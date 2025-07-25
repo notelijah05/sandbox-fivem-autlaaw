@@ -25,6 +25,8 @@ function RetrieveComponents()
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 end
 
+local APIWorking = false
+
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Queue", {
 		"Config",
@@ -123,7 +125,7 @@ QUEUE_PLAYERS_DATA = {}
 QUEUE_PLAYERS = {}
 QUEUE_PLAYERS_SORTED = {}
 
-CURRENT_CONNECTORS = {} 
+CURRENT_CONNECTORS = {}
 CURRENT_CONNECTORS_COUNT = 0
 
 QUEUE_CRASH_PRIORITY = {}
@@ -133,59 +135,19 @@ CONNECTING_PLAYERS_DATA = {}
 
 QUEUE_PLAYER_HISTORY = {} -- For remembering queue positions
 
-local PACResourceName = "sandbox-pwnzor2"
-local _waitingForPac = {}
-local _pacInstalled = true
-
--- Ensure pac is fully ready for our new hook
-AddEventHandler("PhoenixAC::Loaded", function()
-    exports[PACResourceName]:AddHook("PhoenixAC::PlayerConnected", "CustomDeferralState",
-    function(Source, Name, Kick, Deferrals)
-		_waitingForPac[Source] = false
-    end)
-end)
-
 _QUEUE = {
-	HandleAccountLinking = function(self, identifier, deferrals)
-		local p = promise.new()
-
-		deferrals.presentCard(Config.Cards.NotWhitelisted, function(data, rawData)
-			if data.linking then
-				Citizen.SetTimeout(50, function()
-					deferrals.presentCard(Config.Cards.AccountLinking, function(data, rawData)
-						if data.code and #data.code > 8 then
-							local sRes = WebAPI:Request("GET", "serverAPI/linking", {
-								license = identifier,
-								code = _b64enc(data.code),
-							}, {})
-
-							if sRes.code == 200 and sRes.data?.success then
-								deferrals.update(Config.Strings.WebLinkComplete)
-								p:resolve(true)
-							else
-								deferrals.done(Config.Strings.WebLinkError)
-								p:resolve(false)
-							end
-						else
-							if data.cancel then
-								deferrals.done(Config.Strings.NotWhitelisted)
-							else
-								deferrals.done(Config.Strings.WebLinkError)
-							end
-
-							p:resolve(false)
-						end
-					end)
-				end)
-			else
-				deferrals.done(Config.Strings.NotWhitelisted)
-				p:resolve(false)
-			end
-		end)
-
-		return Citizen.Await(p)
-	end,
 	HandleConnection = function(self, source, identifier, deferrals)
+		if not IsSteamRunning(source) then
+			deferrals.done(Config.Strings.SteamRequired)
+			return CancelEvent()
+		end
+
+		local steamName = GetPlayerSteamName(source)
+		if not steamName then
+			deferrals.done(Config.Strings.SteamNameError)
+			return CancelEvent()
+		end
+
 		if GlobalState.IsProduction then
 			while GetGameTimer() < (_dbReadyTime + (Config.Settings.QueueDelay * (1000 * 60))) do
 				local min = math.floor(
@@ -226,24 +188,32 @@ _QUEUE = {
 
 		Queue.Queue:Pop(identifier)
 
-		local ply = PlayerClass(identifier, source, deferrals)
+		local ply = PlayerClass(identifier, source, deferrals, steamName)
 
-		if GetConvar("SERVER_TYPE", "prod") == "prod" then
-			if not ply or not ply:IsWhitelisted() then
-				local success = Queue:HandleAccountLinking(identifier, deferrals)
-
-				if not success then
-					return CancelEvent()
-				end
-
-				Citizen.Wait(5000)
-
-				ply = PlayerClass(identifier, source, deferrals)
+		if not ply:IsWhitelisted() then
+			if APIWorking and WebAPI then
+				deferrals.presentCard(Config.Cards.NotWhitelisted, function(data, rawData)
+					if data and data.linking then
+						deferrals.presentCard(Config.Cards.AccountLinking, function(linkData, linkRawData)
+							if linkData and linkData.code and not linkData.cancel then
+								-- Attempt to link account
+								local success = WebAPI:LinkAccount(identifier, linkData.code)
+								if success then
+									deferrals.done(Config.Strings.WebLinkComplete)
+								else
+									deferrals.done(Config.Strings.WebLinkError)
+								end
+							else
+								deferrals.done(Config.Strings.NotWhitelisted)
+							end
+						end)
+					else
+						deferrals.done(Config.Strings.NotWhitelisted)
+					end
+				end)
+			else
+				deferrals.done(Config.Strings.NotWhitelisted)
 			end
-		end
-
-		if not ply or not ply:IsWhitelisted() or not GetPlayerEndpoint(source) then
-			deferrals.done(Config.Strings.NotWhitelisted)
 			return CancelEvent()
 		end
 
@@ -276,7 +246,7 @@ _QUEUE = {
 			string.format(
 				Config.Strings.Add,
 				ply.Name,
-				ply.AccountID,
+				ply.SteamName or ply.AccountID,
 				ply.Identifier,
 				pos,
 				total,
@@ -286,11 +256,11 @@ _QUEUE = {
 		)
 
 		while GetPlayerEndpoint(source) and not queueClosed and (
-			(not Queue.Queue:Check(identifier)) 
-			or (GetNumPlayerIndices() == MAX_PLAYERS) 
-			or ((GetNumPlayerIndices() + CURRENT_CONNECTORS_COUNT + 1) > MAX_PLAYERS) 
-			or ((GetNumPlayerIndices() + CURRENT_CONNECTORS_COUNT) >= MAX_PLAYERS)
-		) do
+				(not Queue.Queue:Check(identifier))
+				or (GetNumPlayerIndices() == MAX_PLAYERS)
+				or ((GetNumPlayerIndices() + CURRENT_CONNECTORS_COUNT + 1) > MAX_PLAYERS)
+				or ((GetNumPlayerIndices() + CURRENT_CONNECTORS_COUNT) >= MAX_PLAYERS)
+			) do
 			ply.Timer:Tick()
 			local pos, total = Queue.Queue:GetPosition(identifier)
 			local msg = ""
@@ -303,7 +273,8 @@ _QUEUE = {
 			end
 
 			if pos == nil or total == nil then
-				print("Someone In Queue nil/nil ID:", ply.Identifier, "Data: ", identifier, pos, total, json.encode(QUEUE_PLAYERS_DATA[identifier]), json.encode(QUEUE_PLAYERS[identifier]))
+				print("Someone In Queue nil/nil ID:", ply.Identifier, "Data: ", identifier, pos, total,
+					json.encode(QUEUE_PLAYERS_DATA[identifier]), json.encode(QUEUE_PLAYERS[identifier]))
 			end
 
 			ply.Deferrals.update(string.format(Config.Strings.Queued, pos, total, ply.Timer:Output(), msg))
@@ -342,7 +313,7 @@ _QUEUE = {
 				string.format(
 					Config.Strings.Joined,
 					ply.Name,
-					ply.AccountID,
+					ply.SteamName or ply.AccountID,
 					ply.Identifier
 				)
 			)
@@ -357,7 +328,7 @@ _QUEUE = {
 	end,
 	Queue = {
 		Sort = function(self)
-			local sorted = getKeysSortedByValue(QUEUE_PLAYERS, function(a, b) 
+			local sorted = getKeysSortedByValue(QUEUE_PLAYERS, function(a, b)
 				if a.priority ~= b.priority then
 					return a.priority > b.priority
 				end
@@ -376,7 +347,7 @@ _QUEUE = {
 						string.format(
 							Config.Strings.Disconnected,
 							ply.Name,
-							ply.AccountID,
+							ply.SteamName or ply.AccountID,
 							ply.Identifier
 						)
 					)
@@ -394,7 +365,7 @@ _QUEUE = {
 		end,
 		GetCount = function(self)
 			local count = 0
-			for k,v in pairs(QUEUE_PLAYERS) do
+			for k, v in pairs(QUEUE_PLAYERS) do
 				count += 1
 			end
 			return count
@@ -402,7 +373,7 @@ _QUEUE = {
 		GetPosition = function(self, identifier)
 			local count = 0
 			local found = nil
-			for k,v in ipairs(QUEUE_PLAYERS_SORTED) do
+			for k, v in ipairs(QUEUE_PLAYERS_SORTED) do
 				count += 1
 
 				if v == identifier then
@@ -420,10 +391,10 @@ _QUEUE = {
 			end
 
 			local count = 0
-			for k,v in pairs(CURRENT_CONNECTORS) do
+			for k, v in pairs(CURRENT_CONNECTORS) do
 				if v then
 					count += 1
-				end	
+				end
 			end
 
 			CURRENT_CONNECTORS_COUNT = count
@@ -442,7 +413,7 @@ _QUEUE = {
 				string.format(
 					Config.Strings.Crash,
 					ply.Name,
-					ply.AccountID,
+					ply.SteamName or ply.AccountID,
 					ply.Identifier
 				)
 			)
@@ -503,11 +474,10 @@ end)
 
 AddEventHandler("playerConnecting", function(playerName, setKickReason, deferrals)
 	local _src = source
-	_waitingForPac[source] = true
 
 	deferrals.defer()
 	Citizen.Wait(1)
-	deferrals.update(_pacInstalled and Config.Strings.ACWaiting or Config.Strings.Init)
+	deferrals.update(Config.Strings.Init)
 
 	if not _dbReady or GlobalState.IsProduction == nil then
 		deferrals.done(Config.Strings.NotReady)
@@ -530,17 +500,11 @@ AddEventHandler("playerConnecting", function(playerName, setKickReason, deferral
 		return CancelEvent()
 	end
 
-	while _waitingForPac[_src] and _pacInstalled do
-		Citizen.Wait(10)
-	end
-
 	Queue:HandleConnection(_src, identifier, deferrals)
 end)
 
 AddEventHandler("playerDropped", function(message)
 	local src = source
-
-	_waitingForPac[src] = nil
 
 	local license = GetPlayerLicense(src)
 	if license then
@@ -583,7 +547,7 @@ AddEventHandler("Core:Server:SessionStarted", function()
 				Name = ply.Name,
 				Discord = ply.Discord,
 				Mention = ply.Mention,
-				AccountID = ply.AccountID,
+				AccountID = ply.SteamName or ply.AccountID,
 				Avatar = ply.Avatar,
 				Identifier = ply.Identifier,
 				Tokens = ply.Tokens,
@@ -603,13 +567,13 @@ Citizen.CreateThread(function()
 		Citizen.Wait(1000)
 	end
 
-	if not exports["sandbox-base"]:FetchComponent("WebAPI").Enabled then
-		Log("^8Queue Disabled^7", { console = true })
-		queueEnabled = false
-		return
+	if APIWorking and WebAPI then
+		queueEnabled = true
+		print("Queue enabled with WebAPI support")
+	else
+		queueEnabled = true
+		print("Queue enabled without WebAPI - account linking disabled")
 	end
-
-	_pacInstalled = GetResourceState(PACResourceName) ~= "stopped"
 
 	while GetResourceState("hardcap") ~= "stopped" do
 		local state = GetResourceState("hardcap")

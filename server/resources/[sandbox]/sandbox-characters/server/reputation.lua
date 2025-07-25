@@ -55,14 +55,14 @@ _REP = {
 			local char = Fetch:CharacterSource(source)
 			if char ~= nil then
 				local reps = char:GetData("Reputations") or {}
-                local level = 0
+				local level = 0
 				if reps[id] ~= nil then
-                    for k, v in ipairs(GlobalState[string.format("Rep:%s", id)].levels) do
-                        if v.value <= reps[id] then
-                            level = k
-                        end
-                    end
-                    return level
+					for k, v in ipairs(GlobalState[string.format("Rep:%s", id)].levels) do
+						if v.value <= reps[id] then
+							level = k
+						end
+					end
+					return level
 				else
 					return 0
 				end
@@ -95,20 +95,20 @@ _REP = {
 					}
 
 					for k, v in ipairs(repData.levels) do
-                        if v.value <= val then
+						if v.value <= val then
 							repCurrent = {
 								level = k,
 								label = v.label,
 								value = v.value,
 							}
-                        end
-                    end
+						end
+					end
 
 					local repNext = {
-						level = repCurrent.level += 1
+						level = repCurrent.level + 1
 					}
 
-					local nextRepLevel = repCurrent.level += 1
+					local nextRepLevel = repCurrent.level + 1
 					local nextRepLevelLabel = nil
 					if repData.levels[nextRepLevel] then
 						repNext.value = repData.levels[nextRepLevel].value
@@ -151,20 +151,20 @@ _REP = {
 					}
 
 					for k, v in ipairs(repData.levels) do
-                        if v.value <= val then
+						if v.value <= val then
 							repCurrent = {
 								level = k,
 								label = v.label,
 								value = v.value,
 							}
-                        end
-                    end
+						end
+					end
 
 					local repNext = {
-						level = repCurrent.level += 1
+						level = repCurrent.level + 1
 					}
 
-					local nextRepLevel = repCurrent.level += 1
+					local nextRepLevel = repCurrent.level + 1
 					local nextRepLevelLabel = nil
 					if repData.levels[nextRepLevel] then
 						repNext.value = repData.levels[nextRepLevel].value
@@ -195,7 +195,7 @@ _REP = {
 	Modify = {
 		Add = function(self, source, id, amount)
 			if GlobalState[string.format("Rep:%s", id)] ~= nil then
-                local rep = GlobalState[string.format("Rep:%s", id)]
+				local rep = GlobalState[string.format("Rep:%s", id)]
 				local char = Fetch:CharacterSource(source)
 				if char ~= nil then
 					local reps = char:GetData("Reputations") or {}
@@ -218,7 +218,7 @@ _REP = {
 		end,
 		Remove = function(self, source, id, amount)
 			if GlobalState[string.format("Rep:%s", id)] ~= nil then
-                local rep = GlobalState[string.format("Rep:%s", id)]
+				local rep = GlobalState[string.format("Rep:%s", id)]
 
 				local char = Fetch:CharacterSource(source)
 				if char ~= nil then

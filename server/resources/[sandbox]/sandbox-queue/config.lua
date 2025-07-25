@@ -16,7 +16,6 @@ Config = {
 	},
 	Strings = {
 		Init = "Waiting For Queue",
-		ACWaiting = "Waiting For Anti-Cheat Checks",
 		Add = "Added %s (Account: %s, Identifier: %s) To Queue %s/%s (Current Players: %s, Prio: %s)",
 		Banned = "You're Banned, Appeal in Discord\n\nReason: %s\nExpires: %s\nID: %s",
 		PermaBanned = "Permanently Banned, Appeal in Discord\n\nReason: %s\nID: %s",
@@ -34,8 +33,10 @@ Config = {
 		Retrieving = "Retrieving Queue Information",
 		Waiting = "Waiting For Queue To Open - %s %s %s %s",
 		WaitingSeconds = "Waiting For Queue To Open - %s %s",
-		PendingRestart = "🚫 Queue Closed 🚫 Due To A Pending Restart We've Closed The Queue. Please Reconnect In A Few Minutes",
-
+		PendingRestart =
+		"🚫 Queue Closed 🚫 Due To A Pending Restart We've Closed The Queue. Please Reconnect In A Few Minutes",
+		SteamRequired = "Steam must be running to join this server. Please start Steam and try again.",
+		SteamNameError = "Unable to retrieve Steam name. Please ensure Steam is properly connected.",
 		WebLinkComplete = "Successfully Linked FiveM Account to Site. Joining the Queue",
 		WebLinkError = "Failed to Link FiveM to Site. Make Sure That the Code Hasn't Expired.",
 	},
@@ -55,7 +56,8 @@ Config.Cards.NotWhitelisted = {
 			size = "Medium",
 			type = "TextBlock",
 			wrap = true,
-			text = "You are not whitelisted for this server or a connected account could not be found. Please visit the website to apply for whitelist or to link your account at https://sandboxrp.gg/",
+			text =
+			"You are not whitelisted for this server or a connected account could not be found. Please visit the website to apply for whitelist or to link your account at https://sandboxrp.gg/",
 		},
 		{
 			actions = {
@@ -93,7 +95,8 @@ Config.Cards.AccountLinking = {
 			size = "Medium",
 			type = "TextBlock",
 			wrap = true,
-			text = "Please enter the code generated on the site (in your user settings) below. Please note that you have to be whitelisted in order to link your FiveM to the site.",
+			text =
+			"Please enter the code generated on the site (in your user settings) below. Please note that you have to be whitelisted in order to link your FiveM to the site.",
 		},
 		{
 			placeholder = "One Time Code",

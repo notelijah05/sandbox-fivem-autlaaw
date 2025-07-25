@@ -1,4 +1,4 @@
-_royalty = 250 -- amount per play
+_royalty = 250           -- amount per play
 _maxRoyaltyPerHour = 500 -- max amount per hour
 _pendingShopDeposits = {}
 _royaltyCompanies = {
@@ -31,10 +31,14 @@ end)
 AddEventHandler("Phone:Server:Startup", function()
 	for k, v in pairs(_royaltyCompanies) do
 		local t = Banking.Accounts:GetOrganization(k)
-		_pendingShopDeposits[k] = {
-			bank = t.Account,
-			royalties = {},
-		}
+		if t and t.Account then
+			_pendingShopDeposits[k] = {
+				bank = t.Account,
+				royalties = {},
+			}
+		else
+			Logger:Warn("Phone", string.format("Organization account not found for: %s", k))
+		end
 	end
 
 	if not _startingPendingDepositThread then

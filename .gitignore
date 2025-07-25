@@ -2,10 +2,6 @@ artifact/
 txData/
 server/cache
 server/db
-server/config/database.ptr.cfg
-server/config/mongodb.ptr.cfg
-server/config/core.ptr.cfg
-server/server.ptr.cfg
 .vscode/
 .yarn/
 *.bat
@@ -13,6 +9,8 @@ server/server.ptr.cfg
 node_modules
 *.bkp
 .replxx_history
+!server/resources/\[sandbox\]/sandbox-base/node_modules
+bun.lock
 
 # linux only
 *.sh

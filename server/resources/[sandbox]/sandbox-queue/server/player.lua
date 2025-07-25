@@ -1,19 +1,8 @@
-function PlayerClass(identifier, player, deferrals)
-	local member = WebAPI.GetMember:Identifier(identifier)
-	if not member or member == "" or member == -1 or not member?.name then
-		return nil
-	end
+function PlayerClass(identifier, player, deferrals, steamName)
+	local playerName = steamName or GetPlayerName(player) or "Unknown"
 
 	local prio = 0
 	local msg = ""
-
-	if member.priority then
-		local prioBoosts = tonumber(member.priority)
-		if prioBoosts and prioBoosts > 0 then
-			msg = "\n🎉 Extra Priority Boosts | +" .. prioBoosts
-			prio = prio + prioBoosts
-		end
-	end
 
 	if Queue:HasCrashPriority(identifier) then
 		msg = msg .. "\n💥 Crash Priority | +50"
@@ -26,8 +15,8 @@ function PlayerClass(identifier, player, deferrals)
 		prio = prio + tempPrio.Priority
 	end
 
-	local groups = {}
-	table.insert(groups, member.siteRole)
+	-- Default group for all players for now
+	local groups = { "whitelisted" }
 
 	-- Everyone is management when this convar is 1
 	if GetConvar("danger_everyone_is_admin", "") == "1" then
@@ -38,33 +27,26 @@ function PlayerClass(identifier, player, deferrals)
 		if Config.Groups[group] and Config.Groups[group].Queue and Config.Groups[group].Queue.Priority > 0 then
 			prio = prio + tonumber(Config.Groups[group].Queue.Priority)
 
-			msg = msg
-				.. "\n"
-				.. string.format(
-					"%s | +%s",
-					Config.Groups[group].Queue.Message or Config.Groups[group].Name,
-					Config.Groups[group].Queue.Priority
-				)
+			msg = msg .. "\n" .. string.format(
+				"%s | +%s",
+				Config.Groups[group].Queue.Message or Config.Groups[group].Name,
+				Config.Groups[group].Queue.Priority
+			)
 		end
 	end
 
-	while prio == nil do
-		Citizen.Wait(10)
-	end
-
-	--local tokens = GetPlayerTokens(member._id)
 	local mPrio = math.min(Config.MaxPrio, prio)
 
 	local _data = {
 		Source = player,
 		Groups = groups,
-		Name = member.name,
-		Discord = member.discord_id,
-		Mention = member.mention,
-		AccountID = member._id,
-		Avatar = member.image,
-		--Tokens = tokens,
+		Name = playerName,
+		Discord = "",
+		Mention = "",
+		AccountID = steamName or identifier,
+		Avatar = "",
 		Identifier = identifier,
+		SteamName = steamName,
 		Priority = mPrio,
 		Message = msg,
 		TimeBoost = 0,
@@ -92,19 +74,23 @@ function PlayerClass(identifier, player, deferrals)
 			end,
 			Output = function(self)
 				if self.Hour >= 1 then
-					return string.format("%d %s %d %s", self.Hour, self.Hour > 1 and "Hours" or "Hour", self.Minute, self.Minute == 1 and "Minute" or "Minutes")
+					return string.format("%d %s %d %s", self.Hour, self.Hour > 1 and "Hours" or "Hour", self.Minute,
+						self.Minute == 1 and "Minute" or "Minutes")
 				else
-					return string.format("%d %s", self.Minute > 1 and self.Minute or 1, self.Minute <= 1 and "Minute" or "Minutes")
+					return string.format("%d %s", self.Minute > 1 and self.Minute or 1,
+						self.Minute <= 1 and "Minute" or "Minutes")
 				end
 			end,
 		},
 
 		IsWhitelisted = function(self)
-			if Config.Groups[member.siteRole] then
-				return true
+			if APIWorking and WebAPI then
+				local whitelistData = WebAPI:GetWhitelistStatus(identifier)
+				if whitelistData then
+					return whitelistData.whitelisted
+				end
 			end
-
-			return false
+			return true
 		end,
 
 		IsInGracePeriod = function(self)
