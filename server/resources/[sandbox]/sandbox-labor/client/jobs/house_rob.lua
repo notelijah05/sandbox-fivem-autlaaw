@@ -126,7 +126,6 @@ function ExitHouse()
 
         local f = GlobalState[string.format("Robbery:InProgress:%s", propId)]
 
-        TriggerEvent("PAC:IgnoreNextNoclipFlag")
         SetEntityCoords(
             PlayerPedId(),
             f.x,
@@ -203,7 +202,6 @@ function EnterHouseShit(f, exit)
     FreezeEntityPosition(PlayerPedId(), true)
     Wait(50)
 
-    TriggerEvent("PAC:IgnoreNextNoclipFlag")
     SetEntityCoords(PlayerPedId(), f.x, f.y, f.z, 0, 0, 0, false)
     Wait(100)
     SetEntityHeading(PlayerPedId(), f.h)

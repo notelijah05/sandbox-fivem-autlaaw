@@ -30,10 +30,10 @@ AddEventHandler("Menu:Client:Test", function()
 			current = 1,
 			colors = {
 				{ label = "White", hex = "#fff" },
-				{ label = "Black", rgb = { r = 0, g = 0, b = 0 }, hex = "#000" },
-				{ label = "Red", rgb = { r = 255, g = 0, b = 0 } },
+				{ label = "Black", rgb = { r = 0, g = 0, b = 0 },  hex = "#000" },
+				{ label = "Red",   rgb = { r = 255, g = 0, b = 0 } },
 				{ label = "Green", rgb = { r = 0, g = 255, b = 0 } },
-				{ label = "Blue", rgb = { r = 0, g = 0, b = 255 } },
+				{ label = "Blue",  rgb = { r = 0, g = 0, b = 255 } },
 			},
 		},
 		function(data)
@@ -46,7 +46,6 @@ AddEventHandler("Menu:Client:Test", function()
 		oPos = GetEntityCoords(PlayerPedId())
 		oPosH = GetEntityHeading(PlayerPedId())
 
-		TriggerEvent("PAC:IgnoreNextNoclipFlag")
 		SetEntityCoords(PlayerPedId(), -1037.7409667969, -2737.6828613281, 19.169267654419)
 		SetEntityHeading(PlayerPedId(), 315.10974121094)
 		cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", 1)
@@ -56,7 +55,6 @@ AddEventHandler("Menu:Client:Test", function()
 		SetCamRot(cam, -20.0, 0.0, 150.0, 0)
 		SetCamFov(cam, 60.0)
 	end, function()
-		TriggerEvent("PAC:IgnoreNextNoclipFlag")
 		SetEntityCoords(PlayerPedId(), oPos)
 		SetEntityHeading(PlayerPedId(), oPosH)
 		RenderScriptCams(false, true, 500, true, true)
@@ -66,10 +64,10 @@ AddEventHandler("Menu:Client:Test", function()
 		disabled = false,
 		current = 1,
 		list = {
-			{ label = "One", value = 1 },
-			{ label = "Two", value = 2 },
+			{ label = "One",   value = 1 },
+			{ label = "Two",   value = 2 },
 			{ label = "Three", value = 3 },
-			{ label = "Four", value = 4 },
+			{ label = "Four",  value = 4 },
 		},
 	}, function(data)
 		print(data.data.value)
@@ -133,10 +131,10 @@ AddEventHandler("Menu:Client:Test", function()
 		disabled = false,
 		current = 1,
 		list = {
-			{ label = "One", value = 1 },
-			{ label = "Two", value = 2 },
+			{ label = "One",   value = 1 },
+			{ label = "Two",   value = 2 },
 			{ label = "Three", value = 3 },
-			{ label = "Four", value = 4 },
+			{ label = "Four",  value = 4 },
 		},
 	}, function(data)
 		print(data.data.value)

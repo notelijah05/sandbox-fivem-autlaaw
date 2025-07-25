@@ -46,24 +46,24 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		PedInteraction:Add("HiddenHospital", `s_m_m_doctor_01`, GlobalState["HiddenHospital"].coords,
 			GlobalState["HiddenHospital"].heading, 25.0, {
-			{
-				icon = "heart-pulse",
-				text = "Revive Escort (20 $MALD)",
-				event = "Hospital:Client:HiddenRevive",
-				data = LocalPlayer.state.isEscorting or {},
-				isEnabled = function()
-					if LocalPlayer.state.isEscorting ~= nil and not LocalPlayer.state.isDead then
-						local ps = Player(LocalPlayer.state.isEscorting).state
-						return ps.isDead and not ps.deadData?.isMinor
-					else
-						return false
-					end
-				end,
-			},
-		}, 'suitcase-medical', false, true, {
-			animDict = "mp_prison_break",
-			anim = "hack_loop",
-		})
+				{
+					icon = "heart-pulse",
+					text = "Revive Escort (20 $MALD)",
+					event = "Hospital:Client:HiddenRevive",
+					data = LocalPlayer.state.isEscorting or {},
+					isEnabled = function()
+						if LocalPlayer.state.isEscorting ~= nil and not LocalPlayer.state.isDead then
+							local ps = Player(LocalPlayer.state.isEscorting).state
+							return ps.isDead and not ps.deadData?.isMinor
+						else
+							return false
+						end
+					end,
+				},
+			}, 'suitcase-medical', false, true, {
+				animDict = "mp_prison_break",
+				anim = "hack_loop",
+			})
 
 		Polyzone.Create:Box('hospital-check-in-zone-1', vector3(1146.37, -1538.66, 35.03), 2.8, 1.2, {
 			heading = 0,
@@ -99,7 +99,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				event = "Hospital:Client:RequestEMS",
 				isEnabled = function()
 					return (LocalPlayer.state.Character:GetData("ICU") ~= nil and not LocalPlayer.state.Character:GetData("ICU").Released) and
-					(not _done or _done < GetCloudTimeAsInt())
+						(not _done or _done < GetCloudTimeAsInt())
 				end,
 			}
 		})
@@ -161,7 +161,6 @@ HOSPITAL = {
 		_bedId = bedId
 
 		if bed ~= nil and fuck then
-			TriggerEvent("PAC:IgnoreNextNoclipFlag")
 			SetBedCam(bed)
 			if isRp then
 				_healEnd = GetCloudTimeAsInt()
