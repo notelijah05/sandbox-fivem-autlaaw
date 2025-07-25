@@ -61,6 +61,7 @@ const base = [
 	{
 		name: 'home',
 		icon: ['fas', 'house'],
+		label: 'Dashboard',
 		path: '/',
 		exact: true,
 	},
@@ -84,6 +85,7 @@ const pubPrison = [
 	{
 		name: 'home',
 		icon: ['fas', 'house'],
+		label: 'Dashboard',
 		path: '/',
 		exact: true,
 	},
@@ -93,6 +95,7 @@ const attorney = [
 	{
 		name: 'home',
 		icon: ['fas', 'house'],
+		label: 'Dashboard',
 		path: '/',
 		exact: true,
 	},
@@ -139,6 +142,7 @@ const police = [
 	{
 		name: 'home',
 		icon: ['fas', 'house'],
+		label: 'Dashboard',
 		path: '/',
 		exact: true,
 	},
@@ -235,6 +239,7 @@ const doj = [
 	{
 		name: 'home',
 		icon: ['fas', 'house'],
+		label: 'Dashboard',
 		path: '/',
 		exact: true,
 	},
@@ -322,6 +327,7 @@ const districtattorney = [
 	{
 		name: 'home',
 		icon: ['fas', 'house'],
+		label: 'Dashboard',
 		path: '/',
 		exact: true,
 	},
@@ -409,6 +415,7 @@ const medical = [
 	{
 		name: 'home',
 		icon: ['fas', 'house'],
+		label: 'Dashboard',
 		path: '/',
 		exact: true,
 	},
@@ -467,6 +474,7 @@ const doc = [
 	{
 		name: 'home',
 		icon: ['fas', 'house'],
+		label: 'Dashboard',
 		path: '/',
 		exact: true,
 	},
