@@ -136,7 +136,7 @@ local ghosting = false
 local ghostingEnded = false
 local function UnGhostPlayer()
 	ghosting = false
-    SetLocalPlayerAsGhost(false)
+	SetLocalPlayerAsGhost(false)
 end
 
 local function GhostPlayer()
@@ -151,10 +151,10 @@ local function GhostPlayer()
 	end
 
 	ghosting = true
-    --SetGhostedEntityAlpha(254)
-    SetLocalPlayerAsGhost(true)
+	--SetGhostedEntityAlpha(254)
+	SetLocalPlayerAsGhost(true)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while ghosting do
 			local myPos = GetEntityCoords(PlayerPedId())
 			for k, v in ipairs(GetActivePlayers()) do
@@ -172,7 +172,7 @@ local function GhostPlayer()
 					end
 				end
 			end
-			Citizen.Wait(10)
+			Wait(10)
 		end
 	end)
 end
@@ -204,7 +204,7 @@ RegisterNetEvent("Phone:Client:Redline:StoreSingleTrack", function(tId, track)
 	if not updated and track then
 		table.insert(_tracks, track)
 	end
-	
+
 	if not Phone then return end
 
 	Phone.Data:Set("tracks", _tracks)
@@ -239,7 +239,7 @@ end)
 RegisterNetEvent("Phone:Client:Redline:CancelRace", function(id)
 	if _races[id] then
 		_races[id].state = -1
-	
+
 		SendNUIMessage({
 			type = "CANCEL_RACE",
 			data = {
@@ -292,7 +292,7 @@ RegisterNetEvent("Phone:Client:Redline:StartRace", function(id)
 				state = 1,
 			},
 		})
-	
+
 		if _activeRace ~= nil and id == _activeRace.id then
 			Cleanup()
 			StartRace()
@@ -303,7 +303,7 @@ end)
 RegisterNetEvent("Phone:Client:Redline:JoinRace", function(id, racer, data)
 	if _races[id] then
 		_races[id].racers[racer] = data
-	
+
 		SendNUIMessage({
 			type = "JOIN_RACE",
 			data = {
@@ -318,14 +318,14 @@ end)
 RegisterNetEvent("Phone:Client:Redline:LeaveRace", function(id, racer)
 	if _races[id] then
 		_races[id].racers[racer] = nil
-	
+
 		if _activeRace?.id == id then
 			local myAlias = LocalPlayer.state.Character:GetData("Profiles")?.redline?.name
 			if myAlias == racer then
 				Cleanup()
 				ghostingEnded = true
 				UnGhostPlayer()
-	
+
 				SendNUIMessage({
 					type = "I_RACE",
 					data = {
@@ -335,7 +335,7 @@ RegisterNetEvent("Phone:Client:Redline:LeaveRace", function(id, racer)
 				_activeRace = nil
 			end
 		end
-	
+
 		SendNUIMessage({
 			type = "LEAVE_RACE",
 			data = {
@@ -735,14 +735,14 @@ function StartRace()
 		Notification:Info(string.format("Race Starting In %s", countdownMax - countdown))
 		UISounds.Play:FrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
 		countdown = countdown + 1
-		Citizen.Wait(1000)
+		Wait(1000)
 	end
 
 	if not _activeRace or not _loggedIn then
 		return
 	end
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		Notification:Info("Race Started")
 		UISounds.Play:FrontEnd(-1, "GO", "HUD_MINI_GAME_SOUNDSET")
 		SendNUIMessage({
@@ -904,7 +904,7 @@ function StartRace()
 				sCp = cCp
 			end
 
-			Citizen.Wait(1)
+			Wait(1)
 		end
 	end)
 end
@@ -929,7 +929,7 @@ function Cleanup()
 		end
 	end
 
-	
+
 	if leftFlare then
 		StopParticleFxLooped(leftFlare, false)
 	end
@@ -1169,7 +1169,7 @@ function CreatorThread()
 		r = false,
 	}
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while _creator do
 			DisplayTempCheckpoint()
 
@@ -1196,7 +1196,7 @@ function CreatorThread()
 				Wait(1000)
 			end
 
-			Citizen.Wait(1)
+			Wait(1)
 		end
 		Cleanup()
 		SendNUIMessage({

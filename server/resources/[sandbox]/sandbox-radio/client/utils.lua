@@ -28,12 +28,12 @@ function DoesCharacterPassChannelRestrictions(channelRestrictions)
 end
 
 function HasJob(tbl)
-    for k, v in ipairs(tbl) do
-        if Jobs.Permissions:HasJob(v) then
-            return true
-        end
-    end
-    return false
+	for k, v in ipairs(tbl) do
+		if Jobs.Permissions:HasJob(v) then
+			return true
+		end
+	end
+	return false
 end
 
 function CanUseRadio(radioType)
@@ -57,13 +57,13 @@ end
 function LoadAnim(dict)
 	while not HasAnimDictLoaded(dict) do
 		RequestAnimDict(dict)
-		Citizen.Wait(10)
+		Wait(10)
 	end
 end
 
 function LoadModel(hash)
 	while not HasModelLoaded(hash) do
 		RequestModel(hash)
-		Citizen.Wait(10)
+		Wait(10)
 	end
 end

@@ -10,26 +10,26 @@ local _logoutLocations = {
     --         maxZ = 36.8
     --     },
     -- },
-	{ -- St Fiacre Medical Bathroom
+    { -- St Fiacre Medical Bathroom
         center = vector3(1123.17, -1546.83, 35.03),
         length = 1.4,
         width = 1.4,
         options = {
-            heading =  0,
+            heading = 0,
             --debugPoly=true,
             minZ = 32.63,
-  			maxZ = 36.63
+            maxZ = 36.63
         },
     },
-	{ -- St Fiacre Medical Bathroom
+    { -- St Fiacre Medical Bathroom
         center = vector3(1123.2, -1538.36, 35.03),
         length = 1.4,
         width = 1.4,
         options = {
-            heading =  0,
+            heading = 0,
             --debugPoly=true,
-			minZ = 32.63,
-			maxZ = 36.63
+            minZ = 32.63,
+            maxZ = 36.63
         },
     },
     { -- MRPD Bathroom
@@ -43,26 +43,26 @@ local _logoutLocations = {
             maxZ = 32.09
         },
     },
-	{ -- BCSO Bathroom
+    { -- BCSO Bathroom
         center = vector3(1830.4, 3680.58, 38.86),
         length = 3.6,
         width = 3.2,
         options = {
             heading = 30,
             --debugPoly=true,
-			minZ = 37.26,
-			maxZ = 41.26
+            minZ = 37.26,
+            maxZ = 41.26
         },
     },
-	{ -- SAST Bathroom
+    { -- SAST Bathroom
         center = vector3(-452.1, 5998.76, 37.01),
         length = 3.0,
         width = 4.0,
         options = {
             heading = 45,
             --debugPoly=true,
-			minZ = 35.81,
-  			maxZ = 39.81
+            minZ = 35.81,
+            maxZ = 39.81
         },
     },
     -- {
@@ -114,13 +114,14 @@ AddEventHandler('Core:Shared:Ready', function()
         RetrieveComponents()
 
         for k, v in ipairs(_logoutLocations) do
-            Targeting.Zones:AddBox("logout-location-" .. k, "person-from-portal", v.center, v.length, v.width, v.options, {
+            Targeting.Zones:AddBox("logout-location-" .. k, "person-from-portal", v.center, v.length, v.width, v.options,
                 {
-                    icon = "person-from-portal",
-                    text = "Logout",
-                    event = "Locations:Client:LogoutLocation",
-                },
-            }, 2.0, true)
+                    {
+                        icon = "person-from-portal",
+                        text = "Logout",
+                        event = "Locations:Client:LogoutLocation",
+                    },
+                }, 2.0, true)
         end
     end)
 end)
@@ -138,9 +139,9 @@ AddEventHandler('Locations:Client:LogoutLocation', function()
 end)
 
 AddEventHandler("Characters:Client:Spawn", function()
-	Citizen.CreateThread(function()
-		while LocalPlayer.state.loggedIn do
-			Citizen.Wait(60000)
+    CreateThread(function()
+        while LocalPlayer.state.loggedIn do
+            Wait(60000)
 
             if not LocalPlayer.state?.tpLocation then
                 local coords = GetEntityCoords(PlayerPedId())
@@ -149,5 +150,5 @@ AddEventHandler("Characters:Client:Spawn", function()
                 end
             end
         end
-	end)
+    end)
 end)

@@ -8,20 +8,20 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
             local purchaseBankAccount = Banking.Accounts:GetOrganization(shopData.bankAccount)
             if purchaseBankAccount and purchaseBankAccount.Account then
                 if Banking.Balance:Charge(purchaseBankAccount.Account, chosenVehicle.price, {
-                    type = 'bill',
-                    title = 'Fleet Vehicle Purchase',
-                    description = string.format(
-                        'Fleet Vehicle Purchase - %s %s By %s %s (%s)',
-                        chosenVehicle.make,
-                        chosenVehicle.model,
-                        char:GetData('First'),
-                        char:GetData('Last'),
-                        char:GetData('SID')
-                    )
-                }) then
+                        type = 'bill',
+                        title = 'Fleet Vehicle Purchase',
+                        description = string.format(
+                            'Fleet Vehicle Purchase - %s %s By %s %s (%s)',
+                            chosenVehicle.make,
+                            chosenVehicle.model,
+                            char:GetData('First'),
+                            char:GetData('Last'),
+                            char:GetData('SID')
+                        )
+                    }) then
                     local properties = table.copy(chosenVehicle.defaultProperties)
                     properties.livery = livery
-                    Citizen.Wait(200)
+                    Wait(200)
                     Vehicles.Owned:AddToFleet(
                         shopData.job,
                         false,
@@ -37,16 +37,25 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
                         },
                         function(success, vehicle)
                             if success and vehicle then
-                                Execute:Client(src, 'Notification', 'Success', string.format('Fleet Vehicle Purchase of a %s %s was Successful.<br><br>VIN: %s<br>Plate: %s', chosenVehicle.make, chosenVehicle.model, vehicle.VIN, vehicle.RegisteredPlate), 5000, 'cars')
+                                Execute:Client(src, 'Notification', 'Success',
+                                    string.format(
+                                    'Fleet Vehicle Purchase of a %s %s was Successful.<br><br>VIN: %s<br>Plate: %s',
+                                        chosenVehicle.make, chosenVehicle.model, vehicle.VIN, vehicle.RegisteredPlate),
+                                    5000, 'cars')
                             else
-                                Logger:Error('Dealerships', string.format('Purchase of Fleet Vehicle Failed After Taking %s Cash from Bank Account: %s', chosenVehicle.price, purchaseBankAccount.Account))
-                                Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000, 'cars')
+                                Logger:Error('Dealerships',
+                                    string.format(
+                                    'Purchase of Fleet Vehicle Failed After Taking %s Cash from Bank Account: %s',
+                                        chosenVehicle.price, purchaseBankAccount.Account))
+                                Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000,
+                                    'cars')
                             end
                         end,
                         properties
                     )
                 else
-                    Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed - Not Enough Money in the Bank', 5000, 'cars')
+                    Execute:Client(src, 'Notification', 'Error',
+                        'Fleet Vehicle Purchase Failed - Not Enough Money in the Bank', 5000, 'cars')
                 end
             else
                 Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000, 'cars')

@@ -10,7 +10,7 @@ RegisterNUICallback("Dyn8SearchProperties", function(d, cb)
 
     local data = {}
     if properties then
-        for k,v in pairs(properties) do
+        for k, v in pairs(properties) do
             table.insert(data, v)
         end
     end
@@ -22,18 +22,18 @@ RegisterNUICallback("Dyn8SearchProperties", function(d, cb)
 end)
 
 RegisterNUICallback("Dyn8MarkProperty", function(data, cb)
-	local prop = Properties:Get(data)
-	if prop ~= nil then
-		ClearGpsPlayerWaypoint()
-		SetNewWaypoint(prop.location.front.x, prop.location.front.y)
+    local prop = Properties:Get(data)
+    if prop ~= nil then
+        ClearGpsPlayerWaypoint()
+        SetNewWaypoint(prop.location.front.x, prop.location.front.y)
         cb(true)
-	else
-		cb(false)
-	end
+    else
+        cb(false)
+    end
 end)
 
 RegisterNUICallback("Dyn8StartSale", function(data, cb)
-	Callbacks:ServerCallback("Properties:Dyn8:Sell", {
+    Callbacks:ServerCallback("Properties:Dyn8:Sell", {
         property = data.property,
         loan = data.type == 'loan',
         target = data.SID,
@@ -43,18 +43,18 @@ RegisterNUICallback("Dyn8StartSale", function(data, cb)
 end)
 
 RegisterNUICallback("Dyn8StartTransfer", function(data, cb)
-	Callbacks:ServerCallback("Properties:Dyn8:Transfer", {
+    Callbacks:ServerCallback("Properties:Dyn8:Transfer", {
         property = data.property,
         target = data.SID,
     }, cb)
 end)
 
 RegisterNUICallback("Dyn8RunCredit", function(data, cb)
-	Callbacks:ServerCallback(
-        "Properties:Dyn8:CheckCredit", 
+    Callbacks:ServerCallback(
+        "Properties:Dyn8:CheckCredit",
         {
             target = data.term,
-        }, 
+        },
         cb
     )
 end)
@@ -76,19 +76,20 @@ RegisterNUICallback("Dyn8ShowPropertyLocations", function(data, cb)
 
         if _drawingPropertyLocations then
             _drawingPropertyLocations = false
-            Citizen.Wait(100)
+            Wait(100)
         end
 
         _drawingPropertyLocations = true
 
-        Citizen.CreateThread(function()
+        CreateThread(function()
             while LocalPlayer.state.loggedIn and _drawingPropertyLocations do
                 for k, v in pairs(prop.location) do
                     Print3DText(vector3(v.x + 0.0, v.y + 0.0, v.z + 1.0), locationTypes[k])
-                    DrawMarker(2, v.x + 0.0, v.y + 0.0, v.z + 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.4, 0.4, 19, 98, 49, 200, 1, 1, 0, 0)
+                    DrawMarker(2, v.x + 0.0, v.y + 0.0, v.z + 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.4, 0.4, 19, 98,
+                        49, 200, 1, 1, 0, 0)
                 end
 
-                Citizen.Wait(5)
+                Wait(5)
             end
         end)
 
@@ -107,7 +108,7 @@ function Print3DText(coords, text)
         SetTextScale(0.35, 0.35)
         SetTextFont(4)
         SetTextProportional(1)
-        SetTextColour(250, 250, 250, 255)		-- You can change the text color here
+        SetTextColour(250, 250, 250, 255) -- You can change the text color here
         SetTextDropshadow(1, 1, 1, 1, 255)
         SetTextEdge(2, 0, 0, 0, 150)
         SetTextDropShadow()
@@ -122,13 +123,13 @@ function Print3DText(coords, text)
 end
 
 RegisterNUICallback("Dyn8CopyID", function(data, cb)
-	Admin:CopyClipboard(data)
+    Admin:CopyClipboard(data)
 
     cb(true)
 end)
 
 RegisterNUICallback("Dyn8ToggleBlips", function(data, cb)
-	TriggerEvent("Properties:Client:ShowAllPropertyBlips")
+    TriggerEvent("Properties:Client:ShowAllPropertyBlips")
 
     cb('ok')
 end)

@@ -192,8 +192,8 @@ _SCENES = {
 			if type(scene.distance) ~= "number" or scene.distance > 10.0 or scene.distance < 1.0 then
 				scene.distance = 7.5
 			end
-			
-            scene.text.text = SanitizeEmojis(scene.text.text)
+
+			scene.text.text = SanitizeEmojis(scene.text.text)
 
 			local p = promise.new()
 			Database.Game:insertOne({
@@ -357,9 +357,9 @@ function StartExpirationThread()
 	if not _expirationThread then
 		_expirationThread = true
 
-		Citizen.CreateThread(function()
+		CreateThread(function()
 			while true do
-				Citizen.Wait(60 * 1000 * 30)
+				Wait(60 * 1000 * 30)
 				if _hasLoadedScenes then
 					local deleteScenes = {}
 					local timeStamp = os.time()

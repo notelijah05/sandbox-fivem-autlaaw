@@ -2,49 +2,49 @@ _reductions = 0
 
 AddEventHandler("Damage:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Status = exports["sandbox-base"]:FetchComponent("Status")
-	--Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Jail = exports["sandbox-base"]:FetchComponent("Jail")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
+    Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
+    Damage = exports["sandbox-base"]:FetchComponent("Damage")
+    Logger = exports["sandbox-base"]:FetchComponent("Logger")
+    Notification = exports["sandbox-base"]:FetchComponent("Notification")
+    Hud = exports["sandbox-base"]:FetchComponent("Hud")
+    Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
+    Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
+    Status = exports["sandbox-base"]:FetchComponent("Status")
+    --Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
+    Progress = exports["sandbox-base"]:FetchComponent("Progress")
+    EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
+    PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
+    Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
+    Jail = exports["sandbox-base"]:FetchComponent("Jail")
+    Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
+    Animations = exports["sandbox-base"]:FetchComponent("Animations")
+    Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Damage", {
-		"Callbacks",
-		"Damage",
-		"Logger",
-		"Notification",
-		"Hud",
+    exports["sandbox-base"]:RequestDependencies("Damage", {
+        "Callbacks",
+        "Damage",
+        "Logger",
+        "Notification",
+        "Hud",
         "Buffs",
-		"Targeting",
-		"Status",
-		--"Hospital",
-		"Progress",
-		"EmergencyAlerts",
-		"PedInteraction",
-		"Keybinds",
-		"Jail",
-		"Sounds",
-		"Animations",
+        "Targeting",
+        "Status",
+        --"Hospital",
+        "Progress",
+        "EmergencyAlerts",
+        "PedInteraction",
+        "Keybinds",
+        "Jail",
+        "Sounds",
+        "Animations",
         "Weapons",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
+    }, function(error)
+        if #error > 0 then
+            return
+        end
+        RetrieveComponents()
 
         Callbacks:RegisterClientCallback("Damage:Heal", function(s)
             if s then
@@ -69,16 +69,16 @@ AddEventHandler("Core:Shared:Ready", function()
                 Buffs:RemoveBuffType("godmode")
             end
         end)
-	end)
+    end)
 end)
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Damage", DAMAGE)
+    exports["sandbox-base"]:RegisterComponent("Damage", DAMAGE)
 end)
 
 RegisterNetEvent("Characters:Client:Spawned", function()
     StartThreads()
-    
+
     Buffs:RegisterBuff("weakness", "face-head-bandage", "#FF0049", -1, "permanent")
     Buffs:RegisterBuff("godmode", "shield-quartered", "#FFBB04", -1, "permanent")
 
@@ -91,7 +91,8 @@ RegisterNetEvent("Characters:Client:Spawned", function()
     Damage:CalculateMaxHp()
 
     if LocalPlayer.state.isDead then
-        Hud.DeathTexts:Show(LocalPlayer.state.deadData?.isMinor and "knockout" or "death", LocalPlayer.state.isDeadTime, LocalPlayer.state.releaseTime)
+        Hud.DeathTexts:Show(LocalPlayer.state.deadData?.isMinor and "knockout" or "death", LocalPlayer.state.isDeadTime,
+            LocalPlayer.state.releaseTime)
         Hud:Dead(true)
         DoDeadEvent()
     end
@@ -117,9 +118,9 @@ RegisterNetEvent('UI:Client:Reset', function(apps)
         Hud.DeathTexts:Hide()
         Hud:Dead(false)
         if _reductions > 0 then
-			Buffs:ApplyUniqueBuff("weakness", -1)
+            Buffs:ApplyUniqueBuff("weakness", -1)
         else
-			Buffs:RemoveBuffType("weakness")
+            Buffs:RemoveBuffType("weakness")
         end
     end
 end)
@@ -128,13 +129,13 @@ DAMAGE = {
     Reductions = {
         Increase = function(self, amt)
             _reductions += amt
-			Buffs:ApplyUniqueBuff("weakness", -1)
+            Buffs:ApplyUniqueBuff("weakness", -1)
             Callbacks:ServerCallback("Damage:SyncReductions", _reductions)
             Damage:CalculateMaxHp()
         end,
         Reset = function(self)
             _reductions = 0
-			Buffs:RemoveBuffType("weakness")
+            Buffs:RemoveBuffType("weakness")
             Callbacks:ServerCallback("Damage:SyncReductions", _reductions)
             Damage:CalculateMaxHp()
         end,
@@ -169,7 +170,7 @@ DAMAGE = {
         if LocalPlayer.state.isDead then
             DoScreenFadeOut(1000)
             while not IsScreenFadedOut() do
-                Citizen.Wait(10)
+                Wait(10)
             end
         end
 
@@ -191,27 +192,27 @@ DAMAGE = {
 
         local veh = GetVehiclePedIsIn(player)
         local seat = 0
-		if veh ~= 0 then
-			local m = GetEntityModel(veh)
-			for k = -1, GetVehicleModelNumberOfSeats(m) do
-				if GetPedInVehicleSeat(veh, k) == player then
-					seat = k
-				end
-			end
-		end
+        if veh ~= 0 then
+            local m = GetEntityModel(veh)
+            for k = -1, GetVehicleModelNumberOfSeats(m) do
+                if GetPedInVehicleSeat(veh, k) == player then
+                    seat = k
+                end
+            end
+        end
 
         -- if IsPedDeadOrDying(player) then
         --     local loc = GetEntityCoords(player)
         --     NetworkResurrectLocalPlayer(loc, true, true, false)
         -- end
 
-		if veh == 0 then
-			--ClearPedTasksImmediately(player)
-		else
-			Citizen.Wait(300)
-			TaskWarpPedIntoVehicle(player, veh, seat)
-			Citizen.Wait(300)
-		end
+        if veh == 0 then
+            --ClearPedTasksImmediately(player)
+        else
+            Wait(300)
+            TaskWarpPedIntoVehicle(player, veh, seat)
+            Wait(300)
+        end
 
         TriggerServerEvent("Damage:Server:Revived", wasMinor, fieldTreat)
         Hud:Dead(false)
@@ -222,12 +223,12 @@ DAMAGE = {
         end
 
         if _reductions > 0 then
-			Buffs:ApplyUniqueBuff("weakness", -1)
+            Buffs:ApplyUniqueBuff("weakness", -1)
         else
-			Buffs:RemoveBuffType("weakness")
+            Buffs:RemoveBuffType("weakness")
         end
 
-        
+
         local mod = 0.25 * _reductions
         if mod > 0.8 then
             mod = 0.8
@@ -248,16 +249,16 @@ DAMAGE = {
             Animations.Emotes:Play("reviveshit", false, 1750, true)
         end
     end,
-	Died = function(self)
+    Died = function(self)
 
-	end,
-	Apply = {
-		StandardDamage = function(self, value, armorFirst, forceKill)
+    end,
+    Apply = {
+        StandardDamage = function(self, value, armorFirst, forceKill)
             if forceKill and not _hasKO then
                 _hasKO = true
             end
-            
-			ApplyDamageToPed(LocalPlayer.state.ped, value, armorFirst)
-		end,
+
+            ApplyDamageToPed(LocalPlayer.state.ped, value, armorFirst)
+        end,
     }
 }

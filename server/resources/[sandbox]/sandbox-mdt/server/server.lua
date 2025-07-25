@@ -77,7 +77,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		Startup()
 		TriggerEvent("MDT:Server:RegisterCallbacks")
 
-		Citizen.Wait(2500)
+		Wait(2500)
 		UpdateMDTJobsData()
 	end)
 end)
@@ -95,7 +95,7 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 end)
 
 function RegisterMiddleware()
-    Middleware:Add('Characters:Spawning', function(source)
+	Middleware:Add('Characters:Spawning', function(source)
 		local char = Fetch:CharacterSource(source)
 		if char and char:GetData("Attorney") then
 			Citizen.SetTimeout(5000, function()
@@ -107,7 +107,7 @@ function RegisterMiddleware()
 				_onDutyLawyers[source] = char:GetData('SID')
 			end)
 		end
-    end, 50)
+	end, 50)
 end
 
 function UpdateMDTJobsData()
@@ -133,7 +133,7 @@ AddEventHandler('Job:Server:DutyAdd', function(dutyData, source, SID)
 		if job then
 			_onDutyUsers[source] = job.Id
 			local permissions = Jobs.Permissions:GetPermissionsFromJob(source, job.Id)
-	
+
 			TriggerClientEvent("MDT:Client:Login", source, _breakpoints, job, permissions, false, {
 				governmentJobs = _governmentJobs,
 				charges = _charges,
@@ -199,7 +199,7 @@ function CheckMDTPermissions(source, permission, jobId)
 				end
 			end
 		end
-		
+
 		local char = Fetch:CharacterSource(source)
 		if char:GetData('MDTSystemAdmin') then -- They have all permissions
 			return true, mdtUser
@@ -244,9 +244,11 @@ end)
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	Callbacks:RegisterServerCallback("MDT:GetHomeData", function(source, data, cb)
 		local gJob = _onDutyUsers[source]
-		local warrants = MySQL.query.await("SELECT id, state, report, suspect, title, creatorSID, creatorName, creatorCallsign, issued, expires FROM mdt_warrants WHERE state = ? AND expires > NOW() ORDER BY issued DESC LIMIT 5", {
-			"active"
-		})
+		local warrants = MySQL.query.await(
+		"SELECT id, state, report, suspect, title, creatorSID, creatorName, creatorCallsign, issued, expires FROM mdt_warrants WHERE state = ? AND expires > NOW() ORDER BY issued DESC LIMIT 5",
+			{
+				"active"
+			})
 
 		local notices
 		if gJob then
@@ -285,12 +287,13 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 			})
 
 			if id then
-				MySQL.query.await("UPDATE mdt_reports_people SET warrant = ? WHERE type = ? AND SID = ? AND report = ?", {
-					id,
-					"suspect",
-					data.suspect.SID,
-					data.report,
-				})
+				MySQL.query.await("UPDATE mdt_reports_people SET warrant = ? WHERE type = ? AND SID = ? AND report = ?",
+					{
+						id,
+						"suspect",
+						data.suspect.SID,
+						data.report,
+					})
 
 				cb(true)
 				return
@@ -311,7 +314,8 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
 			if data.data.SID and not sentencedSuspects[data.report][data.data.SID] then
 				table.insert(transactions, {
-					query = "UPDATE mdt_reports_people SET sentenced = ?, sentencedAt = NOW(), points = ?, fine = ?, jail = ?, parole = ?, reduction = ?, revoked = ?, doc = ? WHERE type = ? AND SID = ? AND report = ? AND sentenced = ?",
+					query =
+					"UPDATE mdt_reports_people SET sentenced = ?, sentencedAt = NOW(), points = ?, fine = ?, jail = ?, parole = ?, reduction = ?, revoked = ?, doc = ? WHERE type = ? AND SID = ? AND report = ? AND sentenced = ?",
 					values = {
 						1,
 						data.points,
@@ -324,7 +328,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						}),
 						json.encode(data.sentence.revoke),
 						data.sentence.doc and 1 or 0,
-						
+
 						"suspect",
 						data.data.SID,
 						data.report,
@@ -334,7 +338,8 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
 				if data.parole ~= nil then
 					table.insert(transactions, {
-						query = "INSERT INTO character_parole (SID, end, total, parole, sentence, fine) VALUES (?, FROM_UNIXTIME(?), ?, ?, ?, ?) ON DUPLICATE KEY UPDATE end = VALUES(end), total = VALUES(total), parole = VALUES(parole), sentence = VALUES(sentence), fine = VALUES(fine)",
+						query =
+						"INSERT INTO character_parole (SID, end, total, parole, sentence, fine) VALUES (?, FROM_UNIXTIME(?), ?, ?, ?, ?) ON DUPLICATE KEY UPDATE end = VALUES(end), total = VALUES(total), parole = VALUES(parole), sentence = VALUES(sentence), fine = VALUES(fine)",
 						values = {
 							data.data.SID,
 							math.ceil(data.parole["end"]),
@@ -455,7 +460,8 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				}
 			)
 
-			MySQL.query.await("UPDATE mdt_reports_people SET type = ? WHERE report = ? AND type = ? AND SID = ? AND sentenced = ?", {
+			MySQL.query.await(
+			"UPDATE mdt_reports_people SET type = ? WHERE report = ? AND type = ? AND SID = ? AND sentenced = ?", {
 				"suspectOverturned",
 				data.report,
 				"suspect",
@@ -661,7 +667,8 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		local char = Fetch:CharacterSource(source)
 
 		if char and CheckMDTPermissions(source, 'EXPUNGEMENT') and data.SID then
-			local u = MySQL.query.await("UPDATE mdt_reports_people SET expunged = ? WHERE type = ? AND sentenced = ? AND SID = ?", {
+			local u = MySQL.query.await(
+			"UPDATE mdt_reports_people SET expunged = ? WHERE type = ? AND sentenced = ? AND SID = ?", {
 				1,
 				"suspect",
 				1,
@@ -782,12 +789,13 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 							"doc_alerts",
 							{
 								street1 = "Bolingbroke Penitentiary",
-								x = 1852.444, 
-								y = 2585.973, 
+								x = 1852.444,
+								y = 2585.973,
 								z = 45.672
 							},
-							{ 
-								details = string.format("Request to Visit %s %s (%s)", target:GetData("First"), target:GetData("Last"), target:GetData("SID")),
+							{
+								details = string.format("Request to Visit %s %s (%s)", target:GetData("First"),
+									target:GetData("Last"), target:GetData("SID")),
 								icon = "info",
 							},
 							false,
@@ -804,10 +812,10 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						})
 					end
 				else
-					cb({ success = false })	
+					cb({ success = false })
 				end
 			else
-				cb({ success = false })	
+				cb({ success = false })
 			end
 		else
 			cb({

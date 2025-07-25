@@ -65,7 +65,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
                     GiveWheelPrize(source, randomPrize)
 
-                    Citizen.Wait(1000)
+                    Wait(1000)
 
                     if randomPrize.bigWin then
                         GlobalState["Casino:WheelLocked"] = true
@@ -109,34 +109,34 @@ AddEventHandler("Casino:Server:Startup", function()
     end)
 
     while not _casinoConfigLoaded do
-        Citizen.Wait(250)
+        Wait(250)
     end
 
     _wheelAccumulator = Casino.Config:Get("wheel-accumulator") or 0
 end)
 
 AddEventHandler("Core:Server:ForceSave", function()
-	Casino.Config:Set("wheel-accumulator", _wheelAccumulator)
+    Casino.Config:Set("wheel-accumulator", _wheelAccumulator)
 end)
 
 function GenerateWheelPrize()
     local prizes = GetWheelPrizeConfig()
 
     if _wheelAccumulator >= 120000 then
-        table.insert(prizes, {1, { slice = 7, type = "cash", value = 90000 }})
+        table.insert(prizes, { 1, { slice = 7, type = "cash", value = 90000 } })
     end
 
     if _wheelAccumulator >= 200000 and math.random(9) == 4 then
-        table.insert(prizes, {1, { slice = 12, type = "mystery" }})
+        table.insert(prizes, { 1, { slice = 12, type = "mystery" } })
     end
 
     if _wheelAccumulator >= 200000 and math.random(20) == 13 then
-        table.insert(prizes, {3, { slice = 20, type = "cash", value = 150000, bigWin = true }})
+        table.insert(prizes, { 3, { slice = 20, type = "cash", value = 150000, bigWin = true } })
     end
 
     if _wheelAccumulator >= 2000000 and math.random(17) == 7 then -- This might be too low paired with 2 randoms
-        table.insert(prizes, {5, { slice = 5, type = "house", bigWin = true }})
-        table.insert(prizes, {5, { slice = 19, type = "vehicle", bigWin = true }})
+        table.insert(prizes, { 5, { slice = 5, type = "house", bigWin = true } })
+        table.insert(prizes, { 5, { slice = 19, type = "vehicle", bigWin = true } })
     end
 
     local randomPrize = Utils:WeightedRandom(prizes)
@@ -163,7 +163,7 @@ function SpinTheFuckingWheel(slice)
         GlobalState["Casino:WheelLastRotation"] = finalRotation
         TriggerClientEvent("Casino:Client:WheelLastRotation", -1, finalRotation)
 
-        Citizen.Wait(250)
+        Wait(250)
 
         p:resolve(true)
     end)
@@ -211,7 +211,7 @@ function GiveWheelPrize(source, randomPrize)
 
             if Casino.Chips:Modify(source, value) then
                 SendCasinoWonChipsPhoneNotification(source, value)
-                
+
                 winValue = value
                 _wheelAccumulator -= value
             end
@@ -234,13 +234,15 @@ function GiveWheelPrize(source, randomPrize)
         elseif randomPrize.type == "house" then
             SaveCasinoBigWin(source, "wheel", "Won Real Estate Discount Prize", randomPrize)
 
-            SendCasinoPhoneNotification(source, "Real Estate Discount Won!", "Please contact casino staff to claim your prize.", 10000)
+            SendCasinoPhoneNotification(source, "Real Estate Discount Won!",
+                "Please contact casino staff to claim your prize.", 10000)
 
             --SetPrizeDisabled(randomPrize.slice, 7)
         elseif randomPrize.type == "mystery" then
             SaveCasinoBigWin(source, "wheel", "Won Mystery Prize", randomPrize)
 
-            SendCasinoPhoneNotification(source, "Mystery Prize Won!", "Please contact casino staff to claim your prize.", 10000)
+            SendCasinoPhoneNotification(source, "Mystery Prize Won!", "Please contact casino staff to claim your prize.",
+                10000)
 
             --SetPrizeDisabled(randomPrize.slice, 7)
         end

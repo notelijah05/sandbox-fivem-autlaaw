@@ -19,7 +19,7 @@ Camera.angleYMax = 80.0
 
 Camera.Activate = function(delay)
 	if delay then
-		Citizen.Wait(delay)
+		Wait(delay)
 	end
 
 	if not DoesCamExist(Camera.entity) then
@@ -41,7 +41,7 @@ end
 Camera.Deactivate = function()
 	local playerPed = PlayerPedId()
 
-    ClearPedTasksImmediately(PlayerPedId())
+	ClearPedTasksImmediately(PlayerPedId())
 
 	SetCamActive(Camera.entity, false)
 	RenderScriptCams(false, true, 500, true, true)
@@ -110,12 +110,12 @@ Camera.CalculateMaxRadius = function()
 
 	local behindX = pedCoords.x
 		+ ((Cos(Camera.angleX) * Cos(Camera.angleY)) + (Cos(Camera.angleY) * Cos(Camera.angleX)))
-			/ 2
-			* (Camera.radius + 0.5)
+		/ 2
+		* (Camera.radius + 0.5)
 	local behindY = pedCoords.x
 		+ ((Sin(Camera.angleX) * Cos(Camera.angleY)) + (Cos(Camera.angleY) * Sin(Camera.angleX)))
-			/ 2
-			* (Camera.radius + 0.5)
+		/ 2
+		* (Camera.radius + 0.5)
 	local behindZ = (Sin(Camera.angleY)) * (Camera.radius + 0.5)
 
 	local testRay = StartShapeTestRay(
@@ -166,7 +166,7 @@ Camera.CalculatePosition = function(adjustedAngle)
 	return vector3(pedCoords.x + offsetX, pedCoords.y + offsetY, pedCoords.z + offsetZ)
 end
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
 		if Camera.active or FROZEN then
 			DisableFirstPersonCamThisFrame()
@@ -206,6 +206,6 @@ Citizen.CreateThread(function()
 			end
 		end
 
-		Citizen.Wait(0)
+		Wait(0)
 	end
 end)

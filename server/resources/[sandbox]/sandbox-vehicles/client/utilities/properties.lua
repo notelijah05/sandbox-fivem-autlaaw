@@ -31,7 +31,7 @@ function GetVehicleProperties(vehicle, initSetup)
 			SetVehicleMod(vehicle, 15, -1, false) -- Suspension
 			SetVehicleMod(vehicle, 16, -1, false) -- Armour
 
-			Citizen.Wait(100)
+			Wait(100)
 		end
 
 		return {
@@ -147,8 +147,9 @@ function SetVehicleProperties(vehicle, props, data)
 			if callsignData and #callsignData == 3 then
 				local callsign = tonumber(callsignData)
 				if callsign ~= nil then
-					local one, two, three = getCallsignDigit(callsign, 3), getCallsignDigit(callsign, 2), getCallsignDigit(callsign, 1)
-	
+					local one, two, three = getCallsignDigit(callsign, 3), getCallsignDigit(callsign, 2),
+						getCallsignDigit(callsign, 1)
+
 					props.mods.fender = one
 					props.mods.rightFender = two
 					props.mods.roof = three

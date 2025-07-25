@@ -7,7 +7,7 @@ AddEventHandler('Businesses:Client:Startup', function()
     for k, v in pairs(_tvData) do
         if v.viewZone then
             Polyzone.Create:Box(
-                'tv_zone_'.. k,
+                'tv_zone_' .. k,
                 v.viewZone.center,
                 v.viewZone.length,
                 v.viewZone.width,
@@ -65,23 +65,23 @@ function EnterTVZone(id)
 
     for k, v in ipairs(zoneData.tvs) do
         createdDUIs[k] = createTVScaleform(k)
-        Citizen.Wait(500)
-    
+        Wait(500)
+
         PushScaleformMovieFunction(createdDUIs[k].sf, 'SET_TEXTURE')
-    
+
         PushScaleformMovieMethodParameterString('texture_arp_tvs_' .. k)
         PushScaleformMovieMethodParameterString('texture_arp_tvs_other_' .. k)
-    
+
         PushScaleformMovieFunctionParameterInt(0)
         PushScaleformMovieFunctionParameterInt(0)
         PushScaleformMovieFunctionParameterInt(1280)
         PushScaleformMovieFunctionParameterInt(720)
-    
+
         PopScaleformMovieFunctionVoid()
     end
 
 
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while insideTV do
             for k, v in ipairs(zoneData.tvs) do
                 DrawScaleformMovie_3dSolid(
@@ -97,11 +97,11 @@ function EnterTVZone(id)
                     2
                 )
             end
-            Citizen.Wait(0)
+            Wait(0)
         end
     end)
 
-    Citizen.Wait(1500)
+    Wait(1500)
 
     if createdDUIs and #createdDUIs > 0 then
         for k, v in pairs(createdDUIs) do
@@ -129,7 +129,7 @@ end)
 
 RegisterNetEvent('TVs:Client:Update', function(id)
     if insideTV == id then
-        Citizen.Wait(1500)
+        Wait(1500)
         if createdDUIs and #createdDUIs > 0 then
             for k, v in pairs(createdDUIs) do
                 SendDUIMessage(v.dui, {
@@ -158,14 +158,14 @@ local linkPromise
 function GetNewTVLink()
     linkPromise = promise.new()
     Input:Show('TVs', 'URL', {
-		{
-			id = 'name',
-			type = 'text',
-			options = {
-				inputProps = {},
-			},
-		},
-	}, 'TVs:Client:RecieveTVLinkInput', {})
+        {
+            id = 'name',
+            type = 'text',
+            options = {
+                inputProps = {},
+            },
+        },
+    }, 'TVs:Client:RecieveTVLinkInput', {})
 
     return Citizen.Await(linkPromise)
 end

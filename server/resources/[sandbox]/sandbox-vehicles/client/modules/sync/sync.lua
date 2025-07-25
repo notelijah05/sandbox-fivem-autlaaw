@@ -19,7 +19,7 @@ function AddSyncedVehicle(veh)
     if not SYNCED_VEHICLES[veh] then
         local vehClass = GetVehicleClass(veh)
         local data, emergencyData = GetSyncedVehicleStateData(veh, vehClass == 18)
-    
+
         SYNCED_VEHICLES[veh] = data
         UpdateVehicleIndicatorState(veh, SYNCED_VEHICLES[veh].indicators)
         UpdateVehicleNeonsState(veh, SYNCED_VEHICLES[veh].neonsDisabled)
@@ -61,7 +61,7 @@ function GetSyncedVehicleStateData(veh, isEmergency)
     if vehEnt and vehEnt.state then
         local indicatorState = vehEnt.state.indicators
         if indicatorState ~= nil then
-            vState.indicators = indicatorState 
+            vState.indicators = indicatorState
         else
             vState.indicators = false
         end
@@ -91,9 +91,9 @@ function GetSyncedVehicleStateData(veh, isEmergency)
     return vState, vEmergencyState
 end
 
-Citizen.CreateThread(function()
+CreateThread(function()
     while true do
-        Citizen.Wait(30000)
+        Wait(30000)
         vehicleActionRLimits = {}
     end
 end)
@@ -147,7 +147,7 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh, seat, class)
 
     SetAudioFlag("PoliceScannerDisabled", true)
 
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while SYNC_DRIVING_VEHICLE do
             local sleep = true
             if DISABLE_AIR_CONTROL then
@@ -156,7 +156,7 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh, seat, class)
                 DisableControlAction(0, 60, true)
                 sleep = false
             end
-    
+
             if SYNC_DRIVING_EMERGENCY_VEHICLE then
                 DisableControlAction(0, 80, true)
                 DisableControlAction(0, 81, true)
@@ -166,9 +166,9 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh, seat, class)
                 sleep = false
             end
 
-            Citizen.Wait(1)
+            Wait(1)
             if sleep then
-                Citizen.Wait(250)
+                Wait(250)
             end
         end
     end)
@@ -202,9 +202,9 @@ RegisterNetEvent("Vehicle:Client:ForceAudio", function(vNet, audio)
 end)
 
 AddEventHandler("Vehicle:Client:PickupBike", function(entityData)
-	if not DoesEntityExist(entityData.entity) then
-		return
-	end
+    if not DoesEntityExist(entityData.entity) then
+        return
+    end
 
-	Vehicles.Sync.Bike:Pickup(entityData.entity)
+    Vehicles.Sync.Bike:Pickup(entityData.entity)
 end)

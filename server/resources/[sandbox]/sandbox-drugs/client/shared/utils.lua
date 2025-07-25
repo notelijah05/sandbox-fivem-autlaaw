@@ -1,16 +1,15 @@
-
 function loadModel(model)
 	while not HasModelLoaded(model) do
 		RequestModel(model)
-		Citizen.Wait(5)
+		Wait(5)
 	end
 end
 
 function loadAnim(dict)
-    while not HasAnimDictLoaded(dict) do
-        RequestAnimDict(dict)
-        Citizen.Wait(10)
-    end
+	while not HasAnimDictLoaded(dict) do
+		RequestAnimDict(dict)
+		Wait(10)
+	end
 end
 
 function hasValue(tbl, value)

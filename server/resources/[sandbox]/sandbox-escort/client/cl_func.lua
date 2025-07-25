@@ -35,10 +35,10 @@ end
 
 function StartEscortThread(t)
 	while LocalPlayer.state.isEscorting == nil do
-		Citizen.Wait(10)
+		Wait(10)
 	end
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		local ped = GetPlayerPed(t)
 		local myped = PlayerPedId()
 
@@ -47,18 +47,18 @@ function StartEscortThread(t)
 				DisableControlAction(1, 21, true) -- Sprint
 			end
 			DisableControlAction(1, 23, true) -- F
-			Citizen.Wait(5)
+			Wait(5)
 		end
 	end)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		local ped = GetPlayerPed(t)
 
 		while LocalPlayer.state.isEscorting ~= nil do
-			Citizen.Wait(500)
-            if not DoesEntityExist(ped) then
-                Escort:StopEscort()
-            end
+			Wait(500)
+			if not DoesEntityExist(ped) then
+				Escort:StopEscort()
+			end
 		end
 	end)
 end
@@ -66,7 +66,7 @@ end
 RegisterNetEvent("Escort:Client:Escorted", function()
 	_fuckSake = true
 	while LocalPlayer.state.myEscorter == nil do
-		Citizen.Wait(10)
+		Wait(10)
 	end
 
 	if LocalPlayer.state.isCuffed then
@@ -81,12 +81,12 @@ RegisterNetEvent("Escort:Client:Escorted", function()
 		Progress:Cancel()
 	end
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		local ped = GetPlayerPed(GetPlayerFromServerId(LocalPlayer.state.myEscorter))
 		local myped = PlayerPedId()
 
 		while not DoesEntityExist(ped) do
-			Citizen.Wait(1)
+			Wait(1)
 			ped = GetPlayerPed(GetPlayerFromServerId(LocalPlayer.state.myEscorter))
 		end
 
@@ -117,7 +117,7 @@ RegisterNetEvent("Escort:Client:Escorted", function()
 			DisableControlAction(1, 21, true) -- Sprint
 			DisableControlAction(1, 22, true) -- Jump
 			DisableControlAction(1, 23, true) -- F
-			Citizen.Wait(5)
+			Wait(5)
 		end
 		DetachEntity(LocalPlayer.state.ped, true, true)
 	end)
@@ -133,65 +133,65 @@ end)
 
 AddEventHandler("Escort:Client:PullOut", function(entity, data)
 	local vehmodel = GetEntityModel(entity.entity)
-    local vehClass = GetVehicleClass(entity.entity)
+	local vehClass = GetVehicleClass(entity.entity)
 
-    local targetSeat = nil
-    local targetPed = nil
+	local targetSeat = nil
+	local targetPed = nil
 
-    if vehClass == 18 then
-        -- Favour Highest Back Seats First
-        for i = GetVehicleModelNumberOfSeats(vehmodel), -1, -1 do
-            local ent = GetPedInVehicleSeat(entity.entity, i)
-            if ent ~= 0 then
-                targetSeat = i
-                targetPed = ent
-                break
-            end
-        end
-    else
-        for i = -1, GetVehicleModelNumberOfSeats(vehmodel) do
-            local ent = GetPedInVehicleSeat(entity.entity, i)
-            if ent ~= 0 then
-                targetSeat = i
-                targetPed = ent
-                break
-            end
-        end
-    end
+	if vehClass == 18 then
+		-- Favour Highest Back Seats First
+		for i = GetVehicleModelNumberOfSeats(vehmodel), -1, -1 do
+			local ent = GetPedInVehicleSeat(entity.entity, i)
+			if ent ~= 0 then
+				targetSeat = i
+				targetPed = ent
+				break
+			end
+		end
+	else
+		for i = -1, GetVehicleModelNumberOfSeats(vehmodel) do
+			local ent = GetPedInVehicleSeat(entity.entity, i)
+			if ent ~= 0 then
+				targetSeat = i
+				targetPed = ent
+				break
+			end
+		end
+	end
 
-    if targetSeat and targetPed then
-        local dur = 5000
-        if _gJobs[LocalPlayer.state.onDuty] ~= nil then
-            dur = _gJobs[LocalPlayer.state.onDuty]
-        end
+	if targetSeat and targetPed then
+		local dur = 5000
+		if _gJobs[LocalPlayer.state.onDuty] ~= nil then
+			dur = _gJobs[LocalPlayer.state.onDuty]
+		end
 
-        Progress:ProgressWithTickEvent({
-            name = "unseat",
-            duration = dur,
-            label = "Unseating",
-            useWhileDead = false,
-            canCancel = true,
-            animation = false,
-            ignoreModifier = true,
-            controlDisables = {
-                disableMovement = true,
-                disableCarMovement = true,
-                disableMouse = false,
-                disableCombat = true,
-            },
-        }, function()
-            if
-                #(GetEntityCoords(LocalPlayer.state.ped) - GetEntityCoords(entity.entity)) <= 5.0
-                and GetPedInVehicleSeat(entity.entity, targetSeat) == targetPed
-            then
-                return
-            end
-            Progress:Cancel()
-        end, function(cancelled)
-            if not cancelled then
-                local playerId = NetworkGetPlayerIndexFromPed(targetPed)
-                Escort:DoEscort(GetPlayerServerId(playerId), playerId)
-            end
-        end)
-    end
+		Progress:ProgressWithTickEvent({
+			name = "unseat",
+			duration = dur,
+			label = "Unseating",
+			useWhileDead = false,
+			canCancel = true,
+			animation = false,
+			ignoreModifier = true,
+			controlDisables = {
+				disableMovement = true,
+				disableCarMovement = true,
+				disableMouse = false,
+				disableCombat = true,
+			},
+		}, function()
+			if
+				#(GetEntityCoords(LocalPlayer.state.ped) - GetEntityCoords(entity.entity)) <= 5.0
+				and GetPedInVehicleSeat(entity.entity, targetSeat) == targetPed
+			then
+				return
+			end
+			Progress:Cancel()
+		end, function(cancelled)
+			if not cancelled then
+				local playerId = NetworkGetPlayerIndexFromPed(targetPed)
+				Escort:DoEscort(GetPlayerServerId(playerId), playerId)
+			end
+		end)
+	end
 end)

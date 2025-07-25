@@ -67,7 +67,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 	customsMenu = Menu:Create("vehicle_customs", "Vehicle Customs", function()
 		CUSTOMS_OPEN = true
 	end, function()
-		Citizen.Wait(100)
+		Wait(100)
 		customsMenu = false
 		customsMenuSubs = nil
 		collectgarbage()
@@ -113,12 +113,12 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 			disabled = false,
 			current = originalData.paintType[1] or 0,
 			list = {
-				{ label = "Normal", value = 0 },
+				{ label = "Normal",   value = 0 },
 				{ label = "Metallic", value = 1 },
-				{ label = "Pearl", value = 2 },
-				{ label = "Matte", value = 3 },
-				{ label = "Metal", value = 4 },
-				{ label = "Chrome", value = 5 },
+				{ label = "Pearl",    value = 2 },
+				{ label = "Matte",    value = 3 },
+				{ label = "Metal",    value = 4 },
+				{ label = "Chrome",   value = 5 },
 			},
 		}, function(data)
 			if not changingData.paintType then
@@ -156,12 +156,12 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 			disabled = false,
 			current = originalData.paintType[2] or 0,
 			list = {
-				{ label = "Normal", value = 0 },
+				{ label = "Normal",   value = 0 },
 				{ label = "Metallic", value = 1 },
-				{ label = "Pearl", value = 2 },
-				{ label = "Matte", value = 3 },
-				{ label = "Metal", value = 4 },
-				{ label = "Chrome", value = 5 },
+				{ label = "Pearl",    value = 2 },
+				{ label = "Matte",    value = 3 },
+				{ label = "Metal",    value = 4 },
+				{ label = "Chrome",   value = 5 },
 			},
 		}, function(data)
 			if not changingData.paintType then
@@ -289,15 +289,15 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 				disabled = false,
 				current = false,
 				list = {
-					{ label = "No Change", value = false },
-					{ label = "White", value = { r = 255, g = 255, b = 255 } },
-					{ label = "Black", value = { r = 0, g = 0, b = 0 } },
-					{ label = "Dark Grey", value = { r = 25, g = 25, b = 25 } },
-					{ label = "Grey", value = { r = 60, g = 60, b = 60 } },
-					{ label = "Green", value = { r = 74, g = 103, b = 65 } },
+					{ label = "No Change",  value = false },
+					{ label = "White",      value = { r = 255, g = 255, b = 255 } },
+					{ label = "Black",      value = { r = 0, g = 0, b = 0 } },
+					{ label = "Dark Grey",  value = { r = 25, g = 25, b = 25 } },
+					{ label = "Grey",       value = { r = 60, g = 60, b = 60 } },
+					{ label = "Green",      value = { r = 74, g = 103, b = 65 } },
 					{ label = "Dark Green", value = { r = 34, g = 49, b = 29 } },
-					{ label = "Dark Blue", value = { r = 0, g = 16, b = 41 } },
-					{ label = "Silver", value = { r = 192, g = 192, b = 192 } },
+					{ label = "Dark Blue",  value = { r = 0, g = 16, b = 41 } },
+					{ label = "Silver",     value = { r = 192, g = 192, b = 192 } },
 				},
 			},
 			function(data)
@@ -479,20 +479,20 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 			disabled = false,
 			current = originalData.mods.xenonColor or -1,
 			list = {
-				{ label = "Default", value = 255 },
-				{ label = "White", value = 0 },
-				{ label = "Blue", value = 1 },
+				{ label = "Default",       value = 255 },
+				{ label = "White",         value = 0 },
+				{ label = "Blue",          value = 1 },
 				{ label = "Electric Blue", value = 2 },
-				{ label = "Mint Green", value = 3 },
-				{ label = "Lime Green", value = 4 },
-				{ label = "Yellow", value = 5 },
+				{ label = "Mint Green",    value = 3 },
+				{ label = "Lime Green",    value = 4 },
+				{ label = "Yellow",        value = 5 },
 				{ label = "Golden Shower", value = 6 },
-				{ label = "Orange", value = 7 },
-				{ label = "Red", value = 8 },
-				{ label = "Pony Pink", value = 9 },
-				{ label = "Hot Pink", value = 10 },
-				{ label = "Purple", value = 11 },
-				{ label = "Blacklight", value = 12 },
+				{ label = "Orange",        value = 7 },
+				{ label = "Red",           value = 8 },
+				{ label = "Pony Pink",     value = 9 },
+				{ label = "Hot Pink",      value = 10 },
+				{ label = "Purple",        value = 11 },
+				{ label = "Blacklight",    value = 12 },
 			},
 		},
 		function(data)
@@ -589,9 +589,9 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	customsMenuSubs["wheels"].Add:Ticker(
 		"Wheels - $"
-			.. math.ceil(
-				_customsConfig.cost.mods.frontWheels and (_customsConfig.cost.mods.frontWheels * costMultiplier) or 0
-			),
+		.. math.ceil(
+			_customsConfig.cost.mods.frontWheels and (_customsConfig.cost.mods.frontWheels * costMultiplier) or 0
+		),
 		{
 			disabled = false,
 			current = originalData.mods.frontWheels or -1,
@@ -612,9 +612,9 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 	if DRIVING_VEHICLE_CLASS == 8 then
 		customsMenuSubs["wheels"].Add:Ticker(
 			"Rear Wheels - $"
-				.. math.ceil(
-					_customsConfig.cost.mods.backWheels and (_customsConfig.cost.mods.backWheels * costMultiplier) or 0
-				),
+			.. math.ceil(
+				_customsConfig.cost.mods.backWheels and (_customsConfig.cost.mods.backWheels * costMultiplier) or 0
+			),
 			{
 				disabled = false,
 				current = originalData.mods.backWheels or -1,
@@ -717,10 +717,10 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		if v.mod == "horns" then
 			customsMenuSubs["body_parts"].Add:Select(
 				v.name
-					.. " - $"
-					.. math.ceil(
-						_customsConfig.cost.mods[v.mod] and (_customsConfig.cost.mods[v.mod] * costMultiplier) or 0
-					),
+				.. " - $"
+				.. math.ceil(
+					_customsConfig.cost.mods[v.mod] and (_customsConfig.cost.mods[v.mod] * costMultiplier) or 0
+				),
 				{
 					disabled = false,
 					current = originalData.mods[v.mod] or -1,
@@ -756,10 +756,10 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 			if amount > 0 and #levelList > 1 then
 				customsMenuSubs["body_parts"].Add:Select(
 					v.name
-						.. " - $"
-						.. math.ceil(
-							_customsConfig.cost.mods[v.mod] and (_customsConfig.cost.mods[v.mod] * costMultiplier) or 0
-						),
+					.. " - $"
+					.. math.ceil(
+						_customsConfig.cost.mods[v.mod] and (_customsConfig.cost.mods[v.mod] * costMultiplier) or 0
+					),
 					{
 						disabled = false,
 						current = originalData.mods[v.mod] or -1,
@@ -780,7 +780,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	customsMenuSubs["body_parts"].Add:Select(
 		"Window Tints - $"
-			.. math.ceil(_customsConfig.cost.windowTint and (_customsConfig.cost.windowTint * costMultiplier) or 0),
+		.. math.ceil(_customsConfig.cost.windowTint and (_customsConfig.cost.windowTint * costMultiplier) or 0),
 		{
 			disabled = false,
 			current = originalData.windowTint or -1,
@@ -808,7 +808,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	customsMenuSubs["body_parts"].Add:Select(
 		"Plate Type - $"
-			.. math.ceil(_customsConfig.cost.plateIndex and (_customsConfig.cost.plateIndex * costMultiplier) or 0),
+		.. math.ceil(_customsConfig.cost.plateIndex and (_customsConfig.cost.plateIndex * costMultiplier) or 0),
 		{
 			disabled = originalData.plateIndex == 4,
 			current = originalData.plateIndex or 0,

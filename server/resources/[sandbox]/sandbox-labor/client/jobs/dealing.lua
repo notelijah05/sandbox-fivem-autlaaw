@@ -45,7 +45,7 @@ function DoHandoff(ped)
 	loadAnimDict("mp_safehouselost@")
 	ClearPedTasks(ped)
 
-    PlayAmbientSpeech1(ped, 'Chat_State', 'Speech_Params_Force')
+	PlayAmbientSpeech1(ped, 'Chat_State', 'Speech_Params_Force')
 
 	local taskSeq = OpenSequenceTask()
 	TaskSetBlockingOfNonTemporaryEvents(0, true)
@@ -95,7 +95,7 @@ end
 function loadAnimDict(pDict)
 	while not HasAnimDictLoaded(pDict) do
 		RequestAnimDict(pDict)
-		Citizen.Wait(5)
+		Wait(5)
 	end
 end
 
@@ -106,7 +106,7 @@ end)
 
 AddEventHandler("Labor:Client:Setup", function()
 	while _queueLoc == nil do
-		Citizen.Wait(10)
+		Wait(10)
 	end
 
 	if _queueLoc.coords == nil then
@@ -148,7 +148,6 @@ RegisterNetEvent("CornerDealing:Client:DoSequence", function(seqType, netId, arg
 	if seqType == "goto" then
 		SendPedToPlayer(NetworkGetEntityFromNetworkId(netId), arg2)
 	elseif seqType == "handoff" then
-		
 		local ped = NetworkGetEntityFromNetworkId(netId)
 		local relation = GetPedRelationshipGroupHash(ped)
 		SetRelationshipBetweenGroups(0, `PLAYER`, relation)
@@ -180,10 +179,10 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 					if _SellingPed ~= 0 then
 						AddTargetingShit(_SellingPed)
 					else
-						Citizen.CreateThread(function()
+						CreateThread(function()
 							while _working and _state == 1 and _SellingPed == nil and _onDutyTime == dutyTime do
 								while not DoesEntityExist(NetworkGetEntityFromNetworkId(netId)) do
-									Citizen.Wait(3000)
+									Wait(3000)
 								end
 
 								if _working and _state == 1 and _SellingPed == nil then
@@ -212,9 +211,9 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 					_SellingCorner = GetEntityCoords(LocalPlayer.state.ped)
 					LocalPlayer.state:set("cornering", true, true)
 					Entity(_SellingVeh).state:set("cornering", true, true)
-		
+
 					Vehicles.Sync.Doors:Open(entity.entity, 5, true, true)
-		
+
 					Callbacks:ServerCallback("CornerDealing:StartCornering", {
 						netId = NetworkGetNetworkIdFromEntity(entity.entity),
 						corner = _SellingCorner,
@@ -238,7 +237,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 			local start = GetGameTimer()
 			_startTime = start
 
-			Citizen.CreateThread(function()
+			CreateThread(function()
 				while _working and _state == 1 and _startTime == start do
 					if _SellingPed ~= nil then
 						local myCoords = GetEntityCoords(LocalPlayer.state.ped)
@@ -246,13 +245,14 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 
 						local dist = #(pedCoords - myCoords)
 						if dist <= 30.0 then
-							DrawMarker(2, pedCoords.x, pedCoords.y, pedCoords.z + 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.25, 255, 0, 0, 150, true, true, 0, 0)
-							Citizen.Wait(1)
+							DrawMarker(2, pedCoords.x, pedCoords.y, pedCoords.z + 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25,
+								0.25, 0.25, 255, 0, 0, 150, true, true, 0, 0)
+							Wait(1)
 						else
-							Citizen.Wait(dist)
+							Wait(dist)
 						end
 					else
-						Citizen.Wait(1000)
+						Wait(1000)
 					end
 				end
 			end)
@@ -260,7 +260,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 			if joiner == GetPlayerServerId(PlayerId()) then
 				if not _threading then
 					local notFoundCount = 0
-					Citizen.CreateThread(function()
+					CreateThread(function()
 						local ending = false
 						while _working and _state == 1 and _startTime == start do
 							if not ending then
@@ -272,11 +272,11 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 									end
 								end
 							end
-							Citizen.Wait(10)
+							Wait(10)
 						end
 					end)
-		
-					Citizen.CreateThread(function()
+
+					CreateThread(function()
 						local ending = false
 						while _working and _state == 1 and _startTime == start do
 							if not ending and _SellingVeh ~= 0 and _SellingVeh ~= nil then
@@ -288,18 +288,18 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 									Callbacks:ServerCallback("CornerDealing:LeaveArea")
 								end
 							end
-							Citizen.Wait(10)
+							Wait(10)
 						end
 					end)
 
-					Citizen.CreateThread(function()
+					CreateThread(function()
 						while _working and _state == 1 and LocalPlayer.state.loggedIn do
 							PopulateNow()
-							Citizen.Wait(1000)
+							Wait(1000)
 						end
 					end)
-	
-					Citizen.CreateThread(function()
+
+					CreateThread(function()
 						while _working and _state == 1 and LocalPlayer.state.loggedIn and notFoundCount < 10 and _startTime == start do
 							if _SellingPed == nil then
 								local peds = GetGamePool("CPed")
@@ -318,7 +318,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 										and not entState.boughtDrugs
 										and #(_SellingCorner - GetEntityCoords(ped)) < 50.0
 									then
-										entState:set("isDrugBuyer", joiner,  true)
+										entState:set("isDrugBuyer", joiner, true)
 										SetPedSeeingRange(ped, 0.0)
 										SetPedHearingRange(ped, 0.0)
 										SetPedFleeAttributes(ped, 0, false)
@@ -329,13 +329,14 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 										SetBlockingOfNonTemporaryEvents(ped, 1)
 										_SellingPed = ped
 
-										print(string.format("Cornering Buyer Found: %s (%s - %s)", ped, json.encode(GetEntityCoords(ped)), #(_SellingCorner - GetEntityCoords(ped))))
+										print(string.format("Cornering Buyer Found: %s (%s - %s)", ped,
+											json.encode(GetEntityCoords(ped)), #(_SellingCorner - GetEntityCoords(ped))))
 
 										notFoundCount = 0
 										break
 									end
 								end
-	
+
 								if not _SellingPed then
 									notFoundCount += 1
 								else
@@ -345,7 +346,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 												"CornerDealing:SyncPed",
 												NetworkGetNetworkIdFromEntity(_SellingPed)
 											)
-		
+
 											if NetworkHasControlOfEntity(_SellingPed) then
 												SendPedToPlayer(_SellingPed, _SellingCorner)
 											else
@@ -362,13 +363,13 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 										end
 									end
 								end
-	
+
 								if notFoundCount >= 10 then
 									Callbacks:ServerCallback("CornerDealing:NoPeds", {})
 									return
 								end
 							end
-							Citizen.Wait(10000)
+							Wait(10000)
 						end
 						_threading = false
 					end)
@@ -481,7 +482,7 @@ AddEventHandler("CornerDealing:Client:Sell", function(data)
 				local attempt = 0
 				while not NetworkHasControlOfEntity(_SellingPed) and attempt < 100 do
 					NetworkRequestControlOfEntity(_SellingPed)
-					Citizen.Wait(10)
+					Wait(10)
 					attempt += 10
 				end
 
@@ -500,7 +501,7 @@ AddEventHandler("CornerDealing:Client:Sell", function(data)
 			TaskTurnPedToFaceEntity(LocalPlayer.state.ped, _SellingPed, 1000)
 			Animations.Emotes:Play("handoff", false, 3000, true, true)
 		end
-		
+
 		_hasSellingMenu = false
 	end)
 end)

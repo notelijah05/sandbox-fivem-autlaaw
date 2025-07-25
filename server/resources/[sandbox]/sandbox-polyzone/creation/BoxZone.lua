@@ -17,7 +17,7 @@ local function handleInput(useZ, heading, length, width, center)
       end
       return (heading - headingDelta) % 360, length, width, center
     end
-    
+
     DisableControlAction(0, 99, true)
     if IsDisabledControlJustPressed(0, 99) then
       if IsControlPressed(0, 19) then -- alt held down
@@ -54,7 +54,7 @@ function handleZ(minZ, maxZ)
     end
     return minZ - delta, maxZ - delta
   end
-  
+
   DisableControlAction(0, 99, true)
   if IsDisabledControlJustPressed(0, 99) then
     if IsControlPressed(0, 19) then -- alt held down
@@ -70,7 +70,7 @@ end
 
 function boxStart(name, heading, length, width, minHeight, maxHeight)
   local center = GetEntityCoords(PlayerPedId())
-  createdZone = BoxZone:Create(center, length, width, {name = tostring(name)})
+  createdZone = BoxZone:Create(center, length, width, { name = tostring(name) })
   local useZ, minZ, maxZ = false, center.z - 1.0, center.z + 3.0
   if minHeight then
     minZ = center.z - minHeight
@@ -80,14 +80,14 @@ function boxStart(name, heading, length, width, minHeight, maxHeight)
     maxZ = center.z + maxHeight
     createdZone.maxZ = maxZ
   end
-  Citizen.CreateThread(function()
+  CreateThread(function()
     while createdZone do
       if IsControlJustPressed(0, 20) then -- Z pressed
         useZ = not useZ
         if useZ then
-          createdZone.debugColors.walls = {255, 0, 0}
+          createdZone.debugColors.walls = { 255, 0, 0 }
         else
-          createdZone.debugColors.walls = {0, 255, 0}
+          createdZone.debugColors.walls = { 0, 255, 0 }
         end
       end
       heading, length, width, center = handleInput(useZ, heading, length, width, center)
@@ -107,5 +107,6 @@ end
 
 function boxFinish()
   TriggerServerEvent("polyzone:printBox",
-    {name=createdZone.name, center=createdZone.center, length=createdZone.length, width=createdZone.width, heading=createdZone.offsetRot, minZ=createdZone.minZ, maxZ=createdZone.maxZ})
+    { name = createdZone.name, center = createdZone.center, length = createdZone.length, width = createdZone.width, heading =
+    createdZone.offsetRot, minZ = createdZone.minZ, maxZ = createdZone.maxZ })
 end

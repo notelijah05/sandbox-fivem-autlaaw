@@ -7,16 +7,17 @@ end)
 RegisterNetEvent("Characters:Client:Spawn")
 AddEventHandler("Characters:Client:Spawn", function()
     while not GlobalState.LSUPickupLocation do
-        Citizen.Wait(100)
+        Wait(100)
     end
 
-    PedInteraction:Add("lsu-pickup-guy", `s_m_y_dockwork_01`, GlobalState.LSUPickupLocation.coords, GlobalState.LSUPickupLocation.heading, 50.0, {
-		{
-			icon = "box-taped",
-			text = "Collect Order",
-			event = "Laptop:Client:LSUnderground:Collect",
-		},
-	}, 'box-taped', 'WORLD_HUMAN_SMOKING', true)
+    PedInteraction:Add("lsu-pickup-guy", `s_m_y_dockwork_01`, GlobalState.LSUPickupLocation.coords,
+        GlobalState.LSUPickupLocation.heading, 50.0, {
+        {
+            icon = "box-taped",
+            text = "Collect Order",
+            event = "Laptop:Client:LSUnderground:Collect",
+        },
+    }, 'box-taped', 'WORLD_HUMAN_SMOKING', true)
 end)
 
 LAPTOP.LSUnderground = {
@@ -24,13 +25,13 @@ LAPTOP.LSUnderground = {
 }
 
 RegisterNUICallback("GetLSUDetails", function(data, cb)
-	Callbacks:ServerCallback("Laptop:LSUnderground:GetDetails", {}, function(data)
+    Callbacks:ServerCallback("Laptop:LSUnderground:GetDetails", {}, function(data)
         cb(data)
     end)
 end)
 
 RegisterNUICallback("LSUNDG:Market:Checkout", function(data, cb)
-	Callbacks:ServerCallback("Laptop:LSUnderground:Market:Checkout", data, function(data)
+    Callbacks:ServerCallback("Laptop:LSUnderground:Market:Checkout", data, function(data)
         cb(data)
 
         if data?.success and data.coords then
@@ -87,11 +88,9 @@ AddEventHandler("Laptop:Client:LSUnderground:Collect", function()
 end)
 
 RegisterNUICallback("Boosting:Admin:CreateContract", function(data, cb)
-
     if data?.vehicle then
         local h = GetHashKey(data.vehicle)
         if not IsModelValid(h) or not IsModelAVehicle(h) then
-
             cb({
                 success = false,
                 message = 'Invalid Vehicle (Doesn\'t Exist)'

@@ -1,11 +1,11 @@
 local eventHandlers = {}
 local _working = false
-local _state = 0 -- 0 is no pickup | 1 active pickup
+local _state = 0              -- 0 is no pickup | 1 active pickup
 local _activeDropoffState = 0 -- 0 not actively working | 1 actively working
 local _dropOffBlip = nil
 local _dropOffBlipCfg = nil
-local _deliveryCounter = nil -- set counter to nil
-local _currentCookItem = nil -- unset current cook item
+local _deliveryCounter = nil   -- set counter to nil
+local _currentCookItem = nil   -- unset current cook item
 local _gracePeriod = 30 * 1000 -- in ms
 local _lastDelivery = GetGameTimer() - _gracePeriod
 local _lastCook = GetGameTimer() - _gracePeriod
@@ -268,7 +268,7 @@ function FetchDropOffLocation()
 		if not _durationThread then
 			_durationThread = true
 			_durationCheck = _durationTimer
-			Citizen.CreateThread(function()
+			CreateThread(function()
 				while _activeDropoffState == 1 and _durationCheck > 0 do
 					_durationCheck = _durationCheck - 5
 					DrawMarker(
@@ -303,7 +303,7 @@ function FetchDropOffLocation()
 						RunCleanUp()
 						return
 					end
-					Citizen.Wait(5)
+					Wait(5)
 				end
 			end)
 		end

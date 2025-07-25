@@ -9,7 +9,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	_polys = {}
 
 	while GlobalState["FleecaRobberies"] == nil do
-		Citizen.Wait(10)
+		Wait(10)
 	end
 
 	for k, v in ipairs(GlobalState["FleecaRobberies"]) do
@@ -18,7 +18,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		_polys[bankData.id] = true
 
 		SetupFleecaVaults(bankData)
-		
+
 		if bankData.reset ~= nil then
 			Targeting.Zones:AddBox(
 				string.format("fleeca-%s-reset", bankData.id),
@@ -43,14 +43,14 @@ AddEventHandler("Robbery:Client:Setup", function()
 							return (
 								(
 									GlobalState[string.format("Fleeca:%s:VaultDoor", LocalPlayer.state.fleeca)]
-											~= nil
-										and GlobalState[string.format("Fleeca:%s:VaultDoor", bankData.id)].state == 2
+									~= nil
+									and GlobalState[string.format("Fleeca:%s:VaultDoor", bankData.id)].state == 2
 									or GlobalState[string.format(
-												"Fleeca:%s:VaultDoor",
-												LocalPlayer.state.fleeca
-											)]
-											~= nil
-										and GlobalState[string.format("Fleeca:%s:VaultDoor", bankData.id)].state == 3
+										"Fleeca:%s:VaultDoor",
+										LocalPlayer.state.fleeca
+									)]
+									~= nil
+									and GlobalState[string.format("Fleeca:%s:VaultDoor", bankData.id)].state == 3
 								)
 								or (not Doors:IsLocked(string.format("%s_gate", LocalPlayer.state.fleeca)))
 							)
@@ -166,7 +166,7 @@ function OpenDoor(checkOrigin, door)
 		repeat
 			SetEntityHeading(obj, GetEntityHeading(obj) + door.step)
 			count = count + 1
-			Citizen.Wait(10)
+			Wait(10)
 		until count == 150
 	end
 end
@@ -180,7 +180,7 @@ function CloseDoor(checkOrigin, door)
 		repeat
 			SetEntityHeading(obj, GetEntityHeading(obj) - door.step)
 			count = count + 1
-			Citizen.Wait(10)
+			Wait(10)
 		until count == 150
 	end
 end

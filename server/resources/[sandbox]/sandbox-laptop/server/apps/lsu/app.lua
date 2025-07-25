@@ -9,23 +9,23 @@ LAPTOP.LSUnderground = LAPTOP.LSUnderground or {}
 local _timeDelay = os.time() + (60 * math.random(30, 90))
 
 local marketItems = {
-	{ item = "racing_crappy", coin = "VRM", price = 3, vpn = false, qty = 50 },
-	{ item = "racedongle", coin = "VRM", rep = "Racing", repLvl = 2, price = 20, vpn = false, qty = -1 },
-	{ item = "harness", coin = "VRM", rep = "Racing", repLvl = 1, price = 20, vpn = false, qty = -1 },
-	{ item = "purgecontroller", coin = "VRM", rep = "Racing", repLvl = 3, price = 50, vpn = true, qty = 5 },
+	{ item = "racing_crappy",              coin = "VRM",  price = 3,        vpn = false, qty = 50 },
+	{ item = "racedongle",                 coin = "VRM",  rep = "Racing",   repLvl = 2,  price = 20,   vpn = false, qty = -1 },
+	{ item = "harness",                    coin = "VRM",  rep = "Racing",   repLvl = 1,  price = 20,   vpn = false, qty = -1 },
+	{ item = "purgecontroller",            coin = "VRM",  rep = "Racing",   repLvl = 3,  price = 50,   vpn = true,  qty = 5 },
 
-	{ item = "choplist", coin = "VRM", rep = "Chopping", repLvl = 3, price = 25, vpn = true, qty = 25 },
-	{ item = "choplist", coin = "MALD", rep = "Chopping", repLvl = 3, price = 50, qty = 100, vpn = true },
+	{ item = "choplist",                   coin = "VRM",  rep = "Chopping", repLvl = 3,  price = 25,   vpn = true,  qty = 25 },
+	{ item = "choplist",                   coin = "MALD", rep = "Chopping", repLvl = 3,  price = 50,   qty = 100,   vpn = true },
 
-	{ item = "boosting_tracking_disabler", coin = "VRM", price = 50, vpn = true, qty = 20 },
+	{ item = "boosting_tracking_disabler", coin = "VRM",  price = 50,       vpn = true,  qty = 20 },
 
-	{ item = "fakeplates", coin = "VRM", rep = "Racing", repLvl = 1, price = 20, vpn = true, qty = -1 },
-	{ item = "fakeplates", coin = "MALD", price = 50, qty = 5, vpn = true },
+	{ item = "fakeplates",                 coin = "VRM",  rep = "Racing",   repLvl = 1,  price = 20,   vpn = true,  qty = -1 },
+	{ item = "fakeplates",                 coin = "MALD", price = 50,       qty = 5,     vpn = true },
 
-	{ item = "nitrous", coin = "VRM", price = 10, vpn = true, qty = -1 },
-	{ item = "nitrous", coin = "MALD", price = 40, qty = 10, vpn = true },
+	{ item = "nitrous",                    coin = "VRM",  price = 10,       vpn = true,  qty = -1 },
+	{ item = "nitrous",                    coin = "MALD", price = 40,       qty = 10,    vpn = true },
 
-	{ item = "alias_changer", coin = "VRM", rep = "Racing", repLvl = 5, price = 2000, qty = 2, vpn = true },
+	{ item = "alias_changer",              coin = "VRM",  rep = "Racing",   repLvl = 5,  price = 2000, qty = 2,     vpn = true },
 }
 local _defMarket = table.copy(marketItems)
 
@@ -56,10 +56,10 @@ local locations = {
 }
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		local wait = 60 * math.random(120, 240)
 		while true do
-			Citizen.Wait(wait * 1000)
+			Wait(wait * 1000)
 			marketItems = table.copy(_defMarket)
 			Logger:Info("Laptop - LSU", "Market Place Items Restocked")
 		end
@@ -258,9 +258,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			local pendingPickup = _pendingMarketPickups[char:GetData("SID")]
 			if pendingPickup then
 				for _, list in ipairs(pendingPickup) do
-					Citizen.Wait(1)
+					Wait(1)
 					for k, v in ipairs(list) do
-						Citizen.Wait(1)
+						Wait(1)
 						Inventory:AddItem(char:GetData("SID"), v.item, v.quantity, {}, 1)
 					end
 				end

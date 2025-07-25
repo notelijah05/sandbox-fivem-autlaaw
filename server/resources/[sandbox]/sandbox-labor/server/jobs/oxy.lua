@@ -11,9 +11,9 @@ local _loot = {}
 local _wasDoingIllegalShit = {}
 
 local _availableRuns = 10
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(1000 * 60 * 60)
+		Wait(1000 * 60 * 60)
 		_availableRuns += math.random(2, 5)
 	end
 end)
@@ -98,7 +98,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					_sellers[_joiners[source]].state = 2
 					Labor.Offers:Task(_joiners[source], _JOB, "Go To The Pickup Location")
 
-					Citizen.CreateThread(function()
+					CreateThread(function()
 						local ending = false
 						local ent = NetworkGetEntityFromNetworkId(_sellers[_joiners[source]].vehicle.NetId)
 						while _sellers[_joiners[source]] ~= nil do
@@ -112,7 +112,7 @@ AddEventHandler("Labor:Server:Startup", function()
 									)
 								end
 							end
-							Citizen.Wait(10)
+							Wait(10)
 						end
 					end)
 
@@ -258,8 +258,8 @@ AddEventHandler("Labor:Server:Startup", function()
 				string.format("OxyRun:Client:%s:Near", _joiners[source])
 			)
 
-			Citizen.CreateThread(function()
-				Citizen.Wait(math.random(1, 2) * 60000)
+			CreateThread(function()
+				Wait(math.random(1, 2) * 60000)
 				while
 					_joiners[source] ~= nil
 					and _sellers[_joiners[source]] ~= nil
@@ -295,12 +295,12 @@ AddEventHandler("Labor:Server:Startup", function()
 							p:resolve(veh ~= nil)
 						end)
 						if Citizen.Await(p) then
-							Citizen.Wait(math.random(30) * 1000)
+							Wait(math.random(30) * 1000)
 						else
-							Citizen.Wait(2000)
+							Wait(2000)
 						end
 					else
-						Citizen.Wait(5000)
+						Wait(5000)
 					end
 				end
 			end)
@@ -375,7 +375,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				if rollCount > 0 then
 					local rb = math.random(100)
 					if rb >= chance then
-						local take = math.random(2,  (3 * calcLvl))
+						local take = math.random(2, (3 * calcLvl))
 						if rollCount <= 5 or take > rollCount then
 							take = rollCount
 						end
@@ -391,7 +391,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				if bandCount > 0 then
 					local bb = math.random(100)
 					if bb >= chance then
-						local take = math.random(1,  (2 * calcLvl))
+						local take = math.random(1, (2 * calcLvl))
 						if bandCount <= 3 or take > bandCount then
 							take = bandCount
 						end
@@ -499,7 +499,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					DeleteEntity(NetworkGetEntityFromNetworkId(_sellers[_joiners[source]].pending.ped))
 					DeleteEntity(NetworkGetEntityFromNetworkId(_sellers[_joiners[source]].pending.veh))
 				end
-	
+
 				Labor.Offers:Fail(_joiners[source], _JOB)
 			end
 		end
@@ -611,16 +611,18 @@ AddEventHandler("Labor:Server:OxyRun:Queue", function(source, data)
 end)
 
 AddEventHandler('entityRemoved', function(entity)
-    if GetEntityType(entity) == 2 then
-        local ent = Entity(entity)
-        if ent?.state?.oxyBuying and _sellers[ent?.state?.oxyBuying]?.pending then
-            Logger:Warn("Vehicles", string.format("Oxy Vehicle For %s Deleted Unexpectedly, Clearing To Spawn New Vehicle", ent?.state?.oxyBuying))
+	if GetEntityType(entity) == 2 then
+		local ent = Entity(entity)
+		if ent?.state?.oxyBuying and _sellers[ent?.state?.oxyBuying]?.pending then
+			Logger:Warn("Vehicles",
+				string.format("Oxy Vehicle For %s Deleted Unexpectedly, Clearing To Spawn New Vehicle",
+					ent?.state?.oxyBuying))
 			_sellers[_joiners[source]].cars[NetworkGetEntityFromNetworkId(_sellers[ent?.state?.oxyBuying].pending.veh)] = false
 			DeleteEntity(NetworkGetEntityFromNetworkId(_sellers[ent?.state?.oxyBuying].pending.ped))
 			DeleteEntity(NetworkGetEntityFromNetworkId(_sellers[ent?.state?.oxyBuying].pending.veh))
 			_sellers[ent?.state?.oxyBuying].pending = nil
-        end
-    end
+		end
+	end
 end)
 
 AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)

@@ -1,26 +1,26 @@
 local _items = {
 	perishable = {
-		{ section = "perishable", item = "lettuce", price = 1 },
+		{ section = "perishable", item = "lettuce",  price = 1 },
 		{ section = "perishable", item = "cucumber", price = 1 },
-		{ section = "perishable", item = "tomato", price = 1 },
-		{ section = "perishable", item = "potato", price = 1 },
-		{ section = "perishable", item = "orange", price = 1 },
-		{ section = "perishable", item = "peas", price = 1 },
+		{ section = "perishable", item = "tomato",   price = 1 },
+		{ section = "perishable", item = "potato",   price = 1 },
+		{ section = "perishable", item = "orange",   price = 1 },
+		{ section = "perishable", item = "peas",     price = 1 },
 	},
 	crafting = {
-		{ section = "crafting", item = "rubber", price = 1 },
-		{ section = "crafting", item = "plastic", price = 1 },
-		{ section = "crafting", item = "copperwire", price = 1 },
-		{ section = "crafting", item = "glue", price = 1 },
-		{ section = "crafting", item = "heavy_glue", price = 1 },
-		{ section = "crafting", item = "scrapmetal", price = 1 },
-		{ section = "crafting", item = "ironbar", price = 1 },
+		{ section = "crafting", item = "rubber",           price = 1 },
+		{ section = "crafting", item = "plastic",          price = 1 },
+		{ section = "crafting", item = "copperwire",       price = 1 },
+		{ section = "crafting", item = "glue",             price = 1 },
+		{ section = "crafting", item = "heavy_glue",       price = 1 },
+		{ section = "crafting", item = "scrapmetal",       price = 1 },
+		{ section = "crafting", item = "ironbar",          price = 1 },
 		{ section = "crafting", item = "electronic_parts", price = 1 },
 	},
 }
 
 AddEventHandler("Labor:Server:Startup", function()
-	Citizen.Wait(10000)
+	Wait(10000)
 	local menu = {
 		main = {
 			label = "Goods Exporter",

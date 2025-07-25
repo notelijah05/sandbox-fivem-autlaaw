@@ -43,7 +43,7 @@ local function DoItemLoad(items)
 		type = "ITEMS_UNLOADED",
 		data = {},
 	})
-	Citizen.Wait(100)
+	Wait(100)
 	SendNUIMessage({
 		type = "RESET_ITEMS",
 		data = {},
@@ -213,7 +213,8 @@ RegisterNetEvent("Inventory:Client:LoadItems", DoItemLoad)
 
 RegisterNetEvent("Inventory:Client:ReloadItems", function()
 	_reloading = true
-	Notification.Persistent:Info("INVENTORY_RELOAD", "Requesting Updated Item Definitions, Inventory Temporarily Unavailable")
+	Notification.Persistent:Info("INVENTORY_RELOAD",
+		"Requesting Updated Item Definitions, Inventory Temporarily Unavailable")
 	TriggerServerEvent("Inventory:Server:ReloadItems")
 end)
 
@@ -236,9 +237,9 @@ RegisterNetEvent("Inventory:Client:ReceiveReload", function(items)
 end)
 
 function startCd()
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		_timedCd = true
-		Citizen.Wait(1000)
+		Wait(1000)
 		_timedCd = false
 	end)
 end
@@ -290,14 +291,14 @@ RegisterNetEvent("Inventory:Client:Open", function(inventory, inventory2)
 
 			if inventory2 ~= nil then
 				Inventory.Set.Secondary:Inventory(inventory2)
-			
+
 				SendNUIMessage({
 					type = "SET_MODE",
 					data = {
 						mode = "inventory",
 					},
 				})
-				
+
 				Inventory.Set.Secondary.Data.Open = true
 				Inventory.Open:Secondary()
 			else
@@ -309,10 +310,10 @@ RegisterNetEvent("Inventory:Client:Open", function(inventory, inventory2)
 			})
 			SetNuiFocus(true, true)
 		end
-	
-		Citizen.CreateThread(function()
+
+		CreateThread(function()
 			while LocalPlayer.state.inventoryOpen do
-				Citizen.Wait(50)
+				Wait(50)
 			end
 			TriggerServerEvent("Inventory:server:closePlayerInventory", LocalPlayer.state.Character:GetData("SID"))
 		end)
@@ -497,10 +498,10 @@ INVENTORY = {
 						_items[v.Name].durability == nil
 						or not _items[v.Name].isDestroyed
 						or (((v.CreateDate or 0) + _items[v.Name].durability) >= GetCloudTimeAsInt())
-							
+
 					) then
-						return v
-					end
+					return v
+				end
 			end
 		end,
 		GetCount = function(self, item, bundleWeapons)
@@ -525,7 +526,7 @@ INVENTORY = {
 						or (((v.CreateDate or 0) + _items[v.Name].durability) >= GetCloudTimeAsInt())
 					then
 						local itemData = Inventory.Items:GetData(v.Name)
-	
+
 						if bundleWeapons and itemData?.weapon then
 							counts[itemData?.weapon] = (counts[itemData?.weapon] or 0) + v.Count
 						end
@@ -696,7 +697,7 @@ INVENTORY = {
 
 					local itemData = _items[v.Name]
 					if WEAPON_PROPS[itemData?.weapon or v.name] and triggeredKey == "WeaponComponents" then
-						
+
 					end
 
 					return
@@ -914,7 +915,8 @@ function OpenInventory()
 							end
 							p:resolve({
 								invType = 10,
-								owner = string.format("%s:%s:%s", math.ceil(x), math.ceil(y), LocalPlayer.state.currentRoute),
+								owner = string.format("%s:%s:%s", math.ceil(x), math.ceil(y),
+									LocalPlayer.state.currentRoute),
 								position = vector3(x, y, z),
 							})
 						end
@@ -1069,7 +1071,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Set", function(shops)
 				end,
 			}
 		}
-	
+
 		if v.job == nil and LocalPlayer.state.Character ~= nil and v.owner == LocalPlayer.state.Character:GetData("SID") then
 			table.insert(menus, {
 				icon = "sack-dollar",
@@ -1123,7 +1125,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Set", function(shops)
 				})
 			end
 		end
-		
+
 		PedInteraction:Add(
 			"player-shop-" .. v.id,
 			GetHashKey(v.ped_model or 'S_F_Y_SweatShop_01'),

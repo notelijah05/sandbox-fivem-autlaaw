@@ -24,10 +24,10 @@ end)
 function RegisterTasks()
 	if _run then return end
 	_run = true
-	
-	Citizen.CreateThread(function()
+
+	CreateThread(function()
 		while true do
-			Citizen.Wait((1000 * 60) * 10)
+			Wait((1000 * 60) * 10)
 			local docs = {}
 			for k, v in pairs(_plants) do
 				if v and v.plant then
@@ -47,10 +47,10 @@ function RegisterTasks()
 			end
 		end
 	end)
-	
-	Citizen.CreateThread(function()
+
+	CreateThread(function()
 		while true do
-			Citizen.Wait((1000 * 60) * 10)
+			Wait((1000 * 60) * 10)
 			Logger:Trace("Weed", "Growing Plants")
 			local updatingStuff = {}
 
@@ -90,10 +90,10 @@ function RegisterTasks()
 			end
 		end
 	end)
-	
-	Citizen.CreateThread(function()
+
+	CreateThread(function()
 		while true do
-			Citizen.Wait((1000 * 60) * 20)
+			Wait((1000 * 60) * 20)
 			Logger:Trace("Weed", "Increasing Plant Outputs")
 			for k, v in pairs(_plants) do
 				if v.plant.growth < 100 then
@@ -112,10 +112,10 @@ function RegisterTasks()
 			end
 		end
 	end)
-	
-	Citizen.CreateThread(function()
+
+	CreateThread(function()
 		while true do
-			Citizen.Wait((1000 * 60) * 10)
+			Wait((1000 * 60) * 10)
 			Logger:Trace("Weed", "Degrading Water")
 			for k, v in pairs(_plants) do
 				if v.plant.water > -25 then
@@ -127,7 +127,7 @@ function RegisterTasks()
 							if v.plant.fertilizer ~= nil and v.plant.fertilizer.type == "potassium" then
 								potassium = potassium + v.plant.fertilizer.value
 							end
-	
+
 							v.plant.water = v.plant.water - ((1.0 * (1.0 + (1.0 - potassium))) - gt.water)
 						else
 							Weed.Planting:Delete(k)
@@ -142,10 +142,10 @@ function RegisterTasks()
 			end
 		end
 	end)
-	
-	Citizen.CreateThread(function()
+
+	CreateThread(function()
 		while true do
-			Citizen.Wait((1000 * 60) * 1)
+			Wait((1000 * 60) * 1)
 			Logger:Trace("Weed", "Ticking Down Fertilizer")
 			for k, v in pairs(_plants) do
 				if v.plant.fertilizer ~= nil then

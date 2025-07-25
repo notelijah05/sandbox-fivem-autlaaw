@@ -1,19 +1,19 @@
 AddEventHandler("Crypto:Server:Startup", function()
 	while Crypto == nil do
-		Citizen.Wait(10)
+		Wait(10)
 	end
 
 	Crypto.Coin:Create("Vroom", "VRM", 100, false, false)
 	Crypto.Coin:Create("Mald", "MALD", 250, true, 190)
 
-    -- Compatability since we're renaming MALD
+	-- Compatability since we're renaming MALD
 	Middleware:Add("Characters:Spawning", function(source)
 		local char = Fetch:CharacterSource(source)
 		local myCrypto = char:GetData("Crypto")
 
 		if myCrypto.PLEB ~= nil then
 			myCrypto.MALD = myCrypto.PLEB
-			myCrypto.PLEB= nil	
+			myCrypto.PLEB = nil
 			char:SetData("Crypto", myCrypto)
 		end
 	end, 1)

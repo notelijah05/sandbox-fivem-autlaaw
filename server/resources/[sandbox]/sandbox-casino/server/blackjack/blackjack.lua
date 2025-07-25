@@ -40,12 +40,12 @@ function StartBlackjackGame(tableId)
             end
         end)
 
-        Citizen.CreateThread(function()
+        CreateThread(function()
             while (not _blackjack[tableId].Timeout) and not GetBlackjackTableReady(tableId) do
-                Citizen.Wait(250)
+                Wait(250)
             end
 
-            Citizen.Wait(1500)
+            Wait(1500)
 
             local joinedPlayers = 0
 
@@ -78,16 +78,16 @@ function StartBlackjackGame(tableId)
                                 GetCurrentBlackjackHand(tableId, k)
                             )
 
-                            Citizen.Wait(2800)
+                            Wait(2800)
                             UpdateBlackjackGameState(tableId)
                         end
                     end
-    
+
                     if cardIndex == 1 then
                         local randomCard = math.random(1, 52)
-    
+
                         table.insert(_blackjack[tableId].DealerCards, randomCard)
-    
+
                         TriggerClientEvent(
                             "Casino:Client:BlackjackDealInitialCard",
                             -1,
@@ -98,36 +98,37 @@ function StartBlackjackGame(tableId)
                             GetCurrentBlackjackHand(tableId, "dealer")
                         )
                     end
-    
-                    Citizen.Wait(2500)
+
+                    Wait(2500)
                     UpdateBlackjackGameState(tableId)
                 end
 
                 _blackjack[tableId].Status = 2
                 UpdateBlackjackGameState(tableId)
-    
+
                 for k, v in pairs(_blackjack[tableId].Seats) do
                     if v and v.Source and v.Cards and v.Joined then
                         local nextCardCount = 2
                         local currentHand = GetCurrentBlackjackHand(tableId, k)
-    
+
                         if currentHand < 21 then
                             TriggerClientEvent("Casino:Client:BlackjackStandOrHit", -1, tableId, k)
-    
+
                             while nextCardCount >= 1 do
                                 local state = "stand"
-                                local response = GetHitStandResponse(v.Source, GetCurrentBlackjackHand(tableId, k), nextCardCount == 2, v.Bet)
-    
+                                local response = GetHitStandResponse(v.Source, GetCurrentBlackjackHand(tableId, k),
+                                    nextCardCount == 2, v.Bet)
+
                                 if response and response.success and response.state then
                                     state = response.state
                                 end
-    
+
                                 if state == "hit" then
                                     nextCardCount += 1
                                     local randomCard = math.random(1, 52)
-    
+
                                     table.insert(v.Cards, randomCard)
-    
+
                                     TriggerClientEvent(
                                         "Casino:Client:BlackjackDealSingleCard",
                                         -1,
@@ -137,16 +138,16 @@ function StartBlackjackGame(tableId)
                                         nextCardCount,
                                         GetCurrentBlackjackHand(tableId, k)
                                     )
-    
-                                    Citizen.Wait(2000)
-    
+
+                                    Wait(2000)
+
                                     UpdateBlackjackGameState(tableId)
                                     local currentHand = GetCurrentBlackjackHand(tableId, k)
-    
+
                                     if currentHand > 21 then
                                         -- Going Bust
                                         TriggerClientEvent("Casino:Client:BlackjackBust", -1, tableId, k)
-    
+
                                         nextCardCount = 0
                                         v.State = "bust"
 
@@ -169,7 +170,8 @@ function StartBlackjackGame(tableId)
 
                                         local randomCard = math.random(1, 52)
 
-                                        TriggerClientEvent("Casino:Client:BlackjackSyncChipsDoubleDown", -1, v.Bet, v.Chair)
+                                        TriggerClientEvent("Casino:Client:BlackjackSyncChipsDoubleDown", -1, v.Bet,
+                                            v.Chair)
 
                                         table.insert(v.Cards, randomCard)
 
@@ -183,18 +185,18 @@ function StartBlackjackGame(tableId)
                                             GetCurrentBlackjackHand(tableId, k)
                                         )
 
-                                        Citizen.Wait(2000)
+                                        Wait(2000)
 
                                         UpdateBlackjackGameState(tableId)
                                         local currentHand = GetCurrentBlackjackHand(tableId, k)
-    
+
                                         if currentHand > 21 then
                                             -- Going Bust
                                             TriggerClientEvent("Casino:Client:BlackjackBust", -1, tableId, k)
-        
+
                                             nextCardCount = 0
                                             v.State = "bust"
-    
+
                                             UpdateCharacterCasinoStats(v.Source, "blackjack", false, v.Bet)
 
                                             GiveCasinoFuckingMoney(v.Source, "Blackjack", v.Bet)
@@ -227,19 +229,19 @@ function StartBlackjackGame(tableId)
                     GetCurrentBlackjackHand(tableId, "dealer")
                 )
 
-                Citizen.Wait(2800)
+                Wait(2800)
 
                 local dealerHand = GetCurrentBlackjackHand(tableId, "dealer")
                 TriggerClientEvent("Casino:Client:BlackjackFlipDealerCard", -1, tableId, dealerHand)
 
-                Citizen.Wait(2800)
+                Wait(2800)
                 _blackjack[tableId].Status = 3
                 UpdateBlackjackGameState(tableId)
 
                 local allBusted = true
                 local highestPlayerHand = 0
 
-                for k,v in pairs(_blackjack[tableId].Seats) do
+                for k, v in pairs(_blackjack[tableId].Seats) do
                     if v and v.Source and v.Joined then
                         if v.State == "stand" then
                             allBusted = false
@@ -269,7 +271,7 @@ function StartBlackjackGame(tableId)
                                 GetCurrentBlackjackHand(tableId, "dealer")
                             )
 
-                            Citizen.Wait(2800)
+                            Wait(2800)
 
                             UpdateBlackjackGameState(tableId)
 
@@ -279,13 +281,13 @@ function StartBlackjackGame(tableId)
                     end
                 end
 
-                Citizen.Wait(2500)
+                Wait(2500)
 
                 local sentDealerBust = false
                 local sentEveryoneBust = true
                 local cleaningChairs = {}
 
-                for k,v in pairs(_blackjack[tableId].Seats) do
+                for k, v in pairs(_blackjack[tableId].Seats) do
                     if v and v.Source and v.Joined then
                         if v.State == "stand" then
                             local pHand = GetCurrentBlackjackHand(tableId, k)
@@ -294,7 +296,6 @@ function StartBlackjackGame(tableId)
                             local isDealerBust = false
 
                             if pHand <= 21 then
-
                                 if dealerHand > 21 then
                                     isWin = true
                                     -- Win, Dealer Bust
@@ -334,7 +335,8 @@ function StartBlackjackGame(tableId)
                                 if isPush then
                                     TriggerClientEvent("Casino:Client:BlackjackDeclarePush", v.Source, tableId, k)
                                 else
-                                    TriggerClientEvent("Casino:Client:BlackjackDeclareWin", v.Source, tableId, k, isDealerBust)
+                                    TriggerClientEvent("Casino:Client:BlackjackDeclareWin", v.Source, tableId, k,
+                                        isDealerBust)
                                 end
                             else
                                 TriggerClientEvent("Casino:Client:BlackjackDeclareLoss", v.Source, tableId, k)
@@ -347,14 +349,15 @@ function StartBlackjackGame(tableId)
                 _blackjack[tableId].Status = 4
                 UpdateBlackjackGameState(tableId)
 
-                TriggerClientEvent("Casino:Client:BlackjackGameFinished", -1, tableId, _blackjack[tableId].SeatsPlayed, sentDealerBust, sentEveryoneBust)
-                Citizen.Wait(4000 + (2500 * #_blackjack[tableId].SeatsPlayed))
+                TriggerClientEvent("Casino:Client:BlackjackGameFinished", -1, tableId, _blackjack[tableId].SeatsPlayed,
+                    sentDealerBust, sentEveryoneBust)
+                Wait(4000 + (2500 * #_blackjack[tableId].SeatsPlayed))
 
                 _blackjack[tableId].Starting = false
                 _blackjack[tableId].Started = false
 
                 local stillHasActivePlayers = false
-                for k,v in pairs(_blackjack[tableId].Seats) do
+                for k, v in pairs(_blackjack[tableId].Seats) do
                     if v and v.Source then
                         v.Joined = false
 
@@ -390,7 +393,7 @@ function GenerateRandomBJDealerVariation()
 
     while var == 7 or usedVariations[var] do
         var = math.random(0, 13)
-        Citizen.Wait(10)
+        Wait(10)
     end
 
     usedVariations[var] = true
@@ -404,7 +407,7 @@ AddEventHandler("Casino:Server:Startup", function()
     for k, v in pairs(_blackjackTables) do
         local seats = {}
         for i = 0, 3 do
-           seats[i] = false
+            seats[i] = false
         end
 
         local data = GetDefaultBlackjackData(k, seats, v.bet)
@@ -426,7 +429,6 @@ AddEventHandler("Casino:Server:Startup", function()
         local tableId, localChairId = GetBlackjackTableId(chairId)
 
         if _blackjack[tableId] and not _blackjack[tableId].Seats[localChairId] then
-
             if _blackjackTables[tableId].isVIP and not Inventory.Items:Has(char:GetData("SID"), 1, "diamond_vip", 1) then
                 return cb(false, "vip")
             end
@@ -531,12 +533,12 @@ end
 
 function GetHitStandResponse(src, currentHand, canDouble, currentBet)
     local p = promise.new()
-    Callbacks:ClientCallback(src, "Casino:Client:RequestHitStand", { currentHand = currentHand, canDouble = canDouble, currentBet = currentBet }, function(success, state)
-
-        if p then
-            p:resolve({ success = success, state = state })
-        end
-    end)
+    Callbacks:ClientCallback(src, "Casino:Client:RequestHitStand",
+        { currentHand = currentHand, canDouble = canDouble, currentBet = currentBet }, function(success, state)
+            if p then
+                p:resolve({ success = success, state = state })
+            end
+        end)
 
     Citizen.SetTimeout(20000, function()
         if p then
@@ -548,7 +550,6 @@ function GetHitStandResponse(src, currentHand, canDouble, currentBet)
     p = nil
     return res
 end
-
 
 function GetCurrentBlackjackHand(tableId, chairId)
     local cards = nil
@@ -563,7 +564,7 @@ function GetCurrentBlackjackHand(tableId, chairId)
         local hand = 0
         local numberOfAces = 0
 
-        for k,v in pairs(cards) do
+        for k, v in pairs(cards) do
             local nextCard = getCardNumberFromCardId(v)
             if nextCard == 11 then
                 numberOfAces = numberOfAces + 1
@@ -572,7 +573,7 @@ function GetCurrentBlackjackHand(tableId, chairId)
             end
         end
 
-        for i = 1, numberOfAces do 
+        for i = 1, numberOfAces do
             if i == 1 then
                 if hand + 11 > 21 then
                     nextCard = 1
@@ -590,7 +591,7 @@ end
 
 function GetBlackjackTableReady(tableId)
     local readyCount = 0
-    for k,v in pairs(_blackjack[tableId].Seats) do
+    for k, v in pairs(_blackjack[tableId].Seats) do
         if v and v.Source then
             if v.Joined then
                 readyCount += 1
@@ -646,12 +647,12 @@ function getCardNumberFromCardId(cardId)
     elseif cardId == 16 then
         return 3
     elseif cardId == 17 then
-        return 4        
+        return 4
     elseif cardId == 18 then
         return 5
     elseif cardId == 19 then
         return 6
-    elseif cardId == 20  then
+    elseif cardId == 20 then
         return 7
     elseif cardId == 21 then
         return 8
@@ -719,7 +720,3 @@ function getCardNumberFromCardId(cardId)
         return 10
     end
 end
-
-
-
-

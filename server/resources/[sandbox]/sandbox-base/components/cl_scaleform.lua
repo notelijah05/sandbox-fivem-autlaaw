@@ -1,6 +1,6 @@
 COMPONENTS.Scaleform = {
 	_required = { 'Request', 'RequestHud' },
-    _name = 'base',
+	_name = 'base',
 }
 
 --[[ Scaleform Wrapper By Illusivee - https://github.com/Illusivee/scaleform-wrapper ]]
@@ -11,27 +11,28 @@ scaleform.__index = scaleform
 function COMPONENTS.Scaleform.Request(self, Name)
 	local ScaleformHandle = RequestScaleformMovie(Name)
 	local StartTime = GetGameTimer()
-	while not HasScaleformMovieLoaded(ScaleformHandle) do Citizen.Wait(0) 
+	while not HasScaleformMovieLoaded(ScaleformHandle) do
+		Wait(0)
 		if GetGameTimer() - StartTime >= 5000 then
 			print('Failed Requesting Scaleform ' .. Name)
 			return
-		end 
+		end
 	end
-	local data = {name = Name, handle = ScaleformHandle}
+	local data = { name = Name, handle = ScaleformHandle }
 	return setmetatable(data, scaleform)
 end
 
 function COMPONENTS.Scaleform.RequestHud(self, id)
 	local ScaleformHandle = RequestHudScaleform(id)
 	local StartTime = GetGameTimer()
-	while not HasHudScaleformLoaded(ScaleformHandle) do 
-		Citizen.Wait(0) 
+	while not HasHudScaleformLoaded(ScaleformHandle) do
+		Wait(0)
 		if GetGameTimer() - StartTime >= 5000 then
 			print('Failed Loading Scaleform ' .. id)
 			return
 		end
 	end
-	local data = {Name = id, handle = ScaleformHandle}
+	local data = { Name = id, handle = ScaleformHandle }
 	return setmetatable(data, scaleform)
 end
 
@@ -41,34 +42,34 @@ function scaleform:CallScaleFunction(scType, theFunction, ...)
 	elseif scType == 'normal' then
 		BeginScaleformMovieMethod(self.handle, theFunction)
 	end
-    local arg = {...}
-    if arg ~= nil then
-        for i=1,#arg do
-            local sType = type(arg[i])
-            if sType == 'boolean' then
-                PushScaleformMovieMethodParameterBool(arg[i])
+	local arg = { ... }
+	if arg ~= nil then
+		for i = 1, #arg do
+			local sType = type(arg[i])
+			if sType == 'boolean' then
+				PushScaleformMovieMethodParameterBool(arg[i])
 			elseif sType == 'number' then
 				if math.type(arg[i]) == 'integer' then
 					PushScaleformMovieMethodParameterInt(arg[i])
 				else
 					PushScaleformMovieMethodParameterFloat(arg[i])
 				end
-            elseif sType == 'string' then
-                PushScaleformMovieMethodParameterString(arg[i])
-            else
-                PushScaleformMovieMethodParameterInt()
-            end
+			elseif sType == 'string' then
+				PushScaleformMovieMethodParameterString(arg[i])
+			else
+				PushScaleformMovieMethodParameterInt()
+			end
 		end
 	end
 	return EndScaleformMovieMethod()
 end
 
 function scaleform:CallHudFunction(theFunction, ...)
-    self:CallScaleFunction('hud', theFunction, ...)
+	self:CallScaleFunction('hud', theFunction, ...)
 end
 
 function scaleform:CallFunction(theFunction, ...)
-    self:CallScaleFunction('normal', theFunction, ...)
+	self:CallScaleFunction('normal', theFunction, ...)
 end
 
 function scaleform:Draw2D()

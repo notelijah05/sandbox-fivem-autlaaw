@@ -25,9 +25,9 @@ local _eventNames = {
 }
 
 function SetMBAInterior(entitySet)
-    local interior = GetInteriorAtCoords(_intCoords.x, _intCoords.y, _intCoords.z)
+	local interior = GetInteriorAtCoords(_intCoords.x, _intCoords.y, _intCoords.z)
 
-    if IsValidInterior(interior) then
+	if IsValidInterior(interior) then
 		if interior ~= 0 then
 			local removeSets, newEntitySet = _EntitySets.Removals.interiors, _EntitySets.Sets[entitySet]
 			local removeSigns, newSign = _EntitySets.Removals.signs, _EntitySets.Signs[entitySet]
@@ -52,42 +52,41 @@ function SetMBAInterior(entitySet)
 
 			RefreshInterior(interior)
 		end
-    end
+	end
 end
 
 RegisterNetEvent("Characters:Client:Spawn")
 AddEventHandler("Characters:Client:Spawn", function()
-    while GlobalState["MBA:Interior"] == nil do
-        Citizen.Wait(5)
-    end
+	while GlobalState["MBA:Interior"] == nil do
+		Wait(5)
+	end
 	print('GlobalState["MBA:Interior"]', GlobalState["MBA:Interior"])
-    SetMBAInterior(GlobalState["MBA:Interior"])
+	SetMBAInterior(GlobalState["MBA:Interior"])
 end)
 
-Citizen.CreateThread(function()
-    if LocalPlayer.state.loggedIn then
-        SetMBAInterior(GlobalState["MBA:Interior"])
-    end
+CreateThread(function()
+	if LocalPlayer.state.loggedIn then
+		SetMBAInterior(GlobalState["MBA:Interior"])
+	end
 end)
 
 RegisterNetEvent("Businesses:Client:MBA:InteriorUpdate", function(v)
-    if LocalPlayer.state.loggedIn then
-        SetMBAInterior(v)
-    end
+	if LocalPlayer.state.loggedIn then
+		SetMBAInterior(v)
+	end
 end)
 
 AddEventHandler("Businesses:Client:Startup", function()
-
-    Targeting.Zones:AddBox("mba-event-management", "wand-magic-sparkles", vector3(-288.47, -1949.26, 38.05), 5.0, 1.0, {
-        heading = 50,
-        --debugPoly=true,
-        minZ = 37.05,
-        maxZ = 39.05
+	Targeting.Zones:AddBox("mba-event-management", "wand-magic-sparkles", vector3(-288.47, -1949.26, 38.05), 5.0, 1.0, {
+		heading = 50,
+		--debugPoly=true,
+		minZ = 37.05,
+		maxZ = 39.05
 	}, {
-        {
-            icon = "clipboard-check",
-            text = "Clock In",
-            event = "Businesses:Client:ClockIn",
+		{
+			icon = "clipboard-check",
+			text = "Clock In",
+			event = "Businesses:Client:ClockIn",
 			data = { job = "mba" },
 			jobPerms = {
 				{
@@ -95,11 +94,11 @@ AddEventHandler("Businesses:Client:Startup", function()
 					reqOffDuty = true,
 				}
 			},
-        },
-        {
-            icon = "clipboard",
-            text = "Clock Out",
-            event = "Businesses:Client:ClockOut",
+		},
+		{
+			icon = "clipboard",
+			text = "Clock Out",
+			event = "Businesses:Client:ClockOut",
 			data = { job = "mba" },
 			jobPerms = {
 				{
@@ -107,38 +106,38 @@ AddEventHandler("Businesses:Client:Startup", function()
 					reqDuty = true,
 				}
 			},
-        },
-        {
-            icon = "wand-magic-sparkles",
-            text = "Event Setup",
-            event = "Businesses:Client:MBA:StartChangeInterior",
-            data = {},
-            jobPerms = {
+		},
+		{
+			icon = "wand-magic-sparkles",
+			text = "Event Setup",
+			event = "Businesses:Client:MBA:StartChangeInterior",
+			data = {},
+			jobPerms = {
 				{
 					job = "mba",
 					reqDuty = true,
 					permissionKey = 'JOB_SET_MBA',
 				}
-            },
-        },
-    }, 3.0, true)
+			},
+		},
+	}, 3.0, true)
 end)
 
 AddEventHandler("Businesses:Client:MBA:StartChangeInterior", function()
-    local current = GlobalState["MBA:Interior"]
+	local current = GlobalState["MBA:Interior"]
 
-    local options = {}
+	local options = {}
 
-    for k, v in pairs(_eventNames) do
-        if k ~= current then
-            table.insert(options, {
-                label = v,
-                value = k,
-            })
-        end
-    end
+	for k, v in pairs(_eventNames) do
+		if k ~= current then
+			table.insert(options, {
+				label = v,
+				value = k,
+			})
+		end
+	end
 
-    Input:Show(string.format("Change Event Floor - Current: %s", _eventNames[current]), "Match Configuration", {
+	Input:Show(string.format("Change Event Floor - Current: %s", _eventNames[current]), "Match Configuration", {
 		{
 			id = "interior",
 			type = "select",
@@ -149,13 +148,13 @@ AddEventHandler("Businesses:Client:MBA:StartChangeInterior", function()
 end)
 
 AddEventHandler("Businesses:Client:MBA:ChangeInterior", function(values)
-    if values?.interior then
-        Callbacks:ServerCallback("MBA:ChangeInterior", values.interior, function(success)
-            if success then
-                Notification:Success("Updated")
-            else
-                Notification:Error("Failed to Change Event Floor")
-            end
-        end)
-    end
+	if values?.interior then
+		Callbacks:ServerCallback("MBA:ChangeInterior", values.interior, function(success)
+			if success then
+				Notification:Success("Updated")
+			else
+				Notification:Error("Failed to Change Event Floor")
+			end
+		end)
+	end
 end)

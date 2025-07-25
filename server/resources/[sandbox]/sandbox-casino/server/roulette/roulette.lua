@@ -49,11 +49,11 @@ function StartRouletteGame(tableId)
                 _roulette[tableId].WinningBet = winningBetIndex
 
                 TriggerClientEvent("Casino:Client:RouletteGameSpinning", -1, tableId, randomSpinNumber, winningBetIndex)
-                Citizen.Wait(17500)
+                Wait(17500)
 
                 CheckRouletteWinners(tableId, _roulette[tableId].Bets, _roulette[tableId].WinningBet)
 
-                Citizen.Wait(1000)
+                Wait(1000)
 
                 TriggerClientEvent("Casino:Client:RouletteUpdateBets", -1, tableId, {})
 
@@ -61,7 +61,7 @@ function StartRouletteGame(tableId)
                 _roulette[tableId].Starting = false
                 _roulette[tableId].Bets = {}
 
-                Citizen.Wait(2000)
+                Wait(2000)
 
                 if GetRouletteTableCount(tableId) > 0 then
                     StartRouletteGame(tableId)
@@ -98,7 +98,7 @@ function CheckRouletteWinners(tableId, bets, winningIndex)
         if (winningIndex == "0" and betId == "37") or (winningIndex == "00" and betId == "38") then
             -- 12 to 1
             totalsWon[v.Source] = math.floor(totalsWon[v.Source] + v.Amount * 12)
-        elseif 
+        elseif
             (betId == "39" and _rouletteGroups.Red[winningIndex]) or
             (betId == "40" and _rouletteGroups.Black[winningIndex]) or
             (betId == "41" and _rouletteGroups.Even[winningIndex]) or
@@ -111,7 +111,7 @@ function CheckRouletteWinners(tableId, bets, winningIndex)
         elseif tonumber(betId) >= 1 and tonumber(betId) <= 36 and tonumber(betId) == tonumber(winningIndex) then
             -- 10 to 1
             totalsWon[v.Source] = math.floor(totalsWon[v.Source] + v.Amount * 10)
-        elseif 
+        elseif
             (betId == "45" and _rouletteGroups.First12[winningIndex]) or
             (betId == "46" and _rouletteGroups.Second12[winningIndex]) or
             (betId == "47" and _rouletteGroups.Third12[winningIndex]) or
@@ -121,7 +121,7 @@ function CheckRouletteWinners(tableId, bets, winningIndex)
         then
             -- 2 to 1
             totalsWon[v.Source] = math.floor(totalsWon[v.Source] + v.Amount * 2)
-        elseif 
+        elseif
             (betId == "51" and _rouletteGroups.Row1[winningIndex]) or
             (betId == "52" and _rouletteGroups.Row2[winningIndex]) or
             (betId == "53" and _rouletteGroups.Row3[winningIndex]) or
@@ -184,7 +184,7 @@ function GenerateRandomRDealerVariation()
 
     while var == 7 or usedVariations[var] do
         var = math.random(0, 13)
-        Citizen.Wait(10)
+        Wait(10)
     end
 
     usedVariations[var] = true
@@ -193,7 +193,7 @@ end
 
 AddEventHandler("Casino:Server:Startup", function()
     for k, v in pairs(_rouletteTables) do
-        local data = GetDefaultRouletteData(k, {false, false, false, false}, v.highLimit)
+        local data = GetDefaultRouletteData(k, { false, false, false, false }, v.highLimit)
 
         _roulette[k] = data
         GlobalState[string.format("Casino:Roulette:%s", k)] = data
@@ -212,7 +212,6 @@ AddEventHandler("Casino:Server:Startup", function()
         local tableId, localChairId = data.table, data.chair
 
         if _roulette[tableId] and not _roulette[tableId].Seats[localChairId] then
-
             if _rouletteTables[tableId].isVIP and not Inventory.Items:Has(char:GetData("SID"), 1, "diamond_vip", 1) then
                 return cb(false, "vip")
             end
@@ -234,7 +233,7 @@ AddEventHandler("Casino:Server:Startup", function()
             GlobalState[string.format("Casino:Roulette:%s", tableId)] = _roulette[tableId]
             cb(true, tableId, localChairId)
 
-            Citizen.Wait(5000)
+            Wait(5000)
             StartRouletteGame(tableId)
         else
             cb(false)
@@ -298,7 +297,8 @@ AddEventHandler("Casino:Server:Startup", function()
 
                     _roulette[roulettePlayer.Table].Seats[roulettePlayer.LocalChair].TotalBet += data.amount
 
-                    TriggerClientEvent("Casino:Client:RouletteUpdateBets", -1, roulettePlayer.Table, _roulette[roulettePlayer.Table].Bets)
+                    TriggerClientEvent("Casino:Client:RouletteUpdateBets", -1, roulettePlayer.Table,
+                        _roulette[roulettePlayer.Table].Bets)
 
                     cb(true)
                 else
@@ -321,15 +321,15 @@ AddEventHandler("Casino:Server:Startup", function()
             _roulette[tid].Started = false
             StartRouletteGame(tid)
         end
-	end, {
-		help = "[Admin] Force Start Roulette",
-		params = {
-			{
-				name = "Table",
-				help = "Table ID",
-			},
-		},
-	}, 1)
+    end, {
+        help = "[Admin] Force Start Roulette",
+        params = {
+            {
+                name = "Table",
+                help = "Table ID",
+            },
+        },
+    }, 1)
 end)
 
 function HandleCharacterDisconnect(source)

@@ -23,7 +23,7 @@ function AddTaskBeforeVehicleThread(id, func)
 end
 
 AddEventHandler("Vehicles:Client:BecameDriver", function(veh, seat, class)
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		if THREAD_VEHICLE then
 			THREAD_VEHICLE = false
 		end
@@ -60,7 +60,7 @@ AddEventHandler("Vehicles:Client:ExitVehicle", function(veh)
 end)
 
 AddEventHandler("Vehicles:Client:CharacterLogin", function()
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while _characterLoaded do
 			if THREAD_VEHICLE then
 				if DoesEntityExist(THREAD_VEHICLE) then
@@ -81,16 +81,16 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 					THREAD_VEHICLE = false
 				end
 			else
-				Citizen.Wait(1000)
+				Wait(1000)
 			end
-			Citizen.Wait(250)
+			Wait(250)
 		end
 	end)
 
 	local cleanupTick = 0
 	local syncTick = 0
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while _characterLoaded do
 			local vehicles = GetGamePool("CVehicle")
 			local tryingToEnter = GetVehiclePedIsTryingToEnter(GLOBAL_PED)
@@ -175,13 +175,13 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 				end
 			end
 
-			Citizen.Wait(750)
+			Wait(750)
 		end
 	end)
 
-    Citizen.CreateThread( function()
+	CreateThread(function()
 		local restoreMode1, restoreMode2 = nil, nil
-        while _characterLoaded do
+		while _characterLoaded do
 			if IsPedInAnyVehicle(LocalPlayer.state.ped) then
 				playerPed = PlayerPedId()
 				if IsPedArmed(playerPed, 6) then
@@ -191,23 +191,23 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 							local curWeapon = Weapons:GetEquippedHash()
 							SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 							SetCurrentPedVehicleWeapon(playerPed, `WEAPON_UNARMED`)
-							SetPlayerCanDoDriveBy(PlayerId(),false)
+							SetPlayerCanDoDriveBy(PlayerId(), false)
 							restoreMode1 = GetFollowPedCamViewMode()
 							restoreMode2 = GetFollowVehicleCamViewMode()
 							SetFollowPedCamViewMode(4)
 							SetFollowVehicleCamViewMode(4)
 							SetCamViewModeForContext(2, 4)
 							SetCamViewModeForContext(3, 4)
-							Citizen.Wait(250)
+							Wait(250)
 							SetCurrentPedWeapon(playerPed, curWeapon, true)
 							SetCurrentPedVehicleWeapon(playerPed, curWeapon)
 							SetPlayerCanDoDriveBy(PlayerId(), true)
 							LocalPlayer.state.adjustingCam = false
 						end
 					else
-						DisableControlAction(0,36,true)
+						DisableControlAction(0, 36, true)
 						if GetPedStealthMovement(playerPed) == 1 then
-							SetPedStealthMovement(playerPed,0)
+							SetPedStealthMovement(playerPed, 0)
 						end
 
 						if restoreMode1 ~= nil or restoreMode2 ~= nil then
@@ -224,10 +224,10 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 						end
 					end
 				end
-				Citizen.Wait(1)
+				Wait(1)
 			else
-				Citizen.Wait(200)
+				Wait(200)
 			end
-        end
-    end)
+		end
+	end)
 end)

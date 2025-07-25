@@ -127,9 +127,9 @@ function EnableRadar()
 		RADAR_ENABLED = true
 		SendNUIMessage({ type = "RADAR_SHOW" })
 
-		Citizen.CreateThread(function()
+		CreateThread(function()
 			while RADAR_ENABLED do
-				Citizen.Wait(200)
+				Wait(200)
 				local data = {}
 				if RADAR_SETTINGS.frontRadar.transmit or RADAR_SETTINGS.rearRadar.transmit then
 					local vehCoords = GetEntityCoords(GLOBAL_VEH)
@@ -326,15 +326,16 @@ function CheckPlateFlagged(direction, vehicle, plate)
 	if plateFlagged and not RECENT_FLAGS[plate] then
 		RECENT_FLAGS[plate] = true
 		PlayFlaggedAlert()
-		EmergencyAlerts:CreateClientAlert("Radar", "Flagged Plate Detected", "police_alerts", GetLocationData(GetEntityCoords(vehicle)), {
-			icon = "radar",
-			details = string.format(
-				"Your %s Radar Detected a Flagged Plate: %s, Flag Reason: %s",
-				direction,
-				plate,
-				plateFlagged
-			),
-		}, false, nil, 0)
+		EmergencyAlerts:CreateClientAlert("Radar", "Flagged Plate Detected", "police_alerts",
+			GetLocationData(GetEntityCoords(vehicle)), {
+				icon = "radar",
+				details = string.format(
+					"Your %s Radar Detected a Flagged Plate: %s, Flag Reason: %s",
+					direction,
+					plate,
+					plateFlagged
+				),
+			}, false, nil, 0)
 
 		Citizen.SetTimeout(30000, function() -- So the plate doesn't constantly get flagged
 			RECENT_FLAGS[plate] = nil

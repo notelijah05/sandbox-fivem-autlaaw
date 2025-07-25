@@ -1,12 +1,12 @@
 _publicChoplist = {}
 _vipChopList = {}
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while not Laptop do
-		Citizen.Wait(10)
+		Wait(10)
 	end
 
-	
+
 	_publicChoplist = {
 		list = Laptop.LSUnderground.Chopping:GenerateList(10, 2),
 		public = true,
@@ -59,8 +59,6 @@ Citizen.CreateThread(function()
 	-- 		end
 	-- 	end
 
-	-- 	Citizen.Wait(60000)
+	-- 	Wait(60000)
 	-- end
 end)
-
-

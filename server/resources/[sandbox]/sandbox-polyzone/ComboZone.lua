@@ -19,7 +19,7 @@ local function tblDifference(tblA, tblB)
     end
     if not found then
       diff = diff or {}
-      diff[#diff+1] = a
+      diff[#diff + 1] = a
     end
   end
   return diff
@@ -60,7 +60,7 @@ end
 local function _removeZoneByFunction(predicateFn, zones)
   if predicateFn == nil or zones == nil or #zones == 0 then return end
 
-  for i=1, #zones do
+  for i = 1, #zones do
     local possibleZone = zones[i]
     if possibleZone and predicateFn(possibleZone) then
       table.remove(zones, i)
@@ -72,11 +72,11 @@ end
 
 local function _addZoneToGrid(grid, zone)
   local minY, maxY, minX, maxX = _getZoneBounds(zone)
-  for y=minY, maxY do
+  for y = minY, maxY do
     local row = grid[y] or {}
-    for x=minX, maxX do
+    for x = minX, maxX do
       local cell = row[x] or {}
-      cell[#cell+1] = zone
+      cell[#cell + 1] = zone
       row[x] = cell
     end
     grid[y] = row
@@ -92,7 +92,7 @@ end
 
 function ComboZone:draw()
   local zones = self.zones
-  for i=1, #zones do
+  for i = 1, #zones do
     local zone = zones[i]
     if zone and not zone.destroyed then
       zone:draw()
@@ -100,17 +100,16 @@ function ComboZone:draw()
   end
 end
 
-
 local function _initDebug(zone, options)
   if options.debugBlip then zone:addDebugBlip() end
   if not options.debugPoly then
     return
   end
-  
-  Citizen.CreateThread(function()
+
+  CreateThread(function()
     while not zone.destroyed do
       zone:draw()
-      Citizen.Wait(0)
+      Wait(0)
     end
   end)
 end
@@ -122,7 +121,7 @@ function ComboZone:new(zones, options)
 
   local grid = {}
   -- Add a unique id for each zone in the ComboZone and add to grid cache
-  for i=1, #zones do
+  for i = 1, #zones do
     local zone = zones[i]
     if zone then
       zone.id = i
@@ -147,8 +146,8 @@ end
 function ComboZone:Create(zones, options)
   local zone = ComboZone:new(zones, options)
   _initDebug(zone, options)
-  AddEventHandler("polyzone:pzcomboinfo", function ()
-      zone:printInfo()
+  AddEventHandler("polyzone:pzcomboinfo", function()
+    zone:printInfo()
   end)
   return zone
 end
@@ -157,7 +156,7 @@ function ComboZone:getZones(point)
   if not self.useGrid then
     return self.zones
   end
-  
+
   local grid = self.grid
   local x, y = _getGridCell(point)
   local row = grid[y]
@@ -169,7 +168,7 @@ end
 
 function ComboZone:AddZone(zone)
   local zones = self.zones
-  local newIndex = #zones+1
+  local newIndex = #zones + 1
   zone.id = newIndex
   zones[newIndex] = zone
   if self.useGrid then
@@ -182,7 +181,7 @@ function ComboZone:RemoveZone(nameOrFn)
   local predicateFn = nameOrFn
   if type(nameOrFn) == "string" then
     -- Create on the fly predicate function if nameOrFn is a string (zone name)
-    predicateFn = function (zone) return zone.name == nameOrFn end
+    predicateFn = function(zone) return zone.name == nameOrFn end
   elseif type(nameOrFn) ~= "function" then
     return nil
   end
@@ -194,10 +193,10 @@ function ComboZone:RemoveZone(nameOrFn)
   -- Remove from grid cache
   local grid = self.grid
   local minY, maxY, minX, maxX = _getZoneBounds(zone)
-  for y=minY, maxY do
+  for y = minY, maxY do
     local row = grid[y]
     if row then
-      for x=minX, maxX do
+      for x = minX, maxX do
         _removeZoneByFunction(predicateFn, row[x])
       end
     end
@@ -214,7 +213,7 @@ function ComboZone:isPointInside(point, zoneName)
   local zones = self:getZones(point)
   if not zones or #zones == 0 then return false end
 
-  for i=1, #zones do
+  for i = 1, #zones do
     local zone = zones[i]
     if zone and (zoneName == nil or zoneName == zone.name) and zone:isPointInside(point) then
       return true, zone
@@ -236,10 +235,10 @@ function ComboZone:isPointInsideExhaustive(point, insideZones)
   end
   local zones = self:getZones(point)
   if not zones or #zones == 0 then return false, insideZones end
-  for i=1, #zones do
+  for i = 1, #zones do
     local zone = zones[i]
     if zone and zone:isPointInside(point) then
-      insideZones[#insideZones+1] = zone
+      insideZones[#insideZones + 1] = zone
     end
   end
   return #insideZones > 0, insideZones
@@ -248,7 +247,7 @@ end
 function ComboZone:destroy()
   PolyZone.destroy(self)
   local zones = self.zones
-  for i=1, #zones do
+  for i = 1, #zones do
     local zone = zones[i]
     if zone and not zone.destroyed then
       zone:destroy()
@@ -261,7 +260,7 @@ function ComboZone:onPointInOut(getPointCb, onPointInOutCb, waitInMS)
   local _waitInMS = 500
   if waitInMS ~= nil then _waitInMS = waitInMS end
 
-  Citizen.CreateThread(function()
+  CreateThread(function()
     local isInside = nil
     local insideZone = nil
     while not self.destroyed do
@@ -274,7 +273,7 @@ function ComboZone:onPointInOut(getPointCb, onPointInOutCb, waitInMS)
           insideZone = newInsideZone
         end
       end
-      Citizen.Wait(_waitInMS)
+      Wait(_waitInMS)
     end
   end)
 end
@@ -284,7 +283,7 @@ function ComboZone:onPointInOutExhaustive(getPointCb, onPointInOutCb, waitInMS)
   local _waitInMS = 500
   if waitInMS ~= nil then _waitInMS = waitInMS end
 
-  Citizen.CreateThread(function()
+  CreateThread(function()
     local isInside, insideZones = nil, {}
     local newIsInside, newInsideZones = nil, {}
     while not self.destroyed do
@@ -298,7 +297,7 @@ function ComboZone:onPointInOutExhaustive(getPointCb, onPointInOutCb, waitInMS)
           onPointInOutCb(isInside, point, insideZones, enteredZones, leftZones)
         end
       end
-      Citizen.Wait(_waitInMS)
+      Wait(_waitInMS)
     end
   end)
 end
@@ -315,7 +314,7 @@ function ComboZone:addEvent(eventName, zoneName)
   if self.events == nil then self.events = {} end
   local internalEventName = eventPrefix .. eventName
   RegisterNetEvent(internalEventName)
-  self.events[eventName] = AddEventHandler(internalEventName, function (...)
+  self.events[eventName] = AddEventHandler(internalEventName, function(...)
     if self:isPointInside(PolyZone.getPlayerPosition(), zoneName) then
       TriggerEvent(eventName, ...)
     end
@@ -329,7 +328,7 @@ end
 function ComboZone:addDebugBlip()
   self.debugBlip = true
   local zones = self.zones
-  for i=1, #zones do
+  for i = 1, #zones do
     local zone = zones[i]
     if zone then zone:addDebugBlip() end
   end
@@ -338,14 +337,20 @@ end
 function ComboZone:printInfo()
   local zones = self.zones
   local polyCount, boxCount, circleCount, entityCount, comboCount = 0, 0, 0, 0, 0
-  for i=1, #zones do
+  for i = 1, #zones do
     local zone = zones[i]
     if zone then
-      if zone.isEntityZone then entityCount = entityCount + 1
-      elseif zone.isCircleZone then circleCount = circleCount + 1
-      elseif zone.isComboZone then comboCount = comboCount + 1
-      elseif zone.isBoxZone then boxCount = boxCount + 1
-      elseif zone.isPolyZone then polyCount = polyCount + 1 end
+      if zone.isEntityZone then
+        entityCount = entityCount + 1
+      elseif zone.isCircleZone then
+        circleCount = circleCount + 1
+      elseif zone.isComboZone then
+        comboCount = comboCount + 1
+      elseif zone.isBoxZone then
+        boxCount = boxCount + 1
+      elseif zone.isPolyZone then
+        polyCount = polyCount + 1
+      end
     end
   end
   local name = self.name ~= nil and ("\"" .. self.name .. "\"") or nil

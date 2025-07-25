@@ -16,8 +16,8 @@ local _vaultLoot = {
 		cash = {
 			{ 60, { name = "moneyroll", min = 200, max = 250 } },
 			{ 33, { name = "moneyband", min = 22, max = 28 } },
-			{ 5, { name = "valuegoods", min = 14, max = 20 } },
-			{ 2, { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 15000, Random = 5000 } } } },
+			{ 5,  { name = "valuegoods", min = 14, max = 20 } },
+			{ 2,  { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 15000, Random = 5000 } } } },
 		},
 		gold = {
 			{ 85, { name = "goldbar", min = 50, max = 70 } },
@@ -29,8 +29,8 @@ local _vaultLoot = {
 			{ 20, { name = "amethyst", min = 1, max = 1 } },
 			{ 15, { name = "ruby", min = 1, max = 1 } },
 			{ 15, { name = "sapphire", min = 1, max = 1 } },
-			{ 5, { name = "emerald", min = 1, max = 1 } },
-			{ 5, { name = "diamond", min = 1, max = 1 } },
+			{ 5,  { name = "emerald", min = 1, max = 1 } },
+			{ 5,  { name = "diamond", min = 1, max = 1 } },
 		},
 	},
 }
@@ -70,14 +70,14 @@ function ResetFleeca(fleecaId)
 end
 
 function StartAutoCDTimer(fleecaId)
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		if _triggered[fleecaId] then
 			return
 		else
 			_triggered[fleecaId] = true
 		end
 
-		Citizen.Wait(1000 * 60 * 30)
+		Wait(1000 * 60 * 30)
 
 		if _inProgress[fleecaId] then
 			_inProgress[fleecaId] = false
@@ -128,9 +128,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 	Reputation:Create("BankRobbery", "Bank Robberies", {
 		{ label = "Newbie", value = 10000 },
-		{ label = "Okay", value = 20000 },
-		{ label = "Good", value = 30000 },
-		{ label = "Pro", value = 40000 },
+		{ label = "Okay",   value = 20000 },
+		{ label = "Good",   value = 30000 },
+		{ label = "Pro",    value = 40000 },
 		{ label = "Expert", value = 50000 },
 	}, true) -- Not sure what to do with this yet so hide it
 
@@ -226,7 +226,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 										},
 										{
 											icon = "building-columns",
-											details = string.format("Fleeca Bank - %s", FLEECA_LOCATIONS[pState.fleeca].label),
+											details = string.format("Fleeca Bank - %s",
+												FLEECA_LOCATIONS[pState.fleeca].label),
 										},
 										pState.fleeca
 									)
@@ -253,14 +254,15 @@ AddEventHandler("Robbery:Server:Setup", function()
 										GlobalState["AntiShitlord"] = os.time() + (60 * math.random(10, 15))
 									end
 
-									Loot:CustomWeightedSetWithCount(_vaultLoot.trolley[lootData?.type?.type or "cash"], char:GetData("SID"), 1)
+									Loot:CustomWeightedSetWithCount(_vaultLoot.trolley[lootData?.type?.type or "cash"],
+										char:GetData("SID"), 1)
 									if math.random(100) <= 3 then
 										Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 											CryptoCoin = "HEIST",
 											Quantity = 4
 										}, 1)
 									end
-				
+
 									if _redDongies[pState.fleeca] == nil then
 										if data.index > 2 and math.random(100) <= (1 * data.index) then
 											_redDongies[pState.fleeca] = source
@@ -272,7 +274,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 										_fcGlobalReset[pState.fleeca] = os.time() + (60 * 60 * math.random(4, 6))
 									end
 
-									GlobalState[string.format("Fleeca:%s:Loot:%s", pState.fleeca, data.id)] = _fcGlobalReset[pState.fleeca]
+									GlobalState[string.format("Fleeca:%s:Loot:%s", pState.fleeca, data.id)] =
+										_fcGlobalReset[pState.fleeca]
 									StartAutoCDTimer(pState.fleeca)
 									GlobalState[string.format("Fleeca:Disable:%s", pState.fleeca)] = true
 								end
@@ -330,7 +333,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 					end
 				end
 
-				Logger:Info("Robbery", string.format("%s %s (%s) Secured Fleeca %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
+				Logger:Info("Robbery",
+					string.format("%s %s (%s) Secured Fleeca %s", char:GetData("First"), char:GetData("Last"),
+						char:GetData("SID"), pState.fleeca))
 				TriggerClientEvent("Robbery:Client:Fleeca:CloseVaultDoor", -1, pState.fleeca)
 				Doors:SetLock(string.format("%s_tills", pState.fleeca), true)
 				Doors:SetLock(string.format("%s_gate", pState.fleeca), true)
@@ -387,7 +392,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 						)
 					then
 						if not _inUse.VaultDoor[pState.fleeca] then
-							Logger:Info("Robbery", string.format("%s %s (%s) Started Hacking Vault Door At %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
+							Logger:Info("Robbery",
+								string.format("%s %s (%s) Started Hacking Vault Door At %s", char:GetData("First"),
+									char:GetData("Last"), char:GetData("SID"), pState.fleeca))
 							_inUse.VaultDoor[pState.fleeca] = source
 
 							_inProgress[pState.fleeca] = true
@@ -412,7 +419,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 									},
 									{
 										icon = "building-columns",
-										details = string.format("Fleeca Bank - %s", FLEECA_LOCATIONS[pState.fleeca].label),
+										details = string.format("Fleeca Bank - %s", FLEECA_LOCATIONS[pState.fleeca]
+											.label),
 									},
 									pState.fleeca
 								)
@@ -438,7 +446,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 								function(success, data)
 									if success then
 										local timer = math.random(2, 4)
-										Logger:Info("Robbery", string.format("%s %s (%s) Successfully Hacked Vault Door At %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
+										Logger:Info("Robbery",
+											string.format("%s %s (%s) Successfully Hacked Vault Door At %s",
+												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
+												pState.fleeca))
 										GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)] = {
 											state = 2,
 											expires = os.time() + (60 * timer),
@@ -454,8 +465,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 										Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 									else
 										Status.Modify:Add(source, "PLAYER_STRESS", 6)
-						
-										Logger:Info("Robbery", string.format("%s %s (%s) Failed Hacking Vault Door At %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
+
+										Logger:Info("Robbery",
+											string.format("%s %s (%s) Failed Hacking Vault Door At %s",
+												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
+												pState.fleeca))
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 2)
 										if (os.time() - itemData.durability >= newValue) then
 											Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
@@ -556,7 +570,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 						and Doors:IsLocked(string.format("%s_gate", pState.fleeca))
 					then
 						if _inUse.Vault[pState.fleeca] == nil or not _inUse.GateDoor[pState.fleeca] then
-							Logger:Info("Robbery", string.format("%s %s (%s) Started Thermiting Vault Gate Door At %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
+							Logger:Info("Robbery",
+								string.format("%s %s (%s) Started Thermiting Vault Gate Door At %s",
+									char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
 							_inProgress[pState.fleeca] = true
 							if not GlobalState["AntiShitlord"] or os.time() >= GlobalState["AntiShitlord"] then
 								GlobalState["AntiShitlord"] = os.time() + (60 * math.random(10, 15))
@@ -580,7 +596,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 									},
 									{
 										icon = "building-columns",
-										details = string.format("Fleeca Bank - %s", FLEECA_LOCATIONS[pState.fleeca].label),
+										details = string.format("Fleeca Bank - %s", FLEECA_LOCATIONS[pState.fleeca]
+											.label),
 									},
 									pState.fleeca
 								)
@@ -609,7 +626,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 								},
 								function(success, data)
 									if success then
-										Logger:Info("Robbery", string.format("%s %s (%s) Successfully Thermited Vault Gate Door At %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
+										Logger:Info("Robbery",
+											string.format("%s %s (%s) Successfully Thermited Vault Gate Door At %s",
+												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
+												pState.fleeca))
 										GlobalState[string.format("Fleeca:%s:GateDoor", pState.fleeca)] = {
 											state = 3,
 											expires = _fcGlobalReset[pState.fleeca],
@@ -618,7 +638,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 										Status.Modify:Add(source, "PLAYER_STRESS", 3)
 										Execute:Client(source, "Notification", "Success", "Doorlock Disengaged", 6000)
 									else
-										Logger:Info("Robbery", string.format("%s %s (%s) Failed Thermiting Vault Gate Door At %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
+										Logger:Info("Robbery",
+											string.format("%s %s (%s) Failed Thermiting Vault Gate Door At %s",
+												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
+												pState.fleeca))
 										Status.Modify:Add(source, "PLAYER_STRESS", 6)
 									end
 									_inUse.GateDoor[pState.fleeca] = false
@@ -690,11 +713,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 								GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)] ~= nil
 								and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].state == 3
 								and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].expires
-									< os.time()
+								< os.time()
 							)
 						then
 							if not _inUse.VaultDoor[pState.fleeca] then
-								Logger:Info("Robbery", string.format("%s %s (%s) Attempting To Open Vault Door At %s With Access Card", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
+								Logger:Info("Robbery",
+									string.format("%s %s (%s) Attempting To Open Vault Door At %s With Access Card",
+										char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
 								_inProgress[pState.fleeca] = true
 								if not GlobalState["AntiShitlord"] or os.time() >= GlobalState["AntiShitlord"] then
 									GlobalState["AntiShitlord"] = os.time() + (60 * math.random(10, 15))
@@ -708,7 +733,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 									tostring(itemData.MetaData.VaultCode),
 									function(success, data)
 										if success and data.entered == tostring(itemData.MetaData.VaultCode) then
-											Logger:Info("Robbery", string.format("%s %s (%s) Open Vault Door At %s With Access Card", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
+											Logger:Info("Robbery",
+												string.format("%s %s (%s) Open Vault Door At %s With Access Card",
+													char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
+													pState.fleeca))
 											local timer = math.random(2, 4)
 											GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)] = {
 												state = 2,
@@ -723,7 +751,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 												6000
 											)
 										else
-											Logger:Info("Robbery", string.format("%s %s (%s) Failed Opening Vault Door At %s With Access Card", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
+											Logger:Info("Robbery",
+												string.format(
+													"%s %s (%s) Failed Opening Vault Door At %s With Access Card",
+													char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
+													pState.fleeca))
 											GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)] = {
 												state = 4,
 												expires = os.time() + (60 * 60 * 6),
@@ -788,8 +820,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 	Inventory.Items:RegisterUse("moneybag", "FleecaRobbery", function(source, itemData)
 		local char = Fetch:CharacterSource(source)
 		if os.time() >= itemData.MetaData.Finished then
-			local amt = itemData.MetaData?.CustomAmt and (math.random(itemData.MetaData?.CustomAmt.Random) + itemData.MetaData?.CustomAmt.Min) or (math.random(5000) + 10000)
-			Logger:Info("Robbery", string.format("%s %s (%s) Used A Money Bag, Received $%s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), amt))
+			local amt = itemData.MetaData?.CustomAmt and
+				(math.random(itemData.MetaData?.CustomAmt.Random) + itemData.MetaData?.CustomAmt.Min) or
+				(math.random(5000) + 10000)
+			Logger:Info("Robbery",
+				string.format("%s %s (%s) Used A Money Bag, Received $%s", char:GetData("First"), char:GetData("Last"),
+					char:GetData("SID"), amt))
 			Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 			Wallet:Modify(source, amt)
 		else

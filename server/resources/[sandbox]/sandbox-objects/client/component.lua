@@ -48,9 +48,10 @@ RegisterNetEvent("Characters:Client:Logout", function()
 	end
 end)
 
-RegisterNetEvent("Objects:Client:Create", function(id, type, creator, model, coords, heading, rotation, isFrozen, nameOverride)
-	Objects:Create(id, type, creator, model, coords, heading, rotation, isFrozen, nameOverride)
-end)
+RegisterNetEvent("Objects:Client:Create",
+	function(id, type, creator, model, coords, heading, rotation, isFrozen, nameOverride)
+		Objects:Create(id, type, creator, model, coords, heading, rotation, isFrozen, nameOverride)
+	end)
 
 RegisterNetEvent("Objects:Client:Delete", function(id)
 	Objects:Delete(id)
@@ -69,7 +70,7 @@ _OBJECTS = {
 
 		FreezeEntityPosition(obj, isFrozen)
 		while not DoesEntityExist(obj) do
-			Citizen.Wait(1)
+			Wait(1)
 		end
 
 		local entState = Entity(obj).state

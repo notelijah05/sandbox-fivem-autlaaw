@@ -178,12 +178,12 @@ _QUEUE = {
 						)
 					)
 				end
-				Citizen.Wait(100)
+				Wait(100)
 			end
 		end
 
 		while not queueActive do
-			Citizen.Wait(100)
+			Wait(100)
 		end
 
 		Queue.Queue:Pop(identifier)
@@ -239,7 +239,7 @@ _QUEUE = {
 		}
 
 		Queue.Queue:Sort()
-		Citizen.Wait(1000)
+		Wait(1000)
 
 		local pos, total = Queue.Queue:GetPosition(identifier)
 		Log(
@@ -283,7 +283,7 @@ _QUEUE = {
 				QUEUE_PLAYER_HISTORY[identifier].expires = GetGameTimer() + (Config.Settings.SavePosition * 60000)
 			end
 
-			Citizen.Wait(5000)
+			Wait(5000)
 		end
 
 		-- Can join the server now :)
@@ -306,7 +306,7 @@ _QUEUE = {
 			-- 	priority = ply.Priority,
 			-- 	priorityMessage = ply.Message,
 			-- })
-			Citizen.Wait(500)
+			Wait(500)
 			ply.Deferrals.done()
 
 			Log(
@@ -476,7 +476,7 @@ AddEventHandler("playerConnecting", function(playerName, setKickReason, deferral
 	local _src = source
 
 	deferrals.defer()
-	Citizen.Wait(1)
+	Wait(1)
 	deferrals.update(Config.Strings.Init)
 
 	if not _dbReady or GlobalState.IsProduction == nil then
@@ -562,9 +562,9 @@ AddEventHandler("Core:Server:SessionStarted", function()
 	DropPlayer(src, Config.Strings.NoIdentifier)
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while not queueActive do
-		Citizen.Wait(1000)
+		Wait(1000)
 	end
 
 	if APIWorking and WebAPI then
@@ -586,13 +586,13 @@ Citizen.CreateThread(function()
 			break
 		end
 
-		Citizen.Wait(5000)
+		Wait(5000)
 	end
 
-	Citizen.Wait(10000)
+	Wait(10000)
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
 		if Queue ~= nil then
 			GlobalState["QueueCount"] = Queue.Queue:GetCount()
@@ -600,7 +600,7 @@ Citizen.CreateThread(function()
 			Queue.Queue:CheckGhosts()
 		end
 
-		Citizen.Wait(20000)
+		Wait(20000)
 	end
 end)
 

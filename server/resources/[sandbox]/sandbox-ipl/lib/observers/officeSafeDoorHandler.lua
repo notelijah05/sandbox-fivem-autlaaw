@@ -2,10 +2,10 @@
 local _scanDelay = 500
 
 --[[
-Citizen.CreateThread(function()
+CreateThread(function()
     while true do
         local office = 0
-        
+
         -- Search for the current office to open/close the safes doors
         if (Global.FinanceOffices.isInsideOffice1) then office = FinanceOffice1
             elseif (Global.FinanceOffices.isInsideOffice2) then office = FinanceOffice2
@@ -30,7 +30,7 @@ Citizen.CreateThread(function()
             end
         end
 
-        Citizen.Wait(_scanDelay)
+        Wait(_scanDelay)
     end
 end)
 ]]

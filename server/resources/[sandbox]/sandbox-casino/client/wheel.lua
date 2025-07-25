@@ -16,7 +16,8 @@ AddEventHandler("Casino:Client:Startup", function()
             text = "Spin the Wheel! ($1,500)",
             event = "Casino:Client:StartSpin",
             isEnabled = function()
-                return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
+                return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
+                    not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
             end,
         },
         {
@@ -25,7 +26,8 @@ AddEventHandler("Casino:Client:Startup", function()
             event = "Casino:Client:StartSpin",
             data = { turbo = true },
             isEnabled = function()
-                return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
+                return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
+                    not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
             end,
         },
         {
@@ -75,27 +77,28 @@ AddEventHandler("Casino:Client:StartSpin", function(_, data)
             TaskGoStraightToCoord(LocalPlayer.state.ped, _movePos.x, _movePos.y, _movePos.z, 1.0, -1, 34.52, 0.0)
 
             while #(GetEntityCoords(LocalPlayer.state.ped) - _movePos) > 0.1 do
-                Citizen.Wait(10)
+                Wait(10)
             end
 
             SetEntityHeading(LocalPlayer.state.ped, 327.937)
             TaskPlayAnim(LocalPlayer.state.ped, lib, anim, 8.0, -8.0, -1, 0, 0, false, false, false)
 
             while IsEntityPlayingAnim(LocalPlayer.state.ped, lib, anim, 3) do
-                Citizen.Wait(1)
+                Wait(1)
                 DisableAllControlActions(0)
             end
 
             TaskPlayAnim(LocalPlayer.state.ped, lib, "enter_to_armraisedidle", 8.0, -8.0, -1, 0, 0, false, false, false)
 
             while IsEntityPlayingAnim(LocalPlayer.state.ped, lib, "enter_to_armraisedidle", 3) do
-                Citizen.Wait(1)
+                Wait(1)
                 DisableAllControlActions(0)
             end
 
             Callbacks:ServerCallback("Casino:WheelSpin", {})
 
-            TaskPlayAnim(LocalPlayer.state.ped, lib, "armraisedidle_to_spinningidle_high", 8.0, -8.0, -1, 0, 0, false, false, false)
+            TaskPlayAnim(LocalPlayer.state.ped, lib, "armraisedidle_to_spinningidle_high", 8.0, -8.0, -1, 0, 0, false,
+                false, false)
 
             LocalPlayer.state.playingCasino = false
         else
@@ -119,7 +122,8 @@ function CreateCasinoWheel()
     FreezeEntityPosition(_casinoWheel, true)
 
     local lastSpinRotation = GlobalState["Casino:WheelLastRotation"] or 0.0
-    SetEntityRotation(_casinoWheel, _casinoWheelRotation.x, _casinoWheelRotation.y - lastSpinRotation, _casinoWheelRotation.z, 2, true)
+    SetEntityRotation(_casinoWheel, _casinoWheelRotation.x, _casinoWheelRotation.y - lastSpinRotation,
+        _casinoWheelRotation.z, 2, true)
 end
 
 function DeleteCasinoWheel()
@@ -135,42 +139,43 @@ RegisterNetEvent("Casino:Client:SpinWheel", function(target, spins, offset)
             _spinningWheel = false
         end
 
-        Citizen.Wait(10)
+        Wait(10)
 
         _spinningWheel = true
-        Citizen.CreateThread(function()
+        CreateThread(function()
             -- local sliceWidth = 360.0 / 20
             -- local finalRotation = (sliceWidth * target) - offset
-    
+
             -- if finalRotation < 40.0 then
             --     minWheelSpeed = 1
             -- end
-    
+
             -- --SetEntityRotation(_casinoWheel, _casinoWheelRotation.x, _casinoWheelRotation.y - finalRotation, _casinoWheelRotation.z, 2, true)
-    
+
             -- local spinning = true
             -- local doneSpins = 0
             local addedRotation = 0.0
-    
+
             while _insideCasino and _spinningWheel do
                 addedRotation += 25.0
                 --print(addedRotation, wheelSpeed)
-    
+
                 if addedRotation >= 360.0 then
                     addedRotation = 0.0
                 end
-    
-                SetEntityRotation(_casinoWheel, _casinoWheelRotation.x, _casinoWheelRotation.y - addedRotation, _casinoWheelRotation.z, 2, true)
-                Citizen.Wait(1)
+
+                SetEntityRotation(_casinoWheel, _casinoWheelRotation.x, _casinoWheelRotation.y - addedRotation,
+                    _casinoWheelRotation.z, 2, true)
+                Wait(1)
             end
-    
+
             -- wheelSpeed = 1.75
-    
+
             -- while addedRotation < finalRotation do
             --     addedRotation += wheelSpeed
-    
+
             --     local diff = finalRotation - addedRotation
-    
+
             --     if diff <= 100.0 and diff >= 40.0 then
             --         wheelSpeed = 1.0
             --     elseif diff <= 40.0 and diff >= 20.0 then
@@ -178,11 +183,11 @@ RegisterNetEvent("Casino:Client:SpinWheel", function(target, spins, offset)
             --     elseif diff < 20.0 and diff >= 10.0 then
             --         wheelSpeed = 0.35
             --     end
-    
+
             --     SetEntityRotation(_casinoWheel, _casinoWheelRotation.x, _casinoWheelRotation.y - addedRotation, _casinoWheelRotation.z, 2, true)
-            --     Citizen.Wait(5)
+            --     Wait(5)
             -- end
-    
+
             -- SetEntityRotation(_casinoWheel, _casinoWheelRotation.x, _casinoWheelRotation.y - finalRotation, _casinoWheelRotation.z, 2, true)
         end)
     end
@@ -199,7 +204,7 @@ end)
 -- AddStateBagChangeHandler("Casino:WheelLastRotation", nil, function(bagName, key, value, _unused, replicated)
 --     if _insideCasino and _casinoWheel then
 --         _spinningWheel = false
---         Citizen.Wait(10)
+--         Wait(10)
 
 --         SetEntityRotation(_casinoWheel, _casinoWheelRotation.x, _casinoWheelRotation.y - value, _casinoWheelRotation.z, 2, true)
 --     end
@@ -208,9 +213,10 @@ end)
 RegisterNetEvent("Casino:Client:WheelLastRotation", function(value)
     if _insideCasino and _casinoWheel then
         _spinningWheel = false
-        Citizen.Wait(10)
+        Wait(10)
 
-        SetEntityRotation(_casinoWheel, _casinoWheelRotation.x, _casinoWheelRotation.y - value, _casinoWheelRotation.z, 2, true)
+        SetEntityRotation(_casinoWheel, _casinoWheelRotation.x, _casinoWheelRotation.y - value, _casinoWheelRotation.z, 2,
+            true)
     end
 end)
 

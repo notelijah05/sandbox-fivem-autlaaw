@@ -1,5 +1,5 @@
-Citizen.CreateThread(function()
-	while true do
+CreateThread(function()
+    while true do
         for k, v in pairs(_offers) do
             if _Jobs[v.job].Timeout then
                 if v.expires < os.time() and not v.noExpire then
@@ -11,6 +11,6 @@ Citizen.CreateThread(function()
                 end
             end
         end
-		Citizen.Wait(30000)
-	end
+        Wait(30000)
+    end
 end)

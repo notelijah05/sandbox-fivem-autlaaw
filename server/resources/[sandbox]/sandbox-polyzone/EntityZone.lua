@@ -36,14 +36,14 @@ local function _initDebug(zone, options)
   if not options.debugPoly and not options.debugBlip then
     return
   end
-  
-  Citizen.CreateThread(function()
+
+  CreateThread(function()
     local entity = zone.entity
     local shouldDraw = options.debugPoly
     while not zone.destroyed do
       UpdateOffsets(entity, zone)
       if shouldDraw then zone:draw() end
-      Citizen.Wait(0)
+      Wait(0)
     end
   end)
 end
@@ -52,7 +52,7 @@ function EntityZone:new(entity, options)
   assert(DoesEntityExist(entity), "Entity does not exist")
 
   local min, max = GetModelDimensions(GetEntityModel(entity))
-  local dimensions = {min, max}
+  local dimensions = { min, max }
 
   local length = max.y - min.y
   local width = max.x - min.x
@@ -93,7 +93,6 @@ function UpdateOffsets(entity, zone)
   if zone.debugBlip then SetBlipCoords(zone.debugBlip, pos.x, pos.y, 0.0) end
 end
 
-
 -- Helper functions
 function EntityZone:isPointInside(point)
   local entity = self.entity
@@ -113,7 +112,7 @@ function EntityZone:onEntityDamaged(onDamagedCb)
     return
   end
 
-  self.damageEventHandlers[#self.damageEventHandlers + 1] = AddEventHandler('gameEventTriggered', function (name, args)
+  self.damageEventHandlers[#self.damageEventHandlers + 1] = AddEventHandler('gameEventTriggered', function(name, args)
     if self.destroyed or self.paused then
       return
     end
@@ -128,7 +127,7 @@ function EntityZone:onEntityDamaged(onDamagedCb)
 end
 
 function EntityZone:destroy()
-  for i=1, #self.damageEventHandlers do
+  for i = 1, #self.damageEventHandlers do
     print("Destroying damageEventHandler:", self.damageEventHandlers[i])
     RemoveEventHandler(self.damageEventHandlers[i])
   end

@@ -74,7 +74,7 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 	SetNewWaypoint(2016.165, 4987.541)
 	_blip = Blips:Add("FarmingStart", "Farm Supervisor", { x = 2016.165, y = 4987.541, z = 0 }, 480, 2, 1.4)
 
-    eventHandlers["keypress"] = AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
+	eventHandlers["keypress"] = AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
 		if _doing then return end
 		if _working and not _finished then
 			local closest = nil
@@ -92,44 +92,47 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 
 			if closest ~= nil then
 				_doing = true
-				TaskTurnPedToFaceCoord(LocalPlayer.state.ped, closest.point.coords.x, closest.point.coords.y, closest.point.coords.z, 1.0)
-				Citizen.Wait(1000)
+				TaskTurnPedToFaceCoord(LocalPlayer.state.ped, closest.point.coords.x, closest.point.coords.y,
+					closest.point.coords.z, 1.0)
+				Wait(1000)
 				DoAction(closest.point.id)
 			else
 				_doing = false
 			end
 		end
-    end)
-
-	eventHandlers["startup"] = RegisterNetEvent(string.format("Farming:Client:%s:Startup", joiner), function(nodes, actionLabel, baseDur, anim)
-		Blips:Remove("FarmingStart")
-
-		if _nodes ~= nil then return end
-		_actionLabel = actionLabel
-		_actionBaseDur = baseDur
-		_actionAnim = anim
-		_working = true
-		_tasks = 0
-		_nodes = nodes
-
-		for k, v in ipairs(_nodes) do
-            Blips:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0, 0.8)
-		end
-
-		Citizen.CreateThread(function()
-			while _working do
-				local closest = nil
-				for k, v in ipairs(_nodes) do
-					local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - vector3(v.coords.x, v.coords.y, v.coords.z))
-					if dist <= 20 then
-						DrawMarker(1, v.coords.x, v.coords.y, v.coords.z, 0, 0, 0, 0, 0, 0, 0.5, 0.5, 1.0, 112, 209, 244, 250, false, false, 2, false, false, false, false)
-					end
-				end
-
-				Citizen.Wait(5)
-			end
-		end)
 	end)
+
+	eventHandlers["startup"] = RegisterNetEvent(string.format("Farming:Client:%s:Startup", joiner),
+		function(nodes, actionLabel, baseDur, anim)
+			Blips:Remove("FarmingStart")
+
+			if _nodes ~= nil then return end
+			_actionLabel = actionLabel
+			_actionBaseDur = baseDur
+			_actionAnim = anim
+			_working = true
+			_tasks = 0
+			_nodes = nodes
+
+			for k, v in ipairs(_nodes) do
+				Blips:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0, 0.8)
+			end
+
+			CreateThread(function()
+				while _working do
+					local closest = nil
+					for k, v in ipairs(_nodes) do
+						local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - vector3(v.coords.x, v.coords.y, v.coords.z))
+						if dist <= 20 then
+							DrawMarker(1, v.coords.x, v.coords.y, v.coords.z, 0, 0, 0, 0, 0, 0, 0.5, 0.5, 1.0, 112, 209,
+								244, 250, false, false, 2, false, false, false, false)
+						end
+					end
+
+					Wait(5)
+				end
+			end)
+		end)
 
 	eventHandlers["actions"] = RegisterNetEvent(string.format("Farming:Client:%s:Action", joiner), function(data)
 		for k, v in ipairs(_nodes) do
@@ -149,37 +152,38 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 		_blip = Blips:Add("FarmingStart", "Farm Supervisor", { x = 2016.165, y = 4987.541, z = 0 }, 480, 2, 1.4)
 	end)
 
-	eventHandlers["new-task"] = RegisterNetEvent(string.format("Farming:Client:%s:NewTask", joiner), function(nodes, actionLabel, baseDur, anim)
-		Blips:Remove("FarmingStart")
+	eventHandlers["new-task"] = RegisterNetEvent(string.format("Farming:Client:%s:NewTask", joiner),
+		function(nodes, actionLabel, baseDur, anim)
+			Blips:Remove("FarmingStart")
 
-		if #_nodes ~= 0 then
-			for k, v in ipairs(_nodes) do
-				Blips:Remove(string.format("FarmingNode-%s", v.id))
+			if #_nodes ~= 0 then
+				for k, v in ipairs(_nodes) do
+					Blips:Remove(string.format("FarmingNode-%s", v.id))
+				end
 			end
-		end
 
-		_actionLabel = actionLabel
-		_actionBaseDur = baseDur
-		_actionAnim = anim
-		_nodes = nodes
-		_tasks = _tasks + 1
+			_actionLabel = actionLabel
+			_actionBaseDur = baseDur
+			_actionAnim = anim
+			_nodes = nodes
+			_tasks = _tasks + 1
 
-		for k, v in ipairs(_nodes) do
-            Blips:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0, 0.8)
-		end
-	end)
+			for k, v in ipairs(_nodes) do
+				Blips:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0, 0.8)
+			end
+		end)
 end)
 
 AddEventHandler("Farming:Client:TurnIn", function()
-    Callbacks:ServerCallback('Farming:TurnIn', _joiner)
+	Callbacks:ServerCallback('Farming:TurnIn', _joiner)
 end)
 
 AddEventHandler("Farming:Client:StartJob", function()
-    Callbacks:ServerCallback('Farming:StartJob', _joiner, function(state)
+	Callbacks:ServerCallback('Farming:StartJob', _joiner, function(state)
 		if not state then
 			Notification:Error("Unable To Start Job")
 		end
-    end)
+	end)
 end)
 
 RegisterNetEvent("Farming:Client:OffDuty", function(time)

@@ -33,8 +33,8 @@ end
 function circleStart(name, radius, useZ)
   local center = GetEntityCoords(PlayerPedId())
   useZ = useZ or false
-  createdZone = CircleZone:Create(center, radius, {name = tostring(name), useZ = useZ})
-  Citizen.CreateThread(function()
+  createdZone = CircleZone:Create(center, radius, { name = tostring(name), useZ = useZ })
+  CreateThread(function()
     while createdZone do
       radius, center, useZ = handleInput(radius, center, useZ)
       createdZone:setRadius(radius)
@@ -47,5 +47,5 @@ end
 
 function circleFinish()
   TriggerServerEvent("polyzone:printCircle",
-    {name=createdZone.name, center=createdZone.center, radius=createdZone.radius, useZ=createdZone.useZ})
+    { name = createdZone.name, center = createdZone.center, radius = createdZone.radius, useZ = createdZone.useZ })
 end

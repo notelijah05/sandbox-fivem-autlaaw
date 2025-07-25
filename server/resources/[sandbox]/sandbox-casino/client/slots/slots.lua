@@ -14,77 +14,77 @@ local _sessionWinnings = 0
 
 AddEventHandler("Casino:Client:Startup", function()
     for k, v in ipairs(_slotMachineObjects) do
-		Targeting:AddObject(v, "slot-machine", {
-			{
-				icon = "slot-machine",
-				text = "Use Machine",
-				event = "Casino:Client:UseSlotMachine",
-				minDist = 2.0,
-				isEnabled = function()
-					return not _satInChair and GlobalState["CasinoOpen"]
-				end,
-			},
+        Targeting:AddObject(v, "slot-machine", {
             {
-				icon = "slot-machine",
-				text = "Leave Machine",
-				event = "Casino:Client:LeaveSlotMachine",
-				minDist = 2.0,
-				isEnabled = function()
-					return _satInChair
-				end,
-			},
+                icon = "slot-machine",
+                text = "Use Machine",
+                event = "Casino:Client:UseSlotMachine",
+                minDist = 2.0,
+                isEnabled = function()
+                    return not _satInChair and GlobalState["CasinoOpen"]
+                end,
+            },
             {
-				icon = "play",
-				text = "Place $100 Bet",
-				event = "Casino:Client:PlaySlotMachine",
+                icon = "slot-machine",
+                text = "Leave Machine",
+                event = "Casino:Client:LeaveSlotMachine",
+                minDist = 2.0,
+                isEnabled = function()
+                    return _satInChair
+                end,
+            },
+            {
+                icon = "play",
+                text = "Place $100 Bet",
+                event = "Casino:Client:PlaySlotMachine",
                 data = { bet = 100 },
-				minDist = 2.0,
-				isEnabled = function()
-					return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
-				end,
-			},
+                minDist = 2.0,
+                isEnabled = function()
+                    return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
+                end,
+            },
             {
-				icon = "play",
-				text = "Place $250 Bet",
-				event = "Casino:Client:PlaySlotMachine",
+                icon = "play",
+                text = "Place $250 Bet",
+                event = "Casino:Client:PlaySlotMachine",
                 data = { bet = 250 },
-				minDist = 2.0,
-				isEnabled = function()
-					return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
-				end,
-			},
+                minDist = 2.0,
+                isEnabled = function()
+                    return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
+                end,
+            },
             {
-				icon = "play",
-				text = "Place $500 Bet",
-				event = "Casino:Client:PlaySlotMachine",
+                icon = "play",
+                text = "Place $500 Bet",
+                event = "Casino:Client:PlaySlotMachine",
                 data = { bet = 500 },
-				minDist = 2.0,
-				isEnabled = function()
-					return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
-				end,
-			},
+                minDist = 2.0,
+                isEnabled = function()
+                    return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
+                end,
+            },
             {
-				icon = "play",
-				text = "Place $1,000 Bet",
-				event = "Casino:Client:PlaySlotMachine",
+                icon = "play",
+                text = "Place $1,000 Bet",
+                event = "Casino:Client:PlaySlotMachine",
                 data = { bet = 1000 },
-				minDist = 2.0,
-				isEnabled = function()
-					return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
-				end,
-			},
+                minDist = 2.0,
+                isEnabled = function()
+                    return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
+                end,
+            },
             {
-				icon = "play",
-				text = "Place $2,500 Bet",
-				event = "Casino:Client:PlaySlotMachine",
+                icon = "play",
+                text = "Place $2,500 Bet",
+                event = "Casino:Client:PlaySlotMachine",
                 data = { bet = 2500 },
-				minDist = 2.0,
-				isEnabled = function()
-					return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
-				end,
-			},
-		}, 3.0)
-	end
+                minDist = 2.0,
+                isEnabled = function()
+                    return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
+                end,
+            },
+        }, 3.0)
+    end
 end)
 
 AddEventHandler("Casino:Client:UseSlotMachine", function()
@@ -104,36 +104,41 @@ AddEventHandler("Casino:Client:UseSlotMachine", function()
 
                 loadAnim("anim_casino_b@amb@casino@games@shared@player@")
 
-                SITTING_SCENE = NetworkCreateSynchronisedScene(_satInChair.position, _satInChair.rotation, 2, 1, 0, 1065353216, 0, 1065353216)
-                local randomSit = ({'sit_enter_left', 'sit_enter_right'})[math.random(1, 2)]
-                NetworkAddPedToSynchronisedScene(LocalPlayer.state.ped, SITTING_SCENE, "anim_casino_b@amb@casino@games@shared@player@", randomSit, 2.0, -2.0, 13, 16, 2.0, 0)
+                SITTING_SCENE = NetworkCreateSynchronisedScene(_satInChair.position, _satInChair.rotation, 2, 1, 0,
+                    1065353216, 0, 1065353216)
+                local randomSit = ({ 'sit_enter_left', 'sit_enter_right' })[math.random(1, 2)]
+                NetworkAddPedToSynchronisedScene(LocalPlayer.state.ped, SITTING_SCENE,
+                    "anim_casino_b@amb@casino@games@shared@player@", randomSit, 2.0, -2.0, 13, 16, 2.0, 0)
                 NetworkStartSynchronisedScene(SITTING_SCENE)
 
                 SITTING_SCENE = NetworkConvertSynchronisedSceneToSynchronizedScene(SITTING_SCENE)
 
-                repeat Citizen.Wait(0) until GetSynchronizedScenePhase(SITTING_SCENE) >= 0.99 or HasAnimEventFired(LocalPlayer.state.ped, 2038294702) or HasAnimEventFired(LocalPlayer.state.ped, -1424880317)
+                repeat Wait(0) until GetSynchronizedScenePhase(SITTING_SCENE) >= 0.99 or HasAnimEventFired(LocalPlayer.state.ped, 2038294702) or HasAnimEventFired(LocalPlayer.state.ped, -1424880317)
 
-                Citizen.Wait(300)
+                Wait(300)
                 loadAnim("anim_casino_a@amb@casino@games@slots@male")
                 FreezeEntityPosition(LocalPlayer.state.ped, true)
-                TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male", "betidle_idle_a", 2.0, 1.0, -1, 0)
+                TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male", "betidle_idle_a", 2.0,
+                    1.0, -1, 0)
                 local fuck = GetOffsetFromEntityInWorldCoords(tableObj, 0.0, -0.85, 0.0)
                 SetEntityCoords(LocalPlayer.state.ped, fuck.x, fuck.y, _satInChair.position.z - 0.34)
 
-                TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male", "betidle_idle_a", 2.0, 1.0, -1, 0)
+                TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male", "betidle_idle_a", 2.0,
+                    1.0, -1, 0)
 
-                Citizen.CreateThread(function()
+                CreateThread(function()
                     PlaySlotMachineSound("welcome_stinger")
                 end)
 
                 ShowSlotStateUI()
 
-                Citizen.CreateThread(function()
+                CreateThread(function()
                     while _satInChair do
                         if not _pauseAnim then
-                            TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male", "betidle_idle_a", 1.0, 1.0, -1, 0)
+                            TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male",
+                                "betidle_idle_a", 1.0, 1.0, -1, 0)
                         end
-                        Citizen.Wait(5)
+                        Wait(5)
                     end
                 end)
 
@@ -155,8 +160,10 @@ function SetupSlotMachine()
         local tableRotation = GetEntityHeading(_satInChair.tableObj)
 
         local rot = vector3(0.0, 0.0, tableRotation + 0.0)
-        local Offset = GetObjectOffsetFromCoords(_satInChair.tableCoords, GetEntityHeading(_satInChair.tableObj), 0.0, -0.5, 0.6)
-        local CamOffset = GetObjectOffsetFromCoords(_satInChair.tableCoords, GetEntityHeading(_satInChair.tableObj), 0.0, -0.5, 0.6)
+        local Offset = GetObjectOffsetFromCoords(_satInChair.tableCoords, GetEntityHeading(_satInChair.tableObj), 0.0,
+            -0.5, 0.6)
+        local CamOffset = GetObjectOffsetFromCoords(_satInChair.tableCoords, GetEntityHeading(_satInChair.tableObj), 0.0,
+            -0.5, 0.6)
 
         loadModel(tableData.prop1)
 
@@ -189,50 +196,53 @@ AddEventHandler("Casino:Client:PlaySlotMachine", function(_, data)
     if _satInChair then
         _pauseAnim = true
 
-        TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male", "betidle_press_betmax_a", 3.0, 11.0, -1, 48, 0, false, false, false)
-        Citizen.Wait(500)
-        TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male", "pull_spin_a", 3.0, 11.0, -1, 48, 0, false, false, false)
-        PlayEntityAnim(_satInChair.tableObj, "pull_spin_a_slotmachine", "anim_casino_a@amb@casino@games@slots@male", 1000.0, false, true, true, 0, 136704)
+        TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male", "betidle_press_betmax_a", 3.0,
+            11.0, -1, 48, 0, false, false, false)
+        Wait(500)
+        TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male", "pull_spin_a", 3.0, 11.0, -1, 48,
+            0, false, false, false)
+        PlayEntityAnim(_satInChair.tableObj, "pull_spin_a_slotmachine", "anim_casino_a@amb@casino@games@slots@male",
+            1000.0, false, true, true, 0, 136704)
 
-        Citizen.Wait(1000)
+        Wait(1000)
 
-        Callbacks:ServerCallback("Casino:SlotMachinePlay", data, function(success, reelRotations, timeOut, sound, wonAmount)
-            if success then
-                _sessionSpent += data.bet
-                ShowSlotStateUI()
-
-                Citizen.CreateThread(function()
-                    PlaySlotMachineSound("spinning")
-                end)
-
-                _spinningReels = true
-                Citizen.Wait(timeOut)
-                _spinningReels = false
-
-                for k, v in ipairs(reelRotations) do
-
-                    slotObjects[k].rot = GetReelRotation(v)
-                end
-
-                UpdateReelRotations()
-                PlaySlotMachineSound(sound)
-
-                if wonAmount and wonAmount > 0 then
-                    _sessionWinnings += wonAmount
+        Callbacks:ServerCallback("Casino:SlotMachinePlay", data,
+            function(success, reelRotations, timeOut, sound, wonAmount)
+                if success then
+                    _sessionSpent += data.bet
                     ShowSlotStateUI()
+
+                    CreateThread(function()
+                        PlaySlotMachineSound("spinning")
+                    end)
+
+                    _spinningReels = true
+                    Wait(timeOut)
+                    _spinningReels = false
+
+                    for k, v in ipairs(reelRotations) do
+                        slotObjects[k].rot = GetReelRotation(v)
+                    end
+
+                    UpdateReelRotations()
+                    PlaySlotMachineSound(sound)
+
+                    if wonAmount and wonAmount > 0 then
+                        _sessionWinnings += wonAmount
+                        ShowSlotStateUI()
+                    end
+                else
+
                 end
-            else
+            end)
 
-            end
-        end)
-
-        Citizen.Wait(1500)
+        Wait(1500)
         _pauseAnim = false
     end
 end)
 
 function StartSpinThread()
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while _satInChair do
             if _spinningReels then
                 for k, v in ipairs(slotObjects) do
@@ -244,9 +254,9 @@ function StartSpinThread()
                     SetEntityRotation(v.obj, v.rot, 0.0, GetEntityHeading(_satInChair.tableObj), 2, true)
                 end
             else
-                Citizen.Wait(250)
+                Wait(250)
             end
-            Citizen.Wait(1)
+            Wait(1)
         end
     end)
 end
@@ -263,8 +273,9 @@ AddEventHandler("Casino:Client:LeaveSlotMachine", function()
                 loadAnim("anim_casino_a@amb@casino@games@slots@male")
 
                 FreezeEntityPosition(LocalPlayer.state.ped, false)
-                TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male", "exit_left", 1.0, 1.0, 2500, 0)
-                Citizen.Wait(math.floor(GetAnimDuration("anim_casino_a@amb@casino@games@slots@male", "exit_left") * 800))
+                TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_a@amb@casino@games@slots@male", "exit_left", 1.0, 1.0,
+                    2500, 0)
+                Wait(math.floor(GetAnimDuration("anim_casino_a@amb@casino@games@slots@male", "exit_left") * 800))
 
                 ClearPedTasks(LocalPlayer.state.ped)
 
@@ -306,7 +317,7 @@ function GetChairObjFromTable(tableId, tableObj)
         tableModel = _slotMachines[tableId].prop,
         tableCoords = GetEntityCoords(tableObj),
         tableOffset = GetObjectOffsetFromCoords(GetEntityCoords(tableObj), GetEntityHeading(tableObj), 0.0, 0.05, 0.0),
-        position =  GetWorldPositionOfEntityBone(tableObj, GetEntityBoneIndexByName(tableObj, 'Chair_Base_01')),
+        position = GetWorldPositionOfEntityBone(tableObj, GetEntityBoneIndexByName(tableObj, 'Chair_Base_01')),
         rotation = GetWorldRotationOfEntityBone(tableObj, GetEntityBoneIndexByName(tableObj, 'Chair_Base_01')),
         chairId = 1,
     }
@@ -319,8 +330,8 @@ function PlaySlotMachineSound(sound)
 
         PlaySoundFromEntity(soundID, sound, _satInChair.tableObj, soundRef, false, 20, 0)
 
-        while not HasSoundFinished(soundID) do 
-            Citizen.Wait(10)
+        while not HasSoundFinished(soundID) do
+            Wait(10)
         end
 
         ReleaseSoundId(soundID)
@@ -334,7 +345,7 @@ function UpdateReelRotations()
 end
 
 function CleanupSlots()
-    for k,v in ipairs(slotObjects) do
+    for k, v in ipairs(slotObjects) do
         DeleteEntity(v.obj)
     end
 
@@ -362,7 +373,9 @@ function ShowSlotStateUI()
         local machineName = _slotMachineNames[_satInChair.tableModel]
         local myBalance = math.floor(Casino.Chips:Get())
 
-        local overlay = string.format("Chip Balance: $%s<br>Session Spent: $%s<br>Session Winnings: $%s", formatNumberToCurrency(myBalance), formatNumberToCurrency(math.floor(_sessionSpent)), formatNumberToCurrency(math.floor(_sessionWinnings)))
+        local overlay = string.format("Chip Balance: $%s<br>Session Spent: $%s<br>Session Winnings: $%s",
+            formatNumberToCurrency(myBalance), formatNumberToCurrency(math.floor(_sessionSpent)),
+            formatNumberToCurrency(math.floor(_sessionWinnings)))
 
         InfoOverlay:Show(machineName, overlay)
     end

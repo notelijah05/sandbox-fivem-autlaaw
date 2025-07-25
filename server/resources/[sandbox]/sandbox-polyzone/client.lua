@@ -1,9 +1,9 @@
 eventPrefix = '__PolyZone__:'
 PolyZone = {}
 
-local defaultColorWalls = {0, 255, 0}
-local defaultColorOutline = {255, 0, 0}
-local defaultColorGrid = {255, 255, 255}
+local defaultColorWalls = { 0, 255, 0 }
+local defaultColorOutline = { 255, 0, 0 }
+local defaultColorGrid = { 255, 255, 255 }
 
 -- Utility functions
 local abs = math.abs
@@ -43,7 +43,7 @@ end
 function clearTbl(tbl)
   -- Only works with contiguous (array-like) tables
   if tbl == nil then return end
-  for i=1, #tbl do
+  for i = 1, #tbl do
     tbl[i] = nil
   end
   return tbl
@@ -53,18 +53,18 @@ function copyTbl(tbl)
   -- Only a shallow copy, and only works with contiguous (array-like) tables
   if tbl == nil then return end
   local ret = {}
-  for i=1, #tbl do
+  for i = 1, #tbl do
     ret[i] = tbl[i]
   end
   return ret
 end
 
 function DrawText3D(position, text, r, g, b)
-	local onScreen, _x, _y = World3dToScreen2d(position.x, position.y, position.z + 1)
+  local onScreen, _x, _y = World3dToScreen2d(position.x, position.y, position.z + 1)
 
-	local scale = 0.25
-	local fov = (1 / GetGameplayCamFov()) * 100
-	local scale = scale * fov
+  local scale = 0.25
+  local fov = (1 / GetGameplayCamFov()) * 100
+  local scale = scale * fov
 
   if onScreen then
     SetTextScale(0.0 * scale, 0.55 * scale)
@@ -121,11 +121,11 @@ end
 
 -- https://rosettacode.org/wiki/Shoelace_formula_for_polygonal_area#Lua
 local function _calculatePolygonArea(points)
-  local function det2(i,j)
-    return points[i].x*points[j].y-points[j].x*points[i].y
+  local function det2(i, j)
+    return points[i].x * points[j].y - points[j].x * points[i].y
   end
-  local sum = #points>2 and det2(#points,1) or 0
-  for i=1,#points-1 do sum = sum + det2(i,i+1)end
+  local sum = #points > 2 and det2(#points, 1) or 0
+  for i = 1, #points - 1 do sum = sum + det2(i, i + 1) end
   return abs(0.5 * sum)
 end
 
@@ -136,11 +136,11 @@ function _drawWall(p1, p2, minZ, maxZ, r, g, b, a)
   local topLeft = vector3(p1.x, p1.y, maxZ)
   local bottomRight = vector3(p2.x, p2.y, minZ)
   local topRight = vector3(p2.x, p2.y, maxZ)
-  
-  DrawPoly(bottomLeft,topLeft,bottomRight,r,g,b,a)
-  DrawPoly(topLeft,topRight,bottomRight,r,g,b,a)
-  DrawPoly(bottomRight,topRight,topLeft,r,g,b,a)
-  DrawPoly(bottomRight,topLeft,bottomLeft,r,g,b,a)
+
+  DrawPoly(bottomLeft, topLeft, bottomRight, r, g, b, a)
+  DrawPoly(topLeft, topRight, bottomRight, r, g, b, a)
+  DrawPoly(bottomRight, topRight, topLeft, r, g, b, a)
+  DrawPoly(bottomRight, topLeft, bottomLeft, r, g, b, a)
 end
 
 function PolyZone:TransformPoint(point)
@@ -158,7 +158,7 @@ function PolyZone:draw()
   local plyPos = GetEntityCoords(plyPed)
   local minZ = self.minZ or plyPos.z - zDrawDist
   local maxZ = self.maxZ or plyPos.z + zDrawDist
-  
+
   local points = self.points
 
   local fp = vector3(self.center.x, self.center.y, self.center.z or minZ)
@@ -166,12 +166,12 @@ function PolyZone:draw()
     DrawText3D(fp, self.name, 255, 255, 255)
   end
 
-  for i=1, #points do
+  for i = 1, #points do
     local point = self:TransformPoint(points[i])
     DrawLine(point.x, point.y, minZ, point.x, point.y, maxZ, oR, oG, oB, 164)
 
     if i < #points then
-      local p2 = self:TransformPoint(points[i+1])
+      local p2 = self:TransformPoint(points[i + 1])
       DrawLine(point.x, point.y, maxZ, p2.x, p2.y, maxZ, oR, oG, oB, 184)
       _drawWall(point, p2, minZ, maxZ, wR, wG, wB, 48)
     end
@@ -203,7 +203,7 @@ local function _drawGrid(poly)
   local lines = poly.lines
   local color = poly.debugColors.grid or defaultColorGrid
   local r, g, b = color[1], color[2], color[3]
-  for i=1, #lines do
+  for i = 1, #lines do
     local line = lines[i]
     local min = line.min
     local max = line.max
@@ -222,10 +222,10 @@ local function _pointInPoly(point, poly)
 
   -- Checks if point is within the polygon's bounding box
   if x < minX or
-     x > max.x or
-     y < minY or
-     y > max.y then
-      return false
+      x > max.x or
+      y < minY or
+      y > max.y then
+    return false
   end
 
   -- Checks if point is within the polygon's height bounds
@@ -278,13 +278,13 @@ end
 
 function _isGridCellInsidePoly(cellX, cellY, poly)
   gridCellPoints = _calculateGridCellPoints(cellX, cellY, poly)
-  local polyPoints = {table.unpack(poly.points)}
+  local polyPoints = { table.unpack(poly.points) }
   -- Connect the polygon to its starting point
   polyPoints[#polyPoints + 1] = polyPoints[1]
 
   -- If none of the points of the grid cell are in the polygon, the grid cell can't be in it
   local isOnePointInPoly = false
-  for i=1, #gridCellPoints - 1 do
+  for i = 1, #gridCellPoints - 1 do
     local cellPoint = gridCellPoints[i]
     local x = cellPoint.x
     local y = cellPoint.y
@@ -297,7 +297,9 @@ function _isGridCellInsidePoly(cellX, cellY, poly)
         if not poly.gridYPoints[y] then poly.gridYPoints[y] = {} end
         poly.gridXPoints[x][y] = true
         poly.gridYPoints[y][x] = true
-      else break end
+      else
+        break
+      end
     end
   end
   if isOnePointInPoly == false then
@@ -306,19 +308,18 @@ function _isGridCellInsidePoly(cellX, cellY, poly)
 
   -- If any of the grid cell's lines intersects with any of the polygon's lines
   -- then the grid cell is not completely within the poly
-  for i=1, #gridCellPoints - 1 do
+  for i = 1, #gridCellPoints - 1 do
     local gridCellP1 = gridCellPoints[i]
-    local gridCellP2 = gridCellPoints[i+1]
-    for j=1, #polyPoints - 1 do
-      if _isIntersecting(gridCellP1, gridCellP2, polyPoints[j], polyPoints[j+1]) then
+    local gridCellP2 = gridCellPoints[i + 1]
+    for j = 1, #polyPoints - 1 do
+      if _isIntersecting(gridCellP1, gridCellP2, polyPoints[j], polyPoints[j + 1]) then
         return false
       end
     end
   end
-  
+
   return true
 end
-
 
 local function _calculateLinesForDrawingGrid(poly)
   local lines = {}
@@ -330,17 +331,17 @@ local function _calculateLinesForDrawingGrid(poly)
       table.sort(yValues)
       local minY = yValues[1]
       local lastY = yValues[1]
-      for i=1, #yValues do
+      for i = 1, #yValues do
         local y = yValues[i]
         -- Checks for breaks in the grid. If the distance between the last value and the current one
         -- is greater than the size of a grid cell, that means the line between them must go outside the polygon.
         -- Therefore, a line must be created between minY and the lastY, and a new line started at the current y
         if y - lastY > poly.gridCellHeight + 0.01 then
-          lines[#lines+1] = {min=vector2(x, minY), max=vector2(x, lastY)}
+          lines[#lines + 1] = { min = vector2(x, minY), max = vector2(x, lastY) }
           minY = y
         elseif i == #yValues then
           -- If at the last point, create a line between minY and the last point
-          lines[#lines+1] = {min=vector2(x, minY), max=vector2(x, y)}
+          lines[#lines + 1] = { min = vector2(x, minY), max = vector2(x, y) }
         end
         lastY = y
       end
@@ -357,13 +358,13 @@ local function _calculateLinesForDrawingGrid(poly)
       table.sort(xValues)
       local minX = xValues[1]
       local lastX = xValues[1]
-      for i=1, #xValues do
+      for i = 1, #xValues do
         local x = xValues[i]
         if x - lastX > poly.gridCellWidth + 0.01 then
-          lines[#lines+1] = {min=vector2(minX, y), max=vector2(lastX, y)}
+          lines[#lines + 1] = { min = vector2(minX, y), max = vector2(lastX, y) }
           minX = x
         elseif i == #xValues then
-          lines[#lines+1] = {min=vector2(minX, y), max=vector2(x, y)}
+          lines[#lines + 1] = { min = vector2(minX, y), max = vector2(x, y) }
         end
         lastX = x
       end
@@ -379,15 +380,15 @@ local function _createGrid(poly, options)
   poly.gridArea = 0.0
   poly.gridCellWidth = poly.size.x / poly.gridDivisions
   poly.gridCellHeight = poly.size.y / poly.gridDivisions
-  Citizen.CreateThread(function()
+  CreateThread(function()
     -- Calculate all grid cells that are entirely inside the polygon
     local isInside = {}
     local gridCellArea = poly.gridCellWidth * poly.gridCellHeight
-    for y=1, poly.gridDivisions do
-      Citizen.Wait(0)
+    for y = 1, poly.gridDivisions do
+      Wait(0)
       isInside[y] = {}
-      for x=1, poly.gridDivisions do
-        if _isGridCellInsidePoly(x-1, y-1, poly) then
+      for x = 1, poly.gridDivisions do
+        if _isGridCellInsidePoly(x - 1, y - 1, poly) then
           poly.gridArea = poly.gridArea + gridCellArea
           isInside[y][x] = true
         end
@@ -401,9 +402,9 @@ local function _createGrid(poly, options)
     if options.debugGrid then
       local coverage = string.format("%.2f", poly.gridCoverage * 100)
       print("[PolyZone] Debug: Grid Coverage at " .. coverage .. "% with " .. poly.gridDivisions
-      .. " divisions. Optimal coverage for memory usage and startup time is 80-90%")
+        .. " divisions. Optimal coverage for memory usage and startup time is 80-90%")
 
-      Citizen.CreateThread(function()
+      CreateThread(function()
         poly.lines = _calculateLinesForDrawingGrid(poly)
         -- A lot of memory is used by this pre-calc. Force a gc collect after to clear it out
         collectgarbage("collect")
@@ -442,7 +443,7 @@ local function _calculatePoly(poly, options)
     _createGrid(poly, options)
   elseif poly.useGrid then
     local isInside = {}
-    for y=1, poly.gridDivisions do
+    for y = 1, poly.gridDivisions do
       isInside[y] = {}
     end
     poly.grid = isInside
@@ -458,14 +459,14 @@ local function _initDebug(poly, options)
   if not debugEnabled then
     return
   end
-  
-  Citizen.CreateThread(function()
+
+  CreateThread(function()
     while not poly.destroyed do
       poly:draw()
       if options.debugGrid and poly.lines then
         _drawGrid(poly)
       end
-      Citizen.Wait(0)
+      Wait(0)
     end
   end)
 end
@@ -476,7 +477,8 @@ function PolyZone:new(points, options)
     return
   end
   if #points < 3 then
-    print("[PolyZone] Warning: Passed points table with less than 3 points to PolyZone:Create() {name=" .. options.name .. "}")
+    print("[PolyZone] Warning: Passed points table with less than 3 points to PolyZone:Create() {name=" ..
+      options.name .. "}")
   end
 
   options = options or {}
@@ -519,7 +521,7 @@ end
 function PolyZone:isPointInside(point)
   if self.destroyed then
     print("[PolyZone] Warning: Called isPointInside on destroyed zone {name=" .. self.name .. "}")
-    return false 
+    return false
   end
 
   return _pointInPoly(point, self)
@@ -561,7 +563,7 @@ function PolyZone:onPointInOut(getPointCb, onPointInOutCb, waitInMS)
   local _waitInMS = 500
   if waitInMS ~= nil then _waitInMS = waitInMS end
 
-  Citizen.CreateThread(function()
+  CreateThread(function()
     local isInside = nil
     while not self.destroyed do
       if not self.paused then
@@ -572,7 +574,7 @@ function PolyZone:onPointInOut(getPointCb, onPointInOutCb, waitInMS)
           isInside = newIsInside
         end
       end
-      Citizen.Wait(_waitInMS)
+      Wait(_waitInMS)
     end
   end)
 end
@@ -585,7 +587,7 @@ function PolyZone:addEvent(eventName)
   if self.events == nil then self.events = {} end
   local internalEventName = eventPrefix .. eventName
   RegisterNetEvent(internalEventName)
-  self.events[eventName] = AddEventHandler(internalEventName, function (...)
+  self.events[eventName] = AddEventHandler(internalEventName, function(...)
     if self:isPointInside(PolyZone.getPlayerPosition()) then
       TriggerEvent(eventName, ...)
     end

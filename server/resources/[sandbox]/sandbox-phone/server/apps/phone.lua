@@ -51,13 +51,13 @@ PHONE.Call = {
 				end
 
 				Phone.Call:CreateRecord(_calls[source].data)
-	
+
 				TriggerClientEvent("Phone:Client:Phone:EndCall", source)
 				TriggerClientEvent("Phone:Client:AddData", source, "calls", _calls[source].data)
-	
+
 				Phone.Notification:RemoveById(source, "PHONE_CALL")
 				VOIP.Phone:SetCall(source, 0)
-	
+
 				if _calls[source].isBiz then
 					if _bizPhones[_calls[source].isBiz].call and _bizPhones[_calls[source].isBiz].call.handler then
 						VOIP.Phone:SetCall(_bizPhones[_calls[source].isBiz].call.handler, 0)
@@ -90,7 +90,7 @@ PHONE.Call = {
 						)
 					end
 				end
-	
+
 				_calls[source] = nil
 			end
 		end
@@ -222,7 +222,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 				if bizData.call then -- Already Busy
 					Phone.Call:CreateRecord(callerData)
-			
+
 					Phone.Notification:Add(
 						src,
 						"Number Busy",
@@ -231,7 +231,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						6000,
 						"phone"
 					)
-	
+
 					cb(false)
 					Phone.Call:End(src)
 				else
@@ -258,15 +258,16 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					}
 
 					cb(true)
-					TriggerClientEvent("Phone:Client:Biz:Recieve", -1, isBusiness, _bizPhones[isBusiness].coords, _bizPhones[isBusiness].radius or 15.0)
+					TriggerClientEvent("Phone:Client:Biz:Recieve", -1, isBusiness, _bizPhones[isBusiness].coords,
+						_bizPhones[isBusiness].radius or 15.0)
 
-					Citizen.CreateThread(function()
+					CreateThread(function()
 						local timeThen = os.time()
-						Citizen.Wait(30000)
+						Wait(30000)
 
 						if _bizPhones[isBusiness].call and _bizPhones[isBusiness].call.start == timeThen and not _bizPhones[isBusiness].call.handler then
 							Phone.Call:CreateRecord(callerData)
-			
+
 							Phone.Notification:Add(
 								src,
 								"Number Unavailable",
@@ -432,7 +433,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				TriggerClientEvent("Phone:Client:Phone:AcceptCall", src, _calls[src].number)
 
 				local bizCallerSource = _bizPhones[_calls[src].isBiz].call.handler
-				TriggerClientEvent("Phone:Client:Phone:AcceptBizCall", bizCallerSource, _bizPhones[_calls[src].isBiz].call.number)
+				TriggerClientEvent("Phone:Client:Phone:AcceptBizCall", bizCallerSource,
+					_bizPhones[_calls[src].isBiz].call.number)
 				local cid = src
 
 				Logger:Trace(
@@ -462,20 +464,21 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			elseif _calls[src].target ~= nil and _calls[_calls[src].target] ~= nil then
 				_calls[src].state = 2
 				_calls[_calls[src].target].state = 2
-	
+
 				TriggerClientEvent("Phone:Client:Phone:AcceptCall", src, _calls[src].number)
-				TriggerClientEvent("Phone:Client:Phone:AcceptCall", _calls[src].target, _calls[_calls[src].target].number)
-	
+				TriggerClientEvent("Phone:Client:Phone:AcceptCall", _calls[src].target, _calls[_calls[src].target]
+					.number)
+
 				local cid = src
 				if not _calls[src].data.method then
 					cid = _calls[src].target
 				end
-	
+
 				Logger:Trace(
 					"Phone",
 					string.format("%s Accepted Call With %s, Setting To Call Channel %s", src, _calls[src].target, cid)
 				)
-	
+
 				Phone.Notification:AddWithId(
 					src,
 					"PHONE_CALL",
@@ -488,7 +491,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						cancel = "Phone:Nui:Phone:EndCall",
 					}
 				)
-	
+
 				Phone.Notification:AddWithId(
 					_calls[src].target,
 					"PHONE_CALL",
@@ -501,7 +504,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						cancel = "Phone:Nui:Phone:EndCall",
 					}
 				)
-	
+
 				VOIP.Phone:SetCall(src, cid)
 				VOIP.Phone:SetCall(_calls[src].target, cid)
 			end
@@ -556,7 +559,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			if not _bizPhones[id].call.handler then
 				_bizPhones[id].call.handler = source
 				_bizCallHandlers[source] = id
-				
+
 				local targetSource = _bizPhones[id].call.caller
 				local cid = targetSource
 

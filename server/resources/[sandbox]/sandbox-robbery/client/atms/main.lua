@@ -16,7 +16,8 @@ local _phoneApp = {
 
 AddEventHandler("Robbery:Client:Setup", function()
     local atmRobbery = GlobalState["ATMRobberyTerminal"]
-    Targeting.Zones:AddBox("atm-robbery-terminal", "bug", atmRobbery.coords, atmRobbery.length, atmRobbery.width, atmRobbery.options, {
+    Targeting.Zones:AddBox("atm-robbery-terminal", "bug", atmRobbery.coords, atmRobbery.length, atmRobbery.width,
+        atmRobbery.options, {
         {
             icon = "eye-evil",
             text = "Do Illegal Things",
@@ -56,7 +57,8 @@ AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
                 onSuccess = function(data)
                     Callbacks:ServerCallback("Robbery:ATM:StartJob", true, function(success, location)
                         if success then
-                            Phone.Notification:AddWithId("ATMRobbery", "Started - Good Luck", "Access an ATM in the highlighted area", GetCloudTimeAsInt(), -1, {
+                            Phone.Notification:AddWithId("ATMRobbery", "Started - Good Luck",
+                                "Access an ATM in the highlighted area", GetCloudTimeAsInt(), -1, {
                                 color = '#247919',
                                 label = 'Root',
                                 icon = 'terminal',
@@ -67,7 +69,8 @@ AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
                             StartATMRobbery(location, true)
                         else
                             if location then
-                                Phone.Notification:Add("No More!", "You already have done too much today...", GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
+                                Phone.Notification:Add("No More!", "You already have done too much today...",
+                                    GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
                             end
                         end
                     end)
@@ -75,7 +78,8 @@ AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
                 onFail = function(data)
                     Callbacks:ServerCallback("Robbery:ATM:StartJob", false, function() end)
 
-                    Phone.Notification:Add("Not Today Failure", "Your skills are useless to us...", GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
+                    Phone.Notification:Add("Not Today Failure", "Your skills are useless to us...", GetCloudTimeAsInt(),
+                        7500, _phoneApp, {}, nil)
                 end,
             }, {
                 playableWhileDead = false,
@@ -86,10 +90,12 @@ AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
                 },
             }, {})
         else
-            Phone.Notification:Add("Busy at the Moment", "Sorry, please try again in a minute.", GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
+            Phone.Notification:Add("Busy at the Moment", "Sorry, please try again in a minute.", GetCloudTimeAsInt(),
+                7500, _phoneApp, {}, nil)
         end
     else
-        Phone.Notification:Add("Come Back Later", "Sorry, please try again when it's dark.", GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
+        Phone.Notification:Add("Come Back Later", "Sorry, please try again when it's dark.", GetCloudTimeAsInt(), 7500,
+            _phoneApp, {}, nil)
     end
 end)
 
@@ -99,7 +105,7 @@ function StartATMRobbery(location, firstLocation)
     if not _atmZone then return; end
 
     if _blip then
-        RemoveBlip(_blip) 
+        RemoveBlip(_blip)
     end
 
     _blip = AddBlipForRadius(_atmZone.coords.x, _atmZone.coords.y, _atmZone.coords.maxZ, _atmZone.radius + 0.0)
@@ -109,10 +115,11 @@ function StartATMRobbery(location, firstLocation)
     Blips:Add("ATMRobbery", "Target Area", _atmZone.coords, 521, 6, 1.5)
 
     ClearGpsPlayerWaypoint()
-	SetNewWaypoint(_atmZone.coords.x, _atmZone.coords.y)
+    SetNewWaypoint(_atmZone.coords.x, _atmZone.coords.y)
 
     if not firstLocation then
-        Phone.Notification:AddWithId("ATMRobbery", "Well Done - Next!", "Access an ATM in the new highlighted area", GetCloudTimeAsInt() * 1000, -1, _phoneApp, {
+        Phone.Notification:AddWithId("ATMRobbery", "Well Done - Next!", "Access an ATM in the new highlighted area",
+            GetCloudTimeAsInt() * 1000, -1, _phoneApp, {
             accept = "dicks",
         }, nil)
     end
@@ -129,22 +136,22 @@ end
 
 function DoATMProgress(label, duration, canCancel, cb)
     Progress:Progress({
-		name = "installing_atm_hack",
-		duration = (math.random(10) + 10) * 1000,
-		label = label,
-		useWhileDead = false,
-		canCancel = canCancel,
+        name = "installing_atm_hack",
+        duration = (math.random(10) + 10) * 1000,
+        label = label,
+        useWhileDead = false,
+        canCancel = canCancel,
         ignoreModifier = true,
-		controlDisables = {
-			disableMovement = true,
-			disableCarMovement = true,
-			disableMouse = false,
-			disableCombat = true,
-		},
-		animation = {
-			anim = "type",
-		},
-	}, function(status)
+        controlDisables = {
+            disableMovement = true,
+            disableCarMovement = true,
+            disableMouse = false,
+            disableCombat = true,
+        },
+        animation = {
+            anim = "type",
+        },
+    }, function(status)
         if cb then
             cb(status)
         end
@@ -172,9 +179,8 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
 
         Minigame.Play:Memory(5, 1000, 8000, size, size, toGet, 1, {
             onSuccess = function(data)
-
                 while LocalPlayer.state.doingAction do -- Apparently this is dumb
-                    Citizen.Wait(100)
+                    Wait(100)
                 end
 
                 DoATMProgress("Executing", (math.random(10) + 10) * 1000, false, function(status)
@@ -184,7 +190,8 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
                             if location then
                                 StartATMRobbery(location, false)
                             else
-                                Phone.Notification:Add("Done", "We hope to work with you more in the future.", GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
+                                Phone.Notification:Add("Done", "We hope to work with you more in the future.",
+                                    GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
                             end
                         end
 
@@ -198,7 +205,7 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
                 Sounds.Play:Location(coords, 20.0, "house_alarm.ogg", 0.05)
 
                 while LocalPlayer.state.doingAction do -- Apparently this is dumb
-                    Citizen.Wait(100)
+                    Wait(100)
                 end
 
                 Callbacks:ServerCallback("Robbery:ATM:FailHackATM", {
@@ -209,7 +216,8 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
 
                     EndATMRobbery()
 
-                    Phone.Notification:Add("Failed", "I can't believe you just did this.", GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
+                    Phone.Notification:Add("Failed", "I can't believe you just did this.", GetCloudTimeAsInt(), 7500,
+                        _phoneApp, {}, nil)
                 end)
             end,
         }, {

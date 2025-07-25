@@ -83,12 +83,12 @@ function GetObject()
 					pos["y"],
 					pos["z"] + 1,
 					"Obj: "
-						.. ped
-						.. " Model: "
-						.. GetEntityModel(ped)
-						.. " Heading: "
-						.. GetEntityHeading(ped)
-						.. " IN CONTACT"
+					.. ped
+					.. " Model: "
+					.. GetEntityModel(ped)
+					.. " Heading: "
+					.. GetEntityHeading(ped)
+					.. " IN CONTACT"
 				)
 			else
 				DrawText3Ds(
@@ -96,13 +96,13 @@ function GetObject()
 					pos["y"],
 					pos["z"] + 1,
 					"Obj: "
-						.. ped
-						.. " Model: "
-						.. GetEntityModel(ped)
-						.. " Heading: "
-						.. GetEntityHeading(ped)
-						.. "\n\n"
-						.. string.format("Entity Coords: %s, %s, %s", pos["x"], pos["y"], pos["z"])
+					.. ped
+					.. " Model: "
+					.. GetEntityModel(ped)
+					.. " Heading: "
+					.. GetEntityHeading(ped)
+					.. "\n\n"
+					.. string.format("Entity Coords: %s, %s, %s", pos["x"], pos["y"], pos["z"])
 				)
 			end
 		end
@@ -133,12 +133,12 @@ function getNPC()
 					pos["y"],
 					pos["z"],
 					"Ped: "
-						.. ped
-						.. " Model: "
-						.. GetEntityModel(ped)
-						.. " Relationship HASH: "
-						.. GetPedRelationshipGroupHash(ped)
-						.. " IN CONTACT"
+					.. ped
+					.. " Model: "
+					.. GetEntityModel(ped)
+					.. " Relationship HASH: "
+					.. GetPedRelationshipGroupHash(ped)
+					.. " IN CONTACT"
 				)
 			else
 				DrawText3Ds(
@@ -146,11 +146,11 @@ function getNPC()
 					pos["y"],
 					pos["z"],
 					"Ped: "
-						.. ped
-						.. " Model: "
-						.. GetEntityModel(ped)
-						.. " Relationship HASH: "
-						.. GetPedRelationshipGroupHash(ped)
+					.. ped
+					.. " Model: "
+					.. GetEntityModel(ped)
+					.. " Relationship HASH: "
+					.. GetPedRelationshipGroupHash(ped)
 				)
 			end
 		end
@@ -173,9 +173,9 @@ function canPedBeUsed(ped)
 	return true
 end
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(1)
+		Wait(1)
 
 		if _debugging then
 			local pos = GetEntityCoords(GetPlayerPed(-1))
@@ -243,7 +243,7 @@ Citizen.CreateThread(function()
 			local veh = GetVehicle()
 			local nearobj = GetObject()
 		else
-			Citizen.Wait(5000)
+			Wait(5000)
 		end
 	end
 end)

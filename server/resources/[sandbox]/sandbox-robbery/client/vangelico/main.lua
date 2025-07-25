@@ -67,7 +67,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	})
 
 	while not GlobalState["VangelicoCases"] do
-		Citizen.Wait(10)
+		Wait(10)
 	end
 
 	for k, v in ipairs(GlobalState["VangelicoCases"]) do
@@ -83,12 +83,13 @@ AddEventHandler("Robbery:Client:Setup", function()
 				},
 				isEnabled = function(data)
 					return (
-						(GlobalState["Duty:police"] or 0) >= GlobalState["VangelicoRequiredPd"]
-						or GlobalState["Vangelico:InProgress"]
-					)
+							(GlobalState["Duty:police"] or 0) >= GlobalState["VangelicoRequiredPd"]
+							or GlobalState["Vangelico:InProgress"]
+						)
 						and not GlobalState["RobberiesDisabled"]
 						and (not GlobalState["RestartLockdown"] or (GlobalState["RestartLockdown"] and GlobalState["Vangelico:InProgress"]))
-						and (not GlobalState["AntiShitlord"] or GetCloudTimeAsInt() > GlobalState["AntiShitlord"] or GlobalState["Vangelico:InProgress"])
+						and
+						(not GlobalState["AntiShitlord"] or GetCloudTimeAsInt() > GlobalState["AntiShitlord"] or GlobalState["Vangelico:InProgress"])
 						and GlobalState["Vangelico:State"] ~= 2
 						and (
 							(not GlobalState[pId] or GlobalState[pId] < GetCloudTimeAsInt())
@@ -202,7 +203,7 @@ function loadParticle()
 		RequestNamedPtfxAsset("scr_jewelheist")
 	end
 	while not HasNamedPtfxAssetLoaded("scr_jewelheist") do
-		Citizen.Wait(0)
+		Wait(0)
 	end
 	SetPtfxAssetNextCall("scr_jewelheist")
 end
@@ -210,7 +211,7 @@ end
 function loadAnimation()
 	loadAnimDict("missheist_jewel")
 	TaskPlayAnim(PlayerPedId(), "missheist_jewel", "smash_case", 8.0, 1.0, -1, 2, 0, 0, 0, 0)
-	Citizen.Wait(2200)
+	Wait(2200)
 end
 
 AddEventHandler("Robbery:Client:Vangelico:BreakCase", function(entity, data)
@@ -222,8 +223,8 @@ AddEventHandler("Robbery:Client:Vangelico:BreakCase", function(entity, data)
 		loadParticle()
 		TaskTurnPedToFaceCoord(LocalPlayer.state.ped, data.coords.x, data.coords.y, data.coords.z, 1.0)
 
-		Citizen.CreateThread(function()
-			Citizen.Wait(600)
+		CreateThread(function()
+			Wait(600)
 			Sounds.Play:Location(data.coords, 10.0, "jewel_glass.ogg", 0.15)
 			StartParticleFxLoopedAtCoord(
 				"scr_jewel_cab_smash",

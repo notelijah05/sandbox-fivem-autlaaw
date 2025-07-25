@@ -26,7 +26,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 function RegisterDjZones()
-	for k,v in ipairs(Props) do
+	for k, v in ipairs(Props) do
 		DeleteObject(v)
 	end
 
@@ -52,7 +52,7 @@ function RegisterDjZones()
 			if v.prop then
 				RequestModel(v.prop)
 				while not HasModelLoaded(v.prop) do
-					Citizen.Wait(1)
+					Wait(1)
 				end
 				local obj = CreateObject(v.prop, v.coords, false, false, false)
 				local heading = v.heading or math.random(1, 359) + 0.0
@@ -279,7 +279,7 @@ end)
 
 AddEventHandler('onResourceStop', function(resourceName)
 	if resourceName == GetCurrentResourceName() then
-		for k,v in ipairs(Props) do
+		for k, v in ipairs(Props) do
 			DeleteObject(v)
 		end
 	end

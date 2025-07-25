@@ -254,14 +254,14 @@ RegisterNetEvent("Inventory:Client:DumpsterHideThread", function()
 	end
 	_dumpsterHideThreading = true
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		-- Wait till this is synced from server
 		while not LocalPlayer.state.inDumpster do
-			Citizen.Wait(10)
+			Wait(10)
 		end
 
 		while LocalPlayer.state.inDumpster do
-			Citizen.Wait(5)
+			Wait(5)
 
 			Weapons:UnequipIfEquipped()
 
@@ -279,22 +279,22 @@ RegisterNetEvent("Characters:Client:Spawn", function()
 end)
 
 function DisableControls()
-	DisableControlAction(0, 30, true) -- disable left/right
-	DisableControlAction(0, 31, true) -- disable forward/back
-	DisableControlAction(0, 36, true) -- INPUT_DUCK
-	DisableControlAction(0, 21, true) -- disable sprint
-	DisableControlAction(0, 44, true) -- disable cover
-	DisableControlAction(0, 63, true) -- veh turn left
-	DisableControlAction(0, 64, true) -- veh turn right
-	DisableControlAction(0, 71, true) -- veh forward
-	DisableControlAction(0, 72, true) -- veh backwards
-	DisableControlAction(0, 75, true) -- disable exit vehicle
+	DisableControlAction(0, 30, true)  -- disable left/right
+	DisableControlAction(0, 31, true)  -- disable forward/back
+	DisableControlAction(0, 36, true)  -- INPUT_DUCK
+	DisableControlAction(0, 21, true)  -- disable sprint
+	DisableControlAction(0, 44, true)  -- disable cover
+	DisableControlAction(0, 63, true)  -- veh turn left
+	DisableControlAction(0, 64, true)  -- veh turn right
+	DisableControlAction(0, 71, true)  -- veh forward
+	DisableControlAction(0, 72, true)  -- veh backwards
+	DisableControlAction(0, 75, true)  -- disable exit vehicle
 	DisablePlayerFiring(PlayerId(), true) -- Disable weapon firing
-	DisableControlAction(0, 24, true) -- disable attack
-	DisableControlAction(0, 25, true) -- disable aim
-	DisableControlAction(1, 37, true) -- disable weapon select
-	DisableControlAction(0, 47, true) -- disable weapon
-	DisableControlAction(0, 58, true) -- disable weapon
+	DisableControlAction(0, 24, true)  -- disable attack
+	DisableControlAction(0, 25, true)  -- disable aim
+	DisableControlAction(1, 37, true)  -- disable weapon select
+	DisableControlAction(0, 47, true)  -- disable weapon
+	DisableControlAction(0, 58, true)  -- disable weapon
 	DisableControlAction(0, 140, true) -- disable melee
 	DisableControlAction(0, 141, true) -- disable melee
 	DisableControlAction(0, 142, true) -- disable melee

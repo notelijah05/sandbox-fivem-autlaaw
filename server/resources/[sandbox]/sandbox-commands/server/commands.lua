@@ -69,7 +69,7 @@ function RegisterChatCommands()
 			end
 
 			TriggerClientEvent("Animations:Client:DiceRoll", source)
-			Citizen.Wait(1000)
+			Wait(1000)
 			TriggerClientEvent("Chat:Client:ReceiveMe", -1, source, GetGameTimer(), str, true)
 		else
 			Chat.Send.System:Single(source, "Invalid Arguments")
@@ -514,7 +514,8 @@ function RegisterChatCommands()
 		local char = Fetch:SID(targ)
 		if char ~= nil then
 			local pState = Player(char:GetData("Source")).state
-			Chat.Send.System:Single(source, pState?.onRadio and string.format("Radio Frequency: %s", pState?.onRadio) or "Not On Radio")
+			Chat.Send.System:Single(source,
+				pState?.onRadio and string.format("Radio Frequency: %s", pState?.onRadio) or "Not On Radio")
 		else
 			Chat.Send.System:Single(source, "Not Logged In")
 		end
@@ -536,7 +537,8 @@ function RegisterChatCommands()
 			if pState?.onRadio and pState.onRadio == args[1] then
 				local char = Fetch:CharacterSource(tonumber(v))
 				if char ~= nil then
-					table.insert(plyrs, string.format("%s %s (%s)", char:GetData("First"), char:GetData("Last"), char:GetData("SID")))
+					table.insert(plyrs,
+						string.format("%s %s (%s)", char:GetData("First"), char:GetData("Last"), char:GetData("SID")))
 				end
 			end
 		end

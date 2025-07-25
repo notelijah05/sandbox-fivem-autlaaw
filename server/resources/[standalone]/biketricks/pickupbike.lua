@@ -38,7 +38,7 @@
 --   })
 
 --   RequestAnimDict("move_p_m_zero_rucksack")
---   while (not HasAnimDictLoaded("move_p_m_zero_rucksack")) do Citizen.Wait(0) end
+--   while (not HasAnimDictLoaded("move_p_m_zero_rucksack")) do Wait(0) end
 --   TaskPlayAnim(playerPed, "move_p_m_zero_rucksack", "idle", 2.0, 2.0, -1, 51, 0, false, false, false)
 --   bike = true
 
@@ -53,10 +53,10 @@
 
 --     RegisterKeyMapping('dropbike', 'Drop Bike', 'keyboard', 'g')
 
---     Citizen.CreateThread(function()
+--     CreateThread(function()
 --       if bike and IsEntityPlayingAnim(playerPed, "move_p_m_zero_rucksack", "idle", 3) ~= 1 then
 --         RequestAnimDict("move_p_m_zero_rucksack")
---         while (not HasAnimDictLoaded("move_p_m_zero_rucksack")) do Citizen.Wait(0) end
+--         while (not HasAnimDictLoaded("move_p_m_zero_rucksack")) do Wait(0) end
 --           TaskPlayAnim(playerPed, "move_p_m_zero_rucksack", "idle", 2.0, 2.0, -1, 51, 0, false, false, false)
 --         if not IsEntityAttachedToEntity(playerPed, vehicle) then
 --           bike = false

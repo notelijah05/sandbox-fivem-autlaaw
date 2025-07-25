@@ -1,7 +1,7 @@
 function CreatePropertyZones(propertyId, int)
     DestroyPropertyZones(propertyId)
 
-    Citizen.Wait(100)
+    Wait(100)
 
     local interior = PropertyInteriors[int]
     if interior then
@@ -70,7 +70,8 @@ function CreatePropertyZones(propertyId, int)
                                 return false
                             end
                             local property = _properties[data]
-                            return (property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil) or LocalPlayer.state.onDuty == "police"
+                            return (property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil) or
+                            LocalPlayer.state.onDuty == "police"
                         end,
                     },
                     {
@@ -83,7 +84,8 @@ function CreatePropertyZones(propertyId, int)
                                 return false
                             end
                             local property = _properties[data]
-                            return property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil and property?.data?.jobDuty
+                            return property.keys ~= nil and
+                            property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil and property?.data?.jobDuty
                         end,
                     },
                 },
@@ -111,7 +113,8 @@ function CreatePropertyZones(propertyId, int)
                                 return false
                             end
                             local property = _properties[data]
-                            return property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil
+                            return property.keys ~= nil and
+                            property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil
                         end,
                     },
                 },
@@ -132,7 +135,8 @@ function CreatePropertyZones(propertyId, int)
                             return false
                         end
                         local property = _properties[data]
-                        return (property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil) or LocalPlayer.state.onDuty == "police"
+                        return (property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil) or
+                        LocalPlayer.state.onDuty == "police"
                     end,
                 },
                 {
@@ -181,15 +185,15 @@ function CreatePropertyZones(propertyId, int)
             )
         end
 
-        Citizen.Wait(1000)
+        Wait(1000)
         Targeting.Zones:Refresh()
     end
 end
 
 function DestroyPropertyZones(propertyId)
-	Targeting.Zones:RemoveZone(string.format("property-%s-exit", propertyId))
-	Targeting.Zones:RemoveZone(string.format("property-%s-exit-back", propertyId))
-	Targeting.Zones:RemoveZone(string.format("property-%s-warehouse", propertyId))
-	Targeting.Zones:RemoveZone(string.format("property-%s-office", propertyId))
+    Targeting.Zones:RemoveZone(string.format("property-%s-exit", propertyId))
+    Targeting.Zones:RemoveZone(string.format("property-%s-exit-back", propertyId))
+    Targeting.Zones:RemoveZone(string.format("property-%s-warehouse", propertyId))
+    Targeting.Zones:RemoveZone(string.format("property-%s-office", propertyId))
     Targeting.Zones:RemoveZone(string.format("property-%s-crafting", propertyId))
 end

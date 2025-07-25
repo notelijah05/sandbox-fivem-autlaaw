@@ -1,6 +1,6 @@
 _inuse = {}
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
 		for k, v in pairs(_activeTowers) do
 			if not v.onTask and v.next < os.time() then
@@ -9,7 +9,7 @@ Citizen.CreateThread(function()
 				local cId = math.random(#_spawns)
 				while _inuse[cId] do
 					cId = math.random(#_spawns)
-					Citizen.Wait(1)
+					Wait(1)
 				end
 
 				_inuse[cId] = k
@@ -22,14 +22,14 @@ Citizen.CreateThread(function()
 					_spawns[cId][4],
 					function(veh, VIN, plate)
 						SetVehicleDoorsLocked(veh, 2)
-		
+
 						v.location = cId
 						v.veh = veh
-		
+
 						local ent = Entity(veh).state
 						ent.towObjective = true
 						TriggerClientEvent("Tow:Client:MarkPickup", k, _spawns[cId], veh)
-		
+
 						Phone.Notification:AddWithId(
 							k,
 							"TOW_OBJ",
@@ -49,6 +49,6 @@ Citizen.CreateThread(function()
 				)
 			end
 		end
-		Citizen.Wait(5000)
+		Wait(5000)
 	end
 end)

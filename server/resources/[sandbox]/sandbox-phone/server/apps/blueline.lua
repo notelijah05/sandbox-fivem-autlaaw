@@ -130,7 +130,7 @@ function FinishRacePD(id)
 						if
 							_tracks[racedTrack].Fastest[i] == nil
 							or fastest.lap_end - fastest.lap_start
-								< _tracks[racedTrack].Fastest[i].lap_end - _tracks[racedTrack].Fastest[i].lap_start
+							< _tracks[racedTrack].Fastest[i].lap_end - _tracks[racedTrack].Fastest[i].lap_start
 						then
 							table.insert(_tracks[racedTrack].Fastest, i, {
 								time = fastest.time,
@@ -173,7 +173,7 @@ function FinishRacePD(id)
 
 		if #laps > 0 then
 			local qry =
-				"INSERT INTO blueline_track_history (track, race, callsign, lap_start, lap_end, laptime, car, owned) VALUES "
+			"INSERT INTO blueline_track_history (track, race, callsign, lap_start, lap_end, laptime, car, owned) VALUES "
 			local params = {}
 			for k, v in ipairs(laps) do
 				table.insert(params, _races[id].track)
@@ -244,8 +244,8 @@ RegisterServerEvent("Phone:Blueline:FinishRace", function(nId, data, laps, plate
 				)
 			end
 		end
-		Citizen.CreateThread(function()
-			Citizen.Wait(tonumber(_races[data].dnf_time) * 1000)
+		CreateThread(function()
+			Wait(tonumber(_races[data].dnf_time) * 1000)
 			FinishRacePD(data)
 		end)
 	end

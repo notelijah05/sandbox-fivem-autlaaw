@@ -2,7 +2,7 @@ _moneyTruckPeds = {}
 _moneyTrucks = {}
 _truckSpawnEnabled = true
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
 		for k, v in pairs(_moneyTruckPeds) do
 			for i = #v, 1, -1 do
@@ -24,18 +24,18 @@ Citizen.CreateThread(function()
 				_moneyTruckPeds[k] = nil
 			end
 		end
-		Citizen.Wait(60000)
+		Wait(60000)
 	end
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
 		for k, v in pairs(_moneyTrucks) do
 			if os.time() > v.delete then
 				DeleteEntity(v.entity)
 			end
 		end
-		Citizen.Wait(60000)
+		Wait(60000)
 	end
 end)
 
@@ -49,14 +49,14 @@ function IsTruckAtCoords(coords)
 end
 
 AddEventHandler('entityCreated', function(entity)
-    if not DoesEntityExist(entity) or Vehicles == nil then 
-        return
-    end
+	if not DoesEntityExist(entity) or Vehicles == nil then
+		return
+	end
 
 	if not _moneyTrucks[entity] then
 		local entityType = GetEntityType(entity)
 		local populationType = GetEntityPopulationType(entity)
-	
+
 		if entityType == 2 and (populationType == 2 or populationType == 3 or populationType == 5) then
 			local model = GetEntityModel(entity)
 			if model == `stockade` or model == `stockade2` then
@@ -108,24 +108,25 @@ function SpawnBobcatTruck(truckModel, skipCooldown)
 		attmps += 1
 		sel = math.random(#_moneyTruckSpawns)
 		coords = table.copy(_moneyTruckSpawns[sel])
-		Citizen.Wait(1)
+		Wait(1)
 	end
 
 	if not IsTruckAtCoords(coords) then
 		table.remove(_moneyTruckSpawns, sel)
-		Vehicles:SpawnTemp(-1, truckModel, 'automobile', vector3(coords[1], coords[2], coords[3]), coords[4], function(veh, VIN)
-			_moneyTrucks[veh] = {
-				position = coords,
-				delete = os.time() + (BCT_SPAWN_RATE / 1000),
-				entity = veh,
-				looted = false
-			}
-	
-			Entity(veh).state.moneyTruck = true
-			SetEntityDistanceCullingRadius(veh, 20000.0)
-			Citizen.Wait(1000)
-			p:resolve(NetworkGetNetworkIdFromEntity(veh))
-		end)
+		Vehicles:SpawnTemp(-1, truckModel, 'automobile', vector3(coords[1], coords[2], coords[3]), coords[4],
+			function(veh, VIN)
+				_moneyTrucks[veh] = {
+					position = coords,
+					delete = os.time() + (BCT_SPAWN_RATE / 1000),
+					entity = veh,
+					looted = false
+				}
+
+				Entity(veh).state.moneyTruck = true
+				SetEntityDistanceCullingRadius(veh, 20000.0)
+				Wait(1000)
+				p:resolve(NetworkGetNetworkIdFromEntity(veh))
+			end)
 		return Citizen.Await(p)
 	else
 		return false
@@ -208,7 +209,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 						}
 						Entity(ent).state.wasLooted = true
 
-						Logger:Info("Robbery", string.format("%s %s (%s) Looted A Money Truck (VIN: %s)", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), Entity(ent).state.VIN))
+						Logger:Info("Robbery",
+							string.format("%s %s (%s) Looted A Money Truck (VIN: %s)", char:GetData("First"),
+								char:GetData("Last"), char:GetData("SID"), Entity(ent).state.VIN))
 
 						local model = GetEntityModel(ent)
 						if model == `stockade` then

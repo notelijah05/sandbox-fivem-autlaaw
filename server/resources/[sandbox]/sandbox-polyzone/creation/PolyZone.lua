@@ -8,8 +8,8 @@ end
 
 function polyStart(name)
   local coords = GetEntityCoords(PlayerPedId())
-  createdZone = PolyZone:Create({vector2(coords.x, coords.y)}, {name = tostring(name), useGrid=false})
-  Citizen.CreateThread(function()
+  createdZone = PolyZone:Create({ vector2(coords.x, coords.y) }, { name = tostring(name), useGrid = false })
+  CreateThread(function()
     while createdZone do
       -- Have to convert the point to a vector3 prior to calling handleInput,
       -- then convert it back to vector2 afterwards
@@ -25,7 +25,7 @@ end
 
 function polyFinish()
   TriggerServerEvent("polyzone:printPoly",
-    {name=createdZone.name, points=createdZone.points, minZ=minZ, maxZ=maxZ})
+    { name = createdZone.name, points = createdZone.points, minZ = minZ, maxZ = maxZ })
 end
 
 RegisterNetEvent("polyzone:pzadd")

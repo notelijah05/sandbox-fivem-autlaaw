@@ -36,19 +36,19 @@ ANIMATIONS = {
                     items = {},
                 }
             }
-    
-            for k,v in pairs(Config.EmoteNaming.regular) do
+
+            for k, v in pairs(Config.EmoteNaming.regular) do
                 if k ~= "doggo" then
                     local emoteSub = 'emotes-' .. k
-        
+
                     table.insert(emoteMenu.main.items, {
                         label = v.name,
                         description = 'Emotes',
                         submenu = emoteSub,
                     })
-        
+
                     local subItems = {}
-        
+
                     for _, emote in ipairs(v.emotes) do
                         table.insert(subItems, {
                             label = emote[2],
@@ -57,14 +57,14 @@ ANIMATIONS = {
                             data = emote[1]
                         })
                     end
-        
+
                     emoteMenu[emoteSub] = {
                         label = v.name,
                         items = subItems,
                     }
                 end
             end
-    
+
             for _, emote in ipairs(Config.EmoteNaming.prop) do
                 table.insert(emoteMenu['emotes-prop'].items, {
                     label = emote[2],
@@ -73,7 +73,7 @@ ANIMATIONS = {
                     data = emote[1]
                 })
             end
-    
+
             for _, emote in ipairs(Config.EmoteNaming.dance) do
                 table.insert(emoteMenu['emotes-dance'].items, {
                     label = emote[2],
@@ -105,8 +105,8 @@ ANIMATIONS = {
                 },
             },
         }
-        
-        for k,v in spairs(Config.Walks) do
+
+        for k, v in spairs(Config.Walks) do
             table.insert(emoteMenu.main.items, {
                 label = k,
                 event = 'Animations:Client:EmoteMenuWalkStyle',
@@ -137,7 +137,7 @@ ANIMATIONS = {
             },
         }
 
-        for k,v in spairs(Config.Expressions) do
+        for k, v in spairs(Config.Expressions) do
             table.insert(emoteMenu.main.items, {
                 label = k,
                 event = 'Animations:Client:EmoteMenuExpressions',
@@ -154,7 +154,7 @@ ANIMATIONS = {
 
 AddEventHandler('Animations:Client:EmoteMenuEmote', function(data)
     Animations.Emotes:Play(data, true)
-    Citizen.Wait(250)
+    Wait(250)
     Animations:OpenMainEmoteMenu()
 end)
 

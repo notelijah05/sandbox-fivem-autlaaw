@@ -41,10 +41,11 @@ AddEventHandler("Core:Shared:Ready", function()
 		Init()
 
 		while GlobalState["HiddenHospital"] == nil do
-			Citizen.Wait(5)
+			Wait(5)
 		end
 
-		PedInteraction:Add("HiddenHospital", `s_m_m_doctor_01`, GlobalState["HiddenHospital"].coords, GlobalState["HiddenHospital"].heading, 25.0, {
+		PedInteraction:Add("HiddenHospital", `s_m_m_doctor_01`, GlobalState["HiddenHospital"].coords,
+			GlobalState["HiddenHospital"].heading, 25.0, {
 			{
 				icon = "heart-pulse",
 				text = "Revive Escort (20 $MALD)",
@@ -68,7 +69,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			heading = 0,
 			--debugPoly=true,
 			minZ = 32.63,
-  			maxZ = 36.63
+			maxZ = 36.63
 		}, {})
 
 		Polyzone.Create:Box('hospital-check-in-zone-2', vector3(1129.59, -1534.96, 35.03), 2.8, 1.2, {
@@ -97,7 +98,8 @@ AddEventHandler("Core:Shared:Ready", function()
 				text = "Request Personnel",
 				event = "Hospital:Client:RequestEMS",
 				isEnabled = function()
-					return (LocalPlayer.state.Character:GetData("ICU") ~= nil and not LocalPlayer.state.Character:GetData("ICU").Released) and (not _done or _done < GetCloudTimeAsInt())
+					return (LocalPlayer.state.Character:GetData("ICU") ~= nil and not LocalPlayer.state.Character:GetData("ICU").Released) and
+					(not _done or _done < GetCloudTimeAsInt())
 				end,
 			}
 		})
@@ -126,7 +128,7 @@ AddEventHandler("Hospital:Client:RequestEMS", function()
 end)
 
 AddEventHandler('Proxy:Shared:RegisterReady', function()
-    exports['sandbox-base']:RegisterComponent('Hospital', HOSPITAL)
+	exports['sandbox-base']:RegisterComponent('Hospital', HOSPITAL)
 end)
 
 local _bedId = nil
@@ -205,8 +207,8 @@ HOSPITAL = {
 local _inCheckInZone = false
 
 AddEventHandler('Polyzone:Enter', function(id, point, insideZone, data)
-    if id == 'hospital-check-in-zone-1' or id == 'hospital-check-in-zone-2' or id == 'hospital-check-in-zone-3' then
-        _inCheckInZone = true
+	if id == 'hospital-check-in-zone-1' or id == 'hospital-check-in-zone-2' or id == 'hospital-check-in-zone-3' then
+		_inCheckInZone = true
 
 		if not LocalPlayer.state.isEscorted and (GlobalState["ems:pmc:doctor"] == nil or GlobalState["ems:pmc:doctor"] == 0) then
 			if not GlobalState["Duty:ems"] or GlobalState["Duty:ems"] == 0 then
@@ -215,22 +217,22 @@ AddEventHandler('Polyzone:Enter', function(id, point, insideZone, data)
 				Action:Show("medical", '{keybind}primary_action{/keybind} Check In {key}$1500{/key}')
 			end
 		end
-    end
+	end
 end)
 
 AddEventHandler('Polyzone:Exit', function(id, point, insideZone, data)
-    if id == 'hospital-check-in-zone-1' or id == 'hospital-check-in-zone-2' or id == 'hospital-check-in-zone-3' then
-        _inCheckInZone = false
+	if id == 'hospital-check-in-zone-1' or id == 'hospital-check-in-zone-2' or id == 'hospital-check-in-zone-3' then
+		_inCheckInZone = false
 		Action:Hide("medical")
 	elseif id == "hospital-icu-area" and LocalPlayer.state.loggedIn then
 		if LocalPlayer.state.Character:GetData("ICU") and not LocalPlayer.state.Character:GetData("ICU").Released then
 			TriggerEvent("Hospital:Client:ICU:Enter")
 		end
-    end
+	end
 end)
 
 AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
-    if _inCheckInZone then
+	if _inCheckInZone then
 		if not LocalPlayer.state.doingAction and not LocalPlayer.state.isEscorted and (GlobalState["ems:pmc:doctor"] == nil or GlobalState["ems:pmc:doctor"] == 0) then
 			TriggerEvent('Hospital:Client:CheckIn')
 		end

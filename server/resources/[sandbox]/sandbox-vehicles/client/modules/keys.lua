@@ -66,7 +66,7 @@ AddEventHandler('Vehicles:Client:K9GetInNearestSeat', function(entityData)
 		for i = -1, GetVehicleModelNumberOfSeats(vehmodel) do
 			if GetPedInVehicleSeat(entityData.entity, i) == 0 then
 				TaskWarpPedIntoVehicle(LocalPlayer.state.ped, entityData.entity, i)
-				Citizen.Wait(100)
+				Wait(100)
 				Animations.Emotes:Play("dogsitcar", false, false, false)
 				return
 			end
@@ -78,10 +78,10 @@ AddEventHandler('Vehicles:Client:K9LeaveVehicle', function()
 	local veh = GetVehiclePedIsIn(LocalPlayer.state.ped, false)
 	if LocalPlayer.state.isK9Ped and veh ~= 0 then
 		TaskLeaveVehicle(LocalPlayer.state.ped, veh, 16)
-		Citizen.Wait(100)
+		Wait(100)
 		local coords = GetEntityCoords(LocalPlayer.state.ped)
 		SetEntityCoords(LocalPlayer.state.ped, coords.x, coords.y, coords.z - 0.4)
-		Citizen.Wait(100)
+		Wait(100)
 		Animations.Emotes:ForceCancel()
 	end
 end)
@@ -94,9 +94,9 @@ _vehicleKeysExtension = {
 	Keys = {
 		Has = function(self, VIN, gKeys)
 			if VIN and (
-				VEHICLE_KEYS[VIN] 
-				or (gKeys and (LocalPlayer.state.onDuty == gKeys or (LocalPlayer.state.sentOffDuty and LocalPlayer.state.sentOffDuty == gKeys)))
-			) then
+					VEHICLE_KEYS[VIN]
+					or (gKeys and (LocalPlayer.state.onDuty == gKeys or (LocalPlayer.state.sentOffDuty and LocalPlayer.state.sentOffDuty == gKeys)))
+				) then
 				return true
 			else
 				return false
@@ -105,7 +105,7 @@ _vehicleKeysExtension = {
 	},
 	SetLocks = function(self, veh, state)
 		if Entity(veh).state.keepLocked then
-			return	
+			return
 		end
 
 		Callbacks:ServerCallback("Vehicles:ToggleLocks", {

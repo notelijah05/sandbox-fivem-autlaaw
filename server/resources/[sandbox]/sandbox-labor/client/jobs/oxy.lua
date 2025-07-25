@@ -18,21 +18,22 @@ end)
 
 AddEventHandler("Labor:Client:Setup", function()
     while _queueLoc == nil do
-        Citizen.Wait(10)
+        Wait(10)
     end
 
     if _queueLoc.coords == nil then return end
-	PedInteraction:Add("OxyRunner", `s_m_m_movspace_01`,  _queueLoc.coords, _queueLoc.heading, 25.0, {
-		{
-			icon = "tablets",
-			text = "Want a Job to do?",
-			event = "OxyRun:Client:Enable",
+    PedInteraction:Add("OxyRunner", `s_m_m_movspace_01`, _queueLoc.coords, _queueLoc.heading, 25.0, {
+        {
+            icon = "tablets",
+            text = "Want a Job to do?",
+            event = "OxyRun:Client:Enable",
             data = {},
             isEnabled = function()
-                return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_OXY_RUN") and LocalPlayer.state.onDuty ~= "police"
+                return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_OXY_RUN") and
+                    LocalPlayer.state.onDuty ~= "police"
             end,
-		},
-	}, 'seal-question', 'WORLD_HUMAN_HUMAN_STATUE')
+        },
+    }, 'seal-question', 'WORLD_HUMAN_HUMAN_STATUE')
 
     Callbacks:RegisterClientCallback("OxyRun:GetSpawn", function(data, cb)
         if not LocalPlayer.state.inOxySell then
@@ -40,17 +41,19 @@ AddEventHandler("Labor:Client:Setup", function()
             return
         end
 
-        local offset = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, math.random(-20, 20) + 0.0, math.random(-20, 20) + 0.0, 0.0)
-        local success, spawn, heading = GetNthClosestVehicleNodeFavourDirection(offset.x, offset.y, offset.z, _l.coords.x, _l.coords.y, _l.coords.z, 20, 0, 0x40400000, 0)
+        local offset = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, math.random(-20, 20) + 0.0,
+            math.random(-20, 20) + 0.0, 0.0)
+        local success, spawn, heading = GetNthClosestVehicleNodeFavourDirection(offset.x, offset.y, offset.z, _l.coords
+            .x, _l.coords.y, _l.coords.z, 20, 0, 0x40400000, 0)
 
         RequestModel(data.ped)
         local timeout = 0
-        while not HasModelLoaded(data.ped) do 
+        while not HasModelLoaded(data.ped) do
             if timeout >= 10000 then
                 print('failed to load ped model, please report this: ' .. data.ped)
                 return cb(false)
             end
-            Citizen.Wait(10)
+            Wait(10)
             timeout += 10
         end
 
@@ -76,10 +79,10 @@ AddEventHandler("Labor:Client:Setup", function()
                     11.0,
                     true
                 )
-    
-                Citizen.CreateThread(function()
+
+                CreateThread(function()
                     local dist = #(_l.coords - GetEntityCoords(vehicle))
-                    
+
                     local arrived = false
                     local forceEnd = false
 
@@ -90,14 +93,14 @@ AddEventHandler("Labor:Client:Setup", function()
                     end)
 
                     while dist > 15.0 and _l ~= nil and vehicle and DoesEntityExist(vehicle) and not forceEnd do
-                        Citizen.Wait(100)
+                        Wait(100)
                         if _l ~= nil then
                             dist = #(_l.coords - GetEntityCoords(vehicle))
                         end
                     end
                     arrived = true
-    
-                    Citizen.Wait(25000)
+
+                    Wait(25000)
                     if forceEnd or _psychoShit ~= nil and _psychoShit.veh == VehToNet(vehicle) and not _fuckedOff then
                         _fuckedOff = true
                         TaskVehicleDriveWander(NetToPed(_psychoShit.ped), NetToVeh(_psychoShit.veh), 20.0, 786603)
@@ -106,7 +109,7 @@ AddEventHandler("Labor:Client:Setup", function()
                         end)
                     end
                 end)
-    
+
                 cb(VehToNet(vehicle), PedToNet(driver))
             else
                 cb(false)
@@ -118,7 +121,7 @@ end)
 -- AddEventHandler("gameEventTriggered", function(name, args)
 -- 	if name == "CEventNetworkVehicleUndrivable" then
 -- 	  local entity, destoyer, weapon = table.unpack(args)
-  
+
 --       if (_v ~= nil) then
 --         print(string.format("event: %s, trigger: %s, triggerNet: %s", tostring(_v?.ent), entity, NetToVeh(entity)))
 --       end
@@ -131,7 +134,7 @@ end)
 -- end)
 
 RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
-	_joiner = joiner
+    _joiner = joiner
     LocalPlayer.state.oxyJoiner = joiner
     _working = true
     _fuckedOff = false
@@ -164,10 +167,10 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
                                 Callbacks:ServerCallback("OxyRun:CancelPickup")
                                 return
                             end
-        
+
                             Callbacks:ServerCallback("OxyRun:PickupProduct")
                         end, function(cancelled)
-        
+
                         end)
                     else
                         Notification:Error("Not Enough Room In Your Trunk")
@@ -177,7 +180,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
         end
     end)
 
-	eventHandlers["poly-enter"] = AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
+    eventHandlers["poly-enter"] = AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
         if _working and id == "OxyPickup" then
             LocalPlayer.state.inOxyPickup = true
             if _state == 2 then
@@ -193,7 +196,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
         end
     end)
 
-	eventHandlers["poly-exit"] = AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
+    eventHandlers["poly-exit"] = AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
         if _working and id == "OxyPickup" then
             LocalPlayer.state.inOxyPickup = false
             Action:Hide("oxysale")
@@ -203,7 +206,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
         end
     end)
 
-	eventHandlers["entered-car"] = RegisterNetEvent('Vehicles:Client:EnterVehicle', function(veh)
+    eventHandlers["entered-car"] = RegisterNetEvent('Vehicles:Client:EnterVehicle', function(veh)
         Callbacks:ServerCallback("OxyRun:EnteredCar", {
             VIN = Entity(veh).state.VIN,
             NetId = VehToNet(veh),
@@ -212,89 +215,92 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
         })
     end)
 
-	eventHandlers["receive"] = RegisterNetEvent(string.format("OxyRun:Client:%s:Receive", joiner), function(location)
+    eventHandlers["receive"] = RegisterNetEvent(string.format("OxyRun:Client:%s:Receive", joiner), function(location)
         _state = 1
-	end)
+    end)
 
-	eventHandlers["start-pickup"] = RegisterNetEvent(string.format("OxyRun:Client:%s:StartPickup", joiner), function(pu, veh)
-        _state = 2
-        _v = veh
-        _v.ent = NetToVeh(_v.NetId)
-        
-        DeleteWaypoint()
-        SetNewWaypoint(pu.coords.x, pu.coords.y)
-        _blip = Blips:Add("OxyRun", "Oxy Pickup", { x = pu.coords.x, y = pu.coords.y, z = pu.coords.z }, 51, 64, 0.9)
-        Polyzone.Create:Box("OxyPickup", pu.coords, pu.length, pu.width, pu.options)
+    eventHandlers["start-pickup"] = RegisterNetEvent(string.format("OxyRun:Client:%s:StartPickup", joiner),
+        function(pu, veh)
+            _state = 2
+            _v = veh
+            _v.ent = NetToVeh(_v.NetId)
 
-        Citizen.CreateThread(function()
-            local ending = false
-            while _working and _v ~= nil do
-                if not ending then
-                    if _v?.ent ~= nil and DoesEntityExist(_v.ent) then
-                        if GetEntityHealth(_v.ent) == 0 or not IsVehicleDriveable(_v.ent) then
-                            Logger:Trace("OxyRun", "Vehicle Health 0 or Not Drivable")
-                            ending = true
-                            Callbacks:ServerCallback("OxyRun:DestroyVehicle")
+            DeleteWaypoint()
+            SetNewWaypoint(pu.coords.x, pu.coords.y)
+            _blip = Blips:Add("OxyRun", "Oxy Pickup", { x = pu.coords.x, y = pu.coords.y, z = pu.coords.z }, 51, 64, 0.9)
+            Polyzone.Create:Box("OxyPickup", pu.coords, pu.length, pu.width, pu.options)
+
+            CreateThread(function()
+                local ending = false
+                while _working and _v ~= nil do
+                    if not ending then
+                        if _v?.ent ~= nil and DoesEntityExist(_v.ent) then
+                            if GetEntityHealth(_v.ent) == 0 or not IsVehicleDriveable(_v.ent) then
+                                Logger:Trace("OxyRun", "Vehicle Health 0 or Not Drivable")
+                                ending = true
+                                Callbacks:ServerCallback("OxyRun:DestroyVehicle")
+                            end
                         end
                     end
+                    Wait(10)
                 end
-                Citizen.Wait(10)
+            end)
+        end)
+
+    eventHandlers["eligible-pickup"] = RegisterNetEvent(string.format("OxyRun:Client:%s:EligiblePickup", joiner),
+        function()
+            _state = 3
+            local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
+            if LocalPlayer.state.inOxyPickup and veh == _v.ent and GetPedInVehicleSeat(_v.ent, -1) == LocalPlayer.state.ped then
+                Action:Show("oxysale", "{keybind}primary_action{/keybind} Load Product")
             end
         end)
-	end)
 
-	eventHandlers["eligible-pickup"] = RegisterNetEvent(string.format("OxyRun:Client:%s:EligiblePickup", joiner), function()
-        _state = 3
-        local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
-        if LocalPlayer.state.inOxyPickup and veh == _v.ent and GetPedInVehicleSeat(_v.ent, -1) == LocalPlayer.state.ped then
-            Action:Show("oxysale", "{keybind}primary_action{/keybind} Load Product")
-        end
-	end)
+    eventHandlers["start-sale"] = RegisterNetEvent(string.format("OxyRun:Client:%s:StartSale", joiner),
+        function(location)
+            _state = 4
+            _l = location
 
-	eventHandlers["start-sale"] = RegisterNetEvent(string.format("OxyRun:Client:%s:StartSale", joiner), function(location)
-        _state = 4
-        _l = location
+            DeleteWaypoint()
+            SetNewWaypoint(_l.coords.x, _l.coords.y)
 
-        DeleteWaypoint()
-        SetNewWaypoint(_l.coords.x, _l.coords.y)
-
-        if _blip then
-            Blips:Remove("OxyRun")
-        end
-        _blip = Blips:Add("OxyRun", "Oxy Sale", { x = _l.coords.x, y = _l.coords.y, z = _l.coords.z }, 51, 64, 0.9)
-
-		_blipArea = AddBlipForRadius(_l.coords.x, _l.coords.y, _l.coords.maxZ, _l.radius + 0.0)
-		SetBlipColour(_blipArea, 3)
-		SetBlipAlpha(_blipArea, 90)
-
-		Polyzone.Create:Circle("OxySale", _l.coords, _l.radius, _l.options)
-
-        Citizen.CreateThread(function()
-            while _working and _state == 4 do
-                local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - _l.coords)
-                if dist <= 10.0 then
-                    Callbacks:ServerCallback("OxyRun:EnteredArea")
-                end
-                Citizen.Wait(10 * dist)
+            if _blip then
+                Blips:Remove("OxyRun")
             end
-        end)
-	end)
+            _blip = Blips:Add("OxyRun", "Oxy Sale", { x = _l.coords.x, y = _l.coords.y, z = _l.coords.z }, 51, 64, 0.9)
 
-	eventHandlers["near"] = RegisterNetEvent(string.format("OxyRun:Client:%s:Near", joiner), function(data)
+            _blipArea = AddBlipForRadius(_l.coords.x, _l.coords.y, _l.coords.maxZ, _l.radius + 0.0)
+            SetBlipColour(_blipArea, 3)
+            SetBlipAlpha(_blipArea, 90)
+
+            Polyzone.Create:Circle("OxySale", _l.coords, _l.radius, _l.options)
+
+            CreateThread(function()
+                while _working and _state == 4 do
+                    local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - _l.coords)
+                    if dist <= 10.0 then
+                        Callbacks:ServerCallback("OxyRun:EnteredArea")
+                    end
+                    Wait(10 * dist)
+                end
+            end)
+        end)
+
+    eventHandlers["near"] = RegisterNetEvent(string.format("OxyRun:Client:%s:Near", joiner), function(data)
         _state = 5
-	end)
+    end)
 
-	eventHandlers["spawned"] = RegisterNetEvent(string.format("OxyRun:Client:%s:Spawn", joiner), function(data)
+    eventHandlers["spawned"] = RegisterNetEvent(string.format("OxyRun:Client:%s:Spawn", joiner), function(data)
         LocalPlayer.state.oxyBuyer = data
         _fuckedOff = false
         _psychoShit = data
-	end)
+    end)
 
-	eventHandlers["action"] = RegisterNetEvent(string.format("OxyRun:Client:%s:Action", joiner), function()
+    eventHandlers["action"] = RegisterNetEvent(string.format("OxyRun:Client:%s:Action", joiner), function()
         LocalPlayer.state.oxyBuyer = nil
-	end)
+    end)
 
-	eventHandlers["target"] = RegisterNetEvent("OxyRun:Client:MakeSale", function(data)
+    eventHandlers["target"] = RegisterNetEvent("OxyRun:Client:MakeSale", function(data)
         local pda = math.random(100)
         if pda >= 60 then
             EmergencyAlerts:CreateIfReported(100.0, "oxysale", true)
@@ -303,11 +309,11 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
         local c = deepcopy(LocalPlayer.state.oxyBuyer)
         Callbacks:ServerCallback("OxyRun:SellProduct", _psychoShit.veh, function(s)
             if (s) then
-                loadAnimDict( "mp_safehouselost@" )
-                TaskPlayAnim( LocalPlayer.state.ped, "mp_safehouselost@", "package_dropoff", 8.0, 1.0, -1, 16, 0, 0, 0, 0 )  
+                loadAnimDict("mp_safehouselost@")
+                TaskPlayAnim(LocalPlayer.state.ped, "mp_safehouselost@", "package_dropoff", 8.0, 1.0, -1, 16, 0, 0, 0, 0)
             end
 
-            Citizen.Wait(8000)
+            Wait(8000)
 
             _fuckedOff = true
             TaskVehicleDriveWander(NetToPed(_psychoShit.ped), NetToVeh(_psychoShit.veh), 20.0, 786603)
@@ -316,19 +322,19 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
                 Callbacks:ServerCallback("OxyRun:DeleteShit", _psychoShit)
             end)
         end)
-	end)
+    end)
 
-	eventHandlers["end-sale"] = RegisterNetEvent(string.format("OxyRun:Client:%s:EndSale", joiner), function()
+    eventHandlers["end-sale"] = RegisterNetEvent(string.format("OxyRun:Client:%s:EndSale", joiner), function()
         _state = 6
         if _blip then
             Blips:Remove("OxyRun")
         end
         RemoveBlip(_blipArea)
-	end)
+    end)
 
     eventHandlers["veh-poofed"] = RegisterNetEvent(string.format("OxyRun:Client:%s:VehiclePoofed", joiner), function()
         Callbacks:ServerCallback("OxyRun:VehiclePoofed")
-	end)
+    end)
 end)
 
 AddEventHandler("OxyRun:Client:Enable", function()
@@ -341,16 +347,16 @@ end)
 
 AddEventHandler("OxyRun:Client:StartJob", function()
     Callbacks:ServerCallback('OxyRun:StartJob', _joiner, function(state)
-		if not state then
-			Notification:Error("Unable To Start Job")
-		end
+        if not state then
+            Notification:Error("Unable To Start Job")
+        end
     end)
 end)
 
 RegisterNetEvent("OxyRun:Client:OffDuty", function(time)
-	for k, v in pairs(eventHandlers) do
-		RemoveEventHandler(v)
-	end
+    for k, v in pairs(eventHandlers) do
+        RemoveEventHandler(v)
+    end
 
     DeleteWaypoint()
 

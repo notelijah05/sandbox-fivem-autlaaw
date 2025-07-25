@@ -108,9 +108,9 @@ end
 
 function GetFreecamMatrix()
     return _internal_vecX,
-            _internal_vecY,
-            _internal_vecZ,
-            _internal_pos
+        _internal_vecY,
+        _internal_vecZ,
+        _internal_pos
 end
 
 function GetFreecamTarget(distance)
@@ -167,9 +167,9 @@ local function CameraLoop()
         local rotY = 0.0
 
         -- Adjust position relative to camera rotation.
-        pos = pos + (vecX *  moveAD * speedMultiplier)
+        pos = pos + (vecX * moveAD * speedMultiplier)
         pos = pos + (vecY * -moveWS * speedMultiplier)
-        pos = pos + (vecZ *  moveQZ * speedMultiplier)
+        pos = pos + (vecZ * moveQZ * speedMultiplier)
 
         -- Adjust new rotation
         rot = vector3(rotX, rotY, rotZ)
@@ -203,9 +203,9 @@ function SetFreecamEnabled(enable, isNoclip)
         SetFreecamPosition(pos.x, pos.y, pos.z)
         SetFreecamRotation(rot.x, rot.y, rot.z)
 
-        Citizen.CreateThread(function()
+        CreateThread(function()
             while IsFreecamEnabled() do
-                Citizen.Wait(5)
+                Wait(5)
                 CameraLoop()
             end
         end)
@@ -268,7 +268,7 @@ function EulerToMatrix(rotX, rotY, rotZ)
 end
 
 -- When the resource is stopped, make sure to return the camera to the player.
-AddEventHandler('onResourceStop', function (resourceName)
+AddEventHandler('onResourceStop', function(resourceName)
     if resourceName == GetCurrentResourceName() then
         SetFreecamEnabled(false)
     end

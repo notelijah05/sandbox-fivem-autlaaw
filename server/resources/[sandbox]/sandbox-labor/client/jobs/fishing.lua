@@ -45,7 +45,7 @@ local basicFish = {
 }
 
 AddEventHandler("Labor:Client:Setup", function()
-	Polyzone.Create:Poly("fishing_river_zancudo", {
+    Polyzone.Create:Poly("fishing_river_zancudo", {
         vector2(156.34146118164, 3416.5373535156),
         vector2(128.61988830566, 3429.1630859375),
         vector2(-4.1847929954529, 3131.1550292969),
@@ -85,7 +85,7 @@ AddEventHandler("Labor:Client:Setup", function()
         vector2(-208.30116271973, 2946.1721191406),
         vector2(-43.203388214111, 3078.1962890625),
         vector2(101.15602111816, 3113.7119140625)
-	}, {}, { fishing_river = 2 })
+    }, {}, { fishing_river = 2 })
 
     Polyzone.Create:Poly("fishing_river_raton", {
         vector2(-181.28651428223, 4224.3120117188),
@@ -109,7 +109,7 @@ AddEventHandler("Labor:Client:Setup", function()
         vector2(-425.33764648438, 4378.6943359375),
         vector2(-352.85482788086, 4384.9453125),
         vector2(-279.20379638672, 4260.0610351562),
-	}, {}, { fishing_river = 3 })
+    }, {}, { fishing_river = 3 })
 
     Polyzone.Create:Poly("fishing_ocean_shitty1", {
         vector2(-1837.213, -965.995),
@@ -126,7 +126,7 @@ AddEventHandler("Labor:Client:Setup", function()
         vector2(708.54425048828, -1641.7926025391),
         vector2(-735.48138427734, -1294.2583007812),
         vector2(-1663.170, -794.495),
-	}, {}, {
+    }, {}, {
         fishing_shitty_ocean_water = true,
     })
 
@@ -173,7 +173,7 @@ AddEventHandler("Labor:Client:Setup", function()
         vector2(2940.91, -3125.76),
         vector2(2031.82, -3756.06),
         vector2(1256.06, -4095.45)
-	}, {})
+    }, {})
 
     local shopData = {
         {
@@ -191,40 +191,42 @@ AddEventHandler("Labor:Client:Setup", function()
             event = "Fishing:Client:OpenShop",
             data = "fishing-supplies-advanced",
             rep = {
-				id = "Fishing",
-				level = 3,
-			},
+                id = "Fishing",
+                level = 3,
+            },
         },
     }
 
-    Citizen.Wait(2000)
+    Wait(2000)
 
     for k, v in ipairs(basicFish) do
         local fishData = Inventory.Items:GetData(v)
 
         if fishData then
             table.insert(shopData, {
-				icon = "sack-dollar",
-				text = string.format("Sell %s ($%s)", fishData.label, fishData.price),
-				event = "Fishing:Client:Sell",
-				data = { fish = v },
-				--rep = { id = "Hunting", level = 0 },
-				isEnabled = function()
-					return true
-				end,
-			})
+                icon = "sack-dollar",
+                text = string.format("Sell %s ($%s)", fishData.label, fishData.price),
+                event = "Fishing:Client:Sell",
+                data = { fish = v },
+                --rep = { id = "Hunting", level = 0 },
+                isEnabled = function()
+                    return true
+                end,
+            })
         end
     end
 
     for k, v in ipairs(fishingStores) do
-        PedInteraction:Add(string.format("FishingJob%s", k), `a_m_m_hillbilly_01`, v.coords, v.heading, 25.0, shopData, "fishing-rod")
+        PedInteraction:Add(string.format("FishingJob%s", k), `a_m_m_hillbilly_01`, v.coords, v.heading, 25.0, shopData,
+            "fishing-rod")
     end
 end)
 
 -- Returns if they can fish and what zone they are in
 function CanFishHere()
     local offsetCoords = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, 0.0, 1.5, 0.75)
-    local result, hittingCoord = TestProbeAgainstAllWater(offsetCoords.x, offsetCoords.y, offsetCoords.z + 1.0, offsetCoords.x, offsetCoords.y, offsetCoords.z - 35.0, 19)
+    local result, hittingCoord = TestProbeAgainstAllWater(offsetCoords.x, offsetCoords.y, offsetCoords.z + 1.0,
+        offsetCoords.x, offsetCoords.y, offsetCoords.z - 35.0, 19)
     if result == 1 then
         local result2, height = GetWaterHeightNoWaves(hittingCoord.x, hittingCoord.y, hittingCoord.z)
         if result2 then
@@ -284,9 +286,12 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     end
 
     if fishingZone == 4 or fishingZone == 5 then
-        Notification.Persistent:Info("fishing-info-notif", string.format("Fishing - Press %s to Stop. Maybe you could try some deeper water for better fish!", Keybinds:GetKey("cancel_action")), "fishing-rod")
+        Notification.Persistent:Info("fishing-info-notif",
+            string.format("Fishing - Press %s to Stop. Maybe you could try some deeper water for better fish!",
+                Keybinds:GetKey("cancel_action")), "fishing-rod")
     else
-        Notification.Persistent:Info("fishing-info-notif", string.format("Fishing - Press %s to Stop", Keybinds:GetKey("cancel_action")), "fishing-rod")
+        Notification.Persistent:Info("fishing-info-notif",
+            string.format("Fishing - Press %s to Stop", Keybinds:GetKey("cancel_action")), "fishing-rod")
     end
 
     local tick = 0
@@ -296,12 +301,11 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
 
     _fishingTool = toolUsed
 
-    while _isFishing 
+    while _isFishing
         and LocalPlayer.state.loggedIn
         and CanFishHere() == fishingZone
         and #(fishingLocation - GetEntityCoords(LocalPlayer.state.ped)) <= 20.0
         and not IsPedSwimming(LocalPlayer.state.ped) do
-
         tick += 1
 
         if tick >= _nextBite then
@@ -310,7 +314,7 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
             tick = 0
         end
 
-        Citizen.Wait(500)
+        Wait(500)
     end
 
     _isFishing = false
@@ -325,28 +329,28 @@ function DoFishBite(zone, toolUsed)
     end
 
     local difficultyWeights = {
-        {50, 1},
-        {35, 2},
-        {15, 3},
-        {3, 4},
+        { 50, 1 },
+        { 35, 2 },
+        { 15, 3 },
+        { 3,  4 },
     }
 
     -- Ultra Deep Areas (Whales)
     if zone >= 7 and toolUsed == "net" then
         difficultyWeights = {
-            {10, 1},
-            {15, 2},
-            {15, 3},
-            {30, 4},
-            {20, 5},
-            {10, 6},
+            { 10, 1 },
+            { 15, 2 },
+            { 15, 3 },
+            { 30, 4 },
+            { 20, 5 },
+            { 10, 6 },
         }
     elseif zone >= 5 then
         difficultyWeights = {
-            {10, 1},
-            {20, 2},
-            {30, 3},
-            {15, 4},
+            { 10, 1 },
+            { 20, 2 },
+            { 30, 3 },
+            { 15, 4 },
         }
 
         if toolUsed == "net" then
@@ -361,7 +365,7 @@ function DoFishBite(zone, toolUsed)
             return false
         end
 
-        Citizen.Wait(100)
+        Wait(100)
     end
 
     Callbacks:ServerCallback("Fishing:Catch", {
@@ -430,49 +434,51 @@ function GenerateNextFishTime(zone, toolUsed)
 end
 
 RegisterNetEvent("Fishing:Client:OnDuty", function(joiner, time)
-	_joiner = joiner
-	DeleteWaypoint()
-	SetNewWaypoint(fishingStores[1].coords.x, fishingStores[1].coords.y)
-	_blip = Blips:Add("FishingStart", "Shop Owner", { x = fishingStores[1].coords.x, y = fishingStores[1].coords.y, z = fishingStores[1].coords.z }, 480, 2, 1.4)
+    _joiner = joiner
+    DeleteWaypoint()
+    SetNewWaypoint(fishingStores[1].coords.x, fishingStores[1].coords.y)
+    _blip = Blips:Add("FishingStart", "Shop Owner",
+        { x = fishingStores[1].coords.x, y = fishingStores[1].coords.y, z = fishingStores[1].coords.z }, 480, 2, 1.4)
 
-	eventHandlers["startup"] = RegisterNetEvent(string.format("Fishing:Client:%s:Startup", joiner), function()
-		_working = true
-		_state = 1
+    eventHandlers["startup"] = RegisterNetEvent(string.format("Fishing:Client:%s:Startup", joiner), function()
+        _working = true
+        _state = 1
 
-		if _blip ~= nil then
-			Blips:Remove("FishingStart")
-			RemoveBlip(_blip)
-		end
-	end)
+        if _blip ~= nil then
+            Blips:Remove("FishingStart")
+            RemoveBlip(_blip)
+        end
+    end)
 
-	eventHandlers["finish"] = RegisterNetEvent(string.format("Fishing:Client:%s:Finish", joiner), function()
-		_state = 2
-		if _blip ~= nil then
-			Blips:Remove("FishingStart")
-			RemoveBlip(_blip)
-		end
-		_blip = Blips:Add("FishingStart", "Shop Owner", { x = fishingStores[1].coords.x, y = fishingStores[1].coords.y, z = fishingStores[1].coords.z }, 480, 2, 1.4)
-	end)
+    eventHandlers["finish"] = RegisterNetEvent(string.format("Fishing:Client:%s:Finish", joiner), function()
+        _state = 2
+        if _blip ~= nil then
+            Blips:Remove("FishingStart")
+            RemoveBlip(_blip)
+        end
+        _blip = Blips:Add("FishingStart", "Shop Owner",
+            { x = fishingStores[1].coords.x, y = fishingStores[1].coords.y, z = fishingStores[1].coords.z }, 480, 2, 1.4)
+    end)
 
-	eventHandlers["end"] = RegisterNetEvent(string.format("Fishing:Client:%s:FinishJob", joiner), function()
-		_state = 3
-	end)
+    eventHandlers["end"] = RegisterNetEvent(string.format("Fishing:Client:%s:FinishJob", joiner), function()
+        _state = 3
+    end)
 end)
 
 RegisterNetEvent("Fishing:Client:OffDuty", function(time)
-	for k, v in pairs(eventHandlers) do
-		RemoveEventHandler(v)
-	end
+    for k, v in pairs(eventHandlers) do
+        RemoveEventHandler(v)
+    end
 
-	if _blip ~= nil then
-		Blips:Remove("FishingStart")
-		RemoveBlip(_blip)
-	end
+    if _blip ~= nil then
+        Blips:Remove("FishingStart")
+        RemoveBlip(_blip)
+    end
 
-	eventHandlers = {}
-	_joiner = nil
-	_state = nil
-	_working = false
+    eventHandlers = {}
+    _joiner = nil
+    _state = nil
+    _working = false
     _blip = nil
 end)
 
@@ -481,12 +487,12 @@ AddEventHandler("Fishing:Client:OpenShop", function(hitting, data)
 end)
 
 AddEventHandler("Fishing:Client:Sell", function(entity, data)
-	Callbacks:ServerCallback("Fishing:Sell", data.fish)
+    Callbacks:ServerCallback("Fishing:Sell", data.fish)
 end)
 
 
 AddEventHandler("Keybinds:Client:KeyUp:cancel_action", function()
-	if _isFishing then
+    if _isFishing then
         _isFishing = false
     end
 end)
@@ -518,14 +524,16 @@ function StartFishingAnimation()
     end
 
     fishingRodObj = CreateObject(fishingRodProp, GetEntityCoords(LocalPlayer.state.ped), true, true, true)
-    AttachEntityToEntity(fishingRodObj, LocalPlayer.state.ped, GetPedBoneIndex(LocalPlayer.state.ped, 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
+    AttachEntityToEntity(fishingRodObj, LocalPlayer.state.ped, GetPedBoneIndex(LocalPlayer.state.ped, 60309), 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
 
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while _isFishing and LocalPlayer.state.loggedIn do
             if not IsEntityPlayingAnim(LocalPlayer.state.ped, "amb@world_human_stand_fishing@base", "base", 3) and not IsEntityPlayingAnim(LocalPlayer.state.ped, "amb@world_human_stand_fishing@idle_a", "idle_c", 3) then
-                TaskPlayAnim(LocalPlayer.state.ped, "amb@world_human_stand_fishing@base", "base", 3.0, 3.0, -1, 49, 0, false, false, false)
+                TaskPlayAnim(LocalPlayer.state.ped, "amb@world_human_stand_fishing@base", "base", 3.0, 3.0, -1, 49, 0,
+                    false, false, false)
             end
-            Citizen.Wait(250)
+            Wait(250)
         end
 
         StopAnimTask(LocalPlayer.state.ped, "amb@world_human_stand_fishing@base", "base", 3.0)
@@ -535,14 +543,16 @@ function StartFishingAnimation()
 end
 
 function DoFishingCatchingAnimation()
-    Citizen.CreateThread(function()
-        TaskPlayAnim(LocalPlayer.state.ped, "amb@world_human_stand_fishing@idle_a", "idle_c", 3.0, 3.0, -1, 49, 0, false, false, false)
+    CreateThread(function()
+        TaskPlayAnim(LocalPlayer.state.ped, "amb@world_human_stand_fishing@idle_a", "idle_c", 3.0, 3.0, -1, 49, 0, false,
+            false, false)
         StopAnimTask(LocalPlayer.state.ped, "amb@world_human_stand_fishing@base", "base", 3.0)
-        Citizen.Wait(5000)
+        Wait(5000)
 
         if _isFishing then
-            TaskPlayAnim(LocalPlayer.state.ped, "amb@world_human_stand_fishing@base", "base", 3.0, 3.0, -1, 49, 0, false, false, false)
-            StopAnimTask(LocalPlayer.state.ped, "amb@world_human_stand_fishing@idle_a","idle_c", 3.0)
+            TaskPlayAnim(LocalPlayer.state.ped, "amb@world_human_stand_fishing@base", "base", 3.0, 3.0, -1, 49, 0, false,
+                false, false)
+            StopAnimTask(LocalPlayer.state.ped, "amb@world_human_stand_fishing@idle_a", "idle_c", 3.0)
         end
     end)
 end
@@ -550,12 +560,13 @@ end
 function StartFishingNetAnimation()
     LoadAnim("amb@world_human_bum_wash@male@low@idle_a")
 
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while _isFishing and LocalPlayer.state.loggedIn do
             if not IsEntityPlayingAnim(LocalPlayer.state.ped, "amb@world_human_bum_wash@male@low@idle_a", "idle_a", 3) then
-                TaskPlayAnim(LocalPlayer.state.ped, "amb@world_human_bum_wash@male@low@idle_a", "idle_a", 3.0, 3.0, -1, 49, 0, false, false, false)
+                TaskPlayAnim(LocalPlayer.state.ped, "amb@world_human_bum_wash@male@low@idle_a", "idle_a", 3.0, 3.0, -1,
+                    49, 0, false, false, false)
             end
-            Citizen.Wait(250)
+            Wait(250)
         end
 
         StopAnimTask(LocalPlayer.state.ped, "amb@world_human_bum_wash@male@low@idle_a", "idle_a", 3.0)
@@ -567,23 +578,23 @@ function DoFishingNetCatchingAnimation()
 end
 
 function StartFishingControlBlockers()
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while _isFishing do
             DisablePlayerFiring(PlayerId(), true) -- Disable weapon firing
-            DisableControlAction(0, 24, true) -- disable attack
-            DisableControlAction(0, 25, true) -- disable aim
-            DisableControlAction(1, 37, true) -- disable weapon select
-            DisableControlAction(0, 47, true) -- disable weapon
-            DisableControlAction(0, 58, true) -- disable weapon
-            DisableControlAction(0, 140, true) -- disable melee
-            DisableControlAction(0, 141, true) -- disable melee
-            DisableControlAction(0, 142, true) -- disable melee
-            DisableControlAction(0, 143, true) -- disable melee
-            DisableControlAction(0, 263, true) -- disable melee
-            DisableControlAction(0, 264, true) -- disable melee
-            DisableControlAction(0, 257, true) -- disable melee
+            DisableControlAction(0, 24, true)     -- disable attack
+            DisableControlAction(0, 25, true)     -- disable aim
+            DisableControlAction(1, 37, true)     -- disable weapon select
+            DisableControlAction(0, 47, true)     -- disable weapon
+            DisableControlAction(0, 58, true)     -- disable weapon
+            DisableControlAction(0, 140, true)    -- disable melee
+            DisableControlAction(0, 141, true)    -- disable melee
+            DisableControlAction(0, 142, true)    -- disable melee
+            DisableControlAction(0, 143, true)    -- disable melee
+            DisableControlAction(0, 263, true)    -- disable melee
+            DisableControlAction(0, 264, true)    -- disable melee
+            DisableControlAction(0, 257, true)    -- disable melee
 
-            Citizen.Wait(1)
+            Wait(1)
         end
     end)
 end
@@ -591,13 +602,13 @@ end
 function LoadAnim(dict)
     while not HasAnimDictLoaded(dict) do
         RequestAnimDict(dict)
-        Citizen.Wait(10)
+        Wait(10)
     end
 end
 
 function LoadPropDict(model)
     while not HasModelLoaded(model) do
         RequestModel(model)
-        Citizen.Wait(10)
+        Wait(10)
     end
 end

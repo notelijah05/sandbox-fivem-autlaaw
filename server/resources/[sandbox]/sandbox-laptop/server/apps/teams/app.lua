@@ -39,7 +39,6 @@ LAPTOP.Teams = {
     Create = function(self, source, name)
         local char = Fetch:CharacterSource(source)
         if char and not Laptop.Teams:GetByMemberSource(source) then
-
             name = string.gsub(name, '%s+', '')
 
             for k, v in ipairs(_teams) do
@@ -83,13 +82,13 @@ LAPTOP.Teams = {
             if v.ID == id then
                 for _, member in ipairs(v.Members) do
                     Laptop.Notification:Add(
-                        member.Source, 
-                        "Team Deleted", 
-                        "You are no longer a member of a team as the one you were in was just deleted.", 
-                        os.time() * 1000, 
-                        15000, 
-                        "teams", 
-                        {}, 
+                        member.Source,
+                        "Team Deleted",
+                        "You are no longer a member of a team as the one you were in was just deleted.",
+                        os.time() * 1000,
+                        15000,
+                        "teams",
+                        {},
                         {}
                     )
 
@@ -154,14 +153,14 @@ LAPTOP.Teams = {
                                 First = char:GetData("First"),
                                 Last = char:GetData("Last"),
                             }
-    
+
                             table.insert(v.Members, data)
                             char:SetData("Team", team)
-    
+
                             for _, member in ipairs(v.Members) do
                                 TriggerClientEvent("Laptop:Client:Teams:Set", member.Source, v)
                             end
-    
+
                             TriggerEvent("Laptop:Server:Teams:MemberAdded", v.ID, data)
                             return true
                         end
@@ -200,13 +199,13 @@ LAPTOP.Teams = {
                             TriggerClientEvent("Laptop:Client:Teams:Set", member.Source, v)
 
                             Laptop.Notification:Add(
-                                member.Source, 
-                                wasRemoved and "Team Member Removed" or "Team Member Left", 
-                                string.format("%s %s is no longer in your team.", info.First, info.Last), 
-                                os.time() * 1000, 
-                                10000, 
-                                "teams", 
-                                {}, 
+                                member.Source,
+                                wasRemoved and "Team Member Removed" or "Team Member Left",
+                                string.format("%s %s is no longer in your team.", info.First, info.Last),
+                                os.time() * 1000,
+                                10000,
+                                "teams",
+                                {},
                                 {}
                             )
                         end
@@ -216,12 +215,12 @@ LAPTOP.Teams = {
                         else
                             TriggerEvent("Laptop:Server:Teams:MemberRemoved", v.ID, info)
                         end
-        
+
                         local char = Fetch:CharacterSource(source)
                         if char then
                             char:SetData("Team", false)
                         end
-            
+
                         TriggerClientEvent("Laptop:Client:Teams:Set", source, nil)
 
                         break
@@ -244,7 +243,8 @@ LAPTOP.Teams = {
             for k, v in ipairs(_teams) do
                 if v.ID == team then
                     for _, member in ipairs(v.Members) do
-                        Laptop.Notification:Add(member.Source, title, description, time, duration, app, actions, notifData)
+                        Laptop.Notification:Add(member.Source, title, description, time, duration, app, actions,
+                            notifData)
                     end
 
                     break
@@ -255,7 +255,8 @@ LAPTOP.Teams = {
             for k, v in ipairs(_teams) do
                 if v.ID == team then
                     for _, member in ipairs(v.Members) do
-                        Laptop.Notification:AddWithId(member.Source, id, title, description, time, duration, app, actions, notifData)
+                        Laptop.Notification:AddWithId(member.Source, id, title, description, time, duration, app, actions,
+                            notifData)
                     end
 
                     break
@@ -319,7 +320,7 @@ LAPTOP.Teams = {
         Get = function(self, source)
             local char = Fetch:CharacterSource(source)
             local r = {}
-    
+
             if char then
                 local team, leader = Laptop.Teams:GetByMember(char:GetData("SID"))
                 if team then
@@ -336,7 +337,7 @@ LAPTOP.Teams = {
                     end
                 end
             end
-    
+
             return r
         end,
     }
@@ -345,21 +346,21 @@ LAPTOP.Teams = {
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     Callbacks:RegisterServerCallback("Laptop:Teams:Get", function(source, data, cb)
         cb(Laptop.Teams:GetAll())
-	end)
+    end)
 
     Callbacks:RegisterServerCallback("Laptop:Teams:GetRequests", function(source, data, cb)
         cb(Laptop.Teams.Requests:Get(source))
-	end)
+    end)
 
     Callbacks:RegisterServerCallback("Laptop:Teams:Create", function(source, data, cb)
         cb(Laptop.Teams:Create(source, data.Name))
-	end)
+    end)
 
     Callbacks:RegisterServerCallback("Laptop:Teams:Delete", function(source, data, cb)
         local char = Fetch:CharacterSource(source)
         if char then
             local team, leader = Laptop.Teams:GetByMemberSource(source)
-            
+
             if team and leader and team.State == 0 then
                 cb(Laptop.Teams:Delete(team.ID))
             else
@@ -368,7 +369,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         else
             cb(false)
         end
-	end)
+    end)
 
     Callbacks:RegisterServerCallback("Laptop:Teams:Members:Invite", function(source, data, cb)
         local char = Fetch:CharacterSource(source)
@@ -401,12 +402,13 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                 60 * 2 -- 2 Minutes
             )
 
-            Laptop.Notification:Add(target:GetData("Source"), "New Invitation", string.format("You have been invited to team: %s", myTeam.Name), os.time() * 1000, 10000, "teams", {
-                accept = "Laptop:Client:Teams:RequestNotifAccept",
-                cancel = "Laptop:Client:Teams:RequestNotifDeny",
-            }, {
-                request = req,
-            })
+            Laptop.Notification:Add(target:GetData("Source"), "New Invitation",
+                string.format("You have been invited to team: %s", myTeam.Name), os.time() * 1000, 10000, "teams", {
+                    accept = "Laptop:Client:Teams:RequestNotifAccept",
+                    cancel = "Laptop:Client:Teams:RequestNotifDeny",
+                }, {
+                    request = req,
+                })
 
             cb({ success = true })
         else
@@ -420,7 +422,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
             if data.SID == char:GetData("SID") then -- Leaving Group
                 local team = Laptop.Teams:GetByMemberSource(char:GetData("Source"))
                 Laptop.Teams.Members:Remove(char:GetData("Source"), team.ID)
-                
+
                 cb(true)
             else -- Kicking From Group
                 local team = Laptop.Teams:GetByMember(data.SID)
@@ -474,7 +476,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                     true,
                     "Laptop:Server:Teams:InviteRequest",
                     "New Join Request",
-                    string.format("Request to join your team from %s %s (%s).", char:GetData("First"), char:GetData("Last"), char:GetData("SID")),
+                    string.format("Request to join your team from %s %s (%s).", char:GetData("First"),
+                        char:GetData("Last"), char:GetData("SID")),
                     {
                         request = true,
                         team = team.ID,
@@ -482,13 +485,15 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                     },
                     60 * 2 -- 2 Minutes
                 )
-    
-                Laptop.Notification:Add(team.ID, "New Join Request", string.format("%s %s (%s) requested to join your team.", char:GetData("First"), char:GetData("Last"), char:GetData("SID")), os.time() * 1000, 10000, "teams", {
-                    accept = "Laptop:Client:Teams:RequestNotifAccept",
-                    cancel = "Laptop:Client:Teams:RequestNotifDeny",
-                }, {
-                    request = req,
-                })
+
+                Laptop.Notification:Add(team.ID, "New Join Request",
+                    string.format("%s %s (%s) requested to join your team.", char:GetData("First"), char:GetData("Last"),
+                        char:GetData("SID")), os.time() * 1000, 10000, "teams", {
+                        accept = "Laptop:Client:Teams:RequestNotifAccept",
+                        cancel = "Laptop:Client:Teams:RequestNotifDeny",
+                    }, {
+                        request = req,
+                    })
 
                 cb(true)
             else
@@ -507,9 +512,9 @@ function StartTeamsThread()
     if started then return; end
     started = true
 
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while true do
-            Citizen.Wait(60 * 1000 * 0.5)
+            Wait(60 * 1000 * 0.5)
 
             for k, v in ipairs(_teamRequests) do
                 if v.expires <= os.time() then

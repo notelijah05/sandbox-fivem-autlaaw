@@ -28,42 +28,45 @@ AddEventHandler("Casino:Client:Startup", function()
     CreateModelSwap(1022.197, 60.580, 69.865, 2.0, `vw_prop_casino_blckjack_01b`, `vw_prop_casino_roulette_01b`, 0)
     CreateModelSwap(1029.776, 62.375, 69.865, 2.0, `vw_prop_casino_blckjack_01b`, `vw_prop_casino_roulette_01b`, 0)
 
-    for k,v in pairs(_rouletteTables) do
+    for k, v in pairs(_rouletteTables) do
         local maxBet = formatNumberToCurrency(math.floor(_rouletteTablesConfig[k].maxBet))
-        Targeting.Zones:AddBox("casino-roulette-" .. k, "cards", v.polyzone.center, v.polyzone.length, v.polyzone.width, v.polyzone.options, {
-            {
-                icon = "cards",
-                text = _rouletteTablesConfig[k].isVIP and string.format("Join VIP Game ($%s Max Bet)", maxBet) or string.format("Join Game ($%s Max Bet)", maxBet),
-                event = "Casino:Client:JoinRoulette",
-                data = { table = k },
-                isEnabled = function()
-                    return CanJoinRouletteTable(k) and not _rouletteAtTable and GlobalState["CasinoOpen"]
-                end,
-            },
-            {
-                icon = "cards",
-                text = "Game Full",
-                isEnabled = function()
-                    return not CanJoinRouletteTable(k) and not _rouletteAtTable
-                end,
-            },
-            {
-                icon = "cards",
-                text = "Leave Game",
-                event = "Casino:Client:LeaveRoulette",
-                data = { table = k },
-                isEnabled = function()
-                    return _rouletteAtTable and not GlobalState[string.format("Casino:Roulette:%s", k)]?.Started and not _rouletteHasChipsPlaced
-                end,
-            },
-        }, 1.5, true)
+        Targeting.Zones:AddBox("casino-roulette-" .. k, "cards", v.polyzone.center, v.polyzone.length, v.polyzone.width,
+            v.polyzone.options, {
+                {
+                    icon = "cards",
+                    text = _rouletteTablesConfig[k].isVIP and string.format("Join VIP Game ($%s Max Bet)", maxBet) or
+                        string.format("Join Game ($%s Max Bet)", maxBet),
+                    event = "Casino:Client:JoinRoulette",
+                    data = { table = k },
+                    isEnabled = function()
+                        return CanJoinRouletteTable(k) and not _rouletteAtTable and GlobalState["CasinoOpen"]
+                    end,
+                },
+                {
+                    icon = "cards",
+                    text = "Game Full",
+                    isEnabled = function()
+                        return not CanJoinRouletteTable(k) and not _rouletteAtTable
+                    end,
+                },
+                {
+                    icon = "cards",
+                    text = "Leave Game",
+                    event = "Casino:Client:LeaveRoulette",
+                    data = { table = k },
+                    isEnabled = function()
+                        return _rouletteAtTable and not GlobalState[string.format("Casino:Roulette:%s", k)]?.Started and
+                            not _rouletteHasChipsPlaced
+                    end,
+                },
+            }, 1.5, true)
     end
 
     Keybinds:Add("casino_camera", "C", "keyboard", "Casino - Change Roulette Camera", function()
-		if _rouletteAtTable then
+        if _rouletteAtTable then
             RouletteChangeCameraMode(_rouletteAtTable)
         end
-	end)
+    end)
 end)
 
 RegisterNetEvent('Characters:Client:Logout')
@@ -79,16 +82,18 @@ AddEventHandler("Casino:Client:Enter", function()
     loadAnim("anim_casino_b@amb@casino@games@roulette@dealer")
 
     while not _rouletteTablesConfig do
-        Citizen.Wait(100)
+        Wait(100)
     end
 
-    Citizen.Wait(500)
+    Wait(500)
 
     for k, v in pairs(_rouletteTables) do
         local serverData = _rouletteTablesConfig[k]
 
-        local pedCoords = GetObjectOffsetFromCoords(v.table.coords.x, v.table.coords.y, v.table.coords.z, v.table.heading, 0.0, 0.7, 1.0)
-        local dealer = CreatePed(26, serverData.dealerVariation >= 8 and `s_f_y_casino_01` or `s_m_y_casino_01`, pedCoords, v.table.heading + 180.0, false, true)
+        local pedCoords = GetObjectOffsetFromCoords(v.table.coords.x, v.table.coords.y, v.table.coords.z, v.table
+            .heading, 0.0, 0.7, 1.0)
+        local dealer = CreatePed(26, serverData.dealerVariation >= 8 and `s_f_y_casino_01` or `s_m_y_casino_01`,
+            pedCoords, v.table.heading + 180.0, false, true)
         SetEntityCanBeDamaged(dealer, 0)
         FreezeEntityPosition(dealer, true)
         SetPedAsEnemy(dealer, 0)
@@ -116,10 +121,12 @@ AddEventHandler("Casino:Client:Enter", function()
     for k, v in pairs(_rouletteTables) do
         local serverData = _rouletteTablesConfig[k]
 
-        local table = GetClosestObjectOfType(v.table.coords.x, v.table.coords.y, v.table.coords.z, 1.0, v.table.prop, 0, 0, 0)
+        local table = GetClosestObjectOfType(v.table.coords.x, v.table.coords.y, v.table.coords.z, 1.0, v.table.prop, 0,
+            0, 0)
         while table == 0 do
-            Citizen.Wait(250)
-            table = GetClosestObjectOfType(v.table.coords.x, v.table.coords.y, v.table.coords.z, 1.0, v.table.prop, 0, 0, 0)
+            Wait(250)
+            table = GetClosestObjectOfType(v.table.coords.x, v.table.coords.y, v.table.coords.z, 1.0, v.table.prop, 0, 0,
+                0)
         end
 
         if GetObjectTextureVariation(table) ~= serverData.tableVariation then
@@ -143,7 +150,7 @@ end)
 function CanJoinRouletteTable(table)
     local bj = GlobalState[string.format("Casino:Roulette:%s", table)]
     if bj?.Seats then
-        for k,v in pairs(bj.Seats) do
+        for k, v in pairs(bj.Seats) do
             if not v then
                 return true
             end
@@ -156,67 +163,70 @@ AddEventHandler("Casino:Client:JoinRoulette", function(_, data)
     local chairData = GetClosestRouletteChair(data.table)
 
     if chairData then
-        Callbacks:ServerCallback("Casino:JoinRoulette", { table = data.table, chair = chairData.chairId }, function(success, table, chair)
-            if success then
-                _inSittingDownAnimation = true
+        Callbacks:ServerCallback("Casino:JoinRoulette", { table = data.table, chair = chairData.chairId },
+            function(success, table, chair)
+                if success then
+                    _inSittingDownAnimation = true
 
-                _rouletteAtTable = table
-                _rouletteAtLocalChair = chair
+                    _rouletteAtTable = table
+                    _rouletteAtLocalChair = chair
 
-                LocalPlayer.state.playingCasino = true
+                    LocalPlayer.state.playingCasino = true
 
-                Animations.Emotes:ForceCancel()
-                Weapons:UnequipIfEquippedNoAnim()
-
-                if _rouletteStatebagHandler then
-                    RemoveStateBagChangeHandler(_rouletteStatebagHandler)
-                    _rouletteStatebagHandler = nil
-                end
-
-                _rouletteStatebagHandler = AddStateBagChangeHandler(string.format("Casino:Blackjack:%s", tableId), nil, function(bagName, key, value, _unused, replicated)
-                    if _insideCasino and _rouletteAtTable then
-                        ShowRouletteGameStateUI(value)
-                    end
-                end)
-
-                RouletteSitDownAnim(chairData)
-
-                _rouletteForceIdle = true
-
-                RouletteEnableCamera(_rouletteAtTable, true)
-
-                if _rouletteTableData[_rouletteAtTable].startTime then
-                    RouletteBetRenderState(_rouletteAtTable, true)
-                    RouletteHoverNumbers(_rouletteAtTable, {})
-
-                    ShowRouletteGameStateUI(GlobalState[string.format("Casino:Roulette:%s", _rouletteAtTable)])
-                end
-
-                Citizen.CreateThread(function()
-                    while _rouletteAtTable do
-                        if _rouletteForceIdle then
-                            TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_b@amb@casino@games@shared@player@", "idle_cardgames", 1.0, 1.0, -1, 0)
-                        end
-                        Citizen.Wait(5)
-                    end
+                    Animations.Emotes:ForceCancel()
+                    Weapons:UnequipIfEquippedNoAnim()
 
                     if _rouletteStatebagHandler then
                         RemoveStateBagChangeHandler(_rouletteStatebagHandler)
                         _rouletteStatebagHandler = nil
                     end
 
-                    InfoOverlay:Close()
+                    _rouletteStatebagHandler = AddStateBagChangeHandler(string.format("Casino:Blackjack:%s", tableId),
+                        nil, function(bagName, key, value, _unused, replicated)
+                            if _insideCasino and _rouletteAtTable then
+                                ShowRouletteGameStateUI(value)
+                            end
+                        end)
 
-                    LocalPlayer.state.playingCasino = false
-                end)
-            else
-                if table == "vip" then
-                    Notification:Error("You're Not a VIP Loser")
+                    RouletteSitDownAnim(chairData)
+
+                    _rouletteForceIdle = true
+
+                    RouletteEnableCamera(_rouletteAtTable, true)
+
+                    if _rouletteTableData[_rouletteAtTable].startTime then
+                        RouletteBetRenderState(_rouletteAtTable, true)
+                        RouletteHoverNumbers(_rouletteAtTable, {})
+
+                        ShowRouletteGameStateUI(GlobalState[string.format("Casino:Roulette:%s", _rouletteAtTable)])
+                    end
+
+                    CreateThread(function()
+                        while _rouletteAtTable do
+                            if _rouletteForceIdle then
+                                TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_b@amb@casino@games@shared@player@",
+                                    "idle_cardgames", 1.0, 1.0, -1, 0)
+                            end
+                            Wait(5)
+                        end
+
+                        if _rouletteStatebagHandler then
+                            RemoveStateBagChangeHandler(_rouletteStatebagHandler)
+                            _rouletteStatebagHandler = nil
+                        end
+
+                        InfoOverlay:Close()
+
+                        LocalPlayer.state.playingCasino = false
+                    end)
                 else
-                    Notification:Error("Someone Is Sat There")
+                    if table == "vip" then
+                        Notification:Error("You're Not a VIP Loser")
+                    else
+                        Notification:Error("Someone Is Sat There")
+                    end
                 end
-            end
-        end)
+            end)
     else
         Notification:Error("Too Far From Chair")
     end
@@ -238,7 +248,7 @@ function LeaveRoulette(skipAnim)
             InfoOverlay:Close()
 
             if not skipAnim then
-                Citizen.Wait(3000)
+                Wait(3000)
             end
 
             NetworkStopSynchronisedScene(ROULETTE_SITTING_SCENE)
@@ -257,7 +267,8 @@ end)
 
 RegisterNetEvent("Casino:Client:RouletteGameStarting", function(tableId)
     if _insideCasino then
-        PlayAmbientSpeech1(_rouletteDealerPeds[tableId], "MINIGAME_DEALER_PLACE_CHIPS", "SPEECH_PARAMS_FORCE_NORMAL_CLEAR", 1)
+        PlayAmbientSpeech1(_rouletteDealerPeds[tableId], "MINIGAME_DEALER_PLACE_CHIPS",
+            "SPEECH_PARAMS_FORCE_NORMAL_CLEAR", 1)
         _rouletteTableData[tableId].startTime = GetGameTimer() + 28000
 
         if tableId == _rouletteAtTable then
@@ -265,16 +276,16 @@ RegisterNetEvent("Casino:Client:RouletteGameStarting", function(tableId)
             RouletteHoverNumbers(tableId, {})
             _rouletteHasChipsPlaced = false
 
-            Citizen.CreateThread(function()
+            CreateThread(function()
                 while _insideCasino and _rouletteAtTable do
                     if _rouletteTableData[_rouletteAtTable] and _rouletteTableData[_rouletteAtTable].startTime then
                         ShowRouletteGameStateUI(GlobalState[string.format("Casino:Roulette:%s", _rouletteAtTable)])
                     else
-                        Citizen.Wait(500)
+                        Wait(500)
                         ShowRouletteGameStateUI(GlobalState[string.format("Casino:Roulette:%s", _rouletteAtTable)])
                         break
                     end
-                    Citizen.Wait(1000)
+                    Wait(1000)
                 end
             end)
         end
@@ -425,7 +436,7 @@ AddEventHandler("onResourceStop", function(resource)
     end
 end)
 
-local rouletteChairs = {'Chair_Base_01', 'Chair_Base_02', 'Chair_Base_03', 'Chair_Base_04'}
+local rouletteChairs = { 'Chair_Base_01', 'Chair_Base_02', 'Chair_Base_03', 'Chair_Base_04' }
 function GetClosestRouletteChair(tableId)
     local tableData = _rouletteTableData[tableId]
 
@@ -449,8 +460,10 @@ function GetClosestRouletteChair(tableId)
 
         if closest and lastDist <= 1.8 then
             return {
-                position = GetWorldPositionOfEntityBone(tableObj, GetEntityBoneIndexByName(tableObj, rouletteChairs[closest])),
-                rotation = GetWorldRotationOfEntityBone(tableObj, GetEntityBoneIndexByName(tableObj, rouletteChairs[closest])),
+                position = GetWorldPositionOfEntityBone(tableObj,
+                    GetEntityBoneIndexByName(tableObj, rouletteChairs[closest])),
+                rotation = GetWorldRotationOfEntityBone(tableObj,
+                    GetEntityBoneIndexByName(tableObj, rouletteChairs[closest])),
                 chairId = closest
             }
         end
@@ -484,6 +497,8 @@ function ShowRouletteGameStateUI(state)
             showStartTime = string.format(" - Starts In %s Seconds", startsIn)
         end
 
-        InfoOverlay:Show(string.format("Roulette%s", showStartTime), string.format("My Balance: $%s<br><br>Placed Bets: $%s<br>Table Limit: $%s", myBalance, formatNumberToCurrency(math.floor(myBets)), maxBet))
+        InfoOverlay:Show(string.format("Roulette%s", showStartTime),
+            string.format("My Balance: $%s<br><br>Placed Bets: $%s<br>Table Limit: $%s", myBalance,
+                formatNumberToCurrency(math.floor(myBets)), maxBet))
     end
 end

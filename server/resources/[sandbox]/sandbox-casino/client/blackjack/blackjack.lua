@@ -17,46 +17,52 @@ local _blackJackStatebagHandler
 AddEventHandler("Casino:Client:Startup", function()
     _blackjackTablesConfig = GlobalState["Casino:BlackjackConfig"]
 
-    for k,v in pairs(_blackjackTables) do
+    for k, v in pairs(_blackjackTables) do
         local maxBet = formatNumberToCurrency(math.floor(_blackjackTablesConfig[k].bet[#_blackjackTablesConfig[k].bet]))
-        Targeting.Zones:AddBox("casino-blackjack-" .. k, "cards", v.polyzone.center, v.polyzone.length, v.polyzone.width, v.polyzone.options, {
-            {
-                icon = "cards",
-                text = _blackjackTablesConfig[k].isVIP and string.format("Join VIP Game ($%s Max Bet)", maxBet) or string.format("Join Game ($%s Max Bet)", maxBet),
-                event = "Casino:Client:JoinBlackjack",
-                data = { table = k },
-                isEnabled = function()
-                    return CanJoinBlackjackTable(k) and not _BJsatAtTable and GlobalState["CasinoOpen"]
-                end,
-            },
-            {
-                icon = "cards",
-                text = "Game Full",
-                --event = "Casino:Client:JoinBlackjack",
-                --data = { table = k },
-                isEnabled = function()
-                    return not CanJoinBlackjackTable(k) and not _BJsatAtTable
-                end,
-            },
-            {
-                icon = "cards",
-                text = "Leave Game",
-                event = "Casino:Client:LeaveBlackjack",
-                data = { table = k },
-                isEnabled = function()
-                    return _BJsatAtTable and not _inSittingDownAnimation and not _blackjackAwaitingResponse and not GlobalState[string.format("Casino:Blackjack:%s", k)]?.Started
-                end,
-            },
-            {
-                icon = "play",
-                text = _blackjackTablesConfig[k].isVIP and string.format("Start VIP Game ($%s Max Bet)", maxBet) or string.format("Start Game ($%s Max Bet)", maxBet),
-                event = "Casino:Client:StartBlackjack",
-                data = { table = k },
-                isEnabled = function()
-                    return _BJsatAtTable and not _inSittingDownAnimation and not _blackjackAwaitingResponse and not GlobalState[string.format("Casino:Blackjack:%s", k)]?.Started and GlobalState["CasinoOpen"]
-                end,
-            },
-        }, 1.5, true)
+        Targeting.Zones:AddBox("casino-blackjack-" .. k, "cards", v.polyzone.center, v.polyzone.length, v.polyzone.width,
+            v.polyzone.options, {
+                {
+                    icon = "cards",
+                    text = _blackjackTablesConfig[k].isVIP and string.format("Join VIP Game ($%s Max Bet)", maxBet) or
+                        string.format("Join Game ($%s Max Bet)", maxBet),
+                    event = "Casino:Client:JoinBlackjack",
+                    data = { table = k },
+                    isEnabled = function()
+                        return CanJoinBlackjackTable(k) and not _BJsatAtTable and GlobalState["CasinoOpen"]
+                    end,
+                },
+                {
+                    icon = "cards",
+                    text = "Game Full",
+                    --event = "Casino:Client:JoinBlackjack",
+                    --data = { table = k },
+                    isEnabled = function()
+                        return not CanJoinBlackjackTable(k) and not _BJsatAtTable
+                    end,
+                },
+                {
+                    icon = "cards",
+                    text = "Leave Game",
+                    event = "Casino:Client:LeaveBlackjack",
+                    data = { table = k },
+                    isEnabled = function()
+                        return _BJsatAtTable and not _inSittingDownAnimation and not _blackjackAwaitingResponse and
+                            not GlobalState[string.format("Casino:Blackjack:%s", k)]?.Started
+                    end,
+                },
+                {
+                    icon = "play",
+                    text = _blackjackTablesConfig[k].isVIP and string.format("Start VIP Game ($%s Max Bet)", maxBet) or
+                        string.format("Start Game ($%s Max Bet)", maxBet),
+                    event = "Casino:Client:StartBlackjack",
+                    data = { table = k },
+                    isEnabled = function()
+                        return _BJsatAtTable and not _inSittingDownAnimation and not _blackjackAwaitingResponse and
+                            not GlobalState[string.format("Casino:Blackjack:%s", k)]?.Started and
+                            GlobalState["CasinoOpen"]
+                    end,
+                },
+            }, 1.5, true)
     end
 
     Callbacks:RegisterClientCallback("Casino:Client:RequestHitStand", function(data, cb)
@@ -125,12 +131,12 @@ AddEventHandler("Casino:Client:Enter", function()
     loadAnim("anim_casino_b@amb@casino@games@shared@dealer@")
     loadAnim("anim_casino_b@amb@casino@games@blackjack@player")
 
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while _insideCasino do
-            Citizen.Wait(350)
+            Wait(350)
             local closestDist = 1000
             local playerCoords = GetEntityCoords(LocalPlayer.state.ped)
-            
+
             for i = 0, (_blackjackTablesCount * 4) - 1, 1 do
                 local seatCoords = blackjack_func_348(i)
                 local dist = #(playerCoords - seatCoords)
@@ -143,13 +149,14 @@ AddEventHandler("Casino:Client:Enter", function()
     end)
 
     while not _blackjackTablesConfig do
-        Citizen.Wait(100)
+        Wait(100)
     end
 
     for k, v in pairs(_blackjackTables) do
         local serverData = _blackjackTablesConfig[k]
 
-        local dealer = CreatePed(26, serverData.dealerVariation >= 8 and `s_f_y_casino_01` or `s_m_y_casino_01`, v.dealer.coords.x, v.dealer.coords.y, v.dealer.coords.z, v.dealer.heading, false, true)
+        local dealer = CreatePed(26, serverData.dealerVariation >= 8 and `s_f_y_casino_01` or `s_m_y_casino_01`,
+            v.dealer.coords.x, v.dealer.coords.y, v.dealer.coords.z, v.dealer.heading, false, true)
         SetEntityCanBeDamaged(dealer, 0)
         FreezeEntityPosition(dealer, true)
         SetPedAsEnemy(dealer, 0)
@@ -177,10 +184,12 @@ AddEventHandler("Casino:Client:Enter", function()
     for k, v in pairs(_blackjackTables) do
         local serverData = _blackjackTablesConfig[k]
 
-        local table = GetClosestObjectOfType(v.table.coords.x, v.table.coords.y, v.table.coords.z, 1.0, v.table.prop, 0, 0, 0)
+        local table = GetClosestObjectOfType(v.table.coords.x, v.table.coords.y, v.table.coords.z, 1.0, v.table.prop, 0,
+            0, 0)
         while table == 0 do
-            Citizen.Wait(250)
-            table = GetClosestObjectOfType(v.table.coords.x, v.table.coords.y, v.table.coords.z, 1.0, v.table.prop, 0, 0, 0)
+            Wait(250)
+            table = GetClosestObjectOfType(v.table.coords.x, v.table.coords.y, v.table.coords.z, 1.0, v.table.prop, 0, 0,
+                0)
         end
 
         if GetObjectTextureVariation(table) ~= serverData.tableVariation then
@@ -192,7 +201,7 @@ end)
 function CanJoinBlackjackTable(table)
     local bj = GlobalState[string.format("Casino:Blackjack:%s", table)]
     if bj?.Seats then
-        for k,v in pairs(bj.Seats) do
+        for k, v in pairs(bj.Seats) do
             if not v then
                 return true
             end
@@ -205,7 +214,6 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
     local tableId = blackjack_func_368(_BJclosestChair)
 
     if tableId == data.table then
-
         Callbacks:ServerCallback("Casino:JoinBlackjack", _BJclosestChair, function(success, table, chair)
             if success then
                 _inSittingDownAnimation = true
@@ -227,12 +235,13 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
 
                 _inSittingDownAnimation = false
 
-                Citizen.CreateThread(function()
+                CreateThread(function()
                     while _BJsatAtTable do
                         if shouldForceIdleCardGames then
-                            TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_b@amb@casino@games@shared@player@", "idle_cardgames", 1.0, 1.0, -1, 0)
+                            TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_b@amb@casino@games@shared@player@",
+                                "idle_cardgames", 1.0, 1.0, -1, 0)
                         end
-                        Citizen.Wait(5)
+                        Wait(5)
                     end
 
                     if _blackJackStatebagHandler then
@@ -259,7 +268,7 @@ AddEventHandler("Casino:Client:StartBlackjack", function(_, data)
     if _BJsatAtTable and data?.table == _BJsatAtTable then
         Callbacks:ServerCallback("Casino:StartBlackjack", {}, function(success)
             if success then
-                
+
             end
         end)
     end
@@ -313,11 +322,12 @@ RegisterNetEvent("Casino:Client:BlackjackConfirmBet", function(betAmounts, table
 
                 ShowGameStateUI(gameData)
 
-                _blackJackStatebagHandler = AddStateBagChangeHandler(string.format("Casino:Blackjack:%s", tableId), nil, function(bagName, key, value, _unused, replicated)
-                    if _insideCasino and _BJsatAtTable then
-                        ShowGameStateUI(value)
-                    end
-                end)
+                _blackJackStatebagHandler = AddStateBagChangeHandler(string.format("Casino:Blackjack:%s", tableId), nil,
+                    function(bagName, key, value, _unused, replicated)
+                        if _insideCasino and _BJsatAtTable then
+                            ShowGameStateUI(value)
+                        end
+                    end)
             end
         end)
     elseif res?.timeout then
@@ -337,7 +347,7 @@ end)
 RegisterNetEvent("Casino:Client:BlackjackSyncChipsDoubleDown", function(betAmount, chairId)
     if _insideCasino then
         cleanUpChips(tostring(chairId) .. "chips")
-        Citizen.Wait(100)
+        Wait(100)
         betBlackjack(betAmount, chairId)
     end
 end)
@@ -349,7 +359,8 @@ RegisterNetEvent("Casino:Client:BlackjackDealInitialCard", function(tableId, cha
         loadAnim("anim_casino_b@amb@casino@games@shared@player@")
 
         local dealerPed = getDealerFromTableId(tableId)
-        local cardObj = startDealing(tableId, dealerPed, cards, chairId, cardIndex, gotCurrentHand, ((tableId + 1) * 4) - 1)
+        local cardObj = startDealing(tableId, dealerPed, cards, chairId, cardIndex, gotCurrentHand,
+            ((tableId + 1) * 4) - 1)
 
         if chairId < 0 then
             _BJlastDealerCard[tableId] = cardObj
@@ -380,8 +391,10 @@ RegisterNetEvent("Casino:Client:BlackjackFinishStandOrHitPhase", function(tableI
 
         local genderAnimString = ""
 
-        TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer", genderAnimString .. "dealer_focus_player_0" .. chairAnimId .. "_idle_outro", 3.0, 1.0, -1, 2, 0, 0, 0, 0)
-        PlayFacialAnim(dealerPed, genderAnimString .. "dealer_focus_player_0" .. chairAnimId .. "_idle_outro_facial", "anim_casino_b@amb@casino@games@blackjack@dealer")
+        TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer",
+            genderAnimString .. "dealer_focus_player_0" .. chairAnimId .. "_idle_outro", 3.0, 1.0, -1, 2, 0, 0, 0, 0)
+        PlayFacialAnim(dealerPed, genderAnimString .. "dealer_focus_player_0" .. chairAnimId .. "_idle_outro_facial",
+            "anim_casino_b@amb@casino@games@blackjack@dealer")
     end
 end)
 
@@ -389,7 +402,8 @@ RegisterNetEvent("Casino:Client:BlackjackBust", function(tableId, chairId)
     if _insideCasino then
         local dealerPed = getDealerFromTableId(tableId)
         PlayAmbientSpeech1(dealerPed, "MINIGAME_BJACK_DEALER_PLAYER_BUST", "SPEECH_PARAMS_FORCE_NORMAL_CLEAR", 1)
-        TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer", "reaction_bad", 3.0, 1.0, -1, 2, 0, 0, 0, 0)
+        TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer", "reaction_bad", 3.0, 1.0, -1, 2, 0, 0,
+            0, 0)
         if tableId == _BJsatAtTable and _BJsatAtLocalChair == chairId then
             DoBlackjackBustAnimation()
         end
@@ -403,17 +417,19 @@ RegisterNetEvent("Casino:Client:BlackjackFlipDealerCard", function(tableId, gotC
     end
 end)
 
-RegisterNetEvent("Casino:Client:BlackjackDealSingleDealerCard", function(tableId, nextCard, nextCardCount, gotCurrentHand)
-    if _insideCasino then
-        local dealerPed = getDealerFromTableId(tableId)
-        startSingleDealerDealing(dealerPed, tableId, nextCard, nextCardCount, gotCurrentHand, -1 - tableId)
-    end
-end)
+RegisterNetEvent("Casino:Client:BlackjackDealSingleDealerCard",
+    function(tableId, nextCard, nextCardCount, gotCurrentHand)
+        if _insideCasino then
+            local dealerPed = getDealerFromTableId(tableId)
+            startSingleDealerDealing(dealerPed, tableId, nextCard, nextCardCount, gotCurrentHand, -1 - tableId)
+        end
+    end)
 
 RegisterNetEvent("Casino:Client:BlackjackDeclareWin", function(tableId, chairId, isDealerBust)
     if _insideCasino then
         local dealerPed = getDealerFromTableId(tableId)
-        TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer", "reaction_good", 3.0, 1.0, -1, 2, 0, 0, 0, 0)
+        TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer", "reaction_good", 3.0, 1.0, -1, 2, 0, 0,
+            0, 0)
 
         DoBlackjackWinAnimation()
     end
@@ -422,7 +438,8 @@ end)
 RegisterNetEvent("Casino:Client:BlackjackDeclarePush", function(tableId, chairId)
     if _insideCasino then
         local dealerPed = getDealerFromTableId(tableId)
-        TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer", "reaction_impartial", 3.0, 1.0, -1, 2, 0, 0, 0, 0)
+        TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer", "reaction_impartial", 3.0, 1.0, -1, 2,
+            0, 0, 0, 0)
 
         DoBlackjackPushAnimation()
     end
@@ -431,7 +448,8 @@ end)
 RegisterNetEvent("Casino:Client:BlackjackDeclareLoss", function(tableId, chairId)
     if _insideCasino then
         local dealerPed = getDealerFromTableId(tableId)
-        TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer", "reaction_bad", 3.0, 1.0, -1, 2, 0, 0, 0, 0)
+        TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer", "reaction_bad", 3.0, 1.0, -1, 2, 0, 0,
+            0, 0)
 
         DoBlackjackLossAnimation()
     end
@@ -447,20 +465,20 @@ RegisterNetEvent("Casino:Client:BlackjackGameFinished", function(tableId, played
             PlayAmbientSpeech1(dealerPed, "MINIGAME_DEALER_WINS", "SPEECH_PARAMS_FORCE_NORMAL_CLEAR", 1)
         end
 
-        for k,v in pairs(playedSeats) do
+        for k, v in pairs(playedSeats) do
             cleanUpChips(v, tableId)
             cleanUpChips(tostring(v) .. "chips", tableId)
 
-            Citizen.Wait(2500)
+            Wait(2500)
         end
 
         cleanUpChips(-1 - tableId, tableId)
 
         local startingChair = ((tableId + 1) * 4) - 4
         for i = startingChair, startingChair + 3 do
-            for k,v in pairs(_BJcardObjects) do
+            for k, v in pairs(_BJcardObjects) do
                 if k == i then
-                    for k2,v2 in pairs(v) do
+                    for k2, v2 in pairs(v) do
                         DeleteEntity(v2)
                     end
                 end
@@ -535,7 +553,8 @@ function ShowGameStateUI(state)
             end
         end
 
-        local overlay = string.format("Chip Balance: $%s<br>Current Bet: $%s<br><br>", formatNumberToCurrency(myBalance), formatNumberToCurrency(myBet))
+        local overlay = string.format("Chip Balance: $%s<br>Current Bet: $%s<br><br>", formatNumberToCurrency(myBalance),
+            formatNumberToCurrency(myBet))
         overlay = overlay .. string.format("Dealer Hand: %s<br>", dealerHand)
         overlay = overlay .. string.format("My Hand: %s", myHand)
 
@@ -549,7 +568,7 @@ function CountBlackjackHand(cards)
     local hand = 0
     local numberOfAces = 0
 
-    for k,v in pairs(cards) do
+    for k, v in pairs(cards) do
         local nextCard = getCardNumberFromCardId(v)
         if nextCard == 11 then
             numberOfAces = numberOfAces + 1
@@ -558,7 +577,7 @@ function CountBlackjackHand(cards)
         end
     end
 
-    for i = 1, numberOfAces do 
+    for i = 1, numberOfAces do
         if i == 1 then
             if hand + 11 > 21 then
                 nextCard = 1
@@ -607,12 +626,12 @@ function getCardNumberFromCardId(cardId)
     elseif cardId == 16 then
         return 3
     elseif cardId == 17 then
-        return 4        
+        return 4
     elseif cardId == 18 then
         return 5
     elseif cardId == 19 then
         return 6
-    elseif cardId == 20  then
+    elseif cardId == 20 then
         return 7
     elseif cardId == 21 then
         return 8

@@ -23,16 +23,16 @@ function StartSelfieMode()
 		Notification.Persistent:Info(
 			"camera-info-notif",
 			string.format("Camera - Press %s to take a Selfie", Keybinds:GetKey("primary_action"))
-				.. "<br/>"
-				.. string.format("Camera - Press %s to flip the camera", Keybinds:GetKey("secondary_action"))
-				.. "<br/>"
-				.. string.format("Camera - Press %s to cancel", Keybinds:GetKey("emote_cancel")),
+			.. "<br/>"
+			.. string.format("Camera - Press %s to flip the camera", Keybinds:GetKey("secondary_action"))
+			.. "<br/>"
+			.. string.format("Camera - Press %s to cancel", Keybinds:GetKey("emote_cancel")),
 			"camera"
 		)
 		Inventory:Disable()
 		Hud:Hide()
 		DestroyMobilePhone()
-		Citizen.Wait(10)
+		Wait(10)
 		CreateMobilePhone(0)
 		CellCamActivate(true, true)
 		CellCamDisableThisFrame(true)
@@ -43,7 +43,7 @@ function StopSelfieMode()
 	if _selfie then
 		Notification.Persistent:Remove("camera-info-notif")
 		DestroyMobilePhone()
-		Citizen.Wait(10)
+		Wait(10)
 		CellCamDisableThisFrame(false)
 		CellCamActivate(false, false)
 		Inventory:Enable()

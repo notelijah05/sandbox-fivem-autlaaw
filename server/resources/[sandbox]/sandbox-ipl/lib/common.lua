@@ -34,14 +34,14 @@ Global = {
         isInsideApartment4 = false,
         isInsideApartment5 = false,
         isInsideApartment6 = false
-        
+
     },
 
 
     -- Set all interiors variables to false
     -- The loop inside 'interiorIdObserver' will set them to true
     ResetInteriorVariables = function()
-        for _, parentKey in pairs{"Biker", "FinanceOffices", "HighLife"} do
+        for _, parentKey in pairs { "Biker", "FinanceOffices", "HighLife" } do
             local t = Global[parentKey]
             for key in pairs(t) do
                 t[key] = false
@@ -125,7 +125,7 @@ function DrawEmptyRect(name, model)
     local renderId = CreateNamedRenderTargetForModel(name, model)
 
     while (not IsNamedRendertargetRegistered(name)) do
-        Citizen.Wait(step)
+        Wait(step)
         currentTime = currentTime + step
         if (currentTime >= timeout) then return false end
     end
@@ -171,7 +171,7 @@ function LoadStreamedTextureDict(texturesDict)
 
     RequestStreamedTextureDict(texturesDict, 0)
     while not HasStreamedTextureDictLoaded(texturesDict) do
-        Citizen.Wait(step)
+        Wait(step)
         currentTime = currentTime + step
         if (currentTime >= timeout) then return false end
     end
@@ -185,7 +185,7 @@ function LoadScaleform(scaleform)
     local handle = RequestScaleformMovie(scaleform)
 
     while (not HasScaleformMovieLoaded(handle)) do
-        Citizen.Wait(step)
+        Wait(step)
         currentTime = currentTime + step
         if (currentTime >= timeout) then return -1 end
     end
@@ -200,7 +200,7 @@ function GetPedheadshot(ped)
     local pedheadshot = RegisterPedheadshot(ped)
 
     while not IsPedheadshotReady(pedheadshot) do
-        Citizen.Wait(step)
+        Wait(step)
         currentTime = currentTime + step
         if (currentTime >= timeout) then return -1 end
     end
@@ -216,7 +216,8 @@ function GetPedheadshotTexture(ped)
         textureDict = GetPedheadshotTxdString(pedheadshot)
         local IsTextureDictLoaded = LoadStreamedTextureDict(textureDict)
         if (not IsTextureDictLoaded) then
-            Citizen.Trace("ERROR: BikerClubhouseDrawMembers - Textures dictionnary \"" .. tostring(textureDict) .. "\" cannot be loaded.")
+            Citizen.Trace("ERROR: BikerClubhouseDrawMembers - Textures dictionnary \"" ..
+            tostring(textureDict) .. "\" cannot be loaded.")
         end
     else
         Citizen.Trace("ERROR: BikerClubhouseDrawMembers - PedHeadShot not ready.")
@@ -229,10 +230,10 @@ end
 function IsTable(T)
     return type(T) == 'table'
 end
+
 -- Return the number of elements of the table
 function Tablelength(T)
     local count = 0
     for _ in pairs(T) do count = count + 1 end
     return count
 end
-

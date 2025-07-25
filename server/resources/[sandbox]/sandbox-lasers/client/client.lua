@@ -70,6 +70,7 @@ function Laser.new(originPoint, targetPoints, options)
 	function self.getActive()
 		return active
 	end
+
 	function self.setActive(toggle)
 		if active == toggle then
 			return
@@ -87,6 +88,7 @@ function Laser.new(originPoint, targetPoints, options)
 	function self.getVisible()
 		return visible
 	end
+
 	function self.setVisible(toggle)
 		if visible == toggle then
 			return
@@ -97,6 +99,7 @@ function Laser.new(originPoint, targetPoints, options)
 	function self.getMoving()
 		return moving
 	end
+
 	function self.setMoving(toggle)
 		if moving == toggle then
 			return
@@ -107,11 +110,12 @@ function Laser.new(originPoint, targetPoints, options)
 	function self.getColor()
 		return r, g, b, a
 	end
+
 	function self.setColor(_r, _g, _b, _a)
 		if type(_r) ~= "number" or type(_g) ~= "number" or type(_b) ~= "number" or type(_a) ~= "number" then
 			error(
 				"(r, g, b, a) must all be integers "
-					.. string.format("{r = %s, g = %s, b = %s, a = %s}", _r, _g, _b, _a)
+				.. string.format("{r = %s, g = %s, b = %s, a = %s}", _r, _g, _b, _a)
 			)
 		end
 		r, g, b, a = _r, _g, _b, _a
@@ -138,7 +142,7 @@ function Laser.new(originPoint, targetPoints, options)
 
 	function self._startLaser()
 		if #targetPoints == 1 then
-			Citizen.CreateThread(function()
+			CreateThread(function()
 				local direction = norm(targetPoints[1] - originPoint)
 				local destination = originPoint + direction * maxDistance
 				while active do
@@ -152,7 +156,7 @@ function Laser.new(originPoint, targetPoints, options)
 				end
 			end)
 		else
-			Citizen.CreateThread(function()
+			CreateThread(function()
 				local deltaTime = 0
 				local fromIndex = 1
 				local toIndex = 2
@@ -209,7 +213,7 @@ function Laser.new(originPoint, targetPoints, options)
 			"Multi-origin laser must have more than one origin and target points"
 		)
 
-		Citizen.CreateThread(function()
+		CreateThread(function()
 			local deltaTime = 0
 			local fromIndex = 1
 			local toIndex = 2

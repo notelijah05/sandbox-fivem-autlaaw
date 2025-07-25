@@ -9,7 +9,7 @@ function StartCasinoWallsThread()
     RequestStreamedTextureDict("Prop_Screen_Vinewood")
 
     while not HasStreamedTextureDictLoaded("Prop_Screen_Vinewood") do
-        Citizen.Wait(100)
+        Wait(100)
     end
 
     RegisterNamedRendertarget("casinoscreen_01")
@@ -18,11 +18,11 @@ function StartCasinoWallsThread()
 
     videoWallRenderTarget = GetNamedRendertargetRenderId("casinoscreen_01")
 
-    Citizen.CreateThread(function()
+    CreateThread(function()
         local lastUpdatedTvChannel = 0
 
         while _insideCasino do
-            Citizen.Wait(0)
+            Wait(0)
 
             if videoWallRenderTarget then
                 local currentTime = GetGameTimer()
@@ -43,7 +43,8 @@ function StartCasinoWallsThread()
                 SetTextRenderId(videoWallRenderTarget)
                 SetScriptGfxDrawOrder(4)
                 SetScriptGfxDrawBehindPausemenu(true)
-                DrawInteractiveSprite("Prop_Screen_Vinewood", "BG_Wall_Colour_4x4", 0.25, 0.5, 0.5, 1.0, 0.0, 255, 255, 255, 255)
+                DrawInteractiveSprite("Prop_Screen_Vinewood", "BG_Wall_Colour_4x4", 0.25, 0.5, 0.5, 1.0, 0.0, 255, 255,
+                    255, 255)
                 DrawTvChannel(0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
                 SetTextRenderId(GetDefaultScriptRendertargetRenderId())
             end

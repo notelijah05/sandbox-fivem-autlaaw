@@ -40,7 +40,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 end)
 
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
-	if id == "rockford-stage-area" then
+    if id == "rockford-stage-area" then
         if GlobalState["rockford_dj"] then
             CreateDJStuff()
         end
@@ -48,7 +48,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 end)
 
 AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
-	if id == "rockford-stage-area" then
+    if id == "rockford-stage-area" then
         DeleteDJStuff()
     end
 end)
@@ -103,10 +103,10 @@ AddEventHandler("onResourceStop", function(resource)
 end)
 
 function loadModel(model)
-	if IsModelInCdimage(model) then
-		while not HasModelLoaded(model) do
-			RequestModel(model)
-			Citizen.Wait(5)
-		end
-	end
+    if IsModelInCdimage(model) then
+        while not HasModelLoaded(model) do
+            RequestModel(model)
+            Wait(5)
+        end
+    end
 end

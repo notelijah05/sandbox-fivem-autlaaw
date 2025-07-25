@@ -32,7 +32,7 @@ function RetrieveComponents()
     Banking = exports['sandbox-base']:FetchComponent('Banking')
     Police = exports['sandbox-base']:FetchComponent('Police')
     Loans = exports['sandbox-base']:FetchComponent('Loans')
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
+    EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
     RegisterChatCommands()
 end
 
@@ -47,7 +47,7 @@ AddEventHandler('Core:Shared:Ready', function()
         'Wallet',
         'Fetch',
         'Utils',
-		'Logger',
+        'Logger',
         'Middleware',
         'Jobs',
         'Inventory',
@@ -59,8 +59,8 @@ AddEventHandler('Core:Shared:Ready', function()
         'Properties',
         'Banking',
         'Police',
-		'Loans',
-		'EmergencyAlerts'
+        'Loans',
+        'EmergencyAlerts'
     }, function(error)
         if #error > 0 then
             return
@@ -70,7 +70,7 @@ AddEventHandler('Core:Shared:Ready', function()
         RegisterMiddleware()
         RegisterItemUses()
         RegisterPersonalPlateCallbacks()
-		Startup()
+        Startup()
     end)
 end)
 
@@ -89,13 +89,11 @@ function RegisterMiddleware()
     --         for k, v in ipairs(sourceSpawnVehicles) do
     --             Vehicles.Owned:ForceSave(v)
     --         end
-            
+
     --         ACTIVE_OWNED_VEHICLES_SPAWNERS[source] = nil
     --     end
     -- end)
 end
-
-
 
 -- If the vehicle doesn't have it's properties saved, they are sent to the server
 RegisterNetEvent('Vehicles:Server:PlayerSetProperties', function(veh, properties)
@@ -197,7 +195,7 @@ VEHICLE = {
         Create = function(self, id, data)
             data = data or {}
             _vehStores[id] = data
-    
+
             return {
                 Key = id,
                 SetData = function(self, var, data)
@@ -278,14 +276,16 @@ VEHICLE = {
         end,
     },
     Owned = {
-        AddToCharacter = function(self, charSID, vehicleHash, vehicleType, modelType, infoData, cb, properties, defaultStorage, suppliedVIN)
+        AddToCharacter = function(self, charSID, vehicleHash, vehicleType, modelType, infoData, cb, properties,
+                                  defaultStorage, suppliedVIN)
             Vehicles.Owned:Add({
                 Type = 0,
                 Id = charSID
             }, vehicleHash, vehicleType, modelType, infoData, cb, properties, defaultStorage, suppliedVIN)
         end,
-        
-        AddToFleet = function(self, jobId, jobWorkplace, vehicleLevel, vehicleHash, vehicleType, modelType, infoData, cb, properties, qual)
+
+        AddToFleet = function(self, jobId, jobWorkplace, vehicleLevel, vehicleHash, vehicleType, modelType, infoData, cb,
+                              properties, qual)
             if not properties then
                 properties = false
             end
@@ -321,7 +321,8 @@ VEHICLE = {
         end,
 
         -- !!! Should not be used externally
-        Add = function(self, ownerData, vehicleHash, vehicleType, modelType, infoData, cb, properties, defaultStorageData, suppliedVIN)
+        Add = function(self, ownerData, vehicleHash, vehicleType, modelType, infoData, cb, properties, defaultStorageData,
+                       suppliedVIN)
             if type(vehicleType) ~= 'number' or vehicleType < 0 or vehicleType > 2 then
                 vehicleType = 0
             end
@@ -413,7 +414,8 @@ VEHICLE = {
                 end
             end)
         end,
-        GetAll = function(self, vehType, ownerType, ownerId, cb, storageType, storageId, ignoreSpawned, checkFleetOwner, projection)
+        GetAll = function(self, vehType, ownerType, ownerId, cb, storageType, storageId, ignoreSpawned, checkFleetOwner,
+                          projection)
             local orQuery = {}
 
             if ownerType and ownerId then
@@ -444,7 +446,7 @@ VEHICLE = {
                 query['Storage.Type'] = storageType
                 query['Storage.Id'] = storageId
             end
-            
+
             if type(vehType) == 'number' then
                 query['Type'] = vehType
             end
@@ -481,11 +483,12 @@ VEHICLE = {
         GetAllActive = function(self)
             return ACTIVE_OWNED_VEHICLES
         end,
-        
+
         Spawn = function(self, source, VIN, coords, heading, cb, extraData)
             Vehicles.Owned:GetVIN(VIN, function(vehicle)
                 if vehicle and not Vehicles.Owned:GetActive(VIN) then
-                    local spawnedVehicle = CreateFuckingVehicle(vehicle.ModelType, vehicle.Vehicle, coords, (heading and heading + 0.0 or 0.0))
+                    local spawnedVehicle = CreateFuckingVehicle(vehicle.ModelType, vehicle.Vehicle, coords,
+                        (heading and heading + 0.0 or 0.0))
                     if spawnedVehicle then
                         -- Set State
                         local vehState = Entity(spawnedVehicle).state
@@ -504,7 +507,7 @@ VEHICLE = {
                         if vehicle.Owner and vehicle.Owner.Type == 1 and ((not vehicle.Owner.Workplace) or vehicle.Owner.Id == "police" or vehicle.Owner.Id == "prison" or vehicle.Owner.Id == "ems") then
                             vehState.GroupKeys = vehicle.Owner.Id
                         end
-                        
+
                         vehState.Make = vehicle.Make
                         vehState.Model = vehicle.Model
                         vehState.Class = vehicle.Class
@@ -521,11 +524,11 @@ VEHICLE = {
                             vehState.Polish = vehicle.Polish
                         end
 
-						if vehicle.PurgeColor then
-                            vehState.PurgeColor = vehicle.PurgeColor or {r = 255, g = 255, b = 255}
+                        if vehicle.PurgeColor then
+                            vehState.PurgeColor = vehicle.PurgeColor or { r = 255, g = 255, b = 255 }
                         end
 
-						if vehicle.PurgeLocation then
+                        if vehicle.PurgeLocation then
                             vehState.PurgeLocation = vehicle.PurgeLocation or "wheel_rf"
                         end
 
@@ -657,7 +660,7 @@ VEHICLE = {
             if vehicleData then
                 local success = SaveVehicle(VIN)
                 if success then
-                    Logger:Info('Vehicles', 'Successfully Force Saved Vehicle: '.. VIN)
+                    Logger:Info('Vehicles', 'Successfully Force Saved Vehicle: ' .. VIN)
                 end
             end
         end,
@@ -717,7 +720,7 @@ VEHICLE = {
 
         Seize = function(self, VIN, seizeState) -- Vehicle Siezure for Loans
             local vehicleData = Vehicles.Owned:GetActive(VIN)
-            if vehicleData then -- Vehicle is currently out
+            if vehicleData then                 -- Vehicle is currently out
                 vehicleData:SetData('Seized', seizeState)
                 vehicleData:SetData('SeizedTime', seizeState and os.time() or false)
                 if seizeState then
@@ -797,7 +800,8 @@ VEHICLE = {
                     elseif c.Storage.Type == 2 then
                         local prop = Properties:Get(c.Storage.Id)
                         if prop?.location?.garage then
-                            p:resolve(vector3(prop?.location?.garage?.x, prop?.location?.garage?.y, prop?.location?.garage?.z))
+                            p:resolve(vector3(prop?.location?.garage?.x, prop?.location?.garage?.y,
+                                prop?.location?.garage?.z))
                         else
                             p:resolve(false)
                         end
@@ -809,7 +813,8 @@ VEHICLE = {
         end,
     },
 
-    SpawnTemp = function(self, source, model, modelType, coords, heading, cb, vehicleInfoData, properties, preDamage, suppliedPlate, suppliedVIN, spawnAsShit)
+    SpawnTemp = function(self, source, model, modelType, coords, heading, cb, vehicleInfoData, properties, preDamage,
+                         suppliedPlate, suppliedVIN, spawnAsShit)
         local spawnedVehicle = CreateFuckingVehicle(modelType, model, coords, heading, spawnAsShit)
         local vehState = Entity(spawnedVehicle).state
         local plate = suppliedPlate or Vehicles.Identification.Plate:Generate(true)
@@ -833,7 +838,7 @@ VEHICLE = {
         vehState.Trailer = GetVehicleType(spawnedVehicle) == 'trailer'
 
         vehState.VEH_IGNITION = false
-        vehState.SpawnTemp = true 
+        vehState.SpawnTemp = true
 
         if properties or preDamage then
             vehState.awaitingProperties = {
@@ -903,7 +908,7 @@ AddEventHandler('Proxy:Shared:RegisterReady', function()
 end)
 
 --[[
-POPTYPE_UNKNOWN = 0, 
+POPTYPE_UNKNOWN = 0,
 POPTYPE_RANDOM_PERMANENT 1
 POPTYPE_RANDOM_PARKED 2
 POPTYPE_RANDOM_PATROL 3
@@ -913,11 +918,11 @@ POPTYPE_PERMANENT 6
 POPTYPE_MISSION 7
 POPTYPE_REPLAY 8
 POPTYPE_CACHE 9
-POPTYPE_TOOL 10 
+POPTYPE_TOOL 10
 ]]
 
 function GenerateLocalVehicleInfo(entity)
-    if not DoesEntityExist(entity) or Vehicles == nil then 
+    if not DoesEntityExist(entity) or Vehicles == nil then
         return
     end
 
@@ -947,7 +952,8 @@ RegisterNetEvent("Vehicles:Server:RequestGenerateVehicleInfo", function(vNet)
     GenerateLocalVehicleInfo(veh)
 end)
 
-function ApplyOldVehicleState(veh, fuel, damage, damagedParts, mileage, engineHealth, bodyHealth, isBlownUp, localProperties, lastDriven, serverSpawnedTemp)
+function ApplyOldVehicleState(veh, fuel, damage, damagedParts, mileage, engineHealth, bodyHealth, isBlownUp,
+                              localProperties, lastDriven, serverSpawnedTemp)
     local ent = Entity(veh)
     if ent?.state?.VIN then
         ent.state.Fuel = fuel
@@ -1013,20 +1019,22 @@ AddEventHandler('entityRemoved', function(entity)
                 Vehicles.Stores:Delete(ent.state.VIN)
             end
 
-            Citizen.Wait(1000)
+            Wait(1000)
 
             if isLocal then
                 Vehicles:SpawnTemp(-1, vehModel, nil, coords, heading, function(vehicleId)
                     SetVehicleBodyHealth(vehicleId, bodyHealth + 0.0)
 
-                    ApplyOldVehicleState(vehicleId, fuel, damage, damagedParts, mileage, engineHealth, bodyHealth, isBlownUp, _savedVehiclePropertiesClusterfuck[VIN], lastDriven, spawnedTemp)
+                    ApplyOldVehicleState(vehicleId, fuel, damage, damagedParts, mileage, engineHealth, bodyHealth,
+                        isBlownUp, _savedVehiclePropertiesClusterfuck[VIN], lastDriven, spawnedTemp)
                 end, false, false, false, vehPlate, VIN, true)
             else
                 Vehicles.Owned:Spawn(-1, VIN, coords, heading, function(success, vehicleData, vehicleId)
                     if success then
                         SetVehicleBodyHealth(vehicleId, bodyHealth + 0.0)
 
-                        ApplyOldVehicleState(vehicleId, fuel, damage, damagedParts, mileage, engineHealth, bodyHealth, isBlownUp)
+                        ApplyOldVehicleState(vehicleId, fuel, damage, damagedParts, mileage, engineHealth, bodyHealth,
+                            isBlownUp)
                     end
                 end)
             end
@@ -1054,7 +1062,7 @@ RegisterServerEvent('Vehicle:Server:InspectVIN', function(vNet)
     if DoesEntityExist(veh) then
         local vState = Entity(veh).state
         if vState and vState.VIN then
-            Chat.Send.Server:Single(src, 'Vehicle VIN: '.. vState.VIN)
+            Chat.Send.Server:Single(src, 'Vehicle VIN: ' .. vState.VIN)
             TriggerClientEvent('Vehicles:Client:ViewVIN', src, vState.VIN)
         end
     end

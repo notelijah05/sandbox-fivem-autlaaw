@@ -1,7 +1,7 @@
 local enteringVehicle = false
 
 AddEventHandler("Vehicles:Client:CharacterLogin", function()
-	Citizen.CreateThread(function() -- Vehicle Events Thread
+	CreateThread(function() -- Vehicle Events Thread
 		while _characterLoaded do
 			GLOBAL_PED = PlayerPedId()
 			if VEHICLE_INSIDE then
@@ -22,7 +22,7 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 					end
 				end
 
-			-- Enter Vehicle
+				-- Enter Vehicle
 			elseif not VEHICLE_INSIDE and IsPedInAnyVehicle(GLOBAL_PED, false) then
 				VEHICLE_INSIDE = GetVehiclePedIsIn(GLOBAL_PED, false)
 				VEHICLE_SEAT = GetPedSeatInVehicle(VEHICLE_INSIDE, GLOBAL_PED)
@@ -61,7 +61,7 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 								if populationType == 2 then
 									lockedChance = 65
 								end
-					
+
 								if math.random(0, 100) <= lockedChance then
 									vehEnt.state:set("Locked", true, true)
 									SetVehicleDoorsLocked(enter, 2)
@@ -78,7 +78,7 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 							end
 						end
 
-						
+
 						SetEntityAsMissionEntity(enter, true, true)
 						local vehEnt = Entity(enter)
 
@@ -89,7 +89,7 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 						if vehEnt.state.VEH_IGNITION == nil and NetworkGetEntityIsNetworked(enter) then
 							Vehicles.Engine:Force(enter, GetIsVehicleEngineRunning(enter))
 						end
-	
+
 						SetVehicleNeedsToBeHotwired(enter, false)
 					end
 				elseif enteringVehicle then
@@ -97,7 +97,7 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 				end
 			end
 
-			Citizen.Wait(250)
+			Wait(250)
 		end
 	end)
 end)
@@ -109,21 +109,21 @@ AddEventHandler("Vehicles:Client:ExitVehicle", function(VEHICLE_INSIDE)
 end)
 
 AddEventHandler("Vehicles:Client:EnterVehicle", function(CurrentVehicle, CurrentSeat)
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		local isSpeeding = false
 		_watchingSpeed = true
 		while _watchingSpeed do
-            CurrentSpeed = GetEntitySpeed(CurrentVehicle)
+			CurrentSpeed = GetEntitySpeed(CurrentVehicle)
 
-            if CurrentSpeed > 28 and not IsSpeeding then
-                IsSpeeding = true
-                TriggerEvent('Vehicles:Client:Speeding', true, CurrentVehicle, CurrentSeat, CurrentSpeed)
-            elseif IsSpeeding and CurrentSpeed < 28 then
-                IsSpeeding = false
-                TriggerEvent('Vehicles:Client:Speeding', false, CurrentVehicle, CurrentSeat, CurrentSpeed)
-            end
+			if CurrentSpeed > 28 and not IsSpeeding then
+				IsSpeeding = true
+				TriggerEvent('Vehicles:Client:Speeding', true, CurrentVehicle, CurrentSeat, CurrentSpeed)
+			elseif IsSpeeding and CurrentSpeed < 28 then
+				IsSpeeding = false
+				TriggerEvent('Vehicles:Client:Speeding', false, CurrentVehicle, CurrentSeat, CurrentSpeed)
+			end
 
-			Citizen.Wait(100)
+			Wait(100)
 		end
 	end)
 end)

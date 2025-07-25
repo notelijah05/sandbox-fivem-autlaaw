@@ -33,11 +33,11 @@ function OnTime(day, hour, min)
 end
 
 function CronTick()
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while true do
-            Citizen.Wait(60000)
+            Wait(60000)
             local time = GetTime()
-        
+
             if time.hour ~= LastTime.hour or time.min ~= LastTime.min then
                 OnTime(time.day, time.hour, time.min)
                 LastTime = time
@@ -51,7 +51,7 @@ COMPONENTS.Cron = {
     _name = 'base',
     Register = function(self, id, day, hour, min, cb)
         if _jobs[id] ~= nil then
-            COMPONENTS.Logger:Warn('Cron', 'Overriding Already Existing Cron Job: '.. id, { console = true })
+            COMPONENTS.Logger:Warn('Cron', 'Overriding Already Existing Cron Job: ' .. id, { console = true })
         end
 
         _jobs[id] = {

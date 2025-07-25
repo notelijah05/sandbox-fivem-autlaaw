@@ -48,7 +48,8 @@ AddEventHandler("Businesses:Client:Startup", function()
                     if nearUnit and nearUnit?.unitId then
                         local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
 
-                        return (unit.owner and unit.owner.SID == LocalPlayer.state.Character:GetData("SID")) or Jobs.Permissions:HasJob(unit.managedBy)
+                        return (unit.owner and unit.owner.SID == LocalPlayer.state.Character:GetData("SID")) or
+                        Jobs.Permissions:HasJob(unit.managedBy)
                     end
                 end,
             },
@@ -81,7 +82,7 @@ AddEventHandler("Businesses:Client:Startup", function()
     Callbacks:RegisterClientCallback("StorageUnits:Passcode", function(code, cb)
         Minigame.Play:Keypad(code, false, 10000, true, {
             onSuccess = function(data)
-                Citizen.Wait(2000)
+                Wait(2000)
                 cb(true, data)
             end,
             onFail = function(data)
@@ -89,18 +90,18 @@ AddEventHandler("Businesses:Client:Startup", function()
             end,
         }, {
             useWhileDead = false,
-			vehicle = false,
-			controlDisables = {
-				disableMovement = true,
-				disableCarMovement = true,
-				disableMouse = false,
-				disableCombat = true,
-			},
+            vehicle = false,
+            controlDisables = {
+                disableMovement = true,
+                disableCarMovement = true,
+                disableMouse = false,
+                disableCombat = true,
+            },
             animation = {
-				animDict = "amb@prop_human_atm@male@idle_a",
-				anim = "idle_b",
-				flags = 49,
-			},
+                animDict = "amb@prop_human_atm@male@idle_a",
+                anim = "idle_b",
+                flags = 49,
+            },
         })
     end)
 end)
@@ -128,7 +129,9 @@ _STORAGEUNITS = {
                         items = {
                             {
                                 label = "Storage Last Accessed",
-                                description = unit.lastAccessed and string.format("Unit Last Accessed %s ago.", GetFormattedTimeFromSeconds(GetCloudTimeAsInt() - unit.lastAccessed)) or "Never",
+                                description = unit.lastAccessed and
+                                string.format("Unit Last Accessed %s ago.",
+                                    GetFormattedTimeFromSeconds(GetCloudTimeAsInt() - unit.lastAccessed)) or "Never",
                             },
                         }
                     },
@@ -147,12 +150,15 @@ _STORAGEUNITS = {
                     if unit.owner then
                         table.insert(menu.main.items, {
                             label = "Current Unit Owner",
-                            description = string.format("Owned By %s %s (State ID: %s)", unit.owner.First, unit.owner.Last, unit.owner.SID),
+                            description = string.format("Owned By %s %s (State ID: %s)", unit.owner.First,
+                                unit.owner.Last, unit.owner.SID),
                         })
 
                         table.insert(menu.main.items, {
                             label = "Unit Sold By",
-                            description = string.format("Sold By %s %s (State ID: %s) %s ago.", unit.soldBy.First, unit.soldBy.Last, unit.soldBy.SID, GetFormattedTimeFromSeconds(GetCloudTimeAsInt() - unit.soldAt)),
+                            description = string.format("Sold By %s %s (State ID: %s) %s ago.", unit.soldBy.First,
+                                unit.soldBy.Last, unit.soldBy.SID,
+                                GetFormattedTimeFromSeconds(GetCloudTimeAsInt() - unit.soldAt)),
                         })
                     end
                 end
@@ -184,7 +190,8 @@ _STORAGEUNITS = {
                 if unit and unit.managedBy == managedBy then
                     table.insert(menu.main.items, {
                         label = unit.label,
-                        description = unit.owner and string.format("Owned By %s %s", unit.owner.First, unit.owner.Last) or "Not Owned",
+                        description = unit.owner and string.format("Owned By %s %s", unit.owner.First, unit.owner.Last) or
+                        "Not Owned",
                         data = { unit = unit.id },
                         event = "StorageUnits:Manage",
                     })
@@ -196,17 +203,17 @@ _STORAGEUNITS = {
     end,
     GetNearUnit = function(self)
         if LocalPlayer.state.currentRoute ~= 0 then
-			return false
-		end
+            return false
+        end
 
-		local myCoords = GetEntityCoords(LocalPlayer.state.ped)
+        local myCoords = GetEntityCoords(LocalPlayer.state.ped)
 
-		if GlobalState["StorageUnits"] == nil then
-			return false
-		else
-			local closest = nil
-			for k, v in ipairs(GlobalState["StorageUnits"]) do
-				local unit = GlobalState[string.format("StorageUnit:%s", v)]
+        if GlobalState["StorageUnits"] == nil then
+            return false
+        else
+            local closest = nil
+            for k, v in ipairs(GlobalState["StorageUnits"]) do
+                local unit = GlobalState[string.format("StorageUnit:%s", v)]
                 if unit then
                     local dist = #(myCoords - unit.location)
                     if dist < 3.0 and (not closest or dist < closest.dist) then
@@ -216,31 +223,31 @@ _STORAGEUNITS = {
                         }
                     end
                 end
-			end
-			return closest
-		end
+            end
+            return closest
+        end
     end,
 }
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("StorageUnits", _STORAGEUNITS)
+    exports["sandbox-base"]:RegisterComponent("StorageUnits", _STORAGEUNITS)
 end)
 
 AddEventHandler("StorageUnits:ChangePasscode", function(data)
     Input:Show("Change Unit Passcode", "New Passcode", {
-		{
-			id = "passcode",
-			type = "text",
-			options = {
+        {
+            id = "passcode",
+            type = "text",
+            options = {
                 helperText = "Numbers Only - Minimum Length of 4 and a Maximum Length of 8",
-				inputProps = {
+                inputProps = {
                     pattern = "[0-9]+",
                     minlength = 4,
                     maxlength = 8,
                 },
-			},
-		},
-	}, "StorageUnits:Client:NewPasscode", data)
+            },
+        },
+    }, "StorageUnits:Client:NewPasscode", data)
 end)
 
 AddEventHandler("StorageUnits:Client:NewPasscode", function(values, data)
@@ -260,15 +267,15 @@ end)
 
 AddEventHandler("StorageUnits:StartSell", function(data)
     Input:Show("Set Storage Unit Owner", "State ID", {
-		{
-			id = "SID",
-			type = "number",
-			options = {
+        {
+            id = "SID",
+            type = "number",
+            options = {
                 --helperText = "Numbers Only - Minimum Length of 4 and a Maximum Length of 8",
-				inputProps = {},
-			},
-		},
-	}, "StorageUnits:Client:SellUnit", data)
+                inputProps = {},
+            },
+        },
+    }, "StorageUnits:Client:SellUnit", data)
 end)
 
 AddEventHandler("StorageUnits:Client:SellUnit", function(values, data)

@@ -1,52 +1,51 @@
-
 local _runSpeedTime = 0
 RegisterNetEvent("Drugs:Effects:RunSpeed", function(quality)
 	if _runSpeedTime > 0 then
 		return
 	end
 
-    local addiction = LocalPlayer.state.Character:GetData("Addiction")?.Coke?.Factor or 0.0
+	local addiction = LocalPlayer.state.Character:GetData("Addiction")?.Coke?.Factor or 0.0
 	_runSpeedTime = 60 * (1.0 - (addiction / 100))
 
 	local ped = PlayerPedId()
 	local pId = PlayerId()
 	local loops = 0
 
-    local speedMod = 0.49 * (quality / 100)
-    if speedMod > 0.49 then
-        speedMod = 0.49
-    end
+	local speedMod = 0.49 * (quality / 100)
+	if speedMod > 0.49 then
+		speedMod = 0.49
+	end
 
-    local total = 1.0 + speedMod
+	local total = 1.0 + speedMod
 
-    LocalPlayer.state.drugsRunSpeed = true
-    StartScreenEffect("DrugsMichaelAliensFight", 3.0, 0)
+	LocalPlayer.state.drugsRunSpeed = true
+	StartScreenEffect("DrugsMichaelAliensFight", 3.0, 0)
 	SetRunSprintMultiplierForPlayer(pId, total)
 	SetSwimMultiplierForPlayer(pId, total)
 
-    StatSetInt(`MP0_STAMINA`, 100, true)
+	StatSetInt(`MP0_STAMINA`, 100, true)
 	Buffs:ApplyUniqueBuff("speed", _runSpeedTime, false)
 	while _runSpeedTime > 0 and not LocalPlayer.state.isDead do
-        total = 1.0 + (speedMod * (1.0 - (loops / 100)))
+		total = 1.0 + (speedMod * (1.0 - (loops / 100)))
 
-        SetRunSprintMultiplierForPlayer(pId, total)
-        SetSwimMultiplierForPlayer(pId, total)
+		SetRunSprintMultiplierForPlayer(pId, total)
+		SetSwimMultiplierForPlayer(pId, total)
 
 		loops = loops + 1
-		Citizen.Wait(1000)
+		Wait(1000)
 		RestorePlayerStamina(pId, 1.0)
 		_runSpeedTime = _runSpeedTime - 1
 		if IsPedRagdoll(ped) then
 			SetPedToRagdoll(ped, math.random(5), math.random(5), 3, 0, 0, 0)
 		end
 	end
-    Buffs:RemoveBuffType("speed")
-    StopScreenEffect("DrugsMichaelAliensFight")
+	Buffs:RemoveBuffType("speed")
+	StopScreenEffect("DrugsMichaelAliensFight")
 	_runSpeedTime = 0
 	SetRunSprintMultiplierForPlayer(pId, 1.0)
 	SetSwimMultiplierForPlayer(pId, 1.0)
-    StatSetInt(`MP0_STAMINA`, 25, true)
-    LocalPlayer.state.drugsRunSpeed = false
+	StatSetInt(`MP0_STAMINA`, 25, true)
+	LocalPlayer.state.drugsRunSpeed = false
 end)
 
 local _armorTime = 0
@@ -56,8 +55,8 @@ RegisterNetEvent("Drugs:Effects:Armor", function(quality)
 		return
 	end
 
-    local addiction = LocalPlayer.state.Character:GetData("Addiction")?.Meth?.Factor or 0.0
-    
+	local addiction = LocalPlayer.state.Character:GetData("Addiction")?.Meth?.Factor or 0.0
+
 	_armorTime = 0
 	local drugEffectApplyArmorMulti = 0.0
 	local drugEffectQualityMulti = 1.0
@@ -89,7 +88,7 @@ RegisterNetEvent("Drugs:Effects:Armor", function(quality)
 	Buffs:ApplyUniqueBuff("armor", _armorTime, false)
 	while _armorTime > 0 and not LocalPlayer.state.isDead do
 		loops = loops + 1
-		Citizen.Wait(1000)
+		Wait(1000)
 		_armorTime = _armorTime - 1
 		if IsPedRagdoll(PlayerPedId()) then
 			SetPedToRagdoll(PlayerPedId(), math.random(5), math.random(5), 3, 0, 0, 0)
@@ -110,8 +109,8 @@ RegisterNetEvent("Drugs:Effects:Heal", function(quality)
 		return
 	end
 
-    local addiction = LocalPlayer.state.Character:GetData("Addiction")?.Moonshine?.Factor or 0.0
-    
+	local addiction = LocalPlayer.state.Character:GetData("Addiction")?.Moonshine?.Factor or 0.0
+
 	_healTime = 0
 	local drugEffectApplyHealthMulti = 0.0
 	local drugEffectQualityMulti = 1.0
@@ -143,9 +142,9 @@ RegisterNetEvent("Drugs:Effects:Heal", function(quality)
 	while _healTime > 0 and not LocalPlayer.state.isDead do
 		local ped = PlayerPedId()
 		loops = loops + 1
-		Citizen.Wait(1000)
+		Wait(1000)
 		_healTime = _healTime - 1
-		
+
 		local maxHp = GetEntityMaxHealth(ped)
 		local currHp = GetEntityHealth(ped)
 
@@ -161,21 +160,21 @@ RegisterNetEvent("Drugs:Effects:Heal", function(quality)
 end)
 
 RegisterNetEvent("Characters:Client:Spawned", function()
-    Buffs:RegisterBuff("speed", "bolt-lightning", "#8419C2", -1, "timed")
-    Buffs:RegisterBuff("armor", "shield-plus", "#4056b3", -1, "timed")
-    Buffs:RegisterBuff("heal", "trash-plus", "#52984a", -1, "timed")
+	Buffs:RegisterBuff("speed", "bolt-lightning", "#8419C2", -1, "timed")
+	Buffs:RegisterBuff("armor", "shield-plus", "#4056b3", -1, "timed")
+	Buffs:RegisterBuff("heal", "trash-plus", "#52984a", -1, "timed")
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
 	_armorTime = 0
 	_runSpeedTime = 0
 
-    Buffs:RemoveBuffType("speed")
-    Buffs:RemoveBuffType("armor")
+	Buffs:RemoveBuffType("speed")
+	Buffs:RemoveBuffType("armor")
 end)
 
 AddEventHandler("Damage:Client:Triggers:EntityDamaged", function(victim, attacker, pWeapon, isMelee)
-    if victim ~= PlayerPedId() then return end
+	if victim ~= PlayerPedId() then return end
 
 	if _armorTime > 0 and not Config.Weapons[pWeapon]?.isMinor then
 		_armorTime = 0

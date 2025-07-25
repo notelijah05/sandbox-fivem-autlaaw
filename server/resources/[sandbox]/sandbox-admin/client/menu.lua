@@ -22,9 +22,9 @@
 --                 _menuOpen = true
 --             end, function()
 --                 _menuOpen = false
---                 Citizen.Wait(100)
+--                 Wait(100)
 --                 adminSubMenus = nil
---                 adminMenu = nil 
+--                 adminMenu = nil
 --                 collectgarbage()
 --             end, true)
 
@@ -38,7 +38,7 @@
 --                 adminSubMenus['activePlayers'] = Menu:Create('adminActivePlayers', 'Player Management')
 
 --                 -- adminSubMenus['activePlayers'].Add:Button('Revive All', {}, function()
-                    
+
 --                 -- end)
 
 --                 if #data.playerData > 0 then
@@ -46,14 +46,14 @@
 --                     table.sort(data.playerData, function(a, b)
 --                         return a.Source < b.Source
 --                     end)
-                    
+
 --                     for _, player in ipairs(data.playerData) do
 --                         connectedIdentifiers[player.Identifier] = player.Source
 
 --                         local playerMenuId = 'adminActivePlayers-' .. player.Source
 
 --                         adminSubMenus[playerMenuId] = Menu:Create(playerMenuId, string.format('Viewing Player: [%s] %s', player.Source, player.Name))
-                        
+
 --                         -- PUNISH MENU
 --                         adminSubMenus[playerMenuId.. '-punish'] = Menu:Create('adminActivePlayersPunish-' .. player.Source, string.format('Punish Player: [%s] %s', player.Source, player.Name))
 
@@ -123,7 +123,7 @@
 
 --                         if player.Character then
 --                             adminSubMenus[playerMenuId].Add:Text('Character Information', { 'center', 'heading' })
-                            
+
 --                             adminSubMenus[playerMenuId].Add:Text(string.format(
 --                                 [[
 --                                     Name: %s %s<br>
@@ -136,7 +136,7 @@
 --                                 player.Character.Phone
 --                             ), {'pad', 'center', 'code'})
 --                         end
-                        
+
 --                         adminSubMenus[playerMenuId].Add:Button('Goto Player', { disabled = not player.Character, success = true }, function(data)
 --                             Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
 --                                 action = 'GOTO',
@@ -149,7 +149,7 @@
 --                                 end
 --                             end)
 --                         end)
-                        
+
 --                         adminSubMenus[playerMenuId].Add:Button('Bring Player', { disabled = not player.Character, success = true }, function(data)
 --                             Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
 --                                 action = 'BRING',
@@ -180,7 +180,7 @@
 --                                 end)
 --                             end
 --                         end)
-                        
+
 --                         if player.Character then
 --                             adminSubMenus[playerMenuId.. '-phone-perms'] = Menu:Create('adminPhonePerms-' .. player.Source, 'Update Phone Permissions')
 --                             adminSubMenus[playerMenuId].Add:SubMenu('Phone Permissions', adminSubMenus[playerMenuId.. '-phone-perms'], {})
@@ -195,22 +195,22 @@
 --                                             perm = permKey,
 --                                             state = data.data.selected,
 --                                         }, function(targetCoords)
-    
+
 --                                         end)
 --                                     end)
 --                                 end
 --                             end
 --                             adminSubMenus[playerMenuId.. '-phone-perms'].Add:SubMenuBack('Go Back', {})
-    
+
 --                         end
-                        
+
 --                         local playerString
 --                         if player.Character then
 --                             playerString = string.format('[%s] %s - %s %s', player.Source, player.Name, player.Character.First, player.Character.Last)
 --                         else
 --                             playerString = string.format('[%s] %s', player.Source, player.Name)
 --                         end
-                        
+
 --                         if data.callingSource == player.Source then
 --                             playerString = playerString .. ' (You)'
 --                         end
@@ -218,7 +218,7 @@
 --                         adminSubMenus[playerMenuId].Add:SubMenuBack('Go Back', {})
 --                         adminSubMenus['activePlayers'].Add:SubMenu(playerString, adminSubMenus[playerMenuId], {})
 
---                         Citizen.Wait(10)
+--                         Wait(10)
 --                     end
 --                 else
 --                     adminSubMenus['activePlayers'].Add:Button("No Active Players", { disabled = true }, function() end)
@@ -316,34 +316,34 @@
 --             adminSubMenus['teleportationUtils'].Add:Button('Teleport to Waypoint', { success = true }, function()
 --                 TriggerEvent('Commands:Client:TeleportToMarker')
 --             end)
-            
+
 --             local x, y, z = 0.0, 0.0, 0.0
-            
+
 --             adminSubMenus['teleportationUtils'].Add:Number('X', {
 --                 disabled = false,
 --                 current = 0,
 --             }, function(data)
 --                 x = tonumber(data.data.value) + 0.0
 --             end)
-            
+
 --             adminSubMenus['teleportationUtils'].Add:Number('Y', {
 --                 disabled = false,
 --                 current = 0,
 --             }, function(data)
 --                 y = tonumber(data.data.value) + 0.0
 --             end)
-            
+
 --             adminSubMenus['teleportationUtils'].Add:Number('Z', {
 --                 disabled = false,
 --                 current = 0,
 --             }, function(data)
 --                 z = tonumber(data.data.value) + 0.0
 --             end)
-            
+
 --             adminSubMenus['teleportationUtils'].Add:Button('Manual Teleport', { success = true }, function()
 --                 SetEntityCoords(PlayerPedId(), x, y, z)
 --             end)
-            
+
 --             adminSubMenus['teleportationUtils'].Add:SubMenuBack('Go Back', {})
 --             adminMenu.Add:SubMenu('Teleportation', adminSubMenus['teleportationUtils'], {})
 
@@ -352,7 +352,7 @@
 --             local playerPed = PlayerPedId()
 --             local playerCoords = GetEntityCoords(playerPed)
 --             local playerHeading = GetEntityHeading(playerPed)
-            
+
 --             adminSubMenus['developerUtilities'].Add:Text(string.format(
 --                 [[
 --                     Ped Coords: vector3(%.3f, %.3f, %.3f)<br>
@@ -372,9 +372,9 @@
 --                 else
 --                     _drawingCoords = true
 --                     local playerPed = PlayerPedId()
---                     Citizen.CreateThread(function()
+--                     CreateThread(function()
 --                         while _drawingCoords do
---                             Citizen.Wait(5)
+--                             Wait(5)
 --                             local playerCoords = GetEntityCoords(playerPed)
 --                             local playerHeading = GetEntityHeading(playerPed)
 --                             DrawShittyText(string.format('~r~X:~w~ %.3f ~r~Y:~w~ %.3f ~r~Z:~w~ %.3f ~b~H:~w~ %.3f', playerCoords.x, playerCoords.y, playerCoords.z, playerHeading))

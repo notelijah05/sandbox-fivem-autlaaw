@@ -18,24 +18,25 @@ function CircleZone:draw()
 
   if self.useZ then
     local radius = self.radius
-    DrawMarker(28, center.x, center.y, center.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, radius, radius, radius, r, g, b, 48, false, false, 2, nil, nil, false)
+    DrawMarker(28, center.x, center.y, center.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, radius, radius, radius, r, g, b, 48, false,
+      false, 2, nil, nil, false)
   else
     local diameter = self.diameter
-    DrawMarker(1, center.x, center.y, -200.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, diameter, diameter, 400.0, r, g, b, 96, false, false, 2, nil, nil, false)
+    DrawMarker(1, center.x, center.y, -200.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, diameter, diameter, 400.0, r, g, b, 96, false,
+      false, 2, nil, nil, false)
   end
 end
-
 
 local function _initDebug(zone, options)
   if options.debugBlip then zone:addDebugBlip() end
   if not options.debugPoly then
     return
   end
-  
-  Citizen.CreateThread(function()
+
+  CreateThread(function()
     while not zone.destroyed do
       zone:draw()
-      Citizen.Wait(0)
+      Wait(0)
     end
   end)
 end
@@ -49,7 +50,7 @@ function CircleZone:new(center, radius, options)
     diameter = radius * 2.0,
     useZ = options.useZ or false,
     debugPoly = options.debugPoly or false,
-    debugColor = options.debugColor or {0, 255, 0},
+    debugColor = options.debugColor or { 0, 255, 0 },
     data = options.data or {},
     isCircleZone = true,
   }

@@ -8,9 +8,9 @@ RegisterNetEvent("polyzone:pzcreate")
 AddEventHandler("polyzone:pzcreate", function(zoneType, name, args)
   if createdZone ~= nil then
     TriggerEvent('chat:addMessage', {
-      color = { 255, 0, 0},
+      color = { 255, 0, 0 },
       multiline = true,
-      args = {"Me", "A shape is already being created!"}
+      args = { "Me", "A shape is already being created!" }
     })
     return
   end
@@ -19,37 +19,46 @@ AddEventHandler("polyzone:pzcreate", function(zoneType, name, args)
     polyStart(name)
   elseif zoneType == "circle" then
     local radius = nil
-    if #args >= 3 then radius = tonumber(args[3])
-    else radius = tonumber(GetUserInput("Enter radius:")) end
+    if #args >= 3 then
+      radius = tonumber(args[3])
+    else
+      radius = tonumber(GetUserInput("Enter radius:"))
+    end
     if radius == nil then
       TriggerEvent('chat:addMessage', {
-        color = { 255, 0, 0},
+        color = { 255, 0, 0 },
         multiline = true,
-        args = {"Me", "CircleZone requires a radius (must be a number)!"}
+        args = { "Me", "CircleZone requires a radius (must be a number)!" }
       })
       return
     end
     circleStart(name, radius)
   elseif zoneType == "box" then
     local length = nil
-    if #args >= 3 then length = tonumber(args[3])
-    else length = tonumber(GetUserInput("Enter length:")) end
+    if #args >= 3 then
+      length = tonumber(args[3])
+    else
+      length = tonumber(GetUserInput("Enter length:"))
+    end
     if length == nil or length < 0.0 then
       TriggerEvent('chat:addMessage', {
-        color = { 255, 0, 0},
+        color = { 255, 0, 0 },
         multiline = true,
-        args = {"Me", "BoxZone requires a length (must be a positive number)!"}
+        args = { "Me", "BoxZone requires a length (must be a positive number)!" }
       })
       return
     end
     local width = nil
-    if #args >= 4 then width = tonumber(args[4])
-    else width = tonumber(GetUserInput("Enter width:")) end
+    if #args >= 4 then
+      width = tonumber(args[4])
+    else
+      width = tonumber(GetUserInput("Enter width:"))
+    end
     if width == nil or width < 0.0 then
       TriggerEvent('chat:addMessage', {
-        color = { 255, 0, 0},
+        color = { 255, 0, 0 },
         multiline = true,
-        args = {"Me", "BoxZone requires a width (must be a positive number)!"}
+        args = { "Me", "BoxZone requires a width (must be a positive number)!" }
       })
       return
     end
@@ -77,9 +86,9 @@ AddEventHandler("polyzone:pzfinish", function()
   end
 
   TriggerEvent('chat:addMessage', {
-    color = { 0, 255, 0},
+    color = { 0, 255, 0 },
     multiline = true,
-    args = {"Me", "Check your server root folder for polyzone_created_zones.txt to get the zone!"}
+    args = { "Me", "Check your server root folder for polyzone_created_zones.txt to get the zone!" }
   })
 
   lastCreatedZoneType = createdZoneType
@@ -97,11 +106,10 @@ AddEventHandler("polyzone:pzlast", function()
   end
   if lastCreatedZoneType == 'poly' then
     TriggerEvent('chat:addMessage', {
-      color = { 0, 255, 0},
+      color = { 0, 255, 0 },
       multiline = true,
-      args = {"Me", "The command pzlast only supports BoxZone and CircleZone for now"}
+      args = { "Me", "The command pzlast only supports BoxZone and CircleZone for now" }
     })
-  
   end
 
   local name = GetUserInput("Enter name (or leave empty to reuse last zone's name):")
@@ -134,9 +142,9 @@ AddEventHandler("polyzone:pzcancel", function()
   end
 
   TriggerEvent('chat:addMessage', {
-    color = {255, 0, 0},
+    color = { 255, 0, 0 },
     multiline = true,
-    args = {"Me", "Zone creation canceled!"}
+    args = { "Me", "Zone creation canceled!" }
   })
 
   drawZone = false
@@ -146,7 +154,7 @@ end)
 
 -- Drawing
 function drawThread()
-  Citizen.CreateThread(function()
+  CreateThread(function()
     while drawZone do
       if createdZone then
         createdZone:draw()

@@ -20,10 +20,11 @@ local radioRanges = {
 function GetRadioSubmixType(isExtendo, playerCoords, playerVeh)
 	if RADIO_CHANNEL >= 100 then -- Shitty Radio
 		local isInVehicle = playerVeh and playerVeh > 0
-		
+
 		local myCoords = GetEntityCoords(LocalPlayer.state.ped)
 		if LocalPlayer.state.tpLocation then
-			myCoords = vector3(LocalPlayer.state.tpLocation.x, LocalPlayer.state.tpLocation.y, LocalPlayer.state.tpLocation.z)
+			myCoords = vector3(LocalPlayer.state.tpLocation.x, LocalPlayer.state.tpLocation.y,
+				LocalPlayer.state.tpLocation.z)
 		end
 
 		local dist = #(myCoords - playerCoords)
@@ -71,18 +72,19 @@ RegisterNetEvent('VOIP:Radio:Client:SyncRadioData', function(radioData, coordsDa
 	end
 end)
 
-RegisterNetEvent('VOIP:Radio:Client:SetPlayerTalkState', function(targetSource, isTalking, isExtendo, playerCoords, inVeh)
-	if isTalking then
-		local submix, vol = GetRadioSubmixType(isExtendo, playerCoords, inVeh)
+RegisterNetEvent('VOIP:Radio:Client:SetPlayerTalkState',
+	function(targetSource, isTalking, isExtendo, playerCoords, inVeh)
+		if isTalking then
+			local submix, vol = GetRadioSubmixType(isExtendo, playerCoords, inVeh)
 
-		VOIP:ToggleVoice(targetSource, isTalking, submix, vol)
-	else
-		VOIP:ToggleVoice(targetSource, false)
-	end
-	
-	RADIO_DATA[targetSource] = isTalking
-	VOIP:MicClicks(isTalking)
-end)
+			VOIP:ToggleVoice(targetSource, isTalking, submix, vol)
+		else
+			VOIP:ToggleVoice(targetSource, false)
+		end
+
+		RADIO_DATA[targetSource] = isTalking
+		VOIP:MicClicks(isTalking)
+	end)
 
 RegisterNetEvent('VOIP:Radio:Client:AddPlayerToRadio', function(targetSource)
 	Logger:Trace('VOIP', ('%s Joined Current Radio Channel'):format(targetSource))
@@ -122,9 +124,9 @@ function RadioKeyDown()
 		RADIO_TALKING = true
 		VOIP:MicClicks(true)
 		UpdateVOIPIndicatorStatus()
-		Citizen.CreateThread(function()
+		CreateThread(function()
 			while RADIO_TALKING and _characterLoaded do
-				Citizen.Wait(0)
+				Wait(0)
 
 				local aiming = IsPlayerFreeAiming(LocalPlayer.state.PlayerID)
 
@@ -133,9 +135,11 @@ function RadioKeyDown()
 				SetControlNormal(2, 249, 1.0)
 
 				if not aiming and not IsEntityPlayingAnim(LocalPlayer.state.ped, 'random@arrests', 'generic_radio_chatter', 3) then
-					TaskPlayAnim(LocalPlayer.state.ped, 'random@arrests', 'generic_radio_chatter', 8.0, 0.0, -1, 49, 0, false, false, false)
+					TaskPlayAnim(LocalPlayer.state.ped, 'random@arrests', 'generic_radio_chatter', 8.0, 0.0, -1, 49, 0,
+						false, false, false)
 				elseif aiming and not IsEntityPlayingAnim(LocalPlayer.state.ped, 'random@arrests', 'radio_chatter', 3) then
-					TaskPlayAnim(LocalPlayer.state.ped, 'random@arrests', 'radio_chatter', 8.0, 0.0, -1, 49, 0, false, false, false)
+					TaskPlayAnim(LocalPlayer.state.ped, 'random@arrests', 'radio_chatter', 8.0, 0.0, -1, 49, 0, false,
+						false, false)
 				end
 			end
 
@@ -157,7 +161,7 @@ function RadioKeyUp()
 end
 
 AddEventHandler('Ped:Client:Died', function()
-    RadioKeyUp()
+	RadioKeyUp()
 end)
 
 RegisterNetEvent('VOIP:Radio:Client:SetPlayerRadio', function(channel)

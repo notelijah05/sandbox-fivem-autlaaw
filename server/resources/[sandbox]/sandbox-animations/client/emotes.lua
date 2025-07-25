@@ -38,7 +38,7 @@ ANIMATIONS.Emotes = {
 
         if IsInAnimation then
             Animations.Emotes:ForceCancel()
-            Citizen.Wait(250)
+            Wait(250)
         end
 
         if emote ~= nil and type(emote) == 'string' then
@@ -112,11 +112,11 @@ ANIMATIONS.Emotes = {
             SetEntityHeading(ped, pos.h + 0.0)
         end
 
-        Citizen.Wait(500)
+        Wait(500)
 
         TaskPlayAnim(ped, "switch@franklin@bed", "sleep_getup_rubeyes", 8.0, 8.0, -1, 8, 0, false, false, false)
 
-        Citizen.Wait(5000)
+        Wait(5000)
         FreezeEntityPosition(ped, false)
     end,
 }
@@ -129,10 +129,11 @@ function AddPropToPlayer(prop1, bone, off1, off2, off3, rot1, rot2, rot3)
     end
 
     prop = CreateObject(GetHashKey(prop1), x, y, z + 0.2, true, true, true)
-    AttachEntityToEntity(prop, LocalPlayer.state.ped, GetPedBoneIndex(LocalPlayer.state.ped, bone), off1, off2, off3, rot1, rot2, rot3, true, true, false, true, 1, true)
+    AttachEntityToEntity(prop, LocalPlayer.state.ped, GetPedBoneIndex(LocalPlayer.state.ped, bone), off1, off2, off3,
+        rot1, rot2, rot3, true, true, false, true, 1, true)
     table.insert(PlayerProps, prop)
     SetEntityCollision(prop, false, true)
-	SetEntityCompletelyDisableCollision(prop, false, true)
+    SetEntityCompletelyDisableCollision(prop, false, true)
     PlayerHasProp = true
     SetModelAsNoLongerNeeded(prop1)
     return prop
@@ -146,7 +147,6 @@ function DestroyAllProps()
 end
 
 function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, skipDisarm)
-
     if emoteData.AdditionalOptions.BlockVehicle and IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
         return
     end
@@ -154,10 +154,10 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
     if emoteData.AdditionalOptions.AvailableToK9 and not LocalPlayer.state.isK9Ped then
         return
     end
-	
-	if Config.EnableEmoteCD and fromUserInput and _AnimCounter >= Config.AnimMaxEmotesCooldown then
-		return Notification:Error('Stop spamming emotes you pepega.')
-	end
+
+    if Config.EnableEmoteCD and fromUserInput and _AnimCounter >= Config.AnimMaxEmotesCooldown then
+        return Notification:Error('Stop spamming emotes you pepega.')
+    end
 
     currentEmoteAllData = {
         emoteData = emoteData,
@@ -181,9 +181,9 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
 
         ChosenDict, ChosenAnimation = emoteData.AnDictionary, emoteData.AnAnim
         AnimationDuration = -1
-		if fromUserInput and Config.EnableEmoteCD then
-			_AnimCounter = _AnimCounter + 1
-		end
+        if fromUserInput and Config.EnableEmoteCD then
+            _AnimCounter = _AnimCounter + 1
+        end
 
         if PlayerHasProp then
             DestroyAllProps()
@@ -199,7 +199,8 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
             elseif ChosenDict == "ScenarioObject" then
                 BehindPlayer = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, 0.0, 0 - 0.5, -0.5);
                 ClearPedTasks(LocalPlayer.state.ped)
-                TaskStartScenarioAtPosition(LocalPlayer.state.ped, ChosenAnimation, BehindPlayer['x'], BehindPlayer['y'], BehindPlayer['z'], GetEntityHeading(LocalPlayer.state.ped), 0, 1, false)
+                TaskStartScenarioAtPosition(LocalPlayer.state.ped, ChosenAnimation, BehindPlayer['x'], BehindPlayer['y'],
+                    BehindPlayer['z'], GetEntityHeading(LocalPlayer.state.ped), 0, 1, false)
                 IsInAnimation = true
                 IsInEmoteName = emoteName
                 return
@@ -250,22 +251,22 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
 
             if emoteData.AdditionalOptions.PtfxAsset then
                 if emoteData.AdditionalOptions.PtfxAlways then
-                    Citizen.CreateThread(function()
-                        Citizen.Wait(500)
+                    CreateThread(function()
+                        Wait(500)
                         LocalPlayer.state:set('animPtfx', emoteName, true)
                     end)
                 else
                     PtfxWait = emoteData.AdditionalOptions.PtfxWait
                     PtfxPrompt = true
                     Notification:Info(emoteData.AdditionalOptions.PtfxInfo, 5000)
-                    Citizen.CreateThread(function()
+                    CreateThread(function()
                         while PtfxPrompt do
                             if IsControlPressed(0, 47) then
                                 LocalPlayer.state:set('animPtfx', emoteName, true)
                                 Wait(PtfxWait)
                                 LocalPlayer.state:set('animPtfx', false, true)
                             end
-                            Citizen.Wait(5)
+                            Wait(5)
                         end
                     end)
                 end
@@ -274,7 +275,8 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
             end
         end
 
-        TaskPlayAnim(LocalPlayer.state.ped, ChosenDict, ChosenAnimation, BlendInOut, BlendInOut, AnimationDuration, MovementType, 0, false, false, false)
+        TaskPlayAnim(LocalPlayer.state.ped, ChosenDict, ChosenAnimation, BlendInOut, BlendInOut, AnimationDuration,
+            MovementType, 0, false, false, false)
         IsInAnimation = true
         MostRecentDict = ChosenDict
         MostRecentAnimation = ChosenAnimation
@@ -286,20 +288,24 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
             if emoteData.AdditionalOptions.Prop then
                 PropName = emoteData.AdditionalOptions.Prop
                 PropBone = emoteData.AdditionalOptions.PropBone
-                PropPl1, PropPl2, PropPl3, PropPl4, PropPl5, PropPl6 = table.unpack(emoteData.AdditionalOptions.PropPlacement)
+                PropPl1, PropPl2, PropPl3, PropPl4, PropPl5, PropPl6 = table.unpack(emoteData.AdditionalOptions
+                    .PropPlacement)
                 if emoteData.AdditionalOptions.SecondProp then
                     SecondPropName = emoteData.AdditionalOptions.SecondProp
                     SecondPropBone = emoteData.AdditionalOptions.SecondPropBone
-                    SecondPropPl1, SecondPropPl2, SecondPropPl3, SecondPropPl4, SecondPropPl5, SecondPropPl6 = table.unpack(emoteData.AdditionalOptions.SecondPropPlacement)
+                    SecondPropPl1, SecondPropPl2, SecondPropPl3, SecondPropPl4, SecondPropPl5, SecondPropPl6 = table
+                        .unpack(emoteData.AdditionalOptions.SecondPropPlacement)
                     SecondPropEmote = true
                 else
                     SecondPropEmote = false
                 end
                 Wait(AttachWait)
-                local stupidProp1 = AddPropToPlayer(PropName, PropBone, PropPl1, PropPl2, PropPl3, PropPl4, PropPl5, PropPl6)
+                local stupidProp1 = AddPropToPlayer(PropName, PropBone, PropPl1, PropPl2, PropPl3, PropPl4, PropPl5,
+                    PropPl6)
                 LocalPlayer.state:set('animProp1', ObjToNet(stupidProp1), true)
                 if SecondPropEmote then
-                    local stupidProp2 = AddPropToPlayer(SecondPropName, SecondPropBone, SecondPropPl1, SecondPropPl2, SecondPropPl3, SecondPropPl4, SecondPropPl5, SecondPropPl6)
+                    local stupidProp2 = AddPropToPlayer(SecondPropName, SecondPropBone, SecondPropPl1, SecondPropPl2,
+                        SecondPropPl3, SecondPropPl4, SecondPropPl5, SecondPropPl6)
                 end
             end
         end
@@ -323,17 +329,18 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
             end)
         end
 
-        Citizen.CreateThread(function()
+        CreateThread(function()
             while LocalPlayer.state.loggedIn and IsInAnimation and ChosenDict and ChosenAnimation do
                 if not IsEntityPlayingAnim(LocalPlayer.state.ped, ChosenDict, ChosenAnimation, 3) then
-                    TaskPlayAnim(LocalPlayer.state.ped, ChosenDict, ChosenAnimation, BlendInOut, BlendInOut, AnimationDuration, MovementType, 0, false, false, false)
+                    TaskPlayAnim(LocalPlayer.state.ped, ChosenDict, ChosenAnimation, BlendInOut, BlendInOut,
+                        AnimationDuration, MovementType, 0, false, false, false)
                 end
 
                 if emoteData?.AdditionalOptions?.BlockVehicle and IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
                     Animations.Emotes:ForceCancel()
                 end
 
-                Citizen.Wait(250)
+                Wait(250)
             end
         end)
     end
@@ -342,7 +349,7 @@ end
 -- RegisterNetEvent('Routing:Client:NewRoute', function()
 --     if IsInAnimation then
 --         DestroyAllProps()
---         Citizen.Wait(500)
+--         Wait(500)
 --         DoAnEmote(currentEmoteAllData.emoteData, currentEmoteAllData.fromUserInput, currentEmoteAllData.length, currentEmoteAllData.notCancellable, currentEmoteAllData.emoteName, currentEmoteAllData.skipDisarm)
 --     end
 -- end)
@@ -375,12 +382,12 @@ function CancelEmote()
     local emoteOptions = currentEmoteAllData?.emoteData?.AdditionalOptions
     if emoteOptions?.Prop then
         if emoteOptions?.SecondProp then
-            TriggerServerEvent('Animations:Server:ClearAttached', { 
+            TriggerServerEvent('Animations:Server:ClearAttached', {
                 [GetHashKey(emoteOptions?.Prop)] = true,
                 [GetHashKey(emoteOptions?.SecondProp)] = true
             })
         else
-            TriggerServerEvent('Animations:Server:ClearAttached', { 
+            TriggerServerEvent('Animations:Server:ClearAttached', {
                 [GetHashKey(emoteOptions?.Prop)] = true
             })
         end
@@ -394,7 +401,8 @@ function PtfxStart()
         PtfxAt = prop
     end
     UseParticleFxAssetNextCall(PtfxAsset)
-    Ptfx = StartNetworkedParticleFxLoopedOnEntityBone(PtfxName, PtfxAt, Ptfx1, Ptfx2, Ptfx3, Ptfx4, Ptfx5, Ptfx6, GetEntityBoneIndexByName(PtfxName, "VFX"), 1065353216, 0, 0, 0, 1065353216, 1065353216, 1065353216, 0)
+    Ptfx = StartNetworkedParticleFxLoopedOnEntityBone(PtfxName, PtfxAt, Ptfx1, Ptfx2, Ptfx3, Ptfx4, Ptfx5, Ptfx6,
+        GetEntityBoneIndexByName(PtfxName, "VFX"), 1065353216, 0, 0, 0, 1065353216, 1065353216, 1065353216, 0)
     SetParticleFxLoopedColour(Ptfx, 1.0, 1.0, 1.0)
     table.insert(PlayerParticles, Ptfx)
 end
@@ -424,14 +432,14 @@ AddEventHandler('Ped:Client:Died', function()
     Animations.Emotes:ForceCancel()
 end)
 
-Citizen.CreateThread(function()
-	while Config.EnableEmoteCD do
-		if _AnimCounter >= Config.AnimMaxEmotesCooldown then
-			_AnimCounter = _AnimCounter - 1
-			if _AnimCounter < 0 then
-				_AnimCounter = 0
-			end
-		end
-		Citizen.Wait(Config.AnimCooldown)
-	end
+CreateThread(function()
+    while Config.EnableEmoteCD do
+        if _AnimCounter >= Config.AnimMaxEmotesCooldown then
+            _AnimCounter = _AnimCounter - 1
+            if _AnimCounter < 0 then
+                _AnimCounter = 0
+            end
+        end
+        Wait(Config.AnimCooldown)
+    end
 end)

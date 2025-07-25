@@ -56,9 +56,9 @@ AddEventHandler('Core:Shared:Ready', function()
             local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
 
             local insideZone = Polyzone:IsCoordsInZone(pedCoords, false, 'veh_customs_wheels')
-            if 
-                insideZone?.veh_customs_wheels 
-                and LocalPlayer.state.onDuty 
+            if
+                insideZone?.veh_customs_wheels
+                and LocalPlayer.state.onDuty
                 and insideZone.veh_customs_wheels == LocalPlayer.state.onDuty
                 and Jobs.Permissions:HasJob(LocalPlayer.state.onDuty, false, false, 90) then
                 return true
@@ -81,7 +81,7 @@ AddEventHandler('Characters:Client:Logout', function()
 end)
 
 RegisterNetEvent('Fitment:Client:CamberController:UseItem', function()
-	OpenControllerMenu()
+    OpenControllerMenu()
 end)
 
 RegisterNetEvent('Fitment:Client:Update', function(netId, data)
@@ -131,11 +131,11 @@ function RunFitmentDataUpdate()
 end
 
 function StartFitmentThread()
-    Citizen.CreateThread(function()
+    CreateThread(function()
         local tick = 0
         while LocalPlayer.state.loggedIn do
             RunFitmentDataUpdate()
-            Citizen.Wait(5000)
+            Wait(5000)
 
             if tick >= 5 then
                 tick = 0
@@ -146,14 +146,14 @@ function StartFitmentThread()
         end
     end)
 
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while LocalPlayer.state.loggedIn do
-            Citizen.Wait(1)
+            Wait(1)
             for k, v in pairs(fitmentVehicles) do
                 if v?.veh and v.veh ~= EDITING_VEHICLE and DoesEntityExist(v.veh) then
                     SetVehicleFrontTrackWidth(v.veh, v?.data?.frontTrack)
                     SetVehicleRearTrackWidth(v.veh, v?.data?.rearTrack)
-					SetVehicleFrontCamber(v.veh, v?.data?.frontCamber)
+                    SetVehicleFrontCamber(v.veh, v?.data?.frontCamber)
                     SetVehicleRearCamber(v.veh, v?.data?.rearCamber)
                 end
             end

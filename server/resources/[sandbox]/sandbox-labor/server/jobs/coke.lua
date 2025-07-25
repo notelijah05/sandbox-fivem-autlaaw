@@ -49,10 +49,10 @@ local function SpawnPeds(source, coords)
 		--TaskCombatPed(p, GetPlayerPed(source), 0, 16)
 
 		table.insert(peds, NetworkGetNetworkIdFromEntity(p))
-		Citizen.Wait(3)
+		Wait(3)
 	end
 
-	Citizen.Wait(1000)
+	Wait(1000)
 
 	return peds
 end
@@ -109,16 +109,17 @@ AddEventHandler("Labor:Server:Startup", function()
 	Callbacks:RegisterServerCallback("Coke:ArriveAtCayo", function(source, data, cb)
 		if _joiners[source] ~= nil and _active.joiner == _joiners[source] and _active.state == 1 then
 			_active.state = 2
-			Vehicles:SpawnTemp(source, `squaddie`, 'automobile', vector3(4504.899, -4510.600, 4.367), 19.409, function(veh)
-				Vehicles.Keys:Add(_joiners[source], Entity(veh).state.VIN)
-				if _active.isWorkgroup then
-					if #_active.members > 0 then
-						for k, v in ipairs(_active.members) do
-							Vehicles.Keys:Add(v.ID, Entity(veh).state.VIN)
+			Vehicles:SpawnTemp(source, `squaddie`, 'automobile', vector3(4504.899, -4510.600, 4.367), 19.409,
+				function(veh)
+					Vehicles.Keys:Add(_joiners[source], Entity(veh).state.VIN)
+					if _active.isWorkgroup then
+						if #_active.members > 0 then
+							for k, v in ipairs(_active.members) do
+								Vehicles.Keys:Add(v.ID, Entity(veh).state.VIN)
+							end
 						end
 					end
-				end
-			end)
+				end)
 
 			Vehicles:SpawnTemp(
 				source,

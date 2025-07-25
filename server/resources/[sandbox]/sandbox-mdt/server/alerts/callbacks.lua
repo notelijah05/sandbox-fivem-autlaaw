@@ -14,7 +14,7 @@ function RegisterEACallbacks()
 				tState.trackerDisabled = true
 				EmergencyAlerts:DisableTracker(target, true)
 
-				
+
 				local coords = GetEntityCoords(GetPlayerPed(target))
 				Callbacks:ClientCallback(target, "EmergencyAlerts:GetStreetName", coords, function(location)
 					local radioFreq = "Unknown Radio Frequency"
@@ -23,8 +23,8 @@ function RegisterEACallbacks()
 					else
 						radioFreq = "Not On Radio"
 					end
-	
-					
+
+
 					if tState.onDuty == "police" then
 						EmergencyAlerts:Create("13-C", "Officer Tracker Disabled", "police_alerts", location, {
 							icon = "circle-exclamation",
@@ -42,7 +42,8 @@ function RegisterEACallbacks()
 							duration = (60 * 10),
 						}, 1)
 					elseif tState.onDuty == "prison" then
-						EmergencyAlerts:Create("13-C", "DOC Officer Tracker Disabled", {"police_alerts", "doc_alerts"}, location, {
+						EmergencyAlerts:Create("13-C", "DOC Officer Tracker Disabled", { "police_alerts", "doc_alerts" },
+							location, {
 							icon = "circle-exclamation",
 							details = string.format(
 								"%s - %s %s | %s",
@@ -58,7 +59,8 @@ function RegisterEACallbacks()
 							duration = (60 * 10),
 						}, 1)
 					elseif tState.onDuty == "ems" then
-						EmergencyAlerts:Create("13-C", "Medic Tracker Disabled", {"police_alerts", "ems_alerts"}, location, {
+						EmergencyAlerts:Create("13-C", "Medic Tracker Disabled", { "police_alerts", "ems_alerts" },
+							location, {
 							icon = "circle-exclamation",
 							details = string.format(
 								"%s - %s %s | %s",
@@ -95,7 +97,7 @@ function RegisterEACallbacks()
 			local job = Player(source).state.onDuty
 
 			Jobs.Duty:Off(source, false, true)
-			Citizen.Wait(250)
+			Wait(250)
 			Jobs.Duty:On(source, job, true)
 
 			cb(true)

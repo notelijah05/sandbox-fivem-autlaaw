@@ -10,9 +10,9 @@ function OpenStaffMenu(data)
             _menuOpen = true
         end, function()
             _menuOpen = false
-            Citizen.Wait(100)
+            Wait(100)
             adminSubMenus = nil
-            adminMenu = nil 
+            adminMenu = nil
             collectgarbage()
         end, true)
 
@@ -26,40 +26,41 @@ function OpenStaffMenu(data)
             adminSubMenus['activePlayers'] = Menu:Create('adminActivePlayers', 'Player Management')
 
             if #data.playerData > 0 then
-
                 table.sort(data.playerData, function(a, b)
                     return a.Source < b.Source
                 end)
-                
+
                 for _, player in ipairs(data.playerData) do
                     connectedIdentifiers[player.Identifier] = player.Source
 
                     local playerMenuId = 'adminActivePlayers-' .. player.Source
 
-                    adminSubMenus[playerMenuId] = Menu:Create(playerMenuId, string.format('Viewing Player: [%s] %s', player.Source, player.Name))
-                    
-                    -- PUNISH MENU
-                    adminSubMenus[playerMenuId.. '-punish'] = Menu:Create('adminActivePlayersPunish-' .. player.Source, string.format('Punish Player: [%s] %s', player.Source, player.Name))
+                    adminSubMenus[playerMenuId] = Menu:Create(playerMenuId,
+                        string.format('Viewing Player: [%s] %s', player.Source, player.Name))
 
-                    adminSubMenus[playerMenuId.. '-punish'].Add:Text('Kick', { 'center', 'heading' })
-                    adminSubMenus[playerMenuId.. '-punish'].Add:Input('Kick Reason', {
+                    -- PUNISH MENU
+                    adminSubMenus[playerMenuId .. '-punish'] = Menu:Create('adminActivePlayersPunish-' .. player.Source,
+                        string.format('Punish Player: [%s] %s', player.Source, player.Name))
+
+                    adminSubMenus[playerMenuId .. '-punish'].Add:Text('Kick', { 'center', 'heading' })
+                    adminSubMenus[playerMenuId .. '-punish'].Add:Input('Kick Reason', {
                         disabled = false,
                         max = 255,
                         current = '',
                     }, function(data)
                         kickReason = data.data.value
                     end)
-                    adminSubMenus[playerMenuId.. '-punish'].Add:Button('Kick '.. player.Name, {}, function()
+                    adminSubMenus[playerMenuId .. '-punish'].Add:Button('Kick ' .. player.Name, {}, function()
                         if not kickReason then kickReason = 'No Reason Provided' end
                         TriggerServerEvent('Admin:Server:KickPlayer', player.Source, kickReason)
                     end)
 
-                    adminSubMenus[playerMenuId.. '-punish'].Add:Text('Ban', { 'center', 'heading' })
-                    adminSubMenus[playerMenuId.. '-punish'].Add:Select('Ban Length', {
+                    adminSubMenus[playerMenuId .. '-punish'].Add:Text('Ban', { 'center', 'heading' })
+                    adminSubMenus[playerMenuId .. '-punish'].Add:Select('Ban Length', {
                         disabled = false,
                         current = banLength,
                         list = {
-                            { label = '1 Day', value = 1 },
+                            { label = '1 Day',  value = 1 },
                             { label = '2 Days', value = 2 },
                             { label = '3 Days', value = 3 },
                         }
@@ -67,7 +68,7 @@ function OpenStaffMenu(data)
                         banLength = data.data.value
                     end)
 
-                    adminSubMenus[playerMenuId.. '-punish'].Add:Input('Ban Reason', {
+                    adminSubMenus[playerMenuId .. '-punish'].Add:Input('Ban Reason', {
                         disabled = false,
                         max = 255,
                         current = '',
@@ -75,11 +76,11 @@ function OpenStaffMenu(data)
                         banReason = data.data.value
                     end)
 
-                    adminSubMenus[playerMenuId.. '-punish'].Add:Button('Ban '.. player.Name, {}, function()
+                    adminSubMenus[playerMenuId .. '-punish'].Add:Button('Ban ' .. player.Name, {}, function()
                         if not banReason then banReason = 'No Reason Provided' end
                         TriggerServerEvent('Admin:Server:BanPlayer', player.Source, banLength, banReason)
                     end)
-                    adminSubMenus[playerMenuId.. '-punish'].Add:SubMenuBack('Go Back', {})
+                    adminSubMenus[playerMenuId .. '-punish'].Add:SubMenuBack('Go Back', {})
 
                     adminSubMenus[playerMenuId].Add:Text('Player Information', { 'center', 'heading' })
                     adminSubMenus[playerMenuId].Add:Text(string.format(
@@ -97,13 +98,13 @@ function OpenStaffMenu(data)
                         player.Identifier,
                         player.IsStaff and 'Yes' or 'No',
                         player.IsAdmin and 'Yes' or 'No'
-                    ), {'pad', 'center', 'code'})
+                    ), { 'pad', 'center', 'code' })
 
-                    adminSubMenus[playerMenuId].Add:SubMenu('Punishment', adminSubMenus[playerMenuId.. '-punish'], {})
+                    adminSubMenus[playerMenuId].Add:SubMenu('Punishment', adminSubMenus[playerMenuId .. '-punish'], {})
 
                     if player.Character and player.Character.First then
                         adminSubMenus[playerMenuId].Add:Text('Character Information', { 'center', 'heading' })
-                        
+
                         adminSubMenus[playerMenuId].Add:Text(string.format(
                             [[
                                 Name: %s %s<br>
@@ -112,9 +113,9 @@ function OpenStaffMenu(data)
                             player.Character.First,
                             player.Character.Last,
                             player.Character.SID
-                        ), {'pad', 'center', 'code'})
+                        ), { 'pad', 'center', 'code' })
                     end
-                    
+
                     -- adminSubMenus[playerMenuId].Add:Button('Goto Player', { disabled = not player.Character, success = true }, function(data)
                     --     Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
                     --         action = 'GOTO',
@@ -127,7 +128,7 @@ function OpenStaffMenu(data)
                     --         end
                     --     end)
                     -- end)
-                    
+
                     -- adminSubMenus[playerMenuId].Add:Button('Bring Player', { disabled = not player.Character, success = true }, function(data)
                     --     Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
                     --         action = 'BRING',
@@ -145,7 +146,8 @@ function OpenStaffMenu(data)
                     --     ExecuteCommand('heal '.. player.Source)
                     -- end)
 
-                    adminSubMenus[playerMenuId].Add:Button('Attach To (Spectate)', { disabled = not player.Character, success = _attached }, function(data)
+                    adminSubMenus[playerMenuId].Add:Button('Attach To (Spectate)',
+                        { disabled = not player.Character, success = _attached }, function(data)
                         if _attached then
                             AdminStopAttach()
                         else
@@ -161,7 +163,8 @@ function OpenStaffMenu(data)
 
                     local playerString
                     if player.Character then
-                        playerString = string.format('[%s] %s - %s %s', player.Source, player.Name, player.Character.First, player.Character.Last)
+                        playerString = string.format('[%s] %s - %s %s', player.Source, player.Name,
+                            player.Character.First, player.Character.Last)
                     else
                         playerString = string.format('[%s] %s', player.Source, player.Name)
                     end
@@ -192,7 +195,8 @@ function OpenStaffMenu(data)
 
                 for _, player in ipairs(data.recentDisconnects) do
                     local playerMenuId = 'adminRecentDisconnects-' .. player.Source
-                    adminSubMenus[playerMenuId] = Menu:Create(playerMenuId, string.format('Disconnected Player: [%s] %s', player.Source, player.Name))
+                    adminSubMenus[playerMenuId] = Menu:Create(playerMenuId,
+                        string.format('Disconnected Player: [%s] %s', player.Source, player.Name))
 
                     local hasReconnected = connectedIdentifiers[player.Identifier]
 
@@ -213,8 +217,8 @@ function OpenStaffMenu(data)
                         player.IsStaff and 'Yes' or 'No',
                         player.IsAdmin and 'Yes' or 'No',
                         player.Reason,
-                        hasReconnected and ('Yes, as ID '.. hasReconnected) or 'No'
-                    ), {'pad', 'center', 'code'})
+                        hasReconnected and ('Yes, as ID ' .. hasReconnected) or 'No'
+                    ), { 'pad', 'center', 'code' })
 
                     if player.Character then
                         adminSubMenus[playerMenuId].Add:Text('Character Information', { 'center', 'heading' })
@@ -226,13 +230,14 @@ function OpenStaffMenu(data)
                             player.Character.First,
                             player.Character.Last,
                             player.Character.SID
-                        ), {'pad', 'center', 'code'})
+                        ), { 'pad', 'center', 'code' })
                     end
                     adminSubMenus[playerMenuId].Add:SubMenuBack('Go Back', {})
 
                     local playerString
                     if player.Character then
-                        playerString = string.format('[%s] %s - %s %s', player.Source, player.Name, player.Character.First, player.Character.Last)
+                        playerString = string.format('[%s] %s - %s %s', player.Source, player.Name,
+                            player.Character.First, player.Character.Last)
                     else
                         playerString = string.format('[%s] %s', player.Source, player.Name)
                     end
@@ -244,7 +249,8 @@ function OpenStaffMenu(data)
                     adminSubMenus['recentDisconnects'].Add:SubMenu(playerString, adminSubMenus[playerMenuId], {})
                 end
             else
-                adminSubMenus['recentDisconnects'].Add:Button("No Recent Disconnects", { disabled = true }, function() end)
+                adminSubMenus['recentDisconnects'].Add:Button("No Recent Disconnects", { disabled = true },
+                    function() end)
             end
 
             adminSubMenus['recentDisconnects'].Add:SubMenuBack('Go Back', {})

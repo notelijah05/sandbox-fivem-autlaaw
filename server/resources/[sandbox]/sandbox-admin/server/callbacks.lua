@@ -36,12 +36,12 @@ end
 
 function RegisterCallbacks()
     Callbacks:RegisterServerCallback('Admin:GetPlayerList', function(source, data, cb)
-        Citizen.CreateThread(function()
+        CreateThread(function()
             local player = Fetch:Source(source)
             if player and player.Permissions:IsStaff() then
                 local data = {}
                 local activePlayers = Fetch:All()
-    
+
                 for k, v in pairs(activePlayers) do
                     if v ~= nil and v:GetData('AccountID') then
                         table.insert(data, {
@@ -222,16 +222,16 @@ function RegisterCallbacks()
                                     },
                                 },
                                 {
-									["$expr"] = {
-										["$regexMatch"] = {
-											input = {
-												["$concat"] = { "$First", " ", "$Last" },
-											},
-											regex = data.term,
-											options = "i",
-										},
-									},
-								},
+                                    ["$expr"] = {
+                                        ["$regexMatch"] = {
+                                            input = {
+                                                ["$concat"] = { "$First", " ", "$Last" },
+                                            },
+                                            regex = data.term,
+                                            options = "i",
+                                        },
+                                    },
+                                },
                             }
                         },
                     }
@@ -353,7 +353,7 @@ function RegisterCallbacks()
                     elseif data.action == 'heal' then
                         if (notMe or player.Permissions:IsAdmin()) then
                             Callbacks:ClientCallback(targetChar:GetData("Source"), "Damage:Heal", true)
-                            
+
                             cb({
                                 success = true,
                                 message = 'Healed Successfully'
@@ -367,12 +367,13 @@ function RegisterCallbacks()
                             })
                         end
                     elseif data.action == 'attach' and (canFuckWith or player.Permissions:GetLevel() == 100) and notMe then
-                        TriggerClientEvent('Admin:Client:Attach', source, target:GetData('Source'), GetEntityCoords(targetPed), {
-                            First = targetChar:GetData("First"),
-                            Last = targetChar:GetData("Last"),
-                            SID = targetChar:GetData("SID"),
-                            Account = target:GetData("AccountID"),
-                        })
+                        TriggerClientEvent('Admin:Client:Attach', source, target:GetData('Source'),
+                            GetEntityCoords(targetPed), {
+                                First = targetChar:GetData("First"),
+                                Last = targetChar:GetData("Last"),
+                                SID = targetChar:GetData("SID"),
+                                Account = target:GetData("AccountID"),
+                            })
 
                         cb({
                             success = true,
@@ -383,18 +384,18 @@ function RegisterCallbacks()
                     elseif data.action == 'marker' and (canFuckWith or player.Permissions:GetLevel() == 100) then
                         local targetCoords = GetEntityCoords(targetPed)
                         TriggerClientEvent('Admin:Client:Marker', source, targetCoords.x, targetCoords.y)
-					else
-						cb({
+                    else
+                        cb({
                             success = false,
                             message = 'An error has occured due to similar permissions.'
                         })
-					end
+                    end
 
                     if wasSuccessful then
                         Logger:Warn(
                             "Admin",
                             string.format(
-                                "%s [%s] Used Staff Action %s On %s [%s] - Character %s %s (%s)", 
+                                "%s [%s] Used Staff Action %s On %s [%s] - Character %s %s (%s)",
                                 player:GetData("Name"),
                                 player:GetData("AccountID"),
                                 string.upper(data.action),
@@ -522,7 +523,7 @@ function RegisterCallbacks()
                         local vehCoords = GetEntityCoords(data.target)
 
                         SetEntityCoords(pPed, vehCoords.x, vehCoords.y, vehCoords.z - 25.0, true, false, false, false)
-                        Citizen.Wait(300)
+                        Wait(300)
                         SetPedIntoVehicle(pPed, data.target, i)
 
                         break
@@ -531,13 +532,17 @@ function RegisterCallbacks()
             else
                 if netOwner > 0 then
                     if data.action == "explode" then
-                        TriggerClientEvent("NetSync:Client:Execute", netOwner, "NetworkExplodeVehicle", NetworkGetNetworkIdFromEntity(data.target), 1, 0)
+                        TriggerClientEvent("NetSync:Client:Execute", netOwner, "NetworkExplodeVehicle",
+                            NetworkGetNetworkIdFromEntity(data.target), 1, 0)
                     elseif data.action == "repair" then
-                        TriggerClientEvent("Vehicles:Client:Repair:Normal", netOwner, NetworkGetNetworkIdFromEntity(data.target))
+                        TriggerClientEvent("Vehicles:Client:Repair:Normal", netOwner,
+                            NetworkGetNetworkIdFromEntity(data.target))
                     elseif data.action == "repair_full" then
-                        TriggerClientEvent("Vehicles:Client:Repair:Full", netOwner, NetworkGetNetworkIdFromEntity(data.target))
+                        TriggerClientEvent("Vehicles:Client:Repair:Full", netOwner,
+                            NetworkGetNetworkIdFromEntity(data.target))
                     elseif data.action == "repair_engine" then
-                        TriggerClientEvent("Vehicles:Client:Repair:Engine", netOwner, NetworkGetNetworkIdFromEntity(data.target))
+                        TriggerClientEvent("Vehicles:Client:Repair:Engine", netOwner,
+                            NetworkGetNetworkIdFromEntity(data.target))
                     elseif data.action == "stall" then
                         TriggerClientEvent("Admin:Client:Stall", netOwner, NetworkGetNetworkIdFromEntity(data.target))
                     else

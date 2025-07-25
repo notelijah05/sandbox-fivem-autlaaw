@@ -1,4 +1,3 @@
-
 exports('GetBikerGangObject', function()
     return BikerGang
 end)
@@ -10,9 +9,22 @@ end)
 
 BikerGang = {
     Name = {
-        Colors = {black = 0, gray = 1, white = 2, orange = 3, red = 4, green = 5, yellow = 6, blue = 7},
-        Fonts = {font1 = 0, font2 = 1, font3 = 2, font4 = 3, font5 = 4, font6 = 5, font7 = 6,
-                 font8 = 7, font9 = 8, font10 = 9, font11 = 10, font12 = 11, font13 = 12},
+        Colors = { black = 0, gray = 1, white = 2, orange = 3, red = 4, green = 5, yellow = 6, blue = 7 },
+        Fonts = {
+            font1 = 0,
+            font2 = 1,
+            font3 = 2,
+            font4 = 3,
+            font5 = 4,
+            font6 = 5,
+            font7 = 6,
+            font8 = 7,
+            font9 = 8,
+            font10 = 9,
+            font11 = 10,
+            font12 = 11,
+            font13 = 12
+        },
         name = "",
         color = 0,
         font = 0,
@@ -37,8 +49,8 @@ BikerGang = {
         },
 
         emblem = "MPClubPreset1",
-        rot = 90.0,                 -- Rotation for 0.0 to 360.0
-        
+        rot = 90.0, -- Rotation for 0.0 to 360.0
+
         Set = function(logo, rotation)
             BikerGang.Emblem.emblem = logo
             BikerGang.Emblem.rot = rotation
@@ -60,7 +72,8 @@ BikerGang = {
                 prop = "bkr_prop_rt_memorial_president",
                 stage = 0,
                 Init = function()
-                    DrawEmptyRect(BikerGang.Clubhouse.Members.President.target, BikerGang.Clubhouse.Members.President.prop)
+                    DrawEmptyRect(BikerGang.Clubhouse.Members.President.target,
+                        BikerGang.Clubhouse.Members.President.prop)
                 end,
                 Enable = function(state)
                     BikerGang.Clubhouse.Members.President.needToLoad = state
@@ -82,7 +95,8 @@ BikerGang = {
                 prop = "bkr_prop_rt_memorial_vice_pres",
                 stage = 0,
                 Init = function()
-                    DrawEmptyRect(BikerGang.Clubhouse.Members.VicePresident.target, BikerGang.Clubhouse.Members.VicePresident.prop)
+                    DrawEmptyRect(BikerGang.Clubhouse.Members.VicePresident.target,
+                        BikerGang.Clubhouse.Members.VicePresident.prop)
                 end,
                 Enable = function(state)
                     BikerGang.Clubhouse.Members.VicePresident.needToLoad = state
@@ -104,7 +118,8 @@ BikerGang = {
                 prop = "bkr_prop_rt_memorial_active_01",
                 stage = 0,
                 Init = function()
-                    DrawEmptyRect(BikerGang.Clubhouse.Members.RoadCaptain.target, BikerGang.Clubhouse.Members.RoadCaptain.prop)
+                    DrawEmptyRect(BikerGang.Clubhouse.Members.RoadCaptain.target,
+                        BikerGang.Clubhouse.Members.RoadCaptain.prop)
                 end,
                 Enable = function(state)
                     BikerGang.Clubhouse.Members.RoadCaptain.needToLoad = state
@@ -148,7 +163,8 @@ BikerGang = {
                 prop = "bkr_prop_rt_memorial_active_03",
                 stage = 0,
                 Init = function()
-                    DrawEmptyRect(BikerGang.Clubhouse.Members.SergeantAtArms.target, BikerGang.Clubhouse.Members.SergeantAtArms.prop)
+                    DrawEmptyRect(BikerGang.Clubhouse.Members.SergeantAtArms.target,
+                        BikerGang.Clubhouse.Members.SergeantAtArms.prop)
                 end,
                 Enable = function(state)
                     BikerGang.Clubhouse.Members.SergeantAtArms.needToLoad = state
@@ -169,7 +185,8 @@ BikerGang = {
 
                     local IsTextureDictLoaded = LoadStreamedTextureDict(member.textureDict)
                     if (not IsTextureDictLoaded) then
-                        Citizen.Trace("ERROR: BikerClubhouseDrawMembers - Textures dictionnary \"" .. tostring(member.textureDict) .. "\" cannot be loaded.")
+                        Citizen.Trace("ERROR: BikerClubhouseDrawMembers - Textures dictionnary \"" ..
+                        tostring(member.textureDict) .. "\" cannot be loaded.")
                     end
                 else
                     Citizen.Trace("ERROR: BikerClubhouseDrawMembers - PedHeadShot not ready.")
@@ -282,17 +299,17 @@ BikerGang = {
                     outrider = "SHU_MENU_DESC"
                 },
                 Pictures = {
-                    byThePound = "CHM_IMG0", -- Pickup car parked
-                    prisonerOfWar = "CHM_IMG8", -- Police with man down
-                    gunsForHire = "CHM_IMG4", -- Limo
-                    weaponOfChoice = "CHM_IMG10", -- Prisoner being beaten
-                    gunrunning = "CHM_IMG3", -- Shipment
+                    byThePound = "CHM_IMG0",         -- Pickup car parked
+                    prisonerOfWar = "CHM_IMG8",      -- Police with man down
+                    gunsForHire = "CHM_IMG4",        -- Limo
+                    weaponOfChoice = "CHM_IMG10",    -- Prisoner being beaten
+                    gunrunning = "CHM_IMG3",         -- Shipment
                     nineTenthsOfTheLaw = "CHM_IMG6", -- Wheeling
-                    jailbreak = "CHM_IMG5", -- Prison bus
-                    cracked = "CHM_IMG1", -- Safe
-                    fragileGoods = "CHM_IMG2", -- Lost Van
-                    torched = "CHM_IMG9", -- Explosive crate
-                    outrider = "CHM_IMG7" -- Sport ride 
+                    jailbreak = "CHM_IMG5",          -- Prison bus
+                    cracked = "CHM_IMG1",            -- Safe
+                    fragileGoods = "CHM_IMG2",       -- Lost Van
+                    torched = "CHM_IMG9",            -- Explosive crate
+                    outrider = "CHM_IMG7"            -- Sport ride
                 },
             },
             needToLoad = false,
@@ -302,8 +319,8 @@ BikerGang = {
             renderId = -1,
             movieId = -1,
             stage = 0,
-            
-            Position = {none = -1, left = 0, middle = 1, right = 2},
+
+            Position = { none = -1, left = 0, middle = 1, right = 2 },
 
             Init = function()
                 if not DrawEmptyRect(BikerGang.Clubhouse.MissionsWall.target, BikerGang.Clubhouse.MissionsWall.prop) then
@@ -328,19 +345,20 @@ BikerGang = {
                     if BikerGang.Clubhouse.MissionsWall.movieId ~= -1 then
                         if (position > -1) then
                             BeginScaleformMovieMethod(BikerGang.Clubhouse.MissionsWall.movieId, "SET_MISSION")
-                            PushScaleformMovieMethodParameterInt(position)          -- Mission index 0 to 2 (-1 = no mission)
+                            PushScaleformMovieMethodParameterInt(position) -- Mission index 0 to 2 (-1 = no mission)
                             PushScaleformMovieMethodParameterString(title)
                             PushScaleformMovieMethodParameterString(desc)
                             PushScaleformMovieMethodParameterButtonName(textDict)
-                            PushScaleformMovieMethodParameterFloat(x)               -- Mission 0: world coordinates X
-                            PushScaleformMovieMethodParameterFloat(y)               -- Mission 0: world coordinates Y
+                            PushScaleformMovieMethodParameterFloat(x) -- Mission 0: world coordinates X
+                            PushScaleformMovieMethodParameterFloat(y) -- Mission 0: world coordinates Y
                             EndScaleformMovieMethod()
                         else
                             -- Remove all missions
                             for key, value in pairs(BikerGang.Clubhouse.MissionsWall.Position) do
                                 BikerGang.Clubhouse.MissionsWall.RemoveMission(value)
                             end
-                            BikerGang.Clubhouse.MissionsWall.SelectMission(BikerGang.Clubhouse.MissionsWall.Position.none)
+                            BikerGang.Clubhouse.MissionsWall.SelectMission(BikerGang.Clubhouse.MissionsWall.Position
+                            .none)
                         end
                     end
                 end
@@ -362,21 +380,21 @@ BikerGang = {
                 if HasNamedScaleformMovieLoaded(BikerGang.Clubhouse.MissionsWall.movieId) then
                     SetScaleformMovieAsNoLongerNeeded(BikerGang.Clubhouse.MissionsWall.movieId)
                 end
-                
+
                 -- Resetting
                 BikerGang.Clubhouse.MissionsWall.renderId = -1
                 BikerGang.Clubhouse.MissionsWall.movieId = -1
                 BikerGang.Clubhouse.MissionsWall.stage = 0
             end
         },
-        
+
         ClearAll = function()
             BikerGang.Clubhouse.ClubName.Clear()
             BikerGang.Clubhouse.ClubName.loaded = false
-            
+
             BikerGang.Clubhouse.Emblem.Clear()
             BikerGang.Clubhouse.Emblem.loaded = false
-            
+
             BikerGang.Clubhouse.MissionsWall.Clear()
             BikerGang.Clubhouse.MissionsWall.loaded = false
 
@@ -390,29 +408,28 @@ BikerGang = {
     }
 }
 
-Citizen.CreateThread(function()
+CreateThread(function()
     -- Removing the black texture
     BikerGang.Clubhouse.Members.President.Init()
     BikerGang.Clubhouse.Members.VicePresident.Init()
     BikerGang.Clubhouse.Members.RoadCaptain.Init()
     BikerGang.Clubhouse.Members.Enforcer.Init()
     BikerGang.Clubhouse.Members.SergeantAtArms.Init()
-    
+
     BikerGang.Clubhouse.ClubName.Init()
     BikerGang.Clubhouse.Emblem.Init()
     BikerGang.Clubhouse.MissionsWall.Init()
-    
+
 
     while true do
         if (BikerGang.Clubhouse.ClubName.needToLoad or
-            BikerGang.Clubhouse.Emblem.needToLoad or
-            BikerGang.Clubhouse.MissionsWall.needToLoad or
-            BikerGang.Clubhouse.Members.President.needToLoad or
-            BikerGang.Clubhouse.Members.VicePresident.needToLoad or
-            BikerGang.Clubhouse.Members.RoadCaptain.needToLoad or
-            BikerGang.Clubhouse.Members.Enforcer.needToLoad or
-            BikerGang.Clubhouse.Members.SergeantAtArms.needToLoad) then
-
+                BikerGang.Clubhouse.Emblem.needToLoad or
+                BikerGang.Clubhouse.MissionsWall.needToLoad or
+                BikerGang.Clubhouse.Members.President.needToLoad or
+                BikerGang.Clubhouse.Members.VicePresident.needToLoad or
+                BikerGang.Clubhouse.Members.RoadCaptain.needToLoad or
+                BikerGang.Clubhouse.Members.Enforcer.needToLoad or
+                BikerGang.Clubhouse.Members.SergeantAtArms.needToLoad) then
             -- If we are inside a clubhouse, then we load
             if (Global.Biker.isInsideClubhouse1 or Global.Biker.isInsideClubhouse2) then
                 -- Club name
@@ -463,7 +480,6 @@ Citizen.CreateThread(function()
             Wait(1000)
         end
     end
-
 end)
 
 
@@ -473,7 +489,8 @@ end)
 function DrawClubName(name, color, font)
     if BikerGang.Clubhouse.ClubName.stage == 0 then
         if (BikerGang.Clubhouse.ClubName.renderId == -1) then
-            BikerGang.Clubhouse.ClubName.renderId = CreateNamedRenderTargetForModel(BikerGang.Clubhouse.ClubName.target, BikerGang.Clubhouse.ClubName.prop)
+            BikerGang.Clubhouse.ClubName.renderId = CreateNamedRenderTargetForModel(BikerGang.Clubhouse.ClubName.target,
+                BikerGang.Clubhouse.ClubName.prop)
         end
         if (BikerGang.Clubhouse.ClubName.movieId == -1) then
             BikerGang.Clubhouse.ClubName.movieId = RequestScaleformMovie("CLUBHOUSE_NAME")
@@ -482,9 +499,9 @@ function DrawClubName(name, color, font)
     elseif BikerGang.Clubhouse.ClubName.stage == 1 then
         if (HasScaleformMovieLoaded(BikerGang.Clubhouse.ClubName.movieId)) then
             local parameters = {
-                p0 = {type = "string", value = name},
-                p1 = {type = "int", value = color},
-                p2 = {type = "int", value = font}
+                p0 = { type = "string", value = name },
+                p1 = { type = "int", value = color },
+                p2 = { type = "int", value = font }
             }
             SetupScaleform(BikerGang.Clubhouse.ClubName.movieId, "SET_CLUBHOUSE_NAME", parameters)
             BikerGang.Clubhouse.ClubName.stage = 2
@@ -505,13 +522,15 @@ end
 function DrawEmblem(texturesDict, rotation)
     if (BikerGang.Clubhouse.Emblem.stage == 0) then
         if (BikerGang.Clubhouse.Emblem.renderId == -1) then
-            BikerGang.Clubhouse.Emblem.renderId = CreateNamedRenderTargetForModel(BikerGang.Clubhouse.Emblem.target, BikerGang.Clubhouse.Emblem.prop)
+            BikerGang.Clubhouse.Emblem.renderId = CreateNamedRenderTargetForModel(BikerGang.Clubhouse.Emblem.target,
+                BikerGang.Clubhouse.Emblem.prop)
         end
         local IsTextureDictLoaded = LoadStreamedTextureDict(texturesDict)
         if (not IsTextureDictLoaded) then Citizen.Trace("ERROR: DrawEmblem - Textures dictionnary cannot be loaded.") end
         BikerGang.Clubhouse.Emblem.stage = 1
     elseif (BikerGang.Clubhouse.Emblem.stage == 1) then
-        BikerGang.Clubhouse.Emblem.renderId = CreateNamedRenderTargetForModel(BikerGang.Clubhouse.Emblem.target, BikerGang.Clubhouse.Emblem.prop)
+        BikerGang.Clubhouse.Emblem.renderId = CreateNamedRenderTargetForModel(BikerGang.Clubhouse.Emblem.target,
+            BikerGang.Clubhouse.Emblem.prop)
         BikerGang.Clubhouse.Emblem.stage = 2
     elseif (BikerGang.Clubhouse.Emblem.stage == 2) then
         SetTextRenderId(BikerGang.Clubhouse.Emblem.renderId)
@@ -527,7 +546,8 @@ end
 function DrawMissions()
     if BikerGang.Clubhouse.MissionsWall.stage == 0 then
         if (BikerGang.Clubhouse.MissionsWall.renderId == -1) then
-            BikerGang.Clubhouse.MissionsWall.renderId = CreateNamedRenderTargetForModel(BikerGang.Clubhouse.MissionsWall.target, BikerGang.Clubhouse.MissionsWall.prop)
+            BikerGang.Clubhouse.MissionsWall.renderId = CreateNamedRenderTargetForModel(
+            BikerGang.Clubhouse.MissionsWall.target, BikerGang.Clubhouse.MissionsWall.prop)
         end
         BikerGang.Clubhouse.MissionsWall.stage = 1
     elseif BikerGang.Clubhouse.MissionsWall.stage == 1 then
@@ -548,7 +568,6 @@ end
 
 function DrawMember(member)
     if (member.stage == 0) then
-
         member.stage = 1
     elseif (member.stage == 1) then
         member.renderId = CreateNamedRenderTargetForModel(member.target, member.prop)

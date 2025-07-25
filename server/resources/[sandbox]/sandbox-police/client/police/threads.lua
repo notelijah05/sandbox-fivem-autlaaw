@@ -1,5 +1,5 @@
 AddEventHandler("Characters:Client:Spawn", function()
-	Citizen.Wait(5000)
+	Wait(5000)
 	StartThreads()
 end)
 
@@ -27,16 +27,16 @@ local _ignored = {
 local _excludes = {
 	{ coords = vector3(1713.17, 2586.68, 59.88), dist = 250 }, -- prison
 	{ coords = vector3(-106.63, 6467.72, 31.62), dist = 45 }, -- paleto bank
-	{ coords = vector3(251.21, 217.45, 106.28), dist = 20 }, -- city bank
+	{ coords = vector3(251.21, 217.45, 106.28),  dist = 20 }, -- city bank
 	{ coords = vector3(-622.25, -230.93, 38.05), dist = 10 }, -- jewlery store
-	{ coords = vector3(233.37, 373.31, 106.14), dist = 20 }, -- xgems
-	{ coords = vector3(699.91, 132.29, 80.74), dist = 55 }, -- power 1
+	{ coords = vector3(233.37, 373.31, 106.14),  dist = 20 }, -- xgems
+	{ coords = vector3(699.91, 132.29, 80.74),   dist = 55 }, -- power 1
 	{ coords = vector3(2739.55, 1532.99, 57.56), dist = 235 }, -- power 2
-	{ coords = vector3(12.53, -1097.99, 29.8), dist = 10 }, -- Adam's Apple / Pillbox Weapon shop
+	{ coords = vector3(12.53, -1097.99, 29.8),   dist = 10 }, -- Adam's Apple / Pillbox Weapon shop
 }
 
 function StartThreads()
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while LocalPlayer.state.loggedIn do
 			local cw = GetSelectedPedWeapon(LocalPlayer.state.ped)
 			local isArmed = false
@@ -81,26 +81,26 @@ function StartThreads()
 							EmergencyAlerts:CreateIfReported(900.0, "shotsfired", true)
 						end
 					end
-					Citizen.Wait(60000)
+					Wait(60000)
 				end
 			else
-				Citizen.Wait(1000)
+				Wait(1000)
 			end
 
-			Citizen.Wait(50)
+			Wait(50)
 		end
 	end)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while LocalPlayer.state.loggedIn do
 			if LocalPlayer.state.GSR and IsPedSwimming(LocalPlayer.state.ped) then
 				LocalPlayer.state:set("GSR", nil, true)
 			end
-			Citizen.Wait(3000)
+			Wait(3000)
 		end
 	end)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while LocalPlayer.state.loggedIn do
 			local cw = GetSelectedPedWeapon(LocalPlayer.state.ped)
 			if cw then
@@ -108,7 +108,7 @@ function StartThreads()
 					LocalPlayer.state:set("GSR", GetCloudTimeAsInt(), true)
 				end
 			end
-			Citizen.Wait(2)
+			Wait(2)
 		end
 	end)
 
@@ -116,7 +116,7 @@ function StartThreads()
 		[`WEAPON_UNARMED`] = true,
 		[`WEAPON_FLASHLIGHT`] = true,
 	}
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while LocalPlayer.state.loggedIn do
 			if not LocalPlayer.state.isDead then
 				if
@@ -124,11 +124,11 @@ function StartThreads()
 					and IsPlayerFreeAiming(LocalPlayer.state.PlayerID)
 				then
 					Status.Modify:Add("PLAYER_STRESS", 1, false, true)
-					Citizen.Wait(40000)
+					Wait(40000)
 				end
-				Citizen.Wait(100)
+				Wait(100)
 			else
-				Citizen.Wait(10000)
+				Wait(10000)
 			end
 		end
 	end)

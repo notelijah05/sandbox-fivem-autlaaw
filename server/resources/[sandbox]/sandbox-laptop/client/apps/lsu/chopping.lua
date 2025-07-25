@@ -5,20 +5,20 @@ local _validVeh = nil
 local _validBone = nil
 local _delay = false
 local _vehBones = {
-	{ name = "wheel_lf", distance = 1.6, index = 0, type = "tire", duration = 3000 },
-	{ name = "wheel_rf", distance = 1.6, index = 1, type = "tire", duration = 3000 },
-	{ name = "wheel_lm", distance = 1.6, index = 2, type = "tire", duration = 3000 },
-	{ name = "wheel_rm", distance = 1.6, index = 3, type = "tire", duration = 3000 },
-	{ name = "wheel_lr", distance = 1.6, index = 4, type = "tire", duration = 3000 },
-	{ name = "wheel_rr", distance = 1.6, index = 5, type = "tire", duration = 3000 },
-	{ name = "wheel_lm1", distance = 1.6, index = 2, type = "tire", duration = 3000 },
-	{ name = "wheel_rm1", distance = 1.6, index = 3, type = "tire", duration = 3000 },
+	{ name = "wheel_lf",     distance = 1.6, index = 0, type = "tire", duration = 3000 },
+	{ name = "wheel_rf",     distance = 1.6, index = 1, type = "tire", duration = 3000 },
+	{ name = "wheel_lm",     distance = 1.6, index = 2, type = "tire", duration = 3000 },
+	{ name = "wheel_rm",     distance = 1.6, index = 3, type = "tire", duration = 3000 },
+	{ name = "wheel_lr",     distance = 1.6, index = 4, type = "tire", duration = 3000 },
+	{ name = "wheel_rr",     distance = 1.6, index = 5, type = "tire", duration = 3000 },
+	{ name = "wheel_lm1",    distance = 1.6, index = 2, type = "tire", duration = 3000 },
+	{ name = "wheel_rm1",    distance = 1.6, index = 3, type = "tire", duration = 3000 },
 	{ name = "door_dside_f", distance = 1.8, index = 0, type = "door", duration = 6000 },
 	{ name = "door_pside_f", distance = 1.8, index = 1, type = "door", duration = 6000 },
 	{ name = "door_dside_r", distance = 1.8, index = 2, type = "door", duration = 6000 },
 	{ name = "door_pside_r", distance = 1.8, index = 3, type = "door", duration = 6000 },
-	{ name = "bonnet", distance = 2.8, index = 4, type = "door", duration = 9000 },
-	{ name = "boot", distance = 1.6, index = 5, type = "door", duration = 9000 },
+	{ name = "bonnet",       distance = 2.8, index = 4, type = "door", duration = 9000 },
+	{ name = "boot",         distance = 1.6, index = 5, type = "door", duration = 9000 },
 }
 
 RegisterNetEvent("Characters:Client:Spawn", function(data)
@@ -235,21 +235,21 @@ LAPTOP.LSUnderground.Chopping = {
 function DoChoppingThings(veh)
 	local bones = GetValidBones(veh, _vehBones)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while LocalPlayer.state.chopping ~= nil and DoesEntityExist(NetToVeh(LocalPlayer.state.chopping)) do
-			Citizen.Wait(100)
+			Wait(100)
 		end
 		LocalPlayer.state:set("chopping", nil, true)
 	end)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while LocalPlayer.state.inChopZone ~= nil and LocalPlayer.state.chopping ~= nil do
 			bones = GetValidBones(veh, _vehBones)
-			Citizen.Wait(100)
+			Wait(100)
 		end
 	end)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		local keyBind = Keybinds:GetKey("primary_action")
 		local chopMessage = string.format("Press ~w~~r~[%s]~w~ to Chop Vehicle Part", keyBind)
 		local chopMessage = string.format("Press ~w~~r~[%s]~w~ to Scrap Vehicle", keyBind)
@@ -279,20 +279,20 @@ function DoChoppingThings(veh)
 						distance = distance,
 					}
 					_validVeh = veh
-					Citizen.Wait(1)
+					Wait(1)
 				else
 					_validBone = nil
 					if not _delay then
 						_validVeh = nil
 					end
-					Citizen.Wait(10)
+					Wait(10)
 				end
 			else
 				_validBone = nil
 				if not _delay then
 					_validVeh = nil
 				end
-				Citizen.Wait(250)
+				Wait(250)
 			end
 		end
 
@@ -450,7 +450,7 @@ AddEventHandler("Laptop:Client:LSUnderground:Chopping:StartChop", function(entit
 			if res then
 				while not NetworkHasControlOfEntity(entity.entity) do
 					NetworkRequestControlOfEntity(entity.entity)
-					Citizen.Wait(1)
+					Wait(1)
 				end
 				LocalPlayer.state:set("chopping", vNet, true)
 				DoChoppingThings(entity.entity)

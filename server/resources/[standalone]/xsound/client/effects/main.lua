@@ -15,7 +15,7 @@ function fadeIn(name, time, volume_)
 
         volume = getVolume(name)
         while true do
-            Citizen.Wait(time / called)
+            Wait(time / called)
             volume = volume + addVolume
             if volume > volume_ then
                 volume = volume_
@@ -45,7 +45,7 @@ function fadeOut(name, time)
 
         volume = getVolume(name)
         while true do
-            Citizen.Wait(time / called)
+            Wait(time / called)
             volume = volume - addVolume
             if volume < 0 then
                 volume = 0
@@ -61,9 +61,9 @@ exports('fadeOut', fadeOut)
 
 function volumeType(name, volume)
     if isDynamic(name) then
-        setVolumeMax(name,volume)
-        setVolume(name,volume)
+        setVolumeMax(name, volume)
+        setVolume(name, volume)
     else
-        setVolume(name,volume)
+        setVolume(name, volume)
     end
 end

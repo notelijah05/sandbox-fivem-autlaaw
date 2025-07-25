@@ -27,7 +27,7 @@ end)
 
 function CreateLoanTasks()
     Tasks:Register('loan_payment', 60, function()
-    --RegisterCommand('testloans', function()
+        --RegisterCommand('testloans', function()
         local TASK_RUN_TIMESTAMP = os.time()
 
         Database.Game:aggregate({
@@ -37,16 +37,16 @@ function CreateLoanTasks()
                     ['$match'] = {
                         ['$and'] = {
                             { -- Due now
-                                NextPayment = { 
+                                NextPayment = {
                                     ['$gt'] = 0,
                                     ['$lte'] = (TASK_RUN_TIMESTAMP)
                                 }
                             },
                             { -- There is still cost remaining
                                 Defaulted = false,
-                                Remaining = { 
-                                    ['$gte'] = 0 
-                                } 
+                                Remaining = {
+                                    ['$gte'] = 0
+                                }
                             },
                         }
                     }
@@ -67,7 +67,7 @@ function CreateLoanTasks()
                             ['$add'] = { '$NextPayment', _loanConfig.paymentInterval },
                         },
                         Remaining = {
-                            ['$add'] = { 
+                            ['$add'] = {
                                 '$Remaining',
                                 { ['$multiply'] = { '$Total', (_loanConfig.missedPayments.charge / 100) } }
                             }
@@ -204,10 +204,11 @@ function CreateLoanTasks()
                     if v.SID then
                         local onlineChar = Fetch:SID(v.SID)
                         if onlineChar then
-                            Phone.Notification:Add(onlineChar:GetData("Source"), "Loan Payment Due", "You have a loan payment that is due very soon.", os.time(), 7500, "loans", {})
+                            Phone.Notification:Add(onlineChar:GetData("Source"), "Loan Payment Due",
+                                "You have a loan payment that is due very soon.", os.time(), 7500, "loans", {})
                         end
 
-                        Citizen.Wait(100)
+                        Wait(100)
                     end
                 end
             end
@@ -216,11 +217,13 @@ function CreateLoanTasks()
 end
 
 function SendMissedLoanNotification(source, loanData)
-    Phone.Notification:Add(source, "Loan Payment Missed", "You just missed a loan payment on one of your loans.", os.time(), 7500, "loans", {})
+    Phone.Notification:Add(source, "Loan Payment Missed", "You just missed a loan payment on one of your loans.",
+        os.time(), 7500, "loans", {})
 end
 
 function SendDefaultedLoanNotification(source, loanData)
-    Phone.Notification:Add(source, "Loan Defaulted", "One of your loans just got defaulted and the assets are going to be seized.", os.time(), 7500, "loans", {})
+    Phone.Notification:Add(source, "Loan Defaulted",
+        "One of your loans just got defaulted and the assets are going to be seized.", os.time(), 7500, "loans", {})
 end
 
 local typeNames = {

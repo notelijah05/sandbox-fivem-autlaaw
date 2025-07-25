@@ -1,6 +1,6 @@
-Citizen.CreateThread(function()
+CreateThread(function()
 	while GetIsLoadingScreenActive() do
-		Citizen.Wait(0)
+		Wait(0)
 	end
 	SendNUIMessage({
 		type = "APP_SHOW",
@@ -13,7 +13,7 @@ function loadModel(model)
 	loadTo = 0
 	while not HasModelLoaded(model) and loadTo < 500 do
 		loadTo += 1
-		Citizen.Wait(100)
+		Wait(100)
 	end
 end
 
@@ -30,7 +30,7 @@ RegisterNUICallback("GetData", function(data, cb)
 	cb("ok")
 
 	while LocalPlayer.state.ID == nil do
-		Citizen.Wait(1)
+		Wait(1)
 	end
 
 	for k, v in ipairs(peds) do
@@ -59,7 +59,7 @@ RegisterNUICallback("GetData", function(data, cb)
 				ForceRoomForEntity(ped, interior, roomHash)
 			end
 
-			Citizen.Wait(250)
+			Wait(250)
 
 			local cam2 = CreateCamWithParams(
 				"DEFAULT_SCRIPTED_CAMERA",
@@ -97,14 +97,14 @@ RegisterNUICallback("GetData", function(data, cb)
 						local t = 0
 						while not DoesEntityExist(ped) and t < 2500 do
 							t += 1
-							Citizen.Wait(1)
+							Wait(1)
 						end
 
 						if DoesEntityExist(ped) then
 							SetEntityCoords(ped, previews[k][1], previews[k][2], previews[k][3], 0.0, 0.0, 0.0, false)
 							FreezeEntityPosition(ped, true)
 							Ped:Preview(ped, tonumber(v.Gender), v.Preview, false, v.GangChain)
-	
+
 							table.insert(peds, ped)
 						end
 					else
@@ -123,13 +123,13 @@ RegisterNUICallback("GetData", function(data, cb)
 						local t = 0
 						while not DoesEntityExist(ped) and t < 2500 do
 							t += 1
-							Citizen.Wait(1)
+							Wait(1)
 						end
 
 						if DoesEntityExist(ped) then
 							SetEntityCoords(ped, previews[k][1], previews[k][2], previews[k][3], 0.0, 0.0, 0.0, false)
 							FreezeEntityPosition(ped, true)
-	
+
 							table.insert(peds, ped)
 						end
 					end

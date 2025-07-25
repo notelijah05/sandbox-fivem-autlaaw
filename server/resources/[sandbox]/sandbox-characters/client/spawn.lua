@@ -6,7 +6,7 @@ function FadeOutWithTimeout(time, timeOut)
 	foTo = 0
 	while IsScreenFadingOut() and foTo < (timeOut or 3000) do
 		foTo += 1
-		Citizen.Wait(1)
+		Wait(1)
 	end
 end
 
@@ -16,14 +16,13 @@ function FadeInWithTimeout(time, timeOut)
 	fiTo = 0
 	while IsScreenFadingIn() and fiTo < (timeOut or 3000) do
 		fiTo += 1
-		Citizen.Wait(1)
+		Wait(1)
 	end
 end
 
 Spawn = {
 	Choosing = true,
 	InitCamera = function(self)
-		
 		if not IsScreenFadedOut() then
 			FadeOutWithTimeout(500)
 		end
@@ -54,7 +53,7 @@ Spawn = {
 	end,
 	Init = function(self)
 		FadeInWithTimeout(500)
-		Citizen.Wait(500) -- Why the fuck does NUI just not do this without a wait here???
+		Wait(500) -- Why the fuck does NUI just not do this without a wait here???
 		SetNuiFocus(true, true)
 		SendNUIMessage({ type = "APP_SHOW" })
 	end,
@@ -72,7 +71,7 @@ Spawn = {
 		RequestModel(model)
 
 		while not HasModelLoaded(model) do
-			Citizen.Wait(500)
+			Wait(500)
 		end
 		SetPlayerModel(PlayerId(), model)
 		player = PlayerPedId()
@@ -83,10 +82,10 @@ Spawn = {
 		-- Safety check I guess
 		while not IsEntityFocus(player) do
 			ClearFocus()
-			Citizen.Wait(1)
+			Wait(1)
 		end
 
-		Citizen.Wait(300)
+		Wait(300)
 
 		DestroyAllCams(true)
 		RenderScriptCams(false, true, 1, true, true)

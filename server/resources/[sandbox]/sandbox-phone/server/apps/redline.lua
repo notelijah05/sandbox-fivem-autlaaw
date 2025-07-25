@@ -11,12 +11,12 @@ local _trackData = {}
 local _tracks = nil
 
 local _raceItems = {
-	{ item = "racing_crappy", coin = "MALD", price = 10, qty = 100, vpn = false },
-	{ item = "racedongle", coin = "VRM", rep = "Racing", repLvl = 3, price = 20, qty = 5, vpn = false },
-	{ item = "purgecontroller", coin = "VRM", rep = "Racing", repLvl = 3, price = 50, qty = 5, vpn = false },
-	{ item = "harness", coin = "VRM", rep = "Racing", repLvl = 1, price = 20, qty = 5, vpn = false },
+	{ item = "racing_crappy",   coin = "MALD", price = 10,     qty = 100,  vpn = false },
+	{ item = "racedongle",      coin = "VRM",  rep = "Racing", repLvl = 3, price = 20,   qty = 5, vpn = false },
+	{ item = "purgecontroller", coin = "VRM",  rep = "Racing", repLvl = 3, price = 50,   qty = 5, vpn = false },
+	{ item = "harness",         coin = "VRM",  rep = "Racing", repLvl = 1, price = 20,   qty = 5, vpn = false },
 
-	{ item = "alias_changer", coin = "VRM", rep = "Racing", repLvl = 5, price = 2000, qty = 2, vpn = true },
+	{ item = "alias_changer",   coin = "VRM",  rep = "Racing", repLvl = 5, price = 2000, qty = 2, vpn = true },
 
 	{
 		item = "lsundg_invite",
@@ -135,7 +135,8 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 			else
 			end
 		else
-			Execute:Client(source, "Notification", "Error", "An error has occured clearing your alias. Please contact IT.")
+			Execute:Client(source, "Notification", "Error",
+				"An error has occured clearing your alias. Please contact IT.")
 		end
 	end)
 	Inventory.Items:RegisterUse("event_invite", "LSUNDG", function(source, item, itemData)
@@ -153,7 +154,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 							end
 						end
 					end
-	
+
 					if
 						_races[item.MetaData.Event].class ~= "All"
 						and not CheckVehicleAgainstClass(_races[item.MetaData.Event].class, source)
@@ -174,9 +175,10 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 							sid = sid,
 						}
 						TriggerClientEvent("Redline:Client:JoinedEvent", source, _races[item.MetaData.Event])
-						TriggerClientEvent("Phone:Client:Redline:JoinRace", -1, item.MetaData.Event, alias, _races[item.MetaData.Event].racers[alias])
+						TriggerClientEvent("Phone:Client:Redline:JoinRace", -1, item.MetaData.Event, alias,
+							_races[item.MetaData.Event].racers[alias])
 
-						
+
 						Phone.Notification:Add(
 							source,
 							"Joined Event",
@@ -199,16 +201,17 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	end)
 
 	Vendor:Create("RaceGear", "poly", "Race Gear", false, {
-		coords = vector3(707.286, -967.542, 30.468),
-		length = 0.8,
-		width = 0.6,
-		options = {
-			heading = 185,
-			--debugPoly=true,
-			minZ = 28.97,
-			maxZ = 32.97,
-		},
-	}, _raceItems, "flag-checkered", "View Items", false, false, true, 60 * math.random(30, 60), 60 * math.random(240, 360))
+			coords = vector3(707.286, -967.542, 30.468),
+			length = 0.8,
+			width = 0.6,
+			options = {
+				heading = 185,
+				--debugPoly=true,
+				minZ = 28.97,
+				maxZ = 32.97,
+			},
+		}, _raceItems, "flag-checkered", "View Items", false, false, true, 60 * math.random(30, 60),
+		60 * math.random(240, 360))
 
 	LoadTracks()
 
@@ -258,11 +261,12 @@ AddEventHandler("Phone:Server:UpdateProfile", function(source, data)
 		local char = Fetch:CharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
-			local count = MySQL.scalar.await("SELECT COUNT(*) FROM character_app_profiles WHERE app = ? AND name = ? AND sid != ?", {
-				"redline",
-				data.name,
-				sid
-			})
+			local count = MySQL.scalar.await(
+				"SELECT COUNT(*) FROM character_app_profiles WHERE app = ? AND name = ? AND sid != ?", {
+					"redline",
+					data.name,
+					sid
+				})
 
 			if count == 0 then
 				MySQL.prepare.await(
@@ -275,7 +279,7 @@ AddEventHandler("Phone:Server:UpdateProfile", function(source, data)
 						json.encode(data.meta or {}),
 					}
 				)
-	
+
 				local profiles = char:GetData("Profiles") or {}
 				profiles["redline"] = {
 					sid = char:GetData("SID"),
@@ -416,7 +420,7 @@ function FinishRace(id, forceEnd)
 							if
 								_tracks[racedTrack].Fastest[i] == nil
 								or fastest.lap_end - fastest.lap_start
-									< _tracks[racedTrack].Fastest[i].lap_end - _tracks[racedTrack].Fastest[i].lap_start
+								< _tracks[racedTrack].Fastest[i].lap_end - _tracks[racedTrack].Fastest[i].lap_start
 							then
 								table.insert(_tracks[racedTrack].Fastest, i, {
 									time = fastest.time,
@@ -453,7 +457,8 @@ function FinishRace(id, forceEnd)
 			}
 
 			table.insert(queries, {
-				query = "INSERT INTO redline_racer_history (sid, placing, winnings, vehicle, vehicle_class, track) VALUES(?, ?, ?, ?, ?, ?)",
+				query =
+				"INSERT INTO redline_racer_history (sid, placing, winnings, vehicle, vehicle_class, track) VALUES(?, ?, ?, ?, ?, ?)",
 				values = {
 					_races[key].racers[alias].sid,
 					placing or -1,
@@ -481,7 +486,7 @@ function FinishRace(id, forceEnd)
 
 		if #laps > 0 then
 			local qry =
-				"INSERT INTO redline_track_history (track, race, sid, lap_start, lap_end, laptime, car, owned) VALUES "
+			"INSERT INTO redline_track_history (track, race, sid, lap_start, lap_end, laptime, car, owned) VALUES "
 			local params = {}
 			for k, v in ipairs(laps) do
 				table.insert(params, _races[key].track)
@@ -589,8 +594,8 @@ RegisterServerEvent("Phone:Redline:FinishRace", function(nId, data, laps, plate,
 				)
 			end
 		end
-		Citizen.CreateThread(function()
-			Citizen.Wait(tonumber(_races[key].dnf_time) * 1000)
+		CreateThread(function()
+			Wait(tonumber(_races[key].dnf_time) * 1000)
 			FinishRace(tonumber(data))
 		end)
 	end
@@ -728,7 +733,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					},
 				}
 				data.state = 0
-	
+
 				local tmp = nil
 				for k, v in ipairs(_tracks) do
 					if v.id == data.track then
@@ -736,7 +741,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						break
 					end
 				end
-	
+
 				if tmp ~= nil then
 					local tId = MySQL.insert.await(
 						"INSERT INTO redline_race_history (name, buyin, host, track, class, race_config) VALUES(?, ?, ?, ?, ?, ?)",
@@ -1049,10 +1054,11 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			local key = tostring(data.id)
 			if alias ~= nil and _races[key].state == 0 and _races[key].host_id == sid then
 				if data.alias ~= alias then
-					local tSid = MySQL.scalar.await('SELECT sid FROM character_app_profiles WHERE app = ? AND name = ?', {
-						'redline',
-						data.alias
-					})
+					local tSid = MySQL.scalar.await('SELECT sid FROM character_app_profiles WHERE app = ? AND name = ?',
+						{
+							'redline',
+							data.alias
+						})
 
 					if tSid ~= nil then
 						_races[key].racers[data.alias] = nil
@@ -1084,10 +1090,11 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			local key = tostring(data.id)
 			if alias ~= nil and _races[key].state == 0 and _races[key].host_id == sid then
 				if data.alias ~= alias and not _raceInvites[key][string.lower(data.alias)] then
-					local tSid = MySQL.scalar.await('SELECT sid FROM character_app_profiles WHERE app = ? AND name = ?', {
-						'redline',
-						string.lower(data.alias)
-					})
+					local tSid = MySQL.scalar.await('SELECT sid FROM character_app_profiles WHERE app = ? AND name = ?',
+						{
+							'redline',
+							string.lower(data.alias)
+						})
 
 					if tSid ~= nil then
 						local tChar = Fetch:SID(tSid)
@@ -1098,7 +1105,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 								event = _races[key].name,
 								expires = os.time() + (60 * 5),
 							}
-							TriggerClientEvent("Phone:Client:Redline:ReceiveInvite", tChar:GetData("Source"), _raceInvites[key][string.lower(data.alias)])
+							TriggerClientEvent("Phone:Client:Redline:ReceiveInvite", tChar:GetData("Source"),
+								_raceInvites[key][string.lower(data.alias)])
 							cb(true)
 						else
 							cb(false)

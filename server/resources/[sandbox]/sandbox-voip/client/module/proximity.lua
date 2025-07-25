@@ -6,7 +6,7 @@ function DoProximityCheck(myCoords, player, proximity)
 end
 
 function StartVOIPGridThreads()
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while _characterLoaded do
             local coords = GetEntityCoords(LocalPlayer.state.ped)
             local proximity = MumbleGetTalkerProximity()
@@ -29,7 +29,7 @@ function StartVOIPGridThreads()
                 local shouldAdd, dist = DoProximityCheck(coords, player, proximity)
                 if shouldAdd then
                     MumbleAddVoiceTargetChannel(1, MumbleGetVoiceChannelFromServerId(serverId))
-                    table.insert(added, {serverId, MumbleGetVoiceChannelFromServerId(serverId)})
+                    table.insert(added, { serverId, MumbleGetVoiceChannelFromServerId(serverId) })
                 end
             end
 
@@ -44,7 +44,7 @@ function StartVOIPGridThreads()
                 SetSpectatorVoiceMode(false)
             end
 
-            Citizen.Wait(200)
+            Wait(200)
         end
     end)
 end
@@ -64,7 +64,7 @@ function SetSpectatorVoiceMode(enabled)
         if isSpecVoiceEnabled then
             for _, player in ipairs(GetActivePlayers()) do
                 local serverId = GetPlayerServerId(player)
-                if serverId ~= PLAYER_SERVER_ID then 
+                if serverId ~= PLAYER_SERVER_ID then
                     MumbleRemoveVoiceChannelListen(MumbleGetVoiceChannelFromServerId(serverId))
                 end
             end

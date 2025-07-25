@@ -9,10 +9,10 @@ COMPONENTS.Callbacks = {
     end,
     DoServerCallback = function(self, source, event, data, extraId)
         if _sCallbacks[event] ~= nil then
-            -- Citizen.CreateThread(function()
-                _sCallbacks[event](source, data, function(...)
-                    TriggerLatentClientEvent('Callbacks:Client:ReceiveCallback', source, 50000, event, extraId, ...)
-                end)
+            -- CreateThread(function()
+            _sCallbacks[event](source, data, function(...)
+                TriggerLatentClientEvent('Callbacks:Client:ReceiveCallback', source, 50000, event, extraId, ...)
+            end)
             -- end)
         end
     end,
@@ -41,9 +41,9 @@ RegisterServerEvent('Callbacks:Server:ReceiveCallback', function(event, extraId,
     local src = source
     local id = event
 
-	if extraId ~= nil and extraId ~= "" then
+    if extraId ~= nil and extraId ~= "" then
         id = string.format("%s-%s", event, extraId)
-	end
+    end
 
     _cCallbacks[src] = _cCallbacks[src] or {}
     if _cCallbacks[src][id] ~= nil then

@@ -4,7 +4,7 @@ local _blockedExplosions = {}
 local _tmpIgnores = {}
 
 -- Dunno if global state is actually available right away or have to wait till first gametick
-Citizen.CreateThread(function()
+CreateThread(function()
 	GlobalState["WeaponDrops"] = {
 		`PICKUP_AMMO_BULLET_MP`,
 		`PICKUP_AMMO_FIREWORK`,
@@ -171,7 +171,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RegisterCallbacks()
 
 		if not _loaded then
-			Citizen.CreateThread(function()
+			CreateThread(function()
 				_loaded = true
 				while _loaded do
 					for k, v in ipairs(GetPlayers()) do
@@ -192,7 +192,7 @@ AddEventHandler("Core:Shared:Ready", function()
 							end
 						end
 					end
-					Citizen.Wait(60000)
+					Wait(60000)
 				end
 			end)
 		end
@@ -230,28 +230,32 @@ AddEventHandler("explosionEvent", function(sender, ev)
 			then
 				local char = Fetch:CharacterSource(src)
 				if char then
-					Logger:Warn("Pwnzor", string.format("%s %s (%s) Triggered Explosion Detection With Explosion Type of %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), ev.explosionType), {
-						console = true,
-						file = false,
-						database = true,
-						discord = {
-							embed = true,
-							type = 'error',
-							webhook = GetConvar('discord_pwnzor_webhook', ''),
-						}
-					})
+					Logger:Warn("Pwnzor",
+						string.format("%s %s (%s) Triggered Explosion Detection With Explosion Type of %s",
+							char:GetData("First"), char:GetData("Last"), char:GetData("SID"), ev.explosionType), {
+							console = true,
+							file = false,
+							database = true,
+							discord = {
+								embed = true,
+								type = 'error',
+								webhook = GetConvar('discord_pwnzor_webhook', ''),
+							}
+						})
 					Pwnzor:Screenshot(char:GetData("SID"), "Potential Weapon Exploit")
 				else
-					Logger:Warn("Pwnzor", string.format("Source %s Triggered Explosion Detection With Explosion Type of %s", src, ev.explosionType), {
-						console = true,
-						file = false,
-						database = true,
-						discord = {
-							embed = true,
-							type = 'error',
-							webhook = GetConvar('discord_pwnzor_webhook', ''),
-						}
-					})
+					Logger:Warn("Pwnzor",
+						string.format("Source %s Triggered Explosion Detection With Explosion Type of %s", src,
+							ev.explosionType), {
+							console = true,
+							file = false,
+							database = true,
+							discord = {
+								embed = true,
+								type = 'error',
+								webhook = GetConvar('discord_pwnzor_webhook', ''),
+							}
+						})
 				end
 			else
 				if _blockedExplosions[src] == nil then
@@ -318,7 +322,7 @@ RegisterNetEvent("Pwnzor:Server:ResourceStopped", function(resource)
 	end
 end)
 
--- Citizen.CreateThread(function()
+-- CreateThread(function()
 -- 	while true do
 -- 		for k, v in pairs(_blockedExplosions) do
 -- 			for k2, v2 in ipairs(v) do
@@ -327,7 +331,7 @@ end)
 -- 				end
 -- 			end
 -- 		end
--- 		Citizen.Wait(5000)
+-- 		Wait(5000)
 -- 	end
 -- end)
 
@@ -372,7 +376,8 @@ PWNZOR = PWNZOR
 							embeds = {
 								{
 									color = 3844857,
-									title = string.format("Screenshot from %s %s (%s) | %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), desc),
+									title = string.format("Screenshot from %s %s (%s) | %s", char:GetData("First"),
+										char:GetData("Last"), char:GetData("SID"), desc),
 								}
 							}
 						},

@@ -29,7 +29,7 @@ RegisterNetEvent("Properties:Client:InnerStuff", function(propertyData, int, fur
 
 	_isEntering = false
 
-	Citizen.Wait(500)
+	Wait(500)
 	Sync:Stop(1)
 end)
 
@@ -48,9 +48,9 @@ end)
 
 AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 	if LocalPlayer.state.loggedIn and data.PROPERTY_INTERIOR_ZONE and _insideProperty and not _isEntering then
-        print("Exit Property By Leaving Polyzone")
+		print("Exit Property By Leaving Polyzone")
 		ExitProperty()
-    end
+	end
 end)
 
 AddEventHandler("Properties:Client:Exit", function(t, data)
@@ -58,7 +58,7 @@ AddEventHandler("Properties:Client:Exit", function(t, data)
 end)
 
 AddEventHandler("Properties:Client:Crafting", function(t, data)
-	Crafting.Benches:Open('property-'..data)
+	Crafting.Benches:Open('property-' .. data)
 end)
 
 AddEventHandler("Properties:Client:Duty", function(t, data)
@@ -82,7 +82,7 @@ end)
 
 RegisterNetEvent("Properties:Client:AddBlips", function()
 	while LocalPlayer.state.Character == nil or not _propertiesLoaded or not LocalPlayer.state.loggedIn do
-		Citizen.Wait(100)
+		Wait(100)
 	end
 
 	local ownedProps = Properties:GetPropertiesWithAccess()
@@ -90,11 +90,14 @@ RegisterNetEvent("Properties:Client:AddBlips", function()
 	if ownedProps then
 		for k, v in ipairs(ownedProps) do
 			if v.type == 'house' then
-				Blips:Add('property-'.. v.id, 'House: ' .. v.label, vector3(v.location.front.x, v.location.front.y, v.location.front.z), 40, 53, 0.6, 2)
+				Blips:Add('property-' .. v.id, 'House: ' .. v.label,
+					vector3(v.location.front.x, v.location.front.y, v.location.front.z), 40, 53, 0.6, 2)
 			elseif v.type == 'office' then
-				Blips:Add('property-'.. v.id, 'Office: ' .. v.label, vector3(v.location.front.x, v.location.front.y, v.location.front.z), 475, 53, 0.6, 2)
+				Blips:Add('property-' .. v.id, 'Office: ' .. v.label,
+					vector3(v.location.front.x, v.location.front.y, v.location.front.z), 475, 53, 0.6, 2)
 			elseif v.type == 'warehouse' then
-				Blips:Add('property-'.. v.id, 'Warehouse: ' .. v.label, vector3(v.location.front.x, v.location.front.y, v.location.front.z), 473, 53, 0.6, 2)
+				Blips:Add('property-' .. v.id, 'Warehouse: ' .. v.label,
+					vector3(v.location.front.x, v.location.front.y, v.location.front.z), 473, 53, 0.6, 2)
 			end
 		end
 	end

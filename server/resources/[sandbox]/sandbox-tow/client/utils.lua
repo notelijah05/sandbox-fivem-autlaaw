@@ -45,19 +45,19 @@ end
 function RequestControlWithTimeout(veh, timeout)
     local requestTimeout = false
     if not NetworkHasControlOfEntity(veh) then
-		NetworkRequestControlOfEntity(veh)
+        NetworkRequestControlOfEntity(veh)
 
-		Citizen.SetTimeout(timeout, function()
+        Citizen.SetTimeout(timeout, function()
             requestTimeout = true
         end)
 
-		while not NetworkHasControlOfEntity(veh) and not requestTimeout do
-			NetworkRequestControlOfEntity(veh)
-			Citizen.Wait(200)
-		end
-	end
+        while not NetworkHasControlOfEntity(veh) and not requestTimeout do
+            NetworkRequestControlOfEntity(veh)
+            Wait(200)
+        end
+    end
 
-	return NetworkHasControlOfEntity(veh)
+    return NetworkHasControlOfEntity(veh)
 end
 
 function IsVehicleEmpty(veh)
@@ -70,9 +70,8 @@ function IsVehicleEmpty(veh)
     return true
 end
 
-
 function GetClosestAvailableParkingSpace(pedCoords, parkingSpaces)
-    table.sort(parkingSpaces, function(a, b) 
+    table.sort(parkingSpaces, function(a, b)
         local distA = #(a.xyz - pedCoords)
         local distB = #(b.xyz - pedCoords)
         return distA > distB
@@ -102,7 +101,7 @@ function GetClosestVehicleWithinRadius(coords, radius)
     local poolVehicles = GetGamePool('CVehicle')
     local lastDist = radius
     local lastVeh = false
-    
+
     for k, v in ipairs(poolVehicles) do
         if DoesEntityExist(v) then
             local dist = #(coords - GetEntityCoords(v))

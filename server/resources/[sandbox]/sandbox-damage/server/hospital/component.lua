@@ -3,8 +3,8 @@ _inBed = {}
 _inBedChar = {}
 
 local _medsForSale = {
-	{ item = "firstaid", coin = "MALD", price = 20, qty = -1, vpn = false, requireCurrency = false },
-	{ item = "ifak", coin = "MALD", price = 100, qty = -1, vpn = false, requireCurrency = true },
+	{ item = "firstaid", coin = "MALD", price = 20,  qty = -1, vpn = false, requireCurrency = false },
+	{ item = "ifak",     coin = "MALD", price = 100, qty = -1, vpn = false, requireCurrency = true },
 }
 
 
@@ -141,7 +141,7 @@ HOSPITAL = {
 					Released = false,
 				})
 
-				Citizen.CreateThread(function()
+				CreateThread(function()
 					Jobs.Duty:Off(target, Player(target).state.onDuty)
 					Handcuffs:UncuffTarget(-1, target)
 					Ped.Mask:UnequipNoItem(target)

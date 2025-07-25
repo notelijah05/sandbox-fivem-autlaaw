@@ -61,7 +61,7 @@ end
 
 function DoCarBombDetonate(veh)
     for i = 1, 5 do
-        Citizen.Wait(100)
+        Wait(100)
         PlaySoundFromEntity(-1, 'Beep_Red', veh, 'DLC_HEIST_HACKING_SNAKE_SOUNDS', true, true)
     end
 
@@ -72,7 +72,7 @@ function DoCarBombDetonate(veh)
 end
 
 AddEventHandler('Vehicles:Client:StartUp', function()
-    
+
 end)
 
 AddEventHandler('Vehicles:Client:BecameDriver', function(veh)
@@ -84,9 +84,8 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh)
         CAR_BOMB_TICK_MAX = vehEnt.state.CarBomb.ExplosionTicks or 5
         CAR_BOMB_SPEED = vehEnt.state.CarBomb.Speed or 0
 
-        Citizen.CreateThread(function()
+        CreateThread(function()
             while CAR_BOMB_THREAD do
-
                 if not CAR_BOMB_ENABLED then
                     if CAR_BOMB_SPEED <= 0 then
                         if GetIsVehicleEngineRunning(veh) then
@@ -94,7 +93,9 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh)
                         end
                     elseif GetVehicleMPH(veh) > CAR_BOMB_SPEED then
                         CAR_BOMB_ENABLED = true
-                        Notification:Warn("THIS VEHICLE HAS A BOMB - STAY ABOVE " .. math.ceil(CAR_BOMB_SPEED) .. "MPH AND DO NOT LEAVE THE VEHICLE", 15000)
+                        Notification:Warn(
+                            "THIS VEHICLE HAS A BOMB - STAY ABOVE " ..
+                            math.ceil(CAR_BOMB_SPEED) .. "MPH AND DO NOT LEAVE THE VEHICLE", 15000)
                     end
                 else
                     CAR_BOMB_TIME -= 1
@@ -116,7 +117,7 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh)
                         end
                     end
                 end
-                Citizen.Wait(1000)
+                Wait(1000)
             end
         end)
     end
@@ -140,38 +141,38 @@ local linkPromise
 function GetCarBombConfig()
     linkPromise = promise.new()
     Input:Show('Car Bomb', 'URL', {
-		{
-			id = 'minSpeed',
-			type = 'number',
-			options = {
+        {
+            id = 'minSpeed',
+            type = 'number',
+            options = {
                 label = 'Minimum Speed (MPH) (0 for Ignition Bomb)',
-				inputProps = {
+                inputProps = {
                     maxLength = 3,
                 },
-			},
-		},
+            },
+        },
         {
-			id = 'removalTime',
-			type = 'number',
-			options = {
+            id = 'removalTime',
+            type = 'number',
+            options = {
                 label = 'Deactivation Time (Minutes)',
-				inputProps = {
+                inputProps = {
                     maxLength = 4,
                 },
-			},
-		},
+            },
+        },
         {
-			id = 'preExplosionTicks',
-			type = 'number',
-			options = {
+            id = 'preExplosionTicks',
+            type = 'number',
+            options = {
                 label = 'Ticks Before it Explodes',
-				inputProps = {
+                inputProps = {
                     defaultValue = '5',
                     maxLength = 2,
                 },
-			},
-		},
-	}, 'Vehicles:Client:RecieveCarBombConfig', {})
+            },
+        },
+    }, 'Vehicles:Client:RecieveCarBombConfig', {})
 
     return Citizen.Await(linkPromise)
 end

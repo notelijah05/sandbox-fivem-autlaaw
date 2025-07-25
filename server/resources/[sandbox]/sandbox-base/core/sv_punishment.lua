@@ -91,7 +91,7 @@ COMPONENTS.Punishment = {
 					issuer = string.format("%s [%s]", iPlayer:GetData("Name"), iPlayer:GetData("AccountID")),
 				}
 			)
-			
+
 			COMPONENTS.Punishment.Actions:Kick(source, reason, iPlayer:GetData("Name"))
 			return {
 				success = true,
@@ -125,7 +125,7 @@ COMPONENTS.Punishment = {
 				)
 			end
 			COMPONENTS.Punishment.Actions:Kick(source, reason, issuer)
-			
+
 			return {
 				success = true,
 				Name = tPlayer:GetData("Name"),
@@ -508,7 +508,7 @@ COMPONENTS.Punishment.Ban = {
 					banStr = banStr,
 				}
 
-				Citizen.CreateThread(function()
+				CreateThread(function()
 					if dbf and tPlayer then
 						tPlayer:DeleteStore()
 					end

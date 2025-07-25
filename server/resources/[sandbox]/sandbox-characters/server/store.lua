@@ -1,4 +1,5 @@
-local _noUpdate = { "Source", "User", "_id", "ID", "First", "Last", "Phone", "DOB", "Gender", "TempJob", "Ped", "MDTHistory", "Parole", "Preview", "Team", "LSUNDGBan", "MDTSuspension", "Profiles", "TempJob" }
+local _noUpdate = { "Source", "User", "_id", "ID", "First", "Last", "Phone", "DOB", "Gender", "TempJob", "Ped",
+	"MDTHistory", "Parole", "Preview", "Team", "LSUNDGBan", "MDTSuspension", "Profiles", "TempJob" }
 
 local _saving = {}
 
@@ -9,19 +10,18 @@ function StoreData(source)
 	_saving[source] = true
 	local char = Fetch:CharacterSource(source)
 	if char ~= nil then
-
 		local data = char:GetData()
 		local cId = data.ID
 		for k, v in ipairs(_noUpdate) do
 			data[v] = nil
 		end
-	
+
 		local ped = GetPlayerPed(source)
 		if ped > 0 then
 			data.HP = GetEntityHealth(ped)
 			data.Armor = GetPedArmour(ped)
 		end
-	
+
 		if data.States then
 			local s = {}
 			for k, v in ipairs(data.States) do
@@ -31,9 +31,9 @@ function StoreData(source)
 			end
 			data.States = s
 		end
-	
+
 		data.LastPlayed = os.time() * 1000
-	
+
 		Logger:Info("Characters", string.format("Saving Character %s", cId), { console = true })
 		Database.Game:updateOne({
 			collection = "characters",
@@ -50,12 +50,12 @@ function StoreData(source)
 end
 
 -- local _prevSaved = 0
--- Citizen.CreateThread(function()
+-- CreateThread(function()
 -- 	while Fetch == nil or Database == nil do
--- 		Citizen.Wait(1000)
+-- 		Wait(1000)
 -- 	end
 
--- 	-- Citizen.Wait(120000)
+-- 	-- Wait(120000)
 
 -- 	-- while true do
 -- 	-- 	local v = Fetch:Next(_prevSaved)
@@ -81,6 +81,6 @@ end
 -- 	-- 		{ console = true }
 -- 	-- 	)
 
--- 	-- 	Citizen.Wait(math.min(600000, (1200000 / math.max(1, c))))
+-- 	-- 	Wait(math.min(600000, (1200000 / math.max(1, c))))
 -- 	-- end
 -- end)

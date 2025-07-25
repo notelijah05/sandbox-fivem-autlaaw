@@ -2,7 +2,7 @@ local harvesting = false
 
 RegisterNetEvent("Weed:Client:Login", function(l)
 	while PedInteraction == nil do
-		Citizen.Wait(10)
+		Wait(10)
 	end
 
 	PedInteraction:Add("weed-dealer", `s_m_y_dealer_01`, vector3(l.coords.x, l.coords.y, l.coords.z), l.heading, 50.0, {
@@ -122,7 +122,8 @@ AddEventHandler("Weed:Client:Check", function(entity, data)
 			local fertilizers = {
 				{
 					label = "About Fertilizer",
-					description = "Various fertilizers do different things.<br />Nitrogen: Increases possible output of plant.<br />Phosphorus: Increases Growth Per Tick.<br />Potassium: Increases Water Duration.",
+					description =
+					"Various fertilizers do different things.<br />Nitrogen: Increases possible output of plant.<br />Phosphorus: Increases Growth Per Tick.<br />Potassium: Increases Water Duration.",
 				},
 			}
 
@@ -183,7 +184,8 @@ AddEventHandler("Weed:Client:Check", function(entity, data)
 					items = {
 						{
 							label = "Are You Sure?",
-							description = "Destroying this plant is irreversible and you will not receive anything from this plant. Are you absolutely sure you want to do this?",
+							description =
+							"Destroying this plant is irreversible and you will not receive anything from this plant. Are you absolutely sure you want to do this?",
 						},
 						{
 							label = "Yes",

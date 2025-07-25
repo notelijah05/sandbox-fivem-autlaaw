@@ -56,7 +56,7 @@ function InstructionScaleform(scaleform, showFurnitureButtons, showGizmoButtons)
 	if createdCamera ~= 0 then
 		local scaleform = RequestScaleformMovie(scaleform)
 		while not HasScaleformMovieLoaded(scaleform) do
-			Citizen.Wait(0)
+			Wait(0)
 		end
 		PushScaleformMovieFunction(scaleform, "CLEAR_ALL")
 		PopScaleformMovieFunctionVoid()
@@ -177,7 +177,7 @@ function RunPlacementThread(
 	end
 
 	if not useGizmo then
-		Citizen.CreateThread(function()
+		CreateThread(function()
 			while _placeData ~= nil and _placing do
 				if IsPedInAnyVehicle(myPed) then
 					ObjectPlacer:Cancel()
@@ -237,7 +237,7 @@ function RunPlacementThread(
 					placementCoords = nil
 				end
 
-				Citizen.Wait(1)
+				Wait(1)
 			end
 
 			DeleteObject(obj)
@@ -246,7 +246,7 @@ function RunPlacementThread(
 		EnterCursorMode()
 		exports["sandbox-objects"]:prepareGizmo(obj)
 
-		Citizen.CreateThread(function()
+		CreateThread(function()
 			while _placeData ~= nil and _placing do
 				if IsPedInAnyVehicle(myPed) then
 					ObjectPlacer:Cancel()
@@ -289,12 +289,12 @@ function RunPlacementThread(
 					placementCoords = nil
 				end
 
-				Citizen.Wait(1)
+				Wait(1)
 			end
 
 			if _gizmoCam then
 				EnterCursorMode()
-				Citizen.Wait(100)
+				Wait(100)
 			end
 			LeaveCursorMode()
 			DeleteObject(obj)
@@ -317,23 +317,23 @@ end)
 RegisterCommand("-gizmoCameraToggle", function() end)
 
 function DisableControls()
-	DisableControlAction(0, 30, true) -- disable left/right
-	DisableControlAction(0, 31, true) -- disable forward/back
-	DisableControlAction(0, 36, true) -- INPUT_DUCK
-	DisableControlAction(0, 21, true) -- disable sprint
-	DisableControlAction(0, 26, true) -- look behind
-	DisableControlAction(0, 44, true) -- disable cover
-	DisableControlAction(0, 63, true) -- veh turn left
-	DisableControlAction(0, 64, true) -- veh turn right
-	DisableControlAction(0, 71, true) -- veh forward
-	DisableControlAction(0, 72, true) -- veh backwards
-	DisableControlAction(0, 75, true) -- disable exit vehicle
+	DisableControlAction(0, 30, true)  -- disable left/right
+	DisableControlAction(0, 31, true)  -- disable forward/back
+	DisableControlAction(0, 36, true)  -- INPUT_DUCK
+	DisableControlAction(0, 21, true)  -- disable sprint
+	DisableControlAction(0, 26, true)  -- look behind
+	DisableControlAction(0, 44, true)  -- disable cover
+	DisableControlAction(0, 63, true)  -- veh turn left
+	DisableControlAction(0, 64, true)  -- veh turn right
+	DisableControlAction(0, 71, true)  -- veh forward
+	DisableControlAction(0, 72, true)  -- veh backwards
+	DisableControlAction(0, 75, true)  -- disable exit vehicle
 	DisablePlayerFiring(PlayerId(), true) -- Disable weapon firing
-	DisableControlAction(0, 24, true) -- disable attack
-	DisableControlAction(0, 25, true) -- disable aim
-	DisableControlAction(1, 37, true) -- disable weapon select
-	DisableControlAction(0, 47, true) -- disable weapon
-	DisableControlAction(0, 58, true) -- disable weapon
+	DisableControlAction(0, 24, true)  -- disable attack
+	DisableControlAction(0, 25, true)  -- disable aim
+	DisableControlAction(1, 37, true)  -- disable weapon select
+	DisableControlAction(0, 47, true)  -- disable weapon
+	DisableControlAction(0, 58, true)  -- disable weapon
 	DisableControlAction(0, 140, true) -- disable melee
 	DisableControlAction(0, 141, true) -- disable melee
 	DisableControlAction(0, 142, true) -- disable melee

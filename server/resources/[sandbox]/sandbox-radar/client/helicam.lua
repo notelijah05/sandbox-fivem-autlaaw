@@ -1,8 +1,8 @@
 local fov_max = 80.0
-local fov_min = 5.0 -- max zoom level (smaller fov is more zoom)
+local fov_min = 5.0   -- max zoom level (smaller fov is more zoom)
 local zoomspeed = 3.0 -- camera zoom speed
-local speed_lr = 4.0 -- speed by which the camera pans left-right
-local speed_ud = 4.0 -- speed by which the camera pans up-down
+local speed_lr = 4.0  -- speed by which the camera pans left-right
+local speed_ud = 4.0  -- speed by which the camera pans up-down
 
 local fov = (fov_max + fov_min) * 0.5
 
@@ -46,7 +46,7 @@ function StartHeliCamera()
 		SetTimecycleModifierStrength(0.3)
 		local scaleform = RequestScaleformMovie("HELI_CAM")
 		while not HasScaleformMovieLoaded(scaleform) do
-			Citizen.Wait(0)
+			Wait(0)
 		end
 
 		cam = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
@@ -58,9 +58,9 @@ function StartHeliCamera()
 		PushScaleformMovieFunctionParameterInt(0) -- 0 for nothing, 1 for LSPD logo
 		PopScaleformMovieFunctionVoid()
 
-		Citizen.CreateThread(function()
+		CreateThread(function()
 			while heliCamera do
-				Citizen.Wait(2000)
+				Wait(2000)
 
 				if locked_on_vehicle then
 					if
@@ -83,9 +83,9 @@ function StartHeliCamera()
 			end
 		end)
 
-		Citizen.CreateThread(function()
+		CreateThread(function()
 			while heliCamera and LocalPlayer.state.loggedIn do
-				Citizen.Wait(5)
+				Wait(5)
 
 				if locked_on_vehicle then
 					if DoesEntityExist(locked_on_vehicle) then
@@ -108,14 +108,14 @@ function StartHeliCamera()
 				PushScaleformMovieFunctionParameterFloat(GetCamRot(cam, 2).z)
 				PopScaleformMovieFunctionVoid()
 				DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
-				--Citizen.Wait(0)
+				--Wait(0)
 			end
 
 			heliCamera = false
 			locked_on_vehicle = false
 
 			ClearTimecycleModifier()
-			fov = (fov_max + fov_min) * 0.5 -- reset to starting zoom level
+			fov = (fov_max + fov_min) * 0.5     -- reset to starting zoom level
 			RenderScriptCams(false, false, 0, 1, 0) -- Return to gameplay camera
 			SetScaleformMovieAsNoLongerNeeded(scaleform) -- Cleanly release the scaleform
 			DestroyCam(cam, false)

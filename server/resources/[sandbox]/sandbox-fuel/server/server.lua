@@ -35,9 +35,9 @@ AddEventHandler("Core:Shared:Ready", function()
 		RegisterCallbacks()
 
 		if not threading then
-			Citizen.CreateThread(function()
+			CreateThread(function()
 				while true do
-					Citizen.Wait(1000 * 60 * 10)
+					Wait(1000 * 60 * 10)
 					if depositData.amount > 0 then
 						Logger:Trace(
 							"Fuel",
@@ -62,7 +62,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			threading = true
 		end
 
-		Citizen.Wait(2000)
+		Wait(2000)
 		local f = Banking.Accounts:GetOrganization("dgang")
 		if f ~= true then
 			bankAcc = f.Account
@@ -102,7 +102,9 @@ function RegisterCallbacks()
 						})
 
 						if paymentSuccess then
-							Phone.Notification:Add(source, string.format("Fuel Purchase of $%s Successful", math.ceil(totalCost)), false, os.time(), 3000, "bank", {})
+							Phone.Notification:Add(source,
+								string.format("Fuel Purchase of $%s Successful", math.ceil(totalCost)), false, os.time(),
+								3000, "bank", {})
 						end
 					else
 						paymentSuccess = Wallet:Modify(source, -math.abs(totalCost), true)
@@ -113,7 +115,7 @@ function RegisterCallbacks()
 						-- is sent to those accounts instead of a static one
 						depositData.amount += math.abs(totalCost)
 						depositData.transactions += 1
-	
+
 						vehState.state.Fuel = math.min(math.ceil(vehState.state.Fuel + data.fuelAmount), 100)
 						cb(true, totalCost)
 						return

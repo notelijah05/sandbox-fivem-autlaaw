@@ -3,7 +3,7 @@ local awaitingBowl = false
 local pressedBowl = false
 
 local insideBowlingStart = false
--- Citizen.CreateThread(function()
+-- CreateThread(function()
 --     local center = vector3(728.477, -771.375, 25.446)
 --     local points = GetBowlingPinLayout(center)
 
@@ -11,7 +11,7 @@ local insideBowlingStart = false
 --         for k, v in ipairs(points) do
 --             DrawSphere(v, 0.05, 255, 0, 0, 100)
 --         end
---         Citizen.Wait(5)
+--         Wait(5)
 --     end
 -- end)
 
@@ -32,7 +32,7 @@ AddEventHandler('Businesses:Client:Startup', function()
     for k, v in pairs(_bowlingAlleys) do
         if v.startZone then
             Polyzone.Create:Box(
-                'bowling_alley_start_'.. k,
+                'bowling_alley_start_' .. k,
                 v.startZone.center,
                 v.startZone.length,
                 v.startZone.width,
@@ -70,7 +70,8 @@ AddEventHandler('Businesses:Client:Startup', function()
                         data = k,
                         isEnabled = function(data, entity)
                             local alley = GlobalState[string.format('Bowling:Alley:%s', data)]
-                            return alley?.active and #alley.players < 5 and not IsPlayerInBowlingAlley(alley.players, LocalPlayer.state.Character:GetData('SID'))
+                            return alley?.active and #alley.players < 5 and
+                                not IsPlayerInBowlingAlley(alley.players, LocalPlayer.state.Character:GetData('SID'))
                         end,
                     },
                     {
@@ -80,7 +81,8 @@ AddEventHandler('Businesses:Client:Startup', function()
                         data = k,
                         isEnabled = function(data, entity)
                             local alley = GlobalState[string.format('Bowling:Alley:%s', data)]
-                            return alley?.active and ((IsPlayerInBowlingAlley(alley.players, LocalPlayer.state.Character:GetData('SID')) and alley.finished) or LocalPlayer.state.onDuty == 'bowling')
+                            return alley?.active and
+                                ((IsPlayerInBowlingAlley(alley.players, LocalPlayer.state.Character:GetData('SID')) and alley.finished) or LocalPlayer.state.onDuty == 'bowling')
                         end,
                     },
                 },
@@ -147,7 +149,7 @@ function SendBowlingNotification(text, time)
 end
 
 function BowlingBlockers()
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while isBowling do
             DisableControlAction(0, 22, true)
             DisableControlAction(0, 24, true)
@@ -157,7 +159,7 @@ function BowlingBlockers()
             DisableControlAction(0, 33, true)
             DisableControlAction(0, 34, true)
             DisableControlAction(0, 35, true)
-            Citizen.Wait(0)
+            Wait(0)
         end
     end)
 end
@@ -193,21 +195,23 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
     local pins = CreateBowlingPins(alleyData.pins, currentHitPins)
 
     local ball = LoadAndCreateObject('prop_bowling_ball', GetEntityCoords(LocalPlayer.state.ped))
-    AttachEntityToEntity(ball, LocalPlayer.state.ped, GetPedBoneIndex(LocalPlayer.state.ped, 57005), 0.19, -0.01, 0.00, -99.0, -463.0, 0.0, true, true, false, true, 1, true)
+    AttachEntityToEntity(ball, LocalPlayer.state.ped, GetPedBoneIndex(LocalPlayer.state.ped, 57005), 0.19, -0.01, 0.00,
+        -99.0, -463.0, 0.0, true, true, false, true, 1, true)
 
     LoadDict('weapons@projectile@')
     if not IsEntityPlayingAnim(LocalPlayer.state.ped, 'weapons@projectile@', 'aimlive_l', 3) then
         TaskPlayAnim(LocalPlayer.state.ped, 'weapons@projectile@', 'aimlive_l', 8.0, -8.0, -1, 17, 0, false, false, false)
     end
 
-    Citizen.Wait(1000)
+    Wait(1000)
 
     pressedBowl = false
-    Action:Show('bowling', '{keybind}bowling_aim_left{/keybind} Aim Left | {keybind}bowling_aim_right{/keybind} Aim Right | {keybind}primary_action{/keybind} Bowl')
+    Action:Show('bowling',
+        '{keybind}bowling_aim_left{/keybind} Aim Left | {keybind}bowling_aim_right{/keybind} Aim Right | {keybind}primary_action{/keybind} Bowl')
 
     local tm = 0
     while tm < 7500 and not pressedBowl do
-        Citizen.Wait(10)
+        Wait(10)
         tm += 10
     end
 
@@ -216,7 +220,8 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
 
     local skillCheck = SkillCheckBowler()
 
-    TaskPlayAnim(LocalPlayer.state.ped, 'weapons@projectile@', 'throw_l_fb_stand', 8.0, -8.0, -1, 17, 0.8, false, false, false)
+    TaskPlayAnim(LocalPlayer.state.ped, 'weapons@projectile@', 'throw_l_fb_stand', 8.0, -8.0, -1, 17, 0.8, false, false,
+        false)
     local force = 2.0
     if skillCheck then
         force = math.random(50, 80) + 0.0
@@ -230,11 +235,12 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
         end
     end
 
-    Citizen.Wait(150)
+    Wait(150)
     DetachEntity(ball)
 
     SetEntityHeading(ball, GetEntityHeading(LocalPlayer.state.ped))
-    SetEntityVelocity(ball, GetEntityForwardX(ball) * (20 + (force / 10)), GetEntityForwardY(ball) * (20 + (force / 10)), 0.0)
+    SetEntityVelocity(ball, GetEntityForwardX(ball) * (20 + (force / 10)), GetEntityForwardY(ball) * (20 + (force / 10)),
+        0.0)
     ClearPedTasks(LocalPlayer.state.ped)
 
     local pinsBitch = true
@@ -245,8 +251,8 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
 
     while pinsBitch do
         if #(GetEntityCoords(ball) - alleyData.endZone) <= 1.5 then
-            Citizen.CreateThread(function()
-                Citizen.Wait(750)
+            CreateThread(function()
+                Wait(750)
                 for k, v in ipairs(pins) do
                     local entRotation = GetEntityRotation(v)
                     if not (entRotation.x <= 10.0 and entRotation.x >= -10.0 and entRotation.y <= 10.0 and entRotation.y >= -10.0 and entRotation.z <= 10.0 and entRotation.z >= -10.0) then
@@ -255,10 +261,10 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
                     end
                 end
             end)
-            Citizen.Wait(2500)
+            Wait(2500)
             pinsTarget = true
         end
-        Citizen.Wait(100)
+        Wait(100)
     end
 
     print('Delete Bowling Ball')
@@ -276,12 +282,12 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
             end
         end
 
-        Citizen.Wait(3000)
+        Wait(3000)
     end
 
     print('Hit Pins: ', pinsDown)
 
-    Citizen.Wait(2000)
+    Wait(2000)
 
     for k, v in ipairs(pins) do
         DeleteEntity(v)
@@ -314,16 +320,16 @@ local nickNamePromise
 function GetBowlingNickName()
     nickNamePromise = promise.new()
     Input:Show('Bowling', 'Name', {
-		{
-			id = 'name',
-			type = 'text',
-			options = {
-				inputProps = {
-					maxLength = 100,
-				},
-			},
-		},
-	}, 'Bowling:Client:RecieveInput', {})
+        {
+            id = 'name',
+            type = 'text',
+            options = {
+                inputProps = {
+                    maxLength = 100,
+                },
+            },
+        },
+    }, 'Bowling:Client:RecieveInput', {})
 
     return Citizen.Await(nickNamePromise)
 end

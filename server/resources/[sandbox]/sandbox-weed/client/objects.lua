@@ -2,7 +2,7 @@ _activePlants, _nearbyPlants, _spawnedPlants = {}, {}, {}
 
 RegisterNetEvent('Weed:Client:Objects:Init', function(plants)
     if plants and type(plants) == 'table' then
-        for k,v in pairs(plants) do
+        for k, v in pairs(plants) do
             _activePlants[k] = v
         end
 
@@ -10,16 +10,16 @@ RegisterNetEvent('Weed:Client:Objects:Init', function(plants)
         _nearbyPlants = {}
 
         while not LocalPlayer.state.loggedIn do
-            Citizen.Wait(100)
+            Wait(100)
         end
 
-        Citizen.CreateThread(function()
+        CreateThread(function()
             while LocalPlayer.state.loggedIn do
-                Citizen.Wait(3000)
+                Wait(3000)
 
                 if _activePlants then
                     local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
-                    for k,v in pairs(_activePlants) do
+                    for k, v in pairs(_activePlants) do
                         if #(pedCoords - vector3(v.plant.location.x, v.plant.location.y, v.plant.location.z)) <= 500.0 then
                             if not _nearbyPlants[k] then
                                 _nearbyPlants[k] = true
@@ -30,7 +30,7 @@ RegisterNetEvent('Weed:Client:Objects:Init', function(plants)
                             if _spawnedPlants[k] and DoesEntityExist(_spawnedPlants[k]) then
                                 DeleteEntity(_spawnedPlants[k])
                                 _spawnedPlants[k] = nil
-                                Citizen.Wait(5)
+                                Wait(5)
                             end
                         end
                     end
@@ -38,26 +38,26 @@ RegisterNetEvent('Weed:Client:Objects:Init', function(plants)
             end
         end)
 
-        Citizen.CreateThread(function()
+        CreateThread(function()
             while LocalPlayer.state.loggedIn do
-                Citizen.Wait(350)
+                Wait(350)
                 if _activePlants and _nearbyPlants then
                     local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
-                    for k,v in pairs(_nearbyPlants) do
+                    for k, v in pairs(_nearbyPlants) do
                         local weed = _activePlants[k]
                         if weed and #(pedCoords - vector3(weed.plant.location.x, weed.plant.location.y, weed.plant.location.z)) <= 50.0 then
                             if not _spawnedPlants[k] then
                                 _spawnedPlants[k] = CreateWeedPlant(k, weed)
-                                Citizen.Wait(5)
+                                Wait(5)
                             end
                         elseif _spawnedPlants[k] and DoesEntityExist(_spawnedPlants[k]) then
                             DeleteEntity(_spawnedPlants[k])
                             _spawnedPlants[k] = nil
-                            Citizen.Wait(5)
+                            Wait(5)
                         end
                     end
                 else
-                    Citizen.Wait(1500)
+                    Wait(1500)
                 end
             end
         end)
@@ -78,7 +78,7 @@ end)
 RegisterNetEvent('Weed:Client:Objects:UpdateMany', function(data)
     for k, v in ipairs(data) do
         _activePlants[v.id] = v.plant
-    
+
         if v.update and _spawnedPlants[v.id] then
             DeleteEntity(_spawnedPlants[v.id])
             _spawnedPlants[v.id] = nil
@@ -102,9 +102,11 @@ end)
 function CreateWeedPlant(id, data)
     local stage = getStageByPct(data.plant.growth)
 
-    local obj = CreateObject(Plants[stage].model, data.plant.location.x + 0.0, data.plant.location.y + 0.0, data.plant.location.z + Plants[stage].offset, false, true)
+    local obj = CreateObject(Plants[stage].model, data.plant.location.x + 0.0, data.plant.location.y + 0.0,
+        data.plant.location.z + Plants[stage].offset, false, true)
     FreezeEntityPosition(obj, true)
-    SetEntityCoords(obj, data.plant.location.x + 0.0, data.plant.location.y + 0.0, data.plant.location.z + Plants[stage].offset)
+    SetEntityCoords(obj, data.plant.location.x + 0.0, data.plant.location.y + 0.0,
+        data.plant.location.z + Plants[stage].offset)
 
     return obj
 end

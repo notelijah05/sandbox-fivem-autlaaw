@@ -31,7 +31,7 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	GlobalState.RadarFlaggedPlates = {}
 end)
 
@@ -51,7 +51,7 @@ function RegisterChatCommands()
 		{
 			help = "Flag a Plate",
 			params = {
-				{ name = "Plate", help = "The Plate to Flag" },
+				{ name = "Plate",  help = "The Plate to Flag" },
 				{ name = "Reason", help = "Reason Why the Plate is Flagged" },
 			},
 		},
@@ -68,7 +68,7 @@ function RegisterChatCommands()
 
 			if plate then
 				Radar:RemoveFlaggedPlate(plate)
-				Chat.Send.System:Single(src, "Removed Flagged Plate: " .. plate) 
+				Chat.Send.System:Single(src, "Removed Flagged Plate: " .. plate)
 			end
 		end,
 		{

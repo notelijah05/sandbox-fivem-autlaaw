@@ -1,11 +1,11 @@
 local _threading = false
 
 function StartMazeBankThreads()
-    if _threading then return end
-    _threading = true
+	if _threading then return end
+	_threading = true
 
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while _threading do
 			if _mbGlobalReset ~= nil then
 				if os.time() > _mbGlobalReset then
@@ -13,26 +13,26 @@ function StartMazeBankThreads()
 					ResetMazeBank()
 				end
 			end
-			Citizen.Wait(30000)
+			Wait(30000)
 		end
 	end)
 
-    Citizen.CreateThread(function()
-        while _threading do
-            local powerDisabled = IsMBPowerDisabled()
-            if not powerDisabled and not Doors:IsLocked("mazebank_offices") then
-                Doors:SetLock("mazebank_offices", true)
+	CreateThread(function()
+		while _threading do
+			local powerDisabled = IsMBPowerDisabled()
+			if not powerDisabled and not Doors:IsLocked("mazebank_offices") then
+				Doors:SetLock("mazebank_offices", true)
 				for k, v in ipairs(_mbOfficeDoors) do
 					Doors:SetLock(v.door, true)
 				end
-            elseif powerDisabled and Doors:IsLocked("mazebank_offices") then
-                Doors:SetLock("mazebank_offices", false)
-            end
-            Citizen.Wait((1000 * 60) * 1)
-        end
-    end)
+			elseif powerDisabled and Doors:IsLocked("mazebank_offices") then
+				Doors:SetLock("mazebank_offices", false)
+			end
+			Wait((1000 * 60) * 1)
+		end
+	end)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while _threading do
 			for k, v in pairs(_mbHacks) do
 				if
@@ -47,8 +47,8 @@ function StartMazeBankThreads()
 					TriggerClientEvent("Robbery:Client:MazeBank:OpenVaultDoor", -1, v)
 				end
 			end
-	
-			Citizen.Wait(30000)
+
+			Wait(30000)
 		end
 	end)
 end

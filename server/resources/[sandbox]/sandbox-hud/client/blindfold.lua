@@ -4,11 +4,11 @@ RegisterNetEvent("Characters:Client:Spawn", function()
 		"isBlindfolded",
 		string.format("player:%s", GetPlayerServerId(LocalPlayer.state.PlayerID)),
 		function(bagName, key, value, _unused, replicated)
-            if value then
-                SetupBlindfold()
-            else
-                RemoveBlindfold()
-            end
+			if value then
+				SetupBlindfold()
+			else
+				RemoveBlindfold()
+			end
 		end
 	)
 
@@ -27,9 +27,9 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 AddEventHandler("HUD:Client:RemoveBlindfold", function(entity, data)
-    Callbacks:ServerCallback("HUD:RemoveBlindfold", entity.serverId, function(s)
+	Callbacks:ServerCallback("HUD:RemoveBlindfold", entity.serverId, function(s)
 
-    end)
+	end)
 end)
 
 local blindfoldObject = nil
@@ -52,7 +52,7 @@ function SetupBlindfold()
 	blindfoldObject = CreateObjectNoOffset(model, coords, true, false, false)
 
 	while not DoesEntityExist(blindfoldObject) do
-		Citizen.Wait(0)
+		Wait(0)
 	end
 
 	SendNUIMessage({
@@ -83,11 +83,11 @@ function SetupBlindfold()
 	)
 	SetFollowPedCamViewMode(4)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while blindfoldObject ~= nil do
 			SetEntityLocallyInvisible(blindfoldObject)
 			DisableControlAction(0, 0, true)
-			Citizen.Wait(1)
+			Wait(1)
 		end
 	end)
 end

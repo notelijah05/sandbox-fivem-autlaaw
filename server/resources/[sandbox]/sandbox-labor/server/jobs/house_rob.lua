@@ -30,7 +30,7 @@ local _loot = {
 		{ 25, { name = "ring", min = 2, max = 8 } },
 		{ 15, { name = "chain", min = 3, max = 10 } },
 		{ 29, { name = "earrings", min = 6, max = 15 } },
-		{ 1, { name = "valuegoods", max = 1 } },
+		{ 1,  { name = "valuegoods", max = 1 } },
 	},
 	medicine = {
 		-- { 25, { name = "hydrocodone", max = 3 } },
@@ -73,7 +73,7 @@ function StartAlarmCheck(joiner)
 			_robbers[joiner].expires = os.time() + (60 * 3)
 		end
 
-		Citizen.CreateThread(function()
+		CreateThread(function()
 			while
 				_robbers[joiner] ~= nil
 				and _robbers[joiner].nodes ~= nil
@@ -92,15 +92,17 @@ function StartAlarmCheck(joiner)
 				then
 					Labor.Workgroups:SendEvent(joiner, string.format("HouseRobbery:Client:%s:AlarmTriggered", joiner))
 
-					Robbery:TriggerPDAlert(joiner, vector3(_robbers[joiner].coords.x, _robbers[joiner].coords.y, _robbers[joiner].coords.z), "10-90", "House Alarm", {
-						icon = 374,
-						size = 0.9,
-						color = 31,
-						duration = (60 * 5),
-					})
+					Robbery:TriggerPDAlert(joiner,
+						vector3(_robbers[joiner].coords.x, _robbers[joiner].coords.y, _robbers[joiner].coords.z), "10-90",
+						"House Alarm", {
+							icon = 374,
+							size = 0.9,
+							color = 31,
+							duration = (60 * 5),
+						})
 					return
 				end
-				Citizen.Wait(10000)
+				Wait(10000)
 			end
 		end)
 	end
@@ -151,7 +153,6 @@ AddEventHandler("Labor:Server:Startup", function()
 							"HouseRobbery:Lockpick",
 							{ property = _robbers[_joiners[source]].property, tier = _robbers[_joiners[source]].tier },
 							function(success)
-
 								local newValue = slot.CreateDate - (60 * 60 * 24)
 								if success then
 									newValue = slot.CreateDate - (60 * 60 * 12)
@@ -165,7 +166,9 @@ AddEventHandler("Labor:Server:Startup", function()
 								local tier = _robbers[_joiners[source]].tier
 								if success then
 									Status.Modify:Add(source, "PLAYER_STRESS", tier)
-									Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:Lockpicked", _joiners[source]), _robbers[_joiners[source]].nodes)
+									Labor.Workgroups:SendEvent(_joiners[source],
+										string.format("HouseRobbery:Client:%s:Lockpicked", _joiners[source]),
+										_robbers[_joiners[source]].nodes)
 
 									Labor.Offers:Start(
 										_joiners[source],
@@ -221,7 +224,6 @@ AddEventHandler("Labor:Server:Startup", function()
 							"HouseRobbery:AdvLockpick",
 							{ property = _robbers[_joiners[source]].property, tier = _robbers[_joiners[source]].tier },
 							function(success)
-
 								local newValue = slot.CreateDate - (60 * 60 * 24)
 								if success then
 									newValue = slot.CreateDate - (60 * 60 * 12)
@@ -235,7 +237,9 @@ AddEventHandler("Labor:Server:Startup", function()
 								local tier = _robbers[_joiners[source]].tier
 								if success then
 									Status.Modify:Add(source, "PLAYER_STRESS", tier)
-									Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:Lockpicked", _joiners[source]), _robbers[_joiners[source]].nodes)
+									Labor.Workgroups:SendEvent(_joiners[source],
+										string.format("HouseRobbery:Client:%s:Lockpicked", _joiners[source]),
+										_robbers[_joiners[source]].nodes)
 
 									Labor.Offers:Start(
 										_joiners[source],
@@ -305,7 +309,8 @@ AddEventHandler("Labor:Server:Startup", function()
 			then
 				_robbers[_joiners[source]].state = 2
 				Labor.Offers:Task(_joiners[source], _JOB, "Break into the house")
-				Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:Near", _joiners[source]), _robbers[_joiners[source]].coords)
+				Labor.Workgroups:SendEvent(_joiners[source],
+					string.format("HouseRobbery:Client:%s:Near", _joiners[source]), _robbers[_joiners[source]].coords)
 			end
 		end
 	end)
@@ -318,7 +323,8 @@ AddEventHandler("Labor:Server:Startup", function()
 			GlobalState[string.format("%s:RobbingHouse", source)] = data
 
 			local intr = HouseRobberyInteriors[_robbers[_joiners[source]].tier]
-			Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:InnerStuff", _joiners[source]), intr)
+			Labor.Workgroups:SendEvent(_joiners[source],
+				string.format("HouseRobbery:Client:%s:InnerStuff", _joiners[source]), intr)
 
 			Player(source).state.tpLocation = {
 				x = _robbers[_joiners[source]].coords.x,
@@ -334,7 +340,8 @@ AddEventHandler("Labor:Server:Startup", function()
 					and not _robbers[_joiners[source]].nodes.states.alarm.triggered
 				)
 			then
-				Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:AlarmTriggered", _joiners[source]))
+				Labor.Workgroups:SendEvent(_joiners[source],
+					string.format("HouseRobbery:Client:%s:AlarmTriggered", _joiners[source]))
 			end
 
 			_robbers[_joiners[source]].inside += 1
@@ -355,12 +362,12 @@ AddEventHandler("Labor:Server:Startup", function()
 		cb(GlobalState[string.format("%s:RobbingHouse", source)], intr)
 		Routing:RoutePlayerToGlobalRoute(source)
 
-		Citizen.Wait(300)
+		Wait(300)
 
 		if _joiners[source] ~= nil and _robbers[_joiners[source]] ~= nil and _robbers[_joiners[source]].state == 5 then
 			if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
 				_robbers[_joiners[source]].state = 6
-				Citizen.Wait(1000)
+				Wait(1000)
 				Labor.Offers:ManualFinish(_joiners[source], _JOB)
 			end
 		elseif _joiners[source] ~= nil and _robbers[_joiners[source]] ~= nil and _robbers[_joiners[source]].state == 4 then
@@ -383,10 +390,12 @@ AddEventHandler("Labor:Server:Startup", function()
 		then
 			if data.state then
 				_robbers[_joiners[source]].nodes.states.alarm.disabled = true
-				Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:AlarmHacked", _joiners[source]))
+				Labor.Workgroups:SendEvent(_joiners[source],
+					string.format("HouseRobbery:Client:%s:AlarmHacked", _joiners[source]))
 			else
 				_robbers[_joiners[source]].nodes.states.alarm.triggered = true
-				Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:AlarmTriggered", _joiners[source]))
+				Labor.Workgroups:SendEvent(_joiners[source],
+					string.format("HouseRobbery:Client:%s:AlarmTriggered", _joiners[source]))
 
 				Robbery:TriggerPDAlert(source, _robbers[_joiners[source]].coords, "10-90", "House Alarm", {
 					icon = 374,
@@ -408,7 +417,8 @@ AddEventHandler("Labor:Server:Startup", function()
 			and not _robbers[_joiners[source]].nodes.searched[data]
 		then
 			_robbers[_joiners[source]].nodes.searched[data] = true
-			Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:Action", _joiners[source]), data)
+			Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:Action", _joiners[source]),
+				data)
 
 			local intr = HouseRobberyInteriors[_robbers[_joiners[source]].tier]
 			if intr?.robberies?.locations then
@@ -423,7 +433,8 @@ AddEventHandler("Labor:Server:Startup", function()
 
 			if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
 				_robbers[_joiners[source]].state = 5
-				Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:EndRobbery", _joiners[source]))
+				Labor.Workgroups:SendEvent(_joiners[source],
+					string.format("HouseRobbery:Client:%s:EndRobbery", _joiners[source]))
 				if _robbers[_joiners[source]].isWorkgroup then
 					Labor.Offers:Start(_joiners[source], _JOB, "Leave The House", _robbers[_joiners[source]].inside)
 				else
@@ -453,7 +464,8 @@ AddEventHandler("Labor:Server:HouseRobbery:Breach", function(source, house)
 			z = hData.coords.z,
 		}
 
-		TriggerClientEvent("HouseRobbery:Client:Breach", source, { x = intr.x, y = intr.y, z = intr.z, h = intr.h }, intr.exit)
+		TriggerClientEvent("HouseRobbery:Client:Breach", source, { x = intr.x, y = intr.y, z = intr.z, h = intr.h },
+			intr.exit)
 	end
 end)
 
@@ -476,7 +488,6 @@ AddEventHandler("Labor:Server:HouseRobbery:Queue", function(source, data)
 		end
 
 		while house == nil or _inProgress[house] ~= nil do
-
 			local rand = math.random(#HouseRobberyProperties)
 			local d = HouseRobberyProperties[rand]
 
@@ -484,7 +495,7 @@ AddEventHandler("Labor:Server:HouseRobbery:Queue", function(source, data)
 				house = rand
 			end
 
-			Citizen.Wait(1)
+			Wait(1)
 		end
 
 		local pData = HouseRobberyProperties[house]
@@ -608,7 +619,8 @@ AddEventHandler("Labor:Server:HouseRobbery:Queue", function(source, data)
 
 		_offers[_joiners[source]].noExpire = false
 		Labor.Offers:Task(_joiners[source], _JOB, "Go To The Location")
-		Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:Receive", _joiners[source]), house, pData)
+		Labor.Workgroups:SendEvent(_joiners[source], string.format("HouseRobbery:Client:%s:Receive", _joiners[source]),
+			house, pData)
 	end
 
 	WaitList.Interact:Remove("houserobbery", source)

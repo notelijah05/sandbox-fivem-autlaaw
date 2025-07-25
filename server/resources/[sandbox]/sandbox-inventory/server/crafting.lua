@@ -41,23 +41,29 @@ function RemoveCraftingCooldown(source, bench, id)
 			local char = Fetch:CharacterSource(source)
 			if char ~= nil then
 				if _cooldowns[bench] ~= nil then
-					Logger:Info("Crafting", string.format("%s %s (%s) Reset Cooldown %s on bench %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), id, bench))
+					Logger:Info("Crafting",
+						string.format("%s %s (%s) Reset Cooldown %s on bench %s", char:GetData("First"),
+							char:GetData("Last"), char:GetData("SID"), id, bench))
 					Chat.Send.Server:Single(source, "Cooldown Removed From Bench")
 					_cooldowns[bench][id] = nil
 					MySQL.query('DELETE FROM crafting_cooldowns WHERE bench = ? AND id = ?', { bench, id })
 				else
-					Logger:Info("Crafting", string.format("%s %s (%s) Attempted To Remove Cooldown %s From Non-Existent Bench %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), id, bench))
+					Logger:Info("Crafting",
+						string.format("%s %s (%s) Attempted To Remove Cooldown %s From Non-Existent Bench %s",
+							char:GetData("First"), char:GetData("Last"), char:GetData("SID"), id, bench))
 					Chat.Send.Server:Single(source, "Not A Valid Bench")
 				end
 			end
 		else
-			Logger:Info("Crafting", string.format("%s %s (%s) Attempted To Remove Cooldown %s From Bench %s", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), id, bench))
+			Logger:Info("Crafting",
+				string.format("%s %s (%s) Attempted To Remove Cooldown %s From Bench %s", char:GetData("First"),
+					char:GetData("Last"), char:GetData("SID"), id, bench))
 		end
 	end
 end
 
 function LoadCraftingCooldowns()
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		local cds = MySQL.query.await('SELECT * FROM crafting_cooldowns WHERE expires > ?', { os.time() })
 
 		for k, v in ipairs(cds or {}) do
@@ -72,7 +78,7 @@ function CleanupExpiredCooldowns()
 	if _cdThreading then return end
 	_cdThreading = true
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while _cdThreading do
 			for k, v in pairs(_cooldowns) do
 				for k2, v2 in pairs(v) do
@@ -87,7 +93,7 @@ function CleanupExpiredCooldowns()
 					Logger:Info("Inventory", string.format("Remove ^2%s^7 Expired Crafting Cooldowns", d.affectedRows))
 				end
 			end)
-			Citizen.Wait(60000)
+			Wait(60000)
 		end
 	end)
 end
@@ -100,9 +106,10 @@ function InsertCooldown(bench, key, expires)
 end
 
 CRAFTING = {
-	RegisterBench = function(self, id, label, targeting, location, restrictions, recipes, canUseSchematics, isPubSchemTable)
+	RegisterBench = function(self, id, label, targeting, location, restrictions, recipes, canUseSchematics,
+							 isPubSchemTable)
 		while not itemsLoaded do
-			Citizen.Wait(10)
+			Wait(10)
 		end
 
 		_cooldowns[id] = _cooldowns[id] or {}
@@ -211,20 +218,21 @@ CRAFTING = {
 
 			local p = promise.new()
 
-			Citizen.CreateThread(function()
+			CreateThread(function()
 				local meta = {}
 				if itemsDatabase[recipe.result.name].type == 2 and not itemsDatabase[recipe.result.name].noSerial then
 					meta.Scratched = true
 				end
-	
+
 				if recipe.cooldown then
 					if _types[bench].isPubSchemTable then
-						InsertCooldown(string.format("%s:%s", bench, crafter), recipe.id, (os.time() * 1000) + recipe.cooldown)
+						InsertCooldown(string.format("%s:%s", bench, crafter), recipe.id,
+							(os.time() * 1000) + recipe.cooldown)
 					else
 						InsertCooldown(bench, recipe.id, (os.time() * 1000) + recipe.cooldown)
 					end
 				end
-	
+
 				if INVENTORY:AddItem(crafter, recipe.result.name, recipe.result.count * qty, meta, 1) then
 					local inv = getInventory(crafterSource, crafter, 1)
 					if _types[bench].isPubSchemTable then
@@ -271,10 +279,11 @@ CRAFTING = {
 			return false
 		end,
 		HasAny = function(self, stateID, item)
-			return MySQL.scalar.await('SELECT COUNT(*) AS count FROM character_schematics c WHERE c.sid = ? AND c.schematic = ?', {
-				stateID,
-				item,
-			}) > 0
+			return MySQL.scalar.await(
+				'SELECT COUNT(*) AS count FROM character_schematics c WHERE c.sid = ? AND c.schematic = ?', {
+					stateID,
+					item,
+				}) > 0
 		end,
 		Add = function(self, bench, item, stateID)
 			if _types[bench] ~= nil and _schematics[itemsDatabase[item].schematic] ~= nil then
@@ -290,7 +299,8 @@ CRAFTING = {
 							item
 						})
 
-						_playerSchems[stateID][_types[bench].isPubSchemTable] = _playerSchems[stateID][_types[bench].isPubSchemTable] or {}
+						_playerSchems[stateID][_types[bench].isPubSchemTable] = _playerSchems[stateID]
+							[_types[bench].isPubSchemTable] or {}
 						table.insert(_playerSchems[stateID][_types[bench].isPubSchemTable], item)
 					else
 						MySQL.insert.await('INSERT INTO bench_schematics (bench, schematic) VALUES(?, ?)', {
@@ -340,7 +350,7 @@ CRAFTING = {
 			then
 				local recipies = bench.recipes
 				local cooldowns = _cooldowns[benchId]
-	
+
 				if bench.isPubSchemTable then
 					cooldowns = _cooldowns[string.format("%s:%s", benchId, char:GetData("SID"))]
 
@@ -391,7 +401,8 @@ function RegisterCraftingCallbacks()
 					if result ~= nil then
 						table.insert(list, {
 							label = itemData.label,
-							description = string.format("Makes: x%s %s", _schematics[itemData.schematic].result.count, result.label),
+							description = string.format("Makes: x%s %s", _schematics[itemData.schematic].result.count,
+								result.label),
 							event = "Crafting:Client:UseSchematic",
 							data = v,
 						})
@@ -433,7 +444,7 @@ function RegisterCraftingCallbacks()
 							or (
 								bench.restrictions.rep ~= nil
 								and Reputation:GetLevel(source, bench.restrictions.rep.id)
-									>= bench.restrictions.rep.level
+								>= bench.restrictions.rep.level
 							)
 						)
 					then

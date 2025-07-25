@@ -322,7 +322,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				local ped = char:GetData("Ped")
 				if ped.customization.components.mask.drawableId ~= 0 then
 					TriggerClientEvent("Ped:Client:MaskAnim", source)
-					Citizen.Wait(300)
+					Wait(300)
 					Ped.Mask:Unequip(source)
 				end
 			end
@@ -336,7 +336,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				local ped = char:GetData("Ped")
 				if not ped.customization.props.hat.disabled then
 					TriggerClientEvent("Ped:Client:HatGlassAnim", source)
-					Citizen.Wait(300)
+					Wait(300)
 					Ped.Hat:Unequip(source)
 				end
 			end
@@ -350,7 +350,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				local ped = char:GetData("Ped")
 				if not ped.customization.props.hat.disabled then
 					TriggerClientEvent("Ped:Client:HatGlassAnim", source)
-					Citizen.Wait(300)
+					Wait(300)
 					TriggerClientEvent("Ped:Client:Hat", source)
 				end
 			end
@@ -364,7 +364,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				local ped = char:GetData("Ped")
 				if not ped.customization.props.glass.disabled then
 					TriggerClientEvent("Ped:Client:HatGlassAnim", source)
-					Citizen.Wait(300)
+					Wait(300)
 					TriggerClientEvent("Ped:Client:Glasses", source)
 				end
 			end
@@ -413,19 +413,19 @@ AddEventHandler("Core:Shared:Ready", function()
 		end, {
 			help = "Add Whitelisted Ped to Character",
 			params = {
-                {
-                    name = "SID",
-                    help = "Character State ID",
-                },
-                {
-                    name = "Model",
-                    help = "Ped Model e.g. mp_m_freemode_01",
-                },
 				{
-                    name = "Label",
-                    help = "Ped Name",
-                },
-            },
+					name = "SID",
+					help = "Character State ID",
+				},
+				{
+					name = "Model",
+					help = "Ped Model e.g. mp_m_freemode_01",
+				},
+				{
+					name = "Label",
+					help = "Ped Name",
+				},
+			},
 		}, 3)
 
 		Chat:RegisterAdminCommand("pedwhitelistview", function(source, args, rawCommand)
@@ -436,7 +436,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				})
 
 				local message = "Whitelisted Peds<br>"
-				for k,v in ipairs(res) do
+				for k, v in ipairs(res) do
 					message = message .. string.format("Model: %s | Label: %s", v.model, v.label)
 				end
 				Chat.Send.System:Single(source, message)
@@ -446,11 +446,11 @@ AddEventHandler("Core:Shared:Ready", function()
 		end, {
 			help = "View Whitelisted Peds for Character",
 			params = {
-                {
-                    name = "SID",
-                    help = "Character State ID",
-                },
-            },
+				{
+					name = "SID",
+					help = "Character State ID",
+				},
+			},
 		}, 1)
 
 		Chat:RegisterAdminCommand("pedwhitelistremove", function(source, args, rawCommand)
@@ -472,15 +472,15 @@ AddEventHandler("Core:Shared:Ready", function()
 		end, {
 			help = "Remove Whitelisted Ped from Character",
 			params = {
-                {
-                    name = "SID",
-                    help = "Character State ID",
-                },
-                {
-                    name = "Model",
-                    help = "Ped Model e.g. mp_m_freemode_01",
-                },
-            },
+				{
+					name = "SID",
+					help = "Character State ID",
+				},
+				{
+					name = "Model",
+					help = "Ped Model e.g. mp_m_freemode_01",
+				},
+			},
 		}, 2)
 	end)
 end)
@@ -489,7 +489,7 @@ PED = {
 	Save = function(self, char, ped)
 		local p = promise.new()
 
-		-- On the Verge of Suicide (WHY??? Apparently it won't update in mongodb unless this is done) 
+		-- On the Verge of Suicide (WHY??? Apparently it won't update in mongodb unless this is done)
 		if ped?.customization?.face?.features and type(ped.customization.face.features) == "table" then
 			for k, v in pairs(ped.customization.face.features) do
 				ped.customization.face.features[tostring(k)] = v
@@ -645,7 +645,7 @@ PED = {
 					char:GetData("Gender"),
 					ped.customization.components.accessory
 				) or "accessory"
-				
+
 				if itemId ~= "accessory" then
 					if Inventory:AddItem(char:GetData("SID"), itemId, 1, {}, 1) then
 						ped.customization.components.accessory = {
@@ -711,13 +711,13 @@ function RegisterCallbacks()
 				end
 				if #results == 0 then
 					local tmp = deepcopy(TemplateData)
-	
+
 					if char:GetData("Gender") == 0 then
 						tmp.model = "mp_m_freemode_01"
 					else
 						tmp.model = "mp_f_freemode_01"
 					end
-	
+
 					char:SetData("Ped", tmp)
 					cb({
 						existed = false,
@@ -732,7 +732,7 @@ function RegisterCallbacks()
 							tmp.model = "mp_f_freemode_01"
 						end
 					end
-	
+
 					char:SetData("Ped", tmp)
 					cb({
 						existed = true,
@@ -767,7 +767,7 @@ function RegisterCallbacks()
 			local ped = char:GetData("Ped")
 			if ped.customization.components.mask.drawableId ~= 0 then
 				TriggerClientEvent("Ped:Client:MaskAnim", source)
-				Citizen.Wait(500)
+				Wait(500)
 				Ped.Mask:Unequip(source)
 			end
 		end
@@ -779,7 +779,7 @@ function RegisterCallbacks()
 			local ped = char:GetData("Ped")
 			if not ped.customization.props.hat.disabled then
 				TriggerClientEvent("Ped:Client:HatGlassAnim", source)
-				Citizen.Wait(500)
+				Wait(500)
 				Ped.Hat:Unequip(source)
 			end
 		end
@@ -791,7 +791,7 @@ function RegisterCallbacks()
 			local ped = char:GetData("Ped")
 			if ped.customization.components.accessory.drawableId ~= 0 then
 				TriggerClientEvent("Ped:Client:HatGlassAnim", source)
-				Citizen.Wait(500)
+				Wait(500)
 				Ped.Necklace:Unequip(source)
 			end
 		end

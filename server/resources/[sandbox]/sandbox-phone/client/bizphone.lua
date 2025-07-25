@@ -2,10 +2,10 @@ local phoneModel = `vw_prop_casino_phone_01a`
 local _createdPhones = {}
 
 function CreateBizPhoneObject(coords, rotation)
-	RequestModel(phoneModel)
-	while not HasModelLoaded(phoneModel) do
-		Citizen.Wait(1)
-	end
+    RequestModel(phoneModel)
+    while not HasModelLoaded(phoneModel) do
+        Wait(1)
+    end
 
     local obj = CreateObject(phoneModel, coords.x, coords.y, coords.z, false, true, false)
     SetEntityRotation(obj, rotation.x, rotation.y, rotation.z)
@@ -13,7 +13,7 @@ function CreateBizPhoneObject(coords, rotation)
     SetEntityCoords(obj, coords.x, coords.y, coords.z)
 
     while not DoesEntityExist(obj) do
-        Citizen.Wait(1)
+        Wait(1)
     end
 
     return obj
@@ -21,7 +21,7 @@ end
 
 function CreateBizPhones()
     while GlobalState.BizPhones == nil do
-        Citizen.Wait(100)
+        Wait(100)
     end
 
     for k, v in pairs(GlobalState.BizPhones) do
@@ -177,19 +177,19 @@ end
 
 AddEventHandler("Phone:Client:MakeBizCall", function(entityData, data)
     Input:Show("Phone Number", "Number to Call", {
-		{
-			id = "number",
-			type = "text",
-			options = {
+        {
+            id = "number",
+            type = "text",
+            options = {
                 helperText = "E.g 555-555-5555",
-				inputProps = {
+                inputProps = {
                     pattern = "[0-9-]+",
                     minlength = 12,
                     maxlength = 12,
                 },
-			},
-		},
-	}, "Phone:Client:MakeBizCallConfirm", data)
+            },
+        },
+    }, "Phone:Client:MakeBizCallConfirm", data)
 end)
 
 AddEventHandler("Phone:Client:MuteBiz", function(entityData, data)
@@ -213,7 +213,7 @@ AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
             local startCoords = GlobalState.BizPhones[data.id].coords
 
             if success then
-                Citizen.CreateThread(function()
+                CreateThread(function()
                     Animations.Emotes:Play("phonecall2", true)
                     Sounds.Loop:One("ringing.ogg", 0.1)
                     InfoOverlay:Show("Dialing", string.format("Dailing Number: %s", values.number))
@@ -222,7 +222,7 @@ AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
                         if #(GetEntityCoords(LocalPlayer.state.ped) - startCoords) >= 10.0 then
                             TriggerServerEvent("Phone:Server:ForceEndBizCall")
                         end
-                        Citizen.Wait(500)
+                        Wait(500)
                     end
 
                     Animations.Emotes:ForceCancel()
@@ -268,18 +268,18 @@ AddEventHandler("Phone:Client:AcceptBizCall", function(entityData, data)
         Callbacks:ServerCallback("Phone:AcceptBizCall", data.id, function(success, callStr)
             local startCoords = GlobalState.BizPhones[data.id].coords
             LocalPlayer.state.bizCall = data.id
-    
+
             if success then
-                Citizen.CreateThread(function()
+                CreateThread(function()
                     Animations.Emotes:Play("phonecall2", true)
                     InfoOverlay:Show("On Call", string.format("From Number: %s", callStr))
                     while LocalPlayer.state.loggedIn and LocalPlayer.state.bizCall do
                         if #(GetEntityCoords(LocalPlayer.state.ped) - startCoords) >= 10.0 then
                             TriggerServerEvent("Phone:Server:ForceEndBizCall")
                         end
-                        Citizen.Wait(500)
+                        Wait(500)
                     end
-    
+
                     Animations.Emotes:ForceCancel()
                     InfoOverlay:Close()
                 end)

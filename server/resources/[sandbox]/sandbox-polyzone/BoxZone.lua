@@ -18,7 +18,8 @@ function PolyZone.rotate(origin, point, theta)
 end
 
 function BoxZone.calculateMinAndMaxZ(minZ, maxZ, scaleZ, offsetZ)
-  local minScaleZ, maxScaleZ, minOffsetZ, maxOffsetZ = scaleZ[1] or 1.0, scaleZ[2] or 1.0, offsetZ[1] or 0.0, offsetZ[2] or 0.0
+  local minScaleZ, maxScaleZ, minOffsetZ, maxOffsetZ = scaleZ[1] or 1.0, scaleZ[2] or 1.0, offsetZ[1] or 0.0,
+      offsetZ[2] or 0.0
   if (minZ == nil and maxZ == nil) or (minScaleZ == 1.0 and maxScaleZ == 1.0 and minOffsetZ == 0.0 and maxOffsetZ == 0.0) then
     return minZ, maxZ
   end
@@ -47,15 +48,15 @@ end
 local function _calculateScaleAndOffset(options)
   -- Scale and offset tables are both formatted as {forward, back, left, right, up, down}
   -- or if symmetrical {forward/back, left/right, up/down}
-  local scale = options.scale or {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}
-  local offset = options.offset or {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
+  local scale = options.scale or { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 }
+  local offset = options.offset or { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }
   assert(#scale == 3 or #scale == 6, "Scale must be of length 3 or 6")
   assert(#offset == 3 or #offset == 6, "Offset must be of length 3 or 6")
   if #scale == 3 then
-    scale = {scale[1], scale[1], scale[2], scale[2], scale[3], scale[3]}
+    scale = { scale[1], scale[1], scale[2], scale[2], scale[3], scale[3] }
   end
   if #offset == 3 then
-    offset = {offset[1], offset[1], offset[2], offset[2], offset[3], offset[3]}
+    offset = { offset[1], offset[1], offset[2], offset[2], offset[3], offset[3] }
   end
   local minOffset = vector3(offset[3], offset[2], offset[6])
   local maxOffset = vector3(offset[4], offset[1], offset[5])
@@ -77,7 +78,7 @@ local function _calculatePoints(center, length, width, minScale, maxScale, minOf
   local p2 = center.xy + vector2(max.x, min.y)
   local p3 = center.xy + vector2(max.x, max.y)
   local p4 = center.xy + vector2(min.x, max.y)
-  return {p1, p2, p3, p4}
+  return { p1, p2, p3, p4 }
 end
 
 -- Debug drawing functions
@@ -86,30 +87,31 @@ function BoxZone:TransformPoint(point)
   return PolyZone.rotate(self.startPos, point, self.offsetRot) + self.offsetPos
 end
 
-
 -- Initialization functions
 local function _initDebug(zone, options)
   if options.debugBlip then zone:addDebugBlip() end
   if not options.debugPoly then
     return
   end
-  
-  Citizen.CreateThread(function()
+
+  CreateThread(function()
     while not zone.destroyed do
       zone:draw()
-      Citizen.Wait(0)
+      Wait(0)
     end
   end)
 end
 
-local defaultMinOffset, defaultMaxOffset, defaultMinScale, defaultMaxScale = vector3(0.0, 0.0, 0.0), vector3(0.0, 0.0, 0.0), vector3(1.0, 1.0, 1.0), vector3(1.0, 1.0, 1.0)
-local defaultScaleZ, defaultOffsetZ = {defaultMinScale.z, defaultMaxScale.z}, {defaultMinOffset.z, defaultMaxOffset.z}
+local defaultMinOffset, defaultMaxOffset, defaultMinScale, defaultMaxScale = vector3(0.0, 0.0, 0.0),
+    vector3(0.0, 0.0, 0.0), vector3(1.0, 1.0, 1.0), vector3(1.0, 1.0, 1.0)
+local defaultScaleZ, defaultOffsetZ = { defaultMinScale.z, defaultMaxScale.z },
+    { defaultMinOffset.z, defaultMaxOffset.z }
 function BoxZone:new(center, length, width, options)
   local minOffset, maxOffset, minScale, maxScale = defaultMinOffset, defaultMaxOffset, defaultMinScale, defaultMaxScale
   local scaleZ, offsetZ = defaultScaleZ, defaultOffsetZ
   if options.scale ~= nil or options.offset ~= nil then
     minOffset, maxOffset, minScale, maxScale = _calculateScaleAndOffset(options)
-    scaleZ, offsetZ = {minScale.z, maxScale.z}, {minOffset.z, maxOffset.z}
+    scaleZ, offsetZ = { minScale.z, maxScale.z }, { minOffset.z, maxOffset.z }
   end
 
   local points = _calculatePoints(center, length, width, minScale, maxScale, minOffset, maxOffset)
@@ -153,12 +155,11 @@ function BoxZone:Create(center, length, width, options)
   return zone
 end
 
-
 -- Helper functions
 function BoxZone:isPointInside(point)
   if self.destroyed then
     print("[PolyZone] Warning: Called isPointInside on destroyed zone {name=" .. self.name .. "}")
-    return false 
+    return false
   end
 
   local startPos = self.startPos
@@ -198,7 +199,8 @@ function BoxZone:setCenter(center)
   end
   self.center = center
   self.startPos = center.xy
-  self.points = _calculatePoints(self.center, self.length, self.width, self.minScale, self.maxScale, self.minOffset, self.maxOffset)
+  self.points = _calculatePoints(self.center, self.length, self.width, self.minScale, self.maxScale, self.minOffset,
+    self.maxOffset)
 end
 
 function BoxZone:getLength()
@@ -210,7 +212,8 @@ function BoxZone:setLength(length)
     return
   end
   self.length = length
-  self.points = _calculatePoints(self.center, self.length, self.width, self.minScale, self.maxScale, self.minOffset, self.maxOffset)
+  self.points = _calculatePoints(self.center, self.length, self.width, self.minScale, self.maxScale, self.minOffset,
+    self.maxOffset)
 end
 
 function BoxZone:getWidth()
@@ -222,5 +225,6 @@ function BoxZone:setWidth(width)
     return
   end
   self.width = width
-  self.points = _calculatePoints(self.center, self.length, self.width, self.minScale, self.maxScale, self.minOffset, self.maxOffset)
+  self.points = _calculatePoints(self.center, self.length, self.width, self.minScale, self.maxScale, self.minOffset,
+    self.maxOffset)
 end

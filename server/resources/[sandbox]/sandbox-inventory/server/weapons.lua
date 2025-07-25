@@ -236,7 +236,10 @@ AddEventHandler("Core:Shared:Ready", function()
 		Callbacks:RegisterServerCallback("Weapons:PossibleCheaterWarning", function(source, data, cb)
 			local char = Fetch:CharacterSource(source)
 			if char then
-				Logger:Warn("Pwnzor", string.format("%s %s (%s) Had a Weapon They Weren't Supposed To (%s) (Known: %s)", char:GetData("First"), char:GetData("Last"), char:GetData("SID"), data.h, weaponCheaters[data.h] or "No"), {
+				Logger:Warn("Pwnzor",
+					string.format("%s %s (%s) Had a Weapon They Weren't Supposed To (%s) (Known: %s)",
+						char:GetData("First"), char:GetData("Last"), char:GetData("SID"), data.h,
+						weaponCheaters[data.h] or "No"), {
 					console = true,
 					file = false,
 					database = true,
@@ -250,7 +253,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				})
 				Pwnzor:Screenshot(char:GetData("SID"), "Potential Weapon Exploit")
 			end
-      		cb()
+			cb()
 		end)
 	end)
 end)
@@ -296,14 +299,16 @@ WEAPONS = {
 					isScratched = false
 				end
 
-				MySQL.insert('INSERT INTO firearms (serial, scratched, model, item, owner_sid, owner_name) VALUES(?, ?, ?, ?, ?, ?)', {
-					sn,
-					isScratched,
-					model,
-					item.name,
-					sid,
-					string.format("%s %s", char:GetData("First"), char:GetData("Last"))
-				})
+				MySQL.insert(
+				'INSERT INTO firearms (serial, scratched, model, item, owner_sid, owner_name) VALUES(?, ?, ?, ?, ?, ?)',
+					{
+						sn,
+						isScratched,
+						model,
+						item.name,
+						sid,
+						string.format("%s %s", char:GetData("First"), char:GetData("Last"))
+					})
 
 				return sn
 			end
@@ -337,7 +342,7 @@ WEAPONS = {
 				item.name,
 				isCompanyOwned.name
 			})
-			
+
 			return sn
 		end
 	end,
@@ -378,7 +383,7 @@ WEAPONS = {
 											if
 												slotData.MetaData.WeaponComponents ~= nil
 												and slotData.MetaData.WeaponComponents[itemData.component.type]
-													~= nil
+												~= nil
 											then
 												if
 													slotData.MetaData.WeaponComponents[itemData.component.type].attachment
@@ -403,14 +408,16 @@ WEAPONS = {
 												type = itemData.component.type,
 												item = item.Name,
 												created = item.CreateDate,
-												attachment = itemData.component.strings[weaponData.weapon or weaponData.name],
+												attachment = itemData.component.strings
+												[weaponData.weapon or weaponData.name],
 											}
 
 											Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 											if unequipItem ~= nil then
 												local returnData = Inventory.Items:GetData(unequipItem)
 												if returnData?.component?.returnItem then
-													INVENTORY:AddItem(item.Owner, unequipItem, 1, {}, 1, false, false, false, false, false, unequipCreated or os.time())
+													INVENTORY:AddItem(item.Owner, unequipItem, 1, {}, 1, false, false,
+														false, false, false, unequipCreated or os.time())
 												end
 											end
 
@@ -421,16 +428,16 @@ WEAPONS = {
 												source
 											)
 
-											Citizen.Wait(400)
+											Wait(400)
 
-											SetGunPropData(source, char:GetData("SID"), getInventory(source, char:GetData("SID"), 1, false), true)
+											SetGunPropData(source, char:GetData("SID"),
+												getInventory(source, char:GetData("SID"), 1, false), true)
 											TriggerClientEvent("Weapons:Client:UpdateAttachments", source, comps)
 
 											return p:resolve(true)
 										else
 											return p:resolve(false)
 										end
-										
 									else
 										return p:resolve(false)
 									end
@@ -460,8 +467,9 @@ WEAPONS = {
 				if slot.MetaData.WeaponComponents ~= nil and slot.MetaData.WeaponComponents[attachment] ~= nil then
 					local itemData = Inventory.Items:GetData(slot.MetaData.WeaponComponents[attachment].item)
 					if itemData ~= nil then
-						INVENTORY:AddItem(char:GetData("SID"), itemData.name, 1, {}, 1, false, false, false, false, false, slot.MetaData.WeaponComponents[attachment].created or os.time())
-						slot.MetaData.WeaponComponents[attachment] = nil	
+						INVENTORY:AddItem(char:GetData("SID"), itemData.name, 1, {}, 1, false, false, false, false, false,
+							slot.MetaData.WeaponComponents[attachment].created or os.time())
+						slot.MetaData.WeaponComponents[attachment] = nil
 						INVENTORY:SetMetaDataKey(
 							slot.id,
 							"WeaponComponents",

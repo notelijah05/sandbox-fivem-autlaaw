@@ -2,7 +2,7 @@ function LoadScaleform(scaleform)
     local scaleformHandle = RequestScaleformMovie(scaleform)
 
     while not HasScaleformMovieLoaded(scaleformHandle) do
-        Citizen.Wait(10)
+        Wait(10)
     end
 
     return scaleformHandle
@@ -23,7 +23,7 @@ local tvCoords = {
 function SetupBowlingTVs()
     for k, v in pairs(tvCoords) do
         createdDUIs[k] = createBowlingTVScaleform(k)
-        Citizen.Wait(500)
+        Wait(500)
 
         PushScaleformMovieFunction(createdDUIs[k].sf, 'SET_TEXTURE')
 
@@ -38,7 +38,7 @@ function SetupBowlingTVs()
         PopScaleformMovieFunctionVoid()
     end
 
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while insideAlley do
             for k, v in pairs(tvCoords) do
                 DrawScaleformMovie_3dSolid(
@@ -50,7 +50,7 @@ function SetupBowlingTVs()
                     2
                 )
             end
-            Citizen.Wait(0)
+            Wait(0)
         end
     end)
 end
@@ -64,11 +64,11 @@ function DestroyBowlingTVs()
 end
 
 function createBowlingTVScaleform(id)
-    local sfHandle = LoadScaleform('bowling_texture_renderer_'.. id)
+    local sfHandle = LoadScaleform('bowling_texture_renderer_' .. id)
     local txd = CreateRuntimeTxd('texture_bowling_' .. id)
     local duiObj = CreateDui(url, 1280, 720)
     local dui = GetDuiHandle(duiObj)
-    local tx = CreateRuntimeTextureFromDuiHandle(txd, 'texture_bowling_other_'.. id, dui)
+    local tx = CreateRuntimeTextureFromDuiHandle(txd, 'texture_bowling_other_' .. id, dui)
 
     return {
         sf = sfHandle,
@@ -89,7 +89,7 @@ AddEventHandler('Polyzone:Enter', function(id, testedPoint, insideZones, data)
     if id == 'bowling_alley' then
         insideAlley = true
         SetupBowlingTVs()
-        Citizen.Wait(500)
+        Wait(500)
         UpdateBowlingTVs(true)
     end
 end)
@@ -109,7 +109,7 @@ end
 
 RegisterNetEvent('Bowling:Client:TVs:RequestUpdate', function(ignoreFlag)
     if insideAlley then
-        Citizen.Wait(100)
+        Wait(100)
         UpdateBowlingTVs(ignoreFlag)
     end
 end)
@@ -151,14 +151,14 @@ local linkPromise
 function GetBowlingTVLink()
     linkPromise = promise.new()
     Input:Show('Bowling', 'URL', {
-		{
-			id = 'name',
-			type = 'text',
-			options = {
-				inputProps = {},
-			},
-		},
-	}, 'Bowling:Client:RecieveTVLinkInput', {})
+        {
+            id = 'name',
+            type = 'text',
+            options = {
+                inputProps = {},
+            },
+        },
+    }, 'Bowling:Client:RecieveTVLinkInput', {})
 
     return Citizen.Await(linkPromise)
 end

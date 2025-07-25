@@ -1,8 +1,8 @@
 _hasKO = false
 local _lastDamage = {
-    hash = 0,
-    source = 0,
-    melee = false
+	hash = 0,
+	source = 0,
+	melee = false
 }
 
 local damageHistory = {}
@@ -25,20 +25,20 @@ end
 
 local hasBled = false
 AddEventHandler("Damage:Client:Triggers:EntityDamaged", function(victim, attacker, pWeapon, isMelee)
-    if victim ~= PlayerPedId() then return end
+	if victim ~= PlayerPedId() then return end
 
-    if LocalPlayer.state.isAdmin and LocalPlayer.state.isGodmode then
-        return
-    end
+	if LocalPlayer.state.isAdmin and LocalPlayer.state.isGodmode then
+		return
+	end
 
-    local hit, bone = GetPedLastDamageBone(victim)
+	local hit, bone = GetPedLastDamageBone(victim)
 
 	table.insert(damageHistory, {
-        hash = pWeapon,
-        source = attacker,
-        melee = isMelee,
-        bone = bone,
-    })
+		hash = pWeapon,
+		source = attacker,
+		melee = isMelee,
+		bone = bone,
+	})
 
 	wasDamaged = true
 
@@ -51,9 +51,9 @@ AddEventHandler("Damage:Client:Triggers:EntityDamaged", function(victim, attacke
 			hasBled = false
 		end)
 	end
-	
-    -- Execute
-    if LocalPlayer.state?.isDead and LocalPlayer.state.deadData?.isMinor and Config.Weapons[pWeapon]?.violent then
+
+	-- Execute
+	if LocalPlayer.state?.isDead and LocalPlayer.state.deadData?.isMinor and Config.Weapons[pWeapon]?.violent then
 		LocalPlayer.state:set("isDead", true, true)
 		local deadTime = GetCloudTimeAsInt()
 		local releaseTime = deadTime + GetReleaseTime(isMinor)
@@ -69,7 +69,7 @@ AddEventHandler("Damage:Client:Triggers:EntityDamaged", function(victim, attacke
 		TriggerServerEvent("Ped:Server:Died")
 
 		DoDeadEvent()
-    end
+	end
 end)
 
 AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
@@ -77,7 +77,7 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 		_respawning = true
 		TriggerServerEvent("Escort:Server:ForceStop")
 
-        Hud.DeathTexts:Release()
+		Hud.DeathTexts:Release()
 		if not LocalPlayer.state.deadData?.isMinor then
 			Progress:Progress({
 				name = "hospital_action",
@@ -100,14 +100,15 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 							TriggerServerEvent("Escort:Server:ForceStop")
 							_sendToHosp = bedId
 							LocalPlayer.state:set("isHospitalized", true, true)
-							Citizen.Wait(250)
+							Wait(250)
 							Hospital:SendToBed(Config.Beds[_sendToHosp], false, bedId)
 						else
 							Notification:Error("Unable To Respawn Yet, Please Wait")
 						end
 					end)
 				else
-                    Hud.DeathTexts:Show(LocalPlayer.state.deadData?.isMinor and "knockout" or "death", LocalPlayer.state.isDeadTime, LocalPlayer.state.releaseTime)
+					Hud.DeathTexts:Show(LocalPlayer.state.deadData?.isMinor and "knockout" or "death",
+						LocalPlayer.state.isDeadTime, LocalPlayer.state.releaseTime)
 				end
 				_respawning = false
 			end)
@@ -131,35 +132,35 @@ RegisterNetEvent("Damage:Client:Ticks:Armor", function()
 end)
 
 function StartThreads()
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while LocalPlayer.state.loggedIn do
 			if wasDamaged then
 				TriggerServerEvent("Damage:Server:BoneDamage", damageHistory)
 				damageHistory = {}
 				wasDamaged = false
 			end
-			Citizen.Wait(60000)
+			Wait(60000)
 		end
 	end)
-	
+
 	LocalPlayer.state.regenRate = 0.0
 
-    Citizen.CreateThread(function()
-        while LocalPlayer.state.loggedIn do
-            if GetPedStealthMovement(PlayerPedId()) then
-                SetPedStealthMovement(PlayerPedId(), 0, 0)
-            end
-            Citizen.Wait(20)
-        end
-    end)
+	CreateThread(function()
+		while LocalPlayer.state.loggedIn do
+			if GetPedStealthMovement(PlayerPedId()) then
+				SetPedStealthMovement(PlayerPedId(), 0, 0)
+			end
+			Wait(20)
+		end
+	end)
 
 	local lastHp = 0
 	local lastArmor = 0
-    Citizen.CreateThread(function()
-        local sid = LocalPlayer.state.Character:GetData("SID")
-        while LocalPlayer.state.loggedIn do
-            Citizen.Wait((1000 * 60) * 1)
-            if LocalPlayer.state.Character ~= nil and sid == LocalPlayer.state.Character:GetData("SID") then
+	CreateThread(function()
+		local sid = LocalPlayer.state.Character:GetData("SID")
+		while LocalPlayer.state.loggedIn do
+			Wait((1000 * 60) * 1)
+			if LocalPlayer.state.Character ~= nil and sid == LocalPlayer.state.Character:GetData("SID") then
 				local hp = GetEntityHealth(LocalPlayer.state.ped)
 				local armor = GetPedArmour(LocalPlayer.state.ped)
 				if hp ~= lastHp or armor ~= lastArmor then
@@ -167,18 +168,18 @@ function StartThreads()
 					lastArmor = armor
 					TriggerServerEvent("Damage:Server:StoreHealth", hp, armor)
 				end
-            end
-        end
-    end)
+			end
+		end
+	end)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while LocalPlayer.state.loggedIn do
 			if not LocalPlayer.state.inCreator then
-				Citizen.Wait(10000)
+				Wait(10000)
 				local max = GetEntityMaxHealth(LocalPlayer.state.ped) - 100
 
 				local s10 = math.ceil(max * 0.10)
-				local s25 =math.ceil(max * 0.25)
+				local s25 = math.ceil(max * 0.25)
 				local s50 = math.ceil(max * 0.50)
 
 				local myhp = GetEntityHealth(LocalPlayer.state.ped) - 100
@@ -192,24 +193,24 @@ function StartThreads()
 					SetFlash(0, 0, 1, 0, 1)
 				end
 			else
-				Citizen.Wait(30000)
+				Wait(30000)
 			end
 		end
 	end)
 
 	local doingthedead = false
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while LocalPlayer.state.loggedIn do
-            if not LocalPlayer.state.isDead then
-                local player = PlayerPedId()
-                if not (LocalPlayer.state.isAdmin and LocalPlayer.state.isGodmode) and IsEntityDead(player) and not doingthedead then
+			if not LocalPlayer.state.isDead then
+				local player = PlayerPedId()
+				if not (LocalPlayer.state.isAdmin and LocalPlayer.state.isGodmode) and IsEntityDead(player) and not doingthedead then
 					doingthedead = true
-                    local deathHash = GetPedCauseOfDeath(player)
-                    if not deathHash or deathHash == 0 then deathHash = _lastDamage.hash end
-                    local deathSource = GetPedSourceOfDeath(player)
-                    if not deathSource or deathSource == 0 then deathSource = _lastDamage.source end
+					local deathHash = GetPedCauseOfDeath(player)
+					if not deathHash or deathHash == 0 then deathHash = _lastDamage.hash end
+					local deathSource = GetPedSourceOfDeath(player)
+					if not deathSource or deathSource == 0 then deathSource = _lastDamage.source end
 
-                    local isMinor = wasMinorDeath(deathHash)
+					local isMinor = wasMinorDeath(deathHash)
 
 					if not LocalPlayer.state.gameMode then
 						if isMinor and _reductions < 6 then
@@ -219,41 +220,41 @@ function StartThreads()
 						end
 					end
 
-                    LocalPlayer.state:set("isDead", true, true)
+					LocalPlayer.state:set("isDead", true, true)
 
-                    local deadTime = GetCloudTimeAsInt()
-                    local releaseTime = deadTime + GetReleaseTime(isMinor)
+					local deadTime = GetCloudTimeAsInt()
+					local releaseTime = deadTime + GetReleaseTime(isMinor)
 
-                    LocalPlayer.state:set("deadData", {
-                        isMinor = isMinor,
-                    }, true)
-                    LocalPlayer.state:set("isDeadTime", deadTime, true)
-                    LocalPlayer.state:set("releaseTime", releaseTime, true)
+					LocalPlayer.state:set("deadData", {
+						isMinor = isMinor,
+					}, true)
+					LocalPlayer.state:set("isDeadTime", deadTime, true)
+					LocalPlayer.state:set("releaseTime", releaseTime, true)
 					Hud.DeathTexts:Show(isMinor and "knockout" or "death", deadTime, releaseTime)
 
-                    while not LocalPlayer.state.isDead do
-                        Citizen.Wait(1)
-                    end
-                
-                    TriggerEvent("Ped:Client:Died")
-                    TriggerServerEvent("Ped:Server:Died")
-                
-                    if (Jail:IsJailed() or not nearPlayer(100.0)) and not Config.Weapons[deathHash]?.minor then
-                        TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", "injuredPerson")
-                    end
-                    Hud:Dead(true)
-                    DoDeadEvent()
-                    --respawnCd(isMinor)
-					doingthedead = false
-                end
-            else
+					while not LocalPlayer.state.isDead do
+						Wait(1)
+					end
 
-            end
-            Citizen.Wait(100)
+					TriggerEvent("Ped:Client:Died")
+					TriggerServerEvent("Ped:Server:Died")
+
+					if (Jail:IsJailed() or not nearPlayer(100.0)) and not Config.Weapons[deathHash]?.minor then
+						TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", "injuredPerson")
+					end
+					Hud:Dead(true)
+					DoDeadEvent()
+					--respawnCd(isMinor)
+					doingthedead = false
+				end
+			else
+
+			end
+			Wait(100)
 		end
 	end)
 
-    Citizen.CreateThread(function()
+	CreateThread(function()
 		if _healTickRunning then
 			return
 		end
@@ -293,15 +294,15 @@ function StartThreads()
 						LocalPlayer.state:set("healTicks", nil, true)
 					end
 				end
-				Citizen.Wait(10000)
+				Wait(10000)
 			else
-				Citizen.Wait(2000)
+				Wait(2000)
 			end
 		end
 		_healTickRunning = false
 	end)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		if _armrTickRunning then
 			return
 		end
@@ -341,15 +342,15 @@ function StartThreads()
 						LocalPlayer.state:set("armorTicks", nil, true)
 					end
 				end
-				Citizen.Wait(10000)
+				Wait(10000)
 			else
-				Citizen.Wait(2000)
+				Wait(2000)
 			end
 		end
 		_armrTickRunning = false
 	end)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while LocalPlayer.state.loggedIn do
 			if LocalPlayer.state.isLimping then
 				local luck = math.random(100)
@@ -360,16 +361,16 @@ function StartThreads()
 					SetPedToRagdoll(LocalPlayer.state.ped, 1500, 2000, 3, true, true, false)
 				end
 
-				Citizen.Wait(100)
+				Wait(100)
 			else
-				Citizen.Wait(2500)
+				Wait(2500)
 			end
 		end
 	end)
-    
-    Citizen.CreateThread(function()
+
+	CreateThread(function()
 		while LocalPlayer.state.loggedIn do
-            if LocalPlayer.state.onPainKillers ~= nil and LocalPlayer.state.onPainKillers > 0 then
+			if LocalPlayer.state.onPainKillers ~= nil and LocalPlayer.state.onPainKillers > 0 then
 				LocalPlayer.state.onPainKillers = LocalPlayer.state.onPainKillers - 1
 			elseif LocalPlayer.state.wasOnPainKillers then
 				LocalPlayer.state.wasOnPainKillers = false
@@ -384,16 +385,16 @@ function StartThreads()
 				-- SetPedToRagdoll(LocalPlayer.state.ped, 1500, 2000, 3, true, true, false)
 				-- Notification:Custom(Config.Strings.AdrenalineExpired, 5000, "pills", Config.NotifStyle)
 			end
-            
+
 			ApplyLimp(LocalPlayer.state.ped)
-			Citizen.Wait(200)
+			Wait(200)
 		end
 	end)
 
-    Citizen.CreateThread(function()
-        while LocalPlayer.state.loggedIn do
-            SetPlayerHealthRechargeMultiplier(LocalPlayer.state.PlayerID, LocalPlayer.state.regenRate)
-            Citizen.Wait(250)
-        end
-    end)
+	CreateThread(function()
+		while LocalPlayer.state.loggedIn do
+			SetPlayerHealthRechargeMultiplier(LocalPlayer.state.PlayerID, LocalPlayer.state.regenRate)
+			Wait(250)
+		end
+	end)
 end
