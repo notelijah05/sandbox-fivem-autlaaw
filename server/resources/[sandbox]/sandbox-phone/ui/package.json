@@ -34,6 +34,7 @@
 	},
 	"homepage": "https://github.com/2277/react-fivem#readme",
 	"dependencies": {
+		"@babel/plugin-syntax-dynamic-import": "^7.8.3",
 		"@ckeditor/ckeditor5-build-classic": "^38.0.1",
 		"@ckeditor/ckeditor5-react": "^6.0.0",
 		"@emotion/react": "^11.11.1",
@@ -99,8 +100,7 @@
 		"sanitize-html": "^2.10.0",
 		"styled-components": "^6.0.0-rc.3",
 		"thunk": "^0.0.1",
-		"uglifyjs-webpack-plugin": "^2.2.0",
-		"yarn": "^1.22.19"
+		"uglifyjs-webpack-plugin": "^2.2.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.22.5",
