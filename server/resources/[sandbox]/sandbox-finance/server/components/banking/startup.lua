@@ -769,7 +769,7 @@ function RunBankingStartup()
 			BILL = "STATE_ACCOUNT_BILL",
 		}
 
-		stateAccount = CreateBankAccount(
+		local accountNumber = CreateBankAccount(
 			"organization",
 			"government",
 			500000, -- Government Should Probably Have Some Starter Money
@@ -788,6 +788,10 @@ function RunBankingStartup()
 				},
 			}
 		)
+
+		if accountNumber then
+			stateAccount = MySQL.single.await("SELECT * FROM bank_accounts WHERE account = ?", { accountNumber })
+		end
 	end
 
 	CreateOrganizationBankAccounts()
@@ -797,7 +801,11 @@ function RunBankingStartup()
 		Logger:Info("Banking", string.format("Total Balance Across %s Accounts: ^2$%s^7", info.accounts, info.total))
 	end
 
-	Logger:Info("Banking", "Loaded State Government Account - Balance: ^2$" .. stateAccount.balance .. "^7")
+	if stateAccount and stateAccount.balance then
+		Logger:Info("Banking", "Loaded State Government Account - Balance: ^2$" .. stateAccount.balance .. "^7")
+	else
+		Logger:Error("Banking", "Failed to load State Government Account")
+	end
 
 	local d = MySQL.query.await("DELETE FROM bank_accounts_transactions WHERE timestamp < now() - interval 30 DAY")
 
