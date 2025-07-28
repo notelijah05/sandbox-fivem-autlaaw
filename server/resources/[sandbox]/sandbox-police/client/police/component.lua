@@ -322,7 +322,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				not LocalPlayer.state.isDead and v ~= 0 and _pdModels[GetEntityModel(v)] and Vehicles:HasAccess(v)
 		end)
 
-		Interaction:RegisterMenu("police-utils", "Police Utilities", "tablet-rugged", function(data)
+		Interaction:RegisterMenu("police-utils", "Police Utilities", "tablet", function(data)
 			Interaction:ShowMenu({
 				{
 					icon = "lock-keyhole-open",
@@ -352,7 +352,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					end,
 				},
 				{
-					icon = "camera-security",
+					icon = "video",
 					label = "Toggle Body Cam",
 					action = function()
 						Interaction:Hide()

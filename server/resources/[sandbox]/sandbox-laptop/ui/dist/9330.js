@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunksandbox_laptop=self.webpackChunksandbox_laptop||[]).push([[9330],{39330:(a,l,e)=>{e.r(l),e.d(l,{gameCatagories:()=>k});var k=[{value:"all",label:"All"},{value:"blackjack",label:"Blackjack"}]}}]);

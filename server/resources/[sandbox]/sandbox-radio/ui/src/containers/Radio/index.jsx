@@ -12,7 +12,7 @@ import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { far } from '@fortawesome/pro-regular-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
 
 import Nui from '../../util/Nui';
 import frame from '../../radio_frame.webp';

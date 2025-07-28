@@ -6,7 +6,7 @@ import {
 	StyledEngineProvider,
 } from '@mui/material';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { far } from '@fortawesome/pro-regular-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
 import Radio from '../Radio';
 
 library.add(far);

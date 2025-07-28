@@ -199,7 +199,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					end,
 				},
 				{
-					icon = "camera-security",
+					icon = "video",
 					label = "Toggle Body Cam",
 					action = function()
 						Interaction:Hide()
