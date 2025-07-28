@@ -23,8 +23,6 @@ AddEventHandler("Robbery:Client:Setup", function()
 				local model = GetEntityModel(entityHit)
 				if model == `stockade` then
 					return cb(1, VehToNet(entityHit))
-				elseif model == `stockade2` then
-					return cb(2, VehToNet(entityHit))
 				end
 			end
 		end

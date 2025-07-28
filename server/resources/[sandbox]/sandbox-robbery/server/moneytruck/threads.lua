@@ -12,7 +12,7 @@ CreateThread(function()
         end
 
         if _truckSpawnEnabled then
-            spawned = SpawnBobcatTruck(math.random(100) > 50 and `stockade2` or `stockade`)
+            spawned = SpawnBobcatTruck(`stockade`)
             if not spawned then
                 Wait(30000)
             else

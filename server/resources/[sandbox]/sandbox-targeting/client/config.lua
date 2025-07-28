@@ -309,9 +309,9 @@ Config.VehicleMenu = {
 				local vehState = Entity(entityData.entity).state
 				if vehState.FakePlate then
 					return (
-						(Vehicles:HasAccess(entityData.entity, true))
-						or LocalPlayer.state.onDuty == "police" and LocalPlayer.state.inPdStation
-					)
+							(Vehicles:HasAccess(entityData.entity, true))
+							or LocalPlayer.state.onDuty == "police" and LocalPlayer.state.inPdStation
+						)
 						and (
 							Vehicles.Utils:IsCloseToRearOfVehicle(entityData.entity)
 							or Vehicles.Utils:IsCloseToFrontOfVehicle(entityData.entity)
@@ -654,24 +654,6 @@ Config.VehicleMenu = {
 		end,
 	},
 	{
-		icon = "hand",
-		isEnabled = function(data, entityData)
-			return isNearTrunk(entityData.entity, 4.0, true)
-		end,
-		text = "Grab Loot",
-		event = "Robbery:Client:MoneyTruck:GrabLoot",
-		model = `stockade2`,
-		data = {},
-		minDist = 10.0,
-		isEnabled = function(data, entity)
-			local entState = Entity(entity.entity).state
-			return not entState.beingLooted
-				and entState.wasThermited
-				and not entState.wasLooted
-				and GetEntityHealth(entity.entity) > 0
-		end,
-	},
-	{
 		icon = "car-garage",
 		isEnabled = function(data, entityData)
 			local inZone = Polyzone:IsCoordsInZone(GetEntityCoords(entityData.entity), false, "dealerBuyback")
@@ -826,13 +808,13 @@ Config.PlayerMenu = {
 		isEnabled = function(data, target)
 			local playerState = Player(target.serverId).state
 			return (
-				not LocalPlayer.state.onDuty
-				or (
-					LocalPlayer.state.onDuty ~= "police"
-					and LocalPlayer.state.onDuty ~= "prison"
-					and LocalPlayer.state.onDuty ~= "ems"
+					not LocalPlayer.state.onDuty
+					or (
+						LocalPlayer.state.onDuty ~= "police"
+						and LocalPlayer.state.onDuty ~= "prison"
+						and LocalPlayer.state.onDuty ~= "ems"
+					)
 				)
-			)
 				and (
 					playerState.isDead
 					or playerState.isCuffed
@@ -854,9 +836,9 @@ Config.PlayerMenu = {
 		isEnabled = function(data, target)
 			local playerState = Player(target.serverId).state
 			return (
-				not LocalPlayer.state.onDuty
-				or (LocalPlayer.state.onDuty ~= "police" and LocalPlayer.state.onDuty ~= "prison" and LocalPlayer.state.onDuty ~= "ems")
-			)
+					not LocalPlayer.state.onDuty
+					or (LocalPlayer.state.onDuty ~= "police" and LocalPlayer.state.onDuty ~= "prison" and LocalPlayer.state.onDuty ~= "ems")
+				)
 				and (playerState.onDuty == "police" or playerState.onDuty == "prison" or playerState.onDuty == "ems")
 				and not playerState.trackerDisabled
 				and (
@@ -878,8 +860,8 @@ Config.PlayerMenu = {
 		data = {},
 		minDist = 1.5,
 		anyItems = {
-			{ item = "pdhandcuffs", count = 1 },
-			{ item = "handcuffs", count = 1 },
+			{ item = "pdhandcuffs",     count = 1 },
+			{ item = "handcuffs",       count = 1 },
 			{ item = "fluffyhandcuffs", count = 1 },
 		},
 		isEnabled = function(data, target)
@@ -893,8 +875,8 @@ Config.PlayerMenu = {
 		data = {},
 		minDist = 1.5,
 		anyItems = {
-			{ item = "pdhandcuffs", count = 1 },
-			{ item = "handcuffs", count = 1 },
+			{ item = "pdhandcuffs",     count = 1 },
+			{ item = "handcuffs",       count = 1 },
 			{ item = "fluffyhandcuffs", count = 1 },
 		},
 		isEnabled = function(data, target)
@@ -908,8 +890,8 @@ Config.PlayerMenu = {
 		data = {},
 		minDist = 1.5,
 		anyItems = {
-			{ item = "pdhandcuffs", count = 1 },
-			{ item = "handcuffs", count = 1 },
+			{ item = "pdhandcuffs",     count = 1 },
+			{ item = "handcuffs",       count = 1 },
 			{ item = "fluffyhandcuffs", count = 1 },
 		},
 		isEnabled = function(data, target)
@@ -924,8 +906,8 @@ Config.PlayerMenu = {
 		data = {},
 		minDist = 1.5,
 		anyItems = {
-			{ item = "pdhandcuffs", count = 1 },
-			{ item = "handcuffs", count = 1 },
+			{ item = "pdhandcuffs",     count = 1 },
+			{ item = "handcuffs",       count = 1 },
 			{ item = "fluffyhandcuffs", count = 1 },
 		},
 		isEnabled = function(data, target)

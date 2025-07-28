@@ -59,7 +59,7 @@ AddEventHandler('entityCreated', function(entity)
 
 		if entityType == 2 and (populationType == 2 or populationType == 3 or populationType == 5) then
 			local model = GetEntityModel(entity)
-			if model == `stockade` or model == `stockade2` then
+			if model == `stockade` then
 				_moneyTrucks[entity] = {
 					position = GetEntityCoords(entity),
 					delete = os.time() + (BCT_SPAWN_RATE / 1000),
@@ -226,13 +226,6 @@ AddEventHandler("Robbery:Server:Setup", function()
 							-- else
 							-- 	Inventory:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
 							-- end
-						elseif model == `stockade2` then
-							Loot:CustomWeightedSetWithCount(_moneyTruckLoot.bobcat, char:GetData("SID"), 1)
-							Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
-								CryptoCoin = "HEIST",
-								Quantity = math.random(5, 8),
-							}, 1)
-							--Inventory:AddItem(char:GetData("SID"), "blue_dongle", 1, {}, 1)
 						end
 
 						entState.beingLooted = false
