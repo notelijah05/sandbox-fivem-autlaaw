@@ -120,7 +120,9 @@ AddEventHandler("Core:Shared:Ready", function()
 		})
 
 		Keybinds:Add("show_interaction", "F1", "keyboard", "Hud - Show Interaction Menu", function()
-			Interaction:Show()
+			if not IsPauseMenuActive() then
+				Interaction:Show()
+			end
 		end)
 
 		-- Keybinds:Add("map_zoom_in", "PageUp", "keyboard", "Minimap - Zoom In", function()
