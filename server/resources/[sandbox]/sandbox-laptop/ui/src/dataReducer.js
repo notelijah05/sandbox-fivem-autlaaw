@@ -945,7 +945,7 @@ export const initialState = {
 						},
 						{
 							id: 'Dynasty/Properties',
-							icon: ['fas', 'house-building'],
+							icon: ['fas', 'house'],
 							label: 'Properties',
 							permission: 'JOB_SELL',
 						},
@@ -963,19 +963,19 @@ export const initialState = {
 						},
 						{
 							id: 'Tweet',
-							icon: [ "far", "face-awesome" ],
-							label: "Business Spammer",
+							icon: ['fas', 'face-grin-beam'],
+							label: 'Business Spammer',
 							//permission: 'TABLET_TWEET',
 						},
 						{
 							id: 'TweetSettings',
-							icon: [ "far", "face-awesome" ],
-							label: "Spammer Profile",
+							icon: ['fas', 'face-grin-beam'],
+							label: 'Spammer Profile',
 							//permission: 'TABLET_TWEET',
 						},
 						{
 							id: 'FleetManagement',
-							icon: ['fas', 'cars'],
+							icon: ['fas', 'car'],
 							label: 'Fleet Management',
 							//permission: 'TABLET_TWEET',
 						},

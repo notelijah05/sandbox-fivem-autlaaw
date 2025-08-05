@@ -160,7 +160,13 @@ export default (props) => {
 					hidden={tab !== 0}
 					id="boosting"
 				>
-					{tab === 0 && <Boosting canBoost={canBoost} banned={banned} reputations={reps} />}
+					{tab === 0 && (
+						<Boosting
+							canBoost={canBoost}
+							banned={banned}
+							reputations={reps}
+						/>
+					)}
 				</div>
 
 				<div
@@ -226,13 +232,15 @@ export default (props) => {
 							}
 						/>
 						<YPTab
-							icon={<FontAwesomeIcon icon={['fas', 'cart-shopping-fast']} />}
+							icon={
+								<FontAwesomeIcon
+									icon={['fas', 'cart-shopping']}
+								/>
+							}
 						/>
 						<YPTab
 							icon={
-								<FontAwesomeIcon
-									icon={['fas', 'list-timeline']}
-								/>
+								<FontAwesomeIcon icon={['fas', 'list-check']} />
 							}
 						/>
 					</YPTabs>

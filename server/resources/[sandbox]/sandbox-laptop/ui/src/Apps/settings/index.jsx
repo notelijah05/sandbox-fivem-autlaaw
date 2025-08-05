@@ -144,7 +144,7 @@ const useStyles = makeStyles((theme) => ({
 		position: 'fixed',
 		bottom: 10,
 		width: '100%',
-	}
+	},
 }));
 
 export default () => {
@@ -188,13 +188,13 @@ export default () => {
 	const volumeAdd = (e) => {
 		e.preventDefault();
 		//if (settings.volume < 100)
-			//props.UpdateSetting('volume', settings.volume + 5);
+		//props.UpdateSetting('volume', settings.volume + 5);
 	};
 
 	const volumeMinus = (e) => {
 		e.preventDefault();
 		//if (settings.volume >= 5)
-			//props.UpdateSetting('volume', settings.volume - 5);
+		//props.UpdateSetting('volume', settings.volume - 5);
 	};
 
 	const toggleMute = (e) => {
@@ -207,53 +207,59 @@ export default () => {
 		e.preventDefault();
 
 		setSettingsPage(null);
-	}
+	};
 
 	if (settingsPage != null) {
-		return <div className={classes.wrapper}>
-			{settingsPage == "wallpaper" && <Wallpaper />}
-			{settingsPage == "colors" && <Colors />}
-			<Grid container spacing={2}>
-				<Grid item xs={4}>
-					<Paper
-						className={classes.rowWrapper2}
-						onClick={goBack}
-					>
-						<Grid item xs={12}>
-							<Grid container>
-								<Grid item xs={1} style={{ position: 'relative' }}>
-									<FontAwesomeIcon
-										className={classes.arrow2}
-										icon={['fas', 'chevron-left']}
-									/>
-								</Grid>
-								<Grid
-									item
-									xs={11}
-									style={{ position: 'relative' }}
-								>
-									<span className={classes.sectionHeader2}>
-										Go Back
-									</span>
+		return (
+			<div className={classes.wrapper}>
+				{settingsPage == 'wallpaper' && <Wallpaper />}
+				{settingsPage == 'colors' && <Colors />}
+				<Grid container spacing={2}>
+					<Grid item xs={4}>
+						<Paper className={classes.rowWrapper2} onClick={goBack}>
+							<Grid item xs={12}>
+								<Grid container>
+									<Grid
+										item
+										xs={1}
+										style={{ position: 'relative' }}
+									>
+										<FontAwesomeIcon
+											className={classes.arrow2}
+											icon={['fas', 'chevron-left']}
+										/>
+									</Grid>
+									<Grid
+										item
+										xs={11}
+										style={{ position: 'relative' }}
+									>
+										<span
+											className={classes.sectionHeader2}
+										>
+											Go Back
+										</span>
+									</Grid>
 								</Grid>
 							</Grid>
-						</Grid>
-					</Paper>
+						</Paper>
+					</Grid>
+					<Grid item xs={8}>
+						<Version />
+					</Grid>
 				</Grid>
-				<Grid item xs={8}>
-					<Version />
-				</Grid>
-			</Grid>
-		</div>
+			</div>
+		);
 	}
 
-	return <div className={classes.wrapper}>
-		<Grid
-			className={classes.settingsList}
-			container
-			justify="flex-start"
-		>
-			{/* <Paper className={classes.rowWrapper} onClick={profileClicked}>
+	return (
+		<div className={classes.wrapper}>
+			<Grid
+				className={classes.settingsList}
+				container
+				justify="flex-start"
+			>
+				{/* <Paper className={classes.rowWrapper} onClick={profileClicked}>
 				<Grid item xs={12}>
 					<Grid container>
 						<Grid item xs={2} style={{ position: 'relative' }}>
@@ -286,7 +292,7 @@ export default () => {
 			<Grid item xs={12} className={classes.rowHeader}>
 				Notifications
 			</Grid> */}
-			{/* <Paper className={classes.rowWrapper} onClick={toggleNotifs}>
+				{/* <Paper className={classes.rowWrapper} onClick={toggleNotifs}>
 				<Grid item xs={12}>
 					<Grid container>
 						<Grid item xs={2} style={{ position: 'relative' }}>
@@ -319,7 +325,7 @@ export default () => {
 					</Grid>
 				</Grid>
 			</Paper> */}
-			{/* <Paper
+				{/* <Paper
 				className={classes.rowWrapper}
 				onClick={appNotifsClicked}
 			>
@@ -354,13 +360,18 @@ export default () => {
 					</Grid>
 				</Grid>
 			</Paper> */}
-			<Grid item xs={12} className={classes.rowHeader} style={{ fontSize: 20 }}>
-				Settings
-			</Grid>
-			<Grid item xs={12} className={classes.rowHeader}>
-				Personalization
-			</Grid>
-			{/* <Paper className={classes.rowWrapperNoHov}>
+				<Grid
+					item
+					xs={12}
+					className={classes.rowHeader}
+					style={{ fontSize: 20 }}
+				>
+					Settings
+				</Grid>
+				<Grid item xs={12} className={classes.rowHeader}>
+					Personalization
+				</Grid>
+				{/* <Paper className={classes.rowWrapperNoHov}>
 				<Grid item xs={12}>
 					<Grid container>
 						<Grid item xs={2} style={{ position: 'relative' }}>
@@ -419,7 +430,7 @@ export default () => {
 					</Grid>
 				</Grid>
 			</Paper> */}
-			{/* <Paper className={classes.rowWrapper} onClick={soundsClicked}>
+				{/* <Paper className={classes.rowWrapper} onClick={soundsClicked}>
 				<Grid item xs={12}>
 					<Grid container>
 						<Grid item xs={2} style={{ position: 'relative' }}>
@@ -451,76 +462,77 @@ export default () => {
 					</Grid>
 				</Grid>
 			</Paper> */}
-			<Paper
-				className={classes.rowWrapper}
-				onClick={wallpaperClicked}
-			>
-				<Grid item xs={12}>
-					<Grid container>
-						<Grid item xs={1} style={{ position: 'relative' }}>
-							<Avatar
-								className={classes.avatar}
-								style={{ background: orange[500] }}
+				<Paper
+					className={classes.rowWrapper}
+					onClick={wallpaperClicked}
+				>
+					<Grid item xs={12}>
+						<Grid container>
+							<Grid item xs={1} style={{ position: 'relative' }}>
+								<Avatar
+									className={classes.avatar}
+									style={{ background: orange[500] }}
+								>
+									<FontAwesomeIcon
+										className={classes.avatarIcon}
+										icon={['fas', 'images']}
+									/>
+								</Avatar>
+							</Grid>
+							<Grid
+								item
+								xs={9}
+								style={{ paddingLeft: 5, position: 'relative' }}
 							>
+								<span className={classes.sectionHeader}>
+									Wallpaper
+								</span>
+							</Grid>
+							<Grid item xs={2} style={{ position: 'relative' }}>
 								<FontAwesomeIcon
-									className={classes.avatarIcon}
-									icon={['fas', 'image-polaroid']}
+									className={classes.arrow}
+									icon={['fas', 'chevron-right']}
 								/>
-							</Avatar>
-						</Grid>
-						<Grid
-							item
-							xs={9}
-							style={{ paddingLeft: 5, position: 'relative' }}
-						>
-							<span className={classes.sectionHeader}>
-								Wallpaper
-							</span>
-						</Grid>
-						<Grid item xs={2} style={{ position: 'relative' }}>
-							<FontAwesomeIcon
-								className={classes.arrow}
-								icon={['fas', 'chevron-right']}
-							/>
+							</Grid>
 						</Grid>
 					</Grid>
-				</Grid>
-			</Paper>
-			<Paper className={classes.rowWrapper} onClick={colorsClicked}>
-				<Grid item xs={12}>
-					<Grid container>
-						<Grid item xs={1} style={{ position: 'relative' }}>
-							<Avatar
-								className={classes.avatar}
-								style={{ background: deepPurple[500] }}
+				</Paper>
+				<Paper className={classes.rowWrapper} onClick={colorsClicked}>
+					<Grid item xs={12}>
+						<Grid container>
+							<Grid item xs={1} style={{ position: 'relative' }}>
+								<Avatar
+									className={classes.avatar}
+									style={{ background: deepPurple[500] }}
+								>
+									<FontAwesomeIcon
+										className={classes.avatarIcon}
+										icon={['fas', 'swatchbook']}
+									/>
+								</Avatar>
+							</Grid>
+							<Grid
+								item
+								xs={9}
+								style={{ paddingLeft: 5, position: 'relative' }}
 							>
+								<span className={classes.sectionHeader}>
+									Colors
+								</span>
+							</Grid>
+							<Grid item xs={2} style={{ position: 'relative' }}>
 								<FontAwesomeIcon
-									className={classes.avatarIcon}
-									icon={['fas', 'swatchbook']}
+									className={classes.arrow}
+									icon={['fas', 'chevron-right']}
 								/>
-							</Avatar>
-						</Grid>
-						<Grid
-							item
-							xs={9}
-							style={{ paddingLeft: 5, position: 'relative' }}
-						>
-							<span className={classes.sectionHeader}>
-								Colors
-							</span>
-						</Grid>
-						<Grid item xs={2} style={{ position: 'relative' }}>
-							<FontAwesomeIcon
-								className={classes.arrow}
-								icon={['fas', 'chevron-right']}
-							/>
+							</Grid>
 						</Grid>
 					</Grid>
-				</Grid>
-			</Paper>
-		</Grid>
-		<div className={classes.versionWrapper}>
-			<Version />
+				</Paper>
+			</Grid>
+			<div className={classes.versionWrapper}>
+				<Version />
+			</div>
 		</div>
-	</div>;
+	);
 };

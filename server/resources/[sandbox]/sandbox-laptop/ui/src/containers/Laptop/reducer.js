@@ -16,7 +16,7 @@ export const initialState = {
 					internet: {
 						label: 'Interwebz',
 						name: 'internet',
-						icon: ['fas', 'spider-web'],
+						icon: ['fas', 'globe'],
 						color: '#1db5e7',
 						hidden: false,
 						unread: 0,

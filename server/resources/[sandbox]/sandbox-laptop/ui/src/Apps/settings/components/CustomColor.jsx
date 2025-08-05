@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-	Grid,
-	Avatar,
-	Paper,
-} from '@mui/material';
+import { Grid, Avatar, Paper } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -105,7 +101,7 @@ export default (props) => {
 									style={{ backgroundColor: props.color }}
 								>
 									<FontAwesomeIcon
-										icon={['fas', 'eye-dropper-half']}
+										icon={['fas', 'eye-dropper']}
 										className={classes.avatarIcon}
 									/>
 								</Avatar>
