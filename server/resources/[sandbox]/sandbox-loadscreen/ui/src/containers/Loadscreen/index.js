@@ -192,7 +192,7 @@ export default () => {
 		<div className={classes.background}>
 			<Logo name={name} />
 			<div className={classes.domain}>
-				<FontAwesomeIcon icon={['fas', 'rocket-launch']} />
+				<FontAwesomeIcon icon={['fas', 'rocket']} />
 			</div>
 			<div className={classes.discord}>
 				<FontAwesomeIcon icon={['fab', 'discord']} /> 
