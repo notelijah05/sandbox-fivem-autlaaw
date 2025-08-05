@@ -8,7 +8,7 @@ import {
 
 export const initialState = {
 	hidden: process.env.NODE_ENV == 'production',
-	state: STATE_CREATE,
+	state: STATE_SPLASH,
 };
 
 const appReducer = (state = initialState, action) => {
