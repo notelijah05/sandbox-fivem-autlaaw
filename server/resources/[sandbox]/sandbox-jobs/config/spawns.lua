@@ -17,7 +17,7 @@ _jobSpawns = {
 		},
 	},
 	["blackline"] = {
-		icon = "car-garage",
+		icon = "warehouse",
 		locations = {
 			{
 				label = "Spooky Mechanic",
@@ -32,7 +32,7 @@ _jobSpawns = {
 		},
 	},
 	["tuna"] = {
-		icon = "car-garage",
+		icon = "warehouse",
 		locations = {
 			{
 				label = "Tuna Shop",
@@ -47,7 +47,7 @@ _jobSpawns = {
 		},
 	},
 	["prego"] = {
-		icon = "pot-food",
+		icon = "bowl-food",
 		locations = {
 			{
 				label = "Cafe Prego",
@@ -62,7 +62,7 @@ _jobSpawns = {
 		},
 	},
 	["cloud9"] = {
-		icon = "car-garage",
+		icon = "warehouse",
 		locations = {
 			{
 				label = "Cloud9 Drift",
@@ -77,7 +77,7 @@ _jobSpawns = {
 		},
 	},
 	["hayes"] = {
-		icon = "car-garage",
+		icon = "warehouse",
 		locations = {
 			{
 				label = "Hayes Autos",
@@ -137,7 +137,7 @@ _jobSpawns = {
 		},
 	},
 	["avast_arcade"] = {
-		icon = "person-pinball",
+		icon = "bowling-ball",
 		locations = {
 			{
 				label = "Avast Arcade",
@@ -292,7 +292,7 @@ _jobSpawns = {
 		},
 	},
 	["realestate"] = {
-		icon = "house-building",
+		icon = "building",
 		locations = {
 			{
 				label = "Dynasty 8 Offices",
@@ -307,7 +307,7 @@ _jobSpawns = {
 		},
 	},
 	["rockford_records"] = {
-		icon = "album-collection",
+		icon = "music",
 		locations = {
 			{
 				label = "Rockford Records",
@@ -322,7 +322,7 @@ _jobSpawns = {
 		},
 	},
 	["triad"] = {
-		icon = "album-collection",
+		icon = "music",
 		locations = {
 			{
 				label = "Triad Records",
@@ -352,7 +352,7 @@ _jobSpawns = {
 		},
 	},
 	["ottos"] = {
-		icon = "car-wrench",
+		icon = "toolset",
 		locations = {
 			{
 				label = 'Otto"s Autos',
@@ -367,7 +367,7 @@ _jobSpawns = {
 		},
 	},
 	["bennys"] = {
-		icon = "car-wrench",
+		icon = "toolset",
 		locations = {
 			{
 				label = "Bennys",
@@ -382,7 +382,7 @@ _jobSpawns = {
 		},
 	},
 	["pepega_pawn"] = {
-		icon = "coin",
+		icon = "coins",
 		locations = {
 			{
 				label = "Pepega Pawn",
@@ -397,7 +397,7 @@ _jobSpawns = {
 		},
 	},
 	["garcon_pawn"] = {
-		icon = "coin",
+		icon = "coins",
 		locations = {
 			{
 				label = "Garcon Pawn",
@@ -412,7 +412,7 @@ _jobSpawns = {
 		},
 	},
 	["rustybrowns"] = {
-		icon = "donut",
+		icon = "mug-hot",
 		locations = {
 			{
 				label = "Rusty Browns",
@@ -442,7 +442,7 @@ _jobSpawns = {
 		},
 	},
 	["casino"] = {
-		icon = "cards",
+		icon = "diamond",
 		locations = {
 			{
 				label = "Casino Outside",
@@ -467,7 +467,7 @@ _jobSpawns = {
 		},
 	},
 	["pdm"] = {
-		icon = "cars",
+		icon = "car",
 		locations = {
 			{
 				label = "PDM",
@@ -497,7 +497,7 @@ _jobSpawns = {
 		},
 	},
 	["unicorn"] = {
-		icon = "unicorn",
+		icon = "horse-head",
 		locations = {
 			{
 				label = "Vanilla Unicorn",
@@ -587,7 +587,7 @@ _jobSpawns = {
 		},
 	},
 	["beanmachine"] = {
-		icon = "coffee-beans",
+		icon = "mug-hot",
 		locations = {
 			{
 				label = "Bean Machine",
@@ -602,7 +602,7 @@ _jobSpawns = {
 		},
 	},
 	["bakery"] = {
-		icon = "croissant",
+		icon = "bread-slice",
 		locations = {
 			{
 				label = "The Bakery",
@@ -677,7 +677,7 @@ _jobSpawns = {
 		},
 	},
 	["woods_saloon"] = {
-		icon = "beer-mug",
+		icon = "beer-mug-empty",
 		locations = {
 			{
 				label = "Black Woods Saloon",
@@ -707,7 +707,7 @@ _jobSpawns = {
 		},
 	},
 	["autoexotics"] = {
-		icon = "tire",
+		icon = "gears",
 		locations = {
 			{
 				label = "Auto Exotics",
@@ -722,7 +722,7 @@ _jobSpawns = {
 		},
 	},
 	["dreamworks"] = {
-		icon = "car-wrench",
+		icon = "toolset",
 		locations = {
 			{
 				label = "Dreamworks",
