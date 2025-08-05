@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
 	Slide,
 	Fade,
@@ -12,13 +12,14 @@ import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 
 import Nui from '../../util/Nui';
 import frame from '../../radio_frame.webp';
 import wallpaper from '../../background.webp';
 
-library.add(far);
+library.add(far, fas);
 
 const useStyles = makeStyles((theme) => ({
 	wrapper: {
@@ -258,7 +259,9 @@ export default (props) => {
 									{radioType}
 								</div>
 								<div className={classes.radioHeaderInfo}>
-									<FontAwesomeIcon icon={['far', 'volume']} />
+									<FontAwesomeIcon
+										icon={['fas', 'volume-high']}
+									/>
 									{`: ${volume}%`}
 								</div>
 
@@ -293,7 +296,7 @@ export default (props) => {
 													<IconButton type="submit">
 														<FontAwesomeIcon
 															icon={[
-																'far',
+																'fas',
 																'walkie-talkie',
 															]}
 														/>
