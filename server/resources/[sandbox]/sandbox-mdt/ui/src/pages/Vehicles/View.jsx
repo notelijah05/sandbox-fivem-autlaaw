@@ -295,7 +295,7 @@ export default ({ }) => {
                     <Loader text="Loading" />
                 ) : (
                     <>
-                        <FontAwesomeIcon className={classes.nWrapperIcon} icon={['fas', 'cars']} />
+                        <FontAwesomeIcon className={classes.nWrapperIcon} icon={['fas', 'car']} />
                         <div>No Vehicle Selected</div>
                     </>
                 )}

@@ -29,7 +29,7 @@ export default (job, workplace) => {
 
 const systemAdmin = [
 	{
-		icon: ['fas', 'square-terminal'],
+		icon: ['fas', 'terminal'],
 		label: 'Permissions',
 		path: '/system/gov-permissions',
 		exact: true,
@@ -38,7 +38,7 @@ const systemAdmin = [
 		},
 	},
 	{
-		icon: ['fas', 'square-terminal'],
+		icon: ['fas', 'clipboard-user'],
 		label: 'Full Roster',
 		path: '/system/gov-roster',
 		exact: true,
@@ -47,7 +47,7 @@ const systemAdmin = [
 		},
 	},
 	{
-		icon: ['fas', 'square-terminal'],
+		icon: ['fas', 'file-invoice-dollar'],
 		label: 'Charges',
 		path: '/system/charges',
 		exact: true,
@@ -67,7 +67,7 @@ const base = [
 	},
 	{
 		name: 'warrants',
-		icon: ['fas', 'file-certificate'],
+		icon: ['fas', 'file'],
 		label: 'Warrants',
 		path: '/warrants',
 		exact: false,
@@ -109,7 +109,7 @@ const attorney = [
 	},
 	{
 		name: 'warrants',
-		icon: ['fas', 'file-certificate'],
+		icon: ['fas', 'file'],
 		label: 'Warrants',
 		path: '/warrants',
 		exact: false,
@@ -131,7 +131,7 @@ const attorney = [
 	},
 	{
 		name: 'library',
-		icon: ['fas', 'books'],
+		icon: ['fas', 'book'],
 		label: 'Document Library',
 		path: '/library',
 		exact: true,
@@ -148,7 +148,7 @@ const police = [
 	},
 	{
 		name: 'roster',
-		icon: ['fas', 'user-police-tie'],
+		icon: ['fas', 'user-tie'],
 		label: 'Roster',
 		path: '/roster',
 		exact: false,
@@ -163,7 +163,7 @@ const police = [
 	},
 	{
 		name: 'warrants',
-		icon: ['fas', 'file-certificate'],
+		icon: ['fas', 'file'],
 		label: 'Warrants',
 		path: '/warrants',
 		exact: false,
@@ -178,7 +178,7 @@ const police = [
 	},
 	{
 		name: 'vehicles',
-		icon: ['fas', 'cars'],
+		icon: ['fas', 'car'],
 		label: 'Vehicles',
 		path: '/vehicles',
 		submenu: false,
@@ -209,13 +209,13 @@ const police = [
 	},
 	{
 		name: 'library',
-		icon: ['fas', 'books'],
+		icon: ['fas', 'book'],
 		label: 'Document Library',
 		path: '/library',
 		exact: true,
 	},
 	{
-		icon: ['fas', 'car-wrench'],
+		icon: ['fas', 'car-burst'],
 		label: 'Fleet',
 		path: '/fleet-manager',
 		exact: false,
@@ -224,7 +224,7 @@ const police = [
 		},
 	},
 	{
-		icon: ['fas', 'user-crown'],
+		icon: ['fas', 'user-gear'],
 		label: 'Permissions',
 		path: '/admin/permissions',
 		exact: false,
@@ -260,7 +260,7 @@ const doj = [
 	},
 	{
 		name: 'warrants',
-		icon: ['fas', 'file-certificate'],
+		icon: ['fas', 'file'],
 		label: 'Warrants',
 		path: '/warrants',
 		exact: false,
@@ -275,7 +275,7 @@ const doj = [
 	},
 	{
 		name: 'vehicles',
-		icon: ['fas', 'cars'],
+		icon: ['fas', 'car'],
 		label: 'Vehicles',
 		path: '/vehicles',
 		submenu: false,
@@ -306,13 +306,13 @@ const doj = [
 	},
 	{
 		name: 'library',
-		icon: ['fas', 'books'],
+		icon: ['fas', 'book'],
 		label: 'Document Library',
 		path: '/library',
 		exact: true,
 	},
 	{
-		icon: ['fas', 'user-crown'],
+		icon: ['fas', 'user-gear'],
 		label: 'Permissions',
 		path: '/admin/permissions',
 		exact: false,
@@ -348,7 +348,7 @@ const districtattorney = [
 	},
 	{
 		name: 'warrants',
-		icon: ['fas', 'file-certificate'],
+		icon: ['fas', 'file'],
 		label: 'Warrants',
 		path: '/warrants',
 		exact: false,
@@ -363,7 +363,7 @@ const districtattorney = [
 	},
 	{
 		name: 'vehicles',
-		icon: ['fas', 'cars'],
+		icon: ['fas', 'car'],
 		label: 'Vehicles',
 		path: '/vehicles',
 		submenu: false,
@@ -394,7 +394,7 @@ const districtattorney = [
 	},
 	{
 		name: 'library',
-		icon: ['fas', 'books'],
+		icon: ['fas', 'book'],
 		label: 'Document Library',
 		path: '/library',
 		exact: true,
@@ -443,7 +443,7 @@ const medical = [
 		exact: false,
 	},
 	{
-		icon: ['fas', 'cars'],
+		icon: ['fas', 'car'],
 		label: 'Fleet Manager',
 		path: '/fleet-manager',
 		exact: false,
@@ -453,13 +453,13 @@ const medical = [
 	},
 	{
 		name: 'library',
-		icon: ['fas', 'books'],
+		icon: ['fas', 'book'],
 		label: 'Document Library',
 		path: '/library',
 		exact: true,
 	},
 	{
-		icon: ['fas', 'user-crown'],
+		icon: ['fas', 'user-gear'],
 		label: 'Permissions',
 		path: '/admin/permissions',
 		exact: false,
@@ -509,7 +509,7 @@ const doc = [
 		exact: false,
 	},
 	{
-		icon: ['fas', 'cars'],
+		icon: ['fas', 'car'],
 		label: 'Fleet Manager',
 		path: '/fleet-manager',
 		exact: false,
@@ -526,13 +526,13 @@ const doc = [
 	},
 	{
 		name: 'library',
-		icon: ['fas', 'books'],
+		icon: ['fas', 'book'],
 		label: 'Document Library',
 		path: '/library',
 		exact: true,
 	},
 	{
-		icon: ['fas', 'user-crown'],
+		icon: ['fas', 'user-gear'],
 		label: 'Permissions',
 		path: '/admin/permissions',
 		exact: false,
