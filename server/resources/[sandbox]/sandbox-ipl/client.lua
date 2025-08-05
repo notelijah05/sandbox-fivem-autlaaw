@@ -15,7 +15,7 @@ CreateThread(function()
     -- Franklin
     Franklin.LoadDefault()
 
-    --Floyd: -1150.703, -1520.713, 10.633
+    -- Floyd: -1150.703, -1520.713, 10.633
     Floyd.LoadDefault()
 
     -- Trevor: 1985.48132, 3828.76757, 32.5
@@ -34,6 +34,7 @@ CreateThread(function()
     Ammunations.LoadDefault()
     LesterFactory.LoadDefault()
     StripClub.LoadDefault()
+    CargoShip.LoadDefault()
 
     Graffitis.Enable(true)
 
@@ -110,9 +111,9 @@ CreateThread(function()
     -- =---------------------- [DLC: Import/Export] ----------------------=
     -- ====================================================================
     ImportCEOGarage1.LoadDefault()       -- Arcadius Business Centre
-    ImportCEOGarage2.LoadDefault()       -- Maze Bank Building               /!\ Do not load parts Garage1, Garage2 and Garage3 at the same time (overlaping issues)
-    ImportCEOGarage3.LoadDefault()       -- Lom Bank                         /!\ Do not load parts Garage1, Garage2 and Garage3 at the same time (overlaping issues)
-    ImportCEOGarage4.LoadDefault()       -- Maze Bank West                   /!\ Do not load parts Garage1, Garage2 and Garage3 at the same time (overlaping issues)
+    ImportCEOGarage2.LoadDefault()       -- Maze Bank Building /!\ Do not load parts Garage1, Garage2 and Garage3 at the same time (overlaping issues)
+    ImportCEOGarage3.LoadDefault()       -- Lom Bank /!\ Do not load parts Garage1, Garage2 and Garage3 at the same time (overlaping issues)
+    ImportCEOGarage4.LoadDefault()       -- Maze Bank West /!\ Do not load parts Garage1, Garage2 and Garage3 at the same time (overlaping issues)
     ImportVehicleWarehouse.LoadDefault() -- Vehicle warehouse: 994.5925, -3002.594, -39.64699
 
     -- ====================================================================
@@ -139,6 +140,105 @@ CreateThread(function()
     -- ====================================================================
     -- =------------------- [DLC: Diamond Casino Resort] -----------------=
     -- ====================================================================
-    DiamondCasino.LoadDefault()
-    DiamondPenthouse.LoadDefault()
+    if GetGameBuildNumber() >= 2060 then
+        DiamondCasino.LoadDefault()         -- 1100.000, 220.000, -50.000
+        DiamondPenthouse.LoadDefault()      -- 976.636, 70.295, 115.164
+        DiamondArcade.LoadDefault()         -- 2732.000, -380.000, -50.000
+        DiamondArcadeBasement.LoadDefault() -- 2710.0, -360.780, -56.0
+    end
+
+    -- ====================================================================
+    -- =-------------------- [DLC: Cayo Perico Heist] --------------------=
+    -- ====================================================================
+    if GetGameBuildNumber() >= 2189 then
+        CayoPericoNightclub.LoadDefault() -- 1550.0, 250.0, -50.0
+        CayoPericoSubmarine.LoadDefault() -- 1560.0, 400.0, -50.0
+    end
+
+    -- ====================================================================
+    -- =------------------- [DLC: Los Santos Tuners] ---------------------=
+    -- ====================================================================
+    if GetGameBuildNumber() >= 2372 then
+        TunerGarage.LoadDefault()  -- -1350.0, 160.0, -100.0
+        TunerMethLab.LoadDefault() -- 981.9999, -143.0, -50.0
+        TunerMeetup.LoadDefault()  -- -2000.0, 1113.211, -25.36243
+    end
+
+    -- ====================================================================
+    -- =------------------- [DLC: Los Santos The Contract] ---------------------=
+    -- ====================================================================
+    if GetGameBuildNumber() >= 2545 then
+        MpSecurityGarage.LoadDefault()       -- -1071.4387, -77.033875, -93.525505
+        MpSecurityMusicRoofTop.LoadDefault() -- -592.6896, 273.1052, 116.302444
+        MpSecurityStudio.LoadDefault()       -- -1000.7252, -70.559875, -98.10669
+        MpSecurityBillboards.LoadDefault()   -- -592.6896, 273.1052, 116.302444
+        MpSecurityOffice1.LoadDefault()      -- -1021.86084, -427.74564, 68.95764
+        MpSecurityOffice2.LoadDefault()      -- 383.4156, -59.878227, 108.4595
+        MpSecurityOffice3.LoadDefault()      -- -1004.23035, -761.2084, 66.99069
+        MpSecurityOffice4.LoadDefault()      -- -587.87213, -716.84937, 118.10156
+    end
+
+    -- ====================================================================
+    -- =------------------- [DLC: The Criminal Enterprise] ---------------------=
+    -- ====================================================================
+    if GetGameBuildNumber() >= 2699 then
+        CriminalEnterpriseSmeonFix.LoadDefault()         -- -50.2248, -1098.8325, 26.049742
+        CriminalEnterpriseVehicleWarehouse.LoadDefault() -- 800.13696, -3001.4297, -65.14074
+        CriminalEnterpriseWarehouse.LoadDefault()        -- 849.1047, -3000.209, -45.974354
+    end
+
+    -- ====================================================================
+    -- =------------------- [DLC: Los Santos Drug Wars] ------------------=
+    -- ====================================================================
+    if GetGameBuildNumber() >= 2802 then
+        DrugWarsFreakshop.LoadDefault() -- 570.9713, -420.0727, -70.000
+        DrugWarsGarage.LoadDefault()    -- 519.2477, -2618.788, -50.000
+        DrugWarsLab.LoadDefault()       -- 483.4252, -2625.071, -50.000
+    end
+
+    -- ====================================================================
+    -- =------------------- [DLC: San Andreas Mercenaries] ---------------=
+    -- ====================================================================
+    if GetGameBuildNumber() >= 2944 then
+        MercenariesClub.LoadDefault() -- 1202.407, -3251.251, -50.000
+        MercenariesLab.LoadDefault()  -- -1916.119, 3749.719, -100.000
+        MercenariesFixes.LoadDefault()
+    end
+
+    -- ====================================================================
+    -- =------------------- [DLC: The Chop Shop] -------------------------=
+    -- ====================================================================
+    if GetGameBuildNumber() >= 3095 then
+        ChopShopCargoShip.LoadDefault()    -- -344.4349, -4062.832, 17.000
+        ChopShopCartelGarage.LoadDefault() -- 1220.133, -2277.844, -50.000
+        ChopShopLifeguard.LoadDefault()    -- -1488.153, -1021.166, 5.000
+        ChopShopSalvage.LoadDefault()      -- 1077.276, -2274.876, -50.000
+    end
+
+    -- ====================================================================
+    -- =------------------ [DLC: Bottom Dollar Bounties] -----------------=
+    -- ====================================================================
+    if GetGameBuildNumber() >= 3258 then
+        SummerCarrier.LoadDefault() -- -3208.03, 3954.54, 14.0
+        SummerOffice.LoadDefault()  -- 565.886, -2688.761, -50.0
+    end
+
+    -- ====================================================================
+    -- =-------------------- [DLC: Agents of Sabotage] -------------------=
+    -- ====================================================================
+    if GetGameBuildNumber() >= 3407 then
+        AgentsFactory.LoadDefault()    -- 752.31, -997.24, -47.0
+        AgentsOffice.LoadDefault()     -- 2149.71, 4787.76, -47.0
+        AgentsAirstrip.LoadDefault()   -- -2106.98, 1468.31, 282.0
+        AgentsHangarDoor.LoadDefault() -- -2632.43, 2963.23, 8.5
+    end
+
+    -- ====================================================================
+    -- =----------------------- [DLC: Money Fronts] ----------------------=
+    -- ====================================================================
+    if GetGameBuildNumber() >= 3570 then
+        MoneyCarwash.LoadDefault() -- 26.074, -1398.979, -75.0
+        MoneyOffice.LoadDefault()  -- -1160.493, -1538.932, -50.0
+        MoneyConstruction.LoadDefault()
+    end
 end)
