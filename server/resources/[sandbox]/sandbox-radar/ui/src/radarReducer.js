@@ -41,14 +41,14 @@ export const initialState = {
 			speed: null,
 			plate: false,
 			class: false,
-		}
+		},
 	},
 	menu: {
 		showing: false,
 		radarText: '',
 		fastText: '',
 		patrolNumber: 0,
-	}
+	},
 };
 
 const radarReducer = (state = initialState, action) => {
@@ -70,16 +70,16 @@ const radarReducer = (state = initialState, action) => {
 				...state,
 				showingRemote: true,
 			};
-		case 'REMOTE_HIDE': 
+		case 'REMOTE_HIDE':
 			return {
 				...state,
 				showingRemote: false,
 				menu: {
 					...state.menu,
 					showing: false,
-				}
+				},
 			};
-		case 'MENU_SHOW': 
+		case 'MENU_SHOW':
 			return {
 				...state,
 				menu: {
@@ -87,30 +87,30 @@ const radarReducer = (state = initialState, action) => {
 					radar: action.payload.radar,
 					fast: action.payload.fast,
 					patrol: action.payload.patrol,
-				}
-			}
+				},
+			};
 		case 'MENU_HIDE':
 			return {
 				...state,
 				menu: {
 					showing: false,
-				}
+				},
 			};
-        case 'UPDATE_SETTINGS':
-            return {
-                ...state,
+		case 'UPDATE_SETTINGS':
+			return {
+				...state,
 				settings: {
 					...state.settings,
 					...action.payload,
-				}
-            };
+				},
+			};
 		case 'UPDATE_DATA':
 			return {
 				...state,
 				data: {
 					...state.data,
 					...action.payload,
-				}
+				},
 			};
 		default:
 			return state;
