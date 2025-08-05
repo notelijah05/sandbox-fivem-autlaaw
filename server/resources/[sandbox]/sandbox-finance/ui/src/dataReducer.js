@@ -20,7 +20,7 @@ export const initialState = {
 				? []
 				: [
 						{
-							Name: '994094 994094 994094 994094 994094 994094',
+							Name: '994094',
 							Account: 994094,
 							Balance: 0,
 							Type: 'personal',
@@ -49,8 +49,8 @@ export const initialState = {
 							JointOwners: [3],
 						},
 						{
-							Name: '994095',
-							Account: 994095,
+							Name: '994096',
+							Account: 994096,
 							Balance: 5000,
 							Type: 'personal_savings',
 							Owner: 123,
@@ -64,8 +64,8 @@ export const initialState = {
 							JointOwners: [3],
 						},
 						{
-							Name: '994095',
-							Account: 994095,
+							Name: '994097',
+							Account: 994097,
 							Balance: 5000,
 							Type: 'personal_savings',
 							Owner: 123,
@@ -79,8 +79,8 @@ export const initialState = {
 							JointOwners: [3],
 						},
 						{
-							Name: '994095',
-							Account: 994095,
+							Name: '994098',
+							Account: 994098,
 							Balance: 5000,
 							Type: 'personal_savings',
 							Owner: 123,
@@ -94,8 +94,8 @@ export const initialState = {
 							JointOwners: [3],
 						},
 						{
-							Name: '994095',
-							Account: 994095,
+							Name: '994099',
+							Account: 994099,
 							Balance: 5000,
 							Type: 'personal_savings',
 							Owner: 123,
@@ -109,8 +109,8 @@ export const initialState = {
 							JointOwners: [3],
 						},
 						{
-							Name: '994095',
-							Account: 994095,
+							Name: '994100',
+							Account: 994100,
 							Balance: 5000,
 							Type: 'personal_savings',
 							Owner: 123,
@@ -124,8 +124,8 @@ export const initialState = {
 							JointOwners: [3],
 						},
 						{
-							Name: '994095',
-							Account: 994095,
+							Name: '994101',
+							Account: 994101,
 							Balance: 5000,
 							Type: 'personal_savings',
 							Owner: 123,
@@ -139,8 +139,8 @@ export const initialState = {
 							JointOwners: [3],
 						},
 						{
-							Name: '994095',
-							Account: 994095,
+							Name: '994102',
+							Account: 994102,
 							Balance: 5000,
 							Type: 'personal_savings',
 							Owner: 123,
@@ -154,8 +154,8 @@ export const initialState = {
 							JointOwners: [3],
 						},
 						{
-							Name: '994095',
-							Account: 994095,
+							Name: '994103',
+							Account: 994103,
 							Balance: 5000,
 							Type: 'personal_savings',
 							Owner: 123,
@@ -169,8 +169,8 @@ export const initialState = {
 							JointOwners: [3],
 						},
 						{
-							Name: '994095',
-							Account: 994095,
+							Name: '994104',
+							Account: 994104,
 							Balance: 5000,
 							Type: 'personal_savings',
 							Owner: 123,
@@ -184,8 +184,8 @@ export const initialState = {
 							JointOwners: [3],
 						},
 						{
-							Name: '994095',
-							Account: 994095,
+							Name: '994105',
+							Account: 994105,
 							Balance: 5000,
 							Type: 'personal_savings',
 							Owner: 123,

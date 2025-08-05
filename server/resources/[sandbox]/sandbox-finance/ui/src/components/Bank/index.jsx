@@ -175,17 +175,26 @@ export default () => {
 					<div className={classes.accounts}>
 						{personal.map((acc) => {
 							return (
-								<AccountButton key={acc.Account} account={acc} />
+								<AccountButton
+									key={acc.Account}
+									account={acc}
+								/>
 							);
 						})}
 						{savings.map((acc) => {
 							return (
-								<AccountButton key={acc.Account} account={acc} />
+								<AccountButton
+									key={acc.Account}
+									account={acc}
+								/>
 							);
 						})}
 						{organization.map((acc) => {
 							return (
-								<AccountButton key={acc.Account} account={acc} />
+								<AccountButton
+									key={acc.Account}
+									account={acc}
+								/>
 							);
 						})}
 					</div>
