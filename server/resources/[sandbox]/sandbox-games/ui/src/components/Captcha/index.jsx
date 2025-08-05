@@ -585,7 +585,7 @@ export default ({ game }) => {
                     <div className={classes.countdown}>
                         <small>Attempting Security Bypass</small>
                         <span>
-                            <FontAwesomeIcon icon={['fas', 'loader']} spin />
+                            <FontAwesomeIcon icon={['fas', 'spinner']} spin />
                         </span>
                     </div>
                 ) : process == 1 ? (
@@ -594,7 +594,7 @@ export default ({ game }) => {
                         <span>
                             <FontAwesomeIcon
                                 style={{ color: 'red' }}
-                                icon={['fas', 'hexagon-exclamation']}
+                                icon={['fas', 'circle-exclamation']}
                             />
                         </span>
                     </div>
@@ -602,7 +602,7 @@ export default ({ game }) => {
                     <div className={classes.countdown}>
                         <small>Manual Verification Required</small>
                         <span>
-                            <FontAwesomeIcon icon={['fas', 'pen-field']} />
+                            <FontAwesomeIcon icon={['fas', 'pen-to-square']} />
                         </span>
                     </div>
                 ) : count >= 0 ? (
@@ -633,7 +633,7 @@ export default ({ game }) => {
                                 <span>
                                     <FontAwesomeIcon
                                         color="red"
-                                        icon={['fas', 'circle-x']}
+                                        icon={['fas', 'circle-xmark']}
                                     />
                                 </span>
                             </div>
@@ -671,9 +671,7 @@ export default ({ game }) => {
                                             transition: 'none !important',
                                         }}
                                         classes={{
-                                            determinate: classes.progressbar,
                                             bar: classes.progressbar,
-                                            bar1: classes.progressbar,
                                         }}
                                         variant="determinate"
                                         color="success"
@@ -683,9 +681,7 @@ export default ({ game }) => {
                                     <LinearProgress
                                         className={classes.progress}
                                         classes={{
-                                            determinate: classes.progressbar2,
                                             bar: classes.progressbar2,
-                                            bar1: classes.progressbar2,
                                         }}
                                         variant="determinate"
                                         color={

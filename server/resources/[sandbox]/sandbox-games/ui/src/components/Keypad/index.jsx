@@ -341,9 +341,7 @@ export default ({ game }) => {
                             <LinearProgress
                                 className={classes.progress}
                                 classes={{
-                                    determinate: classes.progressbar,
                                     bar: classes.progressbar,
-                                    bar1: classes.progressbar,
                                 }}
                                 variant="determinate"
                                 color={

@@ -381,7 +381,7 @@ export default ({ game }) => {
                     <div className={classes.countdown}>
                         <small>Manual Input Required</small>
                         <span>
-                            <FontAwesomeIcon icon={['fas', 'grid-4']} />
+                            <FontAwesomeIcon icon={['fas', 'grip']} />
                         </span>
                     </div>
                 ) : count >= 0 ? (
@@ -425,9 +425,7 @@ export default ({ game }) => {
                             <LinearProgress
                                 className={classes.progress}
                                 classes={{
-                                    determinate: classes.progressbar,
                                     bar: classes.progressbar,
-                                    bar1: classes.progressbar,
                                 }}
                                 variant="determinate"
                                 color={
