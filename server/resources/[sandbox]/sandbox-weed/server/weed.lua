@@ -2,7 +2,6 @@ _plants = {}
 
 AddEventHandler("Weed:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
@@ -26,7 +25,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weed", {
-		"Database",
 		"Callbacks",
 		"Logger",
 		"Middleware",
@@ -111,14 +109,15 @@ WEED = {
 				planted = os.time(),
 				water = 100.0,
 			}
-			Database.Game:insertOne({
-				collection = "weed",
-				document = weed,
-			}, function(success, results, insertedIds)
-				if not success then
+			MySQL.insert('INSERT INTO weed (is_male, x, y, z, growth, output, material, planted, water) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', {
+				isMale and 1 or 0,
+				location.x, location.y, location.z,
+				0, 1, material, weed.planted, 100.0
+			}, function(insertId)
+				if not insertId then
 					return p:resolve(nil)
 				end
-				weed._id = insertedIds[1]
+				weed._id = insertId
 				return p:resolve(weed)
 			end)
 			return Citizen.Await(p)

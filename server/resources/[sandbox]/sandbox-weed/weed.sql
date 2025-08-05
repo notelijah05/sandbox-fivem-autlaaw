@@ -1,0 +1,17 @@
+DROP TABLE IF EXISTS `weed`;
+CREATE TABLE IF NOT EXISTS `weed` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `is_male` TINYINT(1) NOT NULL,
+  `x` DOUBLE NOT NULL,
+  `y` DOUBLE NOT NULL,
+  `z` DOUBLE NOT NULL,
+  `growth` FLOAT NOT NULL DEFAULT 0,
+  `output` FLOAT NOT NULL DEFAULT 1,
+  `material` INT(11) NOT NULL,
+  `planted` INT(11) NOT NULL,
+  `water` FLOAT NOT NULL DEFAULT 100,
+  `fertilizer_type` VARCHAR(32) DEFAULT NULL,
+  `fertilizer_value` FLOAT DEFAULT NULL,
+  `fertilizer_time` INT(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;

@@ -1,5 +1,3 @@
-server_script "PU6AXI.lua"
-client_script "PU6AXI.lua"
 fx_version("cerulean")
 client_script("@sandbox-base/components/cl_error.lua")
 client_script("@sandbox-pwnzor/client/check.lua")
@@ -17,6 +15,7 @@ shared_scripts({
 })
 
 server_scripts({
+	"@oxmysql/lib/MySQL.lua",
 	"config/sv_*.lua",
 	"server/**/*.lua",
 })
