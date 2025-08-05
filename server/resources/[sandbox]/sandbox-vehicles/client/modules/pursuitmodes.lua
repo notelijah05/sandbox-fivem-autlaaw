@@ -5,7 +5,7 @@ _inPursuitVehicleMegaphone = false
 
 AddEventHandler("Characters:Client:Spawn", function()
     Wait(500)
-    Buffs:RegisterBuff("pursuit-modes", "gauge-circle-bolt", "#892020", -1, "permanent")
+    Buffs:RegisterBuff("pursuit-modes", "gauge-high", "#892020", -1, "permanent")
 end)
 
 local _timeout = false
@@ -64,7 +64,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 
             UISounds.Play:FrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
             Notification:Standard("Switched to Pursuit Mode " .. _inPursuitVehicleSettings[_inPursuitVehicleMode].name or
-            _inPursuitVehicleMode)
+                _inPursuitVehicleMode)
             ApplyPursuitStuffToVehicle(_inPursuitVehicleMode)
 
             Entity(_inPursuitVehicle).state:set('PursuitMode', _inPursuitVehicleMode, true)
@@ -93,7 +93,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 
                 UISounds.Play:FrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
                 Notification:Standard("Switched to Pursuit Mode " ..
-                _inPursuitVehicleSettings[_inPursuitVehicleMode].name or _inPursuitVehicleMode)
+                    _inPursuitVehicleSettings[_inPursuitVehicleMode].name or _inPursuitVehicleMode)
 
                 ApplyPursuitStuffToVehicle(lastPursuitMode)
 

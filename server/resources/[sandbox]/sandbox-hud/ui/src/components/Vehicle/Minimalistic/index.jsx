@@ -10,6 +10,17 @@ import {
 } from 'react-circular-progressbar';
 
 const useStyles = makeStyles((theme) => ({
+    '@keyframes flash': {
+        '0%': {
+            opacity: 1,
+        },
+        '50%': {
+            opacity: 0.1,
+        },
+        '100%': {
+            opacity: 1,
+        },
+    },
     wrapper: {
         position: 'absolute',
         display: 'flex',
@@ -71,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
         bottom: 0,
         fontSize: 18,
         color: theme.palette.error.light,
-        animation: 'flash linear 1s infinite',
+        animation: '$flash linear 1s infinite',
     },
     seatBelt: {
         width: 'fit-content',
@@ -81,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
         right: 10,
         fontSize: 18,
         color: theme.palette.warning.light,
-        animation: 'flash linear 3s infinite',
+        animation: '$flash linear 3s infinite',
     },
     cruise: {
         width: 'fit-content',
@@ -178,9 +189,7 @@ export default () => {
                         </div>
                         {Boolean(checkEngine) && (
                             <span className={classes.checkEngine}>
-                                <FontAwesomeIcon
-                                    icon={['fas', 'engine-warning']}
-                                />
+                                <FontAwesomeIcon icon={['fas', 'oil-can']} />
                             </span>
                         )}
                         {!Boolean(seatbelt) && !Boolean(seatbeltHide) && (

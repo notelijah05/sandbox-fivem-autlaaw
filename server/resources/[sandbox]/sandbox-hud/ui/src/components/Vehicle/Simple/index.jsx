@@ -6,6 +6,17 @@ import ReactHtmlParser from 'react-html-parser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const useStyles = makeStyles((theme) => ({
+    '@keyframes flash': {
+        '0%': {
+            opacity: 1,
+        },
+        '50%': {
+            opacity: 0.1,
+        },
+        '100%': {
+            opacity: 1,
+        },
+    },
     wrapper: {
         position: 'absolute',
         display: 'flex',
@@ -34,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
             display: 'block',
 
             '&.active': {
-                animation: 'flash linear 3s infinite',
+                animation: '$flash linear 3s infinite',
                 color: theme.palette.warning.main,
             },
         },
@@ -43,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
             display: 'block',
 
             '&.active': {
-                animation: 'flash linear 1s infinite',
+                animation: '$flash linear 1s infinite',
                 color: theme.palette.error.main,
             },
         },
@@ -222,7 +233,7 @@ export default () => {
                                         height: `${fuel}%`,
                                         animation:
                                             fuel <= 10
-                                                ? 'flash linear 0.5s infinite'
+                                                ? '$flash linear 0.5s infinite'
                                                 : 'none',
                                         background:
                                             fuel >= 50

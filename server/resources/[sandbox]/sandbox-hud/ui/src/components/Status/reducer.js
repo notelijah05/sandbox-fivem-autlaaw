@@ -64,7 +64,7 @@ export const initialState = {
                       name: 'PLAYER_STRESS',
                       max: 100,
                       value: 66,
-                      icon: 'face-explode',
+                      icon: 'face-dizzy',
                       color: '#de3333',
                       flash: false,
                       options: {

@@ -5,6 +5,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
+    '@keyframes flash': {
+        '0%': {
+            opacity: 1,
+        },
+        '50%': {
+            opacity: 0.1,
+        },
+        '100%': {
+            opacity: 1,
+        },
+    },
     container: {
         paddingLeft: 5,
         lineHeight: '25px',

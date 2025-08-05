@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Avatar, CircularProgress, Fade, useTheme } from '@mui/material';
 import { makeStyles, withTheme } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -48,9 +48,12 @@ const useStyles = makeStyles((theme) => ({
 export default withTheme(() => {
     const classes = useStyles();
 
-    const radioFreq = useSelector((state) => state.status.statuses).filter(
-        (s) => s.name == 'radio-freq',
-    )[0];
+    const statuses = useSelector((state) => state.status.statuses);
+
+    const radioFreq = useMemo(
+        () => statuses.filter((s) => s.name == 'radio-freq')[0],
+        [statuses],
+    );
 
     const voip = useSelector((state) => state.hud.voip);
     const voipIcon = useSelector((state) => state.hud.voipIcon);

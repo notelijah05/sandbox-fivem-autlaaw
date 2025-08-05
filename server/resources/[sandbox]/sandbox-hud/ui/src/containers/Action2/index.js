@@ -7,6 +7,17 @@ import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const useStyles = makeStyles((theme) => ({
+    '@keyframes flash': {
+        '0%': {
+            opacity: 1,
+        },
+        '50%': {
+            opacity: 0.1,
+        },
+        '100%': {
+            opacity: 1,
+        },
+    },
     container: {
         width: 80,
         padding: 5,

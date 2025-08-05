@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@mui/styles';
 
@@ -19,11 +19,17 @@ const useStyles = makeStyles((theme) => ({
 export default () => {
     const classes = useStyles();
 
-    const pers = useSelector((state) =>
-        state.notification.notifications.filter((n) => n.duration <= 0),
+    const notifications = useSelector(
+        (state) => state.notification.notifications,
     );
-    const notifs = useSelector((state) =>
-        state.notification.notifications.filter((n) => n.duration > 0),
+
+    const pers = useMemo(
+        () => notifications.filter((n) => n.duration <= 0),
+        [notifications],
+    );
+    const notifs = useMemo(
+        () => notifications.filter((n) => n.duration > 0),
+        [notifications],
     );
 
     return (

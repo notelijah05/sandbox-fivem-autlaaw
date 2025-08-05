@@ -7,7 +7,7 @@ export const initialState = {
                   {
                       _id: 1,
                       created: 1629674399000,
-                      icon: 'rocket-launch',
+                      icon: 'rocket',
                       message: 'This is a test description, neat',
                       duration: 5000,
                       type: 'success',
@@ -16,7 +16,7 @@ export const initialState = {
                   {
                       _id: 'fuckme-123',
                       created: 1629674399000,
-                      icon: 'rocket-launch',
+                      icon: 'rocket',
                       message: 'This is a test description, neat',
                       duration: 5000,
                       type: 'success',
@@ -25,7 +25,7 @@ export const initialState = {
                   {
                       _id: 2,
                       created: 1629674399000,
-                      icon: 'rocket-launch',
+                      icon: 'rocket',
                       message: 'This is a test description, neat',
                       duration: 6000,
                       type: 'error',
@@ -34,7 +34,7 @@ export const initialState = {
                   {
                       _id: 3,
                       created: 1629674399000,
-                      icon: 'rocket-launch',
+                      icon: 'rocket',
                       message: 'This is a test description, neat',
                       duration: 7000,
                       type: 'info',
@@ -43,7 +43,7 @@ export const initialState = {
                   {
                       _id: 4,
                       created: 1629674399000,
-                      icon: 'rocket-launch',
+                      icon: 'rocket',
                       message: 'This is a test description, neat',
                       duration: 8000,
                       type: 'warning',
@@ -52,7 +52,7 @@ export const initialState = {
                   {
                       _id: 5,
                       created: 1629674399000,
-                      icon: 'rocket-launch',
+                      icon: 'rocket',
                       message: 'This is a test description, neat',
                       duration: 9000,
                       type: 'custom',
@@ -72,7 +72,7 @@ export const initialState = {
                   {
                       _id: 6,
                       created: 1629674399000,
-                      icon: 'rocket-launch',
+                      icon: 'rocket',
                       message: 'This is a test description, neat',
                       duration: -1,
                   },

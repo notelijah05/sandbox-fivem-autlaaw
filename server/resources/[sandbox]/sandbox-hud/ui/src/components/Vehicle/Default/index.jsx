@@ -10,6 +10,17 @@ import { linearProgressClasses } from '@mui/material/LinearProgress';
 import rpmImg from '../../../assets/rpm.webp';
 
 const useStyles = makeStyles((theme) => ({
+    '@keyframes flash': {
+        '0%': {
+            opacity: 1,
+        },
+        '50%': {
+            opacity: 0.1,
+        },
+        '100%': {
+            opacity: 1,
+        },
+    },
     wrapper: {
         position: 'absolute',
         left: 0,
@@ -57,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
             margin: 'auto',
 
             '&.active': {
-                animation: 'flash linear 3s infinite',
+                animation: '$flash linear 3s infinite',
                 color: theme.palette.warning.main,
             },
         },
@@ -72,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
             margin: 'auto',
 
             '&.active': {
-                animation: 'flash linear 1s infinite',
+                animation: '$flash linear 1s infinite',
                 color: theme.palette.error.main,
             },
         },
@@ -180,7 +191,7 @@ export default () => {
         },
         [`& .${linearProgressClasses.bar}`]: {
             transition: 'color ease-in 0.15s',
-            animation: value <= 10 ? 'flash linear 0.5s infinite' : 'none',
+            animation: value <= 10 ? '$flash linear 0.5s infinite' : 'none',
             background:
                 value >= 50
                     ? theme.palette.success.main
@@ -203,7 +214,7 @@ export default () => {
             borderTop: `2px solid ${theme.palette.secondary.dark}80`,
         },
         [`& .${linearProgressClasses.bar}`]: {
-            animation: value <= 10 ? 'flash linear 1s infinite' : 'none',
+            animation: value <= 10 ? '$flash linear 1s infinite' : 'none',
             background: '#0078ec',
         },
     }));

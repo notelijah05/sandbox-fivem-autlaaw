@@ -43,48 +43,42 @@ export default withTheme(() => {
     const isTalking = useSelector((state) => state.hud.talking);
 
     return (
-        <TransitionGroup className={classes.voipContainer}>
+        <div className={classes.voipContainer}>
             <div className={classes.voip}>
-                <CSSTransition key="voip-1" timeout={500} classNames="fade">
-                    <div
-                        className={`${classes.voipStage} ${
-                            voip >= 1 ? 'active' : ''
-                        } ${
-                            isTalking == 1
-                                ? 'talking'
-                                : isTalking == 2
-                                ? 'radio'
-                                : ''
-                        }`}
-                    ></div>
-                </CSSTransition>
-                <CSSTransition key="voip-2" timeout={500} classNames="fade">
-                    <div
-                        className={`${classes.voipStage} ${
-                            voip >= 2 ? 'active' : ''
-                        } ${
-                            isTalking == 1
-                                ? 'talking'
-                                : isTalking == 2
-                                ? 'radio'
-                                : ''
-                        }`}
-                    ></div>
-                </CSSTransition>
-                <CSSTransition key="voip-3" timeout={500} classNames="fade">
-                    <div
-                        className={`${classes.voipStage} ${
-                            voip >= 3 ? 'active' : ''
-                        } ${
-                            isTalking == 1
-                                ? 'talking'
-                                : isTalking == 2
-                                ? 'radio'
-                                : ''
-                        }`}
-                    ></div>
-                </CSSTransition>
+                <div
+                    className={`${classes.voipStage} ${
+                        voip >= 1 ? 'active' : ''
+                    } ${
+                        isTalking == 1
+                            ? 'talking'
+                            : isTalking == 2
+                            ? 'radio'
+                            : ''
+                    }`}
+                ></div>
+                <div
+                    className={`${classes.voipStage} ${
+                        voip >= 2 ? 'active' : ''
+                    } ${
+                        isTalking == 1
+                            ? 'talking'
+                            : isTalking == 2
+                            ? 'radio'
+                            : ''
+                    }`}
+                ></div>
+                <div
+                    className={`${classes.voipStage} ${
+                        voip >= 3 ? 'active' : ''
+                    } ${
+                        isTalking == 1
+                            ? 'talking'
+                            : isTalking == 2
+                            ? 'radio'
+                            : ''
+                    }`}
+                ></div>
             </div>
-        </TransitionGroup>
+        </div>
     );
 });

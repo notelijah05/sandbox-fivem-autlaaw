@@ -161,8 +161,8 @@ end)
 
 RegisterNetEvent("Characters:Client:Spawned", function()
 	Buffs:RegisterBuff("speed", "bolt-lightning", "#8419C2", -1, "timed")
-	Buffs:RegisterBuff("armor", "shield-plus", "#4056b3", -1, "timed")
-	Buffs:RegisterBuff("heal", "trash-plus", "#52984a", -1, "timed")
+	Buffs:RegisterBuff("armor", "shield-halved", "#4056b3", -1, "timed")
+	Buffs:RegisterBuff("heal", "trash-can", "#52984a", -1, "timed")
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()

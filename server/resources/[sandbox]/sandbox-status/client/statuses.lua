@@ -247,7 +247,7 @@ function RegisterStatuses()
 		order = 5,
 	})
 
-	Status:Register("PLAYER_STRESS", 0, "face-explode", "#de3333", false, function(change, force)
+	Status:Register("PLAYER_STRESS", 0, "face-dizzy", "#de3333", false, function(change, force)
 		if _stressTicks > 1 or force then
 			if LocalPlayer.state.ignorePLAYER_STRESS then
 				if LocalPlayer.state.ignorePLAYER_STRESS - 1 > 0 then

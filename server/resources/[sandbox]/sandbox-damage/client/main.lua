@@ -79,8 +79,8 @@ end)
 RegisterNetEvent("Characters:Client:Spawned", function()
     StartThreads()
 
-    Buffs:RegisterBuff("weakness", "face-head-bandage", "#FF0049", -1, "permanent")
-    Buffs:RegisterBuff("godmode", "shield-quartered", "#FFBB04", -1, "permanent")
+    Buffs:RegisterBuff("weakness", "bandage", "#FF0049", -1, "permanent")
+    Buffs:RegisterBuff("godmode", "shield-virus", "#FFBB04", -1, "permanent")
 
     _reductions = LocalPlayer.state.Character:GetData("HPReductions") or 0
     if _reductions > 0 then

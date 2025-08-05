@@ -9,6 +9,17 @@ import NumberStatus from '../components/Number';
 import BarStatus from '../components/Bar';
 
 const useStyles = makeStyles((theme) => ({
+    '@keyframes flash': {
+        '0%': {
+            opacity: 1,
+        },
+        '50%': {
+            opacity: 0.1,
+        },
+        '100%': {
+            opacity: 1,
+        },
+    },
     status: {
         fontSize: 30,
         width: 'fit-content',
