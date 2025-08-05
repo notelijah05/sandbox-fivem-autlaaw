@@ -348,7 +348,7 @@ function RegisterCallbacks()
 							z = hasLastLocation.coords.z,
 							h = 0.0,
 						},
-						icon = "location-smile",
+						icon = "location",
 						event = "Characters:GlobalSpawn",
 					},
 				})
@@ -496,7 +496,7 @@ function RegisterMiddleware()
 							z = hasLastLocation.coords.z,
 							h = 0.0,
 						},
-						icon = "location-smile",
+						icon = "location-dot",
 						event = "Characters:GlobalSpawn",
 					},
 				}
