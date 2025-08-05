@@ -54,7 +54,7 @@ export default () => {
 			onClick={wallpaperClicked}
 		>
 			<div className={classes.icon}>
-				<FontAwesomeIcon icon={['fas', 'image-polaroid']} />
+				<FontAwesomeIcon icon={['fas', 'images']} />
 			</div>
 			<div className={classes.label}>Wallpaper</div>
 			<div className={classes.action}>

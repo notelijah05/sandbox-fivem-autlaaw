@@ -227,13 +227,13 @@ export default () => {
 				<Fragment>
 					<Tooltip title="Your Wallet Information">
 						<IconButton onClick={() => setShowingWallet(true)}>
-							<FontAwesomeIcon icon={['far', 'wallet']} />
+							<FontAwesomeIcon icon={['fas', 'wallet']} />
 						</IconButton>
 					</Tooltip>
 					<Tooltip title="Transfer Crypto">
 						<IconButton onClick={() => setSending(true)}>
 							<FontAwesomeIcon
-								icon={['far', 'arrow-up-from-dotted-line']}
+								icon={['fas', 'money-bill-transfer']}
 							/>
 						</IconButton>
 					</Tooltip>
@@ -241,7 +241,7 @@ export default () => {
 						<IconButton onClick={fetch}>
 							<FontAwesomeIcon
 								className={`fa ${loading ? 'fa-spin' : ''}`}
-								icon={['far', 'arrows-rotate']}
+								icon={['fas', 'arrows-rotate']}
 							/>
 						</IconButton>
 					</Tooltip>

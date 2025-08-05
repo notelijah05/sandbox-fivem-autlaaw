@@ -100,9 +100,9 @@ export default ({ UpdateSetting }) => {
 					}`}
 				>
 					{volume == 0 ? (
-						<FontAwesomeIcon icon={['far', 'volume']} />
+						<FontAwesomeIcon icon={['fas', 'volume-high']} />
 					) : (
-						<FontAwesomeIcon icon={['far', 'volume-xmark']} />
+						<FontAwesomeIcon icon={['fas', 'volume-xmark']} />
 					)}
 				</IconButton>
 				<Slider
@@ -117,7 +117,7 @@ export default ({ UpdateSetting }) => {
 					onClick={onSave}
 					className={classes.actionBtn}
 				>
-					<FontAwesomeIcon icon={['far', 'save']} />
+					<FontAwesomeIcon icon={['fas', 'save']} />
 				</IconButton>
 			</div>
 		</Grid>

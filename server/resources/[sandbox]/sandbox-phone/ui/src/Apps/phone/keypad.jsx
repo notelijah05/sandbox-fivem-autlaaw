@@ -302,7 +302,7 @@ export default (props) => {
 							onClick={() => history('/apps/phone/recent')}
 						>
 							<FontAwesomeIcon
-								icon={['far', 'clock-rotate-left']}
+								icon={['fas', 'clock-rotate-left']}
 								style={{ fontSize: 18 }}
 							/>
 						</Button>
@@ -324,7 +324,7 @@ export default (props) => {
 						onClick={startcall}
 					>
 						<FontAwesomeIcon
-							icon={['far', 'phone']}
+							icon={['fas', 'phone']}
 							style={{ fontSize: 36 }}
 						/>
 					</Button>
@@ -337,7 +337,7 @@ export default (props) => {
 							onClick={() => history('/apps/contacts')}
 						>
 							<FontAwesomeIcon
-								icon={['far', 'address-book']}
+								icon={['fas', 'address-book']}
 								style={{ fontSize: 18 }}
 							/>
 						</Button>
@@ -355,7 +355,7 @@ export default (props) => {
 						className={classes.recent}
 						onClick={() => history('/apps/phone/recent')}
 					>
-						<FontAwesomeIcon icon={['far', 'clock-rotate-left']} />
+						<FontAwesomeIcon icon={['fas', 'clock-rotate-left']} />
 					</IconButton>
 				)}
 				<Grid container spacing={1}>

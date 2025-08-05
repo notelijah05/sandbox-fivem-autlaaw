@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Grid, Switch, Paper } from '@mui/material';
+import { Grid, Switch } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -48,7 +48,7 @@ export default ({ UpdateSetting }) => {
 	return (
 		<Grid item xs={12} className={classes.container} onClick={toggleNotifs}>
 			<div className={classes.icon}>
-				<FontAwesomeIcon icon={['fas', 'bell-on']} />
+				<FontAwesomeIcon icon={['fas', 'bell']} />
 			</div>
 			<div className={classes.label}>Notifications</div>
 			<div className={classes.action}>
@@ -59,36 +59,5 @@ export default ({ UpdateSetting }) => {
 				/>
 			</div>
 		</Grid>
-	);
-
-	return (
-		<Paper className={classes.rowWrapper} onClick={toggleNotifs}>
-			<Grid item xs={12}>
-				<Grid container>
-					<Grid item xs={2} style={{ position: 'relative' }}>
-						<FontAwesomeIcon
-							className={classes.avatarIcon}
-							icon={['fas', 'bell-on']}
-						/>
-					</Grid>
-					<Grid
-						item
-						xs={8}
-						style={{ paddingLeft: 5, position: 'relative' }}
-					>
-						<span className={classes.sectionHeader}>
-							Notifications
-						</span>
-					</Grid>
-					<Grid item xs={2} style={{ position: 'relative' }}>
-						<Switch
-							className={classes.arrow}
-							checked={notifs}
-							color="primary"
-						/>
-					</Grid>
-				</Grid>
-			</Grid>
-		</Paper>
 	);
 };

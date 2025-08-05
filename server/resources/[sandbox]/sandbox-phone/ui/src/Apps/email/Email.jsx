@@ -121,7 +121,7 @@ export default connect(null, { DeleteEmail })(({ email, DeleteEmail }) => {
 					email.expires > Date.now() / 1000 && (
 						<Tooltip title="Email Expires Soon" placement="right">
 							<FontAwesomeIcon
-								icon={['far', 'hexagon-exclamation']}
+								icon={['fas', 'triangle-exclamation']}
 								className={classes.expireIndicator}
 							/>
 						</Tooltip>

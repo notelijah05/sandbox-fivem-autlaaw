@@ -132,7 +132,7 @@ export default (props) => {
 								className={classes.phoneTab}
 								icon={
 									<FontAwesomeIcon
-										icon={['fas', 'list-timeline']}
+										icon={['fas', 'clipboard-list']}
 									/>
 								}
 							/>

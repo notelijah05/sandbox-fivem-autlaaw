@@ -640,7 +640,7 @@ export default connect(null, {
 							}}
 						/>
 						<IconButton type="submit" className={classes.sendBtn}>
-							<FontAwesomeIcon icon="send" />
+							<FontAwesomeIcon icon="share" />
 						</IconButton>
 					</form>
 				</div>

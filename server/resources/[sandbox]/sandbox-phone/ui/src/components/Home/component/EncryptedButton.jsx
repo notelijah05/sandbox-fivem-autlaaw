@@ -144,7 +144,7 @@ export default ({
 			onMouseUp={clickHoldEnd}
 		>
 			<Avatar variant="rounded" className={classes.appIcon}>
-				<FontAwesomeIcon icon={['far', 'question']} />
+				<FontAwesomeIcon icon={['fas', 'question']} />
 			</Avatar>
 			{!docked && <div className={classes.appLabel}>Encrypted App</div>}
 		</div>

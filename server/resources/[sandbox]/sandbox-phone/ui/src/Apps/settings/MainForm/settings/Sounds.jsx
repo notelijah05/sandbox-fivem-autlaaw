@@ -54,7 +54,7 @@ export default () => {
 			onClick={soundsClicked}
 		>
 			<div className={classes.icon}>
-				<FontAwesomeIcon icon={['fas', 'waveform-lines']} />
+				<FontAwesomeIcon icon={['fas', 'file-waveform']} />
 			</div>
 			<div className={classes.label}>Sounds</div>
 			<div className={classes.action}>

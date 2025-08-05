@@ -93,7 +93,7 @@ export default (props) => {
 								{pendingBills.length}
 							</span>
 						)}
-						<FontAwesomeIcon icon={['far', 'file-invoice']} />
+						<FontAwesomeIcon icon={['fas', 'file-invoice']} />
 					</IconButton>
 					<IconButton
 						onClick={() => fetch()}

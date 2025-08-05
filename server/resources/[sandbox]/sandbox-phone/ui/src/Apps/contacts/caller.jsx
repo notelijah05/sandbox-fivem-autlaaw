@@ -239,10 +239,10 @@ export default (props) => {
 				</div>
 				<div className={classes.actions}>
 					<IconButton className="button" onClick={callContact}>
-						<FontAwesomeIcon icon={['far', 'phone']} />
+						<FontAwesomeIcon icon={['fas', 'phone']} />
 					</IconButton>
 					<IconButton className="button" onClick={textContact}>
-						<FontAwesomeIcon icon={['far', 'message-sms']} />
+						<FontAwesomeIcon icon={['fas', 'message']} />
 					</IconButton>
 				</div>
 			</div>

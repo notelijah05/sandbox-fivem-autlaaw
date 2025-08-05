@@ -90,7 +90,7 @@ export default ({ UpdateSetting }) => {
 					onClick={() => setZoomInfo(true)}
 					className={`${classes.actionBtn} left`}
 				>
-					<FontAwesomeIcon icon={['far', 'question']} />
+					<FontAwesomeIcon icon={['fas', 'question']} />
 				</IconButton>
 				<Slider
 					value={state}

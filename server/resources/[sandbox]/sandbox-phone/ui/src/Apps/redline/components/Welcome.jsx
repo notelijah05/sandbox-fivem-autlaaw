@@ -112,7 +112,7 @@ export default (props) => {
 												<FontAwesomeIcon
 													icon={[
 														'far',
-														'octagon-check',
+														'circle-check',
 													]}
 												/>
 											</IconButton>

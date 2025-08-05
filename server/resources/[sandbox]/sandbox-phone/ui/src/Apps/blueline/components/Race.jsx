@@ -81,7 +81,7 @@ export default ({ track, race }) => {
 				</div>
 			</div>
 			<div className={classes.arrow}>
-				<FontAwesomeIcon icon={['far', 'chevron-right']} />
+				<FontAwesomeIcon icon={['fas', 'chevron-right']} />
 			</div>
 		</div>
 	);

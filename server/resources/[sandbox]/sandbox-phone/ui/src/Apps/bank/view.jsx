@@ -321,7 +321,7 @@ export default (props) => {
 							disabled={Boolean(loading)}
 						>
 							<FontAwesomeIcon
-								icon={['far', 'file-invoice-dollar']}
+								icon={['fas', 'file-invoice-dollar']}
 							/>
 						</IconButton>
 					)}
@@ -331,7 +331,7 @@ export default (props) => {
 							disabled={Boolean(loading)}
 						>
 							<FontAwesomeIcon
-								icon={['far', 'money-bill-1-wave']}
+								icon={['fas', 'money-bill-1-wave']}
 							/>
 						</IconButton>
 					)}

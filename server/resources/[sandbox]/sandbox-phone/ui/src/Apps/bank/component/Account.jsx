@@ -148,7 +148,7 @@ export default ({ acc }) => {
 		<Tilt glareEnable>
 			<div className={classes.card} onClick={onClick}>
 				<div className={classes.branding}>
-					TISA <FontAwesomeIcon icon="pancakes" />
+					TISA <FontAwesomeIcon icon="bacon" />
 				</div>
 				<div className={classes.accountName}>{accountName}</div>
 				<div className={classes.balance}>

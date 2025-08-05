@@ -119,12 +119,12 @@ export default (props) => {
 			<Grid item xs={9} className={classes.hLeft}>
 				<FontAwesomeIcon
 					className={classes.headerIcon}
-					icon={['fad', 'signal-strong']}
+					icon={['fad', 'signal']}
 				/>
 				<FontAwesomeIcon
 					className={classes.headerIcon}
 					onClick={ToggleLock}
-					icon={['far', locked ? 'unlock' : 'floppy-disk']}
+					icon={['fas', locked ? 'unlock' : 'floppy-disk']}
 				/>
 				{limited && (
 					<FontAwesomeIcon
@@ -135,7 +135,7 @@ export default (props) => {
 				{!limited && hasState('PHONE_VPN') && (
 					<FontAwesomeIcon
 						className={`${classes.headerIcon} vpn`}
-						icon={['far', 'route-interstate']}
+						icon={['fas', 'user-secret']}
 					/>
 				)}
 				{!limited && hasState('RACE_DONGLE') && (

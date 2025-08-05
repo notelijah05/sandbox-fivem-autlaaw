@@ -306,7 +306,7 @@ export default () => {
 			actions={
 				<Fragment>
 					<IconButton onClick={() => navigate(-1)}>
-						<FontAwesomeIcon icon={['far', 'arrow-left']} />
+						<FontAwesomeIcon icon={['fas', 'arrow-left']} />
 					</IconButton>
 					{raceData?.host_id == sid &&
 						raceData.state == 0 &&
@@ -325,14 +325,14 @@ export default () => {
 								<Tooltip title="Cancel Race">
 									<IconButton onClick={cancelRace}>
 										<FontAwesomeIcon
-											icon={['far', 'xmark']}
+											icon={['fas', 'xmark']}
 										/>
 									</IconButton>
 								</Tooltip>
 								<Tooltip title="Start Race">
 									<IconButton onClick={startRace}>
 										<FontAwesomeIcon
-											icon={['far', 'play']}
+											icon={['fas', 'play']}
 										/>
 									</IconButton>
 								</Tooltip>
@@ -340,7 +340,7 @@ export default () => {
 						) : raceData?.state != 2 ? (
 							<Tooltip title="End Race">
 								<IconButton onClick={endRace}>
-									<FontAwesomeIcon icon={['far', 'ban']} />
+									<FontAwesomeIcon icon={['fas', 'ban']} />
 								</IconButton>
 							</Tooltip>
 						) : null
@@ -354,7 +354,7 @@ export default () => {
 								<Tooltip title="Join Race">
 									<IconButton onClick={joinRace}>
 										<FontAwesomeIcon
-											icon={['far', 'right-to-bracket']}
+											icon={['fas', 'right-to-bracket']}
 										/>
 									</IconButton>
 								</Tooltip>
@@ -364,7 +364,7 @@ export default () => {
 								<Tooltip title="Leave Race">
 									<IconButton onClick={leaveRace}>
 										<FontAwesomeIcon
-											icon={['far', 'right-from-bracket']}
+											icon={['fas', 'right-from-bracket']}
 										/>
 									</IconButton>
 								</Tooltip>

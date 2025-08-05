@@ -94,7 +94,7 @@ export default () => {
 						<FontAwesomeIcon icon={['far', 'envelope']} />
 					</IconButton>
 					<IconButton onClick={() => setCreating(true)}>
-						<FontAwesomeIcon icon={['far', 'plus']} />
+						<FontAwesomeIcon icon={['fas', 'plus']} />
 					</IconButton>
 				</Fragment>
 			}

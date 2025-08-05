@@ -210,7 +210,7 @@ export default connect(null, { acceptCall, endCall })((props) => {
 					disabled={callData == null}
 				>
 					<FontAwesomeIcon
-						icon={['far', 'phone-hangup']}
+						icon={['fas', 'phone-slash']}
 						style={{ fontSize: 36 }}
 					/>
 				</Button>
@@ -222,7 +222,7 @@ export default connect(null, { acceptCall, endCall })((props) => {
 						disabled={callData == null}
 					>
 						<FontAwesomeIcon
-							icon={['far', 'phone-flip']}
+							icon={['fas', 'phone-flip']}
 							style={{ fontSize: 36 }}
 						/>
 					</Button>

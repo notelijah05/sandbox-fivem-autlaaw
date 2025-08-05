@@ -98,7 +98,7 @@ export default (props) => {
 						<FontAwesomeIcon icon={['far', 'calendar-days']} />
 					</IconButton>
 					<IconButton onClick={() => navigate('/apps/blueline/new')}>
-						<FontAwesomeIcon icon={['far', 'plus']} />
+						<FontAwesomeIcon icon={['fas', 'plus']} />
 					</IconButton>
 					{Boolean(canCreate) && (
 						<IconButton

@@ -98,7 +98,7 @@ export default () => {
 				actions={
 					<Fragment>
 						<IconButton onClick={() => navigate(-1)}>
-							<FontAwesomeIcon icon={['far', 'xmark']} />
+							<FontAwesomeIcon icon={['fas', 'xmark']} />
 						</IconButton>
 						<IconButton type="submit">
 							<FontAwesomeIcon icon={['far', 'floppy-disk']} />

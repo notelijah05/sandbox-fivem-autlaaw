@@ -257,7 +257,7 @@ export default (props) => {
 						<Tooltip title="Check Credit">
 							<IconButton onClick={() => onCheckCredit()}>
 								<FontAwesomeIcon
-									icon={['fas', 'circle-dollar']}
+									icon={['fas', 'sack-dollar']}
 								/>
 							</IconButton>
 						</Tooltip>

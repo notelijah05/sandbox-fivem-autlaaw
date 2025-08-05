@@ -54,7 +54,7 @@ export default () => {
 			onClick={appNotifsClicked}
 		>
 			<div className={classes.icon}>
-				<FontAwesomeIcon icon={['fas', 'bell-on']} />
+				<FontAwesomeIcon icon={['fas', 'bell']} />
 			</div>
 			<div className={classes.label}>Application Notifications</div>
 			<div className={classes.action}>

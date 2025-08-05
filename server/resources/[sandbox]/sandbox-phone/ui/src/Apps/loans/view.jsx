@@ -20,7 +20,11 @@ import Nui from '../../util/Nui';
 import { CurrencyFormat } from '../../util/Parser';
 import { useAlert, useAppData } from '../../hooks';
 import { Modal } from '../../components';
-import { getActualRemainingAmount, getLoanIdentifierType, getNextPaymentAmount } from './utils';
+import {
+	getActualRemainingAmount,
+	getLoanIdentifierType,
+	getNextPaymentAmount,
+} from './utils';
 
 const useStyles = makeStyles((theme) => ({
 	loanInfo: {
@@ -199,7 +203,7 @@ export default (props) => {
 										onClick={() => openWeeklyPayment()}
 									>
 										<FontAwesomeIcon
-											icon={['far', 'sack-dollar']}
+											icon={['fas', 'sack-dollar']}
 										/>
 									</IconButton>
 								</span>
@@ -211,7 +215,7 @@ export default (props) => {
 										onClick={() => openWeeklyPayment()}
 									>
 										<FontAwesomeIcon
-											icon={['far', 'circle-dollar']}
+											icon={['fas', 'sack-dollar']}
 										/>
 									</IconButton>
 								</span>

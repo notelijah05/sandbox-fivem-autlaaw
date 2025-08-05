@@ -153,12 +153,12 @@ export default (props) => {
 							})
 						}
 					>
-						<FontAwesomeIcon icon={['far', 'clock-rotate-left']} />
+						<FontAwesomeIcon icon={['fas', 'clock-rotate-left']} />
 					</IconButton>
 					<IconButton
 						onClick={() => navigate('/apps/redline/tracks')}
 					>
-						<FontAwesomeIcon icon={['far', 'trophy']} />
+						<FontAwesomeIcon icon={['fas', 'trophy']} />
 					</IconButton>
 					{Object.keys(rawRaces).filter(
 						(k) =>
@@ -169,7 +169,7 @@ export default (props) => {
 						<IconButton
 							onClick={() => navigate('/apps/redline/new')}
 						>
-							<FontAwesomeIcon icon={['far', 'plus']} />
+							<FontAwesomeIcon icon={['fas', 'plus']} />
 						</IconButton>
 					)}
 					{Boolean(canCreate) && (

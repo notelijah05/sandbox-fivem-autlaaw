@@ -720,16 +720,16 @@ export default (props) => {
 			appId="homemanage"
 			actions={
 				<Fragment>
-					{Boolean(isValid) && <Tooltip title="Go Back">
-						<IconButton
-							onClick={onBack}
-							className={classes.headerAction}
-						>
-							<FontAwesomeIcon
-								icon={['fas', 'house']}
-							/>
-						</IconButton>
-					</Tooltip>}
+					{Boolean(isValid) && (
+						<Tooltip title="Go Back">
+							<IconButton
+								onClick={onBack}
+								className={classes.headerAction}
+							>
+								<FontAwesomeIcon icon={['fas', 'house']} />
+							</IconButton>
+						</Tooltip>
+					)}
 					{Boolean(isValid) && (
 						<>
 							{Boolean(myKey) && !myKey.Owner && (
@@ -740,7 +740,7 @@ export default (props) => {
 										className={classes.headerAction}
 									>
 										<FontAwesomeIcon
-											icon={['fas', 'trash-can-xmark']}
+											icon={['fas', 'trash-can']}
 										/>
 									</IconButton>
 								</Tooltip>

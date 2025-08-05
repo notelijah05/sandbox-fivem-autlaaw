@@ -214,7 +214,7 @@ export default connect(null, { ReadEmail, DeleteEmail, GPSRoute, Hyperlink })(
 							<div className={classes.expireBanner}>
 								<FontAwesomeIcon
 									className="before"
-									icon={['far', 'hexagon-exclamation']}
+									icon={['fas', 'triangle-exclamation']}
 								/>
 								<span>
 									Email expires{' '}
@@ -228,7 +228,7 @@ export default connect(null, { ReadEmail, DeleteEmail, GPSRoute, Hyperlink })(
 								</span>
 								<FontAwesomeIcon
 									className="after"
-									icon={['far', 'hexagon-exclamation']}
+									icon={['fas', 'triangle-exclamation']}
 								/>
 							</div>
 						)}

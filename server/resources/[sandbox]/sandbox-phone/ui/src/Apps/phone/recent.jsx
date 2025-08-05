@@ -34,7 +34,7 @@ export default (props) => {
 			actions={
 				<Fragment>
 					<IconButton onClick={() => navigate('/apps/phone')}>
-						<FontAwesomeIcon icon={['far', 'phone']} />
+						<FontAwesomeIcon icon={['fas', 'phone']} />
 					</IconButton>
 				</Fragment>
 			}

@@ -48,11 +48,11 @@ const useStyles = makeStyles((theme) => ({
 			color: theme.palette.text.alt,
 		},
 	},
-    actions: {
-        width: 30,
-        textAlign: 'center',
-        lineHeight: '45px',
-    }
+	actions: {
+		width: 30,
+		textAlign: 'center',
+		lineHeight: '45px',
+	},
 }));
 
 export default ({ contact, onClick }) => {
@@ -87,7 +87,7 @@ export default ({ contact, onClick }) => {
 				</div>
 			</Tooltip>
 			<div className={classes.actions}>
-				<FontAwesomeIcon icon={['far', 'chevron-right']} />
+				<FontAwesomeIcon icon={['fas', 'chevron-right']} />
 			</div>
 		</div>
 	);

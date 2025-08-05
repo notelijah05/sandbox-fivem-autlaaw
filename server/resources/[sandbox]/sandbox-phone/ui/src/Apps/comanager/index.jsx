@@ -5,7 +5,6 @@ import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router';
 import { throttle } from 'lodash';
 
-
 import { AppContainer, Loader } from '../../components';
 import Nui from '../../util/Nui';
 import { useAlert, useJobPermissions } from '../../hooks';
@@ -161,7 +160,10 @@ export default (props) => {
 					{(player.Jobs && player.Jobs.length) > 0 ? (
 						<List className={classes.list}>
 							{player.Jobs.map((job) => {
-								if (!externalJobs.includes(job.Id)) {
+								if (
+									!externalJobs ||
+									!externalJobs.includes(job.Id)
+								) {
 									return (
 										<ListItem
 											button

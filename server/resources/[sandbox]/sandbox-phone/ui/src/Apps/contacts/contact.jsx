@@ -137,13 +137,13 @@ export default ({ contact, onDelete }) => {
 			</Tooltip>
 			<div className={classes.actions}>
 				<IconButton onClick={callContact}>
-					<FontAwesomeIcon icon={['far', 'phone']} />
+					<FontAwesomeIcon icon={['fas', 'phone']} />
 				</IconButton>
 				<IconButton onClick={textContact}>
-					<FontAwesomeIcon icon={['far', 'message-sms']} />
+					<FontAwesomeIcon icon={['fas', 'message']} />
 				</IconButton>
 				<IconButton onClick={viewContact}>
-					<FontAwesomeIcon icon={['far', 'eye']} />
+					<FontAwesomeIcon icon={['fas', 'eye']} />
 				</IconButton>
 			</div>
 		</div>
@@ -214,7 +214,7 @@ export default ({ contact, onDelete }) => {
 							className={classes.expandoItem}
 							onClick={textContact}
 						>
-							<FontAwesomeIcon icon="message-sms" />
+							<FontAwesomeIcon icon="message" />
 						</Grid>
 						<Grid
 							item

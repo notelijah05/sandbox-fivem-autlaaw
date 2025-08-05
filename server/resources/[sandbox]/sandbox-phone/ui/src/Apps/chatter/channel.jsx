@@ -478,7 +478,7 @@ export default () => {
 								type="submit"
 								className={classes.sendBtn}
 							>
-								<FontAwesomeIcon icon="send" />
+								<FontAwesomeIcon icon="share" />
 							</IconButton>
 						</form>
 					</div>

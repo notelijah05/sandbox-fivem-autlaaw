@@ -33,7 +33,7 @@ export default ({ document }) => {
 			{Boolean(document.signature_required) &&
 				!Boolean(document.signed) && (
 					<ListItemSecondaryAction>
-						<FontAwesomeIcon icon={['far', 'signature']} />
+						<FontAwesomeIcon icon={['fas', 'signature']} />
 					</ListItemSecondaryAction>
 				)}
 		</ListItemButton>

@@ -189,12 +189,12 @@ export default (props) => {
 				<Fragment>
 					{!Boolean(createState) ? (
 						<IconButton onClick={onCreate}>
-							<FontAwesomeIcon icon={['far', 'plus']} />
+							<FontAwesomeIcon icon={['fas', 'plus']} />
 						</IconButton>
 					) : (
 						<Fragment>
 							<IconButton onClick={onCancel}>
-								<FontAwesomeIcon icon={['far', 'xmark']} />
+								<FontAwesomeIcon icon={['fas', 'xmark']} />
 							</IconButton>
 							<IconButton onClick={() => setSaving(true)}>
 								<FontAwesomeIcon

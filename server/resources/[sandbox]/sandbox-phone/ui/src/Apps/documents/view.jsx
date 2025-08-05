@@ -309,7 +309,7 @@ export default (props) => {
 									>
 										<FontAwesomeIcon
 											className={'fa'}
-											icon={['fas', 'trash-can-xmark']}
+											icon={['fas', 'trash-can']}
 										/>
 									</IconButton>
 								</span>

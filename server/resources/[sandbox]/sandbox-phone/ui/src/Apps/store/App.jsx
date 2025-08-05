@@ -105,7 +105,7 @@ export default connect(null, { install, uninstall })((props) => {
 									!props.app.canUninstall
 								}
 							>
-								<FontAwesomeIcon icon={['far', 'x']} />
+								<FontAwesomeIcon icon={['fas', 'x']} />
 							</IconButton>
 						) : (
 							<IconButton
@@ -116,7 +116,7 @@ export default connect(null, { install, uninstall })((props) => {
 									installFailed
 								}
 							>
-								<FontAwesomeIcon icon={['far', 'check']} />
+								<FontAwesomeIcon icon={['fas', 'check']} />
 							</IconButton>
 						)}
 					</div>
