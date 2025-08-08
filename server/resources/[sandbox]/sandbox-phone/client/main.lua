@@ -170,7 +170,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		for k, v in ipairs(_payphones) do
 			Targeting:AddObject(v, "phone-rotary", {
 				{
-					icon = "phone-plus",
+					icon = "phone-volume",
 					text = "Use Payphone",
 					event = "Phone:Client:Payphone",
 					minDist = 2.0,
