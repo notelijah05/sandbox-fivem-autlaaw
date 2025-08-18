@@ -330,14 +330,19 @@ _customsConfig.hornList = {
 }
 
 _customsConfig.wheelTypes = {
-	{ label = "Sport",      value = 0 },
-	{ label = "Muscle",     value = 1 },
-	{ label = "Lowrider",   value = 2 },
-	{ label = "SUV",        value = 3 },
-	{ label = "Offroad",    value = 4 },
-	{ label = "Tuner",      value = 5 },
-	{ label = "Motorcycle", value = 6 },
-	{ label = "Highend",    value = 7 },
+	{ label = "Sport",            value = 0 },
+	{ label = "Muscle",           value = 1 },
+	{ label = "Lowrider",         value = 2 },
+	{ label = "SUV",              value = 3 },
+	{ label = "Offroad",          value = 4 },
+	{ label = "Tuner",            value = 5 },
+	{ label = "Motorcycle",       value = 6 },
+	{ label = "Highend",          value = 7 },
+	{ label = "Benny's Original", value = 8 },
+	{ label = "Benny's Bespoke",  value = 9 },
+	{ label = "Open Wheel",       value = 10 },
+	{ label = "Street",           value = 11 },
+	{ label = "Track",            value = 12 },
 }
 
 _customsConfig.allColors = {
