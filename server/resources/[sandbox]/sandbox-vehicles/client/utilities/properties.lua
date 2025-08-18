@@ -116,6 +116,7 @@ function GetVehicleProperties(vehicle, initSetup)
 				trimB = GetVehicleMod(vehicle, 44),
 				tank = GetVehicleMod(vehicle, 45),
 				windows = GetVehicleMod(vehicle, 46),
+				lightbar = GetVehicleMod(vehicle, 49),
 			},
 		}
 	else
@@ -390,6 +391,9 @@ function SetVehicleProperties(vehicle, props, data)
 			end
 			if props.mods.windows then
 				SetVehicleMod(vehicle, 46, props.mods.windows, false)
+			end
+			if props.mods.lightbar then
+				SetVehicleMod(vehicle, 49, props.mods.lightbar, false)
 			end
 		end
 
