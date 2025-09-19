@@ -2,7 +2,6 @@ EDITING_VEHICLE = nil
 
 AddEventHandler('Fitment:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
-    Game = exports['sandbox-base']:FetchComponent('Game')
     Targeting = exports['sandbox-base']:FetchComponent('Targeting')
     Animations = exports['sandbox-base']:FetchComponent('Animations')
     Notification = exports['sandbox-base']:FetchComponent('Notification')
@@ -21,7 +20,6 @@ end
 
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Fitment', {
-        'Game',
         'Menu',
         'Targeting',
         'Notification',

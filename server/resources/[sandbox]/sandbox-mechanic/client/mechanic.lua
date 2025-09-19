@@ -2,7 +2,6 @@ _repairingVehicle = false
 
 AddEventHandler("Mechanic:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -18,7 +17,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Mechanic", {
-		"Game",
 		"Menu",
 		"Mechanic",
 		"Targeting",

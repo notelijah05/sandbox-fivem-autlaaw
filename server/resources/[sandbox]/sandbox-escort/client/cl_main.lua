@@ -2,7 +2,6 @@ local _timeout = false
 
 AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Stream = exports["sandbox-base"]:FetchComponent("Stream")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
@@ -15,7 +14,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
-		"Game",
 		"Stream",
 		"Keybinds",
 		"Notification",

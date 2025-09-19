@@ -19,7 +19,6 @@ function RetrieveComponents()
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
-	Game = exports["sandbox-base"]:FetchComponent("Game")
 	NetSync = exports["sandbox-base"]:FetchComponent("NetSync")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Lasers = exports["sandbox-base"]:FetchComponent("Lasers")
@@ -46,7 +45,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Doors",
 		"ListMenu",
 		"Input",
-		"Game",
 		"NetSync",
 		"Damage",
 		"Lasers",

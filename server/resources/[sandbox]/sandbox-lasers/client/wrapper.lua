@@ -24,13 +24,11 @@ end
 
 AddEventHandler("Lasers:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Lasers = exports["sandbox-base"]:FetchComponent("Lasers")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Lasers", {
-		"Game",
 		"Lasers",
 	}, function(error)
 		if #error > 0 then

@@ -1,15 +1,10 @@
-Callbacks = nil
-Game = nil
-
 AddEventHandler("Commands:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Commands", {
-		"Game",
 		"Notification",
 	}, function(error)
 		if #error > 0 then

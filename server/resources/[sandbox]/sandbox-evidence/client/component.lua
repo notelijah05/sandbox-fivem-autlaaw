@@ -14,7 +14,6 @@ _ammoNames = {
 
 AddEventHandler("Evidence:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -33,7 +32,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Evidence", {
-		"Game",
 		"Menu",
 		"Targeting",
 		"Notification",

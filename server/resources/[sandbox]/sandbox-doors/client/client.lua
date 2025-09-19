@@ -15,7 +15,6 @@ DOORS_PERMISSION_CACHE = {}
 
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
@@ -33,7 +32,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Game",
 		"Menu",
 		"Notification",
 		"Action",

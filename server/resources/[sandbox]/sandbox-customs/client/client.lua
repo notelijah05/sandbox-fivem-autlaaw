@@ -12,7 +12,6 @@ local showingAction = false
 AddEventHandler("VehicleCustoms:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -29,7 +28,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VehicleCustoms", {
 		"Notification",
-		"Game",
 		"Action",
 		"Progress",
 		"Vehicles",

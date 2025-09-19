@@ -13,7 +13,6 @@ AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -53,7 +52,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
 		"Notification",
 		"Animations",
-		"Game",
 		"Action",
 		"Progress",
 		"Vehicles",
