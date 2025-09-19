@@ -183,11 +183,11 @@ function RegisterPrisonSearchStartup()
 	GlobalState.JailSearchLocations = _jailSearchableLocs[_jailSearchDays[tostring(os.date("%w"))]]
 
 	Reputation:Create(_repName, "PrisonSearchRep", {
-		{ label = "Rank 1", value = 500 },
-		{ label = "Rank 2", value = 1000 },
-		{ label = "Rank 3", value = 2500 },
-		{ label = "Rank 4", value = 4000 },
-		{ label = "Rank 5", value = 5000 },
+		{ label = "Rank 1",   value = 500 },
+		{ label = "Rank 2",   value = 1000 },
+		{ label = "Rank 3",   value = 2500 },
+		{ label = "Rank 4",   value = 4000 },
+		{ label = "Rank 5",   value = 5000 },
 		{ label = "Pls Stop", value = 7500 },
 	}, 1) -- hidden rep
 
@@ -197,7 +197,7 @@ function RegisterPrisonSearchStartup()
 			cb(false)
 			return
 		end
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char then
 			local _PlayerRep = Reputation:GetLevel(source, _repName) or 0

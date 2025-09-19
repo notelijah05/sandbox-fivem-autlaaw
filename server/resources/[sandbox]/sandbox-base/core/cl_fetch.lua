@@ -1,12 +1,10 @@
-COMPONENTS.Fetch = {
-    _required = { 'Player' },
-    _name = 'base',
-}
-
-function COMPONENTS.Fetch.Player(self)
+local function GetPlayer()
     return COMPONENTS.Player.LocalPlayer
 end
 
-function COMPONENTS.Fetch.Character(self)
+local function GetCharacter()
     return COMPONENTS.Player.LocalPlayer:GetData('Character')
 end
+
+exports('FetchPlayer', GetPlayer)
+exports('FetchCharacter', GetCharacter)

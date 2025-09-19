@@ -162,12 +162,12 @@ end
 
 local _lbUpperLoot = {
 	{ 98, { name = "moneyband", min = 80, max = 90 } },
-	{ 2, { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 65000, Random = 15000 } } } },
+	{ 2,  { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 65000, Random = 15000 } } } },
 }
 
 local _lbLoot = {
 	{ 98, { name = "moneyband", min = 55, max = 75 } },
-	{ 2, { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 450000, Random = 15000 } } } },
+	{ 2,  { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 450000, Random = 15000 } } } },
 }
 
 _lbAlerted = false
@@ -181,7 +181,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	StartLombankThreads()
 
 	Callbacks:RegisterServerCallback("Robbery:Lombank:SecureBank", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if Player(source).state.onDuty == "police" then
 				SecureLombank()
@@ -190,18 +190,18 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Lombank:Vault:StartLootTrolley", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inLombank then
 			if
 				GlobalState[string.format(
-						"Lombank:VaultRoom:%s:%s:%s",
-						pState.lombankRoom,
-						math.ceil(data.coords.x),
-						math.ceil(data.coords.y)
-					)]
-					== nil
+					"Lombank:VaultRoom:%s:%s:%s",
+					pState.lombankRoom,
+					math.ceil(data.coords.x),
+					math.ceil(data.coords.y)
+				)]
+				== nil
 				and not _lbInUse.carts[string.format("%s-%s", math.ceil(data.coords.x), math.ceil(data.coords.y))]
 				and not Doors:IsLocked(lbThermPoints[string.format("lowerVaultRoom%s", pState.lombankRoom)].door)
 			then
@@ -234,18 +234,18 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Lombank:Vault:FinishLootTrolley", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inLombank then
 			if
 				GlobalState[string.format(
-						"Lombank:VaultRoom:%s:%s:%s",
-						pState.lombankRoom,
-						math.ceil(data.coords.x),
-						math.ceil(data.coords.y)
-					)]
-					== nil
+					"Lombank:VaultRoom:%s:%s:%s",
+					pState.lombankRoom,
+					math.ceil(data.coords.x),
+					math.ceil(data.coords.y)
+				)]
+				== nil
 				and _lbInUse.carts[string.format("%s-%s", math.ceil(data.coords.x), math.ceil(data.coords.y))] == source
 				and not Doors:IsLocked(lbThermPoints[string.format("lowerVaultRoom%s", pState.lombankRoom)].door)
 			then
@@ -292,7 +292,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Lombank:ElectricBox:Hack", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -487,7 +487,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Lombank:ElectricBox:Thermite", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -698,7 +698,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Lombank:Drill", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(

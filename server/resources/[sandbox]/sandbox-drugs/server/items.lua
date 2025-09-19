@@ -18,7 +18,7 @@ function RegisterItemUse()
 	end)
 
 	Inventory.Items:RegisterUse("adrenaline", "DrugShit", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if _effectCds.adrenaline[char:GetData("SID")] == nil or os.time() > _effectCds.adrenaline[char:GetData("SID")] then
 				_effectCds.adrenaline[char:GetData("SID")] = os.time() + (60 * 1)
@@ -27,7 +27,7 @@ function RegisterItemUse()
 						if s then
 							TriggerClientEvent("Drugs:Effects:Armor", source, 100)
 						end
-					end)	
+					end)
 				end
 			else
 				Execute:Client(source, "Notification", "Error", "Cannot Use That Yet")
@@ -36,7 +36,7 @@ function RegisterItemUse()
 	end)
 
 	Inventory.Items:RegisterUse("meth_pipe", "DrugShit", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if _effectCds.meth[char:GetData("SID")] == nil or os.time() > _effectCds.meth[char:GetData("SID")] then
 				local methItem = Inventory.Items:GetFirst(char:GetData("SID"), "meth_bag", 1)
@@ -66,7 +66,7 @@ function RegisterItemUse()
 	end)
 
 	Inventory.Items:RegisterUse("meth_brick", "DrugShit", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if os.time() >= slot.MetaData.Finished then
 			if Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
 				Inventory:AddItem(
@@ -90,7 +90,7 @@ function RegisterItemUse()
 	end)
 
 	-- Inventory.Items:RegisterUse("meth_bag", "DrugShit", function(source, slot, itemData)
-	-- 	local plyr = Fetch:Source(source)
+	-- 	local plyr = exports['sandbox-base']:FetchSource(source)
 	-- 	if plyr ~= nil then
 	-- 		local char = plyr:GetData("Character")
 	-- 		if char ~= nil then
@@ -112,7 +112,7 @@ function RegisterItemUse()
 	-- end)
 
 	Inventory.Items:RegisterUse("coke_brick", "DrugShit", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
 			Inventory:AddItem(
 				char:GetData("SID"),
@@ -132,7 +132,7 @@ function RegisterItemUse()
 	end)
 
 	Inventory.Items:RegisterUse("coke_bag", "DrugShit", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if _effectCds.coke[char:GetData("SID")] == nil or os.time() > _effectCds.coke[char:GetData("SID")] then
 				_effectCds.coke[char:GetData("SID")] = os.time() + (60 * 3)
@@ -151,7 +151,7 @@ function RegisterItemUse()
 	end)
 
 	Inventory.Items:RegisterUse("moonshine", "DrugShit", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if _effectCds.coke[char:GetData("SID")] == nil or os.time() > _effectCds.coke[char:GetData("SID")] then
 				_effectCds.coke[char:GetData("SID")] = os.time() + (60 * 3)

@@ -11,7 +11,6 @@ function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Loot = exports["sandbox-base"]:FetchComponent("Loot")
 end
@@ -20,33 +19,33 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Xmas", {
 		"Database",
 		"Callbacks",
-        "Middleware",
+		"Middleware",
 		"Logger",
 		"Utils",
 		"Chat",
-		"Fetch",
 		"Inventory",
 		"Loot",
 	}, function(error)
 		if #error > 0 then
 			return
 		end -- Do something to handle if not all dependencies loaded
-        
-        RetrieveComponents()
-        RegisterCommands()
-        RegisterCallbacks()
+
+		RetrieveComponents()
+		RegisterCommands()
+		RegisterCallbacks()
 		RegisterItems()
-        Startup()
+		Startup()
 		StartThreading()
-        
-        Middleware:Add("Characters:Spawning", function(source)
+
+		Middleware:Add("Characters:Spawning", function(source)
 			if _currentDate.month == XMAS_MONTH then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					local sid = char:GetData("SID")
-					TriggerClientEvent("Xmas:Client:Init", source, _currentDate.day, _currentTree, _treeLooted[sid] ~= nil)
+					TriggerClientEvent("Xmas:Client:Init", source, _currentDate.day, _currentTree,
+						_treeLooted[sid] ~= nil)
 				end
 			end
-        end, 2)
+		end, 2)
 	end)
 end)

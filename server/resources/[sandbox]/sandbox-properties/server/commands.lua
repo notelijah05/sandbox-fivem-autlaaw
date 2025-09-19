@@ -247,9 +247,9 @@ function RegisterChatCommands()
 	}, 3)
 
 	Chat:RegisterAdminCommand("ownproperty", function(source, args, rawCommand)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		if player.Permissions:GetLevel() >= 100 then
-			local char = Fetch:SID(tonumber(args[1]))
+			local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 			if char then
 				if _properties[args[2]] then
 					if
@@ -285,7 +285,7 @@ function RegisterChatCommands()
 	}, 2)
 
 	Chat:RegisterAdminCommand("unownproperty", function(source, args, rawCommand)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		if player.Permissions:GetLevel() >= 100 then
 			if _properties[args[1]] then
 				if Properties.Commerce:Sell(args[1]) then
@@ -308,7 +308,7 @@ function RegisterChatCommands()
 	}, 1)
 
 	Chat:RegisterAdminCommand("forecloseproperty", function(source, args, rawCommand)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		if player.Permissions:GetLevel() >= 100 then
 			if _properties[args[1]] then
 				if args[2] == "1" then

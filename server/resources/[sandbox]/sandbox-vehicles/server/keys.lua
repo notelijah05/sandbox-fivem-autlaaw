@@ -12,7 +12,7 @@ end)
 _vehKeys = {
 	Keys = {
 		Has = function(self, source, VIN, groupKeys)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local id = char:GetData('SID')
 				if VEHICLE_KEYS[id] == nil then
@@ -23,19 +23,19 @@ _vehKeys = {
 			return false
 		end,
 		Add = function(self, source, VIN)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local id = char:GetData('SID')
 				if VEHICLE_KEYS[id] == nil then
 					VEHICLE_KEYS[id] = {}
 				end
 				VEHICLE_KEYS[id][VIN] = true
-	
+
 				TriggerClientEvent("Vehicles:Client:UpdateKeys", source, VEHICLE_KEYS[id])
 			end
 		end,
 		Remove = function(self, source, VIN)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local id = char:GetData('SID')
 				if VEHICLE_KEYS[id] == nil then
@@ -55,7 +55,7 @@ _vehKeys = {
 
 			VEHICLE_KEYS[SID][VIN] = true
 
-			local char = Fetch:SID(SID)
+			local char = exports['sandbox-characters']:FetchBySID(SID)
 			if char then
 				TriggerClientEvent('Vehicles:Client:UpdateKeys', char:GetData('Source'), VEHICLE_KEYS[SID])
 			end

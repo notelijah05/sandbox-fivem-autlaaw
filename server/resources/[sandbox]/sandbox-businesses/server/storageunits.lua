@@ -37,14 +37,14 @@ AddEventHandler("Businesses:Server:Startup", function()
     }, 3)
 
     Chat:RegisterAdminCommand("unitcopy", function(source, args, rawCommand)
-		local near = StorageUnits:GetNearUnit(source)
-		if near?.unitId then
-			Execute:Client(source, "Admin", "CopyClipboard", near?.unitId)
-			Execute:Client(source, "Notification", "Success", "Copied Storage Unit ID")
-		end
-	end, {
-		help = "[Dev] Copy ID of Closest Storage Unit",
-	}, 0)
+        local near = StorageUnits:GetNearUnit(source)
+        if near?.unitId then
+            Execute:Client(source, "Admin", "CopyClipboard", near?.unitId)
+            Execute:Client(source, "Notification", "Success", "Copied Storage Unit ID")
+        end
+    end, {
+        help = "[Dev] Copy ID of Closest Storage Unit",
+    }, 0)
 
     Chat:RegisterAdminCommand("unitdelete", function(source, args, rawCommand)
         local res = StorageUnits:Delete(args[1])
@@ -62,20 +62,20 @@ AddEventHandler("Businesses:Server:Startup", function()
     }, 1)
 
     Chat:RegisterAdminCommand("unitown", function(source, args, rawCommand)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local unit = GlobalState[string.format("StorageUnit:%s", args[1])]
         if char and unit then
             if StorageUnits:Sell(args[1], {
-                First = char:GetData("First"),
-                Last = char:GetData("Last"),
-                SID = char:GetData("SID"),
-                ID = char:GetData("ID"),
-            }, {
-                First = char:GetData("First"),
-                Last = char:GetData("Last"),
-                SID = char:GetData("SID"),
-                ID = char:GetData("ID"),
-            }) then
+                    First = char:GetData("First"),
+                    Last = char:GetData("Last"),
+                    SID = char:GetData("SID"),
+                    ID = char:GetData("ID"),
+                }, {
+                    First = char:GetData("First"),
+                    Last = char:GetData("Last"),
+                    SID = char:GetData("SID"),
+                    ID = char:GetData("ID"),
+                }) then
                 Chat.Send.Server:Single(source, "Storage Unit Owned")
             else
                 Chat.Send.Server:Single(source, "Error")
@@ -117,27 +117,27 @@ AddEventHandler("Businesses:Server:Startup", function()
     end)
 
     Callbacks:RegisterServerCallback("StorageUnits:SellUnit", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data.unit and data.SID then
             local unit = GlobalState[string.format("StorageUnit:%s", data.unit)]
             if unit and Jobs.Permissions:HasJob(source, unit.managedBy, false, false, false, false, "UNIT_SELL") then
-                local target = Fetch:SID(data.SID)
+                local target = exports['sandbox-characters']:FetchBySID(data.SID)
                 if target then
                     local myCoords = GetEntityCoords(GetPlayerPed(source))
                     local targetCoords = GetEntityCoords(GetPlayerPed(target:GetData("Source")))
 
                     if #(myCoords - targetCoords) <= 3.0 then
                         if StorageUnits:Sell(data.unit, {
-                            First = target:GetData("First"),
-                            Last = target:GetData("Last"),
-                            SID = target:GetData("SID"),
-                            ID = target:GetData("ID"),
-                        }, {
-                            First = char:GetData("First"),
-                            Last = char:GetData("Last"),
-                            SID = char:GetData("SID"),
-                            ID = char:GetData("ID"),
-                        }) then
+                                First = target:GetData("First"),
+                                Last = target:GetData("Last"),
+                                SID = target:GetData("SID"),
+                                ID = target:GetData("ID"),
+                            }, {
+                                First = char:GetData("First"),
+                                Last = char:GetData("Last"),
+                                SID = char:GetData("SID"),
+                                ID = char:GetData("ID"),
+                            }) then
                             return cb(true)
                         else
                             return cb(false)
@@ -153,7 +153,7 @@ AddEventHandler("Businesses:Server:Startup", function()
     end)
 
     Callbacks:RegisterServerCallback("StorageUnits:ChangePasscode", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data.unit and data.passcode then
             local unit = GlobalState[string.format("StorageUnit:%s", data.unit)]
 
@@ -168,7 +168,7 @@ AddEventHandler("Businesses:Server:Startup", function()
     end)
 
     Callbacks:RegisterServerCallback("StorageUnits:PoliceRaid", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and data.unit then
             local unit = GlobalState[string.format("StorageUnit:%s", data.unit)]
             if unit then
@@ -425,7 +425,7 @@ _STORAGEUNITS = {
 }
 
 AddEventHandler("Proxy:Shared:RegisterReady", function(component)
-	exports["sandbox-base"]:RegisterComponent("StorageUnits", _STORAGEUNITS)
+    exports["sandbox-base"]:RegisterComponent("StorageUnits", _STORAGEUNITS)
 end)
 
 function FormatStorageUnit(data)
@@ -453,5 +453,5 @@ function SaveStorageUnitLastAccess()
 end
 
 AddEventHandler("Core:Server:ForceSave", function()
-	SaveStorageUnitLastAccess()
+    SaveStorageUnitLastAccess()
 end)

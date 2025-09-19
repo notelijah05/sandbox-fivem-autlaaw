@@ -43,7 +43,7 @@ COMPONENTS.Discord = {
 
 CreateThread(function()
 	while true do
-		GlobalState["PlayerCount"] = COMPONENTS.Fetch:Count()
+		GlobalState["PlayerCount"] = exports['sandbox-base']:FetchCount()
 		Wait(30000)
 	end
 end)

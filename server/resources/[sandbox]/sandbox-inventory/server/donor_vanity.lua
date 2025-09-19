@@ -1,6 +1,6 @@
 function RegisterDonorVanityItemsCallbacks()
 	Callbacks:RegisterServerCallback("Inventory:DonorSales:GetPending", function(source, data, cb)
-		local plyr = Fetch:Source(source)
+		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
 			local pending = Inventory.Donator:GetPending(plyr:GetData("Identifier"), true)
 			local mainMenuItems = {}
@@ -36,10 +36,10 @@ function RegisterDonorVanityItemsCallbacks()
 		cb(false)
 	end)
 	Callbacks:RegisterServerCallback("Inventory:DonorSales:SubmitVanityItem", function(source, data, cb)
-		local plyr = Fetch:Source(source)
+		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
-			local char = Fetch:CharacterSource(source)
-			
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+
 			local label = data.vanity_item_label
 			local description = data.vanity_item_description
 			local image = data.vanity_item_image
@@ -113,7 +113,7 @@ function RegisterDonorVanityItemsCallbacks()
 		cb(false)
 	end)
 	Callbacks:RegisterServerCallback("Inventory:DonorSales:GetTokens", function(source, data, cb)
-		local plyr = Fetch:Source(source)
+		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
 			local res = Inventory.Donator:GetPending(plyr:GetData("Identifier"))
 			cb({ available = #res or 0 })
@@ -257,7 +257,7 @@ function TebexAddVanityItem(source, args)
 		})
 		return
 	end
-	local player = Fetch:Source(sid)
+	local player = exports['sandbox-base']:FetchSource(sid)
 	if player then
 		local license = player:GetData("Identifier")
 		if license then
@@ -270,4 +270,5 @@ function TebexAddVanityItem(source, args)
 		end
 	end
 end
+
 RegisterCommand("tebexaddvanityitem", TebexAddVanityItem, true)

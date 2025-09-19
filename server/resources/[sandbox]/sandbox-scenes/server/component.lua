@@ -7,7 +7,6 @@ _spamCheck = {}
 
 AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
@@ -25,7 +24,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Scenes", {
-		"Fetch",
 		"Utils",
 		"Execute",
 		"Chat",
@@ -50,7 +48,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		StartExpirationThread()
 
 		Callbacks:RegisterServerCallback("Scenes:Create", function(source, data, cb)
-			local player = Fetch:Source(source)
+			local player = exports['sandbox-base']:FetchSource(source)
 			local timeStamp = GetGameTimer()
 
 			if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
@@ -67,7 +65,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Scenes:Delete", function(source, sceneId, cb)
-			local player = Fetch:Source(source)
+			local player = exports['sandbox-base']:FetchSource(source)
 			local scene = _loadedScenes[sceneId]
 			local timeStamp = GetGameTimer()
 
@@ -89,7 +87,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Scenes:CanEdit", function(source, sceneId, cb)
-			local player = Fetch:Source(source)
+			local player = exports['sandbox-base']:FetchSource(source)
 			local scene = _loadedScenes[sceneId]
 			local timeStamp = GetGameTimer()
 
@@ -111,7 +109,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Scenes:Edit", function(source, data, cb)
-			local player = Fetch:Source(source)
+			local player = exports['sandbox-base']:FetchSource(source)
 			local scene = _loadedScenes[data.id]
 			local timeStamp = GetGameTimer()
 

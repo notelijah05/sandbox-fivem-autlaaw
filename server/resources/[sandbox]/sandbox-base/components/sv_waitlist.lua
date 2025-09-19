@@ -130,7 +130,7 @@ COMPONENTS.WaitList = {
 	PrintQueue = function(self, id)
 		if _queues[id] ~= nil then
 			for k, v in ipairs(_queues[id].queue) do
-				local char = COMPONENTS.Fetch:CharacterSource(v.source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(v.source)
 				if char ~= nil then
 					print(
 						string.format(

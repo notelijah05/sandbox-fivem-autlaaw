@@ -50,7 +50,7 @@ function RegisterCallbacks()
 	}, 0)
 
 	-- Chat:RegisterAdminCommand("pwnzorban", function(source, args, rawCommand)
-	-- 	local player = Fetch:SID(tonumber(args[1]))
+	-- 	local player = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 	-- 	if player ~= nil then
 	-- 		Punishment.Ban:Source(player:GetData("Source"), -1, args[2], "Pwnzor")
 	-- 	end
@@ -69,7 +69,7 @@ function RegisterCallbacks()
 	-- }, 2)
 
 	-- Chat:RegisterAdminCommand("pwnzorsource", function(source, args, rawCommand)
-	-- 	local player = Fetch:Source(tonumber(args[1]))
+	-- 	local player = exports['sandbox-base']:FetchSource(tonumber(args[1]))
 	-- 	if player ~= nil then
 	-- 		Punishment.Ban:Source(tonumber(args[1]), -1, args[2], "Pwnzor")
 	-- 	end
@@ -92,7 +92,7 @@ function RegisterCallbacks()
 			Pwnzor.Players:Set(source, "GetEvents")
 			cb(_blacklistedClientEvents)
 		else
-			if not Fetch:Source(source).Permissions:IsAdmin() then
+			if not exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
 				Punishment.Ban:Source(source, -1, "Attempt To Recall GetEvents", "Pwnzor")
 			end
 		end
@@ -103,7 +103,7 @@ function RegisterCallbacks()
 			Pwnzor.Players:Set(source, "GetCommands")
 			cb(_blacklistedCommands)
 		else
-			if not Fetch:Source(source).Permissions:IsAdmin() then
+			if not exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
 				Punishment.Ban:Source(source, -1, "Attempt To Recall GetCommands", "Pwnzor")
 			end
 		end
@@ -119,7 +119,7 @@ function RegisterCallbacks()
 
 	Callbacks:RegisterServerCallback("Pwnzor:FOV", function(source, data, cb)
 		if Config.Components.FOV.Enabled then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local fov = data.fov
 			if char then
 				if not _fovScreenshotLast[source] or (GetGameTimer() - _fovScreenshotLast[source]) > 30000 then
@@ -160,7 +160,7 @@ function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Pwnzor:AspectRatio", function(source, data, cb)
 		if Config.Components.AspectRatio.Enabled then
 			local src = source
-			local char = Fetch:CharacterSource(src)
+			local char = exports['sandbox-characters']:FetchCharacterSource(src)
 			if char then
 				Pwnzor:Screenshot(char:GetData("SID"), "Detected Unusual Resolution")
 
@@ -195,7 +195,7 @@ function RegisterCallbacks()
 
 	Callbacks:RegisterServerCallback("Pwnzor:Trigger", function(source, data, cb)
 		cb("💙 From Pwnzor 🙂")
-		if not Fetch:Source(source).Permissions:IsAdmin() then
+		if not exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
 			Logger:Info(
 				"Pwnzor",
 				string.format("Pwnzor Trigger For %s: %s (check) %s (match)", source, data.check, data.match),

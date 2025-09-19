@@ -19,14 +19,14 @@ PHONE.Twitter = {
 		}
 
 		table.insert(_tweets, data)
-		
+
 		TriggerClientEvent("Phone:Client:Twitter:Notify", -1, data)
 		return true
 	end,
 }
 
 -- AddEventHandler("Phone:Server:AliasUpdated", function(src)
--- 	local char = Fetch:CharacterSource(src)
+-- 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 -- 	local sid = char:GetData("SID")
 -- 	for k, v in ipairs(_tweets) do
 -- 		if v.SID == sid then
@@ -62,13 +62,15 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	Middleware:Add("Phone:CreateProfiles", function(source, cData)
 		local name = string.format("%s%s%s", cData.First, cData.Last, cData.SID)
 
-		local id = MySQL.insert.await("INSERT INTO character_app_profiles (sid, app, name, picture, meta) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name), picture = VALUES(picture), meta = VALUES(meta)", {
-			cData.SID,
-			"twitter",
-			name,
-			nil,
-			'{}',
-		})
+		local id = MySQL.insert.await(
+		"INSERT INTO character_app_profiles (sid, app, name, picture, meta) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name), picture = VALUES(picture), meta = VALUES(meta)",
+			{
+				cData.SID,
+				"twitter",
+				name,
+				nil,
+				'{}',
+			})
 
 		return {
 			{
@@ -85,25 +87,26 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	end)
 
 	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local alias = char:GetData("Alias")
 		local profiles = char:GetData("Profiles") or {}
-	
-		if alias.twitter ~= nil then
 
+		if alias.twitter ~= nil then
 			local avatar = nil
 			if alias?.twitter?.avatar ~= nil then
 				avatar = alias.twitter.avatar:sub(1, 512)
 			end
 
-			local rid = MySQL.insert.await("INSERT INTO character_app_profiles (sid, app, name, picture, meta) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name), picture = VALUES(picture), meta = VALUES(meta)", {
-				char:GetData("SID"),
-				"twitter",
-				alias.twitter.name,
-				avatar,
-				'{}',
-			})
-	
+			local rid = MySQL.insert.await(
+			"INSERT INTO character_app_profiles (sid, app, name, picture, meta) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name), picture = VALUES(picture), meta = VALUES(meta)",
+				{
+					char:GetData("SID"),
+					"twitter",
+					alias.twitter.name,
+					avatar,
+					'{}',
+				})
+
 			profiles.twitter = {
 				sid = char:GetData("SID"),
 				app = "twitter",
@@ -111,7 +114,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 				picture = avatar,
 				meta = {},
 			}
-	
+
 			alias.twitter = nil
 			char:SetData("Alias", alias)
 			char:SetData("Profiles", profiles)
@@ -121,10 +124,11 @@ end)
 
 AddEventHandler("Phone:Server:UpdateProfile", function(source, data)
 	if data.app == "twitter" then
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
-			local count = MySQL.scalar.await('SELECT COUNT(*) FROM character_app_profiles WHERE app = ? AND name = ? and sid != ?', {
+			local count = MySQL.scalar.await(
+			'SELECT COUNT(*) FROM character_app_profiles WHERE app = ? AND name = ? and sid != ?', {
 				"twitter",
 				data.name,
 				sid,
@@ -141,7 +145,7 @@ AddEventHandler("Phone:Server:UpdateProfile", function(source, data)
 						json.encode(data.meta or {}),
 					}
 				)
-	
+
 				local profiles = char:GetData("Profiles") or {}
 				profiles["twitter"] = {
 					sid = sid,
@@ -175,7 +179,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 	Callbacks:RegisterServerCallback("Phone:Twitter:CreateTweet", function(source, data, cb)
 		local src = source
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		cb(
 			Phone.Twitter:Post(

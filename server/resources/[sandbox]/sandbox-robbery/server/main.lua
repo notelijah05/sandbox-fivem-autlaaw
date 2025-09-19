@@ -19,7 +19,6 @@ end
 
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
@@ -59,8 +58,8 @@ local _sellerLocs = {
 }
 
 local _toolsForSale = {
-	{ id = 1, item = "vpn", coin = "MALD", price = 60, qty = 10, vpn = false },
-	{ id = 1, item = "safecrack_kit", coin = "MALD", price = 8, qty = 10, vpn = false },
+	{ id = 1, item = "vpn",                 coin = "MALD", price = 60,  qty = 10, vpn = false },
+	{ id = 1, item = "safecrack_kit",       coin = "MALD", price = 8,   qty = 10, vpn = false },
 	{ id = 2, item = "adv_electronics_kit", coin = "MALD", price = 100, qty = 25, vpn = true, ignoreUnique = true },
 	{
 		id = 2,
@@ -75,15 +74,15 @@ local _toolsForSale = {
 }
 
 local _heistTools = {
-	{ id = 2, item = "green_dongle", coin = "HEIST", price = 20, qty = 3, vpn = true, requireCurrency = true },
-	{ id = 1, item = "blue_dongle", coin = "HEIST", price = 30, qty = 1, vpn = true, requireCurrency = true },
-	{ id = 3, item = "red_dongle", coin = "HEIST", price = 40, qty = 1, vpn = true, requireCurrency = true },
+	{ id = 2, item = "green_dongle",  coin = "HEIST", price = 20, qty = 3, vpn = true, requireCurrency = true },
+	{ id = 1, item = "blue_dongle",   coin = "HEIST", price = 30, qty = 1, vpn = true, requireCurrency = true },
+	{ id = 3, item = "red_dongle",    coin = "HEIST", price = 40, qty = 1, vpn = true, requireCurrency = true },
 	{ id = 4, item = "purple_dongle", coin = "HEIST", price = 50, qty = 1, vpn = true, requireCurrency = true },
 	{ id = 5, item = "yellow_dongle", coin = "HEIST", price = 60, qty = 1, vpn = true, requireCurrency = true },
 }
 
 local _heistSellerLocs = {
-	["0"] = vector4(0,0,0,0), -- Sunday
+	["0"] = vector4(0, 0, 0, 0),                        -- Sunday
 	["1"] = vector4(699.795, -817.861, 42.523, 273.516), -- Monday
 	["2"] = vector4(1011.262, -2865.162, 38.157, 181.887), -- Tuesday
 	["3"] = vector4(-408.751, -182.185, 64.892, 302.832), -- Wednesday
@@ -199,7 +198,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"Fetch",
 		"Logger",
 		"Utils",
 		"Callbacks",
@@ -264,9 +262,10 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		local pos = _sellerLocs[tostring(os.date("%w"))]
 		Vendor:Create("HeistShit", "ped", "Rob Tools", GetHashKey("CS_NervousRon"), {
-			coords = vector3(pos.x, pos.y, pos.z),
-			heading = pos.w,
-		}, _toolsForSale, "badge-dollar", "View Offers", 1, false, true, 60 * math.random(30, 60), 60 * math.random(240, 360))
+				coords = vector3(pos.x, pos.y, pos.z),
+				heading = pos.w,
+			}, _toolsForSale, "badge-dollar", "View Offers", 1, false, true, 60 * math.random(30, 60),
+			60 * math.random(240, 360))
 
 		local pos2 = _schemSellerLocs[tostring(os.date("%w"))]
 		Vendor:Create("ScamSchemSeller", "ped", "Dom's Deals", GetHashKey("a_m_m_eastsa_02"), {
@@ -281,8 +280,8 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Robbery:Holdup:Do", function(source, data, cb)
-			local pChar = Fetch:CharacterSource(source)
-			local tChar = Fetch:CharacterSource(data)
+			local pChar = exports['sandbox-characters']:FetchCharacterSource(source)
+			local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
 
 			if pChar ~= nil and tChar ~= nil then
 				local pPed = GetPlayerPed(source)
@@ -330,7 +329,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Robbery:Pickup", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if #(_pickups[char:GetData("SID")] or {}) > 0 then
 					for i = #_pickups[char:GetData("SID")], 1, -1 do
@@ -418,7 +417,7 @@ _ROBBERY = {
 
 RegisterNetEvent("Robbery:Server:Idiot", function(id)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		Logger:Info(
 			"Exploit",

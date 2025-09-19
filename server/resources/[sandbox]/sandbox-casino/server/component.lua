@@ -4,7 +4,6 @@ _casinoConfigLoaded = false
 
 AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
@@ -26,7 +25,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Casino", {
-		"Fetch",
 		"Utils",
 		"Execute",
 		"Chat",
@@ -74,7 +72,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Casino:BuyChips", function(source, amount, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char and amount and amount > 0 then
 				local amount = math.floor(amount)
 				if Wallet:Modify(source, -amount) then
@@ -95,7 +93,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Casino:SellChips", function(source, amount, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char and amount and amount > 0 then
 				local amount = math.floor(amount)
 				local chipTotal = Casino.Chips:Modify(source, -amount)
@@ -116,7 +114,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Casino:PurchaseVIP", function(source, amount, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				if Wallet:Modify(source, -10000) then
 					Inventory:AddItem(char:GetData("SID"), "diamond_vip", 1, {}, 1)
@@ -185,14 +183,14 @@ end
 _CASINO = {
 	Chips = {
 		Get = function(self, source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				return char:GetData("CasinoChips") or 0
 			end
 			return 0
 		end,
 		Has = function(self, source, amount)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char and amount > 0 then
 				local currentChips = char:GetData("CasinoChips") or 0
 				if currentChips >= amount then
@@ -202,7 +200,7 @@ _CASINO = {
 			return false
 		end,
 		Modify = function(self, source, amount)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local currentChips = char:GetData("CasinoChips") or 0
 				local newChipBalance = math.floor(currentChips + amount)
@@ -284,7 +282,7 @@ end
 
 function GiveCasinoFuckingMoney(source, game, amount)
 	local charInfo = "Unknown"
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char then
 		charInfo = string.format("%s %s [%s]", char:GetData("First"), char:GetData("Last"), char:GetData("SID"))
 	end

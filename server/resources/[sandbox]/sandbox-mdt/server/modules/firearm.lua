@@ -1,22 +1,27 @@
 _MDT.Firearm = {
 	Search = function(self, term)
-		return MySQL.query.await("SELECT serial, model, owner_sid, owner_name FROM firearms WHERE scratched = ? AND (serial = ? OR owner_sid = ? OR owner_name LIKE ?)", {
-			0,
-			term,
-			term,
-			"%".. term .. "%"
-		})
+		return MySQL.query.await(
+		"SELECT serial, model, owner_sid, owner_name FROM firearms WHERE scratched = ? AND (serial = ? OR owner_sid = ? OR owner_name LIKE ?)",
+			{
+				0,
+				term,
+				term,
+				"%" .. term .. "%"
+			})
 	end,
 	View = function(self, id)
-		local firearm = MySQL.single.await("SELECT serial, model, owner_sid, owner_name, purchased FROM firearms WHERE scratched = ? AND serial = ?", {
+		local firearm = MySQL.single.await(
+		"SELECT serial, model, owner_sid, owner_name, purchased FROM firearms WHERE scratched = ? AND serial = ?", {
 			0,
 			id,
 		})
 
 		if firearm and firearm.serial then
-			firearm.flags = MySQL.query.await("SELECT title, description, date, author_sid, author_first, author_last, author_callsign FROM firearms_flags WHERE serial = ?", {
-				firearm.serial
-			})
+			firearm.flags = MySQL.query.await(
+			"SELECT title, description, date, author_sid, author_first, author_last, author_callsign FROM firearms_flags WHERE serial = ?",
+				{
+					firearm.serial
+				})
 		end
 
 		return firearm
@@ -32,15 +37,17 @@ _MDT.Firearm = {
 				author_callsign = author.Callsign,
 			}
 
-			local id = MySQL.insert.await("INSERT INTO firearms_flags (serial, title, description, author_sid, author_first, author_last, author_callsign) VALUES (?, ?, ?, ?, ?, ?, ?)", {
-				firearmSerial,
-				flag.title,
-				flag.description,
-				flag.author_sid,
-				flag.author_first,
-				flag.author_last,
-				flag.author_callsign
-			})
+			local id = MySQL.insert.await(
+			"INSERT INTO firearms_flags (serial, title, description, author_sid, author_first, author_last, author_callsign) VALUES (?, ?, ?, ?, ?, ?, ?)",
+				{
+					firearmSerial,
+					flag.title,
+					flag.description,
+					flag.author_sid,
+					flag.author_first,
+					flag.author_last,
+					flag.author_callsign
+				})
 
 			flag.id = id
 
@@ -74,7 +81,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("MDT:Create:firearm-flag", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and CheckMDTPermissions(source, false) then
 			cb(MDT.Firearm.Flags:Add(data.parentId, data.doc, {
 				SID = char:GetData("SID"),

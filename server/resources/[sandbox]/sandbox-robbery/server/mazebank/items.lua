@@ -1,6 +1,6 @@
 function RegisterMBItemUses()
 	Inventory.Items:RegisterUse("thermite", "MazeBankRobbery", function(source, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inMazeBank then
@@ -168,7 +168,7 @@ function RegisterMBItemUses()
 	end)
 
 	Inventory.Items:RegisterUse("red_laptop", "MazeBankRobbery", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inMazeBank then
@@ -222,7 +222,7 @@ function RegisterMBItemUses()
 						if
 							GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)] == nil
 							or GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)].state == 4
-								and os.time() > GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)].expires
+							and os.time() > GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)].expires
 						then
 							if AreRequirementsUnlocked(v.requiredDoors) then
 								if not _mbInUse[k] then
@@ -328,7 +328,7 @@ function RegisterMBItemUses()
 	end)
 
 	Inventory.Items:RegisterUse("adv_lockpick", "MazeBankRobbery", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inMazeBank then

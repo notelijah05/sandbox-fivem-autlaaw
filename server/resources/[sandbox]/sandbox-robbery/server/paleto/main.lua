@@ -19,11 +19,11 @@ _pbAlerted = false
 local _mintDongie = false
 local _pbLoot = {
 	{ 98, { name = "moneyband", min = 125, max = 150 } },
-	{ 2, { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 250000, Random = 50000 } } } },
+	{ 2,  { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 250000, Random = 50000 } } } },
 }
 local _pbSearchLoot = {
 	{ 98, { name = "moneyband", min = 125, max = 150 } },
-	{ 2, { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 250000, Random = 50000 } } } },
+	{ 2,  { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 250000, Random = 50000 } } } },
 }
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", PaletoClearSourceInUse)
@@ -38,7 +38,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:SecureBank", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if Player(source).state.onDuty == "police" then
 				SecurePaleto()
@@ -47,7 +47,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:DisableAlarm", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if Player(source).state.onDuty == "police" then
 				if _bankStates.paleto.fookinLasers then
@@ -107,7 +107,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:VaultTerminal", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -149,7 +149,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:UnlockDoor", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -210,7 +210,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:ElectricBox:Hack", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -363,7 +363,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:PC:Hack", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -501,7 +501,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:Workstation", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -632,7 +632,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:OfficeHack", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -772,7 +772,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:Drill", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -885,7 +885,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:Search", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -981,7 +981,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:StartSafe", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -1024,7 +1024,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Paleto:Safe", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(

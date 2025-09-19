@@ -45,7 +45,7 @@ AddEventHandler('Businesses:Server:Startup', function()
     end)
 
     Callbacks:RegisterServerCallback('Bowling:JoinGame', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data?.alleyId and data.nickName then
             local alley = GlobalState[string.format('Bowling:Alley:%s', data.alleyId)]
 
@@ -64,7 +64,7 @@ AddEventHandler('Businesses:Server:Startup', function()
     end)
 
     Callbacks:RegisterServerCallback('Bowling:EndGame', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data?.alleyId then
             local alley = GlobalState[string.format('Bowling:Alley:%s', data.alleyId)]
 
@@ -143,7 +143,7 @@ AddEventHandler('Businesses:Server:Startup', function()
 end)
 
 function CreateBowlingPlayer(source, nickName)
-    local char = Fetch:CharacterSource(source)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char then
         return {
             SID = char:GetData('SID'),
@@ -156,7 +156,7 @@ end
 
 RegisterServerEvent('Bowling:Server:StartBowling', function(alleyId)
     local src = source
-    local char = Fetch:CharacterSource(src)
+    local char = exports['sandbox-characters']:FetchCharacterSource(src)
     if char and alleyId then
         local alley = GlobalState[string.format('Bowling:Alley:%s', alleyId)]
         local mySID = char:GetData('SID')

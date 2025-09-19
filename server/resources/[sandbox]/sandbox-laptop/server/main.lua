@@ -79,7 +79,6 @@ end)
 AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -112,7 +111,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
-		"Fetch",
 		"Database",
 		"Callbacks",
 		"Logger",
@@ -155,23 +153,23 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Reputation:Create("Chopping", "Vehicle Chopping", {
-			{ label = "Rank 1", value = 1000 },
-			{ label = "Rank 2", value = 2500 },
-			{ label = "Rank 3", value = 5000 },
-			{ label = "Rank 4", value = 10000 },
-			{ label = "Rank 5", value = 25000 },
-			{ label = "Rank 6", value = 50000 },
-			{ label = "Rank 7", value = 100000 },
-			{ label = "Rank 8", value = 250000 },
-			{ label = "Rank 9", value = 500000 },
+			{ label = "Rank 1",  value = 1000 },
+			{ label = "Rank 2",  value = 2500 },
+			{ label = "Rank 3",  value = 5000 },
+			{ label = "Rank 4",  value = 10000 },
+			{ label = "Rank 5",  value = 25000 },
+			{ label = "Rank 6",  value = 50000 },
+			{ label = "Rank 7",  value = 100000 },
+			{ label = "Rank 8",  value = 250000 },
+			{ label = "Rank 9",  value = 500000 },
 			{ label = "Rank 10", value = 1000000 },
 		}, true)
 
 		Reputation:Create("Boosting", "Boosting", {
-			{ label = "D", value = 0 },
-			{ label = "C", value = 6000 },
-			{ label = "B", value = 15000 },
-			{ label = "A", value = 50000 },
+			{ label = "D",  value = 0 },
+			{ label = "C",  value = 6000 },
+			{ label = "B",  value = 15000 },
+			{ label = "A",  value = 50000 },
 			{ label = "A+", value = 120000 }, -- Get Scratching
 			{ label = "S+", value = 150000 },
 		}, true)
@@ -183,7 +181,7 @@ AddEventHandler("Laptop:Server:RegisterMiddleware", function()
 		Laptop:UpdateJobData(source)
 		TriggerClientEvent("Laptop:Client:SetApps", source, LAPTOP_APPS)
 
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myPerms = char:GetData("LaptopPermissions") or {}
 		local modified = false
 		for app, perms in pairs(defaultPermissions) do
@@ -235,7 +233,7 @@ end)
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	Callbacks:RegisterServerCallback("Laptop:Permissions", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		if char ~= nil then
 			local perms = char:GetData("LaptopPermissions")

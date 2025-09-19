@@ -21,7 +21,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
 
@@ -35,7 +34,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Player",
 		"Jobs",
 		"EmergencyAlerts",
-		"Fetch",
 		"Notification",
 		"Vehicles",
 	}, function(error)

@@ -15,7 +15,7 @@ function RegisterItemUses()
 	for k, v in ipairs(_maskItems) do
 		Inventory.Items:RegisterUse(v, "Ped", function(source, item)
 			if not Player(source).state.isCuffed then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if item.MetaData.mask then
 					TriggerClientEvent("Ped:Client:HatGlassAnim", source)
 					Wait(300)
@@ -33,7 +33,7 @@ function RegisterItemUses()
 	for k, v in ipairs(_hatItems) do
 		Inventory.Items:RegisterUse(v, "Ped", function(source, item)
 			if not Player(source).state.isCuffed then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if item.MetaData.hat then
 					TriggerClientEvent("Ped:Client:HatGlassAnim", source)
 					Wait(300)
@@ -51,7 +51,7 @@ function RegisterItemUses()
 	for k, v in ipairs(_accessoryItems) do
 		Inventory.Items:RegisterUse(v, "Ped", function(source, item)
 			if not Player(source).state.isCuffed then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if item.MetaData.accessory then
 					TriggerClientEvent("Ped:Client:HatGlassAnim", source)
 					Wait(300)

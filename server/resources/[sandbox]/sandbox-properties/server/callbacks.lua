@@ -18,10 +18,10 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Properties:RequestAgent", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data]
 		if char ~= nil and property ~= nil then
-			for k, v in pairs(Fetch:AllCharacters()) do
+			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then
 					if Jobs.Permissions:HasPermissionInJob(v:GetData("Source"), "realestate", "JOB_SELL") then
 						Phone.Email:Send(
@@ -57,7 +57,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Properties:EditProperty", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.property]
 		if property ~= nil and Player(source).state.onDuty == "realestate" and data.location then
 			local ped = GetPlayerPed(source)
@@ -91,7 +91,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Properties:SpawnInside", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 		if property ~= nil and char then
 			local pInt = property.upgrades?.interior
@@ -117,7 +117,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Properties:EnterProperty", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data]
 
 		if
@@ -168,7 +168,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Properties:ChangeLock", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 
 		if
@@ -182,7 +182,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Properties:Validate", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 
 		if data.type == "closet" then
@@ -236,7 +236,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Properties:Upgrade", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 
 		if char and property.keys and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.upgrade or property.keys[char:GetData("ID")].Owner) then
@@ -282,7 +282,7 @@ function RegisterCallbacks()
 	local interiorChangeCost = 50000
 
 	Callbacks:RegisterServerCallback("Properties:ChangeInterior", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 
 		if char and data.int and property.keys and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.upgrade or property.keys[char:GetData("ID")].Owner) then
@@ -335,7 +335,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Properties:Dyn8:Search", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local qry = {
 				label = {
@@ -384,12 +384,12 @@ function RegisterCallbacks()
 	-- Hello
 
 	Callbacks:RegisterServerCallback("Properties:Dyn8:Sell", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local prop = _properties[data.property]
 		if Player(source).state.onDuty == 'realestate' then
 			if prop ~= nil and not prop.sold and char then
 				if _selling[data.property] == nil then
-					local targetChar = Fetch:SID(tonumber(data.target))
+					local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(data.target))
 					if targetChar then
 						_selling[data.property] = data.target
 
@@ -406,67 +406,71 @@ function RegisterCallbacks()
 										local downPayment = Utils:Round(prop.price * (downPaymentPercent / 100), 0)
 										local salePriceAfterDown = prop.price - downPayment
 										local afterInterest = Utils:Round(
-										salePriceAfterDown * (1 + (defaultInterestRate / 100)), 0)
+											salePriceAfterDown * (1 + (defaultInterestRate / 100)), 0)
 										local perWeek = Utils:Round(afterInterest / loanWeeks, 0)
 
 										if loanData.maxBorrowable >= salePriceAfterDown then
 											SendPendingLoanEmail({
-												SID = targetChar:GetData('SID'),
-												First = targetChar:GetData('First'),
-												Last = targetChar:GetData('Last'),
-												Source = targetChar:GetData('Source'),
-											}, prop.label, downPaymentPercent, downPayment, loanWeeks, perWeek,
+													SID = targetChar:GetData('SID'),
+													First = targetChar:GetData('First'),
+													Last = targetChar:GetData('Last'),
+													Source = targetChar:GetData('Source'),
+												}, prop.label, downPaymentPercent, downPayment, loanWeeks, perWeek,
 												salePriceAfterDown, function()
-												Billing:Create(targetChar:GetData('Source'), 'Dynasty 8', downPayment,
-													string.format('Property Downpayment for %s', prop.label),
-													function(wasPayed, withAccount)
-														if wasPayed then
-															local loanSuccess = Loans:CreatePropertyLoan(
-															targetChar:GetData('Source'), prop.id, prop.price,
-																downPayment, loanWeeks)
-															if loanSuccess then
-																Properties.Commerce:Buy(prop.id, {
-																	Char = targetChar:GetData("ID"),
-																	SID = targetChar:GetData("SID"),
-																	First = targetChar:GetData("First"),
-																	Last = targetChar:GetData("Last"),
-																	Owner = true,
-																})
+													Billing:Create(targetChar:GetData('Source'), 'Dynasty 8', downPayment,
+														string.format('Property Downpayment for %s', prop.label),
+														function(wasPayed, withAccount)
+															if wasPayed then
+																local loanSuccess = Loans:CreatePropertyLoan(
+																	targetChar:GetData('Source'), prop.id, prop.price,
+																	downPayment, loanWeeks)
+																if loanSuccess then
+																	Properties.Commerce:Buy(prop.id, {
+																		Char = targetChar:GetData("ID"),
+																		SID = targetChar:GetData("SID"),
+																		First = targetChar:GetData("First"),
+																		Last = targetChar:GetData("Last"),
+																		Owner = true,
+																	})
 
-																SendCompletedLoanSaleEmail({
-																	Source = targetChar:GetData("Source"),
-																	SID = targetChar:GetData("SID"),
-																	First = targetChar:GetData("First"),
-																	Last = targetChar:GetData("Last"),
-																}, prop.label, downPaymentPercent, downPayment, loanWeeks,
-																	perWeek, salePriceAfterDown)
+																	SendCompletedLoanSaleEmail({
+																			Source = targetChar:GetData("Source"),
+																			SID = targetChar:GetData("SID"),
+																			First = targetChar:GetData("First"),
+																			Last = targetChar:GetData("Last"),
+																		}, prop.label, downPaymentPercent, downPayment,
+																		loanWeeks,
+																		perWeek, salePriceAfterDown)
 
-																-- Send Realtor Notification
-																Phone.Notification:Add(source, "Property Sale Successful",
-																	string.format("(Loan Sale) %s was sold to %s %s.",
+																	-- Send Realtor Notification
+																	Phone.Notification:Add(source,
+																		"Property Sale Successful",
+																		string.format(
+																			"(Loan Sale) %s was sold to %s %s.",
+																			prop.label, targetChar:GetData('First'),
+																			targetChar:GetData('Last')), os.time(), 7000,
+																		_phoneApp, {})
+
+																	SendPropertyProfits('Loan Sale', prop.price,
+																		prop.label,
+																		char:GetData('BankAccount'), withAccount, {
+																			SID = targetChar:GetData("SID"),
+																			First = targetChar:GetData("First"),
+																			Last = targetChar:GetData("Last"),
+																		})
+																end
+															else
+																Phone.Notification:Add(source, "Property Sale Failed",
+																	string.format(
+																		"(Loan Sale) The downpayment failed when trying to sell %s to %s %s.",
 																		prop.label, targetChar:GetData('First'),
 																		targetChar:GetData('Last')), os.time(), 7000,
 																	_phoneApp, {})
-
-																SendPropertyProfits('Loan Sale', prop.price, prop.label,
-																	char:GetData('BankAccount'), withAccount, {
-																	SID = targetChar:GetData("SID"),
-																	First = targetChar:GetData("First"),
-																	Last = targetChar:GetData("Last"),
-																})
 															end
-														else
-															Phone.Notification:Add(source, "Property Sale Failed",
-																string.format(
-																"(Loan Sale) The downpayment failed when trying to sell %s to %s %s.",
-																	prop.label, targetChar:GetData('First'),
-																	targetChar:GetData('Last')), os.time(), 7000,
-																_phoneApp, {})
-														end
 
-														_selling[data.property] = nil
-													end)
-											end)
+															_selling[data.property] = nil
+														end)
+												end)
 											cb({ success = true, message = 'Loan Offer Sent' })
 										else
 											cb({ success = false, message = 'Person Doesn\'t Qualify for Loan' })
@@ -483,53 +487,54 @@ function RegisterCallbacks()
 
 							Billing:Create(targetChar:GetData('Source'), 'Dynasty 8', prop.price,
 								'Purchase of ' .. prop.label, function(wasPayed, withAccount)
-								if wasPayed then
-									Properties.Commerce:Buy(prop.id, {
-										Char = targetChar:GetData("ID"),
-										SID = targetChar:GetData("SID"),
-										First = targetChar:GetData("First"),
-										Last = targetChar:GetData("Last"),
-										Owner = true,
-									})
+									if wasPayed then
+										Properties.Commerce:Buy(prop.id, {
+											Char = targetChar:GetData("ID"),
+											SID = targetChar:GetData("SID"),
+											First = targetChar:GetData("First"),
+											Last = targetChar:GetData("Last"),
+											Owner = true,
+										})
 
-									-- Send Purchasee Confirmation
-									SendCompletedCashSaleEmail({
-										Source = targetChar:GetData("Source"),
-										SID = targetChar:GetData("SID"),
-										First = targetChar:GetData("First"),
-										Last = targetChar:GetData("Last"),
-									}, prop.label, prop.price)
+										-- Send Purchasee Confirmation
+										SendCompletedCashSaleEmail({
+											Source = targetChar:GetData("Source"),
+											SID = targetChar:GetData("SID"),
+											First = targetChar:GetData("First"),
+											Last = targetChar:GetData("Last"),
+										}, prop.label, prop.price)
 
-									-- Send Realtor Confirmation
-									Phone.Notification:Add(source, "Property Sale Successful",
-										string.format("(Cash Sale) %s was sold to %s %s.", prop.label,
-											targetChar:GetData('First'), targetChar:GetData('Last')), os.time(), 7000,
-										_phoneApp, {})
+										-- Send Realtor Confirmation
+										Phone.Notification:Add(source, "Property Sale Successful",
+											string.format("(Cash Sale) %s was sold to %s %s.", prop.label,
+												targetChar:GetData('First'), targetChar:GetData('Last')), os.time(), 7000,
+											_phoneApp, {})
 
-									SendPropertyProfits('Cash Sale', prop.price, prop.label, char:GetData('BankAccount'),
-										withAccount, {
-										SID = targetChar:GetData("SID"),
-										First = targetChar:GetData("First"),
-										Last = targetChar:GetData("Last"),
-									})
+										SendPropertyProfits('Cash Sale', prop.price, prop.label,
+											char:GetData('BankAccount'),
+											withAccount, {
+												SID = targetChar:GetData("SID"),
+												First = targetChar:GetData("First"),
+												Last = targetChar:GetData("Last"),
+											})
 
-									-- if prop.price >= 50000 then
-									-- 	local creditIncrease = math.floor(prop.price / 1500)
-									-- 	if creditIncrease > 300 then
-									-- 		creditIncrease = 300
-									-- 	end
+										-- if prop.price >= 50000 then
+										-- 	local creditIncrease = math.floor(prop.price / 1500)
+										-- 	if creditIncrease > 300 then
+										-- 		creditIncrease = 300
+										-- 	end
 
-									-- 	Loans.Credit:Increase(targetChar:GetData('SID'), creditIncrease)
-									-- end
-								else
-									Phone.Notification:Add(source, "Property Sale Failed",
-										string.format(
-										"(Cash Sale) The bank transfer failed when trying to sell %s to %s %s.",
-											prop.label, targetChar:GetData('First'), targetChar:GetData('Last')),
-										os.time(), 7000, _phoneApp, {})
-								end
-								_selling[data.property] = nil
-							end)
+										-- 	Loans.Credit:Increase(targetChar:GetData('SID'), creditIncrease)
+										-- end
+									else
+										Phone.Notification:Add(source, "Property Sale Failed",
+											string.format(
+												"(Cash Sale) The bank transfer failed when trying to sell %s to %s %s.",
+												prop.label, targetChar:GetData('First'), targetChar:GetData('Last')),
+											os.time(), 7000, _phoneApp, {})
+									end
+									_selling[data.property] = nil
+								end)
 						end
 
 						Citizen.SetTimeout(5 * (60 * 1000), function()
@@ -552,7 +557,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Properties:Dyn8:CheckCredit", function(source, data, cb)
-		local targetChar = Fetch:SID(tonumber(data?.target))
+		local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(data?.target))
 		if targetChar then
 			local creditCheck = Loans:GetAllowedLoanAmount(targetChar:GetData('SID'), 'property')
 
@@ -568,12 +573,12 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Properties:Dyn8:Transfer", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local prop = _properties[data.property]
 		if Player(source).state.onDuty == 'realestate' then
 			if prop ~= nil and prop.sold and char then
-				local owner = Fetch:SID(prop.owner.SID)
-				local newOwner = Fetch:SID(tonumber(data.target))
+				local owner = exports['sandbox-characters']:FetchBySID(prop.owner.SID)
+				local newOwner = exports['sandbox-characters']:FetchBySID(tonumber(data.target))
 				local hasLoan = Loans:HasRemainingPayments("property", prop.id)
 
 				if not hasLoan then
@@ -709,7 +714,7 @@ end
 
 RegisterNetEvent('RealEstate:Server:AcceptLoan', function(_, email)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char then
 		Phone.Email:Delete(char:GetData('ID'), email)
 		local stateId = char:GetData('SID')
@@ -839,7 +844,7 @@ end
 
 RegisterNetEvent('RealEstate:Server:AcceptTransfer', function()
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char then
 		local stateId = char:GetData('SID')
 
@@ -852,7 +857,7 @@ end)
 
 RegisterNetEvent('RealEstate:Server:DenyTransfer', function()
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char then
 		local stateId = char:GetData('SID')
 

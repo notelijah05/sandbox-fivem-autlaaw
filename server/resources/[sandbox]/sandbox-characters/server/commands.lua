@@ -5,7 +5,7 @@ function RegisterCommands()
 		help = "Logout",
 	}, 0)
 	Chat:RegisterStaffCommand("logoutsid", function(source, args, rawCommand)
-		local char = Fetch:SID(tonumber(args[1]))
+		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
 			exports["sandbox-base"]:FetchComponent("Execute"):Client(char:GetData("Source"), "Characters", "Logout")
 		end
@@ -30,7 +30,7 @@ function RegisterCommands()
 		},
 	}, 1)
 	Chat:RegisterAdminCommand("logoutall", function(source, args, rawCommand)
-		for k, v in pairs(Fetch:All()) do
+		for k, v in pairs(exports['sandbox-base']:FetchAll()) do
 			exports["sandbox-base"]:FetchComponent("Execute"):Client(v:GetData("Source"), "Characters", "Logout")
 		end
 	end, {
@@ -38,7 +38,7 @@ function RegisterCommands()
 	}, 0)
 
 	Chat:RegisterAdminCommand("addrep", function(source, args, rawCommand)
-		local char = Fetch:SID(tonumber(args[1]))
+		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
 			Reputation.Modify:Add(char:GetData("Source"), args[2], tonumber(args[3]))
 			Chat.Send.System:Single(
@@ -67,7 +67,7 @@ function RegisterCommands()
 	}, 3)
 
 	Chat:RegisterAdminCommand("remrep", function(source, args, rawCommand)
-		local char = Fetch:SID(tonumber(args[1]))
+		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
 			Reputation.Modify:Remove(char:GetData("Source"), args[2], tonumber(args[3]))
 			Chat.Send.System:Single(
@@ -96,7 +96,7 @@ function RegisterCommands()
 	}, 3)
 
 	Chat:RegisterAdminCommand("getrep", function(source, args, rawCommand)
-		local char = Fetch:SID(tonumber(args[1]))
+		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
 			local repLevel = Reputation:GetLevel(char:GetData("Source"), args[2])
 			Chat.Send.System:Single(
@@ -121,7 +121,7 @@ function RegisterCommands()
 	}, 2)
 
 	Chat:RegisterAdminCommand("phoneperm", function(source, args, rawCommand)
-		local char = Fetch:SID(tonumber(args[1]))
+		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		local app, perm = args[2], args[3]
 
 		if char ~= nil then
@@ -165,7 +165,7 @@ function RegisterCommands()
 	}, 3)
 
 	Chat:RegisterAdminCommand("laptopperm", function(source, args, rawCommand)
-		local char = Fetch:SID(tonumber(args[1]))
+		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		local app, perm = args[2], args[3]
 
 		if char ~= nil then

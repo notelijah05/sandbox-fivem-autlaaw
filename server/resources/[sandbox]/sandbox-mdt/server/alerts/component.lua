@@ -41,7 +41,6 @@ _alertsDefaultType = {
 
 AddEventHandler("EmergencyAlerts:Shared:DependencyUpdate", RetrieveEAComponents)
 function RetrieveEAComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -54,7 +53,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Fetch",
 		"Database",
 		"Callbacks",
 		"Logger",
@@ -81,7 +79,8 @@ emergencyAlertsData = {}
 
 _pdAlerts = {
 	Create = function(self, code, title, type, location, description, isPanic, blip, styleOverride, isArea, camera)
-		TriggerEvent("ws:mdt-alerts:createAlert", code, title, type, location, description, isPanic, blip, styleOverride, isArea, camera)
+		TriggerEvent("ws:mdt-alerts:createAlert", code, title, type, location, description, isPanic, blip, styleOverride,
+			isArea, camera)
 	end,
 	OnDuty = function(self, dutyData, source, stateId, callsign)
 		if
@@ -96,7 +95,7 @@ _pdAlerts = {
 				end
 			end
 
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			emergencyAlertsData[source] = {
 				SID = stateId,
 				Source = source,
@@ -137,7 +136,7 @@ _pdAlerts = {
 		end
 	end,
 	GetUnitData = function(self, source, job)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local alertPermissions = {}
 			local allJobPermissions = Jobs.Permissions:GetPermissionsFromJob(source, job)
@@ -165,7 +164,7 @@ _pdAlerts = {
 		if emergencyMember then
 			TriggerClientEvent("EmergencyAlerts:Client:Disconnect", source)
 
-			local c = Fetch:CharacterSource(source)
+			local c = exports['sandbox-characters']:FetchCharacterSource(source)
 			if c and dutyData and dutyData.Id == "police" or dutyData.Id == "prison" then
 				TriggerEvent("ws:mdt-alerts:addDispatchLog", "dutyChange", nil, string.format(
 					"[%s] %s. %s is 10-42 (Off Duty)",

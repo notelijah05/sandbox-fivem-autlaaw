@@ -1,7 +1,6 @@
 AddEventHandler("Sync:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
 	RegisterChatCommands()
@@ -10,7 +9,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("CCTV", {
 		"Callbacks",
-		"Fetch",
 		"Chat",
 		"CCTV",
 	}, function(error)
@@ -45,7 +43,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						return CCTV:View(source, i)
 					end
 				end
-				
+
 				for i = 1, #Config.Cameras do
 					if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
 						return CCTV:View(source, i)
@@ -61,12 +59,12 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 _CCTV = {
-    View = function(self, source, camId)
-        local pState = Player(source).state
-        if Config.AllowedJobs[pState.onDuty] or Fetch:Source(source).Permissions:IsAdmin() then
+	View = function(self, source, camId)
+		local pState = Player(source).state
+		if Config.AllowedJobs[pState.onDuty] or exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
 			TriggerClientEvent("CCTV:Client:View", source, camId)
 		end
-    end,
+	end,
 	ViewGroup = function(self, source, camGroup)
 		for k, v in ipairs(Config.Cameras) do
 			if v?.group == camGroup then

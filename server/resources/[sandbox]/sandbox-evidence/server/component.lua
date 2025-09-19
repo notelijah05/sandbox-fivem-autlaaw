@@ -16,7 +16,6 @@ end)
 
 AddEventHandler("Evidence:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
@@ -34,7 +33,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Evidence", {
-		"Fetch",
 		"Utils",
 		"Execute",
 		"Chat",
@@ -120,7 +118,7 @@ end)
 
 RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 	local _src = source
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char and Jobs.Permissions:HasJob(_src, "police") then
 		for k, v in ipairs(EVIDENCE_CACHE) do
 			if v.id == evidenceId then
@@ -170,7 +168,7 @@ local pendingSend = false
 
 RegisterServerEvent("Camara:CapturePhoto", function()
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 	if char then
 		if pendingSend then

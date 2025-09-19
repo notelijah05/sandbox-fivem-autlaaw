@@ -1,6 +1,5 @@
 AddEventHandler("Commands:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
@@ -152,7 +151,7 @@ function RegisterChatCommands()
 	}, -1)
 
 	Chat:RegisterAdminCommand("broadcast", function(source, args, rawCommand)
-		local auth = Fetch:Source(source)
+		local auth = exports['sandbox-base']:FetchSource(source)
 		Chat.Send.Broadcast:All(auth:GetData("Name"), rawCommand:sub(10))
 	end, {
 		help = "Make A Broadcast To All Players",
@@ -193,7 +192,7 @@ function RegisterChatCommands()
 	-- }, -1)
 
 	-- Chat:RegisterStaffCommand("kick", function(source, args, rawCommand)
-	-- 	local t = Fetch:SID(tonumber(args[1]))
+	-- 	local t = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 	-- 	if t ~= nil then
 	-- 		if t:GetData("Source") ~= source then
 	-- 			exports["sandbox-base"]:FetchComponent("Punishment"):Kick(t:GetData("Source"), args[2], source)
@@ -232,7 +231,7 @@ function RegisterChatCommands()
 	-- Chat:RegisterAdminCommand("unbanid", function(source, args, rawCommand)
 	-- 	local type = args[1]
 
-	-- 	local player = Fetch:Source(source)
+	-- 	local player = exports['sandbox-base']:FetchSource(source)
 	-- 	if type == "identifier" then
 	-- 		exports["sandbox-base"]:FetchComponent("Punishment").Unban:Identifier(args[2], source)
 	-- 	elseif type == "account" then
@@ -253,7 +252,7 @@ function RegisterChatCommands()
 	-- }, 2)
 
 	-- Chat:RegisterStaffCommand("bansource", function(source, args, rawCommand)
-	-- 	local player = Fetch:Source(source)
+	-- 	local player = exports['sandbox-base']:FetchSource(source)
 	-- 	if player then
 	-- 		local targetSource, days = tonumber(args[1]), tonumber(args[2])
 	-- 		if source == targetSource then
@@ -285,10 +284,10 @@ function RegisterChatCommands()
 	-- }, 3)
 
 	-- Chat:RegisterStaffCommand("ban", function(source, args, rawCommand)
-	-- 	local player = Fetch:Source(source)
+	-- 	local player = exports['sandbox-base']:FetchSource(source)
 	-- 	if player then
 	-- 		local targetSID, days = tonumber(args[1]), tonumber(args[2])
-	-- 		local t = Fetch:SID(targetSID)
+	-- 		local t = exports['sandbox-characters']:FetchBySID(targetSID)
 	-- 		if t ~= nil then
 	-- 			if t:GetData("Source") == source then
 	-- 				return Chat.Send.System:Single(source, "Cannot Ban Yourself")
@@ -322,7 +321,7 @@ function RegisterChatCommands()
 	-- }, 3)
 
 	-- Chat:RegisterAdminCommand("banid", function(source, args, rawCommand)
-	-- 	local player = Fetch:Source(source)
+	-- 	local player = exports['sandbox-base']:FetchSource(source)
 	-- 	if player then
 	-- 		local type, target, days = args[1], args[2], tonumber(args[3])
 
@@ -453,7 +452,7 @@ function RegisterChatCommands()
 	}, 0)
 
 	Chat:RegisterAdminCommand("addstate", function(source, args, rawCommand)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local states = char:GetData("States") or {}
 			for k, v in ipairs(states) do
@@ -480,7 +479,7 @@ function RegisterChatCommands()
 
 	Chat:RegisterAdminCommand("addstatetarget", function(source, args, rawCommand)
 		local sid, state = tonumber(args[1]), args[2]
-		local char = Fetch:SID(sid)
+		local char = exports['sandbox-characters']:FetchBySID(sid)
 		if char ~= nil then
 			local states = char:GetData("States") or {}
 			for k, v in ipairs(states) do
@@ -511,7 +510,7 @@ function RegisterChatCommands()
 
 	Chat:RegisterStaffCommand("checkradio", function(source, args, rawCommand)
 		local targ = tonumber(args[1])
-		local char = Fetch:SID(targ)
+		local char = exports['sandbox-characters']:FetchBySID(targ)
 		if char ~= nil then
 			local pState = Player(char:GetData("Source")).state
 			Chat.Send.System:Single(source,
@@ -535,7 +534,7 @@ function RegisterChatCommands()
 		for k, v in ipairs(GetPlayers()) do
 			local pState = Player(v).state
 			if pState?.onRadio and pState.onRadio == args[1] then
-				local char = Fetch:CharacterSource(tonumber(v))
+				local char = exports['sandbox-characters']:FetchCharacterSource(tonumber(v))
 				if char ~= nil then
 					table.insert(plyrs,
 						string.format("%s %s (%s)", char:GetData("First"), char:GetData("Last"), char:GetData("SID")))

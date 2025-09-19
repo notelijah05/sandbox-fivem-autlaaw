@@ -1,6 +1,6 @@
 function RegisterChatCommands()
 	Chat:RegisterCommand("resetphonepos", function(source, args, rawCommand)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			char:SetData("PhonePosition", {
 				x = 25,
@@ -17,7 +17,7 @@ function RegisterChatCommands()
 
 	Chat:RegisterAdminCommand("clearalias", function(source, args, rawCommand)
 		if tonumber(args[1]) then
-			local char = Fetch:SID(tonumber(args[1]))
+			local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 
 			if char ~= nil then
 				local aliases = char:GetData("Alias")
@@ -55,7 +55,7 @@ function RegisterChatCommands()
 
 	Chat:RegisterAdminCommand("clearprofile", function(source, args, rawCommand)
 		if tonumber(args[1]) then
-			local char = Fetch:SID(tonumber(args[1]))
+			local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 			if char ~= nil then
 				local profiles = char:GetData("Profiles") or {}
 
@@ -135,7 +135,7 @@ function RegisterChatCommands()
 			"twitter",
 		})
 
-		local char = Fetch:SID(sid)
+		local char = exports['sandbox-characters']:FetchBySID(sid)
 		if char ~= nil then
 			Chat.Send.System:Single(
 				source,
@@ -241,11 +241,11 @@ function RegisterChatCommands()
 	}, 0)
 
 	Chat:RegisterAdminCommand("raceinvite", function(source, args, rawCommand)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char then
 			local id, count = args[1], tonumber(args[2])
-	
+
 			if IsRedlineRace(id) then
 				Inventory:AddItem(char:GetData("SID"), "event_invite", count, {
 					Event = id,

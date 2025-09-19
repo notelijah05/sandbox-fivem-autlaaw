@@ -3,7 +3,6 @@ _placedProps = {}
 
 AddEventHandler("Objects:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
@@ -15,7 +14,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Objects", {
-		"Fetch",
 		"Logger",
 		"Callbacks",
 		"Middleware",
@@ -43,7 +41,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					coords = coords,
 					heading = v.heading,
 					rotation = rotation,
-                    created = math.ceil(v.created / 1000),
+					created = math.ceil(v.created / 1000),
 					creator = v.creator,
 					isFrozen = v.is_frozen,
 					nameOverride = v.name_override,
@@ -139,38 +137,38 @@ end)
 
 _OBJECTS = {
 	Info = function(self, source, id)
-		local plyr = Fetch:Source(source)
+		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr ~= nil then
-            if plyr.Permissions:IsStaff() or plyr.Permissions:IsAdmin() then
-                local char = Fetch:CharacterSource(source)
-                if char ~= nil then
-                    if _placedProps[id] ~= nil then
-                        Chat.Send.Server:Single(
-                            source,
-                            string.format(
-                                "Prop %s: Creator %s, Created %s, Frozen %s, Persistant %s",
-                                id,
-                                _placedProps[id].creator,
-                                os.date("%m/%d/%Y %I:%M %p", _placedProps[id].created),
-                                tostring(_placedProps[id].isFrozen),
-                                tostring(not _placedProps[id].isTemp)
-                            )
-                        )
-                    else
-                        Chat.Send.Server:Single(source, string.format("Unable To Locate Placed Prop With ID %s", id))
-                    end
-                else
-                    return false
-                end
-            else
-                return false
-            end
+			if plyr.Permissions:IsStaff() or plyr.Permissions:IsAdmin() then
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
+				if char ~= nil then
+					if _placedProps[id] ~= nil then
+						Chat.Send.Server:Single(
+							source,
+							string.format(
+								"Prop %s: Creator %s, Created %s, Frozen %s, Persistant %s",
+								id,
+								_placedProps[id].creator,
+								os.date("%m/%d/%Y %I:%M %p", _placedProps[id].created),
+								tostring(_placedProps[id].isFrozen),
+								tostring(not _placedProps[id].isTemp)
+							)
+						)
+					else
+						Chat.Send.Server:Single(source, string.format("Unable To Locate Placed Prop With ID %s", id))
+					end
+				else
+					return false
+				end
+			else
+				return false
+			end
 		else
 			return false
 		end
 	end,
 	Create = function(self, source, type, isTemp, model, coords, rotation, isFrozen, nameOverride)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local id = nil
 
@@ -248,28 +246,28 @@ _OBJECTS = {
 		end
 	end,
 	Delete = function(self, source, id)
-		local plyr = Fetch:Source(source)
+		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr ~= nil and id ~= nil then
-            if plyr.Permissions:IsStaff() or plyr.Permissions:IsAdmin() then
-                local char = Fetch:CharacterSource(source)
-                if char ~= nil then
+			if plyr.Permissions:IsStaff() or plyr.Permissions:IsAdmin() then
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
+				if char ~= nil then
 					if not _placedProps[id].temp then
 						MySQL.query.await("DELETE FROM placed_props WHERE id = ?", { id })
 					end
-                    TriggerClientEvent("Objects:Client:Delete", -1, id)
-                    Logger:Info(
-                        "Objects",
-                        string.format(
-                            "%s %s (%s) Deleted Object: %s",
-                            char:GetData("First"),
-                            char:GetData("Last"),
-                            char:GetData("SID"),
-                            id
-                        )
-                    )
+					TriggerClientEvent("Objects:Client:Delete", -1, id)
+					Logger:Info(
+						"Objects",
+						string.format(
+							"%s %s (%s) Deleted Object: %s",
+							char:GetData("First"),
+							char:GetData("Last"),
+							char:GetData("SID"),
+							id
+						)
+					)
 
 					_placedProps[id] = nil
-            	end
+				end
 			else
 				return false
 			end
@@ -285,7 +283,8 @@ end)
 
 RegisterNetEvent("Objects:Server:Create", function(data, endCoords)
 	local src = source
-	Objects:Create(src, data.type, data.isTemp, data.model, endCoords.coords, endCoords.rotation, data.isFrozen, data.nameOverride)
+	Objects:Create(src, data.type, data.isTemp, data.model, endCoords.coords, endCoords.rotation, data.isFrozen,
+		data.nameOverride)
 end)
 
 RegisterNetEvent("Objects:Server:Delete", function(id)

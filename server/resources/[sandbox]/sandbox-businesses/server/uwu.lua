@@ -1,19 +1,19 @@
 local _uwuPrizes = {
-	{ 100, "uwu_prize_b8" }, -- blue bear
+	{ 100,  "uwu_prize_b8" }, -- blue bear
 	{ 1400, "uwu_prize_b2" }, -- orange bear
-	{ 1, "uwu_prize_b10" }, -- snow bear
+	{ 1,    "uwu_prize_b10" }, -- snow bear
 	{ 1300, "uwu_prize_b3" }, -- red bear
-	{ 800, "uwu_prize_b5" }, -- pink bear
-	{ 700, "uwu_prize_b6" }, -- yellow bear
-	{ 10, "uwu_prize_b9" }, -- grey bear
+	{ 800,  "uwu_prize_b5" }, -- pink bear
+	{ 700,  "uwu_prize_b6" }, -- yellow bear
+	{ 10,   "uwu_prize_b9" }, -- grey bear
 	{ 1000, "uwu_prize_b4" }, -- green bear
 	{ 1600, "uwu_prize_b1" }, -- brown bear
-	{ 200, "uwu_prize_b7" }, -- moon pink bear
+	{ 200,  "uwu_prize_b7" }, -- moon pink bear
 }
 
 AddEventHandler("Businesses:Server:Startup", function()
 	Inventory.Items:RegisterUse("uwu_prize_box", "Businesses", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Inventory.Items:Has(char:GetData("SID"), 1, "uwu_prize_box", 1) then
 			if Inventory.Items:RemoveSlot(item.Owner, "uwu_prize_box", 1, item.Slot, 1) then
 				local prize = Utils:WeightedRandom(_uwuPrizes)

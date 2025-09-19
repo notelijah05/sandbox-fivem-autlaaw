@@ -34,7 +34,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Characters:GetServerData", function(source, data, cb)
-		while Fetch:Source(source) == nil do
+		while exports['sandbox-base']:FetchSource(source) == nil do
 			Wait(1000)
 		end
 
@@ -62,7 +62,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Characters:GetCharacters", function(source, data, cb)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		Database.Game:find({
 			collection = "characters",
 			query = {
@@ -132,7 +132,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Characters:CreateCharacter", function(source, data, cb)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 
 		local p = promise.new()
 		Database.Game:count({
@@ -244,7 +244,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Characters:DeleteCharacter", function(source, data, cb)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		Database.Game:findOne({
 			collection = "characters",
 			query = {
@@ -298,7 +298,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Characters:GetSpawnPoints", function(source, data, cb)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		Database.Game:findOne({
 			collection = "characters",
 			query = {
@@ -360,7 +360,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Characters:GetCharacterData", function(source, data, cb)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		Database.Game:findOne({
 			collection = "characters",
 			query = {
@@ -400,7 +400,7 @@ function RegisterCallbacks()
 
 	Callbacks:RegisterServerCallback("Characters:Logout", function(source, data, cb)
 		_fuckingBozos[source] = os.time()
-		local c = Fetch:CharacterSource(source)
+		local c = exports['sandbox-characters']:FetchCharacterSource(source)
 		if c ~= nil then
 			local cData = c:GetData()
 			if cData.SID and cData.ID then
@@ -439,7 +439,7 @@ AddEventHandler("Characters:Server:DropCleanup", function(source, cData)
 end)
 
 function HandleLastLocation(source)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 	if char ~= nil then
 		local lastLocation = _tempLastLocation[source]
@@ -470,13 +470,13 @@ function RegisterMiddleware()
 		TriggerClientEvent("Characters:Client:Spawned", source)
 	end, 100000)
 	Middleware:Add("Characters:ForceStore", function(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			StoreData(source)
 		end
 	end, 100000)
 	Middleware:Add("Characters:Logout", function(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			StoreData(source)
 		end
@@ -515,7 +515,7 @@ function RegisterMiddleware()
 	end, 5)
 
 	Middleware:Add("playerDropped", function(source, message)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			StoreData(source)
 		end

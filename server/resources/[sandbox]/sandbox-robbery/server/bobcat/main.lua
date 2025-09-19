@@ -81,7 +81,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	GlobalState["Bobcat:LootLocations"] = _bobcatLootLocs
 
 	Inventory.Items:RegisterUse("thermite", "BobcatRobbery", function(source, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		local myPos = GetEntityCoords(GetPlayerPed(source))
@@ -498,7 +498,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Inventory.Items:RegisterUse("bobcat_charge", "BobcatRobbery", function(source, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inBobcat then
@@ -607,7 +607,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Inventory.Items:RegisterUse("blue_laptop", "BobcatRobbery", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inBobcat then
@@ -742,7 +742,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				_moneyTruckSpawns = table.copy(_spawnHoldingShit)
 			end
 
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local pState = Player(source).state
 
@@ -800,7 +800,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				_moneyTruckSpawns = table.copy(_spawnHoldingShit)
 			end
 
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local pState = Player(source).state
 
@@ -857,7 +857,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				_moneyTruckSpawns = table.copy(_spawnHoldingShit)
 			end
 
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local pState = Player(source).state
 
@@ -909,7 +909,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Bobcat:PickupC4", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pState = Player(source).state
 
@@ -1062,7 +1062,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if _bcInUse.loot[data.id] == source then
 				local actualData = _bobcatLootLocs[data.id]
 				if actualData.data.type == data.type then
-					local char = Fetch:CharacterSource(source)
+					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					if char ~= nil then
 						local sid = char:GetData("SID")
 						Logger:Info("Robbery",
@@ -1151,7 +1151,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 	Callbacks:RegisterServerCallback("Robbery:Bobcat:Secure", function(source, data, cb)
 		local pState = Player(source).state
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if pState.onDuty == "police" then
 				Logger:Info("Robbery",
@@ -1188,7 +1188,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	Callbacks:RegisterServerCallback("Robbery:Bobcat:FrontPCResults", function(source, data, cb)
 		if _bcInUse.frontPc == source and not GlobalState["Bobcat:PCHacked"] then
 			if data?.state then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					if Inventory:AddItem(char:GetData("SID"), "bobcat_tracker", 1, {}, 1) then
 						_bcInUse.frontPc = false
@@ -1233,7 +1233,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	-- Callbacks:RegisterServerCallback("Robbery:Bobcat:SecurityPCResults", function(source, data, cb)
 	-- 	if _bcInUse.frontPc == source and not GlobalState["Bobcat:SecurityPCHacked"] then
 	-- 		if data then
-	-- 			local plyr = Fetch:Source(source)
+	-- 			local plyr = exports['sandbox-base']:FetchSource(source)
 	-- 			if plyr ~= nil then
 	-- 				local char = plyr:GetData("Character")
 	-- 				if char ~= nil then

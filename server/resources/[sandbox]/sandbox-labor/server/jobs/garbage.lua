@@ -93,11 +93,11 @@ local _jewelryPrices = {
 }
 
 local _jewelryItems = {
-	{ item = "rolex", ratio = 0.5 },
-	{ item = "watch", ratio = 0.5 },
-	{ item = "chain", ratio = 0.5 },
-	{ item = "earrings", ratio = 0.5 },
-	{ item = "ring", ratio = 0.5 },
+	{ item = "rolex",     ratio = 0.5 },
+	{ item = "watch",     ratio = 0.5 },
+	{ item = "chain",     ratio = 0.5 },
+	{ item = "earrings",  ratio = 0.5 },
+	{ item = "ring",      ratio = 0.5 },
 	{ item = "goldcoins", ratio = 0.5 },
 }
 
@@ -129,29 +129,31 @@ AddEventHandler("Labor:Server:Startup", function()
 			and _Garbage[_joiners[source]].state == 1
 		then
 			_isSpawningTruck = true
-			Vehicles:SpawnTemp(source, `trash2`, 'automobile', vector3(-334.989, -1562.966, 25.230), 57.510, function(veh, VIN)
-				Vehicles.Keys:Add(source, VIN)
-				_Garbage[_joiners[source]].truck = veh
-				local availRoutes = {}
-				for k, v in ipairs(_GarbageRoutes) do
-					table.insert(availRoutes, k)
-				end
-				local randRoute = math.random(#availRoutes)
-				_Garbage[_joiners[source]].route = deepcopy(_GarbageRoutes[availRoutes[randRoute]])
-				table.remove(availRoutes, randRoute)
-				_Garbage[_joiners[source]].routes = availRoutes
-				_Garbage[_joiners[source]].state = 2
-				Labor.Workgroups:SendEvent(_joiners[source], string.format("Garbage:Client:%s:NewRoute", _joiners[source]), _Garbage[_joiners[source]].route)
-				Labor.Offers:Start(
-					_joiners[source],
-					_JOB,
-					string.format("Collect Garbage In %s", _Garbage[_joiners[source]].route["location"]),
-					5
-				)
-				_isSpawningTruck = false
+			Vehicles:SpawnTemp(source, `trash2`, 'automobile', vector3(-334.989, -1562.966, 25.230), 57.510,
+				function(veh, VIN)
+					Vehicles.Keys:Add(source, VIN)
+					_Garbage[_joiners[source]].truck = veh
+					local availRoutes = {}
+					for k, v in ipairs(_GarbageRoutes) do
+						table.insert(availRoutes, k)
+					end
+					local randRoute = math.random(#availRoutes)
+					_Garbage[_joiners[source]].route = deepcopy(_GarbageRoutes[availRoutes[randRoute]])
+					table.remove(availRoutes, randRoute)
+					_Garbage[_joiners[source]].routes = availRoutes
+					_Garbage[_joiners[source]].state = 2
+					Labor.Workgroups:SendEvent(_joiners[source],
+						string.format("Garbage:Client:%s:NewRoute", _joiners[source]), _Garbage[_joiners[source]].route)
+					Labor.Offers:Start(
+						_joiners[source],
+						_JOB,
+						string.format("Collect Garbage In %s", _Garbage[_joiners[source]].route["location"]),
+						5
+					)
+					_isSpawningTruck = false
 
-				cb(veh)
-			end)
+					cb(veh)
+				end)
 		end
 	end)
 
@@ -165,7 +167,8 @@ AddEventHandler("Labor:Server:Startup", function()
 					Vehicles:Delete(_Garbage[_joiners[source]].truck, function()
 						_Garbage[_joiners[source]].truck = nil
 						_Garbage[_joiners[source]].state = 4
-						Labor.Workgroups:SendEvent(_joiners[source], string.format("Garbage:Client:%s:ReturnTruck", _joiners[source]))
+						Labor.Workgroups:SendEvent(_joiners[source],
+							string.format("Garbage:Client:%s:ReturnTruck", _joiners[source]))
 						Labor.Offers:Task(_joiners[source], _JOB, "Speak with the Sanitation Foreman")
 					end)
 				else
@@ -178,7 +181,8 @@ AddEventHandler("Labor:Server:Startup", function()
 	Callbacks:RegisterServerCallback("Garbage:TrashGrab", function(source, data, cb)
 		if _joiners[source] ~= nil and _Garbage[_joiners[source]].state == 2 then
 			Callbacks:ClientCallback(source, "Garbage:DoingSomeAction", "grabTrash")
-			Labor.Workgroups:SendEvent(_joiners[source], string.format("Garbage:Client:%s:Action", _joiners[source]), data)
+			Labor.Workgroups:SendEvent(_joiners[source], string.format("Garbage:Client:%s:Action", _joiners[source]),
+				data)
 			cb(true)
 		else
 			cb(false)
@@ -186,7 +190,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Garbage:TrashPutIn", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _Garbage[_joiners[source]] ~= nil then
 			local luck = math.random(100)
 			if luck >= 80 then
@@ -210,10 +214,12 @@ AddEventHandler("Labor:Server:Startup", function()
 						string.format("Collect Garbage In %s", _Garbage[_joiners[source]].route.location),
 						5
 					)
-					Labor.Workgroups:SendEvent(_joiners[source], string.format("Garbage:Client:%s:NewRoute", _joiners[source]), _Garbage[_joiners[source]].route)
+					Labor.Workgroups:SendEvent(_joiners[source],
+						string.format("Garbage:Client:%s:NewRoute", _joiners[source]), _Garbage[_joiners[source]].route)
 				else
 					_Garbage[_joiners[source]].state = 3
-					Labor.Workgroups:SendEvent(_joiners[source], string.format("Garbage:Client:%s:EndRoutes", _joiners[source]))
+					Labor.Workgroups:SendEvent(_joiners[source],
+						string.format("Garbage:Client:%s:EndRoutes", _joiners[source]))
 					Labor.Offers:Task(_joiners[source], _JOB, "Return your truck")
 				end
 			end
@@ -225,7 +231,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	Callbacks:RegisterServerCallback("Garbage:TurnIn", function(source, data, cb)
 		if _joiners[source] ~= nil and _Garbage[_joiners[source]].tasks >= 3 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char:GetData("TempJob") == _JOB and _Garbage[_joiners[source]].state == 4 then
 				_Garbage[_joiners[source]].state = 5
 				Labor.Offers:ManualFinish(_joiners[source], _JOB)
@@ -241,7 +247,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Garbage:Pawn:Sell", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local repLvl = Reputation:GetLevel(source, _JOB)
 
 		if repLvl > 0 then
@@ -266,7 +272,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	-- Callbacks:RegisterServerCallback("Gabage:Pawn:Buy", function(source, data, cb)
-	-- 	local char = Fetch:CharacterSource(source)
+	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	-- 	local repLvl = Reputation:GetLevel(source, _JOB)
 
 	-- 	if repLvl >= 3 then
@@ -277,7 +283,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	-- end)
 
 	-- Callbacks:RegisterServerCallback("Garbage:Pawn:BuyLimited", function(source, data, cb)
-	-- 	local char = Fetch:CharacterSource(source)
+	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	-- 	local repLvl = Reputation:GetLevel(source, _JOB)
 
 	-- 	if repLvl >= 3 then
@@ -318,7 +324,7 @@ AddEventHandler("Garbage:Server:OnDuty", function(joiner, members, isWorkgroup)
 		tasks = 0,
 	}
 
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
 	Phone.Notification:Add(joiner, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
 	TriggerClientEvent("Garbage:Client:OnDuty", joiner, joiner, os.time())
@@ -327,7 +333,7 @@ AddEventHandler("Garbage:Server:OnDuty", function(joiner, members, isWorkgroup)
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner
-			local member = Fetch:CharacterSource(v.ID)
+			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
 			Phone.Notification:Add(v.ID, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
 			TriggerClientEvent("Garbage:Client:OnDuty", v.ID, joiner, os.time())

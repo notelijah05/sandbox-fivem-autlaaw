@@ -56,7 +56,7 @@ _LOANS = {
 		return Citizen.Await(p)
 	end,
 	CreateVehicleLoan = function(self, targetSource, VIN, totalCost, downPayment, totalWeeks)
-		local char = Fetch:CharacterSource(targetSource)
+		local char = exports['sandbox-characters']:FetchCharacterSource(targetSource)
 		if char then
 			local p = promise.new()
 			local remainingCost = totalCost - downPayment
@@ -99,7 +99,7 @@ _LOANS = {
 		return false
 	end,
 	CreatePropertyLoan = function(self, targetSource, propertyId, totalCost, downPayment, totalWeeks)
-		local char = Fetch:CharacterSource(targetSource)
+		local char = exports['sandbox-characters']:FetchCharacterSource(targetSource)
 		if char then
 			local p = promise.new()
 			local remainingCost = totalCost - downPayment
@@ -142,7 +142,7 @@ _LOANS = {
 		return false
 	end,
 	MakePayment = function(self, source, loanId, inAdvanced, advancedPaymentCount)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local SID = char:GetData("SID")
 			local Account = char:GetData("BankAccount")

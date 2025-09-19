@@ -2,9 +2,10 @@ ACTIVE_RENTAL_VEHICLES = {}
 
 function RegisterVehicleRentalCallbacks()
     Callbacks:RegisterServerCallback('Rentals:Purchase', function(source, data, cb)
-        local rentalSpot, rentalVehicle, spaceCoords, spaceHeading = data.rental, data.vehicle, data.spaceCoords, data.spaceHeading
+        local rentalSpot, rentalVehicle, spaceCoords, spaceHeading = data.rental, data.vehicle, data.spaceCoords,
+            data.spaceHeading
         if type(rentalSpot) == "number" and type(rentalVehicle) == "number" and spaceCoords and spaceHeading and _vehicleRentals[rentalSpot] then
-            local char = Fetch:CharacterSource(source)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
             local rentalSpotData = _vehicleRentals[rentalSpot]
             local rentalVehicleData = rentalSpotData.vehicleList and rentalSpotData.vehicleList[rentalVehicle] or false
             if char and rentalVehicleData then
@@ -32,16 +33,17 @@ function RegisterVehicleRentalCallbacks()
                     local renterId = char:GetData('ID')
                     local renterSID = char:GetData('SID')
                     local renterName = char:GetData('First') .. ' ' .. char:GetData('Last')
-    
-                    Vehicles:SpawnTemp(source, rentalVehicleData.vehicle, rentalVehicleData.modelType, spaceCoords, spaceHeading, function(spawnedVehicle, VIN, plate)
+
+                    Vehicles:SpawnTemp(source, rentalVehicleData.vehicle, rentalVehicleData.modelType, spaceCoords,
+                        spaceHeading, function(spawnedVehicle, VIN, plate)
                         if spawnedVehicle then
                             Vehicles.Keys:Add(source, VIN)
-    
+
                             local vehState = Entity(spawnedVehicle).state
                             vehState.Rental = renterSID
                             vehState.RentalCompany = rentalSpot
                             vehState.RentalCompanyName = rentalSpotData.name
-    
+
                             ACTIVE_RENTAL_VEHICLES[VIN] = {
                                 VIN = VIN,
                                 Entity = spawnedVehicle,
@@ -54,9 +56,9 @@ function RegisterVehicleRentalCallbacks()
                                 Deposit = rentalVehicleData.cost.deposit,
                                 Bank = data.bank,
                             }
-    
+
                             cb(true, plate)
-    
+
                             Inventory:AddItem(renterSID, 'rental_papers', 1, {
                                 Renter = renterName,
                                 Vehicle = rentalVehicleData.make .. ' ' .. rentalVehicleData.model,
@@ -86,7 +88,7 @@ function RegisterVehicleRentalCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Rentals:GetPending', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if type(data.rental) == "number" and char then
             local pending = {}
             local stateId = char:GetData('SID')
@@ -102,14 +104,15 @@ function RegisterVehicleRentalCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Rentals:Return', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if data and data.VIN then
             local vehicle = ACTIVE_RENTAL_VEHICLES[data.VIN]
             if vehicle and DoesEntityExist(vehicle.Entity) then
                 Vehicles:Delete(vehicle.Entity, function(success)
                     if success then
                         if vehicle.Bank then
-                            Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account, vehicle.Deposit, {
+                            Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account,
+                                vehicle.Deposit, {
                                 type = "deposit",
                                 title = "Vehicle Rental Return",
                                 description = "Deposit Money Returned from Rental Return.",

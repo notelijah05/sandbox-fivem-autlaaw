@@ -1,6 +1,6 @@
 function RegisterLBItemUses()
 	Inventory.Items:RegisterUse("thermite", "LombankRobbery", function(source, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inLombank then
@@ -326,7 +326,7 @@ function RegisterLBItemUses()
 	end)
 
 	Inventory.Items:RegisterUse("purple_laptop", "LombankRobbery", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inLombank then

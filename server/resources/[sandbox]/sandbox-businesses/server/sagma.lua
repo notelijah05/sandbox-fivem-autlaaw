@@ -4,10 +4,10 @@ AddEventHandler("Businesses:Server:Startup", function()
     Callbacks:RegisterServerCallback("Businesses:SAGMA:OpenTable", function(source, data, cb)
         Inventory:OpenSecondary(source, 132, data)
     end)
-    
+
     Callbacks:RegisterServerCallback("Businesses:SAGMA:Sell", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
-		if Jobs.Permissions:HasJob(source, _jobName, false, false, false, false, "JOB_SELL_GEMS") then
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
+        if Jobs.Permissions:HasJob(source, _jobName, false, false, false, false, "JOB_SELL_GEMS") then
             local its = Inventory.Items:GetAllOfTypeNoStack(char:GetData("SID"), 1, 11)
 
             if #its > 0 then
@@ -36,13 +36,14 @@ AddEventHandler("Businesses:Server:Startup", function()
                         source,
                         "Notification",
                         "Success",
-                        string.format("Sold %s Gems For $%s (Deposited To Company Account)", totalSold, math.ceil(math.abs(totalPayout) * 0.8))
+                        string.format("Sold %s Gems For $%s (Deposited To Company Account)", totalSold,
+                            math.ceil(math.abs(totalPayout) * 0.8))
                     )
                 else
                     Wallet:Modify(source, totalPayout)
                 end
 
-                
+
                 f = Banking.Accounts:GetOrganization("government")
                 Banking.Balance:Deposit(f.Account, math.ceil(math.abs(totalPayout) * 0.1), {
                     type = "deposit",
@@ -66,13 +67,13 @@ AddEventHandler("Businesses:Server:Startup", function()
                     "Error",
                     "You Don't Have Any Gems To Sell"
                 )
-			end
-		end
+            end
+        end
     end)
 end)
 
 AddEventHandler("Businesses:Server:SAGMA:ViewGem", function(source, data)
-    local char = Fetch:CharacterSource(source)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char ~= nil then
         if Jobs.Permissions:HasJob(source, _jobName, false, false, false, true, "JOB_USE_GEM_TABLE") then
             local its = Inventory:GetInventory(source, data.owner, data.invType)
@@ -80,7 +81,8 @@ AddEventHandler("Businesses:Server:SAGMA:ViewGem", function(source, data)
                 local md = json.decode(its[1].MetaData)
                 local itemData = Inventory.Items:GetData(its[1].Name)
                 if itemData ~= nil and itemData.type == 11 and itemData.gemProperties ~= nil then
-                    TriggerClientEvent("Businesses:Client:SAGMA:ViewGem", source, data.owner, itemData.gemProperties, md.Quality, its[1])
+                    TriggerClientEvent("Businesses:Client:SAGMA:ViewGem", source, data.owner, itemData.gemProperties,
+                        md.Quality, its[1])
                 end
             end
         end

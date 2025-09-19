@@ -13,11 +13,9 @@ function RetrieveComponents()
     Callbacks = exports['sandbox-base']:FetchComponent('Callbacks')
     Database = exports['sandbox-base']:FetchComponent('Database')
     Execute = exports['sandbox-base']:FetchComponent('Execute')
-    Fetch = exports['sandbox-base']:FetchComponent('Fetch')
     Locations = exports['sandbox-base']:FetchComponent('Locations')
     Chat = exports['sandbox-base']:FetchComponent('Chat')
     Wallet = exports['sandbox-base']:FetchComponent('Wallet')
-    Fetch = exports['sandbox-base']:FetchComponent('Fetch')
     Utils = exports['sandbox-base']:FetchComponent('Utils')
     Logger = exports['sandbox-base']:FetchComponent('Logger')
     Middleware = exports['sandbox-base']:FetchComponent('Middleware')
@@ -40,12 +38,10 @@ AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Vehicles', {
         'Callbacks',
         'Database',
-        'Fetch',
         'Execute',
         'Locations',
         'Chat',
         'Wallet',
-        'Fetch',
         'Utils',
         'Logger',
         'Middleware',
@@ -76,7 +72,7 @@ end)
 
 function RegisterMiddleware()
     Middleware:Add('Characters:Spawning', function(source)
-        local id = Fetch:CharacterSource(source):GetData('SID')
+        local id = exports['sandbox-characters']:FetchCharacterSource(source):GetData('SID')
         if VEHICLE_KEYS[id] == nil then
             VEHICLE_KEYS[id] = {}
         end
@@ -668,7 +664,7 @@ VEHICLE = {
         Properties = {
             -- Character Storing Personal Vehicle in Property
             Store = function(self, source, VIN, propertyId, cb)
-                local character = Fetch:CharacterSource(source)
+                local character = exports['sandbox-characters']:FetchCharacterSource(source)
                 local vehData = Vehicles.Owned:GetActive(VIN)
                 if propertyId and character and vehData and vehData:GetData('VIN') then
                     local vehOwner = vehData:GetData('Owner')

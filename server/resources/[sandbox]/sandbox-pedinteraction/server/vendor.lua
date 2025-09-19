@@ -27,7 +27,6 @@ local _illegalBlacklist = {
 
 AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
 function RetrieveVendorComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -40,7 +39,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vendor", {
-		"Fetch",
 		"Callbacks",
 		"Middleware",
 		"Logger",
@@ -73,7 +71,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end, 5)
 
 		Callbacks:RegisterServerCallback("Vendor:GetItems", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _created[data] ~= nil then
 					local itms = {}
@@ -95,10 +93,10 @@ AddEventHandler("Core:Shared:Ready", function()
 								and (
 									not v.requireCurrency
 									or v.requireCurrency
-										and ((v.coin ~= nil and Crypto:Has(source, v.coin, v.price)) or (v.coin == nil and Wallet:Has(
-											source,
-											v.price
-										)))
+									and ((v.coin ~= nil and Crypto:Has(source, v.coin, v.price)) or (v.coin == nil and Wallet:Has(
+										source,
+										v.price
+									)))
 								)
 							then
 								v.index = k
@@ -160,7 +158,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Vendor:BuyItem", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _created[data.id] ~= nil then
 					if not _created[data.id].stockTimeDelay or os.time() > _created[data.id].stockTimeDelay then
@@ -186,11 +184,11 @@ AddEventHandler("Core:Shared:Ready", function()
 									and (
 										not _created[data.id].requireCurrency
 										or _created[data.id].requireCurrency
-											and ((itemData.coin ~= nil and Crypto:Has(
-												source,
-												itemData.coin,
-												itemData.price
-											)) or Wallet:Has(source, itemData.price))
+										and ((itemData.coin ~= nil and Crypto:Has(
+											source,
+											itemData.coin,
+											itemData.price
+										)) or Wallet:Has(source, itemData.price))
 									)
 								then
 									if itemData.coin ~= nil then
@@ -214,9 +212,11 @@ AddEventHandler("Core:Shared:Ready", function()
 											if itemData.limited then
 												local vendorSales = char:GetData("Vendor") or {}
 												vendorSales[data.id] = vendorSales[data.id] or {}
-												vendorSales[data.id][itemData.item] = vendorSales[data.id][itemData.item]
+												vendorSales[data.id][itemData.item] = vendorSales[data.id]
+													[itemData.item]
 													or {}
-												vendorSales[data.id][itemData.item][itemData.limited.id] = vendorSales[data.id][itemData.item][itemData.limited.id]
+												vendorSales[data.id][itemData.item][itemData.limited.id] = vendorSales
+													[data.id][itemData.item][itemData.limited.id]
 													or 0
 												vendorSales[data.id][itemData.item][itemData.limited.id] += 1
 

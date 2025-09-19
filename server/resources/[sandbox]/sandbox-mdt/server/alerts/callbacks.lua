@@ -6,10 +6,10 @@ local trackerJobs = {
 
 function RegisterEACallbacks()
 	Callbacks:RegisterServerCallback("EmergencyAlerts:DisablePDTracker", function(source, target, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local tState = Player(target).state
-			local targetChar = Fetch:CharacterSource(target)
+			local targetChar = exports['sandbox-characters']:FetchCharacterSource(target)
 			if targetChar and tState and trackerJobs[tState.onDuty] and not tState.trackerDisabled then
 				tState.trackerDisabled = true
 				EmergencyAlerts:DisableTracker(target, true)
@@ -44,37 +44,37 @@ function RegisterEACallbacks()
 					elseif tState.onDuty == "prison" then
 						EmergencyAlerts:Create("13-C", "DOC Officer Tracker Disabled", { "police_alerts", "doc_alerts" },
 							location, {
-							icon = "circle-exclamation",
-							details = string.format(
-								"%s - %s %s | %s",
-								targetChar:GetData("Callsign") or "UNKN",
-								targetChar:GetData("First"),
-								targetChar:GetData("Last"),
-								radioFreq
-							)
-						}, false, {
-							icon = 303,
-							size = 1.2,
-							color = 26,
-							duration = (60 * 10),
-						}, 1)
+								icon = "circle-exclamation",
+								details = string.format(
+									"%s - %s %s | %s",
+									targetChar:GetData("Callsign") or "UNKN",
+									targetChar:GetData("First"),
+									targetChar:GetData("Last"),
+									radioFreq
+								)
+							}, false, {
+								icon = 303,
+								size = 1.2,
+								color = 26,
+								duration = (60 * 10),
+							}, 1)
 					elseif tState.onDuty == "ems" then
 						EmergencyAlerts:Create("13-C", "Medic Tracker Disabled", { "police_alerts", "ems_alerts" },
 							location, {
-							icon = "circle-exclamation",
-							details = string.format(
-								"%s - %s %s | %s",
-								targetChar:GetData("Callsign") or "UNKN",
-								targetChar:GetData("First"),
-								targetChar:GetData("Last"),
-								radioFreq
-							)
-						}, false, {
-							icon = 303,
-							size = 1.2,
-							color = 48,
-							duration = (60 * 10),
-						}, 2)
+								icon = "circle-exclamation",
+								details = string.format(
+									"%s - %s %s | %s",
+									targetChar:GetData("Callsign") or "UNKN",
+									targetChar:GetData("First"),
+									targetChar:GetData("Last"),
+									radioFreq
+								)
+							}, false, {
+								icon = 303,
+								size = 1.2,
+								color = 48,
+								duration = (60 * 10),
+							}, 2)
 					end
 				end)
 
@@ -88,7 +88,7 @@ function RegisterEACallbacks()
 
 	-- PD re-enabling their own tracker
 	Callbacks:RegisterServerCallback("EmergencyAlerts:EnablePDTracker", function(source, target, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 		if char and trackerJobs[pState.onDuty] and pState.trackerDisabled then
 			pState.trackerDisabled = false

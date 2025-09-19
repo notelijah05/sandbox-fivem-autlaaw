@@ -1,7 +1,7 @@
 RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
     local src = source
     local shopData = _fleetConfig[shop]
-    local char = Fetch:CharacterSource(src)
+    local char = exports['sandbox-characters']:FetchCharacterSource(src)
     if char and shopData and Jobs.Permissions:HasPermissionInJob(src, shopData.job, shopData.requiredPermission) then
         local chosenVehicle = shopData.vehicles[vehicle]
         if chosenVehicle and chosenVehicle.liveries[livery] ~= nil then
@@ -39,13 +39,13 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
                             if success and vehicle then
                                 Execute:Client(src, 'Notification', 'Success',
                                     string.format(
-                                    'Fleet Vehicle Purchase of a %s %s was Successful.<br><br>VIN: %s<br>Plate: %s',
+                                        'Fleet Vehicle Purchase of a %s %s was Successful.<br><br>VIN: %s<br>Plate: %s',
                                         chosenVehicle.make, chosenVehicle.model, vehicle.VIN, vehicle.RegisteredPlate),
                                     5000, 'cars')
                             else
                                 Logger:Error('Dealerships',
                                     string.format(
-                                    'Purchase of Fleet Vehicle Failed After Taking %s Cash from Bank Account: %s',
+                                        'Purchase of Fleet Vehicle Failed After Taking %s Cash from Bank Account: %s',
                                         chosenVehicle.price, purchaseBankAccount.Account))
                                 Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000,
                                     'cars')

@@ -6,7 +6,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
         if not badgeCooldowns[source] or (now - badgeCooldowns[source]) > 20000 then
             badgeCooldowns[source] = GetGameTimer()
-            local char = Fetch:CharacterSource(source)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
             if char and CheckMDTPermissions(source, { 'PD_HIGH_COMMAND', 'SAFD_HIGH_COMMAND', 'DOJ_JUDGE', 'DOC_HIGH_COMMAND' }) then
                 local officer = MDT.People:View(data.SID)
                 if officer then
@@ -22,7 +22,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
                             end
                         end
                     end
-    
+
                     if departmentData then
                         Inventory:AddItem(char:GetData('SID'), 'government_badge', 1, {
                             ['Department Name'] = departmentName,
@@ -58,7 +58,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
     end)
 
     Inventory.Items:RegisterUse("govid", "MDT", function(source, itemData)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and itemData and itemData.MetaData and itemData.MetaData.StateID then
             Callbacks:ClientCallback(source, "MDT:Client:CanShowLicense", itemData.MetaData, function(canShow)
                 TriggerClientEvent("MDT:Client:ShowLicense", -1, source, {

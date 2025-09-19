@@ -24,7 +24,6 @@ end
 
 AddEventHandler("Drugs:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
@@ -39,7 +38,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Drugs", {
-		"Fetch",
 		"Logger",
 		"Callbacks",
 		"Middleware",
@@ -60,7 +58,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RunDegenThread()
 
 		Middleware:Add("Characters:Spawning", function(source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local addictions = char:GetData("Addiction")
 				if char:GetData("Addiction") == nil then

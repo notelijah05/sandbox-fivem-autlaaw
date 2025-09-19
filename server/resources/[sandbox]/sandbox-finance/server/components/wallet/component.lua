@@ -1,13 +1,13 @@
 _WALLET = {
 	Get = function(self, source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			return char:GetData("Cash") or 0
 		end
 		return 0
 	end,
 	Has = function(self, source, amount)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and amount > 0 then
 			local currentCash = char:GetData("Cash") or 0
 			if currentCash >= amount then
@@ -17,7 +17,7 @@ _WALLET = {
 		return false
 	end,
 	Modify = function(self, source, amount, skipNotify)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local currentCash = char:GetData("Cash") or 0
 			local newCashBalance = math.floor(currentCash + amount)

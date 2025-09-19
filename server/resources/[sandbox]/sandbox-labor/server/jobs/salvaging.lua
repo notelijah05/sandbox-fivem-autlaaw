@@ -3,7 +3,7 @@ local _joiners = {}
 local _salvaging = {}
 
 local _lootTable = {
-	{ 5, { item = "heavy_glue", min = 10, max = 20 } },
+	{ 5,  { item = "heavy_glue", min = 10, max = 20 } },
 	{ 10, { item = "electronic_parts", min = 10, max = 30 } },
 	{ 10, { item = "ironbar", min = 15, max = 35 } },
 	{ 15, { item = "scrapmetal", min = 10, max = 20 } },
@@ -14,15 +14,15 @@ local _lootTable = {
 }
 
 local _deliveryLocs = {
-	{ coords = vector3(751.675, 6459.170, 30.389), heading = 63.946 },
-	{ coords = vector3(-358.859, 6062.094, 30.500), heading = 40.943 },
-	{ coords = vector3(58.984, 2795.010, 56.878), heading = 318.115 },
-	{ coords = vector3(1332.288, 4381.922, 43.328), heading = 163.755 },
+	{ coords = vector3(751.675, 6459.170, 30.389),   heading = 63.946 },
+	{ coords = vector3(-358.859, 6062.094, 30.500),  heading = 40.943 },
+	{ coords = vector3(58.984, 2795.010, 56.878),    heading = 318.115 },
+	{ coords = vector3(1332.288, 4381.922, 43.328),  heading = 163.755 },
 	{ coords = vector3(-1143.611, 2672.218, 17.178), heading = 223.368 },
-	{ coords = vector3(915.404, 3560.406, 32.805), heading = 273.063 },
-	{ coords = vector3(2909.706, 4471.410, 47.136), heading = 135.970 },
-	{ coords = vector3(678.187, 73.964, 82.138), heading = 264.695 },
-	{ coords = vector3(1667.063, -62.022, 173.170), heading = 252.920 },
+	{ coords = vector3(915.404, 3560.406, 32.805),   heading = 273.063 },
+	{ coords = vector3(2909.706, 4471.410, 47.136),  heading = 135.970 },
+	{ coords = vector3(678.187, 73.964, 82.138),     heading = 264.695 },
+	{ coords = vector3(1667.063, -62.022, 173.170),  heading = 252.920 },
 }
 
 AddEventHandler("Labor:Server:Startup", function()
@@ -38,7 +38,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Salvaging:SalvageCar", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -81,7 +81,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Salvaging:TriggerDelivery", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if _salvaging[_joiners[source]].state == 2 then
 			_salvaging[_joiners[source]].state = 3
 			Inventory:AddItem(char:GetData("SID"), "packaged_parts", 1, {}, 1)
@@ -97,7 +97,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Salvaging:EndDelivery", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -135,7 +135,7 @@ AddEventHandler("Salvaging:Server:OnDuty", function(joiner, members, isWorkgroup
 		state = 0,
 	}
 
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
 	Phone.Notification:Add(joiner, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
 	TriggerClientEvent("Salvaging:Client:OnDuty", joiner, joiner, os.time())
@@ -143,7 +143,7 @@ AddEventHandler("Salvaging:Server:OnDuty", function(joiner, members, isWorkgroup
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner
-			local member = Fetch:CharacterSource(v.ID)
+			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
 			Phone.Notification:Add(v.ID, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
 			TriggerClientEvent("Salvaging:Client:OnDuty", v.ID, joiner, os.time())

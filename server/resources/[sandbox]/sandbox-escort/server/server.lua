@@ -4,7 +4,6 @@ function RetrieveComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -18,7 +17,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Callbacks",
 		"Middleware",
 		"Execute",
-		"Fetch",
 		"Utils",
 		"Jobs",
 		"Chat",
@@ -107,13 +105,13 @@ _ESCORT = {
 		if pState.isEscorting ~= nil then
 			local tState = Player(pState.isEscorting).state
 
-            if GetPlayerEndpoint(pState.isEscorting) then -- Check if player source still online
-                local p = promise.new()
-                Callbacks:ClientCallback(pState.isEscorting, "Escort:StopEscort", {}, function()
-                    p:resolve(true)
-                end)
-                Citizen.Await(p)
-            end
+			if GetPlayerEndpoint(pState.isEscorting) then -- Check if player source still online
+				local p = promise.new()
+				Callbacks:ClientCallback(pState.isEscorting, "Escort:StopEscort", {}, function()
+					p:resolve(true)
+				end)
+				Citizen.Await(p)
+			end
 
 			tState.myEscorter = nil
 			tState.isEscorting = nil
@@ -142,7 +140,7 @@ function RegisterCallbacks()
 end
 
 function RegisterMiddleware()
-	
+
 end
 
 local function HandleLogout(source)
@@ -158,7 +156,7 @@ local function HandleLogout(source)
 			end)
 			Citizen.Await(p)
 		end
-		
+
 		tState.myEscorter = nil
 		tState.isEscorting = nil
 		pState.myEscorter = nil

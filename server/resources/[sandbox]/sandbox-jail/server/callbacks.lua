@@ -1,7 +1,7 @@
 function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Jail:SpawnJailed", function(source, data, cb)
 		Routing:RoutePlayerToGlobalRoute(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		TriggerClientEvent("Jail:Client:EnterJail", source)
 		cb(true)
 	end)
@@ -35,21 +35,21 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Jail:MakeItem", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if data == "food" or data == "drink" then
 			Inventory:AddItem(char:GetData("SID"), string.format("prison_%s", data), 1, {}, 1)
 		end
 	end)
 
 	Callbacks:RegisterServerCallback("Jail:MakeJuice", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data then
 			Inventory:AddItem(char:GetData("SID"), data, 1, {}, 1)
 		end
 	end)
 
 	Callbacks:RegisterServerCallback("Jail:Server:ExploitAttempt", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			if data == 1 then
 				Logger:Info(

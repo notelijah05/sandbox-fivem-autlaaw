@@ -11,7 +11,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	Callbacks:RegisterServerCallback("Prison:Action", function(source, data, cb)
 		if _joiners[source] ~= nil and _Prisoners[_joiners[source]] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				Labor.Offers:Update(_joiners[source], _JOB, 1, true, {
 					title = "Prison Labor",
@@ -34,7 +34,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				})
 
 				if not Jail:IsReleaseEligible(source) then
-					local char = Fetch:CharacterSource(source)
+					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					local jailed = char:GetData("Jailed")
 					jailed.Release = jailed.Release - _Prisoners[_joiners[source]].nodes.timeReduce
 					char:SetData("Jailed", jailed)
@@ -57,7 +57,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	Callbacks:RegisterServerCallback("Prison:TurnIn", function(source, data, cb)
 		if _joiners[source] ~= nil and _Prisoners[_joiners[source]].tasks >= 3 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char:GetData("TempJob") == _JOB then
 				Labor.Offers:ManualFinish(_joiners[source], _JOB)
 				cb(true)
@@ -115,7 +115,7 @@ AddEventHandler("Prison:Server:OnDuty", function(joiner, members, isWorkgroup)
 		state = 0,
 	}
 
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
 
 	TriggerClientEvent("Prison:Client:OnDuty", joiner, joiner, os.time())

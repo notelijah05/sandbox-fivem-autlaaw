@@ -1,6 +1,6 @@
 function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Apartment:Validate", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		local isMyApartment = data.id == GlobalState[string.format("%s:Apartment", source)]
@@ -39,7 +39,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Apartment:SpawnInside", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		cb(Apartment:Enter(source, char:GetData("Apartment"), -1, true))
 	end)
 

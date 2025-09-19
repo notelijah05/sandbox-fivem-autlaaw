@@ -8,7 +8,6 @@ function RetrieveComponents()
 	DataStore = exports["sandbox-base"]:FetchComponent("DataStore")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	GlobalConfig = exports["sandbox-base"]:FetchComponent("Config")
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"DataStore",
 		"Logger",
 		"Database",
-		"Fetch",
 		"Logger",
 		"Chat",
 		"Config",

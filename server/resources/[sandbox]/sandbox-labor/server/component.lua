@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -40,7 +39,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Logger",
 		"Generator",
 		"Utils",
-		"Fetch",
 		"Phone",
 		"Wallet",
 		"Inventory",
@@ -310,7 +308,7 @@ _LABOR = {
 			end
 		end,
 		Complete = function(self, source, job)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				Logger:Info(
 					"Labor",
@@ -324,12 +322,13 @@ _LABOR = {
 					)
 				)
 				if _Jobs[job].Salary > 0 then
-					Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account, _Jobs[job].Salary, {
-						type = "paycheck",
-						title = "Paycheck",
-						description = string.format("Paycheck For Labor Worked: %s - $%s", job, _Jobs[job].Salary),
-						data = _Jobs[job].Salary,
-					})
+					Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account, _Jobs[job].Salary,
+						{
+							type = "paycheck",
+							title = "Paycheck",
+							description = string.format("Paycheck For Labor Worked: %s - $%s", job, _Jobs[job].Salary),
+							data = _Jobs[job].Salary,
+						})
 				end
 
 				Reputation.Modify:Add(source, job, _Jobs[job].RepAward)
@@ -442,7 +441,7 @@ _LABOR = {
 	},
 	Workgroups = {
 		Create = function(self, source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 					return false
@@ -514,7 +513,7 @@ _LABOR = {
 			return false
 		end,
 		Join = function(self, creator, source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil and char:GetData("TempJob") == nil then
 				if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 					return false
@@ -578,7 +577,7 @@ _LABOR = {
 		end,
 		Request = function(self, group, source)
 			if _pendingInvites[source] == nil then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil and char:GetData("TempJob") == nil then
 					if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 						return false
@@ -657,7 +656,7 @@ _LABOR = {
 			end
 		end,
 		Leave = function(self, group, source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local myId = char:GetData("SID")
 				for k, v in ipairs(_Groups) do
@@ -698,7 +697,7 @@ _LABOR = {
 				end
 			end
 
-			
+
 			TriggerClientEvent(event, joiner, ...)
 		end,
 	},
@@ -715,7 +714,8 @@ _LABOR = {
 					if isWorkgroup then
 						for k, v in ipairs(_Groups) do
 							if v.Creator.ID == joiner then
-								TriggerEvent(string.format("%s:Server:OnDuty", job), joiner, v.Members, isWorkgroup, data or {})
+								TriggerEvent(string.format("%s:Server:OnDuty", job), joiner, v.Members, isWorkgroup,
+									data or {})
 								_Groups[k].Job = job
 								_Groups[k].Working = true
 								return true
@@ -742,7 +742,7 @@ _LABOR = {
 							for k, v in ipairs(_Groups) do
 								if v.Creator.ID == joiner then
 									for k2, v2 in ipairs(v.Members) do
-										local c = Fetch:CharacterSource(v2.ID)
+										local c = exports['sandbox-characters']:FetchCharacterSource(v2.ID)
 										if c ~= nil then
 											c:SetData("TempJob", nil)
 											Phone.Notification:RemoveById(v2.ID, "LABOR_OBJ")
@@ -781,7 +781,7 @@ _LABOR = {
 
 						_offers[joiner] = nil
 
-						local char = Fetch:CharacterSource(joiner)
+						local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 						if char then
 							char:SetData("TempJob", nil)
 							Phone.Notification:RemoveById(joiner, "LABOR_OBJ")

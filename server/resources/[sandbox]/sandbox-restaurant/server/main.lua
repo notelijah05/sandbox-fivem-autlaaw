@@ -4,7 +4,6 @@ function RetrieveComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Callbacks",
 		"Middleware",
 		"Logger",
-		"Fetch",
 		"Inventory",
 		"Crafting",
 		"Jobs",

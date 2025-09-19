@@ -123,7 +123,7 @@ function CreateLoanTasks()
                                 for k, v in ipairs(results) do
                                     if v.SID then
                                         DecreaseCharacterCreditScore(v.SID, _creditScoreConfig.removal.defaultedLoan)
-                                        local onlineChar = Fetch:SID(v.SID)
+                                        local onlineChar = exports['sandbox-characters']:FetchBySID(v.SID)
                                         if onlineChar then
                                             SendDefaultedLoanNotification(onlineChar:GetData('Source'), v)
                                         end
@@ -162,7 +162,7 @@ function CreateLoanTasks()
                             if v.SID then
                                 DecreaseCharacterCreditScore(v.SID, _creditScoreConfig.removal.missedLoanPayment)
 
-                                local onlineChar = Fetch:SID(v.SID)
+                                local onlineChar = exports['sandbox-characters']:FetchBySID(v.SID)
                                 if onlineChar then
                                     SendMissedLoanNotification(onlineChar:GetData('Source'), v)
                                 end
@@ -202,7 +202,7 @@ function CreateLoanTasks()
             if success and #results > 0 then
                 for k, v in ipairs(results) do
                     if v.SID then
-                        local onlineChar = Fetch:SID(v.SID)
+                        local onlineChar = exports['sandbox-characters']:FetchBySID(v.SID)
                         if onlineChar then
                             Phone.Notification:Add(onlineChar:GetData("Source"), "Loan Payment Due",
                                 "You have a loan payment that is due very soon.", os.time(), 7500, "loans", {})

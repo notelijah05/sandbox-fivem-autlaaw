@@ -1,6 +1,6 @@
 PHONE.Documents = {
 	Create = function(self, source, doc)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and type(doc) == "table" then
 			local p = promise.new()
 
@@ -17,7 +17,7 @@ PHONE.Documents = {
 		return false
 	end,
 	Edit = function(self, source, id, doc)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and type(doc) == "table" then
 			local ts = os.time()
 			MySQL.update.await("UPDATE character_documents SET title = ?, content = ?, time = NOW() WHERE id = ?", {
@@ -39,7 +39,7 @@ PHONE.Documents = {
 			)
 
 			for k, v in ipairs(shared) do
-				local char = Fetch:SID(v.sid)
+				local char = exports['sandbox-characters']:FetchBySID(v.sid)
 				if char then
 					TriggerClientEvent("Phone:Client:UpdateData", char:GetData("Source"), "myDocuments", id, {
 						id = doc.id,
@@ -68,7 +68,7 @@ PHONE.Documents = {
 		return false
 	end,
 	Delete = function(self, source, id)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local ownerId = MySQL.scalar.await("SELECT sid FROM character_documents WHERE id = ?", {
 				id,
@@ -96,7 +96,7 @@ PHONE.Documents = {
 				MySQL.transaction(queries)
 
 				for k, v in ipairs(shared) do
-					local char = Fetch:SID(v.sid)
+					local char = exports['sandbox-characters']:FetchBySID(v.sid)
 					if char ~= nil then
 						TriggerClientEvent("Phone:Client:Documents:Deleted", char:GetData("Source"), id)
 						--TriggerClientEvent("Phone:Client:RemoveData", char:GetData("Source"), "myDocuments", id)
@@ -167,14 +167,14 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Documents:Refresh", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			cb("myDocuments", GetDocuments(char:GetData("SID")))
 		end
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Documents:Share", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.type and data.document then
 			local target = nil
 			if not data.nearby then
@@ -182,7 +182,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					return cb(false)
 				end
 
-				target = Fetch:SID(data.target)
+				target = exports['sandbox-characters']:FetchBySID(data.target)
 
 				if not target then
 					return cb(false)
@@ -268,7 +268,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			if data.isCopy then
 				cb(Phone.Documents:Create(source, data.document))
 			else
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char then
 					local sid = char:GetData("SID")
 					local signName = string.format("%s %s", char:GetData("First"):sub(1, 1), char:GetData("Last"))
@@ -295,7 +295,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						)
 
 						if data.requireSignature then
-							local sender = Fetch:SID(data.document.sharedBy.SID)
+							local sender = exports['sandbox-characters']:FetchBySID(data.document.sharedBy.SID)
 							if sender ~= nil then
 								TriggerClientEvent(
 									"Phone:Client:Documents:SigReqReceived",
@@ -323,7 +323,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 							}
 						)
 
-						local sender = Fetch:SID(data.document.sharedBy.SID)
+						local sender = exports['sandbox-characters']:FetchBySID(data.document.sharedBy.SID)
 						if sender ~= nil then
 							TriggerClientEvent(
 								"Phone:Client:Documents:SigReqReceived",
@@ -353,7 +353,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Documents:Sign", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local signName = string.format("%s %s", char:GetData("First"):sub(1, 1), char:GetData("Last"))
 			local ts = os.time()
@@ -377,7 +377,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				tonumber(data),
 			})
 
-			local owner = Fetch:SID(ownerId)
+			local owner = exports['sandbox-characters']:FetchBySID(ownerId)
 			if owner ~= nil then
 				TriggerClientEvent(
 					"Phone:Client:Documents:SigReqReceived",
@@ -396,7 +396,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Documents:GetSignatures", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local signers = MySQL.rawExecute.await(
 				"SELECT sid, UNIX_TIMESTAMP(signed) as signed, signed_name FROM character_documents_shared WHERE doc_id = ? AND signature_required = ?",

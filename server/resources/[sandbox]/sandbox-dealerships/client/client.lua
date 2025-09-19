@@ -13,7 +13,6 @@ function RetrieveComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
@@ -36,7 +35,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Callbacks",
 		"Targeting",
 		"Jobs",
-		"Fetch",
 		"Polyzone",
 		"Blips",
 		"Action",

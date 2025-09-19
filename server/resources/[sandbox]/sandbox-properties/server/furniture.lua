@@ -2,12 +2,12 @@ _loadedFurniture = {}
 
 function CreateFurnitureCallbacks()
     Callbacks:RegisterServerCallback("Properties:PlaceFurniture", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local insideProperty = GlobalState[string.format("%s:Property", source)]
             if insideProperty and data.model and data.coords and data.rotation then
                 local property = _properties[insideProperty]
-                if property and (property.keys ~= nil and property.keys[char:GetData("ID")]) and _loadedFurniture[property.id]  and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.furniture or property.keys[char:GetData("ID")].Owner) then
+                if property and (property.keys ~= nil and property.keys[char:GetData("ID")]) and _loadedFurniture[property.id] and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.furniture or property.keys[char:GetData("ID")].Owner) then
                     local fData = FurnitureConfig[data.model]
                     if fData then
                         local currentId = 0
@@ -36,7 +36,8 @@ function CreateFurnitureCallbacks()
                         if updated then
                             if _insideProperties[property.id] then
                                 for k, v in pairs(_insideProperties[property.id]) do
-                                    TriggerClientEvent("Furniture:Client:AddItem", k, property.id, #_loadedFurniture[property.id], addedItem)
+                                    TriggerClientEvent("Furniture:Client:AddItem", k, property.id,
+                                        #_loadedFurniture[property.id], addedItem)
                                 end
                             end
 
@@ -52,7 +53,7 @@ function CreateFurnitureCallbacks()
     end)
 
     Callbacks:RegisterServerCallback("Properties:MoveFurniture", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local insideProperty = GlobalState[string.format("%s:Property", source)]
             if insideProperty and data.id and data.coords and data.rotation then
@@ -79,7 +80,8 @@ function CreateFurnitureCallbacks()
                         if updated then
                             if _insideProperties[property.id] then
                                 for k, v in pairs(_insideProperties[property.id]) do
-                                    TriggerClientEvent("Furniture:Client:MoveItem", k, property.id, data.id, _loadedFurniture[property.id][index])
+                                    TriggerClientEvent("Furniture:Client:MoveItem", k, property.id, data.id,
+                                        _loadedFurniture[property.id][index])
                                 end
                             end
 
@@ -95,13 +97,12 @@ function CreateFurnitureCallbacks()
     end)
 
     Callbacks:RegisterServerCallback("Properties:DeleteFurniture", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local insideProperty = GlobalState[string.format("%s:Property", source)]
             if insideProperty and data.id then
                 local property = _properties[insideProperty]
                 if property and (property.keys ~= nil and property.keys[char:GetData("ID")]) and _loadedFurniture[property.id] and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.furniture or property.keys[char:GetData("ID")].Owner) then
-
                     local nF = {}
                     for k, v in ipairs(_loadedFurniture[property.id]) do
                         if v.id ~= data.id then
@@ -119,7 +120,8 @@ function CreateFurnitureCallbacks()
                     if updated then
                         if _insideProperties[property.id] then
                             for k, v in pairs(_insideProperties[property.id]) do
-                                TriggerClientEvent("Furniture:Client:DeleteItem", k, property.id, data.id, _loadedFurniture[property.id])
+                                TriggerClientEvent("Furniture:Client:DeleteItem", k, property.id, data.id,
+                                    _loadedFurniture[property.id])
                             end
                         end
 

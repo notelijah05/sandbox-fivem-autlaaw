@@ -20,7 +20,7 @@ end
 
 function RegisterLoanCallbacks()
     Callbacks:RegisterServerCallback('Loans:GetLoans', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local SID = char:GetData('SID')
             local loans = GetCharactersLoans(SID)
@@ -34,7 +34,7 @@ function RegisterLoanCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Loans:Payment', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and data.loan then
             local SID = char:GetData('SID')
             local res = Loans:MakePayment(source, data.loan, data.paymentAhead, data.weeks)

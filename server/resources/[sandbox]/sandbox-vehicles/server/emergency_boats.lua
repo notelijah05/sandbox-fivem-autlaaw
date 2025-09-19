@@ -7,7 +7,7 @@ local boatCooldowns = {}
 
 RegisterNetEvent("Vehicles:Server:RequestEmergencyBoat", function(parkingSpace)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	local onDuty = Player(src).state.onDuty
 	if
 		char
@@ -36,7 +36,7 @@ end)
 
 RegisterNetEvent("Vehicles:Server:DeleteEmergencyBoat", function(vNet)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	local onDuty = Player(src).state.onDuty
 	if char and (onDuty == "police" or onDuty == "ems") then
 		local veh = NetworkGetEntityFromNetworkId(vNet)

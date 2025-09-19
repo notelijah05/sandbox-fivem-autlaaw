@@ -4,8 +4,8 @@ AddEventHandler("Finance:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Wallet:GiveCash", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
-		local targetChar = Fetch:SID(data.target)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local targetChar = exports['sandbox-characters']:FetchBySID(data.target)
 
 		if char ~= nil and targetChar ~= nil then
 			local playerCoords = GetEntityCoords(GetPlayerPed(source))
@@ -71,8 +71,8 @@ AddEventHandler("Finance:Server:Startup", function()
 	Chat:RegisterCommand("givecash", function(source, args, rawCommand)
 		local target = tonumber(args[1])
 		if target and target > 0 then
-			local char = Fetch:CharacterSource(source)
-			local targetChar = Fetch:SID(target)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			local targetChar = exports['sandbox-characters']:FetchBySID(target)
 
 			if char and targetChar and targetChar:GetData("Source") ~= char:GetData("Source") then
 				local playerCoords = GetEntityCoords(GetPlayerPed(source))

@@ -1,6 +1,5 @@
 AddEventHandler("Chat:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -10,7 +9,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Chat", {
-		"Fetch",
 		"Middleware",
 		"Chat",
 		"Jobs",
@@ -61,8 +59,8 @@ CHAT = {
 	_required = { "Send" },
 	Refresh = {
 		Commands = function(self, source)
-			local player = Fetch:Source(source)
-			local char = Fetch:CharacterSource(source)
+			local player = exports['sandbox-base']:FetchSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil and player ~= nil then
 				local myDuty = Player(source).state.onDuty
 				TriggerClientEvent("chat:resetSuggestions", source)
@@ -171,7 +169,7 @@ end
 
 CHAT.Send = {
 	OOC = function(self, source, message)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			TriggerClientEvent("chat:addMessage", -1, {
 				time = os.time(),
@@ -235,7 +233,7 @@ CHAT.Send = {
 	},
 	Services = {
 		Emergency = function(self, source, message)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			TriggerEvent("EmergencyAlerts:Server:ServerDoPredefined", source, "call911", {
 				details = string.format("%s | %s", char:GetData("SID"), char:GetData("Phone")),
 			})
@@ -259,7 +257,7 @@ CHAT.Send = {
 			end
 		end,
 		EmergencyAnonymous = function(self, source, message)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 			TriggerEvent("EmergencyAlerts:Server:ServerDoPredefined", source, "call911anon")
 			for k, v in ipairs(GetPlayers()) do
@@ -277,8 +275,8 @@ CHAT.Send = {
 			end
 		end,
 		EmergencyRespond = function(self, source, target, message)
-			local char = Fetch:CharacterSource(source)
-			local tChar = Fetch:CharacterSource(target)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			local tChar = exports['sandbox-characters']:FetchCharacterSource(target)
 			if tChar ~= nil then
 				local name = string.format("%s %s", char:GetData("First"), char:GetData("Last"))
 				local str = string.format("%s -> %s", name, tChar:GetData("SID"))
@@ -303,7 +301,7 @@ CHAT.Send = {
 			end
 		end,
 		NonEmergency = function(self, source, message)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				TriggerEvent("EmergencyAlerts:Server:ServerDoPredefined", source, "call311", {
 					details = string.format("%s | %s", char:GetData("SID"), char:GetData("Phone")),
@@ -330,7 +328,7 @@ CHAT.Send = {
 			end
 		end,
 		NonEmergencyAnonymous = function(self, source, message)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				TriggerEvent("EmergencyAlerts:Server:ServerDoPredefined", source, "call311anon")
 				for k, v in ipairs(GetPlayers()) do
@@ -349,8 +347,8 @@ CHAT.Send = {
 			end
 		end,
 		NonEmergencyRespond = function(self, source, target, message)
-			local char = Fetch:CharacterSource(source)
-			local tChar = Fetch:CharacterSource(target)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			local tChar = exports['sandbox-characters']:FetchCharacterSource(target)
 			if tChar ~= nil then
 				local name = string.format("%s %s", char:GetData("First"), char:GetData("Last"))
 				local str = string.format("%s -> %s", name, tChar:GetData("SID"))

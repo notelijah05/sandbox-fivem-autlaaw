@@ -8,7 +8,7 @@ AddEventHandler("Crypto:Server:Startup", function()
 
 	-- Compatability since we're renaming MALD
 	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myCrypto = char:GetData("Crypto")
 
 		if myCrypto.PLEB ~= nil then
@@ -21,7 +21,7 @@ end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	Callbacks:RegisterServerCallback("Phone:Crypto:Buy", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			return cb(Crypto.Exchange:Buy(data.Short, char:GetData("SID"), data.Quantity))
 		end
@@ -29,7 +29,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Crypto:Sell", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			return cb(Crypto.Exchange:Sell(data.Short, char:GetData("SID"), data.Quantity))
 		end
@@ -37,7 +37,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Crypto:Transfer", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and char:GetData("SID") ~= data.Target then
 			return cb(Crypto.Exchange:Transfer(data.Short, char:GetData("SID"), data.Target, data.Quantity))
 		end

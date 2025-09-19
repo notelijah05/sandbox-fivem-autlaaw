@@ -1,6 +1,6 @@
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	Callbacks:RegisterServerCallback("MDT:Hire", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
@@ -40,7 +40,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("MDT:Fire", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
@@ -101,7 +101,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						}, function(success, results)
 							if success then
 								if (data.JobId == "police" or data.JobId == "ems") then
-									local char = Fetch:SID(data.SID)
+									local char = exports['sandbox-characters']:FetchBySID(data.SID)
 									if char then
 										char:SetData("Callsign", false)
 									end
@@ -119,7 +119,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("MDT:ManageEmployment", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
@@ -183,8 +183,8 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-    Callbacks:RegisterServerCallback("MDT:Update:jobPermissions", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	Callbacks:RegisterServerCallback("MDT:Update:jobPermissions", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
 			'PD_HIGH_COMMAND',
@@ -195,23 +195,23 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		local targetData = Jobs:DoesExist(data.JobId, data.WorkplaceId, data.GradeId)
 
 		if char and data and data.UpdatedPermissions and (hasPerms or isSystemAdmin) and targetData then
-            local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
-            if isSystemAdmin or (plyrJob and plyrJob.Grade.Level > targetData.Grade.Level) then
-                cb(
-                    Jobs.Management.Grades:Edit(data.JobId, data.WorkplaceId, data.GradeId, {
-                        Permissions = data.UpdatedPermissions,
-                    })
-                )
-            else
-                cb(false)
-            end
+			local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
+			if isSystemAdmin or (plyrJob and plyrJob.Grade.Level > targetData.Grade.Level) then
+				cb(
+					Jobs.Management.Grades:Edit(data.JobId, data.WorkplaceId, data.GradeId, {
+						Permissions = data.UpdatedPermissions,
+					})
+				)
+			else
+				cb(false)
+			end
 		else
 			cb(false)
 		end
 	end)
 
 	Callbacks:RegisterServerCallback("MDT:Suspend", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
@@ -274,7 +274,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						},
 					}, function(success, results)
 						if success then
-							local char = Fetch:SID(data.SID)
+							local char = exports['sandbox-characters']:FetchBySID(data.SID)
 							if char then
 								local suspensionShit = char:GetData("MDTSuspension") or {}
 
@@ -299,7 +299,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("MDT:Unsuspend", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
@@ -350,7 +350,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						},
 					}, function(success, results)
 						if success then
-							local char = Fetch:SID(data.SID)
+							local char = exports['sandbox-characters']:FetchBySID(data.SID)
 							if char then
 								local suspensionShit = char:GetData("MDTSuspension") or {}
 								suspensionShit[data.JobId] = nil

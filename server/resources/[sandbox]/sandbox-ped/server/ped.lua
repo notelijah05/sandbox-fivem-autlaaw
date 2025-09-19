@@ -283,7 +283,6 @@ GlobalState["Ped:Pricing"] = {
 
 AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
@@ -296,7 +295,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
-		"Fetch",
 		"Callbacks",
 		"Database",
 		"Locations",
@@ -317,7 +315,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		GlobalState["ClothingStoreHidden"] = _hideFromStore
 
 		Chat:RegisterCommand("m0", function(source, args, rawCommand)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 				if ped.customization.components.mask.drawableId ~= 0 then
@@ -331,7 +329,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		})
 
 		Chat:RegisterCommand("h0", function(source, args, rawCommand)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 				if not ped.customization.props.hat.disabled then
@@ -345,7 +343,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		})
 
 		Chat:RegisterCommand("h1", function(source, args, rawCommand)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 				if not ped.customization.props.hat.disabled then
@@ -359,7 +357,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		})
 
 		Chat:RegisterCommand("g1", function(source, args, rawCommand)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 				if not ped.customization.props.glass.disabled then
@@ -373,7 +371,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		})
 
 		Chat:RegisterCommand("g0", function(source, args, rawCommand)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				TriggerClientEvent("Ped:Client:RemoveGlasses", source)
 			end
@@ -521,7 +519,7 @@ PED = {
 		return Citizen.Await(p)
 	end,
 	ApplyOutfit = function(self, source, outfit)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local ped = char:GetData("Ped")
 			ped.customization.components = outfit.data.components or ped.customization.components
@@ -533,7 +531,7 @@ PED = {
 	end,
 	Mask = {
 		Equip = function(self, source, data)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 				ped.customization.components.mask = data
@@ -541,7 +539,7 @@ PED = {
 			end
 		end,
 		Unequip = function(self, source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 
@@ -570,7 +568,7 @@ PED = {
 			end
 		end,
 		UnequipNoItem = function(self, source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 				if ped.customization.components.mask.drawableId ~= 0 then
@@ -588,7 +586,7 @@ PED = {
 	},
 	Hat = {
 		Equip = function(self, source, data)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 				ped.customization.props.hat = data
@@ -596,7 +594,7 @@ PED = {
 			end
 		end,
 		Unequip = function(self, source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 
@@ -627,7 +625,7 @@ PED = {
 	},
 	Necklace = {
 		Equip = function(self, source, data)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 				ped.customization.components.accessory = data
@@ -635,7 +633,7 @@ PED = {
 			end
 		end,
 		Unequip = function(self, source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 				local itemId = Inventory.Items:GetWithStaticMetadata(
@@ -660,7 +658,7 @@ PED = {
 			end
 		end,
 		UnequipNoItem = function(self, source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 				if ped.customization.components.mask.drawableId ~= 0 then
@@ -698,7 +696,7 @@ end
 
 function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Ped:CheckPed", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			Database.Game:findOne({
 				collection = "peds",
@@ -746,7 +744,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Ped:MakePayment", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pricing = GlobalState["Ped:Pricing"][data.type]
 		if pricing == 0 or char:GetData("Cash") >= pricing then
 			char:SetData("Cash", char:GetData("Cash") - pricing)
@@ -757,12 +755,12 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Ped:SavePed", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		cb(Ped:Save(char, data.ped))
 	end)
 
 	Callbacks:RegisterServerCallback("Ped:RemoveMask", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local ped = char:GetData("Ped")
 			if ped.customization.components.mask.drawableId ~= 0 then
@@ -774,7 +772,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Ped:RemoveHat", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local ped = char:GetData("Ped")
 			if not ped.customization.props.hat.disabled then
@@ -786,7 +784,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Ped:RemoveAccessory", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local ped = char:GetData("Ped")
 			if ped.customization.components.accessory.drawableId ~= 0 then
@@ -798,7 +796,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Ped:GetWhitelistedPeds", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local res = MySQL.query.await("SELECT model, label FROM whitelisted_peds WHERE SID = ?", {
 				char:GetData("SID")

@@ -13,7 +13,7 @@ AddEventHandler("Casino:Server:Startup", function()
     Callbacks:RegisterServerCallback("Casino:WheelStart", function(source, data, cb)
         if not GlobalState["Casino:WheelStarted"] then
             if data?.turbo then
-                local char = Fetch:CharacterSource(source)
+                local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
                 if char and Wallet:Has(source, 7500) and Inventory.Items:Has(char:GetData("SID"), 1, "diamond_vip", 1) then
                     GlobalState["Casino:WheelStarted"] = {
@@ -172,7 +172,7 @@ function SpinTheFuckingWheel(slice)
 end
 
 function GiveWheelPrize(source, randomPrize)
-    local char = Fetch:CharacterSource(source)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char then
         local winValue = 0
 

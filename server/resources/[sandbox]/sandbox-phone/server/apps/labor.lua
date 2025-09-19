@@ -1,5 +1,5 @@
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-    Middleware:Add("Phone:Spawning", function(source, char)
+	Middleware:Add("Phone:Spawning", function(source, char)
 		return {
 			{
 				type = "jobs",
@@ -17,7 +17,7 @@ PHONE.Labor = {}
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	Callbacks:RegisterServerCallback("Phone:Labor:CreateWorkgroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myDuty = Player(source).state.onDuty
 
 		if myDuty and (myDuty == "police" or myDuty == "ems") then
@@ -46,7 +46,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Labor:DisbandWorkgroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 			cb(false)
 		else
@@ -55,7 +55,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Labor:JoinWorkgroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myDuty = Player(source).state.onDuty
 		if myDuty and (myDuty == "police" or myDuty == "ems") then
 			Logger:Trace(
@@ -83,7 +83,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Labor:LeaveWorkgroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 			cb(false)
 		else
@@ -92,7 +92,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Labor:StartLaborJob", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myDuty = Player(source).state.onDuty
 		if myDuty and (myDuty == "police" or myDuty == "ems") then
 			Logger:Trace(
@@ -121,7 +121,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Labor:QuitLaborJob", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 			cb(false)
 		else

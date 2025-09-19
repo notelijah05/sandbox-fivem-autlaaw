@@ -79,7 +79,7 @@ function RegisterItemUses()
 					mod = 900,
 				},
 				{
-	
+
 					base = 3500,
 					mod = 900,
 				},
@@ -200,13 +200,13 @@ function RegisterItemUses()
 			end
 			veh = NetworkGetEntityFromNetworkId(veh)
 			if veh and DoesEntityExist(veh) then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char then
 					local vehState = Entity(veh).state
 					if not vehState.VIN then
 						return
 					end
-	
+
 					if not vehState.CarBomb then
 						vehState.CarBomb = {
 							Speed = config.minSpeed,
@@ -274,11 +274,11 @@ function RegisterItemUses()
 end
 
 local polishTypes = {
-	{ -- Normal Polish
+	{                          -- Normal Polish
 		length = (60 * 60 * 24 * 7), -- Lasts for a week
 		multiplier = 10.0,
 	},
-	{ -- High Polish
+	{                           -- High Polish
 		length = (60 * 60 * 24 * 14), -- Lasts for 2 weeks
 		multiplier = 15.0,
 	}
@@ -311,7 +311,8 @@ function UseCarPolish(source, itemData, type)
 
 				Execute:Client(source, "Notification", "Success", "Polish Applied")
 			else
-				Execute:Client(source, "Notification", "Error", "Vehicle Already Has That Polish and It Was Recently Installed")
+				Execute:Client(source, "Notification", "Error",
+					"Vehicle Already Has That Polish and It Was Recently Installed")
 			end
 		end
 	end)
@@ -329,7 +330,8 @@ function UsePurgeColorController(source, itemData)
 				return
 			end
 
-			Callbacks:ClientCallback(source, "Vehicles:UsePurgeColorControllerMenu", { purgeColor = vehState?.PurgeColor, purgeLocation = vehState?.PurgeLocation }, function(retval)
+			Callbacks:ClientCallback(source, "Vehicles:UsePurgeColorControllerMenu",
+				{ purgeColor = vehState?.PurgeColor, purgeLocation = vehState?.PurgeLocation }, function(retval)
 				if retval then
 					if retval.purgeColor then
 						vehState.PurgeColor = {
@@ -346,7 +348,6 @@ function UsePurgeColorController(source, itemData)
 					Execute:Client(source, "Notification", "Error", "Changes were discarded")
 				end
 			end)
-			
 		end
 	end)
 end
@@ -374,13 +375,13 @@ end)
 
 RegisterServerEvent('Vehicles:Server:NitrousUsage', function(vNet, used)
 	local src = source
-    local veh = NetworkGetEntityFromNetworkId(vNet)
+	local veh = NetworkGetEntityFromNetworkId(vNet)
 
-    local ent = Entity(veh)
-    if ent and ent.state and ent.state.Nitrous then
+	local ent = Entity(veh)
+	if ent and ent.state and ent.state.Nitrous then
 		ent.state.Nitrous = ent.state.Nitrous - used
 		if ent.state.Nitrous < 0 then
 			ent.state.Nitrous = 0.0
 		end
-    end
+	end
 end)

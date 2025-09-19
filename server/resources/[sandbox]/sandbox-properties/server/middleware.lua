@@ -1,7 +1,8 @@
 function RegisterMiddleware()
 	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
-		TriggerLatentClientEvent("Properties:Client:Load", source, 50000, _properties, _charPropertyKeys[char:GetData("ID")])
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		TriggerLatentClientEvent("Properties:Client:Load", source, 50000, _properties,
+			_charPropertyKeys[char:GetData("ID")])
 	end)
 
 	Middleware:Add("Characters:GetSpawnPoints", function(source, charId)

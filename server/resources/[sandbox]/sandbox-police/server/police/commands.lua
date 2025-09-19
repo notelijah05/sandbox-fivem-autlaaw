@@ -4,7 +4,7 @@ local _311Cds = {}
 function RegisterCommands()
 	Chat:RegisterCommand("911", function(source, args, rawCommand)
 		if #rawCommand:sub(4) > 0 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
@@ -33,7 +33,7 @@ function RegisterCommands()
 
 	Chat:RegisterCommand("911a", function(source, args, rawCommand)
 		if #rawCommand:sub(5) > 0 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
@@ -64,8 +64,8 @@ function RegisterCommands()
 		"911r",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
-				local target = Fetch:SID(tonumber(args[1]))
-				local char = Fetch:CharacterSource(source)
+				local target = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if not hasValue(char:GetData("States"), "PHONE") then
 					Chat.Send.System:Single(source, "You Find It Difficult Replying to 911")
 					return
@@ -105,7 +105,7 @@ function RegisterCommands()
 
 	Chat:RegisterCommand("311", function(source, args, rawCommand)
 		if #rawCommand:sub(4) > 0 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
@@ -134,7 +134,7 @@ function RegisterCommands()
 
 	Chat:RegisterCommand("311a", function(source, args, rawCommand)
 		if #rawCommand:sub(5) > 0 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
@@ -187,8 +187,8 @@ function RegisterCommands()
 		"311r",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
-				local target = Fetch:SID(tonumber(args[1]))
-				local char = Fetch:CharacterSource(source)
+				local target = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if not hasValue(char:GetData("States"), "PHONE") then
 					Chat.Send.System:Single(source, "You Find It Difficult Replying to 311")
 					return

@@ -1,66 +1,66 @@
 LAPTOP.BizWiz = LAPTOP.BizWiz or {}
 LAPTOP.BizWiz.Receipts = {
 	Search = function(self, jobId, term)
-        if not term then term = '' end
+		if not term then term = '' end
 		local p = promise.new()
 
-        local aggregation = {}
+		local aggregation = {}
 
-        table.insert(aggregation, {
-            ['$match'] = {
-                ['$or'] = {
-                    {
-                        customerName = { ['$regex'] = term, ['$options'] = 'i' }
-                    },
+		table.insert(aggregation, {
+			['$match'] = {
+				['$or'] = {
 					{
-                        ["$expr"] = {
-                            ["$regexMatch"] = {
-                                input = {
-									["$concat"] = { 
-										"$author.First", 
-										" ", 
-										"$author.Last", 
-										" ", 
+						customerName = { ['$regex'] = term, ['$options'] = 'i' }
+					},
+					{
+						["$expr"] = {
+							["$regexMatch"] = {
+								input = {
+									["$concat"] = {
+										"$author.First",
+										" ",
+										"$author.Last",
+										" ",
 										{ ['$toString'] = "$author.SID" }
 									}
-                                },
-                                regex = term,
-                                options = "i",
-                            },
-                        },
-                    },
-                },
+								},
+								regex = term,
+								options = "i",
+							},
+						},
+					},
+				},
 				job = jobId,
-            },
-        })
+			},
+		})
 
 		Database.Game:aggregate({
-            collection = "business_receipts",
-            aggregate = aggregation,
-        }, function(success, results)
-            if not success then
+			collection = "business_receipts",
+			aggregate = aggregation,
+		}, function(success, results)
+			if not success then
 				p:resolve(false)
-                return
-            end
+				return
+			end
 			p:resolve(results)
-        end)
+		end)
 		return Citizen.Await(p)
 	end,
 	View = function(self, jobId, id)
 		local p = promise.new()
-        Database.Game:findOne({
-            collection = "business_receipts",
-            query = {
-                job = jobId,
-                _id = id,
-            },
-        }, function(success, report)
+		Database.Game:findOne({
+			collection = "business_receipts",
+			query = {
+				job = jobId,
+				_id = id,
+			},
+		}, function(success, report)
 			if not report then
 				p:resolve(false)
 				return
 			end
 			p:resolve(report[1])
-        end)
+		end)
 		return Citizen.Await(p)
 	end,
 	Create = function(self, jobId, data)
@@ -69,7 +69,7 @@ LAPTOP.BizWiz.Receipts = {
 		end
 
 		local p = promise.new()
-        data.job = jobId
+		data.job = jobId
 		Database.Game:insertOne({
 			collection = "business_receipts",
 			document = data,
@@ -91,7 +91,7 @@ LAPTOP.BizWiz.Receipts = {
 			collection = "business_receipts",
 			query = {
 				_id = id,
-                job = jobId,
+				job = jobId,
 			},
 			update = {
 				["$set"] = report,
@@ -100,8 +100,8 @@ LAPTOP.BizWiz.Receipts = {
 						Time = (os.time() * 1000),
 						Char = char:GetData("SID"),
 						Log = string.format(
-								"%s Updated Report",
-								char:GetData("First") .. " " .. char:GetData("Last")
+							"%s Updated Report",
+							char:GetData("First") .. " " .. char:GetData("Last")
 						),
 					},
 				},
@@ -111,29 +111,29 @@ LAPTOP.BizWiz.Receipts = {
 		end)
 		return Citizen.Await(p)
 	end,
-    Delete = function(self, jobId, id)
-        local p = promise.new()
+	Delete = function(self, jobId, id)
+		local p = promise.new()
 
-        Database.Game:deleteOne({
+		Database.Game:deleteOne({
 			collection = "business_receipts",
 			query = {
 				_id = id,
-                job = jobId,
+				job = jobId,
 			},
 		}, function(success, deleted)
 			p:resolve(success)
 		end)
 		return Citizen.Await(p)
-    end,
+	end,
 	DeleteAll = function(self, jobId)
 		if not jobId then return false; end
 
 		local p = promise.new()
 
-        Database.Game:delete({
+		Database.Game:delete({
 			collection = "business_receipts",
 			query = {
-                job = jobId,
+				job = jobId,
 			},
 		}, function(success, deleted)
 			p:resolve(success)
@@ -143,18 +143,18 @@ LAPTOP.BizWiz.Receipts = {
 }
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-    Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Search", function(source, data, cb)
-        local job = CheckBusinessPermissions(source)
+	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Search", function(source, data, cb)
+		local job = CheckBusinessPermissions(source)
 		if job then
 			cb(Laptop.BizWiz.Receipts:Search(job, data.term))
 		else
 			cb(false)
 		end
-    end)
+	end)
 
-    Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Create", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
-        local job = CheckBusinessPermissions(source, 'TABLET_CREATE_RECEIPT')
+	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Create", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local job = CheckBusinessPermissions(source, 'TABLET_CREATE_RECEIPT')
 		if job then
 			data.doc.author = {
 				SID = char:GetData("SID"),
@@ -162,51 +162,51 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				Last = char:GetData("Last"),
 			}
 			cb(Laptop.BizWiz.Receipts:Create(job, data.doc))
-        else
-            cb(false)
-        end
-    end)
-
-    Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Update", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
-        local job = CheckBusinessPermissions(source, 'TABLET_MANAGE_RECEIPT')
-		if char and job then
-            data.Report.lastUpdated = {
-                Time = (os.time() * 1000),
-                SID = char:GetData("SID"),
-                First = char:GetData("First"),
-                Last = char:GetData("Last"),
-            }
-			cb(Laptop.BizWiz.Receipts:Update(job, data.id, char, data.Report))
-        else
-            cb(false)
-        end
-    end)
-
-    Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Delete", function(source, data, cb)
-        local job = CheckBusinessPermissions(source, 'TABLET_MANAGE_RECEIPT')
-		if job then
-			cb(Laptop.BizWiz.Receipts:Delete(job, data.id))
-        else
-            cb(false)
-        end
-    end)
-
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:DeleteAll", function(source, data, cb)
-        local job = CheckBusinessPermissions(source, 'TABLET_CLEAR_RECEIPT')
-		if job then
-			cb(Laptop.BizWiz.Receipts:DeleteAll(job))
-        else
-            cb(false)
-        end
-    end)
-
-    Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:View", function(source, data, cb)
-        local job = CheckBusinessPermissions(source)
-		if job then
-			cb(Laptop.BizWiz.Receipts:View(job, data))
-        else
+		else
 			cb(false)
 		end
-    end)
+	end)
+
+	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Update", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local job = CheckBusinessPermissions(source, 'TABLET_MANAGE_RECEIPT')
+		if char and job then
+			data.Report.lastUpdated = {
+				Time = (os.time() * 1000),
+				SID = char:GetData("SID"),
+				First = char:GetData("First"),
+				Last = char:GetData("Last"),
+			}
+			cb(Laptop.BizWiz.Receipts:Update(job, data.id, char, data.Report))
+		else
+			cb(false)
+		end
+	end)
+
+	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Delete", function(source, data, cb)
+		local job = CheckBusinessPermissions(source, 'TABLET_MANAGE_RECEIPT')
+		if job then
+			cb(Laptop.BizWiz.Receipts:Delete(job, data.id))
+		else
+			cb(false)
+		end
+	end)
+
+	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:DeleteAll", function(source, data, cb)
+		local job = CheckBusinessPermissions(source, 'TABLET_CLEAR_RECEIPT')
+		if job then
+			cb(Laptop.BizWiz.Receipts:DeleteAll(job))
+		else
+			cb(false)
+		end
+	end)
+
+	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:View", function(source, data, cb)
+		local job = CheckBusinessPermissions(source)
+		if job then
+			cb(Laptop.BizWiz.Receipts:View(job, data))
+		else
+			cb(false)
+		end
+	end)
 end)

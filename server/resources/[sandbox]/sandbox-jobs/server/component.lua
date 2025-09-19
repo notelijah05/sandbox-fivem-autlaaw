@@ -78,7 +78,7 @@ _JOBS = {
 			return false
 		end
 
-		local char = Fetch:SID(stateId)
+		local char = exports['sandbox-characters']:FetchBySID(stateId)
 
 		if char then
 			local charJobData = char:GetData("Jobs")
@@ -163,7 +163,7 @@ _JOBS = {
 		end
 	end,
 	RemoveJob = function(self, stateId, jobId)
-		local char = Fetch:SID(stateId)
+		local char = exports['sandbox-characters']:FetchBySID(stateId)
 
 		if char then
 			local found = false
@@ -257,7 +257,7 @@ _JOBS = {
 	end,
 	Duty = {
 		On = function(self, source, jobId, hideNotify)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local stateId = char:GetData("SID")
 				local charJobs = char:GetData("Jobs")
@@ -343,7 +343,7 @@ _JOBS = {
 			return false
 		end,
 		Off = function(self, source, jobId, hideNotify)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local stateId = char:GetData("SID")
 				local dutyData = _characterDuty[stateId]
@@ -428,7 +428,7 @@ _JOBS = {
 			return false
 		end,
 		Get = function(self, source, jobId)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local dutyData = _characterDuty[char:GetData("SID")]
 				if dutyData and (not jobId or (jobId == dutyData.Id)) then
@@ -481,7 +481,7 @@ _JOBS = {
 	},
 	Permissions = {
 		IsOwner = function(self, source, jobId)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local jobData = Jobs:Get(jobId)
 				if jobData.Owner and jobData.Owner == char:GetData("SID") then
@@ -491,7 +491,7 @@ _JOBS = {
 			return false
 		end,
 		IsOwnerOfCompany = function(self, source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local stateId = char:GetData("SID")
 				local jobs = char:GetData("Jobs") or {}
@@ -505,7 +505,7 @@ _JOBS = {
 			return false
 		end,
 		GetJobs = function(self, source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local jobs = char:GetData("Jobs") or {}
 				return jobs
@@ -1031,7 +1031,7 @@ _JOBS = {
 			GetAll = function(self, jobId, workplaceId, gradeId)
 				local jobCharacters = {}
 				local onlineCharacters = {}
-				for k, v in pairs(Fetch:AllCharacters()) do
+				for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 					if v ~= nil then
 						table.insert(onlineCharacters, v:GetData("SID"))
 						local jobs = v:GetData("Jobs")
@@ -1117,7 +1117,7 @@ _JOBS = {
 			end,
 			UpdateAllJob = function(self, jobId, newJobName)
 				local onlineCharacters = {}
-				for k, v in pairs(Fetch:AllCharacters()) do
+				for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 					if v ~= nil then
 						table.insert(onlineCharacters, v:GetData("SID"))
 						local jobs = v:GetData("Jobs")
@@ -1181,7 +1181,7 @@ _JOBS = {
 
 				local jobCharacters = {}
 				local onlineCharacters = {}
-				for k, v in pairs(Fetch:AllCharacters()) do
+				for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 					if v ~= nil then
 						table.insert(onlineCharacters, v:GetData("SID"))
 						local jobs = v:GetData("Jobs")
@@ -1240,7 +1240,7 @@ _JOBS = {
 
 				if settingData.Name or settingData.Level then
 					local p = promise.new()
-					for k, v in pairs(Fetch:AllCharacters()) do
+					for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 						if v ~= nil then
 							table.insert(onlineCharacters, v:GetData("SID"))
 							local jobs = v:GetData("Jobs")

@@ -19,13 +19,13 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Vendor:Create("HuntingBaits", false, "Hunting", false, {}, {
-		{ id = 1, item = "cow_bait", price = 250, qty = -1, vpn = false, rep = "Hunting", repLvl = 2, },
-		{ id = 2, item = "chicken_bait", price = 250, qty = -1, vpn = false, rep = "Hunting", repLvl = 2, },
-		{ id = 3, item = "rabbit_bait", price = 250, qty = -1, vpn = false, rep = "Hunting", repLvl = 2, },
-		{ id = 4, item = "pig_bait", price = 250, qty = -1, vpn = false, rep = "Hunting", repLvl = 2, },
-		{ id = 5, item = "boar_bait", price = 250, qty = -1, vpn = false, rep = "Hunting", repLvl = 4, },
-		{ id = 6, item = "deer_bait", price = 250, qty = -1, vpn = false, rep = "Hunting", repLvl = 4, },
-		{ id = 7, item = "exotic_bait", price = 1000, qty = -1, vpn = false, rep = "Hunting", repLvl = 7, },
+		{ id = 1, item = "cow_bait",     price = 250,  qty = -1, vpn = false, rep = "Hunting", repLvl = 2, },
+		{ id = 2, item = "chicken_bait", price = 250,  qty = -1, vpn = false, rep = "Hunting", repLvl = 2, },
+		{ id = 3, item = "rabbit_bait",  price = 250,  qty = -1, vpn = false, rep = "Hunting", repLvl = 2, },
+		{ id = 4, item = "pig_bait",     price = 250,  qty = -1, vpn = false, rep = "Hunting", repLvl = 2, },
+		{ id = 5, item = "boar_bait",    price = 250,  qty = -1, vpn = false, rep = "Hunting", repLvl = 4, },
+		{ id = 6, item = "deer_bait",    price = 250,  qty = -1, vpn = false, rep = "Hunting", repLvl = 4, },
+		{ id = 7, item = "exotic_bait",  price = 1000, qty = -1, vpn = false, rep = "Hunting", repLvl = 7, },
 	}, "badge-dollar", "Hunting")
 
 	Callbacks:RegisterServerCallback("Hunting:StartJob", function(source, data, cb)
@@ -51,7 +51,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Hunting:HarvestAnimal", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local luck = math.random(100)
 		local animal = data.animal
 		local isSpawned = data.isSpawned
@@ -121,7 +121,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Hunting:Sell", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local repLvl = Reputation:GetLevel(source, _JOB)
 
 		if _saleData[data] ~= nil then
@@ -163,7 +163,7 @@ function RegisterHuntingItems()
 				_baitCds[source] == nil
 				or (os.time() - _baitCds[source]) >= HuntingConfig.Baits[item.Name].cooldown * 60
 			then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				Callbacks:ClientCallback(source, "Polyzone:GetAllZonesPlayerIn", {}, function(zones)
 					local found = false
 					for _, zone in ipairs(zones) do
@@ -203,7 +203,7 @@ AddEventHandler("Hunting:Server:OnDuty", function(joiner, members, isWorkgroup)
 		state = 0,
 	}
 
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
 	Phone.Notification:Add(joiner, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
 	TriggerClientEvent("Hunting:Client:OnDuty", joiner, joiner, os.time())
@@ -212,7 +212,7 @@ AddEventHandler("Hunting:Server:OnDuty", function(joiner, members, isWorkgroup)
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner
-			local member = Fetch:CharacterSource(v.ID)
+			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
 			Phone.Notification:Add(v.ID, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
 			TriggerClientEvent("Hunting:Client:OnDuty", v.ID, joiner, os.time())

@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -33,7 +32,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Middleware",
 		"Callbacks",
 		"Logger",
-		"Fetch",
 		"Execute",
 		"Routing",
 		"Chat",
@@ -73,7 +71,7 @@ function RegisterCommands()
 		"jail",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) and tonumber(args[2]) then
-				local char = Fetch:SID(tonumber(args[1]))
+				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil then
 					Jail:Sentence(source, char:GetData("Source"), tonumber(args[2]))
 					Chat.Send.System:Single(source, string.format("%s Has Been Jailed For %s Months", args[1], args[2]))
@@ -120,7 +118,7 @@ end
 
 _JAIL = {
 	IsJailed = function(self, source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local jailed = char:GetData("Jailed")
 			if jailed and not jailed.Released then
@@ -133,7 +131,7 @@ _JAIL = {
 		end
 	end,
 	IsReleaseEligible = function(self, source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local jailed = char:GetData("Jailed")
 			if not jailed or jailed and jailed.Duration < 9999 and os.time() >= (jailed.Release or 0) then
@@ -146,7 +144,7 @@ _JAIL = {
 		end
 	end,
 	Sentence = function(self, source, target, duration)
-		local jailer = Fetch:CharacterSource(source)
+		local jailer = exports['sandbox-characters']:FetchCharacterSource(source)
 		local jState = Player(source).state
 		local jailerName = "LOS SANTOS POLICE DEPARTMENT"
 		for k, v in ipairs(jailer:GetData("Jobs")) do
@@ -160,7 +158,7 @@ _JAIL = {
 			end
 		end
 
-		local char = Fetch:CharacterSource(target)
+		local char = exports['sandbox-characters']:FetchCharacterSource(target)
 		if char ~= nil then
 			if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 				return false
@@ -212,7 +210,7 @@ _JAIL = {
 		end
 	end,
 	Reduce = function(self, source, reduction)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and reduction and type(reduction) == "number" and reduction > 0 and reduction <= 100 then
 			local jailData = char:GetData("Jailed")
 			if
@@ -240,7 +238,7 @@ _JAIL = {
 	end,
 	Release = function(self, source)
 		if Jail:IsReleaseEligible(source) then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				Labor.Jail:Released(source)
 				char:SetData("Jailed", false)
@@ -265,7 +263,7 @@ function FetchInmates()
 	if cachedData == nil or (GetGameTimer() - lastRefreshed) >= CACHE_TIME then
 		local _inmates = {}
 
-		for k, v in pairs(Fetch:AllCharacters()) do
+		for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 			local jailed = v:GetData("Jailed")
 			if jailed and not jailed.Released then
 				table.insert(_inmates, {

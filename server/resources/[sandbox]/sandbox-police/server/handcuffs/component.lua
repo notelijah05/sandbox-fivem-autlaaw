@@ -1,6 +1,5 @@
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", HandcuffsComponents)
 function HandcuffsComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Middleware",
 		"Callbacks",
 		"Logger",
-		"Fetch",
 		"Sounds",
 		"Handcuffs",
 		"Inventory",

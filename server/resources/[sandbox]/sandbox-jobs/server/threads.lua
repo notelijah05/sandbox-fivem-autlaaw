@@ -10,7 +10,7 @@ CreateThread(function()
     while true do
         Wait(1000 * 60 * _payPeriod)
 
-        for k, v in pairs(Fetch:AllCharacters()) do
+        for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
             if v ~= nil then
                 local dutyData = _characterDuty[v:GetData('SID')]
                 if dutyData and not Player(v:GetData("Source")).state.gettingPaycheck then

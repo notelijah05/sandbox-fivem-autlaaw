@@ -29,7 +29,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	}, marketItems, "badge-dollar", "View Offers", false, false, true)
 
 	Inventory.Items:RegisterUse("chopping_invite", "LSUNDG", function(source, item, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pState = Player(source).state
 			if not pState.onDuty or not _blacklistedJobs[pState.onDuty] then

@@ -144,7 +144,7 @@ function CheckRouletteWinners(tableId, bets, winningIndex)
 
     for k, v in pairs(totalsWon) do
         if v > 0 then
-            local char = Fetch:CharacterSource(k)
+            local char = exports['sandbox-characters']:FetchCharacterSource(k)
             if char then
                 if Casino.Chips:Modify(k, v) then
                     SendCasinoWonChipsPhoneNotification(k, v)
@@ -204,7 +204,7 @@ AddEventHandler("Casino:Server:Startup", function()
     GlobalState["Casino:RouletteConfig"] = _rouletteTables
 
     Callbacks:RegisterServerCallback("Casino:JoinRoulette", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or _roulettePlayers[source] then
             return cb(false)
         end
@@ -241,7 +241,7 @@ AddEventHandler("Casino:Server:Startup", function()
     end)
 
     Callbacks:RegisterServerCallback("Casino:LeaveRoulette", function(source, data, cb)
-        --local char = Fetch:CharacterSource(source)
+        --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local blackjackPlayer = _roulettePlayers[source]
         if not blackjackPlayer then
             return cb(false)
@@ -260,7 +260,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
     -- Bets
     Callbacks:RegisterServerCallback("Casino:BetRoulette", function(source, data, cb)
-        --local char = Fetch:CharacterSource(source)
+        --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local roulettePlayer = _roulettePlayers[source]
         if not roulettePlayer or not data then
             return cb(false)

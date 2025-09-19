@@ -11,7 +11,6 @@ function RetrieveComponents()
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Weed = exports["sandbox-base"]:FetchComponent("Weed")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
@@ -34,7 +33,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Locations",
 		"Game",
 		"Routing",
-		"Fetch",
 		"Weed",
 		"Inventory",
 		"Routing",
@@ -70,9 +68,9 @@ function checkNearPlant(source, id)
 	local coords = GetEntityCoords(GetPlayerPed(source))
 	if _plants[id] ~= nil then
 		return #(
-				vector3(coords.x, coords.y, coords.z)
-				- vector3(_plants[id].plant.location.x, _plants[id].plant.location.y, _plants[id].plant.location.z)
-			) <= 5
+			vector3(coords.x, coords.y, coords.z)
+			- vector3(_plants[id].plant.location.x, _plants[id].plant.location.y, _plants[id].plant.location.z)
+		) <= 5
 	else
 		return false
 	end
@@ -109,17 +107,19 @@ WEED = {
 				planted = os.time(),
 				water = 100.0,
 			}
-			MySQL.insert('INSERT INTO weed (is_male, x, y, z, growth, output, material, planted, water) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', {
-				isMale and 1 or 0,
-				location.x, location.y, location.z,
-				0, 1, material, weed.planted, 100.0
-			}, function(insertId)
-				if not insertId then
-					return p:resolve(nil)
-				end
-				weed._id = insertId
-				return p:resolve(weed)
-			end)
+			MySQL.insert(
+				'INSERT INTO weed (is_male, x, y, z, growth, output, material, planted, water) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				{
+					isMale and 1 or 0,
+					location.x, location.y, location.z,
+					0, 1, material, weed.planted, 100.0
+				}, function(insertId)
+					if not insertId then
+						return p:resolve(nil)
+					end
+					weed._id = insertId
+					return p:resolve(weed)
+				end)
 			return Citizen.Await(p)
 		end,
 	},

@@ -95,7 +95,7 @@ function RegisterChatCommands()
 			return
 		end
 
-		local char = Fetch:SID(tonumber(targetSource))
+		local char = exports['sandbox-characters']:FetchBySID(tonumber(targetSource))
 		if char then
 			local stateId = char:GetData("SID")
 
@@ -165,7 +165,8 @@ function RegisterChatCommands()
 	}, 8)
 
 	Chat:RegisterAdminCommand("addfleetvehicle", function(source, args, rawCommand)
-		local jobId, workplaceId, level, vehHash, make, model, class, value, vehType, modelType, qual = table.unpack(args)
+		local jobId, workplaceId, level, vehHash, make, model, class, value, vehType, modelType, qual = table.unpack(
+			args)
 		if not jobId or not workplaceId or not level or not vehHash or not make or not model then
 			Chat.Send.System:Single(source, "Invalid Arguments")
 			return
@@ -411,8 +412,8 @@ function RegisterChatCommands()
 	Chat:RegisterCommand("transfer", function(source, args, rawCommand)
 		local target = tonumber(args[1])
 		if target and target > 0 then
-			local char = Fetch:CharacterSource(source)
-			local targetChar = Fetch:SID(target)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			local targetChar = exports['sandbox-characters']:FetchBySID(target)
 
 			if char and targetChar and targetChar:GetData("Source") ~= char:GetData("Source") then
 				Callbacks:ClientCallback(source, "Vehicles:Transfers:GetTarget", {}, function(data)
@@ -422,7 +423,8 @@ function RegisterChatCommands()
 						if vehEnt?.state?.VIN and vehEnt?.state?.Owned and vehEnt?.state?.Owner?.Type == 0 and vehEnt?.state?.Owner?.Id == char:GetData("SID") then
 							local remainingLoan = Loans:HasRemainingPayments("vehicle", vehEnt.state.VIN)
 							if remainingLoan then
-								Execute:Client(source, "Notification", "Error", "Cannot transfer vehicle with an active loan.")
+								Execute:Client(source, "Notification", "Error",
+									"Cannot transfer vehicle with an active loan.")
 								return
 							end
 

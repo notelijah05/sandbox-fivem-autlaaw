@@ -1,6 +1,6 @@
 function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Xmas:Server:PickupSnowball", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			Inventory:AddItem(sid, "WEAPON_SNOWBALL", 0, { ammo = 1, clip = 0 }, 1)
@@ -8,7 +8,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Xmas:Daily", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			local daily = char:GetData("XmasDaily")
@@ -44,7 +44,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Xmas:Tree", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			if not _treeLooted[sid] then

@@ -164,7 +164,7 @@ function SetupAPIHandler()
 				local data = {
 					Restart = pendingRestartTime,
 					Uptime = GetGameTimer(),
-					Players = COMPONENTS.Fetch:Count(),
+					Players = exports['sandbox-base']:FetchCount(),
 					MaxPlayers = GlobalState.MaxPlayers or 64,
 				}
 

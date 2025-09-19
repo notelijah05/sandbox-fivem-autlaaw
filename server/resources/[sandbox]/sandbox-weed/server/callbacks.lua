@@ -20,7 +20,7 @@ function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Weed:WaterPlant", function(source, pid, cb)
 		if pid ~= nil and _plants[pid] then
 			if checkNearPlant(source, pid) then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					if _plants[pid] ~= nil then
 						if _plants[pid].plant.water < 100 then
@@ -50,7 +50,7 @@ function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Weed:FertilizePlant", function(source, data, cb)
 		if data and data.id and _plants[data.id] then
 			if checkNearPlant(source, data.id) then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					if _plants[data.id] ~= nil then
 						if _plants[data.id].plant.fertilizer == nil then
@@ -88,7 +88,7 @@ function RegisterCallbacks()
 		if pid then
 			if checkNearPlant(source, pid) then
 				if _plants[pid] ~= nil then
-					local char = Fetch:CharacterSource(source)
+					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					if char ~= nil then
 						local stage = Plants[getStageByPct(_plants[pid].plant.growth)]
 						if stage.harvestable then
@@ -152,7 +152,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Weed:DestroyPlant", function(source, pid, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if pid and _plants[pid] then
 				if checkNearPlant(source, pid) then
@@ -181,7 +181,7 @@ function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Weed:PDDestroyPlant", function(source, pid, cb)
 		if pid and _plants[pid] then
 			if checkNearPlant(source, pid) then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					if Player(source).state.onDuty == "police" then
 						Weed.Planting:Delete(pid)
@@ -210,7 +210,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Weed:BuyPackage", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char ~= nil then
 			if _packagesAvailable > 0 and not _weedBuyers[char:GetData("ID")] then

@@ -5,7 +5,6 @@ function RetrieveComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Default = exports["sandbox-base"]:FetchComponent("Default")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -29,7 +28,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Callbacks",
 		"Middleware",
 		"Logger",
-		"Fetch",
 		"Database",
 		"Default",
 		"Chat",
@@ -81,7 +79,7 @@ PROPERTIES = {
 							interior = interior,
 						}
 					}
-	
+
 					Database.Game:insertOne({
 						collection = "properties",
 						document = doc,
@@ -90,20 +88,20 @@ PROPERTIES = {
 							doc.id = insertedIds[1]
 							doc.interior = interior
 							doc.locked = true
-	
+
 							for k, v in pairs(doc.location) do
 								for k2, v2 in pairs(v) do
 									doc.location[k][k2] = doc.location[k][k2] + 0.0
 								end
 							end
-	
+
 							_properties[doc.id] = doc
-	
+
 							Chat.Send.Server:Single(source, "Property Added, Property ID: " .. doc.id)
-	
+
 							TriggerClientEvent("Properties:Client:Update", -1, doc.id, doc)
 						end
-	
+
 						p:resolve(success)
 					end)
 					return Citizen.Await(p)
@@ -315,7 +313,6 @@ PROPERTIES = {
 			if property then
 				local upgradeData = PropertyUpgrades[property.type][upgrade]
 				if upgradeData and upgrade ~= "interior" then
-
 					if level < 1 then
 						level = 1
 					end
@@ -670,7 +667,7 @@ PROPERTIES = {
 			return false
 		end,
 		HasAccessWithData = function(self, source, key, value) -- Has Access to a Property with a specific data/key value
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local propertyKeys = _charPropertyKeys[char:GetData("ID")]
 

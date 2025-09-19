@@ -5,7 +5,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		"checkdriftlicense",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
-				local char = Fetch:SID(tonumber(args[1]))
+				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil then
 					Chat.Send.System:Single(
 						source,
@@ -38,7 +38,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		"revokedriftlicense",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
-				local char = Fetch:SID(tonumber(args[1]))
+				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil then
 					_DRIFT:Revoke(tonumber(args[1]), source)
 				else
@@ -68,7 +68,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		"adddriftlicense",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
-				local char = Fetch:SID(tonumber(args[1]))
+				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil then
 					_DRIFT:Give(tonumber(args[1]), source)
 				else
@@ -99,7 +99,7 @@ end)
 _DRIFT = {
 	Revoke = function(self, sid, source)
 		if Jobs.Permissions:HasPermissionInJob(source, "cloud9", "JOB_DRIFT_LICENSE") then
-			local char = Fetch:SID(tonumber(sid))
+			local char = exports['sandbox-characters']:FetchBySID(tonumber(sid))
 			if char then
 				local licenses = char:GetData("Licenses")
 				local targetSrc = char:GetData("Source")
@@ -120,7 +120,7 @@ _DRIFT = {
 	end,
 	Give = function(self, sid, source)
 		if Jobs.Permissions:HasPermissionInJob(source, "cloud9", "JOB_DRIFT_LICENSE") then
-			local char = Fetch:SID(tonumber(sid))
+			local char = exports['sandbox-characters']:FetchBySID(tonumber(sid))
 			if char then
 				local licenses = char:GetData("Licenses")
 				local targetSrc = char:GetData("Source")
@@ -177,7 +177,7 @@ _DRIFT = {
 		end
 	end,
 	Check = function(self, sid, source)
-		local char = Fetch:SID(tonumber(sid))
+		local char = exports['sandbox-characters']:FetchBySID(tonumber(sid))
 		if char then
 			local licenses = char:GetData("Licenses")
 			return licenses["Drift"].Active or false

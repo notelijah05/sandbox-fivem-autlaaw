@@ -31,8 +31,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end
 
-	
-    Chat:RegisterAdminCommand('choplists', function(source, args, rawCommand)
+
+	Chat:RegisterAdminCommand('choplists', function(source, args, rawCommand)
 		if args[1] == "all" then
 			Logger:Trace("Chopping", "Generating New Public Chop List")
 			_publicChoplist = {
@@ -52,7 +52,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 					_chopped[k] = nil
 				end
 			end
-			
+
 			Logger:Trace("Chopping", "Generating New VIP Chop List")
 			_vipChopList = {
 				list = Laptop.LSUnderground.Chopping:GenerateList(10, 4),
@@ -71,14 +71,14 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 					_chopped[k] = nil
 				end
 			end
-			
-			for k, v in pairs(Fetch:AllCharacters()) do
+
+			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then
 					local dutyData = Jobs.Duty:Get(v:GetData("Source"))
 					if (
-						Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
-						hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
-					) and (not dutyData or dutyData.Id ~= "police") then
+							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
+						) and (not dutyData or dutyData.Id ~= "police") then
 						Laptop.Notification:Add(
 							v:GetData("Source"),
 							"New Chop List",
@@ -124,14 +124,14 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 					_chopped[k] = nil
 				end
 			end
-			
-			for k, v in pairs(Fetch:AllCharacters()) do
+
+			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then
 					local dutyData = Jobs.Duty:Get(v:GetData("Source"))
 					if (
-						Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
-						hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
-					) and (not dutyData or dutyData.Id ~= "police") then
+							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
+						) and (not dutyData or dutyData.Id ~= "police") then
 						Laptop.Notification:Add(
 							v:GetData("Source"),
 							"New Chop List",
@@ -165,14 +165,14 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 					_chopped[k] = nil
 				end
 			end
-			
-			for k, v in pairs(Fetch:AllCharacters()) do
+
+			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then
 					local dutyData = Jobs.Duty:Get(v:GetData("Source"))
 					if (
-						Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
-						hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
-					) and (not dutyData or dutyData.Id ~= "police") then
+							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
+						) and (not dutyData or dutyData.Id ~= "police") then
 						Laptop.Notification:Add(
 							v:GetData("Source"),
 							"New Chop List",
@@ -190,15 +190,15 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		else
 			Chat.Send.System:Single(source, "Invalid Type")
 		end
-    end, {
-        help = 'Generates New Chop List',
+	end, {
+		help = 'Generates New Chop List',
 		params = {
 			{
 				name = "Type",
 				help = "What List Type: public, private, all",
 			},
 		},
-    }, 1)
+	}, 1)
 
 	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:CheckVehicle", function(source, data, cb)
 		local entState = Entity(NetworkGetEntityFromNetworkId(data.vNet)).state
@@ -233,7 +233,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			local pState = Player(source).state
 			local ent = NetworkGetEntityFromNetworkId(data.vNet)
 			local entState = Entity(ent).state
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 			if char ~= nil then
 				if not entState.Owned then
@@ -246,8 +246,10 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							local calcLvl = repLevel
 							if calcLvl < 1 then calcLvl = 1 end
 							calcLvl = math.ceil(calcLvl / 2)
-							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1, calcLvl)
-							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1, calcLvl)
+							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+								calcLvl)
+							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+								calcLvl)
 						end
 						SetVehicleDoorBroken(NetworkGetEntityFromNetworkId(data.vNet), data.index, true)
 						return cb(true)
@@ -260,7 +262,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:ChopTire", function(source, data, cb)
 		if data?.index ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local pState = Player(source).state
 			local entState = Entity(NetworkGetEntityFromNetworkId(data.vNet)).state
 			if char ~= nil then
@@ -274,7 +276,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							local calcLvl = repLevel
 							if calcLvl < 1 then calcLvl = 1 end
 							calcLvl = math.ceil(calcLvl / 2)
-							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1, calcLvl)
+							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+								calcLvl)
 							Inventory:AddItem(char:GetData("SID"), 'rubber', math.random(12, 78) * calcLvl, {}, 1)
 						end
 						return cb(true)
@@ -286,7 +289,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:ChopVehicle", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 		local entState = Entity(NetworkGetEntityFromNetworkId(data.vNet)).state
 		if char ~= nil then
@@ -307,8 +310,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1, calcLvl)
 
 						if list?.entry?.hv then
-							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1, calcLvl)
-							
+							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+								calcLvl)
+
 							if list.type == 3 then
 								Crypto.Exchange:Add("VRM", char:GetData("CryptoWallet"), math.random(5, 10))
 							else
@@ -376,7 +380,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:Pickup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local pickups = char:GetData("ChopPickups") or {}
 
@@ -394,7 +398,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:GetPublicList", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if not _emailed[char:GetData("ID")] or os.time() > _emailed[char:GetData("ID")] then
 				_emailed[char:GetData("ID")] = os.time() + (60 * 10)
@@ -458,7 +462,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	end)
 
 	Inventory.Items:RegisterUse("choplist", "Chopping", function(source, item, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if not item.MetaData.Owner or item.MetaData.Owner == char:GetData("SID") then
 				if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
@@ -483,7 +487,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							Requested Vehicles:
 							<ul>
 						]]
-	
+
 						for k, v in ipairs(item.MetaData.ChopList) do
 							if v.hv then
 								str = str .. string.format("<li>(HIGHVALUE) %s</li>", v.name)
@@ -491,9 +495,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 								str = str .. string.format("<li>%s</li>", v.name)
 							end
 						end
-	
+
 						str = str .. "</ul>"
-	
+
 						Phone.Email:Send(
 							source,
 							"shadow@ls.undg",
@@ -546,7 +550,7 @@ LAPTOP.LSUnderground.Chopping = {
 				while _l[_models.Priority[ind]] ~= nil do
 					ind = math.random(#_models.Priority)
 				end
-	
+
 				_l[_models.Priority[ind]] = {
 					model = _models.Priority[ind].model,
 					name = _models.Priority[ind].name,
@@ -583,7 +587,7 @@ LAPTOP.LSUnderground.Chopping = {
 		return false
 	end,
 	FindList = function(self, source, vehNet)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pState = Player(source).state
 			local ent = NetworkGetEntityFromNetworkId(vehNet)
@@ -661,7 +665,7 @@ LAPTOP.LSUnderground.Chopping = {
 							list = Laptop.LSUnderground.Chopping:GenerateList(10, 2),
 							public = true,
 						}
-			
+
 						for k, v in pairs(_inProgress) do
 							if v.type == 1 then
 								for k2, v2 in pairs(_pChopping) do
@@ -674,14 +678,14 @@ LAPTOP.LSUnderground.Chopping = {
 								_chopped[k] = nil
 							end
 						end
-						
-						for k, v in pairs(Fetch:AllCharacters()) do
+
+						for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 							if v ~= nil then
 								local dutyData = Jobs.Duty:Get(v:GetData("Source"))
 								if (
-									Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
-									hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
-								) and (not dutyData or dutyData.Id ~= "police") then
+										Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+										hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
+									) and (not dutyData or dutyData.Id ~= "police") then
 									Laptop.Notification:Add(
 										v:GetData("Source"),
 										"New Chop List",
@@ -712,7 +716,7 @@ LAPTOP.LSUnderground.Chopping = {
 							list = Laptop.LSUnderground.Chopping:GenerateList(10, 4),
 							public = true,
 						}
-			
+
 						for k, v in pairs(_inProgress) do
 							if v.type == 2 then
 								for k2, v2 in pairs(_pChopping) do
@@ -725,14 +729,14 @@ LAPTOP.LSUnderground.Chopping = {
 								_chopped[k] = nil
 							end
 						end
-						
-						for k, v in pairs(Fetch:AllCharacters()) do
+
+						for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 							if v ~= nil then
 								local dutyData = Jobs.Duty:Get(v:GetData("Source"))
 								if (
-									Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
-									hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
-								) and (not dutyData or dutyData.Id ~= "police") then
+										Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+										hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
+									) and (not dutyData or dutyData.Id ~= "police") then
 									Laptop.Notification:Add(
 										v:GetData("Source"),
 										"New Chop List",
@@ -753,7 +757,7 @@ LAPTOP.LSUnderground.Chopping = {
 				end
 			end
 		elseif type == 3 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local mylists = char:GetData("ChopLists")
 				if mylists ~= nil and mylists[listId] ~= nil then
@@ -780,7 +784,7 @@ LAPTOP.LSUnderground.Chopping = {
 		return false
 	end,
 	CreatePickupBox = function(self, source, wasHv, type)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pickups = char:GetData("ChopPickups") or {}
 
@@ -788,7 +792,7 @@ LAPTOP.LSUnderground.Chopping = {
 			local calcLvl = repLevel
 			if calcLvl < 1 then calcLvl = 1 end
 			calcLvl = math.ceil(calcLvl / 2)
-			
+
 			local items = {
 				Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl, true),
 				Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl, true),
@@ -810,7 +814,8 @@ LAPTOP.LSUnderground.Chopping = {
 				)
 				table.insert(
 					items,
-					Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl, true)
+					Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl,
+						true)
 				)
 			end
 
@@ -818,12 +823,14 @@ LAPTOP.LSUnderground.Chopping = {
 			if repLevel >= 4 then
 				table.insert(
 					items,
-					Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl, true)
+					Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl,
+						true)
 				)
 				if repLevel >= 5 then
 					table.insert(
 						items,
-						Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl, true)
+						Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl,
+							true)
 					)
 				end
 			end
@@ -834,5 +841,3 @@ LAPTOP.LSUnderground.Chopping = {
 		end
 	end,
 }
-
-

@@ -193,7 +193,6 @@ end
 
 AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
 function WeaponsComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
@@ -204,7 +203,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weapons", {
-		"Fetch",
 		"Logger",
 		"Inventory",
 		"Weapons",
@@ -218,7 +216,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		WeaponsComponents()
 
 		Callbacks:RegisterServerCallback("Weapons:UseThrowable", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if INVENTORY.Items:RemoveSlot(char:GetData("SID"), data.Name, 1, data.Slot, 1) then
 					local slotExists = INVENTORY:SlotExists(char:GetData("SID"), data.Slot, 1)
@@ -234,23 +232,23 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Weapons:PossibleCheaterWarning", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				Logger:Warn("Pwnzor",
 					string.format("%s %s (%s) Had a Weapon They Weren't Supposed To (%s) (Known: %s)",
 						char:GetData("First"), char:GetData("Last"), char:GetData("SID"), data.h,
 						weaponCheaters[data.h] or "No"), {
-					console = true,
-					file = false,
-					database = true,
-					discord = {
-						embed = true,
-						type = 'error',
-						webhook = GetConvar('discord_pwnzor_webhook', ''),
-					}
-				}, {
-					data = data
-				})
+						console = true,
+						file = false,
+						database = true,
+						discord = {
+							embed = true,
+							type = 'error',
+							webhook = GetConvar('discord_pwnzor_webhook', ''),
+						}
+					}, {
+						data = data
+					})
 				Pwnzor:Screenshot(char:GetData("SID"), "Potential Weapon Exploit")
 			end
 			cb()
@@ -259,7 +257,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 AddEventHandler("Characters:Server:PlayerDropped", function(source)
-	local plyr = Fetch:Source(source)
+	local plyr = exports['sandbox-base']:FetchSource(source)
 	local ped = GetPlayerPed(source)
 	for k, v in ipairs(GetAllObjects()) do
 		if GetEntityAttachedTo(v) == ped and _weaponModels[GetEntityModel(v)] then
@@ -270,7 +268,7 @@ end)
 
 WEAPONS = {
 	IsEligible = function(self, source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local licenses = char:GetData("Licenses")
 		if licenses ~= nil and licenses.Weapons ~= nil then
 			return licenses.Weapons.Active
@@ -286,7 +284,7 @@ WEAPONS = {
 	end,
 	Purchase = function(self, sid, item, isScratched, isCompanyOwned)
 		if not isCompanyOwned then
-			local char = Fetch:SID(sid)
+			local char = exports['sandbox-characters']:FetchBySID(sid)
 			if char ~= nil then
 				local hash = GetHashKey(item.name)
 				local sn = string.format("SA-%s-%s", math.abs(hash), Sequence:Get(item.name))
@@ -300,7 +298,7 @@ WEAPONS = {
 				end
 
 				MySQL.insert(
-				'INSERT INTO firearms (serial, scratched, model, item, owner_sid, owner_name) VALUES(?, ?, ?, ?, ?, ?)',
+					'INSERT INTO firearms (serial, scratched, model, item, owner_sid, owner_name) VALUES(?, ?, ?, ?, ?, ?)',
 					{
 						sn,
 						isScratched,
@@ -355,7 +353,7 @@ WEAPONS = {
 		return nil
 	end,
 	EquipAttachment = function(self, source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local p = promise.new()
 			Callbacks:ClientCallback(source, "Weapons:Check", {}, function(data)
@@ -409,7 +407,7 @@ WEAPONS = {
 												item = item.Name,
 												created = item.CreateDate,
 												attachment = itemData.component.strings
-												[weaponData.weapon or weaponData.name],
+													[weaponData.weapon or weaponData.name],
 											}
 
 											Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
@@ -460,7 +458,7 @@ WEAPONS = {
 		end
 	end,
 	RemoveAttachment = function(self, source, slotId, attachment)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local slot = INVENTORY:GetSlot(char:GetData("SID"), slotId, 1)
 			if slot ~= nil then

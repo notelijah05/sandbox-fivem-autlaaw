@@ -11,7 +11,6 @@ end
 
 AddEventHandler("Damage:Shared:DependencyUpdate", DamageComponents)
 function DamageComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Logger",
 		"Chat",
 		"Middleware",
-		"Fetch",
 		--"Damage",
 		"Execute",
 		"Status",
@@ -42,7 +40,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RegisterChatCommands()
 
 		Middleware:Add("Characters:Spawning", function(source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local sid = char:GetData("SID")
 				if _deadCunts[sid] ~= nil then
@@ -67,7 +65,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				cb({})
 				return
 			end
-			local char = Fetch:CharacterSource(data)
+			local char = exports['sandbox-characters']:FetchCharacterSource(data)
 			if char ~= nil then
 				local damage = Damage:GetLimbDamage(char:GetData("SID"))
 
@@ -117,7 +115,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Damage:SyncReductions", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				char:SetData("HPReductions", data)
 			end
@@ -153,7 +151,7 @@ end)
 
 RegisterNetEvent("Ped:Server:Died", function()
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		local pState = Player(src).state
 		_deadCunts[char:GetData("SID")] = {
@@ -166,7 +164,7 @@ end)
 
 RegisterNetEvent("Damage:Server:StoreHealth", function(hp, armor)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		char:SetData("HP", hp)
 		char:SetData("Armor", armor)
@@ -175,7 +173,7 @@ end)
 
 RegisterNetEvent("Damage:Server:BoneDamage", function(damageData)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		local sid = char:GetData("SID")
 		for k, v in ipairs(damageData) do
@@ -197,7 +195,7 @@ end)
 
 RegisterNetEvent("Damage:Server:Revived", function(wasMinor, wasFieldTreatment)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		_deadCunts[char:GetData("SID")] = nil
 		if not wasMinor and not wasFieldTreatment then

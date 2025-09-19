@@ -91,7 +91,8 @@ function PrivatePlateStuff(char, source, itemData)
             Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 
             Execute:Client(source, "Notification", "Success", "Personal Plate Setup")
-            Logger:Info('Vehicles', string.format("Personal Plate Change For Vehicle: %s. %s -> %s", vehState.VIN, originalPlate, newPlate))
+            Logger:Info('Vehicles',
+                string.format("Personal Plate Change For Vehicle: %s. %s -> %s", vehState.VIN, originalPlate, newPlate))
         else
             Execute:Client(source, "Notification", "Error", "Error")
         end
@@ -100,28 +101,28 @@ end
 
 function RegisterPersonalPlateCallbacks()
     Inventory.Items:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or (Player(source).state.onDuty ~= "government" and Player(source).state.onDuty ~= "dgang") then
             Execute:Client(source, "Notification", "Error", "Error")
             return
         end
 
         PrivatePlateStuff(char, source, itemData)
-	end)
+    end)
 
     Inventory.Items:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char then
             Execute:Client(source, "Notification", "Error", "Error")
             return
         end
 
         PrivatePlateStuff(char, source, itemData)
-	end)
+    end)
 
     Chat:RegisterAdminCommand("adddonatorplates", function(source, args, rawCommand)
         local license = table.unpack(args)
-    
+
         if license then
             local success = Vehicles.DonatorPlates:Add(license)
             if success then
@@ -130,7 +131,7 @@ function RegisterPersonalPlateCallbacks()
                 Chat.Send.System:Single(source, "Failed")
             end
         end
-      end, {
+    end, {
         help = "[Admin] Add donator plates",
         params = {
             {
@@ -142,16 +143,18 @@ function RegisterPersonalPlateCallbacks()
 
     Chat:RegisterAdminCommand("getdonatorplates", function(source, args, rawCommand)
         local license = table.unpack(args)
-    
+
         if license then
             local success = Vehicles.DonatorPlates:Check(license)
             if success and success.pending then
-                Chat.Send.System:Single(source, string.format("Player Identifier: %s<br>Pending Plates: %s<br>Redeemed Plates: %s", license, success.pending, success.redeemed or 0))
+                Chat.Send.System:Single(source,
+                    string.format("Player Identifier: %s<br>Pending Plates: %s<br>Redeemed Plates: %s", license,
+                        success.pending, success.redeemed or 0))
             else
                 Chat.Send.System:Single(source, "Failed")
             end
         end
-      end, {
+    end, {
         help = "[Admin] Check donator plates",
         params = {
             {
@@ -163,7 +166,7 @@ function RegisterPersonalPlateCallbacks()
 
     Chat:RegisterAdminCommand("removedonatorplates", function(source, args, rawCommand)
         local license = table.unpack(args)
-    
+
         if license then
             local success = Vehicles.DonatorPlates:Remove(license, 1)
             if success then
@@ -172,7 +175,7 @@ function RegisterPersonalPlateCallbacks()
                 Chat.Send.System:Single(source, "Failed")
             end
         end
-      end, {
+    end, {
         help = "[Admin] Remove donator plates",
         params = {
             {
@@ -183,7 +186,7 @@ function RegisterPersonalPlateCallbacks()
     }, 1)
 
     Callbacks:RegisterServerCallback("Vehicles:CheckDonatorPersonalPlates", function(source, data, cb)
-        local plyr = Fetch:Source(source)
+        local plyr = exports['sandbox-base']:FetchSource(source)
         if plyr then
             local res = Vehicles.DonatorPlates:Check(plyr:GetData("Identifier"))
 
@@ -194,9 +197,9 @@ function RegisterPersonalPlateCallbacks()
     end)
 
     Callbacks:RegisterServerCallback("Vehicles:ClaimDonatorPersonalPlates", function(source, data, cb)
-        local plyr = Fetch:Source(source)
+        local plyr = exports['sandbox-base']:FetchSource(source)
         if plyr then
-            local char = Fetch:CharacterSource(source)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
             local res = Vehicles.DonatorPlates:Check(plyr:GetData("Identifier"))
 
             if char and res?.pending >= data then
@@ -207,26 +210,26 @@ function RegisterPersonalPlateCallbacks()
                     cb(true)
 
                     Logger:Warn(
-                      "Donator",
-                      string.format(
-                        "%s [%s] Redeemed %s Donator Plates - Character %s %s (%s)", 
-                        plyr:GetData("Name"),
-                        plyr:GetData("AccountID"),
-                        data,
-                        char:GetData('First'),
-                        char:GetData('Last'),
-                        char:GetData('SID')
-                      ),
-                      {
-                        console = true,
-                        file = false,
-                        database = true,
-                        discord = {
-                          embed = true,
-                          type = "error",
-                          webhook = GetConvar("discord_donation_webhook", ''),
+                        "Donator",
+                        string.format(
+                            "%s [%s] Redeemed %s Donator Plates - Character %s %s (%s)",
+                            plyr:GetData("Name"),
+                            plyr:GetData("AccountID"),
+                            data,
+                            char:GetData('First'),
+                            char:GetData('Last'),
+                            char:GetData('SID')
+                        ),
+                        {
+                            console = true,
+                            file = false,
+                            database = true,
+                            discord = {
+                                embed = true,
+                                type = "error",
+                                webhook = GetConvar("discord_donation_webhook", ''),
+                            }
                         }
-                      }
                     )
                     return
                 end
@@ -246,8 +249,8 @@ end
 -- end)
 
 _vehDonatorPlates = {
-	DonatorPlates = {
-		Add = function(self, playerIdentifier)
+    DonatorPlates = {
+        Add = function(self, playerIdentifier)
             local p = promise.new()
             Database.Game:updateOne({
                 collection = "donator_plates",
@@ -312,13 +315,13 @@ _vehDonatorPlates = {
 
             return Citizen.Await(p)
         end,
-	},
+    },
 }
 
 AddEventHandler("Proxy:Shared:ExtendReady", function(component)
-	if component == "Vehicles" then
-		exports["sandbox-base"]:ExtendComponent(component, _vehDonatorPlates)
-	end
+    if component == "Vehicles" then
+        exports["sandbox-base"]:ExtendComponent(component, _vehDonatorPlates)
+    end
 end)
 
 AddEventHandler("Vehicles:Server:AddDonatorPlates", function(license)
@@ -326,34 +329,35 @@ AddEventHandler("Vehicles:Server:AddDonatorPlates", function(license)
 end)
 
 function TebexAddDonatorPlate(source, args)
-	local sid = table.unpack(args)
-	sid = tonumber(sid)
-	if sid == nil or sid == 0 then
+    local sid = table.unpack(args)
+    sid = tonumber(sid)
+    if sid == nil or sid == 0 then
         Logger:Warn(
-			"Donator Plate",
-			"Provided SID (server ID) was empty.",
-			{
-				console = true,
-				file = false,
-				database = true,
-				discord = {
-					embed = true,
-					type = "error",
-					webhook = GetConvar("discord_donation_webhook", ''),
-				}
-			}
-		)
-		return
-	end
-	local player = Fetch:Source(sid)
-	if player then
-		local license = player:GetData("Identifier")
-		local success = Vehicles.DonatorPlates:Add(license)
-		if success then
-			Chat.Send.System:Single(sid, "Successfully Added")
-		else
-			Chat.Send.System:Single(sid, "Failed")
-		end
-	end  
+            "Donator Plate",
+            "Provided SID (server ID) was empty.",
+            {
+                console = true,
+                file = false,
+                database = true,
+                discord = {
+                    embed = true,
+                    type = "error",
+                    webhook = GetConvar("discord_donation_webhook", ''),
+                }
+            }
+        )
+        return
+    end
+    local player = exports['sandbox-base']:FetchSource(sid)
+    if player then
+        local license = player:GetData("Identifier")
+        local success = Vehicles.DonatorPlates:Add(license)
+        if success then
+            Chat.Send.System:Single(sid, "Successfully Added")
+        else
+            Chat.Send.System:Single(sid, "Failed")
+        end
+    end
 end
+
 RegisterCommand("tebexadddonatorplate", TebexAddDonatorPlate, true)

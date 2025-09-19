@@ -199,7 +199,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			local entState = Entity(ent).state
 			if entState.wasThermited and not entState.wasLooted then
 				if entState.beingLooted == source then
-					local char = Fetch:CharacterSource(source)
+					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					if char ~= nil then
 						_moneyTrucks[ent] = {
 							position = _moneyTrucks[ent]?.position or GetEntityCoords(ent),

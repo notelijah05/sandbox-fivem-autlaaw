@@ -7,7 +7,7 @@ local companyCut = 10
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	Callbacks:RegisterServerCallback("Phone:Dyn8:Search", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local qry = {
 				label = {
@@ -53,6 +53,3 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 end)
-
-
-

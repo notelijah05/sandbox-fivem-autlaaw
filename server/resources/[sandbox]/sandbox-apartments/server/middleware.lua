@@ -6,7 +6,7 @@ function RegisterMiddleware()
 	end)
 
 	-- Middleware:Add("Characters:Spawning", function(source)
-	-- 	local char = Fetch:CharacterSource(source)
+	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	-- 	if char then
 	-- 		GlobalState[string.format("Apartment:Interior:%s", char:GetData("SID"))] = char:GetData("Apartment") or 1
 	-- 	end

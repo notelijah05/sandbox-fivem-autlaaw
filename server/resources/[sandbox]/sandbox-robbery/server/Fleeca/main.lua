@@ -135,7 +135,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	}, true) -- Not sure what to do with this yet so hide it
 
 	Callbacks:RegisterServerCallback("Robbery:Fleeca:Drill", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pState = Player(source).state
 			if
@@ -311,7 +311,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Fleeca:SecureBank", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.fleeca ~= nil then
@@ -345,7 +345,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Inventory.Items:RegisterUse("green_laptop", "FleecaRobbery", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.fleeca ~= nil then
@@ -525,7 +525,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Inventory.Items:RegisterUse("thermite", "FleecaRobbery", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.fleeca ~= nil then
@@ -665,7 +665,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Inventory.Items:RegisterUse("fleeca_card", "FleecaRobbery", function(source, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.fleeca ~= nil then
@@ -818,7 +818,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Inventory.Items:RegisterUse("moneybag", "FleecaRobbery", function(source, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if os.time() >= itemData.MetaData.Finished then
 			local amt = itemData.MetaData?.CustomAmt and
 				(math.random(itemData.MetaData?.CustomAmt.Random) + itemData.MetaData?.CustomAmt.Min) or

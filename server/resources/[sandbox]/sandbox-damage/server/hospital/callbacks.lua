@@ -3,7 +3,7 @@ function HospitalCallbacks()
 		"icu",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
-				local char = Fetch:SID(tonumber(args[1]))
+				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil then
 					Hospital.ICU:Send(char:GetData("Source"))
 					Chat.Send.System:Single(source, string.format("%s Has Been Admitted To ICU", args[1]))
@@ -34,7 +34,7 @@ function HospitalCallbacks()
 		"release",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
-				local char = Fetch:SID(tonumber(args[1]))
+				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil and char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 					Hospital.ICU:Release(char:GetData("Source"))
 					Chat.Send.System:Single(source, string.format("%s Has Been Released From ICU", args[1]))
@@ -63,7 +63,7 @@ function HospitalCallbacks()
 	)
 
 	Callbacks:RegisterServerCallback("Hospital:Treat", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local bed = Hospital:RequestBed(source)
 
 		local cost = 1500
@@ -93,7 +93,7 @@ function HospitalCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Hospital:Respawn", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if os.time() >= Player(source).state.releaseTime then
 			Pwnzor.Players:TempPosIgnore(source)
 			local bed = Hospital:RequestBed(source)
@@ -163,14 +163,14 @@ function HospitalCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Hospital:HiddenRevive", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local p = Player(source).state
 		if p.isEscorting ~= nil then
 			local t = Player(p.isEscorting).state
 			if t ~= nil and t.isDead then
 				if Crypto.Exchange:Remove("MALD", char:GetData("CryptoWallet"), 20) then
 					cb(true)
-					local tChar = Fetch:CharacterSource(p.isEscorting)
+					local tChar = exports['sandbox-characters']:FetchCharacterSource(p.isEscorting)
 					if tChar ~= nil then
 						Callbacks:ClientCallback(tChar:GetData("Source"), "Damage:Heal", true)
 					else
@@ -186,7 +186,7 @@ function HospitalCallbacks()
 
 	Callbacks:RegisterServerCallback("Hospital:SpawnICU", function(source, data, cb)
 		Routing:RoutePlayerToGlobalRoute(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		Player(source).state.ICU = false
 		TriggerClientEvent("Hospital:Client:ICU:Enter", source)
 		cb(true)

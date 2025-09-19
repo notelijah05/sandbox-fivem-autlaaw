@@ -1,45 +1,43 @@
 AddEventHandler("Billboards:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
+    Utils = exports["sandbox-base"]:FetchComponent("Utils")
     Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
+    Database = exports["sandbox-base"]:FetchComponent("Database")
+    Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
+    Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
     Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
+    Logger = exports["sandbox-base"]:FetchComponent("Logger")
+    Generator = exports["sandbox-base"]:FetchComponent("Generator")
+    Phone = exports["sandbox-base"]:FetchComponent("Phone")
+    Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
+    Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
     Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
     Billboards = exports["sandbox-base"]:FetchComponent("Billboards")
     Regex = exports["sandbox-base"]:FetchComponent("Regex")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Billboards", {
-		"Fetch",
-		"Utils",
+    exports["sandbox-base"]:RequestDependencies("Billboards", {
+        "Utils",
         "Execute",
         "Chat",
-		"Database",
-		"Middleware",
-		"Callbacks",
-		"Logger",
-		"Generator",
-		"Phone",
-		"Jobs",
-		"Vehicles",
+        "Database",
+        "Middleware",
+        "Callbacks",
+        "Logger",
+        "Generator",
+        "Phone",
+        "Jobs",
+        "Vehicles",
         "Inventory",
         "Billboards",
         "Regex",
-	}, function(error)
-		if #error > 0 then 
+    }, function(error)
+        if #error > 0 then
             exports["sandbox-base"]:FetchComponent("Logger"):Critical("Billboards", "Failed To Load All Dependencies")
-			return
-		end
-		RetrieveComponents()
+            return
+        end
+        RetrieveComponents()
 
         FetchBillboardsData()
 
@@ -82,7 +80,7 @@ AddEventHandler("Core:Shared:Ready", function()
                 cb(false)
             end
         end)
-	end)
+    end)
 end)
 
 _BILLBOARDS = {
@@ -105,7 +103,7 @@ _BILLBOARDS = {
     GetCategory = function(self, cat)
         local cIds = {}
 
-        for k,v in pairs(_billboardConfig) do
+        for k, v in pairs(_billboardConfig) do
             if v.category == cat then
                 table.insert(cIds, k)
             end
@@ -116,7 +114,7 @@ _BILLBOARDS = {
 }
 
 AddEventHandler("Proxy:Shared:RegisterReady", function(component)
-	exports["sandbox-base"]:RegisterComponent("Billboards", _BILLBOARDS)
+    exports["sandbox-base"]:RegisterComponent("Billboards", _BILLBOARDS)
 end)
 
 local started = false
@@ -140,7 +138,7 @@ function FetchBillboardsData()
             end
         end
 
-        for k,v in pairs(_billboardConfig) do
+        for k, v in pairs(_billboardConfig) do
             GlobalState[string.format("Billboards:%s", k)] = fetchedBillboards[k]
 
             table.insert(billboardIds, k)

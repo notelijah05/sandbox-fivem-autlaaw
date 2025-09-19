@@ -6,7 +6,7 @@ AddEventHandler("Finance:Server:Startup", function()
 	end)
 
 	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and not char:GetData("CryptoWallet") then
 			local stateId = char:GetData("SID")
 			local generatedWallet = GenerateUniqueCrytoWallet()
@@ -25,7 +25,7 @@ AddEventHandler("Finance:Server:Startup", function()
 	end)
 
 	Inventory.Items:RegisterUse("crypto_voucher", "RandomItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if item.MetaData.CryptoCoin and ((item.MetaData.Quantity and tonumber(item.MetaData.Quantity) or 0) > 0) then
 			local data = Crypto.Coin:Get(item.MetaData.CryptoCoin)
 

@@ -3,7 +3,7 @@ RegisterServerEvent('Characters:Server:Spawning', function()
 end)
 
 RegisterServerEvent('Ped:LeaveCreator', function()
-    local char = Fetch:CharacterSource(source)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char ~= nil then
         if char:GetData("New") then
             char:SetData("New", false)

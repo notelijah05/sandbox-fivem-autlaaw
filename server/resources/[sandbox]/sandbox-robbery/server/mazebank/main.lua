@@ -23,8 +23,8 @@ local _purpDongie = false
 local _mbLoot = {
 	{ 60, { name = "moneyroll", min = 420, max = 500 } },
 	{ 33, { name = "moneyband", min = 42, max = 50 } },
-	{ 5, { name = "valuegoods", min = 26, max = 34 } },
-	{ 2, { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 30000, Random = 15000 } } } },
+	{ 5,  { name = "valuegoods", min = 26, max = 34 } },
+	{ 2,  { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 30000, Random = 15000 } } } },
 }
 
 function MazeBankClearSourceInUse(source)
@@ -102,7 +102,7 @@ function ResetMazeBank()
 		GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)] = nil
 		TriggerClientEvent("Robbery:Client:MazeBank:CloseVaultDoor", -1, v)
 	end
-	
+
 	_heistCoin = false
 	_officesLooted = 1
 
@@ -170,7 +170,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	}, 0)
 
 	Callbacks:RegisterServerCallback("Robbery:MazeBank:SecureBank", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if Player(source).state.onDuty == "police" then
 				SecureMazeBank()
@@ -179,7 +179,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:MazeBank:ElectricBox:Hack", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -386,7 +386,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:MazeBank:ElectricBox:Thermite", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -598,7 +598,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:MazeBank:Drill", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -746,7 +746,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:MazeBank:PC:Hack", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -858,7 +858,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											CryptoCoin = "HEIST",
 											Quantity = 6,
 										}, 1)
-									else 
+									else
 										_officesLooted += 1
 									end
 								end

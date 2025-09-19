@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
@@ -22,7 +21,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Callbacks",
 		"Database",
 		"Utils",
-		"Fetch",
 		"Logger",
 		"Wallet",
 		"Banking",
@@ -72,7 +70,7 @@ end)
 
 function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Fuel:CheckBank", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data?.cost then
 			cb(Banking.Balance:Has(char:GetData("BankAccount"), data.cost))
 		else
@@ -81,7 +79,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Fuel:CompleteFueling", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.vehNet and type(data.vehClass) == "number" and type(data.fuelAmount) == "number" then
 			local veh = NetworkGetEntityFromNetworkId(data.vehNet)
 			if veh and DoesEntityExist(veh) then
@@ -127,7 +125,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Fuel:CompleteJerryFueling", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.vehNet and type(data.newAmount) == "number" then
 			local veh = NetworkGetEntityFromNetworkId(data.vehNet)
 			if veh and DoesEntityExist(veh) then

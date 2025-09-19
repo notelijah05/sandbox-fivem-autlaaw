@@ -6,7 +6,6 @@ _hiddenScenes = {}
 AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -31,7 +30,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Scenes", {
 		"Logger",
-		"Fetch",
 		"Callbacks",
 		"Game",
 		"Menu",

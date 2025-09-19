@@ -9,8 +9,8 @@ _jobs = {
 		icon = "star-of-life",
 		location = {
 			x = 1151.694,
-            y = -1527.149,
-            z = 34.844,
+			y = -1527.149,
+			z = 34.844,
 		},
 	},
 	-- misc
@@ -40,8 +40,8 @@ _jobs = {
 		icon = "store",
 		location = {
 			x = -231.453,
-            y = 6235.004,
-            z = 31.496,
+			y = 6235.004,
+			z = 31.496,
 		},
 	},
 	["jewel"] = {
@@ -70,8 +70,8 @@ _jobs = {
 		icon = "gem",
 		location = {
 			x = 1655.100,
-            y = 4883.135,
-            z = 41.968,
+			y = 4883.135,
+			z = 41.968,
 		},
 	},
 	["realestate"] = {
@@ -172,9 +172,9 @@ _jobs = {
 		txtColor = _dark,
 		icon = "gear",
 		location = {
-            x = 149.057,
-            y = 6393.512,
-            z = 31.301,
+			x = 149.057,
+			y = 6393.512,
+			z = 31.301,
 		},
 	},
 	["auto_exotics"] = {
@@ -183,8 +183,8 @@ _jobs = {
 		icon = "wheel",
 		location = {
 			x = 531.894,
-            y = -182.602,
-            z = 54.217,
+			y = -182.602,
+			z = 54.217,
 		},
 	},
 	["dreamworks"] = {
@@ -193,8 +193,8 @@ _jobs = {
 		icon = "gear",
 		location = {
 			x = -750.244,
-            y = -1515.048,
-            z = 5.049,
+			y = -1515.048,
+			z = 5.049,
 		},
 	},
 	["tuna"] = {
@@ -393,7 +393,7 @@ function RefreshServicesDataPls()
 	if cachedData == nil or (GetGameTimer() - lastRefreshed) >= CACHE_TIME then
 		local onlineShit = {}
 
-		for _, char in pairs(Fetch:AllCharacters()) do
+		for _, char in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 			if char ~= nil then
 				local src = char:GetData("Source")
 

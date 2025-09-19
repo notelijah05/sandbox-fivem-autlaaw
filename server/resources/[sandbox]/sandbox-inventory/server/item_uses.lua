@@ -22,15 +22,15 @@ local _materialsTable = {
 	{ 19, { name = "rubber", min = 20, max = 120 } },
 	{ 19, { name = "copperwire", min = 50, max = 250 } },
 	{ 19, { name = "glue", min = 10, max = 55 } },
-	{ 5, { name = "ironbar", min = 10, max = 50 } },
+	{ 5,  { name = "ironbar", min = 10, max = 50 } },
 }
 
 function RegisterRandomItems()
 	INVENTORY.Items:RegisterUse("vanityitem", "VanityItems", function(source, item, itemData)
 		if item?.MetaData?.CustomItemAction == "overlay" then
-			TriggerClientEvent("Inventory:Client:UseVanityItem", source, source, item.MetaData.CustomItemAction, item) 
+			TriggerClientEvent("Inventory:Client:UseVanityItem", source, source, item.MetaData.CustomItemAction, item)
 		elseif item?.MetaData?.CustomItemAction == "overlayall" then
-			TriggerClientEvent("Inventory:Client:UseVanityItem", -1, source, item.MetaData.CustomItemAction, item) 
+			TriggerClientEvent("Inventory:Client:UseVanityItem", -1, source, item.MetaData.CustomItemAction, item)
 		end
 	end)
 
@@ -100,7 +100,7 @@ function RegisterRandomItems()
 		Execute:Client(source, "Notification", "Error", "No money to be found.")
 
 		-- local Winnings = 25000
-		-- local char = Fetch:CharacterSource(source)
+		-- local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		-- INVENTORY.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
 		-- TriggerClientEvent('Inventory:Client:RandomItems:BriefcaseCash', source)
 		-- Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account, Winnings, {
@@ -255,7 +255,7 @@ function RegisterRandomItems()
 	end)
 
 	INVENTORY.Items:RegisterUse("parts_box", "RandomItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			INVENTORY.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
 			if item.MetaData.Items then
@@ -274,7 +274,7 @@ function RegisterRandomItems()
 	INVENTORY.Items:RegisterUse("parachute", "RandomItems", function(source, item)
 		Callbacks:ClientCallback(source, "Weapons:CanEquipParachute", {}, function(canEquip)
 			if canEquip then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char then
 					local states = char:GetData("States") or {}
 					if not hasValue(states, "SCRIPT_PARACHUTE") then
@@ -293,7 +293,7 @@ function RegisterRandomItems()
 	end)
 
 	INVENTORY.Items:RegisterUse("shark_card", "RandomShit", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			local f = Banking.Accounts:GetPersonal(sid)
@@ -316,7 +316,7 @@ function RegisterRandomItems()
 	end)
 
 	Callbacks:RegisterServerCallback("Inventory:UsedParachute", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local states = char:GetData("States") or {}
 			if hasValue(states, "SCRIPT_PARACHUTE") then

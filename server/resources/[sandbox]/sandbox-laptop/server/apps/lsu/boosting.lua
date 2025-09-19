@@ -10,7 +10,7 @@ _boostingEvent = false
 
 AddEventHandler("Laptop:Server:RegisterMiddleware", function()
     Middleware:Add("Characters:Spawning", function(source)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and char:GetData("BoostingContracts") then
             local contracts = char:GetData("BoostingContracts")
 
@@ -39,7 +39,7 @@ AddEventHandler("Characters:Server:PlayerDropped", HandleCharacterLogout)
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:CreateContract", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data?.vehicle and data?.make and data?.model and data?.trackers and data?.price then
             local perm = char:GetData("LaptopPermissions")
 
@@ -88,7 +88,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:GetBans", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local perm = char:GetData("LaptopPermissions")
 
@@ -133,7 +133,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:Ban", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data?.SID then
             local perm = char:GetData("LaptopPermissions")
 
@@ -150,7 +150,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                     }
                 }, function(success, result)
                     if success and result > 0 then
-                        local targetChar = Fetch:SID(data.SID)
+                        local targetChar = exports['sandbox-characters']:FetchBySID(data.SID)
                         if targetChar then
                             targetChar:SetData("LSUNDGBan", {
                                 "Boosting",
@@ -170,7 +170,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:Unban", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data?.SID then
             local perm = char:GetData("LaptopPermissions")
 
@@ -187,7 +187,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                     }
                 }, function(success, result)
                     if success and result > 0 then
-                        local targetChar = Fetch:SID(data.SID)
+                        local targetChar = exports['sandbox-characters']:FetchBySID(data.SID)
                         if targetChar then
                             targetChar:SetData("LSUNDGBan", nil)
                         end
@@ -206,7 +206,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:EnterQueue", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local team, leader = Laptop.Teams:GetByMemberSource(source)
 
         if _boostingEvent then
@@ -247,7 +247,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:ExitQueue", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             for k, v in ipairs(_boostingQueue) do
                 if v.source == source then
@@ -262,7 +262,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:DeclineContract", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local boostingContracts = char:GetData("BoostingContracts") or {}
             local updated = false
@@ -288,7 +288,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:TransferContract", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data?.alias then
             local boostingContracts = char:GetData("BoostingContracts") or {}
             local updated = false
@@ -296,7 +296,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
             for k, v in ipairs(boostingContracts) do
                 if v.id == data.id then
                     local found = nil
-                    for _, c in pairs(Fetch:AllCharacters()) do
+                    for _, c in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
                         if c ~= nil then
                             local profiles = c:GetData("Profiles")
                             if profiles?.redline?.name == data.alias then
@@ -350,7 +350,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:AcceptContract", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local boostingContracts = char:GetData("BoostingContracts") or {}
             local perm = char:GetData("LaptopPermissions")
@@ -404,7 +404,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Exterior", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local team = Laptop.Teams:GetByMemberSource(source)
 
@@ -440,7 +440,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Ignition", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local team = Laptop.Teams:GetByMemberSource(source)
 
@@ -501,7 +501,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:DropOff", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local team = Laptop.Teams:GetByMemberSource(source)
 
@@ -527,7 +527,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:LeftArea", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local team = Laptop.Teams:GetByMemberSource(source)
 
@@ -700,7 +700,7 @@ end)
 
 AddEventHandler("Laptop:Server:LSUnderground:Boosting:ActionRequest", function(source, data, action)
     if action == "accept" and data?.requester and data?.contract then
-        local owner = Fetch:CharacterSource(data.requester)
+        local owner = exports['sandbox-characters']:FetchCharacterSource(data.requester)
         if not owner then return; end
 
         local team, isLeader = Laptop.Teams:GetByMemberSource(data.requester)
@@ -716,7 +716,7 @@ AddEventHandler("Laptop:Server:LSUnderground:Boosting:ActionRequest", function(s
                 if team?.ID and team.State == 0 and (#team.Members >= 2 or (perm["lsunderground"] and perm["lsunderground"]["admin"])) then
                     local fail = false
                     for k, v in ipairs(team.Members) do
-                        local char = Fetch:CharacterSource(v.Source)
+                        local char = exports['sandbox-characters']:FetchCharacterSource(v.Source)
                         if char then
                             local profiles = char:GetData("Profiles")
                             local hasVpn = hasValue(char:GetData("States") or {}, "PHONE_VPN")
@@ -778,7 +778,7 @@ end)
 LAPTOP.LSUnderground = LAPTOP.LSUnderground or {}
 LAPTOP.LSUnderground.Boosting = {
     RewardContract = function(self, source)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local level = Reputation:GetLevel(source, "Boosting")
             if level < 1 then
@@ -844,7 +844,7 @@ LAPTOP.LSUnderground.Boosting = {
         return false
     end,
     GiveContract = function(self, source, vehicle, prices, timeLength, settings)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
         if not timeLength then
             timeLength = 60 * 60 * 5
@@ -925,7 +925,7 @@ LAPTOP.LSUnderground.Boosting = {
                 Reputation.Modify:Remove(v.Source, "Boosting", takenRep)
 
                 if v.SID == contract.owner?.SID then
-                    local cChar = Fetch:CharacterSource(v.Source)
+                    local cChar = exports['sandbox-characters']:FetchCharacterSource(v.Source)
                     if cChar then
                         Logger:Info("Boosting",
                             string.format("%s [%s %s (%s)] Started Class %s Contract (%s)",
@@ -1111,7 +1111,7 @@ LAPTOP.LSUnderground.Boosting = {
                     Reputation.Modify:Add(v.Source, "Boosting", math.floor(_boosting[teamId].takenRep + earnedRep))
 
                     if v.SID == _boosting[teamId].contractOwner?.SID then
-                        local cChar = Fetch:CharacterSource(v.Source)
+                        local cChar = exports['sandbox-characters']:FetchCharacterSource(v.Source)
                         if cChar then
                             Crypto.Exchange:Add(
                                 _boosting[teamId].coin,
@@ -1241,7 +1241,7 @@ function SetupBoostingQueue()
                 )
 
                 if _boostingQueue[index] then
-                    local char = Fetch:CharacterSource(_boostingQueue[index].source)
+                    local char = exports['sandbox-characters']:FetchCharacterSource(_boostingQueue[index].source)
                     if char then
                         local holdingContracts = char:GetData("BoostingContracts") or {}
                         local contractCount = 0

@@ -30,7 +30,7 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 	end
 
 	RegisterCommand(command, function(source, args, rawCommand)
-		local pData = Fetch:Source(source)
+		local pData = exports['sandbox-base']:FetchSource(source)
 		if pData ~= nil then
 			-- TODO : Implement character specific data for commands (IE Jobs)
 			local myDuty = Player(source).state.onDuty
@@ -51,19 +51,19 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 								(#args <= commands[command].args and #args == commands[command].args)
 								or commands[command].args == -1
 							then
-								local char = Fetch:CharacterSource(source)
+								local char = exports['sandbox-characters']:FetchCharacterSource(source)
 								Logger:Info(
 									"Commands",
 									string.format(
 										"%s (%s [%s]) Used A Job Command: %s.%s",
 										char
-												and string.format(
-													"%s %s (SID %s)",
-													char:GetData("First"),
-													char:GetData("Last"),
-													char:GetData("SID")
-												)
-											or "No Character",
+										and string.format(
+											"%s %s (SID %s)",
+											char:GetData("First"),
+											char:GetData("Last"),
+											char:GetData("SID")
+										)
+										or "No Character",
 										pData:GetData("Name"),
 										pData:GetData("AccountID"),
 										command,
@@ -91,19 +91,19 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 					(#args <= commands[command].args and #args == commands[command].args)
 					or commands[command].args == -1
 				then
-					local char = Fetch:CharacterSource(source)
+					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					Logger:Info(
 						"Commands",
 						string.format(
 							"%s (%s [%s]) Used A Command: %s.%s",
 							char
-									and string.format(
-										"%s %s (SID %s)",
-										char:GetData("First"),
-										char:GetData("Last"),
-										char:GetData("SID")
-									)
-								or "No Character",
+							and string.format(
+								"%s %s (SID %s)",
+								char:GetData("First"),
+								char:GetData("Last"),
+								char:GetData("SID")
+							)
+							or "No Character",
 							pData:GetData("Name"),
 							pData:GetData("AccountID"),
 							command,
@@ -147,7 +147,7 @@ function CHAT.RegisterAdminCommand(this, command, callback, suggestion, argument
 	end
 
 	RegisterCommand(command, function(source, args, rawCommand)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		if player ~= nil then
 			local argsStr = ""
 			if #args > 0 then
@@ -237,7 +237,7 @@ function CHAT.RegisterStaffCommand(this, command, callback, suggestion, argument
 	end
 
 	RegisterCommand(command, function(source, args, rawCommand)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		if player ~= nil then
 			local argsStr = ""
 			if #args > 0 then

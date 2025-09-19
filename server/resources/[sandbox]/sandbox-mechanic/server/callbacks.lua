@@ -1,11 +1,11 @@
 function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Mechanic:InstallMultipleRepairParts", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data?.part and data?.quantity and _mechanicItemsToParts[data.part] then
 			if Inventory.Items:Has(char:GetData("SID"), 1, data.part, data.quantity) then
 				Callbacks:ClientCallback(source, "Mechanic:StartInstall", data, function(success)
 					if success then
-					Inventory.Items:Remove(char:GetData("SID"), 1, data.part, data.quantity)
+						Inventory.Items:Remove(char:GetData("SID"), 1, data.part, data.quantity)
 					end
 				end)
 
@@ -36,7 +36,8 @@ function RegisterCallbacks()
 					end
 				end
 
-				TriggerClientEvent('Mechanic:Client:ForcePerformanceProperty', -1, NetworkGetNetworkIdFromEntity(veh), partData.modType, partData.toggleMod or partData.modIndex)
+				TriggerClientEvent('Mechanic:Client:ForcePerformanceProperty', -1, NetworkGetNetworkIdFromEntity(veh),
+					partData.modTpe, partData.toggleMod or partData.modIndex)
 			end
 		end)
 		cb(true)

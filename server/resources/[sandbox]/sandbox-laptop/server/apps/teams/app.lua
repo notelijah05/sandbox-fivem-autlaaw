@@ -37,7 +37,7 @@ LAPTOP.Teams = {
         return false
     end,
     Create = function(self, source, name)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and not Laptop.Teams:GetByMemberSource(source) then
             name = string.gsub(name, '%s+', '')
 
@@ -92,7 +92,7 @@ LAPTOP.Teams = {
                         {}
                     )
 
-                    local char = Fetch:CharacterSource(member.Source)
+                    local char = exports['sandbox-characters']:FetchCharacterSource(member.Source)
                     if char then
                         char:SetData("Team", nil)
                     end
@@ -140,7 +140,7 @@ LAPTOP.Teams = {
     end,
     Members = {
         Add = function(self, source, team)
-            local char = Fetch:CharacterSource(source)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
             if char then
                 for k, v in ipairs(_teams) do
@@ -216,7 +216,7 @@ LAPTOP.Teams = {
                             TriggerEvent("Laptop:Server:Teams:MemberRemoved", v.ID, info)
                         end
 
-                        local char = Fetch:CharacterSource(source)
+                        local char = exports['sandbox-characters']:FetchCharacterSource(source)
                         if char then
                             char:SetData("Team", false)
                         end
@@ -318,7 +318,7 @@ LAPTOP.Teams = {
         end,
 
         Get = function(self, source)
-            local char = Fetch:CharacterSource(source)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
             local r = {}
 
             if char then
@@ -357,7 +357,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:Teams:Delete", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local team, leader = Laptop.Teams:GetByMemberSource(source)
 
@@ -372,8 +372,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:Teams:Members:Invite", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
-        local target = Fetch:SID(data?.SID)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
+        local target = exports['sandbox-characters']:FetchBySID(data?.SID)
         if char and target then
             local myTeam = Laptop.Teams:GetByMember(char:GetData("SID"))
 
@@ -417,7 +417,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:Teams:Members:Remove", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data?.SID and data?.Source then
             if data.SID == char:GetData("SID") then -- Leaving Group
                 local team = Laptop.Teams:GetByMemberSource(char:GetData("Source"))
@@ -441,7 +441,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:Teams:ActionRequest", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data.id then
             local team, leader = Laptop.Teams:GetByMember(char:GetData("SID"))
 
@@ -459,7 +459,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     Callbacks:RegisterServerCallback("Laptop:Teams:RequestInvite", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and not char:GetData("Team") then
             local team = Laptop.Teams:Get(data)
 

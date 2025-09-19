@@ -69,7 +69,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	})
 
 	Callbacks:RegisterServerCallback("Coke:StartWork", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if Wallet:Has(source, 100000) then
 				if not GlobalState["CokeRunActive"] and _active == nil then
@@ -88,7 +88,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Coke:Abort", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if _active ~= nil and _active.joiner == source then
 				if _active.state == 0 then
@@ -246,7 +246,7 @@ AddEventHandler("Coke:Server:OnDuty", function(joiner, members, isWorkgroup)
 			color = "transparent",
 		})
 	else
-		local char = Fetch:CharacterSource(joiner)
+		local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 		if char ~= nil then
 			local cd = char:GetData("CokeCD") or os.time()
 			if cd > os.time() then
@@ -294,7 +294,7 @@ AddEventHandler("Coke:Server:OnDuty", function(joiner, members, isWorkgroup)
 		}
 		GlobalState["CokeRunActive"] = true
 
-		local char = Fetch:CharacterSource(joiner)
+		local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 		char:SetData("TempJob", _JOB)
 		char:SetData("CokeCD", os.time() + (60 * 60 * 24 * 3))
 
@@ -302,7 +302,7 @@ AddEventHandler("Coke:Server:OnDuty", function(joiner, members, isWorkgroup)
 		if #members > 0 then
 			for k, v in ipairs(members) do
 				_joiners[v.ID] = joiner
-				local member = Fetch:CharacterSource(v.ID)
+				local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 				member:SetData("TempJob", _JOB)
 				TriggerClientEvent("Coke:Client:OnDuty", v.ID, joiner, os.time())
 			end

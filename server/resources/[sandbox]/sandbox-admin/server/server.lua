@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
@@ -23,7 +22,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Database",
 		"Logger",
 		"Callbacks",
-		"Fetch",
 		"Utils",
 		"Jobs",
 		"Punishment",
@@ -46,7 +44,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		StartDashboardThread()
 
 		Middleware:Add('Characters:Spawning', function(source)
-			local player = Fetch:Source(source)
+			local player = exports['sandbox-base']:FetchSource(source)
 
 			if player and player.Permissions:IsStaff() then
 				local highestLevel, highestGroup, highestGroupName = 0, nil, nil

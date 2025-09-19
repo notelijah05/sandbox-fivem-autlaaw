@@ -2,7 +2,6 @@ local _uircd = {}
 
 AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
@@ -14,7 +13,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
-		"Fetch",
 		"Logger",
 		"Chat",
 		"Callbacks",
@@ -46,7 +44,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			}
 		end)
 		Middleware:Add("Characters:Spawning", function(source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local config = char:GetData("HUDConfig")
 			if not config then
 				char:SetData("HUDConfig", {
@@ -65,7 +63,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end, 1)
 
 		Callbacks:RegisterServerCallback("HUD:SaveConfig", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				char:SetData("HUDConfig", data)
 				cb(true)
@@ -75,7 +73,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("HUD:RemoveBlindfold", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local tarState = Player(data).state
 				if tarState.isBlindfolded then
@@ -148,7 +146,7 @@ function RegisterChatCommands()
 	})
 
 	Chat:RegisterAdminCommand("testblindfold", function(source, args, rawCommand)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			Player(source).state.isBlindfolded = not Player(source).state.isBlindfolded
 		end

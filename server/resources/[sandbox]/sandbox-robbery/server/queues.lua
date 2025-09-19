@@ -88,7 +88,7 @@ function SetupQueues()
 					local index = math.random(#sources)
 					local src = tonumber(sources[index])
 
-					char = Fetch:CharacterSource(src)
+					char = exports['sandbox-characters']:FetchCharacterSource(src)
 					if char ~= nil then
 						local pState = Player(src).state
 

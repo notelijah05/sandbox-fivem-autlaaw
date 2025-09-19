@@ -1,6 +1,5 @@
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", GovernmentComponents)
 function GovernmentComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
 		"Callbacks",
 		"Logger",
-		"Fetch",
 		"Execute",
 		"Wallet",
 		"Inventory",
@@ -32,7 +30,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		GovernmentComponents()
 
 		Callbacks:RegisterServerCallback("Government:BuyID", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if Wallet:Modify(source, -500) then
 				Inventory:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
 			else
@@ -42,7 +40,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		Callbacks:RegisterServerCallback("Government:BuyLicense", function(source, data, cb)
 			if _licenses[data] ~= nil then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				local licenses = char:GetData("Licenses")
 				if Wallet:Modify(source, -_licenses[data].price) then
 					if licenses[_licenses[data].key] ~= nil and not licenses[_licenses[data].key].Active then
@@ -70,7 +68,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Government:Client:DoWeaponsLicenseBuyPolice", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if Jobs.Permissions:HasJob(source, "police") and char then
 				local licenses = char:GetData("Licenses")
 				if Wallet:Modify(source, -20) then

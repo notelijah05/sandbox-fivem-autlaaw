@@ -6,7 +6,7 @@ CreateThread(function()
 	while true do
 		for k, v in pairs(COMPONENTS.Players) do
 			if not GetPlayerEndpoint(k) and not _dropping[k] then
-				local char = COMPONENTS.Fetch:CharacterSource(k)
+				local char = exports['sandbox-characters']:FetchCharacterSource(k)
 				if char ~= nil then
 					TriggerEvent("Characters:Server:PlayerDropped", k, char:GetData())
 				end
@@ -52,7 +52,7 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 	COMPONENTS.Middleware:Add("playerDropped", function(source, message)
 		local player = COMPONENTS.Players[source]
 		if player ~= nil then
-			local char = COMPONENTS.Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 			local pData = {
 				Source = source,
@@ -86,7 +86,7 @@ AddEventHandler("playerDropped", function(message)
 	local src = source
 	_dropping[src] = true
 
-	local char = COMPONENTS.Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		TriggerEvent("Characters:Server:PlayerDropped", src, char:GetData())
 	end

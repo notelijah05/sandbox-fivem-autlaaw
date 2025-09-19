@@ -105,7 +105,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	})
 
 	Callbacks:RegisterServerCallback("Pawn:Sell", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local pawning = _pawnItems[data]
 			if pawning then

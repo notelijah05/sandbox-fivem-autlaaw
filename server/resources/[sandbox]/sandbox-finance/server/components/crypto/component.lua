@@ -2,7 +2,6 @@ _cryptoCoins = {}
 
 AddEventHandler("Crypto:Shared:DependencyUpdate", RetrieveCryptoComponents)
 function RetrieveCryptoComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
@@ -25,7 +24,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Crypto", {
-		"Fetch",
 		"Utils",
 		"Execute",
 		"Chat",
@@ -97,7 +95,7 @@ _CRYPTO = {
 		end,
 	},
 	Has = function(self, source, coin, amt)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local crypto = char:GetData("Crypto") or {}
 			return crypto[coin] ~= nil and crypto[coin] >= amt
@@ -116,7 +114,7 @@ _CRYPTO = {
 		end,
 		Buy = function(self, coin, target, amount)
 			if Crypto.Exchange:IsListed(coin) then
-				local char = Fetch:SID(target)
+				local char = exports['sandbox-characters']:FetchBySID(target)
 				if char ~= nil then
 					local acc = Banking.Accounts:GetPersonal(char:GetData("SID"))
 					local coinData = Crypto.Coin:Get(coin)
@@ -166,7 +164,7 @@ _CRYPTO = {
 		end,
 		Sell = function(self, coin, target, amount)
 			if Crypto.Exchange:IsListed(coin) then
-				local char = Fetch:SID(target)
+				local char = exports['sandbox-characters']:FetchBySID(target)
 				if char ~= nil then
 					local acc = Banking.Accounts:GetPersonal(char:GetData("SID"))
 					local coinData = Crypto.Coin:Get(coin)
@@ -196,7 +194,7 @@ _CRYPTO = {
 			end
 		end,
 		Add = function(self, coin, target, amount, skipAlert)
-			local char = Fetch:CharacterData("CryptoWallet", target)
+			local char = exports['sandbox-characters']:FetchCharacterData("CryptoWallet", target)
 			if char ~= nil then
 				local crypto = char:GetData("Crypto") or {}
 				if crypto[coin] == nil then
@@ -240,7 +238,7 @@ _CRYPTO = {
 		end,
 		Remove = function(self, coin, target, amount, skipAlert)
 			local p = promise.new()
-			local char = Fetch:CharacterData("CryptoWallet", target)
+			local char = exports['sandbox-characters']:FetchCharacterData("CryptoWallet", target)
 			if char ~= nil then
 				local crypto = char:GetData("Crypto") or {}
 
@@ -304,10 +302,10 @@ _CRYPTO = {
 			return Citizen.Await(p)
 		end,
 		Transfer = function(self, coin, sender, target, amount)
-			local char = Fetch:SID(sender)
+			local char = exports['sandbox-characters']:FetchBySID(sender)
 			if char then
 				if char:GetData("CryptoWallet") ~= target then
-					local tChar = Fetch:CharacterData("CryptoWallet", target)
+					local tChar = exports['sandbox-characters']:FetchCharacterData("CryptoWallet", target)
 
 					if tChar or DoesCryptoWalletExist(target) then
 						if Crypto.Exchange:Remove(coin, char:GetData("CryptoWallet"), math.abs(amount), true) then

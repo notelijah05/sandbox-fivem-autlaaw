@@ -1,6 +1,5 @@
 AddEventHandler("Finance:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
@@ -24,7 +23,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Finance", {
-		"Fetch",
 		"Utils",
 		"Execute",
 		"Chat",

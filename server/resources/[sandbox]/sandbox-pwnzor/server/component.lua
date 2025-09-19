@@ -143,9 +143,7 @@ function RetrieveComponents()
 	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
@@ -157,9 +155,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Punishment",
 		"Callbacks",
 		"Logger",
-		"Fetch",
 		"Pwnzor",
-		"Fetch",
 		"Chat",
 		"Generator",
 		"Execute",
@@ -178,7 +174,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						local mult = GetPlayerWeaponDamageModifier(v)
 
 						if mult > 1.0 then
-							local player = Fetch:Source(tonumber(v))
+							local player = exports['sandbox-base']:FetchSource(tonumber(v))
 							if player and player:GetData("Character") then
 								Logger:Warn(
 									"Pwnzor",
@@ -219,7 +215,7 @@ end)
 
 AddEventHandler("explosionEvent", function(sender, ev)
 	local src = tonumber(sender)
-	local player = Fetch:Source(src)
+	local player = exports['sandbox-base']:FetchSource(src)
 	for _, v in ipairs(Config.Components.Explosions.Options.Types) do
 		if ev.explosionType == v then
 			CancelEvent()
@@ -228,7 +224,7 @@ AddEventHandler("explosionEvent", function(sender, ev)
 				_blockedExplosions[src] ~= nil
 				and #_blockedExplosions[src] >= Config.Components.Explosions.Options.Count
 			then
-				local char = Fetch:CharacterSource(src)
+				local char = exports['sandbox-characters']:FetchCharacterSource(src)
 				if char then
 					Logger:Warn("Pwnzor",
 						string.format("%s %s (%s) Triggered Explosion Detection With Explosion Type of %s",
@@ -277,7 +273,7 @@ AddEventHandler("entityCreating", function(entity)
 end)
 
 RegisterNetEvent("Pwnzor:Server:ResourceStarted", function(resource)
-	local plyr = Fetch:Source(source)
+	local plyr = exports['sandbox-base']:FetchSource(source)
 	Logger:Info(
 		"Pwnzor",
 		string.format("%s (%s) Started A Resource: %s", plyr:GetData("Name"), plyr:GetData("AccountID"), resource),
@@ -295,7 +291,7 @@ RegisterNetEvent("Pwnzor:Server:ResourceStarted", function(resource)
 end)
 
 RegisterNetEvent("Pwnzor:Server:ResourceStopped", function(resource)
-	local plyr = Fetch:Source(source)
+	local plyr = exports['sandbox-base']:FetchSource(source)
 
 	if Config.BanResources[resource] then
 		COMPONENTS.Punishment.Ban:Source(
@@ -360,7 +356,7 @@ PWNZOR = PWNZOR
 			end,
 		},
 		Screenshot = function(self, stateId, desc)
-			local char = Fetch:SID(stateId)
+			local char = exports['sandbox-characters']:FetchBySID(stateId)
 			if char ~= nil then
 				local wh = GetConvar("discord_pwnzor_webhook", "")
 				if wh ~= nil and wh ~= "" then

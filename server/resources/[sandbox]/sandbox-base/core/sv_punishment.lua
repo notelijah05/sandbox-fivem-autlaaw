@@ -42,7 +42,7 @@ COMPONENTS.Punishment = {
 		return Citizen.Await(p)
 	end,
 	Kick = function(self, source, reason, issuer, afk)
-		local tPlayer = COMPONENTS.Fetch:Source(source)
+		local tPlayer = exports['sandbox-base']:FetchSource(source)
 
 		if not tPlayer then
 			return {
@@ -58,7 +58,7 @@ COMPONENTS.Punishment = {
 				}
 			end
 
-			local iPlayer = COMPONENTS.Fetch:Source(issuer)
+			local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 
 			if not iPlayer then
 				return {
@@ -139,7 +139,7 @@ COMPONENTS.Punishment = {
 COMPONENTS.Punishment.Unban = {
 	BanID = function(self, id, issuer)
 		if COMPONENTS.Punishment:CheckBan("_id", id) then
-			local iPlayer = COMPONENTS.Fetch:Source(issuer)
+			local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 
 			COMPONENTS.Database.Auth:find({
 				collection = "bans",
@@ -159,15 +159,15 @@ COMPONENTS.Punishment.Unban = {
 	end,
 	AccountID = function(self, aId, issuer)
 		if COMPONENTS.Punishment:CheckBan("account", aId) then
-			local tPlayer = COMPONENTS.Fetch:PlayerData("AccountID", aId)
+			local tPlayer = exports['sandbox-base']:FetchPlayerData("AccountID", aId)
 			local dbf = false
 
 			if tPlayer == nil then
-				tPlayer = COMPONENTS.Fetch:Website("account", aId)
+				tPlayer = exports['sandbox-base']:FetchWebsite("account", aId)
 				dbf = true
 			end
 
-			local iPlayer = COMPONENTS.Fetch:Source(issuer)
+			local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 
 			COMPONENTS.Database.Auth:find({
 				collection = "bans",
@@ -200,13 +200,13 @@ COMPONENTS.Punishment.Unban = {
 	end,
 	Identifier = function(self, identifier, issuer)
 		if COMPONENTS.Punishment:CheckBan("identifier", identifier) then
-			local tPlayer = COMPONENTS.Fetch:PlayerData("Identifier", identifier)
+			local tPlayer = exports['sandbox-base']:FetchPlayerData("Identifier", identifier)
 			local dbf = false
 			if tPlayer == nil then
-				tPlayer = COMPONENTS.Fetch:Website("identifier", identifier)
+				tPlayer = exports['sandbox-base']:FetchWebsite("identifier", identifier)
 				dbf = true
 			end
-			local iPlayer = COMPONENTS.Fetch:Source(issuer)
+			local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 
 			COMPONENTS.Database.Auth:find({
 				collection = "bans",
@@ -245,7 +245,7 @@ COMPONENTS.Punishment.Unban = {
 
 COMPONENTS.Punishment.Ban = {
 	Source = function(self, source, expires, reason, issuer)
-		local tPlayer = COMPONENTS.Fetch:Source(source)
+		local tPlayer = exports['sandbox-base']:FetchSource(source)
 		local iPlayer
 
 		if not tPlayer then
@@ -262,7 +262,7 @@ COMPONENTS.Punishment.Ban = {
 				}
 			end
 
-			iPlayer = COMPONENTS.Fetch:Source(issuer)
+			iPlayer = exports['sandbox-base']:FetchSource(issuer)
 			if not iPlayer then
 				return {
 					success = false,
@@ -359,7 +359,7 @@ COMPONENTS.Punishment.Ban = {
 		)
 	end,
 	AccountID = function(self, aId, expires, reason, issuer)
-		local iPlayer = COMPONENTS.Fetch:Source(issuer)
+		local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 		if not iPlayer then
 			return {
 				success = false,
@@ -373,13 +373,13 @@ COMPONENTS.Punishment.Ban = {
 			}
 		end
 
-		local tPlayer = COMPONENTS.Fetch:PlayerData("AccountID", tonumber(aId))
+		local tPlayer = exports['sandbox-base']:FetchPlayerData("AccountID", tonumber(aId))
 
 		issuer = string.format("%s [%s]", iPlayer:GetData("Name"), iPlayer:GetData("AccountID"))
 
 		local dbf = false
 		if tPlayer == nil then
-			tPlayer = COMPONENTS.Fetch:Website("account", tonumber(aId))
+			tPlayer = exports['sandbox-base']:FetchWebsite("account", tonumber(aId))
 			dbf = true
 		end
 
@@ -519,7 +519,7 @@ COMPONENTS.Punishment.Ban = {
 		end
 	end,
 	Identifier = function(self, identifier, expires, reason, issuer)
-		local iPlayer = COMPONENTS.Fetch:Source(issuer)
+		local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 		if not iPlayer then
 			return {
 				success = false,
@@ -533,13 +533,13 @@ COMPONENTS.Punishment.Ban = {
 			}
 		end
 
-		local tPlayer = COMPONENTS.Fetch:PlayerData("Identifier", identifier)
+		local tPlayer = exports['sandbox-base']:FetchPlayerData("Identifier", identifier)
 
 		issuer = string.format("%s [%s]", iPlayer:GetData("Name"), iPlayer:GetData("AccountID"))
 
 		local dbf = false
 		if tPlayer == nil then
-			tPlayer = COMPONENTS.Fetch:Website("identifier", identifier)
+			tPlayer = exports['sandbox-base']:FetchWebsite("identifier", identifier)
 			dbf = true
 		end
 

@@ -44,7 +44,7 @@ function RegisterPrisonStashStartup()
 	GlobalState.JailStashLocations = _jailStashLocs
 
 	Callbacks:RegisterServerCallback("Inventory:PrisonStash:Open", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		-- if not Jail:IsJailed(source) then
 		if char then
 			local _inventory = 5000
@@ -65,11 +65,11 @@ function RegisterPrisonStashStartup()
 	end)
 
 	Callbacks:RegisterServerCallback("Inventory:PrisonStash:Raid", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.stateid then
 			if
 				Player(source).state.onDuty == "police" or Player(source).state.onDuty == "prison"
-				--and Jobs.Permissions:HasPermissionInJob(source, "police", "PD_RAID")
+			--and Jobs.Permissions:HasPermissionInJob(source, "police", "PD_RAID")
 			then
 				-- Logger:Warn(
 				-- 	"Police",

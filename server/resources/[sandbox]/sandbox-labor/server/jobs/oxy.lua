@@ -43,7 +43,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	}, 1)
 
 	Callbacks:RegisterServerCallback("OxyRun:Enable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if not hasValue(states, "SCRIPT_OXY_RUN") then
 			table.insert(states, "SCRIPT_OXY_RUN")
@@ -61,7 +61,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("OxyRun:Disable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if hasValue(states, "SCRIPT_OXY_RUN") then
 			for k, v in ipairs(states) do
@@ -75,7 +75,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("OxyRun:EnteredCar", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -138,7 +138,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("OxyRun:EnteredPickup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -157,14 +157,14 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("OxyRun:CancelPickup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
 			Inventory.Items:Remove(_sellers[_joiners[source]].vehicle.VIN, 4, "contraband", false)
 		end
 	end)
 
 	Callbacks:RegisterServerCallback("OxyRun:CheckPickup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -187,7 +187,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("OxyRun:PickupProduct", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if
 			char:GetData("TempJob") == _JOB
@@ -244,7 +244,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("OxyRun:EnteredArea", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -317,7 +317,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("OxyRun:SellProduct", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -424,7 +424,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("OxyRun:DestroyVehicle", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
 			if _sellers[_joiners[source]].state == 6 then
 				_sellers[_joiners[source]].state = 7
@@ -462,7 +462,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("OxyRun:VehiclePoofed", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
 			if _sellers[_joiners[source]].state == 6 then
 				_sellers[_joiners[source]].state = 7
@@ -506,7 +506,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("OxyRun:LeftZone", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -648,7 +648,7 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 		return
 	end
 
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	if char == nil then
 		Labor.Offers:Cancel(joiner, _JOB)
 		Labor.Duty:Off(_JOB, joiner, false, true)
@@ -743,7 +743,7 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 		state = 0,
 	}
 
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
 	TriggerClientEvent("OxyRun:Client:OnDuty", joiner, joiner, os.time())
 	_wasDoingIllegalShit[joiner] = true
@@ -752,7 +752,7 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner
-			local member = Fetch:CharacterSource(v.ID)
+			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
 			TriggerClientEvent("OxyRun:Client:OnDuty", v.ID, joiner, os.time())
 			_wasDoingIllegalShit[v.ID] = true
@@ -777,7 +777,7 @@ function Cleanup(src)
 		if _sellers[joiner].isWorkgroup then
 			if #_sellers[joiner].members > 0 then
 				for k, v in ipairs(_sellers[joiner].members) do
-					local mChar = Fetch:CharacterSource(v.ID)
+					local mChar = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 					if mChar ~= nil then
 						Inventory.Items:Remove(mChar:GetData("SID"), 1, "contraband", false)
 					end
@@ -785,7 +785,7 @@ function Cleanup(src)
 			end
 		end
 
-		local jChar = Fetch:CharacterSource(joiner)
+		local jChar = exports['sandbox-characters']:FetchCharacterSource(joiner)
 		if jChar ~= nil then
 			Inventory.Items:Remove(jChar:GetData("SID"), 1, "contraband", false)
 		end

@@ -104,15 +104,15 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 	Reputation:Create("ATMRobbery", "ATM Hacking", {
 		{ label = "Newbie", value = 1000 },
-		{ label = "Okay", value = 2000 },
-		{ label = "Good", value = 4000 },
-		{ label = "Pro", value = 10000 },
+		{ label = "Okay",   value = 2000 },
+		{ label = "Good",   value = 4000 },
+		{ label = "Pro",    value = 10000 },
 		{ label = "Expert", value = 16000 },
-		{ label = "God", value = 25000 },
+		{ label = "God",    value = 25000 },
 	}, false)
 
 	Callbacks:RegisterServerCallback("Robbery:ATM:StartJob", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local inATM = Player(source).state.ATMRobbery
 
 		if
@@ -153,7 +153,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:ATM:HackATM", function(source, difficulty, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local inATM = Player(source).state.ATMRobbery
 
 		if
@@ -217,7 +217,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:ATM:FailHackATM", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local inATM = Player(source).state.ATMRobbery
 
 		if char and inATM and inATM > 0 then

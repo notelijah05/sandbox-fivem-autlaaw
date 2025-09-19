@@ -1,6 +1,6 @@
 function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Commands:ValidateAdmin", function(source, data, cb)
-		local player = exports["sandbox-base"]:FetchComponent("Fetch"):Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		if player.Permissions:IsAdmin() then
 			cb(true)
 		else

@@ -10,15 +10,15 @@ end)
 
 function RegisterDumpsterStartup()
 	Reputation:Create(_repName, "Dumpster Diving", {
-		{ label = "Rank 1", value = 1000 },
-		{ label = "Rank 2", value = 2500 },
-		{ label = "Rank 3", value = 5000 },
-		{ label = "Rank 4", value = 10000 },
-		{ label = "Rank 5", value = 25000 },
-		{ label = "Rank 6", value = 50000 },
-		{ label = "Rank 7", value = 100000 },
-		{ label = "Rank 8", value = 250000 },
-		{ label = "Rank 9", value = 500000 },
+		{ label = "Rank 1",  value = 1000 },
+		{ label = "Rank 2",  value = 2500 },
+		{ label = "Rank 3",  value = 5000 },
+		{ label = "Rank 4",  value = 10000 },
+		{ label = "Rank 5",  value = 25000 },
+		{ label = "Rank 6",  value = 50000 },
+		{ label = "Rank 7",  value = 100000 },
+		{ label = "Rank 8",  value = 250000 },
+		{ label = "Rank 9",  value = 500000 },
 		{ label = "Rank 10", value = 1000000 },
 	})
 end
@@ -33,7 +33,7 @@ function RegisterDumpsterCallbacks()
 		end
 	end)
 	Callbacks:RegisterServerCallback("Inventory:Dumpster:HidePlayer", function(source, data, cb)
-		local plyr = Fetch:Source(source)
+		local plyr = exports['sandbox-base']:FetchSource(source)
 		local _dumpsterId = data.identifier
 		local _locked = data.locked
 		if plyr ~= nil then
@@ -56,7 +56,7 @@ function RegisterDumpsterCallbacks()
 		end
 	end)
 	Callbacks:RegisterServerCallback("Inventory:Server:SearchDumpster", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local _dumpsterId = data.entity
 			if data and _searchedDumpsters[_dumpsterId] == nil then

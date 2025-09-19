@@ -816,7 +816,7 @@ end
 
 AddEventHandler("Finance:Server:Startup", function()
 	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and not char:GetData("BankAccount") then
 			local stateId = char:GetData("SID")
 			local bankAccountData = Banking.Accounts:CreatePersonal(stateId)

@@ -9,52 +9,57 @@ _MDT.Warrants = {
 			table.insert(params, "%" .. term .. "%")
 		end
 
-		qry = qry .. "ORDER BY state, expires LIMIT ? OFFSET ?" 
-        table.insert(params, perPage + 1) -- Limit
-        if page > 1 then
-            table.insert(params, perPage * (page - 1)) -- Offset
-        else
-            table.insert(params, 0) -- Offset
-        end
+		qry = qry .. "ORDER BY state, expires LIMIT ? OFFSET ?"
+		table.insert(params, perPage + 1)              -- Limit
+		if page > 1 then
+			table.insert(params, perPage * (page - 1)) -- Offset
+		else
+			table.insert(params, 0)                    -- Offset
+		end
 
 		local results = MySQL.query.await(qry, params)
 
 		if #results > perPage then -- There is more results for the next pages
-            table.remove(results)
-            pageCount = page + 1
-        end
+			table.remove(results)
+			pageCount = page + 1
+		end
 
-        return {
-            data = results,
-            pages = pageCount,
-        }
+		return {
+			data = results,
+			pages = pageCount,
+		}
 	end,
 	View = function(self, id)
-		local warrant = MySQL.single.await("SELECT id, state, title, report, suspect, notes, creatorSID, creatorName, creatorCallsign, expires, issued FROM mdt_warrants WHERE id = ?", {
-			id
-		})
+		local warrant = MySQL.single.await(
+		"SELECT id, state, title, report, suspect, notes, creatorSID, creatorName, creatorCallsign, expires, issued FROM mdt_warrants WHERE id = ?",
+			{
+				id
+			})
 
 		if warrant and warrant.suspect then
-			warrant.suspectData = MySQL.single.await("SELECT SID, First, Last, charges FROM mdt_reports_people WHERE report = ? AND type = ? AND warrant = ?", {
+			warrant.suspectData = MySQL.single.await(
+			"SELECT SID, First, Last, charges FROM mdt_reports_people WHERE report = ? AND type = ? AND warrant = ?", {
 				warrant.report,
 				"suspect",
 				warrant.id
 			})
 		end
-		
+
 		return warrant
 	end,
 	Create = function(self, report, suspect, notes, author)
-		local id = MySQL.insert.await("INSERT INTO mdt_warrants (title, report, suspect, notes, creatorSID, creatorName, creatorCallsign, expires) VALUES (?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?))", {
-			string.format("Warrant For %s %s (%s)", suspect.First, suspect.Last, suspect.SID),
-			report,
-			suspect.id,
-			notes,
-			author.SID,
-			string.format("%s %s", author.First, author.Last),
-			author.Callsign,
-			os.time() + (60 * 60 * 24 * 7)
-		})
+		local id = MySQL.insert.await(
+		"INSERT INTO mdt_warrants (title, report, suspect, notes, creatorSID, creatorName, creatorCallsign, expires) VALUES (?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?))",
+			{
+				string.format("Warrant For %s %s (%s)", suspect.First, suspect.Last, suspect.SID),
+				report,
+				suspect.id,
+				notes,
+				author.SID,
+				string.format("%s %s", author.First, author.Last),
+				author.Callsign,
+				os.time() + (60 * 60 * 24 * 7)
+			})
 
 		if id then
 			for user, _ in pairs(_onDutyUsers) do
@@ -105,7 +110,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("MDT:Update:warrant", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char and CheckMDTPermissions(source, false) then
 			cb(MDT.Warrants:Update(data.id, data.state))

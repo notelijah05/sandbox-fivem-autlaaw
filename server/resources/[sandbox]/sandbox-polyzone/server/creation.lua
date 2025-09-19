@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -11,7 +10,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Logger",
 		"Utils",
 		"Chat",
-		"Fetch",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -74,7 +72,7 @@ end)
 RegisterNetEvent("polyzone:printPoly")
 AddEventHandler("polyzone:printPoly", function(zone)
 	local src = source
-	local player = Fetch:Source(src)
+	local player = exports['sandbox-base']:FetchSource(src)
 	if not player.Permissions:IsAdmin() then
 		return
 	end
@@ -89,7 +87,7 @@ end)
 RegisterNetEvent("polyzone:printCircle")
 AddEventHandler("polyzone:printCircle", function(zone)
 	local src = source
-	local player = Fetch:Source(src)
+	local player = exports['sandbox-base']:FetchSource(src)
 	if not player.Permissions:IsAdmin() then
 		return
 	end
@@ -104,7 +102,7 @@ end)
 RegisterNetEvent("polyzone:printBox")
 AddEventHandler("polyzone:printBox", function(zone)
 	local src = source
-	local player = Fetch:Source(src)
+	local player = exports['sandbox-base']:FetchSource(src)
 	if not player.Permissions:IsAdmin() then
 		return
 	end

@@ -14,7 +14,6 @@ function RetrieveComponents()
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	EMS = exports["sandbox-base"]:FetchComponent("EMS")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"UISounds",
 		"Jobs",
 		"Vehicles",
-		"Fetch",
 		"EMS",
 		"Inventory",
 		"Reputation",

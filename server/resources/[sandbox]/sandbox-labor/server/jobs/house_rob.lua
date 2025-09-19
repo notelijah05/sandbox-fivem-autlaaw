@@ -125,7 +125,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	GlobalState["Robbery:InProgress"] = {}
 
 	Inventory.Items:RegisterUse("lockpick", "Robbery", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if
 			char
@@ -196,7 +196,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Inventory.Items:RegisterUse("adv_lockpick", "Robbery", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if
 			char
@@ -267,7 +267,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("HouseRobbery:Enable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if not hasValue(states, "SCRIPT_HOUSE_ROBBERY") then
 			table.insert(states, "SCRIPT_HOUSE_ROBBERY")
@@ -285,7 +285,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("HouseRobbery:Disable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if hasValue(states, "SCRIPT_HOUSE_ROBBERY") then
 			for k, v in ipairs(states) do
@@ -299,7 +299,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("HouseRobbery:ArrivedNear", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				char:GetData("TempJob") == _JOB
@@ -408,7 +408,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("HouseRobbery:Search", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -523,7 +523,7 @@ AddEventHandler("Labor:Server:HouseRobbery:Queue", function(source, data)
 		end
 
 		local exp = os.time() + (60 * 45) - pdo
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			_cooldowns[_robbers[source].tier][char:GetData("ID")] = exp
 		end
@@ -627,7 +627,7 @@ AddEventHandler("Labor:Server:HouseRobbery:Queue", function(source, data)
 end)
 
 AddEventHandler("HouseRobbery:Server:OnDuty", function(joiner, members, isWorkgroup)
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 
 	if char == nil then
 		Labor.Offers:Cancel(joiner, _JOB)
@@ -671,7 +671,7 @@ AddEventHandler("HouseRobbery:Server:OnDuty", function(joiner, members, isWorkgr
 	elseif isWorkgroup then
 		if #members > 0 then
 			for k, v in ipairs(members) do
-				local gChar = Fetch:CharacterSource(v.ID)
+				local gChar = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 				if (_cooldowns[level][v.CharID] or 0) > os.time() and level == 1 then
 					Labor.Offers:Cancel(joiner, _JOB)
 					Labor.Duty:Off(_JOB, joiner, false, true)
@@ -735,7 +735,7 @@ AddEventHandler("HouseRobbery:Server:OnDuty", function(joiner, members, isWorkgr
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner
-			local member = Fetch:CharacterSource(v.ID)
+			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
 			TriggerClientEvent("HouseRobbery:Client:OnDuty", v.ID, joiner, os.time())
 		end

@@ -1,6 +1,6 @@
 function RegisterPBItems()
 	Inventory.Items:RegisterUse("thermite", "PaletoRobbery", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inSubStation then
@@ -251,7 +251,8 @@ function RegisterPBItems()
 														not GlobalState["AntiShitlord"]
 														or os.time() >= GlobalState["AntiShitlord"]
 													then
-														GlobalState["AntiShitlord"] = os.time() + (60 * math.random(10, 15))
+														GlobalState["AntiShitlord"] = os.time() +
+														(60 * math.random(10, 15))
 													end
 
 													Doors:SetLock(v.door, false)
@@ -363,7 +364,8 @@ function RegisterPBItems()
 														not GlobalState["AntiShitlord"]
 														or os.time() >= GlobalState["AntiShitlord"]
 													then
-														GlobalState["AntiShitlord"] = os.time() + (60 * math.random(10, 15))
+														GlobalState["AntiShitlord"] = os.time() +
+														(60 * math.random(10, 15))
 													end
 
 													for k2, v2 in ipairs(v.ptfx) do
@@ -438,7 +440,7 @@ function RegisterPBItems()
 	end)
 
 	Inventory.Items:RegisterUse("yellow_laptop", "PaletoRobbery", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inPaletoBank then

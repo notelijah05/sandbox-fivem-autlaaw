@@ -8,7 +8,7 @@ function StoreData(source)
 		return
 	end
 	_saving[source] = true
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
 		local data = char:GetData()
 		local cId = data.ID
@@ -73,8 +73,7 @@ end
 -- 	-- 	else
 -- 	-- 		_prevSaved = 0
 -- 	-- 	end
-
--- 	-- 	local c = Fetch:CountCharacters() or 1
+-- 	-- 	local c = exports['sandbox-characters']:FetchCountCharacters() or 1
 -- 	-- 	Logger:Trace(
 -- 	-- 		"Characters",
 -- 	-- 		string.format("AFTER SAVE, _prevSaved: %s, c: %s", _prevSaved, c),

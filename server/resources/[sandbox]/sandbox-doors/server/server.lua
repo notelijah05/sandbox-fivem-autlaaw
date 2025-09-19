@@ -11,7 +11,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -26,7 +25,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"Jobs",
 		"Execute",
-		"Fetch",
 		"Doors",
 		"Pwnzor",
 		"Properties",
@@ -254,7 +252,7 @@ end)
 
 function IsDoorDisabled(doorId)
 	if DOORS_CACHE[doorId] and DOORS_CACHE[doorId].disabledUntil then
-		return DOORS_CACHE[doorId].disabledUntil >= os.time() 
+		return DOORS_CACHE[doorId].disabledUntil >= os.time()
 	end
 	return false
 end
@@ -264,7 +262,7 @@ function CheckPlayerAuth(source, doorPermissionData)
 		return true
 	end
 
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char then
 		local stateId = char:GetData("SID")
 
@@ -309,7 +307,7 @@ end
 
 RegisterNetEvent("Doors:Server:PrintDoor", function(data)
 	local src = source
-	local player = Fetch:Source(src)
+	local player = exports['sandbox-base']:FetchSource(src)
 	if not player.Permissions:IsAdmin() then
 		return
 	end

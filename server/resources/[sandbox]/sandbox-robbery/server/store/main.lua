@@ -595,7 +595,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	GlobalState["StoreSafes"] = _safes
 
 	Callbacks:RegisterServerCallback("Robbery:Store:Register", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local d = GlobalState[string.format("Register:%s:%s", data.coords[1], data.coords[2])]
 		if
@@ -649,7 +649,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		local pState = Player(source).state
 
 		if pState.storePoly ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if
 					GlobalState[string.format("Safe:%s", data.id)] == nil
@@ -836,7 +836,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Store:StartLockpick", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				GlobalState[string.format("Register:%s:%s", data.x, data.y)] == nil
@@ -898,7 +898,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Store:Safe", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if GlobalState[string.format("Safe:%s", data.id)] == nil and not GlobalState["RestartLockdown"] then
 			if GetGameTimer() < STORE_SERVER_START_WAIT then
 				Execute:Client(
@@ -988,7 +988,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Store:LootSafe", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if _robbedSafes[data.id] ~= nil and _robbedSafes[data.id].state == 2 then
 			_robbedSafes[data.id].state = 3
@@ -1023,7 +1023,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Store:SecureSafe", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local myDuty = Player(source).state.onDuty
 

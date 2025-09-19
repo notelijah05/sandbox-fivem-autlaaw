@@ -1,7 +1,6 @@
 AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
 function RetrieveWardrobeComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
@@ -14,7 +13,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Wardrobe", {
 		"Chat",
-		"Fetch",
 		"Callbacks",
 		"Middleware",
 		"Database",
@@ -53,9 +51,9 @@ function RegisterChatCommands()
 		end
 
 		if args[2] and tonumber(args[2]) >= 1 then
-			char = Fetch:SID(args[2])
+			char = exports['sandbox-characters']:FetchBySID(args[2])
 		else
-			char = Fetch:CharacterSource(source)
+			char = exports['sandbox-characters']:FetchCharacterSource(source)
 		end
 
 		if char ~= nil then
@@ -95,7 +93,7 @@ end
 
 function RegisterWardrobeCallbacks()
 	Callbacks:RegisterServerCallback("Wardrobe:GetAll", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local wardrobe = char:GetData("Wardrobe") or {}
 
 		local wr = {}
@@ -110,7 +108,7 @@ function RegisterWardrobeCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Wardrobe:Save", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char ~= nil then
 			local ped = char:GetData("Ped")
@@ -129,7 +127,7 @@ function RegisterWardrobeCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Wardrobe:SaveExisting", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char ~= nil then
 			local ped = char:GetData("Ped")
@@ -148,7 +146,7 @@ function RegisterWardrobeCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Wardrobe:Equip", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local outfit = char:GetData("Wardrobe")[tonumber(data)]
 			if outfit ~= nil then
@@ -163,7 +161,7 @@ function RegisterWardrobeCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Wardrobe:Delete", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local wardrobe = char:GetData("Wardrobe") or {}
 			table.remove(wardrobe, data)

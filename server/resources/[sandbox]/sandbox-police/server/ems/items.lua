@@ -1,6 +1,6 @@
 function EMSItems()
 	-- Inventory.Items:RegisterUse("tourniquet", "MedicalItems", function(source, item)
-	-- 	local char = Fetch:CharacterSource(source)
+	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	-- 	if char:GetData("Damage").Bleed > 0 then
 	-- 		if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 	-- 			Player(source).state.tourniquet = (
@@ -19,7 +19,7 @@ function EMSItems()
 	end)
 
 	Inventory.Items:RegisterUse("oxy", "MedicalItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 		if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 			Damage.Effects:Painkiller(source, 2)
@@ -39,7 +39,7 @@ function EMSItems()
 	end)
 
 	Inventory.Items:RegisterUse("bandage", "MedicalItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local ped = GetPlayerPed(source)
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
@@ -69,7 +69,7 @@ function EMSItems()
 	end)
 
 	Inventory.Items:RegisterUse("firstaid", "MedicalItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local ped = GetPlayerPed(source)
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
@@ -103,7 +103,7 @@ function EMSItems()
 	end)
 
 	Inventory.Items:RegisterUse("ifak", "MedicalItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local ped = GetPlayerPed(source)
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
@@ -139,7 +139,7 @@ function EMSItems()
 	end)
 
 	-- Inventory.Items:RegisterUse("gauze", "MedicalItems", function(source, item)
-	-- 	local char = Fetch:CharacterSource(source)
+	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	-- 	if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 	-- 		local dmg = char:GetData("Damage")
 	-- 		if dmg.Bleed > 1 then
@@ -152,10 +152,10 @@ function EMSItems()
 	-- end)
 
 	Inventory.Items:RegisterUse("medicalkit", "MedicalItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Jobs.Permissions:HasJob(source, "ems", false, false, 2) then
 			local myCoords = GetEntityCoords(GetPlayerPed(source))
-			for k, v in pairs(Fetch:AllCharacters()) do
+			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then
 					if v:GetData("Source") ~= source and Player(v:GetData("Source")).state.isHospitalized then
 						local tPos = GetEntityCoords(GetPlayerPed(v:GetData("Source")))

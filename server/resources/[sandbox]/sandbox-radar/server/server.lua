@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
 end
 
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Utils",
 		"Chat",
 		"Jobs",
-		"Fetch",
 		"Radar",
 	}, function(error)
 		if #error > 0 then

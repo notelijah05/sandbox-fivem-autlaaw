@@ -1,5 +1,5 @@
 function UpdateCharacterCasinoStats(source, statType, isWin, amount)
-    local char = Fetch:CharacterSource(source)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char then
         local p = promise.new()
 
@@ -49,7 +49,7 @@ function UpdateCharacterCasinoStats(source, statType, isWin, amount)
 end
 
 function SaveCasinoBigWin(source, machine, prize, data)
-    local char = Fetch:CharacterSource(source)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char then
         local p = promise.new()
 

@@ -7,12 +7,12 @@ AddEventHandler("Characters:Server:PlayerDropped", PaletoClearSourceInUse)
 
 AddEventHandler("Robbery:Server:Setup", function()
 	Reputation:Create("SignRobbery", "Sign Robbery", {
-		{ label = "Newbie", value = 1000 },
-		{ label = "Okay", value = 2000 },
-		{ label = "Good", value = 4000 },
-		{ label = "Pro", value = 10000 },
-		{ label = "Expert", value = 16000 },
-		{ label = "God", value = 25000 },
+		{ label = "Newbie",   value = 1000 },
+		{ label = "Okay",     value = 2000 },
+		{ label = "Good",     value = 4000 },
+		{ label = "Pro",      value = 10000 },
+		{ label = "Expert",   value = 16000 },
+		{ label = "God",      value = 25000 },
 		{ label = "Pls Stop", value = 35000 },
 	}, false)
 
@@ -21,7 +21,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Robbery:Signs:RemoveSign", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local atSign = Player(source).state.SignRobbery
 		if char and not atSign then
 			if GlobalState["RobberiesDisabled"] then

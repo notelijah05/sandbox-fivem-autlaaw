@@ -161,7 +161,6 @@ function RetrieveComponents()
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -184,7 +183,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Callbacks",
 		"Sequence",
-		"Fetch",
 		"Logger",
 		"Utils",
 		"Inventory",
@@ -239,7 +237,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		Middleware:Add("Characters:Spawning", function(source)
 			TriggerLatentClientEvent("Inventory:Client:PolySetup", source, 50000, _polyInvs)
 
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local sid = char:GetData("SID")
 
 			_refreshAttchs[sid] = true
@@ -270,7 +268,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end, 2)
 
 		Middleware:Add("Characters:Created", function(source, cData)
-			local player = Fetch:Source(source)
+			local player = exports['sandbox-base']:FetchSource(source)
 			local docs = {}
 
 			local slot = 1
@@ -333,7 +331,7 @@ end)
 
 RegisterServerEvent("Inventory:server:closePlayerInventory", function()
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		_openInvs[string.format("%s-%s", char:GetData("SID"), 1)] = false
 		refreshShit(char:GetData("SID"), true)
@@ -342,7 +340,7 @@ end)
 
 RegisterNetEvent("Inventory:Server:DegradeLastUsed", function(degradeAmt)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		if _lastUsedItem[src] then
 			local slot = Inventory:GetItem(_lastUsedItem[src])
@@ -412,7 +410,7 @@ function SetGunPropData(source, sid, inv, isForce)
 end
 
 local function isShopModerator(shop, source)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char then
 		local sid = char:GetData("SID")
 		if _playerShops[shop] then
@@ -440,7 +438,7 @@ end
 RegisterNetEvent("Weapons:Server:Equipped", function(state)
 	local src = source
 	_equipped[src] = tonumber(state)
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		SetGunPropData(src, char:GetData("SID"), _cachedInvs[src])
 	end
@@ -454,7 +452,7 @@ AddEventHandler("Queue:Server:SessionActive", function()
 end)
 
 function refreshShit(sid, adding)
-	local char = Fetch:SID(tonumber(sid))
+	local char = exports['sandbox-characters']:FetchBySID(tonumber(sid))
 	if char ~= nil then
 		local source = char:GetData("Source")
 		local inventory = getInventory(source, sid, 1)
@@ -488,7 +486,7 @@ function refreshShit(sid, adding)
 end
 
 function entityPermCheck(source, invType)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 	local shittyInvData = LoadedEntitys[invType]
 
@@ -525,7 +523,7 @@ end
 function getShopSlot(src, Owner, Type, slotId)
 	if LoadedEntitys[tonumber(Type)].shop then
 		if entityPermCheck(src, Type) then
-			local char = Fetch:CharacterSource(src)
+			local char = exports['sandbox-characters']:FetchCharacterSource(src)
 			local slots = getInventory(src, Owner, Type)
 			local slot = slots[slotId]
 			if slot then
@@ -554,7 +552,7 @@ end
 
 function getInventory(src, Owner, Type, limit)
 	if LoadedEntitys[tonumber(Type)].shop then
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		local items = {}
 		if entityPermCheck(src, Type) then
@@ -604,7 +602,7 @@ function getInventory(src, Owner, Type, limit)
 		return items
 	else
 		local inv = MySQL.rawExecute.await(
-		'SELECT id, count(*) as Count, owner as Owner, type as invType, item_id as Name, MAX(price) as Price, MAX(quality) AS Quality, information as MetaData, slot as Slot, MIN(creationDate) AS CreateDate FROM inventory WHERE owner = ? AND type = ? GROUP BY slot ORDER BY slot ASC',
+			'SELECT id, count(*) as Count, owner as Owner, type as invType, item_id as Name, MAX(price) as Price, MAX(quality) AS Quality, information as MetaData, slot as Slot, MIN(creationDate) AS CreateDate FROM inventory WHERE owner = ? AND type = ? GROUP BY slot ORDER BY slot ASC',
 			{
 				tostring(Owner),
 				Type,
@@ -671,13 +669,13 @@ end
 
 function CreateStoreLog(inventory, item, count, buyer, metadata, itemId)
 	MySQL.insert(
-	'INSERT INTO inventory_shop_logs (inventory, item, count, buyer, metadata, itemId) VALUES(?, ?, ?, ?, ?, ?)', {
-		inventory, item, count, buyer, json.encode(metadata), itemId
-	})
+		'INSERT INTO inventory_shop_logs (inventory, item, count, buyer, metadata, itemId) VALUES(?, ?, ?, ?, ?, ?)', {
+			inventory, item, count, buyer, json.encode(metadata), itemId
+		})
 end
 
 function DoMerge(source, data, cb)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 	local item = itemsDatabase[data.name]
 	local cash = char:GetData("Cash")
@@ -736,7 +734,7 @@ function DoMerge(source, data, cb)
 						end
 
 						pendingShopDeposits[_govAccount] = pendingShopDeposits[_govAccount] or
-						{ amount = 0, transactions = 0, tax = true }
+							{ amount = 0, transactions = 0, tax = true }
 						pendingShopDeposits[_govAccount].amount += math.ceil(cost * (1.0 - STORE_SHARE_AMOUNT))
 						pendingShopDeposits[_govAccount].transactions += 1
 					end
@@ -794,18 +792,18 @@ function DoMerge(source, data, cb)
 					if paid then
 						if not isMod then
 							pendingShopDeposits[_playerShops[data.ownerFrom].bank] = pendingShopDeposits
-							[_playerShops[data.ownerFrom].bank] or { amount = 0, transactions = 0 }
+								[_playerShops[data.ownerFrom].bank] or { amount = 0, transactions = 0 }
 							pendingShopDeposits[_playerShops[data.ownerFrom].bank].amount += math.floor((cost * STORE_SHARE_AMOUNT))
 							pendingShopDeposits[_playerShops[data.ownerFrom].bank].transactions += 1
 
 							pendingShopDeposits[_govAccount] = pendingShopDeposits[_govAccount] or
-							{ amount = 0, transactions = 0, tax = true }
+								{ amount = 0, transactions = 0, tax = true }
 							pendingShopDeposits[_govAccount].amount += math.ceil(cost * (1.0 - STORE_SHARE_AMOUNT))
 							pendingShopDeposits[_govAccount].transactions += 1
 						end
 
 						local ids = MySQL.rawExecute.await(
-						"SELECT id, owner, type, slot FROM inventory WHERE slot = ? AND owner = ? and type = ? LIMIT ?",
+							"SELECT id, owner, type, slot FROM inventory WHERE slot = ? AND owner = ? and type = ? LIMIT ?",
 							{
 								data.slotFrom,
 								tostring(data.ownerFrom),
@@ -819,13 +817,13 @@ function DoMerge(source, data, cb)
 						end
 
 						MySQL.update.await(
-						'UPDATE inventory SET slot = ?, owner = ?, type = ?, price = ? WHERE id IN (' ..
-						table.concat(idsFrom, ', ') .. ')', {
-							data.slotTo,
-							tostring(data.ownerTo),
-							data.invTypeTo,
-							0
-						})
+							'UPDATE inventory SET slot = ?, owner = ?, type = ?, price = ? WHERE id IN (' ..
+							table.concat(idsFrom, ', ') .. ')', {
+								data.slotTo,
+								tostring(data.ownerTo),
+								data.invTypeTo,
+								0
+							})
 
 						if WEAPON_PROPS[item.weapon or item.name] ~= nil then
 							_refreshAttchs[data.ownerTo] = source
@@ -919,12 +917,12 @@ function DoMerge(source, data, cb)
 		end
 
 		local ids = MySQL.rawExecute.await(
-		"SELECT id, owner, type, slot FROM inventory WHERE slot = ? AND owner = ? AND type = ? LIMIT ?", {
-			data.slotFrom,
-			tostring(data.ownerFrom),
-			data.invTypeFrom,
-			data.countTo,
-		});
+			"SELECT id, owner, type, slot FROM inventory WHERE slot = ? AND owner = ? AND type = ? LIMIT ?", {
+				data.slotFrom,
+				tostring(data.ownerFrom),
+				data.invTypeFrom,
+				data.countTo,
+			});
 
 		local idsFrom = {}
 		for k, v in ipairs(ids) do
@@ -933,16 +931,17 @@ function DoMerge(source, data, cb)
 
 		if #idsFrom > 0 then
 			MySQL.update.await(
-			'UPDATE inventory SET slot = ?, owner = ?, type = ? WHERE id IN (' .. table.concat(idsFrom, ', ') .. ')', {
-				data.slotTo,
-				tostring(data.ownerTo),
-				data.invTypeTo,
-			})
+				'UPDATE inventory SET slot = ?, owner = ?, type = ? WHERE id IN (' .. table.concat(idsFrom, ', ') .. ')',
+				{
+					data.slotTo,
+					tostring(data.ownerTo),
+					data.invTypeTo,
+				})
 		end
 
 		if ((data.ownerFrom ~= data.ownerTo) or (data.invTypeFrom ~= data.invTypeTo)) then
 			if data.invTypeFrom == 1 then
-				local char = Fetch:SID(data.ownerFrom)
+				local char = exports['sandbox-characters']:FetchBySID(data.ownerFrom)
 
 				if data.ownerFrom == data.ownerTo then
 					if item.type == 2 then
@@ -1013,7 +1012,7 @@ function DoMerge(source, data, cb)
 			end
 
 			if data.invTypeTo == 1 then
-				local char = Fetch:SID(data.ownerTo)
+				local char = exports['sandbox-characters']:FetchBySID(data.ownerTo)
 				if item.isThrowable then
 					TriggerClientEvent(
 						"Weapons:Client:UpdateCount",
@@ -1047,7 +1046,7 @@ function DoMerge(source, data, cb)
 end
 
 function DoSwap(source, data, cb)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 	local item = itemsDatabase[data.name]
 	local cash = char:GetData("Cash")
@@ -1086,7 +1085,7 @@ function DoSwap(source, data, cb)
 		end
 
 		local ids = MySQL.rawExecute.await(
-		"SELECT id, owner, type, slot FROM inventory WHERE (slot = ? AND owner = ? AND type = ?) OR (slot = ? AND owner = ? AND type = ?)",
+			"SELECT id, owner, type, slot FROM inventory WHERE (slot = ? AND owner = ? AND type = ?) OR (slot = ? AND owner = ? AND type = ?)",
 			{
 				data.slotFrom,
 				tostring(data.ownerFrom),
@@ -1112,7 +1111,7 @@ function DoSwap(source, data, cb)
 		if #idsFrom > 0 then
 			table.insert(queries, {
 				query = "UPDATE inventory SET slot = ?, owner = ?, type = ? WHERE id IN (" ..
-				table.concat(idsFrom, ', ') .. ")",
+					table.concat(idsFrom, ', ') .. ")",
 				values = {
 					data.slotTo,
 					tostring(data.ownerTo),
@@ -1124,7 +1123,7 @@ function DoSwap(source, data, cb)
 		if #idsTo > 0 then
 			table.insert(queries, {
 				query = "UPDATE inventory SET slot = ?, owner = ?, type = ? WHERE id IN (" ..
-				table.concat(idsTo, ', ') .. ")",
+					table.concat(idsTo, ', ') .. ")",
 				values = {
 					data.slotFrom,
 					tostring(data.ownerFrom),
@@ -1139,7 +1138,7 @@ function DoSwap(source, data, cb)
 
 		if (data.ownerFrom ~= data.ownerTo) or (data.invTypeFrom ~= data.invTypeTo) then
 			if data.invTypeFrom == 1 then
-				local char = Fetch:SID(data.ownerFrom)
+				local char = exports['sandbox-characters']:FetchBySID(data.ownerFrom)
 
 				if (data.ownerFrom == data.ownerTo) and (data.invTypeFrom == data.invTypeTo) then -- Within Same Inventory
 					if item.type == 2 then
@@ -1210,7 +1209,7 @@ function DoSwap(source, data, cb)
 			end
 
 			if data.invTypeTo == 1 then
-				local char = Fetch:SID(data.ownerTo)
+				local char = exports['sandbox-characters']:FetchBySID(data.ownerTo)
 				if item.isThrowable then
 					TriggerClientEvent(
 						"Weapons:Client:UpdateCount",
@@ -1244,7 +1243,7 @@ function DoSwap(source, data, cb)
 end
 
 function DoMove(source, data, cb)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 	local item = itemsDatabase[data.name]
 	local cash = char:GetData("Cash")
@@ -1301,7 +1300,7 @@ function DoMove(source, data, cb)
 						pendingShopDeposits[bonk].transactions += 1
 
 						pendingShopDeposits[_govAccount] = pendingShopDeposits[_govAccount] or
-						{ amount = 0, transactions = 0, tax = true }
+							{ amount = 0, transactions = 0, tax = true }
 						pendingShopDeposits[_govAccount].amount += math.ceil(cost * (1.0 - STORE_SHARE_AMOUNT))
 						pendingShopDeposits[_govAccount].transactions += 1
 					end
@@ -1367,19 +1366,19 @@ function DoMove(source, data, cb)
 					if paid then
 						if not isMod then
 							pendingShopDeposits[_playerShops[data.ownerFrom].bank] = pendingShopDeposits
-							[_playerShops[data.ownerFrom].bank] or { amount = 0, transactions = 0 }
+								[_playerShops[data.ownerFrom].bank] or { amount = 0, transactions = 0 }
 							pendingShopDeposits[_playerShops[data.ownerFrom].bank].amount += math.floor((cost * STORE_SHARE_AMOUNT))
 							pendingShopDeposits[_playerShops[data.ownerFrom].bank].transactions += 1
 
 							pendingShopDeposits[_govAccount] = pendingShopDeposits[_govAccount] or
-							{ amount = 0, transactions = 0, tax = true }
+								{ amount = 0, transactions = 0, tax = true }
 							pendingShopDeposits[_govAccount].amount += math.ceil(cost * (1.0 - STORE_SHARE_AMOUNT))
 							pendingShopDeposits[_govAccount].transactions += 1
 						end
 
 						if data.isSplit then
 							local itemIds = MySQL.rawExecute.await(
-							'SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ? AND item_id = ? ORDER BY id ASC LIMIT ?',
+								'SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ? AND item_id = ? ORDER BY id ASC LIMIT ?',
 								{
 									tostring(data.ownerFrom),
 									data.invTypeFrom,
@@ -1395,18 +1394,18 @@ function DoMove(source, data, cb)
 
 							if #params > 0 then
 								MySQL.update.await(
-								string.format(
-								'UPDATE inventory SET slot = ?, owner = ?, type = ?, price = ? WHERE id IN (%s)',
-									table.concat(params, ',')), {
-									data.slotTo,
-									tostring(data.ownerTo),
-									data.invTypeTo,
-									0
-								})
+									string.format(
+										'UPDATE inventory SET slot = ?, owner = ?, type = ?, price = ? WHERE id IN (%s)',
+										table.concat(params, ',')), {
+										data.slotTo,
+										tostring(data.ownerTo),
+										data.invTypeTo,
+										0
+									})
 							end
 						else
 							local itemIds = MySQL.rawExecute.await(
-							'SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ? AND item_id = ? ORDER BY id ASC',
+								'SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ? AND item_id = ? ORDER BY id ASC',
 								{
 									tostring(data.ownerFrom),
 									data.invTypeFrom,
@@ -1421,14 +1420,14 @@ function DoMove(source, data, cb)
 
 							if #params > 0 then
 								MySQL.update.await(
-								string.format(
-								'UPDATE inventory SET slot = ?, owner = ?, type = ?, price = ? WHERE id IN (%s)',
-									table.concat(params, ',')), {
-									data.slotTo,
-									tostring(data.ownerTo),
-									data.invTypeTo,
-									0
-								})
+									string.format(
+										'UPDATE inventory SET slot = ?, owner = ?, type = ?, price = ? WHERE id IN (%s)',
+										table.concat(params, ',')), {
+										data.slotTo,
+										tostring(data.ownerTo),
+										data.invTypeTo,
+										0
+									})
 							end
 						end
 
@@ -1520,7 +1519,7 @@ function DoMove(source, data, cb)
 
 		if data.isSplit then
 			local itemIds = MySQL.rawExecute.await(
-			'SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ? AND item_id = ? ORDER BY id ASC LIMIT ?',
+				'SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ? AND item_id = ? ORDER BY id ASC LIMIT ?',
 				{
 					tostring(data.ownerFrom),
 					data.invTypeFrom,
@@ -1536,21 +1535,21 @@ function DoMove(source, data, cb)
 
 			if #params > 0 then
 				MySQL.update.await(
-				string.format('UPDATE inventory SET slot = ?, owner = ?, type = ? WHERE id IN (%s)',
-					table.concat(params, ',')), {
-					data.slotTo,
-					tostring(data.ownerTo),
-					data.invTypeTo,
-				})
+					string.format('UPDATE inventory SET slot = ?, owner = ?, type = ? WHERE id IN (%s)',
+						table.concat(params, ',')), {
+						data.slotTo,
+						tostring(data.ownerTo),
+						data.invTypeTo,
+					})
 			end
 		else
 			local itemIds = MySQL.rawExecute.await(
-			'SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ? AND item_id = ? ORDER BY id ASC', {
-				data.ownerFrom,
-				data.invTypeFrom,
-				data.slotFrom,
-				data.name
-			})
+				'SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ? AND item_id = ? ORDER BY id ASC', {
+					data.ownerFrom,
+					data.invTypeFrom,
+					data.slotFrom,
+					data.name
+				})
 
 			local params = {}
 			for k, v in ipairs(itemIds) do
@@ -1559,18 +1558,18 @@ function DoMove(source, data, cb)
 
 			if #params > 0 then
 				MySQL.update.await(
-				string.format('UPDATE inventory SET slot = ?, owner = ?, type = ? WHERE id IN (%s)',
-					table.concat(params, ',')), {
-					data.slotTo,
-					tostring(data.ownerTo),
-					data.invTypeTo,
-				})
+					string.format('UPDATE inventory SET slot = ?, owner = ?, type = ? WHERE id IN (%s)',
+						table.concat(params, ',')), {
+						data.slotTo,
+						tostring(data.ownerTo),
+						data.invTypeTo,
+					})
 			end
 		end
 
 		if (data.ownerFrom ~= data.ownerTo) or (data.invTypeFrom ~= data.invTypeTo) then
 			if data.invTypeFrom == 1 then
-				local char = Fetch:SID(data.ownerFrom)
+				local char = exports['sandbox-characters']:FetchBySID(data.ownerFrom)
 
 				if (data.ownerFrom == data.ownerTo) and (data.invTypeFrom == data.invTypeTo) then -- Within Same Inventory
 					if item.type == 2 then
@@ -1641,7 +1640,7 @@ function DoMove(source, data, cb)
 			end
 
 			if data.invTypeTo == 1 then
-				local char = Fetch:SID(data.ownerTo)
+				local char = exports['sandbox-characters']:FetchBySID(data.ownerTo)
 				if item.isThrowable then
 					TriggerClientEvent(
 						"Weapons:Client:UpdateCount",
@@ -1721,7 +1720,7 @@ function RegisterCallbacks()
 
 	Callbacks:RegisterServerCallback("Inventory:UseSlot", function(source, data, cb)
 		if data and data.slot then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local slotFrom = INVENTORY:GetOldestInSlot(char:GetData("SID"), data.slot, 1)
 				if slotFrom ~= nil then
@@ -1761,7 +1760,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Inventory:Search", function(source, data, cb)
-		local dest = Fetch:CharacterSource(data.serverId)
+		local dest = exports['sandbox-characters']:FetchCharacterSource(data.serverId)
 		if dest ~= nil then
 			INVENTORY.Search:Character(source, data.serverId, dest:GetData("SID"))
 			cb(dest:GetData("SID"))
@@ -1771,7 +1770,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Inventory:Raid", function(source, data, cb)
-		local dest = Fetch:CharacterSource(source)
+		local dest = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if dest and pState.onDuty ~= nil and pState.onDuty == "police" and Jobs.Permissions:HasPermissionInJob(source, 'police', 'PD_RAID') then
@@ -1817,7 +1816,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Inventory:PlayerShop:AddItem", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			if _playerShops[data.ownerTo] ~= nil then
@@ -1829,7 +1828,7 @@ function RegisterCallbacks()
 
 						if slotTo == nil or slotTo.Price == data.price then
 							local itemIds = MySQL.rawExecute.await(
-							'SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ? AND item_id = ? ORDER BY id ASC LIMIT ?',
+								'SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ? AND item_id = ? ORDER BY id ASC LIMIT ?',
 								{
 									tostring(data.ownerFrom),
 									data.invTypeFrom,
@@ -1844,14 +1843,14 @@ function RegisterCallbacks()
 							end
 
 							MySQL.update.await(
-							string.format(
-							'UPDATE inventory SET slot = ?, owner = ?, type = ?, price = ? WHERE id IN (%s)',
-								table.concat(params, ',')), {
-								data.slotTo,
-								tostring(data.ownerTo),
-								data.invTypeTo,
-								data.price
-							})
+								string.format(
+									'UPDATE inventory SET slot = ?, owner = ?, type = ?, price = ? WHERE id IN (%s)',
+									table.concat(params, ',')), {
+									data.slotTo,
+									tostring(data.ownerTo),
+									data.invTypeTo,
+									data.price
+								})
 
 							if item.type == 2 then
 								TriggerClientEvent(
@@ -1907,12 +1906,12 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Inventory:PlayerShop:AddModerator", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			if _playerShops[data.shop] ~= nil then
 				if _playerShops[data.shop].owner == sid then
-					local tChar = Fetch:SID(tonumber(data.sid))
+					local tChar = exports['sandbox-characters']:FetchBySID(tonumber(data.sid))
 					if tChar ~= nil then
 						if not isShopModerator(data.shop, tChar:GetData("Source")) then
 							INVENTORY.PlayerShops.Moderators:Add(data.shop, tonumber(data.sid),
@@ -1938,7 +1937,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Inventory:PlayerShop:RemoveModerator", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			if _playerShops[data.shop] ~= nil then
@@ -1955,7 +1954,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Inventory:PlayerShop:ViewModerators", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			if _playerShops[data] and _playerShops[data].owner == sid then
@@ -1983,7 +1982,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Inventory:PlayerShop:ChangeState", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if _playerShops[data.id] and isShopModerator(data.id, source) then
 				if not _playerShops[data.id].job or Jobs.Permissions:HasPermissionInJob(source, _playerShops[data.id].job, "JOB_SHOP_CONTROL") then
@@ -2006,7 +2005,7 @@ end
 
 RegisterNetEvent("Inventory:Server:UpdateSettings", function(data)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		local settings = char:GetData("InventorySettings") or _defInvSettings
 		for k, v in pairs(data) do
@@ -2018,7 +2017,7 @@ end)
 
 RegisterNetEvent("Inventory:Server:TriggerAction", function(data)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		if LoadedEntitys[data.invType] ~= nil and LoadedEntitys[data.invType].action ~= nil then
 			TriggerEvent(LoadedEntitys[data.invType].action.event, src, data)
@@ -2028,7 +2027,7 @@ end)
 
 RegisterNetEvent("Inventory:Server:Request", function(secondary)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 	local plyrInvData = {
 		size = (LoadedEntitys[1].slots or 10),
@@ -2209,7 +2208,7 @@ INVENTORY = {
 						free = LoadedEntitys[tonumber(invType)].free or false,
 						playerShop = LoadedEntitys[tonumber(invType)].playerShop or false,
 						modifyShop = LoadedEntitys[tonumber(invType)].playerShop and isShopModerator(Owner, _src) or
-						false,
+							false,
 						action = LoadedEntitys[tonumber(invType)].action or false,
 						inventory = getInventory(_src, Owner, invType),
 						invType = invType,
@@ -2233,7 +2232,7 @@ INVENTORY = {
 	OpenSecondary = function(self, _src, invType, Owner, vehClass, vehModel, isRaid, nameOverride, slotOverride,
 							 capacityOverride)
 		if _src and invType and Owner then
-			local char = Fetch:CharacterSource(_src)
+			local char = exports['sandbox-characters']:FetchCharacterSource(_src)
 
 			local plyrInvData = {
 				size = (LoadedEntitys[1].slots or 10),
@@ -2263,10 +2262,10 @@ INVENTORY = {
 	end,
 	GetSlots = function(self, Owner, Type)
 		local db = MySQL.rawExecute.await(
-		'SELECT slot as Slot FROM inventory WHERE owner = ? AND type = ? GROUP BY slot ORDER BY slot', {
-			tostring(Owner),
-			Type,
-		})
+			'SELECT slot as Slot FROM inventory WHERE owner = ? AND type = ? GROUP BY slot ORDER BY slot', {
+				tostring(Owner),
+				Type,
+			})
 
 		local slots = {}
 		for k, v in ipairs(db) do
@@ -2332,7 +2331,7 @@ INVENTORY = {
 	end,
 	GetSlot = function(self, Owner, Slot, Type)
 		local item = MySQL.prepare.await(
-		'SELECT id, count(*) as Count, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, MIN(creationDate) as CreateDate FROM inventory WHERE owner = ? AND type = ? AND slot = ? GROUP BY slot ORDER BY slot ASC',
+			'SELECT id, count(*) as Count, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, MIN(creationDate) as CreateDate FROM inventory WHERE owner = ? AND type = ? AND slot = ? GROUP BY slot ORDER BY slot ASC',
 			{
 				tostring(Owner),
 				Type,
@@ -2356,7 +2355,7 @@ INVENTORY = {
 	end,
 	GetOldestInSlot = function(self, Owner, Slot, Type)
 		local item = MySQL.prepare.await(
-		'SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND slot = ? ORDER BY creationDate ASC LIMIT 1',
+			'SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND slot = ? ORDER BY creationDate ASC LIMIT 1',
 			{
 				tostring(Owner),
 				Type,
@@ -2372,7 +2371,7 @@ INVENTORY = {
 	end,
 	GetItem = function(self, id)
 		return MySQL.prepare.await(
-		'SELECT id, count(*) as Count, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE id = ?',
+			'SELECT id, count(*) as Count, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE id = ?',
 			{
 				id
 			})
@@ -2402,7 +2401,7 @@ INVENTORY = {
 			if itemExist then
 				if invType == 1 and not skipMetaGen then
 					if not isRecurse and not skipChangeAlert then
-						local char = Fetch:SID(Owner)
+						local char = exports['sandbox-characters']:FetchBySID(Owner)
 						if char ~= nil then
 							TriggerClientEvent("Inventory:Client:Changed", char:GetData("Source"), "add", Name, Count)
 						end
@@ -2428,7 +2427,7 @@ INVENTORY = {
 						})
 					end
 
-					local char = Fetch:SID(Owner)
+					local char = exports['sandbox-characters']:FetchBySID(Owner)
 					local coords = { x = 900.441, y = -1757.186, z = 21.359 }
 					local route = 0
 
@@ -2479,7 +2478,7 @@ INVENTORY = {
 				local MetaData = nil
 				if not skipMetaGen then
 					if invType == 1 then
-						local char = Fetch:SID(Owner)
+						local char = exports['sandbox-characters']:FetchBySID(Owner)
 						if char ~= nil then
 							if itemExist.name == "choplist" then
 								md.Owner = char:GetData("SID")
@@ -2719,7 +2718,7 @@ INVENTORY = {
 				return weights
 			else
 				local items = MySQL.rawExecute.await(
-				'SELECT id, count(*) as Count, item_id as Name FROM inventory WHERE owner = ? AND type = ? GROUP BY item_id',
+					'SELECT id, count(*) as Count, item_id as Name FROM inventory WHERE owner = ? AND type = ? GROUP BY item_id',
 					{
 						tostring(owner),
 						invType,
@@ -2735,7 +2734,7 @@ INVENTORY = {
 		end,
 		GetFirst = function(self, Owner, Name, invType)
 			local item = MySQL.prepare.await(
-			"SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id = ? AND ((expiryDate >= ? AND expiryDate >= 0) OR expiryDate = -1) ORDER BY quality DESC, creationDate ASC LIMIT 1",
+				"SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id = ? AND ((expiryDate >= ? AND expiryDate >= 0) OR expiryDate = -1) ORDER BY quality DESC, creationDate ASC LIMIT 1",
 				{
 					tostring(Owner),
 					invType,
@@ -2751,7 +2750,7 @@ INVENTORY = {
 		end,
 		GetAll = function(self, Owner, Name, invType)
 			local items = MySQL.prepare.await(
-			"SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id = ? ORDER BY quality DESC, creationDate ASC",
+				"SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id = ? ORDER BY quality DESC, creationDate ASC",
 				{
 					tostring(Owner),
 					invType,
@@ -2775,14 +2774,14 @@ INVENTORY = {
 		end,
 		HasId = function(self, owner, invType, id)
 			return MySQL.prepare.await(
-			'SELECT id, count(*) as Count FROM inventory WHERE id = ? AND owner = ? AND type = ?', {
-				id,
-				tostring(owner),
-				invType,
-			}) ~= nil
+				'SELECT id, count(*) as Count FROM inventory WHERE id = ? AND owner = ? AND type = ?', {
+					id,
+					tostring(owner),
+					invType,
+				}) ~= nil
 		end,
 		HasItems = function(self, source, items)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local charId = char:GetData("SID")
 			for k, v in ipairs(items) do
 				if not INVENTORY.Items:Has(charId, 1, v.item, v.count) then
@@ -2792,7 +2791,7 @@ INVENTORY = {
 			return true
 		end,
 		HasAnyItems = function(self, source, items)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local charId = char:GetData("SID")
 
 			for k, v in ipairs(items) do
@@ -2920,7 +2919,7 @@ INVENTORY = {
 						end
 					end
 
-					local sid = Fetch:CharacterSource(source):GetData("SID")
+					local sid = exports['sandbox-characters']:FetchCharacterSource(source):GetData("SID")
 					if WEAPON_PROPS[item.Name] then
 						_refreshAttchs[sid] = true
 					end
@@ -2929,7 +2928,7 @@ INVENTORY = {
 						_refreshGangChain[sid] = true
 					end
 
-					local char = Fetch:CharacterSource(source)
+					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					sendRefreshForClient(source, char:GetData("SID"), 1, item.Slot)
 					_inUse[source] = false
 					TriggerClientEvent("Inventory:Client:InUse", source, _inUse[source])
@@ -2966,7 +2965,7 @@ INVENTORY = {
 			if not skipUpdate then
 				local itemData = itemsDatabase[item]
 				if invType == 1 then
-					local char = Fetch:SID(owner)
+					local char = exports['sandbox-characters']:FetchBySID(owner)
 					if char ~= nil then
 						local source = char:GetData("Source")
 						TriggerClientEvent("Inventory:Client:Changed", source, "removed", item, count)
@@ -2988,7 +2987,7 @@ INVENTORY = {
 
 			if invType == 1 then
 				local itemData = itemsDatabase[item.Name]
-				local char = Fetch:SID(tonumber(owner))
+				local char = exports['sandbox-characters']:FetchBySID(tonumber(owner))
 				if char ~= nil then
 					local source = char:GetData("Source")
 					TriggerClientEvent("Inventory:Client:Changed", source, "removed", item.Name, 1)
@@ -3026,7 +3025,7 @@ INVENTORY = {
 			else
 				if slot.Count >= Count then
 					MySQL.query.await(
-					'DELETE FROM inventory WHERE owner = ? AND type = ? AND slot = "?" AND item_id = ? ORDER BY creationDate ASC LIMIT ?',
+						'DELETE FROM inventory WHERE owner = ? AND type = ? AND slot = "?" AND item_id = ? ORDER BY creationDate ASC LIMIT ?',
 						{
 							tostring(Owner),
 							invType,
@@ -3037,7 +3036,7 @@ INVENTORY = {
 
 					if invType == 1 then
 						local itemData = itemsDatabase[item]
-						local char = Fetch:SID(Owner)
+						local char = exports['sandbox-characters']:FetchBySID(Owner)
 						if char ~= nil then
 							local source = char:GetData("Source")
 							TriggerClientEvent("Inventory:Client:Changed", source, "removed", Name, Count)
@@ -3083,7 +3082,7 @@ INVENTORY = {
 		Put = function(self, source)
 			CreateThread(function()
 				local p = promise.new()
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					local inv = getInventory(source, char:GetData("SID"), 1)
 
@@ -3128,7 +3127,7 @@ INVENTORY = {
 		Take = function(self, source)
 			CreateThread(function()
 				local p = promise.new()
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					local inv = getInventory(source, char:GetData("SID"), 2)
 
@@ -3175,7 +3174,7 @@ INVENTORY = {
 		Clear = function(self, source, ballisticId, ballisticType)
 			CreateThread(function()
 				local p = promise.new()
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					local inv = getInventory(source, ballisticId, ballisticType)
 
@@ -3270,7 +3269,7 @@ INVENTORY = {
 		end
 
 		local res = MySQL.prepare.await(
-		'SELECT id, information as MetaData FROM inventory WHERE item_id = ? AND JSON_EXTRACT(information, "$.StateID") = ?',
+			'SELECT id, information as MetaData FROM inventory WHERE item_id = ? AND JSON_EXTRACT(information, "$.StateID") = ?',
 			{
 				"govid",
 				stateId
@@ -3283,10 +3282,11 @@ INVENTORY = {
 
 		if #updatingIds > 0 then
 			MySQL.update.await(
-			string.format('UPDATE inventory SET information = JSON_SET(information, "$.Mugshot", ?) WHERE id IN (%s)',
-				table.concat(updatingIds, ',')), {
-				mugshot
-			})
+				string.format(
+					'UPDATE inventory SET information = JSON_SET(information, "$.Mugshot", ?) WHERE id IN (%s)',
+					table.concat(updatingIds, ',')), {
+					mugshot
+				})
 		end
 		return true
 	end,
@@ -3294,7 +3294,7 @@ INVENTORY = {
 		Basic = {
 			Create = function(self, name, position, ped, owner, bank, job)
 				local id = MySQL.insert.await(
-				'INSERT INTO player_shops (name, position, ped_model, owner, job, owner_bank) VALUES(?, ?, ?, ?, ?, ?)',
+					'INSERT INTO player_shops (name, position, ped_model, owner, job, owner_bank) VALUES(?, ?, ?, ?, ?, ?)',
 					{
 						name,
 						json.encode(position),
@@ -3338,7 +3338,7 @@ INVENTORY = {
 		Moderators = {
 			Add = function(self, shop, sid, name)
 				MySQL.insert(
-				"INSERT INTO player_shops_moderators (shop, sid, name) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE shop = VALUES(shop), sid = VALUES(sid), name = VALUES(name)",
+					"INSERT INTO player_shops_moderators (shop, sid, name) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE shop = VALUES(shop), sid = VALUES(sid), name = VALUES(name)",
 					{
 						shop,
 						sid,
@@ -3370,7 +3370,7 @@ INVENTORY = {
 		Create = function(self, itemId, label, description, type, rarity, weight, durability, stackLimit, iconOverride,
 						  price, itemData)
 			local id = MySQL.query.await(
-			'INSERT INTO item_template (description, type, rarity, iconOverride, price, weapon, imitate, isStackable, closeUi, metalic, weight, durability, isDestroyed, isRemoved, gun, requiresLicense, qualification, ammoType, bulletCount, container, staticMetadata, component, animConfig, statusChange, extra, schematic, name, label) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				'INSERT INTO item_template (description, type, rarity, iconOverride, price, weapon, imitate, isStackable, closeUi, metalic, weight, durability, isDestroyed, isRemoved, gun, requiresLicense, qualification, ammoType, bulletCount, container, staticMetadata, component, animConfig, statusChange, extra, schematic, name, label) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				{
 					description or nil,
 					type or 1,
@@ -3449,7 +3449,7 @@ INVENTORY = {
 }
 
 function UpdateCharacterItemStates(source, inventory, adding)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if not char then
 		return
 	end
@@ -3491,7 +3491,7 @@ function UpdateCharacterItemStates(source, inventory, adding)
 end
 
 function UpdateCharacterGangChain(source, inventory)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if not char then
 		return
 	end

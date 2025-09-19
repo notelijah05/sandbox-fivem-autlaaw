@@ -1,6 +1,6 @@
 function RegisterItems()
 	Inventory.Items:RegisterUse("present", "Xmas", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			Inventory.Items:RemoveId(sid, 1, item)
@@ -9,7 +9,7 @@ function RegisterItems()
 	end)
 
 	Inventory.Items:RegisterUse("present_daily", "Xmas", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			Inventory.Items:RemoveId(sid, 1, item)

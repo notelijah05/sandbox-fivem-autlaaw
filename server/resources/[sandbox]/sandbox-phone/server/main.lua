@@ -58,7 +58,6 @@ end)
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -92,7 +91,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Fetch",
 		"Database",
 		"Callbacks",
 		"Logger",
@@ -133,15 +131,15 @@ AddEventHandler("Core:Shared:Ready", function()
 		TriggerEvent("Phone:Server:Startup")
 
 		Reputation:Create("Racing", "LS Underground", {
-			{ label = "Rank 1", value = 1000 },
-			{ label = "Rank 2", value = 2500 },
-			{ label = "Rank 3", value = 5000 },
-			{ label = "Rank 4", value = 10000 },
-			{ label = "Rank 5", value = 25000 },
-			{ label = "Rank 6", value = 50000 },
-			{ label = "Rank 7", value = 100000 },
-			{ label = "Rank 8", value = 250000 },
-			{ label = "Rank 9", value = 500000 },
+			{ label = "Rank 1",  value = 1000 },
+			{ label = "Rank 2",  value = 2500 },
+			{ label = "Rank 3",  value = 5000 },
+			{ label = "Rank 4",  value = 10000 },
+			{ label = "Rank 5",  value = 25000 },
+			{ label = "Rank 6",  value = 50000 },
+			{ label = "Rank 7",  value = 100000 },
+			{ label = "Rank 8",  value = 250000 },
+			{ label = "Rank 9",  value = 500000 },
 			{ label = "Rank 10", value = 1000000 },
 		}, true)
 
@@ -151,13 +149,13 @@ end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
-		
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+
 		if char:GetData("PhonePosition") == nil then
 			char:SetData("PhonePosition", { x = 1000, y = 250 })
 		end
 		TriggerClientEvent("Phone:Client:RestorePosition", source, char:GetData("PhonePosition"))
-		
+
 		local changed = false
 		local apps = char:GetData("Apps")
 		for k, v in pairs(apps) do
@@ -177,7 +175,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		Phone:UpdateJobData(source)
 		TriggerClientEvent("Phone:Client:SetApps", source, PHONE_APPS)
 
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myPerms = char:GetData("PhonePermissions")
 		local modified = false
 		for app, perms in pairs(defaultPermissions) do
@@ -199,11 +197,12 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		end
 	end, 1)
 	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
-		
-		local data = MySQL.rawExecute.await("SELECT app, name, picture, meta FROM character_app_profiles WHERE sid = ?", {
-			char:GetData("SID"),
-		})
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+
+		local data = MySQL.rawExecute.await("SELECT app, name, picture, meta FROM character_app_profiles WHERE sid = ?",
+			{
+				char:GetData("SID"),
+			})
 
 		if data then
 			local profiles = {}
@@ -224,11 +223,11 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		TriggerLatentClientEvent("Phone:Client:SetDataMulti", source, 50000, t)
 	end, 1)
 	Middleware:Add("Phone:UIReset", function(source)
-		local plyr = Fetch:CharacterSource(source)
+		local plyr = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			Phone:UpdateJobData(source)
 			TriggerClientEvent("Phone:Client:SetApps", source, PHONE_APPS)
-			
+
 			local t = Middleware:TriggerEventWithData("Phone:Spawning", source, char)
 			TriggerLatentClientEvent("Phone:Client:SetDataMulti", source, 50000, t)
 		end
@@ -269,14 +268,14 @@ end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	Callbacks:RegisterServerCallback("Phone:SavePosition", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			char:SetData("PhonePosition", data)
 		end
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Apps:Home", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local apps = char:GetData("Apps")
 		if data.action == "add" then
 			table.insert(apps.home, data.app)
@@ -294,7 +293,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Apps:Dock", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local apps = char:GetData("Apps")
 		if data.action == "add" then
 			if #apps.dock < 4 then
@@ -314,14 +313,14 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Apps:Reorder", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local apps = char:GetData("Apps")
 		apps[data.type] = data.apps
 		char:SetData("Apps", apps)
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:UpdateAlias", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = char:GetData("Alias") or {}
 		if data.unique then
 			local query = {
@@ -375,7 +374,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 							alias[data.app] = data.alias
 							char:SetData("Alias", alias)
 							cb(true)
-		
+
 							--TriggerEvent("Phone:Server:AliasUpdated", src)
 						else
 							cb(false)
@@ -392,7 +391,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:UpdateProfile", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			local profiles = char:GetData("Profiles") or {}
@@ -406,11 +405,12 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				})
 			end
 
-			local count = MySQL.scalar.await("SELECT COUNT(*) FROM character_app_profiles WHERE app = ? AND name = ? AND sid != ?", {
-				data.app,
-				data.name,
-				sid
-			})
+			local count = MySQL.scalar.await(
+				"SELECT COUNT(*) FROM character_app_profiles WHERE app = ? AND name = ? AND sid != ?", {
+					data.app,
+					data.name,
+					sid
+				})
 
 			if count == 0 then
 				MySQL.prepare.await(
@@ -423,7 +423,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						json.encode(data.meta or {}),
 					}
 				)
-	
+
 				profiles[data.app] = {
 					sid = char:GetData("SID"),
 					app = data.app,
@@ -445,7 +445,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:ShareMyContact", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local myPed = GetPlayerPed(src)
 		local myCoords = GetEntityCoords(myPed)
 		local myBucket = GetPlayerRoutingBucket(src)
@@ -466,7 +466,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Permissions", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		if char ~= nil then
 			local perms = char:GetData("PhonePermissions")

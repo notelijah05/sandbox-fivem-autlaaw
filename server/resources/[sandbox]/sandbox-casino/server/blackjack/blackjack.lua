@@ -421,7 +421,7 @@ AddEventHandler("Casino:Server:Startup", function()
     GlobalState["Casino:BlackjackConfig"] = _blackjackTables
 
     Callbacks:RegisterServerCallback("Casino:JoinBlackjack", function(source, chairId, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or _blackjackPlayers[source] then
             return cb(false)
         end
@@ -458,7 +458,7 @@ AddEventHandler("Casino:Server:Startup", function()
     end)
 
     Callbacks:RegisterServerCallback("Casino:LeaveBlackjack", function(source, data, cb)
-        --local char = Fetch:CharacterSource(source)
+        --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local blackjackPlayer = _blackjackPlayers[source]
         if not blackjackPlayer then
             return cb(false)
@@ -492,7 +492,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
     -- Bet Confirmation
     Callbacks:RegisterServerCallback("Casino:BetBlackjack", function(source, data, cb)
-        --local char = Fetch:CharacterSource(source)
+        --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local blackjackPlayer = _blackjackPlayers[source]
         if not blackjackPlayer then
             return cb(false)

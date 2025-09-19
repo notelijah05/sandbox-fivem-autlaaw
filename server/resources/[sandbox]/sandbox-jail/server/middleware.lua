@@ -11,7 +11,7 @@ function RegisterMiddleware()
 		local _src = source
 		local currentTime = os.time() * 1000
 
-		local char = Fetch:CharacterSource(_src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(_src)
 		if char ~= nil then
 			local jailed = char:GetData("Jailed")
 			if
@@ -23,8 +23,8 @@ function RegisterMiddleware()
 		end
 	end, 2)
 
-    local function CheckJailed(source)
-		local char = Fetch:CharacterSource(source)
+	local function CheckJailed(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local jailed = char:GetData("Jailed") or false
 			if
@@ -34,7 +34,7 @@ function RegisterMiddleware()
 				char:SetData("Jailed", false)
 			end
 		end
-    end
+	end
 
 	Middleware:Add("Characters:Logout", CheckJailed, 1)
 	Middleware:Add("playerDropped", CheckJailed, 1)

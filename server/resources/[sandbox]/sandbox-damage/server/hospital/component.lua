@@ -12,7 +12,6 @@ AddEventHandler("Damage:Shared:DependencyUpdate", HospitalComponents)
 function HospitalComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
@@ -36,7 +35,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hospital", {
 		"Callbacks",
 		"Middleware",
-		"Fetch",
 		"Damage",
 		"Hospital",
 		"Crypto",
@@ -101,7 +99,7 @@ HOSPITAL = {
 		return nil
 	end,
 	OccupyBed = function(self, source, bedId)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and Config.Beds[bedId] ~= nil then
 			if _inBed[bedId] == nil then
 				_inBedChar[char:GetData("ID")] = bedId
@@ -115,7 +113,7 @@ HOSPITAL = {
 		end
 	end,
 	LeaveBed = function(self, source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local inBedId = _inBedChar[char:GetData("ID")]
 			if inBedId ~= nil then
@@ -128,7 +126,7 @@ HOSPITAL = {
 	end,
 	ICU = {
 		Send = function(self, target)
-			local char = Fetch:CharacterSource(target)
+			local char = exports['sandbox-characters']:FetchCharacterSource(target)
 			if char ~= nil then
 				if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 					return false
@@ -157,7 +155,7 @@ HOSPITAL = {
 			end
 		end,
 		Release = function(self, target)
-			local char = Fetch:CharacterSource(target)
+			local char = exports['sandbox-characters']:FetchCharacterSource(target)
 			if char ~= nil then
 				Player(target).state.ICU = false
 				char:SetData("ICU", {
@@ -170,7 +168,7 @@ HOSPITAL = {
 			end
 		end,
 		GetItems = function(self, target)
-			local char = Fetch:CharacterSource(target)
+			local char = exports['sandbox-characters']:FetchCharacterSource(target)
 			if char ~= nil then
 				Player(target).state.ICU = false
 				char:SetData("ICU", {

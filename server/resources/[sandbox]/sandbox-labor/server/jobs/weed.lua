@@ -31,7 +31,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			result = { name = "weed_brick", count = 1 },
 			items = {
 				{ name = "plastic_wrap", count = 2 },
-				{ name = "weed_bud", count = 200 },
+				{ name = "weed_bud",     count = 200 },
 			},
 			time = 8000,
 			animation = "mechanic",
@@ -39,7 +39,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		{
 			result = { name = "weed_baggy", count = 1 },
 			items = {
-				{ name = "baggy", count = 1 },
+				{ name = "baggy",    count = 1 },
 				{ name = "weed_bud", count = 2 },
 			},
 			time = 2000,
@@ -48,7 +48,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	})
 
 	Callbacks:RegisterServerCallback("WeedRun:Enable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if not hasValue(states, "SCRIPT_WEED_RUN") then
 			table.insert(states, "SCRIPT_WEED_RUN")
@@ -66,7 +66,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("WeedRun:Disable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if hasValue(states, "SCRIPT_WEED_RUN") then
 			for k, v in ipairs(states) do
@@ -90,7 +90,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	Callbacks:RegisterServerCallback("WeedRun:DoDropoff", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if Inventory.Items:Remove(char:GetData("SID"), 1, "weed_brick", 1) then
 					local repLevel = Reputation:GetLevel(source, "WeedRun") or 0
@@ -152,7 +152,7 @@ AddEventHandler("Labor:Server:Startup", function()
 end)
 
 AddEventHandler("WeedRun:Server:OnDuty", function(joiner, members, isWorkgroup)
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	if char == nil then
 		Labor.Offers:Cancel(joiner, _JOB)
 		Labor.Duty:Off(_JOB, joiner, false, true)
@@ -168,7 +168,7 @@ AddEventHandler("WeedRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 		state = 0,
 	}
 
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
 	TriggerClientEvent("WeedRun:Client:OnDuty", joiner, joiner, os.time())
 
@@ -176,7 +176,7 @@ AddEventHandler("WeedRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner
-			local member = Fetch:CharacterSource(v.ID)
+			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
 			TriggerClientEvent("WeedRun:Client:OnDuty", v.ID, joiner, os.time())
 		end

@@ -10,7 +10,6 @@ function RetrieveComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -26,7 +25,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Callbacks",
 		"Logger",
 		"Jobs",
-		"Fetch",
 		"Chat",
 		"Execute",
 		"Vehicles",
@@ -40,7 +38,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RetrieveComponents()
 
 		Callbacks:RegisterServerCallback("Tow:RequestJob", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if not Jobs.Permissions:HasJob(source, "tow") and char then
 				cb(Jobs:GiveJob(char:GetData("SID"), "tow", false, "employee"))
 			else
@@ -49,7 +47,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Tow:QuitJob", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if Jobs.Permissions:HasJob(source, "tow") and char then
 				_activeTowers[source] = nil
 				cb(Jobs:RemoveJob(char:GetData("SID"), "tow"))
@@ -59,7 +57,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Tow:OnDuty", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local dutyData = Jobs.Duty:GetDutyData("tow")
 			if Jobs.Permissions:HasJob(source, "tow") and char then
 				if not dutyData or (dutyData and dutyData.Count < maxActive) then
@@ -92,7 +90,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Tow:OffDuty", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char and Jobs.Duty:Get(source, "tow") then
 				local stateId = char:GetData("SID")
 				if not _activeTowVehicles[stateId] then
@@ -116,7 +114,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Tow:RequestTruck", function(source, spaceCoords, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char and Player(source).state.onDuty == "tow" then
 				local stateId = char:GetData("SID")
 				if not _activeTowVehicles[stateId] then
@@ -169,7 +167,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Callbacks:RegisterServerCallback("Tow:ReturnTruck", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local stateId = char:GetData("SID")
 				local hasTruck = _activeTowVehicles[stateId]
@@ -236,7 +234,7 @@ end)
 TOW = {
 	PayoutPickup = function(self, source)
 		if _activeTowers[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account, 300, {
 				type = "paycheck",
 				title = "Tow Fee",

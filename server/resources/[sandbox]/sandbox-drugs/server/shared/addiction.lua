@@ -1,5 +1,5 @@
 function RunDegenThread()
-	for k, v in pairs(Fetch:AllCharacters()) do
+	for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 		if v ~= nil then
 			local addictions = v:GetData("Addiction")
 			if addictions ~= nil then
@@ -34,8 +34,8 @@ end
 
 _DRUGS.Addiction = {
 	Add = function(self, source, drug, factor)
-        local char = Fetch:CharacterSource(source)
-        if char ~= nil then
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
 			local addictions = char:GetData("Addiction")
 			addictions[drug] = {
 				LastUse = os.time(),
@@ -46,8 +46,8 @@ _DRUGS.Addiction = {
 		end
 	end,
 	Remove = function(self, source, drug, factor)
-        local char = Fetch:CharacterSource(source)
-        if char ~= nil then
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
 			local addictions = char:GetData("Addiction")
 			addictions[drug] = {
 				LastUse = os.time(),
@@ -63,8 +63,8 @@ _DRUGS.Addiction = {
 		end
 	end,
 	Reset = function(self, source, drug)
-        local char = Fetch:CharacterSource(source)
-        if char ~= nil then
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
 			local addictions = char:GetData("Addiction")
 			addictions[drug] = {
 				LastUse = false,

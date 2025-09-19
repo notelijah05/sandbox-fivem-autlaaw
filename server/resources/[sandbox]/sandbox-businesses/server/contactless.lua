@@ -2,7 +2,7 @@ _pendingContactless = {}
 
 AddEventHandler("Businesses:Server:Startup", function()
     Callbacks:RegisterServerCallback("Contactless:Create", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         -- Should probably do some better checking here but I cannot be fucked
         if char and data and data.job and data.terminalId and data.payment and data.payment > 0 and data.payment <= 25000 then
             if Player(source).state.onDuty == data.job then
@@ -40,7 +40,7 @@ AddEventHandler("Businesses:Server:Startup", function()
     end)
 
     Callbacks:RegisterServerCallback("Contactless:Clear", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and data.job and data.terminalId then
             if Player(source).state.onDuty == data.job then
                 if _pendingContactless[data.terminalId] then
@@ -58,7 +58,7 @@ AddEventHandler("Businesses:Server:Startup", function()
     end)
 
     Callbacks:RegisterServerCallback("Contactless:Pay", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and data.terminalId and _pendingContactless[data.terminalId] and GlobalState[string.format("PendingContactless:%s", data.terminalId)] then
             GlobalState[string.format("PendingContactless:%s", data.terminalId)] = false
 
@@ -68,7 +68,8 @@ AddEventHandler("Businesses:Server:Startup", function()
                 type = 'bill',
                 transactionAccount = pData.jobAccount,
                 title = 'Contactless Payment',
-                description = string.format('Contactless Payment to %s. Description: %s', pData.jobName, pData.description),
+                description = string.format('Contactless Payment to %s. Description: %s', pData.jobName,
+                    pData.description),
                 data = {
                     biller = pData.biller.SID,
                     character = char:GetData("SID"),
@@ -81,7 +82,8 @@ AddEventHandler("Businesses:Server:Startup", function()
                         type = 'bill',
                         transactionAccount = char:GetData("BankAccount"),
                         title = 'Contactless Payment',
-                        description = string.format('Contactless Payment From State ID: %s. Description: %s', char:GetData("SID"), pData.description),
+                        description = string.format('Contactless Payment From State ID: %s. Description: %s',
+                            char:GetData("SID"), pData.description),
                         data = {
                             biller = pData.biller.SID,
                             character = char:GetData("SID"),
@@ -89,10 +91,13 @@ AddEventHandler("Businesses:Server:Startup", function()
                     })
                 end
 
-                Phone.Notification:Add(pData.billerSource, "Contactless Payment Received", string.format("Received $%s for %s.", math.floor(pData.amount), pData.jobName), os.time(), 8000, "bank", {})
+                Phone.Notification:Add(pData.billerSource, "Contactless Payment Received",
+                    string.format("Received $%s for %s.", math.floor(pData.amount), pData.jobName), os.time(), 8000,
+                    "bank", {})
                 Execute:Client(pData.billerSource, "Notification", "Success", "Contactless Payment Received")
 
-                Phone.Notification:Add(source, "Contactless Payment Accepted", string.format("Paid $%s to %s", math.floor(pData.amount), pData.jobName), os.time(), 8000, "bank", {})
+                Phone.Notification:Add(source, "Contactless Payment Accepted",
+                    string.format("Paid $%s to %s", math.floor(pData.amount), pData.jobName), os.time(), 8000, "bank", {})
 
                 Laptop.BizWiz.Receipts:Create(pData.job, {
                     type = "Contactless Terminal",
@@ -110,10 +115,14 @@ AddEventHandler("Businesses:Server:Startup", function()
 
                 cb(true)
             else
-                Phone.Notification:Add(pData.billerSource, "Contactless Payment Failed", string.format("Payment of $%s for %s failed.", math.floor(pData.amount), pData.jobName), os.time(), 8000, "bank", {})
+                Phone.Notification:Add(pData.billerSource, "Contactless Payment Failed",
+                    string.format("Payment of $%s for %s failed.", math.floor(pData.amount), pData.jobName), os.time(),
+                    8000, "bank", {})
                 Execute:Client(pData.billerSource, "Notification", "Error", "Contactless Payment Failed")
 
-                Phone.Notification:Add(source, "Contactless Payment Failed", string.format("Payment of $%s to %s just failed. Is your balance sufficient?", math.floor(pData.amount), pData.jobName), os.time(), 8000, "bank", {})
+                Phone.Notification:Add(source, "Contactless Payment Failed",
+                    string.format("Payment of $%s to %s just failed. Is your balance sufficient?",
+                        math.floor(pData.amount), pData.jobName), os.time(), 8000, "bank", {})
 
                 GlobalState[string.format("PendingContactless:%s", data.terminalId)] = pData.amount
 

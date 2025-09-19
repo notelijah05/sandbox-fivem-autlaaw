@@ -332,7 +332,7 @@ PHONE.CoManager = {
 		end
 
 		local onlineCharacters = {}
-		for _, char in pairs(Fetch:AllCharacters()) do
+		for _, char in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 			if char ~= nil then
 				table.insert(onlineCharacters, char:GetData("SID"))
 				local jobs = char:GetData("Jobs")
@@ -425,7 +425,7 @@ PHONE.CoManager = {
 
 			local onlineShit = {}
 
-			for _, char in pairs(Fetch:AllCharacters()) do
+			for _, char in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if char ~= nil then
 					table.insert(onlineCharacters, char:GetData("SID"))
 					local jobs = char:GetData("Jobs")
@@ -541,7 +541,7 @@ end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if _pendingHires[char:GetData("SID")] ~= nil then
 			local data = _pendingHires[char:GetData("SID")]
 			TriggerClientEvent("Phone:Client:CoManager:GetJobOffer", source, data.time, data.NewJob)
@@ -569,7 +569,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			if Jobs.Permissions:IsOwner(source, jobId) then
 				return cb({ success = false, code = "IS_OWNER" })
 			else
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char then
 					local success = Jobs:RemoveJob(char:GetData("SID"), jobId)
 					if success then
@@ -632,7 +632,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			local playerIsOwner = Jobs.Permissions:IsOwner(source, jobId)
 			if (playerJobPerms and (playerJobPerms.JOB_HIRE or playerJobPerms.JOB_MANAGEMENT)) or playerIsOwner then
 				if (playerJobData.Grade.Level > grade.Level) or playerIsOwner then
-					local targetChar = Fetch:SID(stateId)
+					local targetChar = exports['sandbox-characters']:FetchBySID(stateId)
 
 					if targetChar then
 						local time = os.time()
@@ -695,7 +695,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				end
 
 				local targetJobData = false
-				local targetChar = Fetch:SID(stateId)
+				local targetChar = exports['sandbox-characters']:FetchBySID(stateId)
 
 				if targetChar then
 					targetJobData = targetChar:GetData("Jobs")
@@ -752,7 +752,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				end
 
 				if (playerJobData.Grade.Level > grade.Level) or playerIsOwner then
-					local targetChar = Fetch:SID(stateId)
+					local targetChar = exports['sandbox-characters']:FetchBySID(stateId)
 					local targetJobData = false
 
 					if targetChar then
@@ -902,7 +902,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:CoManager:AcceptHire", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local stateId = char:GetData("SID")
 			local data = _pendingHires[stateId]
@@ -922,7 +922,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:CoManager:DeclineHire", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local stateId = char:GetData("SID")
 			local data = _pendingHires[stateId]

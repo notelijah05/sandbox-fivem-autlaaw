@@ -15,7 +15,6 @@ _ammoNames = {
 AddEventHandler("Evidence:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -38,7 +37,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Evidence", {
 		"Logger",
-		"Fetch",
 		"Callbacks",
 		"Game",
 		"Menu",
@@ -214,7 +212,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 						local items = {}
 
-						if serial  ~= nil then
+						if serial ~= nil then
 							table.insert(items, {
 								label = 'Weapon Serial Number',
 								description = string.format('Serial: %s', serial or "<scratched off>"),
@@ -222,7 +220,9 @@ AddEventHandler("Core:Shared:Ready", function()
 						elseif policeWeaponId ~= nil then
 							table.insert(items, {
 								label = 'Police Weapon Identifier',
-								description = string.format('Since the weapon had no serial number, a police identifier was given.<br>Identifier: %s', policeWeaponId),
+								description = string.format(
+									'Since the weapon had no serial number, a police identifier was given.<br>Identifier: %s',
+									policeWeaponId),
 							})
 						else
 							table.insert(items, {
@@ -235,7 +235,8 @@ AddEventHandler("Core:Shared:Ready", function()
 							Sounds.Play:Distance(4, "demo.ogg", 0.4)
 							table.insert(items, {
 								label = 'Ballistics Matches Found',
-								description = string.format('%s Projectile Matches Found When Compared to Filed Weapons', #matchingEvidence),
+								description = string.format('%s Projectile Matches Found When Compared to Filed Weapons',
+									#matchingEvidence),
 							})
 							for k, v in ipairs(matchingEvidence) do
 								table.insert(items, {
@@ -254,7 +255,6 @@ AddEventHandler("Core:Shared:Ready", function()
 								items = items,
 							},
 						})
-
 					else
 						Notification:Error('Ballistics Testing Failed')
 					end

@@ -1,54 +1,59 @@
-COMPONENTS.Fetch = {
-	_required = { "Source", "PlayerData", "All" },
-	_name = "base",
-	Source = function(self, source)
-		return COMPONENTS.Players[source]
-	end,
-	PlayerData = function(self, key, value)
-		for k, v in pairs(COMPONENTS.Players) do
-			if v:GetData(key) == value then
-				return v
-			end
-		end
+local function GetSource(source)
+	return COMPONENTS.Players[source]
+end
 
-		return nil
-	end,
-	Website = function(self, type, id)
-		if type == "account" then
-			local data = COMPONENTS.WebAPI.GetMember:AccountID(id)
-			if data ~= nil then
-				return COMPONENTS.DataStore:CreateStore('Fetch', data.id, {
-					ID = data.id,
-					AccountID = data.id,
-					Identifier = data.identifier,
-					Name = data.name,
-					Roles = data.roles,
-				})
-			end
-		elseif type == "identifier" then
-			local data = COMPONENTS.WebAPI.GetMember:Identifier(id)
-			if data ~= nil then
-				return COMPONENTS.DataStore:CreateStore('Fetch', data.id, {
-					ID = data.id,
-					AccountID = data.id,
-					Identifier = data.identifier,
-					Name = data.name,
-					Roles = data.roles,
-				})
-			end
+local function GetPlayerData(key, value)
+	for k, v in pairs(COMPONENTS.Players) do
+		if v:GetData(key) == value then
+			return v
 		end
-		return nil
-	end,
-	All = function(self)
-		return COMPONENTS.Players
-	end,
-	Count = function(self)
-		local c = 0
-		for k, v in pairs(COMPONENTS.Players) do
-			if v ~= nil then
-				c = c + 1
-			end
+	end
+	return nil
+end
+
+local function GetWebsite(type, id)
+	if type == "account" then
+		local data = COMPONENTS.WebAPI.GetMember:AccountID(id)
+		if data ~= nil then
+			return COMPONENTS.DataStore:CreateStore('Fetch', data.id, {
+				ID = data.id,
+				AccountID = data.id,
+				Identifier = data.identifier,
+				Name = data.name,
+				Roles = data.roles,
+			})
 		end
-		return c
-	end,
-}
+	elseif type == "identifier" then
+		local data = COMPONENTS.WebAPI.GetMember:Identifier(id)
+		if data ~= nil then
+			return COMPONENTS.DataStore:CreateStore('Fetch', data.id, {
+				ID = data.id,
+				AccountID = data.id,
+				Identifier = data.identifier,
+				Name = data.name,
+				Roles = data.roles,
+			})
+		end
+	end
+	return nil
+end
+
+local function GetAll()
+	return COMPONENTS.Players
+end
+
+local function GetCount()
+	local c = 0
+	for k, v in pairs(COMPONENTS.Players) do
+		if v ~= nil then
+			c = c + 1
+		end
+	end
+	return c
+end
+
+exports('FetchSource', GetSource)
+exports('FetchPlayerData', GetPlayerData)
+exports('FetchWebsite', GetWebsite)
+exports('FetchAll', GetAll)
+exports('FetchCount', GetCount)

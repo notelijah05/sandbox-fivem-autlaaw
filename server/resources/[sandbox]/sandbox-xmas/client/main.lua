@@ -4,7 +4,6 @@ _existingTree = nil
 AddEventHandler("Xmas:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -19,7 +18,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Xmas", {
 		"Logger",
-		"Fetch",
 		"Callbacks",
 		"Notification",
 		"Animations",

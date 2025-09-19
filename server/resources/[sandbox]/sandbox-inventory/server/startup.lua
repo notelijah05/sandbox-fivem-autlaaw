@@ -275,7 +275,7 @@ function SetupItemUses(itemData)
 		itemsDatabase[itemData.name].closeUi = itemsDatabase[itemData.imitate].closeUi
 	elseif itemData.gangChain ~= nil then
 		INVENTORY.Items:RegisterUse(itemData.name, "GangChains", function(source, item)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if itemData.gangChain ~= nil then
 				if itemData.gangChain ~= char:GetData("GangChain") then
 					TriggerClientEvent("Ped:Client:ChainAnim", source)
@@ -296,7 +296,7 @@ function SetupItemUses(itemData)
 
 	if itemData.drugState ~= nil then
 		INVENTORY.Items:RegisterUse(itemData.name, "DrugStates", function(source, item)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local drugStates = char:GetData("DrugStates") or {}
 				drugStates[itemData.drugState.type] = {
@@ -310,7 +310,7 @@ function SetupItemUses(itemData)
 
 	if itemData.phoneCase ~= nil then
 		INVENTORY.Items:RegisterUse(itemData.name, "PhoneCase", function(source, item)
-			local char = Fetch:CharacterSource(source, true)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source, true)
 			if char ~= nil then
 				char:SetData("PhoneCase", itemData.phoneCase)
 				INVENTORY.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
@@ -460,7 +460,7 @@ function RegisterCommands()
 			Logger:Info("Inventory", "Player SID is not valid!")
 			return
 		end
-		local char = Fetch:SID(tonumber(args[1]), true)
+		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]), true)
 		if char == nil then
 			Logger:Info("Inventory", "Player does not exist!")
 			return
@@ -502,8 +502,8 @@ function RegisterCommands()
 	}, 2)
 
 	Chat:RegisterAdminCommand("clearinventory", function(source, args, rawCommand)
-		local char = Fetch:CharacterSource(source)
-		local tChar = Fetch:SID(tonumber(args[1]), true)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local tChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]), true)
 		if tChar == nil then
 			Execute:Client(source, "Notification", "Error", "This player is not online")
 			return
@@ -558,7 +558,7 @@ function RegisterCommands()
 	}, 2)
 
 	Chat:RegisterAdminCommand("giveitem", function(source, args, rawCommand)
-		local char = Fetch:CharacterSource(source, true)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source, true)
 		if char and tostring(args[1]) ~= nil and tonumber(args[2]) ~= nil then
 			local itemExist = itemsDatabase[args[1]]
 			if itemExist then
@@ -591,7 +591,7 @@ function RegisterCommands()
 	}, 2)
 
 	Chat:RegisterAdminCommand("giveweapon", function(source, args, rawCommand)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if tostring(args[1]) ~= nil then
 			local weapon = string.upper(args[1])
 			local itemExist = itemsDatabase[weapon]
@@ -648,7 +648,7 @@ function RegisterCommands()
 	Chat:RegisterAdminCommand("vanityitemnew", function(source, args, rawCommand)
 		local label, image, amount, text, action = args[1], args[2], tonumber(args[3]), args[4], args[5]
 
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and label and image and amount and amount > 0 then
 			local t = Sequence:Get("VanityItem")
 			local newItem = INVENTORY.ItemTemplate:Create(
@@ -703,7 +703,7 @@ function RegisterCommands()
 
 	Chat:RegisterAdminCommand("vanityitem", function(source, args, rawCommand)
 		local label, image, amount, text, action = args[1], args[2], tonumber(args[3]), args[4], args[5]
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char and label and image and amount and amount > 0 then
 			INVENTORY:AddItem(char:GetData("SID"), "vanityitem", amount, {

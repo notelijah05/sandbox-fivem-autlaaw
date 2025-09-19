@@ -1,7 +1,7 @@
 function RegisterItems()
 	Inventory.Items:RegisterUse("weedseed_male", "Weed", function(source, item)
 		if GlobalState[string.format("%s:House", source)] == nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local veh = GetVehiclePedIsIn(GetPlayerPed(source))
 			if veh == 0 then
 				Callbacks:ClientCallback(source, "Weed:PlantingAnim", {}, function(data)
@@ -12,11 +12,11 @@ function RegisterItems()
 							{ x = data.coords.x, y = data.coords.y, z = data.coords.z },
 							data.material
 						)
-	
+
 						_plants[plant._id] = {
 							plant = plant,
 						}
-	
+
 						Weed.Planting:Set(plant._id, false)
 					else
 						if data.error == 2 then
@@ -36,7 +36,7 @@ function RegisterItems()
 
 	Inventory.Items:RegisterUse("weedseed_female", "Weed", function(source, item)
 		if GlobalState[string.format("%s:House", source)] == nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local veh = GetVehiclePedIsIn(GetPlayerPed(source))
 			if veh == 0 then
 				Callbacks:ClientCallback(source, "Weed:PlantingAnim", {}, function(data)
@@ -47,11 +47,11 @@ function RegisterItems()
 							{ x = data.coords.x, y = data.coords.y, z = data.coords.z },
 							data.material
 						)
-	
+
 						_plants[plant._id] = {
 							plant = plant,
 						}
-	
+
 						Weed.Planting:Set(plant._id, false)
 					else
 						if data.error == 2 then
@@ -70,7 +70,7 @@ function RegisterItems()
 	end)
 
 	Inventory.Items:RegisterUse("rolling_paper", "Weed", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Inventory.Items:Has(char:GetData("SID"), 1, "weed_bud", 1) then
 			Callbacks:ClientCallback(source, "Weed:RollingAnim", {}, function(success)
 				if success then
@@ -88,7 +88,7 @@ function RegisterItems()
 	end)
 
 	Inventory.Items:RegisterUse("weed_joint", "Weed", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		Callbacks:ClientCallback(source, "Weed:SmokingAnim", {}, function(success, count)
 			Inventory.Items:RemoveList(char:GetData("SID"), 1, { { name = "weed_joint", count = 1 } })
 
@@ -103,7 +103,7 @@ function RegisterItems()
 	end)
 
 	Inventory.Items:RegisterUse("weed_brick", "Weed", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Inventory.Items:Has(char:GetData("SID"), 1, "weed_brick", 1) then
 			Callbacks:ClientCallback(source, "Weed:MakingBrick", {
 				label = "Unpacking Brick",
@@ -120,7 +120,7 @@ function RegisterItems()
 	end)
 
 	Inventory.Items:RegisterUse("weed_baggy", "Weed", function(source, item)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Inventory.Items:Has(char:GetData("SID"), 1, "weed_baggy", 1) then
 			Callbacks:ClientCallback(source, "Weed:MakingBrick", {
 				label = "Removing Bud",

@@ -83,7 +83,7 @@ local _pawnItems = {
 AddEventHandler("Businesses:Server:Startup", function()
 	Callbacks:RegisterServerCallback("GarconPawn:Sell", function(source, data, cb)
 		if Jobs.Permissions:HasJob(source, _jobName) then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local money = 0
 				local soldCount = 0

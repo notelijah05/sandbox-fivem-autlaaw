@@ -6,7 +6,6 @@ local _statuses = {}
 AddEventHandler("Status:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
@@ -21,7 +20,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Status", {
 		"Callbacks",
-		"Fetch",
 		"Utils",
 		"Chat",
 		"Status",
@@ -36,9 +34,9 @@ AddEventHandler("Core:Shared:Ready", function()
 		RetrieveComponents()
 		RegisterCallbacks()
 
-		
+
 		Middleware:Add("Characters:Logout", function(source)
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local p = promise.new()
 				Callbacks:ClientCallback(source, "Status:StoreValues", {}, function(vals)
@@ -96,7 +94,7 @@ STATUS = {
 		end,
 	},
 	Set = function(self, source, name, value)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local status = char:GetData("Status")
 			if status == nil then
@@ -114,7 +112,7 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 RegisterServerEvent("Status:Server:Update", function(data)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
 		local status = char:GetData("Status")
 		if status == nil then
@@ -126,7 +124,7 @@ RegisterServerEvent("Status:Server:Update", function(data)
 end)
 
 RegisterServerEvent("Status:Server:StoreAll", function(data)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
 		local status = char:GetData("Status") or {}
 		for k, v in pairs(data) do

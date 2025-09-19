@@ -88,9 +88,11 @@ _MDT.People = {
 						{
 							["$or"] = {
 								{ Deleted = false },
-								{ Deleted = {
-									["$exists"] = false,
-								} },
+								{
+									Deleted = {
+										["$exists"] = false,
+									}
+								},
 							},
 						},
 					},
@@ -145,15 +147,17 @@ _MDT.People = {
 					SID
 				})
 
-				local chargesData = MySQL.query.await("SELECT SID, charges FROM mdt_reports_people WHERE sentenced = ? AND type = ? AND SID = ? AND expunged = ?", {
-					1,
-					"suspect",
-					SID,
-					0
-				})
+				local chargesData = MySQL.query.await(
+					"SELECT SID, charges FROM mdt_reports_people WHERE sentenced = ? AND type = ? AND SID = ? AND expunged = ?",
+					{
+						1,
+						"suspect",
+						SID,
+						0
+					})
 
 				local convictions = {}
-				for k,v in ipairs(chargesData) do
+				for k, v in ipairs(chargesData) do
 					local c = json.decode(v.charges)
 					for _, ch in ipairs(c) do
 						table.insert(convictions, ch)
@@ -217,7 +221,7 @@ _MDT.People = {
 			update = update,
 		}, function(success, results)
 			if success then
-				local target = Fetch:SID(id)
+				local target = exports['sandbox-characters']:FetchBySID(id)
 				if target then
 					target:SetData(key, value)
 				end
@@ -344,7 +348,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						SID = 1,
 						First = 1,
 						Last = 1,
-						Callsign = 1,	
+						Callsign = 1,
 					},
 					limit = 4,
 				},
@@ -398,7 +402,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("MDT:Update:person", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and CheckMDTPermissions(source, false) and data.SID then
 			cb(MDT.People:Update(char, data.SID, data.Key, data.Data))
 		else

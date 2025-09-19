@@ -95,7 +95,7 @@ end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	Inventory.Items:RegisterUse("alias_changer", "LSUNDG", function(source, item, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local _AppName = "redline"
 		if char ~= nil then
 			local profiles = char:GetData("Profiles") or {}
@@ -140,7 +140,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		end
 	end)
 	Inventory.Items:RegisterUse("event_invite", "LSUNDG", function(source, item, itemData)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if item.MetaData.Event and _races[item.MetaData.Event] then
 				local sid = char:GetData("SID")
@@ -216,7 +216,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	LoadTracks()
 
 	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local alias = char:GetData("Alias") or {}
 		local profiles = char:GetData("Profiles") or {}
 
@@ -242,7 +242,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	end, 2)
 
 	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		TriggerLatentClientEvent("Phone:Client:Redline:StoreTracks", source, 50000, _tracks)
 		TriggerClientEvent("Phone:Client:Redline:Spawn", source, {
 			races = _races,
@@ -258,7 +258,7 @@ end)
 
 AddEventHandler("Phone:Server:UpdateProfile", function(source, data)
 	if data.app == "redline" then
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			local count = MySQL.scalar.await(
@@ -302,7 +302,7 @@ function ReloadRaceTracks()
 end
 
 function LeaveAnyRace(source)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
 		local alias = char:GetData("Profiles")?.redline?.name
 		if alias ~= nil then
@@ -521,7 +521,7 @@ function FinishRace(id, forceEnd)
 	TriggerClientEvent("Phone:Client:Redline:FinishRace", -1, key, _races[key])
 	Payout(_races[key].total, _races[key].racers, _races[key].competitive)
 
-	for k, v in pairs(Fetch:AllCharacters()) do
+	for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 		if v ~= nil then
 			local dutyData = Jobs.Duty:Get(v:GetData("Source"))
 			if hasValue(v:GetData("States") or {}, "RACE_DONGLE") and (not dutyData or dutyData.Id ~= "police") then
@@ -545,7 +545,7 @@ end
 function Payout(numRacers, results, isCompetitive)
 	for k, v in pairs(results) do
 		if isCompetitive and v.place ~= nil then
-			local char = Fetch:SID(v.sid)
+			local char = exports['sandbox-characters']:FetchBySID(v.sid)
 			if char ~= nil then
 				Reputation.Modify:Add(char:GetData("Source"), "Racing", 25 + (25 * (numRacers - v.place)))
 				if v.reward ~= nil and v.reward.crypto > 0 then
@@ -559,7 +559,7 @@ end
 -- TODO: Add check for player-owned vehicle
 RegisterServerEvent("Phone:Redline:FinishRace", function(nId, data, laps, plate, vehName)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	local alias = char:GetData("Profiles").redline.name
 
 	local key = tostring(data)
@@ -613,7 +613,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:SaveTrack", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = char:GetData("Profiles").redline.name
 
 		if alias ~= nil then
@@ -646,7 +646,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:DeleteTrack", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = char:GetData("Profiles").redline.name
 
 		local myPerms = char:GetData("PhonePermissions")
@@ -697,7 +697,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:ResetTrackHistory", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = char:GetData("Profiles").redline.name
 		if alias ~= nil then
 			MySQL.query("DELETE FROM redline_track_history WHERE track = ?", {
@@ -711,7 +711,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:CreateRace", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if hasValue(char:GetData("States") or {}, "RACE_DONGLE") then
 			if char:GetData("Profiles")?.redline then
 				if (tonumber(data.laps) or 1) <= 0 then
@@ -851,7 +851,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					_races[key] = table.copy(data)
 					_raceInvites[key] = {}
 					_trackData[key] = table.copy(tmp)
-					for k, v in pairs(Fetch:AllCharacters()) do
+					for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 						if v ~= nil then
 							TriggerClientEvent("Phone:Client:Redline:CreateRace", v:GetData("Source"), data)
 							local dutyData = Jobs.Duty:Get(v:GetData("Source"))
@@ -887,7 +887,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:CancelRace", function(src, key, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if
 			_races[key].host_id == char:GetData("SID")
 			and hasValue(char:GetData("States") or {}, "RACE_DONGLE")
@@ -905,7 +905,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:StartRace", function(src, key, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if
 			_races[key].host_id == char:GetData("SID")
 			and hasValue(char:GetData("States") or {}, "RACE_DONGLE")
@@ -970,7 +970,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:EndRace", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local key = tostring(data)
 		if _races[key].host_id == char:GetData("SID") then
 			FinishRace(tonumber(data), true)
@@ -981,7 +981,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:JoinRace", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = char:GetData("Profiles")?.redline?.name
 
 		local key = tostring(data)
@@ -1034,7 +1034,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:LeaveRace", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = char:GetData("Profiles").redline.name
 		local key = tostring(data)
 		if alias ~= nil and _races[key].state == 0 then
@@ -1047,7 +1047,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:RemoveRacer", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			local alias = char:GetData("Profiles")?.redline?.name
@@ -1063,7 +1063,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					if tSid ~= nil then
 						_races[key].racers[data.alias] = nil
 
-						local tChar = Fetch:SID(tSid)
+						local tChar = exports['sandbox-characters']:FetchBySID(tSid)
 						if tChar ~= nil then
 							TriggerClientEvent("Phone:Client:Redline:RemovedFromRace", tChar:GetData("Source"))
 						end
@@ -1083,7 +1083,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:SendInvite", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			local alias = char:GetData("Profiles")?.redline?.name
@@ -1097,7 +1097,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						})
 
 					if tSid ~= nil then
-						local tChar = Fetch:SID(tSid)
+						local tChar = exports['sandbox-characters']:FetchBySID(tSid)
 						if tChar ~= nil then
 							_raceInvites[key][string.lower(data.alias)] = {
 								id = key,
@@ -1124,7 +1124,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:AcceptInvite", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			local alias = char:GetData("Profiles")?.redline?.name
@@ -1173,7 +1173,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Phone:Redline:DeclineInvite", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			local alias = char:GetData("Profiles")?.redline?.name

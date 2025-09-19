@@ -1,7 +1,7 @@
 function RegisterChatCommands()
 	Chat:RegisterAdminCommand("setcallsign", function(source, args, rawCommand)
 		local newCallsign = args[2]
-		local target = Fetch:SID(tonumber(args[1]))
+		local target = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if target ~= nil then
 			if
 				Jobs.Permissions:HasJob(target:GetData("Source"), "police")
@@ -53,12 +53,13 @@ function RegisterChatCommands()
 			},
 		}, function(success, results)
 			if success and results then
-				local char = Fetch:SID(results.SID)
+				local char = exports['sandbox-characters']:FetchBySID(results.SID)
 				if char then
 					char:SetData("Callsign", false)
 				end
 
-				Chat.Send.System:Single(source, string.format("Callsign Reclaimed From %s %s (%s)", results.First, results.Last, results.SID))
+				Chat.Send.System:Single(source,
+					string.format("Callsign Reclaimed From %s %s (%s)", results.First, results.Last, results.SID))
 			else
 				Chat.Send.System:Single(source, "Nobody With That Callsign")
 			end

@@ -6,7 +6,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Businesses:VANGELICO:Sell", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Jobs.Permissions:HasJob(source, _jobName, false, false, false, false, "JOB_SELL_GEMS") then
 			local its = Inventory.Items:GetAllOfTypeNoStack(char:GetData("SID"), 1, 11)
 
@@ -70,7 +70,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 end)
 
 AddEventHandler("Businesses:Server:VANGELICO:ViewGem", function(source, data)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
 		if Jobs.Permissions:HasJob(source, _jobName, false, false, false, true, "JOB_USE_GEM_TABLE") then
 			local its = Inventory:GetInventory(source, data.owner, data.invType)

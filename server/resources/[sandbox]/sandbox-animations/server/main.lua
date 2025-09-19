@@ -2,7 +2,6 @@ AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
 		"Database",
 		"Utils",
-		"Fetch",
 		"Callbacks",
 		"Chat",
 		"Execute",
@@ -39,7 +37,7 @@ end)
 
 function RegisterMiddleware()
 	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("Animations") == nil then
 			char:SetData("Animations", { walk = "default", expression = "default", emoteBinds = {} })
 		end
@@ -82,7 +80,7 @@ function RegisterChatCommands()
 		help = "Change Facial Expression",
 	})
 	Chat:RegisterCommand("selfie", function(source, args, rawCommand)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			not Player(source).state.isCuffed
 			and not Player(source).state.isDead
@@ -99,7 +97,7 @@ end
 
 function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Animations:UpdatePedFeatures", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			cb(Animations.PedFeatures:UpdateFeatureInfo(char, data.type, data.data))
 		else
@@ -108,7 +106,7 @@ function RegisterCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Animations:UpdateEmoteBinds", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			cb(Animations.EmoteBinds:Update(char, data), data)
 		else
@@ -171,7 +169,7 @@ local pendingSend = false
 
 RegisterServerEvent("Selfie:CaptureSelfie", function()
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char then
 		if pendingSend then
 			Execute:Client(src, "Notification", "Warn", "Please wait while current photo is uploading", 2000)

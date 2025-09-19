@@ -35,10 +35,10 @@ function deepcopy(orig)
 end
 
 function RemoveCraftingCooldown(source, bench, id)
-	local plyr = Fetch:Source(source)
+	local plyr = exports['sandbox-base']:FetchSource(source)
 	if plyr ~= nil then
 		if plyr.Permissions:IsAdmin() then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _cooldowns[bench] ~= nil then
 					Logger:Info("Crafting",
@@ -319,7 +319,7 @@ CRAFTING = {
 		end,
 	},
 	GetBench = function(self, source, benchId)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local bench = _types[benchId]
 			if
@@ -381,7 +381,7 @@ CRAFTING = {
 
 function RegisterCraftingCallbacks()
 	Callbacks:RegisterServerCallback("Crafting:Craft", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			cb(Crafting.Craft:Start(source, char:GetData("SID"), data.bench, data.result, data.qty))
 		else
@@ -390,7 +390,7 @@ function RegisterCraftingCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Crafting:GetSchematics", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local schems = INVENTORY.Items:GetAllOfType(char:GetData("SID"), 1, 17)
 			local list = {}
@@ -417,7 +417,7 @@ function RegisterCraftingCallbacks()
 	end)
 
 	Callbacks:RegisterServerCallback("Crafting:UseSchematic", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if INVENTORY.Items:HasId(char:GetData("SID"), 1, data.schematic.id) then
 				local bench = _types[data.bench]

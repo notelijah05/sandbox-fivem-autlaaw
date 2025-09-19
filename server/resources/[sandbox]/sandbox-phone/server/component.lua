@@ -131,7 +131,7 @@ _limitCount = 10
 
 _PHOTOS = {
 	Create = function(self, source, photo)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and type(photo) == "table" then
 			photo.sid = char:GetData("SID")
 			photo.time = os.time()
@@ -145,7 +145,7 @@ _PHOTOS = {
 		return false
 	end,
 	Fetch = function(self, source)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local retval =
 				MySQL.rawExecute.await("SELECT * FROM character_photos WHERE sid = ? ORDER BY time DESC LIMIT ?", {
@@ -158,7 +158,7 @@ _PHOTOS = {
 		return false
 	end,
 	Delete = function(self, source, id)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local retval = MySQL.rawExecute.await("DELETE FROM character_photos WHERE id = ?", {
 				id,

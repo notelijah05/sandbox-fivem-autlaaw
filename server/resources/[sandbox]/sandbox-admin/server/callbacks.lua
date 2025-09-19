@@ -37,10 +37,10 @@ end
 function RegisterCallbacks()
     Callbacks:RegisterServerCallback('Admin:GetPlayerList', function(source, data, cb)
         CreateThread(function()
-            local player = Fetch:Source(source)
+            local player = exports['sandbox-base']:FetchSource(source)
             if player and player.Permissions:IsStaff() then
                 local data = {}
-                local activePlayers = Fetch:All()
+                local activePlayers = exports['sandbox-base']:FetchAll()
 
                 for k, v in pairs(activePlayers) do
                     if v ~= nil and v:GetData('AccountID') then
@@ -60,7 +60,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:GetDisconnectedPlayerList', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsStaff() then
             local rDs = exports['sandbox-base']:FetchComponent('RecentDisconnects')
             cb(rDs)
@@ -70,9 +70,9 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:GetPlayer', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsStaff() then
-            local target = Fetch:Source(data)
+            local target = exports['sandbox-base']:FetchSource(data)
 
             if target then
                 local staffGroupName = false
@@ -106,7 +106,7 @@ function RegisterCallbacks()
                     }
                 end
 
-                local char = Fetch:CharacterSource(data)
+                local char = exports['sandbox-characters']:FetchCharacterSource(data)
 
                 local p = promise.new()
                 Database.Game:find({
@@ -183,7 +183,7 @@ function RegisterCallbacks()
                         tData.Disconnected = true
                         tData.Reconnected = false
 
-                        for k, v in pairs(Fetch:All()) do
+                        for k, v in pairs(exports['sandbox-base']:FetchAll()) do
                             if v:GetData('AccountID') == tData.AccountID then
                                 tData.Reconnected = k
                             end
@@ -202,7 +202,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:GetAllPlayersByCharacter', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsStaff() then
             local matchQuery = {
                 User = { ["$exists"] = 1 },
@@ -271,7 +271,7 @@ function RegisterCallbacks()
                     local data = {}
 
                     for k, v in ipairs(foundPlayers) do
-                        local isOnline = Fetch:PlayerData("AccountID", v.User)
+                        local isOnline = exports['sandbox-base']:FetchPlayerData("AccountID", v.User)
 
                         if isOnline then
                             v.Online = isOnline:GetData("Source")
@@ -294,7 +294,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:BanPlayer', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and data.targetSource and type(data.length) == "number" and type(data.reason) == "string" and data.length >= -1 and data.length <= 90 then
             if player.Permissions:IsAdmin() or (player.Permissions:IsStaff() and data.length > 0 and data.length <= 7) then
                 cb(Punishment.Ban:Source(data.targetSource, data.length, data.reason, source))
@@ -307,7 +307,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:KickPlayer', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and data.targetSource and type(data.reason) == "string" and player.Permissions:IsStaff() then
             cb(Punishment:Kick(data.targetSource, data.reason, source))
         else
@@ -316,15 +316,15 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:ActionPlayer', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and data.action and data.targetSource and player.Permissions:IsStaff() then
-            local target = Fetch:Source(data.targetSource)
+            local target = exports['sandbox-base']:FetchSource(data.targetSource)
             if target then
                 local canFuckWith = player.Permissions:GetLevel() > target.Permissions:GetLevel()
                 local notMe = player:GetData('Source') ~= target:GetData('Source')
                 local wasSuccessful = false
 
-                local targetChar = Fetch:CharacterSource(data.targetSource)
+                local targetChar = exports['sandbox-characters']:FetchCharacterSource(data.targetSource)
                 if targetChar then
                     local playerPed = GetPlayerPed(player:GetData('Source'))
                     local targetPed = GetPlayerPed(target:GetData('Source'))
@@ -425,7 +425,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:GetVehicleList', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsStaff() then
             local tData = {}
             local allVehicles = Vehicles.Owned.GetAllActive()
@@ -450,7 +450,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:GetVehicle', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsStaff() and data and DoesEntityExist(data) then
             local ent = Entity(data)
 
@@ -485,7 +485,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:VehicleAction', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and data.action and player.Permissions:IsAdmin() and data.target and DoesEntityExist(data.target) then
             local veh = Entity(data.target)
             local netOwner = NetworkGetEntityOwner(data.target)
@@ -592,7 +592,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:CurrentVehicleAction', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and data.action and player.Permissions:IsAdmin() and player.Permissions:GetLevel() >= 90 then
             Logger:Warn(
                 "Admin",
@@ -620,7 +620,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:NoClip', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsStaff() then
             Logger:Warn(
                 "Admin",
@@ -648,9 +648,9 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:UpdatePhonePerms', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player.Permissions:IsAdmin() then
-            local char = Fetch:CharacterSource(data.target)
+            local char = exports['sandbox-characters']:FetchCharacterSource(data.target)
             if char ~= nil then
                 local cPerms = char:GetData("PhonePermissions")
                 cPerms[data.app][data.perm] = data.state
@@ -665,7 +665,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Admin:ToggleInvisible', function(source, data, cb)
-        local player = Fetch:Source(source)
+        local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsAdmin() then
             Logger:Warn(
                 "Admin",

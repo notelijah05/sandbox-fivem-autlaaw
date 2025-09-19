@@ -1,6 +1,5 @@
 AddEventHandler("Banking:Shared:DependencyUpdate", RetrieveBankingComponents)
 function RetrieveBankingComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Database = exports["sandbox-base"]:FetchComponent("Database")
@@ -24,7 +23,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Banking", {
-		"Fetch",
 		"Utils",
 		"Execute",
 		"Chat",
@@ -56,9 +54,11 @@ end)
 _BANKING = {
 	Accounts = {
 		Get = function(self, accountNumber)
-			return MySQL.single.await("SELECT account as Account, balance as Balance, type as Type, owner as Owner, name as Name FROM bank_accounts WHERE account = ?", {
-				accountNumber
-			})
+			return MySQL.single.await(
+				"SELECT account as Account, balance as Balance, type as Type, owner as Owner, name as Name FROM bank_accounts WHERE account = ?",
+				{
+					accountNumber
+				})
 		end,
 		CreatePersonal = function(self, ownerSID)
 			local hasAccount = Banking.Accounts:GetPersonal(ownerSID)
@@ -73,10 +73,12 @@ _BANKING = {
 			return false
 		end,
 		GetPersonal = function(self, ownerSID)
-			return MySQL.single.await("SELECT account as Account, balance as Balance, type as Type, owner as Owner, name as Name FROM bank_accounts WHERE type = ? AND owner = ?", {
-				"personal",
-				tostring(ownerSID)
-			})
+			return MySQL.single.await(
+				"SELECT account as Account, balance as Balance, type as Type, owner as Owner, name as Name FROM bank_accounts WHERE type = ? AND owner = ?",
+				{
+					"personal",
+					tostring(ownerSID)
+				})
 		end,
 		CreatePersonalSavings = function(self, ownerSID)
 			local acc = CreateBankAccount("personal_savings", tostring(ownerSID), 0)
@@ -88,38 +90,44 @@ _BANKING = {
 			return false
 		end,
 		AddPersonalSavingsJointOwner = function(self, accountId, jointOwnerSID)
-			local account = MySQL.single.await("SELECT account, type FROM bank_accounts WHERE type = ? AND account = ?", {
-				"personal_savings",
-				accountId
-			})
-
-			if account then
-				local existing = MySQL.single.await("SELECT jointOwner FROM bank_accounts_permissions WHERE account = ? AND jointOwner = ?", {
-					accountId,
-					tostring(jointOwnerSID)
+			local account = MySQL.single.await("SELECT account, type FROM bank_accounts WHERE type = ? AND account = ?",
+				{
+					"personal_savings",
+					accountId
 				})
 
-				if not existing then
-					return MySQL.insert.await("INSERT INTO bank_accounts_permissions (account, type, jointOwner) VALUES (?, ?, ?)", {
+			if account then
+				local existing = MySQL.single.await(
+					"SELECT jointOwner FROM bank_accounts_permissions WHERE account = ? AND jointOwner = ?", {
 						accountId,
-						1,
 						tostring(jointOwnerSID)
 					})
+
+				if not existing then
+					return MySQL.insert.await(
+						"INSERT INTO bank_accounts_permissions (account, type, jointOwner) VALUES (?, ?, ?)", {
+							accountId,
+							1,
+							tostring(jointOwnerSID)
+						})
 				end
 			end
 		end,
 		RemovePersonalSavingsJointOwner = function(self, accountId, jointOwnerSID)
-			return MySQL.query.await("DELETE FROM bank_accounts_permissions WHERE account = ? AND type = ? AND jointOwner = ?", {
-				accountId,
-				1,
-				tostring(jointOwnerSID)
-			})
+			return MySQL.query.await(
+				"DELETE FROM bank_accounts_permissions WHERE account = ? AND type = ? AND jointOwner = ?", {
+					accountId,
+					1,
+					tostring(jointOwnerSID)
+				})
 		end,
 		GetOrganization = function(self, accountId)
-			return MySQL.single.await("SELECT account as Account, balance as Balance, type as Type, owner as Owner, name as Name FROM bank_accounts WHERE type = ? AND owner = ?", {
-				"organization",
-				accountId
-			})
+			return MySQL.single.await(
+				"SELECT account as Account, balance as Balance, type as Type, owner as Owner, name as Name FROM bank_accounts WHERE type = ? AND owner = ?",
+				{
+					"organization",
+					accountId
+				})
 		end,
 	},
 	Balance = {
@@ -155,12 +163,12 @@ _BANKING = {
 							transactionLog.transactionAccount,
 							transactionLog.data
 						)
-	
+
 						if transactionLog.title ~= "Cash Deposit" then
 							local acct = Banking.Accounts:Get(accountNumber)
 							if acct ~= nil then
 								if acct.Type == "personal" or acct.Type == "personal_savings" then
-									local p = Fetch:SID(tonumber(acct.Owner))
+									local p = exports['sandbox-characters']:FetchBySID(tonumber(acct.Owner))
 									if p ~= nil and not skipPhoneNoti then
 										Phone.Notification:Add(
 											p:GetData("Source"),
@@ -181,7 +189,7 @@ _BANKING = {
 
 									-- 	if jO and #jO > 0 then
 									-- 		for k, v in ipairs(jO) do
-									-- 			local char = Fetch:CharacterData("SID", tonumber(v.jointOwner))
+									-- 			local char = exports['sandbox-characters']:FetchCharacterData("SID", tonumber(v.jointOwner))
 									-- 			if char ~= nil then
 									-- 				Phone.Notification:Add(
 									-- 					char:GetData("Source"),
@@ -250,14 +258,16 @@ _BANKING = {
 
 			data.transactionAccount = transactionAccount
 
-			MySQL.single.await("INSERT INTO bank_accounts_transactions (type, account, amount, title, description, data) VALUES (?, ?, ?, ?, ?, ?)", {
-				tType,
-				accountNumber,
-				math.floor(amount),
-				title,
-				description,
-				json.encode(data)
-			})
+			MySQL.single.await(
+				"INSERT INTO bank_accounts_transactions (type, account, amount, title, description, data) VALUES (?, ?, ?, ?, ?, ?)",
+				{
+					tType,
+					accountNumber,
+					math.floor(amount),
+					title,
+					description,
+					json.encode(data)
+				})
 		end,
 	},
 }

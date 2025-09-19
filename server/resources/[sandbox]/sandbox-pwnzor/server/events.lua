@@ -257,7 +257,7 @@ for k, v in ipairs(_blacklistedEvents) do
 	RegisterNetEvent(v)
 	AddEventHandler(v, function()
 		local src = source
-		if not Fetch:Source(src).Permissions:IsAdmin() then
+		if not exports['sandbox-base']:FetchSource(src).Permissions:IsAdmin() then
 			Punishment.Ban:Source(src, -1, "Pwnzor Event Trigger: " .. v, "Pwnzor")
 		end
 	end)

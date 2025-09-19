@@ -7,7 +7,6 @@ function RetrieveComponents()
     Logger = exports['sandbox-base']:FetchComponent('Logger')
     Utils = exports['sandbox-base']:FetchComponent('Utils')
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
-    Fetch = exports['sandbox-base']:FetchComponent('Fetch')
     Vehicles = exports['sandbox-base']:FetchComponent('Vehicles')
     Inventory = exports['sandbox-base']:FetchComponent('Inventory')
     Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
@@ -32,7 +31,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Chat',
         'Inventory',
         'Jobs',
-        'Fetch',
         'Vehicles',
         'Dealerships',
         'Execute',
@@ -116,7 +114,8 @@ AddEventHandler('Core:Shared:Ready', function()
                 },
                 {
                     name = "Data - Category",
-                    help = "Category e.g. import, drift, coupe, tuner, compact, suv, sedans, muscle, sport, sportclassic, super, motorcycles, offroad, rally, van, utility, misc",
+                    help =
+                    "Category e.g. import, drift, coupe, tuner, compact, suv, sedans, muscle, sport, sportclassic, super, motorcycles, offroad, rally, van, utility, misc",
                 },
             },
         }, 9)
@@ -300,7 +299,8 @@ function RegisterCallbacks()
 
     Callbacks:RegisterServerCallback('Dealerships:StockViewing:FetchData', function(source, dealerId, cb)
         if _dealerships[dealerId] and Jobs.Permissions:HasPermissionInJob(source, dealerId, 'dealership_stock') or Jobs.Permissions:HasPermissionInJob(source, dealerId, 'dealership_sell') then
-            cb(true, Dealerships.Stock:FetchDealer(dealerId), os.time(), Dealerships.Management:GetData(dealerId, 'profitPercentage'))
+            cb(true, Dealerships.Stock:FetchDealer(dealerId), os.time(),
+                Dealerships.Management:GetData(dealerId, 'profitPercentage'))
         else
             cb(false)
         end
@@ -308,14 +308,15 @@ function RegisterCallbacks()
 
     Callbacks:RegisterServerCallback('Dealerships:Sales:FetchData', function(source, dealerId, cb)
         if _dealerships[dealerId] and Jobs.Permissions:HasPermissionInJob(source, dealerId, 'dealership_stock') or Jobs.Permissions:HasPermissionInJob(source, dealerId, 'dealership_sell') then
-            cb(true, Dealerships.Stock:FetchDealer(dealerId), Loans:GetDefaultInterestRate(), Dealerships.Management:GetAllData(dealerId))
+            cb(true, Dealerships.Stock:FetchDealer(dealerId), Loans:GetDefaultInterestRate(),
+                Dealerships.Management:GetAllData(dealerId))
         else
             cb(false)
         end
     end)
 
     Callbacks:RegisterServerCallback('Dealerships:ShowroomManagement:SetPosition', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if data and data.dealerId and type(data.position) == 'number' and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_showroom') then
             cb(Dealerships.Showroom:UpdatePos(data.dealerId, data.position, data.vehData))
         else
@@ -325,20 +326,23 @@ function RegisterCallbacks()
 
     Callbacks:RegisterServerCallback('BikeStand:Purchase', function(source, data, cb)
         if type(data.vehicleHash) == 'number' and type(data.price) == 'number' and data.price > 100 then
-            local char = Fetch:CharacterSource(source)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
             if char and char:GetData('SID') then
                 -- TODO: Charge Money
                 if Wallet:Modify(source, -data.price) then
-                    Vehicles.Owned:AddToCharacter(char:GetData('SID'), data.vehicleHash, 0, 'bike', { make = 'Bicycle', model = data.name, class = 'Bicycle', value = data.price }, function(success, vehicleData)
-                        if success and vehicleData then
-                            Vehicles.Owned:Spawn(source, vehicleData.VIN, data.spawnCoords, data.spawnHeading, function(success)
-                                Vehicles.Keys:Add(source, vehicleData.VIN)
-                                cb(true)
-                            end)
-                        else
-                            cb(false)
-                        end
-                    end)
+                    Vehicles.Owned:AddToCharacter(char:GetData('SID'), data.vehicleHash, 0, 'bike',
+                        { make = 'Bicycle', model = data.name, class = 'Bicycle', value = data.price },
+                        function(success, vehicleData)
+                            if success and vehicleData then
+                                Vehicles.Owned:Spawn(source, vehicleData.VIN, data.spawnCoords, data.spawnHeading,
+                                    function(success)
+                                        Vehicles.Keys:Add(source, vehicleData.VIN)
+                                        cb(true)
+                                    end)
+                            else
+                                cb(false)
+                            end
+                        end)
                 else
                     cb(false)
                 end
@@ -349,12 +353,12 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Dealerships:CheckPersonsCredit', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
         local stateId = math.tointeger(data.SID)
 
         if data and data.dealerId and stateId and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_sell') then
-            local target = Fetch:SID(stateId)
+            local target = exports['sandbox-characters']:FetchBySID(stateId)
 
             if target then
                 local loanData = Loans:GetAllowedLoanAmount(stateId)
@@ -453,7 +457,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Dealerships:BuyBackStart', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if data and data.dealerId and data.netId and _dealerships[data.dealerId] and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_buyback') then
             local veh = NetworkGetEntityFromNetworkId(data.netId)
 
@@ -466,19 +470,21 @@ function RegisterCallbacks()
                             local stockInfo = Dealerships.Stock:FetchDealerVehicle(data.dealerId, vehModel)
                             local vehStrikes = MDT.Vehicles:GetStrikes(vehEnt.state.VIN) or 0
                             local remainingLoan = Loans:HasRemainingPayments("vehicle", vehEnt.state.VIN, 14)
-    
+
                             if not remainingLoan then
                                 if stockInfo and stockInfo.data and vehStrikes then
                                     local strikeLoss = (vehStrikes * 0.02)
                                     local pricePercent = 0.75 - strikeLoss
                                     local buybackPrice = math.floor(vehEnt.state.Value * pricePercent)
-    
-                                    cb(true, stockInfo.data, vehStrikes, buybackPrice, math.floor(vehEnt.state.Value * strikeLoss))
+
+                                    cb(true, stockInfo.data, vehStrikes, buybackPrice,
+                                        math.floor(vehEnt.state.Value * strikeLoss))
                                 else
                                     cb(false)
                                 end
                             else
-                                cb(false, "Vehicle Still Has Remaining Loan Payments or Has Not Been Held for Longer than 14 Days")
+                                cb(false,
+                                    "Vehicle Still Has Remaining Loan Payments or Has Not Been Held for Longer than 14 Days")
                             end
                         else
                             cb(false, "We Don't Sell That Vehicle")
@@ -498,7 +504,7 @@ function RegisterCallbacks()
     end)
 
     Callbacks:RegisterServerCallback('Dealerships:BuyBack', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if data and data.dealerId and data.netId and _dealerships[data.dealerId] and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_buyback') then
             local veh = NetworkGetEntityFromNetworkId(data.netId)
 
@@ -518,7 +524,7 @@ function RegisterCallbacks()
                             local buybackPrice = math.floor(vehEnt.state.Value * pricePercent)
 
                             if vehicle and vehicle:GetData('Owner')?.Type == 0 then
-                                local owner = Fetch:SID(vehicle:GetData('Owner').Id)
+                                local owner = exports['sandbox-characters']:FetchBySID(vehicle:GetData('Owner').Id)
                                 if owner then
                                     local ownerPed = GetPlayerPed(owner:GetData('Source'))
                                     local myPed = GetPlayerPed(source)
@@ -532,7 +538,10 @@ function RegisterCallbacks()
                                                 type = 'bill',
                                                 transactionAccount = p.Account,
                                                 title = 'Vehicle Buyback',
-                                                description = string.format('Vehicle Buyback of a %s %s (%s) From %s %s (%s)', vehEnt.state.Make, vehEnt.state.Model, vehEnt.state.VIN, owner:GetData("First"), owner:GetData("Last"), owner:GetData("SID")),
+                                                description = string.format(
+                                                    'Vehicle Buyback of a %s %s (%s) From %s %s (%s)', vehEnt.state.Make,
+                                                    vehEnt.state.Model, vehEnt.state.VIN, owner:GetData("First"),
+                                                    owner:GetData("Last"), owner:GetData("SID")),
                                                 data = {
                                                     buyer = {
                                                         ID = char:GetData('ID'),
@@ -590,7 +599,9 @@ function RegisterCallbacks()
                                                     type = 'transfer',
                                                     transactionAccount = d.Account,
                                                     title = 'Vehicle Buyback',
-                                                    description = string.format('%s Vehicle Buyback of a %s %s (%s)', _dealerships[data.dealerId].abbreviation, vehEnt.state.Make, vehEnt.state.Model, vehEnt.state.VIN),
+                                                    description = string.format('%s Vehicle Buyback of a %s %s (%s)',
+                                                        _dealerships[data.dealerId].abbreviation, vehEnt.state.Make,
+                                                        vehEnt.state.Model, vehEnt.state.VIN),
                                                     data = {
                                                         buyer = {
                                                             ID = char:GetData('ID'),

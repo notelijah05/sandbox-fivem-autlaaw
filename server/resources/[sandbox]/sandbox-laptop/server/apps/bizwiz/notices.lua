@@ -33,7 +33,7 @@ end)
 LAPTOP.BizWiz = LAPTOP.BizWiz or {}
 LAPTOP.BizWiz.Notices = {
 	Create = function(self, source, job, data)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local p = promise.new()
 

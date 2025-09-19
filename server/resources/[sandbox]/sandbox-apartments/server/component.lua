@@ -3,7 +3,6 @@ _requestors = {}
 
 AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -16,7 +15,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Apartment", {
-		"Fetch",
 		"Middleware",
 		"Callbacks",
 		"Logger",
@@ -27,7 +25,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then
-            
 			return
 		end
 		RetrieveComponents()
@@ -46,7 +43,7 @@ _APTS = {
 		local f = false
 		local rTarget = target
 		if rTarget == -1 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			rTarget = char:GetData("SID")
 			f = true
 		end
@@ -66,7 +63,6 @@ _APTS = {
 		end
 
 		if f then
-
 			Player(source).state.inApartment = {
 				type = targetType,
 				id = rTarget
@@ -116,8 +112,8 @@ _APTS = {
 		Create = function(self, source, target, inZone)
 			if source == target then return end
 
-			local char = Fetch:CharacterSource(source)
-			local tChar = Fetch:SID(target)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			local tChar = exports['sandbox-characters']:FetchBySID(target)
 
 			if tChar ~= nil and string.format("apt-%s", tChar:GetData("Apartment") or 1) == inZone then
 				_requests[target] = _requests[target] or {}
@@ -126,7 +122,7 @@ _APTS = {
 						return
 					end
 				end
-	
+
 				_requestors[source] = target
 				table.insert(_requests[target], {
 					source = source,

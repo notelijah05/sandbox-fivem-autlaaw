@@ -73,7 +73,7 @@ AddEventHandler("Casino:Server:Startup", function()
     --GlobalState["Casino:SlotMachines"] = _slotMachines
 
     Callbacks:RegisterServerCallback("Casino:SlotMachineSit", function(source, machineId, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or _slotMachines[machineId] then
             return cb(false)
         end
@@ -93,7 +93,7 @@ AddEventHandler("Casino:Server:Startup", function()
     end)
 
     Callbacks:RegisterServerCallback("Casino:SlotMachinePlay", function(source, data, cb)
-        --local char = Fetch:CharacterSource(source)
+        --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local bet = math.floor(data.bet)
 
         if GlobalState["CasinoOpen"] and bet >= 100 and bet <= 2500 then
@@ -158,7 +158,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
                         Citizen.SetTimeout(time, function()
                             if _slotMachines[k] then
-                                local char = Fetch:CharacterSource(source)
+                                local char = exports['sandbox-characters']:FetchCharacterSource(source)
                                 if char then
                                     if winnings > 0 then
                                         if Casino.Chips:Modify(source, winnings) then
@@ -190,7 +190,7 @@ AddEventHandler("Casino:Server:Startup", function()
     end)
 
     Callbacks:RegisterServerCallback("Casino:SlotMachineLeave", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char then
             return cb(false)
         end

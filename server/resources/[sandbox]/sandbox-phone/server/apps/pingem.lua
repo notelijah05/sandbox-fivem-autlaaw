@@ -1,7 +1,7 @@
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	Callbacks:RegisterServerCallback("Phone:PingEm:SendPing", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
-		local tChar = Fetch:SID(tonumber(data.target))
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local tChar = exports['sandbox-characters']:FetchBySID(tonumber(data.target))
 
 		local coords = GetEntityCoords(GetPlayerPed(source))
 
