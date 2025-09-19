@@ -81,7 +81,7 @@ local _pawnItems = {
 }
 
 AddEventHandler("Businesses:Server:Startup", function()
-	Callbacks:RegisterServerCallback("PepegaPawn:Sell", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("PepegaPawn:Sell", function(source, data, cb)
 		if Jobs.Permissions:HasJob(source, _jobName) then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then

@@ -182,7 +182,7 @@ function MakeItRainBitchBahama(targetSource, cashType, time)
 			and (#(GetEntityCoords(LocalPlayer.state.ped) - GetEntityCoords(targetPed)) <= 5.0)
 		do
 			local p = promise.new()
-			Callbacks:ServerCallback("BH:MakeItRain", {
+			exports["sandbox-base"]:ServerCallback("BH:MakeItRain", {
 				target = targetSource,
 				type = cashType,
 			}, function(success, cd)

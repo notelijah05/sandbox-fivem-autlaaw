@@ -58,7 +58,6 @@ end
 AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
@@ -79,7 +78,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
 		"Hud",
-		"Callbacks",
 		"Action",
 		"Progress",
 		"Keybinds",
@@ -143,7 +141,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterClientCallback("HUD:GetTargetInfront", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("HUD:GetTargetInfront", function(data, cb)
 			local originCoords = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, 0, 0.5, -0.5)
 			local destinationCoords = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, 0, 1.0, -0.5)
 			local castedRay = StartShapeTestSweptSphere(originCoords, destinationCoords, 1.0, 8, LocalPlayer.state.ped, 4)
@@ -161,7 +159,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterClientCallback("HUD:PutOnBlindfold", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("HUD:PutOnBlindfold", function(data, cb)
 			Progress:Progress({
 				name = "blindfold_action",
 				duration = 6000,

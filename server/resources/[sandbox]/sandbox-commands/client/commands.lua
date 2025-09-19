@@ -3,14 +3,12 @@ Game = nil
 
 AddEventHandler("Commands:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Commands", {
-		"Callbacks",
 		"Game",
 		"Notification",
 	}, function(error)
@@ -19,7 +17,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrieveComponents()
 
-		Callbacks:RegisterClientCallback("Commands:SS", function(d, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Commands:SS", function(d, cb)
 			exports["screenshot-basic"]:requestScreenshotUpload(
 				string.format("https://discord.com/api/webhooks/%s", d),
 				"files[]",

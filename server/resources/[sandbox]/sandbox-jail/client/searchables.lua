@@ -56,7 +56,7 @@ AddEventHandler("Prison:Client:Target:Search", function(entity, data)
 		},
 	}, function(cancelled)
 		if not cancelled and _CURRENT_SEARCH then
-			Callbacks:ServerCallback("Prison:Searchable:GetLootShit", {}, function(success)
+			exports["sandbox-base"]:ServerCallback("Prison:Searchable:GetLootShit", {}, function(success)
 				-- if success then
 				-- 	print("success")
 				-- 	-- UISounds.Play:FrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")

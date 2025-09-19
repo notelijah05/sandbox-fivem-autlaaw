@@ -7,7 +7,6 @@ local _interacting = false
 
 AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
 function WeaponsComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
@@ -20,7 +19,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weapons", {
-		"Callbacks",
 		"Notification",
 		"Weapons",
 		"Progress",
@@ -57,7 +55,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			return _equipped ~= nil and _equipped.MetaData?.WeaponComponents ~= nil
 		end)
 
-		Callbacks:RegisterClientCallback("Weapons:Check", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Weapons:Check", function(data, cb)
 			if _equipped ~= nil then
 				cb({
 					id = _equipped.id,
@@ -68,7 +66,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterClientCallback("Weapons:EquipAttachment", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Weapons:EquipAttachment", function(data, cb)
 			if _equipped ~= nil then
 				Progress:Progress({
 					name = "attch_action",
@@ -97,7 +95,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterClientCallback("Weapons:Logout", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Weapons:Logout", function(data, cb)
 			if _equipped ~= nil then
 				_interacting = true
 				local ped = PlayerPedId()
@@ -130,7 +128,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterClientCallback("Weapons:AddAmmo", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Weapons:AddAmmo", function(data, cb)
 			if _equipped ~= nil and _items[_equipped.Name].ammoType == data.ammoType then
 				Progress:Progress({
 					name = "ammo_action",
@@ -171,7 +169,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterClientCallback("Weapons:CanEquipParachute", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Weapons:CanEquipParachute", function(data, cb)
 			if not IsPedInParachuteFreeFall(LocalPlayer.state.ped) and not IsPedFalling(LocalPlayer.state.ped) and (GetPedParachuteState(LocalPlayer.state.ped) == -1 or GetPedParachuteState(LocalPlayer.state.ped) == 0) then
 				Progress:ProgressWithTickEvent({
 					name = 'equipping_parachute',
@@ -706,7 +704,7 @@ function WeaponsThread()
 					if not ignoredHackerWeapons[hasHash] and hasHash ~= 0 and hasHash ~= _equippedHash then
 						RemoveAllPedWeapons(LocalPlayer.state.ped)
 						if not spammyFuck and not LocalPlayer.state.isDead and not ignoredWarningWeapons[hasHash] then
-							Callbacks:ServerCallback("Weapons:PossibleCheaterWarning", {
+							exports["sandbox-base"]:ServerCallback("Weapons:PossibleCheaterWarning", {
 								h = hasHash,
 								s = _equippedHash
 							}, function()
@@ -739,7 +737,7 @@ function WeaponsThread()
 							originSlot = slot,
 						},
 					})
-					Callbacks:ServerCallback("Weapons:UseThrowable", _equipped, function()
+					exports["sandbox-base"]:ServerCallback("Weapons:UseThrowable", _equipped, function()
 						SendNUIMessage({
 							type = "SLOT_NOT_USED",
 							data = {
@@ -862,7 +860,7 @@ function StartParachuteThread()
 
 				if GetPedParachuteState(LocalPlayer.state.ped) >= 2 then
 					Wait(2500)
-					Callbacks:ServerCallback("Inventory:UsedParachute", {})
+					exports["sandbox-base"]:ServerCallback("Inventory:UsedParachute", {})
 					break
 				end
 			end

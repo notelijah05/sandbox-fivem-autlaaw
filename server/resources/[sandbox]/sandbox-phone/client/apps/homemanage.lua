@@ -14,19 +14,19 @@ RegisterNUICallback("Home:StartPlacement", function(data, cb)
 end)
 
 RegisterNUICallback("Home:CreateDigiKey", function(data, cb)
-	Callbacks:ServerCallback("Phone:Home:CreateDigiKey", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Home:CreateDigiKey", data, cb)
 end)
 
 RegisterNUICallback("Home:RevokeDigiKey", function(data, cb)
-	Callbacks:ServerCallback("Phone:Home:RevokeDigiKey", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Home:RevokeDigiKey", data, cb)
 end)
 
 RegisterNUICallback("Home:RemoveMyKey", function(data, cb)
-	Callbacks:ServerCallback("Phone:Home:RemoveMyKey", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Home:RemoveMyKey", data, cb)
 end)
 
 RegisterNUICallback("Home:LockProperty", function(data, cb)
-	Callbacks:ServerCallback("Phone:Home:LockProperty", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Home:LockProperty", data, cb)
 end)
 
 RegisterNUICallback("Home:EditMode", function(data, cb)
@@ -59,12 +59,12 @@ end)
 
 RegisterNUICallback("PurchasePropertyInterior", function(data, cb)
 	-- data.int
-	Callbacks:ServerCallback("Properties:ChangeInterior", data, cb)
+	exports["sandbox-base"]:ServerCallback("Properties:ChangeInterior", data, cb)
 end)
 
 RegisterNUICallback("PurchasePropertyUpgrade", function(data, cb)
 	-- data.upgrade
-	Callbacks:ServerCallback("Properties:Upgrade", data, cb)
+	exports["sandbox-base"]:ServerCallback("Properties:Upgrade", data, cb)
 end)
 
 RegisterNUICallback("PreviewPropertyInterior", function(data, cb)

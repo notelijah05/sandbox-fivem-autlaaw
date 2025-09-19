@@ -935,15 +935,16 @@ function DoGarageKeyFobAction()
 		local inZone = Polyzone:IsCoordsInZone(playerCoords, false, "door_garage_id")
 		if inZone and inZone.door_garage_id then
 			if Doors:CheckRestriction(inZone.door_garage_id) then
-				Callbacks:ServerCallback("Doors:ToggleLocks", inZone.door_garage_id, function(success, newState)
-					if success then
-						if newState then
-							UISounds.Play:FrontEnd(-1, "OOB_Cancel", "GTAO_FM_Events_Soundset")
-						else
-							UISounds.Play:FrontEnd(-1, "Bomb_Disarmed", "GTAO_Speed_Convoy_Soundset")
+				exports["sandbox-base"]:ServerCallback("Doors:ToggleLocks", inZone.door_garage_id,
+					function(success, newState)
+						if success then
+							if newState then
+								UISounds.Play:FrontEnd(-1, "OOB_Cancel", "GTAO_FM_Events_Soundset")
+							else
+								UISounds.Play:FrontEnd(-1, "Bomb_Disarmed", "GTAO_Speed_Convoy_Soundset")
+							end
 						end
-					end
-				end)
+					end)
 			else
 				if not secretMode then
 					UISounds.Play:FrontEnd(-1, "Hack_Failed", "DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS")

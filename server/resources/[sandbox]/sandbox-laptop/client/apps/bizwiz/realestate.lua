@@ -33,7 +33,7 @@ RegisterNUICallback("Dyn8MarkProperty", function(data, cb)
 end)
 
 RegisterNUICallback("Dyn8StartSale", function(data, cb)
-    Callbacks:ServerCallback("Properties:Dyn8:Sell", {
+    exports["sandbox-base"]:ServerCallback("Properties:Dyn8:Sell", {
         property = data.property,
         loan = data.type == 'loan',
         target = data.SID,
@@ -43,14 +43,14 @@ RegisterNUICallback("Dyn8StartSale", function(data, cb)
 end)
 
 RegisterNUICallback("Dyn8StartTransfer", function(data, cb)
-    Callbacks:ServerCallback("Properties:Dyn8:Transfer", {
+    exports["sandbox-base"]:ServerCallback("Properties:Dyn8:Transfer", {
         property = data.property,
         target = data.SID,
     }, cb)
 end)
 
 RegisterNUICallback("Dyn8RunCredit", function(data, cb)
-    Callbacks:ServerCallback(
+    exports["sandbox-base"]:ServerCallback(
         "Properties:Dyn8:CheckCredit",
         {
             target = data.term,
@@ -60,7 +60,7 @@ RegisterNUICallback("Dyn8RunCredit", function(data, cb)
 end)
 
 RegisterNUICallback("Dyn8ChangePropertyLocations", function(data, cb)
-    Callbacks:ServerCallback("Properties:EditProperty", data, function(success)
+    exports["sandbox-base"]:ServerCallback("Properties:EditProperty", data, function(success)
         if success and _drawingPropertyLocations then
             _drawingPropertyLocations = false
         end

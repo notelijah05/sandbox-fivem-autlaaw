@@ -55,7 +55,7 @@ RegisterNetEvent("Hud:Client:GiveCash", function(hitting, data)
 end)
 
 AddEventHandler("Hud:Client:DoGiveCash", function(values, data)
-	Callbacks:ServerCallback("Wallet:GiveCash", {
+	exports["sandbox-base"]:ServerCallback("Wallet:GiveCash", {
 		target = data.target,
 		amount = values.amount,
 	})

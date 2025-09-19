@@ -20,7 +20,7 @@ AddEventHandler("Finance:Server:Startup", function()
 		end
 	end, 3)
 
-	Callbacks:RegisterServerCallback("Crypto:GetAll", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Crypto:GetAll", function(source, data, cb)
 		cb(_cryptoCoins)
 	end)
 

@@ -74,7 +74,7 @@ function RegisterMBItemUses()
 											v.door
 										)
 									)
-									Callbacks:ClientCallback(source, "Robbery:Games:Thermite", {
+									exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
 										passes = 1,
 										location = v,
 										duration = 11000,
@@ -237,7 +237,7 @@ function RegisterMBItemUses()
 											v.doorId
 										)
 									)
-									Callbacks:ClientCallback(source, "Robbery:Games:Laptop", {
+									exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Laptop", {
 										location = {
 											coords = v.coords,
 											heading = v.heading,
@@ -392,7 +392,7 @@ function RegisterMBItemUses()
 										v.door
 									)
 								)
-								Callbacks:ClientCallback(source, "Robbery:Games:Lockpick", {
+								exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Lockpick", {
 									config = 0.75,
 									data = {
 										stages = 4,

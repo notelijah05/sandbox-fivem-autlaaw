@@ -10,7 +10,7 @@
 --     end
 
 --     _menuOpen = true
---     Callbacks:ServerCallback('Admin:GetMenuData', {}, function(isAdmin, data)
+--     exports["sandbox-base"]:ServerCallback('Admin:GetMenuData', {}, function(isAdmin, data)
 --         if not isAdmin and data then
 --             OpenStaffMenu(data)
 --             return
@@ -138,7 +138,7 @@
 --                         end
 
 --                         adminSubMenus[playerMenuId].Add:Button('Goto Player', { disabled = not player.Character, success = true }, function(data)
---                             Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
+--                             exports["sandbox-base"]:ServerCallback('Admin:PlayerTeleportAction', {
 --                                 action = 'GOTO',
 --                                 target = player.Source,
 --                             }, function(success)
@@ -151,7 +151,7 @@
 --                         end)
 
 --                         adminSubMenus[playerMenuId].Add:Button('Bring Player', { disabled = not player.Character, success = true }, function(data)
---                             Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
+--                             exports["sandbox-base"]:ServerCallback('Admin:PlayerTeleportAction', {
 --                                 action = 'BRING',
 --                                 target = player.Source,
 --                             }, function(success)
@@ -171,7 +171,7 @@
 --                             if _attached then
 --                                 AdminStopAttach()
 --                             else
---                                 Callbacks:ServerCallback('Admin:AttachToPlayer', player.Source, function(targetCoords)
+--                                 exports["sandbox-base"]:ServerCallback('Admin:AttachToPlayer', player.Source, function(targetCoords)
 --                                     if targetCoords then
 --                                         AdminAttachToEntity(player.Source, targetCoords)
 --                                     else
@@ -189,7 +189,7 @@
 --                                 adminSubMenus[playerMenuId.. '-phone-perms'].Add:Text(appKey, { 'center', 'heading' })
 --                                 for permKey, permState in pairs(perms) do
 --                                     adminSubMenus[playerMenuId.. '-phone-perms'].Add:CheckBox(permKey, { selected = permState }, function(data)
---                                         Callbacks:ServerCallback('Admin:UpdatePhonePerms', {
+--                                         exports["sandbox-base"]:ServerCallback('Admin:UpdatePhonePerms', {
 --                                             target = player.Source,
 --                                             app = appKey,
 --                                             perm = permKey,

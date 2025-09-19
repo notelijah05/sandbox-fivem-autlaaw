@@ -21,7 +21,6 @@ AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Loot = exports["sandbox-base"]:FetchComponent("Loot")
@@ -200,7 +199,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
 		"Logger",
 		"Utils",
-		"Callbacks",
 		"Middleware",
 		"Inventory",
 		"Loot",
@@ -279,7 +277,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			TriggerClientEvent("Robbery:Client:State:Init", source, _bankStates)
 		end)
 
-		Callbacks:RegisterServerCallback("Robbery:Holdup:Do", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Robbery:Holdup:Do", function(source, data, cb)
 			local pChar = exports['sandbox-characters']:FetchCharacterSource(source)
 			local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
 
@@ -328,7 +326,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Robbery:Pickup", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Robbery:Pickup", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if #(_pickups[char:GetData("SID")] or {}) > 0 then
@@ -378,7 +376,7 @@ end)
 
 _ROBBERY = {
 	TriggerPDAlert = function(self, source, coords, code, title, blip, description, cameraGroup, isArea)
-		Callbacks:ClientCallback(source, "EmergencyAlerts:GetStreetName", coords, function(location)
+		exports["sandbox-base"]:ClientCallback(source, "EmergencyAlerts:GetStreetName", coords, function(location)
 			EmergencyAlerts:Create(
 				code,
 				title,

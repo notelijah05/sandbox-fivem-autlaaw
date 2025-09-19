@@ -1,5 +1,5 @@
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("MDT:Hire", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Hire", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
@@ -39,7 +39,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Fire", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Fire", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
@@ -118,7 +118,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:ManageEmployment", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:ManageEmployment", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
@@ -183,7 +183,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Update:jobPermissions", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Update:jobPermissions", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
@@ -210,7 +210,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Suspend", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Suspend", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
@@ -298,7 +298,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Unsuspend", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Unsuspend", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')

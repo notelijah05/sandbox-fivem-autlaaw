@@ -54,7 +54,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 end)
 
 AddEventHandler("Businesses:Client:RockfordStage", function()
-    Callbacks:ServerCallback("Businesses:ToggleRockfordStage", {}, function(state)
+    exports["sandbox-base"]:ServerCallback("Businesses:ToggleRockfordStage", {}, function(state)
         if state then
             Notification:Success("DJ Stand Enabled", 5000, "speakers")
         else

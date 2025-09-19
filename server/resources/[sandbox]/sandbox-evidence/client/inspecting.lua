@@ -185,7 +185,7 @@ end
 
 function FetchEvidence()
 	local p = promise.new()
-	Callbacks:ServerCallback("Evidence:Fetch", {}, function(evidence)
+	exports["sandbox-base"]:ServerCallback("Evidence:Fetch", {}, function(evidence)
 		p:resolve(evidence)
 	end)
 

@@ -4,7 +4,7 @@ function RegisterItems()
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local veh = GetVehiclePedIsIn(GetPlayerPed(source))
 			if veh == 0 then
-				Callbacks:ClientCallback(source, "Weed:PlantingAnim", {}, function(data)
+				exports["sandbox-base"]:ClientCallback(source, "Weed:PlantingAnim", {}, function(data)
 					if data.error == nil then
 						Inventory.Items:RemoveList(char:GetData("SID"), 1, { { name = "weedseed_male", count = 1 } })
 						local plant = Weed.Planting:Create(
@@ -39,7 +39,7 @@ function RegisterItems()
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local veh = GetVehiclePedIsIn(GetPlayerPed(source))
 			if veh == 0 then
-				Callbacks:ClientCallback(source, "Weed:PlantingAnim", {}, function(data)
+				exports["sandbox-base"]:ClientCallback(source, "Weed:PlantingAnim", {}, function(data)
 					if data.error == nil then
 						Inventory.Items:RemoveList(char:GetData("SID"), 1, { { name = "weedseed_female", count = 1 } })
 						local plant = Weed.Planting:Create(
@@ -72,7 +72,7 @@ function RegisterItems()
 	Inventory.Items:RegisterUse("rolling_paper", "Weed", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Inventory.Items:Has(char:GetData("SID"), 1, "weed_bud", 1) then
-			Callbacks:ClientCallback(source, "Weed:RollingAnim", {}, function(success)
+			exports["sandbox-base"]:ClientCallback(source, "Weed:RollingAnim", {}, function(success)
 				if success then
 					Inventory.Items:RemoveList(
 						char:GetData("SID"),
@@ -89,7 +89,7 @@ function RegisterItems()
 
 	Inventory.Items:RegisterUse("weed_joint", "Weed", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		Callbacks:ClientCallback(source, "Weed:SmokingAnim", {}, function(success, count)
+		exports["sandbox-base"]:ClientCallback(source, "Weed:SmokingAnim", {}, function(success, count)
 			Inventory.Items:RemoveList(char:GetData("SID"), 1, { { name = "weed_joint", count = 1 } })
 
 			local stressTicks = {}
@@ -105,7 +105,7 @@ function RegisterItems()
 	Inventory.Items:RegisterUse("weed_brick", "Weed", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Inventory.Items:Has(char:GetData("SID"), 1, "weed_brick", 1) then
-			Callbacks:ClientCallback(source, "Weed:MakingBrick", {
+			exports["sandbox-base"]:ClientCallback(source, "Weed:MakingBrick", {
 				label = "Unpacking Brick",
 				time = 10,
 			}, function(success)
@@ -122,7 +122,7 @@ function RegisterItems()
 	Inventory.Items:RegisterUse("weed_baggy", "Weed", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Inventory.Items:Has(char:GetData("SID"), 1, "weed_baggy", 1) then
-			Callbacks:ClientCallback(source, "Weed:MakingBrick", {
+			exports["sandbox-base"]:ClientCallback(source, "Weed:MakingBrick", {
 				label = "Removing Bud",
 				time = 3,
 			}, function(success)

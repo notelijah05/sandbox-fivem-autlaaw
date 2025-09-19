@@ -299,7 +299,7 @@ local function GenerateNodes(source)
 end
 
 AddEventHandler("Labor:Server:Startup", function()
-	Callbacks:RegisterServerCallback("Mining:SellStone", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Mining:SellStone", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local count = Inventory.Items:GetCount(char:GetData("SID"), 1, "crushedrock")
 		if (count or 0) > 0 then
@@ -316,7 +316,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Mining:SellGem", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Mining:SellGem", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local repLvl = Reputation:GetLevel(source, _JOB)
 
@@ -368,7 +368,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Mining:StartJob", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Mining:StartJob", function(source, data, cb)
 		if _mining[_joiners[source]] ~= nil and _mining[_joiners[source]].state == 0 then
 			_mining[_joiners[source]].nodes = GenerateNodes(_joiners[source])
 			Labor.Offers:Start(_joiners[source], _JOB, "Mine Ore Nodes", 15)
@@ -381,7 +381,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Mining:Server:MineNode", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Mining:Server:MineNode", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _mining[_joiners[source]] ~= nil then
 			if _mining[_joiners[source]].state == 1 then

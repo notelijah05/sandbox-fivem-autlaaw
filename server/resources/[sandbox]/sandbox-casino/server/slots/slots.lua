@@ -72,7 +72,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
     --GlobalState["Casino:SlotMachines"] = _slotMachines
 
-    Callbacks:RegisterServerCallback("Casino:SlotMachineSit", function(source, machineId, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:SlotMachineSit", function(source, machineId, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or _slotMachines[machineId] then
             return cb(false)
@@ -92,7 +92,7 @@ AddEventHandler("Casino:Server:Startup", function()
         cb(true)
     end)
 
-    Callbacks:RegisterServerCallback("Casino:SlotMachinePlay", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:SlotMachinePlay", function(source, data, cb)
         --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local bet = math.floor(data.bet)
 
@@ -189,7 +189,7 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:SlotMachineLeave", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:SlotMachineLeave", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char then
             return cb(false)

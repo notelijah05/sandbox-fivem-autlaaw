@@ -107,7 +107,7 @@ RegisterNetEvent("UI:Client:Reset", function()
 end)
 
 AddEventHandler("VANGELICOGRAPESEED:Client:Sell", function()
-	Callbacks:ServerCallback("Businesses:VANGELICOGRAPESEED:Sell", {})
+	exports["sandbox-base"]:ServerCallback("Businesses:VANGELICOGRAPESEED:Sell", {})
 end)
 
 AddEventHandler("Businesses:Client:VANGELICOGRAPESEED:OpenTable", function(e, data)

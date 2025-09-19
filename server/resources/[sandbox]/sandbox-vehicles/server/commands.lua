@@ -2,7 +2,7 @@ function RegisterChatCommands()
 	-- Spawning and Deleting Temporary Admin Vehicles
 	Chat:RegisterAdminCommand("sv", function(source, args, rawCommand)
 		local vehModel = GetHashKey(args[1])
-		Callbacks:ClientCallback(
+		exports["sandbox-base"]:ClientCallback(
 			source,
 			"Vehicles:Admin:GetVehicleSpawnData",
 			vehModel,
@@ -40,7 +40,7 @@ function RegisterChatCommands()
 	}, 1)
 
 	Chat:RegisterStaffCommand("dv", function(source, args, rawCommand)
-		Callbacks:ClientCallback(source, "Vehicles:Admin:GetVehicleToDelete", false, function(vehNet)
+		exports["sandbox-base"]:ClientCallback(source, "Vehicles:Admin:GetVehicleToDelete", false, function(vehNet)
 			local targetVehicle = NetworkGetEntityFromNetworkId(vehNet)
 			Vehicles:Delete(targetVehicle, function() end)
 		end)
@@ -255,7 +255,7 @@ function RegisterChatCommands()
 	}, 11)
 
 	Chat:RegisterAdminCommand("forceaudio", function(source, args, rawCommand)
-		Callbacks:ClientCallback(source, "Vehicles:Admin:GetVehicleInsideData", false, function(veh)
+		exports["sandbox-base"]:ClientCallback(source, "Vehicles:Admin:GetVehicleInsideData", false, function(veh)
 			local audio = args[1]:upper()
 			if audio == "remove" or audio == "false" then
 				audio = false
@@ -366,7 +366,7 @@ function RegisterChatCommands()
 	-- }, -1)
 
 	Chat:RegisterCommand("givekeys", function(source, args, rawCommand)
-		Callbacks:ClientCallback(
+		exports["sandbox-base"]:ClientCallback(
 			source,
 			"Vehicles:Keys:GetVehicleToShare",
 			{},
@@ -416,7 +416,7 @@ function RegisterChatCommands()
 			local targetChar = exports['sandbox-characters']:FetchBySID(target)
 
 			if char and targetChar and targetChar:GetData("Source") ~= char:GetData("Source") then
-				Callbacks:ClientCallback(source, "Vehicles:Transfers:GetTarget", {}, function(data)
+				exports["sandbox-base"]:ClientCallback(source, "Vehicles:Transfers:GetTarget", {}, function(data)
 					local veh = NetworkGetEntityFromNetworkId(data)
 					if veh and DoesEntityExist(veh) then
 						local vehEnt = Entity(veh)

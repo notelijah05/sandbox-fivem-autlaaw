@@ -10,22 +10,23 @@ AddEventHandler('Labor:Client:Setup', function()
 end)
 
 AddEventHandler("Labor:Client:Export:GetMenu", function()
-    ListMenu:Show(GlobalState["LaborExporter"])
+	ListMenu:Show(GlobalState["LaborExporter"])
 end)
 
 AddEventHandler("Labor:Client:Export:Sell", function(data)
-    local itemData = Inventory.Items:GetData(data.item)
-    Confirm:Show(
+	local itemData = Inventory.Items:GetData(data.item)
+	Confirm:Show(
 		string.format("Mass Export %s at $%s/unit?", itemData.label, data.price),
 		{
 			yes = "Labor:Client:Export:Sell:Yes",
 			no = "Labor:Client:Export:Sell:No",
 		},
-		string.format( "Doing this will sell all in your inventory for $%s/unit, are you sure you want to continue?", data.price ),
+		string.format("Doing this will sell all in your inventory for $%s/unit, are you sure you want to continue?",
+			data.price),
 		data
 	)
 end)
 
 AddEventHandler("Labor:Client:Export:Sell:Yes", function(data)
-    Callbacks:ServerCallback("Labor:Exporter:Sell", data)
+	exports["sandbox-base"]:ServerCallback("Labor:Exporter:Sell", data)
 end)

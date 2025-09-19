@@ -1,6 +1,5 @@
 AddEventHandler("Sync:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
 	RegisterChatCommands()
@@ -8,7 +7,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("CCTV", {
-		"Callbacks",
 		"Chat",
 		"CCTV",
 	}, function(error)
@@ -18,7 +16,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RetrieveComponents()
 		SetupCameras()
 
-		Callbacks:RegisterServerCallback("CCTV:PreviousInGroup", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("CCTV:PreviousInGroup", function(source, data, cb)
 			local pState = Player(source).state
 			if pState.inCCTVCam then
 				for i = pState.inCCTVCam.camId - 1, 0, -1 do
@@ -35,7 +33,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("CCTV:NextInGroup", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("CCTV:NextInGroup", function(source, data, cb)
 			local pState = Player(source).state
 			if pState.inCCTVCam then
 				for i = pState.inCCTVCam.camId + 1, #Config.Cameras do
@@ -52,7 +50,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("CCTV:ViewGroup", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("CCTV:ViewGroup", function(source, data, cb)
 			CCTV:ViewGroup(source, data)
 		end)
 	end)

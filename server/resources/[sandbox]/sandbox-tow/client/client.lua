@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -26,7 +25,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Vehicles",
 		"Notification",
-		"Callbacks",
 		"Sounds",
 		"Progress",
 		"Polyzone",

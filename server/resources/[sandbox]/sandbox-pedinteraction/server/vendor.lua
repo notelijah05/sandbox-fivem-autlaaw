@@ -27,7 +27,6 @@ local _illegalBlacklist = {
 
 AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
 function RetrieveVendorComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -39,7 +38,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vendor", {
-		"Callbacks",
 		"Middleware",
 		"Logger",
 		"Reputation",
@@ -70,7 +68,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			TriggerClientEvent("Vendor:Client:Set", source, tmp)
 		end, 5)
 
-		Callbacks:RegisterServerCallback("Vendor:GetItems", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Vendor:GetItems", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _created[data] ~= nil then
@@ -157,7 +155,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Vendor:BuyItem", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Vendor:BuyItem", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _created[data.id] ~= nil then

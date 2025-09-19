@@ -3,7 +3,6 @@ local inBank = true
 AddEventHandler("Finance:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
@@ -26,7 +25,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Finance", {
 		"Utils",
-		"Callbacks",
 		"Logger",
 		"Interaction",
 		"Progress",
@@ -174,7 +172,7 @@ RegisterNetEvent("UI:Client:Reset", function()
 end)
 
 AddEventHandler("Finance:Client:Paycheck", function(entity, data)
-	Callbacks:ServerCallback("Finance:Paycheck", {}, function(s)
+	exports["sandbox-base"]:ServerCallback("Finance:Paycheck", {}, function(s)
 		if s.total > 0 then
 			Notification:Success(string.format("You Received $%s For %s Total Minutes Worked", s.total, s.minutes))
 		else

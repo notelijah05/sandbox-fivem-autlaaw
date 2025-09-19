@@ -68,7 +68,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		}, 2.0)
 	end
 
-	Callbacks:RegisterClientCallback("Robbery:Store:DoSafeCrack", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Store:DoSafeCrack", function(data, cb)
 		_memPass = 1
 		DoMemory(data.passes, data.config, data.data, function(isSuccess, extra)
 			cb(isSuccess, extra)
@@ -169,7 +169,7 @@ AddEventHandler("Robbery:Client:Store:LockpickRegister", function(entity, data)
 			and GlobalState[string.format("Register:%s:%s", coords.x, coords.y)].expires < GetCloudTimeAsInt()
 		)
 	then
-		Callbacks:ServerCallback("Robbery:Store:StartLockpick", coords, function(s)
+		exports["sandbox-base"]:ServerCallback("Robbery:Store:StartLockpick", coords, function(s)
 			if s then
 				if Inventory.Items:Has("lockpick", 1) then
 					_lpPass = 1
@@ -188,7 +188,7 @@ AddEventHandler("Robbery:Client:Store:LockpickSuccess", function(data)
 	if _lpPass then
 		if _lpPass >= 4 then
 			_lpPass = false
-			Callbacks:ServerCallback("Robbery:Store:Register", {
+			exports["sandbox-base"]:ServerCallback("Robbery:Store:Register", {
 				results = true,
 				coords = data,
 				store = _inPoly,
@@ -205,7 +205,7 @@ AddEventHandler("Robbery:Client:Store:LockpickFail", function(data)
 	if not _inPoly then
 		return
 	end
-	Callbacks:ServerCallback("Robbery:Store:Register", {
+	exports["sandbox-base"]:ServerCallback("Robbery:Store:Register", {
 		results = false,
 		coords = data,
 		store = _inPoly,
@@ -219,7 +219,7 @@ AddEventHandler("Robbery:Client:Store:ActualCrackSafe", function(entity, data)
 	end
 	local coords = GetEntityCoords(entity.entity)
 	if GlobalState[string.format("Safe:%s", data.id)] == nil then
-		Callbacks:ServerCallback("Robbery:Store:StartSafeCrack", data, function(s) end)
+		exports["sandbox-base"]:ServerCallback("Robbery:Store:StartSafeCrack", data, function(s) end)
 	end
 end)
 
@@ -229,7 +229,7 @@ AddEventHandler("Robbery:Client:Store:SequenceSafe", function(entity, data)
 	end
 	local coords = GetEntityCoords(entity.entity)
 	if GlobalState[string.format("Safe:%s", data.id)] == nil then
-		Callbacks:ServerCallback("Robbery:Store:StartSafeSequence", {}, function(r)
+		exports["sandbox-base"]:ServerCallback("Robbery:Store:StartSafeSequence", {}, function(r)
 			if r then
 				if Inventory.Items:Has("sequencer", 1) then
 					_scPass = 1
@@ -245,7 +245,7 @@ AddEventHandler("Robbery:Client:Store:OpenSafe", function(entity, data)
 		return
 	end
 	data.store = _inPoly
-	Callbacks:ServerCallback("Robbery:Store:LootSafe", data, function(s) end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Store:LootSafe", data, function(s) end)
 end)
 
 AddEventHandler("Robbery:Client:Store:SecureSafe", function(entity, data)
@@ -272,7 +272,7 @@ AddEventHandler("Robbery:Client:Store:SecureSafe", function(entity, data)
 	}, function(status)
 		if not status then
 			data.store = _inPoly
-			Callbacks:ServerCallback("Robbery:Store:SecureSafe", data, function(s) end)
+			exports["sandbox-base"]:ServerCallback("Robbery:Store:SecureSafe", data, function(s) end)
 		end
 	end)
 end)
@@ -286,7 +286,7 @@ AddEventHandler("Robbery:Client:Store:SafeCrackSuccess", function(data)
 		_scPass = 1
 		data.results = true
 		data.store = _inPoly
-		Callbacks:ServerCallback("Robbery:Store:Safe", data, function(s) end)
+		exports["sandbox-base"]:ServerCallback("Robbery:Store:Safe", data, function(s) end)
 	else
 		_scPass = _scPass + 1
 		Wait(1500)
@@ -300,5 +300,5 @@ AddEventHandler("Robbery:Client:Store:SafeCrackFail", function(data)
 	end
 	data.results = false
 	data.store = _inPoly
-	Callbacks:ServerCallback("Robbery:Store:Safe", data, function(s) end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Store:Safe", data, function(s) end)
 end)

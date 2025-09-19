@@ -19,7 +19,7 @@ function GetCharactersLoans(stateId)
 end
 
 function RegisterLoanCallbacks()
-    Callbacks:RegisterServerCallback('Loans:GetLoans', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Loans:GetLoans', function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local SID = char:GetData('SID')
@@ -33,7 +33,7 @@ function RegisterLoanCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Loans:Payment', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Loans:Payment', function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and data.loan then
             local SID = char:GetData('SID')

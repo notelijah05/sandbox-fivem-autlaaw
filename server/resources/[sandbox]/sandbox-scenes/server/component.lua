@@ -10,7 +10,6 @@ function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Execute",
 		"Chat",
 		"Middleware",
-		"Callbacks",
 		"Logger",
 		"Generator",
 		"Phone",
@@ -45,7 +43,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		LoadScenesFromDB()
 		StartExpirationThread()
 
-		Callbacks:RegisterServerCallback("Scenes:Create", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Scenes:Create", function(source, data, cb)
 			local player = exports['sandbox-base']:FetchSource(source)
 			local timeStamp = GetGameTimer()
 
@@ -62,7 +60,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Scenes:Delete", function(source, sceneId, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Scenes:Delete", function(source, sceneId, cb)
 			local player = exports['sandbox-base']:FetchSource(source)
 			local scene = _loadedScenes[sceneId]
 			local timeStamp = GetGameTimer()
@@ -84,7 +82,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Scenes:CanEdit", function(source, sceneId, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Scenes:CanEdit", function(source, sceneId, cb)
 			local player = exports['sandbox-base']:FetchSource(source)
 			local scene = _loadedScenes[sceneId]
 			local timeStamp = GetGameTimer()
@@ -106,7 +104,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Scenes:Edit", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Scenes:Edit", function(source, data, cb)
 			local player = exports['sandbox-base']:FetchSource(source)
 			local scene = _loadedScenes[data.id]
 			local timeStamp = GetGameTimer()

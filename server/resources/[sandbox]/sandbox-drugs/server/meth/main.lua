@@ -9,9 +9,9 @@ local _toolsForSale = {
 local _methSellerLocs = {
     ["0"] = vector4(-1199.910, 3839.323, 481.303, 3.028), -- Sunday
     ["1"] = vector4(-1199.910, 3839.323, 481.303, 3.028), -- Monday
-    ["2"] = vector4(-302.883, 2521.718, 73.370, 96.139), -- Tuesday
+    ["2"] = vector4(-302.883, 2521.718, 73.370, 96.139),  -- Tuesday
     ["3"] = vector4(-382.379, 6087.801, 38.615, 255.065), -- Wednesday
-    ["4"] = vector4(-302.883, 2521.718, 73.370, 96.139), -- Thursday
+    ["4"] = vector4(-302.883, 2521.718, 73.370, 96.139),  -- Thursday
     ["5"] = vector4(-382.379, 6087.801, 38.615, 255.065), -- Friday
     ["6"] = vector4(-535.855, 2850.274, 26.935, 176.013), -- Saturday
 }
@@ -33,7 +33,7 @@ _DRUGS.Meth = {
     end,
     GetTable = function(self, tableId)
         return MySQL.single.await(
-        'SELECT id, tier, created, cooldown, recipe, active_cook FROM meth_tables WHERE id = ?', { tableId })
+            'SELECT id, tier, created, cooldown, recipe, active_cook FROM meth_tables WHERE id = ?', { tableId })
     end,
     IsTablePlaced = function(self, tableId)
         return MySQL.single.await('SELECT COUNT(table_id) as Count FROM placed_meth_tables WHERE table_id = ?',
@@ -44,14 +44,15 @@ _DRUGS.Meth = {
         local tableData = self:GetTable(tableId)
 
         MySQL.insert.await(
-        "INSERT INTO placed_meth_tables (table_id, owner, placed, expires, coords, heading) VALUES(?, ?, ?, ?, ?, ?)", {
-            tableId,
-            owner,
-            os.time(),
-            created + itemInfo.durability,
-            json.encode(coords),
-            heading,
-        })
+            "INSERT INTO placed_meth_tables (table_id, owner, placed, expires, coords, heading) VALUES(?, ?, ?, ?, ?, ?)",
+            {
+                tableId,
+                owner,
+                os.time(),
+                created + itemInfo.durability,
+                json.encode(coords),
+                heading,
+            })
 
         local cookData = tableData.active_cook ~= nil and json.decode(tableData.active_cook) or {}
 
@@ -101,10 +102,10 @@ AddEventHandler("Drugs:Server:Startup", function()
     local mPos = _methSellerLocs[tostring(os.date("%w"))]
 
     Vendor:Create("MethSeller", "ped", "Mike", `A_M_M_RurMeth_01`, {
-        coords = vector3(mPos.x, mPos.y, mPos.z),
-        heading = mPos.w,
-        scenario = "WORLD_HUMAN_CHEERING"
-    }, _toolsForSale, "badge-dollar", "View Offers", false, false, true, 60 * math.random(30, 60),
+            coords = vector3(mPos.x, mPos.y, mPos.z),
+            heading = mPos.w,
+            scenario = "WORLD_HUMAN_CHEERING"
+        }, _toolsForSale, "badge-dollar", "View Offers", false, false, true, 60 * math.random(30, 60),
         60 * math.random(300, 480))
 
     local tables = MySQL.query.await('SELECT * FROM placed_meth_tables WHERE expires > ?', { os.time() })
@@ -142,7 +143,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         TriggerLatentClientEvent("Drugs:Client:Meth:SetupTables", source, 50000, _placedTables)
     end, 1)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:FinishTablePlacement", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:FinishTablePlacement", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             local table = Inventory:GetItem(data.data)
@@ -151,7 +152,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                 local tableData = Drugs.Meth:GetTable(md.MethTable)
                 if Inventory.Items:RemoveId(char:GetData("SID"), 1, table) then
                     Drugs.Meth:CreatePlacedTable(md.MethTable, char:GetData("SID"), tableData.tier, data.endCoords
-                    .coords, data.endCoords.rotation, table.CreateDate)
+                        .coords, data.endCoords.rotation, table.CreateDate)
                     cb(true)
                 else
                     cb(false)
@@ -162,7 +163,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:PickupTable", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:PickupTable", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data then
@@ -188,7 +189,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:CheckTable", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:CheckTable", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedTables[data] ~= nil then
@@ -205,7 +206,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:StartCooking", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:StartCooking", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedTables[data.tableId] ~= nil then
@@ -231,7 +232,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:PickupCook", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:PickupCook", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedTables[data] ~= nil then
@@ -249,7 +250,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                         end
 
                         local cookPct = math.abs(cookData.cookTime - _tableTiers[tableData.tier].cookTimeMax) /
-                        _tableTiers[tableData.tier].cookTimeMax
+                            _tableTiers[tableData.tier].cookTimeMax
                         local calc = total * cookPct
 
                         if Inventory:AddItem(char:GetData("SID"), "meth_brick", 1, {}, 1, false, false, false, false, false, false, math.floor(100 - total)) then
@@ -269,7 +270,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:GetTableDetails", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:GetTableDetails", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedTables[data] ~= nil then
@@ -336,7 +337,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:GetItems", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:GetItems", function(source, data, cb)
         local itms = {}
 
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -352,7 +353,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         cb(itms)
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:BuyItem", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:BuyItem", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local hasVpn = hasValue(char:GetData("States"), "PHONE_VPN")
 

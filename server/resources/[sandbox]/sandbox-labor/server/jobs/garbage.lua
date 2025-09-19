@@ -106,7 +106,7 @@ local _pawnItems = {
 }
 
 AddEventHandler("Labor:Server:Startup", function()
-	Callbacks:RegisterServerCallback("Garbage:StartJob", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Garbage:StartJob", function(source, data, cb)
 		if _Garbage[data] ~= nil and _Garbage[data].state == 0 then
 			_Garbage[data].state = 1
 			Labor.Offers:Task(_joiners[source], _JOB, "Grab a garbage truck")
@@ -118,7 +118,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	local _isSpawningTruck = false
-	Callbacks:RegisterServerCallback("Garbage:GarbageSpawn", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Garbage:GarbageSpawn", function(source, data, cb)
 		if _isSpawningTruck then
 			cb(false)
 			return
@@ -157,7 +157,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Garbage:GarbageSpawnRemove", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Garbage:GarbageSpawnRemove", function(source, data, cb)
 		if _joiners[source] ~= nil and _Garbage[_joiners[source]].truck ~= nil then
 			if _Garbage[_joiners[source]].state == 3 then
 				local garCoords = GetEntityCoords(_Garbage[_joiners[source]].truck)
@@ -178,9 +178,9 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Garbage:TrashGrab", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Garbage:TrashGrab", function(source, data, cb)
 		if _joiners[source] ~= nil and _Garbage[_joiners[source]].state == 2 then
-			Callbacks:ClientCallback(source, "Garbage:DoingSomeAction", "grabTrash")
+			exports["sandbox-base"]:ClientCallback(source, "Garbage:DoingSomeAction", "grabTrash")
 			Labor.Workgroups:SendEvent(_joiners[source], string.format("Garbage:Client:%s:Action", _joiners[source]),
 				data)
 			cb(true)
@@ -189,7 +189,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Garbage:TrashPutIn", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Garbage:TrashPutIn", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _Garbage[_joiners[source]] ~= nil then
 			local luck = math.random(100)
@@ -200,7 +200,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			end
 			Inventory:AddItem(char:GetData("SID"), "recycledgoods", math.random(10), {}, 1)
 
-			Callbacks:ClientCallback(source, "Garbage:DoingSomeAction", "trashPutIn")
+			exports["sandbox-base"]:ClientCallback(source, "Garbage:DoingSomeAction", "trashPutIn")
 			if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
 				if _Garbage[_joiners[source]].tasks <= 2 then
 					_Garbage[_joiners[source]].tasks = _Garbage[_joiners[source]].tasks + 1
@@ -229,7 +229,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Garbage:TurnIn", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Garbage:TurnIn", function(source, data, cb)
 		if _joiners[source] ~= nil and _Garbage[_joiners[source]].tasks >= 3 then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char:GetData("TempJob") == _JOB and _Garbage[_joiners[source]].state == 4 then
@@ -246,7 +246,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Garbage:Pawn:Sell", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Garbage:Pawn:Sell", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local repLvl = Reputation:GetLevel(source, _JOB)
 
@@ -271,7 +271,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	-- Callbacks:RegisterServerCallback("Gabage:Pawn:Buy", function(source, data, cb)
+	-- exports["sandbox-base"]:RegisterServerCallback("Gabage:Pawn:Buy", function(source, data, cb)
 	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	-- 	local repLvl = Reputation:GetLevel(source, _JOB)
 
@@ -282,7 +282,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	-- 	end
 	-- end)
 
-	-- Callbacks:RegisterServerCallback("Garbage:Pawn:BuyLimited", function(source, data, cb)
+	-- exports["sandbox-base"]:RegisterServerCallback("Garbage:Pawn:BuyLimited", function(source, data, cb)
 	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	-- 	local repLvl = Reputation:GetLevel(source, _JOB)
 

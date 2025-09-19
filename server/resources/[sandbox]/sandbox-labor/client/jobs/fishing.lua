@@ -368,7 +368,7 @@ function DoFishBite(zone, toolUsed)
         Wait(100)
     end
 
-    Callbacks:ServerCallback("Fishing:Catch", {
+    exports["sandbox-base"]:ServerCallback("Fishing:Catch", {
         zone = zone,
         toolUsed = toolUsed,
         difficulty = maxDiff,
@@ -487,7 +487,7 @@ AddEventHandler("Fishing:Client:OpenShop", function(hitting, data)
 end)
 
 AddEventHandler("Fishing:Client:Sell", function(entity, data)
-    Callbacks:ServerCallback("Fishing:Sell", data.fish)
+    exports["sandbox-base"]:ServerCallback("Fishing:Sell", data.fish)
 end)
 
 

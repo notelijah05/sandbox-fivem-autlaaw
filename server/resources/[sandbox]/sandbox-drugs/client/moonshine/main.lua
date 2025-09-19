@@ -140,17 +140,17 @@ AddEventHandler("Drugs:Client:Startup", function()
         }, 3.0)
     end
 
-    Callbacks:RegisterClientCallback("Drugs:Moonshine:PlaceStill", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Drugs:Moonshine:PlaceStill", function(data, cb)
         ObjectPlacer:Start(`prop_still`, "Drugs:Client:Moonshine:FinishPlacement", data, 2)
         cb()
     end)
 
-    Callbacks:RegisterClientCallback("Drugs:Moonshine:PlaceBarrel", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Drugs:Moonshine:PlaceBarrel", function(data, cb)
         ObjectPlacer:Start(`prop_wooden_barrel`, "Drugs:Client:Moonshine:FinishPlacementBarrel", data, 2)
         cb()
     end)
 
-    Callbacks:RegisterClientCallback("Drugs:Moonshine:Use", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Drugs:Moonshine:Use", function(data, cb)
         Wait(400)
         Minigame.Play:RoundSkillbar(0.8, 8, {
             onSuccess = function()
@@ -300,7 +300,7 @@ AddEventHandler("Drugs:Client:Moonshine:FinishPlacement", function(data, endCoor
         },
     }, function(status)
         if not status then
-            Callbacks:ServerCallback("Drugs:Moonshine:FinishStillPlacement", {
+            exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:FinishStillPlacement", {
                 data = data,
                 endCoords = endCoords
             }, function(s)
@@ -331,7 +331,7 @@ AddEventHandler("Drugs:Client:Moonshine:FinishPlacementBarrel", function(data, e
         },
     }, function(status)
         if not status then
-            Callbacks:ServerCallback("Drugs:Moonshine:FinishBarrelPlacement", {
+            exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:FinishBarrelPlacement", {
                 data = data,
                 endCoords = endCoords
             }, function(s)
@@ -361,11 +361,12 @@ AddEventHandler("Drugs:Client:Moonshine:PickupStill", function(entity, data)
             },
         }, function(status)
             if not status then
-                Callbacks:ServerCallback("Drugs:Moonshine:PickupStill", Entity(entity.entity).state.stillId, function(s)
-                    -- if s then
-                    --     DeleteObject(entity.entity)
-                    -- end
-                end)
+                exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:PickupStill", Entity(entity.entity).state
+                    .stillId, function(s)
+                        -- if s then
+                        --     DeleteObject(entity.entity)
+                        -- end
+                    end)
             end
         end)
     end
@@ -374,7 +375,7 @@ end)
 AddEventHandler("Drugs:Client:Moonshine:StartCook", function(entity, data)
     local entState = Entity(entity.entity).state
     if entState.isMoonshineStill and entState.stillId then
-        Callbacks:ServerCallback("Drugs:Moonshine:CheckStill", entState.stillId, function(s)
+        exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:CheckStill", entState.stillId, function(s)
             if s then
                 Progress:Progress({
                     name = "meth_pickup",
@@ -416,7 +417,7 @@ AddEventHandler("Drugs:Client:Moonshine:StartCook", function(entity, data)
                             },
                         }, function(status)
                             if not status then
-                                Callbacks:ServerCallback("Drugs:Moonshine:StartCooking", {
+                                exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:StartCooking", {
                                     stillId = entState.stillId,
                                     results = results
                                 })
@@ -452,7 +453,7 @@ AddEventHandler("Drugs:Client:Moonshine:PickupCook", function(entity, data)
             },
         }, function(status)
             if not status then
-                Callbacks:ServerCallback("Drugs:Moonshine:PickupCook", entState.stillId, function(s)
+                exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:PickupCook", entState.stillId, function(s)
                     if s then
                     else
                         Notification:Error("Still Is Not Ready")
@@ -486,7 +487,8 @@ AddEventHandler("Drugs:Client:Moonshine:PickupBrew", function(entity, data)
                 },
             }, function(status)
                 if not status then
-                    Callbacks:ServerCallback("Drugs:Moonshine:PickupBrew", entState.barrelId, function(s) end)
+                    exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:PickupBrew", entState.barrelId,
+                        function(s) end)
                 end
             end)
         end
@@ -499,7 +501,7 @@ end)
 AddEventHandler("Drugs:Client:Moonshine:StillDetails", function(entity, data)
     local entState = Entity(entity.entity).state
     if entState.isMoonshineStill and entState.stillId then
-        Callbacks:ServerCallback("Drugs:Moonshine:GetStillDetails", entState.stillId, function(s)
+        exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:GetStillDetails", entState.stillId, function(s)
             if s then
                 ListMenu:Show(s)
             end
@@ -563,7 +565,8 @@ AddEventHandler("Drugs:Client:Moonshine:PickupBarrel", function(entity, data)
             },
         }, function(status)
             if not status then
-                Callbacks:ServerCallback("Drugs:Moonshine:PickupBarrel", Entity(entity.entity).state.barrelId,
+                exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:PickupBarrel",
+                    Entity(entity.entity).state.barrelId,
                     function(s)
                         -- if s then
                         --     DeleteObject(entity.entity)
@@ -577,7 +580,7 @@ end)
 AddEventHandler("Drugs:Client:Moonshine:BarrelDetails", function(entity, data)
     local entState = Entity(entity.entity).state
     if entState.isMoonshineBarrel and entState.barrelId then
-        Callbacks:ServerCallback("Drugs:Moonshine:GetBarrelDetails", entState.barrelId, function(s)
+        exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:GetBarrelDetails", entState.barrelId, function(s)
             if s then
                 ListMenu:Show(s)
             end

@@ -63,7 +63,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		GlobalState["Vangelico:State"] = nil
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Vangelico:BreakCase", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Vangelico:BreakCase", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pId = string.format("Vangelico:Case:%s", data)
 		if
@@ -137,7 +137,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Vangelico:SecureStore", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Vangelico:SecureStore", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if _alerted ~= nil and _alerted >= os.time() then
 			PutShittyThingsOnCD()

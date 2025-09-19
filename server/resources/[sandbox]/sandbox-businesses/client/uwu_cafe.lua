@@ -107,7 +107,7 @@ AddEventHandler("Businesses:Client:PetCat", function(data)
 	end
 	TaskTurnPedToFaceEntity(LocalPlayer.state.ped, data.entity, 1000)
 	Wait(1000)
-	Callbacks:ServerCallback("Businesses:Server:PetCat", data, function(success, newState)
+	exports["sandbox-base"]:ServerCallback("Businesses:Server:PetCat", data, function(success, newState)
 		if success then
 			Animations.Emotes:Play("petting", false, 3000, true)
 			Wait(3000)

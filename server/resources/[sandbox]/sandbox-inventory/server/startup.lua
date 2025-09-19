@@ -260,7 +260,7 @@ function SetupItemUses(itemData)
 		end)
 	elseif itemData.type == 9 then
 		INVENTORY.Items:RegisterUse(itemData.name, "Ammo", function(source, item)
-			Callbacks:ClientCallback(source, "Weapons:AddAmmo", itemsDatabase[item.Name], function(state)
+			exports["sandbox-base"]:ClientCallback(source, "Weapons:AddAmmo", itemsDatabase[item.Name], function(state)
 				if state then
 					Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 				end

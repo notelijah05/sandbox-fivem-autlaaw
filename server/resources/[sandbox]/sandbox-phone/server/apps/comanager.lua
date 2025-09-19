@@ -562,7 +562,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:CoManager:QuitJob", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:QuitJob", function(source, data, cb)
 		local jobId = data.JobId
 
 		if jobId and not hasValue(_blacklistedJobs, jobId) then
@@ -581,7 +581,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		return cb({ success = false, code = "ERROR" })
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:FetchRoster", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:FetchRoster", function(source, data, cb)
 		if data.ReqUpdate then
 			local updatedJobData = Phone:UpdateJobData(source, true)
 			cb({
@@ -595,11 +595,11 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:FetchTimeWorked", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:FetchTimeWorked", function(source, data, cb)
 		cb(Phone.CoManager:FetchTimeWorked(source, data))
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:RenameCompany", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:RenameCompany", function(source, data, cb)
 		local jobId, newName = data.JobId, data.NewName
 
 		if jobId and newName and not hasValue(_blacklistedJobs, jobId) then
@@ -617,7 +617,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:HireEmployee", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:HireEmployee", function(source, data, cb)
 		local stateId, jobId, workplace, grade =
 			math.tointeger(data.SID), data.Job.Id, data.Job.Workplace, data.Job.Grade
 
@@ -681,7 +681,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		return cb({ success = false, code = "ERROR" })
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:FireEmployee", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:FireEmployee", function(source, data, cb)
 		local stateId, jobId = math.tointeger(data.SID), data.Job.Id
 
 		if stateId and jobId then
@@ -732,7 +732,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		return cb({ success = false, code = "ERROR" })
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:UpdateEmployee", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:UpdateEmployee", function(source, data, cb)
 		local stateId, jobId, workplace, grade =
 			math.tointeger(data.SID), data.Job.Id, data.Job.Workplace, data.Job.Grade
 		if
@@ -792,7 +792,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		return cb({ success = false, code = "ERROR" })
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:EditWorkplace", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:EditWorkplace", function(source, data, cb)
 		local jobId, workplaceId, newName = data.JobId, data.WorkplaceId, data.NewName
 
 		if jobId and newName and not hasValue(_blacklistedJobs, jobId) then
@@ -807,7 +807,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:CreateGrade", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:CreateGrade", function(source, data, cb)
 		local jobId, workplaceId, gradeName, gradeLevel, gradePermissions =
 			data.JobId, data.WorkplaceId, data.Name, math.tointeger(data.Level), data.Permissions
 		if jobId and gradeName and gradeLevel and gradePermissions and not hasValue(_blacklistedJobs, jobId) then
@@ -834,7 +834,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		cb({ success = false, code = "ERROR" })
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:EditGrade", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:EditGrade", function(source, data, cb)
 		local jobId, workplaceId, gradeId, gradeName, gradeLevel, gradePermissions =
 			data.JobId, data.WorkplaceId, data.Id, data.Name, tonumber(data.Level), data.Permissions
 		if jobId and gradeId and not hasValue(_blacklistedJobs, jobId) then
@@ -872,7 +872,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		cb({ success = false, code = "ERROR" })
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:DeleteGrade", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:DeleteGrade", function(source, data, cb)
 		local jobId, workplaceId, gradeId = data.JobId, data.WorkplaceId, data.Id
 		if jobId and gradeId and not hasValue(_blacklistedJobs, jobId) then
 			local existingGrade = Jobs:DoesExist(jobId, workplaceId, gradeId)
@@ -896,12 +896,12 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		cb({ success = false, code = "ERROR" })
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:PurchaseUpgrade", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:PurchaseUpgrade", function(source, data, cb)
 		-- TODO
 		cb({ success = false, code = "ERROR" })
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:AcceptHire", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:AcceptHire", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local stateId = char:GetData("SID")
@@ -921,7 +921,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		return cb(os.time(), false)
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:DeclineHire", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:DeclineHire", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local stateId = char:GetData("SID")
@@ -934,7 +934,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		cb(os.time())
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:CoManager:DisbandCompany", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:DisbandCompany", function(source, data, cb)
 		-- ! Disabled
 		cb({ success = false, code = "ERROR" })
 	end)

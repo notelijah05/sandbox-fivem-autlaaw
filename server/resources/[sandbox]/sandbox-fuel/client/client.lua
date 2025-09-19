@@ -17,7 +17,6 @@ local pumpModels = {
 
 AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -31,7 +30,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
-		"Callbacks",
 		"Notification",
 		"Action",
 		"Vehicles",
@@ -126,7 +124,7 @@ AddEventHandler("Fuel:Client:FillCan", function()
 		animation = nil,
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Fuel:FillCan", {
+			exports["sandbox-base"]:ServerCallback("Fuel:FillCan", {
 				current = current,
 				pct = pct,
 			}, function(s)
@@ -263,7 +261,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 
 	if data.bank then
 		local p = promise.new()
-		Callbacks:ServerCallback("Fuel:CheckBank", fuelData, function(res)
+		exports["sandbox-base"]:ServerCallback("Fuel:CheckBank", fuelData, function(res)
 			p:resolve(res)
 		end)
 		local canAfford = Citizen.Await(p)
@@ -367,7 +365,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 		local entState = Entity(entityData.entity).state
 		entState:set("beingFueled", nil, true)
 
-		Callbacks:ServerCallback("Fuel:CompleteFueling", {
+		exports["sandbox-base"]:ServerCallback("Fuel:CompleteFueling", {
 			vehNet = VehToNet(entityData.entity),
 			vehClass = GetVehicleClass(entityData.entity),
 			fuelAmount = fuelAmount,
@@ -506,7 +504,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 
 					SetPedAmmoByType(LocalPlayer.state.ped, `AMMO_PETROLCAN`, (fuelAmountAfterUse / 50 * 4500))
 
-					Callbacks:ServerCallback("Fuel:CompleteJerryFueling", {
+					exports["sandbox-base"]:ServerCallback("Fuel:CompleteJerryFueling", {
 						vehNet = VehToNet(entityData.entity),
 						newAmount = math.floor(vehState.Fuel + fuelAmount + 0.0),
 					}, function(success)

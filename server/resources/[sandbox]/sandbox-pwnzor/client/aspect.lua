@@ -30,7 +30,7 @@ function startTimer()
 			if timer > 0 then
 				timer = timer - 1
 				if timer == 0 then
-					Callbacks:ServerCallback("Pwnzor:AspectRatio")
+					exports["sandbox-base"]:ServerCallback("Pwnzor:AspectRatio")
 				end
 			end
 		end

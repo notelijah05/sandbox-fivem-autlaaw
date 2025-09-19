@@ -69,7 +69,7 @@ AddEventHandler("EMS:Client:DrugTest", function(entity, data)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("EMS:DrugTest", entity.serverId, function() end)
+			exports["sandbox-base"]:ServerCallback("EMS:DrugTest", entity.serverId, function() end)
 		end
 	end)
 end)
@@ -102,7 +102,7 @@ AddEventHandler("EMS:Client:Stabilize", function(target, idk)
 			},
 		}, function() end, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("EMS:Stabilize", target, function(res)
+				exports["sandbox-base"]:ServerCallback("EMS:Stabilize", target, function(res)
 					if not res.error then
 						Notification:Success("Patient Stabilized")
 					else
@@ -140,7 +140,7 @@ end)
 -- 			},
 -- 		}, function() end, function(cancelled)
 -- 			if not cancelled then
--- 				Callbacks:ServerCallback("EMS:ApplyTourniquet", data, function(res)
+-- 				exports["sandbox-base"]:ServerCallback("EMS:ApplyTourniquet", data, function(res)
 -- 					if not res.error then
 -- 						Notification:Success("Tourniquet Applied")
 -- 					else
@@ -178,7 +178,7 @@ AddEventHandler("EMS:Client:FieldTreatWounds", function(data)
 			},
 		}, function() end, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("EMS:FieldTreatWounds", data, function(res)
+				exports["sandbox-base"]:ServerCallback("EMS:FieldTreatWounds", data, function(res)
 					if not res.error then
 						local ped = GetPlayerPed(GetPlayerFromServerId(tonumber(data)))
 						local mHp = GetEntityHealth(ped) - 100
@@ -219,7 +219,7 @@ AddEventHandler("EMS:Client:ApplyBandage", function(data)
 			},
 		}, function() end, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("EMS:ApplyBandage", data, function(res)
+				exports["sandbox-base"]:ServerCallback("EMS:ApplyBandage", data, function(res)
 					if not res.error then
 						Notification:Success("Bandage Applied")
 					else
@@ -257,7 +257,7 @@ AddEventHandler("EMS:Client:ApplyMorphine", function(data)
 			},
 		}, function() end, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("EMS:ApplyMorphine", data, function(res)
+				exports["sandbox-base"]:ServerCallback("EMS:ApplyMorphine", data, function(res)
 					if not res.error then
 						Notification:Success("Morphine Administered")
 					else
@@ -296,7 +296,7 @@ RegisterNetEvent("EMS:Client:TreatWounds", function(data)
 			},
 		}, function() end, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("EMS:TreatWounds", data, function(res)
+				exports["sandbox-base"]:ServerCallback("EMS:TreatWounds", data, function(res)
 					if res.error then
 						Notification:Error("Unable To Treat Patient")
 					end

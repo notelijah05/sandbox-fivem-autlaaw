@@ -63,7 +63,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		end
 	end
 
-	Callbacks:RegisterClientCallback("Robbery:Fleeca:Keypad:Vault", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Fleeca:Keypad:Vault", function(data, cb)
 		Minigame.Play:Keypad(data, 5, 10000, false, {
 			onSuccess = function(data)
 				cb(true, data)
@@ -148,13 +148,13 @@ AddEventHandler("Robbery:Client:Fleeca:StartSecuring", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Fleeca:SecureBank", {})
+			exports["sandbox-base"]:ServerCallback("Robbery:Fleeca:SecureBank", {})
 		end
 	end)
 end)
 
 AddEventHandler("Robbery:Client:Fleeca:Drill", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Fleeca:Drill", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Fleeca:Drill", data, function() end)
 end)
 
 function OpenDoor(checkOrigin, door)

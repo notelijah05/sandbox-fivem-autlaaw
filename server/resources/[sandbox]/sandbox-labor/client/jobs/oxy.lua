@@ -35,7 +35,7 @@ AddEventHandler("Labor:Client:Setup", function()
         },
     }, 'seal-question', 'WORLD_HUMAN_HUMAN_STATUE')
 
-    Callbacks:RegisterClientCallback("OxyRun:GetSpawn", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("OxyRun:GetSpawn", function(data, cb)
         if not LocalPlayer.state.inOxySell then
             cb(false)
             return
@@ -105,7 +105,7 @@ AddEventHandler("Labor:Client:Setup", function()
                         _fuckedOff = true
                         TaskVehicleDriveWander(NetToPed(_psychoShit.ped), NetToVeh(_psychoShit.veh), 20.0, 786603)
                         Citizen.SetTimeout(30000, function()
-                            Callbacks:ServerCallback("OxyRun:DeleteShit", _psychoShit)
+                            exports["sandbox-base"]:ServerCallback("OxyRun:DeleteShit", _psychoShit)
                         end)
                     end
                 end)
@@ -128,7 +128,7 @@ end)
 
 --       if (_v?.ent == entity or _v?.ent == NetToVeh(entity)) then
 --         print("Entity is oxy run car")
---         Callbacks:ServerCallback("OxyRun:DestroyVehicle")
+--         exports["sandbox-base"]:ServerCallback("OxyRun:DestroyVehicle")
 --       end
 -- 	end
 -- end)
@@ -144,7 +144,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
             local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
             if veh == _v.ent and GetPedInVehicleSeat(_v.ent, -1) == LocalPlayer.state.ped then
                 Action:Hide("oxysale")
-                Callbacks:ServerCallback("OxyRun:CheckPickup", {}, function(s)
+                exports["sandbox-base"]:ServerCallback("OxyRun:CheckPickup", {}, function(s)
                     if s then
                         Progress:ProgressWithTickEvent({
                             name = 'oxy_pickup',
@@ -164,11 +164,11 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
                             local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
                             if _state ~= 3 or veh ~= _v.ent or GetPedInVehicleSeat(_v.ent, -1) ~= LocalPlayer.state.ped then
                                 Progress:Cancel()
-                                Callbacks:ServerCallback("OxyRun:CancelPickup")
+                                exports["sandbox-base"]:ServerCallback("OxyRun:CancelPickup")
                                 return
                             end
 
-                            Callbacks:ServerCallback("OxyRun:PickupProduct")
+                            exports["sandbox-base"]:ServerCallback("OxyRun:PickupProduct")
                         end, function(cancelled)
 
                         end)
@@ -184,7 +184,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
         if _working and id == "OxyPickup" then
             LocalPlayer.state.inOxyPickup = true
             if _state == 2 then
-                Callbacks:ServerCallback("OxyRun:EnteredPickup")
+                exports["sandbox-base"]:ServerCallback("OxyRun:EnteredPickup")
             else
                 local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
                 if _state == 3 and veh == _v.ent and GetPedInVehicleSeat(_v.ent, -1) == LocalPlayer.state.ped then
@@ -202,12 +202,12 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
             Action:Hide("oxysale")
         elseif _working and id == "OxySale" and LocalPlayer.state.loggedIn then
             LocalPlayer.state.inOxySell = false
-            Callbacks:ServerCallback("OxyRun:LeftZone")
+            exports["sandbox-base"]:ServerCallback("OxyRun:LeftZone")
         end
     end)
 
     eventHandlers["entered-car"] = RegisterNetEvent('Vehicles:Client:EnterVehicle', function(veh)
-        Callbacks:ServerCallback("OxyRun:EnteredCar", {
+        exports["sandbox-base"]:ServerCallback("OxyRun:EnteredCar", {
             VIN = Entity(veh).state.VIN,
             NetId = VehToNet(veh),
             Class = GetVehicleClass(veh),
@@ -238,7 +238,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
                             if GetEntityHealth(_v.ent) == 0 or not IsVehicleDriveable(_v.ent) then
                                 Logger:Trace("OxyRun", "Vehicle Health 0 or Not Drivable")
                                 ending = true
-                                Callbacks:ServerCallback("OxyRun:DestroyVehicle")
+                                exports["sandbox-base"]:ServerCallback("OxyRun:DestroyVehicle")
                             end
                         end
                     end
@@ -279,7 +279,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
                 while _working and _state == 4 do
                     local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - _l.coords)
                     if dist <= 10.0 then
-                        Callbacks:ServerCallback("OxyRun:EnteredArea")
+                        exports["sandbox-base"]:ServerCallback("OxyRun:EnteredArea")
                     end
                     Wait(10 * dist)
                 end
@@ -307,7 +307,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
         end
 
         local c = deepcopy(LocalPlayer.state.oxyBuyer)
-        Callbacks:ServerCallback("OxyRun:SellProduct", _psychoShit.veh, function(s)
+        exports["sandbox-base"]:ServerCallback("OxyRun:SellProduct", _psychoShit.veh, function(s)
             if (s) then
                 loadAnimDict("mp_safehouselost@")
                 TaskPlayAnim(LocalPlayer.state.ped, "mp_safehouselost@", "package_dropoff", 8.0, 1.0, -1, 16, 0, 0, 0, 0)
@@ -319,7 +319,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
             TaskVehicleDriveWander(NetToPed(_psychoShit.ped), NetToVeh(_psychoShit.veh), 20.0, 786603)
             local wait = math.random(30, 100) * 1000
             Citizen.SetTimeout(wait, function()
-                Callbacks:ServerCallback("OxyRun:DeleteShit", _psychoShit)
+                exports["sandbox-base"]:ServerCallback("OxyRun:DeleteShit", _psychoShit)
             end)
         end)
     end)
@@ -333,20 +333,20 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
     end)
 
     eventHandlers["veh-poofed"] = RegisterNetEvent(string.format("OxyRun:Client:%s:VehiclePoofed", joiner), function()
-        Callbacks:ServerCallback("OxyRun:VehiclePoofed")
+        exports["sandbox-base"]:ServerCallback("OxyRun:VehiclePoofed")
     end)
 end)
 
 AddEventHandler("OxyRun:Client:Enable", function()
-    Callbacks:ServerCallback('OxyRun:Enable', {})
+    exports["sandbox-base"]:ServerCallback('OxyRun:Enable', {})
 end)
 
 AddEventHandler("OxyRun:Client:TurnIn", function()
-    Callbacks:ServerCallback('OxyRun:TurnIn', _joiner)
+    exports["sandbox-base"]:ServerCallback('OxyRun:TurnIn', _joiner)
 end)
 
 AddEventHandler("OxyRun:Client:StartJob", function()
-    Callbacks:ServerCallback('OxyRun:StartJob', _joiner, function(state)
+    exports["sandbox-base"]:ServerCallback('OxyRun:StartJob', _joiner, function(state)
         if not state then
             Notification:Error("Unable To Start Job")
         end

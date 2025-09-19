@@ -1,7 +1,7 @@
 _loadedFurniture = {}
 
 function CreateFurnitureCallbacks()
-    Callbacks:RegisterServerCallback("Properties:PlaceFurniture", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Properties:PlaceFurniture", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local insideProperty = GlobalState[string.format("%s:Property", source)]
@@ -52,7 +52,7 @@ function CreateFurnitureCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback("Properties:MoveFurniture", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Properties:MoveFurniture", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local insideProperty = GlobalState[string.format("%s:Property", source)]
@@ -96,7 +96,7 @@ function CreateFurnitureCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback("Properties:DeleteFurniture", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Properties:DeleteFurniture", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local insideProperty = GlobalState[string.format("%s:Property", source)]

@@ -62,7 +62,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
 
-	Callbacks:RegisterServerCallback("Businesses:Server:PetCat", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Businesses:Server:PetCat", function(source, data, cb)
 		if source == nil then
 			return
 		end

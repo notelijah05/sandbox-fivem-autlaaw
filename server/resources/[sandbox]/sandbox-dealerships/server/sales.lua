@@ -53,7 +53,7 @@ function EndTestDrive(vehicle, dealership, _src)
 end
 
 function RegisterVehicleSaleCallbacks()
-    Callbacks:RegisterServerCallback('Dealerships:Sales:TestDrive', function(source, testDriveData, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Dealerships:Sales:TestDrive', function(source, testDriveData, cb)
         local dealership = testDriveData?.dealership
         local data = testDriveData?.data
         if dealership and data then
@@ -109,7 +109,7 @@ function RegisterVehicleSaleCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Dealerships:Sales:StartSale', function(source, saleData, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Dealerships:Sales:StartSale', function(source, saleData, cb)
         local dealership = saleData?.dealership
         local type = saleData?.type
         local data = saleData?.data
@@ -297,38 +297,38 @@ function RegisterVehicleSaleCallbacks()
                                                                                                 loan = {
                                                                                                     length = loanWeeks,
                                                                                                     downPayment =
-                                                                                                    downPayment,
+                                                                                                        downPayment,
                                                                                                 },
                                                                                                 vehicle = {
                                                                                                     VIN = vehicleData
-                                                                                                    .VIN,
+                                                                                                        .VIN,
                                                                                                     vehicle =
                                                                                                         saleVehicleData
                                                                                                         .vehicle,
                                                                                                     data =
-                                                                                                    saleVehicleData.data,
+                                                                                                        saleVehicleData.data,
                                                                                                 },
                                                                                                 profitPercent =
-                                                                                                profitPercent,
+                                                                                                    profitPercent,
                                                                                                 salePrice = salePrice,
                                                                                                 dealerProfits =
-                                                                                                dealerRecieves,
+                                                                                                    dealerRecieves,
                                                                                                 commission =
-                                                                                                playerCommission,
+                                                                                                    playerCommission,
                                                                                                 seller = {
                                                                                                     ID = char:GetData(
-                                                                                                    'ID'),
+                                                                                                        'ID'),
                                                                                                     SID = char:GetData(
-                                                                                                    'SID'),
+                                                                                                        'SID'),
                                                                                                     First = char:GetData(
-                                                                                                    'First'),
+                                                                                                        'First'),
                                                                                                     Last = char:GetData(
-                                                                                                    'Last'),
+                                                                                                        'Last'),
                                                                                                 },
                                                                                                 buyer = {
                                                                                                     ID = targetCharacter
-                                                                                                    :GetData(
-                                                                                                        'ID'),
+                                                                                                        :GetData(
+                                                                                                            'ID'),
                                                                                                     SID = targetCharacter
                                                                                                         :GetData('SID'),
                                                                                                     First =
@@ -339,7 +339,7 @@ function RegisterVehicleSaleCallbacks()
                                                                                                         :GetData('Last'),
                                                                                                 },
                                                                                                 newQuantity =
-                                                                                                removeSuccess,
+                                                                                                    removeSuccess,
                                                                                             })
 
                                                                                         Execute:Client(source,
@@ -349,13 +349,13 @@ function RegisterVehicleSaleCallbacks()
                                                                                             7500, 'car-building')
                                                                                         SendCompletedLoanSaleEmail({
                                                                                                 SID = targetCharacter
-                                                                                                :GetData('SID'),
+                                                                                                    :GetData('SID'),
                                                                                                 First = targetCharacter
-                                                                                                :GetData(
-                                                                                                    'First'),
+                                                                                                    :GetData(
+                                                                                                        'First'),
                                                                                                 Last = targetCharacter
-                                                                                                :GetData(
-                                                                                                    'Last'),
+                                                                                                    :GetData(
+                                                                                                        'Last'),
                                                                                                 Source = targetSrc,
                                                                                             }, dealerData,
                                                                                             saleVehicleData.data,
@@ -372,13 +372,13 @@ function RegisterVehicleSaleCallbacks()
                                                                                             playerCommission,
                                                                                             saleVehicleData.data, {
                                                                                                 SID = targetCharacter
-                                                                                                :GetData('SID'),
+                                                                                                    :GetData('SID'),
                                                                                                 First = targetCharacter
-                                                                                                :GetData(
-                                                                                                    'First'),
+                                                                                                    :GetData(
+                                                                                                        'First'),
                                                                                                 Last = targetCharacter
-                                                                                                :GetData(
-                                                                                                    'Last'),
+                                                                                                    :GetData(
+                                                                                                        'Last'),
                                                                                                 Source = targetSrc,
                                                                                             })
                                                                                     else

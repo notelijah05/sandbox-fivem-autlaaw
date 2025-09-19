@@ -68,7 +68,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		delay = 10000,
 	})
 
-	Callbacks:RegisterServerCallback("Coke:StartWork", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Coke:StartWork", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if Wallet:Has(source, 100000) then
@@ -87,7 +87,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Coke:Abort", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Coke:Abort", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if _active ~= nil and _active.joiner == source then
@@ -106,7 +106,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Coke:ArriveAtCayo", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Coke:ArriveAtCayo", function(source, data, cb)
 		if _joiners[source] ~= nil and _active.joiner == _joiners[source] and _active.state == 1 then
 			_active.state = 2
 			Vehicles:SpawnTemp(source, `squaddie`, 'automobile', vector3(4504.899, -4510.600, 4.367), 19.409,
@@ -140,7 +140,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Coke:StartHeist", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Coke:StartHeist", function(source, data, cb)
 		if _joiners[source] ~= nil and _active.joiner == _joiners[source] and _active.state == 2 then
 			_active.state = 3
 			Labor.Offers:Task(_joiners[source], _JOB, "Locate The Target Vehicle", {
@@ -157,7 +157,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Coke:ArrivedAtPoint", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Coke:ArrivedAtPoint", function(source, data, cb)
 		if _joiners[source] ~= nil and _active.joiner == _joiners[source] and _active.state == 3 then
 			_active.state = 4
 			Labor.Offers:Task(_joiners[source], _JOB, "Retreive Contraband From Vehicle", {
@@ -170,17 +170,18 @@ AddEventHandler("Labor:Server:Startup", function()
 
 			if not _active.pedsSpawned then
 				_active.pedsSpawned = true
-				Callbacks:ClientCallback(source, "Labor:Coke:GetSpawnCoords", _active.drop, function(coords)
-					local peds = SpawnPeds(source, coords)
-					cb(peds)
-				end)
+				exports["sandbox-base"]:ClientCallback(source, "Labor:Coke:GetSpawnCoords", _active.drop,
+					function(coords)
+						local peds = SpawnPeds(source, coords)
+						cb(peds)
+					end)
 			else
 				cb(false)
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Coke:LeftCayo", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Coke:LeftCayo", function(source, data, cb)
 		if _joiners[source] ~= nil and _active.joiner == _joiners[source] and _active.state == 5 then
 			_active.state = 6
 
@@ -198,7 +199,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Coke:Finish", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Coke:Finish", function(source, data, cb)
 		if _joiners[source] ~= nil and _active.joiner == _joiners[source] and _active.state == 6 then
 			DeleteEntity(_active.entity)
 			Labor.Offers:ManualFinish(_joiners[source], _JOB)

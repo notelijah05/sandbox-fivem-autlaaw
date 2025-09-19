@@ -4,7 +4,7 @@ local _joiners = {}
 local _farming = {}
 
 AddEventHandler("Labor:Server:Startup", function()
-	Callbacks:RegisterServerCallback("Farming:StartJob", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Farming:StartJob", function(source, data, cb)
 		if _farming[data] ~= nil and _farming[data].state == 0 then
 			local randJob = math.random(#availableJobs)
 
@@ -34,7 +34,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Farming:CompleteNode", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Farming:CompleteNode", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _farming[_joiners[source]] ~= nil then
 			for k, v in ipairs(_farming[_joiners[source]].nodes) do
@@ -88,7 +88,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Farming:TurnIn", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Farming:TurnIn", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB

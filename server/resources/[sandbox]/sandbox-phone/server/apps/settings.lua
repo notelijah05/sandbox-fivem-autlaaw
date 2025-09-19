@@ -1,5 +1,5 @@
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Settings:Update", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Settings:Update", function(source, data, cb)
 		local src = source
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local settings = char:GetData("PhoneSettings")

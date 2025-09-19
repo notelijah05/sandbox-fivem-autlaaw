@@ -2,7 +2,6 @@ _reductions = 0
 
 AddEventHandler("Damage:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-    Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
     Damage = exports["sandbox-base"]:FetchComponent("Damage")
     Logger = exports["sandbox-base"]:FetchComponent("Logger")
     Notification = exports["sandbox-base"]:FetchComponent("Notification")
@@ -23,7 +22,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
     exports["sandbox-base"]:RequestDependencies("Damage", {
-        "Callbacks",
         "Damage",
         "Logger",
         "Notification",
@@ -46,7 +44,7 @@ AddEventHandler("Core:Shared:Ready", function()
         end
         RetrieveComponents()
 
-        Callbacks:RegisterClientCallback("Damage:Heal", function(s)
+        exports["sandbox-base"]:RegisterClientCallback("Damage:Heal", function(s)
             if s then
                 LocalPlayer.state.deadData = {}
                 Damage.Reductions:Reset()
@@ -54,15 +52,15 @@ AddEventHandler("Core:Shared:Ready", function()
             Damage:Revive()
         end)
 
-        Callbacks:RegisterClientCallback("Damage:FieldStabalize", function(s)
+        exports["sandbox-base"]:RegisterClientCallback("Damage:FieldStabalize", function(s)
             Damage:Revive(true)
         end)
 
-        Callbacks:RegisterClientCallback("Damage:Kill", function()
+        exports["sandbox-base"]:RegisterClientCallback("Damage:Kill", function()
             ApplyDamageToPed(LocalPlayer.state.ped, 10000)
         end)
 
-        Callbacks:RegisterClientCallback("Damage:Admin:Godmode", function(s)
+        exports["sandbox-base"]:RegisterClientCallback("Damage:Admin:Godmode", function(s)
             if s then
                 Buffs:ApplyBuff("godmode")
             else
@@ -130,13 +128,13 @@ DAMAGE = {
         Increase = function(self, amt)
             _reductions += amt
             Buffs:ApplyUniqueBuff("weakness", -1)
-            Callbacks:ServerCallback("Damage:SyncReductions", _reductions)
+            exports["sandbox-base"]:ServerCallback("Damage:SyncReductions", _reductions)
             Damage:CalculateMaxHp()
         end,
         Reset = function(self)
             _reductions = 0
             Buffs:RemoveBuffType("weakness")
-            Callbacks:ServerCallback("Damage:SyncReductions", _reductions)
+            exports["sandbox-base"]:ServerCallback("Damage:SyncReductions", _reductions)
             Damage:CalculateMaxHp()
         end,
     },

@@ -4,23 +4,23 @@ AddEventHandler("Businesses:Client:Startup", function()
         --debugPoly=true,
         minZ = 24.9,
         maxZ = 26.3
-	}, {
+    }, {
         {
             icon = "door-open",
             text = "Lock/Unlock Arena Door",
             event = "Businesses:Client:ToggleTriadBoxingLock",
-			jobPerms = {
-				{
-					job = "triad_boxing",
-					--reqOffDuty = true,
-				}
-			},
+            jobPerms = {
+                {
+                    job = "triad_boxing",
+                    --reqOffDuty = true,
+                }
+            },
         },
     }, 3.0, true)
 end)
 
 AddEventHandler("Businesses:Client:ToggleTriadBoxingLock", function()
-    Callbacks:ServerCallback("Doors:ToggleLocks", "triad_boxing_arena", function(success, newState)
+    exports["sandbox-base"]:ServerCallback("Doors:ToggleLocks", "triad_boxing_arena", function(success, newState)
         if success then
             Sounds.Do.Play:One("doorlocks.ogg", 0.2)
         end

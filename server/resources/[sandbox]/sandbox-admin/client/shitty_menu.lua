@@ -117,7 +117,7 @@ function OpenStaffMenu(data)
                     end
 
                     -- adminSubMenus[playerMenuId].Add:Button('Goto Player', { disabled = not player.Character, success = true }, function(data)
-                    --     Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
+                    --     exports["sandbox-base"]:ServerCallback('Admin:PlayerTeleportAction', {
                     --         action = 'GOTO',
                     --         target = player.Source,
                     --     }, function(success)
@@ -130,7 +130,7 @@ function OpenStaffMenu(data)
                     -- end)
 
                     -- adminSubMenus[playerMenuId].Add:Button('Bring Player', { disabled = not player.Character, success = true }, function(data)
-                    --     Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
+                    --     exports["sandbox-base"]:ServerCallback('Admin:PlayerTeleportAction', {
                     --         action = 'BRING',
                     --         target = player.Source,
                     --     }, function(success)
@@ -148,18 +148,19 @@ function OpenStaffMenu(data)
 
                     adminSubMenus[playerMenuId].Add:Button('Attach To (Spectate)',
                         { disabled = not player.Character, success = _attached }, function(data)
-                        if _attached then
-                            AdminStopAttach()
-                        else
-                            Callbacks:ServerCallback('Admin:AttachToPlayer', player.Source, function(targetCoords)
-                                if targetCoords then
-                                    AdminAttachToEntity(player.Source, targetCoords)
-                                else
-                                    AdminStopAttach()
-                                end
-                            end)
-                        end
-                    end)
+                            if _attached then
+                                AdminStopAttach()
+                            else
+                                exports["sandbox-base"]:ServerCallback('Admin:AttachToPlayer', player.Source,
+                                    function(targetCoords)
+                                        if targetCoords then
+                                            AdminAttachToEntity(player.Source, targetCoords)
+                                        else
+                                            AdminStopAttach()
+                                        end
+                                    end)
+                            end
+                        end)
 
                     local playerString
                     if player.Character then
@@ -270,7 +271,7 @@ function OpenStaffMenu(data)
 end
 
 RegisterNetEvent('Admin:Client:OpenStaffMenu', function()
-    Callbacks:ServerCallback('Admin:GetMenuData', {}, function(isAdmin, data)
+    exports["sandbox-base"]:ServerCallback('Admin:GetMenuData', {}, function(isAdmin, data)
         OpenStaffMenu(data)
     end)
 end)

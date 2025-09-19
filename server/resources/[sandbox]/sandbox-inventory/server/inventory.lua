@@ -157,7 +157,6 @@ end
 
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -181,7 +180,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Callbacks",
 		"Sequence",
 		"Logger",
 		"Utils",
@@ -1682,11 +1680,11 @@ function CreateDZIfNotExist(source, coords)
 end
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Inventory:MergeItem", DoMerge)
-	Callbacks:RegisterServerCallback("Inventory:SwapItem", DoSwap)
-	Callbacks:RegisterServerCallback("Inventory:MoveItem", DoMove)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:MergeItem", DoMerge)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:SwapItem", DoSwap)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:MoveItem", DoMove)
 
-	Callbacks:RegisterServerCallback("Inventory:OpenTrunk", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:OpenTrunk", function(source, data, cb)
 		local myCoords = GetEntityCoords(GetPlayerPed(source))
 		local veh = NetworkGetEntityFromNetworkId(data.netId)
 
@@ -1705,7 +1703,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:UseItem", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:UseItem", function(source, data, cb)
 		if entityPermCheck(source, data.invType) then
 			local slot = INVENTORY:GetOldestInSlot(data.owner, data.slot, data.invType)
 			if slot ~= nil then
@@ -1718,7 +1716,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:UseSlot", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:UseSlot", function(source, data, cb)
 		if data and data.slot then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
@@ -1748,18 +1746,18 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:CheckIfNearDropZone", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:CheckIfNearDropZone", function(source, data, cb)
 		local playerPed = GetPlayerPed(source)
 		local playerCoords = GetEntityCoords(playerPed)
 		local route = Player(source).state.currentRoute
 		cb(INVENTORY:CheckDropZones(route, vector3(playerCoords.x, playerCoords.y, playerCoords.z)))
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:Server:retreiveStores", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:retreiveStores", function(source, data, cb)
 		cb(shopLocations)
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:Search", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Search", function(source, data, cb)
 		local dest = exports['sandbox-characters']:FetchCharacterSource(data.serverId)
 		if dest ~= nil then
 			INVENTORY.Search:Character(source, data.serverId, dest:GetData("SID"))
@@ -1769,7 +1767,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:Raid", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Raid", function(source, data, cb)
 		local dest = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -1778,8 +1776,8 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:Dumpster:Open", function(source, data, cb)
-		Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Dumpster:Open", function(source, data, cb)
+		exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 			invType = 4000,
 			owner = data.identifier,
 		}, function()
@@ -1788,7 +1786,7 @@ function RegisterCallbacks()
 		cb()
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:CloseSecondary", function(source, inventory, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:CloseSecondary", function(source, inventory, cb)
 		if inventory.invType == 1 then
 			refreshShit(inventory.owner)
 		elseif inventory.invType == 10 then
@@ -1815,7 +1813,7 @@ function RegisterCallbacks()
 		cb()
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:PlayerShop:AddItem", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:PlayerShop:AddItem", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -1905,7 +1903,7 @@ function RegisterCallbacks()
 		sendRefreshForClient(source, data.ownerTo, data.invTypeTo, data.slotTo)
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:PlayerShop:AddModerator", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:PlayerShop:AddModerator", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -1936,7 +1934,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:PlayerShop:RemoveModerator", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:PlayerShop:RemoveModerator", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -1953,7 +1951,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:PlayerShop:ViewModerators", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:PlayerShop:ViewModerators", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -1981,7 +1979,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:PlayerShop:ChangeState", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:PlayerShop:ChangeState", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if _playerShops[data.id] and isShopModerator(data.id, source) then
@@ -2894,9 +2892,10 @@ INVENTORY = {
 					if itemData.animConfig ~= nil then
 						used = false
 						local p = promise.new()
-						Callbacks:ClientCallback(source, "Inventory:ItemUse", itemData.animConfig, function(state)
-							p:resolve(state)
-						end)
+						exports["sandbox-base"]:ClientCallback(source, "Inventory:ItemUse", itemData.animConfig,
+							function(state)
+								p:resolve(state)
+							end)
 						used = Citizen.Await(p)
 					end
 
@@ -3213,7 +3212,7 @@ INVENTORY = {
 	},
 	Container = {
 		Open = function(self, src, item, identifier)
-			Callbacks:ClientCallback(src, "Inventory:Container:Open", {
+			exports["sandbox-base"]:ClientCallback(src, "Inventory:Container:Open", {
 				item = item,
 				container = ("container:%s"):format(identifier),
 			}, function()
@@ -3233,14 +3232,14 @@ INVENTORY = {
 	},
 	Search = {
 		Character = function(self, src, tSrc, id)
-			Callbacks:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
+			exports["sandbox-base"]:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
 				Execute:Client(tSrc, "Notification", "Info", "You Were Searched")
 				INVENTORY:OpenSecondary(src, 1, id)
 			end)
 		end,
 	},
 	Rob = function(self, src, tSrc, id)
-		Callbacks:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
+		exports["sandbox-base"]:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
 			INVENTORY:OpenSecondary(src, 1, id)
 		end)
 	end,

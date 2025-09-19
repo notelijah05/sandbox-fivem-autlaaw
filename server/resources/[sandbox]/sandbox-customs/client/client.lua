@@ -11,7 +11,6 @@ local showingAction = false
 
 AddEventHandler("VehicleCustoms:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
@@ -31,7 +30,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VehicleCustoms", {
-		"Callbacks",
 		"Notification",
 		"Game",
 		"Action",
@@ -326,7 +324,7 @@ function DoSlowVehicleNormalRepair(cost, cb)
 		},
 	}, function(cancelled)
 		if not cancelled and DRIVING_VEHICLE then
-			Callbacks:ServerCallback("Vehicles:CompleteRepair", {
+			exports["sandbox-base"]:ServerCallback("Vehicles:CompleteRepair", {
 				cost = cost,
 			}, function(success)
 				if success then

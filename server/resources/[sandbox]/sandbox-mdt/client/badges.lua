@@ -13,7 +13,7 @@ local badgeModels = {
 }
 
 function RegisterBadgeCallbacks()
-	Callbacks:RegisterClientCallback("MDT:Client:CanShowBadge", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("MDT:Client:CanShowBadge", function(data, cb)
 		if
 			not inBadgeAnim
 			and not _mdtOpen
@@ -31,7 +31,7 @@ function RegisterBadgeCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterClientCallback("MDT:Client:CanShowLicense", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("MDT:Client:CanShowLicense", function(data, cb)
 		if
 			not inBadgeAnim
 			and not _mdtOpen

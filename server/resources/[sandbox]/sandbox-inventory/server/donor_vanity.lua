@@ -1,5 +1,5 @@
 function RegisterDonorVanityItemsCallbacks()
-	Callbacks:RegisterServerCallback("Inventory:DonorSales:GetPending", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:DonorSales:GetPending", function(source, data, cb)
 		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
 			local pending = Inventory.Donator:GetPending(plyr:GetData("Identifier"), true)
@@ -35,7 +35,7 @@ function RegisterDonorVanityItemsCallbacks()
 
 		cb(false)
 	end)
-	Callbacks:RegisterServerCallback("Inventory:DonorSales:SubmitVanityItem", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:DonorSales:SubmitVanityItem", function(source, data, cb)
 		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -112,7 +112,7 @@ function RegisterDonorVanityItemsCallbacks()
 
 		cb(false)
 	end)
-	Callbacks:RegisterServerCallback("Inventory:DonorSales:GetTokens", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:DonorSales:GetTokens", function(source, data, cb)
 		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
 			local res = Inventory.Donator:GetPending(plyr:GetData("Identifier"))

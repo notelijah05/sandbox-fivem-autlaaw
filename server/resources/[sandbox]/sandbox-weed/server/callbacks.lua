@@ -2,7 +2,7 @@ local _packagesAvailable = 5
 local _weedBuyers = {}
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Weed:CheckPlant", function(source, pid, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:CheckPlant", function(source, pid, cb)
 		if pid ~= nil and _plants[pid] then
 			if checkNearPlant(source, pid) then
 				cb({
@@ -17,7 +17,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:WaterPlant", function(source, pid, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:WaterPlant", function(source, pid, cb)
 		if pid ~= nil and _plants[pid] then
 			if checkNearPlant(source, pid) then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -47,7 +47,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:FertilizePlant", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:FertilizePlant", function(source, data, cb)
 		if data and data.id and _plants[data.id] then
 			if checkNearPlant(source, data.id) then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -84,7 +84,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:HarvestPlant", function(source, pid, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:HarvestPlant", function(source, pid, cb)
 		if pid then
 			if checkNearPlant(source, pid) then
 				if _plants[pid] ~= nil then
@@ -151,7 +151,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:DestroyPlant", function(source, pid, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:DestroyPlant", function(source, pid, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if pid and _plants[pid] then
@@ -178,7 +178,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:PDDestroyPlant", function(source, pid, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:PDDestroyPlant", function(source, pid, cb)
 		if pid and _plants[pid] then
 			if checkNearPlant(source, pid) then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -209,7 +209,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:BuyPackage", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:BuyPackage", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char ~= nil then

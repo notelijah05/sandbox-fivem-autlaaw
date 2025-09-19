@@ -48,7 +48,7 @@ function EMSItems()
 			local heal = 10
 			if curr < (max * 0.75) then
 				local p = promise.new()
-				Callbacks:ClientCallback(source, "EMS:Heal", heal, function(s)
+				exports["sandbox-base"]:ClientCallback(source, "EMS:Heal", heal, function(s)
 					p:resolve(s)
 				end)
 				Citizen.Await(p)
@@ -80,7 +80,7 @@ function EMSItems()
 			if curr + heal > max then
 				heal = max - curr
 			end
-			Callbacks:ClientCallback(source, "EMS:Heal", heal, function(s)
+			exports["sandbox-base"]:ClientCallback(source, "EMS:Heal", heal, function(s)
 				p:resolve(s)
 			end)
 			Citizen.Await(p)
@@ -114,7 +114,7 @@ function EMSItems()
 			if curr + heal > max then
 				heal = max - curr
 			end
-			Callbacks:ClientCallback(source, "EMS:Heal", heal, function(s)
+			exports["sandbox-base"]:ClientCallback(source, "EMS:Heal", heal, function(s)
 				p:resolve(s)
 			end)
 			Citizen.Await(p)

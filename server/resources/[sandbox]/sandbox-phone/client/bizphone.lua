@@ -193,7 +193,7 @@ AddEventHandler("Phone:Client:MakeBizCall", function(entityData, data)
 end)
 
 AddEventHandler("Phone:Client:MuteBiz", function(entityData, data)
-    Callbacks:ServerCallback("Phone:MuteBiz", data.id, function(success, state)
+    exports["sandbox-base"]:ServerCallback("Phone:MuteBiz", data.id, function(success, state)
         if success then
             if state then
                 Notification:Error("Muted Phone")
@@ -208,31 +208,32 @@ end)
 
 AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
     if values.number and data.id and GlobalState.BizPhones[data.id] then
-        Callbacks:ServerCallback("Phone:MakeBizCall", { id = data.id, number = values.number }, function(success)
-            LocalPlayer.state.bizCall = data.id
-            local startCoords = GlobalState.BizPhones[data.id].coords
+        exports["sandbox-base"]:ServerCallback("Phone:MakeBizCall", { id = data.id, number = values.number },
+            function(success)
+                LocalPlayer.state.bizCall = data.id
+                local startCoords = GlobalState.BizPhones[data.id].coords
 
-            if success then
-                CreateThread(function()
-                    Animations.Emotes:Play("phonecall2", true)
-                    Sounds.Loop:One("ringing.ogg", 0.1)
-                    InfoOverlay:Show("Dialing", string.format("Dailing Number: %s", values.number))
+                if success then
+                    CreateThread(function()
+                        Animations.Emotes:Play("phonecall2", true)
+                        Sounds.Loop:One("ringing.ogg", 0.1)
+                        InfoOverlay:Show("Dialing", string.format("Dailing Number: %s", values.number))
 
-                    while LocalPlayer.state.loggedIn and LocalPlayer.state.bizCall do
-                        if #(GetEntityCoords(LocalPlayer.state.ped) - startCoords) >= 10.0 then
-                            TriggerServerEvent("Phone:Server:ForceEndBizCall")
+                        while LocalPlayer.state.loggedIn and LocalPlayer.state.bizCall do
+                            if #(GetEntityCoords(LocalPlayer.state.ped) - startCoords) >= 10.0 then
+                                TriggerServerEvent("Phone:Server:ForceEndBizCall")
+                            end
+                            Wait(500)
                         end
-                        Wait(500)
-                    end
 
-                    Animations.Emotes:ForceCancel()
-                    Sounds.Stop:One("ringing.ogg")
-                    InfoOverlay:Close()
-                end)
-            else
-                Notification:Error("Failed to Make Call")
-            end
-        end)
+                        Animations.Emotes:ForceCancel()
+                        Sounds.Stop:One("ringing.ogg")
+                        InfoOverlay:Close()
+                    end)
+                else
+                    Notification:Error("Failed to Make Call")
+                end
+            end)
     end
 end)
 
@@ -256,7 +257,7 @@ RegisterNetEvent("Phone:Client:Biz:Recieve", function(id, coords, radius)
 end)
 
 AddEventHandler("Phone:Client:DeclineBizCall", function(entityData, data)
-    Callbacks:ServerCallback("Phone:DeclineBizCall", data.id, function(success)
+    exports["sandbox-base"]:ServerCallback("Phone:DeclineBizCall", data.id, function(success)
         if not success then
             Notification:Error("Failed to Decline Call")
         end
@@ -265,7 +266,7 @@ end)
 
 AddEventHandler("Phone:Client:AcceptBizCall", function(entityData, data)
     if data.id and GlobalState.BizPhones[data.id] then
-        Callbacks:ServerCallback("Phone:AcceptBizCall", data.id, function(success, callStr)
+        exports["sandbox-base"]:ServerCallback("Phone:AcceptBizCall", data.id, function(success, callStr)
             local startCoords = GlobalState.BizPhones[data.id].coords
             LocalPlayer.state.bizCall = data.id
 

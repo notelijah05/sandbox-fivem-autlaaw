@@ -13,7 +13,6 @@ _doingStateAnimation = false
 
 AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
@@ -32,7 +31,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
-		"Callbacks",
 		"Utils",
 		"Notification",
 		"Menu",
@@ -66,7 +64,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			Animations:OpenWalksMenu()
 		end)
 
-		Callbacks:RegisterClientCallback("Selfie:Client:UploadPhoto", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Selfie:Client:UploadPhoto", function(data, cb)
 			local options = {
 				encoding = "webp",
 				quality = 0.8,

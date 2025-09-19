@@ -107,7 +107,7 @@ AddEventHandler("Mechanic:Client:RunDiagnostics", function(entityData)
 end)
 
 AddEventHandler("Mechanic:Client:InstallMultipleRepairParts", function(data)
-	Callbacks:ServerCallback("Mechanic:InstallMultipleRepairParts", data, function(success)
+	exports["sandbox-base"]:ServerCallback("Mechanic:InstallMultipleRepairParts", data, function(success)
 		if not success then
 			Notification:Error("Unable to Install Multiple Parts")
 		end
@@ -115,7 +115,7 @@ AddEventHandler("Mechanic:Client:InstallMultipleRepairParts", function(data)
 end)
 
 AddEventHandler("Mechanic:Client:RemovePerformanceUpgrade", function(data)
-	Callbacks:ServerCallback("Mechanic:RemovePerformanceUpgrade", data, function(success)
+	exports["sandbox-base"]:ServerCallback("Mechanic:RemovePerformanceUpgrade", data, function(success)
 		if not success then
 			Notification:Error("Unable to Remove Upgrade")
 		end

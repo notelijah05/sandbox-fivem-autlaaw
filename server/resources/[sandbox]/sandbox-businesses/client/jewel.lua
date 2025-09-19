@@ -97,7 +97,7 @@ RegisterNetEvent("UI:Client:Reset", function()
 end)
 
 AddEventHandler("JEWEL:Client:Sell", function()
-	Callbacks:ServerCallback("Businesses:JEWEL:Sell", {})
+	exports["sandbox-base"]:ServerCallback("Businesses:JEWEL:Sell", {})
 end)
 
 AddEventHandler("Businesses:Client:JEWEL:OpenTable", function(e, data)

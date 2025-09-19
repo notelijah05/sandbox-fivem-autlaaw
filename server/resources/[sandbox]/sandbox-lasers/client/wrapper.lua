@@ -25,7 +25,6 @@ end
 AddEventHandler("Lasers:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Lasers = exports["sandbox-base"]:FetchComponent("Lasers")
@@ -34,7 +33,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Lasers", {
 		"Logger",
-		"Callbacks",
 		"Game",
 		"Utils",
 		"Lasers",
@@ -44,17 +42,17 @@ AddEventHandler("Core:Shared:Ready", function()
 		end -- Do something to handle if not all dependencies loaded
 		RetrieveComponents()
 
-		Callbacks:RegisterClientCallback("Lasers:Create:Start", function()
+		exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:Start", function()
 			creationEnabled = true
 			inOriginMode = true
 			startCreation()
 		end)
 
-		Callbacks:RegisterClientCallback("Lasers:Create:End", function()
+		exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:End", function()
 			creationEnabled = false
 		end)
 
-		Callbacks:RegisterClientCallback("Lasers:Create:Save", function()
+		exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:Save", function()
 			if not originPoints or not targetPoints then
 				return
 			end

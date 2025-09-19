@@ -121,7 +121,7 @@ AddEventHandler("Inventory:Client:OpenDumpster", function(entity, data)
 			tostring(math.floor(entity.endCoords.y + 10000))
 		),
 	}
-	Callbacks:ServerCallback("Inventory:Dumpster:Open", _invData, function(s) end)
+	exports["sandbox-base"]:ServerCallback("Inventory:Dumpster:Open", _invData, function(s) end)
 end)
 
 AddEventHandler("Inventory:Client:HideInDumpster", function(entity, data)
@@ -130,7 +130,7 @@ AddEventHandler("Inventory:Client:HideInDumpster", function(entity, data)
 		identifier = entity.entity,
 		locked = math.random(1, 3),
 	}
-	Callbacks:ServerCallback("Inventory:Dumpster:HidePlayer", data, function(s, l)
+	exports["sandbox-base"]:ServerCallback("Inventory:Dumpster:HidePlayer", data, function(s, l)
 		if not s then
 			Notification:Error("You're not in the right state to hide in the dumpster.")
 			return
@@ -178,7 +178,7 @@ end)
 AddEventHandler("Inventory:Client:SearchDumpster", function(entity, data)
 	-- print(entity.endCoords, entity.entity, data)
 
-	Callbacks:ServerCallback("Inventory:Server:AvailableDumpster", entity, function(s)
+	exports["sandbox-base"]:ServerCallback("Inventory:Server:AvailableDumpster", entity, function(s)
 		if s and entity then
 			if entity.entity == nil or type(entity.entity) == "boolean" then
 				Notification:Error("This is not a dumpster. Try again.")
@@ -214,7 +214,7 @@ AddEventHandler("Inventory:Client:SearchDumpster", function(entity, data)
 					},
 				}, function(status)
 					if not status then
-						Callbacks:ServerCallback("Inventory:Server:SearchDumpster", entity, function(s) end)
+						exports["sandbox-base"]:ServerCallback("Inventory:Server:SearchDumpster", entity, function(s) end)
 					end
 					_searching = false
 				end)

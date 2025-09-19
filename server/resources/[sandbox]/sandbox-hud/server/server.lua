@@ -4,7 +4,6 @@ AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
@@ -15,7 +14,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
 		"Logger",
 		"Chat",
-		"Callbacks",
 		"Inventory",
 		"Execute",
 		"Middleware",
@@ -62,7 +60,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end, 1)
 
-		Callbacks:RegisterServerCallback("HUD:SaveConfig", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("HUD:SaveConfig", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				char:SetData("HUDConfig", data)
@@ -72,22 +70,23 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("HUD:RemoveBlindfold", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("HUD:RemoveBlindfold", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local tarState = Player(data).state
 				if tarState.isBlindfolded then
-					Callbacks:ClientCallback(source, "HUD:PutOnBlindfold", "Removing Blindfold", function(isSuccess)
-						if isSuccess then
-							if Inventory:AddItem(char:GetData("SID"), "blindfold", 1, {}, 1) then
-								tarState.isBlindfolded = false
-								TriggerClientEvent("VOIP:Client:Gag:Use", data)
-							else
-								Execute:Client(source, "Notification", "Error", "Failed Adding Item")
-								cb(false)
+					exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Removing Blindfold",
+						function(isSuccess)
+							if isSuccess then
+								if Inventory:AddItem(char:GetData("SID"), "blindfold", 1, {}, 1) then
+									tarState.isBlindfolded = false
+									TriggerClientEvent("VOIP:Client:Gag:Use", data)
+								else
+									Execute:Client(source, "Notification", "Error", "Failed Adding Item")
+									cb(false)
+								end
 							end
-						end
-					end)
+						end)
 				else
 					Execute:Client(source, "Notification", "Error", "Target Not Blindfolded")
 					cb(false)
@@ -98,24 +97,25 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		Inventory.Items:RegisterUse("blindfold", "HUD", function(source, item, itemData)
-			Callbacks:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
+			exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
 				if target ~= nil then
 					local tarState = Player(target).state
 					if not tarState.isBlindfolded then
-						Callbacks:ClientCallback(source, "HUD:PutOnBlindfold", "Blindfolding", function(isSuccess)
-							if isSuccess then
-								if tarState.isCuffed then
-									if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
-										tarState.isBlindfolded = true
-										TriggerClientEvent("VOIP:Client:Gag:Use", target)
+						exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Blindfolding",
+							function(isSuccess)
+								if isSuccess then
+									if tarState.isCuffed then
+										if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+											tarState.isBlindfolded = true
+											TriggerClientEvent("VOIP:Client:Gag:Use", target)
+										else
+											Execute:Client(source, "Notification", "Error", "Failed Removing Item")
+										end
 									else
-										Execute:Client(source, "Notification", "Error", "Failed Removing Item")
+										Execute:Client(source, "Notification", "Error", "Target Not Cuffed")
 									end
-								else
-									Execute:Client(source, "Notification", "Error", "Target Not Cuffed")
 								end
-							end
-						end)
+							end)
 					else
 						Execute:Client(source, "Notification", "Error", "Target Already Blindfolded")
 					end

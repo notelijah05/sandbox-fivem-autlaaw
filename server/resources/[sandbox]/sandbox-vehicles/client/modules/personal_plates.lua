@@ -1,5 +1,5 @@
 AddEventHandler("Vehicles:Client:StartUp", function()
-    Callbacks:RegisterClientCallback("Vehicles:GetPersonalPlate", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Vehicles:GetPersonalPlate", function(data, cb)
         local target = Targeting:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
             if Vehicles:HasAccess(target.entity) and (Vehicles.Utils:IsCloseToRearOfVehicle(target.entity) or Vehicles.Utils:IsCloseToFrontOfVehicle(target.entity)) then
@@ -20,9 +20,9 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 
     PedInteraction:Add("donor_plates", `u_f_m_debbie_01`, vector3(-504.405, -182.683, 36.691), 290.319, 25.0, {
         {
-          icon = "rectangle-wide",
-          text = "Donator License Plate Claim",
-          event = "Vehicles:Client:DonatorLicensePlateClaim",
+            icon = "rectangle-wide",
+            text = "Donator License Plate Claim",
+            event = "Vehicles:Client:DonatorLicensePlateClaim",
         },
     }, "comment-dollar")
 end)
@@ -31,18 +31,19 @@ local platePromise
 function GetNewPersonalPlate()
     platePromise = promise.new()
     Input:Show("New Personal Plate", "Personal Plate", {
-		{
-			id = "plate",
-			type = "text",
-			options = {
-				inputProps = {
+        {
+            id = "plate",
+            type = "text",
+            options = {
+                inputProps = {
                     pattern = "[A-HJ-NPR-Z0-9 ]+",
                     maxlength = 8,
                 },
-                helperText = "Plates cannot include the letters O, Q, I and must include at least 3 characters. SPACES FOR PADDING ARE ADDED AUTOMATICALLY!"
-			},
-		},
-	}, "Vehicles:Client:RecievePersonalPlateInput", {})
+                helperText =
+                "Plates cannot include the letters O, Q, I and must include at least 3 characters. SPACES FOR PADDING ARE ADDED AUTOMATICALLY!"
+            },
+        },
+    }, "Vehicles:Client:RecievePersonalPlateInput", {})
 
     return Citizen.Await(platePromise)
 end
@@ -62,16 +63,16 @@ AddEventHandler("Input:Closed", function()
 end)
 
 AddEventHandler("Vehicles:Client:DonatorLicensePlateClaim", function()
-    Callbacks:ServerCallback("Vehicles:CheckDonatorPersonalPlates", {}, function(data)
+    exports["sandbox-base"]:ServerCallback("Vehicles:CheckDonatorPersonalPlates", {}, function(data)
         if data and data > 0 then
-
             local menu = {
                 main = {
                     label = "Claim Donator License Plates",
                     items = {
                         {
                             label = "Information",
-                            description = "Please make sure that there is enough space in your inventory for your new license plates.<br>"
+                            description =
+                            "Please make sure that there is enough space in your inventory for your new license plates.<br>"
                         },
                     }
                 }
@@ -106,7 +107,7 @@ AddEventHandler("Vehicles:Client:DonatorLicensePlateClaim", function()
 end)
 
 AddEventHandler("Vehicles:Client:DonatorLicensePlateClaimConfirm", function(data)
-    Callbacks:ServerCallback("Vehicles:ClaimDonatorPersonalPlates", data, function(success)
+    exports["sandbox-base"]:ServerCallback("Vehicles:ClaimDonatorPersonalPlates", data, function(success)
         if not success then
             Notification:Error("Error")
         end

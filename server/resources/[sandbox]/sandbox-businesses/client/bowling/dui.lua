@@ -172,7 +172,7 @@ end)
 
 AddEventHandler('Bowling:Client:SetTV', function()
     local tvLink = GetBowlingTVLink()
-    Callbacks:ServerCallback('Bowling:UpdateTVLink', tvLink, function(success)
+    exports["sandbox-base"]:ServerCallback('Bowling:UpdateTVLink', tvLink, function(success)
         if success then
             SendBowlingNotification('Updated Link!')
         else

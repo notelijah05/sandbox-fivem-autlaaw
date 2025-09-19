@@ -186,7 +186,7 @@ RegisterNUICallback("CloseUI", function(data, cb)
 end)
 
 RegisterNUICallback("SaveConfig", function(data, cb)
-	Callbacks:ServerCallback("HUD:SaveConfig", data, function(s)
+	exports["sandbox-base"]:ServerCallback("HUD:SaveConfig", data, function(s)
 		cb(s)
 	end)
 end)

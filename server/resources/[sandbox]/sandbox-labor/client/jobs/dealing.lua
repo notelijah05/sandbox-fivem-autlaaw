@@ -35,7 +35,7 @@ function SendPedToPlayer(ped, coords)
 	SetEntityAsMissionEntity(ped, true, true)
 	SetTimeout((1000 * 60) * 2, function()
 		if not Entity(ped).state.boughtDrugs and _working then
-			Callbacks:ServerCallback("CornerDealing:PedTimeout", {})
+			exports["sandbox-base"]:ServerCallback("CornerDealing:PedTimeout", {})
 			NetSync:DeletePed(ped)
 		end
 	end)
@@ -203,7 +203,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		end
 
 		if _working and _state == 0 then
-			Callbacks:ServerCallback("CornerDealing:CheckCorner", {
+			exports["sandbox-base"]:ServerCallback("CornerDealing:CheckCorner", {
 				coords = GetEntityCoords(LocalPlayer.state.ped)
 			}, function(s)
 				if s then
@@ -214,7 +214,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 
 					Vehicles.Sync.Doors:Open(entity.entity, 5, true, true)
 
-					Callbacks:ServerCallback("CornerDealing:StartCornering", {
+					exports["sandbox-base"]:ServerCallback("CornerDealing:StartCornering", {
 						netId = NetworkGetNetworkIdFromEntity(entity.entity),
 						corner = _SellingCorner,
 					})
@@ -225,7 +225,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 
 	eventHandlers["stop-cornering"] = AddEventHandler("CornerDealing:Client:StopCornering", function(data, entity)
 		if _working then
-			Callbacks:ServerCallback("CornerDealing:StopCornering")
+			exports["sandbox-base"]:ServerCallback("CornerDealing:StopCornering")
 		end
 	end)
 
@@ -268,7 +268,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 									if GetEntityHealth(_SellingVeh) == 0 or not IsVehicleDriveable(_SellingVeh) then
 										Logger:Trace("CornerDealing", "Vehicle Health 0 or Not Drivable")
 										ending = true
-										Callbacks:ServerCallback("CornerDealing:DestroyVehicle")
+										exports["sandbox-base"]:ServerCallback("CornerDealing:DestroyVehicle")
 									end
 								end
 							end
@@ -285,7 +285,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 								if #(vehPos - _SellingCorner) > 50.0 then
 									Logger:Trace("CornerDealing", "Vehicle Too Far From Corner")
 									ending = true
-									Callbacks:ServerCallback("CornerDealing:LeaveArea")
+									exports["sandbox-base"]:ServerCallback("CornerDealing:LeaveArea")
 								end
 							end
 							Wait(10)
@@ -342,7 +342,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 								else
 									if not Entity(_SellingPed).state.sentToPed then
 										if NetworkGetEntityIsNetworked(_SellingPed) then
-											Callbacks:ServerCallback(
+											exports["sandbox-base"]:ServerCallback(
 												"CornerDealing:SyncPed",
 												NetworkGetNetworkIdFromEntity(_SellingPed)
 											)
@@ -350,7 +350,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 											if NetworkHasControlOfEntity(_SellingPed) then
 												SendPedToPlayer(_SellingPed, _SellingCorner)
 											else
-												Callbacks:ServerCallback("CornderDealing:SyncEvent", {
+												exports["sandbox-base"]:ServerCallback("CornderDealing:SyncEvent", {
 													event = "goto",
 													netId = NetworkGetNetworkIdFromEntity(_SellingPed),
 													coords = _SellingCorner
@@ -365,7 +365,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 								end
 
 								if notFoundCount >= 10 then
-									Callbacks:ServerCallback("CornerDealing:NoPeds", {})
+									exports["sandbox-base"]:ServerCallback("CornerDealing:NoPeds", {})
 									return
 								end
 							end
@@ -446,7 +446,7 @@ AddEventHandler("CornerDealing:Client:ShowMenu", function(entity, data)
 	end
 
 	if _working and _state == 1 then
-		Callbacks:ServerCallback("CornerDealing:GetSaleMenu", {
+		exports["sandbox-base"]:ServerCallback("CornerDealing:GetSaleMenu", {
 			netId = NetworkGetNetworkIdFromEntity(entity.entity),
 		}, function(data)
 			if data ~= nil and #data > 0 then
@@ -466,7 +466,7 @@ end)
 
 AddEventHandler("CornerDealing:Client:Sell", function(data)
 	Entity(_SellingPed).state:set("boughtDrugs", true, true)
-	Callbacks:ServerCallback("CornerDealing:DoSale", {
+	exports["sandbox-base"]:ServerCallback("CornerDealing:DoSale", {
 		item = data,
 		netId = NetworkGetNetworkIdFromEntity(_SellingPed),
 	}, function(r)
@@ -489,7 +489,7 @@ AddEventHandler("CornerDealing:Client:Sell", function(data)
 				if NetworkHasControlOfEntity(_SellingPed) then
 					DoHandoff(_SellingPed)
 				else
-					Callbacks:ServerCallback("CornderDealing:SyncEvent", {
+					exports["sandbox-base"]:ServerCallback("CornderDealing:SyncEvent", {
 						event = "handoff",
 						netId = NetworkGetNetworkIdFromEntity(_SellingPed),
 						coords = _SellingCorner
@@ -507,7 +507,7 @@ AddEventHandler("CornerDealing:Client:Sell", function(data)
 end)
 
 AddEventHandler("CornerDealing:Client:StartJob", function()
-	Callbacks:ServerCallback("CornerDealing:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("CornerDealing:StartJob", _joiner, function(state)
 		if not state then
 			Notification:Error("Unable To Start Job")
 		end
@@ -545,7 +545,7 @@ end)
 -- 				if IsEntityAPed(args[1]) then --both victim and killer are peds.
 -- 					local entState = Entity(args[1]).state
 -- 					if entState.isDrugBuyer == _joiner then
--- 						Callbacks:ServerCallback("CornerDealing:PedDied", {})
+-- 						exports["sandbox-base"]:ServerCallback("CornerDealing:PedDied", {})
 -- 					end
 -- 				end
 -- 			end
@@ -554,9 +554,9 @@ end)
 -- end)
 
 AddEventHandler("CornerDealing:Client:Enable", function()
-	Callbacks:ServerCallback("CornerDealing:Enable", {})
+	exports["sandbox-base"]:ServerCallback("CornerDealing:Enable", {})
 end)
 
 AddEventHandler("CornerDealing:Client:Disable", function()
-	Callbacks:ServerCallback("CornerDealing:Disable", {})
+	exports["sandbox-base"]:ServerCallback("CornerDealing:Disable", {})
 end)

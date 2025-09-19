@@ -1,16 +1,16 @@
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Labor:GetJobs", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Labor:GetJobs", function(source, data, cb)
 		cb(Labor.Get:Jobs())
 	end)
-	Callbacks:RegisterServerCallback("Labor:GetGroups", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Labor:GetGroups", function(source, data, cb)
 		cb(Labor.Get:Groups())
 	end)
 
-	Callbacks:RegisterServerCallback("Labor:GetReputations", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Labor:GetReputations", function(source, data, cb)
 		cb(Reputation:View(source))
 	end)
 
-	Callbacks:RegisterServerCallback("Labor:AcceptRequest", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Labor:AcceptRequest", function(source, data, cb)
 		if _pendingInvites[data.source] ~= nil then
 			local state = Labor.Workgroups:Join(_pendingInvites[data.source], data.source)
 
@@ -33,7 +33,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Labor:DeclineRequest", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Labor:DeclineRequest", function(source, data, cb)
 		if _pendingInvites[data.source] ~= nil then
 			_pendingInvites[data.source] = nil
 

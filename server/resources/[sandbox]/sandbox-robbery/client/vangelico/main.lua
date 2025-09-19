@@ -137,7 +137,7 @@ AddEventHandler("Robbery:Client:Vangelico:SecureStore", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Vangelico:SecureStore")
+			exports["sandbox-base"]:ServerCallback("Robbery:Vangelico:SecureStore")
 		end
 	end)
 end)
@@ -272,7 +272,7 @@ AddEventHandler("Robbery:Client:Vangelico:BreakCase", function(entity, data)
 			Progress:Cancel()
 		end, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("Robbery:Vangelico:BreakCase", data.index)
+				exports["sandbox-base"]:ServerCallback("Robbery:Vangelico:BreakCase", data.index)
 			end
 		end)
 	end

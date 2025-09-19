@@ -30,7 +30,7 @@ end)
 
 AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 	if _inLogout then
-		Callbacks:ServerCallback("Jail:Validate", {
+		exports["sandbox-base"]:ServerCallback("Jail:Validate", {
 			id = GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)],
 			type = "logout",
 		}, function(state)
@@ -42,7 +42,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 end)
 
 AddEventHandler("Jail:Client:RetreiveItems", function()
-	Callbacks:ServerCallback("Jail:RetreiveItems")
+	exports["sandbox-base"]:ServerCallback("Jail:RetreiveItems")
 end)
 
 AddEventHandler("Jail:Client:CheckSentence", function()
@@ -63,7 +63,7 @@ end)
 
 AddEventHandler("Jail:Client:Released", function()
 	if Jail:IsJailed() and Jail:IsReleaseEligible() then
-		Callbacks:ServerCallback("Jail:Release", {}, function(s)
+		exports["sandbox-base"]:ServerCallback("Jail:Release", {}, function(s)
 			if s then
 				DoScreenFadeOut(1000)
 				while not IsScreenFadedOut() do
@@ -116,7 +116,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			Wait(2000)
 
 			Notification:Warn("Stop exploiting or you will be flighted")
-			Callbacks:ServerCallback("Jail:Server:ExploitAttempt", 1)
+			exports["sandbox-base"]:ServerCallback("Jail:Server:ExploitAttempt", 1)
 		end
 
 		if LocalPlayer.state.myEscorter ~= nil then
@@ -127,7 +127,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			end
 
 			Notification:Warn("Stop exploiting or you will be flighted")
-			Callbacks:ServerCallback("Jail:Server:ExploitAttempt", 2)
+			exports["sandbox-base"]:ServerCallback("Jail:Server:ExploitAttempt", 2)
 		end
 
 		if Jail:IsJailed() and not _doingMugshot then
@@ -142,11 +142,11 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 end)
 
 AddEventHandler("Jail:Client:StartWork", function()
-	Callbacks:ServerCallback("Jail:StartWork")
+	exports["sandbox-base"]:ServerCallback("Jail:StartWork")
 end)
 
 AddEventHandler("Jail:Client:QuitWork", function()
-	Callbacks:ServerCallback("Jail:QuitWork")
+	exports["sandbox-base"]:ServerCallback("Jail:QuitWork")
 end)
 
 AddEventHandler("Jail:Client:MakeFood", function()
@@ -167,7 +167,7 @@ AddEventHandler("Jail:Client:MakeFood", function()
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Jail:MakeItem", "food")
+			exports["sandbox-base"]:ServerCallback("Jail:MakeItem", "food")
 		end
 	end)
 end)
@@ -190,7 +190,7 @@ AddEventHandler("Jail:Client:MakeDrink", function()
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Jail:MakeItem", "drink")
+			exports["sandbox-base"]:ServerCallback("Jail:MakeItem", "drink")
 		end
 	end)
 end)
@@ -213,7 +213,7 @@ AddEventHandler("Jail:Client:MakeJuice", function(self, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Jail:MakeJuice", data.name)
+			exports["sandbox-base"]:ServerCallback("Jail:MakeJuice", data.name)
 		end
 	end)
 end)

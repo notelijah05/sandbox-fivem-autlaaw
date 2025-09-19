@@ -18,7 +18,7 @@ AddEventHandler("Police:Client:ReEnableTracker", function()
 		return
 	end
 
-	Callbacks:ServerCallback("EmergencyAlerts:EnablePDTracker", {}, function(success)
+	exports["sandbox-base"]:ServerCallback("EmergencyAlerts:EnablePDTracker", {}, function(success)
 		if success then
 			Notification:Success("Tracker Re-Enabled")
 		else
@@ -156,7 +156,7 @@ AddEventHandler("Police:Client:GetRadioChannel", function(entity, data)
 		Progress:Cancel()
 	end, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Police:GetRadioChannel", entity.serverId, function() end)
+			exports["sandbox-base"]:ServerCallback("Police:GetRadioChannel", entity.serverId, function() end)
 		end
 	end)
 end)
@@ -180,7 +180,7 @@ AddEventHandler("Police:Client:GSR", function(entity, data)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Police:GSRTest", entity.serverId, function() end)
+			exports["sandbox-base"]:ServerCallback("Police:GSRTest", entity.serverId, function() end)
 		end
 	end)
 end)
@@ -204,7 +204,7 @@ AddEventHandler("Police:Client:BAC", function(entity, data)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Police:BACTest", entity.serverId, function() end)
+			exports["sandbox-base"]:ServerCallback("Police:BACTest", entity.serverId, function() end)
 		end
 	end)
 end)
@@ -228,7 +228,7 @@ AddEventHandler("Police:Client:DNASwab", function(entity, data)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Police:DNASwab", entity.serverId, function() end)
+			exports["sandbox-base"]:ServerCallback("Police:DNASwab", entity.serverId, function() end)
 		end
 	end)
 end)
@@ -379,7 +379,7 @@ AddEventHandler("Police:Client:SpikeyBois", function(x, y, z, obj, cunts, owner)
 end)
 
 AddEventHandler("Police:Client:OpenLocker", function()
-	Callbacks:ServerCallback("MDT:OpenPersonalLocker", {}, function(success)
+	exports["sandbox-base"]:ServerCallback("MDT:OpenPersonalLocker", {}, function(success)
 		if not success then
 			Notification:Error("Callsign Not Set, Unable To Open Locker")
 		end
@@ -399,5 +399,5 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 end)
 
 AddEventHandler("Police:Client:RemoveMask", function(entity, data)
-	Callbacks:ServerCallback("Police:RemoveMask", entity.serverId)
+	exports["sandbox-base"]:ServerCallback("Police:RemoveMask", entity.serverId)
 end)

@@ -169,7 +169,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		help = "Force Reset Maze Bank Heist",
 	}, 0)
 
-	Callbacks:RegisterServerCallback("Robbery:MazeBank:SecureBank", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MazeBank:SecureBank", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if Player(source).state.onDuty == "police" then
@@ -178,7 +178,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MazeBank:ElectricBox:Hack", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MazeBank:ElectricBox:Hack", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
@@ -247,7 +247,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data.boxId
 								)
 							)
-							Callbacks:ClientCallback(source, "Robbery:Games:Hack", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Hack", {
 								config = {
 									countdown = 3,
 									timer = 5,
@@ -385,7 +385,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MazeBank:ElectricBox:Thermite", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MazeBank:ElectricBox:Thermite", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
@@ -463,7 +463,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										data.boxId
 									)
 								)
-								Callbacks:ClientCallback(source, "Robbery:Games:Thermite", {
+								exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
 									passes = 1,
 									location = data.thermitePoint,
 									duration = 25000,
@@ -597,7 +597,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MazeBank:Drill", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MazeBank:Drill", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
@@ -666,7 +666,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data
 								)
 							)
-							Callbacks:ClientCallback(source, "Robbery:Games:Drill", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Drill", {
 								passes = 1,
 								duration = 25000,
 								config = {},
@@ -745,7 +745,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MazeBank:PC:Hack", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MazeBank:PC:Hack", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
@@ -809,7 +809,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data.id
 								)
 							)
-							Callbacks:ClientCallback(source, "Robbery:Games:Progress", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Progress", {
 								config = {
 									label = "Doing Hackermans Stuff",
 									anim = {

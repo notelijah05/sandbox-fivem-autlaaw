@@ -1,5 +1,5 @@
 RegisterNUICallback("PingEm:Send", function(data, cb)
-	Callbacks:ServerCallback("Phone:PingEm:SendPing", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:PingEm:SendPing", data, cb)
 end)
 
 local _pingId = 1
@@ -9,7 +9,7 @@ AddEventHandler("Phone:Client:PingEm:AcceptPing", function(data)
 
 	local blip = Blips:Add(id, "Ping'Em", data.location, 280, 50, 1.1)
 	SetBlipFlashes(blip, true)
-	Callbacks:ServerCallback("Phone:PingEm:GetFeedback", {
+	exports["sandbox-base"]:ServerCallback("Phone:PingEm:GetFeedback", {
 		result = true,
 		source = data.source,
 	})
@@ -21,7 +21,7 @@ AddEventHandler("Phone:Client:PingEm:AcceptPing", function(data)
 end)
 
 AddEventHandler("Phone:Client:PingEm:RejectPing", function(data)
-	Callbacks:ServerCallback("Phone:PingEm:GetFeedback", {
+	exports["sandbox-base"]:ServerCallback("Phone:PingEm:GetFeedback", {
 		result = false,
 		source = data.source,
 	})

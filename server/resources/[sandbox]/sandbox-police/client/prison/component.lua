@@ -1,6 +1,5 @@
 AddEventHandler("Corrections:Shared:DependencyUpdate", CorrectionsComponents)
 function CorrectionsComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
@@ -25,7 +24,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Corrections", {
-		"Callbacks",
 		"Inventory",
 		"Notification",
 		"Input",
@@ -409,7 +407,7 @@ _PROGRESS_LOCKDOWN = false
 AddEventHandler("Prison:Client:SetLockdown", function(entity, data)
 	if not _PROGRESS_LOCKDOWN then
 		_PROGRESS_LOCKDOWN = true
-		Callbacks:ServerCallback("Prison:SetLockdown", data.state, function(success, state)
+		exports["sandbox-base"]:ServerCallback("Prison:SetLockdown", data.state, function(success, state)
 			if success then
 				if state then
 					Notification:Success("Lockdown Initiated")
@@ -434,7 +432,7 @@ _PROGRESS_DOORS = false
 AddEventHandler("Prison:Client:SetCellState", function(entity, data)
 	if not _PROGRESS_DOORS then
 		_PROGRESS_DOORS = true
-		Callbacks:ServerCallback("Prison:SetCellState", data.state, function(success, state)
+		exports["sandbox-base"]:ServerCallback("Prison:SetCellState", data.state, function(success, state)
 			if success then
 				if state then
 					Notification:Success("Cell Doors Locked")

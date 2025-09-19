@@ -1,6 +1,5 @@
 AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
 function RetrieveWardrobeComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
@@ -12,7 +11,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("ListMenu", {
-		"Callbacks",
 		"Notification",
 		"Utils",
 		"ListMenu",
@@ -47,7 +45,7 @@ AddEventHandler("Wardrobe:Client:SaveNew", function(data)
 end)
 
 AddEventHandler("Wardrobe:Client:SaveExisting", function(data)
-	Callbacks:ServerCallback("Wardrobe:SaveExisting", data.index, function(state)
+	exports["sandbox-base"]:ServerCallback("Wardrobe:SaveExisting", data.index, function(state)
 		if state then
 			Notification:Success("Outfit Saved")
 			Wardrobe:Show()
@@ -58,7 +56,7 @@ AddEventHandler("Wardrobe:Client:SaveExisting", function(data)
 end)
 
 AddEventHandler("Wardrobe:Client:DoSave", function(values, data)
-	Callbacks:ServerCallback("Wardrobe:Save", {
+	exports["sandbox-base"]:ServerCallback("Wardrobe:Save", {
 		index = data,
 		name = values.name,
 	}, function(state)
@@ -79,7 +77,7 @@ AddEventHandler("Wardrobe:Client:Delete", function(data)
 end)
 
 AddEventHandler("Wardrobe:Client:Delete:Yes", function(data)
-	Callbacks:ServerCallback("Wardrobe:Delete", data, function(s)
+	exports["sandbox-base"]:ServerCallback("Wardrobe:Delete", data, function(s)
 		if s then
 			Notification:Success("Outfit Deleted")
 			Wardrobe:Show()
@@ -88,7 +86,7 @@ AddEventHandler("Wardrobe:Client:Delete:Yes", function(data)
 end)
 
 AddEventHandler("Wardrobe:Client:Equip", function(data)
-	Callbacks:ServerCallback("Wardrobe:Equip", data.index, function(state)
+	exports["sandbox-base"]:ServerCallback("Wardrobe:Equip", data.index, function(state)
 		if state then
 			Sounds.Play:One("outfit_change.ogg", 0.3)
 			Notification:Success("Outfit Equipped")
@@ -104,7 +102,7 @@ end)
 
 WARDROBE = {
 	Show = function(self)
-		Callbacks:ServerCallback("Wardrobe:GetAll", {}, function(data)
+		exports["sandbox-base"]:ServerCallback("Wardrobe:GetAll", {}, function(data)
 			local items = {}
 			for k, v in pairs(data) do
 				if v.label ~= nil then

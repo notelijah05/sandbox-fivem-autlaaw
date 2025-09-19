@@ -9,7 +9,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		delay = 30000,
 	})
 
-	Callbacks:RegisterServerCallback("Prison:Action", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Prison:Action", function(source, data, cb)
 		if _joiners[source] ~= nil and _Prisoners[_joiners[source]] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
@@ -55,7 +55,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Prison:TurnIn", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Prison:TurnIn", function(source, data, cb)
 		if _joiners[source] ~= nil and _Prisoners[_joiners[source]].tasks >= 3 then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char:GetData("TempJob") == _JOB then

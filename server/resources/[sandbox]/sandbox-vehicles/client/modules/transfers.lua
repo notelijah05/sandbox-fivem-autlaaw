@@ -1,5 +1,5 @@
 AddEventHandler('Vehicles:Client:StartUp', function()
-    Callbacks:RegisterClientCallback('Vehicles:Transfers:GetTarget', function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback('Vehicles:Transfers:GetTarget', function(data, cb)
         if LocalPlayer.state.loggedIn then
             if VEHICLE_INSIDE then
                 return cb(VehToNet(VEHICLE_INSIDE))
@@ -44,7 +44,7 @@ RegisterNetEvent('Vehicles:Tranfers:BeginConfirmation', function(data)
 end)
 
 AddEventHandler('Vehicles:Transfers:Confirm', function(data)
-    Callbacks:ServerCallback('Vehicles:Tranfers:CompleteTransfer', data)
+    exports["sandbox-base"]:ServerCallback('Vehicles:Tranfers:CompleteTransfer', data)
 end)
 
 AddEventHandler('Vehicles:Transfers:Deny', function(data)

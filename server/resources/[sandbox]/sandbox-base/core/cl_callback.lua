@@ -1,39 +1,41 @@
 local _sCallbacks = {}
 local _cCallbacks = {}
 
-COMPONENTS.Callbacks = {
-    _required = { 'ServerCallback', 'RegisterClientCallback', 'DoClientCallback' },
-    _name = 'base',
-    ServerCallback = function(self, event, data, cb, extraId)
-        id = event
-        if extraId ~= nil then
-            id = string.format("%s-%s", event, extraId)
-        else
-            extraId = ''
-        end
+local function ServerCallback(event, data, cb, extraId)
+    local id = event
+    if extraId ~= nil then
+        id = string.format("%s-%s", event, extraId)
+    else
+        extraId = ''
+    end
 
-        data = data or {}
-        _sCallbacks[id] = cb
-        TriggerLatentServerEvent('Callbacks:Server:TriggerEvent', 50000, event, data, extraId)
-    end,
-    RegisterClientCallback = function(self, event, cb)
-        _cCallbacks[event] = cb
-    end,
-    DoClientCallback = function(self, event, extraId, data)
-        if _cCallbacks[event] ~= nil then
-            CreateThread(function()
-                _cCallbacks[event](data, function(...)
-                    TriggerLatentServerEvent('Callbacks:Server:ReceiveCallback', 50000, event, extraId, ...)
-                end)
+    data = data or {}
+    _sCallbacks[id] = cb
+    TriggerLatentServerEvent('Callbacks:Server:TriggerEvent', 50000, event, data, extraId)
+end
+
+local function RegisterClientCallback(event, cb)
+    _cCallbacks[event] = cb
+end
+
+local function DoClientCallback(event, extraId, data)
+    if _cCallbacks[event] ~= nil then
+        CreateThread(function()
+            _cCallbacks[event](data, function(...)
+                TriggerLatentServerEvent('Callbacks:Server:ReceiveCallback', 50000, event, extraId, ...)
             end)
-        end
-    end,
-}
+        end)
+    end
+end
+
+exports('ServerCallback', ServerCallback)
+exports('RegisterClientCallback', RegisterClientCallback)
+exports('DoClientCallback', DoClientCallback)
 
 RegisterNetEvent('Callbacks:Client:TriggerEvent')
 AddEventHandler('Callbacks:Client:TriggerEvent', function(event, data, extraId)
     if data == nil then data = {} end
-    COMPONENTS.Callbacks:DoClientCallback(event, extraId, data)
+    DoClientCallback(event, extraId, data)
 end)
 
 RegisterNetEvent('Callbacks:Client:ReceiveCallback')

@@ -420,7 +420,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
     GlobalState["Casino:BlackjackConfig"] = _blackjackTables
 
-    Callbacks:RegisterServerCallback("Casino:JoinBlackjack", function(source, chairId, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:JoinBlackjack", function(source, chairId, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or _blackjackPlayers[source] then
             return cb(false)
@@ -457,7 +457,7 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:LeaveBlackjack", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:LeaveBlackjack", function(source, data, cb)
         --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local blackjackPlayer = _blackjackPlayers[source]
         if not blackjackPlayer then
@@ -475,7 +475,7 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:StartBlackjack", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:StartBlackjack", function(source, data, cb)
         local blackjackPlayer = _blackjackPlayers[source]
         if not blackjackPlayer then
             return cb(false)
@@ -491,7 +491,7 @@ AddEventHandler("Casino:Server:Startup", function()
     end)
 
     -- Bet Confirmation
-    Callbacks:RegisterServerCallback("Casino:BetBlackjack", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:BetBlackjack", function(source, data, cb)
         --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local blackjackPlayer = _blackjackPlayers[source]
         if not blackjackPlayer then
@@ -533,7 +533,7 @@ end
 
 function GetHitStandResponse(src, currentHand, canDouble, currentBet)
     local p = promise.new()
-    Callbacks:ClientCallback(src, "Casino:Client:RequestHitStand",
+    exports["sandbox-base"]:ClientCallback(src, "Casino:Client:RequestHitStand",
         { currentHand = currentHand, canDouble = canDouble, currentBet = currentBet }, function(success, state)
             if p then
                 p:resolve({ success = success, state = state })

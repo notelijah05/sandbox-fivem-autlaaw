@@ -47,7 +47,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		},
 	})
 
-	Callbacks:RegisterServerCallback("WeedRun:Enable", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("WeedRun:Enable", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if not hasValue(states, "SCRIPT_WEED_RUN") then
@@ -65,7 +65,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("WeedRun:Disable", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("WeedRun:Disable", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if hasValue(states, "SCRIPT_WEED_RUN") then
@@ -79,7 +79,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("WeedRun:StartDropoff", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("WeedRun:StartDropoff", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			TriggerEvent("EmergencyAlerts:Server:ServerDoPredefined", source, "oxysale")
 			cb(true)
@@ -88,7 +88,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("WeedRun:DoDropoff", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("WeedRun:DoDropoff", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then

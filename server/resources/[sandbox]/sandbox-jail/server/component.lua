@@ -5,7 +5,6 @@ local lastRefreshed = 0
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
@@ -28,7 +27,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Middleware",
-		"Callbacks",
 		"Logger",
 		"Execute",
 		"Routing",
@@ -180,7 +178,7 @@ _JAIL = {
 
 			TriggerClientEvent("Jail:Client:Jailed", target)
 			Pwnzor.Players:TempPosIgnore(target)
-			Callbacks:ClientCallback(target, "Jail:DoMugshot", {
+			exports["sandbox-base"]:ClientCallback(target, "Jail:DoMugshot", {
 				jailer = jailerName,
 				duration = duration,
 				date = os.date("%c"),

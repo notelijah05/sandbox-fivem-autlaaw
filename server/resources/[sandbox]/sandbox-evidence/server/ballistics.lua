@@ -1,5 +1,5 @@
 function RegisterBallisticsCallbacks()
-	Callbacks:RegisterServerCallback("Evidence:Ballistics:FileGun", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Evidence:Ballistics:FileGun", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.slotNum and data.serial then
 			-- Files a Gun So Evidence Can Be Found
@@ -61,7 +61,7 @@ end
 function RegisterBallisticsItemUses()
 	Inventory.Items:RegisterUse("evidence-projectile", "Evidence", function(source, itemData)
 		if itemData and itemData.MetaData and itemData.MetaData.EvidenceId and itemData.MetaData.EvidenceWeapon then
-			Callbacks:ClientCallback(source, "Polyzone:IsCoordsInZone", {
+			exports["sandbox-base"]:ClientCallback(source, "Polyzone:IsCoordsInZone", {
 				coords = GetEntityCoords(GetPlayerPed(source)),
 				key = "ballistics",
 				val = true,
@@ -120,7 +120,7 @@ function RegisterBallisticsItemUses()
 
 	Inventory.Items:RegisterUse("evidence-dna", "Evidence", function(source, itemData)
 		if itemData and itemData.MetaData and itemData.MetaData.EvidenceId and itemData.MetaData.EvidenceDNA then
-			Callbacks:ClientCallback(source, "Polyzone:IsCoordsInZone", {
+			exports["sandbox-base"]:ClientCallback(source, "Polyzone:IsCoordsInZone", {
 				coords = GetEntityCoords(GetPlayerPed(source)),
 				key = "dna",
 				val = true,
@@ -283,7 +283,7 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 									end
 
 									Inventory.Ballistics:Clear(source, data.owner, data.invType)
-									Callbacks:ClientCallback(source, "Evidence:RunBallistics", {
+									exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 										true,
 										false,
 										GetMatchingEvidenceProjectiles(firearmRecord.serial),
@@ -294,7 +294,7 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 								end
 							else
 								Inventory.Ballistics:Clear(source, data.owner, data.invType)
-								Callbacks:ClientCallback(source, "Evidence:RunBallistics", {
+								exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 									true,
 									true,
 									GetMatchingEvidenceProjectiles(firearmRecord.serial),
@@ -304,7 +304,7 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 							end
 						else
 							Inventory.Ballistics:Clear(source, data.owner, data.invType)
-							Callbacks:ClientCallback(source, "Evidence:RunBallistics", {
+							exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 								false,
 								false,
 								false,

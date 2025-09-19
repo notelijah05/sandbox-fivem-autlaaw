@@ -148,7 +148,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						)
 					else
 						_robbers[_joiners[source]].state = 3
-						Callbacks:ClientCallback(
+						exports["sandbox-base"]:ClientCallback(
 							source,
 							"HouseRobbery:Lockpick",
 							{ property = _robbers[_joiners[source]].property, tier = _robbers[_joiners[source]].tier },
@@ -219,7 +219,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						)
 					else
 						_robbers[_joiners[source]].state = 3
-						Callbacks:ClientCallback(
+						exports["sandbox-base"]:ClientCallback(
 							source,
 							"HouseRobbery:AdvLockpick",
 							{ property = _robbers[_joiners[source]].property, tier = _robbers[_joiners[source]].tier },
@@ -266,7 +266,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("HouseRobbery:Enable", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("HouseRobbery:Enable", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if not hasValue(states, "SCRIPT_HOUSE_ROBBERY") then
@@ -284,7 +284,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("HouseRobbery:Disable", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("HouseRobbery:Disable", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if hasValue(states, "SCRIPT_HOUSE_ROBBERY") then
@@ -298,7 +298,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("HouseRobbery:ArrivedNear", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("HouseRobbery:ArrivedNear", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
@@ -315,7 +315,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("HouseRobbery:BreakIn", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("HouseRobbery:BreakIn", function(source, data, cb)
 		if _robbers[_joiners[source]].state == 4 then
 			Pwnzor.Players:TempPosIgnore(source)
 			local routeId = Routing:RequestRouteId("Robbery:Properties:" .. _robbers[_joiners[source]].property, false)
@@ -352,7 +352,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("HouseRobbery:Exit", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("HouseRobbery:Exit", function(source, data, cb)
 		Pwnzor.Players:TempPosIgnore(source)
 		local intr = nil
 		if _joiners[source] and _robbers[_joiners[source]] then
@@ -378,7 +378,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		GlobalState[string.format("%s:RobbingHouse", source)] = nil
 	end)
 
-	Callbacks:RegisterServerCallback("HouseRobbery:HackAlarm", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("HouseRobbery:HackAlarm", function(source, data, cb)
 		if
 			_joiners[source] ~= nil
 			and _robbers[_joiners[source]] ~= nil
@@ -407,7 +407,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("HouseRobbery:Search", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("HouseRobbery:Search", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB

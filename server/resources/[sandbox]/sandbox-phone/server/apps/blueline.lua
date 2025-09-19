@@ -252,7 +252,7 @@ RegisterServerEvent("Phone:Blueline:FinishRace", function(nId, data, laps, plate
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Blueline:GetTrack", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:GetTrack", function(src, data, cb)
 		for k, v in ipairs(_tracks) do
 			if v.id == data then
 				cb(v)
@@ -262,7 +262,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		cb(nil)
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:SaveTrack", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:SaveTrack", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = tostring(char:GetData("Callsign"))
 
@@ -295,7 +295,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:DeleteTrack", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:DeleteTrack", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = tostring(char:GetData("Callsign"))
 		if alias ~= nil then
@@ -326,7 +326,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:ResetTrackHistory", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:ResetTrackHistory", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = tostring(char:GetData("Callsign"))
 		if alias ~= nil then
@@ -340,7 +340,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:CreateRace", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:CreateRace", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if Jobs.Permissions:HasJob(src, "police", false, false, false, false, "PD_MANAGE_TRIALS") then
 			data.host_id = char:GetData("SID")
@@ -404,7 +404,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:CancelRace", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:CancelRace", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		if _races[data].host_id == char:GetData("SID") then
@@ -420,7 +420,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:StartRace", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:StartRace", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if _races[data].host_id == char:GetData("SID") then
 			local ploc = GetEntityCoords(GetPlayerPed(src))
@@ -449,7 +449,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:EndRace", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:EndRace", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		if _races[data].host_id == char:GetData("SID") then
@@ -459,7 +459,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:JoinRace", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:JoinRace", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = tostring(char:GetData("Callsign"))
 
@@ -499,7 +499,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:LeaveRace", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:LeaveRace", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = tostring(char:GetData("Callsign"))
 

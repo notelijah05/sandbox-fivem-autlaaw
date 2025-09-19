@@ -2,7 +2,6 @@ local _r = false
 
 AddEventHandler("Pwnzor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
@@ -10,7 +9,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Pwnzor", {
-		"Callbacks",
 		"Notification",
 		"Weapons",
 		"Input",
@@ -24,7 +22,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			RegisterEvents()
 			RegisterCommands()
 
-			-- Callbacks:ServerCallback("Commands:ValidateAdmin", {}, function(isAdmin)
+			-- exports["sandbox-base"]:ServerCallback("Commands:ValidateAdmin", {}, function(isAdmin)
 			-- 	if not isAdmin then
 			-- 		CreateThread(function()
 			-- 			while _r do

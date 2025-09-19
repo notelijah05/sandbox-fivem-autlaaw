@@ -1,6 +1,5 @@
 AddEventHandler("Fitment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -9,7 +8,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Fitment", {
 		"Logger",
-		"Callbacks",
 		"Utils",
 		"Inventory",
 	}, function(error)
@@ -19,7 +17,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RetrieveComponents()
 
 		Inventory.Items:RegisterUse("camber_controller", "Vehicles", function(source, item)
-			Callbacks:ClientCallback(source, "Vehicles:UseCamberController", {}, function(veh)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:UseCamberController", {}, function(veh)
 				if not veh then
 					return
 				end

@@ -1,7 +1,6 @@
 AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -35,7 +34,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
 		"Logger",
-		"Callbacks",
 		"Game",
 		"Phone",
 		"PedInteraction",
@@ -103,32 +101,32 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 AddEventHandler("Labor:Client:AcceptRequest", function(data)
-	Callbacks:ServerCallback("Labor:AcceptRequest", data)
+	exports["sandbox-base"]:ServerCallback("Labor:AcceptRequest", data)
 end)
 
 AddEventHandler("Labor:Client:DeclineRequest", function(data)
-	Callbacks:ServerCallback("Labor:DeclineRequest", data)
+	exports["sandbox-base"]:ServerCallback("Labor:DeclineRequest", data)
 end)
 
 LABOR = {
 	Get = {
 		Jobs = function(self)
 			local p = promise.new()
-			Callbacks:ServerCallback("Labor:GetJobs", {}, function(jobs)
+			exports["sandbox-base"]:ServerCallback("Labor:GetJobs", {}, function(jobs)
 				p:resolve(jobs)
 			end)
 			return Citizen.Await(p)
 		end,
 		Groups = function(self)
 			local p = promise.new()
-			Callbacks:ServerCallback("Labor:GetGroups", {}, function(groups)
+			exports["sandbox-base"]:ServerCallback("Labor:GetGroups", {}, function(groups)
 				p:resolve(groups)
 			end)
 			return Citizen.Await(p)
 		end,
 		Reputations = function(self)
 			local p = promise.new()
-			Callbacks:ServerCallback("Labor:GetReputations", {}, function(jobs)
+			exports["sandbox-base"]:ServerCallback("Labor:GetReputations", {}, function(jobs)
 				p:resolve(jobs)
 			end)
 			return Citizen.Await(p)

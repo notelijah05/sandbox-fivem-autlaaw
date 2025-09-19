@@ -257,7 +257,7 @@ VEHICLE = {
 							if #(startCoords - GetEntityCoords(GLOBAL_PED)) <= 2.0 then
 								SetVehicleHasBeenOwnedByPlayer(vehicle, true)
 								SetEntityAsMissionEntity(vehicle, true, true)
-								Callbacks:ServerCallback("Vehicles:BreakOpenLock", {
+								exports["sandbox-base"]:ServerCallback("Vehicles:BreakOpenLock", {
 									netId = VehToNet(vehicle),
 								}, function(success)
 									Notification:Success("You Managed to Unlock the Vehicle", 3000, "key")
@@ -406,7 +406,7 @@ VEHICLE = {
 							return cb(true, false)
 						end
 
-						Callbacks:ServerCallback("Vehicles:BreakOpenLock", {
+						exports["sandbox-base"]:ServerCallback("Vehicles:BreakOpenLock", {
 							netId = VehToNet(vehicle),
 						}, function(success)
 							if success then
@@ -506,7 +506,7 @@ VEHICLE = {
 							return cb(true, false)
 						end
 
-						Callbacks:ServerCallback("Vehicles:GetKeys", vehEnt.state.VIN, function(success)
+						exports["sandbox-base"]:ServerCallback("Vehicles:GetKeys", vehEnt.state.VIN, function(success)
 							Notification:Success("Lockpicked Vehicle Ignition", 3000, 'key')
 							Action:Show('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
 							_actionShowing = true
@@ -553,7 +553,7 @@ VEHICLE = {
 								SetVehicleHasBeenOwnedByPlayer(vehicle, true)
 								SetEntityAsMissionEntity(vehicle, true, true)
 
-								Callbacks:ServerCallback("Vehicles:BreakOpenLock", {
+								exports["sandbox-base"]:ServerCallback("Vehicles:BreakOpenLock", {
 									netId = VehToNet(vehicle),
 								}, function(success)
 									if success then
@@ -621,13 +621,15 @@ VEHICLE = {
 									return cb(true, false)
 								end
 
-								Callbacks:ServerCallback("Vehicles:GetKeys", vehEnt.state.VIN, function(success)
-									Notification:Success("Vehicle Ignition Bypassed", 3000, 'key')
-									Action:Show('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
-									_actionShowing = true
+								exports["sandbox-base"]:ServerCallback("Vehicles:GetKeys", vehEnt.state.VIN,
+									function(success)
+										Notification:Success("Vehicle Ignition Bypassed", 3000, 'key')
+										Action:Show('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
+										_actionShowing = true
 
-									TriggerEvent("Laptop:Client:LSUnderground:Boosting:SuccessIgnition", VEHICLE_INSIDE)
-								end)
+										TriggerEvent("Laptop:Client:LSUnderground:Boosting:SuccessIgnition",
+											VEHICLE_INSIDE)
+									end)
 
 								cb(true, true)
 							else
@@ -756,7 +758,7 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh, seat)
 	if vehEnt.state.VEH_IGNITION then
 		if not vehEnt.state.PlayerDriven then -- It was stolen directly with a ped in it, get keys
 			Vehicles.Engine:Force(VEHICLE_INSIDE, true)
-			Callbacks:ServerCallback('Vehicles:GetKeys', vehEnt.state.VIN, function()
+			exports["sandbox-base"]:ServerCallback('Vehicles:GetKeys', vehEnt.state.VIN, function()
 				Notification:Success('You found the keys in the vehicle', 3000, 'key')
 			end)
 		end
@@ -849,7 +851,7 @@ RegisterNetEvent("Vehicles:Client:AttemptSlimJim", function()
 end)
 
 AddEventHandler("Vehicles:Client:StartUp", function()
-	Callbacks:RegisterClientCallback("Vehicles:Slimjim", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:Slimjim", function(data, cb)
 		print("Vehicles:Slimjim")
 		if _characterLoaded and LocalPlayer.state.onDuty == "police" then
 			if not VEHICLE_INSIDE then
@@ -878,7 +880,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		end
 	end)
 
-	Callbacks:RegisterClientCallback("Vehicles:Lockpick", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:Lockpick", function(data, cb)
 		if _characterLoaded then
 			if VEHICLE_INSIDE then
 				if VEHICLE_SEAT == -1 then
@@ -920,7 +922,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		end
 	end)
 
-	Callbacks:RegisterClientCallback("Vehicles:AdvLockpick", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:AdvLockpick", function(data, cb)
 		if _characterLoaded then
 			if VEHICLE_INSIDE then
 				if VEHICLE_SEAT == -1 then
@@ -962,7 +964,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		end
 	end)
 
-	Callbacks:RegisterClientCallback("Vehicles:Hack", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:Hack", function(data, cb)
 		if _characterLoaded then
 			if VEHICLE_INSIDE then
 				if VEHICLE_SEAT == -1 then
@@ -999,7 +1001,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		end
 	end)
 
-	Callbacks:RegisterClientCallback("Vehicles:AdvHack", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:AdvHack", function(data, cb)
 		if _characterLoaded then
 			if VEHICLE_INSIDE then
 				if VEHICLE_SEAT == -1 then

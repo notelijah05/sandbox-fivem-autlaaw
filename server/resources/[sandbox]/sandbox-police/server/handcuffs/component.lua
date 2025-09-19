@@ -1,7 +1,6 @@
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", HandcuffsComponents)
 function HandcuffsComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
@@ -18,7 +17,6 @@ end)
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
 		"Middleware",
-		"Callbacks",
 		"Logger",
 		"Sounds",
 		"Handcuffs",
@@ -39,7 +37,7 @@ end)
 
 function DoCuff(source, target, isHardCuffed, isForced)
 	TriggerClientEvent("Handcuffs:Client:CuffingAnim", source)
-	Callbacks:ClientCallback(target, "Handcuffs:DoCuff", {
+	exports["sandbox-base"]:ClientCallback(target, "Handcuffs:DoCuff", {
 		cuffer = source,
 		isHardCuffed = isHardCuffed,
 		forced = isForced,
@@ -163,7 +161,7 @@ _HANDCUFFS = {
 		end
 	end,
 	ToggleCuffs = function(self, source)
-		Callbacks:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
+		exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
 			if target ~= nil then
 				if not Player(target).state.isCuffed then
 					local myPos = GetEntityCoords(GetPlayerPed(source))
@@ -182,7 +180,7 @@ _HANDCUFFS = {
 		end)
 	end,
 	SoftCuff = function(self, source)
-		Callbacks:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
+		exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
 			if target ~= nil then
 				if not Player(target).state.isCuffed then
 					local myPos = GetEntityCoords(GetPlayerPed(source))
@@ -210,7 +208,7 @@ _HANDCUFFS = {
 		Execute:Client(source, "Notification", "Error", "Nobody Around To Cuff")
 	end,
 	HardCuff = function(self, source)
-		Callbacks:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
+		exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
 			if target ~= nil then
 				if not Player(target).state.isCuffed then
 					local myPos = GetEntityCoords(GetPlayerPed(source))
@@ -238,7 +236,7 @@ _HANDCUFFS = {
 		Execute:Client(source, "Notification", "Error", "Nobody Around To Cuff")
 	end,
 	Uncuff = function(self, source)
-		Callbacks:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
+		exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
 			if target ~= nil then
 				if Player(target).state.isCuffed then
 					Handcuffs:UncuffTarget(source, target)
@@ -251,7 +249,7 @@ _HANDCUFFS = {
 		end)
 	end,
 	UncuffTarget = function(self, source, target)
-		Callbacks:ClientCallback(target, "Handcuffs:VehCheck", {}, function(inVeh)
+		exports["sandbox-base"]:ClientCallback(target, "Handcuffs:VehCheck", {}, function(inVeh)
 			if not inVeh then
 				if source ~= -1 then
 					TriggerClientEvent("Handcuffs:Client:UncuffingAnim", source)

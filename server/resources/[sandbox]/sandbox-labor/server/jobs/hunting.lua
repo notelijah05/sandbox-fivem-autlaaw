@@ -28,7 +28,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		{ id = 7, item = "exotic_bait",  price = 1000, qty = -1, vpn = false, rep = "Hunting", repLvl = 7, },
 	}, "badge-dollar", "Hunting")
 
-	Callbacks:RegisterServerCallback("Hunting:StartJob", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hunting:StartJob", function(source, data, cb)
 		if _hunting[data] ~= nil and _hunting[data].state == 0 then
 			_hunting[_joiners[source]].state = 1
 			Labor.Offers:Start(_joiners[source], _JOB, "Harvest Animals", 6)
@@ -39,7 +39,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Hunting:FinishJob", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hunting:FinishJob", function(source, data, cb)
 		if _joiners[source] ~= nil and _hunting[_joiners[source]].state == 2 then
 			_hunting[_joiners[source]].state = 3
 			Labor.Workgroups:SendEvent(_joiners[source], string.format("Hunting:Client:%s:FinishJob", _joiners[source]))
@@ -50,7 +50,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Hunting:HarvestAnimal", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hunting:HarvestAnimal", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local luck = math.random(100)
 		local animal = data.animal
@@ -88,8 +88,8 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Hunting:GenerateAnimal", function(source, data, cb)
-		Callbacks:ClientCallback(source, "Polyzone:GetAllZonesPlayerIn", {}, function(zones)
+	exports["sandbox-base"]:RegisterServerCallback("Hunting:GenerateAnimal", function(source, data, cb)
+		exports["sandbox-base"]:ClientCallback(source, "Polyzone:GetAllZonesPlayerIn", {}, function(zones)
 			local found = false
 			for _, zone in ipairs(zones) do
 				if zone and string.sub(zone.id, 1, string.len("hunting")) == "hunting" then
@@ -120,7 +120,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("Hunting:Sell", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hunting:Sell", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local repLvl = Reputation:GetLevel(source, _JOB)
 
@@ -144,14 +144,14 @@ end)
 function RegisterHuntingItems()
 	Inventory.Items:RegisterUse("hunting_map_dark", "HuntingMap", function(source, itemData)
 		if itemData then
-			Callbacks:ClientCallback(source, "Hunting:Client:CanShowMap", itemData, function(canShow)
+			exports["sandbox-base"]:ClientCallback(source, "Hunting:Client:CanShowMap", itemData, function(canShow)
 				TriggerClientEvent("Hunting:Client:ShowMap", source, itemData)
 			end)
 		end
 	end)
 	Inventory.Items:RegisterUse("hunting_map_light", "HuntingMap", function(source, itemData)
 		if itemData then
-			Callbacks:ClientCallback(source, "Hunting:Client:CanShowMap", itemData, function(canShow)
+			exports["sandbox-base"]:ClientCallback(source, "Hunting:Client:CanShowMap", itemData, function(canShow)
 				TriggerClientEvent("Hunting:Client:ShowMap", source, itemData)
 			end)
 		end
@@ -164,18 +164,19 @@ function RegisterHuntingItems()
 				or (os.time() - _baitCds[source]) >= HuntingConfig.Baits[item.Name].cooldown * 60
 			then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
-				Callbacks:ClientCallback(source, "Polyzone:GetAllZonesPlayerIn", {}, function(zones)
+				exports["sandbox-base"]:ClientCallback(source, "Polyzone:GetAllZonesPlayerIn", {}, function(zones)
 					local found = false
 					for _, zone in ipairs(zones) do
 						if zone and string.sub(zone.id, 1, string.len("hunting")) == "hunting" then
 							local zoneId = tonumber(string.sub(zone.id, string.len("hunting") + 1))
 							if HuntingConfig.Zones[zoneId] ~= nil then
-								Callbacks:ClientCallback(source, "Hunting:PlaceTrap", item.Name, function(successful)
-									if successful then
-										_baitCds[source] = os.time()
-										Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
-									end
-								end)
+								exports["sandbox-base"]:ClientCallback(source, "Hunting:PlaceTrap", item.Name,
+									function(successful)
+										if successful then
+											_baitCds[source] = os.time()
+											Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+										end
+									end)
 
 								found = true
 								break

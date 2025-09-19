@@ -99,7 +99,7 @@ AddEventHandler("Labor:Client:Setup", function()
 		},
 	}, "trash")
 
-	Callbacks:RegisterClientCallback("Garbage:DoingSomeAction", function(item, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Garbage:DoingSomeAction", function(item, cb)
 		local ped = PlayerPedId()
 		if item == "grabTrash" then
 			Animations.Emotes:Play("garbage", false, nil, true)
@@ -199,7 +199,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 			GarbageObject = nil
 		end
 
-		Callbacks:ServerCallback("Garbage:TrashGrab", ObjToNet(entity.entity), function(s)
+		exports["sandbox-base"]:ServerCallback("Garbage:TrashGrab", ObjToNet(entity.entity), function(s)
 			if s then
 				LocalPlayer.state.carryingGarbabge = true
 			end
@@ -207,7 +207,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["toss-gabrage"] = AddEventHandler("Garbage:Client:TossBag", function()
-		Callbacks:ServerCallback("Garbage:TrashPutIn", {}, function(s)
+		exports["sandbox-base"]:ServerCallback("Garbage:TrashPutIn", {}, function(s)
 			if s then
 				LocalPlayer.state.carryingGarbabge = false
 			end
@@ -215,7 +215,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["spawn-truck"] = AddEventHandler("Garbage:Client:GarbageSpawn", function()
-		Callbacks:ServerCallback("Garbage:GarbageSpawn", {}, function(netId)
+		exports["sandbox-base"]:ServerCallback("Garbage:GarbageSpawn", {}, function(netId)
 			if netId == false then
 				Notification:Error("Attempting to spawn garbage truck you pepega.")
 				return
@@ -225,7 +225,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["despawn-truck"] = AddEventHandler("Garbage:Client:GarbageSpawnRemove", function()
-		Callbacks:ServerCallback("Garbage:GarbageSpawnRemove", {})
+		exports["sandbox-base"]:ServerCallback("Garbage:GarbageSpawnRemove", {})
 	end)
 
 	eventHandlers["return-truck"] = RegisterNetEvent(string.format("Garbage:Client:%s:ReturnTruck", joiner), function()
@@ -233,12 +233,12 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["turn-in"] = AddEventHandler("Garbage:Client:TurnIn", function()
-		Callbacks:ServerCallback("Garbage:TurnIn", _joiner)
+		exports["sandbox-base"]:ServerCallback("Garbage:TurnIn", _joiner)
 	end)
 end)
 
 AddEventHandler("Garbage:Client:StartJob", function()
-	Callbacks:ServerCallback("Garbage:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("Garbage:StartJob", _joiner, function(state)
 		if not state then
 			Notification:Error("Unable To Start Job")
 		end
@@ -246,7 +246,7 @@ AddEventHandler("Garbage:Client:StartJob", function()
 end)
 
 AddEventHandler("Garbage:Client:Buy", function()
-	Callbacks:ServerCallback("Gabage:Pawn:Buy", {}, function(items)
+	exports["sandbox-base"]:ServerCallback("Gabage:Pawn:Buy", {}, function(items)
 		local itemList = {}
 
 		for k, v in ipairs(items) do
@@ -279,7 +279,7 @@ AddEventHandler("Garbage:Client:Buy", function()
 end)
 
 AddEventHandler("Garbage:Client:Pawn:BuyLimited", function(data)
-	Callbacks:ServerCallback("Garbage:Pawn:BuyLimited", data)
+	exports["sandbox-base"]:ServerCallback("Garbage:Pawn:BuyLimited", data)
 end)
 
 RegisterNetEvent("Garbage:Client:OffDuty", function(time)

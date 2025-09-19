@@ -173,7 +173,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Phone:CreateCall", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Phone:CreateCall", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if _calls[src] == nil and char:GetData("Phone") ~= data.number then
 			local callingContact = Phone.Contacts:IsContact(char:GetData("SID"), data.number)
@@ -424,7 +424,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Phone:AcceptCall", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Phone:AcceptCall", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		if _calls[src] ~= nil then
@@ -516,18 +516,18 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Phone:EndCall", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Phone:EndCall", function(src, data, cb)
 		Phone.Call:End(src)
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Phone:ReadCalls", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Phone:ReadCalls", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if char ~= nil then
 			Phone.Call:Read(char:GetData("Phone"))
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:MuteBiz", function(source, id, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:MuteBiz", function(source, id, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and id and _bizPhones[id] and Jobs.Permissions:HasJob(source, _bizPhones[id].job) then
 			if GlobalState[string.format("BizPhone:%s:Muted", id)] then
@@ -544,7 +544,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:DeclineBizCall", function(source, id, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:DeclineBizCall", function(source, id, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and id and _bizPhones[id] and _bizPhones[id].call and Jobs.Permissions:HasJob(source, _bizPhones[id].job) then
 			Phone.Call:End(-1, id)
@@ -553,7 +553,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:AcceptBizCall", function(source, id, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:AcceptBizCall", function(source, id, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and not _calls[source] and id and _bizPhones[id] and _bizPhones[id].call and not _bizPhones[id].call.outgoing and Jobs.Permissions:HasJob(source, _bizPhones[id].job) then
 			if not _bizPhones[id].call.handler then
@@ -602,7 +602,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:MakeBizCall", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:MakeBizCall", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and data and data.id and data.number and _bizPhones[data.id] and not _bizPhones[data.id].call and Jobs.Permissions:HasJob(source, _bizPhones[data.id].job) and data.number ~= char:GetData("Phone") then
 			local target = exports['sandbox-characters']:FetchCharacterData("Phone", data.number)

@@ -67,7 +67,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 	GlobalState.LSUPickupLocation = locations[math.random(#locations)]
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:GetDetails", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:GetDetails", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local chopLevel = Reputation:GetLevel(source, "Chopping")
@@ -133,7 +133,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Market:Checkout", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Market:Checkout", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and data and #data > 0 then
 			if os.time() > _timeDelay then
@@ -252,7 +252,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Market:Collect", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Market:Collect", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pendingPickup = _pendingMarketPickups[char:GetData("SID")]

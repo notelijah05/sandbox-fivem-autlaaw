@@ -1,5 +1,5 @@
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Home:CreateDigiKey", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Home:CreateDigiKey", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local property = Properties:Get(data.id)
@@ -93,7 +93,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Home:RevokeDigiKey", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Home:RevokeDigiKey", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local property = Properties:Get(data.id)
@@ -130,7 +130,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Home:RemoveMyKey", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Home:RemoveMyKey", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local property = Properties:Get(data.id)
@@ -164,7 +164,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Home:LockProperty", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Home:LockProperty", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local property = Properties:Get(data.id)

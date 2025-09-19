@@ -251,7 +251,7 @@ _MDT.Vehicles = {
 }
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("MDT:Search:vehicle", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Search:vehicle", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
 			cb(MDT.Vehicles:Search(data.term, data.page, data.perPage))
 		else
@@ -259,7 +259,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:View:vehicle", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:View:vehicle", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
 			cb(MDT.Vehicles:View(data))
 		else
@@ -267,7 +267,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Create:vehicle-flag", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Create:vehicle-flag", function(source, data, cb)
 		if CheckMDTPermissions(source, false, 'police') then
 			cb(MDT.Vehicles.Flags:Add(data.parent, data.doc, data.plate))
 		else
@@ -275,7 +275,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Delete:vehicle-flag", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Delete:vehicle-flag", function(source, data, cb)
 		if CheckMDTPermissions(source, false, 'police') then
 			cb(MDT.Vehicles.Flags:Remove(data.parent, data.id, data.plate, data.removeRadarFlag))
 		else
@@ -283,7 +283,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Update:vehicle-strikes", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Update:vehicle-strikes", function(source, data, cb)
 		if CheckMDTPermissions(source, false, 'police') then
 			cb(MDT.Vehicles:UpdateStrikes(data.VIN, data.strikes))
 		else

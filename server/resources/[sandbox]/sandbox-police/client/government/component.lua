@@ -14,7 +14,6 @@ local govDutyPoints = {
 
 AddEventHandler("Police:Shared:DependencyUpdate", GovComponents)
 function GovComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
@@ -27,7 +26,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Callbacks",
 		"Inventory",
 		"Notification",
 		"Blips",

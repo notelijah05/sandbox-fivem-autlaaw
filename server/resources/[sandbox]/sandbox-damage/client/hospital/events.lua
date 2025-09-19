@@ -151,7 +151,7 @@ AddEventHandler("Hospital:Client:LaydownAnimation", function(hitting, coords)
 end)
 
 AddEventHandler("Hospital:Client:RetreiveItems", function()
-	Callbacks:ServerCallback("Hospital:RetreiveItems")
+	exports["sandbox-base"]:ServerCallback("Hospital:RetreiveItems")
 end)
 
 AddEventHandler("Hospital:Client:HiddenRevive", function(entity, data)
@@ -173,7 +173,7 @@ AddEventHandler("Hospital:Client:HiddenRevive", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Hospital:HiddenRevive", {}, function(s)
+			exports["sandbox-base"]:ServerCallback("Hospital:HiddenRevive", {}, function(s)
 				if s then
 					Escort:StopEscort()
 				end
@@ -218,7 +218,7 @@ AddEventHandler("Hospital:Client:CheckIn", function()
 end)
 
 RegisterNetEvent("Hospital:Client:GetOut", function()
-	Callbacks:ServerCallback("Hospital:LeaveBed", {}, function()
+	exports["sandbox-base"]:ServerCallback("Hospital:LeaveBed", {}, function()
 		_doing = false
 		LeaveBed()
 	end)

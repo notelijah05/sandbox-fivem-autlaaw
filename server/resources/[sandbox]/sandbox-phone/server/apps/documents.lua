@@ -154,26 +154,26 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Documents:Create", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Documents:Create", function(source, data, cb)
 		cb(Phone.Documents:Create(source, data))
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Documents:Edit", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Documents:Edit", function(source, data, cb)
 		cb(Phone.Documents:Edit(source, data.id, data.data))
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Documents:Delete", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Documents:Delete", function(source, data, cb)
 		cb(Phone.Documents:Delete(source, data))
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Documents:Refresh", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Documents:Refresh", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			cb("myDocuments", GetDocuments(char:GetData("SID")))
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Documents:Share", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Documents:Share", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.type and data.document then
 			local target = nil
@@ -263,7 +263,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Documents:RecieveShare", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Documents:RecieveShare", function(source, data, cb)
 		if data then
 			if data.isCopy then
 				cb(Phone.Documents:Create(source, data.document))
@@ -352,7 +352,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Documents:Sign", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Documents:Sign", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local signName = string.format("%s %s", char:GetData("First"):sub(1, 1), char:GetData("Last"))
@@ -395,7 +395,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Documents:GetSignatures", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Documents:GetSignatures", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local signers = MySQL.rawExecute.await(

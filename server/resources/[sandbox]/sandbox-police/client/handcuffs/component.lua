@@ -4,7 +4,6 @@ local MAX_CUFF_ATTEMPTS = 2
 
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", HandcuffComponents)
 function HandcuffComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
@@ -14,7 +13,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
-		"Callbacks",
 		"Inventory",
 		"PedInteraction",
 		"Minigame",
@@ -26,11 +24,11 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		HandcuffComponents()
 
-		Callbacks:RegisterClientCallback("Handcuffs:VehCheck", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Handcuffs:VehCheck", function(data, cb)
 			cb(IsPedInAnyVehicle(LocalPlayer.state.ped))
 		end)
 
-		Callbacks:RegisterClientCallback("Handcuffs:DoCuff", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Handcuffs:DoCuff", function(data, cb)
 			if not IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
 				if _cuffPromise == nil then
 					if not LocalPlayer.state.isCuffed then

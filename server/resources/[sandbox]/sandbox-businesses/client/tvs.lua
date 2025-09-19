@@ -179,7 +179,7 @@ end)
 
 AddEventHandler('TVs:Client:SetLink', function(e, data)
     local tvLink = GetNewTVLink()
-    Callbacks:ServerCallback('TVs:UpdateTVLink', {
+    exports["sandbox-base"]:ServerCallback('TVs:UpdateTVLink', {
         tv = data,
         link = tvLink
     }, function(success)

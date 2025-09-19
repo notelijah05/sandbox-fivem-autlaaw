@@ -6,7 +6,7 @@ local CAR_BOMB_SPEED = 0
 local CAR_BOMB_TICK_MAX = 0
 
 AddEventHandler('Vehicles:Client:StartUp', function()
-    Callbacks:RegisterClientCallback('Vehicles:UseCarBomb', function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback('Vehicles:UseCarBomb', function(data, cb)
         local target = Targeting:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
             if Vehicles.Utils:IsCloseToVehicle(target.entity) then

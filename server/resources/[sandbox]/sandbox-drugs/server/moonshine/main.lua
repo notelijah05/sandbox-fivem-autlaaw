@@ -31,7 +31,7 @@ _DRUGS.Moonshine = {
         end,
         Get = function(self, stillId)
             return MySQL.single.await(
-            'SELECT id, tier, created, cooldown, active_cook FROM moonshine_stills WHERE id = ?', { stillId })
+                'SELECT id, tier, created, cooldown, active_cook FROM moonshine_stills WHERE id = ?', { stillId })
         end,
         IsPlaced = function(self, stillId)
             return MySQL.scalar.await('SELECT COUNT(still_id) as Count FROM placed_moonshine_stills WHERE still_id = ?',
@@ -42,7 +42,7 @@ _DRUGS.Moonshine = {
             local stillData = _DRUGS.Moonshine.Still:Get(stillId)
 
             MySQL.insert.await(
-            "INSERT INTO placed_moonshine_stills (still_id, owner, placed, expires, coords, heading) VALUES(?, ?, ?, ?, ?, ?)",
+                "INSERT INTO placed_moonshine_stills (still_id, owner, placed, expires, coords, heading) VALUES(?, ?, ?, ?, ?, ?)",
                 {
                     stillId,
                     owner,
@@ -111,7 +111,7 @@ _DRUGS.Moonshine = {
             local ready = os.time() + (60 * 60 * 24 * 2)
 
             local barrelId = MySQL.insert.await(
-            "INSERT INTO placed_moonshine_barrels (owner, placed, ready, expires, coords, heading, brew_data) VALUES(?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO placed_moonshine_barrels (owner, placed, ready, expires, coords, heading, brew_data) VALUES(?, ?, ?, ?, ?, ?, ?)",
                 {
                     owner,
                     os.time(),
@@ -222,7 +222,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         TriggerLatentClientEvent("Drugs:Client:Moonshine:SetupBarrels", source, 50000, _placedBarrels)
     end, 1)
 
-    Callbacks:RegisterServerCallback("Drugs:Moonshine:FinishStillPlacement", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:FinishStillPlacement", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             local still = Inventory:GetItem(data.data)
@@ -242,7 +242,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Moonshine:PickupStill", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:PickupStill", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local pState = Player(source).state
         if char ~= nil then
@@ -269,7 +269,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Moonshine:CheckStill", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:CheckStill", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedStills[data] ~= nil then
@@ -286,7 +286,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Moonshine:StartCooking", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:StartCooking", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedStills[data.stillId] ~= nil then
@@ -313,7 +313,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Moonshine:PickupCook", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:PickupCook", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedStills[data] ~= nil then
@@ -343,7 +343,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Moonshine:GetStillDetails", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:GetStillDetails", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedStills[data] ~= nil then
@@ -410,7 +410,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Moonshine:FinishBarrelPlacement", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:FinishBarrelPlacement", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             local barrel = Inventory:GetItem(data.data)
@@ -429,7 +429,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Moonshine:PickupBarrel", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:PickupBarrel", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local pState = Player(source).state
         if char ~= nil then
@@ -455,7 +455,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Moonshine:GetBarrelDetails", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:GetBarrelDetails", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedBarrels[data] ~= nil then
@@ -492,7 +492,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Moonshine:PickupBrew", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:PickupBrew", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             local sid = char:GetData("SID")
@@ -525,7 +525,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    -- Callbacks:RegisterServerCallback("Drugs:Meth:GetItems", function(source, data, cb)
+    -- exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:GetItems", function(source, data, cb)
     --     local itms = {}
 
     --     local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -541,7 +541,7 @@ AddEventHandler("Drugs:Server:Startup", function()
     --     cb(itms)
     -- end)
 
-    -- Callbacks:RegisterServerCallback("Drugs:Meth:BuyItem", function(source, data, cb)
+    -- exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:BuyItem", function(source, data, cb)
     --     local char = exports['sandbox-characters']:FetchCharacterSource(source)
     --     local hasVpn = hasValue(char:GetData("States"), "PHONE_VPN")
 

@@ -1,9 +1,9 @@
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Mechanic:InstallMultipleRepairParts", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Mechanic:InstallMultipleRepairParts", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data?.part and data?.quantity and _mechanicItemsToParts[data.part] then
 			if Inventory.Items:Has(char:GetData("SID"), 1, data.part, data.quantity) then
-				Callbacks:ClientCallback(source, "Mechanic:StartInstall", data, function(success)
+				exports["sandbox-base"]:ClientCallback(source, "Mechanic:StartInstall", data, function(success)
 					if success then
 						Inventory.Items:Remove(char:GetData("SID"), 1, data.part, data.quantity)
 					end
@@ -16,9 +16,9 @@ function RegisterCallbacks()
 
 		cb(false)
 	end)
-	Callbacks:RegisterServerCallback("Mechanic:RemovePerformanceUpgrade", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Mechanic:RemovePerformanceUpgrade", function(source, data, cb)
 		local partData = data
-		Callbacks:ClientCallback(source, 'Mechanic:StartUpgradeRemoval', partData, function(success, veh)
+		exports["sandbox-base"]:ClientCallback(source, 'Mechanic:StartUpgradeRemoval', partData, function(success, veh)
 			if success and veh then
 				local veh = NetworkGetEntityFromNetworkId(veh)
 				local vehState = Entity(veh)

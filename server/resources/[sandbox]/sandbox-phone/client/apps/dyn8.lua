@@ -1,5 +1,5 @@
 RegisterNUICallback("Dyn8:SearchProperty", function(data, cb)
-	Callbacks:ServerCallback("Phone:Dyn8:Search", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Dyn8:Search", data, cb)
 end)
 
 RegisterNUICallback("Dyn8:MarkProperty", function(data, cb)
@@ -10,15 +10,15 @@ RegisterNUICallback("Dyn8:MarkProperty", function(data, cb)
 	else
 		cb(false)
 	end
-	Callbacks:ServerCallback("Phone:Dyn8:Search", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Dyn8:Search", data, cb)
 end)
 
 RegisterNUICallback("Dyn8:SellProperty", function(data, cb)
 	cb('OK')
-	--Callbacks:ServerCallback("Phone:Dyn8:Sell", data, cb)
+	--exports["sandbox-base"]:ServerCallback("Phone:Dyn8:Sell", data, cb)
 end)
 
 RegisterNUICallback("Dyn8:CheckCredit", function(data, cb)
 	cb('OK')
-	--Callbacks:ServerCallback("Phone:Dyn8:CheckCredit", data, cb)
+	--exports["sandbox-base"]:ServerCallback("Phone:Dyn8:CheckCredit", data, cb)
 end)

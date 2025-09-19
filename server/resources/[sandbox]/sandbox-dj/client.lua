@@ -4,7 +4,6 @@ local Props = {}
 
 AddEventHandler("DJ:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
@@ -12,7 +11,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("DJ", {
-		"Callbacks",
 		"Targeting",
 		"Menu",
 		"Notification",
@@ -89,7 +87,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 		volume = 0,
 	}
 	local p = promise.new()
-	Callbacks:ServerCallback("sandbox-dj:server:songInfo", {}, function(cb)
+	exports["sandbox-base"]:ServerCallback("sandbox-dj:server:songInfo", {}, function(cb)
 		p:resolve(cb)
 	end)
 	previousSongs = Citizen.Await(p)
@@ -159,7 +157,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 		if not string.find(song, "youtu") then
 			song = "https://www.youtube.com/watch?v=" .. song
 		end
-		Callbacks:ServerCallback("sandbox-dj:server:playMusic", {
+		exports["sandbox-base"]:ServerCallback("sandbox-dj:server:playMusic", {
 			song = song,
 			zoneNum = boothId,
 		}, function(success, zoneNum)
@@ -186,7 +184,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 	if xSound:soundExists(booth) then
 		if xSound:isPlaying(booth) then
 			djMenu.Add:Button("Pause Music", { success = true }, function()
-				Callbacks:ServerCallback("sandbox-dj:server:pauseMusic", {
+				exports["sandbox-base"]:ServerCallback("sandbox-dj:server:pauseMusic", {
 					zoneName = booth,
 					zoneNum = boothId,
 				}, function(success)
@@ -199,7 +197,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 			end)
 		elseif xSound:isPaused(booth) then
 			djMenu.Add:Button("Resume Music", { success = true }, function()
-				Callbacks:ServerCallback("sandbox-dj:server:resumeMusic", {
+				exports["sandbox-base"]:ServerCallback("sandbox-dj:server:resumeMusic", {
 					zoneName = booth,
 					zoneNum = boothId,
 				}, function(success)
@@ -234,7 +232,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 			if volume > 1.0 then
 				volume = 1.0
 			end
-			Callbacks:ServerCallback("sandbox-dj:server:changeVolume", {
+			exports["sandbox-base"]:ServerCallback("sandbox-dj:server:changeVolume", {
 				volume = volume,
 				zoneName = booth,
 				zoneNum = boothId,
@@ -257,7 +255,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 		djMenu.Add:SubMenu("Change Volume", djMenuSub["changevolume"], {})
 
 		djMenu.Add:Button("Stop Music", { success = true }, function()
-			Callbacks:ServerCallback("sandbox-dj:server:stopMusic", {
+			exports["sandbox-base"]:ServerCallback("sandbox-dj:server:stopMusic", {
 				zoneName = booth,
 				zoneNum = boothId,
 			}, function(success)

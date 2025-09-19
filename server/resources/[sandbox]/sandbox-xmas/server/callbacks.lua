@@ -1,5 +1,5 @@
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Xmas:Server:PickupSnowball", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Xmas:Server:PickupSnowball", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -7,7 +7,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Xmas:Daily", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Xmas:Daily", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -43,7 +43,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Xmas:Tree", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Xmas:Tree", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")

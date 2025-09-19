@@ -149,7 +149,7 @@ end)
 
 AddEventHandler("Businesses:Client:MBA:ChangeInterior", function(values)
 	if values?.interior then
-		Callbacks:ServerCallback("MBA:ChangeInterior", values.interior, function(success)
+		exports["sandbox-base"]:ServerCallback("MBA:ChangeInterior", values.interior, function(success)
 			if success then
 				Notification:Success("Updated")
 			else

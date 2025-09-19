@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
@@ -28,7 +27,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Execute",
 		"Chat",
 		"Middleware",
-		"Callbacks",
 		"Logger",
 		"Generator",
 		"Phone",
@@ -55,7 +53,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			GlobalState["CasinoOpen"] = false
 		end
 
-		Callbacks:RegisterServerCallback("Casino:OpenClose", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Casino:OpenClose", function(source, data, cb)
 			if Player(source).state.onDuty == "casino" and data.state ~= GlobalState["CasinoOpen"] then
 				GlobalState["CasinoOpen"] = data.state
 
@@ -69,7 +67,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Casino:BuyChips", function(source, amount, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Casino:BuyChips", function(source, amount, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char and amount and amount > 0 then
 				local amount = math.floor(amount)
@@ -90,7 +88,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			cb(false)
 		end)
 
-		Callbacks:RegisterServerCallback("Casino:SellChips", function(source, amount, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Casino:SellChips", function(source, amount, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char and amount and amount > 0 then
 				local amount = math.floor(amount)
@@ -111,7 +109,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			cb(false)
 		end)
 
-		Callbacks:RegisterServerCallback("Casino:PurchaseVIP", function(source, amount, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Casino:PurchaseVIP", function(source, amount, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				if Wallet:Modify(source, -10000) then
@@ -125,7 +123,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			cb(true)
 		end)
 
-		Callbacks:RegisterServerCallback("Casino:GetBigWins", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Casino:GetBigWins", function(source, data, cb)
 			if Player(source).state.onDuty == "casino" then
 				exports['sandbox-base']:DatabaseGameFind({
 					collection = "casino_bigwins",

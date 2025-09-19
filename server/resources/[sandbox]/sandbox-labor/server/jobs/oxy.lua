@@ -42,7 +42,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		},
 	}, 1)
 
-	Callbacks:RegisterServerCallback("OxyRun:Enable", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:Enable", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if not hasValue(states, "SCRIPT_OXY_RUN") then
@@ -60,7 +60,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:Disable", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:Disable", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if hasValue(states, "SCRIPT_OXY_RUN") then
@@ -74,7 +74,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:EnteredCar", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:EnteredCar", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
@@ -137,7 +137,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:EnteredPickup", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:EnteredPickup", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
@@ -156,14 +156,14 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:CancelPickup", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:CancelPickup", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
 			Inventory.Items:Remove(_sellers[_joiners[source]].vehicle.VIN, 4, "contraband", false)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:CheckPickup", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:CheckPickup", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
@@ -186,7 +186,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:PickupProduct", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:PickupProduct", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if
@@ -243,7 +243,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:EnteredArea", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:EnteredArea", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
@@ -269,7 +269,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						local p = promise.new()
 
 						local randPed = math.random(#PedModels)
-						Callbacks:ClientCallback(_joiners[source], "OxyRun:GetSpawn", {
+						exports["sandbox-base"]:ClientCallback(_joiners[source], "OxyRun:GetSpawn", {
 							veh = Vehicles.RandomModel:DClass(),
 							ped = PedModels[randPed],
 						}, function(veh, ped)
@@ -307,7 +307,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:DeleteShit", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:DeleteShit", function(source, data, cb)
 		if _joiners[source] and _sellers[_joiners[source]].pending ~= nil then
 			_sellers[_joiners[source]].cars[_sellers[_joiners[source]].pending.veh] = false
 			DeleteEntity(NetworkGetEntityFromNetworkId(_sellers[_joiners[source]].pending.ped))
@@ -316,7 +316,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:SellProduct", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:SellProduct", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
@@ -423,7 +423,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:DestroyVehicle", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:DestroyVehicle", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
 			if _sellers[_joiners[source]].state == 6 then
@@ -461,7 +461,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:VehiclePoofed", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:VehiclePoofed", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
 			if _sellers[_joiners[source]].state == 6 then
@@ -505,7 +505,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:LeftZone", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:LeftZone", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB

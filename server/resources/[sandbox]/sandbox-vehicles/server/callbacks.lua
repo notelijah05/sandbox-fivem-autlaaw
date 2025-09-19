@@ -1,12 +1,12 @@
 local _taggedVehs = {}
 
 function RegisterCallbacks()
-    Callbacks:RegisterServerCallback('Vehicles:GetKeys', function(source, VIN, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GetKeys', function(source, VIN, cb)
         Vehicles.Keys:Add(source, VIN)
         cb(true)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:ToggleLocks', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:ToggleLocks', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data.netId)
         local vehState = Entity(veh).state
         if DoesEntityExist(veh) and vehState.VIN and not vehState.wasThermited then
@@ -25,12 +25,12 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-	Callbacks:RegisterServerCallback('Vehicles:Server:VehicleMegaphone', function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback('Vehicles:Server:VehicleMegaphone', function(source, data, cb)
         TriggerClientEvent("VOIP:Client:Megaphone:Use", source, true)
         cb(true)
     end)
 	
-    Callbacks:RegisterServerCallback('Vehicles:BreakOpenLock', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:BreakOpenLock', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data.netId)
         local vehState = Entity(veh).state
         if DoesEntityExist(veh) and vehState.VIN then
@@ -41,7 +41,7 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:GetVehiclesInStorage', function(source, storageId, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GetVehiclesInStorage', function(source, storageId, cb)
         local character = exports['sandbox-characters']:FetchCharacterSource(source)
         local storageData = _vehicleStorage[storageId]
         if not character or not storageData then
@@ -91,13 +91,13 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:GetVehiclesInStorageSelect', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GetVehiclesInStorageSelect', function(source, data, cb)
         if data.VIN then
             Vehicles.Owned:GetVIN(data.VIN, cb)
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:GetVehiclesInPropertyStorage', function(source, storageId, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GetVehiclesInPropertyStorage', function(source, storageId, cb)
         local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character then
             cb(false)
@@ -166,7 +166,7 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:RetrieveVehicleFromStorage', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:RetrieveVehicleFromStorage', function(source, data, cb)
         local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or not data or not data.VIN or not data.coords or not data.heading then
             cb(false)
@@ -225,7 +225,7 @@ function RegisterCallbacks()
         end)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:PutVehicleInStorage', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:PutVehicleInStorage', function(source, data, cb)
         local character = exports['sandbox-characters']:FetchCharacterSource(source)
         local storageData = _vehicleStorage[data.storageId]
         if not character or not data or not data.VIN or not data.storageId or not storageData then
@@ -291,7 +291,7 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Vehicles:Impound:TagVehicle", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Vehicles:Impound:TagVehicle", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local pState = Player(source).state
         if char ~= nil then
@@ -311,7 +311,7 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:PutVehicleInPropertyStorage', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:PutVehicleInPropertyStorage', function(source, data, cb)
         local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or not data or not data.VIN or not data.storageId then
             cb(false)
@@ -350,7 +350,7 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:Impound', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:Impound', function(source, data, cb)
         local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or not data.type or not data.vNet then
             cb(false)
@@ -450,7 +450,7 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:GetVehiclesInImpound', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GetVehiclesInImpound', function(source, data, cb)
         local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character then
             cb(false)
@@ -473,7 +473,7 @@ function RegisterCallbacks()
         end, 0, 0, false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:RetrieveVehicleFromImpound', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:RetrieveVehicleFromImpound', function(source, data, cb)
         local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or not data.VIN or not data.coords or not data.heading then
             cb(false)
@@ -517,7 +517,7 @@ function RegisterCallbacks()
         end)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:CompleteCustoms', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:CompleteCustoms', function(source, data, cb)
         local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or type(data.cost) ~= 'number' or type(data.changes) ~= 'table' or not data.vNet then
             cb(false)
@@ -576,7 +576,7 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:WheelFitment', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:WheelFitment', function(source, data, cb)
         local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or not data?.vNet then
             cb(false)
@@ -613,7 +613,7 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:CompleteRepair', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:CompleteRepair', function(source, data, cb)
         local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or type(data.cost) ~= 'number' then
             cb(false)
@@ -634,7 +634,7 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:CleanVehicle', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:CleanVehicle', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data.vNet)
         local vehState = Entity(veh)
         if DoesEntityExist(veh) and vehState and vehState.state.VIN then
@@ -651,7 +651,7 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:RemoveFakePlate', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:RemoveFakePlate', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data)
         if veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
@@ -682,7 +682,7 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:RemoveHarness', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:RemoveHarness', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data)
         if veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
@@ -696,7 +696,7 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:Tranfers:CompleteTransfer', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:Tranfers:CompleteTransfer', function(source, data, cb)
         local SID, VIN in data
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
@@ -757,7 +757,7 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:RemoveNitrous', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:RemoveNitrous', function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local veh = NetworkGetEntityFromNetworkId(data)
         if char and veh and DoesEntityExist(veh) then
@@ -776,7 +776,7 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:GiveKeys', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GiveKeys', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data.netId)
         local vehState = Entity(veh).state
         if DoesEntityExist(veh) and vehState.VIN and not vehState.wasThermited then

@@ -254,7 +254,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 			false,
 			function(playerBeingHit, hitPos)
 				if playerBeingHit then
-					Callbacks:ServerCallback("Robbery:Paleto:TriggeredLaser")
+					exports["sandbox-base"]:ServerCallback("Robbery:Paleto:TriggeredLaser")
 				end
 			end
 		)
@@ -411,31 +411,31 @@ AddEventHandler("Robbery:Client:Update:paleto", function()
 end)
 
 AddEventHandler("Robbery:Client:Paleto:ElectricBox:Hack", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Paleto:ElectricBox:Hack", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Paleto:ElectricBox:Hack", data, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Paleto:Upload", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Paleto:PC:Hack", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Paleto:PC:Hack", data, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Paleto:Workstation", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Paleto:Workstation", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Paleto:Workstation", data, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Paleto:OfficeHack", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Paleto:OfficeHack", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Paleto:OfficeHack", data, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Paleto:Drill", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Paleto:Drill", data.drillId, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Paleto:Drill", data.drillId, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Paleto:Search", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Paleto:Search", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Paleto:Search", data, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Paleto:Safe", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Paleto:StartSafe", {}, function(s)
+	exports["sandbox-base"]:ServerCallback("Robbery:Paleto:StartSafe", {}, function(s)
 		if s then
 			Input:Show("Input Access Code", "Access Code", {
 				{
@@ -453,7 +453,7 @@ AddEventHandler("Robbery:Client:Paleto:Safe", function(entity, data)
 end)
 
 AddEventHandler("Robbery:Client:Paleto:SafeInput", function(values, data)
-	Callbacks:ServerCallback("Robbery:Paleto:Safe", {
+	exports["sandbox-base"]:ServerCallback("Robbery:Paleto:Safe", {
 		code = values.code,
 		data = data,
 	}, function() end)
@@ -461,7 +461,7 @@ end)
 
 AddEventHandler("Input:Closed", function(event, data)
 	if event == "Robbery:Client:Paleto:SafeInput" then
-		Callbacks:ServerCallback("Robbery:Paleto:Safe", {
+		exports["sandbox-base"]:ServerCallback("Robbery:Paleto:Safe", {
 			code = false,
 			data = data,
 		}, function() end)
@@ -487,7 +487,7 @@ AddEventHandler("Robbery:Client:Paleto:VaultTerminal", function()
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Paleto:VaultTerminal", {})
+			exports["sandbox-base"]:ServerCallback("Robbery:Paleto:VaultTerminal", {})
 		end
 	end)
 end)
@@ -506,21 +506,21 @@ AddEventHandler("Robbery:Client:Paleto:Door", function(data)
 			},
 		}, "Robbery:Client:Paleto:DoorInput", data)
 	else
-		Callbacks:ServerCallback("Robbery:Paleto:UnlockDoor", {
+		exports["sandbox-base"]:ServerCallback("Robbery:Paleto:UnlockDoor", {
 			data = data,
 		})
 	end
 end)
 
 AddEventHandler("Robbery:Client:Paleto:DoorInput", function(values, data)
-	Callbacks:ServerCallback("Robbery:Paleto:UnlockDoor", {
+	exports["sandbox-base"]:ServerCallback("Robbery:Paleto:UnlockDoor", {
 		code = values.code,
 		data = data,
 	})
 end)
 
 AddEventHandler("Robbery:Client:Paleto:Doors", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Paleto:GetDoors", {}, function(menu)
+	exports["sandbox-base"]:ServerCallback("Robbery:Paleto:GetDoors", {}, function(menu)
 		local menu = {
 			main = {
 				label = "Blaine Co Savings Door Controls",
@@ -551,7 +551,7 @@ AddEventHandler("Robbery:Client:Paleto:StartSecuring", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Paleto:SecureBank", {})
+			exports["sandbox-base"]:ServerCallback("Robbery:Paleto:SecureBank", {})
 		end
 	end)
 end)
@@ -575,7 +575,7 @@ AddEventHandler("Robbery:Client:Paleto:DisableAlarm", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Paleto:DisableAlarm", {})
+			exports["sandbox-base"]:ServerCallback("Robbery:Paleto:DisableAlarm", {})
 		end
 	end)
 end)

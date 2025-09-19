@@ -1,7 +1,7 @@
 _pendingContactless = {}
 
 AddEventHandler("Businesses:Server:Startup", function()
-    Callbacks:RegisterServerCallback("Contactless:Create", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Contactless:Create", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         -- Should probably do some better checking here but I cannot be fucked
         if char and data and data.job and data.terminalId and data.payment and data.payment > 0 and data.payment <= 25000 then
@@ -39,7 +39,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Contactless:Clear", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Contactless:Clear", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and data.job and data.terminalId then
             if Player(source).state.onDuty == data.job then
@@ -57,7 +57,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Contactless:Pay", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Contactless:Pay", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and data.terminalId and _pendingContactless[data.terminalId] and GlobalState[string.format("PendingContactless:%s", data.terminalId)] then
             GlobalState[string.format("PendingContactless:%s", data.terminalId)] = false

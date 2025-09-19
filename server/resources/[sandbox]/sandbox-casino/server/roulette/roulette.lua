@@ -203,7 +203,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
     GlobalState["Casino:RouletteConfig"] = _rouletteTables
 
-    Callbacks:RegisterServerCallback("Casino:JoinRoulette", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:JoinRoulette", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or _roulettePlayers[source] then
             return cb(false)
@@ -240,7 +240,7 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:LeaveRoulette", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:LeaveRoulette", function(source, data, cb)
         --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local blackjackPlayer = _roulettePlayers[source]
         if not blackjackPlayer then
@@ -259,7 +259,7 @@ AddEventHandler("Casino:Server:Startup", function()
     end)
 
     -- Bets
-    Callbacks:RegisterServerCallback("Casino:BetRoulette", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:BetRoulette", function(source, data, cb)
         --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local roulettePlayer = _roulettePlayers[source]
         if not roulettePlayer or not data then

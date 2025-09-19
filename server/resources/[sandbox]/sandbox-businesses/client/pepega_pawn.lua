@@ -24,5 +24,5 @@ AddEventHandler("Businesses:Client:Startup", function()
 end)
 
 AddEventHandler("PepegaPawn:Client:Sell", function(e, data)
-	Callbacks:ServerCallback("PepegaPawn:Sell", {})
+	exports["sandbox-base"]:ServerCallback("PepegaPawn:Sell", {})
 end)

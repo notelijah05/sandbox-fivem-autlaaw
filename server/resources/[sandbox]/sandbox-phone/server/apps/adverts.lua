@@ -20,13 +20,13 @@ PHONE.Adverts = {
 }
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Adverts:Create", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Adverts:Create", function(source, data, cb)
 		Phone.Adverts:Create(source, data)
 	end)
-	Callbacks:RegisterServerCallback("Phone:Adverts:Update", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Adverts:Update", function(source, data, cb)
 		Phone.Adverts:Update(source, data)
 	end)
-	Callbacks:RegisterServerCallback("Phone:Adverts:Delete", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Adverts:Delete", function(source, data, cb)
 		Phone.Adverts:Delete(source)
 	end)
 end)

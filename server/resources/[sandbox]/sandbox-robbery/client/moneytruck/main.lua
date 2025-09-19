@@ -3,7 +3,7 @@ SetRelationshipBetweenGroups(5, relHash, `PLAYER`)
 SetRelationshipBetweenGroups(5, `PLAYER`, relHash)
 
 AddEventHandler("Robbery:Client:Setup", function()
-	Callbacks:RegisterClientCallback("Robbery:Moneytruck:CheckForTruck", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Moneytruck:CheckForTruck", function(data, cb)
 		local startPos = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, 0, 0.5, 0)
 		local endPos = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, 0, 5.0, 0)
 		local rayHandle = StartShapeTestRay(
@@ -30,7 +30,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		return cb(nil)
 	end)
 
-	Callbacks:RegisterClientCallback("Robbery:Moneytruck:Thermite:Door", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Moneytruck:Thermite:Door", function(data, cb)
 		local ent = NetworkGetEntityFromNetworkId(data.vNet)
 		NetworkRequestControlOfEntity(ent)
 		local truckCoords = GetEntityCoords(ent)
@@ -50,7 +50,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		)
 	end)
 
-	Callbacks:RegisterClientCallback("Robbery:Moneytruck:Spawn:Get", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Moneytruck:Spawn:Get", function(data, cb)
 		if LocalPlayer.state.loggedIn then
 			local randomLoc = FindRandomPointInSpace(LocalPlayer.state.ped)
 			local found, loc, heading =
@@ -70,7 +70,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterClientCallback("Robbery:MoneyTruck:MarkTruck", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:MoneyTruck:MarkTruck", function(data, cb)
 		local ent = NetworkGetEntityFromNetworkId(data)
 
 		local text = "Bobcat Truck"
@@ -101,7 +101,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 end)
 
 AddEventHandler("Robbery:Client:MoneyTruck:GrabLoot", function(entity, data)
-	Callbacks:ServerCallback("Robbery:MoneyTruck:CheckLoot", VehToNet(entity.entity), function(s)
+	exports["sandbox-base"]:ServerCallback("Robbery:MoneyTruck:CheckLoot", VehToNet(entity.entity), function(s)
 		if s then
 			Progress:Progress({
 				name = "moneytruck_loot",
@@ -121,9 +121,11 @@ AddEventHandler("Robbery:Client:MoneyTruck:GrabLoot", function(entity, data)
 				},
 			}, function(status)
 				if not status then
-					Callbacks:ServerCallback("Robbery:MoneyTruck:Loot", VehToNet(entity.entity), function(s2) end)
+					exports["sandbox-base"]:ServerCallback("Robbery:MoneyTruck:Loot", VehToNet(entity.entity),
+						function(s2) end)
 				else
-					Callbacks:ServerCallback("Robbery:MoneyTruck:CancelLoot", VehToNet(entity.entity), function(s2) end)
+					exports["sandbox-base"]:ServerCallback("Robbery:MoneyTruck:CancelLoot", VehToNet(entity.entity),
+						function(s2) end)
 				end
 			end)
 		end

@@ -1,7 +1,7 @@
 local badgeCooldowns = {}
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-    Callbacks:RegisterServerCallback("MDT:PrintBadge", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MDT:PrintBadge", function(source, data, cb)
         local now = GetGameTimer()
 
         if not badgeCooldowns[source] or (now - badgeCooldowns[source]) > 20000 then
@@ -51,24 +51,26 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
     Inventory.Items:RegisterUse("government_badge", "MDT", function(source, itemData)
         if itemData and itemData.MetaData and itemData.MetaData.Department then
-            Callbacks:ClientCallback(source, "MDT:Client:CanShowBadge", itemData.MetaData, function(canShow)
-                TriggerClientEvent("MDT:Client:ShowBadge", -1, source, itemData.MetaData)
-            end)
+            exports["sandbox-base"]:ClientCallback(source, "MDT:Client:CanShowBadge", itemData.MetaData,
+                function(canShow)
+                    TriggerClientEvent("MDT:Client:ShowBadge", -1, source, itemData.MetaData)
+                end)
         end
     end)
 
     Inventory.Items:RegisterUse("govid", "MDT", function(source, itemData)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and itemData and itemData.MetaData and itemData.MetaData.StateID then
-            Callbacks:ClientCallback(source, "MDT:Client:CanShowLicense", itemData.MetaData, function(canShow)
-                TriggerClientEvent("MDT:Client:ShowLicense", -1, source, {
-                    SID = itemData.MetaData.StateID,
-                    Name = itemData.MetaData.Name,
-                    Gender = itemData.MetaData.Gender,
-                    DOB = itemData.MetaData.DOB,
-                    Mugshot = itemData.MetaData.Mugshot,
-                })
-            end)
+            exports["sandbox-base"]:ClientCallback(source, "MDT:Client:CanShowLicense", itemData.MetaData,
+                function(canShow)
+                    TriggerClientEvent("MDT:Client:ShowLicense", -1, source, {
+                        SID = itemData.MetaData.StateID,
+                        Name = itemData.MetaData.Name,
+                        Gender = itemData.MetaData.Gender,
+                        DOB = itemData.MetaData.DOB,
+                        Mugshot = itemData.MetaData.Mugshot,
+                    })
+                end)
         end
     end)
 end)

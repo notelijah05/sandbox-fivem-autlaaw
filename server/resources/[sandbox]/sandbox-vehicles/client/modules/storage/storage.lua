@@ -99,7 +99,7 @@ AddEventHandler('Vehicles:Client:StoreVehicle', function(entityData)
         -- Also checks that nobody is in the drivers seat and that the vehicle is not moving
         if vehState and vehState.VIN and vehState.Owned and GetPedInVehicleSeat(entityData.entity) == 0 and GetEntitySpeed(entityData.entity) <= 1 then
             if inVehicleStorageZone and vehicleStorageZoneId then
-                Callbacks:ServerCallback('Vehicles:PutVehicleInStorage', {
+                exports["sandbox-base"]:ServerCallback('Vehicles:PutVehicleInStorage', {
                     VIN = vehState.VIN,
                     storageId = vehicleStorageZoneId,
                 }, function(success)
@@ -114,7 +114,7 @@ AddEventHandler('Vehicles:Client:StoreVehicle', function(entityData)
                 if propGarage and propGarage.propertyId then
                     local prop = Properties:Get(propGarage.propertyId)
                     if prop and prop.keys ~= nil and prop.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil then
-                        Callbacks:ServerCallback('Vehicles:PutVehicleInPropertyStorage', {
+                        exports["sandbox-base"]:ServerCallback('Vehicles:PutVehicleInPropertyStorage', {
                             VIN = vehState.VIN,
                             storageId = propGarage.propertyId,
                         }, function(success, tooFull)
@@ -160,25 +160,26 @@ function OpenVehicleStorage()
             end
 
             if parkingSpace then
-                Callbacks:ServerCallback('Vehicles:GetVehiclesInStorage', vehicleStorageZoneId, function(storedVehicles)
-                    if not storedVehicles then
-                        Notification:Error('Error Fetching Vehicle Storage')
-                        return
-                    end
+                exports["sandbox-base"]:ServerCallback('Vehicles:GetVehiclesInStorage', vehicleStorageZoneId,
+                    function(storedVehicles)
+                        if not storedVehicles then
+                            Notification:Error('Error Fetching Vehicle Storage')
+                            return
+                        end
 
-                    if #storedVehicles > 0 then
-                        cachedStorageShit = {
-                            storageType = 1,
-                            storageId = vehicleStorageZoneId,
-                            storedVehicleData = storedVehicles,
-                            parkingSpace = parkingSpace,
-                            characterDuty = myDuty
-                        }
-                        OpenVehicleStorageMenu(1, vehicleStorageZoneId, storedVehicles, parkingSpace, myDuty)
-                    else
-                        Notification:Error('Vehicle Storage Is Empty')
-                    end
-                end)
+                        if #storedVehicles > 0 then
+                            cachedStorageShit = {
+                                storageType = 1,
+                                storageId = vehicleStorageZoneId,
+                                storedVehicleData = storedVehicles,
+                                parkingSpace = parkingSpace,
+                                characterDuty = myDuty
+                            }
+                            OpenVehicleStorageMenu(1, vehicleStorageZoneId, storedVehicles, parkingSpace, myDuty)
+                        else
+                            Notification:Error('Vehicle Storage Is Empty')
+                        end
+                    end)
             else
                 Notification:Error('Could Not Find Parking Space')
             end
@@ -190,7 +191,8 @@ function OpenVehicleStorage()
                 propertyGarage.coords.h)
 
             if IsParkingSpaceFree(coords) then
-                Callbacks:ServerCallback('Vehicles:GetVehiclesInPropertyStorage', propertyGarage.propertyId,
+                exports["sandbox-base"]:ServerCallback('Vehicles:GetVehiclesInPropertyStorage', propertyGarage
+                    .propertyId,
                     function(storedVehicles, data, characterId, characters)
                         if not storedVehicles then
                             Notification:Error('Error Fetching Vehicle Storage')
@@ -461,7 +463,7 @@ function OpenVehicleStorageMenu(storageType, storageId, storedVehicleData, parki
         table.insert(storageMenu.main.items, {
             label = 'Fleet Vehicles',
             description = characterDuty and 'View Fleet Vehicles That You Have Access To' or
-            'This Requires You to Be On Duty',
+                'This Requires You to Be On Duty',
             submenu = 'fleet',
             disabled = not characterDuty,
         })
@@ -513,7 +515,7 @@ end)
 AddEventHandler("Vehicles:Client:Storage:Select", function(data)
     CleanupTempVehicle()
 
-    Callbacks:ServerCallback("Vehicles:GetVehiclesInStorageSelect", data, function(vehicle)
+    exports["sandbox-base"]:ServerCallback("Vehicles:GetVehiclesInStorageSelect", data, function(vehicle)
         if tempParkingSpace and vehicle then
             loadingVehicleStorageVehicle = true
 
@@ -647,7 +649,7 @@ AddEventHandler('Vehicles:Client:Storage:Retrieve', function(data)
 
     if data.VIN and tempVehAppearanceData[data.VIN] and tempParkingSpace and tempCurrentStorageId then
         vehActuallySpawningOne = true
-        Callbacks:ServerCallback('Vehicles:RetrieveVehicleFromStorage', {
+        exports["sandbox-base"]:ServerCallback('Vehicles:RetrieveVehicleFromStorage', {
             coords = tempParkingSpace.xyz,
             heading = tempParkingSpace.w,
             VIN = data.VIN,

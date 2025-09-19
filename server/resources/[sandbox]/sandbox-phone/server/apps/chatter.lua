@@ -64,7 +64,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Chatter:GetMessageCount", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:GetMessageCount", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -97,7 +97,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Chatter:LoadMessages", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:LoadMessages", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -132,7 +132,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Chatter:SendMessage", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:SendMessage", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -184,7 +184,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Chatter:CreateGroup", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:CreateGroup", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -227,7 +227,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Chatter:LeaveGroup", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:LeaveGroup", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -255,7 +255,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Chatter:DeleteGroup", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:DeleteGroup", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -329,7 +329,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Chatter:Invite:Send", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Chatter:Invite:Send", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -395,7 +395,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Chatter:Invite:Accept", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Chatter:Invite:Accept", function(source, data, cb)
 		local cunt = tonumber(data)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
@@ -436,7 +436,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Chatter:Invite:Decline", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Chatter:Invite:Decline", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -452,7 +452,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Chatter:UpdateGroup", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Chatter:UpdateGroup", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")

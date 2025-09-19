@@ -143,7 +143,7 @@ LAPTOP.BizWiz.Receipts = {
 }
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Search", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Receipt:Search", function(source, data, cb)
 		local job = CheckBusinessPermissions(source)
 		if job then
 			cb(Laptop.BizWiz.Receipts:Search(job, data.term))
@@ -152,7 +152,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Create", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Receipt:Create", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local job = CheckBusinessPermissions(source, 'TABLET_CREATE_RECEIPT')
 		if job then
@@ -167,7 +167,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Update", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Receipt:Update", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local job = CheckBusinessPermissions(source, 'TABLET_MANAGE_RECEIPT')
 		if char and job then
@@ -183,7 +183,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:Delete", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Receipt:Delete", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, 'TABLET_MANAGE_RECEIPT')
 		if job then
 			cb(Laptop.BizWiz.Receipts:Delete(job, data.id))
@@ -192,7 +192,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:DeleteAll", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Receipt:DeleteAll", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, 'TABLET_CLEAR_RECEIPT')
 		if job then
 			cb(Laptop.BizWiz.Receipts:DeleteAll(job))
@@ -201,7 +201,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Receipt:View", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Receipt:View", function(source, data, cb)
 		local job = CheckBusinessPermissions(source)
 		if job then
 			cb(Laptop.BizWiz.Receipts:View(job, data))

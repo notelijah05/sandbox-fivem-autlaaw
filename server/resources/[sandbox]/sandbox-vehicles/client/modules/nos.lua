@@ -73,7 +73,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		end
 	end)
 
-	Callbacks:RegisterClientCallback("Vehicles:InstallNitrous", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:InstallNitrous", function(data, cb)
 		if
 			VEHICLE_INSIDE
 			and DoesEntityExist(VEHICLE_INSIDE)
@@ -463,19 +463,20 @@ AddEventHandler("Vehicles:Client:RemoveNitrous", function(entityData)
 				and Vehicles:HasAccess(VEHICLE_INSIDE, true)
 				and GetPedInVehicleSeat(VEHICLE_INSIDE, -1) == LocalPlayer.state.ped
 			then
-				Callbacks:ServerCallback("Vehicles:RemoveNitrous", VehToNet(VEHICLE_INSIDE), function(success)
-					if success then
-						--Notification:Success('Removed Nitrous Successfully')
+				exports["sandbox-base"]:ServerCallback("Vehicles:RemoveNitrous", VehToNet(VEHICLE_INSIDE),
+					function(success)
+						if success then
+							--Notification:Success('Removed Nitrous Successfully')
 
-						_hasNOS = false
-						EndVehicleNOS()
-						EndVehiclePurge()
+							_hasNOS = false
+							EndVehicleNOS()
+							EndVehiclePurge()
 
-						Hud:NOS(0)
-					else
-						Notification:Error("Could not Remove Nitrous")
-					end
-				end)
+							Hud:NOS(0)
+						else
+							Notification:Error("Could not Remove Nitrous")
+						end
+					end)
 			else
 				Notification:Error("Could not Remove Nitrous")
 			end

@@ -1,6 +1,5 @@
 AddEventHandler("Arcade:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -20,7 +19,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Arcade", {
-		"Callbacks",
 		"Logger",
 		"Notification",
 		"Hud",
@@ -122,11 +120,11 @@ AddEventHandler("Arcade:Client:ClockOut", function(_, data)
 end)
 
 AddEventHandler("Arcade:Client:Open", function()
-	Callbacks:ServerCallback("Arcade:Open", false, function() end)
+	exports["sandbox-base"]:ServerCallback("Arcade:Open", false, function() end)
 end)
 
 AddEventHandler("Arcade:Client:Close", function()
-	Callbacks:ServerCallback("Arcade:Close", false, function() end)
+	exports["sandbox-base"]:ServerCallback("Arcade:Close", false, function() end)
 end)
 
 AddEventHandler("Arcade:Client:CreateNew", function(entity, data)

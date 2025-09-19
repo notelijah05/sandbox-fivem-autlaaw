@@ -1,7 +1,7 @@
 RegisterNUICallback("UpdateSetting", function(data, cb)
 	cb("OK")
 	_settings[data.type] = data.val
-	Callbacks:ServerCallback("Phone:Settings:Update", data)
+	exports["sandbox-base"]:ServerCallback("Phone:Settings:Update", data)
 end)
 
 local testingSound = nil

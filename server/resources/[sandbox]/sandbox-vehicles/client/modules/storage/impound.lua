@@ -1,7 +1,7 @@
 local attemptingImpoundOnVehicle = false
 
 AddEventHandler('Vehicles:Client:StartUp', function()
-    PedInteraction:Add('veh_impound', `ig_floyd`, vector3(-193.282, -1162.433, 22.7), 270.4, 10.0, {
+	PedInteraction:Add('veh_impound', `ig_floyd`, vector3(-193.282, -1162.433, 22.7), 270.4, 10.0, {
 		{
 			icon = "truck-tow",
 			text = "Impound Release Request",
@@ -55,9 +55,9 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 end)
 
 AddEventHandler('Vehicles:Client:CharacterLogin', function()
-    if _vehicleImpound then
-        Blips:Add('veh_impound', "Impound Yard | Tow Job", _vehicleImpound.coords, 317, 16, 0.6)
-    end
+	if _vehicleImpound then
+		Blips:Add('veh_impound', "Impound Yard | Tow Job", _vehicleImpound.coords, 317, 16, 0.6)
+	end
 end)
 
 AddEventHandler('Vehicles:Client:RequestTow', function(entityData)
@@ -69,23 +69,24 @@ AddEventHandler('Vehicles:Client:RequestTow', function(entityData)
 
 			local canRegularImpound = Jobs.Permissions:HasPermission(_impoundConfig.RequiredPermission)
 			local canPoliceImpound = Jobs.Permissions:HasPermission(_impoundConfig.Police.RequiredPermission)
-		
+
 			if myDuty and canRegularImpound or canPoliceImpound then
 				attemptingImpoundOnVehicle = entityData.entity
-	
+
 				local menu = {
 					main = {
 						label = 'Impound Vehicle - ' .. vState.VIN,
 						items = {
 							{
 								label = 'Emergency Impound',
-								description = 'Emergency Impound if a Vehicle is Causing Major Issues or is Broken and Needs to be Removed.',
+								description =
+								'Emergency Impound if a Vehicle is Causing Major Issues or is Broken and Needs to be Removed.',
 								event = 'Vehicles:Client:Tow',
 								data = { type = 'emergency_impound' },
 							},
 							{
 								label = 'Regular Impound',
-								description = 'Impound a Vehicle for a Fine of $'.. _impoundConfig.RegularFine,
+								description = 'Impound a Vehicle for a Fine of $' .. _impoundConfig.RegularFine,
 								event = 'Vehicles:Client:Tow',
 								data = { type = 'impound' },
 							},
@@ -110,20 +111,24 @@ AddEventHandler('Vehicles:Client:RequestTow', function(entityData)
 						if v.Fine.Percent and vState.Value and type(vState.Value) == 'number' then
 							fine = vState.Value * (v.Fine.Percent / 100)
 						end
-		
+
 						if not fine or fine <= v.Fine.Min then
 							fine = v.Fine.Min
 						end
-		
+
 						table.insert(menu.police.items, {
-							label = 'Impound Level #'.. k,
-							description = string.format('%s$%s Fine %s', (v.Holding > 0 and (v.Holding .. ' Hour Holding Time, ') or ''), fine, v.Fine.Percent and string.format('(%s%% of Est. Vehicle Value OR Min. Fine of $%s)', v.Fine.Percent, v.Fine.Min) or ''),
+							label = 'Impound Level #' .. k,
+							description = string.format('%s$%s Fine %s',
+								(v.Holding > 0 and (v.Holding .. ' Hour Holding Time, ') or ''), fine,
+								v.Fine.Percent and
+								string.format('(%s%% of Est. Vehicle Value OR Min. Fine of $%s)', v.Fine.Percent,
+									v.Fine.Min) or ''),
 							data = { type = 'police', level = k },
 							event = 'Vehicles:Client:Tow',
 						})
 					end
 				end
-	
+
 				ListMenu:Show(menu)
 			end
 		end
@@ -139,23 +144,24 @@ AddEventHandler('Vehicles:Client:RequestImpound', function(entityData)
 
 			local canRegularImpound = Jobs.Permissions:HasPermission(_impoundConfig.RequiredPermission)
 			local canPoliceImpound = Jobs.Permissions:HasPermission(_impoundConfig.Police.RequiredPermission)
-		
+
 			if myDuty and canRegularImpound or canPoliceImpound then
 				attemptingImpoundOnVehicle = entityData.entity
-	
+
 				local menu = {
 					main = {
 						label = 'Impound Vehicle - ' .. vState.VIN,
 						items = {
 							{
 								label = 'Emergency Impound',
-								description = 'Emergency Impound if a Vehicle is Causing Major Issues or is Broken and Needs to be Removed.',
+								description =
+								'Emergency Impound if a Vehicle is Causing Major Issues or is Broken and Needs to be Removed.',
 								event = 'Vehicles:Client:Impound',
 								data = { type = 'emergency_impound' },
 							},
 							{
 								label = 'Regular Impound',
-								description = 'Impound a Vehicle for a Fine of $'.. _impoundConfig.RegularFine,
+								description = 'Impound a Vehicle for a Fine of $' .. _impoundConfig.RegularFine,
 								event = 'Vehicles:Client:Impound',
 								data = { type = 'impound' },
 							},
@@ -180,20 +186,24 @@ AddEventHandler('Vehicles:Client:RequestImpound', function(entityData)
 						if v.Fine.Percent and vState.Value and type(vState.Value) == 'number' then
 							fine = vState.Value * (v.Fine.Percent / 100)
 						end
-		
+
 						if not fine or fine <= v.Fine.Min then
 							fine = v.Fine.Min
 						end
-		
+
 						table.insert(menu.police.items, {
-							label = 'Impound Level #'.. k,
-							description = string.format('%s$%s Fine %s', (v.Holding > 0 and (v.Holding .. ' Hour Holding Time, ') or ''), fine, v.Fine.Percent and string.format('(%s%% of Est. Vehicle Value OR Min. Fine of $%s)', v.Fine.Percent, v.Fine.Min) or ''),
+							label = 'Impound Level #' .. k,
+							description = string.format('%s$%s Fine %s',
+								(v.Holding > 0 and (v.Holding .. ' Hour Holding Time, ') or ''), fine,
+								v.Fine.Percent and
+								string.format('(%s%% of Est. Vehicle Value OR Min. Fine of $%s)', v.Fine.Percent,
+									v.Fine.Min) or ''),
 							data = { type = 'police', level = k },
 							event = 'Vehicles:Client:Impound',
 						})
 					end
 				end
-	
+
 				ListMenu:Show(menu)
 			end
 		end
@@ -227,8 +237,7 @@ AddEventHandler('Vehicles:Client:Tow', function(data)
 				end
 			end, function(cancelled)
 				if not cancelled and DoesEntityExist(attemptingImpoundOnVehicle) and (#(GetEntityCoords(attemptingImpoundOnVehicle) - GetEntityCoords(GLOBAL_PED)) <= 10.0) and IsVehicleEmpty(attemptingImpoundOnVehicle) then
-					
-					Callbacks:ServerCallback("Vehicles:Impound:TagVehicle", {
+					exports["sandbox-base"]:ServerCallback("Vehicles:Impound:TagVehicle", {
 						vNet = VehToNet(attemptingImpoundOnVehicle),
 						type = data.type,
 						level = data.level,
@@ -274,7 +283,7 @@ AddEventHandler('Vehicles:Client:Impound', function(data)
 				end
 			end, function(cancelled)
 				if not cancelled and DoesEntityExist(attemptingImpoundOnVehicle) and (#(GetEntityCoords(attemptingImpoundOnVehicle) - GetEntityCoords(GLOBAL_PED)) <= 10.0) and IsVehicleEmpty(attemptingImpoundOnVehicle) then
-					Callbacks:ServerCallback('Vehicles:Impound', {
+					exports["sandbox-base"]:ServerCallback('Vehicles:Impound', {
 						vNet = VehToNet(attemptingImpoundOnVehicle),
 						type = data.type,
 						level = data.level,
@@ -296,7 +305,7 @@ AddEventHandler('Vehicles:Client:Impound', function(data)
 end)
 
 AddEventHandler('Vehicles:Client:TowReleaseMenu', function()
-	Callbacks:ServerCallback('Vehicles:GetVehiclesInImpound', {}, function(vehicleData, time)
+	exports["sandbox-base"]:ServerCallback('Vehicles:GetVehiclesInImpound', {}, function(vehicleData, time)
 		if vehicleData and #vehicleData > 0 then
 			local impoundMenu = {
 				main = {
@@ -304,18 +313,18 @@ AddEventHandler('Vehicles:Client:TowReleaseMenu', function()
 					items = {},
 				}
 			}
-	
+
 			local cash = LocalPlayer.state.Character:GetData('Cash')
-	
+
 			local function createVehicleSubmenu(vehicle)
 				local vehItems = {}
-	
+
 				table.insert(vehItems, {
 					label = 'Vehicle\'s Identification',
 					description = string.format('VIN: %s, Plate: %s', vehicle.VIN, vehicle.RegisteredPlate or 'N/A'),
 					event = false,
 				})
-	
+
 				local passHoldingCheck = false
 				local passFineCheck = false
 
@@ -347,15 +356,16 @@ AddEventHandler('Vehicles:Client:TowReleaseMenu', function()
 					else
 						passHoldingCheck = true
 					end
-		
+
 					if vehicle.Storage.Fine and vehicle.Storage.Fine > 0 then
 						if cash >= vehicle.Storage.Fine then
 							passFineCheck = true
 						end
-		
+
 						table.insert(vehItems, {
 							label = 'Impound - Fine',
-							description = string.format('$%d Fine %s', vehicle.Storage.Fine, (not passFineCheck and ' (Not Enough Cash)' or '')),
+							description = string.format('$%d Fine %s', vehicle.Storage.Fine,
+								(not passFineCheck and ' (Not Enough Cash)' or '')),
 							event = false,
 						})
 					else
@@ -367,12 +377,12 @@ AddEventHandler('Vehicles:Client:TowReleaseMenu', function()
 				if passHoldingCheck and passFineCheck and not vehicle.Seized then
 					canRetrieve = true
 				end
-	
+
 				local description = 'Pay Fees & Retrieve Vehicle'
 				if not passFineCheck then
 					description = 'Cannot Retrieve Vehicle - Not Enough Cash'
 				end
-	
+
 				if not passHoldingCheck then
 					description = 'Cannot Retrieve Vehicle - Still in Holding'
 				end
@@ -388,29 +398,29 @@ AddEventHandler('Vehicles:Client:TowReleaseMenu', function()
 					data = { VIN = vehicle.VIN },
 					disabled = not canRetrieve
 				})
-	
+
 				impoundMenu[vehicle.VIN] = {
 					label = vehicle.Make .. ' ' .. vehicle.Model,
 					items = vehItems
 				}
 			end
-	
+
 			for k, v in ipairs(vehicleData) do
 				createVehicleSubmenu(v)
 				local description = ''
 				if v.RegisteredPlate then
-					description = 'Plate: '.. v.RegisteredPlate .. ' VIN: ' .. v.VIN
+					description = 'Plate: ' .. v.RegisteredPlate .. ' VIN: ' .. v.VIN
 				else
-					description = 'Type: '.. (v.Type == 1 and 'Boat' or 'Aircraft')
+					description = 'Type: ' .. (v.Type == 1 and 'Boat' or 'Aircraft')
 				end
-	
+
 				table.insert(impoundMenu.main.items, {
 					label = v.Make .. ' ' .. v.Model,
 					description = description,
 					submenu = v.VIN,
 				})
 			end
-	
+
 			ListMenu:Show(impoundMenu)
 		else
 			Notification:Info('None of Your Vehicles Are Impounded')
@@ -423,7 +433,7 @@ AddEventHandler('Vehicles:Client:TowRequestRelease', function(data)
 		local pedCoords = GetEntityCoords(GLOBAL_PED)
 		local freeImpoundSpace = GetClosestAvailableParkingSpace(pedCoords, _vehicleImpound.spaces)
 		if freeImpoundSpace and #(pedCoords - freeImpoundSpace.xyz) <= 50.0 then
-			Callbacks:ServerCallback('Vehicles:RetrieveVehicleFromImpound', {
+			exports["sandbox-base"]:ServerCallback('Vehicles:RetrieveVehicleFromImpound', {
 				VIN = data.VIN,
 				coords = freeImpoundSpace.xyz,
 				heading = freeImpoundSpace.w,

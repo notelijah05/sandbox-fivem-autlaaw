@@ -3,7 +3,7 @@ RegisterNetEvent("EMS:Client:Test", function(src)
 end)
 
 function BuildTreatmentMenu(id)
-	Callbacks:ServerCallback("Damage:GetLimbDamage", id, function(menu)
+	exports["sandbox-base"]:ServerCallback("Damage:GetLimbDamage", id, function(menu)
 		local options = {}
 		local ped = GetPlayerPed(GetPlayerFromServerId(tonumber(id)))
 		local needsTreatment = false

@@ -30,13 +30,13 @@ RegisterNetEvent("Phone:Client:Twitter:ClearTweets", function()
 end)
 
 RegisterNUICallback("Twitter:GetCount", function(data, cb)
-	Callbacks:ServerCallback("Phone:Twitter:GetCount", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Twitter:GetCount", data, cb)
 end)
 
 RegisterNUICallback("Twitter:GetTweets", function(data, cb)
-	Callbacks:ServerCallback("Phone:Twitter:GetTweets", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Twitter:GetTweets", data, cb)
 end)
 
 RegisterNUICallback("SendTweet", function(data, cb)
-	Callbacks:ServerCallback("Phone:Twitter:CreateTweet", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Twitter:CreateTweet", data, cb)
 end)

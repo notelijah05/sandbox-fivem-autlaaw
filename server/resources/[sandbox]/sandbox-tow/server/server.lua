@@ -6,7 +6,6 @@ _activeTowers = {}
 AddEventHandler("Tow:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -20,7 +19,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Tow", {
 		"Middleware",
-		"Callbacks",
 		"Logger",
 		"Jobs",
 		"Chat",
@@ -35,7 +33,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrieveComponents()
 
-		Callbacks:RegisterServerCallback("Tow:RequestJob", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Tow:RequestJob", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if not Jobs.Permissions:HasJob(source, "tow") and char then
 				cb(Jobs:GiveJob(char:GetData("SID"), "tow", false, "employee"))
@@ -44,7 +42,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Tow:QuitJob", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Tow:QuitJob", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if Jobs.Permissions:HasJob(source, "tow") and char then
 				_activeTowers[source] = nil
@@ -54,7 +52,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Tow:OnDuty", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Tow:OnDuty", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local dutyData = Jobs.Duty:GetDutyData("tow")
 			if Jobs.Permissions:HasJob(source, "tow") and char then
@@ -87,7 +85,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Tow:OffDuty", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Tow:OffDuty", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char and Jobs.Duty:Get(source, "tow") then
 				local stateId = char:GetData("SID")
@@ -111,7 +109,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Tow:RequestTruck", function(source, spaceCoords, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Tow:RequestTruck", function(source, spaceCoords, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char and Player(source).state.onDuty == "tow" then
 				local stateId = char:GetData("SID")
@@ -164,7 +162,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Tow:ReturnTruck", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Tow:ReturnTruck", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local stateId = char:GetData("SID")

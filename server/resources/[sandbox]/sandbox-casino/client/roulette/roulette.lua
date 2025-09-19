@@ -163,7 +163,7 @@ AddEventHandler("Casino:Client:JoinRoulette", function(_, data)
     local chairData = GetClosestRouletteChair(data.table)
 
     if chairData then
-        Callbacks:ServerCallback("Casino:JoinRoulette", { table = data.table, chair = chairData.chairId },
+        exports["sandbox-base"]:ServerCallback("Casino:JoinRoulette", { table = data.table, chair = chairData.chairId },
             function(success, table, chair)
                 if success then
                     _inSittingDownAnimation = true
@@ -233,7 +233,7 @@ AddEventHandler("Casino:Client:JoinRoulette", function(_, data)
 end)
 
 function LeaveRoulette(skipAnim)
-    Callbacks:ServerCallback("Casino:LeaveRoulette", {}, function(success)
+    exports["sandbox-base"]:ServerCallback("Casino:LeaveRoulette", {}, function(success)
         if success then
             if not skipAnim then
                 RouletteStandUpAnim(_rouletteAtLocalChair)
@@ -331,7 +331,7 @@ function RoulettePlaceChips(betType)
     end
 
     if betAmount then
-        Callbacks:ServerCallback("Casino:BetRoulette", {
+        exports["sandbox-base"]:ServerCallback("Casino:BetRoulette", {
             amount = betAmount,
             betId = betType,
         }, function(success)

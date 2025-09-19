@@ -9,40 +9,42 @@ end)
 
 function OpenShowroomManagement(dealerId)
     if _dealerships[dealerId] and #_dealerships[dealerId].showroom > 0 then
-        Callbacks:ServerCallback('Dealerships:ShowroomManagement:FetchData', dealerId, function(authed, stocks)
-            local stockData = FormatDealerStockToCategories(stocks)
+        exports["sandbox-base"]:ServerCallback('Dealerships:ShowroomManagement:FetchData', dealerId,
+            function(authed, stocks)
+                local stockData = FormatDealerStockToCategories(stocks)
 
-            if not authed then
-                Notification:Error('You\'re Not Authorized to Open Showroom Management')
-                return
-            end
+                if not authed then
+                    Notification:Error('You\'re Not Authorized to Open Showroom Management')
+                    return
+                end
 
-            showroomManagementSub = {}
-            showroomManagement = Menu:Create('showroomManagement',
-                string.format('Manage %s Showroom', _dealerships[dealerId].abbreviation), function()
+                showroomManagementSub = {}
+                showroomManagement = Menu:Create('showroomManagement',
+                    string.format('Manage %s Showroom', _dealerships[dealerId].abbreviation), function()
 
-            end, function()
-                showroomManagement = nil
-                showroomManagementSub = nil
-                collectgarbage()
-            end)
-
-            for pos = 1, #_dealerships[dealerId].showroom do
-                local posVehicle = GlobalState.DealershipShowrooms[dealerId] and
-                GlobalState.DealershipShowrooms[dealerId][tostring(pos)]
-                showroomManagement.Add:AdvButton(
-                posVehicle and
-                string.format('%s %s', posVehicle.make and posVehicle.make or 'Unknown',
-                    posVehicle.model and posVehicle.model or 'Unknown') or 'No Vehicle', { secondaryLabel = '#' .. pos },
-                    function()
-                        showroomManagement:Close()
-                        Wait(100)
-                        StartSettingShowroomPosition(stockData, dealerId, pos, posVehicle)
+                    end, function()
+                        showroomManagement = nil
+                        showroomManagementSub = nil
+                        collectgarbage()
                     end)
-            end
 
-            showroomManagement:Show()
-        end)
+                for pos = 1, #_dealerships[dealerId].showroom do
+                    local posVehicle = GlobalState.DealershipShowrooms[dealerId] and
+                        GlobalState.DealershipShowrooms[dealerId][tostring(pos)]
+                    showroomManagement.Add:AdvButton(
+                        posVehicle and
+                        string.format('%s %s', posVehicle.make and posVehicle.make or 'Unknown',
+                            posVehicle.model and posVehicle.model or 'Unknown') or 'No Vehicle',
+                        { secondaryLabel = '#' .. pos },
+                        function()
+                            showroomManagement:Close()
+                            Wait(100)
+                            StartSettingShowroomPosition(stockData, dealerId, pos, posVehicle)
+                        end)
+                end
+
+                showroomManagement:Show()
+            end)
     end
 end
 
@@ -50,18 +52,18 @@ function StartSettingShowroomPosition(stockData, dealerId, position, positionVeh
     showroomManagement = Menu:Create('showroomManagement',
         string.format('Setting %s Showroom Position #%s', _dealerships[dealerId].abbreviation, position), function()
 
-    end, function()
-        showroomManagement = nil
-        showroomManagementSub = nil
-        collectgarbage()
-    end)
+        end, function()
+            showroomManagement = nil
+            showroomManagementSub = nil
+            collectgarbage()
+        end)
 
     showroomManagementSub = {}
 
     if positionVehicle then
         showroomManagement.Add:SubMenuBack('Clear Current Vehicle', {}, function()
             Wait(50)
-            Callbacks:ServerCallback('Dealerships:ShowroomManagement:SetPosition', {
+            exports["sandbox-base"]:ServerCallback('Dealerships:ShowroomManagement:SetPosition', {
                 dealerId = dealerId,
                 position = position,
                 vehData = false,
@@ -91,10 +93,10 @@ function StartSettingShowroomPosition(stockData, dealerId, position, positionVeh
             for k, v in ipairs(stockData.sorted[category]) do
                 showroomManagementSub[category].Add:AdvButton(('%s %s'):format(v.make, v.model),
                     { secondaryLabel = (v.class or 'Unknown') .. ' Class' }, function()
-                    Wait(100)
-                    showroomManagement:Close()
-                    SetDealerShowroomVehicleAtPosition(dealerId, position, v)
-                end)
+                        Wait(100)
+                        showroomManagement:Close()
+                        SetDealerShowroomVehicleAtPosition(dealerId, position, v)
+                    end)
             end
 
             showroomManagementSub[category].Add:SubMenuBack('Go Back', {})
@@ -121,7 +123,7 @@ function SetDealerShowroomVehicleAtPosition(dealerId, position, vehData)
             vehProperties.mods = nil
             vehProperties.neonEnabled = nil
 
-            Callbacks:ServerCallback('Dealerships:ShowroomManagement:SetPosition', {
+            exports["sandbox-base"]:ServerCallback('Dealerships:ShowroomManagement:SetPosition', {
                 dealerId = dealerId,
                 position = position,
                 vehData = {

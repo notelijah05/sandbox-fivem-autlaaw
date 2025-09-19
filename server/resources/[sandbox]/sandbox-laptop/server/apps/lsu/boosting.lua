@@ -38,101 +38,103 @@ AddEventHandler("Characters:Server:PlayerLoggedOut", HandleCharacterLogout)
 AddEventHandler("Characters:Server:PlayerDropped", HandleCharacterLogout)
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:CreateContract", function(source, data, cb)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if char and data?.vehicle and data?.make and data?.model and data?.trackers and data?.price then
-            local perm = char:GetData("LaptopPermissions")
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:CreateContract",
+        function(source, data, cb)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
+            if char and data?.vehicle and data?.make and data?.model and data?.trackers and data?.price then
+                local perm = char:GetData("LaptopPermissions")
 
-            if perm["lsunderground"] and perm["lsunderground"]["admin"] then
-                local level = nil
-                local cost = tonumber(data.price) or 0
+                if perm["lsunderground"] and perm["lsunderground"]["admin"] then
+                    local level = nil
+                    local cost = tonumber(data.price) or 0
 
-                for k, v in ipairs(_boostingRepToClass) do
-                    if v == data.class then
-                        level = k
+                    for k, v in ipairs(_boostingRepToClass) do
+                        if v == data.class then
+                            level = k
+                        end
                     end
-                end
 
-                if level >= 1 and BOOSTING_VEHICLE_CONFIG[data.class] and cost > 0 then
-                    local category = BOOSTING_VEHICLE_CONFIG[data.class]
-                    local length = math.random(category.length.min, category.length.max) * 60 * 60
-                    local tracker = tonumber(data.trackers) or 0
+                    if level >= 1 and BOOSTING_VEHICLE_CONFIG[data.class] and cost > 0 then
+                        local category = BOOSTING_VEHICLE_CONFIG[data.class]
+                        local length = math.random(category.length.min, category.length.max) * 60 * 60
+                        local tracker = tonumber(data.trackers) or 0
 
-                    cb(Laptop.LSUnderground.Boosting:GiveContract(source, {
-                        vehicle = data.vehicle,
-                        label = string.format("%s %s", data.make, data.model),
-                        make = data.make,
-                        model = data.model,
-                        class = data.class,
-                        classLevel = level,
-                        tracker = tracker,
-                        rewarded = true,
-                    }, {
-                        standard = {
-                            price = cost,
-                            coin = "VRM",
-                        }
-                    }, length, {
-                        skipRep = data.skipRep,
-                        payoutOverride = tonumber(data.payoutOverride),
-                    }))
+                        cb(Laptop.LSUnderground.Boosting:GiveContract(source, {
+                            vehicle = data.vehicle,
+                            label = string.format("%s %s", data.make, data.model),
+                            make = data.make,
+                            model = data.model,
+                            class = data.class,
+                            classLevel = level,
+                            tracker = tracker,
+                            rewarded = true,
+                        }, {
+                            standard = {
+                                price = cost,
+                                coin = "VRM",
+                            }
+                        }, length, {
+                            skipRep = data.skipRep,
+                            payoutOverride = tonumber(data.payoutOverride),
+                        }))
+                    else
+                        cb(false)
+                    end
                 else
                     cb(false)
                 end
             else
                 cb(false)
             end
-        else
-            cb(false)
-        end
-    end)
+        end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:GetBans", function(source, data, cb)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if char then
-            local perm = char:GetData("LaptopPermissions")
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:GetBans",
+        function(source, data, cb)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
+            if char then
+                local perm = char:GetData("LaptopPermissions")
 
-            if perm["lsunderground"] and perm["lsunderground"]["admin"] then
-                exports['sandbox-base']:DatabaseGameFind({
-                    collection = "characters",
-                    query = {
-                        LSUNDGBan = {
-                            ["$exists"] = true,
+                if perm["lsunderground"] and perm["lsunderground"]["admin"] then
+                    exports['sandbox-base']:DatabaseGameFind({
+                        collection = "characters",
+                        query = {
+                            LSUNDGBan = {
+                                ["$exists"] = true,
+                            }
+                        },
+                        options = {
+                            projection = {
+                                SID = 1,
+                                First = 1,
+                                Last = 1,
+                                Alias = 1,
+                                LSUNDGBan = 1,
+                            }
                         }
-                    },
-                    options = {
-                        projection = {
-                            SID = 1,
-                            First = 1,
-                            Last = 1,
-                            Alias = 1,
-                            LSUNDGBan = 1,
-                        }
-                    }
 
-                }, function(success, results)
-                    if success and results then
-                        local cunts = {}
-                        for k, v in ipairs(results) do
-                            v.RacingAlias = v.Profiles?.redline?.name
+                    }, function(success, results)
+                        if success and results then
+                            local cunts = {}
+                            for k, v in ipairs(results) do
+                                v.RacingAlias = v.Profiles?.redline?.name
 
-                            table.insert(cunts, v)
+                                table.insert(cunts, v)
+                            end
+
+                            cb(cunts)
+                        else
+                            cb(false)
                         end
-
-                        cb(cunts)
-                    else
-                        cb(false)
-                    end
-                end)
+                    end)
+                else
+                    cb(false)
+                end
             else
                 cb(false)
             end
-        else
-            cb(false)
-        end
-    end)
+        end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:Ban", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:Ban", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data?.SID then
             local perm = char:GetData("LaptopPermissions")
@@ -169,43 +171,44 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:Unban", function(source, data, cb)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if char and data?.SID then
-            local perm = char:GetData("LaptopPermissions")
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:Unban",
+        function(source, data, cb)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
+            if char and data?.SID then
+                local perm = char:GetData("LaptopPermissions")
 
-            if perm["lsunderground"] and perm["lsunderground"]["admin"] then
-                exports['sandbox-base']:DatabaseGameUpdateOne({
-                    collection = "characters",
-                    query = {
-                        SID = data.SID,
-                    },
-                    update = {
-                        ["$unset"] = {
-                            LSUNDGBan = true,
+                if perm["lsunderground"] and perm["lsunderground"]["admin"] then
+                    exports['sandbox-base']:DatabaseGameUpdateOne({
+                        collection = "characters",
+                        query = {
+                            SID = data.SID,
+                        },
+                        update = {
+                            ["$unset"] = {
+                                LSUNDGBan = true,
+                            }
                         }
-                    }
-                }, function(success, result)
-                    if success and result > 0 then
-                        local targetChar = exports['sandbox-characters']:FetchBySID(data.SID)
-                        if targetChar then
-                            targetChar:SetData("LSUNDGBan", nil)
-                        end
+                    }, function(success, result)
+                        if success and result > 0 then
+                            local targetChar = exports['sandbox-characters']:FetchBySID(data.SID)
+                            if targetChar then
+                                targetChar:SetData("LSUNDGBan", nil)
+                            end
 
-                        cb(true)
-                    else
-                        cb(false)
-                    end
-                end)
+                            cb(true)
+                        else
+                            cb(false)
+                        end
+                    end)
+                else
+                    cb(false)
+                end
             else
                 cb(false)
             end
-        else
-            cb(false)
-        end
-    end)
+        end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:EnterQueue", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:EnterQueue", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local team, leader = Laptop.Teams:GetByMemberSource(source)
 
@@ -246,7 +249,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:ExitQueue", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:ExitQueue", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             for k, v in ipairs(_boostingQueue) do
@@ -261,149 +264,154 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:DeclineContract", function(source, data, cb)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if char then
-            local boostingContracts = char:GetData("BoostingContracts") or {}
-            local updated = false
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:DeclineContract",
+        function(source, data, cb)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
+            if char then
+                local boostingContracts = char:GetData("BoostingContracts") or {}
+                local updated = false
 
-            for k, v in ipairs(boostingContracts) do
-                if v.id == data.id then
-                    table.remove(boostingContracts, k)
+                for k, v in ipairs(boostingContracts) do
+                    if v.id == data.id then
+                        table.remove(boostingContracts, k)
 
-                    updated = true
-                    break
+                        updated = true
+                        break
+                    end
                 end
-            end
 
-            if updated then
-                char:SetData("BoostingContracts", boostingContracts)
-                cb(true)
+                if updated then
+                    char:SetData("BoostingContracts", boostingContracts)
+                    cb(true)
+                else
+                    cb(false)
+                end
             else
                 cb(false)
             end
-        else
-            cb(false)
-        end
-    end)
+        end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:TransferContract", function(source, data, cb)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if char and data?.alias then
-            local boostingContracts = char:GetData("BoostingContracts") or {}
-            local updated = false
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:TransferContract",
+        function(source, data, cb)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
+            if char and data?.alias then
+                local boostingContracts = char:GetData("BoostingContracts") or {}
+                local updated = false
 
-            for k, v in ipairs(boostingContracts) do
-                if v.id == data.id then
-                    local found = nil
-                    for _, c in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
-                        if c ~= nil then
-                            local profiles = c:GetData("Profiles")
-                            if profiles?.redline?.name == data.alias then
-                                found = c
-                                break
+                for k, v in ipairs(boostingContracts) do
+                    if v.id == data.id then
+                        local found = nil
+                        for _, c in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
+                            if c ~= nil then
+                                local profiles = c:GetData("Profiles")
+                                if profiles?.redline?.name == data.alias then
+                                    found = c
+                                    break
+                                end
                             end
                         end
-                    end
 
-                    if found then
-                        local targetContracts = found:GetData("BoostingContracts") or {}
+                        if found then
+                            local targetContracts = found:GetData("BoostingContracts") or {}
 
-                        v.owner = {
-                            Alias = found:GetData("Profiles")?.redline?.name,
-                            SID = found:GetData("SID"),
-                        }
-
-                        table.insert(targetContracts, v)
-
-                        found:SetData("BoostingContracts", targetContracts)
-                        Laptop.Notification:Add(
-                            found:GetData("Source"),
-                            "Contract Transferred to You",
-                            string.format("A New %s Class Contract Was Just Transferred to You. Buy In: %s $%s",
-                                v.vehicle.class, v.prices.standard.price, v.prices.standard.coin),
-                            os.time() * 1000,
-                            10000,
-                            "lsunderground",
-                            {
-                                view = "",
+                            v.owner = {
+                                Alias = found:GetData("Profiles")?.redline?.name,
+                                SID = found:GetData("SID"),
                             }
-                        )
 
-                        table.remove(boostingContracts, k)
-                        updated = true
+                            table.insert(targetContracts, v)
+
+                            found:SetData("BoostingContracts", targetContracts)
+                            Laptop.Notification:Add(
+                                found:GetData("Source"),
+                                "Contract Transferred to You",
+                                string.format("A New %s Class Contract Was Just Transferred to You. Buy In: %s $%s",
+                                    v.vehicle.class, v.prices.standard.price, v.prices.standard.coin),
+                                os.time() * 1000,
+                                10000,
+                                "lsunderground",
+                                {
+                                    view = "",
+                                }
+                            )
+
+                            table.remove(boostingContracts, k)
+                            updated = true
+                        end
+
+                        break
                     end
-
-                    break
                 end
-            end
 
-            if updated then
-                char:SetData("BoostingContracts", boostingContracts)
-                cb(true)
+                if updated then
+                    char:SetData("BoostingContracts", boostingContracts)
+                    cb(true)
+                else
+                    cb(false)
+                end
             else
                 cb(false)
             end
-        else
-            cb(false)
-        end
-    end)
+        end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:AcceptContract", function(source, data, cb)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if char then
-            local boostingContracts = char:GetData("BoostingContracts") or {}
-            local perm = char:GetData("LaptopPermissions")
-            local team, isLeader = Laptop.Teams:GetByMemberSource(source)
-            local level = Reputation:GetLevel(source, "Boosting")
-            if level < 1 then
-                level = 1
-            end
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:AcceptContract",
+        function(source, data, cb)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
+            if char then
+                local boostingContracts = char:GetData("BoostingContracts") or {}
+                local perm = char:GetData("LaptopPermissions")
+                local team, isLeader = Laptop.Teams:GetByMemberSource(source)
+                local level = Reputation:GetLevel(source, "Boosting")
+                if level < 1 then
+                    level = 1
+                end
 
-            for k, v in ipairs(boostingContracts) do
-                if v.id == data.id and (v.expires > os.time()) and (level >= v.vehicle.classLevel or v.vehicle.rewarded) then
-                    if team?.ID and (#team.Members >= 2 or (perm["lsunderground"] and perm["lsunderground"]["admin"])) then
-                        if Crypto:Has(source, v.prices.standard.coin, v.prices.standard.price) then
-                            local req = Laptop.Teams.Requests:Add(
-                                team.ID,
-                                true,
-                                "Laptop:Server:LSUnderground:Boosting:ActionRequest",
-                                "Boosting Contract",
-                                string.format("%s (%s) - %s %s", v.vehicle.label, v.vehicle.class, char:GetData("First"),
-                                    char:GetData("Last")),
-                                {
-                                    contract = data.id,
-                                    requester = source,
-                                },
-                                60 * 2 -- 2 Minutes
-                            )
+                for k, v in ipairs(boostingContracts) do
+                    if v.id == data.id and (v.expires > os.time()) and (level >= v.vehicle.classLevel or v.vehicle.rewarded) then
+                        if team?.ID and (#team.Members >= 2 or (perm["lsunderground"] and perm["lsunderground"]["admin"])) then
+                            if Crypto:Has(source, v.prices.standard.coin, v.prices.standard.price) then
+                                local req = Laptop.Teams.Requests:Add(
+                                    team.ID,
+                                    true,
+                                    "Laptop:Server:LSUnderground:Boosting:ActionRequest",
+                                    "Boosting Contract",
+                                    string.format("%s (%s) - %s %s", v.vehicle.label, v.vehicle.class,
+                                        char:GetData("First"),
+                                        char:GetData("Last")),
+                                    {
+                                        contract = data.id,
+                                        requester = source,
+                                    },
+                                    60 * 2 -- 2 Minutes
+                                )
 
-                            Laptop.Notification:Add(team.ID, "New Request for a Boosting Contract",
-                                string.format("%s %s Requested a Boosting Contract (%s)", char:GetData("First"),
-                                    char:GetData("Last"), v.vehicle.class), os.time() * 1000, 15000, "lsunderground", {
-                                    accept = "Laptop:Client:Teams:RequestNotifAccept",
-                                    cancel = "Laptop:Client:Teams:RequestNotifDeny",
-                                }, {
-                                    request = req,
-                                })
+                                Laptop.Notification:Add(team.ID, "New Request for a Boosting Contract",
+                                    string.format("%s %s Requested a Boosting Contract (%s)", char:GetData("First"),
+                                        char:GetData("Last"), v.vehicle.class), os.time() * 1000, 15000, "lsunderground",
+                                    {
+                                        accept = "Laptop:Client:Teams:RequestNotifAccept",
+                                        cancel = "Laptop:Client:Teams:RequestNotifDeny",
+                                    }, {
+                                        request = req,
+                                    })
 
-                            return cb({ success = true })
+                                return cb({ success = true })
+                            else
+                                return cb({ message = "Not Enough Crypto!" })
+                            end
                         else
-                            return cb({ message = "Not Enough Crypto!" })
+                            return cb({ message = "Not Enough Team Members!" })
                         end
-                    else
-                        return cb({ message = "Not Enough Team Members!" })
-                    end
 
-                    break
+                        break
+                    end
                 end
             end
-        end
 
-        cb(false)
-    end)
+            cb(false)
+        end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Exterior", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:Exterior", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local team = Laptop.Teams:GetByMemberSource(source)
@@ -439,7 +447,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:Ignition", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:Ignition", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local team = Laptop.Teams:GetByMemberSource(source)
@@ -500,7 +508,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         cb()
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:DropOff", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:DropOff", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local team = Laptop.Teams:GetByMemberSource(source)
@@ -526,7 +534,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         cb()
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:LSUnderground:Boosting:LeftArea", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:LeftArea", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local team = Laptop.Teams:GetByMemberSource(source)
@@ -576,7 +584,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
             and (not _boosting[team.ID].trackerCooldown or GetGameTimer() >= _boosting[team.ID].trackerCooldown)
         then
             Citizen.SetTimeout(500, function()
-                Callbacks:ClientCallback(source, "Laptop:LSUnderground:Boosting:TrackerHacker", {},
+                exports["sandbox-base"]:ClientCallback(source, "Laptop:LSUnderground:Boosting:TrackerHacker", {},
                     function(using, success)
                         if using and _boosting[team?.ID] then
                             _boosting[team.ID].trackerCooldown = GetGameTimer() + 25000

@@ -1,6 +1,5 @@
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", GovernmentComponents)
 function GovernmentComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -17,7 +16,6 @@ _licenses = {
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
-		"Callbacks",
 		"Logger",
 		"Execute",
 		"Wallet",
@@ -29,7 +27,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end -- Do something to handle if not all dependencies loaded
 		GovernmentComponents()
 
-		Callbacks:RegisterServerCallback("Government:BuyID", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Government:BuyID", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if Wallet:Modify(source, -500) then
 				Inventory:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
@@ -38,7 +36,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Government:BuyLicense", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Government:BuyLicense", function(source, data, cb)
 			if _licenses[data] ~= nil then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				local licenses = char:GetData("Licenses")
@@ -67,21 +65,22 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Government:Client:DoWeaponsLicenseBuyPolice", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if Jobs.Permissions:HasJob(source, "police") and char then
-				local licenses = char:GetData("Licenses")
-				if Wallet:Modify(source, -20) then
-					licenses["Weapons"].Active = true
-					char:SetData("Licenses", licenses)
-					Middleware:TriggerEvent("Characters:ForceStore", source)
+		exports["sandbox-base"]:RegisterServerCallback("Government:Client:DoWeaponsLicenseBuyPolice",
+			function(source, data, cb)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
+				if Jobs.Permissions:HasJob(source, "police") and char then
+					local licenses = char:GetData("Licenses")
+					if Wallet:Modify(source, -20) then
+						licenses["Weapons"].Active = true
+						char:SetData("Licenses", licenses)
+						Middleware:TriggerEvent("Characters:ForceStore", source)
+					else
+						Execute:Client(source, "Notification", "Error", "Not Enough Cash")
+					end
 				else
-					Execute:Client(source, "Notification", "Error", "Not Enough Cash")
+					Execute:Client(source, "Notification", "Error", "You are Not PD")
 				end
-			else
-				Execute:Client(source, "Notification", "Error", "You are Not PD")
-			end
-		end)
+			end)
 
 		-- Inventory.Poly:Create({
 		-- 	id = "doj-chief-justice-safe",

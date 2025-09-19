@@ -1,6 +1,5 @@
 AddEventHandler("Hospital:Shared:DependencyUpdate", SAFDComponents)
 function SAFDComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
@@ -17,7 +16,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hospital", {
-		"Callbacks",
 		"Notification",
 		"Damage",
 		"Targeting",

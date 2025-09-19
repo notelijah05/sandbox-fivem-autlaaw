@@ -10,11 +10,11 @@ _MDT.Warrants = {
 		end
 
 		qry = qry .. "ORDER BY state, expires LIMIT ? OFFSET ?"
-		table.insert(params, perPage + 1)              -- Limit
+		table.insert(params, perPage + 1)     -- Limit
 		if page > 1 then
 			table.insert(params, perPage * (page - 1)) -- Offset
 		else
-			table.insert(params, 0)                    -- Offset
+			table.insert(params, 0)           -- Offset
 		end
 
 		local results = MySQL.query.await(qry, params)
@@ -31,25 +31,26 @@ _MDT.Warrants = {
 	end,
 	View = function(self, id)
 		local warrant = MySQL.single.await(
-		"SELECT id, state, title, report, suspect, notes, creatorSID, creatorName, creatorCallsign, expires, issued FROM mdt_warrants WHERE id = ?",
+			"SELECT id, state, title, report, suspect, notes, creatorSID, creatorName, creatorCallsign, expires, issued FROM mdt_warrants WHERE id = ?",
 			{
 				id
 			})
 
 		if warrant and warrant.suspect then
 			warrant.suspectData = MySQL.single.await(
-			"SELECT SID, First, Last, charges FROM mdt_reports_people WHERE report = ? AND type = ? AND warrant = ?", {
-				warrant.report,
-				"suspect",
-				warrant.id
-			})
+				"SELECT SID, First, Last, charges FROM mdt_reports_people WHERE report = ? AND type = ? AND warrant = ?",
+				{
+					warrant.report,
+					"suspect",
+					warrant.id
+				})
 		end
 
 		return warrant
 	end,
 	Create = function(self, report, suspect, notes, author)
 		local id = MySQL.insert.await(
-		"INSERT INTO mdt_warrants (title, report, suspect, notes, creatorSID, creatorName, creatorCallsign, expires) VALUES (?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?))",
+			"INSERT INTO mdt_warrants (title, report, suspect, notes, creatorSID, creatorName, creatorCallsign, expires) VALUES (?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?))",
 			{
 				string.format("Warrant For %s %s (%s)", suspect.First, suspect.Last, suspect.SID),
 				report,
@@ -101,15 +102,15 @@ _MDT.Warrants = {
 }
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("MDT:Search:warrant", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Search:warrant", function(source, data, cb)
 		cb(MDT.Warrants:Search(data.term, data.page, data.perPage))
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:View:warrant", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:View:warrant", function(source, data, cb)
 		cb(MDT.Warrants:View(data))
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Update:warrant", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Update:warrant", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char and CheckMDTPermissions(source, false) then

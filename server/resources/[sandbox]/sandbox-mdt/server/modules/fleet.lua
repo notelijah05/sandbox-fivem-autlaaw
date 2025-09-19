@@ -1,5 +1,5 @@
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-  Callbacks:RegisterServerCallback("MDT:ViewVehicleFleet", function(source, data, cb)
+  exports["sandbox-base"]:RegisterServerCallback("MDT:ViewVehicleFleet", function(source, data, cb)
     local hasPerms, loggedInJob = CheckMDTPermissions(source, {
       'FLEET_MANAGEMENT',
     })
@@ -51,7 +51,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
     end
   end)
 
-  Callbacks:RegisterServerCallback("MDT:SetAssignedDrivers", function(source, data, cb)
+  exports["sandbox-base"]:RegisterServerCallback("MDT:SetAssignedDrivers", function(source, data, cb)
     local hasPerms, loggedInJob = CheckMDTPermissions(source, {
       'FLEET_MANAGEMENT',
     })
@@ -85,7 +85,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
     end
   end)
 
-  Callbacks:RegisterServerCallback("MDT:TrackFleetVehicle", function(source, data, cb)
+  exports["sandbox-base"]:RegisterServerCallback("MDT:TrackFleetVehicle", function(source, data, cb)
     local hasPerms, loggedInJob = CheckMDTPermissions(source, {
       'FLEET_MANAGEMENT',
     })

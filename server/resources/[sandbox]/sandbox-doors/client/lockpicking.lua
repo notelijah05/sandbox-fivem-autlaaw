@@ -36,9 +36,9 @@ end
 --         local doorData = DOORS_STATE[showingDoorInfo]
 --         if doorData and doorData.lock then
 --             if not doorData.lockpickable then
---                 return Notification:Error('You can\'t lockpick this door, it\'s too strong') 
+--                 return Notification:Error('You can\'t lockpick this door, it\'s too strong')
 --             elseif Doors:IsAuthorized(doorData) then
---                 return Notification:Error('You can\'t lockpick a door that you have the keys for...') 
+--                 return Notification:Error('You can\'t lockpick a door that you have the keys for...')
 --             elseif not IsAbleToLockpick(showingDoorInfo) then
 --                 return Notification:Error('You have already tried lockpicking this door multiple times, it doesn\'t work...')
 --             end
@@ -48,11 +48,11 @@ end
 --             if doorDist <= 1.5 then
 --                 local chance = math.random(100)
 --                 if chance >= Config.Lockpick.chance then
---                     Citizen.SetTimeout(math.random(Config.Lockpick.animDuration) * 1000, function() 
+--                     Citizen.SetTimeout(math.random(Config.Lockpick.animDuration) * 1000, function()
 --                         Progress:Fail()
 --                         AddLockpickFailedAttempt(showingDoorInfo)
 --                         if math.random(100) <= 40 then -- 40% chance of lockpick breaking or it is just incompetence
---                             Callbacks:ServerCallback('Inventory:Server:RemoveItem', { item = item }, function(done)
+--                             exports["sandbox-base"]:ServerCallback('Inventory:Server:RemoveItem', { item = item }, function(done)
 --                                 Notification:Error('Your lockpick broke trying to pick that lock')
 --                             end)
 --                         else
@@ -79,7 +79,7 @@ end
 --                     }
 --                 }, function(status)
 --                     if not status then
---                         Callbacks:ServerCallback('Doors:ToggleLock', { doorId = showingDoorInfo, state = false, bylockpick = true }, function(success, newState)
+--                         exports["sandbox-base"]:ServerCallback('Doors:ToggleLock', { doorId = showingDoorInfo, state = false, bylockpick = true }, function(success, newState)
 --                             if success and not newState then
 --                                 Notification:Success('You lockpicked the door, it is now open')
 --                             end

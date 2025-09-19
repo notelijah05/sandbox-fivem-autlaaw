@@ -45,7 +45,7 @@ RegisterNetEvent("Weed:Client:Login", function(l)
 end)
 
 AddEventHandler("Weed:Client:Check", function(entity, data)
-	Callbacks:ServerCallback("Weed:CheckPlant", GetWeedPlant(entity.entity), function(data)
+	exports["sandbox-base"]:ServerCallback("Weed:CheckPlant", GetWeedPlant(entity.entity), function(data)
 		if data ~= nil then
 			local stageId = getStageByPct(data.plant.growth)
 			local stage = Plants[stageId]
@@ -227,7 +227,7 @@ AddEventHandler("Weed:Client:Fertilize", function(data)
 			},
 		}, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("Weed:FertilizePlant", data, function(status) end)
+				exports["sandbox-base"]:ServerCallback("Weed:FertilizePlant", data, function(status) end)
 			end
 		end)
 	else
@@ -254,7 +254,7 @@ AddEventHandler("Weed:Client:Water", function(pId)
 			},
 		}, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("Weed:WaterPlant", pId, function(status) end)
+				exports["sandbox-base"]:ServerCallback("Weed:WaterPlant", pId, function(status) end)
 			end
 		end)
 	end
@@ -279,7 +279,7 @@ AddEventHandler("Weed:Client:Harvest", function(entity, data)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Weed:HarvestPlant", GetWeedPlant(entity.entity), function(status) end)
+			exports["sandbox-base"]:ServerCallback("Weed:HarvestPlant", GetWeedPlant(entity.entity), function(status) end)
 		end
 	end)
 end)
@@ -304,17 +304,17 @@ AddEventHandler("Weed:Client:Harvest2", function(nId)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Weed:HarvestPlant", nId, function(status) end)
+			exports["sandbox-base"]:ServerCallback("Weed:HarvestPlant", nId, function(status) end)
 		end
 	end)
 end)
 
 AddEventHandler("Weed:Client:Package", function()
-	Callbacks:ServerCallback("Weed:BuyPackage", {}, function(status) end)
+	exports["sandbox-base"]:ServerCallback("Weed:BuyPackage", {}, function(status) end)
 end)
 
 -- AddEventHandler("Weed:Client:Brick", function()
--- 	Callbacks:ServerCallback("Weed:SellBrick", {}, function(status) end)
+-- 	exports["sandbox-base"]:ServerCallback("Weed:SellBrick", {}, function(status) end)
 -- end)
 
 AddEventHandler("Weed:Client:Destroy", function(nId)
@@ -336,7 +336,7 @@ AddEventHandler("Weed:Client:Destroy", function(nId)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Weed:DestroyPlant", nId, function(status) end)
+			exports["sandbox-base"]:ServerCallback("Weed:DestroyPlant", nId, function(status) end)
 		end
 	end)
 end)
@@ -360,7 +360,8 @@ AddEventHandler("Weed:Client:PDDestroy", function(entity)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Weed:PDDestroyPlant", GetWeedPlant(entity.entity), function(status) end)
+			exports["sandbox-base"]:ServerCallback("Weed:PDDestroyPlant", GetWeedPlant(entity.entity),
+				function(status) end)
 		end
 	end)
 end)

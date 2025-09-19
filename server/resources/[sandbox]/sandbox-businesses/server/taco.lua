@@ -162,7 +162,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		},
 	})
 
-	Callbacks:RegisterServerCallback("Taco:GetNewQueueItem", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Taco:GetNewQueueItem", function(source, data, cb)
 		_currentCookItem = math.random(#_tacoFoodItems)
 		GlobalState["TacoShop:Counter"] = _deliveryCounter
 		GlobalState["TacoShop:CurrentItem"] = _currentCookItem
@@ -170,12 +170,12 @@ AddEventHandler("Businesses:Server:Startup", function()
 		cb(true)
 	end)
 
-	Callbacks:RegisterServerCallback("Taco:SetState", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Taco:SetState", function(source, data, cb)
 		TriggerClientEvent("Taco:PickupState", -1, data)
 		cb(true)
 	end)
 
-	Callbacks:RegisterServerCallback("Tacos:AddToQueue", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Tacos:AddToQueue", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local count = Inventory.Items:GetCount(char:GetData("SID"), 1, data.item) or 0
@@ -204,7 +204,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Tacos:Pickup", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Tacos:Pickup", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			_deliveryCounter = _deliveryCounter - 1
@@ -219,7 +219,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Tacos:Dropoff", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Tacos:Dropoff", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local count = Inventory.Items:GetCount(char:GetData("SID"), 1, _dropOffItem) or 0

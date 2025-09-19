@@ -36,7 +36,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 						-- action = function()
 						-- 	local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
 
-						-- 	Callbacks:ServerCallback("StorageUnits:PoliceRaid", {
+						-- 	exports["sandbox-base"]:ServerCallback("StorageUnits:PoliceRaid", {
 						-- 		unit = nearUnit.unitId
 						-- 	}, function(success)
 						-- 		if not success then
@@ -60,7 +60,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 end)
 
 AddEventHandler("Prison:Client:Target:Stash", function(entity, data)
-	Callbacks:ServerCallback("Inventory:PrisonStash:Open", data.stashType)
+	exports["sandbox-base"]:ServerCallback("Inventory:PrisonStash:Open", data.stashType)
 end)
 
 AddEventHandler("Prison:Client:Stash:Raid", function(entity, data)
@@ -85,7 +85,7 @@ end)
 
 AddEventHandler("Inventory:Client:PrisonStash:Raid", function(values, data)
 	if values and values.stateid and #values.stateid >= 1 then
-		Callbacks:ServerCallback("Inventory:PrisonStash:Raid", {
+		exports["sandbox-base"]:ServerCallback("Inventory:PrisonStash:Raid", {
 			stateid = values.stateid,
 		}, function(success)
 			-- if success then

@@ -1,7 +1,7 @@
 _MDT.Firearm = {
 	Search = function(self, term)
 		return MySQL.query.await(
-		"SELECT serial, model, owner_sid, owner_name FROM firearms WHERE scratched = ? AND (serial = ? OR owner_sid = ? OR owner_name LIKE ?)",
+			"SELECT serial, model, owner_sid, owner_name FROM firearms WHERE scratched = ? AND (serial = ? OR owner_sid = ? OR owner_name LIKE ?)",
 			{
 				0,
 				term,
@@ -11,14 +11,14 @@ _MDT.Firearm = {
 	end,
 	View = function(self, id)
 		local firearm = MySQL.single.await(
-		"SELECT serial, model, owner_sid, owner_name, purchased FROM firearms WHERE scratched = ? AND serial = ?", {
-			0,
-			id,
-		})
+			"SELECT serial, model, owner_sid, owner_name, purchased FROM firearms WHERE scratched = ? AND serial = ?", {
+				0,
+				id,
+			})
 
 		if firearm and firearm.serial then
 			firearm.flags = MySQL.query.await(
-			"SELECT title, description, date, author_sid, author_first, author_last, author_callsign FROM firearms_flags WHERE serial = ?",
+				"SELECT title, description, date, author_sid, author_first, author_last, author_callsign FROM firearms_flags WHERE serial = ?",
 				{
 					firearm.serial
 				})
@@ -38,7 +38,7 @@ _MDT.Firearm = {
 			}
 
 			local id = MySQL.insert.await(
-			"INSERT INTO firearms_flags (serial, title, description, author_sid, author_first, author_last, author_callsign) VALUES (?, ?, ?, ?, ?, ?, ?)",
+				"INSERT INTO firearms_flags (serial, title, description, author_sid, author_first, author_last, author_callsign) VALUES (?, ?, ?, ?, ?, ?, ?)",
 				{
 					firearmSerial,
 					flag.title,
@@ -64,7 +64,7 @@ _MDT.Firearm = {
 }
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("MDT:Search:firearm", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Search:firearm", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
 			cb(MDT.Firearm:Search(data.term or ""))
 		else
@@ -72,7 +72,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:View:firearm", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:View:firearm", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
 			cb(MDT.Firearm:View(data))
 		else
@@ -80,7 +80,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Create:firearm-flag", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Create:firearm-flag", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and CheckMDTPermissions(source, false) then
 			cb(MDT.Firearm.Flags:Add(data.parentId, data.doc, {
@@ -94,7 +94,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Delete:firearm-flag", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Delete:firearm-flag", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
 			cb(MDT.Firearm.Flags:Remove(data.parentId, data.id))
 		else

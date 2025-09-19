@@ -55,13 +55,13 @@ AddEventHandler("Labor:Client:Setup", function()
         },
     }, 'seal-question', 'WORLD_HUMAN_SMOKING')
 
-    Callbacks:RegisterClientCallback("HouseRobbery:Lockpick", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("HouseRobbery:Lockpick", function(data, cb)
         _lpStage = 0
         DoLockpick({ timer = 1.0, base = 5 }, data, cb)
         EmergencyAlerts:CreateIfReported(40.0, "bane", true)
     end)
 
-    Callbacks:RegisterClientCallback("HouseRobbery:AdvLockpick", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("HouseRobbery:AdvLockpick", function(data, cb)
         _lpStage = 0
         DoLockpick({ timer = 0.75, base = 8 }, data, cb)
         EmergencyAlerts:CreateIfReported(40.0, "bane", true)
@@ -110,7 +110,7 @@ function DoAlarm(pId)
 end
 
 function ExitHouse()
-    Callbacks:ServerCallback("HouseRobbery:Exit", {}, function(propId, intr)
+    exports["sandbox-base"]:ServerCallback("HouseRobbery:Exit", {}, function(propId, intr)
         LocalPlayer.state.inRobbedHouse = false
 
         DoScreenFadeOut(1000)
@@ -181,7 +181,7 @@ end)
 
 function EnterHouse()
     if _p ~= nil and _working then
-        Callbacks:ServerCallback("HouseRobbery:BreakIn", _p, function(r, f, exit)
+        exports["sandbox-base"]:ServerCallback("HouseRobbery:BreakIn", _p, function(r, f, exit)
             if r then
                 EnterHouseShit(f, exit)
             end
@@ -250,7 +250,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                     Wait(100)
                     dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - vector3(data.coords.x, data.coords.y, data.coords.z))
                 end
-                Callbacks:ServerCallback("HouseRobbery:ArrivedNear", {})
+                exports["sandbox-base"]:ServerCallback("HouseRobbery:ArrivedNear", {})
             end)
         end)
 
@@ -334,7 +334,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                 end, function(cancelled)
                     if not cancelled then
                         Status.Modify:Add("PLAYER_STRESS", 3, false, true)
-                        Callbacks:ServerCallback("HouseRobbery:Search", data.id)
+                        exports["sandbox-base"]:ServerCallback("HouseRobbery:Search", data.id)
                     end
                 end)
             end
@@ -451,11 +451,11 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("HouseRobbery:Client:Enable", function()
-    Callbacks:ServerCallback('HouseRobbery:Enable', {})
+    exports["sandbox-base"]:ServerCallback('HouseRobbery:Enable', {})
 end)
 
 AddEventHandler("HouseRobbery:Client:StartJob", function()
-    Callbacks:ServerCallback('HouseRobbery:StartJob', _joiner, function(state)
+    exports["sandbox-base"]:ServerCallback('HouseRobbery:StartJob', _joiner, function(state)
         if not state then
             Notification:Error("Unable To Start Job")
         end
@@ -487,7 +487,7 @@ AddEventHandler("HouseRobbery:Client:HackSuccess", function(data)
     _scPass = _scPass + 1
     if _scPass > 3 then
         _scPass = 1
-        Callbacks:ServerCallback("HouseRobbery:HackAlarm", {
+        exports["sandbox-base"]:ServerCallback("HouseRobbery:HackAlarm", {
             propertyId = data.pId,
             state = true
         }, function()
@@ -508,7 +508,7 @@ AddEventHandler("HouseRobbery:Client:HackFail", function(data)
 
     if _scFails > 2 then
         _scFails = 1
-        Callbacks:ServerCallback("HouseRobbery:HackAlarm", {
+        exports["sandbox-base"]:ServerCallback("HouseRobbery:HackAlarm", {
             propertyId = data.pId,
             state = false
         }, function()

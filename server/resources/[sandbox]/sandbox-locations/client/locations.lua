@@ -95,7 +95,6 @@ end)
 
 AddEventHandler('Locations:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
-    Callbacks = exports['sandbox-base']:FetchComponent('Callbacks')
     Locations = exports['sandbox-base']:FetchComponent('Locations')
     Targeting = exports['sandbox-base']:FetchComponent('Targeting')
     Characters = exports['sandbox-base']:FetchComponent('Characters')
@@ -103,7 +102,6 @@ end
 
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Locations', {
-        'Callbacks',
         'Locations',
         'Targeting',
         'Characters',
@@ -128,7 +126,7 @@ end)
 
 LOCATIONS = {
     GetAll = function(self, type, cb)
-        Callbacks:ServerCallback('Locations:GetAll', {
+        exports["sandbox-base"]:ServerCallback('Locations:GetAll', {
             type = type
         }, cb)
     end

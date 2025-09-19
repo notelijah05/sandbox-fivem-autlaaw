@@ -442,7 +442,7 @@ function RefreshServicesDataPls()
 end
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Services:GetServices", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Services:GetServices", function(source, data, cb)
 		RefreshServicesDataPls()
 		cb(cachedData)
 	end)

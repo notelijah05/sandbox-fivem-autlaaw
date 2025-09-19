@@ -98,40 +98,40 @@ AddEventHandler("Robbery:Client:Setup", function()
 			v.width,
 			v.options,
 			v.isThermite
-					and {
-						{
-							icon = "fire",
-							text = "Use Thermite",
-							item = "thermite",
-							event = "Robbery:Client:MazeBank:ElectricBox:Thermite",
-							data = v.data,
-							isEnabled = function(data, entity)
-								return not GlobalState["MazeBank:Secured"]
-									and (
-										not GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
-										or GetCloudTimeAsInt()
-											> GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
-									)
-							end,
-						},
-					}
-				or {
-					{
-						icon = "terminal",
-						text = "Hack Power Interface",
-						item = "adv_electronics_kit",
-						event = "Robbery:Client:MazeBank:ElectricBox:Hack",
-						data = v.data,
-						isEnabled = function(data, entity)
-							return not GlobalState["MazeBank:Secured"]
-								and (
-									not GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
-									or GetCloudTimeAsInt()
-										> GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
-								)
-						end,
-					},
+			and {
+				{
+					icon = "fire",
+					text = "Use Thermite",
+					item = "thermite",
+					event = "Robbery:Client:MazeBank:ElectricBox:Thermite",
+					data = v.data,
+					isEnabled = function(data, entity)
+						return not GlobalState["MazeBank:Secured"]
+							and (
+								not GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
+								or GetCloudTimeAsInt()
+								> GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
+							)
+					end,
 				},
+			}
+			or {
+				{
+					icon = "terminal",
+					text = "Hack Power Interface",
+					item = "adv_electronics_kit",
+					event = "Robbery:Client:MazeBank:ElectricBox:Hack",
+					data = v.data,
+					isEnabled = function(data, entity)
+						return not GlobalState["MazeBank:Secured"]
+							and (
+								not GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
+								or GetCloudTimeAsInt()
+								> GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
+							)
+					end,
+				},
+			},
 			3.0,
 			true
 		)
@@ -159,7 +159,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 							and (
 								not GlobalState[string.format("MazeBank:Vault:Wall:%s", data.id)]
 								or GetCloudTimeAsInt()
-									> GlobalState[string.format("MazeBank:Vault:Wall:%s", data.id)]
+								> GlobalState[string.format("MazeBank:Vault:Wall:%s", data.id)]
 							)
 					end,
 				},
@@ -191,7 +191,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 							and (
 								not GlobalState[string.format("MazeBank:Offices:PC:%s", data.id)]
 								or GetCloudTimeAsInt()
-									> GlobalState[string.format("MazeBank:Offices:PC:%s", data.id)]
+								> GlobalState[string.format("MazeBank:Offices:PC:%s", data.id)]
 							)
 					end,
 				},
@@ -239,25 +239,25 @@ AddEventHandler("Robbery:Client:MazeBank:StartSecuring", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:MazeBank:SecureBank", {})
+			exports["sandbox-base"]:ServerCallback("Robbery:MazeBank:SecureBank", {})
 		end
 	end)
 end)
 
 AddEventHandler("Robbery:Client:MazeBank:ElectricBox:Hack", function(entity, data)
-	Callbacks:ServerCallback("Robbery:MazeBank:ElectricBox:Hack", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:MazeBank:ElectricBox:Hack", data, function() end)
 end)
 
 AddEventHandler("Robbery:Client:MazeBank:ElectricBox:Thermite", function(entity, data)
-	Callbacks:ServerCallback("Robbery:MazeBank:ElectricBox:Thermite", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:MazeBank:ElectricBox:Thermite", data, function() end)
 end)
 
 AddEventHandler("Robbery:Client:MazeBank:Drill", function(entity, data)
-	Callbacks:ServerCallback("Robbery:MazeBank:Drill", data.id, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:MazeBank:Drill", data.id, function() end)
 end)
 
 AddEventHandler("Robbery:Client:MazeBank:PC:Hack", function(entity, data)
-	Callbacks:ServerCallback("Robbery:MazeBank:PC:Hack", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:MazeBank:PC:Hack", data, function() end)
 end)
 
 RegisterNetEvent("Robbery:Client:MazeBank:OpenVaultDoor", function(door)

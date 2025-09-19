@@ -36,7 +36,7 @@ function registerUsables()
 
 	for k, v in pairs(alcoholItems) do
 		Inventory.Items:RegisterUse(k, "Status", function(source, itemData)
-			Callbacks:ClientCallback(source, "Status:DrinkAlcohol", v, function(success)
+			exports["sandbox-base"]:ClientCallback(source, "Status:DrinkAlcohol", v, function(success)
 				if success then
 					Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 				end
@@ -45,7 +45,7 @@ function registerUsables()
 	end
 
 	Inventory.Items:RegisterUse("scuba_gear", "Status", function(source, slot, itemData)
-		Callbacks:ClientCallback(source, "Status:UseScubaGear", {}, function(success)
+		exports["sandbox-base"]:ClientCallback(source, "Status:UseScubaGear", {}, function(success)
 			if success then
 				local newValue = slot.CreateDate - (60 * 60 * 24 * 20)
 				if os.time() - itemData.durability >= newValue then

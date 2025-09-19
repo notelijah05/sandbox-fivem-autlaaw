@@ -1,5 +1,5 @@
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Apartment:Validate", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Apartment:Validate", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -22,7 +22,7 @@ function RegisterCallbacks()
 					return cb(false)
 				end
 
-				Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+				exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 					invType = invType,
 					owner = invOwner,
 				}, function()
@@ -38,24 +38,24 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Apartment:SpawnInside", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Apartment:SpawnInside", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		cb(Apartment:Enter(source, char:GetData("Apartment"), -1, true))
 	end)
 
-	Callbacks:RegisterServerCallback("Apartment:Enter", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Apartment:Enter", function(source, data, cb)
 		cb(Apartment:Enter(source, data.tier, data.id))
 	end)
 
-	Callbacks:RegisterServerCallback("Apartment:Exit", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Apartment:Exit", function(source, data, cb)
 		cb(Apartment:Exit(source))
 	end)
 
-	Callbacks:RegisterServerCallback("Apartment:GetVisitRequests", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Apartment:GetVisitRequests", function(source, data, cb)
 		cb(Apartment.Reqeusts:Get(source))
 	end)
 
-	Callbacks:RegisterServerCallback("Apartment:Visit", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Apartment:Visit", function(source, data, cb)
 		cb(Apartment:Enter(source, data.tier, data.id))
 	end)
 end

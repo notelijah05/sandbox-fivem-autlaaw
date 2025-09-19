@@ -35,10 +35,10 @@ _MDT.Reports = {
             if rType == 0 and term and term:sub(1, 9) == "suspect: " then
                 local reports = {}
                 local reportsWithSuspect = MySQL.query.await(
-                "SELECT report FROM mdt_reports_people WHERE type = ? AND SID = ?", {
-                    "suspect",
-                    term:sub(10, #term)
-                })
+                    "SELECT report FROM mdt_reports_people WHERE type = ? AND SID = ?", {
+                        "suspect",
+                        term:sub(10, #term)
+                    })
 
                 for k, v in ipairs(reportsWithSuspect) do
                     table.insert(reports, v.report)
@@ -141,15 +141,15 @@ _MDT.Reports = {
             end
 
             report.evidence = MySQL.query.await(
-            "SELECT id, report, value, type, label FROM mdt_reports_evidence WHERE report = ?", {
-                report.id,
-            })
+                "SELECT id, report, value, type, label FROM mdt_reports_evidence WHERE report = ?", {
+                    report.id,
+                })
 
             if #suspectList > 0 then
                 report.paroleData = MySQL.query.await(
-                "SELECT SID, end, total, parole, sentence, fine FROM character_parole WHERE SID IN(?)", {
-                    table.concat(suspectList, ",")
-                })
+                    "SELECT SID, end, total, parole, sentence, fine FROM character_parole WHERE SID IN(?)", {
+                        table.concat(suspectList, ",")
+                    })
             end
             return report
         end
@@ -157,7 +157,7 @@ _MDT.Reports = {
     end,
     Create = function(self, data)
         local reportId = MySQL.insert.await(
-        "INSERT INTO mdt_reports (type, title, notes, allowAttorney, creatorSID, creatorName, creatorCallsign) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO mdt_reports (type, title, notes, allowAttorney, creatorSID, creatorName, creatorCallsign) VALUES (?, ?, ?, ?, ?, ?, ?)",
             {
                 data.type,
                 data.title,
@@ -337,7 +337,7 @@ _MDT.Reports = {
 }
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-    Callbacks:RegisterServerCallback("MDT:Search:report", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MDT:Search:report", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if CheckMDTPermissions(source, false) or (char:GetData("Attorney") and data.isAttorney) then
             cb(MDT.Reports:Search(data.term, data.reportType, data.page, data.perPage, data.isAttorney, data.evidence))
@@ -346,7 +346,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("MDT:Search:report-evidence", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MDT:Search:report-evidence", function(source, data, cb)
         if CheckMDTPermissions(source, false) then
             cb(MDT.Reports:SearchEvidence(data.term))
         else
@@ -354,7 +354,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("MDT:Create:report", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MDT:Create:report", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if CheckMDTPermissions(source, false) then
             data.doc.author = {
@@ -369,7 +369,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("MDT:Update:report", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MDT:Update:report", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and CheckMDTPermissions(source, false) then
             cb(MDT.Reports:Update(data.id, char, data.report))
@@ -378,7 +378,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("MDT:Delete:report", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MDT:Delete:report", function(source, data, cb)
         if CheckMDTPermissions(source, true) then
             cb(MDT.Reports:Delete(data.id))
         else
@@ -386,7 +386,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("MDT:View:report", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MDT:View:report", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if CheckMDTPermissions(source, false) or char:GetData("Attorney") then
             cb(MDT.Reports:View(data))

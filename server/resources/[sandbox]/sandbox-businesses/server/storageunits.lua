@@ -91,32 +91,33 @@ AddEventHandler("Businesses:Server:Startup", function()
         }
     }, 1)
 
-    Callbacks:RegisterServerCallback("StorageUnits:Access", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("StorageUnits:Access", function(source, data, cb)
         local unit = GlobalState[string.format("StorageUnit:%s", data)]
         if unit and unitPasscodes[unit.id] and unit.owner then
-            Callbacks:ClientCallback(source, "StorageUnits:Passcode", unitPasscodes[unit.id], function(success, data)
-                if success and data.entered == unitPasscodes[unit.id] then
-                    local storageType = unitEntities[unit.level] or 3000
-                    local storageOwner = string.format("storage-unit:%s", unit.id)
-                    Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
-                        invType = storageType,
-                        owner = storageOwner,
-                    }, function()
-                        Inventory:OpenSecondary(source, storageType, storageOwner)
+            exports["sandbox-base"]:ClientCallback(source, "StorageUnits:Passcode", unitPasscodes[unit.id],
+                function(success, data)
+                    if success and data.entered == unitPasscodes[unit.id] then
+                        local storageType = unitEntities[unit.level] or 3000
+                        local storageOwner = string.format("storage-unit:%s", unit.id)
+                        exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
+                            invType = storageType,
+                            owner = storageOwner,
+                        }, function()
+                            Inventory:OpenSecondary(source, storageType, storageOwner)
 
-                        unitLastAccessed[unit.id] = os.time()
+                            unitLastAccessed[unit.id] = os.time()
 
-                        unit.lastAccessed = os.time()
-                        GlobalState[string.format("StorageUnit:%s", unit.id)] = unit
-                    end)
-                end
-            end)
+                            unit.lastAccessed = os.time()
+                            GlobalState[string.format("StorageUnit:%s", unit.id)] = unit
+                        end)
+                    end
+                end)
         end
 
         cb(true)
     end)
 
-    Callbacks:RegisterServerCallback("StorageUnits:SellUnit", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("StorageUnits:SellUnit", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data.unit and data.SID then
             local unit = GlobalState[string.format("StorageUnit:%s", data.unit)]
@@ -152,7 +153,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback("StorageUnits:ChangePasscode", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("StorageUnits:ChangePasscode", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data.unit and data.passcode then
             local unit = GlobalState[string.format("StorageUnit:%s", data.unit)]
@@ -167,7 +168,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("StorageUnits:PoliceRaid", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("StorageUnits:PoliceRaid", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and data.unit then
             local unit = GlobalState[string.format("StorageUnit:%s", data.unit)]
@@ -194,7 +195,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 
                     local storageType = unitEntities[unit.level] or 3000
                     local storageOwner = string.format("storage-unit:%s", unit.id)
-                    Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+                    exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
                         invType = storageType,
                         owner = storageOwner,
                     }, function()

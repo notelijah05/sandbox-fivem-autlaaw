@@ -344,19 +344,19 @@ LAPTOP.Teams = {
 }
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-    Callbacks:RegisterServerCallback("Laptop:Teams:Get", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:Teams:Get", function(source, data, cb)
         cb(Laptop.Teams:GetAll())
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:Teams:GetRequests", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:Teams:GetRequests", function(source, data, cb)
         cb(Laptop.Teams.Requests:Get(source))
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:Teams:Create", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:Teams:Create", function(source, data, cb)
         cb(Laptop.Teams:Create(source, data.Name))
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:Teams:Delete", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:Teams:Delete", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local team, leader = Laptop.Teams:GetByMemberSource(source)
@@ -371,7 +371,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:Teams:Members:Invite", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:Teams:Members:Invite", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local target = exports['sandbox-characters']:FetchBySID(data?.SID)
         if char and target then
@@ -416,7 +416,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:Teams:Members:Remove", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:Teams:Members:Remove", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data?.SID and data?.Source then
             if data.SID == char:GetData("SID") then -- Leaving Group
@@ -440,7 +440,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:Teams:ActionRequest", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:Teams:ActionRequest", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data.id then
             local team, leader = Laptop.Teams:GetByMember(char:GetData("SID"))
@@ -458,7 +458,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         cb()
     end)
 
-    Callbacks:RegisterServerCallback("Laptop:Teams:RequestInvite", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Laptop:Teams:RequestInvite", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and not char:GetData("Team") then
             local team = Laptop.Teams:Get(data)

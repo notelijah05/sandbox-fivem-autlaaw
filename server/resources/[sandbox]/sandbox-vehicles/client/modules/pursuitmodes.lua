@@ -15,7 +15,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
         Interaction:Hide()
         _inPursuitVehicleMegaphone = not _inPursuitVehicleMegaphone
         Entity(_inPursuitVehicle).state:set('VehicleMegaphone', _inPursuitVehicleMegaphone, true)
-        Callbacks:ServerCallback("Vehicles:Server:VehicleMegaphone", {}, function(data, cb)
+        exports["sandbox-base"]:ServerCallback("Vehicles:Server:VehicleMegaphone", {}, function(data, cb)
         end)
     end, function()
         return _inPursuitVehicle
@@ -114,7 +114,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                 _inPursuitVehicleMegaphone = false
                 local lastVehicleMegaphone = Entity(veh)?.state?.VehicleMegaphone
                 if lastVehicleMegaphone == true then
-                    Callbacks:ServerCallback("Vehicles:Server:VehicleMegaphone", function(data, cb)
+                    exports["sandbox-base"]:ServerCallback("Vehicles:Server:VehicleMegaphone", function(data, cb)
                     end)
                 end
 

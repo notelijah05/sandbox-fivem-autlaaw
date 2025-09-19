@@ -281,25 +281,25 @@ AddEventHandler("Robbery:Client:Lombank:StartSecuring", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Lombank:SecureBank", {})
+			exports["sandbox-base"]:ServerCallback("Robbery:Lombank:SecureBank", {})
 		end
 	end)
 end)
 
 AddEventHandler("Robbery:Client:Lombank:ElectricBox:Hack", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Lombank:ElectricBox:Hack", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Lombank:ElectricBox:Hack", data, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Lombank:ElectricBox:Thermite", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Lombank:ElectricBox:Thermite", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Lombank:ElectricBox:Thermite", data, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Lombank:Drill", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Lombank:Drill", data.id, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Lombank:Drill", data.id, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Lombank:LootCart", function(entity, data)
-	Callbacks:ServerCallback(
+	exports["sandbox-base"]:ServerCallback(
 		"Robbery:Lombank:Vault:StartLootTrolley",
 		{ coords = GetEntityCoords(entity.entity) },
 		function(valid)
@@ -479,7 +479,7 @@ AddEventHandler("Robbery:Client:Lombank:LootCart", function(entity, data)
 				)
 				NetworkStartSynchronisedScene(Grab3)
 
-				Callbacks:ServerCallback(
+				exports["sandbox-base"]:ServerCallback(
 					"Robbery:Lombank:Vault:FinishLootTrolley",
 					{ coords = GetEntityCoords(entity.entity) }
 				)

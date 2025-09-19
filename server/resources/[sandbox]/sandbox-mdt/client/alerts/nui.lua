@@ -15,7 +15,8 @@ RegisterNUICallback("ReceiveAlert", function(data, cb)
 			data.blip.id = string.format("emrg-%s", data.id)
 			data.blip.title = string.format("%s", data.title)
 
-			local eB = Blips:Add(data.blip.id, data.blip.title, data.location, data.blip.icon, data.blip.color, data.blip.size, 2, false, data.blip.flashing)
+			local eB = Blips:Add(data.blip.id, data.blip.title, data.location, data.blip.icon, data.blip.color,
+				data.blip.size, 2, false, data.blip.flashing)
 			SetBlipFlashes(eB, isPanic)
 			table.insert(_alertBlips, {
 				id = data.blip.id,
@@ -41,7 +42,7 @@ end)
 RegisterNUICallback("RemoveAlert", function(data, cb)
 	if data and data.id then
 		local id = string.format("emrg-%s", data.id)
-        Blips:Remove(id)
+		Blips:Remove(id)
 
 		for k, v in ipairs(_alertBlips) do
 			if v.id == id then
@@ -104,7 +105,7 @@ RegisterNUICallback("ViewCamera", function(data, cb)
 	if data.camera then
 		UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 		EmergencyAlerts:Close()
-		Callbacks:ServerCallback("CCTV:ViewGroup", data.camera)
+		exports["sandbox-base"]:ServerCallback("CCTV:ViewGroup", data.camera)
 	end
 end)
 

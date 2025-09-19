@@ -37,7 +37,7 @@ RegisterNUICallback("GetData", function(data, cb)
 		DeleteEntity(v)
 	end
 
-	Callbacks:ServerCallback("Characters:GetServerData", {}, function(serverData)
+	exports["sandbox-base"]:ServerCallback("Characters:GetServerData", {}, function(serverData)
 		SendNUIMessage({
 			type = "LOADING_SHOW",
 			data = { message = "Getting Character Data" },
@@ -45,7 +45,7 @@ RegisterNUICallback("GetData", function(data, cb)
 
 		FadeOutWithTimeout(500)
 
-		Callbacks:ServerCallback("Characters:GetCharacters", {}, function(characters, characterLimit)
+		exports["sandbox-base"]:ServerCallback("Characters:GetCharacters", {}, function(characters, characterLimit)
 			local ped = PlayerPedId()
 			SetEntityCoords(ped, 685.865, 576.222, 132.841, 0.0, 0.0, 0.0, false)
 			FreezeEntityPosition(ped, true)
@@ -157,7 +157,7 @@ end)
 
 RegisterNUICallback("CreateCharacter", function(data, cb)
 	cb("ok")
-	Callbacks:ServerCallback("Characters:CreateCharacter", data, function(character)
+	exports["sandbox-base"]:ServerCallback("Characters:CreateCharacter", data, function(character)
 		if character ~= nil then
 			SendNUIMessage({
 				type = "CREATE_CHARACTER",
@@ -175,7 +175,7 @@ end)
 
 RegisterNUICallback("DeleteCharacter", function(data, cb)
 	cb("ok")
-	Callbacks:ServerCallback("Characters:DeleteCharacter", data.id, function(status)
+	exports["sandbox-base"]:ServerCallback("Characters:DeleteCharacter", data.id, function(status)
 		if status then
 			SendNUIMessage({
 				type = "DELETE_CHARACTER",
@@ -188,7 +188,7 @@ end)
 
 RegisterNUICallback("SelectCharacter", function(data, cb)
 	cb("ok")
-	Callbacks:ServerCallback("Characters:GetSpawnPoints", data.id, function(spawns)
+	exports["sandbox-base"]:ServerCallback("Characters:GetSpawnPoints", data.id, function(spawns)
 		if spawns then
 			SendNUIMessage({
 				type = "SET_SPAWNS",
@@ -209,13 +209,13 @@ RegisterNUICallback("PlayCharacter", function(data, cb)
 
 	FadeOutWithTimeout(500)
 
-	Callbacks:ServerCallback("Characters:GetCharacterData", data.character.ID, function(cData)
+	exports["sandbox-base"]:ServerCallback("Characters:GetCharacterData", data.character.ID, function(cData)
 		cData.spawn = data.spawn
 		TriggerEvent("Characters:Client:SetData", -1, cData, function()
 			exports["sandbox-base"]:FetchComponent("Spawn"):SpawnToWorld(cData, function()
 				LocalPlayer.state.canUsePhone = true
 				if data.spawn.event ~= nil then
-					Callbacks:ServerCallback(data.spawn.event, data.spawn, function()
+					exports["sandbox-base"]:ServerCallback(data.spawn.event, data.spawn, function()
 						LocalPlayer.state.Char = cData.ID
 						LocalPlayer.state:set('SID', cData.SID, true)
 						TriggerServerEvent("Characters:Server:Spawning")

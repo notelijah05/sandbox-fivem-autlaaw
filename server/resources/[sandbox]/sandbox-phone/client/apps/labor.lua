@@ -11,25 +11,25 @@ RegisterNUICallback("GetLaborDetails", function(data, cb)
 end)
 
 RegisterNUICallback("CreateWorkgroup", function(data, cb)
-	Callbacks:ServerCallback("Phone:Labor:CreateWorkgroup", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Labor:CreateWorkgroup", data, cb)
 end)
 
 RegisterNUICallback("JoinWorkgroup", function(data, cb)
-	Callbacks:ServerCallback("Phone:Labor:JoinWorkgroup", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Labor:JoinWorkgroup", data, cb)
 end)
 
 RegisterNUICallback("DisbandWorkgroup", function(data, cb)
-	Callbacks:ServerCallback("Phone:Labor:DisbandWorkgroup", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Labor:DisbandWorkgroup", data, cb)
 end)
 
 RegisterNUICallback("LeaveWorkgroup", function(data, cb)
-	Callbacks:ServerCallback("Phone:Labor:LeaveWorkgroup", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Labor:LeaveWorkgroup", data, cb)
 end)
 
 RegisterNUICallback("StartLaborJob", function(data, cb)
-	Callbacks:ServerCallback("Phone:Labor:StartLaborJob", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Labor:StartLaborJob", data, cb)
 end)
 
 RegisterNUICallback("QuitLaborJob", function(data, cb)
-	Callbacks:ServerCallback("Phone:Labor:QuitLaborJob", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Labor:QuitLaborJob", data, cb)
 end)

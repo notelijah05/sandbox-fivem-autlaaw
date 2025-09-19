@@ -62,7 +62,7 @@ function HospitalCallbacks()
 		}
 	)
 
-	Callbacks:RegisterServerCallback("Hospital:Treat", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hospital:Treat", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local bed = Hospital:RequestBed(source)
 
@@ -92,7 +92,7 @@ function HospitalCallbacks()
 		cb(bed)
 	end)
 
-	Callbacks:RegisterServerCallback("Hospital:Respawn", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hospital:Respawn", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if os.time() >= Player(source).state.releaseTime then
 			Pwnzor.Players:TempPosIgnore(source)
@@ -146,23 +146,23 @@ function HospitalCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Hospital:FindBed", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hospital:FindBed", function(source, data, cb)
 		cb(Hospital:FindBed(source, data))
 	end)
 
-	Callbacks:RegisterServerCallback("Hospital:OccupyBed", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hospital:OccupyBed", function(source, data, cb)
 		cb(Hospital:OccupyBed(source, data))
 	end)
 
-	Callbacks:RegisterServerCallback("Hospital:LeaveBed", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hospital:LeaveBed", function(source, data, cb)
 		cb(Hospital:LeaveBed(source))
 	end)
 
-	Callbacks:RegisterServerCallback("Hospital:RetreiveItems", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hospital:RetreiveItems", function(source, data, cb)
 		Hospital.ICU:GetItems(source)
 	end)
 
-	Callbacks:RegisterServerCallback("Hospital:HiddenRevive", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hospital:HiddenRevive", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local p = Player(source).state
 		if p.isEscorting ~= nil then
@@ -172,7 +172,7 @@ function HospitalCallbacks()
 					cb(true)
 					local tChar = exports['sandbox-characters']:FetchCharacterSource(p.isEscorting)
 					if tChar ~= nil then
-						Callbacks:ClientCallback(tChar:GetData("Source"), "Damage:Heal", true)
+						exports["sandbox-base"]:ClientCallback(tChar:GetData("Source"), "Damage:Heal", true)
 					else
 						Execute:Client(source, "Notification", "Error", "Invalid Target")
 					end
@@ -184,7 +184,7 @@ function HospitalCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Hospital:SpawnICU", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hospital:SpawnICU", function(source, data, cb)
 		Routing:RoutePlayerToGlobalRoute(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		Player(source).state.ICU = false

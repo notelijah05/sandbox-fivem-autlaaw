@@ -5,7 +5,6 @@ local _statuses = {}
 
 AddEventHandler("Status:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
@@ -19,7 +18,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Status", {
-		"Callbacks",
 		"Utils",
 		"Chat",
 		"Status",
@@ -39,7 +37,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local p = promise.new()
-				Callbacks:ClientCallback(source, "Status:StoreValues", {}, function(vals)
+				exports["sandbox-base"]:ClientCallback(source, "Status:StoreValues", {}, function(vals)
 					local status = char:GetData("Status") or {}
 					for k, v in pairs(vals) do
 						status[k] = v
@@ -77,7 +75,7 @@ STATUS = {
 	},
 	Modify = {
 		Add = function(self, source, name, value, addCd, isForced)
-			Callbacks:ClientCallback(source, "Status:Modify", {
+			exports["sandbox-base"]:ClientCallback(source, "Status:Modify", {
 				name = name,
 				value = math.abs(value),
 				addCd = addCd,
@@ -85,7 +83,7 @@ STATUS = {
 			})
 		end,
 		Remove = function(self, source, name, value, addCd, isForced)
-			Callbacks:ClientCallback(source, "Status:Modify", {
+			exports["sandbox-base"]:ClientCallback(source, "Status:Modify", {
 				name = name,
 				value = -(math.abs(value)),
 				addCd = addCd,

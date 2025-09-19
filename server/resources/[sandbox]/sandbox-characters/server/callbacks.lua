@@ -33,7 +33,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:GetServerData", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Characters:GetServerData", function(source, data, cb)
 		while exports['sandbox-base']:FetchSource(source) == nil do
 			Wait(1000)
 		end
@@ -61,7 +61,7 @@ function RegisterCallbacks()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:GetCharacters", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Characters:GetCharacters", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
 		exports['sandbox-base']:DatabaseGameFind({
 			collection = "characters",
@@ -131,7 +131,7 @@ function RegisterCallbacks()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:CreateCharacter", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Characters:CreateCharacter", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
 
 		local p = promise.new()
@@ -243,7 +243,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:DeleteCharacter", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Characters:DeleteCharacter", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
 		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
@@ -297,7 +297,7 @@ function RegisterCallbacks()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:GetSpawnPoints", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Characters:GetSpawnPoints", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
 		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
@@ -359,7 +359,7 @@ function RegisterCallbacks()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:GetCharacterData", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Characters:GetCharacterData", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
 		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
@@ -398,7 +398,7 @@ function RegisterCallbacks()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:Logout", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Characters:Logout", function(source, data, cb)
 		_fuckingBozos[source] = os.time()
 		local c = exports['sandbox-characters']:FetchCharacterSource(source)
 		if c ~= nil then
@@ -420,7 +420,7 @@ function RegisterCallbacks()
 		cb("ok")
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:GlobalSpawn", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Characters:GlobalSpawn", function(source, data, cb)
 		Routing:RoutePlayerToGlobalRoute(source)
 		cb()
 	end)

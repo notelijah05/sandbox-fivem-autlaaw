@@ -191,7 +191,7 @@ function RegisterPrisonSearchStartup()
 		{ label = "Pls Stop", value = 7500 },
 	}, 1) -- hidden rep
 
-	Callbacks:RegisterServerCallback("Prison:Searchable:GetLootShit", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Prison:Searchable:GetLootShit", function(source, data, cb)
 		if not Jail:IsJailed(source) then
 			Execute:Client(source, "Notification", "Error", "You're not jailed.")
 			cb(false)

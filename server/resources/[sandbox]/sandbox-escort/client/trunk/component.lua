@@ -11,7 +11,6 @@ local _inTrunkVeh = nil
 
 AddEventHandler("Trunk:Shared:DependencyUpdate", TrunkComponents)
 function TrunkComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
@@ -21,7 +20,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Trunk", {
-		"Callbacks",
 		"Logger",
 		"Notification",
 		"Action",
@@ -33,13 +31,13 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		TrunkComponents()
 
-		Callbacks:RegisterClientCallback("Trunk:GetPutIn", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPutIn", function(data, cb)
 			if NetworkDoesEntityExistWithNetworkId(data) then
 				InTrunk(NetToVeh(data))
 			end
 		end)
 
-		Callbacks:RegisterClientCallback("Trunk:GetPulledOut", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPulledOut", function(data, cb)
 			if LocalPlayer.state.inTrunk then
 				Trunk:GetOut()
 
@@ -262,9 +260,11 @@ AddEventHandler("Ped:Client:Died", function()
 end)
 
 AddEventHandler("Trunk:Client:PutIn", function(entity, data)
-	Callbacks:ServerCallback("Trunk:PutIn", NetworkGetNetworkIdFromEntity(entity.entity), function(state) end)
+	exports["sandbox-base"]:ServerCallback("Trunk:PutIn", NetworkGetNetworkIdFromEntity(entity.entity),
+		function(state) end)
 end)
 
 AddEventHandler("Trunk:Client:PullOut", function(entity, data)
-	Callbacks:ServerCallback("Trunk:PullOut", NetworkGetNetworkIdFromEntity(entity.entity), function(state) end)
+	exports["sandbox-base"]:ServerCallback("Trunk:PullOut", NetworkGetNetworkIdFromEntity(entity.entity),
+		function(state) end)
 end)

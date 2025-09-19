@@ -9,15 +9,15 @@ function GetNewTVLink(id)
 
     linkPromise = promise.new()
     Input:Show("TVs", "URL - Imgur Only (i.imgur.com/example.png)", {
-		{
-			id = "name",
-			type = "text",
-			options = {
+        {
+            id = "name",
+            type = "text",
+            options = {
                 helperText = string.format("Leave Blank to Reset - Resolution: %s x %s", width, height),
-				inputProps = {},
-			},
-		},
-	}, "Billboards:Client:RecieveTVLinkInput", {})
+                inputProps = {},
+            },
+        },
+    }, "Billboards:Client:RecieveTVLinkInput", {})
 
     return Citizen.Await(linkPromise)
 end
@@ -31,7 +31,7 @@ end)
 
 AddEventHandler("Billboards:Client:SetLink", function(e, data)
     local tvLink = GetNewTVLink(data.id)
-    Callbacks:ServerCallback("Billboards:UpdateURL", {
+    exports["sandbox-base"]:ServerCallback("Billboards:UpdateURL", {
         id = data.id,
         link = tvLink
     }, function(success, invalidUrl)

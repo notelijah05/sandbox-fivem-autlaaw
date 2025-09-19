@@ -2,7 +2,7 @@ local _predefined = {
 	injuredPerson = {
 		code = "10-47",
 		title = "Injured Person",
-		type = {"police_alerts", "ems_alerts"},
+		type = { "police_alerts", "ems_alerts" },
 		isPanic = false,
 		blip = {
 			icon = 280,
@@ -100,7 +100,7 @@ local _predefined = {
 	caraccident = {
 		code = "10-50",
 		title = "Vehicle Accident",
-		type = {"police_alerts", "ems_alerts"},
+		type = { "police_alerts", "ems_alerts" },
 		isPanic = false,
 		blip = {
 			icon = 620,
@@ -113,7 +113,7 @@ local _predefined = {
 	planeaccident = {
 		code = "10-50",
 		title = "Plane Crash",
-		type = {"police_alerts", "ems_alerts"},
+		type = { "police_alerts", "ems_alerts" },
 		isPanic = false,
 		blip = {
 			icon = 307,
@@ -126,7 +126,7 @@ local _predefined = {
 	heliaccident = {
 		code = "10-50",
 		title = "Helicopter Accident",
-		type = {"police_alerts", "ems_alerts"},
+		type = { "police_alerts", "ems_alerts" },
 		isPanic = false,
 		blip = {
 			icon = 64,
@@ -139,7 +139,7 @@ local _predefined = {
 	boataccident = {
 		code = "10-50",
 		title = "Boating Accident",
-		type = {"police_alerts", "ems_alerts"},
+		type = { "police_alerts", "ems_alerts" },
 		isPanic = false,
 		blip = {
 			icon = 427,
@@ -152,7 +152,7 @@ local _predefined = {
 	call911 = {
 		code = "911",
 		title = "911 Call",
-		type = {"police_alerts", "ems_alerts"},
+		type = { "police_alerts", "ems_alerts" },
 		isPanic = false,
 		blip = {
 			icon = 280,
@@ -165,7 +165,7 @@ local _predefined = {
 	call311 = {
 		code = "311",
 		title = "311 Call",
-		type = {"police_alerts", "ems_alerts"},
+		type = { "police_alerts", "ems_alerts" },
 		isPanic = false,
 		blip = {
 			icon = 280,
@@ -178,7 +178,7 @@ local _predefined = {
 	call911anon = {
 		code = "911",
 		title = "911 Call",
-		type = {"police_alerts", "ems_alerts"},
+		type = { "police_alerts", "ems_alerts" },
 		isPanic = false,
 		isAnon = true,
 		blip = {
@@ -192,7 +192,7 @@ local _predefined = {
 	call311anon = {
 		code = "311",
 		title = "311 Call",
-		type = {"police_alerts", "ems_alerts"},
+		type = { "police_alerts", "ems_alerts" },
 		isPanic = false,
 		isAnon = true,
 		blip = {
@@ -305,7 +305,7 @@ AddEventHandler("EmergencyAlerts:Server:ServerDoPredefined", function(src, type,
 		coords = vector3(tpCoords.x, tpCoords.y, tpCoords.z)
 	end
 
-	Callbacks:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
+	exports["sandbox-base"]:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
 		if location ~= nil then
 			EmergencyAlerts:Create(
 				data.code,
@@ -323,7 +323,7 @@ end)
 
 local _cds = {}
 RegisterNetEvent("EmergencyAlerts:Server:DoPredefined", function(type, description)
-	local src = source	
+	local src = source
 	local data = _predefined[type]
 	if data == nil then
 		return
@@ -359,7 +359,7 @@ RegisterNetEvent("EmergencyAlerts:Server:DoPredefined", function(type, descripti
 			coords = vector3(coords.x + math.random(-50, 50), coords.y + math.random(-50, 50), coords.z)
 		end
 
-		Callbacks:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
+		exports["sandbox-base"]:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
 			EmergencyAlerts:Create(
 				data.code,
 				data.title,
@@ -373,5 +373,4 @@ RegisterNetEvent("EmergencyAlerts:Server:DoPredefined", function(type, descripti
 			)
 		end)
 	end
-
 end)

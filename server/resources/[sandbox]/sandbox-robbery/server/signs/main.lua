@@ -20,7 +20,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		TriggerLatentClientEvent("Robbery:Signs:GetObjects", source, 50000, objects)
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Signs:RemoveSign", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Signs:RemoveSign", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local atSign = Player(source).state.SignRobbery
 		if char and not atSign then

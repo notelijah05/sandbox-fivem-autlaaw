@@ -5,7 +5,6 @@ end)
 AddEventHandler("Locations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Default = exports["sandbox-base"]:FetchComponent("Default")
@@ -14,7 +13,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Locations", {
 		"Chat",
-		"Callbacks",
 		"Locations",
 		"Logger",
 		"Default",
@@ -31,7 +29,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Locations:GetAll", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Locations:GetAll", function(source, data, cb)
 		Locations:GetAll(data.type, cb)
 	end)
 end

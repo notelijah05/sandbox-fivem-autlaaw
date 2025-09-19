@@ -1,7 +1,6 @@
 AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -13,7 +12,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
 		"Logger",
-		"Callbacks",
 		"Middleware",
 		"Execute",
 		"Utils",
@@ -106,7 +104,7 @@ _ESCORT = {
 
 			if GetPlayerEndpoint(pState.isEscorting) then -- Check if player source still online
 				local p = promise.new()
-				Callbacks:ClientCallback(pState.isEscorting, "Escort:StopEscort", {}, function()
+				exports["sandbox-base"]:ClientCallback(pState.isEscorting, "Escort:StopEscort", {}, function()
 					p:resolve(true)
 				end)
 				Citizen.Await(p)
@@ -125,15 +123,15 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Escort:DoEscort", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Escort:DoEscort", function(source, data, cb)
 		cb(Escort:Do(source, data))
 	end)
 
-	Callbacks:RegisterServerCallback("Escort:DoPutIn", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Escort:DoPutIn", function(source, data, cb)
 		cb(Escort:DoPutIn(source, data))
 	end)
 
-	Callbacks:RegisterServerCallback("Escort:StopEscort", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Escort:StopEscort", function(source, data, cb)
 		Escort:Stop(source)
 	end)
 end
@@ -150,7 +148,7 @@ local function HandleLogout(source)
 
 		if GetPlayerEndpoint(pState.isEscorting) then -- Check if player source still online
 			local p = promise.new()
-			Callbacks:ClientCallback(pState.isEscorting, "Escort:StopEscort", {}, function()
+			exports["sandbox-base"]:ClientCallback(pState.isEscorting, "Escort:StopEscort", {}, function()
 				p:resolve(true)
 			end)
 			Citizen.Await(p)
@@ -169,7 +167,7 @@ local function HandleLogout(source)
 		pState.isEscorting = nil
 
 		local p = promise.new()
-		Callbacks:ClientCallback(source, "Escort:StopEscort", {}, function()
+		exports["sandbox-base"]:ClientCallback(source, "Escort:StopEscort", {}, function()
 			p:resolve(true)
 		end)
 		Citizen.Await(p)
@@ -220,6 +218,6 @@ RegisterNetEvent("Escort:Server:DoPutIn", function(veh)
 	local pState = Player(src).state
 
 	if pState.isEscorting ~= nil then
-		Callbacks:ClientCallback(pState.isEscorting, "Escort:StopEscort", {}, function() end)
+		exports["sandbox-base"]:ClientCallback(pState.isEscorting, "Escort:StopEscort", {}, function() end)
 	end
 end)

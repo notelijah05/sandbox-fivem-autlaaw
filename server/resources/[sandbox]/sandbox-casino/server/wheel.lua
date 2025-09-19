@@ -10,7 +10,7 @@ AddEventHandler("Casino:Server:Startup", function()
     GlobalState["Casino:WheelLastRotation"] = 0.0
     GlobalState["Casino:WheelLocked"] = false
 
-    Callbacks:RegisterServerCallback("Casino:WheelStart", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:WheelStart", function(source, data, cb)
         if not GlobalState["Casino:WheelStarted"] then
             if data?.turbo then
                 local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -50,7 +50,7 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:WheelSpin", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:WheelSpin", function(source, data, cb)
         if GlobalState["Casino:WheelStarted"] and GlobalState["Casino:WheelStarted"].Source == source and Wallet:Modify(source, GlobalState["Casino:WheelStarted"].Turbo and -7500 or -1500) then
             GlobalState["Casino:WheelSpinning"] = source
 
@@ -99,7 +99,7 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:UnlockWheel", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:UnlockWheel", function(source, data, cb)
         if Player(source).state.onDuty == "casino" and GlobalState["Casino:WheelLocked"] then
             GlobalState["Casino:WheelLocked"] = false
             cb(true)

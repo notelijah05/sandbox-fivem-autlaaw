@@ -79,7 +79,6 @@ end)
 AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -110,7 +109,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
-		"Callbacks",
 		"Logger",
 		"Utils",
 		"Chat",
@@ -230,7 +228,7 @@ RegisterNetEvent("Laptop:Server:UIReset", function()
 end)
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Laptop:Permissions", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:Permissions", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		if char ~= nil then

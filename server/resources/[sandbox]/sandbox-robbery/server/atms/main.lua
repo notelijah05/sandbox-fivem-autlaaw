@@ -111,7 +111,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		{ label = "God",    value = 25000 },
 	}, false)
 
-	Callbacks:RegisterServerCallback("Robbery:ATM:StartJob", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:ATM:StartJob", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local inATM = Player(source).state.ATMRobbery
 
@@ -152,7 +152,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:ATM:HackATM", function(source, difficulty, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:ATM:HackATM", function(source, difficulty, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local inATM = Player(source).state.ATMRobbery
 
@@ -216,7 +216,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:ATM:FailHackATM", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:ATM:FailHackATM", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local inATM = Player(source).state.ATMRobbery
 

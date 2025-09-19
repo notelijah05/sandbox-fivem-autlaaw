@@ -41,7 +41,7 @@ PHONE.Call = {
 		if _payphone then
 			data.isAnon = true
 		end
-		Callbacks:ServerCallback("Phone:Phone:CreateCall", data, function(status)
+		exports["sandbox-base"]:ServerCallback("Phone:Phone:CreateCall", data, function(status)
 			if status then
 				_call = {
 					id = 1,
@@ -79,15 +79,15 @@ PHONE.Call = {
 		if LocalPlayer.state.phoneOpen then
 			PhoneTextToCall()
 		end
-		Callbacks:ServerCallback("Phone:Phone:AcceptCall", _call)
+		exports["sandbox-base"]:ServerCallback("Phone:Phone:AcceptCall", _call)
 	end,
 	End = function(self)
 		_calling = false
 		fucksound()
-		Callbacks:ServerCallback("Phone:Phone:EndCall")
+		exports["sandbox-base"]:ServerCallback("Phone:Phone:EndCall")
 	end,
 	Read = function(self)
-		Callbacks:ServerCallback("Phone:Phone:ReadCalls")
+		exports["sandbox-base"]:ServerCallback("Phone:Phone:ReadCalls")
 	end,
 	Status = function(self)
 		return _call ~= nil

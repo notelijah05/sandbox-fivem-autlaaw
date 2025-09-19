@@ -110,7 +110,7 @@ function StartBait(item, loc)
 		if _baited and LocalPlayer.state.loggedIn then
 			local t = (1000 * 60 * math.random(1, baitConf.time))
 			Wait(t)
-			Callbacks:ServerCallback("Hunting:GenerateAnimal", item, function(r)
+			exports["sandbox-base"]:ServerCallback("Hunting:GenerateAnimal", item, function(r)
 				if r ~= nil then
 					SpawnAnimal(r, loc, baitConf)
 				end
@@ -227,7 +227,7 @@ RegisterNetEvent("Hunting:Client:Polys", function(c)
 end)
 
 AddEventHandler("Labor:Client:Setup", function()
-	Callbacks:RegisterClientCallback("Hunting:Client:CanShowMap", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Hunting:Client:CanShowMap", function(data, cb)
 		if
 			not inMapAnim
 			and not LocalPlayer.state.doingAction
@@ -323,7 +323,7 @@ AddEventHandler("Labor:Client:Setup", function()
 		},
 	}, "deer")
 
-	Callbacks:RegisterClientCallback("Hunting:PlaceTrap", function(item, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Hunting:PlaceTrap", function(item, cb)
 		if _baited then
 			return cb(false)
 		end
@@ -411,11 +411,11 @@ AddEventHandler("Hunting:Client:OpenShop", function()
 end)
 
 AddEventHandler("Hunting:Client:Sell", function(entity, data)
-	Callbacks:ServerCallback("Hunting:Sell", data.tier)
+	exports["sandbox-base"]:ServerCallback("Hunting:Sell", data.tier)
 end)
 
 AddEventHandler("Hunting:Client:StartJob", function()
-	Callbacks:ServerCallback("Hunting:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("Hunting:StartJob", _joiner, function(state)
 		if not state then
 			Notification:Error("Unable To Start Job")
 		end
@@ -423,7 +423,7 @@ AddEventHandler("Hunting:Client:StartJob", function()
 end)
 
 AddEventHandler("Hunting:Client:FinishJob", function()
-	Callbacks:ServerCallback("Hunting:FinishJob", _joiner, function(state) end)
+	exports["sandbox-base"]:ServerCallback("Hunting:FinishJob", _joiner, function(state) end)
 end)
 
 AddEventHandler("Hunting:Client:Harvest", function(entity, data)
@@ -467,7 +467,7 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 			else
 				Status.Modify:Add("PLAYER_STRESS", 5, false, true)
 			end
-			Callbacks:ServerCallback("Hunting:HarvestAnimal", {
+			exports["sandbox-base"]:ServerCallback("Hunting:HarvestAnimal", {
 				animal = data,
 				isSpawned = DecorGetBool(entity.entity, "HuntingSpawn")
 			})
@@ -478,7 +478,7 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 end)
 
 AddEventHandler("Hunting:Client:StartJob", function()
-	-- Callbacks:ServerCallback("Mining:StartJob", _joiner, function(state)
+	-- exports["sandbox-base"]:ServerCallback("Mining:StartJob", _joiner, function(state)
 	-- 	if not state then
 	-- 		Notification:Error("Unable To Start Job")
 	-- 	end

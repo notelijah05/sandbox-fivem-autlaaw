@@ -1,9 +1,9 @@
 AddEventHandler("Finance:Server:Startup", function()
-	Callbacks:RegisterServerCallback("Wallet:GetCash", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Wallet:GetCash", function(source, data, cb)
 		cb(Wallet:Get(source))
 	end)
 
-	Callbacks:RegisterServerCallback("Wallet:GiveCash", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Wallet:GiveCash", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local targetChar = exports['sandbox-characters']:FetchBySID(data.target)
 

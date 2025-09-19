@@ -122,12 +122,12 @@ LAPTOP.LSUnderground.Chopping = {
 						end
 					end, function(status)
 						if not status then
-							Callbacks:ServerCallback("Laptop:LSUnderground:Chopping:ChopPart", {
+							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:ChopPart", {
 								vNet = VehToNet(_validVeh),
 								index = _validBone?.index,
 							}, function(c) end)
 						else
-							Callbacks:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
+							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
 							NetSync:SetVehicleDoorShut(_validVeh, _validBone?.index, true)
 						end
 
@@ -165,7 +165,7 @@ LAPTOP.LSUnderground.Chopping = {
 						end
 					end, function(status)
 						if not status then
-							Callbacks:ServerCallback("Laptop:LSUnderground:Chopping:ChopTire", {
+							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:ChopTire", {
 								vNet = VehToNet(_validVeh),
 								index = _validBone?.index,
 							}, function(r)
@@ -176,7 +176,7 @@ LAPTOP.LSUnderground.Chopping = {
 								end
 							end)
 						else
-							Callbacks:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
+							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
 						end
 						SetTimeout(1500, function()
 							_delay = false
@@ -212,7 +212,7 @@ LAPTOP.LSUnderground.Chopping = {
 						end
 					end, function(status)
 						if not status then
-							Callbacks:ServerCallback("Laptop:LSUnderground:Chopping:ChopVehicle", {
+							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:ChopVehicle", {
 								vNet = VehToNet(_validVeh),
 							}, function(r)
 								-- if r then
@@ -220,7 +220,7 @@ LAPTOP.LSUnderground.Chopping = {
 								-- end
 							end)
 						else
-							Callbacks:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
+							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
 						end
 						SetTimeout(1500, function()
 							_delay = false
@@ -350,7 +350,7 @@ end
 
 RegisterNetEvent("Ped:Client:Died", function()
 	if LocalPlayer.state.chopping ~= nil then
-		Callbacks:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
+		exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
 		LocalPlayer.state:set("chopping", nil, true)
 		_validBone = nil
 		_validVeh = nil
@@ -405,7 +405,7 @@ end)
 AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 	if id == "chopping_public" or id == "chopping_private" or id == "chopping_personal" then
 		if LocalPlayer.state.chopping ~= nil then
-			Callbacks:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
+			exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
 		end
 		if LocalPlayer.state.inChopZone ~= nil then
 			LocalPlayer.state:set("inChopZone", nil, true)
@@ -432,11 +432,11 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 end)
 
 AddEventHandler("Laptop:Client:LSUnderground:Chopping:Pickup", function()
-	Callbacks:ServerCallback("Laptop:LSUnderground:Chopping:Pickup")
+	exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:Pickup")
 end)
 
 AddEventHandler("Laptop:Client:LSUnderground:Chopping:GetPublicList", function()
-	Callbacks:ServerCallback("Laptop:LSUnderground:Chopping:GetPublicList")
+	exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:GetPublicList")
 end)
 
 AddEventHandler("Laptop:Client:LSUnderground:Chopping:StartChop", function(entity, data)
@@ -446,17 +446,18 @@ AddEventHandler("Laptop:Client:LSUnderground:Chopping:StartChop", function(entit
 		and not LocalPlayer.state.chopping
 	then
 		local vNet = VehToNet(entity.entity)
-		Callbacks:ServerCallback("Laptop:LSUnderground:Chopping:CheckVehicle", { vNet = vNet }, function(res)
-			if res then
-				while not NetworkHasControlOfEntity(entity.entity) do
-					NetworkRequestControlOfEntity(entity.entity)
-					Wait(1)
+		exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CheckVehicle", { vNet = vNet },
+			function(res)
+				if res then
+					while not NetworkHasControlOfEntity(entity.entity) do
+						NetworkRequestControlOfEntity(entity.entity)
+						Wait(1)
+					end
+					LocalPlayer.state:set("chopping", vNet, true)
+					DoChoppingThings(entity.entity)
+				else
+					LocalPlayer.state:set("chopping", nil, true)
 				end
-				LocalPlayer.state:set("chopping", vNet, true)
-				DoChoppingThings(entity.entity)
-			else
-				LocalPlayer.state:set("chopping", nil, true)
-			end
-		end)
+			end)
 	end
 end)

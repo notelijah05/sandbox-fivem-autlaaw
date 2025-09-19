@@ -12,12 +12,12 @@ local _phoneApp = {
 }
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Properties:RingDoorbell", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:RingDoorbell", function(source, data, cb)
 		TriggerClientEvent("Properties:Client:Doorbell", -1, data)
 		cb()
 	end)
 
-	Callbacks:RegisterServerCallback("Properties:RequestAgent", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:RequestAgent", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data]
 		if char ~= nil and property ~= nil then
@@ -56,7 +56,7 @@ function RegisterCallbacks()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Properties:EditProperty", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:EditProperty", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.property]
 		if property ~= nil and Player(source).state.onDuty == "realestate" and data.location then
@@ -90,7 +90,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Properties:SpawnInside", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:SpawnInside", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 		if property ~= nil and char then
@@ -116,7 +116,7 @@ function RegisterCallbacks()
 		cb(true)
 	end)
 
-	Callbacks:RegisterServerCallback("Properties:EnterProperty", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:EnterProperty", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data]
 
@@ -150,7 +150,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Properties:ExitProperty", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:ExitProperty", function(source, data, cb)
 		local property = GlobalState[string.format("%s:Property", source)]
 
 		Pwnzor.Players:TempPosIgnore(source)
@@ -167,7 +167,7 @@ function RegisterCallbacks()
 		cb(property)
 	end)
 
-	Callbacks:RegisterServerCallback("Properties:ChangeLock", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:ChangeLock", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 
@@ -181,7 +181,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Properties:Validate", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:Validate", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 
@@ -211,7 +211,7 @@ function RegisterCallbacks()
 
 				local invId = string.format("Property:%s", property.id)
 
-				Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+				exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 					invType = invType,
 					owner = invId,
 				}, function()
@@ -235,7 +235,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Properties:Upgrade", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:Upgrade", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 
@@ -281,7 +281,7 @@ function RegisterCallbacks()
 
 	local interiorChangeCost = 50000
 
-	Callbacks:RegisterServerCallback("Properties:ChangeInterior", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:ChangeInterior", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 
@@ -334,7 +334,7 @@ function RegisterCallbacks()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Properties:Dyn8:Search", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:Dyn8:Search", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local qry = {
@@ -383,7 +383,7 @@ function RegisterCallbacks()
 
 	-- Hello
 
-	Callbacks:RegisterServerCallback("Properties:Dyn8:Sell", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:Dyn8:Sell", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local prop = _properties[data.property]
 		if Player(source).state.onDuty == 'realestate' then
@@ -556,7 +556,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Properties:Dyn8:CheckCredit", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:Dyn8:CheckCredit", function(source, data, cb)
 		local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(data?.target))
 		if targetChar then
 			local creditCheck = Loans:GetAllowedLoanAmount(targetChar:GetData('SID'), 'property')
@@ -572,7 +572,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Properties:Dyn8:Transfer", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Properties:Dyn8:Transfer", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local prop = _properties[data.property]
 		if Player(source).state.onDuty == 'realestate' then

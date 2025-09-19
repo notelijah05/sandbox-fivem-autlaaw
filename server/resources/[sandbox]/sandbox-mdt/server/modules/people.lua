@@ -237,7 +237,7 @@ _MDT.People = {
 }
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("MDT:InputSearch:people", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:InputSearch:people", function(source, data, cb)
 		exports['sandbox-base']:DatabaseGameFind({
 			collection = "characters",
 			query = {
@@ -290,7 +290,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:InputSearch:job", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:InputSearch:job", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
 			exports['sandbox-base']:DatabaseGameFind({
 				collection = "characters",
@@ -364,7 +364,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:InputSearchSID", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:InputSearchSID", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
 			exports['sandbox-base']:DatabaseGameFindOne({
 				collection = "characters",
@@ -393,15 +393,15 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Search:people", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Search:people", function(source, data, cb)
 		cb(MDT.People.Search:People(data.term))
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:View:person", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:View:person", function(source, data, cb)
 		cb(MDT.People:View(data, true))
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Update:person", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Update:person", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and CheckMDTPermissions(source, false) and data.SID then
 			cb(MDT.People:Update(char, data.SID, data.Key, data.Data))
@@ -410,7 +410,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:CheckCallsign", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:CheckCallsign", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
 			exports['sandbox-base']:DatabaseGameFindOne({
 				collection = "characters",

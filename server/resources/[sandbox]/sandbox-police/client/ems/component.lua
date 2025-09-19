@@ -2,7 +2,6 @@ _evald = {}
 
 AddEventHandler("Police:Shared:DependencyUpdate", EMSComponents)
 function EMSComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
@@ -15,7 +14,6 @@ end
 local _calledForHelp = false
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("EMS", {
-		"Callbacks",
 		"Damage",
 		"Inventory",
 		"Progress",
@@ -99,12 +97,12 @@ AddEventHandler("Core:Shared:Ready", function()
 			return LocalPlayer.state.onDuty == "ems"
 		end)
 
-		Callbacks:RegisterClientCallback("EMS:ApplyBandage", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("EMS:ApplyBandage", function(data, cb)
 			SetEntityHealth(LocalPlayer.state.ped, GetEntityHealth(LocalPlayer.state.ped) + 10)
 			cb(true)
 		end)
 
-		Callbacks:RegisterClientCallback("EMS:Heal", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("EMS:Heal", function(data, cb)
 			SetEntityHealth(LocalPlayer.state.ped, GetEntityHealth(LocalPlayer.state.ped) + data)
 			cb(true)
 		end)

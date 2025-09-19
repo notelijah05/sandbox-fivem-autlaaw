@@ -79,7 +79,6 @@ end
 
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
@@ -109,7 +108,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Callbacks",
 		"Inventory",
 		"Utils",
 		"Notification",
@@ -143,14 +141,14 @@ AddEventHandler("Core:Shared:Ready", function()
 		DoItemLoad()
 		CreateDonorVanityItems()
 
-		Callbacks:RegisterClientCallback("Inventory:ForceClose", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Inventory:ForceClose", function(data, cb)
 			Inventory.Close:All()
 			cb(true)
 		end)
 
-		Callbacks:RegisterClientCallback("Inventory:Container:Open", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Inventory:Container:Open", function(data, cb)
 			if SecondInventory.owner ~= nil then
-				Callbacks:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
+				exports["sandbox-base"]:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
 					_container = data.item
 					SecondInventory = { invType = _items[data.item.Name].container, owner = data.container }
 					cb(true)
@@ -162,9 +160,9 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterClientCallback("Inventory:Compartment:Open", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Inventory:Compartment:Open", function(data, cb)
 			if SecondInventory.owner ~= nil then
-				Callbacks:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
+				exports["sandbox-base"]:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
 					SecondInventory = data
 					cb(true)
 				end)
@@ -174,7 +172,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterClientCallback("Inventory:ItemUse", function(item, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Inventory:ItemUse", function(item, cb)
 			if item.anim and (not item.pbConfig or not item.pbConfig.animation) then
 				Animations.Emotes:Play(item.anim, false, item.time, true)
 			end
@@ -400,7 +398,7 @@ INVENTORY = {
 			end
 
 			if Inventory.Set.Secondary.Data.Open then
-				Callbacks:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
+				exports["sandbox-base"]:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
 					SecondInventory = {}
 					_container = nil
 					Inventory.Set.Secondary.Data.Open = false
@@ -467,7 +465,7 @@ INVENTORY = {
 					},
 				})
 				_hkCd = true
-				Callbacks:ServerCallback("Inventory:UseSlot", { slot = control }, function(state)
+				exports["sandbox-base"]:ServerCallback("Inventory:UseSlot", { slot = control }, function(state)
 					if not state then
 						SendNUIMessage({
 							type = "SLOT_NOT_USED",
@@ -622,7 +620,7 @@ INVENTORY = {
 	end,
 	Dumbfuck = {
 		Open = function(self, data)
-			Callbacks:ServerCallback("Inventory:Server:Open", data, function(state)
+			exports["sandbox-base"]:ServerCallback("Inventory:Server:Open", data, function(state)
 				if state then
 					SecondInventory = { invType = data.invType, owner = data.owner }
 				end
@@ -631,7 +629,7 @@ INVENTORY = {
 	},
 	Stash = {
 		Open = function(self, type, identifier)
-			Callbacks:ServerCallback("Stash:Server:Open", {
+			exports["sandbox-base"]:ServerCallback("Stash:Server:Open", {
 				type = type,
 				identifier = identifier,
 			}, function(state)
@@ -643,7 +641,7 @@ INVENTORY = {
 	},
 	Shop = {
 		Open = function(self, identifier)
-			Callbacks:ServerCallback("Shop:Server:Open", {
+			exports["sandbox-base"]:ServerCallback("Shop:Server:Open", {
 				identifier = identifier,
 			}, function(state)
 				if state then
@@ -654,7 +652,7 @@ INVENTORY = {
 	},
 	PlayerShop = {
 		Open = function(self, shopId)
-			Callbacks:ServerCallback("PlayerShop:Server:Open", {
+			exports["sandbox-base"]:ServerCallback("PlayerShop:Server:Open", {
 				id = shopId,
 			}, function(state)
 				if state then
@@ -665,7 +663,7 @@ INVENTORY = {
 	},
 	Search = {
 		Character = function(self, serverId)
-			Callbacks:ServerCallback("Inventory:Search", {
+			exports["sandbox-base"]:ServerCallback("Inventory:Search", {
 				serverId = serverId,
 			}, function(owner)
 				if owner then
@@ -765,7 +763,7 @@ RegisterNetEvent("Inventory:Client:ReceiveItems", function(items)
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()
-	Callbacks:ServerCallback("Inventory:Server:retreiveStores", {}, function(shopsData)
+	exports["sandbox-base"]:ServerCallback("Inventory:Server:retreiveStores", {}, function(shopsData)
 		Shops = shopsData
 		setupStores(shopsData)
 		startDropsTick()
@@ -799,7 +797,7 @@ AddEventHandler("Inventory:Client:Trunk", function(entity, data)
 	local vehClass = GetVehicleClass(entity.entity)
 	local vehModel = GetEntityModel(entity.entity)
 
-	Callbacks:ServerCallback("Inventory:OpenTrunk", {
+	exports["sandbox-base"]:ServerCallback("Inventory:OpenTrunk", {
 		netId = VehToNet(entity.entity),
 		class = vehClass,
 		model = vehModel,
@@ -905,7 +903,7 @@ function OpenInventory()
 			if GetEntitySpeed(playerPed) < 8.0 then
 				local p = promise.new()
 				if Inventory:IsEnabled() then
-					Callbacks:ServerCallback("Inventory:CheckIfNearDropZone", {}, function(dropzone)
+					exports["sandbox-base"]:ServerCallback("Inventory:CheckIfNearDropZone", {}, function(dropzone)
 						if dropzone ~= nil and not isPedInVehicle and not requestSecondary then
 							p:resolve({ invType = 10, owner = dropzone.id, position = dropzone.position })
 						else
@@ -943,7 +941,7 @@ RegisterNUICallback("MergeSlot", function(data, cb)
 	data.model = SecondInventory.model
 	data.inventory = SecondInventory
 
-	Callbacks:ServerCallback("Inventory:MergeItem", data, function(success)
+	exports["sandbox-base"]:ServerCallback("Inventory:MergeItem", data, function(success)
 		if success and success.success then
 			if SecondInventory.netId then
 				local veh = NetToVeh(SecondInventory.netId)
@@ -971,7 +969,7 @@ RegisterNUICallback("SwapSlot", function(data, cb)
 	data.model = SecondInventory.model
 	data.inventory = SecondInventory
 
-	Callbacks:ServerCallback("Inventory:SwapItem", data, function(success)
+	exports["sandbox-base"]:ServerCallback("Inventory:SwapItem", data, function(success)
 		if success and success.success then
 			if SecondInventory.netId then
 				local veh = NetToVeh(SecondInventory.netId)
@@ -999,7 +997,7 @@ RegisterNUICallback("MoveSlot", function(data, cb)
 	data.model = SecondInventory.model
 	data.inventory = SecondInventory
 
-	Callbacks:ServerCallback("Inventory:MoveItem", data, function(success)
+	exports["sandbox-base"]:ServerCallback("Inventory:MoveItem", data, function(success)
 		if success and success.success then
 			if SecondInventory.netId then
 				local veh = NetToVeh(SecondInventory.netId)
@@ -1039,7 +1037,7 @@ RegisterNUICallback("UseItem", function(data, cb)
 	if LocalPlayer.state.doingAction then
 		return
 	end
-	Callbacks:ServerCallback("Inventory:UseItem", {
+	exports["sandbox-base"]:ServerCallback("Inventory:UseItem", {
 		slot = data.slot,
 		owner = data.owner,
 		invType = data.invType,
@@ -1222,7 +1220,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Delete", function(shopId)
 end)
 
 RegisterNUICallback("AddToShop", function(data, cb)
-	Callbacks:ServerCallback("Inventory:PlayerShop:AddItem", data, cb)
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:AddItem", data, cb)
 end)
 
 RegisterNetEvent("StoreFailedPurchase", function(data)
@@ -1257,14 +1255,14 @@ AddEventHandler("Shop:Client:BasicShop:AddModerator", function(obj, shopId)
 end)
 
 AddEventHandler("Shop:Client:BasicShop:AddModeratorInput", function(values, shopId)
-	Callbacks:ServerCallback("Inventory:PlayerShop:AddModerator", {
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:AddModerator", {
 		shop = shopId,
 		sid = values.sid
 	})
 end)
 
 AddEventHandler("Shop:Client:BasicShop:ViewModerators", function(obj, shopId)
-	Callbacks:ServerCallback("Inventory:PlayerShop:ViewModerators", shopId, function(list)
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:ViewModerators", shopId, function(list)
 		if list then
 			ListMenu:Show({
 				main = {
@@ -1277,18 +1275,18 @@ AddEventHandler("Shop:Client:BasicShop:ViewModerators", function(obj, shopId)
 end)
 
 AddEventHandler("Shop:Client:BasicShop:RemoveModerator", function(data)
-	Callbacks:ServerCallback("Inventory:PlayerShop:RemoveModerator", data)
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:RemoveModerator", data)
 end)
 
 AddEventHandler("Shop:Client:BasicShop:OpenShop", function(obj, shopId)
-	Callbacks:ServerCallback("Inventory:PlayerShop:ChangeState", {
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:ChangeState", {
 		id = shopId,
 		state = true
 	})
 end)
 
 AddEventHandler("Shop:Client:BasicShop:CloseShop", function(obj, shopId)
-	Callbacks:ServerCallback("Inventory:PlayerShop:ChangeState", {
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:ChangeState", {
 		id = shopId,
 		state = false
 	})

@@ -4,7 +4,6 @@ _placedProps = {}
 AddEventHandler("Objects:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -15,7 +14,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Objects", {
 		"Logger",
-		"Callbacks",
 		"Middleware",
 		"Execute",
 		"Chat",
@@ -56,7 +54,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end, 1)
 
 		Chat:RegisterAdminCommand("addobj", function(source, args, rawCommand)
-			Callbacks:ClientCallback(source, "Objects:StartPlacement", {
+			exports["sandbox-base"]:ClientCallback(source, "Objects:StartPlacement", {
 				model = GetHashKey(args[1]),
 				data = {
 					model = args[1],
@@ -89,7 +87,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		}, 4)
 
 		Chat:RegisterAdminCommand("addtobj", function(source, args, rawCommand)
-			Callbacks:ClientCallback(source, "Objects:StartPlacement", {
+			exports["sandbox-base"]:ClientCallback(source, "Objects:StartPlacement", {
 				model = GetHashKey(args[1]),
 				data = {
 					model = args[1],

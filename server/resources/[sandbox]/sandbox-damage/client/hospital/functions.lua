@@ -86,7 +86,7 @@ function LeaveBed()
 		ClearPedTasksImmediately(player)
 	end
 
-	Callbacks:ServerCallback("Hospital:LeaveBed")
+	exports["sandbox-base"]:ServerCallback("Hospital:LeaveBed")
 	if _curBed ~= nil and not _curBed.freeBed then
 		Hospital:LeaveBed()
 	end

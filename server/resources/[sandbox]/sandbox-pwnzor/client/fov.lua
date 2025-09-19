@@ -24,14 +24,14 @@ CreateThread(function()
 				local inVeh = IsPedInAnyVehicle(ped, false)
 
 				if not inVeh and (CamPos == 0 or CamPos == 1 or CamPos == 2) and CamFov > 60.2 then
-					Callbacks:ServerCallback("Pwnzor:FOV", { fov = CamFov })
+					exports["sandbox-base"]:ServerCallback("Pwnzor:FOV", { fov = CamFov })
 				elseif not inVeh and CamPos == 4 and CamFov > 58.0 then
-					Callbacks:ServerCallback("Pwnzor:FOV", { fov = CamFov })
+					exports["sandbox-base"]:ServerCallback("Pwnzor:FOV", { fov = CamFov })
 				elseif CamFov < 31.7 then
-					Callbacks:ServerCallback("Pwnzor:FOV", { fov = CamFov })
+					exports["sandbox-base"]:ServerCallback("Pwnzor:FOV", { fov = CamFov })
 				elseif inVeh then
 					if CamPosVeh == 4 and CamFovCar > 60.6 then
-						Callbacks:ServerCallback("Pwnzor:FOV", { fov = CamFovCar })
+						exports["sandbox-base"]:ServerCallback("Pwnzor:FOV", { fov = CamFovCar })
 					elseif CamPosVeh == 0 or CamPosVeh == 1 or CamPosVeh == 2 then
 						local veh = GetVehiclePedIsUsing(ped)
 						if
@@ -44,11 +44,11 @@ CreateThread(function()
 							or GetVehicleClass(veh) == 18
 						then
 							if CamFovCar > 62.6 then
-								Callbacks:ServerCallback("Pwnzor:FOV", { fov = CamFovCar })
+								exports["sandbox-base"]:ServerCallback("Pwnzor:FOV", { fov = CamFovCar })
 							end
 						else
 							if CamFovCar > 60.2 then
-								Callbacks:ServerCallback("Pwnzor:FOV", { fov = CamFovCar })
+								exports["sandbox-base"]:ServerCallback("Pwnzor:FOV", { fov = CamFovCar })
 							end
 						end
 					end

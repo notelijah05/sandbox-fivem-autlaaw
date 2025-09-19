@@ -1,7 +1,6 @@
 AddEventHandler("Billboards:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -28,7 +27,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Billboards", {
 		"Logger",
-		"Callbacks",
 		"Game",
 		"Menu",
 		"Targeting",

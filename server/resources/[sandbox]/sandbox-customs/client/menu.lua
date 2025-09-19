@@ -899,7 +899,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 			Logger:Trace("VehicleCustoms", "Attept Mods Save")
 			customsMenu:Close()
 
-			Callbacks:ServerCallback("Vehicles:CompleteCustoms", {
+			exports["sandbox-base"]:ServerCallback("Vehicles:CompleteCustoms", {
 				vNet = VehToNet(CUST_VEH),
 				changes = changingData,
 				cost = currentCost,

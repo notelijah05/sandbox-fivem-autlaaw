@@ -2,7 +2,6 @@ local _created = {}
 
 AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
 function RetrieveVendorComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -12,7 +11,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vendor", {
-		"Callbacks",
 		"Logger",
 		"PedInteraction",
 		"Targeting",
@@ -137,7 +135,7 @@ RegisterNetEvent("Vendor:Client:Remove", function(id)
 end)
 
 AddEventHandler("Vendor:Client:GetItems", function(entity, data)
-	Callbacks:ServerCallback("Vendor:GetItems", data.id, function(items)
+	exports["sandbox-base"]:ServerCallback("Vendor:GetItems", data.id, function(items)
 		local itemList = {}
 
 		if #items > 0 then
@@ -189,5 +187,5 @@ AddEventHandler("Vendor:Client:GetItems", function(entity, data)
 end)
 
 AddEventHandler("Vendor:Client:BuyItem", function(data)
-	Callbacks:ServerCallback("Vendor:BuyItem", data)
+	exports["sandbox-base"]:ServerCallback("Vendor:BuyItem", data)
 end)

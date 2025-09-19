@@ -87,7 +87,7 @@ function RegisterCallbacks()
 	-- 	},
 	-- }, 2)
 
-	Callbacks:RegisterServerCallback("Pwnzor:GetEvents", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:GetEvents", function(source, data, cb)
 		if not Pwnzor.Players:Get(source, "GetEvents") then
 			Pwnzor.Players:Set(source, "GetEvents")
 			cb(_blacklistedClientEvents)
@@ -98,7 +98,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:GetCommands", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:GetCommands", function(source, data, cb)
 		if not Pwnzor.Players:Get(source, "GetCommands") then
 			Pwnzor.Players:Set(source, "GetCommands")
 			cb(_blacklistedCommands)
@@ -109,7 +109,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:AFK", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:AFK", function(source, data, cb)
 		if Config.Components.AFK.Enabled then
 			Punishment:Kick(source, "You Were Kicked For Being AFK", "Pwnzor", true)
 		end
@@ -117,7 +117,7 @@ function RegisterCallbacks()
 
 	local _fovScreenshotLast = {}
 
-	Callbacks:RegisterServerCallback("Pwnzor:FOV", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:FOV", function(source, data, cb)
 		if Config.Components.FOV.Enabled then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local fov = data.fov
@@ -157,7 +157,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:AspectRatio", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:AspectRatio", function(source, data, cb)
 		if Config.Components.AspectRatio.Enabled then
 			local src = source
 			local char = exports['sandbox-characters']:FetchCharacterSource(src)
@@ -193,7 +193,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:Trigger", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:Trigger", function(source, data, cb)
 		cb("💙 From Pwnzor 🙂")
 		if not exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
 			Logger:Info(
@@ -219,12 +219,12 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:GetCode", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:GetCode", function(source, data, cb)
 		afkCodes[source] = Generator.Hacker.ingVerb()
 		cb(afkCodes[source])
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:EnterCode", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:EnterCode", function(source, data, cb)
 		if afkCodes[source] ~= nil then
 			if afkCodes[source] == data then
 				afkCodes[source] = nil

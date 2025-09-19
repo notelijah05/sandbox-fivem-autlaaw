@@ -3,7 +3,6 @@ _repairingVehicle = false
 AddEventHandler("Mechanic:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -22,7 +21,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Mechanic", {
 		"Logger",
-		"Callbacks",
 		"Game",
 		"Menu",
 		"Mechanic",
@@ -46,7 +44,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		CreateMechanicZones()
 		CreateMechanicDutyPoints()
 
-		Callbacks:RegisterClientCallback("Mechanic:StartInstall", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Mechanic:StartInstall", function(data, cb)
 			local part = data?.part
 			local quantity = data?.quantity
 			if part and quantity and LocalPlayer.state.loggedIn and not _repairingVehicle and type(quantity) == "number" and quantity > 0 then
@@ -159,7 +157,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			cb(false)
 		end)
 
-		Callbacks:RegisterClientCallback("Mechanic:StartUpgradeInstall", function(part, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Mechanic:StartUpgradeInstall", function(part, cb)
 			if LocalPlayer.state.loggedIn and not _repairingVehicle then
 				local duty = LocalPlayer.state.onDuty
 				if duty and _mechanicJobs[duty] then
@@ -269,7 +267,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			cb(false)
 		end)
 
-		Callbacks:RegisterClientCallback("Mechanic:StartUpgradeRemoval", function(part, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Mechanic:StartUpgradeRemoval", function(part, cb)
 			if LocalPlayer.state.loggedIn and not _repairingVehicle then
 				local duty = LocalPlayer.state.onDuty
 				if duty and _mechanicJobs[duty] then

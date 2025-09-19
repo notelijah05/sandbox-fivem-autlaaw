@@ -17,7 +17,6 @@ attachedProps = {}
 
 AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
@@ -35,7 +34,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
-		"Callbacks",
 		"Utils",
 		"UISounds",
 		"Blips",
@@ -91,7 +89,7 @@ function RegisterInteraction()
 					return LocalPed.customization.components.mask.drawableId ~= 0
 				end,
 				action = function()
-					Callbacks:ServerCallback("Ped:RemoveMask")
+					exports["sandbox-base"]:ServerCallback("Ped:RemoveMask")
 					Interaction:Hide()
 				end,
 			},
@@ -102,7 +100,7 @@ function RegisterInteraction()
 					return not LocalPed.customization.props.hat.disabled
 				end,
 				action = function()
-					Callbacks:ServerCallback("Ped:RemoveHat")
+					exports["sandbox-base"]:ServerCallback("Ped:RemoveHat")
 					Interaction:Hide()
 				end,
 			},
@@ -862,7 +860,7 @@ PED = {
 			FROZEN = false
 			_data = nil
 
-			Callbacks:ServerCallback("Apartment:SpawnInside", {})
+			exports["sandbox-base"]:ServerCallback("Apartment:SpawnInside", {})
 		end,
 	},
 	Customization = {
@@ -883,7 +881,7 @@ PED = {
 
 			if type == "SURGERY" then
 				local p = promise.new()
-				Callbacks:ServerCallback("Ped:GetWhitelistedPeds", {}, function(wls)
+				exports["sandbox-base"]:ServerCallback("Ped:GetWhitelistedPeds", {}, function(wls)
 					SendNUIMessage({
 						type = "SET_WL_PEDS",
 						data = {
@@ -915,7 +913,7 @@ PED = {
 		end,
 		Save = function(self, cb)
 			FROZEN = false
-			Callbacks:ServerCallback("Ped:MakePayment", {
+			exports["sandbox-base"]:ServerCallback("Ped:MakePayment", {
 				type = _currentState,
 			}, function(status, paid)
 				if status then
@@ -924,7 +922,7 @@ PED = {
 					end
 
 					Ped:ApplyToPed(LocalPed)
-					Callbacks:ServerCallback("Ped:SavePed", {
+					exports["sandbox-base"]:ServerCallback("Ped:SavePed", {
 						ped = LocalPed,
 					}, function(saved)
 						if _currentState == "CREATOR" then

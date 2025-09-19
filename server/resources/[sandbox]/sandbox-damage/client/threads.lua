@@ -95,7 +95,7 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 				animation = false,
 			}, function(status)
 				if not status then
-					Callbacks:ServerCallback("Hospital:Respawn", {}, function(bedId)
+					exports["sandbox-base"]:ServerCallback("Hospital:Respawn", {}, function(bedId)
 						if bedId ~= nil then
 							TriggerServerEvent("Escort:Server:ForceStop")
 							_sendToHosp = bedId

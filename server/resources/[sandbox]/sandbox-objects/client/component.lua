@@ -2,7 +2,6 @@ _placedProps = {}
 
 AddEventHandler("Objects:Shared:DependencyUpdate", RetrieveObjectsComponents)
 function RetrieveObjectsComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -12,7 +11,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Objects", {
-		"Callbacks",
 		"Notification",
 		"Targeting",
 		"Inventory",
@@ -25,7 +23,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrieveObjectsComponents()
 
-		Callbacks:RegisterClientCallback("Objects:StartPlacement", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Objects:StartPlacement", function(data, cb)
 			ObjectPlacer:Start(data.model, "Objects:Client:FinishPlacement", data.data, true, nil, true)
 			cb()
 		end)

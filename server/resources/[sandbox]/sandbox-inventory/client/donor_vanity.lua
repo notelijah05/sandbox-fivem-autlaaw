@@ -16,13 +16,13 @@ function CreateDonorVanityItems()
 end
 
 AddEventHandler("DonorVanity:Client:ViewPending", function(entityData, data)
-	Callbacks:ServerCallback("Inventory:DonorSales:GetPending", {}, function(menu)
+	exports["sandbox-base"]:ServerCallback("Inventory:DonorSales:GetPending", {}, function(menu)
 		ListMenu:Show(menu)
 	end)
 end)
 
 AddEventHandler("DonorVanity:Client:Open", function(entityData, data)
-	Callbacks:ServerCallback("Inventory:DonorSales:GetTokens", {}, function(data)
+	exports["sandbox-base"]:ServerCallback("Inventory:DonorSales:GetTokens", {}, function(data)
 		if not data or data.available == 0 then
 			return Notification:Error("No Pending Donator Purchases to Redeem")
 		end
@@ -32,7 +32,7 @@ AddEventHandler("DonorVanity:Client:Open", function(entityData, data)
 end)
 
 AddEventHandler("DonorVanity:Client:SubmitInput", function(data)
-	Callbacks:ServerCallback("Inventory:DonorSales:SubmitVanityItem", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Inventory:DonorSales:SubmitVanityItem", data, function() end)
 end)
 
 AddEventHandler("DonorDealer:Client:StartPurchase", function(data)
@@ -59,7 +59,7 @@ AddEventHandler("DonorDealer:Client:StartPurchase", function(data)
 end)
 
 AddEventHandler("DonorDealer:Client:ConfirmPurchase", function(data)
-	Callbacks:ServerCallback("Dealerships:DonorSales:Purchase", data)
+	exports["sandbox-base"]:ServerCallback("Dealerships:DonorSales:Purchase", data)
 end)
 
 local vanityPromise
@@ -83,11 +83,13 @@ function GenerateNewVanityItem()
 			type = "text",
 			options = {
 				inputProps = {
-					pattern = [[((https?:\/\/(www\.)?(cdn\.discordapp\.com\/attachments\/[a-zA-Z\d]+\/[a-zA-z0-9_-]+)?)((i\.)?imgur\.com)?\/[a-zA-z0-9-_]+(\.png|\.jpg|\.jpeg|\.gif)?)]],
+					pattern =
+					[[((https?:\/\/(www\.)?(cdn\.discordapp\.com\/attachments\/[a-zA-Z\d]+\/[a-zA-z0-9_-]+)?)((i\.)?imgur\.com)?\/[a-zA-z0-9-_]+(\.png|\.jpg|\.jpeg|\.gif)?)]],
 					maxlength = 240,
 				},
 				label = "Item Image URL",
-				helperText = "Images must end in jpg, jpeg, png, or gif. Use imgur or discordapp for uploads. Max Length: 100",
+				helperText =
+				"Images must end in jpg, jpeg, png, or gif. Use imgur or discordapp for uploads. Max Length: 100",
 			},
 		},
 		{

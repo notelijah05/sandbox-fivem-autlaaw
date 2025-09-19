@@ -19,7 +19,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Message:InitLoad", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Message:InitLoad", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local messages = MySQL.rawExecute.await(
@@ -35,7 +35,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Messages:LoadTexts", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Messages:LoadTexts", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local messages = MySQL.rawExecute.await(
@@ -52,7 +52,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Messages:SendMessage", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Messages:SendMessage", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local data2 = {
 			owner = data.number,
@@ -96,14 +96,14 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Messages:ReadConvo", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Messages:ReadConvo", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			Phone.Messages:Read(char:GetData("Phone"), data)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Messages:DeleteConvo", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Messages:DeleteConvo", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			Phone.Messages:Delete(char:GetData("Phone"), data)

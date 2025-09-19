@@ -13,14 +13,14 @@ _MDT.Misc = {
 		end,
 		Charge = function(self, data)
 			local id = MySQL.insert.await(
-			"INSERT INTO mdt_charges (type, title, description, fine, jail, points) VALUES (?, ?, ?, ?, ?, ?)", {
-				data.type,
-				data.title,
-				data.description,
-				data.fine,
-				data.jail,
-				data.points
-			})
+				"INSERT INTO mdt_charges (type, title, description, fine, jail, points) VALUES (?, ?, ?, ?, ?, ?)", {
+					data.type,
+					data.title,
+					data.description,
+					data.fine,
+					data.jail,
+					data.points
+				})
 
 			data.id = id
 
@@ -40,12 +40,12 @@ _MDT.Misc = {
 			end
 
 			local id = MySQL.insert.await(
-			"INSERT INTO mdt_notices (title, description, creator, restricted) VALUES (?, ?, ?, ?)", {
-				data.title,
-				data.description,
-				data.author,
-				data.restricted
-			})
+				"INSERT INTO mdt_notices (title, description, creator, restricted) VALUES (?, ?, ?, ?)", {
+					data.title,
+					data.description,
+					data.author,
+					data.restricted
+				})
 
 			for user, _ in pairs(_onDutyUsers) do
 				TriggerClientEvent("MDT:Client:SetData", user, "homeLastFetch", 0)
@@ -60,23 +60,24 @@ _MDT.Misc = {
 	View = {
 		Notice = function(self, id)
 			return MySQL.single.await(
-			"SELECT id, title, description, creator, created, restricted FROM mdt_notices WHERE id = ?", {
-				id
-			})
+				"SELECT id, title, description, creator, created, restricted FROM mdt_notices WHERE id = ?", {
+					id
+				})
 		end,
 	},
 	Update = {
 		Charge = function(self, id, data)
 			local u = MySQL.query.await(
-			"UPDATE mdt_charges SET type = ?, title = ?, description = ?, fine = ?, jail = ?, points = ? WHERE id = ?", {
-				data.type,
-				data.title,
-				data.description,
-				data.fine,
-				data.jail,
-				data.points,
-				id
-			})
+				"UPDATE mdt_charges SET type = ?, title = ?, description = ?, fine = ?, jail = ?, points = ? WHERE id = ?",
+				{
+					data.type,
+					data.title,
+					data.description,
+					data.fine,
+					data.jail,
+					data.points,
+					id
+				})
 
 			if u and u.affectedRows > 0 then
 				for k, v in ipairs(_charges) do
@@ -152,7 +153,7 @@ _MDT.Misc = {
 
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("MDT:Create:BOLO", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Create:BOLO", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if CheckMDTPermissions(source, false, 'police') then
 			data.doc.author = {
@@ -168,7 +169,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Delete:BOLO", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Delete:BOLO", function(source, data, cb)
 		if CheckMDTPermissions(source, false, 'police') then
 			cb(MDT.Misc.Delete:BOLO(data.id))
 		else
@@ -176,7 +177,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Create:charge", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Create:charge", function(source, data, cb)
 		if CheckMDTPermissions(source, true) then
 			data.doc.active = true
 			cb(MDT.Misc.Create:Charge(data.doc))
@@ -185,7 +186,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Update:charge", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Update:charge", function(source, data, cb)
 		if CheckMDTPermissions(source, true) then
 			cb(MDT.Misc.Update:Charge(data.doc.id, data.doc))
 		else
@@ -193,7 +194,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Delete:charge", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Delete:charge", function(source, data, cb)
 		if CheckMDTPermissions(source, true) then
 			cb(MDT.Misc.Delete:Charge(data.doc.id))
 		else
@@ -201,7 +202,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Create:notice", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Create:notice", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and CheckMDTPermissions(source, {
 				'PD_HIGH_COMMAND',
@@ -219,11 +220,11 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:View:notice", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:View:notice", function(source, data, cb)
 		cb(MDT.Misc.View:Notice(data))
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Delete:notice", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Delete:notice", function(source, data, cb)
 		if CheckMDTPermissions(source, {
 				'PD_HIGH_COMMAND',
 				'SAFD_HIGH_COMMAND',

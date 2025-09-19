@@ -1,5 +1,5 @@
 function RegisterDonorVehicleSaleCallbacks()
-  Callbacks:RegisterServerCallback("Dealerships:DonorSales:GetStock", function(source, data, cb)
+  exports["sandbox-base"]:RegisterServerCallback("Dealerships:DonorSales:GetStock", function(source, data, cb)
     local plyr = exports['sandbox-base']:FetchSource(source)
     if plyr and _donorDealerships[data] then
       local pending = Dealerships.Donator:GetPending(plyr:GetData("Identifier"))
@@ -33,7 +33,7 @@ function RegisterDonorVehicleSaleCallbacks()
     cb(false)
   end)
 
-  Callbacks:RegisterServerCallback("Dealerships:DonorSales:GetPending", function(source, data, cb)
+  exports["sandbox-base"]:RegisterServerCallback("Dealerships:DonorSales:GetPending", function(source, data, cb)
     local plyr = exports['sandbox-base']:FetchSource(source)
     if plyr then
       local pending = Dealerships.Donator:GetPending(plyr:GetData("Identifier"), true)
@@ -70,7 +70,7 @@ function RegisterDonorVehicleSaleCallbacks()
     cb(false)
   end)
 
-  Callbacks:RegisterServerCallback("Dealerships:DonorSales:Purchase", function(source, data, cb)
+  exports["sandbox-base"]:RegisterServerCallback("Dealerships:DonorSales:Purchase", function(source, data, cb)
     if data?.dealer and data?.vehicle and _donorDealerships[data.dealer] then
       local plyr = exports['sandbox-base']:FetchSource(source)
       if plyr then

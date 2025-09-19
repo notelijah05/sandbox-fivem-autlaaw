@@ -18,17 +18,17 @@ AddEventHandler("Robbery:Client:Setup", function()
     local atmRobbery = GlobalState["ATMRobberyTerminal"]
     Targeting.Zones:AddBox("atm-robbery-terminal", "bug", atmRobbery.coords, atmRobbery.length, atmRobbery.width,
         atmRobbery.options, {
-        {
-            icon = "eye-evil",
-            text = "Do Illegal Things",
-            event = "Robbery:Client:ATM:UseTerminal",
-            item = "vpn",
-            data = {},
-            isEnabled = function(data, entity)
-                return not LocalPlayer.state.ATMRobbery or LocalPlayer.state.ATMRobbery <= 0
-            end,
-        },
-    }, 2.0)
+            {
+                icon = "eye-evil",
+                text = "Do Illegal Things",
+                event = "Robbery:Client:ATM:UseTerminal",
+                item = "vpn",
+                data = {},
+                isEnabled = function(data, entity)
+                    return not LocalPlayer.state.ATMRobbery or LocalPlayer.state.ATMRobbery <= 0
+                end,
+            },
+        }, 2.0)
 
     for k, v in ipairs(atmObjects) do
         Targeting:AddObject(v, "money-from-bracket", {
@@ -55,16 +55,16 @@ AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
         if (not GlobalState["ATMRobberyStartCD"]) or (GetCloudTimeAsInt() > GlobalState["ATMRobberyStartCD"]) then
             Minigame.Play:Memory(5, 1200, 9000, 5, 5, 5, 2, {
                 onSuccess = function(data)
-                    Callbacks:ServerCallback("Robbery:ATM:StartJob", true, function(success, location)
+                    exports["sandbox-base"]:ServerCallback("Robbery:ATM:StartJob", true, function(success, location)
                         if success then
                             Phone.Notification:AddWithId("ATMRobbery", "Started - Good Luck",
                                 "Access an ATM in the highlighted area", GetCloudTimeAsInt(), -1, {
-                                color = '#247919',
-                                label = 'Root',
-                                icon = 'terminal',
-                            }, {
-                                accept = "dicks",
-                            }, nil)
+                                    color = '#247919',
+                                    label = 'Root',
+                                    icon = 'terminal',
+                                }, {
+                                    accept = "dicks",
+                                }, nil)
 
                             StartATMRobbery(location, true)
                         else
@@ -76,7 +76,7 @@ AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
                     end)
                 end,
                 onFail = function(data)
-                    Callbacks:ServerCallback("Robbery:ATM:StartJob", false, function() end)
+                    exports["sandbox-base"]:ServerCallback("Robbery:ATM:StartJob", false, function() end)
 
                     Phone.Notification:Add("Not Today Failure", "Your skills are useless to us...", GetCloudTimeAsInt(),
                         7500, _phoneApp, {}, nil)
@@ -120,8 +120,8 @@ function StartATMRobbery(location, firstLocation)
     if not firstLocation then
         Phone.Notification:AddWithId("ATMRobbery", "Well Done - Next!", "Access an ATM in the new highlighted area",
             GetCloudTimeAsInt() * 1000, -1, _phoneApp, {
-            accept = "dicks",
-        }, nil)
+                accept = "dicks",
+            }, nil)
     end
 end
 
@@ -184,7 +184,7 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
                 end
 
                 DoATMProgress("Executing", (math.random(10) + 10) * 1000, false, function(status)
-                    Callbacks:ServerCallback("Robbery:ATM:HackATM", size, function(success, location)
+                    exports["sandbox-base"]:ServerCallback("Robbery:ATM:HackATM", size, function(success, location)
                         if success then
                             DoATMProgress("Uninstalling", (math.random(5) + 10) * 1000, false)
                             if location then
@@ -208,7 +208,7 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
                     Wait(100)
                 end
 
-                Callbacks:ServerCallback("Robbery:ATM:FailHackATM", {
+                exports["sandbox-base"]:ServerCallback("Robbery:ATM:FailHackATM", {
                     coords = coords,
                     alarm = alarm,
                 }, function()

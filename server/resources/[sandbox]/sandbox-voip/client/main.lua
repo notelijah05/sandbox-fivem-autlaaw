@@ -36,7 +36,6 @@ end
 
 AddEventHandler("VOIP:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -50,7 +49,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VOIP", {
-		"Callbacks",
 		"Notification",
 		"Logger",
 		"Hud",

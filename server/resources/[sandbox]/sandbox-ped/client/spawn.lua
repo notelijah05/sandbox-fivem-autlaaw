@@ -12,7 +12,7 @@ SPAWN = {
 		while not IsScreenFadedOut() do
 			Wait(10)
 		end
-		Callbacks:ServerCallback("Ped:CheckPed", {}, function(hasPed)
+		exports["sandbox-base"]:ServerCallback("Ped:CheckPed", {}, function(hasPed)
 			data.Ped = hasPed.ped
 			if not hasPed.existed then
 				cb()

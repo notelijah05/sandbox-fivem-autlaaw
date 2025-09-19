@@ -124,7 +124,7 @@ RegisterNetEvent("Escort:Client:Escorted", function()
 end)
 
 AddEventHandler("Escort:Client:PutIn", function(entity, data)
-	Callbacks:ServerCallback("Escort:DoPutIn", {
+	exports["sandbox-base"]:ServerCallback("Escort:DoPutIn", {
 		veh = NetworkGetNetworkIdFromEntity(entity.entity),
 		class = GetVehicleClass(entity.entity),
 		seatCount = GetVehicleModelNumberOfSeats(GetEntityModel(entity.entity)),

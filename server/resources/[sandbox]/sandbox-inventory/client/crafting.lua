@@ -22,7 +22,7 @@ CRAFTING = {
 						if
 							v.restrictions.interior == nil
 							or v.restrictions.interior
-								== GlobalState[string.format("%s:Property", LocalPlayer.state.ID)]
+							== GlobalState[string.format("%s:Property", LocalPlayer.state.ID)]
 						then
 							local obj = nil
 							if v.targeting.model ~= nil then
@@ -169,7 +169,7 @@ AddEventHandler("Crafting:Client:OpenCrafting", function(ent, data)
 end)
 
 AddEventHandler("Crafting:Client:AddSchematic", function(ent, data)
-	Callbacks:ServerCallback("Crafting:GetSchematics", data, function(schematics)
+	exports["sandbox-base"]:ServerCallback("Crafting:GetSchematics", data, function(schematics)
 		if #schematics > 0 then
 			for k, v in ipairs(schematics) do
 				schematics[k].data = {
@@ -206,7 +206,7 @@ AddEventHandler("Crafting:Client:UseSchematic", function(data)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Crafting:UseSchematic", data, function(s) end)
+			exports["sandbox-base"]:ServerCallback("Crafting:UseSchematic", data, function(s) end)
 		end
 	end)
 end)
@@ -216,7 +216,7 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 RegisterNUICallback("Crafting:Craft", function(data, cb)
-	Callbacks:ServerCallback("Crafting:Craft", data, function(state)
+	exports["sandbox-base"]:ServerCallback("Crafting:Craft", data, function(state)
 		if not state.error then
 			cb(state)
 		else

@@ -6,7 +6,6 @@ _leavingBed = false
 
 AddEventHandler("Hospital:Shared:DependencyUpdate", HospitalComponents)
 function HospitalComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
@@ -22,7 +21,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hospital", {
-		"Callbacks",
 		"Notification",
 		"Damage",
 		"Targeting",
@@ -134,7 +132,7 @@ end)
 local _bedId = nil
 HOSPITAL = {
 	CheckIn = function(self)
-		Callbacks:ServerCallback('Hospital:Treat', {}, function(bed)
+		exports["sandbox-base"]:ServerCallback('Hospital:Treat', {}, function(bed)
 			if bed ~= nil then
 				_countdown = Config.HealTimer
 				LocalPlayer.state:set("isHospitalized", true, true)
@@ -149,7 +147,7 @@ HOSPITAL = {
 
 		if bedId then
 			local p = promise.new()
-			Callbacks:ServerCallback('Hospital:OccupyBed', bedId, function(s)
+			exports["sandbox-base"]:ServerCallback('Hospital:OccupyBed', bedId, function(s)
 				p:resolve(s)
 			end)
 
@@ -182,7 +180,7 @@ HOSPITAL = {
 	end,
 	FindBed = function(self, object)
 		local coords = GetEntityCoords(object)
-		Callbacks:ServerCallback('Hospital:FindBed', coords, function(bed)
+		exports["sandbox-base"]:ServerCallback('Hospital:FindBed', coords, function(bed)
 			if bed ~= nil then
 				Hospital:SendToBed(Config.Beds[bed], true, bed)
 			else
@@ -197,7 +195,7 @@ HOSPITAL = {
 		end)
 	end,
 	LeaveBed = function(self)
-		Callbacks:ServerCallback('Hospital:LeaveBed', _bedId, function()
+		exports["sandbox-base"]:ServerCallback('Hospital:LeaveBed', _bedId, function()
 			_bedId = nil
 		end)
 	end,

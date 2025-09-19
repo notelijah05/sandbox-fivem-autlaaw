@@ -125,7 +125,7 @@ LAPTOP.BizWiz.Documents = {
 }
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Document:Search", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Document:Search", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, 'TABLET_VIEW_DOCUMENT')
 		if job then
 			cb(Laptop.BizWiz.Documents:Search(job, data.term))
@@ -134,7 +134,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Document:Create", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Document:Create", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local job = CheckBusinessPermissions(source, 'TABLET_CREATE_DOCUMENT')
 		if job then
@@ -149,7 +149,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Document:Update", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Document:Update", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local job = CheckBusinessPermissions(source, 'TABLET_CREATE_DOCUMENT')
 		if char and job then
@@ -165,7 +165,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Document:Delete", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Document:Delete", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, 'TABLET_DELETE_DOCUMENT')
 		if job then
 			cb(Laptop.BizWiz.Documents:Delete(job, data.id))
@@ -174,7 +174,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Document:View", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Document:View", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, 'TABLET_VIEW_DOCUMENT')
 		if job then
 			cb(Laptop.BizWiz.Documents:View(job, data))

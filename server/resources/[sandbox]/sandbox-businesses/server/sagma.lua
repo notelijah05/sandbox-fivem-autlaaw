@@ -1,11 +1,11 @@
 local _jobName = "sagma"
 
 AddEventHandler("Businesses:Server:Startup", function()
-    Callbacks:RegisterServerCallback("Businesses:SAGMA:OpenTable", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Businesses:SAGMA:OpenTable", function(source, data, cb)
         Inventory:OpenSecondary(source, 132, data)
     end)
 
-    Callbacks:RegisterServerCallback("Businesses:SAGMA:Sell", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Businesses:SAGMA:Sell", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if Jobs.Permissions:HasJob(source, _jobName, false, false, false, false, "JOB_SELL_GEMS") then
             local its = Inventory.Items:GetAllOfTypeNoStack(char:GetData("SID"), 1, 11)

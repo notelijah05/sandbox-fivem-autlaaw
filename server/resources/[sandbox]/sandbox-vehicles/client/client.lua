@@ -11,7 +11,6 @@ VEHICLE_HARNESS = false
 
 AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
@@ -54,7 +53,6 @@ local vehicleDoorNames = {
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
-		"Callbacks",
 		"Notification",
 		"Animations",
 		"Game",
@@ -123,7 +121,7 @@ AddEventHandler("Core:Shared:Ready", function()
 											table.insert(sids, GetPlayerServerId(NetworkGetPlayerIndexFromPed(ped)))
 										end
 									end
-									Callbacks:ServerCallback("Vehicles:GiveKeys", {
+									exports["sandbox-base"]:ServerCallback("Vehicles:GiveKeys", {
 										netId = VehToNet(VEHICLE_INSIDE),
 										sids = sids,
 									})
@@ -389,7 +387,7 @@ end)
 
 AddEventHandler("Vehicles:Client:GiveKeys", function(entityData, data)
 	local vehEnt = Entity(entityData.entity)
-	
+
 	if Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
 		local myCoords = GetEntityCoords(LocalPlayer.state.ped)
 		local peds = GetGamePool("CPed")
@@ -402,12 +400,11 @@ AddEventHandler("Vehicles:Client:GiveKeys", function(entityData, data)
 				end
 			end
 		end
-		Callbacks:ServerCallback("Vehicles:GiveKeys", {
+		exports["sandbox-base"]:ServerCallback("Vehicles:GiveKeys", {
 			netId = VehToNet(entityData.entity),
 			sids = sids,
 		})
 	end
-	
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")

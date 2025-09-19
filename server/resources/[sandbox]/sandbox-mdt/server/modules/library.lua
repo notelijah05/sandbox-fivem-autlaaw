@@ -21,7 +21,7 @@ _MDT.Library = {
 
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-    Callbacks:RegisterServerCallback("MDT:AddLibraryDocument", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MDT:AddLibraryDocument", function(source, data, cb)
         if CheckMDTPermissions(source, true) then
             cb(MDT.Library:Create(data.label, data.link, data.job, data.workplace))
         else
@@ -29,7 +29,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("MDT:RemoveLibraryDocument", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MDT:RemoveLibraryDocument", function(source, data, cb)
         if CheckMDTPermissions(source, true) then
             cb(MDT.Library:Delete(data.id))
         else
@@ -37,7 +37,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("MDT:GetLibraryDocuments", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MDT:GetLibraryDocuments", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local dutyData = Jobs.Duty:Get(source)
@@ -48,7 +48,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
                 cb(res)
             elseif dutyData then
                 local res = MySQL.query.await(
-                "SELECT id, label, link FROM mdt_library WHERE (job = ? AND workplace IS NULL) OR (job = ? AND workplace = ?) ORDER BY label",
+                    "SELECT id, label, link FROM mdt_library WHERE (job = ? AND workplace IS NULL) OR (job = ? AND workplace = ?) ORDER BY label",
                     {
                         dutyData.Id,
                         dutyData.Id,

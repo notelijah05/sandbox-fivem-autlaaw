@@ -69,7 +69,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	GlobalState["LaborExporter"] = menu
 
-	Callbacks:RegisterServerCallback("Labor:Exporter:Sell", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Labor:Exporter:Sell", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if _items[data.section] ~= nil then

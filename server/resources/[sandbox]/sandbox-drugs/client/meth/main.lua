@@ -52,12 +52,12 @@ AddEventHandler("Drugs:Client:Startup", function()
         }, 3.0)
     end
 
-    Callbacks:RegisterClientCallback("Drugs:Meth:PlaceTable", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Drugs:Meth:PlaceTable", function(data, cb)
         ObjectPlacer:Start(`bkr_prop_meth_table01a`, "Drugs:Client:Meth:FinishPlacement", data, false)
         cb()
     end)
 
-    Callbacks:RegisterClientCallback("Drugs:Meth:Use", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Drugs:Meth:Use", function(data, cb)
         Wait(400)
         Minigame.Play:RoundSkillbar(1.0, 6, {
             onSuccess = function()
@@ -83,7 +83,7 @@ AddEventHandler("Drugs:Client:Startup", function()
         })
     end)
 
-    Callbacks:RegisterClientCallback("Drugs:Adrenaline:Use", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Drugs:Adrenaline:Use", function(data, cb)
         Wait(400)
         Minigame.Play:RoundSkillbar(1.0, 6, {
             onSuccess = function()
@@ -194,7 +194,7 @@ AddEventHandler("Drugs:Client:Meth:FinishPlacement", function(data, endCoords)
         },
     }, function(status)
         if not status then
-            Callbacks:ServerCallback("Drugs:Meth:FinishTablePlacement", {
+            exports["sandbox-base"]:ServerCallback("Drugs:Meth:FinishTablePlacement", {
                 data = data,
                 endCoords = endCoords
             }, function(s)
@@ -228,11 +228,12 @@ AddEventHandler("Drugs:Client:Meth:PickupTable", function(entity, data)
             },
         }, function(status)
             if not status then
-                Callbacks:ServerCallback("Drugs:Meth:PickupTable", Entity(entity.entity).state.methTable, function(s)
-                    -- if s then
-                    --     DeleteObject(entity.entity)
-                    -- end
-                end)
+                exports["sandbox-base"]:ServerCallback("Drugs:Meth:PickupTable", Entity(entity.entity).state.methTable,
+                    function(s)
+                        -- if s then
+                        --     DeleteObject(entity.entity)
+                        -- end
+                    end)
             end
         end)
     end
@@ -241,7 +242,7 @@ end)
 AddEventHandler("Drugs:Client:Meth:StartCook", function(entity, data)
     local entState = Entity(entity.entity).state
     if entState.isMethTable and entState.methTable then
-        Callbacks:ServerCallback("Drugs:Meth:CheckTable", entState.methTable, function(s)
+        exports["sandbox-base"]:ServerCallback("Drugs:Meth:CheckTable", entState.methTable, function(s)
             if s then
                 Progress:Progress({
                     name = "meth_pickup",
@@ -329,7 +330,7 @@ AddEventHandler("Drugs:Client:Meth:ConfirmCook", function(data)
                             },
                         }, function(status)
                             if not status then
-                                Callbacks:ServerCallback("Drugs:Meth:StartCooking", data, function(s)
+                                exports["sandbox-base"]:ServerCallback("Drugs:Meth:StartCooking", data, function(s)
 
                                 end)
                             end
@@ -362,7 +363,7 @@ AddEventHandler("Drugs:Client:Meth:PickupCook", function(entity, data)
             },
         }, function(status)
             if not status then
-                Callbacks:ServerCallback("Drugs:Meth:PickupCook", entState.methTable, function(s)
+                exports["sandbox-base"]:ServerCallback("Drugs:Meth:PickupCook", entState.methTable, function(s)
                     if s then
                     else
                         Notification:Error("Table Is Not Ready")
@@ -376,7 +377,7 @@ end)
 AddEventHandler("Drugs:Client:Meth:TableDetails", function(entity, data)
     local entState = Entity(entity.entity).state
     if entState.isMethTable and entState.methTable then
-        Callbacks:ServerCallback("Drugs:Meth:GetTableDetails", entState.methTable, function(s)
+        exports["sandbox-base"]:ServerCallback("Drugs:Meth:GetTableDetails", entState.methTable, function(s)
             if s then
                 ListMenu:Show(s)
             end
@@ -385,7 +386,7 @@ AddEventHandler("Drugs:Client:Meth:TableDetails", function(entity, data)
 end)
 
 AddEventHandler("Drugs:Client:Meth:ViewItems", function(entity, data)
-    Callbacks:ServerCallback("Drugs:Meth:GetItems", {}, function(items)
+    exports["sandbox-base"]:ServerCallback("Drugs:Meth:GetItems", {}, function(items)
         local itemList = {}
 
         if #items > 0 then
@@ -422,5 +423,5 @@ AddEventHandler("Drugs:Client:Meth:ViewItems", function(entity, data)
 end)
 
 AddEventHandler("Drugs:Client:Meth:BuyItem", function(data)
-    Callbacks:ServerCallback("Drugs:Meth:BuyItem", data)
+    exports["sandbox-base"]:ServerCallback("Drugs:Meth:BuyItem", data)
 end)

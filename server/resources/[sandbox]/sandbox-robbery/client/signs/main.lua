@@ -166,7 +166,7 @@ AddEventHandler("Robbery:Client:Signs:StealSign", function(data, entity)
 						"stealsign",
 						false,
 						function(status)
-							Callbacks:ServerCallback(
+							exports["sandbox-base"]:ServerCallback(
 								"Robbery:Signs:RemoveSign",
 								{ coords = entityCoords, model = entity.model, item = entity.item },
 								function(success)

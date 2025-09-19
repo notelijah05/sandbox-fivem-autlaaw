@@ -33,7 +33,7 @@ function IsPersonalPlateTaken(plate)
 end
 
 function PrivatePlateStuff(char, source, itemData)
-    Callbacks:ClientCallback(source, "Vehicles:GetPersonalPlate", {}, function(veh, plate)
+    exports["sandbox-base"]:ClientCallback(source, "Vehicles:GetPersonalPlate", {}, function(veh, plate)
         if not veh or not plate then
             return
         end
@@ -185,7 +185,7 @@ function RegisterPersonalPlateCallbacks()
         },
     }, 1)
 
-    Callbacks:RegisterServerCallback("Vehicles:CheckDonatorPersonalPlates", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Vehicles:CheckDonatorPersonalPlates", function(source, data, cb)
         local plyr = exports['sandbox-base']:FetchSource(source)
         if plyr then
             local res = Vehicles.DonatorPlates:Check(plyr:GetData("Identifier"))
@@ -196,7 +196,7 @@ function RegisterPersonalPlateCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Vehicles:ClaimDonatorPersonalPlates", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Vehicles:ClaimDonatorPersonalPlates", function(source, data, cb)
         local plyr = exports['sandbox-base']:FetchSource(source)
         if plyr then
             local char = exports['sandbox-characters']:FetchCharacterSource(source)

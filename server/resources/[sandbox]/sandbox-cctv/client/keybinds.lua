@@ -9,17 +9,17 @@ function RegisterKeyBinds()
 
 	Keybinds:Add("cctv_previous", "LEFT", "keyboard", "CCTV - Previous Camera", function()
 		if LocalPlayer.state.inCCTVCam then
-            if GlobalState[LocalPlayer.state.inCCTVCam.camKey]?.group ~= nil then
-				Callbacks:ServerCallback("CCTV:PreviousInGroup", {})
-            end
+			if GlobalState[LocalPlayer.state.inCCTVCam.camKey]?.group ~= nil then
+				exports["sandbox-base"]:ServerCallback("CCTV:PreviousInGroup", {})
+			end
 		end
 	end)
 
 	Keybinds:Add("cctv_next", "RIGHT", "keyboard", "CCTV - Next Camera", function()
 		if LocalPlayer.state.inCCTVCam then
-            if GlobalState[LocalPlayer.state.inCCTVCam.camKey]?.group ~= nil then
-				Callbacks:ServerCallback("CCTV:NextInGroup", {})
-            end
+			if GlobalState[LocalPlayer.state.inCCTVCam.camKey]?.group ~= nil then
+				exports["sandbox-base"]:ServerCallback("CCTV:NextInGroup", {})
+			end
 		end
 	end)
 

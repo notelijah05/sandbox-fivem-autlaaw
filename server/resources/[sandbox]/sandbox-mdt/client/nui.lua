@@ -1,69 +1,69 @@
 RegisterNUICallback("Search", function(data, cb)
-	Callbacks:ServerCallback("MDT:Search:" .. data.type, data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:Search:" .. data.type, data, cb)
 end)
 
 RegisterNUICallback("InputSearch", function(data, cb)
-	Callbacks:ServerCallback("MDT:InputSearch:" .. data.type, data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:InputSearch:" .. data.type, data, cb)
 end)
 
 RegisterNUICallback("InputSearchSID", function(data, cb)
-	Callbacks:ServerCallback("MDT:InputSearchSID", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:InputSearchSID", data, cb)
 end)
 
 RegisterNUICallback("View", function(data, cb)
-	Callbacks:ServerCallback("MDT:View:" .. data.type, data.id, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:View:" .. data.type, data.id, cb)
 end)
 
 RegisterNUICallback("Create", function(data, cb)
-	Callbacks:ServerCallback("MDT:Create:" .. data.type, data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:Create:" .. data.type, data, cb)
 end)
 
 RegisterNUICallback("Update", function(data, cb)
-	Callbacks:ServerCallback("MDT:Update:" .. data.type, data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:Update:" .. data.type, data, cb)
 end)
 
 RegisterNUICallback("Delete", function(data, cb)
-	Callbacks:ServerCallback("MDT:Delete:" .. data.type, data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:Delete:" .. data.type, data, cb)
 end)
 
 RegisterNUICallback("SentencePlayer", function(data, cb)
-	Callbacks:ServerCallback("MDT:SentencePlayer", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:SentencePlayer", data, cb)
 end)
 
 RegisterNUICallback("IssueWarrant", function(data, cb)
-	Callbacks:ServerCallback("MDT:IssueWarrant", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:IssueWarrant", data, cb)
 end)
 
 RegisterNUICallback("ManageEmployment", function(data, cb)
-	Callbacks:ServerCallback("MDT:ManageEmployment", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:ManageEmployment", data, cb)
 end)
 
 RegisterNUICallback("HireEmployee", function(data, cb)
-	Callbacks:ServerCallback("MDT:Hire", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:Hire", data, cb)
 end)
 
 RegisterNUICallback("FireEmployee", function(data, cb)
-	Callbacks:ServerCallback("MDT:Fire", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:Fire", data, cb)
 end)
 
 RegisterNUICallback("SuspendEmployee", function(data, cb)
-	Callbacks:ServerCallback("MDT:Suspend", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:Suspend", data, cb)
 end)
 
 RegisterNUICallback("UnsuspendEmployee", function(data, cb)
-	Callbacks:ServerCallback("MDT:Unsuspend", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:Unsuspend", data, cb)
 end)
 
 RegisterNUICallback("CheckCallsign", function(data, cb)
-	Callbacks:ServerCallback("MDT:CheckCallsign", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:CheckCallsign", data, cb)
 end)
 
 RegisterNUICallback("RosterView", function(data, cb)
-	Callbacks:ServerCallback("MDT:RosterView", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:RosterView", data, cb)
 end)
 
 RegisterNUICallback("RosterSelect", function(data, cb)
-	Callbacks:ServerCallback("MDT:RosterSelect", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:RosterSelect", data, cb)
 end)
 
 RegisterNUICallback("GetProperties", function(data, cb)
@@ -71,7 +71,7 @@ RegisterNUICallback("GetProperties", function(data, cb)
 
 	local data = {}
 	if properties then
-		for k,v in pairs(properties) do
+		for k, v in pairs(properties) do
 			table.insert(data, v)
 		end
 	end
@@ -84,7 +84,7 @@ RegisterNUICallback("FindProperty", function(data, cb)
 	if prop ~= nil then
 		ClearGpsPlayerWaypoint()
 		SetNewWaypoint(prop.location.front.x, prop.location.front.y)
-        cb(true)
+		cb(true)
 	else
 		cb(false)
 	end
@@ -92,39 +92,39 @@ end)
 
 RegisterNUICallback("EvidenceLocker", function(data, cb)
 	cb(true)
-	Callbacks:ServerCallback("MDT:OpenEvidenceLocker", data)
+	exports["sandbox-base"]:ServerCallback("MDT:OpenEvidenceLocker", data)
 end)
 
 RegisterNUICallback("PrintBadge", function(data, cb)
-	Callbacks:ServerCallback("MDT:PrintBadge", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:PrintBadge", data, cb)
 end)
 
 RegisterNUICallback("RevokeSuspension", function(data, cb)
-	Callbacks:ServerCallback("MDT:RevokeLicenseSuspension", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:RevokeLicenseSuspension", data, cb)
 end)
 
 RegisterNUICallback("ClearRecord", function(data, cb)
-	Callbacks:ServerCallback("MDT:ClearCriminalRecord", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:ClearCriminalRecord", data, cb)
 end)
 
 RegisterNUICallback("RemovePoints", function(data, cb)
-	Callbacks:ServerCallback("MDT:RemoveLicensePoints", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:RemoveLicensePoints", data, cb)
 end)
 
 RegisterNUICallback("OverturnSentence", function(data, cb)
-	Callbacks:ServerCallback("MDT:OverturnSentence", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:OverturnSentence", data, cb)
 end)
 
 RegisterNUICallback("ViewVehicleFleet", function(data, cb)
-	Callbacks:ServerCallback("MDT:ViewVehicleFleet", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:ViewVehicleFleet", data, cb)
 end)
 
 RegisterNUICallback("SetAssignedDrivers", function(data, cb)
-	Callbacks:ServerCallback("MDT:SetAssignedDrivers", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:SetAssignedDrivers", data, cb)
 end)
 
 RegisterNUICallback("TrackFleetVehicle", function(data, cb)
-	Callbacks:ServerCallback("MDT:TrackFleetVehicle", data, function(data)
+	exports["sandbox-base"]:ServerCallback("MDT:TrackFleetVehicle", data, function(data)
 		if data then
 			DeleteWaypoint()
 			SetNewWaypoint(data.x, data.y)
@@ -136,29 +136,29 @@ RegisterNUICallback("TrackFleetVehicle", function(data, cb)
 end)
 
 RegisterNUICallback("GetHomeData", function(data, cb)
-	Callbacks:ServerCallback("MDT:GetHomeData", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:GetHomeData", data, cb)
 end)
 
 RegisterNUICallback("GetLibraryDocuments", function(data, cb)
-	Callbacks:ServerCallback("MDT:GetLibraryDocuments", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:GetLibraryDocuments", data, cb)
 end)
 
 RegisterNUICallback("AddLibraryDocument", function(data, cb)
-	Callbacks:ServerCallback("MDT:AddLibraryDocument", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:AddLibraryDocument", data, cb)
 end)
 
 RegisterNUICallback("RemoveLibraryDocument", function(data, cb)
-	Callbacks:ServerCallback("MDT:RemoveLibraryDocument", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:RemoveLibraryDocument", data, cb)
 end)
 
 RegisterNUICallback("DOCGetPrisoners", function(data, cb)
-	Callbacks:ServerCallback("MDT:DOCGetPrisoners", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:DOCGetPrisoners", data, cb)
 end)
 
 RegisterNUICallback("DOCReduceSentence", function(data, cb)
-	Callbacks:ServerCallback("MDT:DOCReduceSentence", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:DOCReduceSentence", data, cb)
 end)
 
 RegisterNUICallback("DOCRequestVisitation", function(data, cb)
-	Callbacks:ServerCallback("MDT:DOCRequestVisitation", data, cb)
+	exports["sandbox-base"]:ServerCallback("MDT:DOCRequestVisitation", data, cb)
 end)

@@ -2,7 +2,6 @@ AddEventHandler("Buffs:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
@@ -23,7 +22,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Buffs", {
 		"Buffs",
 		"Hud",
-		"Callbacks",
 		"Action",
 		"Progress",
 		"Keybinds",
@@ -131,15 +129,15 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 RegisterNetEvent("Characters:Client:Spawned", function()
-    _BUFFS:RegisterBuff("prog_mod", "mug-hot", "#D6451A", -1, "timed")
-    _BUFFS:RegisterBuff("stress_ticks", "joint", "#de3333", -1, "timed")
-    _BUFFS:RegisterBuff("heal_ticks", "suitcase-medical", "#52984a", -1, "timed")
-    _BUFFS:RegisterBuff("armor_ticks", "dumbbell", "#4056b3", -1, "timed")
+	_BUFFS:RegisterBuff("prog_mod", "mug-hot", "#D6451A", -1, "timed")
+	_BUFFS:RegisterBuff("stress_ticks", "joint", "#de3333", -1, "timed")
+	_BUFFS:RegisterBuff("heal_ticks", "suitcase-medical", "#52984a", -1, "timed")
+	_BUFFS:RegisterBuff("armor_ticks", "dumbbell", "#4056b3", -1, "timed")
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
-    _BUFFS:RemoveBuffType("prog_mod")
-    _BUFFS:RemoveBuffType("stress_ticks")
-    _BUFFS:RemoveBuffType("heal_ticks")
-    _BUFFS:RemoveBuffType("armor_ticks")
+	_BUFFS:RemoveBuffType("prog_mod")
+	_BUFFS:RemoveBuffType("stress_ticks")
+	_BUFFS:RemoveBuffType("heal_ticks")
+	_BUFFS:RemoveBuffType("armor_ticks")
 end)

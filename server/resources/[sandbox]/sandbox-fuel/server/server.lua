@@ -1,6 +1,5 @@
 AddEventHandler("Fuel:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -17,7 +16,6 @@ local depositData = {
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Fuel", {
-		"Callbacks",
 		"Utils",
 		"Logger",
 		"Wallet",
@@ -67,7 +65,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Fuel:CheckBank", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Fuel:CheckBank", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data?.cost then
 			cb(Banking.Balance:Has(char:GetData("BankAccount"), data.cost))
@@ -76,7 +74,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Fuel:CompleteFueling", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Fuel:CompleteFueling", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.vehNet and type(data.vehClass) == "number" and type(data.fuelAmount) == "number" then
 			local veh = NetworkGetEntityFromNetworkId(data.vehNet)
@@ -122,7 +120,7 @@ function RegisterCallbacks()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Fuel:CompleteJerryFueling", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Fuel:CompleteJerryFueling", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.vehNet and type(data.newAmount) == "number" then
 			local veh = NetworkGetEntityFromNetworkId(data.vehNet)
@@ -139,7 +137,7 @@ function RegisterCallbacks()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Fuel:FillCan", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Fuel:FillCan", function(source, data, cb)
 		local totalCost = CalculateFuelCost(0, math.floor(100 - (data.pct * 100)))
 		cb(totalCost and Wallet:Modify(source, -math.abs(totalCost), true))
 	end)

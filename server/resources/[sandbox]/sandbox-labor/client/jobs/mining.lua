@@ -240,7 +240,7 @@ RegisterNetEvent("Mining:Client:OnDuty", function(joiner, time)
 				end
 
 				local r = Citizen.Await(p)
-				Callbacks:ServerCallback("Mining:Server:MineNode", data)
+				exports["sandbox-base"]:ServerCallback("Mining:Server:MineNode", data)
 			end)
 		else
 			Progress:Progress({
@@ -260,7 +260,7 @@ RegisterNetEvent("Mining:Client:OnDuty", function(joiner, time)
 				},
 			}, function(cancelled)
 				if not cancelled then
-					Callbacks:ServerCallback("Mining:Server:MineNode", data)
+					exports["sandbox-base"]:ServerCallback("Mining:Server:MineNode", data)
 				end
 			end)
 		end
@@ -293,23 +293,23 @@ RegisterNetEvent("Mining:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("Mining:Client:SellStone", function()
-	Callbacks:ServerCallback("Mining:SellStone", {})
+	exports["sandbox-base"]:ServerCallback("Mining:SellStone", {})
 end)
 
 AddEventHandler("Mining:Client:PuchaseAxe", function()
-	Callbacks:ServerCallback("Mining:PurchasePickaxe", {})
+	exports["sandbox-base"]:ServerCallback("Mining:PurchasePickaxe", {})
 end)
 
 AddEventHandler("Mining:Client:TurnIn", function()
-	Callbacks:ServerCallback("Mining:TurnIn", _joiner)
+	exports["sandbox-base"]:ServerCallback("Mining:TurnIn", _joiner)
 end)
 
 AddEventHandler("Mining:Client:SellGem", function(entity, data)
-	Callbacks:ServerCallback("Mining:SellGem", data)
+	exports["sandbox-base"]:ServerCallback("Mining:SellGem", data)
 end)
 
 AddEventHandler("Mining:Client:StartJob", function()
-	Callbacks:ServerCallback("Mining:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("Mining:StartJob", _joiner, function(state)
 		if not state then
 			Notification:Error("Unable To Start Job")
 		end

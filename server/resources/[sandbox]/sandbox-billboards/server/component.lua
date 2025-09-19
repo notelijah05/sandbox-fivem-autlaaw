@@ -3,7 +3,6 @@ function RetrieveComponents()
     Utils = exports["sandbox-base"]:FetchComponent("Utils")
     Execute = exports["sandbox-base"]:FetchComponent("Execute")
     Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-    Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
     Chat = exports["sandbox-base"]:FetchComponent("Chat")
     Logger = exports["sandbox-base"]:FetchComponent("Logger")
     Generator = exports["sandbox-base"]:FetchComponent("Generator")
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
         "Execute",
         "Chat",
         "Middleware",
-        "Callbacks",
         "Logger",
         "Generator",
         "Phone",
@@ -61,7 +59,7 @@ AddEventHandler("Core:Shared:Ready", function()
             },
         }, 2)
 
-        Callbacks:RegisterServerCallback("Billboards:UpdateURL", function(source, data, cb)
+        exports["sandbox-base"]:RegisterServerCallback("Billboards:UpdateURL", function(source, data, cb)
             local billboardData = _billboardConfig[data?.id]
             if billboardData and billboardData.job and Player(source).state.onDuty == billboardData.job then
                 local billboardUrl = data.link

@@ -315,7 +315,7 @@ function IsDrinkingAlcohol()
 end
 
 function RegisterDrunkCallbacks()
-    Callbacks:RegisterClientCallback('Status:DrinkAlcohol', function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback('Status:DrinkAlcohol', function(data, cb)
         if IsDrinkingAlcohol() then
             Notification:Error('Already Drinking!')
             return cb(false)

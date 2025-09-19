@@ -41,7 +41,6 @@ _alertsDefaultType = {
 
 AddEventHandler("EmergencyAlerts:Shared:DependencyUpdate", RetrieveEAComponents)
 function RetrieveEAComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -52,7 +51,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Callbacks",
 		"Logger",
 		"Utils",
 		"Chat",

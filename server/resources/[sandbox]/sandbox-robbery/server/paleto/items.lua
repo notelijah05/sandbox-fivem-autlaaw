@@ -45,7 +45,7 @@ function RegisterPBItems()
 											subStationId
 										)
 									)
-									Callbacks:ClientCallback(source, "Robbery:Games:Thermite", {
+									exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
 										passes = 1,
 										location = substation.thermite,
 										duration = 25000,
@@ -219,7 +219,7 @@ function RegisterPBItems()
 													v.door
 												)
 											)
-											Callbacks:ClientCallback(source, "Robbery:Games:Thermite", {
+											exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
 												passes = 1,
 												location = v,
 												duration = 25000,
@@ -252,7 +252,7 @@ function RegisterPBItems()
 														or os.time() >= GlobalState["AntiShitlord"]
 													then
 														GlobalState["AntiShitlord"] = os.time() +
-														(60 * math.random(10, 15))
+															(60 * math.random(10, 15))
 													end
 
 													Doors:SetLock(v.door, false)
@@ -332,7 +332,7 @@ function RegisterPBItems()
 													v.powerId
 												)
 											)
-											Callbacks:ClientCallback(source, "Robbery:Games:Thermite", {
+											exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
 												passes = 1,
 												location = v,
 												duration = 25000,
@@ -365,7 +365,7 @@ function RegisterPBItems()
 														or os.time() >= GlobalState["AntiShitlord"]
 													then
 														GlobalState["AntiShitlord"] = os.time() +
-														(60 * math.random(10, 15))
+															(60 * math.random(10, 15))
 													end
 
 													for k2, v2 in ipairs(v.ptfx) do
@@ -490,7 +490,7 @@ function RegisterPBItems()
 											v.door
 										)
 									)
-									Callbacks:ClientCallback(source, "Robbery:Games:Captcha", {
+									exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Captcha", {
 										location = {
 											coords = v.coords,
 											heading = v.heading,

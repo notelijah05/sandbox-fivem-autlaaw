@@ -104,7 +104,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		{ label = "Rank 5", value = 40000 },
 	})
 
-	Callbacks:RegisterServerCallback("Pawn:Sell", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pawn:Sell", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local pawning = _pawnItems[data]

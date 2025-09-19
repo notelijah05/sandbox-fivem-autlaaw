@@ -22,7 +22,7 @@ AddEventHandler('Businesses:Server:Startup', function()
         end)
     end
 
-    Callbacks:RegisterServerCallback('TVs:UpdateTVLink', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('TVs:UpdateTVLink', function(source, data, cb)
         if data.tv and data.link then
             local tv = _tvData[data.tv]
             if tv then

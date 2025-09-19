@@ -102,7 +102,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 					ShowTacoPickup()
 					return
 				end
-				Callbacks:ServerCallback("Taco:SetState", { state = 1 }, function()
+				exports["sandbox-base"]:ServerCallback("Taco:SetState", { state = 1 }, function()
 					-- if not LocalPlayer.state.TacoPickup or not LocalPlayer.state.TacoQueue then
 					-- 	return
 					-- end
@@ -124,9 +124,9 @@ AddEventHandler("Businesses:Client:Startup", function()
 							anim = "handoff",
 						},
 					}, function(status)
-						Callbacks:ServerCallback("Tacos:Pickup", {}, function(s)
+						exports["sandbox-base"]:ServerCallback("Tacos:Pickup", {}, function(s)
 							if s then
-								Callbacks:ServerCallback("Taco:SetState", { state = 0 }, function()
+								exports["sandbox-base"]:ServerCallback("Taco:SetState", { state = 0 }, function()
 									FetchDropOffLocation()
 									_activeDropoffState = 1
 									Action:Hide("tacopickup")
@@ -172,7 +172,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 							anim = "handoff",
 						},
 					}, function(status)
-						Callbacks:ServerCallback(
+						exports["sandbox-base"]:ServerCallback(
 							"Tacos:AddToQueue",
 							{ item = _tacoFoodItems[_currentCookItem].item },
 							function(s)
@@ -215,7 +215,7 @@ RegisterNetEvent("Taco:PickupState", function(data)
 end)
 
 function GetNewQueueItem()
-	Callbacks:ServerCallback("Taco:GetNewQueueItem", {}, function() end)
+	exports["sandbox-base"]:ServerCallback("Taco:GetNewQueueItem", {}, function() end)
 end
 
 function ShowTacoPickup()
@@ -354,7 +354,7 @@ AddEventHandler("Tacos:DeliverOrder", function(_, data)
 			anim = "pickfromground",
 		},
 	}, function(status)
-		Callbacks:ServerCallback("Tacos:Dropoff", {}, function(s)
+		exports["sandbox-base"]:ServerCallback("Tacos:Dropoff", {}, function(s)
 			if s then
 				Blips:Remove(data.blipConfig.id)
 				_activeDropoffState = 0

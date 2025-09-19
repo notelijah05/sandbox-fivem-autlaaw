@@ -48,7 +48,7 @@ AddEventHandler("Casino:Client:Startup", function()
 end)
 
 AddEventHandler("Casino:Client:UnlockWheel", function()
-    Callbacks:ServerCallback("Casino:UnlockWheel", {}, function(success)
+    exports["sandbox-base"]:ServerCallback("Casino:UnlockWheel", {}, function(success)
         if success then
             Notification:Success("Wheel Unlocked")
         else
@@ -58,7 +58,7 @@ AddEventHandler("Casino:Client:UnlockWheel", function()
 end)
 
 AddEventHandler("Casino:Client:StartSpin", function(_, data)
-    Callbacks:ServerCallback("Casino:WheelStart", data, function(success, tooPoor)
+    exports["sandbox-base"]:ServerCallback("Casino:WheelStart", data, function(success, tooPoor)
         if success then
             LocalPlayer.state.playingCasino = true
 
@@ -95,7 +95,7 @@ AddEventHandler("Casino:Client:StartSpin", function(_, data)
                 DisableAllControlActions(0)
             end
 
-            Callbacks:ServerCallback("Casino:WheelSpin", {})
+            exports["sandbox-base"]:ServerCallback("Casino:WheelSpin", {})
 
             TaskPlayAnim(LocalPlayer.state.ped, lib, "armraisedidle_to_spinningidle_high", 8.0, -8.0, -1, 0, 0, false,
                 false, false)

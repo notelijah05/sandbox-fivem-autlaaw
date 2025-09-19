@@ -11,14 +11,12 @@ local _inCayoStorm = false
 
 AddEventHandler("Sync:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Sync", {
-		"Callbacks",
 		"Logger",
 		"Sync",
 	}, function(error)

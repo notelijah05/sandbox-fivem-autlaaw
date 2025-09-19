@@ -4,7 +4,6 @@ _existingTree = nil
 AddEventHandler("Xmas:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -18,7 +17,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Xmas", {
 		"Logger",
-		"Callbacks",
 		"Notification",
 		"Animations",
 		"Polyzone",
@@ -99,7 +97,7 @@ AddEventHandler("Xmas:Client:Daily", function()
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Xmas:Daily", {})
+			exports["sandbox-base"]:ServerCallback("Xmas:Daily", {})
 		end
 	end)
 end)
@@ -123,7 +121,7 @@ AddEventHandler("Xmas:Client:Tree", function()
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Xmas:Tree", {}, function(s)
+			exports["sandbox-base"]:ServerCallback("Xmas:Tree", {}, function(s)
 				_existingTree.hasLooted = s
 			end)
 		end

@@ -1,5 +1,5 @@
 AddEventHandler("Vehicles:Client:StartUp", function()
-	Callbacks:RegisterClientCallback("Vehicles:UseCamberController", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:UseCamberController", function(data, cb)
 		local vehEnt = Entity(VEHICLE_INSIDE)
 		if
 			VEHICLE_INSIDE

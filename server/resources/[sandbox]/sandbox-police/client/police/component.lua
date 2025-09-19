@@ -175,7 +175,6 @@ end
 
 AddEventHandler("Police:Shared:DependencyUpdate", PoliceComponents)
 function PoliceComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
@@ -202,7 +201,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Callbacks",
 		"Inventory",
 		"Notification",
 		"Input",
@@ -291,7 +289,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end, function(cancelled)
 				_doing = false
 				if not cancelled then
-					Callbacks:ServerCallback("Inventory:Raid", LocalPlayer.state._inInvPoly.inventory,
+					exports["sandbox-base"]:ServerCallback("Inventory:Raid", LocalPlayer.state._inInvPoly.inventory,
 						function(owner) end)
 				end
 			end)
@@ -313,7 +311,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				animation = false,
 			}, function(status)
 				if not status then
-					Callbacks:ServerCallback("Police:AccessRifleRack")
+					exports["sandbox-base"]:ServerCallback("Police:AccessRifleRack")
 				end
 			end)
 		end, function()
@@ -397,7 +395,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					label = "Breach Property",
 					action = function()
 						Interaction:Hide()
-						Callbacks:ServerCallback("Police:Breach", {
+						exports["sandbox-base"]:ServerCallback("Police:Breach", {
 							type = "property",
 							property = data.propertyId,
 						}, function(s)
@@ -443,7 +441,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				if fuck then
 					local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - vector3(fuck.x, fuck.y, fuck.z))
 					if dist <= 3.0 then
-						Callbacks:ServerCallback("Police:Breach", {
+						exports["sandbox-base"]:ServerCallback("Police:Breach", {
 							type = "robbery",
 							property = v,
 						})
@@ -469,7 +467,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			return false
 		end)
 
-		Callbacks:RegisterClientCallback("Police:PanicButton", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Police:PanicButton", function(data, cb)
 			Progress:Progress({
 				name = "panic_button",
 				duration = 2000,
@@ -495,7 +493,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end)
 		end)
 
-		Callbacks:RegisterClientCallback("Police:Breach", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Police:Breach", function(data, cb)
 			Progress:Progress({
 				name = "breach_action",
 				duration = 3000,
@@ -526,7 +524,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			[`mp_m_freemode_01`] = true,
 			[`mp_f_freemode_01`] = true,
 		}
-		Callbacks:RegisterClientCallback("Police:DoDetCord", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Police:DoDetCord", function(data, cb)
 			local cDoorId, cDoorEnt, cDoorCoords = Doors:GetCurrentDoor()
 			if cDoorId and Doors:IsLocked(cDoorId) then
 				CreateThread(function()
@@ -582,13 +580,13 @@ AddEventHandler("Core:Shared:Ready", function()
 						0, 0, 0)
 					TaskPlayAnim(ped, "anim@heists@ornate_bank@thermal_charge", "cover_eyes_loop", 8.0, 8.0, 6000, 49, 1,
 						0, 0, 0)
-					Callbacks:ServerCallback("Robbery:DoThermiteFx", {
+					exports["sandbox-base"]:ServerCallback("Robbery:DoThermiteFx", {
 						delay = 7000,
 						netId = ObjToNet(bomba)
 					}, function() end)
 					Wait(7000)
 
-					Callbacks:ServerCallback("Robbery:DoDetCordFx", {
+					exports["sandbox-base"]:ServerCallback("Robbery:DoDetCordFx", {
 						x = endCoords.x,
 						y = endCoords.y,
 						z = endCoords.z,
@@ -753,7 +751,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			Polyzone.Create:Poly(v.options.name, v.points, v.options, v.data)
 		end
 
-		Callbacks:RegisterClientCallback("Police:DeploySpikes", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Police:DeploySpikes", function(data, cb)
 			Progress:ProgressWithStartEvent({
 				name = "spikestrips",
 				duration = 1000,
@@ -871,7 +869,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 AddEventHandler("Police:Client:DoApartmentBreach", function(values, data)
-	Callbacks:ServerCallback("Police:Breach", {
+	exports["sandbox-base"]:ServerCallback("Police:Breach", {
 		type = "apartment",
 		property = tonumber(values.unit),
 		id = data,

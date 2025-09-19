@@ -43,7 +43,7 @@ local _jailStashLocs = {
 function RegisterPrisonStashStartup()
 	GlobalState.JailStashLocations = _jailStashLocs
 
-	Callbacks:RegisterServerCallback("Inventory:PrisonStash:Open", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:PrisonStash:Open", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		-- if not Jail:IsJailed(source) then
 		if char then
@@ -55,7 +55,7 @@ function RegisterPrisonStashStartup()
 				_inventoryOwner = "prisonstash:public"
 			end
 
-			Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+			exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 				invType = _inventory,
 				owner = _inventoryOwner,
 			}, function()
@@ -64,7 +64,7 @@ function RegisterPrisonStashStartup()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:PrisonStash:Raid", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:PrisonStash:Raid", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.stateid then
 			if
@@ -92,7 +92,7 @@ function RegisterPrisonStashStartup()
 				local _inventory = 5000
 				local _inventoryOwner = ("prisonstash:%s"):format(tonumber(data.stateid))
 				print("_inventoryOwner", _inventoryOwner)
-				Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+				exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 					invType = _inventory,
 					owner = _inventoryOwner,
 				}, function()

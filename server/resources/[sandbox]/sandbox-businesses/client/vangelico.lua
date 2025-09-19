@@ -111,7 +111,7 @@ RegisterNetEvent("UI:Client:Reset", function()
 end)
 
 AddEventHandler("VANGELICO:Client:Sell", function()
-	Callbacks:ServerCallback("Businesses:VANGELICO:Sell", {})
+	exports["sandbox-base"]:ServerCallback("Businesses:VANGELICO:Sell", {})
 end)
 
 AddEventHandler("Businesses:Client:VANGELICO:OpenTable", function(e, data)

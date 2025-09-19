@@ -10,7 +10,7 @@ AddEventHandler('Dealerships:Client:StartManagement', function(hit, data)
 end)
 
 function OpenDealerManagementMenu(dealer)
-    Callbacks:ServerCallback('Dealerships:GetDealershipData', { dealerId = dealer }, function(data)
+    exports["sandbox-base"]:ServerCallback('Dealerships:GetDealershipData', { dealerId = dealer }, function(data)
         local dealerData = _dealerships[dealer]
         if not data or not dealerData then
             return
@@ -48,7 +48,7 @@ function OpenDealerManagementMenu(dealer)
         manageMenu.Add:Button('Save Changes', { success = true }, function()
             manageMenu:Close()
 
-            Callbacks:ServerCallback('Dealerships:UpdateDealershipData', {
+            exports["sandbox-base"]:ServerCallback('Dealerships:UpdateDealershipData', {
                 dealerId = dealer,
                 updating = updatingData,
             }, function(success)

@@ -380,7 +380,7 @@ CRAFTING = {
 }
 
 function RegisterCraftingCallbacks()
-	Callbacks:RegisterServerCallback("Crafting:Craft", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Crafting:Craft", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			cb(Crafting.Craft:Start(source, char:GetData("SID"), data.bench, data.result, data.qty))
@@ -389,7 +389,7 @@ function RegisterCraftingCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Crafting:GetSchematics", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Crafting:GetSchematics", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local schems = INVENTORY.Items:GetAllOfType(char:GetData("SID"), 1, 17)
@@ -416,7 +416,7 @@ function RegisterCraftingCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Crafting:UseSchematic", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Crafting:UseSchematic", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if INVENTORY.Items:HasId(char:GetData("SID"), 1, data.schematic.id) then

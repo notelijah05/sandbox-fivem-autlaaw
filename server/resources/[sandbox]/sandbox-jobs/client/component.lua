@@ -82,14 +82,14 @@ _JOBS = {
 				end
 			end
 
-			Callbacks:ServerCallback("Jobs:OnDuty", jobId, function(success)
+			exports["sandbox-base"]:ServerCallback("Jobs:OnDuty", jobId, function(success)
 				if cb then
 					cb(success)
 				end
 			end)
 		end,
 		Off = function(self, jobId, cb)
-			Callbacks:ServerCallback("Jobs:OffDuty", jobId, function(success)
+			exports["sandbox-base"]:ServerCallback("Jobs:OffDuty", jobId, function(success)
 				if cb then
 					cb(success)
 				end

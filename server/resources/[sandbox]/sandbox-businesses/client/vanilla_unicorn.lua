@@ -202,7 +202,7 @@ function MakeItRainBitch(targetSource, cashType, time)
             and (#(GetEntityCoords(LocalPlayer.state.ped) - GetEntityCoords(targetPed)) <= 5.0)
         do
             local p = promise.new()
-            Callbacks:ServerCallback('VU:MakeItRain', {
+            exports["sandbox-base"]:ServerCallback('VU:MakeItRain', {
                 target = targetSource,
                 type = cashType,
             }, function(success, cd)

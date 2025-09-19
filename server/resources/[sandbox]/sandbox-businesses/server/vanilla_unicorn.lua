@@ -1,5 +1,5 @@
 AddEventHandler('Businesses:Server:Startup', function()
-    Callbacks:RegisterServerCallback('VU:MakeItRain', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('VU:MakeItRain', function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local targetChar = exports['sandbox-characters']:FetchCharacterSource(data?.target)
 

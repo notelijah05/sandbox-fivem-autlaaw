@@ -1,6 +1,5 @@
 AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
@@ -17,7 +16,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Admin", {
-		"Callbacks",
 		"Utils",
 		"Logger",
 		"Menu",
@@ -42,7 +40,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		Keybinds:Add("admin_noclip", "END", "keyboard", "[Admin] Toggle NoClip", function()
 			if LocalPlayer.state.isStaff then
-				Callbacks:ServerCallback("Admin:NoClip", {
+				exports["sandbox-base"]:ServerCallback("Admin:NoClip", {
 					active = not Admin.NoClip:IsActive(),
 				}, function(isAdmin)
 					if isAdmin then
@@ -189,7 +187,7 @@ function DoAdminVehicleAction(action)
 		and DoesEntityExist(insideVehicle)
 		and NetworkHasControlOfEntity(insideVehicle)
 	then
-		Callbacks:ServerCallback("Admin:CurrentVehicleAction", { action = action }, function(canDo)
+		exports["sandbox-base"]:ServerCallback("Admin:CurrentVehicleAction", { action = action }, function(canDo)
 			if canDo then
 				if action == "repair" then
 					if Vehicles.Repair:Normal(insideVehicle) then

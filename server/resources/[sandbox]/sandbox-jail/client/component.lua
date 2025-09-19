@@ -4,7 +4,6 @@ _doingMugshot = false
 
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
@@ -28,7 +27,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
-		"Callbacks",
 		"Logger",
 		"Blips",
 		"Characters",
@@ -231,7 +229,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}, "user-helmet-safety", "WORLD_HUMAN_JANITOR")
 
-		Callbacks:RegisterClientCallback("Jail:DoMugshot", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Jail:DoMugshot", function(data, cb)
 			_disabled = true
 			_doingMugshot = true
 

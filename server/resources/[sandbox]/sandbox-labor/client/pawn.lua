@@ -62,5 +62,5 @@ AddEventHandler("Labor:Client:Setup", function()
 end)
 
 AddEventHandler("Pawn:Client:Sell", function(e, data)
-	Callbacks:ServerCallback("Pawn:Sell", data)
+	exports["sandbox-base"]:ServerCallback("Pawn:Sell", data)
 end)

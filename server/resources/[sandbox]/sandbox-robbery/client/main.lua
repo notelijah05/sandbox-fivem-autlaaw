@@ -1,7 +1,6 @@
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
@@ -30,7 +29,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
 		"Logger",
-		"Callbacks",
 		"PedInteraction",
 		"Progress",
 		"Phone",
@@ -83,7 +81,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 AddEventHandler("Robbery:Client:PickupItems", function()
-	Callbacks:ServerCallback("Robbery:Pickup", {})
+	exports["sandbox-base"]:ServerCallback("Robbery:Pickup", {})
 end)
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()
@@ -153,7 +151,7 @@ AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
 		Progress:Cancel()
 	end, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Robbery:Holdup:Do", entity.serverId, function(s)
+			exports["sandbox-base"]:ServerCallback("Robbery:Holdup:Do", entity.serverId, function(s)
 				Inventory.Dumbfuck:Open(s)
 
 				while not LocalPlayer.state.inventoryOpen do

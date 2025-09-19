@@ -4,7 +4,7 @@ function RegisterChatCommands()
             local admin = exports['sandbox-base']:FetchSource(source)
             local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
             if char ~= nil and ((char:GetData("Source") ~= admin:GetData("Source")) or admin.Permissions:IsAdmin()) then
-                Callbacks:ClientCallback(char:GetData("Source"), "Damage:Heal", true)
+                exports["sandbox-base"]:ClientCallback(char:GetData("Source"), "Damage:Heal", true)
                 Status:Set(source, "PLAYER_STRESS", 0)
             else
                 Chat.Send.System:Single(source, "Invalid State ID")
@@ -12,7 +12,7 @@ function RegisterChatCommands()
         else
             local char = exports['sandbox-characters']:FetchCharacterSource(source)
             if char ~= nil then
-                Callbacks:ClientCallback(source, "Damage:Heal", true)
+                exports["sandbox-base"]:ClientCallback(source, "Damage:Heal", true)
                 Status:Set(source, "PLAYER_STRESS", 0)
             end
         end
@@ -36,13 +36,13 @@ function RegisterChatCommands()
                 if Player(src).state.isDead then
                     local ped = GetPlayerPed(src)
                     if #(GetEntityCoords(ped) - GetEntityCoords(myPed)) <= radius then
-                        Callbacks:ClientCallback(src, "Damage:Heal", true)
+                        exports["sandbox-base"]:ClientCallback(src, "Damage:Heal", true)
                     end
                 end
             end
         end
 
-        Callbacks:ClientCallback(source, "Damage:Heal", true)
+        exports["sandbox-base"]:ClientCallback(source, "Damage:Heal", true)
         Status:Set(source, "PLAYER_STRESS", 0)
     end, {
         help = "Heals Player",
@@ -59,12 +59,12 @@ function RegisterChatCommands()
             SetPlayerInvincible(source, false)
             Player(source).state.isGodmode = false
             Execute:Client(source, "Notification", "Info", "God Mode Disabled")
-            Callbacks:ClientCallback(source, "Damage:Admin:Godmode", false)
+            exports["sandbox-base"]:ClientCallback(source, "Damage:Admin:Godmode", false)
         else
             SetPlayerInvincible(source, true)
             Player(source).state.isGodmode = true
             Execute:Client(source, "Notification", "Info", "God Mode Enabled")
-            Callbacks:ClientCallback(source, "Damage:Admin:Godmode", true)
+            exports["sandbox-base"]:ClientCallback(source, "Damage:Admin:Godmode", true)
         end
     end, {
         help = "Toggle God Mode",
@@ -72,7 +72,7 @@ function RegisterChatCommands()
 
     Chat:RegisterAdminCommand("die", function(source, args, rawCommand)
         if not Player(source).state.isDead then
-            Callbacks:ClientCallback(source, "Damage:Kill")
+            exports["sandbox-base"]:ClientCallback(source, "Damage:Kill")
         end
     end, {
         help = "Kill Yourself",

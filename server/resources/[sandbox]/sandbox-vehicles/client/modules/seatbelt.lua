@@ -82,7 +82,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
         end
     end)
 
-    Callbacks:RegisterClientCallback('Vehicles:InstallHarness', function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback('Vehicles:InstallHarness', function(data, cb)
         local target = Targeting:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
             if Vehicles.Utils:IsCloseToVehicle(target.entity) then

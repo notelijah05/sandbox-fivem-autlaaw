@@ -87,7 +87,7 @@ end)
 
 AddEventHandler("Doors:Client:LockElevator", function(data)
     if ELEVATOR_STATE[data.elevator] and LocalPlayer.state.loggedIn then
-        Callbacks:ServerCallback("Doors:Elevators:ToggleLocks", data, function(success, newState)
+        exports["sandbox-base"]:ServerCallback("Doors:Elevators:ToggleLocks", data, function(success, newState)
             if success then
                 if newState then
                     Notification:Error("Elevator Locked")
@@ -105,7 +105,7 @@ AddEventHandler("Doors:Client:UseElevator", function(data)
     if elevatorData and elevatorData.floors and LocalPlayer.state.loggedIn then
         local floorData = elevatorData.floors[data.floor]
         if floorData and floorData.coords then
-            Callbacks:ServerCallback("Doors:Elevator:Validate", floorData, function()
+            exports["sandbox-base"]:ServerCallback("Doors:Elevator:Validate", floorData, function()
                 Progress:ProgressWithTickEvent({
                     name = "door_elevator",
                     duration = 2000,

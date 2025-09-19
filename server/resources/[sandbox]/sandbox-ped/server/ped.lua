@@ -283,7 +283,6 @@ GlobalState["Ped:Pricing"] = {
 
 AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -294,7 +293,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
-		"Callbacks",
 		"Locations",
 		"Routing",
 		"Logger",
@@ -693,7 +691,7 @@ function deepcopy(orig)
 end
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Ped:CheckPed", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Ped:CheckPed", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			exports['sandbox-base']:DatabaseGameFindOne({
@@ -741,7 +739,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Ped:MakePayment", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Ped:MakePayment", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pricing = GlobalState["Ped:Pricing"][data.type]
 		if pricing == 0 or char:GetData("Cash") >= pricing then
@@ -752,12 +750,12 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Ped:SavePed", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Ped:SavePed", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		cb(Ped:Save(char, data.ped))
 	end)
 
-	Callbacks:RegisterServerCallback("Ped:RemoveMask", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Ped:RemoveMask", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local ped = char:GetData("Ped")
@@ -769,7 +767,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Ped:RemoveHat", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Ped:RemoveHat", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local ped = char:GetData("Ped")
@@ -781,7 +779,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Ped:RemoveAccessory", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Ped:RemoveAccessory", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local ped = char:GetData("Ped")
@@ -793,7 +791,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Ped:GetWhitelistedPeds", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Ped:GetWhitelistedPeds", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local res = MySQL.query.await("SELECT model, label FROM whitelisted_peds WHERE SID = ?", {

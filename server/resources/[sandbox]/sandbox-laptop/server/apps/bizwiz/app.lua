@@ -54,7 +54,7 @@ function GetBusinessNotices(job)
 end
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:EmployeeSearch", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:EmployeeSearch", function(source, data, cb)
 		local job = CheckBusinessPermissions(source)
 		if job then
 			exports['sandbox-base']:DatabaseGameFind({
@@ -117,7 +117,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:GetTwitterProfile", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:GetTwitterProfile", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "JOB_MANAGEMENT")
 		if job then
 			cb({
@@ -129,7 +129,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:SetTwitterProfile", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:SetTwitterProfile", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "JOB_MANAGEMENT")
 		if job then
 			local success = Jobs.Data:Set(job, "TwitterAvatar", data.profile)
@@ -143,7 +143,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:SendTweet", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:SendTweet", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "TABLET_TWEET")
 		if job then
 			local jobData = Jobs:Get(job)
@@ -222,7 +222,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		}
 	}, 2)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:ViewVehicleFleet", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:ViewVehicleFleet", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
 		if job then
 			Vehicles.Owned:GetAll(nil, 1, job, function(vehicles)
@@ -246,7 +246,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:TrackFleetVehicle", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:TrackFleetVehicle", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
 		if job then
 			cb(Vehicles.Owned:Track(data.vehicle))

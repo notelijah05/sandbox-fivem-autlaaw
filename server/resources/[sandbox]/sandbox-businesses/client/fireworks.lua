@@ -11,7 +11,7 @@ local fireworkProps = {
 }
 
 AddEventHandler("Businesses:Client:Startup", function()
-    Callbacks:RegisterClientCallback("Fireworks:Use", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Fireworks:Use", function(data, cb)
         local firework = fireworkProps[data]
         loadModel(firework.prop)
 

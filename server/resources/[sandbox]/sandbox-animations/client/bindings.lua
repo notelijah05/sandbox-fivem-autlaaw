@@ -1,6 +1,6 @@
 ANIMATIONS.EmoteBinds = {
 	Update = function(self, newBinds)
-		Callbacks:ServerCallback("Animations:UpdateEmoteBinds", newBinds, function(success, data)
+		exports["sandbox-base"]:ServerCallback("Animations:UpdateEmoteBinds", newBinds, function(success, data)
 			if success then
 				emoteBinds = data
 				Notification:Success("Successfully Updated and Saved Keybinds", 5000)

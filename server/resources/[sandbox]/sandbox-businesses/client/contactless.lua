@@ -2,7 +2,7 @@ local currentlyShowing = nil
 
 AddEventHandler("Businesses:Client:PayContactlessPayment", function(_, data)
     if data and data.id then
-        Callbacks:ServerCallback("Contactless:Pay", {
+        exports["sandbox-base"]:ServerCallback("Contactless:Pay", {
             terminalId = data.id,
         }, function(success)
             if success then
@@ -19,7 +19,7 @@ AddEventHandler("Businesses:Client:CreateContactlessPayment", function(_, data)
         if input?.amount and input?.description then
             local amount = tonumber(input.amount)
             if amount and amount > 0 and amount <= 25000 then
-                Callbacks:ServerCallback("Contactless:Create", {
+                exports["sandbox-base"]:ServerCallback("Contactless:Create", {
                     job = data.job,
                     terminalId = data.id,
                     payment = amount,
@@ -40,7 +40,7 @@ end)
 
 AddEventHandler("Businesses:Client:ClearContactlessPayment", function(_, data)
     if data and data.job and data.id then
-        Callbacks:ServerCallback("Contactless:Clear", {
+        exports["sandbox-base"]:ServerCallback("Contactless:Clear", {
             job = data.job,
             terminalId = data.id,
         }, function(success, res)
@@ -60,28 +60,28 @@ function GetContactlessInput(data)
     local showingAtTime = GetGameTimer()
     Input:Show(string.format("Create Contactless Payment - %s Terminal #%s", data.jobName, data.num), "Amount", {
         {
-			id = "amount",
-			type = "number",
-			options = {
-				inputProps = {
+            id = "amount",
+            type = "number",
+            options = {
+                inputProps = {
                     defaultValue = "100",
                     min = 0,
                     max = 25000,
                 },
                 label = "Amount",
-			},
-		},
-		{
-			id = "description",
-			type = "text",
-			options = {
-				inputProps = {
+            },
+        },
+        {
+            id = "description",
+            type = "text",
+            options = {
+                inputProps = {
                     maxlength = 100,
                 },
                 label = "Description",
-			},
-		},
-	}, "Contactless:Client:RecieveInput", {})
+            },
+        },
+    }, "Contactless:Client:RecieveInput", {})
 
     Citizen.SetTimeout(30000, function()
         if promptPromise and currentlyShowing == showingAtTime then

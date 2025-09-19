@@ -1,7 +1,6 @@
 AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -14,7 +13,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
 		"Utils",
-		"Callbacks",
 		"Chat",
 		"Execute",
 		"Animations",
@@ -94,7 +92,7 @@ function RegisterChatCommands()
 end
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Animations:UpdatePedFeatures", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Animations:UpdatePedFeatures", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			cb(Animations.PedFeatures:UpdateFeatureInfo(char, data.type, data.data))
@@ -103,7 +101,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Animations:UpdateEmoteBinds", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Animations:UpdateEmoteBinds", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			cb(Animations.EmoteBinds:Update(char, data), data)
@@ -176,7 +174,7 @@ RegisterServerEvent("Selfie:CaptureSelfie", function()
 		pendingSend = true
 		Execute:Client(src, "Notification", "Info", "Prepping Photo Upload", 2000)
 
-		Callbacks:ClientCallback(src, "Selfie:Client:UploadPhoto", {
+		exports["sandbox-base"]:ClientCallback(src, "Selfie:Client:UploadPhoto", {
 			api = tostring(GetConvar("phone_selfie_webhook", "")),
 			token = tostring(GetConvar("phone_selfie_token", "")),
 		}, function(ret)

@@ -1,4 +1,4 @@
-local priceLevels = {100, 500, 1000, 5000, 10000, 50000}
+local priceLevels = { 100, 500, 1000, 5000, 10000, 50000 }
 
 AddEventHandler("Casino:Client:StartChipPurchase", function()
     if not LocalPlayer.state.Character then
@@ -11,13 +11,13 @@ AddEventHandler("Casino:Client:StartChipPurchase", function()
     local buyMenu = {
         main = {
             label = "Purchase Casino Chips",
-			items = {
-				{
-					--label = "Current Chip Balance",
-					label = string.format("You Have $%s Worth of Chips", formatNumberToCurrency(math.floor(chips))),
+            items = {
+                {
+                    --label = "Current Chip Balance",
+                    label = string.format("You Have $%s Worth of Chips", formatNumberToCurrency(math.floor(chips))),
                     --disabled = true,
-				},
-			},
+                },
+            },
         }
     }
 
@@ -50,7 +50,7 @@ AddEventHandler("Casino:Client:StartChipPurchase", function()
 end)
 
 AddEventHandler("Casino:Client:ConfirmChipPurchase", function(data)
-    Callbacks:ServerCallback("Casino:BuyChips", data.amount)
+    exports["sandbox-base"]:ServerCallback("Casino:BuyChips", data.amount)
 end)
 
 AddEventHandler("Casino:Client:StartChipSell", function()
@@ -64,13 +64,13 @@ AddEventHandler("Casino:Client:StartChipSell", function()
     local buyMenu = {
         main = {
             label = "Cash Out Casino Chips",
-			items = {
-				{
-					--label = "Current Chip Balance",
-					label = string.format("You Have $%s Worth of Chips", formatNumberToCurrency(math.floor(chips))),
+            items = {
+                {
+                    --label = "Current Chip Balance",
+                    label = string.format("You Have $%s Worth of Chips", formatNumberToCurrency(math.floor(chips))),
                     --disabled = true,
-				},
-			},
+                },
+            },
         }
     }
 
@@ -102,7 +102,7 @@ AddEventHandler("Casino:Client:StartChipSell", function()
 end)
 
 AddEventHandler("Casino:Client:ConfirmChipSell", function(data)
-    Callbacks:ServerCallback("Casino:SellChips", data.amount)
+    exports["sandbox-base"]:ServerCallback("Casino:SellChips", data.amount)
 end)
 
 _CASINO = _CASINO or {}

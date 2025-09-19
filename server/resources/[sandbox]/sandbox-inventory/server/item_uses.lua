@@ -272,7 +272,7 @@ function RegisterRandomItems()
 	end)
 
 	INVENTORY.Items:RegisterUse("parachute", "RandomItems", function(source, item)
-		Callbacks:ClientCallback(source, "Weapons:CanEquipParachute", {}, function(canEquip)
+		exports["sandbox-base"]:ClientCallback(source, "Weapons:CanEquipParachute", {}, function(canEquip)
 			if canEquip then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char then
@@ -315,7 +315,7 @@ function RegisterRandomItems()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:UsedParachute", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:UsedParachute", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local states = char:GetData("States") or {}

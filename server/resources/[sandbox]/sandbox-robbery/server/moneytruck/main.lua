@@ -135,7 +135,7 @@ end
 
 local _blueGiven = false
 AddEventHandler("Robbery:Server:Setup", function()
-	Callbacks:RegisterServerCallback("Robbery:MoneyTruck:EnteredTruck", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MoneyTruck:EnteredTruck", function(source, data, cb)
 		local ent = NetworkGetEntityFromNetworkId(data)
 		if ent ~= 0 then
 			local entState = Entity(ent).state
@@ -150,7 +150,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 
-	Callbacks:RegisterServerCallback("Robbery:MoneyTruck:CheckLoot", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MoneyTruck:CheckLoot", function(source, data, cb)
 		local pState = Player(source).state
 		local ent = NetworkGetEntityFromNetworkId(data)
 		if ent ~= 0 then
@@ -171,7 +171,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MoneyTruck:CancelLoot", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MoneyTruck:CancelLoot", function(source, data, cb)
 		local pState = Player(source).state
 		local ent = NetworkGetEntityFromNetworkId(data)
 		if ent ~= 0 then
@@ -192,7 +192,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MoneyTruck:Loot", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MoneyTruck:Loot", function(source, data, cb)
 		local pState = Player(source).state
 		local ent = NetworkGetEntityFromNetworkId(data)
 		if ent ~= 0 then

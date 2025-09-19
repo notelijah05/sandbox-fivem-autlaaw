@@ -1,7 +1,6 @@
 AddEventHandler("Weed:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Weed = exports["sandbox-base"]:FetchComponent("Weed")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -17,7 +16,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weed", {
 		"Logger",
-		"Callbacks",
 		"Game",
 		"Weed",
 		"Targeting",
@@ -52,7 +50,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			vector2(948.73913574219, 85.602745056152)
 		}, {
 			minZ = 105.0,
-			maxZ = 145.0	
+			maxZ = 145.0
 		}, {})
 	end)
 end)
@@ -68,7 +66,7 @@ end
 
 local _plants = {}
 function RegisterCallbacks()
-	Callbacks:RegisterClientCallback("Weed:PlantingAnim", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Weed:PlantingAnim", function(data, cb)
 		local x, y, z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.3, 0))
 		local foundGround, zPos = GetGroundZFor_3dCoord(x, y, z - 0.5, 0)
 		if foundGround then
@@ -79,7 +77,7 @@ function RegisterCallbacks()
 		local retval, hit, endCoords, _, materialHash, _ = GetShapeTestResultIncludingMaterial(rayHandle)
 
 		local fuck = false
-		for k,v in pairs(_activePlants) do
+		for k, v in pairs(_activePlants) do
 			if v and v.plant and #(vector3(x, y, z) - vector3(v.plant.location.x, v.plant.location.y, v.plant.location.z)) <= 0.8 then
 				fuck = true
 			end
@@ -123,7 +121,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterClientCallback("Weed:RollingAnim", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Weed:RollingAnim", function(data, cb)
 		Progress:Progress({
 			name = "rolling_weed",
 			duration = 3000,
@@ -146,7 +144,7 @@ function RegisterCallbacks()
 		end)
 	end)
 
-	Callbacks:RegisterClientCallback("Weed:MakingBrick", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Weed:MakingBrick", function(data, cb)
 		Progress:Progress({
 			name = "making_brick",
 			duration = data.time * 1000,
@@ -169,7 +167,7 @@ function RegisterCallbacks()
 		end)
 	end)
 
-	Callbacks:RegisterClientCallback("Weed:SmokingAnim", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Weed:SmokingAnim", function(data, cb)
 		local ticks = 1
 		Progress:ProgressWithTickEvent({
 			name = "smoking_weed",
@@ -187,7 +185,7 @@ function RegisterCallbacks()
 			animation = {
 				anim = "smoke_weed"
 			}
-    }, function()
+		}, function()
 			local armor = GetPedArmour(LocalPlayer.state.ped)
 			if armor < 50 then
 				SetPedArmour(LocalPlayer.state.ped, armor + 3)

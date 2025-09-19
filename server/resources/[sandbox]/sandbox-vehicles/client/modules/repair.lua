@@ -244,7 +244,7 @@ function CanRepairVehicle(vehicle)
 end
 
 AddEventHandler("Vehicles:Client:StartUp", function()
-	Callbacks:RegisterClientCallback("Vehicles:RepairKit", function(type, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:RepairKit", function(type, cb)
 		if LocalPlayer.state.loggedIn then
 			local entity = Targeting:GetEntityPlayerIsLookingAt()
 

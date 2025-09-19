@@ -131,7 +131,7 @@ AddEventHandler("BikeStands:Client:Purchase", function(data)
 			return
 		end
 
-		Callbacks:ServerCallback("BikeStand:Purchase", {
+		exports["sandbox-base"]:ServerCallback("BikeStand:Purchase", {
 			name = bikeData.name,
 			vehicleHash = bikeData.model,
 			price = bikeData.price,

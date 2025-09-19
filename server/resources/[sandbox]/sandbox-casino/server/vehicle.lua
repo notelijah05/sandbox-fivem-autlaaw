@@ -1,6 +1,6 @@
 AddEventHandler("Casino:Server:Startup", function()
     Chat:RegisterStaffCommand("setcasinovehicle", function(source, args, rawCommand)
-        Callbacks:ClientCallback(source, "Vehicles:Admin:GetVehicleInsideData", false, function(vehData)
+        exports["sandbox-base"]:ClientCallback(source, "Vehicles:Admin:GetVehicleInsideData", false, function(vehData)
             if vehData and vehData.model then
                 local newData = {
                     vehicle = vehData.model,

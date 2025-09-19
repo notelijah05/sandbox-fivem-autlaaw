@@ -1,6 +1,6 @@
 AddEventHandler('Dealerships:Client:StartRunningCredit', function(hit, data)
     Input:Show(
-        "Run Credit Check & See Max Borrowable Amount", 
+        "Run Credit Check & See Max Borrowable Amount",
         "Customer State ID",
         {
             {
@@ -13,13 +13,13 @@ AddEventHandler('Dealerships:Client:StartRunningCredit', function(hit, data)
                 }
             },
         },
-        "Dealerships:Client:RecieveInput", 
+        "Dealerships:Client:RecieveInput",
         data
     )
 end)
 
 AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
-    Callbacks:ServerCallback('Dealerships:CheckPersonsCredit', {
+    exports["sandbox-base"]:ServerCallback('Dealerships:CheckPersonsCredit', {
         dealerId = data.dealerId,
         SID = values.SID,
     }, function(canBorrow, score, result)
@@ -47,7 +47,7 @@ AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
                     {},
                     string.format(
                         [[
-                            State ID %s is not elegible for a vehicle loan. This is because they already have an active vehicle loan. At this time people can 
+                            State ID %s is not elegible for a vehicle loan. This is because they already have an active vehicle loan. At this time people can
                             only have a single vehicle loan.
                         ]],
                         values.SID,

@@ -41,7 +41,7 @@ function OpenCatalog(dealerId)
 
 		DoScreenFadeOut(250)
 
-		Callbacks:ServerCallback("Dealerships:GetDealerStock", dealerId, function(stocks)
+		exports["sandbox-base"]:ServerCallback("Dealerships:GetDealerStock", dealerId, function(stocks)
 			catalogData = FormatDealerStockToCategories(stocks)
 
 			SetupCatalogCams()

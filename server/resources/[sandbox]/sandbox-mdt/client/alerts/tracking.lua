@@ -214,11 +214,12 @@ AddEventHandler("MDT:Client:DisableTracker", function(entity, data)
 					(playerState.onDuty == "police" or playerState.onDuty == "prison" or playerState.onDuty == "ems")
 					and not playerState.trackerDisabled
 				then
-					Callbacks:ServerCallback("EmergencyAlerts:DisablePDTracker", entity.serverId, function(success)
-						if success then
-							Notification:Success("Disabled Their Tracker")
-						end
-					end)
+					exports["sandbox-base"]:ServerCallback("EmergencyAlerts:DisablePDTracker", entity.serverId,
+						function(success)
+							if success then
+								Notification:Success("Disabled Their Tracker")
+							end
+						end)
 				end
 			end
 		end)

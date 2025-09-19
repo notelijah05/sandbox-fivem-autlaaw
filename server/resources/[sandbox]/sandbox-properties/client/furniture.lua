@@ -261,7 +261,7 @@ AddEventHandler("Furniture:Client:Place", function(data, placement)
             model = _placingSearchItem
         end
 
-        Callbacks:ServerCallback("Properties:PlaceFurniture", {
+        exports["sandbox-base"]:ServerCallback("Properties:PlaceFurniture", {
             model = model,
             coords = {
                 x = placement.coords.x,
@@ -311,7 +311,7 @@ end)
 AddEventHandler("Furniture:Client:Move", function(data, placement)
     if _placingFurniture and data.id then
 
-        Callbacks:ServerCallback("Properties:MoveFurniture", {
+        exports["sandbox-base"]:ServerCallback("Properties:MoveFurniture", {
             id = data.id,
             coords = {
                 x = placement.coords.x,

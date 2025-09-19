@@ -1,7 +1,8 @@
 function CreateRentalSpots()
     for k, v in ipairs(_vehicleRentals) do
         if v.interactionPed then
-            PedInteraction:Add('veh_rental_'.. k, v.interactionPed.model, v.coords, v.interactionPed.heading, v.interactionPed.range, {
+            PedInteraction:Add('veh_rental_' .. k, v.interactionPed.model, v.coords, v.interactionPed.heading,
+                v.interactionPed.range, {
                 {
                     icon = 'car-side',
                     text = 'Vehicle Rentals',
@@ -18,7 +19,7 @@ function CreateRentalSpots()
         end
 
         if v.zone then
-            CreatePolyzone('veh_rental_'.. k, v.zone, {
+            CreatePolyzone('veh_rental_' .. k, v.zone, {
                 vehicleRental = k,
             })
         end
@@ -27,7 +28,7 @@ end
 
 function CreateRentalSpotsBlips()
     for k, v in ipairs(_vehicleRentals) do
-        Blips:Add('veh_rental_'.. k, v.name, v.coords, v.blip.sprite, v.blip.color, v.blip.scale)
+        Blips:Add('veh_rental_' .. k, v.name, v.coords, v.blip.sprite, v.blip.color, v.blip.scale)
     end
 end
 
@@ -77,7 +78,7 @@ AddEventHandler('VehicleRentals:Client:OpenRental', function(entityData, data)
 
         table.insert(menu.main.items, {
             label = v.make .. ' ' .. v.model,
-            description = v.description .. ' - $'.. v.cost.payment .. ' with a $' .. v.cost.deposit .. ' Deposit.',
+            description = v.description .. ' - $' .. v.cost.payment .. ' with a $' .. v.cost.deposit .. ' Deposit.',
             submenu = vehicleSub,
         })
     end
@@ -89,7 +90,7 @@ AddEventHandler('VehicleRentals:Client:ConfirmRental', function(data)
     local rentalSpotData = _vehicleRentals[data.rental]
     local availableSpace = GetClosestAvailableParkingSpace(LocalPlayer.state.myPos, rentalSpotData.spaces)
     if availableSpace then
-        Callbacks:ServerCallback('Rentals:Purchase', {
+        exports["sandbox-base"]:ServerCallback('Rentals:Purchase', {
             spaceCoords = availableSpace.xyz,
             spaceHeading = availableSpace.w,
             rental = data.rental,
@@ -97,7 +98,7 @@ AddEventHandler('VehicleRentals:Client:ConfirmRental', function(data)
             bank = data.bank,
         }, function(success, plate)
             if success then
-                Notification:Success('Rental Purchased, It is Parked Nearby. Rental Vehicle Plate: '.. plate)
+                Notification:Success('Rental Purchased, It is Parked Nearby. Rental Vehicle Plate: ' .. plate)
             else
                 Notification:Error('Rental Purchase Failed')
             end
@@ -106,7 +107,7 @@ AddEventHandler('VehicleRentals:Client:ConfirmRental', function(data)
 end)
 
 AddEventHandler('VehicleRentals:Client:ReturnRental', function(entityData, data)
-    Callbacks:ServerCallback('Rentals:GetPending', { rental = data.rental }, function(pending)
+    exports["sandbox-base"]:ServerCallback('Rentals:GetPending', { rental = data.rental }, function(pending)
         if pending then
             local menu = {
                 main = {
@@ -150,7 +151,7 @@ end)
 
 AddEventHandler('VehicleRentals:Client:ConfirmReturnRental', function(data)
     if data and data.vehicle and data.VIN and IsAbleToReturnVehicle(data.vehicle, data.rental) then
-        Callbacks:ServerCallback('Rentals:Return', {
+        exports["sandbox-base"]:ServerCallback('Rentals:Return', {
             VIN = data.VIN,
         }, function(success)
             if success then

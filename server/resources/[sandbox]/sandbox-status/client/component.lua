@@ -12,7 +12,6 @@ local _statusVals = {}
 
 AddEventHandler("Status:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -30,7 +29,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Status", {
-		"Callbacks",
 		"Logger",
 		"Damage",
 		"Hud",
@@ -55,7 +53,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		CreateStressPolys()
 		RegisterDrunkCallbacks()
 
-		Callbacks:RegisterClientCallback("Status:Modify", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Status:Modify", function(data, cb)
 			if data.value > 0 then
 				Status.Modify:Add(data.name, data.value, data.addCd, data.isForced)
 			else
@@ -63,7 +61,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterClientCallback("Status:StoreValues", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Status:StoreValues", function(data, cb)
 			cb(_statusVals)
 		end)
 	end)
@@ -190,7 +188,7 @@ STATUS = {
 local spawned = false
 
 RegisterNetEvent("Status:Client:Reset", function()
-	Callbacks:ServerCallback("Commands:ValidateAdmin", {}, function(isAdmin)
+	exports["sandbox-base"]:ServerCallback("Commands:ValidateAdmin", {}, function(isAdmin)
 		if isAdmin then
 			for k, v in pairs(_statuses) do
 				Status.Set:Single(v.name, v.max)
@@ -207,7 +205,7 @@ RegisterNetEvent("Characters:Client:Spawn", function()
 	local ffs = GetCloudTimeAsInt()
 	_ts = ffs
 
-	Callbacks:ServerCallback("Status:Get", {}, function(results)
+	exports["sandbox-base"]:ServerCallback("Status:Get", {}, function(results)
 		results = results or {}
 		for k, v in pairs(Status:GetRegistered()) do
 			local val = results[v.name] or v.max
@@ -248,7 +246,7 @@ end)
 
 AddEventHandler("UI:Client:ResetFinished", function(manual)
 	if manual then
-		Callbacks:ServerCallback("Status:Get", {}, function(results)
+		exports["sandbox-base"]:ServerCallback("Status:Get", {}, function(results)
 			for k, v in pairs(Status:GetRegistered()) do
 				local val = results[v.name] or v.max
 

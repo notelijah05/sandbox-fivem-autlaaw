@@ -2,7 +2,6 @@ local _timeout = false
 
 AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
@@ -18,7 +17,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
-		"Callbacks",
 		"Utils",
 		"Logger",
 		"Game",
@@ -48,7 +46,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end)
 		end)
 
-		Callbacks:RegisterClientCallback("Escort:StopEscort", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Escort:StopEscort", function(data, cb)
 			DetachEntity(LocalPlayer.state.ped, true, true)
 			cb(true)
 		end)
@@ -62,7 +60,7 @@ ESCORT = {
 				Notification:Error("Unable to escort in this location.")
 				return
 			end
-			Callbacks:ServerCallback("Escort:DoEscort", {
+			exports["sandbox-base"]:ServerCallback("Escort:DoEscort", {
 				target = target,
 				inVeh = IsPedInAnyVehicle(GetPlayerPed(tPlayer)),
 				isSwimming = IsPedSwimming(LocalPlayer.state.ped),
@@ -74,7 +72,7 @@ ESCORT = {
 		end
 	end,
 	StopEscort = function(self)
-		Callbacks:ServerCallback("Escort:StopEscort", function() end)
+		exports["sandbox-base"]:ServerCallback("Escort:StopEscort", function() end)
 	end,
 }
 
@@ -88,8 +86,8 @@ AddEventHandler("Interiors:Exit", function()
 	end
 end)
 
---[[ TODO 
-Add Dragging When Dead 
+--[[ TODO
+Add Dragging When Dead
 Place In vehicle while Dead Slump Animation
 Police Drag Maybe Cuff Also
 Get In Trunk or Place in trunk???

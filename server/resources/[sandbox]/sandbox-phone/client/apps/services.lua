@@ -1,5 +1,5 @@
 RegisterNUICallback("Services:GetServices", function(data, cb)
-	Callbacks:ServerCallback("Phone:Services:GetServices", data, function(servicesData)
+	exports["sandbox-base"]:ServerCallback("Phone:Services:GetServices", data, function(servicesData)
 		cb(servicesData)
 	end)
 end)

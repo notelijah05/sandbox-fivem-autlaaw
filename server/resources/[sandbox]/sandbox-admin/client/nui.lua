@@ -1,33 +1,34 @@
 _hasMenu = false
 
-RegisterNetEvent('Admin:Client:Menu:RecievePermissionData', function(userData, permission, permissionName, permissionLevel)
-    if not _hasMenu then
-        _hasMenu = true
+RegisterNetEvent('Admin:Client:Menu:RecievePermissionData',
+    function(userData, permission, permissionName, permissionLevel)
+        if not _hasMenu then
+            _hasMenu = true
 
-        SendNUIMessage({
-            type = "SET_USERDATA",
-            data = {
-                user = userData,
-                permission = permission,
-                permissionName = permissionName,
-                permissionLevel = permissionLevel,
-            }
-        })
-    end
-end)
+            SendNUIMessage({
+                type = "SET_USERDATA",
+                data = {
+                    user = userData,
+                    permission = permission,
+                    permissionName = permissionName,
+                    permissionLevel = permissionLevel,
+                }
+            })
+        end
+    end)
 
 function OpenMenu()
     if not _menuOpen and _hasMenu then
         _menuOpen = true
         SendNUIMessage({ type = "APP_SHOW" })
-		SetNuiFocus(true, true)
+        SetNuiFocus(true, true)
     end
 end
 
 function CloseMenu()
     if _menuOpen then
         SendNUIMessage({ type = "APP_HIDE" })
-		SetNuiFocus(false, false)
+        SetNuiFocus(false, false)
 
 
         _menuOpen = false
@@ -43,20 +44,20 @@ RegisterNetEvent('UI:Client:Reset', function(apps)
 end)
 
 RegisterNUICallback('Close', function(data, cb)
-	cb('OK')
-	CloseMenu()
+    cb('OK')
+    CloseMenu()
 end)
 
 RegisterNUICallback('GetPlayerList', function(data, cb)
     if data and data.disconnected then
-        Callbacks:ServerCallback('Admin:GetDisconnectedPlayerList', data, cb)
+        exports["sandbox-base"]:ServerCallback('Admin:GetDisconnectedPlayerList', data, cb)
     else
-        Callbacks:ServerCallback('Admin:GetPlayerList', data, cb)
+        exports["sandbox-base"]:ServerCallback('Admin:GetPlayerList', data, cb)
     end
 end)
 
 RegisterNUICallback('GetPlayer', function(data, cb)
-    Callbacks:ServerCallback('Admin:GetPlayer', data, cb)
+    exports["sandbox-base"]:ServerCallback('Admin:GetPlayer', data, cb)
 end)
 
 RegisterNUICallback('GetCurrentVehicle', function(data, cb)
@@ -99,40 +100,40 @@ RegisterNUICallback('GetCurrentVehicle', function(data, cb)
 end)
 
 RegisterNUICallback('ActionPlayer', function(data, cb)
-    Callbacks:ServerCallback('Admin:ActionPlayer', data, cb)
+    exports["sandbox-base"]:ServerCallback('Admin:ActionPlayer', data, cb)
 end)
 
 RegisterNUICallback('KickPlayer', function(data, cb)
-    Callbacks:ServerCallback('Admin:KickPlayer', data, cb)
+    exports["sandbox-base"]:ServerCallback('Admin:KickPlayer', data, cb)
 end)
 
 RegisterNUICallback('BanPlayer', function(data, cb)
-    Callbacks:ServerCallback('Admin:BanPlayer', data, cb)
+    exports["sandbox-base"]:ServerCallback('Admin:BanPlayer', data, cb)
 end)
 
 RegisterNUICallback('GetVehicleList', function(data, cb)
-    Callbacks:ServerCallback('Admin:GetVehicleList', data, cb)
+    exports["sandbox-base"]:ServerCallback('Admin:GetVehicleList', data, cb)
 end)
 
 RegisterNUICallback('GetVehicle', function(data, cb)
-    Callbacks:ServerCallback('Admin:GetVehicle', data, cb)
+    exports["sandbox-base"]:ServerCallback('Admin:GetVehicle', data, cb)
 end)
 
 RegisterNUICallback('ActionVehicle', function(data, cb)
     if data and data.model then
         data.numSeats = GetVehicleModelNumberOfSeats(data.model)
     end
-    Callbacks:ServerCallback('Admin:VehicleAction', data, cb)
+    exports["sandbox-base"]:ServerCallback('Admin:VehicleAction', data, cb)
 end)
 
 RegisterNUICallback('GetAllPlayersByCharacter', function(data, cb)
-    Callbacks:ServerCallback('Admin:GetAllPlayersByCharacter', data, cb)
+    exports["sandbox-base"]:ServerCallback('Admin:GetAllPlayersByCharacter', data, cb)
 end)
 
 RegisterNUICallback('CurrentVehicleAction', function(data, cb)
     local insideVehicle = GetVehiclePedIsIn(LocalPlayer.state.ped, true)
     if insideVehicle and insideVehicle > 0 and DoesEntityExist(insideVehicle) then
-        Callbacks:ServerCallback('Admin:CurrentVehicleAction', data, function(canDo)
+        exports["sandbox-base"]:ServerCallback('Admin:CurrentVehicleAction', data, function(canDo)
             if canDo then
                 if data.action == 'repair' then
                     if Vehicles.Repair:Normal(insideVehicle) then
@@ -180,7 +181,7 @@ RegisterNUICallback('CurrentVehicleAction', function(data, cb)
                         success = true,
                         message = 'Vehicle Refueled',
                     })
-                -- elseif data.action == 'delete' then
+                    -- elseif data.action == 'delete' then
                 elseif data.action == 'customs' then
                     TriggerEvent('VehicleCustoms:Client:Admin', true, 0.0)
 
@@ -208,12 +209,12 @@ RegisterNUICallback('CurrentVehicleAction', function(data, cb)
 end)
 
 RegisterNUICallback('StopAllAttach', function(data, cb)
-	cb('OK')
-	TriggerEvent("Admin:Client:AdminStopAttach")
+    cb('OK')
+    TriggerEvent("Admin:Client:AdminStopAttach")
 end)
 
 RegisterNUICallback('GetPlayerHistory', function(data, cb)
-	cb({
+    cb({
         current = GlobalState.PlayerCount or 0,
         max = GlobalState.MaxPlayers or 1,
         queue = GlobalState.QueueCount or 0,
@@ -222,7 +223,7 @@ RegisterNUICallback('GetPlayerHistory', function(data, cb)
 end)
 
 RegisterNUICallback('ToggleInvisible', function(data, cb)
-    Callbacks:ServerCallback('Admin:ToggleInvisible', data, cb)
+    exports["sandbox-base"]:ServerCallback('Admin:ToggleInvisible', data, cb)
 end)
 
 RegisterNUICallback('ToggleIDs', function(data, cb)

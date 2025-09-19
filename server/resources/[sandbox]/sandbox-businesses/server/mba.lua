@@ -79,7 +79,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         GlobalState["MBA:Interior"] = d
     end
 
-    Callbacks:RegisterServerCallback("MBA:ChangeInterior", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MBA:ChangeInterior", function(source, data, cb)
         if Player(source).state.onDuty == "mba" and data ~= GlobalState["MBA:Interior"] then
             cb(SetMBAInterior(data))
         else

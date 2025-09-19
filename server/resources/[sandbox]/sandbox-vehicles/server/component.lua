@@ -10,7 +10,6 @@ _savedVehiclePropertiesClusterfuck = {}
 
 AddEventHandler('Vehicles:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
-    Callbacks = exports['sandbox-base']:FetchComponent('Callbacks')
     Execute = exports['sandbox-base']:FetchComponent('Execute')
     Locations = exports['sandbox-base']:FetchComponent('Locations')
     Chat = exports['sandbox-base']:FetchComponent('Chat')
@@ -35,7 +34,6 @@ end
 
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Vehicles', {
-        'Callbacks',
         'Execute',
         'Locations',
         'Chat',

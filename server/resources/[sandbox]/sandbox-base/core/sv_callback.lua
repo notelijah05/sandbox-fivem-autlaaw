@@ -1,40 +1,41 @@
 local _sCallbacks = {}
 local _cCallbacks = {}
 
-COMPONENTS.Callbacks = {
-    _required = { 'RegisterServerCallback', 'DoServerCallback', 'ClientCallback' },
-    _name = 'base',
-    RegisterServerCallback = function(self, event, cb)
-        _sCallbacks[event] = cb
-    end,
-    DoServerCallback = function(self, source, event, data, extraId)
-        if _sCallbacks[event] ~= nil then
-            -- CreateThread(function()
-            _sCallbacks[event](source, data, function(...)
-                TriggerLatentClientEvent('Callbacks:Client:ReceiveCallback', source, 50000, event, extraId, ...)
-            end)
-            -- end)
-        end
-    end,
-    ClientCallback = function(self, source, event, data, cb, extraId)
-        if data == nil then data = {} end
+local function RegisterServerCallback(event, cb)
+    _sCallbacks[event] = cb
+end
 
-        id = string.format("%s", event)
-        if extraId ~= nil then
-            id = string.format("%s-%s", event, extraId)
-        else
-            extraId = ''
-        end
-
-        _cCallbacks[source] = _cCallbacks[source] or {}
-        _cCallbacks[source][id] = cb
-        TriggerLatentClientEvent('Callbacks:Client:TriggerEvent', source, 50000, event, data, extraId)
+local function DoServerCallback(source, event, data, extraId)
+    if _sCallbacks[event] ~= nil then
+        _sCallbacks[event](source, data, function(...)
+            TriggerLatentClientEvent('Callbacks:Client:ReceiveCallback', source, 50000, event, extraId, ...)
+        end)
     end
-}
+end
+
+local function ClientCallback(source, event, data, cb, extraId)
+    if data == nil then data = {} end
+
+    local id = string.format("%s", event)
+    if extraId ~= nil then
+        id = string.format("%s-%s", event, extraId)
+    else
+        extraId = ''
+    end
+
+    _cCallbacks[source] = _cCallbacks[source] or {}
+    _cCallbacks[source][id] = cb
+    TriggerLatentClientEvent('Callbacks:Client:TriggerEvent', source, 50000, event, data, extraId)
+end
+
+-- Export the functions
+exports('RegisterServerCallback', RegisterServerCallback)
+exports('DoServerCallback', DoServerCallback)
+exports('ClientCallback', ClientCallback)
 
 RegisterServerEvent('Callbacks:Server:TriggerEvent', function(event, data, extraId)
     data = data or {}
-    COMPONENTS.Callbacks:DoServerCallback(source, event, data, extraId)
+    DoServerCallback(source, event, data, extraId)
 end)
 
 RegisterServerEvent('Callbacks:Server:ReceiveCallback', function(event, extraId, ...)

@@ -70,7 +70,7 @@ SNOWBALLS = {
 			},
 		}, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("Xmas:Server:PickupSnowball", {}, function(s) end)
+				exports["sandbox-base"]:ServerCallback("Xmas:Server:PickupSnowball", {}, function(s) end)
 			end
 		end)
 	end,

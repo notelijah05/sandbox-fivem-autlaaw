@@ -1,5 +1,5 @@
 function RegisterStashCallbacks()
-	Callbacks:RegisterServerCallback("Stash:Server:Open", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Stash:Server:Open", function(source, data, cb)
 		if GlobalState[string.format("%s:Property", source)] ~= nil then
 			local pid = GlobalState[string.format("%s:Property", source)]
 			if not _openInvs[string.format("%s-%s", 13, pid)] then
@@ -13,7 +13,7 @@ function RegisterStashCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Shop:Server:Open", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Shop:Server:Open", function(source, data, cb)
 		local k = string.format("shop:%s", data.identifier)
 		if shopLocations[k] ~= nil then
 			local entId = shopLocations[k].entityId
@@ -28,7 +28,7 @@ function RegisterStashCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:Server:Open", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:Open", function(source, data, cb)
 		if not _openInvs[string.format("%s-%s", data.invType, data.owner)] then
 			if entityPermCheck(source, data.invType) then
 				Inventory:OpenSecondary(source, data.invType, data.owner, data.class or false, data.model or false)
@@ -41,7 +41,7 @@ function RegisterStashCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("PlayerShop:Server:Open", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("PlayerShop:Server:Open", function(source, data, cb)
 		if _playerShops[data.id] then
 			if not _openInvs[string.format("200-%s", data.id)] then
 				Inventory:OpenSecondary(source, 200, data.id)

@@ -58,7 +58,6 @@ end)
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -90,7 +89,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Callbacks",
 		"Logger",
 		"Utils",
 		"Chat",
@@ -265,14 +263,14 @@ RegisterNetEvent("Phone:Server:UIReset", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:SavePosition", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:SavePosition", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			char:SetData("PhonePosition", data)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Apps:Home", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Apps:Home", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local apps = char:GetData("Apps")
 		if data.action == "add" then
@@ -290,7 +288,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		char:SetData("Apps", apps)
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Apps:Dock", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Apps:Dock", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local apps = char:GetData("Apps")
 		if data.action == "add" then
@@ -310,14 +308,14 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		char:SetData("Apps", apps)
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Apps:Reorder", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Apps:Reorder", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local apps = char:GetData("Apps")
 		apps[data.type] = data.apps
 		char:SetData("Apps", apps)
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:UpdateAlias", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:UpdateAlias", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = char:GetData("Alias") or {}
 		if data.unique then
@@ -388,7 +386,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:UpdateProfile", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:UpdateProfile", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -442,7 +440,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:ShareMyContact", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:ShareMyContact", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local myPed = GetPlayerPed(src)
 		local myCoords = GetEntityCoords(myPed)
@@ -463,7 +461,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Permissions", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Permissions", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		if char ~= nil then

@@ -3,7 +3,7 @@ VEHICLE_KEYS = {}
 local _lockdelay = false
 
 AddEventHandler("Vehicles:Client:StartUp", function()
-	Callbacks:RegisterClientCallback("Vehicles:Keys:GetVehicleToShare", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:Keys:GetVehicleToShare", function(data, cb)
 		local playerCoords = GetEntityCoords(GLOBAL_PED)
 		local veh = VEHICLE_INSIDE and VEHICLE_INSIDE or GetClosestVehicleWithinRadius(playerCoords, 10.0)
 		if DoesEntityExist(veh) then
@@ -108,7 +108,7 @@ _vehicleKeysExtension = {
 			return
 		end
 
-		Callbacks:ServerCallback("Vehicles:ToggleLocks", {
+		exports["sandbox-base"]:ServerCallback("Vehicles:ToggleLocks", {
 			netId = NetworkGetNetworkIdFromEntity(veh),
 			state = state,
 		}, function(success, newState)

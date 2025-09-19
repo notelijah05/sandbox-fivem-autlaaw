@@ -4,7 +4,6 @@ local _menu = false
 
 AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
@@ -26,7 +25,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Apartment", {
-		"Callbacks",
 		"Utils",
 		"Blips",
 		"Notification",
@@ -127,7 +125,7 @@ RegisterNetEvent("Characters:Client:Spawn", function()
 end)
 
 -- function CheckVisitors()
--- 	Callbacks:ServerCallback("Apartment:GetRequests", {}, function(requets)
+-- 	exports["sandbox-base"]:ServerCallback("Apartment:GetRequests", {}, function(requets)
 -- 		if #reqeusts > 0 then
 -- 			local menu = {
 -- 				label = _pzs[_inPoly].name,
@@ -328,7 +326,7 @@ AddEventHandler("Apartment:Client:RequestEntry", function(data)
 end)
 
 AddEventHandler("Apartment:Client:DoRequestEntry", function(values, data)
-	Callbacks:ServerCallback("Apartment:RequestEntry", {
+	exports["sandbox-base"]:ServerCallback("Apartment:RequestEntry", {
 		inZone = data,
 		target = values.unit,
 	})
@@ -348,7 +346,7 @@ end)
 
 _APTS = {
 	Enter = function(self, tier, id)
-		Callbacks:ServerCallback("Apartment:Enter", {
+		exports["sandbox-base"]:ServerCallback("Apartment:Enter", {
 			id = id or -1,
 			tier = tier,
 		}, function(s)
@@ -398,7 +396,7 @@ _APTS = {
 			LocalPlayer.state.inApartment.type
 		)]
 
-		Callbacks:ServerCallback("Apartment:Exit", {}, function()
+		exports["sandbox-base"]:ServerCallback("Apartment:Exit", {}, function()
 			DoScreenFadeOut(1000)
 			while not IsScreenFadedOut() do
 				Wait(10)
@@ -435,13 +433,13 @@ _APTS = {
 	end,
 	Extras = {
 		Stash = function(self)
-			Callbacks:ServerCallback("Apartment:Validate", {
+			exports["sandbox-base"]:ServerCallback("Apartment:Validate", {
 				id = GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)],
 				type = "stash",
 			})
 		end,
 		Wardrobe = function(self)
-			Callbacks:ServerCallback("Apartment:Validate", {
+			exports["sandbox-base"]:ServerCallback("Apartment:Validate", {
 				id = GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)],
 				type = "wardrobe",
 			}, function(state)
@@ -451,7 +449,7 @@ _APTS = {
 			end)
 		end,
 		Logout = function(self)
-			Callbacks:ServerCallback("Apartment:Validate", {
+			exports["sandbox-base"]:ServerCallback("Apartment:Validate", {
 				id = GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)],
 				type = "logout",
 			}, function(state)

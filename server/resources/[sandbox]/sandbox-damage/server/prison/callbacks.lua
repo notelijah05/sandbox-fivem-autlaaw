@@ -1,5 +1,5 @@
 function PrisonHospitalCallbacks()
-	Callbacks:RegisterServerCallback("Hospital:PrisonHospitalRevive", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Hospital:PrisonHospitalRevive", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local p = Player(source).state
 		local cost = Config.PrisonCheckIn.Cost
@@ -24,7 +24,7 @@ function PrisonHospitalCallbacks()
 
 		local tChar = exports['sandbox-characters']:FetchCharacterSource(source)
 		if tChar ~= nil then
-			Callbacks:ClientCallback(tChar:GetData("Source"), "Damage:Heal", true)
+			exports["sandbox-base"]:ClientCallback(tChar:GetData("Source"), "Damage:Heal", true)
 		else
 			Execute:Client(source, "Notification", "Error", "An error has occured. Please report this.")
 		end

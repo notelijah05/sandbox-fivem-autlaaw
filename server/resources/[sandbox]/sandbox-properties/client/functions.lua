@@ -1,7 +1,7 @@
 local _moving = false
 
 function EnterProperty(data, backdoor)
-	Callbacks:ServerCallback("Properties:EnterProperty", data.propertyId, function(state, pId, int)
+	exports["sandbox-base"]:ServerCallback("Properties:EnterProperty", data.propertyId, function(state, pId, int)
 		if state then
 			Interaction:Hide()
 
@@ -51,7 +51,7 @@ function EnterProperty(data, backdoor)
 end
 
 function ExitProperty(data, backdoor)
-	Callbacks:ServerCallback("Properties:ExitProperty", {}, function(pId)
+	exports["sandbox-base"]:ServerCallback("Properties:ExitProperty", {}, function(pId)
 		_insideProperty = false
 		_insideInterior = false
 

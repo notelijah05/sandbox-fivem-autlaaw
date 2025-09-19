@@ -20,7 +20,6 @@ _placingSearchItem = nil
 
 AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -47,7 +46,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Properties", {
-		"Callbacks",
 		"Inventory",
 		"Logger",
 		"Utils",
@@ -105,7 +103,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		Interaction:RegisterMenu("house-lock", "Lock", "lock", function(data)
 			Interaction:Hide()
-			Callbacks:ServerCallback("Properties:ChangeLock", {
+			exports["sandbox-base"]:ServerCallback("Properties:ChangeLock", {
 				id = data,
 				state = true,
 			}, function(state)
@@ -139,7 +137,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		Interaction:RegisterMenu("house-unlock", "Unlock", "unlock", function(data)
 			Interaction:Hide()
-			Callbacks:ServerCallback("Properties:ChangeLock", {
+			exports["sandbox-base"]:ServerCallback("Properties:ChangeLock", {
 				id = data,
 				state = false,
 			}, function(state)
@@ -217,180 +215,182 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 function CreatePropertyDoor(isBackdoor)
-	Interaction:RegisterMenu(isBackdoor and "property-backdoor" or "property", isBackdoor and "Property Backdoor" or "Property", isBackdoor and "house-window" or "house", function(data)
-		local pMenu = {
-			{
-				icon = "door-open",
-				label = isBackdoor and "Enter Backdoor" or "Enter",
-				action = function()
-					EnterProperty(data, isBackdoor)
-				end,
-				shouldShow = function()
-					if not _propertiesLoaded then
-						return false
-					end
-
-					local prop = _properties[data.propertyId]
-					return ((prop.keys ~= nil and prop.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil)
-						or (not prop.sold and LocalPlayer.state.onDuty == "realestate" and Jobs.Permissions:HasPermissionInJob(
-							"realestate",
-							"JOB_DOORS"
-						))
-						or not prop.locked) and not prop.foreclosed
-
-				end,
-			},
-			{
-				icon = "lock-open",
-				label = "Unlock",
-				action = function()
-					Callbacks:ServerCallback("Properties:ChangeLock", {
-						id = data.propertyId,
-						state = false,
-					}, function(state)
-						if state then
-							Notification:Success("Property Unlocked")
-						else
-							Notification:Error("Unable to Unlock Property")
+	Interaction:RegisterMenu(isBackdoor and "property-backdoor" or "property",
+		isBackdoor and "Property Backdoor" or "Property", isBackdoor and "house-window" or "house", function(data)
+			local pMenu = {
+				{
+					icon = "door-open",
+					label = isBackdoor and "Enter Backdoor" or "Enter",
+					action = function()
+						EnterProperty(data, isBackdoor)
+					end,
+					shouldShow = function()
+						if not _propertiesLoaded then
+							return false
 						end
-						Interaction:Hide()
-					end)
-				end,
-				shouldShow = function()
-					if not _propertiesLoaded then
-						return false
-					end
-					local prop = _properties[data.propertyId]
-					if
-						((prop.keys ~= nil and prop.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil)
-						or (
-							not prop.sold
-							and LocalPlayer.state.onDuty == "realestate"
-							and Jobs.Permissions:HasPermissionInJob("realestate", "JOB_DOORS")
-						)) and not prop.foreclosed
-					then
-						return prop.locked
-					else
-						return false
-					end
-				end,
-			},
-			{
-				icon = "lock",
-				label = "Lock",
-				action = function()
-					Callbacks:ServerCallback("Properties:ChangeLock", {
-						id = data.propertyId,
-						state = true,
-					}, function(state)
-						if state then
-							Notification:Success("Property Locked")
-						else
-							Notification:Error("Unable to Unlock Property")
+
+						local prop = _properties[data.propertyId]
+						return ((prop.keys ~= nil and prop.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil)
+							or (not prop.sold and LocalPlayer.state.onDuty == "realestate" and Jobs.Permissions:HasPermissionInJob(
+								"realestate",
+								"JOB_DOORS"
+							))
+							or not prop.locked) and not prop.foreclosed
+					end,
+				},
+				{
+					icon = "lock-open",
+					label = "Unlock",
+					action = function()
+						exports["sandbox-base"]:ServerCallback("Properties:ChangeLock", {
+							id = data.propertyId,
+							state = false,
+						}, function(state)
+							if state then
+								Notification:Success("Property Unlocked")
+							else
+								Notification:Error("Unable to Unlock Property")
+							end
+							Interaction:Hide()
+						end)
+					end,
+					shouldShow = function()
+						if not _propertiesLoaded then
+							return false
 						end
-						Interaction:Hide()
-					end)
-				end,
-				shouldShow = function()
-					if not _propertiesLoaded then
-						return false
-					end
-					local prop = _properties[data.propertyId]
-
-					if
-						((prop.keys ~= nil and prop.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil)
-						or (
-							not prop.sold
-							and LocalPlayer.state.onDuty == "realestate"
-							and Jobs.Permissions:HasPermissionInJob("realestate", "JOB_DOORS")
-						)) and not prop.foreclosed
-					then
-						return not prop.locked
-					else
-						return false
-					end
-				end,
-			},
-			{
-				icon = "house-chimney-crack",
-				label = "Property is Foreclosed",
-				action = function()
-					Notification:Error('This Property Has Been Foreclosed! This is why you should pay your property loans...', 10000)
-				end,
-				shouldShow = function()
-					if not _propertiesLoaded then
-						return false
-					end
-					local prop = _properties[data.propertyId]
-					return prop.foreclosed
-				end,
-			},
-		}
-
-		if not isBackdoor then
-			table.insert(pMenu, {
-				icon = "bells",
-				label = "Ring Doorbell",
-				action = function()
-					Callbacks:ServerCallback("Properties:RingDoorbell", data.propertyId, function()
-						Sounds.Play:One("doorbell.ogg", 0.75)
-					end)
-				end,
-				shouldShow = function()
-					if not _propertiesLoaded then
-						return false
-					end
-					local prop = _properties[data.propertyId]
-					return prop.sold and not prop.foreclosed and prop.type == "house"
-				end,
-			})
-
-			table.insert(pMenu, {
-				icon = "sign-hanging",
-				label = "Request Agent",
-				action = function()
-					Callbacks:ServerCallback("Properties:RequestAgent", data.propertyId, function(state)
-						if state then
-							Notification:Success("Notification Sent")
+						local prop = _properties[data.propertyId]
+						if
+							((prop.keys ~= nil and prop.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil)
+								or (
+									not prop.sold
+									and LocalPlayer.state.onDuty == "realestate"
+									and Jobs.Permissions:HasPermissionInJob("realestate", "JOB_DOORS")
+								)) and not prop.foreclosed
+						then
+							return prop.locked
 						else
-							Notification:Error("Unable To Send Notification")
+							return false
 						end
-						Interaction:Hide()
-					end)
-				end,
-				shouldShow = function()
-					if not _propertiesLoaded then
-						return false
-					end
-					local prop = _properties[data.propertyId]
-					return prop and not prop.sold
-				end,
-			})
-		end
+					end,
+				},
+				{
+					icon = "lock",
+					label = "Lock",
+					action = function()
+						exports["sandbox-base"]:ServerCallback("Properties:ChangeLock", {
+							id = data.propertyId,
+							state = true,
+						}, function(state)
+							if state then
+								Notification:Success("Property Locked")
+							else
+								Notification:Error("Unable to Unlock Property")
+							end
+							Interaction:Hide()
+						end)
+					end,
+					shouldShow = function()
+						if not _propertiesLoaded then
+							return false
+						end
+						local prop = _properties[data.propertyId]
 
-		Interaction:ShowMenu(pMenu)
-	end, function()
-		if not _propertiesLoaded then
-			return false
-		end
+						if
+							((prop.keys ~= nil and prop.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil)
+								or (
+									not prop.sold
+									and LocalPlayer.state.onDuty == "realestate"
+									and Jobs.Permissions:HasPermissionInJob("realestate", "JOB_DOORS")
+								)) and not prop.foreclosed
+						then
+							return not prop.locked
+						else
+							return false
+						end
+					end,
+				},
+				{
+					icon = "house-chimney-crack",
+					label = "Property is Foreclosed",
+					action = function()
+						Notification:Error(
+							'This Property Has Been Foreclosed! This is why you should pay your property loans...', 10000)
+					end,
+					shouldShow = function()
+						if not _propertiesLoaded then
+							return false
+						end
+						local prop = _properties[data.propertyId]
+						return prop.foreclosed
+					end,
+				},
+			}
 
-		if isBackdoor then
-			return Properties:GetNearHouseBackdoor()
-		else
-			return Properties:GetNearHouse()
-		end
-	end, function()
-		if not _propertiesLoaded then
-			return false
-		end
-		if isBackdoor then
-			local prop = Properties:GetNearHouseBackdoor()
-			return type(prop) == "table" and _properties[prop.propertyId]?.label or 'Property'
-		else
-			local prop = Properties:GetNearHouse()
-			return type(prop) == "table" and _properties[prop.propertyId]?.label or 'Property'
-		end
-	end)
+			if not isBackdoor then
+				table.insert(pMenu, {
+					icon = "bells",
+					label = "Ring Doorbell",
+					action = function()
+						exports["sandbox-base"]:ServerCallback("Properties:RingDoorbell", data.propertyId, function()
+							Sounds.Play:One("doorbell.ogg", 0.75)
+						end)
+					end,
+					shouldShow = function()
+						if not _propertiesLoaded then
+							return false
+						end
+						local prop = _properties[data.propertyId]
+						return prop.sold and not prop.foreclosed and prop.type == "house"
+					end,
+				})
+
+				table.insert(pMenu, {
+					icon = "sign-hanging",
+					label = "Request Agent",
+					action = function()
+						exports["sandbox-base"]:ServerCallback("Properties:RequestAgent", data.propertyId,
+							function(state)
+								if state then
+									Notification:Success("Notification Sent")
+								else
+									Notification:Error("Unable To Send Notification")
+								end
+								Interaction:Hide()
+							end)
+					end,
+					shouldShow = function()
+						if not _propertiesLoaded then
+							return false
+						end
+						local prop = _properties[data.propertyId]
+						return prop and not prop.sold
+					end,
+				})
+			end
+
+			Interaction:ShowMenu(pMenu)
+		end, function()
+			if not _propertiesLoaded then
+				return false
+			end
+
+			if isBackdoor then
+				return Properties:GetNearHouseBackdoor()
+			else
+				return Properties:GetNearHouse()
+			end
+		end, function()
+			if not _propertiesLoaded then
+				return false
+			end
+			if isBackdoor then
+				local prop = Properties:GetNearHouseBackdoor()
+				return type(prop) == "table" and _properties[prop.propertyId]?.label or 'Property'
+			else
+				local prop = Properties:GetNearHouse()
+				return type(prop) == "table" and _properties[prop.propertyId]?.label or 'Property'
+			end
+		end)
 end
 
 RegisterNetEvent("Properties:Client:Load", function(props, myKeys)
@@ -452,7 +452,7 @@ RegisterNetEvent("Properties:Client:ShowAllPropertyBlips", function(show)
 		end
 	end
 	if show then
-		
+
 	else
 
 	end
@@ -503,7 +503,7 @@ PROPERTIES = {
 					table.insert(props, v)
 				end
 			end
-	
+
 			return props
 		end
 		return false
@@ -578,13 +578,13 @@ PROPERTIES = {
 	end,
 	Extras = {
 		Stash = function(self)
-			Callbacks:ServerCallback("Properties:Validate", {
+			exports["sandbox-base"]:ServerCallback("Properties:Validate", {
 				id = GlobalState[string.format("%s:Property", LocalPlayer.state.ID)],
 				type = "stash",
 			})
 		end,
 		Closet = function(self)
-			Callbacks:ServerCallback("Properties:Validate", {
+			exports["sandbox-base"]:ServerCallback("Properties:Validate", {
 				id = GlobalState[string.format("%s:Property", LocalPlayer.state.ID)],
 				type = "closet",
 			}, function(state)
@@ -594,7 +594,7 @@ PROPERTIES = {
 			end)
 		end,
 		Logout = function(self)
-			Callbacks:ServerCallback("Properties:Validate", {
+			exports["sandbox-base"]:ServerCallback("Properties:Validate", {
 				id = GlobalState[string.format("%s:Property", LocalPlayer.state.ID)],
 				type = "logout",
 			}, function(state)
@@ -669,7 +669,7 @@ PROPERTIES = {
 				end
 			end
 
-			table.sort(_furnitureCategory, function(a,b)
+			table.sort(_furnitureCategory, function(a, b)
 				return (FurnitureConfig[a]?.id or 1) < (FurnitureConfig[b]?.id or 1)
 			end)
 
@@ -681,10 +681,12 @@ PROPERTIES = {
 
 			local fData = FurnitureConfig[model]
 			if fData then
-				InfoOverlay:Show(fData.name, string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", model))
+				InfoOverlay:Show(fData.name,
+					string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", model))
 			end
 
-			ObjectPlacer:Start(GetHashKey(model), "Furniture:Client:Place", metadata, true, "Furniture:Client:Cancel", true, true, startCoords, nil, startRot)
+			ObjectPlacer:Start(GetHashKey(model), "Furniture:Client:Place", metadata, true, "Furniture:Client:Cancel",
+				true, true, startCoords, nil, startRot)
 			if not skipPhone then
 				Phone:Close(true, true)
 			end
@@ -727,7 +729,8 @@ PROPERTIES = {
 
 			local fData = FurnitureConfig[model]
 
-			ObjectPlacer:Start(GetHashKey(furn.model), "Furniture:Client:Move", { id = id }, true, "Furniture:Client:CancelMove", true, true, furn.coords, furn.heading, furn.rotation)
+			ObjectPlacer:Start(GetHashKey(furn.model), "Furniture:Client:Move", { id = id }, true,
+				"Furniture:Client:CancelMove", true, true, furn.coords, furn.heading, furn.rotation)
 			if not skipPhone then
 				Phone:Close(true, true)
 			end
@@ -766,7 +769,7 @@ PROPERTIES = {
 
 			local p = promise.new()
 
-			Callbacks:ServerCallback("Properties:DeleteFurniture", {
+			exports["sandbox-base"]:ServerCallback("Properties:DeleteFurniture", {
 				id = id,
 			}, function(success, furniture)
 				if success then

@@ -280,7 +280,7 @@ end)
 AddEventHandler("Laptop:Client:LSUnderground:Boosting:AttemptExterior", function(veh)
     if _boosting and NetworkDoesEntityExistWithNetworkId(_boosting.vehicleNet) then
         if veh == NetToVeh(_boosting.vehicleNet) then
-            Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:Exterior", {},
+            exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:Exterior", {},
                 function(numPeds, makeDifficult, noAlert)
                     if numPeds then
                         --numPeds = 0
@@ -384,7 +384,7 @@ AddEventHandler("Laptop:Client:LSUnderground:Boosting:SuccessIgnition", function
             local coords = GetEntityCoords(LocalPlayer.state.ped)
             local main, cross = GetStreetNameAtCoord(coords.x, coords.y, coords.z, Citizen.ResultAsInteger(),
                 Citizen.ResultAsInteger())
-            Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:Ignition", {
+            exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:Ignition", {
                 location = string.format("%s - %s", GetStreetNameFromHashKey(main),
                     GetLabelText(GetNameOfZone(coords.x, coords.y, coords.z)))
             }, function()
@@ -411,7 +411,7 @@ function BoostingTrackerCooldown()
 end
 
 function RegisterBoostingCallbacks()
-    Callbacks:RegisterClientCallback("Laptop:LSUnderground:Boosting:TrackerHacker", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Laptop:LSUnderground:Boosting:TrackerHacker", function(data, cb)
         local hackData = _trackerHacks[_boosting?.vehicleData?.class or "B"]
         if not hackData then
             hackData = _trackerHacks.B
@@ -472,7 +472,7 @@ AddEventHandler("Polyzone:Exit", function(id)
     if id == "boosting-dropoff" and inZone then
         inZone = false
         if _boosting and _boosting.state == 4 then
-            Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:LeftArea", {})
+            exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:LeftArea", {})
         end
     end
 end)
@@ -487,7 +487,7 @@ AddEventHandler("Vehicles:Client:ExitVehicle", function(veh)
         and veh == NetToVeh(_boosting.vehicleNet)
         and not CheckPDInZone(_boosting.dropOff, 60.0)
     then
-        Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:DropOff", {})
+        exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:DropOff", {})
     end
 end)
 

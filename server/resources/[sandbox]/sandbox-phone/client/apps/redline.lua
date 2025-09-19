@@ -380,7 +380,7 @@ RegisterNetEvent("Phone:Redline:NotifyDNF", function(id)
 end)
 
 RegisterNUICallback("CreateRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:CreateRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:CreateRace", data, function(res)
 		if res == nil or res.failed then
 			_activeRace = nil
 			cb(res or false)
@@ -405,13 +405,13 @@ RegisterNUICallback("CreateRace", function(data, cb)
 end)
 
 RegisterNUICallback("CancelRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:CancelRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:CancelRace", data, function(res)
 		cb(res)
 	end)
 end)
 
 RegisterNUICallback("PracticeTrack", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:GetTrack", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:GetTrack", data, function(res)
 		cb(res ~= nil)
 		if res ~= nil then
 			SetupTrack(res)
@@ -421,7 +421,7 @@ RegisterNUICallback("PracticeTrack", function(data, cb)
 end)
 
 RegisterNUICallback("JoinRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:JoinRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:JoinRace", data, function(res)
 		if res then
 			_activeRace = res
 
@@ -445,7 +445,7 @@ end)
 
 RegisterNUICallback("LeaveRace", function(data, cb)
 	UnGhostPlayer()
-	Callbacks:ServerCallback("Phone:Redline:LeaveRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:LeaveRace", data, function(res)
 		if _activeRace ~= nil then
 			_activeRace.dnf = true
 			Cleanup()
@@ -490,7 +490,7 @@ RegisterNetEvent("Redline:Client:RemovedFromRace", function()
 end)
 
 RegisterNUICallback("CreateTrack", function(data, cb)
-	Callbacks:ServerCallback("Phone:Permissions", {
+	exports["sandbox-base"]:ServerCallback("Phone:Permissions", {
 		redline = { "create" },
 	}, function(res)
 		cb(res)
@@ -503,7 +503,7 @@ end)
 
 RegisterNUICallback("FinishCreator", function(data, cb)
 	_creator = false
-	Callbacks:ServerCallback("Phone:Permissions", {
+	exports["sandbox-base"]:ServerCallback("Phone:Permissions", {
 		redline = { "create" },
 	}, function(res)
 		if res then
@@ -543,7 +543,7 @@ RegisterNUICallback("FinishCreator", function(data, cb)
 					end
 				end
 				_pendingTrack.Distance = quickMaths((_pendingTrack.Distance / 1609.34)) .. " Miles"
-				Callbacks:ServerCallback("Phone:Redline:SaveTrack", _pendingTrack, function(res2)
+				exports["sandbox-base"]:ServerCallback("Phone:Redline:SaveTrack", _pendingTrack, function(res2)
 					cb(res2)
 				end)
 			else
@@ -557,11 +557,11 @@ RegisterNUICallback("FinishCreator", function(data, cb)
 end)
 
 RegisterNUICallback("DeleteTrack", function(data, cb)
-	Callbacks:ServerCallback("Phone:Permissions", {
+	exports["sandbox-base"]:ServerCallback("Phone:Permissions", {
 		redline = { "create" },
 	}, function(res)
 		if res then
-			Callbacks:ServerCallback("Phone:Redline:DeleteTrack", data, function(res2)
+			exports["sandbox-base"]:ServerCallback("Phone:Redline:DeleteTrack", data, function(res2)
 				cb(res2)
 			end)
 		else
@@ -571,11 +571,11 @@ RegisterNUICallback("DeleteTrack", function(data, cb)
 end)
 
 RegisterNUICallback("ResetTrackHistory", function(data, cb)
-	Callbacks:ServerCallback("Phone:Permissions", {
+	exports["sandbox-base"]:ServerCallback("Phone:Permissions", {
 		redline = { "create" },
 	}, function(res)
 		if res then
-			Callbacks:ServerCallback("Phone:Redline:ResetTrackHistory", data, function(res2)
+			exports["sandbox-base"]:ServerCallback("Phone:Redline:ResetTrackHistory", data, function(res2)
 				cb(res2)
 			end)
 		else
@@ -590,19 +590,19 @@ RegisterNUICallback("StopCreator", function(data, cb)
 end)
 
 RegisterNUICallback("StartRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:StartRace", _activeRace.id, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:StartRace", _activeRace.id, cb)
 end)
 
 RegisterNUICallback("EndRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:EndRace", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:EndRace", data, cb)
 end)
 
 RegisterNUICallback("SendInvite", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:SendInvite", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:SendInvite", data, cb)
 end)
 
 RegisterNUICallback("AcceptInvite", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:AcceptInvite", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:AcceptInvite", data, function(res)
 		if res then
 			_activeRace = res
 
@@ -624,7 +624,7 @@ RegisterNUICallback("AcceptInvite", function(data, cb)
 end)
 
 RegisterNUICallback("DeclineInvite", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:DeclineInvite", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:DeclineInvite", data, cb)
 end)
 
 RegisterNetEvent("Phone:Client:Redline:ReceiveInvite", function(data)
@@ -649,7 +649,7 @@ RegisterNetEvent("Phone:Client:Redline:ReceiveInvite", function(data)
 end)
 
 RegisterNUICallback("RemoveFromRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:RemoveRacer", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:RemoveRacer", data, cb)
 end)
 
 function FinishRace()

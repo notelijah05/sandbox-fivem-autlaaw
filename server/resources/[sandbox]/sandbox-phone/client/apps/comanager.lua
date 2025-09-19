@@ -49,7 +49,7 @@ RegisterNetEvent("Phone:Client:CoManager:GetOfferResult", function(time, state)
 end)
 
 AddEventHandler("Phone:Client:CoManager:AcceptHire", function()
-	Callbacks:ServerCallback("Phone:CoManager:AcceptHire", {}, function(time, state)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:AcceptHire", {}, function(time, state)
 		if state then
 			Phone.Notification:Add("Employment", "You accepted an employment offer", time, 6000, "comanager", {
 				view = "",
@@ -71,7 +71,7 @@ AddEventHandler("Phone:Client:CoManager:AcceptHire", function()
 end)
 
 AddEventHandler("Phone:Client:CoManager:DeclineHire", function()
-	Callbacks:ServerCallback("Phone:CoManager:DeclineHire", {}, function(time)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:DeclineHire", {}, function(time)
 		Phone.Notification:Add(
 			"Employment",
 			"You declined an employment offer",
@@ -100,7 +100,7 @@ RegisterNetEvent("Phone:Client:CoManager:GetTransferRequest", function(time, dat
 end)
 
 AddEventHandler("Phone:Client:CoManager:AcceptXfer", function()
-	Callbacks:ServerCallback("Phone:CoManager:AcceptXfer", {}, function(time, state)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:AcceptXfer", {}, function(time, state)
 		if state then
 			Phone.Notification:Add(
 				"Employment",
@@ -130,7 +130,7 @@ AddEventHandler("Phone:Client:CoManager:AcceptXfer", function()
 end)
 
 AddEventHandler("Phone:Client:CoManager:DeclineXfer", function()
-	Callbacks:ServerCallback("Phone:CoManager:DeclineXfer", {}, function(time)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:DeclineXfer", {}, function(time)
 		Phone.Notification:Add(
 			"Employment",
 			"You declined an ownership transfer request",
@@ -144,57 +144,57 @@ AddEventHandler("Phone:Client:CoManager:DeclineXfer", function()
 end)
 
 RegisterNUICallback("QuitJob", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:QuitJob", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:QuitJob", data, cb)
 end)
 
 RegisterNUICallback("FetchRoster", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:FetchRoster", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:FetchRoster", data, cb)
 end)
 
 RegisterNUICallback("FetchTimeWorked", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:FetchTimeWorked", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:FetchTimeWorked", data, cb)
 end)
 
 RegisterNUICallback("RenameCompany", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:RenameCompany", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:RenameCompany", data, cb)
 end)
 
 RegisterNUICallback("HireEmployee", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:HireEmployee", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:HireEmployee", data, cb)
 end)
 
 RegisterNUICallback("FireEmployee", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:FireEmployee", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:FireEmployee", data, cb)
 end)
 
 RegisterNUICallback("UpdateEmployee", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:UpdateEmployee", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:UpdateEmployee", data, cb)
 end)
 
 RegisterNUICallback("EditWorkplace", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:EditWorkplace", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:EditWorkplace", data, cb)
 end)
 
 RegisterNUICallback("CreateGrade", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:CreateGrade", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:CreateGrade", data, cb)
 end)
 
 RegisterNUICallback("EditGrade", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:EditGrade", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:EditGrade", data, cb)
 end)
 
 RegisterNUICallback("DeleteGrade", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:DeleteGrade", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:DeleteGrade", data, cb)
 end)
 
 RegisterNUICallback("PurchaseUpgrade", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:PurchaseUpgrade", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:PurchaseUpgrade", data, cb)
 end)
 
 RegisterNUICallback("DisbandCompany", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:DisbandCompany", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:DisbandCompany", data, cb)
 end)
 
 RegisterNUICallback("TransferCompany", function(data, cb)
-	Callbacks:ServerCallback("Phone:CoManager:TransferCompany", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:CoManager:TransferCompany", data, cb)
 end)

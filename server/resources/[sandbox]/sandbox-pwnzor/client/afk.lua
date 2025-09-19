@@ -6,7 +6,7 @@ local submitting = false
 local afkCd = false
 
 local function GetCode()
-	Callbacks:ServerCallback("Pwnzor:GetCode", {}, function(c)
+	exports["sandbox-base"]:ServerCallback("Pwnzor:GetCode", {}, function(c)
 		afkAnswer = c
 	end)
 end
@@ -55,7 +55,7 @@ local function StartKickTimer()
 		while isAfk do
 			if time > AFKTimer then
 				if isAfk and not submitting and not (GlobalState["DisableAFK"] or false) then
-					Callbacks:ServerCallback("Pwnzor:AFK")
+					exports["sandbox-base"]:ServerCallback("Pwnzor:AFK")
 				end
 			end
 
@@ -83,7 +83,7 @@ end
 
 AddEventHandler("Pwnzor:Client:EnterAFKCode", function(vals, data)
 	submitting = true
-	Callbacks:ServerCallback("Pwnzor:EnterCode", vals.code, function(c)
+	exports["sandbox-base"]:ServerCallback("Pwnzor:EnterCode", vals.code, function(c)
 		if c then
 			afkAnswer = false
 			Notification.Persistent:Remove("pwnzor-afk")

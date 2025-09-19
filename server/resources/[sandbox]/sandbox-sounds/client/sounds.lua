@@ -2,7 +2,6 @@ local _sounds = {}
 
 AddEventHandler("Sounds:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
@@ -10,7 +9,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Sounds", {
-		"Callbacks",
 		"Logger",
 		"Sounds",
 		"UISounds",
@@ -359,14 +357,14 @@ SOUNDS.Play = {
 		Sounds.Do.Play:One(soundFile, soundVolume)
 	end,
 	Distance = function(self, maxDistance, soundFile, soundVolume)
-		Callbacks:ServerCallback("Sounds:Play:Distance", {
+		exports["sandbox-base"]:ServerCallback("Sounds:Play:Distance", {
 			maxDistance = maxDistance,
 			soundFile = soundFile,
 			soundVolume = soundVolume,
 		})
 	end,
 	Location = function(self, location, maxDistance, soundFile, soundVolume)
-		Callbacks:ServerCallback("Sounds:Play:Location", {
+		exports["sandbox-base"]:ServerCallback("Sounds:Play:Location", {
 			location = location,
 			maxDistance = maxDistance,
 			soundFile = soundFile,
@@ -380,14 +378,14 @@ SOUNDS.Loop = {
 		Sounds.Do.Loop:One(soundFile, soundVolume)
 	end,
 	Distance = function(self, maxDistance, soundFile, soundVolume)
-		Callbacks:ServerCallback("Sounds:Loop:Distance", {
+		exports["sandbox-base"]:ServerCallback("Sounds:Loop:Distance", {
 			maxDistance = maxDistance,
 			soundFile = soundFile,
 			soundVolume = soundVolume,
 		})
 	end,
 	Location = function(self, location, maxDistance, soundFile, soundVolume)
-		Callbacks:ServerCallback("Sounds:Loop:Location", {
+		exports["sandbox-base"]:ServerCallback("Sounds:Loop:Location", {
 			location = location,
 			maxDistance = maxDistance,
 			soundFile = soundFile,
@@ -401,12 +399,12 @@ SOUNDS.Stop = {
 		Sounds.Do.Stop:One(soundFile)
 	end,
 	Distance = function(self, pNet, soundFile)
-		Callbacks:ServerCallback("Sounds:Stop:Distance", {
+		exports["sandbox-base"]:ServerCallback("Sounds:Stop:Distance", {
 			soundFile = soundFile,
 		})
 	end,
 	Location = function(self, pNet, soundFile)
-		Callbacks:ServerCallback("Sounds:Stop:Distance", {
+		exports["sandbox-base"]:ServerCallback("Sounds:Stop:Distance", {
 			soundFile = soundFile,
 		})
 	end,

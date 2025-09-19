@@ -24,7 +24,6 @@ local sentencedSuspects = {}
 
 AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -46,7 +45,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Callbacks",
 		"Logger",
 		"Utils",
 		"Chat",
@@ -238,7 +236,7 @@ RegisterNetEvent('MDT:Server:OpenDOCPublic', function()
 end)
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("MDT:GetHomeData", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:GetHomeData", function(source, data, cb)
 		local gJob = _onDutyUsers[source]
 		local warrants = MySQL.query.await(
 			"SELECT id, state, report, suspect, title, creatorSID, creatorName, creatorCallsign, issued, expires FROM mdt_warrants WHERE state = ? AND expires > NOW() ORDER BY issued DESC LIMIT 5",
@@ -271,7 +269,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		})
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:IssueWarrant", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:IssueWarrant", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char and CheckMDTPermissions(source, false) and data.report and data.suspect and data.suspect.id then
@@ -299,7 +297,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:SentencePlayer", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:SentencePlayer", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if CheckMDTPermissions(source, false) and data.report and not data.data.sentenced then
@@ -432,7 +430,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:OverturnSentence", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:OverturnSentence", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if CheckMDTPermissions(source, "DOJ_OVERTURN_CHARGES") and data.report and data.SID then
@@ -471,7 +469,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:RosterView", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:RosterView", function(source, data, cb)
 		exports['sandbox-base']:DatabaseGameFind({
 			collection = "characters",
 			query = {
@@ -497,7 +495,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:RosterSelect", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:RosterSelect", function(source, data, cb)
 		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
 			query = {
@@ -534,7 +532,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:RevokeLicenseSuspension", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:RevokeLicenseSuspension", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if CheckMDTPermissions(source, 'REVOKE_LICENSE_SUSPENSIONS') then
@@ -606,7 +604,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:RemoveLicensePoints", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:RemoveLicensePoints", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if CheckMDTPermissions(source, 'REVOKE_LICENSE_SUSPENSIONS') and data.SID and data.newPoints then
@@ -659,7 +657,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:ClearCriminalRecord", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:ClearCriminalRecord", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char and CheckMDTPermissions(source, 'EXPUNGEMENT') and data.SID then
@@ -698,10 +696,10 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:OpenEvidenceLocker", function(source, caseNum, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:OpenEvidenceLocker", function(source, caseNum, cb)
 		local myDuty = Player(source).state.onDuty
 		if myDuty and (myDuty == "police" or myDuty == "government") then
-			Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+			exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 				invType = 44,
 				owner = ("evidencelocker:%s"):format(caseNum),
 			}, function()
@@ -710,12 +708,12 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:OpenPersonalLocker", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:OpenPersonalLocker", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and (Jobs.Permissions:HasJob(source, 'police') or Jobs.Permissions:HasJob(source, 'ems') or Jobs.Permissions:HasJob(source, 'prison')) then
 			cb(true)
 
-			Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+			exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 				invType = 45,
 				owner = ("pdlocker:%s"):format(char:GetData('SID')),
 			}, function()
@@ -726,11 +724,11 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:DOCGetPrisoners", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:DOCGetPrisoners", function(source, data, cb)
 		cb(Jail:GetPrisoners())
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:DOCReduceSentence", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:DOCReduceSentence", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and CheckMDTPermissions(source, 'DOC_REDUCTION') and data.reduction then
 			local target = exports['sandbox-characters']:FetchBySID(data.SID)
@@ -770,7 +768,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	end)
 
 	local vCooldowns = {}
-	Callbacks:RegisterServerCallback("MDT:DOCRequestVisitation", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:DOCRequestVisitation", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and (vCooldowns[source] == nil or vCooldowns[source] <= os.time()) and data.SID then
 			local target = exports['sandbox-characters']:FetchBySID(data.SID)

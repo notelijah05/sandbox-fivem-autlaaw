@@ -1,6 +1,5 @@
 AddEventHandler("Loot:Shared:DependencyUpdate", LootComponents)
 function LootComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -8,7 +7,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Loot", {
-		"Callbacks",
 		"Logger",
 		"Utils",
 		"Inventory",

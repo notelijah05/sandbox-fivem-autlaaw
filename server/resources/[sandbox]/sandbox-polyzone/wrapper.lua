@@ -7,7 +7,6 @@ local polyDebug = false
 AddEventHandler("Polyzone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -16,7 +15,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Polyzone", {
 		"Logger",
-		"Callbacks",
 		"Game",
 		"Utils",
 		"Polyzone",
@@ -26,25 +24,25 @@ AddEventHandler("Core:Shared:Ready", function()
 		end -- Do something to handle if not all dependencies loaded
 		RetrieveComponents()
 
-		Callbacks:RegisterClientCallback("Polyzone:GetZoneAtCoords", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetZoneAtCoords", function(data, cb)
 			cb(Polyzone:GetZoneAtCoords(data))
 		end)
 
-		Callbacks:RegisterClientCallback("Polyzone:GetZonePlayerIn", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetZonePlayerIn", function(data, cb)
 			local c = GetEntityCoords(LocalPlayer.state.ped)
 			cb(Polyzone:GetZoneAtCoords(vector3(c.x, c.y, c.z)))
 		end)
 
-		Callbacks:RegisterClientCallback("Polyzone:GetAllZonesAtCoords", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetAllZonesAtCoords", function(data, cb)
 			cb(Polyzone:GetAllZonesAtCoords(data))
 		end)
 
-		Callbacks:RegisterClientCallback("Polyzone:GetAllZonesPlayerIn", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetAllZonesPlayerIn", function(data, cb)
 			local c = GetEntityCoords(LocalPlayer.state.ped)
 			cb(Polyzone:GetAllZonesAtCoords(vector3(c.x, c.y, c.z)))
 		end)
 
-		Callbacks:RegisterClientCallback("Polyzone:IsCoordsInZone", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Polyzone:IsCoordsInZone", function(data, cb)
 			cb(Polyzone:IsCoordsInZone(data.coords, data.id, data.key, data.val))
 		end)
 	end)

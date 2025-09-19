@@ -6,7 +6,6 @@ _hiddenScenes = {}
 AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -30,7 +29,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Scenes", {
 		"Logger",
-		"Callbacks",
 		"Game",
 		"Menu",
 		"Targeting",
@@ -181,7 +179,7 @@ _SCENES = {
 					end
 				end
 
-				Callbacks:ServerCallback("Scenes:Delete", lastId, function(success, invalidPermissions)
+				exports["sandbox-base"]:ServerCallback("Scenes:Delete", lastId, function(success, invalidPermissions)
 					if success then
 						Notification:Success("Scene Deleted")
 					else
@@ -210,7 +208,7 @@ _SCENES = {
 					end
 				end
 
-				Callbacks:ServerCallback("Scenes:CanEdit", lastId, function(success, isStaff)
+				exports["sandbox-base"]:ServerCallback("Scenes:CanEdit", lastId, function(success, isStaff)
 					if success then
 						EditScene(lastId, _loadedScenes[lastId], { staff = isStaff })
 					else
@@ -439,7 +437,7 @@ AddEventHandler("Scenes:Client:OpenOptionsMenu", function(values, data)
 	_creationMenu.Add:Button("Create Scene", { success = true }, function()
 		_lastData = creatingSceneData
 
-		Callbacks:ServerCallback("Scenes:Create", {
+		exports["sandbox-base"]:ServerCallback("Scenes:Create", {
 			scene = creatingSceneData,
 			data = data,
 		}, function(success)
@@ -653,7 +651,7 @@ function EditScene(id, fuckface, data)
 	end)
 
 	_creationMenu.Add:Button("Edit Scene", { success = true }, function()
-		Callbacks:ServerCallback("Scenes:Edit", {
+		exports["sandbox-base"]:ServerCallback("Scenes:Edit", {
 			id = id,
 			scene = creatingSceneData,
 			data = data,

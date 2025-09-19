@@ -11,7 +11,6 @@ end
 
 AddEventHandler("Damage:Shared:DependencyUpdate", DamageComponents)
 function DamageComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
@@ -23,7 +22,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Damage", {
-		"Callbacks",
 		"Logger",
 		"Chat",
 		"Middleware",
@@ -58,7 +56,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end, 2)
 
-		Callbacks:RegisterServerCallback("Damage:GetLimbDamage", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Damage:GetLimbDamage", function(source, data, cb)
 			if data == nil or source == nil then
 				cb({})
 				return
@@ -112,7 +110,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Damage:SyncReductions", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Damage:SyncReductions", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				char:SetData("HPReductions", data)
@@ -130,10 +128,10 @@ DAMAGE = {
 	end,
 	Effects = {
 		Painkiller = function(self, source, tier)
-			Callbacks:ClientCallback(source, "Damage:ApplyPainkiller", 225 * (tier or 1))
+			exports["sandbox-base"]:ClientCallback(source, "Damage:ApplyPainkiller", 225 * (tier or 1))
 		end,
 		Adrenaline = function(self, source, tier)
-			Callbacks:ClientCallback(source, "Damage:ApplyAdrenaline", 75 * (tier or 1))
+			exports["sandbox-base"]:ClientCallback(source, "Damage:ApplyAdrenaline", 75 * (tier or 1))
 		end,
 	},
 }

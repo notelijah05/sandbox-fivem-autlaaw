@@ -1,6 +1,5 @@
 AddEventHandler("Commands:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
@@ -13,7 +12,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Commands", {
 		"Chat",
-		"Callbacks",
 		"Config",
 		"Sounds",
 		"Execute",

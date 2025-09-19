@@ -236,7 +236,7 @@ function ThermiteShit(loc, data, cb)
 
 		DoMemory(data.passes, data.config, data.data, function(isSuccess, extra)
 			if isSuccess then
-				Callbacks:ServerCallback("Robbery:DoThermiteFx", {
+				exports["sandbox-base"]:ServerCallback("Robbery:DoThermiteFx", {
 					delay = ((data.duration + 2000) or 13000),
 					netId = ObjToNet(bomba)
 				}, function() end)
@@ -286,7 +286,7 @@ function BombShit(loc, data, cb)
 
 		DoAim(data.config, data.data, function(isSuccess, extra)
 			if isSuccess then
-				Callbacks:ServerCallback("Robbery:DoThermiteFx", {
+				exports["sandbox-base"]:ServerCallback("Robbery:DoThermiteFx", {
 					delay = ((data.duration + 2000) or 13000),
 					netId = ObjToNet(bomba)
 				}, function() end)

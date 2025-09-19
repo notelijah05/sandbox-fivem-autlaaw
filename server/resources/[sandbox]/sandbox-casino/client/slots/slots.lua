@@ -91,7 +91,7 @@ AddEventHandler("Casino:Client:UseSlotMachine", function()
     local tableId, tableObj = GetClosestSlotMachine()
 
     if tableId then
-        Callbacks:ServerCallback("Casino:SlotMachineSit", tableId, function(success)
+        exports["sandbox-base"]:ServerCallback("Casino:SlotMachineSit", tableId, function(success)
             if success then
                 _satInChair = GetChairObjFromTable(tableId, tableObj)
                 _sessionSpent = 0
@@ -206,7 +206,7 @@ AddEventHandler("Casino:Client:PlaySlotMachine", function(_, data)
 
         Wait(1000)
 
-        Callbacks:ServerCallback("Casino:SlotMachinePlay", data,
+        exports["sandbox-base"]:ServerCallback("Casino:SlotMachinePlay", data,
             function(success, reelRotations, timeOut, sound, wonAmount)
                 if success then
                     _sessionSpent += data.bet
@@ -263,7 +263,7 @@ end
 
 AddEventHandler("Casino:Client:LeaveSlotMachine", function()
     if _satInChair then
-        Callbacks:ServerCallback("Casino:SlotMachineLeave", {}, function(success)
+        exports["sandbox-base"]:ServerCallback("Casino:SlotMachineLeave", {}, function(success)
             if success then
                 InfoOverlay:Close()
 

@@ -7,13 +7,13 @@ local _fishingCooldowns = {}
 AddEventHandler("Labor:Server:Startup", function()
 	RegisterFishingItems()
 
-	Callbacks:RegisterServerCallback("Fishing:Catch", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Fishing:Catch", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char and data?.toolUsed and data?.zone and data?.difficulty and _fishingZoneBasicBait[data.zone] and (not _fishingCooldowns[source] or _fishingCooldowns[source] <= GetGameTimer()) then
 			local toolUsedCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "fishing_" .. data.toolUsed) or 0
 			local correctBaitCount = Inventory.Items:GetCount(char:GetData("SID"), 1, _fishingZoneBasicBait[data.zone]) or
-			0
+				0
 			local lootTable = {}
 
 			if toolUsedCount > 0 and data.difficulty > 0 then
@@ -51,7 +51,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 						if lootItem.count > 0 then
 							local hasToolItem = Inventory.Items:GetFirst(char:GetData("SID"), "fishing_" .. data
-							.toolUsed, 1)
+								.toolUsed, 1)
 							local mult = 6
 							if data.toolUsed == "net" then
 								mult = 3
@@ -86,7 +86,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Fishing:Sell", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Fishing:Sell", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local itemData = Inventory.Items:GetData(data)

@@ -37,7 +37,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Contacts:Create", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Contacts:Create", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
@@ -71,7 +71,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Contacts:Update", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Contacts:Update", function(source, data, cb)
 		if data.id == nil then
 			return cb(nil)
 		end
@@ -112,7 +112,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Contacts:Delete", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Contacts:Delete", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")

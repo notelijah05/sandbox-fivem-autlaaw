@@ -65,7 +65,7 @@ AddEventHandler("Casino:Client:Startup", function()
             }, 1.5, true)
     end
 
-    Callbacks:RegisterClientCallback("Casino:Client:RequestHitStand", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Casino:Client:RequestHitStand", function(data, cb)
         local itemList = {
             {
                 label = "Stand",
@@ -214,7 +214,7 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
     local tableId = blackjack_func_368(_BJclosestChair)
 
     if tableId == data.table then
-        Callbacks:ServerCallback("Casino:JoinBlackjack", _BJclosestChair, function(success, table, chair)
+        exports["sandbox-base"]:ServerCallback("Casino:JoinBlackjack", _BJclosestChair, function(success, table, chair)
             if success then
                 _inSittingDownAnimation = true
 
@@ -266,7 +266,7 @@ end)
 
 AddEventHandler("Casino:Client:StartBlackjack", function(_, data)
     if _BJsatAtTable and data?.table == _BJsatAtTable then
-        Callbacks:ServerCallback("Casino:StartBlackjack", {}, function(success)
+        exports["sandbox-base"]:ServerCallback("Casino:StartBlackjack", {}, function(success)
             if success then
 
             end
@@ -276,7 +276,7 @@ end)
 
 AddEventHandler("Casino:Client:LeaveBlackjack", function(_, data)
     if _BJsatAtTable and data?.table == _BJsatAtTable then
-        Callbacks:ServerCallback("Casino:LeaveBlackjack", {}, function(success)
+        exports["sandbox-base"]:ServerCallback("Casino:LeaveBlackjack", {}, function(success)
             if success then
                 _BJsatAtTable = false
                 _BJsatAtLocalChair = false
@@ -316,7 +316,7 @@ RegisterNetEvent("Casino:Client:BlackjackConfirmBet", function(betAmounts, table
     _blackjackAwaitingResponse = false
 
     if res?.success and res?.data?.confirmBet and res.data.confirmBet >= 100 then
-        Callbacks:ServerCallback("Casino:BetBlackjack", res.data.confirmBet, function(success, gameData)
+        exports["sandbox-base"]:ServerCallback("Casino:BetBlackjack", res.data.confirmBet, function(success, gameData)
             if success then
                 DoBlackjackPlaceBetAnimation()
 

@@ -1,6 +1,6 @@
 function RegisterCommands()
     CreateThread(function()
-        Callbacks:ServerCallback('Pwnzor:GetCommands', {}, function(cmds)
+        exports["sandbox-base"]:ServerCallback('Pwnzor:GetCommands', {}, function(cmds)
             CreateThread(function()
                 while true do
                     local cmds2 = GetRegisteredCommands()
@@ -11,7 +11,7 @@ function RegisterCommands()
                                     string.lower(v) == string.lower('_' .. v2.name) or
                                     string.lower(v) == string.lower('-' .. v2.name) or
                                     string.lower(v) == string.lower('/' .. v2.name)) then
-                                Callbacks:ServerCallback('Pwnzor:Trigger', {
+                                exports["sandbox-base"]:ServerCallback('Pwnzor:Trigger', {
                                     check = v,
                                     match = v2.name,
                                 })

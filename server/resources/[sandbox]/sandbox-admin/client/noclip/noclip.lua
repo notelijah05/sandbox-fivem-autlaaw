@@ -19,7 +19,7 @@ ADMIN.NoClip = {
     Start = function(self)
         if not NOCLIP_ACTIVE then
             noclipEntity = PlayerPedId()
-            if IsPedInAnyVehicle(noclipEntity) then 
+            if IsPedInAnyVehicle(noclipEntity) then
                 noclipEntity = GetVehiclePedIsIn(noclipEntity, false)
             end
 
@@ -31,15 +31,15 @@ ADMIN.NoClip = {
             SetEntityInvincible(noclipEntity, true)
             FreezeEntityPosition(noclipEntity, true)
             SetEntityCollision(noclipEntity, false, false)
-            
+
             if not noclipMode then
                 SetEntityVisible(noclipEntity, false, false)
-    
+
                 if noclipEntity ~= PlayerPedId() then
                     SetEntityVisible(PlayerPedId(), false, false)
                 end
             end
-    
+
             local entityCoords = GetEntityCoords(noclipEntity)
             SetFreecamEnabled(true)
             SetFreecamPosition(entityCoords.x, entityCoords.y, entityCoords.z, not noclipMode)
@@ -82,14 +82,14 @@ AddEventHandler('FreeCam:Update', function()
     local position = GetFreecamPosition()
     local rotation = GetFreecamRotation()
 
-    if NOCLIP_ACTIVE and noclipEntity and not noclipMode then 
+    if NOCLIP_ACTIVE and noclipEntity and not noclipMode then
         SetEntityCoordsNoOffset(noclipEntity, position, false, false, false)
         SetEntityRotation(noclipEntity, rotation, 0, true)
     end
 end)
 
 RegisterNetEvent('Admin:Client:NoClip', function(mode)
-    Callbacks:ServerCallback('Admin:NoClip', {
+    exports["sandbox-base"]:ServerCallback('Admin:NoClip', {
         active = not Admin.NoClip:IsActive()
     }, function(isAdmin)
         if isAdmin then
@@ -102,7 +102,7 @@ RegisterNetEvent('Admin:Client:NoClipInfo', function()
     if NOCLIP_ACTIVE then
         local position = GetFreecamPosition()
         local rotation = GetFreecamRotation()
-        Logger:Trace('NoClip', 'Rotation: '.. rotation)
-        Logger:Trace('NoClip', 'Position: '.. position)
+        Logger:Trace('NoClip', 'Rotation: ' .. rotation)
+        Logger:Trace('NoClip', 'Position: ' .. position)
     end
 end)

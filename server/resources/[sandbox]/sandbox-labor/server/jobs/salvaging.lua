@@ -26,7 +26,7 @@ local _deliveryLocs = {
 }
 
 AddEventHandler("Labor:Server:Startup", function()
-	Callbacks:RegisterServerCallback("Salvaging:StartJob", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Salvaging:StartJob", function(source, data, cb)
 		if _salvaging[data] ~= nil and _salvaging[data].state == 0 then
 			Labor.Offers:Start(data, _JOB, "Scrap Cars", 15)
 			_salvaging[data].state = 1
@@ -37,7 +37,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Salvaging:SalvageCar", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Salvaging:SalvageCar", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
@@ -80,7 +80,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Salvaging:TriggerDelivery", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Salvaging:TriggerDelivery", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if _salvaging[_joiners[source]].state == 2 then
 			_salvaging[_joiners[source]].state = 3
@@ -96,7 +96,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Salvaging:EndDelivery", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Salvaging:EndDelivery", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB

@@ -63,7 +63,7 @@ function DoAction(id)
 	end, function(cancelled)
 		_doing = false
 		if not cancelled then
-			Callbacks:ServerCallback("Farming:CompleteNode", id)
+			exports["sandbox-base"]:ServerCallback("Farming:CompleteNode", id)
 		end
 	end)
 end
@@ -175,11 +175,11 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("Farming:Client:TurnIn", function()
-	Callbacks:ServerCallback('Farming:TurnIn', _joiner)
+	exports["sandbox-base"]:ServerCallback('Farming:TurnIn', _joiner)
 end)
 
 AddEventHandler("Farming:Client:StartJob", function()
-	Callbacks:ServerCallback('Farming:StartJob', _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback('Farming:StartJob', _joiner, function(state)
 		if not state then
 			Notification:Error("Unable To Start Job")
 		end

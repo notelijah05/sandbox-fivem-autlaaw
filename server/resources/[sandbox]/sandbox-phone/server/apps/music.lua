@@ -9,7 +9,7 @@ _royaltyCompanies = {
 _startingPendingDepositThread = false
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Music:Server:SendRoyalties", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Music:Server:SendRoyalties", function(source, data, cb)
 		local song = data.title
 		local label = string.lower(data.label_name)
 

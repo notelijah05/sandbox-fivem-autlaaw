@@ -254,7 +254,7 @@ RegisterNetEvent("Phone:Blueline:NotifyDNF", function(id)
 end)
 
 RegisterNUICallback("CreateRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:CreateRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:CreateRace", data, function(res)
 		if res == nil or res.failed then
 			_activeRace = nil
 			cb(res or false)
@@ -279,13 +279,13 @@ RegisterNUICallback("CreateRacePD", function(data, cb)
 end)
 
 RegisterNUICallback("CancelRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:CancelRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:CancelRace", data, function(res)
 		cb(res)
 	end)
 end)
 
 RegisterNUICallback("PracticeTrackPD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:GetTrack", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:GetTrack", data, function(res)
 		cb(res ~= nil)
 		if res ~= nil then
 			SetupTrackPD(res)
@@ -295,7 +295,7 @@ RegisterNUICallback("PracticeTrackPD", function(data, cb)
 end)
 
 RegisterNUICallback("JoinRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:JoinRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:JoinRace", data, function(res)
 		if res then
 			_activeRace = res
 
@@ -317,7 +317,7 @@ RegisterNUICallback("JoinRacePD", function(data, cb)
 end)
 
 RegisterNUICallback("LeaveRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:LeaveRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:LeaveRace", data, function(res)
 		if _activeRace ~= nil then
 			_activeRace.dnf = true
 			CleanupPD()
@@ -380,7 +380,7 @@ RegisterNUICallback("FinishCreatorPD", function(data, cb)
 				end
 			end
 			_pendingTrack.Distance = quickMaths((_pendingTrack.Distance / 1609.34)) .. " Miles"
-			Callbacks:ServerCallback("Phone:Blueline:SaveTrack", _pendingTrack, function(res2)
+			exports["sandbox-base"]:ServerCallback("Phone:Blueline:SaveTrack", _pendingTrack, function(res2)
 				cb(res2)
 			end)
 		else
@@ -394,7 +394,7 @@ end)
 
 RegisterNUICallback("DeleteTrackPD", function(data, cb)
 	if Jobs.Permissions:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
-		Callbacks:ServerCallback("Phone:Blueline:DeleteTrack", data, function(res2)
+		exports["sandbox-base"]:ServerCallback("Phone:Blueline:DeleteTrack", data, function(res2)
 			cb(res2)
 		end)
 	else
@@ -404,7 +404,7 @@ end)
 
 RegisterNUICallback("ResetTrackHistoryPD", function(data, cb)
 	if Jobs.Permissions:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
-		Callbacks:ServerCallback("Phone:Blueline:ResetTrackHistory", data, function(res2)
+		exports["sandbox-base"]:ServerCallback("Phone:Blueline:ResetTrackHistory", data, function(res2)
 			cb(res2)
 		end)
 	else
@@ -418,11 +418,11 @@ RegisterNUICallback("StopCreatorPD", function(data, cb)
 end)
 
 RegisterNUICallback("StartRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:StartRace", _activeRace.id, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:StartRace", _activeRace.id, cb)
 end)
 
 RegisterNUICallback("EndRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:EndRace", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:EndRace", data, cb)
 end)
 
 function IsInRacePD()

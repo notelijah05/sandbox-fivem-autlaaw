@@ -3,7 +3,6 @@ ONLINE_CHARACTERS = {}
 AddEventHandler("Characters:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	DataStore = exports["sandbox-base"]:FetchComponent("DataStore")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -23,7 +22,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Characters", {
-		"Callbacks",
 		"Middleware",
 		"DataStore",
 		"Logger",

@@ -110,7 +110,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         end
     end)
 
-    Callbacks:RegisterClientCallback('Bowling:DoBowl', function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback('Bowling:DoBowl', function(data, cb)
         local bowlingResults = StartBowlingShit(data)
         cb(bowlingResults)
     end)
@@ -344,7 +344,7 @@ end)
 AddEventHandler('Bowling:Client:StartGame', function(entity, alleyId)
     local nickName = GetBowlingNickName()
     if nickName and string.len(nickName) >= 3 then
-        Callbacks:ServerCallback('Bowling:StartGame', {
+        exports["sandbox-base"]:ServerCallback('Bowling:StartGame', {
             alleyId = alleyId,
             nickName = nickName,
         }, function(success)
@@ -362,7 +362,7 @@ end)
 AddEventHandler('Bowling:Client:JoinGame', function(entity, alleyId)
     local nickName = GetBowlingNickName()
     if nickName and string.len(nickName) >= 3 then
-        Callbacks:ServerCallback('Bowling:JoinGame', {
+        exports["sandbox-base"]:ServerCallback('Bowling:JoinGame', {
             alleyId = alleyId,
             nickName = nickName,
         }, function(success)
@@ -415,7 +415,7 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
 end)
 
 AddEventHandler('Bowling:Client:EndGame', function(entity, alleyId)
-    Callbacks:ServerCallback('Bowling:EndGame', {
+    exports["sandbox-base"]:ServerCallback('Bowling:EndGame', {
         alleyId = alleyId,
     }, function(success)
         if success then
@@ -427,7 +427,7 @@ AddEventHandler('Bowling:Client:EndGame', function(entity, alleyId)
 end)
 
 AddEventHandler('Bowling:Client:ResetAll', function()
-    Callbacks:ServerCallback('Bowling:ResetAll', {}, function(success)
+    exports["sandbox-base"]:ServerCallback('Bowling:ResetAll', {}, function(success)
         if success then
             SendBowlingNotification('Reset All')
         else
@@ -437,7 +437,7 @@ AddEventHandler('Bowling:Client:ResetAll', function()
 end)
 
 AddEventHandler('Bowling:Client:ClearPins', function()
-    Callbacks:ServerCallback('Bowling:ClearPins', {}, function(success)
+    exports["sandbox-base"]:ServerCallback('Bowling:ClearPins', {}, function(success)
         if success then
             SendBowlingNotification('Cleared Pins')
         else

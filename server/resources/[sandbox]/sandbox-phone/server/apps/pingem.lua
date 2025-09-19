@@ -1,5 +1,5 @@
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:PingEm:SendPing", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:PingEm:SendPing", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local tChar = exports['sandbox-characters']:FetchBySID(tonumber(data.target))
 
@@ -53,7 +53,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:PingEm:GetFeedback", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:PingEm:GetFeedback", function(source, data, cb)
 		if data.result then
 			Phone.Notification:Add(data.source, "Your Ping", "Your Ping Was Accepted", os.time(), 6000, "pingem")
 		else

@@ -30,7 +30,6 @@ local _ignoreEvents = {
 
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
@@ -61,7 +60,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Callbacks",
 		"Logger",
 		"Phone",
 		"Notification",
@@ -149,7 +147,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				_settings.volume = 100
 				Sounds.Play:One("unmute.ogg", 0.1)
 			end
-			Callbacks:ServerCallback("Phone:Settings:Update", {
+			exports["sandbox-base"]:ServerCallback("Phone:Settings:Update", {
 				type = "volume",
 				val = _settings.volume,
 			})
@@ -349,25 +347,25 @@ end)
 
 RegisterNUICallback("Home", function(data, cb)
 	cb("OK")
-	Callbacks:ServerCallback("Phone:Apps:Home", data)
+	exports["sandbox-base"]:ServerCallback("Phone:Apps:Home", data)
 end)
 
 RegisterNUICallback("Dock", function(data, cb)
 	cb("OK")
-	Callbacks:ServerCallback("Phone:Apps:Dock", data)
+	exports["sandbox-base"]:ServerCallback("Phone:Apps:Dock", data)
 end)
 
 RegisterNUICallback("Reorder", function(data, cb)
 	cb("OK")
-	Callbacks:ServerCallback("Phone:Apps:Reorder", data)
+	exports["sandbox-base"]:ServerCallback("Phone:Apps:Reorder", data)
 end)
 
 RegisterNUICallback("UpdateAlias", function(data, cb)
-	Callbacks:ServerCallback("Phone:UpdateAlias", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:UpdateAlias", data, cb)
 end)
 
 RegisterNUICallback("UpdateProfile", function(data, cb)
-	Callbacks:ServerCallback("Phone:UpdateProfile", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:UpdateProfile", data, cb)
 end)
 
 RegisterNetEvent("Phone:Client:RestorePosition", function(data)
@@ -379,7 +377,7 @@ end)
 
 RegisterNUICallback("Phone:SavePosition", function(data, cb)
 	cb("OK")
-	Callbacks:ServerCallback("Phone:SavePosition", data)
+	exports["sandbox-base"]:ServerCallback("Phone:SavePosition", data)
 end)
 
 RegisterNUICallback("AcceptPopup", function(data, cb)
@@ -402,7 +400,7 @@ end)
 
 RegisterNUICallback("SaveShare", function(data, cb)
 	if data.type == "contacts" then
-		Callbacks:ServerCallback("Phone:Contacts:Create", data.data, function(nId)
+		exports["sandbox-base"]:ServerCallback("Phone:Contacts:Create", data.data, function(nId)
 			cb(nId)
 			if nId then
 				Phone.Data:Add("contacts", {
@@ -415,7 +413,7 @@ RegisterNUICallback("SaveShare", function(data, cb)
 			end
 		end)
 	elseif data.type == "documents" then
-		Callbacks:ServerCallback("Phone:Documents:RecieveShare", data.data, function(success)
+		exports["sandbox-base"]:ServerCallback("Phone:Documents:RecieveShare", data.data, function(success)
 			cb(success)
 			if success then
 				if success.update then
@@ -432,5 +430,5 @@ end)
 
 RegisterNUICallback("ShareMyContact", function(data, cb)
 	cb(true)
-	Callbacks:ServerCallback("Phone:ShareMyContact", {})
+	exports["sandbox-base"]:ServerCallback("Phone:ShareMyContact", {})
 end)

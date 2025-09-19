@@ -275,7 +275,7 @@ RegisterNetEvent("UI:Client:Reset", function()
 end)
 
 AddEventHandler("SAGMA:Client:Sell", function()
-	Callbacks:ServerCallback("Businesses:SAGMA:Sell", {})
+	exports["sandbox-base"]:ServerCallback("Businesses:SAGMA:Sell", {})
 end)
 
 AddEventHandler("Businesses:Client:SAGMA:OpenTable", function(e, data)

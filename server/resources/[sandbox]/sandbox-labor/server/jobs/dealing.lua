@@ -27,7 +27,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	Vendor:Create("CornerDealer", false, "Unknown", false, {}, _toolsForSale, "badge-dollar", "View Offers", false, false,
 		true)
 
-	Callbacks:RegisterServerCallback("CornerDealing:Enable", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:Enable", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if not hasValue(states, "SCRIPT_CORNER_DEALING") then
@@ -45,7 +45,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:Disable", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:Disable", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if hasValue(states, "SCRIPT_CORNER_DEALING") then
@@ -59,7 +59,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:SyncPed", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:SyncPed", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
@@ -76,7 +76,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:SyncEvent", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:SyncEvent", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
@@ -93,7 +93,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:CheckCorner", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:CheckCorner", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
@@ -115,7 +115,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:StartCornering", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:StartCornering", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
@@ -132,13 +132,13 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:StopCornering", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:StopCornering", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			Labor.Offers:Fail(_joiners[source], _JOB)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:GetSaleMenu", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:GetSaleMenu", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
@@ -210,7 +210,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:DoSale", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:DoSale", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
@@ -316,7 +316,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:NoPeds", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:NoPeds", function(source, data, cb)
 		if _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
@@ -350,7 +350,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	-- Callbacks:RegisterServerCallback("CornerDealing:PedDied", function(source, data, cb)
+	-- exports["sandbox-base"]:RegisterServerCallback("CornerDealing:PedDied", function(source, data, cb)
 	-- 	if _joiners[source] ~= nil then
 	-- 		local plyr = exports['sandbox-base']:FetchSource(source)
 	-- 		if plyr ~= nil then
@@ -365,7 +365,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	-- 	end
 	-- end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:DestroyVehicle", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:DestroyVehicle", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
@@ -404,7 +404,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:PedTimeout", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:PedTimeout", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
@@ -423,7 +423,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:LeaveArea", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:LeaveArea", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then

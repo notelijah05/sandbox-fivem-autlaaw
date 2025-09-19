@@ -15,7 +15,6 @@ _ammoNames = {
 AddEventHandler("Evidence:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -37,7 +36,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Evidence", {
 		"Logger",
-		"Callbacks",
 		"Game",
 		"Menu",
 		"Targeting",
@@ -183,7 +181,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			dna = true,
 		})
 
-		Callbacks:RegisterClientCallback("Evidence:RunBallistics", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Evidence:RunBallistics", function(data, cb)
 			local success, alreadyFiled, matchingEvidence, policeWeaponId, serial = table.unpack(data)
 
 			Animations.Emotes:Play('type3', false, 8000, true, true)

@@ -200,35 +200,36 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		},
 	}, 1)
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:CheckVehicle", function(source, data, cb)
-		local entState = Entity(NetworkGetEntityFromNetworkId(data.vNet)).state
-		local model = GetEntityModel(ent)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Chopping:CheckVehicle",
+		function(source, data, cb)
+			local entState = Entity(NetworkGetEntityFromNetworkId(data.vNet)).state
+			local model = GetEntityModel(ent)
 
-		local list = Laptop.LSUnderground.Chopping:FindList(source, data.vNet)
-		local isInProg = Laptop.LSUnderground.Chopping:InProgress(source, list?.type, model, list?.listId)
-		if list ~= nil and not isInProg then
-			_pChopping[source] = entState.VIN
-			_inProgress[entState.VIN] = {
-				source = source,
-				type = list.type,
-				listId = list.listId,
-				model = GetEntityModel(NetworkGetEntityFromNetworkId(data.vNet)),
-			}
-			_chopped[entState.VIN] = {
-				parts = {},
-				tires = {},
-				body = false,
-			}
-			cb(true)
-		else
-			if isInProg then
-				Execute:Client(source, "Notification", "Error", "Vehicle Already Being Chopped")
+			local list = Laptop.LSUnderground.Chopping:FindList(source, data.vNet)
+			local isInProg = Laptop.LSUnderground.Chopping:InProgress(source, list?.type, model, list?.listId)
+			if list ~= nil and not isInProg then
+				_pChopping[source] = entState.VIN
+				_inProgress[entState.VIN] = {
+					source = source,
+					type = list.type,
+					listId = list.listId,
+					model = GetEntityModel(NetworkGetEntityFromNetworkId(data.vNet)),
+				}
+				_chopped[entState.VIN] = {
+					parts = {},
+					tires = {},
+					body = false,
+				}
+				cb(true)
+			else
+				if isInProg then
+					Execute:Client(source, "Notification", "Error", "Vehicle Already Being Chopped")
+				end
+				cb(false)
 			end
-			cb(false)
-		end
-	end)
+		end)
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:ChopPart", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Chopping:ChopPart", function(source, data, cb)
 		if data?.index ~= nil then
 			local pState = Player(source).state
 			local ent = NetworkGetEntityFromNetworkId(data.vNet)
@@ -260,7 +261,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:ChopTire", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Chopping:ChopTire", function(source, data, cb)
 		if data?.index ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local pState = Player(source).state
@@ -288,98 +289,103 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:ChopVehicle", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local pState = Player(source).state
-		local entState = Entity(NetworkGetEntityFromNetworkId(data.vNet)).state
-		if char ~= nil then
-			if not entState.Owned then
-				local list = Laptop.LSUnderground.Chopping:FindList(source, data.vNet)
-				if list ~= nil or _inProgress[entState.VIN] ~= nil then
-					if not _chopped[entState.VIN]?.body then
-						_chopped[entState.VIN].body = true
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Chopping:ChopVehicle",
+		function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			local pState = Player(source).state
+			local entState = Entity(NetworkGetEntityFromNetworkId(data.vNet)).state
+			if char ~= nil then
+				if not entState.Owned then
+					local list = Laptop.LSUnderground.Chopping:FindList(source, data.vNet)
+					if list ~= nil or _inProgress[entState.VIN] ~= nil then
+						if not _chopped[entState.VIN]?.body then
+							_chopped[entState.VIN].body = true
 
-						local repLevel = Reputation:GetLevel(source, "Chopping") or 0
-						local calcLvl = repLevel
-						if calcLvl < 1 then calcLvl = 1 end
-						calcLvl = math.ceil(calcLvl / 2)
+							local repLevel = Reputation:GetLevel(source, "Chopping") or 0
+							local calcLvl = repLevel
+							if calcLvl < 1 then calcLvl = 1 end
+							calcLvl = math.ceil(calcLvl / 2)
 
-						Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1, calcLvl)
-						Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1, calcLvl)
-						Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1, calcLvl)
-						Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1, calcLvl)
-
-						if list?.entry?.hv then
+							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+								calcLvl)
+							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+								calcLvl)
+							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+								calcLvl)
 							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
 								calcLvl)
 
-							if list.type == 3 then
-								Crypto.Exchange:Add("VRM", char:GetData("CryptoWallet"), math.random(5, 10))
-							else
-								Crypto.Exchange:Add("MALD", char:GetData("CryptoWallet"), math.random(8, 14))
-							end
-							Wallet:Modify(source, math.random(500) + 500)
-						else
-							if list.type == 3 then
-								Crypto.Exchange:Add("VRM", char:GetData("CryptoWallet"), math.random(2, 6))
-							else
-								Crypto.Exchange:Add("MALD", char:GetData("CryptoWallet"), math.random(4, 7))
-							end
-							Wallet:Modify(source, math.random(200) + 200)
-						end
+							if list?.entry?.hv then
+								Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+									calcLvl)
 
-						Reputation.Modify:Add(source, "Chopping", 250 * list.type)
-						Laptop.LSUnderground.Chopping:CreatePickupBox(source, list?.entry?.hv or false, list.type)
+								if list.type == 3 then
+									Crypto.Exchange:Add("VRM", char:GetData("CryptoWallet"), math.random(5, 10))
+								else
+									Crypto.Exchange:Add("MALD", char:GetData("CryptoWallet"), math.random(8, 14))
+								end
+								Wallet:Modify(source, math.random(500) + 500)
+							else
+								if list.type == 3 then
+									Crypto.Exchange:Add("VRM", char:GetData("CryptoWallet"), math.random(2, 6))
+								else
+									Crypto.Exchange:Add("MALD", char:GetData("CryptoWallet"), math.random(4, 7))
+								end
+								Wallet:Modify(source, math.random(200) + 200)
+							end
 
-						Citizen.SetTimeout(1000 * math.random(20, 60), function()
-							if char ~= nil then
-								Phone.Email:Send(
-									source,
-									"shadow@ls.undg",
-									os.time(),
-									"Recent Work",
-									string.format(
-										[[
+							Reputation.Modify:Add(source, "Chopping", 250 * list.type)
+							Laptop.LSUnderground.Chopping:CreatePickupBox(source, list?.entry?.hv or false, list.type)
+
+							Citizen.SetTimeout(1000 * math.random(20, 60), function()
+								if char ~= nil then
+									Phone.Email:Send(
+										source,
+										"shadow@ls.undg",
+										os.time(),
+										"Recent Work",
+										string.format(
+											[[
 												Good Work %s<br /><br />
 												Some of my guys were able to get some more materials and parts out of that car, I've left those materials & parts in a package with the salvaging foreman.<br /><br />
 												Goodluck with your future endeavors
 											]],
-										char:GetData("First")
+											char:GetData("First")
+										)
 									)
-								)
-							end
-						end)
+								end
+							end)
 
-						_pChopping[source] = nil
-						Laptop.LSUnderground.Chopping:RemoveFromList(
-							source,
-							list ~= nil and list?.type or _inProgress[entState.VIN]?.type,
-							GetEntityModel(NetworkGetEntityFromNetworkId(data.vNet)),
-							list ~= nil and list?.listId or _inProgress[entState.VIN]?.listId
-						)
+							_pChopping[source] = nil
+							Laptop.LSUnderground.Chopping:RemoveFromList(
+								source,
+								list ~= nil and list?.type or _inProgress[entState.VIN]?.type,
+								GetEntityModel(NetworkGetEntityFromNetworkId(data.vNet)),
+								list ~= nil and list?.listId or _inProgress[entState.VIN]?.listId
+							)
+						end
+
+						local veh = NetworkGetEntityFromNetworkId(data.vNet)
+						local entState = Entity(veh).state
+						_inProgress[entState.VIN] = nil
+						Vehicles:Delete(veh, function() end)
+
+						return cb(true)
 					end
-
-					local veh = NetworkGetEntityFromNetworkId(data.vNet)
-					local entState = Entity(veh).state
-					_inProgress[entState.VIN] = nil
-					Vehicles:Delete(veh, function() end)
-
-					return cb(true)
 				end
 			end
-		end
 
-		cb(false)
-	end)
+			cb(false)
+		end)
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:CancelChop", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Chopping:CancelChop", function(source, data, cb)
 		if _pChopping[source] ~= nil then
 			_inProgress[_pChopping[source]] = nil
 			_pChopping[source] = nil
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:Pickup", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Chopping:Pickup", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local pickups = char:GetData("ChopPickups") or {}
@@ -397,69 +403,70 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Chopping:GetPublicList", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			if not _emailed[char:GetData("ID")] or os.time() > _emailed[char:GetData("ID")] then
-				_emailed[char:GetData("ID")] = os.time() + (60 * 10)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Chopping:GetPublicList",
+		function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char ~= nil then
+				if not _emailed[char:GetData("ID")] or os.time() > _emailed[char:GetData("ID")] then
+					_emailed[char:GetData("ID")] = os.time() + (60 * 10)
 
-				local str = [[
+					local str = [[
 					Hello %s<br /><br />
 					Here is the current outstanding public requests.<br /><br />
 					Requested Vehicles:
 					<ul>
 				]]
 
-				for k, v in ipairs(_publicChoplist.list) do
-					if v.hv then
-						str = str .. string.format("<li>(HIGHVALUE) %s</li>", v.name)
-					else
-						str = str .. string.format("<li>%s</li>", v.name)
-					end
-				end
-
-				Phone.Email:Send(
-					source,
-					"shadow@ls.undg",
-					os.time(),
-					"Oustanding Public Requests",
-					string.format(str, char:GetData("First")),
-					{},
-					(os.time() + (60 * 20))
-				)
-
-				if char:GetData("ChopLists") ~= nil and #char:GetData("ChopLists") > 0 then
-					local str = [[
-						Hello %s<br /><br />
-						Here is the current outstanding personal shopping lists you have.
-					]]
-					for k, v in pairs(char:GetData("ChopLists")) do
-						str = str .. [[<br /><br />Requested Vehicles:<ul>]]
-
-						for k, v in ipairs(v) do
-							if v.hv then
-								str = str .. string.format("<li>(HIGHVALUE) %s</li>", v.name)
-							else
-								str = str .. string.format("<li>%s</li>", v.name)
-							end
+					for k, v in ipairs(_publicChoplist.list) do
+						if v.hv then
+							str = str .. string.format("<li>(HIGHVALUE) %s</li>", v.name)
+						else
+							str = str .. string.format("<li>%s</li>", v.name)
 						end
-
-						str = str .. [[</ul>]]
 					end
 
 					Phone.Email:Send(
 						source,
 						"shadow@ls.undg",
 						os.time(),
-						"Oustanding Personal Requests",
-						string.format(str, char:GetData("First"))
+						"Oustanding Public Requests",
+						string.format(str, char:GetData("First")),
+						{},
+						(os.time() + (60 * 20))
 					)
+
+					if char:GetData("ChopLists") ~= nil and #char:GetData("ChopLists") > 0 then
+						local str = [[
+						Hello %s<br /><br />
+						Here is the current outstanding personal shopping lists you have.
+					]]
+						for k, v in pairs(char:GetData("ChopLists")) do
+							str = str .. [[<br /><br />Requested Vehicles:<ul>]]
+
+							for k, v in ipairs(v) do
+								if v.hv then
+									str = str .. string.format("<li>(HIGHVALUE) %s</li>", v.name)
+								else
+									str = str .. string.format("<li>%s</li>", v.name)
+								end
+							end
+
+							str = str .. [[</ul>]]
+						end
+
+						Phone.Email:Send(
+							source,
+							"shadow@ls.undg",
+							os.time(),
+							"Oustanding Personal Requests",
+							string.format(str, char:GetData("First"))
+						)
+					end
+				else
+					Execute:Client(source, "Notification", "Error", "Recently Requested Active Chop Lists")
 				end
-			else
-				Execute:Client(source, "Notification", "Error", "Recently Requested Active Chop Lists")
 			end
-		end
-	end)
+		end)
 
 	Inventory.Items:RegisterUse("choplist", "Chopping", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)

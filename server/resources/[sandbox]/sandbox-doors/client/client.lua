@@ -16,7 +16,6 @@ DOORS_PERMISSION_CACHE = {}
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
@@ -37,7 +36,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
 		"Logger",
-		"Callbacks",
 		"Game",
 		"Utils",
 		"Menu",
@@ -62,7 +60,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			DoGarageKeyFobAction()
 		end)
 
-		Callbacks:RegisterClientCallback("Doors:GetCurrentDoor", function(data, cb)
+		exports["sandbox-base"]:RegisterClientCallback("Doors:GetCurrentDoor", function(data, cb)
 			cb(_lookingAtDoor)
 		end)
 
@@ -80,7 +78,7 @@ function InitDoors()
 	initLoaded = true
 	DOORS_STATE = {}
 	ELEVATOR_STATE = {}
-	Callbacks:ServerCallback("Doors:Fetch", {}, function(fetchedDoors, fetchedElevators)
+	exports["sandbox-base"]:ServerCallback("Doors:Fetch", {}, function(fetchedDoors, fetchedElevators)
 		for k, v in ipairs(_doorConfig) do
 			if v.id and not DOORS_IDS[v.id] then
 				DOORS_IDS[v.id] = k
@@ -362,7 +360,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 	if _lookingAtDoor and _showingDoorInfo and not _showingDoorDisabled then
 		StopShowingDoorInfo()
 		DoorAnim()
-		Callbacks:ServerCallback("Doors:ToggleLocks", _lookingAtDoor, function(success, newState)
+		exports["sandbox-base"]:ServerCallback("Doors:ToggleLocks", _lookingAtDoor, function(success, newState)
 			if success then
 				Sounds.Do.Play:One("doorlocks.ogg", 0.2)
 			end

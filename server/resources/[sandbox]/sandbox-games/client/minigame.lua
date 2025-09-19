@@ -42,7 +42,6 @@ local _playing = nil
 AddEventHandler("minigame:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
@@ -62,7 +61,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("minigame", {
 		"Hud",
-		"Callbacks",
 		"Action",
 		"Progress",
 		"Keybinds",

@@ -6,7 +6,6 @@ local _generatedNames = {}
 AddEventHandler("Police:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -28,7 +27,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Middleware",
-		"Callbacks",
 		"Logger",
 		"Jobs",
 		"Chat",
@@ -64,7 +62,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		Inventory.Items:RegisterUse("spikes", "Police", function(source, slot, itemData)
 			if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
-				Callbacks:ClientCallback(source, "Police:DeploySpikes", {}, function(data)
+				exports["sandbox-base"]:ClientCallback(source, "Police:DeploySpikes", {}, function(data)
 					if data ~= nil then
 						TriggerClientEvent("Police:Client:AddDeployedSpike", -1, data.positions, data.h, source)
 
@@ -84,7 +82,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Police:GSRTest", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Police:GSRTest", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 			local pState = Player(source).state
@@ -102,7 +100,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Prison:SetLockdown", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Prison:SetLockdown", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local pState = Player(source).state
 			-- add PD Alert
@@ -121,7 +119,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Prison:SetCellState", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Prison:SetCellState", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local pState = Player(source).state
 
@@ -139,7 +137,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Police:BACTest", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Police:BACTest", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 			local pState = Player(source).state
@@ -172,7 +170,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			cb(true)
 		end)
 
-		Callbacks:RegisterServerCallback("Police:DNASwab", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Police:DNASwab", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 			local pState = Player(source).state
@@ -198,7 +196,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Police:Breach", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Police:Breach", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 			if (data?.type == nil or data?.property == nil) then
@@ -214,7 +212,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						cb(true)
 						Execute:Client(source, "Properties", "Enter", data.property)
 					else
-						Callbacks:ClientCallback(source, "Police:Breach", {}, function(s)
+						exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
 							if s then
 								_breached[data.type][data.property] = os.time() + (60 * 10)
 								Execute:Client(source, "Properties", "Enter", data.property)
@@ -230,7 +228,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 						cb(true)
 					else
-						Callbacks:ClientCallback(source, "Police:Breach", {}, function(s)
+						exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
 							if s then
 								TriggerEvent("Labor:Server:HouseRobbery:Breach", source, data.property)
 
@@ -251,7 +249,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 								return cb(data.property)
 							else
-								Callbacks:ClientCallback(source, "Police:Breach", {}, function(s)
+								exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
 									if s then
 										_breached[data.type][data.property] = os.time() + (60 * 10)
 										Execute:Client(source, "Apartment", "Enter", aptTier, data.property)
@@ -276,7 +274,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Police:AccessRifleRack", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Police:AccessRifleRack", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local myDuty = Player(source).state.onDuty
@@ -286,7 +284,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						if Config.PoliceCars[GetEntityModel(veh)] then
 							local entState = Entity(veh).state
 							if Vehicles.Keys:Has(source, entState.VIN, 'police') then
-								Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+								exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 									invType = 3,
 									owner = ("pdrack:%s"):format(entState.VIN),
 								}, function()
@@ -308,7 +306,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						if Config.PoliceCars[GetEntityModel(veh)] then
 							local entState = Entity(veh).state
 							if Vehicles.Keys:Has(source, entState.VIN, 'prison') then
-								Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+								exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 									invType = 999,
 									owner = ("pdrack:%s"):format(entState.VIN),
 								}, function()
@@ -328,7 +326,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Police:RemoveMask", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Police:RemoveMask", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil and Player(source).state.onDuty == "police" then
 				local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
@@ -338,7 +336,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Police:GetRadioChannel", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Police:GetRadioChannel", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil and Player(source).state.onDuty == "police" then
 				local tState = Player(tonumber(data)).state
@@ -394,7 +392,7 @@ RegisterNetEvent("Police:Server:Panic", function(isAlpha)
 	local pState = Player(src).state
 	if pState.onDuty == "police" then
 		local coords = GetEntityCoords(GetPlayerPed(src))
-		Callbacks:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
+		exports["sandbox-base"]:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
 			if isAlpha then
 				EmergencyAlerts:Create("13-A", "Officer Down", { "police_alerts", "ems_alerts" }, location, {
 					icon = "circle-exclamation",
@@ -431,7 +429,7 @@ RegisterNetEvent("Police:Server:Panic", function(isAlpha)
 		end)
 	elseif Player(src).state.onDuty == "prison" then
 		local coords = GetEntityCoords(GetPlayerPed(src))
-		Callbacks:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
+		exports["sandbox-base"]:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
 			if isAlpha then
 				EmergencyAlerts:Create("13-A", "Corrections Officer Down",
 					{ "police_alerts", "doc_alerts", "ems_alerts" },
@@ -709,7 +707,7 @@ RegisterNetEvent("Police:Server:Slimjim", function()
 	local src = source
 
 	if Player(src).state.onDuty == "police" then
-		Callbacks:ClientCallback(src, "Vehicles:Slimjim", true, function()
+		exports["sandbox-base"]:ClientCallback(src, "Vehicles:Slimjim", true, function()
 
 		end)
 	end

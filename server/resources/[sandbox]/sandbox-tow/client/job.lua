@@ -1,5 +1,5 @@
 AddEventHandler('Tow:Client:RequestJob', function()
-    Callbacks:ServerCallback('Tow:RequestJob', {}, function(success)
+    exports["sandbox-base"]:ServerCallback('Tow:RequestJob', {}, function(success)
         if success then
             Notification:Success('You are Now Employed at Tow Yard', 5000, 'truck-tow')
         else
@@ -9,7 +9,7 @@ AddEventHandler('Tow:Client:RequestJob', function()
 end)
 
 AddEventHandler('Tow:Client:QuitJob', function()
-    Callbacks:ServerCallback('Tow:QuitJob', {}, function(success)
+    exports["sandbox-base"]:ServerCallback('Tow:QuitJob', {}, function(success)
         if not success then
             Notification:Error('Request to Quit Failed', 5000, 'truck-tow')
         end
@@ -17,17 +17,17 @@ AddEventHandler('Tow:Client:QuitJob', function()
 end)
 
 AddEventHandler('Tow:Client:OnDuty', function()
-    Callbacks:ServerCallback('Tow:OnDuty', {})
+    exports["sandbox-base"]:ServerCallback('Tow:OnDuty', {})
 end)
 
 AddEventHandler('Tow:Client:OffDuty', function()
-    Callbacks:ServerCallback('Tow:OffDuty', {})
+    exports["sandbox-base"]:ServerCallback('Tow:OffDuty', {})
 end)
 
 AddEventHandler('Tow:Client:RequestTruck', function()
     local availableSpace = GetClosestAvailableParkingSpace(LocalPlayer.state.myPos, _towSpaces)
     if availableSpace then
-        Callbacks:ServerCallback('Tow:RequestTruck', availableSpace, function(vehNet)
+        exports["sandbox-base"]:ServerCallback('Tow:RequestTruck', availableSpace, function(vehNet)
             if vehNet ~= nil then
                 SetEntityAsMissionEntity(NetToVeh(vehNet))
             end
@@ -38,7 +38,7 @@ AddEventHandler('Tow:Client:RequestTruck', function()
 end)
 
 AddEventHandler('Tow:Client:ReturnTruck', function()
-    Callbacks:ServerCallback('Tow:ReturnTruck', {})
+    exports["sandbox-base"]:ServerCallback('Tow:ReturnTruck', {})
 end)
 
 AddEventHandler('Tow:Client:RequestImpound', function(entityData)
@@ -56,7 +56,7 @@ AddEventHandler('Tow:Client:RequestImpound', function(entityData)
             canCancel = true,
             vehicle = false,
             disarm = false,
-			ignoreModifier = true,
+            ignoreModifier = true,
             controlDisables = {
                 disableMovement = true,
                 disableCarMovement = true,
@@ -72,7 +72,7 @@ AddEventHandler('Tow:Client:RequestImpound', function(entityData)
             end
         end, function(cancelled)
             if not cancelled and DoesEntityExist(entityData.entity) and (#(GetEntityCoords(entityData.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 10.0) and IsVehicleEmpty(entityData.entity) then
-                Callbacks:ServerCallback('Vehicles:Impound', {
+                exports["sandbox-base"]:ServerCallback('Vehicles:Impound', {
                     vNet = VehToNet(entityData.entity),
                     type = 'impound',
                 }, function(success)

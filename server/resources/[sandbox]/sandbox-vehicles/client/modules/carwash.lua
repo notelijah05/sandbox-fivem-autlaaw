@@ -26,7 +26,7 @@ local carWashLocations = {
 
 AddEventHandler('Vehicles:Client:StartUp', function()
     for k, v in ipairs(carWashLocations) do
-        Polyzone.Create:Box('carwash_'.. k, v.center, v.length, v.width, v.options, {
+        Polyzone.Create:Box('carwash_' .. k, v.center, v.length, v.width, v.options, {
             carwash = true,
         })
     end
@@ -69,7 +69,7 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
                     }, function(cancelled)
                         usingCarWash = false
                         if cancelled then return end
-                        Callbacks:ServerCallback('Vehicles:CleanVehicle', {
+                        exports["sandbox-base"]:ServerCallback('Vehicles:CleanVehicle', {
                             vNet = VehToNet(VEHICLE_INSIDE),
                             bill = true,
                         })
@@ -106,7 +106,7 @@ RegisterNetEvent('Vehicles:Client:CleaningKit', function()
             usingCarWash = false
             if cancelled then return end
             if DoesEntityExist(target.entity) and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0 then
-                Callbacks:ServerCallback('Vehicles:CleanVehicle', {
+                exports["sandbox-base"]:ServerCallback('Vehicles:CleanVehicle', {
                     vNet = VehToNet(target.entity),
                     bill = false,
                 }, function(success)

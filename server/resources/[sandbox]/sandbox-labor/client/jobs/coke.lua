@@ -96,7 +96,7 @@ local function SetupPeds(peds)
 end
 
 AddEventHandler("Labor:Client:Setup", function()
-	Callbacks:RegisterClientCallback("Labor:Coke:GetSpawnCoords", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Labor:Coke:GetSpawnCoords", function(data, cb)
 		local coords = {}
 		for i = 1, math.random(25, 50) do
 			local c = vector3(
@@ -156,11 +156,11 @@ AddEventHandler("Labor:Client:Setup", function()
 end)
 
 AddEventHandler("Coke:Client:StartWork", function()
-	Callbacks:ServerCallback("Coke:StartWork")
+	exports["sandbox-base"]:ServerCallback("Coke:StartWork")
 end)
 
 AddEventHandler("Coke:Client:Abort", function()
-	Callbacks:ServerCallback("Coke:Abort")
+	exports["sandbox-base"]:ServerCallback("Coke:Abort")
 end)
 
 RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
@@ -175,14 +175,14 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 
 	eventHandlers["poly-enter"] = AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZone, data)
 		if id == "cayo_perico" and _state == 1 then
-			Callbacks:ServerCallback("Coke:ArriveAtCayo", {}, function() end)
+			exports["sandbox-base"]:ServerCallback("Coke:ArriveAtCayo", {}, function() end)
 		elseif
 			id == "CokeDrop"
 			and _state == 3
 			and not _spawned
 			and _joiner == GetPlayerServerId(LocalPlayer.state.PlayerID)
 		then
-			Callbacks:ServerCallback("Coke:ArrivedAtPoint", {}, function(peds)
+			exports["sandbox-base"]:ServerCallback("Coke:ArrivedAtPoint", {}, function(peds)
 				if peds then
 					SetupPeds(peds)
 				end
@@ -194,7 +194,7 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 	eventHandlers["poly-exit"] = AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZone, data)
 		if id == "cayo_perico" then
 			if _state == 5 then
-				Callbacks:ServerCallback("Coke:LeftCayo", {}, function() end)
+				exports["sandbox-base"]:ServerCallback("Coke:LeftCayo", {}, function() end)
 			else
 			end
 		end
@@ -226,7 +226,7 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["cayo-start"] = AddEventHandler("Coke:Client:StartHeist", function()
-		Callbacks:ServerCallback("Coke:StartHeist", {}, function() end)
+		exports["sandbox-base"]:ServerCallback("Coke:StartHeist", {}, function() end)
 	end)
 
 	eventHandlers["cayo-setup"] = RegisterNetEvent(string.format("Coke:Client:%s:SetupHeist", joiner), function(drop)
@@ -291,12 +291,12 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["finish"] = AddEventHandler("Coke:Client:Finish", function()
-		Callbacks:ServerCallback("Coke:Finish", {}, function() end)
+		exports["sandbox-base"]:ServerCallback("Coke:Finish", {}, function() end)
 	end)
 end)
 
 AddEventHandler("Coke:Client:StartJob", function()
-	Callbacks:ServerCallback("Coke:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("Coke:StartJob", _joiner, function(state)
 		if not state then
 			Notification:Error("Unable To Start Job")
 		end

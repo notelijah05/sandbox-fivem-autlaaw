@@ -197,7 +197,6 @@ function WeaponsComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
@@ -207,7 +206,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"Weapons",
 		"Middleware",
-		"Callbacks",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then
@@ -215,7 +213,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		WeaponsComponents()
 
-		Callbacks:RegisterServerCallback("Weapons:UseThrowable", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Weapons:UseThrowable", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if INVENTORY.Items:RemoveSlot(char:GetData("SID"), data.Name, 1, data.Slot, 1) then
@@ -231,7 +229,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Callbacks:RegisterServerCallback("Weapons:PossibleCheaterWarning", function(source, data, cb)
+		exports["sandbox-base"]:RegisterServerCallback("Weapons:PossibleCheaterWarning", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				Logger:Warn("Pwnzor",
@@ -356,7 +354,7 @@ WEAPONS = {
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local p = promise.new()
-			Callbacks:ClientCallback(source, "Weapons:Check", {}, function(data)
+			exports["sandbox-base"]:ClientCallback(source, "Weapons:Check", {}, function(data)
 				if not data then
 					Execute:Client(source, "Notification", "Error", "No Weapon Equipped")
 					p:resolve(false)
@@ -365,7 +363,7 @@ WEAPONS = {
 					local weaponData = Inventory.Items:GetData(data.item)
 					if itemData ~= nil and itemData.component ~= nil then
 						if itemData.component.strings[weaponData.weapon or weaponData.name] ~= nil then
-							Callbacks:ClientCallback(
+							exports["sandbox-base"]:ClientCallback(
 								source,
 								"Weapons:EquipAttachment",
 								itemData.label,

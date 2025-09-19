@@ -26,7 +26,7 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 						text = data.action,
 						event = string.format("Labor:Client:%s:Action", joiner),
 						data = v.data,
-                        tempjob = "Prison",
+						tempjob = "Prison",
 						isEnabled = function(data)
 							return _working and _state == 1
 						end,
@@ -39,7 +39,7 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 						text = data.action,
 						event = string.format("Labor:Client:%s:Action", joiner),
 						data = v.data,
-                        tempjob = "Prison",
+						tempjob = "Prison",
 						isEnabled = function(data)
 							return _working and _state == 1
 						end,
@@ -52,7 +52,7 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 						text = data.action,
 						event = string.format("Labor:Client:%s:Action", joiner),
 						data = v.data,
-                        tempjob = "Prison",
+						tempjob = "Prison",
 						isEnabled = function(data)
 							return _working and _state == 1
 						end,
@@ -61,7 +61,7 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 			end
 		end
 
-        Targeting.Zones:Refresh()
+		Targeting.Zones:Refresh()
 	end)
 
 	eventHandlers["action"] = AddEventHandler(string.format("Labor:Client:%s:Action", joiner), function(ent, data)
@@ -80,11 +80,11 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 			animation = data.animation,
 		}, function(status)
 			if not status then
-				Callbacks:ServerCallback("Prison:Action", data.id, function(s)
+				exports["sandbox-base"]:ServerCallback("Prison:Action", data.id, function(s)
 					local id = string.format("PrisonNode%s", data.id)
 					Targeting.Zones:RemoveZone(id)
 					Blips:Remove(id)
-                    Targeting.Zones:Refresh()
+					Targeting.Zones:Refresh()
 				end)
 			end
 		end)
@@ -97,7 +97,7 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 				Targeting.Zones:RemoveZone(id)
 				Blips:Remove(id)
 			end
-            Targeting.Zones:Refresh()
+			Targeting.Zones:Refresh()
 		end
 
 		_nodes = nil
@@ -106,7 +106,7 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("Prison:Client:StartJob", function()
-	Callbacks:ServerCallback("Prison:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("Prison:StartJob", _joiner, function(state)
 		if not state then
 			Notification:Error("Unable To Start Job")
 		end
@@ -124,7 +124,7 @@ RegisterNetEvent("Prison:Client:OffDuty", function(time)
 			Targeting.Zones:RemoveZone(id)
 			Blips:Remove(id)
 		end
-        Targeting.Zones:Refresh()
+		Targeting.Zones:Refresh()
 	end
 
 	_joiner = nil

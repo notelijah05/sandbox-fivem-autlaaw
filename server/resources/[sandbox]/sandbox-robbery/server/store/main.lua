@@ -594,7 +594,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	GlobalState["StoreRobberies"] = _storeLocs
 	GlobalState["StoreSafes"] = _safes
 
-	Callbacks:RegisterServerCallback("Robbery:Store:Register", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:Register", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local d = GlobalState[string.format("Register:%s:%s", data.coords[1], data.coords[2])]
@@ -645,7 +645,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:StartSafeCrack", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:StartSafeCrack", function(source, data, cb)
 		local pState = Player(source).state
 
 		if pState.storePoly ~= nil then
@@ -702,7 +702,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								)
 							)
 
-							Callbacks:ClientCallback(source, "Robbery:Store:DoSafeCrack", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Store:DoSafeCrack", {
 								passes = 1,
 								config = {
 									countdown = 3,
@@ -808,7 +808,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:StartSafeSequence", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:StartSafeSequence", function(source, data, cb)
 		if GetGameTimer() < STORE_SERVER_START_WAIT then
 			Execute:Client(
 				source,
@@ -835,7 +835,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		cb(true)
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:StartLockpick", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:StartLockpick", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
@@ -897,7 +897,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:Safe", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:Safe", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if GlobalState[string.format("Safe:%s", data.id)] == nil and not GlobalState["RestartLockdown"] then
 			if GetGameTimer() < STORE_SERVER_START_WAIT then
@@ -987,7 +987,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:LootSafe", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:LootSafe", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if _robbedSafes[data.id] ~= nil and _robbedSafes[data.id].state == 2 then
@@ -1022,7 +1022,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:SecureSafe", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:SecureSafe", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local myDuty = Player(source).state.onDuty

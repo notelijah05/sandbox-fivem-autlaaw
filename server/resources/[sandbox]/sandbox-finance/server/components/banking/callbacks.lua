@@ -1,7 +1,7 @@
 local _actionCooldowns = {}
 
 function RegisterBankingCallbacks()
-	Callbacks:RegisterServerCallback("Finance:Paycheck", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Finance:Paycheck", function(source, data, cb)
 		local pState = Player(source).state
 		pState.gettingPaycheck = true
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -31,7 +31,7 @@ function RegisterBankingCallbacks()
 		pState.gettingPaycheck = false
 	end)
 
-	Callbacks:RegisterServerCallback("Banking:RegisterAccount", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Banking:RegisterAccount", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char ~= nil then
@@ -53,11 +53,11 @@ function RegisterBankingCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Banking:RenameAccount", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Banking:RenameAccount", function(source, data, cb)
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Banking:AddJoint", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Banking:AddJoint", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data?.target > 0 then
 			local p = promise.new()
@@ -105,7 +105,7 @@ function RegisterBankingCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Banking:RemoveJoint", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Banking:RemoveJoint", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			cb(Banking.Accounts:RemovePersonalSavingsJointOwner(data.account, data.target))
@@ -114,7 +114,7 @@ function RegisterBankingCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Banking:GetAccounts", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Banking:GetAccounts", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local SID = char:GetData("SID")
@@ -265,7 +265,7 @@ function RegisterBankingCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Banking:GetAccountsTransactions", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Banking:GetAccountsTransactions", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data?.account and data?.perPage then
 			local offset = data?.offset
@@ -300,7 +300,7 @@ function RegisterBankingCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Banking:DoAccountAction", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Banking:DoAccountAction", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local SID = char:GetData("SID")
 		local account, action = data.account, data.action

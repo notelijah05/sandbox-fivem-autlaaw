@@ -6,15 +6,15 @@ _effectCds = {
 
 function RegisterItemUse()
 	Inventory.Items:RegisterUse("meth_table", "DrugShit", function(source, slot, itemData)
-		Callbacks:ClientCallback(source, "Drugs:Meth:PlaceTable", slot.id, function() end)
+		exports["sandbox-base"]:ClientCallback(source, "Drugs:Meth:PlaceTable", slot.id, function() end)
 	end)
 
 	Inventory.Items:RegisterUse("moonshine_still", "DrugShit", function(source, slot, itemData)
-		Callbacks:ClientCallback(source, "Drugs:Moonshine:PlaceStill", slot.id, function() end)
+		exports["sandbox-base"]:ClientCallback(source, "Drugs:Moonshine:PlaceStill", slot.id, function() end)
 	end)
 
 	Inventory.Items:RegisterUse("moonshine_barrel", "DrugShit", function(source, slot, itemData)
-		Callbacks:ClientCallback(source, "Drugs:Moonshine:PlaceBarrel", slot.id, function() end)
+		exports["sandbox-base"]:ClientCallback(source, "Drugs:Moonshine:PlaceBarrel", slot.id, function() end)
 	end)
 
 	Inventory.Items:RegisterUse("adrenaline", "DrugShit", function(source, slot, itemData)
@@ -23,7 +23,7 @@ function RegisterItemUse()
 			if _effectCds.adrenaline[char:GetData("SID")] == nil or os.time() > _effectCds.adrenaline[char:GetData("SID")] then
 				_effectCds.adrenaline[char:GetData("SID")] = os.time() + (60 * 1)
 				if Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1) then
-					Callbacks:ClientCallback(source, "Drugs:Adrenaline:Use", 100, function(s)
+					exports["sandbox-base"]:ClientCallback(source, "Drugs:Adrenaline:Use", 100, function(s)
 						if s then
 							TriggerClientEvent("Drugs:Effects:Armor", source, 100)
 						end
@@ -43,7 +43,7 @@ function RegisterItemUse()
 				if methItem?.id ~= nil then
 					_effectCds.meth[char:GetData("SID")] = os.time() + (60 * 1)
 					if Inventory.Items:RemoveId(char:GetData("SID"), 1, methItem) then
-						Callbacks:ClientCallback(source, "Drugs:Meth:Use", methItem.Quality, function(s)
+						exports["sandbox-base"]:ClientCallback(source, "Drugs:Meth:Use", methItem.Quality, function(s)
 							if s then
 								Drugs.Addiction:Add(source, "Meth", 0.25)
 								local drugStates = char:GetData("DrugStates") or {}
@@ -97,7 +97,7 @@ function RegisterItemUse()
 	-- 			if _effectCds.meth[char:GetData("SID")] == nil or os.time() > _effectCds.meth[char:GetData("SID")] then
 	-- 				_effectCds.meth[char:GetData("SID")] = os.time() + (60 * 1)
 	-- 				if Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
-	-- 					Callbacks:ClientCallback(source, "Drugs:Meth:Use", slot.Quality, function(s)
+	-- 					exports["sandbox-base"]:ClientCallback(source, "Drugs:Meth:Use", slot.Quality, function(s)
 	-- 						if s then
 	-- 							Drugs.Addiction:Add(source, "Meth", 0.25)
 	-- 							TriggerClientEvent("Drugs:Effects:Armor", source, slot.Quality)
@@ -137,7 +137,7 @@ function RegisterItemUse()
 			if _effectCds.coke[char:GetData("SID")] == nil or os.time() > _effectCds.coke[char:GetData("SID")] then
 				_effectCds.coke[char:GetData("SID")] = os.time() + (60 * 3)
 				if Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
-					Callbacks:ClientCallback(source, "Drugs:Coke:Use", slot.Quality, function(s)
+					exports["sandbox-base"]:ClientCallback(source, "Drugs:Coke:Use", slot.Quality, function(s)
 						if s then
 							Drugs.Addiction:Add(source, "Coke", 0.25)
 							TriggerClientEvent("Drugs:Effects:RunSpeed", source, slot.Quality)
@@ -156,7 +156,7 @@ function RegisterItemUse()
 			if _effectCds.coke[char:GetData("SID")] == nil or os.time() > _effectCds.coke[char:GetData("SID")] then
 				_effectCds.coke[char:GetData("SID")] = os.time() + (60 * 3)
 				if Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
-					Callbacks:ClientCallback(source, "Drugs:Moonshine:Use", slot.Quality, function(s)
+					exports["sandbox-base"]:ClientCallback(source, "Drugs:Moonshine:Use", slot.Quality, function(s)
 						if s then
 							Drugs.Addiction:Add(source, "Moonshine", 0.25)
 							local drugStates = char:GetData("DrugStates") or {}

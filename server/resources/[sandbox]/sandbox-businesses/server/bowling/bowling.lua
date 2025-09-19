@@ -23,7 +23,7 @@ end
 AddEventHandler('Businesses:Server:Startup', function()
     SetupBowlingLanes()
 
-    Callbacks:RegisterServerCallback('Bowling:StartGame', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Bowling:StartGame', function(source, data, cb)
         if data?.alleyId and data?.nickName then
             local alley = GlobalState[string.format('Bowling:Alley:%s', data.alleyId)]
 
@@ -44,7 +44,7 @@ AddEventHandler('Businesses:Server:Startup', function()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Bowling:JoinGame', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Bowling:JoinGame', function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data?.alleyId and data.nickName then
             local alley = GlobalState[string.format('Bowling:Alley:%s', data.alleyId)]
@@ -63,7 +63,7 @@ AddEventHandler('Businesses:Server:Startup', function()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Bowling:EndGame', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Bowling:EndGame', function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data?.alleyId then
             local alley = GlobalState[string.format('Bowling:Alley:%s', data.alleyId)]
@@ -87,7 +87,7 @@ AddEventHandler('Businesses:Server:Startup', function()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Bowling:UpdateTVLink', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Bowling:UpdateTVLink', function(source, data, cb)
         if Player(source).state.onDuty == 'bowling' then
             GlobalState.BowlingTVsLink = data
             TriggerClientEvent('Bowling:Client:TVs:RequestUpdate', -1, true)
@@ -97,7 +97,7 @@ AddEventHandler('Businesses:Server:Startup', function()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Bowling:ResetAll', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Bowling:ResetAll', function(source, data, cb)
         if Player(source).state.onDuty == 'bowling' then
             for k, v in ipairs(_alleys) do
                 local thisAlley = GlobalState[string.format('Bowling:Alley:%s', v)]
@@ -126,7 +126,7 @@ AddEventHandler('Businesses:Server:Startup', function()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Bowling:ClearPins', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Bowling:ClearPins', function(source, data, cb)
         if Player(source).state.onDuty == 'bowling' then
             for k, v in ipairs(GetAllObjects()) do
                 local model = GetEntityModel(v)
@@ -162,7 +162,7 @@ RegisterServerEvent('Bowling:Server:StartBowling', function(alleyId)
         local mySID = char:GetData('SID')
 
         if alley and alley.active and mySID == alley.currentPlayer then
-            Callbacks:ClientCallback(source, 'Bowling:DoBowl', alleyId, function(res)
+            exports["sandbox-base"]:ClientCallback(source, 'Bowling:DoBowl', alleyId, function(res)
                 if res?.first and res?.total then
                     if res.total == 10 then
                         if res.first == 10 then

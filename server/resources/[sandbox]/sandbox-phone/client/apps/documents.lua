@@ -54,25 +54,25 @@ RegisterNetEvent("Phone:Client:Documents:Deleted", function(id)
 end)
 
 RegisterNUICallback("EditDocument", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:Edit", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:Edit", data, cb)
 end)
 
 RegisterNUICallback("DeleteDocument", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:Delete", data.id, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:Delete", data.id, cb)
 end)
 
 RegisterNUICallback("CreateDocument", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:Create", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:Create", data, cb)
 end)
 
 RegisterNUICallback("ShareDocument", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:Share", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:Share", data, cb)
 end)
 
 RegisterNUICallback("SignDocument", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:Sign", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:Sign", data, cb)
 end)
 
 RegisterNUICallback("Documents:GetSignatures", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:GetSignatures", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:GetSignatures", data, cb)
 end)

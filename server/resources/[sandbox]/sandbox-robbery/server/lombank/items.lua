@@ -74,7 +74,7 @@ function RegisterLBItemUses()
 											v.door
 										)
 									)
-									Callbacks:ClientCallback(source, "Robbery:Games:Thermite", {
+									exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
 										passes = 1,
 										location = v,
 										duration = 11000,
@@ -236,7 +236,7 @@ function RegisterLBItemUses()
 									char:GetData("SID")
 								)
 							)
-							Callbacks:ClientCallback(source, "Robbery:Games:Thermite", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
 								passes = 1,
 								location = pos,
 								duration = 25000,
@@ -390,7 +390,7 @@ function RegisterLBItemUses()
 										v.door
 									)
 								)
-								Callbacks:ClientCallback(source, "Robbery:Games:Laptop", {
+								exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Laptop", {
 									location = {
 										coords = v.coords,
 										heading = v.heading,

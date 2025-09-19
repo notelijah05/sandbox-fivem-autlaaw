@@ -134,7 +134,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		{ label = "Expert", value = 50000 },
 	}, true) -- Not sure what to do with this yet so hide it
 
-	Callbacks:RegisterServerCallback("Robbery:Fleeca:Drill", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Fleeca:Drill", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pState = Player(source).state
@@ -196,7 +196,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data.id
 								)
 							)
-							Callbacks:ClientCallback(source, "Robbery:Games:Drill", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Drill", {
 								passes = 1,
 								duration = 25000,
 								config = {},
@@ -310,7 +310,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Fleeca:SecureBank", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Fleeca:SecureBank", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -427,7 +427,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								_robberyAlerts[pState.fleeca] = os.time() + 60 * 20
 							end
 
-							Callbacks:ClientCallback(
+							exports["sandbox-base"]:ClientCallback(
 								source,
 								"Robbery:Games:Laptop",
 								{
@@ -605,7 +605,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end
 
 							Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
-							Callbacks:ClientCallback(
+							exports["sandbox-base"]:ClientCallback(
 								source,
 								"Robbery:Games:Thermite",
 								{
@@ -727,7 +727,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								StartAutoCDTimer(pState.fleeca)
 
 								_inUse.VaultDoor[pState.fleeca] = source
-								Callbacks:ClientCallback(
+								exports["sandbox-base"]:ClientCallback(
 									source,
 									"Robbery:Fleeca:Keypad:Vault",
 									tostring(itemData.MetaData.VaultCode),

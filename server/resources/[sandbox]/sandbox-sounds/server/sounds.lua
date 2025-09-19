@@ -1,6 +1,5 @@
 AddEventHandler("Sounds:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
@@ -8,7 +7,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Sounds", {
-		"Callbacks",
 		"Logger",
 		"Sounds",
 		"Middleware",
@@ -102,23 +100,23 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source)
 end)
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Sounds:Play:Distance", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Sounds:Play:Distance", function(source, data, cb)
 		Sounds.Play:Distance(source, data.maxDistance, data.soundFile, data.soundVolume)
 	end)
 
-	Callbacks:RegisterServerCallback("Sounds:Play:Location", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Sounds:Play:Location", function(source, data, cb)
 		Sounds.Play:Location(source, data.location, data.maxDistance, data.soundFile, data.soundVolume)
 	end)
 
-	Callbacks:RegisterServerCallback("Sounds:Loop:Distance", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Sounds:Loop:Distance", function(source, data, cb)
 		Sounds.Loop:Distance(source, data.maxDistance, data.soundFile, data.soundVolume)
 	end)
 
-	Callbacks:RegisterServerCallback("Sounds:Loop:Location", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Sounds:Loop:Location", function(source, data, cb)
 		Sounds.Loop:Location(source, data.location, data.maxDistance, data.soundFile, data.soundVolume)
 	end)
 
-	Callbacks:RegisterServerCallback("Sounds:Stop:Distance", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Sounds:Stop:Distance", function(source, data, cb)
 		Sounds.Stop:Distance(source, data.soundFile)
 	end)
 end

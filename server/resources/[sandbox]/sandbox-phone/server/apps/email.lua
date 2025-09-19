@@ -182,17 +182,17 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		},
 	}, 4)
 
-	Callbacks:RegisterServerCallback("Phone:Email:Read", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Email:Read", function(source, data, cb)
 		cb(Phone.Email:Read(data))
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Email:Delete", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Email:Delete", function(source, data, cb)
 		local src = source
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		cb(Phone.Email:Delete(char:GetData("SID"), data))
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Email:DeleteExpired", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Email:DeleteExpired", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local ids = MySQL.rawExecute.await(

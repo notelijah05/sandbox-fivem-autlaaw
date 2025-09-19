@@ -11,7 +11,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		_businessNotices = results
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Notice:Create", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Notice:Create", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "TABLET_CREATE_NOTICE")
 		if job then
 			cb(Laptop.BizWiz.Notices:Create(source, job, data.doc))
@@ -20,7 +20,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:Notice:Delete", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Notice:Delete", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "TABLET_DELETE_NOTICE")
 		if job then
 			cb(Laptop.BizWiz.Notices:Delete(job, data.id))

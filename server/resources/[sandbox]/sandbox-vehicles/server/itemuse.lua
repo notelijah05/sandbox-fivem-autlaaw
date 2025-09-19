@@ -1,7 +1,7 @@
 function RegisterItemUses()
 	Inventory.Items:RegisterUse("lockpick", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
-			Callbacks:ClientCallback(source, "Vehicles:Lockpick", true, function(using, success)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:Lockpick", true, function(using, success)
 				if using then
 					local newValue = slot.CreateDate - (60 * 60 * 24)
 					if success then
@@ -19,7 +19,7 @@ function RegisterItemUses()
 
 	Inventory.Items:RegisterUse("adv_lockpick", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
-			Callbacks:ClientCallback(source, "Vehicles:AdvLockpick", true, function(using, success)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:AdvLockpick", true, function(using, success)
 				if using then
 					local newValue = slot.CreateDate - (60 * 60 * 24)
 					if success then
@@ -37,7 +37,7 @@ function RegisterItemUses()
 
 	Inventory.Items:RegisterUse("electronics_kit", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
-			Callbacks:ClientCallback(source, "Vehicles:Hack", true, function(using, success)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:Hack", true, function(using, success)
 				if using then
 					local newValue = slot.CreateDate - (60 * 60 * 24)
 					if success then
@@ -55,7 +55,7 @@ function RegisterItemUses()
 
 	Inventory.Items:RegisterUse("adv_electronics_kit", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
-			Callbacks:ClientCallback(source, "Vehicles:AdvHack", true, function(using, success)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:AdvHack", true, function(using, success)
 				if using then
 					local newValue = slot.CreateDate - (60 * 60 * 24)
 					if success then
@@ -73,7 +73,7 @@ function RegisterItemUses()
 
 	Inventory.Items:RegisterUse("screwdriver", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(1500, function()
-			Callbacks:ClientCallback(source, "Vehicles:Lockpick", {
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:Lockpick", {
 				{
 					base = 4000,
 					mod = 900,
@@ -101,7 +101,7 @@ function RegisterItemUses()
 	end)
 
 	Inventory.Items:RegisterUse("repairkit", "Vehicles", function(source, itemData)
-		Callbacks:ClientCallback(source, "Vehicles:RepairKit", false, function(success)
+		exports["sandbox-base"]:ClientCallback(source, "Vehicles:RepairKit", false, function(success)
 			if success then
 				Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 			end
@@ -109,7 +109,7 @@ function RegisterItemUses()
 	end)
 
 	Inventory.Items:RegisterUse("repairkitadv", "Vehicles", function(source, itemData)
-		Callbacks:ClientCallback(source, "Vehicles:RepairKit", true, function(success)
+		exports["sandbox-base"]:ClientCallback(source, "Vehicles:RepairKit", true, function(success)
 			if success then
 				Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 			end
@@ -139,7 +139,7 @@ function RegisterItemUses()
 		end
 
 		if currentMeta then
-			Callbacks:ClientCallback(source, "Vehicles:GetFakePlateAddingVehicle", {}, function(veh)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:GetFakePlateAddingVehicle", {}, function(veh)
 				if not veh then
 					return
 				end
@@ -191,7 +191,7 @@ function RegisterItemUses()
 	end)
 
 	Inventory.Items:RegisterUse("car_bomb", "Vehicles", function(source, itemData)
-		Callbacks:ClientCallback(source, "Vehicles:UseCarBomb", {}, function(veh, reason, config)
+		exports["sandbox-base"]:ClientCallback(source, "Vehicles:UseCarBomb", {}, function(veh, reason, config)
 			if not veh then
 				if reason then
 					Execute:Client(source, "Notification", "Error", reason)
@@ -229,7 +229,7 @@ function RegisterItemUses()
 	end)
 
 	Inventory.Items:RegisterUse("harness", "Vehicles", function(source, itemData)
-		Callbacks:ClientCallback(source, "Vehicles:InstallHarness", {}, function(veh)
+		exports["sandbox-base"]:ClientCallback(source, "Vehicles:InstallHarness", {}, function(veh)
 			if not veh then
 				return
 			end
@@ -250,7 +250,7 @@ function RegisterItemUses()
 
 	Inventory.Items:RegisterUse("nitrous", "Vehicles", function(source, itemData)
 		if itemData?.MetaData?.Nitrous and itemData?.MetaData?.Nitrous > 0 then
-			Callbacks:ClientCallback(source, "Vehicles:InstallNitrous", {}, function(veh)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:InstallNitrous", {}, function(veh)
 				if not veh then
 					return
 				end
@@ -288,7 +288,7 @@ function UseCarPolish(source, itemData, type)
 	local typeData = polishTypes[type]
 	if not type then return end
 
-	Callbacks:ClientCallback(source, "Vehicles:UseCarPolish", {}, function(veh)
+	exports["sandbox-base"]:ClientCallback(source, "Vehicles:UseCarPolish", {}, function(veh)
 		if not veh then
 			return
 		end
@@ -319,7 +319,7 @@ function UseCarPolish(source, itemData, type)
 end
 
 function UsePurgeColorController(source, itemData)
-	Callbacks:ClientCallback(source, "Vehicles:UsePurgeColorController", {}, function(veh)
+	exports["sandbox-base"]:ClientCallback(source, "Vehicles:UsePurgeColorController", {}, function(veh)
 		if not veh then
 			return
 		end
@@ -330,24 +330,24 @@ function UsePurgeColorController(source, itemData)
 				return
 			end
 
-			Callbacks:ClientCallback(source, "Vehicles:UsePurgeColorControllerMenu",
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:UsePurgeColorControllerMenu",
 				{ purgeColor = vehState?.PurgeColor, purgeLocation = vehState?.PurgeLocation }, function(retval)
-				if retval then
-					if retval.purgeColor then
-						vehState.PurgeColor = {
-							r = retval.purgeColor.r,
-							g = retval.purgeColor.g,
-							b = retval.purgeColor.b,
-						}
+					if retval then
+						if retval.purgeColor then
+							vehState.PurgeColor = {
+								r = retval.purgeColor.r,
+								g = retval.purgeColor.g,
+								b = retval.purgeColor.b,
+							}
+						end
+						if retval.purgeLocation then
+							vehState.PurgeLocation = retval.purgeLocation
+						end
+						Execute:Client(source, "Notification", "Success", "Purge Changes Applied")
+					else
+						Execute:Client(source, "Notification", "Error", "Changes were discarded")
 					end
-					if retval.purgeLocation then
-						vehState.PurgeLocation = retval.purgeLocation
-					end
-					Execute:Client(source, "Notification", "Success", "Purge Changes Applied")
-				else
-					Execute:Client(source, "Notification", "Error", "Changes were discarded")
-				end
-			end)
+				end)
 		end
 	end)
 end

@@ -49,7 +49,7 @@ AddEventHandler("Labor:Client:Setup", function()
 		vector2(2379.1826171875, 3104.9187011719),
 		vector2(2387.0463867188, 3126.4077148438)
 	}, {
-		name="scrap",
+		name = "scrap",
 		--debugPoly=true,
 		--minZ = 50.28173828125,
 		--maxZ = 51.348690032959
@@ -79,7 +79,8 @@ AddEventHandler("Labor:Client:Setup", function()
 			text = "Here For My Pickup",
 			event = "Laptop:Client:LSUnderground:Chopping:Pickup",
 			isEnabled = function()
-				return LocalPlayer.state.Character:GetData("ChopPickups") ~= nil and #LocalPlayer.state.Character:GetData("ChopPickups") > 0
+				return LocalPlayer.state.Character:GetData("ChopPickups") ~= nil and
+				#LocalPlayer.state.Character:GetData("ChopPickups") > 0
 			end,
 		},
 		{
@@ -127,36 +128,38 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 		end
 	end)
 
-	eventHandlers["update-state"] = RegisterNetEvent(string.format("Salvaging:Client:%s:EndScrapping", joiner), function()
-		_state = 2
-		if _blip ~= nil then
-			RemoveBlip(_blip)
-		end
-	
-		for k, v in ipairs(_models) do
-			Targeting:RemoveObject(v)
-		end
-	end)
+	eventHandlers["update-state"] = RegisterNetEvent(string.format("Salvaging:Client:%s:EndScrapping", joiner),
+		function()
+			_state = 2
+			if _blip ~= nil then
+				RemoveBlip(_blip)
+			end
 
-	eventHandlers["delivery"] = RegisterNetEvent(string.format("Salvaging:Client:%s:StartDelivery", joiner), function(point)
-		_state = 3
-		DeleteWaypoint()
-		SetNewWaypoint(point.coords.x, point.coords.y)
+			for k, v in ipairs(_models) do
+				Targeting:RemoveObject(v)
+			end
+		end)
 
-		_blip = Blips:Add("SalvDelivery", "Deliver Goods", point.coords, 478, 2, 1.4)
+	eventHandlers["delivery"] = RegisterNetEvent(string.format("Salvaging:Client:%s:StartDelivery", joiner),
+		function(point)
+			_state = 3
+			DeleteWaypoint()
+			SetNewWaypoint(point.coords.x, point.coords.y)
 
-		PedInteraction:Add("SalvagingDelivery", `mp_m_waremech_01`, point.coords, point.heading, 25.0, {
-			{
-				icon = "box-circle-check",
-				text = "Deliver Goods",
-				event = "Salvaging:Client:EndDelivery",
-				tempjob = "Salvaging",
-				isEnabled = function()
-					return _working and _state == 3
-				end,
-			},
-		}, 'box-circle-check')
-	end)
+			_blip = Blips:Add("SalvDelivery", "Deliver Goods", point.coords, 478, 2, 1.4)
+
+			PedInteraction:Add("SalvagingDelivery", `mp_m_waremech_01`, point.coords, point.heading, 25.0, {
+				{
+					icon = "box-circle-check",
+					text = "Deliver Goods",
+					event = "Salvaging:Client:EndDelivery",
+					tempjob = "Salvaging",
+					isEnabled = function()
+						return _working and _state == 3
+					end,
+				},
+			}, 'box-circle-check')
+		end)
 
 	eventHandlers["actions"] = RegisterNetEvent(string.format("Salvaging:Client:%s:Action", joiner), function(netid)
 		if _nodes then
@@ -196,26 +199,26 @@ AddEventHandler("Salvaging:Client:ScrapCar", function(s, s2)
 		}
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback('Salvaging:SalvageCar', NetworkGetNetworkIdFromEntity(s.entity))
+			exports["sandbox-base"]:ServerCallback('Salvaging:SalvageCar', NetworkGetNetworkIdFromEntity(s.entity))
 		end
 	end)
 end)
 
 AddEventHandler("Salvaging:Client:TriggerDelivery", function()
-    Callbacks:ServerCallback('Salvaging:TriggerDelivery', _joiner)
+	exports["sandbox-base"]:ServerCallback('Salvaging:TriggerDelivery', _joiner)
 end)
 
 AddEventHandler("Salvaging:Client:EndDelivery", function()
-    Callbacks:ServerCallback('Salvaging:EndDelivery', _joiner)
+	exports["sandbox-base"]:ServerCallback('Salvaging:EndDelivery', _joiner)
 	PedInteraction:Remove("SalvagingDelivery")
 end)
 
 AddEventHandler("Salvaging:Client:StartJob", function()
-    Callbacks:ServerCallback('Salvaging:StartJob', _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback('Salvaging:StartJob', _joiner, function(state)
 		if not state then
 			Notification:Error("Unable To Start Job")
 		end
-    end)
+	end)
 end)
 
 RegisterNetEvent("Salvaging:Client:OffDuty", function(time)

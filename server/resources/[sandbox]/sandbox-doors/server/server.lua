@@ -4,7 +4,6 @@ ELEVATOR_CACHE = {}
 
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -18,7 +17,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Callbacks",
 		"Logger",
 		"Utils",
 		"Chat",
@@ -92,11 +90,11 @@ end
 -- end
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Doors:Fetch", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Doors:Fetch", function(source, data, cb)
 		cb(DOORS_CACHE, ELEVATOR_CACHE)
 	end)
 
-	Callbacks:RegisterServerCallback("Doors:ToggleLocks", function(source, doorId, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Doors:ToggleLocks", function(source, doorId, cb)
 		if type(doorId) == "string" then
 			doorId = DOORS_IDS[doorId]
 		end
@@ -114,7 +112,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Doors:Lockpick", function(source, doorId, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Doors:Lockpick", function(source, doorId, cb)
 		if type(doorId) == "string" then
 			doorId = DOORS_IDS[doorId]
 		end
@@ -132,7 +130,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Doors:Elevators:ToggleLocks", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Doors:Elevators:ToggleLocks", function(source, data, cb)
 		local targetElevator = _elevatorConfig[data.elevator]
 		if targetElevator and targetElevator.canLock and CheckPlayerAuth(source, targetElevator.canLock) then
 			local newState = Doors:SetElevatorLock(data.elevator, data.floor)
@@ -146,7 +144,7 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Doors:Elevator:Validate", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Doors:Elevator:Validate", function(source, data, cb)
 		Pwnzor.Players:TempPosIgnore(source)
 		cb()
 	end)

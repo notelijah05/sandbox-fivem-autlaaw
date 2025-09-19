@@ -5,7 +5,6 @@ function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
@@ -29,7 +28,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Execute",
 		"Chat",
 		"Middleware",
-		"Callbacks",
 		"Logger",
 		"Generator",
 		"Phone",

@@ -162,7 +162,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		)
 	end
 
-	Callbacks:RegisterClientCallback("Robbery:Bobcat:SetupPeds", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Bobcat:SetupPeds", function(data, cb)
 		SetupPeds(data.peds, data.isBobcat, data.skipLeaveVeh)
 	end)
 end)
@@ -186,17 +186,17 @@ AddEventHandler("Robbery:Client:Bobcat:StartSecuring", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Bobcat:Secure", {})
+			exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:Secure", {})
 		end
 	end)
 end)
 
 -- AddEventHandler("Robbery:Client:Bobcat:HackFrontPC", function(entity, t)
--- 	Callbacks:ServerCallback("Robbery:Bobcat:CheckFrontPC", {}, function(data)
+-- 	exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:CheckFrontPC", {}, function(data)
 -- 		if data then
 -- 			_capPass = 1
 -- 			DoCaptcha(data.passes, data.config, data.data, function(isSuccess, extra)
--- 				Callbacks:ServerCallback("Robbery:Bobcat:FrontPCResults", {
+-- 				exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:FrontPCResults", {
 -- 					state = isSuccess,
 -- 				}, function() end)
 -- 			end)
@@ -205,11 +205,11 @@ end)
 -- end)
 
 -- AddEventHandler("Robbery:Client:Bobcat:HackSecurityPC", function(entity, t)
--- 	Callbacks:ServerCallback("Robbery:Bobcat:CheckSecurityPC", {}, function(data)
+-- 	exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:CheckSecurityPC", {}, function(data)
 -- 		if data then
 -- 			_capPass = 1
 -- 			DoCaptcha(data.passes, data.config, data.data, function(isSuccess, extra)
--- 				Callbacks:ServerCallback("Robbery:Bobcat:SecurityPCResults", {
+-- 				exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:SecurityPCResults", {
 -- 					state = isSuccess,
 -- 				}, function() end)
 -- 			end)
@@ -250,13 +250,13 @@ AddEventHandler("Robbery:Client:Bobcat:GrabC4", function()
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Bobcat:PickupC4", {}, function(s) end)
+			exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:PickupC4", {}, function(s) end)
 		end
 	end)
 end)
 
 AddEventHandler("Robbery:Client:Bobcat:GrabLoot", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Bobcat:CheckLoot", data, function(s)
+	exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:CheckLoot", data, function(s)
 		if s then
 			Progress:Progress({
 				name = "bobcat_loot",
@@ -276,9 +276,9 @@ AddEventHandler("Robbery:Client:Bobcat:GrabLoot", function(entity, data)
 				},
 			}, function(status)
 				if not status then
-					Callbacks:ServerCallback("Robbery:Bobcat:Loot", data, function(s2) end)
+					exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:Loot", data, function(s2) end)
 				else
-					Callbacks:ServerCallback("Robbery:Bobcat:CancelLoot", data, function(s2) end)
+					exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:CancelLoot", data, function(s2) end)
 				end
 			end)
 		end

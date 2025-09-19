@@ -2,7 +2,6 @@ Characters = nil
 
 AddEventHandler("Characters:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
@@ -10,7 +9,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Characters", {
-		"Callbacks",
 		"Characters",
 		"Action",
 		"Ped",
@@ -45,7 +43,7 @@ CHARACTERS = {
 		while IsScreenFadingOut() do
 			Wait(1)
 		end
-		Callbacks:ServerCallback("Characters:Logout", {}, function()
+		exports["sandbox-base"]:ServerCallback("Characters:Logout", {}, function()
 			LocalPlayer.state.Char = nil
 			LocalPlayer.state.Character = nil
 			LocalPlayer.state.loggedIn = false

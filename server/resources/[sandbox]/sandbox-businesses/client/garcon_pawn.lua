@@ -24,5 +24,5 @@ AddEventHandler("Businesses:Client:Startup", function()
 end)
 
 AddEventHandler("GarconPawn:Client:Sell", function(e, data)
-	Callbacks:ServerCallback("GarconPawn:Sell", {})
+	exports["sandbox-base"]:ServerCallback("GarconPawn:Sell", {})
 end)

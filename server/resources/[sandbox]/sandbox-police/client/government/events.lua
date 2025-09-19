@@ -7,15 +7,15 @@ AddEventHandler("Government:Client:OffDuty", function()
 end)
 
 AddEventHandler("Government:Client:BuyID", function()
-	Callbacks:ServerCallback("Government:BuyID")
+	exports["sandbox-base"]:ServerCallback("Government:BuyID")
 end)
 
 AddEventHandler("Government:Client:DoLicenseBuy", function(license)
-	Callbacks:ServerCallback("Government:BuyLicense", license)
+	exports["sandbox-base"]:ServerCallback("Government:BuyLicense", license)
 end)
 
 AddEventHandler("Government:Client:DoWeaponsLicenseBuyPolice", function(license)
-	Callbacks:ServerCallback("Government:Client:DoWeaponsLicenseBuyPolice", {})
+	exports["sandbox-base"]:ServerCallback("Government:Client:DoWeaponsLicenseBuyPolice", {})
 end)
 
 AddEventHandler("Government:Client:BuyLicense", function()

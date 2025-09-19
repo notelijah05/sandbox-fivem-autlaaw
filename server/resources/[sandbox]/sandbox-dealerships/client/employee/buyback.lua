@@ -4,7 +4,7 @@ AddEventHandler("Dealerships:Client:StartBuyback", function(entity, data)
     local vehNet = VehToNet(entity.entity)
     local vehEnt = Entity(entity.entity)
 
-    Callbacks:ServerCallback("Dealerships:BuyBackStart", {
+    exports["sandbox-base"]:ServerCallback("Dealerships:BuyBackStart", {
         netId = vehNet,
         dealerId = LocalPlayer.state.onDuty,
     }, function(success, data, strikes, price, strikeLoss)
@@ -33,7 +33,8 @@ AddEventHandler("Dealerships:Client:StartBuyback", function(entity, data)
                     vehEnt.state.RegisteredPlate,
                     vehEnt.state.VIN,
                     formatNumberToCurrency(price),
-                    strikes > 0 and string.format("<i>-$%s (%s Strikes)</i>", formatNumberToCurrency(strikeLoss), strikes) or ""
+                    strikes > 0 and
+                    string.format("<i>-$%s (%s Strikes)</i>", formatNumberToCurrency(strikeLoss), strikes) or ""
                 ),
                 {
                     netId = vehNet,
@@ -53,8 +54,8 @@ AddEventHandler("Dealerships:Client:StartBuyback", function(entity, data)
 end)
 
 AddEventHandler("Dealerships:BuyBack:Confirm", function(data)
-    Callbacks:ServerCallback("Dealerships:BuyBack", data, function(success)
-        
+    exports["sandbox-base"]:ServerCallback("Dealerships:BuyBack", data, function(success)
+
     end)
 end)
 
