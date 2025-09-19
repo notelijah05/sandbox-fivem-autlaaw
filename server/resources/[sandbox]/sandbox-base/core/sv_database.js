@@ -22,12 +22,14 @@ function getParamsCollection(db, params) {
 }
 
 function LogTrace(log) {
-	emit(`Logger:Trace`, 'Database', log, { console: true });
+	emit(`exports['sandbox-base']:LoggerTrace`, 'Database', log, {
+		console: true,
+	});
 }
 
 function Log(log, flagOverride = null) {
 	emit(
-		`Logger:Error`,
+		`exports['sandbox-base']:LoggerError`,
 		'Database',
 		log,
 		flagOverride == null

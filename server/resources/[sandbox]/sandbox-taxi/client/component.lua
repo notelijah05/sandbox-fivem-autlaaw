@@ -3,7 +3,6 @@ _rate = GetResourceKvpInt("TAXI_RATE") or 10
 
 AddEventHandler("Taxi:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
@@ -13,7 +12,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
-		"Logger",
 		"Blips",
 		"Keybinds",
 		"Notification",

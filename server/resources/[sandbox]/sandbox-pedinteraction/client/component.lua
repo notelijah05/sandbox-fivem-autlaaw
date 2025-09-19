@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 end
@@ -18,7 +17,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Notification",
 		"Game",
 		"Utils",
-		"Logger",
 		"Targeting",
 		"PedInteraction",
 	}, function(error)
@@ -98,7 +96,8 @@ _pedShit = {
 			end
 
 			if not IsModelValid(model) or not IsModelAPed(model) then
-				Logger:Error("PedInteraction", "Failed to Add Ped ID: " .. id .. " - It's Model is Invalid")
+				exports['sandbox-base']:LoggerError("PedInteraction",
+					"Failed to Add Ped ID: " .. id .. " - It's Model is Invalid")
 				return
 			end
 

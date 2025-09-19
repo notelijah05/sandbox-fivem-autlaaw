@@ -359,7 +359,7 @@ _JOBS = {
 					local j = Jobs:Get(dutyData.Id)
 					local salary = math.ceil((j.Salary * j.SalaryTier) * (workedMinutes / _payPeriod))
 
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Jobs",
 						string.format(
 							"Adding Salary Data For ^3%s^7 Going Off-Duty (^2%s Minutes^7 - ^3$%s^7)",

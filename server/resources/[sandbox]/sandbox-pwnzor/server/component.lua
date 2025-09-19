@@ -141,7 +141,6 @@ end)
 AddEventHandler("Pwnzor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
@@ -152,7 +151,6 @@ local _loaded = false
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Pwnzor", {
 		"Punishment",
-		"Logger",
 		"Pwnzor",
 		"Chat",
 		"Generator",
@@ -174,7 +172,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						if mult > 1.0 then
 							local player = exports['sandbox-base']:FetchSource(tonumber(v))
 							if player and player:GetData("Character") then
-								Logger:Warn(
+								exports['sandbox-base']:LoggerWarn(
 									"Pwnzor",
 									string.format(
 										"%s (%s) Had An Unusual Damage Modifier: %s",
@@ -224,7 +222,7 @@ AddEventHandler("explosionEvent", function(sender, ev)
 			then
 				local char = exports['sandbox-characters']:FetchCharacterSource(src)
 				if char then
-					Logger:Warn("Pwnzor",
+					exports['sandbox-base']:LoggerWarn("Pwnzor",
 						string.format("%s %s (%s) Triggered Explosion Detection With Explosion Type of %s",
 							char:GetData("First"), char:GetData("Last"), char:GetData("SID"), ev.explosionType), {
 							console = true,
@@ -238,7 +236,7 @@ AddEventHandler("explosionEvent", function(sender, ev)
 						})
 					Pwnzor:Screenshot(char:GetData("SID"), "Potential Weapon Exploit")
 				else
-					Logger:Warn("Pwnzor",
+					exports['sandbox-base']:LoggerWarn("Pwnzor",
 						string.format("Source %s Triggered Explosion Detection With Explosion Type of %s", src,
 							ev.explosionType), {
 							console = true,
@@ -272,7 +270,7 @@ end)
 
 RegisterNetEvent("Pwnzor:Server:ResourceStarted", function(resource)
 	local plyr = exports['sandbox-base']:FetchSource(source)
-	Logger:Info(
+	exports['sandbox-base']:LoggerInfo(
 		"Pwnzor",
 		string.format("%s (%s) Started A Resource: %s", plyr:GetData("Name"), plyr:GetData("AccountID"), resource),
 		{
@@ -299,7 +297,7 @@ RegisterNetEvent("Pwnzor:Server:ResourceStopped", function(resource)
 			"Pwnzor"
 		)
 	else
-		Logger:Info(
+		exports['sandbox-base']:LoggerInfo(
 			"Pwnzor",
 			string.format("%s (%s) Stopped A Resource: %s", plyr:GetData("Name"), plyr:GetData("AccountID"), resource),
 			{
@@ -378,7 +376,7 @@ PWNZOR = PWNZOR
 						10000,
 						function(error)
 							if error then
-								Logger:Warn(
+								exports['sandbox-base']:LoggerWarn(
 									"Pwnzor",
 									string.format("Failed to Screenshot SID %s", stateId),
 									{

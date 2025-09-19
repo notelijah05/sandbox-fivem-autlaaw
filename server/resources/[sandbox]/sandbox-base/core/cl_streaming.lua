@@ -11,7 +11,7 @@ COMPONENTS.Stream = {
             local timeout = 0
             while not HasModelLoaded(modelHash) do
                 if timeout > 20000 then
-                    COMPONENTS.Logger:Error("Stream",
+                    exports['sandbox-base']:LoggerError("Stream",
                         string.format('failed to load model, please report this: %s', modelName))
                 end
                 Wait(1)

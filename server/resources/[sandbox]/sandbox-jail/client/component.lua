@@ -4,7 +4,6 @@ _doingMugshot = false
 
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -27,7 +26,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
-		"Logger",
 		"Blips",
 		"Characters",
 		"Animations",

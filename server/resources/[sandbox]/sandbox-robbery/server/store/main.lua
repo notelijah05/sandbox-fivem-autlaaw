@@ -577,7 +577,7 @@ function Threads()
 
 	CreateThread(function()
 		while true do
-			Logger:Trace("Robbery", "Resetting Store Alert States With Expired Emergency Alerts")
+			exports['sandbox-base']:LoggerTrace("Robbery", "Resetting Store Alert States With Expired Emergency Alerts")
 			for k, v in pairs(_storeAlerts) do
 				if v < os.time() then
 					_storeAlerts[k] = nil
@@ -691,7 +691,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						if slot ~= nil then
 							local itemData = Inventory.Items:GetData(slot.Name)
 
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Store Robbery (Safe) At Store %s",
@@ -757,7 +757,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										source = source,
 										state = 1,
 									}
-									Logger:Trace(
+									exports['sandbox-base']:LoggerTrace(
 										"Robbery",
 										string.format("Safe %s Will Unlock At %s", data.id, obj.expires)
 									)
@@ -876,7 +876,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					coords = data,
 					source = source,
 				}
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Robbery",
 					string.format(
 						"%s %s (%s) Started Store Robbery (Register) At Store %s",
@@ -949,7 +949,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				Execute:Client(source, "Notification", "Error", "You've Damaged The Electronics On The Lock", 6000)
 			end
 			if _storeAlerts[data.store] == nil or _storeAlerts[data.store] < os.time() then
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Robbery",
 					string.format(
 						"%s %s (%s) Started Store Robbery (Safe) At Store %s",
@@ -978,12 +978,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 				source = source,
 				state = state,
 			}
-			Logger:Trace("Robbery", string.format("Safe %s Will Unlock At %s", data.id, obj.expires))
+			exports['sandbox-base']:LoggerTrace("Robbery",
+				string.format("Safe %s Will Unlock At %s", data.id, obj.expires))
 			_robbedSafes[data.id] = obj
 			GlobalState[string.format("Safe:%s", data.id)] = obj
 			GlobalState["StoreAntiShitlord"] = os.time() + (60 * math.random(5, 10))
 		else
-			Logger:Error("Robbery", string.format("Safe %s Was Already Cracked", data.id))
+			exports['sandbox-base']:LoggerError("Robbery", string.format("Safe %s Was Already Cracked", data.id))
 		end
 	end)
 
@@ -1007,7 +1008,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				Inventory:AddItem(char:GetData("SID"), "gps_tracker", 1, {}, 1)
 			end
 
-			Logger:Info(
+			exports['sandbox-base']:LoggerInfo(
 				"Robbery",
 				string.format(
 					"%s %s (%s) Looted %s Safe",
@@ -1039,7 +1040,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					_robbedSafes[data.id].state = 4
 					_robbedSafes[data.id].expires = (os.time() + 60 * math.random(30, 60))
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Robbery",
 						string.format(
 							"%s %s (%s) Secured %s Safe",
@@ -1062,14 +1063,16 @@ CreateThread(function()
 		for k, v in pairs(_robbedSafes) do
 			if v.expires < os.time() then
 				if v.state == 1 then
-					Logger:Trace("Robbery", string.format("Safe %s Expired While State 1, Updating To State 2", k))
+					exports['sandbox-base']:LoggerTrace("Robbery",
+						string.format("Safe %s Expired While State 1, Updating To State 2", k))
 					_robbedSafes[k].expires = (os.time() + 60 * math.random(30, 60))
 					_robbedSafes[k].state = 2
 					GlobalState[string.format("Safe:%s", k)] = _robbedSafes[k]
 					Sounds.Play:Location(v.source, v.coords, 10, "alarm.ogg", 0.15)
 					-- Do something to alert
 				else
-					Logger:Trace("Robbery", string.format("Safe %s Expired While State 2, Resetting", k))
+					exports['sandbox-base']:LoggerTrace("Robbery",
+						string.format("Safe %s Expired While State 2, Resetting", k))
 					_robbedSafes[k] = nil
 					GlobalState[string.format("Safe:%s", k)] = nil
 				end

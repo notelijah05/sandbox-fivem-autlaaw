@@ -506,7 +506,7 @@ RegisterNetEvent("Hunting:Client:ShowMap", function(data)
 		return
 	end
 
-	Logger:Trace(
+	exports['sandbox-base']:LoggerTrace(
 		"Hunting/Map",
 		string.format("My Source: %s; My Ped: %s; Map Type: %s", LocalPlayer.state.ID, LocalPlayer.state.ped, data.Name)
 	)

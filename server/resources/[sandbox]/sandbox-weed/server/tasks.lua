@@ -9,11 +9,12 @@ AddEventHandler("Core:Server:ForceSave", function()
 		end
 	end
 	if #docs > 0 then
-		Logger:Info("Weed", string.format("Saving ^2%s^7 Plants", #docs))
+		exports['sandbox-base']:LoggerInfo("Weed", string.format("Saving ^2%s^7 Plants", #docs))
 		local queries = {}
 		for _, plant in ipairs(docs) do
 			table.insert(queries, {
-				query = 'INSERT INTO weed (id, is_male, x, y, z, growth, output, material, planted, water, fertilizer_type, fertilizer_value, fertilizer_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE is_male=VALUES(is_male), x=VALUES(x), y=VALUES(y), z=VALUES(z), growth=VALUES(growth), output=VALUES(output), material=VALUES(material), planted=VALUES(planted), water=VALUES(water), fertilizer_type=VALUES(fertilizer_type), fertilizer_value=VALUES(fertilizer_value), fertilizer_time=VALUES(fertilizer_time)',
+				query =
+				'INSERT INTO weed (id, is_male, x, y, z, growth, output, material, planted, water, fertilizer_type, fertilizer_value, fertilizer_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE is_male=VALUES(is_male), x=VALUES(x), y=VALUES(y), z=VALUES(z), growth=VALUES(growth), output=VALUES(output), material=VALUES(material), planted=VALUES(planted), water=VALUES(water), fertilizer_type=VALUES(fertilizer_type), fertilizer_value=VALUES(fertilizer_value), fertilizer_time=VALUES(fertilizer_time)',
 				values = {
 					plant._id,
 					plant.isMale and 1 or 0,
@@ -43,11 +44,12 @@ function RegisterTasks()
 				end
 			end
 			if #docs > 0 then
-				Logger:Info("Weed", string.format("Saving ^2%s^7 Plants", #docs))
+				exports['sandbox-base']:LoggerInfo("Weed", string.format("Saving ^2%s^7 Plants", #docs))
 				local queries = {}
 				for _, plant in ipairs(docs) do
 					table.insert(queries, {
-						query = 'INSERT INTO weed (id, is_male, x, y, z, growth, output, material, planted, water, fertilizer_type, fertilizer_value, fertilizer_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE is_male=VALUES(is_male), x=VALUES(x), y=VALUES(y), z=VALUES(z), growth=VALUES(growth), output=VALUES(output), material=VALUES(material), planted=VALUES(planted), water=VALUES(water), fertilizer_type=VALUES(fertilizer_type), fertilizer_value=VALUES(fertilizer_value), fertilizer_time=VALUES(fertilizer_time)',
+						query =
+						'INSERT INTO weed (id, is_male, x, y, z, growth, output, material, planted, water, fertilizer_type, fertilizer_value, fertilizer_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE is_male=VALUES(is_male), x=VALUES(x), y=VALUES(y), z=VALUES(z), growth=VALUES(growth), output=VALUES(output), material=VALUES(material), planted=VALUES(planted), water=VALUES(water), fertilizer_type=VALUES(fertilizer_type), fertilizer_value=VALUES(fertilizer_value), fertilizer_time=VALUES(fertilizer_time)',
 						values = {
 							plant._id,
 							plant.isMale and 1 or 0,
@@ -67,12 +69,13 @@ function RegisterTasks()
 	CreateThread(function()
 		while true do
 			Wait((1000 * 60) * 10)
-			Logger:Trace("Weed", "Growing Plants")
+			exports['sandbox-base']:LoggerTrace("Weed", "Growing Plants")
 			local updatingStuff = {}
 
 			for k, v in pairs(_plants) do
 				if (os.time() - v.plant.planted) >= Config.Lifetime then
-					Logger:Trace("Weed", "Deleting Weed Plant Because Some Dumb Cunt Didn't Harvest It")
+					exports['sandbox-base']:LoggerTrace("Weed",
+						"Deleting Weed Plant Because Some Dumb Cunt Didn't Harvest It")
 					Weed.Planting:Delete(k)
 				else
 					if v.plant.growth < 100 then
@@ -110,7 +113,7 @@ function RegisterTasks()
 	CreateThread(function()
 		while true do
 			Wait((1000 * 60) * 20)
-			Logger:Trace("Weed", "Increasing Plant Outputs")
+			exports['sandbox-base']:LoggerTrace("Weed", "Increasing Plant Outputs")
 			for k, v in pairs(_plants) do
 				if v.plant.growth < 100 then
 					local mat = Materials[v.plant.material]
@@ -132,7 +135,7 @@ function RegisterTasks()
 	CreateThread(function()
 		while true do
 			Wait((1000 * 60) * 10)
-			Logger:Trace("Weed", "Degrading Water")
+			exports['sandbox-base']:LoggerTrace("Weed", "Degrading Water")
 			for k, v in pairs(_plants) do
 				if v.plant.water > -25 then
 					local mat = Materials[v.plant.material]
@@ -152,7 +155,8 @@ function RegisterTasks()
 						Weed.Planting:Delete(k)
 					end
 				else
-					Logger:Trace("Weed", "Deleting Weed Plant Because Some Dumb Cunt Didn't Water It")
+					exports['sandbox-base']:LoggerTrace("Weed",
+						"Deleting Weed Plant Because Some Dumb Cunt Didn't Water It")
 					Weed.Planting:Delete(k)
 				end
 			end
@@ -162,7 +166,7 @@ function RegisterTasks()
 	CreateThread(function()
 		while true do
 			Wait((1000 * 60) * 1)
-			Logger:Trace("Weed", "Ticking Down Fertilizer")
+			exports['sandbox-base']:LoggerTrace("Weed", "Ticking Down Fertilizer")
 			for k, v in pairs(_plants) do
 				if v.plant.fertilizer ~= nil then
 					if v.plant.fertilizer.time > 0 then

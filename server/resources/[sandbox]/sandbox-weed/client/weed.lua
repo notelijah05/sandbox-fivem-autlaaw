@@ -1,6 +1,5 @@
 AddEventHandler("Weed:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Weed = exports["sandbox-base"]:FetchComponent("Weed")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -15,7 +14,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weed", {
-		"Logger",
 		"Game",
 		"Weed",
 		"Targeting",

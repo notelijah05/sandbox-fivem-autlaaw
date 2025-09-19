@@ -137,7 +137,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end
 
-    Logger:Trace("Drugs:Meth", string.format("Restored ^2%s^7 Meth Tables", #tables))
+    exports['sandbox-base']:LoggerTrace("Drugs:Meth", string.format("Restored ^2%s^7 Meth Tables", #tables))
 
     Middleware:Add("Characters:Spawning", function(source)
         TriggerLatentClientEvent("Drugs:Client:Meth:SetupTables", source, 50000, _placedTables)

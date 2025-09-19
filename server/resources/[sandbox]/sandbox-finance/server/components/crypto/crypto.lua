@@ -11,7 +11,7 @@ AddEventHandler("Finance:Server:Startup", function()
 			local stateId = char:GetData("SID")
 			local generatedWallet = GenerateUniqueCrytoWallet()
 			if generatedWallet then
-				Logger:Trace(
+				exports['sandbox-base']:LoggerTrace(
 					"Banking",
 					string.format("Crypto Wallet (%s) Created for Character: %s", generatedWallet, stateId)
 				)

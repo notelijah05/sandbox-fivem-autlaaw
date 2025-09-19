@@ -70,7 +70,7 @@ function RegisterBankingCallbacks()
 				if success and results and #results > 0 then
 					local tChar = results[1]
 					if tChar.User == char:GetData("User") then
-						Logger:Info("Billing",
+						exports['sandbox-base']:LoggerInfo("Billing",
 							string.format(
 								"%s %s (%s) [%s] Tried Adding Their Other Character (SID: %s) To a Joint Bank Account (Account: %s).",
 								char:GetData("First"), char:GetData("Last"), char:GetData("SID"), char:GetData("User"),
@@ -307,7 +307,7 @@ function RegisterBankingCallbacks()
 		local accountData = Banking.Accounts:Get(account)
 		if accountData then
 			if _actionCooldowns[source] and _actionCooldowns[source] > GetGameTimer() then
-				Logger:Warn("Pwnzor",
+				exports['sandbox-base']:LoggerWarn("Pwnzor",
 					string.format(
 						"%s %s (%s) Triggered 2 Bank Account Actions in 2 Seconds They Are Probably Cheating (%s)",
 						char:GetData("First"), char:GetData("Last"), char:GetData("SID"), json.encode(data)), {
@@ -404,7 +404,7 @@ function RegisterBankingCallbacks()
 								if success and results and #results > 0 then
 									local tChar = results[1]
 									if tChar.User == char:GetData("User") and tChar.SID ~= char:GetData("SID") then
-										Logger:Info("Billing",
+										exports['sandbox-base']:LoggerInfo("Billing",
 											string.format(
 												"%s %s (%s) [%s] Tried Bank Transferring to their other character (SID: %s, Account: %s).",
 												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),

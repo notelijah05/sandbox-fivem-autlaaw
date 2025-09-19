@@ -27,7 +27,7 @@ COMPONENTS.WebAPI = {
 	_name = "base",
 	Enabled = true,
 	Request = function(self, method, endpoint, params, jsondata)
-		COMPONENTS.Logger:Trace("WebAPI", "Endpoint Called: " .. method .. " - " .. endpoint)
+		exports['sandbox-base']:LoggerTrace("WebAPI", "Endpoint Called: " .. method .. " - " .. endpoint)
 
 		local first = true
 		if params ~= nil then
@@ -53,7 +53,7 @@ COMPONENTS.WebAPI = {
 				}
 
 				-- if data.code ~= nil and data.code ~= 200 then
-				-- 	COMPONENTS.Logger:Error("WebAPI", "Error: " .. data.code, { console = true })
+				-- 	exports['sandbox-base']:LoggerError("WebAPI", "Error: " .. data.code, { console = true })
 				-- end
 
 				if data.data ~= nil then
@@ -75,14 +75,14 @@ COMPONENTS.WebAPI = {
 		return Citizen.Await(p)
 	end,
 	-- Validate = function(self)
-	-- 	COMPONENTS.Logger:Trace("Core", "Validating API Key With Authentication Services", {
+	-- 	exports['sandbox-base']:LoggerTrace("Core", "Validating API Key With Authentication Services", {
 	-- 		console = true,
 	-- 	})
 
 	-- 	local res = COMPONENTS.WebAPI:Request("GET", "admin/startup", nil, {})
 
 	-- 	if res.code ~= 200 then
-	-- 		COMPONENTS.Logger:Critical("Core", "Failed Validation, Shutting Down Server", {
+	-- 		exports['sandbox-base']:LoggerCritical("Core", "Failed Validation, Shutting Down Server", {
 	-- 			console = true,
 	-- 			file = true,
 	-- 		})
@@ -107,7 +107,7 @@ COMPONENTS.WebAPI = {
 
 	-- 		GlobalState.IsProduction = res.data.channel:upper() ~= "DEV"
 	-- 		if COMPONENTS.Config.Server.Access then
-	-- 			COMPONENTS.Logger:Trace(
+	-- 			exports['sandbox-base']:LoggerTrace(
 	-- 				"Core",
 	-- 				string.format(
 	-- 					"Server ^2#%s^7 - ^2%s^7 Authenticated, Running With Access Restrictions",
@@ -117,7 +117,7 @@ COMPONENTS.WebAPI = {
 	-- 				{ console = true }
 	-- 			)
 	-- 		else
-	-- 			COMPONENTS.Logger:Info(
+	-- 			exports['sandbox-base']:LoggerInfo(
 	-- 				"Core",
 	-- 				string.format(
 	-- 					"Server ^2#%s^7 - ^2%s^7 Authenticated, Running With No Access Restriction",
@@ -128,7 +128,7 @@ COMPONENTS.WebAPI = {
 	-- 			)
 	-- 		end
 
-	-- 		COMPONENTS.Logger:Trace("WebAPI", "Loaded ^5" .. tostring(res.data.count) .. "^7 Group Configurations")
+	-- 		exports['sandbox-base']:LoggerTrace("WebAPI", "Loaded ^5" .. tostring(res.data.count) .. "^7 Group Configurations")
 
 	-- 		return true
 	-- 	end

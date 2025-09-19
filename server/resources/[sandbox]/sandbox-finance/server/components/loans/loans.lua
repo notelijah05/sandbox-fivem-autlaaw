@@ -13,7 +13,7 @@ function RunLoanStartup()
         }
     }, function(success, count)
         if success then
-            Logger:Trace('Loans', 'Loaded ^2' .. count .. '^7 Active Loans')
+            exports['sandbox-base']:LoggerTrace('Loans', 'Loaded ^2' .. count .. '^7 Active Loans')
         end
     end)
 end
@@ -119,7 +119,8 @@ function CreateLoanTasks()
                             }
                         }, function(success, updated)
                             if success then
-                                Logger:Info('Loans', '^2' .. #results .. '^7 Loans Have Just Been Defaulted')
+                                exports['sandbox-base']:LoggerInfo('Loans',
+                                    '^2' .. #results .. '^7 Loans Have Just Been Defaulted')
                                 for k, v in ipairs(results) do
                                     if v.SID then
                                         DecreaseCharacterCreditScore(v.SID, _creditScoreConfig.removal.defaultedLoan)
@@ -157,7 +158,8 @@ function CreateLoanTasks()
                     }
                 }, function(success, results)
                     if success and #results > 0 then
-                        Logger:Info('Loans', '^2' .. #results .. '^7 Loan Payments Were Just Missed')
+                        exports['sandbox-base']:LoggerInfo('Loans',
+                            '^2' .. #results .. '^7 Loan Payments Were Just Missed')
                         for k, v in ipairs(results) do
                             if v.SID then
                                 DecreaseCharacterCreditScore(v.SID, _creditScoreConfig.removal.missedLoanPayment)

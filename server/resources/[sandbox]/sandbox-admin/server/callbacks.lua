@@ -391,7 +391,7 @@ function RegisterCallbacks()
                     end
 
                     if wasSuccessful then
-                        Logger:Warn(
+                        exports['sandbox-base']:LoggerWarn(
                             "Admin",
                             string.format(
                                 "%s [%s] Used Staff Action %s On %s [%s] - Character %s %s (%s)",
@@ -562,7 +562,7 @@ function RegisterCallbacks()
                 end
             end
 
-            Logger:Warn(
+            exports['sandbox-base']:LoggerWarn(
                 "Admin",
                 string.format(
                     "%s [%s] Used Vehicle Action %s on %s",
@@ -594,7 +594,7 @@ function RegisterCallbacks()
     exports["sandbox-base"]:RegisterServerCallback('Admin:CurrentVehicleAction', function(source, data, cb)
         local player = exports['sandbox-base']:FetchSource(source)
         if player and data.action and player.Permissions:IsAdmin() and player.Permissions:GetLevel() >= 90 then
-            Logger:Warn(
+            exports['sandbox-base']:LoggerWarn(
                 "Admin",
                 string.format(
                     "%s [%s] Used Vehicle Action %s",
@@ -622,7 +622,7 @@ function RegisterCallbacks()
     exports["sandbox-base"]:RegisterServerCallback('Admin:NoClip', function(source, data, cb)
         local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsStaff() then
-            Logger:Warn(
+            exports['sandbox-base']:LoggerWarn(
                 "Admin",
                 string.format(
                     "%s [%s] Used NoClip (State: %s)",
@@ -667,7 +667,7 @@ function RegisterCallbacks()
     exports["sandbox-base"]:RegisterServerCallback('Admin:ToggleInvisible', function(source, data, cb)
         local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsAdmin() then
-            Logger:Warn(
+            exports['sandbox-base']:LoggerWarn(
                 "Admin",
                 string.format(
                     "%s [%s] Used Invisibility",

@@ -64,7 +64,7 @@ function RegisterLBItemUses()
 										itemData.invType
 									)
 								then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Started Thermiting Lombank Door: %s",
@@ -91,7 +91,7 @@ function RegisterLBItemUses()
 										data = {},
 									}, function(success)
 										if success then
-											Logger:Info(
+											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
 												string.format(
 													"%s %s (%s) Successfully Thermited Lombank Door: %s",
@@ -227,7 +227,7 @@ function RegisterLBItemUses()
 								itemData.invType
 							)
 						then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Thermiting Lombank Vault Power",
@@ -253,7 +253,7 @@ function RegisterLBItemUses()
 								data = {},
 							}, function(success)
 								if success then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Successfully Thermited Lombank Vault Power",
@@ -380,7 +380,7 @@ function RegisterLBItemUses()
 						if AreRequirementsUnlocked(v.requiredDoors) then
 							if not _lbInUse[k] then
 								_lbInUse[k] = source
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Started Hacking Lombank Door: %s",
@@ -399,7 +399,7 @@ function RegisterLBItemUses()
 									data = {},
 								}, function(success, data)
 									if success then
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Successfully Hacked Lombank Door: %s",
@@ -450,7 +450,7 @@ function RegisterLBItemUses()
 											_lbAlerted = os.time() + (60 * 10)
 										end
 									else
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Failed Hacking Lombank Door: %s",

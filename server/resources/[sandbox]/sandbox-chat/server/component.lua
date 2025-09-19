@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 end
 
@@ -12,7 +11,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Middleware",
 		"Chat",
 		"Jobs",
-		"Logger",
 		"EmergencyAlerts",
 	}, function(error)
 		if #error > 0 then

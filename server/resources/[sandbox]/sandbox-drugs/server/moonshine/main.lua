@@ -190,7 +190,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end
 
-    Logger:Trace("Drugs:Moonshine", string.format("Restored ^2%s^7 Moonshine Stills", #stills))
+    exports['sandbox-base']:LoggerTrace("Drugs:Moonshine", string.format("Restored ^2%s^7 Moonshine Stills", #stills))
 
     local barrels = MySQL.query.await('SELECT * FROM placed_moonshine_barrels WHERE expires > ?', { os.time() })
     for k, v in ipairs(barrels) do
@@ -215,7 +215,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end
 
-    Logger:Trace("Drugs:Moonshine", string.format("Restored ^2%s^7 Moonshine Barrels", #barrels))
+    exports['sandbox-base']:LoggerTrace("Drugs:Moonshine", string.format("Restored ^2%s^7 Moonshine Barrels", #barrels))
 
     Middleware:Add("Characters:Spawning", function(source)
         TriggerLatentClientEvent("Drugs:Client:Moonshine:SetupStills", source, 50000, _placedStills)

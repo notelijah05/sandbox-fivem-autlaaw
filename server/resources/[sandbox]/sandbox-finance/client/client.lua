@@ -3,7 +3,6 @@ local inBank = true
 AddEventHandler("Finance:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -25,7 +24,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Finance", {
 		"Utils",
-		"Logger",
 		"Interaction",
 		"Progress",
 		"Targeting",

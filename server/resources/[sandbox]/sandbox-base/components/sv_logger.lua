@@ -19,46 +19,25 @@ local levelColors = {
 	[5] = "critical",
 }
 
-AddEventHandler("Logger:Log", function(component, log, flags, extra)
-	COMPONENTS.Logger:Log(component, log, flags, extra)
+exports('LoggerTrace', function(component, log, flags, data)
+	doLog(1, component, log, flags, data)
 end)
-AddEventHandler("Logger:Trace", function(component, log, flags, extra)
-	COMPONENTS.Logger:Trace(component, log, flags, extra)
+
+exports('LoggerInfo', function(component, log, flags, data)
+	doLog(2, component, log, flags, data)
 end)
-AddEventHandler("Logger:Info", function(component, log, flags, extra)
-	COMPONENTS.Logger:Info(component, log, flags, extra)
+
+exports('LoggerWarn', function(component, log, flags, data)
+	doLog(3, component, log, flags, data)
 end)
-AddEventHandler("Logger:Warn", function(component, log, flags, extra)
-	COMPONENTS.Logger:Warn(component, log, flags, extra)
+
+exports('LoggerError', function(component, log, flags, data)
+	doLog(4, component, log, flags, data)
 end)
-AddEventHandler("Logger:Error", function(component, log, flags, extra)
-	COMPONENTS.Logger:Error(component, log, flags, extra)
+
+exports('LoggerCritical', function(component, log, flags, data)
+	doLog(5, component, log, flags, data)
 end)
-AddEventHandler("Logger:Critical", function(component, log, flags, extra)
-	COMPONENTS.Logger:Critical(component, log, flags, extra)
-end)
-COMPONENTS.Logger = {
-	_required = { "Log" },
-	_name = "base",
-	Trace = function(self, component, log, flags, data)
-		doLog(1, component, log, flags, data)
-	end,
-	Info = function(self, component, log, flags, data)
-		doLog(2, component, log, flags, data)
-	end,
-	Warn = function(self, component, log, flags, data)
-		doLog(3, component, log, flags, data)
-	end,
-	Error = function(self, component, log, flags, data)
-		doLog(4, component, log, flags, data)
-	end,
-	Critical = function(self, component, log, flags, data)
-		doLog(5, component, log, flags, data)
-	end,
-	Log = function(self, component, log, flags, extra) -- Retained purely for legacy sake, stop using this
-		doLog(0, component, log, flags, extra)
-	end,
-}
 
 function doLog(level, component, log, flags, data)
 	CreateThread(function()
@@ -87,7 +66,13 @@ function doLog(level, component, log, flags, data)
 		if flags == nil then
 			flags = { console = true }
 		end
-		if flags.console and level >= COMPONENTS.Convar.LOGGING.value then
+
+		local loggingLevel = 0
+		if COMPONENTS and COMPONENTS.Convar and COMPONENTS.Convar.LOGGING then
+			loggingLevel = COMPONENTS.Convar.LOGGING.value
+		end
+
+		if flags.console and level >= loggingLevel then
 			local formattedLog = string.format("%s\t[^6%s^7] %s", prefix, component, log)
 			print(formattedLog)
 		end
@@ -106,16 +91,20 @@ function doLog(level, component, log, flags, data)
 			logFile:close()
 		end
 
-		if COMPONENTS.Proxy.DatabaseReady then
+		local databaseReady = false
+		if COMPONENTS and COMPONENTS.Proxy and COMPONENTS.Proxy.DatabaseReady then
+			databaseReady = COMPONENTS.Proxy.DatabaseReady
+		end
+
+		if databaseReady then
 			if GlobalState.IsProduction and flags.database then
 				exports['sandbox-base']:DatabaseGameInsertOne({
 					collection = "logs",
 					document = {
 						date = os.time(),
-						--server = COMPONENTS.Config.Server.ID,
 						level = level,
 						component = component,
-						log = machineLog or log,
+						log = log,
 						data = data,
 					},
 				})

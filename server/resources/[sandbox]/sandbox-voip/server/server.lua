@@ -27,7 +27,6 @@ AddEventHandler("VOIP:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
 end
@@ -36,7 +35,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VOIP", {
 		"Chat",
 		"Middleware",
-		"Logger",
 		"Inventory",
 		"VOIP",
 	}, function(error)

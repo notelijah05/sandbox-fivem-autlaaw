@@ -185,7 +185,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						local itemData = Inventory.Items:GetData("drill")
 
 						if slot ~= nil then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Drilling Fleeca %s Loot %s",
@@ -236,7 +236,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 								if success then
 									local lootData = FLEECA_LOCATIONS[pState.fleeca].loots[data.index]
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Successfully Drilled Fleeca %s Loot %s",
@@ -333,7 +333,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					end
 				end
 
-				Logger:Info("Robbery",
+				exports['sandbox-base']:LoggerInfo("Robbery",
 					string.format("%s %s (%s) Secured Fleeca %s", char:GetData("First"), char:GetData("Last"),
 						char:GetData("SID"), pState.fleeca))
 				TriggerClientEvent("Robbery:Client:Fleeca:CloseVaultDoor", -1, pState.fleeca)
@@ -392,7 +392,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						)
 					then
 						if not _inUse.VaultDoor[pState.fleeca] then
-							Logger:Info("Robbery",
+							exports['sandbox-base']:LoggerInfo("Robbery",
 								string.format("%s %s (%s) Started Hacking Vault Door At %s", char:GetData("First"),
 									char:GetData("Last"), char:GetData("SID"), pState.fleeca))
 							_inUse.VaultDoor[pState.fleeca] = source
@@ -446,7 +446,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								function(success, data)
 									if success then
 										local timer = math.random(2, 4)
-										Logger:Info("Robbery",
+										exports['sandbox-base']:LoggerInfo("Robbery",
 											string.format("%s %s (%s) Successfully Hacked Vault Door At %s",
 												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
 												pState.fleeca))
@@ -466,7 +466,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									else
 										Status.Modify:Add(source, "PLAYER_STRESS", 6)
 
-										Logger:Info("Robbery",
+										exports['sandbox-base']:LoggerInfo("Robbery",
 											string.format("%s %s (%s) Failed Hacking Vault Door At %s",
 												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
 												pState.fleeca))
@@ -570,7 +570,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						and Doors:IsLocked(string.format("%s_gate", pState.fleeca))
 					then
 						if _inUse.Vault[pState.fleeca] == nil or not _inUse.GateDoor[pState.fleeca] then
-							Logger:Info("Robbery",
+							exports['sandbox-base']:LoggerInfo("Robbery",
 								string.format("%s %s (%s) Started Thermiting Vault Gate Door At %s",
 									char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
 							_inProgress[pState.fleeca] = true
@@ -626,7 +626,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								},
 								function(success, data)
 									if success then
-										Logger:Info("Robbery",
+										exports['sandbox-base']:LoggerInfo("Robbery",
 											string.format("%s %s (%s) Successfully Thermited Vault Gate Door At %s",
 												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
 												pState.fleeca))
@@ -638,7 +638,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										Status.Modify:Add(source, "PLAYER_STRESS", 3)
 										Execute:Client(source, "Notification", "Success", "Doorlock Disengaged", 6000)
 									else
-										Logger:Info("Robbery",
+										exports['sandbox-base']:LoggerInfo("Robbery",
 											string.format("%s %s (%s) Failed Thermiting Vault Gate Door At %s",
 												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
 												pState.fleeca))
@@ -717,7 +717,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							)
 						then
 							if not _inUse.VaultDoor[pState.fleeca] then
-								Logger:Info("Robbery",
+								exports['sandbox-base']:LoggerInfo("Robbery",
 									string.format("%s %s (%s) Attempting To Open Vault Door At %s With Access Card",
 										char:GetData("First"), char:GetData("Last"), char:GetData("SID"), pState.fleeca))
 								_inProgress[pState.fleeca] = true
@@ -733,7 +733,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									tostring(itemData.MetaData.VaultCode),
 									function(success, data)
 										if success and data.entered == tostring(itemData.MetaData.VaultCode) then
-											Logger:Info("Robbery",
+											exports['sandbox-base']:LoggerInfo("Robbery",
 												string.format("%s %s (%s) Open Vault Door At %s With Access Card",
 													char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
 													pState.fleeca))
@@ -751,7 +751,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												6000
 											)
 										else
-											Logger:Info("Robbery",
+											exports['sandbox-base']:LoggerInfo("Robbery",
 												string.format(
 													"%s %s (%s) Failed Opening Vault Door At %s With Access Card",
 													char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
@@ -823,7 +823,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			local amt = itemData.MetaData?.CustomAmt and
 				(math.random(itemData.MetaData?.CustomAmt.Random) + itemData.MetaData?.CustomAmt.Min) or
 				(math.random(5000) + 10000)
-			Logger:Info("Robbery",
+			exports['sandbox-base']:LoggerInfo("Robbery",
 				string.format("%s %s (%s) Used A Money Bag, Received $%s", char:GetData("First"), char:GetData("Last"),
 					char:GetData("SID"), amt))
 			Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)

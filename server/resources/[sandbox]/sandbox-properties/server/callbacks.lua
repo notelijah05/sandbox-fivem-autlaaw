@@ -263,7 +263,7 @@ function RegisterCallbacks()
 						if success then
 							local upgraded = Properties.Upgrades:Set(property.id, data.upgrade, currentLevel + 1)
 							if not upgraded then
-								Logger:Error("Properties",
+								exports['sandbox-base']:LoggerError("Properties",
 									string.format("SID %s Failed to Upgrade Property %s After Payment (%s - Level %s)",
 										char:GetData("SID"), property.id, thisUpgrade.name, currentLevel + 1))
 							end
@@ -317,7 +317,7 @@ function RegisterCallbacks()
 				if success then
 					local upgraded = Properties.Upgrades:SetInterior(property.id, data.int)
 					if not upgraded then
-						Logger:Error("Properties",
+						exports['sandbox-base']:LoggerError("Properties",
 							string.format("SID %s Failed to Upgrade Property %s After Payment (Interior - %s)",
 								char:GetData("SID"), property.id, data.int))
 					else
@@ -609,7 +609,7 @@ function RegisterCallbacks()
 													"The property transfer was successful.", os.time(), 7000, _phoneApp,
 													{})
 
-												Logger:Warn(
+												exports['sandbox-base']:LoggerWarn(
 													"Properties",
 													string.format(
 														"Property %s (%s) Transfered From %s %s (%s) to %s %s (%s) By %s %s (%s)",

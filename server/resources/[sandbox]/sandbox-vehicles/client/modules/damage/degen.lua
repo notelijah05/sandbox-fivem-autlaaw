@@ -59,7 +59,7 @@ function RunVehiclePartsDamage(veh, isRandom, damageAmount, destroyed)
                 end
             end
 
-            Logger:Trace('Vehicles',
+            exports['sandbox-base']:LoggerTrace('Vehicles',
                 'Running Regular Damage Degen - Data: ' .. json.encode(currentDamage, { indent = true }))
         else
             if damageAmount then
@@ -71,7 +71,8 @@ function RunVehiclePartsDamage(veh, isRandom, damageAmount, destroyed)
                     end
                     currentDamage[k] = newDamage
                 end
-                Logger:Trace('Vehicles', 'Running Collision Damage Degen - Data: ' .. json.encode(currentDamage))
+                exports['sandbox-base']:LoggerTrace('Vehicles',
+                    'Running Collision Damage Degen - Data: ' .. json.encode(currentDamage))
             elseif destroyed then
                 for k, v in pairs(onDestroyPartDamage) do
                     local newDamage = Utils:Round((currentDamage[k] - v), 3)
@@ -85,7 +86,8 @@ function RunVehiclePartsDamage(veh, isRandom, damageAmount, destroyed)
                         Body = 0.0,
                     }, true)
                 end
-                Logger:Trace('Vehicles', 'Running Destroyed Damage Degen - Data: ' .. json.encode(currentDamage))
+                exports['sandbox-base']:LoggerTrace('Vehicles',
+                    'Running Destroyed Damage Degen - Data: ' .. json.encode(currentDamage))
             end
         end
 
@@ -113,7 +115,7 @@ function RunVehiclePartsDamageEffects(veh)
                 end
 
                 if amount then
-                    Logger:Trace('Vehicles', 'Running Damage Effects - Axle')
+                    exports['sandbox-base']:LoggerTrace('Vehicles', 'Running Damage Effects - Axle')
                     CreateThread(function()
                         for i = 0, amount do
                             SetVehicleSteerBias(veh, -1.0)
@@ -130,7 +132,7 @@ function RunVehiclePartsDamageEffects(veh)
             -- Electronics
             if currentDamage.Electronics and currentDamage.Electronics <= 22.5 then
                 if (currentDamage.Electronics >= 15.0 and funChance >= 80) or (currentDamage.Electronics < 15.0 and currentDamage.Electronics >= 5.0 and funChance >= 65) or (currentDamage.Electronics < 5.0 and funChance >= 50) then
-                    Logger:Trace('Vehicles', 'Running Damage Effects - Electronics')
+                    exports['sandbox-base']:LoggerTrace('Vehicles', 'Running Damage Effects - Electronics')
                     if currentDamage.Electronics <= 10 and funChance >= 90 then
                         CreateThread(function()
                             SetVehicleControlsInverted(veh, true)
@@ -153,7 +155,7 @@ function RunVehiclePartsDamageEffects(veh)
             funChance = math.random(1, 100)
             -- Brakes
             if (currentDamage.Brakes and currentDamage.Brakes <= 25.0) and funChance >= 50 then
-                Logger:Trace('Vehicles', 'Running Damage Effects - Brakes')
+                exports['sandbox-base']:LoggerTrace('Vehicles', 'Running Damage Effects - Brakes')
                 CreateThread(function()
                     WEAK_BRAKES = true
                     SetVehicleWeakBrakesState(veh, true)
@@ -181,7 +183,7 @@ function RunVehiclePartsDamageEffects(veh)
                 end
 
                 if amount then
-                    Logger:Trace('Vehicles', 'Running Damage Effects - Fuel Injectors')
+                    exports['sandbox-base']:LoggerTrace('Vehicles', 'Running Damage Effects - Fuel Injectors')
 
                     CreateThread(function()
                         for i = 1, amount do
@@ -220,7 +222,7 @@ function RunVehiclePartsDamageEffects(veh)
                 if damageHit then
                     local newHealth = engineHealth - damageHit
                     if newHealth <= -2000 then
-                        Logger:Trace('Vehicles', 'Running Damage Effects - Radiator')
+                        exports['sandbox-base']:LoggerTrace('Vehicles', 'Running Damage Effects - Radiator')
                         SetVehicleEngineHealth(veh, newHealth)
                     end
                 end
@@ -241,7 +243,7 @@ function RunVehiclePartsDamageEffects(veh)
                 end
 
                 if amount then
-                    Logger:Trace('Vehicles', 'Running Damage Effects - Transmission')
+                    exports['sandbox-base']:LoggerTrace('Vehicles', 'Running Damage Effects - Transmission')
                     CreateThread(function()
                         for i = 1, amount do
                             SetVehicleHandbrake(veh, true)
@@ -268,7 +270,7 @@ function RunVehiclePartsDamageEffects(veh)
                 end
 
                 if wait then
-                    Logger:Trace('Vehicles', 'Running Damage Effects - Clutch')
+                    exports['sandbox-base']:LoggerTrace('Vehicles', 'Running Damage Effects - Clutch')
                     local lolGetFucked = true
                     Citizen.SetTimeout(wait, function()
                         lolGetFucked = false
@@ -287,10 +289,10 @@ end
 
 function SetVehicleWeakBrakesState(veh, state)
     if state then
-        Logger:Trace('Vehicles', 'Weak Brakes: On')
+        exports['sandbox-base']:LoggerTrace('Vehicles', 'Weak Brakes: On')
         SetVehicleHandlingOverrideMultiplier(veh, 'fBrakeForce', 'Float', 0.5)
     else
-        Logger:Trace('Vehicles', 'Weak Brakes: Off')
+        exports['sandbox-base']:LoggerTrace('Vehicles', 'Weak Brakes: Off')
         ResetVehicleHandlingOverride(veh, 'fBrakeForce')
     end
 end

@@ -40,14 +40,14 @@ exports('RegisterComponent', function(component, data)
 
     if COMPONENTS[component] ~= nil then
         if COMPONENTS[component]._protected then
-            COMPONENTS.Logger:Warn('Proxy',
+            exports['sandbox-base']:LoggerWarn('Proxy',
                 string.format("Attempt To Override Protected Component: ^2%s^7", tostring(component)), { console = true })
             return
         else
             if COMPONENTS[component]._required and #COMPONENTS[component]._required > 0 then
                 for k, v in ipairs(COMPONENTS[component]._required) do
                     if data[v] == nil then
-                        COMPONENTS.Logger:Warn('Proxy',
+                        exports['sandbox-base']:LoggerWarn('Proxy',
                             string.format("Attempt To Extend Component While Missing Required Attribute: ^2%s^7",
                                 tostring(v)), { console = true })
                         return
@@ -57,11 +57,13 @@ exports('RegisterComponent', function(component, data)
         end
 
         _overriding = true
-        COMPONENTS.Logger:Trace('Proxy', string.format("Overriding Existing Component: ^2%s^7", tostring(component)),
+        exports['sandbox-base']:LoggerTrace('Proxy',
+            string.format("Overriding Existing Component: ^2%s^7", tostring(component)),
             { console = true })
     end
 
-    COMPONENTS.Logger:Trace('Proxy', string.format("Registered Component: %s", tostring(component)), { console = true })
+    exports['sandbox-base']:LoggerTrace('Proxy',
+        string.format("Registered Component: %s", tostring(component)), { console = true })
     COMPONENTS[component] = data
 
     if _overriding then
@@ -76,7 +78,7 @@ end)
 
 exports('FetchComponent', function(component)
     if not COMPONENTS[component] then
-        COMPONENTS.Logger:Warn('Proxy',
+        exports['sandbox-base']:LoggerWarn('Proxy',
             string.format("^1Attempt To Fetch Non-Existent Component^7: ^2%s^7", tostring(component)), { console = true })
         return nil
     end
@@ -97,11 +99,11 @@ exports('ExtendComponent', function(component, data)
                 NotifyDependencyUpdate(component)
             end
         else
-            COMPONENTS.Logger:Warn('Proxy',
+            exports['sandbox-base']:LoggerWarn('Proxy',
                 string.format("Attempt To Extend Protected Component: ^2%s^7", tostring(component)), { console = true })
         end
     else
-        COMPONENTS.Logger:Warn('Proxy',
+        exports['sandbox-base']:LoggerWarn('Proxy',
             string.format("Attempt To Extend Non-Existent Component: ^2%s^7", tostring(component)), { console = true })
     end
 end)
@@ -123,7 +125,8 @@ exports('RequestDependencies', function(c, d, cb)
                         _attempts[v] = 1
                     elseif _attempts[v] > 50 then
                         table.insert(_errs, v)
-                        COMPONENTS.Logger:Error('Proxy', ('[^2%s^7] Failed To Load For [^3%s^7]'):format(v, c),
+                        exports['sandbox-base']:LoggerError('Proxy',
+                            ('[^2%s^7] Failed To Load For [^3%s^7]'):format(v, c),
                             { console = true })
                         d[k] = nil
                     else

@@ -274,7 +274,7 @@ function StartThreads()
 					end
 
 					if chp + heal <= max then
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Damage",
 							string.format("Heal Tick: %s (Original: %s)", heal, LocalPlayer.state.healTicks[1])
 						)
@@ -322,7 +322,7 @@ function StartThreads()
 					end
 
 					if car + gen <= max then
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Damage",
 							string.format("Armor Tick: %s (Original: %s)", gen, LocalPlayer.state.armorTicks[1])
 						)

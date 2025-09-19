@@ -1,31 +1,22 @@
-AddEventHandler('Logger:Log', function(component, log) COMPONENTS.Logger:Log(component, log) end)
-AddEventHandler('Logger:Trace', function(component, log) COMPONENTS.Logger:Trace(component, log) end)
-AddEventHandler('Logger:Info', function(component, log) COMPONENTS.Logger:Info(component, log) end)
-AddEventHandler('Logger:Warn', function(component, log) COMPONENTS.Logger:Warn(component, log) end)
-AddEventHandler('Logger:Error', function(component, log) COMPONENTS.Logger:Error(component, log) end)
-AddEventHandler('Logger:Critical', function(component, log) COMPONENTS.Logger:Critical(component, log) end)
-COMPONENTS.Logger = {
-    _required = { 'Log' },
-    _name = 'base',
-    Trace = function(self, component, log, flags, data)
-        doLog(1, component, log)
-    end,
-    Info = function(self, component, log, flags, data)
-        doLog(2, component, log)
-    end,
-    Warn = function(self, component, log, flags, data)
-        doLog(3, component, log)
-    end,
-    Error = function(self, component, log, flags, data)
-        doLog(4, component, log)
-    end,
-    Critical = function(self, component, log, flags, data)
-        doLog(5, component, log)
-    end,
-    Log = function (self, component, log, flags, extra)
-        doLog(0, component, log)
-    end
-}
+exports('LoggerTrace', function(component, log, flags, data)
+    doLog(1, component, log, flags, data)
+end)
+
+exports('LoggerInfo', function(component, log, flags, data)
+    doLog(2, component, log, flags, data)
+end)
+
+exports('LoggerWarn', function(component, log, flags, data)
+    doLog(3, component, log, flags, data)
+end)
+
+exports('LoggerError', function(component, log, flags, data)
+    doLog(4, component, log, flags, data)
+end)
+
+exports('LoggerCritical', function(component, log, flags, data)
+    doLog(5, component, log, flags, data)
+end)
 
 function doLog(level, component, log)
     local prefix = '[LOG]'

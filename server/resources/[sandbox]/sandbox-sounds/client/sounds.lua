@@ -2,14 +2,12 @@ local _sounds = {}
 
 AddEventHandler("Sounds:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Sounds", {
-		"Logger",
 		"Sounds",
 		"UISounds",
 	}, function(error)
@@ -25,7 +23,7 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 RegisterNUICallback("SoundEnd", function(data, cb)
-	Logger:Trace("Sounds", ("^2Stopping Sound %s For ID %s^7"):format(data.file, data.source))
+	exports['sandbox-base']:LoggerTrace("Sounds", ("^2Stopping Sound %s For ID %s^7"):format(data.file, data.source))
 	if _sounds[data.source] ~= nil and _sounds[data.source][data.file] ~= nil then
 		_sounds[data.source][data.file] = nil
 	end
@@ -35,7 +33,7 @@ SOUNDS = {}
 SOUNDS.Do = {
 	Loop = {
 		One = function(self, soundFile, soundVolume)
-			Logger:Trace("Sounds", ("^2Looping Sound %s On Client Only^7"):format(soundFile))
+			exports['sandbox-base']:LoggerTrace("Sounds", ("^2Looping Sound %s On Client Only^7"):format(soundFile))
 			_sounds[LocalPlayer.state.ID] = _sounds[LocalPlayer.state.ID] or {}
 			_sounds[LocalPlayer.state.ID][soundFile] = {
 				file = soundFile,
@@ -50,7 +48,7 @@ SOUNDS.Do = {
 			})
 		end,
 		Distance = function(self, playerNetId, maxDistance, soundFile, soundVolume)
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Sounds",
 				("^2Looping Sound %s Per Request From %s For Distance %s^7"):format(soundFile, playerNetId, maxDistance)
 			)
@@ -122,7 +120,7 @@ SOUNDS.Do = {
 			end)
 		end,
 		Location = function(self, playerNetId, location, maxDistance, soundFile, soundVolume)
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Sounds",
 				("^2Looping Sound %s Per Request From %s at location %s For Distance %s^7"):format(
 					soundFile,
@@ -170,7 +168,7 @@ SOUNDS.Do = {
 	},
 	Play = {
 		One = function(self, soundFile, soundVolume)
-			Logger:Trace("Sounds", ("^2Playing Sound %s On Client Only^7"):format(soundFile))
+			exports['sandbox-base']:LoggerTrace("Sounds", ("^2Playing Sound %s On Client Only^7"):format(soundFile))
 			_sounds[LocalPlayer.state.ID] = _sounds[LocalPlayer.state.ID] or {}
 			_sounds[LocalPlayer.state.ID][soundFile] = {
 				file = soundFile,
@@ -185,7 +183,7 @@ SOUNDS.Do = {
 		end,
 		Distance = function(self, playerNetId, maxDistance, soundFile, soundVolume)
 			playerNetId = tonumber(playerNetId)
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Sounds",
 				("^2Playing Sound %s Once Per Request From %s For Distance %s^7"):format(
 					soundFile,
@@ -262,7 +260,7 @@ SOUNDS.Do = {
 			end)
 		end,
 		Location = function(self, playerNetId, location, maxDistance, soundFile, soundVolume)
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Sounds",
 				("^2Playing Sound %s Once Per Request From %s at location %s For Distance %s^7"):format(
 					soundFile,
@@ -315,7 +313,7 @@ SOUNDS.Do = {
 	},
 	Stop = {
 		One = function(self, soundFile)
-			Logger:Trace("Sounds", ("^2Stopping Sound %s On Client^7"):format(soundFile))
+			exports['sandbox-base']:LoggerTrace("Sounds", ("^2Stopping Sound %s On Client^7"):format(soundFile))
 			if _sounds[LocalPlayer.state.ID] ~= nil and _sounds[LocalPlayer.state.ID][soundFile] ~= nil then
 				_sounds[LocalPlayer.state.ID][soundFile] = nil
 				SendNUIMessage({
@@ -326,7 +324,8 @@ SOUNDS.Do = {
 			end
 		end,
 		Distance = function(self, playerNetId, soundFile)
-			Logger:Trace("Sounds", ("^2Stopping Sound %s Per Request From %s^7"):format(soundFile, playerNetId))
+			exports['sandbox-base']:LoggerTrace("Sounds",
+				("^2Stopping Sound %s Per Request From %s^7"):format(soundFile, playerNetId))
 			if _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil then
 				_sounds[playerNetId][soundFile] = nil
 				SendNUIMessage({
@@ -339,7 +338,7 @@ SOUNDS.Do = {
 	},
 	Fade = {
 		One = function(self, soundFile)
-			Logger:Trace("Sounds", ("^2Stopping Sound %s On Client^7"):format(soundFile))
+			exports['sandbox-base']:LoggerTrace("Sounds", ("^2Stopping Sound %s On Client^7"):format(soundFile))
 			if _sounds[LocalPlayer.state.ID] ~= nil and _sounds[LocalPlayer.state.ID][soundFile] ~= nil then
 				_sounds[LocalPlayer.state.ID][soundFile] = nil
 				SendNUIMessage({

@@ -3,28 +3,33 @@ COMPONENTS.Utils = {
     _name = 'base',
     Print = function(self, t, s)
         if t then
-            if type(t) ~= 'table' then 
-                COMPONENTS.Logger:Trace("Utils", "^1 [^3debug^1] ["..type(t).."] ^7 "..t, { console = true })
+            if type(t) ~= 'table' then
+                exports['sandbox-base']:LoggerTrace("Utils", "^1 [^3debug^1] [" .. type(t) .. "] ^7 " .. t,
+                    { console = true })
                 return
             else
                 for k, v in pairs(t) do
-                    local kfmt = '["' .. tostring(k) ..'"]'
+                    local kfmt = '["' .. tostring(k) .. '"]'
                     if type(k) ~= 'string' then
                         kfmt = '[' .. k .. ']'
                     end
-                    local vfmt = '"'.. tostring(v) ..'"'
+                    local vfmt = '"' .. tostring(v) .. '"'
                     if type(v) == 'table' then
-                        self:Print(v, (s or '')..kfmt)
+                        self:Print(v, (s or '') .. kfmt)
                     else
                         if type(v) ~= 'string' then
                             vfmt = tostring(v)
                         end
-                        COMPONENTS.Logger:Trace("Utils", " ^1[^3debug^1] ["..type(t).."]^7 "..(s or '')..kfmt..' = '..vfmt, { console = true })
+                        exports['sandbox-base']:LoggerTrace("Utils",
+                            " ^1[^3debug^1] [" .. type(t) .. "]^7 " .. (s or '') .. kfmt .. ' = ' .. vfmt,
+                            { console = true })
                     end
                 end
             end
         else
-            COMPONENTS.Logger:Error("Utils", "^1Error Printing Request - The Passed through variable seems to be nil^7", { console = true })
+            exports['sandbox-base']:LoggerError("Utils",
+                "^1Error Printing Request - The Passed through variable seems to be nil^7",
+                { console = true })
         end
     end,
     GetTableLength = function(self, t)
@@ -36,8 +41,8 @@ COMPONENTS.Utils = {
     end,
     GetTableKeys = function(self, t)
         local keys = {}
-        for k,v in pairs(t) do
-            table.insert(keys,k)
+        for k, v in pairs(t) do
+            table.insert(keys, k)
         end
         return keys
     end,
@@ -51,9 +56,9 @@ COMPONENTS.Utils = {
     end,
     Round = function(self, n, precision)
         if precision then
-            return math.floor( (n * 10^precision) + 0.5 ) / (10^precision)
+            return math.floor((n * 10 ^ precision) + 0.5) / (10 ^ precision)
         end
-        return math.floor( n + 0.5 )
+        return math.floor(n + 0.5)
     end,
     WeightedRandom = function(self, pool)
         local poolsize = 0

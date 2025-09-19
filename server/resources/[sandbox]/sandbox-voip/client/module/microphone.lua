@@ -1,7 +1,7 @@
 function StartUsingMicrophone(withRange)
 	if PLAYER_CONNECTED and (not CALL_CHANNEL or CALL_CHANNEL <= 0) and not RADIO_TALKING and not USING_MEGAPHONE then
 		CreateThread(function()
-			Logger:Info("VOIP", "Microphone On")
+			exports['sandbox-base']:LoggerInfo("VOIP", "Microphone On")
 			USING_MICROPHONE = true
 
 			MumbleSetAudioInputIntent(`music`)
@@ -28,7 +28,7 @@ end
 
 function StopUsingMicrophone()
 	if USING_MICROPHONE then
-		Logger:Info("VOIP", "Microphone Off")
+		exports['sandbox-base']:LoggerInfo("VOIP", "Microphone Off")
 		USING_MICROPHONE = false
 		TriggerServerEvent("VOIP:Server:Microphone:SetPlayerState", false)
 

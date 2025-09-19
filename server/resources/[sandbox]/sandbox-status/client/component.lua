@@ -12,7 +12,6 @@ local _statusVals = {}
 
 AddEventHandler("Status:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
@@ -29,7 +28,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Status", {
-		"Logger",
 		"Damage",
 		"Hud",
 		"Buffs",
@@ -156,7 +154,7 @@ STATUS = {
 					_recentCd[status] = 1
 				end
 			else
-				Logger:Error("Status", "Attempt To Add To Non-Existent Status")
+				exports['sandbox-base']:LoggerError("Status", "Attempt To Add To Non-Existent Status")
 			end
 		end,
 		Remove = function(self, status, value, force)
@@ -173,7 +171,7 @@ STATUS = {
 			if _statuses[status] ~= nil then
 				_statuses[status].modify(-(math.abs(value)), force)
 			else
-				Logger:Error("Status", "Attempt To Remove From Non-Existent Status")
+				exports['sandbox-base']:LoggerError("Status", "Attempt To Remove From Non-Existent Status")
 			end
 		end,
 	},

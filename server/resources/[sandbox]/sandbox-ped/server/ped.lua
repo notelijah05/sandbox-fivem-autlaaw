@@ -285,7 +285,6 @@ AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -295,7 +294,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
 		"Locations",
 		"Routing",
-		"Logger",
 		"Ped",
 		"Inventory",
 		"Chat",

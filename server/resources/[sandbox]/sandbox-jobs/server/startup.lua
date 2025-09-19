@@ -7,7 +7,6 @@ _loaded = false
 AddEventHandler("Jobs:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
@@ -20,7 +19,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jobs", {
 		"Middleware",
-		"Logger",
 		"Utils",
 		"Execute",
 		"Sequence",
@@ -147,7 +145,7 @@ function RunStartup()
 					document = document,
 				}, function(success, inserted)
 					if not success or inserted <= 0 then
-						Logger:Error("Jobs", "Error Inserting Job on Default Job Update")
+						exports['sandbox-base']:LoggerError("Jobs", "Error Inserting Job on Default Job Update")
 						p:resolve(false)
 					else
 						Wait(10000)
@@ -155,7 +153,7 @@ function RunStartup()
 					end
 				end)
 			else
-				Logger:Error("Jobs", "Error Deleting Job on Default Job Update")
+				exports['sandbox-base']:LoggerError("Jobs", "Error Deleting Job on Default Job Update")
 				p:resolve(false)
 			end
 		end)
@@ -169,7 +167,7 @@ function RunStartup()
 			document = document,
 		}, function(success, inserted)
 			if not success or inserted <= 0 then
-				Logger:Error("Jobs", "Error Inserting Job on Default Job Update")
+				exports['sandbox-base']:LoggerError("Jobs", "Error Inserting Job on Default Job Update")
 				p:resolve(false)
 			else
 				p:resolve(true)
@@ -196,11 +194,11 @@ function RunStartup()
 
 	if #awaitingPromises > 0 then
 		Citizen.Await(promise.all(awaitingPromises))
-		Logger:Info("Jobs", "Inserted/Replaced ^2" .. #awaitingPromises .. "^7 Default Jobs")
+		exports['sandbox-base']:LoggerInfo("Jobs", "Inserted/Replaced ^2" .. #awaitingPromises .. "^7 Default Jobs")
 		jobsFetch = FindAllJobs()
 	end
 
 	RefreshAllJobData()
-	Logger:Trace("Jobs", string.format("Loaded ^2%s^7 Jobs", JOB_COUNT))
+	exports['sandbox-base']:LoggerTrace("Jobs", string.format("Loaded ^2%s^7 Jobs", JOB_COUNT))
 	TriggerEvent("Jobs:Server:CompleteStartup")
 end

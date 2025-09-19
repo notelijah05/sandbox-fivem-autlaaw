@@ -1,6 +1,6 @@
 COMPONENTS.Core = {
 	Shutdown = function(self, reason)
-		COMPONENTS.Logger:Critical("Core", "Shutting Down Core, Reason: " .. reason, {
+		exports['sandbox-base']:LoggerCritical("Core", "Shutting Down Core, Reason: " .. reason, {
 			console = true,
 			file = true,
 		})

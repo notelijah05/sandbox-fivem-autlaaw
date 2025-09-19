@@ -4,8 +4,7 @@ function RegisterCallbacks()
 		if player.Permissions:IsAdmin() then
 			cb(true)
 		else
-			exports["sandbox-base"]:FetchComponent("Logger"):Log(
-				"Commands",
+			exports['sandbox-base']:LoggerError("Commands",
 				string.format("%s attempted to use an admin command but failed Admin Validation.", {
 					console = true,
 					file = true,

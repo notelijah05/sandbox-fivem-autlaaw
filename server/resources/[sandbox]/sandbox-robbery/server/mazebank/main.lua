@@ -237,7 +237,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						local itemData = Inventory.Items:GetData("adv_electronics_kit")
 
 						if itemData ~= nil then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Hacking Maze Bank Power Box %s",
@@ -270,7 +270,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								end
 
 								if success then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Successfully Hacked Maze Bank Power Box %s",
@@ -453,7 +453,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 						if Inventory.Items:Has(char:GetData("SID"), 1, "thermite", 1) then
 							if Inventory.Items:Remove(char:GetData("SID"), 1, "thermite", 1) then
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Started Thermiting Maze Bank Power Box %s",
@@ -480,7 +480,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data = {},
 								}, function(success)
 									if success then
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Successfully Thermited Maze Bank Power Box %s",
@@ -656,7 +656,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						local itemData = Inventory.Items:GetData("drill")
 
 						if slot ~= nil then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Drilling Vault Box: %s",
@@ -683,7 +683,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								end
 
 								if success then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Successfully Drilled Vault Box: %s",
@@ -799,7 +799,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						local itemData = Inventory.Items:GetData("adv_electronics_kit")
 
 						if itemData ~= nil then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Hacking Maze Bank PC %s",
@@ -826,7 +826,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										Inventory:SetItemCreateDate(slot.id, newValue)
 									end
 
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Successfully Hacked Maze Bank PC %s",

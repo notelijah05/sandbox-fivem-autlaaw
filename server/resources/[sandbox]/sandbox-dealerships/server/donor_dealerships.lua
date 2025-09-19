@@ -165,7 +165,7 @@ function RegisterDonorVehicleSaleCallbacks()
 
                       cb(true)
 
-                      Logger:Warn(
+                      exports['sandbox-base']:LoggerWarn(
                         "Donator",
                         string.format(
                           "%s [%s] Redeemed %s Class Donator Vehicle - Character %s %s (%s) - Vehicle %s %s",
@@ -365,7 +365,7 @@ function TebexAddDonatorVehicle(source, args)
   local sid, class = table.unpack(args)
   sid = tonumber(sid)
   if sid == nil or sid == 0 then
-    Logger:Warn(
+    exports['sandbox-base']:LoggerWarn(
       "Donator Vehicle",
       "Provided SID (server ID) was empty.",
       {

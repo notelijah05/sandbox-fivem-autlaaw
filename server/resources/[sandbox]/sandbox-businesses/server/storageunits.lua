@@ -174,7 +174,7 @@ AddEventHandler("Businesses:Server:Startup", function()
             local unit = GlobalState[string.format("StorageUnit:%s", data.unit)]
             if unit then
                 if Player(source).state.onDuty == "police" and Jobs.Permissions:HasPermissionInJob(source, "police", "PD_RAID") then
-                    Logger:Warn(
+                    exports['sandbox-base']:LoggerWarn(
                         "Police",
                         string.format(
                             "Police Storage Unit Raid - Character %s %s (%s) - Accessing Storage Unit %s (%s)",
@@ -225,7 +225,8 @@ function StorageUnitStartup()
             if not success then
                 return
             end
-            Logger:Trace("StorageUnits", "Loaded ^2" .. #results .. "^7 Storage Units", { console = true })
+            exports['sandbox-base']:LoggerTrace("StorageUnits", "Loaded ^2" .. #results .. "^7 Storage Units",
+                { consolerue })
             local unitIds = {}
             for k, v in ipairs(results) do
                 unitPasscodes[v._id] = v.passcode

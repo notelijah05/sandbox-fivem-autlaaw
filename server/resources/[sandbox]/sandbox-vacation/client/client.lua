@@ -3,7 +3,6 @@ local inCayoPerico = false
 AddEventHandler("Island:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 end
@@ -11,7 +10,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Island", {
 		"Utils",
-		"Logger",
 		"Polyzone",
 		"Targeting",
 	}, function(error)
@@ -414,7 +412,7 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 			RequestIpl(v)
 		end
 
-		Logger:Trace("Island", "Entering Island Zone")
+		exports['sandbox-base']:LoggerTrace("Island", "Entering Island Zone")
 	end
 end)
 
@@ -436,7 +434,7 @@ AddEventHandler("Polyzone:Exit", function(id, point, insideZone, data)
 		SetAmbientZoneListStatePersistent("AZL_DLC_Hei4_Island_Zones", false, false)
 		SetAmbientZoneListStatePersistent("AZL_DLC_Hei4_Island_Disabled_Zones", false, false)
 		inCayoPerico = false
-		Logger:Trace("Island", "Leaving Island Zone")
+		exports['sandbox-base']:LoggerTrace("Island", "Leaving Island Zone")
 
 		Wait(50)
 		for k, v in ipairs(requestedIpl) do

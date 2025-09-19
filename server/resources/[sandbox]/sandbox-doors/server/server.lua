@@ -4,7 +4,6 @@ ELEVATOR_CACHE = {}
 
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -17,7 +16,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Logger",
 		"Utils",
 		"Chat",
 		"Inventory",
@@ -56,7 +54,7 @@ function RunStartup()
 				locked = v.locked,
 			}
 		else
-			Logger:Warn("Doors", "Door: " .. (v.id and v.id or k), " Missing Required Data")
+			exports['sandbox-base']:LoggerWarn("Doors", "Door: " .. (v.id and v.id or k), " Missing Required Data")
 		end
 	end
 
@@ -72,7 +70,8 @@ function RunStartup()
 		end
 	end
 
-	Logger:Trace("Doors", "Loaded ^2" .. #_doorConfig .. "^7 Doors & ^2" .. #_elevatorConfig .. "^7 Elevators")
+	exports['sandbox-base']:LoggerTrace("Doors",
+		"Loaded ^2" .. #_doorConfig .. "^7 Doors & ^2" .. #_elevatorConfig .. "^7 Elevators")
 end
 
 function RegisterChatCommands()

@@ -47,7 +47,6 @@ local _isNight = false
 
 AddEventHandler("Sync:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 	RegisterChatCommands()
@@ -81,7 +80,7 @@ function StartThreads()
 	if not GlobalState.IsProduction then
 		_weather = "EXTRASUNNY"
 		_weatherFrozen = true
-		Logger:Trace("Sync", "Freezing Weather (Non Production Server)")
+		exports['sandbox-base']:LoggerTrace("Sync", "Freezing Weather (Non Production Server)")
 	end
 
 	GlobalState["Sync:Time"] = {
@@ -94,7 +93,7 @@ function StartThreads()
 	GlobalState["Sync:Weather"] = _weather
 	GlobalState["Sync:IsNight"] = _isNight
 
-	Logger:Trace(
+	exports['sandbox-base']:LoggerTrace(
 		"Sync",
 		string.format(
 			"Started Time and Weather Sync Threads With Weather: %s and Time: %02d:%02d",
@@ -189,7 +188,7 @@ SYNC = {
 
 		_weatherFrozen = state
 
-		Logger:Info(
+		exports['sandbox-base']:LoggerInfo(
 			"Sync",
 			"Weather Was: ^5" .. (_weatherFrozen and "Frozen" or "Unfrozen") .. "^7",
 			{ console = true }
@@ -202,7 +201,8 @@ SYNC = {
 
 		_timeFrozen = state
 
-		Logger:Info("Sync", "Time Was: ^5" .. (_timeFrozen and "Frozen" or "Unfrozen") .. "^7", { console = true })
+		exports['sandbox-base']:LoggerInfo("Sync", "Time Was: ^5" .. (_timeFrozen and "Frozen" or "Unfrozen") .. "^7",
+			{ console = true })
 	end,
 	Set = {
 		Winter = function(self, state)
@@ -224,7 +224,7 @@ SYNC = {
 
 			TriggerEvent("Sync:Server:BlackoutChange", _blackoutState)
 
-			Logger:Info(
+			exports['sandbox-base']:LoggerInfo(
 				"Sync",
 				"Blackout Was: ^5" .. (_blackoutState and "Enabled" or "Disabled") .. "^7",
 				{ console = true }
@@ -234,7 +234,8 @@ SYNC = {
 			_weather = string.upper(wtype)
 			GlobalState["Sync:Weather"] = _weather
 			TriggerEvent("Sync:Server:WeatherChange", _weather)
-			Logger:Info("Sync", "Weather Manually Updated: ^5" .. _weather .. "^7", { console = true })
+			exports['sandbox-base']:LoggerInfo("Sync", "Weather Manually Updated: ^5" .. _weather .. "^7",
+				{ console = true })
 		end,
 		TimeType = function(self, type)
 			local timeTypeData = AvailableTimeTypes[type:upper()]
@@ -269,7 +270,7 @@ SYNC = {
 				minute = _timeMinute,
 			}
 
-			Logger:Info(
+			exports['sandbox-base']:LoggerInfo(
 				"Sync",
 				"Time Manually Set: ^5" .. string.format("%02d:%02d", _timeHour, _timeMinute) .. "^7",
 				{ console = true }
@@ -355,7 +356,7 @@ SYNC = {
 
 		GlobalState["Sync:Weather"] = _weather
 		TriggerEvent("Sync:Server:WeatherChange", _weather)
-		Logger:Info("Sync", "Weather Updated: ^5" .. _weather .. "^7", { console = true })
+		exports['sandbox-base']:LoggerInfo("Sync", "Weather Updated: ^5" .. _weather .. "^7", { console = true })
 	end,
 }
 

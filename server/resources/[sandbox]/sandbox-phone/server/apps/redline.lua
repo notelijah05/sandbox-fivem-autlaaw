@@ -757,7 +757,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 					if data.phasing == "checkpoints" and data.phasingAdv < 1 then
 						data.phasingAdv = 1
-						Logger:Info(
+						exports['sandbox-base']:LoggerInfo(
 							"Robbery",
 							string.format(
 								"%s %s (%s) Made A Race With Checkpoint Phasing With A Checkpoint Count Under 1 (%s)",
@@ -779,7 +779,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						)
 					elseif data.phasing == "checkpoints" and data.phasingAdv > 10 then
 						data.phasingAdv = 10
-						Logger:Info(
+						exports['sandbox-base']:LoggerInfo(
 							"Robbery",
 							string.format(
 								"%s %s (%s) Made A Race With Checkpoint Phasing With A Checkpoint Count Over 10 (%s)",
@@ -801,7 +801,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						)
 					elseif data.phasing == "timed" and data.phasingAdv < 3 then
 						data.phasingAdv = 3
-						Logger:Info(
+						exports['sandbox-base']:LoggerInfo(
 							"Robbery",
 							string.format(
 								"%s %s (%s) Made A Race With Time Phasing With A Timer Less Than 3sec (%s)",
@@ -823,7 +823,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						)
 					elseif data.phasing == "timed" and data.phasingAdv > 60 then
 						data.phasingAdv = 60
-						Logger:Info(
+						exports['sandbox-base']:LoggerInfo(
 							"Robbery",
 							string.format(
 								"%s %s (%s) Made A Race With Time Phasing With A Timer Greater Than 60sec (%s)",

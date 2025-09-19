@@ -21,7 +21,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local myDuty = Player(source).state.onDuty
 
 		if myDuty and (myDuty == "police" or myDuty == "ems") then
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Labor",
 				string.format(
 					"%s %s (%s) Attempted To Create Workgroup (%s)",
@@ -58,7 +58,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myDuty = Player(source).state.onDuty
 		if myDuty and (myDuty == "police" or myDuty == "ems") then
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Labor",
 				string.format(
 					"%s %s (%s) Attempted To Join Workgroup (%s)",
@@ -95,7 +95,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myDuty = Player(source).state.onDuty
 		if myDuty and (myDuty == "police" or myDuty == "ems") then
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Labor",
 				string.format(
 					"%s %s (%s) Attempted To Double Dip Jobs (%s and %s)",

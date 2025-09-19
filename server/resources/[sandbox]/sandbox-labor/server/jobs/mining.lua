@@ -229,7 +229,7 @@ local function GenerateNodes(source)
 
 		if ultra == 1000000 then
 			heCount = 15
-			Logger:Warn(
+			exports['sandbox-base']:LoggerWarn(
 				"Labor",
 				string.format(
 					"%s %s (%s) Got 1 in a million 15 HE ore node job",

@@ -14,7 +14,7 @@ COMPONENTS.Discord = {
 				}
 
 				if data.code ~= nil and data.code ~= 200 then
-					COMPONENTS.Logger:Error("Discord", "Error: " .. data.code, { console = true })
+					exports['sandbox-base']:LoggerError("Discord", "Error: " .. data.code, { console = true })
 				end
 
 				if data.data ~= nil then

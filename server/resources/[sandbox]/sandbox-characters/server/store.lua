@@ -34,7 +34,7 @@ function StoreData(source)
 
 		data.LastPlayed = os.time() * 1000
 
-		Logger:Info("Characters", string.format("Saving Character %s", cId), { console = true })
+		exports['sandbox-base']:LoggerInfo("Characters", string.format("Saving Character %s", cId), { console = true })
 		exports['sandbox-base']:DatabaseGameUpdateOne({
 			collection = "characters",
 			query = {
@@ -59,7 +59,7 @@ end
 
 -- 	-- while true do
 -- 	-- 	local v = Fetch:Next(_prevSaved)
--- 	-- 	Logger:Trace(
+-- 	-- 	exports['sandbox-base']:LoggerTrace(
 -- 	-- 		"Characters",
 -- 	-- 		string.format("BEFORE SAVE, _prevSaved: %s, v ~= nil: %s", _prevSaved, tostring(v ~= nil)),
 -- 	-- 		{ console = true }
@@ -74,7 +74,7 @@ end
 -- 	-- 		_prevSaved = 0
 -- 	-- 	end
 -- 	-- 	local c = exports['sandbox-characters']:FetchCountCharacters() or 1
--- 	-- 	Logger:Trace(
+-- 	-- 	exports['sandbox-base']:LoggerTrace(
 -- 	-- 		"Characters",
 -- 	-- 		string.format("AFTER SAVE, _prevSaved: %s, c: %s", _prevSaved, c),
 -- 	-- 		{ console = true }

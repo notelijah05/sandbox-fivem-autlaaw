@@ -221,7 +221,7 @@ _BILLING = {
                             string.format("You received a fine of $%d from the State of San Andreas", amount), os.time(),
                             7500, "bank", {})
 
-                        Logger:Info("Billing",
+                        exports['sandbox-base']:LoggerInfo("Billing",
                             string.format("%s %s (%s) Fined $%s By %s %s (%s).", targetChar:GetData("First"),
                                 targetChar:GetData("Last"), targetChar:GetData("SID"), amount,
                                 finingChar:GetData("First"), finingChar:GetData("Last"), finingChar:GetData("SID")), {

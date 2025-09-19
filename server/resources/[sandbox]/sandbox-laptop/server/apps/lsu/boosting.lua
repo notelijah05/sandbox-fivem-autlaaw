@@ -885,7 +885,7 @@ LAPTOP.LSUnderground.Boosting = {
                 _boostingContractCount[char:GetData("SID")] += 1
             end
 
-            Logger:Info("Boosting",
+            exports['sandbox-base']:LoggerInfo("Boosting",
                 string.format("%s [%s %s (%s)] Rewarded Class %s Contract (%s)%s", alias, char:GetData("First"),
                     char:GetData("Last"), char:GetData("SID"), vehicle.class, vehicle.label,
                     vehicle.rewarded and " (Manually Created)" or ""))
@@ -935,7 +935,7 @@ LAPTOP.LSUnderground.Boosting = {
                 if v.SID == contract.owner?.SID then
                     local cChar = exports['sandbox-characters']:FetchCharacterSource(v.Source)
                     if cChar then
-                        Logger:Info("Boosting",
+                        exports['sandbox-base']:LoggerInfo("Boosting",
                             string.format("%s [%s %s (%s)] Started Class %s Contract (%s)",
                                 cChar:GetData("Profiles")?.redline?.name, cChar:GetData("First"), cChar:GetData("Last"),
                                 cChar:GetData("SID"), contract.vehicle.class, contract.vehicle.label))
@@ -1045,7 +1045,7 @@ LAPTOP.LSUnderground.Boosting = {
                             end
                         end)
                     else
-                        Logger:Error("Boosting",
+                        exports['sandbox-base']:LoggerError("Boosting",
                             string.format("Failed to Spawn Vehicle For Boost. Contract Owner SID: %s. Buy In: %s $%s",
                                 contract.owner.SID, contract.prices.standard.price, contract.prices.standard.coin))
                     end
@@ -1127,7 +1127,7 @@ LAPTOP.LSUnderground.Boosting = {
                                 math.floor(_boosting[teamId].price + earnedCrypto)
                             )
 
-                            Logger:Info("Boosting",
+                            exports['sandbox-base']:LoggerInfo("Boosting",
                                 string.format(
                                     "%s [%s %s (%s)] Completed Class %s Contract (%s)%s. Rep Gained: %s Crypto Gained: %s",
                                     cChar:GetData("Profiles")?.redline?.name, cChar:GetData("First"),
@@ -1234,7 +1234,7 @@ function SetupBoostingQueue()
 
     CreateThread(function()
         Wait(BOOSTING_SERVER_START_WAIT)
-        Logger:Info("Boosting", "Boosting Contracts Can Now Be Rewarded")
+        exports['sandbox-base']:LoggerInfo("Boosting", "Boosting Contracts Can Now Be Rewarded")
 
         while true do
             local chosen = false
@@ -1269,7 +1269,7 @@ function SetupBoostingQueue()
                 end
 
                 if not chosen then
-                    Logger:Info("Boosting",
+                    exports['sandbox-base']:LoggerInfo("Boosting",
                         string.format("Nobody Chosen for Boosting Contract (%s | %s)", index, #_boostingQueue))
                 end
             end

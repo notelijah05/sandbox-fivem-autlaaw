@@ -38,13 +38,13 @@ AddEventHandler("Vehicles:Client:BecameDriver", function(veh, seat, class)
 
 		NetworkRequestControlOfEntity(veh)
 
-		Logger:Trace("Vehicles", "Execute Vehicle Pre Thread Tasks")
+		exports['sandbox-base']:LoggerTrace("Vehicles", "Execute Vehicle Pre Thread Tasks")
 
 		for k, v in pairs(PRE_THREAD_TASKS) do
 			v.func(veh, class)
 		end
 
-		Logger:Trace("Vehicles", "Start Vehicle Thread on " .. veh)
+		exports['sandbox-base']:LoggerTrace("Vehicles", "Start Vehicle Thread on " .. veh)
 		THREAD_VEHICLE = veh
 		THREAD_VEHICLE_CLASS = GetVehicleClass(THREAD_VEHICLE)
 	end)
@@ -122,7 +122,7 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 							if state and state.VIN then
 								local data = state.awaitingProperties
 								if data then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Vehicles",
 										string.format("Applying Vehicle Properties To Vehicle VIN: %s", state.VIN)
 									)

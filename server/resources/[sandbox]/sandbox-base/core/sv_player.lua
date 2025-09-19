@@ -28,7 +28,7 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 				lastLocationMessage = string.format(" [Coords: %s]", lastCoords)
 			end
 
-			COMPONENTS.Logger:Info(
+			exports['sandbox-base']:LoggerInfo(
 				"Base",
 				string.format(
 					"%s (%s) With Source %s Disconnected, Reason: %s%s",
@@ -132,7 +132,7 @@ AddEventHandler("Queue:Server:SessionActive", function(source, data)
 			for k, v in pairs(COMPONENTS.Players) do
 				if v:GetData("AccountID") == pData.AccountID then
 					COMPONENTS.Players[k] = nil
-					COMPONENTS.Logger:Error(
+					exports['sandbox-base']:LoggerError(
 						"Base",
 						string.format("%s Connected But Was Already Registered As A Player, Clearing", pData.AccountID)
 					)
@@ -147,7 +147,7 @@ AddEventHandler("Queue:Server:SessionActive", function(source, data)
 
 			COMPONENTS.Players[source] = PlayerClass(source, pData)
 			COMPONENTS.Routing:RoutePlayerToHiddenRoute(source)
-			COMPONENTS.Logger:Info(
+			exports['sandbox-base']:LoggerInfo(
 				"Base",
 				string.format(
 					"%s (%s) Connected With Source %s",

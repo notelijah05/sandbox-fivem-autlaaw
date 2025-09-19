@@ -4,8 +4,6 @@ AddEventHandler("Characters:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	DataStore = exports["sandbox-base"]:FetchComponent("DataStore")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	GlobalConfig = exports["sandbox-base"]:FetchComponent("Config")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
@@ -24,8 +22,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Characters", {
 		"Middleware",
 		"DataStore",
-		"Logger",
-		"Logger",
 		"Chat",
 		"Config",
 		"Routing",

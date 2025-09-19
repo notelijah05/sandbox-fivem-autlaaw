@@ -122,7 +122,7 @@ COMPONENTS.Game = {
 					end
 
 					if not DoesEntityExist(vehicle) then
-						COMPONENTS.Logger:Error(
+						exports['sandbox-base']:LoggerError(
 							"Game",
 							string.format(
 								"Vehicle (%s) Didn't Spawn, Returning Nil And Aborting Remaining Spawn Behavior",
@@ -149,7 +149,7 @@ COMPONENTS.Game = {
 						cb(vehicle)
 					end
 				else
-					COMPONENTS.Logger:Error(
+					exports['sandbox-base']:LoggerError(
 						"Stream",
 						string.format("failed to load model, please report this: %s", model)
 					)

@@ -13,7 +13,7 @@ RegisterNetEvent("Job:Client:DutyChanged", function(state)
 	if state and _trackedJobs[state] then
 		CreateThread(function()
 			local mySID = LocalPlayer.state.Character:GetData("SID")
-			Logger:Trace("Tracking", "Start Emergency Tracking")
+			exports['sandbox-base']:LoggerTrace("Tracking", "Start Emergency Tracking")
 			while
 				LocalPlayer.state.loggedIn
 				and LocalPlayer.state.onDuty
@@ -74,7 +74,7 @@ RegisterNetEvent("Job:Client:DutyChanged", function(state)
 				end
 			end
 
-			Logger:Trace("Tracking", "Clear Emergency Tracking")
+			exports['sandbox-base']:LoggerTrace("Tracking", "Clear Emergency Tracking")
 
 			for k, v in pairs(_trackerBlips) do
 				RemoveBlip(v.blipId)

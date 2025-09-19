@@ -27,7 +27,6 @@ function HospitalComponents()
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Vendor = exports["sandbox-base"]:FetchComponent("Vendor")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -49,7 +48,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Pwnzor",
 		"Banking",
 		"Vendor",
-		"Logger",
 	}, function(error)
 		if #error > 0 then
 			return

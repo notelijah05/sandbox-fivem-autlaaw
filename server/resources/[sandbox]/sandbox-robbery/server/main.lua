@@ -19,7 +19,6 @@ end
 
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -197,7 +196,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"Logger",
 		"Utils",
 		"Middleware",
 		"Inventory",
@@ -288,7 +286,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				local tLoc = GetEntityCoords(pPed)
 
 				if #(vector3(pLoc.x, pLoc.y, pLoc.z) - vector3(tLoc.x, tLoc.y, tLoc.z)) <= 3.0 then
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Robbery",
 						string.format(
 							"%s %s (%s) Robbed %s %s (%s)",
@@ -417,7 +415,7 @@ RegisterNetEvent("Robbery:Server:Idiot", function(id)
 	local src = source
 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
-		Logger:Info(
+		exports['sandbox-base']:LoggerInfo(
 			"Exploit",
 			string.format(
 				"%s %s (%s) Exploited Into A Kill Zone (%s) That Was Still Active, They're Now Dead As Fuck",

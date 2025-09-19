@@ -104,7 +104,7 @@ function HospitalCallbacks()
 			-- end
 
 			Billing:Charge(source, cost, "Medical Services", "Use of facilities at St. Fiacre Medical Center")
-			Logger:Info(
+			exports['sandbox-base']:LoggerInfo(
 				"Robbery",
 				string.format(
 					"%s %s (%s) Respawned Via Local EMS",

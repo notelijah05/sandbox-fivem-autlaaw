@@ -31,7 +31,7 @@ function Startup()
 		if not success then
 			return
 		end
-		Logger:Trace("Properties", "Loaded ^2" .. #results .. "^7 Properties", { console = true })
+		exports['sandbox-base']:LoggerTrace("Properties", "Loaded ^2" .. #results .. "^7 Properties", { console = true })
 
 		for k, v in ipairs(results) do
 			local p = doPropertyThings(v)

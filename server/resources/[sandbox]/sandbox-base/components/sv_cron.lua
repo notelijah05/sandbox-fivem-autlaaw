@@ -51,7 +51,8 @@ COMPONENTS.Cron = {
     _name = 'base',
     Register = function(self, id, day, hour, min, cb)
         if _jobs[id] ~= nil then
-            COMPONENTS.Logger:Warn('Cron', 'Overriding Already Existing Cron Job: ' .. id, { console = true })
+            exports['sandbox-base']:LoggerWarn('Cron', 'Overriding Already Existing Cron Job: ' .. id,
+                { console = true })
         end
 
         _jobs[id] = {
@@ -68,21 +69,24 @@ COMPONENTS.Cron = {
         if _jobs[id] ~= nil then
             _jobs[id] = nil
         else
-            COMPONENTS.Logger:Warn('Cron', 'Attempt To Delete Non-Existing Cron Job: ' .. id, { console = true })
+            exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Delete Non-Existing Cron Job: ' .. id,
+                { console = true })
         end
     end,
     Pause = function(self, id)
         if _jobs[id] ~= nil then
             _jobs[id].pause = true
         else
-            COMPONENTS.Logger:Warn('Cron', 'Attempt To Pause Non-Existing Cron Job: ' .. id, { console = true })
+            exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Pause Non-Existing Cron Job: ' .. id,
+                { console = true })
         end
     end,
     Resume = function(self, id)
         if _jobs[id] ~= nil then
             _jobs[id].pause = false
         else
-            COMPONENTS.Logger:Warn('Cron', 'Attempt To Resume Non-Existing Cron Job: ' .. id, { console = true })
+            exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Resume Non-Existing Cron Job: ' .. id,
+                { console = true })
         end
     end,
     Skip = function(self, id)
@@ -90,7 +94,8 @@ COMPONENTS.Cron = {
             _jobs[id].skip = false
             _jobs[id].pause = false
         else
-            COMPONENTS.Logger:Warn('Cron', 'Attempt To Skip Non-Existing Cron Job: ' .. id, { console = true })
+            exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Skip Non-Existing Cron Job: ' .. id,
+                { console = true })
         end
     end
 }

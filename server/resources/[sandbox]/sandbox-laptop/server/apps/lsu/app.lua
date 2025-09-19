@@ -61,7 +61,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		while true do
 			Wait(wait * 1000)
 			marketItems = table.copy(_defMarket)
-			Logger:Info("Laptop - LSU", "Market Place Items Restocked")
+			exports['sandbox-base']:LoggerInfo("Laptop - LSU", "Market Place Items Restocked")
 		end
 	end)
 

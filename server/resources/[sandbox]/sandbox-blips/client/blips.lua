@@ -2,13 +2,11 @@ blips = {}
 
 AddEventHandler("Blips:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Blips", {
-		"Logger",
 		"Blips",
 	}, function(error)
 		if #error > 0 then
@@ -26,7 +24,7 @@ end)
 BLIPS = {
 	Add = function(self, id, name, coords, sprite, colour, scale, display, category, flashes)
 		if coords == nil then
-			Logger:Error("Blips", "Coords needed for Blip")
+			exports['sandbox-base']:LoggerError("Blips", "Coords needed for Blip")
 			return
 		end
 

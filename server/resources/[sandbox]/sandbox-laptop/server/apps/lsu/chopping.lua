@@ -34,7 +34,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 	Chat:RegisterAdminCommand('choplists', function(source, args, rawCommand)
 		if args[1] == "all" then
-			Logger:Trace("Chopping", "Generating New Public Chop List")
+			exports['sandbox-base']:LoggerTrace("Chopping", "Generating New Public Chop List")
 			_publicChoplist = {
 				list = Laptop.LSUnderground.Chopping:GenerateList(10, 2),
 				public = true,
@@ -53,7 +53,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				end
 			end
 
-			Logger:Trace("Chopping", "Generating New VIP Chop List")
+			exports['sandbox-base']:LoggerTrace("Chopping", "Generating New VIP Chop List")
 			_vipChopList = {
 				list = Laptop.LSUnderground.Chopping:GenerateList(10, 4),
 				public = true,
@@ -106,7 +106,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				end
 			end
 		elseif args[1] == "public" then
-			Logger:Trace("Chopping", "Generating New Public Chop List")
+			exports['sandbox-base']:LoggerTrace("Chopping", "Generating New Public Chop List")
 			_publicChoplist = {
 				list = Laptop.LSUnderground.Chopping:GenerateList(10, 2),
 				public = true,
@@ -147,7 +147,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				end
 			end
 		elseif args[1] == "private" then
-			Logger:Trace("Chopping", "Generating New VIP Chop List")
+			exports['sandbox-base']:LoggerTrace("Chopping", "Generating New VIP Chop List")
 			_vipChopList = {
 				list = Laptop.LSUnderground.Chopping:GenerateList(10, 4),
 				public = true,
@@ -667,7 +667,7 @@ LAPTOP.LSUnderground.Chopping = {
 					table.remove(_publicChoplist.list, k)
 
 					if #_publicChoplist.list <= 0 then
-						Logger:Trace("Chopping", "Generating New Public Chop List")
+						exports['sandbox-base']:LoggerTrace("Chopping", "Generating New Public Chop List")
 						_publicChoplist = {
 							list = Laptop.LSUnderground.Chopping:GenerateList(10, 2),
 							public = true,
@@ -718,7 +718,7 @@ LAPTOP.LSUnderground.Chopping = {
 					table.remove(_vipChopList.list, k)
 
 					if #_vipChopList.list <= 0 then
-						Logger:Trace("Chopping", "Generating New VIP Chop List")
+						exports['sandbox-base']:LoggerTrace("Chopping", "Generating New VIP Chop List")
 						_vipChopList = {
 							list = Laptop.LSUnderground.Chopping:GenerateList(10, 4),
 							public = true,

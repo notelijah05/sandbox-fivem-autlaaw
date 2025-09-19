@@ -75,7 +75,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		Notification.Persistent:Remove("veh_customs")
 
 		if not isSaving then
-			Logger:Trace("VehicleCustoms", "Not Saving - Reset Mods")
+			exports['sandbox-base']:LoggerTrace("VehicleCustoms", "Not Saving - Reset Mods")
 			Vehicles.Properties:Set(CUST_VEH, originalData)
 			Notification:Error("Changes Discarded - You Weren't Charged")
 		end
@@ -896,7 +896,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		local currentCost = CalculateCustomsCost(changingData, costMultiplier)
 		if LocalPlayer.state.Character:GetData("Cash") >= currentCost then
 			isSaving = true
-			Logger:Trace("VehicleCustoms", "Attept Mods Save")
+			exports['sandbox-base']:LoggerTrace("VehicleCustoms", "Attept Mods Save")
 			customsMenu:Close()
 
 			exports["sandbox-base"]:ServerCallback("Vehicles:CompleteCustoms", {

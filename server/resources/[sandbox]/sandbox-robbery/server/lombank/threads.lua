@@ -7,7 +7,7 @@ function StartLombankThreads()
         while _threading do
             if _lbGlobalReset ~= nil then
                 if os.time() > _lbGlobalReset then
-                    Logger:Info("Robbery", "Lombank Heist Has Been Reset")
+                    exports['sandbox-base']:LoggerInfo("Robbery", "Lombank Heist Has Been Reset")
                     ResetLombank()
                 end
             end

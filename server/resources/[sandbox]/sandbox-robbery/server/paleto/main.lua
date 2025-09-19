@@ -240,7 +240,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							local itemData = Inventory.Items:GetData("adv_electronics_kit")
 
 							if itemData ~= nil then
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Started hacking Paleto Electrical Box %s",
@@ -265,7 +265,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
 
 									if success then
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Successfully Hacked Paleto Electrical Box %s",
@@ -390,7 +390,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							local itemData = Inventory.Items:GetData("adv_electronics_kit")
 
 							if itemData ~= nil then
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Started hacking Paleto PC %s",
@@ -413,7 +413,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
 
 									if success then
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Successfully Hacked Paleto PC %s",
@@ -531,7 +531,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							local itemData = Inventory.Items:GetData("adv_electronics_kit")
 
 							if itemData ~= nil then
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Started hacking Paleto Lobby Workstation",
@@ -557,7 +557,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
 
 									if success then
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Successfully Hacked Paleto Lobby Workstation",
@@ -665,7 +665,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							local itemData = Inventory.Items:GetData("adv_electronics_kit")
 
 							if itemData ~= nil then
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Started hacking Paleto Office %s",
@@ -688,7 +688,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
 
 									if success then
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Successfully Hacked Paleto Office %s",
@@ -806,7 +806,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							local itemData = Inventory.Items:GetData("drill")
 
 							if slot ~= nil then
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Started Drilling Paleto Vault Box: %s",
@@ -825,7 +825,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
 
 									if success then
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Successfully Drilled Paleto Vault Box: %s",
@@ -914,7 +914,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_pbInUse.searchPoints[data.searchId] = source
 						GlobalState["PaletoInProgress"] = true
 
-						Logger:Info(
+						exports['sandbox-base']:LoggerInfo(
 							"Robbery",
 							string.format(
 								"%s %s (%s) Started Drilling Paleto Vault Box: %s",
@@ -931,7 +931,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							},
 						}, function(success)
 							if success then
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Successfully Drilled Paleto Vault Box: %s",
@@ -998,7 +998,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if not _pbInUse.officeSafe then
 						_pbInUse.officeSafe = source
-						Logger:Info(
+						exports['sandbox-base']:LoggerInfo(
 							"Robbery",
 							string.format(
 								"%s %s (%s) Started Accessing Paleto Office Safe",
@@ -1041,7 +1041,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if _pbInUse.officeSafe == source then
 						if data.code ~= false and _accessCodes.paleto[4].code == tonumber(data.code) then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Successfully Accessed Paleto Office Safe",
@@ -1096,7 +1096,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							GlobalState["PaletoInProgress"] = true
 						else
 							_pbInUse.officeSafe = false
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Failed Accessing Paleto Office Safe",

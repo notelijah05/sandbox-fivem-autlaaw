@@ -6,7 +6,6 @@ AddEventHandler("Locations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Default = exports["sandbox-base"]:FetchComponent("Default")
 end
 
@@ -14,7 +13,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Locations", {
 		"Chat",
 		"Locations",
-		"Logger",
 		"Default",
 	}, function(error)
 		if #error > 0 then

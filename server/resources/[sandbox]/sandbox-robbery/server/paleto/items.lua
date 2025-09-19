@@ -35,7 +35,7 @@ function RegisterPBItems()
 								GlobalState["PaletoInProgress"] = true
 
 								if Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Started Thermiting Paleto Sub Station #%s",
@@ -63,7 +63,7 @@ function RegisterPBItems()
 										data = {},
 									}, function(success)
 										if success then
-											Logger:Info(
+											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
 												string.format(
 													"%s %s (%s) Successfully Thermited Paleto Sub Station #%s",
@@ -135,7 +135,7 @@ function RegisterPBItems()
 											Status.Modify:Add(source, "PLAYER_STRESS", 3)
 											GlobalState["Fleeca:Disable:savings_paleto"] = true
 										else
-											Logger:Info(
+											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
 												string.format(
 													"%s %s (%s) Failed Thermiting Paleto Sub Station #%s",
@@ -209,7 +209,7 @@ function RegisterPBItems()
 												slot.invType
 											)
 										then
-											Logger:Info(
+											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
 												string.format(
 													"%s %s (%s) Started Hacking Paleto Door: %s",
@@ -237,7 +237,7 @@ function RegisterPBItems()
 												data = {},
 											}, function(success)
 												if success then
-													Logger:Info(
+													exports['sandbox-base']:LoggerInfo(
 														"Robbery",
 														string.format(
 															"%s %s (%s) Successfully Thermited Paleto Door: %s",
@@ -322,7 +322,7 @@ function RegisterPBItems()
 												slot.invType
 											)
 										then
-											Logger:Info(
+											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
 												string.format(
 													"%s %s (%s) Started Thermiting Paleto Security Power: %s",
@@ -350,7 +350,7 @@ function RegisterPBItems()
 												data = {},
 											}, function(success)
 												if success then
-													Logger:Info(
+													exports['sandbox-base']:LoggerInfo(
 														"Robbery",
 														string.format(
 															"%s %s (%s) Successfully Thermited Paleto Security Power: %s",
@@ -480,7 +480,7 @@ function RegisterPBItems()
 							if AreRequirementsUnlocked(v.requiredDoors) then
 								if not _pbInUse[k] then
 									_pbInUse[k] = source
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Started Hacking Paleto Door: %s",
@@ -509,7 +509,7 @@ function RegisterPBItems()
 										data = {},
 									}, function(success, data)
 										if success then
-											Logger:Info(
+											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
 												string.format(
 													"%s %s (%s) Successfully Hacked Paleto Door: %s",
@@ -540,7 +540,7 @@ function RegisterPBItems()
 											Status.Modify:Add(source, "PLAYER_STRESS", 3)
 											GlobalState["Fleeca:Disable:savings_paleto"] = true
 										else
-											Logger:Info(
+											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
 												string.format(
 													"%s %s (%s) Failed Hacking Paleto Door: %s",

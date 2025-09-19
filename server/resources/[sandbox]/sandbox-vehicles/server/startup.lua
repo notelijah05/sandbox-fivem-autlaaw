@@ -11,7 +11,8 @@ function Startup()
         }
     }, function(success, count)
         if success then
-            Logger:Trace('Vehicles', string.format('Loaded ^2%s^7 Character Owned Vehicles', count))
+            exports['sandbox-base']:LoggerTrace('Vehicles',
+                string.format('Loaded ^2%s^7 Character Owned Vehicles', count))
         end
     end)
 
@@ -22,7 +23,7 @@ function Startup()
         }
     }, function(success, count)
         if success then
-            Logger:Trace('Vehicles', string.format('Loaded ^2%s^7 Fleet Owned Vehicles', count))
+            exports['sandbox-base']:LoggerTrace('Vehicles', string.format('Loaded ^2%s^7 Fleet Owned Vehicles', count))
         end
     end)
 
@@ -50,7 +51,7 @@ function Startup()
     --                 timeSpread = 2000
     --             end
 
-    --             Logger:Info('Vehicles', 'Running Periodical Save For '.. #savingVINs .. ' Vehicles')
+    --             exports['sandbox-base']:LoggerInfo('Vehicles', 'Running Periodical Save For '.. #savingVINs .. ' Vehicles')
 
     --             for k, v in ipairs(savingVINs) do
     --                 SaveVehicle(v)

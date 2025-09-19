@@ -18,7 +18,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Objects",
 	}, function(error)
 		if #error > 0 then
-			exports["sandbox-base"]:FetchComponent("Logger"):Critical("Objects", "Failed To Load All Dependencies")
+			exports['sandbox-base']:LoggerCritical("Objects", "Failed To Load All Dependencies")
 			return
 		end
 		RetrieveObjectsComponents()

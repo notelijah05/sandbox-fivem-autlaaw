@@ -11,13 +11,11 @@ local _inCayoStorm = false
 
 AddEventHandler("Sync:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Sync", {
-		"Logger",
 		"Sync",
 	}, function(error)
 		if #error > 0 then
@@ -61,7 +59,7 @@ end)
 
 SYNC = {
 	Start = function(self)
-		Logger:Trace("Sync", "Starting Time and Weather Sync")
+		exports['sandbox-base']:LoggerTrace("Sync", "Starting Time and Weather Sync")
 		_isStopped = false
 
 		_weatherState = GlobalState["Sync:Weather"]
@@ -94,7 +92,7 @@ SYNC = {
 		end
 	end,
 	Stop = function(self, hour)
-		Logger:Trace("Sync", "Stopping Time and Weather Sync")
+		exports['sandbox-base']:LoggerTrace("Sync", "Stopping Time and Weather Sync")
 		_isStopped = true
 
 		if not hour then
@@ -186,12 +184,13 @@ function StartSyncThreads()
 						if not isTransionHappening then
 							isTransionHappening = true
 							_weatherState = GlobalState["Sync:Weather"]
-							Logger:Trace("Sync", "Transitioning to Weather: " .. _weatherState)
+							exports['sandbox-base']:LoggerTrace("Sync", "Transitioning to Weather: " .. _weatherState)
 							ClearOverrideWeather()
 							ClearWeatherTypePersist()
 							SetWeatherTypeOvertimePersist(_weatherState, 15.0)
 							Wait(15000)
-							Logger:Trace("Sync", "Finished Transitioning to Weather: " .. _weatherState)
+							exports['sandbox-base']:LoggerTrace("Sync",
+								"Finished Transitioning to Weather: " .. _weatherState)
 							isTransionHappening = false
 						end
 

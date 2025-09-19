@@ -1,6 +1,5 @@
 AddEventHandler("Arcade:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -19,7 +18,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Arcade", {
-		"Logger",
 		"Notification",
 		"Hud",
 		"Targeting",

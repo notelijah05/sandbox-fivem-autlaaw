@@ -1,6 +1,5 @@
 AddEventHandler("Tow:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -18,7 +17,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Tow", {
-		"Logger",
 		"Utils",
 		"Keybinds",
 		"Targeting",

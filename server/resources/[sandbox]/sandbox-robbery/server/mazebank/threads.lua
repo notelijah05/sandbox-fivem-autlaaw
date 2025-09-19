@@ -9,7 +9,7 @@ function StartMazeBankThreads()
 		while _threading do
 			if _mbGlobalReset ~= nil then
 				if os.time() > _mbGlobalReset then
-					Logger:Info("Robbery", "Maze Bank Heist Has Been Reset")
+					exports['sandbox-base']:LoggerInfo("Robbery", "Maze Bank Heist Has Been Reset")
 					ResetMazeBank()
 				end
 			end
@@ -40,7 +40,7 @@ function StartMazeBankThreads()
 					and GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)].state == 2
 					and GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)].expires < os.time()
 				then
-					Logger:Info("Robbery", string.format("Maze Bank Door %s Opening", v.doorId))
+					exports['sandbox-base']:LoggerInfo("Robbery", string.format("Maze Bank Door %s Opening", v.doorId))
 					GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)] = {
 						state = 3,
 					}

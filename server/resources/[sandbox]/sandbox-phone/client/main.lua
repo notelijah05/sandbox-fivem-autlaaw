@@ -30,7 +30,6 @@ local _ignoreEvents = {
 
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
@@ -60,7 +59,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Logger",
 		"Phone",
 		"Notification",
 		"UISounds",

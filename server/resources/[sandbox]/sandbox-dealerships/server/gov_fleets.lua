@@ -43,7 +43,7 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
                                         chosenVehicle.make, chosenVehicle.model, vehicle.VIN, vehicle.RegisteredPlate),
                                     5000, 'cars')
                             else
-                                Logger:Error('Dealerships',
+                                exports['sandbox-base']:LoggerError('Dealerships',
                                     string.format(
                                         'Purchase of Fleet Vehicle Failed After Taking %s Cash from Bank Account: %s',
                                         chosenVehicle.price, purchaseBankAccount.Account))

@@ -7,7 +7,6 @@ _justBoughtFuckingBike = {}
 
 AddEventHandler("Dealerships:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -28,7 +27,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Dealerships", {
-		"Logger",
 		"Utils",
 		"Game",
 		"Targeting",

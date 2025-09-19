@@ -41,21 +41,21 @@ function RemoveCraftingCooldown(source, bench, id)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _cooldowns[bench] ~= nil then
-					Logger:Info("Crafting",
+					exports['sandbox-base']:LoggerInfo("Crafting",
 						string.format("%s %s (%s) Reset Cooldown %s on bench %s", char:GetData("First"),
 							char:GetData("Last"), char:GetData("SID"), id, bench))
 					Chat.Send.Server:Single(source, "Cooldown Removed From Bench")
 					_cooldowns[bench][id] = nil
 					MySQL.query('DELETE FROM crafting_cooldowns WHERE bench = ? AND id = ?', { bench, id })
 				else
-					Logger:Info("Crafting",
+					exports['sandbox-base']:LoggerInfo("Crafting",
 						string.format("%s %s (%s) Attempted To Remove Cooldown %s From Non-Existent Bench %s",
 							char:GetData("First"), char:GetData("Last"), char:GetData("SID"), id, bench))
 					Chat.Send.Server:Single(source, "Not A Valid Bench")
 				end
 			end
 		else
-			Logger:Info("Crafting",
+			exports['sandbox-base']:LoggerInfo("Crafting",
 				string.format("%s %s (%s) Attempted To Remove Cooldown %s From Bench %s", char:GetData("First"),
 					char:GetData("Last"), char:GetData("SID"), id, bench))
 		end
@@ -90,7 +90,8 @@ function CleanupExpiredCooldowns()
 
 			MySQL.query('DELETE FROM crafting_cooldowns WHERE expires < ?', { os.time() }, function(d)
 				if d.affectedRows > 0 then
-					Logger:Info("Inventory", string.format("Remove ^2%s^7 Expired Crafting Cooldowns", d.affectedRows))
+					exports['sandbox-base']:LoggerInfo("Inventory",
+						string.format("Remove ^2%s^7 Expired Crafting Cooldowns", d.affectedRows))
 				end
 			end)
 			Wait(60000)

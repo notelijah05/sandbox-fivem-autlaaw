@@ -88,7 +88,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				return
 			end
 			if not GlobalState[pId] or GlobalState[pId] < os.time() and GlobalState["Vangelico:State"] ~= 2 then
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Robbery",
 					string.format(
 						"%s %s (%s) Broke Vangelico Case #%s",
@@ -145,7 +145,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			Execute:Client(source, "Notification", "Success", "Store Has Been Secure", 6000)
 		else
 			Execute:Client(source, "Notification", "Error", "Unable To Secure Store, No Recent Crime Reported", 6000)
-			Logger:Info(
+			exports['sandbox-base']:LoggerInfo(
 				"Robbery",
 				string.format(
 					"%s %s (%s) Secured Vangelico",
@@ -154,7 +154,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					char:GetData("SID")
 				)
 			)
-			Logger:Warn(
+			exports['sandbox-base']:LoggerWarn(
 				"Characters",
 				string.format(
 					"Shitlord Cop Tried Securing Vangelico Without A Recent PD Alert %s %s (%s)",

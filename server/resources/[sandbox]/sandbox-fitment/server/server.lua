@@ -1,13 +1,11 @@
 AddEventHandler("Fitment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Fitment", {
-		"Logger",
 		"Utils",
 		"Inventory",
 	}, function(error)

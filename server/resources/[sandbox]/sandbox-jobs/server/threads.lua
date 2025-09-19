@@ -5,7 +5,7 @@ CreateThread(function()
         Wait(100)
     end
 
-    Logger:Info("Jobs", "Salary Thread Starting")
+    exports['sandbox-base']:LoggerInfo("Jobs", "Salary Thread Starting")
 
     while true do
         Wait(1000 * 60 * _payPeriod)
@@ -19,7 +19,7 @@ CreateThread(function()
                     local j = Jobs:Get(dutyData.Id)
                     local salary = math.ceil((j.Salary * j.SalaryTier) * (workedMinutes / _payPeriod))
 
-                    Logger:Info("Jobs",
+                    exports['sandbox-base']:LoggerInfo("Jobs",
                         string.format("Adding Salary Data For ^3%s^7 (^2%s Minutes^7 - ^3$%s^7)", v:GetData("SID"),
                             workedMinutes, salary))
 

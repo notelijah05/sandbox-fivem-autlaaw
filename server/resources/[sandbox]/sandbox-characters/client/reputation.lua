@@ -1,11 +1,9 @@
 AddEventHandler("Reputation:Shared:DependencyUpdate", RepComponents)
 function RepComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Reputation", {
-		"Logger",
 	}, function(error)
 		if #error > 0 then
 			return

@@ -37,7 +37,6 @@ end
 AddEventHandler("VOIP:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -50,7 +49,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VOIP", {
 		"Notification",
-		"Logger",
 		"Hud",
 		"Keybinds",
 		"Utils",
@@ -145,12 +143,12 @@ AddEventHandler("Characters:Client:Logout", function()
 	USING_MEGAPHONE = false
 
 	MumbleSetServerAddress("", 0)
-	Logger:Info("VOIP", "Disconnecting From Mumble (Character Logging Out)")
+	exports['sandbox-base']:LoggerInfo("VOIP", "Disconnecting From Mumble (Character Logging Out)")
 end)
 
 AddEventHandler("VOIP:Client:ConnectionState", function(state)
 	if state then
-		Logger:Info("VOIP", "Connected to Mumble Server")
+		exports['sandbox-base']:LoggerInfo("VOIP", "Connected to Mumble Server")
 
 		while not LocalPlayer.state.voiceChannel do
 			print("Waiting to Be Assigned Voice Channel")
@@ -172,7 +170,7 @@ AddEventHandler("VOIP:Client:ConnectionState", function(state)
 
 		MumbleSetTalkerProximity(CURRENT_VOICE_MODE_DATA.Range + 0.0)
 	else
-		Logger:Warn("VOIP", "Disconnected from Mumble Server")
+		exports['sandbox-base']:LoggerWarn("VOIP", "Disconnected from Mumble Server")
 		StopUsingMegaphone()
 	end
 
@@ -254,7 +252,7 @@ _fuckingVOIP = {
 		UpdateVOIPIndicatorStatus()
 
 		LocalPlayer.state:set("proximity", CURRENT_VOICE_MODE_DATA.Range, false)
-		Logger:Trace("VOIP", "New Voice Range: " .. CURRENT_VOICE_MODE)
+		exports['sandbox-base']:LoggerTrace("VOIP", "New Voice Range: " .. CURRENT_VOICE_MODE)
 	end,
 	ToggleVoice = function(self, plySource, enabled, voiceType, volume)
 		local volumeOverride = volume or GetVolumeForVoiceType(voiceType)

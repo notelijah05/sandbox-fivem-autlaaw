@@ -48,7 +48,7 @@ AddEventHandler('Vehicles:Client:FlipVehicle', function(entityData)
 end)
 
 RegisterNetEvent('Vehicles:Client:FlipVehicleRequest', function(netVeh, pedPitch, vehRoll, vehYaw)
-    Logger:Info('Vehicles', string.format('Flipping Vehicle %s By Server Request', netVeh))
+    exports['sandbox-base']:LoggerInfo('Vehicles', string.format('Flipping Vehicle %s By Server Request', netVeh))
     if NetworkDoesEntityExistWithNetworkId(netVeh) then
         local vehicle = NetToVeh(netVeh)
         FlipVehicle(vehicle, pedPitch, vehRoll, vehYaw)

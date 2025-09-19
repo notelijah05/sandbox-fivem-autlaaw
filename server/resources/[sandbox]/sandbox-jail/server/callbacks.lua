@@ -52,7 +52,7 @@ function RegisterCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			if data == 1 then
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Jail",
 					string.format(
 						"%s %s (%s) attempted to exploit out of prison in a trunk",
@@ -72,7 +72,7 @@ function RegisterCallbacks()
 					}
 				)
 			elseif data == 2 then
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Jail",
 					string.format(
 						"%s %s (%s) attempted to exploit out of prison by being escorted out",

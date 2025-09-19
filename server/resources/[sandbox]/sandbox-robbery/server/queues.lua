@@ -115,7 +115,7 @@ function SetupQueues()
 				end
 
 				if char ~= nil then
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Robbery Queue",
 						string.format(
 							"%s %s (%s) Was Chosen For ^3%s^7",
@@ -147,7 +147,8 @@ function SetupQueues()
 					})
 					_awarded[data.id] = true
 				else
-					Logger:Info("Robbery Queue", string.format("No Eligible Player Found For ^3%s^7", v.name))
+					exports['sandbox-base']:LoggerInfo("Robbery Queue",
+						string.format("No Eligible Player Found For ^3%s^7", v.name))
 				end
 			end, v, (v.wait - v.first))
 		end

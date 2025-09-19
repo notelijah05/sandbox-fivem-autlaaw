@@ -122,7 +122,7 @@ function LoadItemsFromDb()
 
 	RegisterRandomItems()
 
-	Logger:Trace("Inventory", string.format("Loaded ^2%s^7 Items", #iDb))
+	exports['sandbox-base']:LoggerTrace("Inventory", string.format("Loaded ^2%s^7 Items", #iDb))
 	TriggerLatentClientEvent("Inventory:Client:LoadItems", -1, 50000, _dbItems)
 end
 
@@ -130,7 +130,7 @@ local tmpItems = { '"paleto_access_codes"', '"event_invite"' }
 function ClearDropZones()
 	local f = MySQL.query.await("DELETE FROM inventory WHERE type = ?", { 10 })
 
-	Logger:Info("Inventory", string.format("Cleaned Up ^2%s^7 Items In Dropzones", f.affectedRows))
+	exports['sandbox-base']:LoggerInfo("Inventory", string.format("Cleaned Up ^2%s^7 Items In Dropzones", f.affectedRows))
 
 	local trash = 0
 	local s = {}
@@ -143,15 +143,17 @@ function ClearDropZones()
 	local t = MySQL.query.await("DELETE FROM inventory WHERE type IN (" .. table.concat(s, ",") .. ")")
 	trash += t.affectedRows
 
-	Logger:Info("Inventory", string.format("Cleaned Up ^2%s^7 Items In Trash Inventories", trash))
+	exports['sandbox-base']:LoggerInfo("Inventory", string.format("Cleaned Up ^2%s^7 Items In Trash Inventories", trash))
 	local delTmp = MySQL.query.await(string.format("DELETE FROM inventory WHERE item_id IN (%s)",
 		table.concat(tmpItems, ",")))
-	Logger:Info("Inventory", string.format("Cleaned Up ^2%s^7 Temporary Items", delTmp.affectedRows))
+	exports['sandbox-base']:LoggerInfo("Inventory",
+		string.format("Cleaned Up ^2%s^7 Temporary Items", delTmp.affectedRows))
 end
 
 function ClearLocalVehicleInventories()
 	local d = MySQL.query.await("DELETE FROM inventory WHERE SUBSTRING(owner, 11, 1) = ? AND type = ?", { "B", 4 })
-	Logger:Info("Inventory", string.format("Cleaned Up ^2%s^7 Local Vehicle Inventories", d.affectedRows))
+	exports['sandbox-base']:LoggerInfo("Inventory",
+		string.format("Cleaned Up ^2%s^7 Local Vehicle Inventories", d.affectedRows))
 end
 
 function countTable(t)
@@ -169,14 +171,15 @@ function ClearBrokenItems()
 	_started = true
 
 	local d = MySQL.query.await("DELETE FROM inventory WHERE expiryDate < ? AND expiryDate >= 0", { os.time() })
-	Logger:Info("Inventory", string.format("Cleaned Up ^2%s^7 Degraded Items", d.affectedRows))
+	exports['sandbox-base']:LoggerInfo("Inventory", string.format("Cleaned Up ^2%s^7 Degraded Items", d.affectedRows))
 	d = nil
 
 	CreateThread(function()
 		while _started do
 			Wait((1000 * 60) * 30)
 			MySQL.query("DELETE FROM inventory WHERE expiryDate < ? AND expiryDate >= 0", { os.time() }, function(d)
-				Logger:Info("Inventory", string.format("Cleaned Up ^2%s^7 Degraded Items", d.affectedRows))
+				exports['sandbox-base']:LoggerInfo("Inventory",
+					string.format("Cleaned Up ^2%s^7 Degraded Items", d.affectedRows))
 			end)
 		end
 	end)
@@ -335,14 +338,14 @@ function LoadItems()
 	itemsLoaded = true
 
 	RegisterRandomItems()
-	Logger:Trace("Inventory", string.format("Loaded ^2%s^7 Items", c))
+	exports['sandbox-base']:LoggerTrace("Inventory", string.format("Loaded ^2%s^7 Items", c))
 end
 
 function LoadEntityTypes()
 	for k, v in ipairs(_entityTypes) do
 		LoadedEntitys[tonumber(v.id)] = v
 	end
-	Logger:Trace("Inventory", string.format("Loaded ^2%s^7 Inventory Entity Types", #_entityTypes))
+	exports['sandbox-base']:LoggerTrace("Inventory", string.format("Loaded ^2%s^7 Inventory Entity Types", #_entityTypes))
 end
 
 shopLocations = {}
@@ -376,7 +379,7 @@ function LoadShops()
 			storeBankAccounts[v.shop] = v.bank
 		end
 
-		Logger:Trace("Inventory", string.format("Loaded ^2%s^7 Shop Locations", #_shops))
+		exports['sandbox-base']:LoggerTrace("Inventory", string.format("Loaded ^2%s^7 Shop Locations", #_shops))
 	end)
 
 	if not _startingPendingDepositThread then
@@ -387,7 +390,7 @@ function LoadShops()
 
 				for k, v in pairs(pendingShopDeposits) do
 					if v.tax then
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Inventory",
 							string.format(
 								"Depositing ^2$%s^7 To ^3%s^7 For Tax On ^2%s^7 Store Transactions",
@@ -403,7 +406,7 @@ function LoadShops()
 							data = {},
 						}, true)
 					else
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Inventory",
 							string.format(
 								"Depositing ^2$%s^7 To ^3%s^7 For ^2%s^7 Store Transactions",
@@ -453,19 +456,19 @@ function RegisterCommands()
 
 	Chat:RegisterAdminCommand("openinv", function(source, args, rawCommand)
 		if source == nil or source <= 0 then
-			Logger:Info("Inventory", "Source is empty. This is sus.")
+			exports['sandbox-base']:LoggerInfo("Inventory", "Source is empty. This is sus.")
 			return
 		end
 		if args[1] == nil or args[1] == "" then
-			Logger:Info("Inventory", "Player SID is not valid!")
+			exports['sandbox-base']:LoggerInfo("Inventory", "Player SID is not valid!")
 			return
 		end
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]), true)
 		if char == nil then
-			Logger:Info("Inventory", "Player does not exist!")
+			exports['sandbox-base']:LoggerInfo("Inventory", "Player does not exist!")
 			return
 		end
-		Logger:Info(
+		exports['sandbox-base']:LoggerInfo(
 			"Inventory",
 			string.format(
 				"Opening Secondary Inventory: %s %s (%s)",

@@ -399,7 +399,7 @@ function RegisterVehicleSaleCallbacks()
                                                                                 preGenerateVIN)
                                                                         else
                                                                             -- Removal of Car from Stock Failed
-                                                                            Logger:Error(
+                                                                            exports['sandbox-base']:LoggerError(
                                                                                 'Dealerships',
                                                                                 string.format(
                                                                                     'Vehicle Purchase Failed (Removal of Car from Stock Failed) After Taking Money, Uh Oh! Remove Success: %s, Loan Success: %s, Pre Gen VIN: %s, withAccount: %s, targetSrc: %s',
@@ -414,7 +414,7 @@ function RegisterVehicleSaleCallbacks()
                                                                     else
                                                                         -- Car Loan Adding Failed
 
-                                                                        Logger:Error(
+                                                                        exports['sandbox-base']:LoggerError(
                                                                             'Dealerships',
                                                                             string.format(
                                                                                 'Vehicle Purchase Failed (Car Loan Added Failed) After Taking Money, Uh Oh! Loan Success: %s, Pre Gen VIN: %s, withAccount: %s, targetSrc: %s',

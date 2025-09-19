@@ -11,7 +11,6 @@ end
 
 AddEventHandler("Damage:Shared:DependencyUpdate", DamageComponents)
 function DamageComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	--Damage = exports["sandbox-base"]:FetchComponent("Damage")
@@ -22,7 +21,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Damage", {
-		"Logger",
 		"Chat",
 		"Middleware",
 		--"Damage",
@@ -195,7 +193,7 @@ RegisterNetEvent("Damage:Server:Revived", function(wasMinor, wasFieldTreatment)
 	if char ~= nil then
 		_deadCunts[char:GetData("SID")] = nil
 		if not wasMinor and not wasFieldTreatment then
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Damage",
 				string.format(
 					"%s %s (%s) Was Revived (Not Minor and Not Field Treatment)",
@@ -207,7 +205,7 @@ RegisterNetEvent("Damage:Server:Revived", function(wasMinor, wasFieldTreatment)
 			Damage:ResetLimbDamage(char:GetData("SID"))
 		else
 			if wasMinor then
-				Logger:Trace(
+				exports['sandbox-base']:LoggerTrace(
 					"Damage",
 					string.format(
 						"%s %s (%s) Was Revived (Minor Injury)",
@@ -217,7 +215,7 @@ RegisterNetEvent("Damage:Server:Revived", function(wasMinor, wasFieldTreatment)
 					)
 				)
 			else
-				Logger:Trace(
+				exports['sandbox-base']:LoggerTrace(
 					"Damage",
 					string.format(
 						"%s %s (%s) Was Revived (Field Treatment)",

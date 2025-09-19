@@ -5,14 +5,12 @@ _registeredKeybinds = {}
 
 AddEventHandler("Keybinds:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Keybinds", {
-		"Logger",
 		"Utils",
 		"Keybinds",
 	}, function(error)

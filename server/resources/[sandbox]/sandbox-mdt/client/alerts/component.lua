@@ -7,7 +7,6 @@ local _jobs = {
 
 AddEventHandler("EmergencyAlerts:Shared:DependencyUpdate", RetrievePDAComponents)
 function RetrievePDAComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -20,7 +19,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Logger",
 		"Sounds",
 		"UISounds",
 		"EmergencyAlerts",

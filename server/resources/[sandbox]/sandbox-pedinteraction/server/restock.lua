@@ -14,7 +14,7 @@ function StartRestockThread()
 					end
 
 					v.restockTime = os.time() + v.restock
-					Logger:Info("Vendor", string.format("Vendor ^3%s^7 Restocked", k))
+					exports['sandbox-base']:LoggerInfo("Vendor", string.format("Vendor ^3%s^7 Restocked", k))
 				end
 			end
 

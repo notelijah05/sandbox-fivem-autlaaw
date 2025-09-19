@@ -95,7 +95,7 @@ AddEventHandler("Labor:Server:Startup", function()
 									false
 								)
 							else
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Labor",
 									string.format(
 										"%s %s (%s) Failed to Sell %s (%s) at Goods Exporter",

@@ -14,10 +14,11 @@ RegisterNetEvent("Execute:Client:Component", function(component, method, ...)
 		if COMPONENTS[component][method] ~= nil then
 			COMPONENTS[component][method](COMPONENTS[component][method], ...)
 		else
-			COMPONENTS.Logger:Warn("Execute", "Attempted To Execute Non-Method Attribute", { console = true })
+			exports['sandbox-base']:LoggerWarn("Execute", "Attempted To Execute Non-Method Attribute",
+				{ console = true })
 		end
 	else
-		COMPONENTS.Logger:Warn(
+		exports['sandbox-base']:LoggerWarn(
 			"Execute",
 			"Attempted To Execute Method Attribute In Non-Existing Component",
 			{ console = true }

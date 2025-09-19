@@ -108,7 +108,7 @@ function RegisterCallbacks()
 									)
 								then
 									Weed.Planting:Delete(pid)
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Weed",
 										string.format(
 											"%s %s (%s) Harvested A Weed Plant",
@@ -157,7 +157,7 @@ function RegisterCallbacks()
 			if pid and _plants[pid] then
 				if checkNearPlant(source, pid) then
 					Weed.Planting:Delete(pid)
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Weed",
 						string.format(
 							"%s %s (%s) Destroyed A Weed Plant",
@@ -185,7 +185,7 @@ function RegisterCallbacks()
 				if char ~= nil then
 					if Player(source).state.onDuty == "police" then
 						Weed.Planting:Delete(pid)
-						Logger:Info(
+						exports['sandbox-base']:LoggerInfo(
 							"Weed",
 							string.format(
 								"%s %s (%s) PD Destroyed A Weed Plant",
@@ -215,7 +215,7 @@ function RegisterCallbacks()
 		if char ~= nil then
 			if _packagesAvailable > 0 and not _weedBuyers[char:GetData("ID")] then
 				if Wallet:Modify(source, -Config.PackagePrice) then
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Weed",
 						string.format(
 							"%s %s (%s) Bought Weed Package",
@@ -244,7 +244,7 @@ function RegisterCallbacks()
 					Inventory:AddItem(char:GetData("SID"), giving, 2, {}, 1)
 					Inventory:AddItem(char:GetData("SID"), giving2, 2, {}, 1)
 				else
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Weed",
 						string.format(
 							"%s %s (%s) Bought Weed Package",
@@ -257,7 +257,7 @@ function RegisterCallbacks()
 					cb(false)
 				end
 			else
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Weed",
 					string.format(
 						"%s %s (%s) Bought Weed Package",

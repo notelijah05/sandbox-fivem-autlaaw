@@ -28,7 +28,6 @@ local _illegalBlacklist = {
 AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
 function RetrieveVendorComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -39,7 +38,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vendor", {
 		"Middleware",
-		"Logger",
 		"Reputation",
 		"Crypto",
 		"Wallet",
@@ -134,7 +132,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 						cb(itms)
 					else
-						Logger:Warn(
+						exports['sandbox-base']:LoggerWarn(
 							"Vendor",
 							string.format(
 								"^3%s %s^7 (^3%s^7) Attempted to access an illegal flagged vendor (^3%s^7) while on duty as %s",
@@ -264,7 +262,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								Execute:Client(source, "Notification", "Error", "Item Not In Stock")
 							end
 						else
-							Logger:Warn(
+							exports['sandbox-base']:LoggerWarn(
 								"Vendor",
 								string.format(
 									"%s %s (%s) Attempted to buy %s from an illegal flagged vendor (%s) while on duty as %s",

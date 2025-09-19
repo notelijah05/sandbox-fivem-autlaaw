@@ -24,7 +24,6 @@ end
 
 AddEventHandler("Drugs:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -37,7 +36,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Drugs", {
-		"Logger",
 		"Middleware",
 		"Execute",
 		"Chat",
@@ -48,7 +46,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vendor",
 	}, function(error)
 		if #error > 0 then
-			exports["sandbox-base"]:FetchComponent("Logger"):Critical("Drugs", "Failed To Load All Dependencies")
+			exports['sandbox-base']:LoggerCritical("Drugs", "Failed To Load All Dependencies")
 			return
 		end
 		RetrieveComponents()

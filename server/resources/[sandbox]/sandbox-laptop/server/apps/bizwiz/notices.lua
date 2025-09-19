@@ -7,7 +7,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			return
 		end
 
-		Logger:Trace("Laptop", "[BizWiz] Loaded ^2" .. #results .. "^7 Business Notices", { console = true })
+		exports['sandbox-base']:LoggerTrace("Laptop", "[BizWiz] Loaded ^2" .. #results .. "^7 Business Notices",
+			{ console = true })
 		_businessNotices = results
 	end)
 

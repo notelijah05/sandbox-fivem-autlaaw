@@ -2,7 +2,6 @@ AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
 		"Middleware",
 		"Execute",
-		"Logger",
 		"Generator",
 		"Utils",
 		"Phone",
@@ -57,7 +55,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vendor",
 	}, function(error)
 		if #error > 0 then
-			Logger:Critical("Labor", "Failed To Load All Dependencies")
+			exports['sandbox-base']:LoggerCritical("Labor", "Failed To Load All Dependencies")
 			return
 		end
 		RetrieveComponents()
@@ -306,7 +304,7 @@ _LABOR = {
 		Complete = function(self, source, job)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Labor",
 					string.format(
 						"%s %s (%s) Completed Manual Round (%s) - Got $%s",

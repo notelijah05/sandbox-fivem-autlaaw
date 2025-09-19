@@ -10,7 +10,8 @@ AddEventHandler("Drugs:Server:StartCookThreads", function()
             for k, v in pairs(_inProgBrews) do
                 if os.time() > v.end_time then
                     _placedStills[k].pickupReady = true
-                    Logger:Info("Drugs:Moonshine", string.format("Brew for Still %s Is Ready For Pickup", k))
+                    exports['sandbox-base']:LoggerInfo("Drugs:Moonshine",
+                        string.format("Brew for Still %s Is Ready For Pickup", k))
                     TriggerClientEvent("Drugs:Client:Moonshine:UpdateStillData", -1, k, _placedStills[k])
                     _inProgBrews[k] = nil
                 end
@@ -25,7 +26,8 @@ AddEventHandler("Drugs:Server:StartCookThreads", function()
             for k, v in pairs(_inProgAges) do
                 if os.time() > v then
                     _placedBarrels[k].pickupReady = true
-                    Logger:Info("Drugs:Moonshine", string.format("Brew for Barrel %s Is Ready For Pickup", k))
+                    exports['sandbox-base']:LoggerInfo("Drugs:Moonshine",
+                        string.format("Brew for Barrel %s Is Ready For Pickup", k))
                     TriggerClientEvent("Drugs:Client:Moonshine:UpdateBarrelData", -1, k, _placedBarrels[k])
                     _inProgAges[k] = nil
                 end

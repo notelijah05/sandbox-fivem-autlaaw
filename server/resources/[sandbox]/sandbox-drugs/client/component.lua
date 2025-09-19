@@ -32,7 +32,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Status",
 	}, function(error)
 		if #error > 0 then
-			exports["sandbox-base"]:FetchComponent("Logger"):Critical("Drugs", "Failed To Load All Dependencies")
+			exports['sandbox-base']:LoggerCritical("Drugs", "Failed To Load All Dependencies")
 			return
 		end
 		RetrieveComponents()

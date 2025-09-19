@@ -20,7 +20,8 @@ function RegisterCallbacks()
 						if not pState.isDev and not pState.isAdmin and not pState.isStaff then
 							Punishment:Kick(k, "You Were Kicked For Being AFK On Character Select", "Pwnzor", true)
 						else
-							Logger:Warn("Characters", "Staff or Admin Was AFK, Removing From Checks")
+							exports['sandbox-base']:LoggerWarn("Characters",
+								"Staff or Admin Was AFK, Removing From Checks")
 							_fuckingBozos[k] = nil
 						end
 					elseif v < (os.time() - (60 * 5)) then
@@ -221,7 +222,7 @@ function RegisterCallbacks()
 				Middleware:TriggerEvent("Characters:Created", source, doc)
 				cb(doc)
 
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Characters",
 					string.format(
 						"%s [%s] Created a New Character %s %s (%s)",
@@ -273,7 +274,7 @@ function RegisterCallbacks()
 				cb(success)
 
 				if success then
-					Logger:Warn(
+					exports['sandbox-base']:LoggerWarn(
 						"Characters",
 						string.format(
 							"%s [%s] Deleted Character %s %s (%s)",

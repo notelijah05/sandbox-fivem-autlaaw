@@ -28,7 +28,6 @@ local function ClientCallback(source, event, data, cb, extraId)
     TriggerLatentClientEvent('Callbacks:Client:TriggerEvent', source, 50000, event, data, extraId)
 end
 
--- Export the functions
 exports('RegisterServerCallback', RegisterServerCallback)
 exports('DoServerCallback', DoServerCallback)
 exports('ClientCallback', ClientCallback)

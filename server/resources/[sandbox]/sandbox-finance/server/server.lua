@@ -4,7 +4,6 @@ function RetrieveComponents()
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
@@ -25,7 +24,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Execute",
 		"Chat",
 		"Middleware",
-		"Logger",
 		"Generator",
 		"Phone",
 		"Wallet",
@@ -40,7 +38,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Properties",
 	}, function(error)
 		if #error > 0 then
-			exports["sandbox-base"]:FetchComponent("Logger"):Critical("Finance", "Failed To Load All Dependencies")
+			exports['sandbox-base']:LoggerCritical("Finance", "Failed To Load All Dependencies")
 			return
 		end
 		RetrieveComponents()

@@ -157,7 +157,7 @@ RegisterNetEvent("MDT:Client:ShowBadge", function(sender, data)
 		isMe = true
 	end
 
-	Logger:Trace(
+	exports['sandbox-base']:LoggerTrace(
 		"MDT/Badge",
 		string.format(
 			"Sender Source: %s; Sender Player: %s; My Source: %s; My Ped: %s",
@@ -200,7 +200,7 @@ RegisterNetEvent("MDT:Client:ShowLicense", function(sender, data)
 		isMe = true
 	end
 
-	Logger:Trace(
+	exports['sandbox-base']:LoggerTrace(
 		"MDT/Badge",
 		string.format(
 			"Sender Source: %s; Sender Player: %s; My Source: %s; My Ped: %s",

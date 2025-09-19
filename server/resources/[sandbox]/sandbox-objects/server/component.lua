@@ -3,7 +3,6 @@ _placedProps = {}
 
 AddEventHandler("Objects:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -13,7 +12,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Objects", {
-		"Logger",
 		"Middleware",
 		"Execute",
 		"Chat",
@@ -21,7 +19,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Objects",
 	}, function(error)
 		if #error > 0 then
-			exports["sandbox-base"]:FetchComponent("Logger"):Critical("Objects", "Failed To Load All Dependencies")
+			exports['sandbox-base']:LoggerCritical("Objects", "Failed To Load All Dependencies")
 			return
 		end
 		RetrieveComponents()
@@ -47,7 +45,8 @@ AddEventHandler("Core:Shared:Ready", function()
 				restored += 1
 			end
 		end
-		Logger:Trace("Objects", string.format("Restored ^2%s^7 Persistant Props From Database", restored))
+		exports['sandbox-base']:LoggerTrace("Objects",
+			string.format("Restored ^2%s^7 Persistant Props From Database", restored))
 
 		Middleware:Add("Characters:Spawning", function(source)
 			TriggerClientEvent("Objects:Client:SetupObjects", source, _placedProps)
@@ -174,7 +173,7 @@ _OBJECTS = {
 			if isTemp then
 				id = string.format("TMP-%s", _tempIds)
 				_tempIds += 1
-				Logger:Warn(
+				exports['sandbox-base']:LoggerWarn(
 					"Objects",
 					string.format(
 						"%s %s (%s) Created Temporary Object: %s (%s)",
@@ -200,7 +199,7 @@ _OBJECTS = {
 					}
 				)
 
-				Logger:Warn(
+				exports['sandbox-base']:LoggerWarn(
 					"Objects",
 					string.format(
 						"%s %s (%s) Created Persistant Object: %s (%s)",
@@ -253,7 +252,7 @@ _OBJECTS = {
 						MySQL.query.await("DELETE FROM placed_props WHERE id = ?", { id })
 					end
 					TriggerClientEvent("Objects:Client:Delete", -1, id)
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Objects",
 						string.format(
 							"%s %s (%s) Deleted Object: %s",

@@ -12,7 +12,8 @@ PHONE.Call = {
 				end
 
 				if caller ~= nil and _calls[caller] ~= nil then
-					Logger:Trace("Phone", string.format("%s Ending Call With %s", business, caller))
+					exports['sandbox-base']:LoggerTrace("Phone",
+						string.format("%s Ending Call With %s", business, caller))
 					_calls[caller].data.duration = duration or -1
 					TriggerClientEvent("Phone:Client:Phone:EndCall", caller)
 					TriggerClientEvent(
@@ -26,7 +27,7 @@ PHONE.Call = {
 					VOIP.Phone:SetCall(caller, 0)
 					_calls[caller] = nil
 				else
-					Logger:Trace(
+					exports['sandbox-base']:LoggerTrace(
 						"Phone",
 						string.format("%s Ending Call With Second Client Not Registered In A Call", business)
 					)
@@ -70,7 +71,8 @@ PHONE.Call = {
 					TriggerClientEvent("Phone:Client:Biz:End", -1, _calls[source].isBiz)
 				else
 					if _calls[source].target ~= nil and _calls[_calls[source].target] ~= nil then
-						Logger:Trace("Phone", string.format("%s Ending Call With %s", source, _calls[source].target))
+						exports['sandbox-base']:LoggerTrace("Phone",
+							string.format("%s Ending Call With %s", source, _calls[source].target))
 						_calls[_calls[source].target].data.duration = _calls[source].data.duration or -1
 						TriggerClientEvent("Phone:Client:Phone:EndCall", _calls[source].target)
 						TriggerClientEvent(
@@ -84,7 +86,7 @@ PHONE.Call = {
 						VOIP.Phone:SetCall(_calls[source].target, 0)
 						_calls[_calls[source].target] = nil
 					else
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Phone",
 							string.format("%s Ending Call With Second Client Not Registered In A Call", source)
 						)
@@ -288,7 +290,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				if _calls[target:GetData("Source")] == nil then
 					cb(true)
 
-					Logger:Trace("Phone", string.format("%s Starting Call With %s", src, target:GetData("Source")))
+					exports['sandbox-base']:LoggerTrace("Phone",
+						string.format("%s Starting Call With %s", src, target:GetData("Source")))
 
 					_calls[src].target = target:GetData("Source")
 
@@ -345,7 +348,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						data.limited
 					)
 				else
-					Logger:Trace(
+					exports['sandbox-base']:LoggerTrace(
 						"Phone",
 						string.format(
 							"%s Starting Call With Number %s Which Is Already On A Call",
@@ -401,7 +404,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					Phone.Call:End(src)
 				end
 			else
-				Logger:Trace(
+				exports['sandbox-base']:LoggerTrace(
 					"Phone",
 					string.format("%s Starting Call With Number %s Which Is Not Online", src, data.number)
 				)
@@ -437,7 +440,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					_bizPhones[_calls[src].isBiz].call.number)
 				local cid = src
 
-				Logger:Trace(
+				exports['sandbox-base']:LoggerTrace(
 					"Phone",
 					string.format("%s Accepted Call With %s, Setting To Call Channel %s", src, _calls[src].isBiz, cid)
 				)
@@ -474,7 +477,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					cid = _calls[src].target
 				end
 
-				Logger:Trace(
+				exports['sandbox-base']:LoggerTrace(
 					"Phone",
 					string.format("%s Accepted Call With %s, Setting To Call Channel %s", src, _calls[src].target, cid)
 				)
@@ -509,7 +512,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				VOIP.Phone:SetCall(_calls[src].target, cid)
 			end
 		else
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Phone",
 				string.format("%s Attempted Accepting A Call But Server Didn't Have One Registered", source)
 			)
@@ -568,7 +571,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				TriggerClientEvent("Phone:Client:Phone:AcceptCall", targetSource, _calls[targetSource].number)
 				TriggerClientEvent("Phone:Client:Biz:Answered", -1, id)
 
-				Logger:Trace(
+				exports['sandbox-base']:LoggerTrace(
 					"Phone",
 					string.format("%s Accepted Call With %s, Setting To Call Channel %s", id, targetSource, cid)
 				)
@@ -625,7 +628,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						callingStr = target:GetData("Phone"),
 					}
 
-					Logger:Trace("Phone", string.format("%s Starting Call With %s", data.id, target:GetData("Source")))
+					exports['sandbox-base']:LoggerTrace("Phone",
+						string.format("%s Starting Call With %s", data.id, target:GetData("Source")))
 
 					local destContact = Phone.Contacts:IsContact(target:GetData("SID"), _bizPhones[data.id].number)
 					local destStr = _bizPhones[data.id].number
@@ -676,7 +680,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						false
 					)
 				else
-					Logger:Trace(
+					exports['sandbox-base']:LoggerTrace(
 						"Phone",
 						string.format(
 							"%s Starting Call With Number %s Which Is Already On A Call",
@@ -711,7 +715,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					Phone.Call:End(src)
 				end
 			else
-				Logger:Trace(
+				exports['sandbox-base']:LoggerTrace(
 					"Phone",
 					string.format("%s Starting Call With Number %s Which Is Not Online", data.id, data.number)
 				)

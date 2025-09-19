@@ -74,7 +74,7 @@ function OpenControllerMenu()
     end)
 
     wheelMenu.Add:Button('Save', { success = true }, function()
-        Logger:Trace('Fitment', 'Attempt Save')
+        exports['sandbox-base']:LoggerTrace('Fitment', 'Attempt Save')
 
         if editedFrontCamber or editedRearCamber then
             exports["sandbox-base"]:ServerCallback('Vehicles:WheelFitment', {
@@ -102,7 +102,7 @@ function OpenControllerMenu()
     end)
 
     wheelMenu.Add:Button('Reset', { error = true }, function()
-        Logger:Trace('Fitment', 'Attempt Reset')
+        exports['sandbox-base']:LoggerTrace('Fitment', 'Attempt Reset')
 
         exports["sandbox-base"]:ServerCallback('Vehicles:WheelFitment', {
             vNet = VehToNet(EDITING_VEHICLE),

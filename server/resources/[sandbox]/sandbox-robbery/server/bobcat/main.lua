@@ -127,7 +127,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if not _bcInUse.extrDoor then
 				_bcInUse.extrDoor = source
 				if Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
-					Logger:Info("Robbery",
+					exports['sandbox-base']:LoggerInfo("Robbery",
 						string.format("%s %s (%s) Started Thermiting Bobcat Exterior Door", char:GetData("First"),
 							char:GetData("Last"), char:GetData("SID")))
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
@@ -147,7 +147,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						data = {},
 					}, function(success)
 						if success then
-							Logger:Info("Robbery",
+							exports['sandbox-base']:LoggerInfo("Robbery",
 								string.format("%s %s (%s) Successfully Thermited Bobcat Exterior Door",
 									char:GetData("First"), char:GetData("Last"), char:GetData("SID")))
 							if not GlobalState["AntiShitlord"] or os.time() >= GlobalState["AntiShitlord"] then
@@ -183,7 +183,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								_alerted = os.time() + (60 * 10)
 							end
 						else
-							Logger:Info("Robbery",
+							exports['sandbox-base']:LoggerInfo("Robbery",
 								string.format("%s %s (%s) Failed Thermiting Bobcat Exterior Door", char:GetData("First"),
 									char:GetData("Last"), char:GetData("SID")))
 						end
@@ -240,7 +240,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					if not _bcInUse.frontDoor then
 						_bcInUse.frontDoor = source
 						if Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
-							Logger:Info("Robbery",
+							exports['sandbox-base']:LoggerInfo("Robbery",
 								string.format("%s %s (%s) Started Thermiting Bobcat Interior Door", char:GetData("First"),
 									char:GetData("Last"), char:GetData("SID")))
 							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
@@ -260,7 +260,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								data = {},
 							}, function(success)
 								if success then
-									Logger:Info("Robbery",
+									exports['sandbox-base']:LoggerInfo("Robbery",
 										string.format(
 											"%s %s (%s) Successfully Thermited Bobcat Interior Door at coords:(%s)",
 											char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
@@ -305,7 +305,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										_alerted = os.time() + (60 * 10)
 									end
 								else
-									Logger:Info("Robbery",
+									exports['sandbox-base']:LoggerInfo("Robbery",
 										string.format("%s %s (%s) Failed Thermiting Bobcat Interior Door",
 											char:GetData("First"), char:GetData("Last"), char:GetData("SID")))
 								end
@@ -366,7 +366,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											itemData.invType
 										)
 									then
-										Logger:Info("Robbery",
+										exports['sandbox-base']:LoggerInfo("Robbery",
 											string.format("%s %s (%s) Started Thermiting Moneytruck at Coords: (%s)",
 												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
 												json.encode(GetEntityCoords(GetPlayerPed(source)))), {
@@ -395,99 +395,101 @@ AddEventHandler("Robbery:Server:Setup", function()
 												},
 												data = {},
 											}, function(success, coords)
-											if success then
-												Logger:Info("Robbery",
-													string.format(
-														"%s %s (%s) Successfully Thermited Moneytruck at Coords: (%s)",
-														char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
-														json.encode(GetEntityCoords(GetPlayerPed(source)))), {
-														console = true,
-														file = true,
-														database = true,
-														discord = {
-															embed = true,
-														},
-													})
-												local peds = {}
+												if success then
+													exports['sandbox-base']:LoggerInfo("Robbery",
+														string.format(
+															"%s %s (%s) Successfully Thermited Moneytruck at Coords: (%s)",
+															char:GetData("First"), char:GetData("Last"),
+															char:GetData("SID"),
+															json.encode(GetEntityCoords(GetPlayerPed(source)))), {
+															console = true,
+															file = true,
+															database = true,
+															discord = {
+																embed = true,
+															},
+														})
+													local peds = {}
 
-												SetVehicleDoorsLocked(ent, 3)
-												FreezeEntityPosition(ent, 1)
+													SetVehicleDoorsLocked(ent, 3)
+													FreezeEntityPosition(ent, 1)
 
-												local amount = 8
-												if type == 2 then
-													amount = 12
-												end
-
-												for i = 1, amount do
-													local model = `S_M_M_Security_01`
+													local amount = 8
 													if type == 2 then
-														model = `s_m_m_armoured_03`
+														amount = 12
 													end
 
-													local p = CreatePed(5, model, coords.x + math.random(-1.0, 1.0),
-														coords.y + math.random(-1.0, 1.0), coords.z,
-														math.random(360) * 1.0,
-														true, true)
-													local w = _bobcatWeapons[math.random(#_bobcatWeapons)]
-													Entity(p).state.crimePed = true
-													GiveWeaponToPed(p, w, 99999, false, true)
-													SetCurrentPedWeapon(p, w, true)
-													SetPedArmour(p, type == 2 and 1000 or 500)
+													for i = 1, amount do
+														local model = `S_M_M_Security_01`
+														if type == 2 then
+															model = `s_m_m_armoured_03`
+														end
 
-													while not DoesEntityExist(p) do
-														Wait(1)
+														local p = CreatePed(5, model, coords.x + math.random(-1.0, 1.0),
+															coords.y + math.random(-1.0, 1.0), coords.z,
+															math.random(360) * 1.0,
+															true, true)
+														local w = _bobcatWeapons[math.random(#_bobcatWeapons)]
+														Entity(p).state.crimePed = true
+														GiveWeaponToPed(p, w, 99999, false, true)
+														SetCurrentPedWeapon(p, w, true)
+														SetPedArmour(p, type == 2 and 1000 or 500)
+
+														while not DoesEntityExist(p) do
+															Wait(1)
+														end
+
+														table.insert(peds, NetworkGetNetworkIdFromEntity(p))
 													end
 
-													table.insert(peds, NetworkGetNetworkIdFromEntity(p))
-												end
+													Wait(300)
 
-												Wait(300)
+													Entity(ent).state.wasThermited = true
 
-												Entity(ent).state.wasThermited = true
-
-												Robbery:TriggerPDAlert(
-													source,
-													GetEntityCoords(ent),
-													"10-90",
-													"Armored Truck Robbery",
-													{
-														icon = 477,
-														size = 0.9,
-														color = 50,
-														duration = (60 * 5),
-													},
-													{
-														icon = "truck-field",
-														details = type == 2 and 'Bobcat Security' or 'Gruppe 6',
-													}
-												)
-
-												exports["sandbox-base"]:ClientCallback(
-													source,
-													"Robbery:Bobcat:SetupPeds",
-													{
-														peds = peds,
-														isBobcat = false,
-														skipLeaveVeh = true
-													},
-													function() end
-												)
-											else
-												Logger:Info("Robbery",
-													string.format(
-														"%s %s (%s) Failed Thermiting Moneytruck at Coords: (%s)",
-														char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
-														json.encode(GetEntityCoords(GetPlayerPed(source)))), {
-														console = true,
-														file = true,
-														database = true,
-														discord = {
-															embed = true,
+													Robbery:TriggerPDAlert(
+														source,
+														GetEntityCoords(ent),
+														"10-90",
+														"Armored Truck Robbery",
+														{
+															icon = 477,
+															size = 0.9,
+															color = 50,
+															duration = (60 * 5),
 														},
-													})
-											end
-											entState.robberyInProgress = false
-										end)
+														{
+															icon = "truck-field",
+															details = type == 2 and 'Bobcat Security' or 'Gruppe 6',
+														}
+													)
+
+													exports["sandbox-base"]:ClientCallback(
+														source,
+														"Robbery:Bobcat:SetupPeds",
+														{
+															peds = peds,
+															isBobcat = false,
+															skipLeaveVeh = true
+														},
+														function() end
+													)
+												else
+													exports['sandbox-base']:LoggerInfo("Robbery",
+														string.format(
+															"%s %s (%s) Failed Thermiting Moneytruck at Coords: (%s)",
+															char:GetData("First"), char:GetData("Last"),
+															char:GetData("SID"),
+															json.encode(GetEntityCoords(GetPlayerPed(source)))), {
+															console = true,
+															file = true,
+															database = true,
+															discord = {
+																embed = true,
+															},
+														})
+												end
+												entState.robberyInProgress = false
+											end)
 									end
 								else
 									Execute:Client(source, "Notification", "Error", "This Truck Has Already Been Hit",
@@ -553,7 +555,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					if not _bcInUse.useC4 then
 						_bcInUse.useC4 = source
 						if Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
-							Logger:Info("Robbery",
+							exports['sandbox-base']:LoggerInfo("Robbery",
 								string.format("%s %s (%s) Started Breaching Bobcat Vault", char:GetData("First"),
 									char:GetData("Last"), char:GetData("SID")))
 							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Aim", {
@@ -578,7 +580,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								GlobalState["BobcatInProgress"] = true
 
 								if success then
-									Logger:Info("Robbery",
+									exports['sandbox-base']:LoggerInfo("Robbery",
 										string.format("%s %s (%s) Successfully Breached Bobcat Vault",
 											char:GetData("First"), char:GetData("Last"), char:GetData("SID")))
 									GlobalState["Bobcat:VaultDoor"] = true
@@ -588,7 +590,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										_bcGlobalReset = os.time() + BC_RESET_TIME
 									end
 								else
-									Logger:Info("Robbery",
+									exports['sandbox-base']:LoggerInfo("Robbery",
 										string.format("%s %s (%s) Failed Breaching Bobcat Vault", char:GetData("First"),
 											char:GetData("Last"), char:GetData("SID")))
 									GlobalState["Bobcat:VaultDoor"] = false
@@ -661,7 +663,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if not _bcInUse.securedDoor then
 						_bcInUse.securedDoor = source
-						Logger:Info("Robbery",
+						exports['sandbox-base']:LoggerInfo("Robbery",
 							string.format("%s %s (%s) Started Hacking Bobcat Doors", char:GetData("First"),
 								char:GetData("Last"), char:GetData("SID")))
 						exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Laptop", {
@@ -681,7 +683,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							data = {},
 						}, function(success, data)
 							if success then
-								Logger:Info("Robbery",
+								exports['sandbox-base']:LoggerInfo("Robbery",
 									string.format("%s %s (%s) Successfully Hacked Bobcat Doors", char:GetData("First"),
 										char:GetData("Last"), char:GetData("SID")))
 								GlobalState["Bobcat:SecuredDoor"] = true
@@ -701,7 +703,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									_bcGlobalReset = os.time() + BC_RESET_TIME
 								end
 							else
-								Logger:Info("Robbery",
+								exports['sandbox-base']:LoggerInfo("Robbery",
 									string.format("%s %s (%s) Failed Hacking Bobcat Doors", char:GetData("First"),
 										char:GetData("Last"), char:GetData("SID")))
 								Doors:SetLock("bobcat_inner", true)
@@ -771,7 +773,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						6000
 					)
 				else
-					Logger:Info("Robbery",
+					exports['sandbox-base']:LoggerInfo("Robbery",
 						string.format("%s %s (%s) Used Money Truck GPS Tracker", char:GetData("First"),
 							char:GetData("Last"), char:GetData("SID")))
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
@@ -828,7 +830,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						6000
 					)
 				else
-					Logger:Info("Robbery",
+					exports['sandbox-base']:LoggerInfo("Robbery",
 						string.format("%s %s (%s) Used Fleeca Money Truck GPS Tracker", char:GetData("First"),
 							char:GetData("Last"), char:GetData("SID")))
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
@@ -885,7 +887,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						6000
 					)
 				else
-					Logger:Info("Robbery",
+					exports['sandbox-base']:LoggerInfo("Robbery",
 						string.format("%s %s (%s) Used Bobcat Money Truck GPS Tracker", char:GetData("First"),
 							char:GetData("Last"), char:GetData("SID")))
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
@@ -1070,7 +1072,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					if char ~= nil then
 						local sid = char:GetData("SID")
-						Logger:Info("Robbery",
+						exports['sandbox-base']:LoggerInfo("Robbery",
 							string.format("%s %s (%s) Looted Bobcat Loot Crate #%s", char:GetData("First"),
 								char:GetData("Last"), sid, data.id))
 
@@ -1159,7 +1161,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if pState.onDuty == "police" then
-				Logger:Info("Robbery",
+				exports['sandbox-base']:LoggerInfo("Robbery",
 					string.format("%s %s (%s) Secured Bobcat Security", char:GetData("First"), char:GetData("Last"),
 						char:GetData("SID")))
 				SecureBobcat()

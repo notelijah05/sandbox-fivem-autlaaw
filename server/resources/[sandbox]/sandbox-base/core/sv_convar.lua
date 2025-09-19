@@ -30,7 +30,7 @@ AddEventHandler("Core:Shared:Watermark", function()
 	GlobalState.IsProduction = (COMPONENTS.Convar.ENVIRONMENT.value:upper()) ~= "DEV"
 	for k, v in pairs(COMPONENTS.Convar) do
 		if v.value == "CONVAR_DEFAULT" then
-			COMPONENTS.Logger:Error("Convar", "Missing Convar " .. v.key, {
+			exports['sandbox-base']:LoggerError("Convar", "Missing Convar " .. v.key, {
 				console = true,
 				file = true,
 			})

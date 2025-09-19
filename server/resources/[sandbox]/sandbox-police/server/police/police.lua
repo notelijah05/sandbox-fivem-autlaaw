@@ -6,7 +6,6 @@ local _generatedNames = {}
 AddEventHandler("Police:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
@@ -27,7 +26,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Middleware",
-		"Logger",
 		"Jobs",
 		"Chat",
 		"Execute",
@@ -56,7 +54,8 @@ AddEventHandler("Core:Shared:Ready", function()
 		GlobalState["EMSCars"] = Config.EMSCars
 
 		for k, v in pairs(Config.Armories) do
-			Logger:Trace("Police", string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", v.id, v.name))
+			exports['sandbox-base']:LoggerTrace("Police",
+				string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", v.id, v.name))
 			Inventory.Poly:Create(v)
 		end
 
@@ -498,7 +497,7 @@ POLICE = {
 				if extraCheck then
 					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					if char then
-						Logger:Warn(
+						exports['sandbox-base']:LoggerWarn(
 							"Police",
 							string.format(
 								"Police Raid - Character %s %s (%s) - Accessing Property %s (%s)",

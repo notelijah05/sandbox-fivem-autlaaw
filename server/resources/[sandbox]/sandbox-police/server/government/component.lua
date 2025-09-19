@@ -1,6 +1,5 @@
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", GovernmentComponents)
 function GovernmentComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -16,7 +15,6 @@ _licenses = {
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
-		"Logger",
 		"Execute",
 		"Wallet",
 		"Inventory",
@@ -53,7 +51,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					Execute:Client(source, "Notification", "Error", "Not Enough Cash")
 				end
 			else
-				Logger:Error(
+				exports['sandbox-base']:LoggerError(
 					"Government",
 					string.format("%s Tried To Buy Invalid License Type %s", char:GetData("SID"), data),
 					{

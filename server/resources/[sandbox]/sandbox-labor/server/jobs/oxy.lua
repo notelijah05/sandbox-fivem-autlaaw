@@ -104,7 +104,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						while _sellers[_joiners[source]] ~= nil do
 							if not ending then
 								if ent ~= nil and not DoesEntityExist(ent) then
-									Logger:Trace("OxyRun", "Vehicle No Longer Exists")
+									exports['sandbox-base']:LoggerTrace("OxyRun", "Vehicle No Longer Exists")
 									ending = true
 									Labor.Workgroups:SendEvent(
 										_joiners[source],
@@ -614,7 +614,7 @@ AddEventHandler('entityRemoved', function(entity)
 	if GetEntityType(entity) == 2 then
 		local ent = Entity(entity)
 		if ent?.state?.oxyBuying and _sellers[ent?.state?.oxyBuying]?.pending then
-			Logger:Warn("Vehicles",
+			exports['sandbox-base']:LoggerWarn("Vehicles",
 				string.format("Oxy Vehicle For %s Deleted Unexpectedly, Clearing To Spawn New Vehicle",
 					ent?.state?.oxyBuying))
 			_sellers[_joiners[source]].cars[NetworkGetEntityFromNetworkId(_sellers[ent?.state?.oxyBuying].pending.veh)] = false

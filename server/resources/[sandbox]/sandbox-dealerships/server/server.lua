@@ -2,7 +2,6 @@ _hashToVeh = {}
 
 AddEventHandler('Dealerships:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
-    Logger = exports['sandbox-base']:FetchComponent('Logger')
     Utils = exports['sandbox-base']:FetchComponent('Utils')
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
     Vehicles = exports['sandbox-base']:FetchComponent('Vehicles')
@@ -21,7 +20,6 @@ end
 
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Dealerships', {
-        'Logger',
         'Utils',
         'Doors',
         'Chat',

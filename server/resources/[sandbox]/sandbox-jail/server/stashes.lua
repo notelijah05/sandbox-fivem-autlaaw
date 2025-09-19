@@ -71,7 +71,7 @@ function RegisterPrisonStashStartup()
 				Player(source).state.onDuty == "police" or Player(source).state.onDuty == "prison"
 			--and Jobs.Permissions:HasPermissionInJob(source, "police", "PD_RAID")
 			then
-				-- Logger:Warn(
+				-- exports['sandbox-base']:LoggerWarn(
 				-- 	"Police",
 				-- 	string.format(
 				-- 		"Police Storage Unit Raid - Character %s %s (%s) - Accessing Storage Unit %s (%s)",

@@ -4,7 +4,7 @@ AddEventHandler("Core:Shared:Ready", function()
 	-- 	query = {},
 	-- }, function(success, results)
 	-- 	if not success or #results <= 0 then
-	-- 		COMPONENTS.Logger:Critical("Core", "Failed to Load User Groups", {
+	-- 		exports['sandbox-base']:LoggerCritical("Core", "Failed to Load User Groups", {
 	-- 			console = true,
 	-- 			file = true,
 	-- 		})
@@ -18,7 +18,7 @@ AddEventHandler("Core:Shared:Ready", function()
 	-- 		COMPONENTS.Config.Groups[v.Abv] = v
 	-- 	end
 
-	-- 	COMPONENTS.Logger:Info("Core", string.format("Loaded %s User Groups", #results), {
+	-- 	exports['sandbox-base']:LoggerInfo("Core", string.format("Loaded %s User Groups", #results), {
 	-- 		console = true,
 	-- 	})
 	-- end)

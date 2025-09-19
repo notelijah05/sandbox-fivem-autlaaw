@@ -24,7 +24,6 @@ local sentencedSuspects = {}
 
 AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
@@ -45,7 +44,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Logger",
 		"Utils",
 		"Chat",
 		"Phone",
@@ -434,7 +432,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if CheckMDTPermissions(source, "DOJ_OVERTURN_CHARGES") and data.report and data.SID then
-			Logger:Warn(
+			exports['sandbox-base']:LoggerWarn(
 				"MDT",
 				string.format(
 					"%s %s (%s) Overturned Charges From State ID %s on Report %s",
@@ -556,7 +554,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 			end
 
 			if canUpdate then
-				Logger:Warn(
+				exports['sandbox-base']:LoggerWarn(
 					"MDT",
 					string.format(
 						"%s %s (%s) Revoked License Suspensions: %s From State ID %s",
@@ -608,7 +606,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if CheckMDTPermissions(source, 'REVOKE_LICENSE_SUSPENSIONS') and data.SID and data.newPoints then
-			Logger:Warn(
+			exports['sandbox-base']:LoggerWarn(
 				"MDT",
 				string.format(
 					"%s %s (%s) Changed License Points of State ID %s to %s",
@@ -670,7 +668,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				})
 
 			if u and u.affectedRows > 0 then
-				Logger:Warn(
+				exports['sandbox-base']:LoggerWarn(
 					"MDT",
 					string.format(
 						"%s %s (%s) Expunged %s Incidents From State ID %s",
@@ -734,7 +732,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 			local target = exports['sandbox-characters']:FetchBySID(data.SID)
 			if target then
 				if Jail:Reduce(target:GetData("Source"), data.reduction) then
-					Logger:Warn(
+					exports['sandbox-base']:LoggerWarn(
 						"MDT",
 						string.format(
 							"%s %s (%s) Reduced %s %s (%s) Prison Sentence By %s Months",

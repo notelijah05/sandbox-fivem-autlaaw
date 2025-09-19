@@ -91,7 +91,7 @@ function PrivatePlateStuff(char, source, itemData)
             Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 
             Execute:Client(source, "Notification", "Success", "Personal Plate Setup")
-            Logger:Info('Vehicles',
+            exports['sandbox-base']:LoggerInfo('Vehicles',
                 string.format("Personal Plate Change For Vehicle: %s. %s -> %s", vehState.VIN, originalPlate, newPlate))
         else
             Execute:Client(source, "Notification", "Error", "Error")
@@ -209,7 +209,7 @@ function RegisterPersonalPlateCallbacks()
                     Inventory:AddItem(char:GetData("SID"), "personal_plates_donator", data, {}, 1)
                     cb(true)
 
-                    Logger:Warn(
+                    exports['sandbox-base']:LoggerWarn(
                         "Donator",
                         string.format(
                             "%s [%s] Redeemed %s Donator Plates - Character %s %s (%s)",
@@ -332,7 +332,7 @@ function TebexAddDonatorPlate(source, args)
     local sid = table.unpack(args)
     sid = tonumber(sid)
     if sid == nil or sid == 0 then
-        Logger:Warn(
+        exports['sandbox-base']:LoggerWarn(
             "Donator Plate",
             "Provided SID (server ID) was empty.",
             {

@@ -193,7 +193,6 @@ end
 
 AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
 function WeaponsComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
@@ -202,7 +201,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weapons", {
-		"Logger",
 		"Inventory",
 		"Weapons",
 		"Middleware",
@@ -232,7 +230,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		exports["sandbox-base"]:RegisterServerCallback("Weapons:PossibleCheaterWarning", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
-				Logger:Warn("Pwnzor",
+				exports['sandbox-base']:LoggerWarn("Pwnzor",
 					string.format("%s %s (%s) Had a Weapon They Weren't Supposed To (%s) (Known: %s)",
 						char:GetData("First"), char:GetData("Last"), char:GetData("SID"), data.h,
 						weaponCheaters[data.h] or "No"), {

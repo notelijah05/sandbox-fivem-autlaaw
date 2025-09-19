@@ -15,7 +15,6 @@ function RetrieveComponents()
     Chat = exports['sandbox-base']:FetchComponent('Chat')
     Wallet = exports['sandbox-base']:FetchComponent('Wallet')
     Utils = exports['sandbox-base']:FetchComponent('Utils')
-    Logger = exports['sandbox-base']:FetchComponent('Logger')
     Middleware = exports['sandbox-base']:FetchComponent('Middleware')
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
     Inventory = exports['sandbox-base']:FetchComponent('Inventory')
@@ -39,7 +38,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Chat',
         'Wallet',
         'Utils',
-        'Logger',
         'Middleware',
         'Jobs',
         'Inventory',
@@ -652,7 +650,7 @@ VEHICLE = {
             if vehicleData then
                 local success = SaveVehicle(VIN)
                 if success then
-                    Logger:Info('Vehicles', 'Successfully Force Saved Vehicle: ' .. VIN)
+                    exports['sandbox-base']:LoggerInfo('Vehicles', 'Successfully Force Saved Vehicle: ' .. VIN)
                 end
             end
         end,
@@ -1004,7 +1002,7 @@ AddEventHandler('entityRemoved', function(entity)
             local lastDriven = ent.state.LastDriven
             local spawnedTemp = ent.state.SpawnTemp
 
-            -- Logger:Warn("Vehicles", string.format("Vehicle %s Deleted Unexpectedly - Local: %s, %s %s Engine: %s, Body: %s, Blown Up: %s", ent.state.VIN, isLocal, coords, heading, engineHealth, bodyHealth, isBlownUp))
+            -- exports['sandbox-base']:LoggerWarn("Vehicles", string.format("Vehicle %s Deleted Unexpectedly - Local: %s, %s %s Engine: %s, Body: %s, Blown Up: %s", ent.state.VIN, isLocal, coords, heading, engineHealth, bodyHealth, isBlownUp))
 
             if not isLocal then
                 ACTIVE_OWNED_VEHICLES[ent.state.VIN] = nil
@@ -1076,5 +1074,5 @@ AddEventHandler("Core:Server:ForceSave", function()
         c = c + 1
         SaveVehicle(VIN)
     end
-    Logger:Warn("Vehicles", string.format("Force Saved %s Vehicles", c))
+    exports['sandbox-base']:LoggerWarn("Vehicles", string.format("Force Saved %s Vehicles", c))
 end)

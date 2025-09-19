@@ -11,7 +11,6 @@ local _inTrunkVeh = nil
 
 AddEventHandler("Trunk:Shared:DependencyUpdate", TrunkComponents)
 function TrunkComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
@@ -20,7 +19,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Trunk", {
-		"Logger",
 		"Notification",
 		"Action",
 		"Escort",

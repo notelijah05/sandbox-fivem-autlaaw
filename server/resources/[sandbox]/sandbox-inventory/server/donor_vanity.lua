@@ -245,7 +245,7 @@ function TebexAddVanityItem(source, args)
 	local sid = table.unpack(args)
 	sid = tonumber(sid)
 	if sid == nil or sid == 0 then
-		Logger:Warn("Donator Vanity Item", "Provided SID (server ID) was empty.", {
+		exports['sandbox-base']:LoggerWarn("Donator Vanity Item", "Provided SID (server ID) was empty.", {
 			console = true,
 			file = false,
 			database = true,

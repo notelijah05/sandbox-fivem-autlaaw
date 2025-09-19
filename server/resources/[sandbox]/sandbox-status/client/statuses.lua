@@ -111,7 +111,7 @@ end)
 AddEventHandler("Characters:Client:Spawn", function()
 	CreateThread(function()
 		if _strTickRunning then
-			Logger:Trace("Status", "Stress Thread Running, Skipping Creation")
+			exports['sandbox-base']:LoggerTrace("Status", "Stress Thread Running, Skipping Creation")
 			return
 		end
 
@@ -130,7 +130,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 					end
 
 					if cst - gen >= max then
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Status",
 							string.format("Stress Tick: %s (Original: %s)", gen, LocalPlayer.state.stressTicks[1])
 						)

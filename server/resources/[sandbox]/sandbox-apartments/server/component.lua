@@ -4,7 +4,6 @@ _requestors = {}
 AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
@@ -15,7 +14,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Apartment", {
 		"Middleware",
-		"Logger",
 		"Routing",
 		"Inventory",
 		"Apartment",

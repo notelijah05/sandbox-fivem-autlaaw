@@ -23,7 +23,8 @@ COMPONENTS.Default = {
                 }
             }, function(s, r)
                 if not s then
-                    COMPONENTS.Logger:Error('Data', ('Failed To Retrieve Details For %s Default Data'):format(collection))
+                    exports['sandbox-base']:LoggerError('Data',
+                        ('Failed To Retrieve Details For %s Default Data'):format(collection))
                     _inserting[collection] = nil
                     return
                 end
@@ -36,7 +37,7 @@ COMPONENTS.Default = {
                         }
                     }, function(s2, r2)
                         if not s then
-                            COMPONENTS.Logger:Error('Data',
+                            exports['sandbox-base']:LoggerError('Data',
                                 ('Failed To Remove Existing Default Data For %s'):format(collection))
                             _inserting[collection] = nil
                             return
@@ -47,7 +48,8 @@ COMPONENTS.Default = {
                             documents = data
                         }, function(s3, r3)
                             if not s then
-                                COMPONENTS.Logger:Error('Data', ('Failed Adding Default Data For %s'):format(collection))
+                                exports['sandbox-base']:LoggerError('Data',
+                                    ('Failed Adding Default Data For %s'):format(collection))
                                 _inserting[collection] = nil
                                 return
                             end
@@ -73,7 +75,7 @@ COMPONENTS.Default = {
                             }, function(success, result)
                                 _inserting[collection] = nil
                                 if not s then
-                                    COMPONENTS.Logger:Error('Data',
+                                    exports['sandbox-base']:LoggerError('Data',
                                         ('Failed Updating Details For %s Default Data'):format(collection))
                                     return
                                 end
@@ -104,7 +106,8 @@ COMPONENTS.Default = {
                 }
             }, function(s, r)
                 if not s then
-                    COMPONENTS.Logger:Error('Data', ('Failed To Retrieve Details For %s Default Data'):format(collection))
+                    exports['sandbox-base']:LoggerError('Data',
+                        ('Failed To Retrieve Details For %s Default Data'):format(collection))
                     _inserting[collection] = nil
                     return
                 end
@@ -117,7 +120,7 @@ COMPONENTS.Default = {
                         }
                     }, function(s2, r2)
                         if not s then
-                            COMPONENTS.Logger:Error('Data',
+                            exports['sandbox-base']:LoggerError('Data',
                                 ('Failed To Remove Existing Default Data For %s'):format(collection))
                             _inserting[collection] = nil
                             return
@@ -128,7 +131,8 @@ COMPONENTS.Default = {
                             documents = data
                         }, function(s3, r3)
                             if not s then
-                                COMPONENTS.Logger:Error('Data', ('Failed Adding Default Data For %s'):format(collection))
+                                exports['sandbox-base']:LoggerError('Data',
+                                    ('Failed Adding Default Data For %s'):format(collection))
                                 _inserting[collection] = nil
                                 return
                             end
@@ -154,7 +158,7 @@ COMPONENTS.Default = {
                             }, function(success, result)
                                 _inserting[collection] = nil
                                 if not s then
-                                    COMPONENTS.Logger:Error('Data',
+                                    exports['sandbox-base']:LoggerError('Data',
                                         ('Failed Updating Details For %s Default Data'):format(collection))
                                     return
                                 end

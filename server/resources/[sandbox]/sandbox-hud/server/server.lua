@@ -2,7 +2,6 @@ local _uircd = {}
 
 AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
@@ -12,7 +11,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
-		"Logger",
 		"Chat",
 		"Inventory",
 		"Execute",

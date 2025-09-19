@@ -127,7 +127,7 @@ function RegisterCallbacks()
 					Pwnzor:Screenshot(char:GetData("SID"), string.format("Detected Modified FOV: %s", fov))
 				end
 
-				Logger:Warn(
+				exports['sandbox-base']:LoggerWarn(
 					"Pwnzor",
 					string.format(
 						"%s %s (%s) Detected Modified FOV: %s",
@@ -164,7 +164,7 @@ function RegisterCallbacks()
 			if char then
 				Pwnzor:Screenshot(char:GetData("SID"), "Detected Unusual Resolution")
 
-				Logger:Warn(
+				exports['sandbox-base']:LoggerWarn(
 					"Pwnzor",
 					string.format(
 						"%s %s (%s) Detected Unusual Resolution",
@@ -196,7 +196,7 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:Trigger", function(source, data, cb)
 		cb("💙 From Pwnzor 🙂")
 		if not exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
-			Logger:Info(
+			exports['sandbox-base']:LoggerInfo(
 				"Pwnzor",
 				string.format("Pwnzor Trigger For %s: %s (check) %s (match)", source, data.check, data.match),
 				{

@@ -91,7 +91,7 @@ function OpenWheelMenu()
     end)
 
     wheelMenu.Add:Button('Save', { success = true }, function()
-        Logger:Trace('Fitment', 'Attept Save')
+        exports['sandbox-base']:LoggerTrace('Fitment', 'Attept Save')
 
         if editedFrontTrack or editedRearTrack or editedWidth then
             exports["sandbox-base"]:ServerCallback('Vehicles:WheelFitment', {
@@ -120,7 +120,7 @@ function OpenWheelMenu()
     end)
 
     wheelMenu.Add:Button('Reset', { error = true }, function()
-        Logger:Trace('Fitment', 'Attept Reset')
+        exports['sandbox-base']:LoggerTrace('Fitment', 'Attept Reset')
 
         exports["sandbox-base"]:ServerCallback('Vehicles:WheelFitment', {
             vNet = VehToNet(EDITING_VEHICLE),

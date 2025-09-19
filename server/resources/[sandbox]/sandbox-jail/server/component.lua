@@ -5,7 +5,6 @@ local lastRefreshed = 0
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -27,7 +26,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Middleware",
-		"Logger",
 		"Execute",
 		"Routing",
 		"Chat",

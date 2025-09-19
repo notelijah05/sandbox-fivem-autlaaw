@@ -266,7 +266,8 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 							if not ending then
 								if DoesEntityExist(_SellingVeh) then
 									if GetEntityHealth(_SellingVeh) == 0 or not IsVehicleDriveable(_SellingVeh) then
-										Logger:Trace("CornerDealing", "Vehicle Health 0 or Not Drivable")
+										exports['sandbox-base']:LoggerTrace("CornerDealing",
+											"Vehice Health 0 or Not Drivable")
 										ending = true
 										exports["sandbox-base"]:ServerCallback("CornerDealing:DestroyVehicle")
 									end
@@ -283,7 +284,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 								local myPos = GetEntityCoords(LocalPlayer.state.ped)
 								local vehPos = GetEntityCoords(_SellingVeh)
 								if #(vehPos - _SellingCorner) > 50.0 then
-									Logger:Trace("CornerDealing", "Vehicle Too Far From Corner")
+									exports['sandbox-base']:LoggerTrace("CornerDealing", "Vehicle Too Far From Corner")
 									ending = true
 									exports["sandbox-base"]:ServerCallback("CornerDealing:LeaveArea")
 								end

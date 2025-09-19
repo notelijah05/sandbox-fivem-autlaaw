@@ -1,6 +1,5 @@
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
@@ -28,7 +27,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"Logger",
 		"PedInteraction",
 		"Progress",
 		"Phone",

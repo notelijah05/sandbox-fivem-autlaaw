@@ -1,7 +1,6 @@
 AddEventHandler("EMS:Shared:DependencyUpdate", EMSComponents)
 function EMSComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
@@ -10,7 +9,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("EMS", {
 		"Middleware",
-		"Logger",
 		"Inventory",
 		"Damage",
 		"Execute",
@@ -62,7 +60,7 @@ function EMSCallbacks()
 		if char ~= nil then
 			if Inventory.Items:Has(myChar:GetData("SID"), 1, "traumakit", 1) then
 				if Jobs.Permissions:HasJob(source, "ems") then
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"EMS",
 						string.format(
 							"%s %s (%s) Stabilized %s %s (%s)",

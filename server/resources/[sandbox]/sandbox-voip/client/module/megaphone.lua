@@ -1,7 +1,7 @@
 function StartUsingMegaphone(vehAnim)
 	if PLAYER_CONNECTED and (not CALL_CHANNEL or CALL_CHANNEL <= 0) and not RADIO_TALKING and not USING_MICROPHONE then
 		CreateThread(function()
-			Logger:Info("VOIP", "Megaphone On")
+			exports['sandbox-base']:LoggerInfo("VOIP", "Megaphone On")
 			USING_MEGAPHONE = true
 			if vehAnim then
 				Animations.Emotes:Play("radio", false, false, true)
@@ -30,7 +30,7 @@ end
 
 function StopUsingMegaphone()
 	if USING_MEGAPHONE then
-		Logger:Info("VOIP", "Megaphone Off")
+		exports['sandbox-base']:LoggerInfo("VOIP", "Megaphone Off")
 		USING_MEGAPHONE = false
 		TriggerServerEvent("VOIP:Server:Megaphone:SetPlayerState", false)
 

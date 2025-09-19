@@ -209,7 +209,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						}
 						Entity(ent).state.wasLooted = true
 
-						Logger:Info("Robbery",
+						exports['sandbox-base']:LoggerInfo("Robbery",
 							string.format("%s %s (%s) Looted A Money Truck (VIN: %s)", char:GetData("First"),
 								char:GetData("Last"), char:GetData("SID"), Entity(ent).state.VIN))
 

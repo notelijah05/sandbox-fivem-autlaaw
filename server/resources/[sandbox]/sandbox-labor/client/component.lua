@@ -1,6 +1,5 @@
 AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -33,7 +32,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
-		"Logger",
 		"Game",
 		"Phone",
 		"PedInteraction",

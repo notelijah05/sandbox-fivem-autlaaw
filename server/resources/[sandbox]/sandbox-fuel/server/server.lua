@@ -1,7 +1,6 @@
 AddEventHandler("Fuel:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
@@ -17,7 +16,6 @@ local depositData = {
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Fuel", {
 		"Utils",
-		"Logger",
 		"Wallet",
 		"Banking",
 		"Phone",
@@ -33,7 +31,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				while true do
 					Wait(1000 * 60 * 10)
 					if depositData.amount > 0 then
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Fuel",
 							string.format("Depositing ^2$%s^7 To ^3%s^7", math.abs(depositData.amount), bankAcc)
 						)

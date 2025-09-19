@@ -37,7 +37,7 @@ AddEventHandler("Phone:Server:Startup", function()
 				royalties = {},
 			}
 		else
-			Logger:Warn("Phone", string.format("Organization account not found for: %s", k))
+			exports['sandbox-base']:LoggerWarn("Phone", string.format("Organization account not found for: %s", k))
 		end
 	end
 
@@ -48,7 +48,7 @@ AddEventHandler("Phone:Server:Startup", function()
 				Wait(1000 * 60 * 60)
 				for k, v in pairs(_pendingShopDeposits) do
 					for k2, v2 in pairs(v.royalties) do
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Phone",
 							string.format("Depositing ^2$%s^7 To ^3%s^7 For Royalties", v2.total, v.bank)
 						)

@@ -158,7 +158,6 @@ end
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -181,7 +180,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Sequence",
-		"Logger",
 		"Utils",
 		"Inventory",
 		"Chat",
@@ -2307,7 +2305,8 @@ INVENTORY = {
 		if LoadedEntitys[invType] ~= nil then
 			total = getSlotCount(invType, vehClass or false, vehModel or false, false, Owner, src)
 		else
-			Logger:Error("Inventory", string.format("Entity Type ^2%s^7 Was Attempted To Be Loaded", invType))
+			exports['sandbox-base']:LoggerError("Inventory",
+				string.format("Entity Type ^2%s^7 Was Attempted To Be Loaded", invType))
 		end
 
 		for i = 1, total do
@@ -2537,14 +2536,15 @@ INVENTORY = {
 	AddSlot = function(self, Owner, Name, Count, MetaData, Slot, Type, forceCreateDate, quality)
 		local p = promise.new()
 		if Count <= 0 then
-			Logger:Error("Inventory", "[AddSlot] Cannot Add " .. Count .. " of an Item (" .. Owner .. ":" .. Type .. ")")
+			exports['sandbox-base']:LoggerError("Inventory",
+				"[AddSlot] Cannot Add " .. Count .. " of an Item (" .. Owner .. ":" .. Type .. ")")
 			return false
 		end
 
 		if Slot == nil then
 			local freeSlots = INVENTORY:GetFreeSlotNumbers(Owner, Type)
 			if #freeSlots == 0 then
-				Logger:Error("Inventory",
+				exports['sandbox-base']:LoggerError("Inventory",
 					"[AddSlot] No Available Slots For " .. Owner .. ":" .. Type .. " And Passed Slot Was Nil")
 				return false
 			end
@@ -2552,7 +2552,7 @@ INVENTORY = {
 		end
 
 		if itemsDatabase[Name] == nil then
-			Logger:Error(
+			exports['sandbox-base']:LoggerError(
 				"Inventory",
 				string.format("Slot %s in %s-%s has invalid item %s", Slot, Owner, Type, Name)
 			)
@@ -3015,7 +3015,7 @@ INVENTORY = {
 		RemoveSlot = function(self, Owner, Name, Count, Slot, invType)
 			local slot = INVENTORY:GetSlot(Owner, Slot, invType)
 			if slot == nil then
-				Logger:Error(
+				exports['sandbox-base']:LoggerError(
 					"Inventory",
 					"Failed to remove " .. Count .. " from Slot " .. Slot .. " for " .. Owner,
 					{ console = false }

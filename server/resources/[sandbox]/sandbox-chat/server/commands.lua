@@ -52,7 +52,7 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 								or commands[command].args == -1
 							then
 								local char = exports['sandbox-characters']:FetchCharacterSource(source)
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Commands",
 									string.format(
 										"%s (%s [%s]) Used A Job Command: %s.%s",
@@ -92,7 +92,7 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 					or commands[command].args == -1
 				then
 					local char = exports['sandbox-characters']:FetchCharacterSource(source)
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Commands",
 						string.format(
 							"%s (%s [%s]) Used A Command: %s.%s",
@@ -162,7 +162,7 @@ function CHAT.RegisterAdminCommand(this, command, callback, suggestion, argument
 					(#args <= commands[command].args and #args == commands[command].args)
 					or commands[command].args == -1
 				then
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Pwnzor",
 						string.format(
 							"%s (%s) Used An Admin Command: %s.%s",
@@ -190,7 +190,7 @@ function CHAT.RegisterAdminCommand(this, command, callback, suggestion, argument
 					Chat.Send.Server:Single(source, "Invalid Number Of Arguments")
 				end
 			else
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Pwnzor",
 					string.format(
 						"%s (%s) Attempted To Use An Admin Command: %s.%s",
@@ -252,7 +252,7 @@ function CHAT.RegisterStaffCommand(this, command, callback, suggestion, argument
 					(#args <= commands[command].args and #args == commands[command].args)
 					or commands[command].args == -1
 				then
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Pwnzor",
 						string.format(
 							"%s (%s) Used A Staff Command: %s.%s",
@@ -280,7 +280,7 @@ function CHAT.RegisterStaffCommand(this, command, callback, suggestion, argument
 					Chat.Send.Server:Single(source, "Invalid Number Of Arguments")
 				end
 			else
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Pwnzor",
 					string.format(
 						"%s (%s) Attempted To Use A Staff Command: %s.%s",

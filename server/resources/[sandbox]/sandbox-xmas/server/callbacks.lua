@@ -18,7 +18,7 @@ function RegisterCallbacks()
 				and (daily == nil or daily ~= _currentDate.day)
 				and ((_currentDate.day ~= 25 and dailyCount < 1) or (_currentDate.day == 25 and dailyCount < 3))
 			then
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Xmas",
 					string.format(
 						"%s %s (%s) Looted Daily Present From Legion Igloo",
@@ -48,7 +48,7 @@ function RegisterCallbacks()
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			if not _treeLooted[sid] then
-				Logger:Trace(
+				exports['sandbox-base']:LoggerTrace(
 					"Xmas",
 					string.format(
 						"%s %s (%s) Looted Present From Christmas Tree",

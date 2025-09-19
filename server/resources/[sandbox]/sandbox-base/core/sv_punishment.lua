@@ -13,7 +13,7 @@ COMPONENTS.Punishment = {
 			},
 		}, function(success, results, insertedIds)
 			if not success then
-				COMPONENTS.Logger:Error(
+				exports['sandbox-base']:LoggerError(
 					"[^8Error^7] Error in insertOne: " .. tostring(results),
 					{ console = true, file = true, database = true }
 				)
@@ -72,7 +72,7 @@ COMPONENTS.Punishment = {
 				}
 			end
 
-			COMPONENTS.Logger:Info(
+			exports['sandbox-base']:LoggerInfo(
 				"Punishment",
 				string.format(
 					"%s [%s] Kicked By %s [%s] For %s",
@@ -100,7 +100,7 @@ COMPONENTS.Punishment = {
 			}
 		else
 			if not afk then
-				COMPONENTS.Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Punishment",
 					string.format(
 						"%s [%s] Kicked By %s For %s",
@@ -344,7 +344,7 @@ COMPONENTS.Punishment.Ban = {
 			}
 		end
 
-		COMPONENTS.Logger:Info(
+		exports['sandbox-base']:LoggerInfo(
 			"Punishment",
 			banStr,
 			{ console = true, file = true, database = true, discord = { embed = true, type = "info" } },
@@ -425,7 +425,7 @@ COMPONENTS.Punishment.Ban = {
 					false
 				)
 			then
-				COMPONENTS.Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Punishment",
 					banStr,
 					{ console = true, file = true, database = true, discord = { embed = true, type = "info" } },
@@ -484,7 +484,7 @@ COMPONENTS.Punishment.Ban = {
 					false
 				)
 			then
-				COMPONENTS.Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Punishment",
 					banStr,
 					{ console = true, file = true, database = true, discord = { embed = true, type = "info" } },
@@ -582,7 +582,7 @@ COMPONENTS.Punishment.Ban = {
 					false
 				)
 			then
-				COMPONENTS.Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Punishment",
 					banStr,
 					{ console = true, file = true, database = true, discord = { embed = true, type = "info" } },
@@ -649,7 +649,7 @@ COMPONENTS.Punishment.Ban = {
 					false
 				)
 			then
-				COMPONENTS.Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Punishment",
 					banStr,
 					{ console = true, file = true, database = true, discord = { embed = true, type = "info" } },
@@ -734,7 +734,7 @@ COMPONENTS.Punishment.Actions = {
 		}, function(success, results)
 			p:resolve(success)
 			if not success then
-				return COMPONENTS.Logger:Error(
+				return exports['sandbox-base']:LoggerError(
 					"[^8Error^7] Error in insertOne: " .. tostring(results),
 					{ console = true, file = true, database = true, discord = { embed = true, type = "error" } }
 				)
@@ -784,7 +784,7 @@ COMPONENTS.Punishment.Actions = {
 			table.insert(_ids, v._id)
 		end
 
-		COMPONENTS.Logger:Info(
+		exports['sandbox-base']:LoggerInfo(
 			"Punishment",
 			string.format("%s Bans Revoked By %s [%s]", #ids, issuer:GetData("Name"), issuer:GetData("AccountID")),
 			{ console = true, file = true, database = true, discord = { embed = true, type = "info" } },

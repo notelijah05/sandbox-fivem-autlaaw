@@ -5,23 +5,23 @@ isValid = false
 
 AddEventHandler("ObjectPlacer:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
+    Notification = exports["sandbox-base"]:FetchComponent("Notification")
+    Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
+    ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("ObjectPlacer", {
+    exports["sandbox-base"]:RequestDependencies("ObjectPlacer", {
         "Notification",
         "Targeting",
         "ObjectPlacer",
-	}, function(error)
-		if #error > 0 then 
-            exports["sandbox-base"]:FetchComponent("Logger"):Critical("ObjectPlacer", "Failed To Load All Dependencies")
-			return
-		end
-		RetrieveComponents()
-	end)
+    }, function(error)
+        if #error > 0 then
+            exports['sandbox-base']:LoggerCritical("ObjectPlacer", "Failed To Load All Dependencies")
+            return
+        end
+        RetrieveComponents()
+    end)
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
@@ -29,7 +29,8 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 _PLACER = {
-    Start = function(self, model, finishEvent, data, allowedInterior, cancelEvent, useGizmo, isFurniture, startCoords, startHeading, startRotation, maxDistOverride)
+    Start = function(self, model, finishEvent, data, allowedInterior, cancelEvent, useGizmo, isFurniture, startCoords,
+                     startHeading, startRotation, maxDistOverride)
         if _placing or IsPedInAnyVehicle(PlayerPedId()) then
             return
         end
@@ -44,7 +45,8 @@ _PLACER = {
         placementCoords = nil
         isValid = false
 
-        RunPlacementThread(model, allowedInterior, useGizmo, isFurniture, startCoords, startHeading, startRotation, maxDistOverride)
+        RunPlacementThread(model, allowedInterior, useGizmo, isFurniture, startCoords, startHeading, startRotation,
+            maxDistOverride)
     end,
     End = function(self)
         _placing = false
@@ -78,17 +80,17 @@ _PLACER = {
 }
 
 AddEventHandler("Keybinds:Client:KeyDown:primary_action", function()
-	if _placeData ~= nil then
+    if _placeData ~= nil then
         ObjectPlacer:End()
-	end
+    end
 end)
 
 AddEventHandler("Keybinds:Client:KeyDown:cancel_action", function()
-	if _placeData ~= nil then
+    if _placeData ~= nil then
         ObjectPlacer:Cancel()
-	end
+    end
 end)
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("ObjectPlacer", _PLACER)
+    exports["sandbox-base"]:RegisterComponent("ObjectPlacer", _PLACER)
 end)

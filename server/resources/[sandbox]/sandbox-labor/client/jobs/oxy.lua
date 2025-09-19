@@ -236,7 +236,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
                     if not ending then
                         if _v?.ent ~= nil and DoesEntityExist(_v.ent) then
                             if GetEntityHealth(_v.ent) == 0 or not IsVehicleDriveable(_v.ent) then
-                                Logger:Trace("OxyRun", "Vehicle Health 0 or Not Drivable")
+                                exports['sandbox-base']:LoggerTrace("OxyRun", "Vehicle Health 0 or Not Drivable")
                                 ending = true
                                 exports["sandbox-base"]:ServerCallback("OxyRun:DestroyVehicle")
                             end

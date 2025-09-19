@@ -24,7 +24,6 @@ end
 
 AddEventHandler("Lasers:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Lasers = exports["sandbox-base"]:FetchComponent("Lasers")
@@ -32,7 +31,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Lasers", {
-		"Logger",
 		"Game",
 		"Utils",
 		"Lasers",

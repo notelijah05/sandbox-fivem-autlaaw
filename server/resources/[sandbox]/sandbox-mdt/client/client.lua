@@ -9,7 +9,6 @@ local _bodycam = false
 
 AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
@@ -24,7 +23,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Logger",
 		"Notification",
 		"UISounds",
 		"Sounds",

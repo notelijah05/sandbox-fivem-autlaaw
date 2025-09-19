@@ -6,7 +6,6 @@ function RetrieveComponents()
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -28,7 +27,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Execute",
 		"Chat",
 		"Middleware",
-		"Logger",
 		"Generator",
 		"Phone",
 		"Jobs",
@@ -44,7 +42,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Status",
 	}, function(error)
 		if #error > 0 then
-			exports["sandbox-base"]:FetchComponent("Logger"):Critical("Businesses", "Failed To Load All Dependencies")
+			exports['sandbox-base']:LoggerCritical("Businesses", "Failed To Load All Dependencies")
 			return
 		end
 		RetrieveComponents()
@@ -69,10 +67,10 @@ end)
 
 function Startup()
 	for k, v in ipairs(Config.Businesses) do
-		Logger:Trace("Businesses", string.format("Registering Business ^3%s^7", v.Name))
+		exports['sandbox-base']:LoggerTrace("Businesses", string.format("Registering Business ^3%s^7", v.Name))
 		if v.Benches then
 			for benchId, bench in pairs(v.Benches) do
-				-- Logger:Trace(
+				-- exports['sandbox-base']:LoggerTrace(
 				-- 	"Businesses",
 				-- 	string.format("Registering Crafting Bench ^2%s^7 For ^3%s^7", bench.label, v.Name)
 				-- )
@@ -102,7 +100,7 @@ function Startup()
 
 		if v.Storage then
 			for _, storage in pairs(v.Storage) do
-				-- Logger:Trace(
+				-- exports['sandbox-base']:LoggerTrace(
 				-- 	"Businesses",
 				-- 	string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", storage.id, v.Name)
 				-- )

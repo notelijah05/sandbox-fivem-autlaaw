@@ -1,6 +1,5 @@
 AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -11,7 +10,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
-		"Logger",
 		"Middleware",
 		"Execute",
 		"Utils",

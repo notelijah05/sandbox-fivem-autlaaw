@@ -2,7 +2,6 @@ local _created = {}
 
 AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
 function RetrieveVendorComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
@@ -11,7 +10,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vendor", {
-		"Logger",
 		"PedInteraction",
 		"Targeting",
 		"ListMenu",

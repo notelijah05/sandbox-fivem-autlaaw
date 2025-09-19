@@ -17,7 +17,7 @@ function Startup()
 	})
 
 	_charges = MySQL.query.await("SELECT * from mdt_charges")
-	Logger:Trace("MDT", "Loaded ^2" .. #_charges .. "^7 Charges", { console = true })
+	exports['sandbox-base']:LoggerTrace("MDT", "Loaded ^2" .. #_charges .. "^7 Charges", { console = true })
 
 	exports['sandbox-base']:DatabaseGameFind({
 		collection = "vehicles",

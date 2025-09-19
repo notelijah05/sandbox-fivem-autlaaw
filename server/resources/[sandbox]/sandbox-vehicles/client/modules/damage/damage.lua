@@ -40,11 +40,11 @@ AddEventHandler("gameEventTriggered", function(event, args)
 					local bodyHealthDiff = math.floor(LAST_DAMAGE_BODY - bodyHealth)
 
 					if engineHealthDiff > 0.0 then
-						Logger:Trace("Vehicles", "Engine Damaged - New Health: " .. engineHealth)
+						exports['sandbox-base']:LoggerTrace("Vehicles", "Engine Damaged - New Health: " .. engineHealth)
 					end
 
 					if bodyHealthDiff > 0.0 then
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Vehicles",
 							"Body Damage Taken: " .. bodyHealthDiff .. " - New Health: " .. bodyHealth
 						)

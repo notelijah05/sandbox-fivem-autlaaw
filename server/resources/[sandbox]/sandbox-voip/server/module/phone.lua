@@ -4,7 +4,7 @@ _fuckingVOIPPhone = {
 			if not voiceData[source] then
 				return
 			end
-			Logger:Trace("VOIP", ("Adding %s to Call %s"):format(source, callChannel))
+			exports['sandbox-base']:LoggerTrace("VOIP", ("Adding %s to Call %s"):format(source, callChannel))
 			callData[callChannel] = callData[callChannel] or {}
 			for player, _ in pairs(callData[callChannel]) do
 				if player ~= source then
@@ -19,7 +19,7 @@ _fuckingVOIPPhone = {
 			if not voiceData[source] then
 				return
 			end
-			Logger:Trace("VOIP", ("Removing %s from Call %s"):format(source, callChannel))
+			exports['sandbox-base']:LoggerTrace("VOIP", ("Removing %s from Call %s"):format(source, callChannel))
 
 			callData[callChannel] = callData[callChannel] or {}
 			for player, _ in pairs(callData[callChannel]) do

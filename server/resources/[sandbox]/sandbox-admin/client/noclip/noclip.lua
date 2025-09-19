@@ -102,7 +102,7 @@ RegisterNetEvent('Admin:Client:NoClipInfo', function()
     if NOCLIP_ACTIVE then
         local position = GetFreecamPosition()
         local rotation = GetFreecamRotation()
-        Logger:Trace('NoClip', 'Rotation: ' .. rotation)
-        Logger:Trace('NoClip', 'Position: ' .. position)
+        exports['sandbox-base']:LoggerTrace('NoClip', 'Rotation: ' .. rotation)
+        exports['sandbox-base']:LoggerTrace('NoClip', 'Position: ' .. position)
     end
 end)

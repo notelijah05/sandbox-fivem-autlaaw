@@ -59,7 +59,7 @@ end
 
 RegisterNetEvent('VOIP:Radio:Client:SyncRadioData', function(radioData, coordsData, vehData)
 	RADIO_DATA = radioData
-	Logger:Trace('VOIP', 'Syncing Radio')
+	exports['sandbox-base']:LoggerTrace('VOIP', 'Syncing Radio')
 	for tgt, talking in pairs(RADIO_DATA) do
 		if tgt ~= PLAYER_SERVER_ID then
 			if talking then
@@ -87,7 +87,7 @@ RegisterNetEvent('VOIP:Radio:Client:SetPlayerTalkState',
 	end)
 
 RegisterNetEvent('VOIP:Radio:Client:AddPlayerToRadio', function(targetSource)
-	Logger:Trace('VOIP', ('%s Joined Current Radio Channel'):format(targetSource))
+	exports['sandbox-base']:LoggerTrace('VOIP', ('%s Joined Current Radio Channel'):format(targetSource))
 	RADIO_DATA[targetSource] = false
 	if RADIO_TALKING then
 		VOIP:SetPlayerTargets(RADIO_DATA, PLAYER_TALKING and CALL_DATA or {})
@@ -96,7 +96,7 @@ end)
 
 RegisterNetEvent('VOIP:Radio:Client:RemovePlayerFromRadio', function(targetSource)
 	if targetSource == PLAYER_SERVER_ID then
-		Logger:Trace('VOIP', 'Leaving Current Radio Channel - Clearing Up')
+		exports['sandbox-base']:LoggerTrace('VOIP', 'Leaving Current Radio Channel - Clearing Up')
 		for tgt, enabled in pairs(RADIO_DATA) do
 			if tgt ~= PLAYER_SERVER_ID then
 				VOIP:ToggleVoice(tgt, false)
@@ -105,7 +105,7 @@ RegisterNetEvent('VOIP:Radio:Client:RemovePlayerFromRadio', function(targetSourc
 		RADIO_DATA = {}
 		VOIP:SetPlayerTargets({}, PLAYER_TALKING and CALL_DATA or {})
 	else
-		Logger:Trace('VOIP', ('%s Left Current Radio Channel'):format(targetSource))
+		exports['sandbox-base']:LoggerTrace('VOIP', ('%s Left Current Radio Channel'):format(targetSource))
 		RADIO_DATA[targetSource] = nil
 		VOIP:ToggleVoice(targetSource, false)
 		if RADIO_TALKING then
@@ -118,7 +118,7 @@ function RadioKeyDown()
 	if not RADIO_TALKING and RADIO_CHANNEL and RADIO_CHANNEL > 0 and not LocalPlayer.state.isDead then
 		StopUsingMegaphone()
 		LoadAnim('random@arrests')
-		Logger:Trace('VOIP', 'Starting Radio Broadcast')
+		exports['sandbox-base']:LoggerTrace('VOIP', 'Starting Radio Broadcast')
 		VOIP:SetPlayerTargets(RADIO_DATA, PLAYER_TALKING and CALL_DATA or {})
 		TriggerServerEvent('VOIP:Radio:Server:SetTalking', true, LocalPlayer.state.radioType == 2)
 		RADIO_TALKING = true
@@ -151,7 +151,7 @@ end
 
 function RadioKeyUp()
 	if RADIO_CHANNEL and RADIO_CHANNEL > 0 and RADIO_TALKING then
-		Logger:Trace('VOIP', 'Stopping Radio Broadcast')
+		exports['sandbox-base']:LoggerTrace('VOIP', 'Stopping Radio Broadcast')
 		RADIO_TALKING = false
 		TriggerServerEvent('VOIP:Radio:Server:SetTalking', false)
 		MumbleClearVoiceTargetPlayers(1)
@@ -166,6 +166,6 @@ end)
 
 RegisterNetEvent('VOIP:Radio:Client:SetPlayerRadio', function(channel)
 	RADIO_CHANNEL = channel
-	Logger:Trace('VOIP', ('New Radio Channel: %s'):format(channel))
+	exports['sandbox-base']:LoggerTrace('VOIP', ('New Radio Channel: %s'):format(channel))
 	UpdateVOIPIndicatorStatus()
 end)

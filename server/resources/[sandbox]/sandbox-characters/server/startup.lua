@@ -17,7 +17,8 @@ function Startup()
 			return
 		end
 
-		Logger:Trace("Characters", "Loaded ^2" .. #results .. "^7 Spawn Locations", { console = true })
+		exports['sandbox-base']:LoggerTrace("Characters", "Loaded ^2" .. #results .. "^7 Spawn Locations",
+			{ console = true })
 
 		Spawns = { table.unpack(Config.DefaultSpawns) }
 		for k, v in ipairs(results) do
@@ -39,6 +40,7 @@ AddEventHandler("Locations:Server:Added", function(type, location)
 			label = location.Name,
 			location = { x = location.Coords.x, y = location.Coords.y, z = location.Coords.z, h = location.Coords.h },
 		})
-		Logger:Info("Characters", "New Spawn Point Created: ^5" .. location.Name, { console = true })
+		exports['sandbox-base']:LoggerInfo("Characters", "New Spawn Point Created: ^5" .. location.Name,
+			{ console = true })
 	end
 end)

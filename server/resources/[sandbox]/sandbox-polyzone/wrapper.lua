@@ -6,7 +6,6 @@ local polyDebug = false
 
 AddEventHandler("Polyzone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Game = exports["sandbox-base"]:FetchComponent("Game")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -14,7 +13,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Polyzone", {
-		"Logger",
 		"Game",
 		"Utils",
 		"Polyzone",
@@ -65,7 +63,7 @@ AddEventHandler("Characters:Client:Logout", function()
 	if wCombozone then
 		wCombozone:destroy()
 		wCombozone = nil
-		Logger:Trace("Polyzone", "Destroyed All Polyzones (Character Logout)")
+		exports['sandbox-base']:LoggerTrace("Polyzone", "Destroyed All Polyzones (Character Logout)")
 	end
 end)
 
@@ -96,7 +94,7 @@ function InitWrapperZones()
 		table.insert(createdZones, zone)
 	end
 
-	Logger:Trace("Polyzone", string.format("Initialized %s Simple Polyzones", #createdZones))
+	exports['sandbox-base']:LoggerTrace("Polyzone", string.format("Initialized %s Simple Polyzones", #createdZones))
 
 	wCombozone = ComboZone:Create(createdZones, {
 		name = "wrapper_combo",
@@ -252,7 +250,7 @@ RegisterNetEvent("Polyzone:Client:ToggleDebug", function()
 
 	TriggerEvent("Targeting:Client:PolyzoneDebug", polyDebug)
 	if polyDebug and LocalPlayer.state.isAdmin then
-		Logger:Warn("Polyzone", "Polyzone Debug Enabled")
+		exports['sandbox-base']:LoggerWarn("Polyzone", "Polyzone Debug Enabled")
 		CreateThread(function()
 			while polyDebug do
 				if wCombozone then

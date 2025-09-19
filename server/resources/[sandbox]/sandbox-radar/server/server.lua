@@ -2,7 +2,6 @@ FLAGGED_PLATES = {}
 
 AddEventHandler("Radar:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -11,7 +10,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radar", {
-		"Logger",
 		"Utils",
 		"Chat",
 		"Jobs",
@@ -98,19 +96,19 @@ RADAR = {
 			reason = "No Reason Specified"
 		end
 
-		Logger:Trace("Radar", string.format("New Flagged Plate: %s, Reason: %s", plate, reason))
+		exports['sandbox-base']:LoggerTrace("Radar", string.format("New Flagged Plate: %s, Reason: %s", plate, reason))
 		FLAGGED_PLATES[plate] = reason
 
 		GlobalState.RadarFlaggedPlates = FLAGGED_PLATES
 	end,
 	RemoveFlaggedPlate = function(self, plate)
-		Logger:Trace("Radar", string.format("Plate Unflagged: %s", plate))
+		exports['sandbox-base']:LoggerTrace("Radar", string.format("Plate Unflagged: %s", plate))
 		FLAGGED_PLATES[plate] = nil
 
 		GlobalState.RadarFlaggedPlates = FLAGGED_PLATES
 	end,
 	ClearFlaggedPlates = function(self)
-		Logger:Trace("Radar", "All Plates Unflagged")
+		exports['sandbox-base']:LoggerTrace("Radar", "All Plates Unflagged")
 		FLAGGED_PLATES = {}
 
 		GlobalState.RadarFlaggedPlates = FLAGGED_PLATES

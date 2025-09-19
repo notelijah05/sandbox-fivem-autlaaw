@@ -4,7 +4,6 @@ function RetrieveComponents()
     Execute = exports["sandbox-base"]:FetchComponent("Execute")
     Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
     Chat = exports["sandbox-base"]:FetchComponent("Chat")
-    Logger = exports["sandbox-base"]:FetchComponent("Logger")
     Generator = exports["sandbox-base"]:FetchComponent("Generator")
     Phone = exports["sandbox-base"]:FetchComponent("Phone")
     Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
         "Execute",
         "Chat",
         "Middleware",
-        "Logger",
         "Generator",
         "Phone",
         "Jobs",
@@ -30,7 +28,7 @@ AddEventHandler("Core:Shared:Ready", function()
         "Regex",
     }, function(error)
         if #error > 0 then
-            exports["sandbox-base"]:FetchComponent("Logger"):Critical("Billboards", "Failed To Load All Dependencies")
+            exports['sandbox-base']:LoggerCritical("Billboards", "Failed To Load All Dependencies")
             return
         end
         RetrieveComponents()

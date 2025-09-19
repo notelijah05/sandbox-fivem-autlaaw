@@ -1,13 +1,11 @@
 AddEventHandler("Sounds:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Sounds", {
-		"Logger",
 		"Sounds",
 		"Middleware",
 	}, function(error)

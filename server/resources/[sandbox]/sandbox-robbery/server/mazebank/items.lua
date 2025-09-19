@@ -64,7 +64,7 @@ function RegisterMBItemUses()
 										itemData.invType
 									)
 								then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Started Thermiting Maze Bank Door: %s",
@@ -91,7 +91,7 @@ function RegisterMBItemUses()
 										data = {},
 									}, function(success)
 										if success then
-											Logger:Info(
+											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
 												string.format(
 													"%s %s (%s) Successfully Thermited Maze Bank Door: %s",
@@ -227,7 +227,7 @@ function RegisterMBItemUses()
 							if AreRequirementsUnlocked(v.requiredDoors) then
 								if not _mbInUse[k] then
 									_mbInUse[k] = source
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Started Hacking Maze Bank Door: %s",
@@ -246,7 +246,7 @@ function RegisterMBItemUses()
 										data = {},
 									}, function(success, data)
 										if success then
-											Logger:Info(
+											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
 												string.format(
 													"%s %s (%s) Successfully Hacked Maze Bank Door: %s",
@@ -277,7 +277,7 @@ function RegisterMBItemUses()
 											GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 											Status.Modify:Add(source, "PLAYER_STRESS", 3)
 										else
-											Logger:Info(
+											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
 												string.format(
 													"%s %s (%s) Failed Hacking Maze Bank Door: %s",
@@ -382,7 +382,7 @@ function RegisterMBItemUses()
 						if AreRequirementsUnlocked(v.requiredDoors) then
 							if not _mbInUse[v.door] then
 								_mbInUse[v.door] = source
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Started Lock Picking Maze Bank Door: %s",
@@ -409,7 +409,7 @@ function RegisterMBItemUses()
 									end
 
 									if success then
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Successfully Lock Picked Maze Bank Door: %s",
@@ -425,7 +425,7 @@ function RegisterMBItemUses()
 										Doors:SetLock(v.door, false)
 										Status.Modify:Add(source, "PLAYER_STRESS", 3)
 									else
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Failed Lock Picking Maze Bank Door: %s",
