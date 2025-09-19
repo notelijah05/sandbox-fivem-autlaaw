@@ -12,7 +12,6 @@ RECENT_FLAGS = {}
 
 AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Player = exports["sandbox-base"]:FetchComponent("Player")
@@ -25,7 +24,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radar", {
-		"Utils",
 		"Keybinds",
 		"Targeting",
 		"UISounds",
@@ -129,7 +127,7 @@ function EnableRadar()
 				local data = {}
 				if RADAR_SETTINGS.frontRadar.transmit or RADAR_SETTINGS.rearRadar.transmit then
 					local vehCoords = GetEntityCoords(GLOBAL_VEH)
-					local vehHeading = Utils:Round(GetEntityHeading(GLOBAL_VEH), 0)
+					local vehHeading = exports['sandbox-base']:UtilsRound(GetEntityHeading(GLOBAL_VEH), 0)
 					if RADAR_SETTINGS.frontRadar.transmit then
 						local angleOffsets = GetAngleOffsets("Front", RADAR_SETTINGS.frontRadar.lane)
 						local offsetCoords =
@@ -141,7 +139,7 @@ function EnableRadar()
 						-- DrawMarker(28, GetEntityCoords(hittingVehicle), 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 255, 0, 0, 200, false, false, 2, false, false, false, false)
 
 						if hittingVehicle then
-							local targetHeading = Utils:Round(GetEntityHeading(hittingVehicle), 0)
+							local targetHeading = exports['sandbox-base']:UtilsRound(GetEntityHeading(hittingVehicle), 0)
 							local targetSpeed = GetEntityMPH(hittingVehicle)
 							local targetPlate = GetVehicleNumberPlateText(hittingVehicle)
 							local relativeDirection = GetEntityRelativeDirection(vehHeading, targetHeading, 110)
@@ -204,7 +202,7 @@ function EnableRadar()
 						-- DrawMarker(28, GetEntityCoords(hittingVehicle), 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 255, 0, 0, 200, false, false, 2, false, false, false, false)
 
 						if hittingVehicle then
-							local targetHeading = Utils:Round(GetEntityHeading(hittingVehicle), 0)
+							local targetHeading = exports['sandbox-base']:UtilsRound(GetEntityHeading(hittingVehicle), 0)
 							local targetSpeed = GetEntityMPH(hittingVehicle)
 							local targetPlate = GetVehicleNumberPlateText(hittingVehicle)
 							local relativeDirection = GetEntityRelativeDirection(vehHeading, targetHeading, 110)

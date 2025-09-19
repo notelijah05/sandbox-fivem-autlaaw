@@ -31,15 +31,15 @@ function OpenDealershipSales(dealerId)
                     function()
 
                     end, function()
-                    salesMenu = nil
-                    salesMenuSub = nil
-                    collectgarbage()
-                end)
+                        salesMenu = nil
+                        salesMenuSub = nil
+                        collectgarbage()
+                    end)
                 salesMenu.Add:Text(
-                string.format('There are %s different models of vehicle, totalling %s vehicles', stockData.total,
-                    stockData.totalQuantity), { 'pad', 'center', 'code' })
+                    string.format('There are %s different models of vehicle, totalling %s vehicles', stockData.total,
+                        stockData.totalQuantity), { 'pad', 'center', 'code' })
 
-                local orderedCategories = Utils:GetTableKeys(_catalogCategories)
+                local orderedCategories = exports['sandbox-base']:UtilsGetTableKeys(_catalogCategories)
                 table.sort(orderedCategories, function(a, b)
                     return _catalogCategories[a] < _catalogCategories[b]
                 end)
@@ -67,7 +67,7 @@ function OpenDealershipSales(dealerId)
                                     v.class and string.upper(v.class) or '?',
                                     _catalogCategories[v.category],
                                     v.price and
-                                    ('$' .. formatNumberToCurrency(math.floor(Utils:Round(v.price * minSaleMultiplier, 0)))) or
+                                    ('$' .. formatNumberToCurrency(math.floor(exports['sandbox-base']:UtilsRound(v.price * minSaleMultiplier), 0)))) or
                                     '$?',
                                     (v.lastPurchased and GetFormattedTimeFromSeconds(serverTime - v.lastPurchased) .. ' ago.' or 'Never')
                                 ), { 'code', 'pad' })
@@ -80,7 +80,7 @@ function OpenDealershipSales(dealerId)
                                 salesMenuSub[cashSaleIdentifier] = Menu:Create('salesMenu-' .. cashSaleIdentifier,
                                     vehName .. ' - New Sale')
                                 local saleTextElem = salesMenuSub[cashSaleIdentifier].Add:Text(
-                                VehicleSalesGetCashText(dealerMData, dealerData, v), { 'code', 'pad' })
+                                    VehicleSalesGetCashText(dealerMData, dealerData, v), { 'code', 'pad' })
 
                                 salesMenuSub[cashSaleIdentifier].Add:Number('Customers State ID', {
                                     current = saleData.customer
@@ -105,7 +105,7 @@ function OpenDealershipSales(dealerId)
                                     vehName .. ' - New Sale')
 
                                 local saleTextElem = salesMenuSub[loanSaleIdentifier].Add:Text(
-                                VehicleSalesGetLoanText(dealerMData, dealerData, v, loanData, defaultInterestRate),
+                                    VehicleSalesGetLoanText(dealerMData, dealerData, v, loanData, defaultInterestRate),
                                     { 'code', 'pad' })
 
                                 salesMenuSub[loanSaleIdentifier].Add:Slider('Down Payment %', {
@@ -172,9 +172,9 @@ end
 
 function VehicleSalesGetCashText(dealerMData, dealerData, vehData)
     local priceMultiplier = 1 + (dealerMData.profitPercentage / 100)
-    local salePrice = Utils:Round(vehData.price * priceMultiplier, 0)
+    local salePrice = exports['sandbox-base']:UtilsRound(vehData.price * priceMultiplier, 0)
     local dealerProfit = salePrice - vehData.price
-    local earnedCommission = Utils:Round(dealerProfit * (dealerMData.commission / 100), 0)
+    local earnedCommission = exports['sandbox-base']:UtilsRound(dealerProfit * (dealerMData.commission / 100), 0)
 
     return string.format(
         [[
@@ -191,15 +191,15 @@ end
 
 function VehicleSalesGetLoanText(dealerMData, dealerData, vehData, loanData, defaultInterest)
     local priceMultiplier = 1 + (dealerMData.profitPercentage / 100)
-    local salePrice = Utils:Round(vehData.price * priceMultiplier, 0)
+    local salePrice = exports['sandbox-base']:UtilsRound(vehData.price * priceMultiplier, 0)
     local dealerProfit = salePrice - vehData.price
-    local earnedCommission = Utils:Round(dealerProfit * (dealerMData.commission / 100), 0)
+    local earnedCommission = exports['sandbox-base']:UtilsRound(dealerProfit * (dealerMData.commission / 100), 0)
 
-    local downPayment = Utils:Round(salePrice * (loanData.downpayment / 100), 0)
+    local downPayment = exports['sandbox-base']:UtilsRound(salePrice * (loanData.downpayment / 100), 0)
     local salePriceAfterDown = salePrice - downPayment
 
-    local afterInterest = Utils:Round(salePriceAfterDown * (1 + (defaultInterest / 100)), 0)
-    local perWeek = Utils:Round((afterInterest / loanData.weeks), 0)
+    local afterInterest = exports['sandbox-base']:UtilsRound(salePriceAfterDown * (1 + (defaultInterest / 100)), 0)
+    local perWeek = exports['sandbox-base']:UtilsRound((afterInterest / loanData.weeks), 0)
 
     return string.format(
         [[

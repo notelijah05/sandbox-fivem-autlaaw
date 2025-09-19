@@ -358,7 +358,7 @@ function DoFishBite(zone, toolUsed)
         end
     end
 
-    local maxDiff = Utils:WeightedRandom(difficultyWeights)
+    local maxDiff = exports['sandbox-base']:UtilsWeightedRandom(difficultyWeights)
 
     for i = 1, maxDiff, 1 do
         if not DoFishingSkillbar(1.0 + (0.2 * maxDiff), 13 - maxDiff) then

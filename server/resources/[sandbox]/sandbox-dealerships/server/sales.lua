@@ -134,10 +134,11 @@ function RegisterVehicleSaleCallbacks()
                             local vehiclePrice = saleVehicleData.data.price
                             local priceMultiplier = 1 + (profitPercent / 100)
                             local commissionMultiplier = (commissionPercent / 100)
-                            local salePrice = Utils:Round(vehiclePrice * priceMultiplier, 0)
+                            local salePrice = exports['sandbox-base']:UtilsRound(vehiclePrice * priceMultiplier, 0)
 
-                            local playerCommission = Utils:Round((salePrice - vehiclePrice) * commissionMultiplier, 0)
-                            local dealerRecieves = Utils:Round(salePrice - playerCommission, 0)
+                            local playerCommission = exports['sandbox-base']:UtilsRound(
+                            (salePrice - vehiclePrice) * commissionMultiplier, 0)
+                            local dealerRecieves = exports['sandbox-base']:UtilsRound(salePrice - playerCommission, 0)
 
 
                             if type == 'full' then
@@ -243,12 +244,14 @@ function RegisterVehicleSaleCallbacks()
                                             math.tointeger(data.loanWeeks)
 
                                         if downPaymentPercent and loanWeeks and defaultInterestRate then
-                                            local downPayment = Utils:Round(salePrice * (downPaymentPercent / 100), 0)
+                                            local downPayment = exports['sandbox-base']:UtilsRound(
+                                            salePrice * (downPaymentPercent / 100), 0)
                                             local salePriceAfterDown = salePrice - downPayment
-                                            local afterInterest = Utils:Round(
+                                            local afterInterest = exports['sandbox-base']:UtilsRound(
                                                 salePriceAfterDown * (1 + (defaultInterestRate / 100)), 0)
 
-                                            local perWeek = Utils:Round(afterInterest / loanWeeks, 0)
+                                            local perWeek = exports['sandbox-base']:UtilsRound(afterInterest / loanWeeks,
+                                                0)
 
                                             if loanData.maxBorrowable >= salePriceAfterDown then
                                                 SendPendingLoanEmail({

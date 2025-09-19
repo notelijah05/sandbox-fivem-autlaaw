@@ -45,7 +45,7 @@ function OpenWheelMenu()
     if fitmentState and fitmentState?.frontTrack then
         currentFrontTrackWidth = fitmentState?.frontTrack
     else
-        currentFrontTrackWidth = Utils:Round(GetVehicleWheelXOffset(EDITING_VEHICLE, 1) * 2, 2)
+        currentFrontTrackWidth = exports['sandbox-base']:UtilsRound(GetVehicleWheelXOffset(EDITING_VEHICLE, 1) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Front Track Width', {
@@ -61,7 +61,7 @@ function OpenWheelMenu()
     if fitmentState and fitmentState?.rearTrack then
         currentRearTrackWidth = fitmentState?.rearTrack
     else
-        currentRearTrackWidth = Utils:Round(GetVehicleWheelXOffset(EDITING_VEHICLE, 3) * 2, 2)
+        currentRearTrackWidth = exports['sandbox-base']:UtilsRound(GetVehicleWheelXOffset(EDITING_VEHICLE, 3) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Rear Track Width', {
@@ -77,7 +77,7 @@ function OpenWheelMenu()
     if fitmentState and fitmentState?.rearTrack then
         currentWheelWidth = fitmentState?.rearTrack
     else
-        currentWheelWidth = Utils:Round(GetVehicleWheelWidth(EDITING_VEHICLE), 2)
+        currentWheelWidth = exports['sandbox-base']:UtilsRound(GetVehicleWheelWidth(EDITING_VEHICLE), 2)
     end
 
     wheelMenu.Add:Slider('Wheel Width', {

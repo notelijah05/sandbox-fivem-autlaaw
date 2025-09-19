@@ -32,7 +32,8 @@ AddEventHandler("Mechanic:Client:RunDiagnostics", function(entityData)
 					},
 					{
 						label = "Vehicle Mileage",
-						description = (vehEnt.state.Mileage and Utils:Round(vehEnt.state.Mileage, 2) or 0) .. " Miles",
+						description = (vehEnt.state.Mileage and exports['sandbox-base']:UtilsRound(vehEnt.state.Mileage, 2) or 0) ..
+						" Miles",
 						event = false,
 					},
 				},
@@ -66,7 +67,7 @@ AddEventHandler("Mechanic:Client:RunDiagnostics", function(entityData)
 
 				table.insert(menu.main.items, {
 					label = v,
-					description = Utils:Round(vehDamage[k], 2) .. "%",
+					description = exports['sandbox-base']:UtilsRound(vehDamage[k], 2) .. "%",
 					event = false,
 				})
 

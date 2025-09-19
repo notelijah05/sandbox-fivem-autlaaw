@@ -305,7 +305,7 @@ AddEventHandler("Laptop:Client:LSUnderground:Boosting:AttemptExterior", function
 
                                 Entity(ped).state:set('crimePed', true, true)
 
-                                local w = Utils:WeightedRandom(availableWeapons)
+                                local w = exports['sandbox-base']:UtilsWeightedRandom(availableWeapons)
                                 GiveWeaponToPed(ped, w, 99999, false, true)
                                 SetCurrentPedWeapon(ped, w, true)
 
@@ -428,7 +428,7 @@ function RegisterBoostingCallbacks()
                     hackData.rows,
                     math.random(hackData.lengthMin, hackData.lengthMax),
                     hackData.charSize,
-                    Utils:WeightedRandom(hackData.charSet), {
+                    exports['sandbox-base']:UtilsWeightedRandom(hackData.charSet), {
                         onSuccess = function()
                             BoostingTrackerCooldown()
                             cb(true, true)

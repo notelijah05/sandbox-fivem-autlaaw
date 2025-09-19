@@ -7,14 +7,12 @@ local polyDebug = false
 AddEventHandler("Polyzone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Game = exports["sandbox-base"]:FetchComponent("Game")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Polyzone", {
 		"Game",
-		"Utils",
 		"Polyzone",
 	}, function(error)
 		if #error > 0 then

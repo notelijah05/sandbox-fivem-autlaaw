@@ -22,7 +22,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -33,7 +32,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Notification",
 		"Action",
 		"Vehicles",
-		"Utils",
 		"Progress",
 		"Polyzone",
 		"Blips",
@@ -193,7 +191,7 @@ function RunFuelTick(veh)
 	if veh and IsVehicleEngineOn(veh) then
 		local vehState = Entity(veh).state
 		if type(vehState.Fuel) == "number" then
-			local vehRPM = Utils:Round(GetVehicleCurrentRpm(veh), 1)
+			local vehRPM = exports['sandbox-base']:UtilsRound(GetVehicleCurrentRpm(veh), 1)
 			local classUsage = Config.Classes[GetVehicleClass(veh)] or 1.0
 
 			local consumption = ((Config.Usage * Config.FuelUsage[vehRPM]) * classUsage) / 10
@@ -202,7 +200,7 @@ function RunFuelTick(veh)
 				consumption = consumption + 3.0
 			end
 
-			local newVal = Utils:Round(vehState.Fuel - consumption, 2)
+			local newVal = exports['sandbox-base']:UtilsRound(vehState.Fuel - consumption, 2)
 
 			if newVal <= 0.0 then
 				newVal = 0.0

@@ -16,7 +16,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Inventory.Items:Has(char:GetData("SID"), 1, "uwu_prize_box", 1) then
 			if Inventory.Items:RemoveSlot(item.Owner, "uwu_prize_box", 1, item.Slot, 1) then
-				local prize = Utils:WeightedRandom(_uwuPrizes)
+				local prize = exports['sandbox-base']:UtilsWeightedRandom(_uwuPrizes)
 				Inventory:AddItem(char:GetData("SID"), prize, 1, {}, 1)
 			end
 		end

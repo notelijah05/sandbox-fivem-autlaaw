@@ -194,7 +194,6 @@ function PoliceComponents()
 	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
@@ -220,7 +219,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Sync",
 		"Polyzone",
 		"Vehicles",
-		"Utils",
 		"UISounds",
 		"Doors",
 	}, function(error)

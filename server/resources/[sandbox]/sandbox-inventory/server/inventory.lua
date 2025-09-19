@@ -158,7 +158,6 @@ end
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -180,7 +179,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Sequence",
-		"Utils",
 		"Inventory",
 		"Chat",
 		"Wallet",
@@ -3465,7 +3463,7 @@ function UpdateCharacterItemStates(source, inventory, adding)
 
 	if adding then
 		for item, itemState in pairs(allInventoryStates) do
-			if not Utils:DoesTableHaveValue(playerStates, itemState) then
+			if not exports['sandbox-base']:UtilsDoesTableHaveValue(playerStates, itemState) then
 				table.insert(playerStates, itemState)
 				changedState = true
 			end
@@ -3475,7 +3473,7 @@ function UpdateCharacterItemStates(source, inventory, adding)
 	local s = {}
 	for i = #playerStates, 1, -1 do
 		if
-			not Utils:DoesTableHaveValue(allInventoryStates, playerStates[i])
+			not exports['sandbox-base']:UtilsDoesTableHaveValue(allInventoryStates, playerStates[i])
 			and string.sub(playerStates[i], 1, string.len("SCRIPT")) ~= "SCRIPT"
 			and string.sub(playerStates[i], 1, string.len("ACCESS")) ~= "ACCESS"
 		then
@@ -3504,7 +3502,7 @@ function UpdateCharacterGangChain(source, inventory)
 	end
 
 	local myGangChain = char:GetData("GangChain") or nil
-	if myGangChain ~= nil and not Utils:DoesTableHaveValue(gangChains, myGangChain) then
+	if myGangChain ~= nil and not exports['sandbox-base']:UtilsDoesTableHaveValue(gangChains, myGangChain) then
 		char:SetData("GangChain", "NONE")
 	end
 end

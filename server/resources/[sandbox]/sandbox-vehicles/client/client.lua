@@ -19,7 +19,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -60,7 +59,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vehicles",
 		"Blips",
 		"Menu",
-		"Utils",
 		"Minigame",
 		"Keybinds",
 		"Targeting",
@@ -308,7 +306,8 @@ AddEventHandler("Core:Shared:Ready", function()
 								local vehEnt = Entity(VEHICLE_INSIDE)
 								if vehEnt and vehEnt.state and vehEnt.state.Nitrous then
 									Notification:Standard(
-										"Nitrous Remaining: " .. Utils:Round(vehEnt.state.Nitrous, 2) .. "%",
+										"Nitrous Remaining: " ..
+										exports['sandbox-base']:UtilsRound(vehEnt.state.Nitrous, 2) .. "%",
 										10000
 									)
 								end

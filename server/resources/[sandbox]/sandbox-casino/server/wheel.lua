@@ -139,7 +139,7 @@ function GenerateWheelPrize()
         table.insert(prizes, { 5, { slice = 19, type = "vehicle", bigWin = true } })
     end
 
-    local randomPrize = Utils:WeightedRandom(prizes)
+    local randomPrize = exports['sandbox-base']:UtilsWeightedRandom(prizes)
 
     if randomPrize.bigWin then
         Casino.Config:Set("wheel-accumulator", 0)

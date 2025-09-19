@@ -19,7 +19,6 @@ end
 
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Loot = exports["sandbox-base"]:FetchComponent("Loot")
@@ -164,7 +163,7 @@ end
 
 function GetFormattedTimeFromSeconds(seconds)
 	local days = 0
-	local hours = Utils:Round(seconds / 3600, 0)
+	local hours = exports['sandbox-base']:UtilsRound(seconds / 3600, 0)
 	if hours >= 24 then
 		days = math.floor(hours / 24)
 		hours = math.ceil(hours - (days * 24))
@@ -188,7 +187,7 @@ function GetFormattedTimeFromSeconds(seconds)
 			timeString = string.format("%d %s", hours, dumbFuckingShitCuntFucker("hour", hours))
 		end
 	else
-		local minutes = Utils:Round(seconds / 60, 0)
+		local minutes = exports['sandbox-base']:UtilsRound(seconds / 60, 0)
 		timeString = string.format("%d %s", minutes, dumbFuckingShitCuntFucker("minute", minutes))
 	end
 	return timeString
@@ -196,7 +195,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"Utils",
 		"Middleware",
 		"Inventory",
 		"Loot",

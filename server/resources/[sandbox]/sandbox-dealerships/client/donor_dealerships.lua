@@ -32,7 +32,7 @@ AddEventHandler("DonorDealer:Client:Open", function(entityData, data)
 
     local fData = FormatDealerStockToCategories(data.stock)
 
-    local orderedCategories = Utils:GetTableKeys(_catalogCategories)
+    local orderedCategories = exports['sandbox-base']:UtilsGetTableKeys(_catalogCategories)
     table.sort(orderedCategories, function(a, b)
       return _catalogCategories[a] < _catalogCategories[b]
     end)

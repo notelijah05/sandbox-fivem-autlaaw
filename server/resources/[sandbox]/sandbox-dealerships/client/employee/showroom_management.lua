@@ -78,7 +78,7 @@ function StartSettingShowroomPosition(stockData, dealerId, position, positionVeh
         end)
     end
 
-    local orderedCategories = Utils:GetTableKeys(_catalogCategories)
+    local orderedCategories = exports['sandbox-base']:UtilsGetTableKeys(_catalogCategories)
     table.sort(orderedCategories, function(a, b)
         return _catalogCategories[a] < _catalogCategories[b]
     end)

@@ -50,7 +50,7 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
             heading = GetEntityHeading(creationHelperEntity),
         }
 
-        Utils:Print(data)
+        exports['sandbox-base']:UtilsPrint(data)
         TriggerServerEvent('Doors:Server:PrintDoor', data)
         Notification:Success('Saved Door To File')
         creationHelper = false

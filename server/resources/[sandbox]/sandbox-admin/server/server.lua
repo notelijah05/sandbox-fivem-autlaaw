@@ -1,6 +1,5 @@
 AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -16,7 +15,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Admin", {
-		"Utils",
 		"Jobs",
 		"Punishment",
 		"Chat",

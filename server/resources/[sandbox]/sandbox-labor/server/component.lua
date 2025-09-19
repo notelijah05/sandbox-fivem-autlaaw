@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Middleware",
 		"Execute",
 		"Generator",
-		"Utils",
 		"Phone",
 		"Wallet",
 		"Inventory",

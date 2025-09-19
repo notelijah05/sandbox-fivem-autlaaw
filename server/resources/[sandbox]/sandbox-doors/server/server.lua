@@ -4,7 +4,6 @@ ELEVATOR_CACHE = {}
 
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -16,7 +15,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Utils",
 		"Chat",
 		"Inventory",
 		"Jobs",
@@ -321,11 +319,11 @@ function GetDoorOutput(data)
 
 	printout = printout
 		.. "\n\tcoords = vector3("
-		.. tostring(Utils:Round(data.coords.x, 2))
+		.. tostring(exports['sandbox-base']:UtilsRound(data.coords.x, 2))
 		.. ", "
-		.. tostring(Utils:Round(data.coords.y, 2))
+		.. tostring(exports['sandbox-base']:UtilsRound(data.coords.y, 2))
 		.. ", "
-		.. tostring(Utils:Round(data.coords.z, 2))
+		.. tostring(exports['sandbox-base']:UtilsRound(data.coords.z, 2))
 		.. "),"
 	printout = printout .. "\n}\n\n"
 	return printout

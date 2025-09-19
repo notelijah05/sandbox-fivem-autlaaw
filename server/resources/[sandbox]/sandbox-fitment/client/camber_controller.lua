@@ -45,7 +45,7 @@ function OpenControllerMenu()
     if fitmentState and fitmentState?.frontCamber then
         currentFrontCamberWidth = fitmentState?.frontCamber
     else
-        currentFrontCamberWidth = Utils:Round(GetVehicleWheelYRotation(EDITING_VEHICLE, 1) * 2, 2)
+        currentFrontCamberWidth = exports['sandbox-base']:UtilsRound(GetVehicleWheelYRotation(EDITING_VEHICLE, 1) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Front Track Camber', {
@@ -61,7 +61,7 @@ function OpenControllerMenu()
     if fitmentState and fitmentState?.rearCamber then
         currentRearCamberWidth = fitmentState?.rearCamber
     else
-        currentRearCamberWidth = Utils:Round(GetVehicleWheelYRotation(EDITING_VEHICLE, 3) * 2, 2)
+        currentRearCamberWidth = exports['sandbox-base']:UtilsRound(GetVehicleWheelYRotation(EDITING_VEHICLE, 3) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Rear Track Camber', {

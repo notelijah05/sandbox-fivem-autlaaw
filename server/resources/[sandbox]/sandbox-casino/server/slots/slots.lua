@@ -107,16 +107,16 @@ AddEventHandler("Casino:Server:Startup", function()
 
                         local time = math.random(3, 5) * 1000
                         local sound = "no_win"
-                        local reel1 = Utils:WeightedRandom(slotRandom)
-                        local reel2 = Utils:WeightedRandom(slotRandom)
-                        local reel3 = Utils:WeightedRandom(slotRandom)
+                        local reel1 = exports['sandbox-base']:UtilsWeightedRandom(slotRandom)
+                        local reel2 = exports['sandbox-base']:UtilsWeightedRandom(slotRandom)
+                        local reel3 = exports['sandbox-base']:UtilsWeightedRandom(slotRandom)
 
                         local tripleChance = math.random(100)
                         local canHaveTriple = (tripleChance >= 60 and tripleChance <= 69)
 
                         if not canHaveTriple or slotValues[reel3] == "7" then
                             while slotValues[reel3] == slotValues[reel2] do
-                                reel3 = Utils:WeightedRandom(slotRandom)
+                                reel3 = exports['sandbox-base']:UtilsWeightedRandom(slotRandom)
                                 Wait(5)
                             end
                         end

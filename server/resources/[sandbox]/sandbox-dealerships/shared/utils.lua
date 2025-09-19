@@ -1,9 +1,9 @@
 function table.copy(t)
-	local u = {}
-	for k, v in pairs(t) do
-		u[k] = v
-	end
-	return setmetatable(u, getmetatable(t))
+    local u = {}
+    for k, v in pairs(t) do
+        u[k] = v
+    end
+    return setmetatable(u, getmetatable(t))
 end
 
 function FormatDealerStockToCategories(stockData)
@@ -14,11 +14,11 @@ function FormatDealerStockToCategories(stockData)
     if type(stockData) == 'table' and #stockData > 0 then
         for k, v in ipairs(stockData) do
             local category = (v.data.category and _catalogCategories[v.data.category]) and v.data.category or 'misc'
-    
+
             if not sortedVehicles[category] then
                 sortedVehicles[category] = {}
             end
-    
+
             table.insert(sortedVehicles[category], {
                 vehicle = v.vehicle,
                 quantity = v.quantity,
@@ -30,7 +30,7 @@ function FormatDealerStockToCategories(stockData)
                 lastStocked = v.lastStocked,
                 lastPurchase = v.lastPurchase,
             })
-            
+
             totalVehicles = totalVehicles + 1
             totalQuantity = totalQuantity + v.quantity
         end
@@ -58,7 +58,7 @@ end
 
 function GetFormattedTimeFromSeconds(seconds)
     local days = 0
-    local hours = Utils:Round(seconds / 3600, 0)
+    local hours = exports['sandbox-base']:UtilsRound(seconds / 3600, 0)
     if hours >= 24 then
         days = math.floor(hours / 24)
         hours = math.ceil(hours - (days * 24))
@@ -68,7 +68,8 @@ function GetFormattedTimeFromSeconds(seconds)
     if days > 0 or hours > 0 then
         if days > 1 then
             if hours > 0 then
-                timeString = string.format('%d %s and %d %s', days, dumbFuckingShitCuntFucker('day', days), hours, dumbFuckingShitCuntFucker('hour', hours))
+                timeString = string.format('%d %s and %d %s', days, dumbFuckingShitCuntFucker('day', days), hours,
+                    dumbFuckingShitCuntFucker('hour', hours))
             else
                 timeString = string.format('%d %s', days, dumbFuckingShitCuntFucker('day', days))
             end
@@ -76,7 +77,7 @@ function GetFormattedTimeFromSeconds(seconds)
             timeString = string.format('%d %s', hours, dumbFuckingShitCuntFucker('hour', hours))
         end
     else
-        local minutes = Utils:Round(seconds / 60, 0)
+        local minutes = exports['sandbox-base']:UtilsRound(seconds / 60, 0)
         timeString = string.format('%d %s', minutes, dumbFuckingShitCuntFucker('minute', minutes))
     end
     return timeString

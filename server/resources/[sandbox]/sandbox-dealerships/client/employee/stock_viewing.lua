@@ -24,13 +24,13 @@ function ViewDealershipStocks(dealerId)
                     function()
 
                     end, function()
-                    stockViewing = nil
-                    stockViewingSub = nil
-                    collectgarbage()
-                end)
+                        stockViewing = nil
+                        stockViewingSub = nil
+                        collectgarbage()
+                    end)
                 --stockViewing.Add:Text(string.format('There are %s different models of vehicle, totalling %s vehicles', stockData.total, stockData.totalQuantity), { 'pad', 'center', 'code' })
 
-                local orderedCategories = Utils:GetTableKeys(_catalogCategories)
+                local orderedCategories = exports['sandbox-base']:UtilsGetTableKeys(_catalogCategories)
                 table.sort(orderedCategories, function(a, b)
                     return _catalogCategories[a] < _catalogCategories[b]
                 end)
@@ -63,7 +63,9 @@ function ViewDealershipStocks(dealerId)
                                 _catalogCategories[v.category],
                                 v.price and '$' .. formatNumberToCurrency(v.price) or '$?',
                                 v.price and
-                                '$' .. formatNumberToCurrency(math.floor(Utils:Round(v.price * saleMultiplier, 0))) or
+                                '$' ..
+                                formatNumberToCurrency(math.floor(exports['sandbox-base']:UtilsRound(
+                                v.price * saleMultiplier, 0))) or
                                 '$?',
                                 (v.lastPurchased and GetFormattedTimeFromSeconds(serverTime - v.lastPurchased) .. ' ago.' or 'Never'),
                                 GetFormattedTimeFromSeconds(serverTime - v.lastStocked) .. ' ago.',

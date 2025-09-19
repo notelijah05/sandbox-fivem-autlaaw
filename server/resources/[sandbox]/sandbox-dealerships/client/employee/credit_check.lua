@@ -33,7 +33,7 @@ AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
                         of %s.
                     ]],
                     values.SID,
-                    formatNumberToCurrency(math.floor(Utils:Round(result, 0))),
+                    formatNumberToCurrency(math.floor(exports['sandbox-base']:UtilsRound(result, 0))),
                     score
                 ),
                 {},

@@ -30,7 +30,6 @@ function RetrieveComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
@@ -46,7 +45,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Progress",
 		"VOIP",
 		"Keybinds",
-		"Utils",
 		"Sounds",
 		"Jobs",
 		"Weapons",
@@ -232,7 +230,7 @@ function SendUpdates()
 			frequency = RADIO_FREQUENCY,
 			frequencyName = RADIO_FREQUENCY_NAME,
 			power = RADIO_POWER,
-			volume = Utils:Round(RADIO_VOLUME, 0),
+			volume = exports['sandbox-base']:UtilsRound(RADIO_VOLUME, 0),
 			type = HAS_RADIO,
 			typeName = radioNames[HAS_RADIO] or "Radio",
 		},
@@ -467,7 +465,7 @@ end
 function SetRadioChannelFromInput(input)
 	if input ~= RADIO_FREQUENCY and HAS_RADIO then
 		Sounds.Do.Play:One("radioclick.ogg", 0.5 * (RADIO_CLICKS_VOLUME / 100))
-		SetCharacterRadioFrequency(Utils:Round(tonumber(input) or 0, 1))
+		SetCharacterRadioFrequency(exports['sandbox-base']:UtilsRound(tonumber(input) or 0, 1))
 	end
 end
 

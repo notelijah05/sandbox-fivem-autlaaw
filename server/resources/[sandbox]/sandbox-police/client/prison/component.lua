@@ -19,7 +19,6 @@ function CorrectionsComponents()
 	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -43,7 +42,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Sync",
 		"Polyzone",
 		"Vehicles",
-		"Utils",
 	}, function(error)
 		if #error > 0 then
 			return

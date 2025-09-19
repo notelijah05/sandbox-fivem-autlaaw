@@ -1,12 +1,10 @@
 AddEventHandler("Fitment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Fitment", {
-		"Utils",
 		"Inventory",
 	}, function(error)
 		if #error > 0 then

@@ -52,7 +52,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			if not _salvaging[_joiners[source]].entities[data] then
 				_salvaging[_joiners[source]].entities[data] = true
 
-				local randomLoot = Utils:WeightedRandom(_lootTable)
+				local randomLoot = exports['sandbox-base']:UtilsWeightedRandom(_lootTable)
 				Inventory:AddItem(char:GetData("SID"), randomLoot.item, math.random(randomLoot.max), {}, 1)
 				-- local luck = math.random(100)
 				-- if luck == 100 then

@@ -17,7 +17,6 @@ attachedProps = {}
 
 AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
@@ -34,7 +33,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
-		"Utils",
 		"UISounds",
 		"Blips",
 		"Notification",

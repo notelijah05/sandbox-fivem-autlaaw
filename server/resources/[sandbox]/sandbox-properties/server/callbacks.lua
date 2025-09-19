@@ -403,11 +403,12 @@ function RegisterCallbacks()
 									local downPaymentPercent, loanWeeks = math.tointeger(data.deposit),
 										math.tointeger(data.time)
 									if downPaymentPercent and loanWeeks then
-										local downPayment = Utils:Round(prop.price * (downPaymentPercent / 100), 0)
+										local downPayment = exports['sandbox-base']:UtilsRound(
+										prop.price * (downPaymentPercent / 100), 0)
 										local salePriceAfterDown = prop.price - downPayment
-										local afterInterest = Utils:Round(
+										local afterInterest = exports['sandbox-base']:UtilsRound(
 											salePriceAfterDown * (1 + (defaultInterestRate / 100)), 0)
-										local perWeek = Utils:Round(afterInterest / loanWeeks, 0)
+										local perWeek = exports['sandbox-base']:UtilsRound(afterInterest / loanWeeks, 0)
 
 										if loanData.maxBorrowable >= salePriceAfterDown then
 											SendPendingLoanEmail({

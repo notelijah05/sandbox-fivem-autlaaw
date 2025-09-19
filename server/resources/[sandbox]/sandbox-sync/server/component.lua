@@ -54,7 +54,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Sync", {
-		"Utils",
 		"Chat",
 		"Status",
 		"Inventory",

@@ -39,7 +39,6 @@ function RetrieveComponents()
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -51,7 +50,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Notification",
 		"Hud",
 		"Keybinds",
-		"Utils",
 		"Sounds",
 		"Animations",
 		"Polyzone",

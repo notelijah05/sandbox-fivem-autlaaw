@@ -1,6 +1,5 @@
 AddEventHandler("Apartments:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -10,7 +9,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Mechanic", {
-		"Utils",
 		"Mechanic",
 		"Jobs",
 		"Inventory",

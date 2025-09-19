@@ -1,12 +1,10 @@
 AddEventHandler("Loot:Shared:DependencyUpdate", LootComponents)
 function LootComponents()
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Loot", {
-		"Utils",
 		"Inventory",
 	}, function(error)
 		if #error > 0 then
@@ -36,7 +34,7 @@ _LOOT = {
 	-- 	{chance_num, item_name },
 	-- }
 	CustomWeightedSet = function(self, set, owner, invType)
-		local randomItem = Utils:WeightedRandom(set)
+		local randomItem = exports['sandbox-base']:UtilsWeightedRandom(set)
 		if randomItem then
 			return INVENTORY:AddItem(owner, randomItem, 1, {}, invType)
 		end
@@ -46,7 +44,7 @@ _LOOT = {
 	-- 	{chance_num, { name = item, max = max } },
 	-- }
 	CustomWeightedSetWithCount = function(self, set, owner, invType, dontAdd)
-		local randomItem = Utils:WeightedRandom(set)
+		local randomItem = exports['sandbox-base']:UtilsWeightedRandom(set)
 		if randomItem?.name and randomItem?.max then
 			if dontAdd then
 				return {
@@ -64,7 +62,7 @@ _LOOT = {
 	-- 	{chance_num, { name = item, max = max } },
 	-- }
 	CustomWeightedSetWithCountAndModifier = function(self, set, owner, invType, modifier, dontAdd)
-		local randomItem = Utils:WeightedRandom(set)
+		local randomItem = exports['sandbox-base']:UtilsWeightedRandom(set)
 		if randomItem?.name and randomItem?.max then
 			if dontAdd then
 				return {
@@ -79,7 +77,7 @@ _LOOT = {
 	end,
 	Sets = {
 		Gem = function(self, owner, invType)
-			local randomGem = Utils:WeightedRandom({
+			local randomGem = exports['sandbox-base']:UtilsWeightedRandom({
 				{ 5,  "diamond" },
 				{ 5,  "emerald" },
 				{ 5,  "sapphire" },
@@ -93,7 +91,7 @@ _LOOT = {
 		GemRandom = function(self, owner, invType, day)
 			local randomGem = nil
 			if day == 1 then
-				randomGem = Utils:WeightedRandom({
+				randomGem = exports['sandbox-base']:UtilsWeightedRandom({
 					{ 15, "diamond" },
 					{ 15, "emerald" },
 					{ 20, "sapphire" },
@@ -103,7 +101,7 @@ _LOOT = {
 					{ 50, "opal" },
 				})
 			else
-				randomGem = Utils:WeightedRandom({
+				randomGem = exports['sandbox-base']:UtilsWeightedRandom({
 					{ 5,  "diamond" },
 					{ 5,  "emerald" },
 					{ 5,  "sapphire" },
@@ -117,7 +115,7 @@ _LOOT = {
 			return INVENTORY:AddItem(owner, randomGem, 1, {}, invType)
 		end,
 		Ore = function(self, owner, invType, count)
-			local randomOre = Utils:WeightedRandom({
+			local randomOre = exports['sandbox-base']:UtilsWeightedRandom({
 				{ 12, "goldore" },
 				{ 18, "silverore" },
 				{ 50, "ironore" },

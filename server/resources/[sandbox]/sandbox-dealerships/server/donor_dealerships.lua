@@ -95,10 +95,11 @@ function RegisterDonorVehicleSaleCallbacks()
               local vehiclePrice = saleVehicleData.data.price
               local priceMultiplier = 1 + (profitPercent / 100)
               local commissionMultiplier = (commissionPercent / 100)
-              local salePrice = Utils:Round(vehiclePrice * priceMultiplier, 0)
+              local salePrice = exports['sandbox-base']:UtilsRound(vehiclePrice * priceMultiplier, 0)
 
-              local playerCommission = Utils:Round((salePrice - vehiclePrice) * commissionMultiplier, 0)
-              local dealerRecieves = Utils:Round(salePrice - playerCommission, 0)
+              local playerCommission = exports['sandbox-base']:UtilsRound(
+              (salePrice - vehiclePrice) * commissionMultiplier, 0)
+              local dealerRecieves = exports['sandbox-base']:UtilsRound(salePrice - playerCommission, 0)
 
               local removeSuccess = nil
               if _donorDealerships[data.dealer].flags.depleteStockOnPurchase then

@@ -58,7 +58,6 @@ end)
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 
 function RetrieveComponents()
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Photos = exports["sandbox-base"]:FetchComponent("Photos")
@@ -88,7 +87,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Utils",
 		"Chat",
 		"Phone",
 		"Middleware",

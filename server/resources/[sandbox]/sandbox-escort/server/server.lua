@@ -2,7 +2,6 @@ AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
@@ -12,7 +11,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
 		"Middleware",
 		"Execute",
-		"Utils",
 		"Jobs",
 		"Chat",
 		"Escort",

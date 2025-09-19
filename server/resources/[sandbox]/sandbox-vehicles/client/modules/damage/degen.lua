@@ -51,7 +51,7 @@ function RunVehiclePartsDamage(veh, isRandom, damageAmount, destroyed)
             for k, v in pairs(randomPartDamageMults) do
                 local requiredSpeed = partDamageRequiredSpeed[k] or 0.0
                 if vehSpeed >= requiredSpeed then
-                    local newDamage = Utils:Round((currentDamage[k] - (v * speedMult)), 3)
+                    local newDamage = exports['sandbox-base']:UtilsRound((currentDamage[k] - (v * speedMult)), 3)
                     if newDamage <= 0.0 then
                         newDamage = 0.0
                     end
@@ -65,7 +65,7 @@ function RunVehiclePartsDamage(veh, isRandom, damageAmount, destroyed)
             if damageAmount then
                 local damageMult = (100 + damageAmount) / 100
                 for k, v in pairs(damagePartDamageMults) do
-                    local newDamage = Utils:Round((currentDamage[k] - (v * damageMult)), 3)
+                    local newDamage = exports['sandbox-base']:UtilsRound((currentDamage[k] - (v * damageMult)), 3)
                     if newDamage <= 0.0 then
                         newDamage = 0.0
                     end
@@ -75,7 +75,7 @@ function RunVehiclePartsDamage(veh, isRandom, damageAmount, destroyed)
                     'Running Collision Damage Degen - Data: ' .. json.encode(currentDamage))
             elseif destroyed then
                 for k, v in pairs(onDestroyPartDamage) do
-                    local newDamage = Utils:Round((currentDamage[k] - v), 3)
+                    local newDamage = exports['sandbox-base']:UtilsRound((currentDamage[k] - v), 3)
                     if newDamage <= 0.0 then
                         newDamage = 0.0
                     end

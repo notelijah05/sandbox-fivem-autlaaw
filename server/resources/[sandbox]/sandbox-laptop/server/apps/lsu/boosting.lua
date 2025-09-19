@@ -793,7 +793,7 @@ LAPTOP.LSUnderground.Boosting = {
                 level = 1
             end
 
-            local boostingClass = Utils:WeightedRandom(_boostingRepToClassChances[level])
+            local boostingClass = exports['sandbox-base']:UtilsWeightedRandom(_boostingRepToClassChances[level])
 
             if not BOOSTING_VEHICLE_CONFIG[boostingClass] then
                 return false

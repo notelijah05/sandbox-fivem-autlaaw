@@ -1,7 +1,6 @@
 AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
 function RetrieveWardrobeComponents()
 	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Confirm = exports["sandbox-base"]:FetchComponent("Confirm")
@@ -12,7 +11,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("ListMenu", {
 		"Notification",
-		"Utils",
 		"ListMenu",
 		"Input",
 		"Confirm",

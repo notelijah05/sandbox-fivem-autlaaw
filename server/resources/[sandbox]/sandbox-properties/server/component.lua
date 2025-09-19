@@ -16,7 +16,6 @@ function RetrieveComponents()
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	RegisterChatCommands()
 end
 
@@ -36,7 +35,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Banking",
 		"Loans",
 		"Billing",
-		"Utils",
 	}, function(error)
 		if #error > 0 then
 			return
