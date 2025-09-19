@@ -98,15 +98,12 @@ function doLog(level, component, log, flags, data)
 
 		if databaseReady then
 			if GlobalState.IsProduction and flags.database then
-				exports['sandbox-base']:DatabaseGameInsertOne({
-					collection = "logs",
-					document = {
-						date = os.time(),
-						level = level,
-						component = component,
-						log = log,
-						data = data,
-					},
+				exports.oxmysql:insert('INSERT INTO logs (date, level, component, log, data) VALUES (?, ?, ?, ?, ?)', {
+					os.time(),
+					level,
+					component,
+					log,
+					json.encode(data or {})
 				})
 			end
 		end
