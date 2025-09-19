@@ -115,11 +115,12 @@ end
 
 function SetDealerShowroomVehicleAtPosition(dealerId, position, vehData)
     local playerCoords = GetEntityCoords(PlayerPedId())
-    Game.Vehicles:SpawnLocal(vector3(playerCoords.x, playerCoords.y, playerCoords.z - 20.0), vehData.vehicle, 100,
+    exports['sandbox-base']:GameVehiclesSpawnLocal(vector3(playerCoords.x, playerCoords.y, playerCoords.z - 20.0),
+        vehData.vehicle, 100,
         function(vehicle)
             FreezeEntityPosition(vehicle, true)
             local vehProperties = Vehicles.Properties:Get(vehicle)
-            Game.Vehicles:Delete(vehicle)
+            exports['sandbox-base']:GameVehiclesDelete(vehicle)
             vehProperties.mods = nil
             vehProperties.neonEnabled = nil
 

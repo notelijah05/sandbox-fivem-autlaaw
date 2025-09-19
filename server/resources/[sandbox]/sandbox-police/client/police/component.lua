@@ -645,7 +645,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					and not LocalPlayer.state.playingCasino
 				then
 					if GetEntitySpeed(LocalPlayer.state.ped) > 2.0 then
-						local cPlayer, dist = Game.Players:GetClosestPlayer()
+						local cPlayer, dist = exports['sandbox-base']:GamePlayersGetClosestPlayer()
 						local tarPlayer = GetPlayerServerId(cPlayer)
 						if tarPlayer ~= 0 and dist <= 2.0 and GetGameTimer() - lastTackle > 7000 then
 							lastTackle = GetGameTimer()

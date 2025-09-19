@@ -236,7 +236,7 @@ end
 function CleanupTempVehicle()
     for k, v in pairs(_tempVehicles) do
         if DoesEntityExist(v) then
-            Game.Vehicles:Delete(v)
+            exports['sandbox-base']:GameVehiclesDelete(v)
             _tempVehicles[k] = nil
         end
     end
@@ -519,22 +519,23 @@ AddEventHandler("Vehicles:Client:Storage:Select", function(data)
         if tempParkingSpace and vehicle then
             loadingVehicleStorageVehicle = true
 
-            Game.Vehicles:SpawnLocal(tempParkingSpace.xyz, vehicle.Vehicle, tempParkingSpace.w, function(veh)
-                table.insert(_tempVehicles, veh)
+            exports['sandbox-base']:GameVehiclesSpawnLocal(tempParkingSpace.xyz, vehicle.Vehicle, tempParkingSpace.w,
+                function(veh)
+                    table.insert(_tempVehicles, veh)
 
-                FreezeEntityPosition(veh, true)
-                SetEntityAlpha(veh, 155)
-                SetVehicleDoorsLocked(veh, 2)
-                if vehicle.Properties then
-                    SetVehicleProperties(veh, vehicle.Properties)
-                end
-                SetEntityCollision(veh, false, true)
-                if vehicle.RegisteredPlate then
-                    SetVehicleNumberPlateText(veh, vehicle.RegisteredPlate)
-                end
+                    FreezeEntityPosition(veh, true)
+                    SetEntityAlpha(veh, 155)
+                    SetVehicleDoorsLocked(veh, 2)
+                    if vehicle.Properties then
+                        SetVehicleProperties(veh, vehicle.Properties)
+                    end
+                    SetEntityCollision(veh, false, true)
+                    if vehicle.RegisteredPlate then
+                        SetVehicleNumberPlateText(veh, vehicle.RegisteredPlate)
+                    end
 
-                loadingVehicleStorageVehicle = false
-            end)
+                    loadingVehicleStorageVehicle = false
+                end)
         end
 
         local subMenu = {

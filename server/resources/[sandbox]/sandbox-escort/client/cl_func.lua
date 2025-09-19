@@ -4,7 +4,7 @@ local _gJobs = {
 }
 
 function DoEscort()
-	local cPlayer, Dist = Game.Players:GetClosestPlayer()
+	local cPlayer, Dist = exports['sandbox-base']:GamePlayersGetClosestPlayer()
 	local tarPlayer = GetPlayerServerId(cPlayer)
 	local closeDist = 1
 	if IsPedSwimming(LocalPlayer.state.ped) then

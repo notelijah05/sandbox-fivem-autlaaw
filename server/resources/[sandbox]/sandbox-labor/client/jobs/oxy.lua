@@ -58,7 +58,7 @@ AddEventHandler("Labor:Client:Setup", function()
         end
 
         local lol = {}
-        Game.Vehicles:Spawn(spawn, data.veh, heading, function(vehicle)
+        exports['sandbox-base']:GameVehiclesSpawn(spawn, data.veh, heading, function(vehicle)
             print('oxy vehicle: ', vehicle)
             if vehicle and DoesEntityExist(vehicle) then
                 SetVehicleDoorsLockedForAllPlayers(vehicle, true)

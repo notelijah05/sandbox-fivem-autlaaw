@@ -9,7 +9,7 @@ function SpawnShowroom(id)
         local spawnVehicles = {}
         for slot, data in pairs(GlobalState.DealershipShowrooms[id]) do
             local spawnPoint = _dealerships[id].showroom[tonumber(slot)]
-            Game.Vehicles:SpawnLocal(spawnPoint.xyz, data.vehicle, spawnPoint.w, function(veh)
+            exports['sandbox-base']:GameVehiclesSpawnLocal(spawnPoint.xyz, data.vehicle, spawnPoint.w, function(veh)
                 if not SHOWROOM_CACHE[id] then
                     SHOWROOM_CACHE[id] = {}
                 end
@@ -34,7 +34,7 @@ end
 function DeleteShowroom(id)
     if SHOWROOM_CACHE[id] then
         for k, v in pairs(SHOWROOM_CACHE[id]) do
-            Game.Vehicles:Delete(v)
+            exports['sandbox-base']:GameVehiclesDelete(v)
         end
         SHOWROOM_CACHE[id] = nil
     end

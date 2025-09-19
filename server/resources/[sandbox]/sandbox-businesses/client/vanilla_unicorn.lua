@@ -159,7 +159,7 @@ RegisterNetEvent('Businesses:Client:PoleDance', function(dance)
     local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
     for k, v in ipairs(poles) do
         if #(v - pedCoords) <= 1.5 then
-            local cPlayer, dist = Game.Players:GetClosestPlayer()
+            local cPlayer, dist = exports['sandbox-base']:GamePlayersGetClosestPlayer()
 
             if dist == -1 or dist > 1.5 then
                 local poleDance = poleDances[dance]

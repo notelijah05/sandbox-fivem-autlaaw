@@ -59,12 +59,12 @@ end
 function SetCatalogVehicle(veh)
 	if not veh or (veh and GetEntityModel(catalogVeh) ~= GetHashKey(veh)) then -- Delete the vehicle
 		if catalogVeh and DoesEntityExist(catalogVeh) then
-			Game.Vehicles:Delete(catalogVeh)
+			exports['sandbox-base']:GameVehiclesDelete(catalogVeh)
 			catalogVeh = false
 		end
 
 		if veh then
-			Game.Vehicles:SpawnLocal(_catalog.vehicle.xyz, veh, _catalog.vehicle.w, function(veh)
+			exports['sandbox-base']:GameVehiclesSpawnLocal(_catalog.vehicle.xyz, veh, _catalog.vehicle.w, function(veh)
 				catalogVeh = veh
 
 				table.insert(allSpawnedCatalogVehicles, veh)
@@ -106,7 +106,7 @@ function OpenCatalogMenu(catalogName)
 
 		for k, v in ipairs(allSpawnedCatalogVehicles) do
 			if DoesEntityExist(v) then
-				Game.Vehicles:Delete(v)
+				exports['sandbox-base']:GameVehiclesDelete(v)
 			end
 		end
 
