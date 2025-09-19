@@ -3,7 +3,7 @@ _managementData = {}
 DEALERSHIPS.Management = {
     LoadData = function(self)
         local p = promise.new()
-        Database.Game:find({
+        exports['sandbox-base']:DatabaseGameFind({
             collection = 'dealer_data',
             query = {}
         }, function(success, results)
@@ -38,7 +38,7 @@ DEALERSHIPS.Management = {
             dealerData[key] = val
 
             local p = promise.new()
-            Database.Game:updateOne({
+            exports['sandbox-base']:DatabaseGameUpdateOne({
                 collection = 'dealer_data',
                 query = {
                     dealership = dealerId,
@@ -73,7 +73,7 @@ DEALERSHIPS.Management = {
             end
 
             local p = promise.new()
-            Database.Game:updateOne({
+            exports['sandbox-base']:DatabaseGameUpdateOne({
                 collection = 'dealer_data',
                 query = {
                     dealership = dealerId,

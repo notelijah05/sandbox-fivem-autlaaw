@@ -1,6 +1,5 @@
 AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -14,7 +13,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
-		"Database",
 		"Utils",
 		"Callbacks",
 		"Chat",

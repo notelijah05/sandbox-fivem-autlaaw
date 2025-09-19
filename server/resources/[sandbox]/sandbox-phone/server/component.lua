@@ -96,7 +96,7 @@ function IsNumberInUse(number)
 	end
 
 	local p = promise.new()
-	Database.Game:findOne({
+	exports['sandbox-base']:DatabaseGameFindOne({
 		collection = "characters",
 		query = {
 			phone = number,

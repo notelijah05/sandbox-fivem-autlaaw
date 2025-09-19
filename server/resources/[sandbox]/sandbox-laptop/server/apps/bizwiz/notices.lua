@@ -1,5 +1,5 @@
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "business_notices",
 		query = {},
 	}, function(success, results)
@@ -44,7 +44,7 @@ LAPTOP.BizWiz.Notices = {
 				Last = char:GetData("Last"),
 			}
 
-			Database.Game:insertOne({
+			exports['sandbox-base']:DatabaseGameInsertOne({
 				collection = "business_notices",
 				document = data,
 			}, function(success, result, insertIds)
@@ -71,7 +71,7 @@ LAPTOP.BizWiz.Notices = {
 	end,
 	Delete = function(self, job, id)
 		local p = promise.new()
-		Database.Game:deleteOne({
+		exports['sandbox-base']:DatabaseGameDeleteOne({
 			collection = "business_notices",
 			query = {
 				_id = id,

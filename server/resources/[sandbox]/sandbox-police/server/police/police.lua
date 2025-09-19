@@ -5,7 +5,6 @@ local _generatedNames = {}
 
 AddEventHandler("Police:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -28,7 +27,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Database",
 		"Middleware",
 		"Callbacks",
 		"Logger",
@@ -530,7 +528,7 @@ POLICE = {
 		return false
 	end,
 	RunPlate = function(self, source, plate, wasEntity)
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "vehicles",
 			query = {
 				["$or"] = {

@@ -217,7 +217,7 @@ function StorageUnitStartup()
     if not _ran then
         _ran = true
 
-        Database.Game:find({
+        exports['sandbox-base']:DatabaseGameFind({
             collection = "storage_units",
             query = {},
         }, function(success, results)
@@ -262,7 +262,7 @@ _STORAGEUNITS = {
             passcode = "0000",
         }
 
-        Database.Game:insertOne({
+        exports['sandbox-base']:DatabaseGameInsertOne({
             collection = "storage_units",
             document = doc,
         }, function(success, result, insertedIds)
@@ -292,7 +292,7 @@ _STORAGEUNITS = {
         end
 
         local p = promise.new()
-        Database.Game:updateOne({
+        exports['sandbox-base']:DatabaseGameUpdateOne({
             collection = "storage_units",
             query = {
                 _id = id,
@@ -321,7 +321,7 @@ _STORAGEUNITS = {
     end,
     Delete = function(self, id)
         local p = promise.new()
-        Database.Game:deleteOne({
+        exports['sandbox-base']:DatabaseGameDeleteOne({
             collection = "storage_units",
             query = {
                 _id = id,
@@ -345,7 +345,7 @@ _STORAGEUNITS = {
     end,
     Sell = function(self, id, owner, seller)
         local p = promise.new()
-        Database.Game:updateOne({
+        exports['sandbox-base']:DatabaseGameUpdateOne({
             collection = "storage_units",
             query = {
                 _id = id,
@@ -438,7 +438,7 @@ end
 
 function SaveStorageUnitLastAccess()
     for k, v in pairs(unitLastAccessed) do
-        Database.Game:updateOne({
+        exports['sandbox-base']:DatabaseGameUpdateOne({
             collection = "storage_units",
             query = {
                 _id = k,

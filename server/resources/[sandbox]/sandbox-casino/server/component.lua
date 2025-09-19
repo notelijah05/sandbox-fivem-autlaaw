@@ -6,7 +6,6 @@ AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -28,7 +27,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Utils",
 		"Execute",
 		"Chat",
-		"Database",
 		"Middleware",
 		"Callbacks",
 		"Logger",
@@ -129,7 +127,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		Callbacks:RegisterServerCallback("Casino:GetBigWins", function(source, data, cb)
 			if Player(source).state.onDuty == "casino" then
-				Database.Game:find({
+				exports['sandbox-base']:DatabaseGameFind({
 					collection = "casino_bigwins",
 					query = {},
 				}, function(success, results)
@@ -165,7 +163,7 @@ function RunConfigStartup()
 	if not _configStartup then
 		_configStartup = true
 
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "casino_config",
 			query = {},
 		}, function(success, results)
@@ -216,7 +214,7 @@ _CASINO = {
 		Set = function(self, key, data)
 			local p = promise.new()
 
-			Database.Game:findOneAndUpdate({
+			exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
 				collection = "casino_config",
 				query = {
 					key = key,

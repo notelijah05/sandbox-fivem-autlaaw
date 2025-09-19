@@ -16,7 +16,7 @@ COMPONENTS.Default = {
             end
 
             _inserting[collection] = true
-            COMPONENTS.Database.Game:findOne({
+            exports['sandbox-base']:DatabaseGameFindOne({
                 collection = 'defaults',
                 query = {
                     collection = collection
@@ -29,7 +29,7 @@ COMPONENTS.Default = {
                 end
 
                 if #r == 0 or r[1].date < date then
-                    COMPONENTS.Database.Game:delete({
+                    exports['sandbox-base']:DatabaseGameDelete({
                         collection = collection,
                         query = {
                             default = true
@@ -42,7 +42,7 @@ COMPONENTS.Default = {
                             return
                         end
 
-                        COMPONENTS.Database.Game:insert({
+                        exports['sandbox-base']:DatabaseGameInsert({
                             collection = collection,
                             documents = data
                         }, function(s3, r3)
@@ -58,7 +58,7 @@ COMPONENTS.Default = {
 
                             if #r > 0 then qry._id = r[1]._id end
 
-                            COMPONENTS.Database.Game:updateOne({
+                            exports['sandbox-base']:DatabaseGameUpdateOne({
                                 collection = 'defaults',
                                 update = {
                                     ['$set'] = {
@@ -97,7 +97,7 @@ COMPONENTS.Default = {
             end
 
             _inserting[collection] = true
-            COMPONENTS.Database.Game:findOne({
+            exports['sandbox-base']:DatabaseGameFindOne({
                 collection = 'defaults',
                 query = {
                     collection = collection
@@ -110,7 +110,7 @@ COMPONENTS.Default = {
                 end
 
                 if #r == 0 or r[1].date < date then
-                    COMPONENTS.Database.Auth:delete({
+                    exports['sandbox-base']:DatabaseAuthDelete({
                         collection = collection,
                         query = {
                             default = true
@@ -123,7 +123,7 @@ COMPONENTS.Default = {
                             return
                         end
 
-                        COMPONENTS.Database.Auth:insert({
+                        exports['sandbox-base']:DatabaseAuthInsert({
                             collection = collection,
                             documents = data
                         }, function(s3, r3)
@@ -139,7 +139,7 @@ COMPONENTS.Default = {
 
                             if #r > 0 then qry._id = r[1]._id end
 
-                            COMPONENTS.Database.Game:updateOne({
+                            exports['sandbox-base']:DatabaseGameUpdateOne({
                                 collection = 'defaults',
                                 update = {
                                     ['$set'] = {

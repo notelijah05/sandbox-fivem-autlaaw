@@ -99,7 +99,7 @@ function IsVINOwned(vin)
 
 	local p = promise.new()
 
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "vehicles",
 		query = {
 			VIN = vin,
@@ -119,7 +119,7 @@ end
 function IsPlateOwned(plate)
 	local p = promise.new()
 
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "vehicles",
 		query = {
 			["$or"] = {

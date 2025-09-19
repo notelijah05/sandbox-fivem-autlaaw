@@ -9,7 +9,6 @@ AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Utils",
 		"Execute",
 		"Chat",
-		"Database",
 		"Middleware",
 		"Callbacks",
 		"Logger",
@@ -194,7 +192,7 @@ _SCENES = {
 			scene.text.text = SanitizeEmojis(scene.text.text)
 
 			local p = promise.new()
-			Database.Game:insertOne({
+			exports['sandbox-base']:DatabaseGameInsertOne({
 				collection = "scenes",
 				document = scene,
 			}, function(success, result, insertedIds)
@@ -244,7 +242,7 @@ _SCENES = {
 			newData._id = nil
 
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "scenes",
 				query = {
 					_id = id,
@@ -269,7 +267,7 @@ _SCENES = {
 	end,
 	Delete = function(self, id)
 		local p = promise.new()
-		Database.Game:deleteOne({
+		exports['sandbox-base']:DatabaseGameDeleteOne({
 			collection = "scenes",
 			query = {
 				_id = id,
@@ -319,7 +317,7 @@ function DeleteExpiredScenes(deleteRouted)
 		}
 	end
 
-	Database.Game:delete({
+	exports['sandbox-base']:DatabaseGameDelete({
 		collection = "scenes",
 		query = query,
 	}, function(success, deleted)
@@ -338,7 +336,7 @@ function LoadScenesFromDB()
 		_hasLoadedScenes = true
 		DeleteExpiredScenes(true)
 
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "scenes",
 			query = {},
 		}, function(success, results)

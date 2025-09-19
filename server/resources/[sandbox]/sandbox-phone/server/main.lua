@@ -58,7 +58,6 @@ end)
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 
 function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -91,7 +90,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Database",
 		"Callbacks",
 		"Logger",
 		"Utils",
@@ -344,7 +342,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					},
 				}
 			end
-			Database.Game:find({
+			exports['sandbox-base']:DatabaseGameFind({
 				collection = "characters",
 				query = query,
 			}, function(success, results)
@@ -361,7 +359,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						}
 					end
 
-					Database.Game:updateOne({
+					exports['sandbox-base']:DatabaseGameUpdateOne({
 						collection = "characters",
 						query = {
 							_id = char:GetData('ID'),

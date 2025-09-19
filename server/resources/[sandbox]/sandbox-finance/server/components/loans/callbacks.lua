@@ -1,7 +1,7 @@
 function GetCharactersLoans(stateId)
     local p = promise.new()
 
-    Database.Game:find({
+    exports['sandbox-base']:DatabaseGameFind({
         collection = 'loans',
         query = {
             SID = stateId,

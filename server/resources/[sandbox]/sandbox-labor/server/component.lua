@@ -1,6 +1,5 @@
 AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
@@ -32,7 +31,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
-		"Database",
 		"Middleware",
 		"Callbacks",
 		"Execute",

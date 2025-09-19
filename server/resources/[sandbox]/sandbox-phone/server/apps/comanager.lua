@@ -376,7 +376,7 @@ PHONE.CoManager = {
 			query.Jobs["$elemMatch"]["Grade.Id"] = gradeId
 		end
 
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "characters",
 			query = query,
 			options = {
@@ -460,7 +460,7 @@ PHONE.CoManager = {
 				},
 			}
 
-			Database.Game:find({
+			exports['sandbox-base']:DatabaseGameFind({
 				collection = "characters",
 				query = query,
 				options = {
@@ -506,7 +506,7 @@ PHONE.CoManager = {
 
 function GetOfflineCharacter(stateId)
 	local p = promise.new()
-	Database.Game:findOne({
+	exports['sandbox-base']:DatabaseGameFindOne({
 		collection = "characters",
 		query = {
 			SID = stateId,

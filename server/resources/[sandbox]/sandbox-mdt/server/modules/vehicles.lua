@@ -1,6 +1,6 @@
 function GetVehicleOwnerData(sid)
 	local p = promise.new()
-	Database.Game:findOne({
+	exports['sandbox-base']:DatabaseGameFindOne({
 		collection = "characters",
 		query = {
 			SID = sid,
@@ -71,7 +71,7 @@ _MDT.Vehicles = {
 			end
 		end
 
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "vehicles",
 			query = {
 				["$or"] = orQuery,
@@ -100,7 +100,7 @@ _MDT.Vehicles = {
 	end,
 	View = function(self, VIN)
 		local p = promise.new()
-		Database.Game:findOne({
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "vehicles",
 			query = {
 				VIN = VIN,
@@ -156,7 +156,7 @@ _MDT.Vehicles = {
 	Flags = {
 		Add = function(self, VIN, data, plate)
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "vehicles",
 				query = {
 					VIN = VIN,
@@ -176,7 +176,7 @@ _MDT.Vehicles = {
 		end,
 		Remove = function(self, VIN, flag, plate, removeRadarFlag)
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "vehicles",
 				query = {
 					VIN = VIN,
@@ -203,7 +203,7 @@ _MDT.Vehicles = {
 	},
 	UpdateStrikes = function(self, VIN, strikes)
 		local p = promise.new()
-		Database.Game:updateOne({
+		exports['sandbox-base']:DatabaseGameUpdateOne({
 			collection = "vehicles",
 			query = {
 				VIN = VIN,
@@ -220,7 +220,7 @@ _MDT.Vehicles = {
 	end,
 	GetStrikes = function(self, VIN)
 		local p = promise.new()
-		Database.Game:findOne({
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "vehicles",
 			query = {
 				VIN = VIN,

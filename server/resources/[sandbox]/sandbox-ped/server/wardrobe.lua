@@ -3,7 +3,6 @@ function RetrieveWardrobeComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
@@ -15,7 +14,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Chat",
 		"Callbacks",
 		"Middleware",
-		"Database",
 		"Execute",
 		"Locations",
 		"Logger",

@@ -108,7 +108,7 @@ function doLog(level, component, log, flags, data)
 
 		if COMPONENTS.Proxy.DatabaseReady then
 			if GlobalState.IsProduction and flags.database then
-				COMPONENTS.Database.Game:insertOne({
+				exports['sandbox-base']:DatabaseGameInsertOne({
 					collection = "logs",
 					document = {
 						date = os.time(),

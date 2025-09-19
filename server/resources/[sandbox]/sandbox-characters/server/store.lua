@@ -35,7 +35,7 @@ function StoreData(source)
 		data.LastPlayed = os.time() * 1000
 
 		Logger:Info("Characters", string.format("Saving Character %s", cId), { console = true })
-		Database.Game:updateOne({
+		exports['sandbox-base']:DatabaseGameUpdateOne({
 			collection = "characters",
 			query = {
 				_id = cId,

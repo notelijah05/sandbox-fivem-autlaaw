@@ -4,7 +4,7 @@ function Startup()
     if _ran then return end
     _ran = true
 
-    Database.Game:count({
+    exports['sandbox-base']:DatabaseGameCount({
         collection = 'vehicles',
         query = {
             ['Owner.Type'] = 0,
@@ -15,7 +15,7 @@ function Startup()
         end
     end)
 
-    Database.Game:count({
+    exports['sandbox-base']:DatabaseGameCount({
         collection = 'vehicles',
         query = {
             ['Owner.Type'] = 1,

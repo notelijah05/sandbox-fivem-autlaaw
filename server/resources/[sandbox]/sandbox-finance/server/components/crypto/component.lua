@@ -4,7 +4,6 @@ AddEventHandler("Crypto:Shared:DependencyUpdate", RetrieveCryptoComponents)
 function RetrieveCryptoComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Utils",
 		"Execute",
 		"Chat",
-		"Database",
 		"Middleware",
 		"Callbacks",
 		"Logger",
@@ -219,7 +217,7 @@ _CRYPTO = {
 				return true
 			else
 				local p = promise.new()
-				Database.Game:updateOne({
+				exports['sandbox-base']:DatabaseGameUpdateOne({
 					collection = "characters",
 					query = {
 						CryptoWallet = target,
@@ -267,7 +265,7 @@ _CRYPTO = {
 					p:resolve(false)
 				end
 			else
-				Database.Game:findOne({
+				exports['sandbox-base']:DatabaseGameFindOne({
 					collection = "characters",
 					query = {
 						CryptoWallet = target,
@@ -278,7 +276,7 @@ _CRYPTO = {
 						return
 					else
 						if res[1].Crypto[coin] >= amount then
-							Database.Game:updateOne({
+							exports['sandbox-base']:DatabaseGameUpdateOne({
 								collection = "characters",
 								query = {
 									CryptoWallet = target,

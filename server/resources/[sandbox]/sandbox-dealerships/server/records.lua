@@ -4,7 +4,7 @@ DEALERSHIPS.Records = {
     Get = function(self, dealership)
         if _dealerships[dealership] then
             local p = promise.new()
-            Database.Game:find({
+            exports['sandbox-base']:DatabaseGameFind({
                 collection = 'dealer_records',
                 query = {
                     dealership = dealership,
@@ -41,8 +41,8 @@ DEALERSHIPS.Records = {
                         ["$regexMatch"] = {
                             input = {
                                 ["$concat"] = {
-                                    { ['$convert'] = { input = "$seller.First", to = "string", onError = "error" }},
-                                    " ", 
+                                    { ['$convert'] = { input = "$seller.First", to = "string", onError = "error" } },
+                                    " ",
                                     { ['$convert'] = { input = "$seller.Last", to = "string", onError = "error" } }
                                 },
                             },
@@ -80,7 +80,7 @@ DEALERSHIPS.Records = {
                     dealership = dealership,
                 },
             }
-            
+
             if #term > 0 then
                 table.insert(andQuery, {
                     ["$or"] = orQuery,
@@ -93,7 +93,7 @@ DEALERSHIPS.Records = {
                 })
             end
 
-            Database.Game:find({
+            exports['sandbox-base']:DatabaseGameFind({
                 collection = 'dealer_records',
                 query = {
                     ["$and"] = andQuery,
@@ -129,7 +129,7 @@ DEALERSHIPS.Records = {
         if type(document) == 'table' then
             document.dealership = dealership
             local p = promise.new()
-            Database.Game:insertOne({
+            exports['sandbox-base']:DatabaseGameInsertOne({
                 collection = 'dealer_records',
                 document = document,
             }, function(success, inserted)
@@ -143,7 +143,7 @@ DEALERSHIPS.Records = {
         if type(document) == 'table' then
             document.dealership = dealership
             local p = promise.new()
-            Database.Game:insertOne({
+            exports['sandbox-base']:DatabaseGameInsertOne({
                 collection = 'dealer_records_buybacks',
                 document = document,
             }, function(success, inserted)

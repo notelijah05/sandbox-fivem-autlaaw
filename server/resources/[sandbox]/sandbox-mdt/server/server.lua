@@ -24,7 +24,6 @@ local sentencedSuspects = {}
 
 AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -47,7 +46,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Database",
 		"Callbacks",
 		"Logger",
 		"Utils",
@@ -400,7 +398,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
 					if needsUpdate then
 						local p = promise.new()
-						Database.Game:findOneAndUpdate({
+						exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
 							collection = "characters",
 							query = {
 								SID = data.data.SID,
@@ -474,7 +472,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("MDT:RosterView", function(source, data, cb)
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "characters",
 			query = {
 				Jobs = {
@@ -500,7 +498,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("MDT:RosterSelect", function(source, data, cb)
-		Database.Game:findOne({
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
 			query = {
 				SID = data.person,
@@ -580,7 +578,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 					}
 				)
 
-				Database.Game:findOneAndUpdate({
+				exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
 					collection = "characters",
 					query = {
 						SID = data.SID,
@@ -632,7 +630,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				}
 			)
 
-			Database.Game:findOneAndUpdate({
+			exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
 				collection = "characters",
 				query = {
 					SID = data.SID,

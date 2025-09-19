@@ -11,7 +11,6 @@ _savedVehiclePropertiesClusterfuck = {}
 AddEventHandler('Vehicles:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Callbacks = exports['sandbox-base']:FetchComponent('Callbacks')
-    Database = exports['sandbox-base']:FetchComponent('Database')
     Execute = exports['sandbox-base']:FetchComponent('Execute')
     Locations = exports['sandbox-base']:FetchComponent('Locations')
     Chat = exports['sandbox-base']:FetchComponent('Chat')
@@ -37,7 +36,6 @@ end
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Vehicles', {
         'Callbacks',
-        'Database',
         'Execute',
         'Locations',
         'Chat',
@@ -150,7 +148,7 @@ function SaveVehicle(VIN)
 
         veh:SetData('LastSave', os.time())
 
-        Database.Game:updateOne({
+        exports['sandbox-base']:DatabaseGameUpdateOne({
             collection = 'vehicles',
             query = {
                 VIN = VIN,
@@ -372,7 +370,7 @@ VEHICLE = {
                     DirtLevel = 0.0,
                 }
 
-                Database.Game:insertOne({
+                exports['sandbox-base']:DatabaseGameInsertOne({
                     collection = 'vehicles',
                     document = doc,
                 }, function(success, insertedAmount, insertedIds)
@@ -396,7 +394,7 @@ VEHICLE = {
         end,
 
         GetVIN = function(self, VIN, cb)
-            Database.Game:findOne({
+            exports['sandbox-base']:DatabaseGameFindOne({
                 collection = 'vehicles',
                 query = {
                     VIN = VIN,
@@ -447,7 +445,7 @@ VEHICLE = {
                 query['Type'] = vehType
             end
 
-            Database.Game:find({
+            exports['sandbox-base']:DatabaseGameFind({
                 collection = 'vehicles',
                 query = query,
                 options = {
@@ -699,7 +697,7 @@ VEHICLE = {
                     }
                 end
 
-                Database.Game:count({
+                exports['sandbox-base']:DatabaseGameCount({
                     collection = 'vehicles',
                     query = query,
                 }, function(success, count)
@@ -743,7 +741,7 @@ VEHICLE = {
                             }
                         end
 
-                        Database.Game:updateOne({
+                        exports['sandbox-base']:DatabaseGameUpdateOne({
                             collection = 'vehicles',
                             query = {
                                 VIN = VIN,

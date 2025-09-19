@@ -14,7 +14,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 			cb(added)
 
 			if added then
-				Database.Game:updateOne({
+				exports['sandbox-base']:DatabaseGameUpdateOne({
 					collection = "characters",
 					query = {
 						SID = data.SID,
@@ -92,7 +92,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 							}
 						end
 
-						Database.Game:updateOne({
+						exports['sandbox-base']:DatabaseGameUpdateOne({
 							collection = "characters",
 							query = {
 								SID = data.SID,
@@ -154,7 +154,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 					cb(updated)
 
 					if updated then
-						Database.Game:updateOne({
+						exports['sandbox-base']:DatabaseGameUpdateOne({
 							collection = "characters",
 							query = {
 								SID = data.SID,
@@ -250,7 +250,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						Expires = os.time() + (60 * 60 * 24 * data.Length),
 					}
 
-					Database.Game:updateOne({
+					exports['sandbox-base']:DatabaseGameUpdateOne({
 						collection = "characters",
 						query = {
 							SID = data.SID,
@@ -327,7 +327,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				end
 
 				if canRemove then
-					Database.Game:updateOne({
+					exports['sandbox-base']:DatabaseGameUpdateOne({
 						collection = "characters",
 						query = {
 							SID = data.SID,

@@ -1,6 +1,5 @@
 AddEventHandler("EMS:Shared:DependencyUpdate", EMSComponents)
 function EMSComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -11,7 +10,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("EMS", {
-		"Database",
 		"Middleware",
 		"Callbacks",
 		"Logger",

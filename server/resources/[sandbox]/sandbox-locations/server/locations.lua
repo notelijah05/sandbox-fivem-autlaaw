@@ -4,7 +4,6 @@ end)
 
 AddEventHandler("Locations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
@@ -14,7 +13,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Locations", {
-		"Database",
 		"Chat",
 		"Callbacks",
 		"Locations",
@@ -77,7 +75,7 @@ LOCATIONS = {
 			Type = type,
 			Name = name,
 		}
-		Database.Game:insertOne({
+		exports['sandbox-base']:DatabaseGameInsertOne({
 			collection = "locations",
 			document = doc,
 		}, function(success, results)
@@ -92,7 +90,7 @@ LOCATIONS = {
 		end)
 	end,
 	GetAll = function(self, type, cb)
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "locations",
 			query = {
 				Type = type,

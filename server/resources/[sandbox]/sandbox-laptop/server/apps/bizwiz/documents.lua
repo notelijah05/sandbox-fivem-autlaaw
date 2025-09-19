@@ -35,7 +35,7 @@ LAPTOP.BizWiz.Documents = {
 			},
 		})
 
-		Database.Game:aggregate({
+		exports['sandbox-base']:DatabaseGameAggregate({
 			collection = "business_documents",
 			aggregate = aggregation,
 		}, function(success, results)
@@ -49,7 +49,7 @@ LAPTOP.BizWiz.Documents = {
 	end,
 	View = function(self, jobId, id)
 		local p = promise.new()
-		Database.Game:findOne({
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "business_documents",
 			query = {
 				job = jobId,
@@ -67,7 +67,7 @@ LAPTOP.BizWiz.Documents = {
 	Create = function(self, jobId, data)
 		local p = promise.new()
 		data.job = jobId
-		Database.Game:insertOne({
+		exports['sandbox-base']:DatabaseGameInsertOne({
 			collection = "business_documents",
 			document = data,
 		}, function(success, result, insertId)
@@ -84,7 +84,7 @@ LAPTOP.BizWiz.Documents = {
 	end,
 	Update = function(self, jobId, id, char, report)
 		local p = promise.new()
-		Database.Game:updateOne({
+		exports['sandbox-base']:DatabaseGameUpdateOne({
 			collection = "business_documents",
 			query = {
 				_id = id,
@@ -111,7 +111,7 @@ LAPTOP.BizWiz.Documents = {
 	Delete = function(self, jobId, id)
 		local p = promise.new()
 
-		Database.Game:deleteOne({
+		exports['sandbox-base']:DatabaseGameDeleteOne({
 			collection = "business_documents",
 			query = {
 				_id = id,

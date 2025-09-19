@@ -7,7 +7,7 @@ function Startup()
 		return
 	end
 
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "locations",
 		query = {
 			Type = "spawn",

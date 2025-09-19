@@ -110,7 +110,7 @@ _JOBS = {
 			return true
 		else
 			local p = promise.new()
-			Database.Game:findOne({
+			exports['sandbox-base']:DatabaseGameFindOne({
 				collection = "characters",
 				query = {
 					SID = stateId,
@@ -136,7 +136,7 @@ _JOBS = {
 
 					table.insert(charJobData, newJob)
 
-					Database.Game:updateOne({
+					exports['sandbox-base']:DatabaseGameUpdateOne({
 						collection = "characters",
 						query = {
 							SID = stateId,
@@ -205,7 +205,7 @@ _JOBS = {
 			end
 		else
 			local p = promise.new()
-			Database.Game:findOne({
+			exports['sandbox-base']:DatabaseGameFindOne({
 				collection = "characters",
 				query = {
 					SID = stateId,
@@ -223,7 +223,7 @@ _JOBS = {
 						end
 
 						if found then
-							Database.Game:updateOne({
+							exports['sandbox-base']:DatabaseGameUpdateOne({
 								collection = "characters",
 								query = {
 									SID = stateId,
@@ -633,7 +633,7 @@ _JOBS = {
 						},
 					}
 
-					Database.Game:insertOne({
+					exports['sandbox-base']:DatabaseGameInsertOne({
 						collection = "jobs",
 						document = document,
 					}, function(success, inserted)
@@ -679,7 +679,7 @@ _JOBS = {
 				end
 
 				local p = promise.new()
-				Database.Game:updateOne({
+				exports['sandbox-base']:DatabaseGameUpdateOne({
 					collection = "jobs",
 					query = {
 						Id = jobId,
@@ -717,7 +717,7 @@ _JOBS = {
 			Edit = function(self, jobId, workplaceId, newWorkplaceName)
 				if Jobs:DoesExist(jobId, workplaceId) then
 					local p = promise.new()
-					Database.Game:updateOne({
+					exports['sandbox-base']:DatabaseGameUpdateOne({
 						collection = "jobs",
 						query = {
 							Type = "Government",
@@ -822,7 +822,7 @@ _JOBS = {
 							}
 						end
 
-						Database.Game:updateOne({
+						exports['sandbox-base']:DatabaseGameUpdateOne({
 							collection = "jobs",
 							query = query,
 							update = update,
@@ -914,7 +914,7 @@ _JOBS = {
 						}
 					end
 
-					Database.Game:updateOne({
+					exports['sandbox-base']:DatabaseGameUpdateOne({
 						collection = "jobs",
 						query = query,
 						update = update,
@@ -993,7 +993,7 @@ _JOBS = {
 							}
 						end
 
-						Database.Game:updateOne({
+						exports['sandbox-base']:DatabaseGameUpdateOne({
 							collection = "jobs",
 							query = query,
 							update = update,
@@ -1077,7 +1077,7 @@ _JOBS = {
 					query.Jobs["$elemMatch"]["Grade.Id"] = gradeId
 				end
 
-				Database.Game:find({
+				exports['sandbox-base']:DatabaseGameFind({
 					collection = "characters",
 					query = query,
 				}, function(success, results)
@@ -1160,7 +1160,7 @@ _JOBS = {
 
 				local p = promise.new()
 
-				Database.Game:update({
+				exports['sandbox-base']:DatabaseGameUpdate({
 					collection = "characters",
 					query = query,
 					update = update,
@@ -1197,7 +1197,7 @@ _JOBS = {
 					end
 				end
 
-				Database.Game:update({
+				exports['sandbox-base']:DatabaseGameUpdate({
 					collection = "characters",
 					query = {
 						SID = {
@@ -1316,7 +1316,7 @@ _JOBS = {
 						},
 					}
 
-					Database.Game:update({
+					exports['sandbox-base']:DatabaseGameUpdate({
 						collection = "characters",
 						query = query,
 						update = update,
@@ -1339,7 +1339,7 @@ _JOBS = {
 		Set = function(self, jobId, key, val)
 			if Jobs:DoesExist(jobId) and key then
 				local p = promise.new()
-				Database.Game:updateOne({
+				exports['sandbox-base']:DatabaseGameUpdateOne({
 					collection = "jobs",
 					query = {
 						Id = jobId,

@@ -4,7 +4,7 @@ function RunLoanStartup()
     if _ranStartup then return end
     _ranStartup = true
 
-    Database.Game:count({
+    exports['sandbox-base']:DatabaseGameCount({
         collection = 'loans',
         query = {
             Remaining = {
@@ -30,7 +30,7 @@ function CreateLoanTasks()
         --RegisterCommand('testloans', function()
         local TASK_RUN_TIMESTAMP = os.time()
 
-        Database.Game:aggregate({
+        exports['sandbox-base']:DatabaseGameAggregate({
             collection = 'loans',
             aggregate = {
                 {
@@ -86,7 +86,7 @@ function CreateLoanTasks()
         }, function(success, results)
             if success then
                 -- Get All the Loans are now need to be defaulted and notify/seize
-                Database.Game:find({
+                exports['sandbox-base']:DatabaseGameFind({
                     collection = 'loans',
                     query = {
                         ['$expr'] = {
@@ -105,7 +105,7 @@ function CreateLoanTasks()
                             table.insert(updatingAssets, v.AssetIdentifier)
                         end
 
-                        Database.Game:update({
+                        exports['sandbox-base']:DatabaseGameUpdate({
                             collection = 'loans',
                             query = {
                                 AssetIdentifier = {
@@ -143,7 +143,7 @@ function CreateLoanTasks()
                 end)
 
                 -- Notify if someone just missed a payment.
-                Database.Game:find({
+                exports['sandbox-base']:DatabaseGameFind({
                     collection = 'loans',
                     query = {
                         ['$expr'] = {
@@ -177,7 +177,7 @@ function CreateLoanTasks()
     Tasks:Register('loan_reminder', 120, function()
         local TASK_RUN_TIMESTAMP = os.time()
         -- Get All Loans That are Due Soon
-        Database.Game:find({
+        exports['sandbox-base']:DatabaseGameFind({
             collection = 'loans',
             query = {
                 Remaining = {

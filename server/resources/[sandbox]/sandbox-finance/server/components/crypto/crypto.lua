@@ -110,7 +110,7 @@ function DoesCryptoWalletExist(wallet)
 	end
 
 	local p = promise.new()
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "characters",
 		query = {
 			CryptoWallet = wallet,

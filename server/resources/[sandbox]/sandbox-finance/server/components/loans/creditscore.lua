@@ -1,6 +1,6 @@
 function GetCharacterCreditScore(stateId)
     local p = promise.new()
-    Database.Game:findOne({
+    exports['sandbox-base']:DatabaseGameFindOne({
         collection = 'loans_credit_scores',
         query = {
             SID = stateId,
@@ -28,7 +28,7 @@ function SetCharacterCreditScore(stateId, score)
         score = _creditScoreConfig.min
     end
 
-    Database.Game:findOneAndUpdate({
+    exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
         collection = 'loans_credit_scores',
         query = {
             SID = stateId,

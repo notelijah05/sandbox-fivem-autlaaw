@@ -1,7 +1,7 @@
 DEALERSHIPS.Stock = {
     FetchAll = function(self)
         local p = promise.new()
-        Database.Game:find({
+        exports['sandbox-base']:DatabaseGameFind({
             collection = 'dealer_stock',
             query = {}
         }, function(success, result)
@@ -15,7 +15,7 @@ DEALERSHIPS.Stock = {
     end,
     FetchDealer = function(self, dealerId)
         local p = promise.new()
-        Database.Game:find({
+        exports['sandbox-base']:DatabaseGameFind({
             collection = 'dealer_stock',
             query = {
                 dealership = dealerId,
@@ -31,7 +31,7 @@ DEALERSHIPS.Stock = {
     end,
     FetchDealerVehicle = function(self, dealerId, vehModel)
         local p = promise.new()
-        Database.Game:findOne({
+        exports['sandbox-base']:DatabaseGameFindOne({
             collection = 'dealer_stock',
             query = {
                 dealership = dealerId,
@@ -60,7 +60,7 @@ DEALERSHIPS.Stock = {
             local isStocked = Dealerships.Stock:FetchDealerVehicle(dealerId, vehModel)
             local p = promise.new()
             if isStocked then -- The vehicle is already stocked
-                Database.Game:updateOne({
+                exports['sandbox-base']:DatabaseGameUpdateOne({
                     collection = 'dealer_stock',
                     query = {
                         dealership = dealerId,
@@ -86,7 +86,7 @@ DEALERSHIPS.Stock = {
                     end
                 end)
             else
-                Database.Game:insertOne({
+                exports['sandbox-base']:DatabaseGameInsertOne({
                     collection = 'dealer_stock',
                     document = {
                         dealership = dealerId,
@@ -116,7 +116,7 @@ DEALERSHIPS.Stock = {
             local isStocked = Dealerships.Stock:FetchDealerVehicle(dealerId, vehModel)
             if isStocked then -- The vehicle is already stocked
                 local p = promise.new()
-                Database.Game:updateOne({
+                exports['sandbox-base']:DatabaseGameUpdateOne({
                     collection = 'dealer_stock',
                     query = {
                         dealership = dealerId,
@@ -149,7 +149,7 @@ DEALERSHIPS.Stock = {
             local isStocked = Dealerships.Stock:FetchDealerVehicle(dealerId, vehModel)
             if isStocked then -- The vehicle is already stocked
                 local p = promise.new()
-                Database.Game:updateOne({
+                exports['sandbox-base']:DatabaseGameUpdateOne({
                     collection = 'dealer_stock',
                     query = {
                         dealership = dealerId,
@@ -170,7 +170,7 @@ DEALERSHIPS.Stock = {
                 return false
             end
         end
-        return false 
+        return false
     end,
     Ensure = function(self, dealerId, vehModel, quantity, vehData)
         if _dealerships[dealerId] and vehModel then
@@ -194,7 +194,7 @@ DEALERSHIPS.Stock = {
                 local newQuantity = isStocked.quantity - quantity
                 if newQuantity >= 0 then
                     local p = promise.new()
-                    Database.Game:updateOne({
+                    exports['sandbox-base']:DatabaseGameUpdateOne({
                         collection = 'dealer_stock',
                         query = {
                             dealership = dealerId,

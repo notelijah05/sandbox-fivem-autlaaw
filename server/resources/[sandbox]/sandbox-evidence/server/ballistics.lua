@@ -9,14 +9,14 @@ function RegisterBallisticsCallbacks()
 
 				if item.MetaData.ScratchedSerialNumber and item.MetaData.ScratchedSerialNumber == data.serial then
 					firearmRecord = MySQL.single.await(
-					"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
+						"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
 						{
 							item.MetaData.ScratchedSerialNumber,
 							1
 						})
 				elseif item.MetaData.SerialNumber and item.MetaData.SerialNumber == data.serial then
 					firearmRecord = MySQL.single.await(
-					"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
+						"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
 						{
 							item.MetaData.SerialNumber,
 							0
@@ -70,7 +70,7 @@ function RegisterBallisticsItemUses()
 					if not itemData.MetaData.EvidenceDegraded then
 						local filedEvidence = GetEvidenceProjectileRecord(itemData.MetaData.EvidenceId)
 						local matchingWeapon = MySQL.single.await(
-						"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND police_filed = ?",
+							"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND police_filed = ?",
 							{
 								itemData.MetaData.EvidenceWeapon.serial,
 								1
@@ -151,7 +151,7 @@ end
 function GetEvidenceProjectileRecord(evidenceId)
 	local p = promise.new()
 
-	Database.Game:findOne({
+	exports['sandbox-base']:DatabaseGameFindOne({
 		collection = "firearms_projectiles",
 		query = {
 			Id = evidenceId,
@@ -169,7 +169,7 @@ end
 
 function CreateEvidenceProjectileRecord(document)
 	local p = promise.new()
-	Database.Game:insertOne({
+	exports['sandbox-base']:DatabaseGameInsertOne({
 		collection = "firearms_projectiles",
 		document = document,
 	}, function(success, result, insertId)
@@ -186,7 +186,7 @@ end
 function GetMatchingEvidenceProjectiles(weaponSerial)
 	local p = promise.new()
 
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "firearms_projectiles",
 		query = {
 			["Weapon.serial"] = weaponSerial,
@@ -210,7 +210,7 @@ end
 function GetCharacter(stateId)
 	local p = promise.new()
 
-	Database.Game:findOne({
+	exports['sandbox-base']:DatabaseGameFindOne({
 		collection = "characters",
 		query = {
 			SID = stateId,
@@ -254,14 +254,14 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 
 						if md.ScratchedSerialNumber then
 							firearmRecord = MySQL.single.await(
-							"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
+								"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
 								{
 									md.ScratchedSerialNumber,
 									1
 								})
 						elseif md.SerialNumber then
 							firearmRecord = MySQL.single.await(
-							"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
+								"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
 								{
 									md.SerialNumber,
 									0

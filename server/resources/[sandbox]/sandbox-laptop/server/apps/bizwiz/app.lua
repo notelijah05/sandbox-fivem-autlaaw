@@ -1,7 +1,7 @@
 local bizWizJobs = {}
 
 function CheckBusinessPermissions(source, permission)
-    local onDuty = Jobs.Duty:Get(source)
+	local onDuty = Jobs.Duty:Get(source)
 	if onDuty and onDuty.Id and bizWizJobs[onDuty.Id] then
 		if (not permission) or Jobs.Permissions:HasPermissionInJob(source, onDuty.Id, permission) then
 			return onDuty.Id
@@ -15,11 +15,11 @@ AddEventHandler('Job:Server:DutyAdd', function(dutyData, source)
 	if job then
 		local hasConfig = _bizWizConfig[job.Id]
 		local bizWiz = Jobs.Data:Get(job.Id, "bizWiz")
-	
+
 		if hasConfig then
 			bizWiz = hasConfig.type
 		end
-	
+
 		if job and bizWiz and _bizWizTypes[bizWiz] then
 			local bizWizLogo = Jobs.Data:Get(job.Id, "bizWizLogo")
 
@@ -28,15 +28,16 @@ AddEventHandler('Job:Server:DutyAdd', function(dutyData, source)
 			end
 
 			bizWizJobs[job.Id] = true
-	
+
 			Laptop:UpdateJobData(source)
-			TriggerClientEvent("Laptop:Client:BizWiz:Login", source, bizWizLogo or "https://i.imgur.com/ORHSuSM.png", _bizWizTypes[bizWiz], GetBusinessNotices(job.Id))
+			TriggerClientEvent("Laptop:Client:BizWiz:Login", source, bizWizLogo or "https://i.imgur.com/ORHSuSM.png",
+				_bizWizTypes[bizWiz], GetBusinessNotices(job.Id))
 		end
 	end
 end)
 
 AddEventHandler('Job:Server:DutyRemove', function(dutyData, source, SID)
-    if bizWizJobs[dutyData.Id] then
+	if bizWizJobs[dutyData.Id] then
 		TriggerClientEvent("Laptop:Client:BizWiz:Logout", source)
 	end
 end)
@@ -53,10 +54,10 @@ function GetBusinessNotices(job)
 end
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-  Callbacks:RegisterServerCallback("Laptop:BizWiz:EmployeeSearch", function(source, data, cb)
-    local job = CheckBusinessPermissions(source)
+	Callbacks:RegisterServerCallback("Laptop:BizWiz:EmployeeSearch", function(source, data, cb)
+		local job = CheckBusinessPermissions(source)
 		if job then
-			Database.Game:find({
+			exports['sandbox-base']:DatabaseGameFind({
 				collection = "characters",
 				query = {
 					["$and"] = {
@@ -117,7 +118,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Laptop:BizWiz:GetTwitterProfile", function(source, data, cb)
-    local job = CheckBusinessPermissions(source, "JOB_MANAGEMENT")
+		local job = CheckBusinessPermissions(source, "JOB_MANAGEMENT")
 		if job then
 			cb({
 				success = true,
@@ -129,7 +130,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Laptop:BizWiz:SetTwitterProfile", function(source, data, cb)
-    local job = CheckBusinessPermissions(source, "JOB_MANAGEMENT")
+		local job = CheckBusinessPermissions(source, "JOB_MANAGEMENT")
 		if job then
 			local success = Jobs.Data:Set(job, "TwitterAvatar", data.profile)
 			if success then
@@ -143,14 +144,14 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	end)
 
 	Callbacks:RegisterServerCallback("Laptop:BizWiz:SendTweet", function(source, data, cb)
-    local job = CheckBusinessPermissions(source, "TABLET_TWEET")
+		local job = CheckBusinessPermissions(source, "TABLET_TWEET")
 		if job then
 			local jobData = Jobs:Get(job)
 			local avatar = Jobs.Data:Get(job, "TwitterAvatar")
-			
+
 			Phone.Twitter:Post(
-				-1, 
-				-1, 
+				-1,
+				-1,
 				{
 					name = jobData.Name,
 					picture = avatar,
@@ -173,7 +174,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			setting = false
 		end
 
-    local res = Jobs.Data:Set(args[1], "bizWiz", setting)
+		local res = Jobs.Data:Set(args[1], "bizWiz", setting)
 
 		if res?.success then
 			Chat.Send.System:Single(source, "Success")
@@ -200,7 +201,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			setting = false
 		end
 
-    local res = Jobs.Data:Set(args[1], "bizWizLogo", setting)
+		local res = Jobs.Data:Set(args[1], "bizWizLogo", setting)
 
 		if res?.success then
 			Chat.Send.System:Single(source, "Success")
@@ -222,31 +223,31 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	}, 2)
 
 	Callbacks:RegisterServerCallback("Laptop:BizWiz:ViewVehicleFleet", function(source, data, cb)
-    local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
+		local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
 		if job then
 			Vehicles.Owned:GetAll(nil, 1, job, function(vehicles)
-        for k, v in ipairs(vehicles) do
-          if v.Storage then
-            if v.Storage.Type == 0 then
-              v.Storage.Name = Vehicles.Garages:Impound().name
-            elseif v.Storage.Type == 1 then
-              v.Storage.Name = Vehicles.Garages:Get(v.Storage.Id).name
-            elseif v.Storage.Type == 2 then
-              local prop = Properties:Get(v.Storage.Id)
-              v.Storage.Name = prop?.label
-            end
-          end
-        end
+				for k, v in ipairs(vehicles) do
+					if v.Storage then
+						if v.Storage.Type == 0 then
+							v.Storage.Name = Vehicles.Garages:Impound().name
+						elseif v.Storage.Type == 1 then
+							v.Storage.Name = Vehicles.Garages:Get(v.Storage.Id).name
+						elseif v.Storage.Type == 2 then
+							local prop = Properties:Get(v.Storage.Id)
+							v.Storage.Name = prop?.label
+						end
+					end
+				end
 
-        cb(vehicles)
-      end)
+				cb(vehicles)
+			end)
 		else
 			cb(false)
 		end
 	end)
 
 	Callbacks:RegisterServerCallback("Laptop:BizWiz:TrackFleetVehicle", function(source, data, cb)
-    local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
+		local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
 		if job then
 			cb(Vehicles.Owned:Track(data.vehicle))
 		else

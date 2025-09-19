@@ -39,7 +39,7 @@ function RegisterCallbacks()
 		end
 
 		local motd = GetConvar("motd", "Welcome to SandboxRP")
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "changelogs",
 			options = {
 				sort = {
@@ -63,7 +63,7 @@ function RegisterCallbacks()
 
 	Callbacks:RegisterServerCallback("Characters:GetCharacters", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "characters",
 			query = {
 				User = player:GetData("AccountID"),
@@ -84,7 +84,7 @@ function RegisterCallbacks()
 			end
 
 			local p = promise.new()
-			Database.Game:find({
+			exports['sandbox-base']:DatabaseGameFind({
 				collection = "peds",
 				query = {
 					Char = {
@@ -135,7 +135,7 @@ function RegisterCallbacks()
 		local player = exports['sandbox-base']:FetchSource(source)
 
 		local p = promise.new()
-		Database.Game:count({
+		exports['sandbox-base']:DatabaseGameCount({
 			collection = "characters",
 			query = {
 				User = player:GetData("AccountID"),
@@ -208,7 +208,7 @@ function RegisterCallbacks()
 				end
 			end
 
-			Database.Game:insertOne({
+			exports['sandbox-base']:DatabaseGameInsertOne({
 				collection = "characters",
 				document = doc,
 			}, function(success, result, insertedIds)
@@ -245,7 +245,7 @@ function RegisterCallbacks()
 
 	Callbacks:RegisterServerCallback("Characters:DeleteCharacter", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
-		Database.Game:findOne({
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
 			query = {
 				User = player:GetData("AccountID"),
@@ -257,7 +257,7 @@ function RegisterCallbacks()
 				return
 			end
 			local deletingChar = results[1]
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "characters",
 				query = {
 					User = player:GetData("AccountID"),
@@ -299,7 +299,7 @@ function RegisterCallbacks()
 
 	Callbacks:RegisterServerCallback("Characters:GetSpawnPoints", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
-		Database.Game:findOne({
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
 			query = {
 				User = player:GetData("AccountID"),
@@ -361,7 +361,7 @@ function RegisterCallbacks()
 
 	Callbacks:RegisterServerCallback("Characters:GetCharacterData", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
-		Database.Game:findOne({
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
 			query = {
 				User = player:GetData("AccountID"),

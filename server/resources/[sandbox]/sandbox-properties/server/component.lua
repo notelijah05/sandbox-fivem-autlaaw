@@ -5,7 +5,6 @@ function RetrieveComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Default = exports["sandbox-base"]:FetchComponent("Default")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -28,7 +27,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Callbacks",
 		"Middleware",
 		"Logger",
-		"Database",
 		"Default",
 		"Chat",
 		"Properties",
@@ -80,7 +78,7 @@ PROPERTIES = {
 						}
 					}
 
-					Database.Game:insertOne({
+					exports['sandbox-base']:DatabaseGameInsertOne({
 						collection = "properties",
 						document = doc,
 					}, function(success, result, insertedIds)
@@ -120,7 +118,7 @@ PROPERTIES = {
 			end
 
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "properties",
 				query = {
 					_id = id,
@@ -149,7 +147,7 @@ PROPERTIES = {
 			end
 
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "properties",
 				query = {
 					_id = id,
@@ -178,7 +176,7 @@ PROPERTIES = {
 			end
 
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "properties",
 				query = {
 					_id = id,
@@ -207,7 +205,7 @@ PROPERTIES = {
 			end
 
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "properties",
 				query = {
 					_id = id,
@@ -236,7 +234,7 @@ PROPERTIES = {
 			end
 
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "properties",
 				query = {
 					_id = id,
@@ -265,7 +263,7 @@ PROPERTIES = {
 			end
 
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "properties",
 				query = {
 					_id = id,
@@ -291,7 +289,7 @@ PROPERTIES = {
 		end,
 		Delete = function(self, id)
 			local p = promise.new()
-			Database.Game:deleteOne({
+			exports['sandbox-base']:DatabaseGameDeleteOne({
 				collection = "properties",
 				query = {
 					_id = id,
@@ -322,7 +320,7 @@ PROPERTIES = {
 					end
 
 					local p = promise.new()
-					Database.Game:updateOne({
+					exports['sandbox-base']:DatabaseGameUpdateOne({
 						collection = "properties",
 						query = {
 							_id = id,
@@ -384,7 +382,7 @@ PROPERTIES = {
 
 				if intData and intData.type == property.type then
 					local p = promise.new()
-					Database.Game:updateOne({
+					exports['sandbox-base']:DatabaseGameUpdateOne({
 						collection = "properties",
 						query = {
 							_id = id,
@@ -414,7 +412,7 @@ PROPERTIES = {
 	Commerce = {
 		Sell = function(self, id)
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "properties",
 				query = {
 					_id = id,
@@ -456,7 +454,7 @@ PROPERTIES = {
 		end,
 		Buy = function(self, id, owner, payment)
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "properties",
 				query = {
 					_id = id,
@@ -502,7 +500,7 @@ PROPERTIES = {
 			end
 
 			local p = promise.new()
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "properties",
 				query = {
 					_id = id,
@@ -565,7 +563,7 @@ PROPERTIES = {
 		Give = function(self, charData, id, isOwner, permissions, updating)
 			local p = promise.new()
 
-			Database.Game:findOneAndUpdate({
+			exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
 				collection = "properties",
 				query = {
 					_id = id,
@@ -615,7 +613,7 @@ PROPERTIES = {
 		Take = function(self, target, id)
 			local p = promise.new()
 
-			Database.Game:findOneAndUpdate({
+			exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
 				collection = "properties",
 				query = {
 					_id = id,

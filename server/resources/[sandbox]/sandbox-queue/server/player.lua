@@ -112,7 +112,7 @@ end
 function GetPlayerTokens(account)
 	local p = promise.new()
 
-	Database.Auth:findOne({
+	exports['sandbox-base']:DatabaseAuthFindOne({
 		collection = "tokens",
 		query = {
 			account = account,

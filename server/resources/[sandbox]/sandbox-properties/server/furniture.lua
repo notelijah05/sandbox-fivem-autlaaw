@@ -142,7 +142,7 @@ function GetPropertyFurniture(pId, pInt)
     end
 
     local p = promise.new()
-    Database.Game:findOne({
+    exports['sandbox-base']:DatabaseGameFindOne({
         collection = "properties_furniture",
         query = { property = pId },
     }, function(success, results)
@@ -171,7 +171,7 @@ function SetPropertyFurniture(pId, newFurniture, updater)
     end
     local p = promise.new()
 
-    Database.Game:updateOne({
+    exports['sandbox-base']:DatabaseGameUpdateOne({
         collection = "properties_furniture",
         query = { property = pId },
         update = {
@@ -201,7 +201,7 @@ end
 function DeletePropertyFurniture(pId)
     local p = promise.new()
 
-    Database.Game:deleteOne({
+    exports['sandbox-base']:DatabaseGameDeleteOne({
         collection = "properties_furniture",
         query = { property = pId },
     }, function(success)

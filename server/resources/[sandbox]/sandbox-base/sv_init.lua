@@ -1,5 +1,5 @@
 AddEventHandler("Core:Shared:Ready", function()
-	-- COMPONENTS.Database.Auth:find({
+	-- exports['sandbox-base']:DatabaseAuthFind({
 	-- 	collection = "roles",
 	-- 	query = {},
 	-- }, function(success, results)

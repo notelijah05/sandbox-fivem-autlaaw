@@ -1,7 +1,6 @@
 AddEventHandler("Fuel:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -19,7 +18,6 @@ local depositData = {
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Fuel", {
 		"Callbacks",
-		"Database",
 		"Utils",
 		"Logger",
 		"Wallet",

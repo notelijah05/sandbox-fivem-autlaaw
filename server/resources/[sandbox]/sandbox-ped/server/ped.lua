@@ -284,7 +284,6 @@ GlobalState["Ped:Pricing"] = {
 AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -296,7 +295,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
 		"Callbacks",
-		"Database",
 		"Locations",
 		"Routing",
 		"Logger",
@@ -382,7 +380,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		Chat:RegisterAdminCommand("pedwhitelist", function(source, args, rawCommand)
 			local sid, model, label = tonumber(args[1]), args[2], args[3]
 			if sid and model and label then
-				Database.Game:findOne({
+				exports['sandbox-base']:DatabaseGameFindOne({
 					collection = "characters",
 					query = {
 						SID = sid,
@@ -494,7 +492,7 @@ PED = {
 			end
 		end
 
-		Database.Game:updateOne({
+		exports['sandbox-base']:DatabaseGameUpdateOne({
 			collection = "peds",
 			query = {
 				Char = char:GetData("ID"),
@@ -698,7 +696,7 @@ function RegisterCallbacks()
 	Callbacks:RegisterServerCallback("Ped:CheckPed", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			Database.Game:findOne({
+			exports['sandbox-base']:DatabaseGameFindOne({
 				collection = "peds",
 				query = {
 					Char = char:GetData("ID"),

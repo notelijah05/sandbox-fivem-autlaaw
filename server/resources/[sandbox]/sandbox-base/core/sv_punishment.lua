@@ -5,7 +5,7 @@ COMPONENTS.Punishment = {
 		local retVal = -1 -- Fuck You Lua
 
 		local p = promise.new()
-		COMPONENTS.Database.Auth:findOne({
+		exports['sandbox-base']:DatabaseAuthFindOne({
 			collection = "bans",
 			query = {
 				[key] = value,
@@ -14,7 +14,6 @@ COMPONENTS.Punishment = {
 		}, function(success, results, insertedIds)
 			if not success then
 				COMPONENTS.Logger:Error(
-					"Database",
 					"[^8Error^7] Error in insertOne: " .. tostring(results),
 					{ console = true, file = true, database = true }
 				)
@@ -24,7 +23,7 @@ COMPONENTS.Punishment = {
 			if #results > 0 then
 				for k, v in ipairs(results) do
 					if v.expires < os.time() and v.expires ~= -1 then
-						COMPONENTS.Database.Auth:updateOne({
+						exports['sandbox-base']:DatabaseAuthUpdateOne({
 							collection = "bans",
 							query = { _id = v._id },
 							update = { ["$set"] = { active = false } },
@@ -141,7 +140,7 @@ COMPONENTS.Punishment.Unban = {
 		if COMPONENTS.Punishment:CheckBan("_id", id) then
 			local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 
-			COMPONENTS.Database.Auth:find({
+			exports['sandbox-base']:DatabaseAuthFind({
 				collection = "bans",
 				query = {
 					_id = id,
@@ -169,7 +168,7 @@ COMPONENTS.Punishment.Unban = {
 
 			local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 
-			COMPONENTS.Database.Auth:find({
+			exports['sandbox-base']:DatabaseAuthFind({
 				collection = "bans",
 				query = {
 					account = aId,
@@ -208,7 +207,7 @@ COMPONENTS.Punishment.Unban = {
 			end
 			local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 
-			COMPONENTS.Database.Auth:find({
+			exports['sandbox-base']:DatabaseAuthFind({
 				collection = "bans",
 				query = {
 					identifier = identifier,
@@ -708,7 +707,7 @@ COMPONENTS.Punishment.Actions = {
 
 		local p = promise.new()
 
-		COMPONENTS.Database.Auth:findOneAndUpdate({
+		exports['sandbox-base']:DatabaseAuthFindOneAndUpdate({
 			collection = "bans",
 			query = {
 				active = true,
@@ -736,7 +735,6 @@ COMPONENTS.Punishment.Actions = {
 			p:resolve(success)
 			if not success then
 				return COMPONENTS.Logger:Error(
-					"Database",
 					"[^8Error^7] Error in insertOne: " .. tostring(results),
 					{ console = true, file = true, database = true, discord = { embed = true, type = "error" } }
 				)
@@ -775,7 +773,7 @@ COMPONENTS.Punishment.Actions = {
 	Unban = function(self, ids, issuer)
 		local _ids = {}
 		for k, v in ipairs(ids) do
-			COMPONENTS.Database.Auth:updateOne({
+			exports['sandbox-base']:DatabaseAuthUpdateOne({
 				collection = "bans",
 				query = { _id = v._id, active = true },
 				update = {

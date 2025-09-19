@@ -11,7 +11,6 @@ end
 
 AddEventHandler("Damage:Shared:DependencyUpdate", DamageComponents)
 function DamageComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -24,7 +23,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Damage", {
-		"Database",
 		"Callbacks",
 		"Logger",
 		"Chat",

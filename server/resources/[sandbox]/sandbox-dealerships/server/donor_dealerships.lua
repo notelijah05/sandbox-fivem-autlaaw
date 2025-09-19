@@ -282,7 +282,7 @@ end
 DEALERSHIPS.Donator = {
   AddPending = function(self, playerIdentifier, class, data)
     local p = promise.new()
-    Database.Game:insertOne({
+    exports['sandbox-base']:DatabaseGameInsertOne({
       collection = "donator_vehicles",
       document = {
         player = playerIdentifier,
@@ -304,7 +304,7 @@ DEALERSHIPS.Donator = {
       stupid = nil
     end
 
-    Database.Game:find({
+    exports['sandbox-base']:DatabaseGameFind({
       collection = "donator_vehicles",
       query = {
         player = playerIdentifier,
@@ -323,7 +323,7 @@ DEALERSHIPS.Donator = {
   RemovePending = function(self, playerIdentifier, id)
     local p = promise.new()
 
-    Database.Game:updateOne({
+    exports['sandbox-base']:DatabaseGameUpdateOne({
       collection = "donator_vehicles",
       query = {
         player = playerIdentifier,
@@ -343,7 +343,7 @@ DEALERSHIPS.Donator = {
   DeletePending = function(self, playerIdentifier, id)
     local p = promise.new()
 
-    Database.Game:deleteOne({
+    exports['sandbox-base']:DatabaseGameDeleteOne({
       collection = "donator_vehicles",
       query = {
         player = playerIdentifier,

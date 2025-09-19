@@ -8,7 +8,7 @@ function RegisterMiddleware()
 	Middleware:Add("Characters:GetSpawnPoints", function(source, charId)
 		local p = promise.new()
 
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "properties",
 			query = {
 				[string.format("keys.%s", charId)] = {

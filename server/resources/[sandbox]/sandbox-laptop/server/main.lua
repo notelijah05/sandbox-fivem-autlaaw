@@ -79,7 +79,6 @@ end)
 AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 
 function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -111,7 +110,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
-		"Database",
 		"Callbacks",
 		"Logger",
 		"Utils",

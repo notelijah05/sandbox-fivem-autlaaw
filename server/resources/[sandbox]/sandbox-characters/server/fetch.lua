@@ -42,7 +42,7 @@ end)
 
 exports('FetchGetOfflineData', function(stateId, key)
 	local p = promise.new()
-	Database.Game:findOne({
+	exports['sandbox-base']:DatabaseGameFindOne({
 		collection = "characters",
 		query = {
 			SID = stateId,

@@ -122,7 +122,7 @@ function RegisterCallbacks()
                     end
                 end
 
-                Database.Game:find({
+                exports['sandbox-base']:DatabaseGameFind({
                     collection = 'characters',
                     query = {
                         SID = {

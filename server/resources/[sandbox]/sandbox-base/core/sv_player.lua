@@ -196,7 +196,7 @@ COMPONENTS.Player = {
 			for k, v in pairs(ctkns) do
 				table.insert(existing, k)
 			end
-			COMPONENTS.Database.Auth:updateOne({
+			exports['sandbox-base']:DatabaseAuthUpdateOne({
 				collection = "tokens",
 				query = {
 					account = accountId,
@@ -215,7 +215,7 @@ COMPONENTS.Player = {
 				table.insert(tkns, k)
 			end
 
-			COMPONENTS.Database.Auth:updateOne({
+			exports['sandbox-base']:DatabaseAuthUpdateOne({
 				collection = "tokens",
 				query = {
 					account = accountId,

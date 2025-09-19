@@ -3,7 +3,7 @@ local showroomsLoaded = false
 DEALERSHIPS.Showroom = {
     Load = function(self)
         local p = promise.new()
-        Database.Game:find({
+        exports['sandbox-base']:DatabaseGameFind({
             collection = 'dealer_showrooms',
         }, function(success, results)
             local showRoomData = {}
@@ -24,12 +24,12 @@ DEALERSHIPS.Showroom = {
 
     Update = function(self, dealershipId, showroom)
         if _dealerships[dealershipId] then
-            if type(showroom) ~= 'table' then 
-                showroom = {} 
+            if type(showroom) ~= 'table' then
+                showroom = {}
             end
-            
+
             local p = promise.new()
-            Database.Game:findOneAndUpdate({
+            exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
                 collection = 'dealer_showrooms',
                 query = { dealership = dealershipId },
                 update = {
@@ -47,7 +47,7 @@ DEALERSHIPS.Showroom = {
                     local currentData = GlobalState.DealershipShowrooms
                     currentData[dealershipId] = showroom
                     GlobalState.DealershipShowrooms = currentData
-                    
+
                     TriggerClientEvent('Dealerships:Client:ShowroomUpdate', -1, dealershipId)
                     p:resolve(showroom)
                 else
@@ -58,7 +58,7 @@ DEALERSHIPS.Showroom = {
         end
         return false
     end,
-    
+
     UpdatePos = function(self, dealershipId, position, vehicleData)
         if _dealerships[dealershipId] and (#_dealerships[dealershipId].showroom >= position) then
             position = tostring(position)

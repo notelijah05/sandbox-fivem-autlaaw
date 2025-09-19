@@ -6,7 +6,6 @@ _loaded = false
 
 AddEventHandler("Jobs:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -21,7 +20,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jobs", {
-		"Database",
 		"Middleware",
 		"Callbacks",
 		"Logger",
@@ -52,7 +50,7 @@ end)
 function FindAllJobs()
 	local p = promise.new()
 
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "jobs",
 		query = {},
 	}, function(success, results)
@@ -77,7 +75,7 @@ function RefreshAllJobData(job)
 	TriggerEvent("Jobs:Server:UpdatedCache", job or -1)
 
 	local govPromise = promise.new()
-	Database.Game:aggregate({
+	exports['sandbox-base']:DatabaseGameAggregate({
 		collection = "jobs",
 		aggregate = {
 			{ ["$match"] = { Type = "Government" } },
@@ -106,7 +104,7 @@ function RefreshAllJobData(job)
 	end)
 
 	local companyPromise = promise.new()
-	Database.Game:aggregate({
+	exports['sandbox-base']:DatabaseGameAggregate({
 		collection = "jobs",
 		aggregate = {
 			{ ["$match"] = { Type = "Company" } },
@@ -139,14 +137,14 @@ function RunStartup()
 
 	local function replaceExistingDefaultJob(_id, document)
 		local p = promise.new()
-		Database.Game:deleteOne({
+		exports['sandbox-base']:DatabaseGameDeleteOne({
 			collection = "jobs",
 			query = {
 				_id = _id,
 			},
 		}, function(success, deleted)
 			if success then
-				Database.Game:insertOne({
+				exports['sandbox-base']:DatabaseGameInsertOne({
 					collection = "jobs",
 					document = document,
 				}, function(success, inserted)
@@ -168,7 +166,7 @@ function RunStartup()
 
 	local function insertDefaultJob(document)
 		local p = promise.new()
-		Database.Game:insertOne({
+		exports['sandbox-base']:DatabaseGameInsertOne({
 			collection = "jobs",
 			document = document,
 		}, function(success, inserted)

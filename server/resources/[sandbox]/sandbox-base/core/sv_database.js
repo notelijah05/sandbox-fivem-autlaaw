@@ -4,158 +4,22 @@ const utils = require('./db_utils');
 let gameDb;
 let authDb;
 
-let Database = null;
-let Convar = null;
-
-const DATABASE = {
-	_protected: true,
-	_required: ['Game', 'Auth'],
-	//_required: [ 'isConnected', 'insert', 'insertOne', 'find', 'findOne', 'update', 'updateOne', 'delete', 'deleteOne', 'count' ],
-	_name: 'base',
-	Game: {
-		isConnected: () => {
-			return !!Methods.isConnected(gameDb);
-		},
-		insert: (t, params, callback) => {
-			return Methods.insert(gameDb, params, callback);
-		},
-		insertOne: (t, params, callback) => {
-			return Methods.insertOne(gameDb, params, callback);
-		},
-		find: (t, params, callback) => {
-			return Methods.find(gameDb, params, callback);
-		},
-		findOne: (t, params, callback) => {
-			return Methods.findOne(gameDb, params, callback);
-		},
-		update: (t, params, callback, isUpdateOne) => {
-			return Methods.update(gameDb, params, callback, isUpdateOne);
-		},
-		updateOne: (t, params, callback) => {
-			return Methods.updateOne(gameDb, params, callback);
-		},
-		delete: (t, params, callback, isDeleteOne) => {
-			return Methods.delete(gameDb, params, callback, isDeleteOne);
-		},
-		deleteOne: (t, params, callback) => {
-			return Methods.deleteOne(gameDb, params, callback);
-		},
-		findOneAndUpdate: (t, params, callback) => {
-			return Methods.findOneAndUpdate(gameDb, params, callback);
-		},
-		count: (t, params, callback) => {
-			return Methods.count(gameDb, params, callback);
-		},
-		aggregate: (t, params, callback, stupidFlag) => {
-			return Methods.aggregate(gameDb, params, callback, stupidFlag);
-		},
-	},
-	Auth: {
-		isConnected: () => {
-			return !!Methods.isConnected(authDb);
-		},
-		insert: (t, params, callback) => {
-			return Methods.insert(authDb, params, callback);
-		},
-		insertOne: (t, params, callback) => {
-			return Methods.insertOne(authDb, params, callback);
-		},
-		find: (t, params, callback) => {
-			return Methods.find(authDb, params, callback);
-		},
-		findOne: (t, params, callback) => {
-			return Methods.findOne(authDb, params, callback);
-		},
-		update: (t, params, callback, isUpdateOne) => {
-			return Methods.update(authDb, params, callback, isUpdateOne);
-		},
-		updateOne: (t, params, callback) => {
-			return Methods.updateOne(authDb, params, callback);
-		},
-		delete: (t, params, callback, isDeleteOne) => {
-			return Methods.delete(authDb, params, callback, isDeleteOne);
-		},
-		deleteOne: (t, params, callback) => {
-			return Methods.deleteOne(authDb, params, callback);
-		},
-		findOneAndUpdate: (t, params, callback) => {
-			return Methods.findOneAndUpdate(authDb, params, callback);
-		},
-		count: (t, params, callback) => {
-			return Methods.count(authDb, params, callback);
-		},
-		aggregate: (t, params, callback) => {
-			return Methods.aggregate(gameDb, params, callback);
-		},
-	},
-};
-
-AddEventHandler('onResourceStop', function (resource) {
-	if (resource === GetCurrentResourceName()) {
-		gameDb.close();
-		gameDb = null;
-		authDb.close();
-		gameDb = null;
+function checkDatabaseReady() {
+	if (!gameDb || !authDb) {
+		Log(`Database is not connected.`, { console: true });
+		return false;
 	}
-});
-
-AddEventHandler('Database:Shared:DependencyUpdate', RetrieveComponents);
-
-function RetrieveComponents() {
-	Convar = exports[GetCurrentResourceName()].FetchComponent('Convar');
-	Database = exports[GetCurrentResourceName()].FetchComponent('Database');
+	return true;
 }
 
-AddEventHandler('Core:Shared:Ready', () => {
-	exports['sandbox-base'].RequestDependencies(
-		'Database',
-		['Convar', 'Database'],
-		(error) => {
-			if (error.length > 0) return;
-			RetrieveComponents();
-		},
-	);
-});
+function checkParams(params) {
+	return params !== null && typeof params === 'object';
+}
 
-AddEventHandler(
-	'Database:Server:Initialize',
-	function (a_url, a_db, g_url, g_db) {
-		if (
-			Database == null ||
-			!Database.Game.isConnected() ||
-			!Database.Auth.isConnected()
-		) {
-			mongodb.MongoClient.connect(
-				a_url,
-				{ useNewUrlParser: true, useUnifiedTopology: true },
-				function (err, client) {
-					if (err) return Log('Error: ' + err.message);
-					authDb = client.db(a_db);
-					LogTrace(
-						`[^31^7/^22^7] Connected to authentication database "${a_db}".`,
-					);
-					mongodb.MongoClient.connect(
-						g_url,
-						{
-							useNewUrlParser: true,
-							useUnifiedTopology: true,
-						},
-						function (err, client) {
-							if (err) return Log('Error: ' + err.message);
-							gameDb = client.db(g_db);
-							LogTrace(
-								`[^22^7/^22^7] ^7Connected to game database "${g_db}".`,
-							);
-							emit('Database:Server:Ready', DATABASE);
-						},
-					);
-				},
-			);
-		} else {
-			emit('Database:Server:Ready');
-		}
-	},
-);
+function getParamsCollection(db, params) {
+	if (!params.collection) return;
+	return db.collection(params.collection);
+}
 
 function LogTrace(log) {
 	emit(`Logger:Trace`, 'Database', log, { console: true });
@@ -175,23 +39,6 @@ function Log(log, flagOverride = null) {
 			  }
 			: flagOverride,
 	);
-}
-
-function checkDatabaseReady() {
-	if (!gameDb || !authDb) {
-		Log(`Database is not connected.`, { console: true });
-		return false;
-	}
-	return true;
-}
-
-function checkParams(params) {
-	return params !== null && typeof params === 'object';
-}
-
-function getParamsCollection(db, params) {
-	if (!params.collection) return;
-	return db.collection(params.collection);
 }
 
 const Methods = {
@@ -282,9 +129,9 @@ const Methods = {
 		if (!collection)
 			return Log(`update: Invalid collection "${params.collection}"`);
 
-		query = utils.safeObjectArgument(params.query);
-		update = utils.safeObjectArgument(params.update);
-		options = utils.safeObjectArgument(params.options);
+		const query = utils.safeObjectArgument(params.query);
+		const update = utils.safeObjectArgument(params.update);
+		const options = utils.safeObjectArgument(params.options);
 
 		const cb = (err, res) => {
 			if (err) {
@@ -349,7 +196,8 @@ const Methods = {
 	},
 	findOneAndUpdate: (db, params, callback) => {
 		if (!checkDatabaseReady()) return;
-		if (!checkParams(params)) return Log(`find: Invalid params object.`);
+		if (!checkParams(params))
+			return Log(`findOneAndUpdate: Invalid params object.`);
 
 		let collection = getParamsCollection(db, params);
 		if (!collection)
@@ -357,9 +205,9 @@ const Methods = {
 				`findOneAndUpdate: Invalid collection "${params.collection}"`,
 			);
 
-		query = utils.safeObjectArgument(params.query);
-		update = utils.safeObjectArgument(params.update);
-		options = utils.safeObjectArgument(params.options);
+		const query = utils.safeObjectArgument(params.query);
+		const update = utils.safeObjectArgument(params.update);
+		const options = utils.safeObjectArgument(params.options);
 
 		const cb = (err, res) => {
 			if (err) {
@@ -404,3 +252,166 @@ const Methods = {
 		});
 	},
 };
+
+// Game database
+
+exports('DatabaseGameIsConnected', () => {
+	return Methods.isConnected(gameDb);
+});
+
+exports('DatabaseGameInsert', (params, callback) => {
+	return Methods.insert(gameDb, params, callback);
+});
+
+exports('DatabaseGameInsertOne', (params, callback) => {
+	return Methods.insertOne(gameDb, params, callback);
+});
+
+exports('DatabaseGameFind', (params, callback) => {
+	return Methods.find(gameDb, params, callback);
+});
+
+exports('DatabaseGameFindOne', (params, callback) => {
+	return Methods.findOne(gameDb, params, callback);
+});
+
+exports('DatabaseGameUpdate', (params, callback) => {
+	return Methods.update(gameDb, params, callback);
+});
+
+exports('DatabaseGameUpdateOne', (params, callback) => {
+	return Methods.updateOne(gameDb, params, callback);
+});
+
+exports('DatabaseGameDelete', (params, callback) => {
+	return Methods.delete(gameDb, params, callback);
+});
+
+exports('DatabaseGameDeleteOne', (params, callback) => {
+	return Methods.deleteOne(gameDb, params, callback);
+});
+
+exports('DatabaseGameFindOneAndUpdate', (params, callback) => {
+	return Methods.findOneAndUpdate(gameDb, params, callback);
+});
+
+exports('DatabaseGameCount', (params, callback) => {
+	return Methods.count(gameDb, params, callback);
+});
+
+exports('DatabaseGameAggregate', (params, callback, stupidFlag) => {
+	return Methods.aggregate(gameDb, params, callback, stupidFlag);
+});
+
+// Auth database
+
+exports('DatabaseAuthIsConnected', () => {
+	return Methods.isConnected(authDb);
+});
+
+exports('DatabaseAuthInsert', (params, callback) => {
+	return Methods.insert(authDb, params, callback);
+});
+
+exports('DatabaseAuthInsertOne', (params, callback) => {
+	return Methods.insertOne(authDb, params, callback);
+});
+
+exports('DatabaseAuthFind', (params, callback) => {
+	return Methods.find(authDb, params, callback);
+});
+
+exports('DatabaseAuthFindOne', (params, callback) => {
+	return Methods.findOne(authDb, params, callback);
+});
+
+exports('DatabaseAuthUpdate', (params, callback) => {
+	return Methods.update(authDb, params, callback);
+});
+
+exports('DatabaseAuthUpdateOne', (params, callback) => {
+	return Methods.updateOne(authDb, params, callback);
+});
+
+exports('DatabaseAuthDelete', (params, callback) => {
+	return Methods.delete(authDb, params, callback);
+});
+
+exports('DatabaseAuthDeleteOne', (params, callback) => {
+	return Methods.deleteOne(authDb, params, callback);
+});
+
+exports('DatabaseAuthFindOneAndUpdate', (params, callback) => {
+	return Methods.findOneAndUpdate(authDb, params, callback);
+});
+
+exports('DatabaseAuthCount', (params, callback) => {
+	return Methods.count(authDb, params, callback);
+});
+
+exports('DatabaseAuthAggregate', (params, callback) => {
+	return Methods.aggregate(authDb, params, callback);
+});
+
+AddEventHandler('onResourceStop', function (resource) {
+	if (resource === GetCurrentResourceName()) {
+		if (gameDb) {
+			gameDb.close();
+			gameDb = null;
+		}
+		if (authDb) {
+			authDb.close();
+			authDb = null;
+		}
+	}
+});
+
+AddEventHandler(
+	'Database:Server:Initialize',
+	function (a_url, a_db, g_url, g_db) {
+		if (!gameDb && !authDb) {
+			mongodb.MongoClient.connect(
+				a_url,
+				{ useNewUrlParser: true, useUnifiedTopology: true },
+				function (err, client) {
+					if (err) {
+						Log(
+							'Error connecting to auth database: ' + err.message,
+						);
+						console.log('Auth DB connection error:', err);
+					} else {
+						authDb = client.db(a_db);
+						LogTrace(
+							`[^31^7/^22^7] Connected to authentication database "${a_db}".`,
+						);
+					}
+
+					mongodb.MongoClient.connect(
+						g_url,
+						{
+							useNewUrlParser: true,
+							useUnifiedTopology: true,
+						},
+						function (err, client) {
+							if (err) {
+								Log(
+									'Error connecting to game database: ' +
+										err.message,
+								);
+								console.log('Game DB connection error:', err);
+							} else {
+								gameDb = client.db(g_db);
+								LogTrace(
+									`[^22^7/^22^7] ^7Connected to game database "${g_db}".`,
+								);
+							}
+							emit('Database:Server:Ready');
+						},
+					);
+				},
+			);
+		} else {
+			emit('Database:Server:Ready');
+		}
+	},
+);

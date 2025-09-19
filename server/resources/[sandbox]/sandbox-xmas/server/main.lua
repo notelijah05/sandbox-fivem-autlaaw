@@ -5,7 +5,6 @@ XMAS_MONTH = 12
 
 AddEventHandler("Xmas:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
@@ -17,7 +16,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Xmas", {
-		"Database",
 		"Callbacks",
 		"Middleware",
 		"Logger",

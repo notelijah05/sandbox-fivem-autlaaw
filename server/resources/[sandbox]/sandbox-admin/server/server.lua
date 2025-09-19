@@ -1,6 +1,5 @@
 AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
@@ -19,7 +18,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Admin", {
-		"Database",
 		"Logger",
 		"Callbacks",
 		"Utils",

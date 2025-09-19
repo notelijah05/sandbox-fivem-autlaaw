@@ -18,7 +18,6 @@ AddEventHandler("Evidence:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Utils = exports["sandbox-base"]:FetchComponent("Utils")
 	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -36,7 +35,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Utils",
 		"Execute",
 		"Chat",
-		"Database",
 		"Middleware",
 		"Callbacks",
 		"Logger",

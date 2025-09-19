@@ -24,7 +24,7 @@ local requiredCharacterData = {
 function GetCharacterVehiclesData(sid)
 	local p = promise.new()
 
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "vehicles",
 		query = {
 			["Owner.Type"] = 0,
@@ -55,7 +55,7 @@ _MDT.People = {
 	Search = {
 		People = function(self, term)
 			local p = promise.new()
-			Database.Game:find({
+			exports['sandbox-base']:DatabaseGameFind({
 				collection = "characters",
 				query = {
 					["$and"] = {
@@ -115,7 +115,7 @@ _MDT.People = {
 		-- 5 DB Calls Here But IDK what else to do
 		local SID = tonumber(id)
 		local p = promise.new()
-		Database.Game:findOne({
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
 			query = {
 				SID = SID,
@@ -213,7 +213,7 @@ _MDT.People = {
 			}
 		end
 
-		Database.Game:updateOne({
+		exports['sandbox-base']:DatabaseGameUpdateOne({
 			collection = "characters",
 			query = {
 				SID = id,
@@ -238,7 +238,7 @@ _MDT.People = {
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	Callbacks:RegisterServerCallback("MDT:InputSearch:people", function(source, data, cb)
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "characters",
 			query = {
 				["$and"] = {
@@ -292,7 +292,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
 	Callbacks:RegisterServerCallback("MDT:InputSearch:job", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
-			Database.Game:find({
+			exports['sandbox-base']:DatabaseGameFind({
 				collection = "characters",
 				query = {
 					["$and"] = {
@@ -366,7 +366,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
 	Callbacks:RegisterServerCallback("MDT:InputSearchSID", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
-			Database.Game:findOne({
+			exports['sandbox-base']:DatabaseGameFindOne({
 				collection = "characters",
 				query = {
 					SID = tonumber(data.term)
@@ -412,7 +412,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
 	Callbacks:RegisterServerCallback("MDT:CheckCallsign", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
-			Database.Game:findOne({
+			exports['sandbox-base']:DatabaseGameFindOne({
 				collection = "characters",
 				query = {
 					Callsign = data,

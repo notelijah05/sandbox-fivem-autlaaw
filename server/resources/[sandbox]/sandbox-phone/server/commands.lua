@@ -149,7 +149,7 @@ function RegisterChatCommands()
 				)
 			)
 		else
-			Database.Game:findOne({
+			exports['sandbox-base']:DatabaseGameFindOne({
 				collection = "characters",
 				query = {
 					SID = sid,

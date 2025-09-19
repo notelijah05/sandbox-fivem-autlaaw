@@ -25,7 +25,7 @@ function Startup()
 		return
 	end
 
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "properties",
 	}, function(success, results)
 		if not success then

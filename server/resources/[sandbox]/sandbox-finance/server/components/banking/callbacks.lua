@@ -61,7 +61,7 @@ function RegisterBankingCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data?.target > 0 then
 			local p = promise.new()
-			Database.Game:findOne({
+			exports['sandbox-base']:DatabaseGameFindOne({
 				collection = "characters",
 				query = {
 					SID = data.target,
@@ -72,18 +72,18 @@ function RegisterBankingCallbacks()
 					if tChar.User == char:GetData("User") then
 						Logger:Info("Billing",
 							string.format(
-							"%s %s (%s) [%s] Tried Adding Their Other Character (SID: %s) To a Joint Bank Account (Account: %s).",
+								"%s %s (%s) [%s] Tried Adding Their Other Character (SID: %s) To a Joint Bank Account (Account: %s).",
 								char:GetData("First"), char:GetData("Last"), char:GetData("SID"), char:GetData("User"),
 								tChar.SID, data.account), {
-							console = true,
-							file = true,
-							database = true,
-							discord = {
-								embed = true,
-								type = 'info',
-								webhook = GetConvar('discord_log_webhook', ''),
-							}
-						})
+								console = true,
+								file = true,
+								database = true,
+								discord = {
+									embed = true,
+									type = 'info',
+									webhook = GetConvar('discord_log_webhook', ''),
+								}
+							})
 
 						p:resolve(false)
 					else
@@ -165,7 +165,7 @@ function RegisterBankingCallbacks()
 			"SELECT account as Account, balance as Balance, type as Type, owner as Owner, name as Name FROM bank_accounts WHERE (type = ? AND owner = ?) OR (type = ? AND owner = ?)"
 			if jobBankAccounts and #jobBankAccounts > 0 then
 				qry = string.format(
-				"SELECT account as Account, balance as Balance, type as Type, owner as Owner, name as Name FROM bank_accounts WHERE account IN (%s) OR (type = ? AND owner = ?) OR (type = ? AND owner = ?)",
+					"SELECT account as Account, balance as Balance, type as Type, owner as Owner, name as Name FROM bank_accounts WHERE account IN (%s) OR (type = ? AND owner = ?) OR (type = ? AND owner = ?)",
 					table.concat(jobBankAccounts, ","))
 			end
 
@@ -187,11 +187,11 @@ function RegisterBankingCallbacks()
 			local jointOwnerData = {}
 			if #jointOwnerStuff > 0 then
 				local jO = MySQL.query.await(
-				string.format(
-				"SELECT account, jointOwner FROM bank_accounts_permissions WHERE account IN (%s) AND type = ?",
-					table.concat(jointOwnerStuff, ",")), {
-					1
-				})
+					string.format(
+						"SELECT account, jointOwner FROM bank_accounts_permissions WHERE account IN (%s) AND type = ?",
+						table.concat(jointOwnerStuff, ",")), {
+						1
+					})
 
 				for k, v in ipairs(jO) do
 					if not jointOwnerData[v.account] then
@@ -274,7 +274,7 @@ function RegisterBankingCallbacks()
 			end
 
 			local transactions = MySQL.query.await(
-			"SELECT type as Type, account as Account, title as Title, timestamp as Timestamp, amount as Amount, description as Description FROM bank_accounts_transactions WHERE account = ? ORDER BY timestamp DESC LIMIT ? OFFSET ?",
+				"SELECT type as Type, account as Account, title as Title, timestamp as Timestamp, amount as Amount, description as Description FROM bank_accounts_transactions WHERE account = ? ORDER BY timestamp DESC LIMIT ? OFFSET ?",
 				{
 					data.account,
 					data.perPage + 1,
@@ -309,19 +309,19 @@ function RegisterBankingCallbacks()
 			if _actionCooldowns[source] and _actionCooldowns[source] > GetGameTimer() then
 				Logger:Warn("Pwnzor",
 					string.format(
-					"%s %s (%s) Triggered 2 Bank Account Actions in 2 Seconds They Are Probably Cheating (%s)",
+						"%s %s (%s) Triggered 2 Bank Account Actions in 2 Seconds They Are Probably Cheating (%s)",
 						char:GetData("First"), char:GetData("Last"), char:GetData("SID"), json.encode(data)), {
-					console = true,
-					file = false,
-					database = true,
-					discord = {
-						embed = true,
-						type = 'error',
-						webhook = GetConvar('discord_pwnzor_webhook', ''),
-					}
-				}, {
-					data = data
-				})
+						console = true,
+						file = false,
+						database = true,
+						discord = {
+							embed = true,
+							type = 'error',
+							webhook = GetConvar('discord_pwnzor_webhook', ''),
+						}
+					}, {
+						data = data
+					})
 				Pwnzor:Screenshot(char:GetData("SID"), "Bank Account Actions Cooldown Exceeded")
 
 				cb(false)
@@ -395,7 +395,7 @@ function RegisterBankingCallbacks()
 						local p = promise.new()
 
 						if targetAccount.Type == "personal" or targetAccount.Type == "personal_savings" then
-							Database.Game:findOne({
+							exports['sandbox-base']:DatabaseGameFindOne({
 								collection = "characters",
 								query = {
 									SID = tonumber(targetAccount.Owner),
@@ -406,18 +406,18 @@ function RegisterBankingCallbacks()
 									if tChar.User == char:GetData("User") and tChar.SID ~= char:GetData("SID") then
 										Logger:Info("Billing",
 											string.format(
-											"%s %s (%s) [%s] Tried Bank Transferring to their other character (SID: %s, Account: %s).",
+												"%s %s (%s) [%s] Tried Bank Transferring to their other character (SID: %s, Account: %s).",
 												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
 												char:GetData("User"), tChar.SID, targetAccount.Account), {
-											console = true,
-											file = true,
-											database = true,
-											discord = {
-												embed = true,
-												type = 'info',
-												webhook = GetConvar('discord_log_webhook', ''),
-											}
-										})
+												console = true,
+												file = true,
+												database = true,
+												discord = {
+													embed = true,
+													type = 'info',
+													webhook = GetConvar('discord_log_webhook', ''),
+												}
+											})
 
 										p:resolve(false)
 									else

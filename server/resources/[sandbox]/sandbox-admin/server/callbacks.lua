@@ -17,7 +17,7 @@ local fuckingCharProjection = {
 function GetSpawnLocations()
     local p = promise.new()
 
-    Database.Game:find({
+    exports['sandbox-base']:DatabaseGameFind({
         collection = 'locations',
         query = {
             Type = 'spawn'
@@ -109,7 +109,7 @@ function RegisterCallbacks()
                 local char = exports['sandbox-characters']:FetchCharacterSource(data)
 
                 local p = promise.new()
-                Database.Game:find({
+                exports['sandbox-base']:DatabaseGameFind({
                     collection = "characters",
                     query = char and {
                         User = target:GetData('AccountID'),
@@ -238,7 +238,7 @@ function RegisterCallbacks()
                 }
             end
 
-            Database.Game:aggregate({
+            exports['sandbox-base']:DatabaseGameAggregate({
                 collection = 'characters',
                 aggregate = {
                     {

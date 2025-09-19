@@ -1,10 +1,8 @@
 AddEventHandler("Reputation:Shared:DependencyUpdate", RepComponents)
 function RepComponents()
 	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
@@ -12,10 +10,8 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Reputation", {
 		"Callbacks",
-		"Database",
 		"Middleware",
 		"Logger",
-		"Database",
 		"Reputation",
 		"Inventory",
 	}, function(error)

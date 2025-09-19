@@ -27,7 +27,7 @@ _LOANS = {
 	end,
 	GetPlayerLoans = function(self, stateId, type)
 		local p = promise.new()
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "loans",
 			query = {
 				SID = stateId,
@@ -82,7 +82,7 @@ _LOANS = {
 				LastPayment = 0,
 			}
 
-			Database.Game:insertOne({
+			exports['sandbox-base']:DatabaseGameInsertOne({
 				collection = "loans",
 				document = doc,
 			}, function(success, inserted)
@@ -125,7 +125,7 @@ _LOANS = {
 				LastPayment = 0,
 			}
 
-			Database.Game:insertOne({
+			exports['sandbox-base']:DatabaseGameInsertOne({
 				collection = "loans",
 				document = doc,
 			}, function(success, inserted)
@@ -296,7 +296,7 @@ _LOANS = {
 	HasRemainingPayments = function(self, assetType, assetId, checkAge)
 		-- checkAge (check if older than certain age (days))
 		local p = promise.new()
-		Database.Game:findOne({
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "loans",
 			query = {
 				Type = assetType,
@@ -340,7 +340,7 @@ _LOANS = {
 	HasBeenDefaulted = function(self, assetType, assetId)
 		local p = promise.new()
 
-		Database.Game:findOne({
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "loans",
 			query = {
 				Type = assetType,
@@ -367,7 +367,7 @@ end)
 
 function GetLoanByID(loanId, stateId)
 	local p = promise.new()
-	Database.Game:findOne({
+	exports['sandbox-base']:DatabaseGameFindOne({
 		collection = "loans",
 		query = {
 			_id = loanId,
@@ -387,7 +387,7 @@ end
 
 function UpdateLoanById(loanId, update)
 	local p = promise.new()
-	Database.Game:updateOne({
+	exports['sandbox-base']:DatabaseGameUpdateOne({
 		collection = "loans",
 		query = {
 			_id = loanId,

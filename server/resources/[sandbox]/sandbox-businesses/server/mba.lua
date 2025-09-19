@@ -2,26 +2,26 @@ local _hasFetched = false
 local defaultSetup = "basketball"
 
 local _MBAeventNames = {
-	basketball = true,
-	boxing = true,
-	concert = true,
-	curling = true,
-	derby = true,
-	fameorshame = true,
-	fashion = true,
-	football = true,
-	icehockey = true,
-	gokarta = true,
-	gokartb = true,
-	trackmaniaa = true,
-	trackmaniab = true,
-	trackmaniac = true,
-	trackmaniad = true,
-	mma = true,
-	none = true,
-	paintball = true,
-	rocketleague = true,
-	wrestling = true,
+    basketball = true,
+    boxing = true,
+    concert = true,
+    curling = true,
+    derby = true,
+    fameorshame = true,
+    fashion = true,
+    football = true,
+    icehockey = true,
+    gokarta = true,
+    gokartb = true,
+    trackmaniaa = true,
+    trackmaniab = true,
+    trackmaniac = true,
+    trackmaniad = true,
+    mma = true,
+    none = true,
+    paintball = true,
+    rocketleague = true,
+    wrestling = true,
 }
 
 function SetMBAInterior(interior)
@@ -30,7 +30,7 @@ function SetMBAInterior(interior)
     end
 
     local p = promise.new()
-    Database.Game:updateOne({
+    exports['sandbox-base']:DatabaseGameUpdateOne({
         collection = "business_configs",
         query = {
             key = "mba_setup",
@@ -61,7 +61,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         _hasFetched = true
 
         local p = promise.new()
-        Database.Game:findOne({
+        exports['sandbox-base']:DatabaseGameFindOne({
             collection = "business_configs",
             query = {
                 key = "mba_setup"
@@ -91,20 +91,20 @@ AddEventHandler("Businesses:Server:Startup", function()
         local int = args[1]
         if _MBAeventNames[int] then
             if SetMBAInterior(int) then
-                Chat.Send.System:Single(source, "Success") 
+                Chat.Send.System:Single(source, "Success")
             else
-                Chat.Send.System:Single(source, "Error") 
+                Chat.Send.System:Single(source, "Error")
             end
         else
-            Chat.Send.System:Single(source, "Invalid Interior") 
+            Chat.Send.System:Single(source, "Invalid Interior")
         end
-	end, {
-		help = "[Staff] Set Maze Bank Arena Interior",
-		params = {
-			{
-				name = "Interior Type",
-				help = "basketball, gokarta, etc.",
-			},
-		},
-	}, 1)
+    end, {
+        help = "[Staff] Set Maze Bank Arena Interior",
+        params = {
+            {
+                name = "Interior Type",
+                help = "basketball, gokarta, etc.",
+            },
+        },
+    }, 1)
 end)

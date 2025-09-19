@@ -252,7 +252,7 @@ _vehDonatorPlates = {
     DonatorPlates = {
         Add = function(self, playerIdentifier)
             local p = promise.new()
-            Database.Game:updateOne({
+            exports['sandbox-base']:DatabaseGameUpdateOne({
                 collection = "donator_plates",
                 query = {
                     player = playerIdentifier,
@@ -273,7 +273,7 @@ _vehDonatorPlates = {
         end,
         Check = function(self, playerIdentifier)
             local p = promise.new()
-            Database.Game:findOne({
+            exports['sandbox-base']:DatabaseGameFindOne({
                 collection = "donator_plates",
                 query = {
                     player = playerIdentifier,
@@ -295,7 +295,7 @@ _vehDonatorPlates = {
         end,
         Remove = function(self, playerIdentifier, amount)
             local p = promise.new()
-            Database.Game:updateOne({
+            exports['sandbox-base']:DatabaseGameUpdateOne({
                 collection = "donator_plates",
                 query = {
                     player = playerIdentifier,

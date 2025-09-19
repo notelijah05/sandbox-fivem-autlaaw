@@ -354,7 +354,7 @@ function RegisterCallbacks()
 				}
 			end
 
-			Database.Game:aggregate({
+			exports['sandbox-base']:DatabaseGameAggregate({
 				collection = "properties",
 				aggregate = {
 					{

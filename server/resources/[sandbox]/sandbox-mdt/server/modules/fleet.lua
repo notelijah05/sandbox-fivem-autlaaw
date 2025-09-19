@@ -1,11 +1,11 @@
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("MDT:ViewVehicleFleet", function(source, data, cb)
-		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
-			'FLEET_MANAGEMENT',
-		})
+  Callbacks:RegisterServerCallback("MDT:ViewVehicleFleet", function(source, data, cb)
+    local hasPerms, loggedInJob = CheckMDTPermissions(source, {
+      'FLEET_MANAGEMENT',
+    })
 
     if hasPerms and loggedInJob then
-      Database.Game:find({
+      exports['sandbox-base']:DatabaseGameFind({
         collection = "vehicles",
         query = {
           ['Owner.Type'] = 1,
@@ -49,16 +49,16 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
     else
       cb(false)
     end
-	end)
+  end)
 
-	Callbacks:RegisterServerCallback("MDT:SetAssignedDrivers", function(source, data, cb)
+  Callbacks:RegisterServerCallback("MDT:SetAssignedDrivers", function(source, data, cb)
     local hasPerms, loggedInJob = CheckMDTPermissions(source, {
-			'FLEET_MANAGEMENT',
-		})
+      'FLEET_MANAGEMENT',
+    })
 
     if hasPerms and loggedInJob and data.vehicle and data.assigned then
       local ass = {}
-      for k,v in ipairs(data.assigned) do
+      for k, v in ipairs(data.assigned) do
         table.insert(ass, {
           SID = v.SID,
           First = v.First,
@@ -67,7 +67,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         })
       end
 
-      Database.Game:updateOne({
+      exports['sandbox-base']:DatabaseGameUpdateOne({
         collection = "vehicles",
         query = {
           VIN = data.vehicle,
@@ -83,17 +83,17 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
     else
       cb(false)
     end
-	end)
+  end)
 
   Callbacks:RegisterServerCallback("MDT:TrackFleetVehicle", function(source, data, cb)
     local hasPerms, loggedInJob = CheckMDTPermissions(source, {
-			'FLEET_MANAGEMENT',
-		})
+      'FLEET_MANAGEMENT',
+    })
 
     if hasPerms and loggedInJob and data.vehicle then
       cb(Vehicles.Owned:Track(data.vehicle))
     else
       cb(false)
     end
-	end)
+  end)
 end)

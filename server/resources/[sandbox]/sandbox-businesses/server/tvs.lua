@@ -8,7 +8,7 @@ AddEventHandler('Businesses:Server:Startup', function()
             end
         end
 
-        Database.Game:find({
+        exports['sandbox-base']:DatabaseGameFind({
             collection = 'business_tvs',
             query = {}
         }, function(success, results)
@@ -45,7 +45,7 @@ end)
 function SetBusinessTVLink(tvId, link)
     local p = promise.new()
 
-    Database.Game:findOneAndUpdate({
+    exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
         collection = 'business_tvs',
         query = {
             tv = tvId,

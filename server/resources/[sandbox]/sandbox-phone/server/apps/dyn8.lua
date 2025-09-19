@@ -26,7 +26,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				}
 			end
 
-			Database.Game:aggregate({
+			exports['sandbox-base']:DatabaseGameAggregate({
 				collection = "properties",
 				aggregate = {
 					{

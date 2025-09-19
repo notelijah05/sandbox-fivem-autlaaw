@@ -93,7 +93,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
             local perm = char:GetData("LaptopPermissions")
 
             if perm["lsunderground"] and perm["lsunderground"]["admin"] then
-                Database.Game:find({
+                exports['sandbox-base']:DatabaseGameFind({
                     collection = "characters",
                     query = {
                         LSUNDGBan = {
@@ -138,7 +138,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
             local perm = char:GetData("LaptopPermissions")
 
             if perm["lsunderground"] and perm["lsunderground"]["admin"] then
-                Database.Game:updateOne({
+                exports['sandbox-base']:DatabaseGameUpdateOne({
                     collection = "characters",
                     query = {
                         SID = data.SID,
@@ -175,7 +175,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
             local perm = char:GetData("LaptopPermissions")
 
             if perm["lsunderground"] and perm["lsunderground"]["admin"] then
-                Database.Game:updateOne({
+                exports['sandbox-base']:DatabaseGameUpdateOne({
                     collection = "characters",
                     query = {
                         SID = data.SID,
