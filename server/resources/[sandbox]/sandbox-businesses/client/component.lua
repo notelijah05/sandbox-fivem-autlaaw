@@ -21,7 +21,6 @@ function RetrieveComponents()
 	StorageUnits = exports["sandbox-base"]:FetchComponent("StorageUnits")
 	HUD = exports["sandbox-base"]:FetchComponent("Hud")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
-	Stream = exports["sandbox-base"]:FetchComponent("Stream")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -48,7 +47,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"StorageUnits",
 		"Hud",
 		"Crafting",
-		"Stream",
 	}, function(error)
 		if #error > 0 then
 			return
