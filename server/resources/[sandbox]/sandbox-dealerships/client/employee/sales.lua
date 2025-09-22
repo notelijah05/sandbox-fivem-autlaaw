@@ -67,7 +67,7 @@ function OpenDealershipSales(dealerId)
                                     v.class and string.upper(v.class) or '?',
                                     _catalogCategories[v.category],
                                     v.price and
-                                    ('$' .. formatNumberToCurrency(math.floor(exports['sandbox-base']:UtilsRound(v.price * minSaleMultiplier), 0)))) or
+                                    ('$' .. formatNumberToCurrency(math.floor(exports['sandbox-base']:UtilsRound(v.price * minSaleMultiplier), 0))) or
                                     '$?',
                                     (v.lastPurchased and GetFormattedTimeFromSeconds(serverTime - v.lastPurchased) .. ' ago.' or 'Never')
                                 ), { 'code', 'pad' })
