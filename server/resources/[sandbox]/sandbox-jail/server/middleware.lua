@@ -1,5 +1,5 @@
 function RegisterMiddleware()
-	Middleware:Add("Characters:Creating", function(source, cData)
+	exports['sandbox-base']:Add("Characters:Creating", function(source, cData)
 		return {
 			{
 				Jailed = false,
@@ -7,7 +7,7 @@ function RegisterMiddleware()
 		}
 	end)
 
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:Add("Characters:Spawning", function(source)
 		local _src = source
 		local currentTime = os.time() * 1000
 
@@ -36,6 +36,6 @@ function RegisterMiddleware()
 		end
 	end
 
-	Middleware:Add("Characters:Logout", CheckJailed, 1)
-	Middleware:Add("playerDropped", CheckJailed, 1)
+	exports['sandbox-base']:Add("Characters:Logout", CheckJailed, 1)
+	exports['sandbox-base']:Add("playerDropped", CheckJailed, 1)
 end

@@ -31,7 +31,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		DamageComponents()
 		RegisterChatCommands()
 
-		Middleware:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:Add("Characters:Spawning", function(source)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local sid = char:GetData("SID")

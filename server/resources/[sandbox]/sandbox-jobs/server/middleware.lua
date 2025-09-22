@@ -1,14 +1,14 @@
 function RegisterJobMiddleware()
-    Middleware:Add('Characters:Logout', function(source)
+    exports['sandbox-base']:Add('Characters:Logout', function(source)
         Jobs.Duty:Off(source)
-	end, 1)
+    end, 1)
 
-    Middleware:Add('playerDropped', function(source)
-		Jobs.Duty:Off(source)
-	end, 1)
+    exports['sandbox-base']:Add('playerDropped', function(source)
+        Jobs.Duty:Off(source)
+    end, 1)
 
-    Middleware:Add("Characters:GetSpawnPoints", function(source, charId, cData)
-		local spawns = {}
+    exports['sandbox-base']:Add("Characters:GetSpawnPoints", function(source, charId, cData)
+        local spawns = {}
 
         if cData.Jobs and type(cData.Jobs) == 'table' then
             for k, v in ipairs(cData.Jobs) do
@@ -29,6 +29,6 @@ function RegisterJobMiddleware()
             end
         end
 
-		return spawns
-	end, 4)
+        return spawns
+    end, 4)
 end

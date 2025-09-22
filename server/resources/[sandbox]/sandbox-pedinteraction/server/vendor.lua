@@ -48,7 +48,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RetrieveVendorComponents()
 		StartRestockThread()
 
-		Middleware:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:Add("Characters:Spawning", function(source)
 			local tmp = {}
 			for k, v in pairs(_created) do
 				tmp[v.id] = {

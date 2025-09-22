@@ -28,7 +28,7 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:Add("Characters:Spawning", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local alias = char:GetData("Alias")
 		if alias.irc then
@@ -37,7 +37,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		end
 	end, 1)
 
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:Add("Characters:Spawning", function(source)
 		local sid = exports['sandbox-characters']:FetchCharacterSource(source):GetData("SID")
 		_groups[sid] = MySQL.query.await(
 			"SELECT g.id, g.label, g.icon, g.owner, cg.joined_date, (SELECT UNIX_TIMESTAMP(MAX(m.timestamp)) AS timestamp FROM chatter_messages m WHERE m.group = cg.chatty_group) as last_message FROM character_chatter_groups cg INNER JOIN chatter_groups g ON g.id = cg.chatty_group WHERE cg.sid = ?",

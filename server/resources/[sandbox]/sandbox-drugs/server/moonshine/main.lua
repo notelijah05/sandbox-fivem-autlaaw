@@ -217,7 +217,7 @@ AddEventHandler("Drugs:Server:Startup", function()
 
     exports['sandbox-base']:LoggerTrace("Drugs:Moonshine", string.format("Restored ^2%s^7 Moonshine Barrels", #barrels))
 
-    Middleware:Add("Characters:Spawning", function(source)
+    exports['sandbox-base']:Add("Characters:Spawning", function(source)
         TriggerLatentClientEvent("Drugs:Client:Moonshine:SetupStills", source, 50000, _placedStills)
         TriggerLatentClientEvent("Drugs:Client:Moonshine:SetupBarrels", source, 50000, _placedBarrels)
     end, 1)

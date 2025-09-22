@@ -7,7 +7,7 @@ AddEventHandler("Crypto:Server:Startup", function()
 	Crypto.Coin:Create("Mald", "MALD", 250, true, 190)
 
 	-- Compatability since we're renaming MALD
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:Add("Characters:Spawning", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myCrypto = char:GetData("Crypto")
 

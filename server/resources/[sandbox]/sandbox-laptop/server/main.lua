@@ -167,7 +167,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 AddEventHandler("Laptop:Server:RegisterMiddleware", function()
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:Add("Characters:Spawning", function(source)
 		Laptop:UpdateJobData(source)
 		TriggerClientEvent("Laptop:Client:SetApps", source, LAPTOP_APPS)
 
@@ -200,12 +200,12 @@ AddEventHandler("Laptop:Server:RegisterMiddleware", function()
 			char:SetData("LaptopApps", defaultApps())
 		end
 	end, 1)
-	Middleware:Add("Laptop:UIReset", function(source)
+	exports['sandbox-base']:Add("Laptop:UIReset", function(source)
 		Laptop:UpdateJobData(source)
 		TriggerClientEvent("Laptop:Client:SetApps", source, LAPTOP_APPS)
 	end)
-	Middleware:Add("Characters:Creating", function(source, cData)
-		local t = Middleware:TriggerEventWithData("Laptop:CharacterCreated", source, cData)
+	exports['sandbox-base']:Add("Characters:Creating", function(source, cData)
+		local t = exports['sandbox-base']:TriggerEventWithData("Laptop:CharacterCreated", source, cData)
 
 		return {
 			{
@@ -218,7 +218,7 @@ AddEventHandler("Laptop:Server:RegisterMiddleware", function()
 end)
 
 RegisterNetEvent("Laptop:Server:UIReset", function()
-	Middleware:TriggerEvent("Laptop:UIReset", source)
+	exports['sandbox-base']:TriggerEvent("Laptop:UIReset", source)
 end)
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()

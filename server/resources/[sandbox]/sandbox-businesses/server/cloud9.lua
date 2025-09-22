@@ -107,7 +107,7 @@ _DRIFT = {
 					licenses["Drift"].Active = false
 					licenses["Drift"].Suspended = true
 					char:SetData("Licenses", licenses)
-					Middleware:TriggerEvent("Characters:ForceStore", targetSrc)
+					exports['sandbox-base']:TriggerEvent("Characters:ForceStore", targetSrc)
 					exports['sandbox-base']:ExecuteClient(targetSrc, "Notification", "Error",
 						"Your Drift License has been revoked.")
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
@@ -141,7 +141,7 @@ _DRIFT = {
 							licenses["Drift"].Suspended = false
 							licenses["Drift"].Active = true
 							char:SetData("Licenses", licenses)
-							Middleware:TriggerEvent("Characters:ForceStore", targetSrc)
+							exports['sandbox-base']:TriggerEvent("Characters:ForceStore", targetSrc)
 							Phone.Notification:Add(
 								targetSrc,
 								"Payment Successful",

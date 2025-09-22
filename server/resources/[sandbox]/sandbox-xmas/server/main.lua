@@ -29,7 +29,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		Startup()
 		StartThreading()
 
-		Middleware:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:Add("Characters:Spawning", function(source)
 			if _currentDate.month == XMAS_MONTH then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then

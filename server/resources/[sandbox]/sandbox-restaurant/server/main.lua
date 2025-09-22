@@ -19,7 +19,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RetrieveComponents()
 		Startup()
 
-		Middleware:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:Add("Characters:Spawning", function(source)
 			RunRestaurantJobUpdate(source, true)
 		end, 2)
 	end)

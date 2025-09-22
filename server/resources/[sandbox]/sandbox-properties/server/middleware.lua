@@ -1,11 +1,11 @@
 function RegisterMiddleware()
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:Add("Characters:Spawning", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		TriggerLatentClientEvent("Properties:Client:Load", source, 50000, _properties,
 			_charPropertyKeys[char:GetData("ID")])
 	end)
 
-	Middleware:Add("Characters:GetSpawnPoints", function(source, charId)
+	exports['sandbox-base']:Add("Characters:GetSpawnPoints", function(source, charId)
 		local p = promise.new()
 
 		exports['sandbox-base']:DatabaseGameFind({

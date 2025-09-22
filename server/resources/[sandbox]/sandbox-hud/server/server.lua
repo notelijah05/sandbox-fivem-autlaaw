@@ -19,7 +19,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end -- Do something to handle if not all dependencies loaded
 		RetrieveComponents()
 
-		Middleware:Add("Characters:Creating", function(source, cData)
+		exports['sandbox-base']:Add("Characters:Creating", function(source, cData)
 			return {
 				{
 					HUDConfig = {
@@ -37,7 +37,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				},
 			}
 		end)
-		Middleware:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:Add("Characters:Spawning", function(source)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local config = char:GetData("HUDConfig")
 			if not config then

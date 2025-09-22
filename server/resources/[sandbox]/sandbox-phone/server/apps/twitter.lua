@@ -59,7 +59,7 @@ function ClearAllTweets(account)
 end
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	Middleware:Add("Phone:CreateProfiles", function(source, cData)
+	exports['sandbox-base']:Add("Phone:CreateProfiles", function(source, cData)
 		local name = string.format("%s%s%s", cData.First, cData.Last, cData.SID)
 
 		local id = MySQL.insert.await(
@@ -86,7 +86,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		}
 	end)
 
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:Add("Characters:Spawning", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local alias = char:GetData("Alias")
 		local profiles = char:GetData("Profiles") or {}

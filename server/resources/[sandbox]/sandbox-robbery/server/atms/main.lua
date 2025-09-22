@@ -243,7 +243,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:Add("Characters:Spawning", function(source)
 		Player(source).state.ATMRobbery = false
 	end, 10)
 end)

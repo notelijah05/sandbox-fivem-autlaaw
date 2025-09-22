@@ -1,5 +1,5 @@
 RegisterServerEvent('Characters:Server:Spawning', function()
-    Middleware:TriggerEvent("Characters:Spawning", source)
+    exports['sandbox-base']:TriggerEvent("Characters:Spawning", source)
 end)
 
 RegisterServerEvent('Ped:LeaveCreator', function()

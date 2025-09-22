@@ -28,14 +28,14 @@ end)
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	LoadTracks()
 
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:Add("Characters:Spawning", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		TriggerLatentClientEvent("Phone:Client:Blueline:StoreTracks", source, 50000, _tracks)
 		TriggerClientEvent("Phone:Client:Blueline:Spawn", source, {
 			races = _races,
 		})
 	end, 2)
-	Middleware:Add("Phone:UIReset", function(source)
+	exports['sandbox-base']:Add("Phone:UIReset", function(source)
 		TriggerLatentClientEvent("Phone:Client:Blueline:StoreTracks", source, 50000, _tracks)
 		TriggerClientEvent("Phone:Client:Blueline:Spawn", source, {
 			races = _races,

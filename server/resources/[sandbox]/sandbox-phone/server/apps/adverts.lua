@@ -32,7 +32,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	Middleware:Add("Phone:Spawning", function(source, char)
+	exports['sandbox-base']:Add("Phone:Spawning", function(source, char)
 		return {
 			{
 				type = "adverts",

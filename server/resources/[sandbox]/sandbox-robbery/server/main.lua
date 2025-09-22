@@ -267,7 +267,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		Crypto.Coin:Create("HEIST", "HEIST", 100, false, false)
 
-		Middleware:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:Add("Characters:Spawning", function(source)
 			TriggerClientEvent("Robbery:Client:State:Init", source, _bankStates)
 		end)
 

@@ -29,7 +29,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RegisterCallbacks()
 
 
-		Middleware:Add("Characters:Logout", function(source)
+		exports['sandbox-base']:Add("Characters:Logout", function(source)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local p = promise.new()

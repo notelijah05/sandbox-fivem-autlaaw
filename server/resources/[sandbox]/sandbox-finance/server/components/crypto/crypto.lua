@@ -1,11 +1,11 @@
 AddEventHandler("Finance:Server:Startup", function()
-	Middleware:Add("Characters:Creating", function(source, cData)
+	exports['sandbox-base']:Add("Characters:Creating", function(source, cData)
 		return { {
 			Crypto = {},
 		} }
 	end)
 
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:Add("Characters:Spawning", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and not char:GetData("CryptoWallet") then
 			local stateId = char:GetData("SID")

@@ -540,14 +540,14 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:Add("Characters:Spawning", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if _pendingHires[char:GetData("SID")] ~= nil then
 			local data = _pendingHires[char:GetData("SID")]
 			TriggerClientEvent("Phone:Client:CoManager:GetJobOffer", source, data.time, data.NewJob)
 		end
 	end, 2)
-	Middleware:Add("Phone:Spawning", function(source, char)
+	exports['sandbox-base']:Add("Phone:Spawning", function(source, char)
 		return {
 			{
 				type = "externalJobs",

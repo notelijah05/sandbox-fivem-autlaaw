@@ -101,7 +101,7 @@ _JOBS = {
 			local source = char:GetData("Source")
 			char:SetData("Jobs", charJobData)
 
-			Middleware:TriggerEvent("Characters:ForceStore", source)
+			exports['sandbox-base']:TriggerEvent("Characters:ForceStore", source)
 
 			Phone:UpdateJobData(source)
 
@@ -186,7 +186,7 @@ _JOBS = {
 				char:SetData("Jobs", charJobData)
 				Jobs.Duty:Off(source, jobId, true)
 
-				Middleware:TriggerEvent("Characters:ForceStore", source)
+				exports['sandbox-base']:TriggerEvent("Characters:ForceStore", source)
 				Phone:UpdateJobData(source)
 				TriggerEvent("Jobs:Server:JobUpdate", source)
 
@@ -657,7 +657,7 @@ _JOBS = {
 		end,
 		Transfer = function(self, jobId, newOwner)
 			-- TODO
-			--Middleware:TriggerEvent("Business:Transfer", jobId, source:GetData("SID"), target:GetData("SID"))
+			--exports['sandbox-base']:TriggerEvent("Business:Transfer", jobId, source:GetData("SID"), target:GetData("SID"))
 		end,
 		Upgrades = {
 			-- TODO

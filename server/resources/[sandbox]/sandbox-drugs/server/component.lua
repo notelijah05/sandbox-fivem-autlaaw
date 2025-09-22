@@ -51,7 +51,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RegisterItemUse()
 		RunDegenThread()
 
-		Middleware:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:Add("Characters:Spawning", function(source)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local addictions = char:GetData("Addiction")

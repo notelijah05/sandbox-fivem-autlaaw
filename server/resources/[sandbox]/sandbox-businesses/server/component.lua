@@ -45,7 +45,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		TriggerEvent("Businesses:Server:Startup")
 
-		Middleware:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:Add("Characters:Spawning", function(source)
 			TriggerClientEvent(
 				"Taco:SetQueue",
 				source,
@@ -53,7 +53,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			)
 		end, 2)
 
-		Middleware:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:Add("Characters:Spawning", function(source)
 			TriggerLatentClientEvent("Businesses:Client:CreatePoly", source, 50000, _pickups)
 		end, 2)
 
