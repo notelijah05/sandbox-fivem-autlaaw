@@ -1,5 +1,5 @@
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	exports['sandbox-base']:Add("Phone:Spawning", function(source, char)
+	exports['sandbox-base']:MiddlewareAdd("Phone:Spawning", function(source, char)
 		return {
 			{
 				type = "garages",

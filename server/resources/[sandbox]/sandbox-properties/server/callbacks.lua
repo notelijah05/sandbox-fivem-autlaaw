@@ -99,7 +99,7 @@ function RegisterCallbacks()
 			local routeId = Routing:RequestRouteId("Properties:" .. data.id, false)
 			Routing:AddPlayerToRoute(source, routeId)
 			GlobalState[string.format("%s:Property", source)] = data.id
-			exports['sandbox-base']:TriggerEvent("Properties:Enter", source, data.id)
+			exports['sandbox-base']:MiddlewareTriggerEvent("Properties:Enter", source, data.id)
 
 			if not _insideProperties[property.id] then
 				_insideProperties[property.id] = {}
@@ -131,7 +131,7 @@ function RegisterCallbacks()
 			local routeId = Routing:RequestRouteId("Properties:" .. data, false)
 			Routing:AddPlayerToRoute(source, routeId)
 			GlobalState[string.format("%s:Property", source)] = data
-			exports['sandbox-base']:TriggerEvent("Properties:Enter", source, data)
+			exports['sandbox-base']:MiddlewareTriggerEvent("Properties:Enter", source, data)
 
 			if not _insideProperties[property.id] then
 				_insideProperties[property.id] = {}
@@ -154,7 +154,7 @@ function RegisterCallbacks()
 		local property = GlobalState[string.format("%s:Property", source)]
 
 		Pwnzor.Players:TempPosIgnore(source)
-		exports['sandbox-base']:TriggerEvent("Properties:Exit", source, property)
+		exports['sandbox-base']:MiddlewareTriggerEvent("Properties:Exit", source, property)
 		Routing:RoutePlayerToGlobalRoute(source)
 		GlobalState[string.format("%s:Property", source)] = nil
 

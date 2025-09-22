@@ -50,7 +50,7 @@ PHONE.Email = {
 }
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	exports['sandbox-base']:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local alias = char:GetData("Alias")
 		local profiles = char:GetData("Profiles") or {}
@@ -104,7 +104,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		end
 	end, 2)
 
-	exports['sandbox-base']:Add("Phone:Spawning", function(source, char)
+	exports['sandbox-base']:MiddlewareAdd("Phone:Spawning", function(source, char)
 		local emails = MySQL.rawExecute.await(
 			"SELECT id, sid, sender, subject, body, UNIX_TIMESTAMP(timestamp) as time, flags, expires FROM character_emails WHERE sid = ? AND (expires IS NULL or expires > NOW()) ORDER BY time DESC LIMIT 150",
 			{
@@ -126,7 +126,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		}
 	end)
 
-	exports['sandbox-base']:Add("Phone:CreateProfiles", function(source, cData)
+	exports['sandbox-base']:MiddlewareAdd("Phone:CreateProfiles", function(source, cData)
 		local name = string.format("%s_%s%d@sandboxrp.gg", cData.First, cData.Last, cData.SID)
 
 		local id = MySQL.insert.await(

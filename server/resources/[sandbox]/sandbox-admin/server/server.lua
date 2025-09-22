@@ -31,7 +31,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RegisterChatCommands()
 		StartDashboardThread()
 
-		exports['sandbox-base']:Add('Characters:Spawning', function(source)
+		exports['sandbox-base']:MiddlewareAdd('Characters:Spawning', function(source)
 			local player = exports['sandbox-base']:FetchSource(source)
 
 			if player and player.Permissions:IsStaff() then

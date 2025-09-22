@@ -68,7 +68,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 function RegisterMiddleware()
-	exports['sandbox-base']:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		VOIP:AddPlayer(source)
 	end, 3)
 end

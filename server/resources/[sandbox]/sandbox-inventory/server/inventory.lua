@@ -224,7 +224,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			_govAccount = f.Account
 		end
 
-		exports['sandbox-base']:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 			TriggerLatentClientEvent("Inventory:Client:PolySetup", source, 50000, _polyInvs)
 
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -240,7 +240,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end, 1)
 
-		exports['sandbox-base']:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 			local benches = {}
 			for k, v in pairs(_types) do
 				table.insert(benches, {
@@ -257,7 +257,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			TriggerLatentClientEvent("Inventory:Client:BasicShop:Set", source, 50000, _playerShops)
 		end, 2)
 
-		exports['sandbox-base']:Add("Characters:Created", function(source, cData)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Created", function(source, cData)
 			local player = exports['sandbox-base']:FetchSource(source)
 			local docs = {}
 

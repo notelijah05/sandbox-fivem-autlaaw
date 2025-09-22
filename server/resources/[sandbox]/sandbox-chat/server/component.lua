@@ -38,7 +38,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 function RegisterMiddleware()
-	exports['sandbox-base']:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		Chat.Refresh:Commands(source)
 	end, 3)
 end

@@ -136,7 +136,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	exports['sandbox-base']:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char:GetData("PhonePosition") == nil then
@@ -159,7 +159,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 			char:SetData("Apps", apps)
 		end
 	end, -1)
-	exports['sandbox-base']:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		Phone:UpdateJobData(source)
 		TriggerClientEvent("Phone:Client:SetApps", source, PHONE_APPS)
 
@@ -184,7 +184,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 			char:SetData("PhonePermissions", myPerms)
 		end
 	end, 1)
-	exports['sandbox-base']:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local data = MySQL.rawExecute.await("SELECT app, name, picture, meta FROM character_app_profiles WHERE sid = ?",
@@ -207,21 +207,21 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 			char:SetData("Profiles", {})
 		end
 
-		local t = exports['sandbox-base']:TriggerEventWithData("Phone:Spawning", source, char)
+		local t = exports['sandbox-base']:MiddlewareTriggerEventWithData("Phone:Spawning", source, char)
 		TriggerLatentClientEvent("Phone:Client:SetDataMulti", source, 50000, t)
 	end, 1)
-	exports['sandbox-base']:Add("Phone:UIReset", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Phone:UIReset", function(source)
 		local plyr = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			Phone:UpdateJobData(source)
 			TriggerClientEvent("Phone:Client:SetApps", source, PHONE_APPS)
 
-			local t = exports['sandbox-base']:TriggerEventWithData("Phone:Spawning", source, char)
+			local t = exports['sandbox-base']:MiddlewareTriggerEventWithData("Phone:Spawning", source, char)
 			TriggerLatentClientEvent("Phone:Client:SetDataMulti", source, 50000, t)
 		end
 	end)
-	exports['sandbox-base']:Add("Characters:Creating", function(source, cData)
-		local t = exports['sandbox-base']:TriggerEventWithData("Phone:CharacterCreated", source, cData) or {}
+	exports['sandbox-base']:MiddlewareAdd("Characters:Creating", function(source, cData)
+		local t = exports['sandbox-base']:MiddlewareTriggerEventWithData("Phone:CharacterCreated", source, cData) or {}
 		local aliases = {}
 
 		for k, v in ipairs(t) do
@@ -230,7 +230,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 			end
 		end
 
-		local p = exports['sandbox-base']:TriggerEventWithData("Phone:CreateProfiles", source, cData) or {}
+		local p = exports['sandbox-base']:MiddlewareTriggerEventWithData("Phone:CreateProfiles", source, cData) or {}
 		local profiles = {}
 
 		for k, v in ipairs(p) do
@@ -251,7 +251,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 RegisterNetEvent("Phone:Server:UIReset", function()
-	exports['sandbox-base']:TriggerEvent("Phone:UIReset", source)
+	exports['sandbox-base']:MiddlewareTriggerEvent("Phone:UIReset", source)
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()

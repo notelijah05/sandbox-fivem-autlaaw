@@ -9,7 +9,7 @@ _boostingEvent = false
 -- TriggerClientEvent("EmergencyAlerts:Client:TrackerBlip", -1, "police", "boosting-1", "[Police]: S+ Boost (Elgin Ave)", vector3(110, 0, 0), 523, 6, 1.0, true)
 
 AddEventHandler("Laptop:Server:RegisterMiddleware", function()
-    exports['sandbox-base']:Add("Characters:Spawning", function(source)
+    exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and char:GetData("BoostingContracts") then
             local contracts = char:GetData("BoostingContracts")

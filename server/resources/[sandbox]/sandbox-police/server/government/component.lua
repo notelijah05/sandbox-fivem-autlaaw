@@ -39,7 +39,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						licenses[_licenses[data].key].Active = true
 						char:SetData("Licenses", licenses)
 
-						exports['sandbox-base']:TriggerEvent("Characters:ForceStore", source)
+						exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
 					else
 						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
 							"Unable To Purchase License")
@@ -68,7 +68,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					if Wallet:Modify(source, -20) then
 						licenses["Weapons"].Active = true
 						char:SetData("Licenses", licenses)
-						exports['sandbox-base']:TriggerEvent("Characters:ForceStore", source)
+						exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
 					else
 						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
 					end

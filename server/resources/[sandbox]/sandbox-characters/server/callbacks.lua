@@ -201,7 +201,7 @@ function RegisterCallbacks()
 				},
 			}
 
-			local extra = exports['sandbox-base']:TriggerEventWithData("Characters:Creating", source, doc)
+			local extra = exports['sandbox-base']:MiddlewareTriggerEventWithData("Characters:Creating", source, doc)
 			for k, v in ipairs(extra) do
 				for k2, v2 in pairs(v) do
 					if k2 ~= "ID" then
@@ -220,7 +220,7 @@ function RegisterCallbacks()
 				end
 				doc.ID = insertedIds[1]
 				TriggerEvent("Characters:Server:CharacterCreated", doc)
-				exports['sandbox-base']:TriggerEvent("Characters:Created", source, doc)
+				exports['sandbox-base']:MiddlewareTriggerEvent("Characters:Created", source, doc)
 				cb(doc)
 
 				exports['sandbox-base']:LoggerInfo(
@@ -355,7 +355,8 @@ function RegisterCallbacks()
 					},
 				})
 			else
-				local spawns = exports['sandbox-base']:TriggerEventWithData("Characters:GetSpawnPoints", source, data,
+				local spawns = exports['sandbox-base']:MiddlewareTriggerEventWithData("Characters:GetSpawnPoints", source,
+					data,
 					results[1])
 				cb(spawns or {})
 			end
@@ -395,7 +396,7 @@ function RegisterCallbacks()
 
 			GlobalState[string.format("SID:%s", source)] = cData.SID
 
-			exports['sandbox-base']:TriggerEvent("Characters:CharacterSelected", source)
+			exports['sandbox-base']:MiddlewareTriggerEvent("Characters:CharacterSelected", source)
 
 			cb(cData)
 		end)
@@ -413,7 +414,7 @@ function RegisterCallbacks()
 
 			TriggerEvent("Characters:Server:PlayerLoggedOut", source, cData)
 
-			exports['sandbox-base']:TriggerEvent("Characters:Logout", source)
+			exports['sandbox-base']:MiddlewareTriggerEvent("Characters:Logout", source)
 			ONLINE_CHARACTERS[source] = nil
 			GlobalState[string.format("SID:%s", source)] = nil
 			TriggerClientEvent("Characters:Client:Logout", source)
@@ -468,24 +469,24 @@ AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
 end)
 
 function RegisterMiddleware()
-	exports['sandbox-base']:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		_fuckingBozos[source] = nil
 		TriggerClientEvent("Characters:Client:Spawned", source)
 	end, 100000)
-	exports['sandbox-base']:Add("Characters:ForceStore", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:ForceStore", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			StoreData(source)
 		end
 	end, 100000)
-	exports['sandbox-base']:Add("Characters:Logout", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Logout", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			StoreData(source)
 		end
 	end, 10000)
 
-	exports['sandbox-base']:Add("Characters:GetSpawnPoints", function(source, id)
+	exports['sandbox-base']:MiddlewareAdd("Characters:GetSpawnPoints", function(source, id)
 		if id then
 			local hasLastLocation = _lastSpawnLocations[id]
 			if hasLastLocation and hasLastLocation.time and (os.time() - hasLastLocation.time) <= (60 * 5) then
@@ -508,7 +509,7 @@ function RegisterMiddleware()
 		return {}
 	end, 1)
 
-	exports['sandbox-base']:Add("Characters:GetSpawnPoints", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:GetSpawnPoints", function(source)
 		local spawns = {}
 		for k, v in ipairs(Spawns) do
 			v.event = "Characters:GlobalSpawn"
@@ -517,14 +518,14 @@ function RegisterMiddleware()
 		return spawns
 	end, 5)
 
-	exports['sandbox-base']:Add("playerDropped", function(source, message)
+	exports['sandbox-base']:MiddlewareAdd("playerDropped", function(source, message)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			StoreData(source)
 		end
 	end, 10000)
 
-	exports['sandbox-base']:Add("Characters:Logout", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Logout", function(source)
 		local pState = Player(source).state
 		if pState?.tpLocation then
 			_tempLastLocation[source] = pState?.tpLocation
@@ -534,7 +535,7 @@ function RegisterMiddleware()
 		HandleLastLocation(source)
 	end, 1)
 
-	exports['sandbox-base']:Add("playerDropped", HandleLastLocation, 6)
+	exports['sandbox-base']:MiddlewareAdd("playerDropped", HandleLastLocation, 6)
 end
 
 AddEventHandler("playerDropped", function()

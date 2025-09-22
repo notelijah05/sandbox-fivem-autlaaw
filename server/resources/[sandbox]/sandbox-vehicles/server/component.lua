@@ -59,7 +59,7 @@ AddEventHandler('Core:Shared:Ready', function()
 end)
 
 function RegisterMiddleware()
-    exports['sandbox-base']:Add('Characters:Spawning', function(source)
+    exports['sandbox-base']:MiddlewareAdd('Characters:Spawning', function(source)
         local id = exports['sandbox-characters']:FetchCharacterSource(source):GetData('SID')
         if VEHICLE_KEYS[id] == nil then
             VEHICLE_KEYS[id] = {}
@@ -67,7 +67,7 @@ function RegisterMiddleware()
         TriggerClientEvent('Vehicles:Client:UpdateKeys', source, VEHICLE_KEYS[id])
     end, 5)
 
-    -- exports['sandbox-base']:Add('playerDropped', function(source)
+    -- exports['sandbox-base']:MiddlewareAdd('playerDropped', function(source)
     --     local sourceSpawnVehicles = ACTIVE_OWNED_VEHICLES_SPAWNERS[source]
     --     if sourceSpawnVehicles and #sourceSpawnVehicles > 0 then
     --         for k, v in ipairs(sourceSpawnVehicles) do

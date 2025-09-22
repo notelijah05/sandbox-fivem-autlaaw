@@ -157,7 +157,7 @@ RegisterNetEvent("Phone:Server:ForceEndBizCall", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	exports['sandbox-base']:Add("Phone:Spawning", function(source, char)
+	exports['sandbox-base']:MiddlewareAdd("Phone:Spawning", function(source, char)
 		local t = MySQL.query.await(
 			"SELECT id, owner, number, UNIX_TIMESTAMP(time) as time, method, duration, anonymous, limited, unread FROM character_calls WHERE owner = ? ORDER BY time DESC LIMIT 100",
 			{

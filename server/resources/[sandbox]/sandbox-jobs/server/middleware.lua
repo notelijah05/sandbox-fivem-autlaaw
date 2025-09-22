@@ -1,13 +1,13 @@
 function RegisterJobMiddleware()
-    exports['sandbox-base']:Add('Characters:Logout', function(source)
+    exports['sandbox-base']:MiddlewareAdd('Characters:Logout', function(source)
         Jobs.Duty:Off(source)
     end, 1)
 
-    exports['sandbox-base']:Add('playerDropped', function(source)
+    exports['sandbox-base']:MiddlewareAdd('playerDropped', function(source)
         Jobs.Duty:Off(source)
     end, 1)
 
-    exports['sandbox-base']:Add("Characters:GetSpawnPoints", function(source, charId, cData)
+    exports['sandbox-base']:MiddlewareAdd("Characters:GetSpawnPoints", function(source, charId, cData)
         local spawns = {}
 
         if cData.Jobs and type(cData.Jobs) == 'table' then

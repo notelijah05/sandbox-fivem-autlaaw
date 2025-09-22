@@ -17,7 +17,7 @@ PHONE.Contacts = {
 }
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	exports['sandbox-base']:Add("Phone:Spawning", function(source, char)
+	exports['sandbox-base']:MiddlewareAdd("Phone:Spawning", function(source, char)
 		local contacts = MySQL.query.await(
 			"SELECT id, sid, number, name, avatar, color, favorite FROM character_contacts WHERE sid = ?",
 			{

@@ -10,7 +10,7 @@ CreateThread(function()
 				if char ~= nil then
 					TriggerEvent("Characters:Server:PlayerDropped", k, char:GetData())
 				end
-				exports['sandbox-base']:TriggerEvent("playerDropped", k, "Time Out")
+				exports['sandbox-base']:MiddlewareTriggerEvent("playerDropped", k, "Time Out")
 				COMPONENTS.Players[k] = nil
 			end
 		end
@@ -19,7 +19,7 @@ CreateThread(function()
 end)
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports['sandbox-base']:Add("playerDropped", function(source, message)
+	exports['sandbox-base']:MiddlewareAdd("playerDropped", function(source, message)
 		local player = COMPONENTS.Players[source]
 		if player ~= nil then
 			local lastLocationMessage = ""
@@ -49,7 +49,7 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 			)
 		end
 	end, 1)
-	exports['sandbox-base']:Add("playerDropped", function(source, message)
+	exports['sandbox-base']:MiddlewareAdd("playerDropped", function(source, message)
 		local player = COMPONENTS.Players[source]
 		if player ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)

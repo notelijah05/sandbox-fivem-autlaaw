@@ -14,7 +14,7 @@ local _saleData = {
 AddEventHandler("Labor:Server:Startup", function()
 	RegisterHuntingItems()
 
-	exports['sandbox-base']:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		TriggerClientEvent("Hunting:Client:Polys", source, HuntingConfig)
 	end)
 

@@ -74,7 +74,7 @@ function RegisterChatCommands()
 end
 
 function RegisterWardrobeMiddleware()
-	exports['sandbox-base']:Add("Characters:Creating", function(source, cData)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Creating", function(source, cData)
 		return { {
 			Wardrobe = {},
 		} }

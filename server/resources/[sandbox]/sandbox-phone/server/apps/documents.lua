@@ -142,7 +142,7 @@ local function GetDocument(id, sid)
 end
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	exports['sandbox-base']:Add("Phone:Spawning", function(source, char)
+	exports['sandbox-base']:MiddlewareAdd("Phone:Spawning", function(source, char)
 		local sid = char:GetData("SID")
 		return {
 			{

@@ -26,7 +26,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 function RegisterMiddleware()
-	exports['sandbox-base']:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("Animations") == nil then
 			char:SetData("Animations", { walk = "default", expression = "default", emoteBinds = {} })

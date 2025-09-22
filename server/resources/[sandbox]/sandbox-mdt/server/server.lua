@@ -81,7 +81,7 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 end)
 
 function RegisterMiddleware()
-	exports['sandbox-base']:Add('Characters:Spawning', function(source)
+	exports['sandbox-base']:MiddlewareAdd('Characters:Spawning', function(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and char:GetData("Attorney") then
 			Citizen.SetTimeout(5000, function()

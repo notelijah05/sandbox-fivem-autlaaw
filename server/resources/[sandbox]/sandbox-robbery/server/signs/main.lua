@@ -16,7 +16,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		{ label = "Pls Stop", value = 35000 },
 	}, false)
 
-	exports['sandbox-base']:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		TriggerLatentClientEvent("Robbery:Signs:GetObjects", source, 50000, objects)
 	end)
 

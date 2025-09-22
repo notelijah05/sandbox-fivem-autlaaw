@@ -44,7 +44,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		exports['sandbox-base']:LoggerTrace("Objects",
 			string.format("Restored ^2%s^7 Persistant Props From Database", restored))
 
-		exports['sandbox-base']:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 			TriggerClientEvent("Objects:Client:SetupObjects", source, _placedProps)
 		end, 1)
 

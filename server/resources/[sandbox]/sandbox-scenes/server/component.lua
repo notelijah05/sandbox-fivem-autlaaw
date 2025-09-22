@@ -114,7 +114,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		exports['sandbox-base']:Add("Characters:Spawning", function(source)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 			TriggerClientEvent("Scenes:Client:RecieveScenes", source, _loadedScenes)
 		end, 5)
 
