@@ -2,7 +2,6 @@ _placedProps = {}
 
 AddEventHandler("Objects:Shared:DependencyUpdate", RetrieveObjectsComponents)
 function RetrieveObjectsComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
@@ -11,7 +10,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Objects", {
-		"Notification",
 		"Targeting",
 		"Inventory",
 		"ObjectPlacer",

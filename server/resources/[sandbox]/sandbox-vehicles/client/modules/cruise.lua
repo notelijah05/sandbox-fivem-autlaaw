@@ -30,7 +30,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                     VEHICLE_CRUISE = true
                     SetEntityMaxSpeed(VEHICLE_INSIDE, speed)
                 else
-                    Notification:Info('Cruise Can Only Be Enabled Above 15MPH')
+                    exports["sandbox-hud"]:NotifInfo('Cruise Can Only Be Enabled Above 15MPH')
                 end
             end
 

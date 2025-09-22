@@ -5,14 +5,12 @@ isValid = false
 
 AddEventHandler("ObjectPlacer:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-    Notification = exports["sandbox-base"]:FetchComponent("Notification")
     Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
     ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
     exports["sandbox-base"]:RequestDependencies("ObjectPlacer", {
-        "Notification",
         "Targeting",
         "ObjectPlacer",
     }, function(error)
@@ -56,7 +54,7 @@ _PLACER = {
             if _placeData?.cancelEvent then
                 TriggerEvent(_placeData.cancelEvent, _placeData.data, true)
             end
-            Notification:Error("Invalid Object Placement")
+            exports["sandbox-hud"]:NotifError("Invalid Object Placement")
         end
 
         placementCoords = nil
@@ -70,7 +68,7 @@ _PLACER = {
         end
 
         if not skipNotification then
-            Notification:Error("Object Placement Cancelled")
+            exports["sandbox-hud"]:NotifError("Object Placement Cancelled")
         end
 
         placementCoords = nil

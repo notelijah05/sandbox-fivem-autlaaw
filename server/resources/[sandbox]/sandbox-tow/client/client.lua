@@ -4,7 +4,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Jobs",
 		"Vehicles",
-		"Notification",
 		"Sounds",
 		"Progress",
 		"Polyzone",
@@ -119,7 +117,7 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 				local canTow, errorMessage = CanFuckingTowVehicle(truck, targetVehicle)
 				if not canTow then
 					Progress:Cancel()
-					Notification:Error(errorMessage, 5000, "truck-tow")
+					exports["sandbox-hud"]:NotifError(errorMessage, 5000, "truck-tow")
 				end
 			end, function(wasCancelled)
 				_towingAction = false
@@ -127,7 +125,7 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 					local success = AttachVehicleToTow(truck, targetVehicle, truckModel)
 					if success then
 						truckState:set("towingVehicle", VehToNet(success), true)
-						Notification:Success("Vehicle Now on Tow Truck", 5000, "truck-tow")
+						exports["sandbox-hud"]:NotifSuccess("Vehicle Now on Tow Truck", 5000, "truck-tow")
 
 						if Entity(success).state.towObjective then
 							Blips:Remove("towjob-pickup")
@@ -135,12 +133,12 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 						end
 					else
 						truckState:set("towingVehicle", false, true)
-						Notification:Error("Failed to Tow Vehicle", 5000, "truck-tow")
+						exports["sandbox-hud"]:NotifError("Failed to Tow Vehicle", 5000, "truck-tow")
 					end
 				end
 			end)
 		else
-			Notification:Error(errorMessage, 5000, "truck-tow")
+			exports["sandbox-hud"]:NotifError(errorMessage, 5000, "truck-tow")
 		end
 	end
 end)
@@ -153,11 +151,11 @@ AddEventHandler("Vehicles:Client:ReleaseTow", function(entityData)
 		if truckState.towingVehicle then
 			local success = DetachVehicleFromTow(truck, NetToVeh(truckState.towingVehicle))
 			if success then
-				Notification:Success("Vehicle Released from Truck", 5000, "truck-tow")
+				exports["sandbox-hud"]:NotifSuccess("Vehicle Released from Truck", 5000, "truck-tow")
 				truckState:set("towingVehicle", false, true)
 			end
 		else
-			Notification:Error("No Vehicle Being Towed", 5000, "truck-tow")
+			exports["sandbox-hud"]:NotifError("No Vehicle Being Towed", 5000, "truck-tow")
 		end
 	end
 end)

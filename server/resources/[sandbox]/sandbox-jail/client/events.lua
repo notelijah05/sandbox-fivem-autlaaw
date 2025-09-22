@@ -48,13 +48,13 @@ end)
 AddEventHandler("Jail:Client:CheckSentence", function()
 	local jailed = LocalPlayer.state.Character:GetData("Jailed")
 	if not jailed or GetCloudTimeAsInt() >= (jailed.Release or 0) then
-		Notification:Info("Time Served")
+		exports["sandbox-hud"]:NotifInfo("Time Served")
 	else
 		if jailed.Duration >= 9999 then
-			Notification:Info("You've Been Setenced To The 9's")
+			exports["sandbox-hud"]:NotifInfo("You've Been Setenced To The 9's")
 		else
 			local months = math.ceil((jailed.Release - GetCloudTimeAsInt()) / 60)
-			Notification:Info(
+			exports["sandbox-hud"]:NotifInfo(
 				string.format("You Have %s Months of Your %s Month Sentence Remaining", months, jailed.Duration)
 			)
 		end
@@ -115,7 +115,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 
 			Wait(2000)
 
-			Notification:Warn("Stop exploiting or you will be flighted")
+			exports["sandbox-hud"]:NotifWarn("Stop exploiting or you will be flighted")
 			exports["sandbox-base"]:ServerCallback("Jail:Server:ExploitAttempt", 1)
 		end
 

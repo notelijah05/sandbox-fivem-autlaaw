@@ -5,7 +5,6 @@ function RetrieveComponents()
 	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Menu",
 		"Mechanic",
 		"Targeting",
-		"Notification",
 		"Animations",
 		"Polyzone",
 		"Jobs",
@@ -63,7 +61,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						local vehDamage = vehEnt.state.DamagedParts
 
 						if not vehDamage or vehDamage[installingPartData.part] >= 99 then
-							Notification:Error("Vehicle Part Doesn't Need Repairing")
+							exports["sandbox-hud"]:NotifError("Vehicle Part Doesn't Need Repairing")
 							return cb(false)
 						end
 
@@ -77,12 +75,12 @@ AddEventHandler("Core:Shared:Ready", function()
 							or (requiresHighGradeParts and installingPartData.hperformance)
 						then
 							if GetIsVehicleEngineRunning(target.entity) then
-								Notification:Error("Turn Off the Engine")
+								exports["sandbox-hud"]:NotifError("Turn Off the Engine")
 								return cb(false)
 							end
 
 							if IsPedInAnyVehicle(LocalPlayer.state.ped, false) then
-								Notification:Error("Can't Repair Whilst in a Vehicle")
+								exports["sandbox-hud"]:NotifError("Can't Repair Whilst in a Vehicle")
 								return cb(false)
 							end
 
@@ -131,10 +129,10 @@ AddEventHandler("Core:Shared:Ready", function()
 										)
 									then
 										cb(true)
-										Notification:Success("Part Repaired")
+										exports["sandbox-hud"]:NotifSuccess("Part Repaired")
 									else
 										cb(false)
-										Notification:Error("Failed to Repair Part")
+										exports["sandbox-hud"]:NotifError("Failed to Repair Part")
 									end
 								else
 									cb(false)
@@ -143,7 +141,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 							return
 						else
-							Notification:Error("This Part Doesn't Fit! Stupid Mechanic!")
+							exports["sandbox-hud"]:NotifError("This Part Doesn't Fit! Stupid Mechanic!")
 						end
 					end
 				end
@@ -171,18 +169,18 @@ AddEventHandler("Core:Shared:Ready", function()
 							GlobalState["PoliceCars"][GetEntityModel(target.entity)]
 							or GlobalState["EMSCars"][GetEntityModel(target.entity)]
 						then
-							Notification:Error("Vehicle cannot be modified.")
+							exports["sandbox-hud"]:NotifError("Vehicle cannot be modified.")
 							return
 						end
 						if GetIsVehicleEngineRunning(target.entity) then
-							Notification:Error("Turn Off the Engine")
+							exports["sandbox-hud"]:NotifError("Turn Off the Engine")
 							return cb(false)
 						end
 
 						SetVehicleModKit(target.entity, 0)
 
 						if part.toggleMod and IsToggleModOn(target.entity, part.modType) then
-							Notification:Error("Vehicle Already Has Upgrade of That Level")
+							exports["sandbox-hud"]:NotifError("Vehicle Already Has Upgrade of That Level")
 							return cb(false)
 						end
 
@@ -190,18 +188,18 @@ AddEventHandler("Core:Shared:Ready", function()
 							local maxUpgradable = GetNumVehicleMods(target.entity, part.modType) - 1
 							local currentUpgrade = GetVehicleMod(target.entity, part.modType)
 							if part.modIndex > maxUpgradable then
-								Notification:Error("Vehicle Does Not Support That Upgrade")
+								exports["sandbox-hud"]:NotifError("Vehicle Does Not Support That Upgrade")
 								return cb(false)
 							end
 
 							if currentUpgrade >= part.modIndex then
-								Notification:Error("Vehicle Already Has Upgrade of That Level")
+								exports["sandbox-hud"]:NotifError("Vehicle Already Has Upgrade of That Level")
 								return cb(false)
 							end
 						end
 
 						if IsPedInAnyVehicle(LocalPlayer.state.ped, false) then
-							Notification:Error("Can't Repair Whilst in a Vehicle")
+							exports["sandbox-hud"]:NotifError("Can't Repair Whilst in a Vehicle")
 							return cb(false)
 						end
 
@@ -249,7 +247,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								end
 
 								cb(true, VehToNet(target.entity))
-								Notification:Success("Part Installed")
+								exports["sandbox-hud"]:NotifSuccess("Part Installed")
 							else
 								cb(false)
 							end
@@ -281,11 +279,11 @@ AddEventHandler("Core:Shared:Ready", function()
 							GlobalState["PoliceCars"][GetEntityModel(target.entity)]
 							or GlobalState["EMSCars"][GetEntityModel(target.entity)]
 						then
-							Notification:Error("Vehicle cannot be modified.")
+							exports["sandbox-hud"]:NotifError("Vehicle cannot be modified.")
 							return
 						end
 						if GetIsVehicleEngineRunning(target.entity) then
-							Notification:Error("Turn Off the Engine")
+							exports["sandbox-hud"]:NotifError("Turn Off the Engine")
 							return cb(false)
 						end
 
@@ -294,12 +292,12 @@ AddEventHandler("Core:Shared:Ready", function()
 						local currentUpgrade = GetVehicleMod(target.entity, part.partType)
 
 						if currentUpgrade == -1 then
-							Notification:Error("This vehicle part cannot be removed.")
+							exports["sandbox-hud"]:NotifError("This vehicle part cannot be removed.")
 							return cb(false)
 						end
 
 						if IsPedInAnyVehicle(LocalPlayer.state.ped, false) then
-							Notification:Error("Can't Repair Whilst in a Vehicle")
+							exports["sandbox-hud"]:NotifError("Can't Repair Whilst in a Vehicle")
 							return cb(false)
 						end
 
@@ -343,7 +341,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								SetVehicleMod(target.entity, part.partType, -1, false)
 
 								cb(true, VehToNet(target.entity))
-								Notification:Success("Part Uninstalled")
+								exports["sandbox-hud"]:NotifSuccess("Part Uninstalled")
 							else
 								cb(false)
 							end
@@ -395,11 +393,11 @@ end)
 AddEventHandler("Mechanic:Client:StartRegularRepair", function(entityData)
 	if entityData and entityData.entity and DoesEntityExist(entityData.entity) and not _repairingVehicle then
 		if GetIsVehicleEngineRunning(entityData.entity) then
-			return Notification:Error("Turn Off the Engine")
+			return exports["sandbox-hud"]:NotifError("Turn Off the Engine")
 		end
 
 		if IsPedInAnyVehicle(LocalPlayer.state.ped, false) then
-			return Notification:Error("Can't Repair Whilst in a Vehicle")
+			return exports["sandbox-hud"]:NotifError("Can't Repair Whilst in a Vehicle")
 		end
 
 		TaskTurnPedToFaceEntity(LocalPlayer.state.ped, entityData.entity, 1.0)
@@ -437,9 +435,9 @@ AddEventHandler("Mechanic:Client:StartRegularRepair", function(entityData)
 			Animations.Emotes:ForceCancel()
 			if not wasCancelled then
 				if Vehicles.Repair:Normal(entityData.entity) then
-					Notification:Success("Regular Repair Complete")
+					exports["sandbox-hud"]:NotifSuccess("Regular Repair Complete")
 				else
-					Notification:Error("Regular Repair Failed")
+					exports["sandbox-hud"]:NotifError("Regular Repair Failed")
 				end
 			end
 		end)

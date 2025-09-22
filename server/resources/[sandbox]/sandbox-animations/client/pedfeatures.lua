@@ -53,7 +53,7 @@ ANIMATIONS.PedFeatures = {
                     { type = 'walk', data = 'default' },
                     function(success)
                         if success then
-                            Notification:Info('Reset Walking Style', 5000)
+                            exports["sandbox-hud"]:NotifInfo('Reset Walking Style', 5000)
                         end
                     end)
             else
@@ -61,7 +61,7 @@ ANIMATIONS.PedFeatures = {
                 exports["sandbox-base"]:ServerCallback('Animations:UpdatePedFeatures', { type = 'walk', data = walk },
                     function(success)
                         if success then
-                            Notification:Success('Saved Walking Style: ' .. label, 5000)
+                            exports["sandbox-hud"]:NotifSuccess('Saved Walking Style: ' .. label, 5000)
                         end
                     end)
             end
@@ -73,7 +73,7 @@ ANIMATIONS.PedFeatures = {
                     { type = 'walk', data = 'default' },
                     function(success)
                         if success then
-                            Notification:Info('Reset Walking Style', 5000)
+                            exports["sandbox-hud"]:NotifInfo('Reset Walking Style', 5000)
                         end
                     end)
             else
@@ -84,7 +84,7 @@ ANIMATIONS.PedFeatures = {
                 exports["sandbox-base"]:ServerCallback('Animations:UpdatePedFeatures', { type = 'walk', data = walk },
                     function(success)
                         if success then
-                            Notification:Success('Saved Walking Style: ' .. label, 5000)
+                            exports["sandbox-hud"]:NotifSuccess('Saved Walking Style: ' .. label, 5000)
                         end
                     end)
             end
@@ -98,7 +98,7 @@ ANIMATIONS.PedFeatures = {
                 { type = 'expression', data = 'default' },
                 function(success)
                     if success then
-                        Notification:Info('Expression Reset', 5000)
+                        exports["sandbox-hud"]:NotifInfo('Expression Reset', 5000)
                     end
                 end)
         else
@@ -108,7 +108,7 @@ ANIMATIONS.PedFeatures = {
                 { type = 'expression', data = expression },
                 function(success)
                     if success then
-                        Notification:Success('Saved Expression: ' .. label, 5000)
+                        exports["sandbox-hud"]:NotifSuccess('Saved Expression: ' .. label, 5000)
                     end
                 end)
         end

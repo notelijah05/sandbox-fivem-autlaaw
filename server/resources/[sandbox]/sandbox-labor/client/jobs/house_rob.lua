@@ -275,7 +275,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         function(data)
             _nodes = data
             _state = 4
-            Notification:Success("House Has Been Lockpicked")
+            exports["sandbox-hud"]:NotifSuccess("House Has Been Lockpicked")
         end)
 
     eventHandlers["do-hack"] = RegisterNetEvent(string.format("HouseRobbery:Client:%s:HackAlarm", joiner),
@@ -457,7 +457,7 @@ end)
 AddEventHandler("HouseRobbery:Client:StartJob", function()
     exports["sandbox-base"]:ServerCallback('HouseRobbery:StartJob', _joiner, function(state)
         if not state then
-            Notification:Error("Unable To Start Job")
+            exports["sandbox-hud"]:NotifError("Unable To Start Job")
         end
     end)
 end)
@@ -491,7 +491,7 @@ AddEventHandler("HouseRobbery:Client:HackSuccess", function(data)
             propertyId = data.pId,
             state = true
         }, function()
-            Notification:Success("Alarm Bypassed")
+            exports["sandbox-hud"]:NotifSuccess("Alarm Bypassed")
         end)
     else
         Wait(1500)

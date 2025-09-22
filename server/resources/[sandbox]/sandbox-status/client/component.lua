@@ -17,7 +17,6 @@ function RetrieveComponents()
 	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Buffs",
 		"Status",
 		"Polyzone",
-		"Notification",
 		"Progress",
 		"Action",
 		"Blips",

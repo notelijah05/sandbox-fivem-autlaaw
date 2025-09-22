@@ -217,7 +217,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	eventHandlers["spawn-truck"] = AddEventHandler("Garbage:Client:GarbageSpawn", function()
 		exports["sandbox-base"]:ServerCallback("Garbage:GarbageSpawn", {}, function(netId)
 			if netId == false then
-				Notification:Error("Attempting to spawn garbage truck you pepega.")
+				exports["sandbox-hud"]:NotifError("Attempting to spawn garbage truck you pepega.")
 				return
 			end
 			SetEntityAsMissionEntity(NetToVeh(netId))
@@ -240,7 +240,7 @@ end)
 AddEventHandler("Garbage:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback("Garbage:StartJob", _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)

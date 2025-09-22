@@ -24,7 +24,7 @@ end)
 AddEventHandler("DonorVanity:Client:Open", function(entityData, data)
 	exports["sandbox-base"]:ServerCallback("Inventory:DonorSales:GetTokens", {}, function(data)
 		if not data or data.available == 0 then
-			return Notification:Error("No Pending Donator Purchases to Redeem")
+			return exports["sandbox-hud"]:NotifError("No Pending Donator Purchases to Redeem")
 		end
 
 		GenerateNewVanityItem()

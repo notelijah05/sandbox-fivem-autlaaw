@@ -90,9 +90,9 @@ AddEventHandler("Doors:Client:LockElevator", function(data)
         exports["sandbox-base"]:ServerCallback("Doors:Elevators:ToggleLocks", data, function(success, newState)
             if success then
                 if newState then
-                    Notification:Error("Elevator Locked")
+                    exports["sandbox-hud"]:NotifError("Elevator Locked")
                 else
-                    Notification:Success("Elevator Unlocked")
+                    exports["sandbox-hud"]:NotifSuccess("Elevator Unlocked")
                 end
             end
         end)

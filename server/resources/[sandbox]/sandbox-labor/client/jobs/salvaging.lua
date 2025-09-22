@@ -80,7 +80,7 @@ AddEventHandler("Labor:Client:Setup", function()
 			event = "Laptop:Client:LSUnderground:Chopping:Pickup",
 			isEnabled = function()
 				return LocalPlayer.state.Character:GetData("ChopPickups") ~= nil and
-				#LocalPlayer.state.Character:GetData("ChopPickups") > 0
+					#LocalPlayer.state.Character:GetData("ChopPickups") > 0
 			end,
 		},
 		{
@@ -216,7 +216,7 @@ end)
 AddEventHandler("Salvaging:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback('Salvaging:StartJob', _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)

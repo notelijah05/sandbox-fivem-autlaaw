@@ -16,7 +16,7 @@ RegisterNetEvent("EmergencyAlerts:Client:Clear", function(eventRoutine)
     _blipCount = 1
     _alertBlips = {}
 
-    Notification:Success("Blips Cleared & Reset")
+    exports["sandbox-hud"]:NotifSuccess("Blips Cleared & Reset")
 end)
 
 RegisterNetEvent("Job:Client:DutyChanged", function(state)

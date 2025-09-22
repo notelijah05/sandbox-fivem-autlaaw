@@ -4,7 +4,6 @@ AddEventHandler('Fitment:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Targeting = exports['sandbox-base']:FetchComponent('Targeting')
     Animations = exports['sandbox-base']:FetchComponent('Animations')
-    Notification = exports['sandbox-base']:FetchComponent('Notification')
     Polyzone = exports['sandbox-base']:FetchComponent('Polyzone')
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
     Weapons = exports['sandbox-base']:FetchComponent('Weapons')
@@ -22,7 +21,6 @@ AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Fitment', {
         'Menu',
         'Targeting',
-        'Notification',
         'Animations',
         'Polyzone',
         'Jobs',

@@ -1,7 +1,6 @@
 AddEventHandler("Corrections:Shared:DependencyUpdate", CorrectionsComponents)
 function CorrectionsComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
@@ -23,7 +22,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Corrections", {
 		"Inventory",
-		"Notification",
 		"Input",
 		"Keybinds",
 		"Handcuffs",
@@ -406,10 +404,10 @@ AddEventHandler("Prison:Client:SetLockdown", function(entity, data)
 		exports["sandbox-base"]:ServerCallback("Prison:SetLockdown", data.state, function(success, state)
 			if success then
 				if state then
-					Notification:Success("Lockdown Initiated")
+					exports["sandbox-hud"]:NotifSuccess("Lockdown Initiated")
 					TriggerServerEvent("Prison:Server:Lockdown:AlertPolice", state)
 				else
-					Notification:Success("Lockdown Disabled")
+					exports["sandbox-hud"]:NotifSuccess("Lockdown Disabled")
 					TriggerServerEvent("Prison:Server:Lockdown:AlertPolice", state)
 				end
 
@@ -417,7 +415,7 @@ AddEventHandler("Prison:Client:SetLockdown", function(entity, data)
 					_PROGRESS_LOCKDOWN = false
 				end)
 			else
-				Notification:Success("Unauthorized!")
+				exports["sandbox-hud"]:NotifSuccess("Unauthorized!")
 			end
 		end)
 	end
@@ -431,9 +429,9 @@ AddEventHandler("Prison:Client:SetCellState", function(entity, data)
 		exports["sandbox-base"]:ServerCallback("Prison:SetCellState", data.state, function(success, state)
 			if success then
 				if state then
-					Notification:Success("Cell Doors Locked")
+					exports["sandbox-hud"]:NotifSuccess("Cell Doors Locked")
 				else
-					Notification:Success("Cell Doors Unlocked")
+					exports["sandbox-hud"]:NotifSuccess("Cell Doors Unlocked")
 				end
 
 				-- TriggerEvent("Prison:Client:JailAlarm", data.state)
@@ -441,7 +439,7 @@ AddEventHandler("Prison:Client:SetCellState", function(entity, data)
 					_PROGRESS_DOORS = false
 				end)
 			else
-				Notification:Success("Unauthorized!")
+				exports["sandbox-hud"]:NotifSuccess("Unauthorized!")
 			end
 		end)
 	end

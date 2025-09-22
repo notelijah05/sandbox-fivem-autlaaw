@@ -29,11 +29,11 @@ ANIMATIONS.Emotes = {
         end
 
         if fromUserInput and (IsPedBeingStunned(LocalPlayer.state.ped) or IsPedRagdoll(LocalPlayer.state.ped) or IsPedFalling(LocalPlayer.state.ped)) then
-            return Notification:Error('Cannot Do Animation Now')
+            return exports["sandbox-hud"]:NotifError('Cannot Do Animation Now')
         end
 
         if fromUserInput and LocalPlayer.state.playingCasino then
-            return Notification:Error('Cannot Do Animation Now')
+            return exports["sandbox-hud"]:NotifError('Cannot Do Animation Now')
         end
 
         if IsInAnimation then
@@ -54,7 +54,7 @@ ANIMATIONS.Emotes = {
             elseif AnimData.DogEmotes[name] ~= nil then
                 animInfo = AnimData.DogEmotes[name]
             else
-                Notification:Error('Invalid Emote')
+                exports["sandbox-hud"]:NotifError('Invalid Emote')
             end
             local animTime = (time ~= nil and tonumber(time) or nil)
             local notCancellable = notCancellable ~= nil and notCancellable or false
@@ -74,7 +74,7 @@ ANIMATIONS.Emotes = {
             elseif AnimData.DogEmotes[name] ~= nil then
                 animInfo = AnimData.DogEmotes[name]
             else
-                Notification:Error('Invalid Emote')
+                exports["sandbox-hud"]:NotifError('Invalid Emote')
             end
             if emote.prop then
                 animInfo.AdditionalOptions.Prop = emote.prop
@@ -156,7 +156,7 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
     end
 
     if Config.EnableEmoteCD and fromUserInput and _AnimCounter >= Config.AnimMaxEmotesCooldown then
-        return Notification:Error('Stop spamming emotes you pepega.')
+        return exports["sandbox-hud"]:NotifError('Stop spamming emotes you pepega.')
     end
 
     currentEmoteAllData = {
@@ -258,7 +258,7 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
                 else
                     PtfxWait = emoteData.AdditionalOptions.PtfxWait
                     PtfxPrompt = true
-                    Notification:Info(emoteData.AdditionalOptions.PtfxInfo, 5000)
+                    exports["sandbox-hud"]:NotifInfo(emoteData.AdditionalOptions.PtfxInfo, 5000)
                     CreateThread(function()
                         while PtfxPrompt do
                             if IsControlPressed(0, 47) then

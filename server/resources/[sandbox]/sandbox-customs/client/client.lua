@@ -11,7 +11,6 @@ local showingAction = false
 
 AddEventHandler("VehicleCustoms:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -27,7 +26,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VehicleCustoms", {
-		"Notification",
 		"Action",
 		"Progress",
 		"Vehicles",
@@ -172,7 +170,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 			end
 
 			if not CheckJobRestriction(locationData.restrictJobs) then
-				Notification:Error("Authorized Vehicles & Personnel Only")
+				exports["sandbox-hud"]:NotifError("Authorized Vehicles & Personnel Only")
 				return
 			end
 
@@ -182,7 +180,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 					and (LocalPlayer.state.onDuty ~= "police" and LocalPlayer.state.onDuty ~= "prison")
 				) or (Police:IsEMSCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty ~= "ems")
 			then
-				Notification:Error("Authorized Vehicles & Personnel Only")
+				exports["sandbox-hud"]:NotifError("Authorized Vehicles & Personnel Only")
 				return
 			end
 		end
@@ -244,7 +242,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 					},
 				})
 			else
-				Notification:Error("Vehicle Doesn't Need Repairs")
+				exports["sandbox-hud"]:NotifError("Vehicle Doesn't Need Repairs")
 			end
 		end
 	end
@@ -257,7 +255,7 @@ AddEventHandler("Vehicles:Client:OpenVehicleCustoms", function(data)
 	-- TODO: Do Repair Cash Payment & Check Success
 	DoSlowVehicleNormalRepair(data.cost, function(s)
 		if s then
-			Notification:Success("Repaired Vehicle For $" .. data.cost)
+			exports["sandbox-hud"]:NotifSuccess("Repaired Vehicle For $" .. data.cost)
 			if data.customs then
 				StartOpeningVehicleCustoms()
 			end
@@ -276,10 +274,10 @@ function StartOpeningVehicleCustoms()
 					_customsLocations[withinCustoms] and _customsLocations[withinCustoms].settings or {}
 				)
 			else
-				Notification:Error("Cannot Modify a Vehicle That You Don't Have Keys For")
+				exports["sandbox-hud"]:NotifError("Cannot Modify a Vehicle That You Don't Have Keys For")
 			end
 		else
-			Notification:Error("Error")
+			exports["sandbox-hud"]:NotifError("Error")
 		end
 	end
 end

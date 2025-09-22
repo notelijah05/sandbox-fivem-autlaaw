@@ -196,12 +196,12 @@ AddEventHandler("Phone:Client:MuteBiz", function(entityData, data)
     exports["sandbox-base"]:ServerCallback("Phone:MuteBiz", data.id, function(success, state)
         if success then
             if state then
-                Notification:Error("Muted Phone")
+                exports["sandbox-hud"]:NotifError("Muted Phone")
             else
-                Notification:Success("Unmuted Phone")
+                exports["sandbox-hud"]:NotifSuccess("Unmuted Phone")
             end
         else
-            Notification:Error("Error")
+            exports["sandbox-hud"]:NotifError("Error")
         end
     end)
 end)
@@ -231,7 +231,7 @@ AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
                         InfoOverlay:Close()
                     end)
                 else
-                    Notification:Error("Failed to Make Call")
+                    exports["sandbox-hud"]:NotifError("Failed to Make Call")
                 end
             end)
     end
@@ -259,7 +259,7 @@ end)
 AddEventHandler("Phone:Client:DeclineBizCall", function(entityData, data)
     exports["sandbox-base"]:ServerCallback("Phone:DeclineBizCall", data.id, function(success)
         if not success then
-            Notification:Error("Failed to Decline Call")
+            exports["sandbox-hud"]:NotifError("Failed to Decline Call")
         end
     end)
 end)
@@ -285,7 +285,7 @@ AddEventHandler("Phone:Client:AcceptBizCall", function(entityData, data)
                     InfoOverlay:Close()
                 end)
             else
-                Notification:Error("Failed to Accept Call")
+                exports["sandbox-hud"]:NotifError("Failed to Accept Call")
             end
         end)
     end

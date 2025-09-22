@@ -108,7 +108,7 @@ end)
 AddEventHandler("Prison:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback("Prison:StartJob", _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)

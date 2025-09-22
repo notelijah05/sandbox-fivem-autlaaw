@@ -62,14 +62,14 @@ AddEventHandler('Vehicles:Client:RemoveFakePlate', function(entityData)
                 exports["sandbox-base"]:ServerCallback('Vehicles:RemoveFakePlate', VehToNet(entityData.entity),
                     function(success, plate)
                         if success then
-                            Notification:Success('Removed Plate Successfully')
+                            exports["sandbox-hud"]:NotifSuccess('Removed Plate Successfully')
                             SetVehicleNumberPlateText(entityData.entity, plate)
                         else
-                            Notification:Error('Could not Remove Plate')
+                            exports["sandbox-hud"]:NotifError('Could not Remove Plate')
                         end
                     end)
             else
-                Notification:Error('Could not Remove Plate')
+                exports["sandbox-hud"]:NotifError('Could not Remove Plate')
             end
         end)
     end
@@ -100,13 +100,13 @@ AddEventHandler('Vehicles:Client:RemoveHarness', function(entityData)
                 exports["sandbox-base"]:ServerCallback('Vehicles:RemoveHarness', VehToNet(entityData.entity),
                     function(success)
                         if success then
-                            Notification:Success('Removed Harness Successfully')
+                            exports["sandbox-hud"]:NotifSuccess('Removed Harness Successfully')
                         else
-                            Notification:Error('Could not Remove Harness')
+                            exports["sandbox-hud"]:NotifError('Could not Remove Harness')
                         end
                     end)
             else
-                Notification:Error('Could not Remove Harness')
+                exports["sandbox-hud"]:NotifError('Could not Remove Harness')
             end
         end)
     end

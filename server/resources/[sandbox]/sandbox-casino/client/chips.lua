@@ -45,7 +45,7 @@ AddEventHandler("Casino:Client:StartChipPurchase", function()
 
         ListMenu:Show(buyMenu)
     else
-        Notification:Error("Not Enough Cash - Minimum is $100")
+        exports["sandbox-hud"]:NotifError("Not Enough Cash - Minimum is $100")
     end
 end)
 
@@ -97,7 +97,7 @@ AddEventHandler("Casino:Client:StartChipSell", function()
 
         ListMenu:Show(buyMenu)
     else
-        Notification:Error("No Chips to Sell")
+        exports["sandbox-hud"]:NotifError("No Chips to Sell")
     end
 end)
 

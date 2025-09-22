@@ -13,7 +13,6 @@ _doingStateAnimation = false
 
 AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
@@ -30,7 +29,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
-		"Notification",
 		"Menu",
 		"Damage",
 		"Keybinds",

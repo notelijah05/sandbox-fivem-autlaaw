@@ -114,12 +114,12 @@ VEHICLE = {
 
 			if state and vehState.Fuel and vehState.Fuel <= 0.0 then
 				state = false
-				Notification:Error('Vehicle Out of Fuel', 2500, 'gas-pump')
+				exports["sandbox-hud"]:NotifError('Vehicle Out of Fuel', 2500, 'gas-pump')
 			end
 
 			if state and GetVehicleEngineHealth(veh) <= -2000.0 then
 				state = false
-				Notification:Error('Vehicle Engine Damaged', 2500, 'engine-warning')
+				exports["sandbox-hud"]:NotifError('Vehicle Engine Damaged', 2500, 'engine-warning')
 			end
 
 			if state then
@@ -146,7 +146,7 @@ VEHICLE = {
 		Off = function(self, customMessage)
 			local vehEnt = Entity(VEHICLE_INSIDE)
 			Vehicles.Engine:Force(VEHICLE_INSIDE, false)
-			Notification:Info(customMessage and customMessage or 'Engine Turned Off', 1500, 'engine')
+			exports["sandbox-hud"]:NotifInfo(customMessage and customMessage or 'Engine Turned Off', 1500, 'engine')
 
 			if Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
 				Action:Show('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
@@ -158,9 +158,9 @@ VEHICLE = {
 
 			if Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
 				Vehicles.Engine:Force(VEHICLE_INSIDE, true)
-				Notification:Info('Engine Turned On', 1500, 'engine')
+				exports["sandbox-hud"]:NotifInfo('Engine Turned On', 1500, 'engine')
 			else
-				Notification:Error('You Don\'t Have Keys For This Vehicle', 3000, 'key')
+				exports["sandbox-hud"]:NotifError('You Don\'t Have Keys For This Vehicle', 3000, 'key')
 			end
 		end,
 		CheckKeys = function(self)
@@ -169,7 +169,7 @@ VEHICLE = {
 			if Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
 				return true
 			else
-				Notification:Error('You Don\'t Have Keys For This Vehicle', 3000, 'key')
+				exports["sandbox-hud"]:NotifError('You Don\'t Have Keys For This Vehicle', 3000, 'key')
 				return false
 			end
 		end,
@@ -192,7 +192,7 @@ VEHICLE = {
 				local vVIN = vehEnt.state.VIN
 
 				if SLIM_JIM_ATTEMPTS[vVIN] and SLIM_JIM_ATTEMPTS[vVIN] > 3 then
-					Notification:Error("You Have Tried This Vehicle Enough Already")
+					exports["sandbox-hud"]:NotifError("You Have Tried This Vehicle Enough Already")
 					return
 				end
 
@@ -252,7 +252,7 @@ VEHICLE = {
 						end
 
 						if setToFail then
-							Notification:Error("It Was too Difficult and It Didn't Work")
+							exports["sandbox-hud"]:NotifError("It Was too Difficult and It Didn't Work")
 						else
 							if #(startCoords - GetEntityCoords(GLOBAL_PED)) <= 2.0 then
 								SetVehicleHasBeenOwnedByPlayer(vehicle, true)
@@ -260,10 +260,10 @@ VEHICLE = {
 								exports["sandbox-base"]:ServerCallback("Vehicles:BreakOpenLock", {
 									netId = VehToNet(vehicle),
 								}, function(success)
-									Notification:Success("You Managed to Unlock the Vehicle", 3000, "key")
+									exports["sandbox-hud"]:NotifSuccess("You Managed to Unlock the Vehicle", 3000, "key")
 								end)
 							else
-								Notification:Error("Too Far")
+								exports["sandbox-hud"]:NotifError("Too Far")
 							end
 						end
 					end,
@@ -275,7 +275,7 @@ VEHICLE = {
 						else
 							SLIM_JIM_ATTEMPTS[vVIN] = SLIM_JIM_ATTEMPTS[vVIN] + 1
 						end
-						Notification:Error("It Was too Difficult and It Didn't Work")
+						exports["sandbox-hud"]:NotifError("It Was too Difficult and It Didn't Work")
 					end,
 				}, {
 					useWhileDead = false,
@@ -289,7 +289,7 @@ VEHICLE = {
 				})
 			end
 		else
-			Notification:Error("You Cannot Slimjim This Vehicle", 3000, 'key')
+			exports["sandbox-hud"]:NotifError("You Cannot Slimjim This Vehicle", 3000, 'key')
 		end
 	end,
 	LockpickExterior = function(self, config, canUnlockOwned, vehicle, cb)
@@ -402,7 +402,7 @@ VEHICLE = {
 						SetVehicleHasBeenOwnedByPlayer(vehicle, true)
 						SetEntityAsMissionEntity(vehicle, true, true)
 						if vehEnt.state.Owned and not canUnlockOwned then
-							Notification:Error("It Was Too Hard", 3000, 'key')
+							exports["sandbox-hud"]:NotifError("It Was Too Hard", 3000, 'key')
 							return cb(true, false)
 						end
 
@@ -410,13 +410,13 @@ VEHICLE = {
 							netId = VehToNet(vehicle),
 						}, function(success)
 							if success then
-								Notification:Success("Vehicle Unlocked", 3000, "key")
+								exports["sandbox-hud"]:NotifSuccess("Vehicle Unlocked", 3000, "key")
 							end
 						end)
 
 						cb(true, true)
 					else
-						Notification:Error("Too Far")
+						exports["sandbox-hud"]:NotifError("Too Far")
 
 						cb(false, false)
 					end
@@ -425,7 +425,7 @@ VEHICLE = {
 				end
 			end
 		else
-			Notification:Error("You Cannot Lockpick This Vehicle", 3000, 'key')
+			exports["sandbox-hud"]:NotifError("You Cannot Lockpick This Vehicle", 3000, 'key')
 		end
 	end,
 	Lockpick = function(self, config, canUnlockOwned, cb)
@@ -502,12 +502,12 @@ VEHICLE = {
 						SetVehicleHasBeenOwnedByPlayer(VEHICLE_INSIDE, true)
 						SetEntityAsMissionEntity(VEHICLE_INSIDE, true, true)
 						if vehEnt.state.Owned and not canUnlockOwned then
-							Notification:Error("It Was Too Hard", 3000, 'key')
+							exports["sandbox-hud"]:NotifError("It Was Too Hard", 3000, 'key')
 							return cb(true, false)
 						end
 
 						exports["sandbox-base"]:ServerCallback("Vehicles:GetKeys", vehEnt.state.VIN, function(success)
-							Notification:Success("Lockpicked Vehicle Ignition", 3000, 'key')
+							exports["sandbox-hud"]:NotifSuccess("Lockpicked Vehicle Ignition", 3000, 'key')
 							Action:Show('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
 							_actionShowing = true
 
@@ -523,7 +523,7 @@ VEHICLE = {
 				end
 			end
 		else
-			Notification:Error("You Cannot Lockpick This Vehicle", 3000, 'key')
+			exports["sandbox-hud"]:NotifError("You Cannot Lockpick This Vehicle", 3000, 'key')
 		end
 	end,
 	HackExterior = function(self, hackData, canUnlockOwned, vehicle, cb)
@@ -557,13 +557,13 @@ VEHICLE = {
 									netId = VehToNet(vehicle),
 								}, function(success)
 									if success then
-										Notification:Success("Vehicle Unlocked", 3000, "key")
+										exports["sandbox-hud"]:NotifSuccess("Vehicle Unlocked", 3000, "key")
 									end
 								end)
 
 								cb(true, true)
 							else
-								Notification:Error("Too Far")
+								exports["sandbox-hud"]:NotifError("Too Far")
 
 								cb(false, false)
 							end
@@ -588,7 +588,7 @@ VEHICLE = {
 					})
 			end
 		else
-			Notification:Error("You Cannot Lockpick This Vehicle", 3000, 'key')
+			exports["sandbox-hud"]:NotifError("You Cannot Lockpick This Vehicle", 3000, 'key')
 		end
 	end,
 	Hack = function(self, hackData, canUnlockOwned, cb)
@@ -617,13 +617,13 @@ VEHICLE = {
 								SetVehicleHasBeenOwnedByPlayer(VEHICLE_INSIDE, true)
 								SetEntityAsMissionEntity(VEHICLE_INSIDE, true, true)
 								if vehEnt.state.Owned and not canUnlockOwned then
-									Notification:Error("It Was Too Hard", 3000, 'key')
+									exports["sandbox-hud"]:NotifError("It Was Too Hard", 3000, 'key')
 									return cb(true, false)
 								end
 
 								exports["sandbox-base"]:ServerCallback("Vehicles:GetKeys", vehEnt.state.VIN,
 									function(success)
-										Notification:Success("Vehicle Ignition Bypassed", 3000, 'key')
+										exports["sandbox-hud"]:NotifSuccess("Vehicle Ignition Bypassed", 3000, 'key')
 										Action:Show('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
 										_actionShowing = true
 
@@ -656,7 +656,7 @@ VEHICLE = {
 					})
 			end
 		else
-			Notification:Error("You Cannot Lockpick This Vehicle", 3000, 'key')
+			exports["sandbox-hud"]:NotifError("You Cannot Lockpick This Vehicle", 3000, 'key')
 		end
 	end,
 	CanBeStored = function(self, vehicle)
@@ -759,7 +759,7 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh, seat)
 		if not vehEnt.state.PlayerDriven then -- It was stolen directly with a ped in it, get keys
 			Vehicles.Engine:Force(VEHICLE_INSIDE, true)
 			exports["sandbox-base"]:ServerCallback('Vehicles:GetKeys', vehEnt.state.VIN, function()
-				Notification:Success('You found the keys in the vehicle', 3000, 'key')
+				exports["sandbox-hud"]:NotifSuccess('You found the keys in the vehicle', 3000, 'key')
 			end)
 		end
 	else
@@ -867,7 +867,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					if vehClass?.advLockpick then
 						Vehicles:LockpickExterior(vehClass.advLockpick.exterior, data, target.entity, cb)
 					else
-						Notification:Error("Cannot Slimjim This Vehicle")
+						exports["sandbox-hud"]:NotifError("Cannot Slimjim This Vehicle")
 					end
 				else
 					print('nope2')
@@ -891,7 +891,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					if vehClass?.lockpick and not boostOverride then
 						Vehicles:Lockpick(vehClass.lockpick.interior, data, cb)
 					else
-						Notification:Error("Cannot Lockpick This Vehicle")
+						exports["sandbox-hud"]:NotifError("Cannot Lockpick This Vehicle")
 					end
 				else
 					cb(false, false)
@@ -911,7 +911,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					if vehClass?.lockpick and not boostOverride then
 						Vehicles:LockpickExterior(vehClass.lockpick.exterior, data, target.entity, cb)
 					else
-						Notification:Error("Cannot Lockpick This Vehicle")
+						exports["sandbox-hud"]:NotifError("Cannot Lockpick This Vehicle")
 					end
 				else
 					cb(false, false)
@@ -933,7 +933,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					if vehClass?.advLockpick and not boostOverride then
 						Vehicles:Lockpick(vehClass.advLockpick.interior, data, cb)
 					else
-						Notification:Error("Cannot Lockpick This Vehicle")
+						exports["sandbox-hud"]:NotifError("Cannot Lockpick This Vehicle")
 					end
 				else
 					cb(false, false)
@@ -953,7 +953,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					if vehClass?.advLockpick and not boostOverride then
 						Vehicles:LockpickExterior(vehClass.advLockpick.exterior, data, target.entity, cb)
 					else
-						Notification:Error("Cannot Lockpick This Vehicle")
+						exports["sandbox-hud"]:NotifError("Cannot Lockpick This Vehicle")
 					end
 				else
 					cb(false, false)
@@ -972,7 +972,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					if vehClass?.hack then
 						Vehicles:Hack(vehClass?.hack.interior, data, cb)
 					else
-						Notification:Error("Cannot Hack This Vehicle")
+						exports["sandbox-hud"]:NotifError("Cannot Hack This Vehicle")
 					end
 				else
 					cb(false, false)
@@ -990,7 +990,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					if vehClass?.hack then
 						Vehicles:HackExterior(vehClass.hack.exterior, data, target.entity, cb)
 					else
-						Notification:Error("Cannot Hack This Vehicle")
+						exports["sandbox-hud"]:NotifError("Cannot Hack This Vehicle")
 					end
 				else
 					cb(false, false)
@@ -1009,7 +1009,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					if vehClass?.advHack then
 						Vehicles:Hack(vehClass?.advHack.interior, data, cb)
 					else
-						Notification:Error("Cannot Hack This Vehicle")
+						exports["sandbox-hud"]:NotifError("Cannot Hack This Vehicle")
 					end
 				else
 					cb(false, false)
@@ -1027,7 +1027,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					if vehClass?.advHack then
 						Vehicles:HackExterior(vehClass.advHack.exterior, data, target.entity, cb)
 					else
-						Notification:Error("Cannot Hack This Vehicle")
+						exports["sandbox-hud"]:NotifError("Cannot Hack This Vehicle")
 					end
 				else
 					cb(false, false)

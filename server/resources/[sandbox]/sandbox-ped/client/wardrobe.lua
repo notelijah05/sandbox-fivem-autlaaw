@@ -1,6 +1,5 @@
 AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
 function RetrieveWardrobeComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Confirm = exports["sandbox-base"]:FetchComponent("Confirm")
@@ -10,7 +9,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("ListMenu", {
-		"Notification",
 		"ListMenu",
 		"Input",
 		"Confirm",
@@ -45,10 +43,10 @@ end)
 AddEventHandler("Wardrobe:Client:SaveExisting", function(data)
 	exports["sandbox-base"]:ServerCallback("Wardrobe:SaveExisting", data.index, function(state)
 		if state then
-			Notification:Success("Outfit Saved")
+			exports["sandbox-hud"]:NotifSuccess("Outfit Saved")
 			Wardrobe:Show()
 		else
-			Notification:Error("Unable to Save Outfit")
+			exports["sandbox-hud"]:NotifError("Unable to Save Outfit")
 		end
 	end)
 end)
@@ -59,10 +57,10 @@ AddEventHandler("Wardrobe:Client:DoSave", function(values, data)
 		name = values.name,
 	}, function(state)
 		if state then
-			Notification:Success("Outfit Saved")
+			exports["sandbox-hud"]:NotifSuccess("Outfit Saved")
 			Wardrobe:Show()
 		else
-			Notification:Error("Unable to Save Outfit")
+			exports["sandbox-hud"]:NotifError("Unable to Save Outfit")
 		end
 	end)
 end)
@@ -77,7 +75,7 @@ end)
 AddEventHandler("Wardrobe:Client:Delete:Yes", function(data)
 	exports["sandbox-base"]:ServerCallback("Wardrobe:Delete", data, function(s)
 		if s then
-			Notification:Success("Outfit Deleted")
+			exports["sandbox-hud"]:NotifSuccess("Outfit Deleted")
 			Wardrobe:Show()
 		end
 	end)
@@ -87,9 +85,9 @@ AddEventHandler("Wardrobe:Client:Equip", function(data)
 	exports["sandbox-base"]:ServerCallback("Wardrobe:Equip", data.index, function(state)
 		if state then
 			Sounds.Play:One("outfit_change.ogg", 0.3)
-			Notification:Success("Outfit Equipped")
+			exports["sandbox-hud"]:NotifSuccess("Outfit Equipped")
 		else
-			Notification:Error("Unable to Equip Outfit")
+			exports["sandbox-hud"]:NotifError("Unable to Equip Outfit")
 		end
 	end)
 end)

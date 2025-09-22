@@ -67,7 +67,7 @@ function StartInspecting()
 				.. string.format("Camera - Press %s to exit", Keybinds:GetKey("emote_cancel"))
 		end
 		if ignoreFreeAim then
-			Notification.Persistent:Info("camera-info-notif2", NotifyStr, "camera")
+			exports["sandbox-hud"]:NotifPersistentInfo("camera-info-notif2", NotifyStr, "camera")
 		end
 		CreateThread(function()
 			while inspecting do
@@ -177,7 +177,7 @@ function StartInspecting()
 end
 
 function StopInspecting()
-	Notification.Persistent:Remove("camera-info-notif2")
+	exports["sandbox-hud"]:NotifPersistentRemove("camera-info-notif2")
 	if inspecting then
 		inspecting = false
 	end
@@ -214,7 +214,7 @@ function PickupClosestEvidence(localEvidence)
 					--     print('Destroy Evidence')
 				end
 			else
-				Notification:Error("Not Close Enough to Any Evidence")
+				exports["sandbox-hud"]:NotifError("Not Close Enough to Any Evidence")
 			end
 		end
 	end

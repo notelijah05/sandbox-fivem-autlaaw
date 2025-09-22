@@ -56,9 +56,9 @@ end)
 AddEventHandler("Businesses:Client:RockfordStage", function()
     exports["sandbox-base"]:ServerCallback("Businesses:ToggleRockfordStage", {}, function(state)
         if state then
-            Notification:Success("DJ Stand Enabled", 5000, "speakers")
+            exports["sandbox-hud"]:NotifSuccess("DJ Stand Enabled", 5000, "speakers")
         else
-            Notification:Error("DJ Stand Disabled", 5000, "speakers")
+            exports["sandbox-hud"]:NotifError("DJ Stand Disabled", 5000, "speakers")
         end
     end)
 end)

@@ -330,7 +330,7 @@ AddEventHandler("Labor:Client:Setup", function()
 
 		local dist = #(GetEntityCoords(LocalPlayer.state.ped) - _huntingStore)
 		if dist <= 300.0 then
-			Notification:Error("At Least Stop Being Lazy and Move Away From the Store")
+			exports["sandbox-hud"]:NotifError("At Least Stop Being Lazy and Move Away From the Store")
 			return cb(false)
 		end
 
@@ -366,11 +366,11 @@ AddEventHandler("Labor:Client:Setup", function()
 					end
 				end)
 			else
-				Notification:Error("Cannot Place Trap Here")
+				exports["sandbox-hud"]:NotifError("Cannot Place Trap Here")
 				cb(false)
 			end
 		else
-			Notification:Error("Cannot Place Trap Here")
+			exports["sandbox-hud"]:NotifError("Cannot Place Trap Here")
 			cb(false)
 		end
 	end)
@@ -417,7 +417,7 @@ end)
 AddEventHandler("Hunting:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback("Hunting:StartJob", _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)
@@ -434,7 +434,8 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 	TaskTurnPedToFaceEntity(LocalPlayer.state.ped, entity.entity, -1)
 
 	if GetPedCauseOfDeath(entity.entity) ~= wepHash then
-		return Notification:Error("Can't Harvest. This Animal Definitely Wasn't Shot With a Hunting Rifle.")
+		return exports["sandbox-hud"]:NotifError(
+		"Can't Harvest. This Animal Definitely Wasn't Shot With a Hunting Rifle.")
 	end
 
 	Wait(1000)
@@ -480,7 +481,7 @@ end)
 AddEventHandler("Hunting:Client:StartJob", function()
 	-- exports["sandbox-base"]:ServerCallback("Mining:StartJob", _joiner, function(state)
 	-- 	if not state then
-	-- 		Notification:Error("Unable To Start Job")
+	-- 		exports["sandbox-hud"]:NotifError("Unable To Start Job")
 	-- 	end
 	-- end)
 end)

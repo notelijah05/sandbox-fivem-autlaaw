@@ -3,7 +3,6 @@ _reductions = 0
 AddEventHandler("Damage:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
     Damage = exports["sandbox-base"]:FetchComponent("Damage")
-    Notification = exports["sandbox-base"]:FetchComponent("Notification")
     Hud = exports["sandbox-base"]:FetchComponent("Hud")
     Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
     Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -22,7 +21,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
     exports["sandbox-base"]:RequestDependencies("Damage", {
         "Damage",
-        "Notification",
         "Hud",
         "Buffs",
         "Targeting",

@@ -17,7 +17,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Confirm = exports["sandbox-base"]:FetchComponent("Confirm")
 	--Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
@@ -35,7 +34,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vehicles",
 		"ListMenu",
 		"PedInteraction",
-		"Notification",
 		"Input",
 		"Confirm",
 		--'Dealerships',

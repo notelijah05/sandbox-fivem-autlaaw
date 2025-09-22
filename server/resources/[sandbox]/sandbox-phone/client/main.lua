@@ -31,7 +31,6 @@ local _ignoreEvents = {
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -60,7 +59,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
 		"Phone",
-		"Notification",
 		"UISounds",
 		"Sounds",
 		"Hud",
@@ -317,7 +315,7 @@ function TogglePhone()
 			if not Jail:IsJailed() and hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE") then
 				Phone:Open()
 			else
-				Notification:Error("You Don't Have a Phone", 2000)
+				exports["sandbox-hud"]:NotifError("You Don't Have a Phone", 2000)
 				LocalPlayer.state.phoneOpen = false
 			end
 		else

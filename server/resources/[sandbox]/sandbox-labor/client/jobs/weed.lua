@@ -20,17 +20,17 @@ RegisterNetEvent("WeedRun:Client:OnDuty", function(joiner, time)
             SetNewWaypoint(location.x, location.y)
             PedInteraction:Add("WeedDelivery", pedModel, vector3(location[1], location[2], location[3]), location[4],
                 50.0, {
-                {
-                    icon = "box-circle-check",
-                    text = "Deliver Goods",
-                    event = "WeedRun:Client:Deliver",
-                    tempjob = "WeedRun",
-                    item = "weed_brick",
-                    isEnabled = function()
-                        return _working and _state == 1
-                    end,
-                },
-            }, 'box-circle-check')
+                    {
+                        icon = "box-circle-check",
+                        text = "Deliver Goods",
+                        event = "WeedRun:Client:Deliver",
+                        tempjob = "WeedRun",
+                        item = "weed_brick",
+                        isEnabled = function()
+                            return _working and _state == 1
+                        end,
+                    },
+                }, 'box-circle-check')
         end)
 end)
 
@@ -90,7 +90,7 @@ end)
 AddEventHandler("WeedRun:Client:StartJob", function()
     exports["sandbox-base"]:ServerCallback('WeedRun:StartJob', _joiner, function(state)
         if not state then
-            Notification:Error("Unable To Start Job")
+            exports["sandbox-hud"]:NotifError("Unable To Start Job")
         end
     end)
 end)

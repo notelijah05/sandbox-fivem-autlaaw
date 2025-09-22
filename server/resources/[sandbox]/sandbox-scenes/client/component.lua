@@ -7,7 +7,6 @@ AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Scenes", {
 		"Menu",
 		"Targeting",
-		"Notification",
 		"Animations",
 		"Polyzone",
 		"Jobs",
@@ -124,15 +122,15 @@ _SCENES = {
 		local hitting, endCoords, entity = GetEntityPlayerIsLookingAt(15.0, LocalPlayer.state.ped)
 
 		if not hitting then
-			return Notification:Error("Cannot Place Here")
+			return exports["sandbox-hud"]:NotifError("Cannot Place Here")
 		end
 
 		if #(GetEntityCoords(LocalPlayer.state.ped) - endCoords) > 5.0 then
-			return Notification:Error("Cannot Place That Far Away")
+			return exports["sandbox-hud"]:NotifError("Cannot Place That Far Away")
 		end
 
 		if IsEntityAVehicle(entity) or IsEntityAPed(entity) then
-			return Notification:Error("Cannot Place On a Vehicle or Person")
+			return exports["sandbox-hud"]:NotifError("Cannot Place On a Vehicle or Person")
 		end
 
 		Input:Show(
@@ -175,12 +173,12 @@ _SCENES = {
 
 				exports["sandbox-base"]:ServerCallback("Scenes:Delete", lastId, function(success, invalidPermissions)
 					if success then
-						Notification:Success("Scene Deleted")
+						exports["sandbox-hud"]:NotifSuccess("Scene Deleted")
 					else
 						if invalidPermissions then
-							Notification:Error("Invalid Permissions to Delete This Scene")
+							exports["sandbox-hud"]:NotifError("Invalid Permissions to Delete This Scene")
 						else
-							Notification:Error("Failed to Delete Scene")
+							exports["sandbox-hud"]:NotifError("Failed to Delete Scene")
 						end
 					end
 				end)
@@ -206,7 +204,7 @@ _SCENES = {
 					if success then
 						EditScene(lastId, _loadedScenes[lastId], { staff = isStaff })
 					else
-						Notification:Error("Invalid Permissions to Edit This Scene")
+						exports["sandbox-hud"]:NotifError("Invalid Permissions to Edit This Scene")
 					end
 				end)
 			end
@@ -229,7 +227,7 @@ AddEventHandler("Scenes:Client:OpenOptionsMenu", function(values, data)
 	creatingSceneData.text.text = SanitizeEmojis(values.text)
 
 	if (creatingSceneData.text.text == nil or creatingSceneData.text.text == "") then
-		Notification:Error("Scene Creation Cancelled - No Valid Characters In Scene Text")
+		exports["sandbox-hud"]:NotifError("Scene Creation Cancelled - No Valid Characters In Scene Text")
 		return
 	end
 
@@ -248,7 +246,7 @@ AddEventHandler("Scenes:Client:OpenOptionsMenu", function(values, data)
 		CreateThread(function()
 			while _creationOpen do
 				if #(GetEntityCoords(LocalPlayer.state.ped) - creatingSceneData.coords) > 10.0 then
-					Notification:Error("Scene Creation Cancelled - Too Far Away")
+					exports["sandbox-hud"]:NotifError("Scene Creation Cancelled - Too Far Away")
 
 					_creationMenu:Close()
 					break
@@ -436,9 +434,9 @@ AddEventHandler("Scenes:Client:OpenOptionsMenu", function(values, data)
 			data = data,
 		}, function(success)
 			if success then
-				Notification:Success("Scene Placed")
+				exports["sandbox-hud"]:NotifSuccess("Scene Placed")
 			else
-				Notification:Error("Failed to Place Scene")
+				exports["sandbox-hud"]:NotifError("Failed to Place Scene")
 			end
 		end)
 
@@ -469,7 +467,7 @@ function EditScene(id, fuckface, data)
 		CreateThread(function()
 			while _creationOpen do
 				if #(GetEntityCoords(LocalPlayer.state.ped) - creatingSceneData.coords) > 10.0 then
-					Notification:Error("Scene Edit Cancelled - Too Far Away")
+					exports["sandbox-hud"]:NotifError("Scene Edit Cancelled - Too Far Away")
 
 					_creationMenu:Close()
 					break
@@ -651,9 +649,9 @@ function EditScene(id, fuckface, data)
 			data = data,
 		}, function(success)
 			if success then
-				Notification:Success("Scene Edited")
+				exports["sandbox-hud"]:NotifSuccess("Scene Edited")
 			else
-				Notification:Error("Failed to Edit Scene")
+				exports["sandbox-hud"]:NotifError("Failed to Edit Scene")
 			end
 		end)
 

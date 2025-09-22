@@ -217,13 +217,13 @@ AddEventHandler("MDT:Client:DisableTracker", function(entity, data)
 					exports["sandbox-base"]:ServerCallback("EmergencyAlerts:DisablePDTracker", entity.serverId,
 						function(success)
 							if success then
-								Notification:Success("Disabled Their Tracker")
+								exports["sandbox-hud"]:NotifSuccess("Disabled Their Tracker")
 							end
 						end)
 				end
 			end
 		end)
 	else
-		Notification:Error("Unable to Disable Tracker")
+		exports["sandbox-hud"]:NotifError("Unable to Disable Tracker")
 	end
 end)

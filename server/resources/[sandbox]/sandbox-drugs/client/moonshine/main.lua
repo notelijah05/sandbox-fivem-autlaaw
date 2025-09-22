@@ -426,7 +426,7 @@ AddEventHandler("Drugs:Client:Moonshine:StartCook", function(entity, data)
                     end
                 end)
             else
-                Notification:Error("Still Is Not Ready")
+                exports["sandbox-hud"]:NotifError("Still Is Not Ready")
             end
         end)
     end
@@ -456,7 +456,7 @@ AddEventHandler("Drugs:Client:Moonshine:PickupCook", function(entity, data)
                 exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:PickupCook", entState.stillId, function(s)
                     if s then
                     else
-                        Notification:Error("Still Is Not Ready")
+                        exports["sandbox-hud"]:NotifError("Still Is Not Ready")
                     end
                 end)
             end
@@ -493,7 +493,7 @@ AddEventHandler("Drugs:Client:Moonshine:PickupBrew", function(entity, data)
             end)
         end
     else
-        Notification:Error(string.format("Missing Empty Jars (Requires %s Empty Jars",
+        exports["sandbox-hud"]:NotifError(string.format("Missing Empty Jars (Requires %s Empty Jars",
             (_barrels[entState.barrelId]?.brewData?.Drinks or 15)))
     end
 end)

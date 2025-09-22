@@ -1,11 +1,9 @@
 AddEventHandler("Commands:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Commands", {
-		"Notification",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -47,8 +45,8 @@ RegisterNetEvent("Commands:Client:TeleportToMarker", function()
 
 			Wait(5)
 		end
-		Notification:Success("Teleported")
+		exports["sandbox-hud"]:NotifSuccess("Teleported")
 	else
-		Notification:Error("Please place your waypoint.")
+		exports["sandbox-hud"]:NotifError("Please place your waypoint.")
 	end
 end)

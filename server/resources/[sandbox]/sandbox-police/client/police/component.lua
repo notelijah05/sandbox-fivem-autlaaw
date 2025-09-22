@@ -176,7 +176,6 @@ end
 AddEventHandler("Police:Shared:DependencyUpdate", PoliceComponents)
 function PoliceComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
@@ -200,7 +199,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Inventory",
-		"Notification",
 		"Input",
 		"Keybinds",
 		"Handcuffs",
@@ -361,7 +359,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					label = "Start Pit Timer (5 Mins)",
 					action = function()
 						Interaction:Hide()
-						Notification:Custom("5 Minute Pit Timer", 60 * 1000 * 5, 'car-burst', {
+						exports["sandbox-hud"]:NotifCustom("5 Minute Pit Timer", 60 * 1000 * 5, 'car-burst', {
 							alert = {
 								background = "#247BA5B3",
 							},

@@ -27,7 +27,7 @@ AddEventHandler("DonorDealer:Client:Open", function(entityData, data)
   local dealer = data.id
   exports["sandbox-base"]:ServerCallback("Dealerships:DonorSales:GetStock", dealer, function(data)
     if not data then
-      return Notification:Error("No Pending Donator Purchases to Redeem")
+      return exports["sandbox-hud"]:NotifError("No Pending Donator Purchases to Redeem")
     end
 
     local fData = FormatDealerStockToCategories(data.stock)

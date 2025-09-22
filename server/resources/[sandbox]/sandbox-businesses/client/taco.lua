@@ -93,7 +93,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 			if _deliveryCounter > 0 then
 				Action:Hide("tacopickup")
 				if _lastCook + _gracePeriod > GetGameTimer() then
-					Notification:Error(
+					exports["sandbox-hud"]:NotifError(
 						string.format(
 							"You must wait to swap to deliveries! (%s seconds)",
 							math.floor((_lastCook + _gracePeriod - GetGameTimer()) / 1000)
@@ -144,7 +144,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 			if _deliveryCounter < _tacoQueue.maxQueue then
 				Action:Hide("tacoqueue")
 				if _lastDelivery + _gracePeriod > GetGameTimer() then
-					Notification:Error(
+					exports["sandbox-hud"]:NotifError(
 						string.format(
 							"You must wait to swap to start prepping food! (%s seconds)",
 							math.floor((_lastDelivery + _gracePeriod - GetGameTimer()) / 1000)
@@ -180,18 +180,18 @@ AddEventHandler("Businesses:Client:Startup", function()
 									GetNewQueueItem()
 									_lastCook = GetGameTimer()
 								else
-									Notification:Error("You do not have the proper item to bag.")
+									exports["sandbox-hud"]:NotifError("You do not have the proper item to bag.")
 									ShowTacoQueue()
 								end
 							end
 						)
 					end)
 				else
-					Notification:Error("You do not have the proper item to bag.")
+					exports["sandbox-hud"]:NotifError("You do not have the proper item to bag.")
 					ShowTacoQueue()
 				end
 			else
-				Notification:Error("The queue is full.")
+				exports["sandbox-hud"]:NotifError("The queue is full.")
 				Action:Hide("tacoqueue")
 				ShowTacoQueue()
 			end
@@ -299,7 +299,7 @@ function FetchDropOffLocation()
 					)
 					if _durationCheck <= 0 then
 						_durationCheck = 0
-						Notification:Error("You failed to deliver the order in time.")
+						exports["sandbox-hud"]:NotifError("You failed to deliver the order in time.")
 						RunCleanUp()
 						return
 					end

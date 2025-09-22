@@ -244,14 +244,14 @@ AddEventHandler('Vehicles:Client:Tow', function(data)
 						requester = LocalPlayer.state.Character:GetData("SID"),
 					}, function()
 						TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", "towRequest")
-						Notification:Success('Tow Requested')
+						exports["sandbox-hud"]:NotifSuccess('Tow Requested')
 					end)
 				else
-					Notification:Error('Tow Request Failed')
+					exports["sandbox-hud"]:NotifError('Tow Request Failed')
 				end
 			end)
 		else
-			Notification:Error('Cannot Request Tow On That Vehicle Anymore...')
+			exports["sandbox-hud"]:NotifError('Cannot Request Tow On That Vehicle Anymore...')
 		end
 	end
 end)
@@ -289,17 +289,17 @@ AddEventHandler('Vehicles:Client:Impound', function(data)
 						level = data.level,
 					}, function(success)
 						if success then
-							Notification:Success('Vehicle Impounded')
+							exports["sandbox-hud"]:NotifSuccess('Vehicle Impounded')
 						else
-							Notification:Error('Impound Failed')
+							exports["sandbox-hud"]:NotifError('Impound Failed')
 						end
 					end)
 				else
-					Notification:Error('Impound Failed')
+					exports["sandbox-hud"]:NotifError('Impound Failed')
 				end
 			end)
 		else
-			Notification:Error('Cannot Impound That Vehicle Anymore...')
+			exports["sandbox-hud"]:NotifError('Cannot Impound That Vehicle Anymore...')
 		end
 	end
 end)
@@ -423,7 +423,7 @@ AddEventHandler('Vehicles:Client:TowReleaseMenu', function()
 
 			ListMenu:Show(impoundMenu)
 		else
-			Notification:Info('None of Your Vehicles Are Impounded')
+			exports["sandbox-hud"]:NotifInfo('None of Your Vehicles Are Impounded')
 		end
 	end)
 end)
@@ -439,13 +439,14 @@ AddEventHandler('Vehicles:Client:TowRequestRelease', function(data)
 				heading = freeImpoundSpace.w,
 			}, function(success)
 				if success then
-					Notification:Success('Vehicle Retrieved From Impound. It is Parked in the Lot Outside', 10000)
+					exports["sandbox-hud"]:NotifSuccess(
+						'Vehicle Retrieved From Impound. It is Parked in the Lot Outside', 10000)
 				else
-					Notification:Error('Error Retrieving From Impound')
+					exports["sandbox-hud"]:NotifError('Error Retrieving From Impound')
 				end
 			end)
 		else
-			Notification:Error('Impound Parking Lot Full')
+			exports["sandbox-hud"]:NotifError('Impound Parking Lot Full')
 		end
 	end
 end)

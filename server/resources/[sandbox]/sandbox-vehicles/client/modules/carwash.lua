@@ -75,10 +75,10 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
                         })
                     end)
                 else
-                    Notification:Error('Not Enough Cash')
+                    exports["sandbox-hud"]:NotifError('Not Enough Cash')
                 end
             else
-                Notification:Error('This Vehicle Isn\'t Dirty!')
+                exports["sandbox-hud"]:NotifError('This Vehicle Isn\'t Dirty!')
             end
         end
     end
@@ -111,7 +111,7 @@ RegisterNetEvent('Vehicles:Client:CleaningKit', function()
                     bill = false,
                 }, function(success)
                     if success then
-                        Notification:Success('Vehicle Cleaned')
+                        exports["sandbox-hud"]:NotifSuccess('Vehicle Cleaned')
                     end
                 end)
             end

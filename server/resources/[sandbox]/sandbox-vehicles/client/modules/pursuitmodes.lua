@@ -33,7 +33,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 
                         _inPursuitVehicleMode = k
                         UISounds.Play:FrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
-                        Notification:Standard("Switched to Pursuit Mode " .. v.name)
+                        exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " .. v.name)
                         ApplyPursuitStuffToVehicle(_inPursuitVehicleMode)
 
                         Entity(_inPursuitVehicle).state:set('PursuitMode', _inPursuitVehicleMode, true)
@@ -52,7 +52,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 
     Keybinds:Add('vehicle_pursuit_modes', '', 'keyboard', 'Vehicle - Pursuit Modes', function()
         if _inPursuitVehicle and _timeout then
-            Notification:Error("Cannot switch modes that quickly.")
+            exports["sandbox-hud"]:NotifError("Cannot switch modes that quickly.")
             return
         end
         if _inPursuitVehicle and not _timeout then
@@ -63,7 +63,8 @@ AddEventHandler('Vehicles:Client:StartUp', function()
             end
 
             UISounds.Play:FrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
-            Notification:Standard("Switched to Pursuit Mode " .. _inPursuitVehicleSettings[_inPursuitVehicleMode].name or
+            exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " ..
+                _inPursuitVehicleSettings[_inPursuitVehicleMode].name or
                 _inPursuitVehicleMode)
             ApplyPursuitStuffToVehicle(_inPursuitVehicleMode)
 
@@ -92,7 +93,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                 _inPursuitVehicleMode = lastPursuitMode
 
                 UISounds.Play:FrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
-                Notification:Standard("Switched to Pursuit Mode " ..
+                exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " ..
                     _inPursuitVehicleSettings[_inPursuitVehicleMode].name or _inPursuitVehicleMode)
 
                 ApplyPursuitStuffToVehicle(lastPursuitMode)

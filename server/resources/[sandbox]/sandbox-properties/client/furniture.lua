@@ -209,7 +209,7 @@ function SetFurnitureEditMode(state)
                 end
             end
 
-            Notification.Persistent:Standard("furniture", "Furniture Edit Mode Enabled - Third Eye Objects to Move or Delete Them")
+            exports["sandbox-hud"]:NotifPersistentStandard("furniture", "Furniture Edit Mode Enabled - Third Eye Objects to Move or Delete Them")
         else
             for k, v in ipairs(_spawnedFurniture) do
                 if not v.targeting then
@@ -217,7 +217,7 @@ function SetFurnitureEditMode(state)
                 end
             end
 
-            Notification.Persistent:Remove("furniture")
+            exports["sandbox-hud"]:NotifPersistentRemove("furniture")
         end
 
         LocalPlayer.state.furnitureEdit = state
@@ -276,9 +276,9 @@ AddEventHandler("Furniture:Client:Place", function(data, placement)
             data = data,
         }, function(success)
             if success then
-                Notification:Success("Placed Item")
+                exports["sandbox-hud"]:NotifSuccess("Placed Item")
             else
-                Notification:Error("Error")
+                exports["sandbox-hud"]:NotifError("Error")
             end
 
             _placingFurniture = false
@@ -325,9 +325,9 @@ AddEventHandler("Furniture:Client:Move", function(data, placement)
             },
         }, function(success)
             if success then
-                Notification:Success("Moved Item")
+                exports["sandbox-hud"]:NotifSuccess("Moved Item")
             else
-                Notification:Error("Error")
+                exports["sandbox-hud"]:NotifError("Error")
             end
 
             _placingFurniture = false
@@ -352,7 +352,7 @@ AddEventHandler("Furniture:Client:CancelMove", function(data)
             end
         end
 
-        Notification:Error("Move Cancelled")
+        exports["sandbox-hud"]:NotifError("Move Cancelled")
         _placingFurniture = false
         LocalPlayer.state.placingFurniture = false
         if not _skipPhone then

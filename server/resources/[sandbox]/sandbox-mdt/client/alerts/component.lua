@@ -10,7 +10,6 @@ function RetrievePDAComponents()
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
@@ -22,7 +21,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Sounds",
 		"UISounds",
 		"EmergencyAlerts",
-		"Notification",
 		"Keybinds",
 		"Blips",
 		"CCTV",

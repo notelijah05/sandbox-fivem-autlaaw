@@ -3,7 +3,6 @@ local _timeout = false
 AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -14,7 +13,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
 		"Keybinds",
-		"Notification",
 		"Targeting",
 		"Progress",
 		"Hud",
@@ -28,7 +26,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		Keybinds:Add("escort", "k", "keyboard", "Escort", function()
 			if _timeout then
-				Notification:Error("Stop spamming you pepega.")
+				exports["sandbox-hud"]:NotifError("Stop spamming you pepega.")
 				return
 			end
 			_timeout = true
@@ -49,7 +47,7 @@ ESCORT = {
 	DoEscort = function(self, target, tPlayer)
 		if target ~= nil then
 			if LocalPlayer.state.AllowEscorting == false then
-				Notification:Error("Unable to escort in this location.")
+				exports["sandbox-hud"]:NotifError("Unable to escort in this location.")
 				return
 			end
 			exports["sandbox-base"]:ServerCallback("Escort:DoEscort", {

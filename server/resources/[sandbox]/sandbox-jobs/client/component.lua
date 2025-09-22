@@ -74,7 +74,7 @@ _JOBS = {
 		On = function(self, jobId, cb)
 			if jobId then
 				if Jobs.Duty:Get(jobId) then
-					Notification:Error("Already On Duty as that Job")
+					exports["sandbox-hud"]:NotifError("Already On Duty as that Job")
 					if cb then
 						cb(false)
 					end

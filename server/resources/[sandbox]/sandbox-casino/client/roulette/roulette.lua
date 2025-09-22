@@ -221,14 +221,14 @@ AddEventHandler("Casino:Client:JoinRoulette", function(_, data)
                     end)
                 else
                     if table == "vip" then
-                        Notification:Error("You're Not a VIP Loser")
+                        exports["sandbox-hud"]:NotifError("You're Not a VIP Loser")
                     else
-                        Notification:Error("Someone Is Sat There")
+                        exports["sandbox-hud"]:NotifError("Someone Is Sat There")
                     end
                 end
             end)
     else
-        Notification:Error("Too Far From Chair")
+        exports["sandbox-hud"]:NotifError("Too Far From Chair")
     end
 end)
 
@@ -383,7 +383,7 @@ function GetRouletteBetAmount()
     if res?.success and res?.data?.confirmBet then
         return res.data.confirmBet
     elseif res?.timeout then
-        Notification:Error("Ran Out of Time...")
+        exports["sandbox-hud"]:NotifError("Ran Out of Time...")
     end
     return false
 end

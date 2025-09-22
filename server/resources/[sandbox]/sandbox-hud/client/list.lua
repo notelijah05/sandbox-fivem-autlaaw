@@ -1,13 +1,11 @@
 AddEventHandler("ListMenu:Shared:DependencyUpdate", RetrieveListComponents)
 function RetrieveListComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("ListMenu", {
-		"Notification",
 		"UISounds",
 		"ListMenu",
 	}, function(error)

@@ -19,7 +19,6 @@ AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 	Spawn = exports["sandbox-base"]:FetchComponent("Spawn")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
@@ -35,7 +34,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
 		"UISounds",
 		"Blips",
-		"Notification",
 		"Sync",
 		"Spawn",
 		"Action",
@@ -927,11 +925,11 @@ PED = {
 							Ped.Creator:End()
 						else
 							Ped.Customization:Hide()
-							Notification:Success(string.format("You Paid $%s", paid))
+							exports["sandbox-hud"]:NotifSuccess(string.format("You Paid $%s", paid))
 						end
 					end)
 				else
-					Notification:Error("You Don't Have Enough Cash")
+					exports["sandbox-hud"]:NotifError("You Don't Have Enough Cash")
 				end
 				cb(status)
 			end)

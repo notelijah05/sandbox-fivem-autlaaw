@@ -15,7 +15,6 @@ local _ignoreEvents = {
 
 AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -44,7 +43,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
-		"Notification",
 		"UISounds",
 		"Sounds",
 		"Hud",

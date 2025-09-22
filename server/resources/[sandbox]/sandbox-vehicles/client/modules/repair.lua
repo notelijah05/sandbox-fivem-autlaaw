@@ -281,19 +281,19 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 
 							if not success then
 								if errorMessage then
-									Notification:Error(errorMessage)
+									exports["sandbox-hud"]:NotifError(errorMessage)
 								else
-									Notification:Error("Repair Failed")
+									exports["sandbox-hud"]:NotifError("Repair Failed")
 								end
 							else
-								Notification:Success("Repaired Successfully")
+								exports["sandbox-hud"]:NotifSuccess("Repaired Successfully")
 							end
 						else
 							cb(false)
 						end
 					end)
 				else
-					Notification:Error("Vehicle Doesn't Need Repair")
+					exports["sandbox-hud"]:NotifError("Vehicle Doesn't Need Repair")
 					cb(false)
 				end
 			else

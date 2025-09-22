@@ -18,7 +18,6 @@ function RetrieveComponents()
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
 
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Player",
 		"Jobs",
 		"EmergencyAlerts",
-		"Notification",
 		"Vehicles",
 	}, function(error)
 		if #error > 0 then

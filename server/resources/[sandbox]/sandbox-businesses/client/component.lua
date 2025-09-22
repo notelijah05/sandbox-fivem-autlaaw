@@ -1,7 +1,6 @@
 AddEventHandler("Businesses:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -26,7 +25,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Businesses", {
 		"Menu",
-		"Notification",
 		"Animations",
 		"Targeting",
 		"Polyzone",

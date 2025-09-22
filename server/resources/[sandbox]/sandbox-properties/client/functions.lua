@@ -133,7 +133,7 @@ function ExitProperty(data, backdoor)
 		end
 	end)
 
-	Notification.Persistent:Remove("furniture")
+	exports["sandbox-hud"]:NotifPersistentRemove("furniture")
 
 	if _previewingInterior then
 		EndPreview()

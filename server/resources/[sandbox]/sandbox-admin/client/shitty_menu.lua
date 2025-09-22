@@ -122,9 +122,9 @@ function OpenStaffMenu(data)
                     --         target = player.Source,
                     --     }, function(success)
                     --         if success then
-                    --             Notification:Success('Successfully Teleported to '.. player.Name)
+                    --             exports["sandbox-hud"]:NotifSuccess('Successfully Teleported to '.. player.Name)
                     --         else
-                    --             Notification:Error('Failed to Teleport to '.. player.Name)
+                    --             exports["sandbox-hud"]:NotifError('Failed to Teleport to '.. player.Name)
                     --         end
                     --     end)
                     -- end)
@@ -135,9 +135,9 @@ function OpenStaffMenu(data)
                     --         target = player.Source,
                     --     }, function(success)
                     --         if success then
-                    --             Notification:Success('Successfully Brought '.. player.Name)
+                    --             exports["sandbox-hud"]:NotifSuccess('Successfully Brought '.. player.Name)
                     --         else
-                    --             Notification:Error('Failed to Bring '.. player.Name)
+                    --             exports["sandbox-hud"]:NotifError('Failed to Bring '.. player.Name)
                     --         end
                     --     end)
                     -- end)

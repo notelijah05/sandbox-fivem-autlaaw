@@ -13,7 +13,7 @@ function ViewDealershipStocks(dealerId)
         exports["sandbox-base"]:ServerCallback('Dealerships:StockViewing:FetchData', dealerId,
             function(authed, stocks, serverTime, dealerProfitPercent)
                 if not authed then
-                    Notification:Error('You\'re Not Authorized to View Stock', 3500, 'car-building')
+                    exports["sandbox-hud"]:NotifError('You\'re Not Authorized to View Stock', 3500, 'car-building')
                     return
                 end
 
@@ -65,7 +65,7 @@ function ViewDealershipStocks(dealerId)
                                 v.price and
                                 '$' ..
                                 formatNumberToCurrency(math.floor(exports['sandbox-base']:UtilsRound(
-                                v.price * saleMultiplier, 0))) or
+                                    v.price * saleMultiplier, 0))) or
                                 '$?',
                                 (v.lastPurchased and GetFormattedTimeFromSeconds(serverTime - v.lastPurchased) .. ' ago.' or 'Never'),
                                 GetFormattedTimeFromSeconds(serverTime - v.lastStocked) .. ' ago.',

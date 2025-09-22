@@ -52,7 +52,7 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
 
         exports['sandbox-base']:UtilsPrint(data)
         TriggerServerEvent('Doors:Server:PrintDoor', data)
-        Notification:Success('Saved Door To File')
+        exports["sandbox-hud"]:NotifSuccess('Saved Door To File')
         creationHelper = false
     end
 end)

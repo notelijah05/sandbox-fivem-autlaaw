@@ -254,7 +254,7 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:UpdateState", function(st
             end)
         end
     elseif state == 3 and _boosting.dropOff then
-        Notification.Persistent:Remove("boosting-trackers")
+        exports["sandbox-hud"]:NotifPersistentRemove("boosting-trackers")
         Blips:Add(
             "boosting-contract",
             "[Contract]: Dropoff Location",
@@ -274,7 +274,7 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:UpdateState", function(st
 end)
 
 RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:TrackerNotificationUpdate", function(notif)
-    Notification.Persistent:Info("boosting-trackers", notif)
+    exports["sandbox-hud"]:NotifPersistentInfo("boosting-trackers", notif)
 end)
 
 AddEventHandler("Laptop:Client:LSUnderground:Boosting:AttemptExterior", function(veh)
@@ -500,7 +500,7 @@ function CleanUpBoosting()
         Blips:Remove("boosting-contract")
 
         TriggerEvent("Status:Client:Update", "boosting-timer", 0)
-        Notification.Persistent:Remove("boosting-trackers")
+        exports["sandbox-hud"]:NotifPersistentRemove("boosting-trackers")
     end
 end
 

@@ -138,7 +138,7 @@ function CreateBowlingPins(center, skip)
 end
 
 function SendBowlingNotification(text, time)
-    Notification:Custom(text, time or 5000, 'bowling-ball-pin', {
+    exports["sandbox-hud"]:NotifCustom(text, time or 5000, 'bowling-ball-pin', {
         alert = {
             background = "#C05097",
         },
@@ -351,11 +351,11 @@ AddEventHandler('Bowling:Client:StartGame', function(entity, alleyId)
             if success then
                 SendBowlingNotification('Starting a Game of Bowling')
             else
-                Notification:Error('Couldn\'t Start Game', 5000, 'bowling-ball-pin')
+                exports["sandbox-hud"]:NotifError('Couldn\'t Start Game', 5000, 'bowling-ball-pin')
             end
         end)
     else
-        Notification:Error('Please provide a name longer than 2 letters', 5000, 'bowling-ball-pin')
+        exports["sandbox-hud"]:NotifError('Please provide a name longer than 2 letters', 5000, 'bowling-ball-pin')
     end
 end)
 
@@ -369,11 +369,11 @@ AddEventHandler('Bowling:Client:JoinGame', function(entity, alleyId)
             if success then
                 SendBowlingNotification('Joined a Game of Bowling')
             else
-                Notification:Error('Couldn\'t Join Game', 5000, 'bowling-ball-pin')
+                exports["sandbox-hud"]:NotifError('Couldn\'t Join Game', 5000, 'bowling-ball-pin')
             end
         end)
     else
-        Notification:Error('Please provide a name longer than 2 letters', 5000, 'bowling-ball-pin')
+        exports["sandbox-hud"]:NotifError('Please provide a name longer than 2 letters', 5000, 'bowling-ball-pin')
     end
 end)
 
@@ -409,7 +409,7 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
                 end)
             end
         else
-            Notification:Error('Not Your Turn', 5000, 'bowling-ball-pin')
+            exports["sandbox-hud"]:NotifError('Not Your Turn', 5000, 'bowling-ball-pin')
         end
     end
 end)
@@ -421,7 +421,7 @@ AddEventHandler('Bowling:Client:EndGame', function(entity, alleyId)
         if success then
             SendBowlingNotification('Ended a Game of Bowling')
         else
-            Notification:Error('Couldn\'t End Game', 5000, 'bowling-ball-pin')
+            exports["sandbox-hud"]:NotifError('Couldn\'t End Game', 5000, 'bowling-ball-pin')
         end
     end)
 end)
@@ -431,7 +431,7 @@ AddEventHandler('Bowling:Client:ResetAll', function()
         if success then
             SendBowlingNotification('Reset All')
         else
-            Notification:Error('Couldn\'t Reset', 5000, 'bowling-ball-pin')
+            exports["sandbox-hud"]:NotifError('Couldn\'t Reset', 5000, 'bowling-ball-pin')
         end
     end)
 end)
@@ -441,7 +441,7 @@ AddEventHandler('Bowling:Client:ClearPins', function()
         if success then
             SendBowlingNotification('Cleared Pins')
         else
-            Notification:Error('Couldn\'t Clear Pins', 5000, 'bowling-ball-pin')
+            exports["sandbox-hud"]:NotifError('Couldn\'t Clear Pins', 5000, 'bowling-ball-pin')
         end
     end)
 end)

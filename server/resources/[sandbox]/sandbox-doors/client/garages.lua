@@ -948,7 +948,7 @@ function DoGarageKeyFobAction()
 			else
 				if not secretMode then
 					UISounds.Play:FrontEnd(-1, "Hack_Failed", "DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS")
-					Notification:Error("Not Authorized")
+					exports["sandbox-hud"]:NotifError("Not Authorized")
 				end
 			end
 		end

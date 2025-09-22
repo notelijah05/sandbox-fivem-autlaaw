@@ -33,7 +33,7 @@ AddEventHandler("Mechanic:Client:RunDiagnostics", function(entityData)
 					{
 						label = "Vehicle Mileage",
 						description = (vehEnt.state.Mileage and exports['sandbox-base']:UtilsRound(vehEnt.state.Mileage, 2) or 0) ..
-						" Miles",
+							" Miles",
 						event = false,
 					},
 				},
@@ -110,7 +110,7 @@ end)
 AddEventHandler("Mechanic:Client:InstallMultipleRepairParts", function(data)
 	exports["sandbox-base"]:ServerCallback("Mechanic:InstallMultipleRepairParts", data, function(success)
 		if not success then
-			Notification:Error("Unable to Install Multiple Parts")
+			exports["sandbox-hud"]:NotifError("Unable to Install Multiple Parts")
 		end
 	end)
 end)
@@ -118,7 +118,7 @@ end)
 AddEventHandler("Mechanic:Client:RemovePerformanceUpgrade", function(data)
 	exports["sandbox-base"]:ServerCallback("Mechanic:RemovePerformanceUpgrade", data, function(success)
 		if not success then
-			Notification:Error("Unable to Remove Upgrade")
+			exports["sandbox-hud"]:NotifError("Unable to Remove Upgrade")
 		end
 	end)
 end)

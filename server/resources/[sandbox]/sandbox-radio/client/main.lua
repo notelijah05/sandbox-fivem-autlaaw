@@ -25,7 +25,6 @@ local radioNames = {
 
 AddEventHandler("Radio:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
@@ -40,7 +39,6 @@ local radioChannelCycle = false
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radio", {
-		"Notification",
 		"Action",
 		"Progress",
 		"VOIP",
@@ -256,13 +254,13 @@ function ToggleRadioPower(fromUI)
 		TriggerEvent("EmergencyAlerts:Client:RadioChannelChange", "0")
 		TriggerEvent("Status:Client:Update", "radio-freq", 0)
 		if not fromUI then
-			Notification:Error("Radio Turned Off", 2500)
+			exports["sandbox-hud"]:NotifError("Radio Turned Off", 2500)
 		end
 		Sounds.Do.Play:One("radiooff.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
 		LocalPlayer.state:set("onRadio", false, true)
 	else
 		if not fromUI then
-			Notification:Success("Radio Turned On", 2500)
+			exports["sandbox-hud"]:NotifSuccess("Radio Turned On", 2500)
 		end
 		RADIO_POWER = true
 		if RADIO_FREQUENCY_LAST and RADIO_FREQUENCY_LAST > 0 then
@@ -291,10 +289,10 @@ function SetCharacterRadioFrequency(freq, notifyChange)
 					frequencyName = name
 				else
 					canUseFrequency = false
-					Notification:Error("Encrypted Radio Channel")
+					exports["sandbox-hud"]:NotifError("Encrypted Radio Channel")
 				end
 			else
-				Notification:Error("Out of Range Frequency With This Radio")
+				exports["sandbox-hud"]:NotifError("Out of Range Frequency With This Radio")
 				canUseFrequency = false
 			end
 		end
@@ -318,9 +316,9 @@ function SetCharacterRadioFrequency(freq, notifyChange)
 			if notifyChange then
 				Sounds.Do.Play:One("radioclick.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
 				if frequencyName then
-					Notification:Info("Changed Radio Channel to " .. frequencyName)
+					exports["sandbox-hud"]:NotifInfo("Changed Radio Channel to " .. frequencyName)
 				else
-					Notification:Info("Changed Radio Channel to #" .. RADIO_FREQUENCY)
+					exports["sandbox-hud"]:NotifInfo("Changed Radio Channel to #" .. RADIO_FREQUENCY)
 				end
 			end
 		else
@@ -487,7 +485,7 @@ function RadioVolumeUp(notify)
 	RADIO_VOLUME = VOIP.Settings.Volumes.Radio:Set(newVolume)
 
 	if notify then
-		Notification:Info("Radio Volume: " .. math.floor(RADIO_VOLUME) .. "%", 1500)
+		exports["sandbox-hud"]:NotifInfo("Radio Volume: " .. math.floor(RADIO_VOLUME) .. "%", 1500)
 	end
 
 	SendUpdates()
@@ -502,7 +500,7 @@ function RadioVolumeDown(notify)
 	RADIO_VOLUME = VOIP.Settings.Volumes.Radio:Set(newVolume)
 
 	if notify then
-		Notification:Info("Radio Volume: " .. math.floor(RADIO_VOLUME) .. "%", 1500)
+		exports["sandbox-hud"]:NotifInfo("Radio Volume: " .. math.floor(RADIO_VOLUME) .. "%", 1500)
 	end
 
 	SendUpdates()

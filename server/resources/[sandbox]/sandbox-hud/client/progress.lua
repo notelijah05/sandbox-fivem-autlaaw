@@ -199,10 +199,10 @@ function _doProgress(action, start, tick, finish)
 				end
 			end)
 		else
-			Notification:Error("Already Doing An Action", 5000)
+			exports["sandbox-hud"]:NotifError("Already Doing An Action", 5000)
 		end
 	else
-		Notification:Error("Already Doing An Action", 5000)
+		exports["sandbox-hud"]:NotifError("Already Doing An Action", 5000)
 	end
 end
 

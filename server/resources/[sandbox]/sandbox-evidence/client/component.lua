@@ -17,7 +17,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
@@ -34,7 +33,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Evidence", {
 		"Menu",
 		"Targeting",
-		"Notification",
 		"Animations",
 		"Keybinds",
 		"Polyzone",
@@ -197,9 +195,9 @@ AddEventHandler("Core:Shared:Ready", function()
 				if not status then
 					if success then
 						if alreadyFiled then
-							Notification:Success('Ballistics Filed Successfully - Gun Was Already Filed')
+							exports["sandbox-hud"]:NotifSuccess('Ballistics Filed Successfully - Gun Was Already Filed')
 						else
-							Notification:Success('Ballistics Filed Successfully - Gun Now Filed')
+							exports["sandbox-hud"]:NotifSuccess('Ballistics Filed Successfully - Gun Now Filed')
 						end
 
 						local items = {}
@@ -248,7 +246,7 @@ AddEventHandler("Core:Shared:Ready", function()
 							},
 						})
 					else
-						Notification:Error('Ballistics Testing Failed')
+						exports["sandbox-hud"]:NotifError('Ballistics Testing Failed')
 					end
 				end
 			end)

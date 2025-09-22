@@ -80,7 +80,6 @@ end
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -108,7 +107,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Inventory",
-		"Notification",
 		"Action",
 		"Animations",
 		"Progress",
@@ -209,7 +207,7 @@ RegisterNetEvent("Inventory:Client:LoadItems", DoItemLoad)
 
 RegisterNetEvent("Inventory:Client:ReloadItems", function()
 	_reloading = true
-	Notification.Persistent:Info("INVENTORY_RELOAD",
+	exports["sandbox-hud"]:NotifPersistentInfo("INVENTORY_RELOAD",
 		"Requesting Updated Item Definitions, Inventory Temporarily Unavailable")
 	TriggerServerEvent("Inventory:Server:ReloadItems")
 end)
@@ -228,8 +226,8 @@ end)
 RegisterNetEvent("Inventory:Client:ReceiveReload", function(items)
 	LoadItems()
 	DoItemLoad(items)
-	Notification.Persistent:Remove("INVENTORY_RELOAD")
-	Notification:Info("Item Reload Has Completed")
+	exports["sandbox-hud"]:NotifPersistentRemove("INVENTORY_RELOAD")
+	exports["sandbox-hud"]:NotifInfo("Item Reload Has Completed")
 end)
 
 function startCd()
@@ -753,7 +751,8 @@ RegisterNUICallback("BrokeShit", function(data, cb)
 	Inventory.Close:All()
 	Inventory:Enable()
 	_openCd = false
-	Notification:Error("Something Is Broken And Your Inventory Isn't Working, You May Need To Hard Nap To Fix")
+	exports["sandbox-hud"]:NotifError(
+		"Something Is Broken And Your Inventory Isn't Working, You May Need To Hard Nap To Fix")
 end)
 
 RegisterNetEvent("Inventory:Client:ReceiveItems", function(items)
@@ -955,7 +954,7 @@ RegisterNUICallback("MergeSlot", function(data, cb)
 			end
 		else
 			if success and success.reason then
-				Notification:Error(success.reason, 3600)
+				exports["sandbox-hud"]:NotifError(success.reason, 3600)
 			end
 		end
 	end)
@@ -983,7 +982,7 @@ RegisterNUICallback("SwapSlot", function(data, cb)
 			end
 		else
 			if success and success.reason then
-				Notification:Error(success.reason, 3600)
+				exports["sandbox-hud"]:NotifError(success.reason, 3600)
 			end
 		end
 	end)
@@ -1011,7 +1010,7 @@ RegisterNUICallback("MoveSlot", function(data, cb)
 			end
 		else
 			if success and success.reason then
-				Notification:Error(success.reason, 3600)
+				exports["sandbox-hud"]:NotifError(success.reason, 3600)
 			end
 		end
 	end)
@@ -1021,11 +1020,11 @@ RegisterNUICallback("SendNotify", function(data, cb)
 	cb("OK")
 	if data then
 		if data.alert == "success" then
-			Notification:Success(data.message, data.time)
+			exports["sandbox-hud"]:NotifSuccess(data.message, data.time)
 		elseif data.alert == "warning" then
 			Notification:Warning(data.message, data.time)
 		elseif data.alert == "error" then
-			Notification:Error(data.message, data.time)
+			exports["sandbox-hud"]:NotifError(data.message, data.time)
 		end
 	end
 end)

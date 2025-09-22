@@ -6,7 +6,6 @@ function RetrieveComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
@@ -26,7 +25,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Progress",
 		"Targeting",
 		"PedInteraction",
-		"Notification",
 		"Blips",
 		"Polyzone",
 		"Action",
@@ -170,9 +168,10 @@ end)
 AddEventHandler("Finance:Client:Paycheck", function(entity, data)
 	exports["sandbox-base"]:ServerCallback("Finance:Paycheck", {}, function(s)
 		if s.total > 0 then
-			Notification:Success(string.format("You Received $%s For %s Total Minutes Worked", s.total, s.minutes))
+			exports["sandbox-hud"]:NotifSuccess(string.format("You Received $%s For %s Total Minutes Worked", s.total,
+				s.minutes))
 		else
-			Notification:Error("You Need To Work To Earn A Paycheck")
+			exports["sandbox-hud"]:NotifError("You Need To Work To Earn A Paycheck")
 		end
 	end)
 end)

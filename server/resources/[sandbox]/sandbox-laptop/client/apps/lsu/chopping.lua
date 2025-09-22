@@ -360,7 +360,7 @@ end)
 RegisterNetEvent('Laptop:Client:LSUnderground:Chopping:CancelCurrent', function()
 	if LocalPlayer.state.inChopZone ~= nil and LocalPlayer.state.chopping ~= nil then
 		if _delay then
-			Notification:Error("Choplist Has Refreshed")
+			exports["sandbox-hud"]:NotifError("Choplist Has Refreshed")
 			Progress:Cancel()
 		end
 		LocalPlayer.state:set("chopping", nil, true)

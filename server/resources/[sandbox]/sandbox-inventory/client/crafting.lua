@@ -185,7 +185,7 @@ AddEventHandler("Crafting:Client:AddSchematic", function(ent, data)
 				},
 			})
 		else
-			Notification:Error("You Have No Schematics")
+			exports["sandbox-hud"]:NotifError("You Have No Schematics")
 		end
 	end)
 end)
@@ -220,7 +220,8 @@ RegisterNUICallback("Crafting:Craft", function(data, cb)
 		if not state.error then
 			cb(state)
 		else
-			Notification:Error(string.format("Error - %s", state.message or "Something Is Broken, Report This"))
+			exports["sandbox-hud"]:NotifError(string.format("Error - %s",
+				state.message or "Something Is Broken, Report This"))
 			cb(false)
 		end
 	end)

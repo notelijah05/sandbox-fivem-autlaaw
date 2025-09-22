@@ -181,7 +181,7 @@ end)
 AddEventHandler("Farming:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback('Farming:StartJob', _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)

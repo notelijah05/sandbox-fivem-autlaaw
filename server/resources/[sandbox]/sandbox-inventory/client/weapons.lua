@@ -7,7 +7,6 @@ local _interacting = false
 
 AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
 function WeaponsComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -19,7 +18,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weapons", {
-		"Notification",
 		"Weapons",
 		"Progress",
 		"Hud",
@@ -160,9 +158,9 @@ AddEventHandler("Core:Shared:Ready", function()
 				end)
 			else
 				if _equipped == nil then
-					Notification:Error("No Weapon Equipped")
+					exports["sandbox-hud"]:NotifError("No Weapon Equipped")
 				else
-					Notification:Error("Wrong Ammo Type")
+					exports["sandbox-hud"]:NotifError("Wrong Ammo Type")
 				end
 
 				cb(false)

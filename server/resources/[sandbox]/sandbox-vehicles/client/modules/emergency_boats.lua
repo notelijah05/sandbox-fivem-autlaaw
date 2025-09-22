@@ -34,5 +34,5 @@ function StartRequestEmergencyBoat()
         end
     end
 
-    Notification:Error("Not at Boat Storage or Spaces Full")
+    exports["sandbox-hud"]:NotifError("Not at Boat Storage or Spaces Full")
 end

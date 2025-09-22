@@ -3,7 +3,6 @@ function RetrieveComponents()
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
@@ -29,7 +28,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"PedInteraction",
 		"Progress",
 		"Phone",
-		"Notification",
 		"Polyzone",
 		"Targeting",
 		"Progress",

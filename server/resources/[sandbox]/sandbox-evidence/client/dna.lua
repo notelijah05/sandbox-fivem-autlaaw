@@ -18,10 +18,10 @@ RegisterNetEvent("Evidence:Client:RanDNA", function(tooDegraded, success, eviden
 	}, function(status)
 		if not status then
 			if tooDegraded then
-				return Notification:Error("DNA too Degraded to Run")
+				return exports["sandbox-hud"]:NotifError("DNA too Degraded to Run")
 			end
 			if success then
-				Notification:Success("DNA Match Found")
+				exports["sandbox-hud"]:NotifSuccess("DNA Match Found")
 
 				ListMenu:Show({
 					main = {
@@ -44,7 +44,7 @@ RegisterNetEvent("Evidence:Client:RanDNA", function(tooDegraded, success, eviden
 					},
 				})
 			else
-				Notification:Error("Could Not Match DNA")
+				exports["sandbox-hud"]:NotifError("Could Not Match DNA")
 			end
 		end
 	end)

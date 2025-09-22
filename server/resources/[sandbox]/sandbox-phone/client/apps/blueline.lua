@@ -384,7 +384,7 @@ RegisterNUICallback("FinishCreatorPD", function(data, cb)
 				cb(res2)
 			end)
 		else
-			Notification:Error("Not Enough Checkpoints")
+			exports["sandbox-hud"]:NotifError("Not Enough Checkpoints")
 			cb(false)
 		end
 	else
@@ -495,14 +495,14 @@ function StartRacePD()
 	local countdownMax = tonumber(_activeRace.countdown) or 20
 	local countdown = 0
 	while countdown < countdownMax do
-		Notification:Info(string.format("Race Starting In %s", countdownMax - countdown))
+		exports["sandbox-hud"]:NotifInfo(string.format("Race Starting In %s", countdownMax - countdown))
 		UISounds.Play:FrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
 		countdown = countdown + 1
 		Wait(1000)
 	end
 
 	CreateThread(function()
-		Notification:Info("Race Started")
+		exports["sandbox-hud"]:NotifInfo("Race Started")
 		UISounds.Play:FrontEnd(-1, "GO", "HUD_MINI_GAME_SOUNDSET")
 		SendNUIMessage({
 			type = "RACE_START",
@@ -541,7 +541,7 @@ function StartRacePD()
 					cLp = cLp + 1
 					cCps = {}
 					if cLp <= tonumber(_activeRace.laps) then
-						Notification:Info(string.format("Lap %s", cLp))
+						exports["sandbox-hud"]:NotifInfo(string.format("Lap %s", cLp))
 						UISounds.Play:FrontEnd(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET")
 
 						if lap_start ~= nil then
@@ -589,7 +589,7 @@ function StartRacePD()
 					_activeRace.trackData.Type == "p2p" and #cCps == #_activeRace.trackData.Checkpoints
 					or cLp > tonumber(_activeRace.laps)
 				then
-					Notification:Info("Race Finished")
+					exports["sandbox-hud"]:NotifInfo("Race Finished")
 					CleanupPD()
 					UISounds.Play:FrontEnd(-1, "FIRST_PLACE", "HUD_MINI_GAME_SOUNDSET")
 					SendNUIMessage({
@@ -814,7 +814,7 @@ function CreateCheckpointPD()
 
 		AddRaceBlipPD(_pendingTrack.Checkpoints[#_pendingTrack.Checkpoints])
 	else
-		Notification:Error("Point Too Close To Last Point")
+		exports["sandbox-hud"]:NotifError("Point Too Close To Last Point")
 	end
 end
 

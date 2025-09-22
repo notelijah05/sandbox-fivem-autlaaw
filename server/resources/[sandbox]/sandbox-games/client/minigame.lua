@@ -46,7 +46,6 @@ function RetrieveComponents()
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
@@ -64,7 +63,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Progress",
 		"Keybinds",
 		"ListMenu",
-		"Notification",
 		"Minigame",
 		"Interaction",
 		"Phone",
@@ -818,10 +816,10 @@ function _playGame(params, action)
 				end
 			end)
 		else
-			Notification:Error("Already Doing An Action", 5000)
+			exports["sandbox-hud"]:NotifError("Already Doing An Action", 5000)
 		end
 	else
-		Notification:Error("Already Doing An Action", 5000)
+		exports["sandbox-hud"]:NotifError("Already Doing An Action", 5000)
 	end
 end
 

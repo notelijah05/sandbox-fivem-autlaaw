@@ -5,7 +5,6 @@ local _menu = false
 AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
@@ -25,7 +24,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Apartment", {
 		"Blips",
-		"Notification",
 		"Action",
 		"Polyzone",
 		"Ped",
@@ -159,7 +157,7 @@ end)
 
 -- 			ListMenu:Show(menu)
 -- 		else
--- 			Notification:Error("You Have No Requesting Visitors")
+-- 			exports["sandbox-hud"]:NotifError("You Have No Requesting Visitors")
 -- 		end
 -- 	end)
 -- end

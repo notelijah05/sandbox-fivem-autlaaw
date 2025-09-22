@@ -91,7 +91,7 @@ AddEventHandler("playerDropped", function(message)
 		TriggerEvent("Characters:Server:PlayerDropped", src, char:GetData())
 	end
 
-	exports['sandbox-base']:TriggerEvent("playerDropped", src, message)
+	exports['sandbox-base']:MiddlewareTriggerEvent("playerDropped", src, message)
 	COMPONENTS.Players[src] = nil
 	_dropping[src] = nil
 

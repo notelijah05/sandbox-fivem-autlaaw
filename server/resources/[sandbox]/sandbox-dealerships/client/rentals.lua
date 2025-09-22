@@ -3,19 +3,19 @@ function CreateRentalSpots()
         if v.interactionPed then
             PedInteraction:Add('veh_rental_' .. k, v.interactionPed.model, v.coords, v.interactionPed.heading,
                 v.interactionPed.range, {
-                {
-                    icon = 'car-side',
-                    text = 'Vehicle Rentals',
-                    event = 'VehicleRentals:Client:OpenRental',
-                    data = { rental = k },
-                },
-                {
-                    icon = 'car-garage',
-                    text = 'Rental Returns',
-                    event = 'VehicleRentals:Client:ReturnRental',
-                    data = { rental = k },
-                },
-            }, 'car-side', v.interactionPed.scenario)
+                    {
+                        icon = 'car-side',
+                        text = 'Vehicle Rentals',
+                        event = 'VehicleRentals:Client:OpenRental',
+                        data = { rental = k },
+                    },
+                    {
+                        icon = 'car-garage',
+                        text = 'Rental Returns',
+                        event = 'VehicleRentals:Client:ReturnRental',
+                        data = { rental = k },
+                    },
+                }, 'car-side', v.interactionPed.scenario)
         end
 
         if v.zone then
@@ -98,9 +98,10 @@ AddEventHandler('VehicleRentals:Client:ConfirmRental', function(data)
             bank = data.bank,
         }, function(success, plate)
             if success then
-                Notification:Success('Rental Purchased, It is Parked Nearby. Rental Vehicle Plate: ' .. plate)
+                exports["sandbox-hud"]:NotifSuccess('Rental Purchased, It is Parked Nearby. Rental Vehicle Plate: ' ..
+                    plate)
             else
-                Notification:Error('Rental Purchase Failed')
+                exports["sandbox-hud"]:NotifError('Rental Purchase Failed')
             end
         end)
     end
@@ -141,10 +142,10 @@ AddEventHandler('VehicleRentals:Client:ReturnRental', function(entityData, data)
             if #menu.main.items > 0 then
                 ListMenu:Show(menu)
             else
-                Notification:Error('You Have no Vehicle Rentals to Return')
+                exports["sandbox-hud"]:NotifError('You Have no Vehicle Rentals to Return')
             end
         else
-            Notification:Error('You Have no Vehicle Rentals to Return')
+            exports["sandbox-hud"]:NotifError('You Have no Vehicle Rentals to Return')
         end
     end)
 end)
@@ -155,7 +156,7 @@ AddEventHandler('VehicleRentals:Client:ConfirmReturnRental', function(data)
             VIN = data.VIN,
         }, function(success)
             if success then
-                Notification:Success('Rental Returned & Deposit Returned')
+                exports["sandbox-hud"]:NotifSuccess('Rental Returned & Deposit Returned')
             end
         end)
     end

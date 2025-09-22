@@ -2,7 +2,6 @@ AddEventHandler("Restaurant:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 end
@@ -11,7 +10,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Restaurant", {
 		"Inventory",
 		"Targeting",
-		"Notification",
 		"Jobs",
 		"Blips",
 	}, function(error)

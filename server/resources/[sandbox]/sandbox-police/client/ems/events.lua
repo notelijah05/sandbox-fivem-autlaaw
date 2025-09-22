@@ -1,13 +1,14 @@
 AddEventHandler("EMS:Client:OnDuty", function()
 	if Jobs.Permissions:HasJob("ems", "safd") and not LocalPlayer.state.Character:GetData("Callsign") then
-		Notification:Error("Callsign Not Set, Unable To Go On Duty")
+		exports["sandbox-hud"]:NotifError("Callsign Not Set, Unable To Go On Duty")
 		return
 	end
 
 	local susp = LocalPlayer.state.Character:GetData("MDTSuspension")
 	if susp and susp.ems and susp.ems.Expires > GetCloudTimeAsInt() then
 		local tr = GetFormattedTimeFromSeconds(susp.ems.Expires - GetCloudTimeAsInt())
-		Notification:Error(string.format("You Have Been Suspended (%s Remaining), Unable To Go On Duty", tr))
+		exports["sandbox-hud"]:NotifError(string.format("You Have Been Suspended (%s Remaining), Unable To Go On Duty",
+			tr))
 		return
 	end
 
@@ -104,19 +105,19 @@ AddEventHandler("EMS:Client:Stabilize", function(target, idk)
 			if not cancelled then
 				exports["sandbox-base"]:ServerCallback("EMS:Stabilize", target, function(res)
 					if not res.error then
-						Notification:Success("Patient Stabilized")
+						exports["sandbox-hud"]:NotifSuccess("Patient Stabilized")
 					else
 						if res.code == 2 then
-							Notification:Error("Need A Trauma Kit")
+							exports["sandbox-hud"]:NotifError("Need A Trauma Kit")
 						else
-							Notification:Error("Unable To Stabilize Patient")
+							exports["sandbox-hud"]:NotifError("Unable To Stabilize Patient")
 						end
 					end
 				end)
 			end
 		end)
 	else
-		Notification:Error("Need A Trauma Kit")
+		exports["sandbox-hud"]:NotifError("Need A Trauma Kit")
 	end
 end)
 
@@ -142,19 +143,19 @@ end)
 -- 			if not cancelled then
 -- 				exports["sandbox-base"]:ServerCallback("EMS:ApplyTourniquet", data, function(res)
 -- 					if not res.error then
--- 						Notification:Success("Tourniquet Applied")
+-- 						exports["sandbox-hud"]:NotifSuccess("Tourniquet Applied")
 -- 					else
 -- 						if res.code == 2 then
--- 							Notification:Error("Need A Tourniquet")
+-- 							exports["sandbox-hud"]:NotifError("Need A Tourniquet")
 -- 						else
--- 							Notification:Error("Unable To Apply Tourniquet")
+-- 							exports["sandbox-hud"]:NotifError("Unable To Apply Tourniquet")
 -- 						end
 -- 					end
 -- 				end)
 -- 			end
 -- 		end)
 -- 	else
--- 		Notification:Error("Need A Tourniquet")
+-- 		exports["sandbox-hud"]:NotifError("Need A Tourniquet")
 -- 	end
 -- end)
 
@@ -183,19 +184,19 @@ AddEventHandler("EMS:Client:FieldTreatWounds", function(data)
 						local ped = GetPlayerPed(GetPlayerFromServerId(tonumber(data)))
 						local mHp = GetEntityHealth(ped) - 100
 						SetEntityHealth(ped, (mHp / 2))
-						Notification:Success("Wounds Treated")
+						exports["sandbox-hud"]:NotifSuccess("Wounds Treated")
 					else
 						if res.code == 2 then
-							Notification:Error("Need A Trauma Kit")
+							exports["sandbox-hud"]:NotifError("Need A Trauma Kit")
 						else
-							Notification:Error("Unable To Treat Patient")
+							exports["sandbox-hud"]:NotifError("Unable To Treat Patient")
 						end
 					end
 				end)
 			end
 		end)
 	else
-		Notification:Error("Need A Trauma Kit")
+		exports["sandbox-hud"]:NotifError("Need A Trauma Kit")
 	end
 end)
 
@@ -221,19 +222,19 @@ AddEventHandler("EMS:Client:ApplyBandage", function(data)
 			if not cancelled then
 				exports["sandbox-base"]:ServerCallback("EMS:ApplyBandage", data, function(res)
 					if not res.error then
-						Notification:Success("Bandage Applied")
+						exports["sandbox-hud"]:NotifSuccess("Bandage Applied")
 					else
 						if res.code == 2 then
-							Notification:Error("Need A Trauma Kit")
+							exports["sandbox-hud"]:NotifError("Need A Trauma Kit")
 						else
-							Notification:Error("Unable To Apply Bandage")
+							exports["sandbox-hud"]:NotifError("Unable To Apply Bandage")
 						end
 					end
 				end)
 			end
 		end)
 	else
-		Notification:Error("Need A Bandage")
+		exports["sandbox-hud"]:NotifError("Need A Bandage")
 	end
 end)
 
@@ -259,19 +260,19 @@ AddEventHandler("EMS:Client:ApplyMorphine", function(data)
 			if not cancelled then
 				exports["sandbox-base"]:ServerCallback("EMS:ApplyMorphine", data, function(res)
 					if not res.error then
-						Notification:Success("Morphine Administered")
+						exports["sandbox-hud"]:NotifSuccess("Morphine Administered")
 					else
 						if res.code == 2 then
-							Notification:Error("Need A Morphine Vial")
+							exports["sandbox-hud"]:NotifError("Need A Morphine Vial")
 						else
-							Notification:Error("Unable To Administer Morphine")
+							exports["sandbox-hud"]:NotifError("Unable To Administer Morphine")
 						end
 					end
 				end)
 			end
 		end)
 	else
-		Notification:Error("Need A Morphine Vial")
+		exports["sandbox-hud"]:NotifError("Need A Morphine Vial")
 	end
 end)
 
@@ -298,12 +299,12 @@ RegisterNetEvent("EMS:Client:TreatWounds", function(data)
 			if not cancelled then
 				exports["sandbox-base"]:ServerCallback("EMS:TreatWounds", data, function(res)
 					if res.error then
-						Notification:Error("Unable To Treat Patient")
+						exports["sandbox-hud"]:NotifError("Unable To Treat Patient")
 					end
 				end)
 			end
 		end)
 	else
-		Notification:Error("Patient Is Not Hospitalized")
+		exports["sandbox-hud"]:NotifError("Patient Is Not Hospitalized")
 	end
 end)

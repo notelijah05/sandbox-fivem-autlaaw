@@ -72,12 +72,12 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		customsMenuSubs = nil
 		collectgarbage()
 
-		Notification.Persistent:Remove("veh_customs")
+		exports["sandbox-hud"]:NotifPersistentRemove("veh_customs")
 
 		if not isSaving then
 			exports['sandbox-base']:LoggerTrace("VehicleCustoms", "Not Saving - Reset Mods")
 			Vehicles.Properties:Set(CUST_VEH, originalData)
-			Notification:Error("Changes Discarded - You Weren't Charged")
+			exports["sandbox-hud"]:NotifError("Changes Discarded - You Weren't Charged")
 		end
 		CUSTOMS_OPEN = false
 	end, true)
@@ -87,14 +87,14 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		customsMenu.Add:Text("Current Total: $0", { "pad", "center", "code", "textLarge", "colorSuccess", "bold" })
 
 	SetVehicleModKit(CUST_VEH, 0)
-	Notification.Persistent:Standard("veh_customs", "Current Total: $" .. 0)
+	exports["sandbox-hud"]:NotifPersistentStandard("veh_customs", "Current Total: $" .. 0)
 
 	local function updateVehiclePropertyState()
 		Vehicles.Properties:Set(CUST_VEH, originalData)
 		Vehicles.Properties:Set(CUST_VEH, changingData)
 
 		local newCost = CalculateCustomsCost(changingData, costMultiplier)
-		Notification.Persistent:Standard("veh_customs", "Current Total: $" .. newCost)
+		exports["sandbox-hud"]:NotifPersistentStandard("veh_customs", "Current Total: $" .. newCost)
 		customsMenu.Update:Item(costElementId, "Current Total: $" .. newCost, {}, true)
 	end
 
@@ -907,17 +907,17 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 			}, function(success, newNewData)
 				if success then
 					UISounds.Play:FrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
-					Notification:Success("New Modifications Saved & Paid For")
+					exports["sandbox-hud"]:NotifSuccess("New Modifications Saved & Paid For")
 					if newNewData then
 						Vehicles.Properties:Set(CUST_VEH, newNewData)
 					end
 				else
-					Notification:Error("Error Saving Vehicle Modifications - Not Enough Money?")
+					exports["sandbox-hud"]:NotifError("Error Saving Vehicle Modifications - Not Enough Money?")
 					Vehicles.Properties:Set(CUST_VEH, originalData)
 				end
 			end)
 		else
-			Notification:Error("Not Enough Cash")
+			exports["sandbox-hud"]:NotifError("Not Enough Cash")
 		end
 	end)
 

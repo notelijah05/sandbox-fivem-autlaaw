@@ -48,5 +48,5 @@ AddEventHandler('Vehicles:Transfers:Confirm', function(data)
 end)
 
 AddEventHandler('Vehicles:Transfers:Deny', function(data)
-    Notification:Error('Vehicle Transfer Cancelled')
+    exports["sandbox-hud"]:NotifError('Vehicle Transfer Cancelled')
 end)

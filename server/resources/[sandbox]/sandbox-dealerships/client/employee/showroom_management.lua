@@ -14,7 +14,7 @@ function OpenShowroomManagement(dealerId)
                 local stockData = FormatDealerStockToCategories(stocks)
 
                 if not authed then
-                    Notification:Error('You\'re Not Authorized to Open Showroom Management')
+                    exports["sandbox-hud"]:NotifError('You\'re Not Authorized to Open Showroom Management')
                     return
                 end
 
@@ -69,9 +69,9 @@ function StartSettingShowroomPosition(stockData, dealerId, position, positionVeh
                 vehData = false,
             }, function(success)
                 if success then
-                    Notification:Success('Successfully Cleared Vehicle in Position #' .. position)
+                    exports["sandbox-hud"]:NotifSuccess('Successfully Cleared Vehicle in Position #' .. position)
                 else
-                    Notification:Error('Failed to Clear Vehicle in Position #' .. position)
+                    exports["sandbox-hud"]:NotifError('Failed to Clear Vehicle in Position #' .. position)
                 end
                 OpenShowroomManagement(dealerId)
             end)
@@ -137,9 +137,9 @@ function SetDealerShowroomVehicleAtPosition(dealerId, position, vehData)
                 },
             }, function(success)
                 if success then
-                    Notification:Success('Successfully Updated Vehicle in Position #' .. position)
+                    exports["sandbox-hud"]:NotifSuccess('Successfully Updated Vehicle in Position #' .. position)
                 else
-                    Notification:Error('Failed to Update Vehicle in Position #' .. position)
+                    exports["sandbox-hud"]:NotifError('Failed to Update Vehicle in Position #' .. position)
                 end
                 OpenShowroomManagement(dealerId)
             end)

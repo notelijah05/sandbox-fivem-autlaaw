@@ -11,7 +11,6 @@ VEHICLE_HARNESS = false
 
 AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
@@ -50,7 +49,6 @@ local vehicleDoorNames = {
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
-		"Notification",
 		"Animations",
 		"Action",
 		"Progress",
@@ -156,7 +154,7 @@ AddEventHandler("Core:Shared:Ready", function()
 							if #fuckingSeats > 0 then
 								Interaction:ShowMenu(fuckingSeats)
 							else
-								Notification:Error("No Seats Free")
+								exports["sandbox-hud"]:NotifError("No Seats Free")
 							end
 						end,
 					},
@@ -277,7 +275,7 @@ AddEventHandler("Core:Shared:Ready", function()
 							if VEHICLE_INSIDE then
 								local vehEnt = Entity(VEHICLE_INSIDE)
 								if vehEnt and vehEnt.state and vehEnt.state.Mileage then
-									Notification:Info(
+									exports["sandbox-hud"]:NotifInfo(
 										"This Vehicle Has " .. vehEnt.state.Mileage .. " Miles on the Odometer",
 										10000
 									)
@@ -303,7 +301,7 @@ AddEventHandler("Core:Shared:Ready", function()
 							if VEHICLE_INSIDE then
 								local vehEnt = Entity(VEHICLE_INSIDE)
 								if vehEnt and vehEnt.state and vehEnt.state.Nitrous then
-									Notification:Standard(
+									exports["sandbox-hud"]:NotifStandard(
 										"Nitrous Remaining: " ..
 										exports['sandbox-base']:UtilsRound(vehEnt.state.Nitrous, 2) .. "%",
 										10000
@@ -423,7 +421,7 @@ AddEventHandler("Vehicles:Client:Actions:SwitchSeat", function(seatNum)
 	if GetPedInVehicleSeat(VEHICLE_INSIDE, seatNum) == 0 then
 		SetPedIntoVehicle(GLOBAL_PED, VEHICLE_INSIDE, seatNum)
 	else
-		Notification:Error("Seat Occupied")
+		exports["sandbox-hud"]:NotifError("Seat Occupied")
 	end
 end)
 

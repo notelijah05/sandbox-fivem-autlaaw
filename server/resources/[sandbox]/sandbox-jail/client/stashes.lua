@@ -40,7 +40,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 						-- 		unit = nearUnit.unitId
 						-- 	}, function(success)
 						-- 		if not success then
-						-- 			Notification:Error("Error!")
+						-- 			exports["sandbox-hud"]:NotifError("Error!")
 						-- 		else
 						-- 			Sounds.Play:Location(LocalPlayer.state.myPos, 10, "breach.ogg", 0.15)
 						-- 		end
@@ -89,9 +89,9 @@ AddEventHandler("Inventory:Client:PrisonStash:Raid", function(values, data)
 			stateid = values.stateid,
 		}, function(success)
 			-- if success then
-			-- 	Notification:Success("Updated Passcode")
+			-- 	exports["sandbox-hud"]:NotifSuccess("Updated Passcode")
 			-- else
-			-- 	Notification:Error("Failed to Update Passcode")
+			-- 	exports["sandbox-hud"]:NotifError("Failed to Update Passcode")
 			-- end
 		end)
 	end

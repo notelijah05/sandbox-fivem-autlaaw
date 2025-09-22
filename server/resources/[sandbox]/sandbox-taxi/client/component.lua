@@ -5,7 +5,6 @@ AddEventHandler("Taxi:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Taxi = exports["sandbox-base"]:FetchComponent("Taxi")
 end
@@ -14,7 +13,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Blips",
 		"Keybinds",
-		"Notification",
 		"PedInteraction",
 		"Taxi",
 	}, function(error)
@@ -119,7 +117,7 @@ _TAXI = {
 					},
 				})
 			else
-				Notification:Error("Rate Cannot Go Higher")
+				exports["sandbox-hud"]:NotifError("Rate Cannot Go Higher")
 			end
 		end,
 		Decrease = function(self)
@@ -133,7 +131,7 @@ _TAXI = {
 					},
 				})
 			else
-				Notification:Error("Rate Cannot Go Lower")
+				exports["sandbox-hud"]:NotifError("Rate Cannot Go Lower")
 			end
 		end,
 	},

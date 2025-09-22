@@ -5,14 +5,12 @@ _spawnedInteractionPeds = {}
 
 AddEventHandler("PedInteraction:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("PedInteraction", {
-		"Notification",
 		"Targeting",
 		"PedInteraction",
 	}, function(error)

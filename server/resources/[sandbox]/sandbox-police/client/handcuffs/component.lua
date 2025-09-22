@@ -7,7 +7,6 @@ function HandcuffComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 end
 
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"PedInteraction",
 		"Minigame",
-		"Notification",
 		"Weapons",
 	}, function(error)
 		if #error > 0 then

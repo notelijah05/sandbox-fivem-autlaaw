@@ -109,7 +109,7 @@ AddEventHandler("Casino:Client:Startup", function()
             end
         elseif res?.timeout then
             cb(false)
-            Notification:Error("Ran Out of Time...")
+            exports["sandbox-hud"]:NotifError("Ran Out of Time...")
         else
             cb(false)
         end
@@ -255,9 +255,9 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
                 end)
             else
                 if table == "vip" then
-                    Notification:Error("You're Not a VIP Loser")
+                    exports["sandbox-hud"]:NotifError("You're Not a VIP Loser")
                 else
-                    Notification:Error("Someone Is Sat There")
+                    exports["sandbox-hud"]:NotifError("Someone Is Sat There")
                 end
             end
         end)
@@ -331,7 +331,7 @@ RegisterNetEvent("Casino:Client:BlackjackConfirmBet", function(betAmounts, table
             end
         end)
     elseif res?.timeout then
-        Notification:Error("Ran Out of Time...")
+        exports["sandbox-hud"]:NotifError("Ran Out of Time...")
         InfoOverlay:Close()
     else
         InfoOverlay:Close()

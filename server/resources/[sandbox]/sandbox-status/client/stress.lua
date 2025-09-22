@@ -385,9 +385,9 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 			end, function(cancelled)
 				if not cancelled then
 					Status.Set:Single("PLAYER_STRESS", 0)
-					Notification:Success("Stress Relieved")
+					exports["sandbox-hud"]:NotifSuccess("Stress Relieved")
 				else
-					Notification:Info("Stress Partially Relieved")
+					exports["sandbox-hud"]:NotifInfo("Stress Partially Relieved")
 				end
 
 				SetTimeout(tickTime * 2, function()

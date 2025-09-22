@@ -73,10 +73,10 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                 TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
                 if VEHICLE_SEATBELT then
                     SetFlyThroughWindscreenParams(MIN_FLY_BELT, 40.0, 17.0, 500.0)
-                    Notification:Success('Seatbelt On')
+                    exports["sandbox-hud"]:NotifSuccess('Seatbelt On')
                 else
                     SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
-                    Notification:Error('Seatbelt Off')
+                    exports["sandbox-hud"]:NotifError('Seatbelt Off')
                 end
             end
         end
@@ -147,7 +147,7 @@ AddEventHandler('Vehicles:Client:EnterVehicle', function(v, seat)
                 if speedBuffers[2] ~= nil and GetEntitySpeedVector(VEHICLE_INSIDE, true).y > 1.0 and (speedBuffers[1] >= minSpeedActual) and ((speedBuffers[2] - speedBuffers[1]) > (speedBuffers[1] * 0.8)) then
                     -- if not VEHICLE_HARNESS or (VEHICLE_HARNESS and VEHICLE_HARNESS <= 0) then
                     --     if not VEHICLE_SEATBELT then
-                    --         Notification:Info('Maybe You Should be Wearing a Seatbelt...', 8000)
+                    --         exports["sandbox-hud"]:NotifInfo('Maybe You Should be Wearing a Seatbelt...', 8000)
                     --     end
 
                     --     local pedCoords = GetEntityCoords(GLOBAL_PED)

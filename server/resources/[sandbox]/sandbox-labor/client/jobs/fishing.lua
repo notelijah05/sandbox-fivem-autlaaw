@@ -256,22 +256,22 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     local fishingLocation = GetEntityCoords(LocalPlayer.state.ped)
 
     if _isFishing then
-        Notification:Error("Already Fishing")
+        exports["sandbox-hud"]:NotifError("Already Fishing")
         return
     end
 
     if not fishingZone then
-        Notification:Error("Cannot Fish Here")
+        exports["sandbox-hud"]:NotifError("Cannot Fish Here")
         return
     end
 
     if LocalPlayer.state.doingAction then
-        Notification:Error("Already Doing Something")
+        exports["sandbox-hud"]:NotifError("Already Doing Something")
         return
     end
 
     if toolUsed == "net" and not IsNearBoat() then
-        Notification:Error("Have to Use a Fishing Net on a Boat")
+        exports["sandbox-hud"]:NotifError("Have to Use a Fishing Net on a Boat")
         return
     end
 
@@ -286,11 +286,11 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     end
 
     if fishingZone == 4 or fishingZone == 5 then
-        Notification.Persistent:Info("fishing-info-notif",
+        exports["sandbox-hud"]:NotifPersistentInfo("fishing-info-notif",
             string.format("Fishing - Press %s to Stop. Maybe you could try some deeper water for better fish!",
                 Keybinds:GetKey("cancel_action")), "fishing-rod")
     else
-        Notification.Persistent:Info("fishing-info-notif",
+        exports["sandbox-hud"]:NotifPersistentInfo("fishing-info-notif",
             string.format("Fishing - Press %s to Stop", Keybinds:GetKey("cancel_action")), "fishing-rod")
     end
 
@@ -318,7 +318,7 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     end
 
     _isFishing = false
-    Notification.Persistent:Remove("fishing-info-notif")
+    exports["sandbox-hud"]:NotifPersistentRemove("fishing-info-notif")
 end)
 
 function DoFishBite(zone, toolUsed)
@@ -374,7 +374,7 @@ function DoFishBite(zone, toolUsed)
         difficulty = maxDiff,
     }, function(success, stopFishing)
         if not success and not stopFishing then
-            Notification:Warn("The Fish Got Away...", 5000, "fishing-rod")
+            exports["sandbox-hud"]:NotifWarn("The Fish Got Away...", 5000, "fishing-rod")
         end
 
         if stopFishing then

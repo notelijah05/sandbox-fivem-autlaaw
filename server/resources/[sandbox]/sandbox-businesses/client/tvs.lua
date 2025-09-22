@@ -184,9 +184,9 @@ AddEventHandler('TVs:Client:SetLink', function(e, data)
         link = tvLink
     }, function(success)
         if success then
-            Notification:Success('Updated Link!', 5000, 'tv')
+            exports["sandbox-hud"]:NotifSuccess('Updated Link!', 5000, 'tv')
         else
-            Notification:Error('Error', 5000, 'tv')
+            exports["sandbox-hud"]:NotifError('Error', 5000, 'tv')
         end
     end)
 end)

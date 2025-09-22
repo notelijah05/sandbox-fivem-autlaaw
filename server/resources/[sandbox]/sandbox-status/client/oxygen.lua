@@ -74,7 +74,7 @@ end)
 
 function RemoveScubaGear()
 	if IsPedSwimming(LocalPlayer.state.ped) then
-		Notification:Error("Can't Take Off Gear Whilst Swimming")
+		exports["sandbox-hud"]:NotifError("Can't Take Off Gear Whilst Swimming")
 		return
 	end
 
@@ -110,7 +110,7 @@ end
 function RegisterOxygenCallbacks()
 	exports["sandbox-base"]:RegisterClientCallback("Status:UseScubaGear", function(data, cb)
 		if IsPedSwimming(LocalPlayer.state.ped) then
-			Notification:Error("Can't Put On Scuba Gear Whilst Swimming")
+			exports["sandbox-hud"]:NotifError("Can't Put On Scuba Gear Whilst Swimming")
 			return
 		end
 
