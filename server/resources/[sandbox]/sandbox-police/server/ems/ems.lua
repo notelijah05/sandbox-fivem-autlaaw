@@ -1,13 +1,11 @@
 AddEventHandler("EMS:Shared:DependencyUpdate", EMSComponents)
 function EMSComponents()
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("EMS", {
-		"Middleware",
 		"Inventory",
 		"Damage",
 	}, function(error)

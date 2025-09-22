@@ -1,13 +1,11 @@
 AddEventHandler("Arcade:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Arcade", {
 		"Chat",
-		"Middleware",
 	}, function(error)
 		if #error > 0 then
 			return

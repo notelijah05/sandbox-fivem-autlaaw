@@ -27,7 +27,6 @@ local _illegalBlacklist = {
 
 AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
 function RetrieveVendorComponents()
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -36,7 +35,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vendor", {
-		"Middleware",
 		"Reputation",
 		"Crypto",
 		"Wallet",

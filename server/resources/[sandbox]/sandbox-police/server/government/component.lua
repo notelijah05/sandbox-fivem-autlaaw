@@ -2,7 +2,6 @@ AddEventHandler("Handcuffs:Shared:DependencyUpdate", GovernmentComponents)
 function GovernmentComponents()
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 end
 
 _licenses = {
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
 		"Wallet",
 		"Inventory",
-		"Middleware",
 	}, function(error)
 		if #error > 0 then
 			return

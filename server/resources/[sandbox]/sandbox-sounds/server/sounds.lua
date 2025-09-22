@@ -1,13 +1,11 @@
 AddEventHandler("Sounds:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Sounds", {
 		"Sounds",
-		"Middleware",
 	}, function(error)
 		if #error > 0 then
 			return

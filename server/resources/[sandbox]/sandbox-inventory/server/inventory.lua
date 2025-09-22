@@ -161,7 +161,6 @@ function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -181,7 +180,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"Chat",
 		"Wallet",
-		"Middleware",
 		"Crafting",
 		"Weapons",
 		"Jobs",

@@ -4,7 +4,6 @@ AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	RegisterChatCommands()
 end
 
@@ -12,7 +11,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
 		"Chat",
 		"Inventory",
-		"Middleware",
 	}, function(error)
 		if #error > 0 then
 			return

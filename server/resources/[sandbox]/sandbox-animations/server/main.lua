@@ -2,7 +2,6 @@ AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Photos = exports["sandbox-base"]:FetchComponent("Photos")
 	RegisterChatCommands()
@@ -12,7 +11,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
 		"Chat",
 		"Animations",
-		"Middleware",
 		"Inventory",
 		"Photos",
 	}, function(error)

@@ -5,7 +5,6 @@ _activeTowers = {}
 
 AddEventHandler("Tow:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -16,7 +15,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Tow", {
-		"Middleware",
 		"Jobs",
 		"Chat",
 		"Vehicles",

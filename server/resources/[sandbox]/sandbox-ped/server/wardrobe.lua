@@ -1,7 +1,6 @@
 AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
 function RetrieveWardrobeComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 end
@@ -9,7 +8,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Wardrobe", {
 		"Chat",
-		"Middleware",
 		"Locations",
 		"Ped",
 		"Wardrobe",

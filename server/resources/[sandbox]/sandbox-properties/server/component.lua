@@ -2,7 +2,6 @@ _charPropertyKeys = {}
 
 AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Default = exports["sandbox-base"]:FetchComponent("Default")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -21,7 +20,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Properties", {
-		"Middleware",
 		"Default",
 		"Chat",
 		"Properties",

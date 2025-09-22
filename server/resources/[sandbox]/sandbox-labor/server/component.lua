@@ -1,6 +1,5 @@
 AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
@@ -27,7 +26,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
-		"Middleware",
 		"Generator",
 		"Phone",
 		"Wallet",

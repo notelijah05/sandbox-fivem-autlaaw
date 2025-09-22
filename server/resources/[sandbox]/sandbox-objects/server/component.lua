@@ -3,7 +3,6 @@ _placedProps = {}
 
 AddEventHandler("Objects:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Objects = exports["sandbox-base"]:FetchComponent("Objects")
@@ -11,7 +10,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Objects", {
-		"Middleware",
 		"Chat",
 		"Inventory",
 		"Objects",

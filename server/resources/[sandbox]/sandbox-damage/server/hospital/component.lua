@@ -10,7 +10,6 @@ local _medsForSale = {
 
 AddEventHandler("Damage:Shared:DependencyUpdate", HospitalComponents)
 function HospitalComponents()
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
@@ -30,7 +29,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hospital", {
-		"Middleware",
 		"Damage",
 		"Hospital",
 		"Crypto",

@@ -61,7 +61,6 @@ function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Photos = exports["sandbox-base"]:FetchComponent("Photos")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -88,7 +87,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
 		"Chat",
 		"Phone",
-		"Middleware",
 		"Config",
 		"MDT",
 		"Jobs",

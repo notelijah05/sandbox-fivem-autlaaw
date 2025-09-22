@@ -13,7 +13,6 @@ function RetrieveComponents()
     Locations = exports['sandbox-base']:FetchComponent('Locations')
     Chat = exports['sandbox-base']:FetchComponent('Chat')
     Wallet = exports['sandbox-base']:FetchComponent('Wallet')
-    Middleware = exports['sandbox-base']:FetchComponent('Middleware')
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
     Inventory = exports['sandbox-base']:FetchComponent('Inventory')
     Sequence = exports['sandbox-base']:FetchComponent('Sequence')
@@ -34,7 +33,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Locations',
         'Chat',
         'Wallet',
-        'Middleware',
         'Jobs',
         'Inventory',
         'Sequence',

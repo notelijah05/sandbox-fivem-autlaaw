@@ -1,6 +1,5 @@
 AddEventHandler("Chat:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -8,7 +7,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Chat", {
-		"Middleware",
 		"Chat",
 		"Jobs",
 		"EmergencyAlerts",

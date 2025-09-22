@@ -5,7 +5,6 @@ local _generatedNames = {}
 
 AddEventHandler("Police:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
@@ -24,7 +23,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Middleware",
 		"Jobs",
 		"Chat",
 		"Police",

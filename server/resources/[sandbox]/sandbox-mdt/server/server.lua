@@ -25,7 +25,6 @@ local sentencedSuspects = {}
 AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
@@ -44,7 +43,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
 		"Chat",
 		"Phone",
-		"Middleware",
 		"Tasks",
 		"Sequence",
 		"MDT",

@@ -1,6 +1,5 @@
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", HandcuffsComponents)
 function HandcuffsComponents()
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -15,7 +14,6 @@ end)
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
-		"Middleware",
 		"Sounds",
 		"Handcuffs",
 		"Inventory",

@@ -195,7 +195,6 @@ AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
 function WeaponsComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
@@ -203,7 +202,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weapons", {
 		"Inventory",
 		"Weapons",
-		"Middleware",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then

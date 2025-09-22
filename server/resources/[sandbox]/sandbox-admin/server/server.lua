@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	C = exports["sandbox-base"]:FetchComponent("Config")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Punishment",
 		"Chat",
-		"Middleware",
 		"Config",
 		"Properties",
 		"Tasks",

@@ -1,13 +1,11 @@
 AddEventHandler("Trunk:Shared:DependencyUpdate", TrunkComponents)
 function TrunkComponents()
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Trunk = exports["sandbox-base"]:FetchComponent("Trunk")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Trunk", {
-		"Middleware",
 		"Trunk",
 		"Escort",
 	}, function(error)
