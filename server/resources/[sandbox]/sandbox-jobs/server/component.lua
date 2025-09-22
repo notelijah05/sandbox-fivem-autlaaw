@@ -191,14 +191,15 @@ _JOBS = {
 				TriggerEvent("Jobs:Server:JobUpdate", source)
 
 				if removedJobData.Workplace and removedJobData.Workplace.Name then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Info",
 						"No Longer Employed at " .. removedJobData.Workplace.Name
 					)
 				else
-					Execute:Client(source, "Notification", "Info", "No Longer Employed at " .. removedJobData.Name)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
+						"No Longer Employed at " .. removedJobData.Name)
 				end
 
 				return true
@@ -312,7 +313,7 @@ _JOBS = {
 
 					if not hideNotify then
 						if hasJob.Workplace then
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Success",
@@ -323,7 +324,7 @@ _JOBS = {
 								)
 							)
 						else
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Success",
@@ -337,7 +338,7 @@ _JOBS = {
 			end
 
 			if not hideNotify then
-				Execute:Client(source, "Notification", "Error", "Failed to Go On Duty")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Failed to Go On Duty")
 			end
 
 			return false
@@ -414,7 +415,7 @@ _JOBS = {
 					char:SetData("TimeClockedOn", allTimeWorked)
 
 					if not hideNotify then
-						Execute:Client(source, "Notification", "Info", "You're Now Off Duty")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Info", "You're Now Off Duty")
 					end
 
 					return true
@@ -422,7 +423,7 @@ _JOBS = {
 			end
 
 			if not hideNotify then
-				Execute:Client(source, "Notification", "Error", "Failed to Go Off Duty")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Failed to Go Off Duty")
 			end
 
 			return false

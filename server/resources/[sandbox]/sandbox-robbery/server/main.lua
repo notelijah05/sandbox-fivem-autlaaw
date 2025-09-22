@@ -23,7 +23,6 @@ function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Loot = exports["sandbox-base"]:FetchComponent("Loot")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
@@ -199,7 +198,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"Loot",
 		"Wallet",
-		"Execute",
 		"Chat",
 		"Sounds",
 		"Tasks",
@@ -336,7 +334,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								table.remove(_pickups[char:GetData("SID")], i)
 							else
 								Inventory:AddItem(char:GetData("SID"), v.giving, 1, {}, 1)
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",
 									"Error",
@@ -345,7 +343,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								)
 							end
 						else
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Error",
@@ -357,9 +355,11 @@ AddEventHandler("Core:Shared:Ready", function()
 					for k, v in pairs(_pickups[char:GetData("SID")]) do
 					end
 
-					Execute:Client(source, "Notification", "Success", "You've Picked Up All Available Items", 6000)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+						"You've Picked Up All Available Items", 6000)
 				else
-					Execute:Client(source, "Notification", "Error", "You Have Nothing To Pickup", 6000)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have Nothing To Pickup",
+						6000)
 				end
 			end
 		end)

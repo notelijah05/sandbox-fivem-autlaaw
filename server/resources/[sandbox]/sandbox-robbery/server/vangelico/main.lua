@@ -78,7 +78,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			)
 		then
 			if GlobalState["RobberiesDisabled"] then
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -142,9 +142,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 		if _alerted ~= nil and _alerted >= os.time() then
 			PutShittyThingsOnCD()
 			GlobalState["Vangelico:State"] = 2
-			Execute:Client(source, "Notification", "Success", "Store Has Been Secure", 6000)
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Store Has Been Secure", 6000)
 		else
-			Execute:Client(source, "Notification", "Error", "Unable To Secure Store, No Recent Crime Reported", 6000)
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+				"Unable To Secure Store, No Recent Crime Reported", 6000)
 			exports['sandbox-base']:LoggerInfo(
 				"Robbery",
 				string.format(

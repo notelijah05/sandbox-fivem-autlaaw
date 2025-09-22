@@ -26,7 +26,8 @@ function RegisterCallbacks()
 						end
 					elseif v < (os.time() - (60 * 5)) then
 						-- TODO: Implement better alert when at this stage when we have someway to do it
-						Execute:Client(k, "Notification", "Warn", "You Will Be Kicked Soon For Being AFK", 58000)
+						exports['sandbox-base']:ExecuteClient(k, "Notification", "Warn",
+							"You Will Be Kicked Soon For Being AFK", 58000)
 					end
 				end
 			end

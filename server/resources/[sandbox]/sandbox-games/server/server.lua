@@ -3,14 +3,12 @@ local _uircd = {}
 AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	RegisterChatCommands()
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
 		"Chat",
-		"Execute",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -21,7 +19,7 @@ end)
 
 function RegisterChatCommands()
 	-- Chat:RegisterAdminCommand("notif", function(source, args, rawCommand)
-	-- 	exports["sandbox-base"]:FetchComponent("Execute"):Client(source, "Notification", "Success", "This is a test, lul")
+	-- 	exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "This is a test, lul")
 	-- end, {
 	-- 	help = "Test Notification",
 	-- })

@@ -234,7 +234,7 @@ function RegisterCallbacks()
         end
 
         if storageData.retrievalOnly then
-            Execute:Client(source, 'Notification', 'Error', 'Cannot Store Vehicles Here')
+            exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error', 'Cannot Store Vehicles Here')
             cb(false)
             return
         end
@@ -278,7 +278,7 @@ function RegisterCallbacks()
                     end
                 end
             else
-                Execute:Client(source, 'Notification', 'Error', 'Cannot Store This Vehicle Here')
+                exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error', 'Cannot Store This Vehicle Here')
             end
         end
 
@@ -750,7 +750,7 @@ function RegisterCallbacks()
                     Vehicles.Keys:Add(targetChar:GetData('Source'), VIN)
                     return
                 else
-                    Execute:Client(source, 'Notification', 'Error', 'Cannot Transfer to Someone That Isn\'t Nearby')
+                    exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error', 'Cannot Transfer to Someone That Isn\'t Nearby')
                 end
             end
         end
@@ -792,7 +792,7 @@ function RegisterCallbacks()
                     then
                         for k, v in ipairs(data.sids) do
                             Vehicles.Keys:Add(v, vehEnt.state.VIN)
-                            Execute:Client(
+                            exports['sandbox-base']:ExecuteClient(
                                 v,
                                 "Notification",
                                 "Info",
@@ -802,7 +802,7 @@ function RegisterCallbacks()
                             )
                         end
 
-                        Execute:Client(
+                        exports['sandbox-base']:ExecuteClient(
                             source,
                             "Notification",
                             "Success",

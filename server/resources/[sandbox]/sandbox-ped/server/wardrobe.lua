@@ -4,14 +4,12 @@ function RetrieveWardrobeComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Wardrobe", {
 		"Chat",
 		"Middleware",
-		"Execute",
 		"Locations",
 		"Ped",
 		"Wardrobe",
@@ -51,7 +49,7 @@ function RegisterChatCommands()
 		end
 
 		if char ~= nil then
-			Execute:Client(
+			exports['sandbox-base']:ExecuteClient(
 				source,
 				"Notification",
 				"Info",
@@ -60,7 +58,7 @@ function RegisterChatCommands()
 			)
 			TriggerClientEvent("Peds:Customization:Client:AdminAbuse", char:GetData("Source"), shopType)
 		else
-			Execute:Client(source, "Notification", "Error", "Player is not online.", 2000)
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Player is not online.", 2000)
 		end
 	end, {
 		help = "Show Ped Menu for Player",

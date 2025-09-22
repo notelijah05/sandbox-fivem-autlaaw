@@ -48,10 +48,11 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						end)
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "You already have access to that app")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"You already have access to that app")
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "You Can't Use This Item")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Can't Use This Item")
 			end
 		end
 	end)

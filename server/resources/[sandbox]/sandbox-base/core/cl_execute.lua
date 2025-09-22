@@ -19,7 +19,6 @@ RegisterNetEvent("Execute:Client:Component", function(component, method, ...)
 		end
 	else
 		exports['sandbox-base']:LoggerWarn(
-			"Execute",
 			"Attempted To Execute Method Attribute In Non-Existing Component",
 			{ console = true }
 		)

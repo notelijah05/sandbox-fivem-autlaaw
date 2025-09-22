@@ -76,13 +76,16 @@ AddEventHandler("Labor:Server:Startup", function()
 					if not GlobalState["CokeRunCD"] or os.time() > GlobalState["CokeRunCD"] then
 						Labor.Duty:On("Coke", source, true)
 					else
-						Execute:Client(source, "Notification", "Error", "Someone Has Already Done This Recently")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"Someone Has Already Done This Recently")
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Someone Else Is Already Doing This")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Someone Else Is Already Doing This")
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "You Don't Have Enough Cash, Come Back When You Do")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					"You Don't Have Enough Cash, Come Back When You Do")
 			end
 		end
 	end)
@@ -100,7 +103,8 @@ AddEventHandler("Labor:Server:Startup", function()
 					char:SetData("CokeCD", os.time())
 					_active = nil
 				else
-					Execute:Client(source, "Notification", "Error", "Too Late, You Cannot Cancel This Now")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Too Late, You Cannot Cancel This Now")
 				end
 			end
 		end

@@ -9,7 +9,6 @@ function RetrieveComponents()
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	RegisterChatCommands()
 	registerUsables()
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Status",
 		"Inventory",
 		"Wallet",
-		"Execute",
 		"Middleware",
 	}, function(error)
 		if #error > 0 then

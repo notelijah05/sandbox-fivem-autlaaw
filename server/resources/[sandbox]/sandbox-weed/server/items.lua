@@ -20,17 +20,17 @@ function RegisterItems()
 						Weed.Planting:Set(plant._id, false)
 					else
 						if data.error == 2 then
-							Execute:Client(source, "Notification", "Error", "Need Better Soil")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Need Better Soil")
 						elseif data.error == 3 then
-							Execute:Client(source, "Notification", "Error", "Too Close")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Too Close")
 						end
 					end
 				end)
 			else
-				Execute:Client(source, "Notification", "Error", "Can't Plan While In A Vehicle")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Can't Plan While In A Vehicle")
 			end
 		else
-			Execute:Client(source, "Notification", "Error", "Plant Needs Natural Light")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Plant Needs Natural Light")
 		end
 	end)
 
@@ -55,17 +55,17 @@ function RegisterItems()
 						Weed.Planting:Set(plant._id, false)
 					else
 						if data.error == 2 then
-							Execute:Client(source, "Notification", "Error", "Need Better Soil")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Need Better Soil")
 						elseif data.error == 3 then
-							Execute:Client(source, "Notification", "Error", "Too Close")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Too Close")
 						end
 					end
 				end)
 			else
-				Execute:Client(source, "Notification", "Error", "Can't Plan While In A Vehicle")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Can't Plan While In A Vehicle")
 			end
 		else
-			Execute:Client(source, "Notification", "Error", "Plant Needs Natural Light")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Plant Needs Natural Light")
 		end
 	end)
 
@@ -83,7 +83,7 @@ function RegisterItems()
 				end
 			end)
 		else
-			Execute:Client(source, "Notification", "Error", "You need bud you fucking idiot")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You need bud you fucking idiot")
 		end
 	end)
 
@@ -115,7 +115,7 @@ function RegisterItems()
 				end
 			end)
 		else
-			Execute:Client(source, "Notification", "Error", "You need 200 bud you fucking idiot")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You need 200 bud you fucking idiot")
 		end
 	end)
 
@@ -132,7 +132,7 @@ function RegisterItems()
 				end
 			end)
 		else
-			Execute:Client(source, "Notification", "Error", "You need 200 bud you fucking idiot")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You need 200 bud you fucking idiot")
 		end
 	end)
 end

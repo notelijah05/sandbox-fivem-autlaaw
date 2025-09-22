@@ -30,13 +30,13 @@ AddEventHandler('Finance:Server:Startup', function()
     })
 
     Chat:RegisterAdminCommand('testbilling', function(source, args, rawCommand)
-        Execute:Client(source, 'Notification', 'Info', 'Bill Created')
+        exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Info', 'Bill Created')
         Billing:Create(source, 'Some Random Fucking Business', 1500, 'This is a shitty description of a test bill.',
             function(wasPayed)
                 if wasPayed then
-                    Execute:Client(source, 'Notification', 'Success', 'Bill Accepted')
+                    exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Success', 'Bill Accepted')
                 else
-                    Execute:Client(source, 'Notification', 'Error', 'Bill Declined')
+                    exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error', 'Bill Declined')
                 end
             end)
     end, {

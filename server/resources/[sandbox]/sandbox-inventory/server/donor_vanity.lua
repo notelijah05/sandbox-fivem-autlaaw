@@ -90,15 +90,17 @@ function RegisterDonorVanityItemsCallbacks()
 
 						INVENTORY:AddItem(sid, newItem.name, amount, {}, 1)
 
-						Execute:Client(source, "Notification", "Success", "Found unused vanity token!")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+							"Found unused vanity token!")
 					else
-						Execute:Client(source, "Notification", "Error", "Uh this shouldn't happen.")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"Uh this shouldn't happen.")
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "No vanity tokens found.")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No vanity tokens found.")
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",

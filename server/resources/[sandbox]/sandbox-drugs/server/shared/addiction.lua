@@ -22,13 +22,17 @@ end
 
 function DoAlert(source, drug, previous, factor)
 	if factor > 10.0 and previous <= 10.0 then
-		Execute:Client(source, "Notification", "Info", string.format("You're Incredibly Addicted To %s", drug))
+		exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
+			string.format("You're Incredibly Addicted To %s", drug))
 	elseif factor > 5.0 and (previous <= 5.0 or previous > 10.0) then
-		Execute:Client(source, "Notification", "Info", string.format("You're Very Addicted To %s", drug))
+		exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
+			string.format("You're Very Addicted To %s", drug))
 	elseif factor > 0.0 and (previous <= 0.0) then
-		Execute:Client(source, "Notification", "Info", string.format("You're Somewhat Addicted To %s", drug))
+		exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
+			string.format("You're Somewhat Addicted To %s", drug))
 	elseif factor <= 0.0 and (previous > 0.0) then
-		Execute:Client(source, "Notification", "Info", string.format("You're No Longer Addicted To %s", drug))
+		exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
+			string.format("You're No Longer Addicted To %s", drug))
 	end
 end
 

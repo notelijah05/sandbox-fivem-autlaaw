@@ -20,7 +20,6 @@ function RetrieveComponents()
 	Queue = exports["sandbox-base"]:FetchComponent("Queue")
 	Convar = exports["sandbox-base"]:FetchComponent("Convar")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 end
 
@@ -34,7 +33,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Queue",
 		"Convar",
 		"Chat",
-		"Execute",
 		"Sequence",
 	}, function(error)
 		if #error > 0 then return; end

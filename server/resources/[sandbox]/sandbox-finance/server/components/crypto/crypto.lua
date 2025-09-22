@@ -37,7 +37,7 @@ AddEventHandler("Finance:Server:Startup", function()
 			Crypto.Exchange:Add(item.MetaData.CryptoCoin, char:GetData("CryptoWallet"), item.MetaData.Quantity)
 			Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 		else
-			Execute:Client(source, "Notification", "Error", "Invalid Voucher")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Voucher")
 		end
 	end)
 

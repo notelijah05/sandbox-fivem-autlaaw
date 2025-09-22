@@ -8,7 +8,6 @@ AddEventHandler("Jobs:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
@@ -18,7 +17,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jobs", {
 		"Middleware",
-		"Execute",
 		"Sequence",
 		"Generator",
 		"Chat",

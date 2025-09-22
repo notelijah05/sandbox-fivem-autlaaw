@@ -17,7 +17,8 @@ RegisterNetEvent('Vehicles:Server:TestDriveTime', function(vNet)
             _activeTestDrives[dealership].startedTimer = true
 
             if timeRemaining > 0 then
-                Execute:Client(_src, "Notification", "Info", "Test Drive Time Remaining", timeRemaining * 1000, "car")
+                exports['sandbox-base']:ExecuteClient(_src, "Notification", "Info", "Test Drive Time Remaining",
+                    timeRemaining * 1000, "car")
 
                 Citizen.SetTimeout(timeRemaining * 1000, function()
                     EndTestDrive(vehicle, dealership, _src)
@@ -33,7 +34,8 @@ function EndTestDrive(vehicle, dealership, _src)
     if vehicle and vehicle ~= 0 and DoesEntityExist(vehicle) then
         Vehicles:Delete(vehicle, function(success) end)
     else
-        Execute:Client(_src, "Notification", "Error", "Cannot find vehicle to return. Test drive cancelled.", 3000, "car")
+        exports['sandbox-base']:ExecuteClient(_src, "Notification", "Error",
+            "Cannot find vehicle to return. Test drive cancelled.", 3000, "car")
     end
 
     if _dealerships[dealership].testdrive.setplayerback then
@@ -85,12 +87,14 @@ function RegisterVehicleSaleCallbacks()
                                 startedTimer = false,
                             }
 
-                            Execute:Client(source, "Notification", "Success", "Your Test Drive Vehicle Was Provided",
+                            exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+                                "Your Test Drive Vehicle Was Provided",
                                 5000, "car")
                             Entity(spawnedVehicle).state.testDrive = os.time() + timer
                             Entity(spawnedVehicle).state.testDriveDealership = dealership
                         else
-                            Execute:Client(source, "Notification", "Error", "Test Drive Vehicle Failed To Spawn", 5000,
+                            exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+                                "Test Drive Vehicle Failed To Spawn", 5000,
                                 "car")
                         end
                     end,
@@ -101,7 +105,8 @@ function RegisterVehicleSaleCallbacks()
                     }
                 )
             else
-                Execute:Client(source, "Notification", "Error", "We Already Gave You a Test Drive Vehicle", 5000, "car")
+                exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+                    "We Already Gave You a Test Drive Vehicle", 5000, "car")
             end
             cb(true, 'Initiating Test Drive')
         else
@@ -137,7 +142,7 @@ function RegisterVehicleSaleCallbacks()
                             local salePrice = exports['sandbox-base']:UtilsRound(vehiclePrice * priceMultiplier, 0)
 
                             local playerCommission = exports['sandbox-base']:UtilsRound(
-                            (salePrice - vehiclePrice) * commissionMultiplier, 0)
+                                (salePrice - vehiclePrice) * commissionMultiplier, 0)
                             local dealerRecieves = exports['sandbox-base']:UtilsRound(salePrice - playerCommission, 0)
 
 
@@ -183,7 +188,8 @@ function RegisterVehicleSaleCallbacks()
                                                                 newQuantity = removeSuccess,
                                                             })
 
-                                                            Execute:Client(source, 'Notification', 'Success',
+                                                            exports['sandbox-base']:ExecuteClient(source, 'Notification',
+                                                                'Success',
                                                                 'Completed Sales Process - The Customer Received their Vehicle',
                                                                 7500, 'car-building')
                                                             SendCompletedCashSaleEmail({
@@ -214,20 +220,23 @@ function RegisterVehicleSaleCallbacks()
                                                             --     Loans.Credit:Increase(targetCharacter:GetData('SID'), creditIncrease)
                                                             -- end
                                                         else
-                                                            Execute:Client(source, 'Notification', 'Error',
+                                                            exports['sandbox-base']:ExecuteClient(source, 'Notification',
+                                                                'Error',
                                                                 'Error Completing Vehicle Sale', 5000, 'car-building')
-                                                            Execute:Client(targetSrc, 'Notification', 'Error',
+                                                            exports['sandbox-base']:ExecuteClient(targetSrc,
+                                                                'Notification', 'Error',
                                                                 'Error Completing Vehicle Sale', 5000, 'car-building')
                                                         end
                                                     end, false, dealerData.storage)
                                             else
-                                                Execute:Client(source, 'Notification', 'Error',
+                                                exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error',
                                                     'Error Completing Vehicle Sale', 5000, 'car-building')
-                                                Execute:Client(targetSrc, 'Notification', 'Error',
+                                                exports['sandbox-base']:ExecuteClient(targetSrc, 'Notification', 'Error',
                                                     'Error Completing Vehicle Sale', 5000, 'car-building')
                                             end
                                         else
-                                            Execute:Client(source, 'Notification', 'Error', 'Payment Failed', 5000,
+                                            exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error',
+                                                'Payment Failed', 5000,
                                                 'car-building')
                                         end
                                     end)
@@ -245,7 +254,7 @@ function RegisterVehicleSaleCallbacks()
 
                                         if downPaymentPercent and loanWeeks and defaultInterestRate then
                                             local downPayment = exports['sandbox-base']:UtilsRound(
-                                            salePrice * (downPaymentPercent / 100), 0)
+                                                salePrice * (downPaymentPercent / 100), 0)
                                             local salePriceAfterDown = salePrice - downPayment
                                             local afterInterest = exports['sandbox-base']:UtilsRound(
                                                 salePriceAfterDown * (1 + (defaultInterestRate / 100)), 0)
@@ -261,7 +270,8 @@ function RegisterVehicleSaleCallbacks()
                                                         Source = targetSrc,
                                                     }, dealerData, saleVehicleData.data, downPaymentPercent, downPayment,
                                                     loanWeeks, perWeek, afterInterest, function()
-                                                        Execute:Client(source, 'Notification', 'Info',
+                                                        exports['sandbox-base']:ExecuteClient(source, 'Notification',
+                                                            'Info',
                                                             'The Loan Terms Were Accepted by the Customer', 5000,
                                                             'car-building')
                                                         Billing:Create(
@@ -345,11 +355,12 @@ function RegisterVehicleSaleCallbacks()
                                                                                                     removeSuccess,
                                                                                             })
 
-                                                                                        Execute:Client(source,
-                                                                                            'Notification',
-                                                                                            'Success',
-                                                                                            'Completed Sales Process - The Customer Received their Vehicle',
-                                                                                            7500, 'car-building')
+                                                                                        exports['sandbox-base']
+                                                                                            :ExecuteClient(source,
+                                                                                                'Notification',
+                                                                                                'Success',
+                                                                                                'Completed Sales Process - The Customer Received their Vehicle',
+                                                                                                7500, 'car-building')
                                                                                         SendCompletedLoanSaleEmail({
                                                                                                 SID = targetCharacter
                                                                                                     :GetData('SID'),
@@ -385,18 +396,20 @@ function RegisterVehicleSaleCallbacks()
                                                                                                 Source = targetSrc,
                                                                                             })
                                                                                     else
-                                                                                        Execute:Client(source,
-                                                                                            'Notification',
-                                                                                            'Error',
-                                                                                            'Error Completing Vehicle Sale',
-                                                                                            5000,
-                                                                                            'car-building')
-                                                                                        Execute:Client(targetSrc,
-                                                                                            'Notification',
-                                                                                            'Error',
-                                                                                            'Error Completing Vehicle Sale',
-                                                                                            5000,
-                                                                                            'car-building')
+                                                                                        exports['sandbox-base']
+                                                                                            :ExecuteClient(source,
+                                                                                                'Notification',
+                                                                                                'Error',
+                                                                                                'Error Completing Vehicle Sale',
+                                                                                                5000,
+                                                                                                'car-building')
+                                                                                        exports['sandbox-base']
+                                                                                            :ExecuteClient(targetSrc,
+                                                                                                'Notification',
+                                                                                                'Error',
+                                                                                                'Error Completing Vehicle Sale',
+                                                                                                5000,
+                                                                                                'car-building')
                                                                                     end
                                                                                 end, false, dealerData.storage,
                                                                                 preGenerateVIN)
@@ -429,7 +442,8 @@ function RegisterVehicleSaleCallbacks()
                                                                         )
                                                                     end
                                                                 else
-                                                                    Execute:Client(source, 'Notification', 'Error',
+                                                                    exports['sandbox-base']:ExecuteClient(source,
+                                                                        'Notification', 'Error',
                                                                         'Loan Downpayment Failed', 5000, 'car-building')
                                                                 end
                                                             end

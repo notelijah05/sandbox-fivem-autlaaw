@@ -3,7 +3,6 @@ function EMSComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -11,7 +10,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Middleware",
 		"Inventory",
 		"Damage",
-		"Execute",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -39,12 +37,13 @@ RegisterNetEvent("EMS:Server:CheckICUPatients", function()
 
 	if count > 0 then
 		if count == 1 then
-			Execute:Client(src, "Notification", "Info", "There Is 1 Patient In ICU")
+			exports['sandbox-base']:ExecuteClient(src, "Notification", "Info", "There Is 1 Patient In ICU")
 		else
-			Execute:Client(src, "Notification", "Info", string.format("There Are %s Patients In ICU", count))
+			exports['sandbox-base']:ExecuteClient(src, "Notification", "Info",
+				string.format("There Are %s Patients In ICU", count))
 		end
 	else
-		Execute:Client(src, "Notification", "Info", "There Are No Patients In ICU")
+		exports['sandbox-base']:ExecuteClient(src, "Notification", "Info", "There Are No Patients In ICU")
 	end
 end)
 
@@ -94,7 +93,7 @@ function EMSCallbacks()
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Jobs.Permissions:HasJob(source, "ems") then
 			if Inventory.Items:Has(myChar:GetData("SID"), 1, "traumakit", 1) then
-				Execute:Client(data, "Notification", "Success", "Your Wounds Were Treated")
+				exports['sandbox-base']:ExecuteClient(data, "Notification", "Success", "Your Wounds Were Treated")
 				cb({ error = false })
 			else
 				cb({ error = true, code = 2 })
@@ -117,7 +116,7 @@ function EMSCallbacks()
 	-- 						dmg.Bleed = dmg.Bleed - 1
 	-- 						tChar:SetData("Damage", dmg)
 	-- 					else
-	-- 						Execute:Client(data, "Notification", "Error", "You continue bleeding through the gauze")
+	-- 						exports['sandbox-base']:ExecuteClient(data, "Notification", "Error", "You continue bleeding through the gauze")
 	-- 					end
 	-- 					cb({ error = false })
 	-- 				else
@@ -148,7 +147,7 @@ function EMSCallbacks()
 					end)
 
 					Citizen.Await(p)
-					Execute:Client(data, "Notification", "Success", "A Bandage Was Applied To You")
+					exports['sandbox-base']:ExecuteClient(data, "Notification", "Success", "A Bandage Was Applied To You")
 					cb({ error = false })
 				else
 					cb({ error = true, code = 3 })
@@ -166,7 +165,7 @@ function EMSCallbacks()
 		if Jobs.Permissions:HasJob(source, "ems") then
 			if Inventory.Items:Remove(myChar:GetData("SID"), 1, "morphine", 1) then
 				Damage.Effects:Painkiller(tonumber(data), 3)
-				Execute:Client(data, "Notification", "Success", "You Received A Morphine Shot")
+				exports['sandbox-base']:ExecuteClient(data, "Notification", "Success", "You Received A Morphine Shot")
 				cb({ error = false })
 			else
 				cb({ error = true, code = 2 })
@@ -181,8 +180,8 @@ function EMSCallbacks()
 		if Jobs.Permissions:HasJob(source, "ems") then
 			exports["sandbox-base"]:ClientCallback(data, "Damage:Heal", true)
 			--TriggerClientEvent("Hospital:Client:GetOut", data)
-			Execute:Client(source, "Notification", "Success", "Patient Has Been Treated")
-			Execute:Client(data, "Notification", "Success", "You've Been Treated")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Patient Has Been Treated")
+			exports['sandbox-base']:ExecuteClient(data, "Notification", "Success", "You've Been Treated")
 			cb({ error = false })
 		else
 			cb({ error = true, code = 1 })

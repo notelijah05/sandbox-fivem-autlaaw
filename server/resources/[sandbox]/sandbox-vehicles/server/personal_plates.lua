@@ -41,18 +41,18 @@ function PrivatePlateStuff(char, source, itemData)
         if veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
             if not vehState.VIN then
-                Execute:Client(source, "Notification", "Error", "Error")
+                exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Error")
                 return
             end
 
             local vehicle = Vehicles.Owned:GetActive(vehState.VIN)
             if not vehicle then
-                Execute:Client(source, "Notification", "Error", "Can't Do It on This Vehicle")
+                exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Can't Do It on This Vehicle")
                 return
             end
 
             if vehicle:GetData("FakePlate") then
-                Execute:Client(source, "Notification", "Error", "Can't Do It on This Vehicle")
+                exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Can't Do It on This Vehicle")
                 return
             end
 
@@ -60,12 +60,12 @@ function PrivatePlateStuff(char, source, itemData)
             local newPlate = IsPersonalPlateValid(plate)
 
             if not newPlate then
-                Execute:Client(source, "Notification", "Error", "Invalid Plate Formatting")
+                exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Plate Formatting")
                 return
             end
 
             if IsPersonalPlateTaken(newPlate) then
-                Execute:Client(source, "Notification", "Error", "That Plate is Taken")
+                exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "That Plate is Taken")
                 return
             end
 
@@ -90,11 +90,11 @@ function PrivatePlateStuff(char, source, itemData)
             Vehicles.Owned:ForceSave(vehState.VIN)
             Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 
-            Execute:Client(source, "Notification", "Success", "Personal Plate Setup")
+            exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Personal Plate Setup")
             exports['sandbox-base']:LoggerInfo('Vehicles',
                 string.format("Personal Plate Change For Vehicle: %s. %s -> %s", vehState.VIN, originalPlate, newPlate))
         else
-            Execute:Client(source, "Notification", "Error", "Error")
+            exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Error")
         end
     end)
 end
@@ -103,7 +103,7 @@ function RegisterPersonalPlateCallbacks()
     Inventory.Items:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or (Player(source).state.onDuty ~= "government" and Player(source).state.onDuty ~= "dgang") then
-            Execute:Client(source, "Notification", "Error", "Error")
+            exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Error")
             return
         end
 
@@ -113,7 +113,7 @@ function RegisterPersonalPlateCallbacks()
     Inventory.Items:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char then
-            Execute:Client(source, "Notification", "Error", "Error")
+            exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Error")
             return
         end
 

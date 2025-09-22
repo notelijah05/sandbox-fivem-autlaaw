@@ -120,7 +120,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			or (os.time() > GlobalState["ATMRobberyStartCD"]) and GlobalState["Sync:IsNight"]
 		then
 			if GlobalState["RobberiesDisabled"] then
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -161,7 +161,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			or (os.time() > _ATMRobberyCDs[char:GetData("SID")])
 		then
 			if GlobalState["RobberiesDisabled"] then
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",

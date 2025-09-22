@@ -114,7 +114,7 @@ AddEventHandler("Labor:Server:Startup", function()
 										},
 									}
 								)
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",
 									"Error",
@@ -122,7 +122,7 @@ AddEventHandler("Labor:Server:Startup", function()
 								)
 							end
 						else
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Error",

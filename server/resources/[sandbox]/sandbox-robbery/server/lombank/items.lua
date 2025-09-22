@@ -15,7 +15,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -27,7 +27,7 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -36,7 +36,7 @@ function RegisterLBItemUses()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -143,7 +143,7 @@ function RegisterLBItemUses()
 									_lbInUse[k] = false
 								end
 							else
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",
 									"Error",
@@ -155,7 +155,7 @@ function RegisterLBItemUses()
 					end
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -180,7 +180,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -192,7 +192,7 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -201,7 +201,7 @@ function RegisterLBItemUses()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -302,7 +302,7 @@ function RegisterLBItemUses()
 							_lbInUse.vaultPower = false
 						end
 					else
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -314,7 +314,7 @@ function RegisterLBItemUses()
 					return
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -344,7 +344,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -356,7 +356,7 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -365,7 +365,7 @@ function RegisterLBItemUses()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -412,7 +412,7 @@ function RegisterLBItemUses()
 
 										local timer = math.random(2, 4)
 
-										Execute:Client(
+										exports['sandbox-base']:ExecuteClient(
 											source,
 											"Notification",
 											"Success",
@@ -473,7 +473,7 @@ function RegisterLBItemUses()
 									_lbInUse[k] = false
 								end)
 							else
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",
 									"Error",
@@ -486,7 +486,7 @@ function RegisterLBItemUses()
 					end
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",

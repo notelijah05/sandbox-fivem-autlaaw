@@ -230,7 +230,7 @@ function RegisterCallbacks()
 				afkCodes[source] = nil
 				cb(true)
 			else
-				Execute:Client(source, "Notification", "Error", "Incorrect AFK Code")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Incorrect AFK Code")
 				cb(false)
 			end
 		else

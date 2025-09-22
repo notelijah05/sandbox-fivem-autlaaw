@@ -4,7 +4,6 @@ AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	RegisterChatCommands()
 end
@@ -13,7 +12,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
 		"Chat",
 		"Inventory",
-		"Execute",
 		"Middleware",
 	}, function(error)
 		if #error > 0 then
@@ -80,13 +78,14 @@ AddEventHandler("Core:Shared:Ready", function()
 									tarState.isBlindfolded = false
 									TriggerClientEvent("VOIP:Client:Gag:Use", data)
 								else
-									Execute:Client(source, "Notification", "Error", "Failed Adding Item")
+									exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+										"Failed Adding Item")
 									cb(false)
 								end
 							end
 						end)
 				else
-					Execute:Client(source, "Notification", "Error", "Target Not Blindfolded")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Target Not Blindfolded")
 					cb(false)
 				end
 			else
@@ -107,18 +106,21 @@ AddEventHandler("Core:Shared:Ready", function()
 											tarState.isBlindfolded = true
 											TriggerClientEvent("VOIP:Client:Gag:Use", target)
 										else
-											Execute:Client(source, "Notification", "Error", "Failed Removing Item")
+											exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+												"Failed Removing Item")
 										end
 									else
-										Execute:Client(source, "Notification", "Error", "Target Not Cuffed")
+										exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+											"Target Not Cuffed")
 									end
 								end
 							end)
 					else
-						Execute:Client(source, "Notification", "Error", "Target Already Blindfolded")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"Target Already Blindfolded")
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Nobody Near To Blindfold")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Nobody Near To Blindfold")
 				end
 			end)
 		end)
@@ -153,7 +155,7 @@ function RegisterChatCommands()
 	})
 
 	-- Chat:RegisterAdminCommand("notif", function(source, args, rawCommand)
-	-- 	exports["sandbox-base"]:FetchComponent("Execute"):Client(source, "Notification", "Success", "This is a test, lul")
+	-- 	exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "This is a test, lul")
 	-- end, {
 	-- 	help = "Test Notification",
 	-- })

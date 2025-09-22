@@ -1,7 +1,6 @@
 AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -12,7 +11,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
 		"Chat",
-		"Execute",
 		"Animations",
 		"Middleware",
 		"Inventory",
@@ -82,7 +80,7 @@ function RegisterChatCommands()
 		then
 			TriggerClientEvent("Animations:Client:Selfie", source)
 		else
-			Execute:Client(source, "Notification", "Error", "You do not have a phone.")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You do not have a phone.")
 		end
 	end, {
 		help = "Open Selfie Mode",
@@ -166,11 +164,12 @@ RegisterServerEvent("Selfie:CaptureSelfie", function()
 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char then
 		if pendingSend then
-			Execute:Client(src, "Notification", "Warn", "Please wait while current photo is uploading", 2000)
+			exports['sandbox-base']:ExecuteClient(src, "Notification", "Warn",
+				"Please wait while current photo is uploading", 2000)
 			return
 		end
 		pendingSend = true
-		Execute:Client(src, "Notification", "Info", "Prepping Photo Upload", 2000)
+		exports['sandbox-base']:ExecuteClient(src, "Notification", "Info", "Prepping Photo Upload", 2000)
 
 		exports["sandbox-base"]:ClientCallback(src, "Selfie:Client:UploadPhoto", {
 			api = tostring(GetConvar("phone_selfie_webhook", "")),
@@ -184,16 +183,17 @@ RegisterServerEvent("Selfie:CaptureSelfie", function()
 				if retval then
 					pendingSend = false
 					TriggerClientEvent("Selfie:DoCloseSelfie", src)
-					Execute:Client(src, "Notification", "Success", "Photo uploaded successfully!", 2000)
+					exports['sandbox-base']:ExecuteClient(src, "Notification", "Success", "Photo uploaded successfully!",
+						2000)
 				else
 					pendingSend = false
 					TriggerClientEvent("Selfie:DoCloseSelfie", src)
-					Execute:Client(src, "Notification", "Error", "Error uploading photo!", 2000)
+					exports['sandbox-base']:ExecuteClient(src, "Notification", "Error", "Error uploading photo!", 2000)
 				end
 			else
 				pendingSend = false
 				TriggerClientEvent("Selfie:DoCloseSelfie", src)
-				Execute:Client(src, "Notification", "Error", "Error uploading photo!", 2000)
+				exports['sandbox-base']:ExecuteClient(src, "Notification", "Error", "Error uploading photo!", 2000)
 				print("^1ERROR: " .. data)
 			end
 		end)

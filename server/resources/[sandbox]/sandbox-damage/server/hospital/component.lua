@@ -15,7 +15,6 @@ function HospitalComponents()
 	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -36,7 +35,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Hospital",
 		"Crypto",
 		"Phone",
-		"Execute",
 		"Chat",
 		"Billing",
 		"Inventory",
@@ -145,7 +143,7 @@ HOSPITAL = {
 				Pwnzor.Players:TempPosIgnore(target)
 				TriggerClientEvent("Hospital:Client:ICU:Sent", target)
 				TriggerClientEvent("Hospital:Client:ICU:Enter", target)
-				Execute:Client(target, "Notification", "Info", "You Were Admitted To ICU")
+				exports['sandbox-base']:ExecuteClient(target, "Notification", "Info", "You Were Admitted To ICU")
 			else
 				return false
 			end
@@ -158,7 +156,7 @@ HOSPITAL = {
 					Released = true,
 					Items = false,
 				})
-				Execute:Client(target, "Notification", "Info", "You Were Released From ICU")
+				exports['sandbox-base']:ExecuteClient(target, "Notification", "Info", "You Were Released From ICU")
 			else
 				return false
 			end

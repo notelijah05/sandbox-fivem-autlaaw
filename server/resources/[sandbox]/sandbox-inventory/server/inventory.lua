@@ -161,7 +161,6 @@ function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
@@ -184,7 +183,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Wallet",
 		"Middleware",
 		"Crafting",
-		"Execute",
 		"Weapons",
 		"Jobs",
 		"Reputation",
@@ -1910,22 +1908,23 @@ function RegisterCallbacks()
 						if not isShopModerator(data.shop, tChar:GetData("Source")) then
 							INVENTORY.PlayerShops.Moderators:Add(data.shop, tonumber(data.sid),
 								string.format("%s %s", tChar:GetData("First"), tChar:GetData("Last")))
-							Execute:Client(source, "Notification", "Success",
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
 								string.format("%s %s Added As A Shop Moderator", tChar:GetData("First"),
 									tChar:GetData("Last")))
 						else
-							Execute:Client(source, "Notification", "Error",
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
 								string.format("%s %s Is Already A Shop Moderator", tChar:GetData("First"),
 									tChar:GetData("Last")))
 						end
 					else
-						Execute:Client(source, "Notification", "Error", "Invalid Target ID")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target ID")
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "You're Not The Owner Of This Shop")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"You're Not The Owner Of This Shop")
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "Invalid Shop")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Shop")
 			end
 		end
 	end)
@@ -1937,12 +1936,13 @@ function RegisterCallbacks()
 			if _playerShops[data.shop] ~= nil then
 				if _playerShops[data.shop].owner == sid then
 					INVENTORY.PlayerShops.Moderators:Remove(data.shop, data.sid)
-					Execute:Client(source, "Notification", "Success", "Shop Moderator Removed")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Shop Moderator Removed")
 				else
-					Execute:Client(source, "Notification", "Error", "You're Not The Owner Of This Shop")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"You're Not The Owner Of This Shop")
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "Invalid Shop")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Shop")
 			end
 		end
 	end)
@@ -1982,7 +1982,8 @@ function RegisterCallbacks()
 				if not _playerShops[data.id].job or Jobs.Permissions:HasPermissionInJob(source, _playerShops[data.id].job, "JOB_SHOP_CONTROL") then
 					GlobalState[string.format("BasicShop:%s", data.id)] = data.state
 
-					Execute:Client(source, "Notification", "Success", data.state and "Store Opened" or "Store Closed")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+						data.state and "Store Opened" or "Store Closed")
 
 					cb(true)
 				else
@@ -2931,7 +2932,7 @@ INVENTORY = {
 					TriggerClientEvent("Inventory:Client:InUse", source, _inUse[source])
 					cb(used)
 				else
-					Execute:Client(source, "Notification", "Error", "You Can't Use That")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Can't Use That")
 					cb(false)
 				end
 			else
@@ -3108,12 +3109,13 @@ INVENTORY = {
 							MySQL.transaction.await(queries)
 							refreshShit(char:GetData("SID"))
 
-							Execute:Client(source, "Notification", "Success", "Retreived Items")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Retreived Items")
 						else
-							Execute:Client(source, "Notification", "Error", "Not Enough Slots Available")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								"Not Enough Slots Available")
 						end
 					else
-						Execute:Client(source, "Notification", "Error", "No Items To Retreive")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No Items To Retreive")
 					end
 				end
 
@@ -3153,12 +3155,13 @@ INVENTORY = {
 							MySQL.transaction.await(queries)
 							refreshShit(char:GetData("SID"), true)
 
-							Execute:Client(source, "Notification", "Success", "Retreived Items")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Retreived Items")
 						else
-							Execute:Client(source, "Notification", "Error", "Not Enough Slots Available")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								"Not Enough Slots Available")
 						end
 					else
-						Execute:Client(source, "Notification", "Error", "No Items To Retreive")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No Items To Retreive")
 					end
 				end
 
@@ -3231,7 +3234,7 @@ INVENTORY = {
 	Search = {
 		Character = function(self, src, tSrc, id)
 			exports["sandbox-base"]:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
-				Execute:Client(tSrc, "Notification", "Info", "You Were Searched")
+				exports['sandbox-base']:ExecuteClient(tSrc, "Notification", "Info", "You Were Searched")
 				INVENTORY:OpenSecondary(src, 1, id)
 			end)
 		end,

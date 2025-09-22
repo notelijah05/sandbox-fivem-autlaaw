@@ -37,7 +37,7 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
                         },
                         function(success, vehicle)
                             if success and vehicle then
-                                Execute:Client(src, 'Notification', 'Success',
+                                exports['sandbox-base']:ExecuteClient(src, 'Notification', 'Success',
                                     string.format(
                                         'Fleet Vehicle Purchase of a %s %s was Successful.<br><br>VIN: %s<br>Plate: %s',
                                         chosenVehicle.make, chosenVehicle.model, vehicle.VIN, vehicle.RegisteredPlate),
@@ -47,23 +47,26 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
                                     string.format(
                                         'Purchase of Fleet Vehicle Failed After Taking %s Cash from Bank Account: %s',
                                         chosenVehicle.price, purchaseBankAccount.Account))
-                                Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000,
+                                exports['sandbox-base']:ExecuteClient(src, 'Notification', 'Error',
+                                    'Fleet Vehicle Purchase Failed', 5000,
                                     'cars')
                             end
                         end,
                         properties
                     )
                 else
-                    Execute:Client(src, 'Notification', 'Error',
+                    exports['sandbox-base']:ExecuteClient(src, 'Notification', 'Error',
                         'Fleet Vehicle Purchase Failed - Not Enough Money in the Bank', 5000, 'cars')
                 end
             else
-                Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000, 'cars')
+                exports['sandbox-base']:ExecuteClient(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000,
+                    'cars')
             end
         else
-            Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed - Invalid Vehicle', 5000, 'cars')
+            exports['sandbox-base']:ExecuteClient(src, 'Notification', 'Error',
+                'Fleet Vehicle Purchase Failed - Invalid Vehicle', 5000, 'cars')
         end
     else
-        Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000, 'cars')
+        exports['sandbox-base']:ExecuteClient(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000, 'cars')
     end
 end)

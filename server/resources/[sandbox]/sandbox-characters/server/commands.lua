@@ -1,13 +1,13 @@
 function RegisterCommands()
 	Chat:RegisterStaffCommand("logout", function(source, args, rawCommand)
-		exports["sandbox-base"]:FetchComponent("Execute"):Client(source, "Characters", "Logout")
+		exports['sandbox-base']:ExecuteClient(source, "Characters", "Logout")
 	end, {
 		help = "Logout",
 	}, 0)
 	Chat:RegisterStaffCommand("logoutsid", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
-			exports["sandbox-base"]:FetchComponent("Execute"):Client(char:GetData("Source"), "Characters", "Logout")
+			exports['sandbox-base']:ExecuteClient(char:GetData("Source"), "Characters", "Logout")
 		end
 	end, {
 		help = "Force logs out another player by State ID",
@@ -19,7 +19,7 @@ function RegisterCommands()
 		},
 	}, 1)
 	Chat:RegisterStaffCommand("logoutsource", function(source, args, rawCommand)
-		exports["sandbox-base"]:FetchComponent("Execute"):Client(tonumber(args[1]), "Characters", "Logout")
+		exports['sandbox-base']:ExecuteClient(tonumber(args[1]), "Characters", "Logout")
 	end, {
 		help = "Force logs out another player by Source",
 		params = {
@@ -31,7 +31,7 @@ function RegisterCommands()
 	}, 1)
 	Chat:RegisterAdminCommand("logoutall", function(source, args, rawCommand)
 		for k, v in pairs(exports['sandbox-base']:FetchAll()) do
-			exports["sandbox-base"]:FetchComponent("Execute"):Client(v:GetData("Source"), "Characters", "Logout")
+			exports['sandbox-base']:ExecuteClient(v:GetData("Source"), "Characters", "Logout")
 		end
 	end, {
 		help = "Force logs out all players",

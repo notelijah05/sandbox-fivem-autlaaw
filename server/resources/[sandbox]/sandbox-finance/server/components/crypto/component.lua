@@ -2,7 +2,6 @@ _cryptoCoins = {}
 
 AddEventHandler("Crypto:Shared:DependencyUpdate", RetrieveCryptoComponents)
 function RetrieveCryptoComponents()
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
@@ -20,7 +19,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Crypto", {
-		"Execute",
 		"Chat",
 		"Middleware",
 		"Generator",

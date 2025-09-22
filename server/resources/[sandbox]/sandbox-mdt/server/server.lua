@@ -26,7 +26,6 @@ AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
@@ -46,7 +45,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Chat",
 		"Phone",
 		"Middleware",
-		"Execute",
 		"Tasks",
 		"Sequence",
 		"MDT",

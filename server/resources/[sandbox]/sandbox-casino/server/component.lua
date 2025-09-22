@@ -4,7 +4,6 @@ _casinoConfigLoaded = false
 
 AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
@@ -21,7 +20,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Casino", {
-		"Execute",
 		"Chat",
 		"Middleware",
 		"Generator",
@@ -54,12 +52,12 @@ AddEventHandler("Core:Shared:Ready", function()
 				GlobalState["CasinoOpen"] = data.state
 
 				if GlobalState["CasinoOpen"] then
-					Execute:Client(source, "Notification", "Success", "Casino Opened")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Casino Opened")
 				else
-					Execute:Client(source, "Notification", "Error", "Casino Closed")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Casino Closed")
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "Error Opening/Closing Casino")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Error Opening/Closing Casino")
 			end
 		end)
 
@@ -112,7 +110,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					Inventory:AddItem(char:GetData("SID"), "diamond_vip", 1, {}, 1)
 					GiveCasinoFuckingMoney(source, "VIP Card", 10000)
 				else
-					Execute:Client(source, "Notification", "Error", "Not Enough Cash")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
 				end
 			end
 

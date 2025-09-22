@@ -354,7 +354,7 @@ WEAPONS = {
 			local p = promise.new()
 			exports["sandbox-base"]:ClientCallback(source, "Weapons:Check", {}, function(data)
 				if not data then
-					Execute:Client(source, "Notification", "Error", "No Weapon Equipped")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No Weapon Equipped")
 					p:resolve(false)
 				else
 					local itemData = Inventory.Items:GetData(item.Name)
@@ -383,7 +383,7 @@ WEAPONS = {
 													slotData.MetaData.WeaponComponents[itemData.component.type].attachment
 													== itemData.component.string
 												then
-													Execute:Client(
+													exports['sandbox-base']:ExecuteClient(
 														source,
 														"Notification",
 														"Error",
@@ -438,11 +438,13 @@ WEAPONS = {
 								end
 							)
 						else
-							Execute:Client(source, "Notification", "Error", "This Does Not Fit On This Weapon")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								"This Does Not Fit On This Weapon")
 							return p:resolve(false)
 						end
 					else
-						Execute:Client(source, "Notification", "Error", "Something Was Not Defined")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"Something Was Not Defined")
 						return p:resolve(false)
 					end
 				end

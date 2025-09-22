@@ -76,7 +76,8 @@ function RegisterVehicleRentalCallbacks()
                             Model = rentalVehicleData.model,
                         })
                 else
-                    Execute:Client(source, 'Notification', 'Error', 'Not Enough Money to Rent', 5000)
+                    exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error', 'Not Enough Money to Rent',
+                        5000)
                     cb(false)
                 end
             else

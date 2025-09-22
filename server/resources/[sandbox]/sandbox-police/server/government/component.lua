@@ -1,6 +1,5 @@
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", GovernmentComponents)
 function GovernmentComponents()
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
@@ -15,7 +14,6 @@ _licenses = {
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
-		"Execute",
 		"Wallet",
 		"Inventory",
 		"Middleware",
@@ -30,7 +28,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			if Wallet:Modify(source, -500) then
 				Inventory:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
 			else
-				Execute:Client(source, "Notification", "Error", "Not Enough Cash")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
 			end
 		end)
 
@@ -45,10 +43,11 @@ AddEventHandler("Core:Shared:Ready", function()
 
 						Middleware:TriggerEvent("Characters:ForceStore", source)
 					else
-						Execute:Client(source, "Notification", "Error", "Unable To Purchase License")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"Unable To Purchase License")
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Not Enough Cash")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
 				end
 			else
 				exports['sandbox-base']:LoggerError(
@@ -59,7 +58,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						discord = true,
 					}
 				)
-				Execute:Client(source, "Notification", "Error", "Unable To Purchase License")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Purchase License")
 			end
 		end)
 
@@ -73,10 +72,10 @@ AddEventHandler("Core:Shared:Ready", function()
 						char:SetData("Licenses", licenses)
 						Middleware:TriggerEvent("Characters:ForceStore", source)
 					else
-						Execute:Client(source, "Notification", "Error", "Not Enough Cash")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "You are Not PD")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You are Not PD")
 				end
 			end)
 

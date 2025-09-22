@@ -80,7 +80,7 @@ function RegisterEACallbacks()
 						end
 					end)
 
-				Execute:Client(target, "Notification", "Info", "Your Tracker Has Been Disabled")
+				exports['sandbox-base']:ExecuteClient(target, "Notification", "Info", "Your Tracker Has Been Disabled")
 				cb(true)
 				return
 			end

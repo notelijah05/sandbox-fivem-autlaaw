@@ -8,7 +8,7 @@ function EMSItems()
 	-- 				)
 	-- 		end
 	-- 	else
-	-- 		Execute:Client(source, "Notification", "Error", "You're Not Bleeding")
+	-- 		exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You're Not Bleeding")
 	-- 	end
 	-- end)
 
@@ -146,7 +146,7 @@ function EMSItems()
 	-- 			dmg.Bleed = dmg.Bleed - 1
 	-- 			char:SetData("Damage", dmg)
 	-- 		else
-	-- 			Execute:Client(source, "Notification", "Error", "You continue bleeding through the gauze")
+	-- 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You continue bleeding through the gauze")
 	-- 		end
 	-- 	end
 	-- end)
@@ -167,9 +167,9 @@ function EMSItems()
 					end
 				end
 			end
-			Execute:Client(source, "Notification", "Error", "Not Near Any Hospitalized Patients")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Near Any Hospitalized Patients")
 		else
-			Execute:Client(source, "Notification", "Error", "You're not trained to use this")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You're not trained to use this")
 		end
 	end)
 end

@@ -7,7 +7,6 @@ _spamCheck = {}
 
 AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
@@ -20,7 +19,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Scenes", {
-		"Execute",
 		"Chat",
 		"Middleware",
 		"Generator",

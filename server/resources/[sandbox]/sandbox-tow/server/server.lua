@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Middleware",
 		"Jobs",
 		"Chat",
-		"Execute",
 		"Vehicles",
 		"Phone",
 		"Banking",
@@ -59,7 +57,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						_activeTowers[source] = {
 							next = os.time() + (math.random(1, 3) * 60),
 						}
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Info",
@@ -73,13 +71,16 @@ AddEventHandler("Core:Shared:Ready", function()
 							"truck-tow"
 						)
 					else
-						Execute:Client(source, "Notification", "Error", "Failed to Go On Duty", 5000, "truck-tow")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Failed to Go On Duty",
+							5000, "truck-tow")
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Too Many Tow Employees on Duty", 5000, "truck-tow")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Too Many Tow Employees on Duty", 5000, "truck-tow")
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "Failed to Go On Duty", 5000, "truck-tow")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Failed to Go On Duty", 5000,
+					"truck-tow")
 			end
 		end)
 
@@ -93,7 +94,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					_activeTowers[source] = nil
 					Phone.Notification:RemoveById(source, "TOW_OBJ")
 				else
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -103,7 +104,8 @@ AddEventHandler("Core:Shared:Ready", function()
 					)
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "Failed to Go Off Duty", 5000, "truck-tow")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Failed to Go Off Duty", 5000,
+					"truck-tow")
 			end
 		end)
 
@@ -133,7 +135,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								GlobalState[string.format("TowTrucks:%s", stateId)] =
 									NetworkGetNetworkIdFromEntity(spawnedVehicle)
 
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",
 									"Success",
@@ -143,7 +145,8 @@ AddEventHandler("Core:Shared:Ready", function()
 								)
 								cb(spawnedVehicle)
 							else
-								Execute:Client(source, "Notification", "Error", "Truck Spawn Failed", 5000, "truck-tow")
+								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+									"Truck Spawn Failed", 5000, "truck-tow")
 								cb(nil)
 							end
 						end,
@@ -154,7 +157,8 @@ AddEventHandler("Core:Shared:Ready", function()
 						}
 					)
 				else
-					Execute:Client(source, "Notification", "Error", "We Already Gave You a Truck", 5000, "truck-tow")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "We Already Gave You a Truck",
+						5000, "truck-tow")
 					cb(nil)
 				end
 			end
@@ -172,7 +176,7 @@ AddEventHandler("Core:Shared:Ready", function()
 							if success then
 								_activeTowVehicles[stateId] = nil
 								GlobalState[string.format("TowTrucks:%s", stateId)] = false
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",
 									"Success",
@@ -181,7 +185,7 @@ AddEventHandler("Core:Shared:Ready", function()
 									"truck-tow"
 								)
 							else
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",
 									"Error",
@@ -192,7 +196,7 @@ AddEventHandler("Core:Shared:Ready", function()
 							end
 						end)
 					else
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -202,7 +206,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						)
 					end
 				else
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",

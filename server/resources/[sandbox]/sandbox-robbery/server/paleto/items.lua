@@ -16,7 +16,7 @@ function RegisterPBItems()
 				then
 					if PaletoIsGloballyReady(source, true) then
 						if not IsPaletoExploitInstalled() then
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Error",
@@ -25,7 +25,8 @@ function RegisterPBItems()
 							)
 							return
 						elseif (_bankStates.paleto.substations[subStationId] or 0) > os.time() then
-							Execute:Client(source, "Notification", "Error", "This Substation Is Already Disabled", 6000)
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								"This Substation Is Already Disabled", 6000)
 							return
 						end
 						local myPos = GetEntityCoords(GetPlayerPed(source))
@@ -154,7 +155,7 @@ function RegisterPBItems()
 									_pbInUse.substations[subStationId] = false
 								end
 							else
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",
 									"Error",
@@ -176,7 +177,7 @@ function RegisterPBItems()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if not IsPaletoExploitInstalled() then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -185,7 +186,8 @@ function RegisterPBItems()
 						)
 						return
 					elseif not IsPaletoPowerDisabled() then
-						Execute:Client(source, "Notification", "Error", "Regional Power Is Still Active", 6000)
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"Regional Power Is Still Active", 6000)
 						return
 					end
 
@@ -290,7 +292,7 @@ function RegisterPBItems()
 											_pbInUse[v.door] = false
 										end
 									else
-										Execute:Client(
+										exports['sandbox-base']:ExecuteClient(
 											source,
 											"Notification",
 											"Error",
@@ -422,7 +424,7 @@ function RegisterPBItems()
 											_pbInUse.securityAccess[v.powerId] = false
 										end
 									else
-										Execute:Client(
+										exports['sandbox-base']:ExecuteClient(
 											source,
 											"Notification",
 											"Error",
@@ -456,7 +458,7 @@ function RegisterPBItems()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if not IsPaletoExploitInstalled() then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -465,7 +467,7 @@ function RegisterPBItems()
 						)
 						return
 					elseif not _bankStates.paleto.vaultTerminal then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -522,7 +524,7 @@ function RegisterPBItems()
 
 											local timer = math.random(2, 4)
 
-											Execute:Client(
+											exports['sandbox-base']:ExecuteClient(
 												source,
 												"Notification",
 												"Success",
@@ -563,7 +565,7 @@ function RegisterPBItems()
 										_pbInUse[k] = false
 									end)
 								else
-									Execute:Client(
+									exports['sandbox-base']:ExecuteClient(
 										source,
 										"Notification",
 										"Error",
@@ -578,7 +580,7 @@ function RegisterPBItems()
 				else
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",

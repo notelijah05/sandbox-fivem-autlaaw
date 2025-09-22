@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -28,7 +27,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Middleware",
 		"Jobs",
 		"Chat",
-		"Execute",
 		"Police",
 		"Handcuffs",
 		"Routing",
@@ -75,7 +73,8 @@ AddEventHandler("Core:Shared:Ready", function()
 							)
 						end
 
-						Execute:Client(source, "Notification", "Success", "You Deployed Spikes (Despawn In 20s)")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+							"You Deployed Spikes (Despawn In 20s)")
 					end
 				end)
 			end
@@ -94,7 +93,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						Chat.Send.System:Single(source, "GSR: Negative")
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Invalid Target")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
 				end
 			end
 		end)
@@ -109,7 +108,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				for i = 1, 27 do
 					Doors:SetLock(string.format("prison_cell_%s", i), GlobalState["PrisonCellsLocked"])
 				end
-				Execute:Client(source, "Notification", "Info",
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
 					string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
 					GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
 				cb(true, GlobalState["PrisonLockdown"])
@@ -127,7 +126,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				for i = 1, 27 do
 					Doors:SetLock(string.format("prison_cell_%s", i), GlobalState["PrisonCellsLocked"])
 				end
-				Execute:Client(source, "Notification", "Info",
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
 					string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
 					GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
 				cb(true, GlobalState["PrisonCellsLocked"])
@@ -162,7 +161,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						Chat.Send.System:Single(source, "BAC: Not Drunk")
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Invalid Target")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
 				end
 			end
 
@@ -191,7 +190,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					return
 				end
 
-				Execute:Client(source, "Notification", "Error", "Invalid Target")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
 			end
 		end)
 
@@ -209,12 +208,12 @@ AddEventHandler("Core:Shared:Ready", function()
 				if data.type == "property" then
 					if (_breached[data.type][data.property] or 0) > os.time() then
 						cb(true)
-						Execute:Client(source, "Properties", "Enter", data.property)
+						exports['sandbox-base']:ExecuteClient(source, "Properties", "Enter", data.property)
 					else
 						exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
 							if s then
 								_breached[data.type][data.property] = os.time() + (60 * 10)
-								Execute:Client(source, "Properties", "Enter", data.property)
+								exports['sandbox-base']:ExecuteClient(source, "Properties", "Enter", data.property)
 								cb(true)
 							else
 								cb(false)
@@ -244,14 +243,16 @@ AddEventHandler("Core:Shared:Ready", function()
 						local id = aptTier or 1
 						if id == aptTier then
 							if (_breached[data.type][data.property] or 0) > os.time() then
-								Execute:Client(source, "Apartment", "Enter", aptTier, data.property)
+								exports['sandbox-base']:ExecuteClient(source, "Apartment", "Enter", aptTier,
+									data.property)
 
 								return cb(data.property)
 							else
 								exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
 									if s then
 										_breached[data.type][data.property] = os.time() + (60 * 10)
-										Execute:Client(source, "Apartment", "Enter", aptTier, data.property)
+										exports['sandbox-base']:ExecuteClient(source, "Apartment", "Enter", aptTier,
+											data.property)
 
 										return cb(data.property)
 									else
@@ -260,11 +261,12 @@ AddEventHandler("Core:Shared:Ready", function()
 								end)
 							end
 						else
-							Execute:Client(source, "Notification", "Error", "Target Does Not Reside Here")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								"Target Does Not Reside Here")
 							return cb(false)
 						end
 					else
-						Execute:Client(source, "Notification", "Error", "Target Not Online")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Target Not Online")
 						return cb(false)
 					end
 				end
@@ -290,14 +292,15 @@ AddEventHandler("Core:Shared:Ready", function()
 									Inventory:OpenSecondary(source, 3, ("pdrack:%s"):format(entState.VIN))
 								end)
 							else
-								Execute:Client(source, "Notification", "Error", "Can't Access The Locked Compartment")
+								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+									"Can't Access The Locked Compartment")
 							end
 						else
-							Execute:Client(source, "Notification", "Error",
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
 								"Vehicle Not Outfitted With A Secured Compartment")
 						end
 					else
-						Execute:Client(source, "Notification", "Error", "Not In A Vehicle")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not In A Vehicle")
 					end
 				elseif myDuty == 'prison' then
 					local veh = GetVehiclePedIsIn(GetPlayerPed(source))
@@ -312,14 +315,15 @@ AddEventHandler("Core:Shared:Ready", function()
 									Inventory:OpenSecondary(source, 999, ("pdrack:%s"):format(entState.VIN))
 								end)
 							else
-								Execute:Client(source, "Notification", "Error", "Can't Access The Locked Compartment")
+								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+									"Can't Access The Locked Compartment")
 							end
 						else
-							Execute:Client(source, "Notification", "Error",
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
 								"Vehicle Not Outfitted With A Secured Compartment")
 						end
 					else
-						Execute:Client(source, "Notification", "Error", "Not In A Vehicle")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not In A Vehicle")
 					end
 				end
 			end

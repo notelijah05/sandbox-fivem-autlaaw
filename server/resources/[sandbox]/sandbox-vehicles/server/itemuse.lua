@@ -165,9 +165,10 @@ function RegisterItemUses()
 
 						Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 
-						Execute:Client(source, "Notification", "Success", "Fake Plate Installed")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Fake Plate Installed")
 					else
-						Execute:Client(source, "Notification", "Error", "A Fake Plate is Already Installed")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"A Fake Plate is Already Installed")
 					end
 				end
 			end)
@@ -194,7 +195,7 @@ function RegisterItemUses()
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:UseCarBomb", {}, function(veh, reason, config)
 			if not veh then
 				if reason then
-					Execute:Client(source, "Notification", "Error", reason)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", reason)
 				end
 				return
 			end
@@ -217,12 +218,13 @@ function RegisterItemUses()
 
 						Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 
-						Execute:Client(source, "Notification", "Success", "Car Bomb Installed")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Car Bomb Installed")
 					else
-						Execute:Client(source, "Notification", "Error", "Vehicle Already Has Car Bomb")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"Vehicle Already Has Car Bomb")
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Error Installing Car Bomb")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Error Installing Car Bomb")
 				end
 			end
 		end)
@@ -242,7 +244,7 @@ function RegisterItemUses()
 
 				if Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
 					vehState.Harness = 10
-					Execute:Client(source, "Notification", "Success", "Harness Installed")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Harness Installed")
 				end
 			end
 		end)
@@ -263,12 +265,13 @@ function RegisterItemUses()
 
 					if Inventory.Items:RemoveId(itemData.Owner, itemData.invType, itemData) then
 						vehState.Nitrous = itemData.MetaData.Nitrous + 0.0
-						Execute:Client(source, "Notification", "Success", "Nitrous Oxide Installed")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+							"Nitrous Oxide Installed")
 					end
 				end
 			end)
 		else
-			Execute:Client(source, "Notification", "Error", "The Bottle is Empty!")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "The Bottle is Empty!")
 		end
 	end)
 end
@@ -309,9 +312,9 @@ function UseCarPolish(source, itemData, type)
 
 				Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 
-				Execute:Client(source, "Notification", "Success", "Polish Applied")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Polish Applied")
 			else
-				Execute:Client(source, "Notification", "Error",
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
 					"Vehicle Already Has That Polish and It Was Recently Installed")
 			end
 		end
@@ -343,9 +346,9 @@ function UsePurgeColorController(source, itemData)
 						if retval.purgeLocation then
 							vehState.PurgeLocation = retval.purgeLocation
 						end
-						Execute:Client(source, "Notification", "Success", "Purge Changes Applied")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Purge Changes Applied")
 					else
-						Execute:Client(source, "Notification", "Error", "Changes were discarded")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Changes were discarded")
 					end
 				end)
 		end

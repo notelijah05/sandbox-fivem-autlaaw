@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Waitlist = exports["sandbox-base"]:FetchComponent("WaitList")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	RegisterChatCommands()
@@ -14,7 +13,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Chat",
 		"Config",
 		"Sounds",
-		"Execute",
 		"WaitList",
 		"Pwnzor",
 	}, function(error)

@@ -192,7 +192,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -204,7 +204,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -213,7 +213,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -225,7 +225,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("MazeBank:Power:%s", data.boxId)] ~= nil
 					and GlobalState[string.format("MazeBank:Power:%s", data.boxId)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 				if not _mbInUse.powerBoxes[data.boxId] then
@@ -362,7 +363,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_mbInUse.powerBoxes[data.boxId] = false
 					end
 				else
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -374,7 +375,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				return
 			else
 				_mbInUse.powerBoxes[data.boxId] = false
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -399,7 +400,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -411,7 +412,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -420,7 +421,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -432,7 +433,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("MazeBank:Power:%s", data.boxId)] ~= nil
 					and GlobalState[string.format("MazeBank:Power:%s", data.boxId)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 
@@ -571,10 +573,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end
 						else
 							_mbInUse.powerBoxes[data.boxId] = false
-							Execute:Client(source, "Notification", "Error", "You Need Thermite", 6000)
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Need Thermite",
+								6000)
 						end
 					else
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -586,7 +589,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					return
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -611,7 +614,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -623,7 +626,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -632,7 +635,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -644,7 +647,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("MazeBank:Vault:Wall:%s", data)] ~= nil
 					and GlobalState[string.format("MazeBank:Vault:Wall:%s", data)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 				if not _mbInUse.drillPoints[data] then
@@ -722,10 +726,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 						end
 					else
 						_mbInUse.drillPoints[data] = false
-						Execute:Client(source, "Notification", "Error", "You Need A Drill", 6000)
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Need A Drill", 6000)
 					end
 				else
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -734,7 +738,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -759,7 +763,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -771,7 +775,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -780,7 +784,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -872,7 +876,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_mbInUse.officePcs[data.id] = false
 					end
 				else
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -883,7 +887,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 				return
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",

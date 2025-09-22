@@ -96,13 +96,14 @@ AddEventHandler("Labor:Server:Startup", function()
 			if (count) > 0 then
 				if Inventory.Items:Remove(char:GetData("SID"), 1, itemData.name, count) then
 					if Player(char:GetData('Source')).state.onDuty == 'police' or Player(char:GetData('Source')).state.onDuty == 'ems' then
-						Execute:Client(source, "Notification", "Success", "Thanks for the donation! No money for you kek")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+							"Thanks for the donation! No money for you kek")
 					else
 						Wallet:Modify(source, itemData.price * count)
 					end
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "You Have No " .. itemData.label)
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have No " .. itemData.label)
 			end
 		end
 	end)
@@ -127,7 +128,8 @@ function RegisterFishingItems()
 		local repLvl = Reputation:GetLevel(source, _JOB)
 
 		if repLvl < 3 then
-			Execute:Client(source, "Notification", "Error", "Your Net is Tangled and You Don't Know What to Do...")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+				"Your Net is Tangled and You Don't Know What to Do...")
 			return
 		end
 

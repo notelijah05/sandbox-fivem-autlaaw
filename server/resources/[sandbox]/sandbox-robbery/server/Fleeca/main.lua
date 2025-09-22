@@ -146,7 +146,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				)
 			then
 				if GetGameTimer() < SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not _inProgress[pState.fleeca]) then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -155,7 +155,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 					return
 				elseif (GlobalState["Duty:police"] or 0) < REQUIRED_POLICE and not _inProgress[pState.fleeca] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -164,7 +164,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 					return
 				elseif GlobalState['RobberiesDisabled'] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -287,10 +287,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 						end
 					else
 						_inUse.Loot[data.id] = false
-						Execute:Client(source, "Notification", "Error", "You Need A Drill", 6000)
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Need A Drill", 6000)
 					end
 				else
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -299,7 +299,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -356,7 +356,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local bankData = GlobalState[string.format("FleecaRobberies:%s", pState.fleeca)]
 				if #(bankData.points.vaultPC.coords - playerCoords) <= 1.5 then
 					if GetGameTimer() < SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not _inProgress[pState.fleeca]) then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -365,7 +365,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						)
 						return
 					elseif (GlobalState["Duty:police"] or 0) < REQUIRED_POLICE and not _inProgress[pState.fleeca] then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -374,7 +374,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						)
 						return
 					elseif GlobalState['RobberiesDisabled'] then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -455,7 +455,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											expires = os.time() + (60 * timer),
 										}
 										Status.Modify:Add(source, "PLAYER_STRESS", 3)
-										Execute:Client(
+										exports['sandbox-base']:ExecuteClient(
 											source,
 											"Notification",
 											"Success",
@@ -484,14 +484,15 @@ AddEventHandler("Robbery:Server:Setup", function()
 								end, pState.fleeca
 							)
 						else
-							Execute:Client(source, "Notification", "Error", "Someone Else Is Doing A Thing", 6000)
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								"Someone Else Is Doing A Thing", 6000)
 						end
 						return
 					elseif
 						GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)] == nil
 						and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].state == 1
 					then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -503,7 +504,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].state == 4
 						and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].expires > os.time()
 					then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -513,7 +514,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					end
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -536,7 +537,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local bankData = GlobalState[string.format("FleecaRobberies:%s", pState.fleeca)]
 				if #(bankData.points.vaultGate.coords - playerCoords) <= 1.5 then
 					if GetGameTimer() < SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not _inProgress[pState.fleeca]) then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -545,7 +546,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						)
 						return
 					elseif (GlobalState["Duty:police"] or 0) < REQUIRED_POLICE and not _inProgress[pState.fleeca] then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -554,7 +555,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						)
 						return
 					elseif GlobalState['RobberiesDisabled'] then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -636,7 +637,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 										}
 										Doors:SetLock(string.format("%s_gate", pState.fleeca), false)
 										Status.Modify:Add(source, "PLAYER_STRESS", 3)
-										Execute:Client(source, "Notification", "Success", "Doorlock Disengaged", 6000)
+										exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+											"Doorlock Disengaged", 6000)
 									else
 										exports['sandbox-base']:LoggerInfo("Robbery",
 											string.format("%s %s (%s) Failed Thermiting Vault Gate Door At %s",
@@ -648,12 +650,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 								end, pState.fleeca
 							)
 						else
-							Execute:Client(source, "Notification", "Error", "Someone Else Is Doing A Thing", 6000)
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								"Someone Else Is Doing A Thing", 6000)
 						end
 					end
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -679,7 +682,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						<= 1.5
 					then
 						if GetGameTimer() < SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not _inProgress[pState.fleeca]) then
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Error",
@@ -688,7 +691,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							)
 							return
 						elseif (GlobalState["Duty:police"] or 0) < REQUIRED_POLICE and not _inProgress[pState.fleeca] then
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Error",
@@ -697,7 +700,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							)
 							return
 						elseif GlobalState['RobberiesDisabled'] then
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Error",
@@ -743,7 +746,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												expires = os.time() + (60 * timer),
 											}
 											Status.Modify:Add(source, "PLAYER_STRESS", 3)
-											Execute:Client(
+											exports['sandbox-base']:ExecuteClient(
 												source,
 												"Notification",
 												"Success",
@@ -773,14 +776,15 @@ AddEventHandler("Robbery:Server:Setup", function()
 									end
 								)
 							else
-								Execute:Client(source, "Notification", "Error", "Someone Else Is Doing A Thing", 6000)
+								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+									"Someone Else Is Doing A Thing", 6000)
 							end
 							return
 						elseif
 							GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)] == nil
 							and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].state == 1
 						then
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Error",
@@ -792,7 +796,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].state == 4
 							and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].expires > os.time()
 						then
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Error",
@@ -802,7 +806,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						end
 					end
 				else
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -811,7 +815,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "Invalid Access Card: Incorrect Location", 6000)
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					"Invalid Access Card: Incorrect Location", 6000)
 				return
 			end
 		end
@@ -829,7 +834,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 			Wallet:Modify(source, amt)
 		else
-			Execute:Client(source, "Notification", "Error", "Not Ready Yet", 6000)
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Ready Yet", 6000)
 		end
 	end)
 end)

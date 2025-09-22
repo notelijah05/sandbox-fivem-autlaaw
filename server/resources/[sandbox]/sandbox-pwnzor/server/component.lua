@@ -144,7 +144,6 @@ function RetrieveComponents()
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 end
 
 local _loaded = false
@@ -154,7 +153,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Pwnzor",
 		"Chat",
 		"Generator",
-		"Execute",
 	}, function(error)
 		if #error > 0 then
 			return

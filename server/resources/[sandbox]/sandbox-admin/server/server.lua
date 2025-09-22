@@ -6,7 +6,6 @@ function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	C = exports["sandbox-base"]:FetchComponent("Config")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	WebAPI = exports["sandbox-base"]:FetchComponent("WebAPI")
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Middleware",
 		"Config",
 		"Properties",
-		"Execute",
 		"Tasks",
 		"Pwnzor",
 		"WebAPI",
@@ -68,7 +66,8 @@ end)
 function RegisterChatCommands()
 	Chat:RegisterAdminCommand("weptest", function(source, args, rawCommand)
 		if GlobalState.IsProduction then
-			Execute:Client(source, "Notification", "Error", "Cannot Use This On Production Servers")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+				"Cannot Use This On Production Servers")
 			return
 		end
 		TriggerClientEvent("Admin:Client:DamageTest", source, args[1] == "1")
@@ -142,7 +141,7 @@ function RegisterChatCommands()
 
 	Chat:RegisterStaffCommand("cpcoords", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:CopyCoords", source, args[1])
-		Execute:Client(source, "Notification", "Success", "Copied Coordinates")
+		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Copied Coordinates")
 	end, {
 		help = "[Dev] Copy Coords",
 		params = {
@@ -156,8 +155,8 @@ function RegisterChatCommands()
 	Chat:RegisterAdminCommand("cpproperty", function(source, args, rawCommand)
 		local nearProperty = Properties.Utils:IsNearProperty(source)
 		if nearProperty?.propertyId then
-			Execute:Client(source, "Admin", "CopyClipboard", nearProperty?.propertyId)
-			Execute:Client(source, "Notification", "Success", "Copied Property ID")
+			exports['sandbox-base']:ExecuteClient(source, "Admin", "CopyClipboard", nearProperty?.propertyId)
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Copied Property ID")
 		end
 	end, {
 		help = "[Dev] Copy Property ID of Closest Property",

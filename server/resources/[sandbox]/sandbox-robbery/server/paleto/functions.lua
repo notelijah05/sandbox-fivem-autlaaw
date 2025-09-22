@@ -4,9 +4,10 @@ function PaletoIsGloballyReady(source, isHack)
 		or (GlobalState["RestartLockdown"] and not GlobalState["PaletoInProgress"])
 	then
 		if isHack then
-			Execute:Client(source, "Notification", "Error", "Network Offline For A Storm, Check Back Later", 6000)
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+				"Network Offline For A Storm, Check Back Later", 6000)
 		else
-			Execute:Client(
+			exports['sandbox-base']:ExecuteClient(
 				source,
 				"Notification",
 				"Error",
@@ -16,7 +17,7 @@ function PaletoIsGloballyReady(source, isHack)
 		end
 		return false
 	elseif (GlobalState["Duty:police"] or 0) < PALETO_REQUIRED_POLICE and not GlobalState["PaletoInProgress"] then
-		Execute:Client(
+		exports['sandbox-base']:ExecuteClient(
 			source,
 			"Notification",
 			"Error",
@@ -25,7 +26,8 @@ function PaletoIsGloballyReady(source, isHack)
 		)
 		return false
 	elseif GlobalState["RobberiesDisabled"] then
-		Execute:Client(source, "Notification", "Error", "Temporarily Disabled, Please See City Announcements", 6000)
+		exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+			"Temporarily Disabled, Please See City Announcements", 6000)
 		return false
 	end
 
@@ -60,7 +62,7 @@ function DisablePaletoPower(source)
 		icon = "bolt-slash",
 		details = "Paleto",
 	}, false, 250.0)
-	
+
 	GlobalState["Fleeca:Disable:savings_paleto"] = true
 	Doors:SetLock("bank_savings_paleto_gate", false)
 	RestorePowerThread()

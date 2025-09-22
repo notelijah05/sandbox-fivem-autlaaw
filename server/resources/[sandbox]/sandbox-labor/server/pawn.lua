@@ -130,7 +130,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					Wallet:Modify(source, money)
 					Reputation.Modify:Add(source, "Pawn", earntRep)
 				else
-					Execute:Client(source, "Notification", "Error", "You Have Nothing To Sell")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have Nothing To Sell")
 				end
 			end
 		end

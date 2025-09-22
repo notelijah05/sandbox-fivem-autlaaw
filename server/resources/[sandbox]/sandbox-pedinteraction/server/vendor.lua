@@ -32,7 +32,6 @@ function RetrieveVendorComponents()
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -42,7 +41,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Crypto",
 		"Wallet",
 		"Inventory",
-		"Execute",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -232,7 +230,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 											cb(Inventory:AddItem(char:GetData("SID"), itemData.item, 1, {}, 1))
 										else
-											Execute:Client(
+											exports['sandbox-base']:ExecuteClient(
 												source,
 												"Notification",
 												"Error",
@@ -254,12 +252,14 @@ AddEventHandler("Core:Shared:Ready", function()
 												cb(Inventory:AddItem(char:GetData("SID"), itemData.item, 1, {}, 1))
 											end
 										else
-											Execute:Client(source, "Notification", "Error", "Not Enough Cash")
+											exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+												"Not Enough Cash")
 										end
 									end
 								end
 							else
-								Execute:Client(source, "Notification", "Error", "Item Not In Stock")
+								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+									"Item Not In Stock")
 							end
 						else
 							exports['sandbox-base']:LoggerWarn(
@@ -274,7 +274,7 @@ AddEventHandler("Core:Shared:Ready", function()
 									pState.onDuty
 								)
 							)
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Error",

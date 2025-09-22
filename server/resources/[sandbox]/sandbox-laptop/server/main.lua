@@ -81,7 +81,6 @@ AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -110,7 +109,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Chat",
 		"Laptop",
 		"Middleware",
-		"Execute",
 		"Config",
 		"MDT",
 		"Jobs",

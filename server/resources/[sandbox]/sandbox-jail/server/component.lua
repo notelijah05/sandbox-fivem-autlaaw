@@ -5,7 +5,6 @@ local lastRefreshed = 0
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -26,7 +25,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Middleware",
-		"Execute",
 		"Routing",
 		"Chat",
 		"Jobs",
@@ -243,7 +241,7 @@ _JAIL = {
 				return false
 			end
 		else
-			Execute:Client(source, "Notification", "Error", "Not Eligible For Release")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Eligible For Release")
 			return false
 		end
 	end,

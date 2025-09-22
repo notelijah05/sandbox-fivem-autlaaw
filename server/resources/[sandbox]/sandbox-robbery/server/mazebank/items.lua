@@ -15,7 +15,7 @@ function RegisterMBItemUses()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -27,7 +27,7 @@ function RegisterMBItemUses()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -36,7 +36,7 @@ function RegisterMBItemUses()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -144,7 +144,7 @@ function RegisterMBItemUses()
 									_mbInUse[k] = false
 								end
 							else
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",
 									"Error",
@@ -156,7 +156,7 @@ function RegisterMBItemUses()
 					end
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -186,7 +186,7 @@ function RegisterMBItemUses()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -198,7 +198,7 @@ function RegisterMBItemUses()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -207,7 +207,7 @@ function RegisterMBItemUses()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -259,7 +259,7 @@ function RegisterMBItemUses()
 
 											local timer = math.random(2, 4)
 
-											Execute:Client(
+											exports['sandbox-base']:ExecuteClient(
 												source,
 												"Notification",
 												"Success",
@@ -301,7 +301,7 @@ function RegisterMBItemUses()
 										_mbInUse[k] = false
 									end)
 								else
-									Execute:Client(
+									exports['sandbox-base']:ExecuteClient(
 										source,
 										"Notification",
 										"Error",
@@ -316,7 +316,7 @@ function RegisterMBItemUses()
 					end
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -346,7 +346,7 @@ function RegisterMBItemUses()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -358,7 +358,7 @@ function RegisterMBItemUses()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -367,7 +367,7 @@ function RegisterMBItemUses()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -450,7 +450,7 @@ function RegisterMBItemUses()
 									_mbInUse[v.door] = false
 								end)
 							else
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",
 									"Error",
@@ -462,7 +462,7 @@ function RegisterMBItemUses()
 					end
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",

@@ -125,7 +125,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 
 				profiles[_AppName] = nil
 				char:SetData("Profiles", profiles)
-				Execute:Client(source, "Notification", "Success", string.format(
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", string.format(
 					"Alias Cleared For %s %s (%s) For %s",
 					char:GetData("First"),
 					char:GetData("Last"),
@@ -135,7 +135,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 			else
 			end
 		else
-			Execute:Client(source, "Notification", "Error",
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
 				"An error has occured clearing your alias. Please contact IT.")
 		end
 	end)
@@ -195,7 +195,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 					end
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "Invalid Event ID")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Event ID")
 			end
 		end
 	end)
@@ -290,7 +290,7 @@ AddEventHandler("Phone:Server:UpdateProfile", function(source, data)
 				}
 				char:SetData("Profiles", profiles)
 			else
-				Execute:Client(source, "Notification", "Error", "Alias already in use")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Alias already in use")
 			end
 		end
 	end

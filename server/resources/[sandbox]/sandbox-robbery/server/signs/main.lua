@@ -25,7 +25,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		local atSign = Player(source).state.SignRobbery
 		if char and not atSign then
 			if GlobalState["RobberiesDisabled"] then
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",

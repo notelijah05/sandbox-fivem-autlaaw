@@ -656,7 +656,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					or os.time() > GlobalState[string.format("Safe:%s", data.id)].expires
 				then
 					if GetGameTimer() < STORE_SERVER_START_WAIT then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -665,7 +665,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						)
 						return cb(false)
 					elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -674,7 +674,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						)
 						return cb(false)
 					elseif GlobalState["RobberiesDisabled"] then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -766,7 +766,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									GlobalState["StoreAntiShitlord"] = os.time() + (60 * math.random(5, 10))
 
 									Status.Modify:Add(source, "PLAYER_STRESS", 3)
-									Execute:Client(
+									exports['sandbox-base']:ExecuteClient(
 										source,
 										"Notification",
 										"Success",
@@ -781,7 +781,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end)
 						else
 							_storeInUse[data.id] = nil
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Error",
@@ -791,7 +791,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						end
 					else
 						_storeInUse[data.id] = nil
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -800,7 +800,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						)
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Unable To Crack Safe", 6000)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Crack Safe", 6000)
 				end
 			end
 		end
@@ -810,7 +810,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:StartSafeSequence", function(source, data, cb)
 		if GetGameTimer() < STORE_SERVER_START_WAIT then
-			Execute:Client(
+			exports['sandbox-base']:ExecuteClient(
 				source,
 				"Notification",
 				"Error",
@@ -819,7 +819,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			)
 			return cb(false)
 		elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-			Execute:Client(
+			exports['sandbox-base']:ExecuteClient(
 				source,
 				"Notification",
 				"Error",
@@ -828,7 +828,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 			)
 			return cb(false)
 		elseif GlobalState["RobberiesDisabled"] then
-			Execute:Client(source, "Notification", "Error", "Temporarily Disabled, Please See City Announcements", 6000)
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+				"Temporarily Disabled, Please See City Announcements", 6000)
 			return cb(false)
 		end
 
@@ -843,7 +844,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				and not GlobalState["RestartLockdown"]
 			then
 				if GetGameTimer() < STORE_SERVER_START_WAIT then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -852,7 +853,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 					return
 				elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -861,7 +862,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -901,7 +902,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if GlobalState[string.format("Safe:%s", data.id)] == nil and not GlobalState["RestartLockdown"] then
 			if GetGameTimer() < STORE_SERVER_START_WAIT then
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -910,7 +911,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				)
 				return
 			elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -919,7 +920,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				)
 				return
 			elseif GlobalState["RobberiesDisabled"] then
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -928,7 +929,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				)
 				return
 			elseif GlobalState["StoreAntiShitlord"] ~= nil and GlobalState["StoreAntiShitlord"] > os.time() then
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -942,11 +943,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if data.results then
 				state = 1
 				cb(true)
-				Execute:Client(source, "Notification", "Success", "Lock Disengage Initiated, Please Stand By", 6000)
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+					"Lock Disengage Initiated, Please Stand By", 6000)
 			else
 				-- Do something?
 				cb(true)
-				Execute:Client(source, "Notification", "Error", "You've Damaged The Electronics On The Lock", 6000)
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					"You've Damaged The Electronics On The Lock", 6000)
 			end
 			if _storeAlerts[data.store] == nil or _storeAlerts[data.store] < os.time() then
 				exports['sandbox-base']:LoggerInfo(

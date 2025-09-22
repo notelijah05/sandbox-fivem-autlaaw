@@ -30,7 +30,7 @@ function registerUsables()
 			currentMeta = Inventory:UpdateMetaData(itemData.id, currentMeta)
 			Inventory:AddItem(itemData.Owner, "wine_glass", 1, {}, 1)
 		else
-			Execute:Client(source, "Notification", "Error", "Bottle is Empty!")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Bottle is Empty!")
 		end
 	end)
 

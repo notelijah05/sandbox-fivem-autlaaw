@@ -26,7 +26,7 @@ function RepItems()
 			Reputation.Modify:Add(source, item.MetaData.Reputation, item.MetaData.Amount)
 			Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 		else
-			Execute:Client(source, "Notification", "Error", "Invalid Voucher")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Voucher")
 		end
 	end)
 end

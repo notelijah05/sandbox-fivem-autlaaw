@@ -307,11 +307,11 @@ AddEventHandler("Labor:Server:Startup", function()
 				Wallet:Modify(source, (3 * count))
 				cb(true)
 			else
-				Execute:Client(source, "Notification", "Error", "Unable To Remove Crushed Rock")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Remove Crushed Rock")
 				cb(false)
 			end
 		else
-			Execute:Client(source, "Notification", "Error", "You Have No Crushed Rock")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have No Crushed Rock")
 			cb(false)
 		end
 	end)
@@ -350,14 +350,14 @@ AddEventHandler("Labor:Server:Startup", function()
 							repLvl = repLvl,
 						},
 					})
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Info",
 						string.format("$%s Has Been Deposited Into Your Account", totalPayout)
 					)
 				else
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -445,15 +445,16 @@ AddEventHandler("Labor:Server:Startup", function()
 							antiDouche[j] = false
 							Labor.Offers:ManualFinish(j, _JOB)
 						else
-							Execute:Client(source, "Notification", "Error", "Invalid Node")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Node")
 						end
 					end
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "Not Currently Requested To Mine Nodes")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					"Not Currently Requested To Mine Nodes")
 			end
 		else
-			Execute:Client(source, "Notification", "Error", "Incorrect Job")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Incorrect Job")
 		end
 	end)
 end)

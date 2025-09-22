@@ -315,7 +315,7 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 						end
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Item Must Be A Weapon")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Item Must Be A Weapon")
 				end
 			end
 		end

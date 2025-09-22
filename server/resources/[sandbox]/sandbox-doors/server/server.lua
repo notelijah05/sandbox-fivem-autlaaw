@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -18,7 +17,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Chat",
 		"Inventory",
 		"Jobs",
-		"Execute",
 		"Doors",
 		"Pwnzor",
 		"Properties",

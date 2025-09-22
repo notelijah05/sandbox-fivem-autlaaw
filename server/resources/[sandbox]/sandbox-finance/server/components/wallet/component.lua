@@ -26,14 +26,14 @@ _WALLET = {
 
 				if not skipNotify then
 					if amount < 0 then
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Info",
 							string.format("You Paid $%s In Cash", formatNumberToCurrency(math.floor(math.abs(amount))))
 						)
 					else
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Success",

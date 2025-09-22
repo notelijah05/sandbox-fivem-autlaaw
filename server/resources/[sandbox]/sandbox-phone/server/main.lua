@@ -62,7 +62,6 @@ function RetrieveComponents()
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Photos = exports["sandbox-base"]:FetchComponent("Photos")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -90,7 +89,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Chat",
 		"Phone",
 		"Middleware",
-		"Execute",
 		"Config",
 		"MDT",
 		"Jobs",
@@ -428,7 +426,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				--TriggerEvent("Phone:Server:UpdateProfile", src, data)
 				cb(true)
 			else
-				Execute:Client(src, "Notification", "Error", "Alias already in use")
+				exports['sandbox-base']:ExecuteClient(src, "Notification", "Error", "Alias already in use")
 				cb(false)
 			end
 		else

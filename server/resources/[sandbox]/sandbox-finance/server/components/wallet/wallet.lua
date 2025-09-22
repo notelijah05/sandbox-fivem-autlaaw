@@ -17,13 +17,13 @@ AddEventHandler("Finance:Server:Startup", function()
 					if Wallet:Modify(source, -amount, true) then
 						if Wallet:Modify(targetChar:GetData("Source"), amount, true) then
 							TriggerClientEvent('Finance:Client:HandOffCash', source)
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
 								"Success",
 								"You Gave $" .. formatNumberToCurrency(amount) .. " in Cash"
 							)
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								targetChar:GetData("Source"),
 								"Notification",
 								"Success",
@@ -84,13 +84,13 @@ AddEventHandler("Finance:Server:Startup", function()
 						if Wallet:Modify(source, -amount, true) then
 							if Wallet:Modify(targetChar:GetData("Source"), amount, true) then
 								TriggerClientEvent('Finance:Client:HandOffCash', source)
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",
 									"Success",
 									"You Gave $" .. formatNumberToCurrency(amount) .. " in Cash"
 								)
-								Execute:Client(
+								exports['sandbox-base']:ExecuteClient(
 									targetChar:GetData("Source"),
 									"Notification",
 									"Success",
@@ -128,7 +128,7 @@ AddEventHandler("Finance:Server:Startup", function()
 end)
 
 function ShowCash(source)
-	Execute:Client(
+	exports['sandbox-base']:ExecuteClient(
 		source,
 		"Notification",
 		"Success",

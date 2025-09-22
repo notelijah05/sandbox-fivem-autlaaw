@@ -305,7 +305,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -317,7 +317,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -326,7 +326,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -338,7 +338,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("Lombank:Power:%s", data.boxId)] ~= nil
 					and GlobalState[string.format("Lombank:Power:%s", data.boxId)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 
@@ -470,12 +471,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_lbInUse.powerBoxes[data.boxId] = false
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Someone Is Already Interacting With This", 6000)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Someone Is Already Interacting With This", 6000)
 				end
 
 				return
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -500,7 +502,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -512,7 +514,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -521,7 +523,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -533,7 +535,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("Lombank:Power:%s", data.boxId)] ~= nil
 					and GlobalState[string.format("Lombank:Power:%s", data.boxId)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 
@@ -671,10 +674,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end
 						else
 							_lbInUse.powerBoxes[data.boxId] = false
-							Execute:Client(source, "Notification", "Error", "You Need Thermite", 6000)
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Need Thermite",
+								6000)
 						end
 					else
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Error",
@@ -686,7 +690,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					return
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",
@@ -711,7 +715,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -723,7 +727,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -732,7 +736,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -744,7 +748,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("Lombank:Upper:Wall:%s", data)] ~= nil
 					and GlobalState[string.format("Lombank:Upper:Wall:%s", data)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 				if not _lbInUse.drillPoints[data] then
@@ -814,13 +819,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 						end
 					else
 						_lbInUse.drillPoints[data] = false
-						Execute:Client(source, "Notification", "Error", "You Need A Drill", 6000)
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Need A Drill", 6000)
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Someone Is Already Interacting With This", 6000)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Someone Is Already Interacting With This", 6000)
 				end
 			else
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Notification",
 					"Error",

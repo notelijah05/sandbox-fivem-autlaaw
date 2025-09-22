@@ -275,19 +275,19 @@ function RegisterChatCommands()
 
 							Vehicles.Owned:ForceSave(ent.state.VIN)
 
-							Execute:Client(source, "Notification", "Success", "Done")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Done")
 						else
 							ent.state.ForcedAudio = audio
 							TriggerClientEvent("Vehicle:Client:ForceAudio", -1, veh.vehicle, audio)
 
-							Execute:Client(source, "Notification", "Success", "Done")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Done")
 						end
 						return
 					end
 				end
 			end
 
-			Execute:Client(source, "Notification", "Error", "Error")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Error")
 		end)
 	end, {
 		help = "Force Overrides a Vehicle Engine Audio & Saves It",
@@ -382,7 +382,7 @@ function RegisterChatCommands()
 					then
 						for k, v in ipairs(sids) do
 							Vehicles.Keys:Add(v, vehEnt.state.VIN)
-							Execute:Client(
+							exports['sandbox-base']:ExecuteClient(
 								v,
 								"Notification",
 								"Info",
@@ -392,7 +392,7 @@ function RegisterChatCommands()
 							)
 						end
 
-						Execute:Client(
+						exports['sandbox-base']:ExecuteClient(
 							source,
 							"Notification",
 							"Success",
@@ -423,13 +423,14 @@ function RegisterChatCommands()
 						if vehEnt?.state?.VIN and vehEnt?.state?.Owned and vehEnt?.state?.Owner?.Type == 0 and vehEnt?.state?.Owner?.Id == char:GetData("SID") then
 							local remainingLoan = Loans:HasRemainingPayments("vehicle", vehEnt.state.VIN)
 							if remainingLoan then
-								Execute:Client(source, "Notification", "Error",
+								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
 									"Cannot transfer vehicle with an active loan.")
 								return
 							end
 
 							if vehEnt?.state?.Donator then
-								Execute:Client(source, "Notification", "Error", "Cannot transfer this vehicle.")
+								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+									"Cannot transfer this vehicle.")
 								return
 							end
 
@@ -446,7 +447,7 @@ function RegisterChatCommands()
 				return
 			end
 		end
-		Execute:Client(source, 'Notification', 'Error', 'Invalid State ID')
+		exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error', 'Invalid State ID')
 	end, {
 		help = "Transfer Ownership of the Vehicle You Are Looking at or In to Another Person",
 		params = {

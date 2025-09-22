@@ -108,14 +108,16 @@ _DRIFT = {
 					licenses["Drift"].Suspended = true
 					char:SetData("Licenses", licenses)
 					Middleware:TriggerEvent("Characters:ForceStore", targetSrc)
-					Execute:Client(targetSrc, "Notification", "Error", "Your Drift License has been revoked.")
-					Execute:Client(source, "Notification", "Success", "Revoking Drift License Successful")
+					exports['sandbox-base']:ExecuteClient(targetSrc, "Notification", "Error",
+						"Your Drift License has been revoked.")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+						"Revoking Drift License Successful")
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "State ID Not Logged In")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "State ID Not Logged In")
 			end
 		else
-			Execute:Client(source, "Notification", "Error", "Insufficient Privileges")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Insufficient Privileges")
 		end
 	end,
 	Give = function(self, sid, source)
@@ -160,20 +162,24 @@ _DRIFT = {
 								),
 								data = {},
 							}, true)
-							Execute:Client(targetSrc, "Notification", "Success", "You've received a Drift License.")
-							Execute:Client(source, "Notification", "Success", "Drift License Given Successfully")
+							exports['sandbox-base']:ExecuteClient(targetSrc, "Notification", "Success",
+								"You've received a Drift License.")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+								"Drift License Given Successfully")
 						else
-							Execute:Client(source, "Notification", "Error", "Bank: Declined - Insufficient Funds")
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								"Bank: Declined - Insufficient Funds")
 						end
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Drift License already exists!")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Drift License already exists!")
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "State ID Not Logged In")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "State ID Not Logged In")
 			end
 		else
-			Execute:Client(source, "Notification", "Error", "Insufficient Privileges")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Insufficient Privileges")
 		end
 	end,
 	Check = function(self, sid, source)

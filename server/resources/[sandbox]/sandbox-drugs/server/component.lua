@@ -25,7 +25,6 @@ end
 AddEventHandler("Drugs:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
@@ -37,7 +36,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Drugs", {
 		"Middleware",
-		"Execute",
 		"Chat",
 		"Inventory",
 		"Crypto",

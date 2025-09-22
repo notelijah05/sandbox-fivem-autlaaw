@@ -131,14 +131,15 @@ function RegisterDumpsterCallbacks()
 						)
 					end
 					Reputation.Modify:Add(source, _repName, math.random(5, 10))
-					Execute:Client(source, "Notification", "Success", "You found something!")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "You found something!")
 				else
 					Reputation.Modify:Add(source, _repName, math.random(1, 3))
-					Execute:Client(source, "Notification", "Info", "Nothing was found.")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Info", "Nothing was found.")
 				end
 				cb(true)
 			else
-				Execute:Client(source, "Notification", "Error", "This dumpster has been searched already!")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					"This dumpster has been searched already!")
 				cb(false)
 			end
 		else

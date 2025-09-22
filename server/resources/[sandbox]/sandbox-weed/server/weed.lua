@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Weed = exports["sandbox-base"]:FetchComponent("Weed")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -20,7 +19,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weed", {
 		"Middleware",
-		"Execute",
 		"Locations",
 		"Routing",
 		"Weed",

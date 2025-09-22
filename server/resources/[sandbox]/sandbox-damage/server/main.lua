@@ -14,7 +14,6 @@ function DamageComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	--Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	RegisterChatCommands()
 end
@@ -24,7 +23,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Chat",
 		"Middleware",
 		--"Damage",
-		"Execute",
 		"Status",
 	}, function(error)
 		if #error > 0 then

@@ -94,7 +94,8 @@ AddEventHandler("Businesses:Server:Startup", function()
                 Phone.Notification:Add(pData.billerSource, "Contactless Payment Received",
                     string.format("Received $%s for %s.", math.floor(pData.amount), pData.jobName), os.time(), 8000,
                     "bank", {})
-                Execute:Client(pData.billerSource, "Notification", "Success", "Contactless Payment Received")
+                exports['sandbox-base']:ExecuteClient(pData.billerSource, "Notification", "Success",
+                    "Contactless Payment Received")
 
                 Phone.Notification:Add(source, "Contactless Payment Accepted",
                     string.format("Paid $%s to %s", math.floor(pData.amount), pData.jobName), os.time(), 8000, "bank", {})
@@ -118,7 +119,8 @@ AddEventHandler("Businesses:Server:Startup", function()
                 Phone.Notification:Add(pData.billerSource, "Contactless Payment Failed",
                     string.format("Payment of $%s for %s failed.", math.floor(pData.amount), pData.jobName), os.time(),
                     8000, "bank", {})
-                Execute:Client(pData.billerSource, "Notification", "Error", "Contactless Payment Failed")
+                exports['sandbox-base']:ExecuteClient(pData.billerSource, "Notification", "Error",
+                    "Contactless Payment Failed")
 
                 Phone.Notification:Add(source, "Contactless Payment Failed",
                     string.format("Payment of $%s to %s just failed. Is your balance sufficient?",

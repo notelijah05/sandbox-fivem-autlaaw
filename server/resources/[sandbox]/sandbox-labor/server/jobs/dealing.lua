@@ -100,7 +100,8 @@ AddEventHandler("Labor:Server:Startup", function()
 			if char ~= nil then
 				for k, v in ipairs(_cornerCds) do
 					if os.time() < v.expires and #(data.coords - v.coords) < 100.0 then
-						Execute:Client(source, "Notification", "Error", "Someone Has Recently Sold Around Here")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"Someone Has Recently Sold Around Here")
 						return cb(false)
 					end
 				end

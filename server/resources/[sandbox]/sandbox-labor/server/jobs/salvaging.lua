@@ -92,7 +92,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				_deliveryLocs[math.random(#_deliveryLocs)]
 			)
 		else
-			Execute:Client(source, "Notification", "Error", "Not On That Step")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not On That Step")
 		end
 	end)
 
@@ -111,15 +111,16 @@ AddEventHandler("Labor:Server:Startup", function()
 					Labor.Offers:ManualFinish(_joiners[source], _JOB)
 					cb(true)
 				else
-					Execute:Client(source, "Notification", "Error", "Unable To Remove Packaged Parts")
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Unable To Remove Packaged Parts")
 					cb(false)
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "You Have No Packaged Parts")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have No Packaged Parts")
 				cb(false)
 			end
 		else
-			Execute:Client(source, "Notification", "Error", "Unable To Turn In Packaged Parts")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Turn In Packaged Parts")
 			cb(false)
 		end
 	end)

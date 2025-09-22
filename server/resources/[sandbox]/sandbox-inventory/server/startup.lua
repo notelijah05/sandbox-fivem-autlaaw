@@ -221,7 +221,7 @@ function SetupItemUses(itemData)
 			end
 
 			if itemsDatabase[item.Name].progressModifier ~= nil then
-				Execute:Client(
+				exports['sandbox-base']:ExecuteClient(
 					source,
 					"Progress",
 					"Modifier",
@@ -508,7 +508,7 @@ function RegisterCommands()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local tChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]), true)
 		if tChar == nil then
-			Execute:Client(source, "Notification", "Error", "This player is not online")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "This player is not online")
 			return
 		end
 
@@ -516,13 +516,14 @@ function RegisterCommands()
 		local tsid = tChar:GetData("SID")
 
 		MySQL.query.await("DELETE FROM inventory WHERE owner = ? AND type = ?", { sid, 1 })
-		Execute:Client(
+		exports['sandbox-base']:ExecuteClient(
 			tChar:GetData("Source"),
 			"Notification",
 			"Error",
 			"Your inventory was cleared by " .. tostring(tsid)
 		)
-		Execute:Client(source, "Notification", "Success", "You cleared the inventory of " .. tostring(sid))
+		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+			"You cleared the inventory of " .. tostring(sid))
 		refreshShit(tsid, true)
 	end, {
 		help = "Clear Player Inventory",
@@ -539,7 +540,7 @@ function RegisterCommands()
 
 		if Owner and Type then
 			MySQL.query.await("DELETE FROM inventory WHERE owner = ? AND type = ?", { Owner, Type })
-			Execute:Client(
+			exports['sandbox-base']:ExecuteClient(
 				source,
 				"Notification",
 				"Success",
@@ -568,7 +569,7 @@ function RegisterCommands()
 				if itemExist.type ~= 2 then
 					INVENTORY:AddItem(char:GetData("SID"), args[1], tonumber(args[2]), {}, 1)
 				else
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -576,7 +577,7 @@ function RegisterCommands()
 					)
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "Item not located")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Item not located")
 			end
 		end
 	end, {
@@ -618,7 +619,7 @@ function RegisterCommands()
 						)
 					end
 				else
-					Execute:Client(
+					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",
 						"Error",
@@ -626,7 +627,7 @@ function RegisterCommands()
 					)
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "Weapon not located")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Weapon not located")
 			end
 		end
 	end, {
@@ -676,7 +677,7 @@ function RegisterCommands()
 
 			INVENTORY:AddItem(char:GetData("SID"), newItem.name, amount, {}, 1)
 		else
-			Execute:Client(source, "Notification", "Error", "Wrong")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Wrong")
 		end
 	end, {
 		help = "Create a Vanity Item",
@@ -716,7 +717,7 @@ function RegisterCommands()
 				CustomItemAction = action,
 			}, 1)
 		else
-			Execute:Client(source, "Notification", "Error", "Wrong")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Wrong")
 		end
 	end, {
 		help = "Create a Vanity Item",
@@ -754,7 +755,7 @@ function RegisterCommands()
 			z = coords.z - 0.99,
 			h = h,
 		}, args[2], tonumber(args[1]), tonumber(args[3]), args[5] ~= "0" and args[5] or nil)
-		Execute:Client(source, "Notification", "Success", "Shop Created")
+		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Shop Created")
 	end, {
 		help = "Add New Player Shop",
 		params = {
@@ -783,7 +784,7 @@ function RegisterCommands()
 
 	Chat:RegisterAdminCommand("delpshop", function(source, args, rawCommand)
 		INVENTORY.PlayerShops.Basic:Delete(tonumber(args[1]))
-		Execute:Client(source, "Notification", "Success", "Shop Deleted")
+		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Shop Deleted")
 	end, {
 		help = "Delete Player Shop",
 		params = {
@@ -796,7 +797,7 @@ function RegisterCommands()
 
 	Chat:RegisterAdminCommand("reloaddbitems", function(source, args, rawCommand)
 		LoadItemsFromDb()
-		Execute:Client(source, "Notification", "Success", "Items Reloaded & Sent To Clients")
+		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Items Reloaded & Sent To Clients")
 	end, {
 		help = "Force reload item defintions from database",
 	}, 0)

@@ -193,7 +193,7 @@ function RegisterPrisonSearchStartup()
 
 	exports["sandbox-base"]:RegisterServerCallback("Prison:Searchable:GetLootShit", function(source, data, cb)
 		if not Jail:IsJailed(source) then
-			Execute:Client(source, "Notification", "Error", "You're not jailed.")
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You're not jailed.")
 			cb(false)
 			return
 		end
@@ -219,10 +219,10 @@ function RegisterPrisonSearchStartup()
 				end
 				Loot:CustomWeightedSetWithCountAndModifier(_loot, char:GetData("SID"), 1, 1, false)
 				Reputation.Modify:Add(source, _repName, _rando)
-				Execute:Client(source, "Notification", "Success", "You found something!")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "You found something!")
 			else
 				Reputation.Modify:Add(source, _repName, math.random(1, 3))
-				Execute:Client(source, "Notification", "Info", "Nothing was found.")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Info", "Nothing was found.")
 			end
 			cb(true)
 		else

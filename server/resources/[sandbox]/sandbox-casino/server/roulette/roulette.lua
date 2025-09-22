@@ -302,11 +302,11 @@ AddEventHandler("Casino:Server:Startup", function()
 
                     cb(true)
                 else
-                    Execute:Client(source, "Notification", "Error", "Not Enough Chips")
+                    exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Chips")
                     cb(false)
                 end
             else
-                Execute:Client(source, "Notification", "Error", "Over Table Bet Limit")
+                exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Over Table Bet Limit")
                 cb(false)
             end
         else

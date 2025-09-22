@@ -16,7 +16,6 @@ end)
 
 AddEventHandler("Evidence:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
 	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
@@ -29,7 +28,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Evidence", {
-		"Execute",
 		"Chat",
 		"Middleware",
 		"Generator",
@@ -164,11 +162,12 @@ RegisterServerEvent("Camara:CapturePhoto", function()
 
 	if char then
 		if pendingSend then
-			Execute:Client(src, "Notification", "Warn", "Please wait while current photo is uploading", 2000)
+			exports['sandbox-base']:ExecuteClient(src, "Notification", "Warn",
+				"Please wait while current photo is uploading", 2000)
 			return
 		end
 		pendingSend = true
-		Execute:Client(src, "Notification", "Info", "Prepping Photo Upload", 2000)
+		exports['sandbox-base']:ExecuteClient(src, "Notification", "Info", "Prepping Photo Upload", 2000)
 
 		local options = {
 			encoding = "webp",
@@ -205,11 +204,12 @@ RegisterServerEvent("Camara:CapturePhoto", function()
 			function(error)
 				if error then
 					pendingSend = false
-					Execute:Client(src, "Notification", "Error", "Error uploading photo!", 2000)
+					exports['sandbox-base']:ExecuteClient(src, "Notification", "Error", "Error uploading photo!", 2000)
 					print("^1ERROR: " .. error .. "^7")
 				end
 				pendingSend = false
-				Execute:Client(src, "Notification", "Success", "Photo uploaded successfully!", 2000)
+				exports['sandbox-base']:ExecuteClient(src, "Notification", "Success", "Photo uploaded successfully!",
+					2000)
 			end
 		)
 	end
