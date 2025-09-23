@@ -1,22 +1,22 @@
 local _ran = false
 
 function Startup()
-	if _ran then
-		return
-	end
-	_ran = true
+  if _ran then
+    return
+  end
+  _ran = true
 
-	Default:Add(
-		"locations",
-		1682514279,
-		json.decode([[
+  exports['sandbox-base']:DefaultAdd(
+    "locations",
+    1682514279,
+    json.decode([[
         [
 	{
 		"Type": "spawn",
 		"Name": "Alta St",
 		"Heading": 72.41,
 		"Coords": {
-			"x": -206.57, 
+			"x": -206.57,
 			"y": -1015.18,
 			"z": 30.14
 		}
@@ -64,5 +64,5 @@ function Startup()
 ]
 
     ]])
-	)
+  )
 end

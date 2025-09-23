@@ -5,13 +5,11 @@ end)
 AddEventHandler("Locations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
-	Default = exports["sandbox-base"]:FetchComponent("Default")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Locations", {
 		"Locations",
-		"Default",
 	}, function(error)
 		if #error > 0 then
 			return

@@ -29,7 +29,6 @@ function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Default = exports["sandbox-base"]:FetchComponent("Default")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
@@ -46,7 +45,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"MDT",
 		"Jobs",
 		"Inventory",
-		"Default",
 		"Vehicles",
 		"Properties",
 		"Radar",

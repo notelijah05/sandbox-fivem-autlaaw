@@ -11,7 +11,6 @@ function RetrieveComponents()
     Banking = exports['sandbox-base']:FetchComponent('Banking')
     Phone = exports['sandbox-base']:FetchComponent('Phone')
     Wallet = exports['sandbox-base']:FetchComponent('Wallet')
-    Default = exports['sandbox-base']:FetchComponent('Default')
     MDT = exports['sandbox-base']:FetchComponent('MDT')
 end
 
@@ -27,7 +26,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Phone',
         'Banking',
         'Wallet',
-        'Default',
         'MDT',
     }, function(error)
         if #error > 0 then return end -- Do something to handle if not all dependencies loaded

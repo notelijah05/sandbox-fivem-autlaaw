@@ -25,7 +25,7 @@ function LoadDealershipShit()
         -- })
 
 
-        Default:Add(
+        exports['sandbox-base']:DefaultAdd(
             "dealer_stock",
             1630877439,
             {
