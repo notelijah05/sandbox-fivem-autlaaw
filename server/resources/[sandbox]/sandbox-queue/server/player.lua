@@ -21,6 +21,10 @@ function PlayerClass(identifier, player, deferrals, steamName)
 	-- Everyone is management when this convar is 1
 	if GetConvar("danger_everyone_is_admin", "") == "1" then
 		table.insert(groups, "management")
+	else
+		if IsPlayerAceAllowed(player, "queue.management") then
+			table.insert(groups, "management")
+		end
 	end
 
 	for _, group in ipairs(groups) do
