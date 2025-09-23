@@ -11,7 +11,6 @@ function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	WaitList = exports["sandbox-base"]:FetchComponent("WaitList")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
@@ -35,7 +34,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Reputation",
 		"WaitList",
 		"Properties",
-		"Routing",
 		"Status",
 		"Robbery",
 		"Crypto",

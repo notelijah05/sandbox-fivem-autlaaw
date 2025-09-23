@@ -1,8 +1,8 @@
 RegisterServerEvent("Ped:EnterCreator", function()
-	local routeId = Routing:RequestRouteId("ped:" .. source)
-	Routing:AddPlayerToRoute(source, routeId)
+	local routeId = exports["sandbox-base"]:RequestRouteId("ped:" .. source)
+	exports["sandbox-base"]:AddPlayerToRoute(source, routeId)
 end)
 
 RegisterServerEvent("Ped:LeaveCreator", function()
-	Routing:RoutePlayerToGlobalRoute(source)
+	exports["sandbox-base"]:RoutePlayerToGlobalRoute(source)
 end)

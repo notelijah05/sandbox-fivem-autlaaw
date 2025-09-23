@@ -284,7 +284,6 @@ GlobalState["Ped:Pricing"] = {
 AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
-	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
@@ -292,7 +291,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
 		"Locations",
-		"Routing",
 		"Ped",
 		"Inventory",
 	}, function(error)

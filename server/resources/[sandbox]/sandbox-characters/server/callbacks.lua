@@ -418,14 +418,14 @@ function RegisterCallbacks()
 			ONLINE_CHARACTERS[source] = nil
 			GlobalState[string.format("SID:%s", source)] = nil
 			TriggerClientEvent("Characters:Client:Logout", source)
-			Routing:RoutePlayerToHiddenRoute(source)
+			exports["sandbox-base"]:RoutePlayerToHiddenRoute(source)
 			exports["sandbox-base"]:DeleteStore(source, "Character")
 		end
 		cb("ok")
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:GlobalSpawn", function(source, data, cb)
-		Routing:RoutePlayerToGlobalRoute(source)
+		exports["sandbox-base"]:RoutePlayerToGlobalRoute(source)
 		cb()
 	end)
 end

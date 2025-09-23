@@ -3,7 +3,6 @@ ONLINE_CHARACTERS = {}
 AddEventHandler("Characters:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	GlobalConfig = exports["sandbox-base"]:FetchComponent("Config")
-	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
@@ -17,7 +16,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Characters", {
 		"Config",
-		"Routing",
 		"Sequence",
 		"Reputation",
 		"Apartment",

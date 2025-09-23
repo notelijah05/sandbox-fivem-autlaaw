@@ -9,7 +9,6 @@ function RetrieveComponents()
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
@@ -25,7 +24,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Police",
 		"Handcuffs",
-		"Routing",
 		"EmergencyAlerts",
 		"MDT",
 		"Radar",

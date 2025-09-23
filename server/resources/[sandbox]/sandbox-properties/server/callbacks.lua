@@ -96,8 +96,8 @@ function RegisterCallbacks()
 		if property ~= nil and char then
 			local pInt = property.upgrades?.interior
 
-			local routeId = Routing:RequestRouteId("Properties:" .. data.id, false)
-			Routing:AddPlayerToRoute(source, routeId)
+			local routeId = exports["sandbox-base"]:RequestRouteId("Properties:" .. data.id, false)
+			exports["sandbox-base"]:AddPlayerToRoute(source, routeId)
 			GlobalState[string.format("%s:Property", source)] = data.id
 			exports['sandbox-base']:MiddlewareTriggerEvent("Properties:Enter", source, data.id)
 
@@ -128,8 +128,8 @@ function RegisterCallbacks()
 			local pInt = property.upgrades?.interior
 
 			Pwnzor.Players:TempPosIgnore(source)
-			local routeId = Routing:RequestRouteId("Properties:" .. data, false)
-			Routing:AddPlayerToRoute(source, routeId)
+			local routeId = exports["sandbox-base"]:RequestRouteId("Properties:" .. data, false)
+			exports["sandbox-base"]:AddPlayerToRoute(source, routeId)
 			GlobalState[string.format("%s:Property", source)] = data
 			exports['sandbox-base']:MiddlewareTriggerEvent("Properties:Enter", source, data)
 
@@ -155,7 +155,7 @@ function RegisterCallbacks()
 
 		Pwnzor.Players:TempPosIgnore(source)
 		exports['sandbox-base']:MiddlewareTriggerEvent("Properties:Exit", source, property)
-		Routing:RoutePlayerToGlobalRoute(source)
+		exports["sandbox-base"]:RoutePlayerToGlobalRoute(source)
 		GlobalState[string.format("%s:Property", source)] = nil
 
 		if _insideProperties[property] then

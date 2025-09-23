@@ -146,7 +146,7 @@ AddEventHandler("Queue:Server:SessionActive", function(source, data)
 			end
 
 			COMPONENTS.Players[source] = PlayerClass(source, pData)
-			COMPONENTS.Routing:RoutePlayerToHiddenRoute(source)
+			exports["sandbox-base"]:RoutePlayerToHiddenRoute(source)
 			exports['sandbox-base']:LoggerInfo(
 				"Base",
 				string.format(

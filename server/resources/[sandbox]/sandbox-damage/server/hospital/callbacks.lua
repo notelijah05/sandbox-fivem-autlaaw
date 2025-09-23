@@ -187,7 +187,7 @@ function HospitalCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Hospital:SpawnICU", function(source, data, cb)
-		Routing:RoutePlayerToGlobalRoute(source)
+		exports["sandbox-base"]:RoutePlayerToGlobalRoute(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		Player(source).state.ICU = false
 		TriggerClientEvent("Hospital:Client:ICU:Enter", source)

@@ -1,6 +1,6 @@
 function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Jail:SpawnJailed", function(source, data, cb)
-		Routing:RoutePlayerToGlobalRoute(source)
+		exports["sandbox-base"]:RoutePlayerToGlobalRoute(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		TriggerClientEvent("Jail:Client:EnterJail", source)
 		cb(true)

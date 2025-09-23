@@ -4,9 +4,7 @@ AddEventHandler("Weed:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
 	Weed = exports["sandbox-base"]:FetchComponent("Weed")
-	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -17,10 +15,8 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weed", {
 		"Locations",
-		"Routing",
 		"Weed",
 		"Inventory",
-		"Routing",
 		"Tasks",
 		"Wallet",
 		"Reputation",
