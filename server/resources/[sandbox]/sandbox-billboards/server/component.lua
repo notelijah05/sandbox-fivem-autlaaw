@@ -6,7 +6,6 @@ function RetrieveComponents()
     Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
     Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
     Billboards = exports["sandbox-base"]:FetchComponent("Billboards")
-    Regex = exports["sandbox-base"]:FetchComponent("Regex")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
         "Vehicles",
         "Inventory",
         "Billboards",
-        "Regex",
     }, function(error)
         if #error > 0 then
             exports['sandbox-base']:LoggerCritical("Billboards", "Failed To Load All Dependencies")
@@ -57,7 +55,7 @@ AddEventHandler("Core:Shared:Ready", function()
                     billboardUrl = false
                 end
 
-                if not billboardUrl or Regex:Test(_billboardRegex, billboardUrl, "gim") then
+                if not billboardUrl or exports['sandbox-base']:RegexTest(_billboardRegex, billboardUrl, "gim") then
                     cb(Billboards:Set(data.id, billboardUrl))
                 else
                     cb(false, true)
