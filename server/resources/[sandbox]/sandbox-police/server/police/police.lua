@@ -6,7 +6,6 @@ local _generatedNames = {}
 AddEventHandler("Police:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -24,7 +23,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Jobs",
-		"Chat",
 		"Police",
 		"Handcuffs",
 		"Routing",
@@ -86,9 +84,9 @@ AddEventHandler("Core:Shared:Ready", function()
 				local target = Player(data)
 				if target ~= nil then
 					if target.state?.GSR ~= nil and (os.time() - target.state.GSR) <= (60 * 60) then
-						Chat.Send.System:Single(source, "GSR: Positive")
+						exports["sandbox-chat"]:SendSystemSingle(source, "GSR: Positive")
 					else
-						Chat.Send.System:Single(source, "GSR: Negative")
+						exports["sandbox-chat"]:SendSystemSingle(source, "GSR: Negative")
 					end
 				else
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
@@ -143,20 +141,20 @@ AddEventHandler("Core:Shared:Ready", function()
 					-- Great Code Kapp
 					if target.state.isDrunk and target.state.isDrunk > 0 then
 						if target.state.isDrunk >= 70 then
-							Chat.Send.System:Single(source, "BAC: 0.22% - Above Limit")
+							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.22% - Above Limit")
 						elseif target.state.isDrunk >= 40 then
-							Chat.Send.System:Single(source, "BAC: 0.13% - Above Limit")
+							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.13% - Above Limit")
 						elseif target.state.isDrunk >= 30 then
-							Chat.Send.System:Single(source, "BAC: 0.1% - Above Limit")
+							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.1% - Above Limit")
 						elseif target.state.isDrunk >= 25 then
-							Chat.Send.System:Single(source, "BAC: 0.085% - Above Limit")
+							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.085% - Above Limit")
 						elseif target.state.isDrunk >= 15 then
-							Chat.Send.System:Single(source, "BAC: 0.04% - Below Limit")
+							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.04% - Below Limit")
 						else
-							Chat.Send.System:Single(source, "BAC: 0.025% - Below Limit")
+							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.025% - Below Limit")
 						end
 					else
-						Chat.Send.System:Single(source, "BAC: Not Drunk")
+						exports["sandbox-chat"]:SendSystemSingle(source, "BAC: Not Drunk")
 					end
 				else
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
@@ -342,9 +340,9 @@ AddEventHandler("Core:Shared:Ready", function()
 			if char ~= nil and Player(source).state.onDuty == "police" then
 				local tState = Player(tonumber(data)).state
 				if tState and tState?.onRadio then
-					Chat.Send.System:Single(source, string.format("Radio Frequency: %s", tState.onRadio))
+					exports["sandbox-chat"]:SendSystemSingle(source, string.format("Radio Frequency: %s", tState.onRadio))
 				else
-					Chat.Send.System:Single(source, string.format("Not On Radio"))
+					exports["sandbox-chat"]:SendSystemSingle(source, string.format("Not On Radio"))
 				end
 			end
 		end)
@@ -552,7 +550,7 @@ POLICE = {
 					end
 
 					if wasEntity then
-						Chat.Send.Services:Dispatch(
+						exports["sandbox-chat"]:SendDispatch(
 							source,
 							string.format(
 								"<b>Owner</b>: %s<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
@@ -564,7 +562,7 @@ POLICE = {
 							)
 						)
 					else
-						Chat.Send.Services:Dispatch(
+						exports["sandbox-chat"]:SendDispatch(
 							source,
 							string.format(
 								"<b>Owner</b>: %s<br /><b>VIN</b>: Unknown<br /><b>Make & Model</b>: Unknown<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
@@ -583,7 +581,7 @@ POLICE = {
 						)
 					end
 
-					Chat.Send.Services:Dispatch(
+					exports["sandbox-chat"]:SendDispatch(
 						source,
 						string.format(
 							"<b>Owner</b>: %s<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown",
@@ -594,19 +592,19 @@ POLICE = {
 						)
 					)
 				else
-					Chat.Send.Services:Dispatch(source, "No Plate Match")
+					exports["sandbox-chat"]:SendDispatch(source, "No Plate Match")
 				end
 				return
 			end
 
 			if #results > 1 then
-				Chat.Send.Services:Dispatch(source, "Multiple Matches, Please Use MDT")
+				exports["sandbox-chat"]:SendDispatch(source, "Multiple Matches, Please Use MDT")
 			else
 				local vehicle = results[1]
 				if vehicle.FakePlate and vehicle.FakePlateData then
 					local stolen = Radar:CheckPlate(plate)
 					if stolen then
-						Chat.Send.Services:Dispatch(
+						exports["sandbox-chat"]:SendDispatch(
 							source,
 							string.format(
 								"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
@@ -619,7 +617,7 @@ POLICE = {
 							)
 						)
 					else
-						Chat.Send.Services:Dispatch(
+						exports["sandbox-chat"]:SendDispatch(
 							source,
 							string.format(
 								"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown",
@@ -659,7 +657,7 @@ POLICE = {
 					end
 
 					if stolen then
-						Chat.Send.Services:Dispatch(
+						exports["sandbox-chat"]:SendDispatch(
 							source,
 							string.format(
 								"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s %s<br /><b>Plate</b>: %s<br /><b>Class</b>: %s<br /><br /><b>Vehicle Reported Stolen</b>: %s",
@@ -674,7 +672,7 @@ POLICE = {
 							)
 						)
 					else
-						Chat.Send.Services:Dispatch(
+						exports["sandbox-chat"]:SendDispatch(
 							source,
 							string.format(
 								"Owner: %s (%s)\nVIN: %s\nMake & Model: %s %s\nPlate: %s\nClass: %s",

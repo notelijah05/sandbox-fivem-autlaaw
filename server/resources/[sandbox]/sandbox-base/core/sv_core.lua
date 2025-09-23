@@ -35,7 +35,7 @@ AddEventHandler("txAdmin:events:scheduledRestart", function(eventData)
 		GlobalState["RestartLockdown"] = true
 	end
 
-	-- COMPONENTS.Chat.Send.System:Broadcast( -- TX Admin Sends them
+	-- exports["sandbox-chat"]:SendSystemBroadcast( -- TX Admin Sends them
 	-- 	string.format("Server Restart In %s Minutes", math.floor(eventData.secondsRemaining / 60))
 	-- )
 end)

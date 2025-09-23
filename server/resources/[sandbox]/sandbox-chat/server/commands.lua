@@ -1,4 +1,4 @@
-function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, job)
+exports("RegisterCommand", function(command, callback, suggestion, arguments, job)
 	if job ~= nil then
 		if type(job) == "table" and #job > 0 then
 			for k, v in pairs(job) do
@@ -81,7 +81,7 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 
 								callback(source, args, rawCommand)
 							else
-								Chat.Send.Server:Single(source, "Invalid Number Of Arguments")
+								exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
 							end
 						end
 					end
@@ -121,14 +121,14 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 
 					callback(source, args, rawCommand)
 				else
-					Chat.Send.Server:Single(source, "Invalid Number Of Arguments")
+					exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
 				end
 			end
 		end
 	end, false)
-end
+end)
 
-function CHAT.RegisterAdminCommand(this, command, callback, suggestion, arguments)
+exports("RegisterAdminCommand", function(command, callback, suggestion, arguments)
 	commands[command] = {
 		cb = callback,
 		args = (arguments or -1),
@@ -187,7 +187,7 @@ function CHAT.RegisterAdminCommand(this, command, callback, suggestion, argument
 					)
 					callback(source, args, rawCommand)
 				else
-					Chat.Send.Server:Single(source, "Invalid Number Of Arguments")
+					exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
 				end
 			else
 				exports['sandbox-base']:LoggerInfo(
@@ -216,9 +216,9 @@ function CHAT.RegisterAdminCommand(this, command, callback, suggestion, argument
 			end
 		end
 	end, false)
-end
+end)
 
-function CHAT.RegisterStaffCommand(this, command, callback, suggestion, arguments)
+exports("RegisterStaffCommand", function(command, callback, suggestion, arguments)
 	commands[command] = {
 		cb = callback,
 		args = (arguments or -1),
@@ -277,7 +277,7 @@ function CHAT.RegisterStaffCommand(this, command, callback, suggestion, argument
 					)
 					callback(source, args, rawCommand)
 				else
-					Chat.Send.Server:Single(source, "Invalid Number Of Arguments")
+					exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
 				end
 			else
 				exports['sandbox-base']:LoggerInfo(
@@ -306,4 +306,4 @@ function CHAT.RegisterStaffCommand(this, command, callback, suggestion, argument
 			end
 		end
 	end, false)
-end
+end)

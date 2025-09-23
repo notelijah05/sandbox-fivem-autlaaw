@@ -249,9 +249,9 @@ function EMSCallbacks()
 							str = str .. string.format("<li>%s</li>", v)
 						end
 						str = str .. "</ul>"
-						Chat.Send.Services:TestResult(source, str)
+						exports["sandbox-chat"]:SendTestResult(source, str)
 					else
-						Chat.Send.Services:TestResult(
+						exports["sandbox-chat"]:SendTestResult(
 							source,
 							"Drug Test Results:<br/><ul><li>All Results Are Negative</li></ul>"
 						)

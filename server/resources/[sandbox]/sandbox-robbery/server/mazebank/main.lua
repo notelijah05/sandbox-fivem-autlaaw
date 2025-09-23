@@ -163,7 +163,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	StartMazeBankThreads()
 	RegisterMBItemUses()
 
-	Chat:RegisterAdminCommand("resetmb", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("resetmb", function(source, args, rawCommand)
 		ResetMazeBank()
 	end, {
 		help = "Force Reset Maze Bank Heist",

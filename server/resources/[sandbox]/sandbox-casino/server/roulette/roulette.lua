@@ -314,7 +314,7 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Chat:RegisterAdminCommand("forceroulette", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand("forceroulette", function(source, args, rawCommand)
         local tid = tonumber(args[1])
         if _roulette[tid] then
             _roulette[tid].Starting = false

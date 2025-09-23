@@ -44,14 +44,14 @@ function RemoveCraftingCooldown(source, bench, id)
 					exports['sandbox-base']:LoggerInfo("Crafting",
 						string.format("%s %s (%s) Reset Cooldown %s on bench %s", char:GetData("First"),
 							char:GetData("Last"), char:GetData("SID"), id, bench))
-					Chat.Send.Server:Single(source, "Cooldown Removed From Bench")
+					exports["sandbox-chat"]:SendServerSingle(source, "Cooldown Removed From Bench")
 					_cooldowns[bench][id] = nil
 					MySQL.query('DELETE FROM crafting_cooldowns WHERE bench = ? AND id = ?', { bench, id })
 				else
 					exports['sandbox-base']:LoggerInfo("Crafting",
 						string.format("%s %s (%s) Attempted To Remove Cooldown %s From Non-Existent Bench %s",
 							char:GetData("First"), char:GetData("Last"), char:GetData("SID"), id, bench))
-					Chat.Send.Server:Single(source, "Not A Valid Bench")
+					exports["sandbox-chat"]:SendServerSingle(source, "Not A Valid Bench")
 				end
 			end
 		else

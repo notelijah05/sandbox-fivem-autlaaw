@@ -14,7 +14,6 @@ function HospitalComponents()
 	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
@@ -33,7 +32,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Hospital",
 		"Crypto",
 		"Phone",
-		"Chat",
 		"Billing",
 		"Inventory",
 		"Labor",
@@ -63,7 +61,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			scenario = "WORLD_HUMAN_CLIPBOARD",
 		}, _medsForSale, "pump-medical", "View Supplies", false, false, true)
 
-		Chat:RegisterAdminCommand("clearbeds", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterAdminCommand("clearbeds", function(source, args, rawCommand)
 			_inBed = {}
 		end, {
 			help = "Force Clear All Hospital Beds",

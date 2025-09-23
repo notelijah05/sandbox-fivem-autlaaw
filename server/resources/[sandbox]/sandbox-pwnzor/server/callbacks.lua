@@ -37,11 +37,11 @@ local _blacklistedCommands = {
 local _retrieved = {}
 
 function RegisterCallbacks()
-	Chat:RegisterStaffCommand("toggleafk", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterStaffCommand("toggleafk", function(source, args, rawCommand)
 		local disabled = GlobalState["DisableAFK"] or false
 		GlobalState["DisableAFK"] = not disabled
 
-		Chat.Send.System:Single(
+		exports["sandbox-chat"]:SendSystemSingle(
 			source,
 			string.format("AFK Kicking %s", GlobalState["DisableAFK"] and "Disabled" or "Enabled")
 		)
@@ -49,7 +49,7 @@ function RegisterCallbacks()
 		help = "Enabled/Disable AFK Kicks",
 	}, 0)
 
-	-- Chat:RegisterAdminCommand("pwnzorban", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("pwnzorban", function(source, args, rawCommand)
 	-- 	local player = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 	-- 	if player ~= nil then
 	-- 		Punishment.Ban:Source(player:GetData("Source"), -1, args[2], "Pwnzor")
@@ -68,7 +68,7 @@ function RegisterCallbacks()
 	-- 	},
 	-- }, 2)
 
-	-- Chat:RegisterAdminCommand("pwnzorsource", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("pwnzorsource", function(source, args, rawCommand)
 	-- 	local player = exports['sandbox-base']:FetchSource(tonumber(args[1]))
 	-- 	if player ~= nil then
 	-- 		Punishment.Ban:Source(tonumber(args[1]), -1, args[2], "Pwnzor")

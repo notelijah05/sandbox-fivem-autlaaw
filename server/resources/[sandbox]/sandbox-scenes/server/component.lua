@@ -7,7 +7,6 @@ _spamCheck = {}
 
 AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -18,7 +17,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Scenes", {
-		"Chat",
 		"Generator",
 		"Phone",
 		"Jobs",
@@ -118,25 +116,25 @@ AddEventHandler("Core:Shared:Ready", function()
 			TriggerClientEvent("Scenes:Client:RecieveScenes", source, _loadedScenes)
 		end, 5)
 
-		Chat:RegisterCommand("scene", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterCommand("scene", function(source, args, rawCommand)
 			TriggerClientEvent("Scenes:Client:Creation", source, args)
 		end, {
 			help = "Create a Scene (Look Where You Want to Place)",
 		})
 
-		Chat:RegisterStaffCommand("scenestaff", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterStaffCommand("scenestaff", function(source, args, rawCommand)
 			TriggerClientEvent("Scenes:Client:Creation", source, args, true)
 		end, {
 			help = "[Staff] Create a Scene (Look Where You Want to Place)",
 		})
 
-		Chat:RegisterCommand("scenedelete", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterCommand("scenedelete", function(source, args, rawCommand)
 			TriggerClientEvent("Scenes:Client:Deletion", source)
 		end, {
 			help = "Delete a Scene (Look at Scene You Want to Delete)",
 		})
 
-		Chat:RegisterCommand("sceneedit", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterCommand("sceneedit", function(source, args, rawCommand)
 			TriggerClientEvent("Scenes:Client:StartEdit", source)
 		end, {
 			help = "Edit a Scene (Look at Scene You Want to Edit)",

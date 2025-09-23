@@ -5,7 +5,6 @@ local _statuses = {}
 
 AddEventHandler("Status:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -15,7 +14,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Status", {
-		"Chat",
 		"Status",
 		"Inventory",
 		"Wallet",

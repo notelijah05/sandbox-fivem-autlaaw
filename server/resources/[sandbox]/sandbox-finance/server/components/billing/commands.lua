@@ -1,5 +1,5 @@
 AddEventHandler('Finance:Server:Startup', function()
-    Chat:RegisterCommand('fine', function(src, args, raw)
+    exports["sandbox-chat"]:RegisterCommand('fine', function(src, args, raw)
         local player = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
         if player ~= nil then
             local targetSource, fineAmount = table.unpack(args)
@@ -7,17 +7,17 @@ AddEventHandler('Finance:Server:Startup', function()
             if fine and fine > 0 and fine <= 100000 then
                 local success = Billing:Fine(src, player:GetData("Source"), fine)
                 if success then
-                    Chat.Send.System:Single(src,
+                    exports["sandbox-chat"]:SendSystemSingle(src,
                         string.format("You Successfully Fined State ID %s For $%s. You earned $%s.", args[1],
                             success.amount, success.cut))
                 else
-                    Chat.Send.System:Single(src, "Fine Failed")
+                    exports["sandbox-chat"]:SendSystemSingle(src, "Fine Failed")
                 end
             else
-                Chat.Send.System:Single(src, "Fine Amount Too High!")
+                exports["sandbox-chat"]:SendSystemSingle(src, "Fine Amount Too High!")
             end
         else
-            Chat.Send.System:Single(src, "Invalid Target")
+            exports["sandbox-chat"]:SendSystemSingle(src, "Invalid Target")
         end
     end, {
         help = '[Government] Fine Someone',
@@ -29,7 +29,7 @@ AddEventHandler('Finance:Server:Startup', function()
         { Id = 'police' },
     })
 
-    Chat:RegisterAdminCommand('testbilling', function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand('testbilling', function(source, args, rawCommand)
         exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Info', 'Bill Created')
         Billing:Create(source, 'Some Random Fucking Business', 1500, 'This is a shitty description of a test bill.',
             function(wasPayed)

@@ -159,7 +159,6 @@ AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
@@ -178,7 +177,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Sequence",
 		"Inventory",
-		"Chat",
 		"Wallet",
 		"Crafting",
 		"Weapons",

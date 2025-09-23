@@ -1,17 +1,18 @@
 function HospitalCallbacks()
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"icu",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
 				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil then
 					Hospital.ICU:Send(char:GetData("Source"))
-					Chat.Send.System:Single(source, string.format("%s Has Been Admitted To ICU", args[1]))
+					exports["sandbox-chat"]:SendSystemSingle(source,
+						string.format("%s Has Been Admitted To ICU", args[1]))
 				else
-					Chat.Send.System:Single(source, "State ID Not Logged In")
+					exports["sandbox-chat"]:SendSystemSingle(source, "State ID Not Logged In")
 				end
 			else
-				Chat.Send.System:Single(source, "Invalid Arguments")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
 			end
 		end,
 		{
@@ -30,19 +31,20 @@ function HospitalCallbacks()
 			},
 		}
 	)
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"release",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
 				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil and char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 					Hospital.ICU:Release(char:GetData("Source"))
-					Chat.Send.System:Single(source, string.format("%s Has Been Released From ICU", args[1]))
+					exports["sandbox-chat"]:SendSystemSingle(source,
+						string.format("%s Has Been Released From ICU", args[1]))
 				else
-					Chat.Send.System:Single(source, "State ID Not Logged In")
+					exports["sandbox-chat"]:SendSystemSingle(source, "State ID Not Logged In")
 				end
 			else
-				Chat.Send.System:Single(source, "Invalid Arguments")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
 			end
 		end,
 		{

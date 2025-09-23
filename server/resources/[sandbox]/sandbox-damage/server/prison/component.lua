@@ -4,7 +4,6 @@ function PrisonHospitalComponents()
 	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
@@ -22,7 +21,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Hospital",
 		"Crypto",
 		"Phone",
-		"Chat",
 		"Billing",
 		"Inventory",
 		"Labor",

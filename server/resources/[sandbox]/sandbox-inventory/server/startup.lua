@@ -431,7 +431,7 @@ function LoadShops()
 end
 
 function RegisterCommands()
-	Chat:RegisterAdminCommand("storebank", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("storebank", function(source, args, rawCommand)
 		MySQL.query.await(
 			"INSERT INTO shop_bank_accounts (shop, bank) VALUES(?, ?) ON DUPLICATE KEY UPDATE bank = VALUES(bank)",
 			{
@@ -454,7 +454,7 @@ function RegisterCommands()
 		},
 	}, 2)
 
-	Chat:RegisterAdminCommand("openinv", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("openinv", function(source, args, rawCommand)
 		if source == nil or source <= 0 then
 			exports['sandbox-base']:LoggerInfo("Inventory", "Source is empty. This is sus.")
 			return
@@ -488,7 +488,7 @@ function RegisterCommands()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("removecd", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("removecd", function(source, args, rawCommand)
 		RemoveCraftingCooldown(source, args[1], args[2])
 	end, {
 		help = "Remove Crafting Cooldown From A Bench",
@@ -504,7 +504,7 @@ function RegisterCommands()
 		},
 	}, 2)
 
-	Chat:RegisterAdminCommand("clearinventory", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("clearinventory", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local tChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]), true)
 		if tChar == nil then
@@ -535,7 +535,7 @@ function RegisterCommands()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("clearinventory2", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("clearinventory2", function(source, args, rawCommand)
 		local Owner, Type = args[1], tonumber(args[2])
 
 		if Owner and Type then
@@ -561,7 +561,7 @@ function RegisterCommands()
 		},
 	}, 2)
 
-	Chat:RegisterAdminCommand("giveitem", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("giveitem", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source, true)
 		if char and tostring(args[1]) ~= nil and tonumber(args[2]) ~= nil then
 			local itemExist = itemsDatabase[args[1]]
@@ -594,7 +594,7 @@ function RegisterCommands()
 		},
 	}, 2)
 
-	Chat:RegisterAdminCommand("giveweapon", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("giveweapon", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if tostring(args[1]) ~= nil then
 			local weapon = string.upper(args[1])
@@ -649,7 +649,7 @@ function RegisterCommands()
 		},
 	}, 3)
 
-	Chat:RegisterAdminCommand("vanityitemnew", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("vanityitemnew", function(source, args, rawCommand)
 		local label, image, amount, text, action = args[1], args[2], tonumber(args[3]), args[4], args[5]
 
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -705,7 +705,7 @@ function RegisterCommands()
 		},
 	}, 5)
 
-	Chat:RegisterAdminCommand("vanityitem", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("vanityitem", function(source, args, rawCommand)
 		local label, image, amount, text, action = args[1], args[2], tonumber(args[3]), args[4], args[5]
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
@@ -745,7 +745,7 @@ function RegisterCommands()
 		},
 	}, -1)
 
-	Chat:RegisterAdminCommand("addpshop", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("addpshop", function(source, args, rawCommand)
 		local coords = GetEntityCoords(GetPlayerPed(source))
 		local h = GetEntityHeading(GetPlayerPed(source))
 
@@ -782,7 +782,7 @@ function RegisterCommands()
 		},
 	}, 5)
 
-	Chat:RegisterAdminCommand("delpshop", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("delpshop", function(source, args, rawCommand)
 		INVENTORY.PlayerShops.Basic:Delete(tonumber(args[1]))
 		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Shop Deleted")
 	end, {
@@ -795,14 +795,14 @@ function RegisterCommands()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("reloaddbitems", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("reloaddbitems", function(source, args, rawCommand)
 		LoadItemsFromDb()
 		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Items Reloaded & Sent To Clients")
 	end, {
 		help = "Force reload item defintions from database",
 	}, 0)
 
-	Chat:RegisterCommand("reloaditems", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("reloaditems", function(source, args, rawCommand)
 		TriggerClientEvent("Inventory:Client:ReloadItems", source)
 	end, {
 		help = "Attempts To Force Reload Inventory Items",

@@ -1,6 +1,5 @@
 AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Photos = exports["sandbox-base"]:FetchComponent("Photos")
@@ -9,7 +8,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
-		"Chat",
 		"Animations",
 		"Inventory",
 		"Photos",
@@ -35,7 +33,7 @@ function RegisterMiddleware()
 end
 
 function RegisterChatCommands()
-	Chat:RegisterCommand("e", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("e", function(source, args, rawCommand)
 		local emote = args[1]
 		if emote == "c" or emote == "cancel" then
 			TriggerClientEvent("Animations:Client:CharacterCancelEmote", source)
@@ -49,27 +47,27 @@ function RegisterChatCommands()
 			help = "Name of The Emote",
 		} },
 	})
-	Chat:RegisterCommand("emotes", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("emotes", function(source, args, rawCommand)
 		TriggerClientEvent("Execute:Client:Component", source, "Animations", "OpenMainEmoteMenu")
 	end, {
 		help = "Open Emote Menu",
 	})
-	Chat:RegisterCommand("emotebinds", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("emotebinds", function(source, args, rawCommand)
 		TriggerClientEvent("Animations:Client:OpenEmoteBinds", source)
 	end, {
 		help = "Edit Emote Binds",
 	})
-	Chat:RegisterCommand("walks", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("walks", function(source, args, rawCommand)
 		TriggerClientEvent("Execute:Client:Component", source, "Animations", "OpenWalksMenu")
 	end, {
 		help = "Change Walk Style",
 	})
-	Chat:RegisterCommand("face", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("face", function(source, args, rawCommand)
 		TriggerClientEvent("Execute:Client:Component", source, "Animations", "OpenExpressionsMenu")
 	end, {
 		help = "Change Facial Expression",
 	})
-	Chat:RegisterCommand("selfie", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("selfie", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			not Player(source).state.isCuffed

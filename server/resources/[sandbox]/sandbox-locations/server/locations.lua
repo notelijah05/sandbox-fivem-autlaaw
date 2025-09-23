@@ -4,14 +4,12 @@ end)
 
 AddEventHandler("Locations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
 	Default = exports["sandbox-base"]:FetchComponent("Default")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Locations", {
-		"Chat",
 		"Locations",
 		"Default",
 	}, function(error)
@@ -33,7 +31,7 @@ function RegisterCallbacks()
 end
 
 function RegisterChatCommands()
-	Chat:RegisterAdminCommand("location", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("location", function(source, args, rawCommand)
 		local playerPed = GetPlayerPed(source)
 		local coords = GetEntityCoords(playerPed)
 		local heading = GetEntityHeading(playerPed)

@@ -31,29 +31,29 @@ AddEventHandler("Finance:Server:Startup", function()
 							)
 							return
 						else
-							return Chat.Send.System:Single(source, "Error")
+							return exports["sandbox-chat"]:SendSystemSingle(source, "Error")
 						end
 					else
-						return Chat.Send.System:Single(source, "Not Enough Cash")
+						return exports["sandbox-chat"]:SendSystemSingle(source, "Not Enough Cash")
 					end
 				else
-					return Chat.Send.System:Single(source, "Invalid Amount")
+					return exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Amount")
 				end
 			else
-				return Chat.Send.System:Single(source, "Target Not Nearby")
+				return exports["sandbox-chat"]:SendSystemSingle(source, "Target Not Nearby")
 			end
 		else
 			cb(false)
 		end
 	end)
 
-	Chat:RegisterCommand("cash", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("cash", function(source, args, rawCommand)
 		ShowCash(source)
 	end, {
 		help = "Show Current Cash",
 	})
 
-	Chat:RegisterAdminCommand("addcash", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("addcash", function(source, args, rawCommand)
 		local addingAmount = tonumber(args[1])
 		if addingAmount and addingAmount > 0 then
 			Wallet:Modify(source, addingAmount)
@@ -68,7 +68,7 @@ AddEventHandler("Finance:Server:Startup", function()
 		},
 	}, 1)
 
-	Chat:RegisterCommand("givecash", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("givecash", function(source, args, rawCommand)
 		local target = tonumber(args[1])
 		if target and target > 0 then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -98,20 +98,20 @@ AddEventHandler("Finance:Server:Startup", function()
 								)
 								return
 							else
-								return Chat.Send.System:Single(source, "Error")
+								return exports["sandbox-chat"]:SendSystemSingle(source, "Error")
 							end
 						else
-							return Chat.Send.System:Single(source, "Not Enough Cash")
+							return exports["sandbox-chat"]:SendSystemSingle(source, "Not Enough Cash")
 						end
 					else
-						return Chat.Send.System:Single(source, "Invalid Amount")
+						return exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Amount")
 					end
 				else
-					return Chat.Send.System:Single(source, "Target Not Nearby")
+					return exports["sandbox-chat"]:SendSystemSingle(source, "Target Not Nearby")
 				end
 			end
 		end
-		Chat.Send.System:Single(source, "Invalid State ID")
+		exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
 	end, {
 		help = "Give Your Cash to a Person",
 		params = {

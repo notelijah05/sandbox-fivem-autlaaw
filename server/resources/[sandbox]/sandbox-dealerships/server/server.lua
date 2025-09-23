@@ -12,14 +12,12 @@ function RetrieveComponents()
     Phone = exports['sandbox-base']:FetchComponent('Phone')
     Wallet = exports['sandbox-base']:FetchComponent('Wallet')
     Default = exports['sandbox-base']:FetchComponent('Default')
-    Chat = exports['sandbox-base']:FetchComponent('Chat')
     MDT = exports['sandbox-base']:FetchComponent('MDT')
 end
 
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Dealerships', {
         'Doors',
-        'Chat',
         'Inventory',
         'Jobs',
         'Vehicles',
@@ -41,7 +39,7 @@ AddEventHandler('Core:Shared:Ready', function()
 
         RegisterDonorVehicleSaleCallbacks()
 
-        Chat:RegisterAdminCommand("setstock", function(source, args, rawCommand)
+        exports["sandbox-chat"]:RegisterAdminCommand("setstock", function(source, args, rawCommand)
             local dealership, vehicle, modelType, amount, price, class, make, model, category = table.unpack(args)
             amount = tonumber(amount)
             price = tonumber(price)
@@ -57,15 +55,15 @@ AddEventHandler('Core:Shared:Ready', function()
 
                 if res and res.success then
                     if res.existed then
-                        Chat.Send.System:Single(source, "Success - Already Exists")
+                        exports["sandbox-chat"]:SendSystemSingle(source, "Success - Already Exists")
                     else
-                        Chat.Send.System:Single(source, "Success")
+                        exports["sandbox-chat"]:SendSystemSingle(source, "Success")
                     end
                 else
-                    Chat.Send.System:Single(source, "Failed")
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
                 end
             else
-                Chat.Send.System:Single(source, "Invalid Arguments")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
             end
         end, {
             help = "[Admin] Set Stock in a Vehicle Dealership. Use \" for multiple words",
@@ -110,7 +108,7 @@ AddEventHandler('Core:Shared:Ready', function()
             },
         }, 9)
 
-        Chat:RegisterAdminCommand("incstock", function(source, args, rawCommand)
+        exports["sandbox-chat"]:RegisterAdminCommand("incstock", function(source, args, rawCommand)
             local dealership, vehicle, amount = table.unpack(args)
             amount = tonumber(amount)
 
@@ -118,12 +116,12 @@ AddEventHandler('Core:Shared:Ready', function()
                 local res = Dealerships.Stock:Increase(dealership, vehicle, amount)
 
                 if res and res.success then
-                    Chat.Send.System:Single(source, "Successfully Increased Stock")
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Increased Stock")
                 else
-                    Chat.Send.System:Single(source, "Not In Stock")
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
                 end
             else
-                Chat.Send.System:Single(source, "Invalid Arguments")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
             end
         end, {
             help = "[Admin] Set stock for specific vehicle at Dealership. Use \" for multiple words",
@@ -143,7 +141,7 @@ AddEventHandler('Core:Shared:Ready', function()
             },
         }, 3)
 
-        Chat:RegisterAdminCommand("setstockprice", function(source, args, rawCommand)
+        exports["sandbox-chat"]:RegisterAdminCommand("setstockprice", function(source, args, rawCommand)
             local dealership, vehicle, price = table.unpack(args)
             price = tonumber(price)
 
@@ -153,12 +151,12 @@ AddEventHandler('Core:Shared:Ready', function()
                 })
 
                 if res and res.success then
-                    Chat.Send.System:Single(source, "Successfully Set Price to $" .. price)
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Set Price to $" .. price)
                 else
-                    Chat.Send.System:Single(source, "Not In Stock")
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
                 end
             else
-                Chat.Send.System:Single(source, "Invalid Arguments")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
             end
         end, {
             help = "[Admin] Set price for specific vehicle at Dealership.",
@@ -178,7 +176,7 @@ AddEventHandler('Core:Shared:Ready', function()
             },
         }, 3)
 
-        Chat:RegisterAdminCommand("setstockname", function(source, args, rawCommand)
+        exports["sandbox-chat"]:RegisterAdminCommand("setstockname", function(source, args, rawCommand)
             local dealership, vehicle, make, model = table.unpack(args)
 
             if make and model then
@@ -188,12 +186,12 @@ AddEventHandler('Core:Shared:Ready', function()
                 })
 
                 if res and res.success then
-                    Chat.Send.System:Single(source, "Successfully Set Name to " .. make .. " " .. model)
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Set Name to " .. make .. " " .. model)
                 else
-                    Chat.Send.System:Single(source, "Not In Stock")
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
                 end
             else
-                Chat.Send.System:Single(source, "Invalid Arguments")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
             end
         end, {
             help = "[Admin] Set make and model name for specific vehicle at Dealership.",
@@ -217,7 +215,7 @@ AddEventHandler('Core:Shared:Ready', function()
             },
         }, 4)
 
-        Chat:RegisterAdminCommand("setstockclass", function(source, args, rawCommand)
+        exports["sandbox-chat"]:RegisterAdminCommand("setstockclass", function(source, args, rawCommand)
             local dealership, vehicle, class = table.unpack(args)
 
             if class then
@@ -226,12 +224,12 @@ AddEventHandler('Core:Shared:Ready', function()
                 })
 
                 if res and res.success then
-                    Chat.Send.System:Single(source, "Successfully Set Class to " .. class)
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Set Class to " .. class)
                 else
-                    Chat.Send.System:Single(source, "Not In Stock")
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
                 end
             else
-                Chat.Send.System:Single(source, "Invalid Arguments")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
             end
         end, {
             help = "[Admin] Set class for specific vehicle at Dealership.",

@@ -168,7 +168,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Chat:RegisterAdminCommand("bizwizset", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("bizwizset", function(source, args, rawCommand)
 		local setting = args[2]
 		if setting == "false" then
 			setting = false
@@ -177,9 +177,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		local res = Jobs.Data:Set(args[1], "bizWiz", setting)
 
 		if res?.success then
-			Chat.Send.System:Single(source, "Success")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Success")
 		else
-			Chat.Send.System:Single(source, "Failed")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
 		end
 	end, {
 		help = "[Admin] Grant a Business Access to BizWiz App",
@@ -195,7 +195,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		}
 	}, 2)
 
-	Chat:RegisterAdminCommand("bizwizlogo", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("bizwizlogo", function(source, args, rawCommand)
 		local setting = args[2]
 		if setting == "false" then
 			setting = false
@@ -204,9 +204,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		local res = Jobs.Data:Set(args[1], "bizWizLogo", setting)
 
 		if res?.success then
-			Chat.Send.System:Single(source, "Success")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Success")
 		else
-			Chat.Send.System:Single(source, "Failed")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
 		end
 	end, {
 		help = "[Admin] Set BizWiz Logo",

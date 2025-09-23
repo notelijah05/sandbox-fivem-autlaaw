@@ -10,13 +10,13 @@ local unitLastAccessed = {}
 AddEventHandler("Businesses:Server:Startup", function()
     StorageUnitStartup()
 
-    Chat:RegisterAdminCommand("unitadd", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand("unitadd", function(source, args, rawCommand)
         local ped = GetPlayerPed(source)
         local coords = GetEntityCoords(ped)
 
         local res = StorageUnits:Create(vector3(coords.x, coords.y, coords.z - 1.2), args[2], tonumber(args[1]), args[3])
         if res then
-            Chat.Send.Server:Single(source, "Storage Unit Added, ID: " .. res)
+            exports["sandbox-chat"]:SendServerSingle(source, "Storage Unit Added, ID: " .. res)
         end
     end, {
         help = "Add New Storage Unit To Database (Location Is Where You\"re At)",
@@ -36,7 +36,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         }
     }, 3)
 
-    Chat:RegisterAdminCommand("unitcopy", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand("unitcopy", function(source, args, rawCommand)
         local near = StorageUnits:GetNearUnit(source)
         if near?.unitId then
             exports['sandbox-base']:ExecuteClient(source, "Admin", "CopyClipboard", near?.unitId)
@@ -46,10 +46,10 @@ AddEventHandler("Businesses:Server:Startup", function()
         help = "[Dev] Copy ID of Closest Storage Unit",
     }, 0)
 
-    Chat:RegisterAdminCommand("unitdelete", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand("unitdelete", function(source, args, rawCommand)
         local res = StorageUnits:Delete(args[1])
         if res then
-            Chat.Send.Server:Single(source, "Storage Unit Deleted")
+            exports["sandbox-chat"]:SendServerSingle(source, "Storage Unit Deleted")
         end
     end, {
         help = "Delete Storage Unit",
@@ -61,7 +61,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         }
     }, 1)
 
-    Chat:RegisterAdminCommand("unitown", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand("unitown", function(source, args, rawCommand)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local unit = GlobalState[string.format("StorageUnit:%s", args[1])]
         if char and unit then
@@ -76,9 +76,9 @@ AddEventHandler("Businesses:Server:Startup", function()
                     SID = char:GetData("SID"),
                     ID = char:GetData("ID"),
                 }) then
-                Chat.Send.Server:Single(source, "Storage Unit Owned")
+                exports["sandbox-chat"]:SendServerSingle(source, "Storage Unit Owned")
             else
-                Chat.Send.Server:Single(source, "Error")
+                exports["sandbox-chat"]:SendServerSingle(source, "Error")
             end
         end
     end, {

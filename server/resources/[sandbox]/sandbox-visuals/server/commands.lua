@@ -1,13 +1,11 @@
 AddEventHandler("Visuals:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Visuals = exports["sandbox-base"]:FetchComponent("Visuals")
 	RegisterChatCommands()
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Visuals", {
-		"Chat",
 		"Visuals",
 	}, function(error)
 		if #error > 0 then
@@ -28,10 +26,11 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 function RegisterChatCommands()
-	Chat:RegisterCommand("visuals", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("visuals", function(source, args, rawCommand)
 		Visuals:Toggle(source)
 	end, {
-		help = "THIS WILL CAUSE FRAME LAG FOR A FEW SECONDS.\n\nToggle Brighter Emergency Lights. NOTE: This will also make some other lights brighter, IE: interior dash lights, taxi roof advert lights, etc.",
+		help =
+		"THIS WILL CAUSE FRAME LAG FOR A FEW SECONDS.\n\nToggle Brighter Emergency Lights. NOTE: This will also make some other lights brighter, IE: interior dash lights, taxi roof advert lights, etc.",
 	}, -1)
 end
 

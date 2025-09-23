@@ -1,18 +1,16 @@
 AddEventHandler("Polyzone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Polyzone", {
-		"Chat",
 	}, function(error)
 		if #error > 0 then
 			return
 		end -- Do something to handle if not all dependencies loaded
 		RetrieveComponents()
 
-		Chat:RegisterAdminCommand("pzcreate", function(src, args, raw)
+		exports["sandbox-chat"]:RegisterAdminCommand("pzcreate", function(src, args, raw)
 			TriggerClientEvent("polyzone:createcommand", src, args)
 		end, {
 			help = "Starts creation of a zone for PolyZone",
@@ -21,43 +19,43 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}, 1)
 
-		Chat:RegisterAdminCommand("pzadd", function(src, args, raw)
+		exports["sandbox-chat"]:RegisterAdminCommand("pzadd", function(src, args, raw)
 			TriggerClientEvent("polyzone:pzadd", src)
 		end, {
 			help = "Adds point to a zone",
 		})
 
-		Chat:RegisterAdminCommand("pzundo", function(src, args, raw)
+		exports["sandbox-chat"]:RegisterAdminCommand("pzundo", function(src, args, raw)
 			TriggerClientEvent("polyzone:pzundo", src)
 		end, {
 			help = "Undoes the last point added.",
 		})
 
-		Chat:RegisterAdminCommand("pzfinish", function(src, args, raw)
+		exports["sandbox-chat"]:RegisterAdminCommand("pzfinish", function(src, args, raw)
 			TriggerClientEvent("polyzone:pzfinish", src)
 		end, {
 			help = "Finishes and prints zone.",
 		})
 
-		Chat:RegisterAdminCommand("pzlast", function(src, args, raw)
+		exports["sandbox-chat"]:RegisterAdminCommand("pzlast", function(src, args, raw)
 			TriggerClientEvent("polyzone:pzlast", src)
 		end, {
 			help = "Starts creation of the last zone you finished (only works on BoxZone and CircleZone)",
 		})
 
-		Chat:RegisterAdminCommand("pzcancel", function(src, args, raw)
+		exports["sandbox-chat"]:RegisterAdminCommand("pzcancel", function(src, args, raw)
 			TriggerClientEvent("polyzone:pzcancel", src)
 		end, {
 			help = "Cancel zone creation.",
 		})
 
-		Chat:RegisterAdminCommand("pzcomboinfo", function(src, args, raw)
+		exports["sandbox-chat"]:RegisterAdminCommand("pzcomboinfo", function(src, args, raw)
 			TriggerClientEvent("polyzone:pzcomboinfo", src)
 		end, {
 			help = "Prints some useful info for all created ComboZones.",
 		})
 
-		Chat:RegisterAdminCommand("pzdebug", function(src, args, raw)
+		exports["sandbox-chat"]:RegisterAdminCommand("pzdebug", function(src, args, raw)
 			TriggerClientEvent("Polyzone:Client:ToggleDebug", src)
 		end, {
 			help = "Toggle Polyzone Debug mode",

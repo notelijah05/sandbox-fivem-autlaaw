@@ -11,7 +11,6 @@ function RetrieveComponents()
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	WaitList = exports["sandbox-base"]:FetchComponent("WaitList")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 end
 
@@ -26,7 +25,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Wallet",
 		"Reputation",
 		"WaitList",
-		"Chat",
 		"Status",
 	}, function(error)
 		if #error > 0 then

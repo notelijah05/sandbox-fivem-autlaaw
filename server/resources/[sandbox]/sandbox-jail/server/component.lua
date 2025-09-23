@@ -5,7 +5,6 @@ local lastRefreshed = 0
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
@@ -23,7 +22,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Routing",
-		"Chat",
 		"Jobs",
 		"Handcuffs",
 		"Ped",
@@ -55,15 +53,16 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 function RegisterCommands()
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"jail",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) and tonumber(args[2]) then
 				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil then
 					Jail:Sentence(source, char:GetData("Source"), tonumber(args[2]))
-					Chat.Send.System:Single(source, string.format("%s Has Been Jailed For %s Months", args[1], args[2]))
-					Chat.Send.Services:DispatchDOC(
+					exports["sandbox-chat"]:SendSystemSingle(source,
+						string.format("%s Has Been Jailed For %s Months", args[1], args[2]))
+					exports["sandbox-chat"]:SendDispatchDOC(
 						string.format(
 							"%s %s (%s) Has Been Jailed For %s Months",
 							char:GetData("First"),
@@ -73,10 +72,10 @@ function RegisterCommands()
 						)
 					)
 				else
-					Chat.Send.System:Single(source, "State ID Not Logged In")
+					exports["sandbox-chat"]:SendSystemSingle(source, "State ID Not Logged In")
 				end
 			else
-				Chat.Send.System:Single(source, "Invalid Arguments")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
 			end
 		end,
 		{

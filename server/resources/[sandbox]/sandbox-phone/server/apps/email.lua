@@ -153,12 +153,12 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Chat:RegisterAdminCommand("email", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("email", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
 			Phone.Email:Send(char:GetData("Source"), args[2], os.time(), args[3], args[4])
 		else
-			Chat.Send.System:Single(source, "Invalid State ID")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
 		end
 	end, {
 		help = "Send Email To Player",

@@ -32,7 +32,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	end
 
 
-	Chat:RegisterAdminCommand('choplists', function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand('choplists', function(source, args, rawCommand)
 		if args[1] == "all" then
 			exports['sandbox-base']:LoggerTrace("Chopping", "Generating New Public Chop List")
 			_publicChoplist = {
@@ -188,7 +188,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				end
 			end
 		else
-			Chat.Send.System:Single(source, "Invalid Type")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Type")
 		end
 	end, {
 		help = 'Generates New Chop List',

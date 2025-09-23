@@ -4,7 +4,6 @@ _casinoConfigLoaded = false
 
 AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -19,7 +18,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Casino", {
-		"Chat",
 		"Generator",
 		"Phone",
 		"Jobs",
@@ -132,7 +130,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Chat:RegisterCommand("chips", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterCommand("chips", function(source, args, rawCommand)
 			local chipTotal = Casino.Chips:Get(source)
 
 			SendCasinoPhoneNotification(

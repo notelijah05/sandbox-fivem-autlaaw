@@ -1,21 +1,21 @@
 _DRIFTLICENSECOST = 25000
 
 AddEventHandler("Businesses:Server:Startup", function()
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"checkdriftlicense",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
 				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil then
-					Chat.Send.System:Single(
+					exports["sandbox-chat"]:SendSystemSingle(
 						source,
 						string.format("Drift License: %s", _DRIFT:Check(tonumber(args[1]), source))
 					)
 				else
-					Chat.Send.System:Single(source, "State ID Not Logged In")
+					exports["sandbox-chat"]:SendSystemSingle(source, "State ID Not Logged In")
 				end
 			else
-				Chat.Send.System:Single(source, "Invalid Arguments")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
 			end
 		end,
 		{
@@ -34,7 +34,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 			},
 		}
 	)
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"revokedriftlicense",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
@@ -42,10 +42,10 @@ AddEventHandler("Businesses:Server:Startup", function()
 				if char ~= nil then
 					_DRIFT:Revoke(tonumber(args[1]), source)
 				else
-					Chat.Send.System:Single(source, "State ID Not Logged In")
+					exports["sandbox-chat"]:SendSystemSingle(source, "State ID Not Logged In")
 				end
 			else
-				Chat.Send.System:Single(source, "Invalid Arguments")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
 			end
 		end,
 		{
@@ -64,7 +64,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 			},
 		}
 	)
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"adddriftlicense",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
@@ -72,10 +72,10 @@ AddEventHandler("Businesses:Server:Startup", function()
 				if char ~= nil then
 					_DRIFT:Give(tonumber(args[1]), source)
 				else
-					Chat.Send.System:Single(source, "State ID Not Logged In")
+					exports["sandbox-chat"]:SendSystemSingle(source, "State ID Not Logged In")
 				end
 			else
-				Chat.Send.System:Single(source, "Invalid Arguments")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
 			end
 		end,
 		{

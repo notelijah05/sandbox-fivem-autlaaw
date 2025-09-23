@@ -1,5 +1,5 @@
 function RegisterChatCommands()
-	Chat:RegisterCommand("resetphonepos", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("resetphonepos", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			char:SetData("PhonePosition", {
@@ -7,15 +7,15 @@ function RegisterChatCommands()
 				y = 25,
 			})
 			TriggerClientEvent("Phone:Client:RestorePosition", source, char:GetData("PhonePosition"))
-			Chat.Send.System:Single(source, "Phone Position Reset")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Phone Position Reset")
 		else
-			Chat.Send.System:Single(source, "Unable To Reset Phone Position")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Unable To Reset Phone Position")
 		end
 	end, {
 		help = "Resets your phones position",
 	}, 0)
 
-	Chat:RegisterAdminCommand("clearalias", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("clearalias", function(source, args, rawCommand)
 		if tonumber(args[1]) then
 			local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 
@@ -23,7 +23,7 @@ function RegisterChatCommands()
 				local aliases = char:GetData("Alias")
 				aliases[args[2]] = nil
 				char:SetData("Alias", aliases)
-				Chat.Send.System:Single(
+				exports["sandbox-chat"]:SendSystemSingle(
 					source,
 					string.format(
 						"Alias Cleared For %s %s (%s) For %s",
@@ -34,10 +34,10 @@ function RegisterChatCommands()
 					)
 				)
 			else
-				Chat.Send.System:Single(source, "Invalid Target")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target")
 			end
 		else
-			Chat.Send.System:Single(source, "Invalid Target")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target")
 		end
 	end, {
 		help = "[Admin] Clear Player App Alias",
@@ -53,7 +53,7 @@ function RegisterChatCommands()
 		},
 	}, 2)
 
-	Chat:RegisterAdminCommand("clearprofile", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("clearprofile", function(source, args, rawCommand)
 		if tonumber(args[1]) then
 			local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 			if char ~= nil then
@@ -82,7 +82,7 @@ function RegisterChatCommands()
 
 					profiles[args[2]] = nil
 					char:SetData("Profiles", profiles)
-					Chat.Send.System:Single(
+					exports["sandbox-chat"]:SendSystemSingle(
 						source,
 						string.format(
 							"Profile Cleared For %s %s (%s) For %s",
@@ -95,10 +95,10 @@ function RegisterChatCommands()
 				else
 				end
 			else
-				Chat.Send.System:Single(source, "Invalid Target")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target")
 			end
 		else
-			Chat.Send.System:Single(source, "Invalid Target")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target")
 		end
 	end, {
 		help = "[Admin] Clear Player App Alias",
@@ -114,9 +114,9 @@ function RegisterChatCommands()
 		},
 	}, 2)
 
-	Chat:RegisterStaffCommand("ctwitter", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterStaffCommand("ctwitter", function(source, args, rawCommand)
 		ClearAllTweets(args[1])
-		Chat.Send.System:Single(source, "All Tweets Removed")
+		exports["sandbox-chat"]:SendSystemSingle(source, "All Tweets Removed")
 	end, {
 		help = "[Admin] Clear All Tweets",
 		params = {
@@ -127,7 +127,7 @@ function RegisterChatCommands()
 		},
 	}, -1)
 
-	Chat:RegisterStaffCommand("twitteraccount", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterStaffCommand("twitteraccount", function(source, args, rawCommand)
 		local twitterName = args[1]
 
 		local sid = MySQL.scalar.await("SELECT sid FROM character_app_profiles WHERE name = ? AND app = ?", {
@@ -137,7 +137,7 @@ function RegisterChatCommands()
 
 		local char = exports['sandbox-characters']:FetchBySID(sid)
 		if char ~= nil then
-			Chat.Send.System:Single(
+			exports["sandbox-chat"]:SendSystemSingle(
 				source,
 				string.format(
 					"Twitter Account Found With Name: %s. %s %s (SID: %s) [User: %s]",
@@ -157,7 +157,7 @@ function RegisterChatCommands()
 			}, function(success, results)
 				if success and #results > 0 then
 					local char = results[1]
-					Chat.Send.System:Single(
+					exports["sandbox-chat"]:SendSystemSingle(
 						source,
 						string.format(
 							"Twitter Account Found With Name: %s. %s %s (SID: %s) [User: %s]",
@@ -169,7 +169,7 @@ function RegisterChatCommands()
 						)
 					)
 				else
-					Chat.Send.System:Single(source, "No Twitter Account Found")
+					exports["sandbox-chat"]:SendSystemSingle(source, "No Twitter Account Found")
 				end
 			end)
 		end
@@ -183,7 +183,7 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("govtweet", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("govtweet", function(source, args, rawCommand)
 		local accountName, accountAvatar, content, image = args[1], args[2], args[3], args[4]
 
 		if accountName and accountAvatar and content then
@@ -202,7 +202,7 @@ function RegisterChatCommands()
 				name = accountName,
 				picture = accountAvatar,
 			}, content, image, false, "government")
-			Chat.Send.System:Single(source, "Tweet Sent")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Tweet Sent")
 		end
 	end, {
 		help = "[Admin] Send GOVERNMENT ACCOUNT Tweet",
@@ -226,21 +226,21 @@ function RegisterChatCommands()
 		},
 	}, -1)
 
-	Chat:RegisterAdminCommand("reloadtracks", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("reloadtracks", function(source, args, rawCommand)
 		ReloadRaceTracks()
-		Chat.Send.System:Single(source, "Reloaded Vroom Vrooms")
+		exports["sandbox-chat"]:SendSystemSingle(source, "Reloaded Vroom Vrooms")
 	end, {
 		help = "[Admin] Reload Race Tracks",
 	}, 0)
 
-	Chat:RegisterAdminCommand("reloadpdtracks", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("reloadpdtracks", function(source, args, rawCommand)
 		ReloadRaceTracksPD()
-		Chat.Send.System:Single(source, "Reloaded PD Vroom Vrooms")
+		exports["sandbox-chat"]:SendSystemSingle(source, "Reloaded PD Vroom Vrooms")
 	end, {
 		help = "[Admin] Reload PD Race Tracks",
 	}, 0)
 
-	Chat:RegisterAdminCommand("raceinvite", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("raceinvite", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char then

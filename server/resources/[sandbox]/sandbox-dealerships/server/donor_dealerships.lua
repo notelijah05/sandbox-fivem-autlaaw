@@ -98,7 +98,7 @@ function RegisterDonorVehicleSaleCallbacks()
               local salePrice = exports['sandbox-base']:UtilsRound(vehiclePrice * priceMultiplier, 0)
 
               local playerCommission = exports['sandbox-base']:UtilsRound(
-              (salePrice - vehiclePrice) * commissionMultiplier, 0)
+                (salePrice - vehiclePrice) * commissionMultiplier, 0)
               local dealerRecieves = exports['sandbox-base']:UtilsRound(salePrice - playerCommission, 0)
 
               local removeSuccess = nil
@@ -203,15 +203,15 @@ function RegisterDonorVehicleSaleCallbacks()
     cb(false)
   end)
 
-  Chat:RegisterAdminCommand("adddonatorvehicle", function(source, args, rawCommand)
+  exports["sandbox-chat"]:RegisterAdminCommand("adddonatorvehicle", function(source, args, rawCommand)
     local license, class = table.unpack(args)
 
     if license and class then
       local success = Dealerships.Donator:AddPending(license, class)
       if success then
-        Chat.Send.System:Single(source, "Successfully Added Donator Token")
+        exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Added Donator Token")
       else
-        Chat.Send.System:Single(source, "Failed")
+        exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
       end
     end
   end, {
@@ -228,7 +228,7 @@ function RegisterDonorVehicleSaleCallbacks()
     },
   }, 2)
 
-  Chat:RegisterAdminCommand("getdonatorvehicle", function(source, args, rawCommand)
+  exports["sandbox-chat"]:RegisterAdminCommand("getdonatorvehicle", function(source, args, rawCommand)
     local license = table.unpack(args)
 
     if license then
@@ -239,9 +239,9 @@ function RegisterDonorVehicleSaleCallbacks()
           message = message ..
               string.format("<br>ID: %s<br>Class: %s<br>Redeemed: %s<br>", v._id, v.class, v.redeemed and "Yes" or "No")
         end
-        Chat.Send.System:Single(source, message)
+        exports["sandbox-chat"]:SendSystemSingle(source, message)
       else
-        Chat.Send.System:Single(source, "Failed")
+        exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
       end
     end
   end, {
@@ -254,15 +254,15 @@ function RegisterDonorVehicleSaleCallbacks()
     },
   }, 1)
 
-  Chat:RegisterAdminCommand("removedonatorvehicle", function(source, args, rawCommand)
+  exports["sandbox-chat"]:RegisterAdminCommand("removedonatorvehicle", function(source, args, rawCommand)
     local license, tokenId = table.unpack(args)
 
     if license and tokenId then
       local success = Dealerships.Donator:DeletePending(license, tokenId)
       if success then
-        Chat.Send.System:Single(source, "Successfully Removed")
+        exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Removed")
       else
-        Chat.Send.System:Single(source, "Failed")
+        exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
       end
     end
   end, {
@@ -388,9 +388,9 @@ function TebexAddDonatorVehicle(source, args)
     if license and class then
       local success = Dealerships.Donator:AddPending(license, class)
       if success then
-        Chat.Send.System:Single(sid, "Successfully Added Donator Token")
+        exports["sandbox-chat"]:SendSystemSingle(sid, "Successfully Added Donator Token")
       else
-        Chat.Send.System:Single(sid, "Failed")
+        exports["sandbox-chat"]:SendSystemSingle(sid, "Failed")
       end
     end
   end

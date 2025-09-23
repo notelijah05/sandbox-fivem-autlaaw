@@ -1,13 +1,11 @@
 AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
 function RetrieveWardrobeComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Wardrobe", {
-		"Chat",
 		"Locations",
 		"Ped",
 		"Wardrobe",
@@ -28,12 +26,12 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 function RegisterChatCommands()
-	Chat:RegisterAdminCommand("wardrobe", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("wardrobe", function(source, args, rawCommand)
 		TriggerClientEvent("Wardrobe:Client:ShowBitch", source)
 	end, {
 		help = "Test Notification",
 	})
-	Chat:RegisterAdminCommand("ped", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("ped", function(source, args, rawCommand)
 		local char
 		local shopType = 0
 		if args[1] and tonumber(args[1]) >= 0 then

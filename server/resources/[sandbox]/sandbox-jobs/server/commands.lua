@@ -19,7 +19,7 @@ function FetchCharacterJobsFromDB(stateId)
 end
 
 function RegisterJobChatCommands()
-    Chat:RegisterAdminCommand('givejob', function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand('givejob', function(source, args, rawCommand)
         local target, jobId, gradeId, workplaceId = table.unpack(args)
         target = math.tointeger(target)
         if not workplaceId then workplaceId = false; end
@@ -30,22 +30,23 @@ function RegisterJobChatCommands()
                 local success = Jobs:GiveJob(target, jobId, workplaceId, gradeId)
                 if success then
                     if jobExists.Workplace then
-                        Chat.Send.System:Single(source,
+                        exports["sandbox-chat"]:SendSystemSingle(source,
                             string.format('Gave State ID: %s Job: %s - %s - %s', target, jobExists.Name,
                                 jobExists.Workplace.Name, jobExists.Grade.Name))
                     else
-                        Chat.Send.System:Single(source,
+                        exports["sandbox-chat"]:SendSystemSingle(source,
                             string.format('Gave State ID: %s Job: %s - %s', target, jobExists.Name, jobExists.Grade.Name))
                     end
                 else
-                    Chat.Send.System:Single(source, 'Error Giving Job - Maybe that State ID Doesn\'t Exist')
+                    exports["sandbox-chat"]:SendSystemSingle(source,
+                        'Error Giving Job - Maybe that State ID Doesn\'t Exist')
                 end
             else
-                Chat.Send.System:Single(source, 'Job Doesn\'t Exist Fuckface')
+                exports["sandbox-chat"]:SendSystemSingle(source, 'Job Doesn\'t Exist Fuckface')
             end
             return
         else
-            Chat.Send.System:Single(source, 'Invalid Arguments')
+            exports["sandbox-chat"]:SendSystemSingle(source, 'Invalid Arguments')
         end
     end, {
         help = 'Give Player a Job',
@@ -57,13 +58,14 @@ function RegisterJobChatCommands()
         }
     }, -1)
 
-    Chat:RegisterAdminCommand('removejob', function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand('removejob', function(source, args, rawCommand)
         local target, jobId = math.tointeger(args[1]), args[2]
         local success = Jobs:RemoveJob(target, jobId)
         if success then
-            Chat.Send.System:Single(source, 'Successfully Removed Job From State ID:' .. target)
+            exports["sandbox-chat"]:SendSystemSingle(source, 'Successfully Removed Job From State ID:' .. target)
         else
-            Chat.Send.System:Single(source, 'Error Removing Job - State ID Doesn\'t Exist or Maybe They Don\'t that Job')
+            exports["sandbox-chat"]:SendSystemSingle(source,
+                'Error Removing Job - State ID Doesn\'t Exist or Maybe They Don\'t that Job')
         end
     end, {
         help = 'Remove A Job From a Character',
@@ -73,7 +75,7 @@ function RegisterJobChatCommands()
         }
     }, 2)
 
-    Chat:RegisterAdminCommand('setowner', function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand('setowner', function(source, args, rawCommand)
         local jobId, target = table.unpack(args)
         target = math.tointeger(target)
 
@@ -84,16 +86,16 @@ function RegisterJobChatCommands()
                     Owner = target
                 })
                 if success then
-                    Chat.Send.System:Single(source,
+                    exports["sandbox-chat"]:SendSystemSingle(source,
                         string.format('Set Owner of %s (%s) to State ID %s', jobExists.Name, jobExists.Id, target))
                 else
-                    Chat.Send.System:Single(source, 'Error Setting Job Owner')
+                    exports["sandbox-chat"]:SendSystemSingle(source, 'Error Setting Job Owner')
                 end
             else
-                Chat.Send.System:Single(source, 'Job Doesn\'t Exist or Isn\'t a Company You Fuck')
+                exports["sandbox-chat"]:SendSystemSingle(source, 'Job Doesn\'t Exist or Isn\'t a Company You Fuck')
             end
         else
-            Chat.Send.System:Single(source, 'Invalid Job or State ID')
+            exports["sandbox-chat"]:SendSystemSingle(source, 'Invalid Job or State ID')
         end
     end, {
         help = 'Sets the Owner of a Company',
@@ -103,7 +105,7 @@ function RegisterJobChatCommands()
         }
     }, 2)
 
-    Chat:RegisterAdminCommand('onduty', function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand('onduty', function(source, args, rawCommand)
         Jobs.Duty:On(source, args[1])
     end, {
         help = 'Go On Duty',
@@ -112,13 +114,13 @@ function RegisterJobChatCommands()
         }
     }, 1)
 
-    Chat:RegisterAdminCommand('offduty', function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand('offduty', function(source, args, rawCommand)
         Jobs.Duty:Off(source)
     end, {
         help = 'Go Off Duty'
     })
 
-    Chat:RegisterAdminCommand('checkjobs', function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand('checkjobs', function(source, args, rawCommand)
         local target = math.tointeger(args[1])
         local char
         if not args[1] then
@@ -141,19 +143,19 @@ function RegisterJobChatCommands()
             if #charJobs > 0 then
                 for k, v in ipairs(charJobs) do
                     if v.Workplace then
-                        Chat.Send.System:Single(source,
+                        exports["sandbox-chat"]:SendSystemSingle(source,
                             string.format('State ID: %s - Job #%s: %s - %s - %s', stateId, k, v.Name, v.Workplace.Name,
                                 v.Grade.Name))
                     else
-                        Chat.Send.System:Single(source,
+                        exports["sandbox-chat"]:SendSystemSingle(source,
                             string.format('State ID: %s - Job #%s: %s - %s', stateId, k, v.Name, v.Grade.Name))
                     end
                 end
             else
-                Chat.Send.System:Single(source, string.format('State ID: %s -  Has No Jobs', stateId))
+                exports["sandbox-chat"]:SendSystemSingle(source, string.format('State ID: %s -  Has No Jobs', stateId))
             end
         else
-            Chat.Send.System:Single(source, 'Invalid State ID')
+            exports["sandbox-chat"]:SendSystemSingle(source, 'Invalid State ID')
         end
     end, {
         help = 'Shows the Jobs a Character Has',
@@ -162,12 +164,13 @@ function RegisterJobChatCommands()
         }
     }, -1)
 
-    Chat:RegisterAdminCommand('dutycount', function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand('dutycount', function(source, args, rawCommand)
         local jobId = args[1]
         local jobExists = Jobs:Get(jobId)
         if jobExists then
             local dutyData = Jobs.Duty:GetDutyData(jobId)
-            Chat.Send.System:Single(source, string.format('Job: %s -  %s On Duty', jobExists.Name, dutyData?.Count or 0))
+            exports["sandbox-chat"]:SendSystemSingle(source,
+                string.format('Job: %s -  %s On Duty', jobExists.Name, dutyData?.Count or 0))
         end
     end, {
         help = 'Shows how many are on duty for specific job',
@@ -176,15 +179,15 @@ function RegisterJobChatCommands()
         }
     }, 1)
 
-    Chat:RegisterAdminCommand('dutytest', function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand('dutytest', function(source, args, rawCommand)
         local jobId = args[1]
         local jobExists = Jobs:Get(jobId)
         if jobExists then
-            Chat.Send.System:Single(source,
+            exports["sandbox-chat"]:SendSystemSingle(source,
                 string.format('Before Job: %s -  %s On Duty', jobExists.Name,
                     GlobalState[string.format('Duty:%s', jobId)]))
             Jobs.Duty:RefreshDutyData(jobId)
-            Chat.Send.System:Single(source,
+            exports["sandbox-chat"]:SendSystemSingle(source,
                 string.format('After Job: %s -  %s On Duty', jobExists.Name, GlobalState
                     [string.format('Duty:%s', jobId)]))
         end
@@ -195,14 +198,15 @@ function RegisterJobChatCommands()
         }
     }, 1)
 
-    Chat:RegisterAdminCommand('changejobname', function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand('changejobname', function(source, args, rawCommand)
         local jobId = args[1]
         local jobExists = Jobs:Get(jobId)
         if jobExists and args[2] then
             Jobs.Management:Edit(jobId, {
                 Name = args[2]
             })
-            Chat.Send.System:Single(source, string.format('Changed Name to %s (Id: %s)', args[2], jobExists.Id))
+            exports["sandbox-chat"]:SendSystemSingle(source,
+                string.format('Changed Name to %s (Id: %s)', args[2], jobExists.Id))
         end
     end, {
         help = 'Change the Name of the Job',

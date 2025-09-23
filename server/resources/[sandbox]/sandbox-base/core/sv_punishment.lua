@@ -148,7 +148,7 @@ COMPONENTS.Punishment.Unban = {
 				},
 			}, function(success, results)
 				if COMPONENTS.Punishment.Actions:Unban(results, iPlayer) then
-					COMPONENTS.Chat.Send.Server:Single(
+					exports["sandbox-chat"]:SendServerSingle(
 						iPlayer:GetData("Source"),
 						string.format("%s Has Been Revoked", id)
 					)
@@ -176,7 +176,7 @@ COMPONENTS.Punishment.Unban = {
 				},
 			}, function(success, results)
 				if COMPONENTS.Punishment.Actions:Unban(results, iPlayer) then
-					COMPONENTS.Chat.Send.Server:Single(
+					exports["sandbox-chat"]:SendServerSingle(
 						iPlayer:GetData("Source"),
 						string.format(
 							"%s (Account: %s) Has Been Unbanned",
@@ -191,7 +191,7 @@ COMPONENTS.Punishment.Unban = {
 				tPlayer:DeleteStore()
 			end
 		else
-			COMPONENTS.Chat.Send.Server:Single(
+			exports["sandbox-chat"]:SendServerSingle(
 				iPlayer:GetData("Source"),
 				string.format("%s (Account: %s) Is Not Banned", tPlayer:GetData("Name"), tPlayer:GetData("AccountID"))
 			)
@@ -215,7 +215,7 @@ COMPONENTS.Punishment.Unban = {
 				},
 			}, function(success, results)
 				if COMPONENTS.Punishment.Actions:Unban(results, iPlayer) then
-					COMPONENTS.Chat.Send.Server:Single(
+					exports["sandbox-chat"]:SendServerSingle(
 						iPlayer:GetData("Source"),
 						string.format(
 							"%s (Identifier: %s) Has Been Unbanned",
@@ -230,7 +230,7 @@ COMPONENTS.Punishment.Unban = {
 				tPlayer:DeleteStore()
 			end
 		else
-			COMPONENTS.Chat.Send.Server:Single(
+			exports["sandbox-chat"]:SendServerSingle(
 				iPlayer:GetData("Source"),
 				string.format(
 					"%s (Identifier: %s) Is Not Banned",

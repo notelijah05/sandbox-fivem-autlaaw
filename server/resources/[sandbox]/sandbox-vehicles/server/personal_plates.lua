@@ -120,15 +120,15 @@ function RegisterPersonalPlateCallbacks()
         PrivatePlateStuff(char, source, itemData)
     end)
 
-    Chat:RegisterAdminCommand("adddonatorplates", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand("adddonatorplates", function(source, args, rawCommand)
         local license = table.unpack(args)
 
         if license then
             local success = Vehicles.DonatorPlates:Add(license)
             if success then
-                Chat.Send.System:Single(source, "Successfully Added")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Added")
             else
-                Chat.Send.System:Single(source, "Failed")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
             end
         end
     end, {
@@ -141,17 +141,17 @@ function RegisterPersonalPlateCallbacks()
         },
     }, 1)
 
-    Chat:RegisterAdminCommand("getdonatorplates", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand("getdonatorplates", function(source, args, rawCommand)
         local license = table.unpack(args)
 
         if license then
             local success = Vehicles.DonatorPlates:Check(license)
             if success and success.pending then
-                Chat.Send.System:Single(source,
+                exports["sandbox-chat"]:SendSystemSingle(source,
                     string.format("Player Identifier: %s<br>Pending Plates: %s<br>Redeemed Plates: %s", license,
                         success.pending, success.redeemed or 0))
             else
-                Chat.Send.System:Single(source, "Failed")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
             end
         end
     end, {
@@ -164,15 +164,15 @@ function RegisterPersonalPlateCallbacks()
         },
     }, 1)
 
-    Chat:RegisterAdminCommand("removedonatorplates", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand("removedonatorplates", function(source, args, rawCommand)
         local license = table.unpack(args)
 
         if license then
             local success = Vehicles.DonatorPlates:Remove(license, 1)
             if success then
-                Chat.Send.System:Single(source, "Successfully Removed")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Removed")
             else
-                Chat.Send.System:Single(source, "Failed")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
             end
         end
     end, {
@@ -353,9 +353,9 @@ function TebexAddDonatorPlate(source, args)
         local license = player:GetData("Identifier")
         local success = Vehicles.DonatorPlates:Add(license)
         if success then
-            Chat.Send.System:Single(sid, "Successfully Added")
+            exports["sandbox-chat"]:SendSystemSingle(sid, "Successfully Added")
         else
-            Chat.Send.System:Single(sid, "Failed")
+            exports["sandbox-chat"]:SendSystemSingle(sid, "Failed")
         end
     end
 end

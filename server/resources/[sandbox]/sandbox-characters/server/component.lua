@@ -2,7 +2,6 @@ ONLINE_CHARACTERS = {}
 
 AddEventHandler("Characters:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	GlobalConfig = exports["sandbox-base"]:FetchComponent("Config")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
@@ -17,7 +16,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Characters", {
-		"Chat",
 		"Config",
 		"Routing",
 		"Sequence",

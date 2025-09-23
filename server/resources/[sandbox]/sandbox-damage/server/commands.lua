@@ -1,5 +1,5 @@
 function RegisterChatCommands()
-    Chat:RegisterStaffCommand("heal", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterStaffCommand("heal", function(source, args, rawCommand)
         if args[1] ~= nil then
             local admin = exports['sandbox-base']:FetchSource(source)
             local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
@@ -7,7 +7,7 @@ function RegisterChatCommands()
                 exports["sandbox-base"]:ClientCallback(char:GetData("Source"), "Damage:Heal", true)
                 Status:Set(source, "PLAYER_STRESS", 0)
             else
-                Chat.Send.System:Single(source, "Invalid State ID")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
             end
         else
             local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -26,7 +26,7 @@ function RegisterChatCommands()
         },
     }, -1)
 
-    Chat:RegisterStaffCommand("healrange", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterStaffCommand("healrange", function(source, args, rawCommand)
         local radius = args[1] and tonumber(args[1]) or 25.0
 
         local myPed = GetPlayerPed(source)
@@ -54,7 +54,7 @@ function RegisterChatCommands()
         },
     }, -1)
 
-    Chat:RegisterAdminCommand("god", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand("god", function(source, args, rawCommand)
         if Player(source).state.isGodmode then
             SetPlayerInvincible(source, false)
             Player(source).state.isGodmode = false
@@ -70,7 +70,7 @@ function RegisterChatCommands()
         help = "Toggle God Mode",
     }, -1)
 
-    Chat:RegisterAdminCommand("die", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand("die", function(source, args, rawCommand)
         if not Player(source).state.isDead then
             exports["sandbox-base"]:ClientCallback(source, "Damage:Kill")
         end

@@ -1,6 +1,6 @@
 function RegisterChatCommands()
 	-- Spawning and Deleting Temporary Admin Vehicles
-	Chat:RegisterAdminCommand("sv", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("sv", function(source, args, rawCommand)
 		local vehModel = GetHashKey(args[1])
 		exports["sandbox-base"]:ClientCallback(
 			source,
@@ -25,7 +25,7 @@ function RegisterChatCommands()
 						Vehicles.Keys:Add(source, VIN)
 					end)
 				else
-					Chat.Send.Server:Single(source, "Invalid Vehicle Model")
+					exports["sandbox-chat"]:SendServerSingle(source, "Invalid Vehicle Model")
 				end
 			end
 		)
@@ -39,7 +39,7 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	Chat:RegisterStaffCommand("dv", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterStaffCommand("dv", function(source, args, rawCommand)
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:Admin:GetVehicleToDelete", false, function(vehNet)
 			local targetVehicle = NetworkGetEntityFromNetworkId(vehNet)
 			Vehicles:Delete(targetVehicle, function() end)
@@ -49,31 +49,31 @@ function RegisterChatCommands()
 		params = {},
 	}, 0)
 
-	Chat:RegisterAdminCommand("vehiclescount", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("vehiclescount", function(source, args, rawCommand)
 		local count = 0
 		for k, v in pairs(ACTIVE_OWNED_VEHICLES) do
 			count = count + 1
 		end
 
-		Chat.Send.Server:Single(source, count .. " Total Owned Vehicles Spawned")
+		exports["sandbox-chat"]:SendServerSingle(source, count .. " Total Owned Vehicles Spawned")
 	end, {
 		help = "[Dev] Get Total Owned Vehicle Count",
 		params = {},
 	}, 0)
 
-	Chat:RegisterAdminCommand("clearvehicle", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("clearvehicle", function(source, args, rawCommand)
 		local VIN = args[1]
 		if not VIN then return; end
 
 		Vehicles.Owned:Delete(VIN, function(success, nonExist)
 			if success then
 				if nonExist then
-					Chat.Send.Server:Single(source, "Successfully Deleted - It Didn't Exist")
+					exports["sandbox-chat"]:SendServerSingle(source, "Successfully Deleted - It Didn't Exist")
 				else
-					Chat.Send.Server:Single(source, "Successfully Deleted & Saved")
+					exports["sandbox-chat"]:SendServerSingle(source, "Successfully Deleted & Saved")
 				end
 			else
-				Chat.Send.Server:Single(source, "Failed to Delete")
+				exports["sandbox-chat"]:SendServerSingle(source, "Failed to Delete")
 			end
 		end, true)
 	end, {
@@ -86,12 +86,12 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("addownedvehicle", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("addownedvehicle", function(source, args, rawCommand)
 		local targetSource, vehHash, make, model, class, value, vehType, vehModelType = table.unpack(args)
 		print(args)
 
 		if not targetSource or not vehHash or not make or not model then
-			Chat.Send.System:Single(source, "Invalid Arguments")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
 			return
 		end
 
@@ -110,7 +110,7 @@ function RegisterChatCommands()
 					value = math.tointeger(value),
 				}, function(success, vehicle)
 					if success then
-						Chat.Send.System:Single(
+						exports["sandbox-chat"]:SendSystemSingle(
 							source,
 							string.format(
 								"Successfully Added Vehicle to State ID: %s With VIN: %s",
@@ -119,12 +119,12 @@ function RegisterChatCommands()
 							)
 						)
 					else
-						Chat.Send.System:Single(source, "Error Adding Vehicle")
+						exports["sandbox-chat"]:SendSystemSingle(source, "Error Adding Vehicle")
 					end
 				end)
 			end
 		else
-			Chat.Send.System:Single(source, "Player Not Logged In")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Player Not Logged In")
 		end
 	end, {
 		help = "Add Owned Vehicle to Player",
@@ -164,11 +164,11 @@ function RegisterChatCommands()
 		},
 	}, 8)
 
-	Chat:RegisterAdminCommand("addfleetvehicle", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("addfleetvehicle", function(source, args, rawCommand)
 		local jobId, workplaceId, level, vehHash, make, model, class, value, vehType, modelType, qual = table.unpack(
 			args)
 		if not jobId or not workplaceId or not level or not vehHash or not make or not model then
-			Chat.Send.System:Single(source, "Invalid Arguments")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
 			return
 		end
 
@@ -193,16 +193,16 @@ function RegisterChatCommands()
 				value = math.tointeger(value),
 			}, function(success, vehicle)
 				if success then
-					Chat.Send.System:Single(
+					exports["sandbox-chat"]:SendSystemSingle(
 						source,
 						string.format("Successfully Added Vehicle to Fleet With VIN: %s", vehicle.VIN)
 					)
 				else
-					Chat.Send.System:Single(source, "Error Adding Vehicle To Fleet")
+					exports["sandbox-chat"]:SendSystemSingle(source, "Error Adding Vehicle To Fleet")
 				end
 			end, false, qual)
 		else
-			Chat.Send.System:Single(source, "Error Adding Vehicle To Fleet")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Error Adding Vehicle To Fleet")
 		end
 	end, {
 		help = "Add a Fleet Vehicle to a Job",
@@ -254,7 +254,7 @@ function RegisterChatCommands()
 		},
 	}, 11)
 
-	Chat:RegisterAdminCommand("forceaudio", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("forceaudio", function(source, args, rawCommand)
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:Admin:GetVehicleInsideData", false, function(veh)
 			local audio = args[1]:upper()
 			if audio == "remove" or audio == "false" then
@@ -299,7 +299,7 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	Chat:RegisterCommand("seat", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("seat", function(source, args, rawCommand)
 		local seatNum = tonumber(args[1])
 		if seatNum and seatNum > 0 then
 			TriggerClientEvent("Vehicles:Client:Actions:SwitchSeat", source, seatNum - 2)
@@ -314,7 +314,7 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	Chat:RegisterCommand("door", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("door", function(source, args, rawCommand)
 		local doorNum = args[1]
 		local action = string.lower(doorNum)
 		if action == "open" or action == "shut" or action == "close" then
@@ -336,7 +336,7 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	Chat:RegisterCommand("win", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("win", function(source, args, rawCommand)
 		local winNum = args[1]
 		local action = string.lower(winNum)
 		if action == "open" or action == "shut" or action == "close" then
@@ -358,14 +358,14 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	-- Chat:RegisterCommand('slimjim', function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterCommand('slimjim', function(source, args, rawCommand)
 	--     TriggerClientEvent('Vehicles:Client:AttemptSlimJim', source)
 	-- end, {
 	--     help = 'Attempt to Slimjim a Vehicle',
 	--     params = {}
 	-- }, -1)
 
-	Chat:RegisterCommand("givekeys", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("givekeys", function(source, args, rawCommand)
 		exports["sandbox-base"]:ClientCallback(
 			source,
 			"Vehicles:Keys:GetVehicleToShare",
@@ -409,7 +409,7 @@ function RegisterChatCommands()
 		params = {},
 	}, 0)
 
-	Chat:RegisterCommand("transfer", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("transfer", function(source, args, rawCommand)
 		local target = tonumber(args[1])
 		if target and target > 0 then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)

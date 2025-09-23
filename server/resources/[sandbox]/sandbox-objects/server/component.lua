@@ -3,14 +3,12 @@ _placedProps = {}
 
 AddEventHandler("Objects:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Objects = exports["sandbox-base"]:FetchComponent("Objects")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Objects", {
-		"Chat",
 		"Inventory",
 		"Objects",
 	}, function(error)
@@ -48,7 +46,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			TriggerClientEvent("Objects:Client:SetupObjects", source, _placedProps)
 		end, 1)
 
-		Chat:RegisterAdminCommand("addobj", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterAdminCommand("addobj", function(source, args, rawCommand)
 			exports["sandbox-base"]:ClientCallback(source, "Objects:StartPlacement", {
 				model = GetHashKey(args[1]),
 				data = {
@@ -81,7 +79,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}, 4)
 
-		Chat:RegisterAdminCommand("addtobj", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterAdminCommand("addtobj", function(source, args, rawCommand)
 			exports["sandbox-base"]:ClientCallback(source, "Objects:StartPlacement", {
 				model = GetHashKey(args[1]),
 				data = {
@@ -114,7 +112,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}, 4)
 
-		Chat:RegisterAdminCommand("deleteobj", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterAdminCommand("deleteobj", function(source, args, rawCommand)
 			Objects:Delete(source, tonumber(args[1]))
 		end, {
 			help = "Delete a Prop",
@@ -136,7 +134,7 @@ _OBJECTS = {
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					if _placedProps[id] ~= nil then
-						Chat.Send.Server:Single(
+						exports["sandbox-chat"]:SendServerSingle(
 							source,
 							string.format(
 								"Prop %s: Creator %s, Created %s, Frozen %s, Persistant %s",
@@ -148,7 +146,8 @@ _OBJECTS = {
 							)
 						)
 					else
-						Chat.Send.Server:Single(source, string.format("Unable To Locate Placed Prop With ID %s", id))
+						exports["sandbox-chat"]:SendServerSingle(source,
+							string.format("Unable To Locate Placed Prop With ID %s", id))
 					end
 				else
 					return false

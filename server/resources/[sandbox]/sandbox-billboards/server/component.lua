@@ -1,6 +1,5 @@
 AddEventHandler("Billboards:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-    Chat = exports["sandbox-base"]:FetchComponent("Chat")
     Generator = exports["sandbox-base"]:FetchComponent("Generator")
     Phone = exports["sandbox-base"]:FetchComponent("Phone")
     Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -12,7 +11,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
     exports["sandbox-base"]:RequestDependencies("Billboards", {
-        "Chat",
         "Generator",
         "Phone",
         "Jobs",
@@ -29,7 +27,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
         FetchBillboardsData()
 
-        Chat:RegisterAdminCommand("setbillboard", function(source, args, rawCommand)
+        exports["sandbox-chat"]:RegisterAdminCommand("setbillboard", function(source, args, rawCommand)
             local billboardId, billboardUrl = args[1], args[2]
 
             if #billboardUrl <= 10 then

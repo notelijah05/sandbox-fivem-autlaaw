@@ -11,7 +11,6 @@ end
 
 AddEventHandler("Damage:Shared:DependencyUpdate", DamageComponents)
 function DamageComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	--Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	RegisterChatCommands()
@@ -19,7 +18,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Damage", {
-		"Chat",
 		--"Damage",
 		"Status",
 	}, function(error)

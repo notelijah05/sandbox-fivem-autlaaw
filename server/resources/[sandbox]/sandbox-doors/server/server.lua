@@ -4,7 +4,6 @@ ELEVATOR_CACHE = {}
 
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
@@ -14,7 +13,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Chat",
 		"Inventory",
 		"Jobs",
 		"Doors",
@@ -71,7 +69,7 @@ function RunStartup()
 end
 
 function RegisterChatCommands()
-	Chat:RegisterAdminCommand("doorhelp", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("doorhelp", function(source, args, rawCommand)
 		TriggerClientEvent("Doors:Client:DoorHelper", source)
 	end, {
 		help = "[Developer] Toggle Door Creation Helper",

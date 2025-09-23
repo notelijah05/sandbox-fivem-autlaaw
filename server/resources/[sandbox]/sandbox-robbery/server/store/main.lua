@@ -1034,11 +1034,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if myDuty and myDuty == "police" then
 				if _robbedSafes[data.id] ~= nil and _robbedSafes[data.id].state ~= 4 then
 					if _robbedSafes[data.id].state == 1 then
-						Chat.Send.Server:Single(source, "Safe Was Cracked, But Timelock Was Still Engaged")
+						exports["sandbox-chat"]:SendServerSingle(source,
+							"Safe Was Cracked, But Timelock Was Still Engaged")
 					elseif _robbedSafes[data.id].state == 2 then
-						Chat.Send.Server:Single(source, "Safe Was Cracked, And Timelock Disengaged")
+						exports["sandbox-chat"]:SendServerSingle(source, "Safe Was Cracked, And Timelock Disengaged")
 					elseif _robbedSafes[data.id].state == 3 then
-						Chat.Send.Server:Single(source, "Safe Was Cracked and looted")
+						exports["sandbox-chat"]:SendServerSingle(source, "Safe Was Cracked and looted")
 					end
 
 					_robbedSafes[data.id].state = 4

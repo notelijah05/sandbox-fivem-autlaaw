@@ -2,7 +2,6 @@ AddEventHandler("Handcuffs:Shared:DependencyUpdate", HandcuffsComponents)
 function HandcuffsComponents()
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 end
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
@@ -15,7 +14,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
 		"Handcuffs",
 		"Inventory",
-		"Chat",
 	}, function(error)
 		if #error > 0 then
 			return

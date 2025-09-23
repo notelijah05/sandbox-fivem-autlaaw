@@ -11,7 +11,6 @@ _savedVehiclePropertiesClusterfuck = {}
 AddEventHandler('Vehicles:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Locations = exports['sandbox-base']:FetchComponent('Locations')
-    Chat = exports['sandbox-base']:FetchComponent('Chat')
     Wallet = exports['sandbox-base']:FetchComponent('Wallet')
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
     Inventory = exports['sandbox-base']:FetchComponent('Inventory')
@@ -31,7 +30,6 @@ end
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Vehicles', {
         'Locations',
-        'Chat',
         'Wallet',
         'Jobs',
         'Inventory',
@@ -1046,7 +1044,7 @@ RegisterServerEvent('Vehicle:Server:InspectVIN', function(vNet)
     if DoesEntityExist(veh) then
         local vState = Entity(veh).state
         if vState and vState.VIN then
-            Chat.Send.Server:Single(src, 'Vehicle VIN: ' .. vState.VIN)
+            exports["sandbox-chat"]:SendServerSingle(src, 'Vehicle VIN: ' .. vState.VIN)
             TriggerClientEvent('Vehicles:Client:ViewVIN', src, vState.VIN)
         end
     end

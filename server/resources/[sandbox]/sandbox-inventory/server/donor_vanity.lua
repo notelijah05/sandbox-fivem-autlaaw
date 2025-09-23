@@ -124,15 +124,15 @@ function RegisterDonorVanityItemsCallbacks()
 		end
 	end)
 
-	Chat:RegisterAdminCommand("adddonatoritem", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("adddonatoritem", function(source, args, rawCommand)
 		local license = table.unpack(args)
 
 		if license then
 			local success = Inventory.Donator:AddPending(license)
 			if success then
-				Chat.Send.System:Single(source, "Successfully added donator vanity item token")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Successfully added donator vanity item token")
 			else
-				Chat.Send.System:Single(source, "Failed to add donator vanity item token")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Failed to add donator vanity item token")
 			end
 		end
 	end, {
@@ -145,7 +145,7 @@ function RegisterDonorVanityItemsCallbacks()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("getdonatoritem", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("getdonatoritem", function(source, args, rawCommand)
 		local license = table.unpack(args)
 
 		if license then
@@ -156,9 +156,9 @@ function RegisterDonorVanityItemsCallbacks()
 					message = message
 						.. string.format("<br>ID: %s<br>Redeemed: %s<br>", v.id, v.redeemed and "Yes" or "No")
 				end
-				Chat.Send.System:Single(source, message)
+				exports["sandbox-chat"]:SendSystemSingle(source, message)
 			else
-				Chat.Send.System:Single(source, "Failed")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
 			end
 		end
 	end, {
@@ -171,14 +171,14 @@ function RegisterDonorVanityItemsCallbacks()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("removedonatoritem", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("removedonatoritem", function(source, args, rawCommand)
 		local license, tokenId = table.unpack(args)
 		if license and tokenId then
 			local success = Inventory.Donator:DeletePending(license, tokenId)
 			if success then
-				Chat.Send.System:Single(source, "Successfully Removed Token")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Removed Token")
 			else
-				Chat.Send.System:Single(source, "Failed to remove token")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Failed to remove token")
 			end
 		end
 	end, {
@@ -265,9 +265,9 @@ function TebexAddVanityItem(source, args)
 		if license then
 			local success = Inventory.Donator:AddPending(license)
 			if success then
-				Chat.Send.System:Single(sid, "Successfully Added Donator Vanity Item Token")
+				exports["sandbox-chat"]:SendSystemSingle(sid, "Successfully Added Donator Vanity Item Token")
 			else
-				Chat.Send.System:Single(sid, "Failed")
+				exports["sandbox-chat"]:SendSystemSingle(sid, "Failed")
 			end
 		end
 	end

@@ -1,5 +1,5 @@
 function RegisterCommands()
-	Chat:RegisterAdminCommand("xmastree", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("xmastree", function(source, args, rawCommand)
 		GenerateNewTree()
 	end, {
 		help = "Force Spawns A New Christmas Tree",

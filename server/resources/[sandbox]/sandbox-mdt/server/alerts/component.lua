@@ -41,16 +41,12 @@ _alertsDefaultType = {
 
 AddEventHandler("EmergencyAlerts:Shared:DependencyUpdate", RetrieveEAComponents)
 function RetrieveEAComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Chat",
 		"EmergencyAlerts",
-		"Chat",
 	}, function(error)
 		if #error > 0 then
 			return

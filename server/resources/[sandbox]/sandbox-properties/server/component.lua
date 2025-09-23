@@ -3,7 +3,6 @@ _charPropertyKeys = {}
 AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Default = exports["sandbox-base"]:FetchComponent("Default")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
@@ -21,7 +20,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Properties", {
 		"Default",
-		"Chat",
 		"Properties",
 		"Routing",
 		"Phone",
@@ -87,7 +85,7 @@ PROPERTIES = {
 
 							_properties[doc.id] = doc
 
-							Chat.Send.Server:Single(source, "Property Added, Property ID: " .. doc.id)
+							exports["sandbox-chat"]:SendServerSingle(source, "Property Added, Property ID: " .. doc.id)
 
 							TriggerClientEvent("Properties:Client:Update", -1, doc.id, doc)
 						end
@@ -96,11 +94,11 @@ PROPERTIES = {
 					end)
 					return Citizen.Await(p)
 				else
-					Chat.Send.Server:Single(source, "Invalid Interior Combination")
+					exports["sandbox-chat"]:SendServerSingle(source, "Invalid Interior Combination")
 					return false
 				end
 			else
-				Chat.Send.Server:Single(source, "Invalid Property Type")
+				exports["sandbox-chat"]:SendServerSingle(source, "Invalid Property Type")
 				return false
 			end
 		end,

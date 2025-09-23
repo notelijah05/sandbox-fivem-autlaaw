@@ -2,7 +2,6 @@ AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	C = exports["sandbox-base"]:FetchComponent("Config")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
@@ -15,7 +14,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Admin", {
 		"Jobs",
 		"Punishment",
-		"Chat",
 		"Config",
 		"Properties",
 		"Tasks",
@@ -62,7 +60,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 function RegisterChatCommands()
-	Chat:RegisterAdminCommand("weptest", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("weptest", function(source, args, rawCommand)
 		if GlobalState.IsProduction then
 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
 				"Cannot Use This On Production Servers")
@@ -79,49 +77,49 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("statebaglog", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("statebaglog", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:StateBagLog", source)
 	end, {
 		help = "[Admin] Toggle Console State Bag Logging",
 	}, 0)
 
-	Chat:RegisterAdminCommand("voiptargetlog", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("voiptargetlog", function(source, args, rawCommand)
 		TriggerClientEvent("VOIP:Client:ToggleDebugMode", source)
 	end, {
 		help = "[Admin] Toggle Console VOIP Target Logging",
 	}, 0)
 
-	Chat:RegisterAdminCommand("admin", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("admin", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:Menu:Open", source)
 	end, {
 		help = "[Admin] Open Admin Menu",
 	}, 0)
 
-	Chat:RegisterStaffCommand("staff", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterStaffCommand("staff", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:Menu:Open", source)
 	end, {
 		help = "[Staff] Open Staff Menu",
 	}, 0)
 
-	Chat:RegisterStaffCommand("noclip", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterStaffCommand("noclip", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:NoClip", source, false)
 	end, {
 		help = "[Admin] Toggle NoClip",
 	}, 0)
 
-	Chat:RegisterAdminCommand("noclip:dev", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("noclip:dev", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:NoClip", source, true)
 	end, {
 		help = "[Developer] Toggle Developer Mode NoClip",
 	}, 0)
 
-	Chat:RegisterAdminCommand("noclip:info", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("noclip:info", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:NoClipInfo", source)
 	end, {
 		help = "[Developer] Get NoClip Camera Info",
 	}, 0)
 
-	Chat:RegisterAdminCommand("marker", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("marker", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:Marker", source, tonumber(args[1]) + 0.0, tonumber(args[2]) + 0.0)
 	end, {
 		help = "Place Marker at Coordinates",
@@ -137,7 +135,7 @@ function RegisterChatCommands()
 		},
 	}, 2)
 
-	Chat:RegisterStaffCommand("cpcoords", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterStaffCommand("cpcoords", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:CopyCoords", source, args[1])
 		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Copied Coordinates")
 	end, {
@@ -150,7 +148,7 @@ function RegisterChatCommands()
 		},
 	}, -1)
 
-	Chat:RegisterAdminCommand("cpproperty", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("cpproperty", function(source, args, rawCommand)
 		local nearProperty = Properties.Utils:IsNearProperty(source)
 		if nearProperty?.propertyId then
 			exports['sandbox-base']:ExecuteClient(source, "Admin", "CopyClipboard", nearProperty?.propertyId)
@@ -160,12 +158,12 @@ function RegisterChatCommands()
 		help = "[Dev] Copy Property ID of Closest Property",
 	}, 0)
 
-	Chat:RegisterAdminCommand("property", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("property", function(source, args, rawCommand)
 		local nearProperty = Properties.Utils:IsNearProperty(source)
 		if nearProperty?.propertyId then
 			local prop = Properties:Get(nearProperty.propertyId)
 			if prop then
-				Chat.Send.System:Single(
+				exports["sandbox-chat"]:SendSystemSingle(
 					source,
 					string.format(
 						"Property ID: %s<br>Property: %s<br>Interior: %s<br>Owner: %s<br>Price: $%s<br>Type: %s",
@@ -183,31 +181,31 @@ function RegisterChatCommands()
 		help = "[Dev] Get Closest Property Data",
 	}, 0)
 
-	Chat:RegisterCommand("record", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("record", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:Recording", source, 'record')
 	end, {
 		help = "Record With R* Editor",
 	}, 0)
 
-	Chat:RegisterCommand("recordstop", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("recordstop", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:Recording", source, 'stop')
 	end, {
 		help = "Record With R* Editor",
 	}, 0)
 
-	-- Chat:RegisterStaffCommand("recorddel", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterStaffCommand("recorddel", function(source, args, rawCommand)
 	-- 	TriggerClientEvent("Admin:Client:Recording", source, 'delete')
 	-- end, {
 	-- 	help = "[Staff] Record With R* Editor",
 	-- }, 0)
 
-	-- Chat:RegisterStaffCommand("recordedit", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterStaffCommand("recordedit", function(source, args, rawCommand)
 	-- 	TriggerClientEvent("Admin:Client:Recording", source, 'editor')
 	-- end, {
 	-- 	help = "[Staff] Record With R* Editor",
 	-- }, 0)
 
-	Chat:RegisterAdminCommand("setped", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("setped", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:ChangePed", source, args[1])
 	end, {
 		help = "[Admin] Set Ped",
@@ -219,13 +217,13 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("staffcam", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("staffcam", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:NoClip", source, true)
 	end, {
 		help = "[Staff] Camera Mode",
 	}, 0)
 
-	Chat:RegisterAdminCommand("zsetped", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("zsetped", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:ChangePed", tonumber(args[1]), args[2])
 	end, {
 		help = "[Admin] Set Ped",
@@ -241,7 +239,7 @@ function RegisterChatCommands()
 		},
 	}, 2)
 
-	Chat:RegisterAdminCommand("nuke", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("nuke", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:NukeCountdown", -1)
 		Wait(23000)
 		TriggerClientEvent("Admin:Client:Nuke", -1)

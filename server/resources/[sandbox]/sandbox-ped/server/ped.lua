@@ -287,7 +287,6 @@ function RetrieveComponents()
 	Routing = exports["sandbox-base"]:FetchComponent("Routing")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -296,7 +295,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Routing",
 		"Ped",
 		"Inventory",
-		"Chat",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -308,7 +306,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		GlobalState["GangChains"] = _gangChains
 		GlobalState["ClothingStoreHidden"] = _hideFromStore
 
-		Chat:RegisterCommand("m0", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterCommand("m0", function(source, args, rawCommand)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
@@ -322,7 +320,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			help = "Remove Mask",
 		})
 
-		Chat:RegisterCommand("h0", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterCommand("h0", function(source, args, rawCommand)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
@@ -336,7 +334,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			help = "Remove Hat",
 		})
 
-		Chat:RegisterCommand("h1", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterCommand("h1", function(source, args, rawCommand)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
@@ -350,7 +348,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			help = "Re-equip Hat If You Had One",
 		})
 
-		Chat:RegisterCommand("g1", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterCommand("g1", function(source, args, rawCommand)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
@@ -364,7 +362,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			help = "Re-equip Glasses If You Had One",
 		})
 
-		Chat:RegisterCommand("g0", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterCommand("g0", function(source, args, rawCommand)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				TriggerClientEvent("Ped:Client:RemoveGlasses", source)
@@ -373,7 +371,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			help = "Remove Glasses",
 		})
 
-		Chat:RegisterAdminCommand("pedwhitelist", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterAdminCommand("pedwhitelist", function(source, args, rawCommand)
 			local sid, model, label = tonumber(args[1]), args[2], args[3]
 			if sid and model and label then
 				exports['sandbox-base']:DatabaseGameFindOne({
@@ -394,13 +392,14 @@ AddEventHandler("Core:Shared:Ready", function()
 							label
 						})
 
-						Chat.Send.System:Single(source, string.format("Added Whitelisted Ped to State ID %s", sid))
+						exports["sandbox-chat"]:SendSystemSingle(source,
+							string.format("Added Whitelisted Ped to State ID %s", sid))
 					else
-						Chat.Send.System:Single(source, "Invalid State ID")
+						exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
 					end
 				end)
 			else
-				Chat.Send.System:Single(source, "Invalid Arguments")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
 			end
 		end, {
 			help = "Add Whitelisted Ped to Character",
@@ -420,7 +419,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}, 3)
 
-		Chat:RegisterAdminCommand("pedwhitelistview", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterAdminCommand("pedwhitelistview", function(source, args, rawCommand)
 			local sid = tonumber(args[1])
 			if sid then
 				local res = MySQL.query.await("SELECT model, label FROM whitelisted_peds WHERE sid = ?", {
@@ -431,9 +430,9 @@ AddEventHandler("Core:Shared:Ready", function()
 				for k, v in ipairs(res) do
 					message = message .. string.format("Model: %s | Label: %s", v.model, v.label)
 				end
-				Chat.Send.System:Single(source, message)
+				exports["sandbox-chat"]:SendSystemSingle(source, message)
 			else
-				Chat.Send.System:Single(source, "Invalid Arguments")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
 			end
 		end, {
 			help = "View Whitelisted Peds for Character",
@@ -445,7 +444,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}, 1)
 
-		Chat:RegisterAdminCommand("pedwhitelistremove", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterAdminCommand("pedwhitelistremove", function(source, args, rawCommand)
 			local sid, model = tonumber(args[1]), args[2]
 			if sid and model then
 				local d = MySQL.query.await("DELETE FROM whitelisted_peds WHERE SID = ? AND model = ?", {
@@ -454,12 +453,12 @@ AddEventHandler("Core:Shared:Ready", function()
 				})
 
 				if d.affectedRows > 0 then
-					Chat.Send.System:Single(source, "Deleted Ped")
+					exports["sandbox-chat"]:SendSystemSingle(source, "Deleted Ped")
 				else
-					Chat.Send.System:Single(source, "Failed to Delete")
+					exports["sandbox-chat"]:SendSystemSingle(source, "Failed to Delete")
 				end
 			else
-				Chat.Send.System:Single(source, "Invalid Arguments")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
 			end
 		end, {
 			help = "Remove Whitelisted Ped from Character",

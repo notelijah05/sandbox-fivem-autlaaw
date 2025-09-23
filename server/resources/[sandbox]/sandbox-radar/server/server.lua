@@ -2,14 +2,12 @@ FLAGGED_PLATES = {}
 
 AddEventHandler("Radar:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radar", {
-		"Chat",
 		"Jobs",
 		"Radar",
 	}, function(error)
@@ -26,7 +24,7 @@ CreateThread(function()
 end)
 
 function RegisterChatCommands()
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"flagplate",
 		function(src, args, raw)
 			local plate = args[1]
@@ -35,7 +33,7 @@ function RegisterChatCommands()
 			if plate and reason then
 				Radar:AddFlaggedPlate(plate:upper(), reason)
 
-				Chat.Send.System:Single(src, "Plate Flagged: " .. plate)
+				exports["sandbox-chat"]:SendSystemSingle(src, "Plate Flagged: " .. plate)
 			end
 		end,
 		{
@@ -51,14 +49,14 @@ function RegisterChatCommands()
 		}
 	)
 
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"unflagplate",
 		function(src, args, raw)
 			local plate = args[1]
 
 			if plate then
 				Radar:RemoveFlaggedPlate(plate)
-				Chat.Send.System:Single(src, "Removed Flagged Plate: " .. plate)
+				exports["sandbox-chat"]:SendSystemSingle(src, "Removed Flagged Plate: " .. plate)
 			end
 		end,
 		{
@@ -73,7 +71,7 @@ function RegisterChatCommands()
 		}
 	)
 
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"radar",
 		function(src)
 			TriggerClientEvent("Radar:Client:ToggleRadarDisabled", src)

@@ -82,12 +82,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 	_moneyTruckSpawns = table.copy(_spawnHoldingShit)
 
-	Chat:RegisterAdminCommand("togglemoneytruck", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("togglemoneytruck", function(source, args, rawCommand)
 		_truckSpawnEnabled = not _truckSpawnEnabled
 		if _truckSpawnEnabled then
-			Chat.Send.System:Single(source, "Truck Spawns Enabled")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Truck Spawns Enabled")
 		else
-			Chat.Send.System:Single(source, "Truck Spawns Disabled")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Truck Spawns Disabled")
 		end
 	end, {
 		help = "Toggle Bobcat Truck Spawning",

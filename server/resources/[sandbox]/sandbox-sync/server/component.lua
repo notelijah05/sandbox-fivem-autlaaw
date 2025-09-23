@@ -47,14 +47,12 @@ local _isNight = false
 
 AddEventHandler("Sync:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 	RegisterChatCommands()
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Sync", {
-		"Chat",
 		"Status",
 		"Inventory",
 	}, function(error)

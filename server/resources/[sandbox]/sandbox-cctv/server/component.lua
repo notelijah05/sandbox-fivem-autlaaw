@@ -1,13 +1,11 @@
 AddEventHandler("Sync:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
 	RegisterChatCommands()
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("CCTV", {
-		"Chat",
 		"CCTV",
 	}, function(error)
 		if #error > 0 then

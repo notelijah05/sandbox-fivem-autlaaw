@@ -142,7 +142,6 @@ AddEventHandler("Pwnzor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 end
 
@@ -151,7 +150,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Pwnzor", {
 		"Punishment",
 		"Pwnzor",
-		"Chat",
 		"Generator",
 	}, function(error)
 		if #error > 0 then

@@ -19,7 +19,6 @@ function RetrieveComponents()
 	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
 	Queue = exports["sandbox-base"]:FetchComponent("Queue")
 	Convar = exports["sandbox-base"]:FetchComponent("Convar")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 end
 
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Punishment",
 		"Queue",
 		"Convar",
-		"Chat",
 		"Sequence",
 	}, function(error)
 		if #error > 0 then return; end
@@ -42,7 +40,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		Config.Groups = c.Groups
 		queueActive = true
 
-		Chat:RegisterAdminCommand("queue", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterAdminCommand("queue", function(source, args, rawCommand)
 			local message = "Queue List"
 
 			for k, v in ipairs(QUEUE_PLAYERS_SORTED) do
@@ -51,12 +49,12 @@ AddEventHandler("Core:Shared:Ready", function()
 					message = message .. string.format("<br>#%d - %s (%s)", k, pData.Name, v)
 				end
 			end
-			Chat.Send.System:Single(source, message)
+			exports["sandbox-chat"]:SendSystemSingle(source, message)
 		end, {
 			help = "Print the Queue",
 		})
 
-		Chat:RegisterAdminCommand("yeetqueue", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterAdminCommand("yeetqueue", function(source, args, rawCommand)
 			for k, v in pairs(QUEUE_PLAYERS) do
 				if QUEUE_PLAYERS_DATA[k] then
 					QUEUE_PLAYERS_DATA[k].Deferrals.done("Deleted")
@@ -64,18 +62,18 @@ AddEventHandler("Core:Shared:Ready", function()
 
 				Queue.Queue:Pop(k, true)
 			end
-			Chat.Send.System:Single(source, "Done")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Done")
 		end, {
 			help = "Yeet the Queue [DANGER!]",
 		})
 
-		Chat:RegisterAdminCommand("maxplayers", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterAdminCommand("maxplayers", function(source, args, rawCommand)
 			local max = tonumber(args[1])
 			if max and max > 0 and max < 500 then
 				MAX_PLAYERS = max
 				GlobalState["MaxPlayers"] = MAX_PLAYERS
 				SetConvarServerInfo("sv_maxclients", MAX_PLAYERS)
-				Chat.Send.System:Single(source, "Max Players Set")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Max Players Set")
 			end
 		end, {
 			params = {
@@ -87,15 +85,15 @@ AddEventHandler("Core:Shared:Ready", function()
 			help = "Set Max Players",
 		})
 
-		Chat:RegisterStaffCommand("tempprio", function(source, args, rawCommand)
+		exports["sandbox-chat"]:RegisterStaffCommand("tempprio", function(source, args, rawCommand)
 			local ident = args[1]
 			local prio = tonumber(args[2])
 
 			if ident and prio and prio > 0 and prio <= 200 then
 				Queue:AddTempPriority(ident, prio)
-				Chat.Send.System:Single(source, "Priority Added")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Priority Added")
 			else
-				Chat.Send.System:Single(source, "Error")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Error")
 			end
 		end, {
 			params = {

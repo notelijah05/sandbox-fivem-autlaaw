@@ -26,11 +26,11 @@ AddEventHandler("Labor:Server:Startup", function()
 		-- max = 12000,
 	})
 
-	Chat:RegisterAdminCommand("addoxyrun", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("addoxyrun", function(source, args, rawCommand)
 		if tonumber(args[1]) then
 			_availableRuns = _availableRuns + tonumber(args[1])
 		else
-			return Chat.Send.System:Single(source, "Invalid Amount")
+			return exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Amount")
 		end
 	end, {
 		help = "Add Available Oxy Runs",

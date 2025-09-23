@@ -2,13 +2,11 @@ local _uircd = {}
 
 AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	RegisterChatCommands()
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
-		"Chat",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -18,61 +16,61 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 function RegisterChatCommands()
-	-- Chat:RegisterAdminCommand("notif", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("notif", function(source, args, rawCommand)
 	-- 	exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "This is a test, lul")
 	-- end, {
 	-- 	help = "Test Notification",
 	-- })
 
-	-- Chat:RegisterAdminCommand("list", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("list", function(source, args, rawCommand)
 	-- 	TriggerClientEvent("ListMenu:Client:Test", source)
 	-- end, {
 	-- 	help = "Test List Menu",
 	-- })
 
-	-- Chat:RegisterAdminCommand("input", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("input", function(source, args, rawCommand)
 	-- 	TriggerClientEvent("Input:Client:Test", source)
 	-- end, {
 	-- 	help = "Test Input",
 	-- })
 
-	-- Chat:RegisterAdminCommand("confirm", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("confirm", function(source, args, rawCommand)
 	-- 	TriggerClientEvent("Confirm:Client:Test", source)
 	-- end, {
 	-- 	help = "Test Confirm Dialog",
 	-- })
 
-	-- Chat:RegisterAdminCommand("skill", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("skill", function(source, args, rawCommand)
 	-- 	TriggerClientEvent("Minigame:Client:Skillbar", source)
 	-- end, {
 	-- 	help = "Test Skill Bar",
 	-- })
 
-	-- Chat:RegisterAdminCommand("scan", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("scan", function(source, args, rawCommand)
 	-- 	TriggerClientEvent("Minigame:Client:Scanner", source)
 	-- end, {
 	-- 	help = "Test Scanner",
 	-- })
 
-	-- Chat:RegisterAdminCommand("sequencer", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("sequencer", function(source, args, rawCommand)
 	-- 	TriggerClientEvent("Minigame:Client:Sequencer", source)
 	-- end, {
 	-- 	help = "Test Sequencer",
 	-- })
 
-	-- Chat:RegisterAdminCommand("keypad", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("keypad", function(source, args, rawCommand)
 	-- 	TriggerClientEvent("Minigame:Client:Keypad", source)
 	-- end, {
 	-- 	help = "Test Keypad",
 	-- })
 
-	-- Chat:RegisterAdminCommand("scrambler", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("scrambler", function(source, args, rawCommand)
 	-- 	TriggerClientEvent("Minigame:Client:Scrambler", source)
 	-- end, {
 	-- 	help = "Test Scrambler",
 	-- })
 
-	-- Chat:RegisterAdminCommand("memory", function(source, args, rawCommand)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("memory", function(source, args, rawCommand)
 	-- 	TriggerClientEvent("Minigame:Client:Memory", source)
 	-- end, {
 	-- 	help = "Test Memory",

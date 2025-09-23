@@ -1,10 +1,10 @@
 function RegisterCommands()
-	Chat:RegisterStaffCommand("logout", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterStaffCommand("logout", function(source, args, rawCommand)
 		exports['sandbox-base']:ExecuteClient(source, "Characters", "Logout")
 	end, {
 		help = "Logout",
 	}, 0)
-	Chat:RegisterStaffCommand("logoutsid", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterStaffCommand("logoutsid", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
 			exports['sandbox-base']:ExecuteClient(char:GetData("Source"), "Characters", "Logout")
@@ -18,7 +18,7 @@ function RegisterCommands()
 			},
 		},
 	}, 1)
-	Chat:RegisterStaffCommand("logoutsource", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterStaffCommand("logoutsource", function(source, args, rawCommand)
 		exports['sandbox-base']:ExecuteClient(tonumber(args[1]), "Characters", "Logout")
 	end, {
 		help = "Force logs out another player by Source",
@@ -29,7 +29,7 @@ function RegisterCommands()
 			},
 		},
 	}, 1)
-	Chat:RegisterAdminCommand("logoutall", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("logoutall", function(source, args, rawCommand)
 		for k, v in pairs(exports['sandbox-base']:FetchAll()) do
 			exports['sandbox-base']:ExecuteClient(v:GetData("Source"), "Characters", "Logout")
 		end
@@ -37,16 +37,16 @@ function RegisterCommands()
 		help = "Force logs out all players",
 	}, 0)
 
-	Chat:RegisterAdminCommand("addrep", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("addrep", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
 			Reputation.Modify:Add(char:GetData("Source"), args[2], tonumber(args[3]))
-			Chat.Send.System:Single(
+			exports["sandbox-chat"]:SendSystemSingle(
 				source,
 				string.format("%s Rep Added For %s To State ID %s", args[3], args[2], args[1])
 			)
 		else
-			Chat.Send.System:Single(source, "Invalid Target")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target")
 		end
 	end, {
 		help = "Add Specified Reputation To Specified Player",
@@ -66,16 +66,16 @@ function RegisterCommands()
 		},
 	}, 3)
 
-	Chat:RegisterAdminCommand("remrep", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("remrep", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
 			Reputation.Modify:Remove(char:GetData("Source"), args[2], tonumber(args[3]))
-			Chat.Send.System:Single(
+			exports["sandbox-chat"]:SendSystemSingle(
 				source,
 				string.format("%s Rep Removed For %s From State ID %s", args[3], args[2], args[1])
 			)
 		else
-			Chat.Send.System:Single(source, "Invalid Target")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target")
 		end
 	end, {
 		help = "Remove Specified Reputation To Specified Player",
@@ -95,16 +95,16 @@ function RegisterCommands()
 		},
 	}, 3)
 
-	Chat:RegisterAdminCommand("getrep", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("getrep", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
 			local repLevel = Reputation:GetLevel(char:GetData("Source"), args[2])
-			Chat.Send.System:Single(
+			exports["sandbox-chat"]:SendSystemSingle(
 				source,
 				string.format("%s Rep Level For %s To State ID %s", repLevel, args[2], args[1])
 			)
 		else
-			Chat.Send.System:Single(source, "Invalid Target")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target")
 		end
 	end, {
 		help = "Get Specified Reputation for Specified Player",
@@ -120,7 +120,7 @@ function RegisterCommands()
 		},
 	}, 2)
 
-	Chat:RegisterAdminCommand("phoneperm", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("phoneperm", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		local app, perm = args[2], args[3]
 
@@ -130,21 +130,21 @@ function RegisterCommands()
 				if phonePermissions[app][perm] ~= nil then
 					if phonePermissions[app][perm] then
 						phonePermissions[app][perm] = false
-						Chat.Send.System:Single(source, "Disabled Permission")
+						exports["sandbox-chat"]:SendSystemSingle(source, "Disabled Permission")
 					else
 						phonePermissions[app][perm] = true
-						Chat.Send.System:Single(source, "Enabled Permission")
+						exports["sandbox-chat"]:SendSystemSingle(source, "Enabled Permission")
 					end
 
 					char:SetData("PhonePermissions", phonePermissions)
 				else
-					Chat.Send.System:Single(source, "Permission Doesn't Exist")
+					exports["sandbox-chat"]:SendSystemSingle(source, "Permission Doesn't Exist")
 				end
 			else
-				Chat.Send.System:Single(source, "App Doesn't Exist")
+				exports["sandbox-chat"]:SendSystemSingle(source, "App Doesn't Exist")
 			end
 		else
-			Chat.Send.System:Single(source, "Invalid Target")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target")
 		end
 	end, {
 		help = "Add Specified App Permission",
@@ -164,7 +164,7 @@ function RegisterCommands()
 		},
 	}, 3)
 
-	Chat:RegisterAdminCommand("laptopperm", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("laptopperm", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		local app, perm = args[2], args[3]
 
@@ -174,21 +174,21 @@ function RegisterCommands()
 				if laptopPermissions[app][perm] ~= nil then
 					if laptopPermissions[app][perm] then
 						laptopPermissions[app][perm] = false
-						Chat.Send.System:Single(source, "Disabled Permission")
+						exports["sandbox-chat"]:SendSystemSingle(source, "Disabled Permission")
 					else
 						laptopPermissions[app][perm] = true
-						Chat.Send.System:Single(source, "Enabled Permission")
+						exports["sandbox-chat"]:SendSystemSingle(source, "Enabled Permission")
 					end
 
 					char:SetData("LaptopPermissions", laptopPermissions)
 				else
-					Chat.Send.System:Single(source, "Permission Doesn't Exist")
+					exports["sandbox-chat"]:SendSystemSingle(source, "Permission Doesn't Exist")
 				end
 			else
-				Chat.Send.System:Single(source, "App Doesn't Exist")
+				exports["sandbox-chat"]:SendSystemSingle(source, "App Doesn't Exist")
 			end
 		else
-			Chat.Send.System:Single(source, "Invalid Target")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target")
 		end
 	end, {
 		help = "Add Specified App Permission",

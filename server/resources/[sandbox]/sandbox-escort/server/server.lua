@@ -1,14 +1,12 @@
 AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
 		"Jobs",
-		"Chat",
 		"Escort",
 	}, function(error)
 		if #error > 0 then

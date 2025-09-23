@@ -1,5 +1,5 @@
 function RegisterChatCommands()
-	Chat:RegisterAdminCommand("acam", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("acam", function(source, args, rawCommand)
 		if (tonumber(args[1])) then
 			CCTV:View(source, tonumber(args[1]))
 		else

@@ -87,16 +87,16 @@ AddEventHandler("Businesses:Server:Startup", function()
         end
     end)
 
-    Chat:RegisterStaffCommand("setmazebank", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterStaffCommand("setmazebank", function(source, args, rawCommand)
         local int = args[1]
         if _MBAeventNames[int] then
             if SetMBAInterior(int) then
-                Chat.Send.System:Single(source, "Success")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Success")
             else
-                Chat.Send.System:Single(source, "Error")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Error")
             end
         else
-            Chat.Send.System:Single(source, "Invalid Interior")
+            exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Interior")
         end
     end, {
         help = "[Staff] Set Maze Bank Arena Interior",
