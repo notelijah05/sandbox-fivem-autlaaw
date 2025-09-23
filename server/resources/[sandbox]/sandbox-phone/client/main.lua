@@ -50,7 +50,6 @@ function RetrieveComponents()
 	InfoOverlay = exports["sandbox-base"]:FetchComponent("InfoOverlay")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Notifications = exports["sandbox-base"]:FetchComponent("Notifications")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -75,7 +74,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"InfoOverlay",
 		"Input",
 		"Animations",
-		"Notifications",
 	}, function(error)
 		if #error > 0 then
 			return
