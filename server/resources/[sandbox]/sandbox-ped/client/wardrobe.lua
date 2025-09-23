@@ -3,7 +3,6 @@ function RetrieveWardrobeComponents()
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Confirm = exports["sandbox-base"]:FetchComponent("Confirm")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 end
 
@@ -12,7 +11,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"ListMenu",
 		"Input",
 		"Confirm",
-		"Sounds",
 		"Wardrobe",
 	}, function(error)
 		if #error > 0 then
@@ -84,7 +82,7 @@ end)
 AddEventHandler("Wardrobe:Client:Equip", function(data)
 	exports["sandbox-base"]:ServerCallback("Wardrobe:Equip", data.index, function(state)
 		if state then
-			Sounds.Play:One("outfit_change.ogg", 0.3)
+			exports["sandbox-sounds"]:PlayOne("outfit_change.ogg", 0.3)
 			exports["sandbox-hud"]:NotifSuccess("Outfit Equipped")
 		else
 			exports["sandbox-hud"]:NotifError("Unable to Equip Outfit")

@@ -5,7 +5,7 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 RegisterNetEvent("Jail:Client:EnterJail", function()
-	Sounds.Play:One("jailed.ogg", 0.075)
+	exports["sandbox-sounds"]:PlayOne("jailed.ogg", 0.075)
 	if not IsScreenFadedOut() then
 		DoScreenFadeOut(1000)
 		while not IsScreenFadedOut() do
@@ -70,7 +70,7 @@ AddEventHandler("Jail:Client:Released", function()
 					Wait(10)
 				end
 
-				Sounds.Play:One("release.ogg", 0.15)
+				exports["sandbox-sounds"]:PlayOne("release.ogg", 0.15)
 				SetEntityCoords(
 					LocalPlayer.state.ped,
 					Config.Release.coords.x,

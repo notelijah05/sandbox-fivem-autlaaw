@@ -9,10 +9,10 @@ RegisterNUICallback("TestSound", function(data, cb)
 	cb("OK")
 
 	if testingSound ~= nil then
-		Sounds.Stop:One(testingSound)
+		exports["sandbox-sounds"]:StopOne(testingSound)
 		testingSound = nil
 	end
 
 	testingSound = data.val
-	Sounds.Play:One(data.val, 0.1 * (_settings.volume / 100))
+	exports["sandbox-sounds"]:PlayOne(data.val, 0.1 * (_settings.volume / 100))
 end)

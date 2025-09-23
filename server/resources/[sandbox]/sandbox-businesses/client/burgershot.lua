@@ -9,6 +9,6 @@ end)
 
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 	if id == "burgershot_drivethru" then
-		Sounds.Play:Distance(25, "bell.ogg", 0.3)
+		exports["sandbox-sounds"]:PlayDistance(25, "bell.ogg", 0.3)
 	end
 end)

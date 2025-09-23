@@ -166,7 +166,7 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
         alarm = true
 
         Citizen.SetTimeout(8000, function()
-            Sounds.Play:Location(coords, 20.0, "house_alarm.ogg", 0.05)
+            exports["sandbox-sounds"]:PlayLocation(coords, 20.0, "house_alarm.ogg", 0.05)
             TriggerServerEvent("Robbery:Server:ATM:AlertPolice", coords)
         end)
     end
@@ -202,7 +202,7 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
                 end)
             end,
             onFail = function(data)
-                Sounds.Play:Location(coords, 20.0, "house_alarm.ogg", 0.05)
+                exports["sandbox-sounds"]:PlayLocation(coords, 20.0, "house_alarm.ogg", 0.05)
 
                 while LocalPlayer.state.doingAction do -- Apparently this is dumb
                     Wait(100)

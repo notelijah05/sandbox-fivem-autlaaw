@@ -189,7 +189,7 @@ LAPTOP = {
 					},
 				})
 
-				Sounds.Play:One("notification1.ogg", 0.1 * (_settings.volume / 100))
+				exports["sandbox-sounds"]:PlayOne("notification1.ogg", 0.1 * (_settings.volume / 100))
 			end
 		end,
 		AddWithId = function(self, id, title, description, time, duration, app, actions, notifData)
@@ -211,7 +211,7 @@ LAPTOP = {
 			})
 
 			if not LocalPlayer.state.laptopOpen then
-				Sounds.Play:One("notification1.ogg", 0.1 * (_settings.volume / 100))
+				exports["sandbox-sounds"]:PlayOne("notification1.ogg", 0.1 * (_settings.volume / 100))
 			end
 		end,
 		Update = function(self, id, title, description, skipSound)
@@ -225,7 +225,7 @@ LAPTOP = {
 			})
 
 			if not skipSound and not LocalPlayer.state.laptopOpen then
-				Sounds.Play:One("notification1.ogg", 0.1 * (_settings.volume / 100))
+				exports["sandbox-sounds"]:PlayOne("notification1.ogg", 0.1 * (_settings.volume / 100))
 			end
 		end,
 		Remove = function(self, id)

@@ -295,7 +295,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									if IsMBPowerDisabled() then
 										Doors:SetLock("mazebank_offices", false)
 										CCTV.State.Group:Offline("mazebank")
-										Sounds.Play:Location(
+										exports["sandbox-sounds"]:PlayLocation(
 											source,
 											data.ptFxPoint,
 											15.0,
@@ -323,7 +323,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 									else
 										Doors:SetLock("mazebank_offices", true)
-										Sounds.Play:Location(
+										exports["sandbox-sounds"]:PlayLocation(
 											source,
 											data.ptFxPoint,
 											15.0,
@@ -506,7 +506,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										if IsMBPowerDisabled() then
 											Doors:SetLock("mazebank_offices", false)
 											CCTV.State.Group:Offline("mazebank")
-											Sounds.Play:Location(
+											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,
 												15.0,
@@ -535,7 +535,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 										else
 											Doors:SetLock("mazebank_offices", true)
-											Sounds.Play:Location(
+											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,
 												15.0,

@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 end
@@ -18,7 +17,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"Progress",
 		"Targeting",
-		"Sounds",
 		"Blips",
 		"Interaction",
 	}, function(error)
@@ -62,7 +60,7 @@ end)
 RegisterNetEvent("Xmas:Client:NewTree", function(tree)
 	if LocalPlayer.state.loggedIn then
 		SetupTree(tree, false)
-		Sounds.Play:One("xmas.ogg", 0.05)
+		exports["sandbox-sounds"]:PlayOne("xmas.ogg", 0.05)
 	end
 end)
 

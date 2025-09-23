@@ -225,7 +225,7 @@ AddEventHandler("Robbery:Client:Vangelico:BreakCase", function(entity, data)
 
 		CreateThread(function()
 			Wait(600)
-			Sounds.Play:Location(data.coords, 10.0, "jewel_glass.ogg", 0.15)
+			exports["sandbox-sounds"]:PlayLocation(data.coords, 10.0, "jewel_glass.ogg", 0.15)
 			StartParticleFxLoopedAtCoord(
 				"scr_jewel_cab_smash",
 				data.coords.x,

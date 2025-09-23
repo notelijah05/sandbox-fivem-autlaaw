@@ -26,15 +26,16 @@ function StartCallTimeout()
 end
 
 function fucksound()
-	Sounds.Stop:Distance(GetPlayerServerId(LocalPlayer.state.PlayerID), _settings.ringtone or "ringtone1.ogg")
-	Sounds.Stop:One("ringing.ogg")
-	Sounds.Stop:One("vibrate.ogg")
+	exports["sandbox-sounds"]:StopDistance(GetPlayerServerId(LocalPlayer.state.PlayerID),
+		_settings.ringtone or "ringtone1.ogg")
+	exports["sandbox-sounds"]:StopOne("ringing.ogg")
+	exports["sandbox-sounds"]:StopOne("vibrate.ogg")
 end
 
 PHONE.Call = {
 	Create = function(self, data)
 		local p = promise.new()
-		Sounds.Loop:One("ringing.ogg", 0.1 * (_settings.volume / 100))
+		exports["sandbox-sounds"]:LoopOne("ringing.ogg", 0.1 * (_settings.volume / 100))
 		SendNUIMessage({ type = "SET_CALL_PENDING", data = { number = data.number } })
 		data.limited = _limited
 
@@ -69,9 +70,10 @@ PHONE.Call = {
 		}
 		SendNUIMessage({ type = "SET_CALL_INCOMING", data = { number = number, limited = limited } })
 		if _settings and _settings.volume > 0 then
-			Sounds.Loop:Distance(10, _settings.ringtone or "ringtone1.ogg", 0.1 * (_settings.volume / 100))
+			exports["sandbox-sounds"]:LoopDistance(10, _settings.ringtone or "ringtone1.ogg",
+				0.1 * (_settings.volume / 100))
 		else
-			Sounds.Loop:One("vibrate.ogg", 0.1)
+			exports["sandbox-sounds"]:LoopOne("vibrate.ogg", 0.1)
 		end
 	end,
 	Accept = function(self)
@@ -138,7 +140,7 @@ RegisterNetEvent("Phone:Client:Phone:EndCall", function()
 
 	CreateThread(function()
 		Wait(100)
-		Sounds.Play:One("ended.ogg", 0.15)
+		exports["sandbox-sounds"]:PlayOne("ended.ogg", 0.15)
 	end)
 
 	if LocalPlayer.state.phoneOpen then

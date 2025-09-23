@@ -95,7 +95,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 	if id == "uwu_cafe_door" then
 		local h = GetEntityHeading(LocalPlayer.state.ped)
 		if h > 310 or h < 50 then
-			Sounds.Play:Distance(15, "bell.ogg", 0.3)
+			exports["sandbox-sounds"]:PlayDistance(15, "bell.ogg", 0.3)
 		end
 	end
 end)

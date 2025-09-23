@@ -180,7 +180,7 @@ RegisterNetEvent("Government:Client:Gavel", function()
 	end
 	local coords = GetEntityCoords(LocalPlayer.state.ped)
 	if Polyzone:IsCoordsInZone(coords, "courtroom") then
-		Sounds.Play:One("gavel.ogg", 0.6)
+		exports["sandbox-sounds"]:PlayOne("gavel.ogg", 0.6)
 	end
 end)
 

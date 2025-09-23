@@ -408,7 +408,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									if IsLBPowerDisabled() then
 										Doors:SetLock("lombank_hidden_entrance", false)
 										CCTV.State.Group:Offline("lombank")
-										Sounds.Play:Location(
+										exports["sandbox-sounds"]:PlayLocation(
 											source,
 											data.ptFxPoint,
 											15.0,
@@ -437,7 +437,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 									else
 										Doors:SetLock("lombank_hidden_entrance", true)
 										Doors:SetLock("lombank_lasers", true)
-										Sounds.Play:Location(source, data.ptFxPoint, 15.0, "power_small_off.ogg", 0.25)
+										exports["sandbox-sounds"]:PlayLocation(source, data.ptFxPoint, 15.0,
+											"power_small_off.ogg", 0.25)
 										if not _lbPowerAlerted or os.time() > _lbPowerAlerted then
 											Robbery:TriggerPDAlert(
 												source,
@@ -607,7 +608,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										if IsLBPowerDisabled() then
 											Doors:SetLock("lombank_hidden_entrance", false)
 											CCTV.State.Group:Offline("lombank")
-											Sounds.Play:Location(
+											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,
 												15.0,
@@ -636,7 +637,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										else
 											Doors:SetLock("lombank_hidden_entrance", true)
 											Doors:SetLock("lombank_lasers", true)
-											Sounds.Play:Location(
+											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,
 												15.0,

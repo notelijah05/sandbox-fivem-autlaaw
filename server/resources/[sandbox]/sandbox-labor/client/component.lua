@@ -14,7 +14,6 @@ function RetrieveComponents()
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Sync = exports["sandbox-base"]:FetchComponent("Sync")
@@ -42,7 +41,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"EmergencyAlerts",
 		"Status",
 		"Labor",
-		"Sounds",
 		"Properties",
 		"Action",
 		"Sync",

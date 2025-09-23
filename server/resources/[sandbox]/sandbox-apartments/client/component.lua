@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Action",
 		"Polyzone",
 		"Ped",
-		"Sounds",
 		"Targeting",
 		"Interaction",
 		"Action",
@@ -347,7 +345,7 @@ _APTS = {
 			tier = tier,
 		}, function(s)
 			if s then
-				Sounds.Play:One("door_open.ogg", 0.15)
+				exports["sandbox-sounds"]:PlayOne("door_open.ogg", 0.15)
 
 				DoScreenFadeOut(1000)
 				while not IsScreenFadedOut() do
@@ -401,7 +399,7 @@ _APTS = {
 			TriggerEvent("Interiors:Exit")
 			Sync:Start()
 
-			Sounds.Play:One("door_close.ogg", 0.3)
+			exports["sandbox-sounds"]:PlayOne("door_close.ogg", 0.3)
 			Wait(200)
 
 			SetEntityCoords(PlayerPedId(), p.coords.x, p.coords.y, p.coords.z, 0, 0, 0, false)

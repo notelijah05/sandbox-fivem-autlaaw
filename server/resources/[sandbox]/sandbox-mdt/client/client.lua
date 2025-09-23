@@ -10,7 +10,6 @@ local _bodycam = false
 AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -22,7 +21,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
 		"UISounds",
-		"Sounds",
 		"Animations",
 		"EmergencyAlerts",
 		"Weapons",
@@ -140,7 +138,7 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 	})
 
 	if _bodycam and manual then
-		Sounds.Play:Distance(15, "bodycam.ogg", 0.1)
+		exports["sandbox-sounds"]:PlayDistance(15, "bodycam.ogg", 0.1)
 	end
 end)
 
@@ -152,7 +150,7 @@ AddEventHandler("MDT:Client:ToggleBodyCam", function()
 
 	_bodycam = not _bodycam
 	if _bodycam then
-		Sounds.Play:Distance(15, "bodycam.ogg", 0.05)
+		exports["sandbox-sounds"]:PlayDistance(15, "bodycam.ogg", 0.05)
 	end
 end)
 

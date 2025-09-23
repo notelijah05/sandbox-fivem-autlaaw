@@ -131,7 +131,7 @@ AddEventHandler("Doors:Client:UseElevator", function(data)
 
                         SetEntityCoords(GLOBAL_PED, floorData.coords.x, floorData.coords.y, floorData.coords.z)
                         SetEntityHeading(GLOBAL_PED, floorData.coords.w)
-                        Sounds.Play:Distance(5.0, "elevator-bell.ogg", 0.4)
+                        exports["sandbox-sounds"]:PlayDistance(5.0, "elevator-bell.ogg", 0.4)
                         Wait(250)
                         DoScreenFadeIn(500)
                     end

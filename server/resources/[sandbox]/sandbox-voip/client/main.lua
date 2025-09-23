@@ -37,7 +37,6 @@ end
 AddEventHandler("VOIP:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
@@ -46,7 +45,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VOIP", {
 		"Hud",
-		"Sounds",
 		"Animations",
 		"Polyzone",
 		"VOIP",
@@ -265,9 +263,9 @@ _fuckingVOIP = {
 	end,
 	MicClicks = function(self, on, isLocal)
 		if on then
-			Sounds.Do.Play:One("mic_click_on.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
+			exports["sandbox-sounds"]:PlayOne("mic_click_on.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
 		else
-			Sounds.Do.Play:One("mic_click_off.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
+			exports["sandbox-sounds"]:PlayOne("mic_click_off.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
 		end
 	end,
 	SetPlayerTargets = function(self, ...)

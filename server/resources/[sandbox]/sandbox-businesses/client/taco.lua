@@ -69,7 +69,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		elseif id == "TacoQueue" and LocalPlayer.state.loggedIn then
 			ShowTacoQueue()
 		elseif id == "TacoShop_DriveThru" then
-			Sounds.Play:Distance(25, "bell.ogg", 0.3)
+			exports["sandbox-sounds"]:PlayDistance(25, "bell.ogg", 0.3)
 		end
 	end)
 

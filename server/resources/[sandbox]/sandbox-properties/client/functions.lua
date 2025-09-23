@@ -16,7 +16,7 @@ function EnterProperty(data, backdoor)
 
 			local property = _properties[pId]
 
-			Sounds.Play:One("door_open.ogg", 0.3)
+			exports["sandbox-sounds"]:PlayOne("door_open.ogg", 0.3)
 			Wait(200)
 			FreezeEntityPosition(PlayerPedId(), true)
 			Wait(50)
@@ -81,7 +81,7 @@ function ExitProperty(data, backdoor)
 		TriggerEvent('Interiors:Exit')
 		Sync:Start()
 
-		Sounds.Play:One("door_close.ogg", 0.3)
+		exports["sandbox-sounds"]:PlayOne("door_close.ogg", 0.3)
 		Wait(200)
 
 		FreezeEntityPosition(PlayerPedId(), true)

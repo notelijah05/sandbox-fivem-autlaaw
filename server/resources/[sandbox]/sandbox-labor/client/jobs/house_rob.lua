@@ -101,10 +101,10 @@ function DoAlarm(pId)
     _threading = true
     CreateThread(function()
         while _threading and _working and (not _nodes.states.alarm.disabled and not _nodes.states.alarm.triggered) and LocalPlayer.state.inRobbedHouse do
-            Sounds.Play:One("alarm_warn.ogg", 0.1)
+            exports["sandbox-sounds"]:PlayOne("alarm_warn.ogg", 0.1)
             Wait(1000)
         end
-        Sounds.Stop:One("alarm_warn.ogg")
+        exports["sandbox-sounds"]:StopOne("alarm_warn.ogg")
         _threading = false
     end)
 end
@@ -118,10 +118,10 @@ function ExitHouse()
             Wait(10)
         end
 
-        Sounds.Stop:One("alarm_warn.ogg")
-        Sounds.Stop:One("house_alarm.ogg", 0.1)
+        exports["sandbox-sounds"]:StopOne("alarm_warn.ogg")
+        exports["sandbox-sounds"]:StopOne("house_alarm.ogg", 0.1)
 
-        Sounds.Play:One("door_close.ogg", 0.3)
+        exports["sandbox-sounds"]:PlayOne("door_close.ogg", 0.3)
         Wait(200)
 
         local f = GlobalState[string.format("Robbery:InProgress:%s", propId)]
@@ -192,7 +192,7 @@ end
 function EnterHouseShit(f, exit)
     _exit = exit
 
-    Sounds.Play:One("door_open.ogg", 0.15)
+    exports["sandbox-sounds"]:PlayOne("door_open.ogg", 0.15)
 
     DoScreenFadeOut(1000)
     while not IsScreenFadedOut() do
@@ -301,7 +301,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                 _nodes.states.alarm.triggered = true
 
                 if LocalPlayer.state.inRobbedHouse then
-                    Sounds.Loop:One("house_alarm.ogg", 0.1)
+                    exports["sandbox-sounds"]:LoopOne("house_alarm.ogg", 0.1)
                 end
             end
         end)
@@ -386,7 +386,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
             if (not _nodes.states.alarm.disabled and not _nodes.states.alarm.triggered) then
                 DoAlarm(_p)
             elseif _nodes.states.alarm.triggered then
-                Sounds.Play:One("house_alarm.ogg", 0.1)
+                exports["sandbox-sounds"]:PlayOne("house_alarm.ogg", 0.1)
             end
         else
             Targeting:AddEntity(o, "sensor-triangle-exclamation", {

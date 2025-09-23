@@ -1022,7 +1022,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				)
 			)
 			Wallet:Modify(source, (math.random(3000) + 2000))
-			Sounds.Stop:Location(_robbedSafes[data.id].source, _robbedSafes[data.id].coords, "alarm")
+			exports["sandbox-sounds"]:StopLocation(_robbedSafes[data.id].source, _robbedSafes[data.id].coords, "alarm")
 		end
 	end)
 
@@ -1054,7 +1054,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 						)
 					)
 					GlobalState[string.format("Safe:%s", data.id)] = _robbedSafes[data.id]
-					Sounds.Stop:Location(_robbedSafes[data.id].source, _robbedSafes[data.id].coords, "alarm")
+					exports["sandbox-sounds"]:StopLocation(_robbedSafes[data.id].source, _robbedSafes[data.id].coords,
+						"alarm")
 				end
 			end
 		end
@@ -1071,7 +1072,7 @@ CreateThread(function()
 					_robbedSafes[k].expires = (os.time() + 60 * math.random(30, 60))
 					_robbedSafes[k].state = 2
 					GlobalState[string.format("Safe:%s", k)] = _robbedSafes[k]
-					Sounds.Play:Location(v.source, v.coords, 10, "alarm.ogg", 0.15)
+					exports["sandbox-sounds"]:PlayLocation(v.source, v.coords, 10, "alarm.ogg", 0.15)
 					-- Do something to alert
 				else
 					exports['sandbox-base']:LoggerTrace("Robbery",

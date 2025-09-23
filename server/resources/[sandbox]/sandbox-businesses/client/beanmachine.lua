@@ -21,10 +21,10 @@ AddEventHandler('Businesses:Client:Startup', function()
 end)
 
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
-	if id == 'beanmachine_door' or id == 'beanmachine_sidedoor' then
+    if id == 'beanmachine_door' or id == 'beanmachine_sidedoor' then
         local h = GetEntityHeading(LocalPlayer.state.ped)
         if h >= data.minH and h <= data.maxH then
-            Sounds.Play:Distance(15, "bell.ogg", 0.3)
+            exports["sandbox-sounds"]:PlayDistance(15, "bell.ogg", 0.3)
         end
     end
 end)

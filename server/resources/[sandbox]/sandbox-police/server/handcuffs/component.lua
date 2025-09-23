@@ -1,6 +1,5 @@
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", HandcuffsComponents)
 function HandcuffsComponents()
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
@@ -14,7 +13,6 @@ end)
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
-		"Sounds",
 		"Handcuffs",
 		"Inventory",
 		"Chat",
@@ -48,18 +46,18 @@ function DoCuff(source, target, isHardCuffed, isForced)
 				ClearPedTasksImmediately(GetPlayerPed(source))
 
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Suspect Broke Out Of The Cuffs")
-				Sounds.Play:Distance(target, 10, "handcuff_break.ogg", 0.35)
-				--Sounds.Play:One(target, "handcuff_break.ogg", 0.35)
+				exports["sandbox-sounds"]:PlayDistance(target, 10, "handcuff_break.ogg", 0.35)
+				--exports["sandbox-sounds"]:PlayOne(target, "handcuff_break.ogg", 0.35)
 				playerState.isCuffed = false
 				playerState.isHardCuffed = false
 				SetPedConfigFlag(ped, 120, false)
 				SetPedConfigFlag(ped, 121, false)
 			else
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "You Cuffed A Player")
-				Sounds.Play:Distance(target, 10, "handcuff_on.ogg", 0.55)
+				exports["sandbox-sounds"]:PlayDistance(target, 10, "handcuff_on.ogg", 0.55)
 				CreateThread(function()
 					Wait(1050)
-					Sounds.Play:Distance(target, 10, "handcuff_on.ogg", 0.55)
+					exports["sandbox-sounds"]:PlayDistance(target, 10, "handcuff_on.ogg", 0.55)
 				end)
 				SetPedConfigFlag(ped, 120, true)
 				SetPedConfigFlag(ped, 121, isHardCuffed)
@@ -251,7 +249,7 @@ _HANDCUFFS = {
 					TriggerClientEvent("Handcuffs:Client:UncuffingAnim", source)
 					Wait(2200)
 				end
-				Sounds.Play:Distance(target, 10, "handcuff_remove.ogg", 0.15)
+				exports["sandbox-sounds"]:PlayDistance(target, 10, "handcuff_remove.ogg", 0.15)
 				local playerState = Player(target).state
 				local ped = GetPlayerPed(target)
 				FreezeEntityPosition(ped, false)

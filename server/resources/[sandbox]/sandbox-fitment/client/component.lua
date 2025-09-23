@@ -12,7 +12,6 @@ function RetrieveComponents()
     Targeting = exports['sandbox-base']:FetchComponent('Targeting')
     ListMenu = exports['sandbox-base']:FetchComponent('ListMenu')
     Action = exports['sandbox-base']:FetchComponent('Action')
-    Sounds = exports['sandbox-base']:FetchComponent('Sounds')
     Menu = exports['sandbox-base']:FetchComponent('Menu')
     Interaction = exports['sandbox-base']:FetchComponent('Interaction')
 end
@@ -30,7 +29,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Targeting',
         'ListMenu',
         'Action',
-        'Sounds',
         'Menu',
         'Interaction',
     }, function(error)

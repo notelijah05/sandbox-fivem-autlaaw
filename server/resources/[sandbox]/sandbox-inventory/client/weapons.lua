@@ -13,7 +13,6 @@ function WeaponsComponents()
 	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -24,7 +23,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Buffs",
 		"Interaction",
 		"Inventory",
-		"Sounds",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -941,7 +939,7 @@ function DoFlashFx(shakeAmp, time)
 	DisableFiring(time * 0.75)
 
 	Hud.Flashbang:Do(time, totalFlashShakeAmp)
-	Sounds.Loop:One("flashbang.ogg", 0.1 * totalFlashShakeAmp)
+	exports["sandbox-sounds"]:LoopOne("flashbang.ogg", 0.1 * totalFlashShakeAmp)
 
 	Wait(time)
 
@@ -951,9 +949,9 @@ function DoFlashFx(shakeAmp, time)
 	if flashTimersRunning == 0 then
 		ClearPedTasks(PlayerPedId())
 		AnimpostfxStop("Dont_tazeme_bro")
-		Sounds.Fade:One("flashbang.ogg")
+		exports["sandbox-sounds"]:FadeOne("flashbang.ogg")
 	else
-		Sounds.Loop:One("flashbang.ogg", 0.1 * totalFlashShakeAmp)
+		exports["sandbox-sounds"]:LoopOne("flashbang.ogg", 0.1 * totalFlashShakeAmp)
 	end
 end
 

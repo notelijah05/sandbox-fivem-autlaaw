@@ -256,7 +256,7 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
                 for k, v in ipairs(pins) do
                     local entRotation = GetEntityRotation(v)
                     if not (entRotation.x <= 10.0 and entRotation.x >= -10.0 and entRotation.y <= 10.0 and entRotation.y >= -10.0 and entRotation.z <= 10.0 and entRotation.z >= -10.0) then
-                        Sounds.Play:Location(alleyData.endZone, 20.0, "bowling.ogg", 0.3)
+                        exports["sandbox-sounds"]:PlayLocation(alleyData.endZone, 20.0, "bowling.ogg", 0.3)
                         break
                     end
                 end

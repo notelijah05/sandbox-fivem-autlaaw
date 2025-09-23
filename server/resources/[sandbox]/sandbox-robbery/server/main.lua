@@ -23,7 +23,6 @@ function RetrieveComponents()
 	Loot = exports["sandbox-base"]:FetchComponent("Loot")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -197,7 +196,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Loot",
 		"Wallet",
 		"Chat",
-		"Sounds",
 		"Tasks",
 		"EmergencyAlerts",
 		"Properties",

@@ -96,7 +96,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
 
@@ -122,7 +121,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Reputation",
 		"Vehicles",
-		"Sounds",
 		"ListMenu",
 		"Buffs",
 		--'Weapons',

@@ -9,7 +9,6 @@ function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Animations",
 		"Targeting",
 		"Polyzone",
-		"Sounds",
 		"Action",
 		"PedInteraction",
 		"Phone",
@@ -261,19 +259,19 @@ AddEventHandler("Core:Shared:Ready", function()
 				Wait(10)
 			end
 
-			Sounds.Play:One("mugshot.ogg", 0.2)
+			exports["sandbox-sounds"]:PlayOne("mugshot.ogg", 0.2)
 			Wait(2000)
 			for i = 2, #Config.Mugshot.headings do
 				if LocalPlayer.state.loggedIn then
 					SetEntityHeading(LocalPlayer.state.ped, Config.Mugshot.headings[i])
 					Wait(1000)
-					Sounds.Play:One("mugshot.ogg", 0.2)
+					exports["sandbox-sounds"]:PlayOne("mugshot.ogg", 0.2)
 					Wait(3000)
 				end
 			end
 
 			SetEntityHeading(LocalPlayer.state.ped, Config.Mugshot.headings[1])
-			Sounds.Play:One("mugshot.ogg", 0.2)
+			exports["sandbox-sounds"]:PlayOne("mugshot.ogg", 0.2)
 			Wait(2000)
 
 			Animations.Emotes:ForceCancel()

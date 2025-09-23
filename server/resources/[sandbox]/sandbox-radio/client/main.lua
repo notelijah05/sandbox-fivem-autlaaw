@@ -28,7 +28,6 @@ function RetrieveComponents()
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -41,7 +40,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Action",
 		"Progress",
 		"VOIP",
-		"Sounds",
 		"Jobs",
 		"Weapons",
 		"Hud",
@@ -255,7 +253,7 @@ function ToggleRadioPower(fromUI)
 		if not fromUI then
 			exports["sandbox-hud"]:NotifError("Radio Turned Off", 2500)
 		end
-		Sounds.Do.Play:One("radiooff.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
+		exports["sandbox-sounds"]:PlayOne("radiooff.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
 		LocalPlayer.state:set("onRadio", false, true)
 	else
 		if not fromUI then
@@ -266,7 +264,7 @@ function ToggleRadioPower(fromUI)
 			SetCharacterRadioFrequency(RADIO_FREQUENCY_LAST, not fromUI)
 			LocalPlayer.state:set("onRadio", tostring(RADIO_FREQUENCY_LAST), true)
 		end
-		Sounds.Do.Play:One("radioon.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
+		exports["sandbox-sounds"]:PlayOne("radioon.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
 	end
 
 	SendUpdates()
@@ -313,7 +311,7 @@ function SetCharacterRadioFrequency(freq, notifyChange)
 			TriggerEvent("Status:Client:Update", "radio-freq", maskRadio and "???.?" or RADIO_FREQUENCY)
 
 			if notifyChange then
-				Sounds.Do.Play:One("radioclick.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
+				exports["sandbox-sounds"]:PlayOne("radioclick.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
 				if frequencyName then
 					exports["sandbox-hud"]:NotifInfo("Changed Radio Channel to " .. frequencyName)
 				else
@@ -386,7 +384,7 @@ RegisterNetEvent("Characters:Client:SetData", function()
 			if RADIO_POWER then
 				RADIO_POWER = false
 				SetCharacterRadioFrequency(0)
-				Sounds.Do.Play:One("radioclick.ogg", 0.5 * (RADIO_CLICKS_VOLUME / 100))
+				exports["sandbox-sounds"]:PlayOne("radioclick.ogg", 0.5 * (RADIO_CLICKS_VOLUME / 100))
 			end
 
 			CloseRadio()
@@ -461,7 +459,7 @@ end
 
 function SetRadioChannelFromInput(input)
 	if input ~= RADIO_FREQUENCY and HAS_RADIO then
-		Sounds.Do.Play:One("radioclick.ogg", 0.5 * (RADIO_CLICKS_VOLUME / 100))
+		exports["sandbox-sounds"]:PlayOne("radioclick.ogg", 0.5 * (RADIO_CLICKS_VOLUME / 100))
 		SetCharacterRadioFrequency(exports['sandbox-base']:UtilsRound(tonumber(input) or 0, 1))
 	end
 end
@@ -530,7 +528,7 @@ RegisterNUICallback("ClickVolumeUp", function(data, cb)
 
 		RADIO_CLICKS_VOLUME = VOIP.Settings.Volumes.RadioClicks:Set(newVolume)
 
-		Sounds.Do.Play:One("radioclick.ogg", (RADIO_CLICKS_VOLUME / 100))
+		exports["sandbox-sounds"]:PlayOne("radioclick.ogg", (RADIO_CLICKS_VOLUME / 100))
 	end
 	cb("ok")
 end)
@@ -544,7 +542,7 @@ RegisterNUICallback("ClickVolumeDown", function(data, cb)
 
 		RADIO_CLICKS_VOLUME = VOIP.Settings.Volumes.RadioClicks:Set(newVolume)
 
-		Sounds.Do.Play:One("radioclick.ogg", (RADIO_CLICKS_VOLUME / 100))
+		exports["sandbox-sounds"]:PlayOne("radioclick.ogg", (RADIO_CLICKS_VOLUME / 100))
 	end
 	cb("ok")
 end)

@@ -6,9 +6,9 @@ end)
 RegisterNUICallback("ReceiveAlert", function(data, cb)
 	if data and data.id then
 		if data.panic then
-			Sounds.Play:Distance(15, "panic.ogg", 0.5)
+			exports["sandbox-sounds"]:PlayDistance(15, "panic.ogg", 0.5)
 		else
-			Sounds.Play:One("alert_normal.ogg", 0.5)
+			exports["sandbox-sounds"]:PlayOne("alert_normal.ogg", 0.5)
 		end
 
 		if data.blip and type(data.blip) == "table" and data.location ~= nil then

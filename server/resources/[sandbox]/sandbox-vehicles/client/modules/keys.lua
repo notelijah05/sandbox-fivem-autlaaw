@@ -116,11 +116,11 @@ _vehicleKeysExtension = {
 				UnlockAnim()
 				if newState then
 					exports["sandbox-hud"]:NotifError("Vehicle Locked")
-					Sounds.Do.Play:One("central-locking.ogg", 0.2)
+					exports["sandbox-sounds"]:PlayOne("central-locking.ogg", 0.2)
 					DoVehicleLockShit(veh)
 				else
 					exports["sandbox-hud"]:NotifSuccess("Vehicle Unlocked")
-					Sounds.Do.Play:One("central-locking.ogg", 0.2)
+					exports["sandbox-sounds"]:PlayOne("central-locking.ogg", 0.2)
 					DoVehicleUnlockShit(veh)
 				end
 			end

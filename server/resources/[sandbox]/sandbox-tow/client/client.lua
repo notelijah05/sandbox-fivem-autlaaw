@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Jobs",
 		"Vehicles",
-		"Sounds",
 		"Progress",
 		"Polyzone",
 		"PedInteraction",
@@ -90,7 +88,7 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 		local targetVehicle = GetVehicleBehindTowTruck(truck, 8.0)
 		local canTow, errorMessage = CanFuckingTowVehicle(truck, targetVehicle)
 		if canTow then
-			Sounds.Play:Distance(5.0, "tow_truck.ogg", 0.2)
+			exports["sandbox-sounds"]:PlayDistance(5.0, "tow_truck.ogg", 0.2)
 			Progress:ProgressWithStartAndTick({
 				name = "tow_attaching",
 				duration = 1 * 1000,

@@ -23,7 +23,6 @@ function RetrieveComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
@@ -37,7 +36,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"ListMenu",
 		"Progress",
 		"UISounds",
-		"Sounds",
 		"Doors",
 		"Properties",
 	}, function(error)
@@ -352,7 +350,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 		DoorAnim()
 		exports["sandbox-base"]:ServerCallback("Doors:ToggleLocks", _lookingAtDoor, function(success, newState)
 			if success then
-				Sounds.Do.Play:One("doorlocks.ogg", 0.2)
+				exports["sandbox-sounds"]:PlayOne("doorlocks.ogg", 0.2)
 			end
 		end)
 	end

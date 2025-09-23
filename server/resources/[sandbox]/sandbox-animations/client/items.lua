@@ -309,5 +309,5 @@ end)
 RegisterNetEvent("Animations:Client:DiceRoll", function()
 	Animations.Emotes:Play("dice", true)
 
-	Sounds.Play:Distance(3.0, "dice.ogg", 0.8)
+	exports["sandbox-sounds"]:PlayDistance(3.0, "dice.ogg", 0.8)
 end)

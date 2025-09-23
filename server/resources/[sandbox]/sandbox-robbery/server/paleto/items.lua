@@ -93,7 +93,7 @@ function RegisterPBItems()
 											end
 
 											if IsPaletoPowerDisabled() then
-												Sounds.Play:Location(
+												exports["sandbox-sounds"]:PlayLocation(
 													source,
 													substation.thermite.coords,
 													15.0,
@@ -122,7 +122,7 @@ function RegisterPBItems()
 												Doors:SetLock("bank_savings_paleto_gate", false)
 												CCTV.State.Group:Offline("paleto")
 											else
-												Sounds.Play:Location(
+												exports["sandbox-sounds"]:PlayLocation(
 													source,
 													substation.thermite.coords,
 													15.0,

@@ -12,7 +12,6 @@ function RetrieveComponents()
     EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
     PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
     Jail = exports["sandbox-base"]:FetchComponent("Jail")
-    Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
     Animations = exports["sandbox-base"]:FetchComponent("Animations")
     Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 end
@@ -29,7 +28,6 @@ AddEventHandler("Core:Shared:Ready", function()
         "EmergencyAlerts",
         "PedInteraction",
         "Jail",
-        "Sounds",
         "Animations",
         "Weapons",
     }, function(error)

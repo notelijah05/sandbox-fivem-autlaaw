@@ -22,7 +22,7 @@ end)
 AddEventHandler("Businesses:Client:ToggleTriadBoxingLock", function()
     exports["sandbox-base"]:ServerCallback("Doors:ToggleLocks", "triad_boxing_arena", function(success, newState)
         if success then
-            Sounds.Do.Play:One("doorlocks.ogg", 0.2)
+            exports["sandbox-sounds"]:PlayOne("doorlocks.ogg", 0.2)
         end
     end)
 end)

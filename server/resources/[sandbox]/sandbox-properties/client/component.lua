@@ -23,7 +23,6 @@ function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
@@ -45,7 +44,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"Action",
 		"Targeting",
-		"Sounds",
 		"Characters",
 		"Wardrobe",
 		"Interaction",
@@ -324,7 +322,7 @@ function CreatePropertyDoor(isBackdoor)
 					label = "Ring Doorbell",
 					action = function()
 						exports["sandbox-base"]:ServerCallback("Properties:RingDoorbell", data.propertyId, function()
-							Sounds.Play:One("doorbell.ogg", 0.75)
+							exports["sandbox-sounds"]:PlayOne("doorbell.ogg", 0.75)
 						end)
 					end,
 					shouldShow = function()

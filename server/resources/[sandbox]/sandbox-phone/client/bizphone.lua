@@ -216,7 +216,7 @@ AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
                 if success then
                     CreateThread(function()
                         Animations.Emotes:Play("phonecall2", true)
-                        Sounds.Loop:One("ringing.ogg", 0.1)
+                        exports["sandbox-sounds"]:LoopOne("ringing.ogg", 0.1)
                         InfoOverlay:Show("Dialing", string.format("Dailing Number: %s", values.number))
 
                         while LocalPlayer.state.loggedIn and LocalPlayer.state.bizCall do
@@ -227,7 +227,7 @@ AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
                         end
 
                         Animations.Emotes:ForceCancel()
-                        Sounds.Stop:One("ringing.ogg")
+                        exports["sandbox-sounds"]:StopOne("ringing.ogg")
                         InfoOverlay:Close()
                     end)
                 else
@@ -240,7 +240,7 @@ end)
 RegisterNetEvent("Phone:Client:Phone:AcceptBizCall", function(number)
     if LocalPlayer.state.bizCall then
         InfoOverlay:Show("On Call", string.format("To Number: %s", number))
-        Sounds.Stop:One("ringing.ogg")
+        exports["sandbox-sounds"]:StopOne("ringing.ogg")
     end
 end)
 
@@ -248,9 +248,9 @@ RegisterNetEvent("Phone:Client:Biz:Recieve", function(id, coords, radius)
     if LocalPlayer.state.loggedIn and not GlobalState[string.format("BizPhone:%s:Muted", id)] then
         local myCoords = GetEntityCoords(LocalPlayer.state.ped)
         if #(myCoords - coords) <= 150.0 then
-            Sounds.Do.Loop:Location(string.format("bizphones-%s", id), coords, radius, "bizphone.ogg", 0.1)
+            exports["sandbox-sounds"]:LoopLocation(string.format("bizphones-%s", id), coords, radius, "bizphone.ogg", 0.1)
             Citizen.SetTimeout(30000, function()
-                Sounds.Do.Stop:Distance(string.format("bizphones-%s", id), "bizphone.ogg")
+                exports["sandbox-sounds"]:StopDistance(string.format("bizphones-%s", id), "bizphone.ogg")
             end)
         end
     end
@@ -292,14 +292,14 @@ AddEventHandler("Phone:Client:AcceptBizCall", function(entityData, data)
 end)
 
 RegisterNetEvent("Phone:Client:Biz:Answered", function(id)
-    Sounds.Do.Stop:Distance(string.format("bizphones-%s", id), "bizphone.ogg")
+    exports["sandbox-sounds"]:StopDistance(string.format("bizphones-%s", id), "bizphone.ogg")
 end)
 
 RegisterNetEvent("Phone:Client:Biz:End", function(id)
-    Sounds.Do.Stop:Distance(string.format("bizphones-%s", id), "bizphone.ogg")
+    exports["sandbox-sounds"]:StopDistance(string.format("bizphones-%s", id), "bizphone.ogg")
 
     if LocalPlayer.state.bizCall and LocalPlayer.state.bizCall == id then
         LocalPlayer.state.bizCall = nil
-        Sounds.Play:One("ended.ogg", 0.15)
+        exports["sandbox-sounds"]:PlayOne("ended.ogg", 0.15)
     end
 end)

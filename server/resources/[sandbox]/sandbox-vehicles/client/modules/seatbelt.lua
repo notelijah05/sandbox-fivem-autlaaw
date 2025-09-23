@@ -40,7 +40,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                             end
                         end, function(cancelled)
                             if not cancelled and VEHICLE_INSIDE then
-                                Sounds.Do.Play:One('seatbelt.ogg', 0.4)
+                                exports["sandbox-sounds"]:PlayOne('seatbelt.ogg', 0.4)
                                 if VEHICLE_SEATBELT then
                                     SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
                                     VEHICLE_SEATBELT = false
@@ -55,7 +55,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                         end)
                     else
                         if VEHICLE_INSIDE then
-                            Sounds.Do.Play:One('seatbelt.ogg', 0.4)
+                            exports["sandbox-sounds"]:PlayOne('seatbelt.ogg', 0.4)
                             if VEHICLE_SEATBELT then
                                 SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
                                 VEHICLE_SEATBELT = false
@@ -69,7 +69,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                         end
                     end
                 else
-                    Sounds.Do.Play:One('seatbelt.ogg', 0.4)
+                    exports["sandbox-sounds"]:PlayOne('seatbelt.ogg', 0.4)
                     VEHICLE_SEATBELT = not VEHICLE_SEATBELT
                     TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
                     if VEHICLE_SEATBELT then

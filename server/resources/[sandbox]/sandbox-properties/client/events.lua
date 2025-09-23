@@ -2,7 +2,7 @@ _isEntering = false
 
 RegisterNetEvent("Properties:Client:Doorbell", function(propertyId)
 	if _insideProperty and propertyId == _insideProperty.id then
-		Sounds.Play:One("doorbell.ogg", 0.75)
+		exports["sandbox-sounds"]:PlayOne("doorbell.ogg", 0.75)
 	end
 end)
 

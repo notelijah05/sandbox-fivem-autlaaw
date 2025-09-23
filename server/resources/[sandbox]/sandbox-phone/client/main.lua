@@ -32,7 +32,6 @@ AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -59,7 +58,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
 		"Phone",
 		"UISounds",
-		"Sounds",
 		"Hud",
 		"Interaction",
 		"Inventory",
@@ -136,10 +134,10 @@ AddEventHandler("Core:Shared:Ready", function()
 
 			if _settings.volume > 0 then
 				_settings.volume = 0
-				Sounds.Play:One("mute.ogg", 0.1)
+				exports["sandbox-sounds"]:PlayOne("mute.ogg", 0.1)
 			else
 				_settings.volume = 100
-				Sounds.Play:One("unmute.ogg", 0.1)
+				exports["sandbox-sounds"]:PlayOne("unmute.ogg", 0.1)
 			end
 			exports["sandbox-base"]:ServerCallback("Phone:Settings:Update", {
 				type = "volume",

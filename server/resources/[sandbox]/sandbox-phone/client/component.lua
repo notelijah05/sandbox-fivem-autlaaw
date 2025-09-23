@@ -211,7 +211,7 @@ PHONE = {
 				})
 
 				if not LocalPlayer.state.phoneOpen and (Phone:IsAppUsable(app)) then
-					Sounds.Play:One(_settings.texttone, 0.1 * (_settings.volume / 100))
+					exports["sandbox-sounds"]:PlayOne(_settings.texttone, 0.1 * (_settings.volume / 100))
 				end
 			end
 		end,

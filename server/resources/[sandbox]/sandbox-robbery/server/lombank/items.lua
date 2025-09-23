@@ -267,7 +267,8 @@ function RegisterLBItemUses()
 									end
 
 									TriggerEvent("Particles:Server:DoFx", pos.coords, "spark")
-									Sounds.Play:Location(source, pos.coords, 15.0, "power_small_complete_off.ogg", 0.1)
+									exports["sandbox-sounds"]:PlayLocation(source, pos.coords, 15.0,
+										"power_small_complete_off.ogg", 0.1)
 
 									Doors:SetLock("lombank_lasers", false)
 									Status.Modify:Add(source, "PLAYER_STRESS", 3)

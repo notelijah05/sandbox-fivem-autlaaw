@@ -42,7 +42,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 						-- 		if not success then
 						-- 			exports["sandbox-hud"]:NotifError("Error!")
 						-- 		else
-						-- 			Sounds.Play:Location(LocalPlayer.state.myPos, 10, "breach.ogg", 0.15)
+						-- 			exports["sandbox-sounds"]:PlayLocation(LocalPlayer.state.myPos, 10, "breach.ogg", 0.15)
 						-- 		end
 						-- 	end)
 						-- end,

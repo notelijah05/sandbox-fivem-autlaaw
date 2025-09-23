@@ -97,7 +97,7 @@ RegisterNetEvent("Inventory:Client:ArmourModifier", function(mod)
 end)
 
 RegisterNetEvent("Inventory:Client:RandomItems:BirthdayCake", function()
-	Sounds.Play:Distance(20.0, "birthday.ogg", 0.2)
+	exports["sandbox-sounds"]:PlayDistance(20.0, "birthday.ogg", 0.2)
 	Animations.Emotes:Play("cake", false, false, false)
 end)
 
@@ -110,7 +110,7 @@ RegisterNetEvent("Inventory:Client:ERP:ButtPlug", function(color)
 end)
 
 RegisterNetEvent("Inventory:Client:ERP:Vibrator", function(color)
-	Sounds.Play:Distance(20.0, "vibrator.ogg", 0.2)
+	exports["sandbox-sounds"]:PlayDistance(20.0, "vibrator.ogg", 0.2)
 	Animations.Emotes:Play(string.format("erp_vibrator_%s", color), false, false, false)
 end)
 
@@ -119,7 +119,7 @@ RegisterNetEvent("Inventory:Client:RandomItems:Redlight", function()
 end)
 
 RegisterNetEvent("Inventory:Client:Halloween:Pumpkin", function(emote)
-	Sounds.Play:Distance(20.0, "evillaugh.ogg", 0.2)
+	exports["sandbox-sounds"]:PlayDistance(20.0, "evillaugh.ogg", 0.2)
 	Animations.Emotes:Play(emote, false, false, false)
 end)
 

@@ -182,7 +182,6 @@ function PoliceComponents()
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -204,7 +203,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Blips",
 		"Targeting",
 		"Jobs",
-		"Sounds",
 		"Properties",
 		"Apartment",
 		"EmergencyAlerts",
@@ -507,7 +505,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			}, function(cancelled)
 				cb(not cancelled)
 				if not cancelled then
-					--Sounds.Play:Location(LocalPlayer.state.myPos, 20, "breach.ogg", 0.15)
+					--exports["sandbox-sounds"]:PlayLocation(LocalPlayer.state.myPos, 20, "breach.ogg", 0.15)
 				end
 			end)
 		end)

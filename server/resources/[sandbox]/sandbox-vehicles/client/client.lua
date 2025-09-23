@@ -22,7 +22,6 @@ function RetrieveComponents()
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -60,7 +59,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"ListMenu",
 		"Jobs",
-		"Sounds",
 		"PedInteraction",
 		"EmergencyAlerts",
 		"Properties",

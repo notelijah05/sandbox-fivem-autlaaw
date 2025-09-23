@@ -6,7 +6,7 @@ AddEventHandler("Businesses:Client:PayContactlessPayment", function(_, data)
             terminalId = data.id,
         }, function(success)
             if success then
-                Sounds.Play:Distance(4.0, 'payment_success.ogg', 0.2)
+                exports["sandbox-sounds"]:PlayDistance(4.0, 'payment_success.ogg', 0.2)
             end
         end)
     end

@@ -1,27 +1,5 @@
 local _sounds = {}
 
-AddEventHandler("Sounds:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Sounds", {
-		"Sounds",
-		"UISounds",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-	end)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Sounds", SOUNDS)
-end)
-
 RegisterNUICallback("SoundEnd", function(data, cb)
 	exports['sandbox-base']:LoggerTrace("Sounds", ("^2Stopping Sound %s For ID %s^7"):format(data.file, data.source))
 	if _sounds[data.source] ~= nil and _sounds[data.source][data.file] ~= nil then
@@ -29,183 +7,161 @@ RegisterNUICallback("SoundEnd", function(data, cb)
 	end
 end)
 
-SOUNDS = {}
-SOUNDS.Do = {
-	Loop = {
-		One = function(self, soundFile, soundVolume)
-			exports['sandbox-base']:LoggerTrace("Sounds", ("^2Looping Sound %s On Client Only^7"):format(soundFile))
-			_sounds[LocalPlayer.state.ID] = _sounds[LocalPlayer.state.ID] or {}
-			_sounds[LocalPlayer.state.ID][soundFile] = {
-				file = soundFile,
-				volume = soundVolume,
-				distance = maxDistance,
-			}
-			SendNUIMessage({
-				action = "loopSound",
-				source = LocalPlayer.state.ID,
-				file = soundFile,
-				volume = soundVolume,
-			})
-		end,
-		Distance = function(self, playerNetId, maxDistance, soundFile, soundVolume)
-			exports['sandbox-base']:LoggerTrace(
-				"Sounds",
-				("^2Looping Sound %s Per Request From %s For Distance %s^7"):format(soundFile, playerNetId, maxDistance)
-			)
+exports("PlayOne", function(soundFile, soundVolume)
+	exports['sandbox-base']:LoggerTrace("Sounds", ("^2Playing Sound %s On Client Only^7"):format(soundFile))
+	_sounds[LocalPlayer.state.ID] = _sounds[LocalPlayer.state.ID] or {}
+	_sounds[LocalPlayer.state.ID][soundFile] = {
+		file = soundFile,
+		volume = soundVolume,
+	}
+	SendNUIMessage({
+		action = "playSound",
+		source = LocalPlayer.state.ID,
+		file = soundFile,
+		volume = soundVolume,
+	})
+end)
 
-			local isFromMe = false
-			local pPed = PlayerPedId()
+exports("PlayDistance", function(maxDistance, soundFile, soundVolume)
+	exports["sandbox-base"]:ServerCallback("Sounds:Play:Distance", {
+		maxDistance = maxDistance,
+		soundFile = soundFile,
+		soundVolume = soundVolume,
+	})
+end)
 
-			local tPlayer = GetPlayerFromServerId(playerNetId)
-			local tPed = GetPlayerPed(tPlayer)
+exports("PlayLocation", function(location, maxDistance, soundFile, soundVolume)
+	exports["sandbox-base"]:ServerCallback("Sounds:Play:Location", {
+		location = location,
+		maxDistance = maxDistance,
+		soundFile = soundFile,
+		soundVolume = soundVolume,
+	})
+end)
 
-			if playerNetId == LocalPlayer.state.ID then
-				isFromMe = true
-				tPed = LocalPlayer.state.ped
-			end
+exports("LoopOne", function(soundFile, soundVolume)
+	exports['sandbox-base']:LoggerTrace("Sounds", ("^2Looping Sound %s On Client Only^7"):format(soundFile))
+	_sounds[LocalPlayer.state.ID] = _sounds[LocalPlayer.state.ID] or {}
+	_sounds[LocalPlayer.state.ID][soundFile] = {
+		file = soundFile,
+		volume = soundVolume,
+		distance = maxDistance,
+	}
+	SendNUIMessage({
+		action = "loopSound",
+		source = LocalPlayer.state.ID,
+		file = soundFile,
+		volume = soundVolume,
+	})
+end)
 
-			local distIs = #(GetEntityCoords(pPed) - GetEntityCoords(tPed))
-			local vol = soundVolume * (1.0 - (distIs / maxDistance))
-			if isFromMe then
-				vol = soundVolume
-			elseif
-				(tPed ~= 0 and distIs > maxDistance)
-				or tPed == 0
-				or not LocalPlayer.state.loggedIn
-				or (tPlayer == -1)
-			then
-				vol = 0
-			end
+exports("LoopDistance", function(maxDistance, soundFile, soundVolume)
+	exports["sandbox-base"]:ServerCallback("Sounds:Loop:Distance", {
+		maxDistance = maxDistance,
+		soundFile = soundFile,
+		soundVolume = soundVolume,
+	})
+end)
 
-			_sounds[playerNetId] = _sounds[playerNetId] or {}
-			_sounds[playerNetId][soundFile] = {
-				file = soundFile,
-				volume = soundVolume,
-				distance = maxDistance,
-			}
-			SendNUIMessage({
-				action = "loopSound",
-				source = playerNetId,
-				file = soundFile,
-				volume = vol,
-			})
+exports("LoopLocation", function(location, maxDistance, soundFile, soundVolume)
+	exports["sandbox-base"]:ServerCallback("Sounds:Loop:Location", {
+		location = location,
+		maxDistance = maxDistance,
+		soundFile = soundFile,
+		soundVolume = soundVolume,
+	})
+end)
 
-			CreateThread(function()
-				while _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil do
-					tPlayer = GetPlayerFromServerId(playerNetId)
-					tPed = GetPlayerPed(tPlayer)
+exports("StopOne", function(soundFile)
+	exports['sandbox-base']:LoggerTrace("Sounds", ("^2Stopping Sound %s On Client^7"):format(soundFile))
+	if _sounds[LocalPlayer.state.ID] ~= nil and _sounds[LocalPlayer.state.ID][soundFile] ~= nil then
+		_sounds[LocalPlayer.state.ID][soundFile] = nil
+		SendNUIMessage({
+			action = "stopSound",
+			source = LocalPlayer.state.ID,
+			file = soundFile,
+		})
+	end
+end)
 
-					local distIs = #(GetEntityCoords(pPed) - GetEntityCoords(tPed))
-					vol = soundVolume * (1.0 - (distIs / maxDistance))
+exports("StopDistance", function(pNet, soundFile)
+	exports["sandbox-base"]:ServerCallback("Sounds:Stop:Distance", {
+		soundFile = soundFile,
+	})
+end)
 
-					if isFromMe then
-						vol = soundVolume
-					elseif
-						(tPed ~= 0 and distIs > maxDistance)
-						or tPed == 0
-						or not LocalPlayer.state.loggedIn
-						or (tPlayer == -1)
-					then
-						vol = 0
-					end
+exports("StopLocation", function(pNet, soundFile)
+	exports["sandbox-base"]:ServerCallback("Sounds:Stop:Distance", {
+		soundFile = soundFile,
+	})
+end)
 
-					SendNUIMessage({
-						action = "updateVol",
-						source = playerNetId,
-						file = soundFile,
-						volume = vol,
-					})
-					Wait(100)
-				end
-			end)
-		end,
-		Location = function(self, playerNetId, location, maxDistance, soundFile, soundVolume)
-			exports['sandbox-base']:LoggerTrace(
-				"Sounds",
-				("^2Looping Sound %s Per Request From %s at location %s For Distance %s^7"):format(
-					soundFile,
-					playerNetId,
-					json.encode(location),
-					maxDistance
-				)
-			)
-			local distIs = #(GetEntityCoords(LocalPlayer.state.ped) - location)
-			local vol = soundVolume * (1.0 - (distIs / maxDistance))
-			if distIs > maxDistance then
-				vol = 0
-			end
+exports("FadeOne", function(soundFile)
+	exports['sandbox-base']:LoggerTrace("Sounds", ("^2Stopping Sound %s On Client^7"):format(soundFile))
+	if _sounds[LocalPlayer.state.ID] ~= nil and _sounds[LocalPlayer.state.ID][soundFile] ~= nil then
+		_sounds[LocalPlayer.state.ID][soundFile] = nil
+		SendNUIMessage({
+			action = "fadeSound",
+			source = LocalPlayer.state.ID,
+			file = soundFile,
+		})
+	end
+end)
 
-			_sounds[playerNetId] = _sounds[playerNetId] or {}
-			_sounds[playerNetId][soundFile] = {
-				file = soundFile,
-				volume = soundVolume,
-				distance = maxDistance,
-			}
-			SendNUIMessage({
-				action = "loopSound",
-				source = playerNetId,
-				file = soundFile,
-				volume = vol,
-			})
+function DoPlayDistance(playerNetId, maxDistance, soundFile, soundVolume)
+	playerNetId = tonumber(playerNetId)
+	exports['sandbox-base']:LoggerTrace(
+		("^2Playing Sound %s Once Per Request From %s For Distance %s^7"):format(
+			soundFile,
+			playerNetId,
+			maxDistance
+		)
+	)
 
-			CreateThread(function()
-				while _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil do
-					local distIs = #(GetEntityCoords(LocalPlayer.state.ped) - location)
-					vol = soundVolume * (1.0 - (distIs / maxDistance))
-					if distIs > maxDistance or not LocalPlayer.state.loggedIn then
-						vol = 0
-					end
-					SendNUIMessage({
-						action = "updateVol",
-						source = playerNetId,
-						file = soundFile,
-						volume = vol,
-					})
-					Wait(100)
-				end
-			end)
-		end,
-	},
-	Play = {
-		One = function(self, soundFile, soundVolume)
-			exports['sandbox-base']:LoggerTrace("Sounds", ("^2Playing Sound %s On Client Only^7"):format(soundFile))
-			_sounds[LocalPlayer.state.ID] = _sounds[LocalPlayer.state.ID] or {}
-			_sounds[LocalPlayer.state.ID][soundFile] = {
-				file = soundFile,
-				volume = soundVolume,
-			}
-			SendNUIMessage({
-				action = "playSound",
-				source = LocalPlayer.state.ID,
-				file = soundFile,
-				volume = soundVolume,
-			})
-		end,
-		Distance = function(self, playerNetId, maxDistance, soundFile, soundVolume)
-			playerNetId = tonumber(playerNetId)
-			exports['sandbox-base']:LoggerTrace(
-				"Sounds",
-				("^2Playing Sound %s Once Per Request From %s For Distance %s^7"):format(
-					soundFile,
-					playerNetId,
-					maxDistance
-				)
-			)
+	local pPed = PlayerPedId()
+	local isFromMe = false
+	local tPlayer = GetPlayerFromServerId(playerNetId)
+	local tPed = GetPlayerPed(tPlayer)
 
-			local pPed = PlayerPedId()
+	if playerNetId == LocalPlayer.state.ID then
+		isFromMe = true
+		tPed = LocalPlayer.state.ped
+	end
 
-			local isFromMe = false
+	local distIs = #(GetEntityCoords(pPed) - GetEntityCoords(tPed))
+	local vol = soundVolume * (1.0 - (distIs / maxDistance))
+	if isFromMe then
+		vol = soundVolume
+	elseif
+		(tPed ~= 0 and distIs > maxDistance)
+		or (tPed == 0)
+		or not LocalPlayer.state.loggedIn
+		or (tPlayer == -1)
+	then
+		vol = 0
+	end
 
-			local tPlayer = GetPlayerFromServerId(playerNetId)
-			local tPed = GetPlayerPed(tPlayer)
+	_sounds[playerNetId] = _sounds[playerNetId] or {}
+	_sounds[playerNetId][soundFile] = {
+		file = soundFile,
+		volume = soundVolume,
+		distance = maxDistance,
+	}
+	SendNUIMessage({
+		action = "playSound",
+		source = playerNetId,
+		file = soundFile,
+		volume = vol,
+	})
 
-			if playerNetId == LocalPlayer.state.ID then
-				isFromMe = true
-				tPed = LocalPlayer.state.ped
-			end
+	CreateThread(function()
+		while _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil do
+			tPlayer = GetPlayerFromServerId(playerNetId)
+			tPed = GetPlayerPed(tPlayer)
 
 			local distIs = #(GetEntityCoords(pPed) - GetEntityCoords(tPed))
-			local vol = soundVolume * (1.0 - (distIs / maxDistance))
+			vol = soundVolume * (1.0 - (distIs / maxDistance))
+
 			if isFromMe then
 				vol = soundVolume
 			elseif
@@ -217,267 +173,255 @@ SOUNDS.Do = {
 				vol = 0
 			end
 
-			_sounds[playerNetId] = _sounds[playerNetId] or {}
-			_sounds[playerNetId][soundFile] = {
-				file = soundFile,
-				volume = soundVolume,
-				distance = maxDistance,
-			}
 			SendNUIMessage({
-				action = "playSound",
+				action = "updateVol",
 				source = playerNetId,
 				file = soundFile,
 				volume = vol,
 			})
+			Wait(100)
+		end
+	end)
+end
 
-			CreateThread(function()
-				while _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil do
-					tPlayer = GetPlayerFromServerId(playerNetId)
-					tPed = GetPlayerPed(tPlayer)
+function DoPlayLocation(playerNetId, location, maxDistance, soundFile, soundVolume)
+	exports['sandbox-base']:LoggerTrace(
+		("^2Playing Sound %s Once Per Request From %s at location %s For Distance %s^7"):format(
+			soundFile,
+			playerNetId,
+			json.encode(location),
+			maxDistance
+		)
+	)
+	local distIs = #(
+		vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
+		- vector3(location.x, location.y, location.z)
+	)
+	local vol = soundVolume * (1.0 - (distIs / maxDistance))
+	if distIs > maxDistance then
+		vol = 0
+	end
+	_sounds[playerNetId] = _sounds[playerNetId] or {}
+	_sounds[playerNetId][soundFile] = {
+		file = soundFile,
+		volume = soundVolume,
+		distance = maxDistance,
+	}
+	SendNUIMessage({
+		action = "playSound",
+		source = playerNetId,
+		file = soundFile,
+		volume = vol,
+	})
 
-					local distIs = #(GetEntityCoords(pPed) - GetEntityCoords(tPed))
-					vol = soundVolume * (1.0 - (distIs / maxDistance))
-
-					if isFromMe then
-						vol = soundVolume
-					elseif
-						(tPed ~= 0 and distIs > maxDistance)
-						or (tPed == 0)
-						or not LocalPlayer.state.loggedIn
-						or (tPlayer == -1)
-					then
-						vol = 0
-					end
-
-					SendNUIMessage({
-						action = "updateVol",
-						source = playerNetId,
-						file = soundFile,
-						volume = vol,
-					})
-					Wait(100)
-				end
-			end)
-		end,
-		Location = function(self, playerNetId, location, maxDistance, soundFile, soundVolume)
-			exports['sandbox-base']:LoggerTrace(
-				"Sounds",
-				("^2Playing Sound %s Once Per Request From %s at location %s For Distance %s^7"):format(
-					soundFile,
-					playerNetId,
-					json.encode(location),
-					maxDistance
-				)
-			)
+	CreateThread(function()
+		while _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil do
 			local distIs = #(
 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
 				- vector3(location.x, location.y, location.z)
 			)
-			local vol = soundVolume * (1.0 - (distIs / maxDistance))
+			vol = soundVolume * (1.0 - (distIs / maxDistance))
 			if distIs > maxDistance then
 				vol = 0
 			end
-			_sounds[playerNetId] = _sounds[playerNetId] or {}
-			_sounds[playerNetId][soundFile] = {
-				file = soundFile,
-				volume = soundVolume,
-				distance = maxDistance,
-			}
 			SendNUIMessage({
-				action = "playSound",
+				action = "updateVol",
 				source = playerNetId,
 				file = soundFile,
 				volume = vol,
 			})
+			Wait(100)
+		end
+	end)
+end
 
-			CreateThread(function()
-				while _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil do
-					local distIs = #(
-						vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
-						- vector3(location.x, location.y, location.z)
-					)
-					vol = soundVolume * (1.0 - (distIs / maxDistance))
-					if distIs > maxDistance then
-						vol = 0
-					end
-					SendNUIMessage({
-						action = "updateVol",
-						source = playerNetId,
-						file = soundFile,
-						volume = vol,
-					})
-					Wait(100)
-				end
-			end)
-		end,
-	},
-	Stop = {
-		One = function(self, soundFile)
-			exports['sandbox-base']:LoggerTrace("Sounds", ("^2Stopping Sound %s On Client^7"):format(soundFile))
-			if _sounds[LocalPlayer.state.ID] ~= nil and _sounds[LocalPlayer.state.ID][soundFile] ~= nil then
-				_sounds[LocalPlayer.state.ID][soundFile] = nil
-				SendNUIMessage({
-					action = "stopSound",
-					source = LocalPlayer.state.ID,
-					file = soundFile,
-				})
-			end
-		end,
-		Distance = function(self, playerNetId, soundFile)
-			exports['sandbox-base']:LoggerTrace("Sounds",
-				("^2Stopping Sound %s Per Request From %s^7"):format(soundFile, playerNetId))
-			if _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil then
-				_sounds[playerNetId][soundFile] = nil
-				SendNUIMessage({
-					action = "stopSound",
-					source = playerNetId,
-					file = soundFile,
-				})
-			end
-		end,
-	},
-	Fade = {
-		One = function(self, soundFile)
-			exports['sandbox-base']:LoggerTrace("Sounds", ("^2Stopping Sound %s On Client^7"):format(soundFile))
-			if _sounds[LocalPlayer.state.ID] ~= nil and _sounds[LocalPlayer.state.ID][soundFile] ~= nil then
-				_sounds[LocalPlayer.state.ID][soundFile] = nil
-				SendNUIMessage({
-					action = "fadeSound",
-					source = LocalPlayer.state.ID,
-					file = soundFile,
-				})
-			end
-		end,
-	},
-}
+function DoLoopDistance(playerNetId, maxDistance, soundFile, soundVolume)
+	exports['sandbox-base']:LoggerTrace(
+		("^2Looping Sound %s Per Request From %s For Distance %s^7"):format(soundFile, playerNetId, maxDistance)
+	)
 
-SOUNDS.Play = {
-	One = function(self, soundFile, soundVolume)
-		Sounds.Do.Play:One(soundFile, soundVolume)
-	end,
-	Distance = function(self, maxDistance, soundFile, soundVolume)
-		exports["sandbox-base"]:ServerCallback("Sounds:Play:Distance", {
-			maxDistance = maxDistance,
-			soundFile = soundFile,
-			soundVolume = soundVolume,
-		})
-	end,
-	Location = function(self, location, maxDistance, soundFile, soundVolume)
-		exports["sandbox-base"]:ServerCallback("Sounds:Play:Location", {
-			location = location,
-			maxDistance = maxDistance,
-			soundFile = soundFile,
-			soundVolume = soundVolume,
-		})
-	end,
-}
+	local isFromMe = false
+	local pPed = PlayerPedId()
 
-SOUNDS.Loop = {
-	One = function(self, soundFile, soundVolume)
-		Sounds.Do.Loop:One(soundFile, soundVolume)
-	end,
-	Distance = function(self, maxDistance, soundFile, soundVolume)
-		exports["sandbox-base"]:ServerCallback("Sounds:Loop:Distance", {
-			maxDistance = maxDistance,
-			soundFile = soundFile,
-			soundVolume = soundVolume,
-		})
-	end,
-	Location = function(self, location, maxDistance, soundFile, soundVolume)
-		exports["sandbox-base"]:ServerCallback("Sounds:Loop:Location", {
-			location = location,
-			maxDistance = maxDistance,
-			soundFile = soundFile,
-			soundVolume = soundVolume,
-		})
-	end,
-}
+	local tPlayer = GetPlayerFromServerId(playerNetId)
+	local tPed = GetPlayerPed(tPlayer)
 
-SOUNDS.Stop = {
-	One = function(self, soundFile)
-		Sounds.Do.Stop:One(soundFile)
-	end,
-	Distance = function(self, pNet, soundFile)
-		exports["sandbox-base"]:ServerCallback("Sounds:Stop:Distance", {
-			soundFile = soundFile,
-		})
-	end,
-	Location = function(self, pNet, soundFile)
-		exports["sandbox-base"]:ServerCallback("Sounds:Stop:Distance", {
-			soundFile = soundFile,
-		})
-	end,
-}
-
-SOUNDS.Fade = {
-	One = function(self, soundFile)
-		Sounds.Do.Fade:One(soundFile)
-	end,
-}
-
-RegisterNetEvent("Sounds:Client:Play:One", function(playetNedId, soundFile, soundVolume)
-	if Sounds == nil then
-		return
+	if playerNetId == LocalPlayer.state.ID then
+		isFromMe = true
+		tPed = LocalPlayer.state.ped
 	end
-	Sounds.Do.Play:One(playetNedId, soundFile, soundVolume)
+
+	local distIs = #(GetEntityCoords(pPed) - GetEntityCoords(tPed))
+	local vol = soundVolume * (1.0 - (distIs / maxDistance))
+	if isFromMe then
+		vol = soundVolume
+	elseif
+		(tPed ~= 0 and distIs > maxDistance)
+		or tPed == 0
+		or not LocalPlayer.state.loggedIn
+		or (tPlayer == -1)
+	then
+		vol = 0
+	end
+
+	_sounds[playerNetId] = _sounds[playerNetId] or {}
+	_sounds[playerNetId][soundFile] = {
+		file = soundFile,
+		volume = soundVolume,
+		distance = maxDistance,
+	}
+	SendNUIMessage({
+		action = "loopSound",
+		source = playerNetId,
+		file = soundFile,
+		volume = vol,
+	})
+
+	CreateThread(function()
+		while _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil do
+			tPlayer = GetPlayerFromServerId(playerNetId)
+			tPed = GetPlayerPed(tPlayer)
+
+			local distIs = #(GetEntityCoords(pPed) - GetEntityCoords(tPed))
+			vol = soundVolume * (1.0 - (distIs / maxDistance))
+
+			if isFromMe then
+				vol = soundVolume
+			elseif
+				(tPed ~= 0 and distIs > maxDistance)
+				or tPed == 0
+				or not LocalPlayer.state.loggedIn
+				or (tPlayer == -1)
+			then
+				vol = 0
+			end
+
+			SendNUIMessage({
+				action = "updateVol",
+				source = playerNetId,
+				file = soundFile,
+				volume = vol,
+			})
+			Wait(100)
+		end
+	end)
+end
+
+function DoLoopLocation(playerNetId, location, maxDistance, soundFile, soundVolume)
+	exports['sandbox-base']:LoggerTrace(
+		("^2Looping Sound %s Per Request From %s at location %s For Distance %s^7"):format(
+			soundFile,
+			playerNetId,
+			json.encode(location),
+			maxDistance
+		)
+	)
+	local distIs = #(GetEntityCoords(LocalPlayer.state.ped) - location)
+	local vol = soundVolume * (1.0 - (distIs / maxDistance))
+	if distIs > maxDistance then
+		vol = 0
+	end
+
+	_sounds[playerNetId] = _sounds[playerNetId] or {}
+	_sounds[playerNetId][soundFile] = {
+		file = soundFile,
+		volume = soundVolume,
+		distance = maxDistance,
+	}
+	SendNUIMessage({
+		action = "loopSound",
+		source = playerNetId,
+		file = soundFile,
+		volume = vol,
+	})
+
+	CreateThread(function()
+		while _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil do
+			local distIs = #(GetEntityCoords(LocalPlayer.state.ped) - location)
+			vol = soundVolume * (1.0 - (distIs / maxDistance))
+			if distIs > maxDistance or not LocalPlayer.state.loggedIn then
+				vol = 0
+			end
+			SendNUIMessage({
+				action = "updateVol",
+				source = playerNetId,
+				file = soundFile,
+				volume = vol,
+			})
+			Wait(100)
+		end
+	end)
+end
+
+function DoStopDistance(playerNetId, soundFile)
+	exports['sandbox-base']:LoggerTrace("Sounds",
+		("^2Stopping Sound %s Per Request From %s^7"):format(soundFile, playerNetId))
+	if _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil then
+		_sounds[playerNetId][soundFile] = nil
+		SendNUIMessage({
+			action = "stopSound",
+			source = playerNetId,
+			file = soundFile,
+		})
+	end
+end
+
+RegisterNetEvent("Sounds:Client:Play:One", function(playerNetId, soundFile, soundVolume)
+	DoPlayDistance(playerNetId, soundFile, soundVolume)
 end)
 
 RegisterNetEvent("Sounds:Client:Play:Distance", function(playerNetId, maxDistance, soundFile, soundVolume)
-	if Sounds == nil then
-		return
-	end
-	Sounds.Do.Play:Distance(playerNetId, maxDistance, soundFile, soundVolume)
+	DoPlayDistance(playerNetId, maxDistance, soundFile, soundVolume)
 end)
 
 RegisterNetEvent("Sounds:Client:Play:Location", function(playerNetId, location, maxDistance, soundFile, soundVolume)
-	if Sounds == nil then
-		return
-	end
-	Sounds.Do.Play:Location(playerNetId, location, maxDistance, soundFile, soundVolume)
+	DoPlayLocation(playerNetId, location, maxDistance, soundFile, soundVolume)
 end)
 
 RegisterNetEvent("Sounds:Client:Loop:One", function(soundFile, soundVolume)
-	if Sounds == nil then
-		return
-	end
-	Sounds.Do.Loop:One(soundFile, soundVolume)
+	exports['sandbox-base']:LoggerTrace("Sounds", ("^2Looping Sound %s On Client Only^7"):format(soundFile))
+	_sounds[LocalPlayer.state.ID] = _sounds[LocalPlayer.state.ID] or {}
+	_sounds[LocalPlayer.state.ID][soundFile] = {
+		file = soundFile,
+		volume = soundVolume,
+		distance = maxDistance,
+	}
+	SendNUIMessage({
+		action = "loopSound",
+		source = LocalPlayer.state.ID,
+		file = soundFile,
+		volume = soundVolume,
+	})
 end)
 
 RegisterNetEvent("Sounds:Client:Loop:Distance", function(playerNetId, maxDistance, soundFile, soundVolume)
-	if Sounds == nil then
-		return
-	end
-	Sounds.Do.Loop:Distance(playerNetId, maxDistance, soundFile, soundVolume)
+	DoLoopDistance(playerNetId, maxDistance, soundFile, soundVolume)
 end)
 
 RegisterNetEvent("Sounds:Client:Loop:Location", function(playerNetId, location, maxDistance, soundFile, soundVolume)
-	if Sounds == nil then
-		return
-	end
-	Sounds.Do.Loop:Location(playerNetId, location, maxDistance, soundFile, soundVolume)
+	DoLoopLocation(playerNetId, location, maxDistance, soundFile, soundVolume)
 end)
 
 RegisterNetEvent("Sounds:Client:Stop:One", function(soundFile)
-	if Sounds == nil then
-		return
+	exports['sandbox-base']:LoggerTrace("Sounds", ("^2Stopping Sound %s On Client^7"):format(soundFile))
+	if _sounds[LocalPlayer.state.ID] ~= nil and _sounds[LocalPlayer.state.ID][soundFile] ~= nil then
+		_sounds[LocalPlayer.state.ID][soundFile] = nil
+		SendNUIMessage({
+			action = "stopSound",
+			source = LocalPlayer.state.ID,
+			file = soundFile,
+		})
 	end
-	Sounds.Do.Stop:One(soundFile)
 end)
 
 RegisterNetEvent("Sounds:Client:Stop:Distance", function(playerNetId, soundFile)
-	if Sounds == nil then
-		return
-	end
-	Sounds.Do.Stop:Distance(playerNetId, soundFile)
+	DoStopDistance(playerNetId, soundFile)
 end)
 
 RegisterNetEvent("Sounds:Client:Stop:All", function(playerNetId, soundFile)
-	if Sounds == nil then
-		return
-	end
 	if _sounds[playerNetId] ~= nil then
 		for k, v in pairs(_sounds[playerNetId]) do
-			Sounds.Do.Stop:One(playerNetId, v)
+			DoStopDistance(playerNetId, v)
 		end
 		_sounds[playerNetId] = nil
 	end

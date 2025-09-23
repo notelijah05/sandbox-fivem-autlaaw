@@ -7,7 +7,6 @@ function CorrectionsComponents()
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Blips",
 		"Targeting",
 		"Jobs",
-		"Sounds",
 		"Properties",
 		"Apartment",
 		"EmergencyAlerts",

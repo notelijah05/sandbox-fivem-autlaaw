@@ -24,7 +24,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
@@ -41,7 +40,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"ListMenu",
 		"Action",
-		"Sounds",
 		"Inventory",
 	}, function(error)
 		if #error > 0 then
@@ -220,7 +218,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						end
 
 						if matchingEvidence and #matchingEvidence > 0 then
-							Sounds.Play:Distance(4, "demo.ogg", 0.4)
+							exports["sandbox-sounds"]:PlayDistance(4, "demo.ogg", 0.4)
 							table.insert(items, {
 								label = 'Ballistics Matches Found',
 								description = string.format('%s Projectile Matches Found When Compared to Filed Weapons',

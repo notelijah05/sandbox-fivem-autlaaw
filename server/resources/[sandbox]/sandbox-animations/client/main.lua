@@ -23,7 +23,6 @@ function RetrieveComponents()
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -37,7 +36,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Weapons",
 		"ListMenu",
 		"Input",
-		"Sounds",
 		"Inventory",
 	}, function(error)
 		if #error > 0 then

@@ -2,7 +2,6 @@ AddEventHandler("Commands:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Waitlist = exports["sandbox-base"]:FetchComponent("WaitList")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	RegisterChatCommands()
@@ -12,7 +11,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Commands", {
 		"Chat",
 		"Config",
-		"Sounds",
 		"WaitList",
 		"Pwnzor",
 	}, function(error)

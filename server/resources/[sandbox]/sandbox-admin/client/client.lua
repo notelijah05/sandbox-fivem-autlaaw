@@ -7,7 +7,6 @@ function RetrieveComponents()
 	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
 	NetSync = exports["sandbox-base"]:FetchComponent("NetSync")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -19,7 +18,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"VOIP",
 		"Admin",
 		"NetSync",
-		"Sounds",
 	}, function(error)
 		if #error > 0 then
 			return

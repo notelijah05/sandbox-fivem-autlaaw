@@ -67,7 +67,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Robbery:Paleto:TriggeredLaser", function(source, data, cb)
 		if not _bankStates.paleto.fookinLasers then
 			Robbery.State:Update("paleto", "fookinLasers", source)
-			Sounds.Loop:Location(source, vector3(-104.552, 6469.050, 35.981), 50.0, "bank_alarm.ogg", 0.15)
+			exports["sandbox-sounds"]:LoopLocation(source, vector3(-104.552, 6469.050, 35.981), 50.0, "bank_alarm.ogg",
+				0.15)
 			GlobalState["Fleeca:Disable:savings_paleto"] = true
 			if not _pbAlerted or os.time() > _pbAlerted then
 				Robbery:TriggerPDAlert(source, vector3(-111.130, 6462.485, 31.643), "10-33", "Bank Alarm Triggered", {
@@ -289,7 +290,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										Robbery.State:Update("paleto", data.boxId, _pbGlobalReset, "electricalBoxes")
 										TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 										if IsPaletoPowerDisabled() then
-											Sounds.Play:Location(
+											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,
 												15.0,
@@ -318,7 +319,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											Doors:SetLock("bank_savings_paleto_gate", false)
 											RestorePowerThread()
 										else
-											Sounds.Play:Location(
+											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,
 												15.0,

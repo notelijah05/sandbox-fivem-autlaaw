@@ -10,7 +10,6 @@ function RetrieveComponents()
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
@@ -29,7 +28,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Handcuffs",
 		"Ped",
 		"Inventory",
-		"Sounds",
 		"Labor",
 		"Loans",
 		"Jail",
