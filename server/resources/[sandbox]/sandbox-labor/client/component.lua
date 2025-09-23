@@ -15,7 +15,6 @@ function RetrieveComponents()
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 	Confirm = exports["sandbox-base"]:FetchComponent("Confirm")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -40,7 +39,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Labor",
 		"Properties",
 		"Action",
-		"Sync",
 		"Confirm",
 		"Reputation",
 		"Vehicles",

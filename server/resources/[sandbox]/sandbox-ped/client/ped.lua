@@ -18,7 +18,6 @@ attachedProps = {}
 AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 	Spawn = exports["sandbox-base"]:FetchComponent("Spawn")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -32,7 +31,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
 		"UISounds",
-		"Sync",
 		"Spawn",
 		"Action",
 		"Polyzone",
@@ -776,9 +774,9 @@ PED = {
 			LocalPlayer.state.inCreator = true
 			_currentState = "CREATOR"
 
-			Sync:Start()
+			exports["sandbox-sync"]:Start()
 			Wait(300)
-			Sync:Stop(true)
+			exports["sandbox-sync"]:Stop(true)
 
 			FROZEN = true
 			local player = PlayerPedId()
@@ -846,7 +844,7 @@ PED = {
 			})
 		end,
 		End = function(self)
-			Sync:Start()
+			exports["sandbox-sync"]:Start()
 			TriggerServerEvent("Ped:LeaveCreator")
 			Spawn:PlacePedIntoWorld(_data)
 			Ped.Customization:Hide()

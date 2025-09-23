@@ -3,13 +3,11 @@ local inCayoPerico = false
 AddEventHandler("Island:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Island", {
 		"Polyzone",
-		"Targeting",
 	}, function(error)
 		if #error > 0 then
 			return

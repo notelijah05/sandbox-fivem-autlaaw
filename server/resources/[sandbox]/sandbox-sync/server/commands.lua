@@ -1,17 +1,17 @@
 function RegisterChatCommands()
     exports["sandbox-chat"]:RegisterAdminCommand('freezetime', function(source, args, rawCommand)
-        Sync:FreezeTime()
+        exports["sandbox-sync"]:FreezeTime()
         exports["sandbox-chat"]:SendServerSingle(source,
-            'Time Has Been ' .. (Sync.Get:TimeFrozen() and 'Frozen' or 'Unfrozen'))
+            'Time Has Been ' .. (exports["sandbox-sync"]:GetTimeFrozen() and 'Frozen' or 'Unfrozen'))
     end, {
         help = 'Freeze Time',
         params = {}
     })
 
     exports["sandbox-chat"]:RegisterAdminCommand('freezeweather', function(source, args, rawCommand)
-        Sync:FreezeWeather()
+        exports["sandbox-sync"]:FreezeWeather()
         exports["sandbox-chat"]:SendServerSingle(source,
-            'Weather Has Been ' .. (Sync.Get:WeatherFrozen() and 'Frozen' or 'Unfrozen'))
+            'Weather Has Been ' .. (exports["sandbox-sync"]:GetWeatherFrozen() and 'Frozen' or 'Unfrozen'))
     end, {
         help = 'Freeze the Weather',
         params = {}
@@ -20,7 +20,7 @@ function RegisterChatCommands()
     exports["sandbox-chat"]:RegisterAdminCommand('weather', function(source, args, rawCommand)
         for _, v in pairs(AvailableWeatherTypes) do
             if args[1]:upper() == v then
-                Sync.Set:Weather(args[1])
+                exports["sandbox-sync"]:SetWeather(args[1])
                 return
             end
         end
@@ -36,7 +36,7 @@ function RegisterChatCommands()
     }, 1)
 
     exports["sandbox-chat"]:RegisterAdminCommand('time', function(src, args, raw)
-        Sync.Set:TimeType(args[1])
+        exports["sandbox-sync"]:SetTimeType(args[1])
     end, {
         help = 'Set Time',
         params = {
@@ -45,26 +45,26 @@ function RegisterChatCommands()
     }, 1)
 
     exports["sandbox-chat"]:RegisterAdminCommand('clock', function(src, args, raw)
-        Sync.Set:Time(tonumber(args[1]), 0)
+        exports["sandbox-sync"]:SetTime(tonumber(args[1]), tonumber(args[2]))
     end, {
         help = 'Set Specific Hour',
         params = {
             { name = 'Hour', help = '0 - 23' },
         }
-    }, 1)
+    }, -1)
 
     exports["sandbox-chat"]:RegisterAdminCommand('blackout', function(source, args, rawCommand)
-        Sync.Set:Blackout()
+        exports["sandbox-sync"]:SetBlackout()
         exports["sandbox-chat"]:SendServerSingle(source,
-            'Blackout Has Been ' .. (Sync.Get:Blackout() and 'Enabled' or 'Disabled'))
+            'Blackout Has Been ' .. (exports["sandbox-sync"]:GetBlackout() and 'Enabled' or 'Disabled'))
     end, {
         help = 'Toggle Blackout'
     }, 0)
 
     exports["sandbox-chat"]:RegisterAdminCommand('winter', function(source, args, rawCommand)
-        Sync.Set:Winter()
+        exports["sandbox-sync"]:SetWinter()
         exports["sandbox-chat"]:SendServerSingle(source, 'Winter Only Weather Has Been ' ..
-            (Sync.Get:Winter() and 'Enabled' or 'Disabled'))
+            (exports["sandbox-sync"]:GetWinter() and 'Enabled' or 'Disabled'))
     end, {
         help = 'Toggle Winter Only Weather'
     }, 0)

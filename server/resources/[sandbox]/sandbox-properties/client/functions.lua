@@ -79,7 +79,7 @@ function ExitProperty(data, backdoor)
 		end
 
 		TriggerEvent('Interiors:Exit')
-		Sync:Start()
+		exports["sandbox-sync"]:Start()
 
 		exports["sandbox-sounds"]:PlayOne("door_close.ogg", 0.3)
 		Wait(200)

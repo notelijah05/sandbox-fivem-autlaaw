@@ -21,7 +21,7 @@ RegisterNetEvent("Properties:Client:InnerStuff", function(propertyData, int, fur
 	-- 	end)
 	-- end
 
-	Sync:Stop(1)
+	exports["sandbox-sync"]:Stop(1)
 
 	CreatePropertyZones(propertyData.id, int)
 
@@ -30,7 +30,7 @@ RegisterNetEvent("Properties:Client:InnerStuff", function(propertyData, int, fur
 	_isEntering = false
 
 	Wait(500)
-	Sync:Stop(1)
+	exports["sandbox-sync"]:Stop(1)
 end)
 
 ---- TARGETTING EVENTS ----

@@ -15,7 +15,6 @@ function RetrieveComponents()
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
-	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Apartment",
 		"Characters",
 		"Wardrobe",
-		"Sync",
 		"Animations",
 	}, function(error)
 		if #error > 0 then
@@ -257,7 +255,7 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 
 	Targeting.Zones:Refresh()
 	Wait(1000)
-	Sync:Stop(1)
+	exports["sandbox-sync"]:Stop(1)
 end)
 
 AddEventHandler("Apartment:Client:ExitEvent", function()
@@ -395,7 +393,7 @@ _APTS = {
 			end
 
 			TriggerEvent("Interiors:Exit")
-			Sync:Start()
+			exports["sandbox-sync"]:Start()
 
 			exports["sandbox-sounds"]:PlayOne("door_close.ogg", 0.3)
 			Wait(200)

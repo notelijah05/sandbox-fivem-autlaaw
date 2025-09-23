@@ -159,7 +159,7 @@ function ExitHouse()
         end
 
         TriggerEvent('Interiors:Exit')
-        Sync:Start()
+        exports["sandbox-sync"]:Start()
 
         DoScreenFadeIn(1000)
         while not IsScreenFadedIn() do
@@ -213,7 +213,7 @@ function EnterHouseShit(f, exit)
 
     FreezeEntityPosition(PlayerPedId(), false)
 
-    Sync:Stop(1)
+    exports["sandbox-sync"]:Stop(1)
     TriggerEvent("Interiors:Enter", vector3(f.x, f.y, f.z))
 
     DoScreenFadeIn(1000)

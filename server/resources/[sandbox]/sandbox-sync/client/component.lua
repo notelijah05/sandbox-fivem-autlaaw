@@ -9,40 +9,26 @@ local _isStoppedForceTime = 20
 local _inCayo = false
 local _inCayoStorm = false
 
-AddEventHandler("Sync:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Sync = exports["sandbox-base"]:FetchComponent("Sync")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Sync", {
-		"Sync",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
+	if GlobalState["Sync:Winter"] then
+		SetForceVehicleTrails(true)
+		SetForcePedFootstepsTracks(true)
+		ForceSnowPass(true)
 
-		if GlobalState["Sync:Winter"] then
-			SetForceVehicleTrails(true)
-			SetForcePedFootstepsTracks(true)
-			ForceSnowPass(true)
+		RequestScriptAudioBank("ICE_FOOTSTEPS", false)
+		RequestScriptAudioBank("SNOW_FOOTSTEPS", false)
+	else
+		SetForceVehicleTrails(false)
+		SetForcePedFootstepsTracks(false)
+		ForceSnowPass(false)
 
-			RequestScriptAudioBank("ICE_FOOTSTEPS", false)
-			RequestScriptAudioBank("SNOW_FOOTSTEPS", false)
-		else
-			SetForceVehicleTrails(false)
-			SetForcePedFootstepsTracks(false)
-			ForceSnowPass(false)
-
-			ReleaseNamedScriptAudioBank("ICE_FOOTSTEPS")
-			ReleaseNamedScriptAudioBank("SNOW_FOOTSTEPS")
-		end
-	end)
+		ReleaseNamedScriptAudioBank("ICE_FOOTSTEPS")
+		ReleaseNamedScriptAudioBank("SNOW_FOOTSTEPS")
+	end
 end)
 
 AddEventHandler("Characters:Client:Spawn", function()
-	Sync:Start()
+	exports["sandbox-sync"]:Start()
 	-- CreateThread(function()
 	-- 	SwitchTrainTrack(0, true)
 	-- 	SwitchTrainTrack(3, true)
@@ -54,69 +40,67 @@ AddEventHandler("Characters:Client:Spawn", function()
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
-	Sync:Stop()
+	exports["sandbox-sync"]:Stop()
 end)
 
-SYNC = {
-	Start = function(self)
-		exports['sandbox-base']:LoggerTrace("Sync", "Starting Time and Weather Sync")
-		_isStopped = false
+exports("Start", function()
+	exports['sandbox-base']:LoggerTrace("Sync", "Starting Time and Weather Sync")
+	_isStopped = false
 
-		_weatherState = GlobalState["Sync:Weather"]
-		_blackoutState = GlobalState["Sync:Blackout"]
-		local timeState = GlobalState["Sync:Time"]
-		_timeHour = timeState.hour
-		_timeMinute = timeState.minute
+	_weatherState = GlobalState["Sync:Weather"]
+	_blackoutState = GlobalState["Sync:Blackout"]
+	local timeState = GlobalState["Sync:Time"]
+	_timeHour = timeState.hour
+	_timeMinute = timeState.minute
 
-		SetRainFxIntensity(-1.0)
+	SetRainFxIntensity(-1.0)
 
-		if
-			_weatherState == "XMAS"
-			or _weatherState == "BLIZZARD"
-			or _weatherState == "SNOW"
-			or GlobalState["Sync:Winter"]
-		then
-			SetForceVehicleTrails(true)
-			SetForcePedFootstepsTracks(true)
-			ForceSnowPass(true)
+	if
+		_weatherState == "XMAS"
+		or _weatherState == "BLIZZARD"
+		or _weatherState == "SNOW"
+		or GlobalState["Sync:Winter"]
+	then
+		SetForceVehicleTrails(true)
+		SetForcePedFootstepsTracks(true)
+		ForceSnowPass(true)
 
-			RequestScriptAudioBank("ICE_FOOTSTEPS", false)
-			RequestScriptAudioBank("SNOW_FOOTSTEPS", false)
-		else
-			SetForceVehicleTrails(false)
-			SetForcePedFootstepsTracks(false)
-			ForceSnowPass(false)
+		RequestScriptAudioBank("ICE_FOOTSTEPS", false)
+		RequestScriptAudioBank("SNOW_FOOTSTEPS", false)
+	else
+		SetForceVehicleTrails(false)
+		SetForcePedFootstepsTracks(false)
+		ForceSnowPass(false)
 
-			ReleaseNamedScriptAudioBank("ICE_FOOTSTEPS")
-			ReleaseNamedScriptAudioBank("SNOW_FOOTSTEPS")
-		end
-	end,
-	Stop = function(self, hour)
-		exports['sandbox-base']:LoggerTrace("Sync", "Stopping Time and Weather Sync")
-		_isStopped = true
+		ReleaseNamedScriptAudioBank("ICE_FOOTSTEPS")
+		ReleaseNamedScriptAudioBank("SNOW_FOOTSTEPS")
+	end
+end)
 
-		if not hour then
-			_isStoppedForceTime = 20
-		else
-			_isStoppedForceTime = hour
-		end
-	end,
-	IsSyncing = function(self)
-		return not _isStopped
-	end,
-	GetTime = function(self)
-		return {
-			hour = _timeHour,
-			minute = _timeMinute,
-		}
-	end,
-	GetWeather = function(self)
-		return _weatherState
-	end,
-}
+exports("Stop", function(hour)
+	exports['sandbox-base']:LoggerTrace("Sync", "Stopping Time and Weather Sync")
+	_isStopped = true
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Sync", SYNC)
+	if not hour then
+		_isStoppedForceTime = 20
+	else
+		_isStoppedForceTime = hour
+	end
+end)
+
+exports("IsSyncing", function()
+	return not _isStopped
+end)
+
+exports("GetTime", function()
+	return {
+		hour = _timeHour,
+		minute = _timeMinute,
+	}
+end)
+
+exports("GetWeather", function()
+	return _weatherState
 end)
 
 CreateThread(function()

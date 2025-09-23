@@ -561,10 +561,10 @@ CreateThread(function()
 
 	if APIWorking and WebAPI then
 		queueEnabled = true
-		print("Queue enabled with WebAPI support")
+		exports["sandbox-base"]:LoggerInfo("Queue", "Queue enabled with WebAPI support")
 	else
 		queueEnabled = true
-		print("Queue enabled without WebAPI - account linking disabled")
+		exports["sandbox-base"]:LoggerInfo("Queue", "Queue enabled without WebAPI - account linking disabled")
 	end
 
 	while GetResourceState("hardcap") ~= "stopped" do

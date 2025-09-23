@@ -11,7 +11,6 @@ function CorrectionsComponents()
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
-	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
@@ -29,7 +28,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"EmergencyAlerts",
 		"Wardrobe",
 		"Status",
-		"Sync",
 		"Polyzone",
 		"Vehicles",
 	}, function(error)
