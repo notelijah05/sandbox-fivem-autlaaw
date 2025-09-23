@@ -1,14 +1,9 @@
-COMPONENTS.Scaleform = {
-	_required = { 'Request', 'RequestHud' },
-	_name = 'base',
-}
-
 --[[ Scaleform Wrapper By Illusivee - https://github.com/Illusivee/scaleform-wrapper ]]
 
 local scaleform = {}
 scaleform.__index = scaleform
 
-function COMPONENTS.Scaleform.Request(self, Name)
+exports("ScaleformRequest", function(Name)
 	local ScaleformHandle = RequestScaleformMovie(Name)
 	local StartTime = GetGameTimer()
 	while not HasScaleformMovieLoaded(ScaleformHandle) do
@@ -20,9 +15,9 @@ function COMPONENTS.Scaleform.Request(self, Name)
 	end
 	local data = { name = Name, handle = ScaleformHandle }
 	return setmetatable(data, scaleform)
-end
+end)
 
-function COMPONENTS.Scaleform.RequestHud(self, id)
+exports("ScaleformRequestHud", function(id)
 	local ScaleformHandle = RequestHudScaleform(id)
 	local StartTime = GetGameTimer()
 	while not HasHudScaleformLoaded(ScaleformHandle) do
@@ -34,7 +29,7 @@ function COMPONENTS.Scaleform.RequestHud(self, id)
 	end
 	local data = { Name = id, handle = ScaleformHandle }
 	return setmetatable(data, scaleform)
-end
+end)
 
 function scaleform:CallScaleFunction(scType, theFunction, ...)
 	if scType == 'hud' then
