@@ -1,35 +1,33 @@
-COMPONENTS.Core = {
-	Shutdown = function(self, reason)
-		exports['sandbox-base']:LoggerCritical("Core", "Shutting Down Core, Reason: " .. reason, {
-			console = true,
-			file = true,
-		})
+exports("Shutdown", function(reason)
+	exports['sandbox-base']:LoggerCritical("Core", "Shutting Down Core, Reason: " .. reason, {
+		console = true,
+		file = true,
+	})
+	Wait(1000) -- Need wait period so logging can finish
+	os.exit()
+end)
 
-		Wait(1000) -- Need wait period so logging can finish
-		os.exit()
-	end,
-	DropAll = function(self)
-		for k, v in pairs(COMPONENTS.Players) do
-			if v ~= nil then
-				DropPlayer(
-					v:GetData("Source"),
-					"⛔ Server Restarting ⛔ Due to a pending restart, you've been dropped from the server. Please ❗❗❗RESTART FIVEM❗❗❗ and reconnect in a few minutes."
-				)
-			end
+exports("DropAll", function()
+	for k, v in pairs(COMPONENTS.Players) do
+		if v ~= nil then
+			DropPlayer(
+				v:GetData("Source"),
+				"⛔ Server Restarting ⛔ Due to a pending restart, you've been dropped from the server. Please ❗❗❗RESTART FIVEM❗❗❗ and reconnect in a few minutes."
+			)
 		end
-	end,
-}
+	end
+end)
 
 AddEventHandler("Core:Server:ForceAllSave", function()
 	COMPONENTS.Queue.Utils:CloseAndDrop()
-	COMPONENTS.Core.DropAll()
+	exports["sandbox-base"]:DropAll()
 	TriggerEvent("Core:Server:ForceSave")
 end)
 
 AddEventHandler("txAdmin:events:scheduledRestart", function(eventData)
 	if eventData.secondsRemaining <= 60 then
 		COMPONENTS.Queue.Utils:CloseAndDrop()
-		COMPONENTS.Core.DropAll()
+		exports["sandbox-base"]:DropAll()
 		TriggerEvent("Core:Server:ForceSave")
 	elseif not GlobalState["RestartLockdown"] and eventData.secondsRemaining <= (60 * 30) then
 		GlobalState["RestartLockdown"] = true

@@ -86,7 +86,7 @@ COMPONENTS.WebAPI = {
 	-- 			console = true,
 	-- 			file = true,
 	-- 		})
-	-- 		COMPONENTS.Core:Shutdown("Failed Validation, Shutting Down Server")
+	-- 		exports["sandbox-base"]:Shutdown("Failed Validation, Shutting Down Server")
 
 	-- 		return false
 	-- 	else

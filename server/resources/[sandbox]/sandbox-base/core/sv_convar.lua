@@ -36,7 +36,7 @@ AddEventHandler("Core:Shared:Watermark", function()
 			})
 
 			if v.stop then
-				COMPONENTS.Core:Shutdown("Missing Convar " .. v.key)
+				exports["sandbox-base"]:Shutdown("Missing Convar " .. v.key)
 				return
 			end
 		end
