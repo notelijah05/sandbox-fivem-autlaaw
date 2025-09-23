@@ -15,7 +15,8 @@ RegisterNUICallback("ReceiveAlert", function(data, cb)
 			data.blip.id = string.format("emrg-%s", data.id)
 			data.blip.title = string.format("%s", data.title)
 
-			local eB = Blips:Add(data.blip.id, data.blip.title, data.location, data.blip.icon, data.blip.color,
+			local eB = exports["sandbox-blips"]:Add(data.blip.id, data.blip.title, data.location, data.blip.icon,
+				data.blip.color,
 				data.blip.size, 2, false, data.blip.flashing)
 			SetBlipFlashes(eB, isPanic)
 			table.insert(_alertBlips, {
@@ -42,7 +43,7 @@ end)
 RegisterNUICallback("RemoveAlert", function(data, cb)
 	if data and data.id then
 		local id = string.format("emrg-%s", data.id)
-		Blips:Remove(id)
+		exports["sandbox-blips"]:Remove(id)
 
 		for k, v in ipairs(_alertBlips) do
 			if v.id == id then
@@ -76,7 +77,7 @@ RegisterNUICallback("RouteAlert", function(data, cb)
 			end
 
 			if not f then
-				local eB = Blips:Add(
+				local eB = exports["sandbox-blips"]:Add(
 					string.format("emrg-%s", data.id),
 					data.title,
 					data.location,

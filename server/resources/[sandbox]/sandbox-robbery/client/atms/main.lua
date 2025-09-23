@@ -112,7 +112,7 @@ function StartATMRobbery(location, firstLocation)
     SetBlipColour(_blip, 1)
     SetBlipAlpha(_blip, 90)
 
-    Blips:Add("ATMRobbery", "Target Area", _atmZone.coords, 521, 6, 1.5)
+    exports["sandbox-blips"]:Add("ATMRobbery", "Target Area", _atmZone.coords, 521, 6, 1.5)
 
     ClearGpsPlayerWaypoint()
     SetNewWaypoint(_atmZone.coords.x, _atmZone.coords.y)
@@ -127,7 +127,7 @@ end
 
 function EndATMRobbery()
     RemoveBlip(_blip)
-    Blips:Remove("ATMRobbery")
+    exports["sandbox-blips"]:Remove("ATMRobbery")
 
     _blip = nil
 

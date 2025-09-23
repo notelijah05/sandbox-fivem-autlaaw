@@ -40,7 +40,6 @@ function RetrieveComponents()
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -64,7 +63,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"ListMenu",
 		"Labor",
 		"Jail",
-		"Blips",
 		"Reputation",
 		"Polyzone",
 		"Vehicles",

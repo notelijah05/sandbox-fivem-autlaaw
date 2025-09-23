@@ -120,7 +120,8 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	DeleteWaypoint()
 	SetNewWaypoint(-348.940, -1570.224)
 
-	_blip = Blips:Add("GarbageStart", "Sanitation Foreman", { x = -348.940, y = -1570.224, z = 0 }, 480, 2, 1.4)
+	_blip = exports["sandbox-blips"]:Add("GarbageStart", "Sanitation Foreman", { x = -348.940, y = -1570.224, z = 0 },
+		480, 2, 1.4)
 
 	eventHandlers["startup"] = RegisterNetEvent(string.format("Garbage:Client:%s:Startup", joiner), function()
 		_working = true
@@ -167,7 +168,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 		SetNewWaypoint(_route.coords)
 
 		if _blip ~= nil then
-			Blips:Remove("GarbageStart")
+			exports["sandbox-blips"]:Remove("GarbageStart")
 			RemoveBlip(_blip)
 			_blip = nil
 		end
@@ -184,11 +185,12 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 		DeleteWaypoint()
 		SetNewWaypoint(-334.989, -1562.966)
 		if _blip ~= nil then
-			Blips:Remove("GarbageStart")
+			exports["sandbox-blips"]:Remove("GarbageStart")
 			RemoveBlip(_blip)
 			_blip = nil
 		end
-		_blip = Blips:Add("GarbageStart", "Sanitation Foreman", { x = -348.940, y = -1570.224, z = 0 }, 480, 2, 1.4)
+		_blip = exports["sandbox-blips"]:Add("GarbageStart", "Sanitation Foreman", { x = -348.940, y = -1570.224, z = 0 },
+			480, 2, 1.4)
 		_state = 3
 	end)
 
@@ -292,7 +294,7 @@ RegisterNetEvent("Garbage:Client:OffDuty", function(time)
 	end
 
 	if _blip ~= nil then
-		Blips:Remove("GarbageStart")
+		exports["sandbox-blips"]:Remove("GarbageStart")
 		RemoveBlip(_blip)
 		_blip = nil
 	end

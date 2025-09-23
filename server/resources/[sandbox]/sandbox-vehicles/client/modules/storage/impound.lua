@@ -56,7 +56,7 @@ end)
 
 AddEventHandler('Vehicles:Client:CharacterLogin', function()
 	if _vehicleImpound then
-		Blips:Add('veh_impound', "Impound Yard | Tow Job", _vehicleImpound.coords, 317, 16, 0.6)
+		exports["sandbox-blips"]:Add('veh_impound', "Impound Yard | Tow Job", _vehicleImpound.coords, 317, 16, 0.6)
 	end
 end)
 

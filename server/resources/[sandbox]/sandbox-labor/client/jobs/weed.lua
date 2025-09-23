@@ -16,7 +16,7 @@ RegisterNetEvent("WeedRun:Client:OnDuty", function(joiner, time)
     eventHandlers["receive"] = RegisterNetEvent(string.format("WeedRun:Client:%s:Receive", joiner),
         function(location, pedModel)
             _state = 1
-            _blip = Blips:Add("WeedRun", "Buyer", location, 514, 11, 0.9, 2, false, true)
+            _blip = exports["sandbox-blips"]:Add("WeedRun", "Buyer", location, 514, 11, 0.9, 2, false, true)
             SetNewWaypoint(location.x, location.y)
             PedInteraction:Add("WeedDelivery", pedModel, vector3(location[1], location[2], location[3]), location[4],
                 50.0, {
@@ -68,7 +68,7 @@ AddEventHandler("WeedRun:Client:Deliver", function()
                     if not cancelled then
                         exports["sandbox-base"]:ServerCallback("WeedRun:DoDropoff", {}, function(r2)
                             if r2 then
-                                Blips:Remove("WeedRun")
+                                exports["sandbox-blips"]:Remove("WeedRun")
                                 _state = 2
                             end
                         end)
@@ -101,5 +101,5 @@ RegisterNetEvent("WeedRun:Client:OffDuty", function(time)
     end
 
     PedInteraction:Remove("WeedDelivery")
-    Blips:Remove("WeedDelivery")
+    exports["sandbox-blips"]:Remove("WeedDelivery")
 end)

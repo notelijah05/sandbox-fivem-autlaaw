@@ -4,7 +4,6 @@ _doingMugshot = false
 
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -24,7 +23,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
-		"Blips",
 		"Characters",
 		"Animations",
 		"Targeting",
@@ -46,7 +44,8 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrieveComponents()
 
-		Blips:Add("prison", "Bolingbroke Penitentiary", vector3(1852.444, 2585.973, 45.672), 188, 65, 0.8)
+		exports["sandbox-blips"]:Add("prison", "Bolingbroke Penitentiary", vector3(1852.444, 2585.973, 45.672), 188, 65,
+			0.8)
 
 		Polyzone.Create:Poly("prison", Config.Prison.points, Config.Prison.options)
 		Polyzone.Create:Poly("prison-logout", Config.Logout.points, Config.Logout.options)

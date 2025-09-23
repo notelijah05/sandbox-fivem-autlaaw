@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Tow = exports["sandbox-base"]:FetchComponent("Tow")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 end
 
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"PedInteraction",
 		"Tow",
-		"Blips",
 		"Phone",
 	}, function(error)
 		if #error > 0 then
@@ -124,7 +122,7 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 						exports["sandbox-hud"]:NotifSuccess("Vehicle Now on Tow Truck", 5000, "truck-tow")
 
 						if Entity(success).state.towObjective then
-							Blips:Remove("towjob-pickup")
+							exports["sandbox-blips"]:Remove("towjob-pickup")
 							Phone.Notification:Update("TOW_OBJ", "Yard Manager", "Great, bring it back to the yard")
 						end
 					else
@@ -157,12 +155,12 @@ AddEventHandler("Vehicles:Client:ReleaseTow", function(entityData)
 end)
 
 RegisterNetEvent("Tow:Client:MarkPickup", function(coords, vehNet)
-	Blips:Add("towjob-pickup", "Vehicle Pickup", coords, 326, 65, 0.8, 2, false, true)
+	exports["sandbox-blips"]:Add("towjob-pickup", "Vehicle Pickup", coords, 326, 65, 0.8, 2, false, true)
 	SetEntityAsMissionEntity(NetToVeh(vehNet))
 end)
 
 RegisterNetEvent("Tow:Client:CleanupPickup", function()
-	Blips:Remove("towjob-pickup")
+	exports["sandbox-blips"]:Remove("towjob-pickup")
 end)
 
 function AttachVehicleToTow(towTruck, targetVeh, truckModel)

@@ -1,5 +1,5 @@
 AddEventHandler('Labor:Client:Setup', function()
-	Blips:Add('exporter', "Goods Exporter", vector3(-769.529, -2638.597, 12.945), 272, 4, 0.65)
+	exports["sandbox-blips"]:Add('exporter', "Goods Exporter", vector3(-769.529, -2638.597, 12.945), 272, 4, 0.65)
 	PedInteraction:Add("LaborExporter", `a_m_m_farmer_01`, vector3(-769.529, -2638.597, 12.945), 63.569, 25.0, {
 		{
 			icon = "hand-holding-magic",

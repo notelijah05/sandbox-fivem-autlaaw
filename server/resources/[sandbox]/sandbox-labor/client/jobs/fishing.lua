@@ -438,7 +438,7 @@ RegisterNetEvent("Fishing:Client:OnDuty", function(joiner, time)
     _joiner = joiner
     DeleteWaypoint()
     SetNewWaypoint(fishingStores[1].coords.x, fishingStores[1].coords.y)
-    _blip = Blips:Add("FishingStart", "Shop Owner",
+    _blip = exports["sandbox-blips"]:Add("FishingStart", "Shop Owner",
         { x = fishingStores[1].coords.x, y = fishingStores[1].coords.y, z = fishingStores[1].coords.z }, 480, 2, 1.4)
 
     eventHandlers["startup"] = RegisterNetEvent(string.format("Fishing:Client:%s:Startup", joiner), function()
@@ -446,7 +446,7 @@ RegisterNetEvent("Fishing:Client:OnDuty", function(joiner, time)
         _state = 1
 
         if _blip ~= nil then
-            Blips:Remove("FishingStart")
+            exports["sandbox-blips"]:Remove("FishingStart")
             RemoveBlip(_blip)
         end
     end)
@@ -454,10 +454,10 @@ RegisterNetEvent("Fishing:Client:OnDuty", function(joiner, time)
     eventHandlers["finish"] = RegisterNetEvent(string.format("Fishing:Client:%s:Finish", joiner), function()
         _state = 2
         if _blip ~= nil then
-            Blips:Remove("FishingStart")
+            exports["sandbox-blips"]:Remove("FishingStart")
             RemoveBlip(_blip)
         end
-        _blip = Blips:Add("FishingStart", "Shop Owner",
+        _blip = exports["sandbox-blips"]:Add("FishingStart", "Shop Owner",
             { x = fishingStores[1].coords.x, y = fishingStores[1].coords.y, z = fishingStores[1].coords.z }, 480, 2, 1.4)
     end)
 
@@ -472,7 +472,7 @@ RegisterNetEvent("Fishing:Client:OffDuty", function(time)
     end
 
     if _blip ~= nil then
-        Blips:Remove("FishingStart")
+        exports["sandbox-blips"]:Remove("FishingStart")
         RemoveBlip(_blip)
     end
 

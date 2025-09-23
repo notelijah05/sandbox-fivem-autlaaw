@@ -30,7 +30,6 @@ function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Sync = exports["sandbox-base"]:FetchComponent("Sync")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -52,7 +51,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Sync",
 		"Crafting",
-		"Blips",
 		"Polyzone",
 		"Animations",
 		"ObjectPlacer",

@@ -380,14 +380,14 @@ RegisterNetEvent("Hunting:Client:OnDuty", function(joiner, time)
 	_joiner = joiner
 	DeleteWaypoint()
 	SetNewWaypoint(_huntingStore.x, _huntingStore.y)
-	_blip = Blips:Add("HuntingStart", "Shop Owner", _huntingStore, 480, 2, 1.4)
+	_blip = exports["sandbox-blips"]:Add("HuntingStart", "Shop Owner", _huntingStore, 480, 2, 1.4)
 
 	eventHandlers["startup"] = RegisterNetEvent(string.format("Hunting:Client:%s:Startup", joiner), function()
 		_working = true
 		_state = 1
 
 		if _blip ~= nil then
-			Blips:Remove("HuntingStart")
+			exports["sandbox-blips"]:Remove("HuntingStart")
 			RemoveBlip(_blip)
 		end
 	end)
@@ -395,10 +395,11 @@ RegisterNetEvent("Hunting:Client:OnDuty", function(joiner, time)
 	eventHandlers["finish"] = RegisterNetEvent(string.format("Hunting:Client:%s:Finish", joiner), function()
 		_state = 2
 		if _blip ~= nil then
-			Blips:Remove("HuntingStart")
+			exports["sandbox-blips"]:Remove("HuntingStart")
 			RemoveBlip(_blip)
 		end
-		_blip = Blips:Add("HuntingStart", "Shop Owner", { x = -676.4336, y = 5840.2813, z = 16.4404 }, 480, 2, 1.4)
+		_blip = exports["sandbox-blips"]:Add("HuntingStart", "Shop Owner", { x = -676.4336, y = 5840.2813, z = 16.4404 },
+			480, 2, 1.4)
 	end)
 
 	eventHandlers["end"] = RegisterNetEvent(string.format("Hunting:Client:%s:FinishJob", joiner), function()
@@ -435,7 +436,7 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 
 	if GetPedCauseOfDeath(entity.entity) ~= wepHash then
 		return exports["sandbox-hud"]:NotifError(
-		"Can't Harvest. This Animal Definitely Wasn't Shot With a Hunting Rifle.")
+			"Can't Harvest. This Animal Definitely Wasn't Shot With a Hunting Rifle.")
 	end
 
 	Wait(1000)
@@ -492,7 +493,7 @@ RegisterNetEvent("Hunting:Client:OffDuty", function(time)
 	end
 
 	if _blip ~= nil then
-		Blips:Remove("HuntingStart")
+		exports["sandbox-blips"]:Remove("HuntingStart")
 		RemoveBlip(_blip)
 	end
 

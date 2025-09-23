@@ -14,7 +14,6 @@ function RetrieveComponents()
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -28,7 +27,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Action",
 		"Progress",
 		"Vehicles",
-		"Blips",
 		"Menu",
 		"Polyzone",
 		"PedInteraction",
@@ -59,9 +57,9 @@ AddEventHandler("Characters:Client:Spawn", function()
 	for k, v in ipairs(_customsLocations) do
 		if v.blip then
 			if v.aircraft then
-				Blips:Add("veh_customs_" .. k, "Aircraft Vehicle Customs", v.blip, 643, 34, 0.6)
+				exports["sandbox-blips"]:Add("veh_customs_" .. k, "Aircraft Vehicle Customs", v.blip, 643, 34, 0.6)
 			else
-				Blips:Add("veh_customs_" .. k, "Vehicle Customs", v.blip, 643, 12, 0.6)
+				exports["sandbox-blips"]:Add("veh_customs_" .. k, "Vehicle Customs", v.blip, 643, 12, 0.6)
 			end
 		end
 	end

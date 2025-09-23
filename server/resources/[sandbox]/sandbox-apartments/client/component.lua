@@ -4,7 +4,6 @@ local _menu = false
 
 AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
@@ -22,7 +21,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Apartment", {
-		"Blips",
 		"Action",
 		"Polyzone",
 		"Ped",
@@ -50,7 +48,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				tier = k
 			})
 
-			Blips:Add(aptId, apt.name, apt.coords, 475, 25)
+			exports["sandbox-blips"]:Add(aptId, apt.name, apt.coords, 475, 25)
 			_pzs[aptId] = {
 				name = apt.name,
 				id = apt.id,
@@ -114,7 +112,7 @@ RegisterNetEvent("Characters:Client:Spawn", function()
 		local aptId = string.format("apt-%s", v)
 		local apt = GlobalState[string.format("Apartment:%s", v)]
 
-		Blips:Add(aptId, apt.name, apt.coords, 475, 25)
+		exports["sandbox-blips"]:Add(aptId, apt.name, apt.coords, 475, 25)
 	end
 end)
 

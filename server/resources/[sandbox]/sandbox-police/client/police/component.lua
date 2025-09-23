@@ -179,7 +179,6 @@ function PoliceComponents()
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -200,7 +199,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Input",
 		"Handcuffs",
 		"Interaction",
-		"Blips",
 		"Targeting",
 		"Jobs",
 		"Properties",
@@ -876,7 +874,7 @@ end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()
 	for k, v in ipairs(policeStationBlips) do
-		Blips:Add("police_station_" .. k, "Police Department", v, 137, 38, 0.6)
+		exports["sandbox-blips"]:Add("police_station_" .. k, "Police Department", v, 137, 38, 0.6)
 	end
 end)
 

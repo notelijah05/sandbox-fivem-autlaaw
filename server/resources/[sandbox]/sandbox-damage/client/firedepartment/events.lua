@@ -65,6 +65,6 @@ end
 
 RegisterNetEvent("Characters:Client:Spawn", function()
 	for k, v in ipairs(safdCheckin) do
-		Blips:Add("safd-office-" .. k, "Fire & Medical", v.coords, 648, 1, 0.8)
+		exports["sandbox-blips"]:Add("safd-office-" .. k, "Fire & Medical", v.coords, 648, 1, 0.8)
 	end
 end)

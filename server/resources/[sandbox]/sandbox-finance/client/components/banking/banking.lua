@@ -21,9 +21,9 @@ AddEventHandler("Characters:Client:Spawn", function()
 	for k, v in pairs(_bankBranches) do
 		if v.blip then
 			if v.special then
-				Blips:Add("bank_" .. k, "Pacific Bank", v.blip, 272, 15, 0.8)
+				exports["sandbox-blips"]:Add("bank_" .. k, "Pacific Bank", v.blip, 272, 15, 0.8)
 			else
-				Blips:Add("bank_" .. k, "Bank", v.blip, 272, 69, 0.6)
+				exports["sandbox-blips"]:Add("bank_" .. k, "Bank", v.blip, 272, 69, 0.6)
 			end
 		end
 	end
@@ -33,11 +33,11 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 	if data.bank_branch then
 		withinBranchZone = data.bank_branch
 
-        if not GlobalState[string.format("Fleeca:Disable:%s", data.bank_branch)] then
-            Action:Show("banking", "{keybind}primary_action{/keybind} Open Bank")
-        else
-            Action:Show("banking", "Bank Unavailable")
-        end
+		if not GlobalState[string.format("Fleeca:Disable:%s", data.bank_branch)] then
+			Action:Show("banking", "{keybind}primary_action{/keybind} Open Bank")
+		else
+			Action:Show("banking", "Bank Unavailable")
+		end
 
 		showingAction = true
 	end

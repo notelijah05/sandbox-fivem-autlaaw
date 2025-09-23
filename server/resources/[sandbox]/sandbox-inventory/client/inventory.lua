@@ -87,7 +87,6 @@ function RetrieveComponents()
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -113,7 +112,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Input",
 		"Targeting",
 		"UISounds",
-		"Blips",
 		"PedInteraction",
 		"Polyzone",
 		"Hud",

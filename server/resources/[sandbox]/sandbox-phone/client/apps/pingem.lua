@@ -7,7 +7,7 @@ AddEventHandler("Phone:Client:PingEm:AcceptPing", function(data)
 	local id = string.format("pingem-%s", _pingId)
 	_pingId = _pingId + 1
 
-	local blip = Blips:Add(id, "Ping'Em", data.location, 280, 50, 1.1)
+	local blip = exports["sandbox-blips"]:Add(id, "Ping'Em", data.location, 280, 50, 1.1)
 	SetBlipFlashes(blip, true)
 	exports["sandbox-base"]:ServerCallback("Phone:PingEm:GetFeedback", {
 		result = true,
@@ -16,7 +16,7 @@ AddEventHandler("Phone:Client:PingEm:AcceptPing", function(data)
 
 	CreateThread(function()
 		Wait(30000)
-		Blips:Remove(id)
+		exports["sandbox-blips"]:Remove(id)
 	end)
 end)
 

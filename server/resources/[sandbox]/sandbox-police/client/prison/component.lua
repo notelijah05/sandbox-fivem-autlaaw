@@ -4,7 +4,6 @@ function CorrectionsComponents()
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -23,7 +22,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Input",
 		"Handcuffs",
 		"Interaction",
-		"Blips",
 		"Targeting",
 		"Jobs",
 		"Properties",

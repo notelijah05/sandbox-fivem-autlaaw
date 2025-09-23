@@ -18,7 +18,8 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 		for k, v in ipairs(_nodes.locations) do
 			local id = string.format("PrisonNode%s", v.data.id)
 
-			Blips:Add(id, data.blip.name, v.coords, data.blip.sprite or 188, data.blip.color or 56, 0.8)
+			exports["sandbox-blips"]:Add(id, data.blip.name, v.coords, data.blip.sprite or 188, data.blip.color or 56,
+				0.8)
 			if v.type == "box" then
 				Targeting.Zones:AddBox(id, "box-open-full", v.coords, v.length, v.width, v.options, {
 					{
@@ -83,7 +84,7 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 				exports["sandbox-base"]:ServerCallback("Prison:Action", data.id, function(s)
 					local id = string.format("PrisonNode%s", data.id)
 					Targeting.Zones:RemoveZone(id)
-					Blips:Remove(id)
+					exports["sandbox-blips"]:Remove(id)
 					Targeting.Zones:Refresh()
 				end)
 			end
@@ -95,7 +96,7 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 			for k, v in ipairs(_nodes.locations) do
 				local id = string.format("PrisonNode%s", v.id)
 				Targeting.Zones:RemoveZone(id)
-				Blips:Remove(id)
+				exports["sandbox-blips"]:Remove(id)
 			end
 			Targeting.Zones:Refresh()
 		end
@@ -122,7 +123,7 @@ RegisterNetEvent("Prison:Client:OffDuty", function(time)
 		for k, v in ipairs(_nodes.locations) do
 			local id = string.format("PrisonNode%s", v.id)
 			Targeting.Zones:RemoveZone(id)
-			Blips:Remove(id)
+			exports["sandbox-blips"]:Remove(id)
 		end
 		Targeting.Zones:Refresh()
 	end

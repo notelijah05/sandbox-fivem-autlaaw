@@ -55,7 +55,8 @@ AddEventHandler('Vehicles:Client:CharacterLogin', function()
     if _vehicleStorage then
         for k, v in pairs(_vehicleStorage) do
             if not v.restricted and not v.hideBlip then
-                Blips:Add('veh_storage_' .. k, v.name, v.coords, blipsForVehType[v.vehType], 12, 0.6, false, 10)
+                exports["sandbox-blips"]:Add('veh_storage_' .. k, v.name, v.coords, blipsForVehType[v.vehType], 12, 0.6,
+                    false, 10)
             end
         end
 
@@ -68,7 +69,7 @@ AddEventHandler('Vehicles:Client:CharacterLogin', function()
 
         --         if #charJobs > 0 then
         --             if DoesCharacterPassStorageRestrictions(-1, charJobs, v.restricted) then
-        --                 Blips:Add('veh_storage_'.. k, v.name .. ' [Restricted]', v.coords, blipsForVehType[v.vehType], 6, 0.45, false, 10)
+        --                 exports["sandbox-blips"]:Add('veh_storage_'.. k, v.name .. ' [Restricted]', v.coords, blipsForVehType[v.vehType], 6, 0.45, false, 10)
         --             end
         --         end
         --     end

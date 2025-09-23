@@ -6,7 +6,6 @@ function RetrieveComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Progress",
 		"Minigame",
 		"ListMenu",
-		"Blips",
 		"Polyzone",
 		"Targeting",
 		"Hud",

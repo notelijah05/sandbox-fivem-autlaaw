@@ -38,19 +38,19 @@ end
 function CreateShopsBlips()
 	for k, v in ipairs(_clothingStores) do
 		if v.blip then
-			Blips:Add("clothing_store_" .. k, "Clothing Store", v.blip, 73, 44)
+			exports["sandbox-blips"]:Add("clothing_store_" .. k, "Clothing Store", v.blip, 73, 44)
 		end
 	end
 
 	for k, v in ipairs(_barberShops) do
-		Blips:Add("barber_shop_" .. k, "Barbers", v.center, 71, 42)
+		exports["sandbox-blips"]:Add("barber_shop_" .. k, "Barbers", v.center, 71, 42)
 	end
 
 	for k, v in ipairs(_tattooShops) do
-		Blips:Add("tattoo_shop_" .. k, "Tattoo Parlor", v.center, 75, 48)
+		exports["sandbox-blips"]:Add("tattoo_shop_" .. k, "Tattoo Parlor", v.center, 75, 48)
 	end
 
-	Blips:Add("plastic_surgery", "Plastic Surgeon", _plasticSurgery.center, 362, 7)
+	exports["sandbox-blips"]:Add("plastic_surgery", "Plastic Surgeon", _plasticSurgery.center, 362, 7)
 end
 
 function GetPedShopCost(t)
@@ -65,7 +65,7 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 	if data.pedShop then
 		withinPedShop = data.pedShop
 		local action =
-			"{keybind}primary_action{/keybind} Clothing Store ($%s) | {keybind}secondary_action{/keybind} Wardrobe"
+		"{keybind}primary_action{/keybind} Clothing Store ($%s) | {keybind}secondary_action{/keybind} Wardrobe"
 		if withinPedShop == "barber" then
 			action = "{keybind}primary_action{/keybind} Barber Shop ($%s)"
 		elseif withinPedShop == "tattoo" then

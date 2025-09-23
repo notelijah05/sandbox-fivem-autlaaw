@@ -9,7 +9,6 @@ AddEventHandler("EmergencyAlerts:Shared:DependencyUpdate", RetrievePDAComponents
 function RetrievePDAComponents()
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 end
@@ -18,7 +17,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
 		"UISounds",
 		"EmergencyAlerts",
-		"Blips",
 		"CCTV",
 		"Progress",
 	}, function(error)

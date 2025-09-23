@@ -72,7 +72,8 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 	_joiner = joiner
 	DeleteWaypoint()
 	SetNewWaypoint(2016.165, 4987.541)
-	_blip = Blips:Add("FarmingStart", "Farm Supervisor", { x = 2016.165, y = 4987.541, z = 0 }, 480, 2, 1.4)
+	_blip = exports["sandbox-blips"]:Add("FarmingStart", "Farm Supervisor", { x = 2016.165, y = 4987.541, z = 0 }, 480, 2,
+		1.4)
 
 	eventHandlers["keypress"] = AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
 		if _doing then return end
@@ -104,7 +105,7 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 
 	eventHandlers["startup"] = RegisterNetEvent(string.format("Farming:Client:%s:Startup", joiner),
 		function(nodes, actionLabel, baseDur, anim)
-			Blips:Remove("FarmingStart")
+			exports["sandbox-blips"]:Remove("FarmingStart")
 
 			if _nodes ~= nil then return end
 			_actionLabel = actionLabel
@@ -115,7 +116,8 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 			_nodes = nodes
 
 			for k, v in ipairs(_nodes) do
-				Blips:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0, 0.8)
+				exports["sandbox-blips"]:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0,
+					0.8)
 			end
 
 			CreateThread(function()
@@ -137,7 +139,7 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 	eventHandlers["actions"] = RegisterNetEvent(string.format("Farming:Client:%s:Action", joiner), function(data)
 		for k, v in ipairs(_nodes) do
 			if v.id == data then
-				Blips:Remove(string.format("FarmingNode-%s", v.id))
+				exports["sandbox-blips"]:Remove(string.format("FarmingNode-%s", v.id))
 				table.remove(_nodes, k)
 				break
 			end
@@ -149,16 +151,17 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 		_nodes = {}
 		DeleteWaypoint()
 		SetNewWaypoint(2016.165, 4987.541)
-		_blip = Blips:Add("FarmingStart", "Farm Supervisor", { x = 2016.165, y = 4987.541, z = 0 }, 480, 2, 1.4)
+		_blip = exports["sandbox-blips"]:Add("FarmingStart", "Farm Supervisor", { x = 2016.165, y = 4987.541, z = 0 },
+			480, 2, 1.4)
 	end)
 
 	eventHandlers["new-task"] = RegisterNetEvent(string.format("Farming:Client:%s:NewTask", joiner),
 		function(nodes, actionLabel, baseDur, anim)
-			Blips:Remove("FarmingStart")
+			exports["sandbox-blips"]:Remove("FarmingStart")
 
 			if #_nodes ~= 0 then
 				for k, v in ipairs(_nodes) do
-					Blips:Remove(string.format("FarmingNode-%s", v.id))
+					exports["sandbox-blips"]:Remove(string.format("FarmingNode-%s", v.id))
 				end
 			end
 
@@ -169,7 +172,8 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 			_tasks = _tasks + 1
 
 			for k, v in ipairs(_nodes) do
-				Blips:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0, 0.8)
+				exports["sandbox-blips"]:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0,
+					0.8)
 			end
 		end)
 end)
@@ -193,12 +197,12 @@ RegisterNetEvent("Farming:Client:OffDuty", function(time)
 
 	if _nodes ~= nil then
 		for k, v in ipairs(_nodes) do
-			Blips:Remove(string.format("FarmingNode-%s", v.id))
+			exports["sandbox-blips"]:Remove(string.format("FarmingNode-%s", v.id))
 		end
 	end
 
 	if _blip ~= nil then
-		Blips:Remove("FarmingStart")
+		exports["sandbox-blips"]:Remove("FarmingStart")
 	end
 
 	_joiner = nil

@@ -15,7 +15,6 @@ local govDutyPoints = {
 AddEventHandler("Police:Shared:DependencyUpdate", GovComponents)
 function GovComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -26,7 +25,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Inventory",
-		"Blips",
 		"Targeting",
 		"Jobs",
 		"PedInteraction",
@@ -167,7 +165,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()
-	Blips:Add("courthouse", "Courthouse", vector3(-538.916, -214.852, 37.650), 419, 0, 0.9)
+	exports["sandbox-blips"]:Add("courthouse", "Courthouse", vector3(-538.916, -214.852, 37.650), 419, 0, 0.9)
 end)
 
 AddEventHandler("Government:Client:UseGavel", function()

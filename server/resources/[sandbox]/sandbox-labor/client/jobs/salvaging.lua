@@ -146,7 +146,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 			DeleteWaypoint()
 			SetNewWaypoint(point.coords.x, point.coords.y)
 
-			_blip = Blips:Add("SalvDelivery", "Deliver Goods", point.coords, 478, 2, 1.4)
+			_blip = exports["sandbox-blips"]:Add("SalvDelivery", "Deliver Goods", point.coords, 478, 2, 1.4)
 
 			PedInteraction:Add("SalvagingDelivery", `mp_m_waremech_01`, point.coords, point.heading, 25.0, {
 				{
@@ -173,7 +173,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 
 			if _blip ~= nil then
 				RemoveBlip(_blip)
-				Blips:Remove("SalvDelivery")
+				exports["sandbox-blips"]:Remove("SalvDelivery")
 			end
 		end
 	end)
@@ -228,7 +228,7 @@ RegisterNetEvent("Salvaging:Client:OffDuty", function(time)
 
 	if _blip ~= nil then
 		RemoveBlip(_blip)
-		Blips:Remove("SalvDelivery")
+		exports["sandbox-blips"]:Remove("SalvDelivery")
 	end
 
 	for k, v in ipairs(_models) do

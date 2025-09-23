@@ -321,7 +321,7 @@ function CreateStressBlips()
 		local pId = string.format("StressReleif%s", k)
 
 		if v.blip ~= nil then
-			Blips:Add(
+			exports["sandbox-blips"]:Add(
 				pId,
 				v.blip.label or "Stress Reliever",
 				v.blip.coords,

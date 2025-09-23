@@ -54,7 +54,7 @@ LAPTOP.LSUnderground = LAPTOP.LSUnderground or {}
 LAPTOP.LSUnderground.Chopping = {
 	CreateBlips = function(self)
 		if Reputation:HasLevel("Salvaging", 7) or hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND") then
-			_blips.public = Blips:Add(
+			_blips.public = exports["sandbox-blips"]:Add(
 				"chopping_public",
 				"LSUNDG Public Dropoff",
 				GlobalState["PublicDropoff"].coords,
@@ -63,11 +63,11 @@ LAPTOP.LSUnderground.Chopping = {
 				0.4
 			)
 		else
-			Blips:Remove("chopping_public")
+			exports["sandbox-blips"]:Remove("chopping_public")
 		end
 
 		if Reputation:HasLevel("Salvaging", 7) and (Reputation:HasLevel("Chopping", 5) or hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND")) then
-			_blips.vip = Blips:Add(
+			_blips.vip = exports["sandbox-blips"]:Add(
 				"chopping_private",
 				"LSUNDG Private Dropoff",
 				GlobalState["PrivateDropoff"].coords,
@@ -76,11 +76,11 @@ LAPTOP.LSUnderground.Chopping = {
 				0.4
 			)
 		else
-			Blips:Remove("chopping_private")
+			exports["sandbox-blips"]:Remove("chopping_private")
 		end
 
 		if hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND") then
-			_blips.private = Blips:Add(
+			_blips.private = exports["sandbox-blips"]:Add(
 				"chopping_personal",
 				"LSUNDG Personal Dropoff",
 				GlobalState["PersonalDropoff"].coords,
@@ -89,7 +89,7 @@ LAPTOP.LSUnderground.Chopping = {
 				0.4
 			)
 		else
-			Blips:Remove("chopping_personal")
+			exports["sandbox-blips"]:Remove("chopping_personal")
 		end
 	end,
 	AttemptChop = function(self)

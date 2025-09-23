@@ -21,7 +21,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vehicles",
 		"Progress",
 		"Polyzone",
-		"Blips",
 		"Targeting",
 		"Animations",
 	}, function(error)
@@ -96,7 +94,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 	-- Adding them on the map looks to dumb
 	-- for k, v in ipairs(Config.FuelStations) do
 	-- 	if not v.restricted then
-	-- 		Blips:Add('fuel-station-'.. k, 'Fuel Station', v.center, 361, 64, 0.4)
+	-- 		exports["sandbox-blips"]:Add('fuel-station-'.. k, 'Fuel Station', v.center, 361, 64, 0.4)
 	-- 	end
 	-- end
 end)

@@ -118,7 +118,7 @@ _EMS = {
 }
 
 RegisterNetEvent("Characters:Client:Spawn", function()
-	Blips:Add("st_fiacre", "Hospital", vector3(1149.516, -1531.912, 35.381), 61, 42, 0.8)
-	-- Blips:Add("mt_zonah", "Hospital", vector3(-457.019, -333.263, 69.521), 61, 42, 0.8)
-	-- Blips:Add("pb_hospital", "Hospital", vector3(297.840, -584.339, 43.261), 61, 42, 0.8)
+	exports["sandbox-blips"]:Add("st_fiacre", "Hospital", vector3(1149.516, -1531.912, 35.381), 61, 42, 0.8)
+	-- exports["sandbox-blips"]:Add("mt_zonah", "Hospital", vector3(-457.019, -333.263, 69.521), 61, 42, 0.8)
+	-- exports["sandbox-blips"]:Add("pb_hospital", "Hospital", vector3(297.840, -584.339, 43.261), 61, 42, 0.8)
 end)

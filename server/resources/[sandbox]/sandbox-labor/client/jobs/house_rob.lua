@@ -239,9 +239,10 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
             DeleteWaypoint()
             SetNewWaypoint(data.coords.x, data.coords.y)
             if _blip then
-                Blips:Remove("HouseRobbery")
+                exports["sandbox-blips"]:Remove("HouseRobbery")
             end
-            _blip = Blips:Add("HouseRobbery", "Target House", { x = data.coords.x, y = data.coords.y, z = data.coords.z },
+            _blip = exports["sandbox-blips"]:Add("HouseRobbery", "Target House",
+                { x = data.coords.x, y = data.coords.y, z = data.coords.z },
                 40, 23, 0.9)
 
             CreateThread(function()
@@ -343,7 +344,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
     eventHandlers["end"] = RegisterNetEvent(string.format("HouseRobbery:Client:%s:EndRobbery", joiner), function(data)
         _state = 5
         if _blip then
-            Blips:Remove("HouseRobbery")
+            exports["sandbox-blips"]:Remove("HouseRobbery")
         end
     end)
 

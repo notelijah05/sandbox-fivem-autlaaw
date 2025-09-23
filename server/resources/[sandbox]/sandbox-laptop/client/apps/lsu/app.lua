@@ -35,7 +35,7 @@ RegisterNUICallback("LSUNDG:Market:Checkout", function(data, cb)
         cb(data)
 
         if data?.success and data.coords then
-            Blips:Add(
+            exports["sandbox-blips"]:Add(
                 "lsu-pickup-location",
                 "LSUNDG Pickup Location",
                 data.coords,

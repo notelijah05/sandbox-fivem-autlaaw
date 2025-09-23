@@ -2,7 +2,7 @@ function SetupTree(treeData, hasLooted)
 	if _existingTree ~= nil then
 		DeleteEntity(_existingTree.entity)
 		Targeting:RemoveEntity(_existingTree.entity)
-		Blips:Remove("xmas_tree")
+		exports["sandbox-blips"]:Remove("xmas_tree")
 		_existingTree = nil
 	end
 
@@ -25,7 +25,7 @@ function SetupTree(treeData, hasLooted)
 		},
 	})
 
-	Blips:Add(
+	exports["sandbox-blips"]:Add(
 		"xmas_tree",
 		"Christmas Tree",
 		vector3(treeData.location.x, treeData.location.y, treeData.location.z),

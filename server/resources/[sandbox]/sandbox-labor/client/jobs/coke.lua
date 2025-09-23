@@ -170,7 +170,8 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 
 	eventHandlers["receive"] = RegisterNetEvent(string.format("Coke:Client:%s:Receive", joiner), function()
 		_state = 1
-		_blip = Blips:Add("CokeDrop", "Unknown Contact", { x = 4495.498, y = -4514.340, z = 3.021 }, 306, 2, 1.4)
+		_blip = exports["sandbox-blips"]:Add("CokeDrop", "Unknown Contact", { x = 4495.498, y = -4514.340, z = 3.021 },
+			306, 2, 1.4)
 	end)
 
 	eventHandlers["poly-enter"] = AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZone, data)
@@ -232,8 +233,8 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 	eventHandlers["cayo-setup"] = RegisterNetEvent(string.format("Coke:Client:%s:SetupHeist", joiner), function(drop)
 		_state = 3
 		_drop = drop
-		Blips:Remove("CokeDrop")
-		_blip = Blips:Add(
+		exports["sandbox-blips"]:Remove("CokeDrop")
+		_blip = exports["sandbox-blips"]:Add(
 			"CokeDrop",
 			"Unknown Objective",
 			{ x = _drop.coords.x, y = _drop.coords.y, z = _drop.coords.z },
@@ -261,10 +262,11 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 
 	eventHandlers["go-back"] = RegisterNetEvent(string.format("Coke:Client:%s:GoBack", joiner), function()
 		_state = 5
-		Blips:Remove("CokeDrop")
+		exports["sandbox-blips"]:Remove("CokeDrop")
 		RemoveBlip(_blipArea)
 		Polyzone:Remove("CokeDrop")
-		_blip = Blips:Add("CokeDrop", "Unknown Contact", { x = 1292.455, y = -3170.885, z = 4.906 }, 306, 2, 1.4)
+		_blip = exports["sandbox-blips"]:Add("CokeDrop", "Unknown Contact", { x = 1292.455, y = -3170.885, z = 4.906 },
+			306, 2, 1.4)
 	end)
 
 	eventHandlers["setup-finish"] = RegisterNetEvent(string.format("Coke:Client:%s:SetupFinish", joiner), function()
@@ -310,7 +312,7 @@ RegisterNetEvent("Coke:Client:OffDuty", function(time)
 
 	PedInteraction:Remove("CokeDrop")
 	Polyzone:Remove("CokeDrop")
-	Blips:Remove("CokeDrop")
+	exports["sandbox-blips"]:Remove("CokeDrop")
 	RemoveBlip(_blipArea)
 
 	_joiner = nil

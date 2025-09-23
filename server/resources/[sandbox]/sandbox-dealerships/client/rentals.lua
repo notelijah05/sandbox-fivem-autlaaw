@@ -28,7 +28,7 @@ end
 
 function CreateRentalSpotsBlips()
     for k, v in ipairs(_vehicleRentals) do
-        Blips:Add('veh_rental_' .. k, v.name, v.coords, v.blip.sprite, v.blip.color, v.blip.scale)
+        exports["sandbox-blips"]:Add('veh_rental_' .. k, v.name, v.coords, v.blip.sprite, v.blip.color, v.blip.scale)
     end
 end
 

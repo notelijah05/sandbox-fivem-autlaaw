@@ -4,7 +4,6 @@ function SAFDComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Progress",
 		"PedInteraction",
 		"Escort",
-		"Blips",
 		"Polyzone",
 		"Action",
 		"Animations",

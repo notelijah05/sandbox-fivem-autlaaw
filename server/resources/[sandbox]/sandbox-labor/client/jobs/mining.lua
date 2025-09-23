@@ -41,7 +41,8 @@ local function SpawnOres()
 					minDist = 3.0,
 				},
 			}, 3.0)
-			local b = Blips:Add(string.format("MiningNode-%s", k), "Mining Node", v.location, 594, 0, 0.8)
+			local b = exports["sandbox-blips"]:Add(string.format("MiningNode-%s", k), "Mining Node", v.location, 594, 0,
+				0.8)
 
 			table.insert(_objs, {
 				ent = o,
@@ -62,7 +63,7 @@ local function DeleteNode(location)
 			then
 				Targeting:RemoveEntity(v.ent)
 				DeleteObject(v.ent)
-				Blips:Remove(v.blipId)
+				exports["sandbox-blips"]:Remove(v.blipId)
 
 				table.remove(_objs, k)
 				break
@@ -86,7 +87,7 @@ local function DespawnOres()
 			if v then
 				Targeting:RemoveEntity(v.ent)
 				DeleteObject(v.ent)
-				Blips:Remove(v.blipId)
+				exports["sandbox-blips"]:Remove(v.blipId)
 			end
 
 			table.remove(_objs, i)

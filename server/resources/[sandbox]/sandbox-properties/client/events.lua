@@ -90,13 +90,13 @@ RegisterNetEvent("Properties:Client:AddBlips", function()
 	if ownedProps then
 		for k, v in ipairs(ownedProps) do
 			if v.type == 'house' then
-				Blips:Add('property-' .. v.id, 'House: ' .. v.label,
+				exports["sandbox-blips"]:Add('property-' .. v.id, 'House: ' .. v.label,
 					vector3(v.location.front.x, v.location.front.y, v.location.front.z), 40, 53, 0.6, 2)
 			elseif v.type == 'office' then
-				Blips:Add('property-' .. v.id, 'Office: ' .. v.label,
+				exports["sandbox-blips"]:Add('property-' .. v.id, 'Office: ' .. v.label,
 					vector3(v.location.front.x, v.location.front.y, v.location.front.z), 475, 53, 0.6, 2)
 			elseif v.type == 'warehouse' then
-				Blips:Add('property-' .. v.id, 'Warehouse: ' .. v.label,
+				exports["sandbox-blips"]:Add('property-' .. v.id, 'Warehouse: ' .. v.label,
 					vector3(v.location.front.x, v.location.front.y, v.location.front.z), 473, 53, 0.6, 2)
 			end
 		end

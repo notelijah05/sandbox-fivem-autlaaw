@@ -94,7 +94,8 @@ end
 function CreateBikeStandBlips()
 	for k, v in ipairs(_bikeStands) do
 		if v.blip then
-			Blips:Add("bike_stand_" .. k, "Bicycle Stand", v.coords, v.blip.sprite, v.blip.color, v.blip.scale)
+			exports["sandbox-blips"]:Add("bike_stand_" .. k, "Bicycle Stand", v.coords, v.blip.sprite, v.blip.color,
+				v.blip.scale)
 		end
 	end
 end

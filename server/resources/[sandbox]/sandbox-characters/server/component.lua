@@ -33,12 +33,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-CHARACTERS = {
-	GetLastLocation = function(self, source)
-		return _tempLastLocation[source] or false
-	end,
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Characters", CHARACTERS)
+exports("GetLastLocation", function(source)
+	return _tempLastLocation[source] or false
 end)

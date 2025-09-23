@@ -9,7 +9,6 @@ AddEventHandler("Dealerships:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Jobs",
 		"Polyzone",
-		"Blips",
 		"Action",
 		"Menu",
 		"Hud",
@@ -237,7 +235,7 @@ end
 function CreateDealershipBlips()
 	for dealerId, data in pairs(_dealerships) do
 		if data.blip then
-			Blips:Add(
+			exports["sandbox-blips"]:Add(
 				"dealership_" .. dealerId,
 				data.name,
 				data.blip.coords,

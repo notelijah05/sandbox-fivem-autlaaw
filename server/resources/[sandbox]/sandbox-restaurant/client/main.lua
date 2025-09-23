@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -11,7 +10,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"Targeting",
 		"Jobs",
-		"Blips",
 	}, function(error)
 		if error then
 		end

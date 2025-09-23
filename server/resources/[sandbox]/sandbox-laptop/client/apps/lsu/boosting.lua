@@ -203,7 +203,7 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:Start", function(data)
 
     if _boosting then
         if _boosting.pickUp then
-            Blips:Add(
+            exports["sandbox-blips"]:Add(
                 "boosting-contract",
                 "[Contract]: Target Vehicle",
                 _boosting.pickUp,
@@ -231,7 +231,7 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:UpdateState", function(st
     _boosting.state = state
 
     if state == 1 then
-        Blips:Remove("boosting-contract")
+        exports["sandbox-blips"]:Remove("boosting-contract")
     elseif state == 2 then
         if data then
             _boosting.trackerDelay = data.trackerDelay
@@ -255,7 +255,7 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:UpdateState", function(st
         end
     elseif state == 3 and _boosting.dropOff then
         exports["sandbox-hud"]:NotifPersistentRemove("boosting-trackers")
-        Blips:Add(
+        exports["sandbox-blips"]:Add(
             "boosting-contract",
             "[Contract]: Dropoff Location",
             _boosting.dropOff,
@@ -497,7 +497,7 @@ function CleanUpBoosting()
         _boosting = nil
 
         Polyzone:Remove("boosting-dropoff")
-        Blips:Remove("boosting-contract")
+        exports["sandbox-blips"]:Remove("boosting-contract")
 
         TriggerEvent("Status:Client:Update", "boosting-timer", 0)
         exports["sandbox-hud"]:NotifPersistentRemove("boosting-trackers")

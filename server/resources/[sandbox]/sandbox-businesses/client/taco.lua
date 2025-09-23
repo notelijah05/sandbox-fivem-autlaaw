@@ -256,7 +256,7 @@ function FetchDropOffLocation()
 		_dropOffBlipCfg.coords = _dropOffCoords
 		_dropOffBlipCfg.id = string.format("taco_dropoff_blip_%s", _gameTimer)
 		_dropOffBlipCfg.zoneId = string.format("TacoDropOffZone-%s", _gameTimer)
-		_dropOffBlip = Blips:Add(
+		_dropOffBlip = exports["sandbox-blips"]:Add(
 			_dropOffBlipCfg.id,
 			_dropOffBlipCfg.name,
 			vector3(_dropOffBlipCfg.coords.x, _dropOffBlipCfg.coords.y, _dropOffBlipCfg.coords.z),
@@ -356,7 +356,7 @@ AddEventHandler("Tacos:DeliverOrder", function(_, data)
 	}, function(status)
 		exports["sandbox-base"]:ServerCallback("Tacos:Dropoff", {}, function(s)
 			if s then
-				Blips:Remove(data.blipConfig.id)
+				exports["sandbox-blips"]:Remove(data.blipConfig.id)
 				_activeDropoffState = 0
 				_dropOffBlipCfg = nil
 				_dropOffBlip = nil
@@ -377,7 +377,7 @@ function RunCleanUp()
 	LocalPlayer.state.TacoQueue = false
 	LocalPlayer.state.TacoPickup = false
 	if _dropOffBlipCfg ~= nil then
-		Blips:Remove(_dropOffBlipCfg.id)
+		exports["sandbox-blips"]:Remove(_dropOffBlipCfg.id)
 		Targeting.Zones:RemoveZone(_dropOffBlipCfg.zoneId)
 	end
 	_activeDropoffState = 0
