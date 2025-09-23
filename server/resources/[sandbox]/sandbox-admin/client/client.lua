@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Menu",
 		"Status",
 		"Jobs",
-		"Keybinds",
 		"Vehicles",
 		"VOIP",
 		"Admin",
@@ -28,11 +26,11 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrieveComponents()
 
-		Keybinds:Add("admin_menu", "HOME", "keyboard", "[Admin] Open Admin Menu", function()
+		exports["sandbox-keybinds"]:Add("admin_menu", "HOME", "keyboard", "[Admin] Open Admin Menu", function()
 			Admin:OpenMenu()
 		end)
 
-		Keybinds:Add("admin_noclip", "END", "keyboard", "[Admin] Toggle NoClip", function()
+		exports["sandbox-keybinds"]:Add("admin_noclip", "END", "keyboard", "[Admin] Toggle NoClip", function()
 			if LocalPlayer.state.isStaff then
 				exports["sandbox-base"]:ServerCallback("Admin:NoClip", {
 					active = not Admin.NoClip:IsActive(),
@@ -44,15 +42,15 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Keybinds:Add("admin_debug1", "", "keyboard", "[Admin] Debug 1", function()
+		exports["sandbox-keybinds"]:Add("admin_debug1", "", "keyboard", "[Admin] Debug 1", function()
 			DoAdminVehicleAction("repair_engine")
 		end)
 
-		Keybinds:Add("admin_debug2", "", "keyboard", "[Admin] Debug 2", function()
+		exports["sandbox-keybinds"]:Add("admin_debug2", "", "keyboard", "[Admin] Debug 2", function()
 			DoAdminVehicleAction("repair")
 		end)
 
-		Keybinds:Add("admin_debug3", "", "keyboard", "[Admin] Debug IDs", function()
+		exports["sandbox-keybinds"]:Add("admin_debug3", "", "keyboard", "[Admin] Debug IDs", function()
 			if LocalPlayer.state.isStaff then
 				ToggleAdminPlayerIDs()
 			end

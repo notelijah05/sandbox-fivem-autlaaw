@@ -60,11 +60,12 @@ function StartInspecting()
 		inspecting = true
 		fetchedEvidenceCache = FetchEvidence()
 		nearbyEvidence = filterNearbyEvidence(fetchedEvidenceCache)
-		local NotifyStr = string.format("Camera - Press %s to exit", Keybinds:GetKey("emote_cancel"))
+		local NotifyStr = string.format("Camera - Press %s to exit", exports["sandbox-keybinds"]:GetKey("emote_cancel"))
 		if LocalPlayer.state.onDuty == "police" then
-			NotifyStr = string.format("Camera - Press %s to take a photo", Keybinds:GetKey("secondary_action"))
+			NotifyStr = string.format("Camera - Press %s to take a photo",
+					exports["sandbox-keybinds"]:GetKey("secondary_action"))
 				.. "<br/>"
-				.. string.format("Camera - Press %s to exit", Keybinds:GetKey("emote_cancel"))
+				.. string.format("Camera - Press %s to exit", exports["sandbox-keybinds"]:GetKey("emote_cancel"))
 		end
 		if ignoreFreeAim then
 			exports["sandbox-hud"]:NotifPersistentInfo("camera-info-notif2", NotifyStr, "camera")

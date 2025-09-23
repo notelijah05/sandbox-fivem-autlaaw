@@ -22,11 +22,12 @@ function StartSelfieMode()
 		_selfie = true
 		exports["sandbox-hud"]:NotifPersistentInfo(
 			"camera-info-notif",
-			string.format("Camera - Press %s to take a Selfie", Keybinds:GetKey("primary_action"))
+			string.format("Camera - Press %s to take a Selfie", exports["sandbox-keybinds"]:GetKey("primary_action"))
 			.. "<br/>"
-			.. string.format("Camera - Press %s to flip the camera", Keybinds:GetKey("secondary_action"))
+			.. string.format("Camera - Press %s to flip the camera",
+				exports["sandbox-keybinds"]:GetKey("secondary_action"))
 			.. "<br/>"
-			.. string.format("Camera - Press %s to cancel", Keybinds:GetKey("emote_cancel")),
+			.. string.format("Camera - Press %s to cancel", exports["sandbox-keybinds"]:GetKey("emote_cancel")),
 			"camera"
 		)
 		Inventory:Disable()

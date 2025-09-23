@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Progress",
 		"Minigame",
-		"Keybinds",
 		"Properties",
 		"Sounds",
 		"Interaction",

@@ -34,7 +34,6 @@ function RetrieveComponents()
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -62,7 +61,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"UISounds",
 		"Sounds",
 		"Hud",
-		"Keybinds",
 		"Interaction",
 		"Inventory",
 		"Hud",
@@ -87,7 +85,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			return
 		end -- Do something to handle if not all dependencies loaded
 		RetrieveComponents()
-		Keybinds:Add("phone_toggle", "M", "keyboard", "Phone - Open/Close", function()
+		exports["sandbox-keybinds"]:Add("phone_toggle", "M", "keyboard", "Phone - Open/Close", function()
 			if Phone == nil then
 				return
 			end
@@ -95,7 +93,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			TogglePhone()
 		end)
 
-		Keybinds:Add("phone_ansend", "", "keyboard", "Phone - Accept/End Call", function()
+		exports["sandbox-keybinds"]:Add("phone_ansend", "", "keyboard", "Phone - Accept/End Call", function()
 			if Phone == nil then
 				return
 			end
@@ -109,7 +107,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Keybinds:Add("phone_answer", "", "keyboard", "Phone - Accept Call", function()
+		exports["sandbox-keybinds"]:Add("phone_answer", "", "keyboard", "Phone - Accept Call", function()
 			if Phone == nil then
 				return
 			end
@@ -121,7 +119,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Keybinds:Add("phone_end", "", "keyboard", "Phone - End Call", function()
+		exports["sandbox-keybinds"]:Add("phone_end", "", "keyboard", "Phone - End Call", function()
 			if Phone == nil then
 				return
 			end
@@ -131,7 +129,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Keybinds:Add("phone_mute", "", "keyboard", "Phone - Mute/Unmute Sound", function()
+		exports["sandbox-keybinds"]:Add("phone_mute", "", "keyboard", "Phone - Mute/Unmute Sound", function()
 			if Phone == nil then
 				return
 			end

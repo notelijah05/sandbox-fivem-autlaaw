@@ -18,7 +18,6 @@ function RetrieveComponents()
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -46,7 +45,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"UISounds",
 		"Sounds",
 		"Hud",
-		"Keybinds",
 		"Interaction",
 		"Inventory",
 		"Hud",
@@ -73,7 +71,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end -- Do something to handle if not all dependencies loaded
 		RetrieveComponents()
 
-		Keybinds:Add("laptop_open", "", "keyboard", "Laptop - Open", function()
+		exports["sandbox-keybinds"]:Add("laptop_open", "", "keyboard", "Laptop - Open", function()
 			OpenLaptop()
 		end)
 

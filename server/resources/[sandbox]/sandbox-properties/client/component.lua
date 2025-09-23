@@ -35,7 +35,6 @@ function RetrieveComponents()
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	InfoOverlay = exports["sandbox-base"]:FetchComponent("InfoOverlay")
@@ -58,7 +57,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Blips",
 		"Polyzone",
 		"Animations",
-		"Keybinds",
 		"ObjectPlacer",
 		"Phone",
 		"InfoOverlay",
@@ -190,7 +188,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end
 
-		Keybinds:Add("furniture_prev", "LEFT", "keyboard", "Furniture - Previous Item", function()
+		exports["sandbox-keybinds"]:Add("furniture_prev", "LEFT", "keyboard", "Furniture - Previous Item", function()
 			if _placingFurniture then
 				CycleFurniture()
 			elseif _previewingInterior and not _previewingInteriorSwitching then
@@ -198,7 +196,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Keybinds:Add("furniture_next", "RIGHT", "keyboard", "Furniture - Next Item", function()
+		exports["sandbox-keybinds"]:Add("furniture_next", "RIGHT", "keyboard", "Furniture - Next Item", function()
 			if _placingFurniture then
 				CycleFurniture(true)
 			elseif _previewingInterior and not _previewingInteriorSwitching then

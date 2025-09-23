@@ -19,7 +19,6 @@ function RetrieveComponents()
 	Scenes = exports["sandbox-base"]:FetchComponent("Scenes")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -38,14 +37,13 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Sounds",
 		"Scenes",
 		"Input",
-		"Keybinds",
 	}, function(error)
 		if #error > 0 then
 			return
 		end
 		RetrieveComponents()
 
-		Keybinds:Add("scene_create", "", "keyboard", "Scenes - Create Scene", function()
+		exports["sandbox-keybinds"]:Add("scene_create", "", "keyboard", "Scenes - Create Scene", function()
 			Scenes:BeginCreation()
 		end)
 	end)

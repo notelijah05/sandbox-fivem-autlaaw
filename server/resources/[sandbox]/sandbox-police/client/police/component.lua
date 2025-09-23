@@ -177,7 +177,6 @@ AddEventHandler("Police:Shared:DependencyUpdate", PoliceComponents)
 function PoliceComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
@@ -200,7 +199,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Inventory",
 		"Input",
-		"Keybinds",
 		"Handcuffs",
 		"Interaction",
 		"Blips",
@@ -595,7 +593,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		local _cuffCd = false
-		Keybinds:Add("pd_cuff", "LBRACKET", "keyboard", "Police - Cuff", function()
+		exports["sandbox-keybinds"]:Add("pd_cuff", "LBRACKET", "keyboard", "Police - Cuff", function()
 			if LocalPlayer.state.Character ~= nil and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison") then
 				if not _cuffCd then
 					TriggerServerEvent("Police:Server:Cuff")
@@ -607,7 +605,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Keybinds:Add("pd_uncuff", "RBRACKET", "keyboard", "Police - Uncuff", function()
+		exports["sandbox-keybinds"]:Add("pd_uncuff", "RBRACKET", "keyboard", "Police - Uncuff", function()
 			if LocalPlayer.state.Character ~= nil and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison") then
 				if not _cuffCd then
 					TriggerServerEvent("Police:Server:Uncuff")
@@ -619,7 +617,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		-- Keybinds:Add("pd_toggle_cuff", "", "keyboard", "Police - Cuff / Uncuff", function()
+		-- exports["sandbox-keybinds"]:Add("pd_toggle_cuff", "", "keyboard", "Police - Cuff / Uncuff", function()
 		-- 	if LocalPlayer.state.Character ~= nil and LocalPlayer.state.onDuty == "police" then
 		-- 		if not _cuffCd then
 		-- 			TriggerServerEvent("Police:Server:ToggleCuff")
@@ -632,7 +630,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		-- 	end
 		-- end)
 
-		Keybinds:Add("tackle", "", "keyboard", "Tackle", function()
+		exports["sandbox-keybinds"]:Add("tackle", "", "keyboard", "Tackle", function()
 			if LocalPlayer.state.Character ~= nil then
 				if
 					not LocalPlayer.state.isCuffed

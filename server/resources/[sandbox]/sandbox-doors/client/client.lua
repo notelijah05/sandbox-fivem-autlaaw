@@ -22,7 +22,6 @@ function RetrieveComponents()
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -37,7 +36,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"ListMenu",
 		"Progress",
-		"Keybinds",
 		"UISounds",
 		"Sounds",
 		"Doors",
@@ -48,7 +46,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end -- Do something to handle if not all dependencies loaded
 		RetrieveComponents()
 
-		Keybinds:Add("doors_garage_fob", "f10", "keyboard", "Doors - Use Garage Keyfob", function()
+		exports["sandbox-keybinds"]:Add("doors_garage_fob", "f10", "keyboard", "Doors - Use Garage Keyfob", function()
 			DoGarageKeyFobAction()
 		end)
 

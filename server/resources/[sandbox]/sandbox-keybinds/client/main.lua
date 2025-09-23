@@ -3,27 +3,13 @@ local disableAllKeys = false
 local disabledKeys = {}
 _registeredKeybinds = {}
 
-AddEventHandler("Keybinds:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Keybinds", {
-		"Keybinds",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		-- Register the global binds from the config
-		for k, v in pairs(Config.GlobalKeybinds) do
-			_registeredKeybinds[k] = v
-			_registeredKeybinds[k].global = true
-			KeyMappingAdd(k, _registeredKeybinds[k])
-		end
-	end)
+	-- Register the global binds from the config
+	for k, v in pairs(Config.GlobalKeybinds) do
+		_registeredKeybinds[k] = v
+		_registeredKeybinds[k].global = true
+		KeyMappingAdd(k, _registeredKeybinds[k])
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")
@@ -80,60 +66,58 @@ function IsKeyDisabled(key)
 	return false
 end
 
-KEYBINDS = {
-	Add = function(self, id, key, pad, desc, keydownCb, keyupCb, global)
-		if _registeredKeybinds[id] then
-			if not _registeredKeybinds[id].global then -- Do this in case of resource restarts it makes it easier
-				_registeredKeybinds[id].keydownCb = keydownCb
-				_registeredKeybinds[id].keyupCb = keyupCb
-			end
-			return
+exports("Add", function(id, key, pad, desc, keydownCb, keyupCb, global)
+	if _registeredKeybinds[id] then
+		if not _registeredKeybinds[id].global then -- Do this in case of resource restarts it makes it easier
+			_registeredKeybinds[id].keydownCb = keydownCb
+			_registeredKeybinds[id].keyupCb = keyupCb
 		end
+		return
+	end
 
-		if not key then
-			return
-		end
+	if not key then
+		return
+	end
 
-		_registeredKeybinds[id] = {
-			global = global, -- For the odd chance that a global bind is added this way
-			defaultKey = key,
-			defaultPad = (pad and pad or "keyboard"),
-			description = (desc and desc or ""),
-			keydownCb = (not global and keydownCb or nil),
-			keyupCb = (not global and keyupCb or nil),
-		}
+	_registeredKeybinds[id] = {
+		global = global, -- For the odd chance that a global bind is added this way
+		defaultKey = key,
+		defaultPad = (pad and pad or "keyboard"),
+		description = (desc and desc or ""),
+		keydownCb = (not global and keydownCb or nil),
+		keyupCb = (not global and keyupCb or nil),
+	}
 
-		KeyMappingAdd(id, _registeredKeybinds[id])
-	end,
-	Enable = function(self) -- Re-enable all keys again
-		disableAllKeys = false
-		disabledKeys = {}
-	end,
-	Disable = function(self, keys)
-		if keys == nil then -- disable all keys
-			disableAllKeys = true
-		else
-			if type(keys) == "string" then -- disable one or a set of specific keys
-				keys = { keys }
-			end
-			disabledKeys = keys
-		end
-	end,
-	IsDisabled = function(self, key)
-		return IsKeyDisabled(key)
-	end,
-	GetKey = function(self, id)
-		if not _registeredKeybinds[id] then
-			return false
-		end
-		local key = GetControlInstructionalButton(0, GetHashKey("+" .. id) | 0x80000000, 1):gsub("t_", "")
-		if key:find("^b_") then
-			key = _dumbFuckingKeyStrings[key] or "Unknown"
-		end
-		return key
-	end,
-}
+	KeyMappingAdd(id, _registeredKeybinds[id])
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Keybinds", KEYBINDS)
+exports("Enable", function() -- Re-enable all keys again
+	disableAllKeys = false
+	disabledKeys = {}
+end)
+
+exports("Disable", function(keys)
+	if keys == nil then -- disable all keys
+		disableAllKeys = true
+	else
+		if type(keys) == "string" then -- disable one or a set of specific keys
+			keys = { keys }
+		end
+		disabledKeys = keys
+	end
+end)
+
+exports("IsDisabled", function(key)
+	return IsKeyDisabled(key)
+end)
+
+exports("GetKey", function(id)
+	if not _registeredKeybinds[id] then
+		return false
+	end
+	local key = GetControlInstructionalButton(0, GetHashKey("+" .. id) | 0x80000000, 1):gsub("t_", "")
+	if key:find("^b_") then
+		key = _dumbFuckingKeyStrings[key] or "Unknown"
+	end
+	return key
 end)

@@ -15,7 +15,6 @@ AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
@@ -31,7 +30,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
 		"Menu",
 		"Damage",
-		"Keybinds",
 		"Animations",
 		"Targeting",
 		"Interaction",
@@ -162,7 +160,7 @@ RegisterNetEvent("Vehicles:Client:ExitVehicle", function()
 end)
 
 function RegisterKeybinds()
-	Keybinds:Add("pointing", "b", "keyboard", "Pointing - Toggle", function()
+	exports["sandbox-keybinds"]:Add("pointing", "b", "keyboard", "Pointing - Toggle", function()
 		if _isPointing then
 			StopPointing()
 		else
@@ -170,14 +168,14 @@ function RegisterKeybinds()
 		end
 	end)
 
-	Keybinds:Add("ragdoll", Config.RagdollKeybind, "keyboard", "Ragdoll - Toggle", function()
+	exports["sandbox-keybinds"]:Add("ragdoll", Config.RagdollKeybind, "keyboard", "Ragdoll - Toggle", function()
 		local time = 3500
 		Wait(350)
 		ClearPedSecondaryTask(LocalPlayer.state.ped)
 		SetPedToRagdoll(LocalPlayer.state.ped, time, time, 0, 0, 0, 0)
 	end)
 
-	Keybinds:Add("emote_cancel", "x", "keyboard", "Emotes - Cancel Current", function()
+	exports["sandbox-keybinds"]:Add("emote_cancel", "x", "keyboard", "Emotes - Cancel Current", function()
 		Animations.Emotes:Cancel()
 
 		TriggerEvent("Animations:Client:StandUp")
@@ -186,13 +184,13 @@ function RegisterKeybinds()
 	end)
 
 	-- Don't specify and key so then players can set it themselves if they want to use...
-	Keybinds:Add("emote_menu", "", "keyboard", "Emotes - Open Menu", function()
+	exports["sandbox-keybinds"]:Add("emote_menu", "", "keyboard", "Emotes - Open Menu", function()
 		Animations:OpenMainEmoteMenu()
 	end)
 
 	-- There are 4 emote binds and by default they use numbers 6, 7, 8 and 9
 	for bindNum = 1, 4 do
-		Keybinds:Add(
+		exports["sandbox-keybinds"]:Add(
 			"emote_bind_" .. bindNum,
 			tostring(5 + bindNum),
 			"keyboard",

@@ -13,74 +13,75 @@ local MIN_FLY_BELT = math.floor(49.2 * 2.237) -- 110mph
 local MIN_FLY_HARN = math.floor(89.5 * 2.237) -- 200mph
 
 AddEventHandler('Vehicles:Client:StartUp', function()
-    Keybinds:Add('vehicle_seatbelt', 'b', 'keyboard', 'Vehicle - Toggle Seatbelt / Harness', function()
-        if VEHICLE_INSIDE and not seatbeltExemptVehicles[VEHICLE_CLASS] then
-            local vState = Entity(VEHICLE_INSIDE)
-            if vState.state.Harness and vState.state.Harness > 0 and (VEHICLE_SEAT == -1 or VEHICLE_SEAT == 0) then
-                if not VEHICLE_SEATBELT then
-                    Progress:ProgressWithTickEvent({
-                        name = "vehicle_harness",
-                        duration = VEHICLE_SEATBELT and 1000 or 2000,
-                        label = VEHICLE_SEATBELT and "Removing Harness" or "Applying Harness",
-                        tickrate = 1000,
-                        useWhileDead = false,
-                        canCancel = true,
-                        disarm = false,
-                        ignoreModifier = true,
-                        controlDisables = {
-                            disableMovement = false,
-                            disableCarMovement = false,
-                            disableMouse = false,
-                            disableCombat = false,
-                        },
-                    }, function()
-                        if not VEHICLE_INSIDE then
-                            Progress:Fail()
-                        end
-                    end, function(cancelled)
-                        if not cancelled and VEHICLE_INSIDE then
+    exports["sandbox-keybinds"]:Add('vehicle_seatbelt', 'b', 'keyboard', 'Vehicle - Toggle Seatbelt / Harness',
+        function()
+            if VEHICLE_INSIDE and not seatbeltExemptVehicles[VEHICLE_CLASS] then
+                local vState = Entity(VEHICLE_INSIDE)
+                if vState.state.Harness and vState.state.Harness > 0 and (VEHICLE_SEAT == -1 or VEHICLE_SEAT == 0) then
+                    if not VEHICLE_SEATBELT then
+                        Progress:ProgressWithTickEvent({
+                            name = "vehicle_harness",
+                            duration = VEHICLE_SEATBELT and 1000 or 2000,
+                            label = VEHICLE_SEATBELT and "Removing Harness" or "Applying Harness",
+                            tickrate = 1000,
+                            useWhileDead = false,
+                            canCancel = true,
+                            disarm = false,
+                            ignoreModifier = true,
+                            controlDisables = {
+                                disableMovement = false,
+                                disableCarMovement = false,
+                                disableMouse = false,
+                                disableCombat = false,
+                            },
+                        }, function()
+                            if not VEHICLE_INSIDE then
+                                Progress:Fail()
+                            end
+                        end, function(cancelled)
+                            if not cancelled and VEHICLE_INSIDE then
+                                Sounds.Do.Play:One('seatbelt.ogg', 0.4)
+                                if VEHICLE_SEATBELT then
+                                    SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
+                                    VEHICLE_SEATBELT = false
+                                    VEHICLE_HARNESS = false
+                                else
+                                    SetFlyThroughWindscreenParams(MIN_FLY_HARN, 1.0, 17.0, 9999999.0)
+                                    VEHICLE_SEATBELT = true
+                                    VEHICLE_HARNESS = vState.state.Harness
+                                end
+                                TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
+                            end
+                        end)
+                    else
+                        if VEHICLE_INSIDE then
                             Sounds.Do.Play:One('seatbelt.ogg', 0.4)
                             if VEHICLE_SEATBELT then
                                 SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
                                 VEHICLE_SEATBELT = false
                                 VEHICLE_HARNESS = false
                             else
-                                SetFlyThroughWindscreenParams(MIN_FLY_HARN, 1.0, 17.0, 9999999.0)
+                                SetFlyThroughWindscreenParams(MIN_FLY_HARN, 1.0, 17.0, 99999999.0)
                                 VEHICLE_SEATBELT = true
                                 VEHICLE_HARNESS = vState.state.Harness
                             end
                             TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
                         end
-                    end)
+                    end
                 else
-                    if VEHICLE_INSIDE then
-                        Sounds.Do.Play:One('seatbelt.ogg', 0.4)
-                        if VEHICLE_SEATBELT then
-                            SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
-                            VEHICLE_SEATBELT = false
-                            VEHICLE_HARNESS = false
-                        else
-                            SetFlyThroughWindscreenParams(MIN_FLY_HARN, 1.0, 17.0, 99999999.0)
-                            VEHICLE_SEATBELT = true
-                            VEHICLE_HARNESS = vState.state.Harness
-                        end
-                        TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
+                    Sounds.Do.Play:One('seatbelt.ogg', 0.4)
+                    VEHICLE_SEATBELT = not VEHICLE_SEATBELT
+                    TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
+                    if VEHICLE_SEATBELT then
+                        SetFlyThroughWindscreenParams(MIN_FLY_BELT, 40.0, 17.0, 500.0)
+                        exports["sandbox-hud"]:NotifSuccess('Seatbelt On')
+                    else
+                        SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
+                        exports["sandbox-hud"]:NotifError('Seatbelt Off')
                     end
                 end
-            else
-                Sounds.Do.Play:One('seatbelt.ogg', 0.4)
-                VEHICLE_SEATBELT = not VEHICLE_SEATBELT
-                TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
-                if VEHICLE_SEATBELT then
-                    SetFlyThroughWindscreenParams(MIN_FLY_BELT, 40.0, 17.0, 500.0)
-                    exports["sandbox-hud"]:NotifSuccess('Seatbelt On')
-                else
-                    SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
-                    exports["sandbox-hud"]:NotifError('Seatbelt Off')
-                end
             end
-        end
-    end)
+        end)
 
     exports["sandbox-base"]:RegisterClientCallback('Vehicles:InstallHarness', function(data, cb)
         local target = Targeting:GetEntityPlayerIsLookingAt()

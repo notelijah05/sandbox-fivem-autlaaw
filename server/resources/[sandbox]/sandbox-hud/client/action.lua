@@ -4,7 +4,7 @@ ACTION = {
 			message,
 			"{keybind}([A-Za-z!\"#$%&'()*+,-./[\\%]^_`|~]+){/keybind}",
 			function(key)
-				local keyName = Keybinds:GetKey(key) or "Unknown"
+				local keyName = exports["sandbox-keybinds"]:GetKey(key) or "Unknown"
 				return "{key}" .. keyName .. "{/key}"
 			end
 		)

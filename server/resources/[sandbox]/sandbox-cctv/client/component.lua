@@ -16,13 +16,11 @@ local canrotate = false
 
 AddEventHandler("Sync:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("CCTV", {
-		"Keybinds",
 		"CCTV",
 	}, function(error)
 		if #error > 0 then

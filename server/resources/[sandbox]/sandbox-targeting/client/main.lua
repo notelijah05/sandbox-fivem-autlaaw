@@ -7,7 +7,6 @@ interactionZones = {}
 
 AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -22,7 +21,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Targeting", {
-		"Keybinds",
 		"Targeting",
 		"UISounds",
 		"Jobs",
@@ -39,15 +37,16 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrieveComponents()
 
-		Keybinds:Add("targeting_starts", "LMENU", "keyboard", "Targeting (Third Eye) (Hold)", function()
-			if IS_SPAWNED and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isHardCuffed then
-				StartTargeting()
-			end
-		end, function()
-			if not inTargetingMenu then
-				StopTargeting()
-			end
-		end)
+		exports["sandbox-keybinds"]:Add("targeting_starts", "LMENU", "keyboard", "Targeting (Third Eye) (Hold)",
+			function()
+				if IS_SPAWNED and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isHardCuffed then
+					StartTargeting()
+				end
+			end, function()
+				if not inTargetingMenu then
+					StopTargeting()
+				end
+			end)
 
 		if LocalPlayer.state.loggedIn then
 			DeInitPolyzoneTargets()

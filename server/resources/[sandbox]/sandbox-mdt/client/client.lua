@@ -11,7 +11,6 @@ AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -24,7 +23,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
 		"UISounds",
 		"Sounds",
-		"Keybinds",
 		"Animations",
 		"EmergencyAlerts",
 		"Weapons",
@@ -36,7 +34,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end -- Do something to handle if not all dependencies loaded
 		RetrieveComponents()
 
-		Keybinds:Add("gov_mdt", "", "keyboard", "Gov - Open MDT", function()
+		exports["sandbox-keybinds"]:Add("gov_mdt", "", "keyboard", "Gov - Open MDT", function()
 			ToggleMDT()
 		end)
 

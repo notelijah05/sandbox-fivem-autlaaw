@@ -28,7 +28,7 @@ RegisterNetEvent("Animations:Client:OpenEmoteBinds", function()
 				label = string.format(
 					"Emote Bind #%s - Currently Assigned to %s",
 					bindNum,
-					Keybinds:GetKey("emote_bind_" .. bindNum)
+					exports["sandbox-keybinds"]:GetKey("emote_bind_" .. bindNum)
 				),
 				defaultValue = emoteBinds[tostring(bindNum)] or "",
 			},

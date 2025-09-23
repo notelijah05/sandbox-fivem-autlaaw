@@ -288,10 +288,11 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     if fishingZone == 4 or fishingZone == 5 then
         exports["sandbox-hud"]:NotifPersistentInfo("fishing-info-notif",
             string.format("Fishing - Press %s to Stop. Maybe you could try some deeper water for better fish!",
-                Keybinds:GetKey("cancel_action")), "fishing-rod")
+                exports["sandbox-keybinds"]:GetKey("cancel_action")), "fishing-rod")
     else
         exports["sandbox-hud"]:NotifPersistentInfo("fishing-info-notif",
-            string.format("Fishing - Press %s to Stop", Keybinds:GetKey("cancel_action")), "fishing-rod")
+            string.format("Fishing - Press %s to Stop", exports["sandbox-keybinds"]:GetKey("cancel_action")),
+            "fishing-rod")
     end
 
     local tick = 0

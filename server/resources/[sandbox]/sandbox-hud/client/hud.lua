@@ -60,7 +60,6 @@ function RetrieveComponents()
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
@@ -78,7 +77,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Hud",
 		"Action",
 		"Progress",
-		"Keybinds",
 		"ListMenu",
 		"Minigame",
 		"Interaction",
@@ -113,25 +111,25 @@ AddEventHandler("Core:Shared:Ready", function()
 			data = { position = GetMinimapAnchor() },
 		})
 
-		Keybinds:Add("show_interaction", "F1", "keyboard", "Hud - Show Interaction Menu", function()
+		exports["sandbox-keybinds"]:Add("show_interaction", "F1", "keyboard", "Hud - Show Interaction Menu", function()
 			if not IsPauseMenuActive() then
 				Interaction:Show()
 			end
 		end)
 
-		-- Keybinds:Add("map_zoom_in", "PageUp", "keyboard", "Minimap - Zoom In", function()
+		-- exports["sandbox-keybinds"]:Add("map_zoom_in", "PageUp", "keyboard", "Minimap - Zoom In", function()
 		-- 	Hud.Minimap:In()
 		-- end)
 
-		-- Keybinds:Add("map_zoom_out", "PageDown", "keyboard", "Minimap - Zoom Out", function()
+		-- exports["sandbox-keybinds"]:Add("map_zoom_out", "PageDown", "keyboard", "Minimap - Zoom Out", function()
 		-- 	Hud.Minimap:Out()
 		-- end)
 
-		Keybinds:Add("ui_toggle", "F11", "keyboard", "Hud - Toggle HUD", function()
+		exports["sandbox-keybinds"]:Add("ui_toggle", "F11", "keyboard", "Hud - Toggle HUD", function()
 			Hud:Toggle()
 		end)
 
-		Keybinds:Add("ids_toggle", "u", "keyboard", "Hud - Toggle IDs", function()
+		exports["sandbox-keybinds"]:Add("ids_toggle", "u", "keyboard", "Hud - Toggle IDs", function()
 			if not _idsCd then
 				Hud.ID:Toggle()
 			end
@@ -488,8 +486,8 @@ HUD = {
 			SendNUIMessage({
 				type = "DO_DEATH_TEXT",
 				data = {
-					key = Keybinds:GetKey(keyOverride or "secondary_action") or 'Unknown',
-					f1Key = Keybinds:GetKey(keyOverride or "show_interaction") or 'Unknown',
+					key = exports["sandbox-keybinds"]:GetKey(keyOverride or "secondary_action") or 'Unknown',
+					f1Key = exports["sandbox-keybinds"]:GetKey(keyOverride or "show_interaction") or 'Unknown',
 					type = type,
 					deathTime = deathTime,
 					timer = timer,

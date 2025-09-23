@@ -18,7 +18,6 @@ function RetrieveComponents()
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -56,7 +55,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Blips",
 		"Menu",
 		"Minigame",
-		"Keybinds",
 		"Targeting",
 		"Interaction",
 		"Polyzone",
@@ -83,13 +81,14 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		TriggerEvent("Vehicles:Client:StartUp")
 
-		Keybinds:Add("toggle_engine", "IOM_WHEEL_UP", "MOUSE_WHEEL", "Vehicle - Toggle Engine", function()
-			if VEHICLE_INSIDE and VEHICLE_SEAT == -1 then
-				if IsPauseMenuActive() ~= 1 then
-					Vehicles.Engine:Toggle(VEHICLE_INSIDE)
+		exports["sandbox-keybinds"]:Add("toggle_engine", "IOM_WHEEL_UP", "MOUSE_WHEEL", "Vehicle - Toggle Engine",
+			function()
+				if VEHICLE_INSIDE and VEHICLE_SEAT == -1 then
+					if IsPauseMenuActive() ~= 1 then
+						Vehicles.Engine:Toggle(VEHICLE_INSIDE)
+					end
 				end
-			end
-		end)
+			end)
 
 		Interaction:RegisterMenu("veh_quick_actions", false, "car", function()
 			if VEHICLE_INSIDE then

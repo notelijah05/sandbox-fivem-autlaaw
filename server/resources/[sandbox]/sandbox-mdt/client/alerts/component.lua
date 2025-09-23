@@ -10,7 +10,6 @@ function RetrievePDAComponents()
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Sounds",
 		"UISounds",
 		"EmergencyAlerts",
-		"Keybinds",
 		"Blips",
 		"CCTV",
 		"Progress",
@@ -31,12 +29,13 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrievePDAComponents()
 		RegisterCallbacks()
-		Keybinds:Add("emergency_alerts_toggle", "GRAVE", "keyboard", "Police - Toggle Alerts Panel", function()
-			local duty = LocalPlayer.state.onDuty
-			if _jobs[duty] and not LocalPlayer.state.isDead then
-				EmergencyAlerts:Open()
-			end
-		end)
+		exports["sandbox-keybinds"]:Add("emergency_alerts_toggle", "GRAVE", "keyboard", "Police - Toggle Alerts Panel",
+			function()
+				local duty = LocalPlayer.state.onDuty
+				if _jobs[duty] and not LocalPlayer.state.isDead then
+					EmergencyAlerts:Open()
+				end
+			end)
 	end)
 end)
 

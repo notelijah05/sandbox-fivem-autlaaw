@@ -12,7 +12,6 @@ RECENT_FLAGS = {}
 
 AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Player = exports["sandbox-base"]:FetchComponent("Player")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
@@ -23,7 +22,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radar", {
-		"Keybinds",
 		"Targeting",
 		"UISounds",
 		"Player",
@@ -36,7 +34,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrieveComponents()
 
-		Keybinds:Add("radar_lock", "MULTIPLY", "keyboard", "Radar - Toggle Fast Lock", function()
+		exports["sandbox-keybinds"]:Add("radar_lock", "MULTIPLY", "keyboard", "Radar - Toggle Fast Lock", function()
 			if RADAR_LOCKED then
 				UnlockRadar()
 			else
@@ -44,27 +42,27 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Keybinds:Add("radar_remote", "DIVIDE", "keyboard", "Radar - Open Menu/Remote", function()
+		exports["sandbox-keybinds"]:Add("radar_remote", "DIVIDE", "keyboard", "Radar - Open Menu/Remote", function()
 			OpenRadarRemote()
 		end)
 
-		Keybinds:Add("radar_toggle", "SUBTRACT", "keyboard", "Radar - Show/Hide", function()
+		exports["sandbox-keybinds"]:Add("radar_toggle", "SUBTRACT", "keyboard", "Radar - Show/Hide", function()
 			ToggleRadarIsDisabled()
 		end)
 
-		Keybinds:Add("heli_toggle", "E", "keyboard", "Heli Camera - Toggle", function()
+		exports["sandbox-keybinds"]:Add("heli_toggle", "E", "keyboard", "Heli Camera - Toggle", function()
 			StartHeliCamera()
 		end)
 
-		Keybinds:Add("heli_rappell", "X", "keyboard", "Heli - Rappel", function()
+		exports["sandbox-keybinds"]:Add("heli_rappell", "X", "keyboard", "Heli - Rappel", function()
 			HeliRappel()
 		end)
 
-		-- Keybinds:Add("heli_lock", "SPACE", "keyboard", "Heli Camera - Lock On/Off", function()
+		-- exports["sandbox-keybinds"]:Add("heli_lock", "SPACE", "keyboard", "Heli Camera - Lock On/Off", function()
 		-- 	LockOnHeliCamera()
 		-- end)
 
-		-- Keybinds:Add("heli_camera", "MOUSE_RIGHT", "MOUSE_BUTTON", "Heli Camera - Change Mode", function()
+		-- exports["sandbox-keybinds"]:Add("heli_camera", "MOUSE_RIGHT", "MOUSE_BUTTON", "Heli Camera - Change Mode", function()
 		-- 	ChangeVision()
 		-- end)
 	end)

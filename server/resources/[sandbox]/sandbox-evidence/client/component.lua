@@ -15,7 +15,6 @@ _ammoNames = {
 AddEventHandler("Evidence:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -34,7 +33,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Menu",
 		"Targeting",
 		"Animations",
-		"Keybinds",
 		"Polyzone",
 		"Jobs",
 		"Weapons",

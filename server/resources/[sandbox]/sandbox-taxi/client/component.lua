@@ -4,7 +4,6 @@ _rate = GetResourceKvpInt("TAXI_RATE") or 10
 AddEventHandler("Taxi:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Taxi = exports["sandbox-base"]:FetchComponent("Taxi")
 end
@@ -12,7 +11,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Blips",
-		"Keybinds",
 		"PedInteraction",
 		"Taxi",
 	}, function(error)
@@ -21,19 +19,19 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrieveComponents()
 
-		Keybinds:Add("taxi_increase_rate", "", "keyboard", "Taxi - Increase Rate", function()
+		exports["sandbox-keybinds"]:Add("taxi_increase_rate", "", "keyboard", "Taxi - Increase Rate", function()
 			Taxi.Rate:Increase()
 		end)
 
-		Keybinds:Add("taxi_decrease_rate", "", "keyboard", "Taxi - Decrease Rate", function()
+		exports["sandbox-keybinds"]:Add("taxi_decrease_rate", "", "keyboard", "Taxi - Decrease Rate", function()
 			Taxi.Rate:Decrease()
 		end)
 
-		Keybinds:Add("taxi_reset_trip", "", "keyboard", "Taxi - Reset Trip", function()
+		exports["sandbox-keybinds"]:Add("taxi_reset_trip", "", "keyboard", "Taxi - Reset Trip", function()
 			Taxi.Trip:Reset()
 		end)
 
-		Keybinds:Add("taxi_toggle_hud", "", "keyboard", "Taxi - Toggle HUD", function()
+		exports["sandbox-keybinds"]:Add("taxi_toggle_hud", "", "keyboard", "Taxi - Toggle HUD", function()
 			Taxi.Hud:Toggle()
 		end)
 	end)

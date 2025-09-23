@@ -2,7 +2,6 @@ local _timeout = false
 
 AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -12,7 +11,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
-		"Keybinds",
 		"Targeting",
 		"Progress",
 		"Hud",
@@ -24,7 +22,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrieveComponents()
 
-		Keybinds:Add("escort", "k", "keyboard", "Escort", function()
+		exports["sandbox-keybinds"]:Add("escort", "k", "keyboard", "Escort", function()
 			if _timeout then
 				exports["sandbox-hud"]:NotifError("Stop spamming you pepega.")
 				return

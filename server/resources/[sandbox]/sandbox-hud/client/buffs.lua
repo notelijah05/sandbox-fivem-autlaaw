@@ -4,7 +4,6 @@ function RetrieveComponents()
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
@@ -22,7 +21,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Hud",
 		"Action",
 		"Progress",
-		"Keybinds",
 		"ListMenu",
 		"Minigame",
 		"Interaction",

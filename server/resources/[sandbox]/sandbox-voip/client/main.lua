@@ -37,7 +37,6 @@ end
 AddEventHandler("VOIP:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -47,7 +46,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VOIP", {
 		"Hud",
-		"Keybinds",
 		"Sounds",
 		"Animations",
 		"Polyzone",
@@ -60,13 +58,13 @@ AddEventHandler("Core:Shared:Ready", function()
 		RunStartup()
 		CreateMicrophonePolyzones()
 
-		Keybinds:Add("voip_cycleproximity", "Z", "keyboard", "Voice - Cycle Proximity", function()
+		exports["sandbox-keybinds"]:Add("voip_cycleproximity", "Z", "keyboard", "Voice - Cycle Proximity", function()
 			if _characterLoaded and PLAYER_CONNECTED then
 				VOIP:Cycle()
 			end
 		end)
 
-		Keybinds:Add("voip_radio", "CAPITAL", "keyboard", "Voice - Radio - Push to Talk", function()
+		exports["sandbox-keybinds"]:Add("voip_radio", "CAPITAL", "keyboard", "Voice - Radio - Push to Talk", function()
 			if _characterLoaded and PLAYER_CONNECTED and not LocalPlayer.state.isDead and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isHardCuffed then
 				RadioKeyDown()
 			end

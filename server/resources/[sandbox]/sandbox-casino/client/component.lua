@@ -17,7 +17,6 @@ function RetrieveComponents()
 	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
@@ -42,7 +41,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Sounds",
 		"PedInteraction",
 		"Blips",
-		"Keybinds",
 		"Minigame",
 		"Input",
 		"Interaction",

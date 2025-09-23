@@ -16,7 +16,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Menu = exports["sandbox-base"]:FetchComponent("Menu")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
@@ -31,7 +30,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vehicles",
 		"Blips",
 		"Menu",
-		"Keybinds",
 		"Polyzone",
 		"PedInteraction",
 		"ListMenu",
