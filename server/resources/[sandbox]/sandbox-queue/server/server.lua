@@ -15,7 +15,6 @@ local _dbReady = false
 AddEventHandler("Queue:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	c = exports["sandbox-base"]:FetchComponent("Config")
-	WebAPI = exports["sandbox-base"]:FetchComponent("WebAPI")
 	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
 	Queue = exports["sandbox-base"]:FetchComponent("Queue")
 end
@@ -25,7 +24,6 @@ local APIWorking = false
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Queue", {
 		"Config",
-		"WebAPI",
 		"Punishment",
 		"Queue",
 	}, function(error)

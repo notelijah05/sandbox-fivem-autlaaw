@@ -13,7 +13,7 @@ end
 
 local function GetWebsite(type, id)
 	if type == "account" then
-		local data = COMPONENTS.WebAPI.GetMember:AccountID(id)
+		local data = exports['sandbox-base']:WebAPIGetMemberAccountID(id)
 		if data ~= nil then
 			return exports["sandbox-base"]:CreateStore('Fetch', data.id, {
 				ID = data.id,
@@ -24,7 +24,7 @@ local function GetWebsite(type, id)
 			})
 		end
 	elseif type == "identifier" then
-		local data = COMPONENTS.WebAPI.GetMember:Identifier(id)
+		local data = exports['sandbox-base']:WebAPIGetMemberIdentifier(id)
 		if data ~= nil then
 			return exports["sandbox-base"]:CreateStore('Fetch', data.id, {
 				ID = data.id,

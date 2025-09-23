@@ -22,133 +22,140 @@ local function _b64enc(data)
 	)
 end
 
-COMPONENTS.WebAPI = {
-	_required = { "Enabled", "GetMember" },
-	_name = "base",
-	Enabled = true,
-	Request = function(self, method, endpoint, params, jsondata)
-		exports['sandbox-base']:LoggerTrace("WebAPI", "Endpoint Called: " .. method .. " - " .. endpoint)
+exports("WebAPIRequest", function(method, endpoint, params, jsondata)
+	exports['sandbox-base']:LoggerTrace("WebAPI", "Endpoint Called: " .. method .. " - " .. endpoint)
 
-		local first = true
-		if params ~= nil then
-			for k, v in pairs(params) do
-				if first then
-					endpoint = endpoint .. "?" .. k .. "=" .. v
-					first = false
-				else
-					endpoint = endpoint .. "&" .. k .. "=" .. v
-				end
+	local first = true
+	if params ~= nil then
+		for k, v in pairs(params) do
+			if first then
+				endpoint = endpoint .. "?" .. k .. "=" .. v
+				first = false
+			else
+				endpoint = endpoint .. "&" .. k .. "=" .. v
 			end
 		end
+	end
 
-		local p = promise.new()
+	local p = promise.new()
 
-		PerformHttpRequest(
-			exports["sandbox-base"]:GetApiAddress() .. endpoint,
-			function(errorCode, resultData, resultHeaders)
-				data = {
-					data = resultData,
-					code = errorCode,
-					headers = resultHeaders,
-				}
-
-				-- if data.code ~= nil and data.code ~= 200 then
-				-- 	exports['sandbox-base']:LoggerError("WebAPI", "Error: " .. data.code, { console = true })
-				-- end
-
-				if data.data ~= nil then
-					data.data = json.decode(data.data)
-				end
-
-				p:resolve(data)
-			end,
-			method,
-			#jsondata > 0 and json.encode(jsondata) or "",
-			{
-				["Content-Type"] = "application/json",
-				["Authorization"] = "Basic " .. _b64enc(
-					string.format("%s:%s", exports["sandbox-base"]:GetApiId(), exports["sandbox-base"]:GetApiSecret())
-				),
+	PerformHttpRequest(
+		exports["sandbox-base"]:GetApiAddress() .. endpoint,
+		function(errorCode, resultData, resultHeaders)
+			data = {
+				data = resultData,
+				code = errorCode,
+				headers = resultHeaders,
 			}
-		)
 
-		return Citizen.Await(p)
-	end,
-	-- Validate = function(self)
-	-- 	exports['sandbox-base']:LoggerTrace("Core", "Validating API Key With Authentication Services", {
-	-- 		console = true,
-	-- 	})
+			-- if data.code ~= nil and data.code ~= 200 then
+			-- 	exports['sandbox-base']:LoggerError("WebAPI", "Error: " .. data.code, { console = true })
+			-- end
 
-	-- 	local res = COMPONENTS.WebAPI:Request("GET", "admin/startup", nil, {})
-
-	-- 	if res.code ~= 200 then
-	-- 		exports['sandbox-base']:LoggerCritical("Core", "Failed Validation, Shutting Down Server", {
-	-- 			console = true,
-	-- 			file = true,
-	-- 		})
-	-- 		exports["sandbox-base"]:Shutdown("Failed Validation, Shutting Down Server")
-
-	-- 		return false
-	-- 	else
-	-- 		COMPONENTS.Config.Server = {
-	-- 			ID = res.data.id,
-	-- 			Name = res.data.name,
-	-- 			Access = res.data.restricted,
-	-- 			Channel = res.data.channel,
-	-- 			Region = res.data.region,
-	-- 		}
-	-- 		COMPONENTS.Config.Game = {
-	-- 			ID = res.data.game.id,
-	-- 			Name = res.data.game.name,
-	-- 			Short = res.data.game.short,
-	-- 		}
-
-	-- 		COMPONENTS.Config.Groups = res.data.groups
-
-	-- 		GlobalState.IsProduction = res.data.channel:upper() ~= "DEV"
-	-- 		if COMPONENTS.Config.Server.Access then
-	-- 			exports['sandbox-base']:LoggerTrace(
-	-- 				"Core",
-	-- 				string.format(
-	-- 					"Server ^2#%s^7 - ^2%s^7 Authenticated, Running With Access Restrictions",
-	-- 					tostring(COMPONENTS.Config.Server.ID),
-	-- 					COMPONENTS.Config.Server.Name
-	-- 				),
-	-- 				{ console = true }
-	-- 			)
-	-- 		else
-	-- 			exports['sandbox-base']:LoggerInfo(
-	-- 				"Core",
-	-- 				string.format(
-	-- 					"Server ^2#%s^7 - ^2%s^7 Authenticated, Running With No Access Restriction",
-	-- 					tostring(COMPONENTS.Config.Server.ID),
-	-- 					COMPONENTS.Config.Server.Name
-	-- 				),
-	-- 				{ console = true }
-	-- 			)
-	-- 		end
-
-	-- 		exports['sandbox-base']:LoggerTrace("WebAPI", "Loaded ^5" .. tostring(res.data.count) .. "^7 Group Configurations")
-
-	-- 		return true
-	-- 	end
-	-- end,
-}
-
-COMPONENTS.WebAPI.GetMember = {
-	Identifier = function(self, identifier)
-		if identifier ~= nil then
-			local data = COMPONENTS.WebAPI:Request("GET", "serverAPI/user/identifier", {
-				license = identifier,
-			}, {})
-
-			if data.code == 200 then
-				return data.data
+			if data.data ~= nil then
+				data.data = json.decode(data.data)
 			end
+
+			p:resolve(data)
+		end,
+		method,
+		#jsondata > 0 and json.encode(jsondata) or "",
+		{
+			["Content-Type"] = "application/json",
+			["Authorization"] = "Basic " .. _b64enc(
+				string.format("%s:%s", exports["sandbox-base"]:GetApiId(), exports["sandbox-base"]:GetApiSecret())
+			),
+		}
+	)
+
+	return Citizen.Await(p)
+end)
+
+exports("WebAPIGetMemberIdentifier", function(identifier)
+	if identifier ~= nil then
+		local data = exports['sandbox-base']:WebAPIRequest("GET", "serverAPI/user/identifier", {
+			license = identifier,
+		}, {})
+
+		if data.code == 200 then
+			return data.data
 		end
-		return nil
-	end,
-}
+	end
+	return nil
+end)
+
+exports("WebAPIGetMemberAccountID", function(accountId)
+	if accountId ~= nil then
+		local data = exports['sandbox-base']:WebAPIRequest("GET", "serverAPI/user/account", {
+			account = accountId,
+		}, {})
+
+		if data.code == 200 then
+			return data.data
+		end
+	end
+	return nil
+end)
+
+-- exports("WebAPIValidate", function()
+-- 	exports['sandbox-base']:LoggerTrace("Core", "Validating API Key With Authentication Services", {
+-- 		console = true,
+-- 	})
+
+-- 	local res = exports['sandbox-base']:WebAPIRequest("GET", "admin/startup", nil, {})
+
+-- 	if res.code ~= 200 then
+-- 		exports['sandbox-base']:LoggerCritical("Core", "Failed Validation, Shutting Down Server", {
+-- 			console = true,
+-- 			file = true,
+-- 		})
+-- 		exports["sandbox-base"]:Shutdown("Failed Validation, Shutting Down Server")
+
+-- 		return false
+-- 	else
+-- 		COMPONENTS.Config.Server = {
+-- 			ID = res.data.id,
+-- 			Name = res.data.name,
+-- 			Access = res.data.restricted,
+-- 			Channel = res.data.channel,
+-- 			Region = res.data.region,
+-- 		}
+-- 		COMPONENTS.Config.Game = {
+-- 			ID = res.data.game.id,
+-- 			Name = res.data.game.name,
+-- 			Short = res.data.game.short,
+-- 		}
+
+-- 		COMPONENTS.Config.Groups = res.data.groups
+
+-- 		GlobalState.IsProduction = res.data.channel:upper() ~= "DEV"
+-- 		if COMPONENTS.Config.Server.Access then
+-- 			exports['sandbox-base']:LoggerTrace(
+-- 				"Core",
+-- 				string.format(
+-- 					"Server ^2#%s^7 - ^2%s^7 Authenticated, Running With Access Restrictions",
+-- 					tostring(COMPONENTS.Config.Server.ID),
+-- 					COMPONENTS.Config.Server.Name
+-- 				),
+-- 				{ console = true }
+-- 			)
+-- 		else
+-- 			exports['sandbox-base']:LoggerInfo(
+-- 				"Core",
+-- 				string.format(
+-- 					"Server ^2#%s^7 - ^2%s^7 Authenticated, Running With No Access Restriction",
+-- 					tostring(COMPONENTS.Config.Server.ID),
+-- 					COMPONENTS.Config.Server.Name
+-- 				),
+-- 				{ console = true }
+-- 			)
+-- 		end
+
+-- 		exports['sandbox-base']:LoggerTrace("WebAPI", "Loaded ^5" .. tostring(res.data.count) .. "^7 Group Configurations")
+
+-- 		return true
+-- 	end
+-- end)
 
 -- Endpoint for getting server information to display publicly
 
@@ -168,9 +175,7 @@ function SetupAPIHandler()
 					MaxPlayers = GlobalState.MaxPlayers or 64,
 				}
 
-				if COMPONENTS.Queue then
-					data.Queue = COMPONENTS.Queue.Queue:GetCount()
-				end
+				data.Queue = exports['sandbox-base']:QueueGetCount()
 
 				res.send(json.encode(data))
 			end
