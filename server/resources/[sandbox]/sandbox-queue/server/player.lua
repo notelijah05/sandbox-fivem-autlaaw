@@ -18,12 +18,21 @@ function PlayerClass(identifier, player, deferrals, steamName)
 	-- Default group for all players for now
 	local groups = { "whitelisted" }
 
-	-- Everyone is management when this convar is 1
-	if GetConvar("danger_everyone_is_admin", "") == "1" then
+	-- Player Permissions
+	if GetConvar("danger_everyone_is_admin", "") == "1" then -- Everyone is management when this convar is 1
 		table.insert(groups, "management")
 	else
-		if IsPlayerAceAllowed(player, "queue.management") then
-			table.insert(groups, "management")
+		local permissions = {
+			["queue.management"] = "management",
+			["queue.dev"] = "dev",
+			["queue.admin"] = "admin",
+			["queue.operations"] = "operations"
+		}
+
+		for permission, group in pairs(permissions) do
+			if IsPlayerAceAllowed(player, permission) then
+				table.insert(groups, group)
+			end
 		end
 	end
 
