@@ -42,7 +42,7 @@ end
 
 RegisterNetEvent("VOIP:Client:Megaphone:SetPlayerState", function(targetSource, state)
 	if VOIP ~= nil and LocalPlayer.state.loggedIn then
-		VOIP:ToggleVoice(targetSource, state, "megaphone")
+		exports["sandbox-voip"]:ToggleVoice(targetSource, state, "megaphone")
 	end
 end)
 

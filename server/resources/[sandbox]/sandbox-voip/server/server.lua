@@ -27,14 +27,12 @@ AddEventHandler("VOIP:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Chat = exports["sandbox-base"]:FetchComponent("Chat")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VOIP", {
 		"Chat",
 		"Inventory",
-		"VOIP",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -69,53 +67,48 @@ end)
 
 function RegisterMiddleware()
 	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		VOIP:AddPlayer(source)
+		exports["sandbox-voip"]:AddPlayer(source)
 	end, 3)
 end
 
-_fuckingVOIP = {
-	AddPlayer = function(self, source)
-		if not voiceData[source] then
-			voiceData[source] = GetDefaultPlayerVOIPData()
+exports("AddPlayer", function(source)
+	if not voiceData[source] then
+		voiceData[source] = GetDefaultPlayerVOIPData()
 
-			local plyState = Player(source).state
+		local plyState = Player(source).state
 
-			if plyState then
-				local chan = firstFreeChannel()
-				if chan > 0 then
-					mappedChannels[chan] = source
+		if plyState then
+			local chan = firstFreeChannel()
+			if chan > 0 then
+				mappedChannels[chan] = source
 
-					plyState:set("voiceChannel", chan, true)
-				end
+				plyState:set("voiceChannel", chan, true)
 			end
 		end
-	end,
-	RemovePlayer = function(self, source)
-		if voiceData[source] then
-			local plyData = voiceData[source]
+	end
+end)
 
-			if plyData.Radio > 0 then
-				VOIP.Radio:SetChannel(source, 0)
-			end
+exports("RemovePlayer", function(source)
+	if voiceData[source] then
+		local plyData = voiceData[source]
 
-			if plyData.Call > 0 then
-				VOIP.Phone:SetChannel(source, 0)
-			end
-
-			voiceData[source] = nil
+		if plyData.Radio > 0 then
+			exports["sandbox-voip"]:RadioSetChannel(source, 0)
 		end
 
-		local aChannel = Player(source).state.voiceChannel
-		if aChannel then
-			mappedChannels[aChannel] = nil
+		if plyData.Call > 0 then
+			exports["sandbox-voip"]:PhoneSetChannel(source, 0)
 		end
-	end,
-}
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("VOIP", _fuckingVOIP)
+		voiceData[source] = nil
+	end
+
+	local aChannel = Player(source).state.voiceChannel
+	if aChannel then
+		mappedChannels[aChannel] = nil
+	end
 end)
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source)
-	VOIP:RemovePlayer(source)
+	exports["sandbox-voip"]:RemovePlayer(source)
 end)

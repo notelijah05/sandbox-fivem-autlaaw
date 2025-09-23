@@ -27,7 +27,6 @@ AddEventHandler("Radio:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -39,7 +38,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radio", {
 		"Action",
 		"Progress",
-		"VOIP",
 		"Jobs",
 		"Weapons",
 		"Hud",
@@ -101,8 +99,8 @@ AddEventHandler("Characters:Client:Spawn", function()
 	RADIO_FREQUENCY = 0
 	RADIO_FREQUENCY_NAME = ""
 
-	RADIO_VOLUME = VOIP.Settings.Volumes.Radio:Get()
-	RADIO_CLICKS_VOLUME = VOIP.Settings.Volumes.RadioClicks:Get()
+	RADIO_VOLUME = exports["sandbox-voip"]:GetRadioVolume()
+	RADIO_CLICKS_VOLUME = exports["sandbox-voip"]:GetRadioClickVolume()
 	HAS_RADIO = false
 	LocalPlayer.state.radioType = false
 
@@ -479,7 +477,7 @@ function RadioVolumeUp(notify)
 		newVolume = 200
 	end
 
-	RADIO_VOLUME = VOIP.Settings.Volumes.Radio:Set(newVolume)
+	RADIO_VOLUME = exports["sandbox-voip"]:SetRadioVolume(newVolume)
 
 	if notify then
 		exports["sandbox-hud"]:NotifInfo("Radio Volume: " .. math.floor(RADIO_VOLUME) .. "%", 1500)
@@ -494,7 +492,7 @@ function RadioVolumeDown(notify)
 		newVolume = 0
 	end
 
-	RADIO_VOLUME = VOIP.Settings.Volumes.Radio:Set(newVolume)
+	RADIO_VOLUME = exports["sandbox-voip"]:SetRadioVolume(newVolume)
 
 	if notify then
 		exports["sandbox-hud"]:NotifInfo("Radio Volume: " .. math.floor(RADIO_VOLUME) .. "%", 1500)
@@ -526,7 +524,7 @@ RegisterNUICallback("ClickVolumeUp", function(data, cb)
 			newVolume = 200
 		end
 
-		RADIO_CLICKS_VOLUME = VOIP.Settings.Volumes.RadioClicks:Set(newVolume)
+		RADIO_CLICKS_VOLUME = exports["sandbox-voip"]:SetRadioClickVolume(newVolume)
 
 		exports["sandbox-sounds"]:PlayOne("radioclick.ogg", (RADIO_CLICKS_VOLUME / 100))
 	end
@@ -540,7 +538,7 @@ RegisterNUICallback("ClickVolumeDown", function(data, cb)
 			newVolume = 0
 		end
 
-		RADIO_CLICKS_VOLUME = VOIP.Settings.Volumes.RadioClicks:Set(newVolume)
+		RADIO_CLICKS_VOLUME = exports["sandbox-voip"]:SetRadioClickVolume(newVolume)
 
 		exports["sandbox-sounds"]:PlayOne("radioclick.ogg", (RADIO_CLICKS_VOLUME / 100))
 	end

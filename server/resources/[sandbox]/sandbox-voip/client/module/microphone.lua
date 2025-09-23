@@ -41,7 +41,7 @@ end
 
 -- RegisterNetEvent('VOIP:Client:Microphone:SetPlayerState', function(targetSource, state)
 --     if VOIP ~= nil and LocalPlayer.state.loggedIn then
---         VOIP:ToggleVoice(targetSource, state, 'microphone')
+--         exports["sandbox-voip"]:ToggleVoice(targetSource, state, 'microphone')
 --     end
 -- end)
 

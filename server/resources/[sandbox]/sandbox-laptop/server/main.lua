@@ -85,7 +85,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
-	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -112,7 +111,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Labor",
 		"Crypto",
-		"VOIP",
 		"Generator",
 		"Properties",
 		"Vehicles",

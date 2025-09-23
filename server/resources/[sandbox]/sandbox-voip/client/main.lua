@@ -39,7 +39,6 @@ function RetrieveComponents()
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -47,7 +46,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Hud",
 		"Animations",
 		"Polyzone",
-		"VOIP",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -58,7 +56,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports["sandbox-keybinds"]:Add("voip_cycleproximity", "Z", "keyboard", "Voice - Cycle Proximity", function()
 			if _characterLoaded and PLAYER_CONNECTED then
-				VOIP:Cycle()
+				exports["sandbox-voip"]:Cycle()
 			end
 		end)
 
@@ -220,123 +218,112 @@ function UpdateVOIPIndicatorStatus()
 		end
 	end
 
-
 	Hud:UpdateVoip(stage, talking, indicatorIcon)
 end
 
-_fuckingVOIP = {
-	Cycle = function(self, num)
-		if playerMuted or USING_MEGAPHONE or USING_MICROPHONE then
-			return
-		end
-		local newMode = CURRENT_VOICE_MODE + 1
-		if num then
-			newMode = num
-		end
-		if newMode > #VOIP_CONFIG.Modes then
-			newMode = 1
-		end
+exports("Cycle", function(num)
+	if playerMuted or USING_MEGAPHONE or USING_MICROPHONE then
+		return
+	end
+	local newMode = CURRENT_VOICE_MODE + 1
+	if num then
+		newMode = num
+	end
+	if newMode > #VOIP_CONFIG.Modes then
+		newMode = 1
+	end
 
-		CURRENT_VOICE_MODE = newMode
-		CURRENT_VOICE_MODE_DATA = VOIP_CONFIG.Modes[CURRENT_VOICE_MODE]
-		--MumbleSetAudioInputDistance(CURRENT_VOICE_MODE_DATA.Range + 0.0)
-		MumbleSetTalkerProximity(CURRENT_VOICE_MODE_DATA.Range + 0.0)
-		UpdateVOIPIndicatorStatus()
+	CURRENT_VOICE_MODE = newMode
+	CURRENT_VOICE_MODE_DATA = VOIP_CONFIG.Modes[CURRENT_VOICE_MODE]
+	--MumbleSetAudioInputDistance(CURRENT_VOICE_MODE_DATA.Range + 0.0)
+	MumbleSetTalkerProximity(CURRENT_VOICE_MODE_DATA.Range + 0.0)
+	UpdateVOIPIndicatorStatus()
 
-		LocalPlayer.state:set("proximity", CURRENT_VOICE_MODE_DATA.Range, false)
-		exports['sandbox-base']:LoggerTrace("VOIP", "New Voice Range: " .. CURRENT_VOICE_MODE)
-	end,
-	ToggleVoice = function(self, plySource, enabled, voiceType, volume)
-		local volumeOverride = volume or GetVolumeForVoiceType(voiceType)
-		if volumeOverride then
-			MumbleSetVolumeOverrideByServerId(plySource, enabled and volumeOverride or -1.0)
-		else
-			MumbleSetVolumeOverrideByServerId(plySource, -1.0)
-		end
+	LocalPlayer.state:set("proximity", CURRENT_VOICE_MODE_DATA.Range, false)
+	exports['sandbox-base']:LoggerTrace("VOIP", "New Voice Range: " .. CURRENT_VOICE_MODE)
+end)
 
-		if enabled and voiceType and SUBMIX_DATA and SUBMIX_DATA[voiceType] then
-			MumbleSetSubmixForServerId(plySource, SUBMIX_DATA[voiceType])
-		else
-			MumbleSetVolumeOverrideByServerId(plySource, -1.0)
-			MumbleSetSubmixForServerId(plySource, -1)
-		end
-	end,
-	MicClicks = function(self, on, isLocal)
-		if on then
-			exports["sandbox-sounds"]:PlayOne("mic_click_on.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
-		else
-			exports["sandbox-sounds"]:PlayOne("mic_click_off.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
-		end
-	end,
-	SetPlayerTargets = function(self, ...)
-		local targets = { ... }
-		local addedPlayers = {
-			[PLAYER_SERVER_ID] = true,
-		}
+exports("ToggleVoice", function(plySource, enabled, voiceType, volume)
+	local volumeOverride = volume or GetVolumeForVoiceType(voiceType)
+	if volumeOverride then
+		MumbleSetVolumeOverrideByServerId(plySource, enabled and volumeOverride or -1.0)
+	else
+		MumbleSetVolumeOverrideByServerId(plySource, -1.0)
+	end
 
-		for i = 1, #targets do
-			for id, _ in pairs(targets[i]) do
-				if addedPlayers[id] and id ~= PLAYER_SERVER_ID then
-					goto continue
-				end
-				if not addedPlayers[id] then
-					addedPlayers[id] = true
-					MumbleAddVoiceTargetPlayerByServerId(1, id)
-				end
-				::continue::
+	if enabled and voiceType and SUBMIX_DATA and SUBMIX_DATA[voiceType] then
+		MumbleSetSubmixForServerId(plySource, SUBMIX_DATA[voiceType])
+	else
+		MumbleSetVolumeOverrideByServerId(plySource, -1.0)
+		MumbleSetSubmixForServerId(plySource, -1)
+	end
+end)
+
+exports("MicClicks", function(on, isLocal)
+	if on then
+		exports["sandbox-sounds"]:PlayOne("mic_click_on.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
+	else
+		exports["sandbox-sounds"]:PlayOne("mic_click_off.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
+	end
+end)
+
+exports("SetPlayerTargets", function(...)
+	local targets = { ... }
+	local addedPlayers = {
+		[PLAYER_SERVER_ID] = true,
+	}
+
+	for i = 1, #targets do
+		for id, _ in pairs(targets[i]) do
+			if addedPlayers[id] and id ~= PLAYER_SERVER_ID then
+				goto continue
 			end
+			if not addedPlayers[id] then
+				addedPlayers[id] = true
+				MumbleAddVoiceTargetPlayerByServerId(1, id)
+			end
+			::continue::
 		end
-	end,
-	Settings = {
-		Volumes = {
-			Radio = {
-				Set = function(self, val)
-					if type(val) == "number" and val >= 0 and val <= 200 then
-						VOIP_SETTINGS = SetPlayerVOIPSetting("RadioVolume", val / 100)
-					end
+	end
+end)
 
-					return VOIP_SETTINGS.RadioVolume * 100
-				end,
-				Get = function(self)
-					if VOIP_SETTINGS then
-						return VOIP_SETTINGS.RadioVolume * 100
-					end
-				end,
-			},
-			RadioClicks = {
-				Set = function(self, val)
-					if type(val) == "number" and val >= 0 and val <= 200 then
-						VOIP_SETTINGS = SetPlayerVOIPSetting("RadioClickVolume", val / 100)
-					end
+exports("SetRadioVolume", function(val)
+	if type(val) == "number" and val >= 0 and val <= 200 then
+		VOIP_SETTINGS = SetPlayerVOIPSetting("RadioVolume", val / 100)
+	end
+	return VOIP_SETTINGS.RadioVolume * 100
+end)
 
-					return VOIP_SETTINGS.RadioClickVolume * 100
-				end,
-				Get = function(self)
-					if VOIP_SETTINGS then
-						return VOIP_SETTINGS.RadioClickVolume * 100
-					end
-				end,
-			},
-			Phone = {
-				Set = function(self, val)
-					if type(val) == "number" and val >= 0 and val <= 200 then
-						VOIP_SETTINGS = SetPlayerVOIPSetting("CallVolume", val / 100)
-					end
+exports("GetRadioVolume", function()
+	if VOIP_SETTINGS then
+		return VOIP_SETTINGS.RadioVolume * 100
+	end
+end)
 
-					return VOIP_SETTINGS.CallVolume * 100
-				end,
-				Get = function(self)
-					if VOIP_SETTINGS then
-						return VOIP_SETTINGS.CallVolume * 100
-					end
-				end,
-			},
-		},
-	},
-}
+exports("SetRadioClickVolume", function(val)
+	if type(val) == "number" and val >= 0 and val <= 200 then
+		VOIP_SETTINGS = SetPlayerVOIPSetting("RadioClickVolume", val / 100)
+	end
+	return VOIP_SETTINGS.RadioClickVolume * 100
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("VOIP", _fuckingVOIP)
+exports("GetRadioClickVolume", function()
+	if VOIP_SETTINGS then
+		return VOIP_SETTINGS.RadioClickVolume * 100
+	end
+end)
+
+exports("SetCallVolume", function(val)
+	if type(val) == "number" and val >= 0 and val <= 200 then
+		VOIP_SETTINGS = SetPlayerVOIPSetting("CallVolume", val / 100)
+	end
+	return VOIP_SETTINGS.CallVolume * 100
+end)
+
+exports("GetCallVolume", function()
+	if VOIP_SETTINGS then
+		return VOIP_SETTINGS.CallVolume * 100
+	end
 end)
 
 CreateThread(function()
