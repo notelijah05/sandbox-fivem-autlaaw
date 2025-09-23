@@ -1,9 +1,9 @@
 local function GetPlayer()
-    return COMPONENTS.Player.LocalPlayer
+    return exports["sandbox-base"]:GetLocalPlayer()
 end
 
 local function GetCharacter()
-    return COMPONENTS.Player.LocalPlayer:GetData('Character')
+    return exports["sandbox-base"]:GetPlayerData('Character')
 end
 
 exports('FetchPlayer', GetPlayer)

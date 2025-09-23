@@ -8,7 +8,7 @@ exports("Shutdown", function(reason)
 end)
 
 exports("DropAll", function()
-	for k, v in pairs(COMPONENTS.Players) do
+	for k, v in pairs(exports["sandbox-base"]:GetAllPlayers()) do
 		if v ~= nil then
 			DropPlayer(
 				v:GetData("Source"),

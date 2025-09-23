@@ -1,9 +1,9 @@
 local function GetSource(source)
-	return COMPONENTS.Players[source]
+	return exports["sandbox-base"]:GetPlayer(source)
 end
 
 local function GetPlayerData(key, value)
-	for k, v in pairs(COMPONENTS.Players) do
+	for k, v in pairs(exports["sandbox-base"]:GetAllPlayers()) do
 		if v:GetData(key) == value then
 			return v
 		end
@@ -39,12 +39,12 @@ local function GetWebsite(type, id)
 end
 
 local function GetAll()
-	return COMPONENTS.Players
+	return exports["sandbox-base"]:GetAllPlayers()
 end
 
 local function GetCount()
 	local c = 0
-	for k, v in pairs(COMPONENTS.Players) do
+	for k, v in pairs(exports["sandbox-base"]:GetAllPlayers()) do
 		if v ~= nil then
 			c = c + 1
 		end

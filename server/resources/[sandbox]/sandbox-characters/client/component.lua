@@ -28,7 +28,7 @@ RegisterNetEvent("Characters:Client:SetData", function(key, data, cb)
 			exports["sandbox-base"]:CreateStore(1, "Character", data)
 	end
 
-	exports["sandbox-base"]:FetchComponent("Player").LocalPlayer:SetData("Character", LocalPlayer.state.Character)
+	exports["sandbox-base"]:SetPlayerData("Character", LocalPlayer.state.Character)
 	TriggerEvent("Characters:Client:Updated", key)
 
 	if cb then

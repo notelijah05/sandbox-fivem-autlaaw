@@ -13,7 +13,6 @@ RECENT_FLAGS = {}
 AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Player = exports["sandbox-base"]:FetchComponent("Player")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -24,7 +23,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radar", {
 		"Targeting",
 		"UISounds",
-		"Player",
 		"Jobs",
 		"EmergencyAlerts",
 		"Vehicles",
