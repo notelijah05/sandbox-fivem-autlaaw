@@ -5,7 +5,6 @@ function RetrieveComponents()
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
 	Weed = exports["sandbox-base"]:FetchComponent("Weed")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Locations",
 		"Weed",
 		"Inventory",
-		"Tasks",
 		"Wallet",
 		"Reputation",
 		"Status",

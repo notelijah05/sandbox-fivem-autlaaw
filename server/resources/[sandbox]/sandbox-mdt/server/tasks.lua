@@ -1,5 +1,5 @@
 function RegisterTasks()
-	Tasks:Register('mdt_warrants', 30, function()
+	exports['sandbox-base']:TasksRegister('mdt_warrants', 30, function()
 		exports['sandbox-base']:LoggerTrace('MDT', 'Expiring Warrants')
 
 		-- Set Expired Active Warrants to Expired

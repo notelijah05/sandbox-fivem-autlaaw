@@ -4,7 +4,6 @@ function RetrieveComponents()
 	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
 	C = exports["sandbox-base"]:FetchComponent("Config")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	WebAPI = exports["sandbox-base"]:FetchComponent("WebAPI")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Punishment",
 		"Config",
 		"Properties",
-		"Tasks",
 		"Pwnzor",
 		"WebAPI",
 		"Vehicles",

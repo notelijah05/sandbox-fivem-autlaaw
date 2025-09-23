@@ -75,7 +75,7 @@ function SetupQueues()
 		for k, v in ipairs(_queues) do
 			_received[v.id] = {}
 
-			Tasks:Register(v.id, v.wait, function(data)
+			exports['sandbox-base']:TasksRegister(v.id, v.wait, function(data)
 				-- Don't Do Queue Stuff If Restart Lockdown Has Started
 				if GlobalState["RestartLockdown"] or (data.limited and _awarded[data.id]) then
 					return

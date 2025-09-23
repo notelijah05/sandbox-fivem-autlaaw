@@ -48,7 +48,7 @@ AddEventHandler("Core:Server:StartupReady", function()
 end)
 
 AddEventHandler("Core:Shared:Ready", function()
-	COMPONENTS.Tasks:Register("sequence_save", 10, function()
+	COMPONENTS.exports['sandbox-base']:TasksRegister("sequence_save", 10, function()
 		exports['sandbox-base']:SequenceSave()
 	end)
 end)

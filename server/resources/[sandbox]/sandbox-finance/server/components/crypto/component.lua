@@ -9,7 +9,6 @@ function RetrieveCryptoComponents()
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Tasks = exports["sandbox-base"]:FetchComponent("Tasks")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -25,7 +24,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Loans",
 		"Crypto",
 		"Jobs",
-		"Tasks",
 		"Vehicles",
 		"Inventory",
 	}, function(error)

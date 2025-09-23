@@ -26,7 +26,7 @@ AddEventHandler('Finance:Server:Startup', function()
 end)
 
 function CreateLoanTasks()
-    Tasks:Register('loan_payment', 60, function()
+    exports['sandbox-base']:TasksRegister('loan_payment', 60, function()
         --RegisterCommand('testloans', function()
         local TASK_RUN_TIMESTAMP = os.time()
 
@@ -176,7 +176,7 @@ function CreateLoanTasks()
         end)
     end)
 
-    Tasks:Register('loan_reminder', 120, function()
+    exports['sandbox-base']:TasksRegister('loan_reminder', 120, function()
         local TASK_RUN_TIMESTAMP = os.time()
         -- Get All Loans That are Due Soon
         exports['sandbox-base']:DatabaseGameFind({
