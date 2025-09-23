@@ -169,7 +169,7 @@ function RegisterCallbacks()
 				DOB = data.dob,
 				LastPlayed = -1,
 				Jobs = {},
-				SID = Sequence:Get("Character"),
+				SID = exports['sandbox-base']:SequenceGet("Character"),
 				Cash = 1000,
 				New = true,
 				Licenses = {

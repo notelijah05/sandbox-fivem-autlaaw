@@ -476,7 +476,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			if not item.MetaData.Owner or item.MetaData.Owner == char:GetData("SID") then
 				if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 					local personalLists = char:GetData("ChopLists") or {}
-					personalLists[Sequence:Get("PersonalChopList")] = item.MetaData.ChopList
+					personalLists[exports['sandbox-base']:SequenceGet("PersonalChopList")] = item.MetaData.ChopList
 					char:SetData("ChopLists", personalLists)
 
 					if hasValue(char:GetData("States") or {}, "ACCESS_LSUNDERGROUND") and Reputation:HasLevel(source, "Chopping", 3) then

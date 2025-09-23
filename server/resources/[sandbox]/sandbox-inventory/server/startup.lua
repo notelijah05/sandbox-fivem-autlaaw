@@ -654,7 +654,7 @@ function RegisterCommands()
 
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and label and image and amount and amount > 0 then
-			local t = Sequence:Get("VanityItem")
+			local t = exports['sandbox-base']:SequenceGet("VanityItem")
 			local newItem = INVENTORY.ItemTemplate:Create(
 				string.format("vanityitem%s", t),
 				label,

@@ -59,7 +59,7 @@ function RegisterDonorVanityItemsCallbacks()
 					end
 
 					if Inventory.Donator:RemovePending(plyr:GetData("Identifier"), foundToken) then
-						local t = Sequence:Get("VanityItem")
+						local t = exports['sandbox-base']:SequenceGet("VanityItem")
 
 						local newItem = Inventory.ItemTemplate:Create(
 							string.format("vanityitem%s", t),

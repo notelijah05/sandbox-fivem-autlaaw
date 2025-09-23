@@ -281,7 +281,7 @@ WEAPONS = {
 			local char = exports['sandbox-characters']:FetchBySID(sid)
 			if char ~= nil then
 				local hash = GetHashKey(item.name)
-				local sn = string.format("SA-%s-%s", math.abs(hash), Sequence:Get(item.name))
+				local sn = string.format("SA-%s-%s", math.abs(hash), exports['sandbox-base']:SequenceGet(item.name))
 				local model = nil
 				if itemsDatabase[item.name] then
 					model = itemsDatabase[item.name].label
@@ -306,7 +306,7 @@ WEAPONS = {
 			end
 		else
 			local hash = GetHashKey(item.name)
-			local sn = string.format("SA-%s-%s", math.abs(hash), Sequence:Get(item.name))
+			local sn = string.format("SA-%s-%s", math.abs(hash), exports['sandbox-base']:SequenceGet(item.name))
 			local model = nil
 			if itemsDatabase[item.name] then
 				model = itemsDatabase[item.name].label

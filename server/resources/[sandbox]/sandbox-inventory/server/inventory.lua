@@ -84,7 +84,7 @@ function BuildMetaDataTable(cData, item, existing)
 		MetaData.ammo = MetaData.ammo or 0
 		MetaData.clip = MetaData.clip or 0
 	elseif itemExist.type == 10 and not MetaData.Container then
-		MetaData.Container = string.format("container:%s", Sequence:Get("Container"))
+		MetaData.Container = string.format("container:%s", exports['sandbox-base']:SequenceGet("Container"))
 	elseif itemExist.type == 11 and not MetaData.Quality then
 		MetaData.Quality = math.random(100)
 	elseif itemExist.name == "govid" then
@@ -157,7 +157,6 @@ end
 
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
@@ -175,7 +174,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Sequence",
 		"Inventory",
 		"Wallet",
 		"Crafting",

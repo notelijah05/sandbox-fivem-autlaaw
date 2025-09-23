@@ -16,7 +16,6 @@ function RetrieveComponents()
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
-	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Vendor = exports["sandbox-base"]:FetchComponent("Vendor")
@@ -39,7 +38,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Crypto",
 		"Jail",
 		"Banking",
-		"Sequence",
 		"Pwnzor",
 		"Crafting",
 		"Vendor",

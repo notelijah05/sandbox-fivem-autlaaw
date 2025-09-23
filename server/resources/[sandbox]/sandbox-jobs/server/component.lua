@@ -606,7 +606,7 @@ _JOBS = {
 			if not name then
 				name = Generator:Company()
 			end
-			local jobId = string.format("Company_%s", Sequence:Get("Company"))
+			local jobId = string.format("Company_%s", exports['sandbox-base']:SequenceGet("Company"))
 			if jobId and name then
 				local existing = Jobs:Get(jobId)
 				if not existing then
@@ -767,10 +767,11 @@ _JOBS = {
 					if workplaceId then
 						gradeId = string.format(
 							"Grade_%s",
-							Sequence:Get(string.format("Company:%s:%s:Grades", jobId, workplaceId))
+							exports['sandbox-base']:SequenceGet(string.format("Company:%s:%s:Grades", jobId, workplaceId))
 						)
 					else
-						gradeId = string.format("Grade_%s", Sequence:Get(string.format("Company:%s:Grades", jobId)))
+						gradeId = string.format("Grade_%s",
+							exports['sandbox-base']:SequenceGet(string.format("Company:%s:Grades", jobId)))
 					end
 
 					if not Jobs:DoesExist(jobId, workplaceId, gradeId) then
