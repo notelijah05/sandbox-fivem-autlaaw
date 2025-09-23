@@ -297,7 +297,7 @@ function RegisterCallbacks()
         local player = exports['sandbox-base']:FetchSource(source)
         if player and data.targetSource and type(data.length) == "number" and type(data.reason) == "string" and data.length >= -1 and data.length <= 90 then
             if player.Permissions:IsAdmin() or (player.Permissions:IsStaff() and data.length > 0 and data.length <= 7) then
-                cb(Punishment.Ban:Source(data.targetSource, data.length, data.reason, source))
+                cb(exports['sandbox-base']:PunishmentBanSource(data.targetSource, data.length, data.reason, source))
             else
                 cb(false)
             end
@@ -309,7 +309,7 @@ function RegisterCallbacks()
     exports["sandbox-base"]:RegisterServerCallback('Admin:KickPlayer', function(source, data, cb)
         local player = exports['sandbox-base']:FetchSource(source)
         if player and data.targetSource and type(data.reason) == "string" and player.Permissions:IsStaff() then
-            cb(Punishment:Kick(data.targetSource, data.reason, source))
+            cb(exports['sandbox-base']:PunishmentKick(data.targetSource, data.reason, source))
         else
             cb(false)
         end

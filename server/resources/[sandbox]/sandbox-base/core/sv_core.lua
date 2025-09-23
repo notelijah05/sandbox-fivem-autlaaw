@@ -88,7 +88,7 @@ end)
 RegisterNetEvent("Core:Server:ResourceStopped", function(resource)
 	local src = source
 	if resource == "sandbox-pwnzor" then
-		COMPONENTS.Punishment.Ban:Source(src, -1, "Pwnzor Resource Stopped", "Pwnzor")
+		exports['sandbox-base']:PunishmentBanSource(src, -1, "Pwnzor Resource Stopped", "Pwnzor")
 	end
 end)
 

@@ -18,7 +18,8 @@ function RegisterCallbacks()
 					if v < (os.time() - (60 * 10)) then
 						local pState = Player(k).state
 						if not pState.isDev and not pState.isAdmin and not pState.isStaff then
-							Punishment:Kick(k, "You Were Kicked For Being AFK On Character Select", "Pwnzor", true)
+							exports['sandbox-base']:PunishmentKick(k, "You Were Kicked For Being AFK On Character Select",
+								"Pwnzor", true)
 						else
 							exports['sandbox-base']:LoggerWarn("Characters",
 								"Staff or Admin Was AFK, Removing From Checks")

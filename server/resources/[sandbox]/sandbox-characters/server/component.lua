@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
 	RegisterCommands()
 	_spawnFuncs = {}
 end
@@ -19,7 +18,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Apartment",
 		"Phone",
 		"Damage",
-		"Punishment",
 	}, function(error)
 		if #error > 0 then
 			return

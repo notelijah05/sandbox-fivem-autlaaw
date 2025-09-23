@@ -140,7 +140,6 @@ end)
 
 AddEventHandler("Pwnzor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 end
@@ -148,7 +147,6 @@ end
 local _loaded = false
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Pwnzor", {
-		"Punishment",
 		"Pwnzor",
 		"Generator",
 	}, function(error)
@@ -286,7 +284,7 @@ RegisterNetEvent("Pwnzor:Server:ResourceStopped", function(resource)
 	local plyr = exports['sandbox-base']:FetchSource(source)
 
 	if Config.BanResources[resource] then
-		COMPONENTS.Punishment.Ban:Source(
+		exports['sandbox-base']:PunishmentBanSource(
 			plyr:GetData("Source"),
 			-1,
 			string.format("Blacklisted Resource Stopped: %s", resource),

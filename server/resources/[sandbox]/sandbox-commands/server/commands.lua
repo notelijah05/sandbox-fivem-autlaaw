@@ -154,7 +154,7 @@ function RegisterChatCommands()
 	}, -1)
 
 	-- exports["sandbox-chat"]:RegisterStaffCommand("kicksource", function(source, args, rawCommand)
-	-- 	local data = exports["sandbox-base"]:FetchComponent("Punishment"):Kick(tonumber(args[1]), args[2], source)
+	-- 	local data = exports["sandbox-base"]:PunishmentKick(tonumber(args[1]), args[2], source)
 	-- 	if data and data.success then
 	-- 		exports["sandbox-chat"]:SendServerSingle(
 	-- 			source,
@@ -185,7 +185,7 @@ function RegisterChatCommands()
 	-- 	local t = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 	-- 	if t ~= nil then
 	-- 		if t:GetData("Source") ~= source then
-	-- 			exports["sandbox-base"]:FetchComponent("Punishment"):Kick(t:GetData("Source"), args[2], source)
+	-- 			exports["sandbox-base"]:PunishmentKick(t:GetData("Source"), args[2], source)
 	-- 		else
 	-- 			exports["sandbox-chat"]:SendSystemSingle(source, "Cannot Kick Yourself")
 	-- 		end
@@ -207,7 +207,7 @@ function RegisterChatCommands()
 	-- }, 2)
 
 	-- exports["sandbox-chat"]:RegisterAdminCommand("unban", function(source, args, rawCommand)
-	-- 	exports["sandbox-base"]:FetchComponent("Punishment").Unban:BanID(args[1], source)
+	-- 	exports["sandbox-base"]:PunishmentUnbanBanID(args[1], source)
 	-- end, {
 	-- 	help = "Unban Player",
 	-- 	params = {
@@ -223,9 +223,9 @@ function RegisterChatCommands()
 
 	-- 	local player = exports['sandbox-base']:FetchSource(source)
 	-- 	if type == "identifier" then
-	-- 		exports["sandbox-base"]:FetchComponent("Punishment").Unban:Identifier(args[2], source)
+	-- 		exports["sandbox-base"]:PunishmentUnbanIdentifier(args[2], source)
 	-- 	elseif type == "account" then
-	-- 		exports["sandbox-base"]:FetchComponent("Punishment").Unban:AccountID(tonumber(args[2]), source)
+	-- 		exports["sandbox-base"]:PunishmentUnbanAccountID(tonumber(args[2]), source)
 	-- 	end
 	-- end, {
 	-- 	help = "Unban Site ID",
@@ -250,7 +250,7 @@ function RegisterChatCommands()
 	-- 		end
 
 	-- 		if (days >= 1 and days <= 7) or (player.Permissions:IsAdmin() and days >= -1 and days <= 90) then
-	-- 			exports["sandbox-base"]:FetchComponent("Punishment").Ban:Source(targetSource, days, args[3], source)
+	-- 			exports["sandbox-base"]:PunishmentBanSource(targetSource, days, args[3], source)
 	-- 		else
 	-- 			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Time")
 	-- 		end
@@ -284,7 +284,7 @@ function RegisterChatCommands()
 	-- 			end
 
 	-- 			if (days >= 1 and days <= 7) or (player.Permissions:IsAdmin() and days >= -1 and days <= 90) then
-	-- 				exports["sandbox-base"]:FetchComponent("Punishment").Ban:Source(t:GetData("Source"), days, args[3], source)
+	-- 				exports["sandbox-base"]:PunishmentBanSource(t:GetData("Source"), days, args[3], source)
 	-- 			else
 	-- 				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Time")
 	-- 			end
@@ -318,8 +318,7 @@ function RegisterChatCommands()
 	-- 		if days >= -1 and days <= 90 then
 	-- 			if type == "identifier" then
 	-- 				local res = exports["sandbox-base"]
-	-- 					:FetchComponent("Punishment").Ban
-	-- 					:Identifier(target, days, args[4], source)
+	-- 					:PunishmentBanIdentifier(target, days, args[4], source)
 	-- 				if res and res.success then
 	-- 					exports["sandbox-chat"]:SendSystemSingle(source, "Banned Identifier: " .. res.Identifier)
 	-- 				else
@@ -331,7 +330,7 @@ function RegisterChatCommands()
 	-- 				end
 	-- 			elseif type == "account" then
 	-- 				local res =
-	-- 					exports["sandbox-base"]:FetchComponent("Punishment").Ban:AccountID(target, days, args[4], source)
+	-- 					exports["sandbox-base"]:PunishmentBanAccountID(target, days, args[4], source)
 	-- 				if res and res.success then
 	-- 					exports["sandbox-chat"]:SendSystemSingle(source, "Banned Account: " .. res.AccountID)
 	-- 				else
