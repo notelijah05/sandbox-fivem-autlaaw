@@ -19,7 +19,6 @@ function RetrieveComponents()
 	Sync = exports["sandbox-base"]:FetchComponent("Sync")
 	Confirm = exports["sandbox-base"]:FetchComponent("Confirm")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	NetSync = exports["sandbox-base"]:FetchComponent("NetSync")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
@@ -46,7 +45,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Sync",
 		"Confirm",
 		"Reputation",
-		"NetSync",
 		"Vehicles",
 		"Animations",
 		"Weapons",

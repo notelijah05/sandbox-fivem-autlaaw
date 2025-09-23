@@ -5,7 +5,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
-	NetSync = exports["sandbox-base"]:FetchComponent("NetSync")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -15,7 +14,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Vehicles",
 		"Admin",
-		"NetSync",
 	}, function(error)
 		if #error > 0 then
 			return

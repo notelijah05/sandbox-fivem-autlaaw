@@ -157,7 +157,7 @@ RegisterNUICallback('CurrentVehicleAction', function(data, cb)
                         })
                     end
                 elseif data.action == 'explode' then
-                    NetSync:NetworkExplodeVehicle(insideVehicle, 1, 0)
+                    exports["sandbox-base"]:NetworkExplodeVehicle(insideVehicle, 1, 0)
                     return cb({
                         success = true,
                         message = 'Vehicle Exploded',

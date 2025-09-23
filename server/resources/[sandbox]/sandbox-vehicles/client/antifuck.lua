@@ -18,7 +18,7 @@ local function DeleteGhostLocal(ent)
 	if vState.Owned then
 		return
 	end
-	NetSync:DeleteEntity(ent)
+	exports["sandbox-base"]:DeleteEntity(ent)
 end
 
 local function DoTheThing(veh)

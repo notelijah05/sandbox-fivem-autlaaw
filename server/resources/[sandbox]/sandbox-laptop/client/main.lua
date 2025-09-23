@@ -27,7 +27,6 @@ function RetrieveComponents()
 	Blips = exports["sandbox-base"]:FetchComponent("Blips")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	NetSync = exports["sandbox-base"]:FetchComponent("NetSync")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -53,7 +52,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Blips",
 		"Reputation",
 		"Polyzone",
-		"NetSync",
 		"Vehicles",
 		"Progress",
 		"Jobs",

@@ -65,7 +65,7 @@ function DoCarBombDetonate(veh)
         PlaySoundFromEntity(-1, 'Beep_Red', veh, 'DLC_HEIST_HACKING_SNAKE_SOUNDS', true, true)
     end
 
-    NetSync:NetworkExplodeVehicle(veh, 1, 0)
+    exports["sandbox-base"]:NetworkExplodeVehicle(veh, 1, 0)
     ResetCarBomb()
 
     TriggerServerEvent('Vehicles:Server:RemoveBomb', VehToNet(veh))

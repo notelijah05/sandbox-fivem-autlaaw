@@ -36,7 +36,7 @@ function SendPedToPlayer(ped, coords)
 	SetTimeout((1000 * 60) * 2, function()
 		if not Entity(ped).state.boughtDrugs and _working then
 			exports["sandbox-base"]:ServerCallback("CornerDealing:PedTimeout", {})
-			NetSync:DeletePed(ped)
+			exports["sandbox-base"]:DeletePed(ped)
 		end
 	end)
 end
@@ -527,8 +527,8 @@ RegisterNetEvent("CornerDealing:Client:OffDuty", function(time)
 		Entity(_SellingVeh).state:set("cornering", false, true)
 	end
 
-	NetSync:SetEntityAsNoLongerNeeded(_SellingPed)
-	NetSync:SetPedKeepTask(_SellingPed, false)
+	exports["sandbox-base"]:SetEntityAsNoLongerNeeded(_SellingPed)
+	exports["sandbox-base"]:SetPedKeepTask(_SellingPed, false)
 	_SellingPed = nil
 	_SellingCorner = nil
 	_SellingVeh = nil

@@ -29,7 +29,6 @@ function RetrieveComponents()
 	Confirm = exports["sandbox-base"]:FetchComponent("Confirm")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
-	NetSync = exports["sandbox-base"]:FetchComponent("NetSync")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
@@ -65,7 +64,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Confirm",
 		"Police",
 		"Input",
-		"NetSync",
 		"Hud",
 		"UISounds",
 		"Weapons",

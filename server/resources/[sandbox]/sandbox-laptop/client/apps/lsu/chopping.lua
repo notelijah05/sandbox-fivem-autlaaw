@@ -98,7 +98,7 @@ LAPTOP.LSUnderground.Chopping = {
 				if not IsVehicleDoorDamaged(_validVeh, _validBone?.index) then
 					_delay = true
 					PedFaceCoord(LocalPlayer.state.ped, _validBone?.coords)
-					NetSync:SetVehicleDoorOpen(_validVeh, _validBone?.index, false, true)
+					exports["sandbox-base"]:SetVehicleDoorOpen(_validVeh, _validBone?.index, false, true)
 					Progress:ProgressWithTickEvent({
 						name = "chopping_action",
 						duration = _validBone?.duration,
@@ -128,7 +128,7 @@ LAPTOP.LSUnderground.Chopping = {
 							}, function(c) end)
 						else
 							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
-							NetSync:SetVehicleDoorShut(_validVeh, _validBone?.index, true)
+							exports["sandbox-base"]:SetVehicleDoorShut(_validVeh, _validBone?.index, true)
 						end
 
 						SetTimeout(1500, function()
@@ -172,7 +172,7 @@ LAPTOP.LSUnderground.Chopping = {
 								if r then
 									SetTyreHealth(_validVeh, _validBone?.index, true, 0)
 									SetVehicleTyreBurst(_validVeh, _validBone?.index, true, 1000)
-									NetSync:SetVehicleTyreBurst(_validVeh, _validBone?.index, true, 1000)
+									exports["sandbox-base"]:SetVehicleTyreBurst(_validVeh, _validBone?.index, true, 1000)
 								end
 							end)
 						else
@@ -216,7 +216,7 @@ LAPTOP.LSUnderground.Chopping = {
 								vNet = VehToNet(_validVeh),
 							}, function(r)
 								-- if r then
-								-- 	NetSync:DeleteVehicle(_validVeh)
+								-- 	exports["sandbox-base"]:DeleteVehicle(_validVeh)
 								-- end
 							end)
 						else

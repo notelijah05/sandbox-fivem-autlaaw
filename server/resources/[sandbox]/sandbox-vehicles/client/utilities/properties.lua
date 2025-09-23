@@ -405,7 +405,7 @@ function SetVehicleProperties(vehicle, props, data)
 		local driverPed = GetPedInVehicleSeat(vehicle, -1)
 		if driverPed and driverPed > 0 and DoesEntityExist(driverPed) and not IsPedAPlayer(driverPed) then
 			print("Removing NPC Driver From Spawned Vehicle")
-			NetSync:DeletePed(driverPed)
+			exports["sandbox-base"]:DeletePed(driverPed)
 		end
 	end
 end
