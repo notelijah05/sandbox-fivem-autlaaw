@@ -8,6 +8,6 @@ COMPONENTS.Player = {
 
 RegisterNetEvent('Player:Client:SetData')
 AddEventHandler('Player:Client:SetData', function(data)
-    COMPONENTS.Player.LocalPlayer = COMPONENTS.DataStore:CreateStore(1, 'Player', data)
+    COMPONENTS.Player.LocalPlayer = exports["sandbox-base"]:CreateStore(1, 'Player', data)
     TriggerEvent('Player:Client:Updated')
 end)

@@ -25,7 +25,7 @@ RegisterNetEvent("Characters:Client:SetData", function(key, data, cb)
 		LocalPlayer.state.Character:SetData(key, data)
 	else
 		LocalPlayer.state.Character =
-			exports["sandbox-base"]:FetchComponent("DataStore"):CreateStore(1, "Character", data)
+			exports["sandbox-base"]:CreateStore(1, "Character", data)
 	end
 
 	exports["sandbox-base"]:FetchComponent("Player").LocalPlayer:SetData("Character", LocalPlayer.state.Character)

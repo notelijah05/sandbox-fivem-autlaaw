@@ -388,7 +388,7 @@ function RegisterCallbacks()
 				Last = cData.Last,
 			})
 
-			local store = DataStore:CreateStore(source, "Character", cData)
+			local store = exports["sandbox-base"]:CreateStore(source, "Character", cData)
 			ONLINE_CHARACTERS[source] = store
 
 			_pleaseFuckingWorkSID[cData.SID] = source
@@ -419,7 +419,7 @@ function RegisterCallbacks()
 			GlobalState[string.format("SID:%s", source)] = nil
 			TriggerClientEvent("Characters:Client:Logout", source)
 			Routing:RoutePlayerToHiddenRoute(source)
-			DataStore:DeleteStore(source, "Character")
+			exports["sandbox-base"]:DeleteStore(source, "Character")
 		end
 		cb("ok")
 	end)

@@ -96,9 +96,9 @@ AddEventHandler("playerDropped", function(message)
 	_dropping[src] = nil
 
 	if char ~= nil then
-		COMPONENTS.DataStore:DeleteStore(src, "Character")
+		exports["sandbox-base"]:DeleteStore(src, "Character")
 	end
-	COMPONENTS.DataStore:DeleteStore(src, "Player")
+	exports["sandbox-base"]:DeleteStore(src, "Player")
 	TriggerEvent("Characters:Server:DropCleanup", src)
 end)
 
@@ -238,7 +238,7 @@ COMPONENTS.Player = {
 }
 
 function PlayerClass(source, data)
-	local _data = COMPONENTS.DataStore:CreateStore(source, "Player", data)
+	local _data = exports["sandbox-base"]:CreateStore(source, "Player", data)
 
 	_data.Permissions = {
 		IsStaff = function(self)
