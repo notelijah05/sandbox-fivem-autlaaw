@@ -62,7 +62,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	GlobalState["CokeRunActive"] = false
 	GlobalState["CokeRunCD"] = false
 
-	WaitList:Create("coke_import", "individual_time", {
+	exports['sandbox-base']:WaitListCreate("coke_import", "individual_time", {
 		event = "Labor:Server:Coke:Queue",
 		--delay = (1000 * 60) * 5,
 		delay = 10000,
@@ -320,7 +320,7 @@ AddEventHandler("Coke:Server:OnDuty", function(joiner, members, isWorkgroup)
 			color = "transparent",
 		})
 
-		WaitList.Interact:Add("coke_import", joiner, {
+		exports['sandbox-base']:WaitListInteractAdd("coke_import", joiner, {
 			joiner = joiner,
 		})
 	end
@@ -329,7 +329,7 @@ end)
 AddEventHandler("Coke:Server:OffDuty", function(source, joiner)
 	_joiners[source] = nil
 	TriggerClientEvent("Coke:Client:OffDuty", source)
-	WaitList.Interact:Remove("coke_import", source)
+	exports['sandbox-base']:WaitListInteractRemove("coke_import", source)
 end)
 
 AddEventHandler("Coke:Server:FinishJob", function(joiner)

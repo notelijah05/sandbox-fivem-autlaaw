@@ -4,7 +4,7 @@ local _joiners = {}
 local _sellers = {}
 
 AddEventHandler("Labor:Server:Startup", function()
-	WaitList:Create("weedrun", "individual_time", {
+	exports['sandbox-base']:WaitListCreate("weedrun", "individual_time", {
 		event = "Labor:Server:WeedRun:Queue",
 		delay = (1000 * 60) * 3,
 	})
@@ -136,7 +136,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					end
 
 					Labor.Offers:Task(_joiners[source], _JOB, "Wait For Next Delivery")
-					WaitList.Interact:Inactive("weedrun", _joiners[source])
+					exports['sandbox-base']:WaitListInteractInactive("weedrun", _joiners[source])
 
 					cb(true)
 				else
@@ -183,13 +183,13 @@ AddEventHandler("WeedRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 	end
 
 	_offers[joiner].noExpire = true
-	WaitList.Interact:Add("weedrun", joiner, {
+	exports['sandbox-base']:WaitListInteractAdd("weedrun", joiner, {
 		joiner = joiner,
 	})
 end)
 
 AddEventHandler("WeedRun:Server:OffDuty", function(source, joiner)
-	WaitList.Interact:Remove("weedrun", _joiners[source])
+	exports['sandbox-base']:WaitListInteractRemove("weedrun", _joiners[source])
 	_joiners[source] = nil
 	TriggerClientEvent("WeedRun:Client:OffDuty", source)
 end)
@@ -208,5 +208,5 @@ AddEventHandler("Labor:Server:WeedRun:Queue", function(source, data)
 		)
 	end
 
-	WaitList.Interact:Active("weedrun", _joiners[source])
+	exports['sandbox-base']:WaitListInteractActive("weedrun", _joiners[source])
 end)

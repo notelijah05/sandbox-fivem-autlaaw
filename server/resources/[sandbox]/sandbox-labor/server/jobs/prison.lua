@@ -4,7 +4,7 @@ local _joiners = {}
 local _Prisoners = {}
 
 AddEventHandler("Labor:Server:Startup", function()
-	WaitList:Create("prison", "individual_time", {
+	exports['sandbox-base']:WaitListCreate("prison", "individual_time", {
 		event = "Labor:Server:Prison:Queue",
 		delay = 30000,
 	})
@@ -49,7 +49,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					)
 				end
 
-				WaitList.Interact:Inactive("prison", _joiners[source])
+				exports['sandbox-base']:WaitListInteractInactive("prison", _joiners[source])
 			end
 			cb(false)
 		end
@@ -126,7 +126,7 @@ AddEventHandler("Prison:Server:OnDuty", function(joiner, members, isWorkgroup)
 		color = "transparent",
 	})
 
-	WaitList.Interact:Add("prison", joiner, {
+	exports['sandbox-base']:WaitListInteractAdd("prison", joiner, {
 		joiner = joiner,
 	})
 end)
@@ -134,7 +134,7 @@ end)
 AddEventHandler("Prison:Server:OffDuty", function(source, joiner)
 	_joiners[source] = nil
 	TriggerClientEvent("Prison:Client:OffDuty", source)
-	WaitList.Interact:Remove("prison", source)
+	exports['sandbox-base']:WaitListInteractRemove("prison", source)
 end)
 
 AddEventHandler("Prison:Server:FinishJob", function(joiner)

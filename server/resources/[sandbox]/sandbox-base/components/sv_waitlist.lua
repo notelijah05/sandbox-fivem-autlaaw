@@ -3,13 +3,13 @@ local started = false
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
 	for k, v in pairs(_queues) do
-		COMPONENTS.WaitList.Interact:Remove(k, source)
+		exports['sandbox-base']:WaitListInteractRemove(k, source)
 	end
 end)
 
 AddEventHandler("Characters:Server:PlayerDropped", function(source)
 	for k, v in pairs(_queues) do
-		COMPONENTS.WaitList.Interact:Remove(k, source)
+		exports['sandbox-base']:WaitListInteractRemove(k, source)
 	end
 end)
 
@@ -17,7 +17,7 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 	if not started then
 		started = true
 		for k, v in pairs(_queues) do
-			CreateQueue(id)
+			CreateQueue(k)
 		end
 	end
 end)
@@ -84,12 +84,12 @@ function CreateQueue(id)
 							Wait(_queues[id].options.delay)
 						end
 						TriggerEvent(_queues[id].options.event, _queues[id].queue[1].source, _queues[id].queue[1].data)
-						COMPONENTS.WaitList.Interact:Active(id, _queues[id].queue[1].source)
+						exports['sandbox-base']:WaitListInteractActive(id, _queues[id].queue[1].source)
 					elseif _queues[id].type == "concurrent" then
 						for k, v in ipairs(_queues[id].queue) do
 							if #_queues[id].active < _queues[id].options.max then
 								TriggerEvent(_queues[id].options.event, v.source, v.data)
-								COMPONENTS.WaitList.Interact:Active(id, v.source)
+								exports['sandbox-base']:WaitListInteractActive(id, v.source)
 							else
 								break
 							end
@@ -106,14 +106,14 @@ function CreateQueue(id)
 							)
 
 							if _queues[id].queue[1] ~= nil then
-								COMPONENTS.WaitList.Interact:Active(id, _queues[id].queue[1].source)
+								exports['sandbox-base']:WaitListInteractActive(id, _queues[id].queue[1].source)
 							end
 						end
 					elseif _queues[id].type == "individual_time" then
 						for k, v in ipairs(_queues[id].queue) do
 							if v.started + (_queues[id].options.delay / 1000) <= os.time() then
 								TriggerEvent(_queues[id].options.event, v.source, v.data)
-								COMPONENTS.WaitList.Interact:Active(id, v.source)
+								exports['sandbox-base']:WaitListInteractActive(id, v.source)
 							end
 						end
 					end
@@ -126,147 +126,151 @@ function CreateQueue(id)
 	end
 end
 
-COMPONENTS.WaitList = {
-	PrintQueue = function(self, id)
-		if _queues[id] ~= nil then
-			for k, v in ipairs(_queues[id].queue) do
-				local char = exports['sandbox-characters']:FetchCharacterSource(v.source)
-				if char ~= nil then
-					print(
-						string.format(
-							"Waitlist %s #%s, %s %s (%s)",
-							id,
-							k,
-							char:GetData("First"),
-							char:GetData("Last"),
-							char:GetData("SID")
-						)
+exports("WaitListPrintQueue", function(id)
+	if _queues[id] ~= nil then
+		for k, v in ipairs(_queues[id].queue) do
+			local char = exports['sandbox-characters']:FetchCharacterSource(v.source)
+			if char ~= nil then
+				print(
+					string.format(
+						"Waitlist %s #%s, %s %s (%s)",
+						id,
+						k,
+						char:GetData("First"),
+						char:GetData("Last"),
+						char:GetData("SID")
 					)
-				else
-					print(string.format("nil player in waitlist: %s", id))
-				end
+				)
+			else
+				print(string.format("nil player in waitlist: %s", id))
 			end
 		end
-	end,
-	Create = function(self, id, type, options)
-		if ValidateOptions(type, options) then
-			exports['sandbox-base']:LoggerTrace("WaitList",
-				string.format("Creating New WaitList ^2%s^7 (^3%s^7)", id, type))
-			_queues[id] = {
-				id = id,
-				type = type,
-				options = options,
-				queue = {},
-				active = {},
-			}
-			CreateQueue(id)
-		else
-			exports['sandbox-base']:LoggerError(
-				"WaitList",
-				string.format(
-					"Attempted To Register New WaitList ^2%s^7 With Invalid Options For Type: ^3%s^7",
-					id,
-					type
-				)
+	end
+end)
+
+exports("WaitListCreate", function(id, type, options)
+	if ValidateOptions(type, options) then
+		exports['sandbox-base']:LoggerTrace("WaitList",
+			string.format("Creating New WaitList ^2%s^7 (^3%s^7)", id, type))
+		_queues[id] = {
+			id = id,
+			type = type,
+			options = options,
+			queue = {},
+			active = {},
+		}
+		CreateQueue(id)
+	else
+		exports['sandbox-base']:LoggerError(
+			"WaitList",
+			string.format(
+				"Attempted To Register New WaitList ^2%s^7 With Invalid Options For Type: ^3%s^7",
+				id,
+				type
 			)
+		)
+	end
+end)
+
+exports("WaitListPause", function(id)
+	if _queues[id] ~= nil then
+		exports['sandbox-base']:LoggerInfo("WaitList", string.format("^2%s^7 WaitList Process Paused", id))
+		_queues[id].paused = true
+	end
+end)
+
+exports("WaitListUnpause", function(id)
+	if _queues[id] ~= nil then
+		exports['sandbox-base']:LoggerInfo("WaitList",
+			string.format("^2%s^7 WaitList Process Unpaused", id))
+		_queues[id].paused = false
+	end
+end)
+
+exports("WaitListInteractAdd", function(id, source, data)
+	if _queues[id] ~= nil then
+		exports['sandbox-base']:LoggerTrace("WaitList",
+			string.format("^2%s^7 Added To ^3%s^7", source, id))
+		Player(source).state[string.format("WaitList:%s", id)] = {
+			waiting = true,
+		}
+		table.insert(_queues[id].queue, {
+			source = source,
+			data = data,
+			started = os.time(),
+		})
+	end
+end)
+
+exports("WaitListInteractRemove", function(id, source)
+	if source == nil then
+		return
+	end
+	if _queues[id] ~= nil then
+		Player(source).state[string.format("WaitList:%s", id)] = nil
+		for k, v in ipairs(_queues[id].queue) do
+			if v.source == source then
+				exports['sandbox-base']:LoggerTrace(
+					"WaitList",
+					string.format("^2%s^7 Removed From ^3%s^7 Queue", source, id)
+				)
+				table.remove(_queues[id].queue, k)
+				break
+			end
 		end
-	end,
-	Pause = function(self, id)
-		if _queues[id] ~= nil then
-			exports['sandbox-base']:LoggerInfo("WaitList", string.format("^2%s^7 WaitList Process Paused", id))
-			queues[id].paused = true
+
+		for k, v in ipairs(_queues[id].active) do
+			if v.source == source then
+				exports['sandbox-base']:LoggerTrace(
+					"WaitList",
+					string.format("^2%s^7 Removed From ^3%s^7 Active", source, id)
+				)
+				table.remove(_queues[id].active, k)
+				break
+			end
 		end
-	end,
-	Unpause = function(self, id)
-		if _queues[id] ~= nil then
-			exports['sandbox-base']:LoggerInfo("WaitList",
-				string.format("^2%s^7 WaitList Process Unpaused", id))
-			queues[id].paused = false
-		end
-	end,
-	Interact = {
-		Add = function(self, id, source, data)
-			if _queues[id] ~= nil then
+	end
+end)
+
+exports("WaitListInteractPop", function(id)
+	if _queues[id] ~= nil then
+		exports['sandbox-base']:LoggerTrace("WaitList",
+			string.format("Removed First Person From ^2%s^7 ", id))
+		table.remove(_queues[id].queue, 1)
+	end
+end)
+
+exports("WaitListInteractInactive", function(id, source)
+	if _queues[id] ~= nil then
+		for k, v in ipairs(_queues[id].active) do
+			if v.source == source then
 				exports['sandbox-base']:LoggerTrace("WaitList",
-					string.format("^2%s^7 Added To ^3%s^7", source, id))
+					string.format("^2%s^7 Went Inactive In ^3%s^7", source, id))
 				Player(source).state[string.format("WaitList:%s", id)] = {
 					waiting = true,
 				}
-				table.insert(_queues[id].queue, {
-					source = source,
-					data = data,
-					started = os.time(),
-				})
-			end
-		end,
-		Remove = function(self, id, source)
-			if source == nil then
+				v.started = os.time()
+				table.insert(_queues[id].queue, v)
+				table.remove(_queues[id].active, k)
 				return
 			end
-			if _queues[id] ~= nil then
-				Player(source).state[string.format("WaitList:%s", id)] = nil
-				for k, v in ipairs(_queues[id].queue) do
-					if v.source == source then
-						exports['sandbox-base']:LoggerTrace(
-							"WaitList",
-							string.format("^2%s^7 Removed From ^3%s^7 Queue", source, id)
-						)
-						table.remove(_queues[id].queue, k)
-						break
-					end
-				end
+		end
+	end
+end)
 
-				for k, v in ipairs(_queues[id].active) do
-					if v.source == source then
-						exports['sandbox-base']:LoggerTrace(
-							"WaitList",
-							string.format("^2%s^7 Removed From ^3%s^7 Active", source, id)
-						)
-						table.remove(_queues[id].active, k)
-						break
-					end
-				end
-			end
-		end,
-		Pop = function(self, id)
-			if _queues[id] ~= nil then
+exports("WaitListInteractActive", function(id, source)
+	if _queues[id] ~= nil then
+		for k, v in ipairs(_queues[id].queue) do
+			if v.source == source then
 				exports['sandbox-base']:LoggerTrace("WaitList",
-					string.format("Removed First Person From ^2%s^7 ", id))
-				table.remove(_queues[id].queue, 1)
+					string.format("^2%s^7 Went Active In ^3%s^7", source, id))
+				Player(source).state[string.format("WaitList:%s", id)] = {
+					waiting = false,
+				}
+				table.insert(_queues[id].active, v)
+				table.remove(_queues[id].queue, k)
+				return
 			end
-		end,
-		Inactive = function(self, id, source)
-			if _queues[id] ~= nil then
-				for k, v in ipairs(_queues[id].active) do
-					if v.source == source then
-						exports['sandbox-base']:LoggerTrace("WaitList",
-							string.format("^2%s^7 Went Inactive In ^3%s^7", source, id))
-						Player(source).state[string.format("WaitList:%s", id)] = {
-							waiting = true,
-						}
-						v.started = os.time()
-						table.insert(_queues[id].queue, v)
-						table.remove(_queues[id].active, k)
-						return
-					end
-				end
-			end
-		end,
-		Active = function(self, id, source)
-			if _queues[id] ~= nil then
-				for k, v in ipairs(_queues[id].queue) do
-					if v.source == source then
-						exports['sandbox-base']:LoggerTrace("WaitList",
-							string.format("^2%s^7 Went Active In ^3%s^7", source, id))
-						Player(source).state[string.format("WaitList:%s", id)] = {
-							waiting = false,
-						}
-						table.insert(_queues[id].active, v)
-						table.remove(_queues[id].queue, k)
-						return
-					end
-				end
-			end
-		end,
-	},
-}
+		end
+	end
+end)

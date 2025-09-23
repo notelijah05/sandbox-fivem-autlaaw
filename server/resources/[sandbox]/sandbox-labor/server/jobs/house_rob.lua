@@ -117,7 +117,7 @@ end)
 AddEventHandler("Labor:Server:Startup", function()
 	--SetupHouseData()
 
-	WaitList:Create("houserobbery", "individual_time", {
+	exports['sandbox-base']:WaitListCreate("houserobbery", "individual_time", {
 		event = "Labor:Server:HouseRobbery:Queue",
 		delay = (1000 * 60) * math.random(2, 5),
 	})
@@ -319,7 +319,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		if _robbers[_joiners[source]].state == 4 then
 			Pwnzor.Players:TempPosIgnore(source)
 			local routeId = exports["sandbox-base"]:RequestRouteId(
-			"Robbery:Properties:" .. _robbers[_joiners[source]].property, false)
+				"Robbery:Properties:" .. _robbers[_joiners[source]].property, false)
 			exports["sandbox-base"]:AddPlayerToRoute(source, routeId)
 			GlobalState[string.format("%s:RobbingHouse", source)] = data
 
@@ -624,7 +624,7 @@ AddEventHandler("Labor:Server:HouseRobbery:Queue", function(source, data)
 			house, pData)
 	end
 
-	WaitList.Interact:Remove("houserobbery", source)
+	exports['sandbox-base']:WaitListInteractRemove("houserobbery", source)
 end)
 
 AddEventHandler("HouseRobbery:Server:OnDuty", function(joiner, members, isWorkgroup)
@@ -742,13 +742,13 @@ AddEventHandler("HouseRobbery:Server:OnDuty", function(joiner, members, isWorkgr
 		end
 	end
 
-	WaitList.Interact:Add("houserobbery", joiner, {
+	exports['sandbox-base']:WaitListInteractAdd("houserobbery", joiner, {
 		joiner = joiner,
 	})
 end)
 
 AddEventHandler("HouseRobbery:Server:OffDuty", function(source, joiner)
-	WaitList.Interact:Remove("houserobbery", _joiners[source])
+	exports['sandbox-base']:WaitListInteractRemove("houserobbery", _joiners[source])
 	_joiners[source] = nil
 	TriggerClientEvent("HouseRobbery:Client:OffDuty", source)
 end)

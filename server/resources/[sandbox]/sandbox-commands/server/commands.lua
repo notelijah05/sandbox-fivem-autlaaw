@@ -1,7 +1,6 @@
 AddEventHandler("Commands:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Config = exports["sandbox-base"]:FetchComponent("Config")
-	Waitlist = exports["sandbox-base"]:FetchComponent("WaitList")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	RegisterChatCommands()
 end
@@ -9,7 +8,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Commands", {
 		"Config",
-		"WaitList",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then
@@ -101,7 +99,7 @@ function RegisterChatCommands()
 	}, 1)
 
 	exports["sandbox-chat"]:RegisterAdminCommand("printqueue", function(source, args, rawCommand)
-		Waitlist:PrintQueue(args[1])
+		exports['sandbox-base']:WaitListPrintQueue(args[1])
 	end, {
 		help = "Prints Players In Specified Waitlist",
 		params = {

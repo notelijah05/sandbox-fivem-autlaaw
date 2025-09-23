@@ -19,7 +19,7 @@ CreateThread(function()
 end)
 
 AddEventHandler("Labor:Server:Startup", function()
-	WaitList:Create("oxyrun", "individual_time", {
+	exports['sandbox-base']:WaitListCreate("oxyrun", "individual_time", {
 		event = "Labor:Server:OxyRun:Queue",
 		delay = (1000 * 60) * 5,
 		-- min = 10000,
@@ -607,7 +607,7 @@ AddEventHandler("Labor:Server:OxyRun:Queue", function(source, data)
 		TriggerClientEvent(string.format("OxyRun:Client:%s:Receive", _joiners[source]), -1)
 	end
 
-	WaitList.Interact:Remove("oxyrun", source)
+	exports['sandbox-base']:WaitListInteractRemove("oxyrun", source)
 end)
 
 AddEventHandler('entityRemoved', function(entity)
@@ -760,13 +760,13 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 	end
 
 	_offers[joiner].noExpire = true
-	WaitList.Interact:Add("oxyrun", joiner, {
+	exports['sandbox-base']:WaitListInteractAdd("oxyrun", joiner, {
 		joiner = joiner,
 	})
 end)
 
 AddEventHandler("OxyRun:Server:OffDuty", function(source, joiner)
-	WaitList.Interact:Remove("oxyrun", _joiners[source])
+	exports['sandbox-base']:WaitListInteractRemove("oxyrun", _joiners[source])
 	_joiners[source] = nil
 	TriggerClientEvent("OxyRun:Client:OffDuty", source)
 end)

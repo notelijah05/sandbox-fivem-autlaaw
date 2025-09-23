@@ -26,7 +26,6 @@ function RetrieveComponents()
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
-	WaitList = exports["sandbox-base"]:FetchComponent("WaitList")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -197,7 +196,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"EmergencyAlerts",
 		"Properties",
 		"Status",
-		"WaitList",
 		"Reputation",
 		"Robbery",
 		"Jobs",
