@@ -1,7 +1,7 @@
 COMPONENTS.Discord = {
 	_name = "base",
 	RichPresence = function(self)
-		SetDiscordAppId(COMPONENTS.Convar.DISCORD_APP.value)
+		SetDiscordAppId(exports["sandbox-base"]:GetDiscordApp())
 		SetDiscordRichPresenceAsset("sandboxrp_large_icon")
 		SetDiscordRichPresenceAssetText("Join Today: SandboxRP.gg")
 		--SetDiscordRichPresenceAssetSmall("info")

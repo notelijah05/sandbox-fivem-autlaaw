@@ -68,9 +68,7 @@ function doLog(level, component, log, flags, data)
 		end
 
 		local loggingLevel = 0
-		if COMPONENTS and COMPONENTS.Convar and COMPONENTS.Convar.LOGGING then
-			loggingLevel = COMPONENTS.Convar.LOGGING.value
-		end
+		loggingLevel = exports["sandbox-base"]:GetLogging()
 
 		if flags.console and level >= loggingLevel then
 			local formattedLog = string.format("%s\t[^6%s^7] %s", prefix, component, log)

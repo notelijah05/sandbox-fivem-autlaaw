@@ -25,7 +25,7 @@ COMPONENTS.Discord = {
 			#jsondata > 0 and json.encode(jsondata) or "",
 			{
 				["Content-Type"] = "application/json",
-				["Authorization"] = "Bot " .. COMPONENTS.Convar.BOT_TOKEN.value,
+				["Authorization"] = "Bot " .. exports["sandbox-base"]:GetDiscordBotToken(),
 			}
 		)
 

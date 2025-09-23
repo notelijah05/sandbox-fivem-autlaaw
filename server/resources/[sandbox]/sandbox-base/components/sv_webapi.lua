@@ -44,7 +44,7 @@ COMPONENTS.WebAPI = {
 		local p = promise.new()
 
 		PerformHttpRequest(
-			COMPONENTS.Convar.API_ADDRESS.value .. endpoint,
+			exports["sandbox-base"]:GetApiAddress() .. endpoint,
 			function(errorCode, resultData, resultHeaders)
 				data = {
 					data = resultData,
@@ -67,7 +67,7 @@ COMPONENTS.WebAPI = {
 			{
 				["Content-Type"] = "application/json",
 				["Authorization"] = "Basic " .. _b64enc(
-					string.format("%s:%s", COMPONENTS.Convar.API_ID.value, COMPONENTS.Convar.API_SECRET.value)
+					string.format("%s:%s", exports["sandbox-base"]:GetApiId(), exports["sandbox-base"]:GetApiSecret())
 				),
 			}
 		)

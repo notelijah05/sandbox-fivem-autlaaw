@@ -18,7 +18,6 @@ function RetrieveComponents()
 	WebAPI = exports["sandbox-base"]:FetchComponent("WebAPI")
 	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
 	Queue = exports["sandbox-base"]:FetchComponent("Queue")
-	Convar = exports["sandbox-base"]:FetchComponent("Convar")
 	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
 end
 
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"WebAPI",
 		"Punishment",
 		"Queue",
-		"Convar",
 		"Sequence",
 	}, function(error)
 		if #error > 0 then return; end

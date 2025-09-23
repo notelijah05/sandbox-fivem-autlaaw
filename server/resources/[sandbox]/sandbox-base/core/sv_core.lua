@@ -46,10 +46,10 @@ AddEventHandler("Core:Server:StartupReady", function()
 
 		TriggerEvent(
 			"Database:Server:Initialize",
-			COMPONENTS.Convar.AUTH_URL.value,
-			COMPONENTS.Convar.AUTH_DB.value,
-			COMPONENTS.Convar.GAME_URL.value,
-			COMPONENTS.Convar.GAME_DB.value
+			exports["sandbox-base"]:GetAuthUrl(),
+			exports["sandbox-base"]:GetAuthDb(),
+			exports["sandbox-base"]:GetGameUrl(),
+			exports["sandbox-base"]:GetGameDb()
 		)
 		while not COMPONENTS.Proxy.DatabaseReady do
 			Wait(1)

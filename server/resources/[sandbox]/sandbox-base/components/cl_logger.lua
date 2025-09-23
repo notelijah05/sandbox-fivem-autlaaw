@@ -34,7 +34,7 @@ function doLog(level, component, log)
         end
     end
 
-    if COMPONENTS.Convar.LOGGING.value == nil or level >= COMPONENTS.Convar.LOGGING.value then
+    if exports["sandbox-base"]:GetLogging() == nil or level >= exports["sandbox-base"]:GetLogging() then
         local formattedLog = string.format('%s\t[^2%s^7] %s', prefix, component, log)
         print(formattedLog)
     end
