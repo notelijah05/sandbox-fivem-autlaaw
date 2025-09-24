@@ -1,26 +1,7 @@
-AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
-function RetrieveWardrobeComponents()
-	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Wardrobe", {
-		"Locations",
-		"Wardrobe",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveWardrobeComponents()
-		RegisterWardrobeCallbacks()
-		RegisterWardrobeMiddleware()
-		RegisterChatCommands()
-	end)
-end)
-
-WARDROBE = {}
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Wardrobe", WARDROBE)
+	RegisterWardrobeCallbacks()
+	RegisterWardrobeMiddleware()
+	RegisterChatCommands()
 end)
 
 function RegisterChatCommands()

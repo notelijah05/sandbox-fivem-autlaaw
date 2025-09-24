@@ -138,6 +138,6 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 			shopType = string.upper(withinPedShop)
 		end
 
-		Wardrobe:Show()
+		exports['sandbox-ped']:WardrobeShow()
 	end
 end)

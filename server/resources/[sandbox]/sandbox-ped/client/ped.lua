@@ -19,7 +19,6 @@ AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Spawn = exports["sandbox-base"]:FetchComponent("Spawn")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 end
 
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
 		"Spawn",
 		"Polyzone",
-		"Wardrobe",
 		"Apartment",
 	}, function(error)
 		if #error > 0 then

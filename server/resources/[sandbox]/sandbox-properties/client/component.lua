@@ -21,7 +21,6 @@ _placingSearchItem = nil
 AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
-	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -32,7 +31,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Properties", {
 		"Characters",
-		"Wardrobe",
 		"Properties",
 		"Jobs",
 		"Polyzone",
@@ -559,7 +557,7 @@ PROPERTIES = {
 				type = "closet",
 			}, function(state)
 				if state then
-					Wardrobe:Show()
+					exports['sandbox-ped']:WardrobeShow()
 				end
 			end)
 		end,

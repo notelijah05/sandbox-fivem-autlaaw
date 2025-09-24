@@ -1,23 +1,3 @@
-AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
-function RetrieveWardrobeComponents()
-	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Wardrobe", {
-		"Wardrobe",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveWardrobeComponents()
-	end)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Wardrobe", WARDROBE)
-end)
-
 AddEventHandler("Wardrobe:Client:SaveNew", function(data)
 	exports['sandbox-hud']:InputShow("Outfit Name", "Outfit Name", {
 		{
@@ -36,7 +16,7 @@ AddEventHandler("Wardrobe:Client:SaveExisting", function(data)
 	exports["sandbox-base"]:ServerCallback("Wardrobe:SaveExisting", data.index, function(state)
 		if state then
 			exports["sandbox-hud"]:NotifSuccess("Outfit Saved")
-			Wardrobe:Show()
+			exports['sandbox-ped']:WardrobeShow()
 		else
 			exports["sandbox-hud"]:NotifError("Unable to Save Outfit")
 		end
@@ -50,7 +30,7 @@ AddEventHandler("Wardrobe:Client:DoSave", function(values, data)
 	}, function(state)
 		if state then
 			exports["sandbox-hud"]:NotifSuccess("Outfit Saved")
-			Wardrobe:Show()
+			exports['sandbox-ped']:WardrobeShow()
 		else
 			exports["sandbox-hud"]:NotifError("Unable to Save Outfit")
 		end
@@ -68,7 +48,7 @@ AddEventHandler("Wardrobe:Client:Delete:Yes", function(data)
 	exports["sandbox-base"]:ServerCallback("Wardrobe:Delete", data, function(s)
 		if s then
 			exports["sandbox-hud"]:NotifSuccess("Outfit Deleted")
-			Wardrobe:Show()
+			exports['sandbox-ped']:WardrobeShow()
 		end
 	end)
 end)
@@ -85,57 +65,56 @@ AddEventHandler("Wardrobe:Client:Equip", function(data)
 end)
 
 RegisterNetEvent("Wardrobe:Client:ShowBitch", function(eventRoutine)
-	Wardrobe:Show()
+	exports['sandbox-ped']:WardrobeShow()
 end)
 
-WARDROBE = {
-	Show = function(self)
-		exports["sandbox-base"]:ServerCallback("Wardrobe:GetAll", {}, function(data)
-			local items = {}
-			for k, v in pairs(data) do
-				if v.label ~= nil then
-					table.insert(items, {
+exports("WardrobeShow", function()
+	exports["sandbox-base"]:ServerCallback("Wardrobe:GetAll", {}, function(data)
+		local items = {}
+		for k, v in pairs(data) do
+			if v.label ~= nil then
+				table.insert(items, {
+					label = v.label,
+					description = string.format("Outfit #%s", k),
+					actions = {
+						{
+							icon = "floppy-disks",
+							event = "Wardrobe:Client:SaveExisting",
+						},
+						{
+							icon = "shirt",
+							event = "Wardrobe:Client:Equip",
+						},
+						{
+							icon = "x",
+							event = "Wardrobe:Client:Delete",
+						},
+					},
+					data = {
+						index = k,
 						label = v.label,
-						description = string.format("Outfit #%s", k),
-						actions = {
-							{
-								icon = "floppy-disks",
-								event = "Wardrobe:Client:SaveExisting",
-							},
-							{
-								icon = "shirt",
-								event = "Wardrobe:Client:Equip",
-							},
-							{
-								icon = "x",
-								event = "Wardrobe:Client:Delete",
-							},
-						},
-						data = {
-							index = k,
-							label = v.label,
-						},
-					})
-				end
+					},
+				})
 			end
+		end
 
-			table.insert(items, {
-				label = "Save New Outfit",
-				event = "Wardrobe:Client:SaveNew",
-			})
-
-			exports['sandbox-hud']:ListMenuShow({
-				main = {
-					label = "Wardrobe",
-					items = items,
-				},
-			})
-		end)
-	end,
-	Close = function(self)
-		SetNuiFocus(false, false)
-		SendNUIMessage({
-			type = "CLOSE_LIST_MENU",
+		table.insert(items, {
+			label = "Save New Outfit",
+			event = "Wardrobe:Client:SaveNew",
 		})
-	end,
-}
+
+		exports['sandbox-hud']:ListMenuShow({
+			main = {
+				label = "Wardrobe",
+				items = items,
+			},
+		})
+	end)
+end)
+
+exports("WardrobeClose", function()
+	SetNuiFocus(false, false)
+	SendNUIMessage({
+		type = "CLOSE_LIST_MENU",
+	})
+end)

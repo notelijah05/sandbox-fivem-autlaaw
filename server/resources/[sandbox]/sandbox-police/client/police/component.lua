@@ -180,7 +180,6 @@ function PoliceComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
@@ -193,7 +192,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Properties",
 		"Apartment",
 		"EmergencyAlerts",
-		"Wardrobe",
 		"Status",
 		"Polyzone",
 		"Doors",

@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
-	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"Apartment",
 		"Characters",
-		"Wardrobe",
 		"Animations",
 	}, function(error)
 		if #error > 0 then
@@ -420,7 +418,7 @@ _APTS = {
 				type = "wardrobe",
 			}, function(state)
 				if state then
-					Wardrobe:Show()
+					exports['sandbox-ped']:WardrobeShow()
 				end
 			end)
 		end,
