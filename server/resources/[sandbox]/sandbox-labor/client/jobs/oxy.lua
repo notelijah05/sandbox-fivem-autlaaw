@@ -22,7 +22,7 @@ AddEventHandler("Labor:Client:Setup", function()
     end
 
     if _queueLoc.coords == nil then return end
-    PedInteraction:Add("OxyRunner", `s_m_m_movspace_01`, _queueLoc.coords, _queueLoc.heading, 25.0, {
+    exports['sandbox-pedinteraction']:Add("OxyRunner", `s_m_m_movspace_01`, _queueLoc.coords, _queueLoc.heading, 25.0, {
         {
             icon = "tablets",
             text = "Want a Job to do?",

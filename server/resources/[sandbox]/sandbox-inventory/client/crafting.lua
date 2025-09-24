@@ -98,7 +98,7 @@ exports("CraftingBenchesRefresh", function(interior)
 						if obj ~= nil then
 							Targeting:AddEntity(obj, v.targeting.icon, menu)
 						elseif v.targeting.ped ~= nil then
-							PedInteraction:Add(
+							exports['sandbox-pedinteraction']:Add(
 								v.id,
 								GetHashKey(v.targeting.ped.model),
 								vector3(v.location.x, v.location.y, v.location.z),
@@ -124,7 +124,7 @@ exports("CraftingBenchesRefresh", function(interior)
 					else
 						if obj ~= nil then
 						elseif v.targeting.ped ~= nil then
-							PedInteraction:Remove(v.id)
+							exports['sandbox-pedinteraction']:Remove(v.id)
 						elseif v.targeting.poly ~= nil then
 							Targeting.Zones:RemoveZone(v.id)
 						end

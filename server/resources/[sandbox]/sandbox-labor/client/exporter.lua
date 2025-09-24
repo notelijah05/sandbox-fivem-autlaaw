@@ -1,12 +1,13 @@
 AddEventHandler('Labor:Client:Setup', function()
 	exports["sandbox-blips"]:Add('exporter', "Goods Exporter", vector3(-769.529, -2638.597, 12.945), 272, 4, 0.65)
-	PedInteraction:Add("LaborExporter", `a_m_m_farmer_01`, vector3(-769.529, -2638.597, 12.945), 63.569, 25.0, {
-		{
-			icon = "hand-holding-magic",
-			text = "Export Items",
-			event = "Labor:Client:Export:GetMenu",
-		},
-	}, 'money-check-dollar-pen', 'WORLD_HUMAN_CLIPBOARD')
+	exports['sandbox-pedinteraction']:Add("LaborExporter", `a_m_m_farmer_01`, vector3(-769.529, -2638.597, 12.945),
+		63.569, 25.0, {
+			{
+				icon = "hand-holding-magic",
+				text = "Export Items",
+				event = "Labor:Client:Export:GetMenu",
+			},
+		}, 'money-check-dollar-pen', 'WORLD_HUMAN_CLIPBOARD')
 end)
 
 AddEventHandler("Labor:Client:Export:GetMenu", function()

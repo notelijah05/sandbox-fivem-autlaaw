@@ -4,7 +4,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Tow = exports["sandbox-base"]:FetchComponent("Tow")
 end
 
@@ -14,7 +13,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Vehicles",
 		"Polyzone",
-		"PedInteraction",
 		"Tow",
 	}, function(error)
 		if #error > 0 then
@@ -22,36 +20,38 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrieveComponents()
 
-		PedInteraction:Add("veh_tow_jerry", `a_m_m_eastsa_01`, vector3(-247.645, -1183.099, 22.090), 312.942, 50.0, {
-			{
-				icon = "truck-tow",
-				text = "Request Tow Truck",
-				event = "Tow:Client:RequestTruck",
-				jobPerms = {
-					{
-						job = "tow",
-						reqDuty = true,
+		exports['sandbox-pedinteraction']:Add("veh_tow_jerry", `a_m_m_eastsa_01`, vector3(-247.645, -1183.099, 22.090),
+			312.942, 50.0, {
+				{
+					icon = "truck-tow",
+					text = "Request Tow Truck",
+					event = "Tow:Client:RequestTruck",
+					jobPerms = {
+						{
+							job = "tow",
+							reqDuty = true,
+						},
 					},
+					isEnabled = function()
+						return not GlobalState
+							[string.format("TowTrucks:%s", LocalPlayer.state.Character:GetData("SID"))]
+					end,
 				},
-				isEnabled = function()
-					return not GlobalState[string.format("TowTrucks:%s", LocalPlayer.state.Character:GetData("SID"))]
-				end,
-			},
-			{
-				icon = "truck-tow",
-				text = "Return Tow Truck",
-				event = "Tow:Client:ReturnTruck",
-				jobPerms = {
-					{
-						job = "tow",
-						reqDuty = true,
+				{
+					icon = "truck-tow",
+					text = "Return Tow Truck",
+					event = "Tow:Client:ReturnTruck",
+					jobPerms = {
+						{
+							job = "tow",
+							reqDuty = true,
+						},
 					},
+					isEnabled = function()
+						return GlobalState[string.format("TowTrucks:%s", LocalPlayer.state.Character:GetData("SID"))]
+					end,
 				},
-				isEnabled = function()
-					return GlobalState[string.format("TowTrucks:%s", LocalPlayer.state.Character:GetData("SID"))]
-				end,
-			},
-		}, "truck-tow", "WORLD_HUMAN_HANG_OUT_STREET")
+			}, "truck-tow", "WORLD_HUMAN_HANG_OUT_STREET")
 
 		Polyzone.Create:Box("tow_impound_zone", vector3(-236.96, -1173.44, 23.04), 19.4, 24.4, {
 			heading = 270,

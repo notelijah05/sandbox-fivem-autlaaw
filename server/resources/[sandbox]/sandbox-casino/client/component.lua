@@ -10,7 +10,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Casino = exports["sandbox-base"]:FetchComponent("Casino")
 end
 
@@ -22,7 +21,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Vehicles",
 		"Targeting",
-		"PedInteraction",
 		"Casino",
 	}, function(error)
 		if #error > 0 then
@@ -131,7 +129,7 @@ AddEventHandler("Casino:Client:Startup", function()
 		}, 3.0, true)
 	end
 
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"CasinoStaff1",
 		`u_f_m_casinoshop_01`,
 		vector3(965.357, 48.067, 70.701),
@@ -141,7 +139,7 @@ AddEventHandler("Casino:Client:Startup", function()
 		"seal-question",
 		"WORLD_HUMAN_STAND_IMPATIENT"
 	)
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"CasinoStaff2",
 		`s_m_y_casino_01`,
 		vector3(951.773, 21.896, 70.904),
@@ -194,7 +192,7 @@ AddEventHandler("Casino:Client:Startup", function()
 		maxZ = 74.785,
 	})
 
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"CasinoCashier",
 		`s_m_y_casino_01`,
 		vector3(990.372, 31.271, 70.466),

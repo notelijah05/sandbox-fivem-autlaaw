@@ -1,7 +1,8 @@
 function CreateRentalSpots()
     for k, v in ipairs(_vehicleRentals) do
         if v.interactionPed then
-            PedInteraction:Add('veh_rental_' .. k, v.interactionPed.model, v.coords, v.interactionPed.heading,
+            exports['sandbox-pedinteraction']:Add('veh_rental_' .. k, v.interactionPed.model, v.coords,
+                v.interactionPed.heading,
                 v.interactionPed.range, {
                     {
                         icon = 'car-side',

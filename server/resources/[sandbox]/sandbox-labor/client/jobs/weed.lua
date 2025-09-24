@@ -18,7 +18,8 @@ RegisterNetEvent("WeedRun:Client:OnDuty", function(joiner, time)
             _state = 1
             _blip = exports["sandbox-blips"]:Add("WeedRun", "Buyer", location, 514, 11, 0.9, 2, false, true)
             SetNewWaypoint(location.x, location.y)
-            PedInteraction:Add("WeedDelivery", pedModel, vector3(location[1], location[2], location[3]), location[4],
+            exports['sandbox-pedinteraction']:Add("WeedDelivery", pedModel,
+                vector3(location[1], location[2], location[3]), location[4],
                 50.0, {
                     {
                         icon = "box-circle-check",
@@ -100,6 +101,6 @@ RegisterNetEvent("WeedRun:Client:OffDuty", function(time)
         RemoveEventHandler(v)
     end
 
-    PedInteraction:Remove("WeedDelivery")
+    exports['sandbox-pedinteraction']:Remove("WeedDelivery")
     exports["sandbox-blips"]:Remove("WeedDelivery")
 end)

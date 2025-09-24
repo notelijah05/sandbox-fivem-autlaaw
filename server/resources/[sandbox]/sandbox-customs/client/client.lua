@@ -13,7 +13,6 @@ AddEventHandler("VehicleCustoms:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 end
 
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VehicleCustoms", {
 		"Vehicles",
 		"Polyzone",
-		"PedInteraction",
 		"Police",
 	}, function(error)
 		if #error > 0 then

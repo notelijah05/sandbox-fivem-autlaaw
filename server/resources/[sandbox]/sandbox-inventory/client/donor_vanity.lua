@@ -1,17 +1,18 @@
 function CreateDonorVanityItems()
 	for k, v in ipairs(_donorVanitys) do
-		PedInteraction:Add("donor_vanity_" .. k, v.ped.model, v.ped.location.xyz, v.ped.location.w, 50.0, {
-			{
-				icon = "boxes-stacked",
-				text = "Donator Item Purchases",
-				event = "DonorVanity:Client:Open",
-			},
-			{
-				icon = "receipt",
-				text = "View Unredeemed Purchases",
-				event = "DonorVanity:Client:ViewPending",
-			},
-		}, "comment-dollar", v.ped.scenario)
+		exports['sandbox-pedinteraction']:Add("donor_vanity_" .. k, v.ped.model, v.ped.location.xyz, v.ped.location.w,
+			50.0, {
+				{
+					icon = "boxes-stacked",
+					text = "Donator Item Purchases",
+					event = "DonorVanity:Client:Open",
+				},
+				{
+					icon = "receipt",
+					text = "View Unredeemed Purchases",
+					event = "DonorVanity:Client:ViewPending",
+				},
+			}, "comment-dollar", v.ped.scenario)
 	end
 end
 

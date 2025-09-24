@@ -29,7 +29,6 @@ function RetrieveComponents()
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Vendor = exports["sandbox-base"]:FetchComponent("Vendor")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
 end
 
@@ -194,7 +193,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Doors",
 		"Crypto",
 		"Vehicles",
-		"Vendor",
 		"CCTV",
 	}, function(error)
 		if #error > 0 then
@@ -226,24 +224,25 @@ AddEventHandler("Core:Shared:Ready", function()
 		})
 
 		local pos1 = _heistSellerLocs[tostring(os.date("%w"))]
-		Vendor:Create("HeistBlocks", "ped", "Devices", GetHashKey("HC_Hacker"), {
+		exports['sandbox-pedinteraction']:VendorCreate("HeistBlocks", "ped", "Devices", GetHashKey("HC_Hacker"), {
 			coords = vector3(pos1.x, pos1.y, pos1.z),
 			heading = pos1.w,
 			scenario = "WORLD_HUMAN_TOURIST_MOBILE",
 		}, _heistTools, "badge-dollar", "View Offers", false, 1, true, 60 * math.random(30, 60))
 
 		local pos = _sellerLocs[tostring(os.date("%w"))]
-		Vendor:Create("HeistShit", "ped", "Rob Tools", GetHashKey("CS_NervousRon"), {
+		exports['sandbox-pedinteraction']:VendorCreate("HeistShit", "ped", "Rob Tools", GetHashKey("CS_NervousRon"), {
 				coords = vector3(pos.x, pos.y, pos.z),
 				heading = pos.w,
 			}, _toolsForSale, "badge-dollar", "View Offers", 1, false, true, 60 * math.random(30, 60),
 			60 * math.random(240, 360))
 
 		local pos2 = _schemSellerLocs[tostring(os.date("%w"))]
-		Vendor:Create("ScamSchemSeller", "ped", "Dom's Deals", GetHashKey("a_m_m_eastsa_02"), {
-			coords = vector3(pos2.x, pos2.y, pos2.z),
-			heading = pos2.w,
-		}, _schemSeller, "badge-dollar", "View Offers")
+		exports['sandbox-pedinteraction']:VendorCreate("ScamSchemSeller", "ped", "Dom's Deals",
+			GetHashKey("a_m_m_eastsa_02"), {
+				coords = vector3(pos2.x, pos2.y, pos2.z),
+				heading = pos2.w,
+			}, _schemSeller, "badge-dollar", "View Offers")
 
 		Crypto.Coin:Create("HEIST", "HEIST", 100, false, false)
 

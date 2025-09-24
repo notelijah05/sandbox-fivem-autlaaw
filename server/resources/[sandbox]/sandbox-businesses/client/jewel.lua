@@ -45,7 +45,7 @@ local _sellers = {
 
 AddEventHandler("Businesses:Client:Startup", function()
 	for k, v in ipairs(_sellers) do
-		PedInteraction:Add(string.format("JEWELSeller%s", k), v.model, v.coords, v.heading, 25.0, {
+		exports['sandbox-pedinteraction']:Add(string.format("JEWELSeller%s", k), v.model, v.coords, v.heading, 25.0, {
 			{
 				icon = "ring",
 				text = "Sell Gems",

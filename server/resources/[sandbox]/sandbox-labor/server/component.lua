@@ -13,7 +13,6 @@ function RetrieveComponents()
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-	Vendor = exports["sandbox-base"]:FetchComponent("Vendor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jail",
 		"Banking",
 		"Pwnzor",
-		"Vendor",
 	}, function(error)
 		if #error > 0 then
 			exports['sandbox-base']:LoggerCritical("Labor", "Failed To Load All Dependencies")

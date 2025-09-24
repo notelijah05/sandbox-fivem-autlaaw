@@ -57,7 +57,7 @@ local cats = {
 
 AddEventHandler("Businesses:Client:Startup", function()
 	for k, v in ipairs(cats) do
-		PedInteraction:Add(
+		exports['sandbox-pedinteraction']:Add(
 			"uwu-cat-" .. k,
 			`a_c_cat_01`,
 			v.coords,

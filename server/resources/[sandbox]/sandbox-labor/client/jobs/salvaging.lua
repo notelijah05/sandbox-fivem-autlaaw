@@ -55,41 +55,42 @@ AddEventHandler("Labor:Client:Setup", function()
 		--maxZ = 51.348690032959
 	})
 
-	PedInteraction:Add("SalvagingJob", `s_m_y_construct_02`, vector3(2369.771, 3157.132, 47.209), 10.633, 25.0, {
-		{
-			icon = "helmet-safety",
-			text = "Start Work",
-			event = "Salvaging:Client:StartJob",
-			tempjob = "Salvaging",
-			isEnabled = function()
-				return not _working
-			end,
-		},
-		{
-			icon = "ballot-check",
-			text = "I've Finished",
-			event = "Salvaging:Client:TriggerDelivery",
-			tempjob = "Salvaging",
-			isEnabled = function()
-				return _working and _state == 2
-			end,
-		},
-		{
-			icon = "box-open-full",
-			text = "Here For My Pickup",
-			event = "Laptop:Client:LSUnderground:Chopping:Pickup",
-			isEnabled = function()
-				return LocalPlayer.state.Character:GetData("ChopPickups") ~= nil and
-					#LocalPlayer.state.Character:GetData("ChopPickups") > 0
-			end,
-		},
-		{
-			icon = "list-timeline",
-			text = "View Current Requests",
-			event = "Laptop:Client:LSUnderground:Chopping:GetPublicList",
-			rep = { id = "Salvaging", level = 7 },
-		},
-	}, 'car-crash')
+	exports['sandbox-pedinteraction']:Add("SalvagingJob", `s_m_y_construct_02`, vector3(2369.771, 3157.132, 47.209),
+		10.633, 25.0, {
+			{
+				icon = "helmet-safety",
+				text = "Start Work",
+				event = "Salvaging:Client:StartJob",
+				tempjob = "Salvaging",
+				isEnabled = function()
+					return not _working
+				end,
+			},
+			{
+				icon = "ballot-check",
+				text = "I've Finished",
+				event = "Salvaging:Client:TriggerDelivery",
+				tempjob = "Salvaging",
+				isEnabled = function()
+					return _working and _state == 2
+				end,
+			},
+			{
+				icon = "box-open-full",
+				text = "Here For My Pickup",
+				event = "Laptop:Client:LSUnderground:Chopping:Pickup",
+				isEnabled = function()
+					return LocalPlayer.state.Character:GetData("ChopPickups") ~= nil and
+						#LocalPlayer.state.Character:GetData("ChopPickups") > 0
+				end,
+			},
+			{
+				icon = "list-timeline",
+				text = "View Current Requests",
+				event = "Laptop:Client:LSUnderground:Chopping:GetPublicList",
+				rep = { id = "Salvaging", level = 7 },
+			},
+		}, 'car-crash')
 end)
 
 RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
@@ -148,17 +149,18 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 
 			_blip = exports["sandbox-blips"]:Add("SalvDelivery", "Deliver Goods", point.coords, 478, 2, 1.4)
 
-			PedInteraction:Add("SalvagingDelivery", `mp_m_waremech_01`, point.coords, point.heading, 25.0, {
-				{
-					icon = "box-circle-check",
-					text = "Deliver Goods",
-					event = "Salvaging:Client:EndDelivery",
-					tempjob = "Salvaging",
-					isEnabled = function()
-						return _working and _state == 3
-					end,
-				},
-			}, 'box-circle-check')
+			exports['sandbox-pedinteraction']:Add("SalvagingDelivery", `mp_m_waremech_01`, point.coords, point.heading,
+				25.0, {
+					{
+						icon = "box-circle-check",
+						text = "Deliver Goods",
+						event = "Salvaging:Client:EndDelivery",
+						tempjob = "Salvaging",
+						isEnabled = function()
+							return _working and _state == 3
+						end,
+					},
+				}, 'box-circle-check')
 		end)
 
 	eventHandlers["actions"] = RegisterNetEvent(string.format("Salvaging:Client:%s:Action", joiner), function(netid)
@@ -210,7 +212,7 @@ end)
 
 AddEventHandler("Salvaging:Client:EndDelivery", function()
 	exports["sandbox-base"]:ServerCallback('Salvaging:EndDelivery', _joiner)
-	PedInteraction:Remove("SalvagingDelivery")
+	exports['sandbox-pedinteraction']:Remove("SalvagingDelivery")
 end)
 
 AddEventHandler("Salvaging:Client:StartJob", function()
@@ -235,7 +237,7 @@ RegisterNetEvent("Salvaging:Client:OffDuty", function(time)
 		Targeting:RemoveObject(v)
 	end
 
-	PedInteraction:Remove("SalvagingDelivery")
+	exports['sandbox-pedinteraction']:Remove("SalvagingDelivery")
 
 	eventHandlers = {}
 	_joiner = nil

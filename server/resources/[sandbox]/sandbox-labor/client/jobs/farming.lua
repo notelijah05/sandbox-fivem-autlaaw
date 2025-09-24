@@ -12,26 +12,27 @@ local eventHandlers = {}
 local _nodes = nil
 
 AddEventHandler("Labor:Client:Setup", function()
-	PedInteraction:Add("FarmingJob", `a_m_m_farmer_01`, vector3(2016.165, 4987.541, 41.098), 225.995, 25.0, {
-		{
-			icon = "wheat",
-			text = "Start Work",
-			event = "Farming:Client:StartJob",
-			tempjob = "Farming",
-			isEnabled = function()
-				return not _working
-			end,
-		},
-		{
-			icon = "clipboard-list-check",
-			text = "Finish Job",
-			event = "Farming:Client:TurnIn",
-			tempjob = "Farming",
-			isEnabled = function()
-				return _working and _tasks == 2
-			end,
-		},
-	}, 'helmet-safety', 'WORLD_HUMAN_CLIPBOARD')
+	exports['sandbox-pedinteraction']:Add("FarmingJob", `a_m_m_farmer_01`, vector3(2016.165, 4987.541, 41.098), 225.995,
+		25.0, {
+			{
+				icon = "wheat",
+				text = "Start Work",
+				event = "Farming:Client:StartJob",
+				tempjob = "Farming",
+				isEnabled = function()
+					return not _working
+				end,
+			},
+			{
+				icon = "clipboard-list-check",
+				text = "Finish Job",
+				event = "Farming:Client:TurnIn",
+				tempjob = "Farming",
+				isEnabled = function()
+					return _working and _tasks == 2
+				end,
+			},
+		}, 'helmet-safety', 'WORLD_HUMAN_CLIPBOARD')
 end)
 
 local _doing = false

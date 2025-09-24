@@ -101,7 +101,7 @@ _DRUGS.Meth = {
 AddEventHandler("Drugs:Server:Startup", function()
     local mPos = _methSellerLocs[tostring(os.date("%w"))]
 
-    Vendor:Create("MethSeller", "ped", "Mike", `A_M_M_RurMeth_01`, {
+    exports['sandbox-pedinteraction']:VendorCreate("MethSeller", "ped", "Mike", `A_M_M_RurMeth_01`, {
             coords = vector3(mPos.x, mPos.y, mPos.z),
             heading = mPos.w,
             scenario = "WORLD_HUMAN_CHEERING"

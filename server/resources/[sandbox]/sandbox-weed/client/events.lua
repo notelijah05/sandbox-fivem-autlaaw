@@ -5,7 +5,8 @@ RegisterNetEvent("Weed:Client:Login", function(l)
 		Wait(10)
 	end
 
-	PedInteraction:Add("weed-dealer", `s_m_y_dealer_01`, vector3(l.coords.x, l.coords.y, l.coords.z), l.heading, 50.0, {
+	exports['sandbox-pedinteraction']:Add("weed-dealer", `s_m_y_dealer_01`, vector3(l.coords.x, l.coords.y, l.coords.z),
+	l.heading, 50.0, {
 		{
 			icon = "cannabis",
 			text = "Buy Package",

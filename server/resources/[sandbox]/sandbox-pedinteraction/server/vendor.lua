@@ -293,23 +293,9 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-_VENDORS = {
-	Create = function(
-		self,
-		id,
-		type,
-		name,
-		model,
-		position,
-		items,
-		iconOverride,
-		labelOverride,
-		isUnique,
-		isGlobalUnique,
-		isIllegal,
-		stockTimeDelay,
-		restock
-	)
+exports("VendorCreate",
+	function(id, type, name, model, position, items, iconOverride, labelOverride, isUnique, isGlobalUnique, isIllegal,
+			 stockTimeDelay, restock)
 		if restock ~= false then
 			for k, v in ipairs(items) do
 				v.oQty = v.qty
@@ -349,13 +335,9 @@ _VENDORS = {
 			isGlobalUnique,
 			isIllegal
 		)
-	end,
-	Remove = function(self, id)
-		_created[id] = nil
-		TriggerClientEvent("Vendor:Client:Remove", -1, id)
-	end,
-}
+	end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Vendor", _VENDORS)
+exports("VendorRemove", function(id)
+	_created[id] = nil
+	TriggerClientEvent("Vendor:Client:Remove", -1, id)
 end)

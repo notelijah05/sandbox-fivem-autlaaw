@@ -1,6 +1,5 @@
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -12,7 +11,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"PedInteraction",
 		"Polyzone",
 		"Targeting",
 		"Properties",
@@ -29,7 +27,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		TriggerEvent("Robbery:Client:Setup")
 
 		CreateThread(function()
-			PedInteraction:Add(
+			exports['sandbox-pedinteraction']:Add(
 				"RobToolsPickup",
 				GetHashKey("csb_anton"),
 				vector3(1129.422, -476.236, 65.485),

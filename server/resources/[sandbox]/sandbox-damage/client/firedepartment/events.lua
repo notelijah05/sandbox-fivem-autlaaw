@@ -24,7 +24,7 @@ local safdCheckin = {
 }
 
 function SAFDInit()
-	-- PedInteraction:Add(
+	-- exports['sandbox-pedinteraction']:Add(
 	-- 	"hospital-check-in",
 	-- 	`u_f_m_miranda_02`,
 	-- 	vector3(-437.484, -323.269, 33.911),

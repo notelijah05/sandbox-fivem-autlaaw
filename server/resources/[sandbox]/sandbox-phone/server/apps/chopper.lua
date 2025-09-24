@@ -20,7 +20,7 @@ local _blacklistedJobs = {
 }
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Vendor:Create("ChoperItems", "ped", "Items", `U_M_Y_SmugMech_01`, {
+	exports['sandbox-pedinteraction']:VendorCreate("ChoperItems", "ped", "Items", `U_M_Y_SmugMech_01`, {
 		coords = vector3(-623.589, -1681.736, 19.101),
 		heading = 228.222,
 		scenario = "WORLD_HUMAN_TOURIST_MOBILE",

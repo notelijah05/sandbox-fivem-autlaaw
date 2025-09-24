@@ -72,7 +72,6 @@ function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Vendor = exports["sandbox-base"]:FetchComponent("Vendor")
 	RegisterChatCommands()
 end
 
@@ -92,7 +91,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Reputation",
 		"Robbery",
 		"Wallet",
-		"Vendor",
 	}, function(error)
 		if #error > 0 then
 			return

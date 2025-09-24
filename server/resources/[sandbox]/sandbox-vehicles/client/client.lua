@@ -16,7 +16,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
@@ -38,7 +37,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Polyzone",
 		"Jobs",
-		"PedInteraction",
 		"EmergencyAlerts",
 		"Properties",
 		"Police",

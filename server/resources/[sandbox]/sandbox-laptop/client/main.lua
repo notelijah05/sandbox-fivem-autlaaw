@@ -22,7 +22,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
@@ -38,7 +37,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"Vehicles",
 		"Jobs",
-		"PedInteraction",
 		"Properties",
 		"Admin",
 		"Laptop",

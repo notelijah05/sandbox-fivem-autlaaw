@@ -244,7 +244,7 @@ AddEventHandler("Labor:Client:Setup", function()
 	end)
 
 	for k, v in ipairs(_sellers) do
-		PedInteraction:Add(string.format("HideSeller%s", k), v.model, v.coords, v.heading, 25.0, {
+		exports['sandbox-pedinteraction']:Add(string.format("HideSeller%s", k), v.model, v.coords, v.heading, 25.0, {
 			{
 				icon = "cart-shopping",
 				text = "Buy Stuff",
@@ -297,7 +297,7 @@ AddEventHandler("Labor:Client:Setup", function()
 		}, "paw", "WORLD_HUMAN_SMOKING")
 	end
 
-	PedInteraction:Add("HuntingJob", `cs_hunter`, _huntingStore, 227.201, 25.0, {
+	exports['sandbox-pedinteraction']:Add("HuntingJob", `cs_hunter`, _huntingStore, 227.201, 25.0, {
 		{
 			icon = "cart-shopping",
 			text = "Shop",

@@ -1,19 +1,20 @@
 function CreateDonorDealerships()
   for k, v in ipairs(_donorDealerships) do
-    PedInteraction:Add("donor_dealer_" .. k, v.ped.model, v.ped.location.xyz, v.ped.location.w, 50.0, {
+    exports['sandbox-pedinteraction']:Add("donor_dealer_" .. k, v.ped.model, v.ped.location.xyz, v.ped.location.w, 50.0,
       {
-        icon = "car-side",
-        text = "Donator Vehicle Purchases",
-        event = "DonorDealer:Client:Open",
-        data = { id = k },
-      },
-      {
-        icon = "receipt",
-        text = "View Unredeemed Purchases",
-        event = "DonorDealer:Client:ViewPending",
-        data = { id = k },
-      },
-    }, "comment-dollar", v.ped.scenario)
+        {
+          icon = "car-side",
+          text = "Donator Vehicle Purchases",
+          event = "DonorDealer:Client:Open",
+          data = { id = k },
+        },
+        {
+          icon = "receipt",
+          text = "View Unredeemed Purchases",
+          event = "DonorDealer:Client:ViewPending",
+          data = { id = k },
+        },
+      }, "comment-dollar", v.ped.scenario)
   end
 end
 

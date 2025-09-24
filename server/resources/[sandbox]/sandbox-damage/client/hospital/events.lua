@@ -67,7 +67,7 @@ local hospitalCheckin = {
 }
 
 function Init()
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"hospital-check-in-1",
 		`u_f_m_miranda_02`,
 		vector3(1125.869, -1531.991, 34.033),
@@ -77,7 +77,7 @@ function Init()
 		"notes-medical",
 		"WORLD_HUMAN_CLIPBOARD"
 	)
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"hospital-check-in-2",
 		`s_f_y_scrubs_01`,
 		vector3(1144.530, -1543.017, 34.033),
@@ -87,7 +87,7 @@ function Init()
 		"notes-medical",
 		"WORLD_HUMAN_CLIPBOARD"
 	)
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"hospital-check-in-3",
 		`s_f_y_scrubs_01`,
 		vector3(1135.842, -1539.658, 38.504),

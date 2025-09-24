@@ -152,7 +152,7 @@ _DRUGS.Moonshine = {
 AddEventHandler("Drugs:Server:Startup", function()
     -- local mPos = _methSellerLocs[tostring(os.date("%w"))]
 
-    Vendor:Create("MoonshineSeller", "ped", "Karen", `S_F_Y_Bartender_01`, {
+    exports['sandbox-pedinteraction']:VendorCreate("MoonshineSeller", "ped", "Karen", `S_F_Y_Bartender_01`, {
         coords = vector3(755.504, -1860.620, 48.292),
         heading = 307.963,
         scenario = "WORLD_HUMAN_SMOKING"

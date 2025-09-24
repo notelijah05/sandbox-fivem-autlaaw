@@ -110,7 +110,7 @@ AddEventHandler("Labor:Client:Setup", function()
 		cb(coords)
 	end)
 
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"CokeSeller",
 		`A_M_M_BevHills_02`,
 		vector3(GlobalState["CokeRuns"][1], GlobalState["CokeRuns"][2], GlobalState["CokeRuns"][3]),
@@ -204,7 +204,7 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 	eventHandlers["cayo-contact"] = RegisterNetEvent(string.format("Coke:Client:%s:GoTo", joiner), function()
 		if _state == 1 then
 			_state = 2
-			PedInteraction:Add(
+			exports['sandbox-pedinteraction']:Add(
 				"CokeDrop",
 				GetHashKey("S_M_M_HairDress_01"),
 				vector3(4495.498, -4514.340, 3.021),
@@ -271,7 +271,7 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 
 	eventHandlers["setup-finish"] = RegisterNetEvent(string.format("Coke:Client:%s:SetupFinish", joiner), function()
 		_state = 6
-		PedInteraction:Add(
+		exports['sandbox-pedinteraction']:Add(
 			"CokeDrop",
 			GetHashKey("A_M_Y_Beach_01"),
 			vector3(1292.455, -3170.885, 4.906),
@@ -310,7 +310,7 @@ RegisterNetEvent("Coke:Client:OffDuty", function(time)
 		RemoveEventHandler(v)
 	end
 
-	PedInteraction:Remove("CokeDrop")
+	exports['sandbox-pedinteraction']:Remove("CokeDrop")
 	Polyzone:Remove("CokeDrop")
 	exports["sandbox-blips"]:Remove("CokeDrop")
 	RemoveBlip(_blipArea)

@@ -20,7 +20,6 @@ function HospitalComponents()
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
-	Vendor = exports["sandbox-base"]:FetchComponent("Vendor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -35,7 +34,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Ped",
 		"Pwnzor",
 		"Banking",
-		"Vendor",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -49,11 +47,12 @@ AddEventHandler("Core:Shared:Ready", function()
 			heading = 146.641,
 		}
 
-		Vendor:Create("BlackmarketMeds", "ped", "Medical Supplies", `S_M_M_Paramedic_01`, {
-			coords = vector3(2815.044, 5980.179, 349.928),
-			heading = 277.889,
-			scenario = "WORLD_HUMAN_CLIPBOARD",
-		}, _medsForSale, "pump-medical", "View Supplies", false, false, true)
+		exports['sandbox-pedinteraction']:VendorCreate("BlackmarketMeds", "ped", "Medical Supplies", `S_M_M_Paramedic_01`,
+			{
+				coords = vector3(2815.044, 5980.179, 349.928),
+				heading = 277.889,
+				scenario = "WORLD_HUMAN_CLIPBOARD",
+			}, _medsForSale, "pump-medical", "View Supplies", false, false, true)
 
 		exports["sandbox-chat"]:RegisterAdminCommand("clearbeds", function(source, args, rawCommand)
 			_inBed = {}

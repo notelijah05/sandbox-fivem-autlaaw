@@ -16,7 +16,6 @@ AddEventHandler("Police:Shared:DependencyUpdate", GovComponents)
 function GovComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
 
@@ -24,7 +23,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Targeting",
 		"Jobs",
-		"PedInteraction",
 		"Polyzone",
 	}, function(error)
 		if #error > 0 then
@@ -84,7 +82,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}
 
-		PedInteraction:Add(
+		exports['sandbox-pedinteraction']:Add(
 			"govt-services",
 			`a_f_m_eastsa_02`,
 			vector3(-552.412, -202.760, 37.239),

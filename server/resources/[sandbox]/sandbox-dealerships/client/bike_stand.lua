@@ -70,7 +70,7 @@ _bikeStandAvailable = {
 function CreateBikeStands()
 	for k, v in ipairs(_bikeStands) do
 		if v.interactionPed then
-			PedInteraction:Add(
+			exports['sandbox-pedinteraction']:Add(
 				"bike_stand_" .. k,
 				v.interactionPed.model,
 				v.coords,

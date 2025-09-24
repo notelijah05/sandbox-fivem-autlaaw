@@ -45,19 +45,20 @@ local _sellers = {
 
 AddEventHandler("Businesses:Client:Startup", function()
 	for k, v in ipairs(_sellers) do
-		PedInteraction:Add(string.format("VANGELICOGRAPESEEDSeller%s", k), v.model, v.coords, v.heading, 25.0, {
-			{
-				icon = "ring",
-				text = "Sell Gems",
-				event = "VANGELICOGRAPESEED:Client:Sell",
-				jobPerms = {
-					{
-						job = "vangelico_grapeseed",
-						jobPerms = "JOB_SELL_GEMS",
+		exports['sandbox-pedinteraction']:Add(string.format("VANGELICOGRAPESEEDSeller%s", k), v.model, v.coords,
+			v.heading, 25.0, {
+				{
+					icon = "ring",
+					text = "Sell Gems",
+					event = "VANGELICOGRAPESEED:Client:Sell",
+					jobPerms = {
+						{
+							job = "vangelico_grapeseed",
+							jobPerms = "JOB_SELL_GEMS",
+						},
 					},
 				},
-			},
-		}, "sack-dollar")
+			}, "sack-dollar")
 	end
 
 	for k, v in ipairs(_appraisalTables) do

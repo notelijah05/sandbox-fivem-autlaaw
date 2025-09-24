@@ -200,7 +200,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		end
 	end)
 
-	Vendor:Create("RaceGear", "poly", "Race Gear", false, {
+	exports['sandbox-pedinteraction']:VendorCreate("RaceGear", "poly", "Race Gear", false, {
 			coords = vector3(707.286, -967.542, 30.468),
 			length = 0.8,
 			width = 0.6,

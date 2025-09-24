@@ -112,36 +112,37 @@ AddEventHandler("Labor:Client:Setup", function()
 	if _queueLoc.coords == nil then
 		return
 	end
-	PedInteraction:Add("CornerDealing", GetHashKey("csb_grove_str_dlr"), _queueLoc.coords, _queueLoc.heading, 25.0, {
-		{
-			icon = "clock-nine",
-			text = "Sign Up",
-			event = "CornerDealing:Client:Enable",
-			data = {},
-			isEnabled = function()
-				return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_CORNER_DEALING")
-					and LocalPlayer.state.onDuty ~= "police"
-			end,
-		},
-		{
-			icon = "clock-nine",
-			text = "Sign Off",
-			event = "CornerDealing:Client:Disable",
-			data = {},
-			isEnabled = function()
-				return hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_CORNER_DEALING")
-					and LocalPlayer.state.onDuty ~= "police"
-			end,
-		},
-		{
-			icon = "list-radio",
-			text = "View Offers",
-			event = "Vendor:Client:GetItems",
-			data = {
-				id = "CornerDealer",
-			}
-		},
-	}, "seal-question", "WORLD_HUMAN_SMOKING")
+	exports['sandbox-pedinteraction']:Add("CornerDealing", GetHashKey("csb_grove_str_dlr"), _queueLoc.coords,
+		_queueLoc.heading, 25.0, {
+			{
+				icon = "clock-nine",
+				text = "Sign Up",
+				event = "CornerDealing:Client:Enable",
+				data = {},
+				isEnabled = function()
+					return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_CORNER_DEALING")
+						and LocalPlayer.state.onDuty ~= "police"
+				end,
+			},
+			{
+				icon = "clock-nine",
+				text = "Sign Off",
+				event = "CornerDealing:Client:Disable",
+				data = {},
+				isEnabled = function()
+					return hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_CORNER_DEALING")
+						and LocalPlayer.state.onDuty ~= "police"
+				end,
+			},
+			{
+				icon = "list-radio",
+				text = "View Offers",
+				event = "Vendor:Client:GetItems",
+				data = {
+					id = "CornerDealer",
+				}
+			},
+		}, "seal-question", "WORLD_HUMAN_SMOKING")
 end)
 
 RegisterNetEvent("CornerDealing:Client:DoSequence", function(seqType, netId, arg2)

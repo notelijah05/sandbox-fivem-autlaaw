@@ -18,7 +18,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		TriggerClientEvent("Hunting:Client:Polys", source, HuntingConfig)
 	end)
 
-	Vendor:Create("HuntingBaits", false, "Hunting", false, {}, {
+	exports['sandbox-pedinteraction']:VendorCreate("HuntingBaits", false, "Hunting", false, {}, {
 		{ id = 1, item = "cow_bait",     price = 250,  qty = -1, vpn = false, rep = "Hunting", repLvl = 2, },
 		{ id = 2, item = "chicken_bait", price = 250,  qty = -1, vpn = false, rep = "Hunting", repLvl = 2, },
 		{ id = 3, item = "rabbit_bait",  price = 250,  qty = -1, vpn = false, rep = "Hunting", repLvl = 2, },

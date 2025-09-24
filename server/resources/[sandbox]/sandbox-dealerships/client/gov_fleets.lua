@@ -1,7 +1,8 @@
 function CreateGovermentFleetShops()
     for k, v in ipairs(_fleetConfig) do
         if v.interactionPed then
-            PedInteraction:Add('gov_fleet_shop_' .. v.job, v.interactionPed.model, v.interactionPed.coords,
+            exports['sandbox-pedinteraction']:Add('gov_fleet_shop_' .. v.job, v.interactionPed.model,
+                v.interactionPed.coords,
                 v.interactionPed.heading, v.interactionPed.range, {
                     {
                         icon = 'cars',

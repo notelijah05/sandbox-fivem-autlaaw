@@ -42,18 +42,19 @@ AddEventHandler("Labor:Client:Setup", function()
     end
 
     if _queueLoc.coords == nil then return end
-    PedInteraction:Add("HouseRobbery", `csb_grove_str_dlr`, _queueLoc.coords, _queueLoc.heading, 25.0, {
+    exports['sandbox-pedinteraction']:Add("HouseRobbery", `csb_grove_str_dlr`, _queueLoc.coords, _queueLoc.heading, 25.0,
         {
-            icon = "house-chimney-crack",
-            text = "Do A Thing",
-            event = "HouseRobbery:Client:Enable",
-            data = {},
-            isEnabled = function()
-                return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_HOUSE_ROBBERY") and
-                    LocalPlayer.state.onDuty ~= "police"
-            end,
-        },
-    }, 'seal-question', 'WORLD_HUMAN_SMOKING')
+            {
+                icon = "house-chimney-crack",
+                text = "Do A Thing",
+                event = "HouseRobbery:Client:Enable",
+                data = {},
+                isEnabled = function()
+                    return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_HOUSE_ROBBERY") and
+                        LocalPlayer.state.onDuty ~= "police"
+                end,
+            },
+        }, 'seal-question', 'WORLD_HUMAN_SMOKING')
 
     exports["sandbox-base"]:RegisterClientCallback("HouseRobbery:Lockpick", function(data, cb)
         _lpStage = 0

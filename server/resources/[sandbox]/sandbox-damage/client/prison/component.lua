@@ -3,7 +3,6 @@ function PrisonHospitalComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
@@ -13,7 +12,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Damage",
 		"Targeting",
 		"Hospital",
-		"PedInteraction",
 		"Polyzone",
 		"Animations",
 	}, function(error)

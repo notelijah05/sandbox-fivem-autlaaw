@@ -84,7 +84,6 @@ AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -95,7 +94,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Animations",
 		"Targeting",
-		"PedInteraction",
 		"Polyzone",
 		"Jobs",
 		"Reputation",
@@ -1078,7 +1076,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Set", function(shops)
 			end
 		end
 
-		PedInteraction:Add(
+		exports['sandbox-pedinteraction']:Add(
 			"player-shop-" .. v.id,
 			GetHashKey(v.ped_model or 'S_F_Y_SweatShop_01'),
 			vector3(v.position.x, v.position.y, v.position.z),
@@ -1092,7 +1090,7 @@ end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
 	for k, v in pairs(_shops) do
-		PedInteraction:Remove("player-shop-" .. v.id)
+		exports['sandbox-pedinteraction']:Remove("player-shop-" .. v.id)
 	end
 end)
 
@@ -1158,7 +1156,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Create", function(shop)
 	end
 
 
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"player-shop-" .. shop.id,
 		GetHashKey(shop.ped_model or 'S_F_Y_SweatShop_01'),
 		vector3(shop.position.x, shop.position.y, shop.position.z),
@@ -1170,7 +1168,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Create", function(shop)
 end)
 
 RegisterNetEvent("Inventory:Client:BasicShop:Delete", function(shopId)
-	PedInteraction:Remove("player-shop-" .. shopId)
+	exports['sandbox-pedinteraction']:Remove("player-shop-" .. shopId)
 end)
 
 RegisterNUICallback("AddToShop", function(data, cb)

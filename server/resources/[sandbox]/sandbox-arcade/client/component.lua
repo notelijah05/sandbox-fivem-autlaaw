@@ -2,7 +2,6 @@ AddEventHandler("Arcade:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -13,7 +12,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Arcade", {
 		"Targeting",
 		"Status",
-		"PedInteraction",
 		"Jail",
 		"Animations",
 		"Jobs",
@@ -26,68 +24,69 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		TriggerEvent("Arcade:Client:Setup")
 
-		PedInteraction:Add("ArcadeMaster", `cs_jimmydisanto`, vector3(-1658.916, -1062.421, 11.160), 228.868, 25.0, {
-			{
-				icon = "clipboard-check",
-				text = "Clock In",
-				event = "Arcade:Client:ClockIn",
-				data = { job = "avast_arcade" },
-				jobPerms = {
-					{
-						job = "avast_arcade",
-						reqOffDuty = true,
+		exports['sandbox-pedinteraction']:Add("ArcadeMaster", `cs_jimmydisanto`, vector3(-1658.916, -1062.421, 11.160),
+			228.868, 25.0, {
+				{
+					icon = "clipboard-check",
+					text = "Clock In",
+					event = "Arcade:Client:ClockIn",
+					data = { job = "avast_arcade" },
+					jobPerms = {
+						{
+							job = "avast_arcade",
+							reqOffDuty = true,
+						},
 					},
 				},
-			},
-			{
-				icon = "clipboard",
-				text = "Clock Out",
-				event = "Arcade:Client:ClockOut",
-				data = { job = "avast_arcade" },
-				jobPerms = {
-					{
-						job = "avast_arcade",
-						reqDuty = true,
+				{
+					icon = "clipboard",
+					text = "Clock Out",
+					event = "Arcade:Client:ClockOut",
+					data = { job = "avast_arcade" },
+					jobPerms = {
+						{
+							job = "avast_arcade",
+							reqDuty = true,
+						},
 					},
 				},
-			},
-			{
-				icon = "heart-pulse",
-				text = "Open Arcade",
-				event = "Arcade:Client:Open",
-				jobPerms = {
-					{
-						job = "avast_arcade",
-						reqDuty = true,
+				{
+					icon = "heart-pulse",
+					text = "Open Arcade",
+					event = "Arcade:Client:Open",
+					jobPerms = {
+						{
+							job = "avast_arcade",
+							reqDuty = true,
+						},
 					},
+					isEnabled = function()
+						return not GlobalState["Arcade:Open"]
+					end,
 				},
-				isEnabled = function()
-					return not GlobalState["Arcade:Open"]
-				end,
-			},
-			{
-				icon = "heart-pulse",
-				text = "Close Arcade",
-				event = "Arcade:Client:Close",
-				jobPerms = {
-					{
-						job = "arcade",
-						reqDuty = true,
+				{
+					icon = "heart-pulse",
+					text = "Close Arcade",
+					event = "Arcade:Client:Close",
+					jobPerms = {
+						{
+							job = "arcade",
+							reqDuty = true,
+						},
 					},
+					isEnabled = function()
+						return GlobalState["Arcade:Open"]
+					end,
 				},
-				isEnabled = function()
-					return GlobalState["Arcade:Open"]
-				end,
-			},
-			{
-				icon = "heart-pulse",
-				text = "Create New Game",
-				event = "Arcade:Client:CreateNew",
-				isEnabled = function()
-					return GlobalState["Arcade:Open"]
-				end,
-			},
-		}, "joystick", "WORLD_HUMAN_STAND_IMPATIENT")
+				{
+					icon = "heart-pulse",
+					text = "Create New Game",
+					event = "Arcade:Client:CreateNew",
+					isEnabled = function()
+						return GlobalState["Arcade:Open"]
+					end,
+				},
+			}, "joystick", "WORLD_HUMAN_STAND_IMPATIENT")
 	end)
 end)
 

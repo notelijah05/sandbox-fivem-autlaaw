@@ -60,44 +60,45 @@ loadAnimDict = function(dict)
 	end
 end
 AddEventHandler("Labor:Client:Setup", function()
-	PedInteraction:Add("GarbageJob", GetHashKey("s_m_y_garbage"), vector3(-348.940, -1570.224, 24.228), 340.561, 25.0, {
-		{
-			icon = "trash",
-			text = "Start Work",
-			event = "Garbage:Client:StartJob",
-			tempjob = "Garbage",
-			isEnabled = function()
-				return not _working
-			end,
-		},
-		{
-			icon = "handshake-angle",
-			text = "Borrow Garbage Truck",
-			event = "Garbage:Client:GarbageSpawn",
-			tempjob = "Garbage",
-			isEnabled = function()
-				return _working and _state == 1
-			end,
-		},
-		{
-			icon = "handshake-angle",
-			text = "Return Garbage Truck",
-			event = "Garbage:Client:GarbageSpawnRemove",
-			tempjob = "Garbage",
-			isEnabled = function()
-				return _working and _state == 3
-			end,
-		},
-		{
-			icon = "handshake-angle",
-			text = "Complete Job",
-			event = "Garbage:Client:TurnIn",
-			tempjob = "Garbage",
-			isEnabled = function()
-				return _working and _state == 4
-			end,
-		},
-	}, "trash")
+	exports['sandbox-pedinteraction']:Add("GarbageJob", GetHashKey("s_m_y_garbage"), vector3(-348.940, -1570.224, 24.228),
+		340.561, 25.0, {
+			{
+				icon = "trash",
+				text = "Start Work",
+				event = "Garbage:Client:StartJob",
+				tempjob = "Garbage",
+				isEnabled = function()
+					return not _working
+				end,
+			},
+			{
+				icon = "handshake-angle",
+				text = "Borrow Garbage Truck",
+				event = "Garbage:Client:GarbageSpawn",
+				tempjob = "Garbage",
+				isEnabled = function()
+					return _working and _state == 1
+				end,
+			},
+			{
+				icon = "handshake-angle",
+				text = "Return Garbage Truck",
+				event = "Garbage:Client:GarbageSpawnRemove",
+				tempjob = "Garbage",
+				isEnabled = function()
+					return _working and _state == 3
+				end,
+			},
+			{
+				icon = "handshake-angle",
+				text = "Complete Job",
+				event = "Garbage:Client:TurnIn",
+				tempjob = "Garbage",
+				isEnabled = function()
+					return _working and _state == 4
+				end,
+			},
+		}, "trash")
 
 	exports["sandbox-base"]:RegisterClientCallback("Garbage:DoingSomeAction", function(item, cb)
 		local ped = PlayerPedId()

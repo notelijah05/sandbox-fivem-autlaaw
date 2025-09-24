@@ -12,7 +12,7 @@ function PrisonVisitation()
 end
 
 function PrisonHospitalInit()
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"PrisonHospital",
 		`s_m_m_doctor_01`,
 		vector3(1769.832, 2571.891, 44.730),

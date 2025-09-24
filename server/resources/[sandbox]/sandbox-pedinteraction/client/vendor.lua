@@ -2,13 +2,11 @@ local _created = {}
 
 AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
 function RetrieveVendorComponents()
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vendor", {
-		"PedInteraction",
 		"Targeting",
 	}, function(error)
 		if #error > 0 then
@@ -26,7 +24,7 @@ RegisterNetEvent("Vendor:Client:Set", function(vendors)
 		}
 
 		if v.type == "ped" then
-			PedInteraction:Add(v.id, v.model, v.position.coords, v.position.heading, 50.0, {
+			exports['sandbox-pedinteraction']:Add(v.id, v.model, v.position.coords, v.position.heading, 50.0, {
 				{
 					icon = v.iconOverride or "question",
 					text = v.labelOverride or "Buy Items",
@@ -76,7 +74,7 @@ RegisterNetEvent(
 			}
 
 			if type == "ped" then
-				PedInteraction:Add(id, model, position.coords, position.heading, 50.0, {
+				exports['sandbox-pedinteraction']:Add(id, model, position.coords, position.heading, 50.0, {
 					{
 						icon = iconOverride or "question",
 						text = labelOverride or "Buy Items",
@@ -119,7 +117,7 @@ RegisterNetEvent(
 RegisterNetEvent("Vendor:Client:Remove", function(id)
 	if LocalPlayer.state.loggedIn then
 		if _created[id].type == "ped" then
-			PedInteraction:Remove(id)
+			exports['sandbox-pedinteraction']:Remove(id)
 		elseif _created[id].type == "poly" then
 			Targeting.Zones:RemoveZone(id)
 		end

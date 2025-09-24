@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 end
@@ -19,7 +18,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Animations",
 		"Targeting",
 		"Polyzone",
-		"PedInteraction",
 		"Reputation",
 		"Jail",
 	}, function(error)
@@ -187,24 +185,25 @@ AddEventHandler("Core:Shared:Ready", function()
 			true
 		)
 
-		PedInteraction:Add("PrisonJobs", `csb_janitor`, Config.Foreman.coords, Config.Foreman.heading, 25.0, {
-			{
-				icon = "clipboard-check",
-				text = "Start Work",
-				event = "Jail:Client:StartWork",
-				data = {},
-				isEnabled = function()
-					return LocalPlayer.state.Character:GetData("TempJob") == nil
-				end,
-			},
-			{
-				icon = "clipboard",
-				text = "Quit Work",
-				event = "Jail:Client:QuitWork",
-				tempjob = "Prison",
-				data = {},
-			},
-		}, "user-helmet-safety", "WORLD_HUMAN_JANITOR")
+		exports['sandbox-pedinteraction']:Add("PrisonJobs", `csb_janitor`, Config.Foreman.coords, Config.Foreman.heading,
+			25.0, {
+				{
+					icon = "clipboard-check",
+					text = "Start Work",
+					event = "Jail:Client:StartWork",
+					data = {},
+					isEnabled = function()
+						return LocalPlayer.state.Character:GetData("TempJob") == nil
+					end,
+				},
+				{
+					icon = "clipboard",
+					text = "Quit Work",
+					event = "Jail:Client:QuitWork",
+					tempjob = "Prison",
+					data = {},
+				},
+			}, "user-helmet-safety", "WORLD_HUMAN_JANITOR")
 
 		exports["sandbox-base"]:RegisterClientCallback("Jail:DoMugshot", function(data, cb)
 			_disabled = true

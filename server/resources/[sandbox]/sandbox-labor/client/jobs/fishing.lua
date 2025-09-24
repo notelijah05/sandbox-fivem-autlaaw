@@ -217,7 +217,8 @@ AddEventHandler("Labor:Client:Setup", function()
     end
 
     for k, v in ipairs(fishingStores) do
-        PedInteraction:Add(string.format("FishingJob%s", k), `a_m_m_hillbilly_01`, v.coords, v.heading, 25.0, shopData,
+        exports['sandbox-pedinteraction']:Add(string.format("FishingJob%s", k), `a_m_m_hillbilly_01`, v.coords, v
+            .heading, 25.0, shopData,
             "fishing-rod")
     end
 end)

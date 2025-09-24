@@ -26,7 +26,7 @@ function setupStores(shops)
 				end
 			end
 
-			PedInteraction:Add(
+			exports['sandbox-pedinteraction']:Add(
 				"shop-" .. v.id,
 				GetHashKey(v.npc),
 				vector3(v.coords.x, v.coords.y, v.coords.z),

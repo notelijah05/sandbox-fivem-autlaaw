@@ -103,7 +103,7 @@ AddEventHandler("Labor:Client:Setup", function()
 	})
 
 	for k, v in ipairs(_sellers) do
-		PedInteraction:Add(string.format("GemSeller%s", k), v.model, v.coords, v.heading, 25.0, {
+		exports['sandbox-pedinteraction']:Add(string.format("GemSeller%s", k), v.model, v.coords, v.heading, 25.0, {
 			{
 				icon = "sack-dollar",
 				text = "Sell Diamonds",
@@ -163,22 +163,23 @@ AddEventHandler("Labor:Client:Setup", function()
 		}, "gem")
 	end
 
-	PedInteraction:Add("MiningJob", `s_m_y_construct_02`, vector3(2741.874, 2791.691, 34.214), 155.045, 25.0, {
-		{
-			icon = "face-tongue-money",
-			text = "Sell Crushed Stone ($3/per)",
-			event = "Mining:Client:SellStone",
-		},
-		{
-			icon = "helmet-safety",
-			text = "Start Work",
-			event = "Mining:Client:StartJob",
-			tempjob = "Mining",
-			isEnabled = function()
-				return not _working
-			end,
-		},
-	}, "helmet-safety")
+	exports['sandbox-pedinteraction']:Add("MiningJob", `s_m_y_construct_02`, vector3(2741.874, 2791.691, 34.214), 155.045,
+		25.0, {
+			{
+				icon = "face-tongue-money",
+				text = "Sell Crushed Stone ($3/per)",
+				event = "Mining:Client:SellStone",
+			},
+			{
+				icon = "helmet-safety",
+				text = "Start Work",
+				event = "Mining:Client:StartJob",
+				tempjob = "Mining",
+				isEnabled = function()
+					return not _working
+				end,
+			},
+		}, "helmet-safety")
 end)
 
 local attempt = 0

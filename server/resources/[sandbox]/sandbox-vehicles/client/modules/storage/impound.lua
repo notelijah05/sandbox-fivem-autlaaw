@@ -1,7 +1,7 @@
 local attemptingImpoundOnVehicle = false
 
 AddEventHandler('Vehicles:Client:StartUp', function()
-	PedInteraction:Add('veh_impound', `ig_floyd`, vector3(-193.282, -1162.433, 22.7), 270.4, 10.0, {
+	exports['sandbox-pedinteraction']:Add('veh_impound', `ig_floyd`, vector3(-193.282, -1162.433, 22.7), 270.4, 10.0, {
 		{
 			icon = "truck-tow",
 			text = "Impound Release Request",
