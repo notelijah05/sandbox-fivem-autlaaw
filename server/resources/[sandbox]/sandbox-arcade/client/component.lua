@@ -9,7 +9,6 @@ function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Arcade = exports["sandbox-base"]:FetchComponent("Arcade")
 end
 
@@ -24,7 +23,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Animations",
 		"Weapons",
 		"Jobs",
-		"Input",
 		"Arcade",
 	}, function(error)
 		if #error > 0 then
@@ -120,7 +118,7 @@ AddEventHandler("Arcade:Client:Close", function()
 end)
 
 AddEventHandler("Arcade:Client:CreateNew", function(entity, data)
-	Input:Show("Create New Match", "Match Configuration", {
+	exports['sandbox-hud']:InputShow("Create New Match", "Match Configuration", {
 		{
 			id = "gamemode",
 			type = "select",

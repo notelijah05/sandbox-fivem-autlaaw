@@ -35,7 +35,7 @@ RegisterNetEvent("Animations:Client:OpenEmoteBinds", function()
 		})
 	end
 
-	Input:Show("Emote Binds", "Input Label", bindInputs, "Animations:Client:SaveEmoteBinds", {})
+	exports['sandbox-hud']:InputShow("Emote Binds", "Input Label", bindInputs, "Animations:Client:SaveEmoteBinds", {})
 end)
 
 AddEventHandler("Animations:Client:SaveEmoteBinds", function(values)

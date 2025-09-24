@@ -21,7 +21,7 @@ local function ShowInput()
 		Wait(1)
 	end
 
-	Input:Show("Are You There?", string.format('Enter: "%s" To Prevent Being Kicked', afkAnswer), {
+	exports['sandbox-hud']:InputShow("Are You There?", string.format('Enter: "%s" To Prevent Being Kicked', afkAnswer), {
 		{
 			id = "code",
 			type = "text",

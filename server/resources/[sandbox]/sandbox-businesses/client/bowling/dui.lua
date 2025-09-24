@@ -150,7 +150,7 @@ end
 local linkPromise
 function GetBowlingTVLink()
     linkPromise = promise.new()
-    Input:Show('Bowling', 'URL', {
+    exports['sandbox-hud']:InputShow('Bowling', 'URL', {
         {
             id = 'name',
             type = 'text',

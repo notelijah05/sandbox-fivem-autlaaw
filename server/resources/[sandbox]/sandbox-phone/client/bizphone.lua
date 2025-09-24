@@ -176,7 +176,7 @@ function CleanupBizPhones()
 end
 
 AddEventHandler("Phone:Client:MakeBizCall", function(entityData, data)
-    Input:Show("Phone Number", "Number to Call", {
+    exports['sandbox-hud']:InputShow("Phone Number", "Number to Call", {
         {
             id = "number",
             type = "text",

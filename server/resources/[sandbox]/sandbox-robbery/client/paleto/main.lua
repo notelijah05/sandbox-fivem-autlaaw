@@ -437,7 +437,7 @@ end)
 AddEventHandler("Robbery:Client:Paleto:Safe", function(entity, data)
 	exports["sandbox-base"]:ServerCallback("Robbery:Paleto:StartSafe", {}, function(s)
 		if s then
-			Input:Show("Input Access Code", "Access Code", {
+			exports['sandbox-hud']:InputShow("Input Access Code", "Access Code", {
 				{
 					id = "code",
 					type = "number",
@@ -494,7 +494,7 @@ end)
 
 AddEventHandler("Robbery:Client:Paleto:Door", function(data)
 	if data.officeId ~= nil then
-		Input:Show("Input Access Code", "Access Code", {
+		exports['sandbox-hud']:InputShow("Input Access Code", "Access Code", {
 			{
 				id = "code",
 				type = "number",

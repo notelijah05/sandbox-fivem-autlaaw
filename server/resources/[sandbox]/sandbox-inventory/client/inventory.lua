@@ -86,7 +86,6 @@ function RetrieveComponents()
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -104,7 +103,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Progress",
 		"Crafting",
 		"Interaction",
-		"Input",
 		"Targeting",
 		"PedInteraction",
 		"Polyzone",
@@ -1219,7 +1217,7 @@ AddEventHandler("Shop:Client:BasicShop:Open", function(obj, shopId)
 end)
 
 AddEventHandler("Shop:Client:BasicShop:AddModerator", function(obj, shopId)
-	Input:Show(
+	exports['sandbox-hud']:InputShow(
 		"Add Shop Moderator",
 		"Add Shop Moderator",
 		{

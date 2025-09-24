@@ -9,7 +9,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
@@ -23,7 +22,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Interaction",
 		"ListMenu",
-		"Input",
 		"Apartment",
 		"Characters",
 		"Wardrobe",
@@ -298,7 +296,7 @@ AddEventHandler("Apartment:Client:Enter", function(data)
 end)
 
 AddEventHandler("Apartment:Client:RequestEntry", function(data)
-	Input:Show("Request Entry", "Unit Number (Owner State ID)", {
+	exports['sandbox-hud']:InputShow("Request Entry", "Unit Number (Owner State ID)", {
 		{
 			id = "unit",
 			type = "number",

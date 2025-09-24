@@ -8,7 +8,7 @@ function GetNewTVLink(id)
     end
 
     linkPromise = promise.new()
-    Input:Show("TVs", "URL - Imgur Only (i.imgur.com/example.png)", {
+    exports['sandbox-hud']:InputShow("TVs", "URL - Imgur Only (i.imgur.com/example.png)", {
         {
             id = "name",
             type = "text",

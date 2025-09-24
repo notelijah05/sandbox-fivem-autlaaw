@@ -67,7 +67,7 @@ AddEventHandler("Prison:Client:Stash:Raid", function(entity, data)
 	local menu = {}
 	local playerSID = nil
 
-	Input:Show("Prison Stash Raid", "Enter Prisoner State ID", {
+	exports['sandbox-hud']:InputShow("Prison Stash Raid", "Enter Prisoner State ID", {
 		{
 			id = "stateid",
 			type = "text",

@@ -176,7 +176,6 @@ end
 AddEventHandler("Police:Shared:DependencyUpdate", PoliceComponents)
 function PoliceComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -194,7 +193,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Inventory",
-		"Input",
 		"Handcuffs",
 		"Interaction",
 		"Targeting",
@@ -397,7 +395,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					label = "Breach Apartment",
 					action = function()
 						Interaction:Hide()
-						Input:Show("Breaching", "Unit Number (Owner State ID)", {
+						exports['sandbox-hud']:InputShow("Breaching", "Unit Number (Owner State ID)", {
 							{
 								id = "unit",
 								type = "number",

@@ -1,5 +1,5 @@
 AddEventHandler('Dealerships:Client:StartRunningCredit', function(hit, data)
-    Input:Show(
+    exports['sandbox-hud']:InputShow(
         "Run Credit Check & See Max Borrowable Amount",
         "Customer State ID",
         {

@@ -1,14 +1,12 @@
 AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
 function RetrieveWardrobeComponents()
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("ListMenu", {
 		"ListMenu",
-		"Input",
 		"Wardrobe",
 	}, function(error)
 		if #error > 0 then
@@ -23,7 +21,7 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 AddEventHandler("Wardrobe:Client:SaveNew", function(data)
-	Input:Show("Outfit Name", "Outfit Name", {
+	exports['sandbox-hud']:InputShow("Outfit Name", "Outfit Name", {
 		{
 			id = "name",
 			type = "text",

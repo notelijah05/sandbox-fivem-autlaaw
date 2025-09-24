@@ -15,7 +15,6 @@ function RetrieveComponents()
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	InfoOverlay = exports["sandbox-base"]:FetchComponent("InfoOverlay")
@@ -35,7 +34,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"ListMenu",
 		"PedInteraction",
 		"Minigame",
-		"Input",
 		"Interaction",
 		"Inventory",
 		"InfoOverlay",

@@ -30,7 +30,7 @@ end)
 local platePromise
 function GetNewPersonalPlate()
     platePromise = promise.new()
-    Input:Show("New Personal Plate", "Personal Plate", {
+    exports['sandbox-hud']:InputShow("New Personal Plate", "Personal Plate", {
         {
             id = "plate",
             type = "text",

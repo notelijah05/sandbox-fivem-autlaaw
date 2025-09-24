@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
@@ -33,7 +32,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jail",
 		"Trunk",
 		"Escort",
-		"Input",
 	}, function(error)
 		if #error > 0 then
 			return

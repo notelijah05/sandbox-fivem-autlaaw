@@ -157,7 +157,7 @@ end
 local linkPromise
 function GetNewTVLink()
     linkPromise = promise.new()
-    Input:Show('TVs', 'URL', {
+    exports['sandbox-hud']:InputShow('TVs', 'URL', {
         {
             id = 'name',
             type = 'text',

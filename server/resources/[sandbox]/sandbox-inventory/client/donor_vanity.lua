@@ -65,7 +65,7 @@ end)
 local vanityPromise
 function GenerateNewVanityItem()
 	vanityPromise = promise.new()
-	Input:Show("New Vanity Item", "Vanity Item", {
+	exports['sandbox-hud']:InputShow("New Vanity Item", "Vanity Item", {
 		{
 			id = "vanity_item_label",
 			type = "text",

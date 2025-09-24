@@ -58,34 +58,35 @@ function GetContactlessInput(data)
     promptPromise = promise.new()
     currentlyShowing = GetGameTimer()
     local showingAtTime = GetGameTimer()
-    Input:Show(string.format("Create Contactless Payment - %s Terminal #%s", data.jobName, data.num), "Amount", {
-        {
-            id = "amount",
-            type = "number",
-            options = {
-                inputProps = {
-                    defaultValue = "100",
-                    min = 0,
-                    max = 25000,
+    exports['sandbox-hud']:InputShow(
+        string.format("Create Contactless Payment - %s Terminal #%s", data.jobName, data.num), "Amount", {
+            {
+                id = "amount",
+                type = "number",
+                options = {
+                    inputProps = {
+                        defaultValue = "100",
+                        min = 0,
+                        max = 25000,
+                    },
+                    label = "Amount",
                 },
-                label = "Amount",
             },
-        },
-        {
-            id = "description",
-            type = "text",
-            options = {
-                inputProps = {
-                    maxlength = 100,
+            {
+                id = "description",
+                type = "text",
+                options = {
+                    inputProps = {
+                        maxlength = 100,
+                    },
+                    label = "Description",
                 },
-                label = "Description",
             },
-        },
-    }, "Contactless:Client:RecieveInput", {})
+        }, "Contactless:Client:RecieveInput", {})
 
     Citizen.SetTimeout(30000, function()
         if promptPromise and currentlyShowing == showingAtTime then
-            Input:Close()
+            exports['sandbox-hud']:InputClose()
             promptPromise:resolve(false)
             promptPromise = nil
         end

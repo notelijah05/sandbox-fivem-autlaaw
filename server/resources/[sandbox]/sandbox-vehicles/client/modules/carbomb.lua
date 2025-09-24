@@ -140,7 +140,7 @@ end)
 local linkPromise
 function GetCarBombConfig()
     linkPromise = promise.new()
-    Input:Show('Car Bomb', 'URL', {
+    exports['sandbox-hud']:InputShow('Car Bomb', 'URL', {
         {
             id = 'minSpeed',
             type = 'number',

@@ -3,13 +3,11 @@ local _r = false
 AddEventHandler("Pwnzor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Pwnzor", {
 		"Weapons",
-		"Input",
 	}, function(error)
 		if #error > 0 then
 			return

@@ -137,14 +137,15 @@ AddEventHandler("Businesses:Client:MBA:StartChangeInterior", function()
 		end
 	end
 
-	Input:Show(string.format("Change Event Floor - Current: %s", _eventNames[current]), "Match Configuration", {
-		{
-			id = "interior",
-			type = "select",
-			select = options,
-			options = {},
-		},
-	}, "Businesses:Client:MBA:ChangeInterior", {})
+	exports['sandbox-hud']:InputShow(string.format("Change Event Floor - Current: %s", _eventNames[current]),
+		"Match Configuration", {
+			{
+				id = "interior",
+				type = "select",
+				select = options,
+				options = {},
+			},
+		}, "Businesses:Client:MBA:ChangeInterior", {})
 end)
 
 AddEventHandler("Businesses:Client:MBA:ChangeInterior", function(values)

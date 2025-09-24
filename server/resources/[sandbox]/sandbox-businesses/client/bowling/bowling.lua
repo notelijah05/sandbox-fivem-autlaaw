@@ -319,7 +319,7 @@ end
 local nickNamePromise
 function GetBowlingNickName()
     nickNamePromise = promise.new()
-    Input:Show('Bowling', 'Name', {
+    exports['sandbox-hud']:InputShow('Bowling', 'Name', {
         {
             id = 'name',
             type = 'text',

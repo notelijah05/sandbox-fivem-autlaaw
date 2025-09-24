@@ -15,7 +15,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Scenes = exports["sandbox-base"]:FetchComponent("Scenes")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"ListMenu",
 		"Scenes",
-		"Input",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -125,7 +123,7 @@ _SCENES = {
 			return exports["sandbox-hud"]:NotifError("Cannot Place On a Vehicle or Person")
 		end
 
-		Input:Show(
+		exports['sandbox-hud']:InputShow(
 			"Scene Creation",
 			"Scene Text. Use ~n~ For a Newline",
 			{

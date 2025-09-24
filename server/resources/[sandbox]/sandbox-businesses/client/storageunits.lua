@@ -234,7 +234,7 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 AddEventHandler("StorageUnits:ChangePasscode", function(data)
-    Input:Show("Change Unit Passcode", "New Passcode", {
+    exports['sandbox-hud']:InputShow("Change Unit Passcode", "New Passcode", {
         {
             id = "passcode",
             type = "text",
@@ -266,7 +266,7 @@ AddEventHandler("StorageUnits:Client:NewPasscode", function(values, data)
 end)
 
 AddEventHandler("StorageUnits:StartSell", function(data)
-    Input:Show("Set Storage Unit Owner", "State ID", {
+    exports['sandbox-hud']:InputShow("Set Storage Unit Owner", "State ID", {
         {
             id = "SID",
             type = "number",
