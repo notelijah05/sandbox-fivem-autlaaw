@@ -10,7 +10,6 @@ _savedVehiclePropertiesClusterfuck = {}
 
 AddEventHandler('Vehicles:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
-    Locations = exports['sandbox-base']:FetchComponent('Locations')
     Tow = exports['sandbox-base']:FetchComponent('Tow')
     Properties = exports['sandbox-base']:FetchComponent('Properties')
     Police = exports['sandbox-base']:FetchComponent('Police')
@@ -20,7 +19,6 @@ end
 
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Vehicles', {
-        'Locations',
         'Tow',
         'Properties',
         'Police',

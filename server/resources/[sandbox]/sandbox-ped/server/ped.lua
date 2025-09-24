@@ -281,193 +281,180 @@ GlobalState["Ped:Pricing"] = {
 	SURGERY = 2500,
 }
 
-AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Locations = exports["sandbox-base"]:FetchComponent("Locations")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Ped", {
-		"Locations",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
-		RegisterItemUses()
+	RegisterCallbacks()
+	RegisterItemUses()
 
-		GlobalState["GangChains"] = _gangChains
-		GlobalState["ClothingStoreHidden"] = _hideFromStore
+	GlobalState["GangChains"] = _gangChains
+	GlobalState["ClothingStoreHidden"] = _hideFromStore
 
-		exports["sandbox-chat"]:RegisterCommand("m0", function(source, args, rawCommand)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
-				if ped.customization.components.mask.drawableId ~= 0 then
-					TriggerClientEvent("Ped:Client:MaskAnim", source)
-					Wait(300)
-					exports['sandbox-ped']:MaskUnequip(source)
-				end
+	exports["sandbox-chat"]:RegisterCommand("m0", function(source, args, rawCommand)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			local ped = char:GetData("Ped")
+			if ped.customization.components.mask.drawableId ~= 0 then
+				TriggerClientEvent("Ped:Client:MaskAnim", source)
+				Wait(300)
+				exports['sandbox-ped']:MaskUnequip(source)
 			end
-		end, {
-			help = "Remove Mask",
-		})
+		end
+	end, {
+		help = "Remove Mask",
+	})
 
-		exports["sandbox-chat"]:RegisterCommand("h0", function(source, args, rawCommand)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
-				if not ped.customization.props.hat.disabled then
-					TriggerClientEvent("Ped:Client:HatGlassAnim", source)
-					Wait(300)
-					exports['sandbox-ped']:HatUnequip(source)
-				end
+	exports["sandbox-chat"]:RegisterCommand("h0", function(source, args, rawCommand)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			local ped = char:GetData("Ped")
+			if not ped.customization.props.hat.disabled then
+				TriggerClientEvent("Ped:Client:HatGlassAnim", source)
+				Wait(300)
+				exports['sandbox-ped']:HatUnequip(source)
 			end
-		end, {
-			help = "Remove Hat",
-		})
+		end
+	end, {
+		help = "Remove Hat",
+	})
 
-		exports["sandbox-chat"]:RegisterCommand("h1", function(source, args, rawCommand)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
-				if not ped.customization.props.hat.disabled then
-					TriggerClientEvent("Ped:Client:HatGlassAnim", source)
-					Wait(300)
-					TriggerClientEvent("Ped:Client:Hat", source)
-				end
+	exports["sandbox-chat"]:RegisterCommand("h1", function(source, args, rawCommand)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			local ped = char:GetData("Ped")
+			if not ped.customization.props.hat.disabled then
+				TriggerClientEvent("Ped:Client:HatGlassAnim", source)
+				Wait(300)
+				TriggerClientEvent("Ped:Client:Hat", source)
 			end
-		end, {
-			help = "Re-equip Hat If You Had One",
-		})
+		end
+	end, {
+		help = "Re-equip Hat If You Had One",
+	})
 
-		exports["sandbox-chat"]:RegisterCommand("g1", function(source, args, rawCommand)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
-				if not ped.customization.props.glass.disabled then
-					TriggerClientEvent("Ped:Client:HatGlassAnim", source)
-					Wait(300)
-					TriggerClientEvent("Ped:Client:Glasses", source)
-				end
+	exports["sandbox-chat"]:RegisterCommand("g1", function(source, args, rawCommand)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			local ped = char:GetData("Ped")
+			if not ped.customization.props.glass.disabled then
+				TriggerClientEvent("Ped:Client:HatGlassAnim", source)
+				Wait(300)
+				TriggerClientEvent("Ped:Client:Glasses", source)
 			end
-		end, {
-			help = "Re-equip Glasses If You Had One",
-		})
+		end
+	end, {
+		help = "Re-equip Glasses If You Had One",
+	})
 
-		exports["sandbox-chat"]:RegisterCommand("g0", function(source, args, rawCommand)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				TriggerClientEvent("Ped:Client:RemoveGlasses", source)
-			end
-		end, {
-			help = "Remove Glasses",
-		})
+	exports["sandbox-chat"]:RegisterCommand("g0", function(source, args, rawCommand)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			TriggerClientEvent("Ped:Client:RemoveGlasses", source)
+		end
+	end, {
+		help = "Remove Glasses",
+	})
 
-		exports["sandbox-chat"]:RegisterAdminCommand("pedwhitelist", function(source, args, rawCommand)
-			local sid, model, label = tonumber(args[1]), args[2], args[3]
-			if sid and model and label then
-				exports['sandbox-base']:DatabaseGameFindOne({
-					collection = "characters",
-					query = {
-						SID = sid,
-					},
-					options = {
-						projection = {
-							SID = 1,
-						}
+	exports["sandbox-chat"]:RegisterAdminCommand("pedwhitelist", function(source, args, rawCommand)
+		local sid, model, label = tonumber(args[1]), args[2], args[3]
+		if sid and model and label then
+			exports['sandbox-base']:DatabaseGameFindOne({
+				collection = "characters",
+				query = {
+					SID = sid,
+				},
+				options = {
+					projection = {
+						SID = 1,
 					}
-				}, function(success, results)
-					if success and #results > 0 then
-						MySQL.insert.await("INSERT INTO whitelisted_peds (sid, model, label) VALUES (?, ?, ?)", {
-							sid,
-							model,
-							label
-						})
+				}
+			}, function(success, results)
+				if success and #results > 0 then
+					MySQL.insert.await("INSERT INTO whitelisted_peds (sid, model, label) VALUES (?, ?, ?)", {
+						sid,
+						model,
+						label
+					})
 
-						exports["sandbox-chat"]:SendSystemSingle(source,
-							string.format("Added Whitelisted Ped to State ID %s", sid))
-					else
-						exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
-					end
-				end)
-			else
-				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
-			end
-		end, {
-			help = "Add Whitelisted Ped to Character",
-			params = {
-				{
-					name = "SID",
-					help = "Character State ID",
-				},
-				{
-					name = "Model",
-					help = "Ped Model e.g. mp_m_freemode_01",
-				},
-				{
-					name = "Label",
-					help = "Ped Name",
-				},
-			},
-		}, 3)
-
-		exports["sandbox-chat"]:RegisterAdminCommand("pedwhitelistview", function(source, args, rawCommand)
-			local sid = tonumber(args[1])
-			if sid then
-				local res = MySQL.query.await("SELECT model, label FROM whitelisted_peds WHERE sid = ?", {
-					sid
-				})
-
-				local message = "Whitelisted Peds<br>"
-				for k, v in ipairs(res) do
-					message = message .. string.format("Model: %s | Label: %s", v.model, v.label)
-				end
-				exports["sandbox-chat"]:SendSystemSingle(source, message)
-			else
-				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
-			end
-		end, {
-			help = "View Whitelisted Peds for Character",
-			params = {
-				{
-					name = "SID",
-					help = "Character State ID",
-				},
-			},
-		}, 1)
-
-		exports["sandbox-chat"]:RegisterAdminCommand("pedwhitelistremove", function(source, args, rawCommand)
-			local sid, model = tonumber(args[1]), args[2]
-			if sid and model then
-				local d = MySQL.query.await("DELETE FROM whitelisted_peds WHERE SID = ? AND model = ?", {
-					sid,
-					model,
-				})
-
-				if d.affectedRows > 0 then
-					exports["sandbox-chat"]:SendSystemSingle(source, "Deleted Ped")
+					exports["sandbox-chat"]:SendSystemSingle(source,
+						string.format("Added Whitelisted Ped to State ID %s", sid))
 				else
-					exports["sandbox-chat"]:SendSystemSingle(source, "Failed to Delete")
+					exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
 				end
-			else
-				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
-			end
-		end, {
-			help = "Remove Whitelisted Ped from Character",
-			params = {
-				{
-					name = "SID",
-					help = "Character State ID",
-				},
-				{
-					name = "Model",
-					help = "Ped Model e.g. mp_m_freemode_01",
-				},
+			end)
+		else
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
+		end
+	end, {
+		help = "Add Whitelisted Ped to Character",
+		params = {
+			{
+				name = "SID",
+				help = "Character State ID",
 			},
-		}, 2)
-	end)
+			{
+				name = "Model",
+				help = "Ped Model e.g. mp_m_freemode_01",
+			},
+			{
+				name = "Label",
+				help = "Ped Name",
+			},
+		},
+	}, 3)
+
+	exports["sandbox-chat"]:RegisterAdminCommand("pedwhitelistview", function(source, args, rawCommand)
+		local sid = tonumber(args[1])
+		if sid then
+			local res = MySQL.query.await("SELECT model, label FROM whitelisted_peds WHERE sid = ?", {
+				sid
+			})
+
+			local message = "Whitelisted Peds<br>"
+			for k, v in ipairs(res) do
+				message = message .. string.format("Model: %s | Label: %s", v.model, v.label)
+			end
+			exports["sandbox-chat"]:SendSystemSingle(source, message)
+		else
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
+		end
+	end, {
+		help = "View Whitelisted Peds for Character",
+		params = {
+			{
+				name = "SID",
+				help = "Character State ID",
+			},
+		},
+	}, 1)
+
+	exports["sandbox-chat"]:RegisterAdminCommand("pedwhitelistremove", function(source, args, rawCommand)
+		local sid, model = tonumber(args[1]), args[2]
+		if sid and model then
+			local d = MySQL.query.await("DELETE FROM whitelisted_peds WHERE SID = ? AND model = ?", {
+				sid,
+				model,
+			})
+
+			if d.affectedRows > 0 then
+				exports["sandbox-chat"]:SendSystemSingle(source, "Deleted Ped")
+			else
+				exports["sandbox-chat"]:SendSystemSingle(source, "Failed to Delete")
+			end
+		else
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
+		end
+	end, {
+		help = "Remove Whitelisted Ped from Character",
+		params = {
+			{
+				name = "SID",
+				help = "Character State ID",
+			},
+			{
+				name = "Model",
+				help = "Ped Model e.g. mp_m_freemode_01",
+			},
+		},
+	}, 2)
 end)
 
 exports("Save", function(char, ped)

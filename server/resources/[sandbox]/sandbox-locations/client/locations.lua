@@ -89,48 +89,29 @@ local _logoutLocations = {
     },
 }
 
-AddEventHandler('Proxy:Shared:RegisterReady', function()
-    exports['sandbox-base']:RegisterComponent('Locations', LOCATIONS)
-end)
-
-AddEventHandler('Locations:Shared:DependencyUpdate', RetrieveComponents)
-function RetrieveComponents()
-    Locations = exports['sandbox-base']:FetchComponent('Locations')
-end
 
 AddEventHandler('Core:Shared:Ready', function()
-    exports['sandbox-base']:RequestDependencies('Locations', {
-        'Locations',
-    }, function(error)
-        if #error > 0 then
-            return;
-        end
-        RetrieveComponents()
-
-        for k, v in ipairs(_logoutLocations) do
-            exports['sandbox-targeting']:ZonesAddBox("logout-location-" .. k, "person-from-portal", v.center, v.length,
-                v.width, v.options,
+    for k, v in ipairs(_logoutLocations) do
+        exports['sandbox-targeting']:ZonesAddBox("logout-location-" .. k, "person-from-portal", v.center, v.length,
+            v.width, v.options,
+            {
                 {
-                    {
-                        icon = "person-from-portal",
-                        text = "Logout",
-                        event = "Locations:Client:LogoutLocation",
-                    },
-                }, 2.0, true)
-        end
-    end)
+                    icon = "person-from-portal",
+                    text = "Logout",
+                    event = "Locations:Client:LogoutLocation",
+                },
+            }, 2.0, true)
+    end
 end)
 
-LOCATIONS = {
-    GetAll = function(self, type, cb)
-        exports["sandbox-base"]:ServerCallback('Locations:GetAll', {
-            type = type
-        }, cb)
-    end
-}
+exports("GetAll", function(type, cb)
+    exports["sandbox-base"]:ServerCallback('Locations:GetAll', {
+        type = type
+    }, cb)
+end)
 
 AddEventHandler('Locations:Client:LogoutLocation', function()
-    Characters:Logout()
+    exports['sandbox-characters']:Logout()
 end)
 
 AddEventHandler("Characters:Client:Spawn", function()
@@ -138,7 +119,7 @@ AddEventHandler("Characters:Client:Spawn", function()
         while LocalPlayer.state.loggedIn do
             Wait(60000)
 
-            if not LocalPlayer.state?.tpLocation then
+            if not LocalPlayer.state.tpLocation then
                 local coords = GetEntityCoords(PlayerPedId())
                 if LocalPlayer.state.loggedIn and coords and #(coords - vector3(0.0, 0.0, 0.0)) >= 10.0 then
                     TriggerServerEvent('Characters:Server:LastLocation', coords)
