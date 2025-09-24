@@ -209,7 +209,7 @@ function PickupClosestEvidence(localEvidence)
 
 			if closest and lastDist <= 1.75 then
 				if LocalPlayer.state.onDuty == "police" then
-					Animations.Emotes:Play("pickup", false, false, true, true)
+					exports['sandbox-animations']:EmotesPlay("pickup", false, false, true, true)
 					TriggerServerEvent("Evidence:Server:PickupEvidence", closest)
 					-- else
 					--     print('Destroy Evidence')

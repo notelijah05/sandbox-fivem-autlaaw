@@ -21,12 +21,12 @@ function ApplyLimp(ped)
 	if shouldLimp and not (LocalPlayer.state.onPainKillers or 0 > 0) then
 		if not LocalPlayer.state.isLimping then
 			LocalPlayer.state.isLimping = true
-			Animations.PedFeatures:RequestFeaturesUpdate()
+			exports['sandbox-animations']:PedFeaturesRequestFeaturesUpdate()
 		end
 	else
 		if LocalPlayer.state.isLimping then
 			LocalPlayer.state.isLimping = false
-			Animations.PedFeatures:RequestFeaturesUpdate()
+			exports['sandbox-animations']:PedFeaturesRequestFeaturesUpdate()
 		end
 	end
 end

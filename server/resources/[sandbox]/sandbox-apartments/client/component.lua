@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -15,7 +14,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"Apartment",
 		"Characters",
-		"Animations",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -151,7 +149,7 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 
 	if wakeUp then
 		Citizen.SetTimeout(250, function()
-			Animations.Emotes:WakeUp(p.interior.wakeup)
+			exports['sandbox-animations']:EmotesWakeUp(p.interior.wakeup)
 		end)
 	end
 

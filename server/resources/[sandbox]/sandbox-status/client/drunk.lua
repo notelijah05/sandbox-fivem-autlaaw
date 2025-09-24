@@ -305,7 +305,7 @@ local _alcoholConfig = {
 }
 
 function IsDrinkingAlcohol()
-    local doingAnim = Animations.Emotes:Get()
+    local doingAnim = exports['sandbox-animations']:EmotesGet()
     for k, v in pairs(_alcoholConfig) do
         if v.anim == doingAnim then
             return true
@@ -323,7 +323,7 @@ function RegisterDrunkCallbacks()
 
         local alcohol = _alcoholConfig[data]
         if alcohol then
-            Animations.Emotes:Play(alcohol.anim, false, alcohol.initialTime, true)
+            exports['sandbox-animations']:EmotesPlay(alcohol.anim, false, alcohol.initialTime, true)
             exports['sandbox-hud']:Progress({
                 name = data,
                 duration = alcohol.initialTime,
@@ -339,8 +339,8 @@ function RegisterDrunkCallbacks()
             }, function(cancelled)
                 cb(not cancelled)
                 if not cancelled then
-                    Animations.Emotes:ForceCancel()
-                    Animations.Emotes:Play(alcohol.anim, false, false, false)
+                    exports['sandbox-animations']:EmotesForceCancel()
+                    exports['sandbox-animations']:EmotesPlay(alcohol.anim, false, false, false)
 
                     local drunkLevel = Status.Get:Single("PLAYER_DRUNK").value
                     if drunkLevel < alcohol.drunkBaseline then
@@ -354,13 +354,13 @@ function RegisterDrunkCallbacks()
 
                     CreateThread(function()
                         local tick = 3
-                        while LocalPlayer.state.loggedIn and Animations.Emotes:Get() == alcohol.anim do
+                        while LocalPlayer.state.loggedIn and exports['sandbox-animations']:EmotesGet() == alcohol.anim do
                             if tick >= 5 then
                                 Status.Modify:Add("PLAYER_DRUNK", alcohol.drunkPerTick)
 
                                 tick = 0
                                 if endTime <= GetGameTimer() then
-                                    Animations.Emotes:ForceCancel()
+                                    exports['sandbox-animations']:EmotesForceCancel()
                                     break
                                 end
                             else

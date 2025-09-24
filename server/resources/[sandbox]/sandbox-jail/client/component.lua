@@ -5,7 +5,6 @@ _doingMugshot = false
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -14,7 +13,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Characters",
-		"Animations",
 		"Polyzone",
 		"Reputation",
 		"Jail",
@@ -216,7 +214,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				Wait(10)
 			end
 
-			Animations.Emotes:Play("mugshot", false, -1, true)
+			exports['sandbox-animations']:EmotesPlay("mugshot", false, -1, true)
 
 			DoBoardShit(data.jailer, data.duration, data.date)
 			DisableControls()
@@ -254,7 +252,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			exports["sandbox-sounds"]:PlayOne("mugshot.ogg", 0.2)
 			Wait(2000)
 
-			Animations.Emotes:ForceCancel()
+			exports['sandbox-animations']:EmotesForceCancel()
 			_doingMugshot = false
 
 			DoScreenFadeOut(1000)

@@ -12,7 +12,7 @@ _MDT = {
 			SendNUIMessage({ type = "APP_SHOW" })
 			SetNuiFocus(true, true)
 
-			Animations.Emotes:ForceCancel()
+			exports['sandbox-animations']:EmotesForceCancel()
 			exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
 			CreateThread(function()

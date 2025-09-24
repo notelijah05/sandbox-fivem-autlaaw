@@ -3,14 +3,12 @@ _evald = {}
 AddEventHandler("Police:Shared:DependencyUpdate", EMSComponents)
 function EMSComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
 local _calledForHelp = false
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("EMS", {
 		"Damage",
-		"Animations",
 	}, function(error)
 		if #error > 0 then
 			return

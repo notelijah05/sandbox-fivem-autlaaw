@@ -42,14 +42,12 @@ local _playing = nil
 AddEventHandler("minigame:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("minigame", {
 		"Jail",
-		"Animations",
 		"Admin",
 	}, function(error)
 		if #error > 0 then
@@ -839,7 +837,7 @@ function _doGameStart(player, action)
 								)
 							end
 						elseif action.animation.anim ~= nil then
-							Animations.Emotes:Play(action.animation.anim, false, action.duration or -1,
+							exports['sandbox-animations']:EmotesPlay(action.animation.anim, false, action.duration or -1,
 								true)
 						else
 							if GetVehiclePedIsIn(LocalPlayer.state.ped) == 0 then
@@ -980,7 +978,7 @@ function _gameCleanup(action)
 				StopAnimTask(PlayerPedId(), action.animation.animDict, action.animation.anim, 1.0)
 			end
 		elseif action.animation.anim ~= nil then
-			Animations.Emotes:ForceCancel()
+			exports['sandbox-animations']:EmotesForceCancel()
 		else
 			if action.animation.task ~= nil and GetVehiclePedIsIn(LocalPlayer.state.ped) == 0 then
 				ClearPedTasksImmediately(LocalPlayer.state.ped)

@@ -12,40 +12,40 @@ AddEventHandler("Casino:Client:Startup", function()
             minZ = 70.47,
             maxZ = 73.27
         }, {
-        {
-            icon = "face-tongue-money",
-            text = "Spin the Wheel! ($1,500)",
-            event = "Casino:Client:StartSpin",
-            isEnabled = function()
-                return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
-                    not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
-            end,
-        },
-        {
-            icon = "gift-card",
-            text = "VIP Turbo Spin ($7,500)",
-            event = "Casino:Client:StartSpin",
-            data = { turbo = true },
-            isEnabled = function()
-                return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
-                    not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
-            end,
-        },
-        {
-            icon = "unlock",
-            text = "Unlock Wheel",
-            event = "Casino:Client:UnlockWheel",
-            jobPerms = {
-                {
-                    job = "casino",
-                    reqDuty = true,
-                }
+            {
+                icon = "face-tongue-money",
+                text = "Spin the Wheel! ($1,500)",
+                event = "Casino:Client:StartSpin",
+                isEnabled = function()
+                    return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
+                        not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
+                end,
             },
-            isEnabled = function()
-                return GlobalState["Casino:WheelLocked"]
-            end,
-        },
-    }, 2.0, true)
+            {
+                icon = "gift-card",
+                text = "VIP Turbo Spin ($7,500)",
+                event = "Casino:Client:StartSpin",
+                data = { turbo = true },
+                isEnabled = function()
+                    return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
+                        not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
+                end,
+            },
+            {
+                icon = "unlock",
+                text = "Unlock Wheel",
+                event = "Casino:Client:UnlockWheel",
+                jobPerms = {
+                    {
+                        job = "casino",
+                        reqDuty = true,
+                    }
+                },
+                isEnabled = function()
+                    return GlobalState["Casino:WheelLocked"]
+                end,
+            },
+        }, 2.0, true)
 end)
 
 AddEventHandler("Casino:Client:UnlockWheel", function()
@@ -63,7 +63,7 @@ AddEventHandler("Casino:Client:StartSpin", function(_, data)
         if success then
             LocalPlayer.state.playingCasino = true
 
-            Animations.Emotes:ForceCancel()
+            exports['sandbox-animations']:EmotesForceCancel()
             exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
             local _lib = "anim_casino_a@amb@casino@games@lucky7wheel@male"

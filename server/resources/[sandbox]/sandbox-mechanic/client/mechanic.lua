@@ -3,7 +3,6 @@ _repairingVehicle = false
 AddEventHandler("Mechanic:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 end
@@ -11,7 +10,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Mechanic", {
 		"Mechanic",
-		"Animations",
 		"Polyzone",
 		"Jobs",
 	}, function(error)
@@ -391,7 +389,7 @@ AddEventHandler("Mechanic:Client:StartRegularRepair", function(entityData)
 		Wait(750)
 
 		local repairLength = 20
-		Animations.Emotes:Play("mechanic", false, repairLength * 1000, true)
+		exports['sandbox-animations']:EmotesPlay("mechanic", false, repairLength * 1000, true)
 		exports['sandbox-hud']:ProgressWithStartAndTick({
 			name = "veh_mech_repair",
 			duration = repairLength * 1000,
@@ -419,7 +417,7 @@ AddEventHandler("Mechanic:Client:StartRegularRepair", function(entityData)
 			end
 		end, function(wasCancelled)
 			_repairingVehicle = false
-			Animations.Emotes:ForceCancel()
+			exports['sandbox-animations']:EmotesForceCancel()
 			if not wasCancelled then
 				if exports['sandbox-vehicles']:RepairNormal(entityData.entity) then
 					exports["sandbox-hud"]:NotifSuccess("Regular Repair Complete")

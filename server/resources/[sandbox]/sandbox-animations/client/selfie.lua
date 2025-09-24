@@ -71,9 +71,9 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 		_frontie = not _frontie
 		CellFrontCamActivate(_frontie)
 		-- if _frontie == false then
-		-- 	Animations.Emotes:Play("filmshocking", false, false, false)
+		-- 	exports['sandbox-animations']:EmotesPlay("filmshocking", false, false, false)
 		-- else
-		-- 	Animations.Emotes:ForceCancel()
+		-- 	exports['sandbox-animations']:EmotesForceCancel()
 		-- end
 	end
 end)

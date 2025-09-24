@@ -9,7 +9,6 @@ function HospitalComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Damage",
 		"Hospital",
 		"Polyzone",
-		"Animations",
 	}, function(error)
 		if #error > 0 then
 			return

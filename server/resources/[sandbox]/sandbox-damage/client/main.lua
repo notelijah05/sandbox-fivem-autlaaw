@@ -7,7 +7,6 @@ function RetrieveComponents()
     --Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
     EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
     Jail = exports["sandbox-base"]:FetchComponent("Jail")
-    Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
         --"Hospital",
         "EmergencyAlerts",
         "Jail",
-        "Animations",
     }, function(error)
         if #error > 0 then
             return
@@ -225,7 +223,7 @@ DAMAGE = {
         DoScreenFadeIn(1000)
 
         if not LocalPlayer.state.isHospitalized and wasDead and veh == 0 then
-            Animations.Emotes:Play("reviveshit", false, 1750, true)
+            exports['sandbox-animations']:EmotesPlay("reviveshit", false, 1750, true)
         end
     end,
     Died = function(self)

@@ -98,33 +98,33 @@ end)
 
 RegisterNetEvent("Inventory:Client:RandomItems:BirthdayCake", function()
 	exports["sandbox-sounds"]:PlayDistance(20.0, "birthday.ogg", 0.2)
-	Animations.Emotes:Play("cake", false, false, false)
+	exports['sandbox-animations']:EmotesPlay("cake", false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:RandomItems:BriefcaseCash", function()
-	Animations.Emotes:Play("suitcase2", false, false, false)
+	exports['sandbox-animations']:EmotesPlay("suitcase2", false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:ERP:ButtPlug", function(color)
-	Animations.Emotes:Play(string.format("erp_buttplug_%s", color), false, false, false)
+	exports['sandbox-animations']:EmotesPlay(string.format("erp_buttplug_%s", color), false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:ERP:Vibrator", function(color)
 	exports["sandbox-sounds"]:PlayDistance(20.0, "vibrator.ogg", 0.2)
-	Animations.Emotes:Play(string.format("erp_vibrator_%s", color), false, false, false)
+	exports['sandbox-animations']:EmotesPlay(string.format("erp_vibrator_%s", color), false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:RandomItems:Redlight", function()
-	Animations.Emotes:Play("redlight", false, false, false)
+	exports['sandbox-animations']:EmotesPlay("redlight", false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:Halloween:Pumpkin", function(emote)
 	exports["sandbox-sounds"]:PlayDistance(20.0, "evillaugh.ogg", 0.2)
-	Animations.Emotes:Play(emote, false, false, false)
+	exports['sandbox-animations']:EmotesPlay(emote, false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:Signs:UseSign", function(item)
 	if item.Name then
-		Animations.Emotes:Play(item.Name, false, false, false)
+		exports['sandbox-animations']:EmotesPlay(item.Name, false, false, false)
 	end
 end)

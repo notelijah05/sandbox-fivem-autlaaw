@@ -3,7 +3,7 @@ _tabletProp = nil
 LAPTOP = {
 	Open = function(self)
 		exports['sandbox-inventory']:CloseAll()
-		Animations.Emotes:ForceCancel()
+		exports['sandbox-animations']:EmotesForceCancel()
 		exports['sandbox-hud']:InteractionHide()
 		LocalPlayer.state.laptopOpen = true
 		DisplayRadar(true)

@@ -14,14 +14,12 @@ _ammoNames = {
 
 AddEventHandler("Evidence:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Evidence", {
-		"Animations",
 		"Polyzone",
 		"Jobs",
 	}, function(error)
@@ -155,7 +153,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		exports["sandbox-base"]:RegisterClientCallback("Evidence:RunBallistics", function(data, cb)
 			local success, alreadyFiled, matchingEvidence, policeWeaponId, serial = table.unpack(data)
 
-			Animations.Emotes:Play('type3', false, 8000, true, true)
+			exports['sandbox-animations']:EmotesPlay('type3', false, 8000, true, true)
 			exports['sandbox-hud']:Progress({
 				name = 'gun_ballistics_test',
 				duration = 8000,

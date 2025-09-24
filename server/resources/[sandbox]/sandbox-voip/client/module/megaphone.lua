@@ -4,9 +4,9 @@ function StartUsingMegaphone(vehAnim)
 			exports['sandbox-base']:LoggerInfo("VOIP", "Megaphone On")
 			USING_MEGAPHONE = true
 			if vehAnim then
-				Animations.Emotes:Play("radio", false, false, true)
+				exports['sandbox-animations']:EmotesPlay("radio", false, false, true)
 			else
-				Animations.Emotes:Play("megaphone", false, false, true)
+				exports['sandbox-animations']:EmotesPlay("megaphone", false, false, true)
 			end
 			UpdateVOIPIndicatorStatus()
 			while
@@ -35,7 +35,7 @@ function StopUsingMegaphone()
 		TriggerServerEvent("VOIP:Server:Megaphone:SetPlayerState", false)
 
 		MumbleSetTalkerProximity(CURRENT_VOICE_MODE_DATA.Range + 0.0)
-		Animations.Emotes:ForceCancel()
+		exports['sandbox-animations']:EmotesForceCancel()
 		UpdateVOIPIndicatorStatus()
 	end
 end

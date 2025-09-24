@@ -162,7 +162,7 @@ AddEventHandler("Inventory:Client:HideInDumpster", function(entity, data)
 			2,
 			true
 		)
-		Animations.Emotes:Play("laydown_garbage", false, nil, true)
+		exports['sandbox-animations']:EmotesPlay("laydown_garbage", false, nil, true)
 		SetEntityVisible(LocalPlayer.state.ped, false, 0)
 		_insideDumpster = true
 		_isLocked = false
@@ -242,7 +242,7 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 		_isLocked = false
 		_insideCurrentDumpster = nil
 		LocalPlayer.state.inDumpster = false
-		Animations.Emotes:ForceCancel()
+		exports['sandbox-animations']:EmotesForceCancel()
 		exports['sandbox-hud']:ActionHide("dumpsterdiving")
 	end
 end)

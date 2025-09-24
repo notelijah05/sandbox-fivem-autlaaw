@@ -109,7 +109,7 @@ AddEventHandler("Businesses:Client:PetCat", function(data)
 	Wait(1000)
 	exports["sandbox-base"]:ServerCallback("Businesses:Server:PetCat", data, function(success, newState)
 		if success then
-			Animations.Emotes:Play("petting", false, 3000, true)
+			exports['sandbox-animations']:EmotesPlay("petting", false, 3000, true)
 			Wait(3000)
 			exports["sandbox-hud"]:NotifSuccess("Feeling less stressful.")
 		end
@@ -118,38 +118,38 @@ end)
 
 RegisterNetEvent("Inventory:Client:Collectables:UseItem", function(itemName)
 	if itemName == "uwu_prize_b1" then -- brown
-		Animations.Emotes:Play("uwubrownplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwubrownplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b2" then -- orange
-		Animations.Emotes:Play("uwuorangeplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwuorangeplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b3" then -- red
-		Animations.Emotes:Play("uwuorangeplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwuorangeplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b4" then -- green
-		Animations.Emotes:Play("uwugreenplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwugreenplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b5" or itemName == "uwu_prize_b7" then -- pink
-		Animations.Emotes:Play("uwupurpleplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwupurpleplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b6" then -- yellow
-		Animations.Emotes:Play("uwuyellowplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwuyellowplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b8" then -- blue
-		Animations.Emotes:Play("uwublueplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwublueplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b9" then -- grey
-		Animations.Emotes:Play("uwuwasabiplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwuwasabiplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b10" then -- sky blue
-		Animations.Emotes:Play("uwuprincessplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwuprincessplush", false, false, false)
 	end
 end)

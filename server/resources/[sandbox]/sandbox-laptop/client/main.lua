@@ -23,7 +23,6 @@ function RetrieveComponents()
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -36,7 +35,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Properties",
 		"Admin",
 		"Laptop",
-		"Animations",
 	}, function(error)
 		if #error > 0 then
 			return

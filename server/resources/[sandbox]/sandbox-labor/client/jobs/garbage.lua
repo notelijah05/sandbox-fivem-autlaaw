@@ -103,12 +103,12 @@ AddEventHandler("Labor:Client:Setup", function()
 	exports["sandbox-base"]:RegisterClientCallback("Garbage:DoingSomeAction", function(item, cb)
 		local ped = PlayerPedId()
 		if item == "grabTrash" then
-			Animations.Emotes:Play("garbage", false, nil, true)
+			exports['sandbox-animations']:EmotesPlay("garbage", false, nil, true)
 		else
 			if item == "trashPutIn" then
-				Animations.Emotes:Play("garbagethrow", false, nil, true)
+				exports['sandbox-animations']:EmotesPlay("garbagethrow", false, nil, true)
 				SetTimeout(1250, function()
-					Animations.Emotes:ForceCancel()
+					exports['sandbox-animations']:EmotesForceCancel()
 					GarbageObject = nil
 				end)
 			end

@@ -14,13 +14,11 @@ _doingStateAnimation = false
 AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
 		"Damage",
-		"Animations",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -32,12 +30,12 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports['sandbox-hud']:InteractionRegisterMenu("expressions", "Expressions", "face-grin-squint-tears", function()
 			exports['sandbox-hud']:InteractionHide()
-			Animations:OpenExpressionsMenu()
+			exports['sandbox-animations']:OpenExpressionsMenu()
 		end)
 
 		exports['sandbox-hud']:InteractionRegisterMenu("walks", "Walk Styles", "person-walking", function()
 			exports['sandbox-hud']:InteractionHide()
-			Animations:OpenWalksMenu()
+			exports['sandbox-animations']:OpenWalksMenu()
 		end)
 
 		exports["sandbox-base"]:RegisterClientCallback("Selfie:Client:UploadPhoto", function(data, cb)
@@ -63,7 +61,7 @@ end)
 
 local pauseListener = nil
 AddEventHandler("Characters:Client:Spawn", function()
-	Animations.Emotes:Cancel()
+	exports['sandbox-animations']:EmotesCancel()
 	TriggerEvent("Animations:Client:StandUp", true, true)
 
 	pauseListener = AddStateBagChangeHandler(
@@ -77,12 +75,12 @@ AddEventHandler("Characters:Client:Spawn", function()
 					and not LocalPlayer.state.isCuffed
 					and not LocalPlayer.state.isHardCuffed
 				then
-					if value == 1 and not Animations.Emotes:Get() then
-						Animations.Emotes:Play("map", false, nil, true, true)
+					if value == 1 and not exports['sandbox-animations']:EmotesGet() then
+						exports['sandbox-animations']:EmotesPlay("map", false, nil, true, true)
 					end
 				else
-					if value == false and Animations.Emotes:Get() == "map" then
-						Animations.Emotes:ForceCancel()
+					if value == false and exports['sandbox-animations']:EmotesGet() == "map" then
+						exports['sandbox-animations']:EmotesForceCancel()
 					end
 				end
 			end
@@ -93,7 +91,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 		while LocalPlayer.state.loggedIn do
 			Wait(5000)
 			if not _isCrouched and not LocalPlayer.state.drunkMovement then
-				Animations.PedFeatures:RequestFeaturesUpdate()
+				exports['sandbox-animations']:PedFeaturesRequestFeaturesUpdate()
 			end
 		end
 	end)
@@ -103,10 +101,10 @@ AddEventHandler("Characters:Client:Spawn", function()
 			Wait(5)
 			DisableControlAction(0, 36, true)
 			if IsDisabledControlJustPressed(0, 36) then
-				Animations.PedFeatures:ToggleCrouch()
+				exports['sandbox-animations']:PedFeaturesToggleCrouch()
 			end
 			if IsInAnimation and IsPedShooting(LocalPlayer.state.ped) then
-				Animations.Emotes:ForceCancel()
+				exports['sandbox-animations']:EmotesForceCancel()
 			end
 		end
 	end)
@@ -115,16 +113,16 @@ AddEventHandler("Characters:Client:Spawn", function()
 	if character and character:GetData("Animations") then
 		local data = character:GetData("Animations")
 		walkStyle, facialExpression, emoteBinds = data.walk, data.expression, data.emoteBinds
-		Animations.PedFeatures:RequestFeaturesUpdate()
+		exports['sandbox-animations']:PedFeaturesRequestFeaturesUpdate()
 	else
 		walkStyle, facialExpression, emoteBinds =
 			Config.DefaultSettings.walk, Config.DefaultSettings.expression, Config.DefaultSettings.emoteBinds
-		Animations.PedFeatures:RequestFeaturesUpdate()
+		exports['sandbox-animations']:PedFeaturesRequestFeaturesUpdate()
 	end
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
-	Animations.Emotes:ForceCancel()
+	exports['sandbox-animations']:EmotesForceCancel()
 	Wait(20)
 
 	RemoveStateBagChangeHandler(pauseListener)
@@ -158,7 +156,7 @@ function RegisterKeybinds()
 	end)
 
 	exports["sandbox-keybinds"]:Add("emote_cancel", "x", "keyboard", "Emotes - Cancel Current", function()
-		Animations.Emotes:Cancel()
+		exports['sandbox-animations']:EmotesCancel()
 
 		TriggerEvent("Animations:Client:StandUp")
 		TriggerEvent("Animations:Client:Selfie", false)
@@ -167,7 +165,7 @@ function RegisterKeybinds()
 
 	-- Don't specify and key so then players can set it themselves if they want to use...
 	exports["sandbox-keybinds"]:Add("emote_menu", "", "keyboard", "Emotes - Open Menu", function()
-		Animations:OpenMainEmoteMenu()
+		exports['sandbox-animations']:OpenMainEmoteMenu()
 	end)
 
 	-- There are 4 emote binds and by default they use numbers 6, 7, 8 and 9
@@ -178,8 +176,23 @@ function RegisterKeybinds()
 			"keyboard",
 			"Emotes - Bind #" .. bindNum,
 			function()
-				Animations.EmoteBinds:Use(bindNum)
+				exports['sandbox-animations']:EmoteBindsUse(bindNum)
 			end
 		)
 	end
 end
+
+RegisterNetEvent("Animations:Client:OpenMainEmoteMenu")
+AddEventHandler("Animations:Client:OpenMainEmoteMenu", function()
+	exports['sandbox-animations']:OpenMainEmoteMenu()
+end)
+
+RegisterNetEvent("Animations:Client:OpenWalksMenu")
+AddEventHandler("Animations:Client:OpenWalksMenu", function()
+	exports['sandbox-animations']:OpenWalksMenu()
+end)
+
+RegisterNetEvent("Animations:Client:OpenExpressionsMenu")
+AddEventHandler("Animations:Client:OpenExpressionsMenu", function()
+	exports['sandbox-animations']:OpenExpressionsMenu()
+end)

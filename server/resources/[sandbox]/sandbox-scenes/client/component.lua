@@ -5,7 +5,6 @@ _hiddenScenes = {}
 
 AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Scenes = exports["sandbox-base"]:FetchComponent("Scenes")
@@ -13,7 +12,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Scenes", {
-		"Animations",
 		"Polyzone",
 		"Jobs",
 		"Scenes",

@@ -58,14 +58,12 @@ end
 AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
 		"Jail",
-		"Animations",
 		"Admin",
 	}, function(error)
 		if #error > 0 then

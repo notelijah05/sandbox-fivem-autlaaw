@@ -37,9 +37,9 @@ AddEventHandler("Prison:Client:Target:Search", function(entity, data)
 	_CURRENT_SEARCH = true
 
 	if LocalPlayer.state.isK9Ped then
-		Animations.Emotes:Play("searchk9", false, nil, true)
+		exports['sandbox-animations']:EmotesPlay("searchk9", false, nil, true)
 	else
-		Animations.Emotes:Play("mechanic2", false, nil, true) -- or search
+		exports['sandbox-animations']:EmotesPlay("mechanic2", false, nil, true) -- or search
 	end
 	exports['sandbox-hud']:Progress({
 		name = "prison_target_search",
@@ -63,7 +63,7 @@ AddEventHandler("Prison:Client:Target:Search", function(entity, data)
 				-- else
 				-- 	print("failed")
 				-- end
-				Animations.Emotes:ForceCancel()
+				exports['sandbox-animations']:EmotesForceCancel()
 				_CURRENT_SEARCH = false
 			end)
 		else

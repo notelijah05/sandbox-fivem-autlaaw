@@ -501,7 +501,7 @@ AddEventHandler("CornerDealing:Client:Sell", function(data)
 
 			PlayAmbientSpeech1(_SellingPed, 'Generic_Hi', 'Speech_Params_Force')
 			TaskTurnPedToFaceEntity(LocalPlayer.state.ped, _SellingPed, 1000)
-			Animations.Emotes:Play("handoff", false, 3000, true, true)
+			exports['sandbox-animations']:EmotesPlay("handoff", false, 3000, true, true)
 		end
 
 		_hasSellingMenu = false

@@ -82,7 +82,6 @@ end
 
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -90,7 +89,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Animations",
 		"Polyzone",
 		"Jobs",
 		"Reputation",
@@ -137,7 +135,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports["sandbox-base"]:RegisterClientCallback("Inventory:ItemUse", function(item, cb)
 			if item.anim and (not item.pbConfig or not item.pbConfig.animation) then
-				Animations.Emotes:Play(item.anim, false, item.time, true)
+				exports['sandbox-animations']:EmotesPlay(item.anim, false, item.time, true)
 			end
 
 			if item.pbConfig ~= nil then
@@ -158,7 +156,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						disableCombat = item.pbConfig.disableCombat,
 					},
 				}, function(cancelled)
-					Animations.Emotes:ForceCancel()
+					exports['sandbox-animations']:EmotesForceCancel()
 					cb(not cancelled)
 				end)
 			else

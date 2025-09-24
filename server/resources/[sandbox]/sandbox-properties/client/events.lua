@@ -17,7 +17,7 @@ RegisterNetEvent("Properties:Client:InnerStuff", function(propertyData, int, fur
 
 	-- if wakeUp and intr.locations.wakeup then
 	-- 	Citizen.SetTimeout(250, function()
-	-- 		Animations.Emotes:WakeUp(intr.locations.wakeup)
+	-- 		exports['sandbox-animations']:EmotesWakeUp(intr.locations.wakeup)
 	-- 	end)
 	-- end
 

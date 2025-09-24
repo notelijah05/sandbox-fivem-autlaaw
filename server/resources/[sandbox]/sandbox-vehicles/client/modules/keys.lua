@@ -67,7 +67,7 @@ AddEventHandler('Vehicles:Client:K9GetInNearestSeat', function(entityData)
 			if GetPedInVehicleSeat(entityData.entity, i) == 0 then
 				TaskWarpPedIntoVehicle(LocalPlayer.state.ped, entityData.entity, i)
 				Wait(100)
-				Animations.Emotes:Play("dogsitcar", false, false, false)
+				exports['sandbox-animations']:EmotesPlay("dogsitcar", false, false, false)
 				return
 			end
 		end
@@ -82,7 +82,7 @@ AddEventHandler('Vehicles:Client:K9LeaveVehicle', function()
 		local coords = GetEntityCoords(LocalPlayer.state.ped)
 		SetEntityCoords(LocalPlayer.state.ped, coords.x, coords.y, coords.z - 0.4)
 		Wait(100)
-		Animations.Emotes:ForceCancel()
+		exports['sandbox-animations']:EmotesForceCancel()
 	end
 end)
 

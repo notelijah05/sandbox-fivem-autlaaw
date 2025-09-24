@@ -537,7 +537,7 @@ exports("WeaponsEquip", function(item)
 	local hash = GetHashKey(_items[item.Name].weapon or item.Name)
 	local itemData = _items[item.Name]
 
-	if Animations.Emotes:Get() then
+	if exports['sandbox-animations']:EmotesGet() then
 		return
 	end
 

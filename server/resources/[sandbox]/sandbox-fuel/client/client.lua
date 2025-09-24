@@ -18,13 +18,11 @@ local pumpModels = {
 AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
 		"Polyzone",
-		"Animations",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -267,7 +265,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 	local time = math.min(math.ceil(fuelData.requiredFuel / 2), 40)
 	TaskTurnPedToFaceEntity(LocalPlayer.state.ped, entityData.entity, 3000)
 	Wait(2000)
-	Animations.Emotes:Play("fuel", false, nil, true)
+	exports['sandbox-animations']:EmotesPlay("fuel", false, nil, true)
 	exports['sandbox-hud']:ProgressWithStartAndTick({
 		name = "idle",
 		duration = time * 1000,
@@ -302,7 +300,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 			or IsEntityDead(entityData.entity)
 			or #(playerCoords - vehicleCoords) > 5.0
 		then
-			Animations.Emotes:ForceCancel()
+			exports['sandbox-animations']:EmotesForceCancel()
 			exports['sandbox-hud']:ProgressCancel()
 			return
 		end
@@ -335,14 +333,14 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 					_fuelFires = nil
 				end)
 
-				Animations.Emotes:ForceCancel()
+				exports['sandbox-animations']:EmotesForceCancel()
 				exports['sandbox-hud']:ProgressCancel()
 				return
 			end
 		end
 	end, function(wasCancelled)
 		_fueling = false
-		Animations.Emotes:ForceCancel()
+		exports['sandbox-animations']:EmotesForceCancel()
 		local fuelAmount = fuelData.requiredFuel
 		if wasCancelled then
 			fuelAmount = math.ceil(fuelData.requiredFuel * (secondsElapsed / time))

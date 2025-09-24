@@ -1,19 +1,18 @@
-ANIMATIONS.EmoteBinds = {
-	Update = function(self, newBinds)
-		exports["sandbox-base"]:ServerCallback("Animations:UpdateEmoteBinds", newBinds, function(success, data)
-			if success then
-				emoteBinds = data
-				exports["sandbox-hud"]:NotifSuccess("Successfully Updated and Saved Keybinds", 5000)
-			end
-		end)
-	end,
-	Use = function(self, bindId)
-		local bindEmote = emoteBinds[tostring(bindId)]
-		if bindEmote and type(bindEmote) == "string" then
-			Animations.Emotes:Play(bindEmote, true)
+exports("EmoteBindsUpdate", function(newBinds)
+	exports["sandbox-base"]:ServerCallback("Animations:UpdateEmoteBinds", newBinds, function(success, data)
+		if success then
+			emoteBinds = data
+			exports["sandbox-hud"]:NotifSuccess("Successfully Updated and Saved Keybinds", 5000)
 		end
-	end,
-}
+	end)
+end)
+
+exports("EmoteBindsUse", function(bindId)
+	local bindEmote = emoteBinds[tostring(bindId)]
+	if bindEmote and type(bindEmote) == "string" then
+		exports['sandbox-animations']:EmotesPlay(bindEmote, true)
+	end
+end)
 
 RegisterNetEvent("Animations:Client:OpenEmoteBinds", function()
 	local bindInputs = {}
@@ -48,5 +47,5 @@ AddEventHandler("Animations:Client:SaveEmoteBinds", function(values)
 		end
 	end
 
-	Animations.EmoteBinds:Update(updatedBinds)
+	exports['sandbox-animations']:EmoteBindsUpdate(updatedBinds)
 end)

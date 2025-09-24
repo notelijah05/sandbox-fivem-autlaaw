@@ -232,7 +232,7 @@ AddEventHandler("Labor:Client:Setup", function()
 			not inMapAnim
 			and not LocalPlayer.state.doingAction
 			and not LocalPlayer.state.isDead
-			and not Animations.Emotes:Get()
+			and not exports['sandbox-animations']:EmotesGet()
 			and IsPedOnFoot(LocalPlayer.state.ped)
 		then
 			cb(true)

@@ -1,7 +1,7 @@
 _withinDNATesting = true
 
 RegisterNetEvent("Evidence:Client:RanDNA", function(tooDegraded, success, evidenceId)
-	Animations.Emotes:Play("type3", false, 5500, true, true)
+	exports['sandbox-animations']:EmotesPlay("type3", false, 5500, true, true)
 	exports['sandbox-hud']:Progress({
 		name = "dna_test",
 		duration = 5000,

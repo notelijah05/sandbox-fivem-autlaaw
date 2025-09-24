@@ -278,7 +278,7 @@ end)
 
 RegisterNetEvent("EMS:Client:TreatWounds", function(data)
 	if Player(data).state.isHospitalized then
-		Animations.Emotes:ForceCancel()
+		exports['sandbox-animations']:EmotesForceCancel()
 		exports['sandbox-hud']:ProgressWithStartEvent({
 			name = "ems_eval",
 			duration = 20000,

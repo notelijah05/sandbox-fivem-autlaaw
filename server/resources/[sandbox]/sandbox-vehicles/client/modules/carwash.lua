@@ -87,7 +87,7 @@ end)
 RegisterNetEvent('Vehicles:Client:CleaningKit', function()
     local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
     if not usingCarWash and target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0 then
-        Animations.Emotes:Play('clean', false, 14000, true)
+        exports['sandbox-animations']:EmotesPlay('clean', false, 14000, true)
         usingCarWash = true
         exports['sandbox-hud']:Progress({
             name = "vehicle_clean",

@@ -1,22 +1,8 @@
-AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	RegisterChatCommands()
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Animations", {
-		"Animations",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
-		RegisterMiddleware()
-
-		RegisterItems()
-	end)
+	RegisterCallbacks()
+	RegisterMiddleware()
+	RegisterChatCommands()
+	RegisterItems()
 end)
 
 function RegisterMiddleware()
@@ -44,7 +30,7 @@ function RegisterChatCommands()
 		} },
 	})
 	exports["sandbox-chat"]:RegisterCommand("emotes", function(source, args, rawCommand)
-		TriggerClientEvent("Execute:Client:Component", source, "Animations", "OpenMainEmoteMenu")
+		TriggerClientEvent("Animations:Client:OpenMainEmoteMenu", source)
 	end, {
 		help = "Open Emote Menu",
 	})
@@ -54,12 +40,12 @@ function RegisterChatCommands()
 		help = "Edit Emote Binds",
 	})
 	exports["sandbox-chat"]:RegisterCommand("walks", function(source, args, rawCommand)
-		TriggerClientEvent("Execute:Client:Component", source, "Animations", "OpenWalksMenu")
+		TriggerClientEvent("Animations:Client:OpenWalksMenu", source)
 	end, {
 		help = "Change Walk Style",
 	})
 	exports["sandbox-chat"]:RegisterCommand("face", function(source, args, rawCommand)
-		TriggerClientEvent("Execute:Client:Component", source, "Animations", "OpenExpressionsMenu")
+		TriggerClientEvent("Animations:Client:OpenExpressionsMenu", source)
 	end, {
 		help = "Change Facial Expression",
 	})
@@ -83,7 +69,7 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Animations:UpdatePedFeatures", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			cb(Animations.PedFeatures:UpdateFeatureInfo(char, data.type, data.data))
+			cb(exports['sandbox-animations']:PedFeaturesUpdateFeatureInfo(char, data.type, data.data))
 		else
 			cb(false)
 		end
@@ -92,48 +78,39 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Animations:UpdateEmoteBinds", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			cb(Animations.EmoteBinds:Update(char, data), data)
+			cb(exports['sandbox-animations']:EmoteBindsUpdate(char, data), data)
 		else
 			cb(false)
 		end
 	end)
 end
 
-ANIMATIONS = {
-	PedFeatures = {
-		UpdateFeatureInfo = function(self, char, type, data, cb)
-			if type == "walk" then
-				local currentData = char:GetData("Animations")
-				char:SetData(
-					"Animations",
-					{ walk = data, expression = currentData.expression, emoteBinds = currentData.emoteBinds }
-				)
-				return true
-			elseif type == "expression" then
-				local currentData = char:GetData("Animations")
-				char:SetData(
-					"Animations",
-					{ walk = currentData.walk, expression = data, emoteBinds = currentData.emoteBinds }
-				)
-				return true
-			end
-			return false
-		end,
-	},
-	EmoteBinds = {
-		Update = function(self, char, data, cb)
-			local currentData = char:GetData("Animations")
-			char:SetData(
-				"Animations",
-				{ walk = currentData.walk, expression = currentData.expression, emoteBinds = data }
-			)
-			return true
-		end,
-	},
-}
+exports("PedFeaturesUpdateFeatureInfo", function(char, type, data, cb)
+	if type == "walk" then
+		local currentData = char:GetData("Animations")
+		char:SetData(
+			"Animations",
+			{ walk = data, expression = currentData.expression, emoteBinds = currentData.emoteBinds }
+		)
+		return true
+	elseif type == "expression" then
+		local currentData = char:GetData("Animations")
+		char:SetData(
+			"Animations",
+			{ walk = currentData.walk, expression = data, emoteBinds = currentData.emoteBinds }
+		)
+		return true
+	end
+	return false
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Animations", ANIMATIONS)
+exports("EmoteBindsUpdate", function(char, data, cb)
+	local currentData = char:GetData("Animations")
+	char:SetData(
+		"Animations",
+		{ walk = currentData.walk, expression = currentData.expression, emoteBinds = data }
+	)
+	return true
 end)
 
 RegisterServerEvent("Animations:Server:ClearAttached", function(propsToDelete)

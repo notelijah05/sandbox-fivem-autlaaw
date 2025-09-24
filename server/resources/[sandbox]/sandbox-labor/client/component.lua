@@ -6,7 +6,6 @@ function RetrieveComponents()
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Labor",
 		"Properties",
 		"Reputation",
-		"Animations",
 	}, function(error)
 		if #error > 0 then
 			return

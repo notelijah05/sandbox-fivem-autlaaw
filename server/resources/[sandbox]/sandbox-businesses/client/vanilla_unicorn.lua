@@ -172,7 +172,7 @@ RegisterNetEvent('Businesses:Client:PoleDance', function(dance)
                     )
                     SetEntityRotation(PlayerPedId(), 0.0, 0.0, 0.0)
 
-                    Animations.Emotes:Play(poleDance.anim, false, false, false)
+                    exports['sandbox-animations']:EmotesPlay(poleDance.anim, false, false, false)
                 end
             else
                 exports["sandbox-hud"]:NotifError('Pole Taken')
@@ -190,14 +190,14 @@ function MakeItRainBitch(targetSource, cashType, time)
 
     CreateThread(function()
         _makingItRain = true
-        Animations.Emotes:Play('makeitrain', false, false, false)
+        exports['sandbox-animations']:EmotesPlay('makeitrain', false, false, false)
 
         Wait(7500)
 
         while 
             _makingItRain
             and LocalPlayer.state.loggedIn
-            and Animations.Emotes:Get() == 'makeitrain'
+            and exports['sandbox-animations']:EmotesGet() == 'makeitrain'
             and IsDoingStripperDance(Player(targetSource).state.anim)
             and (#(GetEntityCoords(LocalPlayer.state.ped) - GetEntityCoords(targetPed)) <= 5.0)
         do
@@ -219,7 +219,7 @@ function MakeItRainBitch(targetSource, cashType, time)
         end
 
         _makingItRain = false
-        Animations.Emotes:ForceCancel()
+        exports['sandbox-animations']:EmotesForceCancel()
     end)
 end
 

@@ -139,10 +139,10 @@ end
 AddEventHandler("Hospital:Client:LaydownAnimation", function(hitting, coords)
 	SetEntityCoords(LocalPlayer.state.ped, coords.x, coords.y, coords.z)
 	SetEntityHeading(LocalPlayer.state.ped, coords.w)
-	Animations.Emotes:Play("passout3", true)
+	exports['sandbox-animations']:EmotesPlay("passout3", true)
 	LocalPlayer.state:set("isHospitalized", true, true)
 
-	while Animations.Emotes:Get() == "passout3" do
+	while exports['sandbox-animations']:EmotesGet() == "passout3" do
 		Wait(250)
 	end
 

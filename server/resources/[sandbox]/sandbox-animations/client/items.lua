@@ -1,21 +1,21 @@
 RegisterNetEvent("Animations:Client:CampChair", function()
 	-- if LocalPlayer.state.loggedIn then
-	-- 	local inAnim = Animations.Emotes:Get()
+	-- 	local inAnim = exports['sandbox-animations']:EmotesGet()
 	-- 	if inAnim and inAnim == "campchair" then
-	-- 		Animations.Emotes:Cancel()
+	-- 		exports['sandbox-animations']:EmotesCancel()
 	-- 	elseif not inAnim then
-	-- 		Animations.Emotes:Play("campchair", false, false, false)
+	-- 		exports['sandbox-animations']:EmotesPlay("campchair", false, false, false)
 	-- 	end
 	-- end
 end)
 
 RegisterNetEvent("Animations:Client:BeanBag", function()
 	-- if LocalPlayer.state.loggedIn then
-	-- 	local inAnim = Animations.Emotes:Get()
+	-- 	local inAnim = exports['sandbox-animations']:EmotesGet()
 	-- 	if inAnim and inAnim == "beanbag" then
-	-- 		Animations.Emotes:Cancel()
+	-- 		exports['sandbox-animations']:EmotesCancel()
 	-- 	elseif not inAnim then
-	-- 		Animations.Emotes:Play("beanbag", false, false, false)
+	-- 		exports['sandbox-animations']:EmotesPlay("beanbag", false, false, false)
 	-- 	end
 	-- end
 end)
@@ -32,11 +32,11 @@ binocularConfig.fov = (binocularConfig.fovMax + binocularConfig.fovMin) * 0.5
 
 RegisterNetEvent("Animations:Client:Binoculars", function()
 	if LocalPlayer.state.loggedIn then
-		local inAnim = Animations.Emotes:Get()
+		local inAnim = exports['sandbox-animations']:EmotesGet()
 		if inAnim and inAnim == "binoculars" then
-			Animations.Emotes:Cancel()
+			exports['sandbox-animations']:EmotesCancel()
 		elseif not inAnim and not IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
-			Animations.Emotes:Play("binoculars", false, false, false)
+			exports['sandbox-animations']:EmotesPlay("binoculars", false, false, false)
 			exports['sandbox-hud']:Hide()
 
 			CreateThread(function()
@@ -60,7 +60,7 @@ RegisterNetEvent("Animations:Client:Binoculars", function()
 				PushScaleformMovieFunctionParameterInt(0)
 				PopScaleformMovieFunctionVoid()
 
-				while Animations.Emotes:Get() == "binoculars" and LocalPlayer.state.loggedIn do
+				while exports['sandbox-animations']:EmotesGet() == "binoculars" and LocalPlayer.state.loggedIn do
 					local zoomvalue = (1.0 / (binocularConfig.fovMax - binocularConfig.fovMin))
 						* (binocularConfig.fov - binocularConfig.fovMin)
 
@@ -97,11 +97,11 @@ camConfig.fov = (camConfig.fovMax + camConfig.fovMin) * 0.5
 
 RegisterNetEvent("Animations:Client:Camera", function()
 	if LocalPlayer.state.loggedIn then
-		local inAnim = Animations.Emotes:Get()
+		local inAnim = exports['sandbox-animations']:EmotesGet()
 		if inAnim and inAnim == "camera_item" then
-			Animations.Emotes:Cancel()
+			exports['sandbox-animations']:EmotesCancel()
 		elseif not inAnim and not IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
-			Animations.Emotes:Play("camera_item", false, false, false)
+			exports['sandbox-animations']:EmotesPlay("camera_item", false, false, false)
 			exports['sandbox-hud']:Hide()
 
 			TriggerEvent("Animations:Client:UsingCamera", true)
@@ -148,7 +148,7 @@ RegisterNetEvent("Animations:Client:Camera", function()
 
 				local tick = 0
 
-				while Animations.Emotes:Get() == "camera_item" and LocalPlayer.state.loggedIn do
+				while exports['sandbox-animations']:EmotesGet() == "camera_item" and LocalPlayer.state.loggedIn do
 					local zoomvalue = (1.0 / (camConfig.fovMax - camConfig.fovMin)) * (camConfig.fov - camConfig.fovMin)
 
 					HandleCameraPanning(cam, zoomvalue, camConfig)
@@ -285,10 +285,10 @@ function EnsureCharacterAnimStates()
 				return aPrio > bPrio
 			end)
 
-			Animations.Emotes:Play(animStates[1], false, false, true)
+			exports['sandbox-animations']:EmotesPlay(animStates[1], false, false, true)
 			_doingAnimState = animStates[1]
-		elseif _doingAnimState and _doingAnimState == Animations.Emotes:Get() then
-			Animations.Emotes:ForceCancel()
+		elseif _doingAnimState and _doingAnimState == exports['sandbox-animations']:EmotesGet() then
+			exports['sandbox-animations']:EmotesForceCancel()
 		end
 	end
 end
@@ -302,12 +302,12 @@ end)
 
 RegisterNetEvent("Animations:Client:DoPDCallEmote", function(emote)
 	if LocalPlayer.state.loggedIn then
-		Animations.Emotes:Play("phonecall", false, 10000, true)
+		exports['sandbox-animations']:EmotesPlay("phonecall", false, 10000, true)
 	end
 end)
 
 RegisterNetEvent("Animations:Client:DiceRoll", function()
-	Animations.Emotes:Play("dice", true)
+	exports['sandbox-animations']:EmotesPlay("dice", true)
 
 	exports["sandbox-sounds"]:PlayDistance(3.0, "dice.ogg", 0.8)
 end)

@@ -35,7 +35,7 @@ RegisterNetEvent('Evidence:Client:FiledProjectile',
             return exports["sandbox-hud"]:NotifError('Projectile too Degraded to Run Ballistics')
         end
 
-        Animations.Emotes:Play('type3', false, 5500, true, true)
+        exports['sandbox-animations']:EmotesPlay('type3', false, 5500, true, true)
         exports['sandbox-hud']:Progress({
             name = 'projectile_ballistics_test',
             duration = 5000,

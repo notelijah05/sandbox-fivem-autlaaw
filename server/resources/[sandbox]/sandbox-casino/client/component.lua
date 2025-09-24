@@ -4,7 +4,6 @@ _CASINO = _CASINO or {}
 
 AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Casino = exports["sandbox-base"]:FetchComponent("Casino")
@@ -12,7 +11,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Casino", {
-		"Animations",
 		"Polyzone",
 		"Jobs",
 		"Casino",

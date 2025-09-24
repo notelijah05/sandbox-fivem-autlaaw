@@ -215,7 +215,7 @@ AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
 
                 if success then
                     CreateThread(function()
-                        Animations.Emotes:Play("phonecall2", true)
+                        exports['sandbox-animations']:EmotesPlay("phonecall2", true)
                         exports["sandbox-sounds"]:LoopOne("ringing.ogg", 0.1)
                         exports['sandbox-hud']:InfoOverlayShow("Dialing",
                             string.format("Dailing Number: %s", values.number))
@@ -227,7 +227,7 @@ AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
                             Wait(500)
                         end
 
-                        Animations.Emotes:ForceCancel()
+                        exports['sandbox-animations']:EmotesForceCancel()
                         exports["sandbox-sounds"]:StopOne("ringing.ogg")
                         exports['sandbox-hud']:InfoOverlayClose()
                     end)
@@ -273,7 +273,7 @@ AddEventHandler("Phone:Client:AcceptBizCall", function(entityData, data)
 
             if success then
                 CreateThread(function()
-                    Animations.Emotes:Play("phonecall2", true)
+                    exports['sandbox-animations']:EmotesPlay("phonecall2", true)
                     exports['sandbox-hud']:InfoOverlayShow("On Call", string.format("From Number: %s", callStr))
                     while LocalPlayer.state.loggedIn and LocalPlayer.state.bizCall do
                         if #(GetEntityCoords(LocalPlayer.state.ped) - startCoords) >= 10.0 then
@@ -282,7 +282,7 @@ AddEventHandler("Phone:Client:AcceptBizCall", function(entityData, data)
                         Wait(500)
                     end
 
-                    Animations.Emotes:ForceCancel()
+                    exports['sandbox-animations']:EmotesForceCancel()
                     exports['sandbox-hud']:InfoOverlayClose()
                 end)
             else
