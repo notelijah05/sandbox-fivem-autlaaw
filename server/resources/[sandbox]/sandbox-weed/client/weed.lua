@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Weed = exports["sandbox-base"]:FetchComponent("Weed")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -14,7 +13,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Weed",
 		"Targeting",
 		"Animations",
-		"Progress",
 		"Inventory",
 		"PedInteraction",
 		"Polyzone",
@@ -78,7 +76,7 @@ function RegisterCallbacks()
 		if hit then
 			if Materials[materialHash] ~= nil and not Polyzone:IsCoordsInZone(vector3(x, y, z), "cayo_perico") and not Polyzone:IsCoordsInZone(vector3(x, y, z), "casino_roof_weed_blocker") then
 				if not fuck then
-					Progress:Progress({
+					exports['sandbox-hud']:Progress({
 						name = "plant_weed",
 						duration = 15000,
 						label = "Planting",
@@ -114,7 +112,7 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterClientCallback("Weed:RollingAnim", function(data, cb)
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "rolling_weed",
 			duration = 3000,
 			label = "Rolling Joints",
@@ -137,7 +135,7 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterClientCallback("Weed:MakingBrick", function(data, cb)
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "making_brick",
 			duration = data.time * 1000,
 			label = data.label,
@@ -161,7 +159,7 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterClientCallback("Weed:SmokingAnim", function(data, cb)
 		local ticks = 1
-		Progress:ProgressWithTickEvent({
+		exports['sandbox-hud']:ProgressWithTickEvent({
 			name = "smoking_weed",
 			duration = 8000,
 			tickrate = 1000,

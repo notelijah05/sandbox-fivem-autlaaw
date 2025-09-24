@@ -18,7 +18,6 @@ local pumpModels = {
 AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -27,7 +26,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
 		"Vehicles",
-		"Progress",
 		"Polyzone",
 		"Targeting",
 		"Animations",
@@ -101,7 +99,7 @@ AddEventHandler("Fuel:Client:FillCan", function()
 	local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
 	local pct = current / 4500
 
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "fill_petrol_can",
 		duration = math.min(math.ceil(10 - (10 * pct)), 2) * 10000,
 		label = "Filling Petrol Can",
@@ -274,7 +272,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 	TaskTurnPedToFaceEntity(LocalPlayer.state.ped, entityData.entity, 3000)
 	Wait(2000)
 	Animations.Emotes:Play("fuel", false, nil, true)
-	Progress:ProgressWithStartAndTick({
+	exports['sandbox-hud']:ProgressWithStartAndTick({
 		name = "idle",
 		duration = time * 1000,
 		label = "Refueling Vehicle",
@@ -297,7 +295,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 
 		local entState = Entity(entityData.entity).state
 		if entState.beingFueled ~= nil and entState.beingFueled ~= GetPlayerServerId(LocalPlayer.state.PlayerID) then
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 		end
 
 		local playerCoords = GetEntityCoords(LocalPlayer.state.ped)
@@ -309,7 +307,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 			or #(playerCoords - vehicleCoords) > 5.0
 		then
 			Animations.Emotes:ForceCancel()
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 			return
 		end
 
@@ -342,7 +340,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 				end)
 
 				Animations.Emotes:ForceCancel()
-				Progress:Cancel()
+				exports['sandbox-hud']:ProgressCancel()
 				return
 			end
 		end
@@ -402,7 +400,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 
 				local time = math.ceil(fuelAmount / 2)
 
-				Progress:ProgressWithStartAndTick({
+				exports['sandbox-hud']:ProgressWithStartAndTick({
 					name = "idle",
 					duration = time * 1000,
 					label = "Refueling Vehicle",
@@ -445,7 +443,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 						or IsEntityDead(entityData.entity)
 						or #(playerCoords - vehicleCoords) > 5.0
 					then
-						Progress:Cancel()
+						exports['sandbox-hud']:ProgressCancel()
 						return
 					end
 
@@ -483,7 +481,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 								_fuelFires = nil
 							end)
 
-							Progress:Cancel()
+							exports['sandbox-hud']:ProgressCancel()
 							return
 						end
 					end

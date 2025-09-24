@@ -1,10 +1,8 @@
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -17,10 +15,8 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
 		"PedInteraction",
-		"Progress",
 		"Polyzone",
 		"Targeting",
-		"Progress",
 		"Minigame",
 		"Properties",
 		"Inventory",
@@ -97,7 +93,7 @@ RegisterNetEvent("Robbery:Client:PrintState", function(heistId)
 end)
 
 AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
-	Progress:ProgressWithTickEvent({
+	exports['sandbox-hud']:ProgressWithTickEvent({
 		name = "holdup",
 		duration = 5000,
 		label = "Robbing",
@@ -124,7 +120,7 @@ AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
 		then
 			return
 		end
-		Progress:Cancel()
+		exports['sandbox-hud']:ProgressCancel()
 	end, function(cancelled)
 		if not cancelled then
 			exports["sandbox-base"]:ServerCallback("Robbery:Holdup:Do", entity.serverId, function(s)

@@ -36,7 +36,7 @@ end)
 
 local _doing = false
 function DoAction(id)
-	Progress:ProgressWithTickEvent({
+	exports['sandbox-hud']:ProgressWithTickEvent({
 		name = 'farming_action',
 		duration = (math.random(10) + _actionBaseDur) * 1000,
 		label = _actionLabel,
@@ -59,7 +59,7 @@ function DoAction(id)
 				end
 			end
 		end
-		Progress:Cancel()
+		exports['sandbox-hud']:ProgressCancel()
 	end, function(cancelled)
 		_doing = false
 		if not cancelled then

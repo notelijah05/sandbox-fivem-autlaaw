@@ -150,7 +150,7 @@ AddEventHandler("Jail:Client:QuitWork", function()
 end)
 
 AddEventHandler("Jail:Client:MakeFood", function()
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "prison_action",
 		duration = 12500,
 		label = "Making Food",
@@ -173,7 +173,7 @@ AddEventHandler("Jail:Client:MakeFood", function()
 end)
 
 AddEventHandler("Jail:Client:MakeDrink", function()
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "prison_action",
 		duration = 12500,
 		label = "Making Drink",
@@ -196,7 +196,7 @@ AddEventHandler("Jail:Client:MakeDrink", function()
 end)
 
 AddEventHandler("Jail:Client:MakeJuice", function(self, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "prison_action",
 		duration = 12500,
 		label = "Making Slushie",

@@ -191,7 +191,7 @@ AddEventHandler("Crafting:Client:AddSchematic", function(ent, data)
 end)
 
 AddEventHandler("Crafting:Client:UseSchematic", function(data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "schematic_action",
 		duration = 8000,
 		label = "Using Schematic",

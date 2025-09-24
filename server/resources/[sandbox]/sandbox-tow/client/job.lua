@@ -48,7 +48,7 @@ AddEventHandler('Tow:Client:RequestImpound', function(entityData)
     end
 
     if entityData and entityData.entity and DoesEntityExist(entityData.entity) and (not myTowTruck or myTowTruck ~= entityData.entity) and #(GetEntityCoords(entityData.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 10.0 and IsVehicleEmpty(entityData.entity) and Polyzone:IsCoordsInZone(GetEntityCoords(entityData.entity), 'tow_impound_zone') then
-        Progress:ProgressWithTickEvent({
+        exports['sandbox-hud']:ProgressWithTickEvent({
             name = 'veh_impound',
             duration = 10 * 1000,
             label = 'Impounding Vehicle',
@@ -68,7 +68,7 @@ AddEventHandler('Tow:Client:RequestImpound', function(entityData)
             },
         }, function()
             if not DoesEntityExist(entityData.entity) or (#(GetEntityCoords(entityData.entity) - GetEntityCoords(LocalPlayer.state.ped)) > 10.0) or not IsVehicleEmpty(entityData.entity) then
-                Progress:Cancel()
+                exports['sandbox-hud']:ProgressCancel()
             end
         end, function(cancelled)
             if not cancelled and DoesEntityExist(entityData.entity) and (#(GetEntityCoords(entityData.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 10.0) and IsVehicleEmpty(entityData.entity) then

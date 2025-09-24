@@ -53,7 +53,7 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
                 local char = LocalPlayer.state.Character
                 if char and char:GetData('Cash') >= 250 then
                     usingCarWash = true
-                    Progress:Progress({
+                    exports['sandbox-hud']:Progress({
                         name = "vehicle_clean",
                         duration = 10 * 1000,
                         label = "Cleaning Vehicle",
@@ -89,7 +89,7 @@ RegisterNetEvent('Vehicles:Client:CleaningKit', function()
     if not usingCarWash and target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0 then
         Animations.Emotes:Play('clean', false, 14000, true)
         usingCarWash = true
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "vehicle_clean",
             duration = 14000,
             label = "Cleaning Vehicle",

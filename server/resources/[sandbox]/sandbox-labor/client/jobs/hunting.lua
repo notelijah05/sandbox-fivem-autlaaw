@@ -344,7 +344,7 @@ AddEventHandler("Labor:Client:Setup", function()
 
 		if hit then
 			if gms[materialHash] then
-				Progress:Progress({
+				exports['sandbox-hud']:Progress({
 					name = "trap-action",
 					duration = (math.random(5) + 10) * 1000,
 					label = "Placing Bait",
@@ -440,7 +440,7 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 	end
 
 	Wait(1000)
-	Progress:ProgressWithTickEvent({
+	exports['sandbox-hud']:ProgressWithTickEvent({
 		name = "trap-action",
 		duration = 18000,
 		label = "Harvesting",
@@ -457,7 +457,7 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 		},
 	}, function()
 		if DecorGetBool(entity.entity, "HuntingHarvested") then
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 		end
 	end, function(cancelled)
 		if not cancelled and not DecorGetBool(entity.entity, "HuntingHarvested") then

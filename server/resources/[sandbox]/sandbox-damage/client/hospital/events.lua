@@ -155,7 +155,7 @@ AddEventHandler("Hospital:Client:RetreiveItems", function()
 end)
 
 AddEventHandler("Hospital:Client:HiddenRevive", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "ammo_action",
 		duration = (math.random(5) + 15) * 1000,
 		label = "Reviving",
@@ -189,7 +189,7 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 AddEventHandler("Hospital:Client:CheckIn", function()
-	Progress:ProgressWithStartEvent({
+	exports['sandbox-hud']:ProgressWithStartEvent({
 		name = "hospital_action",
 		duration = 2500,
 		label = "Checking In",

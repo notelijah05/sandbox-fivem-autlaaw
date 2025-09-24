@@ -28,7 +28,7 @@ AddEventHandler("EMS:Client:Evaluate", function(entity, data)
 		return
 	end
 
-	Progress:ProgressWithStartEvent({
+	exports['sandbox-hud']:ProgressWithStartEvent({
 		name = "ems_eval",
 		duration = 6000,
 		label = "Evaluating Patient",
@@ -52,7 +52,7 @@ AddEventHandler("EMS:Client:Evaluate", function(entity, data)
 end)
 
 AddEventHandler("EMS:Client:DrugTest", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "drug_test_action",
 		duration = 6000,
 		label = "Performing Drug Test",
@@ -85,7 +85,7 @@ end)
 
 AddEventHandler("EMS:Client:Stabilize", function(target, idk)
 	if Inventory.Items:Has("traumakit", 1) then
-		Progress:ProgressWithStartEvent({
+		exports['sandbox-hud']:ProgressWithStartEvent({
 			name = "ems_eval",
 			duration = 10000,
 			label = "Stabilizing",
@@ -123,7 +123,7 @@ end)
 
 -- AddEventHandler("EMS:Client:ApplyTourniquet", function(data)
 -- 	if Inventory.Items:Has("tourniquet", 1) then
--- 		Progress:ProgressWithStartEvent({
+-- 		exports['sandbox-hud']:ProgressWithStartEvent({
 -- 			name = "ems_eval",
 -- 			duration = 4000,
 -- 			label = "Applying Tourniquet",
@@ -161,7 +161,7 @@ end)
 
 AddEventHandler("EMS:Client:FieldTreatWounds", function(data)
 	if Inventory.Items:Has("traumakit", 1) then
-		Progress:ProgressWithStartEvent({
+		exports['sandbox-hud']:ProgressWithStartEvent({
 			name = "ems_eval",
 			duration = 4000,
 			label = "Treating Wounds",
@@ -202,7 +202,7 @@ end)
 
 AddEventHandler("EMS:Client:ApplyBandage", function(data)
 	if Inventory.Items:Has("bandage", 1) then
-		Progress:ProgressWithStartEvent({
+		exports['sandbox-hud']:ProgressWithStartEvent({
 			name = "ems_eval",
 			duration = 3000,
 			label = "Applying Bandage",
@@ -240,7 +240,7 @@ end)
 
 AddEventHandler("EMS:Client:ApplyMorphine", function(data)
 	if Inventory.Items:Has("morphine", 1) then
-		Progress:ProgressWithStartEvent({
+		exports['sandbox-hud']:ProgressWithStartEvent({
 			name = "ems_eval",
 			duration = 3000,
 			label = "Administering Morphine",
@@ -279,7 +279,7 @@ end)
 RegisterNetEvent("EMS:Client:TreatWounds", function(data)
 	if Player(data).state.isHospitalized then
 		Animations.Emotes:ForceCancel()
-		Progress:ProgressWithStartEvent({
+		exports['sandbox-hud']:ProgressWithStartEvent({
 			name = "ems_eval",
 			duration = 20000,
 			label = "Treating Patient",

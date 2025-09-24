@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Animations",
 		"Polyzone",
 		"Jobs",
-		"Progress",
 		"Vehicles",
 		"Targeting",
 		"Inventory",
@@ -86,7 +84,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 							local repairLength = (installingPartData.time or 15) * quantity
 
-							Progress:ProgressWithStartAndTick({
+							exports['sandbox-hud']:ProgressWithStartAndTick({
 								name = "veh_mech_repair",
 								duration = repairLength * 1000,
 								label = "Repairing Vehicle",
@@ -113,7 +111,7 @@ AddEventHandler("Core:Shared:Ready", function()
 										or (#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
 									)
 								then
-									Progress:Cancel()
+									exports['sandbox-hud']:ProgressCancel()
 								end
 							end, function(wasCancelled)
 								_repairingVehicle = false
@@ -205,7 +203,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 						local repairLength = part.time or 25
 
-						Progress:ProgressWithStartAndTick({
+						exports['sandbox-hud']:ProgressWithStartAndTick({
 							name = "veh_mech_install",
 							duration = repairLength * 1000,
 							label = "Installing " .. part.part .. " Upgrade",
@@ -232,7 +230,7 @@ AddEventHandler("Core:Shared:Ready", function()
 									or (#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
 								)
 							then
-								Progress:Cancel()
+								exports['sandbox-hud']:ProgressCancel()
 							end
 						end, function(wasCancelled)
 							_repairingVehicle = false
@@ -303,7 +301,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 						local repairLength = part.time or 25
 
-						Progress:ProgressWithStartAndTick({
+						exports['sandbox-hud']:ProgressWithStartAndTick({
 							name = "veh_mech_removal",
 							duration = repairLength * 1000,
 							label = "Removing " .. part.partName .. " Upgrade",
@@ -330,7 +328,7 @@ AddEventHandler("Core:Shared:Ready", function()
 									or (#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
 								)
 							then
-								Progress:Cancel()
+								exports['sandbox-hud']:ProgressCancel()
 							end
 						end, function(wasCancelled)
 							_repairingVehicle = false
@@ -402,7 +400,7 @@ AddEventHandler("Mechanic:Client:StartRegularRepair", function(entityData)
 
 		local repairLength = 20
 		Animations.Emotes:Play("mechanic", false, repairLength * 1000, true)
-		Progress:ProgressWithStartAndTick({
+		exports['sandbox-hud']:ProgressWithStartAndTick({
 			name = "veh_mech_repair",
 			duration = repairLength * 1000,
 			label = "Repairing Vehicle",
@@ -425,7 +423,7 @@ AddEventHandler("Mechanic:Client:StartRegularRepair", function(entityData)
 					or Vehicles.Utils:IsCloseToFrontOfVehicle(entityData.entity)
 				)
 			then
-				Progress:Cancel()
+				exports['sandbox-hud']:ProgressCancel()
 			end
 		end, function(wasCancelled)
 			_repairingVehicle = false

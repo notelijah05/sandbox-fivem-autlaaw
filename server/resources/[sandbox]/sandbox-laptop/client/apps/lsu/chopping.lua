@@ -99,7 +99,7 @@ LAPTOP.LSUnderground.Chopping = {
 					_delay = true
 					PedFaceCoord(LocalPlayer.state.ped, _validBone?.coords)
 					exports["sandbox-base"]:SetVehicleDoorOpen(_validVeh, _validBone?.index, false, true)
-					Progress:ProgressWithTickEvent({
+					exports['sandbox-hud']:ProgressWithTickEvent({
 						name = "chopping_action",
 						duration = _validBone?.duration,
 						label = "Removing Part",
@@ -118,7 +118,7 @@ LAPTOP.LSUnderground.Chopping = {
 						},
 					}, function()
 						if _validVeh == nil or _validBone == nil then
-							Progress:Cancel()
+							exports['sandbox-hud']:ProgressCancel()
 						end
 					end, function(status)
 						if not status then
@@ -140,7 +140,7 @@ LAPTOP.LSUnderground.Chopping = {
 				if not IsVehicleTyreBurst(_validVeh, _validBone?.index) then
 					_delay = true
 					PedFaceCoord(LocalPlayer.state.ped, _validBone?.coords)
-					Progress:ProgressWithTickEvent({
+					exports['sandbox-hud']:ProgressWithTickEvent({
 						name = "chopping_action",
 						duration = _validBone?.duration,
 						label = "Removing Part",
@@ -161,7 +161,7 @@ LAPTOP.LSUnderground.Chopping = {
 						},
 					}, function()
 						if _validVeh == nil or _validBone == nil then
-							Progress:Cancel()
+							exports['sandbox-hud']:ProgressCancel()
 						end
 					end, function(status)
 						if not status then
@@ -187,7 +187,7 @@ LAPTOP.LSUnderground.Chopping = {
 				if DoesEntityExist(_validVeh) then
 					_delay = true
 					PedFaceCoord(LocalPlayer.state.ped, _validBone?.coords)
-					Progress:ProgressWithTickEvent({
+					exports['sandbox-hud']:ProgressWithTickEvent({
 						name = "chopping_action",
 						duration = _validBone?.duration,
 						label = "Scrapping Vehicle",
@@ -208,7 +208,7 @@ LAPTOP.LSUnderground.Chopping = {
 						},
 					}, function()
 						if _validVeh == nil or _validBone == nil then
-							Progress:Cancel()
+							exports['sandbox-hud']:ProgressCancel()
 						end
 					end, function(status)
 						if not status then
@@ -361,7 +361,7 @@ RegisterNetEvent('Laptop:Client:LSUnderground:Chopping:CancelCurrent', function(
 	if LocalPlayer.state.inChopZone ~= nil and LocalPlayer.state.chopping ~= nil then
 		if _delay then
 			exports["sandbox-hud"]:NotifError("Choplist Has Refreshed")
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 		end
 		LocalPlayer.state:set("chopping", nil, true)
 		_validBone = nil

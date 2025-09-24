@@ -104,31 +104,31 @@ RegisterNetEvent("Status:Client:Update", function(status, value)
 end)
 
 RegisterNetEvent("Progress:Client:Progress", function(action, cb)
-	Progress:Progress(action, cb)
+	exports['sandbox-hud']:Progress(action, cb)
 end)
 
 RegisterNetEvent("Progress:Client:ProgressWithStartEvent", function(action, start, finish)
-	Progress:ProgressWithStartEvent(action, start, finish)
+	exports['sandbox-hud']:ProgressWithStartEvent(action, start, finish)
 end)
 
 RegisterNetEvent("Progress:Client:ProgressWithTickEvent", function(action, tick, finish)
-	Progress:ProgressWithTickEvent(action, tick, finish)
+	exports['sandbox-hud']:ProgressWithTickEvent(action, tick, finish)
 end)
 
 RegisterNetEvent("Progress:Client:ProgressWithStartAndTick", function(action, start, tick, finish)
-	Progress:ProgressWithStartAndTick(action, start, tick, finish)
+	exports['sandbox-hud']:ProgressWithStartAndTick(action, start, tick, finish)
 end)
 
 RegisterNetEvent("Progress:Client:Cancel", function()
-	Progress:Cancel()
+	exports['sandbox-hud']:ProgressCancel()
 end)
 
 RegisterNetEvent("Progress:Client:Fail", function()
-	Progress:Fail()
+	exports['sandbox-hud']:ProgressFail()
 end)
 
 RegisterNUICallback("Progress:Finish", function(data, cb)
-	Progress:Finish()
+	exports['sandbox-hud']:ProgressFinish()
 	cb("ok")
 end)
 

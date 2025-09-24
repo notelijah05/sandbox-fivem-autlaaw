@@ -253,7 +253,7 @@ AddEventHandler("Robbery:Client:Store:SecureSafe", function(entity, data)
 		return
 	end
 
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "secure_safe",
 		duration = 5000,
 		label = "Securing",

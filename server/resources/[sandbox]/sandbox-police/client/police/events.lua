@@ -90,7 +90,7 @@ RegisterNetEvent("Police:Client:RunPlate", function(hitting, data)
 	local vehEnt = Entity(veh)
 
 	if veh then
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "run_plate",
 			duration = 4000,
 			label = "Running Plate",
@@ -133,7 +133,7 @@ RegisterNetEvent("Police:Client:RunPlate", function(hitting, data)
 end)
 
 AddEventHandler("Police:Client:GetRadioChannel", function(entity, data)
-	Progress:ProgressWithTickEvent({
+	exports['sandbox-hud']:ProgressWithTickEvent({
 		name = "check_freq_action",
 		duration = 2000,
 		label = "Checking Radio Channel",
@@ -154,7 +154,7 @@ AddEventHandler("Police:Client:GetRadioChannel", function(entity, data)
 		if #(GetEntityCoords(LocalPlayer.state.ped) - GetEntityCoords(entity.entity)) <= 5.0 then
 			return
 		end
-		Progress:Cancel()
+		exports['sandbox-hud']:ProgressCancel()
 	end, function(cancelled)
 		if not cancelled then
 			exports["sandbox-base"]:ServerCallback("Police:GetRadioChannel", entity.serverId, function() end)
@@ -163,7 +163,7 @@ AddEventHandler("Police:Client:GetRadioChannel", function(entity, data)
 end)
 
 AddEventHandler("Police:Client:GSR", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "gsr_action",
 		duration = 6000,
 		label = "Performing GSR Test",
@@ -187,7 +187,7 @@ AddEventHandler("Police:Client:GSR", function(entity, data)
 end)
 
 AddEventHandler("Police:Client:BAC", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "bac_action",
 		duration = 6000,
 		label = "Performing Blood Alcohol Test",
@@ -211,7 +211,7 @@ AddEventHandler("Police:Client:BAC", function(entity, data)
 end)
 
 AddEventHandler("Police:Client:DNASwab", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "dna_action",
 		duration = 6000,
 		label = "Performing DNA Swab",

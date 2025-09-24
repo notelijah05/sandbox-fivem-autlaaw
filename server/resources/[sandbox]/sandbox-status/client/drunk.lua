@@ -324,7 +324,7 @@ function RegisterDrunkCallbacks()
         local alcohol = _alcoholConfig[data]
         if alcohol then
             Animations.Emotes:Play(alcohol.anim, false, alcohol.initialTime, true)
-            Progress:Progress({
+            exports['sandbox-hud']:Progress({
                 name = data,
                 duration = alcohol.initialTime,
                 label = alcohol.actionLabel,

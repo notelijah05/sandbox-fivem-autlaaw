@@ -213,7 +213,7 @@ end)
 AddEventHandler('Vehicles:Client:Tow', function(data)
 	if attemptingImpoundOnVehicle and DoesEntityExist(attemptingImpoundOnVehicle) then
 		if #(GetEntityCoords(attemptingImpoundOnVehicle) - GetEntityCoords(GLOBAL_PED)) <= 10.0 and IsVehicleEmpty(attemptingImpoundOnVehicle) then
-			Progress:ProgressWithTickEvent({
+			exports['sandbox-hud']:ProgressWithTickEvent({
 				name = 'veh_impound',
 				duration = 3 * 1000,
 				label = 'Requesting Tow',
@@ -233,7 +233,7 @@ AddEventHandler('Vehicles:Client:Tow', function(data)
 				},
 			}, function()
 				if not DoesEntityExist(attemptingImpoundOnVehicle) or (#(GetEntityCoords(attemptingImpoundOnVehicle) - GetEntityCoords(GLOBAL_PED)) > 10.0) or not IsVehicleEmpty(attemptingImpoundOnVehicle) then
-					Progress:Cancel()
+					exports['sandbox-hud']:ProgressCancel()
 				end
 			end, function(cancelled)
 				if not cancelled and DoesEntityExist(attemptingImpoundOnVehicle) and (#(GetEntityCoords(attemptingImpoundOnVehicle) - GetEntityCoords(GLOBAL_PED)) <= 10.0) and IsVehicleEmpty(attemptingImpoundOnVehicle) then
@@ -259,7 +259,7 @@ end)
 AddEventHandler('Vehicles:Client:Impound', function(data)
 	if attemptingImpoundOnVehicle and DoesEntityExist(attemptingImpoundOnVehicle) then
 		if #(GetEntityCoords(attemptingImpoundOnVehicle) - GetEntityCoords(GLOBAL_PED)) <= 10.0 and IsVehicleEmpty(attemptingImpoundOnVehicle) then
-			Progress:ProgressWithTickEvent({
+			exports['sandbox-hud']:ProgressWithTickEvent({
 				name = 'veh_impound',
 				duration = 10 * 1000,
 				label = 'Impounding Vehicle',
@@ -279,7 +279,7 @@ AddEventHandler('Vehicles:Client:Impound', function(data)
 				},
 			}, function()
 				if not DoesEntityExist(attemptingImpoundOnVehicle) or (#(GetEntityCoords(attemptingImpoundOnVehicle) - GetEntityCoords(GLOBAL_PED)) > 10.0) or not IsVehicleEmpty(attemptingImpoundOnVehicle) then
-					Progress:Cancel()
+					exports['sandbox-hud']:ProgressCancel()
 				end
 			end, function(cancelled)
 				if not cancelled and DoesEntityExist(attemptingImpoundOnVehicle) and (#(GetEntityCoords(attemptingImpoundOnVehicle) - GetEntityCoords(GLOBAL_PED)) <= 10.0) and IsVehicleEmpty(attemptingImpoundOnVehicle) then

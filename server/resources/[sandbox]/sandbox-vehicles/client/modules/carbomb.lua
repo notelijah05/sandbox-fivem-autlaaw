@@ -20,7 +20,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                     return cb(false, 'Invalid Pre Explosion Time')
                 end
 
-                Progress:Progress({
+                exports['sandbox-hud']:Progress({
                     name = "vehicle_install_carbomb",
                     duration = 5000,
                     label = "Installing Car Bomb",

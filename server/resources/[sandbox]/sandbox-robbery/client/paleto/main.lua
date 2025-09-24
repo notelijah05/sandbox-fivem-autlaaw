@@ -469,7 +469,7 @@ AddEventHandler("Input:Closed", function(event, data)
 end)
 
 AddEventHandler("Robbery:Client:Paleto:VaultTerminal", function()
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "disable_vault_pc",
 		duration = math.random(45, 60) * 1000,
 		label = "Disabling",
@@ -533,7 +533,7 @@ AddEventHandler("Robbery:Client:Paleto:Doors", function(entity, data)
 end)
 
 AddEventHandler("Robbery:Client:Paleto:StartSecuring", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "secure_paleto",
 		duration = 30000,
 		label = "Securing",
@@ -557,7 +557,7 @@ AddEventHandler("Robbery:Client:Paleto:StartSecuring", function(entity, data)
 end)
 
 AddEventHandler("Robbery:Client:Paleto:DisableAlarm", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "secure_paleto",
 		duration = 3000,
 		label = "Disabling",

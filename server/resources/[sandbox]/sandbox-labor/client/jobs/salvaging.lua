@@ -180,7 +180,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("Salvaging:Client:ScrapCar", function(s, s2)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = 'salvaging_action',
 		duration = (math.random(15) + 25) * 1000,
 		label = "Scrapping Car",

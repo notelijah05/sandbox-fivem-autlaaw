@@ -66,7 +66,7 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["action"] = AddEventHandler(string.format("Labor:Client:%s:Action", joiner), function(ent, data)
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "prison_action",
 			duration = data.duration,
 			label = data.label,

@@ -18,7 +18,6 @@ function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Animations",
 		"Polyzone",
 		"Jobs",
-		"Progress",
 		"Vehicles",
 		"Targeting",
 		"Inventory",
@@ -166,7 +164,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			local success, alreadyFiled, matchingEvidence, policeWeaponId, serial = table.unpack(data)
 
 			Animations.Emotes:Play('type3', false, 8000, true, true)
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = 'gun_ballistics_test',
 				duration = 8000,
 				label = 'Testing Gun Ballistics',

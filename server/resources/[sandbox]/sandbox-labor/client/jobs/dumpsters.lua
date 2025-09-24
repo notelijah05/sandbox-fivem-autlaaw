@@ -194,7 +194,7 @@ AddEventHandler("Inventory:Client:SearchDumpster", function(entity, data)
 					dict = "creatures@rottweiler@move"
 					anim = "fetch_pickup"
 				end
-				Progress:Progress({
+				exports['sandbox-hud']:Progress({
 					name = "inv_dumpster_search",
 					duration = math.random(20, 25) * 1000,
 					label = "Searching Trash",

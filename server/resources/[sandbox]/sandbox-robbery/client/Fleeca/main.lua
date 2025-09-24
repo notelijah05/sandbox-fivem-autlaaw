@@ -130,7 +130,7 @@ RegisterNetEvent("Robbery:Client:Fleeca:CloseVaultDoor", function(fleecaId)
 end)
 
 AddEventHandler("Robbery:Client:Fleeca:StartSecuring", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "secure_fleeca",
 		duration = 30000,
 		label = "Securing",

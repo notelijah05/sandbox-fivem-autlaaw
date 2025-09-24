@@ -282,7 +282,7 @@ end)
 AddEventHandler("Drugs:Client:Moonshine:FinishPlacement", function(data, endCoords)
     TaskTurnPedToFaceCoord(LocalPlayer.state.ped, endCoords.coords.x, endCoords.coords.y, endCoords.coords.z, 0.0)
     Wait(1000)
-    Progress:Progress({
+    exports['sandbox-hud']:Progress({
         name = "meth_pickup",
         duration = (math.random(5) + 10) * 1000,
         label = "Placing",
@@ -313,7 +313,7 @@ end)
 AddEventHandler("Drugs:Client:Moonshine:FinishPlacementBarrel", function(data, endCoords)
     TaskTurnPedToFaceCoord(LocalPlayer.state.ped, endCoords.coords.x, endCoords.coords.y, endCoords.coords.z, 0.0)
     Wait(1000)
-    Progress:Progress({
+    exports['sandbox-hud']:Progress({
         name = "meth_pickup",
         duration = 3 * 1000,
         label = "Placing",
@@ -343,7 +343,7 @@ end)
 
 AddEventHandler("Drugs:Client:Moonshine:PickupStill", function(entity, data)
     if Entity(entity.entity).state?.isMoonshineStill then
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "meth_pickup",
             duration = (math.random(5) + 15) * 1000,
             label = "Picking Up Still",
@@ -377,7 +377,7 @@ AddEventHandler("Drugs:Client:Moonshine:StartCook", function(entity, data)
     if entState.isMoonshineStill and entState.stillId then
         exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:CheckStill", entState.stillId, function(s)
             if s then
-                Progress:Progress({
+                exports['sandbox-hud']:Progress({
                     name = "meth_pickup",
                     duration = 5 * 1000,
                     label = "Preparing",
@@ -399,7 +399,7 @@ AddEventHandler("Drugs:Client:Moonshine:StartCook", function(entity, data)
 
                         LocalPlayer.state.doingAction = false
 
-                        Progress:Progress({
+                        exports['sandbox-hud']:Progress({
                             name = "meth_pickup",
                             duration = 2 * 1000,
                             label = "Finishing",
@@ -435,7 +435,7 @@ end)
 AddEventHandler("Drugs:Client:Moonshine:PickupCook", function(entity, data)
     local entState = Entity(entity.entity).state
     if entState.isMoonshineStill and entState.stillId then
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "meth_pickup",
             duration = 5 * 1000,
             label = "Emptying Still",
@@ -469,7 +469,7 @@ AddEventHandler("Drugs:Client:Moonshine:PickupBrew", function(entity, data)
     if Inventory.Items:Has("moonshine_jar", (_barrels[entState.barrelId]?.brewData?.Drinks or 15), false) then
         local entState = Entity(entity.entity).state
         if entState.isMoonshineBarrel and entState.barrelId then
-            Progress:Progress({
+            exports['sandbox-hud']:Progress({
                 name = "meth_pickup",
                 duration = 5 * 1000,
                 label = "Emptying Barrel",
@@ -547,7 +547,7 @@ end)
 
 AddEventHandler("Drugs:Client:Moonshine:PickupBarrel", function(entity, data)
     if Entity(entity.entity).state?.isMoonshineBarrel then
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "meth_pickup",
             duration = 8 * 1000,
             label = "Destroying",

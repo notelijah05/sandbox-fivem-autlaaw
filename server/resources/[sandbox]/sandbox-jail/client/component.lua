@@ -10,7 +10,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Trunk = exports["sandbox-base"]:FetchComponent("Trunk")
@@ -25,7 +24,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"PedInteraction",
 		"Inventory",
-		"Progress",
 		"Reputation",
 		"Jail",
 		"Trunk",

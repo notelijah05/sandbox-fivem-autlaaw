@@ -6,7 +6,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
         local target = Targeting:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
             if Vehicles.Utils:IsCloseToVehicle(target.entity) then
-                Progress:Progress({
+                exports['sandbox-hud']:Progress({
                     name = "vehicle_applying_polish",
                     duration = 5000,
                     label = "Applying Polish",

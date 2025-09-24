@@ -3,7 +3,6 @@ local _timeout = false
 AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
@@ -11,7 +10,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
 		"Targeting",
-		"Progress",
 		"Escort",
 		"Vehicles",
 	}, function(error)

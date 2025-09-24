@@ -119,7 +119,7 @@ AddEventHandler("Hospital:Client:PrisonHospitalRevive", function(entity, data)
 		}
 	end
 
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "prison_hospital_revive_action",
 		duration = (math.random(10) + 45) * 1000,
 		label = "Healing",

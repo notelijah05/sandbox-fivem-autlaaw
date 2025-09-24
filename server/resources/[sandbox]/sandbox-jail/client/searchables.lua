@@ -41,7 +41,7 @@ AddEventHandler("Prison:Client:Target:Search", function(entity, data)
 	else
 		Animations.Emotes:Play("mechanic2", false, nil, true) -- or search
 	end
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "prison_target_search",
 		duration = math.random(12000, 18000),
 		label = "Searching Hidden Location",

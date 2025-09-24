@@ -2,7 +2,6 @@ local inBank = true
 
 AddEventHandler("Finance:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -18,7 +17,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Finance", {
-		"Progress",
 		"Targeting",
 		"PedInteraction",
 		"Polyzone",
@@ -177,7 +175,7 @@ RegisterNUICallback("Close", function(data, cb)
 	})
 
 	if not inBank then
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "atm_removing",
 			duration = 1500,
 			label = "Removing Card",

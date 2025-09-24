@@ -9,14 +9,12 @@ AddEventHandler("EmergencyAlerts:Shared:DependencyUpdate", RetrievePDAComponents
 function RetrievePDAComponents()
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
 		"EmergencyAlerts",
 		"CCTV",
-		"Progress",
 	}, function(error)
 		if #error > 0 then
 			return

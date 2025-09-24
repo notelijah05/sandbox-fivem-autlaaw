@@ -12,7 +12,6 @@ VEHICLE_HARNESS = false
 AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
@@ -36,7 +35,6 @@ local vehicleDoorNames = {
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
 		"Animations",
-		"Progress",
 		"Vehicles",
 		"Minigame",
 		"Targeting",

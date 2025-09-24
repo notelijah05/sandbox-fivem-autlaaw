@@ -49,7 +49,7 @@ end
 --                 local chance = math.random(100)
 --                 if chance >= Config.Lockpick.chance then
 --                     Citizen.SetTimeout(math.random(Config.Lockpick.animDuration) * 1000, function()
---                         Progress:Fail()
+--                         exports['sandbox-hud']:ProgressFail()
 --                         AddLockpickFailedAttempt(showingDoorInfo)
 --                         if math.random(100) <= 40 then -- 40% chance of lockpick breaking or it is just incompetence
 --                             exports["sandbox-base"]:ServerCallback('Inventory:Server:RemoveItem', { item = item }, function(done)
@@ -61,7 +61,7 @@ end
 --                     end)
 --                 end
 
---                 Progress:Progress({
+--                 exports['sandbox-hud']:Progress({
 --                     name = 'lockpick',
 --                     duration = Config.Lockpick.animDuration * 1000,
 --                     label = 'Picking the lock',

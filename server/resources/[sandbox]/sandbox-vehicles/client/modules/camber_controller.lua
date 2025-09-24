@@ -26,7 +26,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 				return
 			end
 
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "vehicle_camber_controller",
 				duration = 5000,
 				label = "Plugging In Controller",

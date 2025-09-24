@@ -35,7 +35,7 @@ RegisterNetEvent("WeedRun:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("WeedRun:Client:Deliver", function()
-    Progress:Progress({
+    exports['sandbox-hud']:Progress({
         name = 'weed-sale-1',
         duration = (math.random(5, 10) + 10) * 1000,
         label = "Inspecting Package",
@@ -51,7 +51,7 @@ AddEventHandler("WeedRun:Client:Deliver", function()
     }, function(cancelled)
         if not cancelled then
             exports["sandbox-base"]:ServerCallback("WeedRun:StartDropoff", {}, function(r)
-                Progress:Progress({
+                exports['sandbox-hud']:Progress({
                     name = 'weed-sale-2',
                     duration = (math.random(15, 45) + 45) * 1000,
                     label = "Counting Bills",

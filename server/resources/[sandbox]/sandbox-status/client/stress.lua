@@ -365,7 +365,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 
 			_delay = true
 			exports['sandbox-hud']:ActionHide("destress")
-			Progress:ProgressWithTickEvent({
+			exports['sandbox-hud']:ProgressWithTickEvent({
 				name = "stress_releif",
 				duration = totalTime,
 				label = "Relieving Stress",

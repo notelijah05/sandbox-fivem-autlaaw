@@ -7,13 +7,11 @@ local _interacting = false
 
 AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
 function WeaponsComponents()
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weapons", {
-		"Progress",
 		"Inventory",
 	}, function(error)
 		if #error > 0 then
@@ -56,7 +54,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports["sandbox-base"]:RegisterClientCallback("Weapons:EquipAttachment", function(data, cb)
 			if _equipped ~= nil then
-				Progress:Progress({
+				exports['sandbox-hud']:Progress({
 					name = "attch_action",
 					duration = 5000,
 					label = "Equipping " .. data,
@@ -118,7 +116,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports["sandbox-base"]:RegisterClientCallback("Weapons:AddAmmo", function(data, cb)
 			if _equipped ~= nil and _items[_equipped.Name].ammoType == data.ammoType then
-				Progress:Progress({
+				exports['sandbox-hud']:Progress({
 					name = "ammo_action",
 					duration = 2500,
 					label = "Loading Ammunition",
@@ -159,7 +157,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports["sandbox-base"]:RegisterClientCallback("Weapons:CanEquipParachute", function(data, cb)
 			if not IsPedInParachuteFreeFall(LocalPlayer.state.ped) and not IsPedFalling(LocalPlayer.state.ped) and (GetPedParachuteState(LocalPlayer.state.ped) == -1 or GetPedParachuteState(LocalPlayer.state.ped) == 0) then
-				Progress:ProgressWithTickEvent({
+				exports['sandbox-hud']:ProgressWithTickEvent({
 					name = 'equipping_parachute',
 					duration = 3000,
 					label = 'Equipping Parachute',
@@ -180,7 +178,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						return
 					end
 
-					Progress:Cancel()
+					exports['sandbox-hud']:ProgressCancel()
 				end, function(cancelled)
 					cb(not cancelled)
 				end)
@@ -263,7 +261,7 @@ end)
 
 AddEventHandler("Weapons:Client:RemoveAttachment", function(attachment)
 	if _equipped ~= nil then
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "attch_action",
 			duration = 5000,
 			label = "Removing Attachment",

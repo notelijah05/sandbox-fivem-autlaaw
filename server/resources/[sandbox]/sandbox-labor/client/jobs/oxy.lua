@@ -146,7 +146,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
                 exports['sandbox-hud']:ActionHide("oxysale")
                 exports["sandbox-base"]:ServerCallback("OxyRun:CheckPickup", {}, function(s)
                     if s then
-                        Progress:ProgressWithTickEvent({
+                        exports['sandbox-hud']:ProgressWithTickEvent({
                             name = 'oxy_pickup',
                             duration = 10000,
                             label = 'Waiting',
@@ -163,7 +163,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
                         }, function()
                             local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
                             if _state ~= 3 or veh ~= _v.ent or GetPedInVehicleSeat(_v.ent, -1) ~= LocalPlayer.state.ped then
-                                Progress:Cancel()
+                                exports['sandbox-hud']:ProgressCancel()
                                 exports["sandbox-base"]:ServerCallback("OxyRun:CancelPickup")
                                 return
                             end

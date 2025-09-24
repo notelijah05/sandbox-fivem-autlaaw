@@ -52,7 +52,7 @@ end)
 
 SNOWBALLS = {
 	Pickup = function(self)
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "snowball_pickup",
 			duration = 5000,
 			label = "Making a snowball",

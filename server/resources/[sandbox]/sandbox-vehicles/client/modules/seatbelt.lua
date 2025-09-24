@@ -19,7 +19,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                 local vState = Entity(VEHICLE_INSIDE)
                 if vState.state.Harness and vState.state.Harness > 0 and (VEHICLE_SEAT == -1 or VEHICLE_SEAT == 0) then
                     if not VEHICLE_SEATBELT then
-                        Progress:ProgressWithTickEvent({
+                        exports['sandbox-hud']:ProgressWithTickEvent({
                             name = "vehicle_harness",
                             duration = VEHICLE_SEATBELT and 1000 or 2000,
                             label = VEHICLE_SEATBELT and "Removing Harness" or "Applying Harness",
@@ -36,7 +36,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                             },
                         }, function()
                             if not VEHICLE_INSIDE then
-                                Progress:Fail()
+                                exports['sandbox-hud']:ProgressFail()
                             end
                         end, function(cancelled)
                             if not cancelled and VEHICLE_INSIDE then
@@ -87,7 +87,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
         local target = Targeting:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
             if Vehicles.Utils:IsCloseToVehicle(target.entity) then
-                Progress:Progress({
+                exports['sandbox-hud']:Progress({
                     name = "vehicle_installing_harness",
                     duration = 25000,
                     label = "Installing Harness",

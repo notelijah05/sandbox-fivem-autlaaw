@@ -140,7 +140,7 @@ function EndATMRobbery()
 end
 
 function DoATMProgress(label, duration, canCancel, cb)
-    Progress:Progress({
+    exports['sandbox-hud']:Progress({
         name = "installing_atm_hack",
         duration = (math.random(10) + 10) * 1000,
         label = label,

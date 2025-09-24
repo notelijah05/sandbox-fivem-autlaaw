@@ -176,7 +176,7 @@ end)
 AddEventHandler("Drugs:Client:Meth:FinishPlacement", function(data, endCoords)
     TaskTurnPedToFaceCoord(LocalPlayer.state.ped, endCoords.coords.x, endCoords.coords.y, endCoords.coords.z, 0.0)
     Wait(1000)
-    Progress:Progress({
+    exports['sandbox-hud']:Progress({
         name = "meth_pickup",
         duration = (math.random(5) + 10) * 1000,
         label = "Placing Table",
@@ -210,7 +210,7 @@ end)
 
 AddEventHandler("Drugs:Client:Meth:PickupTable", function(entity, data)
     if Entity(entity.entity).state?.isMethTable then
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "meth_pickup",
             duration = (math.random(5) + 15) * 1000,
             label = "Picking Up Table",
@@ -244,7 +244,7 @@ AddEventHandler("Drugs:Client:Meth:StartCook", function(entity, data)
     if entState.isMethTable and entState.methTable then
         exports["sandbox-base"]:ServerCallback("Drugs:Meth:CheckTable", entState.methTable, function(s)
             if s then
-                Progress:Progress({
+                exports['sandbox-hud']:Progress({
                     name = "meth_pickup",
                     duration = 5 * 1000,
                     label = "Preparing Table",
@@ -276,7 +276,7 @@ end)
 
 AddEventHandler("Drugs:Client:Meth:ConfirmCook", function(data)
     if data ~= nil and _methTables[data.tableId] ~= nil and (not _methTables[data.tableId]?.cooldown or GetCloudTimeAsInt() > _methTables[data.tableId]?.cooldown) then
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "meth_pickup",
             duration = 20 * 1000,
             label = "Readying Ingredients",
@@ -294,7 +294,7 @@ AddEventHandler("Drugs:Client:Meth:ConfirmCook", function(data)
             },
         }, function(status)
             if not status then
-                Progress:Progress({
+                exports['sandbox-hud']:Progress({
                     name = "meth_pickup",
                     duration = 20 * 1000,
                     label = "Mixing Ingredients",
@@ -312,7 +312,7 @@ AddEventHandler("Drugs:Client:Meth:ConfirmCook", function(data)
                     },
                 }, function(status)
                     if not status then
-                        Progress:Progress({
+                        exports['sandbox-hud']:Progress({
                             name = "meth_pickup",
                             duration = 20 * 1000,
                             label = "Starting Cooking Process",
@@ -345,7 +345,7 @@ end)
 AddEventHandler("Drugs:Client:Meth:PickupCook", function(entity, data)
     local entState = Entity(entity.entity).state
     if entState.isMethTable and entState.methTable then
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "meth_pickup",
             duration = 5 * 1000,
             label = "Gathering Goods",

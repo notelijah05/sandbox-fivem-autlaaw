@@ -6,7 +6,6 @@ function RetrieveComponents()
     Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
     Status = exports["sandbox-base"]:FetchComponent("Status")
     --Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
-    Progress = exports["sandbox-base"]:FetchComponent("Progress")
     EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
     PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
     Jail = exports["sandbox-base"]:FetchComponent("Jail")
@@ -19,7 +18,6 @@ AddEventHandler("Core:Shared:Ready", function()
         "Targeting",
         "Status",
         --"Hospital",
-        "Progress",
         "EmergencyAlerts",
         "PedInteraction",
         "Jail",

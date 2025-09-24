@@ -2,7 +2,6 @@ AddEventHandler("Drugs:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -15,7 +14,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Drugs", {
 		"Inventory",
 		"Targeting",
-		"Progress",
 		"ObjectPlacer",
 		"Minigame",
 		"PedInteraction",

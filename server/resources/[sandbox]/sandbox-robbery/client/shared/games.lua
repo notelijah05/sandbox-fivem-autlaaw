@@ -13,7 +13,7 @@ function RegisterGamesCallbacks()
 end
 
 function DoProgress(data, cb)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "robbery_action",
 		duration = math.random(45, 60) * 1000,
 		label = data.config.label or "Doing A Thing",

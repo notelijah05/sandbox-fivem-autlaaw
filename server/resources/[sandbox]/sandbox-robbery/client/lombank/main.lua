@@ -263,7 +263,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 end)
 
 AddEventHandler("Robbery:Client:Lombank:StartSecuring", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "secure_lombank",
 		duration = 30000,
 		label = "Securing",

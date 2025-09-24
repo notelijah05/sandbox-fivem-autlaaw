@@ -106,7 +106,7 @@ AddEventHandler("Doors:Client:UseElevator", function(data)
         local floorData = elevatorData.floors[data.floor]
         if floorData and floorData.coords then
             exports["sandbox-base"]:ServerCallback("Doors:Elevator:Validate", floorData, function()
-                Progress:ProgressWithTickEvent({
+                exports['sandbox-hud']:ProgressWithTickEvent({
                     name = "door_elevator",
                     duration = 2000,
                     label = "Awaiting Elevator",
@@ -122,7 +122,7 @@ AddEventHandler("Doors:Client:UseElevator", function(data)
                     },
                 }, function()
                     if LocalPlayer.state.isCuffed then
-                        return Progress:Cancel()
+                        return exports['sandbox-hud']:ProgressCancel()
                     end
                 end, function(cancelled)
                     if not cancelled and not ELEVATOR_STATE[data.elevator].locked then

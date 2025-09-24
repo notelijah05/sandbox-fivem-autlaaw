@@ -244,7 +244,7 @@ RegisterNetEvent("Mining:Client:OnDuty", function(joiner, time)
 				exports["sandbox-base"]:ServerCallback("Mining:Server:MineNode", data)
 			end)
 		else
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "mining_action",
 				duration = math.random(40, 55) * 1000,
 				label = "Mining",

@@ -120,7 +120,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 end)
 
 AddEventHandler("Robbery:Client:Vangelico:SecureStore", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "secure_vangelico",
 		duration = 30000,
 		label = "Securing",
@@ -242,7 +242,7 @@ AddEventHandler("Robbery:Client:Vangelico:BreakCase", function(entity, data)
 			)
 		end)
 
-		Progress:ProgressWithTickEvent({
+		exports['sandbox-hud']:ProgressWithTickEvent({
 			name = "vangelico_action",
 			duration = (math.random(10) * 1000) + 30000,
 			label = "Robbing",
@@ -269,7 +269,7 @@ AddEventHandler("Robbery:Client:Vangelico:BreakCase", function(entity, data)
 			then
 				return
 			end
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 		end, function(cancelled)
 			if not cancelled then
 				exports["sandbox-base"]:ServerCallback("Robbery:Vangelico:BreakCase", data.index)

@@ -43,7 +43,7 @@ AddEventHandler('Vehicles:Client:AnchorBoat', function(entity, data)
     end
 
     if CanBeAnchored(entity.entity) then
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "boat_anchor",
             duration = 5000,
             label = "Toggling Boat Anchor",

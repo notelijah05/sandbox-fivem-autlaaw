@@ -90,7 +90,7 @@ function AddBankingATMs()
 end
 
 AddEventHandler("Banking:Client:StartOpenATM", function(entityData)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "atm_inserting",
 		duration = 3000,
 		label = "Inserting Card",

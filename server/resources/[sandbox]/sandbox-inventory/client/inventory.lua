@@ -81,7 +81,6 @@ AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -95,7 +94,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Inventory",
 		"Animations",
-		"Progress",
 		"Crafting",
 		"Targeting",
 		"PedInteraction",
@@ -150,7 +148,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 
 			if item.pbConfig ~= nil then
-				Progress:Progress({
+				exports['sandbox-hud']:Progress({
 					name = item.pbConfig.name,
 					duration = item.time,
 					label = item.pbConfig.label,

@@ -103,7 +103,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 end)
 
 function DoStealSignsProgress(label, duration, anim, canCancel, cb)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "robbing_sign",
 		duration = duration,
 		label = label,

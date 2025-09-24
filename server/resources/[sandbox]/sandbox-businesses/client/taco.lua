@@ -106,7 +106,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 					-- if not LocalPlayer.state.TacoPickup or not LocalPlayer.state.TacoQueue then
 					-- 	return
 					-- end
-					Progress:Progress({
+					exports['sandbox-hud']:Progress({
 						name = "taco_pickup",
 						duration = 2500,
 						label = "Picking up delivery.",
@@ -154,7 +154,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 					return
 				end
 				if Inventory.Check.Player:HasItem(_tacoFoodItems[_currentCookItem].item, 1) then
-					Progress:Progress({
+					exports['sandbox-hud']:Progress({
 						name = "taco_queue",
 						duration = 2500,
 						label = string.format("Placing %s in bag.", _tacoFoodItems[_currentCookItem].label),
@@ -336,7 +336,7 @@ AddEventHandler("Taco:Client:TacoShop", function()
 end)
 
 AddEventHandler("Tacos:DeliverOrder", function(_, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "taco_dropoff",
 		duration = 3000,
 		label = "Dropping off delivery.",

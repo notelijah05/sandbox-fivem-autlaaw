@@ -57,7 +57,6 @@ end
 
 AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
@@ -67,7 +66,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
-		"Progress",
 		"Minigame",
 		"Inventory",
 		"Jail",
@@ -139,7 +137,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		exports["sandbox-base"]:RegisterClientCallback("HUD:PutOnBlindfold", function(data, cb)
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "blindfold_action",
 				duration = 6000,
 				label = data,

@@ -103,7 +103,7 @@ end)
 AddEventHandler("Robbery:Client:MoneyTruck:GrabLoot", function(entity, data)
 	exports["sandbox-base"]:ServerCallback("Robbery:MoneyTruck:CheckLoot", VehToNet(entity.entity), function(s)
 		if s then
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "moneytruck_loot",
 				duration = (math.random(15, 30) + 15) * 1000,
 				label = "Grabbing Fat Lewts",

@@ -168,7 +168,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 end)
 
 AddEventHandler("Robbery:Client:Bobcat:StartSecuring", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "secure_bobcat",
 		duration = 30000,
 		label = "Securing",
@@ -232,7 +232,7 @@ RegisterNetEvent("Robbery:Client:Bobcat:UpdateIPL", function(state)
 end)
 
 AddEventHandler("Robbery:Client:Bobcat:GrabC4", function()
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "bobcat_c4",
 		duration = (math.random(5) + 5) * 1000,
 		label = "Grabbing Breach Charge",
@@ -258,7 +258,7 @@ end)
 AddEventHandler("Robbery:Client:Bobcat:GrabLoot", function(entity, data)
 	exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:CheckLoot", data, function(s)
 		if s then
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "bobcat_loot",
 				duration = (math.random(10) + 5) * 1000,
 				label = "Grabbing Fat Lewts",

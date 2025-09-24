@@ -79,7 +79,7 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 
 		exports['sandbox-hud']:DeathTextsRelease()
 		if not LocalPlayer.state.deadData?.isMinor then
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "hospital_action",
 				duration = 10000,
 				label = "Respawning",

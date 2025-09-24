@@ -209,7 +209,7 @@ end)
 AddEventHandler("Weed:Client:Fertilize", function(data)
 	if Inventory.Items:Has(string.format("fertilizer_%s", data.type), 1) then
 		exports['sandbox-hud']:ListMenuClose()
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "fertilize_weed",
 			duration = 15000,
 			label = "Fertilizing",
@@ -238,7 +238,7 @@ end)
 AddEventHandler("Weed:Client:Water", function(pId)
 	if Inventory.Items:Has("water", 1) then
 		exports['sandbox-hud']:ListMenuClose()
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "water_weed",
 			duration = 6000,
 			label = "Watering",
@@ -261,7 +261,7 @@ AddEventHandler("Weed:Client:Water", function(pId)
 end)
 
 AddEventHandler("Weed:Client:Harvest", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "harvest_weed",
 		duration = 6000,
 		label = "Harvesting",
@@ -286,7 +286,7 @@ end)
 
 AddEventHandler("Weed:Client:Harvest2", function(nId)
 	exports['sandbox-hud']:ListMenuClose()
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "harvest_weed",
 		duration = 6000,
 		label = "Harvesting",
@@ -318,7 +318,7 @@ end)
 -- end)
 
 AddEventHandler("Weed:Client:Destroy", function(nId)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "destroy_weed",
 		duration = 8000,
 		label = "Destroying",
@@ -342,7 +342,7 @@ AddEventHandler("Weed:Client:Destroy", function(nId)
 end)
 
 AddEventHandler("Weed:Client:PDDestroy", function(entity)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "harvest_weed",
 		duration = 4000,
 		label = "Destroying",

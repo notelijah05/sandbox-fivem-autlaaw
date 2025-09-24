@@ -310,7 +310,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
     eventHandlers["search"] = RegisterNetEvent(string.format("HouseRobbery:Client:%s:Search", joiner),
         function(ent, data)
             if data.id and not _nodes.searched[data.id] then
-                Progress:ProgressWithTickEvent({
+                exports['sandbox-hud']:ProgressWithTickEvent({
                     name = "robbing_action",
                     duration = actionSpecifics[data.type] and (actionSpecifics[data.type][2] * 1000) or
                         ((math.random(15) + 15) * 1000),
@@ -331,7 +331,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                     if data.id and _nodes and not _nodes.searched[data.id] then
                         return
                     end
-                    Progress:Cancel()
+                    exports['sandbox-hud']:ProgressCancel()
                 end, function(cancelled)
                     if not cancelled then
                         Status.Modify:Add("PLAYER_STRESS", 3, false, true)

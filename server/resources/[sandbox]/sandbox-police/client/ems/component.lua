@@ -4,7 +4,6 @@ AddEventHandler("Police:Shared:DependencyUpdate", EMSComponents)
 function EMSComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
@@ -13,7 +12,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("EMS", {
 		"Damage",
 		"Inventory",
-		"Progress",
 		"Animations",
 	}, function(error)
 		if #error > 0 then

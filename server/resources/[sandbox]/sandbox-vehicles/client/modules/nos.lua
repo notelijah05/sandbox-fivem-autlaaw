@@ -105,7 +105,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 				return
 			end
 
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "vehicle_installing_nitrous",
 				duration = 15000,
 				label = "Installing Nitrous Oxide",
@@ -441,7 +441,7 @@ end
 
 AddEventHandler("Vehicles:Client:RemoveNitrous", function(entityData)
 	if VEHICLE_INSIDE and DoesEntityExist(VEHICLE_INSIDE) and _hasNOS then
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "vehicle_removing_nitrous",
 			duration = 5000,
 			label = "Removing Nitrous Oxide",

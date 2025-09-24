@@ -5,7 +5,6 @@ AddEventHandler("Xmas:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 end
 
@@ -13,7 +12,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Xmas", {
 		"Animations",
 		"Polyzone",
-		"Progress",
 		"Targeting",
 	}, function(error)
 		if #error > 0 then
@@ -69,7 +67,7 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 AddEventHandler("Xmas:Client:Daily", function()
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "xmas",
 		duration = 15000,
 		label = "Picking Up Present",
@@ -93,7 +91,7 @@ AddEventHandler("Xmas:Client:Daily", function()
 end)
 
 AddEventHandler("Xmas:Client:Tree", function()
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "xmas",
 		duration = 15000,
 		label = "Picking Up Present",

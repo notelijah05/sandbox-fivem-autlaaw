@@ -244,7 +244,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		exports['sandbox-hud']:InteractionRegisterMenu("police-raid-biz", "Search Inventory", "magnifying-glass",
 			function(data)
 				exports['sandbox-hud']:InteractionHide()
-				Progress:ProgressWithTickEvent({
+				exports['sandbox-hud']:ProgressWithTickEvent({
 					name = 'pd_raid_biz',
 					duration = 8000,
 					label = "Searching",
@@ -266,7 +266,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					if LocalPlayer.state.onDuty == "police" and not LocalPlayer.state.isDead and LocalPlayer.state._inInvPoly ~= nil then
 						return
 					end
-					Progress:Cancel()
+					exports['sandbox-hud']:ProgressCancel()
 				end, function(cancelled)
 					_doing = false
 					if not cancelled then
@@ -284,7 +284,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		exports['sandbox-hud']:InteractionRegisterMenu("pd-locked-veh", "Secured Compartment", "shield-keyhole",
 			function(data)
 				exports['sandbox-hud']:InteractionHide()
-				Progress:Progress({
+				exports['sandbox-hud']:Progress({
 					name = "pd_rack_prog",
 					duration = 2000,
 					label = "Unlocking Compartment",
@@ -451,7 +451,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end)
 
 		exports["sandbox-base"]:RegisterClientCallback("Police:PanicButton", function(data, cb)
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "panic_button",
 				duration = 2000,
 				label = "Activating Panic Button",
@@ -477,7 +477,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		exports["sandbox-base"]:RegisterClientCallback("Police:Breach", function(data, cb)
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "breach_action",
 				duration = 3000,
 				label = "Breaching",
@@ -735,7 +735,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 
 		exports["sandbox-base"]:RegisterClientCallback("Police:DeploySpikes", function(data, cb)
-			Progress:ProgressWithStartEvent({
+			exports['sandbox-hud']:ProgressWithStartEvent({
 				name = "spikestrips",
 				duration = 1000,
 				label = "Laying Spikes",

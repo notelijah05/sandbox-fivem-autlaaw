@@ -25,7 +25,6 @@ local radioNames = {
 
 AddEventHandler("Radio:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 end
 
@@ -33,7 +32,6 @@ local radioChannelCycle = false
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radio", {
-		"Progress",
 		"Jobs",
 	}, function(error)
 		if #error > 0 then

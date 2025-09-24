@@ -254,7 +254,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					TaskTurnPedToFaceEntity(GLOBAL_PED, vehicle, 1)
 					Wait(500)
 					Vehicles.Sync.Doors:Open(vehicle, 4, false, false)
-					Progress:Progress({
+					exports['sandbox-hud']:Progress({
 						name = "vehicle_repair_kit",
 						duration = 7500,
 						label = "Repairing Engine",

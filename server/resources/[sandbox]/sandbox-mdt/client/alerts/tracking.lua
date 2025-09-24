@@ -180,7 +180,7 @@ AddEventHandler("MDT:Client:DisableTracker", function(entity, data)
 		(playerState.onDuty == "police" or playerState.onDuty == "prison" or playerState.onDuty == "ems")
 		and not playerState.trackerDisabled
 	then
-		Progress:ProgressWithTickEvent({
+		exports['sandbox-hud']:ProgressWithTickEvent({
 			name = "disable_police_tracker",
 			duration = 10000,
 			label = "Disabling Tracker",
@@ -207,7 +207,7 @@ AddEventHandler("MDT:Client:DisableTracker", function(entity, data)
 			then
 				return
 			end
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 		end, function(cancelled)
 			if not cancelled then
 				if

@@ -22,7 +22,6 @@ function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -41,7 +40,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Reputation",
 		"Polyzone",
 		"Vehicles",
-		"Progress",
 		"Jobs",
 		"Minigame",
 		"PedInteraction",

@@ -796,7 +796,7 @@ end)
 AddEventHandler("Vehicles:Client:InspectVIN", function(entityData)
 	if entityData?.entity then
 		if Vehicles:HasAccess(entityData.entity) then
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "inspect_vin",
 				duration = 4000,
 				label = "Inspecting VIN",

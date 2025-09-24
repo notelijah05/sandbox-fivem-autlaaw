@@ -11,7 +11,6 @@ local showingAction = false
 
 AddEventHandler("VehicleCustoms:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -20,7 +19,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VehicleCustoms", {
-		"Progress",
 		"Vehicles",
 		"Polyzone",
 		"PedInteraction",
@@ -289,7 +287,7 @@ function DoSlowVehicleNormalRepair(cost, cb)
 		time = 15000
 	end
 
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "vehicle_quick_repair",
 		duration = time,
 		label = "Repairing Vehicle",

@@ -10,7 +10,7 @@ AddEventHandler('Vehicles:Client:FlipVehicle', function(entityData)
     if not entityData then return end
     TaskTurnPedToFaceEntity(LocalPlayer.state.ped, entityData.entity, 1)
     Wait(250)
-    Progress:ProgressWithTickEvent({
+    exports['sandbox-hud']:ProgressWithTickEvent({
         name = "flipping_vehicle",
         duration = math.random(13, 20) * 1000,
         label = "Flipping Vehicle",
@@ -29,7 +29,7 @@ AddEventHandler('Vehicles:Client:FlipVehicle', function(entityData)
         },
     }, function()
         if not DoesEntityExist(entityData.entity) or (#(GetEntityCoords(entityData.entity) - LocalPlayer.state.myPos) > 5.0) then
-            Progress:Cancel()
+            exports['sandbox-hud']:ProgressCancel()
             return
         end
     end, function(wasCancelled)

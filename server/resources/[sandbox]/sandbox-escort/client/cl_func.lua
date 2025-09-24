@@ -78,7 +78,7 @@ RegisterNetEvent("Escort:Client:Escorted", function()
 	end
 
 	if LocalPlayer.state.doingAction then
-		Progress:Cancel()
+		exports['sandbox-hud']:ProgressCancel()
 	end
 
 	CreateThread(function()
@@ -165,7 +165,7 @@ AddEventHandler("Escort:Client:PullOut", function(entity, data)
 			dur = _gJobs[LocalPlayer.state.onDuty]
 		end
 
-		Progress:ProgressWithTickEvent({
+		exports['sandbox-hud']:ProgressWithTickEvent({
 			name = "unseat",
 			duration = dur,
 			label = "Unseating",
@@ -186,7 +186,7 @@ AddEventHandler("Escort:Client:PullOut", function(entity, data)
 			then
 				return
 			end
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 		end, function(cancelled)
 			if not cancelled then
 				local playerId = NetworkGetPlayerIndexFromPed(targetPed)

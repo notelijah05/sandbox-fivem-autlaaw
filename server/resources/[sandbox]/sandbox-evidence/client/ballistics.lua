@@ -36,7 +36,7 @@ RegisterNetEvent('Evidence:Client:FiledProjectile',
         end
 
         Animations.Emotes:Play('type3', false, 5500, true, true)
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = 'projectile_ballistics_test',
             duration = 5000,
             label = 'Testing Projectile Ballistics',

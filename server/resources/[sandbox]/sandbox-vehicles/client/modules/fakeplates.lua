@@ -3,7 +3,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
         local target = Targeting:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) and CanModelHaveFakePlate(GetEntityModel(target.entity)) then
             if Vehicles:HasAccess(target.entity, false, true) and (Vehicles.Utils:IsCloseToRearOfVehicle(target.entity) or Vehicles.Utils:IsCloseToFrontOfVehicle(target.entity)) then
-                Progress:Progress({
+                exports['sandbox-hud']:Progress({
                     name = "vehicle_adding_plate",
                     duration = 5000,
                     label = "Installing Plate",
@@ -39,7 +39,7 @@ end)
 
 AddEventHandler('Vehicles:Client:RemoveFakePlate', function(entityData)
     if entityData and DoesEntityExist(entityData.entity) and CanModelHaveFakePlate(GetEntityModel(entityData.entity)) then
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "vehicle_removing_plate",
             duration = 5000,
             label = "Removing Plate",
@@ -77,7 +77,7 @@ end)
 
 AddEventHandler('Vehicles:Client:RemoveHarness', function(entityData)
     if entityData and DoesEntityExist(entityData.entity) then
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "vehicle_removing_harness",
             duration = 5000,
             label = "Removing Harness",

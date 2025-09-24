@@ -78,7 +78,7 @@ function RemoveScubaGear()
 		return
 	end
 
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "scuba_gear",
 		duration = 2500,
 		label = "Removing Scuba Gear",
@@ -115,7 +115,7 @@ function RegisterOxygenCallbacks()
 		end
 
 		if oxygenDepletionRate >= 1 then
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "scuba_gear",
 				duration = 5000,
 				label = "Fitting Scuba Gear",
