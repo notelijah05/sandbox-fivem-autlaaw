@@ -336,7 +336,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 									exports['sandbox-finance']:CryptoExchangeAdd("MALD", char:GetData("CryptoWallet"),
 										math.random(8, 14))
 								end
-								Wallet:Modify(source, math.random(500) + 500)
+								exports['sandbox-finance']:WalletModify(source, math.random(500) + 500)
 							else
 								if list.type == 3 then
 									exports['sandbox-finance']:CryptoExchangeAdd("VRM", char:GetData("CryptoWallet"),
@@ -345,7 +345,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 									exports['sandbox-finance']:CryptoExchangeAdd("MALD", char:GetData("CryptoWallet"),
 										math.random(4, 7))
 								end
-								Wallet:Modify(source, math.random(200) + 200)
+								exports['sandbox-finance']:WalletModify(source, math.random(200) + 200)
 							end
 
 							Reputation.Modify:Add(source, "Chopping", 250 * list.type)

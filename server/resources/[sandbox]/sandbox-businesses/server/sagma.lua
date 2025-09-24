@@ -40,7 +40,7 @@ AddEventHandler("Businesses:Server:Startup", function()
                             math.ceil(math.abs(totalPayout) * 0.8))
                     )
                 else
-                    Wallet:Modify(source, totalPayout)
+                    exports['sandbox-finance']:WalletModify(source, totalPayout)
                 end
 
 

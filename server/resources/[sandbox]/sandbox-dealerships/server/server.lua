@@ -4,7 +4,6 @@ AddEventHandler('Dealerships:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
     Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
-    Wallet = exports['sandbox-base']:FetchComponent('Wallet')
     MDT = exports['sandbox-base']:FetchComponent('MDT')
 end
 
@@ -13,7 +12,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Doors',
         'Jobs',
         'Dealerships',
-        'Wallet',
         'MDT',
     }, function(error)
         if #error > 0 then return end -- Do something to handle if not all dependencies loaded
@@ -305,7 +303,7 @@ function RegisterCallbacks()
             local char = exports['sandbox-characters']:FetchCharacterSource(source)
             if char and char:GetData('SID') then
                 -- TODO: Charge Money
-                if Wallet:Modify(source, -data.price) then
+                if exports['sandbox-finance']:WalletModify(source, -data.price) then
                     exports['sandbox-vehicles']:OwnedAddToCharacter(char:GetData('SID'), data.vehicleHash, 0, 'bike',
                         { make = 'Bicycle', model = data.name, class = 'Bicycle', value = data.price },
                         function(success, vehicleData)

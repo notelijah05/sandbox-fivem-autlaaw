@@ -21,7 +21,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				})
 			then
 				_Prisoners[_joiners[source]].state = 0
-				Wallet:Modify(source, 150)
+				exports['sandbox-finance']:WalletModify(source, 150)
 				Labor.Workgroups:SendEvent(
 					_joiners[source],
 					string.format("Prison:Client:%s:Cleanup", _joiners[source])

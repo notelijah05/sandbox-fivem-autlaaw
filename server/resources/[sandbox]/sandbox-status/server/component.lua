@@ -6,7 +6,6 @@ local _statuses = {}
 AddEventHandler("Status:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Status = exports["sandbox-base"]:FetchComponent("Status")
-	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	RegisterChatCommands()
 	registerUsables()
 end
@@ -14,7 +13,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Status", {
 		"Status",
-		"Wallet",
 	}, function(error)
 		if #error > 0 then
 			return

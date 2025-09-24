@@ -1,8 +1,3 @@
-AddEventHandler("Handcuffs:Shared:DependencyUpdate", GovernmentComponents)
-function GovernmentComponents()
-	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-end
-
 _licenses = {
 	drivers = { key = "Drivers", price = 1000 },
 	weapons = { key = "Weapons", price = 2000 },
@@ -11,110 +6,101 @@ _licenses = {
 }
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
-		"Wallet",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		GovernmentComponents()
+	exports["sandbox-base"]:RegisterServerCallback("Government:BuyID", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if exports['sandbox-finance']:WalletModify(source, -500) then
+			exports['sandbox-inventory']:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
+		else
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
+		end
+	end)
 
-		exports["sandbox-base"]:RegisterServerCallback("Government:BuyID", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Government:BuyLicense", function(source, data, cb)
+		if _licenses[data] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if Wallet:Modify(source, -500) then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
+			local licenses = char:GetData("Licenses")
+			if exports['sandbox-finance']:WalletModify(source, -_licenses[data].price) then
+				if licenses[_licenses[data].key] ~= nil and not licenses[_licenses[data].key].Active then
+					licenses[_licenses[data].key].Active = true
+					char:SetData("Licenses", licenses)
+
+					exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
+				else
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Unable To Purchase License")
+				end
 			else
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
 			end
-		end)
+		else
+			exports['sandbox-base']:LoggerError(
+				"Government",
+				string.format("%s Tried To Buy Invalid License Type %s", char:GetData("SID"), data),
+				{
+					console = true,
+					discord = true,
+				}
+			)
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Purchase License")
+		end
+	end)
 
-		exports["sandbox-base"]:RegisterServerCallback("Government:BuyLicense", function(source, data, cb)
-			if _licenses[data] ~= nil then
-				local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Government:Client:DoWeaponsLicenseBuyPolice",
+		function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if Jobs.Permissions:HasJob(source, "police") and char then
 				local licenses = char:GetData("Licenses")
-				if Wallet:Modify(source, -_licenses[data].price) then
-					if licenses[_licenses[data].key] ~= nil and not licenses[_licenses[data].key].Active then
-						licenses[_licenses[data].key].Active = true
-						char:SetData("Licenses", licenses)
-
-						exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
-					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-							"Unable To Purchase License")
-					end
+				if exports['sandbox-finance']:WalletModify(source, -20) then
+					licenses["Weapons"].Active = true
+					char:SetData("Licenses", licenses)
+					exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
 				else
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
 				end
 			else
-				exports['sandbox-base']:LoggerError(
-					"Government",
-					string.format("%s Tried To Buy Invalid License Type %s", char:GetData("SID"), data),
-					{
-						console = true,
-						discord = true,
-					}
-				)
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Purchase License")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You are Not PD")
 			end
 		end)
 
-		exports["sandbox-base"]:RegisterServerCallback("Government:Client:DoWeaponsLicenseBuyPolice",
-			function(source, data, cb)
-				local char = exports['sandbox-characters']:FetchCharacterSource(source)
-				if Jobs.Permissions:HasJob(source, "police") and char then
-					local licenses = char:GetData("Licenses")
-					if Wallet:Modify(source, -20) then
-						licenses["Weapons"].Active = true
-						char:SetData("Licenses", licenses)
-						exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
-					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
-					end
-				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You are Not PD")
-				end
-			end)
+	-- exports['sandbox-inventory']:PolyCreate({
+	-- 	id = "doj-chief-justice-safe",
+	-- 	type = "box",
+	-- 	coords = vector3(-586.32, -213.18, 42.84),
+	-- 	width = 0.6,
+	-- 	length = 1.0,
+	-- 	options = {
+	-- 		heading = 30,
+	-- 		--debugPoly=true,
+	-- 		minZ = 41.84,
+	-- 		maxZ = 44.24,
+	-- 	},
+	-- 	data = {
+	-- 		inventory = {
+	-- 			invType = 46,
+	-- 			owner = "doj-chief-justice-safe",
+	-- 		},
+	-- 	},
+	-- })
 
-		-- exports['sandbox-inventory']:PolyCreate({
-		-- 	id = "doj-chief-justice-safe",
-		-- 	type = "box",
-		-- 	coords = vector3(-586.32, -213.18, 42.84),
-		-- 	width = 0.6,
-		-- 	length = 1.0,
-		-- 	options = {
-		-- 		heading = 30,
-		-- 		--debugPoly=true,
-		-- 		minZ = 41.84,
-		-- 		maxZ = 44.24,
-		-- 	},
-		-- 	data = {
-		-- 		inventory = {
-		-- 			invType = 46,
-		-- 			owner = "doj-chief-justice-safe",
-		-- 		},
-		-- 	},
-		-- })
-
-		exports['sandbox-inventory']:PolyCreate({
-			id = "doj-storage",
-			type = "box",
-			coords = vector3(-586.64, -203.5, 38.23),
-			length = 0.8,
-			width = 1.4,
-			options = {
-				heading = 30,
-				--debugPoly=true,
-				minZ = 37.23,
-				maxZ = 39.43,
+	exports['sandbox-inventory']:PolyCreate({
+		id = "doj-storage",
+		type = "box",
+		coords = vector3(-586.64, -203.5, 38.23),
+		length = 0.8,
+		width = 1.4,
+		options = {
+			heading = 30,
+			--debugPoly=true,
+			minZ = 37.23,
+			maxZ = 39.43,
+		},
+		data = {
+			inventory = {
+				invType = 116,
+				owner = "doj-storage",
 			},
-			data = {
-				inventory = {
-					invType = 116,
-					owner = "doj-storage",
-				},
-			},
-		})
-	end)
+		},
+	})
 end)
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()

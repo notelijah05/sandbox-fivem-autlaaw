@@ -219,7 +219,7 @@ function RegisterCallbacks()
 
 		if char ~= nil then
 			if _packagesAvailable > 0 and not _weedBuyers[char:GetData("ID")] then
-				if Wallet:Modify(source, -Config.PackagePrice) then
+				if exports['sandbox-finance']:WalletModify(source, -Config.PackagePrice) then
 					exports['sandbox-base']:LoggerInfo(
 						"Weed",
 						string.format(

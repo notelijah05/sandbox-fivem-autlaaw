@@ -130,7 +130,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					0
 				if count > 0 then
 					if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, _saleData[data].item, count) then
-						Wallet:Modify(source, _saleData[data].price * count)
+						exports['sandbox-finance']:WalletModify(source, _saleData[data].price * count)
 					end
 				else
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",

@@ -25,7 +25,7 @@ function RegisterVehicleRentalCallbacks()
                             os.time(), 3000, "bank", {})
                     end
                 else
-                    if Wallet:Modify(source, -rentalCost) then
+                    if exports['sandbox-finance']:WalletModify(source, -rentalCost) then
                         didPay = true
                     end
                 end
@@ -123,7 +123,7 @@ function RegisterVehicleRentalCallbacks()
                                     data = {},
                                 })
                         else
-                            Wallet:Modify(source, vehicle.Deposit)
+                            exports['sandbox-finance']:WalletModify(source, vehicle.Deposit)
                         end
                         ACTIVE_RENTAL_VEHICLES[data.VIN] = nil
                     end

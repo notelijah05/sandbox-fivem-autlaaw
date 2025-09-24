@@ -3,14 +3,12 @@ _cryptoCoins = {}
 AddEventHandler("Crypto:Shared:DependencyUpdate", RetrieveCryptoComponents)
 function RetrieveCryptoComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Crypto", {
 		"Generator",
-		"Wallet",
 		"Jobs",
 	}, function(error)
 		if #error > 0 then

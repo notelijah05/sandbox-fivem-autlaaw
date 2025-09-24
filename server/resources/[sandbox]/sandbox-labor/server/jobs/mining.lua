@@ -304,7 +304,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "crushedrock")
 		if (count or 0) > 0 then
 			if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "crushedrock", count) then
-				Wallet:Modify(source, (3 * count))
+				exports['sandbox-finance']:WalletModify(source, (3 * count))
 				cb(true)
 			else
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Remove Crushed Rock")

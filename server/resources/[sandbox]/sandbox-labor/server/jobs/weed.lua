@@ -114,7 +114,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							1
 						)
 					else
-						Wallet:Modify(source, itemData.price + (30 * calcLvl))
+						exports['sandbox-finance']:WalletModify(source, itemData.price + (30 * calcLvl))
 					end
 
 					_sellers[_joiners[source]].state = 2

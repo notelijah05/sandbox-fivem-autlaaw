@@ -159,7 +159,6 @@ end
 
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
@@ -170,7 +169,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Wallet",
 		"Jobs",
 		"Reputation",
 		"Generator",
@@ -665,7 +663,7 @@ function DoMerge(source, data, cb)
 
 				if not paid then
 					if paymentType == 'cash' then
-						paid = Wallet:Modify(source, -(math.abs(cost)))
+						paid = exports['sandbox-finance']:WalletModify(source, -(math.abs(cost)))
 					else
 						paid = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"), cost, {
 							type = 'bill',
@@ -727,7 +725,7 @@ function DoMerge(source, data, cb)
 
 					if not paid then
 						if paymentType == 'cash' then
-							paid = Wallet:Modify(source, -(math.abs(cost)))
+							paid = exports['sandbox-finance']:WalletModify(source, -(math.abs(cost)))
 						else
 							paid = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"), cost, {
 								type = 'bill',
@@ -1234,7 +1232,7 @@ function DoMove(source, data, cb)
 				local paid = cost == 0 or entityFrom.free
 				if not paid then
 					if paymentType == 'cash' then
-						paid = Wallet:Modify(source, -(math.abs(cost)))
+						paid = exports['sandbox-finance']:WalletModify(source, -(math.abs(cost)))
 					else
 						paid = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"), cost, {
 							type = 'bill',
@@ -1302,7 +1300,7 @@ function DoMove(source, data, cb)
 					local paid = cost == 0 or isMod
 					if not paid then
 						if paymentType == 'cash' then
-							paid = Wallet:Modify(source, -(math.abs(cost)))
+							paid = exports['sandbox-finance']:WalletModify(source, -(math.abs(cost)))
 						else
 							paid = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"), cost, {
 								type = 'bill',

@@ -71,7 +71,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Coke:StartWork", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			if Wallet:Has(source, 100000) then
+			if exports['sandbox-finance']:WalletHas(source, 100000) then
 				if not GlobalState["CokeRunActive"] and _active == nil then
 					if not GlobalState["CokeRunCD"] or os.time() > GlobalState["CokeRunCD"] then
 						Labor.Duty:On("Coke", source, true)
@@ -96,7 +96,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			if _active ~= nil and _active.joiner == source then
 				if _active.state == 0 then
 					Labor.Duty:Off("Coke", source, false, false)
-					Wallet:Modify(source, 100000)
+					exports['sandbox-finance']:WalletModify(source, 100000)
 
 					GlobalState["CokeRunActive"] = false
 					GlobalState["CokeRunCD"] = false
@@ -290,7 +290,7 @@ AddEventHandler("Coke:Server:OnDuty", function(joiner, members, isWorkgroup)
 			return
 		end
 
-		Wallet:Modify(joiner, -100000)
+		exports['sandbox-finance']:WalletModify(joiner, -100000)
 		GlobalState["CokeRunCD"] = os.time() + (60 * 60 * 6)
 		_joiners[joiner] = joiner
 		_active = {

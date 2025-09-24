@@ -116,7 +116,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 							data = data,
 						})
 					else
-						Wallet:Modify(source, money)
+						exports['sandbox-finance']:WalletModify(source, money)
 					end
 
 					f = exports['sandbox-finance']:AccountsGetOrganization("government")

@@ -199,7 +199,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			end
 
 			local reward = math.floor((difficulty or 5) * 100 / 4)
-			Wallet:Modify(source, (math.random(150) + reward))
+			exports['sandbox-finance']:WalletModify(source, (math.random(150) + reward))
 
 			if newATMRobbery > 0 then
 				local location = GetNewATMLocation(repLvl, Player(source).state.ATMRobberyZone)

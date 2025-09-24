@@ -607,7 +607,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			_cRegisterCooldowns[source] = os.time() + 5
 			if data.results then
 				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_registerLoot, char:GetData("SID"), 1)
-				Wallet:Modify(source, (math.random(150) + 100))
+				exports['sandbox-finance']:WalletModify(source, (math.random(150) + 100))
 				cb(true)
 			else
 				exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "lockpick", 1)
@@ -1021,7 +1021,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					data.id
 				)
 			)
-			Wallet:Modify(source, (math.random(3000) + 2000))
+			exports['sandbox-finance']:WalletModify(source, (math.random(3000) + 2000))
 			exports["sandbox-sounds"]:StopLocation(_robbedSafes[data.id].source, _robbedSafes[data.id].coords, "alarm")
 		end
 	end)

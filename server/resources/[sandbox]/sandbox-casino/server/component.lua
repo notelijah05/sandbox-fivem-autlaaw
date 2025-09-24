@@ -6,7 +6,6 @@ AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Casino = exports["sandbox-base"]:FetchComponent("Casino")
 end
 
@@ -14,7 +13,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Casino", {
 		"Generator",
 		"Jobs",
-		"Wallet",
 		"Casino",
 	}, function(error)
 		if #error > 0 then
@@ -49,7 +47,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char and amount and amount > 0 then
 				local amount = math.floor(amount)
-				if Wallet:Modify(source, -amount) then
+				if exports['sandbox-finance']:WalletModify(source, -amount) then
 					local total = Casino.Chips:Modify(source, amount)
 					if total then
 						SendCasinoPhoneNotification(
@@ -72,7 +70,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				local amount = math.floor(amount)
 				local chipTotal = Casino.Chips:Modify(source, -amount)
 				if chipTotal then
-					if Wallet:Modify(source, amount) then
+					if exports['sandbox-finance']:WalletModify(source, amount) then
 						SendCasinoPhoneNotification(
 							source,
 							string.format("Cashed Out $%s of Chips", formatNumberToCurrency(amount)),
@@ -90,7 +88,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		exports["sandbox-base"]:RegisterServerCallback("Casino:PurchaseVIP", function(source, amount, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
-				if Wallet:Modify(source, -10000) then
+				if exports['sandbox-finance']:WalletModify(source, -10000) then
 					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "diamond_vip", 1, {}, 1)
 					GiveCasinoFuckingMoney(source, "VIP Card", 10000)
 				else

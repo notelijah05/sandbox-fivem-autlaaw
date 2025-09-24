@@ -487,7 +487,7 @@ function RegisterCallbacks()
             if vehicle and vehicle.VIN and vehicle.Storage.Type == 0 and not vehicle.Seized then
 
                 if vehicle.Storage.Fine and vehicle.Storage.Fine > 0 then
-                    if not Wallet:Modify(source, -vehicle.Storage.Fine) then
+                    if not exports['sandbox-finance']:WalletModify(source, -vehicle.Storage.Fine) then
                         cb(false)
                         return
                     end
@@ -527,7 +527,7 @@ function RegisterCallbacks()
         local veh = NetworkGetEntityFromNetworkId(data.vNet)
         local vehState = Entity(veh)
         if DoesEntityExist(veh) and vehState and vehState.state.VIN then
-            if Wallet:Modify(source, -math.abs(data.cost)) then
+            if exports['sandbox-finance']:WalletModify(source, -math.abs(data.cost)) then
                 local vehicleData = exports['sandbox-vehicles']:OwnedGetActive(vehState.state.VIN)
                 local newProperties = false
                 if vehicleData and vehicleData:GetData('Properties') then
@@ -620,7 +620,7 @@ function RegisterCallbacks()
             return
         end
 
-        if Wallet:Modify(source, -math.abs(data.cost)) then
+        if exports['sandbox-finance']:WalletModify(source, -math.abs(data.cost)) then
             local f = exports['sandbox-finance']:AccountsGetOrganization("dgang")
             exports['sandbox-finance']:BalanceDeposit(f.Account, math.abs(data.cost), {
                 type = 'deposit',
@@ -638,7 +638,7 @@ function RegisterCallbacks()
         local veh = NetworkGetEntityFromNetworkId(data.vNet)
         local vehState = Entity(veh)
         if DoesEntityExist(veh) and vehState and vehState.state.VIN then
-            if not data.bill or (data.bill and Wallet:Modify(source, -100)) then
+            if not data.bill or (data.bill and exports['sandbox-finance']:WalletModify(source, -100)) then
                 local vehicleData = exports['sandbox-vehicles']:OwnedGetActive(vehState.state.VIN)
                 if vehicleData then
                     vehicleData:SetData('DirtLevel', 0.0)

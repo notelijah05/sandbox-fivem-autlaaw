@@ -28,13 +28,11 @@ local _illegalBlacklist = {
 AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
 function RetrieveVendorComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vendor", {
 		"Reputation",
-		"Wallet",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -81,7 +79,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								and (
 									not v.requireCurrency
 									or v.requireCurrency
-									and ((v.coin ~= nil and exports['sandbox-finance']:CryptoHas(source, v.coin, v.price)) or (v.coin == nil and Wallet:Has(
+									and ((v.coin ~= nil and exports['sandbox-finance']:CryptoHas(source, v.coin, v.price)) or (v.coin == nil and exports['sandbox-finance']:WalletHas(
 										source,
 										v.price
 									)))
@@ -176,7 +174,7 @@ AddEventHandler("Core:Shared:Ready", function()
 											source,
 											itemData.coin,
 											itemData.price
-										)) or Wallet:Has(source, itemData.price))
+										)) or exports['sandbox-finance']:WalletHas(source, itemData.price))
 									)
 								then
 									if itemData.coin ~= nil then
@@ -233,8 +231,8 @@ AddEventHandler("Core:Shared:Ready", function()
 											)
 										end
 									else
-										if Wallet:Has(source, itemData.price) then
-											if Wallet:Modify(source, -itemData.price) then
+										if exports['sandbox-finance']:WalletHas(source, itemData.price) then
+											if exports['sandbox-finance']:WalletModify(source, -itemData.price) then
 												if itemData.qty ~= -1 then
 													_created[data.id].items[data.index].qty = itemData.qty - 1
 												end

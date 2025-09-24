@@ -1,6 +1,6 @@
 AddEventHandler("Finance:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Wallet:GetCash", function(source, data, cb)
-		cb(Wallet:Get(source))
+		cb(exports['sandbox-finance']:WalletGet(source))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Wallet:GiveCash", function(source, data, cb)
@@ -14,8 +14,8 @@ AddEventHandler("Finance:Server:Startup", function()
 			if #(playerCoords - targetCoords) <= 5.0 then
 				local amount = math.tointeger(data.amount)
 				if amount and amount > 0 then
-					if Wallet:Modify(source, -amount, true) then
-						if Wallet:Modify(targetChar:GetData("Source"), amount, true) then
+					if exports['sandbox-finance']:WalletModify(source, -amount, true) then
+						if exports['sandbox-finance']:WalletModify(targetChar:GetData("Source"), amount, true) then
 							TriggerClientEvent('Finance:Client:HandOffCash', source)
 							exports['sandbox-base']:ExecuteClient(
 								source,
@@ -56,7 +56,7 @@ AddEventHandler("Finance:Server:Startup", function()
 	exports["sandbox-chat"]:RegisterAdminCommand("addcash", function(source, args, rawCommand)
 		local addingAmount = tonumber(args[1])
 		if addingAmount and addingAmount > 0 then
-			Wallet:Modify(source, addingAmount)
+			exports['sandbox-finance']:WalletModify(source, addingAmount)
 		end
 	end, {
 		help = "Give Cash To Yourself",
@@ -81,8 +81,8 @@ AddEventHandler("Finance:Server:Startup", function()
 				if #(playerCoords - targetCoords) <= 5.0 then
 					local amount = math.tointeger(args[2])
 					if amount and amount > 0 then
-						if Wallet:Modify(source, -amount, true) then
-							if Wallet:Modify(targetChar:GetData("Source"), amount, true) then
+						if exports['sandbox-finance']:WalletModify(source, -amount, true) then
+							if exports['sandbox-finance']:WalletModify(targetChar:GetData("Source"), amount, true) then
 								TriggerClientEvent('Finance:Client:HandOffCash', source)
 								exports['sandbox-base']:ExecuteClient(
 									source,
@@ -132,7 +132,7 @@ function ShowCash(source)
 		source,
 		"Notification",
 		"Success",
-		"You have $" .. formatNumberToCurrency(Wallet:Get(source)),
+		"You have $" .. formatNumberToCurrency(exports['sandbox-finance']:WalletGet(source)),
 		2500,
 		"money-bill-wave"
 	)

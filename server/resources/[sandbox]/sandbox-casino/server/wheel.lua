@@ -15,7 +15,7 @@ AddEventHandler("Casino:Server:Startup", function()
             if data?.turbo then
                 local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
-                if char and Wallet:Has(source, 7500) and exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "diamond_vip", 1) then
+                if char and exports['sandbox-finance']:WalletHas(source, 7500) and exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "diamond_vip", 1) then
                     GlobalState["Casino:WheelStarted"] = {
                         Source = source,
                         Turbo = true,
@@ -30,7 +30,7 @@ AddEventHandler("Casino:Server:Startup", function()
                     cb(false, true)
                 end
             else
-                if Wallet:Has(source, 1500) then
+                if exports['sandbox-finance']:WalletHas(source, 1500) then
                     GlobalState["Casino:WheelStarted"] = {
                         Source = source,
                         Turbo = false,
@@ -51,7 +51,7 @@ AddEventHandler("Casino:Server:Startup", function()
     end)
 
     exports["sandbox-base"]:RegisterServerCallback("Casino:WheelSpin", function(source, data, cb)
-        if GlobalState["Casino:WheelStarted"] and GlobalState["Casino:WheelStarted"].Source == source and Wallet:Modify(source, GlobalState["Casino:WheelStarted"].Turbo and -7500 or -1500) then
+        if GlobalState["Casino:WheelStarted"] and GlobalState["Casino:WheelStarted"].Source == source and exports['sandbox-finance']:WalletModify(source, GlobalState["Casino:WheelStarted"].Turbo and -7500 or -1500) then
             GlobalState["Casino:WheelSpinning"] = source
 
             if GlobalState["Casino:WheelStarted"].Turbo then
@@ -190,7 +190,7 @@ function GiveWheelPrize(source, randomPrize)
                 end
             end
 
-            if Wallet:Modify(source, value) then
+            if exports['sandbox-finance']:WalletModify(source, value) then
                 winValue = value
 
                 if value >= 90000 then

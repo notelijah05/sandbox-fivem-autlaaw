@@ -19,7 +19,6 @@ end
 
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
@@ -181,7 +180,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"Wallet",
 		"EmergencyAlerts",
 		"Properties",
 		"Status",
@@ -281,8 +279,8 @@ AddEventHandler("Core:Shared:Ready", function()
 					)
 
 					local amt = tChar:GetData("Cash")
-					if amt == 0 or Wallet:Modify(data, -amt) then
-						if amt == 0 or Wallet:Modify(source, amt) then
+					if amt == 0 or exports['sandbox-finance']:WalletModify(data, -amt) then
+						if amt == 0 or exports['sandbox-finance']:WalletModify(source, amt) then
 							cb({
 								invType = 1,
 								owner = tChar:GetData("SID"),

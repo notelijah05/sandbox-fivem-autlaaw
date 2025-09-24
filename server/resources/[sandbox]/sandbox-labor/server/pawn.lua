@@ -127,7 +127,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				end
 
 				if money > 0 then
-					Wallet:Modify(source, money)
+					exports['sandbox-finance']:WalletModify(source, money)
 					Reputation.Modify:Add(source, "Pawn", earntRep)
 				else
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have Nothing To Sell")

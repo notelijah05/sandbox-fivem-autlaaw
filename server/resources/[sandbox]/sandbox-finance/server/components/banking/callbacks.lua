@@ -350,7 +350,7 @@ function RegisterBankingCallbacks()
 					})
 
 					if wSucc then
-						Wallet:Modify(source, withdrawAmount, true)
+						exports['sandbox-finance']:WalletModify(source, withdrawAmount, true)
 						cb(true, exports['sandbox-finance']:BalanceGet(accountData.Account))
 						return
 					end
@@ -362,7 +362,7 @@ function RegisterBankingCallbacks()
 					and depositAmount > 0
 					and HasBankAccountPermission(source, accountData, action, SID)
 				then
-					if Wallet:Modify(source, -depositAmount, true) then
+					if exports['sandbox-finance']:WalletModify(source, -depositAmount, true) then
 						local dSucc = exports['sandbox-finance']:BalanceDeposit(accountData.Account, depositAmount, {
 							type = "deposit",
 							title = "Cash Deposit",
@@ -437,17 +437,17 @@ function RegisterBankingCallbacks()
 						if canTransfer then
 							local success = exports['sandbox-finance']:BalanceWithdraw(accountData.Account,
 								transferAmount, {
-								type = "transfer",
-								title = "Outgoing Bank Transfer",
-								description = string.format(
-									"Transfer to Account: %s.%s",
-									targetAccount.Account,
-									(data.description and (" Description: " .. data.description) or "")
-								),
-								data = {
-									character = SID,
-								},
-							})
+									type = "transfer",
+									title = "Outgoing Bank Transfer",
+									description = string.format(
+										"Transfer to Account: %s.%s",
+										targetAccount.Account,
+										(data.description and (" Description: " .. data.description) or "")
+									),
+									data = {
+										character = SID,
+									},
+								})
 
 							if success then
 								local success2 = exports['sandbox-finance']:BalanceDeposit(targetAccount.Account,

@@ -4,7 +4,6 @@ AddEventHandler("Businesses:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
 	StorageUnits = exports["sandbox-base"]:FetchComponent("StorageUnits")
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Businesses", {
 		"Generator",
 		"Jobs",
-		"Wallet",
 		"MDT",
 		"Laptop",
 		"StorageUnits",

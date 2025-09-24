@@ -1,53 +1,49 @@
-_WALLET = {
-	Get = function(self, source)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char then
-			return char:GetData("Cash") or 0
-		end
-		return 0
-	end,
-	Has = function(self, source, amount)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char and amount > 0 then
-			local currentCash = char:GetData("Cash") or 0
-			if currentCash >= amount then
-				return true
-			end
-		end
-		return false
-	end,
-	Modify = function(self, source, amount, skipNotify)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char then
-			local currentCash = char:GetData("Cash") or 0
-			local newCashBalance = math.floor(currentCash + amount)
-			if newCashBalance >= 0 then
-				char:SetData("Cash", newCashBalance)
+exports("WalletGet", function(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char then
+		return char:GetData("Cash") or 0
+	end
+	return 0
+end)
 
-				if not skipNotify then
-					if amount < 0 then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Info",
-							string.format("You Paid $%s In Cash", formatNumberToCurrency(math.floor(math.abs(amount))))
-						)
-					else
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Success",
-							string.format("You Received $%s In Cash", formatNumberToCurrency(math.floor(amount)))
-						)
-					end
+exports("WalletHas", function(source, amount)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char and amount > 0 then
+		local currentCash = char:GetData("Cash") or 0
+		if currentCash >= amount then
+			return true
+		end
+	end
+	return false
+end)
+
+exports("WalletModify", function(source, amount, skipNotify)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char then
+		local currentCash = char:GetData("Cash") or 0
+		local newCashBalance = math.floor(currentCash + amount)
+		if newCashBalance >= 0 then
+			char:SetData("Cash", newCashBalance)
+
+			if not skipNotify then
+				if amount < 0 then
+					exports['sandbox-base']:ExecuteClient(
+						source,
+						"Notification",
+						"Info",
+						string.format("You Paid $%s In Cash", formatNumberToCurrency(math.floor(math.abs(amount))))
+					)
+				else
+					exports['sandbox-base']:ExecuteClient(
+						source,
+						"Notification",
+						"Success",
+						string.format("You Received $%s In Cash", formatNumberToCurrency(math.floor(amount)))
+					)
 				end
-				return newCashBalance
 			end
+			return newCashBalance
 		end
-		return false
-	end,
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Wallet", _WALLET)
+	end
+	return false
 end)

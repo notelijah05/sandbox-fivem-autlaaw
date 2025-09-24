@@ -403,7 +403,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					end
 				end
 
-				Wallet:Modify(source, math.floor(cashAdd * 0.7))
+				exports['sandbox-finance']:WalletModify(source, math.floor(cashAdd * 0.7))
 
 				if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
 					_sellers[_joiners[source]].state = 6

@@ -193,7 +193,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 					if repLevel > 0 then
 						_tacoArtistCash = math.floor(_tacoArtistCash * repLevel)
 					end
-					Wallet:Modify(source, _tacoArtistCash)
+					exports['sandbox-finance']:WalletModify(source, _tacoArtistCash)
 					Reputation.Modify:Add(source, "TacoCrafter", 1)
 
 					cb(true)
@@ -268,7 +268,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 						end
 					end
 
-					Wallet:Modify(source, _tacoDeliveryCash)
+					exports['sandbox-finance']:WalletModify(source, _tacoDeliveryCash)
 					Reputation.Modify:Add(source, "TacoDelivery", repGained)
 
 					cb(true)

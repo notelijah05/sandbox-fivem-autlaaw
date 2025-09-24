@@ -247,7 +247,7 @@ AddEventHandler("Labor:Server:Startup", function()
 								if data.item == "meth_bag" or data.item == "coke_bag" then
 									local cashAdd = (itemData.price + (60 * calcLvl)) * (slot.Quality / 100)
 									-- print((itemData.price + (60 * calcLvl)), (slot.Quality / 100), cashAdd)
-									Wallet:Modify(source, cashAdd)
+									exports['sandbox-finance']:WalletModify(source, cashAdd)
 								else
 									local rand = math.random(100)
 									if rand >= (55 - (2 * calcLvl)) then
@@ -265,7 +265,7 @@ AddEventHandler("Labor:Server:Startup", function()
 											cashAdd = (itemData.price * 2) + (60 * calcLvl)
 										end
 
-										Wallet:Modify(source, cashAdd)
+										exports['sandbox-finance']:WalletModify(source, cashAdd)
 									end
 								end
 

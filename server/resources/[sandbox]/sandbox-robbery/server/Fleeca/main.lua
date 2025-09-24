@@ -834,7 +834,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				string.format("%s %s (%s) Used A Money Bag, Received $%s", char:GetData("First"), char:GetData("Last"),
 					char:GetData("SID"), amt))
 			exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
-			Wallet:Modify(source, amt)
+			exports['sandbox-finance']:WalletModify(source, amt)
 		else
 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Ready Yet", 6000)
 		end

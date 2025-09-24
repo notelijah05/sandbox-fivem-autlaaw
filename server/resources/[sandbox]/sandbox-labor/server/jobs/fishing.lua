@@ -103,7 +103,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
 							"Thanks for the donation! No money for you kek")
 					else
-						Wallet:Modify(source, itemData.price * count)
+						exports['sandbox-finance']:WalletModify(source, itemData.price * count)
 					end
 				end
 			else
