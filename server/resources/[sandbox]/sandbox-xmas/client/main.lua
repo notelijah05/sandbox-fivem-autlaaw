@@ -5,14 +5,12 @@ AddEventHandler("Xmas:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Xmas", {
 		"Animations",
 		"Polyzone",
-		"Targeting",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -24,7 +22,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 RegisterNetEvent("Xmas:Client:Init", function(dayNumber, tree, hasLooted)
-	Targeting.Zones:AddBox("legion-present", "gift", vector3(184.33, -963.19, 30.1), 3.0, 5.8, {
+	exports['sandbox-targeting']:ZonesAddBox("legion-present", "gift", vector3(184.33, -963.19, 30.1), 3.0, 5.8, {
 		heading = 331,
 		--debugPoly=true,
 		minZ = 28.7,
@@ -45,7 +43,7 @@ RegisterNetEvent("Xmas:Client:Init", function(dayNumber, tree, hasLooted)
 			end,
 		},
 	}, 3.0, true)
-	Targeting.Zones:Refresh()
+	exports['sandbox-targeting']:ZonesRefresh()
 
 	_todaysDayNumber = dayNumber
 	SetupTree(tree, hasLooted)
@@ -61,7 +59,7 @@ end)
 RegisterNetEvent("Characters:Client:Logout", function()
 	if _existingTree ~= nil then
 		DeleteEntity(_existingTree.entity)
-		Targeting:RemoveEntity(_existingTree.entity)
+		exports['sandbox-targeting']:RemoveEntity(_existingTree.entity)
 		_existingTree = nil
 	end
 end)

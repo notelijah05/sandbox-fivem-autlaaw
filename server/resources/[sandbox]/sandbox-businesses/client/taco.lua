@@ -25,23 +25,24 @@ AddEventHandler("Businesses:Client:Startup", function()
 		maxZ = 32.28,
 	})
 
-	Targeting.Zones:AddBox(string.format("TacoShop_SelfServe"), "store", vector3(15.38, -1599.99, 29.38), 1.3, 0.6, {
-		name = "shop",
-		heading = 320,
-		--debugPoly=true,
-		minZ = 25.78,
-		maxZ = 29.78,
-	}, {
-		{
-			icon = "store",
-			text = "Shop Taco Ingredients",
-			event = "Taco:Client:TacoShop",
-		},
-	}, 2.0, true)
+	exports['sandbox-targeting']:ZonesAddBox(string.format("TacoShop_SelfServe"), "store",
+		vector3(15.38, -1599.99, 29.38), 1.3, 0.6, {
+			name = "shop",
+			heading = 320,
+			--debugPoly=true,
+			minZ = 25.78,
+			maxZ = 29.78,
+		}, {
+			{
+				icon = "store",
+				text = "Shop Taco Ingredients",
+				event = "Taco:Client:TacoShop",
+			},
+		}, 2.0, true)
 
 	-- Setup Pickup
 	for k, v in pairs(_tacoConfig.sharedPickup) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("TacoSharedPickup-%s", k),
 			"box-open",
 			v.coords,
@@ -308,7 +309,7 @@ function FetchDropOffLocation()
 			end)
 		end
 
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			_dropOffBlipCfg.zoneId,
 			"box-open-full",
 			_tacoDropOffs[_randomDropoff].coords,
@@ -327,7 +328,7 @@ function FetchDropOffLocation()
 			true
 		)
 
-		Targeting.Zones:Refresh()
+		exports['sandbox-targeting']:ZonesRefresh()
 	end
 end
 
@@ -362,8 +363,8 @@ AddEventHandler("Tacos:DeliverOrder", function(_, data)
 				_dropOffBlip = nil
 				_durationThread = false
 				_durationCheck = _durationTimer
-				Targeting.Zones:RemoveZone(data.blipConfig.zoneId)
-				Targeting.Zones:Refresh()
+				exports['sandbox-targeting']:ZonesRemoveZone(data.blipConfig.zoneId)
+				exports['sandbox-targeting']:ZonesRefresh()
 			end
 		end)
 	end)
@@ -378,7 +379,7 @@ function RunCleanUp()
 	LocalPlayer.state.TacoPickup = false
 	if _dropOffBlipCfg ~= nil then
 		exports["sandbox-blips"]:Remove(_dropOffBlipCfg.id)
-		Targeting.Zones:RemoveZone(_dropOffBlipCfg.zoneId)
+		exports['sandbox-targeting']:ZonesRemoveZone(_dropOffBlipCfg.zoneId)
 	end
 	_activeDropoffState = 0
 	_dropOffBlipCfg = nil

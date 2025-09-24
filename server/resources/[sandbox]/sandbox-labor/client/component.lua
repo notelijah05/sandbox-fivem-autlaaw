@@ -1,7 +1,6 @@
 AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
@@ -14,7 +13,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
 		"Polyzone",
-		"Targeting",
 		"EmergencyAlerts",
 		"Status",
 		"Labor",

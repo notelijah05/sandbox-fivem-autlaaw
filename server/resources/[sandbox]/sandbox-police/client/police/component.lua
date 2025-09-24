@@ -176,7 +176,6 @@ end
 AddEventHandler("Police:Shared:DependencyUpdate", PoliceComponents)
 function PoliceComponents()
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
@@ -191,7 +190,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Handcuffs",
-		"Targeting",
 		"Jobs",
 		"Properties",
 		"Apartment",
@@ -310,7 +308,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						TriggerServerEvent("Police:Server:Slimjim")
 					end,
 					shouldShow = function()
-						local target = Targeting:GetEntityPlayerIsLookingAt()
+						local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 						return target
 							and target.entity
 							and DoesEntityExist(target.entity)
@@ -674,58 +672,66 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Targeting.Zones:AddBox("pd-clockinoff-mrpd", "siren-on", vector3(441.96, -981.94, 30.69), 1.2, 1.2, {
-			heading = 356,
-			minZ = 30.49,
-			maxZ = 31.49,
-		}, policeDutyPoint, 2.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-mrpd", "siren-on", vector3(441.96, -981.94, 30.69), 1.2,
+			1.2, {
+				heading = 356,
+				minZ = 30.49,
+				maxZ = 31.49,
+			}, policeDutyPoint, 2.0, true)
 
-		Targeting.Zones:AddBox("pd-clockinoff-sandy", "siren-on", vector3(1833.55, 3678.69, 34.19), 1.0, 3.0, {
-			heading = 30,
-			--debugPoly=true,
-			minZ = 33.79,
-			maxZ = 35.59
-		}, policeDutyPoint, 2.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-sandy", "siren-on", vector3(1833.55, 3678.69, 34.19), 1.0,
+			3.0, {
+				heading = 30,
+				--debugPoly=true,
+				minZ = 33.79,
+				maxZ = 35.59
+			}, policeDutyPoint, 2.0, true)
 
-		Targeting.Zones:AddBox("pd-clockinoff-pbpd", "siren-on", vector3(-447.18, 6013.36, 32.29), 0.8, 1.6, {
-			heading = 45,
-			minZ = 32.29,
-			maxZ = 32.89,
-		}, policeDutyPoint, 2.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-pbpd", "siren-on", vector3(-447.18, 6013.36, 32.29), 0.8,
+			1.6, {
+				heading = 45,
+				minZ = 32.29,
+				maxZ = 32.89,
+			}, policeDutyPoint, 2.0, true)
 
-		Targeting.Zones:AddBox("pd-clockinoff-davis", "siren-on", vector3(381.37, -1595.84, 30.05), 2.0, 1.0, {
-			heading = 320,
-			minZ = 29.85,
-			maxZ = 31.05,
-		}, policeDutyPoint, 2.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-davis", "siren-on", vector3(381.37, -1595.84, 30.05), 2.0,
+			1.0, {
+				heading = 320,
+				minZ = 29.85,
+				maxZ = 31.05,
+			}, policeDutyPoint, 2.0, true)
 
-		Targeting.Zones:AddBox("pd-clockinoff-lamesa", "siren-on", vector3(837.23, -1289.2, 28.24), 0.8, 2.2, {
-			heading = 0,
-			--debugPoly=true,
-			minZ = 27.24,
-			maxZ = 29.04,
-		}, policeDutyPoint, 2.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-lamesa", "siren-on", vector3(837.23, -1289.2, 28.24), 0.8,
+			2.2, {
+				heading = 0,
+				--debugPoly=true,
+				minZ = 27.24,
+				maxZ = 29.04,
+			}, policeDutyPoint, 2.0, true)
 
-		Targeting.Zones:AddBox("pd-clockinoff-courthouse", "siren-on", vector3(-528.46, -189.44, 38.23), 1.0, 1.0, {
-			heading = 30,
-			--debugPoly=true,
-			minZ = 37.63,
-			maxZ = 39.23
-		}, policeDutyPoint, 2.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-courthouse", "siren-on", vector3(-528.46, -189.44, 38.23),
+			1.0, 1.0, {
+				heading = 30,
+				--debugPoly=true,
+				minZ = 37.63,
+				maxZ = 39.23
+			}, policeDutyPoint, 2.0, true)
 
-		Targeting.Zones:AddBox("pd-clockinoff-guardius", "siren-on", vector3(-1083.75, -247.15, 37.76), 1.2, 2, {
-			heading = 27,
-			--debugPoly=true,
-			minZ = 36.76,
-			maxZ = 38.96
-		}, policeDutyPoint, 2.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-guardius", "siren-on", vector3(-1083.75, -247.15, 37.76),
+			1.2, 2, {
+				heading = 27,
+				--debugPoly=true,
+				minZ = 36.76,
+				maxZ = 38.96
+			}, policeDutyPoint, 2.0, true)
 
-		Targeting.Zones:AddBox("pd-clockinoff-guardius2", "siren-on", vector3(-1049.57, -231.01, 39.02), 1, 1, {
-			heading = 300,
-			--debugPoly=true,
-			minZ = 38.02,
-			maxZ = 40.22
-		}, policeDutyPoint, 2.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-guardius2", "siren-on", vector3(-1049.57, -231.01, 39.02),
+			1, 1, {
+				heading = 300,
+				--debugPoly=true,
+				minZ = 38.02,
+				maxZ = 40.22
+			}, policeDutyPoint, 2.0, true)
 
 		for k, v in ipairs(_pdStationPolys) do
 			--print(v.options.name)
@@ -786,66 +792,73 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}
 
-		Targeting.Zones:AddBox("police-shitty-locker", "siren-on", vector3(461.59, -1000.0, 30.69), 1.0, 3.8, {
-			heading = 0,
-			--debugPoly=true,
-			minZ = 29.69,
-			maxZ = 32.69,
-		}, locker, 3.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker", "siren-on", vector3(461.59, -1000.0, 30.69), 1.0,
+			3.8, {
+				heading = 0,
+				--debugPoly=true,
+				minZ = 29.69,
+				maxZ = 32.69,
+			}, locker, 3.0, true)
 
-		Targeting.Zones:AddBox("police-shitty-locker-2", "siren-on", vector3(1841.51, 3682.08, 34.19), 2.0, 1, {
-			heading = 30,
-			--debugPoly=true,
-			minZ = 33.19,
-			maxZ = 35.59
-		}, locker, 3.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker-2", "siren-on", vector3(1841.51, 3682.08, 34.19),
+			2.0, 1, {
+				heading = 30,
+				--debugPoly=true,
+				minZ = 33.19,
+				maxZ = 35.59
+			}, locker, 3.0, true)
 
-		Targeting.Zones:AddBox("police-shitty-locker-3", "siren-on", vector3(-436.32, 6009.79, 37.0), 0.2, 2.2, {
-			heading = 45,
-			--debugPoly=true,
-			minZ = 36.3,
-			maxZ = 38.1,
-		}, locker, 3.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker-3", "siren-on", vector3(-436.32, 6009.79, 37.0),
+			0.2, 2.2, {
+				heading = 45,
+				--debugPoly=true,
+				minZ = 36.3,
+				maxZ = 38.1,
+			}, locker, 3.0, true)
 
-		Targeting.Zones:AddBox("police-shitty-locker-4", "siren-on", vector3(360.08, -1592.9, 25.45), 0.5, 2.8, {
-			heading = 50,
-			--debugPoly=true,
-			minZ = 24.45,
-			maxZ = 27.45,
-		}, locker, 3.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker-4", "siren-on", vector3(360.08, -1592.9, 25.45),
+			0.5, 2.8, {
+				heading = 50,
+				--debugPoly=true,
+				minZ = 24.45,
+				maxZ = 27.45,
+			}, locker, 3.0, true)
 
-		Targeting.Zones:AddBox("police-shitty-locker-5", "siren-on", vector3(844.8, -1286.55, 28.24), 2.0, 1.2, {
-			heading = 0,
-			--debugPoly=true,
-			minZ = 27.24,
-			maxZ = 29.84,
-		}, locker, 3.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker-5", "siren-on", vector3(844.8, -1286.55, 28.24),
+			2.0, 1.2, {
+				heading = 0,
+				--debugPoly=true,
+				minZ = 27.24,
+				maxZ = 29.84,
+			}, locker, 3.0, true)
 
-		Targeting.Zones:AddBox("police-shitty-locker-6", "siren-on", vector3(-1061.09, -247.43, 39.74), 3.6, 1, {
-			heading = 27,
-			--debugPoly=true,
-			minZ = 38.74,
-			maxZ = 41.34
-		}, locker, 3.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker-6", "siren-on", vector3(-1061.09, -247.43, 39.74),
+			3.6, 1, {
+				heading = 27,
+				--debugPoly=true,
+				minZ = 38.74,
+				maxZ = 41.34
+			}, locker, 3.0, true)
 
-		Targeting.Zones:AddBox("ems-shitty-locker-1", "siren-on", vector3(1142.12, -1539.54, 35.03), 4.2, 0.6, {
-			heading = 0,
-			--debugPoly=true,
-			minZ = 32.23,
-			maxZ = 36.23
-		}, {
-			{
-				icon = "user-lock",
-				text = "Open Personal Locker",
-				event = "Police:Client:OpenLocker",
-				jobPerms = {
-					{
-						job = "ems",
-						reqDuty = false,
+		exports['sandbox-targeting']:ZonesAddBox("ems-shitty-locker-1", "siren-on", vector3(1142.12, -1539.54, 35.03),
+			4.2, 0.6, {
+				heading = 0,
+				--debugPoly=true,
+				minZ = 32.23,
+				maxZ = 36.23
+			}, {
+				{
+					icon = "user-lock",
+					text = "Open Personal Locker",
+					event = "Police:Client:OpenLocker",
+					jobPerms = {
+						{
+							job = "ems",
+							reqDuty = false,
+						},
 					},
 				},
-			},
-		}, 3.0, true)
+			}, 3.0, true)
 	end)
 end)
 

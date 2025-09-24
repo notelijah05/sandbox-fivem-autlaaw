@@ -12,7 +12,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(GlobalState["StoreSafes"]) do
-		Targeting.Zones:AddBox(v.id, "vault", v.coords, v.length, v.width, v.options, {
+		exports['sandbox-targeting']:ZonesAddBox(v.id, "vault", v.coords, v.length, v.width, v.options, {
 			{
 				icon = "unlock",
 				text = "Crack Safe",
@@ -81,8 +81,8 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 		LocalPlayer.state:set("storePoly", id, true)
 		_inPoly = id
 		for k, v in ipairs(_models) do
-			Targeting:RemoveObject(v)
-			Targeting:AddObject(v, "cash-register", {
+			exports['sandbox-targeting']:RemoveObject(v)
+			exports['sandbox-targeting']:AddObject(v, "cash-register", {
 				{
 					icon = "cash-register",
 					text = "Lockpick Register",
@@ -115,7 +115,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 
 		_inPoly = nil
 		for k, v in ipairs(_models) do
-			Targeting:RemoveObject(v)
+			exports['sandbox-targeting']:RemoveObject(v)
 		end
 	end
 end)

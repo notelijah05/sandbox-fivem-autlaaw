@@ -99,7 +99,7 @@ function Init()
 	)
 
 	for k, v in ipairs(Config.BedModels) do
-		Targeting:AddObject(v, "stretcher", {
+		exports['sandbox-targeting']:AddObject(v, "stretcher", {
 			{
 				icon = "stretcher",
 				text = "Lay in Bed",
@@ -115,7 +115,7 @@ function Init()
 	end
 
 	for k, v in ipairs(Config.BedPolys) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("hospitalbed-%s", k),
 			"stretcher",
 			v.center,

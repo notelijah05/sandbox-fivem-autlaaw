@@ -96,14 +96,12 @@ end)
 AddEventHandler('Locations:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Locations = exports['sandbox-base']:FetchComponent('Locations')
-    Targeting = exports['sandbox-base']:FetchComponent('Targeting')
     Characters = exports['sandbox-base']:FetchComponent('Characters')
 end
 
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Locations', {
         'Locations',
-        'Targeting',
         'Characters',
     }, function(error)
         if #error > 0 then
@@ -112,7 +110,8 @@ AddEventHandler('Core:Shared:Ready', function()
         RetrieveComponents()
 
         for k, v in ipairs(_logoutLocations) do
-            Targeting.Zones:AddBox("logout-location-" .. k, "person-from-portal", v.center, v.length, v.width, v.options,
+            exports['sandbox-targeting']:ZonesAddBox("logout-location-" .. k, "person-from-portal", v.center, v.length,
+                v.width, v.options,
                 {
                     {
                         icon = "person-from-portal",

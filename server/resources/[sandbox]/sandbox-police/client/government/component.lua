@@ -14,14 +14,12 @@ local govDutyPoints = {
 
 AddEventHandler("Police:Shared:DependencyUpdate", GovComponents)
 function GovComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Targeting",
 		"Jobs",
 		"Polyzone",
 	}, function(error)
@@ -91,7 +89,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			govServices,
 			"bell-concierge"
 		)
-		-- Targeting.Zones:AddBox("govt-services", "bell-concierge", vector3(-555.92, -186.01, 38.22), 2.0, 2.0, {
+		-- exports['sandbox-targeting']:ZonesAddBox("govt-services", "bell-concierge", vector3(-555.92, -186.01, 38.22), 2.0, 2.0, {
 		--     heading = 28,
 		--     --debugPoly=true,
 		--     minZ = 37.22,
@@ -99,7 +97,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		-- }, govServices, 3.0, true)
 
 		for k, v in ipairs(govDutyPoints) do
-			Targeting.Zones:AddBox("gov-info-" .. k, "gavel", v.center, v.length, v.width, v.options, {
+			exports['sandbox-targeting']:ZonesAddBox("gov-info-" .. k, "gavel", v.center, v.length, v.width, v.options, {
 				{
 					icon = "clipboard-check",
 					text = "Go On Duty",
@@ -137,7 +135,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			maxZ = 47.37,
 		}, {})
 
-		Targeting.Zones:AddBox("court-gavel", "gavel", vector3(-575.8, -210.3, 38.77), 0.8, 0.8, {
+		exports['sandbox-targeting']:ZonesAddBox("court-gavel", "gavel", vector3(-575.8, -210.3, 38.77), 0.8, 0.8, {
 			heading = 30,
 			--debugPoly=true,
 			minZ = 37.77,

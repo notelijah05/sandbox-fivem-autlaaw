@@ -15,7 +15,6 @@ local _ignoreEvents = {
 
 AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -30,7 +29,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
-		"Targeting",
 		"Labor",
 		"Jail",
 		"Reputation",

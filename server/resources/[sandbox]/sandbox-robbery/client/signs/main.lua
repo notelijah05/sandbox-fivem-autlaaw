@@ -77,7 +77,7 @@ end)
 
 AddEventHandler("Robbery:Client:Setup", function()
 	for k, v in ipairs(signObjects) do
-		Targeting:AddObject(v.model, "user-secret", {
+		exports['sandbox-targeting']:AddObject(v.model, "user-secret", {
 			{
 				text = string.format("Steal %s", v.label),
 				icon = "eye-evil",

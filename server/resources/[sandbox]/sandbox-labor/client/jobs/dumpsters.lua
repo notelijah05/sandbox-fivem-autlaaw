@@ -68,7 +68,7 @@ end)
 
 function RegisterDumpsterStartup()
 	for k, v in ipairs(_DumpsterEntities) do
-		Targeting:AddObject(v.objectID, "dumpster", {
+		exports['sandbox-targeting']:AddObject(v.objectID, "dumpster", {
 			{
 				icon = "magnifying-glass",
 				isEnabled = function(data, entityData)

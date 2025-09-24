@@ -7,7 +7,6 @@ _justBoughtFuckingBike = {}
 
 AddEventHandler("Dealerships:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -16,7 +15,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Dealerships", {
-		"Targeting",
 		"Jobs",
 		"Polyzone",
 		"Vehicles",
@@ -101,7 +99,7 @@ function CreateDealerships()
 		-- Targets
 		if data.zones and #data.zones.employeeInteracts > 0 then
 			for k, v in ipairs(data.zones.employeeInteracts) do
-				Targeting.Zones:AddBox(
+				exports['sandbox-targeting']:ZonesAddBox(
 					string.format("dealership_%s_employee_%s", dealerId, k),
 					"car-building",
 					v.center,

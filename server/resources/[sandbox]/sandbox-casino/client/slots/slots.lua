@@ -14,7 +14,7 @@ local _sessionWinnings = 0
 
 AddEventHandler("Casino:Client:Startup", function()
     for k, v in ipairs(_slotMachineObjects) do
-        Targeting:AddObject(v, "slot-machine", {
+        exports['sandbox-targeting']:AddObject(v, "slot-machine", {
             {
                 icon = "slot-machine",
                 text = "Use Machine",

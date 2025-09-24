@@ -8,7 +8,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 
 	if GlobalState.JailSearchLocations ~= nil then
 		for key, data in ipairs(GlobalState.JailSearchLocations) do
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				string.format("prison_search_%s", key),
 				"user-ninja",
 				data.coords,

@@ -1,6 +1,5 @@
 AddEventHandler("Arcade:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -10,7 +9,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Arcade", {
-		"Targeting",
 		"Status",
 		"Jail",
 		"Animations",

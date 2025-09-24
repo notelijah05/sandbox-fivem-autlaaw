@@ -16,7 +16,6 @@ DOORS_PERMISSION_CACHE = {}
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
@@ -25,7 +24,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
 		"Jobs",
-		"Targeting",
 		"Doors",
 		"Properties",
 	}, function(error)
@@ -125,7 +123,7 @@ function CreateElevators()
 end
 
 function CreateElevatorFloorTarget(zoneData, elevatorId, floorId, zoneId)
-	Targeting.Zones:AddBox(
+	exports['sandbox-targeting']:ZonesAddBox(
 		("elevators_" .. elevatorId .. "_level_" .. floorId .. "_" .. zoneId),
 		"elevator",
 		zoneData.center,

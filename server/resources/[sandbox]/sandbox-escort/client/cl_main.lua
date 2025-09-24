@@ -2,13 +2,11 @@ local _timeout = false
 
 AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
-		"Targeting",
 		"Vehicles",
 	}, function(error)
 		if #error > 0 then

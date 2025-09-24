@@ -5,12 +5,13 @@ _casinoWheelRotation = vec3(-0.000000, 9.000000, -31.843399)
 _spinningWheel = false
 
 AddEventHandler("Casino:Client:Startup", function()
-    Targeting.Zones:AddBox("casino-wheelspin", "circle-dashed", vector3(989.45, 42.64, 71.27), 1.0, 1.2, {
-        heading = 330,
-        --debugPoly=true,
-        minZ = 70.47,
-        maxZ = 73.27
-    }, {
+    exports['sandbox-targeting']:ZonesAddBox("casino-wheelspin", "circle-dashed", vector3(989.45, 42.64, 71.27), 1.0, 1.2,
+        {
+            heading = 330,
+            --debugPoly=true,
+            minZ = 70.47,
+            maxZ = 73.27
+        }, {
         {
             icon = "face-tongue-money",
             text = "Spin the Wheel! ($1,500)",

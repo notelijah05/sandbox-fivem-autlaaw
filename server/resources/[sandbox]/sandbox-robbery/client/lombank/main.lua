@@ -83,7 +83,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		door = "lombank_hidden_entrance",
 	})
 
-	Targeting.Zones:AddBox("lombank_secure", "shield-keyhole", vector3(7.69, -923.1, 29.9), 2.8, 1.6, {
+	exports['sandbox-targeting']:ZonesAddBox("lombank_secure", "shield-keyhole", vector3(7.69, -923.1, 29.9), 2.8, 1.6, {
 		heading = 340,
 		--debugPoly=true,
 		minZ = 28.9,
@@ -123,7 +123,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(_lbPowerBoxes) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("lombank_power_%s", v.data.boxId),
 			"box-taped",
 			v.coords,
@@ -164,7 +164,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(_lbUpperVaultPoints) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("lombank_upper_%s", v.wallId),
 			"bore-hole",
 			v.coords,
@@ -217,7 +217,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 		LocalPlayer.state:set("inLombankPower", false, true)
 		LocalPlayer.state:set("lombankRoom", data.roomId, true)
 		for k, v in ipairs(_lbCarts) do
-			Targeting:AddObject(v, "treasure-chest", {
+			exports['sandbox-targeting']:AddObject(v, "treasure-chest", {
 				{
 					text = "Grab Loot",
 					icon = "hand",
@@ -257,7 +257,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			LocalPlayer.state:set("lombankRoom", false, true)
 		end
 		for k, v in ipairs(_lbCarts) do
-			Targeting:RemoveObject(v)
+			exports['sandbox-targeting']:RemoveObject(v)
 		end
 	end
 end)

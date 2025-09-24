@@ -5,7 +5,7 @@ local _tableModels = {
 
 AddEventHandler("Drugs:Client:Startup", function()
     for k, v in ipairs(_tableModels) do
-        Targeting:AddObject(v, "table-picnic", {
+        exports['sandbox-targeting']:AddObject(v, "table-picnic", {
             {
                 text = "Pickup Table",
                 icon = "hand",

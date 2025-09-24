@@ -1,21 +1,5 @@
 local _created = {}
 
-AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
-function RetrieveVendorComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Vendor", {
-		"Targeting",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveVendorComponents()
-	end)
-end)
-
 RegisterNetEvent("Vendor:Client:Set", function(vendors)
 	for k, v in pairs(vendors) do
 		_created[v.id] = {
@@ -36,7 +20,7 @@ RegisterNetEvent("Vendor:Client:Set", function(vendors)
 				},
 			}, v.iconOverride or "question", v.position.scenario or false, v.position.anim or nil)
 		elseif v.type == "poly" then
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				v.id,
 				v.iconOverride or "question",
 				v.position.coords,
@@ -87,7 +71,7 @@ RegisterNetEvent(
 					},
 				}, iconOverride or "question", position.scenario or false, position.anim or false)
 			elseif type == "poly" then
-				Targeting.Zones:AddBox(
+				exports['sandbox-targeting']:ZonesAddBox(
 					id,
 					iconOverride or "question",
 					position.coords,
@@ -119,7 +103,7 @@ RegisterNetEvent("Vendor:Client:Remove", function(id)
 		if _created[id].type == "ped" then
 			exports['sandbox-pedinteraction']:Remove(id)
 		elseif _created[id].type == "poly" then
-			Targeting.Zones:RemoveZone(id)
+			exports['sandbox-targeting']:ZonesRemoveZone(id)
 		end
 
 		_created[id] = nil

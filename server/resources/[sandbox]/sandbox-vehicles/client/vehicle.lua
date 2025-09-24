@@ -837,7 +837,7 @@ end)
 
 RegisterNetEvent("Vehicles:Client:AttemptSlimJim", function()
 	if not VEHICLE_INSIDE and _characterLoaded then
-		local target = Targeting:GetEntityPlayerIsLookingAt()
+		local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 		if
 			target
 			and target.entity
@@ -856,7 +856,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		print("Vehicles:Slimjim")
 		if _characterLoaded and LocalPlayer.state.onDuty == "police" then
 			if not VEHICLE_INSIDE then
-				local target = Targeting:GetEntityPlayerIsLookingAt()
+				local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 				if
 					target
 					and target.entity
@@ -898,7 +898,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					cb(false, false)
 				end
 			else
-				local target = Targeting:GetEntityPlayerIsLookingAt()
+				local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 				if
 					target
 					and target.entity
@@ -940,7 +940,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					cb(false, false)
 				end
 			else
-				local target = Targeting:GetEntityPlayerIsLookingAt()
+				local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 				if
 					target
 					and target.entity
@@ -979,7 +979,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					cb(false, false)
 				end
 			else
-				local target = Targeting:GetEntityPlayerIsLookingAt()
+				local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 				if
 					target
 					and target.entity
@@ -1016,7 +1016,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					cb(false, false)
 				end
 			else
-				local target = Targeting:GetEntityPlayerIsLookingAt()
+				local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 				if
 					target
 					and target.entity

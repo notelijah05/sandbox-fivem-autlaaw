@@ -68,29 +68,30 @@ AddEventHandler("Robbery:Client:Setup", function()
 		--debugPoly = true,
 	})
 
-	Targeting.Zones:AddBox("mazebanK_secure", "shield-keyhole", vector3(-1301.14, -826.27, 16.78), 1.4, 0.6, {
-		heading = 37,
-		--debugPoly = true,
-		minZ = 15.78,
-		maxZ = 17.38,
-	}, {
-		{
-			icon = "phone",
-			text = "Secure Bank",
-			event = "Robbery:Client:MazeBank:StartSecuring",
-			jobPerms = {
-				{
-					job = "police",
-					reqDuty = true,
+	exports['sandbox-targeting']:ZonesAddBox("mazebanK_secure", "shield-keyhole", vector3(-1301.14, -826.27, 16.78), 1.4,
+		0.6, {
+			heading = 37,
+			--debugPoly = true,
+			minZ = 15.78,
+			maxZ = 17.38,
+		}, {
+			{
+				icon = "phone",
+				text = "Secure Bank",
+				event = "Robbery:Client:MazeBank:StartSecuring",
+				jobPerms = {
+					{
+						job = "police",
+						reqDuty = true,
+					},
 				},
+				data = {},
+				isEnabled = NeedsReset,
 			},
-			data = {},
-			isEnabled = NeedsReset,
-		},
-	}, 3.0, true)
+		}, 3.0, true)
 
 	for k, v in ipairs(_mbElectric) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("mazebank_power_%s", v.data.boxId),
 			"box-taped",
 			v.coords,
@@ -138,7 +139,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(_mbDrillPoints) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("mazebanK_drill_%s", v.data.wallId),
 			"bore-hole",
 			v.coords,
@@ -170,7 +171,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(_mbDesks) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("mazebanK_workstation_%s", v.data.deskId),
 			"computer",
 			v.coords,

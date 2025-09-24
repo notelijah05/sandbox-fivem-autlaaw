@@ -6,7 +6,6 @@ AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Characters",
 		"Animations",
-		"Targeting",
 		"Polyzone",
 		"Reputation",
 		"Jail",
@@ -39,7 +37,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			Config.Pickup.options
 		)
 
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("bb-retreive", aptId),
 			"hands-holding",
 			Config.Retreival.coords,
@@ -60,7 +58,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			true
 		)
 
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("prison-inmates-list"),
 			"clipboard",
 			Config.VisitorLog.coords,
@@ -78,7 +76,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			true
 		)
 
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			"prison-check",
 			"police-box",
 			Config.Payphone.coords,
@@ -107,7 +105,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			true
 		)
 
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			"prison-food",
 			"fork-knife",
 			Config.Cafeteria.Food.coords,
@@ -124,7 +122,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			true
 		)
 
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			"prison-drink",
 			"cup-straw-swoosh",
 			Config.Cafeteria.Drink.coords,
@@ -141,7 +139,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			true
 		)
 
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			"prison-juice",
 			"cup-straw-swoosh",
 			Config.Cafeteria.Juice.coords,
@@ -168,7 +166,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			true
 		)
 
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			"prison-payphone",
 			"square-phone-flip",
 			Config.Payphones.coords,

@@ -1,7 +1,6 @@
 AddEventHandler("Weed:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Weed = exports["sandbox-base"]:FetchComponent("Weed")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
@@ -9,7 +8,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weed", {
 		"Weed",
-		"Targeting",
 		"Animations",
 		"Polyzone",
 	}, function(error)

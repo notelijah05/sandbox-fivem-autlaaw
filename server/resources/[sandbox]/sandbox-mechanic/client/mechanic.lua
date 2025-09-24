@@ -3,23 +3,19 @@ _repairingVehicle = false
 AddEventHandler("Mechanic:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Mechanic", {
 		"Mechanic",
-		"Targeting",
 		"Animations",
 		"Polyzone",
 		"Jobs",
 		"Vehicles",
-		"Targeting",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -36,7 +32,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				local duty = LocalPlayer.state.onDuty
 				if duty and _mechanicJobs[duty] then
 					local installingPartData = _mechanicItemsToParts[part]
-					local target = Targeting:GetEntityPlayerIsLookingAt()
+					local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 					if
 						installingPartData
 						and target
@@ -146,7 +142,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			if LocalPlayer.state.loggedIn and not _repairingVehicle then
 				local duty = LocalPlayer.state.onDuty
 				if duty and _mechanicJobs[duty] then
-					local target = Targeting:GetEntityPlayerIsLookingAt()
+					local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 					if
 						target
 						and target.entity
@@ -256,7 +252,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			if LocalPlayer.state.loggedIn and not _repairingVehicle then
 				local duty = LocalPlayer.state.onDuty
 				if duty and _mechanicJobs[duty] then
-					local target = Targeting:GetEntityPlayerIsLookingAt()
+					local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 					if
 						target
 						and target.entity

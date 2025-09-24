@@ -16,7 +16,8 @@ local _phoneApp = {
 
 AddEventHandler("Robbery:Client:Setup", function()
     local atmRobbery = GlobalState["ATMRobberyTerminal"]
-    Targeting.Zones:AddBox("atm-robbery-terminal", "bug", atmRobbery.coords, atmRobbery.length, atmRobbery.width,
+    exports['sandbox-targeting']:ZonesAddBox("atm-robbery-terminal", "bug", atmRobbery.coords, atmRobbery.length,
+    atmRobbery.width,
         atmRobbery.options, {
             {
                 icon = "eye-evil",
@@ -31,7 +32,7 @@ AddEventHandler("Robbery:Client:Setup", function()
         }, 2.0)
 
     for k, v in ipairs(atmObjects) do
-        Targeting:AddObject(v, "money-from-bracket", {
+        exports['sandbox-targeting']:AddObject(v, "money-from-bracket", {
             {
                 text = "Run Exploit",
                 icon = 'eye-evil',

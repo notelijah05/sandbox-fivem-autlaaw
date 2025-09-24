@@ -62,7 +62,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 	end
 
 	for k, v in ipairs(_appraisalTables) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			"vangelico-grapeseed-table-" .. k,
 			"table-picnic",
 			v.coords,

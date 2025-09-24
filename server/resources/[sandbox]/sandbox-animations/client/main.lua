@@ -15,14 +15,12 @@ AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
 		"Damage",
 		"Animations",
-		"Targeting",
 	}, function(error)
 		if #error > 0 then
 			return

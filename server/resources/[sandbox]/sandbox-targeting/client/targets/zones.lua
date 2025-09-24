@@ -1,111 +1,116 @@
 local interactionComboZone = nil
 
-TARGETING.Zones = {
-    AddBox = function(self, zoneId, icon, center, length, width, options, menuArray, proximity, enabled)
-        if interactionZones[zoneId] and interactionComboZone then
-            interactionComboZone:RemoveZone(zoneId)
-            Wait(100)
-        end
+exports("ZonesAddBox", function(zoneId, icon, center, length, width, options, menuArray, proximity, enabled)
+    if interactionZones[zoneId] and interactionComboZone then
+        interactionComboZone:RemoveZone(zoneId)
+        Wait(100)
+    end
 
-        if enabled == nil then enabled = true end -- Make enabled if not specified
-        if type(menuArray) ~= 'table' then menuArray = {} end
+    if enabled == nil then enabled = true end -- Make enabled if not specified
+    if type(menuArray) ~= 'table' then menuArray = {} end
 
-        interactionZones[zoneId] = {
-            type = 'zone',
-            enabled = enabled,
-            name = zoneId,
-            icon = icon,
-            menu = menuArray,
-            zone = {
-                type = 'box',
-                center = center,
-                length = length,
-                width = width,
-                options = options or {},
-            },
-            proximity = (type(proximity) == 'number' and proximity or 10.0),
-        }
-    end,
-    AddCircle = function(self, zoneId, icon, center, radius, options, menuArray, proximity, enabled)
-        if interactionZones[zoneId] and interactionComboZone then
-            interactionComboZone:RemoveZone(zoneId)
-            Wait(100)
-        end
+    interactionZones[zoneId] = {
+        type = 'zone',
+        enabled = enabled,
+        name = zoneId,
+        icon = icon,
+        menu = menuArray,
+        zone = {
+            type = 'box',
+            center = center,
+            length = length,
+            width = width,
+            options = options or {},
+        },
+        proximity = (type(proximity) == 'number' and proximity or 10.0),
+    }
+end)
 
-        if enabled == nil then enabled = true end -- Make enabled if not specified
-        if type(menuArray) ~= 'table' then menuArray = {} end
+exports("ZonesAddCircle", function(zoneId, icon, center, radius, options, menuArray, proximity, enabled)
+    if interactionZones[zoneId] and interactionComboZone then
+        interactionComboZone:RemoveZone(zoneId)
+        Wait(100)
+    end
 
-        interactionZones[zoneId] = {
-            type = 'zone',
-            enabled = enabled,
-            name = zoneId,
-            icon = icon,
-            menu = menuArray,
-            zone = {
-                type = 'circle',
-                center = center,
-                radius = radius,
-                options = options or {},
-            },
-            proximity = (type(proximity) == 'number' and proximity or 10.0),
-        }
-    end,
-    AddPoly = function(self, zoneId, icon, points, options, menuArray, proximity, enabled)
-        if interactionZones[zoneId] and interactionComboZone then
-            interactionComboZone:RemoveZone(zoneId)
-            Wait(100)
-        end
+    if enabled == nil then enabled = true end -- Make enabled if not specified
+    if type(menuArray) ~= 'table' then menuArray = {} end
 
-        if enabled == nil then enabled = true end -- Make enabled if not specified
-        if type(menuArray) ~= 'table' then menuArray = {} end
+    interactionZones[zoneId] = {
+        type = 'zone',
+        enabled = enabled,
+        name = zoneId,
+        icon = icon,
+        menu = menuArray,
+        zone = {
+            type = 'circle',
+            center = center,
+            radius = radius,
+            options = options or {},
+        },
+        proximity = (type(proximity) == 'number' and proximity or 10.0),
+    }
+end)
 
-        interactionZones[zoneId] = {
-            type = 'zone',
-            enabled = enabled,
-            name = zoneId,
-            icon = icon,
-            menu = menuArray,
-            zone = {
-                type = 'poly',
-                points = points,
-                options = options or {},
-            },
-            proximity = (type(proximity) == 'number' and proximity or 10.0),
-        }
-    end,
-    IsEnabled = function(self, zoneId)
-        if interactionZones[zoneId] then
-            return interactionZones[zoneId].toggle
+exports("ZonesAddPoly", function(zoneId, icon, points, options, menuArray, proximity, enabled)
+    if interactionZones[zoneId] and interactionComboZone then
+        interactionComboZone:RemoveZone(zoneId)
+        Wait(100)
+    end
+
+    if enabled == nil then enabled = true end -- Make enabled if not specified
+    if type(menuArray) ~= 'table' then menuArray = {} end
+
+    interactionZones[zoneId] = {
+        type = 'zone',
+        enabled = enabled,
+        name = zoneId,
+        icon = icon,
+        menu = menuArray,
+        zone = {
+            type = 'poly',
+            points = points,
+            options = options or {},
+        },
+        proximity = (type(proximity) == 'number' and proximity or 10.0),
+    }
+end)
+
+exports("ZonesIsEnabled", function(zoneId)
+    if interactionZones[zoneId] then
+        return interactionZones[zoneId].toggle
+    end
+    return false
+end)
+
+exports("ZonesToggle", function(zoneId, toggle)
+    if interactionZones[zoneId] then
+        interactionZones[zoneId].toggle = toggle
+    end
+end)
+
+exports("ZonesIsCoordInZone", function(zoneId, coords)
+    if interactionComboZone and interactionZones[zoneId] then
+        local isInside, insideZone = interactionComboZone:isPointInside(coords)
+        if isInside and insideZone then
+            return insideZone.name
         end
-        return false
-    end,
-    Toggle = function(self, zoneId, toggle)
-        if interactionZones[zoneId] then
-            interactionZones[zoneId].toggle = toggle
-        end
-    end,
-    IsCoordInZone = function(self, zoneId, coords)
-        if interactionComboZone and interactionZones[zoneId] then
-            local isInside, insideZone = interactionComboZone:isPointInside(coords)
-            if isInside and insideZone then
-                return insideZone.name
-            end
-        end
-        return false
-    end,
-    RemoveZone = function(self, zoneId)
-        if interactionComboZone and interactionZones[zoneId] then
-            interactionZones[zoneId] = nil
-            interactionComboZone:RemoveZone(zoneId)
-        else
-            interactionZones[zoneId] = nil
-        end
-    end,
-    Refresh = function(self)
-        DeInitPolyzoneTargets()
-        InitPolyzoneTargets()
-    end,
-}
+    end
+    return false
+end)
+
+exports("ZonesRemoveZone", function(zoneId)
+    if interactionComboZone and interactionZones[zoneId] then
+        interactionZones[zoneId] = nil
+        interactionComboZone:RemoveZone(zoneId)
+    else
+        interactionZones[zoneId] = nil
+    end
+end)
+
+exports("ZonesRefresh", function()
+    DeInitPolyzoneTargets()
+    InitPolyzoneTargets()
+end)
 
 function InitPolyzoneTargets()
     if not interactionComboZone then

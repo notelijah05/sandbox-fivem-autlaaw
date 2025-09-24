@@ -4,23 +4,19 @@ _CASINO = _CASINO or {}
 
 AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Casino = exports["sandbox-base"]:FetchComponent("Casino")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Casino", {
-		"Targeting",
 		"Animations",
 		"Polyzone",
 		"Jobs",
 		"Vehicles",
-		"Targeting",
 		"Casino",
 	}, function(error)
 		if #error > 0 then
@@ -71,62 +67,63 @@ AddEventHandler("Casino:Client:Startup", function()
 	}
 
 	for k, v in ipairs(casinoDesks) do
-		Targeting.Zones:AddBox("casino-employee-" .. k, "slot-machine", v.center, v.length, v.width, v.options, {
-			{
-				icon = "clipboard-check",
-				text = "Clock In",
-				event = "Casino:Client:ClockIn",
-				data = { job = "casino" },
-				jobPerms = {
-					{
-						job = "casino",
-						reqOffDuty = true,
+		exports['sandbox-targeting']:ZonesAddBox("casino-employee-" .. k, "slot-machine", v.center, v.length, v.width,
+			v.options, {
+				{
+					icon = "clipboard-check",
+					text = "Clock In",
+					event = "Casino:Client:ClockIn",
+					data = { job = "casino" },
+					jobPerms = {
+						{
+							job = "casino",
+							reqOffDuty = true,
+						},
 					},
 				},
-			},
-			{
-				icon = "clipboard",
-				text = "Clock Out",
-				event = "Casino:Client:ClockOut",
-				data = { job = "casino" },
-				jobPerms = {
-					{
-						job = "casino",
-						reqDuty = true,
+				{
+					icon = "clipboard",
+					text = "Clock Out",
+					event = "Casino:Client:ClockOut",
+					data = { job = "casino" },
+					jobPerms = {
+						{
+							job = "casino",
+							reqDuty = true,
+						},
 					},
 				},
-			},
-			{
-				icon = "slot-machine",
-				text = "Close Casino",
-				event = "Casino:Client:OpenClose",
-				data = { state = false },
-				jobPerms = {
-					{
-						job = "casino",
-						reqDuty = true,
+				{
+					icon = "slot-machine",
+					text = "Close Casino",
+					event = "Casino:Client:OpenClose",
+					data = { state = false },
+					jobPerms = {
+						{
+							job = "casino",
+							reqDuty = true,
+						},
 					},
+					isEnabled = function()
+						return GlobalState["CasinoOpen"]
+					end,
 				},
-				isEnabled = function()
-					return GlobalState["CasinoOpen"]
-				end,
-			},
-			{
-				icon = "slot-machine",
-				text = "Open Casino",
-				event = "Casino:Client:OpenClose",
-				data = { state = true },
-				jobPerms = {
-					{
-						job = "casino",
-						reqDuty = true,
+				{
+					icon = "slot-machine",
+					text = "Open Casino",
+					event = "Casino:Client:OpenClose",
+					data = { state = true },
+					jobPerms = {
+						{
+							job = "casino",
+							reqDuty = true,
+						},
 					},
+					isEnabled = function()
+						return not GlobalState["CasinoOpen"]
+					end,
 				},
-				isEnabled = function()
-					return not GlobalState["CasinoOpen"]
-				end,
-			},
-		}, 3.0, true)
+			}, 3.0, true)
 	end
 
 	exports['sandbox-pedinteraction']:Add(
@@ -202,7 +199,7 @@ AddEventHandler("Casino:Client:Startup", function()
 		"seal-question"
 	)
 
-	Targeting.Zones:AddBox("casino-cashier", "cards", vector3(990.35, 31.18, 71.47), 5.4, 2, {
+	exports['sandbox-targeting']:ZonesAddBox("casino-cashier", "cards", vector3(990.35, 31.18, 71.47), 5.4, 2, {
 		heading = 330,
 		--debugPoly=true,
 		minZ = 70.47,

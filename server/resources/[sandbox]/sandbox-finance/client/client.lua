@@ -2,7 +2,6 @@ local inBank = true
 
 AddEventHandler("Finance:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
 
@@ -16,7 +15,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Finance", {
-		"Targeting",
 		"Polyzone",
 	}, function(error)
 		if #error > 0 then
@@ -38,7 +36,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				},
 			}, "money-check-dollar")
 
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			"paycheck-fuckingcunt",
 			"money-check-dollar",
 			vector3(254.53, 216.58, 106.28),
@@ -77,7 +75,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				},
 			}, "money-check-dollar")
 
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			"paycheck-fuckingcunt-2",
 			"money-check-dollar",
 			vector3(16.72, -927.74, 29.9),
@@ -116,7 +114,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				},
 			}, "money-check-dollar")
 
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			"paycheck-fuckingcunt-3",
 			"money-check-dollar",
 			vector3(-109.04, 6471.68, 31.63),

@@ -20,7 +20,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         end
 
         if v.interactZone then
-            Targeting.Zones:AddBox(
+            exports['sandbox-targeting']:ZonesAddBox(
                 string.format("tv-interact-%s", k),
                 "tv",
                 v.interactZone.center,

@@ -13,7 +13,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 
 	if GlobalState.JailStashLocations ~= nil then
 		for key, data in ipairs(GlobalState.JailStashLocations) do
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				string.format("prison_stash_%s", key),
 				"lock",
 				data.coords,

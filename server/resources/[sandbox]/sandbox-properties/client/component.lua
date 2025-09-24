@@ -20,7 +20,6 @@ _placingSearchItem = nil
 
 AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -32,7 +31,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Properties", {
-		"Targeting",
 		"Characters",
 		"Wardrobe",
 		"Properties",
@@ -692,7 +690,7 @@ PROPERTIES = {
 			for k, v in ipairs(_spawnedFurniture) do
 				if v.id == id then
 					DeleteEntity(v.entity)
-					Targeting:RemoveEntity(v.entity)
+					exports['sandbox-targeting']:RemoveEntity(v.entity)
 				else
 					table.insert(ns, v)
 				end

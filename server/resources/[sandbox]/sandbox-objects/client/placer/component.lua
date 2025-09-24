@@ -5,13 +5,11 @@ isValid = false
 
 AddEventHandler("ObjectPlacer:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-    Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
     ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
     exports["sandbox-base"]:RequestDependencies("ObjectPlacer", {
-        "Targeting",
         "ObjectPlacer",
     }, function(error)
         if #error > 0 then

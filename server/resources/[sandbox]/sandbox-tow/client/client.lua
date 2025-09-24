@@ -1,6 +1,5 @@
 AddEventHandler("Tow:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -9,7 +8,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Tow", {
-		"Targeting",
 		"Jobs",
 		"Vehicles",
 		"Polyzone",

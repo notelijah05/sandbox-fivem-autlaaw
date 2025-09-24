@@ -19,7 +19,6 @@ AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
 		"Vehicles",
 		"Polyzone",
-		"Targeting",
 		"Animations",
 	}, function(error)
 		if #error > 0 then
@@ -37,7 +35,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		CreateFuelStationPolyzones()
 
 		for k, v in ipairs(pumpModels) do
-			Targeting:AddObject(v, "gas-pump", {
+			exports['sandbox-targeting']:AddObject(v, "gas-pump", {
 				{
 					text = "Refill Petrol Can",
 					icon = "gas-pump",

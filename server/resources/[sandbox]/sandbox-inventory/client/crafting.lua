@@ -7,7 +7,7 @@ end)
 
 exports("CraftingBenchesCleanup", function()
 	for k, v in ipairs(_benchObjs) do
-		Targeting:RemoveEntity(v)
+		exports['sandbox-targeting']:RemoveEntity(v)
 		DeleteEntity(v)
 	end
 	_benchObjs = {}
@@ -96,7 +96,7 @@ exports("CraftingBenchesRefresh", function(interior)
 						end
 
 						if obj ~= nil then
-							Targeting:AddEntity(obj, v.targeting.icon, menu)
+							exports['sandbox-targeting']:AddEntity(obj, v.targeting.icon, menu)
 						elseif v.targeting.ped ~= nil then
 							exports['sandbox-pedinteraction']:Add(
 								v.id,
@@ -109,7 +109,7 @@ exports("CraftingBenchesRefresh", function(interior)
 								v.targeting.ped.task
 							)
 						elseif v.targeting.poly ~= nil then
-							Targeting.Zones:AddBox(
+							exports['sandbox-targeting']:ZonesAddBox(
 								v.id,
 								v.targeting.icon,
 								v.targeting.poly.coords,
@@ -126,13 +126,13 @@ exports("CraftingBenchesRefresh", function(interior)
 						elseif v.targeting.ped ~= nil then
 							exports['sandbox-pedinteraction']:Remove(v.id)
 						elseif v.targeting.poly ~= nil then
-							Targeting.Zones:RemoveZone(v.id)
+							exports['sandbox-targeting']:ZonesRemoveZone(v.id)
 						end
 					end
 				end
 			end
 
-			Targeting.Zones:Refresh()
+			exports['sandbox-targeting']:ZonesRefresh()
 		end
 	end
 end)

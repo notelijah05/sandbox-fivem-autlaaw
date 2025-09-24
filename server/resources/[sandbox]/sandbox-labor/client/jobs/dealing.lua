@@ -61,7 +61,7 @@ function DoHandoff(ped)
 end
 
 function AddTargetingShit(ped)
-	Targeting:AddPed(ped, "hands-holding-dollar", {
+	exports['sandbox-targeting']:AddPed(ped, "hands-holding-dollar", {
 		{
 			icon = "list-timeline",
 			text = "Sell Product",
@@ -388,7 +388,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:RemoveTargetting", joiner),
 		function()
 			if _SellingPed ~= nil then
-				Targeting:RemovePed(_SellingPed)
+				exports['sandbox-targeting']:RemovePed(_SellingPed)
 			end
 		end
 	)
@@ -397,7 +397,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:SoldToPed", joiner),
 		function()
 			if _SellingPed ~= nil then
-				Targeting:RemovePed(_SellingPed)
+				exports['sandbox-targeting']:RemovePed(_SellingPed)
 			end
 			_SellingPed = nil
 		end
@@ -407,7 +407,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:EndSelling", joiner),
 		function()
 			if _SellingPed ~= nil then
-				Targeting:RemovePed(_SellingPed)
+				exports['sandbox-targeting']:RemovePed(_SellingPed)
 			end
 			if _SellingVeh ~= nil then
 				Entity(_SellingVeh).state:set("cornering", false, true)
@@ -425,7 +425,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:PedDied", joiner),
 		function()
 			if _SellingPed ~= nil then
-				Targeting:RemovePed(_SellingPed)
+				exports['sandbox-targeting']:RemovePed(_SellingPed)
 			end
 			_SellingPed = nil
 		end
@@ -435,7 +435,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:PedTimeout", joiner),
 		function()
 			if _SellingPed ~= nil then
-				Targeting:RemovePed(_SellingPed)
+				exports['sandbox-targeting']:RemovePed(_SellingPed)
 			end
 			_SellingPed = nil
 		end
@@ -522,7 +522,7 @@ RegisterNetEvent("CornerDealing:Client:OffDuty", function(time)
 	end
 
 	if _SellingPed ~= nil then
-		Targeting:RemovePed(_SellingPed)
+		exports['sandbox-targeting']:RemovePed(_SellingPed)
 	end
 	if _SellingVeh ~= nil then
 		Entity(_SellingVeh).state:set("cornering", false, true)

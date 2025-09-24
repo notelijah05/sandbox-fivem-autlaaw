@@ -27,7 +27,7 @@ function CreateBizPhones()
     for k, v in pairs(GlobalState.BizPhones) do
         local object = CreateBizPhoneObject(v.coords, v.rotation)
 
-        Targeting:AddEntity(object, "phone-office", {
+        exports['sandbox-targeting']:AddEntity(object, "phone-office", {
             {
                 icon = "phone-volume",
                 text = "Phone",

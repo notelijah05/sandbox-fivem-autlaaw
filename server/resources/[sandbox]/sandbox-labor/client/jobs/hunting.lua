@@ -189,7 +189,7 @@ RegisterNetEvent("Hunting:Client:Polys", function(c)
 	end
 
 	for k, v in pairs(_localConfig.Animals) do
-		Targeting:AddPedModel(v.Model, "knife-kitchen", {
+		exports['sandbox-targeting']:AddPedModel(v.Model, "knife-kitchen", {
 			{
 				icon = "rabbit-running",
 				text = string.format("Harvest %s", v.Name),

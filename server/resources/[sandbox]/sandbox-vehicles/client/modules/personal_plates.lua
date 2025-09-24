@@ -1,6 +1,6 @@
 AddEventHandler("Vehicles:Client:StartUp", function()
     exports["sandbox-base"]:RegisterClientCallback("Vehicles:GetPersonalPlate", function(data, cb)
-        local target = Targeting:GetEntityPlayerIsLookingAt()
+        local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
             if Vehicles:HasAccess(target.entity) and (Vehicles.Utils:IsCloseToRearOfVehicle(target.entity) or Vehicles.Utils:IsCloseToFrontOfVehicle(target.entity)) then
                 local settingPlate = GetNewPersonalPlate()
@@ -19,13 +19,13 @@ AddEventHandler("Vehicles:Client:StartUp", function()
     end)
 
     exports['sandbox-pedinteraction']:Add("donor_plates", `u_f_m_debbie_01`, vector3(-504.405, -182.683, 36.691), 290.319,
-    25.0, {
-        {
-            icon = "rectangle-wide",
-            text = "Donator License Plate Claim",
-            event = "Vehicles:Client:DonatorLicensePlateClaim",
-        },
-    }, "comment-dollar")
+        25.0, {
+            {
+                icon = "rectangle-wide",
+                text = "Donator License Plate Claim",
+                event = "Vehicles:Client:DonatorLicensePlateClaim",
+            },
+        }, "comment-dollar")
 end)
 
 local platePromise

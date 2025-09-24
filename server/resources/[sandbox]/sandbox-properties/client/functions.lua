@@ -87,11 +87,11 @@ function ExitProperty(data, backdoor)
 		FreezeEntityPosition(PlayerPedId(), true)
 		Wait(50)
 
-		-- Targeting.Zones:RemoveZone(string.format("property-%s-logout", pId))
-		-- Targeting.Zones:RemoveZone(string.format("property-%s-closet", pId))
-		-- Targeting.Zones:RemoveZone(string.format("property-%s-stash", pId))
-		Targeting.Zones:RemoveZone(string.format("property-%s-exit", pId))
-		Targeting.Zones:RemoveZone(string.format("property-%s-exit-back", pId))
+		-- exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-logout", pId))
+		-- exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-closet", pId))
+		-- exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-stash", pId))
+		exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-exit", pId))
+		exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-exit-back", pId))
 		--Polyzone:Remove("property-int-zone")
 
 		if backdoor and property.location.backdoor then

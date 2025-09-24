@@ -5,7 +5,7 @@ function CreatePropertyZones(propertyId, int)
 
     local interior = PropertyInteriors[int]
     if interior then
-        Targeting.Zones:AddBox(
+        exports['sandbox-targeting']:ZonesAddBox(
             string.format("property-%s-exit", propertyId),
             "door-open",
             interior.locations.front.polyzone.center,
@@ -28,7 +28,7 @@ function CreatePropertyZones(propertyId, int)
         )
 
         if interior.locations.back then
-            Targeting.Zones:AddBox(
+            exports['sandbox-targeting']:ZonesAddBox(
                 string.format("property-%s-exit-back", propertyId),
                 "door-open",
                 interior.locations.back.polyzone.center,
@@ -52,7 +52,7 @@ function CreatePropertyZones(propertyId, int)
         end
 
         if interior.locations.office then
-            Targeting.Zones:AddBox(
+            exports['sandbox-targeting']:ZonesAddBox(
                 string.format("property-%s-office", propertyId),
                 "phone-office",
                 interior.locations.office.polyzone.center,
@@ -96,7 +96,7 @@ function CreatePropertyZones(propertyId, int)
         end
 
         if interior.locations.warehouse then
-            Targeting.Zones:AddBox(
+            exports['sandbox-targeting']:ZonesAddBox(
                 string.format("property-%s-warehouse", propertyId),
                 "warehouse-full",
                 interior.locations.warehouse.polyzone.center,
@@ -173,7 +173,7 @@ function CreatePropertyZones(propertyId, int)
                 })
             end
 
-            Targeting.Zones:AddBox(
+            exports['sandbox-targeting']:ZonesAddBox(
                 string.format("property-%s-crafting", propertyId),
                 "screwdriver-wrench",
                 interior.locations.crafting.polyzone.center,
@@ -187,14 +187,14 @@ function CreatePropertyZones(propertyId, int)
         end
 
         Wait(1000)
-        Targeting.Zones:Refresh()
+        exports['sandbox-targeting']:ZonesRefresh()
     end
 end
 
 function DestroyPropertyZones(propertyId)
-    Targeting.Zones:RemoveZone(string.format("property-%s-exit", propertyId))
-    Targeting.Zones:RemoveZone(string.format("property-%s-exit-back", propertyId))
-    Targeting.Zones:RemoveZone(string.format("property-%s-warehouse", propertyId))
-    Targeting.Zones:RemoveZone(string.format("property-%s-office", propertyId))
-    Targeting.Zones:RemoveZone(string.format("property-%s-crafting", propertyId))
+    exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-exit", propertyId))
+    exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-exit-back", propertyId))
+    exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-warehouse", propertyId))
+    exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-office", propertyId))
+    exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-crafting", propertyId))
 end

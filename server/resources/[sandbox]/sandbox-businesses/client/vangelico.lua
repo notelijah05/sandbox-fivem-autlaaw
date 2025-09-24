@@ -76,34 +76,35 @@ AddEventHandler("Businesses:Client:Startup", function()
 	end
 
 	for k, v in ipairs(_appraisalTables) do
-		Targeting.Zones:AddBox("vangelico-table-" .. k, "table-picnic", v.coords, v.length, v.width, v.options, {
-			{
-				icon = "gem",
-				text = "View Gem Table",
-				event = "Businesses:Client:VANGELICO:OpenTable",
-				data = { id = k },
-				jobPerms = {
-					{
-						job = "vangelico",
-						reqDuty = true,
-						jobPerms = "JOB_USE_GEM_TABLE",
+		exports['sandbox-targeting']:ZonesAddBox("vangelico-table-" .. k, "table-picnic", v.coords, v.length, v.width,
+			v.options, {
+				{
+					icon = "gem",
+					text = "View Gem Table",
+					event = "Businesses:Client:VANGELICO:OpenTable",
+					data = { id = k },
+					jobPerms = {
+						{
+							job = "vangelico",
+							reqDuty = true,
+							jobPerms = "JOB_USE_GEM_TABLE",
+						},
 					},
 				},
-			},
-			{
-				icon = "gem",
-				text = "Create Jewelry",
-				event = "Businesses:Client:VANGELICO:OpenJewelryCrafting",
-				data = { id = k },
-				jobPerms = {
-					{
-						job = "vangelico",
-						reqDuty = true,
-						jobPerms = "JOB_USE_JEWELRY_CRAFTING",
+				{
+					icon = "gem",
+					text = "Create Jewelry",
+					event = "Businesses:Client:VANGELICO:OpenJewelryCrafting",
+					data = { id = k },
+					jobPerms = {
+						{
+							job = "vangelico",
+							reqDuty = true,
+							jobPerms = "JOB_USE_JEWELRY_CRAFTING",
+						},
 					},
 				},
-			},
-		}, 3.0, true)
+			}, 3.0, true)
 	end
 end)
 

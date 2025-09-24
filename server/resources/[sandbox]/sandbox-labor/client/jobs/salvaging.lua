@@ -18,8 +18,8 @@ end
 
 function SetupTargetting()
 	for k, v in ipairs(_models) do
-		Targeting:RemoveObject(v)
-		Targeting:AddObject(v, "car", {
+		exports['sandbox-targeting']:RemoveObject(v)
+		exports['sandbox-targeting']:AddObject(v, "car", {
 			{
 				icon = "engine",
 				text = "Scrap",
@@ -116,7 +116,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 			if id ~= _POLYID then return end
 			_inPoly = false
 			for k, v in ipairs(_models) do
-				Targeting:RemoveObject(v)
+				exports['sandbox-targeting']:RemoveObject(v)
 			end
 		end)
 
@@ -137,7 +137,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 			end
 
 			for k, v in ipairs(_models) do
-				Targeting:RemoveObject(v)
+				exports['sandbox-targeting']:RemoveObject(v)
 			end
 		end)
 
@@ -170,7 +170,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 		_count = _count + 1
 		if _count >= 15 then
 			for k, v in ipairs(_models) do
-				Targeting:RemoveObject(v)
+				exports['sandbox-targeting']:RemoveObject(v)
 			end
 
 			if _blip ~= nil then
@@ -234,7 +234,7 @@ RegisterNetEvent("Salvaging:Client:OffDuty", function(time)
 	end
 
 	for k, v in ipairs(_models) do
-		Targeting:RemoveObject(v)
+		exports['sandbox-targeting']:RemoveObject(v)
 	end
 
 	exports['sandbox-pedinteraction']:Remove("SalvagingDelivery")

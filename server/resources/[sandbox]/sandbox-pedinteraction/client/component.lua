@@ -3,24 +3,10 @@ _characterLoaded, GLOBAL_PED = false, nil
 _interactionPeds = {}
 _spawnedInteractionPeds = {}
 
-AddEventHandler("PedInteraction:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("PedInteraction", {
-		"Targeting",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		-- exports['sandbox-pedinteraction']:Add('fuck', `a_m_y_soucent_04`, vector3(-810.171, -1311.092, 4.000), 332.419, 50.0, {
-		--     { icon = 'boxes-stacked', text = 'F', event = 'F', data = {}, minDist = 2.0, jobs = false },
-		-- })
-	end)
+	-- exports['sandbox-pedinteraction']:Add('fuck', `a_m_y_soucent_04`, vector3(-810.171, -1311.092, 4.000), 332.419, 50.0, {
+	--     { icon = 'boxes-stacked', text = 'F', event = 'F', data = {}, minDist = 2.0, jobs = false },
+	-- })
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")
@@ -48,12 +34,12 @@ AddEventHandler("Characters:Client:Spawn", function()
 						)
 					elseif not inRange and _spawnedInteractionPeds[k] then
 						DeletePed(_spawnedInteractionPeds[k])
-						Targeting:RemovePed(_spawnedInteractionPeds[k])
+						exports['sandbox-targeting']:RemovePed(_spawnedInteractionPeds[k])
 						_spawnedInteractionPeds[k] = nil
 					end
 				elseif _spawnedInteractionPeds[k] then
 					DeletePed(_spawnedInteractionPeds[k])
-					Targeting:RemovePed(_spawnedInteractionPeds[k])
+					exports['sandbox-targeting']:RemovePed(_spawnedInteractionPeds[k])
 					_spawnedInteractionPeds[k] = nil
 				end
 			end
@@ -118,7 +104,7 @@ exports("Remove", function(id)
 		_interactionPeds[id] = nil
 		if _spawnedInteractionPeds[id] then
 			DeleteEntity(_spawnedInteractionPeds[id])
-			Targeting:RemovePed(_spawnedInteractionPeds[id])
+			exports['sandbox-targeting']:RemovePed(_spawnedInteractionPeds[id])
 			_spawnedInteractionPeds[id] = nil
 		end
 	end
@@ -186,7 +172,7 @@ function CreateDumbAssPed(model, coords, heading, menu, icon, scenario, anim, co
 		if not icon then
 			icon = "person-sign"
 		end
-		Targeting:AddPed(ped, icon, menu)
+		exports['sandbox-targeting']:AddPed(ped, icon, menu)
 	end
 
 	return ped

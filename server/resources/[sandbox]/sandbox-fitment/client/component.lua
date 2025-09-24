@@ -2,22 +2,18 @@ EDITING_VEHICLE = nil
 
 AddEventHandler('Fitment:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
-    Targeting = exports['sandbox-base']:FetchComponent('Targeting')
     Animations = exports['sandbox-base']:FetchComponent('Animations')
     Polyzone = exports['sandbox-base']:FetchComponent('Polyzone')
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
     Vehicles = exports['sandbox-base']:FetchComponent('Vehicles')
-    Targeting = exports['sandbox-base']:FetchComponent('Targeting')
 end
 
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Fitment', {
-        'Targeting',
         'Animations',
         'Polyzone',
         'Jobs',
         'Vehicles',
-        'Targeting',
     }, function(error)
         if #error > 0 then return; end
         RetrieveComponents()

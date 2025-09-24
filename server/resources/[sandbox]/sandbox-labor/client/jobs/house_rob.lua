@@ -142,18 +142,18 @@ function ExitHouse()
 
         if intr then
             for k, v in ipairs(intr.robberies.locations) do
-                Targeting.Zones:RemoveZone(string.format("house-robbery-%s", k))
+                exports['sandbox-targeting']:ZonesRemoveZone(string.format("house-robbery-%s", k))
             end
         end
 
         if _stuff ~= nil then
             for k, v in ipairs(_stuff.pois or {}) do
-                Targeting:RemoveEntity(v)
+                exports['sandbox-targeting']:RemoveEntity(v)
                 DeleteObject(v)
             end
         end
 
-        Targeting.Zones:Refresh()
+        exports['sandbox-targeting']:ZonesRefresh()
 
         if _state == 5 then
             _working = false
@@ -370,7 +370,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         table.insert(_stuff.pois, o)
 
         if _nodes.chances.alarm then
-            Targeting:AddEntity(o, "sensor-triangle-exclamation", {
+            exports['sandbox-targeting']:AddEntity(o, "sensor-triangle-exclamation", {
                 {
                     icon = "sensor-triangle-exclamation",
                     text = "Disable Alarm",
@@ -391,7 +391,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                 exports["sandbox-sounds"]:PlayOne("house_alarm.ogg", 0.1)
             end
         else
-            Targeting:AddEntity(o, "sensor-triangle-exclamation", {
+            exports['sandbox-targeting']:AddEntity(o, "sensor-triangle-exclamation", {
                 {
                     icon = "sensor-triangle-exclamation",
                     text = "The Alarm Wasn't Armed",
@@ -412,7 +412,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         end
 
         for k, v in ipairs(intr.robberies.locations) do
-            Targeting.Zones:AddBox(
+            exports['sandbox-targeting']:ZonesAddBox(
                 string.format("house-robbery-%s", k),
                 "box-open-full",
                 v.coords,
@@ -440,7 +440,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         end
 
 
-        Targeting.Zones:Refresh()
+        exports['sandbox-targeting']:ZonesRefresh()
 
         if intr.zone then
             Polyzone.Create:Box("property-house-rob-zone", intr.zone.center, intr.zone.length, intr.zone.width,

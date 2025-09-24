@@ -61,34 +61,35 @@ AddEventHandler("Businesses:Client:Startup", function()
 	end
 
 	for k, v in ipairs(_appraisalTables) do
-		Targeting.Zones:AddBox("jewel-table-" .. k, "table-picnic", v.coords, v.length, v.width, v.options, {
-			{
-				icon = "gem",
-				text = "View Gem Table",
-				event = "Businesses:Client:JEWEL:OpenTable",
-				data = { id = k },
-				jobPerms = {
-					{
-						job = "jewel",
-						reqDuty = true,
-						jobPerms = "JOB_USE_GEM_TABLE",
+		exports['sandbox-targeting']:ZonesAddBox("jewel-table-" .. k, "table-picnic", v.coords, v.length, v.width,
+			v.options, {
+				{
+					icon = "gem",
+					text = "View Gem Table",
+					event = "Businesses:Client:JEWEL:OpenTable",
+					data = { id = k },
+					jobPerms = {
+						{
+							job = "jewel",
+							reqDuty = true,
+							jobPerms = "JOB_USE_GEM_TABLE",
+						},
 					},
 				},
-			},
-			{
-				icon = "gem",
-				text = "Create Jewelry",
-				event = "Businesses:Client:JEWEL:OpenJewelryCrafting",
-				data = { id = k },
-				jobPerms = {
-					{
-						job = "jewel",
-						reqDuty = true,
-						jobPerms = "JOB_USE_JEWELRY_CRAFTING",
+				{
+					icon = "gem",
+					text = "Create Jewelry",
+					event = "Businesses:Client:JEWEL:OpenJewelryCrafting",
+					data = { id = k },
+					jobPerms = {
+						{
+							job = "jewel",
+							reqDuty = true,
+							jobPerms = "JOB_USE_JEWELRY_CRAFTING",
+						},
 					},
 				},
-			},
-		}, 3.0, true)
+			}, 3.0, true)
 	end
 end)
 

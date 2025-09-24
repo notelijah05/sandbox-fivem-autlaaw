@@ -20,7 +20,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		SetupFleecaVaults(bankData)
 
 		if bankData.reset ~= nil then
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				string.format("fleeca-%s-reset", bankData.id),
 				"shield-keyhole",
 				bankData.reset.coords,
@@ -187,7 +187,7 @@ end
 
 function SetupFleecaVaults(bankData)
 	for k, v in ipairs(bankData.loots) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("fleeca-%s", v.options.name),
 			"bore-hole",
 			v.coords,

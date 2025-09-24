@@ -4,7 +4,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
             if VEHICLE_INSIDE then
                 return cb(VehToNet(VEHICLE_INSIDE))
             else
-                local data = Targeting:GetEntityPlayerIsLookingAt()
+                local data = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
                 if data and data.entity and DoesEntityExist(data.entity) and IsEntityAVehicle(data.entity) then
                     return cb(VehToNet(data.entity))
                 end

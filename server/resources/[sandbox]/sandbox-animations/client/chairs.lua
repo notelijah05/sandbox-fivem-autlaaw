@@ -5,7 +5,7 @@ function RegisterChairTargets()
 	for k, v in ipairs(_sittableChairs) do
 		v.id = k
 		if v.prop then
-			Targeting:AddObject(v.prop, "chair", {
+			exports['sandbox-targeting']:AddObject(v.prop, "chair", {
 				{
 					text = "Sit",
 					icon = "chair",
@@ -15,7 +15,7 @@ function RegisterChairTargets()
 				},
 			}, 1.8)
 		elseif v.polyzone then
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				string.format("chair-%s", v.id),
 				"chair",
 				v.polyzone.center,

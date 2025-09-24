@@ -7,7 +7,6 @@ _leavingBed = false
 AddEventHandler("Hospital:Shared:DependencyUpdate", HospitalComponents)
 function HospitalComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -16,7 +15,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hospital", {
 		"Damage",
-		"Targeting",
 		"Hospital",
 		"Polyzone",
 		"Animations",
@@ -73,23 +71,24 @@ AddEventHandler("Core:Shared:Ready", function()
 			maxZ = 41.1
 		}, {})
 
-		Targeting.Zones:AddBox("icu-checkout", "bell-concierge", vector3(1147.83, -1542.54, 39.5), 2.8, 0.8, {
-			name = "hospital",
-			heading = 0,
-			--debugPoly=true,
-			minZ = 38.5,
-			maxZ = 41.1
-		}, {
-			{
-				icon = "bell-concierge",
-				text = "Request Personnel",
-				event = "Hospital:Client:RequestEMS",
-				isEnabled = function()
-					return (LocalPlayer.state.Character:GetData("ICU") ~= nil and not LocalPlayer.state.Character:GetData("ICU").Released) and
-						(not _done or _done < GetCloudTimeAsInt())
-				end,
-			}
-		})
+		exports['sandbox-targeting']:ZonesAddBox("icu-checkout", "bell-concierge", vector3(1147.83, -1542.54, 39.5), 2.8,
+			0.8, {
+				name = "hospital",
+				heading = 0,
+				--debugPoly=true,
+				minZ = 38.5,
+				maxZ = 41.1
+			}, {
+				{
+					icon = "bell-concierge",
+					text = "Request Personnel",
+					event = "Hospital:Client:RequestEMS",
+					isEnabled = function()
+						return (LocalPlayer.state.Character:GetData("ICU") ~= nil and not LocalPlayer.state.Character:GetData("ICU").Released) and
+							(not _done or _done < GetCloudTimeAsInt())
+					end,
+				}
+			})
 
 		Polyzone.Create:Poly("hospital-icu-area", {
 			vector2(1144.3436279297, -1541.1220703125),

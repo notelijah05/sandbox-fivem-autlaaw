@@ -45,7 +45,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         end
 
         if v.interactZone then
-            Targeting.Zones:AddBox(
+            exports['sandbox-targeting']:ZonesAddBox(
                 string.format("bowling-lane-%s", k),
                 "bowling-ball-pin",
                 v.interactZone.center,

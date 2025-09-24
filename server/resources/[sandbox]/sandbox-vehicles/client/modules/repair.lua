@@ -246,7 +246,7 @@ end
 AddEventHandler("Vehicles:Client:StartUp", function()
 	exports["sandbox-base"]:RegisterClientCallback("Vehicles:RepairKit", function(type, cb)
 		if LocalPlayer.state.loggedIn then
-			local entity = Targeting:GetEntityPlayerIsLookingAt()
+			local entity = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 
 			if entity and entity.entity and CanRepairVehicle(entity.entity) then
 				local vehicle = entity.entity

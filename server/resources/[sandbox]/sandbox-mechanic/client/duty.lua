@@ -28,7 +28,7 @@ function CreateMechanicDutyPoints()
 				},
 			}
 
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				"mechanic_duty_" .. k,
 				"chess-clock",
 				v.dutyPoint.center,
@@ -68,7 +68,7 @@ function CreateMechanicDutyPoints()
 				},
 			}
 
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				"mechanic_duty2_" .. k,
 				"chess-clock",
 				v.dutyPoint2.center,

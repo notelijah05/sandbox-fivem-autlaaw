@@ -42,7 +42,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		--debugPoly = true,
 	})
 
-	Targeting.Zones:AddBox("vangelico-pd", "calculator", vector3(-620.09, -223.81, 38.06), 1.0, 1.0, {
+	exports['sandbox-targeting']:ZonesAddBox("vangelico-pd", "calculator", vector3(-620.09, -223.81, 38.06), 1.0, 1.0, {
 		name = "vangelico-pd",
 		heading = 35,
 		--debugPoly = true,
@@ -72,7 +72,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 
 	for k, v in ipairs(GlobalState["VangelicoCases"]) do
 		local pId = string.format("Vangelico:Case:%s", k)
-		Targeting.Zones:AddBox(pId, "container-storage", v.coords, v.length, v.width, v.options, {
+		exports['sandbox-targeting']:ZonesAddBox(pId, "container-storage", v.coords, v.length, v.width, v.options, {
 			{
 				icon = "hammer",
 				text = "Smash Case",
@@ -102,7 +102,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 
 	-- for k, v in ipairs(_cabinets) do
 	-- 	local pId = string.format("Vangelico:Cabinet:%s", k)
-	-- 	Targeting.Zones:AddBox(pId, "container-storage", v.coords, v.length, v.width, v.options, {
+	-- 	exports['sandbox-targeting']:ZonesAddBox(pId, "container-storage", v.coords, v.length, v.width, v.options, {
 	-- 		{
 	-- 			icon = "cabinet-filing",
 	-- 			text = "Search Filing Cabinet",
@@ -144,7 +144,7 @@ end)
 
 AddEventHandler("Polyzone:Enter", function(id, point, insideZones, data)
 	if id == "vangelico" then
-		Targeting:AddObject(GetHashKey("hei_prop_hei_keypad_03"), "calculator", {
+		exports['sandbox-targeting']:AddObject(GetHashKey("hei_prop_hei_keypad_03"), "calculator", {
 			-- {
 			-- 	icon = "bell-on",
 			-- 	text = "Disable Alarm",
@@ -194,7 +194,7 @@ end)
 
 AddEventHandler("Polyzone:Exit", function(id, point, insideZones, data)
 	if id == "vangelico" then
-		Targeting:RemoveObject(GetHashKey("hei_prop_hei_keypad_03"))
+		exports['sandbox-targeting']:RemoveObject(GetHashKey("hei_prop_hei_keypad_03"))
 	end
 end)
 

@@ -30,7 +30,6 @@ local _ignoreEvents = {
 
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -43,7 +42,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Targeting",
 		"Labor",
 		"Jail",
 		"Reputation",
@@ -112,7 +110,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		for k, v in ipairs(_payphones) do
-			Targeting:AddObject(v, "phone-rotary", {
+			exports['sandbox-targeting']:AddObject(v, "phone-rotary", {
 				{
 					icon = "phone-volume",
 					text = "Use Payphone",

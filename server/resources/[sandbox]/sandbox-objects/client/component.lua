@@ -2,14 +2,12 @@ _placedProps = {}
 
 AddEventHandler("Objects:Shared:DependencyUpdate", RetrieveObjectsComponents)
 function RetrieveObjectsComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 	Objects = exports["sandbox-base"]:FetchComponent("Objects")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Objects", {
-		"Targeting",
 		"ObjectPlacer",
 		"Objects",
 	}, function(error)
@@ -84,7 +82,7 @@ _OBJECTS = {
 			nameOverride = nameOverride,
 		}
 
-		Targeting:AddEntity(obj, "draw-square", {
+		exports['sandbox-targeting']:AddEntity(obj, "draw-square", {
 			{
 				icon = "eye",
 				text = "Open",

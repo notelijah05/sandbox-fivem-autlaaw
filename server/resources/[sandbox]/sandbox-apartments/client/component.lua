@@ -6,7 +6,6 @@ AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Apartment", {
 		"Polyzone",
 		"Ped",
-		"Targeting",
 		"Apartment",
 		"Characters",
 		"Wardrobe",
@@ -161,7 +159,7 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 		end)
 	end
 
-	Targeting.Zones:AddBox(
+	exports['sandbox-targeting']:ZonesAddBox(
 		string.format("apt-%s-exit", aptId),
 		"door-open",
 		p.interior.locations.exit.coords,
@@ -180,7 +178,7 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 		true
 	)
 
-	Targeting.Zones:AddBox(
+	exports['sandbox-targeting']:ZonesAddBox(
 		string.format("apt-%s-logout", aptId),
 		"bed-front",
 		p.interior.locations.logout.coords,
@@ -202,7 +200,7 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 		true
 	)
 
-	Targeting.Zones:AddBox(
+	exports['sandbox-targeting']:ZonesAddBox(
 		string.format("apt-%s-wardrobe", propertyId),
 		"shirt",
 		p.interior.locations.wardrobe.coords,
@@ -224,7 +222,7 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 		true
 	)
 
-	Targeting.Zones:AddBox(
+	exports['sandbox-targeting']:ZonesAddBox(
 		string.format("property-%s-stash", propertyId),
 		"toolbox",
 		p.interior.locations.stash.coords,
@@ -243,7 +241,7 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 		true
 	)
 
-	Targeting.Zones:Refresh()
+	exports['sandbox-targeting']:ZonesRefresh()
 	Wait(1000)
 	exports["sandbox-sync"]:Stop(1)
 end)
@@ -393,10 +391,10 @@ _APTS = {
 			SetEntityHeading(PlayerPedId(), p.heading)
 
 			for k, v in pairs(p.interior.locations) do
-				Targeting.Zones:RemoveZone(string.format("apt-%s-%s", k, apartmentId))
+				exports['sandbox-targeting']:ZonesRemoveZone(string.format("apt-%s-%s", k, apartmentId))
 			end
 
-			Targeting.Zones:Refresh()
+			exports['sandbox-targeting']:ZonesRefresh()
 
 			DoScreenFadeIn(1000)
 			while not IsScreenFadedIn() do

@@ -2,7 +2,7 @@ local spawnedDJ = false
 local spawnedLaptop = false
 
 AddEventHandler("Businesses:Client:Startup", function()
-    Targeting.Zones:AddBox(
+    exports['sandbox-targeting']:ZonesAddBox(
         "rockford-stage",
         "speakers",
         vector3(-1004.11, -249.95, 39.47),

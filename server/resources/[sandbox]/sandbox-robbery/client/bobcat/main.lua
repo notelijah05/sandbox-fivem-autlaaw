@@ -40,7 +40,8 @@ AddEventHandler("Robbery:Client:Setup", function()
 		maxZ = 35.549388885498,
 	})
 
-	Targeting.Zones:AddBox("bobcat-secure", "shield-keyhole", vector3(876.94, -2262.69, 30.47), 0.8, 1.4, {
+	exports['sandbox-targeting']:ZonesAddBox("bobcat-secure", "shield-keyhole", vector3(876.94, -2262.69, 30.47), 0.8,
+		1.4, {
 		heading = 356,
 		--debugPoly=true,
 		minZ = 29.87,
@@ -68,7 +69,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		},
 	}, 3.0, true)
 
-	Targeting.Zones:AddBox("bobcat-c4", "bomb", vector3(873.44, -2294.37, 30.47), 1.4, 1.4, {
+	exports['sandbox-targeting']:ZonesAddBox("bobcat-c4", "bomb", vector3(873.44, -2294.37, 30.47), 1.4, 1.4, {
 		heading = 355,
 		-- debugPoly = true,
 		minZ = 29.47,
@@ -88,7 +89,8 @@ AddEventHandler("Robbery:Client:Setup", function()
 		},
 	}, 3.0, true)
 
-	Targeting.Zones:AddBox("bobcat-front-pc-hack", "computer", vector3(875.15, -2263.83, 30.47), 0.8, 1.2, {
+	exports['sandbox-targeting']:ZonesAddBox("bobcat-front-pc-hack", "computer", vector3(875.15, -2263.83, 30.47), 0.8,
+		1.2, {
 		heading = 354,
 		-- debugPoly = true,
 		minZ = 28.92,
@@ -108,7 +110,8 @@ AddEventHandler("Robbery:Client:Setup", function()
 		},
 	}, 3.0, true)
 
-	Targeting.Zones:AddBox("bobcat-securiy-hack", "computer", vector3(887.07, -2299.13, 30.47), 3.0, 1.0, {
+	exports['sandbox-targeting']:ZonesAddBox("bobcat-securiy-hack", "computer", vector3(887.07, -2299.13, 30.47), 3.0,
+		1.0, {
 		heading = 264,
 		-- debugPoly = true,
 		minZ = 29.47,
@@ -134,7 +137,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(GlobalState["Bobcat:LootLocations"]) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("bobcat-loot-%s", k),
 			"box-open-full",
 			v.coords,

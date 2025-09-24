@@ -1,8 +1,8 @@
-TARGETING.AddObject = function(self, modelHash, icon, menuArray, proximity)
+exports("AddObject", function(modelHash, icon, menuArray, proximity)
     if not modelHash then return end
     if not proximity then proximity = 3 end
     if type(menuArray) ~= 'table' then menuArray = {} end
-    
+
     if targetableObjectModels[modelHash] then -- The object has already been added, so add these new menu items to the current menu
         local currentMenu = targetableObjectModels[modelHash].menu
         for k, v in ipairs(menuArray) do
@@ -19,15 +19,13 @@ TARGETING.AddObject = function(self, modelHash, icon, menuArray, proximity)
             proximity = proximity,
         }
     end
-    
-end
+end)
 
-TARGETING.RemoveObject = function(self, modelHash)
+exports("RemoveObject", function(modelHash)
     targetableObjectModels[modelHash] = nil
-end
+end)
 
--- For adding specific entities, probably won't get used much but it is here incase we do
-TARGETING.AddEntity = function(self, entityId, icon, menuArray, proximity, useObjectIcon)
+exports("AddEntity", function(entityId, icon, menuArray, proximity, useObjectIcon)
     if not entityId then return end
     if not proximity then proximity = 3 end
     if type(menuArray) ~= 'table' then menuArray = {} end
@@ -71,12 +69,11 @@ TARGETING.AddEntity = function(self, entityId, icon, menuArray, proximity, useOb
             proximity = proximity,
         }
     end
-end
+end)
 
-TARGETING.RemoveEntity = function(self, entityId)
+exports("RemoveEntity", function(entityId)
     targetableEntities[entityId] = nil
-end
-
+end)
 
 function IsEntityInteractable(entity)
     local entityModel = GetEntityModel(entity)

@@ -99,7 +99,8 @@ AddEventHandler("Robbery:Client:Setup", function()
 		)
 	end
 
-	Targeting.Zones:AddBox("paleto_secure", "shield-keyhole", vector3(-109.57, 6461.51, 31.64), 0.6, 0.4, {
+	exports['sandbox-targeting']:ZonesAddBox("paleto_secure", "shield-keyhole", vector3(-109.57, 6461.51, 31.64), 0.6,
+		0.4, {
 		heading = 315,
 		--debugPoly=true,
 		minZ = 31.24,
@@ -135,7 +136,8 @@ AddEventHandler("Robbery:Client:Setup", function()
 		},
 	}, 3.0, true)
 
-	Targeting.Zones:AddBox("paleto_security", "shield-keyhole", vector3(-91.76, 6464.78, 31.63), 1.4, 0.8, {
+	exports['sandbox-targeting']:ZonesAddBox("paleto_security", "shield-keyhole", vector3(-91.76, 6464.78, 31.63), 1.4,
+		0.8, {
 		heading = 315,
 		--debugPoly=true,
 		minZ = 30.63,
@@ -152,7 +154,8 @@ AddEventHandler("Robbery:Client:Setup", function()
 		},
 	}, 3.0, true)
 
-	Targeting.Zones:AddBox("paleto_hack_workstation", "terminal", vector3(-106.12, 6473.87, 31.63), 1.2, 0.6, {
+	exports['sandbox-targeting']:ZonesAddBox("paleto_hack_workstation", "terminal", vector3(-106.12, 6473.87, 31.63), 1.2,
+		0.6, {
 		heading = 315,
 		--debugPoly=true,
 		minZ = 31.03,
@@ -182,7 +185,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	}, 3.0, true)
 
 	for k, v in ipairs(_pbOfficeHacks) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("paleto_officehack_%s", k),
 			"terminal",
 			v.coords,
@@ -220,7 +223,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(_pbPowerHacks) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("paleto_electricbox_%s", k),
 			"box-taped",
 			v.coords,
@@ -261,7 +264,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(_pbDrillPoints) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("paleto_drillpoint_%s", v.data.drillId),
 			"bore-hole",
 			v.coords,
@@ -290,7 +293,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		)
 	end
 
-	Targeting.Zones:AddBox("paleto_office_safe", "vault", vector3(-105.27, 6480.67, 31.63), 0.8, 0.6, {
+	exports['sandbox-targeting']:ZonesAddBox("paleto_office_safe", "vault", vector3(-105.27, 6480.67, 31.63), 0.8, 0.6, {
 		heading = 45,
 		--debugPoly=true,
 		minZ = 31.43,
@@ -311,7 +314,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	}, 3.0, true)
 
 	for k, v in ipairs(_pbOfficeSearch) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("paleto_searchpoint_%s", v.data.searchId),
 			"magnifying-glass",
 			v.coords,
@@ -354,7 +357,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 	elseif data.subStationId ~= nil then
 		LocalPlayer.state:set("inSubStation", data.subStationId, true)
 	elseif data.pcId ~= nil then
-		Targeting:AddObject(GetHashKey("xm_prop_base_staff_desk_02"), "computer", {
+		exports['sandbox-targeting']:AddObject(GetHashKey("xm_prop_base_staff_desk_02"), "computer", {
 			{
 				text = "Upload Exploit",
 				icon = "terminal",
@@ -394,7 +397,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			LocalPlayer.state:set("inSubStation", false, true)
 		end
 	elseif data.pcId ~= nil then
-		Targeting:RemoveObject(GetHashKey("xm_prop_base_staff_desk_02"))
+		exports['sandbox-targeting']:RemoveObject(GetHashKey("xm_prop_base_staff_desk_02"))
 	elseif id == "paleto_power" then
 		LocalPlayer.state:set("inPaletoPower", false, true)
 	end

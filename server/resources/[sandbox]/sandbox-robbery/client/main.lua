@@ -1,7 +1,6 @@
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
@@ -12,7 +11,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
 		"Polyzone",
-		"Targeting",
 		"Properties",
 		"EmergencyAlerts",
 		"Doors",

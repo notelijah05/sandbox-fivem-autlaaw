@@ -128,7 +128,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 		_working = true
 		_state = 1
 		for k, v in ipairs(trashBins) do
-			Targeting:AddObject(v, "trash", {
+			exports['sandbox-targeting']:AddObject(v, "trash", {
 				{
 					icon = "trash",
 					text = "Grab Trash",
@@ -291,7 +291,7 @@ RegisterNetEvent("Garbage:Client:OffDuty", function(time)
 	end
 
 	for k, v in ipairs(trashBins) do
-		Targeting:RemoveObject(v)
+		exports['sandbox-targeting']:RemoveObject(v)
 	end
 
 	if _blip ~= nil then

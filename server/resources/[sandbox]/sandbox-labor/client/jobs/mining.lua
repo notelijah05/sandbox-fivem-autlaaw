@@ -32,7 +32,7 @@ local function SpawnOres()
 			local o = CreateObject(v.ore.object, v.location.x, v.location.y, v.location.z - 1.4, false, true, false)
 			PlaceObjectOnGroundProperly(o)
 			FreezeEntityPosition(o, true)
-			Targeting:AddEntity(o, "pickaxe", {
+			exports['sandbox-targeting']:AddEntity(o, "pickaxe", {
 				{
 					text = string.format("Mine %s", v.ore.label),
 					icon = "pickaxe",
@@ -61,7 +61,7 @@ local function DeleteNode(location)
 				vector3(v.data.location.x, v.data.location.y, v.data.location.z)
 				== vector3(location.x, location.y, location.z)
 			then
-				Targeting:RemoveEntity(v.ent)
+				exports['sandbox-targeting']:RemoveEntity(v.ent)
 				DeleteObject(v.ent)
 				exports["sandbox-blips"]:Remove(v.blipId)
 
@@ -85,7 +85,7 @@ local function DespawnOres()
 			local v = _objs[i]
 
 			if v then
-				Targeting:RemoveEntity(v.ent)
+				exports['sandbox-targeting']:RemoveEntity(v.ent)
 				DeleteObject(v.ent)
 				exports["sandbox-blips"]:Remove(v.blipId)
 			end

@@ -221,7 +221,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 	end
 
 	for k, v in pairs(_sagmaPaintings) do
-		Targeting.Zones:AddBox("sagma-art-" .. k, "palette", v.coords, v.length, v.width, v.options, {
+		exports['sandbox-targeting']:ZonesAddBox("sagma-art-" .. k, "palette", v.coords, v.length, v.width, v.options, {
 			{
 				icon = "palette",
 				text = "Update Painting",
@@ -239,34 +239,35 @@ AddEventHandler("Businesses:Client:Startup", function()
 	end
 
 	for k, v in ipairs(_appraisalTables) do
-		Targeting.Zones:AddBox("sagma-table-" .. k, "table-picnic", v.coords, v.length, v.width, v.options, {
-			{
-				icon = "gem",
-				text = "View Gem Table",
-				event = "Businesses:Client:SAGMA:OpenTable",
-				data = { id = k },
-				jobPerms = {
-					{
-						job = "sagma",
-						reqDuty = true,
-						jobPerms = "JOB_USE_GEM_TABLE",
+		exports['sandbox-targeting']:ZonesAddBox("sagma-table-" .. k, "table-picnic", v.coords, v.length, v.width,
+			v.options, {
+				{
+					icon = "gem",
+					text = "View Gem Table",
+					event = "Businesses:Client:SAGMA:OpenTable",
+					data = { id = k },
+					jobPerms = {
+						{
+							job = "sagma",
+							reqDuty = true,
+							jobPerms = "JOB_USE_GEM_TABLE",
+						},
 					},
 				},
-			},
-			-- {
-			-- 	icon = "gem",
-			-- 	text = "Create Jewelry",
-			-- 	event = "Businesses:Client:SAGMA:OpenJewelryCrafting",
-			-- 	data = { id = k },
-			-- 	jobPerms = {
-			-- 		{
-			-- 			job = "sagma",
-			-- 			reqDuty = true,
-			-- 			jobPerms = "JOB_USE_JEWELRY_CRAFTING",
-			-- 		},
-			-- 	},
-			-- },
-		}, 3.0, true)
+				-- {
+				-- 	icon = "gem",
+				-- 	text = "Create Jewelry",
+				-- 	event = "Businesses:Client:SAGMA:OpenJewelryCrafting",
+				-- 	data = { id = k },
+				-- 	jobPerms = {
+				-- 		{
+				-- 			job = "sagma",
+				-- 			reqDuty = true,
+				-- 			jobPerms = "JOB_USE_JEWELRY_CRAFTING",
+				-- 		},
+				-- 	},
+				-- },
+			}, 3.0, true)
 	end
 end)
 

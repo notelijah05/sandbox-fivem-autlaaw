@@ -51,7 +51,7 @@ end
 
 AddEventHandler("Drugs:Client:Startup", function()
     for k, v in ipairs(_stillModels) do
-        Targeting:AddObject(v, "kitchen-set", {
+        exports['sandbox-targeting']:AddObject(v, "kitchen-set", {
             {
                 text = "Dismantle Still (Destroys Still)",
                 icon = "hand",
@@ -100,7 +100,7 @@ AddEventHandler("Drugs:Client:Startup", function()
     end
 
     for k, v in ipairs(_barrelModels) do
-        Targeting:AddObject(v, "prescription-bottle", {
+        exports['sandbox-targeting']:AddObject(v, "prescription-bottle", {
             {
                 text = "Destroy Barrel",
                 icon = "hand",

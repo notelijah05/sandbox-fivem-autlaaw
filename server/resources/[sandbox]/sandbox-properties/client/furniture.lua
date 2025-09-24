@@ -114,7 +114,7 @@ function PlaceFurniture(v)
 
                 hasTargeting = true
 
-                Targeting:AddEntity(obj, icon, menu)
+                exports['sandbox-targeting']:AddEntity(obj, icon, menu)
             end
         end
 
@@ -126,7 +126,7 @@ function PlaceFurniture(v)
         })
 
         if LocalPlayer.state.furnitureEdit and not hasTargeting then
-            Targeting:AddEntity(obj, "draw-square", {
+            exports['sandbox-targeting']:AddEntity(obj, "draw-square", {
                 {
                     icon = "arrows-up-down-left-right",
                     text = "Move",
@@ -166,7 +166,7 @@ function DestroyFurniture(s)
         for k, v in ipairs(_spawnedFurniture) do
             DeleteEntity(v.entity)
             if not s then
-                Targeting:RemoveEntity(v.entity)
+                exports['sandbox-targeting']:RemoveEntity(v.entity)
             end
         end
 
@@ -179,7 +179,7 @@ function SetFurnitureEditMode(state)
         if state then
             for k, v in ipairs(_spawnedFurniture) do
                 if not v.targeting then
-                    Targeting:AddEntity(v.entity, "draw-square", {
+                    exports['sandbox-targeting']:AddEntity(v.entity, "draw-square", {
                         {
                             icon = "arrows-up-down-left-right",
                             text = "Move",
@@ -213,7 +213,7 @@ function SetFurnitureEditMode(state)
         else
             for k, v in ipairs(_spawnedFurniture) do
                 if not v.targeting then
-                    Targeting:RemoveEntity(v.entity)
+                    exports['sandbox-targeting']:RemoveEntity(v.entity)
                 end
             end
 
@@ -379,7 +379,7 @@ RegisterNetEvent("Furniture:Client:MoveItem", function(property, id, item)
         for k, v in ipairs(_spawnedFurniture) do
             if v.id == id then
                 DeleteEntity(v.entity)
-                Targeting:RemoveEntity(v.entity)
+                exports['sandbox-targeting']:RemoveEntity(v.entity)
                 shouldUpdate = true
             else
                 table.insert(ns, v)
@@ -406,7 +406,7 @@ RegisterNetEvent("Furniture:Client:DeleteItem", function(property, id, furniture
         for k, v in ipairs(_spawnedFurniture) do
             if v.id == id then
                 DeleteEntity(v.entity)
-                Targeting:RemoveEntity(v.entity)
+                exports['sandbox-targeting']:RemoveEntity(v.entity)
             else
                 table.insert(ns, v)
             end

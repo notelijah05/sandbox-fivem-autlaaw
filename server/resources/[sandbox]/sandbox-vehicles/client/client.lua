@@ -13,7 +13,6 @@ AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -34,7 +33,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
 		"Animations",
 		"Vehicles",
-		"Targeting",
 		"Polyzone",
 		"Jobs",
 		"EmergencyAlerts",
@@ -397,7 +395,7 @@ AddEventHandler("Vehicles:Client:Actions:ToggleDoor", function(doorNum)
 	local vehicle = VEHICLE_INSIDE
 
 	if not vehicle then
-		local targetVehicle = Targeting:GetEntityPlayerIsLookingAt()
+		local targetVehicle = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 		if
 			targetVehicle
 			and targetVehicle.entity
@@ -430,7 +428,7 @@ AddEventHandler("Vehicles:Client:Actions:ToggleWindow", function(winNum)
 	local vehicle = VEHICLE_INSIDE
 
 	if not vehicle then
-		local targetVehicle = Targeting:GetEntityPlayerIsLookingAt()
+		local targetVehicle = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
 		if
 			targetVehicle
 			and targetVehicle.entity

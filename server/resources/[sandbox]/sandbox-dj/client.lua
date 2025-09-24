@@ -2,21 +2,8 @@
 local xSound = exports.xsound
 local Props = {}
 
-AddEventHandler("DJ:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("DJ", {
-		"Targeting",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterDjZones()
-	end)
+	RegisterDjZones()
 end)
 
 function RegisterDjZones()
@@ -28,7 +15,7 @@ function RegisterDjZones()
 
 	for k, v in ipairs(Config.Locations) do
 		if v.enableBooth then
-			Targeting.Zones:AddBox("dj-booth" .. k, "compact-disc", v.coords, 1.0, 1.0, {
+			exports['sandbox-targeting']:ZonesAddBox("dj-booth" .. k, "compact-disc", v.coords, 1.0, 1.0, {
 				name = "djbooth" .. k,
 				heading = 0,
 				--debugPoly=true,

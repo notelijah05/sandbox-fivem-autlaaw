@@ -1,7 +1,7 @@
 function SetupTree(treeData, hasLooted)
 	if _existingTree ~= nil then
 		DeleteEntity(_existingTree.entity)
-		Targeting:RemoveEntity(_existingTree.entity)
+		exports['sandbox-targeting']:RemoveEntity(_existingTree.entity)
 		exports["sandbox-blips"]:Remove("xmas_tree")
 		_existingTree = nil
 	end
@@ -14,7 +14,7 @@ function SetupTree(treeData, hasLooted)
 	FreezeEntityPosition(obj, true)
 	SetCanClimbOnEntity(obj, false)
 
-	Targeting:AddEntity(obj, "tree-christmas", {
+	exports['sandbox-targeting']:AddEntity(obj, "tree-christmas", {
 		{
 			icon = "gift",
 			text = "Pickup Gift",

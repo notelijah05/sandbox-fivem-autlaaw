@@ -77,50 +77,51 @@ RegisterNetEvent("Businesses:Client:MBA:InteriorUpdate", function(v)
 end)
 
 AddEventHandler("Businesses:Client:Startup", function()
-	Targeting.Zones:AddBox("mba-event-management", "wand-magic-sparkles", vector3(-288.47, -1949.26, 38.05), 5.0, 1.0, {
-		heading = 50,
-		--debugPoly=true,
-		minZ = 37.05,
-		maxZ = 39.05
-	}, {
-		{
-			icon = "clipboard-check",
-			text = "Clock In",
-			event = "Businesses:Client:ClockIn",
-			data = { job = "mba" },
-			jobPerms = {
-				{
-					job = "mba",
-					reqOffDuty = true,
-				}
+	exports['sandbox-targeting']:ZonesAddBox("mba-event-management", "wand-magic-sparkles",
+		vector3(-288.47, -1949.26, 38.05), 5.0, 1.0, {
+			heading = 50,
+			--debugPoly=true,
+			minZ = 37.05,
+			maxZ = 39.05
+		}, {
+			{
+				icon = "clipboard-check",
+				text = "Clock In",
+				event = "Businesses:Client:ClockIn",
+				data = { job = "mba" },
+				jobPerms = {
+					{
+						job = "mba",
+						reqOffDuty = true,
+					}
+				},
 			},
-		},
-		{
-			icon = "clipboard",
-			text = "Clock Out",
-			event = "Businesses:Client:ClockOut",
-			data = { job = "mba" },
-			jobPerms = {
-				{
-					job = "mba",
-					reqDuty = true,
-				}
+			{
+				icon = "clipboard",
+				text = "Clock Out",
+				event = "Businesses:Client:ClockOut",
+				data = { job = "mba" },
+				jobPerms = {
+					{
+						job = "mba",
+						reqDuty = true,
+					}
+				},
 			},
-		},
-		{
-			icon = "wand-magic-sparkles",
-			text = "Event Setup",
-			event = "Businesses:Client:MBA:StartChangeInterior",
-			data = {},
-			jobPerms = {
-				{
-					job = "mba",
-					reqDuty = true,
-					permissionKey = 'JOB_SET_MBA',
-				}
+			{
+				icon = "wand-magic-sparkles",
+				text = "Event Setup",
+				event = "Businesses:Client:MBA:StartChangeInterior",
+				data = {},
+				jobPerms = {
+					{
+						job = "mba",
+						reqDuty = true,
+						permissionKey = 'JOB_SET_MBA',
+					}
+				},
 			},
-		},
-	}, 3.0, true)
+		}, 3.0, true)
 end)
 
 AddEventHandler("Businesses:Client:MBA:StartChangeInterior", function()
