@@ -67,8 +67,8 @@ AddEventHandler("Labor:Client:Setup", function()
         EmergencyAlerts:CreateIfReported(40.0, "bane", true)
     end)
 
-    Interaction:RegisterMenu("house-robbery", "Enter House", "window-frame-open", function(data)
-        Interaction:Hide()
+    exports['sandbox-hud']:InteractionRegisterMenu("house-robbery", "Enter House", "window-frame-open", function(data)
+        exports['sandbox-hud']:InteractionHide()
         EnterHouse(data)
     end, function()
         if _working and _p ~= nil and _nodes ~= nil then
@@ -82,8 +82,8 @@ AddEventHandler("Labor:Client:Setup", function()
         return false
     end)
 
-    Interaction:RegisterMenu("house-robbery-exit", "Exit House", "door-open", function(data)
-        Interaction:Hide()
+    exports['sandbox-hud']:InteractionRegisterMenu("house-robbery-exit", "Exit House", "door-open", function(data)
+        exports['sandbox-hud']:InteractionHide()
         ExitHouse()
     end, function()
         if GlobalState[string.format("%s:RobbingHouse", LocalPlayer.state.ID)] ~= nil and _exit ~= nil then

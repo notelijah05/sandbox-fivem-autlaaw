@@ -3,7 +3,7 @@ local _moving = false
 function EnterProperty(data, backdoor)
 	exports["sandbox-base"]:ServerCallback("Properties:EnterProperty", data.propertyId, function(state, pId, int)
 		if state then
-			Interaction:Hide()
+			exports['sandbox-hud']:InteractionHide()
 
 			DoScreenFadeOut(1000)
 			while not IsScreenFadedOut() do

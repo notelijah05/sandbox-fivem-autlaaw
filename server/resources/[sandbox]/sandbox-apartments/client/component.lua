@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
@@ -19,7 +18,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"Ped",
 		"Targeting",
-		"Interaction",
 		"Apartment",
 		"Characters",
 		"Wardrobe",
@@ -45,8 +43,8 @@ AddEventHandler("Core:Shared:Ready", function()
 			}
 		end
 
-		Interaction:RegisterMenu("apt-exit", "Exit Apartment", "door-open", function(data)
-			Interaction:Hide()
+		exports['sandbox-hud']:InteractionRegisterMenu("apt-exit", "Exit Apartment", "door-open", function(data)
+			exports['sandbox-hud']:InteractionHide()
 			Apartment:Exit()
 		end, function()
 			if
@@ -68,8 +66,8 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		-- Interaction:RegisterMenu("apt-visitors", "Check Visitors", "hand-back-fist", function(data)
-		-- 	Interaction:Hide()
+		-- exports['sandbox-hud']:InteractionRegisterMenu("apt-visitors", "Check Visitors", "hand-back-fist", function(data)
+		-- 	exports['sandbox-hud']:InteractionHide()
 		-- 	CheckVisitors()
 		-- end, function()
 		-- 	if GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)] ~= nil then

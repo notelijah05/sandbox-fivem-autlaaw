@@ -2,7 +2,6 @@ AddEventHandler("Corrections:Shared:DependencyUpdate", CorrectionsComponents)
 function CorrectionsComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -18,7 +17,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Corrections", {
 		"Inventory",
 		"Handcuffs",
-		"Interaction",
 		"Targeting",
 		"Jobs",
 		"Properties",
@@ -34,13 +32,13 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		CorrectionsComponents()
 
-		Interaction:RegisterMenu("prison", false, "siren-on", function(data)
-			Interaction:ShowMenu({
+		exports['sandbox-hud']:InteractionRegisterMenu("prison", false, "siren-on", function(data)
+			exports['sandbox-hud']:InteractionShowMenu({
 				{
 					icon = "siren-on",
 					label = "13-A",
 					action = function()
-						Interaction:Hide()
+						exports['sandbox-hud']:InteractionHide()
 						TriggerServerEvent("Police:Server:Panic", true)
 					end,
 					shouldShow = function()
@@ -51,7 +49,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					icon = "siren",
 					label = "13-B",
 					action = function()
-						Interaction:Hide()
+						exports['sandbox-hud']:InteractionHide()
 						TriggerServerEvent("Police:Server:Panic", false)
 					end,
 					shouldShow = function()
@@ -151,50 +149,51 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}, 3.0, true)
 
-		Interaction:RegisterMenu("prison-utils", "Corrections Utilities", "tablet-rugged", function(data)
-			Interaction:ShowMenu({
-				{
-					icon = "lock-keyhole-open",
-					label = "Slimjim Vehicle",
-					action = function()
-						Interaction:Hide()
-						TriggerServerEvent("Police:Server:Slimjim")
-					end,
-					shouldShow = function()
-						local target = Targeting:GetEntityPlayerIsLookingAt()
-						return target
-							and target.entity
-							and DoesEntityExist(target.entity)
-							and IsEntityAVehicle(target.entity)
-							and #(GetEntityCoords(target.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 2.0
-					end,
-				},
-				{
-					icon = "tablet-screen-button",
-					label = "MDT",
-					action = function()
-						Interaction:Hide()
-						TriggerEvent("MDT:Client:Toggle")
-					end,
-					shouldShow = function()
-						return LocalPlayer.state.onDuty == "prison"
-					end,
-				},
-				{
-					icon = "video",
-					label = "Toggle Body Cam",
-					action = function()
-						Interaction:Hide()
-						TriggerEvent("MDT:Client:ToggleBodyCam")
-					end,
-					shouldShow = function()
-						return LocalPlayer.state.onDuty == "prison"
-					end,
-				},
-			})
-		end, function()
-			return LocalPlayer.state.onDuty == "prison"
-		end)
+		exports['sandbox-hud']:InteractionRegisterMenu("prison-utils", "Corrections Utilities", "tablet-rugged",
+			function(data)
+				exports['sandbox-hud']:InteractionShowMenu({
+					{
+						icon = "lock-keyhole-open",
+						label = "Slimjim Vehicle",
+						action = function()
+							exports['sandbox-hud']:InteractionHide()
+							TriggerServerEvent("Police:Server:Slimjim")
+						end,
+						shouldShow = function()
+							local target = Targeting:GetEntityPlayerIsLookingAt()
+							return target
+								and target.entity
+								and DoesEntityExist(target.entity)
+								and IsEntityAVehicle(target.entity)
+								and #(GetEntityCoords(target.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 2.0
+						end,
+					},
+					{
+						icon = "tablet-screen-button",
+						label = "MDT",
+						action = function()
+							exports['sandbox-hud']:InteractionHide()
+							TriggerEvent("MDT:Client:Toggle")
+						end,
+						shouldShow = function()
+							return LocalPlayer.state.onDuty == "prison"
+						end,
+					},
+					{
+						icon = "video",
+						label = "Toggle Body Cam",
+						action = function()
+							exports['sandbox-hud']:InteractionHide()
+							TriggerEvent("MDT:Client:ToggleBodyCam")
+						end,
+						shouldShow = function()
+							return LocalPlayer.state.onDuty == "prison"
+						end,
+					},
+				})
+			end, function()
+				return LocalPlayer.state.onDuty == "prison"
+			end)
 
 		Targeting.Zones:AddBox("prison-clockinoff-1", "clipboard", vector3(1838.94, 2578.14, 46.01), 2.0, 0.8, {
 			heading = 305,

@@ -9,7 +9,6 @@ function RetrieveComponents()
     Progress = exports['sandbox-base']:FetchComponent('Progress')
     Vehicles = exports['sandbox-base']:FetchComponent('Vehicles')
     Targeting = exports['sandbox-base']:FetchComponent('Targeting')
-    Interaction = exports['sandbox-base']:FetchComponent('Interaction')
 end
 
 AddEventHandler('Core:Shared:Ready', function()
@@ -21,14 +20,13 @@ AddEventHandler('Core:Shared:Ready', function()
         'Progress',
         'Vehicles',
         'Targeting',
-        'Interaction',
     }, function(error)
         if #error > 0 then return; end
         RetrieveComponents()
 
-        Interaction:RegisterMenu("veh_wheels", false, "tire", function()
+        exports['sandbox-hud']:InteractionRegisterMenu("veh_wheels", false, "tire", function()
             OpenWheelMenu()
-            Interaction:Hide()
+            exports['sandbox-hud']:InteractionHide()
         end, function()
             local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
 

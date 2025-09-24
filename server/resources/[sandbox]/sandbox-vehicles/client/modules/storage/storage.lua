@@ -40,9 +40,9 @@ AddEventHandler('Vehicles:Client:StartUp', function()
         end
     end
 
-    Interaction:RegisterMenu("veh_storage", false, "garage-open", function()
+    exports['sandbox-hud']:InteractionRegisterMenu("veh_storage", false, "garage-open", function()
         OpenVehicleStorage()
-        Interaction:Hide()
+        exports['sandbox-hud']:InteractionHide()
     end, function()
         local pedCoords = GetEntityCoords(GLOBAL_PED)
         local inVehicleStorageZone, vehicleStorageZoneId = GetVehicleStorageAtCoords(pedCoords)

@@ -38,7 +38,7 @@ exports("Open", function()
 	_limited = false
 	_payphone = false
 	Inventory.Close:All()
-	Interaction:Hide()
+	exports['sandbox-hud']:InteractionHide()
 	LocalPlayer.state.phoneOpen = true
 	DisplayRadar(true)
 	exports['sandbox-hud']:ShiftLocation(true)
@@ -51,7 +51,7 @@ exports("OpenLimited", function()
 	_limited = true
 	_payphone = false
 	Inventory.Close:All()
-	Interaction:Hide()
+	exports['sandbox-hud']:InteractionHide()
 	LocalPlayer.state.phoneOpen = true
 	PhonePlayIn()
 	SendNUIMessage({ type = "PHONE_VISIBLE_LIMITED" })
@@ -62,7 +62,7 @@ exports("OpenPayphone", function()
 	_limited = true
 	_payphone = true
 	Inventory.Close:All()
-	Interaction:Hide()
+	exports['sandbox-hud']:InteractionHide()
 	LocalPlayer.state.phoneOpen = true
 	PhonePlayIn()
 	SendNUIMessage({ type = "PHONE_VISIBLE_LIMITED" })
@@ -86,7 +86,7 @@ exports("Close", function(forced, doJankyStuff)
 		DisplayRadar(LocalPlayer.state.Character and hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
 	end
 	exports['sandbox-hud']:ShiftLocation(LocalPlayer.state.Character and
-	hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
+		hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
 	if not exports['sandbox-phone']:CallStatus() or _limited then
 		PhonePlayOut()
 	end

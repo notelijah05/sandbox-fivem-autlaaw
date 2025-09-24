@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
@@ -24,7 +23,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Progress",
 		"Minigame",
 		"Properties",
-		"Interaction",
 		"Inventory",
 		"EmergencyAlerts",
 		"Doors",

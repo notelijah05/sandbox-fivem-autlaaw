@@ -43,7 +43,7 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 
 	exports['sandbox-hud']:ActionHide()
 	exports['sandbox-hud']:ListMenuClose()
-	Interaction:Hide()
+	exports['sandbox-hud']:InteractionHide()
 	exports["sandbox-hud"]:NotifClear()
 	exports['sandbox-hud']:ConfirmClose()
 	exports['sandbox-hud']:InputClose()

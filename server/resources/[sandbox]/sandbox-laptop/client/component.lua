@@ -4,7 +4,7 @@ LAPTOP = {
 	Open = function(self)
 		Inventory.Close:All()
 		Animations.Emotes:ForceCancel()
-		Interaction:Hide()
+		exports['sandbox-hud']:InteractionHide()
 		LocalPlayer.state.laptopOpen = true
 		DisplayRadar(true)
 		exports['sandbox-hud']:ShiftLocation(true)
@@ -80,7 +80,7 @@ LAPTOP = {
 		end
 
 		exports['sandbox-hud']:ShiftLocation(LocalPlayer.state.Character and
-		hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
+			hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
 		SetNuiFocus(false, false)
 		--TriggerEvent("UI:Client:Close", "laptop")
 	end,

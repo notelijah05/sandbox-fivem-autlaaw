@@ -10,7 +10,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -26,7 +25,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"PedInteraction",
 		"Inventory",
-		"Interaction",
 		"Progress",
 		"Reputation",
 		"Jail",
@@ -221,7 +219,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			_doingMugshot = true
 
 			exports['sandbox-phone']:Close()
-			Interaction:Hide()
+			exports['sandbox-hud']:InteractionHide()
 			Inventory.Close:All()
 
 			DoScreenFadeOut(1000)

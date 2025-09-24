@@ -86,7 +86,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         maxZ = 28.55025100708
 	})
 
-    Interaction:RegisterMenu("vu_stripper_pole", "Vanilla Unicorn Dancers", "party-horn", function()
+    exports['sandbox-hud']:InteractionRegisterMenu("vu_stripper_pole", "Vanilla Unicorn Dancers", "party-horn", function()
         if Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn' and Jobs.Permissions:HasPermissionInJob('unicorn', 'STRIP_POLE') then
             local subMenu = {}
 
@@ -96,12 +96,12 @@ AddEventHandler('Businesses:Client:Startup', function()
                     label = 'Dance '.. k,
                     action = function()
                         TriggerEvent('Businesses:Client:PoleDance', k)
-                        Interaction:Hide()
+                        exports['sandbox-hud']:InteractionHide()
                     end,
                 })
             end
 
-            Interaction:ShowMenu(subMenu)
+            exports['sandbox-hud']:InteractionShowMenu(subMenu)
         else
             exports["sandbox-hud"]:NotifError('Invalid Permissions')
         end
@@ -109,7 +109,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         return Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn'
     end)
 
-    Interaction:RegisterMenu("vu_makeitrain", 'Make It Rain', "money-bill-1-wave", function()
+    exports['sandbox-hud']:InteractionRegisterMenu("vu_makeitrain", 'Make It Rain', "money-bill-1-wave", function()
         if not _makingItRain and Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_makeitrain') then
             local makeItRain = {
                 {
@@ -142,13 +142,13 @@ AddEventHandler('Businesses:Client:Startup', function()
                                 MakeItRainBitch(nearestStripper, v.type, v.time)
                             end
 
-                            Interaction:Hide()
+                            exports['sandbox-hud']:InteractionHide()
                         end,
                     })
                 end
             end
 
-            Interaction:ShowMenu(subMenu)
+            exports['sandbox-hud']:InteractionShowMenu(subMenu)
         end
     end, function()
         return Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_makeitrain') and GetNearbyFuckingStripper()

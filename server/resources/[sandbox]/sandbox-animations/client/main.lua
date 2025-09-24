@@ -16,7 +16,6 @@ function RetrieveComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
@@ -25,7 +24,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Damage",
 		"Animations",
 		"Targeting",
-		"Interaction",
 		"Inventory",
 	}, function(error)
 		if #error > 0 then
@@ -36,13 +34,13 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		RegisterChairTargets()
 
-		Interaction:RegisterMenu("expressions", "Expressions", "face-grin-squint-tears", function()
-			Interaction:Hide()
+		exports['sandbox-hud']:InteractionRegisterMenu("expressions", "Expressions", "face-grin-squint-tears", function()
+			exports['sandbox-hud']:InteractionHide()
 			Animations:OpenExpressionsMenu()
 		end)
 
-		Interaction:RegisterMenu("walks", "Walk Styles", "person-walking", function()
-			Interaction:Hide()
+		exports['sandbox-hud']:InteractionRegisterMenu("walks", "Walk Styles", "person-walking", function()
+			exports['sandbox-hud']:InteractionHide()
 			Animations:OpenWalksMenu()
 		end)
 

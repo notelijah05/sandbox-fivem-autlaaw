@@ -16,7 +16,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -41,7 +40,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vehicles",
 		"Minigame",
 		"Targeting",
-		"Interaction",
 		"Polyzone",
 		"Jobs",
 		"PedInteraction",
@@ -66,12 +64,12 @@ AddEventHandler("Core:Shared:Ready", function()
 				end
 			end)
 
-		Interaction:RegisterMenu("veh_quick_actions", false, "car", function()
+		exports['sandbox-hud']:InteractionRegisterMenu("veh_quick_actions", false, "car", function()
 			if VEHICLE_INSIDE then
 				local vehEnt = Entity(VEHICLE_INSIDE)
 				local subMenu = {}
 				local seatAmount = GetVehicleModelNumberOfSeats(GetEntityModel(VEHICLE_INSIDE))
-				Interaction:ShowMenu({
+				exports['sandbox-hud']:InteractionShowMenu({
 					{
 						icon = "key",
 						label = "Give Keys",
@@ -95,7 +93,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								end
 							end
 
-							Interaction:Hide()
+							exports['sandbox-hud']:InteractionHide()
 						end,
 					},
 					{
@@ -120,14 +118,14 @@ AddEventHandler("Core:Shared:Ready", function()
 										label = actualFuckingSeatNumber == -1 and "Driver's Seat" or "Seat #" .. i,
 										action = function()
 											TriggerEvent("Vehicles:Client:Actions:SwitchSeat", actualFuckingSeatNumber)
-											Interaction:Hide()
+											exports['sandbox-hud']:InteractionHide()
 										end,
 									})
 								end
 							end
 
 							if #fuckingSeats > 0 then
-								Interaction:ShowMenu(fuckingSeats)
+								exports['sandbox-hud']:InteractionShowMenu(fuckingSeats)
 							else
 								exports["sandbox-hud"]:NotifError("No Seats Free")
 							end
@@ -158,7 +156,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								end
 							end
 
-							Interaction:ShowMenu(fuckingDoors)
+							exports['sandbox-hud']:InteractionShowMenu(fuckingDoors)
 						end,
 					},
 					{
@@ -240,7 +238,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								end,
 							})
 
-							Interaction:ShowMenu(fuckingDoors)
+							exports['sandbox-hud']:InteractionShowMenu(fuckingDoors)
 						end,
 					},
 					{
@@ -256,7 +254,7 @@ AddEventHandler("Core:Shared:Ready", function()
 									)
 								end
 
-								Interaction:Hide()
+								exports['sandbox-hud']:InteractionHide()
 							end
 						end,
 					},
@@ -283,7 +281,7 @@ AddEventHandler("Core:Shared:Ready", function()
 									)
 								end
 
-								Interaction:Hide()
+								exports['sandbox-hud']:InteractionHide()
 							end
 						end,
 					},

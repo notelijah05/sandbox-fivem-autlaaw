@@ -51,7 +51,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		maxZ = 34.32,
 	})
 
-	Interaction:RegisterMenu("bh_stripper_pole", "Bahama Mamas Dancers", "party-horn", function()
+	exports['sandbox-hud']:InteractionRegisterMenu("bh_stripper_pole", "Bahama Mamas Dancers", "party-horn", function()
 		if
 			(
 				Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_1")
@@ -69,12 +69,12 @@ AddEventHandler("Businesses:Client:Startup", function()
 					label = "Dance " .. k,
 					action = function()
 						TriggerEvent("Businesses:Client:PoleDanceBH", k)
-						Interaction:Hide()
+						exports['sandbox-hud']:InteractionHide()
 					end,
 				})
 			end
 
-			Interaction:ShowMenu(subMenu)
+			exports['sandbox-hud']:InteractionShowMenu(subMenu)
 		else
 			exports["sandbox-hud"]:NotifError("Invalid Permissions")
 		end
@@ -86,7 +86,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		) and LocalPlayer.state.onDuty == "bahama"
 	end)
 
-	Interaction:RegisterMenu("bh_makeitrain", "Make It Rain", "money-bill-1-wave", function()
+	exports['sandbox-hud']:InteractionRegisterMenu("bh_makeitrain", "Make It Rain", "money-bill-1-wave", function()
 		if not _makingItRain and Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_makeitrain") then
 			local makeItRain = {
 				{
@@ -119,13 +119,13 @@ AddEventHandler("Businesses:Client:Startup", function()
 								MakeItRainBitchBahama(nearestStripper, v.type, v.time)
 							end
 
-							Interaction:Hide()
+							exports['sandbox-hud']:InteractionHide()
 						end,
 					})
 				end
 			end
 
-			Interaction:ShowMenu(subMenu)
+			exports['sandbox-hud']:InteractionShowMenu(subMenu)
 		end
 	end, function()
 		return Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_makeitrain")

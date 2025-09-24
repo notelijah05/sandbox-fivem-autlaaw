@@ -37,8 +37,8 @@ function RegisterChairTargets()
 		end
 	end
 
-	Interaction:RegisterMenu("chairs-stand-up", "Stand Up", "chair", function(data)
-		Interaction:Hide()
+	exports['sandbox-hud']:InteractionRegisterMenu("chairs-stand-up", "Stand Up", "chair", function(data)
+		exports['sandbox-hud']:InteractionHide()
 		StandTheFuckUp()
 	end, function()
 		return isSitting

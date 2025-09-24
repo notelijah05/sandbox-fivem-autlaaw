@@ -8,14 +8,12 @@ local _interacting = false
 AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
 function WeaponsComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weapons", {
 		"Progress",
-		"Interaction",
 		"Inventory",
 	}, function(error)
 		if #error > 0 then
@@ -23,7 +21,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		WeaponsComponents()
 
-		Interaction:RegisterMenu("weapon-attachments", false, "gun", function(data)
+		exports['sandbox-hud']:InteractionRegisterMenu("weapon-attachments", false, "gun", function(data)
 			local menu = {}
 
 			if _equipped ~= nil and _equipped.MetaData and _equipped.MetaData.WeaponComponents ~= nil then
@@ -33,14 +31,14 @@ AddEventHandler("Core:Shared:Ready", function()
 						icon = "xmark",
 						label = string.format("Remove %s", itemData.label),
 						action = function()
-							Interaction:Hide()
+							exports['sandbox-hud']:InteractionHide()
 							TriggerEvent("Weapons:Client:RemoveAttachment", k)
 						end,
 					})
 				end
 			end
 
-			Interaction:ShowMenu(menu)
+			exports['sandbox-hud']:InteractionShowMenu(menu)
 		end, function()
 			return _equipped ~= nil and _equipped.MetaData and _equipped.MetaData.WeaponComponents ~= nil
 		end)

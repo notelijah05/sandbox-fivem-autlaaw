@@ -1,11 +1,11 @@
 AddEventHandler("Businesses:Client:Startup", function()
-    Interaction:RegisterMenu("storage-units", "Storage Unit", "warehouse", function(data)
-        Interaction:ShowMenu({
+    exports['sandbox-hud']:InteractionRegisterMenu("storage-units", "Storage Unit", "warehouse", function(data)
+        exports['sandbox-hud']:InteractionShowMenu({
             {
                 icon = "warehouse",
                 label = "Access Storage",
                 action = function()
-                    Interaction:Hide()
+                    exports['sandbox-hud']:InteractionHide()
                     StorageUnits:Access()
                 end,
                 shouldShow = function()
@@ -16,7 +16,7 @@ AddEventHandler("Businesses:Client:Startup", function()
                 icon = "bomb",
                 label = "Raid Storage",
                 action = function()
-                    Interaction:Hide()
+                    exports['sandbox-hud']:InteractionHide()
                     local nearUnit = StorageUnits:GetNearUnit()
                     if nearUnit and nearUnit?.unitId then
                         local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
@@ -40,7 +40,7 @@ AddEventHandler("Businesses:Client:Startup", function()
                 icon = "gear",
                 label = "Manage",
                 action = function()
-                    Interaction:Hide()
+                    exports['sandbox-hud']:InteractionHide()
                     StorageUnits:Manage()
                 end,
                 shouldShow = function()
@@ -57,7 +57,7 @@ AddEventHandler("Businesses:Client:Startup", function()
                 icon = "gears",
                 label = "Manage All",
                 action = function()
-                    Interaction:Hide()
+                    exports['sandbox-hud']:InteractionHide()
                     local nearUnit = StorageUnits:GetNearUnit()
                     if nearUnit and nearUnit?.unitId then
                         local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]

@@ -21,7 +21,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 		end
 	end)
 
-	Interaction:RegisterMenu("veh_autodrive_danger", false, "skull-crossbones", function()
+	exports['sandbox-hud']:InteractionRegisterMenu("veh_autodrive_danger", false, "skull-crossbones", function()
 		StopAutoPilot()
 		Wait(1000)
 		StartAutoPilot(true)

@@ -5,7 +5,6 @@ function EMSComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
@@ -15,7 +14,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Damage",
 		"Inventory",
 		"Progress",
-		"Interaction",
 		"Animations",
 	}, function(error)
 		if #error > 0 then
@@ -23,8 +21,8 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		EMSComponents()
 
-		Interaction:RegisterMenu("call-911", "Call For Help", "siren-on", function(data)
-			Interaction:Hide()
+		exports['sandbox-hud']:InteractionRegisterMenu("call-911", "Call For Help", "siren-on", function(data)
+			exports['sandbox-hud']:InteractionHide()
 			TriggerServerEvent("EMS:Server:RequestHelp")
 			_calledForHelp = GetCloudTimeAsInt() + (60 * 5)
 		end, function()
@@ -35,13 +33,13 @@ AddEventHandler("Core:Shared:Ready", function()
 				and (not _calledForHelp or GetCloudTimeAsInt() > _calledForHelp)
 		end)
 
-		Interaction:RegisterMenu("ems", false, "siren-on", function(data)
-			Interaction:ShowMenu({
+		exports['sandbox-hud']:InteractionRegisterMenu("ems", false, "siren-on", function(data)
+			exports['sandbox-hud']:InteractionShowMenu({
 				{
 					icon = "siren-on",
 					label = "13-A",
 					action = function()
-						Interaction:Hide()
+						exports['sandbox-hud']:InteractionHide()
 						TriggerServerEvent("EMS:Server:Panic", true)
 					end,
 					shouldShow = function()
@@ -52,7 +50,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					icon = "siren",
 					label = "13-B",
 					action = function()
-						Interaction:Hide()
+						exports['sandbox-hud']:InteractionHide()
 						TriggerServerEvent("EMS:Server:Panic", false)
 					end,
 					shouldShow = function()
@@ -64,13 +62,13 @@ AddEventHandler("Core:Shared:Ready", function()
 			return LocalPlayer.state.onDuty == "ems" and LocalPlayer.state.onDuty and LocalPlayer.state.isDead
 		end)
 
-		Interaction:RegisterMenu("ems-utils", "EMS Utilities", "tablet-rugged", function(data)
-			Interaction:ShowMenu({
+		exports['sandbox-hud']:InteractionRegisterMenu("ems-utils", "EMS Utilities", "tablet-rugged", function(data)
+			exports['sandbox-hud']:InteractionShowMenu({
 				{
 					icon = "tablet-screen-button",
 					label = "MDT",
 					action = function()
-						Interaction:Hide()
+						exports['sandbox-hud']:InteractionHide()
 						TriggerEvent("MDT:Client:Toggle")
 					end,
 					shouldShow = function()
@@ -81,7 +79,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					icon = "video",
 					label = "Toggle Body Cam",
 					action = function()
-						Interaction:Hide()
+						exports['sandbox-hud']:InteractionHide()
 						TriggerEvent("MDT:Client:ToggleBodyCam")
 					end,
 					shouldShow = function()

@@ -42,8 +42,8 @@ function SetupTree(treeData, hasLooted)
 end
 
 AddEventHandler("Xmas:Client:RegisterStartups", function()
-	Interaction:RegisterMenu("pickup-snowball", "Pickup Snowball", "ball-pile", function(data)
-		Interaction:Hide()
+	exports['sandbox-hud']:InteractionRegisterMenu("pickup-snowball", "Pickup Snowball", "ball-pile", function(data)
+		exports['sandbox-hud']:InteractionHide()
 		SNOWBALLS.Pickup()
 	end, function()
 		return SNOWBALLS.CanPickup()

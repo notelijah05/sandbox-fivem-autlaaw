@@ -1,7 +1,7 @@
 AddEventHandler('Vehicles:Client:StartUp', function()
-    Interaction:RegisterMenu("pd_ems_boats", "Access Boat", "ship", function()
+    exports['sandbox-hud']:InteractionRegisterMenu("pd_ems_boats", "Access Boat", "ship", function()
         StartRequestEmergencyBoat()
-        Interaction:Hide()
+        exports['sandbox-hud']:InteractionHide()
     end, function()
         if LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "ems" then
             local pedCoords = GetEntityCoords(LocalPlayer.state.ped)

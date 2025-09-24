@@ -164,9 +164,9 @@ function RegisterOxygenCallbacks()
 end
 
 function RegisterOxygenMenus()
-	Interaction:RegisterMenu("scuba_gear", "Take Off Scuba Gear", "mask-snorkel", function()
+	exports['sandbox-hud']:InteractionRegisterMenu("scuba_gear", "Take Off Scuba Gear", "mask-snorkel", function()
 		RemoveScubaGear()
-		Interaction:Hide()
+		exports['sandbox-hud']:InteractionHide()
 	end, function()
 		return oxygenDepletionRate < 1
 	end)

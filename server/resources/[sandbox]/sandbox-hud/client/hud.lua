@@ -59,7 +59,6 @@ AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -70,7 +69,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
 		"Progress",
 		"Minigame",
-		"Interaction",
 		"Inventory",
 		"Jail",
 		"Animations",
@@ -100,7 +98,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports["sandbox-keybinds"]:Add("show_interaction", "F1", "keyboard", "Hud - Show Interaction Menu", function()
 			if not IsPauseMenuActive() then
-				Interaction:Show()
+				exports['sandbox-hud']:InteractionShow()
 			end
 		end)
 

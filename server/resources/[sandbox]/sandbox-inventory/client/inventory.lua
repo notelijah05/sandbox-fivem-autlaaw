@@ -83,7 +83,6 @@ function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -98,7 +97,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Animations",
 		"Progress",
 		"Crafting",
-		"Interaction",
 		"Targeting",
 		"PedInteraction",
 		"Polyzone",
@@ -332,7 +330,7 @@ INVENTORY = {
 		Player = function(self, doSecondary)
 			if Inventory:IsEnabled() then
 				exports['sandbox-phone']:Close()
-				Interaction:Hide()
+				exports['sandbox-hud']:InteractionHide()
 				if not LocalPlayer.state.inventoryOpen then
 					LocalPlayer.state.inventoryOpen = true
 					TriggerServerEvent("Inventory:Server:Request", doSecondary and SecondInventory or false)

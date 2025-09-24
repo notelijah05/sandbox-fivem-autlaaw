@@ -2,7 +2,6 @@ local inBank = true
 
 AddEventHandler("Finance:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -19,7 +18,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Finance", {
-		"Interaction",
 		"Progress",
 		"Targeting",
 		"PedInteraction",
@@ -146,9 +144,9 @@ AddEventHandler("Core:Shared:Ready", function()
 			true
 		)
 
-		Interaction:RegisterMenu("cash", "Show Cash", "dollar-sign", function()
+		exports['sandbox-hud']:InteractionRegisterMenu("cash", "Show Cash", "dollar-sign", function()
 			TriggerServerEvent("Wallet:ShowCash")
-			Interaction:Hide()
+			exports['sandbox-hud']:InteractionHide()
 		end)
 	end)
 end)

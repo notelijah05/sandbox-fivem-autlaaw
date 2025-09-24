@@ -20,7 +20,6 @@ function RetrieveComponents()
 	Spawn = exports["sandbox-base"]:FetchComponent("Spawn")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -31,7 +30,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Spawn",
 		"Polyzone",
 		"Ped",
-		"Interaction",
 		"Wardrobe",
 		"Apartment",
 		"Inventory",
@@ -68,8 +66,8 @@ RegisterNetEvent("Ped:Client:RemoveKevlar", function()
 end)
 
 function RegisterInteraction()
-	Interaction:RegisterMenu("ped_interact", false, "face-tired", function()
-		Interaction:ShowMenu({
+	exports['sandbox-hud']:InteractionRegisterMenu("ped_interact", false, "face-tired", function()
+		exports['sandbox-hud']:InteractionShowMenu({
 			{
 				icon = "masks-theater",
 				label = "Remove Mask",
@@ -78,7 +76,7 @@ function RegisterInteraction()
 				end,
 				action = function()
 					exports["sandbox-base"]:ServerCallback("Ped:RemoveMask")
-					Interaction:Hide()
+					exports['sandbox-hud']:InteractionHide()
 				end,
 			},
 			{
@@ -89,7 +87,7 @@ function RegisterInteraction()
 				end,
 				action = function()
 					exports["sandbox-base"]:ServerCallback("Ped:RemoveHat")
-					Interaction:Hide()
+					exports['sandbox-hud']:InteractionHide()
 				end,
 			},
 			{
@@ -105,7 +103,7 @@ function RegisterInteraction()
 						Wait(500)
 						ClearPedProp(LocalPlayer.state.ped, 1)
 					end)
-					Interaction:Hide()
+					exports['sandbox-hud']:InteractionHide()
 				end,
 			},
 			{
@@ -126,7 +124,7 @@ function RegisterInteraction()
 							LocalPed.customization.props.glass.textureId
 						)
 					end)
-					Interaction:Hide()
+					exports['sandbox-hud']:InteractionHide()
 				end,
 			},
 			{
@@ -171,8 +169,8 @@ function RegisterInteraction()
 							)
 						end
 					end)
-					Interaction:Hide()
-					-- Interaction:ShowMenu({
+					exports['sandbox-hud']:InteractionHide()
+					-- exports['sandbox-hud']:InteractionShowMenu({
 					-- 	{
 					-- 		icon = "face-sunglasses",
 					-- 		label = "Put On Hat & Glasses",
@@ -204,7 +202,7 @@ function RegisterInteraction()
 					-- 					LocalPed.customization.props.glass.textureId
 					-- 				)
 					-- 			end)
-					-- 			Interaction:Hide()
+					-- 			exports['sandbox-hud']:InteractionHide()
 					-- 		end,
 					-- 	},
 					-- 	{
@@ -227,7 +225,7 @@ function RegisterInteraction()
 					-- 					LocalPed.customization.props.hat.textureId
 					-- 				)
 					-- 			end)
-					-- 			Interaction:Hide()
+					-- 			exports['sandbox-hud']:InteractionHide()
 					-- 		end,
 					-- 	},
 					-- 	{
@@ -251,7 +249,7 @@ function RegisterInteraction()
 					-- 					LocalPed.customization.props.glass.textureId
 					-- 				)
 					-- 			end)
-					-- 			Interaction:Hide()
+					-- 			exports['sandbox-hud']:InteractionHide()
 					-- 		end,
 					-- 	},
 					-- })

@@ -11,8 +11,8 @@ end)
 local _timeout = false
 
 AddEventHandler('Vehicles:Client:StartUp', function()
-    Interaction:RegisterMenu("vehicle-megaphone", false, "megaphone", function(data)
-        Interaction:Hide()
+    exports['sandbox-hud']:InteractionRegisterMenu("vehicle-megaphone", false, "megaphone", function(data)
+        exports['sandbox-hud']:InteractionHide()
         _inPursuitVehicleMegaphone = not _inPursuitVehicleMegaphone
         Entity(_inPursuitVehicle).state:set('VehicleMegaphone', _inPursuitVehicleMegaphone, true)
         exports["sandbox-base"]:ServerCallback("Vehicles:Server:VehicleMegaphone", {}, function(data, cb)
@@ -21,7 +21,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
         return _inPursuitVehicle
     end)
 
-    Interaction:RegisterMenu("pursuit-modes", false, "car-on", function(data)
+    exports['sandbox-hud']:InteractionRegisterMenu("pursuit-modes", false, "car-on", function(data)
         if _inPursuitVehicleSettings then
             local menu = {}
             for k, v in pairs(_inPursuitVehicleSettings) do
@@ -29,7 +29,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                     icon = "gauge-high",
                     label = string.format("%s Class", v.name),
                     action = function()
-                        Interaction:Hide()
+                        exports['sandbox-hud']:InteractionHide()
 
                         _inPursuitVehicleMode = k
                         exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Business_Restart",
@@ -45,7 +45,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                 })
             end
 
-            Interaction:ShowMenu(menu)
+            exports['sandbox-hud']:InteractionShowMenu(menu)
         end
     end, function()
         return _inPursuitVehicleSettings

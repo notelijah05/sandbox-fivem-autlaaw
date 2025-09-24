@@ -24,7 +24,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -40,7 +39,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Characters",
 		"Wardrobe",
-		"Interaction",
 		"Inventory",
 		"Properties",
 		"Jobs",
@@ -57,8 +55,8 @@ AddEventHandler("Core:Shared:Ready", function()
 		CreatePropertyDoor(false)
 		CreatePropertyDoor(true)
 
-		Interaction:RegisterMenu("house-exit", "Exit", "door-open", function(data)
-			Interaction:Hide()
+		exports['sandbox-hud']:InteractionRegisterMenu("house-exit", "Exit", "door-open", function(data)
+			exports['sandbox-hud']:InteractionHide()
 			ExitProperty(data, data == 'back')
 		end, function()
 			if _insideProperty and _insideInterior then
@@ -81,8 +79,8 @@ AddEventHandler("Core:Shared:Ready", function()
 			return false
 		end)
 
-		Interaction:RegisterMenu("house-lock", "Lock", "lock", function(data)
-			Interaction:Hide()
+		exports['sandbox-hud']:InteractionRegisterMenu("house-lock", "Lock", "lock", function(data)
+			exports['sandbox-hud']:InteractionHide()
 			exports["sandbox-base"]:ServerCallback("Properties:ChangeLock", {
 				id = data,
 				state = true,
@@ -115,8 +113,8 @@ AddEventHandler("Core:Shared:Ready", function()
 			return false
 		end)
 
-		Interaction:RegisterMenu("house-unlock", "Unlock", "unlock", function(data)
-			Interaction:Hide()
+		exports['sandbox-hud']:InteractionRegisterMenu("house-unlock", "Unlock", "unlock", function(data)
+			exports['sandbox-hud']:InteractionHide()
 			exports["sandbox-base"]:ServerCallback("Properties:ChangeLock", {
 				id = data,
 				state = false,
@@ -195,7 +193,7 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 function CreatePropertyDoor(isBackdoor)
-	Interaction:RegisterMenu(isBackdoor and "property-backdoor" or "property",
+	exports['sandbox-hud']:InteractionRegisterMenu(isBackdoor and "property-backdoor" or "property",
 		isBackdoor and "Property Backdoor" or "Property", isBackdoor and "house-window" or "house", function(data)
 			local pMenu = {
 				{
@@ -231,7 +229,7 @@ function CreatePropertyDoor(isBackdoor)
 							else
 								exports["sandbox-hud"]:NotifError("Unable to Unlock Property")
 							end
-							Interaction:Hide()
+							exports['sandbox-hud']:InteractionHide()
 						end)
 					end,
 					shouldShow = function()
@@ -266,7 +264,7 @@ function CreatePropertyDoor(isBackdoor)
 							else
 								exports["sandbox-hud"]:NotifError("Unable to Unlock Property")
 							end
-							Interaction:Hide()
+							exports['sandbox-hud']:InteractionHide()
 						end)
 					end,
 					shouldShow = function()
@@ -335,7 +333,7 @@ function CreatePropertyDoor(isBackdoor)
 								else
 									exports["sandbox-hud"]:NotifError("Unable To Send Notification")
 								end
-								Interaction:Hide()
+								exports['sandbox-hud']:InteractionHide()
 							end)
 					end,
 					shouldShow = function()
@@ -348,7 +346,7 @@ function CreatePropertyDoor(isBackdoor)
 				})
 			end
 
-			Interaction:ShowMenu(pMenu)
+			exports['sandbox-hud']:InteractionShowMenu(pMenu)
 		end, function()
 			if not _propertiesLoaded then
 				return false
