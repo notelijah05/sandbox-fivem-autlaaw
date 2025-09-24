@@ -4,7 +4,6 @@ AddEventHandler("Crypto:Shared:DependencyUpdate", RetrieveCryptoComponents)
 function RetrieveCryptoComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
-	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -15,7 +14,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Crypto", {
 		"Generator",
 		"Wallet",
-		"Banking",
 		"Billing",
 		"Loans",
 		"Crypto",
@@ -94,11 +92,11 @@ _CRYPTO = {
 			if Crypto.Exchange:IsListed(coin) then
 				local char = exports['sandbox-characters']:FetchBySID(target)
 				if char ~= nil then
-					local acc = Banking.Accounts:GetPersonal(char:GetData("SID"))
+					local acc = exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID"))
 					local coinData = Crypto.Coin:Get(coin)
 					if acc.Balance >= (coinData.Price * amount) then
 						if
-							Banking.Balance:Withdraw(acc.Account, (coinData.Price * amount), {
+							exports['sandbox-finance']:BalanceWithdraw(acc.Account, (coinData.Price * amount), {
 								type = "withdraw",
 								title = "Crypto Purchase",
 								description = string.format("Bought %s $%s", amount, coin),
@@ -144,12 +142,12 @@ _CRYPTO = {
 			if Crypto.Exchange:IsListed(coin) then
 				local char = exports['sandbox-characters']:FetchBySID(target)
 				if char ~= nil then
-					local acc = Banking.Accounts:GetPersonal(char:GetData("SID"))
+					local acc = exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID"))
 					local coinData = Crypto.Coin:Get(coin)
 
 					if coinData.Sellable then
 						if Crypto.Exchange:Remove(coin, char:GetData("CryptoWallet"), amount, true) then
-							return Banking.Balance:Deposit(acc.Account, (coinData.Sellable * amount), {
+							return exports['sandbox-finance']:BalanceDeposit(acc.Account, (coinData.Sellable * amount), {
 								type = "deposit",
 								title = "Crypto Sale",
 								description = string.format("Sold %s $%s", amount, coin),

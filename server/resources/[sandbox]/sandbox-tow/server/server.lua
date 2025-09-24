@@ -6,14 +6,12 @@ _activeTowers = {}
 AddEventHandler("Tow:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Tow = exports["sandbox-base"]:FetchComponent("Tow")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Tow", {
 		"Jobs",
-		"Banking",
 		"Tow",
 	}, function(error)
 		if #error > 0 then
@@ -225,12 +223,13 @@ TOW = {
 	PayoutPickup = function(self, source)
 		if _activeTowers[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account, 300, {
-				type = "paycheck",
-				title = "Tow Fee",
-				description = "Your Fee For A Vehicle Pickup",
-				data = 300,
-			})
+			exports['sandbox-finance']:BalanceDeposit(
+				exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID")).Account, 300, {
+					type = "paycheck",
+					title = "Tow Fee",
+					description = "Your Fee For A Vehicle Pickup",
+					data = 300,
+				})
 			exports['sandbox-phone']:NotificationRemoveById(source, "TOW_OBJ")
 			exports['sandbox-phone']:NotificationAdd(
 				source,

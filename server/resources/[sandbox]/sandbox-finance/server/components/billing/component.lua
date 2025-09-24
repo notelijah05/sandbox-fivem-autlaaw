@@ -39,7 +39,7 @@ _BILLING = {
         local billingChar = exports['sandbox-characters']:FetchCharacterSource(billingSource)
         if account and amount and amount > 0 and (billingChar and targetChar) and (targetChar:GetData('SID') ~= billingChar:GetData('SID')) then
             local billerStateId = billingChar:GetData('SID')
-            local account = Banking.Accounts:Get(account)
+            local account = exports['sandbox-finance']:AccountsGet(account)
             if account and account.Type == 'organization' and HasBankAccountPermission(billingSource, account, 'BILL', billerStateId) then
                 local targetStateId = targetChar:GetData('SID')
                 local newBillingId = GetBillingId()
@@ -60,7 +60,7 @@ _BILLING = {
 
                 PENDING_BILLS_CB[newBillingId] = function(wasPayed, withAccount)
                     if wasPayed then
-                        local success = Banking.Balance:Deposit(billData.Account, billData.Amount, {
+                        local success = exports['sandbox-finance']:BalanceDeposit(billData.Account, billData.Amount, {
                             type = 'bill',
                             transactionAccount = withAccount,
                             title = 'Bill Payment',
@@ -113,12 +113,12 @@ _BILLING = {
                 if v.Id == billId then
                     local account = false
                     if withAccount then
-                        account = Banking.Accounts:Get(withAccount)
+                        account = exports['sandbox-finance']:AccountsGet(withAccount)
                     else
-                        account = Banking.Accounts:GetPersonal(stateId)
+                        account = exports['sandbox-finance']:AccountsGetPersonal(stateId)
                     end
                     if PENDING_BILLS_CB[billId] and account and (account.Balance >= v.Amount) and HasBankAccountPermission(source, account, 'WITHDRAW', stateId) then
-                        local success = Banking.Balance:Withdraw(account.Account, v.Amount, {
+                        local success = exports['sandbox-finance']:BalanceWithdraw(account.Account, v.Amount, {
                             type = 'bill',
                             transactionAccount = v.Account,
                             title = 'Payment for a Bill',
@@ -155,14 +155,14 @@ _BILLING = {
                 local targetCharSID = targetChar:GetData('SID')
                 local finingCharSID = finingChar:GetData('SID')
 
-                local targetCharAccount = Banking.Accounts:GetPersonal(targetCharSID)
-                local finingCharAccount = Banking.Accounts:GetPersonal(finingCharSID)
+                local targetCharAccount = exports['sandbox-finance']:AccountsGetPersonal(targetCharSID)
+                local finingCharAccount = exports['sandbox-finance']:AccountsGetPersonal(finingCharSID)
                 local policeJob = Jobs.Permissions:HasJob(finingSource, 'police')
 
-                local policeAccount = Banking.Accounts:GetOrganization(string.format('police-%s',
+                local policeAccount = exports['sandbox-finance']:AccountsGetOrganization(string.format('police-%s',
                     policeJob?.Workplace?.Id or ''))
                 if not policeAccount then
-                    policeAccount = Banking.Accounts:GetOrganization('police')
+                    policeAccount = exports['sandbox-finance']:AccountsGetOrganization('police')
                 end
 
                 if targetCharAccount and finingCharAccount then
@@ -174,7 +174,7 @@ _BILLING = {
                     local policeCutAmount = math.floor(amount * policeCut)
                     local stateCutAmount = math.floor(amount * stateCut)
 
-                    local success = Banking.Balance:Withdraw(targetCharAccount.Account, amount, {
+                    local success = exports['sandbox-finance']:BalanceWithdraw(targetCharAccount.Account, amount, {
                         type = 'fine',
                         title = 'Fine Payment',
                         description = 'Fine From the State of San Andreas',
@@ -184,7 +184,7 @@ _BILLING = {
                     })
 
                     if success then
-                        Banking.Balance:Deposit(finingCharAccount.Account, finerCutAmount, {
+                        exports['sandbox-finance']:BalanceDeposit(finingCharAccount.Account, finerCutAmount, {
                             type = 'fine_profit',
                             title = 'Fine Profit',
                             description = string.format('Your Earned %% of Fine Profit', targetCharSID),
@@ -194,7 +194,7 @@ _BILLING = {
                         })
 
                         if policeAccount then
-                            Banking.Balance:Deposit(policeAccount.Account, policeCutAmount, {
+                            exports['sandbox-finance']:BalanceDeposit(policeAccount.Account, policeCutAmount, {
                                 type = 'fine_profit',
                                 title = 'Fine Profit',
                                 description = string.format('Fine Profit (Fine to State ID: %s By State ID: %s)',
@@ -206,7 +206,7 @@ _BILLING = {
                             })
                         end
 
-                        Banking.Balance:Deposit(100000, stateCutAmount, {
+                        exports['sandbox-finance']:BalanceDeposit(100000, stateCutAmount, {
                             type = 'fine_profit',
                             title = 'Fine Profit',
                             description = string.format('Fine Profit (Fine to State ID: %s By State ID: %s)',
@@ -251,10 +251,10 @@ _BILLING = {
             local targetChar = exports['sandbox-characters']:FetchCharacterSource(source)
             if targetChar then
                 local targetCharSID = targetChar:GetData('SID')
-                local targetCharAccount = Banking.Accounts:GetPersonal(targetCharSID)
+                local targetCharAccount = exports['sandbox-finance']:AccountsGetPersonal(targetCharSID)
 
                 if targetCharAccount then
-                    local success = Banking.Balance:Withdraw(targetCharAccount.Account, amount, {
+                    local success = exports['sandbox-finance']:BalanceWithdraw(targetCharAccount.Account, amount, {
                         type = 'bill',
                         title = title,
                         description = description,

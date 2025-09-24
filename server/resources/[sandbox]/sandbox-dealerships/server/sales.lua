@@ -648,9 +648,9 @@ function SendCompletedLoanSaleEmail(charData, dealerData, vehicleInfoData, downP
 end
 
 function SendDealerProfits(dealerData, dealerProfits, playerBankAccount, playerProfits, vehicleInfoData, buyerData)
-    local dealerAccount = Banking.Accounts:GetOrganization(dealerData.id)
+    local dealerAccount = exports['sandbox-finance']:AccountsGetOrganization(dealerData.id)
     if dealerAccount then
-        Banking.Balance:Deposit(dealerAccount.Account, math.floor(dealerProfits), {
+        exports['sandbox-finance']:BalanceDeposit(dealerAccount.Account, math.floor(dealerProfits), {
             type = 'transfer',
             title = 'Vehicle Purchase',
             description = string.format('Vehicle Sale of a %s %s to %s %s (State ID %s)', vehicleInfoData.make,
@@ -660,7 +660,7 @@ function SendDealerProfits(dealerData, dealerProfits, playerBankAccount, playerP
     end
 
     if playerBankAccount then
-        Banking.Balance:Deposit(playerBankAccount, math.floor(playerProfits), {
+        exports['sandbox-finance']:BalanceDeposit(playerBankAccount, math.floor(playerProfits), {
             type = 'transfer',
             title = dealerData.abbreviation .. ' - Commission',
             description = string.format('Vehicle Sale Commission from your %s employment.', dealerData.name),

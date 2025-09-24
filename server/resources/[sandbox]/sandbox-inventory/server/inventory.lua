@@ -163,7 +163,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Drugs = exports["sandbox-base"]:FetchComponent("Drugs")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
@@ -175,7 +174,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Reputation",
 		"Generator",
-		"Banking",
 		"Drugs",
 		"Robbery",
 		"Laptop",
@@ -207,7 +205,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		RegisterCraftingCallbacks()
 		RegisterDonorVanityItemsCallbacks()
 
-		local f = Banking.Accounts:GetOrganization("government")
+		local f = exports['sandbox-finance']:AccountsGetOrganization("government")
 		if f ~= true then
 			_govAccount = f.Account
 		end
@@ -653,7 +651,7 @@ function DoMerge(source, data, cb)
 	if entityFrom.shop then
 		local slotFrom = getShopSlot(source, data.ownerFrom, data.invTypeFrom, data.slotFrom)
 		local cost = math.ceil(((slotFrom and slotFrom.Price or item.price) * tonumber(data.countTo)))
-		local paymentType = (cash >= cost and 'cash' or (Banking.Balance:Has(char:GetData("BankAccount"), cost) and 'bank' or nil))
+		local paymentType = (cash >= cost and 'cash' or (exports['sandbox-finance']:BalanceHas(char:GetData("BankAccount"), cost) and 'bank' or nil))
 		if entityFrom.free or paymentType ~= nil then
 			if -- Check if the item is either not a gun, or if it is that they have a Weapons license
 				(item.type ~= 2
@@ -669,7 +667,7 @@ function DoMerge(source, data, cb)
 					if paymentType == 'cash' then
 						paid = Wallet:Modify(source, -(math.abs(cost)))
 					else
-						paid = Banking.Balance:Charge(char:GetData("BankAccount"), cost, {
+						paid = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"), cost, {
 							type = 'bill',
 							title = 'Store Purchase',
 							description = string.format('Bought x%s %s', data.countTo, item.label),
@@ -722,7 +720,7 @@ function DoMerge(source, data, cb)
 
 			if slotFrom ~= nil then
 				local cost = math.ceil((slotFrom.Price * tonumber(data.countTo)))
-				local paymentType = (cash >= cost and 'cash' or (Banking.Balance:Has(char:GetData("BankAccount"), cost) and 'bank' or nil))
+				local paymentType = (cash >= cost and 'cash' or (exports['sandbox-finance']:BalanceHas(char:GetData("BankAccount"), cost) and 'bank' or nil))
 
 				if cost == 0 or paymentType ~= nil or isMod then
 					local paid = cost == 0 or isMod
@@ -731,7 +729,7 @@ function DoMerge(source, data, cb)
 						if paymentType == 'cash' then
 							paid = Wallet:Modify(source, -(math.abs(cost)))
 						else
-							paid = Banking.Balance:Charge(char:GetData("BankAccount"), cost, {
+							paid = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"), cost, {
 								type = 'bill',
 								title = 'Store Purchase',
 								description = string.format('Bought x%s %s From %s', data.countTo, item.label,
@@ -1223,7 +1221,7 @@ function DoMove(source, data, cb)
 	if entityFrom.shop then
 		local slotFrom = getShopSlot(source, data.ownerFrom, data.invTypeFrom, data.slotFrom)
 		local cost = math.ceil(((slotFrom and slotFrom.Price or item.price) * tonumber(data.countTo)))
-		local paymentType = (cash >= cost and 'cash' or (Banking.Balance:Has(char:GetData("BankAccount"), cost) and 'bank' or nil))
+		local paymentType = (cash >= cost and 'cash' or (exports['sandbox-finance']:BalanceHas(char:GetData("BankAccount"), cost) and 'bank' or nil))
 		if entityFrom.free or paymentType ~= nil then
 			if -- Check if the item is either not a gun, or if it is that they have a Weapons license
 				(item.type ~= 2
@@ -1238,7 +1236,7 @@ function DoMove(source, data, cb)
 					if paymentType == 'cash' then
 						paid = Wallet:Modify(source, -(math.abs(cost)))
 					else
-						paid = Banking.Balance:Charge(char:GetData("BankAccount"), cost, {
+						paid = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"), cost, {
 							type = 'bill',
 							title = 'Store Purchase',
 							description = string.format('Bought x%s %s', data.countTo, item.label),
@@ -1299,14 +1297,14 @@ function DoMove(source, data, cb)
 
 			if slotFrom ~= nil then
 				local cost = math.ceil((slotFrom.Price * tonumber(data.countTo)))
-				local paymentType = (cash >= cost and 'cash' or (Banking.Balance:Has(char:GetData("BankAccount"), cost) and 'bank' or nil))
+				local paymentType = (cash >= cost and 'cash' or (exports['sandbox-finance']:BalanceHas(char:GetData("BankAccount"), cost) and 'bank' or nil))
 				if cost == 0 or paymentType ~= nil or isMod then
 					local paid = cost == 0 or isMod
 					if not paid then
 						if paymentType == 'cash' then
 							paid = Wallet:Modify(source, -(math.abs(cost)))
 						else
-							paid = Banking.Balance:Charge(char:GetData("BankAccount"), cost, {
+							paid = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"), cost, {
 								type = 'bill',
 								title = 'Store Purchase',
 								description = string.format('Bought x%s %s From %s', data.countTo, item.label,

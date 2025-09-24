@@ -16,8 +16,8 @@ AddEventHandler('Businesses:Server:Startup', function()
                         Wallet:Modify(targetChar:GetData('Source'), math.floor(itemData.price * 0.1))
                         Wallet:Modify(char:GetData('Source'), math.floor(itemData.price * 0.8))
 
-                        local f = Banking.Accounts:GetOrganization("unicorn")
-                        Banking.Balance:Deposit(f.Account, math.floor(itemData.price * 0.05), {
+                        local f = exports['sandbox-finance']:AccountsGetOrganization("unicorn")
+                        exports['sandbox-finance']:BalanceDeposit(f.Account, math.floor(itemData.price * 0.05), {
                             type = "deposit",
                             title = "Private Dances",
                             description = string.format("5%% Tax On %s Private Dances", math.floor(itemData.price)),

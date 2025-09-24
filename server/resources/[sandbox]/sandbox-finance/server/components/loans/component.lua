@@ -197,7 +197,7 @@ _LOANS = {
 					-- TODO: (maybe) Interest Going to the Government Account?
 
 					local dueAmount = math.ceil(((loan.Remaining / remainingPayments) * payments) * interestMult)
-					local chargeSuccess = Banking.Balance:Charge(Account, dueAmount, {
+					local chargeSuccess = exports['sandbox-finance']:BalanceCharge(Account, dueAmount, {
 						type = "loan",
 						title = "Loan Payment",
 						description = string.format(

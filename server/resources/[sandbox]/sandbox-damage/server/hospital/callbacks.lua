@@ -75,16 +75,16 @@ function HospitalCallbacks()
 
 		Billing:Charge(source, cost, "Medical Services", "Use of facilities at St. Fiacre Medical Center")
 
-		local f = Banking.Accounts:GetOrganization("ems")
-		Banking.Balance:Deposit(f.Account, cost / 2, {
+		local f = exports['sandbox-finance']:AccountsGetOrganization("ems")
+		exports['sandbox-finance']:BalanceDeposit(f.Account, cost / 2, {
 			type = "deposit",
 			title = "Medical Treatment",
 			description = string.format("Medical Bill For %s %s", char:GetData("First"), char:GetData("Last")),
 			data = {},
 		}, true)
 
-		f = Banking.Accounts:GetOrganization("government")
-		Banking.Balance:Deposit(f.Account, cost / 2, {
+		f = exports['sandbox-finance']:AccountsGetOrganization("government")
+		exports['sandbox-finance']:BalanceDeposit(f.Account, cost / 2, {
 			type = "deposit",
 			title = "Medical Treatment",
 			description = string.format("Medical Bill For %s %s", char:GetData("First"), char:GetData("Last")),
@@ -126,16 +126,16 @@ function HospitalCallbacks()
 				}
 			)
 
-			local f = Banking.Accounts:GetOrganization("ems")
-			Banking.Balance:Deposit(f.Account, cost / 2, {
+			local f = exports['sandbox-finance']:AccountsGetOrganization("ems")
+			exports['sandbox-finance']:BalanceDeposit(f.Account, cost / 2, {
 				type = "deposit",
 				title = "Medical Treatment",
 				description = string.format("Medical Bill For %s %s", char:GetData("First"), char:GetData("Last")),
 				data = {},
 			}, true)
 
-			f = Banking.Accounts:GetOrganization("government")
-			Banking.Balance:Deposit(f.Account, cost / 2, {
+			f = exports['sandbox-finance']:AccountsGetOrganization("government")
+			exports['sandbox-finance']:BalanceDeposit(f.Account, cost / 2, {
 				type = "deposit",
 				title = "Medical Treatment",
 				description = string.format("Medical Bill For %s %s", char:GetData("First"), char:GetData("Last")),

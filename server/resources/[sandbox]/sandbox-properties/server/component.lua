@@ -6,7 +6,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
 	RegisterChatCommands()
@@ -18,7 +17,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Police",
 		"Pwnzor",
-		"Banking",
 		"Loans",
 		"Billing",
 	}, function(error)

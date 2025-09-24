@@ -67,7 +67,6 @@ function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
-	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
@@ -85,7 +84,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Properties",
 		"Loans",
 		"Billing",
-		"Banking",
 		"Reputation",
 		"Robbery",
 		"Wallet",

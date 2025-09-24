@@ -1,7 +1,6 @@
 AddEventHandler("Fuel:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 end
 
 local threading = false
@@ -14,7 +13,6 @@ local depositData = {
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Fuel", {
 		"Wallet",
-		"Banking",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -31,7 +29,7 @@ AddEventHandler("Core:Shared:Ready", function()
 							"Fuel",
 							string.format("Depositing ^2$%s^7 To ^3%s^7", math.abs(depositData.amount), bankAcc)
 						)
-						Banking.Balance:Deposit(bankAcc, math.abs(depositData.amount), {
+						exports['sandbox-finance']:BalanceDeposit(bankAcc, math.abs(depositData.amount), {
 							type = "deposit",
 							title = "Fuel Services",
 							description = string.format(
@@ -51,7 +49,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 
 		Wait(2000)
-		local f = Banking.Accounts:GetOrganization("dgang")
+		local f = exports['sandbox-finance']:AccountsGetOrganization("dgang")
 		if f ~= true then
 			bankAcc = f.Account
 		end
@@ -62,7 +60,7 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Fuel:CheckBank", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data?.cost then
-			cb(Banking.Balance:Has(char:GetData("BankAccount"), data.cost))
+			cb(exports['sandbox-finance']:BalanceHas(char:GetData("BankAccount"), data.cost))
 		else
 			cb(false)
 		end
@@ -79,15 +77,16 @@ function RegisterCallbacks()
 				if vehState and vehState.state and totalCost then
 					local paymentSuccess = false
 					if data.useBank then
-						paymentSuccess = Banking.Balance:Charge(char:GetData("BankAccount"), math.abs(totalCost), {
-							type = 'bill',
-							title = 'Fuel Purchase',
-							description = 'Fuel Purchase',
-							data = {
-								vehicle = vehState.state.VIN,
-								fuel = data.fuelAmount,
-							}
-						})
+						paymentSuccess = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"),
+							math.abs(totalCost), {
+								type = 'bill',
+								title = 'Fuel Purchase',
+								description = 'Fuel Purchase',
+								data = {
+									vehicle = vehState.state.VIN,
+									fuel = data.fuelAmount,
+								}
+							})
 
 						if paymentSuccess then
 							exports['sandbox-phone']:NotificationAdd(source,

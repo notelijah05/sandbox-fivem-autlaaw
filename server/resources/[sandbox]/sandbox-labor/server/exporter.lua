@@ -79,8 +79,8 @@ AddEventHandler("Labor:Server:Startup", function()
 						local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, v.item)
 						if (count or 0) > 0 then
 							if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.item, count) then
-								Banking.Balance:Deposit(
-									Banking.Accounts:GetPersonal(char:GetData("SID")).Account,
+								exports['sandbox-finance']:BalanceDeposit(
+									exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID")).Account,
 									count * v.price,
 									{
 										type = "deposit",

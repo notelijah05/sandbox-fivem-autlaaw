@@ -13,7 +13,7 @@ function RegisterVehicleRentalCallbacks()
 
                 local didPay = false
                 if data.bank then
-                    didPay = Banking.Balance:Charge(char:GetData("BankAccount"), rentalCost, {
+                    didPay = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"), rentalCost, {
                         type = 'bill',
                         title = 'Vehicle Rental',
                         description = string.format('Rented a %s %s', rentalVehicleData.make, rentalVehicleData.model),
@@ -114,7 +114,8 @@ function RegisterVehicleRentalCallbacks()
                 exports['sandbox-vehicles']:Delete(vehicle.Entity, function(success)
                     if success then
                         if vehicle.Bank then
-                            Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account,
+                            exports['sandbox-finance']:BalanceDeposit(
+                                exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID")).Account,
                                 vehicle.Deposit, {
                                     type = "deposit",
                                     title = "Vehicle Rental Return",

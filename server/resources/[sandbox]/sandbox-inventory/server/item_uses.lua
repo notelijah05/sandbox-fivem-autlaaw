@@ -103,7 +103,7 @@ function RegisterRandomItems()
 		-- local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		-- exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
 		-- TriggerClientEvent('Inventory:Client:RandomItems:BriefcaseCash', source)
-		-- Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account, Winnings, {
+		-- exports['sandbox-finance']:BalanceDeposit(exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID")).Account, Winnings, {
 		-- 	type = "deposit",
 		-- 	title = "Sandbox Lotto Event",
 		-- 	description = string.format("Lotto Earnings - $%s", Winnings),
@@ -297,7 +297,7 @@ function RegisterRandomItems()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
-			local f = Banking.Accounts:GetPersonal(sid)
+			local f = exports['sandbox-finance']:AccountsGetPersonal(sid)
 			if f ~= nil then
 				if exports['sandbox-inventory']:RemoveId(sid, 1, item) then
 					local amt = item.MetaData.Amount
@@ -305,7 +305,7 @@ function RegisterRandomItems()
 						amt = (item.MetaData.CustomAmt.Min or 0) + math.random(item.MetaData.CustomAmt.Random)
 					end
 
-					Banking.Balance:Deposit(f.Account, amt, {
+					exports['sandbox-finance']:BalanceDeposit(f.Account, amt, {
 						type = "deposit",
 						title = "Shark Card",
 						description = "balance Redemption From A Shark Card",

@@ -30,7 +30,7 @@ end)
 
 AddEventHandler("Phone:Server:Startup", function()
 	for k, v in pairs(_royaltyCompanies) do
-		local t = Banking.Accounts:GetOrganization(k)
+		local t = exports['sandbox-finance']:AccountsGetOrganization(k)
 		if t and t.Account then
 			_pendingShopDeposits[k] = {
 				bank = t.Account,
@@ -53,7 +53,7 @@ AddEventHandler("Phone:Server:Startup", function()
 							string.format("Depositing ^2$%s^7 To ^3%s^7 For Royalties", v2.total, v.bank)
 						)
 
-						Banking.Balance:Deposit(v.bank, v2.total, {
+						exports['sandbox-finance']:BalanceDeposit(v.bank, v2.total, {
 							type = "deposit",
 							title = "Royalty Fee",
 							description = string.format("Royalties for %s - Number of Plays %s", v2.song, v2.played),

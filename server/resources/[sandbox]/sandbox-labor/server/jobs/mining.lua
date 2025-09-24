@@ -341,15 +341,17 @@ AddEventHandler("Labor:Server:Startup", function()
 						end
 					end
 
-					Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account, totalPayout, {
-						type = "deposit",
-						title = "Gems Sale",
-						description = string.format("Sold %s x%s", itemData.label, count),
-						data = {
-							gem = data,
-							repLvl = repLvl,
-						},
-					})
+					exports['sandbox-finance']:BalanceDeposit(
+						exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID")).Account,
+						totalPayout, {
+							type = "deposit",
+							title = "Gems Sale",
+							description = string.format("Sold %s x%s", itemData.label, count),
+							data = {
+								gem = data,
+								repLvl = repLvl,
+							},
+						})
 					exports['sandbox-base']:ExecuteClient(
 						source,
 						"Notification",

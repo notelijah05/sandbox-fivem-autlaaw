@@ -246,9 +246,9 @@ function RegisterCallbacks()
 				if thisUpgrade then
 					local currentLevel = Properties.Upgrades:Get(property.id, data.upgrade)
 					local nextLevel = thisUpgrade.levels[currentLevel + 1]
-					local p = Banking.Accounts:GetPersonal(char:GetData("SID"))
+					local p = exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID"))
 					if nextLevel and nextLevel.price and p and p.Account then
-						local success = Banking.Balance:Charge(p.Account, nextLevel.price, {
+						local success = exports['sandbox-finance']:BalanceCharge(p.Account, nextLevel.price, {
 							type = "bill",
 							title = "Property Upgrade",
 							description = string.format("Upgrade %s to Level %s on %s", thisUpgrade.name,
@@ -288,7 +288,7 @@ function RegisterCallbacks()
 		if char and data.int and property.keys and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.upgrade or property.keys[char:GetData("ID")].Owner) then
 			local oldInterior = PropertyInteriors[property?.upgrades?.interior]
 			local newInterior = PropertyInteriors[data.int]
-			local p = Banking.Accounts:GetPersonal(char:GetData("SID"))
+			local p = exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID"))
 
 			if p and p.Account and oldInterior and newInterior and newInterior.type == property.type then
 				local price = 0
@@ -302,7 +302,7 @@ function RegisterCallbacks()
 					end
 				end
 
-				local success = Banking.Balance:Charge(p.Account, price, {
+				local success = exports['sandbox-finance']:BalanceCharge(p.Account, price, {
 					type = "bill",
 					title = "Property Upgrade",
 					description = string.format("Upgrade Interior to %s on %s", (newInterior.info?.name or data.int),
@@ -792,9 +792,9 @@ function SendCompletedCashSaleEmail(charData, propertyLabel, price)
 end
 
 function SendPropertyProfits(type, propPrice, propLabel, playerBankAccount, payedAccount, buyerData)
-	local dynastyAccount = Banking.Accounts:GetOrganization('realestate')
+	local dynastyAccount = exports['sandbox-finance']:AccountsGetOrganization('realestate')
 	if dynastyAccount then
-		Banking.Balance:Deposit(dynastyAccount.Account, math.floor(propPrice * (companyCut / 100)), {
+		exports['sandbox-finance']:BalanceDeposit(dynastyAccount.Account, math.floor(propPrice * (companyCut / 100)), {
 			type = 'transfer',
 			title = 'Property Purchase',
 			description = string.format('Property %s - %s to %s %s (SID %s)', type, propLabel, buyerData.First,
@@ -806,7 +806,7 @@ function SendPropertyProfits(type, propPrice, propLabel, playerBankAccount, paye
 		})
 	end
 
-	Banking.Balance:Deposit(playerBankAccount, math.floor(propPrice * (commissionCut / 100)), {
+	exports['sandbox-finance']:BalanceDeposit(playerBankAccount, math.floor(propPrice * (commissionCut / 100)), {
 		type = 'transfer',
 		title = 'Dynasty 8 - Property Sale Commission',
 		description = string.format('Property %s - %s to %s %s (SID %s)', type, propLabel, buyerData.First,
@@ -817,7 +817,7 @@ function SendPropertyProfits(type, propPrice, propLabel, playerBankAccount, paye
 		},
 	})
 
-	Banking.Balance:Deposit(100000, math.floor(propPrice * (govCut / 100)), {
+	exports['sandbox-finance']:BalanceDeposit(100000, math.floor(propPrice * (govCut / 100)), {
 		type = 'transfer',
 		title = 'Property Sales Tax',
 		description = string.format('Property %s - %s to %s %s (SID %s)', type, propLabel, buyerData.First,

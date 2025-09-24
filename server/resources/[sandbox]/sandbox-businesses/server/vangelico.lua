@@ -24,9 +24,9 @@ AddEventHandler("Businesses:Server:Startup", function()
 					end
 				end
 
-				local f = Banking.Accounts:GetOrganization(_jobName)
+				local f = exports['sandbox-finance']:AccountsGetOrganization(_jobName)
 				if f ~= nil then
-					Banking.Balance:Deposit(f.Account, math.ceil(math.abs(totalPayout) * 0.8), {
+					exports['sandbox-finance']:BalanceDeposit(f.Account, math.ceil(math.abs(totalPayout) * 0.8), {
 						type = "deposit",
 						title = "Sold Goods",
 						description = string.format("Sold %s Gems", totalSold),
@@ -46,8 +46,8 @@ AddEventHandler("Businesses:Server:Startup", function()
 					Wallet:Modify(source, totalPayout)
 				end
 
-				f = Banking.Accounts:GetOrganization("government")
-				Banking.Balance:Deposit(f.Account, math.ceil(math.abs(totalPayout) * 0.1), {
+				f = exports['sandbox-finance']:AccountsGetOrganization("government")
+				exports['sandbox-finance']:BalanceDeposit(f.Account, math.ceil(math.abs(totalPayout) * 0.1), {
 					type = "deposit",
 					title = "Sold Goods Tax",
 					description = string.format("10%% Tax On %s Sold Gems", totalSold),
@@ -55,8 +55,8 @@ AddEventHandler("Businesses:Server:Startup", function()
 				}, true)
 
 				-- KEKW
-				f = Banking.Accounts:GetOrganization("dgang")
-				Banking.Balance:Deposit(f.Account, math.ceil(math.abs(totalPayout) * 0.1), {
+				f = exports['sandbox-finance']:AccountsGetOrganization("dgang")
+				exports['sandbox-finance']:BalanceDeposit(f.Account, math.ceil(math.abs(totalPayout) * 0.1), {
 					type = "deposit",
 					title = "Sold Goods Tax",
 					description = string.format("10%% Tax On %s Sold Gems", totalSold),

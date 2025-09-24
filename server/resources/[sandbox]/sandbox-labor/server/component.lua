@@ -10,7 +10,6 @@ function RetrieveComponents()
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
-	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
@@ -25,7 +24,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Robbery",
 		"Crypto",
 		"Jail",
-		"Banking",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then
@@ -291,7 +289,9 @@ _LABOR = {
 					)
 				)
 				if _Jobs[job].Salary > 0 then
-					Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account, _Jobs[job].Salary,
+					exports['sandbox-finance']:BalanceDeposit(
+						exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID")).Account,
+						_Jobs[job].Salary,
 						{
 							type = "paycheck",
 							title = "Paycheck",

@@ -821,7 +821,7 @@ AddEventHandler("Finance:Server:Startup", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and not char:GetData("BankAccount") then
 			local stateId = char:GetData("SID")
-			local bankAccountData = Banking.Accounts:CreatePersonal(stateId)
+			local bankAccountData = exports['sandbox-finance']:AccountsCreatePersonal(stateId)
 			if bankAccountData then
 				exports['sandbox-base']:LoggerTrace(
 					"Banking",

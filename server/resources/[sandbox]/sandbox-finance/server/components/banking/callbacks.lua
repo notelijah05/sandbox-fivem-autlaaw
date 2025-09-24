@@ -16,12 +16,13 @@ function RegisterBankingCallbacks()
 
 		if amt > 0 then
 			char:SetData("Salary", false)
-			Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account, amt, {
-				type = 'paycheck',
-				title = "Paycheck",
-				description = string.format('Paycheck For %s Minutes Worked', mts),
-				data = salary
-			})
+			exports['sandbox-finance']:BalanceDeposit(
+				exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID")).Account, amt, {
+					type = 'paycheck',
+					title = "Paycheck",
+					description = string.format('Paycheck For %s Minutes Worked', mts),
+					data = salary
+				})
 		end
 
 		cb({
@@ -36,7 +37,7 @@ function RegisterBankingCallbacks()
 
 		if char ~= nil then
 			if data.type == "personal_savings" then
-				local acc = Banking.Accounts:CreatePersonalSavings(char:GetData("SID"))
+				local acc = exports['sandbox-finance']:AccountsCreatePersonalSavings(char:GetData("SID"))
 				acc.Permissions = {
 					MANAGE = true,
 					BALANCE = true,
@@ -96,7 +97,7 @@ function RegisterBankingCallbacks()
 
 			local canAdd = Citizen.Await(p)
 			if canAdd then
-				cb(Banking.Accounts:AddPersonalSavingsJointOwner(data.account, data.target))
+				cb(exports['sandbox-finance']:AccountsAddPersonalSavingsJointOwner(data.account, data.target))
 			else
 				cb(false)
 			end
@@ -108,7 +109,7 @@ function RegisterBankingCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Banking:RemoveJoint", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			cb(Banking.Accounts:RemovePersonalSavingsJointOwner(data.account, data.target))
+			cb(exports['sandbox-finance']:AccountsRemovePersonalSavingsJointOwner(data.account, data.target))
 		else
 			cb(false)
 		end
@@ -304,7 +305,7 @@ function RegisterBankingCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local SID = char:GetData("SID")
 		local account, action = data.account, data.action
-		local accountData = Banking.Accounts:Get(account)
+		local accountData = exports['sandbox-finance']:AccountsGet(account)
 		if accountData then
 			if _actionCooldowns[source] and _actionCooldowns[source] > GetGameTimer() then
 				exports['sandbox-base']:LoggerWarn("Pwnzor",
@@ -338,7 +339,7 @@ function RegisterBankingCallbacks()
 					and accountData.Balance >= withdrawAmount
 					and HasBankAccountPermission(source, accountData, action, SID)
 				then
-					local wSucc = Banking.Balance:Withdraw(accountData.Account, withdrawAmount, {
+					local wSucc = exports['sandbox-finance']:BalanceWithdraw(accountData.Account, withdrawAmount, {
 						type = "withdraw",
 						title = "Cash Withdrawal",
 						description = data.description or "No Description",
@@ -350,7 +351,7 @@ function RegisterBankingCallbacks()
 
 					if wSucc then
 						Wallet:Modify(source, withdrawAmount, true)
-						cb(true, Banking.Balance:Get(accountData.Account))
+						cb(true, exports['sandbox-finance']:BalanceGet(accountData.Account))
 						return
 					end
 				end
@@ -362,7 +363,7 @@ function RegisterBankingCallbacks()
 					and HasBankAccountPermission(source, accountData, action, SID)
 				then
 					if Wallet:Modify(source, -depositAmount, true) then
-						local dSucc = Banking.Balance:Deposit(accountData.Account, depositAmount, {
+						local dSucc = exports['sandbox-finance']:BalanceDeposit(accountData.Account, depositAmount, {
 							type = "deposit",
 							title = "Cash Deposit",
 							description = data.description or "No Description",
@@ -373,7 +374,7 @@ function RegisterBankingCallbacks()
 						})
 
 						if dSucc then
-							cb(true, Banking.Balance:Get(accountData.Account))
+							cb(true, exports['sandbox-finance']:BalanceGet(accountData.Account))
 							return
 						end
 					end
@@ -382,9 +383,9 @@ function RegisterBankingCallbacks()
 				local transferAmount = tonumber(data.amount)
 				local targetAccount = false
 				if data.targetType then
-					targetAccount = Banking.Accounts:GetPersonal(data.target)
+					targetAccount = exports['sandbox-finance']:AccountsGetPersonal(data.target)
 				else
-					targetAccount = Banking.Accounts:Get(tonumber(data.target))
+					targetAccount = exports['sandbox-finance']:AccountsGet(tonumber(data.target))
 				end
 
 				if transferAmount and transferAmount > 0 and targetAccount then
@@ -434,7 +435,8 @@ function RegisterBankingCallbacks()
 						local canTransfer = Citizen.Await(p)
 
 						if canTransfer then
-							local success = Banking.Balance:Withdraw(accountData.Account, transferAmount, {
+							local success = exports['sandbox-finance']:BalanceWithdraw(accountData.Account,
+								transferAmount, {
 								type = "transfer",
 								title = "Outgoing Bank Transfer",
 								description = string.format(
@@ -448,19 +450,20 @@ function RegisterBankingCallbacks()
 							})
 
 							if success then
-								local success2 = Banking.Balance:Deposit(targetAccount.Account, transferAmount, {
-									type = "transfer",
-									title = "Incoming Bank Transfer",
-									description = string.format(
-										"Transfer from Account: %s.%s",
-										accountData.Account,
-										(data.description and (" Description: " .. data.description) or "")
-									),
-									transactionAccount = accountData.Account,
-									data = {
-										character = SID,
-									},
-								})
+								local success2 = exports['sandbox-finance']:BalanceDeposit(targetAccount.Account,
+									transferAmount, {
+										type = "transfer",
+										title = "Incoming Bank Transfer",
+										description = string.format(
+											"Transfer from Account: %s.%s",
+											accountData.Account,
+											(data.description and (" Description: " .. data.description) or "")
+										),
+										transactionAccount = accountData.Account,
+										data = {
+											character = SID,
+										},
+									})
 								cb(success2)
 								return
 							end

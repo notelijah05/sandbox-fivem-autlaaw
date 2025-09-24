@@ -356,7 +356,7 @@ function LoadShops()
 	CreateThread(function()
 		Wait(10000)
 
-		local f = Banking.Accounts:GetOrganization("dgang")
+		local f = exports['sandbox-finance']:AccountsGetOrganization("dgang")
 
 		for k, v in ipairs(_shops) do
 			local id = k
@@ -399,7 +399,7 @@ function LoadShops()
 								v.transactions
 							)
 						)
-						Banking.Balance:Deposit(k, v.amount, {
+						exports['sandbox-finance']:BalanceDeposit(k, v.amount, {
 							type = "deposit",
 							title = "Sales Tax",
 							description = string.format("Deposit For Sales Tax On %s Store Sales", v.transactions),
@@ -415,7 +415,7 @@ function LoadShops()
 								v.transactions
 							)
 						)
-						Banking.Balance:Deposit(k, v.amount, {
+						exports['sandbox-finance']:BalanceDeposit(k, v.amount, {
 							type = "deposit",
 							title = "Store Sales",
 							description = string.format("Deposit For %s Store Sales", v.transactions),

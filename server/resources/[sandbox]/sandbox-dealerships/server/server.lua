@@ -6,7 +6,6 @@ function RetrieveComponents()
     Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
     Billing = exports['sandbox-base']:FetchComponent('Billing')
     Loans = exports['sandbox-base']:FetchComponent('Loans')
-    Banking = exports['sandbox-base']:FetchComponent('Banking')
     Wallet = exports['sandbox-base']:FetchComponent('Wallet')
     MDT = exports['sandbox-base']:FetchComponent('MDT')
 end
@@ -18,7 +17,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Dealerships',
         'Billing',
         'Loans',
-        'Banking',
         'Wallet',
         'MDT',
     }, function(error)
@@ -513,27 +511,29 @@ function RegisterCallbacks()
                                     local myPed = GetPlayerPed(source)
 
                                     if #(GetEntityCoords(ownerPed) - GetEntityCoords(myPed)) <= 5.0 then
-                                        local d = Banking.Accounts:GetOrganization(data.dealerId)
-                                        local p = Banking.Accounts:GetPersonal(owner:GetData('SID'))
+                                        local d = exports['sandbox-finance']:AccountsGetOrganization(data.dealerId)
+                                        local p = exports['sandbox-finance']:AccountsGetPersonal(owner:GetData('SID'))
 
                                         if d and d.Account and p and p.Account then
-                                            local success = Banking.Balance:Charge(d.Account, buybackPrice, {
-                                                type = 'bill',
-                                                transactionAccount = p.Account,
-                                                title = 'Vehicle Buyback',
-                                                description = string.format(
-                                                    'Vehicle Buyback of a %s %s (%s) From %s %s (%s)', vehEnt.state.Make,
-                                                    vehEnt.state.Model, vehEnt.state.VIN, owner:GetData("First"),
-                                                    owner:GetData("Last"), owner:GetData("SID")),
-                                                data = {
-                                                    buyer = {
-                                                        ID = char:GetData('ID'),
-                                                        SID = char:GetData('SID'),
-                                                        First = char:GetData('First'),
-                                                        Last = char:GetData('Last'),
+                                            local success = exports['sandbox-finance']:BalanceCharge(d.Account,
+                                                buybackPrice, {
+                                                    type = 'bill',
+                                                    transactionAccount = p.Account,
+                                                    title = 'Vehicle Buyback',
+                                                    description = string.format(
+                                                        'Vehicle Buyback of a %s %s (%s) From %s %s (%s)',
+                                                        vehEnt.state.Make,
+                                                        vehEnt.state.Model, vehEnt.state.VIN, owner:GetData("First"),
+                                                        owner:GetData("Last"), owner:GetData("SID")),
+                                                    data = {
+                                                        buyer = {
+                                                            ID = char:GetData('ID'),
+                                                            SID = char:GetData('SID'),
+                                                            First = char:GetData('First'),
+                                                            Last = char:GetData('Last'),
+                                                        }
                                                     }
-                                                }
-                                            })
+                                                })
 
                                             if success then
                                                 local ownerHistory = vehicle:GetData('OwnerHistory') or {}
@@ -578,7 +578,7 @@ function RegisterCallbacks()
                                                     },
                                                 })
 
-                                                Banking.Balance:Deposit(p.Account, buybackPrice, {
+                                                exports['sandbox-finance']:BalanceDeposit(p.Account, buybackPrice, {
                                                     type = 'transfer',
                                                     transactionAccount = d.Account,
                                                     title = 'Vehicle Buyback',

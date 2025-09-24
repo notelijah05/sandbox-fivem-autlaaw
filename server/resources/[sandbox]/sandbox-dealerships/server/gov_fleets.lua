@@ -5,9 +5,9 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
     if char and shopData and Jobs.Permissions:HasPermissionInJob(src, shopData.job, shopData.requiredPermission) then
         local chosenVehicle = shopData.vehicles[vehicle]
         if chosenVehicle and chosenVehicle.liveries[livery] ~= nil then
-            local purchaseBankAccount = Banking.Accounts:GetOrganization(shopData.bankAccount)
+            local purchaseBankAccount = exports['sandbox-finance']:AccountsGetOrganization(shopData.bankAccount)
             if purchaseBankAccount and purchaseBankAccount.Account then
-                if Banking.Balance:Charge(purchaseBankAccount.Account, chosenVehicle.price, {
+                if exports['sandbox-finance']:BalanceCharge(purchaseBankAccount.Account, chosenVehicle.price, {
                         type = 'bill',
                         title = 'Fleet Vehicle Purchase',
                         description = string.format(

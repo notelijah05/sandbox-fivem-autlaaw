@@ -130,7 +130,7 @@ _DRIFT = {
 					local PlayerAccount = char:GetData("BankAccount")
 					local paymentSuccess = false
 					if PlayerAccount then
-						paymentSuccess = Banking.Balance:Charge(PlayerAccount, _DRIFTLICENSECOST, {
+						paymentSuccess = exports['sandbox-finance']:BalanceCharge(PlayerAccount, _DRIFTLICENSECOST, {
 							type = "bill",
 							title = "DMV Licenses",
 							description = "Drift License Cost",
@@ -151,8 +151,8 @@ _DRIFT = {
 								"bank",
 								{}
 							)
-							local f = Banking.Accounts:GetOrganization("cloud9")
-							Banking.Balance:Deposit(f.Account, math.abs(_DRIFTLICENSECOST), {
+							local f = exports['sandbox-finance']:AccountsGetOrganization("cloud9")
+							exports['sandbox-finance']:BalanceDeposit(f.Account, math.abs(_DRIFTLICENSECOST), {
 								type = "deposit",
 								title = "Cloud 9",
 								description = string.format(

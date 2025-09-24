@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Casino = exports["sandbox-base"]:FetchComponent("Casino")
 end
 
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Generator",
 		"Jobs",
 		"Wallet",
-		"Banking",
 		"Casino",
 	}, function(error)
 		if #error > 0 then
@@ -263,8 +261,8 @@ function GiveCasinoFuckingMoney(source, game, amount)
 		charInfo = string.format("%s %s [%s]", char:GetData("First"), char:GetData("Last"), char:GetData("SID"))
 	end
 
-	local f = Banking.Accounts:GetOrganization("dgang")
-	Banking.Balance:Deposit(f.Account, amount, {
+	local f = exports['sandbox-finance']:AccountsGetOrganization("dgang")
+	exports['sandbox-finance']:BalanceDeposit(f.Account, amount, {
 		type = "deposit",
 		title = game,
 		description = string.format("%s Profit From %s", game, charInfo),
@@ -273,8 +271,8 @@ function GiveCasinoFuckingMoney(source, game, amount)
 
 	if game == "Lucky Wheel" then
 		amount = 100
-		local f = Banking.Accounts:GetOrganization("casino")
-		Banking.Balance:Deposit(f.Account, amount, {
+		local f = exports['sandbox-finance']:AccountsGetOrganization("casino")
+		exports['sandbox-finance']:BalanceDeposit(f.Account, amount, {
 			type = "deposit",
 			title = game,
 			description = string.format("%s Profit From %s", game, charInfo),

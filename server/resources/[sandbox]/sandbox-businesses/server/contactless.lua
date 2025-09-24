@@ -10,7 +10,7 @@ AddEventHandler("Businesses:Server:Startup", function()
                     local amount = math.floor(data.payment)
 
                     local jobData = Jobs:Get(data.job)
-                    local jobBank = Banking.Accounts:GetOrganization(data.job)
+                    local jobBank = exports['sandbox-finance']:AccountsGetOrganization(data.job)
 
                     _pendingContactless[data.terminalId] = {
                         job = data.job,
@@ -64,7 +64,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 
             local pData = _pendingContactless[data.terminalId]
 
-            local wSuccess = Banking.Balance:Charge(char:GetData("BankAccount"), pData.amount, {
+            local wSuccess = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"), pData.amount, {
                 type = 'bill',
                 transactionAccount = pData.jobAccount,
                 title = 'Contactless Payment',
@@ -78,7 +78,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 
             if wSuccess then
                 if pData.jobAccount then
-                    local success = Banking.Balance:Deposit(pData.jobAccount, pData.amount, {
+                    local success = exports['sandbox-finance']:BalanceDeposit(pData.jobAccount, pData.amount, {
                         type = 'bill',
                         transactionAccount = char:GetData("BankAccount"),
                         title = 'Contactless Payment',
