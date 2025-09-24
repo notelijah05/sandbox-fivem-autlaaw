@@ -6,15 +6,11 @@ _leavingBed = false
 
 AddEventHandler("Hospital:Shared:DependencyUpdate", HospitalComponents)
 function HospitalComponents()
-	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hospital", {
-		"Damage",
-		"Hospital",
 		"Polyzone",
 	}, function(error)
 		if #error > 0 then
@@ -37,7 +33,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					isEnabled = function()
 						if LocalPlayer.state.isEscorting ~= nil and not LocalPlayer.state.isDead then
 							local ps = Player(LocalPlayer.state.isEscorting).state
-							return ps.isDead and not ps.deadData?.isMinor
+							return ps.isDead and not (ps.deadData and ps.deadData.isMinor)
 						else
 							return false
 						end
@@ -111,81 +107,79 @@ AddEventHandler("Hospital:Client:RequestEMS", function()
 	end
 end)
 
-AddEventHandler('Proxy:Shared:RegisterReady', function()
-	exports['sandbox-base']:RegisterComponent('Hospital', HOSPITAL)
+exports("HospitalCheckIn", function()
+	exports["sandbox-base"]:ServerCallback('Hospital:Treat', {}, function(bed)
+		if bed ~= nil then
+			_countdown = Config.HealTimer
+			LocalPlayer.state:set("isHospitalized", true, true)
+			exports['sandbox-damage']:HospitalSendToBed(Config.Beds[bed], false, bed)
+		else
+			exports["sandbox-hud"]:NotifError('No Beds Available')
+		end
+	end)
+end)
+
+exports("HospitalSendToBed", function(bed, isRp, bedId)
+	local fuck = false
+
+	if bedId then
+		local p = promise.new()
+		exports["sandbox-base"]:ServerCallback('Hospital:OccupyBed', bedId, function(s)
+			p:resolve(s)
+		end)
+
+		fuck = Citizen.Await(p)
+	else
+		fuck = true
+	end
+
+	_bedId = bedId
+
+	if bed ~= nil and fuck then
+		SetBedCam(bed)
+		if isRp then
+			_healEnd = GetCloudTimeAsInt()
+			exports['sandbox-hud']:DeathTextsShow("hospital_rp", GetCloudTimeAsInt(), _healEnd, "primary_action")
+		else
+			_healEnd = GetCloudTimeAsInt() + (60 * 1)
+			exports['sandbox-hud']:DeathTextsShow("hospital", GetCloudTimeAsInt(), _healEnd, "primary_action")
+			Citizen.SetTimeout(((_healEnd - GetCloudTimeAsInt()) - 10) * 1000, function()
+				if LocalPlayer.state.loggedIn and LocalPlayer.state.isHospitalized then
+					LocalPlayer.state.deadData = {}
+					exports['sandbox-damage']:ReductionsReset()
+					exports['sandbox-damage']:Revive()
+				end
+			end)
+		end
+	else
+		exports["sandbox-hud"]:NotifError('Invalid Bed or Bed Occupied')
+	end
+end)
+
+exports("HospitalFindBed", function(object)
+	local coords = GetEntityCoords(object)
+	exports["sandbox-base"]:ServerCallback('Hospital:FindBed', coords, function(bed)
+		if bed ~= nil then
+			exports['sandbox-damage']:HospitalSendToBed(Config.Beds[bed], true, bed)
+		else
+			exports['sandbox-damage']:HospitalSendToBed({
+				x = coords.x,
+				y = coords.y,
+				z = coords.z,
+				h = GetEntityHeading(object),
+				freeBed = true,
+			}, true)
+		end
+	end)
+end)
+
+exports("HospitalLeaveBed", function()
+	exports["sandbox-base"]:ServerCallback('Hospital:LeaveBed', _bedId, function()
+		_bedId = nil
+	end)
 end)
 
 local _bedId = nil
-HOSPITAL = {
-	CheckIn = function(self)
-		exports["sandbox-base"]:ServerCallback('Hospital:Treat', {}, function(bed)
-			if bed ~= nil then
-				_countdown = Config.HealTimer
-				LocalPlayer.state:set("isHospitalized", true, true)
-				Hospital:SendToBed(Config.Beds[bed], false, bed)
-			else
-				exports["sandbox-hud"]:NotifError('No Beds Available')
-			end
-		end)
-	end,
-	SendToBed = function(self, bed, isRp, bedId)
-		local fuck = false
-
-		if bedId then
-			local p = promise.new()
-			exports["sandbox-base"]:ServerCallback('Hospital:OccupyBed', bedId, function(s)
-				p:resolve(s)
-			end)
-
-			fuck = Citizen.Await(p)
-		else
-			fuck = true
-		end
-
-		_bedId = bedId
-
-		if bed ~= nil and fuck then
-			SetBedCam(bed)
-			if isRp then
-				_healEnd = GetCloudTimeAsInt()
-				exports['sandbox-hud']:DeathTextsShow("hospital_rp", GetCloudTimeAsInt(), _healEnd, "primary_action")
-			else
-				_healEnd = GetCloudTimeAsInt() + (60 * 1)
-				exports['sandbox-hud']:DeathTextsShow("hospital", GetCloudTimeAsInt(), _healEnd, "primary_action")
-				Citizen.SetTimeout(((_healEnd - GetCloudTimeAsInt()) - 10) * 1000, function()
-					if LocalPlayer.state.loggedIn and LocalPlayer.state.isHospitalized then
-						LocalPlayer.state.deadData = {}
-						Damage.Reductions:Reset()
-						Damage:Revive()
-					end
-				end)
-			end
-		else
-			exports["sandbox-hud"]:NotifError('Invalid Bed or Bed Occupied')
-		end
-	end,
-	FindBed = function(self, object)
-		local coords = GetEntityCoords(object)
-		exports["sandbox-base"]:ServerCallback('Hospital:FindBed', coords, function(bed)
-			if bed ~= nil then
-				Hospital:SendToBed(Config.Beds[bed], true, bed)
-			else
-				Hospital:SendToBed({
-					x = coords.x,
-					y = coords.y,
-					z = coords.z,
-					h = GetEntityHeading(object),
-					freeBed = true,
-				}, true)
-			end
-		end)
-	end,
-	LeaveBed = function(self)
-		exports["sandbox-base"]:ServerCallback('Hospital:LeaveBed', _bedId, function()
-			_bedId = nil
-		end)
-	end,
-}
 
 local _inCheckInZone = false
 

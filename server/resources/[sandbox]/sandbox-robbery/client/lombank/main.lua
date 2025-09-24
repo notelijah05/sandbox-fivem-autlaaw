@@ -196,7 +196,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 	if type(data) == "table" then
 		if data.isDeath then
 			if not data.door or Doors:IsLocked(data.door) then
-				Damage.Apply:StandardDamage(10000, false, true)
+				exports['sandbox-damage']:ApplyStandardDamage(10000, false, true)
 				TriggerServerEvent("Robbery:Server:Idiot", id)
 				if data.tpCoords ~= nil then
 					ClearPedTasksImmediately(PlayerPedId())

@@ -5,7 +5,6 @@ function RetrieveComponents()
 	GlobalConfig = exports["sandbox-base"]:FetchComponent("Config")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
-	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	RegisterCommands()
 	_spawnFuncs = {}
 end
@@ -15,7 +14,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Config",
 		"Reputation",
 		"Apartment",
-		"Damage",
 	}, function(error)
 		if #error > 0 then
 			return

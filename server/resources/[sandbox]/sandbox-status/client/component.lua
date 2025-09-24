@@ -12,14 +12,12 @@ local _statusVals = {}
 
 AddEventHandler("Status:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Status", {
-		"Damage",
 		"Status",
 		"Polyzone",
 	}, function(error)

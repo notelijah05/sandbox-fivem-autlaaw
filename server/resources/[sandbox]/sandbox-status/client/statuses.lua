@@ -16,7 +16,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 						if luck <= 20 then
 							SetPedToRagdoll(player, 1500, 2000, 3, true, true, false)
 						end
-						Damage.Apply:StandardDamage(3, false)
+						exports['sandbox-damage']:ApplyStandardDamage(3, false)
 						effectCount = 0
 					elseif effectCount >= 1000 then
 						ShakeGameplayCam("SMALL_EXPLOSION_SHAKE", 0.2)
@@ -224,11 +224,11 @@ function RegisterStatuses()
 		if val <= 25 then
 			if val > 10 then
 				if (GetEntityHealth(player) - 100) > 11 then
-					Damage.Apply:StandardDamage(10, false)
+					exports['sandbox-damage']:ApplyStandardDamage(10, false)
 				end
 			else
 				if (GetEntityHealth(player) - 100) > 1 then
-					Damage.Apply:StandardDamage(1, false)
+					exports['sandbox-damage']:ApplyStandardDamage(1, false)
 				else
 					if _hungerTicks <= 10 then
 						SetFlash(0, 0, 100, 10000, 100)

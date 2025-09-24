@@ -101,7 +101,7 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 							_sendToHosp = bedId
 							LocalPlayer.state:set("isHospitalized", true, true)
 							Wait(250)
-							Hospital:SendToBed(Config.Beds[_sendToHosp], false, bedId)
+							exports['sandbox-damage']:HospitalSendToBed(Config.Beds[_sendToHosp], false, bedId)
 						else
 							exports["sandbox-hud"]:NotifError("Unable To Respawn Yet, Please Wait")
 						end
@@ -113,7 +113,7 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 				_respawning = false
 			end)
 		else
-			Damage:Revive()
+			exports['sandbox-damage']:Revive()
 			_respawning = false
 		end
 	end
@@ -214,7 +214,7 @@ function StartThreads()
 
 					if not LocalPlayer.state.gameMode then
 						if isMinor and _reductions < 6 then
-							DAMAGE.Reductions:Increase(1)
+							exports['sandbox-damage']:ReductionsIncrease(1)
 						else
 							isMinor = false
 						end
@@ -247,8 +247,6 @@ function StartThreads()
 					--respawnCd(isMinor)
 					doingthedead = false
 				end
-			else
-
 			end
 			Wait(100)
 		end

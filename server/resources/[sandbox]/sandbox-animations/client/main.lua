@@ -11,51 +11,38 @@ emoteBinds = {}
 
 _doingStateAnimation = false
 
-AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Animations", {
-		"Damage",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterKeybinds()
+	RegisterKeybinds()
 
-		RegisterChairTargets()
+	RegisterChairTargets()
 
-		exports['sandbox-hud']:InteractionRegisterMenu("expressions", "Expressions", "face-grin-squint-tears", function()
-			exports['sandbox-hud']:InteractionHide()
-			exports['sandbox-animations']:OpenExpressionsMenu()
-		end)
+	exports['sandbox-hud']:InteractionRegisterMenu("expressions", "Expressions", "face-grin-squint-tears", function()
+		exports['sandbox-hud']:InteractionHide()
+		exports['sandbox-animations']:OpenExpressionsMenu()
+	end)
 
-		exports['sandbox-hud']:InteractionRegisterMenu("walks", "Walk Styles", "person-walking", function()
-			exports['sandbox-hud']:InteractionHide()
-			exports['sandbox-animations']:OpenWalksMenu()
-		end)
+	exports['sandbox-hud']:InteractionRegisterMenu("walks", "Walk Styles", "person-walking", function()
+		exports['sandbox-hud']:InteractionHide()
+		exports['sandbox-animations']:OpenWalksMenu()
+	end)
 
-		exports["sandbox-base"]:RegisterClientCallback("Selfie:Client:UploadPhoto", function(data, cb)
-			local options = {
-				encoding = "webp",
-				quality = 0.8,
-				headers = {
-					Authorization = string.format("%s", data.token),
-				},
-			}
-			exports["screenshot-basic"]:requestScreenshotUpload(
-				string.format("%s", data.api),
-				"image",
-				options,
-				function(data)
-					local image = json.decode(data)
-					cb(json.encode({ url = image.url }))
-				end
-			)
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Selfie:Client:UploadPhoto", function(data, cb)
+		local options = {
+			encoding = "webp",
+			quality = 0.8,
+			headers = {
+				Authorization = string.format("%s", data.token),
+			},
+		}
+		exports["screenshot-basic"]:requestScreenshotUpload(
+			string.format("%s", data.api),
+			"image",
+			options,
+			function(data)
+				local image = json.decode(data)
+				cb(json.encode({ url = image.url }))
+			end
+		)
 	end)
 end)
 

@@ -4,7 +4,6 @@ function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
-	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Lasers = exports["sandbox-base"]:FetchComponent("Lasers")
 end
 
@@ -14,7 +13,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Properties",
 		"EmergencyAlerts",
 		"Doors",
-		"Damage",
 		"Lasers",
 	}, function(error)
 		if #error > 0 then

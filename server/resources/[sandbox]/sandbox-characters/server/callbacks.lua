@@ -340,7 +340,7 @@ function RegisterCallbacks()
 				cb({ Config.PrisonSpawn })
 			elseif results[1].ICU and not results[1].ICU.Released then
 				cb({ Config.ICUSpawn })
-			elseif hasLastLocation and Damage:WasDead(results[1].SID) then
+			elseif hasLastLocation and exports['sandbox-damage']:WasDead(results[1].SID) then
 				cb({
 					{
 						id = "LastLocation",

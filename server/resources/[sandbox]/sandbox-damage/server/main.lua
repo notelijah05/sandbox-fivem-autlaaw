@@ -11,14 +11,12 @@ end
 
 AddEventHandler("Damage:Shared:DependencyUpdate", DamageComponents)
 function DamageComponents()
-	--Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	RegisterChatCommands()
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Damage", {
-		--"Damage",
 		"Status",
 	}, function(error)
 		if #error > 0 then
@@ -55,7 +53,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 			local char = exports['sandbox-characters']:FetchCharacterSource(data)
 			if char ~= nil then
-				local damage = Damage:GetLimbDamage(char:GetData("SID"))
+				local damage = exports['sandbox-damage']:GetLimbDamage(char:GetData("SID"))
 
 				local menuData = {}
 
@@ -111,25 +109,20 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-DAMAGE = {
-	GetLimbDamage = function(self, sid)
-		return _damagedLimbs[sid]
-	end,
-	ResetLimbDamage = function(self, sid)
-		_damagedLimbs[sid] = {}
-	end,
-	Effects = {
-		Painkiller = function(self, source, tier)
-			exports["sandbox-base"]:ClientCallback(source, "Damage:ApplyPainkiller", 225 * (tier or 1))
-		end,
-		Adrenaline = function(self, source, tier)
-			exports["sandbox-base"]:ClientCallback(source, "Damage:ApplyAdrenaline", 75 * (tier or 1))
-		end,
-	},
-}
+exports("GetLimbDamage", function(sid)
+	return _damagedLimbs[sid]
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Damage", DAMAGE)
+exports("ResetLimbDamage", function(sid)
+	_damagedLimbs[sid] = {}
+end)
+
+exports("EffectsPainkiller", function(source, tier)
+	exports["sandbox-base"]:ClientCallback(source, "Damage:ApplyPainkiller", 225 * (tier or 1))
+end)
+
+exports("EffectsAdrenaline", function(source, tier)
+	exports["sandbox-base"]:ClientCallback(source, "Damage:ApplyAdrenaline", 75 * (tier or 1))
 end)
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
@@ -196,7 +189,7 @@ RegisterNetEvent("Damage:Server:Revived", function(wasMinor, wasFieldTreatment)
 					char:GetData("SID")
 				)
 			)
-			Damage:ResetLimbDamage(char:GetData("SID"))
+			exports['sandbox-damage']:ResetLimbDamage(char:GetData("SID"))
 		else
 			if wasMinor then
 				exports['sandbox-base']:LoggerTrace(

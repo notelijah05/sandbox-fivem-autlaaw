@@ -2,18 +2,14 @@ _reductions = 0
 
 AddEventHandler("Damage:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-    Damage = exports["sandbox-base"]:FetchComponent("Damage")
     Status = exports["sandbox-base"]:FetchComponent("Status")
-    --Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
     EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
     Jail = exports["sandbox-base"]:FetchComponent("Jail")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
     exports["sandbox-base"]:RequestDependencies("Damage", {
-        "Damage",
         "Status",
-        --"Hospital",
         "EmergencyAlerts",
         "Jail",
     }, function(error)
@@ -25,13 +21,13 @@ AddEventHandler("Core:Shared:Ready", function()
         exports["sandbox-base"]:RegisterClientCallback("Damage:Heal", function(s)
             if s then
                 LocalPlayer.state.deadData = {}
-                Damage.Reductions:Reset()
+                exports['sandbox-damage']:ReductionsReset()
             end
-            Damage:Revive()
+            exports['sandbox-damage']:Revive()
         end)
 
         exports["sandbox-base"]:RegisterClientCallback("Damage:FieldStabalize", function(s)
-            Damage:Revive(true)
+            exports['sandbox-damage']:Revive(true)
         end)
 
         exports["sandbox-base"]:RegisterClientCallback("Damage:Kill", function()
@@ -48,10 +44,6 @@ AddEventHandler("Core:Shared:Ready", function()
     end)
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-    exports["sandbox-base"]:RegisterComponent("Damage", DAMAGE)
-end)
-
 RegisterNetEvent("Characters:Client:Spawned", function()
     StartThreads()
 
@@ -64,10 +56,11 @@ RegisterNetEvent("Characters:Client:Spawned", function()
     else
         exports['sandbox-hud']:RemoveBuffType("weakness")
     end
-    Damage:CalculateMaxHp()
+    exports['sandbox-damage']:CalculateMaxHp()
 
     if LocalPlayer.state.isDead then
-        exports['sandbox-hud']:DeathTextsShow(LocalPlayer.state.deadData?.isMinor and "knockout" or "death",
+        exports['sandbox-hud']:DeathTextsShow(
+            (LocalPlayer.state.deadData and LocalPlayer.state.deadData.isMinor) and "knockout" or "death",
             LocalPlayer.state.isDeadTime,
             LocalPlayer.state.releaseTime)
         exports['sandbox-hud']:Dead(true)
@@ -102,140 +95,139 @@ RegisterNetEvent('UI:Client:Reset', function(apps)
     end
 end)
 
-DAMAGE = {
-    Reductions = {
-        Increase = function(self, amt)
-            _reductions += amt
-            exports['sandbox-hud']:ApplyUniqueBuff("weakness", -1)
-            exports["sandbox-base"]:ServerCallback("Damage:SyncReductions", _reductions)
-            Damage:CalculateMaxHp()
-        end,
-        Reset = function(self)
-            _reductions = 0
-            exports['sandbox-hud']:RemoveBuffType("weakness")
-            exports["sandbox-base"]:ServerCallback("Damage:SyncReductions", _reductions)
-            Damage:CalculateMaxHp()
-        end,
-    },
-    CalculateMaxHp = function(self)
-        local ped = PlayerPedId()
-        local curr = GetEntityHealth(ped)
-        local currMax = GetEntityMaxHealth(ped)
+exports("ReductionsIncrease", function(amt)
+    _reductions += amt
+    exports['sandbox-hud']:ApplyUniqueBuff("weakness", -1)
+    exports["sandbox-base"]:ServerCallback("Damage:SyncReductions", _reductions)
+    exports['sandbox-damage']:CalculateMaxHp()
+end)
 
-        local mod = 0.25 * _reductions
-        if mod > 0.8 then
-            mod = 0.8
+exports("ReductionsReset", function()
+    _reductions = 0
+    exports['sandbox-hud']:RemoveBuffType("weakness")
+    exports["sandbox-base"]:ServerCallback("Damage:SyncReductions", _reductions)
+    exports['sandbox-damage']:CalculateMaxHp()
+end)
+
+exports("CalculateMaxHp", function()
+    local ped = PlayerPedId()
+    local curr = GetEntityHealth(ped)
+    local currMax = GetEntityMaxHealth(ped)
+
+    local mod = 0.25 * _reductions
+    if mod > 0.8 then
+        mod = 0.8
+    end
+
+    local newMax = 100 + math.ceil(100 * (1.0 - mod))
+
+    SetEntityMaxHealth(ped, newMax)
+
+    local newHp = curr
+    if curr > newMax then
+        SetEntityHealth(ped, newMax)
+    end
+
+    exports['sandbox-hud']:ForceHP()
+end)
+
+exports("WasDead", function(sid)
+    return _deadCunts[sid] ~= nil
+end)
+
+exports("Revive", function(fieldTreat)
+    local player = PlayerPedId()
+
+    if LocalPlayer.state.isDead then
+        DoScreenFadeOut(1000)
+        while not IsScreenFadedOut() do
+            Wait(10)
         end
+    end
 
-        local newMax = 100 + math.ceil(100 * (1.0 - mod))
+    local wasDead = LocalPlayer.state.isDead
+    local wasMinor = LocalPlayer.state.deadData and LocalPlayer.state.deadData.isMinor
 
-        SetEntityMaxHealth(ped, newMax)
+    if LocalPlayer.state.isDead then
+        LocalPlayer.state:set("isDead", false, true)
+    end
+    if LocalPlayer.state.deadData then
+        LocalPlayer.state:set("deadData", false, true)
+    end
+    if LocalPlayer.state.isDeadTime then
+        LocalPlayer.state:set("isDeadTime", false, true)
+    end
+    if LocalPlayer.state.releaseTime then
+        LocalPlayer.state:set("releaseTime", false, true)
+    end
 
-        local newHp = curr
-        if curr > newMax then
-            SetEntityHealth(ped, newMax)
-        end
-
-        exports['sandbox-hud']:ForceHP()
-    end,
-    WasDead = function(self, sid)
-        return _deadCunts[sid] ~= nil
-    end,
-    Revive = function(self, fieldTreat)
-        local player = PlayerPedId()
-
-        if LocalPlayer.state.isDead then
-            DoScreenFadeOut(1000)
-            while not IsScreenFadedOut() do
-                Wait(10)
+    local veh = GetVehiclePedIsIn(player)
+    local seat = 0
+    if veh ~= 0 then
+        local m = GetEntityModel(veh)
+        for k = -1, GetVehicleModelNumberOfSeats(m) do
+            if GetPedInVehicleSeat(veh, k) == player then
+                seat = k
             end
         end
+    end
 
-        local wasDead = LocalPlayer.state.isDead
-        local wasMinor = LocalPlayer.state.deadData?.isMinor
+    -- if IsPedDeadOrDying(player) then
+    --     local loc = GetEntityCoords(player)
+    --     NetworkResurrectLocalPlayer(loc, true, true, false)
+    -- end
 
-        if LocalPlayer.state.isDead then
-            LocalPlayer.state:set("isDead", false, true)
-        end
-        if LocalPlayer.state.deadData then
-            LocalPlayer.state:set("deadData", false, true)
-        end
-        if LocalPlayer.state.isDeadTime then
-            LocalPlayer.state:set("isDeadTime", false, true)
-        end
-        if LocalPlayer.state.releaseTime then
-            LocalPlayer.state:set("releaseTime", false, true)
-        end
+    if veh == 0 then
+        --ClearPedTasksImmediately(player)
+    else
+        Wait(300)
+        TaskWarpPedIntoVehicle(player, veh, seat)
+        Wait(300)
+    end
 
-        local veh = GetVehiclePedIsIn(player)
-        local seat = 0
-        if veh ~= 0 then
-            local m = GetEntityModel(veh)
-            for k = -1, GetVehicleModelNumberOfSeats(m) do
-                if GetPedInVehicleSeat(veh, k) == player then
-                    seat = k
-                end
-            end
-        end
+    TriggerServerEvent("Damage:Server:Revived", wasMinor, fieldTreat)
+    exports['sandbox-hud']:Dead(false)
 
-        -- if IsPedDeadOrDying(player) then
-        --     local loc = GetEntityCoords(player)
-        --     NetworkResurrectLocalPlayer(loc, true, true, false)
-        -- end
+    if not LocalPlayer.state.isHospitalized and wasDead then
+        exports['sandbox-hud']:DeathTextsHide()
+        SetEntityInvincible(player, LocalPlayer.state.isAdmin and LocalPlayer.state.isGodmode or false)
+    end
 
-        if veh == 0 then
-            --ClearPedTasksImmediately(player)
-        else
-            Wait(300)
-            TaskWarpPedIntoVehicle(player, veh, seat)
-            Wait(300)
-        end
+    if _reductions > 0 then
+        exports['sandbox-hud']:ApplyUniqueBuff("weakness", -1)
+    else
+        exports['sandbox-hud']:RemoveBuffType("weakness")
+    end
 
-        TriggerServerEvent("Damage:Server:Revived", wasMinor, fieldTreat)
-        exports['sandbox-hud']:Dead(false)
+    local mod = 0.25 * _reductions
+    if mod > 0.8 then
+        mod = 0.8
+    end
+    local newMax = 100 + math.ceil(100 * (1.0 - mod))
 
-        if not LocalPlayer.state.isHospitalized and wasDead then
-            exports['sandbox-hud']:DeathTextsHide()
-            SetEntityInvincible(player, LocalPlayer.state.isAdmin and LocalPlayer.state.isGodmode or false)
-        end
+    SetEntityHealth(player, newMax)
+    SetPlayerSprint(PlayerId(), true)
+    ClearPedBloodDamage(player)
 
-        if _reductions > 0 then
-            exports['sandbox-hud']:ApplyUniqueBuff("weakness", -1)
-        else
-            exports['sandbox-hud']:RemoveBuffType("weakness")
-        end
+    if not fieldTreat then
+        Status:Reset()
+    end
 
+    DoScreenFadeIn(1000)
 
-        local mod = 0.25 * _reductions
-        if mod > 0.8 then
-            mod = 0.8
-        end
-        local newMax = 100 + math.ceil(100 * (1.0 - mod))
+    if not LocalPlayer.state.isHospitalized and wasDead and veh == 0 then
+        exports['sandbox-animations']:EmotesPlay("reviveshit", false, 1750, true)
+    end
+end)
 
-        SetEntityHealth(player, newMax)
-        SetPlayerSprint(PlayerId(), true)
-        ClearPedBloodDamage(player)
+exports("Died", function()
+    -- Empty for now
+end)
 
-        if not fieldTreat then
-            Status:Reset()
-        end
+exports("ApplyStandardDamage", function(value, armorFirst, forceKill)
+    if forceKill and not _hasKO then
+        _hasKO = true
+    end
 
-        DoScreenFadeIn(1000)
-
-        if not LocalPlayer.state.isHospitalized and wasDead and veh == 0 then
-            exports['sandbox-animations']:EmotesPlay("reviveshit", false, 1750, true)
-        end
-    end,
-    Died = function(self)
-
-    end,
-    Apply = {
-        StandardDamage = function(self, value, armorFirst, forceKill)
-            if forceKill and not _hasKO then
-                _hasKO = true
-            end
-
-            ApplyDamageToPed(LocalPlayer.state.ped, value, armorFirst)
-        end,
-    }
-}
+    ApplyDamageToPed(LocalPlayer.state.ped, value, armorFirst)
+end)

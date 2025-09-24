@@ -5,7 +5,7 @@ function HospitalCallbacks()
 			if tonumber(args[1]) then
 				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil then
-					Hospital.ICU:Send(char:GetData("Source"))
+					exports['sandbox-damage']:HospitalICUSend(char:GetData("Source"))
 					exports["sandbox-chat"]:SendSystemSingle(source,
 						string.format("%s Has Been Admitted To ICU", args[1]))
 				else
@@ -37,7 +37,7 @@ function HospitalCallbacks()
 			if tonumber(args[1]) then
 				local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 				if char ~= nil and char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
-					Hospital.ICU:Release(char:GetData("Source"))
+					exports['sandbox-damage']:HospitalICURelease(char:GetData("Source"))
 					exports["sandbox-chat"]:SendSystemSingle(source,
 						string.format("%s Has Been Released From ICU", args[1]))
 				else
@@ -66,7 +66,7 @@ function HospitalCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Hospital:Treat", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local bed = Hospital:RequestBed(source)
+		local bed = exports['sandbox-damage']:HospitalRequestBed(source)
 
 		local cost = 1500
 		-- if not GlobalState["Duty:ems"] or GlobalState["Duty:ems"] == 0 then
@@ -98,7 +98,7 @@ function HospitalCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if os.time() >= Player(source).state.releaseTime then
 			Pwnzor.Players:TempPosIgnore(source)
-			local bed = Hospital:RequestBed(source)
+			local bed = exports['sandbox-damage']:HospitalRequestBed(source)
 
 			local cost = 1500
 			-- if not GlobalState["Duty:ems"] or GlobalState["Duty:ems"] == 0 then
@@ -149,19 +149,19 @@ function HospitalCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Hospital:FindBed", function(source, data, cb)
-		cb(Hospital:FindBed(source, data))
+		cb(exports['sandbox-damage']:HospitalFindBed(source, data))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Hospital:OccupyBed", function(source, data, cb)
-		cb(Hospital:OccupyBed(source, data))
+		cb(exports['sandbox-damage']:HospitalOccupyBed(source, data))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Hospital:LeaveBed", function(source, data, cb)
-		cb(Hospital:LeaveBed(source))
+		cb(exports['sandbox-damage']:HospitalLeaveBed(source))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Hospital:RetreiveItems", function(source, data, cb)
-		Hospital.ICU:GetItems(source)
+		exports['sandbox-damage']:HospitalICUGetItems(source)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Hospital:HiddenRevive", function(source, data, cb)

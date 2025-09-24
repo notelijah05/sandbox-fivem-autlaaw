@@ -1,19 +1,6 @@
-AddEventHandler("EMS:Shared:DependencyUpdate", EMSComponents)
-function EMSComponents()
-	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("EMS", {
-		"Damage",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		EMSComponents()
-		EMSCallbacks()
-		EMSItems()
-	end)
+	EMSCallbacks()
+	EMSItems()
 end)
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()
@@ -160,7 +147,7 @@ function EMSCallbacks()
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
 		if Jobs.Permissions:HasJob(source, "ems") then
 			if exports['sandbox-inventory']:Remove(myChar:GetData("SID"), 1, "morphine", 1) then
-				Damage.Effects:Painkiller(tonumber(data), 3)
+				exports['sandbox-damage']:EffectsPainkiller(tonumber(data), 3)
 				exports['sandbox-base']:ExecuteClient(data, "Notification", "Success", "You Received A Morphine Shot")
 				cb({ error = false })
 			else

@@ -14,7 +14,7 @@ function EMSItems()
 
 	exports['sandbox-inventory']:RegisterUse("morphine", "MedicalItems", function(source, item)
 		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
-			Damage.Effects:Painkiller(source, 1)
+			exports['sandbox-damage']:EffectsPainkiller(source, 1)
 		end
 	end)
 
@@ -22,7 +22,7 @@ function EMSItems()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
-			Damage.Effects:Painkiller(source, 2)
+			exports['sandbox-damage']:EffectsPainkiller(source, 2)
 
 			if pState.healTicks ~= nil then
 				local f = pState.healTicks

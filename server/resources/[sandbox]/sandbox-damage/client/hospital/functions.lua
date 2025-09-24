@@ -88,7 +88,7 @@ function LeaveBed()
 
 	exports["sandbox-base"]:ServerCallback("Hospital:LeaveBed")
 	if _curBed ~= nil and not _curBed.freeBed then
-		Hospital:LeaveBed()
+		exports['sandbox-damage']:HospitalLeaveBed()
 	end
 
 	--FreezeEntityPosition(player, false)

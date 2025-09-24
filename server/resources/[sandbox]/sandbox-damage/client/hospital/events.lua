@@ -210,7 +210,7 @@ AddEventHandler("Hospital:Client:CheckIn", function()
 		LocalPlayer.state:set("isHospitalized", true, true)
 	end, function(status)
 		if not status then
-			Hospital:CheckIn()
+			exports['sandbox-damage']:HospitalCheckIn()
 		else
 			LocalPlayer.state:set("isHospitalized", false, true)
 		end
@@ -228,7 +228,7 @@ AddEventHandler("Hospital:Client:FindBed", function(event, data)
 	if not event then
 		return
 	end
-	Hospital:FindBed(event.entity)
+	exports['sandbox-damage']:HospitalFindBed(event.entity)
 end)
 
 RegisterNetEvent("Hospital:Client:ICU:Enter", function()
