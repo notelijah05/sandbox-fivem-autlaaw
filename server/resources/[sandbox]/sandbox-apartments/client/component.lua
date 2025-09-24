@@ -4,13 +4,11 @@ local _menu = false
 
 AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Apartment", {
-		"Apartment",
 		"Characters",
 	}, function(error)
 		if #error > 0 then
@@ -35,11 +33,11 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports['sandbox-hud']:InteractionRegisterMenu("apt-exit", "Exit Apartment", "door-open", function(data)
 			exports['sandbox-hud']:InteractionHide()
-			Apartment:Exit()
+			exports['sandbox-apartments']:Exit()
 		end, function()
 			if
 				not LocalPlayer.state.isDead
-				and GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)] ~= nil
+				and GlobalState[string.format("%s:", LocalPlayer.state.ID)] ~= nil
 			then
 				local p = GlobalState[string.format(
 					"Apartment:%s",
@@ -78,11 +76,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		-- 	end
 		-- end)
 	end)
-end)
-
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Apartment", _APTS)
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()
@@ -137,7 +130,7 @@ end)
 -- end
 
 RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
-	while GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)] == nil do
+	while GlobalState[string.format("%s:", LocalPlayer.state.ID)] == nil do
 		Wait(10)
 		print("Interior Stuff Waiting, This Shouldn't Spam")
 	end
@@ -239,7 +232,7 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 end)
 
 AddEventHandler("Apartment:Client:ExitEvent", function()
-	Apartment:Exit()
+	exports['sandbox-apartments']:Exit()
 end)
 
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
@@ -261,7 +254,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 end)
 
 AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
-	if id == _inPoly?.id then
+	if _inPoly and _inPoly.id and id == _inPoly.id then
 		_inPoly = nil
 		exports['sandbox-hud']:ActionHide('apt-enter')
 	end
@@ -273,12 +266,12 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 		and (LocalPlayer.state.Character:GetData("Apartment") or 1) == _inPoly.data
 		and not LocalPlayer.state.isDead and GetVehiclePedIsIn(LocalPlayer.state.ped) == 0
 	then
-		Apartment:Enter(_inPoly.data, -1)
+		exports['sandbox-apartments']:Enter(_inPoly.data, -1)
 	end
 end)
 
 AddEventHandler("Apartment:Client:Enter", function(data)
-	Apartment:Enter(data)
+	exports['sandbox-apartments']:Enter(data)
 end)
 
 AddEventHandler("Apartment:Client:RequestEntry", function(data)
@@ -303,130 +296,131 @@ AddEventHandler("Apartment:Client:DoRequestEntry", function(values, data)
 end)
 
 AddEventHandler("Apartment:Client:Stash", function(t, data)
-	Apartment.Extras:Stash()
+	exports['sandbox-apartments']:ExtrasStash()
 end)
 
 AddEventHandler("Apartment:Client:Wardrobe", function(t, data)
-	Apartment.Extras:Wardrobe()
+	exports['sandbox-apartments']:ExtrasWardrobe()
 end)
 
 AddEventHandler("Apartment:Client:Logout", function(t, data)
-	Apartment.Extras:Logout()
+	exports['sandbox-apartments']:ExtrasLogout()
 end)
 
-_APTS = {
-	Enter = function(self, tier, id)
-		exports["sandbox-base"]:ServerCallback("Apartment:Enter", {
-			id = id or -1,
-			tier = tier,
-		}, function(s)
-			if s then
-				exports["sandbox-sounds"]:PlayOne("door_open.ogg", 0.15)
+exports("Enter", function(tier, id)
+	exports["sandbox-base"]:ServerCallback("Apartment:Enter", {
+		id = id or -1,
+		tier = tier,
+	}, function(s)
+		if s then
+			exports["sandbox-sounds"]:PlayOne("door_open.ogg", 0.15)
 
-				DoScreenFadeOut(1000)
-				while not IsScreenFadedOut() do
-					Wait(10)
-				end
-
-				local p = GlobalState[string.format("Apartment:%s", s)]
-
-				FreezeEntityPosition(PlayerPedId(), true)
-				Wait(50)
-				SetEntityCoords(
-					PlayerPedId(),
-					p.interior.spawn.x,
-					p.interior.spawn.y,
-					p.interior.spawn.z,
-					0,
-					0,
-					0,
-					false
-				)
-				Wait(100)
-				SetEntityHeading(PlayerPedId(), p.interior.spawn.h)
-
-				local time = GetGameTimer()
-				while (not HasCollisionLoadedAroundEntity(PlayerPedId()) and (GetGameTimer() - time) < 10000) do
-					Wait(100)
-				end
-
-				FreezeEntityPosition(PlayerPedId(), false)
-
-				DoScreenFadeIn(1000)
-				while not IsScreenFadedIn() do
-					Wait(10)
-				end
-			end
-		end)
-	end,
-	Exit = function(self)
-		local apartmentId = GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)]
-		local p = GlobalState[string.format(
-			"Apartment:%s",
-			LocalPlayer.state.inApartment.type
-		)]
-
-		exports["sandbox-base"]:ServerCallback("Apartment:Exit", {}, function()
 			DoScreenFadeOut(1000)
 			while not IsScreenFadedOut() do
 				Wait(10)
 			end
 
-			TriggerEvent("Interiors:Exit")
-			exports["sandbox-sync"]:Start()
+			local p = GlobalState[string.format("Apartment:%s", s)]
 
-			exports["sandbox-sounds"]:PlayOne("door_close.ogg", 0.3)
-			Wait(200)
-
-			SetEntityCoords(PlayerPedId(), p.coords.x, p.coords.y, p.coords.z, 0, 0, 0, false)
+			FreezeEntityPosition(PlayerPedId(), true)
+			Wait(50)
+			SetEntityCoords(
+				PlayerPedId(),
+				p.interior.spawn.x,
+				p.interior.spawn.y,
+				p.interior.spawn.z,
+				0,
+				0,
+				0,
+				false
+			)
 			Wait(100)
-			SetEntityHeading(PlayerPedId(), p.heading)
+			SetEntityHeading(PlayerPedId(), p.interior.spawn.h)
 
-			for k, v in pairs(p.interior.locations) do
-				exports['sandbox-targeting']:ZonesRemoveZone(string.format("apt-%s-%s", k, apartmentId))
+			local time = GetGameTimer()
+			while (not HasCollisionLoadedAroundEntity(PlayerPedId()) and (GetGameTimer() - time) < 10000) do
+				Wait(100)
 			end
 
-			exports['sandbox-targeting']:ZonesRefresh()
+			FreezeEntityPosition(PlayerPedId(), false)
 
 			DoScreenFadeIn(1000)
 			while not IsScreenFadedIn() do
 				Wait(10)
 			end
-		end)
-	end,
-	GetNearApartment = function(self)
-		if _inPoly?.id ~= nil and _pzs[_inPoly?.id]?.id ~= nil then
-			return GlobalState[string.format("Apartment:%s", _pzs[_inPoly?.id].id)]
-		else
-			return nil
 		end
-	end,
-	Extras = {
-		Stash = function(self)
-			exports["sandbox-base"]:ServerCallback("Apartment:Validate", {
-				id = GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)],
-				type = "stash",
-			})
-		end,
-		Wardrobe = function(self)
-			exports["sandbox-base"]:ServerCallback("Apartment:Validate", {
-				id = GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)],
-				type = "wardrobe",
-			}, function(state)
-				if state then
-					exports['sandbox-ped']:WardrobeShow()
-				end
-			end)
-		end,
-		Logout = function(self)
-			exports["sandbox-base"]:ServerCallback("Apartment:Validate", {
-				id = GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)],
-				type = "logout",
-			}, function(state)
-				if state then
-					Characters:Logout()
-				end
-			end)
-		end,
-	},
-}
+	end)
+end)
+
+exports("Exit", function()
+	local apartmentId = GlobalState[string.format("%s:", LocalPlayer.state.ID)]
+	local p = GlobalState[string.format(
+		"Apartment:%s",
+		LocalPlayer.state.inApartment.type
+	)]
+
+	exports["sandbox-base"]:ServerCallback("Apartment:Exit", {}, function()
+		DoScreenFadeOut(1000)
+		while not IsScreenFadedOut() do
+			Wait(10)
+		end
+
+		TriggerEvent("Interiors:Exit")
+		exports["sandbox-sync"]:Start()
+
+		exports["sandbox-sounds"]:PlayOne("door_close.ogg", 0.3)
+		Wait(200)
+
+		SetEntityCoords(PlayerPedId(), p.coords.x, p.coords.y, p.coords.z, 0, 0, 0, false)
+		Wait(100)
+		SetEntityHeading(PlayerPedId(), p.heading)
+
+		for k, v in pairs(p.interior.locations) do
+			exports['sandbox-targeting']:ZonesRemoveZone(string.format("apt-%s-%s", k, apartmentId))
+		end
+
+		exports['sandbox-targeting']:ZonesRefresh()
+
+		DoScreenFadeIn(1000)
+		while not IsScreenFadedIn() do
+			Wait(10)
+		end
+	end)
+end)
+
+exports("GetNearApartment", function()
+	if _inPoly and _inPoly.id and _pzs[_inPoly.id] and _pzs[_inPoly.id].id then
+		return GlobalState[string.format("Apartment:%s", _pzs[_inPoly.id].id)]
+	else
+		return nil
+	end
+end)
+
+exports("ExtrasStash", function()
+	exports["sandbox-base"]:ServerCallback("Apartment:Validate", {
+		id = GlobalState[string.format("%s:", LocalPlayer.state.ID)],
+		type = "stash",
+	})
+end)
+
+exports("ExtrasWardrobe", function()
+	exports["sandbox-base"]:ServerCallback("Apartment:Validate", {
+		id = GlobalState[string.format("%s:", LocalPlayer.state.ID)],
+		type = "wardrobe",
+	}, function(state)
+		if state then
+			exports['sandbox-ped']:WardrobeShow()
+		end
+	end)
+end)
+
+exports("ExtrasLogout", function()
+	exports["sandbox-base"]:ServerCallback("Apartment:Validate", {
+		id = GlobalState[string.format("%s:", LocalPlayer.state.ID)],
+		type = "logout",
+	}, function(state)
+		if state then
+			Characters:Logout()
+		end
+	end)
+end)

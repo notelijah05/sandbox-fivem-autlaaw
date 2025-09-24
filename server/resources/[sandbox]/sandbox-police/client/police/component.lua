@@ -177,7 +177,6 @@ AddEventHandler("Police:Shared:DependencyUpdate", PoliceComponents)
 function PoliceComponents()
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
@@ -187,7 +186,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Handcuffs",
 		"Properties",
-		"Apartment",
 		"EmergencyAlerts",
 		"Status",
 		"Doors",
@@ -393,13 +391,13 @@ AddEventHandler("Core:Shared:Ready", function()
 						}, "Police:Client:DoApartmentBreach", data.id)
 					end,
 					shouldShow = function()
-						return Apartment:GetNearApartment()
+						return exports['sandbox-apartments']:GetNearApartment()
 					end,
 				},
 			})
 		end, function()
 			if LocalPlayer.state.onDuty and LocalPlayer.state.onDuty == "police" then
-				return Properties:GetNearHouse() or Apartment:GetNearApartment()
+				return Properties:GetNearHouse() or exports['sandbox-apartments']:GetNearApartment()
 			else
 				return nil
 			end

@@ -333,7 +333,7 @@ function RegisterCallbacks()
 					{
 						id = 1,
 						label = "Character Creation",
-						location = Apartment:GetInteriorLocation(results[1].Apartment or 1),
+						location = exports['sandbox-apartments']:GetInteriorLocation(results[1].Apartment or 1),
 					},
 				})
 			elseif results[1].Jailed and not results[1].Jailed.Released ~= nil then

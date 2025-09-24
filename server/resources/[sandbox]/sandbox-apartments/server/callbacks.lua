@@ -40,15 +40,15 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Apartment:SpawnInside", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		cb(Apartment:Enter(source, char:GetData("Apartment"), -1, true))
+		cb(exports['sandbox-apartments']:Enter(source, char:GetData("Apartment"), -1, true))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Apartment:Enter", function(source, data, cb)
-		cb(Apartment:Enter(source, data.tier, data.id))
+		cb(exports['sandbox-apartments']:Enter(source, data.tier, data.id))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Apartment:Exit", function(source, data, cb)
-		cb(Apartment:Exit(source))
+		cb(exports['sandbox-apartments']:Exit(source))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Apartment:GetVisitRequests", function(source, data, cb)
@@ -56,6 +56,6 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Apartment:Visit", function(source, data, cb)
-		cb(Apartment:Enter(source, data.tier, data.id))
+		cb(exports['sandbox-apartments']:Enter(source, data.tier, data.id))
 	end)
 end

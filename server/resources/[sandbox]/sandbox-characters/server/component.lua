@@ -4,7 +4,6 @@ AddEventHandler("Characters:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	GlobalConfig = exports["sandbox-base"]:FetchComponent("Config")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	RegisterCommands()
 	_spawnFuncs = {}
 end
@@ -13,7 +12,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Characters", {
 		"Config",
 		"Reputation",
-		"Apartment",
 	}, function(error)
 		if #error > 0 then
 			return
