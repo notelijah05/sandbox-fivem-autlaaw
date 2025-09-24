@@ -7,7 +7,6 @@ function PrisonHospitalComponents()
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
-	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 end
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Labor",
 		"Jobs",
 		"Handcuffs",
-		"Ped",
 		"Pwnzor",
 		"Banking",
 	}, function(error)

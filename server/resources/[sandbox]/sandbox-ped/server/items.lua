@@ -21,9 +21,9 @@ function RegisterItemUses()
 					Wait(300)
 					local ped = char:GetData("Ped")
 					if ped.customization.components.mask.drawableId ~= 0 then
-						Ped.Mask:Unequip(source)
+						exports['sandbox-ped']:MaskUnequip(source)
 					end
-					Ped.Mask:Equip(source, item.MetaData.mask)
+					exports['sandbox-ped']:MaskEquip(source, item.MetaData.mask)
 					exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 				end
 			end
@@ -39,9 +39,9 @@ function RegisterItemUses()
 					Wait(300)
 					local ped = char:GetData("Ped")
 					if not ped.customization.props.hat.disabled then
-						Ped.Hat:Unequip(source)
+						exports['sandbox-ped']:HatUnequip(source)
 					end
-					Ped.Hat:Equip(source, item.MetaData.hat)
+					exports['sandbox-ped']:HatEquip(source, item.MetaData.hat)
 					exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 				end
 			end
@@ -57,10 +57,10 @@ function RegisterItemUses()
 					Wait(300)
 					local ped = char:GetData("Ped")
 					if (ped.customization.components.accessory?.drawableId or 0) ~= 0 then
-						Ped.Necklace:Unequip(source)
+						exports['sandbox-ped']:NecklaceUnequip(source)
 					end
 
-					Ped.Necklace:Equip(
+					exports['sandbox-ped']:NecklaceEquip(
 						source,
 						item.MetaData.accessory[char:GetData("Gender")]
 						or item.MetaData.accessory[tostring(char:GetData("Gender"))]

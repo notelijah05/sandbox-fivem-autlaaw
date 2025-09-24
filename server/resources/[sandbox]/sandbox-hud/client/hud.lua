@@ -105,12 +105,12 @@ AddEventHandler("Core:Shared:Ready", function()
 		-- end)
 
 		exports["sandbox-keybinds"]:Add("ui_toggle", "F11", "keyboard", "Hud - Toggle HUD", function()
-			exports['sandbox-hud']:HudToggle()
+			exports['sandbox-hud']:Toggle()
 		end)
 
 		exports["sandbox-keybinds"]:Add("ids_toggle", "u", "keyboard", "Hud - Toggle IDs", function()
 			if not _idsCd then
-				exports['sandbox-hud']:HudIDToggle()
+				exports['sandbox-hud']:IDToggle()
 			end
 		end)
 
@@ -389,7 +389,7 @@ exports("IDToggle", function()
 			ShowIds()
 			_idsCd = true
 			Citizen.SetTimeout(6000, function()
-				exports['sandbox-hud']:HudIDToggle()
+				exports['sandbox-hud']:IDToggle()
 			end)
 		end
 	else
@@ -515,7 +515,7 @@ AddEventHandler("Characters:Client:Updated", function(key)
 			DisplayRadar(
 				LocalPlayer.state.phoneOpen or hasValue(LocalPlayer.state.Character:GetData("States"), "GPS")
 			)
-			exports['sandbox-hud']:HudShiftLocation(
+			exports['sandbox-hud']:ShiftLocation(
 				LocalPlayer.state.phoneOpen or hasValue(LocalPlayer.state.Character:GetData("States"), "GPS")
 			)
 		end
@@ -819,6 +819,6 @@ end)
 
 AddEventHandler("Keybinds:Client:KeyUp:cancel_action", function()
 	if _overlayToggled then
-		exports['sandbox-hud']:HudOverlayHide()
+		exports['sandbox-hud']:OverlayHide()
 	end
 end)

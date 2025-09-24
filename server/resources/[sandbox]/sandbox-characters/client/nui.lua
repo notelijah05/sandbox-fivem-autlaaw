@@ -102,7 +102,7 @@ RegisterNUICallback("GetData", function(data, cb)
 						if DoesEntityExist(ped) then
 							SetEntityCoords(ped, previews[k][1], previews[k][2], previews[k][3], 0.0, 0.0, 0.0, false)
 							FreezeEntityPosition(ped, true)
-							Ped:Preview(ped, tonumber(v.Gender), v.Preview, false, v.GangChain)
+							exports['sandbox-ped']:Preview(ped, tonumber(v.Gender), v.Preview, false, v.GangChain)
 
 							table.insert(peds, ped)
 						end

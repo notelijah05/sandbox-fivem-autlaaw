@@ -12,7 +12,6 @@ function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 end
@@ -26,7 +25,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"MDT",
 		"Radar",
 		"Generator",
-		"Ped",
 		"Doors",
 		"Robbery"
 	}, function(error)
@@ -327,7 +325,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			if char ~= nil and Player(source).state.onDuty == "police" then
 				local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
 				if tChar ~= nil then
-					Ped.Mask:Unequip(data)
+					exports['sandbox-ped']:MaskUnequip(data)
 				end
 			end
 		end)

@@ -1,13 +1,11 @@
 AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
 function RetrieveWardrobeComponents()
-	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Wardrobe", {
 		"Locations",
-		"Ped",
 		"Wardrobe",
 	}, function(error)
 		if #error > 0 then
@@ -138,7 +136,7 @@ function RegisterWardrobeCallbacks()
 		if char ~= nil then
 			local outfit = char:GetData("Wardrobe")[tonumber(data)]
 			if outfit ~= nil then
-				Ped:ApplyOutfit(source, outfit)
+				exports['sandbox-ped']:ApplyOutfit(source, outfit)
 				cb(true)
 			else
 				cb(false)

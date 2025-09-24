@@ -284,13 +284,11 @@ GlobalState["Ped:Pricing"] = {
 AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
-	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
 		"Locations",
-		"Ped",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -309,7 +307,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				if ped.customization.components.mask.drawableId ~= 0 then
 					TriggerClientEvent("Ped:Client:MaskAnim", source)
 					Wait(300)
-					Ped.Mask:Unequip(source)
+					exports['sandbox-ped']:MaskUnequip(source)
 				end
 			end
 		end, {
@@ -323,7 +321,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				if not ped.customization.props.hat.disabled then
 					TriggerClientEvent("Ped:Client:HatGlassAnim", source)
 					Wait(300)
-					Ped.Hat:Unequip(source)
+					exports['sandbox-ped']:HatUnequip(source)
 				end
 			end
 		end, {
@@ -472,200 +470,198 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-PED = {
-	Save = function(self, char, ped)
-		local p = promise.new()
+exports("Save", function(char, ped)
+	local p = promise.new()
 
-		-- On the Verge of Suicide (WHY??? Apparently it won't update in mongodb unless this is done)
-		if ped?.customization?.face?.features and type(ped.customization.face.features) == "table" then
-			for k, v in pairs(ped.customization.face.features) do
-				ped.customization.face.features[tostring(k)] = v
-			end
+	-- On the Verge of Suicide (WHY??? Apparently it won't update in mongodb unless this is done)
+	if ped and ped.customization and ped.customization.face and ped.customization.face.features and type(ped.customization.face.features) == "table" then
+		for k, v in pairs(ped.customization.face.features) do
+			ped.customization.face.features[tostring(k)] = v
+		end
+	end
+
+	exports['sandbox-base']:DatabaseGameUpdateOne({
+		collection = "peds",
+		query = {
+			Char = char:GetData("ID"),
+		},
+		update = {
+			["$set"] = {
+				Ped = ped,
+			},
+		},
+		options = {
+			upsert = true,
+		},
+	}, function(success, results)
+		if not success then
+			return
+		end
+		char:SetData("Ped", ped)
+
+		p:resolve(success)
+	end)
+
+	return Citizen.Await(p)
+end)
+
+exports("ApplyOutfit", function(source, outfit)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local ped = char:GetData("Ped")
+		ped.customization.components = outfit.data.components or ped.customization.components
+		ped.customization.props = outfit.data.props or ped.customization.props
+		ped.customization.colors = outfit.data.colors or ped.customization.colors
+		ped.customization.overlay = outfit.data.overlay or ped.customization.overlay
+		exports['sandbox-ped']:Save(char, ped)
+	end
+end)
+
+exports("MaskEquip", function(source, data)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local ped = char:GetData("Ped")
+		ped.customization.components.mask = data
+		exports['sandbox-ped']:Save(char, ped)
+	end
+end)
+
+exports("MaskUnequip", function(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local ped = char:GetData("Ped")
+
+		local itemId = exports['sandbox-inventory']:GetWithStaticMetadata(
+			"mask",
+			"drawableId",
+			"textureId",
+			char:GetData("Gender"),
+			ped.customization.components.mask
+		) or "mask"
+
+		local md = { mask = ped.customization.components.mask }
+		if itemId ~= "mask" then
+			md = {}
 		end
 
-		exports['sandbox-base']:DatabaseGameUpdateOne({
-			collection = "peds",
-			query = {
-				Char = char:GetData("ID"),
-			},
-			update = {
-				["$set"] = {
-					Ped = ped,
-				},
-			},
-			options = {
-				upsert = true,
-			},
-		}, function(success, results)
-			if not success then
-				return
-			end
-			char:SetData("Ped", ped)
-
-			p:resolve(success)
-		end)
-
-		return Citizen.Await(p)
-	end,
-	ApplyOutfit = function(self, source, outfit)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local ped = char:GetData("Ped")
-			ped.customization.components = outfit.data.components or ped.customization.components
-			ped.customization.props = outfit.data.props or ped.customization.props
-			ped.customization.colors = outfit.data.colors or ped.customization.colors
-			ped.customization.overlay = outfit.data.overlay or ped.customization.overlay
-			Ped:Save(char, ped)
+		if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
+			ped.customization.components.mask = {
+				componentId = 1,
+				drawableId = 0,
+				textureId = 0,
+				paletteId = 0,
+			}
+			exports['sandbox-ped']:Save(char, ped)
 		end
-	end,
-	Mask = {
-		Equip = function(self, source, data)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
-				ped.customization.components.mask = data
-				Ped:Save(char, ped)
-			end
-		end,
-		Unequip = function(self, source)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
+	end
+end)
 
-				local itemId = exports['sandbox-inventory']:ItemsGetWithStaticMetadata(
-					"mask",
-					"drawableId",
-					"textureId",
-					char:GetData("Gender"),
-					ped.customization.components.mask
-				) or "mask"
+exports("MaskUnequipNoItem", function(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local ped = char:GetData("Ped")
+		if ped.customization.components.mask.drawableId ~= 0 then
+			TriggerClientEvent("Ped:Client:MaskAnim", source)
+			ped.customization.components.mask = {
+				componentId = 1,
+				drawableId = 0,
+				textureId = 0,
+				paletteId = 0,
+			}
+			exports['sandbox-ped']:Save(char, ped)
+		end
+	end
+end)
 
-				local md = { mask = ped.customization.components.mask }
-				if itemId ~= "mask" then
-					md = {}
-				end
+exports("HatEquip", function(source, data)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local ped = char:GetData("Ped")
+		ped.customization.props.hat = data
+		exports['sandbox-ped']:Save(char, ped)
+	end
+end)
 
-				if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
-					ped.customization.components.mask = {
-						componentId = 1,
-						drawableId = 0,
-						textureId = 0,
-						paletteId = 0,
-					}
-					Ped:Save(char, ped)
-				end
-			end
-		end,
-		UnequipNoItem = function(self, source)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
-				if ped.customization.components.mask.drawableId ~= 0 then
-					TriggerClientEvent("Ped:Client:MaskAnim", source)
-					ped.customization.components.mask = {
-						componentId = 1,
-						drawableId = 0,
-						textureId = 0,
-						paletteId = 0,
-					}
-					Ped:Save(char, ped)
-				end
-			end
-		end,
-	},
-	Hat = {
-		Equip = function(self, source, data)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
-				ped.customization.props.hat = data
-				Ped:Save(char, ped)
-			end
-		end,
-		Unequip = function(self, source)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
+exports("HatUnequip", function(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local ped = char:GetData("Ped")
 
-				local itemId = exports['sandbox-inventory']:ItemsGetWithStaticMetadata(
-					"hat",
-					"drawableId",
-					"textureId",
-					char:GetData("Gender"),
-					ped.customization.props.hat
-				) or "hat"
+		local itemId = exports['sandbox-inventory']:GetWithStaticMetadata(
+			"hat",
+			"drawableId",
+			"textureId",
+			char:GetData("Gender"),
+			ped.customization.props.hat
+		) or "hat"
 
-				local md = { hat = ped.customization.props.hat }
-				if itemId ~= "hat" then
-					md = {}
-				end
+		local md = { hat = ped.customization.props.hat }
+		if itemId ~= "hat" then
+			md = {}
+		end
 
-				if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
-					ped.customization.props.hat = {
-						componentId = 0,
-						drawableId = 0,
-						textureId = 0,
-						disabled = true,
-					}
-					Ped:Save(char, ped)
-				end
-			end
-		end,
-	},
-	Necklace = {
-		Equip = function(self, source, data)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
-				ped.customization.components.accessory = data
-				Ped:Save(char, ped)
-			end
-		end,
-		Unequip = function(self, source)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
-				local itemId = exports['sandbox-inventory']:ItemsGetWithStaticMetadata(
-					"accessory",
-					"drawableId",
-					"textureId",
-					char:GetData("Gender"),
-					ped.customization.components.accessory
-				) or "accessory"
+		if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
+			ped.customization.props.hat = {
+				componentId = 0,
+				drawableId = 0,
+				textureId = 0,
+				disabled = true,
+			}
+			exports['sandbox-ped']:Save(char, ped)
+		end
+	end
+end)
 
-				if itemId ~= "accessory" then
-					if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, {}, 1) then
-						ped.customization.components.accessory = {
-							componentId = 7,
-							drawableId = 0,
-							textureId = 0,
-							paletteId = 0,
-						}
-						Ped:Save(char, ped)
-					end
-				end
+exports("NecklaceEquip", function(source, data)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local ped = char:GetData("Ped")
+		ped.customization.components.accessory = data
+		exports['sandbox-ped']:Save(char, ped)
+	end
+end)
+
+exports("NecklaceUnequip", function(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local ped = char:GetData("Ped")
+		local itemId = exports['sandbox-inventory']:GetWithStaticMetadata(
+			"accessory",
+			"drawableId",
+			"textureId",
+			char:GetData("Gender"),
+			ped.customization.components.accessory
+		) or "accessory"
+
+		if itemId ~= "accessory" then
+			if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, {}, 1) then
+				ped.customization.components.accessory = {
+					componentId = 7,
+					drawableId = 0,
+					textureId = 0,
+					paletteId = 0,
+				}
+				exports['sandbox-ped']:Save(char, ped)
 			end
-		end,
-		UnequipNoItem = function(self, source)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local ped = char:GetData("Ped")
-				if ped.customization.components.mask.drawableId ~= 0 then
-					TriggerClientEvent("Ped:Client:MaskAnim", source)
-					ped.customization.components.mask = {
-						componentId = 1,
-						drawableId = 0,
-						textureId = 0,
-						paletteId = 0,
-					}
-					Ped:Save(char, ped)
-				end
-			end
-		end,
-	},
-}
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Ped", PED)
+		end
+	end
+end)
+
+exports("NecklaceUnequipNoItem", function(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local ped = char:GetData("Ped")
+		if ped.customization.components.mask.drawableId ~= 0 then
+			TriggerClientEvent("Ped:Client:MaskAnim", source)
+			ped.customization.components.mask = {
+				componentId = 1,
+				drawableId = 0,
+				textureId = 0,
+				paletteId = 0,
+			}
+			exports['sandbox-ped']:Save(char, ped)
+		end
+	end
 end)
 
 function deepcopy(orig)
@@ -745,7 +741,7 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Ped:SavePed", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		cb(Ped:Save(char, data.ped))
+		cb(exports['sandbox-ped']:Save(char, data.ped))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Ped:RemoveMask", function(source, data, cb)
@@ -755,7 +751,7 @@ function RegisterCallbacks()
 			if ped.customization.components.mask.drawableId ~= 0 then
 				TriggerClientEvent("Ped:Client:MaskAnim", source)
 				Wait(500)
-				Ped.Mask:Unequip(source)
+				exports['sandbox-ped']:MaskUnequip(source)
 			end
 		end
 	end)
@@ -767,7 +763,7 @@ function RegisterCallbacks()
 			if not ped.customization.props.hat.disabled then
 				TriggerClientEvent("Ped:Client:HatGlassAnim", source)
 				Wait(500)
-				Ped.Hat:Unequip(source)
+				exports['sandbox-ped']:HatUnequip(source)
 			end
 		end
 	end)
@@ -779,7 +775,7 @@ function RegisterCallbacks()
 			if ped.customization.components.accessory.drawableId ~= 0 then
 				TriggerClientEvent("Ped:Client:HatGlassAnim", source)
 				Wait(500)
-				Ped.Necklace:Unequip(source)
+				exports['sandbox-ped']:NecklaceUnequip(source)
 			end
 		end
 	end)

@@ -13,7 +13,7 @@ exports("InteractionHide", function()
 end)
 
 exports("InteractionShow", function()
-	if not exports['sandbox-hud']:HudIsDisabledAllowDead() then
+	if not exports['sandbox-hud']:IsDisabledAllowDead() then
 		exports['sandbox-phone']:Close()
 		exports['sandbox-inventory']:CloseAll()
 

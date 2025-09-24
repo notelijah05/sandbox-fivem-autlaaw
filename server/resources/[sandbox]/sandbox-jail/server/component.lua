@@ -6,7 +6,6 @@ AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
-	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
@@ -19,7 +18,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Jobs",
 		"Handcuffs",
-		"Ped",
 		"Labor",
 		"Loans",
 		"Jail",
@@ -155,7 +153,7 @@ _JAIL = {
 			CreateThread(function()
 				Jobs.Duty:Off(target, Player(target).state.onDuty)
 				Handcuffs:UncuffTarget(-1, target)
-				Ped.Mask:UnequipNoItem(target)
+				exports['sandbox-ped']:MaskUnequipNoItem(target)
 				exports['sandbox-inventory']:HoldingPut(target)
 			end)
 

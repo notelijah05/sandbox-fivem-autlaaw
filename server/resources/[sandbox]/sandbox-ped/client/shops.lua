@@ -95,7 +95,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 		local playerPed = PlayerPedId()
 		local x, y, z = table.unpack(GetEntityCoords(playerPed))
 
-		Ped.Customization:Show(shopType, {
+		exports['sandbox-ped']:CustomizationShow(shopType, {
 			x = x,
 			y = y,
 			z = z,
@@ -123,7 +123,7 @@ RegisterNetEvent("Peds:Customization:Client:AdminAbuse", function(shopType)
 		_type = "tattoo"
 	end
 
-	Ped.Customization:Show(string.upper(_type), {
+	exports['sandbox-ped']:CustomizationShow(string.upper(_type), {
 		x = x,
 		y = y,
 		z = z,

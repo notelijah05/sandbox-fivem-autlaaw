@@ -3,13 +3,11 @@ Characters = nil
 AddEventHandler("Characters:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
-	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Characters", {
 		"Characters",
-		"Ped",
 	}, function(error)
 		if #error > 0 then
 			return

@@ -5,7 +5,6 @@ local _menu = false
 AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
@@ -15,7 +14,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Apartment", {
 		"Polyzone",
-		"Ped",
 		"Apartment",
 		"Characters",
 		"Wardrobe",

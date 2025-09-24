@@ -32,14 +32,14 @@ end)
 
 RegisterNUICallback("Save", function(data, cb)
 	if _currentState ~= nil then
-		Ped.Customization:Save(cb)
+		exports['sandbox-ped']:CustomizationSave(cb)
 	else
 		cb(false)
 	end
 end)
 
 RegisterNUICallback("Cancel", function(data, cb)
-	cb(Ped.Customization:Cancel())
+	cb(exports['sandbox-ped']:CustomizationCancel())
 end)
 
 function deepcopy(orig)
@@ -92,10 +92,10 @@ function ToggleNekked(data)
 		nakedPed.customization.props.hat.disabled = true
 		nakedPed.customization.props.glass.disabled = true
 		nakedPed.customization.props.ear.disabled = true
-		Ped:ApplyToPed(nakedPed)
+		exports['sandbox-ped']:ApplyToPed(nakedPed)
 	else
 		LocalPlayer.state.isNaked = false
-		Ped:ApplyToPed(LocalPed)
+		exports['sandbox-ped']:ApplyToPed(LocalPed)
 		nakedPed = nil
 	end
 end
@@ -146,9 +146,9 @@ RegisterNUICallback("SetPedHeadBlendData", function(data, cb)
 	LocalPed.customization.face[data.face][data.type] = data.value
 	if LocalPlayer.state.isNaked then
 		nakedPed.customization.face[data.face][data.type] = data.value
-		Ped:ApplyToPed(nakedPed)
+		exports['sandbox-ped']:ApplyToPed(nakedPed)
 	else
-		Ped:ApplyToPed(LocalPed)
+		exports['sandbox-ped']:ApplyToPed(LocalPed)
 	end
 end)
 
@@ -185,9 +185,9 @@ RegisterNUICallback("SetPed", function(data, cb)
 
 	if data.value == "mp_f_freemode_01" or data.value == "mp_m_freemode_01" then
 		if LocalPlayer.state.isNaked then
-			Ped:ApplyToPed(nakedPed)
+			exports['sandbox-ped']:ApplyToPed(nakedPed)
 		else
-			Ped:ApplyToPed(LocalPed)
+			exports['sandbox-ped']:ApplyToPed(LocalPed)
 		end
 	end
 end)
@@ -197,9 +197,9 @@ RegisterNUICallback("SetPedFaceFeature", function(data, cb)
 	LocalPed.customization.face.features[data.index] = data.value
 	if LocalPlayer.state.isNaked then
 		nakedPed.customization.face.features[data.index] = data.value
-		Ped:ApplyToPed(nakedPed)
+		exports['sandbox-ped']:ApplyToPed(nakedPed)
 	else
-		Ped:ApplyToPed(LocalPed)
+		exports['sandbox-ped']:ApplyToPed(LocalPed)
 	end
 end)
 
@@ -216,9 +216,9 @@ RegisterNUICallback("SetPedHeadOverlay", function(data, cb)
 		else
 			nakedPed.customization.overlay[data.type][data.extraType] = data.value
 		end
-		Ped:ApplyToPed(nakedPed)
+		exports['sandbox-ped']:ApplyToPed(nakedPed)
 	else
-		Ped:ApplyToPed(LocalPed)
+		exports['sandbox-ped']:ApplyToPed(LocalPed)
 	end
 end)
 
@@ -226,11 +226,11 @@ RegisterNUICallback("SetPedComponentVariation", function(data, cb)
 	cb("OK")
 	LocalPed.customization.components[data.name][data.type] = data.value
 	if not LocalPlayer.state.isNaked then
-		Ped:ApplyToPed(LocalPed)
+		exports['sandbox-ped']:ApplyToPed(LocalPed)
 	else
 		if data.name == "hair" then
 			nakedPed.customization.components[data.name][data.type] = data.value
-			Ped:ApplyToPed(nakedPed)
+			exports['sandbox-ped']:ApplyToPed(nakedPed)
 		end
 	end
 end)
@@ -239,7 +239,7 @@ RegisterNUICallback("SetPedPropIndex", function(data, cb)
 	cb("OK")
 	LocalPed.customization.props[data.name][data.type] = data.value
 	if not LocalPlayer.state.isNaked then
-		Ped:ApplyToPed(LocalPed)
+		exports['sandbox-ped']:ApplyToPed(LocalPed)
 	end
 end)
 
@@ -248,9 +248,9 @@ RegisterNUICallback("SetPedHairColor", function(data, cb)
 	LocalPed.customization.colors[data.name][data.type].index = data.value
 	if LocalPlayer.state.isNaked then
 		nakedPed.customization.colors[data.name][data.type].index = data.value
-		Ped:ApplyToPed(nakedPed)
+		exports['sandbox-ped']:ApplyToPed(nakedPed)
 	else
-		Ped:ApplyToPed(LocalPed)
+		exports['sandbox-ped']:ApplyToPed(LocalPed)
 	end
 end)
 
@@ -260,9 +260,9 @@ RegisterNUICallback("SetPedHairOverlay", function(data, cb)
 	LocalPed.customization.hairOverlay = data.value
 	if LocalPlayer.state.isNaked then
 		nakedPed.customization.hairOverlay = data.value
-		Ped:ApplyToPed(nakedPed)
+		exports['sandbox-ped']:ApplyToPed(nakedPed)
 	else
-		Ped:ApplyToPed(LocalPed)
+		exports['sandbox-ped']:ApplyToPed(LocalPed)
 	end
 end)
 
@@ -271,9 +271,9 @@ RegisterNUICallback("SetPedEyeColor", function(data, cb)
 	LocalPed.customization.eyeColor = data.value
 	if LocalPlayer.state.isNaked then
 		nakedPed.customization.eyeColor = data.value
-		Ped:ApplyToPed(nakedPed)
+		exports['sandbox-ped']:ApplyToPed(nakedPed)
 	else
-		Ped:ApplyToPed(LocalPed)
+		exports['sandbox-ped']:ApplyToPed(LocalPed)
 	end
 end)
 
@@ -292,9 +292,9 @@ RegisterNUICallback("AddPedTattoo", function(data, cb)
 			Hash = "",
 			Zone = data.type,
 		})
-		Ped:ApplyToPed(nakedPed, true)
+		exports['sandbox-ped']:ApplyToPed(nakedPed, true)
 	else
-		Ped:ApplyToPed(LocalPed, true)
+		exports['sandbox-ped']:ApplyToPed(LocalPed, true)
 	end
 end)
 
@@ -303,9 +303,9 @@ RegisterNUICallback("RemovePedTattoo", function(data, cb)
 	table.remove(LocalPed.customization.tattoos, data.index + 1)
 	if LocalPlayer.state.isNaked then
 		table.remove(nakedPed.customization.tattoos, data.index + 1)
-		Ped:ApplyToPed(nakedPed, true)
+		exports['sandbox-ped']:ApplyToPed(nakedPed, true)
 	else
-		Ped:ApplyToPed(LocalPed, true)
+		exports['sandbox-ped']:ApplyToPed(LocalPed, true)
 	end
 end)
 
@@ -314,9 +314,9 @@ RegisterNUICallback("SetPedTattoo", function(data, cb)
 	LocalPed.customization.tattoos[data.index + 1] = data.data
 	if LocalPlayer.state.isNaked then
 		nakedPed.customization.tattoos[data.index + 1] = data.data
-		Ped:ApplyToPed(nakedPed, true)
+		exports['sandbox-ped']:ApplyToPed(nakedPed, true)
 	else
-		Ped:ApplyToPed(LocalPed, true)
+		exports['sandbox-ped']:ApplyToPed(LocalPed, true)
 	end
 end)
 

@@ -16,7 +16,7 @@ SPAWN = {
 			data.Ped = hasPed.ped
 			if not hasPed.existed then
 				cb()
-				Ped.Creator:Start(data)
+				exports['sandbox-ped']:CreatorStart(data)
 			else
 				cb()
 				Spawn:PlacePedIntoWorld(data)
@@ -77,7 +77,7 @@ SPAWN = {
 		SetNuiFocus(false, false)
 
 		LocalPed = LocalPlayer.state.Character:GetData("Ped")
-		Ped:ApplyToPed(LocalPed)
+		exports['sandbox-ped']:ApplyToPed(LocalPed)
 		if data.action ~= nil then
 			FreezeEntityPosition(player, false)
 			TriggerEvent(data.action, data.data)
