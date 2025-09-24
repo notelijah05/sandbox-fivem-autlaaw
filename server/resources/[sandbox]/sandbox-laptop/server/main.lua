@@ -83,7 +83,6 @@ function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
-	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
@@ -101,7 +100,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"MDT",
 		"Jobs",
 		"Labor",
-		"Crypto",
 		"Generator",
 		"Properties",
 		"Loans",

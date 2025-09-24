@@ -290,7 +290,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	-- 	if repLvl >= 3 then
 	-- 		if _pawnItems[data.index] and _pawnItems[data.index].qty > 0 then
-	-- 			if Crypto.Exchange:Remove(_pawnItems[data.index].coin, char:GetData("SID"), _pawnItems[data.index].price) then
+	-- 			if exports['sandbox-finance']:CryptoExchangeRemove(_pawnItems[data.index].coin, char:GetData("SID"), _pawnItems[data.index].price) then
 	-- 				_pawnItems[data.index].qty = _pawnItems[data.index].qty - 1
 
 	-- 				exports['sandbox-phone']:NotificationAdd(

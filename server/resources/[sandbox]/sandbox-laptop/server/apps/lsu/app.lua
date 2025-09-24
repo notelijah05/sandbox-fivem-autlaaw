@@ -101,7 +101,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						and (not v.vpn or hasVpn)
 						and (
 							not v.requireCurrency
-							or v.requireCurrency and v.coin ~= nil and Crypto:Has(source, v.coin, v.price)
+							or v.requireCurrency and v.coin ~= nil and exports['sandbox-finance']:CryptoHas(source, v.coin, v.price)
 						)
 					then
 						if _timeDelay > os.time() then
@@ -154,7 +154,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				local failed = false
 
 				for k, v in ipairs(requiredCoins) do
-					if not Crypto:Has(source, k, v) then
+					if not exports['sandbox-finance']:CryptoHas(source, k, v) then
 						failed = true
 					end
 				end
@@ -183,7 +183,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						then
 							if v.qty == -1 or v.qty >= v.quantity then
 								if
-									Crypto.Exchange:Remove(
+									exports['sandbox-finance']:CryptoExchangeRemove(
 										marketItem.coin,
 										char:GetData("CryptoWallet"),
 										math.floor(marketItem.price * v.quantity)

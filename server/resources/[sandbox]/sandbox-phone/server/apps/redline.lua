@@ -549,7 +549,8 @@ function Payout(numRacers, results, isCompetitive)
 			if char ~= nil then
 				Reputation.Modify:Add(char:GetData("Source"), "Racing", 25 + (25 * (numRacers - v.place)))
 				if v.reward ~= nil and v.reward.crypto > 0 then
-					Crypto.Exchange:Add(_awardedCoin, char:GetData("CryptoWallet"), v.reward.crypto)
+					exports['sandbox-finance']:CryptoExchangeAdd(_awardedCoin, char:GetData("CryptoWallet"),
+						v.reward.crypto)
 				end
 			end
 		end

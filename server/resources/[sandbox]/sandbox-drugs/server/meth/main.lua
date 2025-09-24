@@ -359,8 +359,8 @@ AddEventHandler("Drugs:Server:Startup", function()
 
         for k, v in ipairs(_toolsForSale) do
             if v.id == data then
-                local coinData = Crypto.Coin:Get(v.coin)
-                if Crypto.Exchange:Remove(v.coin, char:GetData("CryptoWallet"), v.price) then
+                local coinData = exports['sandbox-finance']:CryptoCoinGet(v.coin)
+                if exports['sandbox-finance']:CryptoExchangeRemove(v.coin, char:GetData("CryptoWallet"), v.price) then
                     exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
                     _toolsForSale[v.item][char:GetData("SID")] = true
                 else

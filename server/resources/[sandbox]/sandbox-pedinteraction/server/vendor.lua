@@ -28,14 +28,12 @@ local _illegalBlacklist = {
 AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
 function RetrieveVendorComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vendor", {
 		"Reputation",
-		"Crypto",
 		"Wallet",
 	}, function(error)
 		if #error > 0 then
@@ -83,7 +81,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								and (
 									not v.requireCurrency
 									or v.requireCurrency
-									and ((v.coin ~= nil and Crypto:Has(source, v.coin, v.price)) or (v.coin == nil and Wallet:Has(
+									and ((v.coin ~= nil and exports['sandbox-finance']:CryptoHas(source, v.coin, v.price)) or (v.coin == nil and Wallet:Has(
 										source,
 										v.price
 									)))
@@ -174,7 +172,7 @@ AddEventHandler("Core:Shared:Ready", function()
 									and (
 										not _created[data.id].requireCurrency
 										or _created[data.id].requireCurrency
-										and ((itemData.coin ~= nil and Crypto:Has(
+										and ((itemData.coin ~= nil and exports['sandbox-finance']:CryptoHas(
 											source,
 											itemData.coin,
 											itemData.price
@@ -182,9 +180,9 @@ AddEventHandler("Core:Shared:Ready", function()
 									)
 								then
 									if itemData.coin ~= nil then
-										local coinData = Crypto.Coin:Get(itemData.coin)
+										local coinData = exports['sandbox-finance']:CryptoCoinGet(itemData.coin)
 										if
-											Crypto.Exchange:Remove(
+											exports['sandbox-finance']:CryptoExchangeRemove(
 												itemData.coin,
 												char:GetData("CryptoWallet"),
 												itemData.price

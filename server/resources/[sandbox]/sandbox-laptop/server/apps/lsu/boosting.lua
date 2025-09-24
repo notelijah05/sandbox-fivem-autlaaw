@@ -369,7 +369,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                 for k, v in ipairs(boostingContracts) do
                     if v.id == data.id and (v.expires > os.time()) and (level >= v.vehicle.classLevel or v.vehicle.rewarded) then
                         if team?.ID and (#team.Members >= 2 or (perm["lsunderground"] and perm["lsunderground"]["admin"])) then
-                            if Crypto:Has(source, v.prices.standard.coin, v.prices.standard.price) then
+                            if exports['sandbox-finance']:CryptoHas(source, v.prices.standard.coin, v.prices.standard.price) then
                                 local req = Laptop.Teams.Requests:Add(
                                     team.ID,
                                     true,
@@ -744,7 +744,7 @@ AddEventHandler("Laptop:Server:LSUnderground:Boosting:ActionRequest", function(s
                     end
 
                     if not fail then
-                        if Crypto.Exchange:Remove(v.prices.standard.coin, owner:GetData("CryptoWallet"), v.prices.standard.price) then
+                        if exports['sandbox-finance']:CryptoExchangeRemove(v.prices.standard.coin, owner:GetData("CryptoWallet"), v.prices.standard.price) then
                             table.remove(contracts, k)
                             updated = true
 
@@ -1122,7 +1122,7 @@ LAPTOP.LSUnderground.Boosting = {
                     if v.SID == _boosting[teamId].contractOwner?.SID then
                         local cChar = exports['sandbox-characters']:FetchCharacterSource(v.Source)
                         if cChar then
-                            Crypto.Exchange:Add(
+                            exports['sandbox-finance']:CryptoExchangeAdd(
                                 _boosting[teamId].coin,
                                 cChar:GetData("CryptoWallet"),
                                 math.floor(_boosting[teamId].price + earnedCrypto)

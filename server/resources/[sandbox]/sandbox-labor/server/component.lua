@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
-	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
@@ -22,7 +21,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Properties",
 		"Status",
 		"Robbery",
-		"Crypto",
 		"Jail",
 		"Pwnzor",
 	}, function(error)

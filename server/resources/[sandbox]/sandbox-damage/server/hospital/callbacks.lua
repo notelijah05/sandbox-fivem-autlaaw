@@ -172,7 +172,7 @@ function HospitalCallbacks()
 		if p.isEscorting ~= nil then
 			local t = Player(p.isEscorting).state
 			if t ~= nil and t.isDead then
-				if Crypto.Exchange:Remove("MALD", char:GetData("CryptoWallet"), 20) then
+				if exports['sandbox-finance']:CryptoExchangeRemove("MALD", char:GetData("CryptoWallet"), 20) then
 					cb(true)
 					local tChar = exports['sandbox-characters']:FetchCharacterSource(p.isEscorting)
 					if tChar ~= nil then

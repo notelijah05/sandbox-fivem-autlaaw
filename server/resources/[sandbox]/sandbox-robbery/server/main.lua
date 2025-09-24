@@ -27,7 +27,6 @@ function RetrieveComponents()
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
-	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
 end
 
@@ -190,7 +189,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Robbery",
 		"Jobs",
 		"Doors",
-		"Crypto",
 		"CCTV",
 	}, function(error)
 		if #error > 0 then
@@ -242,7 +240,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				heading = pos2.w,
 			}, _schemSeller, "badge-dollar", "View Offers")
 
-		Crypto.Coin:Create("HEIST", "HEIST", 100, false, false)
+		exports['sandbox-finance']:CryptoCoinCreate("HEIST", "HEIST", 100, false, false)
 
 		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 			TriggerClientEvent("Robbery:Client:State:Init", source, _bankStates)

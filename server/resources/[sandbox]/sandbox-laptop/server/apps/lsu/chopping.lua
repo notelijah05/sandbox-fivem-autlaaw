@@ -330,16 +330,20 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 									calcLvl)
 
 								if list.type == 3 then
-									Crypto.Exchange:Add("VRM", char:GetData("CryptoWallet"), math.random(5, 10))
+									exports['sandbox-finance']:CryptoExchangeAdd("VRM", char:GetData("CryptoWallet"),
+										math.random(5, 10))
 								else
-									Crypto.Exchange:Add("MALD", char:GetData("CryptoWallet"), math.random(8, 14))
+									exports['sandbox-finance']:CryptoExchangeAdd("MALD", char:GetData("CryptoWallet"),
+										math.random(8, 14))
 								end
 								Wallet:Modify(source, math.random(500) + 500)
 							else
 								if list.type == 3 then
-									Crypto.Exchange:Add("VRM", char:GetData("CryptoWallet"), math.random(2, 6))
+									exports['sandbox-finance']:CryptoExchangeAdd("VRM", char:GetData("CryptoWallet"),
+										math.random(2, 6))
 								else
-									Crypto.Exchange:Add("MALD", char:GetData("CryptoWallet"), math.random(4, 7))
+									exports['sandbox-finance']:CryptoExchangeAdd("MALD", char:GetData("CryptoWallet"),
+										math.random(4, 7))
 								end
 								Wallet:Modify(source, math.random(200) + 200)
 							end

@@ -3,7 +3,6 @@ _cryptoCoins = {}
 AddEventHandler("Crypto:Shared:DependencyUpdate", RetrieveCryptoComponents)
 function RetrieveCryptoComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -14,7 +13,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Generator",
 		"Wallet",
 		"Loans",
-		"Crypto",
 		"Jobs",
 	}, function(error)
 		if #error > 0 then
@@ -25,298 +23,297 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-_CRYPTO = {
-	Coin = {
-		Create = function(self, name, acronym, price, buyable, sellable)
-			while Crypto == nil do
-				Wait(1)
-			end
+exports("CryptoCoinCreate", function(name, acronym, price, buyable, sellable)
+	while Crypto == nil do
+		Wait(1)
+	end
 
-			if not Crypto.Coin:Get(acronym) then
-				table.insert(_cryptoCoins, {
+	if not exports['sandbox-finance']:CryptoCoinGet(acronym) then
+		table.insert(_cryptoCoins, {
+			Name = name,
+			Short = acronym,
+			Price = price,
+			Buyable = buyable,
+			Sellable = sellable,
+		})
+	else
+		for k, v in ipairs(_cryptoCoins) do
+			if v.Short == acronym then
+				_cryptoCoins[k] = {
 					Name = name,
 					Short = acronym,
 					Price = price,
 					Buyable = buyable,
 					Sellable = sellable,
-				})
-			else
-				for k, v in ipairs(_cryptoCoins) do
-					if v.Short == acronym then
-						_cryptoCoins[k] = {
-							Name = name,
-							Short = acronym,
-							Price = price,
-							Buyable = buyable,
-							Sellable = sellable,
-						}
-						return
-					end
-				end
+				}
+				return
 			end
-		end,
-		Get = function(self, acronym)
-			for k, v in ipairs(_cryptoCoins) do
-				if v.Short == acronym then
-					return v
-				end
-			end
-
-			return nil
-		end,
-		GetAll = function(self)
-			return _cryptoCoins
-		end,
-	},
-	Has = function(self, source, coin, amt)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local crypto = char:GetData("Crypto") or {}
-			return crypto[coin] ~= nil and crypto[coin] >= amt
-		else
-			return false
 		end
-	end,
-	Exchange = {
-		IsListed = function(self, coin)
-			for k, v in ipairs(_cryptoCoins) do
-				if v.Short == coin then
-					return true
-				end
-			end
-			return false
-		end,
-		Buy = function(self, coin, target, amount)
-			if Crypto.Exchange:IsListed(coin) then
-				local char = exports['sandbox-characters']:FetchBySID(target)
-				if char ~= nil then
-					local acc = exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID"))
-					local coinData = Crypto.Coin:Get(coin)
-					if acc.Balance >= (coinData.Price * amount) then
-						if
-							exports['sandbox-finance']:BalanceWithdraw(acc.Account, (coinData.Price * amount), {
-								type = "withdraw",
-								title = "Crypto Purchase",
-								description = string.format("Bought %s $%s", amount, coin),
-								transactionAccount = false,
-								data = {
-									character = char:GetData("SID"),
-								},
-							})
-						then
-							exports['sandbox-phone']:NotificationAdd(
-								char:GetData("Source"),
-								"Crypto Purchase",
-								string.format("You Bought %s $%s", amount, coin),
-								os.time(),
-								6000,
-								"crypto",
-								{}
-							)
-							return Crypto.Exchange:Add(coin, char:GetData("CryptoWallet"), amount)
-						else
-							return false
-						end
-					else
-						exports['sandbox-phone']:NotificationAdd(
-							char:GetData("Source"),
-							"Crypto Purchase",
-							"Insufficient Funds",
-							os.time(),
-							6000,
-							"crypto",
-							{}
-						)
-						return false
-					end
-				else
-					return false
-				end
-			else
-				return false
-			end
-		end,
-		Sell = function(self, coin, target, amount)
-			if Crypto.Exchange:IsListed(coin) then
-				local char = exports['sandbox-characters']:FetchBySID(target)
-				if char ~= nil then
-					local acc = exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID"))
-					local coinData = Crypto.Coin:Get(coin)
+	end
+end)
 
-					if coinData.Sellable then
-						if Crypto.Exchange:Remove(coin, char:GetData("CryptoWallet"), amount, true) then
-							return exports['sandbox-finance']:BalanceDeposit(acc.Account, (coinData.Sellable * amount), {
-								type = "deposit",
-								title = "Crypto Sale",
-								description = string.format("Sold %s $%s", amount, coin),
-								transactionAccount = false,
-								data = {
-									character = char:GetData("SID"),
-								},
-							})
-						else
-							return false
-						end
-					else
-						return false
-					end
-				else
-					return false
-				end
-			else
-				return false
-			end
-		end,
-		Add = function(self, coin, target, amount, skipAlert)
-			local char = exports['sandbox-characters']:FetchCharacterData("CryptoWallet", target)
-			if char ~= nil then
-				local crypto = char:GetData("Crypto") or {}
-				if crypto[coin] == nil then
-					crypto[coin] = 0
-				end
+exports("CryptoCoinGet", function(acronym)
+	for k, v in ipairs(_cryptoCoins) do
+		if v.Short == acronym then
+			return v
+		end
+	end
 
-				crypto[coin] = crypto[coin] + amount
-				char:SetData("Crypto", crypto)
+	return nil
+end)
 
-				if not skipAlert then
+exports("CryptoCoinGetAll", function()
+	return _cryptoCoins
+end)
+
+exports("CryptoHas", function(source, coin, amt)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local crypto = char:GetData("Crypto") or {}
+		return crypto[coin] ~= nil and crypto[coin] >= amt
+	else
+		return false
+	end
+end)
+
+exports("CryptoExchangeIsListed", function(coin)
+	for k, v in ipairs(_cryptoCoins) do
+		if v.Short == coin then
+			return true
+		end
+	end
+	return false
+end)
+
+exports("CryptoExchangeBuy", function(coin, target, amount)
+	if exports['sandbox-finance']:CryptoExchangeIsListed(coin) then
+		local char = exports['sandbox-characters']:FetchBySID(target)
+		if char ~= nil then
+			local acc = exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID"))
+			local coinData = exports['sandbox-finance']:CryptoCoinGet(coin)
+			if acc.Balance >= (coinData.Price * amount) then
+				if
+					exports['sandbox-finance']:BalanceWithdraw(acc.Account, (coinData.Price * amount), {
+						type = "withdraw",
+						title = "Crypto Purchase",
+						description = string.format("Bought %s $%s", amount, coin),
+						transactionAccount = false,
+						data = {
+							character = char:GetData("SID"),
+						},
+					})
+				then
 					exports['sandbox-phone']:NotificationAdd(
 						char:GetData("Source"),
-						"Received Crypto",
-						string.format("You Received %s $%s", amount, coin),
+						"Crypto Purchase",
+						string.format("You Bought %s $%s", amount, coin),
 						os.time(),
 						6000,
 						"crypto",
 						{}
 					)
+					return exports['sandbox-finance']:CryptoExchangeAdd(coin, char:GetData("CryptoWallet"), amount)
+				else
+					return false
 				end
-
-				return true
 			else
-				local p = promise.new()
-				exports['sandbox-base']:DatabaseGameUpdateOne({
-					collection = "characters",
-					query = {
-						CryptoWallet = target,
-					},
-					update = {
-						["$inc"] = {
-							[string.format("Crypto.%s", coin)] = amount,
-						},
-					},
-				}, function(success, res)
-					p:resolve(success)
-				end)
-
-				return Citizen.Await(p)
+				exports['sandbox-phone']:NotificationAdd(
+					char:GetData("Source"),
+					"Crypto Purchase",
+					"Insufficient Funds",
+					os.time(),
+					6000,
+					"crypto",
+					{}
+				)
+				return false
 			end
-		end,
-		Remove = function(self, coin, target, amount, skipAlert)
-			local p = promise.new()
-			local char = exports['sandbox-characters']:FetchCharacterData("CryptoWallet", target)
-			if char ~= nil then
-				local crypto = char:GetData("Crypto") or {}
+		else
+			return false
+		end
+	else
+		return false
+	end
+end)
 
-				if crypto[coin] == nil then
-					crypto[coin] = 0
+exports("CryptoExchangeSell", function(coin, target, amount)
+	if exports['sandbox-finance']:CryptoExchangeIsListed(coin) then
+		local char = exports['sandbox-characters']:FetchBySID(target)
+		if char ~= nil then
+			local acc = exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID"))
+			local coinData = exports['sandbox-finance']:CryptoCoinGet(coin)
+
+			if coinData.Sellable then
+				if exports['sandbox-finance']:CryptoExchangeRemove(coin, char:GetData("CryptoWallet"), amount, true) then
+					return exports['sandbox-finance']:BalanceDeposit(acc.Account, (coinData.Sellable * amount), {
+						type = "deposit",
+						title = "Crypto Sale",
+						description = string.format("Sold %s $%s", amount, coin),
+						transactionAccount = false,
+						data = {
+							character = char:GetData("SID"),
+						},
+					})
+				else
+					return false
 				end
+			else
+				return false
+			end
+		else
+			return false
+		end
+	else
+		return false
+	end
+end)
 
-				if crypto[coin] >= amount then
-					crypto[coin] = crypto[coin] - amount
-					char:SetData("Crypto", crypto)
+exports("CryptoExchangeAdd", function(coin, target, amount, skipAlert)
+	local char = exports['sandbox-characters']:FetchCharacterData("CryptoWallet", target)
+	if char ~= nil then
+		local crypto = char:GetData("Crypto") or {}
+		if crypto[coin] == nil then
+			crypto[coin] = 0
+		end
 
-					if not skipAlert then
-						exports['sandbox-phone']:NotificationAdd(
-							char:GetData("Source"),
-							"Crypto Purchase",
-							string.format("You Paid %s $%s", amount, coin),
-							os.time(),
-							6000,
-							"crypto",
-							{}
-						)
-					end
+		crypto[coin] = crypto[coin] + amount
+		char:SetData("Crypto", crypto)
 
-					p:resolve(true)
+		if not skipAlert then
+			exports['sandbox-phone']:NotificationAdd(
+				char:GetData("Source"),
+				"Received Crypto",
+				string.format("You Received %s $%s", amount, coin),
+				os.time(),
+				6000,
+				"crypto",
+				{}
+			)
+		end
+
+		return true
+	else
+		local p = promise.new()
+		exports['sandbox-base']:DatabaseGameUpdateOne({
+			collection = "characters",
+			query = {
+				CryptoWallet = target,
+			},
+			update = {
+				["$inc"] = {
+					[string.format("Crypto.%s", coin)] = amount,
+				},
+			},
+		}, function(success, res)
+			p:resolve(success)
+		end)
+
+		return Citizen.Await(p)
+	end
+end)
+
+exports("CryptoExchangeRemove", function(coin, target, amount, skipAlert)
+	local p = promise.new()
+	local char = exports['sandbox-characters']:FetchCharacterData("CryptoWallet", target)
+	if char ~= nil then
+		local crypto = char:GetData("Crypto") or {}
+
+		if crypto[coin] == nil then
+			crypto[coin] = 0
+		end
+
+		if crypto[coin] >= amount then
+			crypto[coin] = crypto[coin] - amount
+			char:SetData("Crypto", crypto)
+
+			if not skipAlert then
+				exports['sandbox-phone']:NotificationAdd(
+					char:GetData("Source"),
+					"Crypto Purchase",
+					string.format("You Paid %s $%s", amount, coin),
+					os.time(),
+					6000,
+					"crypto",
+					{}
+				)
+			end
+
+			p:resolve(true)
+		else
+			p:resolve(false)
+		end
+	else
+		exports['sandbox-base']:DatabaseGameFindOne({
+			collection = "characters",
+			query = {
+				CryptoWallet = target,
+			},
+		}, function(success, res)
+			if #res == 0 then
+				p:resolve(false)
+				return
+			else
+				if res[1].Crypto[coin] >= amount then
+					exports['sandbox-base']:DatabaseGameUpdateOne({
+						collection = "characters",
+						query = {
+							CryptoWallet = target,
+						},
+						update = {
+							["$inc"] = {
+								[string.format("Crypto.%s", coin)] = amount,
+							},
+						},
+					}, function(success, res)
+						p:resolve(success)
+					end)
 				else
 					p:resolve(false)
+					return
 				end
-			else
-				exports['sandbox-base']:DatabaseGameFindOne({
-					collection = "characters",
-					query = {
-						CryptoWallet = target,
-					},
-				}, function(success, res)
-					if #res == 0 then
-						p:resolve(false)
-						return
-					else
-						if res[1].Crypto[coin] >= amount then
-							exports['sandbox-base']:DatabaseGameUpdateOne({
-								collection = "characters",
-								query = {
-									CryptoWallet = target,
-								},
-								update = {
-									["$inc"] = {
-										[string.format("Crypto.%s", coin)] = amount,
-									},
-								},
-							}, function(success, res)
-								p:resolve(success)
-							end)
-						else
-							p:resolve(false)
-							return
-						end
-					end
-				end)
 			end
+		end)
+	end
 
-			return Citizen.Await(p)
-		end,
-		Transfer = function(self, coin, sender, target, amount)
-			local char = exports['sandbox-characters']:FetchBySID(sender)
-			if char then
-				if char:GetData("CryptoWallet") ~= target then
-					local tChar = exports['sandbox-characters']:FetchCharacterData("CryptoWallet", target)
+	return Citizen.Await(p)
+end)
 
-					if tChar or DoesCryptoWalletExist(target) then
-						if Crypto.Exchange:Remove(coin, char:GetData("CryptoWallet"), math.abs(amount), true) then
+exports("CryptoExchangeTransfer", function(coin, sender, target, amount)
+	local char = exports['sandbox-characters']:FetchBySID(sender)
+	if char then
+		if char:GetData("CryptoWallet") ~= target then
+			local tChar = exports['sandbox-characters']:FetchCharacterData("CryptoWallet", target)
+
+			if tChar or DoesCryptoWalletExist(target) then
+				if exports['sandbox-finance']:CryptoExchangeRemove(coin, char:GetData("CryptoWallet"), math.abs(amount), true) then
+					exports['sandbox-phone']:NotificationAdd(
+						char:GetData("Source"),
+						"Crypto Transfer",
+						string.format("You Sent %s $%s", amount, coin),
+						os.time(),
+						6000,
+						"crypto",
+						{}
+					)
+
+					if exports['sandbox-finance']:CryptoExchangeAdd(coin, target, math.abs(amount), true) then
+						if tChar then
 							exports['sandbox-phone']:NotificationAdd(
-								char:GetData("Source"),
+								tChar:GetData("Source"),
 								"Crypto Transfer",
-								string.format("You Sent %s $%s", amount, coin),
+								string.format("You Received %s $%s", amount, coin),
 								os.time(),
 								6000,
 								"crypto",
 								{}
 							)
-
-							if Crypto.Exchange:Add(coin, target, math.abs(amount), true) then
-								if tChar then
-									exports['sandbox-phone']:NotificationAdd(
-										tChar:GetData("Source"),
-										"Crypto Transfer",
-										string.format("You Received %s $%s", amount, coin),
-										os.time(),
-										6000,
-										"crypto",
-										{}
-									)
-								end
-
-								return true
-							end
 						end
+
+						return true
 					end
 				end
 			end
-			return false
-		end,
-	},
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Crypto", _CRYPTO)
+		end
+	end
+	return false
 end)

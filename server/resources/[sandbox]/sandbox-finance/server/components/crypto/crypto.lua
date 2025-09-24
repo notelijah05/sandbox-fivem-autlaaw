@@ -27,14 +27,15 @@ AddEventHandler("Finance:Server:Startup", function()
 	exports['sandbox-inventory']:RegisterUse("crypto_voucher", "RandomItems", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if item.MetaData.CryptoCoin and ((item.MetaData.Quantity and tonumber(item.MetaData.Quantity) or 0) > 0) then
-			local data = Crypto.Coin:Get(item.MetaData.CryptoCoin)
+			local data = exports['sandbox-finance']:CryptoCoinGet(item.MetaData.CryptoCoin)
 
 			-- More dumb compatability stuff
 			if item.MetaData.CryptoCoin == "PLEB" then
 				item.MetaData.CryptoCoin = "MALD"
 			end
 
-			Crypto.Exchange:Add(item.MetaData.CryptoCoin, char:GetData("CryptoWallet"), item.MetaData.Quantity)
+			exports['sandbox-finance']:CryptoExchangeAdd(item.MetaData.CryptoCoin, char:GetData("CryptoWallet"),
+				item.MetaData.Quantity)
 			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 		else
 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Voucher")
