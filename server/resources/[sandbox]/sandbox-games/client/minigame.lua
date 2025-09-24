@@ -657,7 +657,7 @@ MINIGAME = {
 			_playGame(params, action)
 		end,
 		Drill = function(self, events, data)
-			Drilling.Start(function(success)
+			exports['sandbox-games']:DrillingStart(function(success)
 				if success then
 					if type(events.onSuccess) == "string" then
 						TriggerEvent(events.onSuccess, data or {})
