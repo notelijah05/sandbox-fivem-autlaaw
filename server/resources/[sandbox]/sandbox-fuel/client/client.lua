@@ -239,7 +239,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 	local entState = Entity(entityData.entity).state
 	entState:set("beingFueled", GetPlayerServerId(LocalPlayer.state.PlayerID), true)
 
-	local fuelData = Vehicles.Fuel:CanBeFueled(entityData.entity)
+	local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
 	if not fuelData then
 		return
 	end

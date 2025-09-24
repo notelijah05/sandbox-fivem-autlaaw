@@ -44,14 +44,14 @@ Config.VehicleMenu = {
 	{
 		icon = "gas-pump",
 		isEnabled = function(data, entityData)
-			if Vehicles ~= nil and Vehicles.Fuel:CanBeFueled(entityData.entity) then
+			if Vehicles ~= nil and exports['sandbox-fuel']:CanBeFueled(entityData.entity) then
 				return true
 			end
 			return false
 		end,
 		textFunc = function(data, entityData)
 			if Vehicles ~= nil then
-				local fuelData = Vehicles.Fuel:CanBeFueled(entityData.entity)
+				local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
 				if fuelData then
 					if fuelData.needsFuel then
 						return string.format("Refuel For $%d", fuelData.cost)
@@ -70,7 +70,7 @@ Config.VehicleMenu = {
 		icon = "credit-card",
 		isEnabled = function(data, entityData)
 			if Vehicles ~= nil then
-				local fuelData = Vehicles.Fuel:CanBeFueled(entityData.entity)
+				local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
 				if fuelData and fuelData.needsFuel then
 					return true
 				end
@@ -79,7 +79,7 @@ Config.VehicleMenu = {
 		end,
 		textFunc = function(data, entityData)
 			if Vehicles ~= nil then
-				local fuelData = Vehicles.Fuel:CanBeFueled(entityData.entity)
+				local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
 				if fuelData then
 					if fuelData.needsFuel then
 						return string.format("Refuel For $%d (Pay by Card)", fuelData.cost)
