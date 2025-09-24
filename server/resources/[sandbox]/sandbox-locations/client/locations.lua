@@ -96,13 +96,11 @@ end)
 AddEventHandler('Locations:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Locations = exports['sandbox-base']:FetchComponent('Locations')
-    Characters = exports['sandbox-base']:FetchComponent('Characters')
 end
 
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Locations', {
         'Locations',
-        'Characters',
     }, function(error)
         if #error > 0 then
             return;

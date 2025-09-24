@@ -2,80 +2,66 @@ local _pzs = {}
 local _inPoly = false
 local _menu = false
 
-AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Characters = exports["sandbox-base"]:FetchComponent("Characters")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Apartment", {
-		"Characters",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
+	for k, v in ipairs(GlobalState["Apartments"]) do
+		local aptId = string.format("apt-%s", v)
+		local apt = GlobalState[string.format("Apartment:%s", v)]
 
-		for k, v in ipairs(GlobalState["Apartments"]) do
-			local aptId = string.format("apt-%s", v)
-			local apt = GlobalState[string.format("Apartment:%s", v)]
+		exports['sandbox-polyzone']:CreateBox(aptId, apt.coords, apt.length, apt.width, apt.options, {
+			tier = k
+		})
 
-			exports['sandbox-polyzone']:CreateBox(aptId, apt.coords, apt.length, apt.width, apt.options, {
-				tier = k
-			})
+		exports["sandbox-blips"]:Add(aptId, apt.name, apt.coords, 475, 25)
+		_pzs[aptId] = {
+			name = apt.name,
+			id = apt.id,
+		}
+	end
 
-			exports["sandbox-blips"]:Add(aptId, apt.name, apt.coords, 475, 25)
-			_pzs[aptId] = {
-				name = apt.name,
-				id = apt.id,
-			}
+	exports['sandbox-hud']:InteractionRegisterMenu("apt-exit", "Exit Apartment", "door-open", function(data)
+		exports['sandbox-hud']:InteractionHide()
+		exports['sandbox-apartments']:Exit()
+	end, function()
+		if
+			not LocalPlayer.state.isDead
+			and GlobalState[string.format("%s:", LocalPlayer.state.ID)] ~= nil
+		then
+			local p = GlobalState[string.format(
+				"Apartment:%s",
+				LocalPlayer.state.inApartment.type
+			)]
+
+			local dist = #(
+				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
+				- vector3(p.interior.spawn.x, p.interior.spawn.y, p.interior.spawn.z)
+			)
+			return dist <= 2.0
+		else
+			return false
 		end
-
-		exports['sandbox-hud']:InteractionRegisterMenu("apt-exit", "Exit Apartment", "door-open", function(data)
-			exports['sandbox-hud']:InteractionHide()
-			exports['sandbox-apartments']:Exit()
-		end, function()
-			if
-				not LocalPlayer.state.isDead
-				and GlobalState[string.format("%s:", LocalPlayer.state.ID)] ~= nil
-			then
-				local p = GlobalState[string.format(
-					"Apartment:%s",
-					LocalPlayer.state.inApartment.type
-				)]
-
-				local dist = #(
-					vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
-					- vector3(p.interior.spawn.x, p.interior.spawn.y, p.interior.spawn.z)
-				)
-				return dist <= 2.0
-			else
-				return false
-			end
-		end)
-
-		-- exports['sandbox-hud']:InteractionRegisterMenu("apt-visitors", "Check Visitors", "hand-back-fist", function(data)
-		-- 	exports['sandbox-hud']:InteractionHide()
-		-- 	CheckVisitors()
-		-- end, function()
-		-- 	if GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)] ~= nil then
-		-- 		local p = GlobalState[string.format(
-		-- 			"Apartment:%s",
-		-- 			GlobalState[string.format(
-		-- 				"Apartment:Interior:%s",
-		-- 				GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)]
-		-- 			)]
-		-- 		)]
-		-- 		local dist = #(
-		-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
-		-- 				- vector3(p.interior.spawn.x, p.interior.spawn.y, p.interior.spawn.z)
-		-- 			)
-		-- 		return dist <= 2.0
-		-- 	else
-		-- 		return false
-		-- 	end
-		-- end)
 	end)
+
+	-- exports['sandbox-hud']:InteractionRegisterMenu("apt-visitors", "Check Visitors", "hand-back-fist", function(data)
+	-- 	exports['sandbox-hud']:InteractionHide()
+	-- 	CheckVisitors()
+	-- end, function()
+	-- 	if GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)] ~= nil then
+	-- 		local p = GlobalState[string.format(
+	-- 			"Apartment:%s",
+	-- 			GlobalState[string.format(
+	-- 				"Apartment:Interior:%s",
+	-- 				GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)]
+	-- 			)]
+	-- 		)]
+	-- 		local dist = #(
+	-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
+	-- 				- vector3(p.interior.spawn.x, p.interior.spawn.y, p.interior.spawn.z)
+	-- 			)
+	-- 		return dist <= 2.0
+	-- 	else
+	-- 		return false
+	-- 	end
+	-- end)
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()

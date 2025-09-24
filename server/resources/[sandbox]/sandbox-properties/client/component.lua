@@ -20,14 +20,12 @@ _placingSearchItem = nil
 
 AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Properties", {
-		"Characters",
 		"Properties",
 		"ObjectPlacer",
 	}, function(error)

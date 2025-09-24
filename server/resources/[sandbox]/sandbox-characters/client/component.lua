@@ -1,21 +1,3 @@
-Characters = nil
-
-AddEventHandler("Characters:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Characters = exports["sandbox-base"]:FetchComponent("Characters")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Characters", {
-		"Characters",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-	end)
-end)
-
 RegisterNetEvent("Characters:Client:SetData", function(key, data, cb)
 	if key ~= -1 then
 		LocalPlayer.state.Character:SetData(key, data)
@@ -32,29 +14,26 @@ RegisterNetEvent("Characters:Client:SetData", function(key, data, cb)
 	end
 end)
 
-CHARACTERS = {
-	Updating = true,
-	Logout = function(self)
-		DoScreenFadeOut(500)
-		while IsScreenFadingOut() do
-			Wait(1)
-		end
-		exports["sandbox-base"]:ServerCallback("Characters:Logout", {}, function()
-			LocalPlayer.state.Char = nil
-			LocalPlayer.state.Character = nil
-			LocalPlayer.state.loggedIn = false
-			LocalPlayer.state:set('SID', nil, true)
-			exports['sandbox-hud']:ActionHide()
-			exports["sandbox-base"]:FetchComponent("Spawn"):InitCamera()
-			SendNUIMessage({
-				type = "APP_RESET",
-			})
-			Wait(500)
-			exports["sandbox-base"]:FetchComponent("Spawn"):Init()
-		end)
-	end,
-}
+exports("Logout", function()
+	DoScreenFadeOut(500)
+	while IsScreenFadingOut() do
+		Wait(1)
+	end
+	exports["sandbox-base"]:ServerCallback("Characters:Logout", {}, function()
+		LocalPlayer.state.Char = nil
+		LocalPlayer.state.Character = nil
+		LocalPlayer.state.loggedIn = false
+		LocalPlayer.state:set('SID', nil, true)
+		exports['sandbox-hud']:ActionHide()
+		exports["sandbox-base"]:FetchComponent("Spawn"):InitCamera()
+		SendNUIMessage({
+			type = "APP_RESET",
+		})
+		Wait(500)
+		exports["sandbox-base"]:FetchComponent("Spawn"):Init()
+	end)
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Characters", CHARACTERS)
+RegisterNetEvent("Characters:Client:Logout:Event", function()
+	exports['sandbox-characters']:Logout()
 end)

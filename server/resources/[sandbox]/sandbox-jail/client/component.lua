@@ -4,14 +4,12 @@ _doingMugshot = false
 
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
-		"Characters",
 		"Reputation",
 		"Jail",
 	}, function(error)
