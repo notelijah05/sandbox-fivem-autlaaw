@@ -5,13 +5,11 @@ _activeTowers = {}
 
 AddEventHandler("Tow:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Tow = exports["sandbox-base"]:FetchComponent("Tow")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Tow", {
-		"Jobs",
 		"Tow",
 	}, function(error)
 		if #error > 0 then
@@ -21,8 +19,8 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports["sandbox-base"]:RegisterServerCallback("Tow:RequestJob", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if not Jobs.Permissions:HasJob(source, "tow") and char then
-				cb(Jobs:GiveJob(char:GetData("SID"), "tow", false, "employee"))
+			if not exports['sandbox-jobs']:HasJob(source, "tow") and char then
+				cb(exports['sandbox-jobs']:GiveJob(char:GetData("SID"), "tow", false, "employee"))
 			else
 				cb(false)
 			end
@@ -30,9 +28,9 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports["sandbox-base"]:RegisterServerCallback("Tow:QuitJob", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if Jobs.Permissions:HasJob(source, "tow") and char then
+			if exports['sandbox-jobs']:HasJob(source, "tow") and char then
 				_activeTowers[source] = nil
-				cb(Jobs:RemoveJob(char:GetData("SID"), "tow"))
+				cb(exports['sandbox-jobs']:RemoveJob(char:GetData("SID"), "tow"))
 			else
 				cb(false)
 			end
@@ -40,10 +38,10 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports["sandbox-base"]:RegisterServerCallback("Tow:OnDuty", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			local dutyData = Jobs.Duty:GetDutyData("tow")
-			if Jobs.Permissions:HasJob(source, "tow") and char then
+			local dutyData = exports['sandbox-jobs']:DutyGetDutyData("tow")
+			if exports['sandbox-jobs']:HasJob(source, "tow") and char then
 				if not dutyData or (dutyData and dutyData.Count < maxActive) then
-					if Jobs.Duty:On(source, "tow", true) then
+					if exports['sandbox-jobs']:DutyOn(source, "tow", true) then
 						_activeTowers[source] = {
 							next = os.time() + (math.random(1, 3) * 60),
 						}
@@ -76,10 +74,10 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		exports["sandbox-base"]:RegisterServerCallback("Tow:OffDuty", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char and Jobs.Duty:Get(source, "tow") then
+			if char and exports['sandbox-jobs']:DutyGet(source, "tow") then
 				local stateId = char:GetData("SID")
 				if not _activeTowVehicles[stateId] then
-					Jobs.Duty:Off(source, "tow")
+					exports['sandbox-jobs']:DutyOff(source, "tow")
 					Tow:CleanupPickup(source)
 					_activeTowers[source] = nil
 					exports['sandbox-phone']:NotificationRemoveById(source, "TOW_OBJ")

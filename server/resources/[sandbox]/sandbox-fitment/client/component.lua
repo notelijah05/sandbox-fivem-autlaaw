@@ -1,33 +1,21 @@
 EDITING_VEHICLE = nil
 
-AddEventHandler('Fitment:Shared:DependencyUpdate', RetrieveComponents)
-function RetrieveComponents()
-    Jobs = exports['sandbox-base']:FetchComponent('Jobs')
-end
-
 AddEventHandler('Core:Shared:Ready', function()
-    exports['sandbox-base']:RequestDependencies('Fitment', {
-        'Jobs',
-    }, function(error)
-        if #error > 0 then return; end
-        RetrieveComponents()
+    exports['sandbox-hud']:InteractionRegisterMenu("veh_wheels", false, "tire", function()
+        OpenWheelMenu()
+        exports['sandbox-hud']:InteractionHide()
+    end, function()
+        local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
 
-        exports['sandbox-hud']:InteractionRegisterMenu("veh_wheels", false, "tire", function()
-            OpenWheelMenu()
-            exports['sandbox-hud']:InteractionHide()
-        end, function()
-            local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
-
-            local insideZone = exports['sandbox-polyzone']:IsCoordsInZone(pedCoords, false, 'veh_customs_wheels')
-            if
-                insideZone?.veh_customs_wheels
-                and LocalPlayer.state.onDuty
-                and insideZone.veh_customs_wheels == LocalPlayer.state.onDuty
-                and Jobs.Permissions:HasJob(LocalPlayer.state.onDuty, false, false, 90) then
-                return true
-            end
-            return false
-        end)
+        local insideZone = exports['sandbox-polyzone']:IsCoordsInZone(pedCoords, false, 'veh_customs_wheels')
+        if
+            insideZone?.veh_customs_wheels
+            and LocalPlayer.state.onDuty
+            and insideZone.veh_customs_wheels == LocalPlayer.state.onDuty
+            and exports['sandbox-jobs']:HasJob(LocalPlayer.state.onDuty, false, false, 90) then
+            return true
+        end
+        return false
     end)
 end)
 

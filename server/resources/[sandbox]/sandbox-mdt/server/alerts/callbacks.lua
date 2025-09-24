@@ -98,9 +98,9 @@ function RegisterEACallbacks()
 
 			local job = Player(source).state.onDuty
 
-			Jobs.Duty:Off(source, false, true)
+			exports['sandbox-jobs']:DutyOff(source, false, true)
 			Wait(250)
-			Jobs.Duty:On(source, job, true)
+			exports['sandbox-jobs']:DutyOn(source, job, true)
 
 			cb(true)
 		else

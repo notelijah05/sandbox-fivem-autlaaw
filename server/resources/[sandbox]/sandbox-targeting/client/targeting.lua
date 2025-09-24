@@ -181,13 +181,13 @@ function DoesCharacterPassJobPermissions(jobPermissions)
 
 	for k, v in ipairs(jobPermissions) do
 		if v.job then
-			if not v.reqOffDuty or (v.reqOffDuty and (not Jobs.Duty:Get(v.job))) then
-				if Jobs.Permissions:HasJob(v.job, v.workplace, v.grade, v.gradeLevel, v.reqDuty, v.permissionKey) then
+			if not v.reqOffDuty or (v.reqOffDuty and (not exports['sandbox-jobs']:DutyGet(v.job))) then
+				if exports['sandbox-jobs']:HasJob(v.job, v.workplace, v.grade, v.gradeLevel, v.reqDuty, v.permissionKey) then
 					return true
 				end
 			end
 		elseif v.permissionKey then
-			if Jobs.Permissions:HasPermission(v.permissionKey) then
+			if exports['sandbox-jobs']:HasPermission(v.permissionKey) then
 				return true
 			end
 		end

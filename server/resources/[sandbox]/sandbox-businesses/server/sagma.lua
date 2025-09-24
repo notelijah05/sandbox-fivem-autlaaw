@@ -7,7 +7,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 
     exports["sandbox-base"]:RegisterServerCallback("Businesses:SAGMA:Sell", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if Jobs.Permissions:HasJob(source, _jobName, false, false, false, false, "JOB_SELL_GEMS") then
+        if exports['sandbox-jobs']:HasJob(source, _jobName, false, false, false, false, "JOB_SELL_GEMS") then
             local its = exports['sandbox-inventory']:GetAllOfTypeNoStack(char:GetData("SID"), 1, 11)
 
             if #its > 0 then
@@ -75,7 +75,7 @@ end)
 AddEventHandler("Businesses:Server:SAGMA:ViewGem", function(source, data)
     local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char ~= nil then
-        if Jobs.Permissions:HasJob(source, _jobName, false, false, false, true, "JOB_USE_GEM_TABLE") then
+        if exports['sandbox-jobs']:HasJob(source, _jobName, false, false, false, true, "JOB_USE_GEM_TABLE") then
             local its = exports['sandbox-inventory']:GetInventory(source, data.owner, data.invType)
             if #its > 0 then
                 local md = json.decode(its[1].MetaData)

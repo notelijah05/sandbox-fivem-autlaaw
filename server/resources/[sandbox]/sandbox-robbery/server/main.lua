@@ -24,7 +24,6 @@ function RetrieveComponents()
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
 end
@@ -185,7 +184,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Status",
 		"Reputation",
 		"Robbery",
-		"Jobs",
 		"Doors",
 		"CCTV",
 	}, function(error)

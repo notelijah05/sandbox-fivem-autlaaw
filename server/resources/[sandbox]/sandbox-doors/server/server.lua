@@ -4,7 +4,6 @@ ELEVATOR_CACHE = {}
 
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -12,7 +11,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Jobs",
 		"Doors",
 		"Pwnzor",
 		"Properties",
@@ -255,7 +253,7 @@ function CheckPlayerAuth(source, doorPermissionData)
 	if char then
 		local stateId = char:GetData("SID")
 
-		if Jobs.Permissions:HasJob(source, "dgang", false, false, 99, true) then
+		if exports['sandbox-jobs']:HasJob(source, "dgang", false, false, 99, true) then
 			return true
 		end
 
@@ -267,7 +265,7 @@ function CheckPlayerAuth(source, doorPermissionData)
 			elseif v.type == "job" then
 				if v.job then
 					if
-						Jobs.Permissions:HasJob(
+						exports['sandbox-jobs']:HasJob(
 							source,
 							v.job,
 							v.workplace,
@@ -280,7 +278,7 @@ function CheckPlayerAuth(source, doorPermissionData)
 						return true
 					end
 				elseif v.jobPermission then
-					if Jobs.Permissions:HasPermission(source, v.jobPermission) then
+					if exports['sandbox-jobs']:HasPermission(source, v.jobPermission) then
 						return true
 					end
 				end

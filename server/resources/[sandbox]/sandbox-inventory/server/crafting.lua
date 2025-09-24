@@ -330,7 +330,7 @@ exports("CraftingGetBench", function(source, benchId)
 					source
 				)])
 				or (bench.restrictions.char ~= nil and bench.restrictions.char == char:GetData("SID"))
-				or (bench.restrictions.job ~= nil and Jobs.Permissions:HasJob(
+				or (bench.restrictions.job ~= nil and exports['sandbox-jobs']:HasJob(
 					source,
 					bench.restrictions.job.id,
 					bench.restrictions.job.workplace,
@@ -429,7 +429,7 @@ function RegisterCraftingCallbacks()
 								source
 							)])
 							or (bench.restrictions.char ~= nil and bench.restrictions.char == char:GetData("SID"))
-							or (bench.restrictions.job ~= nil and Jobs.Permissions:HasJob(
+							or (bench.restrictions.job ~= nil and exports['sandbox-jobs']:HasJob(
 								source,
 								bench.restrictions.job.id,
 								bench.restrictions.job.workplace,

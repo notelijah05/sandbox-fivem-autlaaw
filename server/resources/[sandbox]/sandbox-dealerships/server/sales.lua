@@ -123,7 +123,7 @@ function RegisterVehicleSaleCallbacks()
             local dealerData = _dealerships[dealership]
             local customerStateId, vehicle = math.tointeger(data.customer), data.vehicle
             local char = exports['sandbox-characters']:FetchCharacterSource(source)
-            if char and dealerData and customerStateId and vehicle and Jobs.Permissions:HasPermissionInJob(source, dealerData.id, 'dealership_sell') then
+            if char and dealerData and customerStateId and vehicle and exports['sandbox-jobs']:HasPermissionInJob(source, dealerData.id, 'dealership_sell') then
                 local targetCharacter = exports['sandbox-characters']:FetchBySID(customerStateId)
                 if targetCharacter then
                     local playerCoords = GetEntityCoords(GetPlayerPed(source))

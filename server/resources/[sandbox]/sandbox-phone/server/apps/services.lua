@@ -399,7 +399,7 @@ function RefreshServicesDataPls()
 
 				local onDuty = Player(src).state.onDuty
 				if onDuty and not isBlacklistedJob(onDuty) then
-					local jobData = Jobs:Get(onDuty)
+					local jobData = exports['sandbox-jobs']:Get(onDuty)
 					if jobData and jobData.Id == onDuty and not jobData.Hidden then
 						local bizPhone = GlobalState.BizPhones[jobData.Id]
 

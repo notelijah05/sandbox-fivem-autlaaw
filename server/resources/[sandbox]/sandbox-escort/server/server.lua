@@ -1,19 +1,6 @@
-AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Escort", {
-		"Jobs",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
-		RegisterMiddleware()
-	end)
+	RegisterCallbacks()
+	RegisterMiddleware()
 end)
 
 exports("EscortDo", function(source, data)

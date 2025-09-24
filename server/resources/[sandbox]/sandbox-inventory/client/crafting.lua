@@ -45,7 +45,7 @@ exports("CraftingBenchesRefresh", function(interior)
 						or (v.restrictions.char ~= nil and v.restrictions.char == LocalPlayer.state.Character:GetData(
 							"SID"
 						))
-						or (v.restrictions.job ~= nil and Jobs.Permissions:HasJob(
+						or (v.restrictions.job ~= nil and exports['sandbox-jobs']:HasJob(
 							v.restrictions.job.id,
 							v.restrictions.job.workplace,
 							v.restrictions.job.grade,

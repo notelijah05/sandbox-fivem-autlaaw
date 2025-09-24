@@ -5,13 +5,11 @@ _hiddenScenes = {}
 
 AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Scenes = exports["sandbox-base"]:FetchComponent("Scenes")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Scenes", {
-		"Jobs",
 		"Scenes",
 	}, function(error)
 		if #error > 0 then

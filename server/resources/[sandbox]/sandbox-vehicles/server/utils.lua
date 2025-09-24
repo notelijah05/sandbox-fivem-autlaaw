@@ -94,7 +94,7 @@ end
 
 function DoesVehiclePassStorageRestrictions(source, restrictedData)
     for k, v in ipairs(restrictedData) do
-        if Jobs.Permissions:HasJob(source, v.JobId, v.WorkplaceId) then
+        if exports['sandbox-jobs']:HasJob(source, v.JobId, v.WorkplaceId) then
             return true
         end
     end

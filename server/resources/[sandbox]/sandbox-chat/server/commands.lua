@@ -46,7 +46,7 @@ exports("RegisterCommand", function(command, callback, suggestion, arguments, jo
 			if commands[command].job ~= nil then
 				for k, v in pairs(commands[command].job) do
 					if myDuty and myDuty == v.Id then
-						if Jobs.Permissions:HasJob(source, v.Id, v.Workplace, v.Grade, v.Level) then
+						if exports['sandbox-jobs']:HasJob(source, v.Id, v.Workplace, v.Grade, v.Level) then
 							if
 								(#args <= commands[command].args and #args == commands[command].args)
 								or commands[command].args == -1

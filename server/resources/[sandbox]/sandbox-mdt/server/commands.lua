@@ -4,8 +4,8 @@ function RegisterChatCommands()
 		local target = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if target ~= nil then
 			if
-				Jobs.Permissions:HasJob(target:GetData("Source"), "police")
-				or Jobs.Permissions:HasJob(target:GetData("Source"), "ems")
+				exports['sandbox-jobs']:HasJob(target:GetData("Source"), "police")
+				or exports['sandbox-jobs']:HasJob(target:GetData("Source"), "ems")
 			then
 				if MDT.People:Update(-1, target:GetData("SID"), "Callsign", newCallsign) then
 					exports["sandbox-chat"]:SendSystemSingle(source, "Updated Callsign")

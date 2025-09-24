@@ -42,12 +42,12 @@ AddEventHandler("Police:Client:OnDuty", function()
 	end
 
 	StatSetInt(`MP0_STAMINA`, 35, true)
-	Jobs.Duty:On("police")
+	exports['sandbox-jobs']:DutyOn("police")
 end)
 
 AddEventHandler("Police:Client:OffDuty", function()
 	StatSetInt(`MP0_STAMINA`, 25, true)
-	Jobs.Duty:Off("police")
+	exports['sandbox-jobs']:DutyOff("police")
 end)
 
 RegisterNetEvent("Job:Client:DutyChanged", function(state, job)
@@ -57,11 +57,11 @@ RegisterNetEvent("Job:Client:DutyChanged", function(state, job)
 end)
 
 AddEventHandler("Corrections:Client:OnDuty", function()
-	Jobs.Duty:On("prison")
+	exports['sandbox-jobs']:DutyOn("prison")
 end)
 
 AddEventHandler("Corrections:Client:OffDuty", function()
-	Jobs.Duty:Off("prison")
+	exports['sandbox-jobs']:DutyOff("prison")
 end)
 
 RegisterNetEvent("Police:Client:Search", function(hitting, data)

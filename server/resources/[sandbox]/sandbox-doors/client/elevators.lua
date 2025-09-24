@@ -155,11 +155,11 @@ function CheckElevatorPermissions(restricted)
                 end
             elseif v.type == "job" then
                 if v.job then
-                    if Jobs.Permissions:HasJob(v.job, v.workplace, v.grade, v.gradeLevel, v.reqDuty, v.jobPermission) then
+                    if exports['sandbox-jobs']:HasJob(v.job, v.workplace, v.grade, v.gradeLevel, v.reqDuty, v.jobPermission) then
                         return true
                     end
                 elseif v.jobPermission then
-                    if Jobs.Permissions:HasPermission(v.jobPermission) then
+                    if exports['sandbox-jobs']:HasPermission(v.jobPermission) then
                         return true
                     end
                 end

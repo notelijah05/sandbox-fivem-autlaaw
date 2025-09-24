@@ -1,22 +1,9 @@
-AddEventHandler("Restaurant:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Restaurant", {
-		"Jobs",
-	}, function(error)
-		if error then
-		end
+	Startup()
 
-		RetrieveComponents()
-		Startup()
-
-		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-			RunRestaurantJobUpdate(source, true)
-		end, 2)
-	end)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		RunRestaurantJobUpdate(source, true)
+	end, 2)
 end)
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()
@@ -26,7 +13,7 @@ end)
 _RESTAURANT = {}
 
 function RunRestaurantJobUpdate(source, onSpawn)
-	local charJobs = Jobs.Permissions:GetJobs(source)
+	local charJobs = exports['sandbox-jobs']:GetJobs(source)
 	local warmersList = {}
 	for k, v in ipairs(charJobs) do
 		local jobWarmers = _warmers[v.Id]

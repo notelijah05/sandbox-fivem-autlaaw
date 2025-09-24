@@ -59,7 +59,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 				or exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_3")
 			)
 			and LocalPlayer.state.onDuty == "bahama"
-			and Jobs.Permissions:HasPermissionInJob("bahama", "STRIP_POLE")
+			and exports['sandbox-jobs']:HasPermissionInJob("bahama", "STRIP_POLE")
 		then
 			local subMenu = {}
 

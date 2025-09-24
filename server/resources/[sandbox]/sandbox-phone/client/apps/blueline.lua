@@ -309,7 +309,7 @@ RegisterNUICallback("LeaveRacePD", function(data, cb)
 end)
 
 RegisterNUICallback("CreateTrackPD", function(data, cb)
-	if Jobs.Permissions:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
+	if exports['sandbox-jobs']:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
 		_creator = true
 		CreatorThreadPD()
 		cb(true)
@@ -321,7 +321,7 @@ end)
 RegisterNUICallback("FinishCreatorPD", function(data, cb)
 	_creator = false
 
-	if Jobs.Permissions:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
+	if exports['sandbox-jobs']:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
 		if #_pendingTrack.Checkpoints > 2 then
 			_pendingTrack.Name = data.name
 			_pendingTrack.Type = data.type
@@ -371,7 +371,7 @@ RegisterNUICallback("FinishCreatorPD", function(data, cb)
 end)
 
 RegisterNUICallback("DeleteTrackPD", function(data, cb)
-	if Jobs.Permissions:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
+	if exports['sandbox-jobs']:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
 		exports["sandbox-base"]:ServerCallback("Phone:Blueline:DeleteTrack", data, function(res2)
 			cb(res2)
 		end)
@@ -381,7 +381,7 @@ RegisterNUICallback("DeleteTrackPD", function(data, cb)
 end)
 
 RegisterNUICallback("ResetTrackHistoryPD", function(data, cb)
-	if Jobs.Permissions:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
+	if exports['sandbox-jobs']:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
 		exports["sandbox-base"]:ServerCallback("Phone:Blueline:ResetTrackHistory", data, function(res2)
 			cb(res2)
 		end)

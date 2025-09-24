@@ -69,7 +69,7 @@ function RegisterPrisonStashStartup()
 		if char and data and data.stateid then
 			if
 				Player(source).state.onDuty == "police" or Player(source).state.onDuty == "prison"
-			--and Jobs.Permissions:HasPermissionInJob(source, "police", "PD_RAID")
+			--and exports['sandbox-jobs']:HasPermissionInJob(source, "police", "PD_RAID")
 			then
 				-- exports['sandbox-base']:LoggerWarn(
 				-- 	"Police",

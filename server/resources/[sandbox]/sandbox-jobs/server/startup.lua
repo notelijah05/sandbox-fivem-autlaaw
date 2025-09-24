@@ -4,29 +4,16 @@ JOB_COUNT = 0
 
 _loaded = false
 
-AddEventHandler("Jobs:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Jobs", {
-		"Jobs",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterJobMiddleware()
-		RegisterJobCallbacks()
-		RegisterJobChatCommands()
+	RegisterJobMiddleware()
+	RegisterJobCallbacks()
+	RegisterJobChatCommands()
 
-		_loaded = true
+	_loaded = true
 
-		RunStartup()
+	RunStartup()
 
-		TriggerEvent("Jobs:Server:Startup")
-	end)
+	TriggerEvent("Jobs:Server:Startup")
 end)
 
 function FindAllJobs()

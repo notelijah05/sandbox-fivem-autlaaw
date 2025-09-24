@@ -1,9 +1,9 @@
 AddEventHandler("Government:Client:OnDuty", function()
-	Jobs.Duty:On("government")
+	exports['sandbox-jobs']:DutyOn("government")
 end)
 
 AddEventHandler("Government:Client:OffDuty", function()
-	Jobs.Duty:Off("government")
+	exports['sandbox-jobs']:DutyOff("government")
 end)
 
 AddEventHandler("Government:Client:BuyID", function()

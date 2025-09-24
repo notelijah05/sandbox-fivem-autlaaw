@@ -15,14 +15,12 @@ DOORS_PERMISSION_CACHE = {}
 
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Jobs",
 		"Doors",
 		"Properties",
 	}, function(error)
@@ -182,7 +180,7 @@ DOORS = {
 				return true
 			end
 
-			if Jobs.Permissions:HasJob("dgang", false, false, 99, true) then
+			if exports['sandbox-jobs']:HasJob("dgang", false, false, 99, true) then
 				return true
 			end
 
@@ -196,7 +194,7 @@ DOORS = {
 				elseif v.type == "job" then
 					if v.job then
 						if
-							Jobs.Permissions:HasJob(
+							exports['sandbox-jobs']:HasJob(
 								v.job,
 								v.workplace,
 								v.grade,
@@ -208,7 +206,7 @@ DOORS = {
 							return true
 						end
 					elseif v.jobPermission then
-						if Jobs.Permissions:HasPermission(v.jobPermission) then
+						if exports['sandbox-jobs']:HasPermission(v.jobPermission) then
 							return true
 						end
 					end

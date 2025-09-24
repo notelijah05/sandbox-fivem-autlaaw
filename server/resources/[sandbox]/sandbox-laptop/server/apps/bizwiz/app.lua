@@ -1,9 +1,9 @@
 local bizWizJobs = {}
 
 function CheckBusinessPermissions(source, permission)
-	local onDuty = Jobs.Duty:Get(source)
+	local onDuty = exports['sandbox-jobs']:DutyGet(source)
 	if onDuty and onDuty.Id and bizWizJobs[onDuty.Id] then
-		if (not permission) or Jobs.Permissions:HasPermissionInJob(source, onDuty.Id, permission) then
+		if (not permission) or exports['sandbox-jobs']:HasPermissionInJob(source, onDuty.Id, permission) then
 			return onDuty.Id
 		end
 	end
@@ -11,17 +11,17 @@ function CheckBusinessPermissions(source, permission)
 end
 
 AddEventHandler('Job:Server:DutyAdd', function(dutyData, source)
-	local job = Jobs.Permissions:HasJob(source, dutyData.Id)
+	local job = exports['sandbox-jobs']:HasJob(source, dutyData.Id)
 	if job then
 		local hasConfig = _bizWizConfig[job.Id]
-		local bizWiz = Jobs.Data:Get(job.Id, "bizWiz")
+		local bizWiz = exports['sandbox-jobs']:DataGet(job.Id, "bizWiz")
 
 		if hasConfig then
 			bizWiz = hasConfig.type
 		end
 
 		if job and bizWiz and _bizWizTypes[bizWiz] then
-			local bizWizLogo = Jobs.Data:Get(job.Id, "bizWizLogo")
+			local bizWizLogo = exports['sandbox-jobs']:DataGet(job.Id, "bizWizLogo")
 
 			if not bizWizLogo and hasConfig then
 				bizWizLogo = hasConfig.logo
@@ -122,7 +122,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		if job then
 			cb({
 				success = true,
-				pfp = Jobs.Data:Get(job, "TwitterAvatar")
+				pfp = exports['sandbox-jobs']:DataGet(job, "TwitterAvatar")
 			})
 		else
 			cb(false)
@@ -132,7 +132,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:SetTwitterProfile", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "JOB_MANAGEMENT")
 		if job then
-			local success = Jobs.Data:Set(job, "TwitterAvatar", data.profile)
+			local success = exports['sandbox-jobs']:DataSet(job, "TwitterAvatar", data.profile)
 			if success then
 				cb(data.profile)
 			else
@@ -146,8 +146,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:SendTweet", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "TABLET_TWEET")
 		if job then
-			local jobData = Jobs:Get(job)
-			local avatar = Jobs.Data:Get(job, "TwitterAvatar")
+			local jobData = exports['sandbox-jobs']:Get(job)
+			local avatar = exports['sandbox-jobs']:DataGet(job, "TwitterAvatar")
 
 			exports['sandbox-phone']:TwitterPost(
 				-1,
@@ -174,7 +174,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			setting = false
 		end
 
-		local res = Jobs.Data:Set(args[1], "bizWiz", setting)
+		local res = exports['sandbox-jobs']:DataSet(args[1], "bizWiz", setting)
 
 		if res?.success then
 			exports["sandbox-chat"]:SendSystemSingle(source, "Success")
@@ -201,7 +201,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			setting = false
 		end
 
-		local res = Jobs.Data:Set(args[1], "bizWizLogo", setting)
+		local res = exports['sandbox-jobs']:DataSet(args[1], "bizWizLogo", setting)
 
 		if res?.success then
 			exports["sandbox-chat"]:SendSystemSingle(source, "Success")

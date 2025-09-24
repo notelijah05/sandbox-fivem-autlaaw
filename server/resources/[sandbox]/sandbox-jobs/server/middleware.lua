@@ -1,10 +1,10 @@
 function RegisterJobMiddleware()
     exports['sandbox-base']:MiddlewareAdd('Characters:Logout', function(source)
-        Jobs.Duty:Off(source)
+        exports['sandbox-jobs']:DutyOff(source)
     end, 1)
 
     exports['sandbox-base']:MiddlewareAdd('playerDropped', function(source)
-        Jobs.Duty:Off(source)
+        exports['sandbox-jobs']:DutyOff(source)
     end, 1)
 
     exports['sandbox-base']:MiddlewareAdd("Characters:GetSpawnPoints", function(source, charId, cData)

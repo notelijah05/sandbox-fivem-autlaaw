@@ -535,7 +535,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:MuteBiz", function(source, id, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil and id and _bizPhones[id] and Jobs.Permissions:HasJob(source, _bizPhones[id].job) then
+		if char ~= nil and id and _bizPhones[id] and exports['sandbox-jobs']:HasJob(source, _bizPhones[id].job) then
 			if GlobalState[string.format("BizPhone:%s:Muted", id)] then
 				MySQL.query.await("UPDATE business_phones SET muted = ? WHERE id = ?", { false, id })
 				GlobalState[string.format("BizPhone:%s:Muted", id)] = false
@@ -552,7 +552,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:DeclineBizCall", function(source, id, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil and id and _bizPhones[id] and _bizPhones[id].call and Jobs.Permissions:HasJob(source, _bizPhones[id].job) then
+		if char ~= nil and id and _bizPhones[id] and _bizPhones[id].call and exports['sandbox-jobs']:HasJob(source, _bizPhones[id].job) then
 			exports['sandbox-phone']:CallEnd(-1, id)
 		else
 			cb(false)
@@ -561,7 +561,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:AcceptBizCall", function(source, id, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil and not _calls[source] and id and _bizPhones[id] and _bizPhones[id].call and not _bizPhones[id].call.outgoing and Jobs.Permissions:HasJob(source, _bizPhones[id].job) then
+		if char ~= nil and not _calls[source] and id and _bizPhones[id] and _bizPhones[id].call and not _bizPhones[id].call.outgoing and exports['sandbox-jobs']:HasJob(source, _bizPhones[id].job) then
 			if not _bizPhones[id].call.handler then
 				_bizPhones[id].call.handler = source
 				_bizCallHandlers[source] = id
@@ -610,7 +610,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:MakeBizCall", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil and data and data.id and data.number and _bizPhones[data.id] and not _bizPhones[data.id].call and Jobs.Permissions:HasJob(source, _bizPhones[data.id].job) and data.number ~= char:GetData("Phone") then
+		if char ~= nil and data and data.id and data.number and _bizPhones[data.id] and not _bizPhones[data.id].call and exports['sandbox-jobs']:HasJob(source, _bizPhones[data.id].job) and data.number ~= char:GetData("Phone") then
 			local target = exports['sandbox-characters']:FetchCharacterData("Phone", data.number)
 			if target ~= nil and hasValue(target:GetData("States"), "PHONE") then
 				if _calls[target:GetData("Source")] == nil then

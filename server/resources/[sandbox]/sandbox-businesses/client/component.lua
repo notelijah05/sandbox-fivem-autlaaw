@@ -1,12 +1,10 @@
 AddEventHandler("Businesses:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	StorageUnits = exports["sandbox-base"]:FetchComponent("StorageUnits")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Businesses", {
-		"Jobs",
 		"StorageUnits",
 	}, function(error)
 		if #error > 0 then
@@ -514,12 +512,12 @@ end)
 
 AddEventHandler("Businesses:Client:ClockIn", function(_, data)
 	if data and data.job then
-		Jobs.Duty:On(data.job)
+		exports['sandbox-jobs']:DutyOn(data.job)
 	end
 end)
 
 AddEventHandler("Businesses:Client:ClockOut", function(_, data)
 	if data and data.job then
-		Jobs.Duty:Off(data.job)
+		exports['sandbox-jobs']:DutyOff(data.job)
 	end
 end)

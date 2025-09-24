@@ -159,7 +159,6 @@ end
 
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Drugs = exports["sandbox-base"]:FetchComponent("Drugs")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
@@ -168,7 +167,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Jobs",
 		"Reputation",
 		"Drugs",
 		"Robbery",
@@ -365,7 +363,7 @@ local function isShopModerator(shop, source)
 				return true
 			else
 				if _playerShops[shop].job ~= nil then
-					return Jobs.Permissions:HasPermissionInJob(source, _playerShops[shop].job, 'JOB_SHOP')
+					return exports['sandbox-jobs']:HasPermissionInJob(source, _playerShops[shop].job, 'JOB_SHOP')
 				else
 					if _playerShopMods[shop] then
 						for k, v in ipairs(_playerShopMods[shop]) do
@@ -440,7 +438,7 @@ function entityPermCheck(source, invType)
 	if shittyInvData then
 		return (
 			shittyInvData.restriction == nil
-			or (shittyInvData.restriction.job ~= nil and Jobs.Permissions:HasJob(
+			or (shittyInvData.restriction.job ~= nil and exports['sandbox-jobs']:HasJob(
 				source,
 				shittyInvData.restriction.job.id,
 				shittyInvData.restriction.job.workplace or false,
@@ -476,7 +474,7 @@ function getShopSlot(src, Owner, Type, slotId)
 			if slot then
 				local item, stack, price = nil, nil, nil
 				if itemsDatabase[slot.Name] ~= nil then
-					if not slot.job or Jobs.Permissions:HasJob(src, slot.job) then
+					if not slot.job or exports['sandbox-jobs']:HasJob(src, slot.job) then
 						return slot
 					end
 				end
@@ -507,7 +505,7 @@ function getInventory(src, Owner, Type, limit)
 				local item, stack, price = nil, nil, nil
 				if type(v) == "table" then
 					if itemsDatabase[v.item] ~= nil then
-						if not v.job or Jobs.Permissions:HasJob(src, v.job) then
+						if not v.job or exports['sandbox-jobs']:HasJob(src, v.job) then
 							item = v.item
 							stack = v.count or itemsDatabase[v.item].isStackable or 1
 							price = v.price or itemsDatabase[v.item].price or 0
@@ -1724,7 +1722,7 @@ function RegisterCallbacks()
 		local dest = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
-		if dest and pState.onDuty ~= nil and pState.onDuty == "police" and Jobs.Permissions:HasPermissionInJob(source, 'police', 'PD_RAID') then
+		if dest and pState.onDuty ~= nil and pState.onDuty == "police" and exports['sandbox-jobs']:HasPermissionInJob(source, 'police', 'PD_RAID') then
 			exports['sandbox-inventory']:OpenSecondary(source, data.invType, data.owner, data.class or false,
 				data.model or false, true)
 		end
@@ -1940,7 +1938,7 @@ function RegisterCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if _playerShops[data.id] and isShopModerator(data.id, source) then
-				if not _playerShops[data.id].job or Jobs.Permissions:HasPermissionInJob(source, _playerShops[data.id].job, "JOB_SHOP_CONTROL") then
+				if not _playerShops[data.id].job or exports['sandbox-jobs']:HasPermissionInJob(source, _playerShops[data.id].job, "JOB_SHOP_CONTROL") then
 					GlobalState[string.format("BasicShop:%s", data.id)] = data.state
 
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
@@ -2868,7 +2866,7 @@ exports("Use", function(source, item, cb)
 
 		if
 			itemData.useRestrict == nil
-			or (itemData.useRestrict.job ~= nil and Jobs.Permissions:HasJob(
+			or (itemData.useRestrict.job ~= nil and exports['sandbox-jobs']:HasJob(
 				source,
 				itemData.useRestrict.job.id,
 				itemData.useRestrict.job.workplace or false,

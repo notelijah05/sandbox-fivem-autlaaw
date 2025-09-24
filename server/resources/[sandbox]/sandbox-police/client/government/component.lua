@@ -12,36 +12,77 @@ local govDutyPoints = {
 	},
 }
 
-AddEventHandler("Police:Shared:DependencyUpdate", GovComponents)
-function GovComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Jobs",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		GovComponents()
+	local govServices = {
+		{
+			icon = "id-card",
+			text = "Purchase ID ($500)",
+			event = "Government:Client:BuyID",
+		},
+		{
+			icon = "file-certificate",
+			text = "License Services",
+			event = "Government:Client:BuyLicense",
+		},
+		{
+			icon = "gavel",
+			text = "Public Records",
+			event = "Government:Client:AccessPublicRecords",
+		},
+		{
+			icon = "clipboard-check",
+			text = "Go On Duty",
+			event = "Government:Client:OnDuty",
+			jobPerms = {
+				{
+					job = "government",
+					reqOffDuty = true,
+				},
+			},
+		},
+		{
+			icon = "clipboard",
+			text = "Go Off Duty",
+			event = "Government:Client:OffDuty",
+			jobPerms = {
+				{
+					job = "government",
+					reqDuty = true,
+				},
+			},
+		},
+		{
+			icon = "shop-lock",
+			text = "DOJ Shop",
+			event = "Government:Client:DOJShop",
+			jobPerms = {
+				{
+					job = "government",
+					workplace = "doj",
+					reqDuty = true,
+				},
+			},
+		},
+	}
 
-		local govServices = {
-			{
-				icon = "id-card",
-				text = "Purchase ID ($500)",
-				event = "Government:Client:BuyID",
-			},
-			{
-				icon = "file-certificate",
-				text = "License Services",
-				event = "Government:Client:BuyLicense",
-			},
-			{
-				icon = "gavel",
-				text = "Public Records",
-				event = "Government:Client:AccessPublicRecords",
-			},
+	exports['sandbox-pedinteraction']:Add(
+		"govt-services",
+		`a_f_m_eastsa_02`,
+		vector3(-552.412, -202.760, 37.239),
+		337.363,
+		25.0,
+		govServices,
+		"bell-concierge"
+	)
+	-- exports['sandbox-targeting']:ZonesAddBox("govt-services", "bell-concierge", vector3(-555.92, -186.01, 38.22), 2.0, 2.0, {
+	--     heading = 28,
+	--     --debugPoly=true,
+	--     minZ = 37.22,
+	--     maxZ = 39.62
+	-- }, govServices, 3.0, true)
+
+	for k, v in ipairs(govDutyPoints) do
+		exports['sandbox-targeting']:ZonesAddBox("gov-info-" .. k, "gavel", v.center, v.length, v.width, v.options, {
 			{
 				icon = "clipboard-check",
 				text = "Go On Duty",
@@ -65,93 +106,38 @@ AddEventHandler("Core:Shared:Ready", function()
 				},
 			},
 			{
-				icon = "shop-lock",
-				text = "DOJ Shop",
-				event = "Government:Client:DOJShop",
-				jobPerms = {
-					{
-						job = "government",
-						workplace = "doj",
-						reqDuty = true,
-					},
-				},
-			},
-		}
-
-		exports['sandbox-pedinteraction']:Add(
-			"govt-services",
-			`a_f_m_eastsa_02`,
-			vector3(-552.412, -202.760, 37.239),
-			337.363,
-			25.0,
-			govServices,
-			"bell-concierge"
-		)
-		-- exports['sandbox-targeting']:ZonesAddBox("govt-services", "bell-concierge", vector3(-555.92, -186.01, 38.22), 2.0, 2.0, {
-		--     heading = 28,
-		--     --debugPoly=true,
-		--     minZ = 37.22,
-		--     maxZ = 39.62
-		-- }, govServices, 3.0, true)
-
-		for k, v in ipairs(govDutyPoints) do
-			exports['sandbox-targeting']:ZonesAddBox("gov-info-" .. k, "gavel", v.center, v.length, v.width, v.options, {
-				{
-					icon = "clipboard-check",
-					text = "Go On Duty",
-					event = "Government:Client:OnDuty",
-					jobPerms = {
-						{
-							job = "government",
-							reqOffDuty = true,
-						},
-					},
-				},
-				{
-					icon = "clipboard",
-					text = "Go Off Duty",
-					event = "Government:Client:OffDuty",
-					jobPerms = {
-						{
-							job = "government",
-							reqDuty = true,
-						},
-					},
-				},
-				{
-					icon = "gavel",
-					text = "Public Records",
-					event = "Government:Client:AccessPublicRecords",
-				},
-			}, 3.0, true)
-		end
-
-		exports['sandbox-polyzone']:CreateBox("courtroom", vector3(-571.17, -207.02, 38.77), 18.2, 19.6, {
-			heading = 30,
-			--debugPoly=true,
-			minZ = 36.97,
-			maxZ = 47.37,
-		}, {})
-
-		exports['sandbox-targeting']:ZonesAddBox("court-gavel", "gavel", vector3(-575.8, -210.3, 38.77), 0.8, 0.8, {
-			heading = 30,
-			--debugPoly=true,
-			minZ = 37.77,
-			maxZ = 39.37,
-		}, {
-			{
 				icon = "gavel",
-				text = "Use Gavel",
-				event = "Government:Client:UseGavel",
-				-- jobPerms = {
-				--     {
-				--         job = 'government',
-				--         reqDuty = true,
-				--     }
-				-- },
+				text = "Public Records",
+				event = "Government:Client:AccessPublicRecords",
 			},
 		}, 3.0, true)
-	end)
+	end
+
+	exports['sandbox-polyzone']:CreateBox("courtroom", vector3(-571.17, -207.02, 38.77), 18.2, 19.6, {
+		heading = 30,
+		--debugPoly=true,
+		minZ = 36.97,
+		maxZ = 47.37,
+	}, {})
+
+	exports['sandbox-targeting']:ZonesAddBox("court-gavel", "gavel", vector3(-575.8, -210.3, 38.77), 0.8, 0.8, {
+		heading = 30,
+		--debugPoly=true,
+		minZ = 37.77,
+		maxZ = 39.37,
+	}, {
+		{
+			icon = "gavel",
+			text = "Use Gavel",
+			event = "Government:Client:UseGavel",
+			-- jobPerms = {
+			--     {
+			--         job = 'government',
+			--         reqDuty = true,
+			--     }
+			-- },
+		},
+	}, 3.0, true)
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()

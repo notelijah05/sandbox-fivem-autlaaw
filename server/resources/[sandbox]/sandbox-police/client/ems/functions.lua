@@ -15,7 +15,7 @@ function BuildTreatmentMenu(id)
 		})
 
 		if targetState.isDead then
-			if Jobs.Permissions:HasJob("ems") then
+			if exports['sandbox-jobs']:HasJob("ems") then
 				table.insert(options, {
 					label = string.format("Stabilize (Revive)"),
 					description = "Requires Trauma Kit",
@@ -25,7 +25,7 @@ function BuildTreatmentMenu(id)
 				needsTreatment = true
 			end
 		else
-			if Jobs.Permissions:HasJob("ems") then
+			if exports['sandbox-jobs']:HasJob("ems") then
 				local maxHp = GetEntityMaxHealth(ped) - 100
 				local hp = GetEntityHealth(ped) - 100
 

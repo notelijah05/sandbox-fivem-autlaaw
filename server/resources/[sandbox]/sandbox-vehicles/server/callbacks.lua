@@ -58,9 +58,9 @@ function RegisterCallbacks()
             if type(storageData.fleet) == 'table' and myDuty then
                 for k, v in ipairs(storageData.fleet) do
                     if v.JobId == myDuty then
-                        local jobData = Jobs.Permissions:HasJob(source, v.JobId, v.WorkplaceId)
+                        local jobData = exports['sandbox-jobs']:HasJob(source, v.JobId, v.WorkplaceId)
                         if jobData then
-                            local jobPermissions = Jobs.Permissions:GetPermissionsFromJob(source, jobData.Id)
+                            local jobPermissions = exports['sandbox-jobs']:GetPermissionsFromJob(source, jobData.Id)
                             if jobPermissions then
                                 fleetFetch = {
                                     Id = jobData.Id,
@@ -191,7 +191,7 @@ function RegisterCallbacks()
                     local onDuty = Player(source).state.onDuty
 
                     if onDuty and onDuty == vehicle.Owner.Id then
-                        local jobPermissions = Jobs.Permissions:GetPermissionsFromJob(source, vehicle.Owner.Id, vehicle.Owner.Workplace)
+                        local jobPermissions = exports['sandbox-jobs']:GetPermissionsFromJob(source, vehicle.Owner.Id, vehicle.Owner.Workplace)
                         if jobPermissions then
                             local allowedLevel = GetAllowedFleetVehicleLevelFromJobPermissions(jobPermissions)
                             if (allowedLevel >= vehicle.Owner.Level) then
@@ -257,7 +257,7 @@ function RegisterCallbacks()
                 local onDuty = Player(source).state.onDuty
 
                 if onDuty and onDuty == vehicleOwner.Id then
-                    local jobPermissions = Jobs.Permissions:GetPermissionsFromJob(source, vehicleOwner.Id, vehicleOwner.Workplace)
+                    local jobPermissions = exports['sandbox-jobs']:GetPermissionsFromJob(source, vehicleOwner.Id, vehicleOwner.Workplace)
                     if jobPermissions then
                         local allowedLevel = GetAllowedFleetVehicleLevelFromJobPermissions(jobPermissions)
                         if (allowedLevel >= vehicleOwner.Level) then
@@ -360,7 +360,7 @@ function RegisterCallbacks()
         local veh = NetworkGetEntityFromNetworkId(data.vNet)
         local myDuty = Player(source).state.onDuty
 
-        if DoesEntityExist(veh) and myDuty and Jobs.Permissions:HasPermission(source, _impoundConfig.RequiredPermission) or Jobs.Permissions:HasPermission(source, _impoundConfig.Police.RequiredPermission) then
+        if DoesEntityExist(veh) and myDuty and exports['sandbox-jobs']:HasPermission(source, _impoundConfig.RequiredPermission) or exports['sandbox-jobs']:HasPermission(source, _impoundConfig.Police.RequiredPermission) then
             local vState = Entity(veh).state
             if vState and vState.VIN and not vState.towObjective then
                 local ownedVehicle = exports['sandbox-vehicles']:OwnedGetActive(vState.VIN)

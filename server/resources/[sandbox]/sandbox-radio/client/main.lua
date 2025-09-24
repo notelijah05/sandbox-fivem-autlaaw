@@ -23,64 +23,50 @@ local radioNames = {
 	"P6900 Radio",
 }
 
-AddEventHandler("Radio:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-end
-
 local radioChannelCycle = false
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Radio", {
-		"Jobs",
-	}, function(error)
-		if #error > 0 then
-			return
+	exports["sandbox-keybinds"]:Add("voip_radio_power", "", "keyboard", "Voice - Radio - Toggle Power On/Off",
+		function()
+			if LocalPlayer.state.loggedIn and HAS_RADIO and not radioChannelCycle then
+				radioChannelCycle = true
+				ToggleRadioPower(false)
+				Citizen.SetTimeout(1000, function()
+					radioChannelCycle = false
+				end)
+			end
+		end)
+
+	exports["sandbox-keybinds"]:Add("voip_radio_open", "", "keyboard", "Voice - Radio - Open Radio", function()
+		if LocalPlayer.state.loggedIn and HAS_RADIO and not LocalPlayer.state.doingAction then
+			if CanUseRadio(HAS_RADIO) then
+				OpenRadio()
+			end
 		end
-		RetrieveComponents()
+	end)
 
-		exports["sandbox-keybinds"]:Add("voip_radio_power", "", "keyboard", "Voice - Radio - Toggle Power On/Off",
-			function()
-				if LocalPlayer.state.loggedIn and HAS_RADIO and not radioChannelCycle then
-					radioChannelCycle = true
-					ToggleRadioPower(false)
-					Citizen.SetTimeout(1000, function()
-						radioChannelCycle = false
-					end)
-				end
-			end)
+	exports["sandbox-keybinds"]:Add("voip_radio_vol_down", "", "keyboard", "Voice - Radio - Volume Down", function()
+		if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
+			RadioVolumeDown(true)
+		end
+	end)
 
-		exports["sandbox-keybinds"]:Add("voip_radio_open", "", "keyboard", "Voice - Radio - Open Radio", function()
-			if LocalPlayer.state.loggedIn and HAS_RADIO and not LocalPlayer.state.doingAction then
-				if CanUseRadio(HAS_RADIO) then
-					OpenRadio()
-				end
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("voip_radio_vol_up", "", "keyboard", "Voice - Radio - Volume Up", function()
+		if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
+			RadioVolumeUp(true)
+		end
+	end)
 
-		exports["sandbox-keybinds"]:Add("voip_radio_vol_down", "", "keyboard", "Voice - Radio - Volume Down", function()
-			if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
-				RadioVolumeDown(true)
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("voip_radio_next", "", "keyboard", "Voice - Radio - Channel Next", function()
+		if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
+			CycleRadioChannel(true)
+		end
+	end)
 
-		exports["sandbox-keybinds"]:Add("voip_radio_vol_up", "", "keyboard", "Voice - Radio - Volume Up", function()
-			if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
-				RadioVolumeUp(true)
-			end
-		end)
-
-		exports["sandbox-keybinds"]:Add("voip_radio_next", "", "keyboard", "Voice - Radio - Channel Next", function()
-			if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
-				CycleRadioChannel(true)
-			end
-		end)
-
-		exports["sandbox-keybinds"]:Add("voip_radio_prev", "", "keyboard", "Voice - Radio - Channel Prev.", function()
-			if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
-				CycleRadioChannel(false)
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("voip_radio_prev", "", "keyboard", "Voice - Radio - Channel Prev.", function()
+		if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
+			CycleRadioChannel(false)
+		end
 	end)
 end)
 
@@ -401,7 +387,7 @@ function GetHasRadioChannelAuth(freq)
 			return true, "Poggers"
 		end
 	elseif freq == 22 then
-		if Jobs.Permissions:HasJob("blackline") then
+		if exports['sandbox-jobs']:HasJob("blackline") then
 			return true, "Mald"
 		end
 	elseif freq < 100 then

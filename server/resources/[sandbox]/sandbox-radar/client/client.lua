@@ -12,13 +12,11 @@ RECENT_FLAGS = {}
 
 AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radar", {
-		"Jobs",
 		"EmergencyAlerts",
 	}, function(error)
 		if #error > 0 then

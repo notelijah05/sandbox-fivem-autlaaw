@@ -2,7 +2,7 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
     local src = source
     local shopData = _fleetConfig[shop]
     local char = exports['sandbox-characters']:FetchCharacterSource(src)
-    if char and shopData and Jobs.Permissions:HasPermissionInJob(src, shopData.job, shopData.requiredPermission) then
+    if char and shopData and exports['sandbox-jobs']:HasPermissionInJob(src, shopData.job, shopData.requiredPermission) then
         local chosenVehicle = shopData.vehicles[vehicle]
         if chosenVehicle and chosenVehicle.liveries[livery] ~= nil then
             local purchaseBankAccount = exports['sandbox-finance']:AccountsGetOrganization(shopData.bankAccount)

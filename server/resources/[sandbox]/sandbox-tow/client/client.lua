@@ -1,12 +1,10 @@
 AddEventHandler("Tow:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Tow = exports["sandbox-base"]:FetchComponent("Tow")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Tow", {
-		"Jobs",
 		"Tow",
 	}, function(error)
 		if #error > 0 then

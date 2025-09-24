@@ -1,5 +1,5 @@
 AddEventHandler("EMS:Client:OnDuty", function()
-	if Jobs.Permissions:HasJob("ems", "safd") and not LocalPlayer.state.Character:GetData("Callsign") then
+	if exports['sandbox-jobs']:HasJob("ems", "safd") and not LocalPlayer.state.Character:GetData("Callsign") then
 		exports["sandbox-hud"]:NotifError("Callsign Not Set, Unable To Go On Duty")
 		return
 	end
@@ -12,11 +12,11 @@ AddEventHandler("EMS:Client:OnDuty", function()
 		return
 	end
 
-	Jobs.Duty:On("ems")
+	exports['sandbox-jobs']:DutyOn("ems")
 end)
 
 AddEventHandler("EMS:Client:OffDuty", function()
-	Jobs.Duty:Off("ems")
+	exports['sandbox-jobs']:DutyOff("ems")
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()

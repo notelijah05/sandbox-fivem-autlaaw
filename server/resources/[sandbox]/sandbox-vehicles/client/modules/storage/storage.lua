@@ -65,7 +65,7 @@ AddEventHandler('Vehicles:Client:CharacterLogin', function()
         -- Add Restricted Ones After so the Blips Appear With the Restricted Ones at the end of the list
         -- for k, v in pairs(_vehicleStorage) do
         --     if v.restricted then
-        --         local charJobs = Jobs.Permissions:GetJobs()
+        --         local charJobs = exports['sandbox-jobs']:GetJobs()
 
         --         if #charJobs > 0 then
         --             if DoesCharacterPassStorageRestrictions(-1, charJobs, v.restricted) then
@@ -148,7 +148,7 @@ function OpenVehicleStorage()
     if inVehicleStorageZone and vehicleStorageZoneId then
         local myDuty = LocalPlayer.state.onDuty
         local vehStorageData = _vehicleStorage[vehicleStorageZoneId]
-        if not vehStorageData or (vehStorageData.restricted and not DoesCharacterPassStorageRestrictions(-1, Jobs.Permissions:GetJobs(), vehStorageData.restricted)) then
+        if not vehStorageData or (vehStorageData.restricted and not DoesCharacterPassStorageRestrictions(-1, exports['sandbox-jobs']:GetJobs(), vehStorageData.restricted)) then
             return exports["sandbox-hud"]:NotifError('Invalid Permission To Access This Vehicle Storage')
         end
 

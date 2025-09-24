@@ -3,13 +3,11 @@ _repairingVehicle = false
 AddEventHandler("Mechanic:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Mechanic", {
 		"Mechanic",
-		"Jobs",
 	}, function(error)
 		if #error > 0 then
 			return

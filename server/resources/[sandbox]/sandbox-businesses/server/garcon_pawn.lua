@@ -82,7 +82,7 @@ local _pawnItems = {
 
 AddEventHandler("Businesses:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("GarconPawn:Sell", function(source, data, cb)
-		if Jobs.Permissions:HasJob(source, _jobName) then
+		if exports['sandbox-jobs']:HasJob(source, _jobName) then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				local money = 0

@@ -342,7 +342,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:CreateRace", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
-		if Jobs.Permissions:HasJob(src, "police", false, false, false, false, "PD_MANAGE_TRIALS") then
+		if exports['sandbox-jobs']:HasJob(src, "police", false, false, false, false, "PD_MANAGE_TRIALS") then
 			data.host_id = char:GetData("SID")
 			data.host_src = src
 			data.time = os.time()
@@ -379,7 +379,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 					if v ~= nil then
 						TriggerClientEvent("Phone:Client:Blueline:CreateRace", v:GetData("Source"), data)
-						local dutyData = Jobs.Duty:Get(v:GetData("Source"))
+						local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 						if v:GetData("Source") ~= src and dutyData?.Id == "police" then
 							exports['sandbox-phone']:NotificationAdd(
 								v:GetData("Source"),
@@ -471,7 +471,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 
 		print(data)
-		if Jobs.Permissions:HasJob(src, "police") and alias ~= nil and _races[data].state == 0 then
+		if exports['sandbox-jobs']:HasJob(src, "police") and alias ~= nil and _races[data].state == 0 then
 			if
 				_races[data].class ~= "All"
 				and CheckVehicleAgainstClass(_races[data].class, char:GetData("Source")) == false

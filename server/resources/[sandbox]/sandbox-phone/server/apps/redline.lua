@@ -523,7 +523,7 @@ function FinishRace(id, forceEnd)
 
 	for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 		if v ~= nil then
-			local dutyData = Jobs.Duty:Get(v:GetData("Source"))
+			local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 			if hasValue(v:GetData("States") or {}, "RACE_DONGLE") and (not dutyData or dutyData.Id ~= "police") then
 				exports['sandbox-phone']:NotificationAdd(
 					v:GetData("Source"),
@@ -855,7 +855,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 						if v ~= nil then
 							TriggerClientEvent("Phone:Client:Redline:CreateRace", v:GetData("Source"), data)
-							local dutyData = Jobs.Duty:Get(v:GetData("Source"))
+							local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 							if
 								v:GetData("Source") ~= src
 								and hasValue(v:GetData("States") or {}, "RACE_DONGLE")

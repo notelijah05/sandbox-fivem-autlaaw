@@ -64,7 +64,7 @@ LABOR = {
 	Get = {
 		Jobs = function(self)
 			local p = promise.new()
-			exports["sandbox-base"]:ServerCallback("Labor:GetJobs", {}, function(jobs)
+			exports["sandbox-base"]:ServerCallback("Laborexports['sandbox-jobs']:GetJobs", {}, function(jobs)
 				p:resolve(jobs)
 			end)
 			return Citizen.Await(p)

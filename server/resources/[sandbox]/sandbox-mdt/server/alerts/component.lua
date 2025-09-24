@@ -74,7 +74,7 @@ _pdAlerts = {
 			and (dutyData.Id == "police" or dutyData.Id == "ems" or dutyData.Id == "tow" or dutyData.Id == "prison")
 		then
 			local alertPermissions = {}
-			local allJobPermissions = Jobs.Permissions:GetPermissionsFromJob(source, dutyData.Id)
+			local allJobPermissions = exports['sandbox-jobs']:GetPermissionsFromJob(source, dutyData.Id)
 			for k, v in pairs(_alertsPermMap) do
 				if allJobPermissions[v] then
 					alertPermissions[v] = true
@@ -125,7 +125,7 @@ _pdAlerts = {
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			local alertPermissions = {}
-			local allJobPermissions = Jobs.Permissions:GetPermissionsFromJob(source, job)
+			local allJobPermissions = exports['sandbox-jobs']:GetPermissionsFromJob(source, job)
 			if allJobPermissions then
 				for k, v in pairs(_alertsPermMap) do
 					if allJobPermissions[v] then

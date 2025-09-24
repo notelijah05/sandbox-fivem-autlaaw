@@ -1,5 +1,5 @@
 function RegisterCallbacks()
-	exports["sandbox-base"]:RegisterServerCallback("Labor:GetJobs", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Laborexports['sandbox-jobs']:GetJobs", function(source, data, cb)
 		cb(Labor.Get:Jobs())
 	end)
 	exports["sandbox-base"]:RegisterServerCallback("Labor:GetGroups", function(source, data, cb)

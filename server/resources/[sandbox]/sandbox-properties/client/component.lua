@@ -22,7 +22,6 @@ AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 end
 
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Properties", {
 		"Characters",
 		"Properties",
-		"Jobs",
 		"ObjectPlacer",
 	}, function(error)
 		if #error > 0 then
@@ -121,7 +119,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						or (
 							not property.sold
 							and LocalPlayer.state.onDuty == "realestate"
-							and Jobs.Permissions:HasPermissionInJob("realestate", "JOB_DOORS")
+							and exports['sandbox-jobs']:HasPermissionInJob("realestate", "JOB_DOORS")
 						)
 					)
 				then
@@ -195,7 +193,7 @@ function CreatePropertyDoor(isBackdoor)
 
 						local prop = _properties[data.propertyId]
 						return ((prop.keys ~= nil and prop.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil)
-							or (not prop.sold and LocalPlayer.state.onDuty == "realestate" and Jobs.Permissions:HasPermissionInJob(
+							or (not prop.sold and LocalPlayer.state.onDuty == "realestate" and exports['sandbox-jobs']:HasPermissionInJob(
 								"realestate",
 								"JOB_DOORS"
 							))
@@ -228,7 +226,7 @@ function CreatePropertyDoor(isBackdoor)
 								or (
 									not prop.sold
 									and LocalPlayer.state.onDuty == "realestate"
-									and Jobs.Permissions:HasPermissionInJob("realestate", "JOB_DOORS")
+									and exports['sandbox-jobs']:HasPermissionInJob("realestate", "JOB_DOORS")
 								)) and not prop.foreclosed
 						then
 							return prop.locked
@@ -264,7 +262,7 @@ function CreatePropertyDoor(isBackdoor)
 								or (
 									not prop.sold
 									and LocalPlayer.state.onDuty == "realestate"
-									and Jobs.Permissions:HasPermissionInJob("realestate", "JOB_DOORS")
+									and exports['sandbox-jobs']:HasPermissionInJob("realestate", "JOB_DOORS")
 								)) and not prop.foreclosed
 						then
 							return not prop.locked

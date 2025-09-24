@@ -1,12 +1,10 @@
 AddEventHandler("Chat:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Chat", {
-		"Jobs",
 		"EmergencyAlerts",
 	}, function(error)
 		if #error > 0 then
@@ -91,7 +89,7 @@ exports("RefreshCommands", function(source)
 								or (
 									myDuty
 									and myDuty == v2.Id
-									and Jobs.Permissions:HasJob(
+									and exports['sandbox-jobs']:HasJob(
 										source,
 										v2.Id,
 										v2.Workplace or false,

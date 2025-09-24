@@ -23,7 +23,7 @@ function RegisterCallbacks()
 		if char ~= nil and property ~= nil then
 			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then
-					if Jobs.Permissions:HasPermissionInJob(v:GetData("Source"), "realestate", "JOB_SELL") then
+					if exports['sandbox-jobs']:HasPermissionInJob(v:GetData("Source"), "realestate", "JOB_SELL") then
 						exports['sandbox-phone']:EmailSend(
 							v:GetData("Source"),
 							char:GetData("Profiles").email.name,
@@ -122,7 +122,7 @@ function RegisterCallbacks()
 
 		if
 			(property.keys ~= nil and property.keys[char:GetData("ID")])
-			or (not property.sold and Jobs.Permissions:HasPermissionInJob(source, "realestate", "JOB_DOORS"))
+			or (not property.sold and exports['sandbox-jobs']:HasPermissionInJob(source, "realestate", "JOB_DOORS"))
 			or not property.locked or Police:IsInBreach(source, "property", data)
 		then
 			local pInt = property.upgrades?.interior
@@ -173,7 +173,7 @@ function RegisterCallbacks()
 
 		if
 			(property.keys ~= nil and property.keys[char:GetData("ID")])
-			or (not property.sold and Jobs.Permissions:HasPermissionInJob(source, "realestate", "JOB_DOORS"))
+			or (not property.sold and exports['sandbox-jobs']:HasPermissionInJob(source, "realestate", "JOB_DOORS"))
 		then
 			cb(Properties.Utils:SetLock(data.id, data.state))
 		else

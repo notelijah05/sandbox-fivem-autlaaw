@@ -2,13 +2,11 @@ FLAGGED_PLATES = {}
 
 AddEventHandler("Radar:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radar", {
-		"Jobs",
 		"Radar",
 	}, function(error)
 		if #error > 0 then

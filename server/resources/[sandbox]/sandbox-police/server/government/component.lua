@@ -48,7 +48,7 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RegisterServerCallback("Government:Client:DoWeaponsLicenseBuyPolice",
 		function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if Jobs.Permissions:HasJob(source, "police") and char then
+			if exports['sandbox-jobs']:HasJob(source, "police") and char then
 				local licenses = char:GetData("Licenses")
 				if exports['sandbox-finance']:WalletModify(source, -20) then
 					licenses["Weapons"].Active = true

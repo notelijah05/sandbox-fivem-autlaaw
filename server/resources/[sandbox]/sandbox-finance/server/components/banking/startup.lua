@@ -866,7 +866,7 @@ function CreateOrganizationBankAccounts()
 		end
 	end
 
-	local allJobs = Jobs:GetAll()
+	local allJobs = exports['sandbox-jobs']:GetAll()
 	if not allJobs then
 		return
 	end

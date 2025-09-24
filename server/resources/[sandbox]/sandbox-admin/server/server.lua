@@ -1,6 +1,5 @@
 AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	C = exports["sandbox-base"]:FetchComponent("Config")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
@@ -8,7 +7,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Admin", {
-		"Jobs",
 		"Config",
 		"Properties",
 		"Pwnzor",

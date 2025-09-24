@@ -160,7 +160,7 @@ exports("BillingFine", function(finingSource, targetSource, amount)
 
             local targetCharAccount = exports['sandbox-finance']:AccountsGetPersonal(targetCharSID)
             local finingCharAccount = exports['sandbox-finance']:AccountsGetPersonal(finingCharSID)
-            local policeJob = Jobs.Permissions:HasJob(finingSource, 'police')
+            local policeJob = exports['sandbox-jobs']:HasJob(finingSource, 'police')
 
             local policeAccount = exports['sandbox-finance']:AccountsGetOrganization(string.format('police-%s',
                 (policeJob and policeJob.Workplace and policeJob.Workplace.Id) or ''))

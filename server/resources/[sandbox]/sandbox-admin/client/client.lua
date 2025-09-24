@@ -1,14 +1,12 @@
 AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Status = exports["sandbox-base"]:FetchComponent("Status")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Admin", {
 		"Status",
-		"Jobs",
 		"Admin",
 	}, function(error)
 		if #error > 0 then

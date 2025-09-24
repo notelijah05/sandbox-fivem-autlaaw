@@ -5,7 +5,6 @@ local _generatedNames = {}
 
 AddEventHandler("Police:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -17,7 +16,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Jobs",
 		"Police",
 		"Handcuffs",
 		"EmergencyAlerts",
@@ -485,7 +483,7 @@ end)
 
 POLICE = {
 	IsInBreach = function(self, source, type, id, extraCheck)
-		if Player(source)?.state?.onDuty == "police" and (not extraCheck or Jobs.Permissions:HasPermissionInJob(source, 'police', 'PD_RAID')) then
+		if Player(source)?.state?.onDuty == "police" and (not extraCheck or exports['sandbox-jobs']:HasPermissionInJob(source, 'police', 'PD_RAID')) then
 			if _breached[type] and _breached[type][id] and ((_breached[type][id] or 0) > os.time()) then
 				if extraCheck then
 					local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -629,7 +627,7 @@ POLICE = {
 
 						ownerName = string.format("%s %s", owner.First, owner.Last)
 					elseif vehicle.Owner.Type == 1 then
-						local jobData = Jobs:DoesExist(vehicle.Owner.Id, vehicle.Owner.Workplace)
+						local jobData = exports['sandbox-jobs']:DoesExist(vehicle.Owner.Id, vehicle.Owner.Workplace)
 						if jobData then
 							if jobData.Workplace then
 								ownerName = string.format('%s (%s)', jobData.Name, jobData.Workplace.Name)

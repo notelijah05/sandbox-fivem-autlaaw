@@ -12,7 +12,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 			text = "Request Tow Job",
 			event = "Tow:Client:RequestJob",
 			isEnabled = function(data, entityData)
-				if not Jobs.Permissions:HasJob('tow') then
+				if not exports['sandbox-jobs']:HasJob('tow') then
 					return true
 				end
 				return false
@@ -67,8 +67,9 @@ AddEventHandler('Vehicles:Client:RequestTow', function(entityData)
 			local character = LocalPlayer.state.Character
 			local myDuty = LocalPlayer.state.onDuty
 
-			local canRegularImpound = Jobs.Permissions:HasPermission(_impoundConfig.RequiredPermission)
-			local canPoliceImpound = Jobs.Permissions:HasPermission(_impoundConfig.Police.RequiredPermission)
+			local canRegularImpound = exports['sandbox-jobs']:HasPermission(_impoundConfig.RequiredPermission)
+			local canPoliceImpound = exports['sandbox-jobs']:HasPermission(_impoundConfig.Police
+				.RequiredPermission)
 
 			if myDuty and canRegularImpound or canPoliceImpound then
 				attemptingImpoundOnVehicle = entityData.entity
@@ -142,8 +143,9 @@ AddEventHandler('Vehicles:Client:RequestImpound', function(entityData)
 			local character = LocalPlayer.state.Character
 			local myDuty = LocalPlayer.state.onDuty
 
-			local canRegularImpound = Jobs.Permissions:HasPermission(_impoundConfig.RequiredPermission)
-			local canPoliceImpound = Jobs.Permissions:HasPermission(_impoundConfig.Police.RequiredPermission)
+			local canRegularImpound = exports['sandbox-jobs']:HasPermission(_impoundConfig.RequiredPermission)
+			local canPoliceImpound = exports['sandbox-jobs']:HasPermission(_impoundConfig.Police
+				.RequiredPermission)
 
 			if myDuty and canRegularImpound or canPoliceImpound then
 				attemptingImpoundOnVehicle = entityData.entity

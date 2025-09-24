@@ -153,7 +153,7 @@ function EMSItems()
 
 	exports['sandbox-inventory']:RegisterUse("medicalkit", "MedicalItems", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems", false, false, 2) then
+		if exports['sandbox-jobs']:HasJob(source, "ems", false, false, 2) then
 			local myCoords = GetEntityCoords(GetPlayerPed(source))
 			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then

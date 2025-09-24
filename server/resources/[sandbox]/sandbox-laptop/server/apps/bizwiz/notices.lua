@@ -57,7 +57,7 @@ LAPTOP.BizWiz.Notices = {
 				data._id = insertIds[1]
 				table.insert(_businessNotices, data)
 
-				local jobDutyData = Jobs.Duty:GetDutyData(job)
+				local jobDutyData = exports['sandbox-jobs']:DutyGetDutyData(job)
 				if jobDutyData and jobDutyData.DutyPlayers then
 					for k, v in ipairs(jobDutyData.DutyPlayers) do
 						TriggerClientEvent("Laptop:Client:AddData", v, "businessNotices", data)
@@ -91,7 +91,7 @@ LAPTOP.BizWiz.Notices = {
 				end
 			end
 
-			local jobDutyData = Jobs.Duty:GetDutyData(job)
+			local jobDutyData = exports['sandbox-jobs']:DutyGetDutyData(job)
 			if jobDutyData and jobDutyData.DutyPlayers then
 				for k, v in ipairs(jobDutyData.DutyPlayers) do
 					TriggerClientEvent("Laptop:Client:RemoveData", v, "businessNotices", id)

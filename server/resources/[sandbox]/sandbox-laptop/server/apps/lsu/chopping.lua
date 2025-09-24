@@ -74,7 +74,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then
-					local dutyData = Jobs.Duty:Get(v:GetData("Source"))
+					local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 					if (
 							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
 							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
@@ -127,7 +127,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then
-					local dutyData = Jobs.Duty:Get(v:GetData("Source"))
+					local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 					if (
 							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
 							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
@@ -168,7 +168,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then
-					local dutyData = Jobs.Duty:Get(v:GetData("Source"))
+					local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 					if (
 							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
 							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
@@ -706,7 +706,7 @@ LAPTOP.LSUnderground.Chopping = {
 
 						for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 							if v ~= nil then
-								local dutyData = Jobs.Duty:Get(v:GetData("Source"))
+								local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 								if (
 										Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
 										hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
@@ -757,7 +757,7 @@ LAPTOP.LSUnderground.Chopping = {
 
 						for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 							if v ~= nil then
-								local dutyData = Jobs.Duty:Get(v:GetData("Source"))
+								local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 								if (
 										Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
 										hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")

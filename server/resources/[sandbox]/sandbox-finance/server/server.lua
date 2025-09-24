@@ -1,12 +1,10 @@
 AddEventHandler("Finance:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Finance", {
-		"Jobs",
 		"Properties",
 	}, function(error)
 		if #error > 0 then

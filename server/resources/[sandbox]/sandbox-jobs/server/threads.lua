@@ -16,7 +16,7 @@ CreateThread(function()
                 if dutyData and not Player(v:GetData("Source")).state.gettingPaycheck then
                     local existing = v:GetData("Salary") or {}
                     local workedMinutes = math.floor((os.time() - dutyData.Time) / 60)
-                    local j = Jobs:Get(dutyData.Id)
+                    local j = exports['sandbox-jobs']:Get(dutyData.Id)
                     local salary = math.ceil((j.Salary * j.SalaryTier) * (workedMinutes / _payPeriod))
 
                     exports['sandbox-base']:LoggerInfo("Jobs",

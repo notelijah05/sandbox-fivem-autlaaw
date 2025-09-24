@@ -49,7 +49,7 @@ AddEventHandler("Businesses:Client:Startup", function()
                         local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
 
                         return (unit.owner and unit.owner.SID == LocalPlayer.state.Character:GetData("SID")) or
-                            Jobs.Permissions:HasJob(unit.managedBy)
+                            exports['sandbox-jobs']:HasJob(unit.managedBy)
                     end
                 end,
             },
@@ -70,7 +70,7 @@ AddEventHandler("Businesses:Client:Startup", function()
                     if nearUnit and nearUnit?.unitId then
                         local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
 
-                        return Jobs.Permissions:HasJob(unit.managedBy)
+                        return exports['sandbox-jobs']:HasJob(unit.managedBy)
                     end
                 end,
             },
@@ -146,7 +146,7 @@ _STORAGEUNITS = {
                     })
                 end
 
-                if Jobs.Permissions:HasJob(unit.managedBy) then
+                if exports['sandbox-jobs']:HasJob(unit.managedBy) then
                     if unit.owner then
                         table.insert(menu.main.items, {
                             label = "Current Unit Owner",
@@ -163,7 +163,7 @@ _STORAGEUNITS = {
                     end
                 end
 
-                if Jobs.Permissions:HasJob(unit.managedBy, false, false, false, false, "UNIT_SELL") then
+                if exports['sandbox-jobs']:HasJob(unit.managedBy, false, false, false, false, "UNIT_SELL") then
                     table.insert(menu.main.items, {
                         label = "Sell Storage Unit",
                         description = "Set the new owner of the storage unit",

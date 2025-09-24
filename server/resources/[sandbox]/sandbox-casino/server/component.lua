@@ -4,13 +4,11 @@ _casinoConfigLoaded = false
 
 AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Casino = exports["sandbox-base"]:FetchComponent("Casino")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Casino", {
-		"Jobs",
 		"Casino",
 	}, function(error)
 		if #error > 0 then

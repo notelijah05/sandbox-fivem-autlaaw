@@ -136,7 +136,7 @@ _MDT.People = {
 
 				if char.Jobs then
 					for k, v in ipairs(char.Jobs) do
-						local jobData = Jobs:Get(v.Id)
+						local jobData = exports['sandbox-jobs']:Get(v.Id)
 						if jobData.Owner and jobData.Owner == char.SID then
 							table.insert(ownedBusinesses, v.Id)
 						end

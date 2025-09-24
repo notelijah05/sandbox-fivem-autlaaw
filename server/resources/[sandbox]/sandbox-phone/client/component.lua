@@ -130,7 +130,7 @@ exports("IsAppUsable", function(app)
 				or (
 					(
 						appdata.restricted.job
-						and Jobs.Permissions:HasJob(
+						and exports['sandbox-jobs']:HasJob(
 							appdata.restricted.job,
 							appdata.restricted.workplace,
 							appdata.restricted.grade
@@ -140,7 +140,7 @@ exports("IsAppUsable", function(app)
 						LocalPlayer.state.Character:GetData("States"),
 						appdata.restricted.state
 					))
-					or (appdata.restricted.jobPermission and Jobs.Permissions:HasJob(
+					or (appdata.restricted.jobPermission and exports['sandbox-jobs']:HasJob(
 						appdata.restricted.job,
 						appdata.restricted.workplace,
 						appdata.restricted.grade,

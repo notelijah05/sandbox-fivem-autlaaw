@@ -41,7 +41,7 @@ function EMSCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(tonumber(data))
 		if char ~= nil then
 			if exports['sandbox-inventory']:ItemsHas(myChar:GetData("SID"), 1, "traumakit", 1) then
-				if Jobs.Permissions:HasJob(source, "ems") then
+				if exports['sandbox-jobs']:HasJob(source, "ems") then
 					exports['sandbox-base']:LoggerInfo(
 						"EMS",
 						string.format(
@@ -74,7 +74,7 @@ function EMSCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("EMS:FieldTreatWounds", function(source, data, cb)
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems") then
+		if exports['sandbox-jobs']:HasJob(source, "ems") then
 			if exports['sandbox-inventory']:ItemsHas(myChar:GetData("SID"), 1, "traumakit", 1) then
 				exports['sandbox-base']:ExecuteClient(data, "Notification", "Success", "Your Wounds Were Treated")
 				cb({ error = false })
@@ -88,7 +88,7 @@ function EMSCallbacks()
 
 	-- exports["sandbox-base"]:RegisterServerCallback("EMS:ApplyGauze", function(source, data, cb)
 	-- 	local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
-	-- 	if Jobs.Permissions:HasJob(source, "ems") then
+	-- 	if exports['sandbox-jobs']:HasJob(source, "ems") then
 	-- 		if exports['sandbox-inventory']:Remove(myChar:GetData("SID"), 1, "gauze", 1) then
 	-- 			local target = exports['sandbox-base']:FetchSource(data)
 	-- 			if target ~= nil then
@@ -118,7 +118,7 @@ function EMSCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("EMS:ApplyBandage", function(source, data, cb)
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems") then
+		if exports['sandbox-jobs']:HasJob(source, "ems") then
 			if exports['sandbox-inventory']:Remove(myChar:GetData("SID"), 1, "bandage", 1) then
 				local ped = GetPlayerPed(data)
 				local currHp = GetEntityHealth(ped)
@@ -145,7 +145,7 @@ function EMSCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("EMS:ApplyMorphine", function(source, data, cb)
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems") then
+		if exports['sandbox-jobs']:HasJob(source, "ems") then
 			if exports['sandbox-inventory']:Remove(myChar:GetData("SID"), 1, "morphine", 1) then
 				exports['sandbox-damage']:EffectsPainkiller(tonumber(data), 3)
 				exports['sandbox-base']:ExecuteClient(data, "Notification", "Success", "You Received A Morphine Shot")
@@ -160,7 +160,7 @@ function EMSCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("EMS:TreatWounds", function(source, data, cb)
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems") then
+		if exports['sandbox-jobs']:HasJob(source, "ems") then
 			exports["sandbox-base"]:ClientCallback(data, "Damage:Heal", true)
 			--TriggerClientEvent("Hospital:Client:GetOut", data)
 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Patient Has Been Treated")
@@ -173,7 +173,7 @@ function EMSCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("EMS:CheckDamage", function(source, data, cb)
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems") or Jobs.Permissions:HasJob(source, "police") then
+		if exports['sandbox-jobs']:HasJob(source, "ems") or exports['sandbox-jobs']:HasJob(source, "police") then
 			local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
 			if tChar ~= nil then
 				cb(tChar:GetData("Damage"))

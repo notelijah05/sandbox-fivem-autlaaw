@@ -87,7 +87,7 @@ AddEventHandler('Businesses:Client:Startup', function()
 	})
 
     exports['sandbox-hud']:InteractionRegisterMenu("vu_stripper_pole", "Vanilla Unicorn Dancers", "party-horn", function()
-        if exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn' and Jobs.Permissions:HasPermissionInJob('unicorn', 'STRIP_POLE') then
+        if exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn' and exports['sandbox-jobs']:HasPermissionInJob('unicorn', 'STRIP_POLE') then
             local subMenu = {}
 
             for k, v in ipairs(poleDances) do

@@ -88,7 +88,7 @@ AddEventHandler("Mechanic:Client:OnDuty", function(_, job)
 		return
 	end
 
-	Jobs.Duty:On(job)
+	exports['sandbox-jobs']:DutyOn(job)
 end)
 
 AddEventHandler("Mechanic:Client:OffDuty", function(_, job)
@@ -96,5 +96,5 @@ AddEventHandler("Mechanic:Client:OffDuty", function(_, job)
 		return
 	end
 
-	Jobs.Duty:Off(job)
+	exports['sandbox-jobs']:DutyOff(job)
 end)

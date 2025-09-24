@@ -2,7 +2,7 @@ LAPTOP_APPS = {}
 
 LAPTOP = {
 	UpdateJobData = function(self, source, returnValues)
-		local charJobs = Jobs.Permissions:GetJobs(source)
+		local charJobs = exports['sandbox-jobs']:GetJobs(source)
 		local charJobPerms = {}
 		local jobData = {}
 		if charJobs and #charJobs > 0 then
@@ -16,7 +16,7 @@ LAPTOP = {
 				if perms then
 					charJobPerms[v.Id] = perms
 				end
-				table.insert(jobData, Jobs:Get(v.Id))
+				table.insert(jobData, exports['sandbox-jobs']:Get(v.Id))
 			end
 		end
 

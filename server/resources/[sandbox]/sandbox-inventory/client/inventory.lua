@@ -82,13 +82,11 @@ end
 
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Jobs",
 		"Reputation",
 	}, function(error)
 		if #error > 0 then
@@ -1046,7 +1044,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Set", function(shops)
 				end,
 			})
 		else
-			if Jobs.Permissions:HasPermissionInJob(v.job, "JOB_SHOP_CONTROL") then
+			if exports['sandbox-jobs']:HasPermissionInJob(v.job, "JOB_SHOP_CONTROL") then
 				table.insert(menus, {
 					icon = "octagon-check",
 					text = "Open Shop",
@@ -1125,7 +1123,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Create", function(shop)
 			end,
 		})
 	else
-		if Jobs.Permissions:HasPermissionInJob(shop.job, "JOB_SHOP_CONTROL") then
+		if exports['sandbox-jobs']:HasPermissionInJob(shop.job, "JOB_SHOP_CONTROL") then
 			table.insert(menus, {
 				icon = "octagon-check",
 				text = "Open Shop",

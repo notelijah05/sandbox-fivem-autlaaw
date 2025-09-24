@@ -121,7 +121,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data.unit and data.SID then
             local unit = GlobalState[string.format("StorageUnit:%s", data.unit)]
-            if unit and Jobs.Permissions:HasJob(source, unit.managedBy, false, false, false, false, "UNIT_SELL") then
+            if unit and exports['sandbox-jobs']:HasJob(source, unit.managedBy, false, false, false, false, "UNIT_SELL") then
                 local target = exports['sandbox-characters']:FetchBySID(data.SID)
                 if target then
                     local myCoords = GetEntityCoords(GetPlayerPed(source))
@@ -173,7 +173,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         if char and data and data.unit then
             local unit = GlobalState[string.format("StorageUnit:%s", data.unit)]
             if unit then
-                if Player(source).state.onDuty == "police" and Jobs.Permissions:HasPermissionInJob(source, "police", "PD_RAID") then
+                if Player(source).state.onDuty == "police" and exports['sandbox-jobs']:HasPermissionInJob(source, "police", "PD_RAID") then
                     exports['sandbox-base']:LoggerWarn(
                         "Police",
                         string.format(

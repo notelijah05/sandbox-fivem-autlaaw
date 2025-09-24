@@ -14,30 +14,15 @@ RegisterNetEvent("Evidence:Server:RecieveEvidence", function(newEvidence)
 	end
 end)
 
-AddEventHandler("Evidence:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Evidence", {
-		"Jobs",
-	}, function(error)
-		if #error > 0 then
-			exports['sandbox-base']:LoggerCritical("Evidence", "Failed To Load All Dependencies")
-			return
-		end
-		RetrieveComponents()
+	StartDeletionThread()
 
-		StartDeletionThread()
-
-		exports["sandbox-base"]:RegisterServerCallback("Evidence:Fetch", function(source, data, cb)
-			cb(EVIDENCE_CACHE)
-		end)
-
-		RegisterBallisticsCallbacks()
-		RegisterBallisticsItemUses()
+	exports["sandbox-base"]:RegisterServerCallback("Evidence:Fetch", function(source, data, cb)
+		cb(EVIDENCE_CACHE)
 	end)
+
+	RegisterBallisticsCallbacks()
+	RegisterBallisticsItemUses()
 end)
 
 local _deletionThead = false
@@ -95,7 +80,7 @@ end)
 RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 	local _src = source
 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
-	if char and Jobs.Permissions:HasJob(_src, "police") then
+	if char and exports['sandbox-jobs']:HasJob(_src, "police") then
 		for k, v in ipairs(EVIDENCE_CACHE) do
 			if v.id == evidenceId then
 				if v.type == "paint_fragment" then

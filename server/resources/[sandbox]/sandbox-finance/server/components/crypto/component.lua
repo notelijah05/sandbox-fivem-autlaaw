@@ -1,22 +1,5 @@
 _cryptoCoins = {}
 
-AddEventHandler("Crypto:Shared:DependencyUpdate", RetrieveCryptoComponents)
-function RetrieveCryptoComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Crypto", {
-		"Jobs",
-	}, function(error)
-		if #error > 0 then
-			exports['sandbox-base']:LoggerCritical("Crypto", "Failed To Load All Dependencies")
-			return
-		end
-		RetrieveCryptoComponents()
-	end)
-end)
-
 exports("CryptoCoinCreate", function(name, acronym, price, buyable, sellable)
 	while Crypto == nil do
 		Wait(1)

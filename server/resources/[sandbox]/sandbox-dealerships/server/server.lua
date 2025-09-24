@@ -2,7 +2,6 @@ _hashToVeh = {}
 
 AddEventHandler('Dealerships:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
-    Jobs = exports['sandbox-base']:FetchComponent('Jobs')
     Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
     MDT = exports['sandbox-base']:FetchComponent('MDT')
 end
@@ -10,7 +9,6 @@ end
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Dealerships', {
         'Doors',
-        'Jobs',
         'Dealerships',
         'MDT',
     }, function(error)
@@ -263,7 +261,7 @@ function RegisterCallbacks()
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:ShowroomManagement:FetchData',
         function(source, dealerId, cb)
-            if _dealerships[dealerId] and Jobs.Permissions:HasPermissionInJob(source, dealerId, 'dealership_showroom') then
+            if _dealerships[dealerId] and exports['sandbox-jobs']:HasPermissionInJob(source, dealerId, 'dealership_showroom') then
                 cb(true, Dealerships.Stock:FetchDealer(dealerId))
             else
                 cb(false)
@@ -271,7 +269,7 @@ function RegisterCallbacks()
         end)
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:StockViewing:FetchData', function(source, dealerId, cb)
-        if _dealerships[dealerId] and Jobs.Permissions:HasPermissionInJob(source, dealerId, 'dealership_stock') or Jobs.Permissions:HasPermissionInJob(source, dealerId, 'dealership_sell') then
+        if _dealerships[dealerId] and exports['sandbox-jobs']:HasPermissionInJob(source, dealerId, 'dealership_stock') or exports['sandbox-jobs']:HasPermissionInJob(source, dealerId, 'dealership_sell') then
             cb(true, Dealerships.Stock:FetchDealer(dealerId), os.time(),
                 Dealerships.Management:GetData(dealerId, 'profitPercentage'))
         else
@@ -280,7 +278,7 @@ function RegisterCallbacks()
     end)
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:Sales:FetchData', function(source, dealerId, cb)
-        if _dealerships[dealerId] and Jobs.Permissions:HasPermissionInJob(source, dealerId, 'dealership_stock') or Jobs.Permissions:HasPermissionInJob(source, dealerId, 'dealership_sell') then
+        if _dealerships[dealerId] and exports['sandbox-jobs']:HasPermissionInJob(source, dealerId, 'dealership_stock') or exports['sandbox-jobs']:HasPermissionInJob(source, dealerId, 'dealership_sell') then
             cb(true, Dealerships.Stock:FetchDealer(dealerId), exports['sandbox-finance']:LoansGetDefaultInterestRate(),
                 Dealerships.Management:GetAllData(dealerId))
         else
@@ -291,7 +289,7 @@ function RegisterCallbacks()
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:ShowroomManagement:SetPosition',
         function(source, data, cb)
             local char = exports['sandbox-characters']:FetchCharacterSource(source)
-            if data and data.dealerId and type(data.position) == 'number' and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_showroom') then
+            if data and data.dealerId and type(data.position) == 'number' and exports['sandbox-jobs']:HasPermissionInJob(source, data.dealerId, 'dealership_showroom') then
                 cb(Dealerships.Showroom:UpdatePos(data.dealerId, data.position, data.vehData))
             else
                 cb(false)
@@ -332,7 +330,7 @@ function RegisterCallbacks()
 
         local stateId = math.tointeger(data.SID)
 
-        if data and data.dealerId and stateId and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_sell') then
+        if data and data.dealerId and stateId and exports['sandbox-jobs']:HasPermissionInJob(source, data.dealerId, 'dealership_sell') then
             local target = exports['sandbox-characters']:FetchBySID(stateId)
 
             if target then
@@ -371,7 +369,7 @@ function RegisterCallbacks()
     end)
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:GetDealershipData', function(source, data, cb)
-        if data and data.dealerId and _dealerships[data.dealerId] and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_manage') then
+        if data and data.dealerId and _dealerships[data.dealerId] and exports['sandbox-jobs']:HasPermissionInJob(source, data.dealerId, 'dealership_manage') then
             cb(Dealerships.Management:GetAllData(data.dealerId))
         else
             cb(false)
@@ -379,7 +377,7 @@ function RegisterCallbacks()
     end)
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:UpdateDealershipData', function(source, data, cb)
-        if data and data.dealerId and _dealerships[data.dealerId] and data.updating and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_manage') then
+        if data and data.dealerId and _dealerships[data.dealerId] and data.updating and exports['sandbox-jobs']:HasPermissionInJob(source, data.dealerId, 'dealership_manage') then
             data.updating._id = nil
             data.updating.dealership = nil
 
@@ -390,7 +388,7 @@ function RegisterCallbacks()
     end)
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:FetchHistory', function(source, data, cb)
-        if data.dealership and _dealerships[data.dealership] and Jobs.Permissions:HasPermissionInJob(source, data.dealership, 'dealership_manage') then
+        if data.dealership and _dealerships[data.dealership] and exports['sandbox-jobs']:HasPermissionInJob(source, data.dealership, 'dealership_manage') then
             cb(Dealerships.Records:GetPage(data.category, data.term, data.dealership, data.page, 6))
         else
             cb(false)
@@ -398,7 +396,7 @@ function RegisterCallbacks()
     end)
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:FetchCurrentOwner', function(source, data, cb)
-        if data and data.dealerId and _dealerships[data.dealerId] and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_manage') then
+        if data and data.dealerId and _dealerships[data.dealerId] and exports['sandbox-jobs']:HasPermissionInJob(source, data.dealerId, 'dealership_manage') then
             exports['sandbox-vehicles']:OwnedGetVIN(data.VIN, function(vehicle)
                 if vehicle then
                     if vehicle.Owner then
@@ -406,7 +404,7 @@ function RegisterCallbacks()
                             local owner = MDT.People:View(vehicle.Owner.Id)
                             vehicle.OwnerName = string.format("%s %s (%s)", owner.First, owner.Last, owner.SID)
                         elseif vehicle.Owner.Type == 1 or vehicle.Owner.Type == 2 then
-                            local jobData = Jobs:DoesExist(vehicle.Owner.Id, vehicle.Owner.Workplace)
+                            local jobData = exports['sandbox-jobs']:DoesExist(vehicle.Owner.Id, vehicle.Owner.Workplace)
                             if jobData then
                                 if jobData.Workplace then
                                     vehicle.OwnerName = string.format('%s (%s)', jobData.Name, jobData.Workplace.Name)
@@ -433,7 +431,7 @@ function RegisterCallbacks()
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:BuyBackStart', function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if data and data.dealerId and data.netId and _dealerships[data.dealerId] and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_buyback') then
+        if data and data.dealerId and data.netId and _dealerships[data.dealerId] and exports['sandbox-jobs']:HasPermissionInJob(source, data.dealerId, 'dealership_buyback') then
             local veh = NetworkGetEntityFromNetworkId(data.netId)
 
             if veh and DoesEntityExist(veh) then
@@ -481,7 +479,7 @@ function RegisterCallbacks()
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:BuyBack', function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if data and data.dealerId and data.netId and _dealerships[data.dealerId] and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_buyback') then
+        if data and data.dealerId and data.netId and _dealerships[data.dealerId] and exports['sandbox-jobs']:HasPermissionInJob(source, data.dealerId, 'dealership_buyback') then
             local veh = NetworkGetEntityFromNetworkId(data.netId)
 
             if veh and DoesEntityExist(veh) then

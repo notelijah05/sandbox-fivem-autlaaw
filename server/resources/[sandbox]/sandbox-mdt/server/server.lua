@@ -25,7 +25,6 @@ local sentencedSuspects = {}
 AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
@@ -36,7 +35,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
 		"MDT",
-		"Jobs",
 		"Properties",
 		"Radar",
 		"Jail",
@@ -85,7 +83,7 @@ end
 
 function UpdateMDTJobsData()
 	local newData = {}
-	local allJobData = Jobs:GetAll()
+	local allJobData = exports['sandbox-jobs']:GetAll()
 	for k, v in ipairs(_governmentJobs) do
 		newData[v] = allJobData[v]
 	end
@@ -102,10 +100,10 @@ end)
 
 AddEventHandler('Job:Server:DutyAdd', function(dutyData, source, SID)
 	if governmentJobs[dutyData.Id] then
-		local job = Jobs.Permissions:HasJob(source, dutyData.Id)
+		local job = exports['sandbox-jobs']:HasJob(source, dutyData.Id)
 		if job then
 			_onDutyUsers[source] = job.Id
-			local permissions = Jobs.Permissions:GetPermissionsFromJob(source, job.Id)
+			local permissions = exports['sandbox-jobs']:GetPermissionsFromJob(source, job.Id)
 
 			TriggerClientEvent("MDT:Client:Login", source, _breakpoints, job, permissions, false, {
 				governmentJobs = _governmentJobs,
@@ -134,11 +132,11 @@ AddEventHandler('Job:Server:DutyAdd', function(dutyData, source, SID)
 end)
 
 AddEventHandler('Jobs:Server:JobUpdate', function(source)
-	local dutyData = Jobs.Duty:Get(source)
+	local dutyData = exports['sandbox-jobs']:DutyGet(source)
 	if dutyData and governmentJobs[dutyData.Id] then
-		local job = Jobs.Permissions:HasJob(source, dutyData.Id)
+		local job = exports['sandbox-jobs']:HasJob(source, dutyData.Id)
 		if job then
-			local permissions = Jobs.Permissions:GetPermissionsFromJob(source, job.Id)
+			local permissions = exports['sandbox-jobs']:GetPermissionsFromJob(source, job.Id)
 			TriggerClientEvent('MDT:Client:UpdateJobData', source, job, permissions)
 		end
 	end
@@ -160,12 +158,13 @@ function CheckMDTPermissions(source, permission, jobId)
 		end
 
 		if type(permission) == 'string' then
-			local hasPerm = Jobs.Permissions:HasPermissionInJob(source, mdtUser, permission)
+			local hasPerm = exports['sandbox-jobs']
+			exports['sandbox-jobs']:HasPermissionInJob(source, mdtUser, permission)
 			if hasPerm then
 				return true, mdtUser
 			end
 		elseif type(permission) == 'table' then
-			local jobPermissions = Jobs.Permissions:GetPermissionsFromJob(source, mdtUser)
+			local jobPermissions = exports['sandbox-jobs']:GetPermissionsFromJob(source, mdtUser)
 			for k, v in ipairs(permission) do
 				if jobPermissions[v] then
 					return true, mdtUser
@@ -183,7 +182,7 @@ end
 
 RegisterNetEvent('MDT:Server:OpenPublicRecords', function()
 	local src = source
-	local dutyData = Jobs.Duty:Get(src)
+	local dutyData = exports['sandbox-jobs']:DutyGet(src)
 
 	if not _onDutyUsers[src] then
 		TriggerClientEvent("MDT:Client:SetMultipleData", src, {
@@ -689,7 +688,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("MDT:OpenPersonalLocker", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char and (Jobs.Permissions:HasJob(source, 'police') or Jobs.Permissions:HasJob(source, 'ems') or Jobs.Permissions:HasJob(source, 'prison')) then
+		if char and (exports['sandbox-jobs']:HasJob(source, 'police') or exports['sandbox-jobs']:HasJob(source, 'ems') or exports['sandbox-jobs']:HasJob(source, 'prison')) then
 			cb(true)
 
 			exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
@@ -754,7 +753,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 			if target then
 				local jailed = target:GetData("Jailed")
 				if jailed and not jailed.Released then
-					local dutyData = Jobs.Duty:GetDutyData("prison")
+					local dutyData = exports['sandbox-jobs']:DutyGetDutyData("prison")
 					if dutyData and dutyData.Count > 0 then
 						EmergencyAlerts:Create(
 							"DOC",

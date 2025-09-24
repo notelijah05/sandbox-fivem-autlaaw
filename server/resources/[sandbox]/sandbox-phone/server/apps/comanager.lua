@@ -320,7 +320,7 @@ local _pendingHires = {}
 local _pendingXfers = {}
 
 exports("CoManagerFetchAllAccessibleRosters", function(source)
-	local playersJobs = Jobs.Permissions:GetJobs(source)
+	local playersJobs = exports['sandbox-jobs']:GetJobs(source)
 	local fetchedRosterData = {}
 	local fetchingJobs = {}
 	for k, v in ipairs(playersJobs) do
@@ -420,7 +420,7 @@ exports("CoManagerFetchAllAccessibleRosters", function(source)
 end)
 
 exports("CoManagerFetchTimeWorked", function(source, jobId)
-	if Jobs.Permissions:HasJob(source, jobId, false, false, false, false, "JOB_MANAGEMENT") then
+	if exports['sandbox-jobs']:HasJob(source, jobId, false, false, false, false, "JOB_MANAGEMENT") then
 		local onlineCharacters = {}
 
 		local onlineShit = {}
@@ -564,12 +564,12 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local jobId = data.JobId
 
 		if jobId and not hasValue(_blacklistedJobs, jobId) then
-			if Jobs.Permissions:IsOwner(source, jobId) then
+			if exports['sandbox-jobs']:IsOwner(source, jobId) then
 				return cb({ success = false, code = "IS_OWNER" })
 			else
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char then
-					local success = Jobs:RemoveJob(char:GetData("SID"), jobId)
+					local success = exports['sandbox-jobs']:RemoveJob(char:GetData("SID"), jobId)
 					if success then
 						return cb({ success = true, code = "ERROR" })
 					end
@@ -601,8 +601,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local jobId, newName = data.JobId, data.NewName
 
 		if jobId and newName and not hasValue(_blacklistedJobs, jobId) then
-			if Jobs.Permissions:IsOwner(source, jobId) then
-				local res = Jobs.Management:Edit(jobId, {
+			if exports['sandbox-jobs']:IsOwner(source, jobId) then
+				local res = exports['sandbox-jobs']:ManagementEdit(jobId, {
 					Name = newName,
 				})
 
@@ -623,11 +623,11 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			(not workplace or (workplace and workplace.Id))
 			and grade
 			and grade.Id
-			and Jobs:DoesExist(jobId, (workplace and workplace.Id or false), grade.Id)
+			and exports['sandbox-jobs']:DoesExist(jobId, (workplace and workplace.Id or false), grade.Id)
 		then
-			local playerJobData = Jobs.Permissions:HasJob(source, jobId)
-			local playerJobPerms = Jobs.Permissions:GetPermissionsFromJob(source, jobId)
-			local playerIsOwner = Jobs.Permissions:IsOwner(source, jobId)
+			local playerJobData = exports['sandbox-jobs']:HasJob(source, jobId)
+			local playerJobPerms = exports['sandbox-jobs']:GetPermissionsFromJob(source, jobId)
+			local playerIsOwner = exports['sandbox-jobs']:IsOwner(source, jobId)
 			if (playerJobPerms and (playerJobPerms.JOB_HIRE or playerJobPerms.JOB_MANAGEMENT)) or playerIsOwner then
 				if (playerJobData.Grade.Level > grade.Level) or playerIsOwner then
 					local targetChar = exports['sandbox-characters']:FetchBySID(stateId)
@@ -683,10 +683,10 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local stateId, jobId = math.tointeger(data.SID), data.Job.Id
 
 		if stateId and jobId then
-			local job = Jobs:Get(jobId)
-			local playerJobData = Jobs.Permissions:HasJob(source, jobId)
-			local playerJobPerms = Jobs.Permissions:GetPermissionsFromJob(source, jobId)
-			local playerIsOwner = Jobs.Permissions:IsOwner(source, jobId)
+			local job = exports['sandbox-jobs']:Get(jobId)
+			local playerJobData = exports['sandbox-jobs']:HasJob(source, jobId)
+			local playerJobPerms = exports['sandbox-jobs']:GetPermissionsFromJob(source, jobId)
+			local playerIsOwner = exports['sandbox-jobs']:IsOwner(source, jobId)
 			if (playerJobPerms and (playerJobPerms.JOB_FIRE or playerJobPerms.JOB_MANAGEMENT)) or playerIsOwner then
 				if job.Owner and job.Owner == stateId then
 					return cb({ success = false, code = "INVALID_PERMISSIONS" })
@@ -716,7 +716,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					end
 
 					if canRemoveJob then
-						local success = Jobs:RemoveJob(stateId, playerJobData.Id)
+						local success = exports['sandbox-jobs']:RemoveJob(stateId, playerJobData.Id)
 						return cb({ success = success, code = "ERROR" })
 					else
 						return cb({ success = false, code = "INVALID_PERMISSIONS" })
@@ -735,12 +735,12 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			math.tointeger(data.SID), data.Job.Id, data.Job.Workplace, data.Job.Grade
 		if
 			(not workplace or (workplace and workplace.Id) and grade and grade.Id)
-			and Jobs:DoesExist(jobId, (workplace and workplace.Id or false), grade.Id)
+			and exports['sandbox-jobs']:DoesExist(jobId, (workplace and workplace.Id or false), grade.Id)
 		then
-			local job = Jobs:Get(jobId)
-			local playerJobData = Jobs.Permissions:HasJob(source, jobId)
-			local playerJobPerms = Jobs.Permissions:GetPermissionsFromJob(source, jobId)
-			local playerIsOwner = Jobs.Permissions:IsOwner(source, jobId)
+			local job = exports['sandbox-jobs']:Get(jobId)
+			local playerJobData = exports['sandbox-jobs']:HasJob(source, jobId)
+			local playerJobPerms = exports['sandbox-jobs']:GetPermissionsFromJob(source, jobId)
+			local playerIsOwner = exports['sandbox-jobs']:IsOwner(source, jobId)
 			if
 				(playerJobPerms and (playerJobPerms.JOB_MANAGE_EMPLOYEES or playerJobPerms.JOB_MANAGEMENT))
 				or playerIsOwner
@@ -775,7 +775,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 						if canChangeJob then
 							local success =
-								Jobs:GiveJob(stateId, playerJobData.Id, (workplace and workplace.Id or false), grade.Id)
+								exports['sandbox-jobs']:GiveJob(stateId, playerJobData.Id,
+									(workplace and workplace.Id or false), grade.Id)
 							return cb({ success = success, code = "ERROR" })
 						else
 							return cb({ success = false, code = "INVALID_PERMISSIONS" })
@@ -794,8 +795,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local jobId, workplaceId, newName = data.JobId, data.WorkplaceId, data.NewName
 
 		if jobId and newName and not hasValue(_blacklistedJobs, jobId) then
-			if Jobs.Permissions:IsOwner(source, jobId) then
-				local res = Jobs.Management.Workplace:Edit(jobId, workplaceId, newName)
+			if exports['sandbox-jobs']:IsOwner(source, jobId) then
+				local res = exports['sandbox-jobs']:ManagementWorkplaceEdit(jobId, workplaceId, newName)
 				cb(res)
 			else
 				cb({ success = false, code = "INVALID_PERMISSIONS" })
@@ -809,9 +810,9 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local jobId, workplaceId, gradeName, gradeLevel, gradePermissions =
 			data.JobId, data.WorkplaceId, data.Name, math.tointeger(data.Level), data.Permissions
 		if jobId and gradeName and gradeLevel and gradePermissions and not hasValue(_blacklistedJobs, jobId) then
-			local playerJobData = Jobs.Permissions:HasJob(source, jobId)
-			local playerJobPerms = Jobs.Permissions:GetPermissionsFromJob(source, jobId)
-			local playerIsOwner = Jobs.Permissions:IsOwner(source, jobId)
+			local playerJobData = exports['sandbox-jobs']:HasJob(source, jobId)
+			local playerJobPerms = exports['sandbox-jobs']:GetPermissionsFromJob(source, jobId)
+			local playerIsOwner = exports['sandbox-jobs']:IsOwner(source, jobId)
 
 			for k, v in pairs(gradePermissions) do
 				if v and (not playerJobPerms[k] and not playerIsOwner) then
@@ -823,7 +824,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				((playerJobPerms and playerJobPerms.JOB_MANAGEMENT) and gradeLevel < playerJobData.Grade.Level)
 				or playerIsOwner
 			then
-				local res = Jobs.Management.Grades:Create(jobId, workplaceId, gradeName, gradeLevel, gradePermissions)
+				local res = exports['sandbox-jobs']:ManagementGradesCreate(jobId, workplaceId, gradeName, gradeLevel,
+					gradePermissions)
 				return cb(res)
 			else
 				return cb({ success = false, code = "INVALID_PERMISSIONS" })
@@ -836,11 +838,11 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local jobId, workplaceId, gradeId, gradeName, gradeLevel, gradePermissions =
 			data.JobId, data.WorkplaceId, data.Id, data.Name, tonumber(data.Level), data.Permissions
 		if jobId and gradeId and not hasValue(_blacklistedJobs, jobId) then
-			local existingGrade = Jobs:DoesExist(jobId, workplaceId, gradeId)
+			local existingGrade = exports['sandbox-jobs']:DoesExist(jobId, workplaceId, gradeId)
 			if existingGrade then
-				local playerJobData = Jobs.Permissions:HasJob(source, jobId)
-				local playerJobPerms = Jobs.Permissions:GetPermissionsFromJob(source, jobId)
-				local playerIsOwner = Jobs.Permissions:IsOwner(source, jobId)
+				local playerJobData = exports['sandbox-jobs']:HasJob(source, jobId)
+				local playerJobPerms = exports['sandbox-jobs']:GetPermissionsFromJob(source, jobId)
+				local playerIsOwner = exports['sandbox-jobs']:IsOwner(source, jobId)
 
 				for k, v in pairs(gradePermissions) do
 					if v and (not playerJobPerms[k] and not playerIsOwner) then
@@ -855,7 +857,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						and gradeLevel < playerJobData.Grade.Level
 					) or playerIsOwner
 				then
-					local res = Jobs.Management.Grades:Edit(jobId, workplaceId, gradeId, {
+					local res = exports['sandbox-jobs']:ManagementGradesEdit(jobId, workplaceId, gradeId, {
 						Name = gradeName,
 						Level = gradeLevel,
 						Permissions = gradePermissions,
@@ -873,18 +875,18 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:DeleteGrade", function(source, data, cb)
 		local jobId, workplaceId, gradeId = data.JobId, data.WorkplaceId, data.Id
 		if jobId and gradeId and not hasValue(_blacklistedJobs, jobId) then
-			local existingGrade = Jobs:DoesExist(jobId, workplaceId, gradeId)
+			local existingGrade = exports['sandbox-jobs']:DoesExist(jobId, workplaceId, gradeId)
 			if existingGrade then
-				local playerJobData = Jobs.Permissions:HasJob(source, jobId)
-				local playerJobPerms = Jobs.Permissions:GetPermissionsFromJob(source, jobId)
-				local playerIsOwner = Jobs.Permissions:IsOwner(source, jobId)
+				local playerJobData = exports['sandbox-jobs']:HasJob(source, jobId)
+				local playerJobPerms = exports['sandbox-jobs']:GetPermissionsFromJob(source, jobId)
+				local playerIsOwner = exports['sandbox-jobs']:IsOwner(source, jobId)
 				if
 					(
 						(playerJobPerms and playerJobPerms.JOB_MANAGEMENT)
 						and existingGrade.Grade.Level < playerJobData.Grade.Level
 					) or playerIsOwner
 				then
-					local res = Jobs.Management.Grades:Delete(jobId, workplaceId, gradeId)
+					local res = exports['sandbox-jobs']:ManagementGradesDelete(jobId, workplaceId, gradeId)
 					return cb(res)
 				else
 					return cb({ success = false, code = "INVALID_PERMISSIONS" })
@@ -905,7 +907,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			local stateId = char:GetData("SID")
 			local data = _pendingHires[stateId]
 			if data then
-				local success = Jobs:GiveJob(
+				local success = exports['sandbox-jobs']:GiveJob(
 					stateId,
 					data.NewJob.Id,
 					(data.NewJob.Workplace and data.NewJob.Workplace.Id or false),

@@ -69,9 +69,9 @@ AddEventHandler("Properties:Client:Duty", function(t, data)
 	local property = _properties[data]
 	if property?.data?.jobDuty then
 		if LocalPlayer.state.onDuty == property?.data?.jobDuty then
-			Jobs.Duty:Off(property?.data?.jobDuty)
+			exports['sandbox-jobs']:DutyOff(property?.data?.jobDuty)
 		else
-			Jobs.Duty:On(property?.data?.jobDuty)
+			exports['sandbox-jobs']:DutyOn(property?.data?.jobDuty)
 		end
 	end
 end)

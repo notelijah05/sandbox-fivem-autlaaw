@@ -98,7 +98,7 @@ end)
 
 _DRIFT = {
 	Revoke = function(self, sid, source)
-		if Jobs.Permissions:HasPermissionInJob(source, "cloud9", "JOB_DRIFT_LICENSE") then
+		if exports['sandbox-jobs']:HasPermissionInJob(source, "cloud9", "JOB_DRIFT_LICENSE") then
 			local char = exports['sandbox-characters']:FetchBySID(tonumber(sid))
 			if char then
 				local licenses = char:GetData("Licenses")
@@ -121,7 +121,7 @@ _DRIFT = {
 		end
 	end,
 	Give = function(self, sid, source)
-		if Jobs.Permissions:HasPermissionInJob(source, "cloud9", "JOB_DRIFT_LICENSE") then
+		if exports['sandbox-jobs']:HasPermissionInJob(source, "cloud9", "JOB_DRIFT_LICENSE") then
 			local char = exports['sandbox-characters']:FetchBySID(tonumber(sid))
 			if char then
 				local licenses = char:GetData("Licenses")

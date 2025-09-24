@@ -9,7 +9,7 @@ AddEventHandler("Businesses:Server:Startup", function()
                 if not _pendingContactless[data.terminalId] then
                     local amount = math.floor(data.payment)
 
-                    local jobData = Jobs:Get(data.job)
+                    local jobData = exports['sandbox-jobs']:Get(data.job)
                     local jobBank = exports['sandbox-finance']:AccountsGetOrganization(data.job)
 
                     _pendingContactless[data.terminalId] = {

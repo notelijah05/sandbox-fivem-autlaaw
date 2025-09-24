@@ -1,17 +1,5 @@
-AddEventHandler("Restaurant:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Restaurant", {
-		"Jobs",
-	}, function(error)
-		if error then
-		end
-		RetrieveComponents()
-		Startup()
-	end)
+	Startup()
 end)
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()
@@ -781,12 +769,12 @@ end)
 
 AddEventHandler("Restaurant:Client:ClockIn", function(_, data)
 	if data and data.job then
-		Jobs.Duty:On(data.job)
+		exports['sandbox-jobs']:DutyOn(data.job)
 	end
 end)
 
 AddEventHandler("Restaurant:Client:ClockOut", function(_, data)
 	if data and data.job then
-		Jobs.Duty:Off(data.job)
+		exports['sandbox-jobs']:DutyOff(data.job)
 	end
 end)

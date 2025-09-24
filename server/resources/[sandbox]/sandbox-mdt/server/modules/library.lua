@@ -40,7 +40,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
     exports["sandbox-base"]:RegisterServerCallback("MDT:GetLibraryDocuments", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
-            local dutyData = Jobs.Duty:Get(source)
+            local dutyData = exports['sandbox-jobs']:DutyGet(source)
 
             if CheckMDTPermissions(source, true) then
                 local res = MySQL.query.await("SELECT id, label, link FROM mdt_library ORDER BY label", {})

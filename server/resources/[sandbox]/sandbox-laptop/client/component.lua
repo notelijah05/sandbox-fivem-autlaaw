@@ -121,11 +121,11 @@ LAPTOP = {
 									end
 								end
 							elseif k == "job" then
-								if not Jobs.Permissions:HasJob(v) then
+								if not exports['sandbox-jobs']:HasJob(v) then
 									return false
 								end
 							elseif k == "laptopPermission" then
-								if not Laptop.Permissions:HasPermission(v.app, v.permission) then
+								if not Laptop.Permissionsexports['sandbox-jobs']:HasPermission(v.app, v.permission) then
 									return false
 								end
 							elseif k == "reputation" then

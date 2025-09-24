@@ -116,7 +116,7 @@ _MDT.Vehicles = {
 				if vehicle.Owner.Type == 0 then
 					vehicle.Owner.Person = GetVehicleOwnerData(vehicle.Owner.Id)
 				elseif vehicle.Owner.Type == 1 or vehicle.Owner.Type == 2 then
-					local jobData = Jobs:DoesExist(vehicle.Owner.Id, vehicle.Owner.Workplace)
+					local jobData = exports['sandbox-jobs']:DoesExist(vehicle.Owner.Id, vehicle.Owner.Workplace)
 					if jobData then
 						if jobData.Workplace then
 							vehicle.Owner.JobName = string.format('%s (%s)', jobData.Name, jobData.Workplace.Name)

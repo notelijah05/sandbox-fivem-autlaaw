@@ -60,7 +60,6 @@ AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Config = exports["sandbox-base"]:FetchComponent("Config")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -72,7 +71,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
 		"Config",
 		"MDT",
-		"Jobs",
 		"Labor",
 		"Properties",
 		"Reputation",

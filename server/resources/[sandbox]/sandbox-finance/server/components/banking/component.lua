@@ -1,12 +1,10 @@
 AddEventHandler("Banking:Shared:DependencyUpdate", RetrieveBankingComponents)
 function RetrieveBankingComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Banking", {
-		"Jobs",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then

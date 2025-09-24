@@ -185,7 +185,7 @@ function RegisterChatCommands()
 			qual = false
 		end
 
-		local jobExists = Jobs:DoesExist(jobId, workplaceId)
+		local jobExists = exports['sandbox-jobs']:DoesExist(jobId, workplaceId)
 		if type(vehHash) == "number" and jobExists and level and level >= 0 and level < 10 and make and model then
 			exports['sandbox-vehicles']:OwnedAddToFleet(jobId, workplaceId, level, vehHash, vehType, modelType, {
 				make = make,

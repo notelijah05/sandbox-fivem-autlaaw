@@ -7,13 +7,11 @@ _justBoughtFuckingBike = {}
 
 AddEventHandler("Dealerships:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	--Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Dealerships", {
-		"Jobs",
 		--'Dealerships',
 	}, function(error)
 		if #error > 0 then
@@ -266,9 +264,9 @@ end)
 AddEventHandler("Dealerships:Client:ToggleDuty", function(entityData, data)
 	if data and data.dealerId then
 		if data.state then
-			Jobs.Duty:On(data.dealerId)
+			exports['sandbox-jobs']:DutyOn(data.dealerId)
 		else
-			Jobs.Duty:Off(data.dealerId)
+			exports['sandbox-jobs']:DutyOff(data.dealerId)
 		end
 	end
 end)

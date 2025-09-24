@@ -235,7 +235,7 @@ function RegisterBankingCallbacks()
 							if job.workplace and job.workplace ~= "" and #job.workplace > 0 then
 								fuckingWorkplace = job.workplace
 							end
-							local jobPermissions = Jobs.Permissions:GetPermissionsFromJob(
+							local jobPermissions = exports['sandbox-jobs']:GetPermissionsFromJob(
 								source,
 								job.job,
 								fuckingWorkplace

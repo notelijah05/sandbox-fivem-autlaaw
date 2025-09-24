@@ -1,30 +1,16 @@
-AddEventHandler("Billboards:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Billboards", {
-		"Jobs",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
+	-- print('testing biatch')
+	-- local dui = CreateBillboardDUI('https://i.imgur.com/Zlf40QZ.png', 1024, 512)
+	-- AddReplaceTexture('ch2_03b_cg2_03b_bb', 'ch2_03b_bb_lowdown', dui.dictionary, dui.texture)
 
-		-- print('testing biatch')
-		-- local dui = CreateBillboardDUI('https://i.imgur.com/Zlf40QZ.png', 1024, 512)
-		-- AddReplaceTexture('ch2_03b_cg2_03b_bb', 'ch2_03b_bb_lowdown', dui.dictionary, dui.texture)
+	-- Wait(10000)
 
-		-- Wait(10000)
+	-- print(dui.id)
 
-		-- print(dui.id)
+	-- ReleaseBillboardDUI(dui.id)
+	-- RemoveReplaceTexture('ch2_03b_cg2_03b_bb', 'ch2_03b_bb_lowdown')
 
-		-- ReleaseBillboardDUI(dui.id)
-		-- RemoveReplaceTexture('ch2_03b_cg2_03b_bb', 'ch2_03b_bb_lowdown')
-
-		StartUp()
-	end)
+	StartUp()
 end)
 
 local started = false

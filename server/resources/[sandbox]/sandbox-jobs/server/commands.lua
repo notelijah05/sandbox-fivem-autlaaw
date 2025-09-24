@@ -25,9 +25,9 @@ function RegisterJobChatCommands()
         if not workplaceId then workplaceId = false; end
 
         if target and jobId and gradeId then
-            local jobExists = Jobs:DoesExist(jobId, workplaceId, gradeId)
+            local jobExists = exports['sandbox-jobs']:DoesExist(jobId, workplaceId, gradeId)
             if jobExists then
-                local success = Jobs:GiveJob(target, jobId, workplaceId, gradeId)
+                local success = exports['sandbox-jobs']:GiveJob(target, jobId, workplaceId, gradeId)
                 if success then
                     if jobExists.Workplace then
                         exports["sandbox-chat"]:SendSystemSingle(source,
@@ -60,7 +60,7 @@ function RegisterJobChatCommands()
 
     exports["sandbox-chat"]:RegisterAdminCommand('removejob', function(source, args, rawCommand)
         local target, jobId = math.tointeger(args[1]), args[2]
-        local success = Jobs:RemoveJob(target, jobId)
+        local success = exports['sandbox-jobs']:RemoveJob(target, jobId)
         if success then
             exports["sandbox-chat"]:SendSystemSingle(source, 'Successfully Removed Job From State ID:' .. target)
         else
@@ -80,9 +80,9 @@ function RegisterJobChatCommands()
         target = math.tointeger(target)
 
         if target and jobId then
-            local jobExists = Jobs:Get(jobId)
+            local jobExists = exports['sandbox-jobs']:Get(jobId)
             if jobExists and jobExists.Type == 'Company' then
-                local success = Jobs.Management:Edit(jobId, {
+                local success = exports['sandbox-jobs']:ManagementEdit(jobId, {
                     Owner = target
                 })
                 if success then
@@ -106,7 +106,7 @@ function RegisterJobChatCommands()
     }, 2)
 
     exports["sandbox-chat"]:RegisterAdminCommand('onduty', function(source, args, rawCommand)
-        Jobs.Duty:On(source, args[1])
+        exports['sandbox-jobs']:DutyOn(source, args[1])
     end, {
         help = 'Go On Duty',
         params = {
@@ -115,7 +115,7 @@ function RegisterJobChatCommands()
     }, 1)
 
     exports["sandbox-chat"]:RegisterAdminCommand('offduty', function(source, args, rawCommand)
-        Jobs.Duty:Off(source)
+        exports['sandbox-jobs']:DutyOff(source)
     end, {
         help = 'Go Off Duty'
     })
@@ -166,9 +166,9 @@ function RegisterJobChatCommands()
 
     exports["sandbox-chat"]:RegisterAdminCommand('dutycount', function(source, args, rawCommand)
         local jobId = args[1]
-        local jobExists = Jobs:Get(jobId)
+        local jobExists = exports['sandbox-jobs']:Get(jobId)
         if jobExists then
-            local dutyData = Jobs.Duty:GetDutyData(jobId)
+            local dutyData = exports['sandbox-jobs']:DutyGetDutyData(jobId)
             exports["sandbox-chat"]:SendSystemSingle(source,
                 string.format('Job: %s -  %s On Duty', jobExists.Name, dutyData?.Count or 0))
         end
@@ -181,12 +181,12 @@ function RegisterJobChatCommands()
 
     exports["sandbox-chat"]:RegisterAdminCommand('dutytest', function(source, args, rawCommand)
         local jobId = args[1]
-        local jobExists = Jobs:Get(jobId)
+        local jobExists = exports['sandbox-jobs']:Get(jobId)
         if jobExists then
             exports["sandbox-chat"]:SendSystemSingle(source,
                 string.format('Before Job: %s -  %s On Duty', jobExists.Name,
                     GlobalState[string.format('Duty:%s', jobId)]))
-            Jobs.Duty:RefreshDutyData(jobId)
+            exports['sandbox-jobs']:DutyRefreshDutyData(jobId)
             exports["sandbox-chat"]:SendSystemSingle(source,
                 string.format('After Job: %s -  %s On Duty', jobExists.Name, GlobalState
                     [string.format('Duty:%s', jobId)]))
@@ -200,9 +200,9 @@ function RegisterJobChatCommands()
 
     exports["sandbox-chat"]:RegisterAdminCommand('changejobname', function(source, args, rawCommand)
         local jobId = args[1]
-        local jobExists = Jobs:Get(jobId)
+        local jobExists = exports['sandbox-jobs']:Get(jobId)
         if jobExists and args[2] then
-            Jobs.Management:Edit(jobId, {
+            exports['sandbox-jobs']:ManagementEdit(jobId, {
                 Name = args[2]
             })
             exports["sandbox-chat"]:SendSystemSingle(source,

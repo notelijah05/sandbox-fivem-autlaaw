@@ -10,7 +10,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		}, data.JobId)
 
 		if char and data.SID and data.WorkplaceId and data.GradeId and (hasPerms or isSystemAdmin) then
-			local added = Jobs:GiveJob(data.SID, data.JobId, data.WorkplaceId, data.GradeId, true)
+			local added = exports['sandbox-jobs']:GiveJob(data.SID, data.JobId, data.WorkplaceId, data.GradeId, true)
 			cb(added)
 
 			if added then
@@ -56,7 +56,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				if isSystemAdmin then
 					canRemove = true
 				else
-					local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
+					local plyrJob = exports['sandbox-jobs']:HasJob(source, loggedInJob)
 					for k, v in ipairs(charData.Jobs) do
 						if v.Id == data.JobId then
 							if plyrJob.Grade.Level > v.Grade.Level then
@@ -68,7 +68,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				end
 
 				if canRemove then
-					local removed = Jobs:RemoveJob(data.SID, data.JobId)
+					local removed = exports['sandbox-jobs']:RemoveJob(data.SID, data.JobId)
 					cb(removed)
 
 					if removed then
@@ -128,7 +128,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 			'DOC_HIGH_COMMAND',
 		}, data.JobId)
 
-		local newJobData = Jobs:DoesExist(data.data.Id, data.data.Workplace.Id, data.data.Grade.Id)
+		local newJobData = exports['sandbox-jobs']:DoesExist(data.data.Id, data.data.Workplace.Id, data.data.Grade.Id)
 
 		if char and data and data.SID and (hasPerms or isSystemAdmin) and newJobData then
 			local charData = MDT.People:View(data.SID)
@@ -137,7 +137,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				if isSystemAdmin then
 					canDoItBitch = true
 				else
-					local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
+					local plyrJob = exports['sandbox-jobs']:HasJob(source, loggedInJob)
 					for k, v in ipairs(charData.Jobs) do
 						if v.Id == data.JobId then
 							if plyrJob.Grade.Level > v.Grade.Level and plyrJob.Grade.Level > newJobData.Grade.Level then
@@ -149,7 +149,8 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				end
 
 				if canDoItBitch then
-					local updated = Jobs:GiveJob(data.SID, newJobData.Id, newJobData.Workplace.Id, newJobData.Grade.Id)
+					local updated = exports['sandbox-jobs']:GiveJob(data.SID, newJobData.Id, newJobData.Workplace.Id,
+						newJobData.Grade.Id)
 
 					cb(updated)
 
@@ -192,13 +193,13 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 			'DOC_HIGH_COMMAND',
 		}, data.JobId)
 
-		local targetData = Jobs:DoesExist(data.JobId, data.WorkplaceId, data.GradeId)
+		local targetData = exports['sandbox-jobs']:DoesExist(data.JobId, data.WorkplaceId, data.GradeId)
 
 		if char and data and data.UpdatedPermissions and (hasPerms or isSystemAdmin) and targetData then
-			local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
+			local plyrJob = exports['sandbox-jobs']:HasJob(source, loggedInJob)
 			if isSystemAdmin or (plyrJob and plyrJob.Grade.Level > targetData.Grade.Level) then
 				cb(
-					Jobs.Management.Grades:Edit(data.JobId, data.WorkplaceId, data.GradeId, {
+					exports['sandbox-jobs']:ManagementGradesEdit(data.JobId, data.WorkplaceId, data.GradeId, {
 						Permissions = data.UpdatedPermissions,
 					})
 				)
@@ -227,7 +228,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				if isSystemAdmin then
 					canRemove = true
 				else
-					local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
+					local plyrJob = exports['sandbox-jobs']:HasJob(source, loggedInJob)
 					for k, v in ipairs(charData.Jobs) do
 						if v.Id == data.JobId then
 							if plyrJob.Grade.Level > v.Grade.Level then
@@ -281,7 +282,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 								suspensionShit[data.JobId] = suspendData
 								char:SetData("MDTSuspension", suspensionShit)
 
-								Jobs.Duty:Off(char:GetData("Source"), data.JobId)
+								exports['sandbox-jobs']:DutyOff(char:GetData("Source"), data.JobId)
 							end
 
 							cb(true)
@@ -315,7 +316,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				if isSystemAdmin then
 					canRemove = true
 				else
-					local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
+					local plyrJob = exports['sandbox-jobs']:HasJob(source, loggedInJob)
 					for k, v in ipairs(charData.Jobs) do
 						if v.Id == data.JobId then
 							if plyrJob.Grade.Level > v.Grade.Level then
