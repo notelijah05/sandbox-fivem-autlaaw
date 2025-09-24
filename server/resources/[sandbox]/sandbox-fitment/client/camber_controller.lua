@@ -14,7 +14,7 @@ function OpenControllerMenu()
 
     local editedFrontCamber, editedRearCamber
 
-    wheelMenu = Menu:Create('vehicle_wheels', 'Vehicle Wheels', function()
+    wheelMenu = exports['sandbox-menu']:Create('vehicle_wheels', 'Vehicle Wheels', function()
         wheelMenuOpen = true
 
         CreateThread(function()

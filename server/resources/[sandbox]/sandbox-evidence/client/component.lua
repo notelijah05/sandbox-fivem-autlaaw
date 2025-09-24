@@ -29,7 +29,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Evidence", {
-		"Menu",
 		"Targeting",
 		"Animations",
 		"Polyzone",

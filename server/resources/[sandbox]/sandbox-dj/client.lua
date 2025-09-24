@@ -5,13 +5,11 @@ local Props = {}
 AddEventHandler("DJ:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Menu = exports["sandbox-base"]:FetchComponent("Menu")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("DJ", {
 		"Targeting",
-		"Menu",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -131,7 +129,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 	local djMenu = {}
 	local djMenuSub = {}
 
-	djMenu = Menu:Create("djMenuPlayer", string.format("DJ Turntable"), function() end, function()
+	djMenu = exports['sandbox-menu']:Create("djMenuPlayer", string.format("DJ Turntable"), function() end, function()
 		djMenu = nil
 		djMenuSub = nil
 		collectgarbage()
@@ -168,7 +166,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 		end)
 	end)
 
-	djMenuSub["songhistory"] = Menu:Create("djSongHistoryMenu", "Song History")
+	djMenuSub["songhistory"] = exports['sandbox-menu']:Create("djSongHistoryMenu", "Song History")
 	if previousSongs[booth] then
 		for _, v in pairs(previousSongs[booth]) do
 			djMenuSub["songhistory"].Add:Text(string.format("Song: %s", v), { "pad", "code", "center", "textLarge" })
@@ -208,7 +206,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 			end)
 		end
 		-- i-_1Os7hVDw
-		djMenuSub["changevolume"] = Menu:Create("dj_change_volume", "Change Volume")
+		djMenuSub["changevolume"] = exports['sandbox-menu']:Create("dj_change_volume", "Change Volume")
 
 		djMenuSub["changevolume"].Add:Slider("Change Volume", {
 			current = song.volume,

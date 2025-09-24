@@ -21,7 +21,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Businesses", {
-		"Menu",
 		"Animations",
 		"Targeting",
 		"Polyzone",

@@ -64,7 +64,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 	exports["sandbox-base"]:RegisterClientCallback("Vehicles:UsePurgeColorControllerMenu", function(data, cb)
 		local changingData = {}
 		purgeMenu = {}
-		purgeMenu = Menu:Create("purge_controller_settings", "Purge Controller")
+		purgeMenu = exports['sandbox-menu']:Create("purge_controller_settings", "Purge Controller")
 
 		purgeMenu.Add:Text("Purge Color Picker", { "heading" })
 

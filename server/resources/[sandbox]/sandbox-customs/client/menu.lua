@@ -64,7 +64,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		mods = {},
 	}
 
-	customsMenu = Menu:Create("vehicle_customs", "Vehicle Customs", function()
+	customsMenu = exports['sandbox-menu']:Create("vehicle_customs", "Vehicle Customs", function()
 		CUSTOMS_OPEN = true
 	end, function()
 		Wait(100)
@@ -100,7 +100,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	-- PAINT STUFF
 
-	customsMenuSubs["paint"] = Menu:Create("vehicle_customs_paint", "Paint")
+	customsMenuSubs["paint"] = exports['sandbox-menu']:Create("vehicle_customs_paint", "Paint")
 
 	if not settings.GOVERNMENT_PAINT then
 		customsMenuSubs["paint"].Add:Text("Primary Paint Color", { "heading" })
@@ -318,7 +318,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	-- LIVERIES
 
-	customsMenuSubs["livery"] = Menu:Create("vehicle_customs_livery", "Liveries")
+	customsMenuSubs["livery"] = exports['sandbox-menu']:Create("vehicle_customs_livery", "Liveries")
 
 	local hasLiveries = false
 	local liveryCount = GetVehicleLiveryCount(CUST_VEH)
@@ -387,7 +387,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 	customsMenu.Add:SubMenu("Livery", customsMenuSubs["livery"], { disabled = not hasLiveries })
 
 	-- EXTRAS
-	customsMenuSubs["extras"] = Menu:Create("vehicle_customs_extras", "Extras")
+	customsMenuSubs["extras"] = exports['sandbox-menu']:Create("vehicle_customs_extras", "Extras")
 	local hasExtras = false
 
 	local extraItemIds = {}
@@ -454,7 +454,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 	customsMenu.Add:SubMenu("Extras", customsMenuSubs["extras"], { disabled = not hasExtras })
 
 	-- Lighting
-	customsMenuSubs["lighting"] = Menu:Create("vehicle_customs_lighting", "Lighting")
+	customsMenuSubs["lighting"] = exports['sandbox-menu']:Create("vehicle_customs_lighting", "Lighting")
 
 	customsMenuSubs["lighting"].Add:Text("Xenon Lights", { "heading" })
 	customsMenuSubs["lighting"].Add:CheckBox(
@@ -546,7 +546,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	-- Wheels & Tires
 
-	customsMenuSubs["wheels"] = Menu:Create("vehicle_customs_wheels", "Wheels")
+	customsMenuSubs["wheels"] = exports['sandbox-menu']:Create("vehicle_customs_wheels", "Wheels")
 
 	local wheelTypeList = {}
 	for k, v in pairs(_customsConfig.wheelTypes) do
@@ -711,7 +711,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	-- Body Parts
 
-	customsMenuSubs["body_parts"] = Menu:Create("vehicle_customs_body_parts", "Body Parts")
+	customsMenuSubs["body_parts"] = exports['sandbox-menu']:Create("vehicle_customs_body_parts", "Body Parts")
 
 	for k, v in ipairs(_customsConfig.bodyParts) do
 		if v.mod == "horns" then
@@ -830,7 +830,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 	-- Performance Parts
 
 	if canInstallPerformance then
-		customsMenuSubs["performance"] = Menu:Create("vehicle_customs_performance", "Performance")
+		customsMenuSubs["performance"] = exports['sandbox-menu']:Create("vehicle_customs_performance", "Performance")
 
 		for k, v in ipairs(_customsConfig.performanceMods) do
 			local levelList = {

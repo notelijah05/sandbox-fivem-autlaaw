@@ -16,13 +16,11 @@ function RetrieveComponents()
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Scenes = exports["sandbox-base"]:FetchComponent("Scenes")
-	Menu = exports["sandbox-base"]:FetchComponent("Menu")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Scenes", {
-		"Menu",
 		"Targeting",
 		"Animations",
 		"Polyzone",
@@ -230,7 +228,7 @@ AddEventHandler("Scenes:Client:OpenOptionsMenu", function(values, data)
 	creatingSceneData.coords = vector3(data.coords.x, data.coords.y, data.coords.z)
 	creatingSceneData.route = LocalPlayer.state.currentRoute
 
-	_creationMenu = Menu:Create("scenes", "Scene Creation", function()
+	_creationMenu = exports['sandbox-menu']:Create("scenes", "Scene Creation", function()
 		_creationOpen = true
 		CreateThread(function()
 			while _creationOpen do
@@ -448,7 +446,7 @@ function EditScene(id, fuckface, data)
 	end
 	local creatingSceneData = deepcopy(fuckface)
 
-	_creationMenu = Menu:Create("scenes", "Edit Scene", function()
+	_creationMenu = exports['sandbox-menu']:Create("scenes", "Edit Scene", function()
 		_creationOpen = true
 		_hiddenScenes[fuckface._id] = true
 		CreateThread(function()

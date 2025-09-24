@@ -19,13 +19,14 @@ function OpenDealerManagementMenu(dealer)
         manageMenuSub = {}
         updatingData = {}
 
-        manageMenu = Menu:Create('dmanageMenu', string.format('Manage %s', dealerData.abbreviation), function()
+        manageMenu = exports['sandbox-menu']:Create('dmanageMenu',
+            string.format('Manage %s', dealerData.abbreviation), function()
 
-        end, function()
-            manageMenu = nil
-            manageMenuSub = nil
-            collectgarbage()
-        end)
+            end, function()
+                manageMenu = nil
+                manageMenuSub = nil
+                collectgarbage()
+            end)
 
         manageMenu.Add:Slider('Dealership Profit %', {
             current = data.profitPercentage,

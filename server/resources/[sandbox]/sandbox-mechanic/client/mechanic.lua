@@ -16,7 +16,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Mechanic", {
-		"Menu",
 		"Mechanic",
 		"Targeting",
 		"Animations",

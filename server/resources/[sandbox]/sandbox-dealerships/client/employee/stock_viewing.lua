@@ -20,7 +20,8 @@ function ViewDealershipStocks(dealerId)
                 local stockData = FormatDealerStockToCategories(stocks)
                 stockViewingSub = {}
 
-                stockViewing = Menu:Create('stockViewing', string.format('View %s Stock', dealerData.abbreviation),
+                stockViewing = exports['sandbox-menu']:Create('stockViewing',
+                    string.format('View %s Stock', dealerData.abbreviation),
                     function()
 
                     end, function()
@@ -39,7 +40,7 @@ function ViewDealershipStocks(dealerId)
 
                 for _, category in ipairs(orderedCategories) do
                     if stockData.sorted[category] and #stockData.sorted[category] > 0 then
-                        stockViewingSub[category] = Menu:Create('stockViewingCat-' .. category,
+                        stockViewingSub[category] = exports['sandbox-menu']:Create('stockViewingCat-' .. category,
                             _catalogCategories[category])
 
                         for k, v in ipairs(stockData.sorted[category]) do

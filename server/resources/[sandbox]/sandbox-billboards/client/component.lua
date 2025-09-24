@@ -19,7 +19,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Billboards", {
-		"Menu",
 		"Targeting",
 		"Animations",
 		"Polyzone",

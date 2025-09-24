@@ -6,7 +6,7 @@ function OpenStaffMenu(data)
     _menuOpen = true
     if data then
         adminSubMenus = {}
-        adminMenu = Menu:Create('adminMenu', 'Staff Menu', function(id, back)
+        adminMenu = exports['sandbox-menu']:Create('adminMenu', 'Staff Menu', function(id, back)
             _menuOpen = true
         end, function()
             _menuOpen = false
@@ -23,7 +23,7 @@ function OpenStaffMenu(data)
 
         -- Active Player Management
         if data.playerData then
-            adminSubMenus['activePlayers'] = Menu:Create('adminActivePlayers', 'Player Management')
+            adminSubMenus['activePlayers'] = exports['sandbox-menu']:Create('adminActivePlayers', 'Player Management')
 
             if #data.playerData > 0 then
                 table.sort(data.playerData, function(a, b)
@@ -35,11 +35,12 @@ function OpenStaffMenu(data)
 
                     local playerMenuId = 'adminActivePlayers-' .. player.Source
 
-                    adminSubMenus[playerMenuId] = Menu:Create(playerMenuId,
+                    adminSubMenus[playerMenuId] = exports['sandbox-menu']:Create(playerMenuId,
                         string.format('Viewing Player: [%s] %s', player.Source, player.Name))
 
                     -- PUNISH MENU
-                    adminSubMenus[playerMenuId .. '-punish'] = Menu:Create('adminActivePlayersPunish-' .. player.Source,
+                    adminSubMenus[playerMenuId .. '-punish'] = exports['sandbox-menu']:Create(
+                        'adminActivePlayersPunish-' .. player.Source,
                         string.format('Punish Player: [%s] %s', player.Source, player.Name))
 
                     adminSubMenus[playerMenuId .. '-punish'].Add:Text('Kick', { 'center', 'heading' })
@@ -186,7 +187,8 @@ function OpenStaffMenu(data)
             adminMenu.Add:SubMenu('Player Management', adminSubMenus['activePlayers'], {})
         end
 
-        adminSubMenus['recentDisconnects'] = Menu:Create('adminRecentDisconnects', 'Recent Disconnects')
+        adminSubMenus['recentDisconnects'] = exports['sandbox-menu']:Create('adminRecentDisconnects',
+            'Recent Disconnects')
         if data.recentDisconnects then
             if #data.recentDisconnects > 0 then
                 -- Highest Source should be at the top because it is the most recent disconnections
@@ -196,7 +198,7 @@ function OpenStaffMenu(data)
 
                 for _, player in ipairs(data.recentDisconnects) do
                     local playerMenuId = 'adminRecentDisconnects-' .. player.Source
-                    adminSubMenus[playerMenuId] = Menu:Create(playerMenuId,
+                    adminSubMenus[playerMenuId] = exports['sandbox-menu']:Create(playerMenuId,
                         string.format('Disconnected Player: [%s] %s', player.Source, player.Name))
 
                     local hasReconnected = connectedIdentifiers[player.Identifier]

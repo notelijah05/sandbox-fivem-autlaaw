@@ -19,7 +19,7 @@ function OpenShowroomManagement(dealerId)
                 end
 
                 showroomManagementSub = {}
-                showroomManagement = Menu:Create('showroomManagement',
+                showroomManagement = exports['sandbox-menu']:Create('showroomManagement',
                     string.format('Manage %s Showroom', _dealerships[dealerId].abbreviation), function()
 
                     end, function()
@@ -49,7 +49,7 @@ function OpenShowroomManagement(dealerId)
 end
 
 function StartSettingShowroomPosition(stockData, dealerId, position, positionVehicle)
-    showroomManagement = Menu:Create('showroomManagement',
+    showroomManagement = exports['sandbox-menu']:Create('showroomManagement',
         string.format('Setting %s Showroom Position #%s', _dealerships[dealerId].abbreviation, position), function()
 
         end, function()
@@ -87,7 +87,7 @@ function StartSettingShowroomPosition(stockData, dealerId, position, positionVeh
 
     for _, category in ipairs(orderedCategories) do
         if stockData.sorted[category] and #stockData.sorted[category] > 0 then
-            showroomManagementSub[category] = Menu:Create('showroomManagementCat-' .. category,
+            showroomManagementSub[category] = exports['sandbox-menu']:Create('showroomManagementCat-' .. category,
                 _catalogCategories[category])
 
             for k, v in ipairs(stockData.sorted[category]) do

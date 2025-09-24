@@ -27,7 +27,8 @@ function OpenDealershipSales(dealerId)
                 local stockData = FormatDealerStockToCategories(stocks)
                 salesMenuSub = {}
 
-                salesMenu = Menu:Create('salesMenu', string.format('View %s Stock', _dealerships[dealerId].abbreviation),
+                salesMenu = exports['sandbox-menu']:Create('salesMenu',
+                    string.format('View %s Stock', _dealerships[dealerId].abbreviation),
                     function()
 
                     end, function()
@@ -48,13 +49,15 @@ function OpenDealershipSales(dealerId)
 
                 for _, category in ipairs(orderedCategories) do
                     if stockData.sorted[category] and #stockData.sorted[category] > 0 then
-                        salesMenuSub[category] = Menu:Create('salesMenuCat-' .. category, _catalogCategories[category])
+                        salesMenuSub[category] = exports['sandbox-menu']:Create('salesMenuCat-' .. category,
+                            _catalogCategories[category])
 
                         for k, v in ipairs(stockData.sorted[category]) do
                             if v.quantity > 0 then
                                 local vehMenuIdentifier = string.format('c:%s:%s', category, v.vehicle)
                                 local vehName = v.make .. ' ' .. v.model
-                                salesMenuSub[vehMenuIdentifier] = Menu:Create('salesMenu-' .. vehMenuIdentifier, vehName)
+                                salesMenuSub[vehMenuIdentifier] = exports['sandbox-menu']:Create(
+                                    'salesMenu-' .. vehMenuIdentifier, vehName)
                                 salesMenuSub[vehMenuIdentifier].Add:Text(string.format(
                                     [[
                                     Make & Model: %s<br>
@@ -77,7 +80,8 @@ function OpenDealershipSales(dealerId)
 
 
                                 -- Cash Sales Menu
-                                salesMenuSub[cashSaleIdentifier] = Menu:Create('salesMenu-' .. cashSaleIdentifier,
+                                salesMenuSub[cashSaleIdentifier] = exports['sandbox-menu']:Create(
+                                    'salesMenu-' .. cashSaleIdentifier,
                                     vehName .. ' - New Sale')
                                 local saleTextElem = salesMenuSub[cashSaleIdentifier].Add:Text(
                                     VehicleSalesGetCashText(dealerMData, dealerData, v), { 'code', 'pad' })
@@ -101,7 +105,8 @@ function OpenDealershipSales(dealerId)
 
 
                                 -- Loan Sales Menu
-                                salesMenuSub[loanSaleIdentifier] = Menu:Create('salesMenu-' .. loanSaleIdentifier,
+                                salesMenuSub[loanSaleIdentifier] = exports['sandbox-menu']:Create(
+                                    'salesMenu-' .. loanSaleIdentifier,
                                     vehName .. ' - New Sale')
 
                                 local saleTextElem = salesMenuSub[loanSaleIdentifier].Add:Text(

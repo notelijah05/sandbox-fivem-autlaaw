@@ -97,7 +97,7 @@ function GetVehicleDealerCarInformationText(vData)
 end
 
 function OpenCatalogMenu(catalogName)
-	catalogMenu = Menu:Create("dealerCatalog", catalogName .. " Vehicle Catalog", function()
+	catalogMenu = exports['sandbox-menu']:Create("dealerCatalog", catalogName .. " Vehicle Catalog", function()
 		catalogMenuOpen = true
 	end, function()
 		DestroyCatalogCams()
@@ -139,7 +139,7 @@ function OpenCatalogMenu(catalogName)
 				SetCatalogVehicle(catalogData.sorted[catalogCurrent][1].vehicle)
 			end
 
-			catalogSubMenus[cat] = Menu:Create(
+			catalogSubMenus[cat] = exports['sandbox-menu']:Create(
 				"dealerCatalogSub-" .. cat,
 				catalogName .. " Catalog - " .. _catalogCategories[cat] .. " Vehicles"
 			)
