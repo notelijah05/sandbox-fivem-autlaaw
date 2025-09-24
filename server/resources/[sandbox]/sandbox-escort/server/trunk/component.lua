@@ -1,40 +1,26 @@
-AddEventHandler("Trunk:Shared:DependencyUpdate", TrunkComponents)
-function TrunkComponents()
-	Escort = exports["sandbox-base"]:FetchComponent("Escort")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Trunk", {
-		"Escort",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		TrunkComponents()
+	exports["sandbox-base"]:RegisterServerCallback("Trunk:PutIn", function(source, data, cb)
+		local t = Player(source).state.isEscorting
 
-		exports["sandbox-base"]:RegisterServerCallback("Trunk:PutIn", function(source, data, cb)
-			local t = Player(source).state.isEscorting
+		if t ~= nil then
+			exports['sandbox-escort']:EscortStop(source)
+			exports["sandbox-base"]:ClientCallback(t, "Trunk:GetPutIn", data)
+		end
+	end)
 
-			if t ~= nil then
-				exports['sandbox-escort']:EscortStop(source)
-				exports["sandbox-base"]:ClientCallback(t, "Trunk:GetPutIn", data)
-			end
-		end)
+	exports["sandbox-base"]:RegisterServerCallback("Trunk:PullOut", function(source, data, cb)
+		local ent = NetworkGetEntityFromNetworkId(data)
+		local entState = Entity(ent).state
 
-		exports["sandbox-base"]:RegisterServerCallback("Trunk:PullOut", function(source, data, cb)
-			local ent = NetworkGetEntityFromNetworkId(data)
-			local entState = Entity(ent).state
-
-			if entState.trunkOccupied then
-				exports["sandbox-base"]:ClientCallback(entState.trunkOccupied, "Trunk:GetPulledOut", {}, function()
-					Wait(500)
-					exports['sandbox-escort']:EscortDo(source, {
-						target = entState.trunkOccupied,
-						inVeh = false,
-					})
-				end)
-			end
-		end)
+		if entState.trunkOccupied then
+			exports["sandbox-base"]:ClientCallback(entState.trunkOccupied, "Trunk:GetPulledOut", {}, function()
+				Wait(500)
+				exports['sandbox-escort']:EscortDo(source, {
+					target = entState.trunkOccupied,
+					inVeh = false,
+				})
+			end)
+		end
 	end)
 end)
 

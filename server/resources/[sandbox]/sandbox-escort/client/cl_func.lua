@@ -25,9 +25,9 @@ function DoEscort()
 				and not tState.isHospitalized
 				and (tState.isEscorting == nil and tState.myEscorter == nil)
 			then
-				Escort:DoEscort(tarPlayer, cPlayer)
+				exports['sandbox-escort']:DoEscort(tarPlayer, cPlayer)
 			elseif LocalPlayer.state.isEscorting ~= nil then
-				Escort:StopEscort()
+				exports['sandbox-escort']:StopEscort()
 			end
 		end
 	end
@@ -57,7 +57,7 @@ function StartEscortThread(t)
 		while LocalPlayer.state.isEscorting ~= nil do
 			Wait(500)
 			if not DoesEntityExist(ped) then
-				Escort:StopEscort()
+				exports['sandbox-escort']:StopEscort()
 			end
 		end
 	end)
@@ -190,7 +190,7 @@ AddEventHandler("Escort:Client:PullOut", function(entity, data)
 		end, function(cancelled)
 			if not cancelled then
 				local playerId = NetworkGetPlayerIndexFromPed(targetPed)
-				Escort:DoEscort(GetPlayerServerId(playerId), playerId)
+				exports['sandbox-escort']:DoEscort(GetPlayerServerId(playerId), playerId)
 			end
 		end)
 	end

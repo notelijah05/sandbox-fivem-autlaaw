@@ -9,39 +9,25 @@ local customOffsets = {
 
 local _inTrunkVeh = nil
 
-AddEventHandler("Trunk:Shared:DependencyUpdate", TrunkComponents)
-function TrunkComponents()
-	Escort = exports["sandbox-base"]:FetchComponent("Escort")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Trunk", {
-		"Escort",
-	}, function(error)
-		if #error > 0 then
-			return
+	exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPutIn", function(data, cb)
+		if NetworkDoesEntityExistWithNetworkId(data) then
+			InTrunk(NetToVeh(data))
 		end
-		TrunkComponents()
+	end)
 
-		exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPutIn", function(data, cb)
-			if NetworkDoesEntityExistWithNetworkId(data) then
-				InTrunk(NetToVeh(data))
+	exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPulledOut", function(data, cb)
+		if LocalPlayer.state.inTrunk then
+			exports['sandbox-escort']:TrunkGetOut()
+
+			while LocalPlayer.state.inTrunk do
+				Wait(5)
 			end
-		end)
 
-		exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPulledOut", function(data, cb)
-			if LocalPlayer.state.inTrunk then
-				exports['sandbox-escort']:TrunkGetOut()
-
-				while LocalPlayer.state.inTrunk do
-					Wait(5)
-				end
-
-				cb(true)
-			else
-				cb(false)
-			end
-		end)
+			cb(true)
+		else
+			cb(false)
+		end
 	end)
 end)
 

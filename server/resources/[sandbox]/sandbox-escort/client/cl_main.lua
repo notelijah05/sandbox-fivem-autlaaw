@@ -3,14 +3,12 @@ local _timeout = false
 AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Escort = exports["sandbox-base"]:FetchComponent("Escort")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
 		"Targeting",
-		"Escort",
 		"Vehicles",
 	}, function(error)
 		if #error > 0 then
@@ -37,36 +35,31 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-ESCORT = {
-	DoEscort = function(self, target, tPlayer)
-		if target ~= nil then
-			if LocalPlayer.state.AllowEscorting == false then
-				exports["sandbox-hud"]:NotifError("Unable to escort in this location.")
-				return
-			end
-			exports["sandbox-base"]:ServerCallback("Escort:DoEscort", {
-				target = target,
-				inVeh = IsPedInAnyVehicle(GetPlayerPed(tPlayer)),
-				isSwimming = IsPedSwimming(LocalPlayer.state.ped),
-			}, function(state)
-				if state then
-					StartEscortThread(tPlayer)
-				end
-			end)
+exports("DoEscort", function(target, tPlayer)
+	if target ~= nil then
+		if LocalPlayer.state.AllowEscorting == false then
+			exports["sandbox-hud"]:NotifError("Unable to escort in this location.")
+			return
 		end
-	end,
-	StopEscort = function(self)
-		exports["sandbox-base"]:ServerCallback("Escort:StopEscort", function() end)
-	end,
-}
+		exports["sandbox-base"]:ServerCallback("Escort:DoEscort", {
+			target = target,
+			inVeh = IsPedInAnyVehicle(GetPlayerPed(tPlayer)),
+			isSwimming = IsPedSwimming(LocalPlayer.state.ped),
+		}, function(state)
+			if state then
+				StartEscortThread(tPlayer)
+			end
+		end)
+	end
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Escort", ESCORT)
+exports("StopEscort", function()
+	exports["sandbox-base"]:ServerCallback("Escort:StopEscort", function() end)
 end)
 
 AddEventHandler("Interiors:Exit", function()
 	if LocalPlayer.state.isEscorting ~= nil then
-		Escort:StopEscort()
+		exports['sandbox-escort']:EscortStopEscort()
 	end
 end)
 

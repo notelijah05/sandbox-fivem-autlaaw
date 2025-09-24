@@ -10,7 +10,6 @@ function HospitalComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Escort = exports["sandbox-base"]:FetchComponent("Escort")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Hospital",
 		"PedInteraction",
-		"Escort",
 		"Polyzone",
 		"Animations",
 	}, function(error)

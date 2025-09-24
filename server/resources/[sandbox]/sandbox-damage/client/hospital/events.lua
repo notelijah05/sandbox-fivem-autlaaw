@@ -175,7 +175,7 @@ AddEventHandler("Hospital:Client:HiddenRevive", function(entity, data)
 		if not status then
 			exports["sandbox-base"]:ServerCallback("Hospital:HiddenRevive", {}, function(s)
 				if s then
-					Escort:StopEscort()
+					exports['sandbox-escort']:StopEscort()
 				end
 			end)
 		end

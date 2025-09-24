@@ -141,7 +141,7 @@ AddEventHandler("Hospital:Client:PrisonHospitalRevive", function(entity, data)
 		if not status then
 			exports["sandbox-base"]:ServerCallback("Hospital:PrisonHospitalRevive", {}, function(s)
 				if s then
-					Escort:StopEscort()
+					exports['sandbox-escort']:StopEscort()
 				end
 			end)
 		end
