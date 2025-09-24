@@ -14,7 +14,6 @@ AddEventHandler("Status:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Status", {
 		"Damage",
 		"Hud",
-		"Buffs",
 		"Status",
 		"Polyzone",
 		"Progress",

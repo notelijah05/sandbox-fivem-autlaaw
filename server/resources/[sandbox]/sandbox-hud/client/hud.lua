@@ -68,7 +68,6 @@ function RetrieveComponents()
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
-	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -84,7 +83,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jail",
 		"Animations",
 		"Admin",
-		"Buffs",
 	}, function(error)
 		if #error > 0 then
 			return

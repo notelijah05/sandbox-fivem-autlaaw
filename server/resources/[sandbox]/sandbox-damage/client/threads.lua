@@ -120,13 +120,13 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 end)
 
 RegisterNetEvent("Damage:Client:Ticks:Heal", function()
-	Buffs:ApplyUniqueBuff("heal_ticks", #LocalPlayer.state.healTicks * 10, false, {
+	exports['sandbox-hud']:ApplyUniqueBuff("heal_ticks", #LocalPlayer.state.healTicks * 10, false, {
 		customMax = #LocalPlayer.state.healTicks * 10,
 	})
 end)
 
 RegisterNetEvent("Damage:Client:Ticks:Armor", function()
-	Buffs:ApplyUniqueBuff("armor_ticks", #LocalPlayer.state.armorTicks * 10, false, {
+	exports['sandbox-hud']:ApplyUniqueBuff("armor_ticks", #LocalPlayer.state.armorTicks * 10, false, {
 		customMax = #LocalPlayer.state.armorTicks * 10,
 	})
 end)
@@ -265,7 +265,7 @@ function StartThreads()
 				local max = GetEntityMaxHealth(LocalPlayer.state.ped)
 
 				if chp >= max then
-					Buffs:RemoveBuffType("heal_ticks")
+					exports['sandbox-hud']:RemoveBuffType("heal_ticks")
 					LocalPlayer.state:set("healTicks", nil, true)
 				else
 					local heal = LocalPlayer.state.healTicks[1] or 0
@@ -281,7 +281,7 @@ function StartThreads()
 						SetEntityHealth(LocalPlayer.state.ped, chp + heal)
 
 						if chp + heal >= max then
-							Buffs:RemoveBuffType("heal_ticks")
+							exports['sandbox-hud']:RemoveBuffType("heal_ticks")
 						end
 					end
 
@@ -290,7 +290,7 @@ function StartThreads()
 					if #t > 0 then
 						LocalPlayer.state:set("healTicks", t, true)
 					else
-						Buffs:RemoveBuffType("heal_ticks")
+						exports['sandbox-hud']:RemoveBuffType("heal_ticks")
 						LocalPlayer.state:set("healTicks", nil, true)
 					end
 				end
@@ -313,7 +313,7 @@ function StartThreads()
 				local max = GetPlayerMaxArmour(LocalPlayer.state.PlayerID)
 
 				if car >= max then
-					Buffs:RemoveBuffType("armor_ticks")
+					exports['sandbox-hud']:RemoveBuffType("armor_ticks")
 					LocalPlayer.state:set("armorTicks", nil, true)
 				else
 					local gen = LocalPlayer.state.armorTicks[1] or 0
@@ -329,7 +329,7 @@ function StartThreads()
 						SetPedArmour(LocalPlayer.state.ped, car + gen)
 
 						if chp + heal >= max then
-							Buffs:RemoveBuffType("armor_ticks")
+							exports['sandbox-hud']:RemoveBuffType("armor_ticks")
 						end
 					end
 
@@ -338,7 +338,7 @@ function StartThreads()
 					if #t > 0 then
 						LocalPlayer.state:set("armorTicks", t, true)
 					else
-						Buffs:RemoveBuffType("armor_ticks")
+						exports['sandbox-hud']:RemoveBuffType("armor_ticks")
 						LocalPlayer.state:set("armorTicks", nil, true)
 					end
 				end

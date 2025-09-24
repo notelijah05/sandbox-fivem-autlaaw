@@ -14,7 +14,7 @@ function RunSpeed(modifier, duration, cd, ss)
 			AnimpostfxPlay("DrugsTrevorClownsFight", 0, true)
 		end
 
-		Buffs:ApplyUniqueBuff("speed", duration / 1000, false)
+		exports['sandbox-hud']:ApplyUniqueBuff("speed", duration / 1000, false)
 		SetTimeout(duration, function()
 			_runSpeed = false
 		end)
@@ -23,7 +23,7 @@ function RunSpeed(modifier, duration, cd, ss)
 			SetPedMoveRateOverride(PlayerPedId(), modifier)
 			Wait(1)
 		end
-		Buffs:RemoveBuffType("speed")
+		exports['sandbox-hud']:RemoveBuffType("speed")
 		SetPedMoveRateOverride(PlayerPedId(), 0.0)
 		AnimpostfxStop("DrugsTrevorClownsFight")
 		Wait(cd)

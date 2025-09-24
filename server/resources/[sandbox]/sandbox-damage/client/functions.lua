@@ -77,7 +77,7 @@ function DoDeadEvent()
 	if LocalPlayer.state.isDead then
 		Weapons:UnequipIfEquippedNoAnim()
 		if not LocalPlayer.state.gameMode then
-			Buffs:RemoveBuffType("weakness")
+			exports['sandbox-hud']:RemoveBuffType("weakness")
 			DisableControls()
 			DeadAnimLoop()
 		else

@@ -5,7 +5,7 @@ _inPursuitVehicleMegaphone = false
 
 AddEventHandler("Characters:Client:Spawn", function()
     Wait(500)
-    Buffs:RegisterBuff("pursuit-modes", "gauge-high", "#892020", -1, "permanent")
+    exports['sandbox-hud']:RegisterBuff("pursuit-modes", "gauge-high", "#892020", -1, "permanent")
 end)
 
 local _timeout = false
@@ -219,10 +219,11 @@ function ApplyPursuitStuffToVehicle(mode)
             local percentage = (100 / (#_inPursuitVehicleSettings - 1)) * (mode - 1)
 
             print(_inPursuitVehicleSettings[_inPursuitVehicleMode].name)
-            Buffs:ApplyUniqueBuff("pursuit-modes", -1, _inPursuitVehicleSettings[_inPursuitVehicleMode].name)
+            exports['sandbox-hud']:ApplyUniqueBuff("pursuit-modes", -1,
+                _inPursuitVehicleSettings[_inPursuitVehicleMode].name)
             --TriggerEvent("Status:Client:Update", "pursuit-modes", percentage)
         else
-            Buffs:RemoveBuffType("pursuit-modes")
+            exports['sandbox-hud']:RemoveBuffType("pursuit-modes")
             --TriggerEvent("Status:Client:Update", "pursuit-modes", 0)
         end
     end
@@ -241,6 +242,6 @@ function RemovePursuitStuffFromVehicle(veh)
     SetVehicleLights(veh, 0)
     ToggleVehicleMod(veh, 22, false)
 
-    Buffs:RemoveBuffType("pursuit-modes")
+    exports['sandbox-hud']:RemoveBuffType("pursuit-modes")
     --TriggerEvent("Status:Client:Update", "pursuit-modes", 0)
 end

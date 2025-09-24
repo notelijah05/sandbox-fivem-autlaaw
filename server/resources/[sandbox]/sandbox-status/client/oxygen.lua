@@ -5,7 +5,7 @@ local oxygenTank = nil
 local oxygenMask = nil
 
 AddEventHandler("Characters:Client:Spawn", function()
-	Buffs:RegisterBuff("oxygen-tank", "mask-ventilator", "#457F88", -1, "permanent")
+	exports['sandbox-hud']:RegisterBuff("oxygen-tank", "mask-ventilator", "#457F88", -1, "permanent")
 	Hud:RegisterStatus("oxygen", 100, 100, "lungs", "#457F88", true, false, {
 		hideHigh = true,
 		order = 3,

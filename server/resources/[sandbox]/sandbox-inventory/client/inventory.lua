@@ -95,7 +95,6 @@ function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
 
 	--Weapons = exports['sandbox-base']:FetchComponent('Weapons')
 end
@@ -118,7 +117,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Reputation",
 		"Vehicles",
 		"ListMenu",
-		"Buffs",
 		--'Weapons',
 	}, function(error)
 		if #error > 0 then

@@ -4,7 +4,6 @@ AddEventHandler("Damage:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
     Damage = exports["sandbox-base"]:FetchComponent("Damage")
     Hud = exports["sandbox-base"]:FetchComponent("Hud")
-    Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
     Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
     Status = exports["sandbox-base"]:FetchComponent("Status")
     --Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
     exports["sandbox-base"]:RequestDependencies("Damage", {
         "Damage",
         "Hud",
-        "Buffs",
         "Targeting",
         "Status",
         --"Hospital",
@@ -54,9 +52,9 @@ AddEventHandler("Core:Shared:Ready", function()
 
         exports["sandbox-base"]:RegisterClientCallback("Damage:Admin:Godmode", function(s)
             if s then
-                Buffs:ApplyBuff("godmode")
+                exports['sandbox-hud']:ApplyBuff("godmode")
             else
-                Buffs:RemoveBuffType("godmode")
+                exports['sandbox-hud']:RemoveBuffType("godmode")
             end
         end)
     end)
@@ -69,14 +67,14 @@ end)
 RegisterNetEvent("Characters:Client:Spawned", function()
     StartThreads()
 
-    Buffs:RegisterBuff("weakness", "bandage", "#FF0049", -1, "permanent")
-    Buffs:RegisterBuff("godmode", "shield-virus", "#FFBB04", -1, "permanent")
+    exports['sandbox-hud']:RegisterBuff("weakness", "bandage", "#FF0049", -1, "permanent")
+    exports['sandbox-hud']:RegisterBuff("godmode", "shield-virus", "#FFBB04", -1, "permanent")
 
     _reductions = LocalPlayer.state.Character:GetData("HPReductions") or 0
     if _reductions > 0 then
-        Buffs:ApplyUniqueBuff("weakness", -1)
+        exports['sandbox-hud']:ApplyUniqueBuff("weakness", -1)
     else
-        Buffs:RemoveBuffType("weakness")
+        exports['sandbox-hud']:RemoveBuffType("weakness")
     end
     Damage:CalculateMaxHp()
 
@@ -100,7 +98,7 @@ RegisterNetEvent("Characters:Client:Logout", function()
         LocalPlayer.state:set("releaseTime", false, true)
     end
 
-    Buffs:RemoveBuffType("weakness")
+    exports['sandbox-hud']:RemoveBuffType("weakness")
 end)
 
 RegisterNetEvent('UI:Client:Reset', function(apps)
@@ -108,9 +106,9 @@ RegisterNetEvent('UI:Client:Reset', function(apps)
         Hud.DeathTexts:Hide()
         Hud:Dead(false)
         if _reductions > 0 then
-            Buffs:ApplyUniqueBuff("weakness", -1)
+            exports['sandbox-hud']:ApplyUniqueBuff("weakness", -1)
         else
-            Buffs:RemoveBuffType("weakness")
+            exports['sandbox-hud']:RemoveBuffType("weakness")
         end
     end
 end)
@@ -119,13 +117,13 @@ DAMAGE = {
     Reductions = {
         Increase = function(self, amt)
             _reductions += amt
-            Buffs:ApplyUniqueBuff("weakness", -1)
+            exports['sandbox-hud']:ApplyUniqueBuff("weakness", -1)
             exports["sandbox-base"]:ServerCallback("Damage:SyncReductions", _reductions)
             Damage:CalculateMaxHp()
         end,
         Reset = function(self)
             _reductions = 0
-            Buffs:RemoveBuffType("weakness")
+            exports['sandbox-hud']:RemoveBuffType("weakness")
             exports["sandbox-base"]:ServerCallback("Damage:SyncReductions", _reductions)
             Damage:CalculateMaxHp()
         end,
@@ -213,9 +211,9 @@ DAMAGE = {
         end
 
         if _reductions > 0 then
-            Buffs:ApplyUniqueBuff("weakness", -1)
+            exports['sandbox-hud']:ApplyUniqueBuff("weakness", -1)
         else
-            Buffs:RemoveBuffType("weakness")
+            exports['sandbox-hud']:RemoveBuffType("weakness")
         end
 
 

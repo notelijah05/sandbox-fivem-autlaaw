@@ -102,7 +102,7 @@ local _hpListener = nil
 
 RegisterNetEvent("Status:Client:Ticks:Stress", function()
 	if LocalPlayer.state.stressTicks ~= nil then
-		Buffs:ApplyUniqueBuff("stress_ticks", #(LocalPlayer.state.stressTicks or {}), false, {
+		exports['sandbox-hud']:ApplyUniqueBuff("stress_ticks", #(LocalPlayer.state.stressTicks or {}), false, {
 			customMax = #(LocalPlayer.state.stressTicks or {}),
 		})
 	end

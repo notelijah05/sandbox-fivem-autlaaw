@@ -30,7 +30,6 @@ function RetrieveComponents()
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
-	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
 end
 
 local vehicleDoorNames = {
@@ -63,7 +62,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Hud",
 		"UISounds",
 		"Weapons",
-		"Buffs",
 	}, function(error)
 		if #error > 0 then
 			return

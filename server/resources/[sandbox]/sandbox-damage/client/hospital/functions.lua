@@ -75,9 +75,9 @@ function LeaveBed()
 		end
 
 		if _reductions > 0 then
-			Buffs:ApplyUniqueBuff("weakness", -1)
+			exports['sandbox-hud']:ApplyUniqueBuff("weakness", -1)
 		else
-			Buffs:RemoveBuffType("weakness")
+			exports['sandbox-hud']:RemoveBuffType("weakness")
 		end
 
 		SetEntityInvincible(player, false)

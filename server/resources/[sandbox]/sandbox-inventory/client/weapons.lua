@@ -10,7 +10,6 @@ function WeaponsComponents()
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Weapons",
 		"Progress",
 		"Hud",
-		"Buffs",
 		"Interaction",
 		"Inventory",
 	}, function(error)
@@ -840,9 +838,9 @@ function RunParachuteUpdate()
 		end
 
 		if hasChute then
-			Buffs:ApplyUniqueBuff("parachute", -1)
+			exports['sandbox-hud']:ApplyUniqueBuff("parachute", -1)
 		else
-			Buffs:RemoveBuffType("parachute")
+			exports['sandbox-hud']:RemoveBuffType("parachute")
 		end
 	end
 end
@@ -879,7 +877,7 @@ end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()
 	Wait(1000)
-	Buffs:RegisterBuff("parachute", "parachute-box", "#A72929", -1, "permanent")
+	exports['sandbox-hud']:RegisterBuff("parachute", "parachute-box", "#A72929", -1, "permanent")
 end)
 
 local prevCoords = 0

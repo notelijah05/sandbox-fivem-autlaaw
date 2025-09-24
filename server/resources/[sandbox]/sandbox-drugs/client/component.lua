@@ -9,7 +9,6 @@ function RetrieveComponents()
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 end
@@ -25,7 +24,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"ListMenu",
 		"PedInteraction",
 		"Polyzone",
-		"Buffs",
 		"Minigame",
 		"Status",
 	}, function(error)
