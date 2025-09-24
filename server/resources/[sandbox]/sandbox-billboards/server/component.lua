@@ -2,14 +2,12 @@ AddEventHandler("Billboards:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
     Generator = exports["sandbox-base"]:FetchComponent("Generator")
     Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-    Billboards = exports["sandbox-base"]:FetchComponent("Billboards")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
     exports["sandbox-base"]:RequestDependencies("Billboards", {
         "Generator",
         "Jobs",
-        "Billboards",
     }, function(error)
         if #error > 0 then
             exports['sandbox-base']:LoggerCritical("Billboards", "Failed To Load All Dependencies")
@@ -26,7 +24,7 @@ AddEventHandler("Core:Shared:Ready", function()
                 billboardUrl = false
             end
 
-            Billboards:Set(billboardId, billboardUrl)
+            exports['sandbox-billboards']:BillboardsSet(billboardId, billboardUrl)
         end, {
             help = "Set a Billboard URL",
             params = {
@@ -42,7 +40,7 @@ AddEventHandler("Core:Shared:Ready", function()
         }, 2)
 
         exports["sandbox-base"]:RegisterServerCallback("Billboards:UpdateURL", function(source, data, cb)
-            local billboardData = _billboardConfig[data?.id]
+            local billboardData = _billboardConfig[data and data.id]
             if billboardData and billboardData.job and Player(source).state.onDuty == billboardData.job then
                 local billboardUrl = data.link
                 if #billboardUrl <= 5 then
@@ -50,7 +48,7 @@ AddEventHandler("Core:Shared:Ready", function()
                 end
 
                 if not billboardUrl or exports['sandbox-base']:RegexTest(_billboardRegex, billboardUrl, "gim") then
-                    cb(Billboards:Set(data.id, billboardUrl))
+                    cb(exports['sandbox-billboards']:BillboardsSet(data.id, billboardUrl))
                 else
                     cb(false, true)
                 end
@@ -61,38 +59,34 @@ AddEventHandler("Core:Shared:Ready", function()
     end)
 end)
 
-_BILLBOARDS = {
-    Set = function(self, id, url)
-        if id and _billboardConfig[id] then
-            local updated = SetBillboardURL(id, url)
-            if updated then
-                GlobalState[string.format("Billboards:%s", id)] = url
+exports("BillboardsSet", function(id, url)
+    if id and _billboardConfig[id] then
+        local updated = SetBillboardURL(id, url)
+        if updated then
+            GlobalState[string.format("Billboards:%s", id)] = url
 
-                TriggerClientEvent('Billboards:Client:UpdateBoardURL', -1, id, url)
+            TriggerClientEvent('Billboards:Client:UpdateBoardURL', -1, id, url)
 
-                return true
-            end
+            return true
         end
-        return false
-    end,
-    Get = function(self, id)
-        return GlobalState[string.format("Billboards:%s", id)]
-    end,
-    GetCategory = function(self, cat)
-        local cIds = {}
+    end
+    return false
+end)
 
-        for k, v in pairs(_billboardConfig) do
-            if v.category == cat then
-                table.insert(cIds, k)
-            end
+exports("BillboardsGet", function(id)
+    return GlobalState[string.format("Billboards:%s", id)]
+end)
+
+exports("BillboardsGetCategory", function(cat)
+    local cIds = {}
+
+    for k, v in pairs(_billboardConfig) do
+        if v.category == cat then
+            table.insert(cIds, k)
         end
+    end
 
-        return cIds
-    end,
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function(component)
-    exports["sandbox-base"]:RegisterComponent("Billboards", _BILLBOARDS)
+    return cIds
 end)
 
 local started = false
