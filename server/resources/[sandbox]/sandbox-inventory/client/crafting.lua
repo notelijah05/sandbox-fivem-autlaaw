@@ -178,7 +178,7 @@ AddEventHandler("Crafting:Client:AddSchematic", function(ent, data)
 				}
 			end
 
-			ListMenu:Show({
+			exports['sandbox-hud']:ListMenuShow({
 				main = {
 					label = "Crafting Schematics",
 					items = schematics,

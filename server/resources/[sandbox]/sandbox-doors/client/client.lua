@@ -17,7 +17,6 @@ AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -28,7 +27,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
 		"Jobs",
 		"Targeting",
-		"ListMenu",
 		"Progress",
 		"Doors",
 		"Properties",

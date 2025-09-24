@@ -129,7 +129,7 @@ AddEventHandler('Vehicles:Client:RequestTow', function(entityData)
 					end
 				end
 
-				ListMenu:Show(menu)
+				exports['sandbox-hud']:ListMenuShow(menu)
 			end
 		end
 	end
@@ -204,7 +204,7 @@ AddEventHandler('Vehicles:Client:RequestImpound', function(entityData)
 					end
 				end
 
-				ListMenu:Show(menu)
+				exports['sandbox-hud']:ListMenuShow(menu)
 			end
 		end
 	end
@@ -421,7 +421,7 @@ AddEventHandler('Vehicles:Client:TowReleaseMenu', function()
 				})
 			end
 
-			ListMenu:Show(impoundMenu)
+			exports['sandbox-hud']:ListMenuShow(impoundMenu)
 		else
 			exports["sandbox-hud"]:NotifInfo('None of Your Vehicles Are Impounded')
 		end

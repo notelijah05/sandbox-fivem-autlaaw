@@ -58,7 +58,7 @@ function BuildTreatmentMenu(id)
 			})
 		end
 
-		ListMenu:Show({
+		exports['sandbox-hud']:ListMenuShow({
 			main = {
 				label = "Patient Treatment",
 				items = options,

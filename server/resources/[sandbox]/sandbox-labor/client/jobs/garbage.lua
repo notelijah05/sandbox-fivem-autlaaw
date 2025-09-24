@@ -271,7 +271,7 @@ AddEventHandler("Garbage:Client:Buy", function()
 			end
 		end
 
-		ListMenu:Show({
+		exports['sandbox-hud']:ListMenuShow({
 			main = {
 				label = "Pawn Shop",
 				items = itemList,

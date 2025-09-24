@@ -170,7 +170,7 @@ AddEventHandler("Weed:Client:Check", function(entity, data)
 				submenu = "deleteConfirm",
 			})
 
-			ListMenu:Show({
+			exports['sandbox-hud']:ListMenuShow({
 				main = {
 					label = string.format("Weed Plant Stage: %s", stageId),
 					items = items,
@@ -208,7 +208,7 @@ end)
 
 AddEventHandler("Weed:Client:Fertilize", function(data)
 	if Inventory.Items:Has(string.format("fertilizer_%s", data.type), 1) then
-		ListMenu:Close()
+		exports['sandbox-hud']:ListMenuClose()
 		Progress:Progress({
 			name = "fertilize_weed",
 			duration = 15000,
@@ -237,7 +237,7 @@ end)
 
 AddEventHandler("Weed:Client:Water", function(pId)
 	if Inventory.Items:Has("water", 1) then
-		ListMenu:Close()
+		exports['sandbox-hud']:ListMenuClose()
 		Progress:Progress({
 			name = "water_weed",
 			duration = 6000,
@@ -285,7 +285,7 @@ AddEventHandler("Weed:Client:Harvest", function(entity, data)
 end)
 
 AddEventHandler("Weed:Client:Harvest2", function(nId)
-	ListMenu:Close()
+	exports['sandbox-hud']:ListMenuClose()
 	Progress:Progress({
 		name = "harvest_weed",
 		duration = 6000,

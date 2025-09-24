@@ -81,7 +81,7 @@ AddEventHandler("Doors:Client:OpenElevator", function(hitEntity, data)
             return a.level < b.level
         end)
 
-        ListMenu:Show(menu)
+        exports['sandbox-hud']:ListMenuShow(menu)
     end
 end)
 

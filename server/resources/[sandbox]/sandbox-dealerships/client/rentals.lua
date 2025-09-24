@@ -83,7 +83,7 @@ AddEventHandler('VehicleRentals:Client:OpenRental', function(entityData, data)
         })
     end
 
-    ListMenu:Show(menu)
+    exports['sandbox-hud']:ListMenuShow(menu)
 end)
 
 AddEventHandler('VehicleRentals:Client:ConfirmRental', function(data)
@@ -140,7 +140,7 @@ AddEventHandler('VehicleRentals:Client:ReturnRental', function(entityData, data)
             end
 
             if #menu.main.items > 0 then
-                ListMenu:Show(menu)
+                exports['sandbox-hud']:ListMenuShow(menu)
             else
                 exports["sandbox-hud"]:NotifError('You Have no Vehicle Rentals to Return')
             end

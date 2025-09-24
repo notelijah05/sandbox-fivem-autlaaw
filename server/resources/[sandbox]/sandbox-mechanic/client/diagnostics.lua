@@ -103,7 +103,7 @@ AddEventHandler("Mechanic:Client:RunDiagnostics", function(entityData)
 			end
 		end
 
-		ListMenu:Show(menu)
+		exports['sandbox-hud']:ListMenuShow(menu)
 	end
 end)
 
@@ -190,6 +190,6 @@ AddEventHandler("Mechanic:Client:RunPerformanceDiagnostics", function(entityData
 			event = false,
 		})
 
-		ListMenu:Show(menu)
+		exports['sandbox-hud']:ListMenuShow(menu)
 	end
 end)

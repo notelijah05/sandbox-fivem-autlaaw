@@ -121,7 +121,7 @@ AddEventHandler("BikeStands:Client:Open", function(entityData, data)
 		})
 	end
 
-	ListMenu:Show(menuData)
+	exports['sandbox-hud']:ListMenuShow(menuData)
 end)
 
 AddEventHandler("BikeStands:Client:Purchase", function(data)

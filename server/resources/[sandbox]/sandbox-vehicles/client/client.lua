@@ -18,7 +18,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -45,7 +44,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Interaction",
 		"Polyzone",
-		"ListMenu",
 		"Jobs",
 		"PedInteraction",
 		"EmergencyAlerts",
@@ -327,7 +325,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					-- 				or (LocalPlayer.state.onDuty == "police" and LocalPlayer.state.inPdStation)
 					-- 			)
 					-- 		then
-					--             ListMenu:Close()
+					--             exports['sandbox-hud']:ListMenuClose()
 					-- 			TriggerServerEvent("Vehicle:Server:InspectVIN", VehToNet(VEHICLE_INSIDE))
 					-- 		end
 					-- 	end,

@@ -492,7 +492,7 @@ function OpenVehicleStorageMenu(storageType, storageId, storedVehicleData, parki
     end
 
     vehStorageMenuOpen = true
-    ListMenu:Show(storageMenu)
+    exports['sandbox-hud']:ListMenuShow(storageMenu)
 end
 
 AddEventHandler("Vehicles:Client:Storage:GoBack", function()
@@ -636,7 +636,7 @@ AddEventHandler("Vehicles:Client:Storage:Select", function(data)
 
         subMenu.main.items = vehItems
 
-        ListMenu:Show(subMenu)
+        exports['sandbox-hud']:ListMenuShow(subMenu)
     end)
 end)
 

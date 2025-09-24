@@ -15,7 +15,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 end
 
@@ -25,7 +24,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vehicles",
 		"Polyzone",
 		"PedInteraction",
-		"ListMenu",
 		"Police",
 	}, function(error)
 		if #error > 0 then
@@ -197,7 +195,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 
 		if withinCustomsType == 0 then
 			if bodyHealth < 1000 or engineHealth < 1000 then
-				ListMenu:Show({
+				exports['sandbox-hud']:ListMenuShow({
 					main = {
 						label = "Customs - Repair Required",
 						items = {
@@ -217,7 +215,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 			end
 		elseif withinCustomsType == 1 then
 			if bodyHealth < 1000 or engineHealth < 1000 then
-				ListMenu:Show({
+				exports['sandbox-hud']:ListMenuShow({
 					main = {
 						label = "Repair Shop",
 						items = {

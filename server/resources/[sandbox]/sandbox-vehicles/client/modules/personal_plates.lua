@@ -99,7 +99,7 @@ AddEventHandler("Vehicles:Client:DonatorLicensePlateClaim", function()
             end
 
 
-            ListMenu:Show(menu)
+            exports['sandbox-hud']:ListMenuShow(menu)
         else
             exports["sandbox-hud"]:NotifError("No Plates to Claim")
         end

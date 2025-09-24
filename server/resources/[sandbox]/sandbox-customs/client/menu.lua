@@ -896,7 +896,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		local currentCost = CalculateCustomsCost(changingData, costMultiplier)
 		if LocalPlayer.state.Character:GetData("Cash") >= currentCost then
 			isSaving = true
-			exports['sandbox-base']:LoggerTrace("VehicleCustoms", "Attept Mods Save")
+			exports['sandbox-base']:LoggerTrace("VehicleCustoms", "Attempt Mods Save")
 			customsMenu:Close()
 
 			exports["sandbox-base"]:ServerCallback("Vehicles:CompleteCustoms", {

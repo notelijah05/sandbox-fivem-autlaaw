@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Ped",
 		"Targeting",
 		"Interaction",
-		"ListMenu",
 		"Apartment",
 		"Characters",
 		"Wardrobe",
@@ -143,7 +141,7 @@ end)
 
 -- 			menu.items = menu
 
--- 			ListMenu:Show(menu)
+-- 			exports['sandbox-hud']:ListMenuShow(menu)
 -- 		else
 -- 			exports["sandbox-hud"]:NotifError("You Have No Requesting Visitors")
 -- 		end

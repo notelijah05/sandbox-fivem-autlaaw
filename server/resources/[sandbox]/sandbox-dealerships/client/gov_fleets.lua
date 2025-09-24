@@ -70,7 +70,7 @@ AddEventHandler('FleetDealers:Client:Open', function(entityData, data)
             })
         end
 
-        ListMenu:Show(menuData)
+        exports['sandbox-hud']:ListMenuShow(menuData)
     end
 end)
 

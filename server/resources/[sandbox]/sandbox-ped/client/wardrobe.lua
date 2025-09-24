@@ -1,12 +1,10 @@
 AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
 function RetrieveWardrobeComponents()
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("ListMenu", {
-		"ListMenu",
+	exports["sandbox-base"]:RequestDependencies("Wardrobe", {
 		"Wardrobe",
 	}, function(error)
 		if #error > 0 then
@@ -126,7 +124,7 @@ WARDROBE = {
 				event = "Wardrobe:Client:SaveNew",
 			})
 
-			ListMenu:Show({
+			exports['sandbox-hud']:ListMenuShow({
 				main = {
 					label = "Wardrobe",
 					items = items,

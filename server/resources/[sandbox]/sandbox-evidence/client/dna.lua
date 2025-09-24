@@ -23,7 +23,7 @@ RegisterNetEvent("Evidence:Client:RanDNA", function(tooDegraded, success, eviden
 			if success then
 				exports["sandbox-hud"]:NotifSuccess("DNA Match Found")
 
-				ListMenu:Show({
+				exports['sandbox-hud']:ListMenuShow({
 					main = {
 						label = "DNA Comparison Results",
 						items = {

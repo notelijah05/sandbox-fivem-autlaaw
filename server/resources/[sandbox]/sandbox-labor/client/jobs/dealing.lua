@@ -451,7 +451,7 @@ AddEventHandler("CornerDealing:Client:ShowMenu", function(entity, data)
 			netId = NetworkGetNetworkIdFromEntity(entity.entity),
 		}, function(data)
 			if data ~= nil and #data > 0 then
-				ListMenu:Show({
+				exports['sandbox-hud']:ListMenuShow({
 					main = {
 						label = "Corner Dealing",
 						items = data,

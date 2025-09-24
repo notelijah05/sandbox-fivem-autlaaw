@@ -822,7 +822,7 @@ AddEventHandler("Vehicles:Client:InspectVIN", function(entityData)
 end)
 
 RegisterNetEvent("Vehicles:Client:ViewVIN", function(VIN)
-	ListMenu:Show({
+	exports['sandbox-hud']:ListMenuShow({
 		main = {
 			label = 'VIN Inspection',
 			items = {

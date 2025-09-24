@@ -17,7 +17,7 @@ end
 
 AddEventHandler("DonorVanity:Client:ViewPending", function(entityData, data)
 	exports["sandbox-base"]:ServerCallback("Inventory:DonorSales:GetPending", {}, function(menu)
-		ListMenu:Show(menu)
+		exports['sandbox-hud']:ListMenuShow(menu)
 	end)
 end)
 

@@ -18,7 +18,6 @@ function GovComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
 
@@ -28,7 +27,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Jobs",
 		"PedInteraction",
-		"ListMenu",
 		"Polyzone",
 	}, function(error)
 		if #error > 0 then

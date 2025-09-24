@@ -379,7 +379,7 @@ AddEventHandler("Drugs:Client:Meth:TableDetails", function(entity, data)
     if entState.isMethTable and entState.methTable then
         exports["sandbox-base"]:ServerCallback("Drugs:Meth:GetTableDetails", entState.methTable, function(s)
             if s then
-                ListMenu:Show(s)
+                exports['sandbox-hud']:ListMenuShow(s)
             end
         end)
     end
@@ -413,7 +413,7 @@ AddEventHandler("Drugs:Client:Meth:ViewItems", function(entity, data)
             })
         end
 
-        ListMenu:Show({
+        exports['sandbox-hud']:ListMenuShow({
             main = {
                 label = "Offers",
                 items = itemList,

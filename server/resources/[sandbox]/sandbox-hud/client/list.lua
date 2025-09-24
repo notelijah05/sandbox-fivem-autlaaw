@@ -1,25 +1,5 @@
-AddEventHandler("ListMenu:Shared:DependencyUpdate", RetrieveListComponents)
-function RetrieveListComponents()
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("ListMenu", {
-		"ListMenu",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveListComponents()
-	end)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("ListMenu", LISTMENU)
-end)
-
 RegisterNetEvent("ListMenu:Client:Test", function()
-	ListMenu:Show({
+	exports['sandbox-hud']:ListMenuShow({
 		main = {
 			label = "Test Menu",
 			items = {
@@ -55,7 +35,7 @@ end)
 
 RegisterNUICallback("ListMenu:Clicked", function(data, cb)
 	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
-	ListMenu:Close()
+	exports['sandbox-hud']:ListMenuClose()
 	TriggerEvent(data.event, data.data)
 	cb("ok")
 end)
@@ -74,25 +54,24 @@ end)
 
 RegisterNUICallback("ListMenu:Close", function(data, cb)
 	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CANCEL", "HUD_FRONTEND_DEFAULT_SOUNDSET")
-	ListMenu:Close()
+	exports['sandbox-hud']:ListMenuClose()
 	TriggerEvent("ListMenu:Close")
 	cb("ok")
 end)
 
-LISTMENU = {
-	Show = function(self, menus)
-		SetNuiFocus(true, true)
-		SendNUIMessage({
-			type = "SET_LIST_MENU",
-			data = {
-				menus = menus,
-			},
-		})
-	end,
-	Close = function(self)
-		SetNuiFocus(false, false)
-		SendNUIMessage({
-			type = "CLOSE_LIST_MENU",
-		})
-	end,
-}
+exports("ListMenuShow", function(menus)
+	SetNuiFocus(true, true)
+	SendNUIMessage({
+		type = "SET_LIST_MENU",
+		data = {
+			menus = menus,
+		},
+	})
+end)
+
+exports("ListMenuClose", function()
+	SetNuiFocus(false, false)
+	SendNUIMessage({
+		type = "CLOSE_LIST_MENU",
+	})
+end)

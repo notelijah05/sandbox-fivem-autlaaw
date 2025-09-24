@@ -95,7 +95,7 @@ AddEventHandler("Government:Client:BuyLicense", function()
 		end
 	end
 
-	ListMenu:Show({
+	exports['sandbox-hud']:ListMenuShow({
 		main = {
 			label = "Licensing Services",
 			items = items,

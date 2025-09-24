@@ -3,7 +3,7 @@ local currentlyShowing = nil
 
 function StartListMenuPrompt(menu, timeout)
     if showingListMenuPrompt then
-        ListMenu:Close()
+        exports['sandbox-hud']:ListMenuClose()
         showingListMenuPrompt:resolve({ success = false, timeout = false, data = {} })
         showingListMenuPrompt = nil
     end
@@ -11,13 +11,13 @@ function StartListMenuPrompt(menu, timeout)
     showingListMenuPrompt = promise.new()
     currentlyShowing = GetGameTimer()
 
-    ListMenu:Show(menu)
+    exports['sandbox-hud']:ListMenuShow(menu)
 
     if timeout then
         local showingAtTime = GetGameTimer()
         Citizen.SetTimeout(timeout, function()
             if showingListMenuPrompt and currentlyShowing == showingAtTime then
-                ListMenu:Close()
+                exports['sandbox-hud']:ListMenuClose()
                 showingListMenuPrompt:resolve({ success = false, timeout = true, data = {} })
                 showingListMenuPrompt = nil
             end

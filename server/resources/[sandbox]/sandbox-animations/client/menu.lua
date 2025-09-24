@@ -86,7 +86,7 @@ ANIMATIONS = {
             cachedEmoteMenu = emoteMenu
         end
 
-        ListMenu:Show(cachedEmoteMenu)
+        exports['sandbox-hud']:ListMenuShow(cachedEmoteMenu)
     end,
     OpenWalksMenu = function(self, fromMainMenu)
         local emoteMenu = {
@@ -117,7 +117,7 @@ ANIMATIONS = {
             })
         end
 
-        ListMenu:Show(emoteMenu)
+        exports['sandbox-hud']:ListMenuShow(emoteMenu)
     end,
     OpenExpressionsMenu = function(self)
         local emoteMenu = {
@@ -148,7 +148,7 @@ ANIMATIONS = {
             })
         end
 
-        ListMenu:Show(emoteMenu)
+        exports['sandbox-hud']:ListMenuShow(emoteMenu)
     end,
 }
 

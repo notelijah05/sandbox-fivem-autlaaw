@@ -528,7 +528,7 @@ AddEventHandler("Robbery:Client:Paleto:Doors", function(entity, data)
 			},
 		}
 
-		ListMenu:Show(menu)
+		exports['sandbox-hud']:ListMenuShow(menu)
 	end)
 end)
 

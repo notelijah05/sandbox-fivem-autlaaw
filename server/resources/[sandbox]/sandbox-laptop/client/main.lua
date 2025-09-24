@@ -20,7 +20,6 @@ function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -43,7 +42,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"Hud",
 		"Targeting",
-		"ListMenu",
 		"Labor",
 		"Jail",
 		"Reputation",

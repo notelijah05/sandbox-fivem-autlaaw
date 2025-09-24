@@ -4,7 +4,6 @@ AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
 function RetrieveVendorComponents()
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
@@ -12,7 +11,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vendor", {
 		"PedInteraction",
 		"Targeting",
-		"ListMenu",
 		"Inventory",
 	}, function(error)
 		if #error > 0 then
@@ -175,7 +173,7 @@ AddEventHandler("Vendor:Client:GetItems", function(entity, data)
 			})
 		end
 
-		ListMenu:Show({
+		exports['sandbox-hud']:ListMenuShow({
 			main = {
 				label = _created[data.id].name,
 				items = itemList,

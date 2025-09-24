@@ -503,7 +503,7 @@ AddEventHandler("Drugs:Client:Moonshine:StillDetails", function(entity, data)
     if entState.isMoonshineStill and entState.stillId then
         exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:GetStillDetails", entState.stillId, function(s)
             if s then
-                ListMenu:Show(s)
+                exports['sandbox-hud']:ListMenuShow(s)
             end
         end)
     end
@@ -582,7 +582,7 @@ AddEventHandler("Drugs:Client:Moonshine:BarrelDetails", function(entity, data)
     if entState.isMoonshineBarrel and entState.barrelId then
         exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:GetBarrelDetails", entState.barrelId, function(s)
             if s then
-                ListMenu:Show(s)
+                exports['sandbox-hud']:ListMenuShow(s)
             end
         end)
     end

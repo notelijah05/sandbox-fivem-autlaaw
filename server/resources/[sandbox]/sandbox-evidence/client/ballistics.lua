@@ -76,7 +76,7 @@ RegisterNetEvent('Evidence:Client:FiledProjectile',
                     end
 
                     if label and desc then
-                        ListMenu:Show({
+                        exports['sandbox-hud']:ListMenuShow({
                             main = {
                                 label = 'Ballistics Comparison - Results',
                                 items = {

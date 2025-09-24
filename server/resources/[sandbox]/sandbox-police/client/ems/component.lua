@@ -5,7 +5,6 @@ function EMSComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Damage",
 		"Inventory",
 		"Progress",
-		"ListMenu",
 		"Interaction",
 		"Animations",
 	}, function(error)

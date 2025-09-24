@@ -76,7 +76,7 @@ AddEventHandler("EMS:Client:DrugTest", function(entity, data)
 end)
 
 AddEventHandler("EMS:Client:DismissTreatment", function()
-	ListMenu:Close()
+	exports['sandbox-hud']:ListMenuClose()
 end)
 
 AddEventHandler("EMS:Client:CheckICUPatients", function()

@@ -91,7 +91,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -108,7 +107,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Reputation",
 		"Vehicles",
-		"ListMenu",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -1243,7 +1241,7 @@ end)
 AddEventHandler("Shop:Client:BasicShop:ViewModerators", function(obj, shopId)
 	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:ViewModerators", shopId, function(list)
 		if list then
-			ListMenu:Show({
+			exports['sandbox-hud']:ListMenuShow({
 				main = {
 					label = "Shop Moderators",
 					items = list,

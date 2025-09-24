@@ -19,7 +19,6 @@ function RetrieveComponents()
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -29,7 +28,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Interaction",
 		"Hud",
-		"ListMenu",
 		"Inventory",
 	}, function(error)
 		if #error > 0 then

@@ -10,7 +10,7 @@ AddEventHandler('Labor:Client:Setup', function()
 end)
 
 AddEventHandler("Labor:Client:Export:GetMenu", function()
-	ListMenu:Show(GlobalState["LaborExporter"])
+	exports['sandbox-hud']:ListMenuShow(GlobalState["LaborExporter"])
 end)
 
 AddEventHandler("Labor:Client:Export:Sell", function(data)

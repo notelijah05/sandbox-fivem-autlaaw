@@ -172,7 +172,7 @@ _STORAGEUNITS = {
                     })
                 end
 
-                ListMenu:Show(menu)
+                exports['sandbox-hud']:ListMenuShow(menu)
             end
         end
     end,
@@ -199,7 +199,7 @@ _STORAGEUNITS = {
             end
         end
 
-        ListMenu:Show(menu)
+        exports['sandbox-hud']:ListMenuShow(menu)
     end,
     GetNearUnit = function(self)
         if LocalPlayer.state.currentRoute ~= 0 then

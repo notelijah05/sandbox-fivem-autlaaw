@@ -6,7 +6,6 @@ function RetrieveComponents()
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Hud",
 		"ObjectPlacer",
 		"Minigame",
-		"ListMenu",
 		"PedInteraction",
 		"Polyzone",
 		"Minigame",

@@ -19,7 +19,7 @@ end
 
 AddEventHandler("DonorDealer:Client:ViewPending", function(entityData, data)
   exports["sandbox-base"]:ServerCallback("Dealerships:DonorSales:GetPending", {}, function(menu)
-    ListMenu:Show(menu)
+    exports['sandbox-hud']:ListMenuShow(menu)
   end)
 end)
 
@@ -82,7 +82,7 @@ AddEventHandler("DonorDealer:Client:Open", function(entityData, data)
       items = mainMenuItems,
     }
 
-    ListMenu:Show(menu)
+    exports['sandbox-hud']:ListMenuShow(menu)
   end)
 end)
 

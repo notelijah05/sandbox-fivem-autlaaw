@@ -10,7 +10,6 @@ function RetrieveComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
@@ -24,7 +23,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Progress",
 		"Vehicles",
 		"Targeting",
-		"ListMenu",
 		"Inventory",
 	}, function(error)
 		if #error > 0 then

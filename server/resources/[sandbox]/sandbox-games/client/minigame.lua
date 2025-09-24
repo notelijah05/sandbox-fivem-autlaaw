@@ -43,7 +43,6 @@ AddEventHandler("minigame:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -56,7 +55,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("minigame", {
 		"Hud",
 		"Progress",
-		"ListMenu",
 		"Minigame",
 		"Interaction",
 		"Inventory",
