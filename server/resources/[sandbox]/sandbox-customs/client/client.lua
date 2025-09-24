@@ -11,7 +11,6 @@ local showingAction = false
 
 AddEventHandler("VehicleCustoms:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -23,7 +22,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VehicleCustoms", {
-		"Action",
 		"Progress",
 		"Vehicles",
 		"Polyzone",
@@ -129,9 +127,9 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 				if CheckClassRestriction(DRIVING_VEHICLE_CLASS, locationData.restrictClass) then
 					showingAction = true
 					if withinCustomsType == 0 then
-						Action:Show("bennys", "{keybind}primary_action{/keybind} Customize Vehicle")
+						exports['sandbox-hud']:ActionShow("bennys", "{keybind}primary_action{/keybind} Customize Vehicle")
 					elseif withinCustomsType == 1 then
-						Action:Show("bennys", "{keybind}primary_action{/keybind} Repair Vehicle")
+						exports['sandbox-hud']:ActionShow("bennys", "{keybind}primary_action{/keybind} Repair Vehicle")
 					end
 				end
 			end
@@ -144,7 +142,7 @@ AddEventHandler("Polyzone:Exit", function(id, point, insideZone, data)
 		withinCustoms = false
 		ForceCloseVehicleCustoms()
 		if showingAction then
-			Action:Hide("bennys")
+			exports['sandbox-hud']:ActionHide("bennys")
 			showingAction = false
 		end
 	end

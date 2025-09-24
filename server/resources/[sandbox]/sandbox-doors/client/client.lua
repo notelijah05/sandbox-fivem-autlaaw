@@ -15,7 +15,6 @@ DOORS_PERMISSION_CACHE = {}
 
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
@@ -28,7 +27,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Action",
 		"Jobs",
 		"Targeting",
 		"ListMenu",
@@ -260,7 +258,7 @@ function StopShowingDoorInfo()
 	if not _showingDoorInfo then
 		return
 	end
-	Action:Hide("doors")
+	exports['sandbox-hud']:ActionHide("doors")
 	_showingDoorInfo = false
 end
 
@@ -270,13 +268,13 @@ function StartShowingDoorInfo(doorId)
 
 	if DOORS_STATE[doorId].disabledUntil and DOORS_STATE[doorId].disabledUntil > GetCloudTimeAsInt() then
 		_showingDoorDisabled = true
-		Action:Show("doors", "This Door is Disabled")
+		exports['sandbox-hud']:ActionShow("doors", "This Door is Disabled")
 		return
 	end
 
 	local actionMsg = "{keybind}primary_action{/keybind} "
 		.. (DOORS_STATE[doorId].locked and "Unlock Door" or "Lock Door")
-	Action:Show("doors", actionMsg)
+	exports['sandbox-hud']:ActionShow("doors", actionMsg)
 end
 
 function StartCharacterThreads()

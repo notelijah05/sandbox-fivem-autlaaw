@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
@@ -29,7 +28,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Progress",
 		"Vehicles",
 		"ListMenu",
-		"Action",
 		"PedInteraction",
 		"Minigame",
 		"Input",

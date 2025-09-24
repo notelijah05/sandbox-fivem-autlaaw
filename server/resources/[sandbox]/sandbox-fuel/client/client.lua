@@ -17,7 +17,6 @@ local pumpModels = {
 
 AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -27,7 +26,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
-		"Action",
 		"Vehicles",
 		"Progress",
 		"Polyzone",

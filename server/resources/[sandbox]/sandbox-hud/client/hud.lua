@@ -59,7 +59,6 @@ AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
@@ -73,7 +72,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
 		"Hud",
-		"Action",
 		"Progress",
 		"ListMenu",
 		"Minigame",

@@ -14,7 +14,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Scenes = exports["sandbox-base"]:FetchComponent("Scenes")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 end
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vehicles",
 		"Targeting",
 		"ListMenu",
-		"Action",
 		"Scenes",
 		"Input",
 	}, function(error)

@@ -130,7 +130,7 @@ VEHICLE = {
 				SetVehicleUndriveable(veh, false)
 
 				if _actionShowing then
-					Action:Hide('engine')
+					exports['sandbox-hud']:ActionHide('engine')
 					_actionShowing = false
 				end
 			else
@@ -149,7 +149,7 @@ VEHICLE = {
 			exports["sandbox-hud"]:NotifInfo(customMessage and customMessage or 'Engine Turned Off', 1500, 'engine')
 
 			if Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
-				Action:Show('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
+				exports['sandbox-hud']:ActionShow('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
 				_actionShowing = true
 			end
 		end,
@@ -508,7 +508,7 @@ VEHICLE = {
 
 						exports["sandbox-base"]:ServerCallback("Vehicles:GetKeys", vehEnt.state.VIN, function(success)
 							exports["sandbox-hud"]:NotifSuccess("Lockpicked Vehicle Ignition", 3000, 'key')
-							Action:Show('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
+							exports['sandbox-hud']:ActionShow('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
 							_actionShowing = true
 
 							TriggerEvent("Laptop:Client:LSUnderground:Boosting:SuccessIgnition", VEHICLE_INSIDE)
@@ -624,7 +624,8 @@ VEHICLE = {
 								exports["sandbox-base"]:ServerCallback("Vehicles:GetKeys", vehEnt.state.VIN,
 									function(success)
 										exports["sandbox-hud"]:NotifSuccess("Vehicle Ignition Bypassed", 3000, 'key')
-										Action:Show('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
+										exports['sandbox-hud']:ActionShow('engine',
+											'{keybind}toggle_engine{/keybind} Turn Engine On')
 										_actionShowing = true
 
 										TriggerEvent("Laptop:Client:LSUnderground:Boosting:SuccessIgnition",
@@ -764,7 +765,7 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh, seat)
 		end
 	else
 		if Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
-			Action:Show('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
+			exports['sandbox-hud']:ActionShow('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
 			_actionShowing = true
 		end
 	end
@@ -778,7 +779,7 @@ end)
 
 AddEventHandler('Vehicles:Client:ExitVehicle', function(veh)
 	if _actionShowing then
-		Action:Hide('engine')
+		exports['sandbox-hud']:ActionHide('engine')
 		_actionShowing = false
 	end
 

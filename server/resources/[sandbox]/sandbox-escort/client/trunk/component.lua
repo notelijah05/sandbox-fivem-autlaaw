@@ -11,14 +11,12 @@ local _inTrunkVeh = nil
 
 AddEventHandler("Trunk:Shared:DependencyUpdate", TrunkComponents)
 function TrunkComponents()
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
 	Trunk = exports["sandbox-base"]:FetchComponent("Trunk")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Trunk", {
-		"Action",
 		"Escort",
 		"Trunk",
 	}, function(error)
@@ -149,7 +147,7 @@ function InTrunk(veh)
 		end
 
 		if not LocalPlayer.state.isCuffed and not LocalPlayer.state.isDead then
-			Action:Show(
+			exports['sandbox-hud']:ActionShow(
 				"trunk",
 				"{keybind}primary_action{/keybind} Exit Trunk | {keybind}secondary_action{/keybind} Open/Close Trunk"
 			)
@@ -199,7 +197,7 @@ function InTrunk(veh)
 				Wait(10)
 			end
 
-			Action:Hide("trunk")
+			exports['sandbox-hud']:ActionHide("trunk")
 			SetVehicleDoorOpen(_inTrunkVeh, 5, 1, 1)
 			UnmountTrunkCam()
 			DetachEntity(LocalPlayer.state.ped)

@@ -206,7 +206,7 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
     Wait(1000)
 
     pressedBowl = false
-    Action:Show('bowling',
+    exports['sandbox-hud']:ActionShow('bowling',
         '{keybind}bowling_aim_left{/keybind} Aim Left | {keybind}bowling_aim_right{/keybind} Aim Right | {keybind}primary_action{/keybind} Bowl')
 
     local tm = 0
@@ -215,7 +215,7 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
         tm += 10
     end
 
-    Action:Hide('bowling')
+    exports['sandbox-hud']:ActionHide('bowling')
     awaitingBowl = false
 
     local skillCheck = SkillCheckBowler()
@@ -380,7 +380,7 @@ end)
 AddEventHandler('Polyzone:Enter', function(id, testedPoint, insideZones, data)
     if data?.bowling_start then
         insideBowlingStart = data.bowling_start_id
-        Action:Show('bowling', '{keybind}primary_action{/keybind} Start Bowling')
+        exports['sandbox-hud']:ActionShow('bowling', '{keybind}primary_action{/keybind} Start Bowling')
 
         LoadRequestModel('prop_bowling_ball')
         LoadRequestModel('prop_bowling_pin')
@@ -390,7 +390,7 @@ end)
 AddEventHandler('Polyzone:Exit', function(id, testedPoint, insideZones, data)
     if insideBowlingStart and data?.bowling_start and data.bowling_start_id == insideBowlingStart then
         insideBowlingStart = false
-        Action:Hide('bowling')
+        exports['sandbox-hud']:ActionHide('bowling')
     end
 end)
 
@@ -401,7 +401,7 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
         local alley = GlobalState[string.format('Bowling:Alley:%s', insideBowlingStart)]
         if alley and not alley.finished and alley.currentPlayer == LocalPlayer.state.Character:GetData('SID') then
             if not _actionCD then
-                Action:Hide('bowling')
+                exports['sandbox-hud']:ActionHide('bowling')
                 TriggerServerEvent('Bowling:Server:StartBowling', insideBowlingStart)
                 _actionCD = true
                 Citizen.SetTimeout(30000, function()

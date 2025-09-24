@@ -6,7 +6,6 @@ function SAFDComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"PedInteraction",
 		"Escort",
 		"Polyzone",
-		"Action",
 		"Animations",
 	}, function(error)
 		if #error > 0 then

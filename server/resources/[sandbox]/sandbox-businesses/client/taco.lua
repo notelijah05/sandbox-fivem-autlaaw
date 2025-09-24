@@ -76,10 +76,10 @@ AddEventHandler("Businesses:Client:Startup", function()
 	eventHandlers["poly-exit"] = AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 		if id == "TacoPickup" and LocalPlayer.state.loggedIn then
 			LocalPlayer.state.TacoPickup = false
-			Action:Hide("tacopickup")
+			exports['sandbox-hud']:ActionHide("tacopickup")
 		elseif id == "TacoQueue" and LocalPlayer.state.loggedIn then
 			LocalPlayer.state.TacoQueue = false
-			Action:Hide("tacoqueue")
+			exports['sandbox-hud']:ActionHide("tacoqueue")
 		end
 	end)
 
@@ -91,7 +91,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 			and not LocalPlayer.state.doingAction
 		then
 			if _deliveryCounter > 0 then
-				Action:Hide("tacopickup")
+				exports['sandbox-hud']:ActionHide("tacopickup")
 				if _lastCook + _gracePeriod > GetGameTimer() then
 					exports["sandbox-hud"]:NotifError(
 						string.format(
@@ -129,7 +129,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 								exports["sandbox-base"]:ServerCallback("Taco:SetState", { state = 0 }, function()
 									FetchDropOffLocation()
 									_activeDropoffState = 1
-									Action:Hide("tacopickup")
+									exports['sandbox-hud']:ActionHide("tacopickup")
 									_lastDelivery = GetGameTimer()
 								end)
 							end
@@ -137,12 +137,12 @@ AddEventHandler("Businesses:Client:Startup", function()
 					end)
 				end)
 			else
-				Action:Hide("tacopickup")
+				exports['sandbox-hud']:ActionHide("tacopickup")
 				ShowTacoPickup()
 			end
 		elseif _activeDropoffState == 0 and LocalPlayer.state.TacoQueue and LocalPlayer.state.loggedIn then
 			if _deliveryCounter < _tacoQueue.maxQueue then
-				Action:Hide("tacoqueue")
+				exports['sandbox-hud']:ActionHide("tacoqueue")
 				if _lastDelivery + _gracePeriod > GetGameTimer() then
 					exports["sandbox-hud"]:NotifError(
 						string.format(
@@ -192,7 +192,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 				end
 			else
 				exports["sandbox-hud"]:NotifError("The queue is full.")
-				Action:Hide("tacoqueue")
+				exports['sandbox-hud']:ActionHide("tacoqueue")
 				ShowTacoQueue()
 			end
 		end
@@ -222,9 +222,9 @@ function ShowTacoPickup()
 	if _activeDropoffState == 0 and _deliveryCounter ~= nil then
 		LocalPlayer.state.TacoPickup = true
 		if _deliveryCounter > 0 then
-			Action:Show("tacopickup", "{keybind}primary_action{/keybind} Grab Delivery")
+			exports['sandbox-hud']:ActionShow("tacopickup", "{keybind}primary_action{/keybind} Grab Delivery")
 		else
-			Action:Show("tacopickup", "No deliveries available.")
+			exports['sandbox-hud']:ActionShow("tacopickup", "No deliveries available.")
 		end
 	end
 end
@@ -232,9 +232,9 @@ end
 function ShowTacoQueue()
 	if _activeDropoffState == 0 and _deliveryCounter ~= nil then
 		if _deliveryCounter >= _tacoQueue.maxQueue then
-			Action:Show("tacoqueue", "We require food to be delivered")
+			exports['sandbox-hud']:ActionShow("tacoqueue", "We require food to be delivered")
 		else
-			Action:Show(
+			exports['sandbox-hud']:ActionShow(
 				"tacoqueue",
 				string.format(
 					"{keybind}primary_action{/keybind} We require a %s to be delivered.",

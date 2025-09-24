@@ -17,7 +17,6 @@ function RetrieveComponents()
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 end
@@ -29,7 +28,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Status",
 		"Polyzone",
 		"Progress",
-		"Action",
 		"Animations",
 		"Interaction",
 	}, function(error)

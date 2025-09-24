@@ -6,7 +6,6 @@ function PrisonHospitalComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"PedInteraction",
 		"Escort",
 		"Polyzone",
-		"Action",
 		"Animations",
 		"Inventory",
 	}, function(error)

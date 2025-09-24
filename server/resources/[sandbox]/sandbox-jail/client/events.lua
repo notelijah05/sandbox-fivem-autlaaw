@@ -100,7 +100,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 		_inPickup = true
 	elseif id == "prison-logout" then
 		_inLogout = true
-		Action:Show("logout", "{keybind}primary_action{/keybind} Switch Characters")
+		exports['sandbox-hud']:ActionShow("logout", "{keybind}primary_action{/keybind} Switch Characters")
 	end
 end)
 
@@ -137,7 +137,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 		_inPickup = false
 	elseif id == "prison-logout" then
 		_inLogout = false
-		Action:Hide("logout")
+		exports['sandbox-hud']:ActionHide("logout")
 	end
 end)
 

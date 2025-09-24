@@ -34,9 +34,9 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 		withinBranchZone = data.bank_branch
 
 		if not GlobalState[string.format("Fleeca:Disable:%s", data.bank_branch)] then
-			Action:Show("banking", "{keybind}primary_action{/keybind} Open Bank")
+			exports['sandbox-hud']:ActionShow("banking", "{keybind}primary_action{/keybind} Open Bank")
 		else
-			Action:Show("banking", "Bank Unavailable")
+			exports['sandbox-hud']:ActionShow("banking", "Bank Unavailable")
 		end
 
 		showingAction = true
@@ -47,7 +47,7 @@ AddEventHandler("Polyzone:Exit", function(id, point, insideZone, data)
 	if withinBranchZone and data and data.bank_branch then
 		withinBranchZone = false
 		if showingAction then
-			Action:Hide("banking")
+			exports['sandbox-hud']:ActionHide("banking")
 			showingAction = false
 		end
 	end

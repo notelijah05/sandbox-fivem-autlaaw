@@ -339,14 +339,15 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 			Wait(10)
 		end
 		_inPoly = id
-		Action:Show("destress", string.format("{keybind}primary_action{/keybind} To %s", _pzDefs[_pzs[id]].action))
+		exports['sandbox-hud']:ActionShow("destress",
+			string.format("{keybind}primary_action{/keybind} To %s", _pzDefs[_pzs[id]].action))
 	end
 end)
 
 AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 	if _pzs[id] and id == _inPoly then
 		_inPoly = nil
-		Action:Hide("destress")
+		exports['sandbox-hud']:ActionHide("destress")
 	end
 end)
 
@@ -363,7 +364,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 			local tickTime = totalTime / currentStress
 
 			_delay = true
-			Action:Hide("destress")
+			exports['sandbox-hud']:ActionHide("destress")
 			Progress:ProgressWithTickEvent({
 				name = "stress_releif",
 				duration = totalTime,
@@ -393,7 +394,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 				SetTimeout(tickTime * 2, function()
 					_delay = false
 					if _inPoly ~= nil and Status.Get:Single("PLAYER_STRESS").value > 0 then
-						Action:Show(
+						exports['sandbox-hud']:ActionShow(
 							"destress",
 							string.format("{keybind}primary_action{/keybind} To %s", _pzDefs[_pzs[_inPoly]].action)
 						)

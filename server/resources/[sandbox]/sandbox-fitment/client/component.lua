@@ -11,7 +11,6 @@ function RetrieveComponents()
     Vehicles = exports['sandbox-base']:FetchComponent('Vehicles')
     Targeting = exports['sandbox-base']:FetchComponent('Targeting')
     ListMenu = exports['sandbox-base']:FetchComponent('ListMenu')
-    Action = exports['sandbox-base']:FetchComponent('Action')
     Interaction = exports['sandbox-base']:FetchComponent('Interaction')
 end
 
@@ -26,7 +25,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Vehicles',
         'Targeting',
         'ListMenu',
-        'Action',
         'Interaction',
     }, function(error)
         if #error > 0 then return; end

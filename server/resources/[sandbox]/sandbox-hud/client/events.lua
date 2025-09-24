@@ -41,7 +41,7 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 		})
 	end
 
-	Action:Hide()
+	exports['sandbox-hud']:ActionHide()
 	ListMenu:Close()
 	Interaction:Hide()
 	exports["sandbox-hud"]:NotifClear()

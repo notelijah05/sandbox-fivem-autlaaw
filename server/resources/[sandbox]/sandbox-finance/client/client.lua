@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 end
 
 function TableLength(tbl)
@@ -25,7 +24,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"PedInteraction",
 		"Polyzone",
-		"Action",
 	}, function(error)
 		if #error > 0 then
 			return

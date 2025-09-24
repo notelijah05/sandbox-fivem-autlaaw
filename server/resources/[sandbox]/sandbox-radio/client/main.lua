@@ -25,7 +25,6 @@ local radioNames = {
 
 AddEventHandler("Radio:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
@@ -36,7 +35,6 @@ local radioChannelCycle = false
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radio", {
-		"Action",
 		"Progress",
 		"Jobs",
 		"Weapons",

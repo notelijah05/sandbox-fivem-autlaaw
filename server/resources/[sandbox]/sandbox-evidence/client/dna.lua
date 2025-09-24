@@ -53,7 +53,7 @@ end)
 AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 	if data and data.dna and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "ems") then
 		_withinDNATesting = true
-		Action:Show("dna", "{key}Use DNA Evidence{/key} Run DNA Sample")
+		exports['sandbox-hud']:ActionShow("dna", "{key}Use DNA Evidence{/key} Run DNA Sample")
 	end
 end)
 
@@ -65,6 +65,6 @@ AddEventHandler("Polyzone:Exit", function(id, point, insideZone, data)
 		and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "ems")
 	then
 		_withinDNATesting = false
-		Action:Hide("dna")
+		exports['sandbox-hud']:ActionHide("dna")
 	end
 end)

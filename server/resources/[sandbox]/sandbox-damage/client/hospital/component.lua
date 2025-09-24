@@ -12,7 +12,6 @@ function HospitalComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
@@ -26,7 +25,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"PedInteraction",
 		"Escort",
 		"Polyzone",
-		"Action",
 		"Animations",
 	}, function(error)
 		if #error > 0 then
@@ -206,9 +204,11 @@ AddEventHandler('Polyzone:Enter', function(id, point, insideZone, data)
 
 		if not LocalPlayer.state.isEscorted and (GlobalState["ems:pmc:doctor"] == nil or GlobalState["ems:pmc:doctor"] == 0) then
 			if not GlobalState["Duty:ems"] or GlobalState["Duty:ems"] == 0 then
-				Action:Show("medical", '{keybind}primary_action{/keybind} Check In {key}$1500{/key}')
+				exports['sandbox-hud']:ActionShow("medical",
+					'{keybind}primary_action{/keybind} Check In {key}$1500{/key}')
 			else
-				Action:Show("medical", '{keybind}primary_action{/keybind} Check In {key}$1500{/key}')
+				exports['sandbox-hud']:ActionShow("medical",
+					'{keybind}primary_action{/keybind} Check In {key}$1500{/key}')
 			end
 		end
 	end
@@ -217,7 +217,7 @@ end)
 AddEventHandler('Polyzone:Exit', function(id, point, insideZone, data)
 	if id == 'hospital-check-in-zone-1' or id == 'hospital-check-in-zone-2' or id == 'hospital-check-in-zone-3' then
 		_inCheckInZone = false
-		Action:Hide("medical")
+		exports['sandbox-hud']:ActionHide("medical")
 	elseif id == "hospital-icu-area" and LocalPlayer.state.loggedIn then
 		if LocalPlayer.state.Character:GetData("ICU") and not LocalPlayer.state.Character:GetData("ICU").Released then
 			TriggerEvent("Hospital:Client:ICU:Enter")

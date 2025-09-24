@@ -143,7 +143,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
         if _working and _state == 3 and LocalPlayer.state.inOxyPickup and not LocalPlayer.state.doingAction then
             local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
             if veh == _v.ent and GetPedInVehicleSeat(_v.ent, -1) == LocalPlayer.state.ped then
-                Action:Hide("oxysale")
+                exports['sandbox-hud']:ActionHide("oxysale")
                 exports["sandbox-base"]:ServerCallback("OxyRun:CheckPickup", {}, function(s)
                     if s then
                         Progress:ProgressWithTickEvent({
@@ -188,7 +188,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
             else
                 local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
                 if _state == 3 and veh == _v.ent and GetPedInVehicleSeat(_v.ent, -1) == LocalPlayer.state.ped then
-                    Action:Show("oxysale", "{keybind}primary_action{/keybind} Load Product")
+                    exports['sandbox-hud']:ActionShow("oxysale", "{keybind}primary_action{/keybind} Load Product")
                 end
             end
         elseif _working and id == "OxySale" then
@@ -199,7 +199,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
     eventHandlers["poly-exit"] = AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
         if _working and id == "OxyPickup" then
             LocalPlayer.state.inOxyPickup = false
-            Action:Hide("oxysale")
+            exports['sandbox-hud']:ActionHide("oxysale")
         elseif _working and id == "OxySale" and LocalPlayer.state.loggedIn then
             LocalPlayer.state.inOxySell = false
             exports["sandbox-base"]:ServerCallback("OxyRun:LeftZone")
@@ -253,7 +253,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
             _state = 3
             local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
             if LocalPlayer.state.inOxyPickup and veh == _v.ent and GetPedInVehicleSeat(_v.ent, -1) == LocalPlayer.state.ped then
-                Action:Show("oxysale", "{keybind}primary_action{/keybind} Load Product")
+                exports['sandbox-hud']:ActionShow("oxysale", "{keybind}primary_action{/keybind} Load Product")
             end
         end)
 

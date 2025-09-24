@@ -4,12 +4,10 @@ local _menu = false
 
 AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
@@ -20,12 +18,10 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Apartment", {
-		"Action",
 		"Polyzone",
 		"Ped",
 		"Targeting",
 		"Interaction",
-		"Action",
 		"ListMenu",
 		"Input",
 		"Apartment",
@@ -276,14 +272,14 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 
 		local str = string.format("{keybind}primary_action{/keybind} To Enter %s", _pzs[id].name)
 
-		Action:Show('apt-enter', str)
+		exports['sandbox-hud']:ActionShow('apt-enter', str)
 	end
 end)
 
 AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 	if id == _inPoly?.id then
 		_inPoly = nil
-		Action:Hide('apt-enter')
+		exports['sandbox-hud']:ActionHide('apt-enter')
 	end
 end)
 

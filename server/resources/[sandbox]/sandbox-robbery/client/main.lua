@@ -9,7 +9,6 @@ function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
@@ -29,7 +28,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Properties",
 		"Interaction",
 		"Inventory",
-		"Action",
 		"EmergencyAlerts",
 		"Doors",
 		"ListMenu",

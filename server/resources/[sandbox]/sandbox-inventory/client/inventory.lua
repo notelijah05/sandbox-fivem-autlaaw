@@ -80,7 +80,6 @@ end
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
@@ -102,7 +101,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Inventory",
-		"Action",
 		"Animations",
 		"Progress",
 		"Crafting",

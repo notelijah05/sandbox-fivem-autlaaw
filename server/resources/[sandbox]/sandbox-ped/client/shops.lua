@@ -74,14 +74,14 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 			action = "{keybind}primary_action{/keybind} Plastic Surgery ($%s)"
 		end
 
-		Action:Show("pedshop", string.format(action, GetPedShopCost(withinPedShop)))
+		exports['sandbox-hud']:ActionShow("pedshop", string.format(action, GetPedShopCost(withinPedShop)))
 	end
 end)
 
 AddEventHandler("Polyzone:Exit", function(id, point, insideZone, data)
 	if withinPedShop and data and data.pedShop then
 		withinPedShop = false
-		Action:Hide("pedshop")
+		exports['sandbox-hud']:ActionHide("pedshop")
 	end
 end)
 

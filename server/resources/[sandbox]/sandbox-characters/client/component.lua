@@ -3,14 +3,12 @@ Characters = nil
 AddEventHandler("Characters:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Characters", {
 		"Characters",
-		"Action",
 		"Ped",
 	}, function(error)
 		if #error > 0 then
@@ -48,7 +46,7 @@ CHARACTERS = {
 			LocalPlayer.state.Character = nil
 			LocalPlayer.state.loggedIn = false
 			LocalPlayer.state:set('SID', nil, true)
-			Action:Hide()
+			exports['sandbox-hud']:ActionHide()
 			exports["sandbox-base"]:FetchComponent("Spawn"):InitCamera()
 			SendNUIMessage({
 				type = "APP_RESET",

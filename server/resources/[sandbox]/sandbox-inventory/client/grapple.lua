@@ -234,10 +234,10 @@ local function GrappleThreads()
 			local hit, pos, _, _ = GrappleCurrentAimPoint(40)
 			if not shownGrappleButton and freeAiming and hit == 1 and CAN_GRAPPLE_HERE then
 				shownGrappleButton = true
-				Action:Show("grapple", "{key}Shoot{/key} To Grapple")
+				exports['sandbox-hud']:ActionShow("grapple", "{key}Shoot{/key} To Grapple")
 			elseif shownGrappleButton and ((not freeAiming) or hit ~= 1 or not CAN_GRAPPLE_HERE) then
 				shownGrappleButton = false
-				Action:Hide("grapple")
+				exports['sandbox-hud']:ActionHide("grapple")
 			end
 			Wait(250)
 		end
@@ -250,7 +250,7 @@ local function GrappleThreads()
 				local hit, pos, _, _ = GrappleCurrentAimPoint(40)
 				if hit == 1 then
 					_grappleEquipped = false
-					Action:Hide("grapple")
+					exports['sandbox-hud']:ActionHide("grapple")
 					shownGrappleButton = false
 					local grapple = Grapple.new(pos)
 					grapple.activate()

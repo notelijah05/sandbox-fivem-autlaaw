@@ -58,7 +58,7 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 	if id == "prison-hospital-check-in-zone" then
 		_inCheckInZone = true
 		if not LocalPlayer.state.isEscorted then
-			Action:Show(
+			exports['sandbox-hud']:ActionShow(
 				"medical",
 				"{keybind}primary_action{/keybind} Check In {key}$" .. Config.PrisonCheckIn.Cost .. "{/key}"
 			)
@@ -78,7 +78,7 @@ end)
 AddEventHandler("Polyzone:Exit", function(id, point, insideZone, data)
 	if id == "prison-hospital-check-in-zone" then
 		_inCheckInZone = false
-		Action:Hide("medical")
+		exports['sandbox-hud']:ActionHide("medical")
 	end
 	if id == "prison_visitation" then
 		if data.disableEscorting then

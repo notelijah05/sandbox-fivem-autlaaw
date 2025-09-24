@@ -170,7 +170,7 @@ AddEventHandler("Inventory:Client:HideInDumpster", function(entity, data)
 		TriggerEvent("Inventory:Client:DumpsterHideThread")
 
 		if not LocalPlayer.state.isCuffed and not LocalPlayer.state.isDead then
-			Action:Show("dumpsterdiving", "{keybind}secondary_action{/keybind} Exit Trash")
+			exports['sandbox-hud']:ActionShow("dumpsterdiving", "{keybind}secondary_action{/keybind} Exit Trash")
 		end
 	end)
 end)
@@ -243,7 +243,7 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 		_insideCurrentDumpster = nil
 		LocalPlayer.state.inDumpster = false
 		Animations.Emotes:ForceCancel()
-		Action:Hide("dumpsterdiving")
+		exports['sandbox-hud']:ActionHide("dumpsterdiving")
 	end
 end)
 

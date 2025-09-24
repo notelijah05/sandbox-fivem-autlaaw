@@ -10,7 +10,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
@@ -25,7 +24,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Jobs",
 		"Polyzone",
-		"Action",
 		"Hud",
 		"Vehicles",
 		"ListMenu",
@@ -252,7 +250,7 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZones, data)
 			SpawnShowroom(data.dealerId)
 		elseif data.type == "catalog" and _dealerships[data.dealerId] then
 			_withinCatalog = data.dealerId
-			Action:Show(
+			exports['sandbox-hud']:ActionShow(
 				"pdm",
 				"{keybind}primary_action{/keybind} View " .. _dealerships[data.dealerId].abbreviation .. " Catalog"
 			)
@@ -266,7 +264,7 @@ AddEventHandler("Polyzone:Exit", function(id, point, insideZones, data)
 			DeleteShowroom(data.dealerId)
 			_withinShowroom = false
 		elseif data.type == "catalog" then
-			Action:Hide("pdm")
+			exports['sandbox-hud']:ActionHide("pdm")
 			_withinCatalog = false
 			ForceCloseCatalog()
 		end
@@ -275,7 +273,7 @@ end)
 
 AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 	if _withinCatalog then
-		Action:Hide("pdm")
+		exports['sandbox-hud']:ActionHide("pdm")
 		OpenCatalog(_withinCatalog)
 	end
 end)

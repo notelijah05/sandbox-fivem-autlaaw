@@ -6,7 +6,7 @@ AddEventHandler('Polyzone:Enter', function(id, point, insideZone, data)
     if data and data.ballistics and LocalPlayer.state.onDuty == 'police' then
         _ballisticsId = id
         _withinBallistics = true
-        Action:Show('ballistics',
+        exports['sandbox-hud']:ActionShow('ballistics',
             '{keybind}primary_action{/keybind} Test & File Gun Ballistics | {key}Use Projectile Evidence{/key} File Projectile & Compare')
     end
 end)
@@ -15,13 +15,13 @@ AddEventHandler('Polyzone:Exit', function(id, point, insideZone, data)
     if _withinBallistics and data and data.ballistics and LocalPlayer.state.onDuty == 'police' then
         _ballisticsId = nil
         _withinBallistics = false
-        Action:Hide('ballistics')
+        exports['sandbox-hud']:ActionHide('ballistics')
     end
 end)
 
 AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
     if _withinBallistics and LocalPlayer.state.loggedIn then
-        Action:Hide('ballistics')
+        exports['sandbox-hud']:ActionHide('ballistics')
         Inventory.Dumbfuck:Open({
             invType = 212,
             owner = _ballisticsId,
