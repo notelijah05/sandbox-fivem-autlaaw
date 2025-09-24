@@ -43,7 +43,7 @@ RegisterNetEvent("Inventory:Client:UseVanityItem", function(sender, action, item
 	end
 
 	if action == "overlay" then
-		Hud.Overlay:Show(itemData)
+		exports['sandbox-hud']:OverlayShow(itemData)
 	elseif action == "overlayall" then
 		if senderClient < 0 and not isMe then
 			return
@@ -58,12 +58,12 @@ RegisterNetEvent("Inventory:Client:UseVanityItem", function(sender, action, item
 			local dist = #(GetEntityCoords(senderPed) - GetEntityCoords(myPed))
 
 			if dist <= 4.0 and HasEntityClearLosToEntity(myPed, senderPed, 17) then
-				Hud.Overlay:Show(itemData)
+				exports['sandbox-hud']:OverlayShow(itemData)
 			end
 		end
 	end
 	Citizen.SetTimeout(10000, function()
-		Hud.Overlay:Hide()
+		exports['sandbox-hud']:OverlayHide()
 	end)
 end)
 

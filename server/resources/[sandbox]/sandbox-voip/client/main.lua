@@ -36,14 +36,12 @@ end
 
 AddEventHandler("VOIP:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VOIP", {
-		"Hud",
 		"Animations",
 		"Polyzone",
 	}, function(error)
@@ -100,7 +98,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 
 	CURRENT_VOICE_MODE = 2
 	CURRENT_VOICE_MODE_DATA = VOIP_CONFIG.Modes[CURRENT_VOICE_MODE]
-	Hud:UpdateVoip(2, false)
+	exports['sandbox-hud']:UpdateVoip(2, false)
 
 	local address, port = GetVOIPMumbleAddress()
 	MumbleSetServerAddress(address, port)
@@ -218,7 +216,7 @@ function UpdateVOIPIndicatorStatus()
 		end
 	end
 
-	Hud:UpdateVoip(stage, talking, indicatorIcon)
+	exports['sandbox-hud']:UpdateVoip(stage, talking, indicatorIcon)
 end
 
 exports("Cycle", function(num)

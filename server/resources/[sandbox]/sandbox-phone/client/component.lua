@@ -41,7 +41,7 @@ exports("Open", function()
 	Interaction:Hide()
 	LocalPlayer.state.phoneOpen = true
 	DisplayRadar(true)
-	Hud:ShiftLocation(true)
+	exports['sandbox-hud']:ShiftLocation(true)
 	PhonePlayIn()
 	SendNUIMessage({ type = "PHONE_VISIBLE" })
 	SetNuiFocus(true, true)
@@ -85,7 +85,8 @@ exports("Close", function(forced, doJankyStuff)
 	if not IsPedInAnyVehicle(PlayerPedId(), true) then
 		DisplayRadar(LocalPlayer.state.Character and hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
 	end
-	Hud:ShiftLocation(LocalPlayer.state.Character and hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
+	exports['sandbox-hud']:ShiftLocation(LocalPlayer.state.Character and
+	hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
 	if not exports['sandbox-phone']:CallStatus() or _limited then
 		PhonePlayOut()
 	end

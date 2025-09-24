@@ -23,7 +23,6 @@ function RetrieveComponents()
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 end
 
 local vehicleDoorNames = {
@@ -49,7 +48,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"EmergencyAlerts",
 		"Properties",
 		"Police",
-		"Hud",
 	}, function(error)
 		if #error > 0 then
 			return

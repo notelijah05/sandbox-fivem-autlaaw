@@ -264,7 +264,7 @@ AddEventHandler("Drugs:Client:Meth:StartCook", function(entity, data)
                     if not status then
                         local c = table.copy(_tableTiers[_methTables[entState.methTable].tier])
                         c.tableId = entState.methTable
-                        Hud.Meth:Open(c)
+                        exports['sandbox-hud']:MethOpen(c)
                     end
                 end)
             else

@@ -147,7 +147,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 				EndVehicleNOS()
 				EndVehiclePurge()
 
-				Hud:NOS(0)
+				exports['sandbox-hud']:NOS(0)
 			end
 		end
 	end, true)
@@ -162,7 +162,7 @@ function DoInitNOSCheck(veh)
 		if vehEnt and vehEnt.state and vehEnt.state.VIN and vehEnt.state.Nitrous then
 			_hasNOS = vehEnt.state.Nitrous
 
-			Hud:NOS(math.ceil(_hasNOS))
+			exports['sandbox-hud']:NOS(math.ceil(_hasNOS))
 		end
 	end
 end
@@ -255,7 +255,7 @@ function EndVehicleNOS()
 		_hasNOS -= _NOSUsage
 		_NOSUsage = 0.0
 
-		Hud:NOS(math.ceil(_hasNOS))
+		exports['sandbox-hud']:NOS(math.ceil(_hasNOS))
 
 		TriggerServerEvent("Vehicles:Server:SyncNitroEffect", _vehNet, false)
 
@@ -472,7 +472,7 @@ AddEventHandler("Vehicles:Client:RemoveNitrous", function(entityData)
 							EndVehicleNOS()
 							EndVehiclePurge()
 
-							Hud:NOS(0)
+							exports['sandbox-hud']:NOS(0)
 						else
 							exports["sandbox-hud"]:NotifError("Could not Remove Nitrous")
 						end

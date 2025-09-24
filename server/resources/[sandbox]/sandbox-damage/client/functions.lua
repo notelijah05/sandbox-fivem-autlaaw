@@ -81,11 +81,11 @@ function DoDeadEvent()
 			DisableControls()
 			DeadAnimLoop()
 		else
-			Hud.DeathTexts:Hide()
+			exports['sandbox-hud']:DeathTextsHide()
 			TriggerEvent(string.format("Damage:Client:Gamemode:%s:Died", LocalPlayer.state.gameMode))
 		end
 	else
-		Hud.DeathTexts:Hide()
+		exports['sandbox-hud']:DeathTextsHide()
 		ClearPedTasksImmediately(PlayerPedId())
 		SetEntityInvincible(PlayerPedId(), LocalPlayer.state.isAdmin and LocalPlayer.state.isGodmode or false)
 	end
@@ -165,7 +165,7 @@ function DeadAnimLoop()
 
 			AnimpostfxStop("DeathFailMPIn")
 
-			Hud.DeathTexts:Hide()
+			exports['sandbox-hud']:DeathTextsHide()
 			ClearPedTasksImmediately(ped)
 			SetEntityInvincible(ped, LocalPlayer.state.isAdmin and LocalPlayer.state.isGodmode or false)
 

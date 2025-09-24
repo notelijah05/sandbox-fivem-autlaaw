@@ -1,11 +1,11 @@
 AddEventHandler("Vehicles:Client:EnterVehicle", function(currentVehicle, currentSeat)
 	GLOBAL_VEH = currentVehicle
-	Hud.Vehicle:Show()
+	exports['sandbox-hud']:VehicleShow()
 	--Hud.Minimap:Set()
 end)
 
 AddEventHandler("Vehicles:Client:ExitVehicle", function(currentVehicle, currentSeat)
-	Hud.Vehicle:Hide()
+	exports['sandbox-hud']:VehicleHide()
 	GLOBAL_VEH = nil
 end)
 
@@ -17,14 +17,14 @@ AddEventHandler("Characters:Client:Spawn", function()
 		},
 	})
 
-	Hud:Show()
+	exports['sandbox-hud']:Show()
 
 	DisplayRadar(hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
-	Hud:ShiftLocation(hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
+	exports['sandbox-hud']:ShiftLocation(hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
 end)
 
 RegisterNetEvent("UI:Client:Reset", function(manual)
-	Hud:Hide()
+	exports['sandbox-hud']:Hide()
 	SendNUIMessage({
 		type = "UI_RESET",
 		data = {
@@ -48,13 +48,13 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 	exports['sandbox-hud']:ConfirmClose()
 	exports['sandbox-hud']:InputClose()
 	InfoOverlay:Close()
-	Hud.Meth:Close()
+	exports['sandbox-hud']:MethClose()
 
 	TriggerEvent("UI:Client:ResetFinished", manual)
 
 	if manual then
 		Wait(2500)
-		Hud:Show()
+		exports['sandbox-hud']:Show()
 		if exports['sandbox-phone']:IsOpen() or hasValue(LocalPlayer.state.Character:GetData("States"), "GPS") then
 			DisplayRadar(true)
 		end

@@ -6,7 +6,6 @@ function RetrieveComponents()
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
@@ -25,7 +24,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Minigame",
 		"Polyzone",
 		"Targeting",
-		"Hud",
 		"Inventory",
 		"EmergencyAlerts",
 		"Status",

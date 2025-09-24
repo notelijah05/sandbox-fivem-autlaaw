@@ -6,7 +6,7 @@ local oxygenMask = nil
 
 AddEventHandler("Characters:Client:Spawn", function()
 	exports['sandbox-hud']:RegisterBuff("oxygen-tank", "mask-ventilator", "#457F88", -1, "permanent")
-	Hud:RegisterStatus("oxygen", 100, 100, "lungs", "#457F88", true, false, {
+	exports['sandbox-hud']:RegisterStatus("oxygen", 100, 100, "lungs", "#457F88", true, false, {
 		hideHigh = true,
 		order = 3,
 	})
@@ -97,7 +97,7 @@ function RemoveScubaGear()
 		if not cancelled then
 			oxygenDepletionRate = 1.25
 
-			Hud:RegisterStatus("oxygen", 100, 100, "lungs", "#457F88", true, true, {
+			exports['sandbox-hud']:RegisterStatus("oxygen", 100, 100, "lungs", "#457F88", true, true, {
 				hideHigh = true,
 				order = 3,
 			})
@@ -135,7 +135,7 @@ function RegisterOxygenCallbacks()
 				if not cancelled then
 					oxygenDepletionRate = 0.025
 
-					Hud:RegisterStatus("oxygen", 100, 100, "mask-snorkel", "#457F88", true, true, {
+					exports['sandbox-hud']:RegisterStatus("oxygen", 100, 100, "mask-snorkel", "#457F88", true, true, {
 						hideHigh = false,
 						order = 3,
 					})

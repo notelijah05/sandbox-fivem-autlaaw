@@ -13,7 +13,7 @@ INTERACTION = {
 		})
 	end,
 	Show = function(self)
-		if not Hud:IsDisabledAllowDead() then
+		if not exports['sandbox-hud']:IsDisabledAllowDead() then
 			exports['sandbox-phone']:Close()
 			Inventory.Close:All()
 

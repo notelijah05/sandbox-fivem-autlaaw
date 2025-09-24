@@ -31,7 +31,7 @@ function StartSelfieMode()
 			"camera"
 		)
 		Inventory:Disable()
-		Hud:Hide()
+		exports['sandbox-hud']:Hide()
 		DestroyMobilePhone()
 		Wait(10)
 		CreateMobilePhone(0)
@@ -48,7 +48,7 @@ function StopSelfieMode()
 		CellCamDisableThisFrame(false)
 		CellCamActivate(false, false)
 		Inventory:Enable()
-		Hud:Show()
+		exports['sandbox-hud']:Show()
 		_selfie = false
 		_frontie = true
 	end

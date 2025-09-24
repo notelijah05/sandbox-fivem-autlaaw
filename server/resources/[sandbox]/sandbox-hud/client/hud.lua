@@ -57,7 +57,6 @@ end
 
 AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
@@ -69,7 +68,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
-		"Hud",
 		"Progress",
 		"Minigame",
 		"Interaction",
@@ -83,7 +81,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 		RetrieveComponents()
 		-- Hud.Minimap:Set()
-
 
 		SetBlipAlpha(GetNorthRadarBlip(), 0.0)
 
@@ -116,12 +113,12 @@ AddEventHandler("Core:Shared:Ready", function()
 		-- end)
 
 		exports["sandbox-keybinds"]:Add("ui_toggle", "F11", "keyboard", "Hud - Toggle HUD", function()
-			Hud:Toggle()
+			exports['sandbox-hud']:HudToggle()
 		end)
 
 		exports["sandbox-keybinds"]:Add("ids_toggle", "u", "keyboard", "Hud - Toggle IDs", function()
 			if not _idsCd then
-				Hud.ID:Toggle()
+				exports['sandbox-hud']:HudIDToggle()
 			end
 		end)
 
@@ -193,351 +190,332 @@ function hasValue(tbl, value)
 	return false
 end
 
-HUD = {
-	_required = { "IsDisabled", "IsDisabledAllowDead", "Show", "Hide", "Toggle", "Vehicle", "RegisterStatus" },
-	IsDisabled = function(self)
-		return (
-			LocalPlayer.state.isDead
-			or LocalPlayer.state.isCuffed
-			or LocalPlayer.state.doingAction
-			or LocalPlayer.state.inventoryOpen
-			or LocalPlayer.state.phoneOpen
-			or LocalPlayer.state.crafting
-			or LocalPlayer.state.isHospitalized
-			or LocalPlayer.state.myEscorter ~= nil
-			or LocalPlayer.state.InventoryDisabled
-		)
-	end,
-	IsDisabledAllowDead = function(self)
-		return (
-			LocalPlayer.state.isCuffed
-			or LocalPlayer.state.inventoryOpen
-			or LocalPlayer.state.phoneOpen
-			or LocalPlayer.state.crafting
-			or LocalPlayer.state.isHospitalized
-			or LocalPlayer.state.InventoryDisabled
-		)
-	end,
-	ForceHP = function(self)
-		SendNUIMessage({
-			type = "UPDATE_HP",
-			data = {
-				hp = (GetEntityHealth(LocalPlayer.state.ped) - 100),
-				maxHp = (GetEntityMaxHealth(LocalPlayer.state.ped) - 100),
-				armor = GetPedArmour(LocalPlayer.state.ped),
-			},
-		})
-	end,
-	Show = function(self)
-		if _toggled then
-			return
-		end
+exports("IsDisabled", function()
+	return (
+		LocalPlayer.state.isDead
+		or LocalPlayer.state.isCuffed
+		or LocalPlayer.state.doingAction
+		or LocalPlayer.state.inventoryOpen
+		or LocalPlayer.state.phoneOpen
+		or LocalPlayer.state.crafting
+		or LocalPlayer.state.isHospitalized
+		or LocalPlayer.state.myEscorter ~= nil
+		or LocalPlayer.state.InventoryDisabled
+	)
+end)
 
-		local fuel = nil
-		if GLOBAL_VEH ~= nil and DoesEntityExist(GLOBAL_VEH) then
-			local vehState = Entity(GLOBAL_VEH).state
-			fuel = vehState.Fuel
-		end
+exports("IsDisabledAllowDead", function()
+	return (
+		LocalPlayer.state.isCuffed
+		or LocalPlayer.state.inventoryOpen
+		or LocalPlayer.state.phoneOpen
+		or LocalPlayer.state.crafting
+		or LocalPlayer.state.isHospitalized
+		or LocalPlayer.state.InventoryDisabled
+	)
+end)
 
-		local ped = PlayerPedId()
-		SendNUIMessage({
-			type = "SHOW_HUD",
-			data = {
-				hp = (GetEntityHealth(ped) - 100),
-				maxHp = (GetEntityMaxHealth(ped) - 100),
-				armor = GetPedArmour(ped),
-				fuel = fuel,
-			},
-		})
-		_toggled = true
+exports("ForceHP", function()
+	SendNUIMessage({
+		type = "UPDATE_HP",
+		data = {
+			hp = (GetEntityHealth(LocalPlayer.state.ped) - 100),
+			maxHp = (GetEntityMaxHealth(LocalPlayer.state.ped) - 100),
+			armor = GetPedArmour(LocalPlayer.state.ped),
+		},
+	})
+end)
+
+exports("Show", function()
+	if _toggled then
+		return
+	end
+
+	local fuel = nil
+	if GLOBAL_VEH ~= nil and DoesEntityExist(GLOBAL_VEH) then
+		local vehState = Entity(GLOBAL_VEH).state
+		fuel = vehState.Fuel
+	end
+
+	local ped = PlayerPedId()
+	SendNUIMessage({
+		type = "SHOW_HUD",
+		data = {
+			hp = (GetEntityHealth(ped) - 100),
+			maxHp = (GetEntityMaxHealth(ped) - 100),
+			armor = GetPedArmour(ped),
+			fuel = fuel,
+		},
+	})
+	_toggled = true
+	StartThreads()
+
+	if GLOBAL_VEH ~= nil then
+		exports['sandbox-hud']:HudVehicleShow()
+	end
+end)
+
+exports("Hide", function()
+	if not _toggled then
+		return
+	end
+
+	SendNUIMessage({
+		type = "HIDE_HUD",
+	})
+	_toggled = false
+
+	if not exports['sandbox-phone']:IsOpen() then
+		DisplayRadar(false)
+	end
+	exports['sandbox-hud']:HudVehicleHide()
+end)
+
+exports("Toggle", function()
+	SendNUIMessage({
+		type = "TOGGLE_HUD",
+	})
+	_toggled = not _toggled
+	if _toggled then
 		StartThreads()
 
 		if GLOBAL_VEH ~= nil then
-			Hud.Vehicle:Show()
+			exports['sandbox-hud']:HudVehicleShow()
+		else
+			exports['sandbox-hud']:HudVehicleHide()
 		end
-	end,
-	Hide = function(self)
-		if not _toggled then
-			return
-		end
-
-		SendNUIMessage({
-			type = "HIDE_HUD",
-		})
-		_toggled = false
-
-		if not exports['sandbox-phone']:IsOpen() then
+	else
+		if not exports['sandbox-phone']:IsOpen() and not hasValue(LocalPlayer.state.Character:GetData("States"), "GPS") then
 			DisplayRadar(false)
 		end
-		Hud.Vehicle:Hide()
-	end,
-	Toggle = function(self)
-		SendNUIMessage({
-			type = "TOGGLE_HUD",
-		})
-		_toggled = not _toggled
-		if _toggled then
-			StartThreads()
-
-			if GLOBAL_VEH ~= nil then
-				Hud.Vehicle:Show()
-			else
-				Hud.Vehicle:Hide()
-			end
-		else
-			if not exports['sandbox-phone']:IsOpen() and not hasValue(LocalPlayer.state.Character:GetData("States"), "GPS") then
-				DisplayRadar(false)
-			end
-			Hud.Vehicle:Hide()
-		end
-	end,
-	ShiftLocation = function(self, status)
-		SendNUIMessage({
-			type = "SHIFT_LOCATION",
-			data = { shift = status, position = GetMinimapAnchor() },
-		})
-	end,
-	Overlay = {
-		Show = function(self, data)
-			if _overlayToggled then
-				return
-			end
-
-			SendNUIMessage({
-				type = "SHOW_OVERLAY",
-				data = { data },
-			})
-			_overlayToggled = true
-		end,
-		Hide = function(self, data)
-			if not _overlayToggled then
-				return
-			end
-
-			SendNUIMessage({
-				type = "HIDE_OVERLAY",
-			})
-			_overlayToggled = false
-		end,
-	},
-	Vehicle = {
-		Show = function(self)
-			if _vehToggled then
-				return
-			end
-
-			SendNUIMessage({
-				type = "SHOW_VEHICLE",
-				data = {
-					position = GetMinimapAnchor()
-				}
-			})
-			_vehToggled = true
-			StartVehicleThreads()
-		end,
-		Hide = function(self)
-			if not _vehToggled then
-				return
-			end
-
-			SendNUIMessage({
-				type = "HIDE_VEHICLE",
-			})
-			_vehToggled = false
-		end,
-		Toggle = function(self)
-			SendNUIMessage({
-				type = "TOGGLE_VEHICLE",
-			})
-			_vehToggled = not _vehToggled
-			if _vehToggled then
-				StartVehicleThreads()
-			end
-		end,
-	},
-	RegisterStatus = function(self, name, current, max, icon, color, flash, update, options)
-		local data = {
-			name = name,
-			max = max,
-			value = current,
-			icon = icon,
-			color = color,
-			flash = flash,
-			options = options,
-		}
-
-		if update then
-			SendNUIMessage({
-				type = "UPDATE_STATUS",
-				data = { status = data },
-			})
-		else
-			SendNUIMessage({
-				type = "REGISTER_STATUS",
-				data = { status = data },
-			})
-			_statusCount = _statusCount + 1
-		end
-
-		_statuses[name] = data
-	end,
-	ResetStatus = function(self)
-		SendNUIMessage({
-			type = "RESET_STATUSES",
-		})
-	end,
-	ID = {
-		Toggle = function(self)
-			if not _showingIds then
-				if not _idsCd then
-					ShowIds()
-					_idsCd = true
-					Citizen.SetTimeout(6000, function()
-						HUD.ID:Toggle()
-					end)
-				end
-			else
-				_showingIds = false
-				Citizen.SetTimeout(10000, function()
-					_idsCd = false
-				end)
-			end
-		end,
-	},
-	-- Minimap = {
-	-- 	Set = function(self)
-	-- 		SetRadarZoom(_zoomLevels[_zoomLevel])
-	-- 	end,
-	-- 	In = function(self)
-	-- 		if _zoomLevel == 1 then
-	-- 			_zoomLevel = #_zoomLevels
-	-- 		else
-	-- 			_zoomLevel = _zoomLevel - 1
-	-- 		end
-	-- 		SetResourceKvpInt("zoomLevel", _zoomLevel)
-	-- 		SetRadarZoom(_zoomLevels[_zoomLevel])
-	-- 	end,
-	-- 	Out = function(self)
-	-- 		if _zoomLevel == #_zoomLevels then
-	-- 			_zoomLevel = 1
-	-- 		else
-	-- 			_zoomLevel = _zoomLevel + 1
-	-- 		end
-	-- 		SetResourceKvpInt("zoomLevel", _zoomLevel)
-	-- 		SetRadarZoom(_zoomLevels[_zoomLevel])
-	-- 	end,
-	-- },
-	Dead = function(self, state)
-		SendNUIMessage({
-			type = "SET_DEAD",
-			data = {
-				state = state,
-			},
-		})
-	end,
-	GemTable = {
-		Open = function(self, quality)
-			SendNUIMessage({
-				type = "SHOW_GEM_TABLE",
-				data = {
-					info = quality
-				}
-			})
-		end,
-		Close = function(self)
-			SendNUIMessage({
-				type = "CLOSE_GEM_TABLE",
-				data = {},
-			})
-		end
-	},
-	Meth = {
-		Open = function(self, config)
-			SetNuiFocus(true, true)
-			SetNuiFocusKeepInput(false)
-			SendNUIMessage({
-				type = "OPEN_METH",
-				data = {
-					config = config,
-				}
-			})
-		end,
-		Close = function(self)
-			SetNuiFocus(false, false)
-			SetNuiFocusKeepInput(false)
-			SendNUIMessage({
-				type = "CLOSE_METH",
-				data = {},
-			})
-		end,
-	},
-	DeathTexts = {
-		Show = function(self, type, deathTime, timer, keyOverride)
-			SendNUIMessage({
-				type = "DO_DEATH_TEXT",
-				data = {
-					key = exports["sandbox-keybinds"]:GetKey(keyOverride or "secondary_action") or 'Unknown',
-					f1Key = exports["sandbox-keybinds"]:GetKey(keyOverride or "show_interaction") or 'Unknown',
-					type = type,
-					deathTime = deathTime,
-					timer = timer,
-					medicalPrice = 1500 -- (not GlobalState["Duty:ems"] or GlobalState["Duty:ems"] == 0) and 150 or 5000
-				},
-			})
-		end,
-		Release = function(self)
-			SendNUIMessage({
-				type = "DO_DEATH_RELEASING",
-				data = {},
-			})
-		end,
-		Hide = function(self)
-			SendNUIMessage({
-				type = "HIDE_DEATH_TEXT",
-				data = {},
-			})
-		end,
-	},
-	Flashbang = {
-		Do = function(self, duration, strength)
-			SendNUIMessage({
-				type = "SET_FLASHBANGED",
-				data = {
-					duration = duration,
-					strength = strength,
-				}
-			})
-		end,
-		End = function(self)
-			SendNUIMessage({
-				type = "CLEAR_FLASHBANGED",
-			})
-		end,
-	},
-	UpdateVoip = function(self, level, talking, iconOverride)
-		SendNUIMessage({
-			type = "SET_VOIP_LEVEL",
-			data = {
-				level = level,
-				talking = talking,
-				icon = iconOverride,
-			}
-		})
-	end,
-	NOS = function(self, level)
-		SendNUIMessage({
-			type = "UPDATE_NOS",
-			data = {
-				nos = level,
-			}
-		})
-	end,
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Hud", HUD)
+		exports['sandbox-hud']:HudVehicleHide()
+	end
 end)
 
+exports("ShiftLocation", function(status)
+	SendNUIMessage({
+		type = "SHIFT_LOCATION",
+		data = { shift = status, position = GetMinimapAnchor() },
+	})
+end)
+
+exports("OverlayShow", function(data)
+	if _overlayToggled then
+		return
+	end
+
+	SendNUIMessage({
+		type = "SHOW_OVERLAY",
+		data = { data },
+	})
+	_overlayToggled = true
+end)
+
+exports("OverlayHide", function(data)
+	if not _overlayToggled then
+		return
+	end
+
+	SendNUIMessage({
+		type = "HIDE_OVERLAY",
+	})
+	_overlayToggled = false
+end)
+
+exports("VehicleShow", function()
+	if _vehToggled then
+		return
+	end
+
+	SendNUIMessage({
+		type = "SHOW_VEHICLE",
+		data = {
+			position = GetMinimapAnchor()
+		}
+	})
+	_vehToggled = true
+	StartVehicleThreads()
+end)
+
+exports("VehicleHide", function()
+	if not _vehToggled then
+		return
+	end
+
+	SendNUIMessage({
+		type = "HIDE_VEHICLE",
+	})
+	_vehToggled = false
+end)
+
+exports("VehicleToggle", function()
+	SendNUIMessage({
+		type = "TOGGLE_VEHICLE",
+	})
+	_vehToggled = not _vehToggled
+	if _vehToggled then
+		StartVehicleThreads()
+	end
+end)
+
+exports("RegisterStatus", function(name, current, max, icon, color, flash, update, options)
+	local data = {
+		name = name,
+		max = max,
+		value = current,
+		icon = icon,
+		color = color,
+		flash = flash,
+		options = options,
+	}
+
+	if update then
+		SendNUIMessage({
+			type = "UPDATE_STATUS",
+			data = { status = data },
+		})
+	else
+		SendNUIMessage({
+			type = "REGISTER_STATUS",
+			data = { status = data },
+		})
+		_statusCount = _statusCount + 1
+	end
+
+	_statuses[name] = data
+end)
+
+exports("ResetStatus", function()
+	SendNUIMessage({
+		type = "RESET_STATUSES",
+	})
+end)
+
+exports("IDToggle", function()
+	if not _showingIds then
+		if not _idsCd then
+			ShowIds()
+			_idsCd = true
+			Citizen.SetTimeout(6000, function()
+				exports['sandbox-hud']:HudIDToggle()
+			end)
+		end
+	else
+		_showingIds = false
+		Citizen.SetTimeout(10000, function()
+			_idsCd = false
+		end)
+	end
+end)
+
+exports("Dead", function(state)
+	SendNUIMessage({
+		type = "SET_DEAD",
+		data = {
+			state = state,
+		},
+	})
+end)
+
+exports("GemTableOpen", function(quality)
+	SendNUIMessage({
+		type = "SHOW_GEM_TABLE",
+		data = {
+			info = quality
+		}
+	})
+end)
+
+exports("GemTableClose", function()
+	SendNUIMessage({
+		type = "CLOSE_GEM_TABLE",
+		data = {},
+	})
+end)
+
+exports("MethOpen", function(config)
+	SetNuiFocus(true, true)
+	SetNuiFocusKeepInput(false)
+	SendNUIMessage({
+		type = "OPEN_METH",
+		data = {
+			config = config,
+		}
+	})
+end)
+
+exports("MethClose", function()
+	SetNuiFocus(false, false)
+	SetNuiFocusKeepInput(false)
+	SendNUIMessage({
+		type = "CLOSE_METH",
+		data = {},
+	})
+end)
+
+exports("DeathTextsShow", function(type, deathTime, timer, keyOverride)
+	SendNUIMessage({
+		type = "DO_DEATH_TEXT",
+		data = {
+			key = exports["sandbox-keybinds"]:GetKey(keyOverride or "secondary_action") or 'Unknown',
+			f1Key = exports["sandbox-keybinds"]:GetKey(keyOverride or "show_interaction") or 'Unknown',
+			type = type,
+			deathTime = deathTime,
+			timer = timer,
+			medicalPrice = 1500 -- (not GlobalState["Duty:ems"] or GlobalState["Duty:ems"] == 0) and 150 or 5000
+		},
+	})
+end)
+
+exports("DeathTextsRelease", function()
+	SendNUIMessage({
+		type = "DO_DEATH_RELEASING",
+		data = {},
+	})
+end)
+
+exports("DeathTextsHide", function()
+	SendNUIMessage({
+		type = "HIDE_DEATH_TEXT",
+		data = {},
+	})
+end)
+
+exports("FlashbangDo", function(duration, strength)
+	SendNUIMessage({
+		type = "SET_FLASHBANGED",
+		data = {
+			duration = duration,
+			strength = strength,
+		}
+	})
+end)
+
+exports("FlashbangEnd", function()
+	SendNUIMessage({
+		type = "CLEAR_FLASHBANGED",
+	})
+end)
+
+exports("UpdateVoip", function(level, talking, iconOverride)
+	SendNUIMessage({
+		type = "SET_VOIP_LEVEL",
+		data = {
+			level = level,
+			talking = talking,
+			icon = iconOverride,
+		}
+	})
+end)
+
+exports("NOS", function(level)
+	SendNUIMessage({
+		type = "UPDATE_NOS",
+		data = {
+			nos = level,
+		}
+	})
+end)
 
 AddEventHandler("Characters:Client:Updated", function(key)
 	if key == "States" then
@@ -545,7 +523,7 @@ AddEventHandler("Characters:Client:Updated", function(key)
 			DisplayRadar(
 				LocalPlayer.state.phoneOpen or hasValue(LocalPlayer.state.Character:GetData("States"), "GPS")
 			)
-			Hud:ShiftLocation(
+			exports['sandbox-hud']:HudShiftLocation(
 				LocalPlayer.state.phoneOpen or hasValue(LocalPlayer.state.Character:GetData("States"), "GPS")
 			)
 		end
@@ -555,11 +533,11 @@ end)
 function GetLocation()
 	local pos = GetEntityCoords(LocalPlayer.state.ped)
 
-	if LocalPlayer.state?.tpLocation then
+	if LocalPlayer.state.tpLocation then
 		pos = vector3(
-			LocalPlayer.state?.tpLocation.x,
-			LocalPlayer.state?.tpLocation.y,
-			LocalPlayer.state?.tpLocation.z
+			LocalPlayer.state.tpLocation.x,
+			LocalPlayer.state.tpLocation.y,
+			LocalPlayer.state.tpLocation.z
 		)
 	end
 
@@ -764,12 +742,12 @@ function StartVehicleThreads()
 
 	if GetPedInVehicleSeat(GLOBAL_VEH, -1) ~= LocalPlayer.state.ped then
 		CreateThread(function()
-			local lastIgnition = Entity(GLOBAL_VEH).state?.VEH_IGNITION
+			local lastIgnition = Entity(GLOBAL_VEH).state.VEH_IGNITION
 			while _vehToggled do
 				Wait(1000)
 
 				if GLOBAL_VEH then
-					local ignitionState = Entity(GLOBAL_VEH).state?.VEH_IGNITION
+					local ignitionState = Entity(GLOBAL_VEH).state.VEH_IGNITION
 					if lastIgnition ~= ignitionState then
 						lastIgnition = ignitionState
 
@@ -849,6 +827,6 @@ end)
 
 AddEventHandler("Keybinds:Client:KeyUp:cancel_action", function()
 	if _overlayToggled then
-		Hud.Overlay.Hide()
+		exports['sandbox-hud']:HudOverlayHide()
 	end
 end)

@@ -30,10 +30,8 @@ local _ignoreEvents = {
 
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
@@ -49,10 +47,8 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Hud",
 		"Interaction",
 		"Inventory",
-		"Hud",
 		"Targeting",
 		"Labor",
 		"Jail",
@@ -270,7 +266,7 @@ function TogglePhone()
 		return
 	end
 	if not _openCd then
-		if not Hud:IsDisabled() then
+		if not exports['sandbox-hud']:IsDisabled() then
 			if not Jail:IsJailed() and hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE") then
 				exports['sandbox-phone']:Open()
 			else

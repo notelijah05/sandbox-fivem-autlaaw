@@ -190,7 +190,7 @@ end)
 RegisterNetEvent("Characters:Client:Spawn")
 AddEventHandler("Characters:Client:Spawn", function()
     Wait(1000)
-    Hud:RegisterStatus("boosting-timer", 0, 100, "timer", "#892020", false, false, {
+    exports['sandbox-hud']:RegisterStatus("boosting-timer", 0, 100, "timer", "#892020", false, false, {
         hideZero = true,
     })
 end)

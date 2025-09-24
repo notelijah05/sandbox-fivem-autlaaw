@@ -4,7 +4,6 @@ AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
@@ -13,7 +12,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Escort", {
 		"Targeting",
 		"Progress",
-		"Hud",
 		"Escort",
 		"Vehicles",
 	}, function(error)

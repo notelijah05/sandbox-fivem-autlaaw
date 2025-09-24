@@ -27,7 +27,6 @@ AddEventHandler("Radio:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 end
 
 local radioChannelCycle = false
@@ -36,7 +35,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radio", {
 		"Progress",
 		"Jobs",
-		"Hud",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -100,7 +98,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 	HAS_RADIO = false
 	LocalPlayer.state.radioType = false
 
-	Hud:RegisterStatus("radio-freq", 0, 1000, "walkie-talkie", "#4056b3", false, false, {
+	exports['sandbox-hud']:RegisterStatus("radio-freq", 0, 1000, "walkie-talkie", "#4056b3", false, false, {
 		hideZero = true,
 		force = "numbers",
 	})

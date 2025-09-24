@@ -1,6 +1,5 @@
 AddEventHandler("Arcade:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
@@ -13,7 +12,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Arcade", {
-		"Hud",
 		"Targeting",
 		"Status",
 		"Progress",

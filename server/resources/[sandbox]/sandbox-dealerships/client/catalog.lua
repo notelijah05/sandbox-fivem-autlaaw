@@ -37,7 +37,7 @@ end
 
 function OpenCatalog(dealerId)
 	if not catalogMenuOpen then
-		Hud:Hide()
+		exports['sandbox-hud']:Hide()
 
 		DoScreenFadeOut(250)
 
@@ -112,7 +112,7 @@ function OpenCatalogMenu(catalogName)
 
 		allSpawnedCatalogVehicles = {}
 
-		Hud:Show()
+		exports['sandbox-hud']:Show()
 		Wait(250)
 		catalogData = {}
 		catalogMenu = nil

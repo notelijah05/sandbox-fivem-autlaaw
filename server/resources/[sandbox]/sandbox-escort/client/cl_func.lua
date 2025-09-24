@@ -21,7 +21,7 @@ function DoEscort()
 				LocalPlayer.state.isEscorting == nil
 				and not IsPedInAnyVehicle(LocalPlayer.state.ped, true)
 				and not IsPedInAnyVehicle(GetPlayerPed(tarPlayer), true)
-				and not Hud:IsDisabledAllowDead()
+				and not exports['sandbox-hud']:IsDisabledAllowDead()
 				and not tState.isHospitalized
 				and (tState.isEscorting == nil and tState.myEscorter == nil)
 			then

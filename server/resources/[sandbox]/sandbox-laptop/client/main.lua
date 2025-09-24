@@ -15,10 +15,8 @@ local _ignoreEvents = {
 
 AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
@@ -37,10 +35,8 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
-		"Hud",
 		"Interaction",
 		"Inventory",
-		"Hud",
 		"Targeting",
 		"Labor",
 		"Jail",
@@ -72,7 +68,7 @@ end)
 function OpenLaptop()
 	if
 		_loggedIn
-		and not Hud:IsDisabled()
+		and not exports['sandbox-hud']:IsDisabled()
 		and not Jail:IsJailed()
 		and hasValue(LocalPlayer.state.Character:GetData("States"), "LAPTOP")
 		and not LocalPlayer.state.laptopOpen

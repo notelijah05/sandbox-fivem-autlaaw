@@ -100,7 +100,7 @@ function LeaveBed()
 
 	RenderScriptCams(0, true, 200, true, true)
 	DestroyCam(cam, false)
-	Hud.DeathTexts:Hide()
+	exports['sandbox-hud']:DeathTextsHide()
 	_curBed = nil
 	_leavingBed = false
 	LocalPlayer.state:set("isHospitalized", false, true)

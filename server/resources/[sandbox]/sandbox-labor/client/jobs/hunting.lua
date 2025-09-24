@@ -513,7 +513,7 @@ RegisterNetEvent("Hunting:Client:ShowMap", function(data)
 		string.format("My Source: %s; My Ped: %s; Map Type: %s", LocalPlayer.state.ID, LocalPlayer.state.ped, data.Name)
 	)
 
-	Hud.Overlay:Show(data)
+	exports['sandbox-hud']:OverlayShow(data)
 end)
 
 function StartMapAnim()
@@ -559,7 +559,7 @@ function StopMapAnim()
 	if inMapAnim then
 		StopAnimTask(PlayerPedId(), "amb@world_human_tourist_map@male@idle_b", "idle_d", 3.0)
 		DeleteEntity(licenseEntity)
-		Hud.Overlay:Hide()
+		exports['sandbox-hud']:OverlayHide()
 		inMapAnim = false
 	end
 end

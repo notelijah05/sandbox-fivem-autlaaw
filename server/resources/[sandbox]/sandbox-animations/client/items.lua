@@ -37,7 +37,7 @@ RegisterNetEvent("Animations:Client:Binoculars", function()
 			Animations.Emotes:Cancel()
 		elseif not inAnim and not IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
 			Animations.Emotes:Play("binoculars", false, false, false)
-			Hud:Hide()
+			exports['sandbox-hud']:Hide()
 
 			CreateThread(function()
 				SetTimecycleModifier("default")
@@ -79,7 +79,7 @@ RegisterNetEvent("Animations:Client:Binoculars", function()
 				SetNightvision(false)
 				SetSeethrough(false)
 
-				Hud:Show()
+				exports['sandbox-hud']:Show()
 			end)
 		end
 	end
@@ -102,7 +102,7 @@ RegisterNetEvent("Animations:Client:Camera", function()
 			Animations.Emotes:Cancel()
 		elseif not inAnim and not IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
 			Animations.Emotes:Play("camera_item", false, false, false)
-			Hud:Hide()
+			exports['sandbox-hud']:Hide()
 
 			TriggerEvent("Animations:Client:UsingCamera", true)
 
@@ -180,7 +180,7 @@ RegisterNetEvent("Animations:Client:Camera", function()
 				SetSeethrough(false)
 
 				if LocalPlayer.state.loggedIn then
-					Hud:Show()
+					exports['sandbox-hud']:Show()
 				end
 			end)
 		end

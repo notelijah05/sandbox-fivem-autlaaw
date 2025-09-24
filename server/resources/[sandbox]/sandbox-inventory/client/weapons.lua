@@ -8,7 +8,6 @@ local _interacting = false
 AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
 function WeaponsComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
@@ -16,7 +15,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weapons", {
 		"Progress",
-		"Hud",
 		"Interaction",
 		"Inventory",
 	}, function(error)
@@ -931,7 +929,7 @@ function DoFlashFx(shakeAmp, time)
 	TaskPlayAnim(PlayerPedId(), "anim@heists@ornate_bank@thermal_charge", "cover_eyes_intro", 8.0, 8.0, time, 50, 8.0)
 	DisableFiring(time * 0.75)
 
-	Hud.Flashbang:Do(time, totalFlashShakeAmp)
+	exports['sandbox-hud']:FlashbangDo(time, totalFlashShakeAmp)
 	exports["sandbox-sounds"]:LoopOne("flashbang.ogg", 0.1 * totalFlashShakeAmp)
 
 	Wait(time)

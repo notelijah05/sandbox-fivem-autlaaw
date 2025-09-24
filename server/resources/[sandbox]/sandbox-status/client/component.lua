@@ -13,7 +13,6 @@ local _statusVals = {}
 AddEventHandler("Status:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
@@ -24,7 +23,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Status", {
 		"Damage",
-		"Hud",
 		"Status",
 		"Polyzone",
 		"Progress",
@@ -198,7 +196,7 @@ RegisterNetEvent("Characters:Client:Spawn", function()
 		for k, v in pairs(Status:GetRegistered()) do
 			local val = results[v.name] or v.max
 			_statusVals[v.name] = val
-			Hud:RegisterStatus(v.name, val, v.max, v.icon, v.color, v.flash, false, v.options)
+			exports['sandbox-hud']:RegisterStatus(v.name, val, v.max, v.icon, v.color, v.flash, false, v.options)
 		end
 	end)
 
@@ -239,7 +237,7 @@ AddEventHandler("UI:Client:ResetFinished", function(manual)
 				local val = results[v.name] or v.max
 
 				_statusVals[v.name] = val
-				Hud:RegisterStatus(v.name, val, v.max, v.icon, v.color, v.flash, false, v.options)
+				exports['sandbox-hud']:RegisterStatus(v.name, val, v.max, v.icon, v.color, v.flash, false, v.options)
 			end
 		end)
 	end
@@ -249,7 +247,7 @@ RegisterNetEvent("Characters:Client:Logout", function()
 	_ts = nil
 	spawned = false
 	isEnabled = true
-	Hud:ResetStatus()
+	exports['sandbox-hud']:ResetStatus()
 	_statusVals = {}
 end)
 

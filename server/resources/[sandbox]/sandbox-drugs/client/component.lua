@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"Targeting",
 		"Progress",
-		"Hud",
 		"ObjectPlacer",
 		"Minigame",
 		"PedInteraction",

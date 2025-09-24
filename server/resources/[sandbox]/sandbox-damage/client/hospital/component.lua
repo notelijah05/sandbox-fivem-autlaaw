@@ -157,10 +157,10 @@ HOSPITAL = {
 			SetBedCam(bed)
 			if isRp then
 				_healEnd = GetCloudTimeAsInt()
-				Hud.DeathTexts:Show("hospital_rp", GetCloudTimeAsInt(), _healEnd, "primary_action")
+				exports['sandbox-hud']:DeathTextsShow("hospital_rp", GetCloudTimeAsInt(), _healEnd, "primary_action")
 			else
 				_healEnd = GetCloudTimeAsInt() + (60 * 1)
-				Hud.DeathTexts:Show("hospital", GetCloudTimeAsInt(), _healEnd, "primary_action")
+				exports['sandbox-hud']:DeathTextsShow("hospital", GetCloudTimeAsInt(), _healEnd, "primary_action")
 				Citizen.SetTimeout(((_healEnd - GetCloudTimeAsInt()) - 10) * 1000, function()
 					if LocalPlayer.state.loggedIn and LocalPlayer.state.isHospitalized then
 						LocalPlayer.state.deadData = {}
@@ -233,7 +233,7 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
 	else
 		if _curBed ~= nil and LocalPlayer.state.isHospitalized and GetCloudTimeAsInt() > _healEnd and not _leavingBed then
 			_leavingBed = true
-			Hud.DeathTexts:Release()
+			exports['sandbox-hud']:DeathTextsRelease()
 			LeaveBed()
 		end
 	end

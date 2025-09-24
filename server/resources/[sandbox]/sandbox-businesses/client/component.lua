@@ -11,7 +11,6 @@ function RetrieveComponents()
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	StorageUnits = exports["sandbox-base"]:FetchComponent("StorageUnits")
-	HUD = exports["sandbox-base"]:FetchComponent("Hud")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 end
 
@@ -28,7 +27,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Interaction",
 		"Inventory",
 		"StorageUnits",
-		"Hud",
 		"Crafting",
 	}, function(error)
 		if #error > 0 then

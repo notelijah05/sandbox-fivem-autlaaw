@@ -1,18 +1,7 @@
 local _uircd = {}
 
-AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	RegisterChatCommands()
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Hud", {
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-	end)
+	RegisterChatCommands()
 end)
 
 function RegisterChatCommands()

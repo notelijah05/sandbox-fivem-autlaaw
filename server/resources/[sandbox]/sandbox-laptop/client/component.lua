@@ -7,7 +7,7 @@ LAPTOP = {
 		Interaction:Hide()
 		LocalPlayer.state.laptopOpen = true
 		DisplayRadar(true)
-		Hud:ShiftLocation(true)
+		exports['sandbox-hud']:ShiftLocation(true)
 		SendNUIMessage({ type = "LAPTOP_VISIBLE" })
 		SetNuiFocus(true, true)
 
@@ -79,7 +79,8 @@ LAPTOP = {
 			DisplayRadar(LocalPlayer.state.Character and hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
 		end
 
-		Hud:ShiftLocation(LocalPlayer.state.Character and hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
+		exports['sandbox-hud']:ShiftLocation(LocalPlayer.state.Character and
+		hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
 		SetNuiFocus(false, false)
 		--TriggerEvent("UI:Client:Close", "laptop")
 	end,

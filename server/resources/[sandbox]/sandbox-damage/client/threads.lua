@@ -62,8 +62,8 @@ AddEventHandler("Damage:Client:Triggers:EntityDamaged", function(victim, attacke
 		}, true)
 		LocalPlayer.state:set("isDeadTime", deadTime, true)
 		LocalPlayer.state:set("releaseTime", releaseTime, true)
-		Hud.DeathTexts:Hide()
-		Hud.DeathTexts:Show("death", deadTime, releaseTime)
+		exports['sandbox-hud']:DeathTextsHide()
+		exports['sandbox-hud']:DeathTextsShow("death", deadTime, releaseTime)
 
 		TriggerEvent("Ped:Client:Died")
 		TriggerServerEvent("Ped:Server:Died")
@@ -77,7 +77,7 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 		_respawning = true
 		TriggerServerEvent("Escort:Server:ForceStop")
 
-		Hud.DeathTexts:Release()
+		exports['sandbox-hud']:DeathTextsRelease()
 		if not LocalPlayer.state.deadData?.isMinor then
 			Progress:Progress({
 				name = "hospital_action",
@@ -107,7 +107,7 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 						end
 					end)
 				else
-					Hud.DeathTexts:Show(LocalPlayer.state.deadData?.isMinor and "knockout" or "death",
+					exports['sandbox-hud']:DeathTextsShow(LocalPlayer.state.deadData?.isMinor and "knockout" or "death",
 						LocalPlayer.state.isDeadTime, LocalPlayer.state.releaseTime)
 				end
 				_respawning = false
@@ -230,7 +230,7 @@ function StartThreads()
 					}, true)
 					LocalPlayer.state:set("isDeadTime", deadTime, true)
 					LocalPlayer.state:set("releaseTime", releaseTime, true)
-					Hud.DeathTexts:Show(isMinor and "knockout" or "death", deadTime, releaseTime)
+					exports['sandbox-hud']:DeathTextsShow(isMinor and "knockout" or "death", deadTime, releaseTime)
 
 					while not LocalPlayer.state.isDead do
 						Wait(1)
@@ -242,7 +242,7 @@ function StartThreads()
 					if (Jail:IsJailed() or not nearPlayer(100.0)) and not Config.Weapons[deathHash]?.minor then
 						TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", "injuredPerson")
 					end
-					Hud:Dead(true)
+					exports['sandbox-hud']:Dead(true)
 					DoDeadEvent()
 					--respawnCd(isMinor)
 					doingthedead = false

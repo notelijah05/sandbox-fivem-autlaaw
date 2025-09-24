@@ -87,7 +87,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -103,7 +102,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"PedInteraction",
 		"Polyzone",
-		"Hud",
 		"Jobs",
 		"Reputation",
 		"Vehicles",
@@ -328,7 +326,7 @@ end)
 INVENTORY = {
 	_required = { "IsEnabled", "Open", "Close", "Set", "Enable", "Disable", "Toggle", "Check" },
 	IsEnabled = function(self)
-		return _startup and not _openCd and not _timedCd and not Hud:IsDisabled()
+		return _startup and not _openCd and not _timedCd and not exports['sandbox-hud']:IsDisabled()
 	end,
 	Open = {
 		Player = function(self, doSecondary)
@@ -433,7 +431,7 @@ INVENTORY = {
 	},
 	Used = {
 		HotKey = function(self, control)
-			if not _hkCd and not _inUse and not Hud:IsDisabled() then
+			if not _hkCd and not _inUse and not exports['sandbox-hud']:IsDisabled() then
 				SendNUIMessage({
 					type = "USE_ITEM_PLAYER",
 					data = {

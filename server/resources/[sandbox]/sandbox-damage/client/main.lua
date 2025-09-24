@@ -3,7 +3,6 @@ _reductions = 0
 AddEventHandler("Damage:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
     Damage = exports["sandbox-base"]:FetchComponent("Damage")
-    Hud = exports["sandbox-base"]:FetchComponent("Hud")
     Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
     Status = exports["sandbox-base"]:FetchComponent("Status")
     --Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
@@ -17,7 +16,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
     exports["sandbox-base"]:RequestDependencies("Damage", {
         "Damage",
-        "Hud",
         "Targeting",
         "Status",
         --"Hospital",
@@ -77,9 +75,10 @@ RegisterNetEvent("Characters:Client:Spawned", function()
     Damage:CalculateMaxHp()
 
     if LocalPlayer.state.isDead then
-        Hud.DeathTexts:Show(LocalPlayer.state.deadData?.isMinor and "knockout" or "death", LocalPlayer.state.isDeadTime,
+        exports['sandbox-hud']:DeathTextsShow(LocalPlayer.state.deadData?.isMinor and "knockout" or "death",
+            LocalPlayer.state.isDeadTime,
             LocalPlayer.state.releaseTime)
-        Hud:Dead(true)
+        exports['sandbox-hud']:Dead(true)
         DoDeadEvent()
     end
 end)
@@ -87,7 +86,7 @@ end)
 RegisterNetEvent("Characters:Client:Logout", function()
     if LocalPlayer.state.isDead then
         AnimpostfxStop("DeathFailMPIn")
-        Hud.DeathTexts:Hide()
+        exports['sandbox-hud']:DeathTextsHide()
         ClearPedTasksImmediately(ped)
 
         LocalPlayer.state:set("isDead", false, true)
@@ -101,8 +100,8 @@ end)
 
 RegisterNetEvent('UI:Client:Reset', function(apps)
     if not LocalPlayer.state.isDead and not LocalPlayer.state.isHospitalized then
-        Hud.DeathTexts:Hide()
-        Hud:Dead(false)
+        exports['sandbox-hud']:DeathTextsHide()
+        exports['sandbox-hud']:Dead(false)
         if _reductions > 0 then
             exports['sandbox-hud']:ApplyUniqueBuff("weakness", -1)
         else
@@ -145,7 +144,7 @@ DAMAGE = {
             SetEntityHealth(ped, newMax)
         end
 
-        Hud:ForceHP()
+        exports['sandbox-hud']:ForceHP()
     end,
     WasDead = function(self, sid)
         return _deadCunts[sid] ~= nil
@@ -201,10 +200,10 @@ DAMAGE = {
         end
 
         TriggerServerEvent("Damage:Server:Revived", wasMinor, fieldTreat)
-        Hud:Dead(false)
+        exports['sandbox-hud']:Dead(false)
 
         if not LocalPlayer.state.isHospitalized and wasDead then
-            Hud.DeathTexts:Hide()
+            exports['sandbox-hud']:DeathTextsHide()
             SetEntityInvincible(player, LocalPlayer.state.isAdmin and LocalPlayer.state.isGodmode or false)
         end
 

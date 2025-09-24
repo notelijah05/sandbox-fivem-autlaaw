@@ -123,7 +123,7 @@ end)
 
 RegisterNetEvent("Businesses:Client:VANGELICOGRAPESEED:ViewGem", function(tableId, gemProps, quality, item)
 	LocalPlayer.state:set("inGemViewVangelicoGrapeseed", true, true)
-	-- HUD.GemTable:Open(quality)
+	-- exports['sandbox-hud']:GemTableOpen(quality)
 	Inventory.StaticTooltip:Open(item)
 	local str = string.format("Gem Quality: %s%%", quality)
 	exports["sandbox-hud"]:NotifStandard(str, 5000, "gem")
@@ -132,7 +132,7 @@ end)
 
 AddEventHandler("Keybinds:Client:KeyUp:cancel_action", function()
 	if LocalPlayer.state.inGemView then
-		HUD.GemTable:Close()
+		exports['sandbox-hud']:GemTableClose()
 		Inventory.StaticTooltip:Close()
 		LocalPlayer.state:set("inGemViewVangelicoGrapeseed", false, true)
 	end
@@ -188,7 +188,7 @@ function ActivateTable(tableId, color, quality, item)
 	Wait(1000)
 	local dirtLevel = (15 - math.floor(quality / 6.66)) + 0.0
 
-	HUD.GemTable:Open(quality)
+	exports['sandbox-hud']:GemTableOpen(quality)
 	Inventory.StaticTooltip:Open(item)
 
 	_gemObj = CreateObject(prop, _tableConfig[tableId].createCoords, 0, 0)
@@ -211,7 +211,7 @@ end
 function CleanupTable()
 	RenderScriptCams(false, false, 0, 1, 0)
 	DeleteEntity(_gemObj)
-	HUD.GemTable:Close()
+	exports['sandbox-hud']:GemTableClose()
 	Inventory.StaticTooltip:Close()
 	if LocalPlayer.state.inGemTableVangelico then
 		LocalPlayer.state:set("inGemTableVangelicoGrapeseed", false, true)
