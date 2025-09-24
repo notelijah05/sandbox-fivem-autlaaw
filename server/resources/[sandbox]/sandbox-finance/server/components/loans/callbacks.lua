@@ -37,7 +37,7 @@ function RegisterLoanCallbacks()
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and data.loan then
             local SID = char:GetData('SID')
-            local res = Loans:MakePayment(source, data.loan, data.paymentAhead, data.weeks)
+            local res = exports['sandbox-finance']:LoansMakePayment(source, data.loan, data.paymentAhead, data.weeks)
             if res and res.success then
                 cb(res, {
                     loans = GetCharactersLoans(SID),

@@ -394,9 +394,11 @@ function RegisterCallbacks()
 						_selling[data.property] = data.target
 
 						if data.loan and data.time and data.deposit then
-							local loanData = Loans:GetAllowedLoanAmount(targetChar:GetData('SID'), 'property')
-							local hasLoans = Loans:GetPlayerLoans(targetChar:GetData('SID'), 'property')
-							local defaultInterestRate = Loans:GetDefaultInterestRate()
+							local loanData = exports['sandbox-finance']:LoansGetAllowedLoanAmount(
+								targetChar:GetData('SID'), 'property')
+							local hasLoans = exports['sandbox-finance']:LoansGetPlayerLoans(targetChar:GetData('SID'),
+								'property')
+							local defaultInterestRate = exports['sandbox-finance']:LoansGetDefaultInterestRate()
 
 							if #hasLoans <= 1 then
 								if loanData?.maxBorrowable and loanData.maxBorrowable > 0 and defaultInterestRate then
@@ -423,9 +425,11 @@ function RegisterCallbacks()
 														string.format('Property Downpayment for %s', prop.label),
 														function(wasPayed, withAccount)
 															if wasPayed then
-																local loanSuccess = Loans:CreatePropertyLoan(
-																	targetChar:GetData('Source'), prop.id, prop.price,
-																	downPayment, loanWeeks)
+																local loanSuccess = exports['sandbox-finance']
+																	:LoansCreatePropertyLoan(
+																		targetChar:GetData('Source'), prop.id, prop
+																		.price,
+																		downPayment, loanWeeks)
 																if loanSuccess then
 																	Properties.Commerce:Buy(prop.id, {
 																		Char = targetChar:GetData("ID"),
@@ -528,7 +532,7 @@ function RegisterCallbacks()
 										-- 		creditIncrease = 300
 										-- 	end
 
-										-- 	Loans.Credit:Increase(targetChar:GetData('SID'), creditIncrease)
+										-- 	exports['sandbox-finance']:LoansCreditIncrease(targetChar:GetData('SID'), creditIncrease)
 										-- end
 									else
 										exports['sandbox-phone']:NotificationAdd(source, "Property Sale Failed",
@@ -563,7 +567,8 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Properties:Dyn8:CheckCredit", function(source, data, cb)
 		local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(data?.target))
 		if targetChar then
-			local creditCheck = Loans:GetAllowedLoanAmount(targetChar:GetData('SID'), 'property')
+			local creditCheck = exports['sandbox-finance']:LoansGetAllowedLoanAmount(targetChar:GetData('SID'),
+				'property')
 
 			cb({
 				SID = targetChar:GetData('SID'),
@@ -583,7 +588,7 @@ function RegisterCallbacks()
 			if prop ~= nil and prop.sold and char then
 				local owner = exports['sandbox-characters']:FetchBySID(prop.owner.SID)
 				local newOwner = exports['sandbox-characters']:FetchBySID(tonumber(data.target))
-				local hasLoan = Loans:HasRemainingPayments("property", prop.id)
+				local hasLoan = exports['sandbox-finance']:LoansHasRemainingPayments("property", prop.id)
 
 				if not hasLoan then
 					if owner and newOwner then

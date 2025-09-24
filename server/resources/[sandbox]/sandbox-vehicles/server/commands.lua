@@ -422,7 +422,8 @@ function RegisterChatCommands()
 					if veh and DoesEntityExist(veh) then
 						local vehEnt = Entity(veh)
 						if vehEnt?.state?.VIN and vehEnt?.state?.Owned and vehEnt?.state?.Owner?.Type == 0 and vehEnt?.state?.Owner?.Id == char:GetData("SID") then
-							local remainingLoan = Loans:HasRemainingPayments("vehicle", vehEnt.state.VIN)
+							local remainingLoan = exports['sandbox-finance']:LoansHasRemainingPayments("vehicle",
+								vehEnt.state.VIN)
 							if remainingLoan then
 								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
 									"Cannot transfer vehicle with an active loan.")

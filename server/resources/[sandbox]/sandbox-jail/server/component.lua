@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
-	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -19,7 +18,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Handcuffs",
 		"Labor",
-		"Loans",
 		"Jail",
 		"Pwnzor",
 		"Reputation",
@@ -178,7 +176,7 @@ _JAIL = {
 			end)
 
 			if duration >= 100 then
-				Loans.Credit:Decrease(char:GetData("SID"), 10)
+				exports['sandbox-finance']:LoansCreditDecrease(char:GetData("SID"), 10)
 			end
 
 			cachedData = nil

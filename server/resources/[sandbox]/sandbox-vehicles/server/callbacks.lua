@@ -462,7 +462,7 @@ function RegisterCallbacks()
             for k, v in ipairs(vehicles) do
                 if v.Seized then
                     -- TODO: ADD ASSET FEE SEIZURE CHECK HERE
-                    if not Loans:HasBeenDefaulted("vehicle", v.VIN) then
+                    if not exports['sandbox-finance']:LoansHasBeenDefaulted("vehicle", v.VIN) then
                         exports['sandbox-vehicles']:OwnedSeize(v.VIN, false)
                         v.Seized = false
                     end

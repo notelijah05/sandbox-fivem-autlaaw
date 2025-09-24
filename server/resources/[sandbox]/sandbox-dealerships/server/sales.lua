@@ -219,7 +219,7 @@ function RegisterVehicleSaleCallbacks()
                                                             --         creditIncrease = 25
                                                             --     end
 
-                                                            --     Loans.Credit:Increase(targetCharacter:GetData('SID'), creditIncrease)
+                                                            --     exports['sandbox-finance']:LoansCreditIncrease(targetCharacter:GetData('SID'), creditIncrease)
                                                             -- end
                                                         else
                                                             exports['sandbox-base']:ExecuteClient(source, 'Notification',
@@ -245,12 +245,15 @@ function RegisterVehicleSaleCallbacks()
 
                                 cb(true, 'Initiating Sales Process')
                             elseif type == 'loan' then
-                                local loanData = Loans:GetAllowedLoanAmount(targetCharacter:GetData('SID'))
-                                local hasLoans = Loans:GetPlayerLoans(targetCharacter:GetData('SID'), 'vehicle')
+                                local loanData = exports['sandbox-finance']:LoansGetAllowedLoanAmount(targetCharacter
+                                    :GetData('SID'))
+                                local hasLoans = exports['sandbox-finance']:LoansGetPlayerLoans(
+                                    targetCharacter:GetData('SID'), 'vehicle')
 
                                 if loanData and #hasLoans < loanData.limit then
                                     if loanData and loanData.maxBorrowable and loanData.maxBorrowable > 0 then
-                                        local defaultInterestRate = Loans:GetDefaultInterestRate()
+                                        local defaultInterestRate = exports['sandbox-finance']
+                                            :LoansGetDefaultInterestRate()
                                         local downPaymentPercent, loanWeeks = math.tointeger(data.downPayment),
                                             math.tointeger(data.loanWeeks)
 
@@ -287,9 +290,11 @@ function RegisterVehicleSaleCallbacks()
                                                                     local preGenerateVIN = Vehicles.Identification.VIN
                                                                         :GenerateOwned()
 
-                                                                    local loanSuccess = Loans:CreateVehicleLoan(
-                                                                        targetSrc,
-                                                                        preGenerateVIN, salePrice, downPayment, loanWeeks)
+                                                                    local loanSuccess = exports['sandbox-finance']
+                                                                        :LoansCreateVehicleLoan(
+                                                                            targetSrc,
+                                                                            preGenerateVIN, salePrice, downPayment,
+                                                                            loanWeeks)
                                                                     if loanSuccess then
                                                                         local removeSuccess = Dealerships.Stock:Remove(
                                                                             dealerData.id, saleVehicleData.vehicle, 1)

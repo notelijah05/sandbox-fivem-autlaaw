@@ -4,7 +4,6 @@ AddEventHandler('Dealerships:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
     Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
-    Loans = exports['sandbox-base']:FetchComponent('Loans')
     Wallet = exports['sandbox-base']:FetchComponent('Wallet')
     MDT = exports['sandbox-base']:FetchComponent('MDT')
 end
@@ -14,7 +13,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Doors',
         'Jobs',
         'Dealerships',
-        'Loans',
         'Wallet',
         'MDT',
     }, function(error)
@@ -285,7 +283,7 @@ function RegisterCallbacks()
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:Sales:FetchData', function(source, dealerId, cb)
         if _dealerships[dealerId] and Jobs.Permissions:HasPermissionInJob(source, dealerId, 'dealership_stock') or Jobs.Permissions:HasPermissionInJob(source, dealerId, 'dealership_sell') then
-            cb(true, Dealerships.Stock:FetchDealer(dealerId), Loans:GetDefaultInterestRate(),
+            cb(true, Dealerships.Stock:FetchDealer(dealerId), exports['sandbox-finance']:LoansGetDefaultInterestRate(),
                 Dealerships.Management:GetAllData(dealerId))
         else
             cb(false)
@@ -340,9 +338,9 @@ function RegisterCallbacks()
             local target = exports['sandbox-characters']:FetchBySID(stateId)
 
             if target then
-                local loanData = Loans:GetAllowedLoanAmount(stateId)
+                local loanData = exports['sandbox-finance']:LoansGetAllowedLoanAmount(stateId)
                 if loanData and loanData.maxBorrowable and loanData.maxBorrowable > 0 then
-                    local charVehicleLoans = Loans:GetPlayerLoans(stateId, 'vehicle')
+                    local charVehicleLoans = exports['sandbox-finance']:LoansGetPlayerLoans(stateId, 'vehicle')
                     if not charVehicleLoans or #charVehicleLoans < loanData.limit then
                         cb({
                             SID = stateId,
@@ -448,7 +446,8 @@ function RegisterCallbacks()
                         if vehModel then
                             local stockInfo = Dealerships.Stock:FetchDealerVehicle(data.dealerId, vehModel)
                             local vehStrikes = MDT.Vehicles:GetStrikes(vehEnt.state.VIN) or 0
-                            local remainingLoan = Loans:HasRemainingPayments("vehicle", vehEnt.state.VIN, 14)
+                            local remainingLoan = exports['sandbox-finance']:LoansHasRemainingPayments("vehicle",
+                                vehEnt.state.VIN, 14)
 
                             if not remainingLoan then
                                 if stockInfo and stockInfo.data and vehStrikes then
@@ -494,7 +493,8 @@ function RegisterCallbacks()
                     if vehModel then
                         local stockInfo = Dealerships.Stock:FetchDealerVehicle(data.dealerId, vehModel)
                         local vehStrikes = MDT.Vehicles:GetStrikes(vehEnt.state.VIN) or 0
-                        local remainingLoan = Loans:HasRemainingPayments("vehicle", vehEnt.state.VIN, 14)
+                        local remainingLoan = exports['sandbox-finance']:LoansHasRemainingPayments("vehicle",
+                            vehEnt.state.VIN, 14)
 
                         if stockInfo and stockInfo.data and vehStrikes and not remainingLoan then
                             local vehicle = exports['sandbox-vehicles']:OwnedGetActive(vehEnt.state.VIN)
