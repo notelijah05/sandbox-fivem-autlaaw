@@ -217,7 +217,8 @@ AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
                     CreateThread(function()
                         Animations.Emotes:Play("phonecall2", true)
                         exports["sandbox-sounds"]:LoopOne("ringing.ogg", 0.1)
-                        InfoOverlay:Show("Dialing", string.format("Dailing Number: %s", values.number))
+                        exports['sandbox-hud']:InfoOverlayShow("Dialing",
+                            string.format("Dailing Number: %s", values.number))
 
                         while LocalPlayer.state.loggedIn and LocalPlayer.state.bizCall do
                             if #(GetEntityCoords(LocalPlayer.state.ped) - startCoords) >= 10.0 then
@@ -228,7 +229,7 @@ AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
 
                         Animations.Emotes:ForceCancel()
                         exports["sandbox-sounds"]:StopOne("ringing.ogg")
-                        InfoOverlay:Close()
+                        exports['sandbox-hud']:InfoOverlayClose()
                     end)
                 else
                     exports["sandbox-hud"]:NotifError("Failed to Make Call")
@@ -239,7 +240,7 @@ end)
 
 RegisterNetEvent("Phone:Client:Phone:AcceptBizCall", function(number)
     if LocalPlayer.state.bizCall then
-        InfoOverlay:Show("On Call", string.format("To Number: %s", number))
+        exports['sandbox-hud']:InfoOverlayShow("On Call", string.format("To Number: %s", number))
         exports["sandbox-sounds"]:StopOne("ringing.ogg")
     end
 end)
@@ -273,7 +274,7 @@ AddEventHandler("Phone:Client:AcceptBizCall", function(entityData, data)
             if success then
                 CreateThread(function()
                     Animations.Emotes:Play("phonecall2", true)
-                    InfoOverlay:Show("On Call", string.format("From Number: %s", callStr))
+                    exports['sandbox-hud']:InfoOverlayShow("On Call", string.format("From Number: %s", callStr))
                     while LocalPlayer.state.loggedIn and LocalPlayer.state.bizCall do
                         if #(GetEntityCoords(LocalPlayer.state.ped) - startCoords) >= 10.0 then
                             TriggerServerEvent("Phone:Server:ForceEndBizCall")
@@ -282,7 +283,7 @@ AddEventHandler("Phone:Client:AcceptBizCall", function(entityData, data)
                     end
 
                     Animations.Emotes:ForceCancel()
-                    InfoOverlay:Close()
+                    exports['sandbox-hud']:InfoOverlayClose()
                 end)
             else
                 exports["sandbox-hud"]:NotifError("Failed to Accept Call")

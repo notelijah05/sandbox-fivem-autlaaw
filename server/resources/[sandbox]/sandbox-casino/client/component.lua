@@ -15,7 +15,6 @@ function RetrieveComponents()
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	InfoOverlay = exports["sandbox-base"]:FetchComponent("InfoOverlay")
 	Casino = exports["sandbox-base"]:FetchComponent("Casino")
 end
 
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Minigame",
 		"Interaction",
 		"Inventory",
-		"InfoOverlay",
 		"Casino",
 	}, function(error)
 		if #error > 0 then

@@ -249,7 +249,7 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
                         _blackJackStatebagHandler = nil
                     end
 
-                    InfoOverlay:Close()
+                    exports['sandbox-hud']:InfoOverlayClose()
 
                     LocalPlayer.state.playingCasino = false
                 end)
@@ -281,7 +281,7 @@ AddEventHandler("Casino:Client:LeaveBlackjack", function(_, data)
                 _BJsatAtTable = false
                 _BJsatAtLocalChair = false
                 leaveBlackjackSeat()
-                InfoOverlay:Close()
+                exports['sandbox-hud']:InfoOverlayClose()
 
                 LocalPlayer.state.playingCasino = false
             end
@@ -332,9 +332,9 @@ RegisterNetEvent("Casino:Client:BlackjackConfirmBet", function(betAmounts, table
         end)
     elseif res?.timeout then
         exports["sandbox-hud"]:NotifError("Ran Out of Time...")
-        InfoOverlay:Close()
+        exports['sandbox-hud']:InfoOverlayClose()
     else
-        InfoOverlay:Close()
+        exports['sandbox-hud']:InfoOverlayClose()
     end
 end)
 
@@ -486,7 +486,7 @@ RegisterNetEvent("Casino:Client:BlackjackGameFinished", function(tableId, played
         end
 
         if tableId == _BJsatAtTable then
-            InfoOverlay:Close()
+            exports['sandbox-hud']:InfoOverlayClose()
 
             if _blackJackStatebagHandler then
                 RemoveStateBagChangeHandler(_blackJackStatebagHandler)
@@ -558,9 +558,9 @@ function ShowGameStateUI(state)
         overlay = overlay .. string.format("Dealer Hand: %s<br>", dealerHand)
         overlay = overlay .. string.format("My Hand: %s", myHand)
 
-        InfoOverlay:Show(stateLabel, overlay)
+        exports['sandbox-hud']:InfoOverlayShow(stateLabel, overlay)
     else
-        InfoOverlay:Show("Game Pending Start", "Waiting for all players to confirm their bets.")
+        exports['sandbox-hud']:InfoOverlayShow("Game Pending Start", "Waiting for all players to confirm their bets.")
     end
 end
 

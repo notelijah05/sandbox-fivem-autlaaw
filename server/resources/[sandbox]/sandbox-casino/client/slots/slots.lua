@@ -265,7 +265,7 @@ AddEventHandler("Casino:Client:LeaveSlotMachine", function()
     if _satInChair then
         exports["sandbox-base"]:ServerCallback("Casino:SlotMachineLeave", {}, function(success)
             if success then
-                InfoOverlay:Close()
+                exports['sandbox-hud']:InfoOverlayClose()
 
                 LocalPlayer.state.playingCasino = false
 
@@ -377,6 +377,6 @@ function ShowSlotStateUI()
             formatNumberToCurrency(myBalance), formatNumberToCurrency(math.floor(_sessionSpent)),
             formatNumberToCurrency(math.floor(_sessionWinnings)))
 
-        InfoOverlay:Show(machineName, overlay)
+        exports['sandbox-hud']:InfoOverlayShow(machineName, overlay)
     end
 end

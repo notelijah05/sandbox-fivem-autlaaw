@@ -243,13 +243,13 @@ function CycleFurniture(direction)
         end
     end
 
-    InfoOverlay:Close()
+    exports['sandbox-hud']:InfoOverlayClose()
     ObjectPlacer:Cancel(true, true)
     Wait(200)
     local fKey = _furnitureCategory[_furnitureCategoryCurrent]
     local fData = FurnitureConfig[fKey]
     if fData then
-        InfoOverlay:Show(fData.name, string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", fKey))
+        exports['sandbox-hud']:InfoOverlayShow(fData.name, string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", fKey))
     end
     ObjectPlacer:Start(GetHashKey(fKey), "Furniture:Client:Place", {}, true, "Furniture:Client:Cancel", true, true)
 end
@@ -283,7 +283,7 @@ AddEventHandler("Furniture:Client:Place", function(data, placement)
 
             _placingFurniture = false
             LocalPlayer.state.placingFurniture = false
-            InfoOverlay:Close()
+            exports['sandbox-hud']:InfoOverlayClose()
 
             if not _skipPhone then
                 exports['sandbox-phone']:Open()
@@ -304,7 +304,7 @@ AddEventHandler("Furniture:Client:Cancel", function()
 
         Wait(200)
         DisablePauseMenu(false)
-        InfoOverlay:Close()
+        exports['sandbox-hud']:InfoOverlayClose()
     end
 end)
 
@@ -332,7 +332,7 @@ AddEventHandler("Furniture:Client:Move", function(data, placement)
 
             _placingFurniture = false
             LocalPlayer.state.placingFurniture = false
-            InfoOverlay:Close()
+            exports['sandbox-hud']:InfoOverlayClose()
 
             if not _skipPhone then
                 exports['sandbox-phone']:Open()

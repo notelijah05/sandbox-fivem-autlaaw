@@ -32,7 +32,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
-	InfoOverlay = exports["sandbox-base"]:FetchComponent("InfoOverlay")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -49,7 +48,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"Animations",
 		"ObjectPlacer",
-		"InfoOverlay",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -663,7 +661,7 @@ PROPERTIES = {
 
 			local fData = FurnitureConfig[model]
 			if fData then
-				InfoOverlay:Show(fData.name,
+				exports['sandbox-hud']:InfoOverlayShow(fData.name,
 					string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", model))
 			end
 

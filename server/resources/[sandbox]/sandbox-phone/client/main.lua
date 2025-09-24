@@ -41,7 +41,6 @@ function RetrieveComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	InfoOverlay = exports["sandbox-base"]:FetchComponent("InfoOverlay")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
@@ -58,7 +57,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Progress",
 		"Jobs",
 		"Properties",
-		"InfoOverlay",
 		"Animations",
 	}, function(error)
 		if #error > 0 then

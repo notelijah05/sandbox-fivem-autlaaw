@@ -47,7 +47,7 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 	exports["sandbox-hud"]:NotifClear()
 	exports['sandbox-hud']:ConfirmClose()
 	exports['sandbox-hud']:InputClose()
-	InfoOverlay:Close()
+	exports['sandbox-hud']:InfoOverlayClose()
 	exports['sandbox-hud']:MethClose()
 
 	TriggerEvent("UI:Client:ResetFinished", manual)

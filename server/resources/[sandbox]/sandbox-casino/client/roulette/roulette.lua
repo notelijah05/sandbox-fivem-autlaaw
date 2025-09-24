@@ -215,7 +215,7 @@ AddEventHandler("Casino:Client:JoinRoulette", function(_, data)
                             _rouletteStatebagHandler = nil
                         end
 
-                        InfoOverlay:Close()
+                        exports['sandbox-hud']:InfoOverlayClose()
 
                         LocalPlayer.state.playingCasino = false
                     end)
@@ -245,7 +245,7 @@ function LeaveRoulette(skipAnim)
 
             _rouletteAtTable = false
             _rouletteAtLocalChair = false
-            InfoOverlay:Close()
+            exports['sandbox-hud']:InfoOverlayClose()
 
             if not skipAnim then
                 Wait(3000)
@@ -472,7 +472,7 @@ end
 
 function ShowRouletteGameStateUI(state)
     if state.Started then
-        InfoOverlay:Show("Roulette", "The Wheel is Spinning")
+        exports['sandbox-hud']:InfoOverlayShow("Roulette", "The Wheel is Spinning")
     else
         local myBets = 0
         local myBalance = formatNumberToCurrency(math.floor(Casino.Chips:Get()))
@@ -497,7 +497,7 @@ function ShowRouletteGameStateUI(state)
             showStartTime = string.format(" - Starts In %s Seconds", startsIn)
         end
 
-        InfoOverlay:Show(string.format("Roulette%s", showStartTime),
+        exports['sandbox-hud']:InfoOverlayShow(string.format("Roulette%s", showStartTime),
             string.format("My Balance: $%s<br><br>Placed Bets: $%s<br>Table Limit: $%s", myBalance,
                 formatNumberToCurrency(math.floor(myBets)), maxBet))
     end
