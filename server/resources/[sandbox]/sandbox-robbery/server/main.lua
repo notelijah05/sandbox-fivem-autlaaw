@@ -33,7 +33,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Vendor = exports["sandbox-base"]:FetchComponent("Vendor")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
-	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 end
 
 local _sellerLocs = {
@@ -201,7 +200,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vehicles",
 		"Vendor",
 		"CCTV",
-		"Crafting",
 	}, function(error)
 		if #error > 0 then
 			return

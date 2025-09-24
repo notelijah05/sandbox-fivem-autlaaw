@@ -6,7 +6,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
-	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Inventory",
 		"Police",
-		"Crafting",
 		"Pwnzor",
 		"Banking",
 		"Loans",

@@ -27,7 +27,6 @@ function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
@@ -42,7 +41,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"Properties",
 		"Jobs",
-		"Crafting",
 		"Polyzone",
 		"Animations",
 		"ObjectPlacer",

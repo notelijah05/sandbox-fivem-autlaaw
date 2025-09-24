@@ -1092,7 +1092,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						if data.id == 1 then
 							local t = deepcopy(_bobcatSchems)
 							local schem = math.random(#t)
-							while #t > 0 and Crafting.Schematics:HasAny(sid, t[schem]) do
+							while #t > 0 and exports['sandbox-inventory']:CraftingSchematicsHasAny(sid, t[schem]) do
 								table.remove(t, schem)
 								if #t > 0 then
 									schem = math.random(#t)
@@ -1106,7 +1106,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							else
 								t = deepcopy(_bobcatC2Schems)
 								schem = math.random(#t)
-								while #t > 0 and Crafting.Schematics:HasAny(sid, t[schem]) do
+								while #t > 0 and exports['sandbox-inventory']:CraftingSchematicsHasAny(sid, t[schem]) do
 									table.remove(t, schem)
 									if #t > 0 then
 										schem = math.random(#t)
@@ -1118,7 +1118,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								if t[schem] ~= nil then
 									Inventory:AddItem(sid, t[schem], 1, {}, 1)
 								else
-									if not Crafting.Schematics:HasAny(sid, "schematic_grapple_gun") then
+									if not exports['sandbox-inventory']:CraftingSchematicsHasAny(sid, "schematic_grapple_gun") then
 										Inventory:AddItem(sid, "schematic_grapple_gun", 1, {}, 1)
 									else
 										Inventory:AddItem(sid, _bobcatCombined[math.random(#_bobcatCombined)], 1, {}, 1)
@@ -1128,7 +1128,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						elseif data.id == 4 then
 							local t = deepcopy(_bobcatAttchSchems)
 							local schem = math.random(#t)
-							while #t > 0 and Crafting.Schematics:HasAny(sid, t[schem]) do
+							while #t > 0 and exports['sandbox-inventory']:CraftingSchematicsHasAny(sid, t[schem]) do
 								table.remove(t, schem)
 								schem = math.random(#t)
 							end

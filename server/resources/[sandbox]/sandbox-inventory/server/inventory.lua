@@ -161,7 +161,6 @@ AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -176,7 +175,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Inventory",
 		"Wallet",
-		"Crafting",
 		"Jobs",
 		"Reputation",
 		"Vehicles",
@@ -2030,7 +2028,7 @@ RegisterNetEvent("Inventory:Server:Request", function(secondary)
 	}
 
 	if secondary?.crafting then
-		local benchDetails = Crafting:GetBench(source, secondary.id)
+		local benchDetails = exports['sandbox-inventory']:CraftingGetBench(source, secondary.id)
 		if benchDetails ~= nil then
 			benchDetails.crafting = true
 			benchDetails.bench = secondary.id

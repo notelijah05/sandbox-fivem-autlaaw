@@ -118,7 +118,7 @@ AddEventHandler("Businesses:Client:VANGELICOGRAPESEED:OpenTable", function(e, da
 end)
 
 AddEventHandler("Businesses:Client:VANGELICOGRAPESEED:OpenJewelryCrafting", function(e, data)
-	Crafting.Benches:Open("vangelico_grapeseed-jewelry")
+	exports['sandbox-inventory']:CraftingBenchesOpen("vangelico_grapeseed-jewelry")
 end)
 
 RegisterNetEvent("Businesses:Client:VANGELICOGRAPESEED:ViewGem", function(tableId, gemProps, quality, item)

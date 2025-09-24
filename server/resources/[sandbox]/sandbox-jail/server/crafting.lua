@@ -1,6 +1,6 @@
 function RegisterPrisonCraftingStartup()
 	for k, v in pairs(_prisonCrafting.peds) do
-		Crafting:RegisterBench(k, v.target, {
+		exports['sandbox-inventory']:CraftingRegisterBench(k, v.target, {
 			ped = {
 				model = v.model,
 				task = v.anim,

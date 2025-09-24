@@ -108,7 +108,7 @@ AddEventHandler("Businesses:Client:JEWEL:OpenTable", function(e, data)
 end)
 
 AddEventHandler("Businesses:Client:JEWEL:OpenJewelryCrafting", function(e, data)
-	Crafting.Benches:Open("jewel-jewelry")
+	exports['sandbox-inventory']:CraftingBenchesOpen("jewel-jewelry")
 end)
 
 RegisterNetEvent("Businesses:Client:JEWEL:ViewGem", function(tableId, gemProps, quality, item)

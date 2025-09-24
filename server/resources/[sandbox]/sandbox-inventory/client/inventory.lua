@@ -81,7 +81,6 @@ AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -94,7 +93,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Inventory",
 		"Animations",
-		"Crafting",
 		"Targeting",
 		"PedInteraction",
 		"Polyzone",

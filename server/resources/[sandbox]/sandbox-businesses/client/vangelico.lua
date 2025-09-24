@@ -122,7 +122,7 @@ AddEventHandler("Businesses:Client:VANGELICO:OpenTable", function(e, data)
 end)
 
 AddEventHandler("Businesses:Client:VANGELICO:OpenJewelryCrafting", function(e, data)
-	Crafting.Benches:Open("vangelico-jewelry")
+	exports['sandbox-inventory']:CraftingBenchesOpen("vangelico-jewelry")
 end)
 
 RegisterNetEvent("Businesses:Client:VANGELICO:ViewGem", function(tableId, gemProps, quality, item)

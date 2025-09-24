@@ -14,7 +14,6 @@ function RetrieveComponents()
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Loot = exports["sandbox-base"]:FetchComponent("Loot")
-	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 end
 
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Pwnzor",
 		"Reputation",
 		"Loot",
-		"Crafting",
 		"EmergencyAlerts",
 	}, function(error)
 		if #error > 0 then

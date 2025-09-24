@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
 
@@ -12,7 +11,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Mechanic",
 		"Jobs",
 		"Inventory",
-		"Crafting",
 		"Vehicles",
 	}, function(error)
 		if #error > 0 then
@@ -26,17 +24,18 @@ AddEventHandler("Core:Shared:Ready", function()
 		for k, v in ipairs(_mechanicShopStorageCrafting) do
 			if v.partCrafting then
 				for benchId, bench in ipairs(v.partCrafting) do
-					Crafting:RegisterBench(string.format("mech-%s-%s", v.job, benchId), bench.label, bench.targeting, {
-						x = bench.targeting.poly.coords.x,
-						y = bench.targeting.poly.coords.y,
-						z = bench.targeting.poly.coords.z,
-						h = bench.targeting.poly.options.heading,
-					}, {
-						job = {
-							id = v.job,
-							onDuty = true,
-						},
-					}, bench.recipes, bench.canUseSchematics)
+					exports['sandbox-inventory']:CraftingRegisterBench(string.format("mech-%s-%s", v.job, benchId),
+						bench.label, bench.targeting, {
+							x = bench.targeting.poly.coords.x,
+							y = bench.targeting.poly.coords.y,
+							z = bench.targeting.poly.coords.z,
+							h = bench.targeting.poly.options.heading,
+						}, {
+							job = {
+								id = v.job,
+								onDuty = true,
+							},
+						}, bench.recipes, bench.canUseSchematics)
 				end
 			end
 

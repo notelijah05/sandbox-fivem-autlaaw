@@ -8,7 +8,8 @@ function Startup()
 			for benchId, bench in pairs(v.Benches) do
 				-- exports['sandbox-base']:LoggerTrace("Restaurant", string.format("Registering Crafting Bench ^2%s^7 For ^3%s^7", bench.label, v.Name))
 				if v?.IgnoreDuty then
-					Crafting:RegisterBench(string.format("%s-%s", k, benchId), bench.label, bench.targeting, {
+					exports['sandbox-inventory']:CraftingRegisterBench(string.format("%s-%s", k, benchId), bench.label,
+						bench.targeting, {
 						x = bench.targeting.poly.coords.x,
 						y = bench.targeting.poly.coords.y,
 						z = bench.targeting.poly.coords.z,
@@ -20,7 +21,8 @@ function Startup()
 						},
 					}, bench.recipes)
 				else
-					Crafting:RegisterBench(string.format("%s-%s", k, benchId), bench.label, bench.targeting, {
+					exports['sandbox-inventory']:CraftingRegisterBench(string.format("%s-%s", k, benchId), bench.label,
+						bench.targeting, {
 						x = bench.targeting.poly.coords.x,
 						y = bench.targeting.poly.coords.y,
 						z = bench.targeting.poly.coords.z,

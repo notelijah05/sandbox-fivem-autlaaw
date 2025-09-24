@@ -9,7 +9,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		delay = (1000 * 60) * 3,
 	})
 
-	Crafting:RegisterBench("WeedPackaging", "Weed Processing", {
+	exports['sandbox-inventory']:CraftingRegisterBench("WeedPackaging", "Weed Processing", {
 		actionString = "Packaging",
 		icon = "cannabis",
 		poly = {

@@ -37,7 +37,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		{ label = "Pls Stop", value = 7500 },
 	}, false) -- hidden rep
 
-	Crafting:RegisterBench("TacoShopFood", "Taco Farmer Prep Table", {
+	exports['sandbox-inventory']:CraftingRegisterBench("TacoShopFood", "Taco Farmer Prep Table", {
 		actionString = "Packaging",
 		icon = "taco",
 		poly = {
@@ -126,7 +126,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		},
 	})
 
-	Crafting:RegisterBench("TacoShopDrinks", "Taco Farmer Fountain Drinks", {
+	exports['sandbox-inventory']:CraftingRegisterBench("TacoShopDrinks", "Taco Farmer Fountain Drinks", {
 		actionString = "Pouring",
 		icon = "glass",
 		poly = {

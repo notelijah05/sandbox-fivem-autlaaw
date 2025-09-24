@@ -286,7 +286,7 @@ AddEventHandler("Businesses:Client:SAGMA:OpenTable", function(e, data)
 end)
 
 AddEventHandler("Businesses:Client:SAGMA:OpenJewelryCrafting", function(e, data)
-	Crafting.Benches:Open("sagma-jewelry")
+	exports['sandbox-inventory']:CraftingBenchesOpen("sagma-jewelry")
 end)
 
 RegisterNetEvent("Businesses:Client:SAGMA:ViewGem", function(tableId, gemProps, quality, item)

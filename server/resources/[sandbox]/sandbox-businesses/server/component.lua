@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
@@ -23,7 +22,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vehicles",
 		"Inventory",
 		"Wallet",
-		"Crafting",
 		"Banking",
 		"MDT",
 		"Laptop",
@@ -66,14 +64,16 @@ function Startup()
 				-- )
 
 				if bench.targeting.manual then
-					Crafting:RegisterBench(string.format("%s-%s", v.Job, benchId), bench.label, bench.targeting, {}, {
+					exports['sandbox-inventory']:CraftingRegisterBench(string.format("%s-%s", v.Job, benchId),
+						bench.label, bench.targeting, {}, {
 						job = {
 							id = v.Job,
 							onDuty = true,
 						},
 					}, bench.recipes)
 				else
-					Crafting:RegisterBench(string.format("%s-%s", k, benchId), bench.label, bench.targeting, {
+					exports['sandbox-inventory']:CraftingRegisterBench(string.format("%s-%s", k, benchId), bench.label,
+						bench.targeting, {
 						x = 0,
 						y = 0,
 						z = bench.targeting.poly.coords.z,
