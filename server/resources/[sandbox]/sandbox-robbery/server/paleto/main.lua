@@ -850,7 +850,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 											_pbGlobalReset = os.time() + PALETO_RESET_TIME
 										end
 
-										Loot:CustomWeightedSetWithCount(_pbLoot, char:GetData("SID"), 1)
+										exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_pbLoot,
+											char:GetData("SID"), 1)
 
 										Robber.State:Update("paleto", data, _pbGlobalReset, "drillPoints")
 										GlobalState["Fleeca:Disable:savings_paleto"] = true
@@ -954,7 +955,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 									_pbGlobalReset = os.time() + PALETO_RESET_TIME
 								end
 
-								Loot:CustomWeightedSetWithCount(_pbSearchLoot, char:GetData("SID"), 1)
+								exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_pbSearchLoot,
+									char:GetData("SID"), 1)
 
 								Robbery.State:Update("paleto", data.searchId, _pbGlobalReset, "officeSearch")
 								GlobalState["Fleeca:Disable:savings_paleto"] = true
@@ -1065,7 +1067,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 							Robbery.State:Update("paleto", "officeSafe", _pbGlobalReset)
 
-							Loot:CustomWeightedSetWithCount(_pbLoot, char:GetData("SID"), 1)
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_pbLoot, char:GetData("SID"), 1)
 							Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 								CryptoCoin = "MALD",
 								Quantity = math.random(200, 400),

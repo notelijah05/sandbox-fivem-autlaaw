@@ -425,7 +425,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			if intr?.robberies?.locations then
 				local lootType = intr.robberies.locations[data] and intr.robberies.locations[data].type or "standard"
 				local lootTable = _loot[lootType] or _loot["standard"]
-				Loot:CustomWeightedSetWithCount(lootTable, char:GetData("SID"), 1)
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(lootTable, char:GetData("SID"), 1)
 
 				if math.random(100) <= 5 then
 					Inventory:AddItem(char:GetData("SID"), "safecrack_kit", 1, {}, 1)

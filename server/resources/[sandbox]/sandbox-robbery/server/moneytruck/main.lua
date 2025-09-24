@@ -215,7 +215,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 						local model = GetEntityModel(ent)
 						if model == `stockade` then
-							Loot:CustomWeightedSetWithCount(_moneyTruckLoot.fleeca, char:GetData("SID"), 1)
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_moneyTruckLoot.fleeca,
+								char:GetData("SID"), 1)
 							Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 								CryptoCoin = "HEIST",
 								Quantity = math.random(5, 6),

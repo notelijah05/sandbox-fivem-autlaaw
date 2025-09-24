@@ -248,9 +248,11 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							local calcLvl = repLevel
 							if calcLvl < 1 then calcLvl = 1 end
 							calcLvl = math.ceil(calcLvl / 2)
-							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+								char:GetData("SID"), 1,
 								calcLvl)
-							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+								char:GetData("SID"), 1,
 								calcLvl)
 						end
 						SetVehicleDoorBroken(NetworkGetEntityFromNetworkId(data.vNet), data.index, true)
@@ -278,7 +280,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							local calcLvl = repLevel
 							if calcLvl < 1 then calcLvl = 1 end
 							calcLvl = math.ceil(calcLvl / 2)
-							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+								char:GetData("SID"), 1,
 								calcLvl)
 							Inventory:AddItem(char:GetData("SID"), 'rubber', math.random(12, 78) * calcLvl, {}, 1)
 						end
@@ -307,17 +310,22 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							if calcLvl < 1 then calcLvl = 1 end
 							calcLvl = math.ceil(calcLvl / 2)
 
-							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+								char:GetData("SID"), 1,
 								calcLvl)
-							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+								char:GetData("SID"), 1,
 								calcLvl)
-							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+								char:GetData("SID"), 1,
 								calcLvl)
-							Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+								char:GetData("SID"), 1,
 								calcLvl)
 
 							if list?.entry?.hv then
-								Loot:CustomWeightedSetWithCountAndModifier(_lootTables.materials, char:GetData("SID"), 1,
+								exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+									_lootTables.materials, char:GetData("SID"), 1,
 									calcLvl)
 
 								if list.type == 3 then
@@ -806,27 +814,34 @@ LAPTOP.LSUnderground.Chopping = {
 			calcLvl = math.ceil(calcLvl / 2)
 
 			local items = {
-				Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl, true),
-				Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl, true),
-				Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl, true),
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+					char:GetData("SID"), 1, calcLvl, true),
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+					char:GetData("SID"), 1, calcLvl, true),
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+					char:GetData("SID"), 1, calcLvl, true),
 			}
 
 			if wasHv then
 				table.insert(
 					items,
-					Loot:CustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"), 1, true)
+					exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
+						1, true)
 				)
 				table.insert(
 					items,
-					Loot:CustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"), 1, true)
+					exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
+						1, true)
 				)
 				table.insert(
 					items,
-					Loot:CustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"), 1, true)
+					exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
+						1, true)
 				)
 				table.insert(
 					items,
-					Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl,
+					exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+						char:GetData("SID"), 1, calcLvl,
 						true)
 				)
 			end
@@ -835,13 +850,15 @@ LAPTOP.LSUnderground.Chopping = {
 			if repLevel >= 4 then
 				table.insert(
 					items,
-					Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl,
+					exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+						char:GetData("SID"), 1, calcLvl,
 						true)
 				)
 				if repLevel >= 5 then
 					table.insert(
 						items,
-						Loot:CustomWeightedSetWithCountAndModifier(_boxTables.materials, char:GetData("SID"), 1, calcLvl,
+						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+							char:GetData("SID"), 1, calcLvl,
 							true)
 					)
 				end

@@ -39,7 +39,8 @@ AddEventHandler("Labor:Server:Startup", function()
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _farming[_joiners[source]] ~= nil then
 			for k, v in ipairs(_farming[_joiners[source]].nodes) do
 				if v.id == data then
-					Loot:CustomSetWithCount(_farming[_joiners[source]].job.loot, char:GetData("SID"), 1)
+					exports['sandbox-inventory']:LootCustomSetWithCount(_farming[_joiners[source]].job.loot,
+						char:GetData("SID"), 1)
 					Labor.Workgroups:SendEvent(
 						_joiners[source],
 						string.format("Farming:Client:%s:Action", _joiners[source]),

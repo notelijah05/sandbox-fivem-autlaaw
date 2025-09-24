@@ -182,9 +182,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 			local repLvl = Reputation:GetLevel(source, "ATMRobbery")
 
 			if repLvl >= 4 then
-				Loot:CustomWeightedSetWithCount(_atmLootHigh, char:GetData("SID"), 1)
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_atmLootHigh, char:GetData("SID"), 1)
 			else
-				Loot:CustomWeightedSetWithCount(_atmLoot, char:GetData("SID"), 1)
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_atmLoot, char:GetData("SID"), 1)
 			end
 
 			local chance = 15

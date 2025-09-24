@@ -1082,10 +1082,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 								char:GetData("Last"), sid, data.id))
 
 						for i = 1, actualData.data.amount do
-							Loot:CustomWeightedSetWithCount(_bobcatLootTable[data.type], sid, 1)
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_bobcatLootTable[data.type], sid,
+								1)
 						end
 						if math.random(100) <= actualData.data.bonus then
-							Loot:CustomWeightedSetWithCount(_bobcatLootTable[data.type], sid, 1)
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_bobcatLootTable[data.type], sid,
+								1)
 						end
 
 						-- Only give schematic in 1 box

@@ -4,7 +4,8 @@ function RegisterItems()
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			Inventory.Items:RemoveId(sid, 1, item)
-			Loot:CustomWeightedSetWithCountAndModifier(_xmasConfig.Loot.present, sid, 1, 1, false)
+			exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_xmasConfig.Loot.present, sid, 1, 1,
+				false)
 		end
 	end)
 
@@ -13,7 +14,8 @@ function RegisterItems()
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			Inventory.Items:RemoveId(sid, 1, item)
-			Loot:CustomWeightedSetWithCountAndModifier(_xmasConfig.Loot.daily, sid, 1, 1, false)
+			exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_xmasConfig.Loot.daily, sid, 1, 1,
+				false)
 		end
 	end)
 end

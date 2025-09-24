@@ -11,7 +11,6 @@ function RetrieveComponents()
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Casino = exports["sandbox-base"]:FetchComponent("Casino")
-	Loot = exports["sandbox-base"]:FetchComponent("Loot")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -23,7 +22,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Wallet",
 		"Banking",
 		"Casino",
-		"Loot",
 	}, function(error)
 		if #error > 0 then
 			exports['sandbox-base']:LoggerCritical("Casino", "Failed To Load All Dependencies")

@@ -217,7 +217,8 @@ function RegisterPrisonSearchStartup()
 					_loot = _lootTables.high
 					-- maybe give a fucking rifle or some shit kekw
 				end
-				Loot:CustomWeightedSetWithCountAndModifier(_loot, char:GetData("SID"), 1, 1, false)
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_loot, char:GetData("SID"), 1, 1,
+					false)
 				Reputation.Modify:Add(source, _repName, _rando)
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "You found something!")
 			else

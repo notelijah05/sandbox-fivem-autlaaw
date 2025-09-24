@@ -194,9 +194,9 @@ AddEventHandler("Labor:Server:Startup", function()
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _Garbage[_joiners[source]] ~= nil then
 			local luck = math.random(100)
 			if luck >= 80 then
-				Loot:CustomSet(_highClassLoot, char:GetData("SID"), 1, math.random(5, 20))
+				exports['sandbox-inventory']:LootCustomSet(_highClassLoot, char:GetData("SID"), 1, math.random(5, 20))
 			elseif luck >= 50 then
-				Loot:CustomSet(_lootTable, char:GetData("SID"), 1, math.random(5, 20))
+				exports['sandbox-inventory']:LootCustomSet(_lootTable, char:GetData("SID"), 1, math.random(5, 20))
 			end
 			Inventory:AddItem(char:GetData("SID"), "recycledgoods", math.random(10), {}, 1)
 

@@ -254,7 +254,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 										GlobalState["AntiShitlord"] = os.time() + (60 * math.random(10, 15))
 									end
 
-									Loot:CustomWeightedSetWithCount(_vaultLoot.trolley[lootData?.type?.type or "cash"],
+									exports['sandbox-inventory']:LootCustomWeightedSetWithCount(
+										_vaultLoot.trolley[lootData?.type?.type or "cash"],
 										char:GetData("SID"), 1)
 									if math.random(100) <= 3 then
 										Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {

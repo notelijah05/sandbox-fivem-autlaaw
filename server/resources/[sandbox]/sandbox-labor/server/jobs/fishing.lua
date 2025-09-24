@@ -27,7 +27,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				end
 
 				if #filteredLoot > 0 then
-					local lootItem = Loot:CustomWeightedSetWithCount(filteredLoot, 0, 0, true)
+					local lootItem = exports['sandbox-inventory']:LootCustomWeightedSetWithCount(filteredLoot, 0, 0, true)
 					if lootItem then
 						if FishingConfig.FishItems[lootItem.name] then
 							if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _fishing[_joiners[source]] ~= nil and (_fishing[_joiners[source]].tool == data.toolUsed) then
@@ -150,7 +150,7 @@ function RegisterFishingItems()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char and Inventory.Items:Remove(char:GetData("SID"), 1, item.Name, 1) then
-			Loot:CustomWeightedSetWithCount({
+			exports['sandbox-inventory']:LootCustomWeightedSetWithCount({
 				{ 35, { name = "scrapmetal", min = 1, max = 2 } },
 				{ 20, { name = "rubber", min = 1, max = 3 } },
 				{ 15, { name = "goldcoins", min = 3, max = 7 } },
@@ -164,7 +164,7 @@ function RegisterFishingItems()
 	Inventory.Items:RegisterUse("fishing_chest", "Fishing", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and Inventory.Items:Remove(char:GetData("SID"), 1, item.Name, 1) then
-			Loot:CustomWeightedSetWithCount({
+			exports['sandbox-inventory']:LootCustomWeightedSetWithCount({
 				{ 35, { name = "goldcoins", min = 7, max = 15 } },
 				{ 25, { name = "ring", min = 6, max = 12 } },
 				{ 18, { name = "goldbar", min = 1, max = 3 } },

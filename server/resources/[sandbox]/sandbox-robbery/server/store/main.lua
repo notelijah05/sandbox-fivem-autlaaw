@@ -606,7 +606,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		then
 			_cRegisterCooldowns[source] = os.time() + 5
 			if data.results then
-				Loot:CustomWeightedSetWithCount(_registerLoot, char:GetData("SID"), 1)
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_registerLoot, char:GetData("SID"), 1)
 				Wallet:Modify(source, (math.random(150) + 100))
 				cb(true)
 			else
@@ -999,7 +999,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			_robbedSafes[data.id].expires = (os.time() + 60 * math.random(30, 60))
 			GlobalState[string.format("Safe:%s", data.id)] = _robbedSafes[data.id]
 
-			Loot:CustomWeightedSetWithCount(_safeLoot, char:GetData("SID"), 1)
+			exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_safeLoot, char:GetData("SID"), 1)
 
 			if math.random(100) <= 5 then
 				Inventory:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)

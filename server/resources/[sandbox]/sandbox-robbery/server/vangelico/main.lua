@@ -129,10 +129,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 					if luck == 100 then
 						--Inventory:AddItem(char:GetData("SID"), "valuegoods", 1, {}, 1)
 					end
-					Loot.Sets:Gem(char:GetData("SID"), 1)
+					exports['sandbox-inventory']:LootSetsGem(char:GetData("SID"), 1)
 				end
 
-				Loot:CustomWeightedSetWithCount(_loot, char:GetData("SID"), 1)
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_loot, char:GetData("SID"), 1)
 			end
 		end
 	end)

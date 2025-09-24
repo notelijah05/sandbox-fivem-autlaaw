@@ -249,7 +249,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				and _lbInUse.carts[string.format("%s-%s", math.ceil(data.coords.x), math.ceil(data.coords.y))] == source
 				and not Doors:IsLocked(lbThermPoints[string.format("lowerVaultRoom%s", pState.lombankRoom)].door)
 			then
-				Loot:CustomWeightedSetWithCount(_lbLoot, char:GetData("SID"), 1)
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_lbLoot, char:GetData("SID"), 1)
 
 				if math.random(100) <= (7 * _trolleysLooted) and not _heistCoin then
 					_heistCoin = true
@@ -807,7 +807,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 										_lbGlobalReset = os.time() + LOMBANK_RESET_TIME
 									end
 
-									Loot:CustomWeightedSetWithCount(_lbUpperLoot, char:GetData("SID"), 1)
+									exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_lbUpperLoot,
+										char:GetData("SID"), 1)
 
 									GlobalState[string.format("Lombank:Upper:Wall:%s", data)] = _lbGlobalReset
 									GlobalState["Fleeca:Disable:lombank_legion"] = true

@@ -419,7 +419,7 @@ AddEventHandler("Labor:Server:Startup", function()
 									or (luck >= 95)
 									or (not data.failed and node.luck <= 10)
 								then
-									Loot:CustomWeightedSetWithCount({
+									exports['sandbox-inventory']:LootCustomWeightedSetWithCount({
 										{ 30, { name = "amethyst", max = 1 } },
 										{ 30, { name = "citrine", max = 1 } },
 										{ 40, { name = "opal", max = 1 } },

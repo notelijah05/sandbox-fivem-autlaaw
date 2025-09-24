@@ -76,7 +76,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 
 		if #HuntingSrvConfig.Loot[animal] > 0 then
-			Loot:CustomSetWithCount(HuntingSrvConfig.Loot[animal], char:GetData("SID"), 1)
+			exports['sandbox-inventory']:LootCustomSetWithCount(HuntingSrvConfig.Loot[animal], char:GetData("SID"), 1)
 		end
 
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _hunting[_joiners[source]] ~= nil then

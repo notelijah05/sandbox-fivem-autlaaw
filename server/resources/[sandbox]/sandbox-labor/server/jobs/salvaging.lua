@@ -56,9 +56,9 @@ AddEventHandler("Labor:Server:Startup", function()
 				Inventory:AddItem(char:GetData("SID"), randomLoot.item, math.random(randomLoot.max), {}, 1)
 				-- local luck = math.random(100)
 				-- if luck == 100 then
-				-- 	Loot:CustomSet(_highClassLoot, char:GetData("SID"), 1, math.random(5))
+				-- 	exports['sandbox-inventory']:LootCustomSet(_highClassLoot, char:GetData("SID"), 1, math.random(5))
 				-- elseif luck >= 75 then
-				-- 	Loot:CustomSet(_lootTable, char:GetData("SID"), 1, math.random(10))
+				-- 	exports['sandbox-inventory']:LootCustomSet(_lootTable, char:GetData("SID"), 1, math.random(10))
 				-- end
 
 				Inventory:AddItem(char:GetData("SID"), "salvagedparts", math.random(10), {}, 1)

@@ -20,7 +20,6 @@ end
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Loot = exports["sandbox-base"]:FetchComponent("Loot")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -187,7 +186,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
 		"Inventory",
-		"Loot",
 		"Wallet",
 		"EmergencyAlerts",
 		"Properties",

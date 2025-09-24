@@ -706,7 +706,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 									_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
 
-									Loot:CustomWeightedSetWithCount(_mbLoot, char:GetData("SID"), 1)
+									exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_mbLoot,
+										char:GetData("SID"), 1)
 
 									if not _purpDongie then
 										if math.random(100) <= 10 then

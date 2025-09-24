@@ -216,7 +216,7 @@ function GiveWheelPrize(source, randomPrize)
                 _wheelAccumulator -= value
             end
         elseif randomPrize.type == "alcohol" then
-            Loot:CustomWeightedSetWithCount({
+            exports['sandbox-inventory']:LootCustomWeightedSetWithCount({
                 { 25, { name = "diamond_drink", min = 1, max = 1 } },
                 { 25, { name = "wine_glass", min = 1, max = 1 } },
                 { 25, { name = "whiskey_glass", min = 1, max = 1 } },
