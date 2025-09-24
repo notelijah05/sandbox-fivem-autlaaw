@@ -168,7 +168,8 @@ function IsAbleToReturnVehicle(vehicle, rentalSpot)
         local vehicleCoords = GetEntityCoords(vehicle)
         local hasDriver = GetPedInVehicleSeat(vehicle, -1)
         local speed = GetEntitySpeed(vehicle)
-        local withinReturnZone = Polyzone:IsCoordsInZone(vehicleCoords, false, 'vehicleRental', rentalSpot)
+        local withinReturnZone = exports['sandbox-polyzone']:IsCoordsInZone(vehicleCoords, false, 'vehicleRental',
+            rentalSpot)
         if withinReturnZone and (not hasDriver or hasDriver <= 0) and speed <= 2.0 then
             return true
         end

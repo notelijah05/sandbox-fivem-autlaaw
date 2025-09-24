@@ -92,7 +92,7 @@ function ExitProperty(data, backdoor)
 		-- exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-stash", pId))
 		exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-exit", pId))
 		exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-exit-back", pId))
-		--Polyzone:Remove("property-int-zone")
+		--exports['sandbox-polyzone']:Remove("property-int-zone")
 
 		if backdoor and property.location.backdoor then
 			SetEntityCoords(

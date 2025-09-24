@@ -246,7 +246,7 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 		SetBlipColour(_blipArea, 3)
 		SetBlipAlpha(_blipArea, 90)
 
-		Polyzone.Create:Circle("CokeDrop", _drop.coords, _drop.size * 2.0, {
+		exports['sandbox-polyzone']:CreateCircle("CokeDrop", _drop.coords, _drop.size * 2.0, {
 			--debugPoly = true
 		}, _drop)
 	end)
@@ -264,7 +264,7 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 		_state = 5
 		exports["sandbox-blips"]:Remove("CokeDrop")
 		RemoveBlip(_blipArea)
-		Polyzone:Remove("CokeDrop")
+		exports['sandbox-polyzone']:Remove("CokeDrop")
 		_blip = exports["sandbox-blips"]:Add("CokeDrop", "Unknown Contact", { x = 1292.455, y = -3170.885, z = 4.906 },
 			306, 2, 1.4)
 	end)
@@ -311,7 +311,7 @@ RegisterNetEvent("Coke:Client:OffDuty", function(time)
 	end
 
 	exports['sandbox-pedinteraction']:Remove("CokeDrop")
-	Polyzone:Remove("CokeDrop")
+	exports['sandbox-polyzone']:Remove("CokeDrop")
 	exports["sandbox-blips"]:Remove("CokeDrop")
 	RemoveBlip(_blipArea)
 

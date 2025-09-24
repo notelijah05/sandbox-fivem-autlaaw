@@ -219,7 +219,7 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:Start", function(data)
             SetNewWaypoint(_boosting.pickUp.x, _boosting.pickUp.y)
         end
 
-        Polyzone.Create:Circle("boosting-dropoff", _boosting.dropOff, 30.0, {})
+        exports['sandbox-polyzone']:CreateCircle("boosting-dropoff", _boosting.dropOff, 30.0, {})
     end
 end)
 
@@ -496,7 +496,7 @@ function CleanUpBoosting()
         LocalPlayer.state.isBoosting = false
         _boosting = nil
 
-        Polyzone:Remove("boosting-dropoff")
+        exports['sandbox-polyzone']:Remove("boosting-dropoff")
         exports["sandbox-blips"]:Remove("boosting-contract")
 
         TriggerEvent("Status:Client:Update", "boosting-timer", 0)

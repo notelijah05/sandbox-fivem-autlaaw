@@ -1,13 +1,11 @@
 AddEventHandler("Weed:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Weed = exports["sandbox-base"]:FetchComponent("Weed")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weed", {
 		"Weed",
-		"Polyzone",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -18,7 +16,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		LoadWeedModels()
 
-		Polyzone.Create:Poly("casino_roof_weed_blocker", {
+		exports['sandbox-polyzone']:CreatePoly("casino_roof_weed_blocker", {
 			vector2(909.12774658203, 68.336456298828),
 			vector2(892.63311767578, 34.766555786133),
 			vector2(904.96075439453, 22.200096130371),
@@ -66,7 +64,7 @@ function RegisterCallbacks()
 		end
 
 		if hit then
-			if Materials[materialHash] ~= nil and not Polyzone:IsCoordsInZone(vector3(x, y, z), "cayo_perico") and not Polyzone:IsCoordsInZone(vector3(x, y, z), "casino_roof_weed_blocker") then
+			if Materials[materialHash] ~= nil and not exports['sandbox-polyzone']:IsCoordsInZone(vector3(x, y, z), "cayo_perico") and not exports['sandbox-polyzone']:IsCoordsInZone(vector3(x, y, z), "casino_roof_weed_blocker") then
 				if not fuck then
 					exports['sandbox-hud']:Progress({
 						name = "plant_weed",

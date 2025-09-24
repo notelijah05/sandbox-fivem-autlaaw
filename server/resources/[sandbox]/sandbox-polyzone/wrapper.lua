@@ -4,41 +4,27 @@ local wCombozone
 
 local polyDebug = false
 
-AddEventHandler("Polyzone:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Polyzone", {
-		"Polyzone",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
+	exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetZoneAtCoords", function(data, cb)
+		cb(exports['sandbox-polyzone']:GetZoneAtCoords(data))
+	end)
 
-		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetZoneAtCoords", function(data, cb)
-			cb(Polyzone:GetZoneAtCoords(data))
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetZonePlayerIn", function(data, cb)
+		local c = GetEntityCoords(LocalPlayer.state.ped)
+		cb(exports['sandbox-polyzone']:GetZoneAtCoords(vector3(c.x, c.y, c.z)))
+	end)
 
-		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetZonePlayerIn", function(data, cb)
-			local c = GetEntityCoords(LocalPlayer.state.ped)
-			cb(Polyzone:GetZoneAtCoords(vector3(c.x, c.y, c.z)))
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetAllZonesAtCoords", function(data, cb)
+		cb(exports['sandbox-polyzone']:GetAllZonesAtCoords(data))
+	end)
 
-		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetAllZonesAtCoords", function(data, cb)
-			cb(Polyzone:GetAllZonesAtCoords(data))
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetAllZonesPlayerIn", function(data, cb)
+		local c = GetEntityCoords(LocalPlayer.state.ped)
+		cb(exports['sandbox-polyzone']:GetAllZonesAtCoords(vector3(c.x, c.y, c.z)))
+	end)
 
-		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetAllZonesPlayerIn", function(data, cb)
-			local c = GetEntityCoords(LocalPlayer.state.ped)
-			cb(Polyzone:GetAllZonesAtCoords(vector3(c.x, c.y, c.z)))
-		end)
-
-		exports["sandbox-base"]:RegisterClientCallback("Polyzone:IsCoordsInZone", function(data, cb)
-			cb(Polyzone:IsCoordsInZone(data.coords, data.id, data.key, data.val))
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Polyzone:IsCoordsInZone", function(data, cb)
+		cb(exports['sandbox-polyzone']:IsCoordsInZone(data.coords, data.id, data.key, data.val))
 	end)
 end)
 
@@ -127,118 +113,117 @@ function AddZoneAfterCreation(id, zoneData)
 	wCombozone:AddZone(zone)
 end
 
-_POLYZONE = {
-	Create = {
-		Box = function(self, id, center, length, width, options, data)
-			local existingZone = addedZones[id]
+exports("CreateBox", function(id, center, length, width, options, data)
+	local existingZone = addedZones[id]
 
-			if existingZone and wCombozone then
-				Polyzone:Remove(id)
-				Wait(100)
-			end
+	if existingZone and wCombozone then
+		exports['sandbox-polyzone']:Remove(id)
+		Wait(100)
+	end
 
-			addedZones[id] = {
-				id = id,
-				type = "box",
-				center = center,
-				width = width,
-				length = length,
-				options = options,
-				data = data,
-			}
+	addedZones[id] = {
+		id = id,
+		type = "box",
+		center = center,
+		width = width,
+		length = length,
+		options = options,
+		data = data,
+	}
 
-			AddZoneAfterCreation(id, addedZones[id])
-		end,
-		Poly = function(self, id, points, options, data)
-			local existingZone = addedZones[id]
+	AddZoneAfterCreation(id, addedZones[id])
+end)
 
-			if existingZone and wCombozone then
-				Polyzone:Remove(id)
-				Wait(100)
-			end
+exports("CreatePoly", function(id, points, options, data)
+	local existingZone = addedZones[id]
 
-			addedZones[id] = {
-				id = id,
-				type = "poly",
-				points = points,
-				options = options,
-				data = data,
-			}
+	if existingZone and wCombozone then
+		exports['sandbox-polyzone']:Remove(id)
+		Wait(100)
+	end
 
-			AddZoneAfterCreation(id, addedZones[id])
-		end,
-		Circle = function(self, id, center, radius, options, data)
-			local existingZone = addedZones[id]
+	addedZones[id] = {
+		id = id,
+		type = "poly",
+		points = points,
+		options = options,
+		data = data,
+	}
 
-			if existingZone and wCombozone then
-				Polyzone:Remove(id)
-				Wait(100)
-			end
+	AddZoneAfterCreation(id, addedZones[id])
+end)
 
-			addedZones[id] = {
-				id = id,
-				type = "circle",
-				center = center,
-				radius = radius,
-				options = options,
-				data = data,
-			}
+exports("CreateCircle", function(id, center, radius, options, data)
+	local existingZone = addedZones[id]
 
-			AddZoneAfterCreation(id, addedZones[id])
-		end,
-	},
-	Remove = function(self, id)
-		if addedZones[id] then
-			if wCombozone then
-				wCombozone:RemoveZone(id)
-				TriggerEvent("Polyzone:Exit", id, false, false, addedZones[id].data or {})
-			end
-			addedZones[id] = nil
+	if existingZone and wCombozone then
+		exports['sandbox-polyzone']:Remove(id)
+		Wait(100)
+	end
+
+	addedZones[id] = {
+		id = id,
+		type = "circle",
+		center = center,
+		radius = radius,
+		options = options,
+		data = data,
+	}
+
+	AddZoneAfterCreation(id, addedZones[id])
+end)
+
+exports("Remove", function(id)
+	if addedZones[id] then
+		if wCombozone then
+			wCombozone:RemoveZone(id)
+			TriggerEvent("Polyzone:Exit", id, false, false, addedZones[id].data or {})
 		end
+		addedZones[id] = nil
+	end
+	return false
+end)
+
+exports("Get", function(id)
+	return addedZones[id]
+end)
+
+-- !! WARNING WON'T WORK FOR OVERLAPPING ZONES SO BETTER OFF NOT USING IT !!
+exports("GetZoneAtCoords", function(coords)
+	if not wCombozone then
 		return false
-	end,
-	Get = function(self, id)
-		return addedZones[id]
-	end,
-	-- !! WARNING WON'T WORK FOR OVERLAPPING ZONES SO BETTER OFF NOT USING IT !!
-	GetZoneAtCoords = function(self, coords)
-		if not wCombozone then
-			return false
-		end
-		local isInside, insideZone = wCombozone:isPointInside(coords)
-		if isInside and insideZone and insideZone.data then
-			return insideZone.data
-		end
-		return false
-	end,
-	GetAllZonesAtCoords = function(self, coords)
-		local withinZonesData = {}
-		local isInside, insideZones = wCombozone:isPointInsideExhaustive(coords)
-		if isInside and insideZones and #insideZones > 0 then
-			for k, v in ipairs(insideZones) do
-				table.insert(withinZonesData, v.data)
-			end
-		end
-		return withinZonesData
-	end,
-	IsCoordsInZone = function(self, coords, id, key, val)
-		local isInside, insideZones = wCombozone:isPointInsideExhaustive(coords)
-		if isInside and insideZones and #insideZones > 0 then
-			for k, v in ipairs(insideZones) do
-				if
-					(not id or v.data.id == id)
-					and (not key or ((val == nil and v.data[key]) or (val ~= nil and v.data[key] == val)))
-				then
-					return v.data
-				end
-			end
-		end
-		return false
-	end,
-}
+	end
+	local isInside, insideZone = wCombozone:isPointInside(coords)
+	if isInside and insideZone and insideZone.data then
+		return insideZone.data
+	end
+	return false
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Polyzone", _POLYZONE)
+exports("GetAllZonesAtCoords", function(coords)
+	local withinZonesData = {}
+	local isInside, insideZones = wCombozone:isPointInsideExhaustive(coords)
+	if isInside and insideZones and #insideZones > 0 then
+		for k, v in ipairs(insideZones) do
+			table.insert(withinZonesData, v.data)
+		end
+	end
+	return withinZonesData
+end)
+
+exports("IsCoordsInZone", function(coords, id, key, val)
+	local isInside, insideZones = wCombozone:isPointInsideExhaustive(coords)
+	if isInside and insideZones and #insideZones > 0 then
+		for k, v in ipairs(insideZones) do
+			if
+				(not id or v.data.id == id)
+				and (not key or ((val == nil and v.data[key]) or (val ~= nil and v.data[key] == val)))
+			then
+				return v.data
+			end
+		end
+	end
+	return false
 end)
 
 RegisterNetEvent("Polyzone:Client:ToggleDebug", function()

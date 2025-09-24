@@ -11,13 +11,11 @@ local showingAction = false
 
 AddEventHandler("VehicleCustoms:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VehicleCustoms", {
-		"Polyzone",
 		"Police",
 	}, function(error)
 		if #error > 0 then
@@ -93,12 +91,12 @@ function CreateCustomsZones()
 		}
 
 		if v.zone and v.zone.type == "poly" and v.zone.points then
-			Polyzone.Create:Poly("veh_customs_" .. k, v.zone.points, {
+			exports['sandbox-polyzone']:CreatePoly("veh_customs_" .. k, v.zone.points, {
 				minZ = v.zone.minZ,
 				maxZ = v.zone.maxZ,
 			}, data)
 		elseif v.zone and v.zone.type == "box" and v.zone.center and v.zone.length and v.zone.width then
-			Polyzone.Create:Box("veh_customs_" .. k, v.zone.center, v.zone.length, v.zone.width, {
+			exports['sandbox-polyzone']:CreateBox("veh_customs_" .. k, v.zone.center, v.zone.length, v.zone.width, {
 				heading = v.zone.heading,
 				minZ = v.zone.minZ,
 				maxZ = v.zone.maxZ,

@@ -16,7 +16,6 @@ DOORS_PERMISSION_CACHE = {}
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end

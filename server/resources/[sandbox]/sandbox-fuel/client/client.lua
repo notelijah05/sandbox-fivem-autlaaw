@@ -15,60 +15,47 @@ local pumpModels = {
 	486135101, -- LTD Grove Gabz
 }
 
-AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Vehicles", {
-		"Polyzone",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		CreateFuelStationPolyzones()
+	CreateFuelStationPolyzones()
 
-		for k, v in ipairs(pumpModels) do
-			exports['sandbox-targeting']:AddObject(v, "gas-pump", {
-				{
-					text = "Refill Petrol Can",
-					icon = "gas-pump",
-					textFunc = function()
-						local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
-						local pct = current / 4500
-						return string.format(
-							"Refill Petrol Can ($%s)",
-							math.ceil(CalculateFuelCost(0, math.floor(100 - (pct * 100))))
+	for k, v in ipairs(pumpModels) do
+		exports['sandbox-targeting']:AddObject(v, "gas-pump", {
+			{
+				text = "Refill Petrol Can",
+				icon = "gas-pump",
+				textFunc = function()
+					local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
+					local pct = current / 4500
+					return string.format(
+						"Refill Petrol Can ($%s)",
+						math.ceil(CalculateFuelCost(0, math.floor(100 - (pct * 100))))
+					)
+				end,
+				event = "Fuel:Client:FillCan",
+				minDist = 3.0,
+				isEnabled = function()
+					local isArmed, hash = GetCurrentPedWeapon(LocalPlayer.state.ped)
+					local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
+					local pct = current / 4500
+					local cCost = CalculateFuelCost(0, math.floor(100 - (pct * 100)))
+					if cCost then
+						local cost = math.ceil(cCost)
+						return (
+							isArmed
+							and hash == `WEAPON_PETROLCAN`
+							and GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`) < 4500
+							and LocalPlayer.state.Character:GetData("Cash") >= cost
 						)
-					end,
-					event = "Fuel:Client:FillCan",
-					minDist = 3.0,
-					isEnabled = function()
-						local isArmed, hash = GetCurrentPedWeapon(LocalPlayer.state.ped)
-						local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
-						local pct = current / 4500
-						local cCost = CalculateFuelCost(0, math.floor(100 - (pct * 100)))
-						if cCost then
-							local cost = math.ceil(cCost)
-							return (
-								isArmed
-								and hash == `WEAPON_PETROLCAN`
-								and GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`) < 4500
-								and LocalPlayer.state.Character:GetData("Cash") >= cost
-							)
-						end
-					end,
-				},
-			}, 3.0)
-		end
-	end)
+					end
+				end,
+			},
+		}, 3.0)
+	end
 end)
 
 function CreateFuelStationPolyzones()
 	for k, v in ipairs(Config.FuelStations) do
-		Polyzone.Create:Box("fuel_" .. k, v.center, v.length, v.width, {
+		exports['sandbox-polyzone']:CreateBox("fuel_" .. k, v.center, v.length, v.width, {
 			heading = v.heading,
 			minZ = v.minZ,
 			maxZ = v.maxZ,

@@ -17,7 +17,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		RefreshInterior(interiorid)
 	end)
 
-	Polyzone.Create:Poly("bobcat", {
+	exports['sandbox-polyzone']:CreatePoly("bobcat", {
 		vector2(907.62103271484, -2256.4008789062),
 		vector2(884.54675292969, -2254.3540039062),
 		vector2(884.14483642578, -2258.1083984375),
@@ -42,32 +42,32 @@ AddEventHandler("Robbery:Client:Setup", function()
 
 	exports['sandbox-targeting']:ZonesAddBox("bobcat-secure", "shield-keyhole", vector3(876.94, -2262.69, 30.47), 0.8,
 		1.4, {
-		heading = 356,
-		--debugPoly=true,
-		minZ = 29.87,
-		maxZ = 31.47,
-	}, {
-		{
-			icon = "phone",
-			text = "Secure Building",
-			event = "Robbery:Client:Bobcat:StartSecuring",
-			jobPerms = {
-				{
-					job = "police",
-					reqDuty = true,
+			heading = 356,
+			--debugPoly=true,
+			minZ = 29.87,
+			maxZ = 31.47,
+		}, {
+			{
+				icon = "phone",
+				text = "Secure Building",
+				event = "Robbery:Client:Bobcat:StartSecuring",
+				jobPerms = {
+					{
+						job = "police",
+						reqDuty = true,
+					},
 				},
+				data = id,
+				isEnabled = function(s, s2)
+					return (
+						GlobalState["Bobcat:ExtrDoor"]
+						or GlobalState["Bobcat:FrontDoor"]
+						or GlobalState["Bobcat:SecuredDoor"]
+						or GlobalState["Bobcat:VaultDoor"]
+					) and not GlobalState["Bobcat:Secured"]
+				end,
 			},
-			data = id,
-			isEnabled = function(s, s2)
-				return (
-					GlobalState["Bobcat:ExtrDoor"]
-					or GlobalState["Bobcat:FrontDoor"]
-					or GlobalState["Bobcat:SecuredDoor"]
-					or GlobalState["Bobcat:VaultDoor"]
-				) and not GlobalState["Bobcat:Secured"]
-			end,
-		},
-	}, 3.0, true)
+		}, 3.0, true)
 
 	exports['sandbox-targeting']:ZonesAddBox("bobcat-c4", "bomb", vector3(873.44, -2294.37, 30.47), 1.4, 1.4, {
 		heading = 355,
@@ -91,46 +91,46 @@ AddEventHandler("Robbery:Client:Setup", function()
 
 	exports['sandbox-targeting']:ZonesAddBox("bobcat-front-pc-hack", "computer", vector3(875.15, -2263.83, 30.47), 0.8,
 		1.2, {
-		heading = 354,
-		-- debugPoly = true,
-		minZ = 28.92,
-		maxZ = 31.32,
-	}, {
-		{
-			icon = "terminal",
-			text = "Hack Terminal",
-			event = "Robbery:Client:Bobcat:HackFrontPC",
-			item = "electronics_kit",
-			isEnabled = function(data)
-				return LocalPlayer.state.inBobcat
-					and not GlobalState["Bobcat:PCHacked"]
-					and GlobalState["Bobcat:ExtrDoor"]
-					and GlobalState["Bobcat:FrontDoor"]
-			end,
-		},
-	}, 3.0, true)
+			heading = 354,
+			-- debugPoly = true,
+			minZ = 28.92,
+			maxZ = 31.32,
+		}, {
+			{
+				icon = "terminal",
+				text = "Hack Terminal",
+				event = "Robbery:Client:Bobcat:HackFrontPC",
+				item = "electronics_kit",
+				isEnabled = function(data)
+					return LocalPlayer.state.inBobcat
+						and not GlobalState["Bobcat:PCHacked"]
+						and GlobalState["Bobcat:ExtrDoor"]
+						and GlobalState["Bobcat:FrontDoor"]
+				end,
+			},
+		}, 3.0, true)
 
 	exports['sandbox-targeting']:ZonesAddBox("bobcat-securiy-hack", "computer", vector3(887.07, -2299.13, 30.47), 3.0,
 		1.0, {
-		heading = 264,
-		-- debugPoly = true,
-		minZ = 29.47,
-		maxZ = 31.27,
-	}, {
-		{
-			icon = "terminal",
-			text = "Hack Terminal",
-			event = "Robbery:Client:Bobcat:HackSecuriyPC",
-			isEnabled = function(data)
-				return LocalPlayer.state.inBobcat
-					and not GlobalState["Bobcat:SecurityPCHacked"]
-					and GlobalState["Bobcat:ExtrDoor"]
-					and GlobalState["Bobcat:FrontDoor"]
-					and GlobalState["Bobcat:SecuredDoor"]
-					and GlobalState["Bobcat:SecurityDoor"]
-			end,
-		},
-	}, 3.0, true)
+			heading = 264,
+			-- debugPoly = true,
+			minZ = 29.47,
+			maxZ = 31.27,
+		}, {
+			{
+				icon = "terminal",
+				text = "Hack Terminal",
+				event = "Robbery:Client:Bobcat:HackSecuriyPC",
+				isEnabled = function(data)
+					return LocalPlayer.state.inBobcat
+						and not GlobalState["Bobcat:SecurityPCHacked"]
+						and GlobalState["Bobcat:ExtrDoor"]
+						and GlobalState["Bobcat:FrontDoor"]
+						and GlobalState["Bobcat:SecuredDoor"]
+						and GlobalState["Bobcat:SecurityDoor"]
+				end,
+			},
+		}, 3.0, true)
 
 	while GlobalState["Bobcat:LootLocations"] == nil do
 		Wait(1)

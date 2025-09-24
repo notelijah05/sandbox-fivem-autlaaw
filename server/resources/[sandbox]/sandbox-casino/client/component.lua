@@ -4,14 +4,12 @@ _CASINO = _CASINO or {}
 
 AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Casino = exports["sandbox-base"]:FetchComponent("Casino")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Casino", {
-		"Polyzone",
 		"Jobs",
 		"Casino",
 	}, function(error)
@@ -143,14 +141,14 @@ AddEventHandler("Casino:Client:Startup", function()
 		"WORLD_HUMAN_GUARD_STAND"
 	)
 
-	Polyzone.Create:Box("casino_inside", vector3(1004.77, 38.26, 77.91), 129.2, 90.0, {
+	exports['sandbox-polyzone']:CreateBox("casino_inside", vector3(1004.77, 38.26, 77.91), 129.2, 90.0, {
 		heading = 305,
 		--debugPoly=true,
 		minZ = 62.71,
 		maxZ = 78.11,
 	}, {})
 
-	Polyzone.Create:Poly("casino_audio", {
+	exports['sandbox-polyzone']:CreatePoly("casino_audio", {
 		vector2(1031.4703369141, 69.031555175781),
 		vector2(1029.1315917969, 70.45630645752),
 		vector2(1020.2162475586, 74.967506408691),

@@ -1,5 +1,5 @@
 function PrisonVisitation()
-	Polyzone.Create:Box("prison_visitation", vector3(1831.24, 2585.78, 46.01), 12.4, 8.2, {
+	exports['sandbox-polyzone']:CreateBox("prison_visitation", vector3(1831.24, 2585.78, 46.01), 12.4, 8.2, {
 		heading = 0,
 		--debugPoly=true,
 		minZ = 44.21,
@@ -37,7 +37,7 @@ function PrisonHospitalInit()
 		"WORLD_HUMAN_CLIPBOARD"
 	)
 
-	Polyzone.Create:Box(
+	exports['sandbox-polyzone']:CreateBox(
 		"prison-hospital-check-in-zone",
 		Config.PrisonCheckIn.Coords,
 		Config.PrisonCheckIn.Width,

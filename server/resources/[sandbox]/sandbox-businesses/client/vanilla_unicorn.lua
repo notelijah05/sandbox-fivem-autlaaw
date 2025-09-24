@@ -34,7 +34,7 @@ local poles = {
 }
 
 AddEventHandler('Businesses:Client:Startup', function()
-    Polyzone.Create:Poly('vu_dancers', {
+    exports['sandbox-polyzone']:CreatePoly('vu_dancers', {
         vector2(110.14764404297, -1288.5469970703),
         vector2(109.54054260254, -1287.9322509766),
         vector2(108.68753814697, -1287.7067871094),
@@ -59,7 +59,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         maxZ = 30.55025100708
 	})
 
-    Polyzone.Create:Poly('vu_makeitrain', {
+    exports['sandbox-polyzone']:CreatePoly('vu_makeitrain', {
         vector2(104.21175384521, -1297.1346435547),
         vector2(104.99973297119, -1298.6086425781),
         vector2(113.97306060791, -1293.412109375),
@@ -87,7 +87,7 @@ AddEventHandler('Businesses:Client:Startup', function()
 	})
 
     exports['sandbox-hud']:InteractionRegisterMenu("vu_stripper_pole", "Vanilla Unicorn Dancers", "party-horn", function()
-        if Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn' and Jobs.Permissions:HasPermissionInJob('unicorn', 'STRIP_POLE') then
+        if exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn' and Jobs.Permissions:HasPermissionInJob('unicorn', 'STRIP_POLE') then
             local subMenu = {}
 
             for k, v in ipairs(poleDances) do
@@ -106,11 +106,11 @@ AddEventHandler('Businesses:Client:Startup', function()
             exports["sandbox-hud"]:NotifError('Invalid Permissions')
         end
     end, function()
-        return Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn'
+        return exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn'
     end)
 
     exports['sandbox-hud']:InteractionRegisterMenu("vu_makeitrain", 'Make It Rain', "money-bill-1-wave", function()
-        if not _makingItRain and Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_makeitrain') then
+        if not _makingItRain and exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_makeitrain') then
             local makeItRain = {
                 {
                     type = 'cash',
@@ -151,7 +151,7 @@ AddEventHandler('Businesses:Client:Startup', function()
             exports['sandbox-hud']:InteractionShowMenu(subMenu)
         end
     end, function()
-        return Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_makeitrain') and GetNearbyFuckingStripper()
+        return exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_makeitrain') and GetNearbyFuckingStripper()
     end)
 end)
 

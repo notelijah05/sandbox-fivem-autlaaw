@@ -23,7 +23,7 @@ exports("CallEnd", function(source, business)
 				)
 				exports['sandbox-phone']:CallCreateRecord(_calls[caller].data)
 				exports['sandbox-phone']:NotificationRemoveById(caller, "PHONE_CALL")
-				exports["sandbox-voip"]:PhoneSetCall(caller, 0)
+				exports["sandbox-voip"]:SetCall(caller, 0)
 				_calls[caller] = nil
 			else
 				exports['sandbox-base']:LoggerTrace(
@@ -33,7 +33,7 @@ exports("CallEnd", function(source, business)
 			end
 
 			if _bizPhones[business].call.handler then
-				exports["sandbox-voip"]:PhoneSetCall(_bizPhones[business].call.handler, 0)
+				exports["sandbox-voip"]:SetCall(_bizPhones[business].call.handler, 0)
 
 				_bizCallHandlers[_bizPhones[business].call.handler] = nil
 			end
@@ -56,11 +56,11 @@ exports("CallEnd", function(source, business)
 			TriggerClientEvent("Phone:Client:AddData", source, "calls", _calls[source].data)
 
 			exports['sandbox-phone']:NotificationRemoveById(source, "PHONE_CALL")
-			exports["sandbox-voip"]:PhoneSetCall(source, 0)
+			exports["sandbox-voip"]:SetCall(source, 0)
 
 			if _calls[source].isBiz then
 				if _bizPhones[_calls[source].isBiz].call and _bizPhones[_calls[source].isBiz].call.handler then
-					exports["sandbox-voip"]:PhoneSetCall(_bizPhones[_calls[source].isBiz].call.handler, 0)
+					exports["sandbox-voip"]:SetCall(_bizPhones[_calls[source].isBiz].call.handler, 0)
 
 					_bizCallHandlers[_bizPhones[_calls[source].isBiz].call.handler] = nil
 				end
@@ -82,7 +82,7 @@ exports("CallEnd", function(source, business)
 					)
 					exports['sandbox-phone']:CallCreateRecord(_calls[_calls[source].target].data)
 					exports['sandbox-phone']:NotificationRemoveById(_calls[source].target, "PHONE_CALL")
-					exports["sandbox-voip"]:PhoneSetCall(_calls[source].target, 0)
+					exports["sandbox-voip"]:SetCall(_calls[source].target, 0)
 					_calls[_calls[source].target] = nil
 				else
 					exports['sandbox-base']:LoggerTrace(
@@ -465,8 +465,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					}
 				)
 
-				exports["sandbox-voip"]:PhoneSetCall(src, cid)
-				exports["sandbox-voip"]:PhoneSetCall(bizCallerSource, cid)
+				exports["sandbox-voip"]:SetCall(src, cid)
+				exports["sandbox-voip"]:SetCall(bizCallerSource, cid)
 			elseif _calls[src].target ~= nil and _calls[_calls[src].target] ~= nil then
 				_calls[src].state = 2
 				_calls[_calls[src].target].state = 2
@@ -511,8 +511,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					}
 				)
 
-				exports["sandbox-voip"]:PhoneSetCall(src, cid)
-				exports["sandbox-voip"]:PhoneSetCall(_calls[src].target, cid)
+				exports["sandbox-voip"]:SetCall(src, cid)
+				exports["sandbox-voip"]:SetCall(_calls[src].target, cid)
 			end
 		else
 			exports['sandbox-base']:LoggerTrace(
@@ -596,8 +596,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					}
 				)
 
-				exports["sandbox-voip"]:PhoneSetCall(source, cid)
-				exports["sandbox-voip"]:PhoneSetCall(targetSource, cid)
+				exports["sandbox-voip"]:SetCall(source, cid)
+				exports["sandbox-voip"]:SetCall(targetSource, cid)
 
 				cb(true, _bizPhones[id].call.callingStr)
 			else

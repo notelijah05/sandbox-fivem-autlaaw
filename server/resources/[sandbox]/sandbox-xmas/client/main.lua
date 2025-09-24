@@ -1,22 +1,8 @@
 _todaysDayNumber = nil
 _existingTree = nil
 
-AddEventHandler("Xmas:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Xmas", {
-		"Polyzone",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		TriggerEvent("Xmas:Client:RegisterStartups")
-	end)
+	TriggerEvent("Xmas:Client:RegisterStartups")
 end)
 
 RegisterNetEvent("Xmas:Client:Init", function(dayNumber, tree, hasLooted)

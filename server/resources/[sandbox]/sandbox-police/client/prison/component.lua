@@ -6,7 +6,6 @@ function CorrectionsComponents()
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Apartment",
 		"EmergencyAlerts",
 		"Status",
-		"Polyzone",
 	}, function(error)
 		if #error > 0 then
 			return

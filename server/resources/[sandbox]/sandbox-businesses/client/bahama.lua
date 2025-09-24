@@ -22,21 +22,21 @@ local poles = {
 }
 
 AddEventHandler("Businesses:Client:Startup", function()
-	Polyzone.Create:Circle("bh_dancers_1", vector3(-1393.78, -612.28, 30.32), 1.53, {
+	exports['sandbox-polyzone']:CreateCircle("bh_dancers_1", vector3(-1393.78, -612.28, 30.32), 1.53, {
 		name = "bh_dancers_1",
 		useZ = false,
 		minZ = 29.32,
 		maxZ = 32.32,
 		--debugPoly=true
 	})
-	Polyzone.Create:Circle("bh_dancers_2", vector3(-1390.82, -616.84, 29.72), 1.55, {
+	exports['sandbox-polyzone']:CreateCircle("bh_dancers_2", vector3(-1390.82, -616.84, 29.72), 1.55, {
 		name = "bh_dancers_2",
 		useZ = false,
 		minZ = 29.32,
 		maxZ = 32.32,
 		--debugPoly=true
 	})
-	Polyzone.Create:Circle("bh_dancers_3", vector3(-1387.79, -621.39, 29.72), 1.5, {
+	exports['sandbox-polyzone']:CreateCircle("bh_dancers_3", vector3(-1387.79, -621.39, 29.72), 1.5, {
 		name = "bh_dancers_3",
 		useZ = false,
 		minZ = 29.32,
@@ -44,7 +44,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		--debugPoly=true
 	})
 
-	Polyzone.Create:Box("bh_makeitrain", vector3(-1390.89, -616.98, 29.32), 6.0, 16.8, {
+	exports['sandbox-polyzone']:CreateBox("bh_makeitrain", vector3(-1390.89, -616.98, 29.32), 6.0, 16.8, {
 		heading = 302,
 		--debugPoly=true,
 		minZ = 28.32,
@@ -54,9 +54,9 @@ AddEventHandler("Businesses:Client:Startup", function()
 	exports['sandbox-hud']:InteractionRegisterMenu("bh_stripper_pole", "Bahama Mamas Dancers", "party-horn", function()
 		if
 			(
-				Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_1")
-				or Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_2")
-				or Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_3")
+				exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_1")
+				or exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_2")
+				or exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_3")
 			)
 			and LocalPlayer.state.onDuty == "bahama"
 			and Jobs.Permissions:HasPermissionInJob("bahama", "STRIP_POLE")
@@ -80,14 +80,14 @@ AddEventHandler("Businesses:Client:Startup", function()
 		end
 	end, function()
 		return (
-			Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_1")
-			or Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_2")
-			or Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_3")
+			exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_1")
+			or exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_2")
+			or exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_3")
 		) and LocalPlayer.state.onDuty == "bahama"
 	end)
 
 	exports['sandbox-hud']:InteractionRegisterMenu("bh_makeitrain", "Make It Rain", "money-bill-1-wave", function()
-		if not _makingItRain and Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_makeitrain") then
+		if not _makingItRain and exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_makeitrain") then
 			local makeItRain = {
 				{
 					type = "cash",
@@ -128,7 +128,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 			exports['sandbox-hud']:InteractionShowMenu(subMenu)
 		end
 	end, function()
-		return Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_makeitrain")
+		return exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_makeitrain")
 			and GetNearbyFuckingStripper()
 	end)
 end)

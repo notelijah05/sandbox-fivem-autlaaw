@@ -18,7 +18,6 @@ function RetrieveComponents()
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Labor",
 		"Jail",
 		"Reputation",
-		"Polyzone",
 		"Jobs",
 		"Properties",
 		"Admin",

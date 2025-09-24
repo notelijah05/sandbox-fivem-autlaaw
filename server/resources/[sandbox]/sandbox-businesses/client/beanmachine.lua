@@ -1,5 +1,5 @@
 AddEventHandler('Businesses:Client:Startup', function()
-    Polyzone.Create:Box('beanmachine_door', vector3(115.34, -1038.95, 29.29), 1.6, 2.8, {
+    exports['sandbox-polyzone']:CreateBox('beanmachine_door', vector3(115.34, -1038.95, 29.29), 1.6, 2.8, {
         heading = 250,
         --debugPoly=true,
         minZ = 28.29,
@@ -9,7 +9,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         maxH = 300.0,
     })
 
-    Polyzone.Create:Box('beanmachine_sidedoor', vector3(127.37, -1029.97, 29.29), 1.6, 1.8, {
+    exports['sandbox-polyzone']:CreateBox('beanmachine_sidedoor', vector3(127.37, -1029.97, 29.29), 1.6, 1.8, {
         heading = 250,
         --debugPoly=true,
         minZ = 28.29,

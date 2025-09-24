@@ -20,7 +20,7 @@ local insideBowlingStart = false
 -- end
 
 AddEventHandler('Businesses:Client:Startup', function()
-    Polyzone.Create:Box(
+    exports['sandbox-polyzone']:CreateBox(
         'bowling_alley',
         _bowlingZone.center,
         _bowlingZone.length,
@@ -31,7 +31,7 @@ AddEventHandler('Businesses:Client:Startup', function()
 
     for k, v in pairs(_bowlingAlleys) do
         if v.startZone then
-            Polyzone.Create:Box(
+            exports['sandbox-polyzone']:CreateBox(
                 'bowling_alley_start_' .. k,
                 v.startZone.center,
                 v.startZone.length,

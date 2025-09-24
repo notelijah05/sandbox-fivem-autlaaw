@@ -15,10 +15,12 @@ local _durationCheck = 0
 
 AddEventHandler("Businesses:Client:Startup", function()
 	-- Setup Zones
-	Polyzone.Create:Box("TacoPickup", _tacoPickUp.coords, _tacoPickUp.length, _tacoPickUp.width, _tacoPickUp.options)
-	Polyzone.Create:Box("TacoQueue", _tacoQueue.coords, _tacoQueue.length, _tacoQueue.width, _tacoQueue.options)
+	exports['sandbox-polyzone']:CreateBox("TacoPickup", _tacoPickUp.coords, _tacoPickUp.length, _tacoPickUp.width,
+		_tacoPickUp.options)
+	exports['sandbox-polyzone']:CreateBox("TacoQueue", _tacoQueue.coords, _tacoQueue.length, _tacoQueue.width,
+		_tacoQueue.options)
 
-	Polyzone.Create:Box("TacoShop_DriveThru", vector3(17.11, -1595.12, 29.28), 6.6, 3.8, {
+	exports['sandbox-polyzone']:CreateBox("TacoShop_DriveThru", vector3(17.11, -1595.12, 29.28), 6.6, 3.8, {
 		heading = 50,
 		--debugPoly=true,
 		minZ = 28.28,

@@ -4,14 +4,12 @@ local _menu = false
 
 AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Apartment", {
-		"Polyzone",
 		"Apartment",
 		"Characters",
 	}, function(error)
@@ -24,7 +22,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			local aptId = string.format("apt-%s", v)
 			local apt = GlobalState[string.format("Apartment:%s", v)]
 
-			Polyzone.Create:Box(aptId, apt.coords, apt.length, apt.width, apt.options, {
+			exports['sandbox-polyzone']:CreateBox(aptId, apt.coords, apt.length, apt.width, apt.options, {
 				tier = k
 			})
 

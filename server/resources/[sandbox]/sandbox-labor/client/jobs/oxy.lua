@@ -229,7 +229,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
             SetNewWaypoint(pu.coords.x, pu.coords.y)
             _blip = exports["sandbox-blips"]:Add("OxyRun", "Oxy Pickup",
                 { x = pu.coords.x, y = pu.coords.y, z = pu.coords.z }, 51, 64, 0.9)
-            Polyzone.Create:Box("OxyPickup", pu.coords, pu.length, pu.width, pu.options)
+            exports['sandbox-polyzone']:CreateBox("OxyPickup", pu.coords, pu.length, pu.width, pu.options)
 
             CreateThread(function()
                 local ending = false
@@ -275,7 +275,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
             SetBlipColour(_blipArea, 3)
             SetBlipAlpha(_blipArea, 90)
 
-            Polyzone.Create:Circle("OxySale", _l.coords, _l.radius, _l.options)
+            exports['sandbox-polyzone']:CreateCircle("OxySale", _l.coords, _l.radius, _l.options)
 
             CreateThread(function()
                 while _working and _state == 4 do
@@ -362,8 +362,8 @@ RegisterNetEvent("OxyRun:Client:OffDuty", function(time)
 
     DeleteWaypoint()
 
-    Polyzone:Remove("OxyPickup")
-    Polyzone:Remove("OxySale")
+    exports['sandbox-polyzone']:Remove("OxyPickup")
+    exports['sandbox-polyzone']:Remove("OxySale")
     if _blip then
         exports["sandbox-blips"]:Remove("OxyRun")
     end

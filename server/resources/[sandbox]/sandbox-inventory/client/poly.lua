@@ -9,11 +9,12 @@ RegisterNetEvent("Inventory:Client:PolySetup", function(locs)
 			end
 
 			if data.type == "box" then
-				Polyzone.Create:Box(data.id, data.coords, data.length, data.width, data.options, data.data)
+				exports['sandbox-polyzone']:CreateBox(data.id, data.coords, data.length, data.width, data.options,
+					data.data)
 			elseif data.type == "poly" then
-				Polyzone.Create:Poly(data.id, data.points, data.options, data.data)
+				exports['sandbox-polyzone']:CreatePoly(data.id, data.points, data.options, data.data)
 			else
-				Polyzone.Create:Circle(data.id, data.coords, data.radius, data.options, data.data)
+				exports['sandbox-polyzone']:CreateCircle(data.id, data.coords, data.radius, data.options, data.data)
 			end
 		end
 	end

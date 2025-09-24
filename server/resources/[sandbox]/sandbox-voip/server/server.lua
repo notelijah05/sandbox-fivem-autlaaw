@@ -82,7 +82,7 @@ exports("RemovePlayer", function(source)
 		end
 
 		if plyData.Call > 0 then
-			exports["sandbox-voip"]:PhoneSetChannel(source, 0)
+			exports["sandbox-voip"]:SetChannel(source, 0)
 		end
 
 		voiceData[source] = nil

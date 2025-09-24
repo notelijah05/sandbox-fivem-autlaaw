@@ -2,13 +2,11 @@ EDITING_VEHICLE = nil
 
 AddEventHandler('Fitment:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
-    Polyzone = exports['sandbox-base']:FetchComponent('Polyzone')
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
 end
 
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Fitment', {
-        'Polyzone',
         'Jobs',
     }, function(error)
         if #error > 0 then return; end
@@ -20,7 +18,7 @@ AddEventHandler('Core:Shared:Ready', function()
         end, function()
             local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
 
-            local insideZone = Polyzone:IsCoordsInZone(pedCoords, false, 'veh_customs_wheels')
+            local insideZone = exports['sandbox-polyzone']:IsCoordsInZone(pedCoords, false, 'veh_customs_wheels')
             if
                 insideZone?.veh_customs_wheels
                 and LocalPlayer.state.onDuty

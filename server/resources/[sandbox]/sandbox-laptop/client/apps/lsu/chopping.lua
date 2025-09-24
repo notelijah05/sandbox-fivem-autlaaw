@@ -22,7 +22,7 @@ local _vehBones = {
 }
 
 RegisterNetEvent("Characters:Client:Spawn", function(data)
-	Polyzone.Create:Box(
+	exports['sandbox-polyzone']:CreateBox(
 		"chopping_public",
 		GlobalState["PublicDropoff"].coords,
 		GlobalState["PublicDropoff"].length,
@@ -30,7 +30,7 @@ RegisterNetEvent("Characters:Client:Spawn", function(data)
 		GlobalState["PublicDropoff"].options,
 		{}
 	)
-	Polyzone.Create:Box(
+	exports['sandbox-polyzone']:CreateBox(
 		"chopping_private",
 		GlobalState["PrivateDropoff"].coords,
 		GlobalState["PrivateDropoff"].length,
@@ -38,7 +38,7 @@ RegisterNetEvent("Characters:Client:Spawn", function(data)
 		GlobalState["PrivateDropoff"].options,
 		{}
 	)
-	Polyzone.Create:Box(
+	exports['sandbox-polyzone']:CreateBox(
 		"chopping_personal",
 		GlobalState["PersonalDropoff"].coords,
 		GlobalState["PersonalDropoff"].length,

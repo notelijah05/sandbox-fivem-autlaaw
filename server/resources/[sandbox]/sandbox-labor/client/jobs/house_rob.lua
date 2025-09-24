@@ -169,7 +169,7 @@ function ExitHouse()
 
         Wait(1000)
 
-        Polyzone:Remove("property-house-rob-zone")
+        exports['sandbox-polyzone']:Remove("property-house-rob-zone")
     end)
 end
 
@@ -443,7 +443,8 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         exports['sandbox-targeting']:ZonesRefresh()
 
         if intr.zone then
-            Polyzone.Create:Box("property-house-rob-zone", intr.zone.center, intr.zone.length, intr.zone.width,
+            exports['sandbox-polyzone']:CreateBox("property-house-rob-zone", intr.zone.center, intr.zone.length,
+                intr.zone.width,
                 intr.zone.options, {})
         end
 

@@ -5,7 +5,6 @@ _doingMugshot = false
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 end
@@ -13,7 +12,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Characters",
-		"Polyzone",
 		"Reputation",
 		"Jail",
 	}, function(error)
@@ -25,9 +23,9 @@ AddEventHandler("Core:Shared:Ready", function()
 		exports["sandbox-blips"]:Add("prison", "Bolingbroke Penitentiary", vector3(1852.444, 2585.973, 45.672), 188, 65,
 			0.8)
 
-		Polyzone.Create:Poly("prison", Config.Prison.points, Config.Prison.options)
-		Polyzone.Create:Poly("prison-logout", Config.Logout.points, Config.Logout.options)
-		Polyzone.Create:Box(
+		exports['sandbox-polyzone']:CreatePoly("prison", Config.Prison.points, Config.Prison.options)
+		exports['sandbox-polyzone']:CreatePoly("prison-logout", Config.Logout.points, Config.Logout.options)
+		exports['sandbox-polyzone']:CreateBox(
 			"prison-pickup",
 			Config.Pickup.coords,
 			Config.Pickup.length,

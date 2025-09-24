@@ -37,12 +37,12 @@ exports("SetCall", function(source, callChannel)
 	end
 
 	if callChannel ~= 0 and plyVoice.Call == 0 then
-		exports["sandbox-voip"]:PhoneAddToCall(source, callChannel)
+		exports["sandbox-voip"]:AddToCall(source, callChannel)
 	elseif callChannel == 0 and plyVoice.Call > 0 then
-		exports["sandbox-voip"]:PhoneRemoveFromCall(source, plyVoice.Call)
+		exports["sandbox-voip"]:RemoveFromCall(source, plyVoice.Call)
 	elseif plyVoice.Call > 0 then
-		exports["sandbox-voip"]:PhoneRemoveFromCall(source, plyVoice.Call)
-		exports["sandbox-voip"]:PhoneAddToCall(source, callChannel)
+		exports["sandbox-voip"]:RemoveFromCall(source, plyVoice.Call)
+		exports["sandbox-voip"]:AddToCall(source, callChannel)
 	end
 	TriggerClientEvent("VOIP:Phone:Client:SetPlayerCall", source, callChannel)
 end)
@@ -63,9 +63,9 @@ exports("SetTalking", function(source, talking)
 end)
 
 RegisterNetEvent("VOIP:Phone:Server:SetCall", function(callChannel)
-	exports["sandbox-voip"]:PhoneSetCall(source, callChannel)
+	exports["sandbox-voip"]:SetCall(source, callChannel)
 end)
 
 RegisterNetEvent("VOIP:Phone:Server:SetTalking", function(talking)
-	exports["sandbox-voip"]:PhoneSetTalking(source, talking)
+	exports["sandbox-voip"]:SetTalking(source, talking)
 end)

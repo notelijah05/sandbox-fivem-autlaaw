@@ -51,7 +51,7 @@ function NeedsReset()
 end
 
 AddEventHandler("Robbery:Client:Setup", function()
-	Polyzone.Create:Poly("bank_mazebank", {
+	exports['sandbox-polyzone']:CreatePoly("bank_mazebank", {
 		vector2(-1305.3043212891, -832.20843505859),
 		vector2(-1313.142578125, -837.57971191406),
 		vector2(-1322.0520019531, -826.35705566406),

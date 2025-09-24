@@ -31,7 +31,7 @@ local _weapons = {
 }
 
 AddEventHandler("Robbery:Client:Setup", function()
-	Polyzone.Create:Poly("vangelico", {
+	exports['sandbox-polyzone']:CreatePoly("vangelico", {
 		vector2(-627.94396972656, -240.6435546875),
 		vector2(-636.67626953125, -229.46875),
 		vector2(-620.25476074219, -220.87989807129),

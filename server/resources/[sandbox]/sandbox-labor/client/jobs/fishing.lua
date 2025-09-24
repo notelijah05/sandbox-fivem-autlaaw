@@ -45,7 +45,7 @@ local basicFish = {
 }
 
 AddEventHandler("Labor:Client:Setup", function()
-    Polyzone.Create:Poly("fishing_river_zancudo", {
+    exports['sandbox-polyzone']:CreatePoly("fishing_river_zancudo", {
         vector2(156.34146118164, 3416.5373535156),
         vector2(128.61988830566, 3429.1630859375),
         vector2(-4.1847929954529, 3131.1550292969),
@@ -87,7 +87,7 @@ AddEventHandler("Labor:Client:Setup", function()
         vector2(101.15602111816, 3113.7119140625)
     }, {}, { fishing_river = 2 })
 
-    Polyzone.Create:Poly("fishing_river_raton", {
+    exports['sandbox-polyzone']:CreatePoly("fishing_river_raton", {
         vector2(-181.28651428223, 4224.3120117188),
         --vector2(-449.234, 4569.082),
         vector2(-140.56726074219, 4259.6186523438),
@@ -111,7 +111,7 @@ AddEventHandler("Labor:Client:Setup", function()
         vector2(-279.20379638672, 4260.0610351562),
     }, {}, { fishing_river = 3 })
 
-    Polyzone.Create:Poly("fishing_ocean_shitty1", {
+    exports['sandbox-polyzone']:CreatePoly("fishing_ocean_shitty1", {
         vector2(-1837.213, -965.995),
         vector2(-1276.9390869141, -1926.0460205078),
         vector2(-688.33306884766, -2526.37109375),
@@ -130,19 +130,19 @@ AddEventHandler("Labor:Client:Setup", function()
         fishing_shitty_ocean_water = true,
     })
 
-    Polyzone.Create:Circle("fishing_ocean_shitty2", vector3(-2216.9, 2559.83, 66.16), 519.25, {}, {
+    exports['sandbox-polyzone']:CreateCircle("fishing_ocean_shitty2", vector3(-2216.9, 2559.83, 66.16), 519.25, {}, {
         fishing_shitty_ocean_water = true,
     })
 
-    Polyzone.Create:Circle("fishing_ocean_shitty3", vector3(-1796.15, -1182.05, 13.01), 95, {}, {
+    exports['sandbox-polyzone']:CreateCircle("fishing_ocean_shitty3", vector3(-1796.15, -1182.05, 13.01), 95, {}, {
         fishing_shitty_ocean_water = true,
     })
 
-    Polyzone.Create:Circle("fishing_ocean_shitty4", vector3(-3374.96, 968.46, 8.29), 69.0, {}, {
+    exports['sandbox-polyzone']:CreateCircle("fishing_ocean_shitty4", vector3(-3374.96, 968.46, 8.29), 69.0, {}, {
         fishing_shitty_ocean_water = true,
     })
 
-    Polyzone.Create:Poly("fishing_deep_ocean_water", {
+    exports['sandbox-polyzone']:CreatePoly("fishing_deep_ocean_water", {
         vector2(-1010.61, -4428.79),
         vector2(-2950.00, -3386.36),
         vector2(-3046.97, -1956.06),
@@ -232,9 +232,9 @@ function CanFishHere()
         local result2, height = GetWaterHeightNoWaves(hittingCoord.x, hittingCoord.y, hittingCoord.z)
         if result2 then
             if height <= 0.5 then
-                if Polyzone:IsCoordsInZone(offsetCoords, false, "fishing_shitty_ocean_water") then
+                if exports['sandbox-polyzone']:IsCoordsInZone(offsetCoords, false, "fishing_shitty_ocean_water") then
                     return 4
-                elseif Polyzone:IsCoordsInZone(offsetCoords, "fishing_deep_ocean_water") then
+                elseif exports['sandbox-polyzone']:IsCoordsInZone(offsetCoords, "fishing_deep_ocean_water") then
                     return 5
                 else
                     return 6
@@ -243,7 +243,7 @@ function CanFishHere()
                 return 1
             end
         else
-            local inRiverZone = Polyzone:IsCoordsInZone(offsetCoords, false, "fishing_river")
+            local inRiverZone = exports['sandbox-polyzone']:IsCoordsInZone(offsetCoords, false, "fishing_river")
             if inRiverZone and inRiverZone.fishing_river then
                 return inRiverZone.fishing_river
             end

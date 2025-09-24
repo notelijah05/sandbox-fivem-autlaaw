@@ -82,14 +82,12 @@ end
 
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Polyzone",
 		"Jobs",
 		"Reputation",
 	}, function(error)

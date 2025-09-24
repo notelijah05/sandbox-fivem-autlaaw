@@ -6,7 +6,7 @@ local scale = 0.08
 AddEventHandler('Businesses:Client:Startup', function()
     for k, v in pairs(_tvData) do
         if v.viewZone then
-            Polyzone.Create:Box(
+            exports['sandbox-polyzone']:CreateBox(
                 'tv_zone_' .. k,
                 v.viewZone.center,
                 v.viewZone.length,

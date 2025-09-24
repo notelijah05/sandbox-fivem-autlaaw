@@ -7,7 +7,7 @@ local _polys = {}
 AddEventHandler("Robbery:Client:Setup", function()
 	_polys = {}
 	for k, v in pairs(GlobalState["StoreRobberies"]) do
-		Polyzone.Create:Box(v.id, v.coords, v.width, v.length, v.options)
+		exports['sandbox-polyzone']:CreateBox(v.id, v.coords, v.width, v.length, v.options)
 		_polys[v.id] = true
 	end
 

@@ -8,7 +8,7 @@ function RegisterMetalDetectors()
 	_metalDetectorPropsLoaded = {}
 
 	for k, v in pairs(_metalDetectorLocations) do
-		Polyzone.Create:Box(string.format("%s-metal-detector-zone", k), v.coords, v.width, v.length, {
+		exports['sandbox-polyzone']:CreateBox(string.format("%s-metal-detector-zone", k), v.coords, v.width, v.length, {
 			heading = v.options.heading,
 			--debugPoly=true,
 			minZ = v.options.minZ,

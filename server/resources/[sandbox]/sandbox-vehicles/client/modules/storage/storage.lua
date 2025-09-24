@@ -24,13 +24,13 @@ AddEventHandler('Vehicles:Client:StartUp', function()
             }
 
             if v.zone and v.zone.type == 'poly' and v.zone.points then
-                Polyzone.Create:Poly('veh_storage_' .. k, v.zone.points, {
+                exports['sandbox-polyzone']:CreatePoly('veh_storage_' .. k, v.zone.points, {
                     minZ = v.zone.minZ,
                     maxZ = v.zone.maxZ,
                     debugPoly = false
                 }, data)
             elseif v.zone and v.zone.type == 'box' and v.zone.center and v.zone.length and v.zone.width then
-                Polyzone.Create:Box('veh_storage_' .. k, v.zone.center, v.zone.length, v.zone.width, {
+                exports['sandbox-polyzone']:CreateBox('veh_storage_' .. k, v.zone.center, v.zone.length, v.zone.width, {
                     heading = v.zone.heading,
                     minZ = v.zone.minZ,
                     maxZ = v.zone.maxZ,
@@ -78,7 +78,7 @@ AddEventHandler('Vehicles:Client:CharacterLogin', function()
 end)
 
 function GetVehicleStorageAtCoords(coords)
-    local insideZone = Polyzone:IsCoordsInZone(coords, false, 'veh_storage')
+    local insideZone = exports['sandbox-polyzone']:IsCoordsInZone(coords, false, 'veh_storage')
     if insideZone and insideZone.veh_storage and insideZone.veh_storage_id then
         return true, insideZone.veh_storage_id
     end

@@ -15,13 +15,11 @@ local govDutyPoints = {
 AddEventHandler("Police:Shared:DependencyUpdate", GovComponents)
 function GovComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Jobs",
-		"Polyzone",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -128,7 +126,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			}, 3.0, true)
 		end
 
-		Polyzone.Create:Box("courtroom", vector3(-571.17, -207.02, 38.77), 18.2, 19.6, {
+		exports['sandbox-polyzone']:CreateBox("courtroom", vector3(-571.17, -207.02, 38.77), 18.2, 19.6, {
 			heading = 30,
 			--debugPoly=true,
 			minZ = 36.97,
@@ -169,7 +167,7 @@ RegisterNetEvent("Government:Client:Gavel", function()
 		return
 	end
 	local coords = GetEntityCoords(LocalPlayer.state.ped)
-	if Polyzone:IsCoordsInZone(coords, "courtroom") then
+	if exports['sandbox-polyzone']:IsCoordsInZone(coords, "courtroom") then
 		exports["sandbox-sounds"]:PlayOne("gavel.ogg", 0.6)
 	end
 end)

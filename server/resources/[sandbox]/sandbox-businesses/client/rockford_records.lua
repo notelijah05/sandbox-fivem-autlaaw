@@ -31,7 +31,7 @@ AddEventHandler("Businesses:Client:Startup", function()
         true
     )
 
-    Polyzone.Create:Box("rockford-stage-area", vector3(-1002.26, -257.48, 39.04), 12.2, 16.8, {
+    exports['sandbox-polyzone']:CreateBox("rockford-stage-area", vector3(-1002.26, -257.48, 39.04), 12.2, 16.8, {
         heading = 323,
         --debugPoly=true,
         minZ = 38.04,
@@ -87,7 +87,7 @@ function DeleteDJStuff()
 end
 
 AddStateBagChangeHandler("rockford_dj", nil, function(bagName, key, value, _unused, replicated)
-    if Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "rockford-stage-area") then
+    if exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "rockford-stage-area") then
         if value then
             CreateDJStuff()
         else

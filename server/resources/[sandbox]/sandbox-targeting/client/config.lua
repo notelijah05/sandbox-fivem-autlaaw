@@ -282,7 +282,7 @@ Config.VehicleMenu = {
 		},
 		isEnabled = function(data, entityData)
 			if entityData.entity and DoesEntityExist(entityData.entity) then
-				if Polyzone:IsCoordsInZone(GetEntityCoords(entityData.entity), "tow_impound_zone") then
+				if exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(entityData.entity), "tow_impound_zone") then
 					return true
 				end
 			end
@@ -656,7 +656,8 @@ Config.VehicleMenu = {
 	{
 		icon = "car-garage",
 		isEnabled = function(data, entityData)
-			local inZone = Polyzone:IsCoordsInZone(GetEntityCoords(entityData.entity), false, "dealerBuyback")
+			local inZone = exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(entityData.entity), false,
+				"dealerBuyback")
 			if inZone then
 				return LocalPlayer.state.onDuty == inZone.dealerId
 			end

@@ -305,11 +305,11 @@ function CreateStressPolys()
 	for k, v in ipairs(_pzDefs) do
 		local pId = string.format("StressReleif%s", k)
 		if v.type == "poly" then
-			Polyzone.Create:Poly(pId, v.points, v.options or {}, v.data or {})
+			exports['sandbox-polyzone']:CreatePoly(pId, v.points, v.options or {}, v.data or {})
 		elseif v.type == "box" then
-			Polyzone.Create:Box(pId, v.coords, v.length, v.width, v.options or {}, v.data or {})
+			exports['sandbox-polyzone']:CreateBox(pId, v.coords, v.length, v.width, v.options or {}, v.data or {})
 		else
-			Polyzone.Create:Circle(pId, v.coords, v.radius, v.options or {}, v.data or {})
+			exports['sandbox-polyzone']:CreateCircle(pId, v.coords, v.radius, v.options or {}, v.data or {})
 		end
 
 		_pzs[pId] = k

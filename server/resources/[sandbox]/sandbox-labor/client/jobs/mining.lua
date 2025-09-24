@@ -96,7 +96,7 @@ local function DespawnOres()
 end
 
 AddEventHandler("Labor:Client:Setup", function()
-	Polyzone.Create:Circle(_POLYID, vector3(2885.78, 2803.96, 54.76), 350.0, {
+	exports['sandbox-polyzone']:CreateCircle(_POLYID, vector3(2885.78, 2803.96, 54.76), 350.0, {
 		name = _POLYID,
 		useZ = false,
 		--debugPoly=true

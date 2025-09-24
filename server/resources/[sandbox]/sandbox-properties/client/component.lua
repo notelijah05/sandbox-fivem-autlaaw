@@ -23,7 +23,6 @@ function RetrieveComponents()
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 end
 
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Characters",
 		"Properties",
 		"Jobs",
-		"Polyzone",
 		"ObjectPlacer",
 	}, function(error)
 		if #error > 0 then
@@ -149,7 +147,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		for k, v in pairs(PropertyInteriors) do
 			if v.zone then
-				Polyzone.Create:Box(
+				exports['sandbox-polyzone']:CreateBox(
 					string.format("property-int-zone-%s", k),
 					v.zone.center,
 					v.zone.length,

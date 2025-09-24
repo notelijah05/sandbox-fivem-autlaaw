@@ -185,7 +185,7 @@ end
 RegisterNetEvent("Hunting:Client:Polys", function(c)
 	_localConfig = c
 	for k, v in ipairs(_localConfig.Zones) do
-		Polyzone.Create:Circle(string.format("hunting%s", k), v.coords, v.radius, v.options)
+		exports['sandbox-polyzone']:CreateCircle(string.format("hunting%s", k), v.coords, v.radius, v.options)
 	end
 
 	for k, v in pairs(_localConfig.Animals) do

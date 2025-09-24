@@ -1,12 +1,10 @@
 AddEventHandler("Billboards:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Billboards", {
-		"Polyzone",
 		"Jobs",
 	}, function(error)
 		if #error > 0 then

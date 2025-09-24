@@ -14,7 +14,8 @@ AddEventHandler("Robbery:Client:Setup", function()
 
 	for k, v in ipairs(GlobalState["FleecaRobberies"]) do
 		local bankData = GlobalState[string.format("FleecaRobberies:%s", v)]
-		Polyzone.Create:Box(bankData.id, bankData.coords, bankData.width, bankData.length, bankData.options)
+		exports['sandbox-polyzone']:CreateBox(bankData.id, bankData.coords, bankData.width, bankData.length,
+			bankData.options)
 		_polys[bankData.id] = true
 
 		SetupFleecaVaults(bankData)

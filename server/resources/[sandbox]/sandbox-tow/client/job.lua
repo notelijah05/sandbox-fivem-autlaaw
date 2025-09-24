@@ -47,7 +47,7 @@ AddEventHandler('Tow:Client:RequestImpound', function(entityData)
         myTowTruck = NetToVeh(myTowTruck)
     end
 
-    if entityData and entityData.entity and DoesEntityExist(entityData.entity) and (not myTowTruck or myTowTruck ~= entityData.entity) and #(GetEntityCoords(entityData.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 10.0 and IsVehicleEmpty(entityData.entity) and Polyzone:IsCoordsInZone(GetEntityCoords(entityData.entity), 'tow_impound_zone') then
+    if entityData and entityData.entity and DoesEntityExist(entityData.entity) and (not myTowTruck or myTowTruck ~= entityData.entity) and #(GetEntityCoords(entityData.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 10.0 and IsVehicleEmpty(entityData.entity) and exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(entityData.entity), 'tow_impound_zone') then
         exports['sandbox-hud']:ProgressWithTickEvent({
             name = 'veh_impound',
             duration = 10 * 1000,

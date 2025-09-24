@@ -6,13 +6,14 @@ function RunBankingStartup()
 
 	for k, v in pairs(_bankBranches) do
 		if v.interactZone then
-			Polyzone.Create:Box("banking-" .. k, v.interactZone.center, v.interactZone.length, v.interactZone.width, {
-				heading = v.interactZone.heading,
-				minZ = v.interactZone.minZ,
-				maxZ = v.interactZone.maxZ,
-			}, {
-				bank_branch = k,
-			})
+			exports['sandbox-polyzone']:CreateBox("banking-" .. k, v.interactZone.center, v.interactZone.length,
+				v.interactZone.width, {
+					heading = v.interactZone.heading,
+					minZ = v.interactZone.minZ,
+					maxZ = v.interactZone.maxZ,
+				}, {
+					bank_branch = k,
+				})
 		end
 	end
 end

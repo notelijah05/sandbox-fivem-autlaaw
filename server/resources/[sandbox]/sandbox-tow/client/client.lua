@@ -1,14 +1,12 @@
 AddEventHandler("Tow:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Tow = exports["sandbox-base"]:FetchComponent("Tow")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Tow", {
 		"Jobs",
-		"Polyzone",
 		"Tow",
 	}, function(error)
 		if #error > 0 then
@@ -49,7 +47,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				},
 			}, "truck-tow", "WORLD_HUMAN_HANG_OUT_STREET")
 
-		Polyzone.Create:Box("tow_impound_zone", vector3(-236.96, -1173.44, 23.04), 19.4, 24.4, {
+		exports['sandbox-polyzone']:CreateBox("tow_impound_zone", vector3(-236.96, -1173.44, 23.04), 19.4, 24.4, {
 			heading = 270,
 			minZ = 22.04,
 			maxZ = 26.04,

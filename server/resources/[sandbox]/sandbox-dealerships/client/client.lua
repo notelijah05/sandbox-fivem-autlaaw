@@ -8,14 +8,12 @@ _justBoughtFuckingBike = {}
 AddEventHandler("Dealerships:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	--Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Dealerships", {
 		"Jobs",
-		"Polyzone",
 		--'Dealerships',
 	}, function(error)
 		if #error > 0 then
@@ -54,11 +52,12 @@ end)
 
 function CreatePolyzone(id, zone, data)
 	if zone.type == "poly" then
-		Polyzone.Create:Poly("dealerships_" .. id, zone.points, zone.options, data)
+		exports['sandbox-polyzone']:CreatePoly("dealerships_" .. id, zone.points, zone.options, data)
 	elseif zone.type == "box" then
-		Polyzone.Create:Box("dealerships_" .. id, zone.center, zone.length, zone.width, zone.options, data)
+		exports['sandbox-polyzone']:CreateBox("dealerships_" .. id, zone.center, zone.length, zone.width, zone.options,
+			data)
 	elseif zone.type == "circle" then
-		Polyzone.Create:Circle("dealerships_" .. id, zone.center, zone.radius, zone.options, data)
+		exports['sandbox-polyzone']:CreateCircle("dealerships_" .. id, zone.center, zone.radius, zone.options, data)
 	end
 end
 

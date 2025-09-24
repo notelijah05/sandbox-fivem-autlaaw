@@ -35,7 +35,7 @@ function SetupTargetting()
 end
 
 AddEventHandler("Labor:Client:Setup", function()
-	Polyzone.Create:Poly(_POLYID, {
+	exports['sandbox-polyzone']:CreatePoly(_POLYID, {
 		vector2(2403.0769042969, 3160.6232910156),
 		vector2(2435.3303222656, 3160.5451660156),
 		vector2(2435.2749023438, 3026.3818359375),
@@ -123,7 +123,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 		_blip = AddBlipForArea(2385.561, 3057.702, 48.153, 140.0, 80.0)
 		SetBlipColour(_blip, 79)
 
-		if _inPoly or (not _inPoly and Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped, false, _POLYID, true)) and _count < 15) then
+		if _inPoly or (not _inPoly and exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped, false, _POLYID, true)) and _count < 15) then
 			SetupTargetting()
 			_inPoly = true
 		end

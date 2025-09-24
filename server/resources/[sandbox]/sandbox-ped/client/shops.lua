@@ -2,14 +2,14 @@ local withinPedShop = false
 
 function CreateSpecificPolyzoneType(type, id, data)
 	if data.type == "poly" then
-		Polyzone.Create:Poly(id, data.points, {
+		exports['sandbox-polyzone']:CreatePoly(id, data.points, {
 			minZ = data.minZ,
 			maxZ = data.maxZ,
 		}, {
 			pedShop = type,
 		})
 	elseif data.type == "box" then
-		Polyzone.Create:Box(id, data.center, data.length, data.width, {
+		exports['sandbox-polyzone']:CreateBox(id, data.center, data.length, data.width, {
 			heading = data.heading,
 			minZ = data.minZ,
 			maxZ = data.maxZ,

@@ -181,7 +181,6 @@ function PoliceComponents()
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
 
@@ -193,7 +192,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Apartment",
 		"EmergencyAlerts",
 		"Status",
-		"Polyzone",
 		"Doors",
 	}, function(error)
 		if #error > 0 then
@@ -732,7 +730,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 		for k, v in ipairs(_pdStationPolys) do
 			--print(v.options.name)
-			Polyzone.Create:Poly(v.options.name, v.points, v.options, v.data)
+			exports['sandbox-polyzone']:CreatePoly(v.options.name, v.points, v.options, v.data)
 		end
 
 		exports["sandbox-base"]:RegisterClientCallback("Police:DeploySpikes", function(data, cb)

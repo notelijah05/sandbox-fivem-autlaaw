@@ -1,5 +1,5 @@
 AddEventHandler("Businesses:Client:Startup", function()
-	Polyzone.Create:Box("burgershot_drivethru", vector3(-1196.14, -909.33, 13.77), 7.2, 7.6, {
+	exports['sandbox-polyzone']:CreateBox("burgershot_drivethru", vector3(-1196.14, -909.33, 13.77), 7.2, 7.6, {
 		heading = 348,
 		--debugPoly=true,
 		minZ = 12.57,

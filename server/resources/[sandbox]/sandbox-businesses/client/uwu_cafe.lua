@@ -83,7 +83,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		)
 	end
 
-	Polyzone.Create:Box("uwu_cafe_door", vector3(-581.05, -1068.09, 22.34), 3.0, 1.6, {
+	exports['sandbox-polyzone']:CreateBox("uwu_cafe_door", vector3(-581.05, -1068.09, 22.34), 3.0, 1.6, {
 		heading = 0,
 		--debugPoly=true,
 		minZ = 21.34,

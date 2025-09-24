@@ -26,7 +26,7 @@ local carWashLocations = {
 
 AddEventHandler('Vehicles:Client:StartUp', function()
     for k, v in ipairs(carWashLocations) do
-        Polyzone.Create:Box('carwash_' .. k, v.center, v.length, v.width, v.options, {
+        exports['sandbox-polyzone']:CreateBox('carwash_' .. k, v.center, v.length, v.width, v.options, {
             carwash = true,
         })
     end

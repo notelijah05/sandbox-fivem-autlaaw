@@ -36,7 +36,7 @@ function IsLBPowerDisabled()
 end
 
 AddEventHandler("Robbery:Client:Setup", function()
-	Polyzone.Create:Poly("dumbcunt", {
+	exports['sandbox-polyzone']:CreatePoly("dumbcunt", {
 		vector2(-316.5087890625, -2439.6040039062),
 		vector2(-319.24176025391, -2436.7438964844),
 		vector2(-326.0520324707, -2431.16796875),
@@ -55,7 +55,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		door = "coke_garage",
 	})
 
-	Polyzone.Create:Poly("bank_lombank", {
+	exports['sandbox-polyzone']:CreatePoly("bank_lombank", {
 		vector2(-0.41744011640549, -933.08654785156),
 		vector2(14.137574195862, -893.74298095703),
 		vector2(47.590084075928, -905.93432617188),
@@ -65,7 +65,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		-- debugPoly = true,
 	})
 
-	Polyzone.Create:Poly("lombank_power", {
+	exports['sandbox-polyzone']:CreatePoly("lombank_power", {
 		vector2(43.716075897217, -811.39093017578),
 		vector2(43.310741424561, -812.01684570312),
 		vector2(46.399833679199, -813.21368408203),
@@ -104,7 +104,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		},
 	}, 3.0, true)
 
-	Polyzone.Create:Box("lombank_death", vector3(24.86, -921.78, 25.74), 7.4, 7.8, {
+	exports['sandbox-polyzone']:CreateBox("lombank_death", vector3(24.86, -921.78, 25.74), 7.4, 7.8, {
 		heading = 340,
 		--debugPoly=true,
 		minZ = 24.74,
@@ -116,10 +116,11 @@ AddEventHandler("Robbery:Client:Setup", function()
 	})
 
 	for k, v in ipairs(_lombankRooms) do
-		Polyzone.Create:Box(string.format("lombank_room_%s", v.roomId), v.coords, v.length, v.width, v.options, {
-			isLombankRoom = true,
-			roomId = v.roomId,
-		})
+		exports['sandbox-polyzone']:CreateBox(string.format("lombank_room_%s", v.roomId), v.coords, v.length, v.width,
+			v.options, {
+				isLombankRoom = true,
+				roomId = v.roomId,
+			})
 	end
 
 	for k, v in ipairs(_lbPowerBoxes) do

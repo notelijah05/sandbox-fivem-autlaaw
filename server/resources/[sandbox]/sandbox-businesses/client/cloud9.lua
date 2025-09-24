@@ -1,5 +1,5 @@
 AddEventHandler("Businesses:Client:Startup", function()
-	Polyzone.Create:Poly("cloud9-drift-area", {
+	exports['sandbox-polyzone']:CreatePoly("cloud9-drift-area", {
 		vector2(210.07374572754, -2536.0458984375),
 		vector2(146.61747741699, -2573.9255371094),
 		vector2(14.569815635681, -2559.7707519531),
@@ -79,7 +79,7 @@ function DeleteDriftStuff()
 end
 
 AddStateBagChangeHandler("cloud9_drift", nil, function(bagName, key, value, _unused, replicated)
-	if Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "cloud9-drift-area") then
+	if exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "cloud9-drift-area") then
 		if value then
 			DoDriftStuff()
 		else
