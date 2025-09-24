@@ -24,7 +24,7 @@ AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
         SID = values.SID,
     }, function(canBorrow, score, result)
         if canBorrow then
-            Confirm:Show(
+            exports['sandbox-hud']:ConfirmShow(
                 'Credit Check Results',
                 {},
                 string.format(
@@ -42,7 +42,7 @@ AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
             )
         else
             if score and result then
-                Confirm:Show(
+                exports['sandbox-hud']:ConfirmShow(
                     'Credit Check Results',
                     {},
                     string.format(
@@ -58,7 +58,7 @@ AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
                     'Ok'
                 )
             elseif score and not result then
-                Confirm:Show(
+                exports['sandbox-hud']:ConfirmShow(
                     'Credit Check Results',
                     {},
                     string.format(
@@ -73,7 +73,7 @@ AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
                     'Ok'
                 )
             else
-                Confirm:Show(
+                exports['sandbox-hud']:ConfirmShow(
                     'Credit Check Results',
                     {},
                     [[

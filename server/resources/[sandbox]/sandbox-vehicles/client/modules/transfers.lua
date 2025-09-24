@@ -15,7 +15,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 end)
 
 RegisterNetEvent('Vehicles:Tranfers:BeginConfirmation', function(data)
-    Confirm:Show(
+    exports['sandbox-hud']:ConfirmShow(
         'Confirm Vehicle Ownership Transfer',
         {
             yes = 'Vehicles:Transfers:Confirm',

@@ -15,7 +15,7 @@ end)
 
 AddEventHandler("Labor:Client:Export:Sell", function(data)
 	local itemData = Inventory.Items:GetData(data.item)
-	Confirm:Show(
+	exports['sandbox-hud']:ConfirmShow(
 		string.format("Mass Export %s at $%s/unit?", itemData.label, data.price),
 		{
 			yes = "Labor:Client:Export:Sell:Yes",

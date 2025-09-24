@@ -3,21 +3,21 @@ function CreateGovermentFleetShops()
         if v.interactionPed then
             PedInteraction:Add('gov_fleet_shop_' .. v.job, v.interactionPed.model, v.interactionPed.coords,
                 v.interactionPed.heading, v.interactionPed.range, {
-                {
-                    icon = 'cars',
-                    text = 'Purchase Fleet Vehicles',
-                    event = 'FleetDealers:Client:Open',
-                    data = { shop = k },
-                    jobPerms = {
-                        {
-                            job = v.job,
-                            permissionKey = v.requiredPermission,
-                            reqDuty = true,
-                            workplace = v.workplace,
-                        },
-                    }
-                },
-            }, 'cars', v.interactionPed.scenario)
+                    {
+                        icon = 'cars',
+                        text = 'Purchase Fleet Vehicles',
+                        event = 'FleetDealers:Client:Open',
+                        data = { shop = k },
+                        jobPerms = {
+                            {
+                                job = v.job,
+                                permissionKey = v.requiredPermission,
+                                reqDuty = true,
+                                workplace = v.workplace,
+                            },
+                        }
+                    },
+                }, 'cars', v.interactionPed.scenario)
         end
     end
 end
@@ -75,14 +75,14 @@ AddEventHandler('FleetDealers:Client:Open', function(entityData, data)
 end)
 
 AddEventHandler('FleetDealers:Client:ConfirmPurchase', function(data)
-    Confirm:Show(
+    exports['sandbox-hud']:ConfirmShow(
         string.format('Confirm %s Fleet Purchase', data.jobName),
         {
             yes = 'FleetDealers:Client:Purchase',
             no = 'FleetDealers:Client:CancelPurchase',
         },
         string.format('Please Confirm the Purchase of a %s %s (%s Livery) for $%s', data.vehData.make, data.vehData
-        .model, data.liveryName, formatNumberToCurrency(data.vehData.price)),
+            .model, data.liveryName, formatNumberToCurrency(data.vehData.price)),
         data
     )
 end)

@@ -36,7 +36,7 @@ AddEventHandler("DonorVanity:Client:SubmitInput", function(data)
 end)
 
 AddEventHandler("DonorDealer:Client:StartPurchase", function(data)
-	Confirm:Show(
+	exports['sandbox-hud']:ConfirmShow(
 		"Confirm Donator Vehicle Purchase",
 		{
 			yes = "DonorDealer:Client:ConfirmPurchase",

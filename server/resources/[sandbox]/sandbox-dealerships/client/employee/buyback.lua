@@ -11,7 +11,7 @@ AddEventHandler("Dealerships:Client:StartBuyback", function(entity, data)
         if success then
             local dealerData = _dealerships[LocalPlayer.state.onDuty]
 
-            Confirm:Show(
+            exports['sandbox-hud']:ConfirmShow(
                 string.format("Confirm %s Vehicle Buy Back", dealerData.abbreviation),
                 {
                     yes = "Dealerships:BuyBack:Confirm",

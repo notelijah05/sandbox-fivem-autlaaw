@@ -1,13 +1,11 @@
 AddEventHandler("Confirm:Shared:DependencyUpdate", RetrieveConfirmComponents)
 function RetrieveConfirmComponents()
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Confirm = exports["sandbox-base"]:FetchComponent("Confirm")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Confirm", {
 		"UISounds",
-		"Confirm",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -16,12 +14,8 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Confirm", CONFIRM)
-end)
-
 -- RegisterNetEvent("Confirm:Client:Test", function()
--- 	Confirm:Show(
+-- 	exports['sandbox-hud']:ConfirmShow(
 -- 		"Test Input",
 -- 		{
 -- 			yes = "Confirm:Test:Yes",
@@ -47,7 +41,7 @@ RegisterNUICallback("Confirm:Yes", function(data, cb)
 	if data.event then
 		TriggerEvent(data.event, data.data)
 	end
-	Confirm:Close()
+	exports['sandbox-hud']:ConfirmClose()
 	cb("ok")
 end)
 
@@ -56,30 +50,29 @@ RegisterNUICallback("Confirm:No", function(data, cb)
 	if data and data.event then
 		TriggerEvent(data.event, data.data)
 	end
-	Confirm:Close()
+	exports['sandbox-hud']:ConfirmClose()
 	cb("ok")
 end)
 
-CONFIRM = {
-	Show = function(self, title, events, description, data, denyLabel, acceptLabel)
-		SetNuiFocus(true, true)
-		SendNUIMessage({
-			type = "SHOW_CONFIRM",
-			data = {
-				title = title,
-				yes = events.yes,
-				no = events.no,
-				description = description,
-				data = data,
-				denyLabel = denyLabel,
-				acceptLabel = acceptLabel,
-			},
-		})
-	end,
-	Close = function(self)
-		SetNuiFocus(false, false)
-		SendNUIMessage({
-			type = "CLOSE_CONFIRM",
-		})
-	end,
-}
+exports("ConfirmShow", function(title, events, description, data, denyLabel, acceptLabel)
+	SetNuiFocus(true, true)
+	SendNUIMessage({
+		type = "SHOW_CONFIRM",
+		data = {
+			title = title,
+			yes = events.yes,
+			no = events.no,
+			description = description,
+			data = data,
+			denyLabel = denyLabel,
+			acceptLabel = acceptLabel,
+		},
+	})
+end)
+
+exports("ConfirmClose", function()
+	SetNuiFocus(false, false)
+	SendNUIMessage({
+		type = "CLOSE_CONFIRM",
+	})
+end)

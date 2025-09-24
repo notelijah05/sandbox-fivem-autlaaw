@@ -2,7 +2,6 @@ AddEventHandler("Wardrobe:Shared:DependencyUpdate", RetrieveWardrobeComponents)
 function RetrieveWardrobeComponents()
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
-	Confirm = exports["sandbox-base"]:FetchComponent("Confirm")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 end
 
@@ -10,7 +9,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("ListMenu", {
 		"ListMenu",
 		"Input",
-		"Confirm",
 		"Wardrobe",
 	}, function(error)
 		if #error > 0 then
@@ -64,7 +62,7 @@ AddEventHandler("Wardrobe:Client:DoSave", function(values, data)
 end)
 
 AddEventHandler("Wardrobe:Client:Delete", function(data)
-	Confirm:Show(string.format("Delete %s?", data.label), {
+	exports['sandbox-hud']:ConfirmShow(string.format("Delete %s?", data.label), {
 		yes = "Wardrobe:Client:Delete:Yes",
 		no = "Wardrobe:Client:Delete:No",
 	}, "", data.index)

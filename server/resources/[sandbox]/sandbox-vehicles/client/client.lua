@@ -23,7 +23,6 @@ function RetrieveComponents()
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Confirm = exports["sandbox-base"]:FetchComponent("Confirm")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
@@ -54,7 +53,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"PedInteraction",
 		"EmergencyAlerts",
 		"Properties",
-		"Confirm",
 		"Police",
 		"Input",
 		"Hud",

@@ -19,7 +19,7 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 -- RegisterNetEvent("Confirm:Client:Test", function()
--- 	Confirm:Show(
+-- 	exports['sandbox-hud']:ConfirmShow(
 -- 		"Test Input",
 -- 		{
 -- 			yes = "Confirm:Test:Yes",

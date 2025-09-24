@@ -87,7 +87,7 @@ AddEventHandler("DonorDealer:Client:Open", function(entityData, data)
 end)
 
 AddEventHandler("DonorDealer:Client:StartPurchase", function(data)
-  Confirm:Show(
+  exports['sandbox-hud']:ConfirmShow(
     "Confirm Donator Vehicle Purchase",
     {
       yes = "DonorDealer:Client:ConfirmPurchase",
