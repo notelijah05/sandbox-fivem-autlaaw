@@ -389,7 +389,7 @@ end
 
 function DoFishingSkillbar(timeLength, area)
     local p = promise.new()
-    Minigame.Play:RoundSkillbar(timeLength, area, {
+    exports['sandbox-games']:MinigamePlayRoundSkillbar(timeLength, area, {
         onSuccess = function()
             p:resolve(true)
         end,

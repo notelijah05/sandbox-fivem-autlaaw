@@ -3,7 +3,7 @@
 local scDelay = 5000
 local scPass = 1
 RegisterNetEvent("Minigame:Client:Skillbar", function()
-	Minigame.Play:Skillbar(scDelay, 10 - scPass, {
+	exports['sandbox-games']:MinigamePlaySkillbar(scDelay, 10 - scPass, {
 		onSuccess = "Minigame:Client:DemoSkillbarSuccess",
 		onFail = "Minigame:Client:DemoSkillbarFail",
 	})
@@ -33,7 +33,7 @@ end)
 local scanTimer = 50
 local scanPass = 1
 RegisterNetEvent("Minigame:Client:Scanner", function()
-	Minigame.Play:Scanner(5, scanTimer, 5000, 20, 5 - scanPass, true, {
+	exports['sandbox-games']:MinigamePlayScanner(5, scanTimer, 5000, 20, 5 - scanPass, true, {
 		onPerfect = "Minigame:Client:DemoScannerPerfect",
 		onSuccess = "Minigame:Client:DemoScannerSuccess",
 		onFail = "Minigame:Client:DemoScannerFail",
@@ -64,7 +64,7 @@ end)
 --
 local seqPass = 1
 RegisterNetEvent("Minigame:Client:Sequencer", function()
-	Minigame.Play:Sequencer(5, 250, 10000 - (1000 * seqPass), 3 + seqPass, false, {
+	exports['sandbox-games']:MinigamePlaySequencer(5, 250, 10000 - (1000 * seqPass), 3 + seqPass, false, {
 		onPerfect = "Minigame:Client:DemoSequencerPerfect",
 		onSuccess = "Minigame:Client:DemoSequencerSuccess",
 		onFail = "Minigame:Client:DemoSequencerFail",
@@ -94,7 +94,7 @@ end)
 --[[ KEYPAD DEMO ]]
 --
 RegisterNetEvent("Minigame:Client:Keypad", function()
-	Minigame.Play:Keypad("1234", false, false, false, {
+	exports['sandbox-games']:MinigamePlayKeypad("1234", false, false, false, {
 		onSuccess = "Minigame:Client:DemoKeypadSuccess",
 		onFail = "Minigame:Client:DemoKeypadFail",
 	})
@@ -117,7 +117,7 @@ RegisterNetEvent("Minigame:Client:Scrambler", function()
 end)
 
 function dothingy()
-	Minigame.Play:Scrambler(5, 3000, 14000 + ((f or 0) * 2000), 3, 16 + (f * 4), {
+	exports['sandbox-games']:MinigamePlayScrambler(5, 3000, 14000 + ((f or 0) * 2000), 3, 16 + (f * 4), {
 		onPerfect = function()
 			if f < 3 then
 				f += 1
@@ -154,7 +154,7 @@ end)
 --
 local memPass = 1
 RegisterNetEvent("Minigame:Client:Memory", function()
-	Minigame.Play:Memory(5, 2000, 10000, 3 + memPass, 3 + memPass, 4 + memPass, 3, {
+	exports['sandbox-games']:MinigamePlayMemory(5, 2000, 10000, 3 + memPass, 3 + memPass, 4 + memPass, 3, {
 		onPerfect = "Minigame:Client:DemoMemoryPerfect",
 		onSuccess = "Minigame:Client:DemoMemorySuccess",
 		onFail = "Minigame:Client:DemoMemoryFail",
@@ -186,7 +186,7 @@ end)
 --
 local slidersPass = 1
 RegisterNetEvent("Minigame:Client:Sliders", function()
-	Minigame.Play:Sliders(3, 3000, 25000, 12, 3 + slidersPass, {
+	exports['sandbox-games']:MinigamePlaySliders(3, 3000, 25000, 12, 3 + slidersPass, {
 		onSuccess = "Minigame:Client:DemoSlidersSuccess",
 		onFail = "Minigame:Client:DemoSlidersFail",
 	})

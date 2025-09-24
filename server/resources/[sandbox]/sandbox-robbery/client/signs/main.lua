@@ -154,7 +154,7 @@ AddEventHandler("Robbery:Client:Signs:StealSign", function(data, entity)
 				return
 			end
 
-			Minigame.Play:RoundSkillbar(1.0, 5, {
+			exports['sandbox-games']:MinigamePlayRoundSkillbar(1.0, 5, {
 				onSuccess = function(data)
 					while LocalPlayer.state.doingAction do -- Apparently this is dumb
 						Wait(100)

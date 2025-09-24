@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Vehicles",
 		"Targeting",
 		"PedInteraction",
-		"Minigame",
 		"Inventory",
 	}, function(error)
 		if #error > 0 then

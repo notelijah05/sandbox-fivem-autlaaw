@@ -13,7 +13,6 @@ AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -36,7 +35,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
 		"Animations",
 		"Vehicles",
-		"Minigame",
 		"Targeting",
 		"Polyzone",
 		"Jobs",

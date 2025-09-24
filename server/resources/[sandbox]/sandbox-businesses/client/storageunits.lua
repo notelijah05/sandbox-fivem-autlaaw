@@ -80,7 +80,7 @@ AddEventHandler("Businesses:Client:Startup", function()
     end)
 
     exports["sandbox-base"]:RegisterClientCallback("StorageUnits:Passcode", function(code, cb)
-        Minigame.Play:Keypad(code, false, 10000, true, {
+        exports['sandbox-games']:MinigamePlayKeypad(code, false, 10000, true, {
             onSuccess = function(data)
                 Wait(2000)
                 cb(true, data)

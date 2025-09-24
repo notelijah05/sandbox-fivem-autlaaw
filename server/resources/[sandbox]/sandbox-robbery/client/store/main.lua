@@ -126,7 +126,7 @@ function LPScan(coords)
 	if not _inPoly then
 		return
 	end
-	Minigame.Play:Scanner(5, _timer, 5000 - (750 * _lpPass), 20, 1, true, {
+	exports['sandbox-games']:MinigamePlayScanner(5, _timer, 5000 - (750 * _lpPass), 20, 1, true, {
 		onSuccess = "Robbery:Client:Store:LockpickSuccess",
 		onFail = "Robbery:Client:Store:LockpickFail",
 	}, {
@@ -144,7 +144,7 @@ function SCSeq(id)
 	if not _inPoly then
 		return
 	end
-	Minigame.Play:Sequencer(5, 500, 7500 - (500 * _scPass), 2 + _scPass, true, {
+	exports['sandbox-games']:MinigamePlaySequencer(5, 500, 7500 - (500 * _scPass), 2 + _scPass, true, {
 		onSuccess = "Robbery:Client:Store:SafeCrackSuccess",
 		onFail = "Robbery:Client:Store:SafeCrackFail",
 	}, {

@@ -6,14 +6,12 @@ AddEventHandler("Handcuffs:Shared:DependencyUpdate", HandcuffComponents)
 function HandcuffComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
 		"Inventory",
 		"PedInteraction",
-		"Minigame",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -40,7 +38,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					if not data.forced and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isDead then
 						CuffAttempt()
 						_cuffPromise = promise.new()
-						Minigame.Play:RoundSkillbar(
+						exports['sandbox-games']:MinigamePlayRoundSkillbar(
 							1.35 * math.ceil(((_attempts / 2) or 1)),
 							(4 - (_attempts / 2) > 1 and 4 - (_attempts / 2) or 1),
 							{

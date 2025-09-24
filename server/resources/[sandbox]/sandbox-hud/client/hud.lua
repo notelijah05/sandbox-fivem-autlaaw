@@ -57,7 +57,6 @@ end
 
 AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -66,7 +65,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
-		"Minigame",
 		"Inventory",
 		"Jail",
 		"Animations",

@@ -166,7 +166,7 @@ end
 
 function SkillCheckBowler()
     local p = promise.new()
-    Minigame.Play:RoundSkillbar(1.0, 5, {
+    exports['sandbox-games']:MinigamePlayRoundSkillbar(1.0, 5, {
         onSuccess = function()
             p:resolve(true)
         end,

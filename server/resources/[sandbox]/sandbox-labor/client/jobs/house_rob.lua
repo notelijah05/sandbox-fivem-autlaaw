@@ -524,7 +524,7 @@ end)
 
 local stageComplete = 0
 function DoLockpick(diff, data, cb)
-    Minigame.Play:RoundSkillbar((diff.timer + (0.2 * data.tier)), diff.base - stageComplete, {
+    exports['sandbox-games']:MinigamePlayRoundSkillbar((diff.timer + (0.2 * data.tier)), diff.base - stageComplete, {
         onSuccess = function()
             Wait(400)
             if stageComplete >= 3 then
@@ -551,7 +551,7 @@ function DoLockpick(diff, data, cb)
 end
 
 function DoHack(pId)
-    Minigame.Play:Sequencer(5, 300, 7500 - (1000 * _scPass), 3 + _scPass, true, {
+    exports['sandbox-games']:MinigamePlaySequencer(5, 300, 7500 - (1000 * _scPass), 3 + _scPass, true, {
         onSuccess = "HouseRobbery:Client:HackSuccess",
         onFail = "HouseRobbery:Client:HackFail",
     }, {

@@ -1,7 +1,6 @@
 AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -17,7 +16,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
 		"PedInteraction",
-		"Minigame",
 		"Polyzone",
 		"Targeting",
 		"Inventory",

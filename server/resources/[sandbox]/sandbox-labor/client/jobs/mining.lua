@@ -206,7 +206,8 @@ RegisterNetEvent("Mining:Client:OnDuty", function(joiner, time)
 				local p = promise.new()
 				while attempt < 3 do
 					local p2 = promise.new()
-					Minigame.Play:RoundSkillbar((data?.ore?.factor or 0.75) * (data?.ore?.scale or 1.15),
+					exports['sandbox-games']:MinigamePlayRoundSkillbar(
+						(data?.ore?.factor or 0.75) * (data?.ore?.scale or 1.15),
 						(data?.ore?.size or 6) - attempt, {
 							onSuccess = function()
 								Wait(400)

@@ -14,7 +14,7 @@ local function RunSkillChecks(total)
 
     for i = 1, total do
         local p = promise.new()
-        Minigame.Play:RoundSkillbar(1.15, 3, {
+        exports['sandbox-games']:MinigamePlayRoundSkillbar(1.15, 3, {
             onSuccess = function()
                 success += 1
                 Wait(50)
@@ -152,7 +152,7 @@ AddEventHandler("Drugs:Client:Startup", function()
 
     exports["sandbox-base"]:RegisterClientCallback("Drugs:Moonshine:Use", function(data, cb)
         Wait(400)
-        Minigame.Play:RoundSkillbar(0.8, 8, {
+        exports['sandbox-games']:MinigamePlayRoundSkillbar(0.8, 8, {
             onSuccess = function()
                 cb(true)
             end,

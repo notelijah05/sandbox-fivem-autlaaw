@@ -422,7 +422,7 @@ function RegisterBoostingCallbacks()
             local veh = NetToVeh(_boosting.vehicleNet)
 
             if GetEntitySpeed(veh) >= 15.0 and GetPedInVehicleSeat(veh, 0) == LocalPlayer.state.ped then
-                Minigame.Play:Pattern(
+                exports['sandbox-games']:MinigamePlayPattern(
                     3,
                     hackData.duration,
                     hackData.rows,

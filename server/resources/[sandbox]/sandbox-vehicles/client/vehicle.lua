@@ -241,7 +241,7 @@ VEHICLE = {
 					end
 				end)
 
-				Minigame.Play:RoundSkillbar(12, 3, {
+				exports['sandbox-games']:MinigamePlayRoundSkillbar(12, 3, {
 					onSuccess = function()
 						dumbAnim = false
 						ClearPedTasks(GLOBAL_PED)
@@ -364,7 +364,7 @@ VEHICLE = {
 						break
 					end
 
-					Minigame.Play:RoundSkillbar(v, config.base - k, {
+					exports['sandbox-games']:MinigamePlayRoundSkillbar(v, config.base - k, {
 						onSuccess = function()
 							Wait(400)
 							stageComplete = true
@@ -467,7 +467,7 @@ VEHICLE = {
 						break
 					end
 
-					Minigame.Play:RoundSkillbar(v, config.base - k, {
+					exports['sandbox-games']:MinigamePlayRoundSkillbar(v, config.base - k, {
 						onSuccess = function()
 							Wait(400)
 							stageComplete = true
@@ -541,7 +541,7 @@ VEHICLE = {
 				TaskTurnPedToFaceEntity(GLOBAL_PED, vehicle, 500)
 				TriggerEvent("Laptop:Client:LSUnderground:Boosting:AttemptExterior", vehicle)
 
-				Minigame.Play:Pattern(
+				exports['sandbox-games']:MinigamePlayPattern(
 					3,
 					hackData.duration,
 					hackData.rows,
@@ -605,7 +605,7 @@ VEHICLE = {
 				local startCoords = GetEntityCoords(GLOBAL_PED)
 				TaskTurnPedToFaceEntity(GLOBAL_PED, VEHICLE_INSIDE, 500)
 
-				Minigame.Play:Pattern(
+				exports['sandbox-games']:MinigamePlayPattern(
 					3,
 					hackData.duration,
 					hackData.rows,

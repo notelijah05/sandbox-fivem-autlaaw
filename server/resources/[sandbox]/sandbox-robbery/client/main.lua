@@ -3,7 +3,6 @@ function RetrieveComponents()
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"PedInteraction",
 		"Polyzone",
 		"Targeting",
-		"Minigame",
 		"Properties",
 		"Inventory",
 		"EmergencyAlerts",

@@ -41,7 +41,6 @@ local _playing = nil
 
 AddEventHandler("minigame:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
@@ -50,7 +49,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("minigame", {
-		"Minigame",
 		"Inventory",
 		"Jail",
 		"Animations",
@@ -163,577 +161,575 @@ end
 		- onSuccess = Called if whatever games success (but not perfect, or if no perfection event is given) criteria is met
 		- onfail = called if minigame timesout or fail criteria is met
 ]]
-MINIGAME = {
-	_required = {
-		"Play",
-		"Cancel",
-	},
-	Play = {
-		--[[
-			Timer: Duration of progress bar
-			Difficulty: What % (out of 100) the size of the highlighted zone is
 
-			Criteria:
-				= Perfection: NONE
-				- Success: Key Pressed Within Window
-				- Fail: Timeout or key pressed when progress bar not in highlighted area
-		]]
-		Skillbar = function(self, timer, difficulty, events, action, data)
-			local params = {
-				type = "skillbar",
-				timer = timer,
-				difficulty = difficulty,
-				events = events,
-				data = data,
-				needsMouse = false,
-			}
-			_playing = params
+--[[
+	Timer: Duration of progress bar
+	Difficulty: What % (out of 100) the size of the highlighted zone is
 
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = false,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
+	Criteria:
+		= Perfection: NONE
+		- Success: Key Pressed Within Window
+		- Fail: Timeout or key pressed when progress bar not in highlighted area
+]]
+exports("MinigamePlaySkillbar", function(timer, difficulty, events, action, data)
+	local params = {
+		type = "skillbar",
+		timer = timer,
+		difficulty = difficulty,
+		events = events,
+		data = data,
+		needsMouse = false,
+	}
+	_playing = params
 
-			_playGame(params, action)
-		end,
-		--[[
-			Rate: How much the indicator moves each tick, higher is faster. 0.1 = super slow, 10 = super fast
-			Difficulty: What % (out of 100) the size of the highlighted zone is
+	action = normalizeAction(action or {})
+	action.controlDisables = {
+		disableMouse = false,
+		disableMovement = true,
+		disableCarMovement = true,
+		disableCombat = true,
+	}
 
-			Criteria:
-				= Perfection: NONE
-				- Success: Key Pressed Within Window
-				- Fail: Timeout or key pressed when progress bar not in highlighted area
-		]]
-		RoundSkillbar = function(self, rate, difficulty, events, action, data)
-			if difficulty < 2 then
-				difficulty = 2
+	_playGame(params, action)
+end)
+
+--[[
+	Rate: How much the indicator moves each tick, higher is faster. 0.1 = super slow, 10 = super fast
+	Difficulty: What % (out of 100) the size of the highlighted zone is
+
+	Criteria:
+		= Perfection: NONE
+		- Success: Key Pressed Within Window
+		- Fail: Timeout or key pressed when progress bar not in highlighted area
+]]
+exports("MinigamePlayRoundSkillbar", function(rate, difficulty, events, action, data)
+	if difficulty < 2 then
+		difficulty = 2
+	end
+
+	local params = {
+		type = "round",
+		rate = rate,
+		difficulty = difficulty,
+		randomKey = true,
+		events = events,
+		data = data,
+		needsMouse = false,
+	}
+	_playing = params
+
+	action = normalizeAction(action or {})
+	action.controlDisables = {
+		disableMouse = false,
+		disableMovement = true,
+		disableCarMovement = true,
+		disableCombat = true,
+	}
+
+	_playGame(params, action)
+end)
+
+--[[
+	Countdown: Time before game is started
+	Timer: Time between changes of current (green) bar
+	Limit: Total time allowed before game timesout
+	Total: How many bars there are in total
+	Difficulty: How many bars on each side of the middle bar will be highlighted
+	Random Key (Bool): If game uses random key, if false will always use E
+
+	Criteria:
+		= Perfection: Singular middle bar is active when key pressed
+		- Success: Any highlighted bar is active when key pressed
+		- Fail: Timeout or key pressed when no highlighted bar is current
+]]
+exports("MinigamePlayScanner", function(countdown, timer, limit, total, difficulty, randomKey, events, action, data)
+	local params = {
+		type = "scanner",
+		countdown = countdown,
+		timer = timer,
+		limit = limit,
+		total = total,
+		difficulty = difficulty,
+		randomKey = randomKey,
+		events = events,
+		data = data,
+		needsMouse = false,
+	}
+
+	action = normalizeAction(action or {})
+	action.controlDisables = {
+		disableMouse = true,
+		disableMovement = true,
+		disableCarMovement = true,
+		disableCombat = true,
+	}
+
+	_playGame(params, action)
+end)
+
+--[[
+	Countdown: Time before game is started
+	Flash: How long each key will flash for preview (Total preview time = this * 12)
+	Timer: Total time allowed before game timesout
+	Total: How many bars there are in total
+	Difficulty: Length of the sequence
+	Is Masked (Bool): If the output is masked or visible
+
+	Criteria:
+		= Perfection: Sequence completed & correct in under 25% the alotted time
+		- Success: Sequence entered is correct
+		- Fail: Timeout or sequence is incorrect
+]]
+exports("MinigamePlaySequencer", function(countdown, flash, timer, difficulty, isMasked, events, action, data)
+	local params = {
+		type = "sequencer",
+		countdown = countdown,
+		timer = flash,
+		limit = timer,
+		difficulty = difficulty,
+		mask = isMasked,
+		events = events,
+		data = data,
+		needsMouse = true,
+	}
+
+	action = normalizeAction(action or {})
+	action.controlDisables = {
+		disableMouse = true,
+		disableMovement = true,
+		disableCarMovement = true,
+		disableCombat = true,
+	}
+
+	_playGame(params, action)
+end)
+
+--[[
+	Code: The code that is expected (In string, no spaces)
+	Is Masked (Bool): If the output is masked or visible
+
+	Criteria:
+		= Perfection: NONE
+		- Success: Code entered correctly
+		- Fail: COde entered incorrectly
+]]
+exports("MinigamePlayKeypad", function(code, countdown, timer, isMasked, events, action, data)
+	local params = {
+		type = "keypad",
+		countdown = countdown,
+		limit = timer,
+		difficulty = difficulty,
+		total = code,
+		mask = isMasked,
+		events = events,
+		data = merge(data or {}, { code = code }),
+		needsMouse = true,
+	}
+
+	action = normalizeAction(action or {})
+	action.controlDisables = {
+		disableMouse = true,
+		disableMovement = true,
+		disableCarMovement = true,
+		disableCombat = true,
+	}
+
+	_playGame(params, action)
+end)
+
+--[[
+	Countdown: Time before game is started
+	Change: Time, in MS, before the sequence of keys is changed
+	Timer: Total time allowed before game timesout
+	Strikes: Amount of times an incorrect key can be pressed before game fails
+	Numbers: Total amount of keys to have, should be multiples of 4
+
+	Criteria:
+		= Perfection: All numbers activated without gaining a strike
+		- Success: All numbers activated
+		- Fail: Timeout or strike count exceeded
+]]
+exports("MinigamePlayScrambler", function(countdown, change, timer, strikes, numbers, events, action, data)
+	local params = {
+		type = "scrambler",
+		countdown = countdown,
+		timer = change,
+		limit = timer,
+		total = strikes,
+		difficulty = numbers,
+		mask = isMasked,
+		events = events,
+		data = data,
+		needsMouse = true,
+	}
+
+	action = normalizeAction(action or {})
+	action.controlDisables = {
+		disableMouse = true,
+		disableMovement = true,
+		disableCarMovement = true,
+		disableCombat = true,
+	}
+
+	_playGame(params, action)
+end)
+
+--[[
+	Countdown: Time before game is started
+	Preview: Time, in MS, activated cells are highlighted before game is activated
+	Timer: Total time allowed before game timesout
+	Columns: Number of columns
+	Rows: Number of rows
+	Num Active: Total number of activate cells
+	Strikes: Total amount of wrong cells that can be activated before considered a fail
+
+	Criteria:
+		= Perfection: All activated cells clicked without any wrong ones
+		- Success:All activated cells clicked
+		- Fail: Timeout, incorrect cells exceed strike count, not all active cells clicked
+]]
+exports("MinigamePlayMemory",
+	function(countdown, preview, timer, columns, rows, numActive, strikes, events, action, data)
+		local params = {
+			type = "memory",
+			countdown = countdown,
+			timer = preview,
+			limit = timer,
+			cols = columns,
+			rows = rows,
+			errors = strikes,
+			difficulty = numActive,
+			total = columns * rows,
+			events = events,
+			data = data,
+			needsMouse = true,
+		}
+
+		action = normalizeAction(action or {})
+		action.controlDisables = {
+			disableMouse = true,
+			disableMovement = true,
+			disableCarMovement = true,
+			disableCombat = true,
+		}
+
+		_playGame(params, action)
+	end)
+
+--[[
+	Countdown: Time before game is started
+	Limit: Total duration of game
+	Timer: How long between target generation (First target is generated at a quarter of this rate after game starts)
+	StartSize: Size, in pixels, that targets start at
+	MaxSize: Max size, in pixels, that targets grow to
+	GrowthRate: How fast targets grow, lower is faster
+	Accuracy: Required accuracy player must have to pass game
+	IsMoving: Are the targets moving around the screen?
+
+	Criteria:
+		- Success: Accuracy equal to or higher than the required accuracy
+		- Perfect: 100% Accuracy
+		- Fail: Accuracy lower than the required accuracy
+]]
+exports("MinigamePlayAim",
+	function(countdown, limit, timer, startSize, maxSize, growthRate, accuracy, isMoving, events, action, data)
+		local params = {
+			type = "aim",
+			countdown = countdown,
+			limit = limit,
+			timer = timer,
+			startSize = startSize,
+			maxSize = maxSize,
+			difficulty = growthRate,
+			accuracy = accuracy,
+			isMoving = isMoving,
+			events = events,
+			data = data,
+			needsMouse = true,
+		}
+
+		action = normalizeAction(action or {})
+		action.controlDisables = {
+			disableMouse = true,
+			disableMovement = true,
+			disableCarMovement = true,
+			disableCombat = true,
+		}
+
+		_playGame(params, action)
+	end)
+
+--[[
+	Countdown: Time before game is started
+	Timer: How long, in miliseconds, to show the preview
+	Limit: Total duration of game
+	Difficulty: How many squares
+	Difficulty2: How many questions the user has to answer (Up to 8)
+
+	Criteria:
+		- Success: Entered Correct Answer
+		- Fail: Timeout or incorrect entry
+]]
+exports("MinigamePlayCaptcha", function(countdown, timer, limit, difficulty, difficulty2, events, action, data)
+	if difficulty2 > 8 then
+		difficulty2 = 8
+	end
+
+	local params = {
+		type = "captcha",
+		countdown = countdown,
+		timer = timer,
+		limit = limit,
+		difficulty = difficulty,
+		difficulty2 = difficulty2,
+		events = events,
+		data = data,
+		needsMouse = true,
+	}
+
+	action = normalizeAction(action or {})
+	action.controlDisables = {
+		disableMouse = true,
+		disableMovement = true,
+		disableCarMovement = true,
+		disableCombat = true,
+	}
+
+	_playGame(params, action)
+end)
+
+--[[
+	Countdown: Time before game is started
+	Timer: Range, miliseconds in an array (IE: {3000, 4000}), for keys to take to move from top to bottom
+	Limit: Total duration of game
+	Difficulty: How many alleys (Up to 4)
+	Chances: How many fails player can have before game ends
+	IsShuffled: Boolean, are the alleys shuffled (IE, A S D F keyset could be in D S F A order)
+
+	Criteria:
+		- Success: Lasted duration of game without failing more than allowed
+		- Fail: Failed more than allowed
+]]
+exports("MinigamePlayKeymaster", function(countdown, timer, limit, difficulty, chances, isShuffled, events, action, data)
+	if difficulty > 4 then
+		difficulty = 4
+	end
+
+	local params = {
+		type = "keymaster",
+		countdown = countdown,
+		timer = timer,
+		limit = limit,
+		difficulty = difficulty,
+		chances = chances,
+		shuffled = isShuffled,
+		randomKey = true,
+		events = events,
+		data = data,
+		needsMouse = true,
+	}
+
+	action = normalizeAction(action or {})
+	action.controlDisables = {
+		disableMouse = true,
+		disableMovement = true,
+		disableCarMovement = true,
+		disableCombat = true,
+	}
+
+	_playGame(params, action)
+end)
+
+--[[
+	Countdown: Time before game is started
+	Limit: Total duration of game
+	Size: How many rows of 10 characters are there (Limit of 10)
+	Difficulty: How many characters are in the answer sequence
+	Difficulty2: How many characters are in each element
+	Charset: Charset to use, or false to use a random one. (Valid Options: numeric, alphabet, alphanumer, greek, symbols)
+
+	Criteria:
+		- Success: Prompted finish with the correct values highlighted
+		- Fail: Time ran out or selected wrong characters
+]]
+exports("MinigamePlayPattern", function(countdown, limit, size, difficulty, difficulty2, charset, events, action, data)
+	if size > 10 then
+		size = 10
+	end
+
+	local params = {
+		type = "pattern",
+		countdown = countdown,
+		limit = limit,
+		size = size,
+		difficulty = difficulty,
+		difficulty2 = difficulty2,
+		total = charset,
+		events = events,
+		data = data,
+		needsMouse = true,
+	}
+
+	action = normalizeAction(action or {})
+	action.controlDisables = {
+		disableMouse = true,
+		disableMovement = true,
+		disableCarMovement = true,
+		disableCombat = true,
+	}
+
+	_playGame(params, action)
+end)
+
+--[[
+	Countdown: Time before game is started
+	Timer: How many times icon shuffle, each shuffle is ~1 second (IE: timer = 5 is 5 shuffles or 5 seconds)
+	Limit: Total duration of game
+	Delay: How long, in ms, to show the final shuffled results before starting input
+	Difficulty: How many icons to show, should be divisible by 4
+	Difficulty2: How may different icons the user must enter
+
+	Criteria:
+		- Success: Submited all successful answers
+		- Fail: Time ran out or submitted incorrect answer
+]]
+exports("MinigamePlayIcons", function(countdown, timer, limit, delay, difficulty, difficulty2, events, action, data)
+	local params = {
+		type = "icons",
+		countdown = countdown,
+		timer = timer,
+		limit = limit,
+		delay = delay,
+		difficulty = difficulty,
+		difficulty2 = difficulty2,
+		events = events,
+		data = data,
+		needsMouse = true,
+	}
+
+	action = normalizeAction(action or {})
+	action.controlDisables = {
+		disableMouse = true,
+		disableMovement = true,
+		disableCarMovement = true,
+		disableCombat = true,
+	}
+
+	_playGame(params, action)
+end)
+
+--[[
+	Countdown: Time before game is started
+	Delay: How long to display numbers of targets
+	Limit: Total duration of game
+	Difficulty: How many targets are tehre
+
+	Criteria:
+		- Success: Submited all successful answers
+		- Fail: Time ran out or submitted incorrect answer
+]]
+exports("MinigamePlayTracking", function(countdown, delay, limit, difficulty, events, action, data)
+	local params = {
+		type = "tracking",
+		countdown = countdown,
+		delay = delay,
+		limit = limit,
+		difficulty = difficulty,
+		events = events,
+		data = data,
+		needsMouse = true,
+	}
+
+	action = normalizeAction(action or {})
+	action.controlDisables = {
+		disableMouse = true,
+		disableMovement = true,
+		disableCarMovement = true,
+		disableCombat = true,
+	}
+
+	_playGame(params, action)
+end)
+
+--[[
+	Countdown: Time before game is started
+	Preview: Time, in MS, activated cells are highlighted before game is activated
+	Speed: How fast sliders are moving, NOTE: Speed is reduced by 100ms on every slider so keep this in mind
+	Foregiveness: The size in which the slider may be off but still count (In pixels), higher = easier
+	Number of Sliders: How many sliders the game will have
+
+	Criteria:
+		- Success: p
+		- Fail: Timeout
+]]
+-- exports("MinigamePlaySliders", function(countdown, speed, limit, foregiveness, numberOfSliders, events, action, data)
+-- 	print(numberOfSliders)
+-- 	local params = {
+-- 		type = "drill",
+-- 		countdown = countdown,
+-- 		timer = speed,
+-- 		limit = limit,
+-- 		difficulty = foregiveness,
+-- 		total = numberOfSliders,
+-- 		events = events,
+-- 		data = data,
+-- 		needsMouse = true,
+-- 	}
+
+-- 	action = normalizeAction(action or {})
+-- 	action.controlDisables = {
+-- 		disableMouse = true,
+-- 		disableMovement = true,
+-- 		disableCarMovement = true,
+-- 		disableCombat = true,
+-- 	}
+
+-- 	_playGame(params, action)
+-- end)
+
+exports("MinigamePlayDrill", function(events, data)
+	exports['sandbox-games']:DrillingStart(function(success)
+		if success then
+			if type(events.onSuccess) == "string" then
+				TriggerEvent(events.onSuccess, data or {})
+			else
+				events.onSuccess(data or {})
 			end
-
-			local params = {
-				type = "round",
-				rate = rate,
-				difficulty = difficulty,
-				randomKey = true,
-				events = events,
-				data = data,
-				needsMouse = false,
-			}
-			_playing = params
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = false,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		--[[
-			Countdown: Time before game is started
-			Timer: Time between changes of current (green) bar
-			Limit: Total time allowed before game timesout
-			Total: How many bars there are in total
-			Difficulty: How many bars on each side of the middle bar will be highlighted
-			Random Key (Bool): If game uses random key, if false will always use E
-
-			Criteria:
-				= Perfection: Singular middle bar is active when key pressed
-				- Success: Any highlighted bar is active when key pressed
-				- Fail: Timeout or key pressed when no highlighted bar is current
-		]]
-		Scanner = function(self, countdown, timer, limit, total, difficulty, randomKey, events, action, data)
-			local params = {
-				type = "scanner",
-				countdown = countdown,
-				timer = timer,
-				limit = limit,
-				total = total,
-				difficulty = difficulty,
-				randomKey = randomKey,
-				events = events,
-				data = data,
-				needsMouse = false,
-			}
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = true,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		--[[
-			Countdown: Time before game is started
-			Flash: How long each key will flash for preview (Total preview time = this * 12)
-			Timer: Total time allowed before game timesout
-			Total: How many bars there are in total
-			Difficulty: Length of the sequence
-			Is Masked (Bool): If the output is masked or visible
-
-			Criteria:
-				= Perfection: Sequence completed & correct in under 25% the alotted time
-				- Success: Sequence entered is correct
-				- Fail: Timeout or sequence is incorrect
-		]]
-		Sequencer = function(self, countdown, flash, timer, difficulty, isMasked, events, action, data)
-			local params = {
-				type = "sequencer",
-				countdown = countdown,
-				timer = flash,
-				limit = timer,
-				difficulty = difficulty,
-				mask = isMasked,
-				events = events,
-				data = data,
-				needsMouse = true,
-			}
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = true,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		--[[
-			Code: The code that is expected (In string, no spaces)
-			Is Masked (Bool): If the output is masked or visible
-
-			Criteria:
-				= Perfection: NONE
-				- Success: Code entered correctly
-				- Fail: COde entered incorrectly
-		]]
-		Keypad = function(self, code, countdown, timer, isMasked, events, action, data)
-			local params = {
-				type = "keypad",
-				countdown = countdown,
-				limit = timer,
-				difficulty = difficulty,
-				total = code,
-				mask = isMasked,
-				events = events,
-				data = merge(data or {}, { code = code }),
-				needsMouse = true,
-			}
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = true,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		--[[
-			Countdown: Time before game is started
-			Change: Time, in MS, before the sequence of keys is changed
-			Timer: Total time allowed before game timesout
-			Strikes: Amount of times an incorrect key can be pressed before game fails
-			Numbers: Total amount of keys to have, should be multiples of 4
-
-			Criteria:
-				= Perfection: All numbers activated without gaining a strike
-				- Success: All numbers activated
-				- Fail: Timeout or strike count exceeded
-		]]
-		Scrambler = function(self, countdown, change, timer, strikes, numbers, events, action, data)
-			local params = {
-				type = "scrambler",
-				countdown = countdown,
-				timer = change,
-				limit = timer,
-				total = strikes,
-				difficulty = numbers,
-				mask = isMasked,
-				events = events,
-				data = data,
-				needsMouse = true,
-			}
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = true,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		--[[
-			Countdown: Time before game is started
-			Preview: Time, in MS, activated cells are highlighted before game is activated
-			Timer: Total time allowed before game timesout
-			Columns: Number of columns
-			Rows: Number of rows
-			Num Active: Total number of activate cells
-			Strikes: Total amount of wrong cells that can be activated before considered a fail
-
-			Criteria:
-				= Perfection: All activated cells clicked without any wrong ones
-				- Success:All activated cells clicked
-				- Fail: Timeout, incorrect cells exceed strike count, not all active cells clicked
-		]]
-		Memory = function(self, countdown, preview, timer, columns, rows, numActive, strikes, events, action, data)
-			local params = {
-				type = "memory",
-				countdown = countdown,
-				timer = preview,
-				limit = timer,
-				cols = columns,
-				rows = rows,
-				errors = strikes,
-				difficulty = numActive,
-				total = columns * rows,
-				events = events,
-				data = data,
-				needsMouse = true,
-			}
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = true,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		--[[
-			Countdown: Time before game is started
-			Limit: Total duration of game
-			Timer: How long between target generation (First target is generated at a quarter of this rate after game starts)
-			StartSize: Size, in pixels, that targets start at
-			MaxSize: Max size, in pixels, that targets grow to
-			GrowthRate: How fast targets grow, lower is faster
-			Accuracy: Required accuracy player must have to pass game
-			IsMoving: Are the targets moving around the screen?
-
-			Criteria:
-				- Success: Accuracy equal to or higher than the required accuracy
-				- Perfect: 100% Accuracy
-				- Fail: Accuracy lower than the required accuracy
-		]]
-		Aim = function(
-			self,
-			countdown,
-			limit,
-			timer,
-			startSize,
-			maxSize,
-			growthRate,
-			accuracy,
-			isMoving,
-			events,
-			action,
-			data
-		)
-			local params = {
-				type = "aim",
-				countdown = countdown,
-				limit = limit,
-				timer = timer,
-				startSize = startSize,
-				maxSize = maxSize,
-				difficulty = growthRate,
-				accuracy = accuracy,
-				isMoving = isMoving,
-				events = events,
-				data = data,
-				needsMouse = true,
-			}
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = true,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		--[[
-			Countdown: Time before game is started
-			Timer: How long, in miliseconds, to show the preview
-			Limit: Total duration of game
-			Difficulty: How many squares
-			Difficulty2: How many questions the user has to answer (Up to 8)
-
-			Criteria:
-				- Success: Entered Correct Answer
-				- Fail: Timeout or incorrect entry
-		]]
-		Captcha = function(self, countdown, timer, limit, difficulty, difficulty2, events, action, data)
-			if difficulty2 > 8 then
-				difficulty2 = 8
-			end
-
-			local params = {
-				type = "captcha",
-				countdown = countdown,
-				timer = timer,
-				limit = limit,
-				difficulty = difficulty,
-				difficulty2 = difficulty2,
-				events = events,
-				data = data,
-				needsMouse = true,
-			}
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = true,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		--[[
-			Countdown: Time before game is started
-			Timer: Range, miliseconds in an array (IE: {3000, 4000}), for keys to take to move from top to bottom
-			Limit: Total duration of game
-			Difficulty: How many alleys (Up to 4)
-			Chances: How many fails player can have before game ends
-			IsShuffled: Boolean, are the alleys shuffled (IE, A S D F keyset could be in D S F A order)
-
-			Criteria:
-				- Success: Lasted duration of game without failing more than allowed
-				- Fail: Failed more than allowed
-		]]
-		Keymaster = function(self, countdown, timer, limit, difficulty, chances, isShuffled, events, action, data)
-			if difficulty > 4 then
-				difficulty = 4
-			end
-
-			local params = {
-				type = "keymaster",
-				countdown = countdown,
-				timer = timer,
-				limit = limit,
-				difficulty = difficulty,
-				chances = chances,
-				shuffled = isShuffled,
-				randomKey = true,
-				events = events,
-				data = data,
-				needsMouse = true,
-			}
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = true,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		--[[
-			Countdown: Time before game is started
-			Limit: Total duration of game
-			Size: How many rows of 10 characters are there (Limit of 10)
-			Difficulty: How many characters are in the answer sequence
-			Difficulty2: How many characters are in each element
-			Charset: Charset to use, or false to use a random one. (Valid Options: numeric, alphabet, alphanumer, greek, symbols)
-
-			Criteria:
-				- Success: Prompted finish with the correct values highlighted
-				- Fail: Time ran out or selected wrong characters
-		]]
-		Pattern = function(self, countdown, limit, size, difficulty, difficulty2, charset, events, action, data)
-			if size > 10 then
-				size = 10
-			end
-
-			local params = {
-				type = "pattern",
-				countdown = countdown,
-				limit = limit,
-				size = size,
-				difficulty = difficulty,
-				difficulty2 = difficulty2,
-				total = charset,
-				events = events,
-				data = data,
-				needsMouse = true,
-			}
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = true,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		--[[
-			Countdown: Time before game is started
-			Timer: How many times icon shuffle, each shuffle is ~1 second (IE: timer = 5 is 5 shuffles or 5 seconds)
-			Limit: Total duration of game
-			Delay: How long, in ms, to show the final shuffled results before starting input
-			Difficulty: How many icons to show, should be divisible by 4
-			Difficulty2: How may different icons the user must enter
-
-			Criteria:
-				- Success: Submited all successful answers
-				- Fail: Time ran out or submitted incorrect answer
-		]]
-		Icons = function(self, countdown, timer, limit, delay, difficulty, difficulty2, events, action, data)
-			local params = {
-				type = "icons",
-				countdown = countdown,
-				timer = timer,
-				limit = limit,
-				delay = delay,
-				difficulty = difficulty,
-				difficulty2 = difficulty2,
-				events = events,
-				data = data,
-				needsMouse = true,
-			}
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = true,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		--[[
-			Countdown: Time before game is started
-			Delay: How long to display numbers of targets
-			Limit: Total duration of game
-			Difficulty: How many targets are tehre
-
-			Criteria:
-				- Success: Submited all successful answers
-				- Fail: Time ran out or submitted incorrect answer
-		]]
-		Tracking = function(self, countdown, delay, limit, difficulty, events, action, data)
-			local params = {
-				type = "tracking",
-				countdown = countdown,
-				delay = delay,
-				limit = limit,
-				difficulty = difficulty,
-				events = events,
-				data = data,
-				needsMouse = true,
-			}
-
-			action = normalizeAction(action or {})
-			action.controlDisables = {
-				disableMouse = true,
-				disableMovement = true,
-				disableCarMovement = true,
-				disableCombat = true,
-			}
-
-			_playGame(params, action)
-		end,
-		Drill = function(self, events, data)
-			exports['sandbox-games']:DrillingStart(function(success)
-				if success then
-					if type(events.onSuccess) == "string" then
-						TriggerEvent(events.onSuccess, data or {})
-					else
-						events.onSuccess(data or {})
-					end
-					ClearPedTasks(PlayerPedId())
-				else
-					if type(events.onFail) == "string" then
-						TriggerEvent(events.onFail, data or {})
-					else
-						events.onFail(data or {})
-					end
-					ClearPedTasks(PlayerPedId())
-				end
-			end)
-		end,
-		--[[
-			Countdown: Time before game is started
-			Preview: Time, in MS, activated cells are highlighted before game is activated
-			Speed: How fast sliders are moving, NOTE: Speed is reduced by 100ms on every slider so keep this in mind
-			Foregiveness: The size in which the slider may be off but still count (In pixels), higher = easier
-			Number of Sliders: How many sliders the game will have
-
-			Criteria:
-				- Success: p
-				- Fail: Timeout
-		]]
-		-- Sliders = function(self, countdown, speed, limit, foregiveness, numberOfSliders, events, action, data)
-		-- 	print(numberOfSliders)
-		-- 	local params = {
-		-- 		type = "drill",
-		-- 		countdown = countdown,
-		-- 		timer = speed,
-		-- 		limit = limit,
-		-- 		difficulty = foregiveness,
-		-- 		total = numberOfSliders,
-		-- 		events = events,
-		-- 		data = data,
-		-- 		needsMouse = true,
-		-- 	}
-
-		-- 	action = normalizeAction(action or {})
-		-- 	action.controlDisables = {
-		-- 		disableMouse = true,
-		-- 		disableMovement = true,
-		-- 		disableCarMovement = true,
-		-- 		disableCombat = true,
-		-- 	}
-
-		-- 	_playGame(params, action)
-		-- end,
-	},
-	Cancel = function(self)
-		SendNUIMessage({
-			type = "FAIL_GAME",
-		})
-
-		isPlayingGame = false
-		if type(_playing.events.onFail) == "string" then
-			TriggerEvent(_playing.events.onFail, _playing.data)
+			ClearPedTasks(PlayerPedId())
 		else
-			_playing.events.onFail(_playing.data)
+			if type(events.onFail) == "string" then
+				TriggerEvent(events.onFail, data or {})
+			else
+				events.onFail(data or {})
+			end
+			ClearPedTasks(PlayerPedId())
 		end
+	end)
+end)
 
-		Minigame:End()
-		SetNuiFocus(false, false)
-		SetNuiFocusKeepInput(false)
-	end,
-	End = function(self)
-		_runGameThread = false
-		isPlayingGame = false
+exports("MinigameCancel", function()
+	SendNUIMessage({
+		type = "FAIL_GAME",
+	})
 
-		LocalPlayer.state.doingAction = false
-	end,
-}
+	isPlayingGame = false
+	if type(_playing.events.onFail) == "string" then
+		TriggerEvent(_playing.events.onFail, _playing.data)
+	else
+		_playing.events.onFail(_playing.data)
+	end
+
+	exports['sandbox-games']:MinigameEnd()
+	SetNuiFocus(false, false)
+	SetNuiFocusKeepInput(false)
+end)
+
+exports("MinigameEnd", function()
+	_runGameThread = false
+	isPlayingGame = false
+
+	LocalPlayer.state.doingAction = false
+end)
 
 RegisterNUICallback("Minigame:Finish", function(data, cb)
 	cb("OK")
@@ -761,13 +757,9 @@ end)
 
 RegisterNUICallback("Minigame:End", function(data, cb)
 	cb("OK")
-	Minigame:End()
+	exports['sandbox-games']:MinigameEnd()
 	SetNuiFocus(false, false)
 	SetNuiFocusKeepInput(false)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Minigame", MINIGAME)
 end)
 
 function _playGame(params, action)
@@ -795,7 +787,7 @@ function _playGame(params, action)
 					SetNuiFocusKeepInput(not params.needsMouse)
 					Wait(1)
 					if IsEntityDead(player) and not action.useWhileDead then
-						Minigame:Cancel()
+						exports['sandbox-games']:MinigameCancel()
 					end
 				end
 			end)
@@ -849,7 +841,8 @@ function _doGameStart(player, action)
 								)
 							end
 						elseif action.animation.anim ~= nil then
-							Animations.Emotes:Play(action.animation.anim, false, action.duration or -1, true)
+							exports['sandbox-animations']:EmotesPlay(action.animation.anim, false, action.duration or -1,
+								true)
 						else
 							if GetVehiclePedIsIn(LocalPlayer.state.ped) == 0 then
 								TaskStartScenarioInPlace(player, "PROP_HUMAN_BUM_BIN", 0, true)
@@ -968,7 +961,7 @@ function _doGameStart(player, action)
 				end
 
 				if action.vehicle and not IsPedInAnyVehicle(player) then
-					Minigame:Cancel()
+					exports['sandbox-games']:MinigameCancel()
 				end
 			end
 			Wait(0)
@@ -989,7 +982,7 @@ function _gameCleanup(action)
 				StopAnimTask(PlayerPedId(), action.animation.animDict, action.animation.anim, 1.0)
 			end
 		elseif action.animation.anim ~= nil then
-			Animations.Emotes:ForceCancel()
+			exports['sandbox-animations']:EmotesForceCancel()
 		else
 			if action.animation.task ~= nil and GetVehiclePedIsIn(LocalPlayer.state.ped) == 0 then
 				ClearPedTasksImmediately(LocalPlayer.state.ped)

@@ -1,7 +1,7 @@
 AddEventHandler("Drugs:Client:Startup", function()
     exports["sandbox-base"]:RegisterClientCallback("Drugs:Coke:Use", function(data, cb)
         Wait(400)
-        Minigame.Play:RoundSkillbar(1.0, 6, {
+        exports['sandbox-games']:MinigamePlayRoundSkillbar(1.0, 6, {
             onSuccess = function()
                 cb(true)
             end,

@@ -64,7 +64,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	exports["sandbox-base"]:RegisterClientCallback("Robbery:Fleeca:Keypad:Vault", function(data, cb)
-		Minigame.Play:Keypad(data, 5, 10000, false, {
+		exports['sandbox-games']:MinigamePlayKeypad(data, 5, 10000, false, {
 			onSuccess = function(data)
 				cb(true, data)
 			end,

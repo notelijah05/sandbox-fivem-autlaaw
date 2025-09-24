@@ -53,7 +53,7 @@ end)
 AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
     if GlobalState['Sync:IsNight'] then
         if (not GlobalState["ATMRobberyStartCD"]) or (GetCloudTimeAsInt() > GlobalState["ATMRobberyStartCD"]) then
-            Minigame.Play:Memory(5, 1200, 9000, 5, 5, 5, 2, {
+            exports['sandbox-games']:MinigamePlayMemory(5, 1200, 9000, 5, 5, 5, 2, {
                 onSuccess = function(data)
                     exports["sandbox-base"]:ServerCallback("Robbery:ATM:StartJob", true, function(success, location)
                         if success then
@@ -182,7 +182,7 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
         local size = math.random(5, 7)
         local toGet = math.random(4, 6)
 
-        Minigame.Play:Memory(5, 1000, 8000, size, size, toGet, 1, {
+        exports['sandbox-games']:MinigamePlayMemory(5, 1000, 8000, size, size, toGet, 1, {
             onSuccess = function(data)
                 while LocalPlayer.state.doingAction do -- Apparently this is dumb
                     Wait(100)
