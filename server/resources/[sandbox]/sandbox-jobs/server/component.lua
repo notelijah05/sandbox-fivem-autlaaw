@@ -604,7 +604,7 @@ _JOBS = {
 	Management = {
 		Create = function(self, name, ownerSID) -- For player business creations
 			if not name then
-				name = Generator:Company()
+				name = exports['sandbox-base']:GeneratorCompany()
 			end
 			local jobId = string.format("Company_%s", exports['sandbox-base']:SequenceGet("Company"))
 			if jobId and name then

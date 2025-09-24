@@ -125,7 +125,8 @@ function RegisterItemUses()
 
 			updatingMetaData.Plate = Vehicles.Identification.Plate:Generate(true)
 			updatingMetaData.VIN = Vehicles.Identification.VIN:GenerateLocal() -- Might not be completely unique but odds are low and idc
-			updatingMetaData.OwnerName = Generator.Name:First() .. " " .. Generator.Name:Last()
+			updatingMetaData.OwnerName = exports['sandbox-base']:GeneratorNameFirst() ..
+			" " .. exports['sandbox-base']:GeneratorNameLast()
 			updatingMetaData.SID = exports['sandbox-base']:SequenceGet("Character")
 			updatingMetaData.Vehicle = exports['sandbox-vehicles']:RandomName()
 

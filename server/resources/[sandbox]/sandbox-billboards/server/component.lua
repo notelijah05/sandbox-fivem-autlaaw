@@ -1,12 +1,10 @@
 AddEventHandler("Billboards:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-    Generator = exports["sandbox-base"]:FetchComponent("Generator")
     Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
     exports["sandbox-base"]:RequestDependencies("Billboards", {
-        "Generator",
         "Jobs",
     }, function(error)
         if #error > 0 then

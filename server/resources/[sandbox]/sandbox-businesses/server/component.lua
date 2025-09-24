@@ -2,7 +2,6 @@ _pickups = {}
 
 AddEventHandler("Businesses:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
@@ -13,7 +12,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Businesses", {
-		"Generator",
 		"Jobs",
 		"MDT",
 		"Laptop",

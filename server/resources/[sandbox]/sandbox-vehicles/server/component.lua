@@ -12,7 +12,6 @@ AddEventHandler('Vehicles:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Locations = exports['sandbox-base']:FetchComponent('Locations')
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
-    Generator = exports['sandbox-base']:FetchComponent('Generator')
     Tow = exports['sandbox-base']:FetchComponent('Tow')
     Properties = exports['sandbox-base']:FetchComponent('Properties')
     Police = exports['sandbox-base']:FetchComponent('Police')
@@ -24,7 +23,6 @@ AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Vehicles', {
         'Locations',
         'Jobs',
-        'Generator',
         'Tow',
         'Properties',
         'Police',

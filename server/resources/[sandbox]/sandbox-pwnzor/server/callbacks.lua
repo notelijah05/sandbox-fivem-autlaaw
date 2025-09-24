@@ -221,7 +221,7 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:GetCode", function(source, data, cb)
-		afkCodes[source] = Generator.Hacker.ingVerb()
+		afkCodes[source] = exports['sandbox-base']:GeneratorHackerIngVerb()
 		cb(afkCodes[source])
 	end)
 

@@ -110,8 +110,8 @@ function BuildMetaDataTable(cData, item, existing)
 		MetaData.Amount = math.random(1000, 5000)
 	elseif itemExist.name == "vpn" then
 		MetaData.VpnName = {
-			First = Generator.Name:First(),
-			Last = Generator.Name:Last(),
+			First = exports['sandbox-base']:GeneratorNameFirst(),
+			Last = exports['sandbox-base']:GeneratorNameLast(),
 		}
 	elseif itemExist.name == "cigarette_pack" then
 		MetaData.Count = 30
@@ -161,7 +161,6 @@ AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Drugs = exports["sandbox-base"]:FetchComponent("Drugs")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
@@ -171,7 +170,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Jobs",
 		"Reputation",
-		"Generator",
 		"Drugs",
 		"Robbery",
 		"Laptop",

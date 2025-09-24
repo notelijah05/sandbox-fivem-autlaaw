@@ -11,7 +11,6 @@ function RetrieveComponents()
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
-	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 end
@@ -24,7 +23,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"EmergencyAlerts",
 		"MDT",
 		"Radar",
-		"Generator",
 		"Doors",
 		"Robbery"
 	}, function(error)
@@ -539,8 +537,8 @@ POLICE = {
 					if not _generatedNames[plate] then
 						_generatedNames[plate] = string.format(
 							"%s %s",
-							Generator.Name:First(),
-							Generator.Name:Last()
+							exports['sandbox-base']:GeneratorNameFirst(),
+							exports['sandbox-base']:GeneratorNameLast()
 						)
 					end
 
@@ -571,8 +569,8 @@ POLICE = {
 					if not _generatedNames[plate] then
 						_generatedNames[plate] = string.format(
 							"%s %s",
-							Generator.Name:First(),
-							Generator.Name:Last()
+							exports['sandbox-base']:GeneratorNameFirst(),
+							exports['sandbox-base']:GeneratorNameLast()
 						)
 					end
 

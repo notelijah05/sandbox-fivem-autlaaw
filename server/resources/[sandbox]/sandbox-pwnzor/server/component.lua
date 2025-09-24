@@ -141,14 +141,12 @@ end)
 AddEventHandler("Pwnzor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 end
 
 local _loaded = false
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Pwnzor", {
 		"Pwnzor",
-		"Generator",
 	}, function(error)
 		if #error > 0 then
 			return

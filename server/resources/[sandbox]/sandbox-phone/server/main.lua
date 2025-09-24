@@ -62,7 +62,6 @@ function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
-	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
@@ -75,7 +74,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"MDT",
 		"Jobs",
 		"Labor",
-		"Generator",
 		"Properties",
 		"Reputation",
 		"Robbery",
