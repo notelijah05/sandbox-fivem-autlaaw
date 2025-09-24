@@ -24,7 +24,7 @@ AddEventHandler("Core:Shared:Ready", function()
                 billboardUrl = false
             end
 
-            exports['sandbox-billboards']:BillboardsSet(billboardId, billboardUrl)
+            exports['sandbox-billboards']:Set(billboardId, billboardUrl)
         end, {
             help = "Set a Billboard URL",
             params = {
@@ -48,7 +48,7 @@ AddEventHandler("Core:Shared:Ready", function()
                 end
 
                 if not billboardUrl or exports['sandbox-base']:RegexTest(_billboardRegex, billboardUrl, "gim") then
-                    cb(exports['sandbox-billboards']:BillboardsSet(data.id, billboardUrl))
+                    cb(exports['sandbox-billboards']:Set(data.id, billboardUrl))
                 else
                     cb(false, true)
                 end
@@ -59,7 +59,7 @@ AddEventHandler("Core:Shared:Ready", function()
     end)
 end)
 
-exports("BillboardsSet", function(id, url)
+exports("Set", function(id, url)
     if id and _billboardConfig[id] then
         local updated = SetBillboardURL(id, url)
         if updated then
@@ -73,11 +73,11 @@ exports("BillboardsSet", function(id, url)
     return false
 end)
 
-exports("BillboardsGet", function(id)
+exports("Get", function(id)
     return GlobalState[string.format("Billboards:%s", id)]
 end)
 
-exports("BillboardsGetCategory", function(cat)
+exports("GetCategory", function(cat)
     local cIds = {}
 
     for k, v in pairs(_billboardConfig) do
