@@ -12,7 +12,6 @@ function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
 end
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
 		"Animations",
 		"EmergencyAlerts",
-		"Weapons",
 		"Admin",
 		"Properties",
 	}, function(error)

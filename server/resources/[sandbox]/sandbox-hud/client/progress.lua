@@ -285,7 +285,7 @@ function _doActionStart(player, action)
 					end
 
 					if action.disarm then
-						Weapons:UnequipIfEquippedNoAnim()
+						exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 					end
 
 					isAnim = true

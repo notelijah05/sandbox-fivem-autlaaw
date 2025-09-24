@@ -224,7 +224,7 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
                 LocalPlayer.state.playingCasino = true
 
                 Animations.Emotes:ForceCancel()
-                Weapons:UnequipIfEquippedNoAnim()
+                exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
                 if _blackJackStatebagHandler then
                     RemoveStateBagChangeHandler(_blackJackStatebagHandler)

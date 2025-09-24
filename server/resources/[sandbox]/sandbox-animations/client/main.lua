@@ -19,7 +19,6 @@ function RetrieveComponents()
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 end
 
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Interaction",
 		"Hud",
-		"Weapons",
 		"ListMenu",
 		"Inventory",
 	}, function(error)

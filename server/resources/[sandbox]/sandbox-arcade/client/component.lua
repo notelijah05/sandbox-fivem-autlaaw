@@ -7,7 +7,6 @@ function RetrieveComponents()
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Arcade = exports["sandbox-base"]:FetchComponent("Arcade")
 end
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"PedInteraction",
 		"Jail",
 		"Animations",
-		"Weapons",
 		"Jobs",
 		"Arcade",
 	}, function(error)

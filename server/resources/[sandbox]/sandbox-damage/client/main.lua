@@ -12,7 +12,6 @@ function RetrieveComponents()
     PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
     Jail = exports["sandbox-base"]:FetchComponent("Jail")
     Animations = exports["sandbox-base"]:FetchComponent("Animations")
-    Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
         "PedInteraction",
         "Jail",
         "Animations",
-        "Weapons",
     }, function(error)
         if #error > 0 then
             return

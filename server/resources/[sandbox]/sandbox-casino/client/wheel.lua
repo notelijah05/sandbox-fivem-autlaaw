@@ -63,7 +63,7 @@ AddEventHandler("Casino:Client:StartSpin", function(_, data)
             LocalPlayer.state.playingCasino = true
 
             Animations.Emotes:ForceCancel()
-            Weapons:UnequipIfEquippedNoAnim()
+            exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
             local _lib = "anim_casino_a@amb@casino@games@lucky7wheel@male"
             -- if IsPedMale(playerPed) then

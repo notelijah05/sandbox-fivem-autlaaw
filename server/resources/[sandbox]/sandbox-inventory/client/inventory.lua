@@ -92,8 +92,6 @@ function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-
-	--Weapons = exports['sandbox-base']:FetchComponent('Weapons')
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -111,7 +109,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Reputation",
 		"Vehicles",
 		"ListMenu",
-		--'Weapons',
 	}, function(error)
 		if #error > 0 then
 			return
@@ -834,7 +831,7 @@ end)
 local runningId = 0
 RegisterNetEvent("Inventory:Client:Changed", function(type, item, count, slot)
 	if type == "holster" then
-		local equipped = Weapons:GetEquippedItem()
+		local equipped = exports['sandbox-inventory']:WeaponsGetEquippedItem()
 		if equipped ~= nil and equipped.Slot == slot and equipped.Name == item then
 			type = "Holstered"
 		else

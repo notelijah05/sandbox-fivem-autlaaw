@@ -63,7 +63,6 @@ function RetrieveComponents()
 	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
@@ -77,7 +76,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Minigame",
 		"Interaction",
 		"Inventory",
-		"Weapons",
 		"Jail",
 		"Animations",
 		"Admin",

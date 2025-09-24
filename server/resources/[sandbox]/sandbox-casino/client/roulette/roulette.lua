@@ -174,7 +174,7 @@ AddEventHandler("Casino:Client:JoinRoulette", function(_, data)
                     LocalPlayer.state.playingCasino = true
 
                     Animations.Emotes:ForceCancel()
-                    Weapons:UnequipIfEquippedNoAnim()
+                    exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
                     if _rouletteStatebagHandler then
                         RemoveStateBagChangeHandler(_rouletteStatebagHandler)

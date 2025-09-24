@@ -13,7 +13,7 @@ _MDT = {
 			SetNuiFocus(true, true)
 
 			Animations.Emotes:ForceCancel()
-			Weapons:UnequipIfEquippedNoAnim()
+			exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
 			CreateThread(function()
 				local playerPed = PlayerPedId()

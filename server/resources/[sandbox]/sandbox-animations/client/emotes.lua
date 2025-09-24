@@ -176,7 +176,7 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
         end
 
         if not skipDisarm then
-            Weapons:UnequipIfEquippedNoAnim()
+            exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
         end
 
         ChosenDict, ChosenAnimation = emoteData.AnDictionary, emoteData.AnAnim

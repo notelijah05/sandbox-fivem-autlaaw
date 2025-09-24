@@ -1,47 +1,34 @@
 local _r = false
 
-AddEventHandler("Pwnzor:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Pwnzor", {
-		"Weapons",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		if not _r then
-			_r = true
-			RegisterEvents()
-			RegisterCommands()
+	if not _r then
+		_r = true
+		RegisterEvents()
+		RegisterCommands()
 
-			-- exports["sandbox-base"]:ServerCallback("Commands:ValidateAdmin", {}, function(isAdmin)
-			-- 	if not isAdmin then
-			-- 		CreateThread(function()
-			-- 			while _r do
-			-- 				Wait(1)
-			-- 				local ped = PlayerPedId()
-			-- 				SetPedInfiniteAmmoClip(ped, false)
-			-- 				SetEntityInvincible(ped, false)
-			-- 				SetEntityCanBeDamaged(ped, true)
-			-- 				ResetEntityAlpha(ped)
-			-- 				local fallin = IsPedFalling(ped)
-			-- 				local ragg = IsPedRagdoll(ped)
-			-- 				local parac = GetPedParachuteState(ped)
-			-- 				if parac >= 0 or ragg or fallin then
-			-- 					SetEntityMaxSpeed(ped, 80.0)
-			-- 				else
-			-- 					SetEntityMaxSpeed(ped, 7.1)
-			-- 				end
-			-- 			end
-			-- 		end)
-			-- 	end
-			-- end)
-		end
-	end)
+		-- exports["sandbox-base"]:ServerCallback("Commands:ValidateAdmin", {}, function(isAdmin)
+		-- 	if not isAdmin then
+		-- 		CreateThread(function()
+		-- 			while _r do
+		-- 				Wait(1)
+		-- 				local ped = PlayerPedId()
+		-- 				SetPedInfiniteAmmoClip(ped, false)
+		-- 				SetEntityInvincible(ped, false)
+		-- 				SetEntityCanBeDamaged(ped, true)
+		-- 				ResetEntityAlpha(ped)
+		-- 				local fallin = IsPedFalling(ped)
+		-- 				local ragg = IsPedRagdoll(ped)
+		-- 				local parac = GetPedParachuteState(ped)
+		-- 				if parac >= 0 or ragg or fallin then
+		-- 					SetEntityMaxSpeed(ped, 80.0)
+		-- 				else
+		-- 					SetEntityMaxSpeed(ped, 7.1)
+		-- 				end
+		-- 			end
+		-- 		end)
+		-- 	end
+		-- end)
+	end
 end)
 
 AddEventHandler("onResourceStart", function(resourceName)

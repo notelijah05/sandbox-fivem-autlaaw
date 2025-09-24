@@ -100,7 +100,7 @@ AddEventHandler("Casino:Client:UseSlotMachine", function()
                 LocalPlayer.state.playingCasino = true
 
                 Animations.Emotes:ForceCancel()
-                Weapons:UnequipIfEquippedNoAnim()
+                exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
                 loadAnim("anim_casino_b@amb@casino@games@shared@player@")
 

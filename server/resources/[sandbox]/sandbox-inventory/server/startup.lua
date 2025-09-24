@@ -293,7 +293,7 @@ function SetupItemUses(itemData)
 		end)
 	elseif itemData.type == 16 and itemData.component ~= nil then
 		INVENTORY.Items:RegisterUse(itemData.name, "WeaponAttachments", function(source, item)
-			Weapons:EquipAttachment(source, item)
+			exports['sandbox-inventory']:WeaponsEquipAttachment(source, item)
 		end)
 	end
 

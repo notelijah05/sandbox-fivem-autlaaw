@@ -752,7 +752,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				},
 				disarm = true,
 			}, function()
-				Weapons:UnequipIfEquippedNoAnim()
+				exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 			end, function(status)
 				if not status then
 					local h = GetEntityHeading(PlayerPedId())

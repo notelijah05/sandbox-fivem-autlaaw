@@ -27,7 +27,6 @@ AddEventHandler("Radio:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 end
 
@@ -37,7 +36,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radio", {
 		"Progress",
 		"Jobs",
-		"Weapons",
 		"Hud",
 	}, function(error)
 		if #error > 0 then
@@ -151,7 +149,7 @@ function OpenRadio()
 		type = "APP_SHOW",
 	})
 
-	Weapons:UnequipIfEquippedNoAnim()
+	exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
 	CreateThread(function()
 		local playerPed = PlayerPedId()

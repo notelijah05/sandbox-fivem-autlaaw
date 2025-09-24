@@ -256,7 +256,7 @@ local function GrappleThreads()
 					grapple.activate()
 					TriggerServerEvent("Inventory:Server:DegradeLastUsed", 25)
 					Wait(1000)
-					Weapons:UnequipIfEquippedNoAnim()
+					exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 				end
 			end
 			Wait(0)

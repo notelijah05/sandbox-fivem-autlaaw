@@ -73,10 +73,12 @@ function BuildMetaDataTable(cData, item, existing)
 	if itemExist.type == 2 then
 		if not MetaData.SerialNumber and not itemExist.noSerial then
 			if MetaData.Scratched then
-				MetaData.ScratchedSerialNumber = Weapons:Purchase(cData.SID, itemExist, true, MetaData.Company)
+				MetaData.ScratchedSerialNumber = exports['sandbox-inventory']:WeaponsPurchase(cData.SID, itemExist, true,
+					MetaData.Company)
 				MetaData.Scratched = nil
 			else
-				MetaData.SerialNumber = Weapons:Purchase(cData.SID, itemExist, false, MetaData.Company)
+				MetaData.SerialNumber = exports['sandbox-inventory']:WeaponsPurchase(cData.SID, itemExist, false,
+					MetaData.Company)
 			end
 			MetaData.Company = nil
 		end
@@ -160,7 +162,6 @@ function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -176,7 +177,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"Wallet",
 		"Crafting",
-		"Weapons",
 		"Jobs",
 		"Reputation",
 		"Vehicles",
@@ -458,7 +458,7 @@ function refreshShit(sid, adding)
 			invType = 1,
 			capacity = LoadedEntitys[1].capacity,
 			owner = sid,
-			isWeaponEligble = Weapons:IsEligible(source),
+			isWeaponEligble = exports['sandbox-inventory']:WeaponsIsEligible(source),
 			qualifications = char:GetData("Qualifications") or {},
 		}, _refreshAttchs[sid] ~= nil)
 
@@ -690,7 +690,7 @@ function DoMerge(source, data, cb)
 				(item.type ~= 2
 					or (
 						item.type == 2
-						and (not item.requiresLicense or item.requiresLicense and Weapons:IsEligible(source))
+						and (not item.requiresLicense or item.requiresLicense and exports['sandbox-inventory']:WeaponsIsEligible(source))
 					))
 				and (not item.qualification or hasValue(char:GetData("Qualifications"), item.qualification))
 			then
@@ -1259,7 +1259,7 @@ function DoMove(source, data, cb)
 				(item.type ~= 2
 					or (
 						item.type == 2
-						and (not item.requiresLicense or item.requiresLicense and Weapons:IsEligible(source))
+						and (not item.requiresLicense or item.requiresLicense and exports['sandbox-inventory']:WeaponsIsEligible(source))
 					))
 				and (not item.qualification or hasValue(char:GetData("Qualifications"), item.qualification))
 			then
@@ -2024,7 +2024,7 @@ RegisterNetEvent("Inventory:Server:Request", function(secondary)
 		invType = 1,
 		capacity = LoadedEntitys[1].capacity,
 		owner = char:GetData("SID"),
-		isWeaponEligble = Weapons:IsEligible(src),
+		isWeaponEligble = exports['sandbox-inventory']:WeaponsIsEligible(src),
 		qualifications = char:GetData("Qualifications") or {},
 		loaded = false,
 	}
@@ -2229,7 +2229,7 @@ INVENTORY = {
 				invType = 1,
 				capacity = LoadedEntitys[1].capacity,
 				owner = char:GetData("SID"),
-				isWeaponEligble = Weapons:IsEligible(_src),
+				isWeaponEligble = exports['sandbox-inventory']:WeaponsIsEligible(_src),
 				qualifications = char:GetData("Qualifications") or {},
 			}
 

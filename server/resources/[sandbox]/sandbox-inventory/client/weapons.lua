@@ -7,7 +7,6 @@ local _interacting = false
 
 AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
 function WeaponsComponents()
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
@@ -16,7 +15,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weapons", {
-		"Weapons",
 		"Progress",
 		"Hud",
 		"Interaction",
@@ -30,7 +28,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		Interaction:RegisterMenu("weapon-attachments", false, "gun", function(data)
 			local menu = {}
 
-			if _equipped ~= nil and _equipped.MetaData?.WeaponComponents ~= nil then
+			if _equipped ~= nil and _equipped.MetaData and _equipped.MetaData.WeaponComponents ~= nil then
 				for k, v in pairs(_equipped.MetaData.WeaponComponents) do
 					local itemData = Inventory.Items:GetData(v.item)
 					table.insert(menu, {
@@ -46,7 +44,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 			Interaction:ShowMenu(menu)
 		end, function()
-			return _equipped ~= nil and _equipped.MetaData?.WeaponComponents ~= nil
+			return _equipped ~= nil and _equipped.MetaData and _equipped.MetaData.WeaponComponents ~= nil
 		end)
 
 		exports["sandbox-base"]:RegisterClientCallback("Weapons:Check", function(data, cb)
@@ -116,7 +114,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					}
 				})
 				cb(data)
-				_interacting = true
+				_interacting = false
 			else
 				cb(nil)
 			end
@@ -148,7 +146,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					-- }
 				}, function(status)
 					if not status then
-						Weapons.Ammo:Add(data)
+						exports['sandbox-inventory']:WeaponsAmmoAdd(data)
 						cb(true)
 					end
 				end)
@@ -200,10 +198,10 @@ end)
 RegisterNetEvent("Weapons:Client:Use", function(data)
 	_interacting = true
 	if _equipped ~= nil and _equipped.Slot == data.Slot then
-		Weapons:Unequip(data)
+		exports['sandbox-inventory']:WeaponsUnequip(data)
 		TriggerEvent("Weapons:Client:Changed", nil)
 	else
-		Weapons:Equip(data)
+		exports['sandbox-inventory']:WeaponsEquip(data)
 		TriggerEvent("Weapons:Client:Changed", data)
 		SetWeaponsNoAutoswap(true)
 	end
@@ -219,7 +217,7 @@ end)
 RegisterNetEvent("Weapons:Client:Remove", function(data, from, diff)
 	_interacting = true
 	if _equipped ~= nil and _equipped.Slot == from then
-		Weapons:Unequip(data, diff)
+		exports['sandbox-inventory']:WeaponsUnequip(data, diff)
 	end
 	_interacting = false
 end)
@@ -227,7 +225,7 @@ end)
 RegisterNetEvent("Weapons:Client:ForceUnequip", function()
 	_interacting = true
 	if _equipped ~= nil then
-		Weapons:UnequipIfEquippedNoAnim()
+		exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 	end
 	_interacting = false
 end)
@@ -251,7 +249,7 @@ end)
 RegisterNetEvent("Weapons:Client:UpdateAttachments", function(components)
 	_interacting = true
 	if _equipped ~= nil then
-		local hash = Weapons:GetEquippedHash()
+		local hash = exports['sandbox-inventory']:WeaponsGetEquippedHash()
 		for k, v in pairs(_equipped.MetaData.WeaponComponents or {}) do
 			if components[k] == nil then
 				RemoveWeaponComponentFromPed(LocalPlayer.state.ped, hash, GetHashKey(v.attachment))
@@ -533,118 +531,121 @@ local anims = {
 	},
 }
 
-WEAPONS = {
-	GetEquippedHash = function(self)
-		if _equipped ~= nil then
-			return GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
-		else
-			return nil
-		end
-	end,
-	GetEquippedItem = function(self)
-		return _equipped
-	end,
-	IsEligible = function(self)
-		local licenses = LocalPlayer.state.Character:GetData("Licenses")
-		if licenses ~= nil and licenses.Weapons ~= nil then
-			return licenses.Weapons.Active
-		else
-			return false
-		end
-	end,
-	Equip = function(self, item)
-		local ped = PlayerPedId()
-		local hash = GetHashKey(_items[item.Name].weapon or item.Name)
-		local itemData = _items[item.Name]
+exports("WeaponsGetEquippedHash", function()
+	if _equipped ~= nil then
+		return GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
+	else
+		return nil
+	end
+end)
 
-		if Animations.Emotes:Get() then
-			return
-		end
+exports("WeaponsGetEquippedItem", function()
+	return _equipped
+end)
 
-		if _equipped ~= nil then
-			Weapons:Unequip(_equipped)
-		end
+exports("WeaponsIsEligible", function()
+	local licenses = LocalPlayer.state.Character:GetData("Licenses")
+	if licenses ~= nil and licenses.Weapons ~= nil then
+		return licenses.Weapons.Active
+	else
+		return false
+	end
+end)
 
-		-- print(string.format("Equipping Weapon, Total Ammo: %s, Clip: %s", item.MetaData.ammo or 0, item.MetaData.clip or 0))
-		if WEAPON_PROPS[item.Name] ~= nil then
-			anims.Draw:TH(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
+exports("WeaponsEquip", function(item)
+	local ped = PlayerPedId()
+	local hash = GetHashKey(_items[item.Name].weapon or item.Name)
+	local itemData = _items[item.Name]
+
+	if Animations.Emotes:Get() then
+		return
+	end
+
+	if _equipped ~= nil then
+		exports['sandbox-inventory']:WeaponsUnequip(_equipped)
+	end
+
+	if WEAPON_PROPS[item.Name] ~= nil then
+		anims.Draw:TH(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
+			item, itemData)
+	else
+		if LocalPlayer.state.onDuty == "police" then
+			anims.Cop:Draw(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
 				item, itemData)
 		else
-			if LocalPlayer.state.onDuty == "police" then
-				anims.Cop:Draw(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
-					item, itemData)
-			else
-				anims.Draw:OH(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
-					item, itemData)
-			end
+			anims.Draw:OH(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
+				item, itemData)
 		end
+	end
 
-		_equipped = item
-		_equippedHash = hash
-		_equippedData = itemData
-		TriggerEvent("Weapons:Client:SwitchedWeapon", _equipped.Name, _equipped, _items[_equipped.Name])
-		TriggerServerEvent("Weapons:Server:Equipped", item.Slot)
-		SendNUIMessage({
-			type = "SET_EQUIPPED",
-			data = {
-				item = _equipped,
-			}
-		})
+	_equipped = item
+	_equippedHash = hash
+	_equippedData = itemData
+	TriggerEvent("Weapons:Client:SwitchedWeapon", _equipped.Name, _equipped, _items[_equipped.Name])
+	TriggerServerEvent("Weapons:Server:Equipped", item.Slot)
+	SendNUIMessage({
+		type = "SET_EQUIPPED",
+		data = {
+			item = _equipped,
+		}
+	})
 
-		RunDegenThread()
-	end,
-	UnequipIfEquipped = function(self)
-		if _equipped ~= nil then
-			Weapons:Unequip(_equipped)
-		end
-	end,
-	UnequipIfEquippedNoAnim = function(self)
-		if _equipped ~= nil then
-			local ped = PlayerPedId()
-			local itemData = _items[_equipped.Name]
-			UpdateAmmo(_equipped, diff)
-			SetPedAmmoByType(ped, GetHashKey(itemData.ammoType), 0)
-			SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
-			RemoveAllPedWeapons(ped)
-			_equipped = nil
-			_equippedData = nil
-			_equippedHash = nil
-			TriggerEvent("Weapons:Client:SwitchedWeapon", false)
-			TriggerServerEvent("Weapons:Server:Equipped", false)
-			SendNUIMessage({
-				type = "SET_EQUIPPED",
-				data = {
-					item = _equipped,
-				}
-			})
-		end
-	end,
-	Unequip = function(self, item, diff)
-		if item == nil then
-			return
-		end
-		local ped = PlayerPedId()
-		local hash = GetHashKey(_items[item.Name].weapon or item.Name)
-		local itemData = _items[item.Name]
-		UpdateAmmo(item, diff)
-		if WEAPON_PROPS[item.Name] ~= nil then
-			anims.Holster:TH(ped)
+	RunDegenThread()
+end)
+
+exports("WeaponsUnequip", function(item, diff)
+	if item == nil then
+		return
+	end
+	local ped = PlayerPedId()
+	local hash = GetHashKey(_items[item.Name].weapon or item.Name)
+	local itemData = _items[item.Name]
+	UpdateAmmo(item, diff)
+	if WEAPON_PROPS[item.Name] ~= nil then
+		anims.Holster:TH(ped)
+	else
+		if LocalPlayer.state.onDuty == "police" then
+			anims.Cop:Holster(ped)
 		else
-			if LocalPlayer.state.onDuty == "police" then
-				anims.Cop:Holster(ped)
-			else
-				anims.Holster:OH(ped)
-			end
+			anims.Holster:OH(ped)
 		end
+	end
 
+	SetPedAmmoByType(ped, GetHashKey(itemData.ammoType), 0)
+
+	if item.MetaData.WeaponComponents ~= nil then
+		for k, v in pairs(item.MetaData.WeaponComponents) do
+			RemoveWeaponComponentFromPed(ped, hash, v.attachment)
+		end
+	end
+
+	_equipped = nil
+	_equippedData = nil
+	_equippedHash = nil
+	TriggerEvent("Weapons:Client:SwitchedWeapon", false)
+	TriggerServerEvent("Weapons:Server:Equipped", false)
+	SendNUIMessage({
+		type = "SET_EQUIPPED",
+		data = {
+			item = _equipped,
+		}
+	})
+end)
+
+exports("WeaponsUnequipIfEquipped", function()
+	if _equipped ~= nil then
+		exports['sandbox-inventory']:WeaponsUnequip(_equipped)
+	end
+end)
+
+exports("WeaponsUnequipIfEquippedNoAnim", function()
+	if _equipped ~= nil then
+		local ped = PlayerPedId()
+		local itemData = _items[_equipped.Name]
+		UpdateAmmo(_equipped, diff)
 		SetPedAmmoByType(ped, GetHashKey(itemData.ammoType), 0)
-
-		if item.MetaData.WeaponComponents ~= nil then
-			for k, v in pairs(item.MetaData.WeaponComponents) do
-				RemoveWeaponComponentFromPed(ped, hash, v.attachment)
-			end
-		end
-
+		SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
+		RemoveAllPedWeapons(ped)
 		_equipped = nil
 		_equippedData = nil
 		_equippedHash = nil
@@ -656,20 +657,15 @@ WEAPONS = {
 				item = _equipped,
 			}
 		})
-	end,
-	Ammo = {
-		Add = function(self, item)
-			if _equipped ~= nil then
-				local ped = PlayerPedId()
-				local hash = GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
-				AddAmmoToPed(ped, hash, item.bulletCount or 10)
-			end
-		end,
-	},
-}
+	end
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Weapons", WEAPONS)
+exports("WeaponsAmmoAdd", function(item)
+	if _equipped ~= nil then
+		local ped = PlayerPedId()
+		local hash = GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
+		AddAmmoToPed(ped, hash, item.bulletCount or 10)
+	end
 end)
 
 function WeaponsThread()
@@ -786,8 +782,8 @@ function RunDegenThread()
 	CreateThread(function()
 		while _equipped ~= nil do
 			local itemData = _items[_equipped.Name]
-			if itemData.durability ~= nil and (GetCloudTimeAsInt() - (_equipped?.MetaData?.CreateDate or GetCloudTimeAsInt()) >= itemData.durability) then
-				Weapons:UnequipIfEquippedNoAnim()
+			if itemData.durability ~= nil and (GetCloudTimeAsInt() - (_equipped.MetaData and _equipped.MetaData.CreateDate or GetCloudTimeAsInt()) >= itemData.durability) then
+				exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 			end
 			Wait(10000)
 		end
@@ -872,7 +868,7 @@ AddEventHandler("Weapons:Client:SwitchedWeapon", function()
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
-	Weapons:UnequipIfEquippedNoAnim()
+	exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()
@@ -930,7 +926,6 @@ end
 function DoFlashFx(shakeAmp, time)
 	flashTimersRunning += 1
 	totalFlashShakeAmp += shakeAmp
-
 
 	AnimpostfxPlay("Dont_tazeme_bro", 0, true)
 	TaskPlayAnim(PlayerPedId(), "anim@heists@ornate_bank@thermal_charge", "cover_eyes_intro", 8.0, 8.0, time, 50, 8.0)
@@ -993,7 +988,6 @@ RegisterNetEvent("Weapons:Client:DoFlashFx", function(x, y, z, stunTime, afterTi
 			result, hit, endCoords, surfNorm, entityHit = GetShapeTestResult(handle)
 			Wait(1)
 		end
-
 
 		playerHit = (result == 2) and (entityHit == PlayerPedId())
 
