@@ -73,7 +73,8 @@ function HospitalCallbacks()
 		-- 	cost = 150
 		-- end
 
-		Billing:Charge(source, cost, "Medical Services", "Use of facilities at St. Fiacre Medical Center")
+		exports['sandbox-finance']:BillingCharge(source, cost, "Medical Services",
+			"Use of facilities at St. Fiacre Medical Center")
 
 		local f = exports['sandbox-finance']:AccountsGetOrganization("ems")
 		exports['sandbox-finance']:BalanceDeposit(f.Account, cost / 2, {
@@ -105,7 +106,8 @@ function HospitalCallbacks()
 			-- 	cost = 150
 			-- end
 
-			Billing:Charge(source, cost, "Medical Services", "Use of facilities at St. Fiacre Medical Center")
+			exports['sandbox-finance']:BillingCharge(source, cost, "Medical Services",
+				"Use of facilities at St. Fiacre Medical Center")
 			exports['sandbox-base']:LoggerInfo(
 				"Robbery",
 				string.format(

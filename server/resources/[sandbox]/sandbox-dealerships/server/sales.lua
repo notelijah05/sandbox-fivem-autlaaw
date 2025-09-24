@@ -147,7 +147,8 @@ function RegisterVehicleSaleCallbacks()
 
 
                             if type == 'full' then
-                                Billing:Create(targetSrc, dealerData.abbreviation .. ' - Sales', salePrice, '',
+                                exports['sandbox-finance']:BillingCreate(targetSrc, dealerData.abbreviation .. ' - Sales',
+                                    salePrice, '',
                                     function(wasPayed, withAccount)
                                         if wasPayed then
                                             local removeSuccess = Dealerships.Stock:Remove(dealerData.id,
@@ -275,7 +276,7 @@ function RegisterVehicleSaleCallbacks()
                                                             'Info',
                                                             'The Loan Terms Were Accepted by the Customer', 5000,
                                                             'car-building')
-                                                        Billing:Create(
+                                                        exports['sandbox-finance']:BillingCreate(
                                                             targetSrc,
                                                             dealerData.name,
                                                             downPayment,

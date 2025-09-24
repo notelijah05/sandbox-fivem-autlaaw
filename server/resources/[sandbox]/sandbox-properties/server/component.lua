@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
-	Billing = exports["sandbox-base"]:FetchComponent("Billing")
 	RegisterChatCommands()
 end
 
@@ -18,7 +17,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Police",
 		"Pwnzor",
 		"Loans",
-		"Billing",
 	}, function(error)
 		if #error > 0 then
 			return

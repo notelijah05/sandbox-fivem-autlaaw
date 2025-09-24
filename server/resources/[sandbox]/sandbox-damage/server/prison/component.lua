@@ -1,7 +1,6 @@
 AddEventHandler("Damage:Shared:DependencyUpdate", PrisonHospitalComponents)
 function PrisonHospitalComponents()
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
-	Billing = exports["sandbox-base"]:FetchComponent("Billing")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
@@ -11,7 +10,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("PrisonHospital", {
 		"Crypto",
-		"Billing",
 		"Labor",
 		"Jobs",
 		"Handcuffs",

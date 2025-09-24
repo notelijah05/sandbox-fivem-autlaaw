@@ -4,7 +4,8 @@ function PrisonHospitalCallbacks()
 		local p = Player(source).state
 		local cost = Config.PrisonCheckIn.Cost
 
-		Billing:Charge(source, cost, "Medical Services", "Use of facilities at Bolingbroke Infirmary")
+		exports['sandbox-finance']:BillingCharge(source, cost, "Medical Services",
+			"Use of facilities at Bolingbroke Infirmary")
 
 		local f = exports['sandbox-finance']:AccountsGetOrganization("ems")
 		exports['sandbox-finance']:BalanceDeposit(f.Account, cost / 2, {

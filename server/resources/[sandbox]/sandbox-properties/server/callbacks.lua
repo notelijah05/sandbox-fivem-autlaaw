@@ -418,7 +418,8 @@ function RegisterCallbacks()
 													Source = targetChar:GetData('Source'),
 												}, prop.label, downPaymentPercent, downPayment, loanWeeks, perWeek,
 												salePriceAfterDown, function()
-													Billing:Create(targetChar:GetData('Source'), 'Dynasty 8', downPayment,
+													exports['sandbox-finance']:BillingCreate(
+														targetChar:GetData('Source'), 'Dynasty 8', downPayment,
 														string.format('Property Downpayment for %s', prop.label),
 														function(wasPayed, withAccount)
 															if wasPayed then
@@ -487,7 +488,8 @@ function RegisterCallbacks()
 						else
 							cb({ success = true, message = 'Sale Offer Sent' })
 
-							Billing:Create(targetChar:GetData('Source'), 'Dynasty 8', prop.price,
+							exports['sandbox-finance']:BillingCreate(targetChar:GetData('Source'), 'Dynasty 8',
+								prop.price,
 								'Purchase of ' .. prop.label, function(wasPayed, withAccount)
 									if wasPayed then
 										Properties.Commerce:Buy(prop.id, {

@@ -5,7 +5,7 @@ AddEventHandler('Finance:Server:Startup', function()
             local targetSource, fineAmount = table.unpack(args)
             local fine = tonumber(fineAmount)
             if fine and fine > 0 and fine <= 100000 then
-                local success = Billing:Fine(src, player:GetData("Source"), fine)
+                local success = exports['sandbox-finance']:BillingFine(src, player:GetData("Source"), fine)
                 if success then
                     exports["sandbox-chat"]:SendSystemSingle(src,
                         string.format("You Successfully Fined State ID %s For $%s. You earned $%s.", args[1],
@@ -31,7 +31,8 @@ AddEventHandler('Finance:Server:Startup', function()
 
     exports["sandbox-chat"]:RegisterAdminCommand('testbilling', function(source, args, rawCommand)
         exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Info', 'Bill Created')
-        Billing:Create(source, 'Some Random Fucking Business', 1500, 'This is a shitty description of a test bill.',
+        exports['sandbox-finance']:BillingCreate(source, 'Some Random Fucking Business', 1500,
+            'This is a shitty description of a test bill.',
             function(wasPayed)
                 if wasPayed then
                     exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Success', 'Bill Accepted')
