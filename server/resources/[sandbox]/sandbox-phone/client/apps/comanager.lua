@@ -6,7 +6,7 @@ RegisterNetEvent("Phone:Client:CoManager:GetJobOffer", function(time, jobData)
 	else
 		message = string.format("You've received an employment offer as %s - %s", jobData.Name, jobData.Grade.Name)
 	end
-	Phone.Notification:Add(
+	exports['sandbox-phone']:NotificationAdd(
 		"Employment Offer",
 		message,
 		time,
@@ -26,7 +26,7 @@ end)
 
 RegisterNetEvent("Phone:Client:CoManager:GetOfferResult", function(time, state)
 	if state then
-		Phone.Notification:Add(
+		exports['sandbox-phone']:NotificationAdd(
 			"Employment Offer Response",
 			"Your Employment Offer Was Accepted",
 			time,
@@ -36,7 +36,7 @@ RegisterNetEvent("Phone:Client:CoManager:GetOfferResult", function(time, state)
 			nil
 		)
 	else
-		Phone.Notification:Add(
+		exports['sandbox-phone']:NotificationAdd(
 			"Employment Offer Response",
 			"Your Employment Offer Was Declined",
 			time,
@@ -51,11 +51,12 @@ end)
 AddEventHandler("Phone:Client:CoManager:AcceptHire", function()
 	exports["sandbox-base"]:ServerCallback("Phone:CoManager:AcceptHire", {}, function(time, state)
 		if state then
-			Phone.Notification:Add("Employment", "You accepted an employment offer", time, 6000, "comanager", {
-				view = "",
-			}, nil)
+			exports['sandbox-phone']:NotificationAdd("Employment", "You accepted an employment offer", time, 6000,
+				"comanager", {
+					view = "",
+				}, nil)
 		else
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				"Employment",
 				"Unable to accept an employment offer",
 				time,
@@ -72,7 +73,7 @@ end)
 
 AddEventHandler("Phone:Client:CoManager:DeclineHire", function()
 	exports["sandbox-base"]:ServerCallback("Phone:CoManager:DeclineHire", {}, function(time)
-		Phone.Notification:Add(
+		exports['sandbox-phone']:NotificationAdd(
 			"Employment",
 			"You declined an employment offer",
 			time,
@@ -85,7 +86,7 @@ AddEventHandler("Phone:Client:CoManager:DeclineHire", function()
 end)
 
 RegisterNetEvent("Phone:Client:CoManager:GetTransferRequest", function(time, data)
-	Phone.Notification:Add(
+	exports['sandbox-phone']:NotificationAdd(
 		data.Name,
 		string.format("%s Wants To Transfer Ownership of %s", data.Sender, data.Name),
 		time,
@@ -102,7 +103,7 @@ end)
 AddEventHandler("Phone:Client:CoManager:AcceptXfer", function()
 	exports["sandbox-base"]:ServerCallback("Phone:CoManager:AcceptXfer", {}, function(time, state)
 		if state then
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				"Employment",
 				"You accepted an ownership transfer request",
 				time,
@@ -114,7 +115,7 @@ AddEventHandler("Phone:Client:CoManager:AcceptXfer", function()
 				nil
 			)
 		else
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				"Employment",
 				"Unable to accept an ownership transfer request",
 				time,
@@ -131,7 +132,7 @@ end)
 
 AddEventHandler("Phone:Client:CoManager:DeclineXfer", function()
 	exports["sandbox-base"]:ServerCallback("Phone:CoManager:DeclineXfer", {}, function(time)
-		Phone.Notification:Add(
+		exports['sandbox-phone']:NotificationAdd(
 			"Employment",
 			"You declined an ownership transfer request",
 			time,

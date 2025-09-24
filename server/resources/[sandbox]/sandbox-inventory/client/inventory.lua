@@ -91,7 +91,6 @@ function RetrieveComponents()
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
@@ -115,7 +114,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"PedInteraction",
 		"Polyzone",
 		"Hud",
-		"Phone",
 		"Jobs",
 		"Reputation",
 		"Vehicles",
@@ -348,7 +346,7 @@ INVENTORY = {
 	Open = {
 		Player = function(self, doSecondary)
 			if Inventory:IsEnabled() then
-				Phone:Close()
+				exports['sandbox-phone']:Close()
 				Interaction:Hide()
 				if not LocalPlayer.state.inventoryOpen then
 					LocalPlayer.state.inventoryOpen = true

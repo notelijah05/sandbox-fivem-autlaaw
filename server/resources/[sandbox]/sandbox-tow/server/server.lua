@@ -7,7 +7,6 @@ AddEventHandler("Tow:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Tow = exports["sandbox-base"]:FetchComponent("Tow")
 end
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Tow", {
 		"Jobs",
 		"Vehicles",
-		"Phone",
 		"Banking",
 		"Tow",
 	}, function(error)
@@ -88,7 +86,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					Jobs.Duty:Off(source, "tow")
 					Tow:CleanupPickup(source)
 					_activeTowers[source] = nil
-					Phone.Notification:RemoveById(source, "TOW_OBJ")
+					exports['sandbox-phone']:NotificationRemoveById(source, "TOW_OBJ")
 				else
 					exports['sandbox-base']:ExecuteClient(
 						source,
@@ -235,8 +233,8 @@ TOW = {
 				description = "Your Fee For A Vehicle Pickup",
 				data = 300,
 			})
-			Phone.Notification:RemoveById(source, "TOW_OBJ")
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationRemoveById(source, "TOW_OBJ")
+			exports['sandbox-phone']:NotificationAdd(
 				source,
 				"Yard Manager",
 				"Good work, I've sent your fee to your account. I'll let you know when I got another job for you",

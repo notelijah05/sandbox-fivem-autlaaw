@@ -470,7 +470,8 @@ AddEventHandler("Mining:Server:OnDuty", function(joiner, members, isWorkgroup)
 
 	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
-	Phone.Notification:Add(joiner, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
+	exports['sandbox-phone']:NotificationAdd(joiner, "Job Activity", "You started a job", os.time(), 6000, "labor",
+		{})
 	TriggerClientEvent("Mining:Client:OnDuty", joiner, joiner, os.time())
 
 	Labor.Offers:Task(joiner, _JOB, "Talk To The Foreman")
@@ -479,7 +480,8 @@ AddEventHandler("Mining:Server:OnDuty", function(joiner, members, isWorkgroup)
 			_joiners[v.ID] = joiner
 			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
-			Phone.Notification:Add(v.ID, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
+			exports['sandbox-phone']:NotificationAdd(v.ID, "Job Activity", "You started a job", os.time(), 6000,
+				"labor", {})
 			TriggerClientEvent("Mining:Client:OnDuty", v.ID, joiner, os.time())
 		end
 	end

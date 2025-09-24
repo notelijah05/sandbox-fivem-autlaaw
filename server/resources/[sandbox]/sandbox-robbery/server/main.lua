@@ -30,7 +30,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Vendor = exports["sandbox-base"]:FetchComponent("Vendor")
 	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
@@ -199,7 +198,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Doors",
 		"Crypto",
-		"Phone",
 		"Vehicles",
 		"Vendor",
 		"CCTV",

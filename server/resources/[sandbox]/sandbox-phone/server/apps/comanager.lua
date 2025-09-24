@@ -319,33 +319,127 @@ local _jobPerms = {
 local _pendingHires = {}
 local _pendingXfers = {}
 
-PHONE.CoManager = {
-	FetchAllAccessibleRosters = function(self, source)
-		local playersJobs = Jobs.Permissions:GetJobs(source)
-		local fetchedRosterData = {}
-		local fetchingJobs = {}
-		for k, v in ipairs(playersJobs) do
-			if not hasValue(_blacklistedJobs, v.Id) then
-				fetchingJobs[v.Id] = true
-				fetchedRosterData[v.Id] = {}
+exports("CoManagerFetchAllAccessibleRosters", function(source)
+	local playersJobs = Jobs.Permissions:GetJobs(source)
+	local fetchedRosterData = {}
+	local fetchingJobs = {}
+	for k, v in ipairs(playersJobs) do
+		if not hasValue(_blacklistedJobs, v.Id) then
+			fetchingJobs[v.Id] = true
+			fetchedRosterData[v.Id] = {}
+		end
+	end
+
+	local onlineCharacters = {}
+	for _, char in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
+		if char ~= nil then
+			table.insert(onlineCharacters, char:GetData("SID"))
+			local jobs = char:GetData("Jobs")
+			if jobs and #jobs > 0 then
+				for k, v in ipairs(jobs) do
+					if fetchingJobs[v.Id] then
+						table.insert(fetchedRosterData[v.Id], {
+							Source = char:GetData("Source"),
+							SID = char:GetData("SID"),
+							First = char:GetData("First"),
+							Last = char:GetData("Last"),
+							Phone = char:GetData("Phone"),
+							JobData = v,
+						})
+					end
+				end
 			end
 		end
+	end
 
+	local p = promise.new()
+
+	local query = {
+		SID = {
+			["$nin"] = onlineCharacters,
+		},
+		Jobs = {
+			["$elemMatch"] = {
+				Id = {
+					["$in"] = exports['sandbox-base']:UtilsGetTableKeys(fetchingJobs),
+				},
+			},
+		},
+	}
+
+	if workplaceId then
+		query.Jobs["$elemMatch"]["Workplace.Id"] = workplaceId
+	end
+
+	if gradeId then
+		query.Jobs["$elemMatch"]["Grade.Id"] = gradeId
+	end
+
+	exports['sandbox-base']:DatabaseGameFind({
+		collection = "characters",
+		query = query,
+		options = {
+			projection = {
+				SID = 1,
+				First = 1,
+				Last = 1,
+				Phone = 1,
+				Jobs = 1,
+			},
+		},
+	}, function(success, results)
+		if success then
+			for _, c in ipairs(results) do
+				if c.Jobs and #c.Jobs > 0 then
+					for k, v in ipairs(c.Jobs) do
+						if fetchingJobs[v.Id] then
+							table.insert(fetchedRosterData[v.Id], {
+								Source = false,
+								SID = c.SID,
+								First = c.First,
+								Last = c.Last,
+								Phone = c.Phone,
+								JobData = v,
+							})
+						end
+					end
+				end
+			end
+			p:resolve(true)
+		else
+			p:resolve(false)
+		end
+	end)
+
+	local res = Citizen.Await(p)
+	if res then
+		return fetchedRosterData
+	else
+		return false
+	end
+end)
+
+exports("CoManagerFetchTimeWorked", function(source, jobId)
+	if Jobs.Permissions:HasJob(source, jobId, false, false, false, false, "JOB_MANAGEMENT") then
 		local onlineCharacters = {}
+
+		local onlineShit = {}
+
 		for _, char in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 			if char ~= nil then
 				table.insert(onlineCharacters, char:GetData("SID"))
 				local jobs = char:GetData("Jobs")
 				if jobs and #jobs > 0 then
 					for k, v in ipairs(jobs) do
-						if fetchingJobs[v.Id] then
-							table.insert(fetchedRosterData[v.Id], {
+						if v.Id == jobId then
+							table.insert(onlineShit, {
 								Source = char:GetData("Source"),
 								SID = char:GetData("SID"),
 								First = char:GetData("First"),
 								Last = char:GetData("Last"),
 								Phone = char:GetData("Phone"),
-								JobData = v,
+								LastClockOn = char:GetData("LastClockOn"),
+								TimeClockedOn = char:GetData("TimeClockedOn"),
 							})
 						end
 					end
@@ -361,20 +455,10 @@ PHONE.CoManager = {
 			},
 			Jobs = {
 				["$elemMatch"] = {
-					Id = {
-						["$in"] = exports['sandbox-base']:UtilsGetTableKeys(fetchingJobs),
-					},
+					Id = jobId,
 				},
 			},
 		}
-
-		if workplaceId then
-			query.Jobs["$elemMatch"]["Workplace.Id"] = workplaceId
-		end
-
-		if gradeId then
-			query.Jobs["$elemMatch"]["Grade.Id"] = gradeId
-		end
 
 		exports['sandbox-base']:DatabaseGameFind({
 			collection = "characters",
@@ -385,26 +469,22 @@ PHONE.CoManager = {
 					First = 1,
 					Last = 1,
 					Phone = 1,
-					Jobs = 1,
+					LastClockOn = 1,
+					TimeClockedOn = 1,
 				},
 			},
 		}, function(success, results)
 			if success then
 				for _, c in ipairs(results) do
-					if c.Jobs and #c.Jobs > 0 then
-						for k, v in ipairs(c.Jobs) do
-							if fetchingJobs[v.Id] then
-								table.insert(fetchedRosterData[v.Id], {
-									Source = false,
-									SID = c.SID,
-									First = c.First,
-									Last = c.Last,
-									Phone = c.Phone,
-									JobData = v,
-								})
-							end
-						end
-					end
+					table.insert(onlineShit, {
+						Source = false,
+						SID = c.SID,
+						First = c.First,
+						Last = c.Last,
+						Phone = c.Phone,
+						LastClockOn = c.LastClockOn,
+						TimeClockedOn = c.TimeClockedOn,
+					})
 				end
 				p:resolve(true)
 			else
@@ -414,95 +494,13 @@ PHONE.CoManager = {
 
 		local res = Citizen.Await(p)
 		if res then
-			return fetchedRosterData
+			return onlineShit
 		else
 			return false
 		end
-	end,
-	FetchTimeWorked = function(self, source, jobId)
-		if Jobs.Permissions:HasJob(source, jobId, false, false, false, false, "JOB_MANAGEMENT") then
-			local onlineCharacters = {}
-
-			local onlineShit = {}
-
-			for _, char in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
-				if char ~= nil then
-					table.insert(onlineCharacters, char:GetData("SID"))
-					local jobs = char:GetData("Jobs")
-					if jobs and #jobs > 0 then
-						for k, v in ipairs(jobs) do
-							if v.Id == jobId then
-								table.insert(onlineShit, {
-									Source = char:GetData("Source"),
-									SID = char:GetData("SID"),
-									First = char:GetData("First"),
-									Last = char:GetData("Last"),
-									Phone = char:GetData("Phone"),
-									LastClockOn = char:GetData("LastClockOn"),
-									TimeClockedOn = char:GetData("TimeClockedOn"),
-								})
-							end
-						end
-					end
-				end
-			end
-
-			local p = promise.new()
-
-			local query = {
-				SID = {
-					["$nin"] = onlineCharacters,
-				},
-				Jobs = {
-					["$elemMatch"] = {
-						Id = jobId,
-					},
-				},
-			}
-
-			exports['sandbox-base']:DatabaseGameFind({
-				collection = "characters",
-				query = query,
-				options = {
-					projection = {
-						SID = 1,
-						First = 1,
-						Last = 1,
-						Phone = 1,
-						--Jobs = 1,
-						LastClockOn = 1,
-						TimeClockedOn = 1,
-					},
-				},
-			}, function(success, results)
-				if success then
-					for _, c in ipairs(results) do
-						table.insert(onlineShit, {
-							Source = false,
-							SID = c.SID,
-							First = c.First,
-							Last = c.Last,
-							Phone = c.Phone,
-							LastClockOn = c.LastClockOn,
-							TimeClockedOn = c.TimeClockedOn,
-						})
-					end
-					p:resolve(true)
-				else
-					p:resolve(false)
-				end
-			end)
-
-			local res = Citizen.Await(p)
-			if res then
-				return onlineShit
-			else
-				return false
-			end
-		end
-		return false
-	end,
-}
+	end
+	return false
+end)
 
 function GetOfflineCharacter(stateId)
 	local p = promise.new()
@@ -586,17 +584,17 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			local updatedJobData = Phone:UpdateJobData(source, true)
 			cb({
 				jobData = updatedJobData.jobData,
-				rosterData = Phone.CoManager:FetchAllAccessibleRosters(source),
+				rosterData = exports['sandbox-phone']:CoManagerFetchAllAccessibleRosters(source),
 			})
 		else
 			cb({
-				rosterData = Phone.CoManager:FetchAllAccessibleRosters(source),
+				rosterData = exports['sandbox-phone']:CoManagerFetchAllAccessibleRosters(source),
 			})
 		end
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:FetchTimeWorked", function(source, data, cb)
-		cb(Phone.CoManager:FetchTimeWorked(source, data))
+		cb(exports['sandbox-phone']:CoManagerFetchTimeWorked(source, data))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:RenameCompany", function(source, data, cb)

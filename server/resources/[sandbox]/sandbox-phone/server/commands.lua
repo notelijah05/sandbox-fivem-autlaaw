@@ -198,7 +198,7 @@ function RegisterChatCommands()
 				}
 			end
 
-			Phone.Twitter:Post(-1, -1, {
+			exports['sandbox-phone']:TwitterPost(-1, -1, {
 				name = accountName,
 				picture = accountAvatar,
 			}, content, image, false, "government")

@@ -33,7 +33,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		if not hasValue(states, "SCRIPT_CORNER_DEALING") then
 			table.insert(states, "SCRIPT_CORNER_DEALING")
 			char:SetData("States", states)
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				source,
 				"New Job Available",
 				"A new job is available, check it out.",
@@ -335,7 +335,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					_sellers[_joiners[source]].pedNet = nil
 					_sellers[_joiners[source]].netId = nil
 					Labor.Offers:Task(_joiners[source], _JOB, "Find A Corner")
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						source,
 						"New Corner",
 						"Seems this corner dried up, find something else.",
@@ -383,7 +383,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					_sellers[_joiners[source]].pedNet = nil
 					_sellers[_joiners[source]].netId = nil
 					Labor.Offers:Task(_joiners[source], _JOB, "Find A Corner")
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						source,
 						"New Corner",
 						"Your vehicle was destroyed, find something new and head to a new corner.",
@@ -440,7 +440,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					_sellers[_joiners[source]].pedNet = nil
 					_sellers[_joiners[source]].netId = nil
 					Labor.Offers:Task(_joiners[source], _JOB, "Find A Corner")
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						source,
 						"New Corner",
 						"Your vehicle got too far from the corner, find another place to sell.",

@@ -2,7 +2,6 @@ AddEventHandler("Fuel:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 end
 
 local threading = false
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Fuel", {
 		"Wallet",
 		"Banking",
-		"Phone",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -92,7 +90,7 @@ function RegisterCallbacks()
 						})
 
 						if paymentSuccess then
-							Phone.Notification:Add(source,
+							exports['sandbox-phone']:NotificationAdd(source,
 								string.format("Fuel Purchase of $%s Successful", math.ceil(totalCost)), false, os.time(),
 								3000, "bank", {})
 						end

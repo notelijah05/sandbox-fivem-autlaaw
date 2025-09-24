@@ -33,7 +33,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	InfoOverlay = exports["sandbox-base"]:FetchComponent("InfoOverlay")
 end
 
@@ -52,7 +51,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"Animations",
 		"ObjectPlacer",
-		"Phone",
 		"InfoOverlay",
 	}, function(error)
 		if #error > 0 then
@@ -674,7 +672,7 @@ PROPERTIES = {
 			ObjectPlacer:Start(GetHashKey(model), "Furniture:Client:Place", metadata, true, "Furniture:Client:Cancel",
 				true, true, startCoords, nil, startRot)
 			if not skipPhone then
-				Phone:Close(true, true)
+				exports['sandbox-phone']:Close(true, true)
 			end
 			_skipPhone = skipPhone
 
@@ -718,7 +716,7 @@ PROPERTIES = {
 			ObjectPlacer:Start(GetHashKey(furn.model), "Furniture:Client:Move", { id = id }, true,
 				"Furniture:Client:CancelMove", true, true, furn.coords, furn.heading, furn.rotation)
 			if not skipPhone then
-				Phone:Close(true, true)
+				exports['sandbox-phone']:Close(true, true)
 			end
 			_skipPhone = skipPhone
 

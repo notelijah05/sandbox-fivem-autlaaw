@@ -74,7 +74,7 @@ _BILLING = {
                         })
 
                         if success then
-                            Phone.Notification:Add(billingSource, "Bill Payment Received",
+                            exports['sandbox-phone']:NotificationAdd(billingSource, "Bill Payment Received",
                                 string.format("Payment for a bill you sent to State ID: %s was just received.",
                                     targetStateId), os.time(), 5000, "bank", {})
                         end
@@ -217,7 +217,7 @@ _BILLING = {
                             }
                         })
 
-                        Phone.Notification:Add(targetSource, "Received Fine",
+                        exports['sandbox-phone']:NotificationAdd(targetSource, "Received Fine",
                             string.format("You received a fine of $%d from the State of San Andreas", amount), os.time(),
                             7500, "bank", {})
 
@@ -262,7 +262,7 @@ _BILLING = {
                     })
 
                     if success then
-                        Phone.Notification:Add(source, "New Bank Charge",
+                        exports['sandbox-phone']:NotificationAdd(source, "New Bank Charge",
                             string.format("Received Charge of $%d - %s", amount, title), os.time(), 7500, "bank", {})
 
                         return amount
@@ -279,7 +279,8 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 end)
 
 function SendNewBillNotificationToPhone(source, billData)
-    Phone.Notification:Add(source, "Received New Bill", string.format("$%d Bill From %s", billData.Amount, billData.Name),
+    exports['sandbox-phone']:NotificationAdd(source, "Received New Bill",
+        string.format("$%d Bill From %s", billData.Amount, billData.Name),
         os.time(), 7500, "bank", {
             accept = "Phone:Nui:Bank:AcceptBill",
             cancel = "Phone:Nui:Bank:DenyBill",

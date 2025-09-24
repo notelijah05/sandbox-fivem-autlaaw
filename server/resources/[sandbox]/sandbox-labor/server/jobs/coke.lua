@@ -244,7 +244,7 @@ end)
 
 AddEventHandler("Coke:Server:OnDuty", function(joiner, members, isWorkgroup)
 	if _active ~= nil then
-		Phone.Notification:Add(joiner, "Unknown", "No Jobs Available", os.time(), 6000, {
+		exports['sandbox-phone']:NotificationAdd(joiner, "Unknown", "No Jobs Available", os.time(), 6000, {
 			title = "Unknown",
 			label = "Unknown",
 			icon = "block-question",
@@ -255,17 +255,18 @@ AddEventHandler("Coke:Server:OnDuty", function(joiner, members, isWorkgroup)
 		if char ~= nil then
 			local cd = char:GetData("CokeCD") or os.time()
 			if cd > os.time() then
-				Phone.Notification:Add(joiner, "Unknown", "Your Group Is Not Eligible. Please Wait", os.time(), 6000, {
-					title = "Unknown",
-					label = "Unknown",
-					icon = "block-question",
-					color = "transparent",
-				})
+				exports['sandbox-phone']:NotificationAdd(joiner, "Unknown",
+					"Your Group Is Not Eligible. Please Wait", os.time(), 6000, {
+						title = "Unknown",
+						label = "Unknown",
+						icon = "block-question",
+						color = "transparent",
+					})
 
 				if isWorkgroup then
 					if #members > 0 then
 						for k, v in ipairs(members) do
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								v.ID,
 								"Unknown",
 								"Your Group Is Not Eligible. Please Wait",

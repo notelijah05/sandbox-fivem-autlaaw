@@ -7,7 +7,7 @@ RegisterNetEvent("Phone:Client:Documents:ReceivedSignature", function(id, data)
 		},
 	})
 
-	Phone.Notification:Add(
+	exports['sandbox-phone']:NotificationAdd(
 		"Document Signed",
 		string.format("%s Signed Your Document", data.signed_name),
 		data.signed,
@@ -30,7 +30,7 @@ RegisterNetEvent("Phone:Client:Documents:SigReqReceived", function(id, data)
 	})
 
 	if data.signed ~= nil then
-		Phone.Notification:Add(
+		exports['sandbox-phone']:NotificationAdd(
 			"Document Signed",
 			string.format("%s Signed Your Document", data.signed_name),
 			data.signed,

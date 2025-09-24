@@ -72,7 +72,7 @@ function ExitProperty(data, backdoor)
 		SetFurnitureEditMode(false)
 		if _placingFurniture then
 			ObjectPlacer:Cancel(true, true)
-			Phone:ResetRoute()
+			exports['sandbox-phone']:ResetRoute()
 			_placingFurniture = false
 			LocalPlayer.state.placingFurniture = false
 			LocalPlayer.state.furnitureEdit = false

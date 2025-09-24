@@ -1,7 +1,6 @@
 AddEventHandler("Banking:Shared:DependencyUpdate", RetrieveBankingComponents)
 function RetrieveBankingComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
@@ -16,7 +15,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Banking", {
 		"Generator",
-		"Phone",
 		"Wallet",
 		"Banking",
 		"Billing",
@@ -154,7 +152,7 @@ _BANKING = {
 								if acct.Type == "personal" or acct.Type == "personal_savings" then
 									local p = exports['sandbox-characters']:FetchBySID(tonumber(acct.Owner))
 									if p ~= nil and not skipPhoneNoti then
-										Phone.Notification:Add(
+										exports['sandbox-phone']:NotificationAdd(
 											p:GetData("Source"),
 											"Received A Deposit",
 											string.format("$%s Deposited Into %s", math.floor(amount), acct.Name),
@@ -175,7 +173,7 @@ _BANKING = {
 									-- 		for k, v in ipairs(jO) do
 									-- 			local char = exports['sandbox-characters']:FetchCharacterData("SID", tonumber(v.jointOwner))
 									-- 			if char ~= nil then
-									-- 				Phone.Notification:Add(
+									-- 				exports['sandbox-phone']:NotificationAdd(
 									-- 					char:GetData("Source"),
 									-- 					"Received A Deposit",
 									-- 					string.format(

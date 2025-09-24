@@ -16,7 +16,6 @@ function RetrieveComponents()
     Inventory = exports['sandbox-base']:FetchComponent('Inventory')
     Generator = exports['sandbox-base']:FetchComponent('Generator')
     Vehicles = exports['sandbox-base']:FetchComponent('Vehicles')
-    Phone = exports['sandbox-base']:FetchComponent('Phone')
     Tow = exports['sandbox-base']:FetchComponent('Tow')
     Properties = exports['sandbox-base']:FetchComponent('Properties')
     Banking = exports['sandbox-base']:FetchComponent('Banking')
@@ -34,7 +33,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Inventory',
         'Generator',
         'Vehicles',
-        'Phone',
         'Tow',
         'Properties',
         'Banking',

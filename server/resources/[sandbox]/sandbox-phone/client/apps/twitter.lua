@@ -4,13 +4,9 @@ RegisterNetEvent("Phone:Client:Twitter:Notify", function(tweet)
 		data = tweet,
 	})
 
-	if Phone == nil then
-		return
-	end
-
 	if tweet.source ~= GetPlayerServerId(PlayerId()) then
 		Wait(1000)
-		Phone.Notification:Add(tweet.author.name, tweet.content, tweet.time, 6000, "twitter", {
+		exports['sandbox-phone']:NotificationAdd(tweet.author.name, tweet.content, tweet.time, 6000, "twitter", {
 			view = "#",
 		}, nil)
 	end

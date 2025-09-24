@@ -159,7 +159,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 						_races[item.MetaData.Event].class ~= "All"
 						and not CheckVehicleAgainstClass(_races[item.MetaData.Event].class, source)
 					then
-						Phone.Notification:Add(
+						exports['sandbox-phone']:NotificationAdd(
 							source,
 							"Unable to Join Race",
 							"This vehicle is not in the right class.",
@@ -179,7 +179,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 							_races[item.MetaData.Event].racers[alias])
 
 
-						Phone.Notification:Add(
+						exports['sandbox-phone']:NotificationAdd(
 							source,
 							"Joined Event",
 							string.format("You Have Joined %s", _races[item.MetaData.Event].name),
@@ -525,7 +525,7 @@ function FinishRace(id, forceEnd)
 		if v ~= nil then
 			local dutyData = Jobs.Duty:Get(v:GetData("Source"))
 			if hasValue(v:GetData("States") or {}, "RACE_DONGLE") and (not dutyData or dutyData.Id ~= "police") then
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					v:GetData("Source"),
 					string.format("%s", cancelled and "Event Cancelled" or "Event Finished"),
 					string.format("%s has %s", _races[key].name, cancelled and "been cancelled" or "finished"),
@@ -860,7 +860,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 								and hasValue(v:GetData("States") or {}, "RACE_DONGLE")
 								and (not dutyData or dutyData.Id ~= "police")
 							then
-								Phone.Notification:Add(
+								exports['sandbox-phone']:NotificationAdd(
 									v:GetData("Source"),
 									string.format("New Event: %s", data.name),
 									string.format("%s created an event", char:GetData("Profiles").redline.name),
@@ -923,7 +923,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				_races[key].class ~= "All"
 				and CheckVehicleAgainstClass(_races[key].class, char:GetData("Source")) == false
 			then
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					char:GetData("Source"),
 					"Unable to Join Race",
 					"This vehicle is not in the right class.",
@@ -1010,7 +1010,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				_races[key].class ~= "All"
 				and CheckVehicleAgainstClass(_races[key].class, char:GetData("Source")) == false
 			then
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					char:GetData("Source"),
 					"Unable to Join Race",
 					"This vehicle is not in the right class.",
@@ -1144,7 +1144,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						_races[key].class ~= "All"
 						and not CheckVehicleAgainstClass(_races[key].class, src)
 					then
-						Phone.Notification:Add(
+						exports['sandbox-phone']:NotificationAdd(
 							src,
 							"Unable to Join Race",
 							"This vehicle is not in the right class.",

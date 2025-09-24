@@ -4,7 +4,7 @@ RegisterNUICallback("Install", function(data, cb)
 	else
 		exports["sandbox-base"]:ServerCallback("Phone:Store:Install:Do", data.app, function(status, app, time)
 			if status then
-				Phone.Notification:Add("App Installed", nil, time, 6000, data.app, {
+				exports['sandbox-phone']:NotificationAdd("App Installed", nil, time, 6000, data.app, {
 					view = "",
 				}, nil)
 			end

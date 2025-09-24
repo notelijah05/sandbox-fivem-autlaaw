@@ -48,7 +48,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		if not hasValue(states, "SCRIPT_OXY_RUN") then
 			table.insert(states, "SCRIPT_OXY_RUN")
 			char:SetData("States", states)
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				source,
 				"New Job Available",
 				"A new job is available, check it out.",
@@ -123,7 +123,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						data
 					)
 				else
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						_joiners[source],
 						"Job Activity",
 						"Not Enough Room In This Vehicles Trunk",
@@ -430,7 +430,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				_sellers[_joiners[source]].state = 7
 				Labor.Offers:ManualFinish(_joiners[source], _JOB)
 			else
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					_joiners[source],
 					"Job Activity",
 					"Vehicle Was Destroyed",
@@ -443,7 +443,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				if _sellers[_joiners[source]].isWorkgroup then
 					if #_sellers[_joiners[source]].members > 0 then
 						for k, v in ipairs(_sellers[_joiners[source]].members) do
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								v.ID,
 								"Job Activity",
 								"Vehicle Was Destroyed",
@@ -468,7 +468,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				_sellers[_joiners[source]].state = 7
 				Labor.Offers:ManualFinish(_joiners[source], _JOB)
 			else
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					_joiners[source],
 					"Job Activity",
 					"Vehicle Was Lost",
@@ -481,7 +481,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				if _sellers[_joiners[source]].isWorkgroup then
 					if #_sellers[_joiners[source]].members > 0 then
 						for k, v in ipairs(_sellers[_joiners[source]].members) do
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								v.ID,
 								"Job Activity",
 								"Vehicle Was Lost",
@@ -514,7 +514,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			and _sellers[_joiners[source]] ~= nil
 			and _sellers[_joiners[source]].state < 6
 		then
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				_joiners[source],
 				"Job Activity",
 				"You Left The Sale Area",
@@ -527,7 +527,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			if _sellers[_joiners[source]].isWorkgroup then
 				if #_sellers[_joiners[source]].members > 0 then
 					for k, v in ipairs(_sellers[_joiners[source]].members) do
-						Phone.Notification:Add(
+						exports['sandbox-phone']:NotificationAdd(
 							v.ID,
 							"Job Activity",
 							"You Left The Sale Area",
@@ -574,7 +574,7 @@ AddEventHandler("Labor:Server:OxyRun:Queue", function(source, data)
 		if _availableRuns <= 0 then
 			Labor.Offers:Cancel(_joiners[source], _JOB)
 			Labor.Duty:Off(_JOB, _joiners[source], false, true)
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				_joiners[source],
 				"Job Activity",
 				"Sorry, ran out of jobs",
@@ -586,7 +586,7 @@ AddEventHandler("Labor:Server:OxyRun:Queue", function(source, data)
 			if isWorkgroup then
 				if #_sellers[_joiners[source]].members > 0 then
 					for k, v in ipairs(members) do
-						Phone.Notification:Add(
+						exports['sandbox-phone']:NotificationAdd(
 							v.ID,
 							"Job Activity",
 							"Sorry, ran out of jobs",
@@ -629,11 +629,12 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 	if _availableRuns <= 0 then
 		Labor.Offers:Cancel(joiner, _JOB)
 		Labor.Duty:Off(_JOB, joiner, false, true)
-		Phone.Notification:Add(joiner, "Job Activity", "No Jobs Available", os.time(), 6000, "labor", {})
+		exports['sandbox-phone']:NotificationAdd(joiner, "Job Activity", "No Jobs Available", os.time(), 6000,
+			"labor", {})
 		if isWorkgroup then
 			if #members > 0 then
 				for k, v in ipairs(members) do
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						v.ID,
 						"Job Activity",
 						"No Jobs Available",
@@ -658,7 +659,7 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 	if (_cooldowns[char:GetData("ID")] or 0) > os.time() then
 		Labor.Offers:Cancel(joiner, _JOB)
 		Labor.Duty:Off(_JOB, joiner, false, true)
-		Phone.Notification:Add(
+		exports['sandbox-phone']:NotificationAdd(
 			joiner,
 			"Job Activity",
 			"Not Eligible For Another Run",
@@ -670,7 +671,7 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 		if isWorkgroup then
 			if #members > 0 then
 				for k, v in ipairs(members) do
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						v.ID,
 						"Job Activity",
 						"Your Group Is Not Eligible For Another Run. Please Wait",
@@ -690,7 +691,7 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 				if (_cooldowns[v.CharID] or 0) > os.time() then
 					Labor.Offers:Cancel(joiner, _JOB)
 					Labor.Duty:Off(_JOB, joiner, false, true)
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						joiner,
 						"Job Activity",
 						"Cannot Give You A Job With This Group. Please Wait",
@@ -703,7 +704,7 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 						if #members > 0 then
 							for k2, v2 in ipairs(members) do
 								if v.ID == v2.ID then
-									Phone.Notification:Add(
+									exports['sandbox-phone']:NotificationAdd(
 										v2.ID,
 										"Job Activity",
 										"Not Eligible For Another Run. Please Wait",
@@ -713,7 +714,7 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 										{}
 									)
 								else
-									Phone.Notification:Add(
+									exports['sandbox-phone']:NotificationAdd(
 										v2.ID,
 										"Job Activity",
 										"Your Group Is Not Eligible For Another Run. Please Wait",

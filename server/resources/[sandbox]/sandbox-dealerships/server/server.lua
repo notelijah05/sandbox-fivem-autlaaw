@@ -9,7 +9,6 @@ function RetrieveComponents()
     Billing = exports['sandbox-base']:FetchComponent('Billing')
     Loans = exports['sandbox-base']:FetchComponent('Loans')
     Banking = exports['sandbox-base']:FetchComponent('Banking')
-    Phone = exports['sandbox-base']:FetchComponent('Phone')
     Wallet = exports['sandbox-base']:FetchComponent('Wallet')
     MDT = exports['sandbox-base']:FetchComponent('MDT')
 end
@@ -23,7 +22,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Dealerships',
         'Billing',
         'Loans',
-        'Phone',
         'Banking',
         'Wallet',
         'MDT',

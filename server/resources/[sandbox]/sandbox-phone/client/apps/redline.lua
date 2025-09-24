@@ -182,7 +182,7 @@ RegisterNetEvent("Phone:Client:Redline:StoreTracks", function(tracks)
 
 	if not Phone then return end
 
-	Phone.Data:Set("tracks", _tracks)
+	exports['sandbox-phone']:DataSet("tracks", _tracks)
 end)
 
 RegisterNetEvent("Phone:Client:Redline:StoreSingleTrack", function(tId, track)
@@ -207,7 +207,7 @@ RegisterNetEvent("Phone:Client:Redline:StoreSingleTrack", function(tId, track)
 
 	if not Phone then return end
 
-	Phone.Data:Set("tracks", _tracks)
+	exports['sandbox-phone']:DataSet("tracks", _tracks)
 end)
 
 RegisterNetEvent("Phone:Client:Redline:Spawn", function(data)
@@ -628,7 +628,7 @@ RegisterNUICallback("DeclineInvite", function(data, cb)
 end)
 
 RegisterNetEvent("Phone:Client:Redline:ReceiveInvite", function(data)
-	Phone.Notification:Add(
+	exports['sandbox-phone']:NotificationAdd(
 		"Received Event Invite",
 		string.format("%s Invited You To %s", data.sender, data.event),
 		GetCloudTimeAsInt(),

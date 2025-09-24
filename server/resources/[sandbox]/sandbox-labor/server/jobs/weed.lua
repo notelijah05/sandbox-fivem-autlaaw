@@ -53,7 +53,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		if not hasValue(states, "SCRIPT_WEED_RUN") then
 			table.insert(states, "SCRIPT_WEED_RUN")
 			char:SetData("States", states)
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				source,
 				"New Job Available",
 				"A new job is available, check it out.",

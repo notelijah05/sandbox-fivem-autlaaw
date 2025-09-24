@@ -165,7 +165,6 @@ function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Drugs = exports["sandbox-base"]:FetchComponent("Drugs")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
@@ -182,7 +181,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Reputation",
 		"Vehicles",
 		"Generator",
-		"Phone",
 		"Banking",
 		"Drugs",
 		"Robbery",
@@ -708,7 +706,8 @@ function DoMerge(source, data, cb)
 							description = string.format('Bought x%s %s', data.countTo, item.label),
 							data = {}
 						})
-						Phone.Notification:Add(source, "Bill Payment Successful", false, os.time(), 3000, "bank", {})
+						exports['sandbox-phone']:NotificationAdd(source, "Bill Payment Successful", false, os.time(),
+							3000, "bank", {})
 					end
 
 					if paid then
@@ -769,7 +768,7 @@ function DoMerge(source, data, cb)
 									_playerShops[data.ownerFrom].name),
 								data = {}
 							})
-							Phone.Notification:Add(source, "Bill Payment Successful",
+							exports['sandbox-phone']:NotificationAdd(source, "Bill Payment Successful",
 								string.format('Bought x%s %s From %s', data.countTo, item.label,
 									_playerShops[data.ownerFrom].name), os.time(), 3000, "bank", {})
 						end
@@ -1275,7 +1274,7 @@ function DoMove(source, data, cb)
 							description = string.format('Bought x%s %s', data.countTo, item.label),
 							data = {}
 						})
-						Phone.Notification:Add(source, "Bill Payment Successful",
+						exports['sandbox-phone']:NotificationAdd(source, "Bill Payment Successful",
 							string.format('Bought x%s %s', data.countTo, item.label), os.time(), 3000, "bank", {})
 					end
 
@@ -1343,7 +1342,7 @@ function DoMove(source, data, cb)
 									_playerShops[data.ownerFrom].name),
 								data = {}
 							})
-							Phone.Notification:Add(source, "Bill Payment Successful",
+							exports['sandbox-phone']:NotificationAdd(source, "Bill Payment Successful",
 								string.format('Bought x%s %s From %s', data.countTo, item.label,
 									_playerShops[data.ownerFrom].name), os.time(), 3000, "bank", {})
 						end

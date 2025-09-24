@@ -2,7 +2,6 @@ AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Loot = exports["sandbox-base"]:FetchComponent("Loot")
@@ -23,7 +22,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
 		"Generator",
-		"Phone",
 		"Wallet",
 		"Inventory",
 		"Loot",
@@ -114,7 +112,7 @@ _LABOR = {
 						for k2, v2 in pairs(_Groups) do
 							if v2.Creator.ID == joiner then
 								for k3, v3 in ipairs(v2.Members) do
-									Phone.Notification:AddWithId(
+									exports['sandbox-phone']:NotificationAddWithId(
 										v3.ID,
 										"LABOR_OBJ",
 										title,
@@ -129,7 +127,8 @@ _LABOR = {
 						end
 					end
 
-					Phone.Notification:AddWithId(joiner, "LABOR_OBJ", title, text, os.time(), -1, app, {})
+					exports['sandbox-phone']:NotificationAddWithId(joiner, "LABOR_OBJ", title, text, os.time(), -1,
+						app, {})
 				end
 			end
 		end,
@@ -159,7 +158,7 @@ _LABOR = {
 							for k2, v2 in pairs(_Groups) do
 								if v2.Creator.ID == joiner then
 									for k3, v3 in ipairs(v2.Members) do
-										Phone.Notification:AddWithId(
+										exports['sandbox-phone']:NotificationAddWithId(
 											v3.ID,
 											"LABOR_OBJ",
 											title,
@@ -179,7 +178,7 @@ _LABOR = {
 							end
 						end
 
-						Phone.Notification:AddWithId(
+						exports['sandbox-phone']:NotificationAddWithId(
 							joiner,
 							"LABOR_OBJ",
 							title,
@@ -220,7 +219,7 @@ _LABOR = {
 								for k2, v2 in pairs(_Groups) do
 									if v2.Creator.ID == joiner then
 										for k3, v3 in ipairs(v2.Members) do
-											Phone.Notification:RemoveById(v3.ID, "LABOR_OBJ")
+											exports['sandbox-phone']:NotificationRemoveById(v3.ID, "LABOR_OBJ")
 											if not paidOut[v3.ID] then
 												paidOut[v3.ID] = true
 												Labor.Offers:Complete(v3.ID, job)
@@ -229,7 +228,7 @@ _LABOR = {
 									end
 								end
 							end
-							Phone.Notification:RemoveById(joiner, "LABOR_OBJ")
+							exports['sandbox-phone']:NotificationRemoveById(joiner, "LABOR_OBJ")
 							if not paidOut[joiner] then
 								paidOut[joiner] = true
 								Labor.Offers:Complete(joiner, job)
@@ -248,7 +247,7 @@ _LABOR = {
 								for k2, v2 in pairs(_Groups) do
 									if v2.Creator.ID == joiner then
 										for k3, v3 in ipairs(v2.Members) do
-											Phone.Notification:Update(
+											exports['sandbox-phone']:NotificationUpdate(
 												v3.ID,
 												"LABOR_OBJ",
 												title,
@@ -263,7 +262,7 @@ _LABOR = {
 									end
 								end
 							end
-							Phone.Notification:Update(
+							exports['sandbox-phone']:NotificationUpdate(
 								joiner,
 								"LABOR_OBJ",
 								title,
@@ -322,7 +321,7 @@ _LABOR = {
 						for k2, v2 in pairs(_Groups) do
 							if v2.Creator.ID == v.Joiner then
 								for k3, v3 in ipairs(v2.Members) do
-									Phone.Notification:RemoveById(v3.ID, "LABOR_OBJ")
+									exports['sandbox-phone']:NotificationRemoveById(v3.ID, "LABOR_OBJ")
 									if not paidOut[v3.ID] then
 										paidOut[v3.ID] = true
 										Labor.Offers:Complete(v3.ID, job)
@@ -332,7 +331,7 @@ _LABOR = {
 						end
 					end
 
-					Phone.Notification:RemoveById(v.Joiner, "LABOR_OBJ")
+					exports['sandbox-phone']:NotificationRemoveById(v.Joiner, "LABOR_OBJ")
 					if not paidOut[v.Joiner] then
 						paidOut[v.Joiner] = true
 						Labor.Offers:Complete(v.Joiner, job)
@@ -352,9 +351,9 @@ _LABOR = {
 						for k2, v2 in pairs(_Groups) do
 							if v2.Creator.ID == joiner then
 								for k3, v3 in ipairs(v2.Members) do
-									Phone.Notification:RemoveById(v3.ID, "LABOR_OBJ")
+									exports['sandbox-phone']:NotificationRemoveById(v3.ID, "LABOR_OBJ")
 									if timeout ~= nil then
-										Phone.Notification:Add(
+										exports['sandbox-phone']:NotificationAdd(
 											v3.ID,
 											"Job Failed",
 											timeout.Message,
@@ -374,9 +373,9 @@ _LABOR = {
 							end
 						end
 					end
-					Phone.Notification:RemoveById(joiner, "LABOR_OBJ")
+					exports['sandbox-phone']:NotificationRemoveById(joiner, "LABOR_OBJ")
 					if timeout ~= nil then
-						Phone.Notification:Add(
+						exports['sandbox-phone']:NotificationAdd(
 							joiner,
 							"Job Failed",
 							timeout.Message,
@@ -406,13 +405,13 @@ _LABOR = {
 						for k2, v2 in pairs(_Groups) do
 							if v2.Creator.ID == joiner then
 								for k3, v3 in ipairs(v2.Members) do
-									Phone.Notification:RemoveById(v3.ID, "LABOR_OBJ")
+									exports['sandbox-phone']:NotificationRemoveById(v3.ID, "LABOR_OBJ")
 								end
 							end
 						end
 					end
 
-					Phone.Notification:RemoveById(joiner, "LABOR_OBJ")
+					exports['sandbox-phone']:NotificationRemoveById(joiner, "LABOR_OBJ")
 					TriggerEvent(string.format("%s:Server:CancelJob", job), joiner)
 					Labor.Duty:Off(job, joiner, false, true)
 				end
@@ -471,7 +470,7 @@ _LABOR = {
 					end
 					for k2, v2 in ipairs(v.Members) do
 						TriggerClientEvent("Labor:Client:WorkgroupDisbanded", v2.ID)
-						Phone.Notification:Add(
+						exports['sandbox-phone']:NotificationAdd(
 							v2.ID,
 							"Job Activity",
 							string.format(
@@ -536,7 +535,7 @@ _LABOR = {
 							}
 							table.insert(_Groups[k].Members, d)
 
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								v.Creator.ID,
 								"Job Activity",
 								string.format("%s %s Joined Your Workgroup", name.First, name.Last),
@@ -593,7 +592,7 @@ _LABOR = {
 									name = vpn.MetaData.VpnName
 								end
 
-								Phone.Notification:Add(
+								exports['sandbox-phone']:NotificationAdd(
 									v.Creator.ID,
 									"Job Activity",
 									string.format("%s %s Request To Join Your Group", name.First, name.Last),
@@ -613,7 +612,7 @@ _LABOR = {
 									if _pendingInvites[source] ~= nil then
 										_pendingInvites[source] = nil
 
-										Phone.Notification:Add(
+										exports['sandbox-phone']:NotificationAdd(
 											source,
 											"Job Activity",
 											"Your Group Request Was Ignored",
@@ -645,7 +644,7 @@ _LABOR = {
 							if v2.ID == source then
 								table.remove(_Groups[k].Members, k2)
 
-								Phone.Notification:Add(
+								exports['sandbox-phone']:NotificationAdd(
 									v.Creator.ID,
 									"Job Activity",
 									string.format("%s %s Left Your Workgroup", v2.First, v2.Last),
@@ -725,12 +724,12 @@ _LABOR = {
 										local c = exports['sandbox-characters']:FetchCharacterSource(v2.ID)
 										if c ~= nil then
 											c:SetData("TempJob", nil)
-											Phone.Notification:RemoveById(v2.ID, "LABOR_OBJ")
+											exports['sandbox-phone']:NotificationRemoveById(v2.ID, "LABOR_OBJ")
 											TriggerEvent(string.format("%s:Server:OffDuty", job), v2.ID, joiner)
 
 											if not noAlert then
 												if wasFinished then
-													Phone.Notification:Add(
+													exports['sandbox-phone']:NotificationAdd(
 														v2.ID,
 														"Job Activity",
 														"You finished a job",
@@ -740,7 +739,7 @@ _LABOR = {
 														{}
 													)
 												else
-													Phone.Notification:Add(
+													exports['sandbox-phone']:NotificationAdd(
 														v2.ID,
 														"Job Activity",
 														"You quit a job",
@@ -764,11 +763,11 @@ _LABOR = {
 						local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 						if char then
 							char:SetData("TempJob", nil)
-							Phone.Notification:RemoveById(joiner, "LABOR_OBJ")
+							exports['sandbox-phone']:NotificationRemoveById(joiner, "LABOR_OBJ")
 							TriggerEvent(string.format("%s:Server:OffDuty", job), joiner, joiner)
 							if not noAlert then
 								if wasFinished then
-									Phone.Notification:Add(
+									exports['sandbox-phone']:NotificationAdd(
 										joiner,
 										"Job Activity",
 										"You finished a job",
@@ -778,7 +777,7 @@ _LABOR = {
 										{}
 									)
 								else
-									Phone.Notification:Add(
+									exports['sandbox-phone']:NotificationAdd(
 										joiner,
 										"Job Activity",
 										"You quit a job",

@@ -305,7 +305,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						-- TODO
 						--char:SetData("Apps", Laptop.Store.Install:Do("lsunderground", char:GetData("Apps"), "force"))
 
-						Phone.Email:Send(
+						exports['sandbox-phone']:EmailSend(
 							source,
 							"shadow@ls.undg",
 							os.time(),

@@ -30,7 +30,7 @@ CreateThread(function()
 						ent.towObjective = true
 						TriggerClientEvent("Tow:Client:MarkPickup", k, _spawns[cId], veh)
 
-						Phone.Notification:AddWithId(
+						exports['sandbox-phone']:NotificationAddWithId(
 							k,
 							"TOW_OBJ",
 							"Yard Manager",

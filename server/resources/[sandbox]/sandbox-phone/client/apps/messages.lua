@@ -28,11 +28,12 @@ RegisterNetEvent("Phone:Client:Messages:Notify", function(message)
 	})
 
 	if message.contact then
-		Phone.Notification:Add(message.contact.name, message.message, message.time, 6000, "messages", {
-			view = "convo/" .. message.number,
-		}, nil)
+		exports['sandbox-phone']:NotificationAdd(message.contact.name, message.message, message.time, 6000,
+			"messages", {
+				view = "convo/" .. message.number,
+			}, nil)
 	else
-		Phone.Notification:Add(message.number, message.message, message.time, 6000, "messages", {
+		exports['sandbox-phone']:NotificationAdd(message.number, message.message, message.time, 6000, "messages", {
 			view = "convo/" .. message.number,
 		}, nil)
 	end

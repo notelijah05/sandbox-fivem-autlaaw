@@ -103,7 +103,7 @@ _JOBS = {
 
 			exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
 
-			Phone:UpdateJobData(source)
+			exports['sandbox-phone']:UpdateJobData(source)
 
 			TriggerEvent("Jobs:Server:JobUpdate", source)
 
@@ -187,7 +187,7 @@ _JOBS = {
 				Jobs.Duty:Off(source, jobId, true)
 
 				exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
-				Phone:UpdateJobData(source)
+				exports['sandbox-phone']:UpdateJobData(source)
 				TriggerEvent("Jobs:Server:JobUpdate", source)
 
 				if removedJobData.Workplace and removedJobData.Workplace.Name then
@@ -1128,7 +1128,7 @@ _JOBS = {
 								if v.Id == jobId then
 									v.Name = newJobName
 									v:SetData("Jobs", jobs)
-									Phone:UpdateJobData(v:GetData("Source"))
+									exports['sandbox-phone']:UpdateJobData(v:GetData("Source"))
 								end
 							end
 						end
@@ -1192,7 +1192,7 @@ _JOBS = {
 								if v.Id == jobId and (v.Workplace and (v.Workplace.Id == workplaceId)) then
 									v.Workplace.Name = newWorkplaceName
 									v:SetData("Jobs", jobs)
-									Phone:UpdateJobData(v:GetData("Source"))
+									exports['sandbox-phone']:UpdateJobData(v:GetData("Source"))
 								end
 							end
 						end
@@ -1262,7 +1262,7 @@ _JOBS = {
 										end
 
 										v:SetData("Jobs", jobs)
-										Phone:UpdateJobData(v:GetData("Source"))
+										exports['sandbox-phone']:UpdateJobData(v:GetData("Source"))
 									end
 								end
 							end

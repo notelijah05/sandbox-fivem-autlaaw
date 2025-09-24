@@ -1,4 +1,4 @@
-exports("PhoneAddToCall", function(source, callChannel)
+exports("AddToCall", function(source, callChannel)
 	if not voiceData[source] then
 		return
 	end
@@ -14,7 +14,7 @@ exports("PhoneAddToCall", function(source, callChannel)
 	TriggerClientEvent("VOIP:Phone:Client:SyncCallData", source, callData[callChannel])
 end)
 
-exports("PhoneRemoveFromCall", function(source, callChannel)
+exports("RemoveFromCall", function(source, callChannel)
 	if not voiceData[source] then
 		return
 	end
@@ -29,7 +29,7 @@ exports("PhoneRemoveFromCall", function(source, callChannel)
 	voiceData[source].Call = 0
 end)
 
-exports("PhoneSetCall", function(source, callChannel)
+exports("SetCall", function(source, callChannel)
 	local plyVoice = voiceData[source]
 	local callChannel = tonumber(callChannel)
 	if not plyVoice or not callChannel then
@@ -47,7 +47,7 @@ exports("PhoneSetCall", function(source, callChannel)
 	TriggerClientEvent("VOIP:Phone:Client:SetPlayerCall", source, callChannel)
 end)
 
-exports("PhoneSetTalking", function(source, talking)
+exports("SetTalking", function(source, talking)
 	local plyVoice = voiceData[source]
 	if not plyVoice then
 		return

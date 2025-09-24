@@ -2,7 +2,6 @@ AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
@@ -23,7 +22,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
 		"PedInteraction",
 		"Progress",
-		"Phone",
 		"Polyzone",
 		"Targeting",
 		"Progress",

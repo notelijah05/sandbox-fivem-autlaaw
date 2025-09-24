@@ -32,7 +32,7 @@ RegisterNetEvent("Phone:Client:Chatter:Notify", function(message, gData)
 		data = message,
 	})
 
-	Phone.Notification:Add(gData.label, message.message, message.timestamp, 6000, "chatter", {
+	exports['sandbox-phone']:NotificationAdd(gData.label, message.message, message.timestamp, 6000, "chatter", {
 		view = "channel/" .. message.group,
 	}, nil)
 
@@ -55,9 +55,10 @@ RegisterNetEvent("Phone:Client:Chatter:ReceiveInvite", function(invite)
 		},
 	})
 
-	Phone.Notification:Add(invite.label, "You Were Invited To A Group", invite.timestamp, 6000, "chatter", {
-		view = "join/" .. invite.group,
-	}, nil)
+	exports['sandbox-phone']:NotificationAdd(invite.label, "You Were Invited To A Group", invite.timestamp, 6000,
+		"chatter", {
+			view = "join/" .. invite.group,
+		}, nil)
 end)
 
 RegisterNetEvent("Phone:Client:Chatter:GroupDeleted", function(id)

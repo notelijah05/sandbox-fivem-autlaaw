@@ -5,7 +5,6 @@ _casinoConfigLoaded = false
 AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -19,7 +18,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Casino", {
 		"Generator",
-		"Phone",
 		"Jobs",
 		"Vehicles",
 		"Inventory",
@@ -259,7 +257,7 @@ function SendCasinoSpentChipsPhoneNotification(source, amount)
 end
 
 function SendCasinoPhoneNotification(source, title, description, time)
-	Phone.Notification:Add(source, title, description, os.time(), time or 7500, {
+	exports['sandbox-phone']:NotificationAdd(source, title, description, os.time(), time or 7500, {
 		color = "#18191e",
 		label = "Casino",
 		icon = "cards",

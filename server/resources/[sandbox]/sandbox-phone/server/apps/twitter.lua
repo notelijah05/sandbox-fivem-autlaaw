@@ -1,29 +1,28 @@
 local _tweets = {}
 
-PHONE.Twitter = {
-	Get = function(self)
-		return _tweets
-	end,
-	Post = function(self, source, SID, author, content, image, isRetweet, verified)
-		local data = {
-			id = #_tweets + 1,
-			time = os.time(),
-			source = source,
-			SID = SID,
-			author = author,
-			content = content,
-			image = image,
-			likes = {},
-			retweet = isRetweet,
-			verified = verified,
-		}
+exports("TwitterGet", function()
+	return _tweets
+end)
 
-		table.insert(_tweets, data)
+exports("TwitterPost", function(source, SID, author, content, image, isRetweet, verified)
+	local data = {
+		id = #_tweets + 1,
+		time = os.time(),
+		source = source,
+		SID = SID,
+		author = author,
+		content = content,
+		image = image,
+		likes = {},
+		retweet = isRetweet,
+		verified = verified,
+	}
 
-		TriggerClientEvent("Phone:Client:Twitter:Notify", -1, data)
-		return true
-	end,
-}
+	table.insert(_tweets, data)
+
+	TriggerClientEvent("Phone:Client:Twitter:Notify", -1, data)
+	return true
+end)
 
 -- AddEventHandler("Phone:Server:AliasUpdated", function(src)
 -- 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
@@ -93,7 +92,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 
 		if alias.twitter ~= nil then
 			local avatar = nil
-			if alias?.twitter?.avatar ~= nil then
+			if alias.twitter and alias.twitter.avatar ~= nil then
 				avatar = alias.twitter.avatar:sub(1, 512)
 			end
 
@@ -182,7 +181,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		cb(
-			Phone.Twitter:Post(
+			exports['sandbox-phone']:TwitterPost(
 				src,
 				char:GetData("SID"),
 				char:GetData("Profiles").twitter,

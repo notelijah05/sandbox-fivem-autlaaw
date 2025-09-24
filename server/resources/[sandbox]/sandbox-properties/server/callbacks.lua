@@ -24,7 +24,7 @@ function RegisterCallbacks()
 			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then
 					if Jobs.Permissions:HasPermissionInJob(v:GetData("Source"), "realestate", "JOB_SELL") then
-						Phone.Email:Send(
+						exports['sandbox-phone']:EmailSend(
 							v:GetData("Source"),
 							char:GetData("Profiles").email.name,
 							os.time(),
@@ -444,7 +444,7 @@ function RegisterCallbacks()
 																		perWeek, salePriceAfterDown)
 
 																	-- Send Realtor Notification
-																	Phone.Notification:Add(source,
+																	exports['sandbox-phone']:NotificationAdd(source,
 																		"Property Sale Successful",
 																		string.format(
 																			"(Loan Sale) %s was sold to %s %s.",
@@ -461,7 +461,8 @@ function RegisterCallbacks()
 																		})
 																end
 															else
-																Phone.Notification:Add(source, "Property Sale Failed",
+																exports['sandbox-phone']:NotificationAdd(source,
+																	"Property Sale Failed",
 																	string.format(
 																		"(Loan Sale) The downpayment failed when trying to sell %s to %s %s.",
 																		prop.label, targetChar:GetData('First'),
@@ -506,7 +507,7 @@ function RegisterCallbacks()
 										}, prop.label, prop.price)
 
 										-- Send Realtor Confirmation
-										Phone.Notification:Add(source, "Property Sale Successful",
+										exports['sandbox-phone']:NotificationAdd(source, "Property Sale Successful",
 											string.format("(Cash Sale) %s was sold to %s %s.", prop.label,
 												targetChar:GetData('First'), targetChar:GetData('Last')), os.time(), 7000,
 											_phoneApp, {})
@@ -528,7 +529,7 @@ function RegisterCallbacks()
 										-- 	Loans.Credit:Increase(targetChar:GetData('SID'), creditIncrease)
 										-- end
 									else
-										Phone.Notification:Add(source, "Property Sale Failed",
+										exports['sandbox-phone']:NotificationAdd(source, "Property Sale Failed",
 											string.format(
 												"(Cash Sale) The bank transfer failed when trying to sell %s to %s %s.",
 												prop.label, targetChar:GetData('First'), targetChar:GetData('Last')),
@@ -606,7 +607,8 @@ function RegisterCallbacks()
 													Last = newOwner:GetData("Last"),
 													Owner = true,
 												}) then
-												Phone.Notification:Add(source, "Property Transfer Successful",
+												exports['sandbox-phone']:NotificationAdd(source,
+													"Property Transfer Successful",
 													"The property transfer was successful.", os.time(), 7000, _phoneApp,
 													{})
 
@@ -628,16 +630,18 @@ function RegisterCallbacks()
 													)
 												)
 											else
-												Phone.Notification:Add(source, "Property Transfer Failed",
+												exports['sandbox-phone']:NotificationAdd(source,
+													"Property Transfer Failed",
 													"The property transfer failed.", os.time(), 7000, _phoneApp, {})
 											end
 										else
-											Phone.Notification:Add(source, "Property Transfer Failed",
+											exports['sandbox-phone']:NotificationAdd(source,
+												"Property Transfer Failed",
 												"The new owner declined the transfer.", os.time(), 7000, _phoneApp, {})
 										end
 									end)
 								else
-									Phone.Notification:Add(source, "Property Transfer Failed",
+									exports['sandbox-phone']:NotificationAdd(source, "Property Transfer Failed",
 										"The owner declined the transfer.", os.time(), 7000, _phoneApp, {})
 								end
 							end)
@@ -667,7 +671,7 @@ function SendPendingLoanEmail(charData, propertyLabel, downPaymentPercent, downP
 							  remaining, cb)
 	if not _pendingLoanAccept[charData.SID] then
 		_pendingLoanAccept[charData.SID] = cb
-		Phone.Email:Send(
+		exports['sandbox-phone']:EmailSend(
 			charData.Source,
 			'loans@dynasty8.com',
 			os.time(),
@@ -717,7 +721,7 @@ RegisterNetEvent('RealEstate:Server:AcceptLoan', function(_, email)
 	local src = source
 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char then
-		Phone.Email:Delete(char:GetData('ID'), email)
+		exports['sandbox-phone']:EmailDelete(char:GetData('ID'), email)
 		local stateId = char:GetData('SID')
 
 		if _pendingLoanAccept[stateId] then
@@ -729,7 +733,7 @@ end)
 
 function SendCompletedLoanSaleEmail(charData, propertyLabel, downPaymentPercent, downPayment, loanWeeks, weeklyPayments,
 									remaining)
-	Phone.Email:Send(
+	exports['sandbox-phone']:EmailSend(
 		charData.Source,
 		'loans@dynasty8.com',
 		os.time(),
@@ -764,7 +768,7 @@ function SendCompletedLoanSaleEmail(charData, propertyLabel, downPaymentPercent,
 end
 
 function SendCompletedCashSaleEmail(charData, propertyLabel, price)
-	Phone.Email:Send(
+	exports['sandbox-phone']:EmailSend(
 		charData.Source,
 		'sales@dynasty8.com',
 		os.time(),
@@ -835,12 +839,13 @@ function SendPendingPropertyTransfer(source, isOwner, data, cb)
 		description = string.format("Transfer of %s to %s %s (%s)", data.Property, data.First, data.Last, data.SID)
 	end
 
-	Phone.Notification:Add(source, "Property Transfer Request", description, os.time(), 15000, _phoneApp, {
-		accept = "RealEstate:Client:AcceptTransfer",
-		cancel = "RealEstate:Client:DenyTransfer",
-	}, {
-		data = data,
-	})
+	exports['sandbox-phone']:NotificationAdd(source, "Property Transfer Request", description, os.time(), 15000,
+		_phoneApp, {
+			accept = "RealEstate:Client:AcceptTransfer",
+			cancel = "RealEstate:Client:DenyTransfer",
+		}, {
+			data = data,
+		})
 end
 
 RegisterNetEvent('RealEstate:Server:AcceptTransfer', function()

@@ -13,8 +13,6 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	end)
 end)
 
-PHONE.Labor = {}
-
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Labor:CreateWorkgroup", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)

@@ -1,20 +1,18 @@
 local _playersContacts = {}
 
-PHONE.Contacts = {
-	IsContact = function(self, myId, targetNumber)
-		if _playersContacts[myId] ~= nil then
-			for k, v in ipairs(_playersContacts[myId]) do
-				if v.number == targetNumber then
-					return v
-				end
+exports("ContactsIsContact", function(myId, targetNumber)
+	if _playersContacts[myId] ~= nil then
+		for k, v in ipairs(_playersContacts[myId]) do
+			if v.number == targetNumber then
+				return v
 			end
-
-			return false
-		else
-			return false
 		end
-	end,
-}
+
+		return false
+	else
+		return false
+	end
+end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	exports['sandbox-base']:MiddlewareAdd("Phone:Spawning", function(source, char)

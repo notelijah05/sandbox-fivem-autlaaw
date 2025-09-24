@@ -138,7 +138,8 @@ AddEventHandler("Salvaging:Server:OnDuty", function(joiner, members, isWorkgroup
 
 	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
-	Phone.Notification:Add(joiner, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
+	exports['sandbox-phone']:NotificationAdd(joiner, "Job Activity", "You started a job", os.time(), 6000, "labor",
+		{})
 	TriggerClientEvent("Salvaging:Client:OnDuty", joiner, joiner, os.time())
 
 	if #members > 0 then
@@ -146,7 +147,8 @@ AddEventHandler("Salvaging:Server:OnDuty", function(joiner, members, isWorkgroup
 			_joiners[v.ID] = joiner
 			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
-			Phone.Notification:Add(v.ID, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
+			exports['sandbox-phone']:NotificationAdd(v.ID, "Job Activity", "You started a job", os.time(), 6000,
+				"labor", {})
 			TriggerClientEvent("Salvaging:Client:OnDuty", v.ID, joiner, os.time())
 		end
 	end

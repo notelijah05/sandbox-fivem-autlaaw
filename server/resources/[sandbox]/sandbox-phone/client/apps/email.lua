@@ -7,7 +7,7 @@ RegisterNetEvent("Phone:Client:Email:Receive", function(email)
 		},
 	})
 	Wait(1e3)
-	Phone.Notification:Add(email.sender, email.subject, email.time, 6000, "email", {
+	exports['sandbox-phone']:NotificationAdd(email.sender, email.subject, email.time, 6000, "email", {
 		view = "view/" .. email.id,
 	}, nil)
 end)

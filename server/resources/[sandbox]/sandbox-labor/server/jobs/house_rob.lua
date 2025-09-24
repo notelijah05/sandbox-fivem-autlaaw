@@ -272,7 +272,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		if not hasValue(states, "SCRIPT_HOUSE_ROBBERY") then
 			table.insert(states, "SCRIPT_HOUSE_ROBBERY")
 			char:SetData("States", states)
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				source,
 				"New Job Available",
 				"A new job is available, check it out.",
@@ -593,7 +593,7 @@ AddEventHandler("Labor:Server:HouseRobbery:Queue", function(source, data)
 
 		_robbers[_joiners[source]].nodes = t
 
-		Phone.Notification:Add(
+		exports['sandbox-phone']:NotificationAdd(
 			_robbers[_joiners[source]].joiner,
 			"Job Activity",
 			"You've Received A Contract",
@@ -605,7 +605,7 @@ AddEventHandler("Labor:Server:HouseRobbery:Queue", function(source, data)
 		if _robbers[_joiners[source]].isWorkgroup then
 			if #_robbers[_joiners[source]].members > 0 then
 				for k, v in ipairs(_robbers[_joiners[source]].members) do
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						v.ID,
 						"Job Activity",
 						"You've Received A Contract",
@@ -644,7 +644,7 @@ AddEventHandler("HouseRobbery:Server:OnDuty", function(joiner, members, isWorkgr
 	if (_cooldowns[level][char:GetData("ID")] or 0) > os.time() and level == 1 then
 		Labor.Offers:Cancel(joiner, _JOB)
 		Labor.Duty:Off(_JOB, joiner, false, true)
-		Phone.Notification:Add(
+		exports['sandbox-phone']:NotificationAdd(
 			joiner,
 			"Job Activity",
 			"You're Not Eligible For Any Available Contracts",
@@ -656,7 +656,7 @@ AddEventHandler("HouseRobbery:Server:OnDuty", function(joiner, members, isWorkgr
 		if isWorkgroup then
 			if #members > 0 then
 				for k, v in ipairs(members) do
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						v.ID,
 						"Job Activity",
 						"Your Group Is Not Eligible For Any Available Contracts. Please Wait",
@@ -676,7 +676,7 @@ AddEventHandler("HouseRobbery:Server:OnDuty", function(joiner, members, isWorkgr
 				if (_cooldowns[level][v.CharID] or 0) > os.time() and level == 1 then
 					Labor.Offers:Cancel(joiner, _JOB)
 					Labor.Duty:Off(_JOB, joiner, false, true)
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						joiner,
 						"Job Activity",
 						"Your Group Is Not Eligible For Any Available Contracts. Please Wait",
@@ -689,7 +689,7 @@ AddEventHandler("HouseRobbery:Server:OnDuty", function(joiner, members, isWorkgr
 						if #members > 0 then
 							for k2, v2 in ipairs(members) do
 								if v.ID == v2.ID then
-									Phone.Notification:Add(
+									exports['sandbox-phone']:NotificationAdd(
 										v2.ID,
 										"Job Activity",
 										"You're Not Eligible For Any Available Contracts. Please Wait",
@@ -699,7 +699,7 @@ AddEventHandler("HouseRobbery:Server:OnDuty", function(joiner, members, isWorkgr
 										{}
 									)
 								else
-									Phone.Notification:Add(
+									exports['sandbox-phone']:NotificationAdd(
 										v2.ID,
 										"Job Activity",
 										"Your Group Is Not Eligible For Any Available Contracts. Please Wait",

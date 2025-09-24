@@ -58,8 +58,6 @@ end)
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 
 function RetrieveComponents()
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Photos = exports["sandbox-base"]:FetchComponent("Photos")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -82,7 +80,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Phone",
 		"Config",
 		"MDT",
 		"Jobs",
@@ -100,7 +97,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Robbery",
 		"Wallet",
 		"Vendor",
-		"Photos",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -154,7 +150,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		end
 	end, -1)
 	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		Phone:UpdateJobData(source)
+		exports['sandbox-phone']:UpdateJobData(source)
 		TriggerClientEvent("Phone:Client:SetApps", source, PHONE_APPS)
 
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -207,7 +203,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	exports['sandbox-base']:MiddlewareAdd("Phone:UIReset", function(source)
 		local plyr = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			Phone:UpdateJobData(source)
+			exports['sandbox-phone']:UpdateJobData(source)
 			TriggerClientEvent("Phone:Client:SetApps", source, PHONE_APPS)
 
 			local t = exports['sandbox-base']:MiddlewareTriggerEventWithData("Phone:Spawning", source, char)

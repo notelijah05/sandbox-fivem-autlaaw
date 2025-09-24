@@ -3,7 +3,6 @@ _cryptoCoins = {}
 AddEventHandler("Crypto:Shared:DependencyUpdate", RetrieveCryptoComponents)
 function RetrieveCryptoComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
@@ -17,7 +16,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Crypto", {
 		"Generator",
-		"Phone",
 		"Wallet",
 		"Banking",
 		"Billing",
@@ -114,7 +112,7 @@ _CRYPTO = {
 								},
 							})
 						then
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								char:GetData("Source"),
 								"Crypto Purchase",
 								string.format("You Bought %s $%s", amount, coin),
@@ -128,7 +126,7 @@ _CRYPTO = {
 							return false
 						end
 					else
-						Phone.Notification:Add(
+						exports['sandbox-phone']:NotificationAdd(
 							char:GetData("Source"),
 							"Crypto Purchase",
 							"Insufficient Funds",
@@ -189,7 +187,7 @@ _CRYPTO = {
 				char:SetData("Crypto", crypto)
 
 				if not skipAlert then
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						char:GetData("Source"),
 						"Received Crypto",
 						string.format("You Received %s $%s", amount, coin),
@@ -235,7 +233,7 @@ _CRYPTO = {
 					char:SetData("Crypto", crypto)
 
 					if not skipAlert then
-						Phone.Notification:Add(
+						exports['sandbox-phone']:NotificationAdd(
 							char:GetData("Source"),
 							"Crypto Purchase",
 							string.format("You Paid %s $%s", amount, coin),
@@ -293,7 +291,7 @@ _CRYPTO = {
 
 					if tChar or DoesCryptoWalletExist(target) then
 						if Crypto.Exchange:Remove(coin, char:GetData("CryptoWallet"), math.abs(amount), true) then
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								char:GetData("Source"),
 								"Crypto Transfer",
 								string.format("You Sent %s $%s", amount, coin),
@@ -305,7 +303,7 @@ _CRYPTO = {
 
 							if Crypto.Exchange:Add(coin, target, math.abs(amount), true) then
 								if tChar then
-									Phone.Notification:Add(
+									exports['sandbox-phone']:NotificationAdd(
 										tChar:GetData("Source"),
 										"Crypto Transfer",
 										string.format("You Received %s $%s", amount, coin),

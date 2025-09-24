@@ -21,7 +21,7 @@ function StartPreview(int)
         _previewingInteriorCam = 1
         _previewingInteriorSwitching = true
 
-        Phone:Close(true)
+        exports['sandbox-phone']:Close(true)
 
         DoScreenFadeOut(250)
         while not IsScreenFadedOut() do

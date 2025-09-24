@@ -1,53 +1,53 @@
-PHONE.Email = {
-	Read = function(self, charId, id)
-		return MySQL.update.await("UPDATE character_emails SET unread = ? WHERE id = ?", {
-			false,
-			id,
-		}) > 0
-	end,
-	Send = function(self, serverId, sender, time, subject, body, flags, expires)
-		local char = exports['sandbox-characters']:FetchCharacterSource(serverId)
-		if char ~= nil then
-			local id = MySQL.insert.await(
-				"INSERT INTO character_emails (sid, sender, subject, body, timestamp, flags, expires) VALUES(?, ?, ?, ?, FROM_UNIXTIME(?), ?, FROM_UNIXTIME(?))",
-				{
-					char:GetData("SID"),
-					sender,
-					subject,
-					body,
-					time,
-					flags and json.encode(flags) or nil,
-					expires,
-				}
-			)
+exports("EmailRead", function(charId, id)
+	return MySQL.update.await("UPDATE character_emails SET unread = ? WHERE id = ?", {
+		false,
+		id,
+	}) > 0
+end)
 
-			local doc = {
-				id = id,
-				owner = char:GetData("SID"),
-				sender = sender,
-				subject = subject,
-				body = body,
-				time = time,
-				unread = true,
-				flags = flags,
-				expires = expires,
+exports("EmailSend", function(serverId, sender, time, subject, body, flags, expires)
+	local char = exports['sandbox-characters']:FetchCharacterSource(serverId)
+	if char ~= nil then
+		local id = MySQL.insert.await(
+			"INSERT INTO character_emails (sid, sender, subject, body, timestamp, flags, expires) VALUES(?, ?, ?, ?, FROM_UNIXTIME(?), ?, FROM_UNIXTIME(?))",
+			{
+				char:GetData("SID"),
+				sender,
+				subject,
+				body,
+				time,
+				flags and json.encode(flags) or nil,
+				expires,
 			}
+		)
 
-			TriggerClientEvent("Phone:Client:Email:Receive", serverId, doc)
-		end
-	end,
-	Delete = function(self, charId, id)
-		MySQL.query("DELETE FROM character_emails WHERE sid = ? AND id = ?", {
-			charId,
-			id,
-		})
+		local doc = {
+			id = id,
+			owner = char:GetData("SID"),
+			sender = sender,
+			subject = subject,
+			body = body,
+			time = time,
+			unread = true,
+			flags = flags,
+			expires = expires,
+		}
 
-		local char = exports['sandbox-characters']:FetchBySID(charId)
-		if char then
-			TriggerClientEvent("Phone:Client:Email:Delete", char:GetData("Source"), id)
-		end
-	end,
-}
+		TriggerClientEvent("Phone:Client:Email:Receive", serverId, doc)
+	end
+end)
+
+exports("EmailDelete", function(charId, id)
+	MySQL.query("DELETE FROM character_emails WHERE sid = ? AND id = ?", {
+		charId,
+		id,
+	})
+
+	local char = exports['sandbox-characters']:FetchBySID(charId)
+	if char then
+		TriggerClientEvent("Phone:Client:Email:Delete", char:GetData("Source"), id)
+	end
+end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
@@ -156,7 +156,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	exports["sandbox-chat"]:RegisterAdminCommand("email", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
-			Phone.Email:Send(char:GetData("Source"), args[2], os.time(), args[3], args[4])
+			exports['sandbox-phone']:EmailSend(char:GetData("Source"), args[2], os.time(), args[3], args[4])
 		else
 			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
 		end
@@ -183,13 +183,13 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	}, 4)
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Email:Read", function(source, data, cb)
-		cb(Phone.Email:Read(data))
+		cb(exports['sandbox-phone']:EmailRead(data))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Email:Delete", function(source, data, cb)
 		local src = source
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
-		cb(Phone.Email:Delete(char:GetData("SID"), data))
+		cb(exports['sandbox-phone']:EmailDelete(char:GetData("SID"), data))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Email:DeleteExpired", function(source, data, cb)

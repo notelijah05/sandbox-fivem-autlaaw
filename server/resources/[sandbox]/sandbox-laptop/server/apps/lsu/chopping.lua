@@ -340,7 +340,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 							Citizen.SetTimeout(1000 * math.random(20, 60), function()
 								if char ~= nil then
-									Phone.Email:Send(
+									exports['sandbox-phone']:EmailSend(
 										source,
 										"shadow@ls.undg",
 										os.time(),
@@ -426,7 +426,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						end
 					end
 
-					Phone.Email:Send(
+					exports['sandbox-phone']:EmailSend(
 						source,
 						"shadow@ls.undg",
 						os.time(),
@@ -455,7 +455,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							str = str .. [[</ul>]]
 						end
 
-						Phone.Email:Send(
+						exports['sandbox-phone']:EmailSend(
 							source,
 							"shadow@ls.undg",
 							os.time(),
@@ -507,7 +507,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 						str = str .. "</ul>"
 
-						Phone.Email:Send(
+						exports['sandbox-phone']:EmailSend(
 							source,
 							"shadow@ls.undg",
 							os.time(),

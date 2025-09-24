@@ -2,32 +2,33 @@ local _adverts = {
 	["0"] = {},
 	-- Lua, Suck My Dick
 }
-PHONE.Adverts = {
-	Create = function(self, source, advert)
-		_adverts[source] = advert
-		TriggerClientEvent("Phone:Client:AddData", -1, "adverts", advert, source)
-	end,
-	Update = function(self, source, advert)
-		_adverts[source] = advert
-		TriggerClientEvent("Phone:Client:UpdateData", -1, "adverts", source, advert)
-	end,
-	Delete = function(self, source)
-		if _adverts[source] ~= nil then
-			_adverts[source] = nil
-			TriggerClientEvent("Phone:Client:RemoveData", -1, "adverts", source)
-		end
-	end,
-}
+
+exports("AdvertsCreate", function(source, advert)
+	_adverts[source] = advert
+	TriggerClientEvent("Phone:Client:AddData", -1, "adverts", advert, source)
+end)
+
+exports("AdvertsUpdate", function(source, advert)
+	_adverts[source] = advert
+	TriggerClientEvent("Phone:Client:UpdateData", -1, "adverts", source, advert)
+end)
+
+exports("AdvertsDelete", function(source)
+	if _adverts[source] ~= nil then
+		_adverts[source] = nil
+		TriggerClientEvent("Phone:Client:RemoveData", -1, "adverts", source)
+	end
+end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Adverts:Create", function(source, data, cb)
-		Phone.Adverts:Create(source, data)
+		exports['sandbox-phone']:AdvertsCreate(source, data)
 	end)
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Adverts:Update", function(source, data, cb)
-		Phone.Adverts:Update(source, data)
+		exports['sandbox-phone']:AdvertsUpdate(source, data)
 	end)
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Adverts:Delete", function(source, data, cb)
-		Phone.Adverts:Delete(source)
+		exports['sandbox-phone']:AdvertsDelete(source)
 	end)
 end)
 
@@ -43,9 +44,9 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
-	Phone.Adverts:Delete(source)
+	exports['sandbox-phone']:AdvertsDelete(source)
 end)
 
 AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
-	Phone.Adverts:Delete(source)
+	exports['sandbox-phone']:AdvertsDelete(source)
 end)

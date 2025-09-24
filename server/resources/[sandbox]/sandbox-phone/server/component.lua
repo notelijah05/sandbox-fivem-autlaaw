@@ -1,93 +1,90 @@
 PHONE_APPS = {}
 local usedNumbersCache = {}
 
-PHONE = {
-	UpdateJobData = function(self, source, returnValues)
-		local charJobs = Jobs.Permissions:GetJobs(source)
-		local charJobPerms = {}
-		local jobData = {}
-		if charJobs and #charJobs > 0 then
-			for k, v in ipairs(charJobs) do
-				local perms = GlobalState[string.format(
-					"JobPerms:%s:%s:%s",
-					v.Id,
-					(v.Workplace and v.Workplace.Id or false),
-					v.Grade.Id
-				)]
-				if perms then
-					charJobPerms[v.Id] = perms
-				end
-				table.insert(jobData, Jobs:Get(v.Id))
+exports("UpdateJobData", function(source, returnValues)
+	local charJobs = Jobs.Permissions:GetJobs(source)
+	local charJobPerms = {}
+	local jobData = {}
+	if charJobs and #charJobs > 0 then
+		for k, v in ipairs(charJobs) do
+			local perms = GlobalState[string.format(
+				"JobPerms:%s:%s:%s",
+				v.Id,
+				(v.Workplace and v.Workplace.Id or false),
+				v.Grade.Id
+			)]
+			if perms then
+				charJobPerms[v.Id] = perms
 			end
+			table.insert(jobData, Jobs:Get(v.Id))
 		end
+	end
 
-		if returnValues then
-			return {
-				charJobPerms = charJobPerms,
-				jobData = jobData,
-			}
-		end
+	if returnValues then
+		return {
+			charJobPerms = charJobPerms,
+			jobData = jobData,
+		}
+	end
 
-		TriggerLatentClientEvent("Phone:Client:SetDataMulti", source, 50000, {
-			{
-				type = "JobPermissions",
-				data = charJobPerms,
-			},
-			{
-				type = "JobData",
-				data = jobData,
-			},
-		})
-	end,
-	Notification = {
-		Add = function(self, source, title, description, time, duration, app, actions, notifData)
-			TriggerClientEvent(
-				"Phone:Client:Notifications:Add",
-				source,
-				title,
-				description,
-				time,
-				duration,
-				app,
-				actions,
-				notifData
-			)
-		end,
-		AddWithId = function(self, source, id, title, description, time, duration, app, actions, notifData)
-			TriggerClientEvent(
-				"Phone:Client:Notifications:AddWithId",
-				source,
-				id,
-				title,
-				description,
-				time,
-				duration,
-				app,
-				actions,
-				notifData
-			)
-		end,
-		Update = function(self, source, id, title, description)
-			TriggerClientEvent("Phone:Client:Notifications:Update", source, id, title, description)
-		end,
-		RemoveById = function(self, source, id)
-			TriggerClientEvent("Phone:Client:Notifications:Remove", source, id)
-		end,
-	},
-	GeneratePhoneNumber = function(self)
-		local pNumber = GeneratePhoneNumber()
-		while IsNumberInUse(pNumber) do
-			pNumber = GeneratePhoneNumber()
-		end
+	TriggerLatentClientEvent("Phone:Client:SetDataMulti", source, 50000, {
+		{
+			type = "JobPermissions",
+			data = charJobPerms,
+		},
+		{
+			type = "JobData",
+			data = jobData,
+		},
+	})
+end)
 
-		usedNumbersCache[pNumber] = true
+exports("NotificationAdd", function(source, title, description, time, duration, app, actions, notifData)
+	TriggerClientEvent(
+		"Phone:Client:Notifications:Add",
+		source,
+		title,
+		description,
+		time,
+		duration,
+		app,
+		actions,
+		notifData
+	)
+end)
 
-		return pNumber
-	end,
-}
+exports("NotificationAddWithId", function(source, id, title, description, time, duration, app, actions, notifData)
+	TriggerClientEvent(
+		"Phone:Client:Notifications:AddWithId",
+		source,
+		id,
+		title,
+		description,
+		time,
+		duration,
+		app,
+		actions,
+		notifData
+	)
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Phone", PHONE)
+exports("NotificationUpdate", function(source, id, title, description)
+	TriggerClientEvent("Phone:Client:Notifications:Update", source, id, title, description)
+end)
+
+exports("NotificationRemoveById", function(source, id)
+	TriggerClientEvent("Phone:Client:Notifications:Remove", source, id)
+end)
+
+exports("GeneratePhoneNumber", function()
+	local pNumber = GeneratePhoneNumber()
+	while IsNumberInUse(pNumber) do
+		pNumber = GeneratePhoneNumber()
+	end
+
+	usedNumbersCache[pNumber] = true
+
+	return pNumber
 end)
 
 function IsNumberInUse(number)
@@ -129,50 +126,46 @@ end
 -- Media
 _limitCount = 10
 
-_PHOTOS = {
-	Create = function(self, source, photo)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil and type(photo) == "table" then
-			photo.sid = char:GetData("SID")
-			photo.time = os.time()
-			photo.id = MySQL.insert.await("INSERT INTO character_photos (sid, image_url) VALUES(?, ?)", {
+exports("PhotosCreate", function(source, photo)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil and type(photo) == "table" then
+		photo.sid = char:GetData("SID")
+		photo.time = os.time()
+		photo.id = MySQL.insert.await("INSERT INTO character_photos (sid, image_url) VALUES(?, ?)", {
+			char:GetData("SID"),
+			photo.image_url,
+		})
+
+		return photo
+	end
+	return false
+end)
+
+exports("PhotosFetch", function(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local retval =
+			MySQL.rawExecute.await("SELECT * FROM character_photos WHERE sid = ? ORDER BY time DESC LIMIT ?", {
 				char:GetData("SID"),
-				photo.image_url,
+				_limitCount,
 			})
 
-			return photo
-		end
-		return false
-	end,
-	Fetch = function(self, source)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local retval =
-				MySQL.rawExecute.await("SELECT * FROM character_photos WHERE sid = ? ORDER BY time DESC LIMIT ?", {
-					char:GetData("SID"),
-					_limitCount,
-				})
+		return retval
+	end
+	return false
+end)
 
-			return retval
+exports("PhotosDelete", function(source, id)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local retval = MySQL.rawExecute.await("DELETE FROM character_photos WHERE id = ?", {
+			id,
+		})
+		if retval then
+			-- print("deleted", id)
+			--TriggerClientEvent("Phone:Client:Documents:Deleted", char:GetData("Source"), id)
 		end
-		return false
-	end,
-	Delete = function(self, source, id)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local retval = MySQL.rawExecute.await("DELETE FROM character_photos WHERE id = ?", {
-				id,
-			})
-			if retval then
-				-- print("deleted", id)
-				--TriggerClientEvent("Phone:Client:Documents:Deleted", char:GetData("Source"), id)
-			end
-			return true
-		end
-		return false
-	end,
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Photos", _PHOTOS)
+		return true
+	end
+	return false
 end)

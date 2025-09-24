@@ -1,5 +1,3 @@
-PHONE.Chopper = PHONE.Chopper or {}
-
 local marketItems = {
 	{
 		item = "chopping_invite",
@@ -39,12 +37,14 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						table.insert(states, "ACCESS_CHOPPER")
 						char:SetData("States", states)
 
-						char:SetData("Apps", Phone.Store.Install:Do("chopper", char:GetData("Apps"), "force"))
+						char:SetData("Apps",
+							exports['sandbox-phone']:StoreInstallDo("chopper", char:GetData("Apps"), "force"))
 
 						Citizen.SetTimeout(5000, function()
-							Phone.Notification:Add(source, "App Installed", nil, os.time(), 6000, "chopper", {
-								view = "",
-							}, nil)
+							exports['sandbox-phone']:NotificationAdd(source, "App Installed", nil, os.time(), 6000,
+								"chopper", {
+									view = "",
+								}, nil)
 						end)
 					end
 				else

@@ -55,7 +55,7 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 	if manual then
 		Wait(2500)
 		Hud:Show()
-		if Phone:IsOpen() or hasValue(LocalPlayer.state.Character:GetData("States"), "GPS") then
+		if exports['sandbox-phone']:IsOpen() or hasValue(LocalPlayer.state.Character:GetData("States"), "GPS") then
 			DisplayRadar(true)
 		end
 	end

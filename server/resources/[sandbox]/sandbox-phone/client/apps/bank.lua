@@ -14,7 +14,7 @@ RegisterNUICallback("Banking:Transfer", function(data, cb)
 	exports["sandbox-base"]:ServerCallback('Banking:DoAccountAction', data, function(success)
 		if success then
 			exports["sandbox-base"]:ServerCallback('Banking:GetAccounts', {}, function(accounts, pendingBills)
-				Phone.Data:Set('bankLoans', {
+				exports['sandbox-phone']:DataSet('bankLoans', {
 					accounts = accounts,
 					pendingBills = pendingBills or {},
 				})

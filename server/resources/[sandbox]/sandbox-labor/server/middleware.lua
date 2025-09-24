@@ -33,7 +33,7 @@ function RunLaborLogoutShit(source)
 
     for k, v in pairs(_pendingInvites) do
         if v == source then
-            Phone.Notification:Add(
+            exports['sandbox-phone']:NotificationAdd(
                 v.Creator.ID,
                 "Job Activity",
                 "Requested Group Is No Longer Available",
@@ -47,9 +47,8 @@ function RunLaborLogoutShit(source)
     end
 end
 
-
 function RegisterMiddleware()
-    
+
 end
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", RunLaborLogoutShit)

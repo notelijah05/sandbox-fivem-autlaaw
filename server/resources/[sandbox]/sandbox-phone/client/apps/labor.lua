@@ -1,5 +1,5 @@
 RegisterNetEvent("Phone:Client:Labor:NotifyEnd", function(time)
-	Phone.Notification:Add("Job Activity", "You finished a job", time, 6000, "labor", {}, nil)
+	exports['sandbox-phone']:NotificationAdd("Job Activity", "You finished a job", time, 6000, "labor", {}, nil)
 end)
 
 RegisterNUICallback("GetLaborDetails", function(data, cb)

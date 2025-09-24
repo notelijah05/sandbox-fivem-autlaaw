@@ -727,7 +727,7 @@ function RegisterCallbacks()
                     vehicle:SetData('Storage', GetVehicleTypeDefaultStorage(vehicle:GetData('Type')))
                     Vehicles.Owned:ForceSave(VIN)
 
-                    Phone.Notification:Add(
+                    exports['sandbox-phone']:NotificationAdd(
                         source,
                         "Vehicle Ownership",
                         "A vehicle was just transferred out of your ownership",
@@ -736,7 +736,7 @@ function RegisterCallbacks()
                         "garage",
                         {}
                     )
-                    Phone.Notification:Add(
+                    exports['sandbox-phone']:NotificationAdd(
                         targetChar:GetData('Source'),
                         "Vehicle Ownership",
                         "A vehicle was just transferred into your ownership",

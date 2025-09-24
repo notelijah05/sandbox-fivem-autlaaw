@@ -48,7 +48,7 @@ AddEventHandler("MDT:Client:ResetData", function()
 		Wait(1)
 	end
 
-	Phone.Data:Reset()
+	exports['sandbox-phone']:DataReset()
 end)
 
 RegisterNetEvent("Characters:Client:Logout")

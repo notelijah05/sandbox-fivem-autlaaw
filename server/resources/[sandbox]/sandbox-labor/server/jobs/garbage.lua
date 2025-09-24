@@ -292,7 +292,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	-- 			if Crypto.Exchange:Remove(_pawnItems[data.index].coin, char:GetData("SID"), _pawnItems[data.index].price) then
 	-- 				_pawnItems[data.index].qty = _pawnItems[data.index].qty - 1
 
-	-- 				Phone.Notification:Add(
+	-- 				exports['sandbox-phone']:NotificationAdd(
 	-- 					source,
 	-- 					"Crypto Purchase",
 	-- 					string.format("You Paid %s $%s", _pawnItems[data.index].price, _pawnItems[data.index].coin),
@@ -327,7 +327,8 @@ AddEventHandler("Garbage:Server:OnDuty", function(joiner, members, isWorkgroup)
 
 	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
-	Phone.Notification:Add(joiner, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
+	exports['sandbox-phone']:NotificationAdd(joiner, "Job Activity", "You started a job", os.time(), 6000, "labor",
+		{})
 	TriggerClientEvent("Garbage:Client:OnDuty", joiner, joiner, os.time())
 
 	Labor.Offers:Task(joiner, _JOB, "Speak with the Sanitation Foreman")
@@ -336,7 +337,8 @@ AddEventHandler("Garbage:Server:OnDuty", function(joiner, members, isWorkgroup)
 			_joiners[v.ID] = joiner
 			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
-			Phone.Notification:Add(v.ID, "Job Activity", "You started a job", os.time(), 6000, "labor", {})
+			exports['sandbox-phone']:NotificationAdd(v.ID, "Job Activity", "You started a job", os.time(), 6000,
+				"labor", {})
 			TriggerClientEvent("Garbage:Client:OnDuty", v.ID, joiner, os.time())
 		end
 	end

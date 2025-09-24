@@ -142,7 +142,7 @@ _DRIFT = {
 							licenses["Drift"].Active = true
 							char:SetData("Licenses", licenses)
 							exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", targetSrc)
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								targetSrc,
 								"Payment Successful",
 								string.format("Cloud 9 Drift License - $%s", _DRIFTLICENSECOST),

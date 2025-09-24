@@ -431,7 +431,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 										Robbery.State:Update("paleto", data.pcId, _pbGlobalReset, "exploits")
 										if IsPaletoExploitInstalled() then
-											Phone.Email:Send(
+											exports['sandbox-phone']:EmailSend(
 												source,
 												"ghost@ls.undg",
 												os.time(),
@@ -447,7 +447,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											)
 										else
 											local count = CountPaletoExploits()
-											Phone.Email:Send(
+											exports['sandbox-phone']:EmailSend(
 												source,
 												"ghost@ls.undg",
 												os.time(),

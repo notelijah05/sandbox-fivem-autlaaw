@@ -15,7 +15,7 @@ function RegisterCallbacks()
 			local state = Labor.Workgroups:Join(_pendingInvites[data.source], data.source)
 
 			if state then
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					data.source,
 					"Job Activity",
 					"You Joined A Workgroup",
@@ -37,7 +37,7 @@ function RegisterCallbacks()
 		if _pendingInvites[data.source] ~= nil then
 			_pendingInvites[data.source] = nil
 
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				data.source,
 				"Job Activity",
 				"Your Group Request Was Denied",
@@ -47,7 +47,7 @@ function RegisterCallbacks()
 				{}
 			)
 
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				source,
 				"Labor Activity",
 				"You Denied A Group Request",

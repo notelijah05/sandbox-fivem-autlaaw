@@ -30,7 +30,6 @@ local _ignoreEvents = {
 
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
@@ -53,7 +52,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Phone",
 		"UISounds",
 		"Hud",
 		"Interaction",
@@ -78,54 +76,34 @@ AddEventHandler("Core:Shared:Ready", function()
 		end -- Do something to handle if not all dependencies loaded
 		RetrieveComponents()
 		exports["sandbox-keybinds"]:Add("phone_toggle", "M", "keyboard", "Phone - Open/Close", function()
-			if Phone == nil then
-				return
-			end
-
 			TogglePhone()
 		end)
 
 		exports["sandbox-keybinds"]:Add("phone_ansend", "", "keyboard", "Phone - Accept/End Call", function()
-			if Phone == nil then
-				return
-			end
-
 			if _call ~= nil then
 				if _call.state == 1 then
-					Phone.Call:Accept()
+					exports['sandbox-phone']:CallAccept()
 				else
-					Phone.Call:End()
+					exports['sandbox-phone']:CallEnd()
 				end
 			end
 		end)
 
 		exports["sandbox-keybinds"]:Add("phone_answer", "", "keyboard", "Phone - Accept Call", function()
-			if Phone == nil then
-				return
-			end
-
 			if _call ~= nil then
 				if _call.state == 1 then
-					Phone.Call:Accept()
+					exports['sandbox-phone']:CallAccept()
 				end
 			end
 		end)
 
 		exports["sandbox-keybinds"]:Add("phone_end", "", "keyboard", "Phone - End Call", function()
-			if Phone == nil then
-				return
-			end
-
 			if _call ~= nil then
-				Phone.Call:End()
+				exports['sandbox-phone']:CallEnd()
 			end
 		end)
 
 		exports["sandbox-keybinds"]:Add("phone_mute", "", "keyboard", "Phone - Mute/Unmute Sound", function()
-			if Phone == nil then
-				return
-			end
-
 			if _settings.volume > 0 then
 				_settings.volume = 0
 				exports["sandbox-sounds"]:PlayOne("mute.ogg", 0.1)
@@ -159,7 +137,8 @@ AddEventHandler("Core:Shared:Ready", function()
 					event = "Phone:Client:Payphone",
 					minDist = 2.0,
 					isEnabled = function()
-						return not Phone:IsOpen() and not Phone.Call:Status()
+						return not exports['sandbox-phone']:IsOpen() and
+							not exports['sandbox-phone']:CallStatus()
 					end,
 				},
 			}, 3.0)
@@ -169,7 +148,7 @@ end)
 
 AddEventHandler("Phone:Client:Payphone", function(entity, data)
 	if entity.entity ~= nil then
-		Phone:OpenPayphone()
+		exports['sandbox-phone']:OpenPayphone()
 	end
 end)
 
@@ -179,19 +158,19 @@ AddEventHandler("Characters:Client:Updated", function(key)
 	end
 
 	_settings = LocalPlayer.state.Character:GetData("PhoneSettings")
-	Phone.Data:Set("player", LocalPlayer.state.Character:GetData())
+	exports['sandbox-phone']:DataSet("player", LocalPlayer.state.Character:GetData())
 
 	if
 		key == "States"
 		and LocalPlayer.state.phoneOpen
 		and (not hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE"))
 	then
-		Phone:Close(true)
+		exports['sandbox-phone']:Close(true)
 	end
 end)
 
 RegisterNetEvent("Job:Client:DutyChanged", function(state)
-	Phone.Data:Set("onDuty", state)
+	exports['sandbox-phone']:DataSet("onDuty", state)
 end)
 
 RegisterNetEvent("UI:Client:Reset", function(manual)
@@ -204,20 +183,20 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 	if manual then
 		TriggerServerEvent("Phone:Server:UIReset")
 		if LocalPlayer.state.phoneOpen then
-			Phone:Close()
+			exports['sandbox-phone']:Close()
 		end
 	end
 end)
 
 AddEventHandler("UI:Client:Close", function(context)
 	if context ~= "phone" then
-		Phone:Close()
+		exports['sandbox-phone']:Close()
 	end
 end)
 
 AddEventHandler("Ped:Client:Died", function()
 	if LocalPlayer.state.phoneOpen then
-		Phone:Close()
+		exports['sandbox-phone']:Close()
 	end
 end)
 
@@ -235,27 +214,23 @@ local shareTypes = {
 }
 
 RegisterNetEvent("Phone:Client:ReceiveShare", function(share, time)
-	Phone.Notification:Add("Received QuickShare", shareTypes[share.type], time, 7500, {
+	exports['sandbox-phone']:NotificationAdd("Received QuickShare", shareTypes[share.type], time, 7500, {
 		color = "#18191e",
 		label = "Share",
 		icon = "share-nodes",
 	}, {
 		view = "USE_SHARE",
 	}, nil)
-	Phone:ReceiveShare(share)
+	exports['sandbox-phone']:ReceiveShare(share)
 end)
 
 AddEventHandler("Characters:Client:Spawn", function()
 	_loggedIn = true
 
-	while Phone == nil do
-		Wait(1)
-	end
-
 	if LocalPlayer.state.Character then
 		local settings = LocalPlayer.state.Character:GetData("PhoneSettings")
 		if settings then
-			Phone:SetExpanded(settings.Expanded)
+			exports['sandbox-phone']:SetExpanded(settings.Expanded)
 		end
 	end
 
@@ -303,13 +278,13 @@ function TogglePhone()
 	if not _openCd then
 		if not Hud:IsDisabled() then
 			if not Jail:IsJailed() and hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE") then
-				Phone:Open()
+				exports['sandbox-phone']:Open()
 			else
 				exports["sandbox-hud"]:NotifError("You Don't Have a Phone", 2000)
 				LocalPlayer.state.phoneOpen = false
 			end
 		else
-			Phone:Close()
+			exports['sandbox-phone']:Close()
 		end
 
 		if not IsPedInAnyVehicle(PlayerPedId(), true) then
@@ -319,11 +294,11 @@ function TogglePhone()
 end
 
 AddEventHandler("Phone:Client:OpenLimited", function()
-	Phone:OpenLimited()
+	exports['sandbox-phone']:OpenLimited()
 end)
 
 AddEventHandler("Ped:Client:Died", function()
-	Phone:Close(true)
+	exports['sandbox-phone']:Close(true)
 end)
 
 RegisterNUICallback("CDExpired", function(data, cb)
@@ -389,7 +364,7 @@ RegisterNUICallback("SaveShare", function(data, cb)
 		exports["sandbox-base"]:ServerCallback("Phone:Contacts:Create", data.data, function(nId)
 			cb(nId)
 			if nId then
-				Phone.Data:Add("contacts", {
+				exports['sandbox-phone']:DataAdd("contacts", {
 					id = nId,
 					name = data.data.name,
 					number = data.data.number,
@@ -403,9 +378,9 @@ RegisterNUICallback("SaveShare", function(data, cb)
 			cb(success)
 			if success then
 				if success.update then
-					Phone.Data:Update("myDocuments", success.id, success)
+					exports['sandbox-phone']:DataUpdate("myDocuments", success.id, success)
 				else
-					Phone.Data:Add("myDocuments", success)
+					exports['sandbox-phone']:DataAdd("myDocuments", success)
 				end
 			end
 		end)

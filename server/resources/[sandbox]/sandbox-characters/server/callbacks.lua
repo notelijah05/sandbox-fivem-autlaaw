@@ -157,7 +157,7 @@ function RegisterCallbacks()
 		local charCount = Citizen.Await(p)
 
 		if charCount < 3 or player.Permissions:IsStaff() then
-			local pNumber = Phone:GeneratePhoneNumber()
+			local pNumber = exports['sandbox-phone']:GeneratePhoneNumber()
 
 			local doc = {
 				User = player:GetData("AccountID"),

@@ -14,7 +14,7 @@ INTERACTION = {
 	end,
 	Show = function(self)
 		if not Hud:IsDisabledAllowDead() then
-			Phone:Close()
+			exports['sandbox-phone']:Close()
 			Inventory.Close:All()
 
 			SetNuiFocus(true, true)

@@ -149,7 +149,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			local jobData = Jobs:Get(job)
 			local avatar = Jobs.Data:Get(job, "TwitterAvatar")
 
-			Phone.Twitter:Post(
+			exports['sandbox-phone']:TwitterPost(
 				-1,
 				-1,
 				{

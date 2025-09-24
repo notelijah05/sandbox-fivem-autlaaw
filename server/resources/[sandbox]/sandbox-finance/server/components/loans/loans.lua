@@ -206,7 +206,8 @@ function CreateLoanTasks()
                     if v.SID then
                         local onlineChar = exports['sandbox-characters']:FetchBySID(v.SID)
                         if onlineChar then
-                            Phone.Notification:Add(onlineChar:GetData("Source"), "Loan Payment Due",
+                            exports['sandbox-phone']:NotificationAdd(onlineChar:GetData("Source"),
+                                "Loan Payment Due",
                                 "You have a loan payment that is due very soon.", os.time(), 7500, "loans", {})
                         end
 
@@ -219,12 +220,13 @@ function CreateLoanTasks()
 end
 
 function SendMissedLoanNotification(source, loanData)
-    Phone.Notification:Add(source, "Loan Payment Missed", "You just missed a loan payment on one of your loans.",
+    exports['sandbox-phone']:NotificationAdd(source, "Loan Payment Missed",
+        "You just missed a loan payment on one of your loans.",
         os.time(), 7500, "loans", {})
 end
 
 function SendDefaultedLoanNotification(source, loanData)
-    Phone.Notification:Add(source, "Loan Defaulted",
+    exports['sandbox-phone']:NotificationAdd(source, "Loan Defaulted",
         "One of your loans just got defaulted and the assets are going to be seized.", os.time(), 7500, "loans", {})
 end
 

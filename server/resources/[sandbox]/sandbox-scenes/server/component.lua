@@ -8,7 +8,6 @@ _spamCheck = {}
 AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
@@ -18,7 +17,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Scenes", {
 		"Generator",
-		"Phone",
 		"Jobs",
 		"Vehicles",
 		"Inventory",

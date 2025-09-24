@@ -1,7 +1,6 @@
 AddEventHandler("Finance:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
@@ -16,7 +15,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Finance", {
 		"Generator",
-		"Phone",
 		"Wallet",
 		"Banking",
 		"Billing",

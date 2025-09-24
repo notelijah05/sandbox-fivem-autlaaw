@@ -3,7 +3,6 @@ _charPropertyKeys = {}
 AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
@@ -18,7 +17,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Properties", {
 		"Properties",
-		"Phone",
 		"Jobs",
 		"Inventory",
 		"Police",

@@ -125,38 +125,16 @@ local function handleFlare(checkpoint)
 	end
 end
 
-local _waiting = false
 RegisterNetEvent("Phone:Client:Blueline:StoreTracks", function(tracks)
 	_tracks = tracks
 
-	if _waiting then
-		return
-	end
-	if Phone == nil then
-		_waiting = true
-		while Phone == nil do
-			Wait(1)
-		end
-	end
-
-	Phone.Data:Set("tracks_pd", _tracks)
+	exports['sandbox-phone']:DataSet("tracks_pd", _tracks)
 end)
 
-local _waiting2 = false
 RegisterNetEvent("Phone:Client:Blueline:StoreSingleTrack", function(tId, track)
 	_tracks[tId] = track
 
-	if _waiting2 then
-		return
-	end
-	if Phone == nil then
-		_waiting2 = true
-		while Phone == nil do
-			Wait(1)
-		end
-	end
-
-	Phone.Data:Set("tracks_pd", _tracks)
+	exports['sandbox-phone']:DataSet("tracks_pd", _tracks)
 end)
 
 RegisterNetEvent("Phone:Client:Blueline:Spawn", function(data)

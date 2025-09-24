@@ -381,7 +381,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						TriggerClientEvent("Phone:Client:Blueline:CreateRace", v:GetData("Source"), data)
 						local dutyData = Jobs.Duty:Get(v:GetData("Source"))
 						if v:GetData("Source") ~= src and dutyData?.Id == "police" then
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								v:GetData("Source"),
 								string.format("New Event: %s", data.name),
 								string.format("%s created an event", v:GetData("Callsign")),
@@ -476,7 +476,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				_races[data].class ~= "All"
 				and CheckVehicleAgainstClass(_races[data].class, char:GetData("Source")) == false
 			then
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					char:GetData("Source"),
 					"Unable to Join Race",
 					"This vehicle is not in the right class.",

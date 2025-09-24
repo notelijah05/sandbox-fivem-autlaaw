@@ -286,7 +286,7 @@ AddEventHandler("Furniture:Client:Place", function(data, placement)
             InfoOverlay:Close()
 
             if not _skipPhone then
-                Phone:Open()
+                exports['sandbox-phone']:Open()
             end
         end)
     end
@@ -299,7 +299,7 @@ AddEventHandler("Furniture:Client:Cancel", function()
         LocalPlayer.state.placingFurniture = false
 
         if not _skipPhone then
-            Phone:Open()
+            exports['sandbox-phone']:Open()
         end
 
         Wait(200)
@@ -335,7 +335,7 @@ AddEventHandler("Furniture:Client:Move", function(data, placement)
             InfoOverlay:Close()
 
             if not _skipPhone then
-                Phone:Open()
+                exports['sandbox-phone']:Open()
             end
         end)
     end
@@ -356,7 +356,7 @@ AddEventHandler("Furniture:Client:CancelMove", function(data)
         _placingFurniture = false
         LocalPlayer.state.placingFurniture = false
         if not _skipPhone then
-            Phone:Open()
+            exports['sandbox-phone']:Open()
         end
 
         Wait(200)

@@ -91,13 +91,13 @@ AddEventHandler("Businesses:Server:Startup", function()
                     })
                 end
 
-                Phone.Notification:Add(pData.billerSource, "Contactless Payment Received",
+                exports['sandbox-phone']:NotificationAdd(pData.billerSource, "Contactless Payment Received",
                     string.format("Received $%s for %s.", math.floor(pData.amount), pData.jobName), os.time(), 8000,
                     "bank", {})
                 exports['sandbox-base']:ExecuteClient(pData.billerSource, "Notification", "Success",
                     "Contactless Payment Received")
 
-                Phone.Notification:Add(source, "Contactless Payment Accepted",
+                exports['sandbox-phone']:NotificationAdd(source, "Contactless Payment Accepted",
                     string.format("Paid $%s to %s", math.floor(pData.amount), pData.jobName), os.time(), 8000, "bank", {})
 
                 Laptop.BizWiz.Receipts:Create(pData.job, {
@@ -116,13 +116,13 @@ AddEventHandler("Businesses:Server:Startup", function()
 
                 cb(true)
             else
-                Phone.Notification:Add(pData.billerSource, "Contactless Payment Failed",
+                exports['sandbox-phone']:NotificationAdd(pData.billerSource, "Contactless Payment Failed",
                     string.format("Payment of $%s for %s failed.", math.floor(pData.amount), pData.jobName), os.time(),
                     8000, "bank", {})
                 exports['sandbox-base']:ExecuteClient(pData.billerSource, "Notification", "Error",
                     "Contactless Payment Failed")
 
-                Phone.Notification:Add(source, "Contactless Payment Failed",
+                exports['sandbox-phone']:NotificationAdd(source, "Contactless Payment Failed",
                     string.format("Payment of $%s to %s just failed. Is your balance sufficient?",
                         math.floor(pData.amount), pData.jobName), os.time(), 8000, "bank", {})
 

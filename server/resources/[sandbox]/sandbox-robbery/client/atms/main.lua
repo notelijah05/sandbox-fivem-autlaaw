@@ -57,7 +57,7 @@ AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
                 onSuccess = function(data)
                     exports["sandbox-base"]:ServerCallback("Robbery:ATM:StartJob", true, function(success, location)
                         if success then
-                            Phone.Notification:AddWithId("ATMRobbery", "Started - Good Luck",
+                            exports['sandbox-phone']:NotificationAddWithId("ATMRobbery", "Started - Good Luck",
                                 "Access an ATM in the highlighted area", GetCloudTimeAsInt(), -1, {
                                     color = '#247919',
                                     label = 'Root',
@@ -69,7 +69,8 @@ AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
                             StartATMRobbery(location, true)
                         else
                             if location then
-                                Phone.Notification:Add("No More!", "You already have done too much today...",
+                                exports['sandbox-phone']:NotificationAdd("No More!",
+                                    "You already have done too much today...",
                                     GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
                             end
                         end
@@ -78,7 +79,8 @@ AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
                 onFail = function(data)
                     exports["sandbox-base"]:ServerCallback("Robbery:ATM:StartJob", false, function() end)
 
-                    Phone.Notification:Add("Not Today Failure", "Your skills are useless to us...", GetCloudTimeAsInt(),
+                    exports['sandbox-phone']:NotificationAdd("Not Today Failure", "Your skills are useless to us...",
+                        GetCloudTimeAsInt(),
                         7500, _phoneApp, {}, nil)
                 end,
             }, {
@@ -90,11 +92,13 @@ AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
                 },
             }, {})
         else
-            Phone.Notification:Add("Busy at the Moment", "Sorry, please try again in a minute.", GetCloudTimeAsInt(),
+            exports['sandbox-phone']:NotificationAdd("Busy at the Moment", "Sorry, please try again in a minute.",
+                GetCloudTimeAsInt(),
                 7500, _phoneApp, {}, nil)
         end
     else
-        Phone.Notification:Add("Come Back Later", "Sorry, please try again when it's dark.", GetCloudTimeAsInt(), 7500,
+        exports['sandbox-phone']:NotificationAdd("Come Back Later", "Sorry, please try again when it's dark.",
+            GetCloudTimeAsInt(), 7500,
             _phoneApp, {}, nil)
     end
 end)
@@ -118,7 +122,8 @@ function StartATMRobbery(location, firstLocation)
     SetNewWaypoint(_atmZone.coords.x, _atmZone.coords.y)
 
     if not firstLocation then
-        Phone.Notification:AddWithId("ATMRobbery", "Well Done - Next!", "Access an ATM in the new highlighted area",
+        exports['sandbox-phone']:NotificationAddWithId("ATMRobbery", "Well Done - Next!",
+            "Access an ATM in the new highlighted area",
             GetCloudTimeAsInt() * 1000, -1, _phoneApp, {
                 accept = "dicks",
             }, nil)
@@ -131,7 +136,7 @@ function EndATMRobbery()
 
     _blip = nil
 
-    Phone.Notification:Remove("ATMRobbery")
+    exports['sandbox-phone']:NotificationRemove("ATMRobbery")
 end
 
 function DoATMProgress(label, duration, canCancel, cb)
@@ -190,7 +195,8 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
                             if location then
                                 StartATMRobbery(location, false)
                             else
-                                Phone.Notification:Add("Done", "We hope to work with you more in the future.",
+                                exports['sandbox-phone']:NotificationAdd("Done",
+                                    "We hope to work with you more in the future.",
                                     GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
                             end
                         end
@@ -216,7 +222,8 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
 
                     EndATMRobbery()
 
-                    Phone.Notification:Add("Failed", "I can't believe you just did this.", GetCloudTimeAsInt(), 7500,
+                    exports['sandbox-phone']:NotificationAdd("Failed", "I can't believe you just did this.",
+                        GetCloudTimeAsInt(), 7500,
                         _phoneApp, {}, nil)
                 end)
             end,

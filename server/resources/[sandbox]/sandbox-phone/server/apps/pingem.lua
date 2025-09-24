@@ -12,7 +12,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 		if tChar ~= nil and tChar:GetData("Source") ~= source then
 			if data.type then -- Anonymous
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					tChar:GetData("Source"),
 					"Received A Ping",
 					"You Received An Anonymous Ping",
@@ -30,7 +30,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				)
 				cb(true)
 			else
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					tChar:GetData("Source"),
 					"Received A Ping",
 					string.format("You Received A Ping From %s %s", char:GetData("First"), char:GetData("Last")),
@@ -55,9 +55,11 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:PingEm:GetFeedback", function(source, data, cb)
 		if data.result then
-			Phone.Notification:Add(data.source, "Your Ping", "Your Ping Was Accepted", os.time(), 6000, "pingem")
+			exports['sandbox-phone']:NotificationAdd(data.source, "Your Ping", "Your Ping Was Accepted", os.time(),
+				6000, "pingem")
 		else
-			Phone.Notification:Add(data.source, "Your Ping", "Your Ping Was Rejected", os.time(), 6000, "pingem")
+			exports['sandbox-phone']:NotificationAdd(data.source, "Your Ping", "Your Ping Was Rejected", os.time(),
+				6000, "pingem")
 		end
 	end)
 end)

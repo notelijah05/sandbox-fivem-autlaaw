@@ -14,9 +14,11 @@ AddEventHandler('Finance:Server:Startup', function()
             cb(success)
             if data.notify then
                 if success then
-                    Phone.Notification:Add(source, "Bill Payment Successful", false, os.time(), 3000, "bank", {})
+                    exports['sandbox-phone']:NotificationAdd(source, "Bill Payment Successful", false, os.time(),
+                        3000, "bank", {})
                 else
-                    Phone.Notification:Add(source, "Bill Payment Failed", false, os.time(), 3000, "bank", {})
+                    exports['sandbox-phone']:NotificationAdd(source, "Bill Payment Failed", false, os.time(), 3000,
+                        "bank", {})
                 end
             end
         else

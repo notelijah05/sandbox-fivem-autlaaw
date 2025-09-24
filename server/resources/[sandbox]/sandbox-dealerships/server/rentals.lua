@@ -21,7 +21,8 @@ function RegisterVehicleRentalCallbacks()
                     })
 
                     if didPay then
-                        Phone.Notification:Add(source, "Rental Payment Successful", false, os.time(), 3000, "bank", {})
+                        exports['sandbox-phone']:NotificationAdd(source, "Rental Payment Successful", false,
+                            os.time(), 3000, "bank", {})
                     end
                 else
                     if Wallet:Modify(source, -rentalCost) then

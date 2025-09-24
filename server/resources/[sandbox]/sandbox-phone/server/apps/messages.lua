@@ -1,18 +1,17 @@
-PHONE.Messages = {
-	Read = function(self, owner, number)
-		MySQL.query("UPDATE character_messages SET unread = ? WHERE owner = ? AND number = ?", {
-			0,
-			owner,
-			number,
-		})
-	end,
-	Delete = function(self, owner, number)
-		MySQL.query("DELETE FROM character_messages WHERE owner = ? AND number = ?", {
-			owner,
-			number,
-		})
-	end,
-}
+exports("MessagesRead", function(owner, number)
+	MySQL.query("UPDATE character_messages SET unread = ? WHERE owner = ? AND number = ?", {
+		0,
+		owner,
+		number,
+	})
+end)
+
+exports("MessagesDelete", function(owner, number)
+	MySQL.query("DELETE FROM character_messages WHERE owner = ? AND number = ?", {
+		owner,
+		number,
+	})
+end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
 
@@ -87,7 +86,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			local targetChar = exports['sandbox-characters']:FetchCharacterData("Phone", data.number)
 			if targetChar ~= nil then
 				data2.id = id.insertId + 1
-				data2.contact = Phone.Contacts:IsContact(targetChar:GetData("SID"), data2.number)
+				data2.contact = exports['sandbox-phone']:ContactsIsContact(targetChar:GetData("SID"), data2.number)
 				TriggerClientEvent("Phone:Client:Messages:Notify", targetChar:GetData("Source"), data2, false)
 			end
 			cb(id.insertId)
@@ -99,14 +98,14 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Messages:ReadConvo", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			Phone.Messages:Read(char:GetData("Phone"), data)
+			exports['sandbox-phone']:MessagesRead(char:GetData("Phone"), data)
 		end
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Messages:DeleteConvo", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			Phone.Messages:Delete(char:GetData("Phone"), data)
+			exports['sandbox-phone']:MessagesDelete(char:GetData("Phone"), data)
 			cb(true)
 		else
 			cb(false)

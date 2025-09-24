@@ -126,7 +126,7 @@ function SetupQueues()
 						)
 					)
 
-					Phone.Email:Send(
+					exports['sandbox-phone']:EmailSend(
 						char:GetData("Source"),
 						"unknown@sandboxrp.gg",
 						os.time(),

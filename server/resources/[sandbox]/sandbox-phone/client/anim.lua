@@ -121,7 +121,7 @@ function PhonePlayAnim(status, freeze, force)
 end
 
 function PhonePlayOut()
-	if not Phone.Call:Status() then
+	if not exports['sandbox-phone']:CallStatus() then
 		PhonePlayAnim("out")
 	end
 end
@@ -136,7 +136,7 @@ function PhonePlayText()
 						IsPedInAnyVehicle(myPedId, false)
 						and not IsEntityPlayingAnim(PlayerPedId(), "anim@cellphone@in_car@ps", "cellphone_text_in", 3)
 					)
-				) and not Phone.Call:Status()
+				) and not exports['sandbox-phone']:CallStatus()
 			then
 				PhonePlayAnim("text", false, true)
 			end
@@ -170,7 +170,7 @@ function PhonePlayCall(freeze)
 end
 
 function PhoneCallToText()
-	if not Phone.Call:Status() then
+	if not exports['sandbox-phone']:CallStatus() then
 		PhonePlayAnim("text", false, true)
 	end
 end
@@ -180,7 +180,7 @@ function PhoneTextToCall()
 end
 
 function PhonePlayIn()
-	if not Phone.Call:Status() then
+	if not exports['sandbox-phone']:CallStatus() then
 		PhonePlayAnim("text", false, true)
 	end
 end

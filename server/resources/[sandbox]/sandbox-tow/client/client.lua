@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Tow = exports["sandbox-base"]:FetchComponent("Tow")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -19,7 +18,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"PedInteraction",
 		"Tow",
-		"Phone",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -123,7 +121,8 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 
 						if Entity(success).state.towObjective then
 							exports["sandbox-blips"]:Remove("towjob-pickup")
-							Phone.Notification:Update("TOW_OBJ", "Yard Manager", "Great, bring it back to the yard")
+							exports['sandbox-phone']:NotificationUpdate("TOW_OBJ", "Yard Manager",
+								"Great, bring it back to the yard")
 						end
 					else
 						truckState:set("towingVehicle", false, true)

@@ -1,158 +1,159 @@
 local _calls = {}
 local _bizCallHandlers = {} -- The people who answered the business call
 
-PHONE.Call = {
-	End = function(self, source, business)
-		if business then
-			if _bizPhones[business] and _bizPhones[business].call then
-				local caller = _bizPhones[business].call.caller
-				local duration = false
-				if _bizPhones[business].call.handler then
-					duration = math.ceil(os.time() - _bizPhones[business].call.start)
+exports("CallEnd", function(source, business)
+	if business then
+		if _bizPhones[business] and _bizPhones[business].call then
+			local caller = _bizPhones[business].call.caller
+			local duration = false
+			if _bizPhones[business].call.handler then
+				duration = math.ceil(os.time() - _bizPhones[business].call.start)
+			end
+
+			if caller ~= nil and _calls[caller] ~= nil then
+				exports['sandbox-base']:LoggerTrace("Phone",
+					string.format("%s Ending Call With %s", business, caller))
+				_calls[caller].data.duration = duration or -1
+				TriggerClientEvent("Phone:Client:Phone:EndCall", caller)
+				TriggerClientEvent(
+					"Phone:Client:AddData",
+					caller,
+					"calls",
+					_calls[caller].data
+				)
+				exports['sandbox-phone']:CallCreateRecord(_calls[caller].data)
+				exports['sandbox-phone']:NotificationRemoveById(caller, "PHONE_CALL")
+				exports["sandbox-voip"]:PhoneSetCall(caller, 0)
+				_calls[caller] = nil
+			else
+				exports['sandbox-base']:LoggerTrace(
+					"Phone",
+					string.format("%s Ending Call With Second Client Not Registered In A Call", business)
+				)
+			end
+
+			if _bizPhones[business].call.handler then
+				exports["sandbox-voip"]:PhoneSetCall(_bizPhones[business].call.handler, 0)
+
+				_bizCallHandlers[_bizPhones[business].call.handler] = nil
+			end
+
+			_bizPhones[business].call = false
+			GlobalState[string.format("BizPhone:%s", business)] = nil
+			TriggerClientEvent("Phone:Client:Biz:End", -1, business)
+		end
+	else
+		if _calls[source] ~= nil then
+			if _calls[source].state == 2 then
+				_calls[source].data.duration = math.ceil(os.time() - _calls[source].start)
+			else
+				_calls[source].data.duration = -1
+			end
+
+			exports['sandbox-phone']:CallCreateRecord(_calls[source].data)
+
+			TriggerClientEvent("Phone:Client:Phone:EndCall", source)
+			TriggerClientEvent("Phone:Client:AddData", source, "calls", _calls[source].data)
+
+			exports['sandbox-phone']:NotificationRemoveById(source, "PHONE_CALL")
+			exports["sandbox-voip"]:PhoneSetCall(source, 0)
+
+			if _calls[source].isBiz then
+				if _bizPhones[_calls[source].isBiz].call and _bizPhones[_calls[source].isBiz].call.handler then
+					exports["sandbox-voip"]:PhoneSetCall(_bizPhones[_calls[source].isBiz].call.handler, 0)
+
+					_bizCallHandlers[_bizPhones[_calls[source].isBiz].call.handler] = nil
 				end
 
-				if caller ~= nil and _calls[caller] ~= nil then
+				_bizPhones[_calls[source].isBiz].call = false
+				GlobalState[string.format("BizPhone:%s", _calls[source].isBiz)] = nil
+				TriggerClientEvent("Phone:Client:Biz:End", -1, _calls[source].isBiz)
+			else
+				if _calls[source].target ~= nil and _calls[_calls[source].target] ~= nil then
 					exports['sandbox-base']:LoggerTrace("Phone",
-						string.format("%s Ending Call With %s", business, caller))
-					_calls[caller].data.duration = duration or -1
-					TriggerClientEvent("Phone:Client:Phone:EndCall", caller)
+						string.format("%s Ending Call With %s", source, _calls[source].target))
+					_calls[_calls[source].target].data.duration = _calls[source].data.duration or -1
+					TriggerClientEvent("Phone:Client:Phone:EndCall", _calls[source].target)
 					TriggerClientEvent(
 						"Phone:Client:AddData",
-						caller,
+						_calls[source].target,
 						"calls",
-						_calls[caller].data
+						_calls[_calls[source].target].data
 					)
-					Phone.Call:CreateRecord(_calls[caller].data)
-					Phone.Notification:RemoveById(caller, "PHONE_CALL")
-					exports["sandbox-voip"]:PhoneSetCall(caller, 0)
-					_calls[caller] = nil
+					exports['sandbox-phone']:CallCreateRecord(_calls[_calls[source].target].data)
+					exports['sandbox-phone']:NotificationRemoveById(_calls[source].target, "PHONE_CALL")
+					exports["sandbox-voip"]:PhoneSetCall(_calls[source].target, 0)
+					_calls[_calls[source].target] = nil
 				else
 					exports['sandbox-base']:LoggerTrace(
 						"Phone",
-						string.format("%s Ending Call With Second Client Not Registered In A Call", business)
+						string.format("%s Ending Call With Second Client Not Registered In A Call", source)
 					)
 				end
-
-				if _bizPhones[business].call.handler then
-					exports["sandbox-voip"]:PhoneSetCall(_bizPhones[business].call.handler, 0)
-
-					_bizCallHandlers[_bizPhones[business].call.handler] = nil
-				end
-
-				_bizPhones[business].call = false
-				GlobalState[string.format("BizPhone:%s", business)] = nil
-				TriggerClientEvent("Phone:Client:Biz:End", -1, business)
 			end
-		else
-			if _calls[source] ~= nil then
-				if _calls[source].state == 2 then
-					_calls[source].data.duration = math.ceil(os.time() - _calls[source].start)
-				else
-					_calls[source].data.duration = -1
-				end
 
-				Phone.Call:CreateRecord(_calls[source].data)
-
-				TriggerClientEvent("Phone:Client:Phone:EndCall", source)
-				TriggerClientEvent("Phone:Client:AddData", source, "calls", _calls[source].data)
-
-				Phone.Notification:RemoveById(source, "PHONE_CALL")
-				exports["sandbox-voip"]:PhoneSetCall(source, 0)
-
-				if _calls[source].isBiz then
-					if _bizPhones[_calls[source].isBiz].call and _bizPhones[_calls[source].isBiz].call.handler then
-						exports["sandbox-voip"]:PhoneSetCall(_bizPhones[_calls[source].isBiz].call.handler, 0)
-
-						_bizCallHandlers[_bizPhones[_calls[source].isBiz].call.handler] = nil
-					end
-
-					_bizPhones[_calls[source].isBiz].call = false
-					GlobalState[string.format("BizPhone:%s", _calls[source].isBiz)] = nil
-					TriggerClientEvent("Phone:Client:Biz:End", -1, _calls[source].isBiz)
-				else
-					if _calls[source].target ~= nil and _calls[_calls[source].target] ~= nil then
-						exports['sandbox-base']:LoggerTrace("Phone",
-							string.format("%s Ending Call With %s", source, _calls[source].target))
-						_calls[_calls[source].target].data.duration = _calls[source].data.duration or -1
-						TriggerClientEvent("Phone:Client:Phone:EndCall", _calls[source].target)
-						TriggerClientEvent(
-							"Phone:Client:AddData",
-							_calls[source].target,
-							"calls",
-							_calls[_calls[source].target].data
-						)
-						Phone.Call:CreateRecord(_calls[_calls[source].target].data)
-						Phone.Notification:RemoveById(_calls[source].target, "PHONE_CALL")
-						exports["sandbox-voip"]:PhoneSetCall(_calls[source].target, 0)
-						_calls[_calls[source].target] = nil
-					else
-						exports['sandbox-base']:LoggerTrace(
-							"Phone",
-							string.format("%s Ending Call With Second Client Not Registered In A Call", source)
-						)
-					end
-				end
-
-				_calls[source] = nil
-			end
+			_calls[source] = nil
 		end
-	end,
-	CreateRecord = function(self, record)
-		MySQL.insert(
-			"INSERT INTO character_calls (owner, number, method, duration, anonymous, decryptable, limited, unread) VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
-			{
-				record.owner,
-				record.number,
-				record.method,
-				record.duration,
-				record.anonymous or false,
-				record.decryptable or false,
-				record.limited or false,
-				record.unread or false,
-			}
-		)
-	end,
-	Decrypt = function(self, owner, number)
-		MySQL.update("UPDATE character_calls SET anonymous = ? WHERE owner = ? AND number = ? AND decryptable = ?", {
-			false,
-			owner,
-			number,
-			true,
-		})
-	end,
-	Read = function(self, owner)
-		MySQL.update("UPDATE character_calls SET unread = ? WHERE owner = ? AND unread = ?", {
-			false,
-			owner,
-			true,
-		})
-	end,
-}
+	end
+end)
+
+exports("CallCreateRecord", function(record)
+	MySQL.insert(
+		"INSERT INTO character_calls (owner, number, method, duration, anonymous, decryptable, limited, unread) VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
+		{
+			record.owner,
+			record.number,
+			record.method,
+			record.duration,
+			record.anonymous or false,
+			record.decryptable or false,
+			record.limited or false,
+			record.unread or false,
+		}
+	)
+end)
+
+exports("CallDecrypt", function(owner, number)
+	MySQL.update("UPDATE character_calls SET anonymous = ? WHERE owner = ? AND number = ? AND decryptable = ?", {
+		false,
+		owner,
+		number,
+		true,
+	})
+end)
+
+exports("CallRead", function(owner)
+	MySQL.update("UPDATE character_calls SET unread = ? WHERE owner = ? AND unread = ?", {
+		false,
+		owner,
+		true,
+	})
+end)
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
 	if _calls[source] ~= nil then
-		Phone.Call:End(source)
+		exports['sandbox-phone']:CallEnd(source)
 	end
 
 	if _bizCallHandlers[source] ~= nil then
-		Phone.Call:End(-1, _bizCallHandlers[source])
+		exports['sandbox-phone']:CallEnd(-1, _bizCallHandlers[source])
 	end
 end)
 
 AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 	if _calls[source] ~= nil then
-		Phone.Call:End(source)
+		exports['sandbox-phone']:CallEnd(source)
 	end
 
 	if _bizCallHandlers[source] ~= nil then
-		Phone.Call:End(-1, _bizCallHandlers[source])
+		exports['sandbox-phone']:CallEnd(-1, _bizCallHandlers[source])
 	end
 end)
 
 RegisterNetEvent("Phone:Server:ForceEndBizCall", function()
 	local src = source
 	if _bizCallHandlers[source] ~= nil then
-		Phone.Call:End(-1, _bizCallHandlers[source])
+		exports['sandbox-phone']:CallEnd(-1, _bizCallHandlers[source])
 	end
 end)
 
@@ -178,7 +179,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Phone:CreateCall", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if _calls[src] == nil and char:GetData("Phone") ~= data.number then
-			local callingContact = Phone.Contacts:IsContact(char:GetData("SID"), data.number)
+			local callingContact = exports['sandbox-phone']:ContactsIsContact(char:GetData("SID"), data.number)
 			local callingStr = data.number
 			if callingContact and not data.limited then
 				callingStr = callingContact.name
@@ -203,9 +204,10 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					unread = false,
 				},
 			}
-			Phone.Notification:AddWithId(src, "PHONE_CALL", "Dialing", callingStr, os.time(), -1, "phone", {
-				cancel = "Phone:Nui:Phone:EndCall",
-			}, nil)
+			exports['sandbox-phone']:NotificationAddWithId(src, "PHONE_CALL", "Dialing", callingStr, os.time(), -1,
+				"phone", {
+					cancel = "Phone:Nui:Phone:EndCall",
+				}, nil)
 
 			local isBusiness = _bizPhoneNumbersCheck[data.number]
 			if isBusiness and _bizPhones[isBusiness] then
@@ -223,9 +225,9 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				}
 
 				if bizData.call then -- Already Busy
-					Phone.Call:CreateRecord(callerData)
+					exports['sandbox-phone']:CallCreateRecord(callerData)
 
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						src,
 						"Number Busy",
 						"The Number You Dialed Is Busy",
@@ -235,7 +237,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					)
 
 					cb(false)
-					Phone.Call:End(src)
+					exports['sandbox-phone']:CallEnd(src)
 				else
 					_calls[src].isBiz = isBusiness
 
@@ -268,9 +270,9 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						Wait(30000)
 
 						if _bizPhones[isBusiness].call and _bizPhones[isBusiness].call.start == timeThen and not _bizPhones[isBusiness].call.handler then
-							Phone.Call:CreateRecord(callerData)
+							exports['sandbox-phone']:CallCreateRecord(callerData)
 
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								src,
 								"Number Unavailable",
 								"The Number You Dialed Is Unavailable",
@@ -278,7 +280,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 								6000,
 								"phone"
 							)
-							Phone.Call:End(src)
+							exports['sandbox-phone']:CallEnd(src)
 						end
 					end)
 				end
@@ -295,7 +297,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 					_calls[src].target = target:GetData("Source")
 
-					local destContact = Phone.Contacts:IsContact(target:GetData("SID"), char:GetData("Phone"))
+					local destContact = exports['sandbox-phone']:ContactsIsContact(target:GetData("SID"),
+						char:GetData("Phone"))
 					local destStr = char:GetData("Phone")
 					if destContact then
 						destStr = destContact.name
@@ -326,7 +329,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						},
 					}
 
-					Phone.Notification:AddWithId(
+					exports['sandbox-phone']:NotificationAddWithId(
 						target:GetData("Source"),
 						"PHONE_CALL",
 						"Incoming Call",
@@ -368,8 +371,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						anonymous = data.isAnon,
 						unread = false,
 					}
-					Phone.Call:CreateRecord(callerData)
-					Phone.Notification:Add(
+					exports['sandbox-phone']:CallCreateRecord(callerData)
+					exports['sandbox-phone']:NotificationAdd(
 						src,
 						"Number Busy",
 						"The Number You Dialed Is Busy",
@@ -389,9 +392,9 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						anonymous = data.isAnon,
 						unread = true,
 					}
-					Phone.Call:CreateRecord(recipData)
+					exports['sandbox-phone']:CallCreateRecord(recipData)
 					TriggerClientEvent("Phone:Client:AddData", target:GetData("Source"), "calls", recipData)
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						target:GetData("Source"),
 						"Missed Call",
 						"You Missed A Call",
@@ -401,14 +404,14 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					)
 
 					cb(false)
-					Phone.Call:End(src)
+					exports['sandbox-phone']:CallEnd(src)
 				end
 			else
 				exports['sandbox-base']:LoggerTrace(
 					"Phone",
 					string.format("%s Starting Call With Number %s Which Is Not Online", src, data.number)
 				)
-				Phone.Call:CreateRecord({
+				exports['sandbox-phone']:CallCreateRecord({
 					owner = data.number,
 					number = char:GetData("Phone"),
 					time = os.time(),
@@ -449,7 +452,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				t.state = 2
 				GlobalState[string.format("BizPhone:%s", _calls[src].isBiz)] = t
 
-				Phone.Notification:AddWithId(
+				exports['sandbox-phone']:NotificationAddWithId(
 					src,
 					"PHONE_CALL",
 					"On Call",
@@ -482,7 +485,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					string.format("%s Accepted Call With %s, Setting To Call Channel %s", src, _calls[src].target, cid)
 				)
 
-				Phone.Notification:AddWithId(
+				exports['sandbox-phone']:NotificationAddWithId(
 					src,
 					"PHONE_CALL",
 					"On Call",
@@ -495,7 +498,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					}
 				)
 
-				Phone.Notification:AddWithId(
+				exports['sandbox-phone']:NotificationAddWithId(
 					_calls[src].target,
 					"PHONE_CALL",
 					"On Call",
@@ -520,13 +523,13 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Phone:EndCall", function(src, data, cb)
-		Phone.Call:End(src)
+		exports['sandbox-phone']:CallEnd(src)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Phone:ReadCalls", function(src, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if char ~= nil then
-			Phone.Call:Read(char:GetData("Phone"))
+			exports['sandbox-phone']:CallRead(char:GetData("Phone"))
 		end
 	end)
 
@@ -550,7 +553,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Phone:DeclineBizCall", function(source, id, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and id and _bizPhones[id] and _bizPhones[id].call and Jobs.Permissions:HasJob(source, _bizPhones[id].job) then
-			Phone.Call:End(-1, id)
+			exports['sandbox-phone']:CallEnd(-1, id)
 		else
 			cb(false)
 		end
@@ -580,7 +583,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				t.state = 2
 				GlobalState[string.format("BizPhone:%s", id)] = t
 
-				Phone.Notification:AddWithId(
+				exports['sandbox-phone']:NotificationAddWithId(
 					targetSource,
 					"PHONE_CALL",
 					"On Call",
@@ -631,7 +634,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					exports['sandbox-base']:LoggerTrace("Phone",
 						string.format("%s Starting Call With %s", data.id, target:GetData("Source")))
 
-					local destContact = Phone.Contacts:IsContact(target:GetData("SID"), _bizPhones[data.id].number)
+					local destContact = exports['sandbox-phone']:ContactsIsContact(target:GetData("SID"),
+						_bizPhones[data.id].number)
 					local destStr = _bizPhones[data.id].number
 					if destContact then
 						destStr = destContact.name
@@ -658,7 +662,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						},
 					}
 
-					Phone.Notification:AddWithId(
+					exports['sandbox-phone']:NotificationAddWithId(
 						target:GetData("Source"),
 						"PHONE_CALL",
 						"Incoming Call",
@@ -700,9 +704,9 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						anonymous = data.isAnon,
 						unread = true,
 					}
-					Phone.Call:CreateRecord(recipData)
+					exports['sandbox-phone']:CallCreateRecord(recipData)
 					TriggerClientEvent("Phone:Client:AddData", target:GetData("Source"), "calls", recipData)
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						target:GetData("Source"),
 						"Missed Call",
 						"You Missed A Call",
@@ -712,14 +716,14 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					)
 
 					cb(false, true)
-					Phone.Call:End(src)
+					exports['sandbox-phone']:CallEnd(src)
 				end
 			else
 				exports['sandbox-base']:LoggerTrace(
 					"Phone",
 					string.format("%s Starting Call With Number %s Which Is Not Online", data.id, data.number)
 				)
-				Phone.Call:CreateRecord({
+				exports['sandbox-phone']:CallCreateRecord({
 					owner = data.number,
 					number = char:GetData("Phone"),
 					time = os.time(),

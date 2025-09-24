@@ -485,7 +485,7 @@ function RegisterVehicleSaleCallbacks()
 end
 
 function SendCompletedCashSaleEmail(charData, dealerData, vehicleInfoData, price, VIN, plate)
-    Phone.Email:Send(
+    exports['sandbox-phone']:EmailSend(
         charData.Source,
         dealerData.emails.sales,
         os.time(),
@@ -519,7 +519,7 @@ function SendPendingLoanEmail(charData, dealerData, vehicleInfoData, downPayment
                               weeklyPayments, remaining, cb)
     if not _pendingLoanAccept[charData.SID] then
         _pendingLoanAccept[charData.SID] = cb
-        Phone.Email:Send(
+        exports['sandbox-phone']:EmailSend(
             charData.Source,
             dealerData.emails.loans,
             os.time(),
@@ -571,7 +571,7 @@ RegisterNetEvent('Dealerships:Server:AcceptLoan', function(_, email)
     local src = source
     local char = exports['sandbox-characters']:FetchCharacterSource(src)
     if char then
-        Phone.Email:Delete(char:GetData('ID'), email)
+        exports['sandbox-phone']:EmailDelete(char:GetData('ID'), email)
         local stateId = char:GetData('SID')
 
         if _pendingLoanAccept[stateId] then
@@ -584,7 +584,7 @@ end)
 
 function SendCompletedLoanSaleEmail(charData, dealerData, vehicleInfoData, downPaymentPercent, downPayment, loanWeeks,
                                     weeklyPayments, remaining, VIN, plate)
-    Phone.Email:Send(
+    exports['sandbox-phone']:EmailSend(
         charData.Source,
         dealerData.emails.loans,
         os.time(),

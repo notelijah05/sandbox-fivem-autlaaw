@@ -2,7 +2,6 @@ AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Photos = exports["sandbox-base"]:FetchComponent("Photos")
 	RegisterChatCommands()
 end
 
@@ -10,7 +9,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Animations", {
 		"Animations",
 		"Inventory",
-		"Photos",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -175,7 +173,7 @@ RegisterServerEvent("Selfie:CaptureSelfie", function()
 				local _data = {
 					image_url = json.decode(ret).url,
 				}
-				local retval = Photos:Create(src, _data)
+				local retval = exports['sandbox-phone']:PhotosCreate(src, _data)
 				if retval then
 					pendingSend = false
 					TriggerClientEvent("Selfie:DoCloseSelfie", src)
