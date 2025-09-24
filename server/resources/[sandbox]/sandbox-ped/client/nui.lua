@@ -25,7 +25,8 @@ end)
 RegisterNUICallback("FrontEndSound", function(data, cb)
 	cb("ok")
 	if Sounds[data.sound] ~= nil then
-		UISounds.Play:FrontEnd(Sounds[data.sound].id, Sounds[data.sound].sound, Sounds[data.sound].library)
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(Sounds[data.sound].id, Sounds[data.sound].sound,
+			Sounds[data.sound].library)
 	end
 end)
 

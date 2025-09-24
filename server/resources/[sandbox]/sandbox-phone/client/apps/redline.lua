@@ -364,7 +364,7 @@ RegisterNetEvent("Phone:Redline:NotifyDNF", function(id)
 		ghostingEnded = true
 		UnGhostPlayer()
 
-		UISounds.Play:FrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
 		SendNUIMessage({
 			type = "RACE_DNF",
 		})
@@ -449,7 +449,7 @@ RegisterNUICallback("LeaveRace", function(data, cb)
 		if _activeRace ~= nil then
 			_activeRace.dnf = true
 			Cleanup()
-			UISounds.Play:FrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
+			exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
 			SendNUIMessage({
 				type = "RACE_DNF",
 			})
@@ -482,7 +482,7 @@ RegisterNetEvent("Redline:Client:RemovedFromRace", function()
 	if _activeRace ~= nil then
 		_activeRace.dnf = true
 		Cleanup()
-		UISounds.Play:FrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
 		SendNUIMessage({
 			type = "RACE_DNF",
 		})
@@ -733,7 +733,7 @@ function StartRace()
 	local countdown = 0
 	while countdown < countdownMax and _activeRace ~= nil and _loggedIn do
 		exports["sandbox-hud"]:NotifInfo(string.format("Race Starting In %s", countdownMax - countdown))
-		UISounds.Play:FrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
 		countdown = countdown + 1
 		Wait(1000)
 	end
@@ -744,7 +744,7 @@ function StartRace()
 
 	CreateThread(function()
 		exports["sandbox-hud"]:NotifInfo("Race Started")
-		UISounds.Play:FrontEnd(-1, "GO", "HUD_MINI_GAME_SOUNDSET")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "GO", "HUD_MINI_GAME_SOUNDSET")
 		SendNUIMessage({
 			type = "RACE_START",
 			data = {
@@ -787,7 +787,7 @@ function StartRace()
 					cCps = {}
 					if cLp <= tonumber(_activeRace.laps) then
 						exports["sandbox-hud"]:NotifInfo(string.format("Lap %s", cLp))
-						UISounds.Play:FrontEnd(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET")
+						exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET")
 
 						if lap_start ~= nil then
 							local lapEnd = GetGameTimer()
@@ -809,7 +809,7 @@ function StartRace()
 				if sCp ~= -1 then -- i think this is sprint?
 					SetBlipColour(blip, 0)
 					table.insert(cCps, cCp)
-					UISounds.Play:FrontEnd(-1, "CHECKPOINT_NORMAL", "HUD_MINI_GAME_SOUNDSET")
+					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_NORMAL", "HUD_MINI_GAME_SOUNDSET")
 
 					if _activeRace.phasing == "checkpoints" and cCp >= (_activeRace.phasingAdv + 1) then
 						ghostingEnded = true
@@ -841,7 +841,7 @@ function StartRace()
 				then
 					exports["sandbox-hud"]:NotifInfo("Race Finished")
 					Cleanup()
-					UISounds.Play:FrontEnd(-1, "FIRST_PLACE", "HUD_MINI_GAME_SOUNDSET")
+					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "FIRST_PLACE", "HUD_MINI_GAME_SOUNDSET")
 					SendNUIMessage({
 						type = "RACE_END",
 					})

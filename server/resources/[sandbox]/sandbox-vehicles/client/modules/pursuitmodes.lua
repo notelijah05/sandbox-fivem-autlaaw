@@ -32,7 +32,8 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                         Interaction:Hide()
 
                         _inPursuitVehicleMode = k
-                        UISounds.Play:FrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
+                        exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Business_Restart",
+                            "DLC_Biker_Computer_Sounds")
                         exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " .. v.name)
                         ApplyPursuitStuffToVehicle(_inPursuitVehicleMode)
 
@@ -62,7 +63,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                 _inPursuitVehicleMode = 1
             end
 
-            UISounds.Play:FrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
+            exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
             exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " ..
                 _inPursuitVehicleSettings[_inPursuitVehicleMode].name or
                 _inPursuitVehicleMode)
@@ -92,7 +93,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
             if lastPursuitMode ~= nil and lastPursuitMode <= #_inPursuitVehicleSettings then
                 _inPursuitVehicleMode = lastPursuitMode
 
-                UISounds.Play:FrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
+                exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
                 exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " ..
                     _inPursuitVehicleSettings[_inPursuitVehicleMode].name or _inPursuitVehicleMode)
 

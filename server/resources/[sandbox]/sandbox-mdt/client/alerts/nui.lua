@@ -56,14 +56,14 @@ RegisterNUICallback("RemoveAlert", function(data, cb)
 end)
 
 RegisterNUICallback("AssignedToAlert", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "Menu_Accept", "Phone_SoundSet_Default")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Menu_Accept", "Phone_SoundSet_Default")
 	cb("OK")
 end)
 
 RegisterNUICallback("RouteAlert", function(data, cb)
 	cb("OK")
 	if data.location then
-		UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 		EmergencyAlerts:Close()
 
 		if data.blip then
@@ -104,7 +104,7 @@ end)
 RegisterNUICallback("ViewCamera", function(data, cb)
 	cb('OK')
 	if data.camera then
-		UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 		EmergencyAlerts:Close()
 		exports["sandbox-base"]:ServerCallback("CCTV:ViewGroup", data.camera)
 	end
@@ -112,6 +112,6 @@ end)
 
 RegisterNUICallback("SwapToRadio", function(data, cb)
 	cb("OK")
-	UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	TriggerEvent("Radio:Client:SetChannelFromInput", data.radio)
 end)

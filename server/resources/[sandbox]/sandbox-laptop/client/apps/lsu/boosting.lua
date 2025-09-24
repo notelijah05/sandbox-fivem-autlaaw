@@ -245,7 +245,7 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:UpdateState", function(st
                     if NetworkDoesEntityExistWithNetworkId(_boosting.vehicleNet) then
                         local veh = NetToVeh(_boosting.vehicleNet)
                         if veh == GetVehiclePedIsIn(LocalPlayer.state.ped, false) then
-                            UISounds.Play:FrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
+                            exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
                         end
                     end
 

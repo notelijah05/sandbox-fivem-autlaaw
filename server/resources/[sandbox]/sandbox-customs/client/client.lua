@@ -16,7 +16,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 end
 
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"PedInteraction",
 		"ListMenu",
-		"UISounds",
 		"Police",
 	}, function(error)
 		if #error > 0 then
@@ -313,7 +311,7 @@ function DoSlowVehicleNormalRepair(cost, cb)
 			}, function(success)
 				if success then
 					Vehicles.Repair:Normal(DRIVING_VEHICLE)
-					UISounds.Play:FrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
+					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
 					cb(true)
 				else
 					cb(false)

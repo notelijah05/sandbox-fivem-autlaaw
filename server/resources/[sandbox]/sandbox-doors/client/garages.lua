@@ -939,15 +939,18 @@ function DoGarageKeyFobAction()
 					function(success, newState)
 						if success then
 							if newState then
-								UISounds.Play:FrontEnd(-1, "OOB_Cancel", "GTAO_FM_Events_Soundset")
+								exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "OOB_Cancel",
+									"GTAO_FM_Events_Soundset")
 							else
-								UISounds.Play:FrontEnd(-1, "Bomb_Disarmed", "GTAO_Speed_Convoy_Soundset")
+								exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Bomb_Disarmed",
+									"GTAO_Speed_Convoy_Soundset")
 							end
 						end
 					end)
 			else
 				if not secretMode then
-					UISounds.Play:FrontEnd(-1, "Hack_Failed", "DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS")
+					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Hack_Failed",
+						"DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS")
 					exports["sandbox-hud"]:NotifError("Not Authorized")
 				end
 			end

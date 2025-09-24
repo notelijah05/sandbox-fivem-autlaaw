@@ -298,7 +298,7 @@ AddEventHandler("Targeting:Client:MenuSelect", function(event, data)
 	end
 	if event then
 		TriggerEvent(event, hittingTargetData, data)
-		UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	end
 	StopTargeting()
 	hittingTargetData = false

@@ -116,7 +116,7 @@ RegisterNUICallback("Interaction:Trigger", function(data, cb)
 			if v.action then
 				v.action(v.data)
 			end
-			UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+			exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 			return cb(true)
 		end
 	end
@@ -125,13 +125,13 @@ end)
 
 RegisterNUICallback("Interaction:Hide", function(data, cb)
 	Interaction:Hide()
-	UISounds.Play:FrontEnd(-1, "CANCEL", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CANCEL", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	cb(true)
 end)
 
 RegisterNUICallback("Interaction:Back", function(data, cb)
 	Interaction:Back()
-	UISounds.Play:FrontEnd(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	cb(true)
 end)
 

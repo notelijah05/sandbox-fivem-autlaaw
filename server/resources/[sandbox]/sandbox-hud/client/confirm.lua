@@ -1,19 +1,3 @@
-AddEventHandler("Confirm:Shared:DependencyUpdate", RetrieveConfirmComponents)
-function RetrieveConfirmComponents()
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Confirm", {
-		"UISounds",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveConfirmComponents()
-	end)
-end)
-
 -- RegisterNetEvent("Confirm:Client:Test", function()
 -- 	exports['sandbox-hud']:ConfirmShow(
 -- 		"Test Input",
@@ -37,7 +21,7 @@ end)
 -- end)
 
 RegisterNUICallback("Confirm:Yes", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	if data.event then
 		TriggerEvent(data.event, data.data)
 	end
@@ -46,7 +30,7 @@ RegisterNUICallback("Confirm:Yes", function(data, cb)
 end)
 
 RegisterNUICallback("Confirm:No", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	if data and data.event then
 		TriggerEvent(data.event, data.data)
 	end

@@ -1,12 +1,10 @@
 AddEventHandler("Input:Shared:DependencyUpdate", RetrieveInputComponents)
 function RetrieveInputComponents()
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Input", {
-		"UISounds",
 		"Input",
 	}, function(error)
 		if #error > 0 then
@@ -103,14 +101,14 @@ end)
 -- end)
 
 RegisterNUICallback("Input:Submit", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	TriggerEvent(data.event, data.values, data.data)
 	Input:Close()
 	cb("ok")
 end)
 
 RegisterNUICallback("Input:Close", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	Input:Close()
 	TriggerEvent("Input:Closed", data.event, data.data)
 	cb("ok")

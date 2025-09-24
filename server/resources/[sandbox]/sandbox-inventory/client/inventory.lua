@@ -85,7 +85,6 @@ function RetrieveComponents()
 	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
 	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -107,7 +106,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Interaction",
 		"Input",
 		"Targeting",
-		"UISounds",
 		"PedInteraction",
 		"Polyzone",
 		"Hud",
@@ -704,7 +702,7 @@ local Sounds = {
 RegisterNUICallback("FrontEndSound", function(data, cb)
 	cb("ok")
 	if Sounds[data] ~= nil then
-		UISounds.Play:FrontEnd(Sounds[data].id, Sounds[data].sound, Sounds[data].library)
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(Sounds[data].id, Sounds[data].sound, Sounds[data].library)
 	end
 end)
 

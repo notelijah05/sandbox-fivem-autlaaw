@@ -177,7 +177,7 @@ function StartVehicleNOS()
 		and not IsVehicleStopped(VEHICLE_INSIDE)
 	then
 		if _hasNOS <= 0.0 then
-			UISounds.Play:FrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")
+			exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")
 			exports["sandbox-hud"]:NotifStandard("No More Nitrous Left!")
 			return
 		end
@@ -224,7 +224,7 @@ function StartVehicleNOS()
 					--print(_NOSUsage)
 
 					if (GetGameTimer() - _NOSStart) >= 4000 then
-						UISounds.Play:FrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")
+						exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")
 						SetVehicleEngineHealth(_veh, 0.0)
 						SetVehicleCanLeakPetrol(_veh, false)
 

@@ -1,12 +1,10 @@
 AddEventHandler("ListMenu:Shared:DependencyUpdate", RetrieveListComponents)
 function RetrieveListComponents()
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("ListMenu", {
-		"UISounds",
 		"ListMenu",
 	}, function(error)
 		if #error > 0 then
@@ -56,26 +54,26 @@ RegisterNetEvent("ListMenu:Client:Test", function()
 end)
 
 RegisterNUICallback("ListMenu:Clicked", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	ListMenu:Close()
 	TriggerEvent(data.event, data.data)
 	cb("ok")
 end)
 
 RegisterNUICallback("ListMenu:Back", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	TriggerEvent("ListMenu:GoBack")
 	cb("ok")
 end)
 
 RegisterNUICallback("ListMenu:SubMenu", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "CONTINUE", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CONTINUE", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	TriggerEvent("ListMenu:EnterSubMenu", data.submenu)
 	cb("ok")
 end)
 
 RegisterNUICallback("ListMenu:Close", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "CANCEL", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CANCEL", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	ListMenu:Close()
 	TriggerEvent("ListMenu:Close")
 	cb("ok")

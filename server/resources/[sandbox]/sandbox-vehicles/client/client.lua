@@ -26,7 +26,6 @@ function RetrieveComponents()
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Input = exports["sandbox-base"]:FetchComponent("Input")
 	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
 end
 
@@ -56,7 +55,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Police",
 		"Input",
 		"Hud",
-		"UISounds",
 		"Weapons",
 	}, function(error)
 		if #error > 0 then

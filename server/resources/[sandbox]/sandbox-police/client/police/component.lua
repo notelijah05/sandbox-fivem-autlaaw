@@ -188,7 +188,6 @@ function PoliceComponents()
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
 
@@ -207,7 +206,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Status",
 		"Polyzone",
 		"Vehicles",
-		"UISounds",
 		"Doors",
 	}, function(error)
 		if #error > 0 then
@@ -361,7 +359,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						})
 
 						Citizen.SetTimeout(60 * 1000 * 5, function()
-							UISounds.Play:FrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")
+							exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")
 						end)
 					end,
 					shouldShow = function()

@@ -17,7 +17,6 @@ attachedProps = {}
 
 AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Spawn = exports["sandbox-base"]:FetchComponent("Spawn")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
@@ -29,7 +28,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
-		"UISounds",
 		"Spawn",
 		"Polyzone",
 		"Ped",

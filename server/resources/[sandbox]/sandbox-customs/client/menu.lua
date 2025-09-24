@@ -906,7 +906,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 				new = Vehicles.Properties:Get(CUST_VEH),
 			}, function(success, newNewData)
 				if success then
-					UISounds.Play:FrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
+					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
 					exports["sandbox-hud"]:NotifSuccess("New Modifications Saved & Paid For")
 					if newNewData then
 						Vehicles.Properties:Set(CUST_VEH, newNewData)

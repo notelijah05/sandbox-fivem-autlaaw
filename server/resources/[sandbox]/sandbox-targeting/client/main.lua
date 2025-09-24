@@ -8,7 +8,6 @@ interactionZones = {}
 AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	EMS = exports["sandbox-base"]:FetchComponent("EMS")
@@ -22,7 +21,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Targeting", {
 		"Targeting",
-		"UISounds",
 		"Jobs",
 		"Vehicles",
 		"EMS",

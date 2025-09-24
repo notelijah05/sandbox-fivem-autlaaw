@@ -20,7 +20,6 @@ function RetrieveComponents()
 	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
 	Progress = exports["sandbox-base"]:FetchComponent("Progress")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
@@ -31,7 +30,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"ListMenu",
 		"Progress",
-		"UISounds",
 		"Doors",
 		"Properties",
 	}, function(error)
