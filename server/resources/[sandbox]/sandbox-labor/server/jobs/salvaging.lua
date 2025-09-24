@@ -53,7 +53,8 @@ AddEventHandler("Labor:Server:Startup", function()
 				_salvaging[_joiners[source]].entities[data] = true
 
 				local randomLoot = exports['sandbox-base']:UtilsWeightedRandom(_lootTable)
-				Inventory:AddItem(char:GetData("SID"), randomLoot.item, math.random(randomLoot.max), {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), randomLoot.item, math.random(randomLoot.max),
+					{}, 1)
 				-- local luck = math.random(100)
 				-- if luck == 100 then
 				-- 	exports['sandbox-inventory']:LootCustomSet(_highClassLoot, char:GetData("SID"), 1, math.random(5))
@@ -61,7 +62,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				-- 	exports['sandbox-inventory']:LootCustomSet(_lootTable, char:GetData("SID"), 1, math.random(10))
 				-- end
 
-				Inventory:AddItem(char:GetData("SID"), "salvagedparts", math.random(10), {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "salvagedparts", math.random(10), {}, 1)
 				Labor.Workgroups:SendEvent(
 					_joiners[source],
 					string.format("Salvaging:Client:%s:Action", _joiners[source]),
@@ -84,7 +85,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if _salvaging[_joiners[source]].state == 2 then
 			_salvaging[_joiners[source]].state = 3
-			Inventory:AddItem(char:GetData("SID"), "packaged_parts", 1, {}, 1)
+			exports['sandbox-inventory']:AddItem(char:GetData("SID"), "packaged_parts", 1, {}, 1)
 			Labor.Offers:Start(_joiners[source], _JOB, "Deliver Packaged Parts", 1)
 			Labor.Workgroups:SendEvent(
 				_joiners[source],
@@ -104,9 +105,9 @@ AddEventHandler("Labor:Server:Startup", function()
 			and _salvaging[_joiners[source]] ~= nil
 			and _salvaging[_joiners[source]].state == 3
 		then
-			local count = Inventory.Items:GetCount(char:GetData("SID"), 1, "packaged_parts")
+			local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "packaged_parts")
 			if (count or 0) > 0 then
-				if Inventory.Items:Remove(char:GetData("SID"), 1, "packaged_parts", count) then
+				if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "packaged_parts", count) then
 					_salvaging[_joiners[source]].state = 4
 					Labor.Offers:ManualFinish(_joiners[source], _JOB)
 					cb(true)

@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Casino = exports["sandbox-base"]:FetchComponent("Casino")
@@ -18,7 +17,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Generator",
 		"Jobs",
 		"Vehicles",
-		"Inventory",
 		"Wallet",
 		"Banking",
 		"Casino",
@@ -97,7 +95,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				if Wallet:Modify(source, -10000) then
-					Inventory:AddItem(char:GetData("SID"), "diamond_vip", 1, {}, 1)
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "diamond_vip", 1, {}, 1)
 					GiveCasinoFuckingMoney(source, "VIP Card", 10000)
 				else
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")

@@ -2,7 +2,7 @@ _tabletProp = nil
 
 LAPTOP = {
 	Open = function(self)
-		Inventory.Close:All()
+		exports['sandbox-inventory']:CloseAll()
 		Animations.Emotes:ForceCancel()
 		exports['sandbox-hud']:InteractionHide()
 		LocalPlayer.state.laptopOpen = true

@@ -19,7 +19,6 @@ end
 
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -185,7 +184,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"Inventory",
 		"Wallet",
 		"EmergencyAlerts",
 		"Properties",
@@ -308,14 +306,14 @@ AddEventHandler("Core:Shared:Ready", function()
 				if #(_pickups[char:GetData("SID")] or {}) > 0 then
 					for i = #_pickups[char:GetData("SID")], 1, -1 do
 						local v = _pickups[char:GetData("SID")][i]
-						local givingItem = Inventory.Items:GetData(v.giving)
-						local receivingItem = Inventory.Items:GetData(v.receiving)
+						local givingItem = exports['sandbox-inventory']:ItemsGetData(v.giving)
+						local receivingItem = exports['sandbox-inventory']:ItemsGetData(v.receiving)
 
-						if Inventory.Items:Remove(char:GetData("SID"), 1, v.giving, 1) then
-							if Inventory:AddItem(char:GetData("SID"), v.receiving, 1, {}, 1) then
+						if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.giving, 1) then
+							if exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.receiving, 1, {}, 1) then
 								table.remove(_pickups[char:GetData("SID")], i)
 							else
-								Inventory:AddItem(char:GetData("SID"), v.giving, 1, {}, 1)
+								exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.giving, 1, {}, 1)
 								exports['sandbox-base']:ExecuteClient(
 									source,
 									"Notification",

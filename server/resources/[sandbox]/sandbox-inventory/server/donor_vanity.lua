@@ -2,7 +2,7 @@ function RegisterDonorVanityItemsCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:DonorSales:GetPending", function(source, data, cb)
 		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
-			local pending = Inventory.Donator:GetPending(plyr:GetData("Identifier"), true)
+			local pending = exports['sandbox-inventory']:DonatorGetPending(plyr:GetData("Identifier"), true)
 			local mainMenuItems = {}
 			for k, v in ipairs(pending) do
 				if not v.redeemed then
@@ -48,7 +48,7 @@ function RegisterDonorVanityItemsCallbacks()
 
 			if label and description and image and amount and amount > 0 then
 				local sid = char:GetData("SID")
-				local pending = Inventory.Donator:GetPending(plyr:GetData("Identifier"), true)
+				local pending = exports['sandbox-inventory']:DonatorGetPending(plyr:GetData("Identifier"), true)
 				if #pending > 0 then
 					local foundToken = nil
 					for k, v in ipairs(pending) do
@@ -58,10 +58,10 @@ function RegisterDonorVanityItemsCallbacks()
 						end
 					end
 
-					if Inventory.Donator:RemovePending(plyr:GetData("Identifier"), foundToken) then
+					if exports['sandbox-inventory']:DonatorRemovePending(plyr:GetData("Identifier"), foundToken) then
 						local t = exports['sandbox-base']:SequenceGet("VanityItem")
 
-						local newItem = Inventory.ItemTemplate:Create(
+						local newItem = exports['sandbox-inventory']:ItemTemplateCreate(
 							string.format("vanityitem%s", t),
 							label,
 							description or "",
@@ -88,7 +88,7 @@ function RegisterDonorVanityItemsCallbacks()
 
 						itemsDatabase[newItem.name].isUsable = true
 
-						INVENTORY:AddItem(sid, newItem.name, amount, {}, 1)
+						exports['sandbox-inventory']:AddItem(sid, newItem.name, amount, {}, 1)
 
 						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
 							"Found unused vanity token!")
@@ -117,7 +117,7 @@ function RegisterDonorVanityItemsCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:DonorSales:GetTokens", function(source, data, cb)
 		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
-			local res = Inventory.Donator:GetPending(plyr:GetData("Identifier"))
+			local res = exports['sandbox-inventory']:DonatorGetPending(plyr:GetData("Identifier"))
 			cb({ available = #res or 0 })
 		else
 			cb(false)
@@ -128,7 +128,7 @@ function RegisterDonorVanityItemsCallbacks()
 		local license = table.unpack(args)
 
 		if license then
-			local success = Inventory.Donator:AddPending(license)
+			local success = exports['sandbox-inventory']:DonatorAddPending(license)
 			if success then
 				exports["sandbox-chat"]:SendSystemSingle(source, "Successfully added donator vanity item token")
 			else
@@ -149,7 +149,7 @@ function RegisterDonorVanityItemsCallbacks()
 		local license = table.unpack(args)
 
 		if license then
-			local res = Inventory.Donator:GetPending(license, true)
+			local res = exports['sandbox-inventory']:DonatorGetPending(license, true)
 			if res then
 				local message = string.format("Player Identifier: %s<br>", license)
 				for k, v in ipairs(res) do
@@ -174,7 +174,7 @@ function RegisterDonorVanityItemsCallbacks()
 	exports["sandbox-chat"]:RegisterAdminCommand("removedonatoritem", function(source, args, rawCommand)
 		local license, tokenId = table.unpack(args)
 		if license and tokenId then
-			local success = Inventory.Donator:DeletePending(license, tokenId)
+			local success = exports['sandbox-inventory']:DonatorDeletePending(license, tokenId)
 			if success then
 				exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Removed Token")
 			else
@@ -195,52 +195,53 @@ function RegisterDonorVanityItemsCallbacks()
 		},
 	}, 2)
 
-	Inventory.Donator = {
-		AddPending = function(self, playerIdentifier, itemName, itemCount, data)
-			MySQL.insert("INSERT INTO donator_items (player, data, redeemed) VALUES(?, ?, ?)", {
-				playerIdentifier,
-				data and json.encode(data) or nil,
-				false,
-			})
+	exports("DonatorAddPending", function(playerIdentifier, itemName, itemCount, data)
+		MySQL.insert("INSERT INTO donator_items (player, data, redeemed) VALUES(?, ?, ?)", {
+			playerIdentifier,
+			data and json.encode(data) or nil,
+			false,
+		})
 
-			return true
-		end,
-		GetPending = function(self, playerIdentifier, includeRedeemed)
-			local results = {}
-			if includeRedeemed then
-				results = MySQL.query.await("SELECT id, player, redeemed, data FROM donator_items WHERE player = ?", {
+		return true
+	end)
+
+	exports("DonatorGetPending", function(playerIdentifier, includeRedeemed)
+		local results = {}
+		if includeRedeemed then
+			results = MySQL.query.await("SELECT id, player, redeemed, data FROM donator_items WHERE player = ?", {
+				playerIdentifier,
+			})
+		else
+			results = MySQL.query.await(
+				"SELECT id, player, redeemed, data FROM donator_items WHERE player = ? and redeemed = ?",
+				{
 					playerIdentifier,
-				})
-			else
-				results = MySQL.query.await(
-					"SELECT id, player, redeemed, data FROM donator_items WHERE player = ? and redeemed = ?",
-					{
-						playerIdentifier,
-						false,
-					}
-				)
-			end
+					false,
+				}
+			)
+		end
 
-			return results
-		end,
-		RemovePending = function(self, playerIdentifier, id)
-			local res = MySQL.query.await("UPDATE donator_items SET redeemed = ? WHERE id = ? AND player = ?", {
-				true,
-				id,
-				playerIdentifier,
-			})
+		return results
+	end)
 
-			return res.affectedRows > 0
-		end,
-		DeletePending = function(self, playerIdentifier, id)
-			local res = MySQL.query.await("DELETE FROM donator_items WHERE id = ? AND player = ?", {
-				id,
-				playerIdentifier,
-			})
+	exports("DonatorRemovePending", function(playerIdentifier, id)
+		local res = MySQL.query.await("UPDATE donator_items SET redeemed = ? WHERE id = ? AND player = ?", {
+			true,
+			id,
+			playerIdentifier,
+		})
 
-			return res.affectedRows > 0
-		end,
-	}
+		return res.affectedRows > 0
+	end)
+
+	exports("DonatorDeletePending", function(playerIdentifier, id)
+		local res = MySQL.query.await("DELETE FROM donator_items WHERE id = ? AND player = ?", {
+			id,
+			playerIdentifier,
+		})
+
+		return res.affectedRows > 0
+	end)
 end
 
 function TebexAddVanityItem(source, args)
@@ -263,7 +264,7 @@ function TebexAddVanityItem(source, args)
 	if player then
 		local license = player:GetData("Identifier")
 		if license then
-			local success = Inventory.Donator:AddPending(license)
+			local success = exports['sandbox-inventory']:DonatorAddPending(license)
 			if success then
 				exports["sandbox-chat"]:SendSystemSingle(sid, "Successfully Added Donator Vanity Item Token")
 			else

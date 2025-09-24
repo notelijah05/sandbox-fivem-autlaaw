@@ -132,7 +132,7 @@ AddEventHandler('Businesses:Client:Startup', function()
             local subMenu = {}
 
             for k, v in ipairs(makeItRain) do
-                if v.type == 'cash' or Inventory.Check.Player:HasItem(v.type, 1) then
+                if v.type == 'cash' or exports['sandbox-inventory']:CheckPlayerHasItem(v.type, 1) then
                     table.insert(subMenu, {
                         icon = 'money-bill-1-wave',
                         label = v.text,

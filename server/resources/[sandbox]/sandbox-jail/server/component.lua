@@ -7,7 +7,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Handcuffs",
 		"Ped",
-		"Inventory",
 		"Labor",
 		"Loans",
 		"Jail",
@@ -158,7 +156,7 @@ _JAIL = {
 				Jobs.Duty:Off(target, Player(target).state.onDuty)
 				Handcuffs:UncuffTarget(-1, target)
 				Ped.Mask:UnequipNoItem(target)
-				Inventory.Holding:Put(target)
+				exports['sandbox-inventory']:HoldingPut(target)
 			end)
 
 			TriggerClientEvent("Jail:Client:Jailed", target)

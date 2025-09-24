@@ -200,7 +200,7 @@ AddEventHandler("Labor:Client:Setup", function()
     Wait(2000)
 
     for k, v in ipairs(basicFish) do
-        local fishData = Inventory.Items:GetData(v)
+        local fishData = exports['sandbox-inventory']:ItemsGetData(v)
 
         if fishData then
             table.insert(shopData, {
@@ -405,7 +405,7 @@ end
 
 function HasCorrectBaitForZone(zone)
     local requiredBait = _fishingZoneBasicBait[zone]
-    if requiredBait and Inventory.Check.Player:HasItem(requiredBait, 1) then
+    if requiredBait and exports['sandbox-inventory']:CheckPlayerHasItem(requiredBait, 1) then
         return true
     end
     return false
@@ -484,7 +484,7 @@ RegisterNetEvent("Fishing:Client:OffDuty", function(time)
 end)
 
 AddEventHandler("Fishing:Client:OpenShop", function(hitting, data)
-    Inventory.Shop:Open(data)
+    exports['sandbox-inventory']:ShopOpen(data)
 end)
 
 AddEventHandler("Fishing:Client:Sell", function(entity, data)

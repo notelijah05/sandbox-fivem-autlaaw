@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Config = exports["sandbox-base"]:FetchComponent("Config")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
 		"Generator",
 		"Wallet",
-		"Inventory",
 		"Labor",
 		"Vehicles",
 		"Reputation",
@@ -437,7 +435,7 @@ _LABOR = {
 
 				local name = { First = char:GetData("First"), Last = char:GetData("Last") }
 				if hasValue(char:GetData("States") or {}, "PHONE_VPN") then
-					local vpn = Inventory.Items:GetFirst(char:GetData("SID"), "vpn", 1)
+					local vpn = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
 					name = vpn.MetaData.VpnName
 				end
 
@@ -518,7 +516,7 @@ _LABOR = {
 
 							local name = { First = char:GetData("First"), Last = char:GetData("Last") }
 							if hasValue(char:GetData("States") or {}, "PHONE_VPN") then
-								local vpn = Inventory.Items:GetFirst(char:GetData("SID"), "vpn", 1)
+								local vpn = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
 								name = vpn.MetaData.VpnName
 							end
 
@@ -584,7 +582,7 @@ _LABOR = {
 
 								local name = { First = char:GetData("First"), Last = char:GetData("Last") }
 								if hasValue(char:GetData("States") or {}, "PHONE_VPN") then
-									local vpn = Inventory.Items:GetFirst(char:GetData("SID"), "vpn", 1)
+									local vpn = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
 									name = vpn.MetaData.VpnName
 								end
 

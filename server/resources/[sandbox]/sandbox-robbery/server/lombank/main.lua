@@ -253,7 +253,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 				if math.random(100) <= (7 * _trolleysLooted) and not _heistCoin then
 					_heistCoin = true
-					Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 						CryptoCoin = "HEIST",
 						Quantity = 8,
 					}, 1)
@@ -347,9 +347,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 					_lbInUse.powerBoxes[data.boxId] = source
 					GlobalState["LombankInProgress"] = true
 
-					if Inventory.Items:Has(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), "adv_electronics_kit", 1)
-						local itemData = Inventory.Items:GetData("adv_electronics_kit")
+					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"),
+							"adv_electronics_kit", 1)
+						local itemData = exports['sandbox-inventory']:ItemsGetData("adv_electronics_kit")
 
 						if itemData ~= nil then
 							exports['sandbox-base']:LoggerInfo(
@@ -379,9 +380,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 									newValue = slot.CreateDate - (60 * 60 * 12)
 								end
 								if os.time() - itemData.durability >= newValue then
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									Inventory:SetItemCreateDate(slot.id, newValue)
+									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if success then
@@ -553,8 +554,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_lbInUse.powerBoxes[data.boxId] = source
 						GlobalState["LombankInProgress"] = true
 
-						if Inventory.Items:Has(char:GetData("SID"), 1, "thermite", 1) then
-							if Inventory.Items:Remove(char:GetData("SID"), 1, "thermite", 1) then
+						if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "thermite", 1) then
+							if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "thermite", 1) then
 								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
@@ -757,9 +758,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 					_lbInUse.drillPoints[data] = source
 					GlobalState["LombankInProgress"] = true
 
-					if Inventory.Items:Has(char:GetData("SID"), 1, "drill", 1) then
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), "drill", 1)
-						local itemData = Inventory.Items:GetData("drill")
+					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "drill", 1) then
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "drill", 1)
+						local itemData = exports['sandbox-inventory']:ItemsGetData("drill")
 
 						if slot ~= nil then
 							exports['sandbox-base']:LoggerInfo(
@@ -783,9 +784,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 									newValue = slot.CreateDate - (60 * 60 * 12)
 								end
 								if os.time() - itemData.durability >= newValue then
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									Inventory:SetItemCreateDate(slot.id, newValue)
+									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if success then

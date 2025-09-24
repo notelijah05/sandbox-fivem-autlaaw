@@ -57,7 +57,6 @@ end
 
 AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
@@ -65,7 +64,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
-		"Inventory",
 		"Jail",
 		"Animations",
 		"Admin",
@@ -245,7 +243,7 @@ exports("Show", function()
 	StartThreads()
 
 	if GLOBAL_VEH ~= nil then
-		exports['sandbox-hud']:HudVehicleShow()
+		exports['sandbox-hud']:VehicleShow()
 	end
 end)
 
@@ -262,7 +260,7 @@ exports("Hide", function()
 	if not exports['sandbox-phone']:IsOpen() then
 		DisplayRadar(false)
 	end
-	exports['sandbox-hud']:HudVehicleHide()
+	exports['sandbox-hud']:VehicleHide()
 end)
 
 exports("Toggle", function()
@@ -274,15 +272,15 @@ exports("Toggle", function()
 		StartThreads()
 
 		if GLOBAL_VEH ~= nil then
-			exports['sandbox-hud']:HudVehicleShow()
+			exports['sandbox-hud']:VehicleShow()
 		else
-			exports['sandbox-hud']:HudVehicleHide()
+			exports['sandbox-hud']:VehicleHide()
 		end
 	else
 		if not exports['sandbox-phone']:IsOpen() and not hasValue(LocalPlayer.state.Character:GetData("States"), "GPS") then
 			DisplayRadar(false)
 		end
-		exports['sandbox-hud']:HudVehicleHide()
+		exports['sandbox-hud']:VehicleHide()
 	end
 end)
 

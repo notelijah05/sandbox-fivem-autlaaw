@@ -175,7 +175,6 @@ end
 
 AddEventHandler("Police:Shared:DependencyUpdate", PoliceComponents)
 function PoliceComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -191,7 +190,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Inventory",
 		"Handcuffs",
 		"Targeting",
 		"Jobs",

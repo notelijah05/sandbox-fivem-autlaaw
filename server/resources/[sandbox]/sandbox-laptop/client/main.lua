@@ -15,7 +15,6 @@ local _ignoreEvents = {
 
 AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
@@ -32,7 +31,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
-		"Inventory",
 		"Targeting",
 		"Labor",
 		"Jail",
@@ -77,7 +75,7 @@ AddEventHandler("Inventory:Client:ItemsLoaded", function()
 	while Laptop == nil do
 		Wait(10)
 	end
-	Laptop.Data:Set("items", Inventory.Items:GetData())
+	Laptop.Data:Set("items", exports['sandbox-inventory']:ItemsGetData())
 end)
 
 AddEventHandler("Characters:Client:Updated", function(key)

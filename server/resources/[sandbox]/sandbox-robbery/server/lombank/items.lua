@@ -1,5 +1,5 @@
 function RegisterLBItemUses()
-	Inventory.Items:RegisterUse("thermite", "LombankRobbery", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("thermite", "LombankRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -56,7 +56,7 @@ function RegisterLBItemUses()
 								GlobalState["LombankInProgress"] = true
 
 								if
-									Inventory.Items:RemoveSlot(
+									exports['sandbox-inventory']:RemoveSlot(
 										itemData.Owner,
 										itemData.Name,
 										1,
@@ -219,7 +219,7 @@ function RegisterLBItemUses()
 						GlobalState["LombankInProgress"] = true
 
 						if
-							Inventory.Items:RemoveSlot(
+							exports['sandbox-inventory']:RemoveSlot(
 								itemData.Owner,
 								itemData.Name,
 								1,
@@ -326,7 +326,7 @@ function RegisterLBItemUses()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("purple_laptop", "LombankRobbery", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("purple_laptop", "LombankRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -427,7 +427,7 @@ function RegisterLBItemUses()
 											expires = os.time() + (60 * timer),
 										})
 
-										Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+										exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 										Status.Modify:Add(source, "PLAYER_STRESS", 3)
 										GlobalState["Fleeca:Disable:lombank_legion"] = true
 										if not _lbAlerted or os.time() > _lbAlerted then
@@ -466,9 +466,9 @@ function RegisterLBItemUses()
 
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 										if os.time() - itemData.durability >= newValue then
-											Inventory.Items:RemoveId(char:GetData("SID"), 1, slot)
+											exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
 										else
-											Inventory:SetItemCreateDate(slot.id, newValue)
+											exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 										end
 									end
 									_lbInUse[k] = false

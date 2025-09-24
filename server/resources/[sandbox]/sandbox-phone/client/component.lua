@@ -37,7 +37,7 @@ end
 exports("Open", function()
 	_limited = false
 	_payphone = false
-	Inventory.Close:All()
+	exports['sandbox-inventory']:CloseAll()
 	exports['sandbox-hud']:InteractionHide()
 	LocalPlayer.state.phoneOpen = true
 	DisplayRadar(true)
@@ -50,7 +50,7 @@ end)
 exports("OpenLimited", function()
 	_limited = true
 	_payphone = false
-	Inventory.Close:All()
+	exports['sandbox-inventory']:CloseAll()
 	exports['sandbox-hud']:InteractionHide()
 	LocalPlayer.state.phoneOpen = true
 	PhonePlayIn()
@@ -61,7 +61,7 @@ end)
 exports("OpenPayphone", function()
 	_limited = true
 	_payphone = true
-	Inventory.Close:All()
+	exports['sandbox-inventory']:CloseAll()
 	exports['sandbox-hud']:InteractionHide()
 	LocalPlayer.state.phoneOpen = true
 	PhonePlayIn()

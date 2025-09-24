@@ -2,7 +2,6 @@ AddEventHandler("Apartments:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
 
@@ -10,7 +9,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Mechanic", {
 		"Mechanic",
 		"Jobs",
-		"Inventory",
 		"Vehicles",
 	}, function(error)
 		if #error > 0 then
@@ -41,7 +39,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 			if v.partStorage then
 				for storageId, storage in ipairs(v.partStorage) do
-					Inventory.Poly:Create(storage)
+					exports['sandbox-inventory']:PolyCreate(storage)
 				end
 			end
 		end

@@ -22,7 +22,7 @@ end)
 AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
     if _withinBallistics and LocalPlayer.state.loggedIn then
         exports['sandbox-hud']:ActionHide('ballistics')
-        Inventory.Dumbfuck:Open({
+        exports['sandbox-inventory']:DumbfuckOpen({
             invType = 212,
             owner = _ballisticsId,
         })

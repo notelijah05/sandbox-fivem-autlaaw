@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 end
 
@@ -22,7 +21,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Crypto",
 		"Jobs",
 		"Vehicles",
-		"Inventory",
 		"Properties",
 	}, function(error)
 		if #error > 0 then

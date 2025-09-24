@@ -127,9 +127,9 @@ AddEventHandler("Weed:Client:Check", function(entity, data)
 				},
 			}
 
-			local hasNitro = Inventory.Items:Has("fertilizer_nitrogen", 1)
-			local hasPhos = Inventory.Items:Has("fertilizer_phosphorus", 1)
-			local hasPotas = Inventory.Items:Has("fertilizer_potassium", 1)
+			local hasNitro = exports['sandbox-inventory']:ItemsHas("fertilizer_nitrogen", 1)
+			local hasPhos = exports['sandbox-inventory']:ItemsHas("fertilizer_phosphorus", 1)
+			local hasPotas = exports['sandbox-inventory']:ItemsHas("fertilizer_potassium", 1)
 
 			if hasNitro or hasPhos or hasPotas then
 				if hasNitro then
@@ -207,7 +207,7 @@ AddEventHandler("Weed:Client:Check", function(entity, data)
 end)
 
 AddEventHandler("Weed:Client:Fertilize", function(data)
-	if Inventory.Items:Has(string.format("fertilizer_%s", data.type), 1) then
+	if exports['sandbox-inventory']:ItemsHas(string.format("fertilizer_%s", data.type), 1) then
 		exports['sandbox-hud']:ListMenuClose()
 		exports['sandbox-hud']:Progress({
 			name = "fertilize_weed",
@@ -236,7 +236,7 @@ AddEventHandler("Weed:Client:Fertilize", function(data)
 end)
 
 AddEventHandler("Weed:Client:Water", function(pId)
-	if Inventory.Items:Has("water", 1) then
+	if exports['sandbox-inventory']:ItemsHas("water", 1) then
 		exports['sandbox-hud']:ListMenuClose()
 		exports['sandbox-hud']:Progress({
 			name = "water_weed",

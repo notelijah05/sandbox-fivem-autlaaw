@@ -40,7 +40,7 @@ _DRUGS.Meth = {
             { tableId })?.Count or 0 > 0
     end,
     CreatePlacedTable = function(self, tableId, owner, tier, coords, heading, created)
-        local itemInfo = Inventory.Items:GetData("meth_table")
+        local itemInfo = exports['sandbox-inventory']:ItemsGetData("meth_table")
         local tableData = self:GetTable(tableId)
 
         MySQL.insert.await(
@@ -146,11 +146,11 @@ AddEventHandler("Drugs:Server:Startup", function()
     exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:FinishTablePlacement", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
-            local table = Inventory:GetItem(data.data)
+            local table = exports['sandbox-inventory']:GetItem(data.data)
             if table.Owner == tostring(char:GetData("SID")) then
                 local md = json.decode(table.MetaData)
                 local tableData = Drugs.Meth:GetTable(md.MethTable)
-                if Inventory.Items:RemoveId(char:GetData("SID"), 1, table) then
+                if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, table) then
                     Drugs.Meth:CreatePlacedTable(md.MethTable, char:GetData("SID"), tableData.tier, data.endCoords
                         .coords, data.endCoords.rotation, table.CreateDate)
                     cb(true)
@@ -170,7 +170,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                 if Drugs.Meth:IsTablePlaced(data) then
                     local tableData = Drugs.Meth:GetTable(data)
                     if Drugs.Meth:RemovePlacedTable(data) then
-                        if Inventory:AddItem(char:GetData("SID"), "meth_table", 1, { MethTable = data }, 1, false, false, false, false, false, tableData.created, false) then
+                        if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "meth_table", 1, { MethTable = data }, 1, false, false, false, false, false, tableData.created, false) then
                             cb(true)
                         else
                             cb(false)
@@ -253,7 +253,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                             _tableTiers[tableData.tier].cookTimeMax
                         local calc = total * cookPct
 
-                        if Inventory:AddItem(char:GetData("SID"), "meth_brick", 1, {}, 1, false, false, false, false, false, false, math.floor(100 - total)) then
+                        if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "meth_brick", 1, {}, 1, false, false, false, false, false, false, math.floor(100 - total)) then
                             Drugs.Meth:FinishTableCook(data)
                         end
                     else
@@ -361,7 +361,7 @@ AddEventHandler("Drugs:Server:Startup", function()
             if v.id == data then
                 local coinData = Crypto.Coin:Get(v.coin)
                 if Crypto.Exchange:Remove(v.coin, char:GetData("CryptoWallet"), v.price) then
-                    Inventory:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
+                    exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
                     _toolsForSale[v.item][char:GetData("SID")] = true
                 else
                     exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",

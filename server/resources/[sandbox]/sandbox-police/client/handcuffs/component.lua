@@ -4,13 +4,11 @@ local MAX_CUFF_ATTEMPTS = 2
 
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", HandcuffComponents)
 function HandcuffComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
-		"Inventory",
 		"PedInteraction",
 	}, function(error)
 		if #error > 0 then

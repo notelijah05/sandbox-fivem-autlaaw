@@ -127,7 +127,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local luck = math.random(100)
 				if luck >= 98 then
 					if luck == 100 then
-						--Inventory:AddItem(char:GetData("SID"), "valuegoods", 1, {}, 1)
+						--exports['sandbox-inventory']:AddItem(char:GetData("SID"), "valuegoods", 1, {}, 1)
 					end
 					exports['sandbox-inventory']:LootSetsGem(char:GetData("SID"), 1)
 				end

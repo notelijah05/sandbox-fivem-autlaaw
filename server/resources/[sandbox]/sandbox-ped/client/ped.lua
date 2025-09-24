@@ -22,7 +22,6 @@ function RetrieveComponents()
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -32,7 +31,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Ped",
 		"Wardrobe",
 		"Apartment",
-		"Inventory",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -262,7 +260,7 @@ function RegisterInteraction()
 				not LocalPed.customization.props.hat.disabled
 				or not LocalPed.customization.props.glass.disabled
 				or (LocalPed.customization.components.mask.drawableId ~= 0)
-				or (Inventory.Items:GetWithStaticMetadata("accessory", "drawableId", "textureId", LocalPlayer.state.Character:GetData("Gender"), LocalPed.customization.components.accessory) ~= nil)
+				or (exports['sandbox-inventory']:ItemsGetWithStaticMetadata("accessory", "drawableId", "textureId", LocalPlayer.state.Character:GetData("Gender"), LocalPed.customization.components.accessory) ~= nil)
 			)
 	end)
 end

@@ -70,7 +70,7 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 			LocalPlayer.state:set("AllowEscorting", false, true)
 		end
 		if data.disableInventory then
-			Inventory:Disable()
+			exports['sandbox-inventory']:Disable()
 		end
 	end
 end)
@@ -85,7 +85,7 @@ AddEventHandler("Polyzone:Exit", function(id, point, insideZone, data)
 			LocalPlayer.state:set("AllowEscorting", true, true)
 		end
 		if data.disableInventory then
-			Inventory:Enable()
+			exports['sandbox-inventory']:Enable()
 		end
 	end
 end)

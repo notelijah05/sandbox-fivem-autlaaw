@@ -186,7 +186,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Door Unlocked")
 
 							if _pbDoorsGarbage[data.data.id].requireCode then
-								Inventory.Items:RemoveAll(char:GetData("SID"), 1, "paleto_access_codes")
+								exports['sandbox-inventory']:RemoveAll(char:GetData("SID"), 1, "paleto_access_codes")
 							end
 						else
 							Doors:SetLock(data.data.door, true)
@@ -236,9 +236,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_pbInUse.powerBoxes[data.boxId] = source
 						GlobalState["PaletoInProgress"] = true
 
-						if Inventory.Items:Has(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
-							local slot = Inventory.Items:GetFirst(char:GetData("SID"), "adv_electronics_kit", 1)
-							local itemData = Inventory.Items:GetData("adv_electronics_kit")
+						if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
+							local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"),
+								"adv_electronics_kit", 1)
+							local itemData = exports['sandbox-inventory']:ItemsGetData("adv_electronics_kit")
 
 							if itemData ~= nil then
 								exports['sandbox-base']:LoggerInfo(
@@ -263,7 +264,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									},
 									data = {},
 								}, function(success)
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 
 									if success then
 										exports['sandbox-base']:LoggerInfo(
@@ -387,9 +388,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_pbInUse.pcHacks[data.pcId] = source
 						GlobalState["PaletoInProgress"] = true
 
-						if Inventory.Items:Has(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
-							local slot = Inventory.Items:GetFirst(char:GetData("SID"), "adv_electronics_kit", 1)
-							local itemData = Inventory.Items:GetData("adv_electronics_kit")
+						if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
+							local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"),
+								"adv_electronics_kit", 1)
+							local itemData = exports['sandbox-inventory']:ItemsGetData("adv_electronics_kit")
 
 							if itemData ~= nil then
 								exports['sandbox-base']:LoggerInfo(
@@ -412,7 +414,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									},
 									data = {},
 								}, function(success)
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 
 									if success then
 										exports['sandbox-base']:LoggerInfo(
@@ -529,10 +531,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 						if
 							hasValue(char:GetData("States") or {}, "PHONE_VPN")
-							and Inventory.Items:Has(char:GetData("SID"), 1, "adv_electronics_kit", 1)
+							and exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1)
 						then
-							local slot = Inventory.Items:GetFirst(char:GetData("SID"), "adv_electronics_kit", 1)
-							local itemData = Inventory.Items:GetData("adv_electronics_kit")
+							local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"),
+								"adv_electronics_kit", 1)
+							local itemData = exports['sandbox-inventory']:ItemsGetData("adv_electronics_kit")
 
 							if itemData ~= nil then
 								exports['sandbox-base']:LoggerInfo(
@@ -558,7 +561,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									},
 									data = {},
 								}, function(success, data)
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 
 									if success then
 										exports['sandbox-base']:LoggerInfo(
@@ -575,9 +578,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 										end
 
 										Robbery.State:Update("paleto", "workstation", _pbGlobalReset)
-										Inventory:AddItem(char:GetData("SID"), "paleto_access_codes", 1, {
-											AccessCodes = { _accessCodes.paleto[1] },
-										}, 1)
+										exports['sandbox-inventory']:AddItem(char:GetData("SID"), "paleto_access_codes",
+											1, {
+												AccessCodes = { _accessCodes.paleto[1] },
+											}, 1)
 
 										GlobalState["Fleeca:Disable:savings_paleto"] = true
 										if not _pbAlerted or os.time() > _pbAlerted then
@@ -664,9 +668,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_pbInUse.officeHacks[data.officeId] = source
 						GlobalState["PaletoInProgress"] = true
 
-						if Inventory.Items:Has(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
-							local slot = Inventory.Items:GetFirst(char:GetData("SID"), "adv_electronics_kit", 1)
-							local itemData = Inventory.Items:GetData("adv_electronics_kit")
+						if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
+							local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"),
+								"adv_electronics_kit", 1)
+							local itemData = exports['sandbox-inventory']:ItemsGetData("adv_electronics_kit")
 
 							if itemData ~= nil then
 								exports['sandbox-base']:LoggerInfo(
@@ -689,7 +694,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									},
 									data = {},
 								}, function(success)
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 
 									if success then
 										exports['sandbox-base']:LoggerInfo(
@@ -709,12 +714,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 										Robbery.State:Update("paleto", data.officeId, _pbGlobalReset, "officeHacks")
 
 										if _accessCodes.paleto[data.officeId + 1] ~= nil then
-											Inventory:AddItem(char:GetData("SID"), "paleto_access_codes", 1, {
-												AccessCodes = { _accessCodes.paleto[data.officeId + 1] },
-											}, 1)
+											exports['sandbox-inventory']:AddItem(char:GetData("SID"),
+												"paleto_access_codes", 1, {
+													AccessCodes = { _accessCodes.paleto[data.officeId + 1] },
+												}, 1)
 										end
 
-										Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+										exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 											CryptoCoin = "MALD",
 											Quantity = math.random(200, 400),
 										}, 1)
@@ -805,9 +811,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_pbInUse.drillPoints[data] = source
 						GlobalState["PaletoInProgress"] = true
 
-						if Inventory.Items:Has(char:GetData("SID"), 1, "drill", 1) then
-							local slot = Inventory.Items:GetFirst(char:GetData("SID"), "drill", 1)
-							local itemData = Inventory.Items:GetData("drill")
+						if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "drill", 1) then
+							local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "drill", 1)
+							local itemData = exports['sandbox-inventory']:ItemsGetData("drill")
 
 							if slot ~= nil then
 								exports['sandbox-base']:LoggerInfo(
@@ -826,7 +832,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									config = {},
 									data = {},
 								}, function(success)
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 
 									if success then
 										exports['sandbox-base']:LoggerInfo(
@@ -1060,7 +1066,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								)
 							)
 
-							Inventory.Items:RemoveAll(char:GetData("SID"), 1, "paleto_access_codes")
+							exports['sandbox-inventory']:RemoveAll(char:GetData("SID"), 1, "paleto_access_codes")
 							if not _pbGlobalReset or os.time() > _pbGlobalReset then
 								_pbGlobalReset = os.time() + PALETO_RESET_TIME
 							end
@@ -1068,12 +1074,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 							Robbery.State:Update("paleto", "officeSafe", _pbGlobalReset)
 
 							exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_pbLoot, char:GetData("SID"), 1)
-							Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+							exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 								CryptoCoin = "MALD",
 								Quantity = math.random(200, 400),
 							}, 1)
 
-							Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+							exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 								CryptoCoin = "HEIST",
 								Quantity = 12,
 							}, 1)

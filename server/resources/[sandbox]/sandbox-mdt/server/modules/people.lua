@@ -227,7 +227,7 @@ _MDT.People = {
 				end
 
 				if key == "Mugshot" then
-					Inventory:UpdateGovIDMugshot(id, value)
+					exports['sandbox-inventory']:UpdateGovIDMugshot(id, value)
 				end
 			end
 			p:resolve(success)

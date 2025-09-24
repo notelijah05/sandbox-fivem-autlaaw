@@ -80,7 +80,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	StartBobcatThreads()
 	GlobalState["Bobcat:LootLocations"] = _bobcatLootLocs
 
-	Inventory.Items:RegisterUse("thermite", "BobcatRobbery", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("thermite", "BobcatRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -126,7 +126,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 			if not _bcInUse.extrDoor then
 				_bcInUse.extrDoor = source
-				if Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
+				if exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
 					exports['sandbox-base']:LoggerInfo("Robbery",
 						string.format("%s %s (%s) Started Thermiting Bobcat Exterior Door", char:GetData("First"),
 							char:GetData("Last"), char:GetData("SID")))
@@ -240,7 +240,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if not _bcInUse.frontDoor then
 						_bcInUse.frontDoor = source
-						if Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
+						if exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
 							exports['sandbox-base']:LoggerInfo("Robbery",
 								string.format("%s %s (%s) Started Thermiting Bobcat Interior Door", char:GetData("First"),
 									char:GetData("Last"), char:GetData("SID")))
@@ -360,7 +360,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								entState.robberyInProgress = source
 								if not entState.wasThermited then
 									if
-										Inventory.Items:RemoveSlot(
+										exports['sandbox-inventory']:RemoveSlot(
 											itemData.Owner,
 											itemData.Name,
 											1,
@@ -508,7 +508,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("bobcat_charge", "BobcatRobbery", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("bobcat_charge", "BobcatRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -558,7 +558,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if not _bcInUse.useC4 then
 						_bcInUse.useC4 = source
-						if Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
+						if exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
 							exports['sandbox-base']:LoggerInfo("Robbery",
 								string.format("%s %s (%s) Started Breaching Bobcat Vault", char:GetData("First"),
 									char:GetData("Last"), char:GetData("SID")))
@@ -617,7 +617,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("blue_laptop", "BobcatRobbery", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("blue_laptop", "BobcatRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -702,7 +702,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								Doors:SetLock("bobcat_inner", false)
 								exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
 									"Doorlock Disengaged", 6000)
-								Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+								exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 
 								if not _bcGlobalReset then
 									_bcGlobalReset = os.time() + BC_RESET_TIME
@@ -716,9 +716,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 								local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 								if (os.time() - itemData.durability >= newValue) then
-									Inventory.Items:RemoveId(char:GetData("SID"), 1, slot)
+									exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
 								else
-									Inventory:SetItemCreateDate(
+									exports['sandbox-inventory']:SetItemCreateDate(
 										slot.id,
 										newValue
 									)
@@ -748,7 +748,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("gps_tracker", "BobcatRobbery", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("gps_tracker", "BobcatRobbery", function(source, slot, itemData)
 		if _truckSpawnEnabled then
 			if #_moneyTruckSpawns == 0 then
 				_moneyTruckSpawns = table.copy(_spawnHoldingShit)
@@ -783,7 +783,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							char:GetData("Last"), char:GetData("SID")))
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
 						if r then
-							Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+							exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
@@ -806,7 +806,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("fleeca_tracker", "BobcatRobbery", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("fleeca_tracker", "BobcatRobbery", function(source, slot, itemData)
 		if _truckSpawnEnabled then
 			if #_moneyTruckSpawns == 0 then
 				_moneyTruckSpawns = table.copy(_spawnHoldingShit)
@@ -840,7 +840,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							char:GetData("Last"), char:GetData("SID")))
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
 						if r then
-							Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+							exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
@@ -863,7 +863,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("bobcat_tracker", "BobcatRobbery", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("bobcat_tracker", "BobcatRobbery", function(source, slot, itemData)
 		if _truckSpawnEnabled then
 			if #_moneyTruckSpawns == 0 then
 				_moneyTruckSpawns = table.copy(_spawnHoldingShit)
@@ -897,7 +897,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							char:GetData("Last"), char:GetData("SID")))
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
 						if r then
-							Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+							exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 							exports['sandbox-base']:ExecuteClient(
 								source,
 								"Notification",
@@ -969,7 +969,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if not _bcInUse.grabC4 then
 						_bcInUse.grabC4 = source
-						if Inventory:AddItem(char:GetData("SID"), "bobcat_charge", 1, {}, 1) then
+						if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "bobcat_charge", 1, {}, 1) then
 							GlobalState["BobcatC4"] = char:GetData("SID")
 							GlobalState["BobcatInProgress"] = true
 
@@ -1104,7 +1104,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end
 
 							if t[schem] ~= nil then
-								Inventory:AddItem(sid, t[schem], 1, {}, 1)
+								exports['sandbox-inventory']:AddItem(sid, t[schem], 1, {}, 1)
 							else
 								t = deepcopy(_bobcatC2Schems)
 								schem = math.random(#t)
@@ -1118,12 +1118,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 								end
 
 								if t[schem] ~= nil then
-									Inventory:AddItem(sid, t[schem], 1, {}, 1)
+									exports['sandbox-inventory']:AddItem(sid, t[schem], 1, {}, 1)
 								else
 									if not exports['sandbox-inventory']:CraftingSchematicsHasAny(sid, "schematic_grapple_gun") then
-										Inventory:AddItem(sid, "schematic_grapple_gun", 1, {}, 1)
+										exports['sandbox-inventory']:AddItem(sid, "schematic_grapple_gun", 1, {}, 1)
 									else
-										Inventory:AddItem(sid, _bobcatCombined[math.random(#_bobcatCombined)], 1, {}, 1)
+										exports['sandbox-inventory']:AddItem(sid,
+											_bobcatCombined[math.random(#_bobcatCombined)], 1, {}, 1)
 									end
 								end
 							end
@@ -1136,9 +1137,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end
 
 							if t[schem] ~= nil then
-								Inventory:AddItem(sid, t[schem], 1, {}, 1)
+								exports['sandbox-inventory']:AddItem(sid, t[schem], 1, {}, 1)
 							else
-								Inventory:AddItem(sid, _bobcatAttchSchems[math.random(#_bobcatAttchSchems)], 1, {}, 1)
+								exports['sandbox-inventory']:AddItem(sid,
+									_bobcatAttchSchems[math.random(#_bobcatAttchSchems)], 1, {}, 1)
 							end
 						end
 
@@ -1204,7 +1206,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if data?.state then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
-					if Inventory:AddItem(char:GetData("SID"), "bobcat_tracker", 1, {}, 1) then
+					if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "bobcat_tracker", 1, {}, 1) then
 						_bcInUse.frontPc = false
 						GlobalState["Bobcat:PCHacked"] = true
 						cb(true)
@@ -1251,7 +1253,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	-- 			if plyr ~= nil then
 	-- 				local char = plyr:GetData("Character")
 	-- 				if char ~= nil then
-	-- 					if Inventory:AddItem(char:GetData("SID"), "moneytruck_map", 1, {}, 1) then
+	-- 					if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "moneytruck_map", 1, {}, 1) then
 	-- 						_bcInUse.securityPc = false
 	-- 						GlobalState["Bobcat:SecurityPCHacked"] = true
 	-- 					end
@@ -1338,7 +1340,7 @@ end
 
 function RemoveC4(source, cData)
 	if cData ~= nil then
-		Inventory.Items:RemoveAll(cData.SID, 1, "bobcat_charge")
+		exports['sandbox-inventory']:RemoveAll(cData.SID, 1, "bobcat_charge")
 		if GlobalState["BobcatC4"] == cData.SID then
 			GlobalState["BobcatC4"] = false
 		end

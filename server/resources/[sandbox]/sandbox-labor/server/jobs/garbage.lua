@@ -198,7 +198,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			elseif luck >= 50 then
 				exports['sandbox-inventory']:LootCustomSet(_lootTable, char:GetData("SID"), 1, math.random(5, 20))
 			end
-			Inventory:AddItem(char:GetData("SID"), "recycledgoods", math.random(10), {}, 1)
+			exports['sandbox-inventory']:AddItem(char:GetData("SID"), "recycledgoods", math.random(10), {}, 1)
 
 			exports["sandbox-base"]:ClientCallback(source, "Garbage:DoingSomeAction", "trashPutIn")
 			if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
@@ -253,9 +253,9 @@ AddEventHandler("Labor:Server:Startup", function()
 		if repLvl > 0 then
 			local money = 0
 			for k, v in ipairs(_jewelryItems) do
-				local count = Inventory.Items:GetCount(char:GetData("SID"), 1, v.item) or 0
+				local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, v.item) or 0
 				if count > 0 then
-					if Inventory.Items:Remove(char:GetData("SID"), 1, v.item, count) then
+					if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.item, count) then
 						money = money + math.floor(_jewelryPrices[repLvl] * v.ratio) * count
 					end
 				end
@@ -302,7 +302,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	-- 					{}
 	-- 				)
 
-	-- 				cb(Inventory:AddItem(char:GetData("SID"), _pawnItems[data.index].item, 1, {}, 1))
+	-- 				cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"), _pawnItems[data.index].item, 1, {}, 1))
 	-- 			else
 	-- 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Crypto")
 	-- 			end

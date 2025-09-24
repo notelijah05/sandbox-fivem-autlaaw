@@ -83,7 +83,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			and _sellers[_joiners[source]].state == 1
 		then
 			if not Vehicles.Owned:GetActive(data.VIN) then
-				if #Inventory:GetFreeSlotNumbers(data.VIN, 4, data.Class, data.Model) >= 10 then
+				if #exports['sandbox-inventory']:GetFreeSlotNumbers(data.VIN, 4, data.Class, data.Model) >= 10 then
 					local exp = os.time() + (60 * 20)
 					_cooldowns[char:GetData("ID")] = exp
 					if isWorkgroup then
@@ -159,7 +159,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("OxyRun:CancelPickup", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
-			Inventory.Items:Remove(_sellers[_joiners[source]].vehicle.VIN, 4, "contraband", false)
+			exports['sandbox-inventory']:Remove(_sellers[_joiners[source]].vehicle.VIN, 4, "contraband", false)
 		end
 	end)
 
@@ -172,7 +172,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			and _sellers[_joiners[source]].state == 3
 		then
 			if
-				#Inventory:GetFreeSlotNumbers(
+				#exports['sandbox-inventory']:GetFreeSlotNumbers(
 					_sellers[_joiners[source]].vehicle.VIN,
 					4,
 					_sellers[_joiners[source]].vehicle.Class,
@@ -198,14 +198,14 @@ AddEventHandler("Labor:Server:Startup", function()
 			local veh = GetVehiclePedIsIn(GetPlayerPed(source))
 			local vEnt = Entity(veh).state
 			if
-				#Inventory:GetFreeSlotNumbers(
+				#exports['sandbox-inventory']:GetFreeSlotNumbers(
 					vEnt.VIN,
 					4,
 					_sellers[_joiners[source]].vehicle.Class,
 					_sellers[_joiners[source]].vehicle.Model
 				) >= 1
 			then
-				Inventory:AddItem(
+				exports['sandbox-inventory']:AddItem(
 					vEnt.VIN,
 					"contraband",
 					1,
@@ -338,7 +338,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				end
 			end
 
-			if Inventory.Items:Remove(char:GetData("SID"), 1, "contraband", 1) then
+			if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "contraband", 1) then
 				Labor.Workgroups:SendEvent(
 					_joiners[source],
 					string.format("OxyRun:Client:%s:Action", _joiners[source])
@@ -349,7 +349,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				local cashAdd = math.random(200) + 200
 
 				if math.random(100) >= 80 then
-					Inventory:AddItem(char:GetData("SID"), "oxy", math.random(3), {}, 1)
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "oxy", math.random(3), {}, 1)
 				end
 
 				local repLevel = Reputation:GetLevel(source, "OxyRun") or 0
@@ -358,7 +358,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				if repLevel >= 5 then
 					chance = 50
 					if math.random(200) <= 1 then
-						Inventory:AddItem(char:GetData("SID"), "vpn", 1, {}, 1)
+						exports['sandbox-inventory']:AddItem(char:GetData("SID"), "vpn", 1, {}, 1)
 					end
 				elseif repLevel >= 3 then
 					chance = 70
@@ -371,7 +371,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					calcLvl = 1
 				end
 
-				local rollCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "moneyroll")
+				local rollCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "moneyroll")
 				if rollCount > 0 then
 					local rb = math.random(100)
 					if rb >= chance then
@@ -379,15 +379,15 @@ AddEventHandler("Labor:Server:Startup", function()
 						if rollCount <= 5 or take > rollCount then
 							take = rollCount
 						end
-						local itemData = Inventory.Items:GetData("moneyroll")
+						local itemData = exports['sandbox-inventory']:ItemsGetData("moneyroll")
 
-						if itemData and Inventory.Items:Remove(char:GetData("SID"), 1, "moneyroll", take) then
+						if itemData and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "moneyroll", take) then
 							cashAdd += (itemData.price * take)
 						end
 					end
 				end
 
-				local bandCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "moneyband")
+				local bandCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "moneyband")
 				if bandCount > 0 then
 					local bb = math.random(100)
 					if bb >= chance then
@@ -395,9 +395,9 @@ AddEventHandler("Labor:Server:Startup", function()
 						if bandCount <= 3 or take > bandCount then
 							take = bandCount
 						end
-						local itemData = Inventory.Items:GetData("moneyband")
+						local itemData = exports['sandbox-inventory']:ItemsGetData("moneyband")
 
-						if itemData and Inventory.Items:Remove(char:GetData("SID"), 1, "moneyband", take) then
+						if itemData and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "moneyband", take) then
 							cashAdd += (itemData.price * take)
 						end
 					end
@@ -554,7 +554,7 @@ end)
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
 	if _wasDoingIllegalShit[source] then
 		if cData ~= nil then
-			Inventory.Items:Remove(cData.SID, 1, "contraband", false, true)
+			exports['sandbox-inventory']:Remove(cData.SID, 1, "contraband", false, true)
 		end
 		_wasDoingIllegalShit[source] = nil
 	end
@@ -563,7 +563,7 @@ end)
 AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 	if _wasDoingIllegalShit[source] then
 		if cData ~= nil then
-			Inventory.Items:Remove(cData.SID, 1, "contraband", false, true)
+			exports['sandbox-inventory']:Remove(cData.SID, 1, "contraband", false, true)
 		end
 		_wasDoingIllegalShit[source] = nil
 	end
@@ -780,7 +780,7 @@ function Cleanup(src)
 				for k, v in ipairs(_sellers[joiner].members) do
 					local mChar = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 					if mChar ~= nil then
-						Inventory.Items:Remove(mChar:GetData("SID"), 1, "contraband", false)
+						exports['sandbox-inventory']:Remove(mChar:GetData("SID"), 1, "contraband", false)
 					end
 				end
 			end
@@ -788,11 +788,11 @@ function Cleanup(src)
 
 		local jChar = exports['sandbox-characters']:FetchCharacterSource(joiner)
 		if jChar ~= nil then
-			Inventory.Items:Remove(jChar:GetData("SID"), 1, "contraband", false)
+			exports['sandbox-inventory']:Remove(jChar:GetData("SID"), 1, "contraband", false)
 		end
 
 		if _sellers[joiner].vehicle ~= nil then
-			Inventory.Items:Remove(_sellers[joiner].vehicle.VIN, 4, "contraband", false)
+			exports['sandbox-inventory']:Remove(_sellers[joiner].vehicle.VIN, 4, "contraband", false)
 		end
 
 		_availableRuns = _availableRuns - 1

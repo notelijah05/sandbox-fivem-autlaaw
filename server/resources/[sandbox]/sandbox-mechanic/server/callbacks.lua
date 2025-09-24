@@ -2,10 +2,10 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Mechanic:InstallMultipleRepairParts", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data?.part and data?.quantity and _mechanicItemsToParts[data.part] then
-			if Inventory.Items:Has(char:GetData("SID"), 1, data.part, data.quantity) then
+			if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, data.part, data.quantity) then
 				exports["sandbox-base"]:ClientCallback(source, "Mechanic:StartInstall", data, function(success)
 					if success then
-						Inventory.Items:Remove(char:GetData("SID"), 1, data.part, data.quantity)
+						exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, data.part, data.quantity)
 					end
 				end)
 

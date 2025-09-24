@@ -408,7 +408,7 @@ RegisterNetEvent("Hunting:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("Hunting:Client:OpenShop", function()
-	Inventory.Shop:Open("hunting-supplies")
+	exports['sandbox-inventory']:ShopOpen("hunting-supplies")
 end)
 
 AddEventHandler("Hunting:Client:Sell", function(entity, data)

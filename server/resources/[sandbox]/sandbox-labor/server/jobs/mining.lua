@@ -301,9 +301,9 @@ end
 AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Mining:SellStone", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local count = Inventory.Items:GetCount(char:GetData("SID"), 1, "crushedrock")
+		local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "crushedrock")
 		if (count or 0) > 0 then
-			if Inventory.Items:Remove(char:GetData("SID"), 1, "crushedrock", count) then
+			if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "crushedrock", count) then
 				Wallet:Modify(source, (3 * count))
 				cb(true)
 			else
@@ -321,21 +321,21 @@ AddEventHandler("Labor:Server:Startup", function()
 		local repLvl = Reputation:GetLevel(source, _JOB)
 
 		if _gems[data] ~= nil and _gems[data].level <= repLvl then
-			local itemData = Inventory.Items:GetData(data)
+			local itemData = exports['sandbox-inventory']:ItemsGetData(data)
 			if itemData ~= nil then
-				local count = Inventory.Items:GetCount(char:GetData("SID"), 1, data)
+				local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, data)
 
 				if count > 0 then
 					local totalPayout = 0
 					for i = 1, count do
-						local item = Inventory.Items:GetFirst(char:GetData("SID"), data, 1)
+						local item = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), data, 1)
 						if item then
 							local payout = itemData.price * ((item.MetaData.Quality / 100) - _payoutCuts[repLvl])
 							if payout <= 0 then
 								payout = 100
 							end
 
-							if Inventory.Items:Remove(char:GetData("SID"), 1, data, 1) then
+							if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, data, 1) then
 								totalPayout = math.ceil(totalPayout + payout)
 							end
 						end
@@ -392,7 +392,8 @@ AddEventHandler("Labor:Server:Startup", function()
 							vector3(node.location.x, node.location.y, node.location.z)
 							== vector3(data.location.x, data.location.y, data.location.z)
 						then
-							Inventory:AddItem(char:GetData("SID"), "crushedrock", math.random(8), {}, 1)
+							exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crushedrock", math.random(8), {},
+								1)
 
 							local luck = math.random(100)
 							if node.ore.item then
@@ -402,7 +403,7 @@ AddEventHandler("Labor:Server:Startup", function()
 									or (not data.failed and node.luck <= 10)
 								then
 									if node.ore.count > 1 then
-										Inventory:AddItem(
+										exports['sandbox-inventory']:AddItem(
 											char:GetData("SID"),
 											node.ore.item,
 											math.random(node.ore.count),
@@ -410,7 +411,7 @@ AddEventHandler("Labor:Server:Startup", function()
 											1
 										)
 									else
-										Inventory:AddItem(char:GetData("SID"), node.ore.item, 1, {}, 1)
+										exports['sandbox-inventory']:AddItem(char:GetData("SID"), node.ore.item, 1, {}, 1)
 									end
 								end
 							else

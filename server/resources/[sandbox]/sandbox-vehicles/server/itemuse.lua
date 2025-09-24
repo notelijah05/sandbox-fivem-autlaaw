@@ -1,5 +1,5 @@
 function RegisterItemUses()
-	Inventory.Items:RegisterUse("lockpick", "Vehicles", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("lockpick", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
 			exports["sandbox-base"]:ClientCallback(source, "Vehicles:Lockpick", true, function(using, success)
 				if using then
@@ -8,16 +8,16 @@ function RegisterItemUses()
 						newValue = slot.CreateDate - (60 * 60 * 12)
 					end
 					if (os.time() - itemData.durability >= newValue) then
-						Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+						exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						Inventory:SetItemCreateDate(slot.id, newValue)
+						exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 			end)
 		end)
 	end)
 
-	Inventory.Items:RegisterUse("adv_lockpick", "Vehicles", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("adv_lockpick", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
 			exports["sandbox-base"]:ClientCallback(source, "Vehicles:AdvLockpick", true, function(using, success)
 				if using then
@@ -26,16 +26,16 @@ function RegisterItemUses()
 						newValue = slot.CreateDate - (60 * 60 * 12)
 					end
 					if (os.time() - itemData.durability >= newValue) then
-						Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+						exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						Inventory:SetItemCreateDate(slot.id, newValue)
+						exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 			end)
 		end)
 	end)
 
-	Inventory.Items:RegisterUse("electronics_kit", "Vehicles", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("electronics_kit", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
 			exports["sandbox-base"]:ClientCallback(source, "Vehicles:Hack", true, function(using, success)
 				if using then
@@ -44,16 +44,16 @@ function RegisterItemUses()
 						newValue = slot.CreateDate - (60 * 60 * 12)
 					end
 					if (os.time() - itemData.durability >= newValue) then
-						Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+						exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						Inventory:SetItemCreateDate(slot.id, newValue)
+						exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 			end)
 		end)
 	end)
 
-	Inventory.Items:RegisterUse("adv_electronics_kit", "Vehicles", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("adv_electronics_kit", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
 			exports["sandbox-base"]:ClientCallback(source, "Vehicles:AdvHack", true, function(using, success)
 				if using then
@@ -62,16 +62,16 @@ function RegisterItemUses()
 						newValue = slot.CreateDate - (60 * 60 * 12)
 					end
 					if (os.time() - itemData.durability >= newValue) then
-						Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+						exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						Inventory:SetItemCreateDate(slot.id, newValue)
+						exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 			end)
 		end)
 	end)
 
-	Inventory.Items:RegisterUse("screwdriver", "Vehicles", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("screwdriver", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(1500, function()
 			exports["sandbox-base"]:ClientCallback(source, "Vehicles:Lockpick", {
 				{
@@ -91,32 +91,34 @@ function RegisterItemUses()
 						newValue = slot.CreateDate - (60 * 60 * 12)
 					end
 					if (os.time() - itemData.durability >= newValue) then
-						Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+						exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						Inventory:SetItemCreateDate(slot.id, newValue)
+						exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 			end)
 		end)
 	end)
 
-	Inventory.Items:RegisterUse("repairkit", "Vehicles", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("repairkit", "Vehicles", function(source, itemData)
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:RepairKit", false, function(success)
 			if success then
-				Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
+				exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData
+				.invType)
 			end
 		end)
 	end)
 
-	Inventory.Items:RegisterUse("repairkitadv", "Vehicles", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("repairkitadv", "Vehicles", function(source, itemData)
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:RepairKit", true, function(success)
 			if success then
-				Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
+				exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData
+				.invType)
 			end
 		end)
 	end)
 
-	Inventory.Items:RegisterUse("fakeplates", "Vehicles", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("fakeplates", "Vehicles", function(source, itemData)
 		local currentMeta = itemData.MetaData or {}
 		if not currentMeta.Plate then -- Data needs generating
 			local updatingMetaData = {}
@@ -127,13 +129,13 @@ function RegisterItemUses()
 			updatingMetaData.SID = exports['sandbox-base']:SequenceGet("Character")
 			updatingMetaData.Vehicle = Vehicles:RandomName()
 
-			currentMeta = Inventory:UpdateMetaData(itemData.id, updatingMetaData)
+			currentMeta = exports['sandbox-inventory']:UpdateMetaData(itemData.id, updatingMetaData)
 		end
 
 		if not currentMeta.Vehicle then
 			currentMeta.Vehicle = Vehicles:RandomName()
 
-			Inventory:UpdateMetaData(iitemData.id, {
+			exports['sandbox-inventory']:UpdateMetaData(iitemData.id, {
 				Vehicle = currentMeta.Vehicle
 			})
 		end
@@ -163,7 +165,8 @@ function RegisterItemUses()
 
 						Vehicles.Owned:ForceSave(vehState.VIN)
 
-						Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
+						exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
+							itemData.invType)
 
 						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Fake Plate Installed")
 					else
@@ -175,23 +178,23 @@ function RegisterItemUses()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("carpolish", "Vehicles", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("carpolish", "Vehicles", function(source, itemData)
 		UseCarPolish(source, itemData, 1)
 	end)
 
-	Inventory.Items:RegisterUse("carpolish_high", "Vehicles", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("carpolish_high", "Vehicles", function(source, itemData)
 		UseCarPolish(source, itemData, 2)
 	end)
 
-	Inventory.Items:RegisterUse("carclean", "Vehicles", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("carclean", "Vehicles", function(source, itemData)
 		TriggerClientEvent("Vehicles:Client:CleaningKit", source)
 	end)
 
-	Inventory.Items:RegisterUse("purgecontroller", "Vehicles", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("purgecontroller", "Vehicles", function(source, itemData)
 		UsePurgeColorController(source, itemData)
 	end)
 
-	Inventory.Items:RegisterUse("car_bomb", "Vehicles", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("car_bomb", "Vehicles", function(source, itemData)
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:UseCarBomb", {}, function(veh, reason, config)
 			if not veh then
 				if reason then
@@ -216,7 +219,8 @@ function RegisterItemUses()
 							InstalledBy = char:GetData("SID"),
 						}
 
-						Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
+						exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
+							itemData.invType)
 
 						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Car Bomb Installed")
 					else
@@ -230,7 +234,7 @@ function RegisterItemUses()
 		end)
 	end)
 
-	Inventory.Items:RegisterUse("harness", "Vehicles", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("harness", "Vehicles", function(source, itemData)
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:InstallHarness", {}, function(veh)
 			if not veh then
 				return
@@ -242,7 +246,7 @@ function RegisterItemUses()
 					return
 				end
 
-				if Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
+				if exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
 					vehState.Harness = 10
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Harness Installed")
 				end
@@ -250,7 +254,7 @@ function RegisterItemUses()
 		end)
 	end)
 
-	Inventory.Items:RegisterUse("nitrous", "Vehicles", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("nitrous", "Vehicles", function(source, itemData)
 		if itemData?.MetaData?.Nitrous and itemData?.MetaData?.Nitrous > 0 then
 			exports["sandbox-base"]:ClientCallback(source, "Vehicles:InstallNitrous", {}, function(veh)
 				if not veh then
@@ -263,7 +267,7 @@ function RegisterItemUses()
 						return
 					end
 
-					if Inventory.Items:RemoveId(itemData.Owner, itemData.invType, itemData) then
+					if exports['sandbox-inventory']:RemoveId(itemData.Owner, itemData.invType, itemData) then
 						vehState.Nitrous = itemData.MetaData.Nitrous + 0.0
 						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
 							"Nitrous Oxide Installed")
@@ -310,7 +314,8 @@ function UseCarPolish(source, itemData, type)
 					Mult = typeData.multiplier,
 				}
 
-				Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
+				exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData
+				.invType)
 
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Polish Applied")
 			else

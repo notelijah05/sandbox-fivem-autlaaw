@@ -115,11 +115,11 @@ AddEventHandler("Labor:Server:Startup", function()
 				local earntRep = 0
 
 				for k, v in ipairs(pawning) do
-					local count = Inventory.Items:GetCount(char:GetData("SID"), 1, v.item) or 0
+					local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, v.item) or 0
 					if count > 0 then
-						local itemData = Inventory.Items:GetData(v.item)
+						local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
 
-						if itemData and Inventory.Items:Remove(char:GetData("SID"), 1, v.item, count) then
+						if itemData and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.item, count) then
 							money += math.floor(((_pawnPricing[repLvl] / 100) * itemData.price) * count)
 							earntRep += v.rep * count
 						end

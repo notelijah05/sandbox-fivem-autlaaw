@@ -1,13 +1,11 @@
 AddEventHandler("Restaurant:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Restaurant", {
-		"Inventory",
 		"Targeting",
 		"Jobs",
 	}, function(error)
@@ -761,7 +759,7 @@ RegisterNetEvent("Restaurant:Client:CreatePoly", function(pickups, warmersList, 
 end)
 
 AddEventHandler("Restaurant:Client:Pickup", function(entity, data)
-	Inventory.Dumbfuck:Open(data.inventory)
+	exports['sandbox-inventory']:DumbfuckOpen(data.inventory)
 end)
 
 AddEventHandler("Restaurant:Client:ClockIn", function(_, data)

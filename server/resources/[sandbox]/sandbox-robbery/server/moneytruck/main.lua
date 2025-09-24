@@ -217,15 +217,15 @@ AddEventHandler("Robbery:Server:Setup", function()
 						if model == `stockade` then
 							exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_moneyTruckLoot.fleeca,
 								char:GetData("SID"), 1)
-							Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+							exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 								CryptoCoin = "HEIST",
 								Quantity = math.random(5, 6),
 							}, 1)
 							-- if math.random(100) <= 10 and not _blueGiven then
 							-- 	_blueGiven = true
-							-- 	Inventory:AddItem(char:GetData("SID"), "blue_dongle", 1, {}, 1)
+							-- 	exports['sandbox-inventory']:AddItem(char:GetData("SID"), "blue_dongle", 1, {}, 1)
 							-- else
-							-- 	Inventory:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
+							-- 	exports['sandbox-inventory']:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
 							-- end
 						end
 

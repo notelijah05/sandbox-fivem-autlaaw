@@ -1,7 +1,6 @@
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", GovernmentComponents)
 function GovernmentComponents()
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 _licenses = {
@@ -14,7 +13,6 @@ _licenses = {
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
 		"Wallet",
-		"Inventory",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -24,7 +22,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		exports["sandbox-base"]:RegisterServerCallback("Government:BuyID", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if Wallet:Modify(source, -500) then
-				Inventory:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
 			else
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
 			end
@@ -77,7 +75,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				end
 			end)
 
-		-- Inventory.Poly:Create({
+		-- exports['sandbox-inventory']:PolyCreate({
 		-- 	id = "doj-chief-justice-safe",
 		-- 	type = "box",
 		-- 	coords = vector3(-586.32, -213.18, 42.84),
@@ -97,7 +95,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		-- 	},
 		-- })
 
-		Inventory.Poly:Create({
+		exports['sandbox-inventory']:PolyCreate({
 			id = "doj-storage",
 			type = "box",
 			coords = vector3(-586.64, -203.5, 38.23),

@@ -115,7 +115,7 @@ AddEventHandler("VANGELICO:Client:Sell", function()
 end)
 
 AddEventHandler("Businesses:Client:VANGELICO:OpenTable", function(e, data)
-	Inventory.Dumbfuck:Open({
+	exports['sandbox-inventory']:DumbfuckOpen({
 		invType = 196,
 		owner = data.id,
 	})
@@ -128,7 +128,7 @@ end)
 RegisterNetEvent("Businesses:Client:VANGELICO:ViewGem", function(tableId, gemProps, quality, item)
 	LocalPlayer.state:set("inGemViewVangelico", true, true)
 	-- exports['sandbox-hud']:GemTableOpen(quality)
-	Inventory.StaticTooltip:Open(item)
+	exports['sandbox-inventory']:StaticTooltipOpen(item)
 	local str = string.format("Gem Quality: %s%%", quality)
 	exports["sandbox-hud"]:NotifStandard(str, 5000, "gem")
 	--ActivateTable(tableId, gemProps.color, quality, item)
@@ -137,7 +137,7 @@ end)
 AddEventHandler("Keybinds:Client:KeyUp:cancel_action", function()
 	if LocalPlayer.state.inGemView then
 		exports['sandbox-hud']:GemTableClose()
-		Inventory.StaticTooltip:Close()
+		exports['sandbox-inventory']:StaticTooltipClose()
 		LocalPlayer.state:set("inGemViewVangelico", false, true)
 	end
 end)
@@ -193,7 +193,7 @@ function ActivateTable(tableId, color, quality, item)
 	local dirtLevel = (15 - math.floor(quality / 6.66)) + 0.0
 
 	exports['sandbox-hud']:GemTableOpen(quality)
-	Inventory.StaticTooltip:Open(item)
+	exports['sandbox-inventory']:StaticTooltipOpen(item)
 
 	_gemObj = CreateObject(prop, _tableConfig[tableId].createCoords, 0, 0)
 	FreezeEntityPosition(_gemObj, true)
@@ -216,7 +216,7 @@ function CleanupTable()
 	RenderScriptCams(false, false, 0, 1, 0)
 	DeleteEntity(_gemObj)
 	exports['sandbox-hud']:GemTableClose()
-	Inventory.StaticTooltip:Close()
+	exports['sandbox-inventory']:StaticTooltipClose()
 	if LocalPlayer.state.inGemTableVangelico then
 		LocalPlayer.state:set("inGemTableVangelico", false, true)
 	end

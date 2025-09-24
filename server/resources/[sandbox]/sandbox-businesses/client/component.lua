@@ -6,7 +6,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	StorageUnits = exports["sandbox-base"]:FetchComponent("StorageUnits")
 end
 
@@ -18,7 +17,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Vehicles",
 		"PedInteraction",
-		"Inventory",
 		"StorageUnits",
 	}, function(error)
 		if #error > 0 then
@@ -205,7 +203,7 @@ RegisterNetEvent("Businesses:Client:CreatePoly", function(pickups, onSpawn)
 end)
 
 AddEventHandler("Businesses:Client:Pickup", function(entity, data)
-	Inventory.Dumbfuck:Open(data.inventory)
+	exports['sandbox-inventory']:DumbfuckOpen(data.inventory)
 end)
 
 function GetBusinessClockInMenu(businessName)

@@ -52,5 +52,5 @@ function setupStores(shops)
 end
 
 AddEventHandler("Shop:Client:OpenShop", function(obj, data)
-	Inventory.Shop:Open(data)
+	exports['sandbox-inventory']:ShopOpen(data)
 end)

@@ -60,7 +60,7 @@ function RegisterVehicleRentalCallbacks()
 
                                 cb(true, plate)
 
-                                Inventory:AddItem(renterSID, 'rental_papers', 1, {
+                                exports['sandbox-inventory']:AddItem(renterSID, 'rental_papers', 1, {
                                     Renter = renterName,
                                     Vehicle = rentalVehicleData.make .. ' ' .. rentalVehicleData.model,
                                     Plate = not rentalVehicleData.noPlate and plate or 'No Plate',

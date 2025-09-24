@@ -1,30 +1,15 @@
-AddEventHandler("Loot:Shared:DependencyUpdate", LootComponents)
-function LootComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Loot", {
-		"Inventory",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		LootComponents()
-	end)
-end)
-
 exports("LootItemClass", function(owner, invType, class, count)
-	return INVENTORY:AddItem(owner, itemClasses[class][math.random(#itemClasses[class])], count, {}, invType)
+	return exports['sandbox-inventory']:AddItem(owner, itemClasses[class][math.random(#itemClasses[class])], count, {},
+		invType)
 end)
 
 exports("LootCustomSet", function(set, owner, invType, count)
-	return INVENTORY:AddItem(owner, set[math.random(#set)], count, {}, invType)
+	return exports['sandbox-inventory']:AddItem(owner, set[math.random(#set)], count, {}, invType)
 end)
 
 exports("LootCustomSetWithCount", function(set, owner, invType)
 	local i = set[math.random(#set)]
-	return INVENTORY:AddItem(owner, i.name, math.random(i.min or 0, i.max), {}, invType)
+	return exports['sandbox-inventory']:AddItem(owner, i.name, math.random(i.min or 0, i.max), {}, invType)
 end)
 
 -- Export for adding weighted set item
@@ -35,7 +20,7 @@ end)
 exports("LootCustomWeightedSet", function(set, owner, invType)
 	local randomItem = exports['sandbox-base']:UtilsWeightedRandom(set)
 	if randomItem then
-		return INVENTORY:AddItem(owner, randomItem, 1, {}, invType)
+		return exports['sandbox-inventory']:AddItem(owner, randomItem, 1, {}, invType)
 	end
 end)
 
@@ -53,7 +38,8 @@ exports("LootCustomWeightedSetWithCount", function(set, owner, invType, dontAdd)
 				count = math.random(randomItem.min or 1, randomItem.max)
 			}
 		else
-			return INVENTORY:AddItem(owner, randomItem.name, math.random(randomItem.min or 1, randomItem.max),
+			return exports['sandbox-inventory']:AddItem(owner, randomItem.name,
+				math.random(randomItem.min or 1, randomItem.max),
 				randomItem.metadata or {}, invType)
 		end
 	end
@@ -73,7 +59,7 @@ exports("LootCustomWeightedSetWithCountAndModifier", function(set, owner, invTyp
 				count = math.random(randomItem.min or 1, randomItem.max) * modifier
 			}
 		else
-			return INVENTORY:AddItem(owner, randomItem.name,
+			return exports['sandbox-inventory']:AddItem(owner, randomItem.name,
 				math.random(randomItem.min or 1, randomItem.max) * modifier, randomItem.metadata or {}, invType)
 		end
 	end
@@ -89,7 +75,7 @@ exports("LootSetsGem", function(owner, invType)
 		{ 25, "citrine" },
 		{ 75, "opal" },
 	})
-	return INVENTORY:AddItem(owner, randomGem, 1, {}, invType)
+	return exports['sandbox-inventory']:AddItem(owner, randomGem, 1, {}, invType)
 end)
 
 exports("LootSetsGemRandom", function(owner, invType, day)
@@ -116,7 +102,7 @@ exports("LootSetsGemRandom", function(owner, invType, day)
 		})
 	end
 
-	return INVENTORY:AddItem(owner, randomGem, 1, {}, invType)
+	return exports['sandbox-inventory']:AddItem(owner, randomGem, 1, {}, invType)
 end)
 
 exports("LootSetsOre", function(owner, invType, count)
@@ -125,5 +111,5 @@ exports("LootSetsOre", function(owner, invType, count)
 		{ 18, "silverore" },
 		{ 50, "ironore" },
 	})
-	return INVENTORY:AddItem(owner, randomOre, count, {}, invType)
+	return exports['sandbox-inventory']:AddItem(owner, randomOre, count, {}, invType)
 end)

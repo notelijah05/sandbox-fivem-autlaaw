@@ -1,7 +1,6 @@
 AddEventHandler("Handcuffs:Shared:DependencyUpdate", HandcuffsComponents)
 function HandcuffsComponents()
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
@@ -13,7 +12,6 @@ end)
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Handcuffs", {
 		"Handcuffs",
-		"Inventory",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -79,7 +77,7 @@ RegisterNetEvent("Handcuffs:Server:HardCuff", function(target)
 	local tPos = GetEntityCoords(GetPlayerPed(target))
 
 	if #(vector3(mPos.x, mPos.y, mPos.z) - vector3(tPos.x, tPos.y, tPos.z)) <= 1.5 then
-		if Inventory.Items:HasAnyItems(src, Config.CuffItems) then
+		if exports['sandbox-inventory']:ItemsHasAnyItems(src, Config.CuffItems) then
 			if
 				not Player(target).state.isCuffed
 				or (Player(target).state.isCuffed and not Player(target).state.isHardCuffed)
@@ -105,7 +103,7 @@ RegisterNetEvent("Handcuffs:Server:SoftCuff", function(target)
 	local tPos = GetEntityCoords(GetPlayerPed(target))
 
 	if #(vector3(mPos.x, mPos.y, mPos.z) - vector3(tPos.x, tPos.y, tPos.z)) <= 1.5 then
-		if Inventory.Items:HasAnyItems(src, Config.CuffItems) then
+		if exports['sandbox-inventory']:ItemsHasAnyItems(src, Config.CuffItems) then
 			local pState = Player(target).state
 			if not pState.isCuffed or (pState.isCuffed and pState.isHardCuffed) then
 				Handcuffs:SoftCuffTarget(src, target, false)
@@ -129,7 +127,7 @@ RegisterNetEvent("Handcuffs:Server:Uncuff", function(target)
 	local tPos = GetEntityCoords(GetPlayerPed(target))
 
 	if #(vector3(mPos.x, mPos.y, mPos.z) - vector3(tPos.x, tPos.y, tPos.z)) <= 1.5 then
-		if Inventory.Items:HasAnyItems(src, Config.CuffItems) then
+		if exports['sandbox-inventory']:ItemsHasAnyItems(src, Config.CuffItems) then
 			if Player(target).state.isCuffed then
 				Handcuffs:UncuffTarget(src, target)
 			end

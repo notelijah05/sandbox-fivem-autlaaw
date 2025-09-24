@@ -10,7 +10,6 @@ function RetrieveCryptoComponents()
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -23,7 +22,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Crypto",
 		"Jobs",
 		"Vehicles",
-		"Inventory",
 	}, function(error)
 		if #error > 0 then
 			exports['sandbox-base']:LoggerCritical("Crypto", "Failed To Load All Dependencies")

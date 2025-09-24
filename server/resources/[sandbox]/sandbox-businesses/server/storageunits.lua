@@ -103,7 +103,7 @@ AddEventHandler("Businesses:Server:Startup", function()
                             invType = storageType,
                             owner = storageOwner,
                         }, function()
-                            Inventory:OpenSecondary(source, storageType, storageOwner)
+                            exports['sandbox-inventory']:OpenSecondary(source, storageType, storageOwner)
 
                             unitLastAccessed[unit.id] = os.time()
 
@@ -199,7 +199,7 @@ AddEventHandler("Businesses:Server:Startup", function()
                         invType = storageType,
                         owner = storageOwner,
                     }, function()
-                        Inventory:OpenSecondary(source, storageType, storageOwner)
+                        exports['sandbox-inventory']:OpenSecondary(source, storageType, storageOwner)
                     end)
 
                     cb(true)

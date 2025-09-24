@@ -11,7 +11,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	EMS = exports["sandbox-base"]:FetchComponent("EMS")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -24,7 +23,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Vehicles",
 		"EMS",
-		"Inventory",
 		"Reputation",
 		"Mechanic",
 		"Polyzone",

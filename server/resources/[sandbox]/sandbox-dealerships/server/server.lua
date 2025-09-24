@@ -4,7 +4,6 @@ AddEventHandler('Dealerships:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
     Vehicles = exports['sandbox-base']:FetchComponent('Vehicles')
-    Inventory = exports['sandbox-base']:FetchComponent('Inventory')
     Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
     Billing = exports['sandbox-base']:FetchComponent('Billing')
     Loans = exports['sandbox-base']:FetchComponent('Loans')
@@ -16,7 +15,6 @@ end
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Dealerships', {
         'Doors',
-        'Inventory',
         'Jobs',
         'Vehicles',
         'Dealerships',

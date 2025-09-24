@@ -283,7 +283,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
 								char:GetData("SID"), 1,
 								calcLvl)
-							Inventory:AddItem(char:GetData("SID"), 'rubber', math.random(12, 78) * calcLvl, {}, 1)
+							exports['sandbox-inventory']:AddItem(char:GetData("SID"), 'rubber',
+								math.random(12, 78) * calcLvl, {}, 1)
 						end
 						return cb(true)
 					end
@@ -401,7 +402,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 			if #pickups > 0 then
 				for k, v in ipairs(pickups) do
-					Inventory:AddItem(char:GetData("SID"), "parts_box", 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "parts_box", 1, {
 						Items = v.Items,
 					}, 1)
 				end
@@ -478,11 +479,11 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			end
 		end)
 
-	Inventory.Items:RegisterUse("choplist", "Chopping", function(source, item, itemData)
+	exports['sandbox-inventory']:RegisterUse("choplist", "Chopping", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if not item.MetaData.Owner or item.MetaData.Owner == char:GetData("SID") then
-				if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+				if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 					local personalLists = char:GetData("ChopLists") or {}
 					personalLists[exports['sandbox-base']:SequenceGet("PersonalChopList")] = item.MetaData.ChopList
 					char:SetData("ChopLists", personalLists)

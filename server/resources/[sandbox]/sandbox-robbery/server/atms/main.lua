@@ -192,7 +192,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				chance = 22
 			end
 			if math.random(100) < chance and repLvl >= 2 then
-				Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 					CryptoCoin = "HEIST",
 					Quantity = math.random(2, repLvl + 1),
 				}, 1)

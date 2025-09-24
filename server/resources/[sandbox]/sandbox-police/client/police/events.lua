@@ -65,7 +65,7 @@ AddEventHandler("Corrections:Client:OffDuty", function()
 end)
 
 RegisterNetEvent("Police:Client:Search", function(hitting, data)
-	Inventory.Search:Character(hitting.serverId)
+	exports['sandbox-inventory']:SearchCharacter(hitting.serverId)
 	while not LocalPlayer.state.inventoryOpen do
 		Wait(1)
 	end
@@ -78,7 +78,7 @@ RegisterNetEvent("Police:Client:Search", function(hitting, data)
 					- GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(hitting.serverId)))
 				) > 3.0
 			then
-				Inventory.Close:All()
+				exports['sandbox-inventory']:CloseAll()
 			end
 			Wait(2)
 		end

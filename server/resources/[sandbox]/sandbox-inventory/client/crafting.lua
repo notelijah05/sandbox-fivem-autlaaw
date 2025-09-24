@@ -82,7 +82,7 @@ exports("CraftingBenchesRefresh", function(interior)
 								event = "Crafting:Client:AddSchematic",
 								data = v,
 								isEnabled = function(data, entityData)
-									return Inventory.Items:HasType(17, 1)
+									return exports['sandbox-inventory']:ItemsHasType(17, 1)
 								end,
 								jobPerms = v.restrictions.job ~= nil and {
 									{

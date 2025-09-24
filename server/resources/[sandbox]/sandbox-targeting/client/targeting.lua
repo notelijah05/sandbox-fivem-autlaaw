@@ -218,12 +218,12 @@ function OpenTargetingMenu(entityData, menu)
 			and (entityData.type ~= "vehicle" or (entityData.type == "vehicle" and v.model == nil) or (entityData.type == "vehicle" and GetEntityModel(
 				entityData.entity
 			) == v.model))
-			and (v.item == nil or v.item ~= nil and Inventory.Check.Player:HasItem(
+			and (v.item == nil or v.item ~= nil and exports['sandbox-inventory']:CheckPlayerHasItem(
 				v.item,
 				v.itemCountFunc and v.itemCountFunc(v.data, entityData) or v.itemCount or 1
 			))
-			and (v.items == nil or v.items ~= nil and Inventory.Check.Player:HasItems(v.items))
-			and (v.anyItems == nil or v.anyItems ~= nil and Inventory.Check.Player:HasAnyItems(v.anyItems))
+			and (v.items == nil or v.items ~= nil and exports['sandbox-inventory']:CheckPlayerHasItems(v.items))
+			and (v.anyItems == nil or v.anyItems ~= nil and exports['sandbox-inventory']:CheckPlayerHasAnyItems(v.anyItems))
 			and (v.rep == nil or v.rep.level <= Reputation:GetLevel(v.rep.id))
 			and (not IsPedInAnyVehicle(GLOBAL_PED) or v.allowFromVehicle)
 		then
@@ -271,12 +271,12 @@ function CanOpenTargetingMenu(id, entityData)
 			and (entityData.type ~= "vehicle" or (entityData.type == "vehicle" and v.model == nil) or (entityData.type == "vehicle" and GetEntityModel(
 				entityData.entity
 			) == v.model))
-			and (v.item == nil or v.item ~= nil and Inventory.Check.Player:HasItem(
+			and (v.item == nil or v.item ~= nil and exports['sandbox-inventory']:CheckPlayerHasItem(
 				v.item,
 				v.itemCountFunc and v.itemCountFunc(v.data, entityData) or v.itemCount or 1
 			))
-			and (v.items == nil or v.items ~= nil and Inventory.Check.Player:HasItems(v.items))
-			and (v.anyItems == nil or v.anyItems ~= nil and Inventory.Check.Player:HasAnyItems(v.anyItems))
+			and (v.items == nil or v.items ~= nil and exports['sandbox-inventory']:CheckPlayerHasItems(v.items))
+			and (v.anyItems == nil or v.anyItems ~= nil and exports['sandbox-inventory']:CheckPlayerHasAnyItems(v.anyItems))
 			and (v.rep == nil or v.rep.level <= Reputation:GetLevel(v.rep.id))
 			and (not IsPedInAnyVehicle(GLOBAL_PED) or v.allowFromVehicle)
 		then

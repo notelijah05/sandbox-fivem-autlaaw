@@ -671,7 +671,7 @@ function RegisterCallbacks()
                     Vehicles.Owned:ForceSave(vehState.VIN)
 
                     if fakePlateData and fakePlateData.Plate then
-                        Inventory:AddItem(char:GetData('SID'), 'fakeplates', 1, fakePlateData, 1)
+                        exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'fakeplates', 1, fakePlateData, 1)
                     end
 
                     cb(true, originalPlate)
@@ -763,7 +763,7 @@ function RegisterCallbacks()
         if char and veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
             if vehState.VIN and vehState.Nitrous then
-                Inventory:AddItem(char:GetData('SID'), 'nitrous', 1, {
+                exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'nitrous', 1, {
                     Nitrous = math.floor(vehState.Nitrous)
                 }, 1, nil, nil, nil, nil, nil, nil, nil, true)
 

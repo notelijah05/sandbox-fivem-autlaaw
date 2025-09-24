@@ -15,7 +15,7 @@ AddEventHandler("Casino:Server:Startup", function()
             if data?.turbo then
                 local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
-                if char and Wallet:Has(source, 7500) and Inventory.Items:Has(char:GetData("SID"), 1, "diamond_vip", 1) then
+                if char and Wallet:Has(source, 7500) and exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "diamond_vip", 1) then
                     GlobalState["Casino:WheelStarted"] = {
                         Source = source,
                         Turbo = true,

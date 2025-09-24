@@ -30,7 +30,6 @@ function RetrieveVendorComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -38,7 +37,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Reputation",
 		"Crypto",
 		"Wallet",
-		"Inventory",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -226,7 +224,8 @@ AddEventHandler("Core:Shared:Ready", function()
 												}
 											end
 
-											cb(Inventory:AddItem(char:GetData("SID"), itemData.item, 1, {}, 1))
+											cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemData.item, 1,
+												{}, 1))
 										else
 											exports['sandbox-base']:ExecuteClient(
 												source,
@@ -247,7 +246,8 @@ AddEventHandler("Core:Shared:Ready", function()
 												_bought[data.id][source][itemData.item] = (
 													_bought[data.id][source][itemData.item] or 0
 												) + 1
-												cb(Inventory:AddItem(char:GetData("SID"), itemData.item, 1, {}, 1))
+												cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"),
+													itemData.item, 1, {}, 1))
 											end
 										else
 											exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",

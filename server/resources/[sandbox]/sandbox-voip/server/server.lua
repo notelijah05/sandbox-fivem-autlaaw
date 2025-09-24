@@ -23,43 +23,30 @@ function GetDefaultPlayerVOIPData(source)
 	}
 end
 
-AddEventHandler("VOIP:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("VOIP", {
-		"Inventory",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterMiddleware()
+	RegisterMiddleware()
 
-		local mAddress = GetConvar("ext_mumble_address", "")
-		if mAddress ~= "" then
-			GlobalState.MumbleAddress = mAddress
-			GlobalState.MumblePort = GetConvarInt("ext_mumble_port", 64738)
-		end
+	local mAddress = GetConvar("ext_mumble_address", "")
+	if mAddress ~= "" then
+		GlobalState.MumbleAddress = mAddress
+		GlobalState.MumblePort = GetConvarInt("ext_mumble_port", 64738)
+	end
 
-		--RegisterChatCommands()
-		Inventory.Items:RegisterUse("radio", "VOIP", function(source, itemData)
-			TriggerClientEvent("Radio:Client:OpenUI", source, 1)
-		end)
+	--RegisterChatCommands()
+	exports['sandbox-inventory']:RegisterUse("radio", "VOIP", function(source, itemData)
+		TriggerClientEvent("Radio:Client:OpenUI", source, 1)
+	end)
 
-		Inventory.Items:RegisterUse("radio_shitty", "VOIP", function(source, itemData)
-			TriggerClientEvent("Radio:Client:OpenUI", source, 3)
-		end)
+	exports['sandbox-inventory']:RegisterUse("radio_shitty", "VOIP", function(source, itemData)
+		TriggerClientEvent("Radio:Client:OpenUI", source, 3)
+	end)
 
-		Inventory.Items:RegisterUse("radio_extendo", "VOIP", function(source, itemData)
-			TriggerClientEvent("Radio:Client:OpenUI", source, 2)
-		end)
+	exports['sandbox-inventory']:RegisterUse("radio_extendo", "VOIP", function(source, itemData)
+		TriggerClientEvent("Radio:Client:OpenUI", source, 2)
+	end)
 
-		Inventory.Items:RegisterUse("megaphone", "VOIP", function(source, itemData)
-			TriggerClientEvent("VOIP:Client:Megaphone:Use", source, false)
-		end)
+	exports['sandbox-inventory']:RegisterUse("megaphone", "VOIP", function(source, itemData)
+		TriggerClientEvent("VOIP:Client:Megaphone:Use", source, false)
 	end)
 end)
 

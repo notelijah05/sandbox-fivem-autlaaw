@@ -26,13 +26,13 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		scenario = "WORLD_HUMAN_TOURIST_MOBILE",
 	}, marketItems, "badge-dollar", "View Offers", false, false, true)
 
-	Inventory.Items:RegisterUse("chopping_invite", "LSUNDG", function(source, item, itemData)
+	exports['sandbox-inventory']:RegisterUse("chopping_invite", "LSUNDG", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pState = Player(source).state
 			if not pState.onDuty or not _blacklistedJobs[pState.onDuty] then
 				if not hasValue(char:GetData("States") or {}, "ACCESS_CHOPPER") then
-					if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+					if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 						local states = char:GetData("States") or {}
 						table.insert(states, "ACCESS_CHOPPER")
 						char:SetData("States", states)

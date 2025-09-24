@@ -1,43 +1,10 @@
 local _uircd = {}
 
-AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	RegisterChatCommands()
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Hud", {
-		"Inventory",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-
-		exports['sandbox-base']:MiddlewareAdd("Characters:Creating", function(source, cData)
-			return {
-				{
-					HUDConfig = {
-						layout = "default",
-						statusType = "numbers",
-						buffsAnchor = "compass",
-						vehicle = "default",
-						buffsAnchor2 = true,
-						showRPM = true,
-						hideCrossStreet = false,
-						hideCompassBg = false,
-						minimapAnchor = true,
-						transparentBg = true,
-					},
-				},
-			}
-		end)
-		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			local config = char:GetData("HUDConfig")
-			if not config then
-				char:SetData("HUDConfig", {
+	exports['sandbox-base']:MiddlewareAdd("Characters:Creating", function(source, cData)
+		return {
+			{
+				HUDConfig = {
 					layout = "default",
 					statusType = "numbers",
 					buffsAnchor = "compass",
@@ -48,77 +15,95 @@ AddEventHandler("Core:Shared:Ready", function()
 					hideCompassBg = false,
 					minimapAnchor = true,
 					transparentBg = true,
-				})
-			end
-		end, 1)
+				},
+			},
+		}
+	end)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local config = char:GetData("HUDConfig")
+		if not config then
+			char:SetData("HUDConfig", {
+				layout = "default",
+				statusType = "numbers",
+				buffsAnchor = "compass",
+				vehicle = "default",
+				buffsAnchor2 = true,
+				showRPM = true,
+				hideCrossStreet = false,
+				hideCompassBg = false,
+				minimapAnchor = true,
+				transparentBg = true,
+			})
+		end
+	end, 1)
 
-		exports["sandbox-base"]:RegisterServerCallback("HUD:SaveConfig", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				char:SetData("HUDConfig", data)
-				cb(true)
+	exports["sandbox-base"]:RegisterServerCallback("HUD:SaveConfig", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			char:SetData("HUDConfig", data)
+			cb(true)
+		else
+			cb(false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("HUD:RemoveBlindfold", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			local tarState = Player(data).state
+			if tarState.isBlindfolded then
+				exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Removing Blindfold",
+					function(isSuccess)
+						if isSuccess then
+							if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "blindfold", 1, {}, 1) then
+								tarState.isBlindfolded = false
+								TriggerClientEvent("VOIP:Client:Gag:Use", data)
+							else
+								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+									"Failed Adding Item")
+								cb(false)
+							end
+						end
+					end)
 			else
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Target Not Blindfolded")
 				cb(false)
 			end
-		end)
+		else
+			cb(false)
+		end
+	end)
 
-		exports["sandbox-base"]:RegisterServerCallback("HUD:RemoveBlindfold", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local tarState = Player(data).state
-				if tarState.isBlindfolded then
-					exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Removing Blindfold",
+	exports['sandbox-inventory']:RegisterUse("blindfold", "HUD", function(source, item, itemData)
+		exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
+			if target ~= nil then
+				local tarState = Player(target).state
+				if not tarState.isBlindfolded then
+					exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Blindfolding",
 						function(isSuccess)
 							if isSuccess then
-								if Inventory:AddItem(char:GetData("SID"), "blindfold", 1, {}, 1) then
-									tarState.isBlindfolded = false
-									TriggerClientEvent("VOIP:Client:Gag:Use", data)
+								if tarState.isCuffed then
+									if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+										tarState.isBlindfolded = true
+										TriggerClientEvent("VOIP:Client:Gag:Use", target)
+									else
+										exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+											"Failed Removing Item")
+									end
 								else
 									exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-										"Failed Adding Item")
-									cb(false)
+										"Target Not Cuffed")
 								end
 							end
 						end)
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Target Not Blindfolded")
-					cb(false)
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Target Already Blindfolded")
 				end
 			else
-				cb(false)
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Nobody Near To Blindfold")
 			end
-		end)
-
-		Inventory.Items:RegisterUse("blindfold", "HUD", function(source, item, itemData)
-			exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
-				if target ~= nil then
-					local tarState = Player(target).state
-					if not tarState.isBlindfolded then
-						exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Blindfolding",
-							function(isSuccess)
-								if isSuccess then
-									if tarState.isCuffed then
-										if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
-											tarState.isBlindfolded = true
-											TriggerClientEvent("VOIP:Client:Gag:Use", target)
-										else
-											exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-												"Failed Removing Item")
-										end
-									else
-										exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-											"Target Not Cuffed")
-									end
-								end
-							end)
-					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-							"Target Already Blindfolded")
-					end
-				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Nobody Near To Blindfold")
-				end
-			end)
 		end)
 	end)
 end)

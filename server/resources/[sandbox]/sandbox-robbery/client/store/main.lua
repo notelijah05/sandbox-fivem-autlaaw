@@ -171,7 +171,7 @@ AddEventHandler("Robbery:Client:Store:LockpickRegister", function(entity, data)
 	then
 		exports["sandbox-base"]:ServerCallback("Robbery:Store:StartLockpick", coords, function(s)
 			if s then
-				if Inventory.Items:Has("lockpick", 1) then
+				if exports['sandbox-inventory']:ItemsHas("lockpick", 1) then
 					_lpPass = 1
 					LPScan(coords)
 				end
@@ -231,7 +231,7 @@ AddEventHandler("Robbery:Client:Store:SequenceSafe", function(entity, data)
 	if GlobalState[string.format("Safe:%s", data.id)] == nil then
 		exports["sandbox-base"]:ServerCallback("Robbery:Store:StartSafeSequence", {}, function(r)
 			if r then
-				if Inventory.Items:Has("sequencer", 1) then
+				if exports['sandbox-inventory']:ItemsHas("sequencer", 1) then
 					_scPass = 1
 					SCSeq(data)
 				end

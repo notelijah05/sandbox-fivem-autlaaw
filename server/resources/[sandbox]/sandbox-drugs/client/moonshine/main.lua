@@ -466,7 +466,7 @@ end)
 
 AddEventHandler("Drugs:Client:Moonshine:PickupBrew", function(entity, data)
     local entState = Entity(entity.entity).state
-    if Inventory.Items:Has("moonshine_jar", (_barrels[entState.barrelId]?.brewData?.Drinks or 15), false) then
+    if exports['sandbox-inventory']:ItemsHas("moonshine_jar", (_barrels[entState.barrelId]?.brewData?.Drinks or 15), false) then
         local entState = Entity(entity.entity).state
         if entState.isMoonshineBarrel and entState.barrelId then
             exports['sandbox-hud']:Progress({

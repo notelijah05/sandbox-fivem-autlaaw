@@ -391,7 +391,7 @@ AddEventHandler("Drugs:Client:Meth:ViewItems", function(entity, data)
 
         if #items > 0 then
             for k, v in ipairs(items) do
-                local itemData = Inventory.Items:GetData(v.item)
+                local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
                 if v.qty > 0 then
                     table.insert(itemList, {
                         label = itemData.label,

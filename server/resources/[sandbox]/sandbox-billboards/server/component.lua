@@ -3,7 +3,6 @@ function RetrieveComponents()
     Generator = exports["sandbox-base"]:FetchComponent("Generator")
     Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
     Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-    Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
     Billboards = exports["sandbox-base"]:FetchComponent("Billboards")
 end
 
@@ -12,7 +11,6 @@ AddEventHandler("Core:Shared:Ready", function()
         "Generator",
         "Jobs",
         "Vehicles",
-        "Inventory",
         "Billboards",
     }, function(error)
         if #error > 0 then

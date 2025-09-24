@@ -193,13 +193,11 @@ end
 
 AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
 function WeaponsComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weapons", {
-		"Inventory",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then
@@ -210,8 +208,8 @@ AddEventHandler("Core:Shared:Ready", function()
 		exports["sandbox-base"]:RegisterServerCallback("Weapons:UseThrowable", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
-				if INVENTORY.Items:RemoveSlot(char:GetData("SID"), data.Name, 1, data.Slot, 1) then
-					local slotExists = INVENTORY:SlotExists(char:GetData("SID"), data.Slot, 1)
+				if exports['sandbox-inventory']:RemoveSlot(char:GetData("SID"), data.Name, 1, data.Slot, 1) then
+					local slotExists = exports['sandbox-inventory']:SlotExists(char:GetData("SID"), data.Slot, 1)
 					if not slotExists then
 						TriggerClientEvent("Weapons:Client:ForceUnequip", source)
 					end
@@ -269,7 +267,7 @@ exports("WeaponsIsEligible", function(source)
 end)
 
 exports("WeaponsSave", function(source, id, ammo, clip)
-	INVENTORY:UpdateMetaData(id, {
+	exports['sandbox-inventory']:UpdateMetaData(id, {
 		ammo = ammo,
 		clip = clip,
 	})
@@ -350,14 +348,15 @@ end)
 exports("WeaponsEquipAttachment", function(source, item)
 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
-		local slot = INVENTORY:GetSlot(char:GetData("SID"), item.Slot, 1)
+		local slot = exports['sandbox-inventory']:GetSlot(char:GetData("SID"), item.Slot, 1)
 		if slot ~= nil then
 			if slot.MetaData.WeaponComponents ~= nil and slot.MetaData.WeaponComponents[item.component] ~= nil then
-				local itemData = Inventory.Items:GetData(slot.MetaData.WeaponComponents[item.component].item)
+				local itemData = exports['sandbox-inventory']:ItemsGetData(slot.MetaData.WeaponComponents
+					[item.component].item)
 				if itemData ~= nil then
-					INVENTORY:RemoveSlot(char:GetData("SID"), itemData.name, 1, item.Slot, 1)
+					exports['sandbox-inventory']:RemoveSlot(char:GetData("SID"), itemData.name, 1, item.Slot, 1)
 					slot.MetaData.WeaponComponents[item.component] = nil
-					INVENTORY:SetMetaDataKey(
+					exports['sandbox-inventory']:SetMetaDataKey(
 						slot.id,
 						"WeaponComponents",
 						slot.MetaData.WeaponComponents,
@@ -373,15 +372,17 @@ end)
 exports("WeaponsRemoveAttachment", function(source, slotId, attachment)
 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
-		local slot = INVENTORY:GetSlot(char:GetData("SID"), slotId, 1)
+		local slot = exports['sandbox-inventory']:GetSlot(char:GetData("SID"), slotId, 1)
 		if slot ~= nil then
 			if slot.MetaData.WeaponComponents ~= nil and slot.MetaData.WeaponComponents[attachment] ~= nil then
-				local itemData = Inventory.Items:GetData(slot.MetaData.WeaponComponents[attachment].item)
+				local itemData = exports['sandbox-inventory']:ItemsGetData(slot.MetaData.WeaponComponents[attachment]
+					.item)
 				if itemData ~= nil then
-					INVENTORY:AddItem(char:GetData("SID"), itemData.name, 1, {}, 1, false, false, false, false, false,
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemData.name, 1, {}, 1, false, false,
+						false, false, false,
 						slot.MetaData.WeaponComponents[attachment].created or os.time())
 					slot.MetaData.WeaponComponents[attachment] = nil
-					INVENTORY:SetMetaDataKey(
+					exports['sandbox-inventory']:SetMetaDataKey(
 						slot.id,
 						"WeaponComponents",
 						slot.MetaData.WeaponComponents,
@@ -401,7 +402,7 @@ end)
 RegisterNetEvent("Weapon:Server:UpdateAmmoDiff", function(diff, ammo, clip)
 	local _src = source
 	if diff and diff.id then
-		INVENTORY:UpdateMetaData(diff.id, {
+		exports['sandbox-inventory']:UpdateMetaData(diff.id, {
 			ammo = ammo,
 			clip = clip,
 		})

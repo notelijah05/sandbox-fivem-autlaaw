@@ -19,7 +19,6 @@ function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Generator",
 		"Jobs",
 		"Vehicles",
-		"Inventory",
 	}, function(error)
 		if #error > 0 then
 			exports['sandbox-base']:LoggerCritical("Evidence", "Failed To Load All Dependencies")
@@ -105,14 +103,14 @@ RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 		for k, v in ipairs(EVIDENCE_CACHE) do
 			if v.id == evidenceId then
 				if v.type == "paint_fragment" then
-					Inventory:AddItem(char:GetData("SID"), "evidence-paint", 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-paint", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
 						EvidenceColor = v.data and v.data.color,
 					}, 1)
 				elseif v.type == "projectile" then
-					Inventory:AddItem(char:GetData("SID"), "evidence-projectile", 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-projectile", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
@@ -121,7 +119,7 @@ RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 						EvidenceDegraded = v.data and v.data.tooDegraded,
 					}, 1)
 				elseif v.type == "casing" then
-					Inventory:AddItem(char:GetData("SID"), "evidence-casing", 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-casing", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
@@ -129,7 +127,7 @@ RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 						EvidenceAmmoType = (v.data and v.data.weapon) and v.data.weapon.ammoTypeName,
 					}, 1)
 				elseif v.type == "blood" then
-					Inventory:AddItem(char:GetData("SID"), "evidence-dna", 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-dna", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },

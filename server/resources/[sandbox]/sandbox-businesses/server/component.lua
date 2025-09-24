@@ -5,7 +5,6 @@ function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Generator",
 		"Jobs",
 		"Vehicles",
-		"Inventory",
 		"Wallet",
 		"Banking",
 		"MDT",
@@ -66,24 +64,24 @@ function Startup()
 				if bench.targeting.manual then
 					exports['sandbox-inventory']:CraftingRegisterBench(string.format("%s-%s", v.Job, benchId),
 						bench.label, bench.targeting, {}, {
-						job = {
-							id = v.Job,
-							onDuty = true,
-						},
-					}, bench.recipes)
+							job = {
+								id = v.Job,
+								onDuty = true,
+							},
+						}, bench.recipes)
 				else
 					exports['sandbox-inventory']:CraftingRegisterBench(string.format("%s-%s", k, benchId), bench.label,
 						bench.targeting, {
-						x = 0,
-						y = 0,
-						z = bench.targeting.poly.coords.z,
-						h = bench.targeting.poly.options.heading,
-					}, {
-						job = {
-							id = v.Job,
-							onDuty = true,
-						},
-					}, bench.recipes)
+							x = 0,
+							y = 0,
+							z = bench.targeting.poly.coords.z,
+							h = bench.targeting.poly.options.heading,
+						}, {
+							job = {
+								id = v.Job,
+								onDuty = true,
+							},
+						}, bench.recipes)
 				end
 			end
 		end
@@ -94,7 +92,7 @@ function Startup()
 				-- 	"Businesses",
 				-- 	string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", storage.id, v.Name)
 				-- )
-				Inventory.Poly:Create(storage)
+				exports['sandbox-inventory']:PolyCreate(storage)
 			end
 		end
 

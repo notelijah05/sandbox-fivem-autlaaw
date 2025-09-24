@@ -1,13 +1,11 @@
 AddEventHandler("Reputation:Shared:DependencyUpdate", RepComponents)
 function RepComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Reputation", {
 		"Reputation",
-		"Inventory",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -18,11 +16,11 @@ AddEventHandler("Core:Shared:Ready", function()
 end)
 
 function RepItems()
-	Inventory.Items:RegisterUse("rep_voucher", "RandomItems", function(source, item)
+	exports['sandbox-inventory']:RegisterUse("rep_voucher", "RandomItems", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if item.MetaData.Reputation and ((item.MetaData.Amount and tonumber(item.MetaData.Amount) or 0) > 0) then
 			Reputation.Modify:Add(source, item.MetaData.Reputation, item.MetaData.Amount)
-			Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 		else
 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Voucher")
 		end

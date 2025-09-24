@@ -14,7 +14,6 @@ function HospitalComponents()
 	Hospital = exports["sandbox-base"]:FetchComponent("Hospital")
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
@@ -30,7 +29,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Hospital",
 		"Crypto",
 		"Billing",
-		"Inventory",
 		"Labor",
 		"Jobs",
 		"Handcuffs",
@@ -129,7 +127,7 @@ HOSPITAL = {
 					Jobs.Duty:Off(target, Player(target).state.onDuty)
 					Handcuffs:UncuffTarget(-1, target)
 					Ped.Mask:UnequipNoItem(target)
-					Inventory.Holding:Put(target)
+					exports['sandbox-inventory']:HoldingPut(target)
 				end)
 
 				Pwnzor.Players:TempPosIgnore(target)
@@ -161,7 +159,7 @@ HOSPITAL = {
 					Released = true,
 					Items = true,
 				})
-				Inventory.Holding:Take(target)
+				exports['sandbox-inventory']:HoldingTake(target)
 			else
 				return false
 			end

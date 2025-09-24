@@ -65,13 +65,13 @@ AddEventHandler("Labor:Server:Startup", function()
 
 		if isSpawned then -- Only Allow Hides for Baited Animals
 			if luck >= 90 then
-				Inventory:AddItem(char:GetData("SID"), "hide_tier4", 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "hide_tier4", 1, {}, 1)
 			elseif luck >= 80 then
-				Inventory:AddItem(char:GetData("SID"), "hide_tier3", 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "hide_tier3", 1, {}, 1)
 			elseif luck >= 70 then
-				Inventory:AddItem(char:GetData("SID"), "hide_tier2", 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "hide_tier2", 1, {}, 1)
 			elseif luck >= 50 then
-				Inventory:AddItem(char:GetData("SID"), "hide_tier1", 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "hide_tier1", 1, {}, 1)
 			end
 		end
 
@@ -126,9 +126,10 @@ AddEventHandler("Labor:Server:Startup", function()
 
 		if _saleData[data] ~= nil then
 			if repLvl >= _saleData[data].rep then
-				local count = Inventory.Items:GetCount(char:GetData("SID"), 1, _saleData[data].item) or 0
+				local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, _saleData[data].item) or
+					0
 				if count > 0 then
-					if Inventory.Items:Remove(char:GetData("SID"), 1, _saleData[data].item, count) then
+					if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, _saleData[data].item, count) then
 						Wallet:Modify(source, _saleData[data].price * count)
 					end
 				else
@@ -143,14 +144,14 @@ AddEventHandler("Labor:Server:Startup", function()
 end)
 
 function RegisterHuntingItems()
-	Inventory.Items:RegisterUse("hunting_map_dark", "HuntingMap", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("hunting_map_dark", "HuntingMap", function(source, itemData)
 		if itemData then
 			exports["sandbox-base"]:ClientCallback(source, "Hunting:Client:CanShowMap", itemData, function(canShow)
 				TriggerClientEvent("Hunting:Client:ShowMap", source, itemData)
 			end)
 		end
 	end)
-	Inventory.Items:RegisterUse("hunting_map_light", "HuntingMap", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("hunting_map_light", "HuntingMap", function(source, itemData)
 		if itemData then
 			exports["sandbox-base"]:ClientCallback(source, "Hunting:Client:CanShowMap", itemData, function(canShow)
 				TriggerClientEvent("Hunting:Client:ShowMap", source, itemData)
@@ -159,7 +160,7 @@ function RegisterHuntingItems()
 	end)
 
 	for k, v in pairs(HuntingConfig.Baits) do
-		Inventory.Items:RegisterUse(k, "Hunting", function(source, item)
+		exports['sandbox-inventory']:RegisterUse(k, "Hunting", function(source, item)
 			if
 				_baitCds[source] == nil
 				or (os.time() - _baitCds[source]) >= HuntingConfig.Baits[item.Name].cooldown * 60
@@ -175,7 +176,8 @@ function RegisterHuntingItems()
 									function(successful)
 										if successful then
 											_baitCds[source] = os.time()
-											Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+											exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot,
+												1)
 										end
 									end)
 

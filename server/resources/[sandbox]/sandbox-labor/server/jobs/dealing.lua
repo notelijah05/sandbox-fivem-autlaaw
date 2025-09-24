@@ -156,7 +156,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						entState.seller = source
 						local items = {}
 
-						local weedCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "weed_baggy")
+						local weedCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "weed_baggy")
 						if weedCount > 0 then
 							table.insert(items, {
 								label = "Sell Weed",
@@ -166,7 +166,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							})
 						end
 
-						local oxyCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "oxy")
+						local oxyCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "oxy")
 						if oxyCount > 0 then
 							table.insert(items, {
 								label = "Sell Oxy",
@@ -176,7 +176,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							})
 						end
 
-						local methCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "meth_bag")
+						local methCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "meth_bag")
 						if methCount > 0 then
 							table.insert(items, {
 								label = "Sell Meth",
@@ -186,7 +186,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							})
 						end
 
-						local cokeCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "coke_bag")
+						local cokeCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "coke_bag")
 						if cokeCount > 0 then
 							table.insert(items, {
 								label = "Sell Cocaine",
@@ -224,10 +224,10 @@ AddEventHandler("Labor:Server:Startup", function()
 					local entState = Entity(ent).state
 
 					if entState?.seller == source then
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), data.item, 1)
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), data.item, 1)
 						if slot ~= nil then
-							if Inventory.Items:RemoveId(char:GetData("SID"), 1, slot) then
-								local itemData = Inventory.Items:GetData(data.item)
+							if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot) then
+								local itemData = exports['sandbox-inventory']:ItemsGetData(data.item)
 
 								Labor.Workgroups:SendEvent(_joiners[source],
 									string.format("CornerDealing:Client:%s:Action", _joiners[source]))
@@ -255,7 +255,8 @@ AddEventHandler("Labor:Server:Startup", function()
 											lower = math.ceil((itemData.price * (2 + calcLvl)) / 100)
 											higher = math.ceil((itemData.price * (4 + calcLvl)) / 100)
 										end
-										Inventory:AddItem(char:GetData("SID"), "moneyroll", math.random(lower, higher),
+										exports['sandbox-inventory']:AddItem(char:GetData("SID"), "moneyroll",
+											math.random(lower, higher),
 											{}, 1)
 									else
 										local cashAdd = itemData.price + (60 * calcLvl)

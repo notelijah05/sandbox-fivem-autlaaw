@@ -610,19 +610,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 				Wallet:Modify(source, (math.random(150) + 100))
 				cb(true)
 			else
-				Inventory.Items:Remove(char:GetData("SID"), 1, "lockpick", 1)
+				exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "lockpick", 1)
 
-				local slot = Inventory.Items:GetFirst(char:GetData("SID"), "lockpick", 1)
+				local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "lockpick", 1)
 				if slot ~= nil then
-					local itemData = Inventory.Items:GetData("lockpick")
+					local itemData = exports['sandbox-inventory']:ItemsGetData("lockpick")
 					local newValue = slot.CreateDate - math.ceil(itemData.durability / 2)
 					if success then
 						newValue = slot.CreateDate - math.ceil(itemData.durability / 8)
 					end
 					if os.time() - itemData.durability >= newValue then
-						Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+						exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						Inventory:SetItemCreateDate(slot.id, newValue)
+						exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 
@@ -686,10 +686,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if not _storeInUse[pState.storePoly] then
 						_storeInUse[pState.storePoly] = source
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), "safecrack_kit", 1)
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "safecrack_kit", 1)
 
 						if slot ~= nil then
-							local itemData = Inventory.Items:GetData(slot.Name)
+							local itemData = exports['sandbox-inventory']:ItemsGetData(slot.Name)
 
 							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
@@ -716,13 +716,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 								},
 								data = {},
 							}, function(isSuccess, extra)
-								local itemData = Inventory.Items:GetData("safecrack_kit")
+								local itemData = exports['sandbox-inventory']:ItemsGetData("safecrack_kit")
 
 								local newValue = slot.CreateDate - math.ceil(itemData.durability / 2)
 								if os.time() - itemData.durability >= newValue then
-									Inventory.Items:RemoveId(char:GetData("SID"), 1, slot)
+									exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
 								else
-									Inventory:SetItemCreateDate(slot.id, newValue)
+									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if isSuccess then
@@ -1002,13 +1002,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 			exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_safeLoot, char:GetData("SID"), 1)
 
 			if math.random(100) <= 5 then
-				Inventory:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
-				Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 					CryptoCoin = "HEIST",
 					Quantity = 2,
 				}, 1)
 			elseif math.random(100) <= 15 then
-				Inventory:AddItem(char:GetData("SID"), "gps_tracker", 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "gps_tracker", 1, {}, 1)
 			end
 
 			exports['sandbox-base']:LoggerInfo(

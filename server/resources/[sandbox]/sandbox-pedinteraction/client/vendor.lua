@@ -4,14 +4,12 @@ AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
 function RetrieveVendorComponents()
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vendor", {
 		"PedInteraction",
 		"Targeting",
-		"Inventory",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -136,7 +134,7 @@ AddEventHandler("Vendor:Client:GetItems", function(entity, data)
 
 		if #items > 0 then
 			for k, v in ipairs(items) do
-				local itemData = Inventory.Items:GetData(v.item)
+				local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
 				if v.delayed then
 					table.insert(itemList, {
 						label = itemData.label,

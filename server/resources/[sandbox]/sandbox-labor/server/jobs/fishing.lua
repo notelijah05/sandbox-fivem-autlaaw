@@ -11,8 +11,10 @@ AddEventHandler("Labor:Server:Startup", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char and data?.toolUsed and data?.zone and data?.difficulty and _fishingZoneBasicBait[data.zone] and (not _fishingCooldowns[source] or _fishingCooldowns[source] <= GetGameTimer()) then
-			local toolUsedCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "fishing_" .. data.toolUsed) or 0
-			local correctBaitCount = Inventory.Items:GetCount(char:GetData("SID"), 1, _fishingZoneBasicBait[data.zone]) or
+			local toolUsedCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1,
+				"fishing_" .. data.toolUsed) or 0
+			local correctBaitCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1,
+					_fishingZoneBasicBait[data.zone]) or
 				0
 			local lootTable = {}
 
@@ -42,15 +44,17 @@ AddEventHandler("Labor:Server:Startup", function()
 								end
 							end
 
-							if Inventory.Items:Has(char:GetData("SID"), 1, _fishingZoneBasicBait[data.zone], 1) then
-								Inventory.Items:Remove(char:GetData("SID"), 1, _fishingZoneBasicBait[data.zone], 1)
+							if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, _fishingZoneBasicBait[data.zone], 1) then
+								exports['sandbox-inventory']:Remove(char:GetData("SID"), 1,
+									_fishingZoneBasicBait[data.zone], 1)
 							end
 						end
 
-						Inventory:AddItem(char:GetData("SID"), lootItem.name, lootItem.count, {}, 1)
+						exports['sandbox-inventory']:AddItem(char:GetData("SID"), lootItem.name, lootItem.count, {}, 1)
 
 						if lootItem.count > 0 then
-							local hasToolItem = Inventory.Items:GetFirst(char:GetData("SID"), "fishing_" .. data
+							local hasToolItem = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"),
+								"fishing_" .. data
 								.toolUsed, 1)
 							local mult = 6
 							if data.toolUsed == "net" then
@@ -58,12 +62,12 @@ AddEventHandler("Labor:Server:Startup", function()
 							end
 
 							if hasToolItem then
-								local toolData = Inventory.Items:GetData(hasToolItem.Name)
+								local toolData = exports['sandbox-inventory']:ItemsGetData(hasToolItem.Name)
 								local newValue = hasToolItem.CreateDate - (60 * 60 * mult * lootItem.count)
 								if (os.time() - toolData.durability >= newValue) then
-									Inventory.Items:RemoveId(char:GetData("SID"), 1, hasToolItem)
+									exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, hasToolItem)
 								else
-									Inventory:SetItemCreateDate(
+									exports['sandbox-inventory']:SetItemCreateDate(
 										hasToolItem.id,
 										newValue
 									)
@@ -89,12 +93,12 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Fishing:Sell", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
-		local itemData = Inventory.Items:GetData(data)
+		local itemData = exports['sandbox-inventory']:ItemsGetData(data)
 
 		if char and itemData then
-			local count = Inventory.Items:GetCount(char:GetData("SID"), 1, itemData.name) or 0
+			local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, itemData.name) or 0
 			if (count) > 0 then
-				if Inventory.Items:Remove(char:GetData("SID"), 1, itemData.name, count) then
+				if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, itemData.name, count) then
 					if Player(char:GetData('Source')).state.onDuty == 'police' or Player(char:GetData('Source')).state.onDuty == 'ems' then
 						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
 							"Thanks for the donation! No money for you kek")
@@ -110,7 +114,7 @@ AddEventHandler("Labor:Server:Startup", function()
 end)
 
 function RegisterFishingItems()
-	Inventory.Items:RegisterUse("fishing_rod", "Labor", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("fishing_rod", "Labor", function(source, itemData)
 		if _joiners[source] and _fishing[_joiners[source]] ~= nil and _fishing[_joiners[source]].state == 0 then
 			_fishing[_joiners[source]].state = 1
 			_fishing[_joiners[source]].tool = "rod"
@@ -124,7 +128,7 @@ function RegisterFishingItems()
 		TriggerClientEvent("Fishing:Client:StartFishing", source, "rod")
 	end)
 
-	Inventory.Items:RegisterUse("fishing_net", "Labor", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("fishing_net", "Labor", function(source, itemData)
 		local repLvl = Reputation:GetLevel(source, _JOB)
 
 		if repLvl < 3 then
@@ -146,10 +150,10 @@ function RegisterFishingItems()
 		TriggerClientEvent("Fishing:Client:StartFishing", source, "net")
 	end)
 
-	Inventory.Items:RegisterUse("fishing_boot", "Fishing", function(source, item)
+	exports['sandbox-inventory']:RegisterUse("fishing_boot", "Fishing", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
-		if char and Inventory.Items:Remove(char:GetData("SID"), 1, item.Name, 1) then
+		if char and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, item.Name, 1) then
 			exports['sandbox-inventory']:LootCustomWeightedSetWithCount({
 				{ 35, { name = "scrapmetal", min = 1, max = 2 } },
 				{ 20, { name = "rubber", min = 1, max = 3 } },
@@ -161,9 +165,9 @@ function RegisterFishingItems()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("fishing_chest", "Fishing", function(source, item)
+	exports['sandbox-inventory']:RegisterUse("fishing_chest", "Fishing", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char and Inventory.Items:Remove(char:GetData("SID"), 1, item.Name, 1) then
+		if char and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, item.Name, 1) then
 			exports['sandbox-inventory']:LootCustomWeightedSetWithCount({
 				{ 35, { name = "goldcoins", min = 7, max = 15 } },
 				{ 25, { name = "ring", min = 6, max = 12 } },

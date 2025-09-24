@@ -38,7 +38,7 @@ _DRUGS.Moonshine = {
                 { stillId }) > 0
         end,
         CreatePlaced = function(self, stillId, owner, tier, coords, heading, created)
-            local itemInfo = Inventory.Items:GetData("moonshine_still")
+            local itemInfo = exports['sandbox-inventory']:ItemsGetData("moonshine_still")
             local stillData = _DRUGS.Moonshine.Still:Get(stillId)
 
             MySQL.insert.await(
@@ -107,7 +107,7 @@ _DRUGS.Moonshine = {
                 { barrelId }) > 0
         end,
         CreatePlaced = function(self, owner, coords, heading, created, brewData)
-            local itemInfo = Inventory.Items:GetData("moonshine_barrel")
+            local itemInfo = exports['sandbox-inventory']:ItemsGetData("moonshine_barrel")
             local ready = os.time() + (60 * 60 * 24 * 2)
 
             local barrelId = MySQL.insert.await(
@@ -225,11 +225,11 @@ AddEventHandler("Drugs:Server:Startup", function()
     exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:FinishStillPlacement", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
-            local still = Inventory:GetItem(data.data)
+            local still = exports['sandbox-inventory']:GetItem(data.data)
             if still.Owner == tostring(char:GetData("SID")) then
                 local md = json.decode(still.MetaData)
                 local stillData = Drugs.Moonshine.Still:Get(md.Still)
-                if Inventory.Items:RemoveId(char:GetData("SID"), 1, still) then
+                if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, still) then
                     Drugs.Moonshine.Still:CreatePlaced(md.Still, char:GetData("SID"), stillData.tier,
                         data.endCoords.coords, data.endCoords.rotation, still.CreateDate)
                     cb(true)
@@ -321,7 +321,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                 if stillData.active_cook ~= nil then
                     local cookData = json.decode(stillData.active_cook)
                     if os.time() > cookData.end_time then
-                        if Inventory:AddItem(char:GetData("SID"), "moonshine_barrel", 1, {
+                        if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "moonshine_barrel", 1, {
                                 Brew = {
                                     Quality = cookData.quality,
                                     Drinks = math.random(15, 30),
@@ -413,10 +413,10 @@ AddEventHandler("Drugs:Server:Startup", function()
     exports["sandbox-base"]:RegisterServerCallback("Drugs:Moonshine:FinishBarrelPlacement", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
-            local barrel = Inventory:GetItem(data.data)
+            local barrel = exports['sandbox-inventory']:GetItem(data.data)
             if barrel.Owner == tostring(char:GetData("SID")) then
                 local md = json.decode(barrel.MetaData)
-                if Inventory.Items:RemoveId(char:GetData("SID"), 1, barrel) then
+                if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, barrel) then
                     Drugs.Moonshine.Barrel:CreatePlaced(char:GetData("SID"), data.endCoords.coords,
                         data.endCoords.rotation, os.time(), md.Brew)
                     cb(true)
@@ -498,9 +498,9 @@ AddEventHandler("Drugs:Server:Startup", function()
             local sid = char:GetData("SID")
             if data and _placedBarrels[data] ~= nil then
                 if _placedBarrels[data].owner == sid then
-                    if Inventory.Items:Has(sid, 1, "moonshine_jar", (_placedBarrels[data].brewData?.Drinks or 15)) then
-                        if Inventory.Items:Remove(sid, 1, "moonshine_jar", (_placedBarrels[data].brewData?.Drinks or 15), false) then
-                            if Inventory:AddItem(sid, "moonshine", (_placedBarrels[data].brewData?.Drinks or 15), {}, 1, false, false, false, false, false, false, _placedBarrels[data].brewData?.Quality or math.random(1, 100)) then
+                    if exports['sandbox-inventory']:ItemsHas(sid, 1, "moonshine_jar", (_placedBarrels[data].brewData?.Drinks or 15)) then
+                        if exports['sandbox-inventory']:Remove(sid, 1, "moonshine_jar", (_placedBarrels[data].brewData?.Drinks or 15), false) then
+                            if exports['sandbox-inventory']:AddItem(sid, "moonshine", (_placedBarrels[data].brewData?.Drinks or 15), {}, 1, false, false, false, false, false, false, _placedBarrels[data].brewData?.Quality or math.random(1, 100)) then
                                 Drugs.Moonshine.Barrel:RemovePlaced(data)
                             else
                                 cb(false)
@@ -549,7 +549,7 @@ AddEventHandler("Drugs:Server:Startup", function()
     --         if v.id == data then
     --             local coinData = Crypto.Coin:Get(v.coin)
     --             if Crypto.Exchange:Remove(v.coin, char:GetData("CryptoWallet"), v.price) then
-    --                 Inventory:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
+    --                 exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
     --                 _toolsForSale[v.item][char:GetData("SID")] = true
     --             else
     --                 exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", string.format("Not Enough %s", coinData.Name), 6000)

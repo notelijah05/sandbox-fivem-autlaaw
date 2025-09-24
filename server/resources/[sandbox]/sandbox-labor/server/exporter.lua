@@ -43,7 +43,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	}
 
 	for k, v in ipairs(_items.perishable) do
-		local itemData = Inventory.Items:GetData(v.item)
+		local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
 		table.insert(menu.perishable.items, {
 			label = itemData.label,
 			description = string.format("Export Price: $%s/unit", v.price),
@@ -58,7 +58,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	}
 
 	for k, v in ipairs(_items.crafting) do
-		local itemData = Inventory.Items:GetData(v.item)
+		local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
 		table.insert(menu.crafting.items, {
 			label = itemData.label,
 			description = string.format("Export Price: $%s/unit", v.price),
@@ -75,10 +75,10 @@ AddEventHandler("Labor:Server:Startup", function()
 			if _items[data.section] ~= nil then
 				for k, v in ipairs(_items[data.section]) do
 					if data.item == v.item then
-						local itemData = Inventory.Items:GetData(v.item)
-						local count = Inventory.Items:GetCount(char:GetData("SID"), 1, v.item)
+						local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
+						local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, v.item)
 						if (count or 0) > 0 then
-							if Inventory.Items:Remove(char:GetData("SID"), 1, v.item, count) then
+							if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.item, count) then
 								Banking.Balance:Deposit(
 									Banking.Accounts:GetPersonal(char:GetData("SID")).Account,
 									count * v.price,

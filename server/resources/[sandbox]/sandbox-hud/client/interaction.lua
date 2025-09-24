@@ -15,7 +15,7 @@ end)
 exports("InteractionShow", function()
 	if not exports['sandbox-hud']:HudIsDisabledAllowDead() then
 		exports['sandbox-phone']:Close()
-		exports['sandbox-inventory']:InventoryCloseAll()
+		exports['sandbox-inventory']:CloseAll()
 
 		SetNuiFocus(true, true)
 		SetCursorLocation(0.5, 0.5)

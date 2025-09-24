@@ -41,7 +41,6 @@ local _playing = nil
 
 AddEventHandler("minigame:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
@@ -49,7 +48,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("minigame", {
-		"Inventory",
 		"Jail",
 		"Animations",
 		"Admin",

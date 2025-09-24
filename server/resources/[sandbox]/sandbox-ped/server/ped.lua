@@ -285,14 +285,12 @@ AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Locations = exports["sandbox-base"]:FetchComponent("Locations")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Ped", {
 		"Locations",
 		"Ped",
-		"Inventory",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -534,7 +532,7 @@ PED = {
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 
-				local itemId = Inventory.Items:GetWithStaticMetadata(
+				local itemId = exports['sandbox-inventory']:ItemsGetWithStaticMetadata(
 					"mask",
 					"drawableId",
 					"textureId",
@@ -547,7 +545,7 @@ PED = {
 					md = {}
 				end
 
-				if Inventory:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
+				if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
 					ped.customization.components.mask = {
 						componentId = 1,
 						drawableId = 0,
@@ -589,7 +587,7 @@ PED = {
 			if char ~= nil then
 				local ped = char:GetData("Ped")
 
-				local itemId = Inventory.Items:GetWithStaticMetadata(
+				local itemId = exports['sandbox-inventory']:ItemsGetWithStaticMetadata(
 					"hat",
 					"drawableId",
 					"textureId",
@@ -602,7 +600,7 @@ PED = {
 					md = {}
 				end
 
-				if Inventory:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
+				if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
 					ped.customization.props.hat = {
 						componentId = 0,
 						drawableId = 0,
@@ -627,7 +625,7 @@ PED = {
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local ped = char:GetData("Ped")
-				local itemId = Inventory.Items:GetWithStaticMetadata(
+				local itemId = exports['sandbox-inventory']:ItemsGetWithStaticMetadata(
 					"accessory",
 					"drawableId",
 					"textureId",
@@ -636,7 +634,7 @@ PED = {
 				) or "accessory"
 
 				if itemId ~= "accessory" then
-					if Inventory:AddItem(char:GetData("SID"), itemId, 1, {}, 1) then
+					if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, {}, 1) then
 						ped.customization.components.accessory = {
 							componentId = 7,
 							drawableId = 0,

@@ -40,7 +40,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				Player(source).state.SignRobbery = true
 				objects[#objects + 1] = { coords = data.coords, model = data.model }
 				TriggerClientEvent("Robbery:Client:DeleteSign", -1, data)
-				Inventory:AddItem(char:GetData("SID"), data.item, 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), data.item, 1, {}, 1)
 				Reputation.Modify:Add(source, "SignRobbery", math.random(35, 75))
 				Player(source).state.SignRobbery = false
 				cb(true)

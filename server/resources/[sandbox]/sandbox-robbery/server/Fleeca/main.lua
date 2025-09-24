@@ -180,9 +180,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 					_inUse.Loot[data.id] = source
 					GlobalState["MazeBankInProgress"] = true
 
-					if Inventory.Items:Has(char:GetData("SID"), 1, "drill", 1) then
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), "drill", 1)
-						local itemData = Inventory.Items:GetData("drill")
+					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "drill", 1) then
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "drill", 1)
+						local itemData = exports['sandbox-inventory']:ItemsGetData("drill")
 
 						if slot ~= nil then
 							exports['sandbox-base']:LoggerInfo(
@@ -207,9 +207,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 									newValue = slot.CreateDate - (itemData.durability / 5)
 								end
 								if os.time() - itemData.durability >= newValue then
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									Inventory:SetItemCreateDate(slot.id, newValue)
+									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if _robberyAlerts[pState.fleeca] == nil or _robberyAlerts[pState.fleeca] < os.time() then
@@ -258,7 +258,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										_vaultLoot.trolley[lootData?.type?.type or "cash"],
 										char:GetData("SID"), 1)
 									if math.random(100) <= 3 then
-										Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+										exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 											CryptoCoin = "HEIST",
 											Quantity = 4
 										}, 1)
@@ -267,7 +267,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 									if _redDongies[pState.fleeca] == nil then
 										if data.index > 2 and math.random(100) <= (1 * data.index) then
 											_redDongies[pState.fleeca] = source
-											Inventory:AddItem(char:GetData("SID"), "red_dongle", 1, {}, 1)
+											exports['sandbox-inventory']:AddItem(char:GetData("SID"), "red_dongle", 1, {},
+												1)
 										end
 									end
 
@@ -345,7 +346,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("green_laptop", "FleecaRobbery", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("green_laptop", "FleecaRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -463,7 +464,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											string.format("Time Lock Disengaging, Please Wait %s Minutes", timer),
 											6000
 										)
-										Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+										exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 									else
 										Status.Modify:Add(source, "PLAYER_STRESS", 6)
 
@@ -473,9 +474,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 												pState.fleeca))
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 2)
 										if (os.time() - itemData.durability >= newValue) then
-											Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+											exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 										else
-											Inventory:SetItemCreateDate(
+											exports['sandbox-inventory']:SetItemCreateDate(
 												slot.id,
 												newValue
 											)
@@ -526,7 +527,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("thermite", "FleecaRobbery", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("thermite", "FleecaRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -606,7 +607,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								_robberyAlerts[pState.fleeca] = os.time() + 60 * 20
 							end
 
-							Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+							exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 							exports["sandbox-base"]:ClientCallback(
 								source,
 								"Robbery:Games:Thermite",
@@ -668,7 +669,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("fleeca_card", "FleecaRobbery", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("fleeca_card", "FleecaRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -766,7 +767,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											}
 											Status.Modify:Add(source, "PLAYER_STRESS", 6)
 										end
-										Inventory.Items:RemoveSlot(
+										exports['sandbox-inventory']:RemoveSlot(
 											itemData.Owner,
 											itemData.Name,
 											1,
@@ -823,7 +824,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("moneybag", "FleecaRobbery", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("moneybag", "FleecaRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if os.time() >= itemData.MetaData.Finished then
 			local amt = itemData.MetaData?.CustomAmt and
@@ -832,7 +833,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			exports['sandbox-base']:LoggerInfo("Robbery",
 				string.format("%s %s (%s) Used A Money Bag, Received $%s", char:GetData("First"), char:GetData("Last"),
 					char:GetData("SID"), amt))
-			Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
+			exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 			Wallet:Modify(source, amt)
 		else
 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Ready Yet", 6000)

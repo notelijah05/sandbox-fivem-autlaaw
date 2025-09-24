@@ -87,8 +87,6 @@ function RetrieveComponents()
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Loot = exports["sandbox-base"]:FetchComponent("Loot")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
@@ -110,8 +108,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Generator",
 		"Properties",
 		"Vehicles",
-		"Inventory",
-		"Loot",
 		"Loans",
 		"Billing",
 		"Banking",
@@ -128,7 +124,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		TriggerEvent("Laptop:Server:RegisterMiddleware")
 		TriggerEvent("Laptop:Server:RegisterCallbacks")
 
-		Inventory.Items:RegisterUse("laptop", "Laptop", function(source, itemData)
+		exports['sandbox-inventory']:RegisterUse("laptop", "Laptop", function(source, itemData)
 			TriggerClientEvent("Laptop:Client:Open", source)
 		end)
 

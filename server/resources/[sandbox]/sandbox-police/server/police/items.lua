@@ -1,9 +1,9 @@
 function PoliceItems()
-    Inventory.Items:RegisterUse("det_cord", "PDItems", function(source, slot, itemData)
+    exports['sandbox-inventory']:RegisterUse("det_cord", "PDItems", function(source, slot, itemData)
         local pState = Player(source).state
         if pState.onDuty == "police" then
             exports["sandbox-base"]:ClientCallback(source, "Police:DoDetCord", {}, function(s, doorId)
-                if s and Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1) then
+                if s and exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1) then
                     Doors:SetLock(doorId, false)
                     Doors:DisableDoor(doorId, 60 * 60)
                 end

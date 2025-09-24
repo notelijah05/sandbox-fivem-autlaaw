@@ -5,7 +5,6 @@ ELEVATOR_CACHE = {}
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -13,7 +12,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Inventory",
 		"Jobs",
 		"Doors",
 		"Pwnzor",
@@ -77,7 +75,7 @@ function RegisterChatCommands()
 end
 
 -- function RegisterItems()
---     Inventory.Items:RegisterUse('lockpick', 'Doors', function(source, item)
+--     exports['sandbox-inventory']:RegisterUse('lockpick', 'Doors', function(source, item)
 --         TriggerClientEvent('Doors:Client:AttemptLockpick', source, item)
 --     end)
 -- end

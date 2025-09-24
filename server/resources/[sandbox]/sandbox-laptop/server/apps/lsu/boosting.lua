@@ -572,7 +572,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         cb()
     end)
 
-    Inventory.Items:RegisterUse("boosting_tracking_disabler", "Boosting", function(source, slot, itemData)
+    exports['sandbox-inventory']:RegisterUse("boosting_tracking_disabler", "Boosting", function(source, slot, itemData)
         local team = Laptop.Teams:GetByMemberSource(source)
         local ped = GetPlayerPed(source)
         local inVeh = GetVehiclePedIsIn(ped, false)
@@ -593,9 +593,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                                 local newValue = slot.CreateDate - (60 * 60 * 12)
 
                                 if (os.time() - itemData.durability >= newValue) then
-                                    Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+                                    exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
                                 else
-                                    Inventory:SetItemCreateDate(slot.id, newValue)
+                                    exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
                                 end
 
                                 _boosting[team.ID].trackerCount = _boosting[team.ID].trackerCount + 1

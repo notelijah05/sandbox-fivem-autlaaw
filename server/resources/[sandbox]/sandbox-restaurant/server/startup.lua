@@ -10,29 +10,29 @@ function Startup()
 				if v?.IgnoreDuty then
 					exports['sandbox-inventory']:CraftingRegisterBench(string.format("%s-%s", k, benchId), bench.label,
 						bench.targeting, {
-						x = bench.targeting.poly.coords.x,
-						y = bench.targeting.poly.coords.y,
-						z = bench.targeting.poly.coords.z,
-						h = bench.targeting.poly.options.heading,
-					}, {
-						job = {
-							id = v.Job,
-							onDuty = false,
-						},
-					}, bench.recipes)
+							x = bench.targeting.poly.coords.x,
+							y = bench.targeting.poly.coords.y,
+							z = bench.targeting.poly.coords.z,
+							h = bench.targeting.poly.options.heading,
+						}, {
+							job = {
+								id = v.Job,
+								onDuty = false,
+							},
+						}, bench.recipes)
 				else
 					exports['sandbox-inventory']:CraftingRegisterBench(string.format("%s-%s", k, benchId), bench.label,
 						bench.targeting, {
-						x = bench.targeting.poly.coords.x,
-						y = bench.targeting.poly.coords.y,
-						z = bench.targeting.poly.coords.z,
-						h = bench.targeting.poly.options.heading,
-					}, {
-						job = {
-							id = v.Job,
-							onDuty = true,
-						},
-					}, bench.recipes)
+							x = bench.targeting.poly.coords.x,
+							y = bench.targeting.poly.coords.y,
+							z = bench.targeting.poly.coords.z,
+							h = bench.targeting.poly.options.heading,
+						}, {
+							job = {
+								id = v.Job,
+								onDuty = true,
+							},
+						}, bench.recipes)
 				end
 			end
 		end
@@ -40,7 +40,7 @@ function Startup()
 		if v.Storage then
 			for _, storage in pairs(v.Storage) do
 				-- exports['sandbox-base']:LoggerTrace("Restaurant", string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", storage.id, v.Name))
-				Inventory.Poly:Create(storage)
+				exports['sandbox-inventory']:PolyCreate(storage)
 			end
 		end
 

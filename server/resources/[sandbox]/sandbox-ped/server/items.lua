@@ -13,7 +13,7 @@ local _accessoryItems = {
 
 function RegisterItemUses()
 	for k, v in ipairs(_maskItems) do
-		Inventory.Items:RegisterUse(v, "Ped", function(source, item)
+		exports['sandbox-inventory']:RegisterUse(v, "Ped", function(source, item)
 			if not Player(source).state.isCuffed then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if item.MetaData.mask then
@@ -24,14 +24,14 @@ function RegisterItemUses()
 						Ped.Mask:Unequip(source)
 					end
 					Ped.Mask:Equip(source, item.MetaData.mask)
-					Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+					exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 				end
 			end
 		end)
 	end
 
 	for k, v in ipairs(_hatItems) do
-		Inventory.Items:RegisterUse(v, "Ped", function(source, item)
+		exports['sandbox-inventory']:RegisterUse(v, "Ped", function(source, item)
 			if not Player(source).state.isCuffed then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if item.MetaData.hat then
@@ -42,14 +42,14 @@ function RegisterItemUses()
 						Ped.Hat:Unequip(source)
 					end
 					Ped.Hat:Equip(source, item.MetaData.hat)
-					Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+					exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 				end
 			end
 		end)
 	end
 
 	for k, v in ipairs(_accessoryItems) do
-		Inventory.Items:RegisterUse(v, "Ped", function(source, item)
+		exports['sandbox-inventory']:RegisterUse(v, "Ped", function(source, item)
 			if not Player(source).state.isCuffed then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if item.MetaData.accessory then
@@ -66,7 +66,7 @@ function RegisterItemUses()
 						or item.MetaData.accessory[tostring(char:GetData("Gender"))]
 						or item.MetaData.accessory
 					)
-					Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+					exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 				end
 			end
 		end)

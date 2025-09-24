@@ -3,7 +3,7 @@ function RegisterBallisticsCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.slotNum and data.serial then
 			-- Files a Gun So Evidence Can Be Found
-			local item = Inventory:GetSlot(char:GetData("SID"), data.slotNum, 1)
+			local item = exports['sandbox-inventory']:GetSlot(char:GetData("SID"), data.slotNum, 1)
 			if item and item.MetaData and (item.MetaData.ScratchedSerialNumber or item.MetaData.SerialNumber) then
 				local firearmRecord, policeWeapId
 
@@ -33,7 +33,8 @@ function RegisterBallisticsCallbacks()
 							})
 
 							if item.MetaData.ScratchedSerialNumber then
-								Inventory:SetMetaDataKey(item.id, "PoliceWeaponId", firearmRecord.police_id, source)
+								exports['sandbox-inventory']:SetMetaDataKey(item.id, "PoliceWeaponId",
+									firearmRecord.police_id, source)
 							end
 
 							return cb(
@@ -59,7 +60,7 @@ function RegisterBallisticsCallbacks()
 end
 
 function RegisterBallisticsItemUses()
-	Inventory.Items:RegisterUse("evidence-projectile", "Evidence", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("evidence-projectile", "Evidence", function(source, itemData)
 		if itemData and itemData.MetaData and itemData.MetaData.EvidenceId and itemData.MetaData.EvidenceWeapon then
 			exports["sandbox-base"]:ClientCallback(source, "Polyzone:IsCoordsInZone", {
 				coords = GetEntityCoords(GetPlayerPed(source)),
@@ -118,7 +119,7 @@ function RegisterBallisticsItemUses()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("evidence-dna", "Evidence", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("evidence-dna", "Evidence", function(source, itemData)
 		if itemData and itemData.MetaData and itemData.MetaData.EvidenceId and itemData.MetaData.EvidenceDNA then
 			exports["sandbox-base"]:ClientCallback(source, "Polyzone:IsCoordsInZone", {
 				coords = GetEntityCoords(GetPlayerPed(source)),
@@ -243,11 +244,11 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 	if char ~= nil then
 		local pState = Player(source).state
 		if pState.onDuty == "police" then
-			local its = Inventory:GetInventory(source, data.owner, data.invType)
+			local its = exports['sandbox-inventory']:GetInventory(source, data.owner, data.invType)
 			if #its > 0 then
 				local item = its[1]
 				local md = json.decode(item.MetaData)
-				local itemData = Inventory.Items:GetData(item.Name)
+				local itemData = exports['sandbox-inventory']:ItemsGetData(item.Name)
 				if itemData ~= nil and itemData.type == 2 then
 					if item and md and (md.ScratchedSerialNumber or md.SerialNumber) then
 						local firearmRecord, policeWeapId
@@ -278,11 +279,12 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 									})
 
 									if md.ScratchedSerialNumber then
-										Inventory:SetMetaDataKey(item.id, "PoliceWeaponId", firearmRecord.police_id,
+										exports['sandbox-inventory']:SetMetaDataKey(item.id, "PoliceWeaponId",
+											firearmRecord.police_id,
 											source)
 									end
 
-									Inventory.Ballistics:Clear(source, data.owner, data.invType)
+									exports['sandbox-inventory']:BallisticsClear(source, data.owner, data.invType)
 									exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 										true,
 										false,
@@ -293,7 +295,7 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 									})
 								end
 							else
-								Inventory.Ballistics:Clear(source, data.owner, data.invType)
+								exports['sandbox-inventory']:BallisticsClear(source, data.owner, data.invType)
 								exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 									true,
 									true,
@@ -303,7 +305,7 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 								})
 							end
 						else
-							Inventory.Ballistics:Clear(source, data.owner, data.invType)
+							exports['sandbox-inventory']:BallisticsClear(source, data.owner, data.invType)
 							exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 								false,
 								false,

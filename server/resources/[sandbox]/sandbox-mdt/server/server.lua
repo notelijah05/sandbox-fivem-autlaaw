@@ -26,7 +26,6 @@ AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
@@ -39,7 +38,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
 		"MDT",
 		"Jobs",
-		"Inventory",
 		"Vehicles",
 		"Properties",
 		"Radar",
@@ -686,7 +684,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				invType = 44,
 				owner = ("evidencelocker:%s"):format(caseNum),
 			}, function()
-				Inventory:OpenSecondary(source, 44, ("evidencelocker:%s"):format(caseNum))
+				exports['sandbox-inventory']:OpenSecondary(source, 44, ("evidencelocker:%s"):format(caseNum))
 			end)
 		end
 	end)
@@ -700,7 +698,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				invType = 45,
 				owner = ("pdlocker:%s"):format(char:GetData('SID')),
 			}, function()
-				Inventory:OpenSecondary(source, 45, ("pdlocker:%s"):format(char:GetData('SID')))
+				exports['sandbox-inventory']:OpenSecondary(source, 45, ("pdlocker:%s"):format(char:GetData('SID')))
 			end)
 		else
 			cb(false)

@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Weed = exports["sandbox-base"]:FetchComponent("Weed")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 end
@@ -13,7 +12,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Weed",
 		"Targeting",
 		"Animations",
-		"Inventory",
 		"PedInteraction",
 		"Polyzone",
 	}, function(error)

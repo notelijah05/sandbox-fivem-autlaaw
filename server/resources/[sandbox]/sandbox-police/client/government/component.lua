@@ -14,7 +14,6 @@ local govDutyPoints = {
 
 AddEventHandler("Police:Shared:DependencyUpdate", GovComponents)
 function GovComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
@@ -23,7 +22,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Inventory",
 		"Targeting",
 		"Jobs",
 		"PedInteraction",
@@ -181,5 +179,5 @@ RegisterNetEvent("Government:Client:Gavel", function()
 end)
 
 AddEventHandler("Government:Client:DOJShop", function()
-	Inventory.Shop:Open("doj-shop")
+	exports['sandbox-inventory']:ShopOpen("doj-shop")
 end)

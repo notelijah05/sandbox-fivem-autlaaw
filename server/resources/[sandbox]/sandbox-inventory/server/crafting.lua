@@ -184,13 +184,13 @@ exports("CraftingCraftStart", function(crafterSource, crafter, bench, schemId, q
 	local makingItem = recipe.result
 	local reqSlotPerItem = itemsDatabase[makingItem.name].isStackable or 1
 	local totalRequiredSlots = math.ceil((makingItem.count * qty) / reqSlotPerItem)
-	local freeSlots = INVENTORY:GetFreeSlotNumbers(crafter, 1)
+	local freeSlots = exports['sandbox-inventory']:GetFreeSlotNumbers(crafter, 1)
 	if #freeSlots < totalRequiredSlots then
 		return { error = true, message = "Inventory Full" }
 	end
 
 	for k, v in pairs(reagents) do
-		if not INVENTORY.Items:Has(crafter, 1, k, v) then
+		if not exports['sandbox-inventory']:ItemsHas(crafter, 1, k, v) then
 			return { error = true, message = "Missing Ingredients" }
 		end
 	end
@@ -207,7 +207,7 @@ exports("CraftingCraftStart", function(crafterSource, crafter, bench, schemId, q
 	end
 
 	for k, v in pairs(reagents) do
-		if not INVENTORY.Items:Remove(crafter, 1, k, v, true) then
+		if not exports['sandbox-inventory']:Remove(crafter, 1, k, v, true) then
 			return false
 		end
 	end
@@ -229,7 +229,7 @@ exports("CraftingCraftStart", function(crafterSource, crafter, bench, schemId, q
 			end
 		end
 
-		if INVENTORY:AddItem(crafter, recipe.result.name, recipe.result.count * qty, meta, 1) then
+		if exports['sandbox-inventory']:AddItem(crafter, recipe.result.name, recipe.result.count * qty, meta, 1) then
 			local inv = getInventory(crafterSource, crafter, 1)
 			if _types[bench].isPubSchemTable then
 				local bId = string.format("%s:%s", bench, crafter)
@@ -389,12 +389,12 @@ function RegisterCraftingCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Crafting:GetSchematics", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			local schems = INVENTORY.Items:GetAllOfType(char:GetData("SID"), 1, 17)
+			local schems = exports['sandbox-inventory']:GetAllOfType(char:GetData("SID"), 1, 17)
 			local list = {}
 			for k, v in pairs(schems) do
-				local itemData = INVENTORY.Items:GetData(v.Name)
+				local itemData = exports['sandbox-inventory']:ItemsGetData(v.Name)
 				if itemData and itemData.schematic ~= nil and _schematics[itemData.schematic] ~= nil and not exports['sandbox-inventory']:CraftingSchematicsHas(data.id, itemData.schematic, char:GetData("SID")) then
-					local result = INVENTORY.Items:GetData(_schematics[itemData.schematic].result.name)
+					local result = exports['sandbox-inventory']:ItemsGetData(_schematics[itemData.schematic].result.name)
 					if result ~= nil then
 						table.insert(list, {
 							label = itemData.label,
@@ -416,7 +416,7 @@ function RegisterCraftingCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Crafting:UseSchematic", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			if INVENTORY.Items:HasId(char:GetData("SID"), 1, data.schematic.id) then
+			if exports['sandbox-inventory']:ItemsHasId(char:GetData("SID"), 1, data.schematic.id) then
 				local bench = _types[data.bench]
 				if bench ~= nil then
 					if
@@ -445,7 +445,7 @@ function RegisterCraftingCallbacks()
 							)
 						)
 					then
-						if INVENTORY.Items:RemoveId(char:GetData("SID"), 1, data.schematic) then
+						if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, data.schematic) then
 							if exports['sandbox-inventory']:CraftingSchematicsAdd(data.bench, data.schematic.Name, char:GetData("SID")) then
 								TriggerClientEvent("Crafting:Client:ForceBenchRefresh", source)
 								cb(true)

@@ -153,7 +153,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 					ShowTacoQueue()
 					return
 				end
-				if Inventory.Check.Player:HasItem(_tacoFoodItems[_currentCookItem].item, 1) then
+				if exports['sandbox-inventory']:CheckPlayerHasItem(_tacoFoodItems[_currentCookItem].item, 1) then
 					exports['sandbox-hud']:Progress({
 						name = "taco_queue",
 						duration = 2500,
@@ -332,7 +332,7 @@ function FetchDropOffLocation()
 end
 
 AddEventHandler("Taco:Client:TacoShop", function()
-	Inventory.Shop:Open("taco-shop-self")
+	exports['sandbox-inventory']:ShopOpen("taco-shop-self")
 end)
 
 AddEventHandler("Tacos:DeliverOrder", function(_, data)

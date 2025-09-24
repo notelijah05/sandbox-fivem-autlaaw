@@ -1,5 +1,5 @@
 function RegisterMBItemUses()
-	Inventory.Items:RegisterUse("thermite", "MazeBankRobbery", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("thermite", "MazeBankRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -56,7 +56,7 @@ function RegisterMBItemUses()
 								GlobalState["MazeBankInProgress"] = true
 
 								if
-									Inventory.Items:RemoveSlot(
+									exports['sandbox-inventory']:RemoveSlot(
 										itemData.Owner,
 										itemData.Name,
 										1,
@@ -167,7 +167,7 @@ function RegisterMBItemUses()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("red_laptop", "MazeBankRobbery", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("red_laptop", "MazeBankRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -267,7 +267,8 @@ function RegisterMBItemUses()
 												6000
 											)
 
-											Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+											exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot,
+												1)
 											_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
 											GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)] = {
 												state = 2,
@@ -290,9 +291,9 @@ function RegisterMBItemUses()
 
 											local newValue = slot.CreateDate - (60 * 60 * 24)
 											if os.time() - itemData.durability >= newValue then
-												Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+												exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 											else
-												Inventory:SetItemCreateDate(slot.id, newValue)
+												exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 											end
 
 											_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
@@ -327,7 +328,7 @@ function RegisterMBItemUses()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("adv_lockpick", "MazeBankRobbery", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("adv_lockpick", "MazeBankRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -403,9 +404,9 @@ function RegisterMBItemUses()
 										newValue = slot.CreateDate - (60 * 60 * 12)
 									end
 									if os.time() - itemData.durability >= newValue then
-										Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+										exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 									else
-										Inventory:SetItemCreateDate(slot.id, newValue)
+										exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 									end
 
 									if success then
@@ -442,9 +443,9 @@ function RegisterMBItemUses()
 
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 										if os.time() - itemData.durability >= newValue then
-											Inventory.Items:RemoveId(char:GetData("SID"), 1, slot)
+											exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
 										else
-											Inventory:SetItemCreateDate(slot.id, newValue)
+											exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 										end
 									end
 									_mbInUse[v.door] = false

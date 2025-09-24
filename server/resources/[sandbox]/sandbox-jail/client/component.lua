@@ -9,7 +9,6 @@ function RetrieveComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 end
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Targeting",
 		"Polyzone",
 		"PedInteraction",
-		"Inventory",
 		"Reputation",
 		"Jail",
 	}, function(error)
@@ -214,7 +212,7 @@ AddEventHandler("Core:Shared:Ready", function()
 
 			exports['sandbox-phone']:Close()
 			exports['sandbox-hud']:InteractionHide()
-			Inventory.Close:All()
+			exports['sandbox-inventory']:CloseAll()
 
 			DoScreenFadeOut(1000)
 			while not IsScreenFadedOut() do

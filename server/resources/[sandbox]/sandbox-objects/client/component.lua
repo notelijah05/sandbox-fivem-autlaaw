@@ -3,7 +3,6 @@ _placedProps = {}
 AddEventHandler("Objects:Shared:DependencyUpdate", RetrieveObjectsComponents)
 function RetrieveObjectsComponents()
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 	Objects = exports["sandbox-base"]:FetchComponent("Objects")
 end
@@ -11,7 +10,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Objects", {
 		"Targeting",
-		"Inventory",
 		"ObjectPlacer",
 		"Objects",
 	}, function(error)
@@ -183,7 +181,7 @@ AddEventHandler("Objects:Client:ViewData", function(entity, data)
 end)
 
 AddEventHandler("Objects:Client:OpenInventory", function(entity, data)
-	Inventory.Dumbfuck:Open({
+	exports['sandbox-inventory']:DumbfuckOpen({
 		invType = 138,
 		owner = Entity(entity.entity).state.objectId,
 	})

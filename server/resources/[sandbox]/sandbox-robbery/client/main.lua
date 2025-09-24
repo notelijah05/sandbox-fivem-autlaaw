@@ -4,7 +4,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"Targeting",
 		"Properties",
-		"Inventory",
 		"EmergencyAlerts",
 		"Doors",
 		"Damage",
@@ -122,7 +120,7 @@ AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
 	end, function(cancelled)
 		if not cancelled then
 			exports["sandbox-base"]:ServerCallback("Robbery:Holdup:Do", entity.serverId, function(s)
-				Inventory.Dumbfuck:Open(s)
+				exports['sandbox-inventory']:DumbfuckOpen(s)
 
 				while not LocalPlayer.state.inventoryOpen do
 					Wait(1)
@@ -136,7 +134,7 @@ AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
 								- GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(entity.serverId)))
 							) > 3.0
 						then
-							Inventory.Close:All()
+							exports['sandbox-inventory']:CloseAll()
 						end
 						Wait(2)
 					end

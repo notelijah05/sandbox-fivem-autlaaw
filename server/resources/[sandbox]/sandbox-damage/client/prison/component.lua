@@ -6,7 +6,6 @@ function PrisonHospitalComponents()
 	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"PedInteraction",
 		"Polyzone",
 		"Animations",
-		"Inventory",
 	}, function(error)
 		if #error > 0 then
 			return

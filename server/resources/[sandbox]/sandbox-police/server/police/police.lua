@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
@@ -48,10 +47,10 @@ AddEventHandler("Core:Shared:Ready", function()
 		for k, v in pairs(Config.Armories) do
 			exports['sandbox-base']:LoggerTrace("Police",
 				string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", v.id, v.name))
-			Inventory.Poly:Create(v)
+			exports['sandbox-inventory']:PolyCreate(v)
 		end
 
-		Inventory.Items:RegisterUse("spikes", "Police", function(source, slot, itemData)
+		exports['sandbox-inventory']:RegisterUse("spikes", "Police", function(source, slot, itemData)
 			if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
 				exports["sandbox-base"]:ClientCallback(source, "Police:DeploySpikes", {}, function(data)
 					if data ~= nil then
@@ -59,9 +58,9 @@ AddEventHandler("Core:Shared:Ready", function()
 
 						local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 						if (os.time() - itemData.durability >= newValue) then
-							Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+							exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 						else
-							Inventory:SetItemCreateDate(
+							exports['sandbox-inventory']:SetItemCreateDate(
 								slot.id,
 								newValue
 							)
@@ -172,7 +171,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					local coords = GetEntityCoords(GetPlayerPed(data))
 					_swabCounter += 1
 
-					Inventory:AddItem(char:GetData('SID'), 'evidence-dna', 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'evidence-dna', 1, {
 						EvidenceType = 'blood',
 						EvidenceId = string.format('%s-%s', os.date('%d%m%y-%H%M%S', os.time()), 950000 + _swabCounter),
 						EvidenceCoords = { x = coords.x, y = coords.y, z = coords.z },
@@ -283,7 +282,8 @@ AddEventHandler("Core:Shared:Ready", function()
 									invType = 3,
 									owner = ("pdrack:%s"):format(entState.VIN),
 								}, function()
-									Inventory:OpenSecondary(source, 3, ("pdrack:%s"):format(entState.VIN))
+									exports['sandbox-inventory']:OpenSecondary(source, 3,
+										("pdrack:%s"):format(entState.VIN))
 								end)
 							else
 								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
@@ -306,7 +306,8 @@ AddEventHandler("Core:Shared:Ready", function()
 									invType = 999,
 									owner = ("pdrack:%s"):format(entState.VIN),
 								}, function()
-									Inventory:OpenSecondary(source, 999, ("pdrack:%s"):format(entState.VIN))
+									exports['sandbox-inventory']:OpenSecondary(source, 999,
+										("pdrack:%s"):format(entState.VIN))
 								end)
 							else
 								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",

@@ -1,6 +1,5 @@
 AddEventHandler("Corrections:Shared:DependencyUpdate", CorrectionsComponents)
 function CorrectionsComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
@@ -15,7 +14,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Corrections", {
-		"Inventory",
 		"Handcuffs",
 		"Targeting",
 		"Jobs",

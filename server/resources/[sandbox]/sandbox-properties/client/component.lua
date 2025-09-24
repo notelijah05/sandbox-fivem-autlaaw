@@ -20,11 +20,9 @@ _placingSearchItem = nil
 
 AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
 	Characters = exports["sandbox-base"]:FetchComponent("Characters")
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
@@ -34,11 +32,9 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Properties", {
-		"Inventory",
 		"Targeting",
 		"Characters",
 		"Wardrobe",
-		"Inventory",
 		"Properties",
 		"Jobs",
 		"Polyzone",

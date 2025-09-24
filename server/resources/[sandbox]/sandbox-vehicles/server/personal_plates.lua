@@ -88,7 +88,7 @@ function PrivatePlateStuff(char, source, itemData)
             vehState.RegisteredPlate = newPlate
 
             Vehicles.Owned:ForceSave(vehState.VIN)
-            Inventory.Items:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
+            exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 
             exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Personal Plate Setup")
             exports['sandbox-base']:LoggerInfo('Vehicles',
@@ -100,7 +100,7 @@ function PrivatePlateStuff(char, source, itemData)
 end
 
 function RegisterPersonalPlateCallbacks()
-    Inventory.Items:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
+    exports['sandbox-inventory']:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or (Player(source).state.onDuty ~= "government" and Player(source).state.onDuty ~= "dgang") then
             exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Error")
@@ -110,7 +110,7 @@ function RegisterPersonalPlateCallbacks()
         PrivatePlateStuff(char, source, itemData)
     end)
 
-    Inventory.Items:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
+    exports['sandbox-inventory']:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char then
             exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Error")
@@ -206,7 +206,7 @@ function RegisterPersonalPlateCallbacks()
                 local isRemoved = Vehicles.DonatorPlates:Remove(plyr:GetData("Identifier"), data)
 
                 if isRemoved then
-                    Inventory:AddItem(char:GetData("SID"), "personal_plates_donator", data, {}, 1)
+                    exports['sandbox-inventory']:AddItem(char:GetData("SID"), "personal_plates_donator", data, {}, 1)
                     cb(true)
 
                     exports['sandbox-base']:LoggerWarn(

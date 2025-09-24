@@ -124,7 +124,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	GlobalState["Robbery:InProgress"] = {}
 
-	Inventory.Items:RegisterUse("lockpick", "Robbery", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("lockpick", "Robbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if
@@ -158,9 +158,9 @@ AddEventHandler("Labor:Server:Startup", function()
 									newValue = slot.CreateDate - (60 * 60 * 12)
 								end
 								if (os.time() - itemData.durability >= newValue) then
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									Inventory:SetItemCreateDate(slot.id, newValue)
+									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 								end
 
 								local tier = _robbers[_joiners[source]].tier
@@ -195,7 +195,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("adv_lockpick", "Robbery", function(source, slot, itemData)
+	exports['sandbox-inventory']:RegisterUse("adv_lockpick", "Robbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if
@@ -229,9 +229,9 @@ AddEventHandler("Labor:Server:Startup", function()
 									newValue = slot.CreateDate - (60 * 60 * 12)
 								end
 								if (os.time() - itemData.durability >= newValue) then
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									Inventory:SetItemCreateDate(slot.id, newValue)
+									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 								end
 
 								local tier = _robbers[_joiners[source]].tier
@@ -428,7 +428,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(lootTable, char:GetData("SID"), 1)
 
 				if math.random(100) <= 5 then
-					Inventory:AddItem(char:GetData("SID"), "safecrack_kit", 1, {}, 1)
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "safecrack_kit", 1, {}, 1)
 				end
 			end
 

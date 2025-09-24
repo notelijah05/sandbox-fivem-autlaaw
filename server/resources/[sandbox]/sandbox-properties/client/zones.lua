@@ -71,7 +71,7 @@ function CreatePropertyZones(propertyId, int)
                             end
                             local property = _properties[data]
                             return (property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil) or
-                            LocalPlayer.state.onDuty == "police"
+                                LocalPlayer.state.onDuty == "police"
                         end,
                     },
                     {
@@ -85,7 +85,8 @@ function CreatePropertyZones(propertyId, int)
                             end
                             local property = _properties[data]
                             return property.keys ~= nil and
-                            property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil and property?.data?.jobDuty
+                                property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil and
+                                property?.data?.jobDuty
                         end,
                     },
                 },
@@ -114,7 +115,7 @@ function CreatePropertyZones(propertyId, int)
                             end
                             local property = _properties[data]
                             return property.keys ~= nil and
-                            property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil
+                                property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil
                         end,
                     },
                 },
@@ -136,7 +137,7 @@ function CreatePropertyZones(propertyId, int)
                         end
                         local property = _properties[data]
                         return (property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil) or
-                        LocalPlayer.state.onDuty == "police"
+                            LocalPlayer.state.onDuty == "police"
                     end,
                 },
                 {
@@ -167,7 +168,7 @@ function CreatePropertyZones(propertyId, int)
                             return false
                         end
 
-                        return Inventory.Items:HasType(17, 1)
+                        return exports['sandbox-inventory']:ItemsHasType(17, 1)
                     end,
                 })
             end

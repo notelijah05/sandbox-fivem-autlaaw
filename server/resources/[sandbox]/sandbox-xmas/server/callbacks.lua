@@ -3,7 +3,7 @@ function RegisterCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
-			Inventory:AddItem(sid, "WEAPON_SNOWBALL", 0, { ammo = 1, clip = 0 }, 1)
+			exports['sandbox-inventory']:AddItem(sid, "WEAPON_SNOWBALL", 0, { ammo = 1, clip = 0 }, 1)
 		end
 	end)
 
@@ -37,7 +37,7 @@ function RegisterCallbacks()
 						},
 					}
 				)
-				Inventory:AddItem(sid, "present_daily", 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(sid, "present_daily", 1, {}, 1)
 				char:SetData("XmasDaily", _currentDate.day)
 			end
 		end
@@ -67,7 +67,7 @@ function RegisterCallbacks()
 						},
 					}
 				)
-				Inventory:AddItem(sid, "present", 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(sid, "present", 1, {}, 1)
 				_treeLooted[sid] = true
 				cb(true)
 			else

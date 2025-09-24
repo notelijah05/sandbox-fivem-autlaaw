@@ -59,7 +59,7 @@ function RegisterPrisonStashStartup()
 				invType = _inventory,
 				owner = _inventoryOwner,
 			}, function()
-				Inventory:OpenSecondary(source, _inventory, _inventoryOwner)
+				exports['sandbox-inventory']:OpenSecondary(source, _inventory, _inventoryOwner)
 			end)
 		end
 	end)
@@ -96,7 +96,7 @@ function RegisterPrisonStashStartup()
 					invType = _inventory,
 					owner = _inventoryOwner,
 				}, function()
-					Inventory:OpenSecondary(source, _inventory, _inventoryOwner)
+					exports['sandbox-inventory']:OpenSecondary(source, _inventory, _inventoryOwner)
 				end)
 
 				cb(true)

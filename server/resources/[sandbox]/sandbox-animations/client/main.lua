@@ -16,7 +16,6 @@ function RetrieveComponents()
 	Damage = exports["sandbox-base"]:FetchComponent("Damage")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -24,7 +23,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Damage",
 		"Animations",
 		"Targeting",
-		"Inventory",
 	}, function(error)
 		if #error > 0 then
 			return

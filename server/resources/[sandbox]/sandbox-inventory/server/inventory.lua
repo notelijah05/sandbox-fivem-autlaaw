@@ -159,7 +159,6 @@ end
 
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -173,7 +172,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Inventory",
 		"Wallet",
 		"Jobs",
 		"Reputation",
@@ -262,7 +260,8 @@ AddEventHandler("Core:Shared:Ready", function()
 					metadata.Owner = cData.SID
 				end
 
-				local insData = INVENTORY:AddItem(cData.SID, v.name, v.countTo, metadata, 1, false, false, false, false,
+				local insData = exports['sandbox-inventory']:AddItem(cData.SID, v.name, v.countTo, metadata, 1, false,
+					false, false, false,
 					slot, false, false, true)
 				slot += 1
 			end
@@ -298,10 +297,6 @@ end
 AddEventHandler("Characters:Server:PlayerLoggedOut", HandleLogout)
 AddEventHandler("Characters:Server:PlayerDropped", HandleLogout)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Inventory", INVENTORY)
-end)
-
 AddEventHandler("Queue:Server:SessionActive", function(source)
 	TriggerLatentClientEvent("Inventory:Client:LoadItems", source, 50000, itemsDatabase)
 end)
@@ -325,7 +320,7 @@ RegisterNetEvent("Inventory:Server:DegradeLastUsed", function(degradeAmt)
 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		if _lastUsedItem[src] then
-			local slot = Inventory:GetItem(_lastUsedItem[src])
+			local slot = exports['sandbox-inventory']:GetItem(_lastUsedItem[src])
 
 			if slot then
 				local itemData = itemsDatabase[slot.Name]
@@ -333,9 +328,9 @@ RegisterNetEvent("Inventory:Server:DegradeLastUsed", function(degradeAmt)
 				local newValue = slot.CreateDate - math.floor(itemData.durability * (degradeAmt / 100))
 
 				if (os.time() - itemData.durability >= newValue) then
-					Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+					exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 				else
-					Inventory:SetItemCreateDate(slot.id, newValue)
+					exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 				end
 			end
 		end
@@ -343,7 +338,7 @@ RegisterNetEvent("Inventory:Server:DegradeLastUsed", function(degradeAmt)
 end)
 
 function sendRefreshForClient(_src, owner, invType, slot)
-	--local data = Inventory:GetSlot(owner, slot, invType)
+	--local data = exports['sandbox-inventory']:GetSlot(owner, slot, invType)
 	TriggerClientEvent("Inventory:Client:SetSlot", _src, owner, invType, slot)
 end
 
@@ -351,42 +346,20 @@ function SetGunPropData(source, sid, inv, isForce)
 	local data = {}
 	for k, v in ipairs(inv or {}) do
 		local itemData = itemsDatabase[v.Name]
-		if WEAPON_PROPS[itemData?.weapon or v.Name] then
+		if WEAPON_PROPS[(itemData and itemData.weapon) or v.Name] then
 			local md = json.decode(v.MetaData)
 			data[string.format("i-%s", v.id)] = {
 				item = v.Name,
-				weapon = itemData?.weapon or v.Name,
-				tint = md?.WeaponTint or false,
-				attachments = md?.WeaponComponents or false,
+				weapon = (itemData and itemData.weapon) or v.Name,
+				tint = (md and md.WeaponTint) or false,
+				attachments = (md and md.WeaponComponents) or false,
 				slot = v.Slot,
 				equipped = _equipped[source] == v.Slot,
 			}
 		end
 	end
 
-	local needsUpdate = isForce
-	if not needsUpdate then
-		if _cachedProps[source] ~= nil then
-			for k, v in pairs(_cachedProps[source]) do
-				if data[k] == nil or v.equipped ~= data[k].equipped then
-					needsUpdate = true
-					break
-				end
-			end
-
-			for k, v in pairs(data) do
-				if _cachedProps[source][k] == nil then
-					needsUpdate = true
-					break
-				end
-			end
-		else
-			needsUpdate = true
-		end
-	end
-
-	if needsUpdate then
-		_cachedProps[source] = data
+	if isForce then
 		TriggerLatentClientEvent("Weapons:Client:UpdateProps", -1, 50000, source, data)
 	end
 end
@@ -681,7 +654,7 @@ function DoMerge(source, data, cb)
 
 	if entityFrom.shop then
 		local slotFrom = getShopSlot(source, data.ownerFrom, data.invTypeFrom, data.slotFrom)
-		local cost = math.ceil(((slotFrom?.Price or item.price) * tonumber(data.countTo)))
+		local cost = math.ceil(((slotFrom and slotFrom.Price or item.price) * tonumber(data.countTo)))
 		local paymentType = (cash >= cost and 'cash' or (Banking.Balance:Has(char:GetData("BankAccount"), cost) and 'bank' or nil))
 		if entityFrom.free or paymentType ~= nil then
 			if -- Check if the item is either not a gun, or if it is that they have a Weapons license
@@ -724,7 +697,8 @@ function DoMerge(source, data, cb)
 				end
 
 				if paid then
-					local insData = INVENTORY:AddItem(char:GetData("SID"), data.name, data.countTo, {}, data.invTypeTo,
+					local insData = exports['sandbox-inventory']:AddItem(char:GetData("SID"), data.name, data.countTo, {},
+						data.invTypeTo,
 						false, false, false, false, data.slotTo, false, false, false, true)
 					CreateStoreLog(data.ownerFrom, data.name, data.countTo or 1, char:GetData("SID"), insData.MetaData, 0)
 				end
@@ -745,8 +719,8 @@ function DoMerge(source, data, cb)
 	elseif entityFrom.playerShop and data.ownerFrom ~= data.ownerTo and data.invTypeFrom ~= data.invTypeTo then
 		if _playerShops[data.ownerFrom] then
 			local isMod = isShopModerator(data.ownerFrom, source)
-			local slotFrom = INVENTORY:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
-			local slotTo = INVENTORY:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+			local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
+			local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 			if slotFrom ~= nil then
 				local cost = math.ceil((slotFrom.Price * tonumber(data.countTo)))
@@ -883,8 +857,8 @@ function DoMerge(source, data, cb)
 			return cb({ reason = "Cannot Do That" })
 		end
 
-		local slotFrom = INVENTORY:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
-		local slotTo = INVENTORY:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+		local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
+		local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 		if slotFrom == nil or slotTo == nil then
 			cb({ reason = "Item No Longer In That Slot" })
@@ -893,7 +867,7 @@ function DoMerge(source, data, cb)
 			return
 		end
 
-		if entityFrom.playerShop and slotFrom?.Price ~= slotTo?.Price then
+		if entityFrom.playerShop and slotFrom.Price ~= slotTo.Price then
 			sendRefreshForClient(source, data.ownerFrom, data.invTypeFrom, data.slotFrom)
 			sendRefreshForClient(source, data.ownerTo, data.invTypeTo, data.slotTo)
 			return cb({ reason = "Item Price Mismatch, Cannot Merge" })
@@ -948,7 +922,7 @@ function DoMerge(source, data, cb)
 								"Weapons:Client:UpdateCount",
 								char:GetData("Source"),
 								data.slotTo,
-								((slotTo?.Count or 0) + data.countTo)
+								((slotTo and slotTo.Count or 0) + data.countTo)
 							)
 						end
 					elseif item.type == 10 then
@@ -1001,7 +975,7 @@ function DoMerge(source, data, cb)
 						"Weapons:Client:UpdateCount",
 						char:GetData("Source"),
 						data.slotTo,
-						((slotTo?.Count or 0) + data.countTo)
+						((slotTo and slotTo.Count or 0) + data.countTo)
 					)
 				end
 			end
@@ -1057,8 +1031,8 @@ function DoSwap(source, data, cb)
 		sendRefreshForClient(source, data.ownerTo, data.invTypeTo, data.slotTo)
 		return
 	else
-		local slotFrom = INVENTORY:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
-		local slotTo = INVENTORY:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+		local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
+		local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 		if slotFrom == nil or slotTo == nil then
 			cb({ reason = "Item No Longer In That Slot" })
@@ -1145,7 +1119,7 @@ function DoSwap(source, data, cb)
 								"Weapons:Client:UpdateCount",
 								char:GetData("Source"),
 								data.slotTo,
-								((slotTo?.Count or 0) + data.countTo)
+								((slotTo and slotTo.Count or 0) + data.countTo)
 							)
 						end
 					elseif item.type == 10 then
@@ -1198,7 +1172,7 @@ function DoSwap(source, data, cb)
 						"Weapons:Client:UpdateCount",
 						char:GetData("Source"),
 						data.slotTo,
-						((slotTo?.Count or 0) + data.countTo)
+						((slotTo and slotTo.Count or 0) + data.countTo)
 					)
 				end
 			end
@@ -1250,7 +1224,7 @@ function DoMove(source, data, cb)
 
 	if entityFrom.shop then
 		local slotFrom = getShopSlot(source, data.ownerFrom, data.invTypeFrom, data.slotFrom)
-		local cost = math.ceil(((slotFrom?.Price or item.price) * tonumber(data.countTo)))
+		local cost = math.ceil(((slotFrom and slotFrom.Price or item.price) * tonumber(data.countTo)))
 		local paymentType = (cash >= cost and 'cash' or (Banking.Balance:Has(char:GetData("BankAccount"), cost) and 'bank' or nil))
 		if entityFrom.free or paymentType ~= nil then
 			if -- Check if the item is either not a gun, or if it is that they have a Weapons license
@@ -1290,7 +1264,8 @@ function DoMove(source, data, cb)
 				end
 
 				if paid then
-					local insData = INVENTORY:AddItem(char:GetData("SID"), data.name, data.countTo, {}, data.invTypeTo,
+					local insData = exports['sandbox-inventory']:AddItem(char:GetData("SID"), data.name, data.countTo, {},
+						data.invTypeTo,
 						false, false, false, false, data.slotTo, false, false, false, true)
 					CreateStoreLog(data.ownerFrom, data.name, data.countTo or 1, char:GetData("SID"), insData.MetaData, 0)
 				end
@@ -1321,8 +1296,8 @@ function DoMove(source, data, cb)
 	elseif entityFrom.playerShop and data.ownerFrom ~= data.ownerTo and data.invTypeFrom ~= data.invTypeTo then
 		if _playerShops[data.ownerFrom] then
 			local isMod = isShopModerator(data.ownerFrom, source)
-			local slotFrom = INVENTORY:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
-			local slotTo = INVENTORY:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+			local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
+			local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 			if slotFrom ~= nil then
 				local cost = math.ceil((slotFrom.Price * tonumber(data.countTo)))
@@ -1442,7 +1417,7 @@ function DoMove(source, data, cb)
 						})
 						sendRefreshForClient(source, data.ownerFrom, data.invTypeFrom, data.slotFrom)
 						sendRefreshForClient(source, data.ownerTo, data.invTypeTo, data.slotTo)
-						cb({ reason = "Payment Failed" })
+						return cb({ reason = "Payment Failed" })
 					end
 				else
 					TriggerClientEvent("StoreFailedPurchase", source, {
@@ -1455,7 +1430,7 @@ function DoMove(source, data, cb)
 					})
 					sendRefreshForClient(source, data.ownerFrom, data.invTypeFrom, data.slotFrom)
 					sendRefreshForClient(source, data.ownerTo, data.invTypeTo, data.slotTo)
-					cb({ reason = "You Cannot Afford That" })
+					return cb({ reason = "You Cannot Afford That" })
 				end
 			else
 				TriggerClientEvent("StoreFailedPurchase", source, {
@@ -1490,8 +1465,8 @@ function DoMove(source, data, cb)
 			return cb({ reason = "Cannot Do That" })
 		end
 
-		local slotFrom = INVENTORY:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
-		local slotTo = INVENTORY:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+		local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
+		local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 		if slotFrom == nil then
 			cb({ reason = "Item No Longer In That Slot" })
@@ -1576,7 +1551,7 @@ function DoMove(source, data, cb)
 								"Weapons:Client:UpdateCount",
 								char:GetData("Source"),
 								data.slotTo,
-								((slotTo?.Count or 0) + data.countTo)
+								((slotTo and slotTo.Count or 0) + data.countTo)
 							)
 						end
 					elseif item.type == 10 then
@@ -1629,7 +1604,7 @@ function DoMove(source, data, cb)
 						"Weapons:Client:UpdateCount",
 						char:GetData("Source"),
 						data.slotTo,
-						((slotTo?.Count or 0) + data.countTo)
+						((slotTo and slotTo.Count or 0) + data.countTo)
 					)
 				end
 			end
@@ -1659,8 +1634,8 @@ end
 function CreateDZIfNotExist(source, coords)
 	local route = Player(source).state.currentRoute
 	local id = string.format("%s:%s:%s", math.ceil(coords.x), math.ceil(coords.y), route)
-	if not INVENTORY:DropExists(route, id) then
-		INVENTORY:CreateDropzone(route, coords)
+	if not exports['sandbox-inventory']:DropExists(route, id) then
+		exports['sandbox-inventory']:CreateDropzone(route, coords)
 	end
 end
 
@@ -1681,7 +1656,8 @@ function RegisterCallbacks()
 		local dist = #(vector3(myCoords.x, myCoords.y, myCoords.z) - vector3(vehCoords.x, vehCoords.y, vehCoords.z))
 		local lock = GetVehicleDoorLockStatus(veh)
 		if dist < 8 and (lock == 0 or lock == 1) then
-			INVENTORY:OpenSecondary(source, 4, Entity(veh).state.VIN, data.class or false, data.model or false)
+			exports['sandbox-inventory']:OpenSecondary(source, 4, Entity(veh).state.VIN, data.class or false,
+				data.model or false)
 			cb(true)
 		else
 			cb(false)
@@ -1690,10 +1666,10 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:UseItem", function(source, data, cb)
 		if entityPermCheck(source, data.invType) then
-			local slot = INVENTORY:GetOldestInSlot(data.owner, data.slot, data.invType)
+			local slot = exports['sandbox-inventory']:GetOldestInSlot(data.owner, data.slot, data.invType)
 			if slot ~= nil then
 				_lastUsedItem[source] = slot.id
-				INVENTORY.Items:Use(source, slot, cb)
+				exports['sandbox-inventory']:Use(source, slot, cb)
 			else
 				sendRefreshForClient(source, data.owner, data.invType, data.slot)
 				cb(false)
@@ -1705,11 +1681,11 @@ function RegisterCallbacks()
 		if data and data.slot then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
-				local slotFrom = INVENTORY:GetOldestInSlot(char:GetData("SID"), data.slot, 1)
+				local slotFrom = exports['sandbox-inventory']:GetOldestInSlot(char:GetData("SID"), data.slot, 1)
 				if slotFrom ~= nil then
 					if slotFrom.Count or 0 > 0 then
 						_lastUsedItem[source] = slotFrom.id
-						INVENTORY.Items:Use(source, slotFrom, function(yea)
+						exports['sandbox-inventory']:Use(source, slotFrom, function(yea)
 							if not yea then
 								sendRefreshForClient(source, char:GetData("SID"), 1, slotFrom)
 							end
@@ -1735,7 +1711,7 @@ function RegisterCallbacks()
 		local playerPed = GetPlayerPed(source)
 		local playerCoords = GetEntityCoords(playerPed)
 		local route = Player(source).state.currentRoute
-		cb(INVENTORY:CheckDropZones(route, vector3(playerCoords.x, playerCoords.y, playerCoords.z)))
+		cb(exports['sandbox-inventory']:CheckDropZones(route, vector3(playerCoords.x, playerCoords.y, playerCoords.z)))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:retreiveStores", function(source, data, cb)
@@ -1745,7 +1721,7 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:Search", function(source, data, cb)
 		local dest = exports['sandbox-characters']:FetchCharacterSource(data.serverId)
 		if dest ~= nil then
-			INVENTORY.Search:Character(source, data.serverId, dest:GetData("SID"))
+			exports['sandbox-inventory']:SearchCharacter(source, data.serverId, dest:GetData("SID"))
 			cb(dest:GetData("SID"))
 		else
 			cb(false)
@@ -1757,7 +1733,8 @@ function RegisterCallbacks()
 		local pState = Player(source).state
 
 		if dest and pState.onDuty ~= nil and pState.onDuty == "police" and Jobs.Permissions:HasPermissionInJob(source, 'police', 'PD_RAID') then
-			INVENTORY:OpenSecondary(source, data.invType, data.owner, data.class or false, data.model or false, true)
+			exports['sandbox-inventory']:OpenSecondary(source, data.invType, data.owner, data.class or false,
+				data.model or false, true)
 		end
 	end)
 
@@ -1766,7 +1743,7 @@ function RegisterCallbacks()
 			invType = 4000,
 			owner = data.identifier,
 		}, function()
-			INVENTORY:OpenSecondary(source, 4000, data.identifier)
+			exports['sandbox-inventory']:OpenSecondary(source, 4000, data.identifier)
 		end)
 		cb()
 	end)
@@ -1776,12 +1753,12 @@ function RegisterCallbacks()
 			refreshShit(inventory.owner)
 		elseif inventory.invType == 10 then
 			local route = Player(source).state.currentRoute
-			local exists = INVENTORY:DropExists(route, inventory.owner)
-			local hasItems = INVENTORY:HasItems(inventory.owner, 10)
+			local exists = exports['sandbox-inventory']:DropExists(route, inventory.owner)
+			local hasItems = exports['sandbox-inventory']:HasItems(inventory.owner, 10)
 			if inventory.position ~= nil and hasItems and not exists then
-				INVENTORY:CreateDropzone(route, inventory.position)
+				exports['sandbox-inventory']:CreateDropzone(route, inventory.position)
 			elseif exists and not hasItems then
-				INVENTORY:RemoveDropzone(route, inventory.owner)
+				exports['sandbox-inventory']:RemoveDropzone(route, inventory.owner)
 			end
 		else
 			if _refreshAttchs[inventory.owner] then
@@ -1804,10 +1781,11 @@ function RegisterCallbacks()
 			local sid = char:GetData("SID")
 			if _playerShops[data.ownerTo] ~= nil then
 				if isShopModerator(data.ownerTo, source) then
-					local slotFrom = INVENTORY:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
+					local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data
+						.invTypeFrom)
 					if slotFrom ~= nil then
 						local item = itemsDatabase[slotFrom.Name]
-						local slotTo = INVENTORY:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+						local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 						if slotTo == nil or slotTo.Price == data.price then
 							local itemIds = MySQL.rawExecute.await(
@@ -1897,7 +1875,7 @@ function RegisterCallbacks()
 					local tChar = exports['sandbox-characters']:FetchBySID(tonumber(data.sid))
 					if tChar ~= nil then
 						if not isShopModerator(data.shop, tChar:GetData("Source")) then
-							INVENTORY.PlayerShops.Moderators:Add(data.shop, tonumber(data.sid),
+							exports['sandbox-inventory']:PlayerShopModeratorAdd(data.shop, tonumber(data.sid),
 								string.format("%s %s", tChar:GetData("First"), tChar:GetData("Last")))
 							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
 								string.format("%s %s Added As A Shop Moderator", tChar:GetData("First"),
@@ -1926,7 +1904,7 @@ function RegisterCallbacks()
 			local sid = char:GetData("SID")
 			if _playerShops[data.shop] ~= nil then
 				if _playerShops[data.shop].owner == sid then
-					INVENTORY.PlayerShops.Moderators:Remove(data.shop, data.sid)
+					exports['sandbox-inventory']:PlayerShopModeratorRemove(data.shop, data.sid)
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Shop Moderator Removed")
 				else
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
@@ -2027,7 +2005,7 @@ RegisterNetEvent("Inventory:Server:Request", function(secondary)
 		loaded = false,
 	}
 
-	if secondary?.crafting then
+	if secondary and secondary.crafting then
 		local benchDetails = exports['sandbox-inventory']:CraftingGetBench(source, secondary.id)
 		if benchDetails ~= nil then
 			benchDetails.crafting = true
@@ -2042,81 +2020,87 @@ RegisterNetEvent("Inventory:Server:Request", function(secondary)
 	else
 		TriggerClientEvent("Inventory:Client:Open", src, plyrInvData,
 			secondary and
-			INVENTORY:GetSecondaryData(src, secondary.invType, secondary.owner, secondary.class or false,
+			exports['sandbox-inventory']:GetSecondaryData(src, secondary.invType, secondary.owner,
+				secondary.class or false,
 				secondary.model or false) or nil)
 		plyrInvData.inventory = getInventory(src, char:GetData("SID"), 1)
 		plyrInvData.loaded = true
 		--TriggerClientEvent("Inventory:Client:Cache", src, plyrInvData)
 		TriggerClientEvent("Inventory:Client:Load", src, plyrInvData,
 			secondary and
-			INVENTORY:GetSecondary(src, secondary.invType, secondary.owner, secondary.class or false,
+			exports['sandbox-inventory']:GetSecondary(src, secondary.invType, secondary.owner, secondary.class or false,
 				secondary.model or false) or nil)
 	end
 end)
 
 local _inUse = {}
-INVENTORY = {
-	CreateDropzone = function(self, routeId, coords)
-		local area = {
-			id = string.format("%s:%s:%s", math.ceil(coords.x), math.ceil(coords.y), routeId),
-			route = routeId,
-			coords = {
-				x = coords.x,
-				y = coords.y,
-				z = coords.z,
-			},
-		}
 
-		table.insert(_dropzones, area)
-		TriggerClientEvent("Inventory:Client:AddDropzone", -1, area)
+exports("CreateDropzone", function(routeId, coords)
+	local area = {
+		id = string.format("%s:%s:%s", math.ceil(coords.x), math.ceil(coords.y), routeId),
+		route = routeId,
+		coords = {
+			x = coords.x,
+			y = coords.y,
+			z = coords.z,
+		},
+	}
 
-		return area.id
-	end,
-	CheckDropZones = function(self, routeId, coords)
-		local found = nil
+	table.insert(_dropzones, area)
+	TriggerClientEvent("Inventory:Client:AddDropzone", -1, area)
 
-		for k, v in ipairs(_dropzones) do
-			if v.route == routeId then
-				local dz = v.coords
-				local distance = #(vector3(coords.x, coords.y, coords.z) - vector3(dz.x, dz.y, dz.z))
-				if distance < 2.0 and (found == nil or distance < found.distance) then
-					found = {
-						id = v.id,
-						position = v.coords,
-						distance = distance,
-						route = v.route,
-					}
-				end
+	return area.id
+end)
+
+exports("CheckDropZones", function(routeId, coords)
+	local found = nil
+
+	for k, v in ipairs(_dropzones) do
+		if v.route == routeId then
+			local dz = v.coords
+			local distance = #(vector3(coords.x, coords.y, coords.z) - vector3(dz.x, dz.y, dz.z))
+			if distance < 2.0 and (found == nil or distance < found.distance) then
+				found = {
+					id = v.id,
+					position = v.coords,
+					distance = distance,
+					route = v.route,
+				}
 			end
 		end
+	end
 
-		return found
-	end,
-	RemoveDropzone = function(self, routeId, id)
-		for k, v in ipairs(_dropzones) do
-			if v.id == id and v.route == routeId then
-				if not _doingThings[string.format("%s-%s", id, 10)] then
-					table.remove(_dropzones, k)
-					TriggerClientEvent("Inventory:Client:RemoveDropzone", -1, id)
-				end
-				break
-			end
-		end
-	end,
-	DropExists = function(self, routeId, id)
-		for k, v in ipairs(_dropzones) do
-			if v.id == id and v.route == routeId then
-				return true
-			end
-		end
+	return found
+end)
 
-		return false
-	end,
-	GetInventory = function(self, source, owner, invType)
-		return getInventory(source, owner, invType)
-	end,
-	GetSecondaryData = function(self, _src, invType, Owner, vehClass, vehModel, isRaid, nameOverride, slotOverride,
-								capacityOverride)
+exports("RemoveDropzone", function(routeId, id)
+	for k, v in ipairs(_dropzones) do
+		if v.id == id and v.route == routeId then
+			if not _doingThings[string.format("%s-%s", id, 10)] then
+				table.remove(_dropzones, k)
+				TriggerClientEvent("Inventory:Client:RemoveDropzone", -1, id)
+			end
+			break
+		end
+	end
+end)
+
+exports("DropExists", function(routeId, id)
+	for k, v in ipairs(_dropzones) do
+		if v.id == id and v.route == routeId then
+			return true
+		end
+	end
+
+	return false
+end)
+
+exports("GetInventory", function(source, owner, invType)
+	return getInventory(source, owner, invType)
+end)
+
+exports("GetSecondaryData",
+	function(_src, invType, Owner, vehClass, vehModel, isRaid, nameOverride, slotOverride, capacityOverride)
 		if _src and invType and Owner then
 			if entityPermCheck(_src, invType) or (isRaid and Player(_src).state.onDuty == "police") then
 				if not _openInvs[string.format("%s-%s", Owner, invType)] or _openInvs[string.format("%s-%s", Owner, invType)] == _src then
@@ -2161,9 +2145,10 @@ INVENTORY = {
 				end
 			end
 		end
-	end,
-	GetSecondary = function(self, _src, invType, Owner, vehClass, vehModel, isRaid, nameOverride, slotOverride,
-							capacityOverride)
+	end)
+
+exports("GetSecondary",
+	function(_src, invType, Owner, vehClass, vehModel, isRaid, nameOverride, slotOverride, capacityOverride)
 		if _src and invType and Owner then
 			if entityPermCheck(_src, invType) or (isRaid and Player(_src).state.onDuty == "police") then
 				if not _openInvs[string.format("%s-%s", Owner, invType)] or _openInvs[string.format("%s-%s", Owner, invType)] == _src then
@@ -2214,9 +2199,10 @@ INVENTORY = {
 		else
 			return nil
 		end
-	end,
-	OpenSecondary = function(self, _src, invType, Owner, vehClass, vehModel, isRaid, nameOverride, slotOverride,
-							 capacityOverride)
+	end)
+
+exports("OpenSecondary",
+	function(_src, invType, Owner, vehClass, vehModel, isRaid, nameOverride, slotOverride, capacityOverride)
 		if _src and invType and Owner then
 			local char = exports['sandbox-characters']:FetchCharacterSource(_src)
 
@@ -2234,137 +2220,149 @@ INVENTORY = {
 			TriggerEvent("Inventory:Server:Opened", _src, Owner, invType)
 
 			TriggerClientEvent("Inventory:Client:Open", _src, plyrInvData,
-				INVENTORY:GetSecondaryData(_src, invType, Owner, vehClass, vehModel, isRaid, nameOverride, slotOverride,
-					capacityOverride))
+				exports['sandbox-inventory']:GetSecondaryData(_src, invType, Owner, vehClass, vehModel, isRaid,
+					nameOverride, slotOverride, capacityOverride))
 
 			plyrInvData.inventory = getInventory(_src, char:GetData("SID"), 1)
 			plyrInvData.loaded = true
 
 			TriggerClientEvent("Inventory:Client:Cache", _src, plyrInvData)
 			TriggerClientEvent("Inventory:Client:Load", _src, plyrInvData,
-				INVENTORY:GetSecondary(_src, invType, Owner, vehClass, vehModel, isRaid, nameOverride, slotOverride,
-					capacityOverride))
+				exports['sandbox-inventory']:GetSecondary(_src, invType, Owner, vehClass, vehModel, isRaid,
+					nameOverride, slotOverride, capacityOverride))
 		end
-	end,
-	GetSlots = function(self, Owner, Type)
-		local db = MySQL.rawExecute.await(
-			'SELECT slot as Slot FROM inventory WHERE owner = ? AND type = ? GROUP BY slot ORDER BY slot', {
-				tostring(Owner),
-				Type,
-			})
+	end)
 
-		local slots = {}
-		for k, v in ipairs(db) do
-			table.insert(slots, v.Slot)
-		end
-		return slots
-	end,
-	GetSlotCount = function(self, Owner, Type)
-		return MySQL.scalar.await('SELECT COUNT(*) as count FROM inventory WHERE owner = ? AND type = ?', {
+exports("GetSlots", function(Owner, Type)
+	local db = MySQL.rawExecute.await(
+		'SELECT slot as Slot FROM inventory WHERE owner = ? AND type = ? GROUP BY slot ORDER BY slot', {
 			tostring(Owner),
 			Type,
 		})
-	end,
-	HasItems = function(self, Owner, Type)
-		return MySQL.scalar.await('SELECT COUNT(id) as count FROM inventory WHERE owner = ? AND type = ?', {
-			tostring(Owner),
-			Type,
-		}) > 0
-	end,
-	GetMatchingSlot = function(self, Owner, Name, Count, Type)
-		if not itemsDatabase[Name].isStackable then
-			return nil
+
+	local slots = {}
+	for k, v in ipairs(db) do
+		table.insert(slots, v.Slot)
+	end
+	return slots
+end)
+
+exports("GetSlotCount", function(Owner, Type)
+	return MySQL.scalar.await('SELECT COUNT(*) as count FROM inventory WHERE owner = ? AND type = ?', {
+		tostring(Owner),
+		Type,
+	})
+end)
+
+exports("HasItems", function(Owner, Type)
+	return MySQL.scalar.await('SELECT COUNT(id) as count FROM inventory WHERE owner = ? AND type = ?', {
+		tostring(Owner),
+		Type,
+	}) > 0
+end)
+
+exports("GetMatchingSlot", function(Owner, Name, Count, Type)
+	if not itemsDatabase[Name].isStackable then
+		return nil
+	end
+
+	return (MySQL.scalar.await('SELECT slot as Slot FROM inventory WHERE owner = ? AND type = ? AND item_id = ? GROUP BY slot HAVING COUNT(item_id) <= ?', {
+		tostring(Owner),
+		Type,
+		Name,
+		itemsDatabase[Name].isStackable - Count
+	}))
+end)
+
+exports("GetFreeSlotNumbers", function(Owner, invType, vehClass, vehModel, src)
+	local result = exports['sandbox-inventory']:GetSlots(Owner, invType)
+	local occupiedTable = {}
+	local unOccupiedSlots = {}
+	for k, v in ipairs(result) do
+		occupiedTable[v] = true
+	end
+
+	local total = 8
+	if LoadedEntitys[invType] ~= nil then
+		total = getSlotCount(invType, vehClass or false, vehModel or false, false, Owner, src)
+	else
+		exports['sandbox-base']:LoggerError("Inventory",
+			string.format("Entity Type ^2%s^7 Was Attempted To Be Loaded", invType))
+	end
+
+	for i = 1, total do
+		if not occupiedTable[i] then
+			table.insert(unOccupiedSlots, i)
 		end
+	end
 
-		return (MySQL.scalar.await('SELECT slot as Slot FROM inventory WHERE owner = ? AND type = ? AND item_id = ? GROUP BY slot HAVING COUNT(item_id) <= ?', {
-			tostring(Owner),
-			Type,
-			Name,
-			itemsDatabase[Name].isStackable - Count
-		}))
-	end,
-	GetFreeSlotNumbers = function(self, Owner, invType, vehClass, vehModel, src)
-		local result = INVENTORY:GetSlots(Owner, invType)
-		local occupiedTable = {}
-		local unOccupiedSlots = {}
-		for k, v in ipairs(result) do
-			occupiedTable[v] = true
-		end
+	table.sort(unOccupiedSlots)
 
-		local total = 8
-		if LoadedEntitys[invType] ~= nil then
-			total = getSlotCount(invType, vehClass or false, vehModel or false, false, Owner, src)
-		else
-			exports['sandbox-base']:LoggerError("Inventory",
-				string.format("Entity Type ^2%s^7 Was Attempted To Be Loaded", invType))
-		end
+	return unOccupiedSlots
+end)
 
-		for i = 1, total do
-			if not occupiedTable[i] then
-				table.insert(unOccupiedSlots, i)
-			end
-		end
+exports("SlotExists", function(Owner, Slot, Type)
+	return (MySQL.scalar.await('SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ?', {
+		tostring(Owner),
+		Type,
+		Slot
+	}) ~= nil)
+end)
 
-		table.sort(unOccupiedSlots)
-
-		return unOccupiedSlots
-	end,
-	SlotExists = function(self, Owner, Slot, Type)
-		return (MySQL.scalar.await('SELECT id FROM inventory WHERE owner = ? AND type = ? AND slot = ?', {
+exports("GetSlot", function(Owner, Slot, Type)
+	local item = MySQL.prepare.await(
+		'SELECT id, count(*) as Count, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, MIN(creationDate) as CreateDate FROM inventory WHERE owner = ? AND type = ? AND slot = ? GROUP BY slot ORDER BY slot ASC',
+		{
 			tostring(Owner),
 			Type,
 			Slot
-		}) ~= nil)
-	end,
-	GetSlot = function(self, Owner, Slot, Type)
-		local item = MySQL.prepare.await(
-			'SELECT id, count(*) as Count, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, MIN(creationDate) as CreateDate FROM inventory WHERE owner = ? AND type = ? AND slot = ? GROUP BY slot ORDER BY slot ASC',
-			{
-				tostring(Owner),
-				Type,
-				Slot
-			})
+		})
 
-		if item ~= nil then
-			item.MetaData = json.decode(item.MetaData or "{}")
-		end
+	if item ~= nil then
+		item.MetaData = json.decode(item.MetaData or "{}")
+	end
 
-		return item
-	end,
-	CountInSlot = function(self, Owner, Slot, Type)
-		local t = MySQL.scalar.await('SELECT COUNT(*) as Count FROM inventory WHERE owner = ? AND type = ? AND slot = ?',
-			{
-				tostring(Owner),
-				Type,
-				Slot
-			})
-		return t
-	end,
-	GetOldestInSlot = function(self, Owner, Slot, Type)
-		local item = MySQL.prepare.await(
-			'SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND slot = ? ORDER BY creationDate ASC LIMIT 1',
-			{
-				tostring(Owner),
-				Type,
-				Slot
-			})
+	return item
+end)
 
-		if item ~= nil then
-			item.MetaData = json.decode(item.MetaData or "{}")
-			item.Count = self:CountInSlot(Owner, Slot, Type)
-		end
+exports("CountInSlot", function(Owner, Slot, Type)
+	local t = MySQL.scalar.await('SELECT COUNT(*) as Count FROM inventory WHERE owner = ? AND type = ? AND slot = ?',
+		{
+			tostring(Owner),
+			Type,
+			Slot
+		})
+	return t
+end)
 
-		return item
-	end,
-	GetItem = function(self, id)
-		return MySQL.prepare.await(
-			'SELECT id, count(*) as Count, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE id = ?',
-			{
-				id
-			})
-	end,
-	AddItem = function(self, Owner, Name, Count, md, invType, vehClass, vehModel, entity, isRecurse, Slot,
-					   forceCreateDate, quality, skipMetaGen, skipChangeAlert)
+exports("GetOldestInSlot", function(Owner, Slot, Type)
+	local item = MySQL.prepare.await(
+		'SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND slot = ? ORDER BY creationDate ASC LIMIT 1',
+		{
+			tostring(Owner),
+			Type,
+			Slot
+		})
+
+	if item ~= nil then
+		item.MetaData = json.decode(item.MetaData or "{}")
+		item.Count = exports['sandbox-inventory']:CountInSlot(Owner, Slot, Type)
+	end
+
+	return item
+end)
+
+exports("GetItem", function(id)
+	return MySQL.prepare.await(
+		'SELECT id, count(*) as Count, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE id = ?',
+		{
+			id
+		})
+end)
+
+exports("AddItem",
+	function(Owner, Name, Count, md, invType, vehClass, vehModel, entity, isRecurse, Slot, forceCreateDate, quality,
+			 skipMetaGen, skipChangeAlert)
 		local p = promise.new()
 
 		CreateThread(function()
@@ -2396,7 +2394,7 @@ INVENTORY = {
 				end
 
 				local slotsNeeded = math.ceil(Count / (itemExist.isStackable or 1))
-				local slots = INVENTORY:GetFreeSlotNumbers(Owner, invType, vehClass, vehModel)
+				local slots = exports['sandbox-inventory']:GetFreeSlotNumbers(Owner, invType, vehClass, vehModel)
 				local slotsData = {}
 				if Slot then
 					table.insert(slotsData, {
@@ -2428,15 +2426,15 @@ INVENTORY = {
 						route = GetEntityRoutingBucket(entity)
 					end
 
-					local dz = INVENTORY:CheckDropZones(route, coords)
+					local dz = exports['sandbox-inventory']:CheckDropZones(route, coords)
 					local tOwn = nil
 					if dz == nil then
-						tOwn = INVENTORY:CreateDropzone(route, coords)
+						tOwn = exports['sandbox-inventory']:CreateDropzone(route, coords)
 					else
 						tOwn = dz.id
 					end
 
-					local t = INVENTORY:GetFreeSlotNumbers(tOwn, 10, vehClass, vehModel)
+					local t = exports['sandbox-inventory']:GetFreeSlotNumbers(tOwn, 10, vehClass, vehModel)
 					for k, v in ipairs(t) do
 						if #slotsData < slotsNeeded then
 							table.insert(slotsData, {
@@ -2492,12 +2490,14 @@ INVENTORY = {
 					end
 
 					local c = Count > (itemExist.isStackable or 1) and (itemExist.isStackable or 1) or Count
-					local mSlot = INVENTORY:GetMatchingSlot(v.owner, Name, c, v.type)
+					local mSlot = exports['sandbox-inventory']:GetMatchingSlot(v.owner, Name, c, v.type)
 					if mSlot == nil then
-						retval = INVENTORY:AddSlot(v.owner, Name, c, MetaData, v.slot, v.type, forceCreateDate or false,
+						retval = exports['sandbox-inventory']:AddSlot(v.owner, Name, c, MetaData, v.slot, v
+							.type, forceCreateDate or false,
 							quality or false)
 					else
-						retval = INVENTORY:AddSlot(v.owner, Name, c, MetaData, mSlot, v.type, forceCreateDate or false,
+						retval = exports['sandbox-inventory']:AddSlot(v.owner, Name, c, MetaData, mSlot, v.type,
+							forceCreateDate or false,
 							quality or false)
 					end
 				end
@@ -2522,85 +2522,51 @@ INVENTORY = {
 		end)
 
 		return Citizen.Await(p)
-	end,
-	AddSlot = function(self, Owner, Name, Count, MetaData, Slot, Type, forceCreateDate, quality)
-		local p = promise.new()
-		if Count <= 0 then
+	end)
+
+exports("AddSlot", function(Owner, Name, Count, MetaData, Slot, Type, forceCreateDate, quality)
+	local p = promise.new()
+	if Count <= 0 then
+		exports['sandbox-base']:LoggerError("Inventory",
+			"[AddSlot] Cannot Add " .. Count .. " of an Item (" .. Owner .. ":" .. Type .. ")")
+		return false
+	end
+
+	if Slot == nil then
+		local freeSlots = exports['sandbox-inventory']:GetFreeSlotNumbers(Owner, Type)
+		if #freeSlots == 0 then
 			exports['sandbox-base']:LoggerError("Inventory",
-				"[AddSlot] Cannot Add " .. Count .. " of an Item (" .. Owner .. ":" .. Type .. ")")
+				"[AddSlot] No Available Slots For " .. Owner .. ":" .. Type .. " And Passed Slot Was Nil")
 			return false
 		end
+		Slot = freeSlots[1]
+	end
 
-		if Slot == nil then
-			local freeSlots = INVENTORY:GetFreeSlotNumbers(Owner, Type)
-			if #freeSlots == 0 then
-				exports['sandbox-base']:LoggerError("Inventory",
-					"[AddSlot] No Available Slots For " .. Owner .. ":" .. Type .. " And Passed Slot Was Nil")
-				return false
-			end
-			Slot = freeSlots[1]
-		end
+	if itemsDatabase[Name] == nil then
+		exports['sandbox-base']:LoggerError(
+			"Inventory",
+			string.format("Slot %s in %s-%s has invalid item %s", Slot, Owner, Type, Name)
+		)
+		return false
+	end
 
-		if itemsDatabase[Name] == nil then
-			exports['sandbox-base']:LoggerError(
-				"Inventory",
-				string.format("Slot %s in %s-%s has invalid item %s", Slot, Owner, Type, Name)
-			)
-			return false
-		end
+	local created = forceCreateDate or os.time()
+	local expiry = -1
+	if itemsDatabase[Name].durability ~= nil and itemsDatabase[Name].isDestroyed then
+		expiry = created + itemsDatabase[Name].durability
+	end
 
-
-
-		local created = forceCreateDate or os.time()
-		local expiry = -1
-		if itemsDatabase[Name].durability ~= nil and itemsDatabase[Name].isDestroyed then
-			expiry = created + itemsDatabase[Name].durability
-		end
-
-		if Count > 2500 then
-			local c = Count
-			local queries = {}
-			while c > 0 do
-				local qry =
-				'INSERT INTO inventory (owner, type, item_id, slot, quality, information, creationDate, expiryDate) VALUES '
-				local params = {}
-
-				local c2 = c > 2500 and 2500 or c
-
-				for i = 1, c2 do
-					table.insert(params, tostring(Owner))
-					table.insert(params, Type)
-					table.insert(params, Name)
-					table.insert(params, Slot)
-					table.insert(params, quality or 0)
-					table.insert(params, json.encode(MetaData))
-					table.insert(params, created)
-					table.insert(params, expiry)
-					qry = qry .. '(?, ?, ?, ?, ?, ?, ?, ?)'
-					if i < c2 then
-						qry = qry .. ','
-					end
-				end
-
-				qry = qry .. ';'
-
-				table.insert(queries, {
-					query = qry,
-					values = params
-				})
-
-				c -= c2
-			end
-
-			MySQL.transaction(queries, function(r)
-				p:resolve(r)
-			end)
-		else
+	if Count > 2500 then
+		local c = Count
+		local queries = {}
+		while c > 0 do
 			local qry =
 			'INSERT INTO inventory (owner, type, item_id, slot, quality, information, creationDate, expiryDate) VALUES '
 			local params = {}
 
-			for i = 1, Count do
+			local c2 = c > 2500 and 2500 or c
+
+			for i = 1, c2 do
 				table.insert(params, tostring(Owner))
 				table.insert(params, Type)
 				table.insert(params, Name)
@@ -2610,834 +2576,879 @@ INVENTORY = {
 				table.insert(params, created)
 				table.insert(params, expiry)
 				qry = qry .. '(?, ?, ?, ?, ?, ?, ?, ?)'
-				if i < Count then
+				if i < c2 then
 					qry = qry .. ','
 				end
 			end
 
 			qry = qry .. ';'
 
-			MySQL.query(qry, params, function(res)
-				p:resolve(res)
-			end)
+			table.insert(queries, {
+				query = qry,
+				values = params
+			})
+
+			c -= c2
 		end
 
-		return Citizen.Await(p)
-	end,
-	SetItemCreateDate = function(self, id, value)
-		MySQL.update.await('UPDATE inventory SET creationDate = ? WHERE id = ?', {
-			value,
+		MySQL.transaction(queries, function(r)
+			p:resolve(r)
+		end)
+	else
+		local qry =
+		'INSERT INTO inventory (owner, type, item_id, slot, quality, information, creationDate, expiryDate) VALUES '
+		local params = {}
+
+		for i = 1, Count do
+			table.insert(params, tostring(Owner))
+			table.insert(params, Type)
+			table.insert(params, Name)
+			table.insert(params, Slot)
+			table.insert(params, quality or 0)
+			table.insert(params, json.encode(MetaData))
+			table.insert(params, created)
+			table.insert(params, expiry)
+			qry = qry .. '(?, ?, ?, ?, ?, ?, ?, ?)'
+			if i < Count then
+				qry = qry .. ','
+			end
+		end
+
+		qry = qry .. ';'
+
+		MySQL.query(qry, params, function(res)
+			p:resolve(res)
+		end)
+	end
+
+	return Citizen.Await(p)
+end)
+
+exports("SetItemCreateDate", function(id, value)
+	MySQL.update.await('UPDATE inventory SET creationDate = ? WHERE id = ?', {
+		value,
+		id,
+	})
+end)
+
+exports("SetMetaDataKey", function(id, key, value, source)
+	local slot = exports['sandbox-inventory']:GetItem(id)
+	if slot ~= nil then
+		local md = json.decode(slot.MetaData or "{}")
+		md[key] = value
+		MySQL.update.await('UPDATE inventory SET information = ? WHERE id = ?', {
+			json.encode(md),
 			id,
 		})
-	end,
-	SetMetaDataKey = function(self, id, key, value, source)
-		local slot = INVENTORY:GetItem(id)
-		if slot ~= nil then
-			local md = json.decode(slot.MetaData or "{}")
-			md[key] = value
-			MySQL.update.await('UPDATE inventory SET information = ? WHERE id = ?', {
-				json.encode(md),
-				id,
-			})
 
-			if source then
-				TriggerClientEvent("Inventory:Client:UpdateMetadata", source, slot.Slot, json.encode(md), key)
-			end
-
-			return md
-		else
-			return {}
-		end
-	end,
-	UpdateMetaData = function(self, id, updatingMeta)
-		if type(updatingMeta) ~= "table" then
-			return false
+		if source then
+			TriggerClientEvent("Inventory:Client:UpdateMetadata", source, slot.Slot, json.encode(md), key)
 		end
 
-		local slot = INVENTORY:GetItem(id)
-		if slot ~= nil then
-			local md = json.decode(slot.MetaData or "{}")
+		return md
+	else
+		return {}
+	end
+end)
 
-			for k, v in pairs(updatingMeta) do
-				md[k] = v
-			end
+exports("UpdateMetaData", function(id, updatingMeta)
+	if type(updatingMeta) ~= "table" then
+		return false
+	end
 
-			MySQL.update.await('UPDATE inventory SET information = ? WHERE id = ?', {
-				json.encode(md),
-				id,
-			})
+	local slot = exports['sandbox-inventory']:GetItem(id)
+	if slot ~= nil then
+		local md = json.decode(slot.MetaData or "{}")
 
-			return md
-		else
-			return {}
+		for k, v in pairs(updatingMeta) do
+			md[k] = v
 		end
-	end,
-	Items = {
-		GetData = function(self, item)
-			return itemsDatabase[item]
-		end,
-		GetCount = function(self, owner, invType, item)
-			local counts = INVENTORY.Items:GetCounts(owner, invType)
-			return counts[item] or 0
-		end,
-		GetCounts = function(self, owner, invType)
-			if invType == 1 then
-				if _invCounts[owner] == nil then
-					getInventory(owner, invType)
-				end
-				return _invCounts[owner]
-			else
-				-- non-players shouldn't be counting, so why are we here?
-				return {}
+
+		MySQL.update.await('UPDATE inventory SET information = ? WHERE id = ?', {
+			json.encode(md),
+			id,
+		})
+
+		return md
+	else
+		return {}
+	end
+end)
+
+exports("ItemsGetData", function(item)
+	return itemsDatabase[item]
+end)
+
+exports("ItemsGetCount", function(owner, invType, item)
+	local counts = exports['sandbox-inventory']:ItemsGetCounts(owner, invType)
+	return counts[item] or 0
+end)
+
+exports("ItemsGetCounts", function(owner, invType)
+	if invType == 1 then
+		if _invCounts[owner] == nil then
+			getInventory(owner, invType)
+		end
+		return _invCounts[owner]
+	else
+		-- non-players shouldn't be counting, so why are we here?
+		return {}
+	end
+end)
+
+exports("ItemsGetWeights", function(owner, invType)
+	if invType == 1 then
+		if _invCounts[owner] == nil then
+			getInventory(owner, invType)
+		end
+		local weights = 0
+		for k, v in pairs(_invCounts[owner]) do
+			local itemExist = itemsDatabase[k]
+			if itemExist then
+				weights = weights + (itemExist.weight * v)
 			end
-		end,
-		GetWeights = function(self, owner, invType)
-			if invType == 1 then
-				if _invCounts[owner] == nil then
-					getInventory(owner, invType)
-				end
-				local weights = 0
-				for k, v in pairs(_invCounts[owner]) do
-					local itemExist = itemsDatabase[k]
-					if itemExist then
-						weight += (itemExist.weight * v)
-					end
-				end
-				return weights
-			else
-				local items = MySQL.rawExecute.await(
-					'SELECT id, count(*) as Count, item_id as Name FROM inventory WHERE owner = ? AND type = ? GROUP BY item_id',
-					{
-						tostring(owner),
-						invType,
-					})
-
-				local weights = 0
-				for k, slot in ipairs(items) do
-					weights += (slot.Count * itemsDatabase[slot.Name].weight or 0)
-				end
-
-				return weights
-			end
-		end,
-		GetFirst = function(self, Owner, Name, invType)
-			local item = MySQL.prepare.await(
-				"SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id = ? AND ((expiryDate >= ? AND expiryDate >= 0) OR expiryDate = -1) ORDER BY quality DESC, creationDate ASC LIMIT 1",
-				{
-					tostring(Owner),
-					invType,
-					Name,
-					os.time(),
-				})
-
-			if item ~= nil then
-				item.MetaData = json.decode(item.MetaData or "{}")
-			end
-
-			return item
-		end,
-		GetAll = function(self, Owner, Name, invType)
-			local items = MySQL.prepare.await(
-				"SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id = ? ORDER BY quality DESC, creationDate ASC",
-				{
-					tostring(Owner),
-					invType,
-					Name,
-				})
-
-			if #items > 0 then
-				for k, v in ipairs(items) do
-					items[k].MetaData = json.decode(items[k].MetaData or "{}")
-				end
-			end
-
-			return items
-		end,
-		Has = function(self, owner, invType, item, count)
-			return (MySQL.prepare.await('SELECT id, count(id) as Count FROM inventory WHERE owner = ? AND type = ? AND item_id = ? GROUP BY item_id', {
+		end
+		return weights
+	else
+		local items = MySQL.rawExecute.await(
+			'SELECT id, count(*) as Count, item_id as Name FROM inventory WHERE owner = ? AND type = ? GROUP BY item_id',
+			{
 				tostring(owner),
 				invType,
-				item
-			})?.Count or 0) >= (count or 1)
-		end,
-		HasId = function(self, owner, invType, id)
-			return MySQL.prepare.await(
-				'SELECT id, count(*) as Count FROM inventory WHERE id = ? AND owner = ? AND type = ?', {
-					id,
-					tostring(owner),
-					invType,
-				}) ~= nil
-		end,
-		HasItems = function(self, source, items)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			local charId = char:GetData("SID")
-			for k, v in ipairs(items) do
-				if not INVENTORY.Items:Has(charId, 1, v.item, v.count) then
-					return false
-				end
-			end
+			})
+
+		local weights = 0
+		for k, slot in ipairs(items) do
+			weights = weights + (slot.Count * (itemsDatabase[slot.Name].weight or 0))
+		end
+
+		return weights
+	end
+end)
+
+exports("ItemsGetFirst", function(Owner, Name, invType)
+	local item = MySQL.prepare.await(
+		"SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id = ? AND ((expiryDate >= ? AND expiryDate >= 0) OR expiryDate = -1) ORDER BY quality DESC, creationDate ASC LIMIT 1",
+		{
+			tostring(Owner),
+			invType,
+			Name,
+			os.time(),
+		})
+
+	if item ~= nil then
+		item.MetaData = json.decode(item.MetaData or "{}")
+	end
+
+	return item
+end)
+
+exports("ItemsGetAll", function(Owner, Name, invType)
+	local items = MySQL.prepare.await(
+		"SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id = ? ORDER BY quality DESC, creationDate ASC",
+		{
+			tostring(Owner),
+			invType,
+			Name,
+		})
+
+	if #items > 0 then
+		for k, v in ipairs(items) do
+			items[k].MetaData = json.decode(items[k].MetaData or "{}")
+		end
+	end
+
+	return items
+end)
+
+exports("ItemsHas", function(owner, invType, item, count)
+	local result = MySQL.prepare.await(
+		'SELECT id, count(id) as Count FROM inventory WHERE owner = ? AND type = ? AND item_id = ? GROUP BY item_id', {
+			tostring(owner),
+			invType,
+			item
+		})
+	return (result and result.Count or 0) >= (count or 1)
+end)
+
+exports("ItemsHasId", function(owner, invType, id)
+	return MySQL.prepare.await(
+		'SELECT id, count(*) as Count FROM inventory WHERE id = ? AND owner = ? AND type = ?', {
+			id,
+			tostring(owner),
+			invType,
+		}) ~= nil
+end)
+
+exports("ItemsHasItems", function(source, items)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	local charId = char:GetData("SID")
+	for k, v in ipairs(items) do
+		if not exports['sandbox-inventory']:ItemsHas(charId, 1, v.item, v.count) then
+			return false
+		end
+	end
+	return true
+end)
+
+exports("ItemsHasAnyItems", function(source, items)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	local charId = char:GetData("SID")
+
+	for k, v in ipairs(items) do
+		if exports['sandbox-inventory']:ItemsHas(charId, 1, v.item, v.count) then
 			return true
-		end,
-		HasAnyItems = function(self, source, items)
+		end
+	end
+
+	return false
+end)
+
+exports("GetAllOfType", function(owner, invType, itemType)
+	local f = {}
+	local params = {}
+
+	for k, v in pairs(itemsDatabase) do
+		if v.type == itemType then
+			table.insert(f, string.format('"%s"', v.name))
+		end
+	end
+
+	local qry = string.format(
+		'SELECT id, count(id) as Count, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id IN (%s) GROUP BY item_id ORDER BY creationDate ASC',
+		table.concat(f, ',')
+	)
+	return MySQL.rawExecute.await(qry, { tostring(owner), invType })
+end)
+
+exports("GetAllOfTypeNoStack", function(owner, invType, itemType)
+	local f = {}
+	local params = {}
+
+	for k, v in pairs(itemsDatabase) do
+		if v.type == itemType then
+			table.insert(f, string.format('"%s"', v.name))
+		end
+	end
+
+	local qry = string.format(
+		'SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id IN (%s)',
+		table.concat(f, ',')
+	)
+	return MySQL.rawExecute.await(qry, { tostring(owner), invType })
+end)
+
+exports("RegisterUse", function(item, id, cb)
+	ItemCallbacks[item] = ItemCallbacks[item] or {}
+	ItemCallbacks[item][id] = cb
+	if itemsDatabase[item] and not itemsDatabase[item].isUsable then
+		itemsDatabase[item].isUsable = true
+	end
+
+	if itemsDatabase[item] and itemsDatabase[item].isUsable then
+		for k, v in pairs(itemsDatabase) do
+			if v.imitate == item then
+				v.isUsable = true
+			end
+		end
+	end
+end)
+
+exports("Use", function(source, item, cb)
+	if item == nil then
+		return cb(false)
+	end
+
+	if not itemsDatabase[item.Name] or not itemsDatabase[item.Name].isUsable or _inUse[source] then
+		return cb(false)
+	end
+
+	local itemData = itemsDatabase[item.Name]
+	if
+		not itemData.durability
+		or item ~= nil
+		and item.CreateDate ~= nil
+		and item.CreateDate + itemData.durability > os.time()
+	then
+		if itemData.closeUi then
+			TriggerClientEvent("Inventory:CloseUI", source)
+		end
+
+		if
+			itemData.useRestrict == nil
+			or (itemData.useRestrict.job ~= nil and Jobs.Permissions:HasJob(
+				source,
+				itemData.useRestrict.job.id,
+				itemData.useRestrict.job.workplace or false,
+				itemData.useRestrict.job.grade or false,
+				false,
+				false,
+				itemData.useRestrict.job.permissionKey or false
+			) and (not itemData.useRestrict.job.duty or Player(source).state.onDuty == itemData.useRestrict.job.id))
+			or (itemData.useRestrict.state and hasValue(char:GetData("States"), itemData.useRestrict.state))
+			or (itemData.useRestrict.rep ~= nil and Reputation:GetLevel(source, itemData.useRestrict.rep.id) >= itemData.useRestrict.rep.level)
+			or (itemData.useRestrict.character ~= nil and itemData.useRestrict.character == char:GetData("ID"))
+			or (itemData.useRestrict.admin and plyr.Permissions:IsAdmin())
+		then
+			_inUse[source] = true
+			TriggerClientEvent("Inventory:Client:InUse", source, _inUse[source])
+			TriggerClientEvent("Inventory:Client:Changed", source, itemData.type == 2 and "holster" or "used",
+				item.Name, 0, item.Slot)
+
+			local used = true
+			if itemData.animConfig ~= nil then
+				used = false
+				local p = promise.new()
+				exports["sandbox-base"]:ClientCallback(source, "Inventory:ItemUse", itemData.animConfig,
+					function(state)
+						p:resolve(state)
+					end)
+				used = Citizen.Await(p)
+			end
+
+			if used then
+				local retard = false
+				if ItemCallbacks[item.Name] ~= nil then
+					for k, callback in pairs(ItemCallbacks[item.Name]) do
+						retard = true
+						callback(source, item, itemsDatabase[item.Name])
+					end
+				elseif itemData.imitate and ItemCallbacks[itemData.imitate] ~= nil then
+					for k, callback in pairs(ItemCallbacks[itemData.imitate]) do
+						retard = true
+						callback(source, item, itemsDatabase[item.Name])
+					end
+				end
+
+				if retard then
+					TriggerClientEvent("Markers:ItemAction", source, item)
+				end
+			end
+
+			local sid = exports['sandbox-characters']:FetchCharacterSource(source):GetData("SID")
+			if WEAPON_PROPS[item.Name] then
+				_refreshAttchs[sid] = true
+			end
+
+			if itemData.gangChain ~= nil then
+				_refreshGangChain[sid] = true
+			end
+
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			local charId = char:GetData("SID")
+			sendRefreshForClient(source, char:GetData("SID"), 1, item.Slot)
+			_inUse[source] = false
+			TriggerClientEvent("Inventory:Client:InUse", source, _inUse[source])
+			cb(used)
+		else
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Can't Use That")
+			cb(false)
+		end
+	else
+		cb(false)
+	end
+end)
 
-			for k, v in ipairs(items) do
-				if INVENTORY.Items:Has(charId, 1, v.item, v.count) then
-					return true
+exports("Remove", function(owner, invType, item, count, skipUpdate)
+	local qry = "DELETE FROM inventory WHERE owner = ? AND type = ? AND item_id = ?"
+	local vars = {
+		tostring(owner),
+		invType,
+		item,
+	}
+
+	if count then
+		qry =
+		"DELETE FROM inventory WHERE owner = ? AND type = ? AND item_id = ? ORDER BY slot ASC, creationDate ASC LIMIT ?"
+		vars = {
+			tostring(owner),
+			invType,
+			item,
+			count,
+		}
+	end
+
+	local results = MySQL.query.await(qry, vars)
+
+	if not skipUpdate then
+		local itemData = itemsDatabase[item]
+		if invType == 1 then
+			local char = exports['sandbox-characters']:FetchBySID(owner)
+			if char ~= nil then
+				local source = char:GetData("Source")
+				TriggerClientEvent("Inventory:Client:Changed", source, "removed", item, count)
+				if WEAPON_PROPS[itemData and itemData.weapon or item] ~= nil then
+					_refreshAttchs[owner] = source
 				end
-			end
-
-			return false
-		end,
-		GetAllOfType = function(self, owner, invType, itemType)
-			local f = {}
-			local params = {}
-
-			for k, v in pairs(itemsDatabase) do
-				if v.type == itemType then
-					table.insert(f, string.format('"%s"', v.name))
+				if itemData and itemData.gangChain ~= nil then
+					_refreshGangChain[owner] = source
 				end
+				refreshShit(owner)
+			end
+		end
+	end
+
+	return results.affectedRows >= (count or 0)
+end)
+
+exports("RemoveId", function(owner, invType, item)
+	MySQL.query.await("DELETE FROM inventory WHERE id = ?", { item.id })
+
+	if invType == 1 then
+		local itemData = itemsDatabase[item.Name]
+		local char = exports['sandbox-characters']:FetchBySID(tonumber(owner))
+		if char ~= nil then
+			local source = char:GetData("Source")
+			TriggerClientEvent("Inventory:Client:Changed", source, "removed", item.Name, 1)
+			if WEAPON_PROPS[itemData and itemData.weapon or item.Name] ~= nil then
+				_refreshAttchs[owner] = source
 			end
 
-			local qry = string.format(
-				'SELECT id, count(id) as Count, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id IN (%s) GROUP BY item_id ORDER BY creationDate ASC',
-				table.concat(f, ',')
-			)
-			return MySQL.rawExecute.await(qry, { tostring(owner), invType })
-		end,
-		GetAllOfTypeNoStack = function(self, owner, invType, itemType)
-			local f = {}
-			local params = {}
-
-			for k, v in pairs(itemsDatabase) do
-				if v.type == itemType then
-					table.insert(f, string.format('"%s"', v.name))
-				end
+			if itemData and itemData.gangChain ~= nil then
+				_refreshGangChain[owner] = source
 			end
 
-			local qry = string.format(
-				'SELECT id, owner as Owner, type as invType, item_id as Name, price as Price, quality AS Quality, information as MetaData, slot as Slot, creationDate as CreateDate FROM inventory WHERE owner = ? AND type = ? AND item_id IN (%s)',
-				table.concat(f, ',')
-			)
-			return MySQL.rawExecute.await(qry, { tostring(owner), invType })
-		end,
-		RegisterUse = function(self, item, id, cb)
-			ItemCallbacks[item] = ItemCallbacks[item] or {}
-			ItemCallbacks[item][id] = cb
-			if itemsDatabase[item] and not itemsDatabase[item].isUsable then
-				itemsDatabase[item].isUsable = true
-			end
+			refreshShit(owner)
+		end
+	end
 
-			if itemsDatabase[item]?.isUsable then
-				for k, v in pairs(itemsDatabase) do
-					if v.imitate == item then
-						v.isUsable = true
-					end
-				end
-			end
-		end,
-		Use = function(self, source, item, cb)
-			if item == nil then
-				return cb(false)
-			end
+	return true
+end)
 
-			if not itemsDatabase[item.Name]?.isUsable or _inUse[source] then
-				return cb(false)
-			end
+exports("RemoveAll", function(owner, type, item)
+	MySQL.query('DELETE FROM inventory WHERE owner = ? AND type = ? AND item_id = ?', {
+		tostring(owner),
+		type,
+		item,
+	})
+	return true
+end)
 
-			local itemData = itemsDatabase[item.Name]
-			if
-				not itemData.durability
-				or item ~= nil
-				and item.CreateDate ~= nil
-				and item.CreateDate + itemData.durability > os.time()
-			then
-				if itemData.closeUi then
-					TriggerClientEvent("Inventory:CloseUI", source)
-				end
-
-				if
-					itemData.useRestrict == nil
-					or (itemData.useRestrict.job ~= nil and Jobs.Permissions:HasJob(
-						source,
-						itemData.useRestrict.job.id,
-						itemData.useRestrict.job.workplace or false,
-						itemData.useRestrict.job.grade or false,
-						false,
-						false,
-						itemData.useRestrict.job.permissionKey or false
-					) and (not itemData.useRestrict.job.duty or Player(source).state.onDuty == itemData.useRestrict.job.id))
-					or (itemData.useRestrict.state and hasValue(char:GetData("States"), itemData.useRestrict.state))
-					or (itemData.useRestrict.rep ~= nil and Reputation:GetLevel(source, itemData.useRestrict.rep.id) >= itemData.useRestrict.rep.level)
-					or (itemData.useRestrict.character ~= nil and itemData.useRestrict.character == char:GetData("ID"))
-					or (itemData.useRestrict.admin and plyr.Permissions:IsAdmin())
-				then
-					_inUse[source] = true
-					TriggerClientEvent("Inventory:Client:InUse", source, _inUse[source])
-					TriggerClientEvent("Inventory:Client:Changed", source, itemData.type == 2 and "holster" or "used",
-						item.Name, 0, item.Slot)
-
-					local used = true
-					if itemData.animConfig ~= nil then
-						used = false
-						local p = promise.new()
-						exports["sandbox-base"]:ClientCallback(source, "Inventory:ItemUse", itemData.animConfig,
-							function(state)
-								p:resolve(state)
-							end)
-						used = Citizen.Await(p)
-					end
-
-					if used then
-						local retard = false
-						if ItemCallbacks[item.Name] ~= nil then
-							for k, callback in pairs(ItemCallbacks[item.Name]) do
-								retard = true
-								callback(source, item, itemsDatabase[item.Name])
-							end
-						elseif itemData.imitate and ItemCallbacks[itemData.imitate] ~= nil then
-							for k, callback in pairs(ItemCallbacks[itemData.imitate]) do
-								retard = true
-								callback(source, item, itemsDatabase[item.Name])
-							end
-						end
-
-						if retard then
-							TriggerClientEvent("Markers:ItemAction", source, item)
-						end
-					end
-
-					local sid = exports['sandbox-characters']:FetchCharacterSource(source):GetData("SID")
-					if WEAPON_PROPS[item.Name] then
-						_refreshAttchs[sid] = true
-					end
-
-					if itemData.gangChain ~= nil then
-						_refreshGangChain[sid] = true
-					end
-
-					local char = exports['sandbox-characters']:FetchCharacterSource(source)
-					sendRefreshForClient(source, char:GetData("SID"), 1, item.Slot)
-					_inUse[source] = false
-					TriggerClientEvent("Inventory:Client:InUse", source, _inUse[source])
-					cb(used)
-				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Can't Use That")
-					cb(false)
-				end
-			else
-				cb(false)
-			end
-		end,
-		Remove = function(self, owner, invType, item, count, skipUpdate)
-			local qry = "DELETE FROM inventory WHERE owner = ? AND type = ? AND item_id = ?"
-			local vars = {
-				tostring(owner),
-				invType,
-				item,
-			}
-
-			if count then
-				qry =
-				"DELETE FROM inventory WHERE owner = ? AND type = ? AND item_id = ? ORDER BY slot ASC, creationDate ASC LIMIT ?"
-				vars = {
-					tostring(owner),
+exports("RemoveSlot", function(Owner, Name, Count, Slot, invType)
+	local slot = exports['sandbox-inventory']:GetSlot(Owner, Slot, invType)
+	if slot == nil then
+		exports['sandbox-base']:LoggerError(
+			"Inventory",
+			"Failed to remove " .. Count .. " from Slot " .. Slot .. " for " .. Owner,
+			{ console = false }
+		)
+		return false
+	else
+		if slot.Count >= Count then
+			MySQL.query.await(
+				'DELETE FROM inventory WHERE owner = ? AND type = ? AND slot = "?" AND item_id = ? ORDER BY creationDate ASC LIMIT ?',
+				{
+					tostring(Owner),
 					invType,
-					item,
-					count,
-				}
-			end
-
-			local results = MySQL.query.await(qry, vars)
-
-			if not skipUpdate then
-				local itemData = itemsDatabase[item]
-				if invType == 1 then
-					local char = exports['sandbox-characters']:FetchBySID(owner)
-					if char ~= nil then
-						local source = char:GetData("Source")
-						TriggerClientEvent("Inventory:Client:Changed", source, "removed", item, count)
-						if WEAPON_PROPS[itemData?.weapon or item] ~= nil then
-							_refreshAttchs[owner] = source
-						end
-						if itemData?.gangChain ~= nil then
-							_refreshGangChain[owner] = source
-						end
-						refreshShit(owner)
-					end
-				end
-			end
-
-			return results.affectedRows >= (count or 0)
-		end,
-		RemoveId = function(self, owner, invType, item)
-			MySQL.query.await("DELETE FROM inventory WHERE id = ?", { item.id })
+					Slot,
+					Name,
+					Count,
+				})
 
 			if invType == 1 then
-				local itemData = itemsDatabase[item.Name]
-				local char = exports['sandbox-characters']:FetchBySID(tonumber(owner))
+				local itemData = itemsDatabase[item]
+				local char = exports['sandbox-characters']:FetchBySID(Owner)
 				if char ~= nil then
 					local source = char:GetData("Source")
-					TriggerClientEvent("Inventory:Client:Changed", source, "removed", item.Name, 1)
-					if WEAPON_PROPS[itemData?.weapon or item.Name] ~= nil then
-						_refreshAttchs[owner] = source
+					TriggerClientEvent("Inventory:Client:Changed", source, "removed", Name, Count)
+					if WEAPON_PROPS[itemData and itemData.weapon or item] ~= nil then
+						_refreshAttchs[Owner] = source
 					end
 
-					if itemData?.gangChain ~= nil then
-						_refreshGangChain[owner] = source
+					if itemData and itemData.gangChain ~= nil then
+						_refreshGangChain[Owner] = source
 					end
 
-					refreshShit(owner)
+					refreshShit(Owner)
 				end
 			end
 
 			return true
-		end,
-		RemoveAll = function(self, owner, type, item)
-			MySQL.query('DELETE FROM inventory WHERE owner = ? AND type = ? AND item_id = ?', {
-				tostring(owner),
-				type,
-				item,
-			})
-			return true
-		end,
-		RemoveSlot = function(self, Owner, Name, Count, Slot, invType)
-			local slot = INVENTORY:GetSlot(Owner, Slot, invType)
-			if slot == nil then
-				exports['sandbox-base']:LoggerError(
-					"Inventory",
-					"Failed to remove " .. Count .. " from Slot " .. Slot .. " for " .. Owner,
-					{ console = false }
-				)
-				return false
-			else
-				if slot.Count >= Count then
-					MySQL.query.await(
-						'DELETE FROM inventory WHERE owner = ? AND type = ? AND slot = "?" AND item_id = ? ORDER BY creationDate ASC LIMIT ?',
-						{
-							tostring(Owner),
-							invType,
-							Slot,
-							Name,
-							Count,
-						})
-
-					if invType == 1 then
-						local itemData = itemsDatabase[item]
-						local char = exports['sandbox-characters']:FetchBySID(Owner)
-						if char ~= nil then
-							local source = char:GetData("Source")
-							TriggerClientEvent("Inventory:Client:Changed", source, "removed", Name, Count)
-							if WEAPON_PROPS[itemData?.weapon or item] ~= nil then
-								_refreshAttchs[Owner] = source
-							end
-
-							if itemData?.gangChain ~= nil then
-								_refreshGangChain[Owner] = source
-							end
-
-							refreshShit(Owner)
-						end
-					end
-
-					return true
-				else
-					return false
-				end
-			end
-		end,
-		RemoveList = function(self, owner, invType, items)
-			for k, v in ipairs(items) do
-				INVENTORY.Items:Remove(owner, invType, v.name, v.count)
-			end
-		end,
-		GetWithStaticMetadata = function(self, masterKey, mainIdName, textureIdName, gender, data)
-			for k, v in pairs(itemsDatabase) do
-				if v.staticMetadata ~= nil
-					and v.staticMetadata[masterKey] ~= nil
-					and v.staticMetadata[masterKey][gender] ~= nil
-					and v.staticMetadata[masterKey][gender][mainIdName] == data[mainIdName]
-					and v.staticMetadata[masterKey][gender][textureIdName] == data[textureIdName]
-				then
-					return k
-				end
-			end
-
-			return nil
-		end,
-	},
-	Holding = {
-		Put = function(self, source)
-			CreateThread(function()
-				local p = promise.new()
-				local char = exports['sandbox-characters']:FetchCharacterSource(source)
-				if char ~= nil then
-					local inv = getInventory(source, char:GetData("SID"), 1)
-
-					if #inv > 0 then
-						local freeSlots = INVENTORY:GetFreeSlotNumbers(char:GetData("SID"), 2)
-
-						if #inv <= #freeSlots then
-							local queries = {}
-
-							for k, v in ipairs(inv) do
-								local sid = char:GetData("SID")
-								table.insert(queries, {
-									query =
-									"UPDATE inventory SET owner = ?, type = ?, slot = ? WHERE owner = ? AND type = ? AND slot = ?",
-									values = {
-										tostring(sid),
-										2,
-										freeSlots[k],
-										tostring(sid),
-										1,
-										v.Slot
-									}
-								})
-							end
-
-							MySQL.transaction.await(queries)
-							refreshShit(char:GetData("SID"))
-
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Retreived Items")
-						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-								"Not Enough Slots Available")
-						end
-					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No Items To Retreive")
-					end
-				end
-
-				p:resolve(true)
-				Citizen.Await(p)
-			end)
-		end,
-		Take = function(self, source)
-			CreateThread(function()
-				local p = promise.new()
-				local char = exports['sandbox-characters']:FetchCharacterSource(source)
-				if char ~= nil then
-					local inv = getInventory(source, char:GetData("SID"), 2)
-
-					if #inv > 0 then
-						local freeSlots = INVENTORY:GetFreeSlotNumbers(char:GetData("SID"), 1)
-
-						if #inv <= #freeSlots then
-							local queries = {}
-
-							for k, v in ipairs(inv) do
-								local sid = char:GetData("SID")
-								table.insert(queries, {
-									query =
-									"UPDATE inventory SET owner = ?, type = ?, slot = ? WHERE owner = ? AND type = ? AND slot = ?",
-									values = {
-										tostring(sid),
-										1,
-										freeSlots[k],
-										tostring(sid),
-										2,
-										v.Slot
-									}
-								})
-							end
-
-							MySQL.transaction.await(queries)
-							refreshShit(char:GetData("SID"), true)
-
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Retreived Items")
-						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-								"Not Enough Slots Available")
-						end
-					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No Items To Retreive")
-					end
-				end
-
-				p:resolve(true)
-				Citizen.Await(p)
-			end)
-		end,
-	},
-	Ballistics = {
-		Clear = function(self, source, ballisticId, ballisticType)
-			CreateThread(function()
-				local p = promise.new()
-				local char = exports['sandbox-characters']:FetchCharacterSource(source)
-				if char ~= nil then
-					local inv = getInventory(source, ballisticId, ballisticType)
-
-					if #inv > 0 then
-						local freeSlots = INVENTORY:GetFreeSlotNumbers(char:GetData("SID"), 1)
-
-						if #inv <= #freeSlots then
-							local queries = {}
-
-							for k, v in ipairs(inv) do
-								local sid = char:GetData("SID")
-								table.insert(queries, {
-									query =
-									"UPDATE inventory SET owner = ?, type = ?, slot = ? WHERE owner = ? AND type = ? AND slot = ?",
-									values = {
-										tostring(sid),
-										1,
-										freeSlots[k],
-										ballisticId,
-										ballisticType,
-										v.Slot
-									}
-								})
-							end
-
-							MySQL.transaction.await(queries)
-							refreshShit(char:GetData("SID"), true)
-						end
-					end
-				end
-
-				p:resolve(true)
-				Citizen.Await(p)
-			end)
-		end,
-	},
-	Container = {
-		Open = function(self, src, item, identifier)
-			exports["sandbox-base"]:ClientCallback(src, "Inventory:Container:Open", {
-				item = item,
-				container = ("container:%s"):format(identifier),
-			}, function()
-				INVENTORY:OpenSecondary(src, itemsDatabase[item.Name].container, ("container:%s"):format(identifier))
-			end)
-		end,
-	},
-	Stash = {
-		Open = function(self, src, invType, identifier)
-			INVENTORY:OpenSecondary(src, invType, ("stash:%s"):format(identifier))
-		end,
-	},
-	Shop = {
-		Open = function(self, src, identifier)
-			INVENTORY:OpenSecondary(src, 11, ("shop:%s"):format(identifier))
-		end,
-	},
-	Search = {
-		Character = function(self, src, tSrc, id)
-			exports["sandbox-base"]:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
-				exports['sandbox-base']:ExecuteClient(tSrc, "Notification", "Info", "You Were Searched")
-				INVENTORY:OpenSecondary(src, 1, id)
-			end)
-		end,
-	},
-	Rob = function(self, src, tSrc, id)
-		exports["sandbox-base"]:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
-			INVENTORY:OpenSecondary(src, 1, id)
-		end)
-	end,
-	Poly = {
-		Create = function(self, data)
-			table.insert(_polyInvs, data.id)
-			GlobalState[string.format("Inventory:%s", data.id)] = data
-		end,
-		-- Add = {
-		-- 	Box = function(self, id, coords, length, width, options, entityId, restrictions)
-
-		-- 	end,
-		-- 	Poly = function(self) end,
-		-- 	Circle = function(self) end,
-		-- },
-		Remove = function(self, id)
-
-		end,
-	},
-	IsOpen = function(self, invType, id)
-		return _openInvs[string.format("%s-%s", invType, id)]
-	end,
-	UpdateGovIDMugshot = function(self, stateId, mugshot)
-		if not stateId or type(stateId) ~= "number" then
+		else
 			return false
 		end
+	end
+end)
 
-		local res = MySQL.prepare.await(
-			'SELECT id, information as MetaData FROM inventory WHERE item_id = ? AND JSON_EXTRACT(information, "$.StateID") = ?',
+exports("RemoveList", function(owner, invType, items)
+	for k, v in ipairs(items) do
+		exports['sandbox-inventory']:Remove(owner, invType, v.name, v.count)
+	end
+end)
+
+exports("GetWithStaticMetadata", function(masterKey, mainIdName, textureIdName, gender, data)
+	for k, v in pairs(itemsDatabase) do
+		if v.staticMetadata ~= nil
+			and v.staticMetadata[masterKey] ~= nil
+			and v.staticMetadata[masterKey][gender] ~= nil
+			and v.staticMetadata[masterKey][gender][mainIdName] == data[mainIdName]
+			and v.staticMetadata[masterKey][gender][textureIdName] == data[textureIdName]
+		then
+			return k
+		end
+	end
+
+	return nil
+end)
+
+exports("HoldingPut", function(source)
+	CreateThread(function()
+		local p = promise.new()
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			local inv = getInventory(source, char:GetData("SID"), 1)
+
+			if #inv > 0 then
+				local freeSlots = exports['sandbox-inventory']:GetFreeSlotNumbers(char:GetData("SID"), 2)
+
+				if #inv <= #freeSlots then
+					local queries = {}
+
+					for k, v in ipairs(inv) do
+						local sid = char:GetData("SID")
+						table.insert(queries, {
+							query =
+							"UPDATE inventory SET owner = ?, type = ?, slot = ? WHERE owner = ? AND type = ? AND slot = ?",
+							values = {
+								tostring(sid),
+								2,
+								freeSlots[k],
+								tostring(sid),
+								1,
+								v.Slot
+							}
+						})
+					end
+
+					MySQL.transaction.await(queries)
+					refreshShit(char:GetData("SID"))
+
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Retreived Items")
+				else
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Not Enough Slots Available")
+				end
+			else
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No Items To Retreive")
+			end
+		end
+
+		p:resolve(true)
+		Citizen.Await(p)
+	end)
+end)
+
+exports("HoldingTake", function(source)
+	CreateThread(function()
+		local p = promise.new()
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			local inv = getInventory(source, char:GetData("SID"), 2)
+
+			if #inv > 0 then
+				local freeSlots = exports['sandbox-inventory']:GetFreeSlotNumbers(char:GetData("SID"), 1)
+
+				if #inv <= #freeSlots then
+					local queries = {}
+
+					for k, v in ipairs(inv) do
+						local sid = char:GetData("SID")
+						table.insert(queries, {
+							query =
+							"UPDATE inventory SET owner = ?, type = ?, slot = ? WHERE owner = ? AND type = ? AND slot = ?",
+							values = {
+								tostring(sid),
+								1,
+								freeSlots[k],
+								tostring(sid),
+								2,
+								v.Slot
+							}
+						})
+					end
+
+					MySQL.transaction.await(queries)
+					refreshShit(char:GetData("SID"), true)
+
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Retreived Items")
+				else
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						"Not Enough Slots Available")
+				end
+			else
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No Items To Retreive")
+			end
+		end
+
+		p:resolve(true)
+		Citizen.Await(p)
+	end)
+end)
+
+exports("BallisticsClear", function(source, ballisticId, ballisticType)
+	CreateThread(function()
+		local p = promise.new()
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			local inv = getInventory(source, ballisticId, ballisticType)
+
+			if #inv > 0 then
+				local freeSlots = exports['sandbox-inventory']:GetFreeSlotNumbers(char:GetData("SID"), 1)
+
+				if #inv <= #freeSlots then
+					local queries = {}
+
+					for k, v in ipairs(inv) do
+						local sid = char:GetData("SID")
+						table.insert(queries, {
+							query =
+							"UPDATE inventory SET owner = ?, type = ?, slot = ? WHERE owner = ? AND type = ? AND slot = ?",
+							values = {
+								tostring(sid),
+								1,
+								freeSlots[k],
+								ballisticId,
+								ballisticType,
+								v.Slot
+							}
+						})
+					end
+
+					MySQL.transaction.await(queries)
+					refreshShit(char:GetData("SID"), true)
+				end
+			end
+		end
+
+		p:resolve(true)
+		Citizen.Await(p)
+	end)
+end)
+
+exports("ContainerOpen", function(src, item, identifier)
+	exports["sandbox-base"]:ClientCallback(src, "Inventory:Container:Open", {
+		item = item,
+		container = ("container:%s"):format(identifier),
+	}, function()
+		exports['sandbox-inventory']:OpenSecondary(src, itemsDatabase[item.Name].container,
+			("container:%s"):format(identifier))
+	end)
+end)
+
+exports("StashOpen", function(src, invType, identifier)
+	exports['sandbox-inventory']:OpenSecondary(src, invType, ("stash:%s"):format(identifier))
+end)
+
+exports("ShopOpen", function(src, identifier)
+	exports['sandbox-inventory']:OpenSecondary(src, 11, ("shop:%s"):format(identifier))
+end)
+
+exports("SearchCharacter", function(src, tSrc, id)
+	exports["sandbox-base"]:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
+		exports['sandbox-base']:ExecuteClient(tSrc, "Notification", "Info", "You Were Searched")
+		exports['sandbox-inventory']:OpenSecondary(src, 1, id)
+	end)
+end)
+
+exports("Rob", function(src, tSrc, id)
+	exports["sandbox-base"]:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
+		exports['sandbox-inventory']:OpenSecondary(src, 1, id)
+	end)
+end)
+
+exports("PolyCreate", function(data)
+	table.insert(_polyInvs, data.id)
+	GlobalState[string.format("Inventory:%s", data.id)] = data
+end)
+
+exports("PolyRemove", function(id)
+	-- Implementation for removing poly inventory
+end)
+
+exports("IsOpen", function(invType, id)
+	return _openInvs[string.format("%s-%s", invType, id)]
+end)
+
+exports("UpdateGovIDMugshot", function(stateId, mugshot)
+	if not stateId or type(stateId) ~= "number" then
+		return false
+	end
+
+	local res = MySQL.prepare.await(
+		'SELECT id, information as MetaData FROM inventory WHERE item_id = ? AND JSON_EXTRACT(information, "$.StateID") = ?',
+		{
+			"govid",
+			stateId
+		})
+
+	local updatingIds = {}
+	for k, v in ipairs(res) do
+		table.insert(updatingIds, v.id)
+	end
+
+	if #updatingIds > 0 then
+		MySQL.update.await(
+			string.format(
+				'UPDATE inventory SET information = JSON_SET(information, "$.Mugshot", ?) WHERE id IN (%s)',
+				table.concat(updatingIds, ',')), {
+				mugshot
+			})
+	end
+	return true
+end)
+
+exports("PlayerShopBasicCreate", function(name, position, ped, owner, bank, job)
+	local id = MySQL.insert.await(
+		'INSERT INTO player_shops (name, position, ped_model, owner, job, owner_bank) VALUES(?, ?, ?, ?, ?, ?)',
+		{
+			name,
+			json.encode(position),
+			ped ~= "0" and ped or nil,
+			owner,
+			job ~= "0" and job or nil,
+			bank,
+		})
+	_playerShops[id] = {
+		id = id,
+		name = name,
+		ped_model = ped ~= "0" and ped or nil,
+		position = position,
+		owner = owner,
+		job = job ~= "0" and job or nil,
+		bank = bank,
+	}
+
+	TriggerClientEvent("Inventory:Client:BasicShop:Create", -1, _playerShops[id])
+end)
+
+exports("PlayerShopBasicDelete", function(id)
+	local queries = {}
+	table.insert(queries, {
+		query = "DELETE FROM player_shops_moderators WHERE shop = ?",
+		values = {
+			id,
+		}
+	})
+	table.insert(queries, {
+		query = "DELETE FROM player_shops WHERE id = ?",
+		values = {
+			id,
+		}
+	})
+	MySQL.transaction(queries)
+	_playerShops[id] = nil
+	_playerShopMods[id] = nil
+	TriggerClientEvent("Inventory:Client:BasicShop:Delete", -1, id)
+end)
+
+exports("PlayerShopModeratorAdd", function(shop, sid, name)
+	MySQL.insert(
+		"INSERT INTO player_shops_moderators (shop, sid, name) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE shop = VALUES(shop), sid = VALUES(sid), name = VALUES(name)",
+		{
+			shop,
+			sid,
+			name
+		})
+	_playerShopMods[shop] = _playerShopMods[shop] or {}
+	table.insert(_playerShopMods[shop], {
+		sid = sid,
+		name = name,
+	})
+end)
+
+exports("PlayerShopModeratorRemove", function(shop, sid)
+	MySQL.query("DELETE FROM player_shops_moderators WHERE shop = ? AND sid = ?", {
+		shop,
+		sid,
+	})
+
+	_playerShopMods[shop] = _playerShopMods[shop] or {}
+	for k, v in ipairs(_playerShopMods[shop]) do
+		if v.sid == sid then
+			table.remove(_playerShopMods[shop], k)
+			break
+		end
+	end
+end)
+
+exports("ItemTemplateCreate",
+	function(itemId, label, description, type, rarity, weight, durability, stackLimit, iconOverride,
+			 price, itemData)
+		local id = MySQL.query.await(
+			'INSERT INTO item_template (description, type, rarity, iconOverride, price, weapon, imitate, isStackable, closeUi, metalic, weight, durability, isDestroyed, isRemoved, gun, requiresLicense, qualification, ammoType, bulletCount, container, staticMetadata, component, animConfig, statusChange, extra, schematic, name, label) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			{
-				"govid",
-				stateId
+				description or nil,
+				type or 1,
+				rarity or 1,
+				iconOverride or nil,
+				price >= 0 and price or 0,
+				itemData and itemData.weapon or nil,
+				itemData and itemData.imitate or nil,
+				stackLimit or 1,
+				itemData and itemData.closeUi or false,
+				itemData and itemData.metalic or false,
+				weight >= 0 and weight or nil,
+				durability >= 0 and durability or nil,
+				itemData and itemData.isDestroyed or false,
+				itemData and itemData.isRemoved or false,
+				type == 2,
+				itemData and itemData.requiresLicense or false,
+				itemData and itemData.qualification or nil,
+				itemData and itemData.ammoType or nil,
+				itemData and itemData.bulletCount or 0,
+				itemData and itemData.container or nil,
+				itemData and itemData.staticMetadata and json.encode(itemData.staticMetadata) or nil,
+				itemData and itemData.component and json.encode(itemData.component) or nil,
+				itemData and itemData.animConfig and json.encode(itemData.animConfig) or nil,
+				itemData and itemData.statusChange and json.encode(itemData.statusChange) or nil,
+				itemData and itemData.extra and json.encode(itemData.extra) or nil,
+				itemData and itemData.schematic or nil,
+				itemId,
+				label,
 			})
 
-		local updatingIds = {}
-		for k, v in ipairs(res) do
-			table.insert(updatingIds, v.id)
-		end
-
-		if #updatingIds > 0 then
-			MySQL.update.await(
-				string.format(
-					'UPDATE inventory SET information = JSON_SET(information, "$.Mugshot", ?) WHERE id IN (%s)',
-					table.concat(updatingIds, ',')), {
-					mugshot
-				})
-		end
-		return true
-	end,
-	PlayerShops = {
-		Basic = {
-			Create = function(self, name, position, ped, owner, bank, job)
-				local id = MySQL.insert.await(
-					'INSERT INTO player_shops (name, position, ped_model, owner, job, owner_bank) VALUES(?, ?, ?, ?, ?, ?)',
-					{
-						name,
-						json.encode(position),
-						ped ~= "0" and ped or nil,
-						owner,
-						job ~= "0" and job or nil,
-						bank,
-					})
-				_playerShops[id] = {
-					id = id,
-					name = name,
-					ped_model = ped ~= "0" and ped or nil,
-					position = position,
-					owner = owner,
-					job = job ~= "0" and job or nil,
-					bank = bank,
-				}
-
-				TriggerClientEvent("Inventory:Client:BasicShop:Create", -1, _playerShops[id])
-			end,
-			Delete = function(self, id)
-				local queries = {}
-				table.insert(queries, {
-					query = "DELETE FROM player_shops_moderators WHERE shop = ?",
-					values = {
-						id,
-					}
-				})
-				table.insert(queries, {
-					query = "DELETE FROM player_shops WHERE id = ?",
-					values = {
-						id,
-					}
-				})
-				MySQL.transaction(queries)
-				_playerShops[id] = nil
-				_playerShopMods[id] = nil
-				TriggerClientEvent("Inventory:Client:BasicShop:Delete", -1, id)
-			end,
-		},
-		Moderators = {
-			Add = function(self, shop, sid, name)
-				MySQL.insert(
-					"INSERT INTO player_shops_moderators (shop, sid, name) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE shop = VALUES(shop), sid = VALUES(sid), name = VALUES(name)",
-					{
-						shop,
-						sid,
-						name
-					})
-				_playerShopMods[shop] = _playerShopMods[shop] or {}
-				table.insert(_playerShopMods[shop], {
-					sid = sid,
-					name = name,
-				})
-			end,
-			Remove = function(self, shop, sid)
-				MySQL.query("DELETE FROM player_shops_moderators WHERE shop = ? AND sid = ?", {
-					shop,
-					sid,
-				})
-
-				_playerShopMods[shop] = _playerShopMods[shop] or {}
-				for k, v in ipairs(_playerShopMods[shop]) do
-					if v.sid == sid then
-						table.remove(_playerShopMods[shop], k)
-						break
-					end
-				end
-			end
+		itemsDatabase[itemId] = {
+			name = itemId,
+			label = label,
+			description = description or nil,
+			type = type or 1,
+			rarity = rarity or 1,
+			iconOverride = iconOverride or nil,
+			price = price >= 0 and price or 0,
+			weapon = itemData and itemData.weapon or nil,
+			imitate = itemData and itemData.imitate or nil,
+			isStackable = stackLimit or 1,
+			closeUi = itemData and itemData.closeUi or false,
+			metalic = itemData and itemData.metalic or false,
+			weight = weight >= 0 and weight or nil,
+			durability = durability >= 0 and durability or nil,
+			isDestroyed = itemData and itemData.isDestroyed or false,
+			isRemoved = itemData and itemData.isRemoved or false,
+			gun = type == 2,
+			requiresLicense = itemData and itemData.requiresLicense or false,
+			qualification = itemData and itemData.qualification or nil,
+			ammoType = itemData and itemData.ammoType or nil,
+			bulletCount = itemData and itemData.bulletCount or 0,
+			container = itemData and itemData.container or nil,
+			staticMetadata = itemData and itemData.staticMetadata or nil,
+			component = itemData and itemData.component or nil,
+			animConfig = itemData and itemData.animConfig or nil,
+			statusChange = itemData and itemData.statusChange or nil,
+			schematic = itemData and itemData.schematic or nil,
 		}
-	},
-	ItemTemplate = {
-		Create = function(self, itemId, label, description, type, rarity, weight, durability, stackLimit, iconOverride,
-						  price, itemData)
-			local id = MySQL.query.await(
-				'INSERT INTO item_template (description, type, rarity, iconOverride, price, weapon, imitate, isStackable, closeUi, metalic, weight, durability, isDestroyed, isRemoved, gun, requiresLicense, qualification, ammoType, bulletCount, container, staticMetadata, component, animConfig, statusChange, extra, schematic, name, label) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-				{
-					description or nil,
-					type or 1,
-					rarity or 1,
-					iconOverride or nil,
-					price >= 0 and price or 0,
-					itemData?.weapon or nil,
-					itemData?.imitate or nil,
-					stackLimit or 1,
-					itemData?.closeUi or false,
-					itemData?.metalic or false,
-					weight >= 0 and weight or nil,
-					durability >= 0 and durability or nil,
-					itemData?.isDestroyed or false,
-					itemData?.isRemoved or false,
-					type == 2,
-					itemData?.requiresLicense or false,
-					itemData?.qualification or nil,
-					itemData?.ammoType or nil,
-					itemData?.bulletCount or 0,
-					itemData?.container or nil,
-					itemData?.staticMetadata and json.encode(itemData?.staticMetadata) or nil,
-					itemData?.component and json.encode(itemData?.component) or nil,
-					itemData?.animConfig and json.encode(itemData?.animConfig) or nil,
-					itemData?.statusChange and json.encode(itemData?.statusChange) or nil,
-					itemData?.extra and json.encode(itemData?.extra) or nil,
-					itemData?.schematic or nil,
-					itemId,
-					label,
-				})
 
-			itemsDatabase[itemId] = {
-				name = itemId,
-				label = label,
-				description = description or nil,
-				type = type or 1,
-				rarity = rarity or 1,
-				iconOverride = iconOverride or nil,
-				price = price >= 0 and price or 0,
-				weapon = itemData?.weapon or nil,
-				imitate = itemData?.imitate or nil,
-				isStackable = stackLimit or 1,
-				closeUi = itemData?.closeUi or false,
-				metalic = itemData?.metalic or false,
-				weight = weight >= 0 and weight or nil,
-				durability = durability >= 0 and durability or nil,
-				isDestroyed = itemData?.isDestroyed or false,
-				isRemoved = itemData?.isRemoved or false,
-				gun = type == 2,
-				requiresLicense = itemData?.requiresLicense or false,
-				qualification = itemData?.qualification or nil,
-				ammoType = itemData?.ammoType or nil,
-				bulletCount = itemData?.bulletCount or 0,
-				container = itemData?.container or nil,
-				staticMetadata = itemData?.staticMetadata or nil,
-				component = itemData?.component or nil,
-				animConfig = itemData?.animConfig or nil,
-				statusChange = itemData?.statusChange or nil,
-				schematic = itemData?.schematic or nil,
-			}
-
-			if itemData?.extra then
-				for k, v in pairs(itemData.extra) do
-					itemsDatabase[itemId][k] = v
-				end
+		if itemData and itemData.extra then
+			for k, v in pairs(itemData.extra) do
+				itemsDatabase[itemId][k] = v
 			end
+		end
 
-			SetupItemUses(itemsDatabase[itemId])
+		SetupItemUses(itemsDatabase[itemId])
 
-			TriggerEvent("Inventory:Server:NewItemCreated", itemId, type)
-			TriggerLatentClientEvent("Inventory:Client:NewItemCreated", -1, 50000, itemsDatabase[itemId])
+		TriggerEvent("Inventory:Server:NewItemCreated", itemId, type)
+		TriggerLatentClientEvent("Inventory:Client:NewItemCreated", -1, 50000, itemsDatabase[itemId])
 
-			return itemsDatabase[itemId]
-		end,
-	}
-}
+		return itemsDatabase[itemId]
+	end)
 
 function UpdateCharacterItemStates(source, inventory, adding)
 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
