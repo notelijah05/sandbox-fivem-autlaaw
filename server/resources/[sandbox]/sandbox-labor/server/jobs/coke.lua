@@ -113,19 +113,20 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Coke:ArriveAtCayo", function(source, data, cb)
 		if _joiners[source] ~= nil and _active.joiner == _joiners[source] and _active.state == 1 then
 			_active.state = 2
-			Vehicles:SpawnTemp(source, `squaddie`, 'automobile', vector3(4504.899, -4510.600, 4.367), 19.409,
+			exports['sandbox-vehicles']:SpawnTemp(source, `squaddie`, 'automobile', vector3(4504.899, -4510.600, 4.367),
+				19.409,
 				function(veh)
-					Vehicles.Keys:Add(_joiners[source], Entity(veh).state.VIN)
+					exports['sandbox-vehicles']:KeysAdd(_joiners[source], Entity(veh).state.VIN)
 					if _active.isWorkgroup then
 						if #_active.members > 0 then
 							for k, v in ipairs(_active.members) do
-								Vehicles.Keys:Add(v.ID, Entity(veh).state.VIN)
+								exports['sandbox-vehicles']:KeysAdd(v.ID, Entity(veh).state.VIN)
 							end
 						end
 					end
 				end)
 
-			Vehicles:SpawnTemp(
+			exports['sandbox-vehicles']:SpawnTemp(
 				source,
 				_active.drop.vehicle,
 				'automobile',
@@ -190,16 +191,17 @@ AddEventHandler("Labor:Server:Startup", function()
 			_active.state = 6
 
 			DeleteEntity(_active.entity)
-			Vehicles:SpawnTemp(source, `bison`, 'automobile', vector3(1293.300, -3168.405, 4.906), 61.642, function(veh)
-				Entity(veh).state.Locked = false
-				Entity(veh).state.noLockpick = true
-				SetVehicleDoorsLocked(veh, 1)
-				_active.entity = veh
-				Labor.Workgroups:SendEvent(
-					_joiners[source],
-					string.format("Coke:Client:%s:SetupFinish", _joiners[source])
-				)
-			end)
+			exports['sandbox-vehicles']:SpawnTemp(source, `bison`, 'automobile', vector3(1293.300, -3168.405, 4.906),
+				61.642, function(veh)
+					Entity(veh).state.Locked = false
+					Entity(veh).state.noLockpick = true
+					SetVehicleDoorsLocked(veh, 1)
+					_active.entity = veh
+					Labor.Workgroups:SendEvent(
+						_joiners[source],
+						string.format("Coke:Client:%s:SetupFinish", _joiners[source])
+					)
+				end)
 		end
 	end)
 

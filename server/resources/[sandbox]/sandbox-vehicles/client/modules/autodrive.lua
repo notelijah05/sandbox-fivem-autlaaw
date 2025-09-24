@@ -15,7 +15,7 @@ local keysToDisable = {
 AddEventHandler('Vehicles:Client:StartUp', function()
 	exports["sandbox-keybinds"]:Add('veh_toggle_autodrive', 'Y', 'keyboard', 'Vehicle - Toggle Autopilot', function()
 		if VEHICLE_INSIDE and DoesEntityExist(VEHICLE_INSIDE) and VEHICLE_SEAT == -1 then
-			if Vehicles.Engine:CheckKeys() then -- check if have keys
+			if exports['sandbox-vehicles']:EngineCheckKeys() then -- check if have keys
 				StartAutoPilot()
 			end
 		end

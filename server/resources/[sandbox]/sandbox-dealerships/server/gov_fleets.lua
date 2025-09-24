@@ -22,7 +22,7 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
                     local properties = table.copy(chosenVehicle.defaultProperties)
                     properties.livery = livery
                     Wait(200)
-                    Vehicles.Owned:AddToFleet(
+                    exports['sandbox-vehicles']:OwnedAddToFleet(
                         shopData.job,
                         false,
                         0,

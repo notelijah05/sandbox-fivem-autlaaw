@@ -183,7 +183,6 @@ function PoliceComponents()
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
 
@@ -197,7 +196,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Wardrobe",
 		"Status",
 		"Polyzone",
-		"Vehicles",
 		"Doors",
 	}, function(error)
 		if #error > 0 then
@@ -295,7 +293,8 @@ AddEventHandler("Core:Shared:Ready", function()
 			end, function()
 				local v = GetVehiclePedIsIn(LocalPlayer.state.ped)
 				return (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison") and
-					not LocalPlayer.state.isDead and v ~= 0 and _pdModels[GetEntityModel(v)] and Vehicles:HasAccess(v)
+					not LocalPlayer.state.isDead and v ~= 0 and _pdModels[GetEntityModel(v)] and
+					exports['sandbox-vehicles']:HasAccess(v)
 			end)
 
 		exports['sandbox-hud']:InteractionRegisterMenu("police-utils", "Police Utilities", "tablet", function(data)

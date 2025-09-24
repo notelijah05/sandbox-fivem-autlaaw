@@ -118,7 +118,8 @@ function RegisterDonorVehicleSaleCallbacks()
               local revokeToken = Dealerships.Donator:RemovePending(plyr:GetData("Identifier"), removeId)
 
               if removeSuccess and revokeToken then
-                Vehicles.Owned:AddToCharacter(char:GetData('SID'), GetHashKey(saleVehicleData.vehicle), 0,
+                exports['sandbox-vehicles']:OwnedAddToCharacter(char:GetData('SID'), GetHashKey(saleVehicleData.vehicle),
+                  0,
                   saleVehicleData.modelType, {
                     make = saleVehicleData.data.make,
                     model = saleVehicleData.data.model,

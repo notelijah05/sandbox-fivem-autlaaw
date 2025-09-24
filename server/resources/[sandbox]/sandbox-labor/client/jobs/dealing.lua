@@ -213,7 +213,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 					LocalPlayer.state:set("cornering", true, true)
 					Entity(_SellingVeh).state:set("cornering", true, true)
 
-					Vehicles.Sync.Doors:Open(entity.entity, 5, true, true)
+					exports['sandbox-vehicles']:SyncDoorsOpen(entity.entity, 5, true, true)
 
 					exports["sandbox-base"]:ServerCallback("CornerDealing:StartCornering", {
 						netId = NetworkGetNetworkIdFromEntity(entity.entity),

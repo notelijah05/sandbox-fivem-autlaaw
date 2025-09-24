@@ -839,7 +839,7 @@ function _doGameStart(player, action)
 								)
 							end
 						elseif action.animation.anim ~= nil then
-							exports['sandbox-animations']:EmotesPlay(action.animation.anim, false, action.duration or -1,
+							Animations.Emotes:Play(action.animation.anim, false, action.duration or -1,
 								true)
 						else
 							if GetVehiclePedIsIn(LocalPlayer.state.ped) == 0 then
@@ -980,7 +980,7 @@ function _gameCleanup(action)
 				StopAnimTask(PlayerPedId(), action.animation.animDict, action.animation.anim, 1.0)
 			end
 		elseif action.animation.anim ~= nil then
-			exports['sandbox-animations']:EmotesForceCancel()
+			Animations.Emotes:ForceCancel()
 		else
 			if action.animation.task ~= nil and GetVehiclePedIsIn(LocalPlayer.state.ped) == 0 then
 				ClearPedTasksImmediately(LocalPlayer.state.ped)

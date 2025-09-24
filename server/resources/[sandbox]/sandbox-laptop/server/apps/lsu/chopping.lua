@@ -378,7 +378,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						local veh = NetworkGetEntityFromNetworkId(data.vNet)
 						local entState = Entity(veh).state
 						_inProgress[entState.VIN] = nil
-						Vehicles:Delete(veh, function() end)
+						exports['sandbox-vehicles']:Delete(veh, function() end)
 
 						return cb(true)
 					end

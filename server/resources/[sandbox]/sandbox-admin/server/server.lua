@@ -4,7 +4,6 @@ function RetrieveComponents()
 	C = exports["sandbox-base"]:FetchComponent("Config")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -13,7 +12,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Config",
 		"Properties",
 		"Pwnzor",
-		"Vehicles",
 	}, function(error)
 		if #error > 0 then
 			return

@@ -65,7 +65,6 @@ function RetrieveComponents()
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Billing = exports["sandbox-base"]:FetchComponent("Billing")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
@@ -84,7 +83,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Crypto",
 		"Generator",
 		"Properties",
-		"Vehicles",
 		"Loans",
 		"Billing",
 		"Banking",

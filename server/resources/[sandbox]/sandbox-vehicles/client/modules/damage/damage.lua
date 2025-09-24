@@ -62,7 +62,7 @@ AddEventHandler("gameEventTriggered", function(event, args)
 							exports["sandbox-hud"]:NotifError("Engine Stalled")
 							CreateThread(function()
 								while stalling do
-									Vehicles.Engine:Force(DAMAGE_VEHICLE, false)
+									exports['sandbox-vehicles']:EngineForce(DAMAGE_VEHICLE, false)
 									Wait(500)
 								end
 							end)

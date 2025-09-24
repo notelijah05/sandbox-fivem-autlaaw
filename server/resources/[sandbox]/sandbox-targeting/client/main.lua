@@ -8,7 +8,6 @@ interactionZones = {}
 AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	EMS = exports["sandbox-base"]:FetchComponent("EMS")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
@@ -19,7 +18,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Targeting", {
 		"Jobs",
-		"Vehicles",
 		"EMS",
 		"Reputation",
 		"Mechanic",

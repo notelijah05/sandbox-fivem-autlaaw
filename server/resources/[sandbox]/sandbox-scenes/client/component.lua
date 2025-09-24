@@ -8,7 +8,6 @@ function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Scenes = exports["sandbox-base"]:FetchComponent("Scenes")
 end
 
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Animations",
 		"Polyzone",
 		"Jobs",
-		"Vehicles",
 		"Scenes",
 	}, function(error)
 		if #error > 0 then

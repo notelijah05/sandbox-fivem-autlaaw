@@ -162,7 +162,6 @@ function RetrieveComponents()
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Drugs = exports["sandbox-base"]:FetchComponent("Drugs")
@@ -175,7 +174,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Wallet",
 		"Jobs",
 		"Reputation",
-		"Vehicles",
 		"Generator",
 		"Banking",
 		"Drugs",

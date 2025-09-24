@@ -11,14 +11,12 @@ local showingAction = false
 
 AddEventHandler("VehicleCustoms:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("VehicleCustoms", {
-		"Vehicles",
 		"Polyzone",
 		"Police",
 	}, function(error)
@@ -251,7 +249,7 @@ function StartOpeningVehicleCustoms()
 	if withinCustoms and DRIVING_VEHICLE then
 		local vehEnt = Entity(DRIVING_VEHICLE)
 		if vehEnt and vehEnt.state.VIN then
-			if Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
+			if exports['sandbox-vehicles']:KeysHas(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
 				OpenVehicleCustoms(
 					_customsLocations[withinCustoms] and _customsLocations[withinCustoms].canInstallPerformance,
 					_customsLocations[withinCustoms] and _customsLocations[withinCustoms].costMultiplier or 1.0,
@@ -304,7 +302,7 @@ function DoSlowVehicleNormalRepair(cost, cb)
 				cost = cost,
 			}, function(success)
 				if success then
-					Vehicles.Repair:Normal(DRIVING_VEHICLE)
+					exports['sandbox-vehicles']:RepairNormal(DRIVING_VEHICLE)
 					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
 					cb(true)
 				else

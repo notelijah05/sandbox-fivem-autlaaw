@@ -76,7 +76,7 @@ function Startup()
                 if DoesEntityExist(v) then
                     local state = Entity(v).state
                     if state and not state.Owned and not state.SpawnTemp and state.LastDriven and state.LastDriven <= timeBefore then
-                        Vehicles:Delete(v, function() end)
+                        exports['sandbox-vehicles']:Delete(v, function() end)
                     end
                 end
             end

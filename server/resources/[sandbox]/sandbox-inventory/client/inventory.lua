@@ -86,7 +86,6 @@ function RetrieveComponents()
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -95,7 +94,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Polyzone",
 		"Jobs",
 		"Reputation",
-		"Vehicles",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -346,7 +344,7 @@ exports("CloseAll", function()
 	_playerDataOpen = false
 
 	if trunkOpen and trunkOpen > 0 then
-		Vehicles.Sync.Doors:Shut(trunkOpen, 5, false)
+		exports['sandbox-vehicles']:SyncDoorsShut(trunkOpen, 5, false)
 		trunkOpen = false
 	end
 
@@ -357,7 +355,7 @@ end)
 
 exports("CloseSecondary", function()
 	if trunkOpen and trunkOpen > 0 then
-		Vehicles.Sync.Doors:Shut(trunkOpen, 5, false)
+		exports['sandbox-vehicles']:SyncDoorsShut(trunkOpen, 5, false)
 		trunkOpen = false
 	end
 
@@ -765,7 +763,7 @@ AddEventHandler("Inventory:Client:Trunk", function(entity, data)
 			SetVehicleHasBeenOwnedByPlayer(entity.entity, true)
 			SetEntityAsMissionEntity(entity.entity, true, true)
 			--SetVehicleDoorOpen(entity.entity, 5, true, false)
-			Vehicles.Sync.Doors:Open(entity.entity, 5, false, false)
+			exports['sandbox-vehicles']:SyncDoorsOpen(entity.entity, 5, false, false)
 		end
 	end)
 end)

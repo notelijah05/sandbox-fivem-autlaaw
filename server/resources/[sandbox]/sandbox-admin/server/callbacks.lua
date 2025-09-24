@@ -493,7 +493,7 @@ function RegisterCallbacks()
             if data.action == "fuel" then
                 veh.state.Fuel = 100
             elseif data.action == "delete" then
-                Vehicles:Delete(data.target, function() end)
+                exports['sandbox-vehicles']:Delete(data.target, function() end)
             elseif data.action == "locks" then
                 veh.state.Locked = not veh.state.Locked
 

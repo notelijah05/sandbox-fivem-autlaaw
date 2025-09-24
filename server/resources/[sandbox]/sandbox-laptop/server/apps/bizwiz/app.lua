@@ -225,13 +225,13 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:ViewVehicleFleet", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
 		if job then
-			Vehicles.Owned:GetAll(nil, 1, job, function(vehicles)
+			exports['sandbox-vehicles']:OwnedGetAll(nil, 1, job, function(vehicles)
 				for k, v in ipairs(vehicles) do
 					if v.Storage then
 						if v.Storage.Type == 0 then
-							v.Storage.Name = Vehicles.Garages:Impound().name
+							v.Storage.Name = exports['sandbox-vehicles']:GaragesImpound().name
 						elseif v.Storage.Type == 1 then
-							v.Storage.Name = Vehicles.Garages:Get(v.Storage.Id).name
+							v.Storage.Name = exports['sandbox-vehicles']:GaragesGet(v.Storage.Id).name
 						elseif v.Storage.Type == 2 then
 							local prop = Properties:Get(v.Storage.Id)
 							v.Storage.Name = prop?.label
@@ -249,7 +249,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:TrackFleetVehicle", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
 		if job then
-			cb(Vehicles.Owned:Track(data.vehicle))
+			cb(exports['sandbox-vehicles']:OwnedTrack(data.vehicle))
 		else
 			cb(false)
 		end

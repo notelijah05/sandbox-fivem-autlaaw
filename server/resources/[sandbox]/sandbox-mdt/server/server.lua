@@ -26,7 +26,6 @@ AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
@@ -38,7 +37,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
 		"MDT",
 		"Jobs",
-		"Vehicles",
 		"Properties",
 		"Radar",
 		"Jail",

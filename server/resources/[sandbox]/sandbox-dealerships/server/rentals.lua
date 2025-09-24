@@ -35,10 +35,11 @@ function RegisterVehicleRentalCallbacks()
                     local renterSID = char:GetData('SID')
                     local renterName = char:GetData('First') .. ' ' .. char:GetData('Last')
 
-                    Vehicles:SpawnTemp(source, rentalVehicleData.vehicle, rentalVehicleData.modelType, spaceCoords,
+                    exports['sandbox-vehicles']:SpawnTemp(source, rentalVehicleData.vehicle, rentalVehicleData.modelType,
+                        spaceCoords,
                         spaceHeading, function(spawnedVehicle, VIN, plate)
                             if spawnedVehicle then
-                                Vehicles.Keys:Add(source, VIN)
+                                exports['sandbox-vehicles']:KeysAdd(source, VIN)
 
                                 local vehState = Entity(spawnedVehicle).state
                                 vehState.Rental = renterSID
@@ -110,7 +111,7 @@ function RegisterVehicleRentalCallbacks()
         if data and data.VIN then
             local vehicle = ACTIVE_RENTAL_VEHICLES[data.VIN]
             if vehicle and DoesEntityExist(vehicle.Entity) then
-                Vehicles:Delete(vehicle.Entity, function(success)
+                exports['sandbox-vehicles']:Delete(vehicle.Entity, function(success)
                     if success then
                         if vehicle.Bank then
                             Banking.Balance:Deposit(Banking.Accounts:GetPersonal(char:GetData("SID")).Account,

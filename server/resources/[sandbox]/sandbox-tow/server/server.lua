@@ -6,7 +6,6 @@ _activeTowers = {}
 AddEventHandler("Tow:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Banking = exports["sandbox-base"]:FetchComponent("Banking")
 	Tow = exports["sandbox-base"]:FetchComponent("Tow")
 end
@@ -14,7 +13,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Tow", {
 		"Jobs",
-		"Vehicles",
 		"Banking",
 		"Tow",
 	}, function(error)
@@ -108,7 +106,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			if char and Player(source).state.onDuty == "tow" then
 				local stateId = char:GetData("SID")
 				if not _activeTowVehicles[stateId] then
-					Vehicles:SpawnTemp(
+					exports['sandbox-vehicles']:SpawnTemp(
 						source,
 						`flatbed`,
 						'automobile',
@@ -116,7 +114,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						spaceCoords.w,
 						function(spawnedVehicle, VIN, plate)
 							if spawnedVehicle then
-								Vehicles.Keys:Add(source, VIN)
+								exports['sandbox-vehicles']:KeysAdd(source, VIN)
 
 								_activeTowVehicles[stateId] = {
 									SID = stateId,
@@ -166,7 +164,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				if hasTruck and hasTruck.veh and DoesEntityExist(hasTruck.veh) then
 					local truckCoords = GetEntityCoords(hasTruck.veh)
 					if #(truckCoords - _towSpaces[1].xyz) <= 20.0 then
-						Vehicles:Delete(hasTruck.veh, function(success)
+						exports['sandbox-vehicles']:Delete(hasTruck.veh, function(success)
 							if success then
 								_activeTowVehicles[stateId] = nil
 								GlobalState[string.format("TowTrucks:%s", stateId)] = false
@@ -255,7 +253,7 @@ TOW = {
 	CleanupPickup = function(self, source)
 		if _activeTowers[source] ~= nil then
 			if _activeTowers[source].veh ~= nil and DoesEntityExist(_activeTowers[source].veh) then
-				Vehicles:Delete(veh, function(success) end)
+				exports['sandbox-vehicles']:Delete(veh, function(success) end)
 				_activeTowers[source].veh = nil
 			end
 

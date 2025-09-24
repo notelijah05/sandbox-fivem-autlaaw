@@ -27,7 +27,7 @@ function RegisterMechanicItems()
                             local veh = NetworkGetEntityFromNetworkId(veh)
                             local vehState = Entity(veh)
                             if DoesEntityExist(veh) and vehState and vehState.state.VIN then
-                                local vehicleData = Vehicles.Owned:GetActive(vehState.state.VIN)
+                                local vehicleData = exports['sandbox-vehicles']:OwnedGetActive(vehState.state.VIN)
                                 if vehicleData and vehicleData:GetData('Properties') then
                                     local currentProperties = vehicleData:GetData('Properties')
 
@@ -40,7 +40,7 @@ function RegisterMechanicItems()
                                     end
 
                                     vehicleData:SetData('Properties', currentProperties)
-                                    Vehicles.Owned:ForceSave(vehicleData:GetData('VIN'))
+                                    exports['sandbox-vehicles']:OwnedForceSave(vehicleData:GetData('VIN'))
                                 end
                             end
 

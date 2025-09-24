@@ -133,9 +133,9 @@ _MDT.Vehicles = {
 
 			if vehicle.Storage then
 				if vehicle.Storage.Type == 0 then
-					vehicle.Storage.Name = Vehicles.Garages:Impound().name
+					vehicle.Storage.Name = exports['sandbox-vehicles']:GaragesImpound().name
 				elseif vehicle.Storage.Type == 1 then
-					vehicle.Storage.Name = Vehicles.Garages:Get(vehicle.Storage.Id).name
+					vehicle.Storage.Name = exports['sandbox-vehicles']:GaragesGet(vehicle.Storage.Id).name
 				elseif vehicle.Storage.Type == 2 then
 					local prop = Properties:Get(vehicle.Storage.Id)
 					vehicle.Storage.Name = prop?.label

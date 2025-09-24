@@ -118,7 +118,7 @@ Config.VehicleMenu = {
 	{
 		icon = "garage-open",
 		isEnabled = function(data, entityData)
-			if Vehicles ~= nil and Vehicles:CanBeStored(entityData.entity) then
+			if Vehicles ~= nil and exports['sandbox-vehicles']:CanBeStored(entityData.entity) then
 				return true
 			end
 			return false
@@ -148,7 +148,7 @@ Config.VehicleMenu = {
 		text = "Give Keys",
 		isEnabled = function(data, entityData)
 			local vehEnt = Entity(entityData.entity)
-			return Vehicles ~= nil and Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys)
+			return Vehicles ~= nil and exports['sandbox-vehicles']:KeysHas(vehEnt.state.VIN, vehEnt.state.GroupKeys)
 		end,
 		event = "Vehicles:Client:GiveKeys",
 		data = {},
@@ -207,7 +207,7 @@ Config.VehicleMenu = {
 				and vehState.VIN
 				and not vehState.wasThermited
 				and Vehicles ~= nil
-				and Vehicles.Keys:Has(vehState.VIN)
+				and exports['sandbox-vehicles']:KeysHas(vehState.VIN)
 			then
 				return true
 			end
@@ -293,8 +293,8 @@ Config.VehicleMenu = {
 	{
 		icon = "print-magnifying-glass",
 		isEnabled = function(data, entityData)
-			return Vehicles:HasAccess(entityData.entity)
-				and Vehicles.Utils:IsCloseToFrontOfVehicle(entityData.entity)
+			return exports['sandbox-vehicles']:HasAccess(entityData.entity)
+				and exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(entityData.entity)
 				and (GetVehicleDoorAngleRatio(entityData.entity, 4) >= 0.1)
 		end,
 		text = "Inspect VIN",
@@ -309,12 +309,12 @@ Config.VehicleMenu = {
 				local vehState = Entity(entityData.entity).state
 				if vehState.FakePlate then
 					return (
-							(Vehicles:HasAccess(entityData.entity, true))
+							(exports['sandbox-vehicles']:HasAccess(entityData.entity, true))
 							or LocalPlayer.state.onDuty == "police" and LocalPlayer.state.inPdStation
 						)
 						and (
-							Vehicles.Utils:IsCloseToRearOfVehicle(entityData.entity)
-							or Vehicles.Utils:IsCloseToFrontOfVehicle(entityData.entity)
+							exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity)
+							or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(entityData.entity)
 						)
 				end
 			end
@@ -331,7 +331,7 @@ Config.VehicleMenu = {
 			if DoesEntityExist(entityData.entity) then
 				local vehState = Entity(entityData.entity).state
 				if vehState.Harness and vehState.Harness > 0 then
-					return Vehicles:HasAccess(entityData.entity, true)
+					return exports['sandbox-vehicles']:HasAccess(entityData.entity, true)
 				end
 			end
 			return false
@@ -443,7 +443,7 @@ Config.VehicleMenu = {
 		isEnabled = function(data, entityData)
 			if
 				DoesEntityExist(entityData.entity)
-				and (Vehicles.Utils:IsCloseToRearOfVehicle(entityData.entity) or Vehicles.Utils:IsCloseToFrontOfVehicle(
+				and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(
 					entityData.entity
 				))
 				and Mechanic:CanAccessVehicleAsMechanic(entityData.entity)
@@ -466,7 +466,7 @@ Config.VehicleMenu = {
 		isEnabled = function(data, entityData)
 			if
 				DoesEntityExist(entityData.entity)
-				and (Vehicles.Utils:IsCloseToRearOfVehicle(entityData.entity) or Vehicles.Utils:IsCloseToFrontOfVehicle(
+				and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(
 					entityData.entity
 				))
 				and Mechanic:CanAccessVehicleAsMechanic(entityData.entity)
@@ -485,7 +485,7 @@ Config.VehicleMenu = {
 		isEnabled = function(data, entityData)
 			if
 				DoesEntityExist(entityData.entity)
-				and (Vehicles.Utils:IsCloseToRearOfVehicle(entityData.entity) or Vehicles.Utils:IsCloseToFrontOfVehicle(
+				and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(
 					entityData.entity
 				))
 				and Mechanic:CanAccessVehicleAsMechanic(entityData.entity)
@@ -604,7 +604,7 @@ Config.VehicleMenu = {
 			local rvModels = { [`cararv`] = true, [`guardianrv`] = true, [`sandroamer`] = true, [`sandkingrv`] = true }
 			return not LocalPlayer.state.isDead
 				and rvModels[GetEntityModel(entity.entity)]
-				and Vehicles:HasAccess(entity.entity)
+				and exports['sandbox-vehicles']:HasAccess(entity.entity)
 		end,
 		text = "Open Wardrobe",
 		event = "Wardrobe:Client:ShowBitch",

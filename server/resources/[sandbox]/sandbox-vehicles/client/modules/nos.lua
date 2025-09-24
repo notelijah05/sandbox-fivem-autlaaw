@@ -228,7 +228,7 @@ function StartVehicleNOS()
 						SetVehicleEngineHealth(_veh, 0.0)
 						SetVehicleCanLeakPetrol(_veh, false)
 
-						Vehicles.Engine:Force(_veh, false)
+						exports['sandbox-vehicles']:EngineForce(_veh, false)
 
 						EndVehicleNOS()
 						break
@@ -460,7 +460,7 @@ AddEventHandler("Vehicles:Client:RemoveNitrous", function(entityData)
 		}, function(cancelled)
 			if
 				not cancelled
-				and Vehicles:HasAccess(VEHICLE_INSIDE, true)
+				and exports['sandbox-vehicles']:HasAccess(VEHICLE_INSIDE, true)
 				and GetPedInVehicleSeat(VEHICLE_INSIDE, -1) == LocalPlayer.state.ped
 			then
 				exports["sandbox-base"]:ServerCallback("Vehicles:RemoveNitrous", VehToNet(VEHICLE_INSIDE),

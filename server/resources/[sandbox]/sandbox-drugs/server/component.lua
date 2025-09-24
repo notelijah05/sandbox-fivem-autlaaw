@@ -25,14 +25,12 @@ end
 AddEventHandler("Drugs:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Crypto = exports["sandbox-base"]:FetchComponent("Crypto")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Drugs = exports["sandbox-base"]:FetchComponent("Drugs")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Drugs", {
 		"Crypto",
-		"Vehicles",
 		"Drugs",
 	}, function(error)
 		if #error > 0 then

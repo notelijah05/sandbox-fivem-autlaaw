@@ -49,7 +49,7 @@ function IsTruckAtCoords(coords)
 end
 
 AddEventHandler('entityCreated', function(entity)
-	if not DoesEntityExist(entity) or Vehicles == nil then
+	if not DoesEntityExist(entity) then
 		return
 	end
 
@@ -113,7 +113,8 @@ function SpawnBobcatTruck(truckModel, skipCooldown)
 
 	if not IsTruckAtCoords(coords) then
 		table.remove(_moneyTruckSpawns, sel)
-		Vehicles:SpawnTemp(-1, truckModel, 'automobile', vector3(coords[1], coords[2], coords[3]), coords[4],
+		exports['sandbox-vehicles']:SpawnTemp(-1, truckModel, 'automobile', vector3(coords[1], coords[2], coords[3]),
+			coords[4],
 			function(veh, VIN)
 				_moneyTrucks[veh] = {
 					position = coords,

@@ -220,7 +220,7 @@ _LOANS = {
 
 						if loan.Defaulted then -- Unseize Assets
 							if loan.Type == "vehicle" then
-								Vehicles.Owned:Seize(loan.AssetIdentifier, false)
+								exports['sandbox-vehicles']:OwnedSeize(loan.AssetIdentifier, false)
 							elseif loan.Type == "property" then
 								Properties.Commerce:Foreclose(loan.AssetIdentifier, false)
 							end

@@ -31,7 +31,7 @@ function CreateCasinoShowcaseVehicle(vehData)
         _platformVehicle = veh
 
         if vehData.properties then
-            Vehicles.Properties:Set(veh, vehData.properties)
+            exports['sandbox-vehicles']:PropertiesSet(veh, vehData.properties)
         end
 
         FreezeEntityPosition(veh, true)

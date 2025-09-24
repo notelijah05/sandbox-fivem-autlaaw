@@ -82,7 +82,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			and _sellers[_joiners[source]] ~= nil
 			and _sellers[_joiners[source]].state == 1
 		then
-			if not Vehicles.Owned:GetActive(data.VIN) then
+			if not exports['sandbox-vehicles']:OwnedGetActive(data.VIN) then
 				if #exports['sandbox-inventory']:GetFreeSlotNumbers(data.VIN, 4, data.Class, data.Model) >= 10 then
 					local exp = os.time() + (60 * 20)
 					_cooldowns[char:GetData("ID")] = exp
@@ -270,7 +270,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 						local randPed = math.random(#PedModels)
 						exports["sandbox-base"]:ClientCallback(_joiners[source], "OxyRun:GetSpawn", {
-							veh = Vehicles.RandomModel:DClass(),
+							veh = exports['sandbox-vehicles']:RandomModelDClass(),
 							ped = PedModels[randPed],
 						}, function(veh, ped)
 							if veh then

@@ -31,9 +31,9 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
           for k, v in ipairs(results) do
             if v.Storage then
               if v.Storage.Type == 0 then
-                v.Storage.Name = Vehicles.Garages:Impound().name
+                v.Storage.Name = exports['sandbox-vehicles']:GaragesImpound().name
               elseif v.Storage.Type == 1 then
-                v.Storage.Name = Vehicles.Garages:Get(v.Storage.Id).name
+                v.Storage.Name = exports['sandbox-vehicles']:GaragesGet(v.Storage.Id).name
               elseif v.Storage.Type == 2 then
                 local prop = Properties:Get(v.Storage.Id)
                 v.Storage.Name = prop?.label
@@ -91,7 +91,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
     })
 
     if hasPerms and loggedInJob and data.vehicle then
-      cb(Vehicles.Owned:Track(data.vehicle))
+      cb(exports['sandbox-vehicles']:OwnedTrack(data.vehicle))
     else
       cb(false)
     end

@@ -29,7 +29,7 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 				VEHICLE_CLASS = GetVehicleClass(VEHICLE_INSIDE)
 				VEHICLE_TOP_SPEED = 250.0
 
-				local vehClassData = _vehicleClasses[Vehicles.Class:Get(VEHICLE_INSIDE)]
+				local vehClassData = _vehicleClasses[exports['sandbox-vehicles']:ClassGet(VEHICLE_INSIDE)]
 
 				if vehClassData and vehClassData.topSpeed and not Police:IsPdCar(VEHICLE_INSIDE) then
 					-- UNCOMMENT THIS BELOW FOR THE HARD CAPPED TOP SPEEDS POG
@@ -87,7 +87,7 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 						end
 
 						if vehEnt.state.VEH_IGNITION == nil and NetworkGetEntityIsNetworked(enter) then
-							Vehicles.Engine:Force(enter, GetIsVehicleEngineRunning(enter))
+							exports['sandbox-vehicles']:EngineForce(enter, GetIsVehicleEngineRunning(enter))
 						end
 
 						SetVehicleNeedsToBeHotwired(enter, false)
@@ -101,7 +101,6 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 		end
 	end)
 end)
-
 
 local _watchingSpeed = false
 AddEventHandler("Vehicles:Client:ExitVehicle", function(VEHICLE_INSIDE)

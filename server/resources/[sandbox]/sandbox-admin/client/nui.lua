@@ -136,21 +136,21 @@ RegisterNUICallback('CurrentVehicleAction', function(data, cb)
         exports["sandbox-base"]:ServerCallback('Admin:CurrentVehicleAction', data, function(canDo)
             if canDo then
                 if data.action == 'repair' then
-                    if Vehicles.Repair:Normal(insideVehicle) then
+                    if exports['sandbox-vehicles']:RepairNormal(insideVehicle) then
                         return cb({
                             success = true,
                             message = 'Vehicle Repaired',
                         })
                     end
                 elseif data.action == 'repair_full' then
-                    if Vehicles.Repair:Full(insideVehicle) then
+                    if exports['sandbox-vehicles']:RepairFull(insideVehicle) then
                         return cb({
                             success = true,
                             message = 'Vehicle Repaired Fully',
                         })
                     end
                 elseif data.action == 'repair_engine' then
-                    if Vehicles.Repair:Engine(insideVehicle) then
+                    if exports['sandbox-vehicles']:RepairEngine(insideVehicle) then
                         return cb({
                             success = true,
                             message = 'Engine Repaired',

@@ -997,7 +997,8 @@ LAPTOP.LSUnderground.Boosting = {
                 }
             end
 
-            Vehicles:SpawnTemp(source, GetHashKey(contract.vehicle.vehicle), 'automobile', pickUpLocation.coords.xyz,
+            exports['sandbox-vehicles']:SpawnTemp(source, GetHashKey(contract.vehicle.vehicle), 'automobile',
+                pickUpLocation.coords.xyz,
                 pickUpLocation.coords.w, function(spawnedVehicle, VIN, plate)
                     if spawnedVehicle then
                         local vehState = Entity(spawnedVehicle).state
@@ -1140,7 +1141,7 @@ LAPTOP.LSUnderground.Boosting = {
                 end
 
                 Citizen.SetTimeout(60 * 1000, function()
-                    Vehicles:Delete(veh, function(success) end)
+                    exports['sandbox-vehicles']:Delete(veh, function(success) end)
                 end)
             end
 

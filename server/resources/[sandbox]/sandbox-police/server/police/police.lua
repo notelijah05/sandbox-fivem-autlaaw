@@ -12,7 +12,6 @@ function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Radar = exports["sandbox-base"]:FetchComponent("Radar")
 	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Ped = exports["sandbox-base"]:FetchComponent("Ped")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
@@ -27,7 +26,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"MDT",
 		"Radar",
 		"Generator",
-		"Vehicles",
 		"Ped",
 		"Doors",
 		"Robbery"
@@ -277,7 +275,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					if veh ~= 0 then
 						if Config.PoliceCars[GetEntityModel(veh)] then
 							local entState = Entity(veh).state
-							if Vehicles.Keys:Has(source, entState.VIN, 'police') then
+							if exports['sandbox-vehicles']:KeysHas(source, entState.VIN, 'police') then
 								exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 									invType = 3,
 									owner = ("pdrack:%s"):format(entState.VIN),
@@ -301,7 +299,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					if veh ~= 0 then
 						if Config.PoliceCars[GetEntityModel(veh)] then
 							local entState = Entity(veh).state
-							if Vehicles.Keys:Has(source, entState.VIN, 'prison') then
+							if exports['sandbox-vehicles']:KeysHas(source, entState.VIN, 'prison') then
 								exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 									invType = 999,
 									owner = ("pdrack:%s"):format(entState.VIN),

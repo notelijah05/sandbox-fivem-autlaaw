@@ -269,7 +269,7 @@ function _doActionStart(player, action)
 								end
 							end)
 						elseif action.animation.anim ~= nil then
-							exports['sandbox-animations']:EmotesPlay(action.animation.anim, false, action.duration, true)
+							Animations.Emotes:Play(action.animation.anim, false, action.duration, true)
 						else
 							if GetVehiclePedIsIn(LocalPlayer.state.ped) == 0 then
 								TaskStartScenarioInPlace(player, "PROP_HUMAN_BUM_BIN", 0, true)
@@ -416,7 +416,7 @@ function _doCleanup(action)
 		if action.animation.animDict ~= nil and action.animation.anim ~= nil then
 			StopAnimTask(LocalPlayer.state.ped, action.animation.animDict, action.animation.anim, 1.0)
 		elseif action.animation.anim ~= nil then
-			exports['sandbox-animations']:EmotesForceCancel()
+			Animations.Emotes:ForceCancel()
 		else
 			if action.animation.task ~= nil and not IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
 				ClearPedTasks(LocalPlayer.state.ped)

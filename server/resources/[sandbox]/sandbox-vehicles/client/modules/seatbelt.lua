@@ -86,7 +86,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
     exports["sandbox-base"]:RegisterClientCallback('Vehicles:InstallHarness', function(data, cb)
         local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
-            if Vehicles.Utils:IsCloseToVehicle(target.entity) then
+            if exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target.entity) then
                 exports['sandbox-hud']:Progress({
                     name = "vehicle_installing_harness",
                     duration = 25000,
@@ -103,7 +103,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                         anim = "mechanic2",
                     },
                 }, function(cancelled)
-                    if not cancelled and Vehicles.Utils:IsCloseToVehicle(target.entity) then
+                    if not cancelled and exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target.entity) then
                         cb(VehToNet(target.entity))
                     else
                         cb(false)

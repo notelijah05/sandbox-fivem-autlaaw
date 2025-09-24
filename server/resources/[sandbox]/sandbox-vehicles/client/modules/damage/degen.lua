@@ -187,9 +187,9 @@ function RunVehiclePartsDamageEffects(veh)
 
                     CreateThread(function()
                         for i = 1, amount do
-                            Vehicles.Engine:Force(veh, false)
+                            exports['sandbox-vehicles']:EngineForce(veh, false)
                             Wait(wait)
-                            Vehicles.Engine:Force(veh, true)
+                            exports['sandbox-vehicles']:EngineForce(veh, true)
                             Wait(wait + 100)
                         end
                     end)

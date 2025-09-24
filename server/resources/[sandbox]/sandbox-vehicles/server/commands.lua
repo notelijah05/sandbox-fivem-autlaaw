@@ -21,9 +21,10 @@ function RegisterChatCommands()
 				end
 
 				if spawnCoords then
-					Vehicles:SpawnTemp(source, vehModel, modelType, spawnCoords, spawnHeading, function(veh, VIN)
-						Vehicles.Keys:Add(source, VIN)
-					end)
+					exports['sandbox-vehicles']:SpawnTemp(source, vehModel, modelType, spawnCoords, spawnHeading,
+						function(veh, VIN)
+							exports['sandbox-vehicles']:KeysAdd(source, VIN)
+						end)
 				else
 					exports["sandbox-chat"]:SendServerSingle(source, "Invalid Vehicle Model")
 				end
@@ -42,7 +43,7 @@ function RegisterChatCommands()
 	exports["sandbox-chat"]:RegisterStaffCommand("dv", function(source, args, rawCommand)
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:Admin:GetVehicleToDelete", false, function(vehNet)
 			local targetVehicle = NetworkGetEntityFromNetworkId(vehNet)
-			Vehicles:Delete(targetVehicle, function() end)
+			exports['sandbox-vehicles']:Delete(targetVehicle, function() end)
 		end)
 	end, {
 		help = "Deletes a Vehicle You Are Inside or Looking at",
@@ -65,7 +66,7 @@ function RegisterChatCommands()
 		local VIN = args[1]
 		if not VIN then return; end
 
-		Vehicles.Owned:Delete(VIN, function(success, nonExist)
+		exports['sandbox-vehicles']:OwnedDelete(VIN, function(success, nonExist)
 			if success then
 				if nonExist then
 					exports["sandbox-chat"]:SendServerSingle(source, "Successfully Deleted - It Didn't Exist")
@@ -103,7 +104,7 @@ function RegisterChatCommands()
 			vehHash = GetHashKey(vehHash)
 
 			if type(vehHash) == "number" and make and model and vehModelType then
-				Vehicles.Owned:AddToCharacter(stateId, vehHash, vehType, vehModelType, {
+				exports['sandbox-vehicles']:OwnedAddToCharacter(stateId, vehHash, vehType, vehModelType, {
 					make = make,
 					model = model,
 					class = class,
@@ -186,7 +187,7 @@ function RegisterChatCommands()
 
 		local jobExists = Jobs:DoesExist(jobId, workplaceId)
 		if type(vehHash) == "number" and jobExists and level and level >= 0 and level < 10 and make and model then
-			Vehicles.Owned:AddToFleet(jobId, workplaceId, level, vehHash, vehType, modelType, {
+			exports['sandbox-vehicles']:OwnedAddToFleet(jobId, workplaceId, level, vehHash, vehType, modelType, {
 				make = make,
 				model = model,
 				class = class,
@@ -266,14 +267,14 @@ function RegisterChatCommands()
 				if v and DoesEntityExist(v) then
 					local ent = Entity(v)
 					if ent and ent.state and ent.state.VIN then
-						local vehicle = Vehicles.Owned:GetActive(ent.state.VIN)
+						local vehicle = exports['sandbox-vehicles']:OwnedGetActive(ent.state.VIN)
 						if vehicle then
 							vehicle:SetData("ForcedAudio", audio)
 							ent.state.ForcedAudio = audio
 
 							TriggerClientEvent("Vehicle:Client:ForceAudio", -1, veh.vehicle, audio)
 
-							Vehicles.Owned:ForceSave(ent.state.VIN)
+							exports['sandbox-vehicles']:OwnedForceSave(ent.state.VIN)
 
 							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Done")
 						else
@@ -378,10 +379,10 @@ function RegisterChatCommands()
 						vehEnt
 						and vehEnt.state
 						and vehEnt.state.VIN
-						and Vehicles.Keys:Has(source, vehEnt.state.VIN, false)
+						and exports['sandbox-vehicles']:KeysHas(source, vehEnt.state.VIN, false)
 					then
 						for k, v in ipairs(sids) do
-							Vehicles.Keys:Add(v, vehEnt.state.VIN)
+							exports['sandbox-vehicles']:KeysAdd(v, vehEnt.state.VIN)
 							exports['sandbox-base']:ExecuteClient(
 								v,
 								"Notification",

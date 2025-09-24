@@ -2,7 +2,6 @@ AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Admin = exports["sandbox-base"]:FetchComponent("Admin")
 end
 
@@ -10,7 +9,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Admin", {
 		"Status",
 		"Jobs",
-		"Vehicles",
 		"Admin",
 	}, function(error)
 		if #error > 0 then
@@ -174,13 +172,13 @@ function DoAdminVehicleAction(action)
 		exports["sandbox-base"]:ServerCallback("Admin:CurrentVehicleAction", { action = action }, function(canDo)
 			if canDo then
 				if action == "repair" then
-					if Vehicles.Repair:Normal(insideVehicle) then
+					if exports['sandbox-vehicles']:RepairNormal(insideVehicle) then
 					end
 				elseif action == "repair_full" then
-					if Vehicles.Repair:Full(insideVehicle) then
+					if exports['sandbox-vehicles']:RepairFull(insideVehicle) then
 					end
 				elseif action == "repair_engine" then
-					if Vehicles.Repair:Engine(insideVehicle) then
+					if exports['sandbox-vehicles']:RepairEngine(insideVehicle) then
 					end
 				end
 			end

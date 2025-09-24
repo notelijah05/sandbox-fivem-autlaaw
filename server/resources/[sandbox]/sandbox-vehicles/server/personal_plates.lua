@@ -45,7 +45,7 @@ function PrivatePlateStuff(char, source, itemData)
                 return
             end
 
-            local vehicle = Vehicles.Owned:GetActive(vehState.VIN)
+            local vehicle = exports['sandbox-vehicles']:OwnedGetActive(vehState.VIN)
             if not vehicle then
                 exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Can't Do It on This Vehicle")
                 return
@@ -87,7 +87,7 @@ function PrivatePlateStuff(char, source, itemData)
             vehState.Plate = newPlate
             vehState.RegisteredPlate = newPlate
 
-            Vehicles.Owned:ForceSave(vehState.VIN)
+            exports['sandbox-vehicles']:OwnedForceSave(vehState.VIN)
             exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 
             exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Personal Plate Setup")
@@ -124,7 +124,7 @@ function RegisterPersonalPlateCallbacks()
         local license = table.unpack(args)
 
         if license then
-            local success = Vehicles.DonatorPlates:Add(license)
+            local success = exports['sandbox-vehicles']:DonatorPlatesAdd(license)
             if success then
                 exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Added")
             else
@@ -145,7 +145,7 @@ function RegisterPersonalPlateCallbacks()
         local license = table.unpack(args)
 
         if license then
-            local success = Vehicles.DonatorPlates:Check(license)
+            local success = exports['sandbox-vehicles']:DonatorPlatesCheck(license)
             if success and success.pending then
                 exports["sandbox-chat"]:SendSystemSingle(source,
                     string.format("Player Identifier: %s<br>Pending Plates: %s<br>Redeemed Plates: %s", license,
@@ -168,7 +168,7 @@ function RegisterPersonalPlateCallbacks()
         local license = table.unpack(args)
 
         if license then
-            local success = Vehicles.DonatorPlates:Remove(license, 1)
+            local success = exports['sandbox-vehicles']:DonatorPlatesRemove(license, 1)
             if success then
                 exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Removed")
             else
@@ -188,9 +188,9 @@ function RegisterPersonalPlateCallbacks()
     exports["sandbox-base"]:RegisterServerCallback("Vehicles:CheckDonatorPersonalPlates", function(source, data, cb)
         local plyr = exports['sandbox-base']:FetchSource(source)
         if plyr then
-            local res = Vehicles.DonatorPlates:Check(plyr:GetData("Identifier"))
+            local res = exports['sandbox-vehicles']:DonatorPlatesCheck(plyr:GetData("Identifier"))
 
-            cb(res?.pending or 0)
+            cb(res and res.pending or 0)
         else
             cb(false)
         end
@@ -200,10 +200,10 @@ function RegisterPersonalPlateCallbacks()
         local plyr = exports['sandbox-base']:FetchSource(source)
         if plyr then
             local char = exports['sandbox-characters']:FetchCharacterSource(source)
-            local res = Vehicles.DonatorPlates:Check(plyr:GetData("Identifier"))
+            local res = exports['sandbox-vehicles']:DonatorPlatesCheck(plyr:GetData("Identifier"))
 
-            if char and res?.pending >= data then
-                local isRemoved = Vehicles.DonatorPlates:Remove(plyr:GetData("Identifier"), data)
+            if char and res and res.pending >= data then
+                local isRemoved = exports['sandbox-vehicles']:DonatorPlatesRemove(plyr:GetData("Identifier"), data)
 
                 if isRemoved then
                     exports['sandbox-inventory']:AddItem(char:GetData("SID"), "personal_plates_donator", data, {}, 1)
@@ -248,84 +248,76 @@ end
 --     print(IsPersonalPlateValid('FFFFFFFF'))
 -- end)
 
-_vehDonatorPlates = {
-    DonatorPlates = {
-        Add = function(self, playerIdentifier)
-            local p = promise.new()
-            exports['sandbox-base']:DatabaseGameUpdateOne({
-                collection = "donator_plates",
-                query = {
-                    player = playerIdentifier,
-                },
-                update = {
-                    ["$inc"] = {
-                        pending = 1
-                    }
-                },
-                options = {
-                    upsert = true,
-                }
-            }, function(success)
-                p:resolve(success)
-            end)
+exports("DonatorPlatesAdd", function(playerIdentifier)
+    local p = promise.new()
+    exports['sandbox-base']:DatabaseGameUpdateOne({
+        collection = "donator_plates",
+        query = {
+            player = playerIdentifier,
+        },
+        update = {
+            ["$inc"] = {
+                pending = 1
+            }
+        },
+        options = {
+            upsert = true,
+        }
+    }, function(success)
+        p:resolve(success)
+    end)
 
-            return Citizen.Await(p)
-        end,
-        Check = function(self, playerIdentifier)
-            local p = promise.new()
-            exports['sandbox-base']:DatabaseGameFindOne({
-                collection = "donator_plates",
-                query = {
-                    player = playerIdentifier,
-                },
-            }, function(success, results)
-                if success then
-                    p:resolve(results)
-                else
-                    p:resolve(false)
-                end
-            end)
+    return Citizen.Await(p)
+end)
 
-            local res = Citizen.Await(p)
+exports("DonatorPlatesCheck", function(playerIdentifier)
+    local p = promise.new()
+    exports['sandbox-base']:DatabaseGameFindOne({
+        collection = "donator_plates",
+        query = {
+            player = playerIdentifier,
+        },
+    }, function(success, results)
+        if success then
+            p:resolve(results)
+        else
+            p:resolve(false)
+        end
+    end)
 
-            if res and res[1]?.player then
-                return res[1]
-            end
-            return false
-        end,
-        Remove = function(self, playerIdentifier, amount)
-            local p = promise.new()
-            exports['sandbox-base']:DatabaseGameUpdateOne({
-                collection = "donator_plates",
-                query = {
-                    player = playerIdentifier,
-                    pending = {
-                        ["$gte"] = amount
-                    }
-                },
-                update = {
-                    ["$inc"] = {
-                        pending = -amount,
-                        redeemed = amount,
-                    }
-                },
-            }, function(success)
-                p:resolve(success)
-            end)
+    local res = Citizen.Await(p)
 
-            return Citizen.Await(p)
-        end,
-    },
-}
-
-AddEventHandler("Proxy:Shared:ExtendReady", function(component)
-    if component == "Vehicles" then
-        exports["sandbox-base"]:ExtendComponent(component, _vehDonatorPlates)
+    if res and res[1] and res[1].player then
+        return res[1]
     end
+    return false
+end)
+
+exports("DonatorPlatesRemove", function(playerIdentifier, amount)
+    local p = promise.new()
+    exports['sandbox-base']:DatabaseGameUpdateOne({
+        collection = "donator_plates",
+        query = {
+            player = playerIdentifier,
+            pending = {
+                ["$gte"] = amount
+            }
+        },
+        update = {
+            ["$inc"] = {
+                pending = -amount,
+                redeemed = amount,
+            }
+        },
+    }, function(success)
+        p:resolve(success)
+    end)
+
+    return Citizen.Await(p)
 end)
 
 AddEventHandler("Vehicles:Server:AddDonatorPlates", function(license)
-    Vehicles.DonatorPlates:Add(license)
+    exports['sandbox-vehicles']:DonatorPlatesAdd(license)
 end)
 
 function TebexAddDonatorPlate(source, args)
@@ -351,7 +343,7 @@ function TebexAddDonatorPlate(source, args)
     local player = exports['sandbox-base']:FetchSource(sid)
     if player then
         local license = player:GetData("Identifier")
-        local success = Vehicles.DonatorPlates:Add(license)
+        local success = exports['sandbox-vehicles']:DonatorPlatesAdd(license)
         if success then
             exports["sandbox-chat"]:SendSystemSingle(sid, "Successfully Added")
         else

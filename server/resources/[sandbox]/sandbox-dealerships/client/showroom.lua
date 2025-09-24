@@ -16,7 +16,7 @@ function SpawnShowroom(id)
 
                 SHOWROOM_CACHE[id][slot] = veh
 
-                Vehicles.Properties:Set(veh, data.properties)
+                exports['sandbox-vehicles']:PropertiesSet(veh, data.properties)
 
                 FreezeEntityPosition(veh, true)
                 SetVehicleDoorsLocked(veh, 2)

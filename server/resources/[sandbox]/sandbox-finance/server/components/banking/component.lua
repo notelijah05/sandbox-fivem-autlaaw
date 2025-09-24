@@ -7,7 +7,6 @@ function RetrieveBankingComponents()
 	Loans = exports["sandbox-base"]:FetchComponent("Loans")
 	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Loans",
 		"Crypto",
 		"Jobs",
-		"Vehicles",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then

@@ -453,13 +453,13 @@
 --                 end
 
 --                 adminSubMenus['vehicleUtilities'].Add:Button('Quick Repair', { success = true }, function()
---                     if Vehicles.Repair:Normal(insideVehicle) then
+--                     if exports['sandbox-vehicles']:RepairNormal(insideVehicle) then
 --                         exports["sandbox-hud"]:NotifSuccess('Repaired Vehicle')
 --                     end
 --                 end)
 
 --                 adminSubMenus['vehicleUtilities'].Add:Button('Full Repair Inc. Degen Parts', { error = true }, function()
---                     if Vehicles.Repair:Full(insideVehicle) then
+--                     if exports['sandbox-vehicles']:RepairFull(insideVehicle) then
 --                         exports["sandbox-hud"]:NotifSuccess('Repaired Vehicle Fully')
 --                     end
 --                 end)

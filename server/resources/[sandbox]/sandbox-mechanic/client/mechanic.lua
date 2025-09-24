@@ -6,7 +6,6 @@ function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -15,7 +14,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Animations",
 		"Polyzone",
 		"Jobs",
-		"Vehicles",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -41,8 +39,8 @@ AddEventHandler("Core:Shared:Ready", function()
 						and IsEntityAVehicle(target.entity)
 						and (
 							(#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
-							or Vehicles.Utils:IsCloseToRearOfVehicle(target.entity)
-							or Vehicles.Utils:IsCloseToFrontOfVehicle(target.entity)
+							or exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
+							or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
 						)
 					then
 						local vehEnt = Entity(target.entity)
@@ -100,8 +98,8 @@ AddEventHandler("Core:Shared:Ready", function()
 								if
 									not DoesEntityExist(target.entity)
 									or not (
-										Vehicles.Utils:IsCloseToRearOfVehicle(target.entity)
-										or Vehicles.Utils:IsCloseToFrontOfVehicle(target.entity)
+										exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
+										or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
 										or (#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
 									)
 								then
@@ -111,7 +109,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								_repairingVehicle = false
 								if not wasCancelled then
 									if
-										Vehicles.Repair:Part(
+										exports['sandbox-vehicles']:RepairPart(
 											target.entity,
 											installingPartData.part,
 											(installingPartData.amount * quantity)
@@ -150,8 +148,8 @@ AddEventHandler("Core:Shared:Ready", function()
 						and IsEntityAVehicle(target.entity)
 						and (
 							(#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
-							or Vehicles.Utils:IsCloseToRearOfVehicle(target.entity)
-							or Vehicles.Utils:IsCloseToFrontOfVehicle(target.entity)
+							or exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
+							or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
 						)
 					then
 						if
@@ -219,8 +217,8 @@ AddEventHandler("Core:Shared:Ready", function()
 							if
 								not DoesEntityExist(target.entity)
 								or not (
-									Vehicles.Utils:IsCloseToRearOfVehicle(target.entity)
-									or Vehicles.Utils:IsCloseToFrontOfVehicle(target.entity)
+									exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
+									or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
 									or (#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
 								)
 							then
@@ -260,8 +258,8 @@ AddEventHandler("Core:Shared:Ready", function()
 						and IsEntityAVehicle(target.entity)
 						and (
 							(#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
-							or Vehicles.Utils:IsCloseToRearOfVehicle(target.entity)
-							or Vehicles.Utils:IsCloseToFrontOfVehicle(target.entity)
+							or exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
+							or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
 						)
 					then
 						if
@@ -317,8 +315,8 @@ AddEventHandler("Core:Shared:Ready", function()
 							if
 								not DoesEntityExist(target.entity)
 								or not (
-									Vehicles.Utils:IsCloseToRearOfVehicle(target.entity)
-									or Vehicles.Utils:IsCloseToFrontOfVehicle(target.entity)
+									exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
+									or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
 									or (#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
 								)
 							then
@@ -413,8 +411,8 @@ AddEventHandler("Mechanic:Client:StartRegularRepair", function(entityData)
 			if
 				not DoesEntityExist(entityData.entity)
 				or not (
-					Vehicles.Utils:IsCloseToRearOfVehicle(entityData.entity)
-					or Vehicles.Utils:IsCloseToFrontOfVehicle(entityData.entity)
+					exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity)
+					or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(entityData.entity)
 				)
 			then
 				exports['sandbox-hud']:ProgressCancel()
@@ -423,7 +421,7 @@ AddEventHandler("Mechanic:Client:StartRegularRepair", function(entityData)
 			_repairingVehicle = false
 			Animations.Emotes:ForceCancel()
 			if not wasCancelled then
-				if Vehicles.Repair:Normal(entityData.entity) then
+				if exports['sandbox-vehicles']:RepairNormal(entityData.entity) then
 					exports["sandbox-hud"]:NotifSuccess("Regular Repair Complete")
 				else
 					exports["sandbox-hud"]:NotifError("Regular Repair Failed")

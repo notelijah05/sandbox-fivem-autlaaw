@@ -59,7 +59,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	isSaving = false
 
-	local originalData = Vehicles.Properties:Get(CUST_VEH)
+	local originalData = exports['sandbox-vehicles']:PropertiesGet(CUST_VEH)
 	local changingData = {
 		mods = {},
 	}
@@ -76,7 +76,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 		if not isSaving then
 			exports['sandbox-base']:LoggerTrace("VehicleCustoms", "Not Saving - Reset Mods")
-			Vehicles.Properties:Set(CUST_VEH, originalData)
+			exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, originalData)
 			exports["sandbox-hud"]:NotifError("Changes Discarded - You Weren't Charged")
 		end
 		CUSTOMS_OPEN = false
@@ -90,8 +90,8 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 	exports["sandbox-hud"]:NotifPersistentStandard("veh_customs", "Current Total: $" .. 0)
 
 	local function updateVehiclePropertyState()
-		Vehicles.Properties:Set(CUST_VEH, originalData)
-		Vehicles.Properties:Set(CUST_VEH, changingData)
+		exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, originalData)
+		exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, changingData)
 
 		local newCost = CalculateCustomsCost(changingData, costMultiplier)
 		exports["sandbox-hud"]:NotifPersistentStandard("veh_customs", "Current Total: $" .. newCost)
@@ -903,17 +903,17 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 				vNet = VehToNet(CUST_VEH),
 				changes = changingData,
 				cost = currentCost,
-				new = Vehicles.Properties:Get(CUST_VEH),
+				new = exports['sandbox-vehicles']:PropertiesGet(CUST_VEH),
 			}, function(success, newNewData)
 				if success then
 					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
 					exports["sandbox-hud"]:NotifSuccess("New Modifications Saved & Paid For")
 					if newNewData then
-						Vehicles.Properties:Set(CUST_VEH, newNewData)
+						exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, newNewData)
 					end
 				else
 					exports["sandbox-hud"]:NotifError("Error Saving Vehicle Modifications - Not Enough Money?")
-					Vehicles.Properties:Set(CUST_VEH, originalData)
+					exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, originalData)
 				end
 			end)
 		else

@@ -8,7 +8,6 @@ function CorrectionsComponents()
 	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -21,7 +20,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Wardrobe",
 		"Status",
 		"Polyzone",
-		"Vehicles",
 	}, function(error)
 		if #error > 0 then
 			return

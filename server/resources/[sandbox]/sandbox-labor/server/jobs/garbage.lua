@@ -129,9 +129,10 @@ AddEventHandler("Labor:Server:Startup", function()
 			and _Garbage[_joiners[source]].state == 1
 		then
 			_isSpawningTruck = true
-			Vehicles:SpawnTemp(source, `trash2`, 'automobile', vector3(-334.989, -1562.966, 25.230), 57.510,
+			exports['sandbox-vehicles']:SpawnTemp(source, `trash2`, 'automobile', vector3(-334.989, -1562.966, 25.230),
+				57.510,
 				function(veh, VIN)
-					Vehicles.Keys:Add(source, VIN)
+					exports['sandbox-vehicles']:KeysAdd(source, VIN)
 					_Garbage[_joiners[source]].truck = veh
 					local availRoutes = {}
 					for k, v in ipairs(_GarbageRoutes) do
@@ -164,7 +165,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				local pedCoords = GetEntityCoords(GetPlayerPed(source))
 				local distance = #(pedCoords - garCoords)
 				if distance <= 25 then
-					Vehicles:Delete(_Garbage[_joiners[source]].truck, function()
+					exports['sandbox-vehicles']:Delete(_Garbage[_joiners[source]].truck, function()
 						_Garbage[_joiners[source]].truck = nil
 						_Garbage[_joiners[source]].state = 4
 						Labor.Workgroups:SendEvent(_joiners[source],

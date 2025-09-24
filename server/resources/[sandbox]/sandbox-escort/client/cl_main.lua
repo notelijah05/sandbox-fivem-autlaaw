@@ -1,35 +1,21 @@
 local _timeout = false
 
-AddEventHandler("Escort:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Escort", {
-		"Vehicles",
-	}, function(error)
-		if #error > 0 then
+	exports["sandbox-keybinds"]:Add("escort", "k", "keyboard", "Escort", function()
+		if _timeout then
+			exports["sandbox-hud"]:NotifError("Stop spamming you pepega.")
 			return
 		end
-		RetrieveComponents()
-
-		exports["sandbox-keybinds"]:Add("escort", "k", "keyboard", "Escort", function()
-			if _timeout then
-				exports["sandbox-hud"]:NotifError("Stop spamming you pepega.")
-				return
-			end
-			_timeout = true
-			DoEscort()
-			Citizen.SetTimeout(1000, function()
-				_timeout = false
-			end)
+		_timeout = true
+		DoEscort()
+		Citizen.SetTimeout(1000, function()
+			_timeout = false
 		end)
+	end)
 
-		exports["sandbox-base"]:RegisterClientCallback("Escort:StopEscort", function(data, cb)
-			DetachEntity(LocalPlayer.state.ped, true, true)
-			cb(true)
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Escort:StopEscort", function(data, cb)
+		DetachEntity(LocalPlayer.state.ped, true, true)
+		cb(true)
 	end)
 end)
 

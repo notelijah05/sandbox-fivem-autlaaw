@@ -12,7 +12,6 @@ VEHICLE_HARNESS = false
 AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
@@ -32,7 +31,6 @@ local vehicleDoorNames = {
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
 		"Animations",
-		"Vehicles",
 		"Polyzone",
 		"Jobs",
 		"EmergencyAlerts",
@@ -51,7 +49,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			function()
 				if VEHICLE_INSIDE and VEHICLE_SEAT == -1 then
 					if IsPauseMenuActive() ~= 1 then
-						Vehicles.Engine:Toggle(VEHICLE_INSIDE)
+						exports['sandbox-vehicles']:EngineToggle(VEHICLE_INSIDE)
 					end
 				end
 			end)
@@ -66,10 +64,11 @@ AddEventHandler("Core:Shared:Ready", function()
 						icon = "key",
 						label = "Give Keys",
 						shouldShow = function()
-							return VEHICLE_INSIDE and Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys)
+							return VEHICLE_INSIDE and
+								exports['sandbox-vehicles']:KeysHas(vehEnt.state.VIN, vehEnt.state.GroupKeys)
 						end,
 						action = function()
-							if Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
+							if exports['sandbox-vehicles']:KeysHas(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
 								if IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
 									local sids = {}
 									for i = -1, GetVehicleModelNumberOfSeats(VEHICLE_INSIDE), 1 do
@@ -302,14 +301,14 @@ AddEventHandler("Core:Shared:Ready", function()
 					-- 	icon = "print-magnifying-glass",
 					-- 	label = "Inspect VIN",
 					-- 	shouldShow = function()
-					-- 		return (LocalPlayer.state.onDuty ~= "police" and Vehicles:HasAccess(VEHICLE_INSIDE))
+					-- 		return (LocalPlayer.state.onDuty ~= "police" and exports['sandbox-vehicles']:HasAccess(VEHICLE_INSIDE))
 					-- 			or (LocalPlayer.state.onDuty == "police" and LocalPlayer.state.inPdStation)
 					-- 	end,
 					-- 	action = function()
 					-- 		if
 					-- 			VEHICLE_INSIDE
 					-- 			and (
-					-- 				(LocalPlayer.state.onDuty ~= "police" and Vehicles:HasAccess(VEHICLE_INSIDE))
+					-- 				(LocalPlayer.state.onDuty ~= "police" and exports['sandbox-vehicles']:HasAccess(VEHICLE_INSIDE))
 					-- 				or (LocalPlayer.state.onDuty == "police" and LocalPlayer.state.inPdStation)
 					-- 			)
 					-- 		then
@@ -322,13 +321,13 @@ AddEventHandler("Core:Shared:Ready", function()
 						icon = "lightbulb-on",
 						label = "Neons",
 						shouldShow = function()
-							if VEHICLE_INSIDE and Vehicles.Sync.Neons:Has() and not Police:IsPdCar(VEHICLE_INSIDE) then
+							if VEHICLE_INSIDE and exports['sandbox-vehicles']:SyncNeonsHas() and not Police:IsPdCar(VEHICLE_INSIDE) then
 								return true
 							end
 						end,
 						action = function()
 							if VEHICLE_INSIDE then
-								Vehicles.Sync.Neons:Toggle()
+								exports['sandbox-vehicles']:SyncNeonsToggle()
 							end
 						end,
 					},
@@ -346,7 +345,7 @@ end)
 AddEventHandler("Vehicles:Client:GiveKeys", function(entityData, data)
 	local vehEnt = Entity(entityData.entity)
 
-	if Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
+	if exports['sandbox-vehicles']:KeysHas(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
 		local myCoords = GetEntityCoords(LocalPlayer.state.ped)
 		local peds = GetGamePool("CPed")
 		local sids = {}
@@ -411,14 +410,14 @@ AddEventHandler("Vehicles:Client:Actions:ToggleDoor", function(doorNum)
 	end
 
 	if doorNum == "shut" or doorNum == "close" then
-		Vehicles.Sync.Doors:Shut(vehicle, "all", false)
+		exports['sandbox-vehicles']:SyncDoorsShut(vehicle, "all", false)
 	elseif doorNum == "open" then
-		Vehicles.Sync.Doors:Open(vehicle, "all", false, false)
+		exports['sandbox-vehicles']:SyncDoorsOpen(vehicle, "all", false, false)
 	else
 		if GetVehicleDoorAngleRatio(vehicle, doorNum) > 0.0 then
-			Vehicles.Sync.Doors:Shut(vehicle, doorNum, false)
+			exports['sandbox-vehicles']:SyncDoorsShut(vehicle, doorNum, false)
 		else
-			Vehicles.Sync.Doors:Open(vehicle, doorNum, false, false)
+			exports['sandbox-vehicles']:SyncDoorsOpen(vehicle, doorNum, false, false)
 		end
 	end
 end)

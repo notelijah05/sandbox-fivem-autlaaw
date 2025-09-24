@@ -2,7 +2,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
     exports["sandbox-base"]:RegisterClientCallback("Vehicles:GetPersonalPlate", function(data, cb)
         local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
-            if Vehicles:HasAccess(target.entity) and (Vehicles.Utils:IsCloseToRearOfVehicle(target.entity) or Vehicles.Utils:IsCloseToFrontOfVehicle(target.entity)) then
+            if exports['sandbox-vehicles']:HasAccess(target.entity) and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)) then
                 local settingPlate = GetNewPersonalPlate()
 
                 if settingPlate then

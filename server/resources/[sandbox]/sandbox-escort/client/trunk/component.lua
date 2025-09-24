@@ -211,10 +211,10 @@ end)
 exports("TrunkToggleTrunk", function()
 	if GetVehicleDoorAngleRatio(_inTrunkVeh, 5) > 0.0 then
 		--SetVehicleDoorsShut(_inTrunkVeh, 5, true, false)
-		Vehicles.Sync.Doors:Shut(_inTrunkVeh, 5, true)
+		exports['sandbox-vehicles']:SyncDoorsShut(_inTrunkVeh, 5, true)
 	else
 		--SetVehicleDoorOpen(_inTrunkVeh, 5, true, true)
-		Vehicles.Sync.Doors:Open(_inTrunkVeh, 5, false, false)
+		exports['sandbox-vehicles']:SyncDoorsOpen(_inTrunkVeh, 5, false, false)
 	end
 end)
 

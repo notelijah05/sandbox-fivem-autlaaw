@@ -17,14 +17,12 @@ local pumpModels = {
 
 AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
 	Animations = exports["sandbox-base"]:FetchComponent("Animations")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
-		"Vehicles",
 		"Polyzone",
 		"Animations",
 	}, function(error)
@@ -194,7 +192,7 @@ function RunFuelTick(veh)
 
 			if newVal <= 0.0 then
 				newVal = 0.0
-				Vehicles.Engine:Force(veh, false)
+				exports['sandbox-vehicles']:EngineForce(veh, false)
 			elseif newVal <= 5.0 then
 				if _lowtick >= 3 then
 					_lowtick = 0

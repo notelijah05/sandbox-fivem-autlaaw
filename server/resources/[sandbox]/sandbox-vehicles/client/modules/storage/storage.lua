@@ -92,7 +92,7 @@ AddEventHandler('Vehicles:Client:StoreVehicle', function(entityData)
         local inVehicleStorageZone, vehicleStorageZoneId = GetVehicleStorageAtCoords(vehicleCoords)
         local vehState = Entity(entityData.entity).state
 
-        if vehState.EmergencyBoat and Vehicles:HasAccess(entityData.entity, true) and GetPedInVehicleSeat(entityData.entity) == 0 and GetEntitySpeed(entityData.entity) <= 1 then
+        if vehState.EmergencyBoat and exports['sandbox-vehicles']:HasAccess(entityData.entity, true) and GetPedInVehicleSeat(entityData.entity) == 0 and GetEntitySpeed(entityData.entity) <= 1 then
             TriggerServerEvent("Vehicles:Server:DeleteEmergencyBoat", VehToNet(entityData.entity))
             return
         end

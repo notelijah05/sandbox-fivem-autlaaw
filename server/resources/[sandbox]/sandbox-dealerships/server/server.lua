@@ -3,7 +3,6 @@ _hashToVeh = {}
 AddEventHandler('Dealerships:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Jobs = exports['sandbox-base']:FetchComponent('Jobs')
-    Vehicles = exports['sandbox-base']:FetchComponent('Vehicles')
     Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
     Billing = exports['sandbox-base']:FetchComponent('Billing')
     Loans = exports['sandbox-base']:FetchComponent('Loans')
@@ -16,7 +15,6 @@ AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Dealerships', {
         'Doors',
         'Jobs',
-        'Vehicles',
         'Dealerships',
         'Billing',
         'Loans',
@@ -314,13 +312,14 @@ function RegisterCallbacks()
             if char and char:GetData('SID') then
                 -- TODO: Charge Money
                 if Wallet:Modify(source, -data.price) then
-                    Vehicles.Owned:AddToCharacter(char:GetData('SID'), data.vehicleHash, 0, 'bike',
+                    exports['sandbox-vehicles']:OwnedAddToCharacter(char:GetData('SID'), data.vehicleHash, 0, 'bike',
                         { make = 'Bicycle', model = data.name, class = 'Bicycle', value = data.price },
                         function(success, vehicleData)
                             if success and vehicleData then
-                                Vehicles.Owned:Spawn(source, vehicleData.VIN, data.spawnCoords, data.spawnHeading,
+                                exports['sandbox-vehicles']:OwnedSpawn(source, vehicleData.VIN, data.spawnCoords,
+                                    data.spawnHeading,
                                     function(success)
-                                        Vehicles.Keys:Add(source, vehicleData.VIN)
+                                        exports['sandbox-vehicles']:KeysAdd(source, vehicleData.VIN)
                                         cb(true)
                                     end)
                             else
@@ -408,7 +407,7 @@ function RegisterCallbacks()
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:FetchCurrentOwner', function(source, data, cb)
         if data and data.dealerId and _dealerships[data.dealerId] and Jobs.Permissions:HasPermissionInJob(source, data.dealerId, 'dealership_manage') then
-            Vehicles.Owned:GetVIN(data.VIN, function(vehicle)
+            exports['sandbox-vehicles']:OwnedGetVIN(data.VIN, function(vehicle)
                 if vehicle then
                     if vehicle.Owner then
                         if vehicle.Owner.Type == 0 then
@@ -502,7 +501,7 @@ function RegisterCallbacks()
                         local remainingLoan = Loans:HasRemainingPayments("vehicle", vehEnt.state.VIN, 14)
 
                         if stockInfo and stockInfo.data and vehStrikes and not remainingLoan then
-                            local vehicle = Vehicles.Owned:GetActive(vehEnt.state.VIN)
+                            local vehicle = exports['sandbox-vehicles']:OwnedGetActive(vehEnt.state.VIN)
 
                             local pricePercent = 0.75 - (vehStrikes * 0.02)
                             local buybackPrice = math.floor(vehEnt.state.Value * pricePercent)
@@ -555,8 +554,8 @@ function RegisterCallbacks()
                                                 vehicle:SetData('OwnerHistory', ownerHistory)
                                                 vehicle:SetData('Storage', _dealerships[data.dealerId].storage)
 
-                                                Vehicles.Owned:ForceSave(vehEnt.state.VIN)
-                                                Vehicles.Keys:Remove(owner:GetData('Source'), VIN)
+                                                exports['sandbox-vehicles']:OwnedForceSave(vehEnt.state.VIN)
+                                                exports['sandbox-vehicles']:KeysRemove(owner:GetData('Source'), VIN)
 
                                                 Dealerships.Records:CreateBuyBack(data.dealerId, {
                                                     time = os.time(),
@@ -596,7 +595,7 @@ function RegisterCallbacks()
                                                     },
                                                 })
 
-                                                Vehicles:Delete(veh, function() end)
+                                                exports['sandbox-vehicles']:Delete(veh, function() end)
 
                                                 Dealerships.Stock:Increase(data.dealerId, vehModel, 1)
 

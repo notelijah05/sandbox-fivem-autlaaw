@@ -132,7 +132,7 @@ function CreateLoanTasks()
 
                                     if v.AssetIdentifier then
                                         if v.Type == 'vehicle' then
-                                            Vehicles.Owned:Seize(v.AssetIdentifier, true)
+                                            exports['sandbox-vehicles']:OwnedSeize(v.AssetIdentifier, true)
                                         elseif v.Type == 'property' then
                                             Properties.Commerce:Foreclose(v.AssetIdentifier, true)
                                         end

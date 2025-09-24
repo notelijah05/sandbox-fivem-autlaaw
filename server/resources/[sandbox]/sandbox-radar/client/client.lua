@@ -14,14 +14,12 @@ AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Radar", {
 		"Jobs",
 		"EmergencyAlerts",
-		"Vehicles",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -134,7 +132,7 @@ function EnableRadar()
 							local targetPlate = GetVehicleNumberPlateText(hittingVehicle)
 							local relativeDirection = GetEntityRelativeDirection(vehHeading, targetHeading, 110)
 
-							local class = Vehicles.Class:Get(hittingVehicle)
+							local class = exports['sandbox-vehicles']:ClassGet(hittingVehicle)
 							if Entity(hittingVehicle) and Entity(hittingVehicle).state.Class then
 								class = Entity(hittingVehicle).state.Class
 							end
@@ -197,7 +195,7 @@ function EnableRadar()
 							local targetPlate = GetVehicleNumberPlateText(hittingVehicle)
 							local relativeDirection = GetEntityRelativeDirection(vehHeading, targetHeading, 110)
 
-							local class = Vehicles.Class:Get(hittingVehicle)
+							local class = exports['sandbox-vehicles']:ClassGet(hittingVehicle)
 							if Entity(hittingVehicle) and Entity(hittingVehicle).state.Class then
 								class = Entity(hittingVehicle).state.Class
 							end

@@ -104,7 +104,7 @@ function RegisterItemUses()
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:RepairKit", false, function(success)
 			if success then
 				exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData
-				.invType)
+					.invType)
 			end
 		end)
 	end)
@@ -113,7 +113,7 @@ function RegisterItemUses()
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:RepairKit", true, function(success)
 			if success then
 				exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData
-				.invType)
+					.invType)
 			end
 		end)
 	end)
@@ -127,13 +127,13 @@ function RegisterItemUses()
 			updatingMetaData.VIN = Vehicles.Identification.VIN:GenerateLocal() -- Might not be completely unique but odds are low and idc
 			updatingMetaData.OwnerName = Generator.Name:First() .. " " .. Generator.Name:Last()
 			updatingMetaData.SID = exports['sandbox-base']:SequenceGet("Character")
-			updatingMetaData.Vehicle = Vehicles:RandomName()
+			updatingMetaData.Vehicle = exports['sandbox-vehicles']:RandomName()
 
 			currentMeta = exports['sandbox-inventory']:UpdateMetaData(itemData.id, updatingMetaData)
 		end
 
 		if not currentMeta.Vehicle then
-			currentMeta.Vehicle = Vehicles:RandomName()
+			currentMeta.Vehicle = exports['sandbox-vehicles']:RandomName()
 
 			exports['sandbox-inventory']:UpdateMetaData(iitemData.id, {
 				Vehicle = currentMeta.Vehicle
@@ -152,7 +152,7 @@ function RegisterItemUses()
 						return
 					end
 
-					local vehicle = Vehicles.Owned:GetActive(vehState.VIN)
+					local vehicle = exports['sandbox-vehicles']:OwnedGetActive(vehState.VIN)
 					if not vehicle then
 						return
 					end
@@ -163,7 +163,7 @@ function RegisterItemUses()
 						SetVehicleNumberPlateText(veh, currentMeta.Plate)
 						vehState.FakePlate = currentMeta.Plate
 
-						Vehicles.Owned:ForceSave(vehState.VIN)
+						exports['sandbox-vehicles']:OwnedForceSave(vehState.VIN)
 
 						exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
 							itemData.invType)
@@ -315,7 +315,7 @@ function UseCarPolish(source, itemData, type)
 				}
 
 				exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData
-				.invType)
+					.invType)
 
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Polish Applied")
 			else

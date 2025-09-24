@@ -119,7 +119,7 @@ function SetDealerShowroomVehicleAtPosition(dealerId, position, vehData)
         vehData.vehicle, 100,
         function(vehicle)
             FreezeEntityPosition(vehicle, true)
-            local vehProperties = Vehicles.Properties:Get(vehicle)
+            local vehProperties = exports['sandbox-vehicles']:PropertiesGet(vehicle)
             exports['sandbox-base']:GameVehiclesDelete(vehicle)
             vehProperties.mods = nil
             vehProperties.neonEnabled = nil
