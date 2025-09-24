@@ -107,7 +107,7 @@ end)
 AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 	if id == "prison" and LocalPlayer.state.loggedIn then
 		if LocalPlayer.state.inTrunk then
-			Trunk:GetOut()
+			exports['sandbox-escort']:TrunkGetOut()
 
 			while LocalPlayer.state.inTrunk do
 				Wait(1)

@@ -12,7 +12,6 @@ function RetrieveComponents()
 	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Trunk = exports["sandbox-base"]:FetchComponent("Trunk")
 	Escort = exports["sandbox-base"]:FetchComponent("Escort")
 end
 
@@ -26,7 +25,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Inventory",
 		"Reputation",
 		"Jail",
-		"Trunk",
 		"Escort",
 	}, function(error)
 		if #error > 0 then
