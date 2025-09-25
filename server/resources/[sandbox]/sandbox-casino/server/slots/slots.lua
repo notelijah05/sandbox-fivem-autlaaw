@@ -99,7 +99,7 @@ AddEventHandler("Casino:Server:Startup", function()
         if GlobalState["CasinoOpen"] and bet >= 100 and bet <= 2500 then
             for k, v in pairs(_slotMachines) do
                 if v and v.Source == source then
-                    if Casino.Chips:Modify(source, -bet) then
+                    if exports['sandbox-casino']:ChipsModify(source, -bet) then
                         GiveCasinoFuckingMoney(source, "Slots", bet)
                         SendCasinoSpentChipsPhoneNotification(source, bet)
 
@@ -161,7 +161,7 @@ AddEventHandler("Casino:Server:Startup", function()
                                 local char = exports['sandbox-characters']:FetchCharacterSource(source)
                                 if char then
                                     if winnings > 0 then
-                                        if Casino.Chips:Modify(source, winnings) then
+                                        if exports['sandbox-casino']:ChipsModify(source, winnings) then
                                             SendCasinoWonChipsPhoneNotification(source, winnings)
                                         end
 

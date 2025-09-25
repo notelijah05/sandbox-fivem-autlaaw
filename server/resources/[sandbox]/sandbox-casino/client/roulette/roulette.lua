@@ -476,7 +476,7 @@ function ShowRouletteGameStateUI(state)
         exports['sandbox-hud']:InfoOverlayShow("Roulette", "The Wheel is Spinning")
     else
         local myBets = 0
-        local myBalance = formatNumberToCurrency(math.floor(Casino.Chips:Get()))
+        local myBalance = formatNumberToCurrency(math.floor(exports['sandbox-casino']:ChipsGet()))
         local maxBet = formatNumberToCurrency(math.floor(_rouletteTablesConfig[state.Id]?.maxBet or 0))
         local showStartTime = ""
 

@@ -6,7 +6,7 @@ AddEventHandler("Casino:Client:StartChipPurchase", function()
     end
 
     local cash = LocalPlayer.state.Character:GetData("Cash") or 0
-    local chips = Casino.Chips:Get()
+    local chips = exports['sandbox-casino']:ChipsGet()
 
     local buyMenu = {
         main = {
@@ -59,7 +59,7 @@ AddEventHandler("Casino:Client:StartChipSell", function()
     end
 
     local cash = LocalPlayer.state.Character:GetData("Cash") or 0
-    local chips = Casino.Chips:Get()
+    local chips = exports['sandbox-casino']:ChipsGet()
 
     local buyMenu = {
         main = {
@@ -120,7 +120,7 @@ _CASINO.Chips = {
     end,
     Has = function(self, amount)
         if amount > 0 then
-            return Casino.Chips:Get() >= amount
+            return exports['sandbox-casino']:ChipsGet() >= amount
         end
         return false
     end

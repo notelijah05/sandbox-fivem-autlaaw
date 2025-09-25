@@ -89,7 +89,7 @@ AddEventHandler("Casino:Client:Startup", function()
                 description = "Double Down!",
                 event = "Casino:Client:RecievePromptData",
                 data = { state = "double" },
-                disabled = data.currentBet > Casino.Chips:Get()
+                disabled = data.currentBet > exports['sandbox-casino']:ChipsGet()
             })
         end
 
@@ -533,7 +533,7 @@ function ShowGameStateUI(state)
         local dealerHand = CountBlackjackHand(state.DealerCards)
         local stateLabel = "Blackjack"
         local myHand = 0
-        local myBalance = math.floor(Casino.Chips:Get())
+        local myBalance = math.floor(exports['sandbox-casino']:ChipsGet())
         local myBet = 0
 
         if state.Status == 1 then

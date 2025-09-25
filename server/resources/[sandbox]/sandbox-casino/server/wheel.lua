@@ -92,7 +92,7 @@ AddEventHandler("Casino:Server:Startup", function()
             _wheelSpins += 1
             if _wheelSpins > 10 then
                 _wheelSpins = 0
-                Casino.Config:Set("wheel-accumulator", _wheelAccumulator)
+                exports['sandbox-casino']:ConfigSet("wheel-accumulator", _wheelAccumulator)
             end
         else
             cb(false)
@@ -112,11 +112,11 @@ AddEventHandler("Casino:Server:Startup", function()
         Wait(250)
     end
 
-    _wheelAccumulator = Casino.Config:Get("wheel-accumulator") or 0
+    _wheelAccumulator = exports['sandbox-casino']:ConfigGet("wheel-accumulator") or 0
 end)
 
 AddEventHandler("Core:Server:ForceSave", function()
-    Casino.Config:Set("wheel-accumulator", _wheelAccumulator)
+    exports['sandbox-casino']:ConfigSet("wheel-accumulator", _wheelAccumulator)
 end)
 
 function GenerateWheelPrize()
@@ -142,7 +142,7 @@ function GenerateWheelPrize()
     local randomPrize = exports['sandbox-base']:UtilsWeightedRandom(prizes)
 
     if randomPrize.bigWin then
-        Casino.Config:Set("wheel-accumulator", 0)
+        exports['sandbox-casino']:ConfigSet("wheel-accumulator", 0)
         _wheelAccumulator = 0
     end
 
@@ -209,7 +209,7 @@ function GiveWheelPrize(source, randomPrize)
                 end
             end
 
-            if Casino.Chips:Modify(source, value) then
+            if exports['sandbox-casino']:ChipsModify(source, value) then
                 SendCasinoWonChipsPhoneNotification(source, value)
 
                 winValue = value

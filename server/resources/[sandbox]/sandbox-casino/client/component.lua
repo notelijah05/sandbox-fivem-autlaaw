@@ -1,27 +1,8 @@
 _insideCasino = false
 _insideCasinoAudio = false
-_CASINO = _CASINO or {}
-
-AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Casino = exports["sandbox-base"]:FetchComponent("Casino")
-end
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Casino", {
-		"Casino",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		TriggerEvent("Casino:Client:Startup")
-	end)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Casino", _CASINO)
+	TriggerEvent("Casino:Client:Startup")
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")
@@ -202,7 +183,7 @@ AddEventHandler("Casino:Client:Startup", function()
 			text = "Cash Out Chips",
 			event = "Casino:Client:StartChipSell",
 			isEnabled = function()
-				return Casino.Chips:Get() > 0
+				return exports['sandbox-casino']:ChipsGet(source) > 0
 			end,
 		},
 		{

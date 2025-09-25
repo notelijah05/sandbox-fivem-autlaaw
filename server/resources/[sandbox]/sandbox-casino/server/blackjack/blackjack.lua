@@ -164,7 +164,7 @@ function StartBlackjackGame(tableId)
                                     nextCardCount = 0
                                     v.State = "stand"
                                 elseif state == "double" and nextCardCount == 2 then
-                                    if Casino.Chips:Modify(v.Source, -v.Bet) then
+                                    if exports['sandbox-casino']:ChipsModify(v.Source, -v.Bet) then
                                         SendCasinoSpentChipsPhoneNotification(v.Source, v.Bet)
                                         v.Bet = v.Bet * 2
 
@@ -328,7 +328,7 @@ function StartBlackjackGame(tableId)
                                     wonAmount = v.Bet * 2
                                 end
 
-                                if Casino.Chips:Modify(v.Source, wonAmount) then
+                                if exports['sandbox-casino']:ChipsModify(v.Source, wonAmount) then
                                     SendCasinoWonChipsPhoneNotification(v.Source, wonAmount)
                                 end
 
@@ -503,7 +503,7 @@ AddEventHandler("Casino:Server:Startup", function()
         end
 
         if _blackjack[blackjackPlayer.Table] and _blackjack[blackjackPlayer.Table].Seats[blackjackPlayer.LocalChair] then
-            if Casino.Chips:Modify(source, -data) then
+            if exports['sandbox-casino']:ChipsModify(source, -data) then
                 SendCasinoSpentChipsPhoneNotification(source, data)
 
                 _blackjack[blackjackPlayer.Table].Seats[blackjackPlayer.LocalChair].Bet = data

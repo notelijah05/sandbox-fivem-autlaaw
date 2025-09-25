@@ -146,7 +146,7 @@ function CheckRouletteWinners(tableId, bets, winningIndex)
         if v > 0 then
             local char = exports['sandbox-characters']:FetchCharacterSource(k)
             if char then
-                if Casino.Chips:Modify(k, v) then
+                if exports['sandbox-casino']:ChipsModify(k, v) then
                     SendCasinoWonChipsPhoneNotification(k, v)
                 end
 
@@ -273,7 +273,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
         if (amount >= 100) and _roulette[roulettePlayer.Table] and not _roulette[roulettePlayer.Table].Started and _roulette[roulettePlayer.Table].Seats[roulettePlayer.LocalChair] then
             if (_roulette[roulettePlayer.Table].Seats[roulettePlayer.LocalChair].TotalBet + amount) <= _rouletteTables[roulettePlayer.Table].maxBet then
-                if Casino.Chips:Modify(source, -amount) then
+                if exports['sandbox-casino']:ChipsModify(source, -amount) then
                     --SendCasinoSpentChipsPhoneNotification(source, amount)
 
                     if amount > 10000 then

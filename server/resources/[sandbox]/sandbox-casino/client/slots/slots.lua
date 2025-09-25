@@ -371,7 +371,7 @@ end
 function ShowSlotStateUI()
     if _satInChair then
         local machineName = _slotMachineNames[_satInChair.tableModel]
-        local myBalance = math.floor(Casino.Chips:Get())
+        local myBalance = math.floor(exports['sandbox-casino']:ChipsGet())
 
         local overlay = string.format("Chip Balance: $%s<br>Session Spent: $%s<br>Session Winnings: $%s",
             formatNumberToCurrency(myBalance), formatNumberToCurrency(math.floor(_sessionSpent)),
