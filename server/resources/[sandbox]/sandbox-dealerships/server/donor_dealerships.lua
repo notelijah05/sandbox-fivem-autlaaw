@@ -2,7 +2,7 @@ function RegisterDonorVehicleSaleCallbacks()
   exports["sandbox-base"]:RegisterServerCallback("Dealerships:DonorSales:GetStock", function(source, data, cb)
     local plyr = exports['sandbox-base']:FetchSource(source)
     if plyr and _donorDealerships[data] then
-      local pending = Dealerships.Donator:GetPending(plyr:GetData("Identifier"))
+      local pending = exports['sandbox-dealerships']:DonatorGetPending(plyr:GetData("Identifier"))
 
       if pending and #pending > 0 then
         local filtered = {}
@@ -14,7 +14,7 @@ function RegisterDonorVehicleSaleCallbacks()
           table.insert(classList, v.class)
         end
 
-        local dealerData = Dealerships.Stock:FetchDealer(_donorDealerships[data].availableVehicles)
+        local dealerData = exports['sandbox-dealerships']:StockFetchDealer(_donorDealerships[data].availableVehicles)
 
         for k, v in ipairs(dealerData) do
           if allowedClasses[v.data.class] and (not _donorDealerships[data].flags.depleteStockOnPurchase or v.quantity > 0) then
@@ -36,7 +36,7 @@ function RegisterDonorVehicleSaleCallbacks()
   exports["sandbox-base"]:RegisterServerCallback("Dealerships:DonorSales:GetPending", function(source, data, cb)
     local plyr = exports['sandbox-base']:FetchSource(source)
     if plyr then
-      local pending = Dealerships.Donator:GetPending(plyr:GetData("Identifier"), true)
+      local pending = exports['sandbox-dealerships']:DonatorGetPending(plyr:GetData("Identifier"), true)
       local mainMenuItems = {}
       for k, v in ipairs(pending) do
         if not v.redeemed then
@@ -79,12 +79,12 @@ function RegisterDonorVehicleSaleCallbacks()
         local dealerData = _dealerships[hostDealer]
 
         if char and hostDealer then
-          local profitPercent = Dealerships.Management:GetData(hostDealer, 'profitPercentage')
-          local commissionPercent = Dealerships.Management:GetData(hostDealer, 'commission')
-          local saleVehicleData = Dealerships.Stock:FetchDealerVehicle(hostDealer, data.vehicle)
+          local profitPercent = exports['sandbox-dealerships']:ManagementGetData(hostDealer, 'profitPercentage')
+          local commissionPercent = exports['sandbox-dealerships']:ManagementGetData(hostDealer, 'commission')
+          local saleVehicleData = exports['sandbox-dealerships']:StockFetchDealerVehicle(hostDealer, data.vehicle)
 
           if profitPercent and commissionPercent and saleVehicleData and saleVehicleData.quantity > 0 and saleVehicleData.data.price and saleVehicleData.data.price > 0 then
-            local donatorStuff = Dealerships.Donator:GetPending(plyr:GetData("Identifier"))
+            local donatorStuff = exports['sandbox-dealerships']:DonatorGetPending(plyr:GetData("Identifier"))
 
             local allowedClasses = {}
             for k, v in ipairs(donatorStuff) do
@@ -103,7 +103,7 @@ function RegisterDonorVehicleSaleCallbacks()
 
               local removeSuccess = nil
               if _donorDealerships[data.dealer].flags.depleteStockOnPurchase then
-                removeSuccess = Dealerships.Stock:Remove(hostDealer, saleVehicleData.vehicle, 1)
+                removeSuccess = exports['sandbox-dealerships']:StockRemove(hostDealer, saleVehicleData.vehicle, 1)
               else
                 removeSuccess = saleVehicleData.quantity
               end
@@ -115,8 +115,8 @@ function RegisterDonorVehicleSaleCallbacks()
                 end
               end
 
-              local revokeToken = Dealerships.Donator:RemovePending(plyr:GetData("Identifier"), removeId)
-
+              local revokeToken = exports['sandbox-dealerships']:DonatorRemovePending(plyr:GetData("Identifier"),
+                removeId)
               if removeSuccess and revokeToken then
                 exports['sandbox-vehicles']:OwnedAddToCharacter(char:GetData('SID'), GetHashKey(saleVehicleData.vehicle),
                   0,
@@ -129,7 +129,7 @@ function RegisterDonorVehicleSaleCallbacks()
                   }, function(success, vehicleData)
                     if success and vehicleData then
                       if _donorDealerships[data.dealer].flags.depleteStockOnPurchase then
-                        Dealerships.Records:Create(hostDealer, {
+                        exports['sandbox-dealerships']:RecordsCreate(hostDealer, {
                           time = os.time(),
                           type = "full",
                           vehicle = {
@@ -208,7 +208,7 @@ function RegisterDonorVehicleSaleCallbacks()
     local license, class = table.unpack(args)
 
     if license and class then
-      local success = Dealerships.Donator:AddPending(license, class)
+      local success = exports['sandbox-dealerships']:DonatorAddPending(license, class)
       if success then
         exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Added Donator Token")
       else
@@ -233,7 +233,7 @@ function RegisterDonorVehicleSaleCallbacks()
     local license = table.unpack(args)
 
     if license then
-      local res = Dealerships.Donator:GetPending(license, true)
+      local res = exports['sandbox-dealerships']:DonatorGetPending(license, true)
       if res then
         local message = string.format("Player Identifier: %s<br>", license)
         for k, v in ipairs(res) do
@@ -259,7 +259,7 @@ function RegisterDonorVehicleSaleCallbacks()
     local license, tokenId = table.unpack(args)
 
     if license and tokenId then
-      local success = Dealerships.Donator:DeletePending(license, tokenId)
+      local success = exports['sandbox-dealerships']:DonatorDeletePending(license, tokenId)
       if success then
         exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Removed")
       else
@@ -281,86 +281,88 @@ function RegisterDonorVehicleSaleCallbacks()
   }, 2)
 end
 
-DEALERSHIPS.Donator = {
-  AddPending = function(self, playerIdentifier, class, data)
-    local p = promise.new()
-    exports['sandbox-base']:DatabaseGameInsertOne({
-      collection = "donator_vehicles",
-      document = {
-        player = playerIdentifier,
-        class = class,
-        redeemed = false,
-        data = data,
-      },
-    }, function(success, inserted)
-      p:resolve(success and inserted > 0)
-    end)
+-- Export functions
+exports('DonatorAddPending', function(playerIdentifier, class, data)
+  local p = promise.new()
+  exports['sandbox-base']:DatabaseGameInsertOne({
+    collection = "donator_vehicles",
+    document = {
+      player = playerIdentifier,
+      class = class,
+      redeemed = false,
+      data = data,
+    },
+  }, function(success, inserted)
+    p:resolve(success and inserted > 0)
+  end)
 
-    return Citizen.Await(p)
-  end,
-  GetPending = function(self, playerIdentifier, includeRedeemed)
-    local p = promise.new()
+  return Citizen.Await(p)
+end)
 
-    local stupid = false
-    if includeRedeemed then
-      stupid = nil
-    end
+exports('DonatorGetPending', function(playerIdentifier, includeRedeemed)
+  local p = promise.new()
 
-    exports['sandbox-base']:DatabaseGameFind({
-      collection = "donator_vehicles",
-      query = {
-        player = playerIdentifier,
-        redeemed = stupid,
-      },
-    }, function(success, results)
-      if success and #results > 0 then
-        p:resolve(results)
-      else
-        p:resolve({})
-      end
-    end)
-
-    return Citizen.Await(p)
-  end,
-  RemovePending = function(self, playerIdentifier, id)
-    local p = promise.new()
-
-    exports['sandbox-base']:DatabaseGameUpdateOne({
-      collection = "donator_vehicles",
-      query = {
-        player = playerIdentifier,
-        _id = id,
-      },
-      update = {
-        ["$set"] = {
-          redeemed = true,
-        }
-      }
-    }, function(success, updated)
-      p:resolve(success)
-    end)
-
-    return Citizen.Await(p)
-  end,
-  DeletePending = function(self, playerIdentifier, id)
-    local p = promise.new()
-
-    exports['sandbox-base']:DatabaseGameDeleteOne({
-      collection = "donator_vehicles",
-      query = {
-        player = playerIdentifier,
-        _id = id,
-      },
-    }, function(success)
-      p:resolve(success)
-    end)
-
-    return Citizen.Await(p)
+  local stupid = false
+  if includeRedeemed then
+    stupid = nil
   end
-}
+
+  exports['sandbox-base']:DatabaseGameFind({
+    collection = "donator_vehicles",
+    query = {
+      player = playerIdentifier,
+      redeemed = stupid,
+    },
+  }, function(success, results)
+    if success and #results > 0 then
+      p:resolve(results)
+    else
+      p:resolve({})
+    end
+  end)
+
+  return Citizen.Await(p)
+end)
+
+exports('DonatorRemovePending', function(playerIdentifier, id)
+  local p = promise.new()
+
+  exports['sandbox-base']:DatabaseGameUpdateOne({
+    collection = "donator_vehicles",
+    query = {
+      player = playerIdentifier,
+      _id = id,
+    },
+    update = {
+      ["$set"] = {
+        redeemed = true,
+      }
+    }
+  }, function(success, updated)
+    p:resolve(success)
+  end)
+
+  return Citizen.Await(p)
+end)
+
+exports('DonatorDeletePending', function(playerIdentifier, id)
+  local p = promise.new()
+
+  exports['sandbox-base']:DatabaseGameDeleteOne({
+    collection = "donator_vehicles",
+    query = {
+      player = playerIdentifier,
+      _id = id,
+    },
+  }, function(success)
+    p:resolve(success)
+  end)
+
+  return Citizen.Await(p)
+end)
 
 AddEventHandler("DonorDealer:Server:AddCarToPlayer", function(identifier, class)
-  Dealerships.Donator:AddPending(identifier, class)
+  exports['sandbox-dealerships']:DonatorAddPending(identifier, class)
 end)
 
 function TebexAddDonatorVehicle(source, args)
@@ -387,7 +389,7 @@ function TebexAddDonatorVehicle(source, args)
   if player then
     local license = player:GetData("Identifier")
     if license and class then
-      local success = Dealerships.Donator:AddPending(license, class)
+      local success = exports['sandbox-dealerships']:DonatorAddPending(license, class)
       if success then
         exports["sandbox-chat"]:SendSystemSingle(sid, "Successfully Added Donator Token")
       else

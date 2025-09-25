@@ -14,7 +14,7 @@ AddEventHandler('Core:Shared:Ready', function()
         price = tonumber(price)
 
         if amount and (price and price > 0) then
-            local res = Dealerships.Stock:Add(dealership, vehicle, modelType, amount, {
+            local res = exports['sandbox-dealerships']:StockAdd(dealership, vehicle, modelType, amount, {
                 class = class,
                 price = price,
                 make = make,
@@ -82,7 +82,7 @@ AddEventHandler('Core:Shared:Ready', function()
         amount = tonumber(amount)
 
         if amount and amount > 0 then
-            local res = Dealerships.Stock:Increase(dealership, vehicle, amount)
+            local res = exports['sandbox-dealerships']:StockIncrease(dealership, vehicle, amount)
 
             if res and res.success then
                 exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Increased Stock")
@@ -115,7 +115,7 @@ AddEventHandler('Core:Shared:Ready', function()
         price = tonumber(price)
 
         if price and price > 0 then
-            local res = Dealerships.Stock:Update(dealership, vehicle, {
+            local res = exports['sandbox-dealerships']:StockUpdate(dealership, vehicle, {
                 ["data.price"] = price
             })
 
@@ -149,7 +149,7 @@ AddEventHandler('Core:Shared:Ready', function()
         local dealership, vehicle, make, model = table.unpack(args)
 
         if make and model then
-            local res = Dealerships.Stock:Update(dealership, vehicle, {
+            local res = exports['sandbox-dealerships']:StockUpdate(dealership, vehicle, {
                 ["data.make"] = make,
                 ["data.model"] = model,
             })
@@ -188,7 +188,7 @@ AddEventHandler('Core:Shared:Ready', function()
         local dealership, vehicle, class = table.unpack(args)
 
         if class then
-            local res = Dealerships.Stock:Update(dealership, vehicle, {
+            local res = exports['sandbox-dealerships']:StockUpdate(dealership, vehicle, {
                 ["data.class"] = class
             })
 
@@ -218,7 +218,7 @@ AddEventHandler('Core:Shared:Ready', function()
         },
     }, 3)
 
-    local allStock = Dealerships.Stock:FetchAll()
+    local allStock = exports['sandbox-dealerships']:StockFetchAll()
     if allStock and #allStock > 0 then
         for k, v in ipairs(allStock) do
             if not _hashToVeh[v.dealership] then
@@ -233,7 +233,7 @@ end)
 function RegisterCallbacks()
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:GetDealerStock', function(source, dealerId, cb)
         if dealerId and _dealerships[dealerId] then
-            cb(Dealerships.Stock:FetchDealer(dealerId))
+            cb(exports['sandbox-dealerships']:StockFetchDealer(dealerId))
         else
             cb(false)
         end
@@ -242,7 +242,7 @@ function RegisterCallbacks()
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:ShowroomManagement:FetchData',
         function(source, dealerId, cb)
             if _dealerships[dealerId] and exports['sandbox-jobs']:HasPermissionInJob(source, dealerId, 'dealership_showroom') then
-                cb(true, Dealerships.Stock:FetchDealer(dealerId))
+                cb(true, exports['sandbox-dealerships']:StockFetchDealer(dealerId))
             else
                 cb(false)
             end
@@ -250,8 +250,8 @@ function RegisterCallbacks()
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:StockViewing:FetchData', function(source, dealerId, cb)
         if _dealerships[dealerId] and exports['sandbox-jobs']:HasPermissionInJob(source, dealerId, 'dealership_stock') or exports['sandbox-jobs']:HasPermissionInJob(source, dealerId, 'dealership_sell') then
-            cb(true, Dealerships.Stock:FetchDealer(dealerId), os.time(),
-                Dealerships.Management:GetData(dealerId, 'profitPercentage'))
+            cb(true, exports['sandbox-dealerships']:StockFetchDealer(dealerId), os.time(),
+                exports['sandbox-dealerships']:ManagementGetData(dealerId, 'profitPercentage'))
         else
             cb(false)
         end
@@ -259,8 +259,9 @@ function RegisterCallbacks()
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:Sales:FetchData', function(source, dealerId, cb)
         if _dealerships[dealerId] and exports['sandbox-jobs']:HasPermissionInJob(source, dealerId, 'dealership_stock') or exports['sandbox-jobs']:HasPermissionInJob(source, dealerId, 'dealership_sell') then
-            cb(true, Dealerships.Stock:FetchDealer(dealerId), exports['sandbox-finance']:LoansGetDefaultInterestRate(),
-                Dealerships.Management:GetAllData(dealerId))
+            cb(true, exports['sandbox-dealerships']:StockFetchDealer(dealerId),
+                exports['sandbox-finance']:LoansGetDefaultInterestRate(),
+                exports['sandbox-dealerships']:ManagementGetAllData(dealerId))
         else
             cb(false)
         end
@@ -270,7 +271,7 @@ function RegisterCallbacks()
         function(source, data, cb)
             local char = exports['sandbox-characters']:FetchCharacterSource(source)
             if data and data.dealerId and type(data.position) == 'number' and exports['sandbox-jobs']:HasPermissionInJob(source, data.dealerId, 'dealership_showroom') then
-                cb(Dealerships.Showroom:UpdatePos(data.dealerId, data.position, data.vehData))
+                cb(exports['sandbox-dealerships']:ShowroomUpdatePos(data.dealerId, data.position, data.vehData))
             else
                 cb(false)
             end
@@ -350,7 +351,7 @@ function RegisterCallbacks()
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:GetDealershipData', function(source, data, cb)
         if data and data.dealerId and _dealerships[data.dealerId] and exports['sandbox-jobs']:HasPermissionInJob(source, data.dealerId, 'dealership_manage') then
-            cb(Dealerships.Management:GetAllData(data.dealerId))
+            cb(exports['sandbox-dealerships']:ManagementGetAllData(data.dealerId))
         else
             cb(false)
         end
@@ -361,7 +362,7 @@ function RegisterCallbacks()
             data.updating._id = nil
             data.updating.dealership = nil
 
-            cb(Dealerships.Management:SetMultipleData(data.dealerId, data.updating))
+            cb(exports['sandbox-dealerships']:ManagementSetMultipleData(data.dealerId, data.updating))
         else
             cb(false)
         end
@@ -369,7 +370,7 @@ function RegisterCallbacks()
 
     exports["sandbox-base"]:RegisterServerCallback('Dealerships:FetchHistory', function(source, data, cb)
         if data.dealership and _dealerships[data.dealership] and exports['sandbox-jobs']:HasPermissionInJob(source, data.dealership, 'dealership_manage') then
-            cb(Dealerships.Records:GetPage(data.category, data.term, data.dealership, data.page, 6))
+            cb(exports['sandbox-dealerships']:RecordsGetPage(data.category, data.term, data.dealership, data.page, 6))
         else
             cb(false)
         end
@@ -420,7 +421,8 @@ function RegisterCallbacks()
                     if not vehEnt.state.Donator and vehEnt.state.Value and type(vehEnt.state.Value) == "number" and vehEnt.state.Value > 0 then
                         local vehModel = GetVehicleModelFromHash(data.dealerId, GetEntityModel(veh))
                         if vehModel then
-                            local stockInfo = Dealerships.Stock:FetchDealerVehicle(data.dealerId, vehModel)
+                            local stockInfo = exports['sandbox-dealerships']:StockFetchDealerVehicle(data.dealerId,
+                                vehModel)
                             local vehStrikes = exports['sandbox-mdt']:VehiclesGetStrikes(vehEnt.state.VIN) or 0
                             local remainingLoan = exports['sandbox-finance']:LoansHasRemainingPayments("vehicle",
                                 vehEnt.state.VIN, 14)
@@ -467,7 +469,7 @@ function RegisterCallbacks()
                 if vehEnt.state.VIN and vehEnt.state.Owned and vehEnt.state.Make and vehEnt.state.Value and type(vehEnt.state.Value) == "number" and vehEnt.state.Value > 0 then
                     local vehModel = GetVehicleModelFromHash(data.dealerId, GetEntityModel(veh))
                     if vehModel then
-                        local stockInfo = Dealerships.Stock:FetchDealerVehicle(data.dealerId, vehModel)
+                        local stockInfo = exports['sandbox-dealerships']:StockFetchDealerVehicle(data.dealerId, vehModel)
                         local vehStrikes = exports['sandbox-mdt']:VehiclesGetStrikes(vehEnt.state.VIN) or 0
                         local remainingLoan = exports['sandbox-finance']:LoansHasRemainingPayments("vehicle",
                             vehEnt.state.VIN, 14)
@@ -531,7 +533,7 @@ function RegisterCallbacks()
                                                 exports['sandbox-vehicles']:OwnedForceSave(vehEnt.state.VIN)
                                                 exports['sandbox-vehicles']:KeysRemove(owner:GetData('Source'), VIN)
 
-                                                Dealerships.Records:CreateBuyBack(data.dealerId, {
+                                                exports['sandbox-dealerships']:RecordsCreateBuyBack(data.dealerId, {
                                                     time = os.time(),
                                                     vehicle = {
                                                         VIN = vehEnt.state.VIN,
@@ -571,7 +573,7 @@ function RegisterCallbacks()
 
                                                 exports['sandbox-vehicles']:Delete(veh, function() end)
 
-                                                Dealerships.Stock:Increase(data.dealerId, vehModel, 1)
+                                                exports['sandbox-dealerships']:StockIncrease(data.dealerId, vehModel, 1)
 
                                                 cb(true)
                                             else

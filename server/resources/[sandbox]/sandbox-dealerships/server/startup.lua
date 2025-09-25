@@ -5,10 +5,10 @@ function LoadDealershipShit()
         _ran = true
 
         GlobalState.DealershipShowrooms = {}
-        Dealerships.Showroom:Load()
-        Dealerships.Management:LoadData()
+        exports['sandbox-dealerships']:ShowroomLoad()
+        exports['sandbox-dealerships']:ManagementLoadData()
 
-        -- Dealerships.Stock:Ensure('pdm', 'blista', 20, {
+        -- exports['sandbox-dealerships']:StockEnsure('pdm', 'blista', 20, {
         --     make = 'Dinka',
         --     model = 'Blista',
         --     class = 'B',
@@ -16,7 +16,7 @@ function LoadDealershipShit()
         --     price = 12500,
         -- })
 
-        -- Dealerships.Stock:Ensure('pdm', 'asbo', 20, {
+        -- exports['sandbox-dealerships']:StockEnsure('pdm', 'asbo', 20, {
         --     make = 'Maxwell',
         --     model = 'Asbo',
         --     class = 'C',

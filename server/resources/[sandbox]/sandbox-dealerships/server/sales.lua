@@ -131,10 +131,13 @@ function RegisterVehicleSaleCallbacks()
                     if #(playerCoords - targetCoords) <= 15.0 then
                         local targetSrc = targetCharacter:GetData('Source')
 
-                        local profitPercent = Dealerships.Management:GetData(dealership, 'profitPercentage')
-                        local commissionPercent = Dealerships.Management:GetData(dealership, 'commission')
+                        local profitPercent = exports['sandbox-dealerships']:ManagementGetData(dealership,
+                            'profitPercentage')
+                        local commissionPercent = exports['sandbox-dealerships']:ManagementGetData(dealership,
+                            'commission')
 
-                        local saleVehicleData = Dealerships.Stock:FetchDealerVehicle(dealerData.id, vehicle)
+                        local saleVehicleData = exports['sandbox-dealerships']:StockFetchDealerVehicle(dealerData.id,
+                            vehicle)
                         if profitPercent and commissionPercent and saleVehicleData and saleVehicleData.quantity > 0 and saleVehicleData.data.price and saleVehicleData.data.price > 0 then
                             local vehiclePrice = saleVehicleData.data.price
                             local priceMultiplier = 1 + (profitPercent / 100)
@@ -151,7 +154,8 @@ function RegisterVehicleSaleCallbacks()
                                     salePrice, '',
                                     function(wasPayed, withAccount)
                                         if wasPayed then
-                                            local removeSuccess = Dealerships.Stock:Remove(dealerData.id,
+                                            local removeSuccess = exports['sandbox-dealerships']:StockRemove(
+                                                dealerData.id,
                                                 saleVehicleData.vehicle, 1)
                                             if removeSuccess then
                                                 exports['sandbox-vehicles']:OwnedAddToCharacter(
@@ -163,7 +167,7 @@ function RegisterVehicleSaleCallbacks()
                                                         value = salePrice,
                                                     }, function(success, vehicleData)
                                                         if success and vehicleData then
-                                                            Dealerships.Records:Create(dealerData.id, {
+                                                            exports['sandbox-dealerships']:RecordsCreate(dealerData.id, {
                                                                 time = os.time(),
                                                                 type = type,
                                                                 vehicle = {
@@ -296,7 +300,8 @@ function RegisterVehicleSaleCallbacks()
                                                                             preGenerateVIN, salePrice, downPayment,
                                                                             loanWeeks)
                                                                     if loanSuccess then
-                                                                        local removeSuccess = Dealerships.Stock:Remove(
+                                                                        local removeSuccess = exports
+                                                                        ['sandbox-dealerships']:StockRemove(
                                                                             dealerData.id, saleVehicleData.vehicle, 1)
                                                                         if removeSuccess then
                                                                             exports['sandbox-vehicles']
@@ -314,68 +319,71 @@ function RegisterVehicleSaleCallbacks()
                                                                                             .price
                                                                                     }, function(success, vehicleData)
                                                                                         if success and vehicleData then
-                                                                                            Dealerships.Records:Create(
-                                                                                                dealerData.id,
-                                                                                                {
-                                                                                                    time = os.time(),
-                                                                                                    type = type,
-                                                                                                    loan = {
-                                                                                                        length =
-                                                                                                            loanWeeks,
-                                                                                                        downPayment =
-                                                                                                            downPayment,
-                                                                                                    },
-                                                                                                    vehicle = {
-                                                                                                        VIN = vehicleData
-                                                                                                            .VIN,
-                                                                                                        vehicle =
-                                                                                                            saleVehicleData
-                                                                                                            .vehicle,
-                                                                                                        data =
-                                                                                                            saleVehicleData.data,
-                                                                                                    },
-                                                                                                    profitPercent =
-                                                                                                        profitPercent,
-                                                                                                    salePrice = salePrice,
-                                                                                                    dealerProfits =
-                                                                                                        dealerRecieves,
-                                                                                                    commission =
-                                                                                                        playerCommission,
-                                                                                                    seller = {
-                                                                                                        ID = char
-                                                                                                            :GetData(
-                                                                                                                'ID'),
-                                                                                                        SID = char
-                                                                                                            :GetData(
-                                                                                                                'SID'),
-                                                                                                        First = char
-                                                                                                            :GetData(
-                                                                                                                'First'),
-                                                                                                        Last = char
-                                                                                                            :GetData(
-                                                                                                                'Last'),
-                                                                                                    },
-                                                                                                    buyer = {
-                                                                                                        ID =
-                                                                                                            targetCharacter
-                                                                                                            :GetData(
-                                                                                                                'ID'),
-                                                                                                        SID =
-                                                                                                            targetCharacter
-                                                                                                            :GetData(
-                                                                                                                'SID'),
-                                                                                                        First =
-                                                                                                            targetCharacter
-                                                                                                            :GetData(
-                                                                                                                'First'),
-                                                                                                        Last =
-                                                                                                            targetCharacter
-                                                                                                            :GetData(
-                                                                                                                'Last'),
-                                                                                                    },
-                                                                                                    newQuantity =
-                                                                                                        removeSuccess,
-                                                                                                })
+                                                                                            exports['sandbox-dealerships']
+                                                                                                :RecordsCreate(
+                                                                                                    dealerData.id,
+                                                                                                    {
+                                                                                                        time = os.time(),
+                                                                                                        type = type,
+                                                                                                        loan = {
+                                                                                                            length =
+                                                                                                                loanWeeks,
+                                                                                                            downPayment =
+                                                                                                                downPayment,
+                                                                                                        },
+                                                                                                        vehicle = {
+                                                                                                            VIN =
+                                                                                                                vehicleData
+                                                                                                                .VIN,
+                                                                                                            vehicle =
+                                                                                                                saleVehicleData
+                                                                                                                .vehicle,
+                                                                                                            data =
+                                                                                                                saleVehicleData.data,
+                                                                                                        },
+                                                                                                        profitPercent =
+                                                                                                            profitPercent,
+                                                                                                        salePrice =
+                                                                                                            salePrice,
+                                                                                                        dealerProfits =
+                                                                                                            dealerRecieves,
+                                                                                                        commission =
+                                                                                                            playerCommission,
+                                                                                                        seller = {
+                                                                                                            ID = char
+                                                                                                                :GetData(
+                                                                                                                    'ID'),
+                                                                                                            SID = char
+                                                                                                                :GetData(
+                                                                                                                    'SID'),
+                                                                                                            First = char
+                                                                                                                :GetData(
+                                                                                                                    'First'),
+                                                                                                            Last = char
+                                                                                                                :GetData(
+                                                                                                                    'Last'),
+                                                                                                        },
+                                                                                                        buyer = {
+                                                                                                            ID =
+                                                                                                                targetCharacter
+                                                                                                                :GetData(
+                                                                                                                    'ID'),
+                                                                                                            SID =
+                                                                                                                targetCharacter
+                                                                                                                :GetData(
+                                                                                                                    'SID'),
+                                                                                                            First =
+                                                                                                                targetCharacter
+                                                                                                                :GetData(
+                                                                                                                    'First'),
+                                                                                                            Last =
+                                                                                                                targetCharacter
+                                                                                                                :GetData(
+                                                                                                                    'Last'),
+                                                                                                        },
+                                                                                                        newQuantity =
+                                                                                                            removeSuccess,
+                                                                                                    })
 
                                                                                             exports['sandbox-base']
                                                                                                 :ExecuteClient(source,
