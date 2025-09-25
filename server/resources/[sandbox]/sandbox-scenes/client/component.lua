@@ -3,23 +3,9 @@ _nearbyScenes = {}
 
 _hiddenScenes = {}
 
-AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Scenes = exports["sandbox-base"]:FetchComponent("Scenes")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Scenes", {
-		"Scenes",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		exports["sandbox-keybinds"]:Add("scene_create", "", "keyboard", "Scenes - Create Scene", function()
-			Scenes:BeginCreation()
-		end)
+	exports["sandbox-keybinds"]:Add("scene_create", "", "keyboard", "Scenes - Create Scene", function()
+		exports['sandbox-scenes']:BeginCreation()
 	end)
 end)
 
@@ -85,104 +71,104 @@ end)
 _creationOpen = false
 _creationMenu = nil
 
-_SCENES = {
-	BeginCreation = function(self, text, staff)
-		if _creationOpen then
-			return
-		end
+exports('BeginCreation', function(text, staff)
+	if _creationOpen then
+		return
+	end
 
-		local hitting, endCoords, entity = GetEntityPlayerIsLookingAt(15.0, LocalPlayer.state.ped)
+	local hitting, endCoords, entity = GetEntityPlayerIsLookingAt(15.0, LocalPlayer.state.ped)
 
-		if not hitting then
-			return exports["sandbox-hud"]:NotifError("Cannot Place Here")
-		end
+	if not hitting then
+		return exports["sandbox-hud"]:NotifError("Cannot Place Here")
+	end
 
-		if #(GetEntityCoords(LocalPlayer.state.ped) - endCoords) > 5.0 then
-			return exports["sandbox-hud"]:NotifError("Cannot Place That Far Away")
-		end
+	if #(GetEntityCoords(LocalPlayer.state.ped) - endCoords) > 5.0 then
+		return exports["sandbox-hud"]:NotifError("Cannot Place That Far Away")
+	end
 
-		if IsEntityAVehicle(entity) or IsEntityAPed(entity) then
-			return exports["sandbox-hud"]:NotifError("Cannot Place On a Vehicle or Person")
-		end
+	if IsEntityAVehicle(entity) or IsEntityAPed(entity) then
+		return exports["sandbox-hud"]:NotifError("Cannot Place On a Vehicle or Person")
+	end
 
-		exports['sandbox-hud']:InputShow(
-			"Scene Creation",
-			"Scene Text. Use ~n~ For a Newline",
+	exports['sandbox-hud']:InputShow(
+		"Scene Creation",
+		"Scene Text. Use ~n~ For a Newline",
+		{
 			{
-				{
-					id = "text",
-					type = "multiline",
-					options = {
-						inputProps = {
-							value = text,
-							maxLength = 290,
-						},
+				id = "text",
+				type = "multiline",
+				options = {
+					inputProps = {
+						value = text,
+						maxLength = 290,
 					},
 				},
 			},
-			"Scenes:Client:OpenOptionsMenu",
-			{
-				staff = staff,
-				coords = endCoords,
-				entity = entity,
-			}
-		)
-	end,
-	Deletion = function(self)
-		if _nearbyScenes and #_nearbyScenes > 0 then
-			local hitting, endCoords, entity = GetEntityPlayerIsLookingAt(15.0, LocalPlayer.state.ped)
-			if hitting and endCoords then
-				local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
-				local lastDist = nil
-				local lastId = nil
-				for k, v in pairs(_nearbyScenes) do
-					local dist = #(pedCoords - v.coords)
-					if (not lastDist) or (lastDist and dist < lastDist) then
-						lastDist = dist
-						lastId = v._id
+		},
+		"Scenes:Client:OpenOptionsMenu",
+		{
+			staff = staff,
+			coords = endCoords,
+			entity = entity,
+		}
+	)
+end)
+
+exports('Deletion', function()
+	if _nearbyScenes and #_nearbyScenes > 0 then
+		local hitting, endCoords, entity = GetEntityPlayerIsLookingAt(15.0, LocalPlayer.state.ped)
+		if hitting and endCoords then
+			local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
+			local lastDist = nil
+			local lastId = nil
+			for k, v in pairs(_nearbyScenes) do
+				local dist = #(pedCoords - v.coords)
+				if (not lastDist) or (lastDist and dist < lastDist) then
+					lastDist = dist
+					lastId = v._id
+				end
+			end
+
+			exports["sandbox-base"]:ServerCallback("Scenes:Delete", lastId, function(success, invalidPermissions)
+				if success then
+					exports["sandbox-hud"]:NotifSuccess("Scene Deleted")
+				else
+					if invalidPermissions then
+						exports["sandbox-hud"]:NotifError("Invalid Permissions to Delete This Scene")
+					else
+						exports["sandbox-hud"]:NotifError("Failed to Delete Scene")
 					end
 				end
-
-				exports["sandbox-base"]:ServerCallback("Scenes:Delete", lastId, function(success, invalidPermissions)
-					if success then
-						exports["sandbox-hud"]:NotifSuccess("Scene Deleted")
-					else
-						if invalidPermissions then
-							exports["sandbox-hud"]:NotifError("Invalid Permissions to Delete This Scene")
-						else
-							exports["sandbox-hud"]:NotifError("Failed to Delete Scene")
-						end
-					end
-				end)
-			end
+			end)
 		end
-	end,
-	Edit = function(self)
-		if _nearbyScenes and #_nearbyScenes > 0 then
-			local hitting, endCoords, entity = GetEntityPlayerIsLookingAt(15.0, LocalPlayer.state.ped)
-			if hitting and endCoords then
-				local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
-				local lastDist = nil
-				local lastId = nil
-				for k, v in pairs(_nearbyScenes) do
-					local dist = #(pedCoords - v.coords)
-					if (not lastDist) or (lastDist and dist < lastDist) then
-						lastDist = dist
-						lastId = v._id
-					end
+	end
+end)
+
+exports('Edit', function()
+	if _nearbyScenes and #_nearbyScenes > 0 then
+		local hitting, endCoords, entity = GetEntityPlayerIsLookingAt(15.0, LocalPlayer.state.ped)
+		if hitting and endCoords then
+			local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
+			local lastDist = nil
+			local lastId = nil
+			for k, v in pairs(_nearbyScenes) do
+				local dist = #(pedCoords - v.coords)
+				if (not lastDist) or (lastDist and dist < lastDist) then
+					lastDist = dist
+					lastId = v._id
 				end
-
-				exports["sandbox-base"]:ServerCallback("Scenes:CanEdit", lastId, function(success, isStaff)
-					if success then
-						EditScene(lastId, _loadedScenes[lastId], { staff = isStaff })
-					else
-						exports["sandbox-hud"]:NotifError("Invalid Permissions to Edit This Scene")
-					end
-				end)
 			end
+
+			exports["sandbox-base"]:ServerCallback("Scenes:CanEdit", lastId, function(success, isStaff)
+				if success then
+					EditScene(lastId, _loadedScenes[lastId], { staff = isStaff })
+				else
+					exports["sandbox-hud"]:NotifError("Invalid Permissions to Edit This Scene")
+				end
+			end)
 		end
-	end,
-}
+	end
+end)
 
 _lastData = nil
 
@@ -631,22 +617,18 @@ function EditScene(id, fuckface, data)
 	end)
 
 	_creationMenu:Show()
-end
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Scenes", _SCENES)
 end)
 
 RegisterNetEvent("Scenes:Client:Creation", function(args, asStaff)
-	Scenes:BeginCreation(#args > 0 and table.concat(args, " ") or nil, asStaff)
+	exports['sandbox-scenes']:BeginCreation(#args > 0 and table.concat(args, " ") or nil, asStaff)
 end)
 
 RegisterNetEvent("Scenes:Client:Deletion", function()
-	Scenes:Deletion()
+	exports['sandbox-scenes']:Deletion()
 end)
 
 RegisterNetEvent("Scenes:Client:StartEdit", function()
-	Scenes:Edit()
+	exports['sandbox-scenes']:Edit()
 end)
 
 CreateThread(function()

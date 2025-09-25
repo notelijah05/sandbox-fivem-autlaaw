@@ -5,266 +5,248 @@ _hasLoadedScenes = false
 
 _spamCheck = {}
 
-AddEventHandler("Scenes:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Scenes = exports["sandbox-base"]:FetchComponent("Scenes")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Scenes", {
-		"Scenes",
-	}, function(error)
-		if #error > 0 then
-			exports['sandbox-base']:LoggerCritical("Scenes", "Failed To Load All Dependencies")
-			return
+	LoadScenesFromDB()
+	StartExpirationThread()
+
+	exports["sandbox-base"]:RegisterServerCallback("Scenes:Create", function(source, data, cb)
+		local player = exports['sandbox-base']:FetchSource(source)
+		local timeStamp = GetGameTimer()
+
+		if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
+			return cb(false)
 		end
-		RetrieveComponents()
 
-		LoadScenesFromDB()
-		StartExpirationThread()
-
-		exports["sandbox-base"]:RegisterServerCallback("Scenes:Create", function(source, data, cb)
-			local player = exports['sandbox-base']:FetchSource(source)
-			local timeStamp = GetGameTimer()
-
-			if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
-				return cb(false)
+		if player and data.scene and data.data then
+			local wasCreated = exports['sandbox-scenes']:Create(data.scene,
+				data.data.staff and player.Permissions:IsStaff())
+			if wasCreated then
+				_spamCheck[source] = timeStamp + 3500
 			end
-
-			if player and data.scene and data.data then
-				local wasCreated = Scenes:Create(data.scene, data.data.staff and player.Permissions:IsStaff())
-				if wasCreated then
-					_spamCheck[source] = timeStamp + 3500
-				end
-				cb(wasCreated)
-			end
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Scenes:Delete", function(source, sceneId, cb)
-			local player = exports['sandbox-base']:FetchSource(source)
-			local scene = _loadedScenes[sceneId]
-			local timeStamp = GetGameTimer()
-
-			if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
-				return cb(false)
-			end
-
-			if scene and player then
-				if scene.staff and not player.Permissions:IsStaff() then
-					return cb(false, true)
-				end
-
-				_spamCheck[source] = timeStamp + 5000
-
-				cb(Scenes:Delete(sceneId))
-			else
-				cb(false)
-			end
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Scenes:CanEdit", function(source, sceneId, cb)
-			local player = exports['sandbox-base']:FetchSource(source)
-			local scene = _loadedScenes[sceneId]
-			local timeStamp = GetGameTimer()
-
-			if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
-				return cb(false, false)
-			end
-
-			if scene and player then
-				if scene.staff and not player.Permissions:IsStaff() then
-					return cb(false, player.Permissions:IsStaff())
-				end
-
-				_spamCheck[source] = timeStamp + 5000
-
-				cb(true, player.Permissions:IsStaff())
-			else
-				cb(false, false)
-			end
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Scenes:Edit", function(source, data, cb)
-			local player = exports['sandbox-base']:FetchSource(source)
-			local scene = _loadedScenes[data.id]
-			local timeStamp = GetGameTimer()
-
-			if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
-				return cb(false)
-			end
-
-			if scene and player then
-				_spamCheck[source] = timeStamp + 5000
-
-				cb(Scenes:Edit(data.id, data.scene, player.Permissions:IsStaff()))
-			else
-				cb(false)
-			end
-		end)
-
-		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-			TriggerClientEvent("Scenes:Client:RecieveScenes", source, _loadedScenes)
-		end, 5)
-
-		exports["sandbox-chat"]:RegisterCommand("scene", function(source, args, rawCommand)
-			TriggerClientEvent("Scenes:Client:Creation", source, args)
-		end, {
-			help = "Create a Scene (Look Where You Want to Place)",
-		})
-
-		exports["sandbox-chat"]:RegisterStaffCommand("scenestaff", function(source, args, rawCommand)
-			TriggerClientEvent("Scenes:Client:Creation", source, args, true)
-		end, {
-			help = "[Staff] Create a Scene (Look Where You Want to Place)",
-		})
-
-		exports["sandbox-chat"]:RegisterCommand("scenedelete", function(source, args, rawCommand)
-			TriggerClientEvent("Scenes:Client:Deletion", source)
-		end, {
-			help = "Delete a Scene (Look at Scene You Want to Delete)",
-		})
-
-		exports["sandbox-chat"]:RegisterCommand("sceneedit", function(source, args, rawCommand)
-			TriggerClientEvent("Scenes:Client:StartEdit", source)
-		end, {
-			help = "Edit a Scene (Look at Scene You Want to Edit)",
-		})
+			cb(wasCreated)
+		end
 	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Scenes:Delete", function(source, sceneId, cb)
+		local player = exports['sandbox-base']:FetchSource(source)
+		local scene = _loadedScenes[sceneId]
+		local timeStamp = GetGameTimer()
+
+		if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
+			return cb(false)
+		end
+
+		if scene and player then
+			if scene.staff and not player.Permissions:IsStaff() then
+				return cb(false, true)
+			end
+
+			_spamCheck[source] = timeStamp + 5000
+
+			cb(exports['sandbox-scenes']:Delete(sceneId))
+		else
+			cb(false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Scenes:CanEdit", function(source, sceneId, cb)
+		local player = exports['sandbox-base']:FetchSource(source)
+		local scene = _loadedScenes[sceneId]
+		local timeStamp = GetGameTimer()
+
+		if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
+			return cb(false, false)
+		end
+
+		if scene and player then
+			if scene.staff and not player.Permissions:IsStaff() then
+				return cb(false, player.Permissions:IsStaff())
+			end
+
+			_spamCheck[source] = timeStamp + 5000
+
+			cb(true, player.Permissions:IsStaff())
+		else
+			cb(false, false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Scenes:Edit", function(source, data, cb)
+		local player = exports['sandbox-base']:FetchSource(source)
+		local scene = _loadedScenes[data.id]
+		local timeStamp = GetGameTimer()
+
+		if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
+			return cb(false)
+		end
+
+		if scene and player then
+			_spamCheck[source] = timeStamp + 5000
+
+			cb(exports['sandbox-scenes']:Edit(data.id, data.scene, player.Permissions:IsStaff()))
+		else
+			cb(false)
+		end
+	end)
+
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		TriggerClientEvent("Scenes:Client:RecieveScenes", source, _loadedScenes)
+	end, 5)
+
+	exports["sandbox-chat"]:RegisterCommand("scene", function(source, args, rawCommand)
+		TriggerClientEvent("Scenes:Client:Creation", source, args)
+	end, {
+		help = "Create a Scene (Look Where You Want to Place)",
+	})
+
+	exports["sandbox-chat"]:RegisterStaffCommand("scenestaff", function(source, args, rawCommand)
+		TriggerClientEvent("Scenes:Client:Creation", source, args, true)
+	end, {
+		help = "[Staff] Create a Scene (Look Where You Want to Place)",
+	})
+
+	exports["sandbox-chat"]:RegisterCommand("scenedelete", function(source, args, rawCommand)
+		TriggerClientEvent("Scenes:Client:Deletion", source)
+	end, {
+		help = "Delete a Scene (Look at Scene You Want to Delete)",
+	})
+
+	exports["sandbox-chat"]:RegisterCommand("sceneedit", function(source, args, rawCommand)
+		TriggerClientEvent("Scenes:Client:StartEdit", source)
+	end, {
+		help = "Edit a Scene (Look at Scene You Want to Edit)",
+	})
 end)
 
 AddEventHandler("Characters:Server:PlayerDropped", function(source, message)
 	_spamCheck[source] = nil
 end)
 
-_SCENES = {
-	Create = function(self, scene, isStaff)
-		if scene and scene.coords then
-			scene.coords = {
-				x = scene.coords.x,
-				y = scene.coords.y,
-				z = scene.coords.z,
-			}
+exports('Create', function(scene, isStaff)
+	if scene and scene.coords then
+		scene.coords = {
+			x = scene.coords.x,
+			y = scene.coords.y,
+			z = scene.coords.z,
+		}
 
-			if not scene.length and not isStaff then
-				return false
-			end
-
-			if scene.length then
-				if scene.length > 24 then
-					scene.length = 24
-				elseif scene.length < 1 then
-					scene.length = 1
-				end
-
-				scene.expires = os.time() + (3600 * scene.length)
-				scene.staff = false
-			else
-				scene.expires = false
-				scene.staff = true
-			end
-
-			if type(scene.distance) ~= "number" or scene.distance > 10.0 or scene.distance < 1.0 then
-				scene.distance = 7.5
-			end
-
-			scene.text.text = SanitizeEmojis(scene.text.text)
-
-			local p = promise.new()
-			exports['sandbox-base']:DatabaseGameInsertOne({
-				collection = "scenes",
-				document = scene,
-			}, function(success, result, insertedIds)
-				if success then
-					scene._id = insertedIds[1]
-					p:resolve(scene)
-					_loadedScenes[scene._id] = scene
-					TriggerClientEvent("Scenes:Client:AddScene", -1, scene._id, scene)
-				else
-					p:resolve(false)
-				end
-			end)
-
-			return Citizen.Await(p)
+		if not scene.length and not isStaff then
+			return false
 		end
-	end,
-	Edit = function(self, id, newData, isStaff)
-		if newData and newData.coords then
-			newData.coords = {
-				x = newData.coords.x,
-				y = newData.coords.y,
-				z = newData.coords.z,
-			}
 
-			if not newData.length and not isStaff then
-				return false
+		if scene.length then
+			if scene.length > 24 then
+				scene.length = 24
+			elseif scene.length < 1 then
+				scene.length = 1
 			end
 
-			if newData.length then
-				if newData.length > 24 then
-					newData.length = 24
-				elseif newData.length < 1 then
-					newData.length = 1
-				end
-
-				newData.expires = os.time() + (3600 * newData.length)
-				newData.staff = false
-			else
-				newData.expires = false
-				newData.staff = true
-			end
-
-			if type(newData.distance) ~= "number" or newData.distance > 10.0 or newData.distance < 1.0 then
-				newData.distance = 7.5
-			end
-
-			newData._id = nil
-
-			local p = promise.new()
-			exports['sandbox-base']:DatabaseGameUpdateOne({
-				collection = "scenes",
-				query = {
-					_id = id,
-				},
-				update = {
-					["$set"] = newData,
-				},
-			}, function(success, result)
-				-- print(success, result)
-				if success then
-					newData._id = id
-					p:resolve(newData)
-					_loadedScenes[id] = newData
-					TriggerClientEvent("Scenes:Client:AddScene", -1, newData._id, newData)
-				else
-					p:resolve(false)
-				end
-			end)
-
-			return Citizen.Await(p)
+			scene.expires = os.time() + (3600 * scene.length)
+			scene.staff = false
+		else
+			scene.expires = false
+			scene.staff = true
 		end
-	end,
-	Delete = function(self, id)
+
+		if type(scene.distance) ~= "number" or scene.distance > 10.0 or scene.distance < 1.0 then
+			scene.distance = 7.5
+		end
+
+		scene.text.text = SanitizeEmojis(scene.text.text)
+
 		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameDeleteOne({
+		exports['sandbox-base']:DatabaseGameInsertOne({
 			collection = "scenes",
-			query = {
-				_id = id,
-			},
-		}, function(success, deleted)
-			p:resolve(success)
-
-			if success and _loadedScenes[id] then
-				_loadedScenes[id] = nil
-				TriggerClientEvent("Scenes:Client:RemoveScene", -1, id)
+			document = scene,
+		}, function(success, result, insertedIds)
+			if success then
+				scene._id = insertedIds[1]
+				p:resolve(scene)
+				_loadedScenes[scene._id] = scene
+				TriggerClientEvent("Scenes:Client:AddScene", -1, scene._id, scene)
+			else
+				p:resolve(false)
 			end
 		end)
 
 		return Citizen.Await(p)
-	end,
-}
+	end
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Scenes", _SCENES)
+exports('Edit', function(id, newData, isStaff)
+	if newData and newData.coords then
+		newData.coords = {
+			x = newData.coords.x,
+			y = newData.coords.y,
+			z = newData.coords.z,
+		}
+
+		if not newData.length and not isStaff then
+			return false
+		end
+
+		if newData.length then
+			if newData.length > 24 then
+				newData.length = 24
+			elseif newData.length < 1 then
+				newData.length = 1
+			end
+
+			newData.expires = os.time() + (3600 * newData.length)
+			newData.staff = false
+		else
+			newData.expires = false
+			newData.staff = true
+		end
+
+		if type(newData.distance) ~= "number" or newData.distance > 10.0 or newData.distance < 1.0 then
+			newData.distance = 7.5
+		end
+
+		newData._id = nil
+
+		local p = promise.new()
+		exports['sandbox-base']:DatabaseGameUpdateOne({
+			collection = "scenes",
+			query = {
+				_id = id,
+			},
+			update = {
+				["$set"] = newData,
+			},
+		}, function(success, result)
+			-- print(success, result)
+			if success then
+				newData._id = id
+				p:resolve(newData)
+				_loadedScenes[id] = newData
+				TriggerClientEvent("Scenes:Client:AddScene", -1, newData._id, newData)
+			else
+				p:resolve(false)
+			end
+		end)
+
+		return Citizen.Await(p)
+	end
+end)
+
+exports('Delete', function(id)
+	local p = promise.new()
+	exports['sandbox-base']:DatabaseGameDeleteOne({
+		collection = "scenes",
+		query = {
+			_id = id,
+		},
+	}, function(success, deleted)
+		p:resolve(success)
+
+		if success and _loadedScenes[id] then
+			_loadedScenes[id] = nil
+			TriggerClientEvent("Scenes:Client:RemoveScene", -1, id)
+		end
+	end)
+
+	return Citizen.Await(p)
 end)
 
 function DeleteExpiredScenes(deleteRouted)
@@ -340,7 +322,7 @@ function StartExpirationThread()
 
 					for k, v in pairs(_loadedScenes) do
 						if v.expires and timeStamp >= v.expires then
-							if Scenes:Delete(v._id) then
+							if exports['sandbox-scenes']:Delete(v._id) then
 								table.insert(deleteScenes, v._id)
 							end
 						end
