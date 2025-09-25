@@ -151,7 +151,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 				data = {},
 				isEnabled = function(data, entity)
 					return IsPaletoExploitInstalled() and
-					not exports['sandbox-doors']:IsLocked("bank_savings_paleto_security")
+						not exports['sandbox-doors']:IsLocked("bank_savings_paleto_security")
 				end,
 			},
 		}, 3.0, true)
@@ -251,7 +251,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(_pbLasers) do
-		Lasers:Create(
+		exports['sandbox-lasers']:Create(
 			string.format("paleto_lasers_%s", k),
 			v.origins,
 			v.targets,
@@ -351,8 +351,8 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 
 		local powerDisabled = IsPaletoPowerDisabled()
 		for k, v in ipairs(_pbLasers) do
-			Lasers.Utils:SetActive(string.format("paleto_lasers_%s", k), not powerDisabled)
-			Lasers.Utils:SetVisible(string.format("paleto_lasers_%s", k), not powerDisabled)
+			exports['sandbox-lasers']:SetActive(string.format("paleto_lasers_%s", k), not powerDisabled)
+			exports['sandbox-lasers']:SetVisible(string.format("paleto_lasers_%s", k), not powerDisabled)
 		end
 	elseif id == "paleto_hack_access" and not exports['sandbox-doors']:IsLocked("bank_savings_paleto_gate") then
 		LocalPlayer.state:set("inPaletoWSPoint", true, true)
@@ -387,8 +387,8 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			LocalPlayer.state:set("inPaletoBank", false, true)
 		end
 		for k, v in ipairs(_pbLasers) do
-			Lasers.Utils:SetActive(string.format("paleto_lasers_%s", k), false)
-			Lasers.Utils:SetVisible(string.format("paleto_lasers_%s", k), false)
+			exports['sandbox-lasers']:SetActive(string.format("paleto_lasers_%s", k), false)
+			exports['sandbox-lasers']:SetVisible(string.format("paleto_lasers_%s", k), false)
 		end
 	elseif id == "paleto_hack_access" then
 		if LocalPlayer.state.inPaletoWSPoint then
@@ -409,8 +409,8 @@ AddEventHandler("Robbery:Client:Update:paleto", function()
 	if LocalPlayer.state.inPaletoBank then
 		local powerDisabled = IsPaletoPowerDisabled()
 		for k2, v2 in ipairs(_pbLasers) do
-			Lasers.Utils:SetActive(string.format("paleto_lasers_%s", k2), not powerDisabled)
-			Lasers.Utils:SetVisible(string.format("paleto_lasers_%s", k2), not powerDisabled)
+			exports['sandbox-lasers']:SetActive(string.format("paleto_lasers_%s", k2), not powerDisabled)
+			exports['sandbox-lasers']:SetVisible(string.format("paleto_lasers_%s", k2), not powerDisabled)
 		end
 	end
 end)
@@ -589,8 +589,8 @@ RegisterNetEvent("Robbery:Client:Paleto:CheckLasers", function()
 	if LocalPlayer.state.inPaletoBank then
 		local powerDisabled = IsPaletoPowerDisabled()
 		for k2, v2 in ipairs(_pbLasers) do
-			Lasers.Utils:SetActive(string.format("paleto_lasers_%s", k2), not powerDisabled)
-			Lasers.Utils:SetVisible(string.format("paleto_lasers_%s", k2), not powerDisabled)
+			exports['sandbox-lasers']:SetActive(string.format("paleto_lasers_%s", k2), not powerDisabled)
+			exports['sandbox-lasers']:SetVisible(string.format("paleto_lasers_%s", k2), not powerDisabled)
 		end
 	end
 end)

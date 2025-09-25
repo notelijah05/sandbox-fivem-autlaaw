@@ -1,36 +1,23 @@
-AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Lasers = exports["sandbox-base"]:FetchComponent("Lasers")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"Lasers",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterGamesCallbacks()
-		TriggerEvent("Robbery:Client:Setup")
+	RegisterGamesCallbacks()
+	TriggerEvent("Robbery:Client:Setup")
 
-		CreateThread(function()
-			exports['sandbox-pedinteraction']:Add(
-				"RobToolsPickup",
-				GetHashKey("csb_anton"),
-				vector3(1129.422, -476.236, 65.485),
-				300.00,
-				25.0,
+	CreateThread(function()
+		exports['sandbox-pedinteraction']:Add(
+			"RobToolsPickup",
+			GetHashKey("csb_anton"),
+			vector3(1129.422, -476.236, 65.485),
+			300.00,
+			25.0,
+			{
 				{
-					{
-						icon = "hand",
-						text = "Pickup Items",
-						event = "Robbery:Client:PickupItems",
-					},
+					icon = "hand",
+					text = "Pickup Items",
+					event = "Robbery:Client:PickupItems",
 				},
-				"box-dollar"
-			)
-		end)
+			},
+			"box-dollar"
+		)
 	end)
 end)
 
