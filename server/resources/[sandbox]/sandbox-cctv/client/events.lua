@@ -1,3 +1,3 @@
 RegisterNetEvent("CCTV:Client:View", function(camId)
-    CCTV:View(camId)
+    exports['sandbox-cctv']:View(camId)
 end)

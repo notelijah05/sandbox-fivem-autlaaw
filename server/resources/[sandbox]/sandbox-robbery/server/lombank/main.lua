@@ -95,7 +95,7 @@ function ResetLombank()
 	end
 
 	Doors:SetLock("lombank_lasers", true)
-	CCTV.State.Group:Online("lombank")
+	exports['sandbox-cctv']:StateGroupOnline("lombank")
 	for k, v in pairs(lbThermPoints) do
 		Doors:SetLock(v.door, true)
 	end
@@ -136,7 +136,7 @@ function SecureLombank()
 	end
 
 	Doors:SetLock("lombank_lasers", true)
-	CCTV.State.Group:Online("lombank")
+	exports['sandbox-cctv']:StateGroupOnline("lombank")
 	for k, v in pairs(lbThermPoints) do
 		Doors:SetLock(v.door, true)
 	end
@@ -408,7 +408,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 									if IsLBPowerDisabled() then
 										Doors:SetLock("lombank_hidden_entrance", false)
-										CCTV.State.Group:Offline("lombank")
+										exports['sandbox-cctv']:StateGroupOffline("lombank")
 										exports["sandbox-sounds"]:PlayLocation(
 											source,
 											data.ptFxPoint,
@@ -608,7 +608,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 										if IsLBPowerDisabled() then
 											Doors:SetLock("lombank_hidden_entrance", false)
-											CCTV.State.Group:Offline("lombank")
+											exports['sandbox-cctv']:StateGroupOffline("lombank")
 											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,

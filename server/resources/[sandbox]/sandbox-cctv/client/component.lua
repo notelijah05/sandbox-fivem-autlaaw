@@ -14,35 +14,17 @@ local currentTimecycle = nil
 local offline = false
 local canrotate = false
 
-AddEventHandler("Sync:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("CCTV", {
-		"CCTV",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterKeyBinds()
-	end)
+	RegisterKeyBinds()
 end)
 
-_CCTV = {
-	View = function(self, camId)
-		local camKey = string.format("CCTV:Camera:%s", camId)
-		EnterCam(camId)
-	end,
-	Close = function(self)
-		if LocalPlayer.state.inCCTVCam then
-			ExitCam()
-		end
-	end,
-}
+exports('View', function(camId)
+	local camKey = string.format("CCTV:Camera:%s", camId)
+	EnterCam(camId)
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function(component)
-	exports["sandbox-base"]:RegisterComponent("CCTV", _CCTV)
+exports('Close', function()
+	if LocalPlayer.state.inCCTVCam then
+		ExitCam()
+	end
 end)

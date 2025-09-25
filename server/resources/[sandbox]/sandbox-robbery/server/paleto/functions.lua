@@ -51,7 +51,7 @@ function DisablePaletoPower(source)
 		Robbery.State:Update("paleto", v.data.boxId, _pbGlobalReset, "electricalBoxes")
 	end
 
-	CCTV.State.Group:Offline("paleto")
+	exports['sandbox-cctv']:StateGroupOffline("paleto")
 
 	Robbery:TriggerPDAlert(source, vector3(-195.586, 6338.740, 31.515), "10-33", "Regional Power Grid Disruption", {
 		icon = 354,
@@ -105,7 +105,7 @@ function ResetPaleto()
 	_pbGlobalReset = os.time() + PALETO_RESET_TIME
 
 	Doors:SetLock("bank_savings_paleto_gate", true)
-	CCTV.State.Group:Online("paleto")
+	exports['sandbox-cctv']:StateGroupOnline("paleto")
 
 	TriggerClientEvent("Robbery:Client:Paleto:ResetLasers", -1)
 
@@ -138,7 +138,7 @@ function SecurePaleto()
 	_pbGlobalReset = os.time() + PALETO_RESET_TIME
 
 	Doors:SetLock("bank_savings_paleto_gate", true)
-	CCTV.State.Group:Online("paleto")
+	exports['sandbox-cctv']:StateGroupOnline("paleto")
 
 	TriggerClientEvent("Robbery:Client:Paleto:ResetLasers", -1)
 

@@ -120,7 +120,7 @@ function RegisterPBItems()
 												)
 
 												Doors:SetLock("bank_savings_paleto_gate", false)
-												CCTV.State.Group:Offline("paleto")
+												exports['sandbox-cctv']:StateGroupOffline("paleto")
 											else
 												exports["sandbox-sounds"]:PlayLocation(
 													source,
@@ -130,7 +130,7 @@ function RegisterPBItems()
 													0.1
 												)
 												Doors:SetLock("bank_savings_paleto_gate", true)
-												CCTV.State.Group:Online("paleto")
+												exports['sandbox-cctv']:StateGroupOnline("paleto")
 											end
 
 											Status.Modify:Add(source, "PLAYER_STRESS", 3)

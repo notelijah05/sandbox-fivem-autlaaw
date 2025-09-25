@@ -89,7 +89,7 @@ function ResetMazeBank()
 	end
 
 	Doors:SetLock("mazebank_offices", true)
-	CCTV.State.Group:Online("mazebank")
+	exports['sandbox-cctv']:StateGroupOnline("mazebank")
 	for k, v in pairs(_mbDoors) do
 		Doors:SetLock(v.door, true)
 	end
@@ -131,7 +131,7 @@ function SecureMazeBank()
 	end
 
 	Doors:SetLock("mazebank_offices", true)
-	CCTV.State.Group:Online("mazebank")
+	exports['sandbox-cctv']:StateGroupOnline("mazebank")
 	for k, v in ipairs(_mbDoors) do
 		Doors:SetLock(v.door, true)
 	end
@@ -295,7 +295,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 									if IsMBPowerDisabled() then
 										Doors:SetLock("mazebank_offices", false)
-										CCTV.State.Group:Offline("mazebank")
+										exports['sandbox-cctv']:StateGroupOffline("mazebank")
 										exports["sandbox-sounds"]:PlayLocation(
 											source,
 											data.ptFxPoint,
@@ -506,7 +506,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 										if IsMBPowerDisabled() then
 											Doors:SetLock("mazebank_offices", false)
-											CCTV.State.Group:Offline("mazebank")
+											exports['sandbox-cctv']:StateGroupOffline("mazebank")
 											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,

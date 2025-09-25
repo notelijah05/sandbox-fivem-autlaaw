@@ -3,7 +3,7 @@ camMoveUp, camMoveDown, camMoveLeft, camMoveRight = false, false, false, false
 function RegisterKeyBinds()
 	exports["sandbox-keybinds"]:Add("cctv_disconnect", "ESCAPE", "keyboard", "CCTV - Close Camera", function()
 		if LocalPlayer.state.inCCTVCam then
-			CCTV:Close()
+			exports['sandbox-cctv']:Close()
 		end
 	end)
 
