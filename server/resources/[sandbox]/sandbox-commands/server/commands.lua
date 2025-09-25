@@ -1,19 +1,6 @@
-AddEventHandler("Commands:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-	RegisterChatCommands()
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Commands", {
-		"Pwnzor",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
-	end)
+	RegisterCallbacks()
+	RegisterChatCommands()
 end)
 
 function RegisterChatCommands()
@@ -85,7 +72,7 @@ function RegisterChatCommands()
 
 	exports["sandbox-chat"]:RegisterStaffCommand("screenshot", function(source, args, rawCommand)
 		local sid = tonumber(args[1])
-		Pwnzor:Screenshot(sid, "Requested With Command")
+		exports['sandbox-pwnzor']:Screenshot(sid, "Requested With Command")
 	end, {
 		help = "Screenshot Specified Player",
 		params = {

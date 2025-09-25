@@ -98,7 +98,7 @@ function HospitalCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Hospital:Respawn", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if os.time() >= Player(source).state.releaseTime then
-			Pwnzor.Players:TempPosIgnore(source)
+			exports['sandbox-pwnzor']:TempPosIgnore(source)
 			local bed = exports['sandbox-damage']:HospitalRequestBed(source)
 
 			local cost = 1500

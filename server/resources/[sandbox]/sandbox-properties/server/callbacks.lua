@@ -127,7 +127,7 @@ function RegisterCallbacks()
 		then
 			local pInt = property.upgrades?.interior
 
-			Pwnzor.Players:TempPosIgnore(source)
+			exports['sandbox-pwnzor']:TempPosIgnore(source)
 			local routeId = exports["sandbox-base"]:RequestRouteId("Properties:" .. data, false)
 			exports["sandbox-base"]:AddPlayerToRoute(source, routeId)
 			GlobalState[string.format("%s:Property", source)] = data
@@ -153,7 +153,7 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Properties:ExitProperty", function(source, data, cb)
 		local property = GlobalState[string.format("%s:Property", source)]
 
-		Pwnzor.Players:TempPosIgnore(source)
+		exports['sandbox-pwnzor']:TempPosIgnore(source)
 		exports['sandbox-base']:MiddlewareTriggerEvent("Properties:Exit", source, property)
 		exports["sandbox-base"]:RoutePlayerToGlobalRoute(source)
 		GlobalState[string.format("%s:Property", source)] = nil

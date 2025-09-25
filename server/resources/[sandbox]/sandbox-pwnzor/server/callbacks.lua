@@ -88,8 +88,8 @@ function RegisterCallbacks()
 	-- }, 2)
 
 	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:GetEvents", function(source, data, cb)
-		if not Pwnzor.Players:Get(source, "GetEvents") then
-			Pwnzor.Players:Set(source, "GetEvents")
+		if not exports['sandbox-pwnzor']:Get(source, "GetEvents") then
+			exports['sandbox-pwnzor']:Set(source, "GetEvents")
 			cb(_blacklistedClientEvents)
 		else
 			if not exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
@@ -99,8 +99,8 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:GetCommands", function(source, data, cb)
-		if not Pwnzor.Players:Get(source, "GetCommands") then
-			Pwnzor.Players:Set(source, "GetCommands")
+		if not exports['sandbox-pwnzor']:Get(source, "GetCommands") then
+			exports['sandbox-pwnzor']:Set(source, "GetCommands")
 			cb(_blacklistedCommands)
 		else
 			if not exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
@@ -124,7 +124,8 @@ function RegisterCallbacks()
 			if char then
 				if not _fovScreenshotLast[source] or (GetGameTimer() - _fovScreenshotLast[source]) > 30000 then
 					_fovScreenshotLast[source] = GetGameTimer()
-					Pwnzor:Screenshot(char:GetData("SID"), string.format("Detected Modified FOV: %s", fov))
+					exports['sandbox-pwnzor']:Screenshot(char:GetData("SID"),
+						string.format("Detected Modified FOV: %s", fov))
 				end
 
 				exports['sandbox-base']:LoggerWarn(
@@ -163,7 +164,7 @@ function RegisterCallbacks()
 			local src = source
 			local char = exports['sandbox-characters']:FetchCharacterSource(src)
 			if char then
-				Pwnzor:Screenshot(char:GetData("SID"), "Detected Unusual Resolution")
+				exports['sandbox-pwnzor']:Screenshot(char:GetData("SID"), "Detected Unusual Resolution")
 
 				exports['sandbox-base']:LoggerWarn(
 					"Pwnzor",

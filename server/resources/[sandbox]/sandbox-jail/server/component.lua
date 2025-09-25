@@ -2,26 +2,13 @@ local CACHE_TIME = 60000 -- 1 Minute(s)
 local cachedData = nil
 local lastRefreshed = 0
 
-AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Jail", {
-		"Pwnzor",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterCommands()
-		RegisterCallbacks()
-		RegisterMiddleware()
-		RegisterPrisonSearchStartup()
-		RegisterPrisonStashStartup()
-		RegisterPrisonCraftingStartup()
-	end)
+	RegisterCommands()
+	RegisterCallbacks()
+	RegisterMiddleware()
+	RegisterPrisonSearchStartup()
+	RegisterPrisonStashStartup()
+	RegisterPrisonCraftingStartup()
 end)
 
 function RegisterCommands()
@@ -141,7 +128,7 @@ exports('Sentence', function(source, target, duration)
 		end)
 
 		TriggerClientEvent("Jail:Client:Jailed", target)
-		Pwnzor.Players:TempPosIgnore(target)
+		exports['sandbox-pwnzor']:TempPosIgnore(target)
 		exports["sandbox-base"]:ClientCallback(target, "Jail:DoMugshot", {
 			jailer = jailerName,
 			duration = duration,

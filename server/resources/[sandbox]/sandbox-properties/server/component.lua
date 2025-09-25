@@ -1,28 +1,15 @@
 _charPropertyKeys = {}
 
-AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-	RegisterChatCommands()
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Properties", {
-		"Pwnzor",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
-		RegisterMiddleware()
-		DefaultData()
-		Startup()
+	RegisterCallbacks()
+	RegisterMiddleware()
+	RegisterChatCommands()
+	DefaultData()
+	Startup()
 
-		CreateFurnitureCallbacks()
+	CreateFurnitureCallbacks()
 
-		SetupPropertyCrafting()
-	end)
+	SetupPropertyCrafting()
 end)
 
 exports('Add', function(source, type, interior, price, label, pos)

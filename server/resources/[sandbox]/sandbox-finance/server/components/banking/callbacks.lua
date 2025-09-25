@@ -323,7 +323,7 @@ function RegisterBankingCallbacks()
 					}, {
 						data = data
 					})
-				Pwnzor:Screenshot(char:GetData("SID"), "Bank Account Actions Cooldown Exceeded")
+				exports['sandbox-pwnzor']:Screenshot(char:GetData("SID"), "Bank Account Actions Cooldown Exceeded")
 
 				cb(false)
 				return

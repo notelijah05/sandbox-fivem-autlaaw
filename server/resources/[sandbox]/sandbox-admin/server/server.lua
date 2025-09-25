@@ -1,49 +1,36 @@
-AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Admin", {
-		"Pwnzor",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterCallbacks()
-		RegisterChatCommands()
-		StartDashboardThread()
+	RegisterCallbacks()
+	RegisterChatCommands()
+	StartDashboardThread()
 
-		exports['sandbox-base']:MiddlewareAdd('Characters:Spawning', function(source)
-			local player = exports['sandbox-base']:FetchSource(source)
+	exports['sandbox-base']:MiddlewareAdd('Characters:Spawning', function(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 
-			if player and player.Permissions:IsStaff() then
-				local highestLevel, highestGroup, highestGroupName = 0, nil, nil
-				for k, v in ipairs(player:GetData('Groups')) do
-					local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
-					if group and (type(group.Permission) == 'table') then
-						if group.Permission.Level > highestLevel then
-							highestLevel = group.Permission.Level
-							highestGroup = v
-							highestGroupName = group.Name
-						end
+		if player and player.Permissions:IsStaff() then
+			local highestLevel, highestGroup, highestGroupName = 0, nil, nil
+			for k, v in ipairs(player:GetData('Groups')) do
+				local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
+				if group and (type(group.Permission) == 'table') then
+					if group.Permission.Level > highestLevel then
+						highestLevel = group.Permission.Level
+						highestGroup = v
+						highestGroupName = group.Name
 					end
 				end
-
-				TriggerClientEvent('Admin:Client:Menu:RecievePermissionData', source, {
-					Source = source,
-					Name = player:GetData('Name'),
-					AccountID = player:GetData('AccountID'),
-					Identifier = player:GetData('Identifier'),
-					Groups = player:GetData('Groups'),
-					Discord = player:GetData("Discord"),
-					Mention = player:GetData("Mention"),
-					Avatar = player:GetData("Avatar"),
-				}, highestGroup, highestGroupName, highestLevel)
 			end
-		end, 5)
-	end)
+
+			TriggerClientEvent('Admin:Client:Menu:RecievePermissionData', source, {
+				Source = source,
+				Name = player:GetData('Name'),
+				AccountID = player:GetData('AccountID'),
+				Identifier = player:GetData('Identifier'),
+				Groups = player:GetData('Groups'),
+				Discord = player:GetData("Discord"),
+				Mention = player:GetData("Mention"),
+				Avatar = player:GetData("Avatar"),
+			}, highestGroup, highestGroupName, highestLevel)
+		end
+	end, 5)
 end)
 
 function RegisterChatCommands()

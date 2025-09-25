@@ -318,7 +318,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("HouseRobbery:BreakIn", function(source, data, cb)
 		if _robbers[_joiners[source]].state == 4 then
-			Pwnzor.Players:TempPosIgnore(source)
+			exports['sandbox-pwnzor']:TempPosIgnore(source)
 			local routeId = exports["sandbox-base"]:RequestRouteId(
 				"Robbery:Properties:" .. _robbers[_joiners[source]].property, false)
 			exports["sandbox-base"]:AddPlayerToRoute(source, routeId)
@@ -355,7 +355,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("HouseRobbery:Exit", function(source, data, cb)
-		Pwnzor.Players:TempPosIgnore(source)
+		exports['sandbox-pwnzor']:TempPosIgnore(source)
 		local intr = nil
 		if _joiners[source] and _robbers[_joiners[source]] then
 			intr = HouseRobberyInteriors[_robbers[_joiners[source]].tier]
@@ -454,7 +454,7 @@ AddEventHandler("Labor:Server:HouseRobbery:Breach", function(source, house)
 	local h = GlobalState[string.format("Robbery:InProgress:%s", house)]
 	if h then
 		local hData = HouseRobberyProperties[house]
-		Pwnzor.Players:TempPosIgnore(source)
+		exports['sandbox-pwnzor']:TempPosIgnore(source)
 
 		local routeId = exports["sandbox-base"]:RequestRouteId("Robbery:Properties:" .. house, false)
 		exports["sandbox-base"]:AddPlayerToRoute(source, routeId)

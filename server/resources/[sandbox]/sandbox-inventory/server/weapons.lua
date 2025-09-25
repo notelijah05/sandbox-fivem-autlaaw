@@ -191,58 +191,44 @@ function tableContains(tbl, value)
 	return false
 end
 
-AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
-function WeaponsComponents()
-	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Weapons", {
-		"Pwnzor",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		WeaponsComponents()
-
-		exports["sandbox-base"]:RegisterServerCallback("Weapons:UseThrowable", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				if exports['sandbox-inventory']:RemoveSlot(char:GetData("SID"), data.Name, 1, data.Slot, 1) then
-					local slotExists = exports['sandbox-inventory']:SlotExists(char:GetData("SID"), data.Slot, 1)
-					if not slotExists then
-						TriggerClientEvent("Weapons:Client:ForceUnequip", source)
-					end
-
-					cb()
+	exports["sandbox-base"]:RegisterServerCallback("Weapons:UseThrowable", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			if exports['sandbox-inventory']:RemoveSlot(char:GetData("SID"), data.Name, 1, data.Slot, 1) then
+				local slotExists = exports['sandbox-inventory']:SlotExists(char:GetData("SID"), data.Slot, 1)
+				if not slotExists then
+					TriggerClientEvent("Weapons:Client:ForceUnequip", source)
 				end
-			else
+
 				cb()
 			end
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Weapons:PossibleCheaterWarning", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char then
-				exports['sandbox-base']:LoggerWarn("Pwnzor",
-					string.format("%s %s (%s) Had a Weapon They Weren't Supposed To (%s) (Known: %s)",
-						char:GetData("First"), char:GetData("Last"), char:GetData("SID"), data.h,
-						weaponCheaters[data.h] or "No"), {
-						console = true,
-						file = false,
-						database = true,
-						discord = {
-							embed = true,
-							type = 'error',
-							webhook = GetConvar('discord_pwnzor_webhook', ''),
-						}
-					}, {
-						data = data
-					})
-				Pwnzor:Screenshot(char:GetData("SID"), "Potential Weapon Exploit")
-			end
+		else
 			cb()
-		end)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Weapons:PossibleCheaterWarning", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char then
+			exports['sandbox-base']:LoggerWarn("Pwnzor",
+				string.format("%s %s (%s) Had a Weapon They Weren't Supposed To (%s) (Known: %s)",
+					char:GetData("First"), char:GetData("Last"), char:GetData("SID"), data.h,
+					weaponCheaters[data.h] or "No"), {
+					console = true,
+					file = false,
+					database = true,
+					discord = {
+						embed = true,
+						type = 'error',
+						webhook = GetConvar('discord_pwnzor_webhook', ''),
+					}
+				}, {
+					data = data
+				})
+			exports['sandbox-pwnzor']:Screenshot(char:GetData("SID"), "Potential Weapon Exploit")
+		end
+		cb()
 	end)
 end)
 

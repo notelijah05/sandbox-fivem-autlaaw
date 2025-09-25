@@ -1,20 +1,3 @@
-AddEventHandler("Banking:Shared:DependencyUpdate", RetrieveBankingComponents)
-function RetrieveBankingComponents()
-	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Banking", {
-		"Pwnzor",
-	}, function(error)
-		if #error > 0 then
-			exports['sandbox-base']:LoggerCritical("Banking", "Failed To Load All Dependencies")
-			return
-		end
-		RetrieveBankingComponents()
-	end)
-end)
-
 exports("AccountsGet", function(accountNumber)
 	return MySQL.single.await(
 		"SELECT account as Account, balance as Balance, type as Type, owner as Owner, name as Name FROM bank_accounts WHERE account = ?",

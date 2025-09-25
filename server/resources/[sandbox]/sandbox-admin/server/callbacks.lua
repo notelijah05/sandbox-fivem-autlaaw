@@ -332,7 +332,7 @@ function RegisterCallbacks()
                     local targetPed = GetPlayerPed(target:GetData('Source'))
                     if data.action == 'bring' and canFuckWith and notMe then
                         local playerCoords = GetEntityCoords(playerPed)
-                        Pwnzor.Players:TempPosIgnore(target:GetData("Source"))
+                        exports['sandbox-pwnzor']:TempPosIgnore(target:GetData("Source"))
                         SetEntityCoords(targetPed, playerCoords.x, playerCoords.y, playerCoords.z + 1.0)
 
                         cb({

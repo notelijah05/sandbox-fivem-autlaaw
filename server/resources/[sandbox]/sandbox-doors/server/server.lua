@@ -2,25 +2,12 @@ DOORS_CACHE = {}
 DOORS_IDS = {}
 ELEVATOR_CACHE = {}
 
-AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Pwnzor",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
-		RegisterChatCommands()
-		--RegisterItems()
+	RegisterCallbacks()
+	RegisterChatCommands()
+	--RegisterItems()
 
-		RunStartup()
-	end)
+	RunStartup()
 end)
 
 local _startup = false
@@ -130,7 +117,7 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Doors:Elevator:Validate", function(source, data, cb)
-		Pwnzor.Players:TempPosIgnore(source)
+		exports['sandbox-pwnzor']:TempPosIgnore(source)
 		cb()
 	end)
 end

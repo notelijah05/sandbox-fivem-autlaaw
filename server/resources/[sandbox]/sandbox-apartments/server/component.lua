@@ -1,23 +1,10 @@
 _requests = {}
 _requestors = {}
 
-AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Apartment", {
-		"Pwnzor",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterCallbacks()
-		RegisterMiddleware()
-		Startup()
-	end)
+	RegisterCallbacks()
+	RegisterMiddleware()
+	Startup()
 end)
 
 exports("Enter", function(source, targetType, target, wakeUp)
@@ -50,7 +37,7 @@ exports("Enter", function(source, targetType, target, wakeUp)
 		}
 
 		local routeId = exports["sandbox-base"]:RequestRouteId(string.format("Apartment:%s", rTarget), false)
-		Pwnzor.Players:TempPosIgnore(source)
+		exports['sandbox-pwnzor']:TempPosIgnore(source)
 		exports["sandbox-base"]:AddPlayerToRoute(source, routeId)
 		GlobalState[string.format("%s:", source)] = rTarget
 		TriggerClientEvent("Apartment:Client:InnerStuff", source, targetType or 1, rTarget, wakeUp)
@@ -73,7 +60,7 @@ end)
 exports("Exit", function(source)
 	exports["sandbox-base"]:RoutePlayerToGlobalRoute(source)
 	GlobalState[string.format("%s:", source)] = nil
-	Pwnzor.Players:TempPosIgnore(source)
+	exports['sandbox-pwnzor']:TempPosIgnore(source)
 	Player(source).state.inApartment = nil
 	Player(source).state.tpLocation = nil
 

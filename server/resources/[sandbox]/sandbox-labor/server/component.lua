@@ -1,21 +1,7 @@
-AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Labor", {
-		"Pwnzor",
-	}, function(error)
-		if #error > 0 then
-			exports['sandbox-base']:LoggerCritical("Labor", "Failed To Load All Dependencies")
-			return
-		end
-		RetrieveComponents()
-		RegisterCallbacks()
-		RegisterMiddleware()
-		TriggerEvent("Labor:Server:Startup")
-	end)
+	RegisterCallbacks()
+	RegisterMiddleware()
+	TriggerEvent("Labor:Server:Startup")
 end)
 
 _Jobs = {}
