@@ -100,7 +100,7 @@ AddEventHandler("Businesses:Server:Startup", function()
                 exports['sandbox-phone']:NotificationAdd(source, "Contactless Payment Accepted",
                     string.format("Paid $%s to %s", math.floor(pData.amount), pData.jobName), os.time(), 8000, "bank", {})
 
-                Laptop.BizWiz.Receipts:Create(pData.job, {
+                exports['sandbox-laptop']:BizWizReceiptsCreate(pData.job, {
                     type = "Contactless Terminal",
                     time = os.time() * 1000,
                     author = pData.biller,

@@ -36,7 +36,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		if args[1] == "all" then
 			exports['sandbox-base']:LoggerTrace("Chopping", "Generating New Public Chop List")
 			_publicChoplist = {
-				list = Laptop.LSUnderground.Chopping:GenerateList(10, 2),
+				list = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(10, 2),
 				public = true,
 			}
 
@@ -55,7 +55,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 			exports['sandbox-base']:LoggerTrace("Chopping", "Generating New VIP Chop List")
 			_vipChopList = {
-				list = Laptop.LSUnderground.Chopping:GenerateList(10, 4),
+				list = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(10, 4),
 				public = true,
 			}
 
@@ -79,7 +79,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
 							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
 						) and (not dutyData or dutyData.Id ~= "police") then
-						Laptop.Notification:Add(
+						exports['sandbox-laptop']:AddNotification(
 							v:GetData("Source"),
 							"New Chop List",
 							"A New Public Chop List Is Available",
@@ -91,7 +91,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							}
 						)
 
-						Laptop.Notification:Add(
+						exports['sandbox-laptop']:AddNotification(
 							v:GetData("Source"),
 							"New Chop List",
 							"A New Private Chop List Is Available",
@@ -108,7 +108,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		elseif args[1] == "public" then
 			exports['sandbox-base']:LoggerTrace("Chopping", "Generating New Public Chop List")
 			_publicChoplist = {
-				list = Laptop.LSUnderground.Chopping:GenerateList(10, 2),
+				list = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(10, 2),
 				public = true,
 			}
 
@@ -132,7 +132,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
 							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
 						) and (not dutyData or dutyData.Id ~= "police") then
-						Laptop.Notification:Add(
+						exports['sandbox-laptop']:AddNotification(
 							v:GetData("Source"),
 							"New Chop List",
 							"A New Public Chop List Is Available",
@@ -149,7 +149,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		elseif args[1] == "private" then
 			exports['sandbox-base']:LoggerTrace("Chopping", "Generating New VIP Chop List")
 			_vipChopList = {
-				list = Laptop.LSUnderground.Chopping:GenerateList(10, 4),
+				list = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(10, 4),
 				public = true,
 			}
 
@@ -173,7 +173,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
 							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
 						) and (not dutyData or dutyData.Id ~= "police") then
-						Laptop.Notification:Add(
+						exports['sandbox-laptop']:AddNotification(
 							v:GetData("Source"),
 							"New Chop List",
 							"A New Private Chop List Is Available",
@@ -205,8 +205,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			local entState = Entity(NetworkGetEntityFromNetworkId(data.vNet)).state
 			local model = GetEntityModel(ent)
 
-			local list = Laptop.LSUnderground.Chopping:FindList(source, data.vNet)
-			local isInProg = Laptop.LSUnderground.Chopping:InProgress(source, list?.type, model, list?.listId)
+			local list = exports['sandbox-laptop']:LSUndergroundChoppingFindList(source, data.vNet)
+			local isInProg = exports['sandbox-laptop']:LSUndergroundChoppingInProgress(source, list?.type, model,
+				list?.listId)
 			if list ~= nil and not isInProg then
 				_pChopping[source] = entState.VIN
 				_inProgress[entState.VIN] = {
@@ -239,7 +240,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 			if char ~= nil then
 				if not entState.Owned then
-					local list = Laptop.LSUnderground.Chopping:FindList(source, data.vNet)
+					local list = exports['sandbox-laptop']:LSUndergroundChoppingFindList(source, data.vNet)
 					if list ~= nil then
 						if not _chopped[entState.VIN].parts[data.index] then
 							_chopped[entState.VIN].parts[data.index] = true
@@ -271,7 +272,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			local entState = Entity(NetworkGetEntityFromNetworkId(data.vNet)).state
 			if char ~= nil then
 				if not entState.Owned then
-					local list = Laptop.LSUnderground.Chopping:FindList(source, data.vNet)
+					local list = exports['sandbox-laptop']:LSUndergroundChoppingFindList(source, data.vNet)
 					if list ~= nil then
 						if not _chopped[entState.VIN].tires[data.index] then
 							_chopped[entState.VIN].tires[data.index] = true
@@ -301,7 +302,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			local entState = Entity(NetworkGetEntityFromNetworkId(data.vNet)).state
 			if char ~= nil then
 				if not entState.Owned then
-					local list = Laptop.LSUnderground.Chopping:FindList(source, data.vNet)
+					local list = exports['sandbox-laptop']:LSUndergroundChoppingFindList(source, data.vNet)
 					if list ~= nil or _inProgress[entState.VIN] ~= nil then
 						if not _chopped[entState.VIN]?.body then
 							_chopped[entState.VIN].body = true
@@ -349,7 +350,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							end
 
 							Reputation.Modify:Add(source, "Chopping", 250 * list.type)
-							Laptop.LSUnderground.Chopping:CreatePickupBox(source, list?.entry?.hv or false, list.type)
+							exports['sandbox-laptop']:LSUndergroundChoppingCreatePickupBox(source,
+								list?.entry?.hv or false, list.type)
 
 							Citizen.SetTimeout(1000 * math.random(20, 60), function()
 								if char ~= nil then
@@ -371,7 +373,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							end)
 
 							_pChopping[source] = nil
-							Laptop.LSUnderground.Chopping:RemoveFromList(
+							exports['sandbox-laptop']:LSUndergroundChoppingRemoveFromList(
 								source,
 								list ~= nil and list?.type or _inProgress[entState.VIN]?.type,
 								GetEntityModel(NetworkGetEntityFromNetworkId(data.vNet)),
@@ -493,7 +495,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 					char:SetData("ChopLists", personalLists)
 
 					if hasValue(char:GetData("States") or {}, "ACCESS_LSUNDERGROUND") and Reputation:HasLevel(source, "Chopping", 3) then
-						Laptop.Notification:Add(
+						exports['sandbox-laptop']:AddNotification(
 							source,
 							"New Personal Choplist",
 							"You've Received A New Personal Choplist",
@@ -544,334 +546,336 @@ function TableLength(tbl)
 	return cnt
 end
 
-LAPTOP.LSUnderground = LAPTOP.LSUnderground or {}
-LAPTOP.LSUnderground.Chopping = {
-	GenerateList = function(self, length, hvCount)
-		local _l = {}
+exports('LSUndergroundChoppingGenerateList', function(length, hvCount)
+	local _l = {}
 
-		if length <= 0 then
-			length = 1
+	if length <= 0 then
+		length = 1
+	end
+
+	for i = 1, length do
+		local ind = math.random(#_models.Normal)
+		while _l[_models.Normal[ind]] ~= nil do
+			ind = math.random(#_models.Normal)
 		end
 
-		for i = 1, length do
-			local ind = math.random(#_models.Normal)
-			while _l[_models.Normal[ind]] ~= nil do
-				ind = math.random(#_models.Normal)
+		_l[_models.Normal[ind]] = {
+			model = _models.Normal[ind].model,
+			name = _models.Normal[ind].name,
+			hv = false,
+		}
+	end
+
+	if hvCount > 0 then
+		for i = 1, hvCount do
+			local ind = math.random(#_models.Priority)
+			while _l[_models.Priority[ind]] ~= nil do
+				ind = math.random(#_models.Priority)
 			end
 
-			_l[_models.Normal[ind]] = {
-				model = _models.Normal[ind].model,
-				name = _models.Normal[ind].name,
-				hv = false,
+			_l[_models.Priority[ind]] = {
+				model = _models.Priority[ind].model,
+				name = _models.Priority[ind].name,
+				hv = true,
 			}
 		end
+	end
 
-		if hvCount > 0 then
-			for i = 1, hvCount do
-				local ind = math.random(#_models.Priority)
-				while _l[_models.Priority[ind]] ~= nil do
-					ind = math.random(#_models.Priority)
-				end
+	local t = {}
+	for k, v in pairs(_l) do
+		table.insert(t, v)
+	end
+	return t
+end)
 
-				_l[_models.Priority[ind]] = {
-					model = _models.Priority[ind].model,
-					name = _models.Priority[ind].name,
-					hv = true,
-				}
+exports('LSUndergroundChoppingInProgress', function(source, type, model, listId)
+	if type == nil or type == 3 and listId == nil then return false end
+
+	if type == 1 or type == 2 then
+		for k, v in pairs(_inProgress) do
+			if v.type == type and v.model == model and v.source ~= source then
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					"Vehicle Type Is Already Being Chopped")
+				return true
 			end
 		end
-
-		local t = {}
-		for k, v in pairs(_l) do
-			table.insert(t, v)
-		end
-		return t
-	end,
-	InProgress = function(self, source, type, model, listId)
-		if type == nil or type == 3 and listId == nil then return false end
-
-		if type == 1 or type == 2 then
-			for k, v in pairs(_inProgress) do
-				if v.type == type and v.model == model and v.source ~= source then
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-						"Vehicle Type Is Already Being Chopped")
-					return true
-				end
-			end
-		elseif type == 3 then
-			for k, v in pairs(_inProgress) do
-				if v.type == type and v.model == model and v.source ~= source and v.listId == listId then
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-						"Vehicle Type Is Already Being Chopped")
-					return true
-				end
+	elseif type == 3 then
+		for k, v in pairs(_inProgress) do
+			if v.type == type and v.model == model and v.source ~= source and v.listId == listId then
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					"Vehicle Type Is Already Being Chopped")
+				return true
 			end
 		end
+	end
 
-		return false
-	end,
-	FindList = function(self, source, vehNet)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local pState = Player(source).state
-			local ent = NetworkGetEntityFromNetworkId(vehNet)
-			local chopLevel = Reputation:GetLevel(source, "Chopping")
+	return false
+end)
 
-			if ent ~= nil then
-				local model = GetEntityModel(ent)
-				if pState.inChopZone == "chopping_public" and Reputation:GetLevel(source, "Salvaging") >= 7 then
-					local chopEntry = Laptop.LSUnderground.Chopping:IsOnList(_publicChoplist.list, model)
-					if not chopEntry then
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Vehicle Not On Chop List")
-						return nil
-					elseif Laptop.LSUnderground.Chopping:InProgress(source, 1, model) then
-						return nil
-					else
-						return { entry = chopEntry, type = 1, model = model }
-					end
-				elseif
-					pState.inChopZone == "chopping_private"
-					and (
-						hasValue(char:GetData("States") or {}, "ACCESS_LSUNDERGROUND") or
-						Reputation:HasLevel(source, "Chopping", 5)
-					)
-				then
-					local chopEntry = Laptop.LSUnderground.Chopping:IsOnList(_vipChopList.list, model)
-					if not chopEntry then
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Vehicle Not On Chop List")
-						return nil
-					elseif Laptop.LSUnderground.Chopping:InProgress(source, 2, model) then
-						return nil
-					else
-						return { entry = chopEntry, type = 2, model = model }
-					end
-				elseif
-					pState.inChopZone == "chopping_personal"
-					and (char:GetData("ChopLists") ~= nil and TableLength(char:GetData("ChopLists")) > 0)
-				then
-					local personallists = char:GetData("ChopLists")
-					for k, v in pairs(personallists) do
-						local chopEntry = Laptop.LSUnderground.Chopping:IsOnList(v, model)
-						if chopEntry then
-							return { listId = k, entry = chopEntry, type = 3, model = model }
-						end
-					end
+exports('LSUndergroundChoppingFindList', function(source, vehNet)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local pState = Player(source).state
+		local ent = NetworkGetEntityFromNetworkId(vehNet)
+		local chopLevel = Reputation:GetLevel(source, "Chopping")
 
+		if ent ~= nil then
+			local model = GetEntityModel(ent)
+			if pState.inChopZone == "chopping_public" and Reputation:GetLevel(source, "Salvaging") >= 7 then
+				local chopEntry = exports['sandbox-laptop']:LSUndergroundChoppingIsOnList(_publicChoplist.list, model)
+				if not chopEntry then
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Vehicle Not On Chop List")
 					return nil
-				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-						"Not In A Valid Dropoff Location")
+				elseif exports['sandbox-laptop']:LSUndergroundChoppingInProgress(source, 1, model) then
 					return nil
+				else
+					return { entry = chopEntry, type = 1, model = model }
 				end
+			elseif
+				pState.inChopZone == "chopping_private"
+				and (
+					hasValue(char:GetData("States") or {}, "ACCESS_LSUNDERGROUND") or
+					Reputation:HasLevel(source, "Chopping", 5)
+				)
+			then
+				local chopEntry = exports['sandbox-laptop']:LSUndergroundChoppingIsOnList(_vipChopList.list, model)
+				if not chopEntry then
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Vehicle Not On Chop List")
+					return nil
+				elseif exports['sandbox-laptop']:LSUndergroundChoppingInProgress(source, 2, model) then
+					return nil
+				else
+					return { entry = chopEntry, type = 2, model = model }
+				end
+			elseif
+				pState.inChopZone == "chopping_personal"
+				and (char:GetData("ChopLists") ~= nil and TableLength(char:GetData("ChopLists")) > 0)
+			then
+				local personallists = char:GetData("ChopLists")
+				for k, v in pairs(personallists) do
+					local chopEntry = exports['sandbox-laptop']:LSUndergroundChoppingIsOnList(v, model)
+					if chopEntry then
+						return { listId = k, entry = chopEntry, type = 3, model = model }
+					end
+				end
+
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Vehicle Not On Chop List")
+				return nil
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Entity")
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					"Not In A Valid Dropoff Location")
 				return nil
 			end
+		else
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Entity")
+			return nil
 		end
-	end,
-	IsOnList = function(self, list, model)
-		for k, v in ipairs(list) do
+	end
+end)
+
+exports('LSUndergroundChoppingIsOnList', function(list, model)
+	for k, v in ipairs(list) do
+		if v.model == model then
+			return v
+		end
+	end
+	return false
+end)
+
+exports('LSUndergroundChoppingRemoveFromList', function(source, type, model, listId)
+	if type == 1 then
+		for k, v in ipairs(_publicChoplist.list) do
 			if v.model == model then
-				return v
+				table.remove(_publicChoplist.list, k)
+
+				if #_publicChoplist.list <= 0 then
+					exports['sandbox-base']:LoggerTrace("Chopping", "Generating New Public Chop List")
+					_publicChoplist = {
+						list = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(10, 2),
+						public = true,
+					}
+
+					for k, v in pairs(_inProgress) do
+						if v.type == 1 then
+							for k2, v2 in pairs(_pChopping) do
+								if v2 == k then
+									TriggerClientEvent("Laptop:Client:LSUnderground:Chopping:CancelCurrent", k2)
+									_pChopping[k2] = nil
+								end
+							end
+							_inProgress[k] = nil
+							_chopped[k] = nil
+						end
+					end
+
+					for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
+						if v ~= nil then
+							local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
+							if (
+									Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+									hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
+								) and (not dutyData or dutyData.Id ~= "police") then
+								exports['sandbox-laptop']:AddNotification(
+									v:GetData("Source"),
+									"New Chop List",
+									"A New Public Chop List Is Available",
+									os.time() * 1000,
+									10000,
+									"lsunderground",
+									{
+										view = "",
+									}
+								)
+							end
+						end
+					end
+				end
+
+				return true
 			end
 		end
-		return false
-	end,
-	RemoveFromList = function(self, source, type, model, listId)
-		if type == 1 then
-			for k, v in ipairs(_publicChoplist.list) do
-				if v.model == model then
-					table.remove(_publicChoplist.list, k)
+	elseif type == 2 then
+		for k, v in ipairs(_vipChopList.list) do
+			if v.model == model then
+				table.remove(_vipChopList.list, k)
 
-					if #_publicChoplist.list <= 0 then
-						exports['sandbox-base']:LoggerTrace("Chopping", "Generating New Public Chop List")
-						_publicChoplist = {
-							list = Laptop.LSUnderground.Chopping:GenerateList(10, 2),
-							public = true,
-						}
+				if #_vipChopList.list <= 0 then
+					exports['sandbox-base']:LoggerTrace("Chopping", "Generating New VIP Chop List")
+					_vipChopList = {
+						list = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(10, 4),
+						public = true,
+					}
 
-						for k, v in pairs(_inProgress) do
-							if v.type == 1 then
-								for k2, v2 in pairs(_pChopping) do
-									if v2 == k then
-										TriggerClientEvent("Laptop:Client:LSUnderground:Chopping:CancelCurrent", k2)
-										_pChopping[k2] = nil
-									end
-								end
-								_inProgress[k] = nil
-								_chopped[k] = nil
-							end
-						end
-
-						for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
-							if v ~= nil then
-								local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
-								if (
-										Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
-										hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
-									) and (not dutyData or dutyData.Id ~= "police") then
-									Laptop.Notification:Add(
-										v:GetData("Source"),
-										"New Chop List",
-										"A New Public Chop List Is Available",
-										os.time() * 1000,
-										10000,
-										"lsunderground",
-										{
-											view = "",
-										}
-									)
+					for k, v in pairs(_inProgress) do
+						if v.type == 2 then
+							for k2, v2 in pairs(_pChopping) do
+								if v2 == k then
+									TriggerClientEvent("Laptop:Client:LSUnderground:Chopping:CancelCurrent", k2)
+									_pChopping[k2] = nil
 								end
 							end
+							_inProgress[k] = nil
+							_chopped[k] = nil
 						end
 					end
 
-					return true
-				end
-			end
-		elseif type == 2 then
-			for k, v in ipairs(_vipChopList.list) do
-				if v.model == model then
-					table.remove(_vipChopList.list, k)
-
-					if #_vipChopList.list <= 0 then
-						exports['sandbox-base']:LoggerTrace("Chopping", "Generating New VIP Chop List")
-						_vipChopList = {
-							list = Laptop.LSUnderground.Chopping:GenerateList(10, 4),
-							public = true,
-						}
-
-						for k, v in pairs(_inProgress) do
-							if v.type == 2 then
-								for k2, v2 in pairs(_pChopping) do
-									if v2 == k then
-										TriggerClientEvent("Laptop:Client:LSUnderground:Chopping:CancelCurrent", k2)
-										_pChopping[k2] = nil
-									end
-								end
-								_inProgress[k] = nil
-								_chopped[k] = nil
-							end
-						end
-
-						for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
-							if v ~= nil then
-								local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
-								if (
-										Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
-										hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
-									) and (not dutyData or dutyData.Id ~= "police") then
-									Laptop.Notification:Add(
-										v:GetData("Source"),
-										"New Chop List",
-										"A New Private Chop List Is Available",
-										os.time() * 1000,
-										10000,
-										"lsunderground",
-										{
-											view = "",
-										}
-									)
-								end
+					for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
+						if v ~= nil then
+							local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
+							if (
+									Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+									hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
+								) and (not dutyData or dutyData.Id ~= "police") then
+								exports['sandbox-laptop']:AddNotification(
+									v:GetData("Source"),
+									"New Chop List",
+									"A New Private Chop List Is Available",
+									os.time() * 1000,
+									10000,
+									"lsunderground",
+									{
+										view = "",
+									}
+								)
 							end
 						end
 					end
-
-					return true
 				end
-			end
-		elseif type == 3 then
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local mylists = char:GetData("ChopLists")
-				if mylists ~= nil and mylists[listId] ~= nil then
-					local found = false
-					for k, v in pairs(mylists[listId]) do
-						if v.model == model then
-							table.remove(mylists[listId], k)
 
-							if #mylists[listId] <= 0 then
-								mylists[listId] = nil
-							end
-
-							char:SetData("ChopLists", mylists)
-							found = true
-							break
-						end
-					end
-
-					return found
-				end
+				return true
 			end
 		end
-
-		return false
-	end,
-	CreatePickupBox = function(self, source, wasHv, type)
+	elseif type == 3 then
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			local pickups = char:GetData("ChopPickups") or {}
+			local mylists = char:GetData("ChopLists")
+			if mylists ~= nil and mylists[listId] ~= nil then
+				local found = false
+				for k, v in pairs(mylists[listId]) do
+					if v.model == model then
+						table.remove(mylists[listId], k)
 
-			local repLevel = Reputation:GetLevel(source, "Chopping") or 0
-			local calcLvl = repLevel
-			if calcLvl < 1 then calcLvl = 1 end
-			calcLvl = math.ceil(calcLvl / 2)
+						if #mylists[listId] <= 0 then
+							mylists[listId] = nil
+						end
 
-			local items = {
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
-					char:GetData("SID"), 1, calcLvl, true),
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
-					char:GetData("SID"), 1, calcLvl, true),
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
-					char:GetData("SID"), 1, calcLvl, true),
-			}
-
-			if wasHv then
-				table.insert(
-					items,
-					exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
-						1, true)
-				)
-				table.insert(
-					items,
-					exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
-						1, true)
-				)
-				table.insert(
-					items,
-					exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
-						1, true)
-				)
-				table.insert(
-					items,
-					exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
-						char:GetData("SID"), 1, calcLvl,
-						true)
-				)
-			end
-
-			local repLevel = Reputation:GetLevel(source, "Chopping") or 0
-			if repLevel >= 4 then
-				table.insert(
-					items,
-					exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
-						char:GetData("SID"), 1, calcLvl,
-						true)
-				)
-				if repLevel >= 5 then
-					table.insert(
-						items,
-						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
-							char:GetData("SID"), 1, calcLvl,
-							true)
-					)
+						char:SetData("ChopLists", mylists)
+						found = true
+						break
+					end
 				end
+
+				return found
 			end
-			table.insert(pickups, {
-				Items = items,
-			})
-			char:SetData("ChopPickups", pickups)
 		end
-	end,
-}
+	end
+
+	return false
+end)
+
+exports('LSUndergroundChoppingCreatePickupBox', function(source, wasHv, type)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local pickups = char:GetData("ChopPickups") or {}
+
+		local repLevel = Reputation:GetLevel(source, "Chopping") or 0
+		local calcLvl = repLevel
+		if calcLvl < 1 then calcLvl = 1 end
+		calcLvl = math.ceil(calcLvl / 2)
+
+		local items = {
+			exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+				char:GetData("SID"), 1, calcLvl, true),
+			exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+				char:GetData("SID"), 1, calcLvl, true),
+			exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+				char:GetData("SID"), 1, calcLvl, true),
+		}
+
+		if wasHv then
+			table.insert(
+				items,
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
+					1, true)
+			)
+			table.insert(
+				items,
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
+					1, true)
+			)
+			table.insert(
+				items,
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
+					1, true)
+			)
+			table.insert(
+				items,
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+					char:GetData("SID"), 1, calcLvl,
+					true)
+			)
+		end
+
+		local repLevel = Reputation:GetLevel(source, "Chopping") or 0
+		if repLevel >= 4 then
+			table.insert(
+				items,
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+					char:GetData("SID"), 1, calcLvl,
+					true)
+			)
+			if repLevel >= 5 then
+				table.insert(
+					items,
+					exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+						char:GetData("SID"), 1, calcLvl,
+						true)
+				)
+			end
+		end
+		table.insert(pickups, {
+			Items = items,
+		})
+		char:SetData("ChopPickups", pickups)
+	end
+end)

@@ -59,7 +59,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                         local length = math.random(category.length.min, category.length.max) * 60 * 60
                         local tracker = tonumber(data.trackers) or 0
 
-                        cb(Laptop.LSUnderground.Boosting:GiveContract(source, {
+                        cb(exports['sandbox-laptop']:LSUndergroundBoostingGiveContract(source, {
                             vehicle = data.vehicle,
                             label = string.format("%s %s", data.make, data.model),
                             make = data.make,
@@ -210,7 +210,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
     exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:EnterQueue", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        local team, leader = Laptop.Teams:GetByMemberSource(source)
+        local team, leader = exports['sandbox-laptop']:TeamsGetByMemberSource(source)
 
         if _boostingEvent then
             cb({ message = "Cannot Join Queue Right Now..." })
@@ -322,7 +322,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                             table.insert(targetContracts, v)
 
                             found:SetData("BoostingContracts", targetContracts)
-                            Laptop.Notification:Add(
+                            exports['sandbox-laptop']:AddNotification(
                                 found:GetData("Source"),
                                 "Contract Transferred to You",
                                 string.format("A New %s Class Contract Was Just Transferred to You. Buy In: %s $%s",
@@ -360,7 +360,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
             if char then
                 local boostingContracts = char:GetData("BoostingContracts") or {}
                 local perm = char:GetData("LaptopPermissions")
-                local team, isLeader = Laptop.Teams:GetByMemberSource(source)
+                local team, isLeader = exports['sandbox-laptop']:TeamsGetByMemberSource(source)
                 local level = Reputation:GetLevel(source, "Boosting")
                 if level < 1 then
                     level = 1
@@ -370,7 +370,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                     if v.id == data.id and (v.expires > os.time()) and (level >= v.vehicle.classLevel or v.vehicle.rewarded) then
                         if team?.ID and (#team.Members >= 2 or (perm["lsunderground"] and perm["lsunderground"]["admin"])) then
                             if exports['sandbox-finance']:CryptoHas(source, v.prices.standard.coin, v.prices.standard.price) then
-                                local req = Laptop.Teams.Requests:Add(
+                                local req = exports['sandbox-laptop']:TeamsRequestsAdd(
                                     team.ID,
                                     true,
                                     "Laptop:Server:LSUnderground:Boosting:ActionRequest",
@@ -385,7 +385,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                                     60 * 2 -- 2 Minutes
                                 )
 
-                                Laptop.Notification:Add(team.ID, "New Request for a Boosting Contract",
+                                exports['sandbox-laptop']:AddNotification(team.ID, "New Request for a Boosting Contract",
                                     string.format("%s %s Requested a Boosting Contract (%s)", char:GetData("First"),
                                         char:GetData("Last"), v.vehicle.class), os.time() * 1000, 15000, "lsunderground",
                                     {
@@ -414,7 +414,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:Exterior", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
-            local team = Laptop.Teams:GetByMemberSource(source)
+            local team = exports['sandbox-laptop']:TeamsGetByMemberSource(source)
 
             if team?.ID and _boosting[team.ID] and _boosting[team.ID].state == 0 then
                 _boosting[team.ID].state = 1
@@ -439,7 +439,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                     end
                 end
 
-                Laptop.Teams.Members:SendEvent(team.ID, "Laptop:Client:LSUnderground:Boosting:UpdateState", 1)
+                exports['sandbox-laptop']:TeamsMembersSendEvent(team.ID,
+                    "Laptop:Client:LSUnderground:Boosting:UpdateState", 1)
                 return cb(numPeds, makeDifficult, noAlert)
             end
         end
@@ -450,14 +451,15 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:Ignition", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
-            local team = Laptop.Teams:GetByMemberSource(source)
+            local team = exports['sandbox-laptop']:TeamsGetByMemberSource(source)
 
             if team?.ID and _boosting[team.ID] and _boosting[team.ID].state == 1 then
                 if _boosting[team.ID].trackerTotal and _boosting[team.ID].trackerTotal > 0 then
                     _boosting[team.ID].state = 2
 
-                    Laptop.Teams.Members:SendEvent(team.ID, "Laptop:Client:LSUnderground:Boosting:UpdateState", 2)
-                    Laptop.Teams.Members:NotificationAddWithId(
+                    exports['sandbox-laptop']:TeamsMembersSendEvent(team.ID,
+                        "Laptop:Client:LSUnderground:Boosting:UpdateState", 2)
+                    exports['sandbox-laptop']:TeamsMembersNotificationAddWithId(
                         team.ID,
                         "BOOSTING_CONTRACT",
                         "Current Contract",
@@ -489,7 +491,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                 else
                     _boosting[team.ID].state = 3
 
-                    Laptop.Teams.Members:NotificationAddWithId(
+                    exports['sandbox-laptop']:TeamsMembersNotificationAddWithId(
                         team.ID,
                         "BOOSTING_CONTRACT",
                         "Current Contract",
@@ -500,7 +502,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                         {},
                         {}
                     )
-                    Laptop.Teams.Members:SendEvent(team.ID, "Laptop:Client:LSUnderground:Boosting:UpdateState", 3)
+                    exports['sandbox-laptop']:TeamsMembersSendEvent(team.ID,
+                        "Laptop:Client:LSUnderground:Boosting:UpdateState", 3)
                 end
             end
         end
@@ -511,12 +514,12 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:DropOff", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
-            local team = Laptop.Teams:GetByMemberSource(source)
+            local team = exports['sandbox-laptop']:TeamsGetByMemberSource(source)
 
             if team?.ID and _boosting[team.ID] and _boosting[team.ID].state == 3 then
                 _boosting[team.ID].state = 4
 
-                Laptop.Teams.Members:NotificationAddWithId(
+                exports['sandbox-laptop']:TeamsMembersNotificationAddWithId(
                     team.ID,
                     "BOOSTING_CONTRACT",
                     "Current Contract",
@@ -527,7 +530,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                     {},
                     {}
                 )
-                Laptop.Teams.Members:SendEvent(team.ID, "Laptop:Client:LSUnderground:Boosting:UpdateState", 4)
+                exports['sandbox-laptop']:TeamsMembersSendEvent(team.ID,
+                    "Laptop:Client:LSUnderground:Boosting:UpdateState", 4)
             end
         end
 
@@ -537,7 +541,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:LeftArea", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
-            local team = Laptop.Teams:GetByMemberSource(source)
+            local team = exports['sandbox-laptop']:TeamsGetByMemberSource(source)
 
             if team?.ID and _boosting[team.ID] and _boosting[team.ID].state == 4 then
                 local stillInZone = false
@@ -552,9 +556,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
                 if not stillInZone then
                     if #(GetEntityCoords(_boosting[team.ID].vehicle) - _boosting[team.ID].dropOff) <= 30.0 then
-                        Laptop.LSUnderground.Boosting:Complete(team?.ID)
+                        exports['sandbox-laptop']:LSUndergroundBoostingComplete(team?.ID)
                     else
-                        Laptop.Teams.Members:Notification(
+                        exports['sandbox-laptop']:TeamsMembersNotification(
                             team.ID,
                             "Current Contract",
                             "Make sure that the vehicle stays in the drop off zone...",
@@ -573,7 +577,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
     end)
 
     exports['sandbox-inventory']:RegisterUse("boosting_tracking_disabler", "Boosting", function(source, slot, itemData)
-        local team = Laptop.Teams:GetByMemberSource(source)
+        local team = exports['sandbox-laptop']:TeamsGetByMemberSource(source)
         local ped = GetPlayerPed(source)
         local inVeh = GetVehiclePedIsIn(ped, false)
 
@@ -604,7 +608,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                                     -- Done
                                     _boosting[team.ID].state = 3
 
-                                    Laptop.Teams.Members:NotificationAddWithId(
+                                    exports['sandbox-laptop']:TeamsMembersNotificationAddWithId(
                                         team.ID,
                                         "BOOSTING_CONTRACT",
                                         "Current Contract",
@@ -616,19 +620,19 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                                         {}
                                     )
 
-                                    Laptop.Teams.Members:SendEvent(team.ID,
+                                    exports['sandbox-laptop']:TeamsMembersSendEvent(team.ID,
                                         "Laptop:Client:LSUnderground:Boosting:UpdateState", 3)
                                 else
                                     local addingDelay = math.random(3, 6)
                                     _boosting[team.ID].trackerDelay = _boosting[team.ID].trackerDelay + addingDelay
 
-                                    Laptop.Teams.Members:SendEvent(team.ID,
+                                    exports['sandbox-laptop']:TeamsMembersSendEvent(team.ID,
                                         "Laptop:Client:LSUnderground:Boosting:UpdateState", 2, {
                                             trackerDelay = _boosting[team.ID].trackerDelay,
                                             trackerCount = _boosting[team.ID].trackerCount
                                         })
 
-                                    Laptop.Teams.Members:NotificationAddWithId(
+                                    exports['sandbox-laptop']:TeamsMembersNotificationAddWithId(
                                         team.ID,
                                         "BOOSTING_CONTRACT",
                                         "Current Contract",
@@ -665,13 +669,13 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                                     _boosting[team.ID].trackerCount = 0
                                 end
 
-                                Laptop.Teams.Members:SendEvent(team.ID,
+                                exports['sandbox-laptop']:TeamsMembersSendEvent(team.ID,
                                     "Laptop:Client:LSUnderground:Boosting:UpdateState", 2, {
                                         trackerDelay = _boosting[team.ID].trackerDelay,
                                         trackerCount = _boosting[team.ID].trackerCount
                                     })
 
-                                Laptop.Teams.Members:NotificationAddWithId(
+                                exports['sandbox-laptop']:TeamsMembersNotificationAddWithId(
                                     team.ID,
                                     "BOOSTING_CONTRACT",
                                     "Current Contract",
@@ -711,7 +715,7 @@ AddEventHandler("Laptop:Server:LSUnderground:Boosting:ActionRequest", function(s
         local owner = exports['sandbox-characters']:FetchCharacterSource(data.requester)
         if not owner then return; end
 
-        local team, isLeader = Laptop.Teams:GetByMemberSource(data.requester)
+        local team, isLeader = exports['sandbox-laptop']:TeamsGetByMemberSource(data.requester)
 
         if not team then return; end
 
@@ -748,17 +752,17 @@ AddEventHandler("Laptop:Server:LSUnderground:Boosting:ActionRequest", function(s
                             table.remove(contracts, k)
                             updated = true
 
-                            Laptop.LSUnderground.Boosting:Start(team.ID, v)
+                            exports['sandbox-laptop']:LSUndergroundBoostingStart(team.ID, v)
                         else
                             for _, m in ipairs(team.Members) do
-                                Laptop.Notification:Add(m.Source, "Failed to Start Boosting Contract",
+                                exports['sandbox-laptop']:AddNotification(m.Source, "Failed to Start Boosting Contract",
                                     string.format("%s %s doesn't have enough crypto to start the contract.",
                                         owner:GetData("First"), owner:GetData("Last")), os.time() * 1000, 10000,
                                     "lsunderground", {}, {})
                             end
                         end
                     else
-                        Laptop.Teams.Members:Notification(
+                        exports['sandbox-laptop']:TeamsMembersNotification(
                             team.ID,
                             "Unable to Start Contract",
                             "Some of your team members don't meet the entry requirements",
@@ -783,379 +787,370 @@ AddEventHandler("Laptop:Server:LSUnderground:Boosting:ActionRequest", function(s
     end
 end)
 
-LAPTOP.LSUnderground = LAPTOP.LSUnderground or {}
-LAPTOP.LSUnderground.Boosting = {
-    RewardContract = function(self, source)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if char then
-            local level = Reputation:GetLevel(source, "Boosting")
-            if level < 1 then
-                level = 1
+exports('LSUndergroundBoostingRewardContract', function(source)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
+    if char then
+        local level = Reputation:GetLevel(source, "Boosting")
+        if level < 1 then
+            level = 1
+        end
+
+        local boostingClass = exports['sandbox-base']:UtilsWeightedRandom(_boostingRepToClassChances[level])
+
+        if not BOOSTING_VEHICLE_CONFIG[boostingClass] then
+            return false
+        end
+
+        local category = BOOSTING_VEHICLE_CONFIG[boostingClass]
+        local isRare = false
+        local length = math.random(category.length.min, category.length.max) * 60 * 60
+        local veh, cost
+
+        local tracker = false
+
+        if category.tracker then
+            local chance = math.random(100)
+            if chance >= (100 - category.tracker.chance) then
+                tracker = math.random(category.tracker.min, category.tracker.max)
             end
+        end
 
-            local boostingClass = exports['sandbox-base']:UtilsWeightedRandom(_boostingRepToClassChances[level])
+        if category.rareVehicles and #category.rareVehicles > 0 and math.random(22, 39) == 33 then
+            local random = math.random(#category.rareVehicles)
 
-            if not BOOSTING_VEHICLE_CONFIG[boostingClass] then
-                return false
-            end
+            veh = category.rareVehicles[random]
+            cost = math.random(veh.priceBase - 2, veh.priceBase + 2)
+            isRare = true
 
-            local category = BOOSTING_VEHICLE_CONFIG[boostingClass]
-            local isRare = false
-            local length = math.random(category.length.min, category.length.max) * 60 * 60
-            local veh, cost
-
-            local tracker = false
-
-            if category.tracker then
+            if category.trackerRare then
                 local chance = math.random(100)
-                if chance >= (100 - category.tracker.chance) then
-                    tracker = math.random(category.tracker.min, category.tracker.max)
+                if chance >= (100 - category.trackerRare.chance) then
+                    tracker = math.random(category.trackerRare.min, category.trackerRare.max)
                 end
             end
+        else
+            local random = math.random(#category.vehicles)
 
-            if category.rareVehicles and #category.rareVehicles > 0 and math.random(22, 39) == 33 then
-                local random = math.random(#category.rareVehicles)
-
-                veh = category.rareVehicles[random]
-                cost = math.random(veh.priceBase - 2, veh.priceBase + 2)
-                isRare = true
-
-                if category.trackerRare then
-                    local chance = math.random(100)
-                    if chance >= (100 - category.trackerRare.chance) then
-                        tracker = math.random(category.trackerRare.min, category.trackerRare.max)
-                    end
-                end
-            else
-                local random = math.random(#category.vehicles)
-
-                veh = category.vehicles[random]
-                cost = math.random(veh.priceBase - 2, veh.priceBase + 2)
-            end
-
-            return Laptop.LSUnderground.Boosting:GiveContract(source, {
-                vehicle = veh.vehicle,
-                label = string.format("%s %s", veh.make, veh.model),
-                make = veh.make,
-                model = veh.model,
-                class = boostingClass,
-                classLevel = level,
-                rare = isRare,
-                tracker = tracker
-            }, {
-                standard = {
-                    price = cost,
-                    coin = "VRM",
-                }
-            }, length)
-        end
-        return false
-    end,
-    GiveContract = function(self, source, vehicle, prices, timeLength, settings)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-
-        if not timeLength then
-            timeLength = 60 * 60 * 5
+            veh = category.vehicles[random]
+            cost = math.random(veh.priceBase - 2, veh.priceBase + 2)
         end
 
-        if char then
-            local alias = char:GetData("Profiles")?.redline?.name
-            local contracts = char:GetData("BoostingContracts") or {}
-
-            _boostingIds += 1
-
-            local boostContract = {
-                id = _boostingIds,
-                owner = {
-                    SID = char:GetData("SID"),
-                    Alias = alias,
-                },
-                vehicle = vehicle,
-                prices = prices,
-                expires = os.time() + timeLength,
-                settings = settings or {}
+        return exports['sandbox-laptop']:LSUndergroundBoostingGiveContract(source, {
+            vehicle = veh.vehicle,
+            label = string.format("%s %s", veh.make, veh.model),
+            make = veh.make,
+            model = veh.model,
+            class = boostingClass,
+            classLevel = level,
+            rare = isRare,
+            tracker = tracker
+        }, {
+            standard = {
+                price = cost,
+                coin = "VRM",
             }
+        }, length)
+    end
+    return false
+end)
 
-            table.insert(contracts, boostContract)
-            char:SetData("BoostingContracts", contracts)
+exports('LSUndergroundBoostingGiveContract', function(source, vehicle, prices, timeLength, settings)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
-            if not _boostingContractCount[char:GetData("SID")] then
-                _boostingContractCount[char:GetData("SID")] = 1
-            else
-                _boostingContractCount[char:GetData("SID")] += 1
-            end
+    if not timeLength then
+        timeLength = 60 * 60 * 5
+    end
 
-            exports['sandbox-base']:LoggerInfo("Boosting",
-                string.format("%s [%s %s (%s)] Rewarded Class %s Contract (%s)%s", alias, char:GetData("First"),
-                    char:GetData("Last"), char:GetData("SID"), vehicle.class, vehicle.label,
-                    vehicle.rewarded and " (Manually Created)" or ""))
+    if char then
+        local alias = char:GetData("Profiles")?.redline?.name
+        local contracts = char:GetData("BoostingContracts") or {}
 
-            Laptop.Notification:Add(
-                source,
-                "New Contract Available",
-                string.format("A New %s Class Contract Now Available For %s $%s", vehicle.class, prices.standard.price,
-                    prices.standard.coin),
-                os.time() * 1000,
-                10000,
-                "lsunderground",
-                {
-                    view = "",
-                }
-            )
+        _boostingIds += 1
 
-            return true
+        local boostContract = {
+            id = _boostingIds,
+            owner = {
+                SID = char:GetData("SID"),
+                Alias = alias,
+            },
+            vehicle = vehicle,
+            prices = prices,
+            expires = os.time() + timeLength,
+            settings = settings or {}
+        }
+
+        table.insert(contracts, boostContract)
+        char:SetData("BoostingContracts", contracts)
+
+        if not _boostingContractCount[char:GetData("SID")] then
+            _boostingContractCount[char:GetData("SID")] = 1
+        else
+            _boostingContractCount[char:GetData("SID")] += 1
         end
-        return false
-    end,
 
-    Start = function(self, teamId, contract)
-        local team = Laptop.Teams:Get(teamId)
-        if team and contract and contract?.vehicle?.vehicle then
-            local dropOffLocation = _boostingDropoffs[math.random(#_boostingDropoffs)]
+        exports['sandbox-base']:LoggerInfo("Boosting",
+            string.format("%s [%s %s (%s)] Rewarded Class %s Contract (%s)%s", alias, char:GetData("First"),
+                char:GetData("Last"), char:GetData("SID"), vehicle.class, vehicle.label,
+                vehicle.rewarded and " (Manually Created)" or ""))
 
-            if _boostingEvent then
-                dropOffLocation = _boostingEventDropoff
-            end
-
-            local possibleLocations = {}
-            for k, v in ipairs(_boostingLocations) do
-                if #(dropOffLocation - v.coords.xyz) >= 1000.0 and ((not v.rich) or (v.rich and contract.vehicle.classLevel >= 4)) and not IsPickupCloseToOtherActiveBoost(v.coords.xyz) then
-                    table.insert(possibleLocations, v)
-                end
-            end
-
-            local pickUpLocation = possibleLocations[math.random(#possibleLocations)]
-
-            local earningRep = 50 * contract.vehicle.classLevel
-            local takenRep = math.floor(earningRep * 0.8)
-
-            for k, v in ipairs(team.Members) do
-                Reputation.Modify:Remove(v.Source, "Boosting", takenRep)
-
-                if v.SID == contract.owner?.SID then
-                    local cChar = exports['sandbox-characters']:FetchCharacterSource(v.Source)
-                    if cChar then
-                        exports['sandbox-base']:LoggerInfo("Boosting",
-                            string.format("%s [%s %s (%s)] Started Class %s Contract (%s)",
-                                cChar:GetData("Profiles")?.redline?.name, cChar:GetData("First"), cChar:GetData("Last"),
-                                cChar:GetData("SID"), contract.vehicle.class, contract.vehicle.label))
-                    end
-                end
-            end
-
-            local base = contract.prices.standard.price
-            local payout = math.random(math.ceil(base * 0.5), math.ceil(base * 1.1))
-
-            local payoutOverride = contract.settings?.payoutOverride
-            if payoutOverride and payoutOverride > 0 then
-                payout = payoutOverride
-            end
-
-            --[[
-                Boosting States
-                0 - yet to find vehicle
-                1 - is breaking into vehicle (peds)
-                2 - has to disabled tracking (not always a thing)
-                3 - yet to drop off
-                4 - LEAVE THE AREA
-            ]]
-
-            _boosting[team.ID] = {
-                team = team.ID,
-                state = 0,
-                vehicle = nil,
-                contractOwner = contract.owner,
-                vehicleData = contract.vehicle,
-                members = team.Members,
-                dropOff = dropOffLocation,
-                pickUp = pickUpLocation.coords.xyz,
-                pedSpawns = pickUpLocation.peds,
-                peds = 4,
-                settings = contract.settings,
-                earningRep = earningRep,
-                takenRep = takenRep,
-                coin = contract.prices.standard.coin,
-                price = contract.prices.standard.price,
-                payout = payout,
-
-                trackerDelay = 0,
-                trackerTotal = contract.vehicle.tracker,
-                trackerCount = 0,
+        exports['sandbox-laptop']:AddNotification(
+            source,
+            "New Contract Available",
+            string.format("A New %s Class Contract Now Available For %s $%s", vehicle.class, prices.standard.price,
+                prices.standard.coin),
+            os.time() * 1000,
+            10000,
+            "lsunderground",
+            {
+                view = "",
             }
+        )
 
-            Laptop.Teams:SetState(team.ID, "boosting", string.format("On %s Boosting Contract", contract.vehicle.class))
+        return true
+    end
+    return false
+end)
 
-            local properties = nil
-            if contract.vehicle.class == "D" or contract.vehicle.class == "A+" then
-                properties = {
-                    mods = {
-                        transmission = 2,
-                        brakes = 2,
-                        engine = 2,
-                        turbo = true,
-                    }
-                }
+exports('LSUndergroundBoostingStart', function(teamId, contract)
+    local team = exports['sandbox-laptop']:TeamsGet(teamId)
+    if team and contract and contract?.vehicle?.vehicle then
+        local dropOffLocation = _boostingDropoffs[math.random(#_boostingDropoffs)]
+
+        if _boostingEvent then
+            dropOffLocation = _boostingEventDropoff
+        end
+
+        local possibleLocations = {}
+        for k, v in ipairs(_boostingLocations) do
+            if #(dropOffLocation - v.coords.xyz) >= 1000.0 and ((not v.rich) or (v.rich and contract.vehicle.classLevel >= 4)) and not IsPickupCloseToOtherActiveBoost(v.coords.xyz) then
+                table.insert(possibleLocations, v)
             end
+        end
 
-            exports['sandbox-vehicles']:SpawnTemp(source, GetHashKey(contract.vehicle.vehicle), 'automobile',
-                pickUpLocation.coords.xyz,
-                pickUpLocation.coords.w, function(spawnedVehicle, VIN, plate)
-                    if spawnedVehicle then
-                        local vehState = Entity(spawnedVehicle).state
-                        vehState.boostVehicle = team.ID
+        local pickUpLocation = possibleLocations[math.random(#possibleLocations)]
 
-                        vehState.Locked = true
-                        SetVehicleDoorsLocked(spawnedVehicle, 2)
+        local earningRep = 50 * contract.vehicle.classLevel
+        local takenRep = math.floor(earningRep * 0.8)
 
-                        -- forces them to hack A+
-                        if contract.vehicle.classLevel >= 5 then
-                            vehState.boostForceHack = true
-                        end
+        for k, v in ipairs(team.Members) do
+            Reputation.Modify:Remove(v.Source, "Boosting", takenRep)
 
-                        _boosting[team.ID].vehicle = spawnedVehicle
-                        _boosting[team.ID].vehicleNet = NetworkGetNetworkIdFromEntity(spawnedVehicle)
+            if v.SID == contract.owner?.SID then
+                local cChar = exports['sandbox-characters']:FetchCharacterSource(v.Source)
+                if cChar then
+                    exports['sandbox-base']:LoggerInfo("Boosting",
+                        string.format("%s [%s %s (%s)] Started Class %s Contract (%s)",
+                            cChar:GetData("Profiles")?.redline?.name, cChar:GetData("First"), cChar:GetData("Last"),
+                            cChar:GetData("SID"), contract.vehicle.class, contract.vehicle.label))
+                end
+            end
+        end
 
-                        Laptop.Teams.Members:SendEvent(team.ID, "Laptop:Client:LSUnderground:Boosting:Start",
-                            _boosting[team.ID])
+        local base = contract.prices.standard.price
+        local payout = math.random(math.ceil(base * 0.5), math.ceil(base * 1.1))
 
-                        Laptop.Teams.Members:NotificationAddWithId(
-                            team.ID,
-                            "BOOSTING_CONTRACT",
-                            "Current Contract",
-                            "Find and Steal the Vehicle",
-                            os.time() * 1000,
-                            -1,
-                            "lsunderground",
-                            {},
-                            {}
-                        )
+        local payoutOverride = contract.settings?.payoutOverride
+        if payoutOverride and payoutOverride > 0 then
+            payout = payoutOverride
+        end
 
-                        Citizen.SetTimeout(20000, function()
-                            if DoesEntityExist(spawnedVehicle) then
-                                vehState.Locked = true
-                                SetVehicleDoorsLocked(spawnedVehicle, 2)
+        _boosting[team.ID] = {
+            team = team.ID,
+            state = 0,
+            vehicle = nil,
+            contractOwner = contract.owner,
+            vehicleData = contract.vehicle,
+            members = team.Members,
+            dropOff = dropOffLocation,
+            pickUp = pickUpLocation.coords.xyz,
+            pedSpawns = pickUpLocation.peds,
+            peds = 4,
+            settings = contract.settings,
+            earningRep = earningRep,
+            takenRep = takenRep,
+            coin = contract.prices.standard.coin,
+            price = contract.prices.standard.price,
+            payout = payout,
 
+            trackerDelay = 0,
+            trackerTotal = contract.vehicle.tracker,
+            trackerCount = 0,
+        }
 
-                                for i = -1, 4 do
-                                    local inVeh = GetPedInVehicleSeat(spawnedVehicle, i)
-                                    if inVeh and DoesEntityExist(inVeh) then
-                                        TaskLeaveVehicle(inVeh, spawnedVehicle, 4160)
-                                        DeleteEntity(inVeh)
-                                    end
+        exports['sandbox-laptop']:TeamsSetState(team.ID, "boosting",
+            string.format("On %s Boosting Contract", contract.vehicle.class))
+
+        local properties = nil
+        if contract.vehicle.class == "D" or coct.vehicle.class == "A+" then
+            properties = {
+                mods = {
+                    transmission = 2,
+                    brakes = 2,
+                    engine = 2,
+                    turbo = true,
+                }
+            }
+        end
+
+        exports['sandbox-vehicles']:SpawnTemp(source, GetHashKey(contract.vehicle.vehicle), 'automobile',
+            pickUpLocation.coords.xyz,
+            pickUpLocation.coords.w, function(spawnedVehicle, VIN, plate)
+                if spawnedVehicle then
+                    local vehState = Entity(spawnedVehicle).state
+                    vehState.boostVehicle = team.ID
+
+                    vehState.Locked = true
+                    SetVehicleDoorsLocked(spawnedVehicle, 2)
+
+                    -- forces them to hack A+
+                    if contract.vehicle.classLevel >= 5 then
+                        vehState.boostForceHack = true
+                    end
+
+                    _boosting[team.ID].vehicle = spawnedVehicle
+                    _boosting[team.ID].vehicleNet = NetworkGetNetworkIdFromEntity(spawnedVehicle)
+
+                    exports['sandbox-laptop']:TeamsMembersSendEvent(team.ID, "Laptop:Client:LSUnderground:Boosting:Start",
+                        _boosting[team.ID])
+
+                    exports['sandbox-laptop']:TeamsMembersNotificationAddWithId(
+                        team.ID,
+                        "BOOSTING_CONTRACT",
+                        "Current Contract",
+                        "Find and Steal the Vehicle",
+                        os.time() * 1000,
+                        -1,
+                        "lsunderground",
+                        {},
+                        {}
+                    )
+
+                    Citizen.SetTimeout(20000, function()
+                        if DoesEntityExist(spawnedVehicle) then
+                            vehState.Locked = true
+                            SetVehicleDoorsLocked(spawnedVehicle, 2)
+
+                            for i = -1, 4 do
+                                local inVeh = GetPedInVehicleSeat(spawnedVehicle, i)
+                                if inVeh and DoesEntityExist(inVeh) then
+                                    TaskLeaveVehicle(inVeh, spawnedVehicle, 4160)
+                                    DeleteEntity(inVeh)
                                 end
                             end
-                        end)
-                    else
-                        exports['sandbox-base']:LoggerError("Boosting",
-                            string.format("Failed to Spawn Vehicle For Boost. Contract Owner SID: %s. Buy In: %s $%s",
-                                contract.owner.SID, contract.prices.standard.price, contract.prices.standard.coin))
-                    end
-                end, {
-                    Make = contract.vehicle.make,
-                    Model = contract.vehicle.make,
-                    Value = 500000,
-                    Class = contract.vehicle.class,
-                }, properties)
-        end
-    end,
-    Cancel = function(self, teamId, teamDeleted)
-        if _boosting[teamId] then
-            if not teamDeleted then
-                Laptop.Teams:ResetState(teamId)
-                Laptop.Teams.Members:NotificationRemoveById(teamId, "BOOSTING_CONTRACT")
-                Laptop.Teams.Members:Notification(
-                    teamId,
-                    "Contract Cancelled",
-                    "Your team failed to complete the boost, you have received a penalty.",
-                    os.time() * 1000,
-                    15000,
-                    "lsunderground",
-                    {},
-                    {}
-                )
-                Laptop.Teams.Members:SendEvent(teamId, "Laptop:Client:LSUnderground:Boosting:End", true)
-            end
-
-            TriggerClientEvent("EmergencyAlerts:Client:TrackerBlip", -1, "police", string.format("boosting-%s", teamId))
-            _boosting[teamId] = nil
-        end
-    end,
-    Complete = function(self, teamId)
-        if _boosting[teamId] then
-            local veh = _boosting[teamId].vehicle
-
-            _boosting[teamId].state = 5
-
-            if DoesEntityExist(veh) then
-                local vehState = Entity(veh).state
-                vehState.boostVehicle = true
-                vehState.Locked = true
-                SetVehicleDoorsLocked(veh, 2)
-                vehState.keepLocked = true
-
-                local vStalls = vehState.stalls or 0
-
-                -- Crypto
-                local earnedCrypto = _boosting[teamId].payout
-                local cPerStall = earnedCrypto * 0.2
-                earnedCrypto -= (cPerStall * vStalls)
-
-                if earnedCrypto < 0 then
-                    earnedCrypto = 0
-                end
-
-                -- Rep
-                local earnedRep = _boosting[teamId].earningRep
-                local rPerStall = earnedRep * 0.15
-                earnedRep -= (rPerStall * vStalls)
-                if earnedRep < 10 then
-                    earnedRep = 10
-                end
-
-                if _boosting[teamId].settings?.skipRep then
-                    earnedRep = 0
-                end
-
-                for k, v in ipairs(_boosting[teamId].members) do
-                    Reputation.Modify:Add(v.Source, "Boosting", math.floor(_boosting[teamId].takenRep + earnedRep))
-
-                    if v.SID == _boosting[teamId].contractOwner?.SID then
-                        local cChar = exports['sandbox-characters']:FetchCharacterSource(v.Source)
-                        if cChar then
-                            exports['sandbox-finance']:CryptoExchangeAdd(
-                                _boosting[teamId].coin,
-                                cChar:GetData("CryptoWallet"),
-                                math.floor(_boosting[teamId].price + earnedCrypto)
-                            )
-
-                            exports['sandbox-base']:LoggerInfo("Boosting",
-                                string.format(
-                                    "%s [%s %s (%s)] Completed Class %s Contract (%s)%s. Rep Gained: %s Crypto Gained: %s",
-                                    cChar:GetData("Profiles")?.redline?.name, cChar:GetData("First"),
-                                    cChar:GetData("Last"), cChar:GetData("SID"), _boosting[teamId].vehicleData.class,
-                                    _boosting[teamId].vehicleData.label,
-                                    _boosting[teamId].vehicleData.rewarded and " (Manually Created)" or "", earnedRep,
-                                    earnedCrypto))
                         end
-                    end
+                    end)
+                else
+                    exports['sandbox-base']:LoggerError("Boosting",
+                        string.format("Failed to Spawn Vehicle For Boost. Contract Owner SID: %s. Buy In: %s $%s",
+                            contract.owner.SID, contract.prices.standard.price, contract.prices.standard.coin))
                 end
+            end, {
+                Make = contract.vehicle.make,
+                Model = contract.vehicle.make,
+                Value = 500000,
+                Class = contract.vehicle.class,
+            }, properties)
+    end
+end)
 
-                Citizen.SetTimeout(60 * 1000, function()
-                    exports['sandbox-vehicles']:Delete(veh, function(success) end)
-                end)
+exports('LSUndergroundBoostingCancel', function(teamId, teamDeleted)
+    if _boosting[teamId] then
+        if not teamDeleted then
+            exports['sandbox-laptop']:TeamsResetState(teamId)
+            exports['sandbox-laptop']:TeamsMembersNotificationRemoveById(teamId, "BOOSTING_CONTRACT")
+            exports['sandbox-laptop']:TeamsMembersNotification(
+                teamId,
+                "Contract Cancelled",
+                "Your team failed to complete the boost, you have received a penalty.",
+                os.time() * 1000,
+                15000,
+                "lsunderground",
+                {},
+                {}
+            )
+            exports['sandbox-laptop']:TeamsMembersSendEvent(teamId, "Laptop:Client:LSUnderground:Boosting:End", true)
+        end
+
+        TriggerClientEvent("EmergencyAlerts:Client:TrackerBlip", -1, "police", string.format("boosting-%s", teamId))
+        _boosting[teamId] = nil
+    end
+end)
+
+exports('LSUndergroundBoostingComplete', function(teamId)
+    if _boosting[teamId] then
+        local veh = _boosting[teamId].vehicle
+
+        _boosting[teamId].state = 5
+
+        if DoesEntityExist(veh) then
+            local vehState = Entity(veh).state
+            vehState.boostVehicle = true
+            vehState.Locked = true
+            SetVehicleDoorsLocked(veh, 2)
+            vehState.keepLocked = true
+
+            local vStalls = vehState.stalls or 0
+
+            -- Crypto
+            local earnedCrypto = _boosting[teamId].payout
+            local cPerStall = earnedCrypto * 0.2
+            earnedCrypto -= (cPerStall * vStalls)
+
+            if earnedCrypto < 0 then
+                earnedCrypto = 0
             end
 
-            Laptop.Teams:ResetState(teamId)
-            Laptop.Teams.Members:NotificationRemoveById(teamId, "BOOSTING_CONTRACT")
-            Laptop.Teams.Members:SendEvent(teamId, "Laptop:Client:LSUnderground:Boosting:End")
-            TriggerClientEvent("EmergencyAlerts:Client:TrackerBlip", -1, "police", string.format("boosting-%s", teamId))
-            _boosting[teamId] = nil
+            -- Rep
+            local earnedRep = _boosting[teamId].earningRep
+            local rPerStall = earnedRep * 0.15
+            earnedRep -= (rPerStall * vStalls)
+            if earnedRep < 10 then
+                earnedRep = 10
+            end
+
+            if _boosting[teamId].settings?.skipRep then
+                earnedRep = 0
+            end
+
+            for k, v in ipairs(_boosting[teamId].members) do
+                Reputation.Modify:Add(v.Source, "Boosting", math.floor(_boosting[teamId].takenRep + earnedRep))
+
+                if v.SID == _boosting[teamId].contractOwner?.SID then
+                    local cChar = exports['sandbox-characters']:FetchCharacterSource(v.Source)
+                    if cChar then
+                        exports['sandbox-finance']:CryptoExchangeAdd(
+                            _boosting[teamId].coin,
+                            cChar:GetData("CryptoWallet"),
+                            math.floor(_boosting[teamId].price + earnedCrypto)
+                        )
+
+                        exports['sandbox-base']:LoggerInfo("Boosting",
+                            string.format(
+                                "%s [%s %s (%s)] Completed Class %s Contract (%s)%s. Rep Gained: %s Crypto Gained: %s",
+                                cChar:GetData("Profiles")?.redline?.name, cChar:GetData("First"),
+                                cChar:GetData("Last"), cChar:GetData("SID"), _boosting[teamId].vehicleData.class,
+                                _boosting[teamId].vehicleData.label,
+                                _boosting[teamId].vehicleData.rewarded and " (Manually Created)" or "", earnedRep,
+                                earnedCrypto))
+                    end
+                end
+            end
+
+            Citizen.SetTimeout(60 * 1000, function()
+                exports['sandbox-vehicles']:Delete(veh, function(success) end)
+            end)
         end
-    end,
-}
+
+        exports['sandbox-laptop']:TeamsResetState(teamId)
+        exports['sandbox-laptop']:TeamsMembersNotificationRemoveById(teamId, "BOOSTING_CONTRACT")
+        exports['sandbox-laptop']:TeamsMembersSendEvent(teamId, "Laptop:Client:LSUnderground:Boosting:End")
+        TriggerClientEvent("EmergencyAlerts:Client:TrackerBlip", -1, "police", string.format("boosting-%s", teamId))
+        _boosting[teamId] = nil
+    end
+end)
 
 function RemovedFromQueueNotification(source)
-    Laptop.Notification:Add(
+    exports['sandbox-laptop']:AddNotification(
         source,
         "No Longer in Queue",
         "You were removed from the boosting queue since you are no longer eligible.",
@@ -1169,7 +1164,7 @@ function RemovedFromQueueNotification(source)
 end
 
 AddEventHandler("Laptop:Server:Teams:MemberRemoved", function(teamId, member)
-    local team = Laptop.Teams:Get(teamId)
+    local team = exports['sandbox-laptop']:TeamsGet(teamId)
     if team and team.Members and #team.Members < 2 then -- No longer enough people, kick 'em out of the queue
         for k, v in ipairs(_boostingQueue) do
             if v.team == teamId and (not v.admin or v.source == member.Source) then
@@ -1181,7 +1176,7 @@ AddEventHandler("Laptop:Server:Teams:MemberRemoved", function(teamId, member)
         end
 
         if _boosting[teamId] then
-            Laptop.LSUnderground.Boosting:Cancel(teamId)
+            exports['sandbox-laptop']:LSUndergroundBoostingCancel(teamId)
         end
     end
 end)
@@ -1197,14 +1192,14 @@ AddEventHandler("Laptop:Server:Teams:Deleted", function(teamId)
     end
 
     if _boosting[teamId] then
-        Laptop.LSUnderground.Boosting:Cancel(teamId, true)
+        exports['sandbox-laptop']:LSUndergroundBoostingCancel(teamId, true)
     end
 end)
 
 AddEventHandler("Vehicles:Server:Deleted", function(veh)
     for k, v in pairs(_boosting) do
         if v and v.vehicle == veh then
-            Laptop.LSUnderground.Boosting:Cancel(k)
+            exports['sandbox-laptop']:LSUndergroundBoostingCancel(k)
         end
     end
 end)
@@ -1212,7 +1207,7 @@ end)
 RegisterNetEvent("Vehicles:Server:BlownUp", function(veh)
     for k, v in pairs(_boosting) do
         if v and v.vehicle == veh then
-            Laptop.LSUnderground.Boosting:Cancel(k)
+            exports['sandbox-laptop']:LSUndergroundBoostingCancel(k)
         end
     end
 end)
@@ -1222,7 +1217,7 @@ RegisterNetEvent("Towing:Server:TowingVehicle", function(vehNet)
     if veh and DoesEntityExist(veh) then
         for k, v in pairs(_boosting) do
             if v and v.vehicle == veh then
-                Laptop.LSUnderground.Boosting:Cancel(k)
+                exports['sandbox-laptop']:LSUndergroundBoostingCancel(k)
             end
         end
     end
@@ -1264,7 +1259,7 @@ function SetupBoostingQueue()
                         if not _boosting[_boostingQueue[index].team] and (not _boostingContractCount[char:GetData("SID")] or (_boostingContractCount[char:GetData("SID")] < BOOSTING_MAX_CONTRACTS)) and (contractCount < BOOSTING_MAX_QUEUE) then
                             chosen = true
 
-                            Laptop.LSUnderground.Boosting:RewardContract(char:GetData("Source"))
+                            exports['sandbox-laptop']:LSUndergroundBoostingRewardContract(char:GetData("Source"))
                         end
                     end
                 end

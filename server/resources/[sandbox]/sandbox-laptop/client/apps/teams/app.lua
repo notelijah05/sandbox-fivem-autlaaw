@@ -3,7 +3,7 @@ _myTeam = nil
 RegisterNetEvent("Laptop:Client:Teams:Set", function(teamData)
 	_myTeam = teamData
 
-	Laptop.Data:Set("myGroup", _myTeam)
+	exports['sandbox-laptop']:SetData("myGroup", _myTeam)
 end)
 
 RegisterNUICallback("GetTeams", function(data, cb)

@@ -21,6 +21,186 @@ local _vehBones = {
 	{ name = "boot",         distance = 1.6, index = 5, type = "door", duration = 9000 },
 }
 
+exports('ChoppingCreateBlips', function()
+	if Reputation:HasLevel("Salvaging", 7) or hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND") then
+		_blips.public = exports["sandbox-blips"]:Add(
+			"chopping_public",
+			"LSUNDG Public Dropoff",
+			GlobalState["PublicDropoff"].coords,
+			524,
+			35,
+			0.4
+		)
+	else
+		exports["sandbox-blips"]:Remove("chopping_public")
+	end
+
+	if Reputation:HasLevel("Salvaging", 7) and (Reputation:HasLevel("Chopping", 5) or hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND")) then
+		_blips.vip = exports["sandbox-blips"]:Add(
+			"chopping_private",
+			"LSUNDG Private Dropoff",
+			GlobalState["PrivateDropoff"].coords,
+			524,
+			36,
+			0.4
+		)
+	else
+		exports["sandbox-blips"]:Remove("chopping_private")
+	end
+
+	if hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND") then
+		_blips.private = exports["sandbox-blips"]:Add(
+			"chopping_personal",
+			"LSUNDG Personal Dropoff",
+			GlobalState["PersonalDropoff"].coords,
+			524,
+			43,
+			0.4
+		)
+	else
+		exports["sandbox-blips"]:Remove("chopping_personal")
+	end
+end)
+
+exports('AttemptChop', function()
+	if _validBone ~= nil and _validVeh ~= nil then
+		if _validBone?.type == "door" then
+			if not IsVehicleDoorDamaged(_validVeh, _validBone?.index) then
+				_delay = true
+				PedFaceCoord(LocalPlayer.state.ped, _validBone?.coords)
+				exports["sandbox-base"]:SetVehicleDoorOpen(_validVeh, _validBone?.index, false, true)
+				exports['sandbox-hud']:ProgressWithTickEvent({
+					name = "chopping_action",
+					duration = _validBone?.duration,
+					label = "Removing Part",
+					useWhileDead = true,
+					canCancel = true,
+					ignoreModifier = true,
+					tickrate = 100,
+					controlDisables = {
+						disableMovement = true,
+						disableCarMovement = true,
+						disableMouse = false,
+						disableCombat = true,
+					},
+					animation = {
+						task = "WORLD_HUMAN_WELDING",
+					},
+				}, function()
+					if _validVeh == nil or _validBone == nil then
+						exports['sandbox-hud']:ProgressCancel()
+					end
+				end, function(status)
+					if not status then
+						exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:ChopPart", {
+							vNet = VehToNet(_validVeh),
+							index = _validBone?.index,
+						}, function(c) end)
+					else
+						exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
+						exports["sandbox-base"]:SetVehicleDoorShut(_validVeh, _validBone?.index, true)
+					end
+
+					SetTimeout(1500, function()
+						_delay = false
+					end)
+				end)
+			end
+		elseif _validBone?.type == "tire" then
+			if not IsVehicleTyreBurst(_validVeh, _validBone?.index) then
+				_delay = true
+				PedFaceCoord(LocalPlayer.state.ped, _validBone?.coords)
+				exports['sandbox-hud']:ProgressWithTickEvent({
+					name = "chopping_action",
+					duration = _validBone?.duration,
+					label = "Removing Part",
+					useWhileDead = true,
+					canCancel = true,
+					ignoreModifier = true,
+					tickrate = 100,
+					controlDisables = {
+						disableMovement = true,
+						disableCarMovement = true,
+						disableMouse = false,
+						disableCombat = true,
+					},
+					animation = {
+						animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@",
+						anim = "machinic_loop_mechandplayer",
+						flags = 1,
+					},
+				}, function()
+					if _validVeh == nil or _validBone == nil then
+						exports['sandbox-hud']:ProgressCancel()
+					end
+				end, function(status)
+					if not status then
+						exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:ChopTire", {
+							vNet = VehToNet(_validVeh),
+							index = _validBone?.index,
+						}, function(r)
+							if r then
+								SetTyreHealth(_validVeh, _validBone?.index, true, 0)
+								SetVehicleTyreBurst(_validVeh, _validBone?.index, true, 1000)
+								exports["sandbox-base"]:SetVehicleTyreBurst(_validVeh, _validBone?.index, true, 1000)
+							end
+						end)
+					else
+						exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
+					end
+					SetTimeout(1500, function()
+						_delay = false
+					end)
+				end)
+			end
+		elseif _validBone?.type == "body" then
+			if DoesEntityExist(_validVeh) then
+				_delay = true
+				PedFaceCoord(LocalPlayer.state.ped, _validBone?.coords)
+				exports['sandbox-hud']:ProgressWithTickEvent({
+					name = "chopping_action",
+					duration = _validBone?.duration,
+					label = "Scrapping Vehicle",
+					useWhileDead = true,
+					canCancel = true,
+					ignoreModifier = true,
+					tickrate = 100,
+					controlDisables = {
+						disableMovement = true,
+						disableCarMovement = true,
+						disableMouse = false,
+						disableCombat = true,
+					},
+					animation = {
+						animDict = "mini@repair",
+						anim = "fixing_a_ped",
+						flags = 17,
+					},
+				}, function()
+					if _validVeh == nil or _validBone == nil then
+						exports['sandbox-hud']:ProgressCancel()
+					end
+				end, function(status)
+					if not status then
+						exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:ChopVehicle", {
+							vNet = VehToNet(_validVeh),
+						}, function(r)
+							-- if r then
+							-- 	exports["sandbox-base"]:DeleteVehicle(_validVeh)
+							-- end
+						end)
+					else
+						exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
+					end
+					SetTimeout(1500, function()
+						_delay = false
+					end)
+				end)
+			end
+		end
+	end
+end)
+
 RegisterNetEvent("Characters:Client:Spawn", function(data)
 	exports['sandbox-polyzone']:CreateBox(
 		"chopping_public",
@@ -47,190 +227,8 @@ RegisterNetEvent("Characters:Client:Spawn", function(data)
 		{}
 	)
 
-	Laptop.LSUnderground.Chopping:CreateBlips()
+	exports['sandbox-laptop']:ChoppingCreateBlips()
 end)
-
-LAPTOP.LSUnderground = LAPTOP.LSUnderground or {}
-LAPTOP.LSUnderground.Chopping = {
-	CreateBlips = function(self)
-		if Reputation:HasLevel("Salvaging", 7) or hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND") then
-			_blips.public = exports["sandbox-blips"]:Add(
-				"chopping_public",
-				"LSUNDG Public Dropoff",
-				GlobalState["PublicDropoff"].coords,
-				524,
-				35,
-				0.4
-			)
-		else
-			exports["sandbox-blips"]:Remove("chopping_public")
-		end
-
-		if Reputation:HasLevel("Salvaging", 7) and (Reputation:HasLevel("Chopping", 5) or hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND")) then
-			_blips.vip = exports["sandbox-blips"]:Add(
-				"chopping_private",
-				"LSUNDG Private Dropoff",
-				GlobalState["PrivateDropoff"].coords,
-				524,
-				36,
-				0.4
-			)
-		else
-			exports["sandbox-blips"]:Remove("chopping_private")
-		end
-
-		if hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND") then
-			_blips.private = exports["sandbox-blips"]:Add(
-				"chopping_personal",
-				"LSUNDG Personal Dropoff",
-				GlobalState["PersonalDropoff"].coords,
-				524,
-				43,
-				0.4
-			)
-		else
-			exports["sandbox-blips"]:Remove("chopping_personal")
-		end
-	end,
-	AttemptChop = function(self)
-		if _validBone ~= nil and _validVeh ~= nil then
-			if _validBone?.type == "door" then
-				if not IsVehicleDoorDamaged(_validVeh, _validBone?.index) then
-					_delay = true
-					PedFaceCoord(LocalPlayer.state.ped, _validBone?.coords)
-					exports["sandbox-base"]:SetVehicleDoorOpen(_validVeh, _validBone?.index, false, true)
-					exports['sandbox-hud']:ProgressWithTickEvent({
-						name = "chopping_action",
-						duration = _validBone?.duration,
-						label = "Removing Part",
-						useWhileDead = true,
-						canCancel = true,
-						ignoreModifier = true,
-						tickrate = 100,
-						controlDisables = {
-							disableMovement = true,
-							disableCarMovement = true,
-							disableMouse = false,
-							disableCombat = true,
-						},
-						animation = {
-							task = "WORLD_HUMAN_WELDING",
-						},
-					}, function()
-						if _validVeh == nil or _validBone == nil then
-							exports['sandbox-hud']:ProgressCancel()
-						end
-					end, function(status)
-						if not status then
-							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:ChopPart", {
-								vNet = VehToNet(_validVeh),
-								index = _validBone?.index,
-							}, function(c) end)
-						else
-							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
-							exports["sandbox-base"]:SetVehicleDoorShut(_validVeh, _validBone?.index, true)
-						end
-
-						SetTimeout(1500, function()
-							_delay = false
-						end)
-					end)
-				end
-			elseif _validBone?.type == "tire" then
-				if not IsVehicleTyreBurst(_validVeh, _validBone?.index) then
-					_delay = true
-					PedFaceCoord(LocalPlayer.state.ped, _validBone?.coords)
-					exports['sandbox-hud']:ProgressWithTickEvent({
-						name = "chopping_action",
-						duration = _validBone?.duration,
-						label = "Removing Part",
-						useWhileDead = true,
-						canCancel = true,
-						ignoreModifier = true,
-						tickrate = 100,
-						controlDisables = {
-							disableMovement = true,
-							disableCarMovement = true,
-							disableMouse = false,
-							disableCombat = true,
-						},
-						animation = {
-							animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@",
-							anim = "machinic_loop_mechandplayer",
-							flags = 1,
-						},
-					}, function()
-						if _validVeh == nil or _validBone == nil then
-							exports['sandbox-hud']:ProgressCancel()
-						end
-					end, function(status)
-						if not status then
-							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:ChopTire", {
-								vNet = VehToNet(_validVeh),
-								index = _validBone?.index,
-							}, function(r)
-								if r then
-									SetTyreHealth(_validVeh, _validBone?.index, true, 0)
-									SetVehicleTyreBurst(_validVeh, _validBone?.index, true, 1000)
-									exports["sandbox-base"]:SetVehicleTyreBurst(_validVeh, _validBone?.index, true, 1000)
-								end
-							end)
-						else
-							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
-						end
-						SetTimeout(1500, function()
-							_delay = false
-						end)
-					end)
-				end
-			elseif _validBone?.type == "body" then
-				if DoesEntityExist(_validVeh) then
-					_delay = true
-					PedFaceCoord(LocalPlayer.state.ped, _validBone?.coords)
-					exports['sandbox-hud']:ProgressWithTickEvent({
-						name = "chopping_action",
-						duration = _validBone?.duration,
-						label = "Scrapping Vehicle",
-						useWhileDead = true,
-						canCancel = true,
-						ignoreModifier = true,
-						tickrate = 100,
-						controlDisables = {
-							disableMovement = true,
-							disableCarMovement = true,
-							disableMouse = false,
-							disableCombat = true,
-						},
-						animation = {
-							animDict = "mini@repair",
-							anim = "fixing_a_ped",
-							flags = 17,
-						},
-					}, function()
-						if _validVeh == nil or _validBone == nil then
-							exports['sandbox-hud']:ProgressCancel()
-						end
-					end, function(status)
-						if not status then
-							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:ChopVehicle", {
-								vNet = VehToNet(_validVeh),
-							}, function(r)
-								-- if r then
-								-- 	exports["sandbox-base"]:DeleteVehicle(_validVeh)
-								-- end
-							end)
-						else
-							exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Chopping:CancelChop")
-						end
-						SetTimeout(1500, function()
-							_delay = false
-						end)
-					end)
-				end
-			end
-		end
-	end,
-}
 
 function DoChoppingThings(veh)
 	local bones = GetValidBones(veh, _vehBones)
@@ -371,7 +369,7 @@ end)
 
 AddEventHandler("Characters:Client:Updated", function(key)
 	if key == "Reputations" or key == "States" then
-		Laptop.LSUnderground.Chopping:CreateBlips()
+		exports['sandbox-laptop']:ChoppingCreateBlips()
 	end
 end)
 
@@ -426,7 +424,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 		and not _delay
 	then
 		_doingActions = true
-		Laptop.LSUnderground.Chopping:AttemptChop()
+		exports['sandbox-laptop']:AttemptChop()
 		_doingActions = false
 	end
 end)

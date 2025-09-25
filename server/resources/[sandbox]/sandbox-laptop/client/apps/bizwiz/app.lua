@@ -1,13 +1,13 @@
 RegisterNetEvent("Laptop:Client:BizWiz:Login", function(logo, links, notices)
-	Laptop.Data:Set("businessLogo", logo)
-	Laptop.Data:Set("businessPages", links)
-	Laptop.Data:Set("businessNotices", notices)
+	exports['sandbox-laptop']:SetData("businessLogo", logo)
+	exports['sandbox-laptop']:SetData("businessPages", links)
+	exports['sandbox-laptop']:SetData("businessNotices", notices)
 end)
 
 RegisterNetEvent("Laptop:Client:BizWiz:Logout", function()
-	Laptop.Data:Set("businessLogo", nil)
-	Laptop.Data:Set("businessPages", nil)
-	Laptop.Data:Set("businessNotices", nil)
+	exports['sandbox-laptop']:SetData("businessLogo", nil)
+	exports['sandbox-laptop']:SetData("businessPages", nil)
+	exports['sandbox-laptop']:SetData("businessNotices", nil)
 end)
 
 

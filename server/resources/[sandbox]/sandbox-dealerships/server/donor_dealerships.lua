@@ -281,7 +281,6 @@ function RegisterDonorVehicleSaleCallbacks()
   }, 2)
 end
 
--- Export functions
 exports('DonatorAddPending', function(playerIdentifier, class, data)
   local p = promise.new()
   exports['sandbox-base']:DatabaseGameInsertOne({

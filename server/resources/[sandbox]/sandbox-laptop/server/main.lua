@@ -80,14 +80,12 @@ AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 
 function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
 	RegisterChatCommands()
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
 		"Reputation",
-		"Laptop",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -128,7 +126,7 @@ end)
 
 AddEventHandler("Laptop:Server:RegisterMiddleware", function()
 	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		Laptop:UpdateJobData(source)
+		exports['sandbox-laptop']:UpdateJobData(source)
 		TriggerClientEvent("Laptop:Client:SetApps", source, LAPTOP_APPS)
 
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -161,7 +159,7 @@ AddEventHandler("Laptop:Server:RegisterMiddleware", function()
 		end
 	end, 1)
 	exports['sandbox-base']:MiddlewareAdd("Laptop:UIReset", function(source)
-		Laptop:UpdateJobData(source)
+		exports['sandbox-laptop']:UpdateJobData(source)
 		TriggerClientEvent("Laptop:Client:SetApps", source, LAPTOP_APPS)
 	end)
 	exports['sandbox-base']:MiddlewareAdd("Characters:Creating", function(source, cData)

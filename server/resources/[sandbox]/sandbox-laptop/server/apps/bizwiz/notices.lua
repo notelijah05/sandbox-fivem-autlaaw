@@ -1,3 +1,74 @@
+exports('BizWizNoticesCreate', function(source, job, data)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char then
+		local p = promise.new()
+
+		data.job = job
+		data.author = {
+			SID = char:GetData("SID"),
+			First = char:GetData("First"),
+			Last = char:GetData("Last"),
+		}
+
+		exports['sandbox-base']:DatabaseGameInsertOne({
+			collection = "business_notices",
+			document = data,
+		}, function(success, result, insertIds)
+			if not success then
+				p:resolve(false)
+				return
+			end
+
+			data._id = insertIds[1]
+			table.insert(_businessNotices, data)
+
+			local jobDutyData = exports['sandbox-jobs']:DutyGetDutyData(job)
+			if jobDutyData and jobDutyData.DutyPlayers then
+				for k, v in ipairs(jobDutyData.DutyPlayers) do
+					TriggerClientEvent("Laptop:Client:AddData", v, "businessNotices", data)
+				end
+			end
+
+			p:resolve(insertIds[1])
+		end)
+		return Citizen.Await(p)
+	end
+	return false
+end)
+
+exports('BizWizNoticesDelete', function(job, id)
+	local p = promise.new()
+	exports['sandbox-base']:DatabaseGameDeleteOne({
+		collection = "business_notices",
+		query = {
+			_id = id,
+			job = job,
+		},
+	}, function(success, deleted)
+		if not success then
+			p:resolve(false)
+			return
+		end
+
+		for k, v in ipairs(_businessNotices) do
+			if v._id == id then
+				table.remove(_businessNotices, k)
+				break
+			end
+		end
+
+		local jobDutyData = exports['sandbox-jobs']:DutyGetDutyData(job)
+		if jobDutyData and jobDutyData.DutyPlayers then
+			for k, v in ipairs(jobDutyData.DutyPlayers) do
+				TriggerClientEvent("Laptop:Client:RemoveData", v, "businessNotices", id)
+			end
+		end
+
+		p:resolve(true)
+	end)
+	return Citizen.Await(p)
+end)
+
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports['sandbox-base']:DatabaseGameFind({
 		collection = "business_notices",
@@ -15,7 +86,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Notice:Create", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "TABLET_CREATE_NOTICE")
 		if job then
-			cb(Laptop.BizWiz.Notices:Create(source, job, data.doc))
+			cb(exports['sandbox-laptop']:BizWizNoticesCreate(source, job, data.doc))
 		else
 			cb(false)
 		end
@@ -24,82 +95,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Notice:Delete", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, "TABLET_DELETE_NOTICE")
 		if job then
-			cb(Laptop.BizWiz.Notices:Delete(job, data.id))
+			cb(exports['sandbox-laptop']:BizWizNoticesDelete(job, data.id))
 		else
 			cb(false)
 		end
 	end)
 end)
-
-LAPTOP.BizWiz = LAPTOP.BizWiz or {}
-LAPTOP.BizWiz.Notices = {
-	Create = function(self, source, job, data)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char then
-			local p = promise.new()
-
-			data.job = job
-			data.author = {
-				SID = char:GetData("SID"),
-				First = char:GetData("First"),
-				Last = char:GetData("Last"),
-			}
-
-			exports['sandbox-base']:DatabaseGameInsertOne({
-				collection = "business_notices",
-				document = data,
-			}, function(success, result, insertIds)
-				if not success then
-					p:resolve(false)
-					return
-				end
-
-				data._id = insertIds[1]
-				table.insert(_businessNotices, data)
-
-				local jobDutyData = exports['sandbox-jobs']:DutyGetDutyData(job)
-				if jobDutyData and jobDutyData.DutyPlayers then
-					for k, v in ipairs(jobDutyData.DutyPlayers) do
-						TriggerClientEvent("Laptop:Client:AddData", v, "businessNotices", data)
-					end
-				end
-
-				p:resolve(insertIds[1])
-			end)
-			return Citizen.Await(p)
-		end
-		return false
-	end,
-	Delete = function(self, job, id)
-		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameDeleteOne({
-			collection = "business_notices",
-			query = {
-				_id = id,
-				job = job,
-			},
-		}, function(success, deleted)
-			if not success then
-				p:resolve(false)
-				return
-			end
-
-			for k, v in ipairs(_businessNotices) do
-				if v._id == id then
-					table.remove(_businessNotices, k)
-					break
-				end
-			end
-
-			local jobDutyData = exports['sandbox-jobs']:DutyGetDutyData(job)
-			if jobDutyData and jobDutyData.DutyPlayers then
-				for k, v in ipairs(jobDutyData.DutyPlayers) do
-					TriggerClientEvent("Laptop:Client:RemoveData", v, "businessNotices", id)
-				end
-			end
-
-			p:resolve(true)
-		end)
-		return Citizen.Await(p)
-	end,
-}

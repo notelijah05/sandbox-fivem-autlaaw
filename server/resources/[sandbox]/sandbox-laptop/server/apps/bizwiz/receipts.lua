@@ -1,152 +1,154 @@
-LAPTOP.BizWiz = LAPTOP.BizWiz or {}
-LAPTOP.BizWiz.Receipts = {
-	Search = function(self, jobId, term)
-		if not term then term = '' end
-		local p = promise.new()
+exports('BizWizReceiptsSearch', function(jobId, term)
+	if not term then term = '' end
+	local p = promise.new()
 
-		local aggregation = {}
+	local aggregation = {}
 
-		table.insert(aggregation, {
-			['$match'] = {
-				['$or'] = {
-					{
-						customerName = { ['$regex'] = term, ['$options'] = 'i' }
-					},
-					{
-						["$expr"] = {
-							["$regexMatch"] = {
-								input = {
-									["$concat"] = {
-										"$author.First",
-										" ",
-										"$author.Last",
-										" ",
-										{ ['$toString'] = "$author.SID" }
-									}
-								},
-								regex = term,
-								options = "i",
+	table.insert(aggregation, {
+		['$match'] = {
+			['$or'] = {
+				{
+					customerName = { ['$regex'] = term, ['$options'] = 'i' }
+				},
+				{
+					["$expr"] = {
+						["$regexMatch"] = {
+							input = {
+								["$concat"] = {
+									"$author.First",
+									" ",
+									"$author.Last",
+									" ",
+									{ ['$toString'] = "$author.SID" }
+								}
 							},
+							regex = term,
+							options = "i",
 						},
 					},
 				},
-				job = jobId,
 			},
-		})
+			job = jobId,
+		},
+	})
 
-		exports['sandbox-base']:DatabaseGameAggregate({
-			collection = "business_receipts",
-			aggregate = aggregation,
-		}, function(success, results)
-			if not success then
-				p:resolve(false)
-				return
-			end
-			p:resolve(results)
-		end)
-		return Citizen.Await(p)
-	end,
-	View = function(self, jobId, id)
-		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameFindOne({
-			collection = "business_receipts",
-			query = {
-				job = jobId,
-				_id = id,
-			},
-		}, function(success, report)
-			if not report then
-				p:resolve(false)
-				return
-			end
-			p:resolve(report[1])
-		end)
-		return Citizen.Await(p)
-	end,
-	Create = function(self, jobId, data)
-		if not _bizWizConfig[jobId] then
-			return false
+	exports['sandbox-base']:DatabaseGameAggregate({
+		collection = "business_receipts",
+		aggregate = aggregation,
+	}, function(success, results)
+		if not success then
+			p:resolve(false)
+			return
 		end
+		p:resolve(results)
+	end)
+	return Citizen.Await(p)
+end)
 
-		local p = promise.new()
-		data.job = jobId
-		exports['sandbox-base']:DatabaseGameInsertOne({
-			collection = "business_receipts",
-			document = data,
-		}, function(success, result, insertId)
-			if not success then
-				p:resolve(false)
-				return
-			end
-			p:resolve({
-				_id = insertId[1],
-			})
-		end)
+exports('BizWizReceiptsView', function(jobId, id)
+	local p = promise.new()
+	exports['sandbox-base']:DatabaseGameFindOne({
+		collection = "business_receipts",
+		query = {
+			job = jobId,
+			_id = id,
+		},
+	}, function(success, report)
+		if not report then
+			p:resolve(false)
+			return
+		end
+		p:resolve(report[1])
+	end)
+	return Citizen.Await(p)
+end)
 
-		return Citizen.Await(p)
-	end,
-	Update = function(self, jobId, id, char, report)
-		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameUpdateOne({
-			collection = "business_receipts",
-			query = {
-				_id = id,
-				job = jobId,
-			},
-			update = {
-				["$set"] = report,
-				["$push"] = {
-					history = {
-						Time = (os.time() * 1000),
-						Char = char:GetData("SID"),
-						Log = string.format(
-							"%s Updated Report",
-							char:GetData("First") .. " " .. char:GetData("Last")
-						),
-					},
+exports('BizWizReceiptsCreate', function(jobId, data)
+	if not _bizWizConfig[jobId] then
+		return false
+	end
+
+	local p = promise.new()
+	data.job = jobId
+	exports['sandbox-base']:DatabaseGameInsertOne({
+		collection = "business_receipts",
+		document = data,
+	}, function(success, result, insertId)
+		if not success then
+			p:resolve(false)
+			return
+		end
+		p:resolve({
+			_id = insertId[1],
+		})
+	end)
+
+	return Citizen.Await(p)
+end)
+
+exports('BizWizReceiptsUpdate', function(jobId, id, char, report)
+	local p = promise.new()
+	exports['sandbox-base']:DatabaseGameUpdateOne({
+		collection = "business_receipts",
+		query = {
+			_id = id,
+			job = jobId,
+		},
+		update = {
+			["$set"] = report,
+			["$push"] = {
+				history = {
+					Time = (os.time() * 1000),
+					Char = char:GetData("SID"),
+					Log = string.format(
+						"%s Updated Report",
+						char:GetData("First") .. " " .. char:GetData("Last")
+					),
 				},
 			},
-		}, function(success, result)
-			p:resolve(success)
-		end)
-		return Citizen.Await(p)
-	end,
-	Delete = function(self, jobId, id)
-		local p = promise.new()
+		},
+	}, function(success, result)
+		p:resolve(success)
+	end)
+	return Citizen.Await(p)
+end)
 
-		exports['sandbox-base']:DatabaseGameDeleteOne({
-			collection = "business_receipts",
-			query = {
-				_id = id,
-				job = jobId,
-			},
-		}, function(success, deleted)
-			p:resolve(success)
-		end)
-		return Citizen.Await(p)
-	end,
-	DeleteAll = function(self, jobId)
-		if not jobId then return false; end
+exports('BizWizReceiptsDelete', function(jobId, id)
+	local p = promise.new()
 
-		local p = promise.new()
+	exports['sandbox-base']:DatabaseGameDeleteOne({
+		collection = "business_receipts",
+		query = {
+			_id = id,
+			job = jobId,
+		},
+	}, function(success, deleted)
+		p:resolve(success)
+	end)
+	return Citizen.Await(p)
+end)
 
-		exports['sandbox-base']:DatabaseGameDelete({
-			collection = "business_receipts",
-			query = {
-				job = jobId,
-			},
-		}, function(success, deleted)
-			p:resolve(success)
-		end)
-		return Citizen.Await(p)
-	end,
-}
+exports('BizWizReceiptsDeleteAll', function(jobId)
+	if not jobId then return false; end
+
+	local p = promise.new()
+
+	exports['sandbox-base']:DatabaseGameDelete({
+		collection = "business_receipts",
+		query = {
+			job = jobId,
+		},
+	}, function(success, deleted)
+		p:resolve(success)
+	end)
+	return Citizen.Await(p)
+end)
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Receipt:Search", function(source, data, cb)
 		local job = CheckBusinessPermissions(source)
 		if job then
-			cb(Laptop.BizWiz.Receipts:Search(job, data.term))
+			cb(exports['sandbox-laptop']:BizWizReceiptsSearch(job, data.term))
 		else
 			cb(false)
 		end
@@ -161,7 +163,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				First = char:GetData("First"),
 				Last = char:GetData("Last"),
 			}
-			cb(Laptop.BizWiz.Receipts:Create(job, data.doc))
+			cb(exports['sandbox-laptop']:BizWizReceiptsCreate(job, data.doc))
 		else
 			cb(false)
 		end
@@ -177,7 +179,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				First = char:GetData("First"),
 				Last = char:GetData("Last"),
 			}
-			cb(Laptop.BizWiz.Receipts:Update(job, data.id, char, data.Report))
+			cb(exports['sandbox-laptop']:BizWizReceiptsUpdate(job, data.id, char, data.Report))
 		else
 			cb(false)
 		end
@@ -186,7 +188,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Receipt:Delete", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, 'TABLET_MANAGE_RECEIPT')
 		if job then
-			cb(Laptop.BizWiz.Receipts:Delete(job, data.id))
+			cb(exports['sandbox-laptop']:BizWizReceiptsDelete(job, data.id))
 		else
 			cb(false)
 		end
@@ -195,7 +197,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Receipt:DeleteAll", function(source, data, cb)
 		local job = CheckBusinessPermissions(source, 'TABLET_CLEAR_RECEIPT')
 		if job then
-			cb(Laptop.BizWiz.Receipts:DeleteAll(job))
+			cb(exports['sandbox-laptop']:BizWizReceiptsDeleteAll(job))
 		else
 			cb(false)
 		end
@@ -204,7 +206,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Receipt:View", function(source, data, cb)
 		local job = CheckBusinessPermissions(source)
 		if job then
-			cb(Laptop.BizWiz.Receipts:View(job, data))
+			cb(exports['sandbox-laptop']:BizWizReceiptsView(job, data))
 		else
 			cb(false)
 		end

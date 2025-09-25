@@ -4,8 +4,6 @@ local _boostingReps = { Boosting = true }
 
 local _pendingMarketPickups = {}
 
-LAPTOP.LSUnderground = LAPTOP.LSUnderground or {}
-
 local _timeDelay = os.time() + (60 * math.random(30, 90))
 
 local marketItems = {
@@ -216,7 +214,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						extra = "Some of Your Items Weren't Delivered Due Processing Error"
 					end
 
-					Laptop.Notification:Add(
+					exports['sandbox-laptop']:AddNotification(
 						source,
 						"Your Order",
 						string.format(
@@ -266,7 +264,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				end
 
 				_pendingMarketPickups[char:GetData("SID")] = nil
-				Laptop.Notification:Add(
+				exports['sandbox-laptop']:AddNotification(
 					source,
 					"Your Order",
 					"Thanks for collecting your order.",
@@ -326,7 +324,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						)
 
 						Citizen.SetTimeout(5000, function()
-							Laptop.Notification:Add(
+							exports['sandbox-laptop']:AddNotification(
 								source,
 								"Program Installed",
 								nil,
@@ -350,5 +348,3 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 end)
-
-LAPTOP.LSU = {}

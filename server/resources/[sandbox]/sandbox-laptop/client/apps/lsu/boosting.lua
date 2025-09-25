@@ -510,7 +510,7 @@ end)
 
 RegisterNetEvent("Laptop:Client:Teams:Set", function(teamData)
     if not teamData and wasBoosting then
-        Laptop.Notification:Remove("BOOSTING_CONTRACT")
+        exports['sandbox-laptop']:RemoveNotification("BOOSTING_CONTRACT")
 
         CleanUpBoosting()
     end

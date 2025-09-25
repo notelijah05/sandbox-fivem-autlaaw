@@ -29,7 +29,7 @@ AddEventHandler('Job:Server:DutyAdd', function(dutyData, source)
 
 			bizWizJobs[job.Id] = true
 
-			Laptop:UpdateJobData(source)
+			exports['sandbox-laptop']:UpdateJobData(source)
 			TriggerClientEvent("Laptop:Client:BizWiz:Login", source, bizWizLogo or "https://i.imgur.com/ORHSuSM.png",
 				_bizWizTypes[bizWiz], GetBusinessNotices(job.Id))
 		end

@@ -160,13 +160,11 @@ end
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Reputation",
-		"Laptop",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -242,7 +240,8 @@ AddEventHandler("Core:Shared:Ready", function()
 				local metadata = BuildMetaDataTable(cData, v.name)
 
 				if v.name == "choplist" then
-					metadata.ChopList = Laptop.LSUnderground.Chopping:GenerateList(math.random(4, 8), math.random(3, 5))
+					metadata.ChopList = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(math.random(4, 8),
+						math.random(3, 5))
 					metadata.Owner = cData.SID
 				end
 
@@ -2471,7 +2470,8 @@ exports("AddItem",
 					if (itemExist.name == "meth_bag" or itemExist.name == "meth_brick" or itemExist.name == "coke_bag" or itemExist.name == "coke_brick") and not qualSet then
 						quality = math.random(1, 100)
 					elseif itemExist.name == "choplist" then
-						MetaData.ChopList = Laptop.LSUnderground.Chopping:GenerateList(math.random(4, 8),
+						MetaData.ChopList = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(
+							math.random(4, 8),
 							math.random(3, 5))
 					end
 

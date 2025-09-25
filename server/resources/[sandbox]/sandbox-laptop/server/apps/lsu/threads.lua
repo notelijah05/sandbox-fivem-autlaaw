@@ -8,11 +8,11 @@ CreateThread(function()
 
 
 	_publicChoplist = {
-		list = Laptop.LSUnderground.Chopping:GenerateList(10, 2),
+		list = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(10, 2),
 		public = true,
 	}
 	_vipChopList = {
-		list = Laptop.LSUnderground.Chopping:GenerateList(10, 4),
+		list = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(10, 4),
 		public = true,
 	}
 
@@ -20,7 +20,7 @@ CreateThread(function()
 	-- 	if not _publicChoplist.expires or os.time() > _publicChoplist.expires then
 	-- 		exports['sandbox-base']:LoggerTrace("Chopping", "Generating New Public Chop List")
 	-- 		_publicChoplist = {
-	-- 			list = Laptop.LSUnderground.Chopping:GenerateList(10, 2),
+	-- 			list = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(10, 2),
 	-- 			expires = os.time() + (60 * 10),
 	-- 		}
 
@@ -41,7 +41,7 @@ CreateThread(function()
 	-- 	if not _vipChopList.expires or os.time() > _vipChopList.expires then
 	-- 		exports['sandbox-base']:LoggerTrace("Chopping", "Generating New VIP Chop List")
 	-- 		_vipChopList = {
-	-- 			list = Laptop.LSUnderground.Chopping:GenerateList(10, 4),
+	-- 			list = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(10, 4),
 	-- 			expires = os.time() + (60 * 10),
 	-- 		}
 

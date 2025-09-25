@@ -16,13 +16,11 @@ local _ignoreEvents = {
 AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
 		"Reputation",
-		"Laptop",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -45,7 +43,7 @@ function OpenLaptop()
 		and hasValue(LocalPlayer.state.Character:GetData("States"), "LAPTOP")
 		and not LocalPlayer.state.laptopOpen
 	then
-		Laptop:Open()
+		exports['sandbox-laptop']:Open()
 	end
 end
 
@@ -55,7 +53,7 @@ AddEventHandler("Inventory:Client:ItemsLoaded", function()
 	while Laptop == nil do
 		Wait(10)
 	end
-	Laptop.Data:Set("items", exports['sandbox-inventory']:ItemsGetData())
+	exports['sandbox-laptop']:SetData("items", exports['sandbox-inventory']:ItemsGetData())
 end)
 
 AddEventHandler("Characters:Client:Updated", function(key)
@@ -63,23 +61,23 @@ AddEventHandler("Characters:Client:Updated", function(key)
 		return
 	end
 	_settings = LocalPlayer.state.Character:GetData("LaptopSettings")
-	Laptop.Data:Set("player", LocalPlayer.state.Character:GetData())
+	exports['sandbox-laptop']:SetData("player", LocalPlayer.state.Character:GetData())
 
 	if
 		key == "States"
 		and LocalPlayer.state.laptopOpen
 		and (not hasValue(LocalPlayer.state.Character:GetData("States"), "LAPTOP"))
 	then
-		Laptop:Close(true)
+		exports['sandbox-laptop']:Close(true)
 	end
 end)
 
 AddEventHandler("Ped:Client:Died", function()
-	Laptop:Close(true)
+	exports['sandbox-laptop']:Close(true)
 end)
 
 RegisterNetEvent("Job:Client:DutyChanged", function(state)
-	Laptop.Data:Set("onDuty", state)
+	exports['sandbox-laptop']:SetData("onDuty", state)
 end)
 
 RegisterNetEvent("UI:Client:Reset", function(manual)
@@ -92,20 +90,20 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 	if manual then
 		TriggerServerEvent("Laptop:Server:UIReset")
 		if LocalPlayer.state.tabletOpen then
-			Laptop:Close()
+			exports['sandbox-laptop']:Close()
 		end
 	end
 end)
 
 AddEventHandler("UI:Client:Close", function(context)
 	if context ~= "laptop" then
-		Laptop:Close()
+		exports['sandbox-laptop']:Close()
 	end
 end)
 
 AddEventHandler("Ped:Client:Died", function()
 	if LocalPlayer.state.laptopOpen then
-		Laptop:Close()
+		exports['sandbox-laptop']:Close()
 	end
 end)
 

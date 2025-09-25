@@ -20,10 +20,6 @@ AddEventHandler("Characters:Client:Spawn", function()
         }, 'box-taped', 'WORLD_HUMAN_SMOKING', true)
 end)
 
-LAPTOP.LSUnderground = {
-
-}
-
 RegisterNUICallback("GetLSUDetails", function(data, cb)
     exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:GetDetails", {}, function(data)
         cb(data)
@@ -64,10 +60,10 @@ end)
 RegisterNUICallback("Boosting:AcceptContract", function(data, cb)
     exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:AcceptContract", data, function(res)
         if res?.success then
-            Laptop.Data:Add("disabledBoostingContracts", data.id)
+            exports['sandbox-laptop']:AddData("disabledBoostingContracts", data.id)
 
             Citizen.SetTimeout(120000, function()
-                Laptop.Data:Remove("disabledBoostingContracts", data.id)
+                exports['sandbox-laptop']:RemoveData("disabledBoostingContracts", data.id)
             end)
         end
 
