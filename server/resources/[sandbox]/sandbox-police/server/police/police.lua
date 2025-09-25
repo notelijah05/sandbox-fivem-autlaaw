@@ -9,7 +9,6 @@ function RetrieveComponents()
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
-	Radar = exports["sandbox-base"]:FetchComponent("Radar")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 end
@@ -20,7 +19,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Handcuffs",
 		"EmergencyAlerts",
 		"MDT",
-		"Radar",
 		"Doors",
 		"Robbery"
 	}, function(error)
@@ -530,7 +528,7 @@ POLICE = {
 			},
 		}, function(success, results)
 			if not success or #results == 0 then
-				local stolen = Radar:CheckPlate(plate)
+				local stolen = exports['sandbox-radar']:CheckPlate(plate)
 				if stolen then
 					if not _generatedNames[plate] then
 						_generatedNames[plate] = string.format(
@@ -593,7 +591,7 @@ POLICE = {
 			else
 				local vehicle = results[1]
 				if vehicle.FakePlate and vehicle.FakePlateData then
-					local stolen = Radar:CheckPlate(plate)
+					local stolen = exports['sandbox-radar']:CheckPlate(plate)
 					if stolen then
 						exports["sandbox-chat"]:SendDispatch(
 							source,

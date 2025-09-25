@@ -40,7 +40,7 @@ function Startup()
 
 		for k, v in ipairs(results) do
 			if v.RegisteredPlate and v.Type == 0 then
-				Radar:AddFlaggedPlate(v.RegisteredPlate, "Vehicle Flagged in MDT")
+				exports['sandbox-radar']:AddFlaggedPlate(v.RegisteredPlate, "Vehicle Flagged in MDT")
 			end
 		end
 	end)

@@ -143,7 +143,7 @@ _MDT.Vehicles = {
 			end
 
 			if vehicle.RegisteredPlate then
-				local flagged = Radar:CheckPlate(vehicle.RegisteredPlate)
+				local flagged = exports['sandbox-radar']:CheckPlate(vehicle.RegisteredPlate)
 				if flagged ~= "Vehicle Flagged in MDT" then
 					vehicle.RadarFlag = flagged
 				end
@@ -168,7 +168,7 @@ _MDT.Vehicles = {
 				},
 			}, function(success, result)
 				if success and data.Type and data.Description and plate then
-					Radar:AddFlaggedPlate(plate, 'Vehicle Flagged in MDT')
+					exports['sandbox-radar']:AddFlaggedPlate(plate, 'Vehicle Flagged in MDT')
 				end
 				p:resolve(success)
 			end)
@@ -192,9 +192,9 @@ _MDT.Vehicles = {
 				p:resolve(success)
 
 				if success and plate and removeRadarFlag then
-					local isFlagged = Radar:CheckPlate(plate)
+					local isFlagged = exports['sandbox-radar']:CheckPlate(plate)
 					if isFlagged == "Vehicle Flagged in MDT" then
-						Radar:RemoveFlaggedPlate(plate)
+						exports['sandbox-radar']:RemoveFlaggedPlate(plate)
 					end
 				end
 			end)

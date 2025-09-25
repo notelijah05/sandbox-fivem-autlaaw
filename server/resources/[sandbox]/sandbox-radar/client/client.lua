@@ -324,9 +324,3 @@ function CheckPlateFlagged(direction, vehicle, plate)
 		return false
 	end
 end
-
--- RADAR = {}
-
--- AddEventHandler('Proxy:Shared:RegisterReady', function()
---     exports['sandbox-base']:RegisterComponent('Radar', RADAR)
--- end)
