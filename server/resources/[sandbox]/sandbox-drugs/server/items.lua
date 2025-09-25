@@ -45,7 +45,7 @@ function RegisterItemUse()
 					if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, methItem) then
 						exports["sandbox-base"]:ClientCallback(source, "Drugs:Meth:Use", methItem.Quality, function(s)
 							if s then
-								Drugs.Addiction:Add(source, "Meth", 0.25)
+								exports['sandbox-drugs']:AddictionAdd(source, "Meth", 0.25)
 								local drugStates = char:GetData("DrugStates") or {}
 								drugStates["meth"] = {
 									item = "meth_bag",
@@ -99,7 +99,7 @@ function RegisterItemUse()
 	-- 				if exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
 	-- 					exports["sandbox-base"]:ClientCallback(source, "Drugs:Meth:Use", slot.Quality, function(s)
 	-- 						if s then
-	-- 							Drugs.Addiction:Add(source, "Meth", 0.25)
+	-- 							exports['sandbox-drugs']:AddictionAdd(source, "Meth", 0.25)
 	-- 							TriggerClientEvent("Drugs:Effects:Armor", source, slot.Quality)
 	-- 						end
 	-- 					end)
@@ -139,7 +139,7 @@ function RegisterItemUse()
 				if exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
 					exports["sandbox-base"]:ClientCallback(source, "Drugs:Coke:Use", slot.Quality, function(s)
 						if s then
-							Drugs.Addiction:Add(source, "Coke", 0.25)
+							exports['sandbox-drugs']:AddictionAdd(source, "Coke", 0.25)
 							TriggerClientEvent("Drugs:Effects:RunSpeed", source, slot.Quality)
 						end
 					end)
@@ -158,7 +158,7 @@ function RegisterItemUse()
 				if exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
 					exports["sandbox-base"]:ClientCallback(source, "Drugs:Moonshine:Use", slot.Quality, function(s)
 						if s then
-							Drugs.Addiction:Add(source, "Moonshine", 0.25)
+							exports['sandbox-drugs']:AddictionAdd(source, "Moonshine", 0.25)
 							local drugStates = char:GetData("DrugStates") or {}
 							drugStates["moonshine"] = {
 								item = "moonshine",

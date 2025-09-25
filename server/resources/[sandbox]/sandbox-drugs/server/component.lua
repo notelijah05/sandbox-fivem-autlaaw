@@ -1,4 +1,3 @@
-_DRUGS = _DRUGS or {}
 local _addictionTemplate = {
 	Meth = {
 		LastUse = false,
@@ -22,45 +21,27 @@ function table.copy(t)
 	return setmetatable(u, getmetatable(t))
 end
 
-AddEventHandler("Drugs:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Drugs = exports["sandbox-base"]:FetchComponent("Drugs")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Drugs", {
-		"Drugs",
-	}, function(error)
-		if #error > 0 then
-			exports['sandbox-base']:LoggerCritical("Drugs", "Failed To Load All Dependencies")
-			return
-		end
-		RetrieveComponents()
-		RegisterItemUse()
-		RunDegenThread()
+	RegisterItemUse()
+	RunDegenThread()
 
-		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local addictions = char:GetData("Addiction")
-				if char:GetData("Addiction") == nil then
-					char:SetData("Addiction", _addictionTemplate)
-				else
-					for k, v in pairs(_addictionTemplate) do
-						if addictions[k] == nil then
-							addictions[k] = table.copy(v)
-						end
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			local addictions = char:GetData("Addiction")
+			if char:GetData("Addiction") == nil then
+				char:SetData("Addiction", _addictionTemplate)
+			else
+				for k, v in pairs(_addictionTemplate) do
+					if addictions[k] == nil then
+						addictions[k] = table.copy(v)
 					end
-					char:SetData("Addiction", addictions)
 				end
+				char:SetData("Addiction", addictions)
 			end
-		end, 1)
+		end
+	end, 1)
 
-		TriggerEvent("Drugs:Server:Startup")
-		TriggerEvent("Drugs:Server:StartCookThreads")
-	end)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Drugs", _DRUGS)
+	TriggerEvent("Drugs:Server:Startup")
+	TriggerEvent("Drugs:Server:StartCookThreads")
 end)

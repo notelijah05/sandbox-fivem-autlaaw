@@ -23,135 +23,136 @@ local _toolsForSale = {
     },
 }
 
-_DRUGS = _DRUGS or {}
-_DRUGS.Moonshine = {
-    Still = {
-        Generate = function(self, tier)
-            return MySQL.insert.await('INSERT INTO moonshine_stills (created, tier) VALUES(?, ?)', { os.time(), tier })
-        end,
-        Get = function(self, stillId)
-            return MySQL.single.await(
-                'SELECT id, tier, created, cooldown, active_cook FROM moonshine_stills WHERE id = ?', { stillId })
-        end,
-        IsPlaced = function(self, stillId)
-            return MySQL.scalar.await('SELECT COUNT(still_id) as Count FROM placed_moonshine_stills WHERE still_id = ?',
-                { stillId }) > 0
-        end,
-        CreatePlaced = function(self, stillId, owner, tier, coords, heading, created)
-            local itemInfo = exports['sandbox-inventory']:ItemsGetData("moonshine_still")
-            local stillData = _DRUGS.Moonshine.Still:Get(stillId)
+exports('MoonshineStillGenerate', function(tier)
+    return MySQL.insert.await('INSERT INTO moonshine_stills (created, tier) VALUES(?, ?)', { os.time(), tier })
+end)
 
-            MySQL.insert.await(
-                "INSERT INTO placed_moonshine_stills (still_id, owner, placed, expires, coords, heading) VALUES(?, ?, ?, ?, ?, ?)",
-                {
-                    stillId,
-                    owner,
-                    os.time(),
-                    created + itemInfo.durability,
-                    json.encode(coords),
-                    heading,
-                })
+exports('MoonshineStillGet', function(stillId)
+    return MySQL.single.await(
+        'SELECT id, tier, created, cooldown, active_cook FROM moonshine_stills WHERE id = ?', { stillId })
+end)
 
-            local cookData = stillData.active_cook ~= nil and json.decode(stillData.active_cook) or {}
+exports('MoonshineStillIsPlaced', function(stillId)
+    return MySQL.scalar.await('SELECT COUNT(still_id) as Count FROM placed_moonshine_stills WHERE still_id = ?',
+        { stillId }) > 0
+end)
 
-            _placedStills[stillId] = {
-                id = stillId,
-                owner = owner,
-                tier = tier,
-                placed = os.time(),
-                expires = created + itemInfo.durability,
-                cooldown = stillData.cooldown,
-                activeBrew = stillData.active_cook ~= nil,
-                pickupReady = os.time() > (cookData?.end_time or 0),
-                coords = coords,
-                heading = heading,
-            }
+exports('MoonshineStillCreatePlaced', function(stillId, owner, tier, coords, heading, created)
+    local itemInfo = exports['sandbox-inventory']:ItemsGetData("moonshine_still")
+    local stillData = exports['sandbox-drugs']:MoonshineStillGet(stillId)
 
-            TriggerClientEvent("Drugs:Client:Moonshine:CreateStill", -1, _placedStills[stillId])
-        end,
-        RemovePlaced = function(self, stillId)
-            local s = MySQL.query.await('DELETE FROM placed_moonshine_stills WHERE still_id = ?', { stillId })
-            if s.affectedRows > 0 then
-                _placedStills[stillId] = nil
-                TriggerClientEvent("Drugs:Client:Moonshine:RemoveStill", -1, stillId)
-            end
-            return s.affectedRows > 0
-        end,
-        StartCook = function(self, stillId, cooldown, results)
-            MySQL.query.await('UPDATE moonshine_stills SET cooldown = ?, active_cook = ? WHERE id = ?',
-                { cooldown, json.encode(results), stillId })
-            _placedStills[stillId].cooldown = cooldown
-            _placedStills[stillId].activeBrew = true
-            _placedStills[stillId].pickupReady = false
-            _inProgBrews[stillId] = results
+    MySQL.insert.await(
+        "INSERT INTO placed_moonshine_stills (still_id, owner, placed, expires, coords, heading) VALUES(?, ?, ?, ?, ?, ?)",
+        {
+            stillId,
+            owner,
+            os.time(),
+            created + itemInfo.durability,
+            json.encode(coords),
+            heading,
+        })
 
-            TriggerClientEvent("Drugs:Client:Moonshine:UpdateStillData", -1, stillId, _placedStills[stillId])
-        end,
-        FinishCook = function(self, stillId)
-            MySQL.query.await('UPDATE moonshine_stills SET active_cook = NULL WHERE id = ?', { stillId })
-            _placedStills[stillId].activeBrew = false
-            _placedStills[stillId].pickupReady = false
-            _inProgBrews[stillId] = nil
-            TriggerClientEvent("Drugs:Client:Moonshine:UpdateStillData", -1, stillId, _placedStills[stillId])
-        end
-    },
-    Barrel = {
-        Generate = function(self)
-            return {
-                Quality = math.random(1, 100),
-                Drinks = math.random(15, 30),
-            }
-        end,
-        IsPlaced = function(self, barrelId)
-            return MySQL.scalar.await('SELECT COUNT(*) as Count FROM placed_moonshine_barrels WHERE barrel_id = ?',
-                { barrelId }) > 0
-        end,
-        CreatePlaced = function(self, owner, coords, heading, created, brewData)
-            local itemInfo = exports['sandbox-inventory']:ItemsGetData("moonshine_barrel")
-            local ready = os.time() + (60 * 60 * 24 * 2)
+    local cookData = stillData.active_cook ~= nil and json.decode(stillData.active_cook) or {}
 
-            local barrelId = MySQL.insert.await(
-                "INSERT INTO placed_moonshine_barrels (owner, placed, ready, expires, coords, heading, brew_data) VALUES(?, ?, ?, ?, ?, ?, ?)",
-                {
-                    owner,
-                    os.time(),
-                    ready,
-                    created + itemInfo.durability,
-                    json.encode(coords),
-                    heading,
-                    json.encode(brewData),
-                })
+    _placedStills[stillId] = {
+        id = stillId,
+        owner = owner,
+        tier = tier,
+        placed = os.time(),
+        expires = created + itemInfo.durability,
+        cooldown = stillData.cooldown,
+        activeBrew = stillData.active_cook ~= nil,
+        pickupReady = os.time() > (cookData?.end_time or 0),
+        coords = coords,
+        heading = heading,
+    }
 
-            _placedBarrels[barrelId] = {
-                id = barrelId,
-                owner = owner,
-                placed = os.time(),
-                ready = ready,
-                expires = created + itemInfo.durability,
-                pickupReady = false,
-                coords = coords,
-                heading = heading,
-                brewData = brewData,
-            }
+    TriggerClientEvent("Drugs:Client:Moonshine:CreateStill", -1, _placedStills[stillId])
+end)
 
-            _inProgAges[barrelId] = ready
+exports('MoonshineStillRemovePlaced', function(stillId)
+    local s = MySQL.query.await('DELETE FROM placed_moonshine_stills WHERE still_id = ?', { stillId })
+    if s.affectedRows > 0 then
+        _placedStills[stillId] = nil
+        TriggerClientEvent("Drugs:Client:Moonshine:RemoveStill", -1, stillId)
+    end
+    return s.affectedRows > 0
+end)
 
-            TriggerClientEvent("Drugs:Client:Moonshine:CreateBarrel", -1, _placedBarrels[barrelId])
-        end,
-        RemovePlaced = function(self, barrelId)
-            local s = MySQL.query.await('DELETE FROM placed_moonshine_barrels WHERE barrel_id = ?', { barrelId })
-            if s.affectedRows > 0 then
-                _placedBarrels[barrelId] = nil
-                TriggerClientEvent("Drugs:Client:Moonshine:RemoveBarrel", -1, barrelId)
-            end
-            return s.affectedRows > 0
-        end,
-    },
-}
+exports('MoonshineStillStartCook', function(stillId, cooldown, results)
+    MySQL.query.await('UPDATE moonshine_stills SET cooldown = ?, active_cook = ? WHERE id = ?',
+        { cooldown, json.encode(results), stillId })
+    _placedStills[stillId].cooldown = cooldown
+    _placedStills[stillId].activeBrew = true
+    _placedStills[stillId].pickupReady = false
+    _inProgBrews[stillId] = results
+
+    TriggerClientEvent("Drugs:Client:Moonshine:UpdateStillData", -1, stillId, _placedStills[stillId])
+end)
+
+exports('MoonshineStillFinishCook', function(stillId)
+    MySQL.query.await('UPDATE moonshine_stills SET active_cook = NULL WHERE id = ?', { stillId })
+    _placedStills[stillId].activeBrew = false
+    _placedStills[stillId].pickupReady = false
+    _inProgBrews[stillId] = nil
+    TriggerClientEvent("Drugs:Client:Moonshine:UpdateStillData", -1, stillId, _placedStills[stillId])
+end)
+
+exports('MoonshineBarrelGenerate', function()
+    return {
+        Quality = math.random(1, 100),
+        Drinks = math.random(15, 30),
+    }
+end)
+
+exports('MoonshineBarrelIsPlaced', function(barrelId)
+    return MySQL.scalar.await('SELECT COUNT(*) as Count FROM placed_moonshine_barrels WHERE barrel_id = ?',
+        { barrelId }) > 0
+end)
+
+exports('MoonshineBarrelCreatePlaced', function(owner, coords, heading, created, brewData)
+    local itemInfo = exports['sandbox-inventory']:ItemsGetData("moonshine_barrel")
+    local ready = os.time() + (60 * 60 * 24 * 2)
+
+    local barrelId = MySQL.insert.await(
+        "INSERT INTO placed_moonshine_barrels (owner, placed, ready, expires, coords, heading, brew_data) VALUES(?, ?, ?, ?, ?, ?, ?)",
+        {
+            owner,
+            os.time(),
+            ready,
+            created + itemInfo.durability,
+            json.encode(coords),
+            heading,
+            json.encode(brewData),
+        })
+
+    _placedBarrels[barrelId] = {
+        id = barrelId,
+        owner = owner,
+        placed = os.time(),
+        ready = ready,
+        expires = created + itemInfo.durability,
+        pickupReady = false,
+        coords = coords,
+        heading = heading,
+        brewData = brewData,
+    }
+
+    _inProgAges[barrelId] = ready
+
+    TriggerClientEvent("Drugs:Client:Moonshine:CreateBarrel", -1, _placedBarrels[barrelId])
+end)
+
+exports('MoonshineBarrelRemovePlaced', function(barrelId)
+    local s = MySQL.query.await('DELETE FROM placed_moonshine_barrels WHERE barrel_id = ?', { barrelId })
+    if s.affectedRows > 0 then
+        _placedBarrels[barrelId] = nil
+        TriggerClientEvent("Drugs:Client:Moonshine:RemoveBarrel", -1, barrelId)
+    end
+    return s.affectedRows > 0
+end)
 
 AddEventHandler("Drugs:Server:Startup", function()
-    -- local mPos = _methSellerLocs[tostring(os.date("%w"))]
-
     exports['sandbox-pedinteraction']:VendorCreate("MoonshineSeller", "ped", "Karen", `S_F_Y_Bartender_01`, {
         coords = vector3(755.504, -1860.620, 48.292),
         heading = 307.963,
@@ -161,7 +162,7 @@ AddEventHandler("Drugs:Server:Startup", function()
     local stills = MySQL.query.await('SELECT * FROM placed_moonshine_stills WHERE expires > ?', { os.time() })
     for k, v in ipairs(stills) do
         if _placedStills[v.still_id] == nil then
-            local stillData = Drugs.Moonshine.Still:Get(v.still_id)
+            local stillData = exports['sandbox-drugs']:MoonshineStillGet(v.still_id)
 
             if stillData ~= nil then
                 local coords = json.decode(v.coords)
@@ -228,9 +229,9 @@ AddEventHandler("Drugs:Server:Startup", function()
             local still = exports['sandbox-inventory']:GetItem(data.data)
             if still.Owner == tostring(char:GetData("SID")) then
                 local md = json.decode(still.MetaData)
-                local stillData = Drugs.Moonshine.Still:Get(md.Still)
+                local stillData = exports['sandbox-drugs']:MoonshineStillGet(md.Still)
                 if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, still) then
-                    Drugs.Moonshine.Still:CreatePlaced(md.Still, char:GetData("SID"), stillData.tier,
+                    exports['sandbox-drugs']:MoonshineStillCreatePlaced(md.Still, char:GetData("SID"), stillData.tier,
                         data.endCoords.coords, data.endCoords.rotation, still.CreateDate)
                     cb(true)
                 else
@@ -247,10 +248,10 @@ AddEventHandler("Drugs:Server:Startup", function()
         local pState = Player(source).state
         if char ~= nil then
             if data then
-                if Drugs.Moonshine.Still:IsPlaced(data) then
-                    local stillData = Drugs.Moonshine.Still:Get(data)
+                if exports['sandbox-drugs']:MoonshineStillIsPlaced(data) then
+                    local stillData = exports['sandbox-drugs']:MoonshineStillGet(data)
                     if pState.onDuty == "police" or stillData.owner == char:GetData("SID") then
-                        if Drugs.Moonshine.Still:RemovePlaced(data) then
+                        if exports['sandbox-drugs']:MoonshineStillRemovePlaced(data) then
                             cb(true)
                         else
                             cb(false)
@@ -291,8 +292,8 @@ AddEventHandler("Drugs:Server:Startup", function()
         if char ~= nil then
             if data and _placedStills[data.stillId] ~= nil then
                 if _placedStills[data.stillId].cooldown == nil or os.time() > _placedStills[data.stillId].cooldown then
-                    local stillData = Drugs.Moonshine.Still:Get(data.stillId)
-                    Drugs.Moonshine.Still:StartCook(data.stillId, os.time() + (60 * 60 * 2), {
+                    local stillData = exports['sandbox-drugs']:MoonshineStillGet(data.stillId)
+                    exports['sandbox-drugs']:MoonshineStillStartCook(data.stillId, os.time() + (60 * 60 * 2), {
                         start_time = os.time(),
                         end_time = os.time() + (60 * _stillTiers[stillData.tier]?.cookTime or 30),
                         quality = (data.results.success / data.results.total) * 100
@@ -317,7 +318,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedStills[data] ~= nil then
-                local stillData = Drugs.Moonshine.Still:Get(data)
+                local stillData = exports['sandbox-drugs']:MoonshineStillGet(data)
                 if stillData.active_cook ~= nil then
                     local cookData = json.decode(stillData.active_cook)
                     if os.time() > cookData.end_time then
@@ -327,7 +328,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                                     Drinks = math.random(15, 30),
                                 }
                             }, 1, false, false, false, false, false, false, false) then
-                            Drugs.Moonshine.Still:FinishCook(data)
+                            exports['sandbox-drugs']:MoonshineStillFinishCook(data)
                         end
                     else
                         cb(false)
@@ -347,7 +348,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedStills[data] ~= nil then
-                local stillData = Drugs.Moonshine.Still:Get(data)
+                local stillData = exports['sandbox-drugs']:MoonshineStillGet(data)
 
                 local menu = {
                     main = {
@@ -417,7 +418,7 @@ AddEventHandler("Drugs:Server:Startup", function()
             if barrel.Owner == tostring(char:GetData("SID")) then
                 local md = json.decode(barrel.MetaData)
                 if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, barrel) then
-                    Drugs.Moonshine.Barrel:CreatePlaced(char:GetData("SID"), data.endCoords.coords,
+                    exports['sandbox-drugs']:MoonshineBarrelCreatePlaced(char:GetData("SID"), data.endCoords.coords,
                         data.endCoords.rotation, os.time(), md.Brew)
                     cb(true)
                 else
@@ -434,9 +435,9 @@ AddEventHandler("Drugs:Server:Startup", function()
         local pState = Player(source).state
         if char ~= nil then
             if data then
-                if Drugs.Moonshine.Barrel:IsPlaced(data) then
+                if exports['sandbox-drugs']:MoonshineBarrelIsPlaced(data) then
                     if pState.onDuty == "police" or _placedBarrels[data]?.owner == char:GetData("SID") then
-                        if Drugs.Moonshine.Barrel:RemovePlaced(data) then
+                        if exports['sandbox-drugs']:MoonshineBarrelRemovePlaced(data) then
                             cb(true)
                         else
                             cb(false)
@@ -501,7 +502,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                     if exports['sandbox-inventory']:ItemsHas(sid, 1, "moonshine_jar", (_placedBarrels[data].brewData?.Drinks or 15)) then
                         if exports['sandbox-inventory']:Remove(sid, 1, "moonshine_jar", (_placedBarrels[data].brewData?.Drinks or 15), false) then
                             if exports['sandbox-inventory']:AddItem(sid, "moonshine", (_placedBarrels[data].brewData?.Drinks or 15), {}, 1, false, false, false, false, false, false, _placedBarrels[data].brewData?.Quality or math.random(1, 100)) then
-                                Drugs.Moonshine.Barrel:RemovePlaced(data)
+                                exports['sandbox-drugs']:MoonshineBarrelRemovePlaced(data)
                             else
                                 cb(false)
                             end

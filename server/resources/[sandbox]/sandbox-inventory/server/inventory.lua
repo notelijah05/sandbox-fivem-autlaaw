@@ -124,15 +124,15 @@ function BuildMetaDataTable(cData, item, existing)
 	elseif itemExist.name == "rusty_pd" then
 		MetaData.Count = 12
 	elseif itemExist.name == "meth_table" and not MetaData.MethTable then
-		MetaData.MethTable = Drugs.Meth:GenerateTable(1)
+		MetaData.MethTable = exports['sandbox-drugs']:MethGenerateTable(1)
 	elseif itemExist.name == "adv_meth_table" and not MetaData.MethTable then
-		MetaData.MethTable = Drugs.Meth:GenerateTable(2)
+		MetaData.MethTable = exports['sandbox-drugs']:MethGenerateTable(2)
 	elseif itemExist.name == "meth_brick" then
 		MetaData.Finished = os.time() + (60 * 60 * 24)
 	elseif itemExist.name == "moonshine_still" and not MetaData.Still then
-		MetaData.Still = Drugs.Moonshine.Still:Generate(1)
+		MetaData.Still = exports['sandbox-drugs']:MoonshineStillGenerate(1)
 	elseif itemExist.name == "moonshine_barrel" and not MetaData.Brew then
-		MetaData.Brew = Drugs.Moonshine.Barrel:Generate(1)
+		MetaData.Brew = exports['sandbox-drugs']:MoonshineBarrelGenerate(1)
 	elseif itemExist.name == "paleto_access_codes" and not MetaData.AccessCodes then
 		MetaData.AccessCodes = {
 			exports['sandbox-robbery']:RobberyGetAccessCodes('paleto')[1]
@@ -160,14 +160,12 @@ end
 AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Drugs = exports["sandbox-base"]:FetchComponent("Drugs")
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Reputation",
-		"Drugs",
 		"Laptop",
 	}, function(error)
 		if #error > 0 then

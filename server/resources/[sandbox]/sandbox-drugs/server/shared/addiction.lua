@@ -36,46 +36,46 @@ function DoAlert(source, drug, previous, factor)
 	end
 end
 
-_DRUGS.Addiction = {
-	Add = function(self, source, drug, factor)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local addictions = char:GetData("Addiction")
-			addictions[drug] = {
-				LastUse = os.time(),
-				Factor = addictions[drug].Factor + (factor or 1.0),
-			}
-			DoAlert(source, drug, addictions[drug].Factor - (factor or 1.0), addictions[drug].Factor)
-			char:SetData("Addiction", addictions)
-		end
-	end,
-	Remove = function(self, source, drug, factor)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local addictions = char:GetData("Addiction")
-			addictions[drug] = {
-				LastUse = os.time(),
-				Factor = addictions[drug].Factor - (factor or 1.0),
-			}
+exports('AddictionAdd', function(source, drug, factor)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local addictions = char:GetData("Addiction")
+		addictions[drug] = {
+			LastUse = os.time(),
+			Factor = addictions[drug].Factor + (factor or 1.0),
+		}
+		DoAlert(source, drug, addictions[drug].Factor - (factor or 1.0), addictions[drug].Factor)
+		char:SetData("Addiction", addictions)
+	end
+end)
 
-			if addictions[drug].Factor < 0 then
-				addictions[drug].Factor = 0
-			end
+exports('AddictionRemove', function(source, drug, factor)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local addictions = char:GetData("Addiction")
+		addictions[drug] = {
+			LastUse = os.time(),
+			Factor = addictions[drug].Factor - (factor or 1.0),
+		}
 
-			DoAlert(source, drug, addictions[drug].Factor - (factor or 1.0), addictions[drug].Factor)
-			char:SetData("Addiction", addictions)
+		if addictions[drug].Factor < 0 then
+			addictions[drug].Factor = 0
 		end
-	end,
-	Reset = function(self, source, drug)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local addictions = char:GetData("Addiction")
-			addictions[drug] = {
-				LastUse = false,
-				Factor = 0,
-			}
-			DoAlert(source, drug, addictions[drug].Factor)
-			char:SetData("Addiction", addictions)
-		end
-	end,
-}
+
+		DoAlert(source, drug, addictions[drug].Factor - (factor or 1.0), addictions[drug].Factor)
+		char:SetData("Addiction", addictions)
+	end
+end)
+
+exports('AddictionReset', function(source, drug)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local addictions = char:GetData("Addiction")
+		addictions[drug] = {
+			LastUse = false,
+			Factor = 0,
+		}
+		DoAlert(source, drug, addictions[drug].Factor)
+		char:SetData("Addiction", addictions)
+	end
+end)

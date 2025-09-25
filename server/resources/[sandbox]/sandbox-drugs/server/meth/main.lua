@@ -16,87 +16,90 @@ local _methSellerLocs = {
     ["6"] = vector4(-535.855, 2850.274, 26.935, 176.013), -- Saturday
 }
 
-_DRUGS = _DRUGS or {}
-_DRUGS.Meth = {
-    GenerateTable = function(self, tier)
-        local recipe = {
-            ingredients = {},
-            cookTimeMax = math.random(_tableTiers[tier].cookTimeMax)
-        }
+exports('MethGenerateTable', function(tier)
+    local recipe = {
+        ingredients = {},
+        cookTimeMax = math.random(_tableTiers[tier].cookTimeMax)
+    }
 
-        for i = 1, _tableTiers[tier].ingredients do
-            table.insert(recipe.ingredients, math.random(100))
-        end
-
-        return MySQL.insert.await('INSERT INTO meth_tables (created, recipe, tier) VALUES(?, ?, ?)',
-            { os.time(), json.encode(recipe), tier })
-    end,
-    GetTable = function(self, tableId)
-        return MySQL.single.await(
-            'SELECT id, tier, created, cooldown, recipe, active_cook FROM meth_tables WHERE id = ?', { tableId })
-    end,
-    IsTablePlaced = function(self, tableId)
-        return MySQL.single.await('SELECT COUNT(table_id) as Count FROM placed_meth_tables WHERE table_id = ?',
-            { tableId })?.Count or 0 > 0
-    end,
-    CreatePlacedTable = function(self, tableId, owner, tier, coords, heading, created)
-        local itemInfo = exports['sandbox-inventory']:ItemsGetData("meth_table")
-        local tableData = self:GetTable(tableId)
-
-        MySQL.insert.await(
-            "INSERT INTO placed_meth_tables (table_id, owner, placed, expires, coords, heading) VALUES(?, ?, ?, ?, ?, ?)",
-            {
-                tableId,
-                owner,
-                os.time(),
-                created + itemInfo.durability,
-                json.encode(coords),
-                heading,
-            })
-
-        local cookData = tableData.active_cook ~= nil and json.decode(tableData.active_cook) or {}
-
-        _placedTables[tableId] = {
-            id = tableId,
-            owner = owner,
-            tier = tier,
-            placed = os.time(),
-            expires = created + itemInfo.durability,
-            cooldown = tableData.cooldown,
-            activeCook = tableData.active_cook ~= nil,
-            pickupReady = os.time() > (cookData?.end_time or 0),
-            coords = coords,
-            heading = heading,
-        }
-
-        TriggerClientEvent("Drugs:Client:Meth:CreateTable", -1, _placedTables[tableId])
-    end,
-    RemovePlacedTable = function(self, tableId)
-        local s = MySQL.query.await('DELETE FROM placed_meth_tables WHERE table_id = ?', { tableId })
-        if s.affectedRows > 0 then
-            _placedTables[tableId] = nil
-            TriggerClientEvent("Drugs:Client:Meth:RemoveTable", -1, tableId)
-        end
-        return s.affectedRows > 0
-    end,
-    StartTableCook = function(self, tableId, cooldown, recipe)
-        MySQL.query.await('UPDATE meth_tables SET cooldown = ?, active_cook = ? WHERE id = ?',
-            { cooldown, json.encode(recipe), tableId })
-        _placedTables[tableId].cooldown = cooldown
-        _placedTables[tableId].activeCook = true
-        _placedTables[tableId].pickupReady = false
-        _inProgCooks[tableId] = recipe
-
-        TriggerClientEvent("Drugs:Client:Meth:UpdateTableData", -1, tableId, _placedTables[tableId])
-    end,
-    FinishTableCook = function(self, tableId)
-        MySQL.query.await('UPDATE meth_tables SET active_cook = NULL WHERE id = ?', { tableId })
-        _placedTables[tableId].activeCook = false
-        _placedTables[tableId].pickupReady = false
-        _inProgCooks[tableId] = nil
-        TriggerClientEvent("Drugs:Client:Meth:UpdateTableData", -1, tableId, _placedTables[tableId])
+    for i = 1, _tableTiers[tier].ingredients do
+        table.insert(recipe.ingredients, math.random(100))
     end
-}
+
+    return MySQL.insert.await('INSERT INTO meth_tables (created, recipe, tier) VALUES(?, ?, ?)',
+        { os.time(), json.encode(recipe), tier })
+end)
+
+exports('MethGetTable', function(tableId)
+    return MySQL.single.await(
+        'SELECT id, tier, created, cooldown, recipe, active_cook FROM meth_tables WHERE id = ?', { tableId })
+end)
+
+exports('MethIsTablePlaced', function(tableId)
+    return MySQL.single.await('SELECT COUNT(table_id) as Count FROM placed_meth_tables WHERE table_id = ?',
+        { tableId })?.Count or 0 > 0
+end)
+
+exports('MethCreatePlacedTable', function(tableId, owner, tier, coords, heading, created)
+    local itemInfo = exports['sandbox-inventory']:ItemsGetData("meth_table")
+    local tableData = exports['sandbox-drugs']:MethGetTable(tableId)
+
+    MySQL.insert.await(
+        "INSERT INTO placed_meth_tables (table_id, owner, placed, expires, coords, heading) VALUES(?, ?, ?, ?, ?, ?)",
+        {
+            tableId,
+            owner,
+            os.time(),
+            created + itemInfo.durability,
+            json.encode(coords),
+            heading,
+        })
+
+    local cookData = tableData.active_cook ~= nil and json.decode(tableData.active_cook) or {}
+
+    _placedTables[tableId] = {
+        id = tableId,
+        owner = owner,
+        tier = tier,
+        placed = os.time(),
+        expires = created + itemInfo.durability,
+        cooldown = tableData.cooldown,
+        activeCook = tableData.active_cook ~= nil,
+        pickupReady = os.time() > (cookData?.end_time or 0),
+        coords = coords,
+        heading = heading,
+    }
+
+    TriggerClientEvent("Drugs:Client:Meth:CreateTable", -1, _placedTables[tableId])
+end)
+
+exports('MethRemovePlacedTable', function(tableId)
+    local s = MySQL.query.await('DELETE FROM placed_meth_tables WHERE table_id = ?', { tableId })
+    if s.affectedRows > 0 then
+        _placedTables[tableId] = nil
+        TriggerClientEvent("Drugs:Client:Meth:RemoveTable", -1, tableId)
+    end
+    return s.affectedRows > 0
+end)
+
+exports('MethStartTableCook', function(tableId, cooldown, recipe)
+    MySQL.query.await('UPDATE meth_tables SET cooldown = ?, active_cook = ? WHERE id = ?',
+        { cooldown, json.encode(recipe), tableId })
+    _placedTables[tableId].cooldown = cooldown
+    _placedTables[tableId].activeCook = true
+    _placedTables[tableId].pickupReady = false
+    _inProgCooks[tableId] = recipe
+
+    TriggerClientEvent("Drugs:Client:Meth:UpdateTableData", -1, tableId, _placedTables[tableId])
+end)
+
+exports('MethFinishTableCook', function(tableId)
+    MySQL.query.await('UPDATE meth_tables SET active_cook = NULL WHERE id = ?', { tableId })
+    _placedTables[tableId].activeCook = false
+    _placedTables[tableId].pickupReady = false
+    _inProgCooks[tableId] = nil
+    TriggerClientEvent("Drugs:Client:Meth:UpdateTableData", -1, tableId, _placedTables[tableId])
+end)
 
 AddEventHandler("Drugs:Server:Startup", function()
     local mPos = _methSellerLocs[tostring(os.date("%w"))]
@@ -111,7 +114,7 @@ AddEventHandler("Drugs:Server:Startup", function()
     local tables = MySQL.query.await('SELECT * FROM placed_meth_tables WHERE expires > ?', { os.time() })
     for k, v in ipairs(tables) do
         if _placedTables[v.table_id] == nil or not DoesEntityExist(_placedTables[v.table_id]?.entity) then
-            local tableData = Drugs.Meth:GetTable(v.table_id)
+            local tableData = exports['sandbox-drugs']:MethGetTable(v.table_id)
             local coords = json.decode(v.coords)
 
             local cookData = tableData.active_cook ~= nil and json.decode(tableData.active_cook) or {}
@@ -149,9 +152,10 @@ AddEventHandler("Drugs:Server:Startup", function()
             local table = exports['sandbox-inventory']:GetItem(data.data)
             if table.Owner == tostring(char:GetData("SID")) then
                 local md = json.decode(table.MetaData)
-                local tableData = Drugs.Meth:GetTable(md.MethTable)
+                local tableData = exports['sandbox-drugs']:MethGetTable(md.MethTable)
                 if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, table) then
-                    Drugs.Meth:CreatePlacedTable(md.MethTable, char:GetData("SID"), tableData.tier, data.endCoords
+                    exports['sandbox-drugs']:MethCreatePlacedTable(md.MethTable, char:GetData("SID"), tableData.tier,
+                        data.endCoords
                         .coords, data.endCoords.rotation, table.CreateDate)
                     cb(true)
                 else
@@ -167,9 +171,9 @@ AddEventHandler("Drugs:Server:Startup", function()
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data then
-                if Drugs.Meth:IsTablePlaced(data) then
-                    local tableData = Drugs.Meth:GetTable(data)
-                    if Drugs.Meth:RemovePlacedTable(data) then
+                if exports['sandbox-drugs']:MethIsTablePlaced(data) then
+                    local tableData = exports['sandbox-drugs']:MethGetTable(data)
+                    if exports['sandbox-drugs']:MethRemovePlacedTable(data) then
                         if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "meth_table", 1, { MethTable = data }, 1, false, false, false, false, false, tableData.created, false) then
                             cb(true)
                         else
@@ -211,7 +215,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         if char ~= nil then
             if data and _placedTables[data.tableId] ~= nil then
                 if _placedTables[data.tableId].cooldown == nil or os.time() > _placedTables[data.tableId].cooldown then
-                    Drugs.Meth:StartTableCook(data.tableId, os.time() + (60 * 60 * 2), {
+                    exports['sandbox-drugs']:MethStartTableCook(data.tableId, os.time() + (60 * 60 * 2), {
                         start_time = os.time(),
                         end_time = os.time() + (60 * data.cookTime),
                         ingredients = data.ingredients,
@@ -236,7 +240,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedTables[data] ~= nil then
-                local tableData = Drugs.Meth:GetTable(data)
+                local tableData = exports['sandbox-drugs']:MethGetTable(data)
                 local targetData = json.decode(tableData.recipe)
                 if tableData.active_cook ~= nil then
                     local cookData = json.decode(tableData.active_cook)
@@ -254,7 +258,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                         local calc = total * cookPct
 
                         if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "meth_brick", 1, {}, 1, false, false, false, false, false, false, math.floor(100 - total)) then
-                            Drugs.Meth:FinishTableCook(data)
+                            exports['sandbox-drugs']:MethFinishTableCook(data)
                         end
                     else
                         cb(false)
@@ -274,7 +278,7 @@ AddEventHandler("Drugs:Server:Startup", function()
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedTables[data] ~= nil then
-                local tableData = Drugs.Meth:GetTable(data)
+                local tableData = exports['sandbox-drugs']:MethGetTable(data)
 
                 local menu = {
                     main = {
