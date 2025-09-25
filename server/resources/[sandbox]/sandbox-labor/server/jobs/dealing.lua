@@ -70,7 +70,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					local ent = NetworkGetEntityFromNetworkId(data)
 					SetEntityDistanceCullingRadius(ent, 5000.0)
 
-					Labor.Workgroups:SendEvent(_joiners[source],
+					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 						string.format("CornerDealing:Client:%s:SyncPed", _joiners[source]), data)
 				end
 			end
@@ -126,8 +126,8 @@ AddEventHandler("Labor:Server:Startup", function()
 					_sellers[_joiners[source]].state = 1
 					_sellers[_joiners[source]].netId = data.netId
 					_sellers[_joiners[source]].corner = data.corner
-					Labor.Offers:Start(_joiners[source], _JOB, "Sell Product", 10)
-					Labor.Workgroups:SendEvent(_joiners[source],
+					exports['sandbox-labor']:StartOffer(_joiners[source], _JOB, "Sell Product", 10)
+					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 						string.format("CornerDealing:Client:%s:StartSelling", _joiners[source]), data.netId, data.corner)
 				end
 			end
@@ -136,7 +136,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:StopCornering", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			Labor.Offers:Fail(_joiners[source], _JOB)
+			exports['sandbox-labor']:FailOffer(_joiners[source], _JOB)
 		end
 	end)
 
@@ -230,7 +230,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot) then
 								local itemData = exports['sandbox-inventory']:ItemsGetData(data.item)
 
-								Labor.Workgroups:SendEvent(_joiners[source],
+								exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 									string.format("CornerDealing:Client:%s:Action", _joiners[source]))
 
 								local repLevel = Reputation:GetLevel(source, "CornerDealing") or 0
@@ -271,10 +271,10 @@ AddEventHandler("Labor:Server:Startup", function()
 
 								Reputation.Modify:Add(source, _JOB, repAdd)
 
-								Labor.Workgroups:SendEvent(_joiners[source],
+								exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 									string.format("CornerDealing:Client:%s:RemoveTargetting", _joiners[source]))
 
-								if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
+								if exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true) then
 									if _sellers[_joiners[source]].pedNet ~= nil then
 										local ent = NetworkGetEntityFromNetworkId(_sellers[_joiners[source]].pedNet)
 										if DoesEntityExist(ent) then
@@ -285,15 +285,15 @@ AddEventHandler("Labor:Server:Startup", function()
 									_sellers[_joiners[source]].state = 0
 									_sellers[_joiners[source]].pedNet = nil
 									_sellers[_joiners[source]].netId = nil
-									Labor.Offers:Task(_joiners[source], _JOB, "Find A Corner")
+									exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Find A Corner")
 									Citizen.SetTimeout(5000, function()
-										Labor.Workgroups:SendEvent(_joiners[source],
+										exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 											string.format("CornerDealing:Client:%s:EndSelling", _joiners[source]))
 									end)
 								else
 									Citizen.SetTimeout((math.random(15, 30) + 30) * 1000, function()
 										if _joiners[source] ~= nil then
-											Labor.Workgroups:SendEvent(_joiners[source],
+											exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 												string.format("CornerDealing:Client:%s:SoldToPed", _joiners[source]))
 										end
 									end)
@@ -336,7 +336,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					_sellers[_joiners[source]].state = 0
 					_sellers[_joiners[source]].pedNet = nil
 					_sellers[_joiners[source]].netId = nil
-					Labor.Offers:Task(_joiners[source], _JOB, "Find A Corner")
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Find A Corner")
 					exports['sandbox-phone']:NotificationAdd(
 						source,
 						"New Corner",
@@ -346,7 +346,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						"labor",
 						{}
 					)
-					Labor.Workgroups:SendEvent(_joiners[source],
+					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 						string.format("CornerDealing:Client:%s:EndSelling", _joiners[source]))
 				end
 			end
@@ -384,7 +384,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					_sellers[_joiners[source]].state = 0
 					_sellers[_joiners[source]].pedNet = nil
 					_sellers[_joiners[source]].netId = nil
-					Labor.Offers:Task(_joiners[source], _JOB, "Find A Corner")
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Find A Corner")
 					exports['sandbox-phone']:NotificationAdd(
 						source,
 						"New Corner",
@@ -441,7 +441,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					_sellers[_joiners[source]].state = 0
 					_sellers[_joiners[source]].pedNet = nil
 					_sellers[_joiners[source]].netId = nil
-					Labor.Offers:Task(_joiners[source], _JOB, "Find A Corner")
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Find A Corner")
 					exports['sandbox-phone']:NotificationAdd(
 						source,
 						"New Corner",
@@ -461,8 +461,8 @@ end)
 AddEventHandler("CornerDealing:Server:OnDuty", function(joiner, members, isWorkgroup)
 	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	if char == nil then
-		Labor.Offers:Cancel(joiner, _JOB)
-		Labor.Duty:Off(_JOB, joiner, false, true)
+		exports['sandbox-labor']:CancelOffer(joiner, _JOB)
+		exports['sandbox-labor']:OffDuty(_JOB, joiner, false, true)
 		return
 	end
 
@@ -487,7 +487,7 @@ AddEventHandler("CornerDealing:Server:OnDuty", function(joiner, members, isWorkg
 		end
 	end
 
-	Labor.Offers:Task(joiner, _JOB, "Find A Corner")
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Find A Corner")
 end)
 
 AddEventHandler("CornerDealing:Server:OffDuty", function(source, joiner)

@@ -373,8 +373,9 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Mining:StartJob", function(source, data, cb)
 		if _mining[_joiners[source]] ~= nil and _mining[_joiners[source]].state == 0 then
 			_mining[_joiners[source]].nodes = GenerateNodes(_joiners[source])
-			Labor.Offers:Start(_joiners[source], _JOB, "Mine Ore Nodes", 15)
-			Labor.Workgroups:SendEvent(_joiners[source], string.format("Mining:Client:%s:Startup", _joiners[source]),
+			exports['sandbox-labor']:StartOffer(_joiners[source], _JOB, "Mine Ore Nodes", 15)
+			exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+				string.format("Mining:Client:%s:Startup", _joiners[source]),
 				_mining[_joiners[source]].nodes)
 			_mining[_joiners[source]].state = 1
 			cb(true)
@@ -431,12 +432,13 @@ AddEventHandler("Labor:Server:Startup", function()
 							end
 
 							local j = _joiners[source]
-							Labor.Workgroups:SendEvent(j, string.format("Mining:Client:%s:RemoveNode", j), node.location)
-							if Labor.Offers:Update(j, _JOB, 1, false) then
+							exports['sandbox-labor']:SendWorkgroupEvent(j,
+								string.format("Mining:Client:%s:RemoveNode", j), node.location)
+							if exports['sandbox-labor']:UpdateOffer(j, _JOB, 1, false) then
 								antiDouche[j] = false
 							elseif not _mining[j].nodes or #_mining[j].nodes == 0 then
 								antiDouche[j] = false
-								Labor.Offers:ManualFinish(j, _JOB)
+								exports['sandbox-labor']:ManualFinishOffer(j, _JOB)
 							else
 								table.remove(_mining[j].nodes, i)
 							end
@@ -446,7 +448,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					else
 						if not _mining[j].nodes or #_mining[j].nodes == 0 then
 							antiDouche[j] = false
-							Labor.Offers:ManualFinish(j, _JOB)
+							exports['sandbox-labor']:ManualFinishOffer(j, _JOB)
 						else
 							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Node")
 						end
@@ -477,7 +479,7 @@ AddEventHandler("Mining:Server:OnDuty", function(joiner, members, isWorkgroup)
 		{})
 	TriggerClientEvent("Mining:Client:OnDuty", joiner, joiner, os.time())
 
-	Labor.Offers:Task(joiner, _JOB, "Talk To The Foreman")
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Talk To The Foreman")
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner

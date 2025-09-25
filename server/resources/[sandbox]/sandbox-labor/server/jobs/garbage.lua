@@ -109,8 +109,8 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Garbage:StartJob", function(source, data, cb)
 		if _Garbage[data] ~= nil and _Garbage[data].state == 0 then
 			_Garbage[data].state = 1
-			Labor.Offers:Task(_joiners[source], _JOB, "Grab a garbage truck")
-			Labor.Workgroups:SendEvent(data, string.format("Garbage:Client:%s:Startup", data))
+			exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Grab a garbage truck")
+			exports['sandbox-labor']:SendWorkgroupEvent(data, string.format("Garbage:Client:%s:Startup", data))
 			cb(true)
 		else
 			cb(false)
@@ -143,9 +143,9 @@ AddEventHandler("Labor:Server:Startup", function()
 					table.remove(availRoutes, randRoute)
 					_Garbage[_joiners[source]].routes = availRoutes
 					_Garbage[_joiners[source]].state = 2
-					Labor.Workgroups:SendEvent(_joiners[source],
+					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 						string.format("Garbage:Client:%s:NewRoute", _joiners[source]), _Garbage[_joiners[source]].route)
-					Labor.Offers:Start(
+					exports['sandbox-labor']:StartOffer(
 						_joiners[source],
 						_JOB,
 						string.format("Collect Garbage In %s", _Garbage[_joiners[source]].route["location"]),
@@ -168,9 +168,9 @@ AddEventHandler("Labor:Server:Startup", function()
 					exports['sandbox-vehicles']:Delete(_Garbage[_joiners[source]].truck, function()
 						_Garbage[_joiners[source]].truck = nil
 						_Garbage[_joiners[source]].state = 4
-						Labor.Workgroups:SendEvent(_joiners[source],
+						exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 							string.format("Garbage:Client:%s:ReturnTruck", _joiners[source]))
-						Labor.Offers:Task(_joiners[source], _JOB, "Speak with the Sanitation Foreman")
+						exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Speak with the Sanitation Foreman")
 					end)
 				else
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Truck Needs To Be With You")
@@ -182,7 +182,8 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Garbage:TrashGrab", function(source, data, cb)
 		if _joiners[source] ~= nil and _Garbage[_joiners[source]].state == 2 then
 			exports["sandbox-base"]:ClientCallback(source, "Garbage:DoingSomeAction", "grabTrash")
-			Labor.Workgroups:SendEvent(_joiners[source], string.format("Garbage:Client:%s:Action", _joiners[source]),
+			exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+				string.format("Garbage:Client:%s:Action", _joiners[source]),
 				data)
 			cb(true)
 		else
@@ -202,26 +203,26 @@ AddEventHandler("Labor:Server:Startup", function()
 			exports['sandbox-inventory']:AddItem(char:GetData("SID"), "recycledgoods", math.random(10), {}, 1)
 
 			exports["sandbox-base"]:ClientCallback(source, "Garbage:DoingSomeAction", "trashPutIn")
-			if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
+			if exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true) then
 				if _Garbage[_joiners[source]].tasks <= 2 then
 					_Garbage[_joiners[source]].tasks = _Garbage[_joiners[source]].tasks + 1
 					local randRoute = math.random(#_Garbage[_joiners[source]].routes)
 					_Garbage[_joiners[source]].route =
 						deepcopy(_GarbageRoutes[_Garbage[_joiners[source]].routes[randRoute]])
 					table.remove(_Garbage[_joiners[source]].routes, randRoute)
-					Labor.Offers:Start(
+					exports['sandbox-labor']:StartOffer(
 						_joiners[source],
 						_JOB,
 						string.format("Collect Garbage In %s", _Garbage[_joiners[source]].route.location),
 						5
 					)
-					Labor.Workgroups:SendEvent(_joiners[source],
+					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 						string.format("Garbage:Client:%s:NewRoute", _joiners[source]), _Garbage[_joiners[source]].route)
 				else
 					_Garbage[_joiners[source]].state = 3
-					Labor.Workgroups:SendEvent(_joiners[source],
+					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 						string.format("Garbage:Client:%s:EndRoutes", _joiners[source]))
-					Labor.Offers:Task(_joiners[source], _JOB, "Return your truck")
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Return your truck")
 				end
 			end
 			cb(true)
@@ -235,7 +236,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char:GetData("TempJob") == _JOB and _Garbage[_joiners[source]].state == 4 then
 				_Garbage[_joiners[source]].state = 5
-				Labor.Offers:ManualFinish(_joiners[source], _JOB)
+				exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 				cb(true)
 			else
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Finish Job")
@@ -332,7 +333,7 @@ AddEventHandler("Garbage:Server:OnDuty", function(joiner, members, isWorkgroup)
 		{})
 	TriggerClientEvent("Garbage:Client:OnDuty", joiner, joiner, os.time())
 
-	Labor.Offers:Task(joiner, _JOB, "Speak with the Sanitation Foreman")
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Speak with the Sanitation Foreman")
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner

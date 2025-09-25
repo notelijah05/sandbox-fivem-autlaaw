@@ -4,7 +4,6 @@ local lastRefreshed = 0
 
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -12,7 +11,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
-		"Labor",
 		"Jail",
 		"Pwnzor",
 		"Reputation",
@@ -133,7 +131,7 @@ _JAIL = {
 				return false
 			end
 
-			Labor.Jail:Sentenced(target)
+			exports['sandbox-labor']:JailSentenced(target)
 
 			char:SetData("Jailed", {
 				Time = os.time(),
@@ -209,7 +207,7 @@ _JAIL = {
 		if Jail:IsReleaseEligible(source) then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
-				Labor.Jail:Released(source)
+				exports['sandbox-labor']:JailReleased(source)
 				char:SetData("Jailed", false)
 
 				cachedData = nil

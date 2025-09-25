@@ -1,7 +1,6 @@
 AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Status = exports["sandbox-base"]:FetchComponent("Status")
-	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 end
@@ -9,7 +8,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
 		"Status",
-		"Labor",
 		"Properties",
 		"Reputation",
 	}, function(error)
@@ -46,10 +44,6 @@ function PedFaceCoord(pPed, pCoords)
 	end
 end
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Labor", LABOR)
-end)
-
 AddEventHandler("Labor:Client:AcceptRequest", function(data)
 	exports["sandbox-base"]:ServerCallback("Labor:AcceptRequest", data)
 end)
@@ -58,28 +52,26 @@ AddEventHandler("Labor:Client:DeclineRequest", function(data)
 	exports["sandbox-base"]:ServerCallback("Labor:DeclineRequest", data)
 end)
 
-LABOR = {
-	Get = {
-		Jobs = function(self)
-			local p = promise.new()
-			exports["sandbox-base"]:ServerCallback("Laborexports['sandbox-jobs']:GetJobs", {}, function(jobs)
-				p:resolve(jobs)
-			end)
-			return Citizen.Await(p)
-		end,
-		Groups = function(self)
-			local p = promise.new()
-			exports["sandbox-base"]:ServerCallback("Labor:GetGroups", {}, function(groups)
-				p:resolve(groups)
-			end)
-			return Citizen.Await(p)
-		end,
-		Reputations = function(self)
-			local p = promise.new()
-			exports["sandbox-base"]:ServerCallback("Labor:GetReputations", {}, function(jobs)
-				p:resolve(jobs)
-			end)
-			return Citizen.Await(p)
-		end,
-	},
-}
+exports('GetJobs', function()
+	local p = promise.new()
+	exports["sandbox-base"]:ServerCallback("Labor:GetJobs", {}, function(jobs)
+		p:resolve(jobs)
+	end)
+	return Citizen.Await(p)
+end)
+
+exports('GetGroups', function()
+	local p = promise.new()
+	exports["sandbox-base"]:ServerCallback("Labor:GetGroups", {}, function(groups)
+		p:resolve(groups)
+	end)
+	return Citizen.Await(p)
+end)
+
+exports('GetReputations', function()
+	local p = promise.new()
+	exports["sandbox-base"]:ServerCallback("Labor:GetReputations", {}, function(jobs)
+		p:resolve(jobs)
+	end)
+	return Citizen.Await(p)
+end)

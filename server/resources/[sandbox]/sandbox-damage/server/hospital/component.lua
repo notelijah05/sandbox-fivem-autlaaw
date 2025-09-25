@@ -9,13 +9,11 @@ local _medsForSale = {
 
 AddEventHandler("Damage:Shared:DependencyUpdate", HospitalComponents)
 function HospitalComponents()
-	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hospital", {
-		"Labor",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then
@@ -100,7 +98,7 @@ exports("HospitalICUSend", function(target)
 			return false
 		end
 
-		Labor.Jail:Sentenced(target)
+		exports['sandbox-labor']:JailSentenced(target)
 
 		Player(target).state.ICU = true
 		char:SetData("ICU", {

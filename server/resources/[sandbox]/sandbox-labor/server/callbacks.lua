@@ -1,9 +1,9 @@
 function RegisterCallbacks()
-	exports["sandbox-base"]:RegisterServerCallback("Laborexports['sandbox-jobs']:GetJobs", function(source, data, cb)
-		cb(Labor.Get:Jobs())
+	exports["sandbox-base"]:RegisterServerCallback("Labor:GetJobs", function(source, data, cb)
+		cb(exports['sandbox-labor']:GetJobs())
 	end)
 	exports["sandbox-base"]:RegisterServerCallback("Labor:GetGroups", function(source, data, cb)
-		cb(Labor.Get:Groups())
+		cb(exports['sandbox-labor']:GetGroups())
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Labor:GetReputations", function(source, data, cb)
@@ -12,7 +12,7 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Labor:AcceptRequest", function(source, data, cb)
 		if _pendingInvites[data.source] ~= nil then
-			local state = Labor.Workgroups:Join(_pendingInvites[data.source], data.source)
+			local state = exports['sandbox-labor']:JoinWorkgroup(_pendingInvites[data.source], data.source)
 
 			if state then
 				exports['sandbox-phone']:NotificationAdd(

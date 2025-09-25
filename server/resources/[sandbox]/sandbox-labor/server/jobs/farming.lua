@@ -17,8 +17,8 @@ AddEventHandler("Labor:Server:Startup", function()
 			table.remove(_farming[data].jobs, randJob)
 			_farming[data].job.locationSets = nil
 
-			Labor.Offers:Start(data, _JOB, _farming[data].job.objective, #_farming[data].nodes)
-			Labor.Workgroups:SendEvent(
+			exports['sandbox-labor']:StartOffer(data, _JOB, _farming[data].job.objective, #_farming[data].nodes)
+			exports['sandbox-labor']:SendWorkgroupEvent(
 				data,
 				string.format("Farming:Client:%s:Startup", data),
 				_farming[data].nodes,
@@ -41,13 +41,13 @@ AddEventHandler("Labor:Server:Startup", function()
 				if v.id == data then
 					exports['sandbox-inventory']:LootCustomSetWithCount(_farming[_joiners[source]].job.loot,
 						char:GetData("SID"), 1)
-					Labor.Workgroups:SendEvent(
+					exports['sandbox-labor']:SendWorkgroupEvent(
 						_joiners[source],
 						string.format("Farming:Client:%s:Action", _joiners[source]),
 						data
 					)
 					table.remove(_farming[_joiners[source]].nodes, k)
-					if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
+					if exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true) then
 						_farming[_joiners[source]].tasks = _farming[_joiners[source]].tasks + 1
 
 						if _farming[_joiners[source]].tasks < 2 then
@@ -60,13 +60,13 @@ AddEventHandler("Labor:Server:Startup", function()
 							)
 							table.remove(_farming[_joiners[source]].jobs, randJob)
 							_farming[_joiners[source]].job.locationSets = nil
-							Labor.Offers:Start(
+							exports['sandbox-labor']:StartOffer(
 								_joiners[source],
 								_JOB,
 								_farming[_joiners[source]].job.objective,
 								#_farming[_joiners[source]].nodes
 							)
-							Labor.Workgroups:SendEvent(
+							exports['sandbox-labor']:SendWorkgroupEvent(
 								_joiners[source],
 								string.format("Farming:Client:%s:NewTask", _joiners[source]),
 								_farming[_joiners[source]].nodes,
@@ -75,12 +75,12 @@ AddEventHandler("Labor:Server:Startup", function()
 								_farming[_joiners[source]].job.animation
 							)
 						else
-							Labor.Workgroups:SendEvent(
+							exports['sandbox-labor']:SendWorkgroupEvent(
 								_joiners[source],
 								string.format("Farming:Client:%s:EndFarming", _joiners[source])
 							)
 							_farming[_joiners[source]].state = 2
-							Labor.Offers:Task(_joiners[source], _JOB, "Return To The Farm Supervisor")
+							exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Return To The Farm Supervisor")
 						end
 					end
 					return
@@ -99,7 +99,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		then
 			_farming[_joiners[source]].state = 3
 
-			Labor.Offers:ManualFinish(_joiners[source], _JOB)
+			exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 			cb(true)
 		else
 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Turn In Ore")
@@ -123,7 +123,7 @@ AddEventHandler("Farming:Server:OnDuty", function(joiner, members, isWorkgroup)
 		{})
 	TriggerClientEvent("Farming:Client:OnDuty", joiner, joiner, os.time())
 
-	Labor.Offers:Task(joiner, _JOB, "Speak With The Farm Supervisor")
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Speak With The Farm Supervisor")
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner

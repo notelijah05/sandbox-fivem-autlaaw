@@ -31,7 +31,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Hunting:StartJob", function(source, data, cb)
 		if _hunting[data] ~= nil and _hunting[data].state == 0 then
 			_hunting[_joiners[source]].state = 1
-			Labor.Offers:Start(_joiners[source], _JOB, "Harvest Animals", 6)
+			exports['sandbox-labor']:StartOffer(_joiners[source], _JOB, "Harvest Animals", 6)
 			TriggerClientEvent(string.format("Hunting:Client:%s:Startup", data), -1)
 			cb(true)
 		else
@@ -42,8 +42,9 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Hunting:FinishJob", function(source, data, cb)
 		if _joiners[source] ~= nil and _hunting[_joiners[source]].state == 2 then
 			_hunting[_joiners[source]].state = 3
-			Labor.Workgroups:SendEvent(_joiners[source], string.format("Hunting:Client:%s:FinishJob", _joiners[source]))
-			Labor.Offers:ManualFinish(_joiners[source], _JOB)
+			exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+				string.format("Hunting:Client:%s:FinishJob", _joiners[source]))
+			exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 			cb(true)
 		else
 			cb(false)
@@ -80,10 +81,11 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _hunting[_joiners[source]] ~= nil then
-			if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
+			if exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true) then
 				_hunting[_joiners[source]].state = 2
-				Labor.Offers:Task(_joiners[source], _JOB, "Talk To The Shop Owner")
-				Labor.Workgroups:SendEvent(_joiners[source], string.format("Hunting:Client:%s:Finish", _joiners[source]))
+				exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Talk To The Shop Owner")
+				exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+					string.format("Hunting:Client:%s:Finish", _joiners[source]))
 			end
 		end
 	end)
@@ -213,7 +215,7 @@ AddEventHandler("Hunting:Server:OnDuty", function(joiner, members, isWorkgroup)
 		{})
 	TriggerClientEvent("Hunting:Client:OnDuty", joiner, joiner, os.time())
 
-	Labor.Offers:Task(joiner, _JOB, "Talk To The Shop Owner")
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Talk To The Shop Owner")
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner

@@ -4,9 +4,9 @@ end)
 
 RegisterNUICallback("GetLaborDetails", function(data, cb)
 	cb({
-		jobs = Labor.Get:Jobs(),
-		groups = Labor.Get:Groups(),
-		reputations = Labor.Get:Reputations(),
+		jobs = exports['sandbox-labor']:GetJobs(),
+		groups = exports['sandbox-labor']:GetGroups(),
+		reputations = exports['sandbox-labor']:GetReputations(),
 	})
 end)
 

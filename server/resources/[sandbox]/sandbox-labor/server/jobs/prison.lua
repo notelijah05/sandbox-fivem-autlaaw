@@ -13,7 +13,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		if _joiners[source] ~= nil and _Prisoners[_joiners[source]] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
-				Labor.Offers:Update(_joiners[source], _JOB, 1, true, {
+				exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true, {
 					title = "Prison Labor",
 					label = "Prison",
 					icon = "link",
@@ -22,11 +22,11 @@ AddEventHandler("Labor:Server:Startup", function()
 			then
 				_Prisoners[_joiners[source]].state = 0
 				exports['sandbox-finance']:WalletModify(source, 150)
-				Labor.Workgroups:SendEvent(
+				exports['sandbox-labor']:SendWorkgroupEvent(
 					_joiners[source],
 					string.format("Prison:Client:%s:Cleanup", _joiners[source])
 				)
-				Labor.Offers:Task(_joiners[source], _JOB, "Wait For Work", {
+				exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Wait For Work", {
 					title = "Prison Labor",
 					label = "Prison",
 					icon = "link",
@@ -59,7 +59,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		if _joiners[source] ~= nil and _Prisoners[_joiners[source]].tasks >= 3 then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char:GetData("TempJob") == _JOB then
-				Labor.Offers:ManualFinish(_joiners[source], _JOB)
+				exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 				cb(true)
 			else
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Finish Job")
@@ -85,12 +85,12 @@ AddEventHandler("Labor:Server:Prison:Queue", function(source, data)
 		_Prisoners[_joiners[source]].jobIndex = f
 		_Prisoners[_joiners[source]].nodes = deepcopy(_prisonJobs[f])
 
-		Labor.Workgroups:SendEvent(
+		exports['sandbox-labor']:SendWorkgroupEvent(
 			_joiners[source],
 			string.format("Prison:Client:%s:Receive", _joiners[source]),
 			_Prisoners[_joiners[source]].nodes
 		)
-		Labor.Offers:Start(
+		exports['sandbox-labor']:StartOffer(
 			_joiners[source],
 			_JOB,
 			_Prisoners[_joiners[source]].nodes.action,
@@ -119,7 +119,7 @@ AddEventHandler("Prison:Server:OnDuty", function(joiner, members, isWorkgroup)
 	char:SetData("TempJob", _JOB)
 
 	TriggerClientEvent("Prison:Client:OnDuty", joiner, joiner, os.time())
-	Labor.Offers:Task(joiner, _JOB, "Wait For Work", {
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Wait For Work", {
 		title = "Prison Labor",
 		label = "Prison",
 		icon = "link",

@@ -3,11 +3,11 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		return {
 			{
 				type = "jobs",
-				data = Labor.Get:Jobs(),
+				data = exports['sandbox-labor']:GetJobs(),
 			},
 			{
 				type = "workGroups",
-				data = Labor.Get:Groups(),
+				data = exports['sandbox-labor']:GetGroups(),
 			},
 		}
 	end)
@@ -38,7 +38,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 				cb(false)
 			else
-				cb(Labor.Workgroups:Create(source))
+				cb(exports['sandbox-labor']:CreateWorkgroup(source))
 			end
 		end
 	end)
@@ -48,7 +48,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 			cb(false)
 		else
-			cb(Labor.Workgroups:Disband(source, true))
+			cb(exports['sandbox-labor']:DisbandWorkgroup(source, true))
 		end
 	end)
 
@@ -75,7 +75,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 				cb(false)
 			else
-				cb(Labor.Workgroups:Request(data, source))
+				cb(exports['sandbox-labor']:RequestWorkgroup(data, source))
 			end
 		end
 	end)
@@ -85,7 +85,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 			cb(false)
 		else
-			cb(Labor.Workgroups:Leave(data, source))
+			cb(exports['sandbox-labor']:LeaveWorkgroup(data, source))
 		end
 	end)
 
@@ -113,7 +113,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 				cb(false)
 			else
-				cb(Labor.Duty:On(data.job, source, data.isWorkgroup))
+				cb(exports['sandbox-labor']:OnDuty(data.job, source, data.isWorkgroup))
 			end
 		end
 	end)
@@ -123,7 +123,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 			cb(false)
 		else
-			cb(Labor.Duty:Off(data, source))
+			cb(exports['sandbox-labor']:OffDuty(data, source))
 		end
 	end)
 end)

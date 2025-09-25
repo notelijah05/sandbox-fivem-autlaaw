@@ -126,17 +126,17 @@ AddEventHandler("Labor:Server:Startup", function()
 								for k2, v2 in pairs(_Groups) do
 									if v2.Creator.ID == _joiners[source] then
 										for k3, v3 in ipairs(v2.Members) do
-											Labor.Offers:Complete(v3.ID, _JOB)
+											exports['sandbox-labor']:CompleteOffer(v3.ID, _JOB)
 										end
 									end
 								end
 							end
 
-							Labor.Offers:Complete(_joiners[source], _JOB)
+							exports['sandbox-labor']:CompleteOffer(_joiners[source], _JOB)
 						end
 					end
 
-					Labor.Offers:Task(_joiners[source], _JOB, "Wait For Next Delivery")
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Wait For Next Delivery")
 					exports['sandbox-base']:WaitListInteractInactive("weedrun", _joiners[source])
 
 					cb(true)
@@ -155,8 +155,8 @@ end)
 AddEventHandler("WeedRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	if char == nil then
-		Labor.Offers:Cancel(joiner, _JOB)
-		Labor.Duty:Off(_JOB, joiner, false, true)
+		exports['sandbox-labor']:CancelOffer(joiner, _JOB)
+		exports['sandbox-labor']:OffDuty(_JOB, joiner, false, true)
 		return
 	end
 
@@ -173,7 +173,7 @@ AddEventHandler("WeedRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 	char:SetData("TempJob", _JOB)
 	TriggerClientEvent("WeedRun:Client:OnDuty", joiner, joiner, os.time())
 
-	Labor.Offers:Task(joiner, _JOB, "Wait For A Delivery")
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Wait For A Delivery")
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner
@@ -200,8 +200,8 @@ AddEventHandler("Labor:Server:WeedRun:Queue", function(source, data)
 		_sellers[_joiners[source]].state = 1
 		_sellers[_joiners[source]].location = _weedSaleLocations[math.random(#_weedSaleLocations)]
 		_offers[_joiners[source]].noExpire = false
-		Labor.Offers:Task(_joiners[source], _JOB, "Deliver The Package")
-		Labor.Workgroups:SendEvent(
+		exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Deliver The Package")
+		exports['sandbox-labor']:SendWorkgroupEvent(
 			_joiners[source],
 			string.format("WeedRun:Client:%s:Receive", _joiners[source]),
 			_sellers[_joiners[source]].location,

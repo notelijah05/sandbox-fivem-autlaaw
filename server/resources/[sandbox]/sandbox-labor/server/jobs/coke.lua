@@ -74,7 +74,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			if exports['sandbox-finance']:WalletHas(source, 100000) then
 				if not GlobalState["CokeRunActive"] and _active == nil then
 					if not GlobalState["CokeRunCD"] or os.time() > GlobalState["CokeRunCD"] then
-						Labor.Duty:On("Coke", source, true)
+						exports['sandbox-labor']:OnDuty("Coke", source, true)
 					else
 						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
 							"Someone Has Already Done This Recently")
@@ -95,7 +95,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		if char ~= nil then
 			if _active ~= nil and _active.joiner == source then
 				if _active.state == 0 then
-					Labor.Duty:Off("Coke", source, false, false)
+					exports['sandbox-labor']:OffDuty("Coke", source, false, false)
 					exports['sandbox-finance']:WalletModify(source, 100000)
 
 					GlobalState["CokeRunActive"] = false
@@ -139,7 +139,8 @@ AddEventHandler("Labor:Server:Startup", function()
 					_active.entity = veh
 					_active.VIN = Entity(veh).state.VIN
 					exports['sandbox-inventory']:AddItem(_active.VIN, "coke_brick", 4, {}, 4)
-					Labor.Workgroups:SendEvent(_joiners[source], string.format("Coke:Client:%s:GoTo", _joiners[source]))
+					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+						string.format("Coke:Client:%s:GoTo", _joiners[source]))
 				end
 			)
 		end
@@ -148,13 +149,13 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Coke:StartHeist", function(source, data, cb)
 		if _joiners[source] ~= nil and _active.joiner == _joiners[source] and _active.state == 2 then
 			_active.state = 3
-			Labor.Offers:Task(_joiners[source], _JOB, "Locate The Target Vehicle", {
+			exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Locate The Target Vehicle", {
 				title = "Unknown",
 				label = "Unknown",
 				icon = "block-question",
 				color = "transparent",
 			})
-			Labor.Workgroups:SendEvent(
+			exports['sandbox-labor']:SendWorkgroupEvent(
 				_joiners[source],
 				string.format("Coke:Client:%s:SetupHeist", _joiners[source]),
 				_active.drop
@@ -165,13 +166,14 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Coke:ArrivedAtPoint", function(source, data, cb)
 		if _joiners[source] ~= nil and _active.joiner == _joiners[source] and _active.state == 3 then
 			_active.state = 4
-			Labor.Offers:Task(_joiners[source], _JOB, "Retreive Contraband From Vehicle", {
+			exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Retreive Contraband From Vehicle", {
 				title = "Unknown",
 				label = "Unknown",
 				icon = "block-question",
 				color = "transparent",
 			})
-			Labor.Workgroups:SendEvent(_joiners[source], string.format("Coke:Client:%s:DoShit", _joiners[source]))
+			exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+				string.format("Coke:Client:%s:DoShit", _joiners[source]))
 
 			if not _active.pedsSpawned then
 				_active.pedsSpawned = true
@@ -197,7 +199,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					Entity(veh).state.noLockpick = true
 					SetVehicleDoorsLocked(veh, 1)
 					_active.entity = veh
-					Labor.Workgroups:SendEvent(
+					exports['sandbox-labor']:SendWorkgroupEvent(
 						_joiners[source],
 						string.format("Coke:Client:%s:SetupFinish", _joiners[source])
 					)
@@ -208,7 +210,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Coke:Finish", function(source, data, cb)
 		if _joiners[source] ~= nil and _active.joiner == _joiners[source] and _active.state == 6 then
 			DeleteEntity(_active.entity)
-			Labor.Offers:ManualFinish(_joiners[source], _JOB)
+			exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 		end
 	end)
 end)
@@ -217,13 +219,14 @@ AddEventHandler("Inventory:Server:Opened", function(source, owner, type)
 	if _joiners[source] ~= nil and _active.joiner == _joiners[source] and _active.state == 4 then
 		if owner == _active.VIN and type == 4 then
 			_active.state = 5
-			Labor.Offers:Task(_joiners[source], _JOB, "Meet Contact Back In Los Santos", {
+			exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Meet Contact Back In Los Santos", {
 				title = "Unknown",
 				label = "Unknown",
 				icon = "block-question",
 				color = "transparent",
 			})
-			Labor.Workgroups:SendEvent(_joiners[source], string.format("Coke:Client:%s:GoBack", _joiners[source]))
+			exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+				string.format("Coke:Client:%s:GoBack", _joiners[source]))
 		end
 	end
 end)
@@ -233,9 +236,10 @@ AddEventHandler("Labor:Server:Coke:Queue", function(source, data)
 		_active.state = 1
 		_active.drop = cokeDrops[math.random(#cokeDrops)]
 
-		Labor.Workgroups:SendEvent(_joiners[source], string.format("Coke:Client:%s:Receive", _joiners[source]))
+		exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+			string.format("Coke:Client:%s:Receive", _joiners[source]))
 
-		Labor.Offers:Task(_joiners[source], _JOB, "Speak To The Contact At Cayo Perico", {
+		exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Speak To The Contact At Cayo Perico", {
 			title = "Unknown",
 			label = "Unknown",
 			icon = "block-question",
@@ -316,7 +320,7 @@ AddEventHandler("Coke:Server:OnDuty", function(joiner, members, isWorkgroup)
 			end
 		end
 
-		Labor.Offers:Task(joiner, _JOB, "Wait For Contact", {
+		exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Wait For Contact", {
 			title = "Unknown",
 			label = "Unknown",
 			icon = "block-question",

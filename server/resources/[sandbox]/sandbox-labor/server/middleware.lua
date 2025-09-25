@@ -6,12 +6,12 @@ function RunLaborLogoutShit(source)
                     for k3, v3 in pairs(_Groups) do
                         for k4, v4 in ipairs(v3.Members) do
                             if v3.Creator.ID == source then
-                                return Labor.Workgroups:Disband(source, true)
+                                return exports['sandbox-labor']:DisbandWorkgroup(source, true)
                             end
                         end
                     end
                 else
-                    Labor.Duty:Off(k, source)
+                    exports['sandbox-labor']:OffDuty(k, source)
                 end
             end
         end
@@ -19,11 +19,11 @@ function RunLaborLogoutShit(source)
 
     for k, v in pairs(_Groups) do
         if v.Creator.ID == source then
-            return Labor.Workgroups:Disband(source, true)
+            return exports['sandbox-labor']:DisbandWorkgroup(source, true)
         else
             for k2, v2 in ipairs(v.Members) do
                 if v2.ID == source then
-                    return Labor.Workgroups:Leave(v, source)
+                    return exports['sandbox-labor']:LeaveWorkgroup(v, source)
                 end
             end
         end

@@ -33,14 +33,14 @@ AddEventHandler("Labor:Server:Startup", function()
 					if lootItem then
 						if FishingConfig.FishItems[lootItem.name] then
 							if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _fishing[_joiners[source]] ~= nil and (_fishing[_joiners[source]].tool == data.toolUsed) then
-								if Labor.Offers:Update(_joiners[source], _JOB, lootItem.count, true) then
+								if exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, lootItem.count, true) then
 									_fishing[_joiners[source]].state = 2
 
-									Labor.Workgroups:SendEvent(
+									exports['sandbox-labor']:SendWorkgroupEvent(
 										_joiners[source],
 										string.format("Fishing:Client:%s:FinishJob", _joiners[source])
 									)
-									Labor.Offers:ManualFinish(_joiners[source], _JOB)
+									exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 								end
 							end
 
@@ -118,8 +118,8 @@ function RegisterFishingItems()
 		if _joiners[source] and _fishing[_joiners[source]] ~= nil and _fishing[_joiners[source]].state == 0 then
 			_fishing[_joiners[source]].state = 1
 			_fishing[_joiners[source]].tool = "rod"
-			Labor.Offers:Start(_joiners[source], _JOB, "Catch Fish", 30)
-			Labor.Workgroups:SendEvent(
+			exports['sandbox-labor']:StartOffer(_joiners[source], _JOB, "Catch Fish", 30)
+			exports['sandbox-labor']:SendWorkgroupEvent(
 				_joiners[source],
 				string.format("Fishing:Client:%s:Startup", _joiners[source])
 			)
@@ -140,8 +140,8 @@ function RegisterFishingItems()
 		if _joiners[source] and _fishing[_joiners[source]] ~= nil and _fishing[_joiners[source]].state == 0 then
 			_fishing[_joiners[source]].state = 1
 			_fishing[_joiners[source]].tool = "net"
-			Labor.Offers:Start(_joiners[source], _JOB, "Catch Fish", 40)
-			Labor.Workgroups:SendEvent(
+			exports['sandbox-labor']:StartOffer(_joiners[source], _JOB, "Catch Fish", 40)
+			exports['sandbox-labor']:SendWorkgroupEvent(
 				_joiners[source],
 				string.format("Fishing:Client:%s:Startup", _joiners[source])
 			)
@@ -197,7 +197,7 @@ AddEventHandler("Fishing:Server:OnDuty", function(joiner, members, isWorkgroup)
 		{})
 	TriggerClientEvent("Fishing:Client:OnDuty", joiner, joiner, os.time())
 
-	Labor.Offers:Task(joiner, _JOB, "Buy Fishing Equipment & Start Fishing")
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Buy Fishing Equipment & Start Fishing")
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner

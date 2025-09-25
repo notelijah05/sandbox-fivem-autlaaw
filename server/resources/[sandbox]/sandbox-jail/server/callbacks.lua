@@ -27,11 +27,11 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Jail:StartWork", function(source, data, cb)
-		Labor.Duty:On("Prison", source, false)
+		exports['sandbox-labor']:OnDuty("Prison", source, false)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Jail:QuitWork", function(source, data, cb)
-		Labor.Duty:Off("Prison", source, false, false)
+		exports['sandbox-labor']:OffDuty("Prison", source, false, false)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Jail:MakeItem", function(source, data, cb)

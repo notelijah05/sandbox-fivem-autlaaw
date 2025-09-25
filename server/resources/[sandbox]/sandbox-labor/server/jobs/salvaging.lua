@@ -28,9 +28,10 @@ local _deliveryLocs = {
 AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Salvaging:StartJob", function(source, data, cb)
 		if _salvaging[data] ~= nil and _salvaging[data].state == 0 then
-			Labor.Offers:Start(data, _JOB, "Scrap Cars", 15)
+			exports['sandbox-labor']:StartOffer(data, _JOB, "Scrap Cars", 15)
 			_salvaging[data].state = 1
-			Labor.Workgroups:SendEvent(_joiners[source], string.format("Salvaging:Client:%s:Startup", _joiners[source]))
+			exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+				string.format("Salvaging:Client:%s:Startup", _joiners[source]))
 			cb(true)
 		else
 			cb(false)
@@ -63,19 +64,19 @@ AddEventHandler("Labor:Server:Startup", function()
 				-- end
 
 				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "salvagedparts", math.random(10), {}, 1)
-				Labor.Workgroups:SendEvent(
+				exports['sandbox-labor']:SendWorkgroupEvent(
 					_joiners[source],
 					string.format("Salvaging:Client:%s:Action", _joiners[source]),
 					data
 				)
 
-				if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
+				if exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true) then
 					_salvaging[_joiners[source]].state = 2
-					Labor.Workgroups:SendEvent(
+					exports['sandbox-labor']:SendWorkgroupEvent(
 						_joiners[source],
 						string.format("Salvaging:Client:%s:EndScrapping", _joiners[source])
 					)
-					Labor.Offers:Task(_joiners[source], _JOB, "Return To The Yard Manager")
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Return To The Yard Manager")
 				end
 			end
 		end
@@ -86,8 +87,8 @@ AddEventHandler("Labor:Server:Startup", function()
 		if _salvaging[_joiners[source]].state == 2 then
 			_salvaging[_joiners[source]].state = 3
 			exports['sandbox-inventory']:AddItem(char:GetData("SID"), "packaged_parts", 1, {}, 1)
-			Labor.Offers:Start(_joiners[source], _JOB, "Deliver Packaged Parts", 1)
-			Labor.Workgroups:SendEvent(
+			exports['sandbox-labor']:StartOffer(_joiners[source], _JOB, "Deliver Packaged Parts", 1)
+			exports['sandbox-labor']:SendWorkgroupEvent(
 				_joiners[source],
 				string.format("Salvaging:Client:%s:StartDelivery", _joiners[source]),
 				_deliveryLocs[math.random(#_deliveryLocs)]
@@ -109,7 +110,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			if (count or 0) > 0 then
 				if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "packaged_parts", count) then
 					_salvaging[_joiners[source]].state = 4
-					Labor.Offers:ManualFinish(_joiners[source], _JOB)
+					exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 					cb(true)
 				else
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
@@ -153,7 +154,7 @@ AddEventHandler("Salvaging:Server:OnDuty", function(joiner, members, isWorkgroup
 			TriggerClientEvent("Salvaging:Client:OnDuty", v.ID, joiner, os.time())
 		end
 	end
-	Labor.Offers:Task(joiner, _JOB, "Talk To The Yard Manager")
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Talk To The Yard Manager")
 end)
 
 AddEventHandler("Salvaging:Server:OffDuty", function(source, joiner)
