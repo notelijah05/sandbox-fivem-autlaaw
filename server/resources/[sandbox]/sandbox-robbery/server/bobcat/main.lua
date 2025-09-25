@@ -712,7 +712,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									string.format("%s %s (%s) Failed Hacking Bobcat Doors", char:GetData("First"),
 										char:GetData("Last"), char:GetData("SID")))
 								exports['sandbox-doors']:SetLock("bobcat_inner", true)
-								Status.Modify:Add(source, "PLAYER_STRESS", 6)
+								exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 
 								local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 								if (os.time() - itemData.durability >= newValue) then

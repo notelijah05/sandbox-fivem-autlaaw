@@ -68,7 +68,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		end
 		local _source = source
 		if data.entity ~= 0 and data.entity ~= nil then
-			Status.Modify:Remove(_source, "PLAYER_STRESS", math.random(3))
+			exports['sandbox-status']:Remove(_source, "PLAYER_STRESS", math.random(3))
 			cb(true)
 		else
 			cb(false)

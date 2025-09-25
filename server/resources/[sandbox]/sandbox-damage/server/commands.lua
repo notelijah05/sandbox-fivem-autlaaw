@@ -5,7 +5,7 @@ function RegisterChatCommands()
             local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
             if char ~= nil and ((char:GetData("Source") ~= admin:GetData("Source")) or admin.Permissions:IsAdmin()) then
                 exports["sandbox-base"]:ClientCallback(char:GetData("Source"), "Damage:Heal", true)
-                Status:Set(source, "PLAYER_STRESS", 0)
+                exports['sandbox-status']:Set(source, "PLAYER_STRESS", 0)
             else
                 exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
             end
@@ -13,7 +13,7 @@ function RegisterChatCommands()
             local char = exports['sandbox-characters']:FetchCharacterSource(source)
             if char ~= nil then
                 exports["sandbox-base"]:ClientCallback(source, "Damage:Heal", true)
-                Status:Set(source, "PLAYER_STRESS", 0)
+                exports['sandbox-status']:Set(source, "PLAYER_STRESS", 0)
             end
         end
     end, {
@@ -43,7 +43,7 @@ function RegisterChatCommands()
         end
 
         exports["sandbox-base"]:ClientCallback(source, "Damage:Heal", true)
-        Status:Set(source, "PLAYER_STRESS", 0)
+        exports['sandbox-status']:Set(source, "PLAYER_STRESS", 0)
     end, {
         help = "Heals Player",
         params = {

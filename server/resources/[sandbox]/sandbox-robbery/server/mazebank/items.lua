@@ -130,11 +130,11 @@ function RegisterMBItemUses()
 												)
 												GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 												_mbAlerted = os.time() + (60 * 10)
-												Status.Modify:Add(source, "PLAYER_STRESS", 3)
+												exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 											end
 										else
 											_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
-											Status.Modify:Add(source, "PLAYER_STRESS", 6)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 										end
 
 										_mbInUse[k] = false
@@ -276,7 +276,7 @@ function RegisterMBItemUses()
 											}
 
 											GlobalState["Fleeca:Disable:mazebank_baycity"] = true
-											Status.Modify:Add(source, "PLAYER_STRESS", 3)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 										else
 											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
@@ -297,7 +297,7 @@ function RegisterMBItemUses()
 											end
 
 											_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
-											Status.Modify:Add(source, "PLAYER_STRESS", 6)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 										end
 										_mbInUse[k] = false
 									end)
@@ -424,7 +424,7 @@ function RegisterMBItemUses()
 										GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 										_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
 										exports['sandbox-doors']:SetLock(v.door, false)
-										Status.Modify:Add(source, "PLAYER_STRESS", 3)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 									else
 										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
@@ -439,7 +439,7 @@ function RegisterMBItemUses()
 
 										_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
 										exports['sandbox-doors']:SetLock(v.door, true)
-										Status.Modify:Add(source, "PLAYER_STRESS", 6)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 										if os.time() - itemData.durability >= newValue then

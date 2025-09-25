@@ -1,42 +1,28 @@
 _reductions = 0
 
-AddEventHandler("Damage:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-    Status = exports["sandbox-base"]:FetchComponent("Status")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-    exports["sandbox-base"]:RequestDependencies("Damage", {
-        "Status",
-    }, function(error)
-        if #error > 0 then
-            return
+    exports["sandbox-base"]:RegisterClientCallback("Damage:Heal", function(s)
+        if s then
+            LocalPlayer.state.deadData = {}
+            exports['sandbox-damage']:ReductionsReset()
         end
-        RetrieveComponents()
+        exports['sandbox-damage']:Revive()
+    end)
 
-        exports["sandbox-base"]:RegisterClientCallback("Damage:Heal", function(s)
-            if s then
-                LocalPlayer.state.deadData = {}
-                exports['sandbox-damage']:ReductionsReset()
-            end
-            exports['sandbox-damage']:Revive()
-        end)
+    exports["sandbox-base"]:RegisterClientCallback("Damage:FieldStabalize", function(s)
+        exports['sandbox-damage']:Revive(true)
+    end)
 
-        exports["sandbox-base"]:RegisterClientCallback("Damage:FieldStabalize", function(s)
-            exports['sandbox-damage']:Revive(true)
-        end)
+    exports["sandbox-base"]:RegisterClientCallback("Damage:Kill", function()
+        ApplyDamageToPed(LocalPlayer.state.ped, 10000)
+    end)
 
-        exports["sandbox-base"]:RegisterClientCallback("Damage:Kill", function()
-            ApplyDamageToPed(LocalPlayer.state.ped, 10000)
-        end)
-
-        exports["sandbox-base"]:RegisterClientCallback("Damage:Admin:Godmode", function(s)
-            if s then
-                exports['sandbox-hud']:ApplyBuff("godmode")
-            else
-                exports['sandbox-hud']:RemoveBuffType("godmode")
-            end
-        end)
+    exports["sandbox-base"]:RegisterClientCallback("Damage:Admin:Godmode", function(s)
+        if s then
+            exports['sandbox-hud']:ApplyBuff("godmode")
+        else
+            exports['sandbox-hud']:RemoveBuffType("godmode")
+        end
     end)
 end)
 
@@ -206,7 +192,7 @@ exports("Revive", function(fieldTreat)
     ClearPedBloodDamage(player)
 
     if not fieldTreat then
-        Status:Reset()
+        exports['sandbox-status']:Reset()
     end
 
     DoScreenFadeIn(1000)

@@ -465,9 +465,9 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 
 			if _localConfig.Animals[data] ~= nil and _localConfig.Animals[data].Illegal then
 				TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", "illegalHunting")
-				Status.Modify:Add("PLAYER_STRESS", 10, false, true)
+				exports['sandbox-status']:Add("PLAYER_STRESS", 10, false, true)
 			else
-				Status.Modify:Add("PLAYER_STRESS", 5, false, true)
+				exports['sandbox-status']:Add("PLAYER_STRESS", 5, false, true)
 			end
 			exports["sandbox-base"]:ServerCallback("Hunting:HarvestAnimal", {
 				animal = data,

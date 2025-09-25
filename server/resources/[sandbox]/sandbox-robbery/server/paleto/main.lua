@@ -82,7 +82,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						details = "Blaine County Savings Bank",
 					}, "paleto")
 				_pbAlerted = os.time() + (60 * 10)
-				Status.Modify:Add(source, "PLAYER_STRESS", 15)
+				exports['sandbox-status']:Add(source, "PLAYER_STRESS", 15)
 			end
 		end
 	end)
@@ -192,7 +192,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						else
 							exports['sandbox-doors']:SetLock(data.data.door, true)
 							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Access Code")
-							Status.Modify:Add(source, "PLAYER_STRESS", 6)
+							exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 						end
 					else
 						cb(false)
@@ -331,9 +331,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 											)
 											exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", true)
 										end
-										Status.Modify:Add(source, "PLAYER_STRESS", 3)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 									else
-										Status.Modify:Add(source, "PLAYER_STRESS", 6)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 									end
 
 									_pbInUse.powerBoxes[data.boxId] = false
@@ -472,9 +472,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 												)
 											)
 										end
-										Status.Modify:Add(source, "PLAYER_STRESS", 3)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 									else
-										Status.Modify:Add(source, "PLAYER_STRESS", 6)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 									end
 
 									_pbInUse.pcHacks[data.pcId] = false
@@ -606,10 +606,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 												"paleto"
 											)
 											_pbAlerted = os.time() + (60 * 10)
-											Status.Modify:Add(source, "PLAYER_STRESS", 3)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 										end
 									else
-										Status.Modify:Add(source, "PLAYER_STRESS", 6)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 									end
 
 									_pbInUse.workstation = false
@@ -749,10 +749,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 												"paleto"
 											)
 											_pbAlerted = os.time() + (60 * 10)
-											Status.Modify:Add(source, "PLAYER_STRESS", 3)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 										end
 									else
-										Status.Modify:Add(source, "PLAYER_STRESS", 6)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 									end
 
 									_pbInUse.officeHacks[data.officeId] = false
@@ -1109,7 +1109,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									"paleto"
 								)
 								_pbAlerted = os.time() + (60 * 10)
-								Status.Modify:Add(source, "PLAYER_STRESS", 3)
+								exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 							end
 
 							_pbInUse.officeSafe = false

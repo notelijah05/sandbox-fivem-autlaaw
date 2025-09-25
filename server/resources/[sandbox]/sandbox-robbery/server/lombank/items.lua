@@ -130,9 +130,9 @@ function RegisterLBItemUses()
 												)
 												_lbAlerted = os.time() + (60 * 10)
 											end
-											Status.Modify:Add(source, "PLAYER_STRESS", 3)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 										else
-											Status.Modify:Add(source, "PLAYER_STRESS", 6)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 										end
 
 										_lbInUse[k] = false
@@ -271,7 +271,7 @@ function RegisterLBItemUses()
 										"power_small_complete_off.ogg", 0.1)
 
 									exports['sandbox-doors']:SetLock("lombank_lasers", false)
-									Status.Modify:Add(source, "PLAYER_STRESS", 3)
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 									GlobalState["Fleeca:Disable:lombank_legion"] = true
 									if not _lbAlerted or os.time() > _lbAlerted then
 										exports['sandbox-robbery']:TriggerPDAlert(
@@ -294,7 +294,7 @@ function RegisterLBItemUses()
 										_lbAlerted = os.time() + (60 * 10)
 									end
 								else
-									Status.Modify:Add(source, "PLAYER_STRESS", 6)
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 								end
 
 								_lbInUse.vaultPower = false
@@ -428,7 +428,7 @@ function RegisterLBItemUses()
 										})
 
 										exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
-										Status.Modify:Add(source, "PLAYER_STRESS", 3)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 										GlobalState["Fleeca:Disable:lombank_legion"] = true
 										if not _lbAlerted or os.time() > _lbAlerted then
 											exports['sandbox-robbery']:TriggerPDAlert(
@@ -462,7 +462,7 @@ function RegisterLBItemUses()
 											)
 										)
 										exports['sandbox-doors']:SetLock(v.door, true)
-										Status.Modify:Add(source, "PLAYER_STRESS", 6)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 										if os.time() - itemData.durability >= newValue then

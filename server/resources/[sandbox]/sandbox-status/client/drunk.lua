@@ -32,7 +32,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 
         while LocalPlayer.state.loggedIn do
             if not LocalPlayer.state.isDead then
-                local val = Status.Get:Single("PLAYER_DRUNK").value or 0
+                local val = exports['sandbox-status']:GetSingle("PLAYER_DRUNK").value or 0
 
                 if val >= 10 then
                     if not wasDrunk then
@@ -342,13 +342,13 @@ function RegisterDrunkCallbacks()
                     exports['sandbox-animations']:EmotesForceCancel()
                     exports['sandbox-animations']:EmotesPlay(alcohol.anim, false, false, false)
 
-                    local drunkLevel = Status.Get:Single("PLAYER_DRUNK").value
+                    local drunkLevel = exports['sandbox-status']:GetSingle("PLAYER_DRUNK").value
                     if drunkLevel < alcohol.drunkBaseline then
-                        Status.Set:Single("PLAYER_DRUNK", alcohol.drunkBaseline)
+                        exports['sandbox-status']:SetSingle("PLAYER_DRUNK", alcohol.drunkBaseline)
                     end
 
-                    Status.Modify:Add("PLAYER_THIRST", alcohol.thirst)
-                    Status.Modify:Remove("PLAYER_STRESS", alcohol.stressRelief, true)
+                    exports['sandbox-status']:Add("PLAYER_THIRST", alcohol.thirst)
+                    exports['sandbox-status']:Remove("PLAYER_STRESS", alcohol.stressRelief, true)
 
                     local endTime = GetGameTimer() + alcohol.maxTime
 
@@ -356,7 +356,7 @@ function RegisterDrunkCallbacks()
                         local tick = 3
                         while LocalPlayer.state.loggedIn and exports['sandbox-animations']:EmotesGet() == alcohol.anim do
                             if tick >= 5 then
-                                Status.Modify:Add("PLAYER_DRUNK", alcohol.drunkPerTick)
+                                exports['sandbox-status']:Add("PLAYER_DRUNK", alcohol.drunkPerTick)
 
                                 tick = 0
                                 if endTime <= GetGameTimer() then

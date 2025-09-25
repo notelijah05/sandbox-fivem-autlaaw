@@ -1,14 +1,12 @@
 AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
 		"Reputation",
-		"Status",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then

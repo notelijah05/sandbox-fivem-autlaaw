@@ -334,7 +334,7 @@ function CreateStressBlips()
 end
 
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
-	if _pzs[id] and Status.Get:Single("PLAYER_STRESS").value > 0 and not _delay then
+	if _pzs[id] and exports['sandbox-status']:GetSingle("PLAYER_STRESS").value > 0 and not _delay then
 		while GetVehiclePedIsIn(LocalPlayer.state.ped) ~= 0 do
 			Wait(10)
 		end
@@ -357,7 +357,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 		if _pzDefs[_pzs[_inPoly]].anim ~= nil and not _delay then
 			local animData = _pzDefs[_pzs[_inPoly]].anim
 
-			local currentStress = Status.Get:Single("PLAYER_STRESS").value
+			local currentStress = exports['sandbox-status']:GetSingle("PLAYER_STRESS").value
 			local reliefMultiplier = _pzDefs[_pzs[_inPoly]].multipier or 3.0
 
 			local totalTime = math.ceil(currentStress * reliefMultiplier) * 1000
@@ -382,10 +382,10 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 				animation = animData,
 				disarm = true,
 			}, function()
-				Status.Modify:Remove("PLAYER_STRESS", 1, true)
+				exports['sandbox-status']:Remove("PLAYER_STRESS", 1, true)
 			end, function(cancelled)
 				if not cancelled then
-					Status.Set:Single("PLAYER_STRESS", 0)
+					exports['sandbox-status']:SetSingle("PLAYER_STRESS", 0)
 					exports["sandbox-hud"]:NotifSuccess("Stress Relieved")
 				else
 					exports["sandbox-hud"]:NotifInfo("Stress Partially Relieved")
@@ -393,7 +393,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 
 				SetTimeout(tickTime * 2, function()
 					_delay = false
-					if _inPoly ~= nil and Status.Get:Single("PLAYER_STRESS").value > 0 then
+					if _inPoly ~= nil and exports['sandbox-status']:GetSingle("PLAYER_STRESS").value > 0 then
 						exports['sandbox-hud']:ActionShow(
 							"destress",
 							string.format("{keybind}primary_action{/keybind} To %s", _pzDefs[_pzs[_inPoly]].action)

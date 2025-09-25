@@ -123,7 +123,7 @@ function StartThreads()
 					not _blacklistedWeps[GetCurrentPedWeapon(LocalPlayer.state.ped, true)]
 					and IsPlayerFreeAiming(LocalPlayer.state.PlayerID)
 				then
-					Status.Modify:Add("PLAYER_STRESS", 1, false, true)
+					exports['sandbox-status']:Add("PLAYER_STRESS", 1, false, true)
 					Wait(40000)
 				end
 				Wait(100)

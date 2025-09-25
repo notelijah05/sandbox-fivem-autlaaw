@@ -135,7 +135,7 @@ RegisterNetEvent("Drugs:Effects:Heal", function(quality)
 		drugEffectApplyHealthMulti = 3.0
 	end
 
-	Status.Modify:Add("PLAYER_DRUNK", math.ceil(10 * (1.0 + (drugEffectQuality / 100))))
+	exports['sandbox-status']:Add("PLAYER_DRUNK", math.ceil(10 * (1.0 + (drugEffectQuality / 100))))
 	_healTime = math.ceil(30 * (1.0 + (drugEffectQuality / 100)) * (1.0 - (addiction / 100)))
 	local loops = 0
 	exports['sandbox-hud']:ApplyUniqueBuff("heal", _healTime, false)

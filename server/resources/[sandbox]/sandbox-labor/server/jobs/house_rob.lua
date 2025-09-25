@@ -166,7 +166,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 								local tier = _robbers[_joiners[source]].tier
 								if success then
-									Status.Modify:Add(source, "PLAYER_STRESS", tier)
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier)
 									exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 										string.format("HouseRobbery:Client:%s:Lockpicked", _joiners[source]),
 										_robbers[_joiners[source]].nodes)
@@ -185,7 +185,7 @@ AddEventHandler("Labor:Server:Startup", function()
 									_robbers[_joiners[source]].state = 4
 								else
 									_robbers[_joiners[source]].state = 2
-									Status.Modify:Add(source, "PLAYER_STRESS", tier * 2)
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier * 2)
 								end
 							end
 						)
@@ -237,7 +237,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 								local tier = _robbers[_joiners[source]].tier
 								if success then
-									Status.Modify:Add(source, "PLAYER_STRESS", tier)
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier)
 									exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 										string.format("HouseRobbery:Client:%s:Lockpicked", _joiners[source]),
 										_robbers[_joiners[source]].nodes)
@@ -256,7 +256,7 @@ AddEventHandler("Labor:Server:Startup", function()
 									_robbers[_joiners[source]].state = 4
 								else
 									_robbers[_joiners[source]].state = 2
-									Status.Modify:Add(source, "PLAYER_STRESS", tier * 2)
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier * 2)
 								end
 							end
 						)

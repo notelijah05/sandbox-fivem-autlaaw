@@ -456,7 +456,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											state = 2,
 											expires = os.time() + (60 * timer),
 										}
-										Status.Modify:Add(source, "PLAYER_STRESS", 3)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 										exports['sandbox-base']:ExecuteClient(
 											source,
 											"Notification",
@@ -466,7 +466,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										)
 										exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 									else
-										Status.Modify:Add(source, "PLAYER_STRESS", 6)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 
 										exports['sandbox-base']:LoggerInfo("Robbery",
 											string.format("%s %s (%s) Failed Hacking Vault Door At %s",
@@ -638,7 +638,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											expires = _fcGlobalReset[pState.fleeca],
 										}
 										exports['sandbox-doors']:SetLock(string.format("%s_gate", pState.fleeca), false)
-										Status.Modify:Add(source, "PLAYER_STRESS", 3)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 										exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
 											"Doorlock Disengaged", 6000)
 									else
@@ -646,7 +646,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											string.format("%s %s (%s) Failed Thermiting Vault Gate Door At %s",
 												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
 												pState.fleeca))
-										Status.Modify:Add(source, "PLAYER_STRESS", 6)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 									end
 									_inUse.GateDoor[pState.fleeca] = false
 								end, pState.fleeca
@@ -747,7 +747,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												state = 2,
 												expires = os.time() + (60 * timer),
 											}
-											Status.Modify:Add(source, "PLAYER_STRESS", 3)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 											exports['sandbox-base']:ExecuteClient(
 												source,
 												"Notification",
@@ -765,7 +765,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												state = 4,
 												expires = os.time() + (60 * 60 * 6),
 											}
-											Status.Modify:Add(source, "PLAYER_STRESS", 6)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 										end
 										exports['sandbox-inventory']:RemoveSlot(
 											itemData.Owner,

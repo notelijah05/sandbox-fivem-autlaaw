@@ -630,14 +630,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 					_storeAlerts[data.store] = (os.time() + (60 * 5))
 					exports['sandbox-robbery']:TriggerPDAlert(source, _storeLocs[data.store].coords, "10-90",
 						"Store Robbery", {
-						icon = 628,
-						size = 0.9,
-						color = 31,
-						duration = (60 * 5),
-					}, {
-						icon = "shop",
-						details = "24/7",
-					}, data.store)
+							icon = 628,
+							size = 0.9,
+							color = 31,
+							duration = (60 * 5),
+						}, {
+							icon = "shop",
+							details = "24/7",
+						}, data.store)
 				end
 				cb(true)
 			end
@@ -766,7 +766,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									GlobalState[string.format("Safe:%s", data.id)] = obj
 									GlobalState["StoreAntiShitlord"] = os.time() + (60 * math.random(5, 10))
 
-									Status.Modify:Add(source, "PLAYER_STRESS", 3)
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 									exports['sandbox-base']:ExecuteClient(
 										source,
 										"Notification",
@@ -775,7 +775,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										6000
 									)
 								else
-									Status.Modify:Add(source, "PLAYER_STRESS", 6)
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 								end
 
 								_storeInUse[data.id] = nil
@@ -971,9 +971,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 						color = 31,
 						duration = (60 * 5),
 					}, {
-					icon = "shop",
-					details = "24/7",
-				}, data.store)
+						icon = "shop",
+						details = "24/7",
+					}, data.store)
 			end
 			local obj = {
 				expires = (os.time() + 60 * 5),

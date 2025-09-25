@@ -335,7 +335,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                     exports['sandbox-hud']:ProgressCancel()
                 end, function(cancelled)
                     if not cancelled then
-                        Status.Modify:Add("PLAYER_STRESS", 3, false, true)
+                        exports['sandbox-status']:Add("PLAYER_STRESS", 3, false, true)
                         exports["sandbox-base"]:ServerCallback("HouseRobbery:Search", data.id)
                     end
                 end)

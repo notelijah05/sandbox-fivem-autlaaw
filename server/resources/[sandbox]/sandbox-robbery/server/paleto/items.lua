@@ -134,7 +134,7 @@ function RegisterPBItems()
 												exports['sandbox-cctv']:StateGroupOnline("paleto")
 											end
 
-											Status.Modify:Add(source, "PLAYER_STRESS", 3)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 											GlobalState["Fleeca:Disable:savings_paleto"] = true
 										else
 											exports['sandbox-base']:LoggerInfo(
@@ -147,7 +147,7 @@ function RegisterPBItems()
 													subStationId
 												)
 											)
-											Status.Modify:Add(source, "PLAYER_STRESS", 6)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 										end
 
 										_pbInUse.substations[subStationId] = false
@@ -279,10 +279,10 @@ function RegisterPBItems()
 															"paleto"
 														)
 														_pbAlerted = os.time() + (60 * 10)
-														Status.Modify:Add(source, "PLAYER_STRESS", 3)
+														exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 													end
 												else
-													Status.Modify:Add(source, "PLAYER_STRESS", 6)
+													exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 												end
 
 												_pbInUse[v.door] = false
@@ -413,10 +413,10 @@ function RegisterPBItems()
 															"paleto"
 														)
 														_pbAlerted = os.time() + (60 * 10)
-														Status.Modify:Add(source, "PLAYER_STRESS", 3)
+														exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 													end
 												else
-													Status.Modify:Add(source, "PLAYER_STRESS", 6)
+													exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 												end
 
 												_pbInUse.securityAccess[v.powerId] = false
@@ -543,7 +543,7 @@ function RegisterPBItems()
 
 											exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot,
 												1)
-											Status.Modify:Add(source, "PLAYER_STRESS", 3)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 											GlobalState["Fleeca:Disable:savings_paleto"] = true
 										else
 											exports['sandbox-base']:LoggerInfo(
@@ -557,7 +557,7 @@ function RegisterPBItems()
 												)
 											)
 											exports['sandbox-doors']:SetLock(v.door, true)
-											Status.Modify:Add(source, "PLAYER_STRESS", 6)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 
 											local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 											if os.time() - itemData.durability >= newValue then

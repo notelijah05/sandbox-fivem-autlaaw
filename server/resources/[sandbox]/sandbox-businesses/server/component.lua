@@ -3,13 +3,11 @@ _pickups = {}
 AddEventHandler("Businesses:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Status = exports["sandbox-base"]:FetchComponent("Status")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Businesses", {
 		"Reputation",
-		"Status",
 	}, function(error)
 		if #error > 0 then
 			exports['sandbox-base']:LoggerCritical("Businesses", "Failed To Load All Dependencies")

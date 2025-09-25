@@ -1,46 +1,32 @@
-AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Status = exports["sandbox-base"]:FetchComponent("Status")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Admin", {
-		"Status",
-	}, function(error)
-		if #error > 0 then
-			return
+	exports["sandbox-keybinds"]:Add("admin_menu", "HOME", "keyboard", "[Admin] Open Admin Menu", function()
+		exports['sandbox-admin']:OpenMenu()
+	end)
+
+	exports["sandbox-keybinds"]:Add("admin_noclip", "END", "keyboard", "[Admin] Toggle NoClip", function()
+		if LocalPlayer.state.isStaff then
+			exports["sandbox-base"]:ServerCallback("Admin:NoClip", {
+				active = not exports['sandbox-admin']:NoClipIsActive(),
+			}, function(isAdmin)
+				if isAdmin then
+					exports['sandbox-admin']:NoClipToggle()
+				end
+			end)
 		end
-		RetrieveComponents()
+	end)
 
-		exports["sandbox-keybinds"]:Add("admin_menu", "HOME", "keyboard", "[Admin] Open Admin Menu", function()
-			exports['sandbox-admin']:OpenMenu()
-		end)
+	exports["sandbox-keybinds"]:Add("admin_debug1", "", "keyboard", "[Admin] Debug 1", function()
+		DoAdminVehicleAction("repair_engine")
+	end)
 
-		exports["sandbox-keybinds"]:Add("admin_noclip", "END", "keyboard", "[Admin] Toggle NoClip", function()
-			if LocalPlayer.state.isStaff then
-				exports["sandbox-base"]:ServerCallback("Admin:NoClip", {
-					active = not exports['sandbox-admin']:NoClipIsActive(),
-				}, function(isAdmin)
-					if isAdmin then
-						exports['sandbox-admin']:NoClipToggle()
-					end
-				end)
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("admin_debug2", "", "keyboard", "[Admin] Debug 2", function()
+		DoAdminVehicleAction("repair")
+	end)
 
-		exports["sandbox-keybinds"]:Add("admin_debug1", "", "keyboard", "[Admin] Debug 1", function()
-			DoAdminVehicleAction("repair_engine")
-		end)
-
-		exports["sandbox-keybinds"]:Add("admin_debug2", "", "keyboard", "[Admin] Debug 2", function()
-			DoAdminVehicleAction("repair")
-		end)
-
-		exports["sandbox-keybinds"]:Add("admin_debug3", "", "keyboard", "[Admin] Debug IDs", function()
-			if LocalPlayer.state.isStaff then
-				ToggleAdminPlayerIDs()
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("admin_debug3", "", "keyboard", "[Admin] Debug IDs", function()
+		if LocalPlayer.state.isStaff then
+			ToggleAdminPlayerIDs()
+		end
 	end)
 end)
 

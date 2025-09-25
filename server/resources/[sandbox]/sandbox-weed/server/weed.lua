@@ -3,13 +3,11 @@ _plants = {}
 AddEventHandler("Weed:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Status = exports["sandbox-base"]:FetchComponent("Status")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Weed", {
 		"Reputation",
-		"Status",
 	}, function(error)
 		if #error > 0 then
 			return
