@@ -66,7 +66,7 @@ function StartThreads()
 								vehName = vehEnt.state.Make .. " " .. vehEnt.state.Model
 							end
 
-							EmergencyAlerts:CreateIfReported(500.0, "shotsfiredvehicle", true, {
+							exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(500.0, "shotsfiredvehicle", true, {
 								icon = "car",
 								details = vehName,
 								vehicleColor = {
@@ -76,9 +76,9 @@ function StartThreads()
 								},
 							})
 						elseif IsPedCurrentWeaponSilenced(LocalPlayer.state.ped) then
-							EmergencyAlerts:CreateIfReported(10.0, "shotsfired", true)
+							exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(10.0, "shotsfired", true)
 						else
-							EmergencyAlerts:CreateIfReported(900.0, "shotsfired", true)
+							exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(900.0, "shotsfired", true)
 						end
 					end
 					Wait(60000)

@@ -257,7 +257,7 @@ RegisterNetEvent("EMS:Server:Panic", function(isAlpha)
 		local coords = GetEntityCoords(GetPlayerPed(src))
 		exports["sandbox-base"]:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
 			if isAlpha then
-				EmergencyAlerts:Create(
+				exports['sandbox-mdt']:EmergencyAlertsCreate(
 					"13-A",
 					"Medic Down",
 					{ "police_alerts", "ems_alerts" },
@@ -282,7 +282,7 @@ RegisterNetEvent("EMS:Server:Panic", function(isAlpha)
 					2
 				)
 			else
-				EmergencyAlerts:Create(
+				exports['sandbox-mdt']:EmergencyAlertsCreate(
 					"13-B",
 					"Medic Down",
 					{ "police_alerts", "ems_alerts" },

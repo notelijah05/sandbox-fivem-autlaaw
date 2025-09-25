@@ -19,7 +19,7 @@ function StartAETrackingThreads()
                 end
             end
 
-            EmergencyAlerts:SendOnDutyEvent("EmergencyAlerts:Client:UpdateTrackers", memberCoords)
+            exports['sandbox-mdt']:EmergencyAlertsSendOnDutyEvent("EmergencyAlerts:Client:UpdateTrackers", memberCoords)
         end
     end)
 end

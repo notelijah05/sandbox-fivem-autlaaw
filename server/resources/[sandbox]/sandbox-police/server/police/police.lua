@@ -7,7 +7,6 @@ AddEventHandler("Police:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Police",
 		"Handcuffs",
-		"EmergencyAlerts",
 		"MDT",
 		"Doors",
 		"Robbery"
@@ -382,44 +380,46 @@ RegisterNetEvent("Police:Server:Panic", function(isAlpha)
 		local coords = GetEntityCoords(GetPlayerPed(src))
 		exports["sandbox-base"]:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
 			if isAlpha then
-				EmergencyAlerts:Create("13-A", "Officer Down", { "police_alerts", "ems_alerts" }, location, {
-					icon = "circle-exclamation",
-					details = string.format(
-						"%s - %s %s | %s",
-						char:GetData("Callsign"),
-						char:GetData("First"),
-						char:GetData("Last"),
-						pState?.onRadio and string.format("Radio Freq: %s", pState.onRadio) or "Not On Radio"
-					)
-				}, true, {
-					icon = 303,
-					size = 1.2,
-					color = 26,
-					duration = (60 * 10),
-				}, 1)
+				exports['sandbox-mdt']:EmergencyAlertsCreate("13-A", "Officer Down", { "police_alerts", "ems_alerts" },
+					location, {
+						icon = "circle-exclamation",
+						details = string.format(
+							"%s - %s %s | %s",
+							char:GetData("Callsign"),
+							char:GetData("First"),
+							char:GetData("Last"),
+							pState?.onRadio and string.format("Radio Freq: %s", pState.onRadio) or "Not On Radio"
+						)
+					}, true, {
+						icon = 303,
+						size = 1.2,
+						color = 26,
+						duration = (60 * 10),
+					}, 1)
 			else
-				EmergencyAlerts:Create("13-B", "Officer Down", { "police_alerts", "ems_alerts" }, location, {
-					icon = "circle-exclamation",
-					details = string.format(
-						"%s - %s %s",
-						char:GetData("Callsign"),
-						char:GetData("First"),
-						char:GetData("Last"),
-						pState?.onRadio and string.format("Radio Freq: %s", pState.onRadio) or "Not On Radio"
-					)
-				}, false, {
-					icon = 303,
-					size = 0.9,
-					color = 26,
-					duration = (60 * 10),
-				}, 1)
+				exports['sandbox-mdt']:EmergencyAlertsCreate("13-B", "Officer Down", { "police_alerts", "ems_alerts" },
+					location, {
+						icon = "circle-exclamation",
+						details = string.format(
+							"%s - %s %s",
+							char:GetData("Callsign"),
+							char:GetData("First"),
+							char:GetData("Last"),
+							pState?.onRadio and string.format("Radio Freq: %s", pState.onRadio) or "Not On Radio"
+						)
+					}, false, {
+						icon = 303,
+						size = 0.9,
+						color = 26,
+						duration = (60 * 10),
+					}, 1)
 			end
 		end)
 	elseif Player(src).state.onDuty == "prison" then
 		local coords = GetEntityCoords(GetPlayerPed(src))
 		exports["sandbox-base"]:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
 			if isAlpha then
-				EmergencyAlerts:Create("13-A", "Corrections Officer Down",
+				exports['sandbox-mdt']:EmergencyAlertsCreate("13-A", "Corrections Officer Down",
 					{ "police_alerts", "doc_alerts", "ems_alerts" },
 					location, {
 						icon = "circle-exclamation",
@@ -437,7 +437,7 @@ RegisterNetEvent("Police:Server:Panic", function(isAlpha)
 						duration = (60 * 10),
 					}, 1)
 			else
-				EmergencyAlerts:Create("13-B", "Corrections Officer Down",
+				exports['sandbox-mdt']:EmergencyAlertsCreate("13-B", "Corrections Officer Down",
 					{ "police_alerts", "doc_alerts", "ems_alerts" },
 					location, {
 						icon = "circle-exclamation",

@@ -285,11 +285,11 @@ local _predefined = {
 }
 
 AddEventHandler("Job:Server:DutyAdd", function(dutyData, source, stateId, callsign)
-	EmergencyAlerts:OnDuty(dutyData, source, stateId, callsign)
+	exports['sandbox-mdt']:EmergencyAlertsOnDuty(dutyData, source, stateId, callsign)
 end)
 
 AddEventHandler("Job:Server:DutyRemove", function(dutyData, source, stateId)
-	EmergencyAlerts:OffDuty(dutyData, source, stateId)
+	exports['sandbox-mdt']:EmergencyAlertsOffDuty(dutyData, source, stateId)
 end)
 
 AddEventHandler("EmergencyAlerts:Server:ServerDoPredefined", function(src, type, description)
@@ -307,7 +307,7 @@ AddEventHandler("EmergencyAlerts:Server:ServerDoPredefined", function(src, type,
 
 	exports["sandbox-base"]:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
 		if location ~= nil then
-			EmergencyAlerts:Create(
+			exports['sandbox-mdt']:EmergencyAlertsCreate(
 				data.code,
 				data.title,
 				data.type,
@@ -338,7 +338,7 @@ RegisterNetEvent("EmergencyAlerts:Server:DoPredefined", function(type, descripti
 	end
 
 	if data.isAnon then
-		EmergencyAlerts:Create(
+		exports['sandbox-mdt']:EmergencyAlertsCreate(
 			data.code,
 			data.title,
 			data.type,
@@ -360,7 +360,7 @@ RegisterNetEvent("EmergencyAlerts:Server:DoPredefined", function(type, descripti
 		end
 
 		exports["sandbox-base"]:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
-			EmergencyAlerts:Create(
+			exports['sandbox-mdt']:EmergencyAlertsCreate(
 				data.code,
 				data.title,
 				data.type,

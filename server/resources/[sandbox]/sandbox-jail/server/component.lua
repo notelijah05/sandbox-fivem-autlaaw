@@ -9,7 +9,6 @@ function RetrieveComponents()
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -19,7 +18,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jail",
 		"Pwnzor",
 		"Reputation",
-		"EmergencyAlerts",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -162,7 +160,7 @@ _JAIL = {
 			}, function()
 				TriggerClientEvent("Jail:Client:EnterJail", target)
 
-				EmergencyAlerts:Create("DOC", "New Inmate Arrival", "doc_alerts", {
+				exports['sandbox-mdt']:EmergencyAlertsCreate("DOC", "New Inmate Arrival", "doc_alerts", {
 					street1 = "Bolingbroke Penitentiary",
 					x = 1852.444,
 					y = 2585.973,

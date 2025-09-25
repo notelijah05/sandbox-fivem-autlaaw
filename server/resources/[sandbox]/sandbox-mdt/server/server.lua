@@ -27,7 +27,6 @@ function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	RegisterChatCommands()
 end
 
@@ -36,7 +35,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"MDT",
 		"Properties",
 		"Jail",
-		"EmergencyAlerts",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -753,7 +751,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				if jailed and not jailed.Released then
 					local dutyData = exports['sandbox-jobs']:DutyGetDutyData("prison")
 					if dutyData and dutyData.Count > 0 then
-						EmergencyAlerts:Create(
+						exports['sandbox-mdt']:EmergencyAlertsCreate(
 							"DOC",
 							"Visition Request from Lobby",
 							"doc_alerts",

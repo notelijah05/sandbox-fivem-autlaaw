@@ -184,7 +184,7 @@ RegisterNetEvent("MDT:Client:Toggle", function(eventOnClose)
 	_sendEventOnClose = eventOnClose
 	if _mdtOpen then
 		MDT:Close()
-		EmergencyAlerts:Close()
+		exports['sandbox-mdt']:EmergencyAlertsClose()
 	else
 		MDT:Open()
 	end
@@ -196,18 +196,18 @@ end)
 
 RegisterNetEvent("MDT:Client:Close", function()
 	MDT:Close()
-	EmergencyAlerts:Close()
+	exports['sandbox-mdt']:EmergencyAlertsClose()
 end)
 
 RegisterNUICallback("Close", function(data, cb)
 	cb("OK")
 	MDT:Close()
-	EmergencyAlerts:Close()
+	exports['sandbox-mdt']:EmergencyAlertsClose()
 end)
 
 AddEventHandler("Ped:Client:Died", function()
 	MDT:Close()
-	EmergencyAlerts:Close()
+	exports['sandbox-mdt']:EmergencyAlertsClose()
 end)
 
 function LoadAnim(dict)

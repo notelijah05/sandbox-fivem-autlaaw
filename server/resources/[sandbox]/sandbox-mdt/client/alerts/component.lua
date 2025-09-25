@@ -5,34 +5,15 @@ local _jobs = {
 	tow = true,
 }
 
-AddEventHandler("EmergencyAlerts:Shared:DependencyUpdate", RetrievePDAComponents)
-function RetrievePDAComponents()
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"EmergencyAlerts",
-		"CCTV",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrievePDAComponents()
-		RegisterCallbacks()
-		exports["sandbox-keybinds"]:Add("emergency_alerts_toggle", "GRAVE", "keyboard", "Police - Toggle Alerts Panel",
-			function()
-				local duty = LocalPlayer.state.onDuty
-				if _jobs[duty] and not LocalPlayer.state.isDead then
-					EmergencyAlerts:Open()
-				end
-			end)
-	end)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("EmergencyAlerts", _pdAlerts)
+	RegisterCallbacks()
+	exports["sandbox-keybinds"]:Add("emergency_alerts_toggle", "GRAVE", "keyboard", "Police - Toggle Alerts Panel",
+		function()
+			local duty = LocalPlayer.state.onDuty
+			if _jobs[duty] and not LocalPlayer.state.isDead then
+				exports['sandbox-mdt']:EmergencyAlertsOpen()
+			end
+		end)
 end)
 
 local _pTs = {
@@ -177,39 +158,42 @@ function RegisterCallbacks()
 end
 
 local ids = 0
-_pdAlerts = {
-	Open = function(self)
-		SendNUIMessage({
-			type = "SET_SHOWING",
-			data = {
-				state = true,
-			},
-		})
-		SetNuiFocus(true, true)
-	end,
-	Close = function(self)
-		SendNUIMessage({
-			type = "SET_SHOWING",
-			data = {
-				state = false,
-			},
-		})
-		SetNuiFocus(false, false)
-	end,
-	CreateIfReported = function(self, distance, type, isNpcTriggered, description)
-		if isNpcTriggered then
-			local ped = nearNpc(distance, type == "shotsfired" or type == "shotsfiredvehicle")
-			if ped ~= nil then
-				TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", type, description)
-				return true
-			end
-			return false
-		else
+
+exports("EmergencyAlertsOpen", function()
+	SendNUIMessage({
+		type = "SET_SHOWING",
+		data = {
+			state = true,
+		},
+	})
+	SetNuiFocus(true, true)
+end)
+
+exports("EmergencyAlertsClose", function()
+	SendNUIMessage({
+		type = "SET_SHOWING",
+		data = {
+			state = false,
+		},
+	})
+	SetNuiFocus(false, false)
+end)
+
+exports("EmergencyAlertsCreateIfReported", function(distance, type, isNpcTriggered, description)
+	if isNpcTriggered then
+		local ped = nearNpc(distance, type == "shotsfired" or type == "shotsfiredvehicle")
+		if ped ~= nil then
 			TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", type, description)
+			return true
 		end
-	end,
-	CreateClientAlert = function(self, code, title, eType, location, description, isPanic, blip, styleOverride, isArea,
-								 camera)
+		return false
+	else
+		TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", type, description)
+	end
+end)
+
+exports("EmergencyAlertsCreateClientAlert",
+	function(code, title, eType, location, description, isPanic, blip, styleOverride, isArea, camera)
 		local alert = {
 			id = string.format("local-%s-%s", GetGameTimer(), math.random(1000, 9999)),
 			code = code,
@@ -231,13 +215,12 @@ _pdAlerts = {
 				alert = alert,
 			},
 		})
-	end,
-}
+	end)
 
 RegisterNetEvent("EmergencyAlerts:Client:Open", function()
-	EmergencyAlerts:Open()
+	exports['sandbox-mdt']:EmergencyAlertsOpen()
 end)
 
 RegisterNetEvent("EmergencyAlerts:Client:Close", function()
-	EmergencyAlerts:Close()
+	exports['sandbox-mdt']:EmergencyAlertsClose()
 end)

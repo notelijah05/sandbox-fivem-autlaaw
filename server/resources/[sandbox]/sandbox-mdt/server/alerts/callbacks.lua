@@ -12,7 +12,7 @@ function RegisterEACallbacks()
 			local targetChar = exports['sandbox-characters']:FetchCharacterSource(target)
 			if targetChar and tState and trackerJobs[tState.onDuty] and not tState.trackerDisabled then
 				tState.trackerDisabled = true
-				EmergencyAlerts:DisableTracker(target, true)
+				exports['sandbox-mdt']:EmergencyAlertsDisableTracker(target, true)
 
 
 				local coords = GetEntityCoords(GetPlayerPed(target))
@@ -27,23 +27,24 @@ function RegisterEACallbacks()
 
 
 						if tState.onDuty == "police" then
-							EmergencyAlerts:Create("13-C", "Officer Tracker Disabled", "police_alerts", location, {
-								icon = "circle-exclamation",
-								details = string.format(
-									"%s - %s %s | %s",
-									targetChar:GetData("Callsign") or "UNKN",
-									targetChar:GetData("First"),
-									targetChar:GetData("Last"),
-									radioFreq
-								)
-							}, false, {
-								icon = 303,
-								size = 1.2,
-								color = 26,
-								duration = (60 * 10),
-							}, 1)
+							exports['sandbox-mdt']:EmergencyAlertsCreate("13-C", "Officer Tracker Disabled",
+								"police_alerts", location, {
+									icon = "circle-exclamation",
+									details = string.format(
+										"%s - %s %s | %s",
+										targetChar:GetData("Callsign") or "UNKN",
+										targetChar:GetData("First"),
+										targetChar:GetData("Last"),
+										radioFreq
+									)
+								}, false, {
+									icon = 303,
+									size = 1.2,
+									color = 26,
+									duration = (60 * 10),
+								}, 1)
 						elseif tState.onDuty == "prison" then
-							EmergencyAlerts:Create("13-C", "DOC Officer Tracker Disabled",
+							exports['sandbox-mdt']:EmergencyAlertsCreate("13-C", "DOC Officer Tracker Disabled",
 								{ "police_alerts", "doc_alerts" },
 								location, {
 									icon = "circle-exclamation",
@@ -61,7 +62,8 @@ function RegisterEACallbacks()
 									duration = (60 * 10),
 								}, 1)
 						elseif tState.onDuty == "ems" then
-							EmergencyAlerts:Create("13-C", "Medic Tracker Disabled", { "police_alerts", "ems_alerts" },
+							exports['sandbox-mdt']:EmergencyAlertsCreate("13-C", "Medic Tracker Disabled",
+								{ "police_alerts", "ems_alerts" },
 								location, {
 									icon = "circle-exclamation",
 									details = string.format(
@@ -94,7 +96,7 @@ function RegisterEACallbacks()
 		local pState = Player(source).state
 		if char and trackerJobs[pState.onDuty] and pState.trackerDisabled then
 			pState.trackerDisabled = false
-			EmergencyAlerts:DisableTracker(source, false)
+			exports['sandbox-mdt']:EmergencyAlertsDisableTracker(source, false)
 
 			local job = Player(source).state.onDuty
 

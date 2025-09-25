@@ -19,7 +19,6 @@ end
 
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
@@ -179,7 +178,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"EmergencyAlerts",
 		"Properties",
 		"Status",
 		"Reputation",
@@ -344,7 +342,7 @@ end)
 _ROBBERY = {
 	TriggerPDAlert = function(self, source, coords, code, title, blip, description, cameraGroup, isArea)
 		exports["sandbox-base"]:ClientCallback(source, "EmergencyAlerts:GetStreetName", coords, function(location)
-			EmergencyAlerts:Create(
+			exports['sandbox-mdt']:EmergencyAlertsCreate(
 				code,
 				title,
 				"police_alerts",

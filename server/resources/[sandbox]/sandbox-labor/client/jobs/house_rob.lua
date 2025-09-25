@@ -59,13 +59,13 @@ AddEventHandler("Labor:Client:Setup", function()
     exports["sandbox-base"]:RegisterClientCallback("HouseRobbery:Lockpick", function(data, cb)
         _lpStage = 0
         DoLockpick({ timer = 1.0, base = 5 }, data, cb)
-        EmergencyAlerts:CreateIfReported(40.0, "bane", true)
+        exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(40.0, "bane", true)
     end)
 
     exports["sandbox-base"]:RegisterClientCallback("HouseRobbery:AdvLockpick", function(data, cb)
         _lpStage = 0
         DoLockpick({ timer = 0.75, base = 8 }, data, cb)
-        EmergencyAlerts:CreateIfReported(40.0, "bane", true)
+        exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(40.0, "bane", true)
     end)
 
     exports['sandbox-hud']:InteractionRegisterMenu("house-robbery", "Enter House", "window-frame-open", function(data)

@@ -10,52 +10,38 @@ RADAR_LAST_REAR_PLATE = false
 RADAR_LAST_FRONT_PLATE = false
 RECENT_FLAGS = {}
 
-AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Radar", {
-		"EmergencyAlerts",
-	}, function(error)
-		if #error > 0 then
-			return
+	exports["sandbox-keybinds"]:Add("radar_lock", "MULTIPLY", "keyboard", "Radar - Toggle Fast Lock", function()
+		if RADAR_LOCKED then
+			UnlockRadar()
+		else
+			LockRadar()
 		end
-		RetrieveComponents()
-
-		exports["sandbox-keybinds"]:Add("radar_lock", "MULTIPLY", "keyboard", "Radar - Toggle Fast Lock", function()
-			if RADAR_LOCKED then
-				UnlockRadar()
-			else
-				LockRadar()
-			end
-		end)
-
-		exports["sandbox-keybinds"]:Add("radar_remote", "DIVIDE", "keyboard", "Radar - Open Menu/Remote", function()
-			OpenRadarRemote()
-		end)
-
-		exports["sandbox-keybinds"]:Add("radar_toggle", "SUBTRACT", "keyboard", "Radar - Show/Hide", function()
-			ToggleRadarIsDisabled()
-		end)
-
-		exports["sandbox-keybinds"]:Add("heli_toggle", "E", "keyboard", "Heli Camera - Toggle", function()
-			StartHeliCamera()
-		end)
-
-		exports["sandbox-keybinds"]:Add("heli_rappell", "X", "keyboard", "Heli - Rappel", function()
-			HeliRappel()
-		end)
-
-		-- exports["sandbox-keybinds"]:Add("heli_lock", "SPACE", "keyboard", "Heli Camera - Lock On/Off", function()
-		-- 	LockOnHeliCamera()
-		-- end)
-
-		-- exports["sandbox-keybinds"]:Add("heli_camera", "MOUSE_RIGHT", "MOUSE_BUTTON", "Heli Camera - Change Mode", function()
-		-- 	ChangeVision()
-		-- end)
 	end)
+
+	exports["sandbox-keybinds"]:Add("radar_remote", "DIVIDE", "keyboard", "Radar - Open Menu/Remote", function()
+		OpenRadarRemote()
+	end)
+
+	exports["sandbox-keybinds"]:Add("radar_toggle", "SUBTRACT", "keyboard", "Radar - Show/Hide", function()
+		ToggleRadarIsDisabled()
+	end)
+
+	exports["sandbox-keybinds"]:Add("heli_toggle", "E", "keyboard", "Heli Camera - Toggle", function()
+		StartHeliCamera()
+	end)
+
+	exports["sandbox-keybinds"]:Add("heli_rappell", "X", "keyboard", "Heli - Rappel", function()
+		HeliRappel()
+	end)
+
+	-- exports["sandbox-keybinds"]:Add("heli_lock", "SPACE", "keyboard", "Heli Camera - Lock On/Off", function()
+	-- 	LockOnHeliCamera()
+	-- end)
+
+	-- exports["sandbox-keybinds"]:Add("heli_camera", "MOUSE_RIGHT", "MOUSE_BUTTON", "Heli Camera - Change Mode", function()
+	-- 	ChangeVision()
+	-- end)
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")
@@ -306,7 +292,7 @@ function CheckPlateFlagged(direction, vehicle, plate)
 	if plateFlagged and not RECENT_FLAGS[plate] then
 		RECENT_FLAGS[plate] = true
 		PlayFlaggedAlert()
-		EmergencyAlerts:CreateClientAlert("Radar", "Flagged Plate Detected", "police_alerts",
+		exports['sandbox-mdt']:EmergencyAlertsCreateClientAlert("Radar", "Flagged Plate Detected", "police_alerts",
 			GetLocationData(GetEntityCoords(vehicle)), {
 				icon = "radar",
 				details = string.format(

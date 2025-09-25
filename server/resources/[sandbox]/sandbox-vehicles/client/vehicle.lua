@@ -356,7 +356,7 @@ exports("LockpickExterior", function(config, canUnlockOwned, vehicle, cb)
 					SetVehicleAlarmTimeLeft(vehicle, math.random(25, 40) * 100)
 					StartVehicleAlarm(vehicle)
 					if not alerted and not Entity(vehicle).state.boostVehicle then
-						EmergencyAlerts:CreateIfReported(200.0, "lockpickext", true)
+						exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(200.0, "lockpickext", true)
 						alerted = true
 					end
 				end
@@ -457,7 +457,7 @@ exports("Lockpick", function(config, canUnlockOwned, cb)
 					SetVehicleAlarmTimeLeft(VEHICLE_INSIDE, math.random(15, 30) * 100)
 					StartVehicleAlarm(VEHICLE_INSIDE)
 					if not alerted and not Entity(VEHICLE_INSIDE).state.boostVehicle then
-						if EmergencyAlerts:CreateIfReported(200.0, "lockpickint", true) then
+						if exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(200.0, "lockpickint", true) then
 							TriggerServerEvent('Radar:Server:StolenVehicle',
 								GetVehicleNumberPlateText(VEHICLE_INSIDE))
 						end

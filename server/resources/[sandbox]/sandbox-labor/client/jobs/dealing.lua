@@ -475,7 +475,7 @@ AddEventHandler("CornerDealing:Client:Sell", function(data)
 		if r then
 			local pda = math.random(100)
 			if pda >= 60 then
-				EmergencyAlerts:CreateIfReported(100.0, "oxysale", true)
+				exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(100.0, "oxysale", true)
 			end
 
 			if NetworkHasControlOfEntity(_SellingPed) then

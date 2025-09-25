@@ -10,13 +10,11 @@ local _bodycam = false
 AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"EmergencyAlerts",
 		"Properties",
 	}, function(error)
 		if #error > 0 then
@@ -100,7 +98,7 @@ end)
 RegisterNetEvent("Characters:Client:Logout", function()
 	MDT:Close()
 	MDT.Badges:Close()
-	EmergencyAlerts:Close()
+	exports['sandbox-mdt']:EmergencyAlertsClose()
 
 	SendNUIMessage({
 		type = "LOGOUT",
@@ -121,7 +119,7 @@ end)
 RegisterNetEvent("UI:Client:Reset", function(manual)
 	MDT:Close()
 	MDT.Badges:Close()
-	EmergencyAlerts:Close()
+	exports['sandbox-mdt']:EmergencyAlertsClose()
 	SendNUIMessage({
 		type = "SET_BODYCAM",
 		data = {

@@ -161,13 +161,13 @@ AddEventHandler('Vehicles:Client:EnterVehicle', function(v, seat)
                     --     local model = GetEntityModel(VEHICLE_INSIDE)
 
                     --     if IsThisModelAPlane(model) then
-                    --         EmergencyAlerts:CreateIfReported(300.0, "planeaccident", true)
+                    --         exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(300.0, "planeaccident", true)
                     --     elseif IsThisModelAHeli(model) then
-                    --         EmergencyAlerts:CreateIfReported(300.0, "heliaccident", true)
+                    --         exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(300.0, "heliaccident", true)
                     --     elseif IsThisModelABoat(model) or IsThisModelAJetski(model) then
-                    --         EmergencyAlerts:CreateIfReported(300.0, "boataccident", true)
+                    --         exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(300.0, "boataccident", true)
                     --     else
-                    --         EmergencyAlerts:CreateIfReported(300.0, "caraccident", true)
+                    --         exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(300.0, "caraccident", true)
                     --     end
                     -- else
                     --     print('harness get facked')

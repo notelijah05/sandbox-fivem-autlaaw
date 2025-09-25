@@ -11,7 +11,6 @@ VEHICLE_HARNESS = false
 
 AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 end
@@ -27,7 +26,6 @@ local vehicleDoorNames = {
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
-		"EmergencyAlerts",
 		"Properties",
 		"Police",
 	}, function(error)

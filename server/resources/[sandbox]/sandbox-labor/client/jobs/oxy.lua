@@ -305,7 +305,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
     eventHandlers["target"] = RegisterNetEvent("OxyRun:Client:MakeSale", function(data)
         local pda = math.random(100)
         if pda >= 60 then
-            EmergencyAlerts:CreateIfReported(100.0, "oxysale", true)
+            exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(100.0, "oxysale", true)
         end
 
         local c = deepcopy(LocalPlayer.state.oxyBuyer)

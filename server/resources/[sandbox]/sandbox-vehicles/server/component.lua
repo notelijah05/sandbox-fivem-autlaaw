@@ -13,7 +13,6 @@ function RetrieveComponents()
     Tow = exports['sandbox-base']:FetchComponent('Tow')
     Properties = exports['sandbox-base']:FetchComponent('Properties')
     Police = exports['sandbox-base']:FetchComponent('Police')
-    EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
     RegisterChatCommands()
 end
 
@@ -22,7 +21,6 @@ AddEventHandler('Core:Shared:Ready', function()
         'Tow',
         'Properties',
         'Police',
-        'EmergencyAlerts'
     }, function(error)
         if #error > 0 then
             return

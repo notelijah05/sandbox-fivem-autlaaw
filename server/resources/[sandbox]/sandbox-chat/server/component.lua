@@ -1,36 +1,23 @@
-AddEventHandler("Chat:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Chat", {
-		"EmergencyAlerts",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterMiddleware()
+	RegisterMiddleware()
 
-		exports["sandbox-chat"]:RegisterCommand("me", function(source, args, rawCommand)
-			if #args > 0 then
-				local message = table.concat(args, " ")
-				TriggerClientEvent("Chat:Client:ReceiveMe", -1, source, GetGameTimer(), message)
-			else
-				exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
-			end
-		end, {
-			help = "Let People Know What You are Doing",
-			params = {},
-		}, -1)
+	exports["sandbox-chat"]:RegisterCommand("me", function(source, args, rawCommand)
+		if #args > 0 then
+			local message = table.concat(args, " ")
+			TriggerClientEvent("Chat:Client:ReceiveMe", -1, source, GetGameTimer(), message)
+		else
+			exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
+		end
+	end, {
+		help = "Let People Know What You are Doing",
+		params = {},
+	}, -1)
 
-		exports["sandbox-chat"]:RegisterStaffCommand("clearall", function(source, args, rawCommand)
-			exports["sandbox-chat"]:ClearAll()
-		end, {
-			help = "[Staff] Clear chat for everyone",
-		}, 0)
-	end)
+	exports["sandbox-chat"]:RegisterStaffCommand("clearall", function(source, args, rawCommand)
+		exports["sandbox-chat"]:ClearAll()
+	end, {
+		help = "[Staff] Clear chat for everyone",
+	}, 0)
 end)
 
 function RegisterMiddleware()

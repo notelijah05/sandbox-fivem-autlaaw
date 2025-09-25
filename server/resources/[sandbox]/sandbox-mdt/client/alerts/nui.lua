@@ -1,6 +1,6 @@
 RegisterNUICallback("CloseAlerts", function(data, cb)
 	cb("OK")
-	EmergencyAlerts:Close()
+	exports['sandbox-mdt']:EmergencyAlertsClose()
 end)
 
 RegisterNUICallback("ReceiveAlert", function(data, cb)
@@ -64,7 +64,7 @@ RegisterNUICallback("RouteAlert", function(data, cb)
 	cb("OK")
 	if data.location then
 		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
-		EmergencyAlerts:Close()
+		exports['sandbox-mdt']:EmergencyAlertsClose()
 
 		if data.blip then
 			local f = false
@@ -105,7 +105,7 @@ RegisterNUICallback("ViewCamera", function(data, cb)
 	cb('OK')
 	if data.camera then
 		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
-		EmergencyAlerts:Close()
+		exports['sandbox-mdt']:EmergencyAlertsClose()
 		exports["sandbox-base"]:ServerCallback("CCTV:ViewGroup", data.camera)
 	end
 end)
