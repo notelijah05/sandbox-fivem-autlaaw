@@ -14,7 +14,9 @@ AddEventHandler("Businesses:Server:Startup", function()
         local ped = GetPlayerPed(source)
         local coords = GetEntityCoords(ped)
 
-        local res = StorageUnits:Create(vector3(coords.x, coords.y, coords.z - 1.2), args[2], tonumber(args[1]), args[3])
+        local res = exports['sandbox-businesses']:StorageUnitsCreate(vector3(coords.x, coords.y, coords.z - 1.2), args
+            [2],
+            tonumber(args[1]), args[3])
         if res then
             exports["sandbox-chat"]:SendServerSingle(source, "Storage Unit Added, ID: " .. res)
         end
@@ -37,7 +39,7 @@ AddEventHandler("Businesses:Server:Startup", function()
     }, 3)
 
     exports["sandbox-chat"]:RegisterAdminCommand("unitcopy", function(source, args, rawCommand)
-        local near = StorageUnits:GetNearUnit(source)
+        local near = exports['sandbox-businesses']:StorageUnitsGetNearUnit(source)
         if near.unitId then
             TriggerClientEvent("Admin:Client:CopyClipboard", source, near.unitId)
             exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Copied Storage Unit ID")
@@ -47,7 +49,7 @@ AddEventHandler("Businesses:Server:Startup", function()
     }, 0)
 
     exports["sandbox-chat"]:RegisterAdminCommand("unitdelete", function(source, args, rawCommand)
-        local res = StorageUnits:Delete(args[1])
+        local res = exports['sandbox-businesses']:StorageUnitsDelete(args[1])
         if res then
             exports["sandbox-chat"]:SendServerSingle(source, "Storage Unit Deleted")
         end
@@ -65,7 +67,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local unit = GlobalState[string.format("StorageUnit:%s", args[1])]
         if char and unit then
-            if StorageUnits:Sell(args[1], {
+            if exports['sandbox-businesses']:StorageUnitsSell(args[1], {
                     First = char:GetData("First"),
                     Last = char:GetData("Last"),
                     SID = char:GetData("SID"),
@@ -128,7 +130,7 @@ AddEventHandler("Businesses:Server:Startup", function()
                     local targetCoords = GetEntityCoords(GetPlayerPed(target:GetData("Source")))
 
                     if #(myCoords - targetCoords) <= 3.0 then
-                        if StorageUnits:Sell(data.unit, {
+                        if exports['sandbox-businesses']:StorageUnitsSell(data.unit, {
                                 First = target:GetData("First"),
                                 Last = target:GetData("Last"),
                                 SID = target:GetData("SID"),
@@ -159,7 +161,7 @@ AddEventHandler("Businesses:Server:Startup", function()
             local unit = GlobalState[string.format("StorageUnit:%s", data.unit)]
 
             if unit and unit.owner and unit.owner.SID == char:GetData("SID") then
-                cb(StorageUnits:Update(unit.id, "passcode", data.passcode))
+                cb(exports['sandbox-businesses']:StorageUnitsUpdate(unit.id, "passcode", data.passcode))
             else
                 cb(false)
             end
@@ -226,7 +228,7 @@ function StorageUnitStartup()
                 return
             end
             exports['sandbox-base']:LoggerTrace("StorageUnits", "Loaded ^2" .. #results .. "^7 Storage Units",
-                { consolerue })
+                { console = true })
             local unitIds = {}
             for k, v in ipairs(results) do
                 unitPasscodes[v._id] = v.passcode
@@ -242,192 +244,193 @@ function StorageUnitStartup()
     end
 end
 
-_STORAGEUNITS = {
-    Create = function(self, location, label, level, managedBy)
-        if level > 3 or level < 0 then
-            return false
+exports('StorageUnitsCreate', function(location, label, level, managedBy)
+    if level > 3 or level < 0 then
+        return false
+    end
+
+    local p = promise.new()
+
+    local doc = {
+        label = label,
+        owner = false,
+        level = level,
+        location = {
+            x = location.x,
+            y = location.y,
+            z = location.z,
+        },
+        managedBy = managedBy,
+        lastAccessed = false,
+        passcode = "0000",
+    }
+
+    exports['sandbox-base']:DatabaseGameInsertOne({
+        collection = "storage_units",
+        document = doc,
+    }, function(success, result, insertedIds)
+        if success then
+            doc.id = insertedIds[1]
+            doc.location = location
+
+            local unitIds = GlobalState["StorageUnits"]
+            table.insert(unitIds, doc.id)
+            GlobalState["StorageUnits"] = unitIds
+
+            GlobalState[string.format("StorageUnit:%s", doc.id)] = doc
+
+            unitPasscodes[doc.id] = "0000"
+
+            p:resolve(doc.id)
+        else
+            p:resolve(false)
         end
+    end)
 
-        local p = promise.new()
+    return Citizen.Await(p)
+end)
 
-        local doc = {
-            label = label,
-            owner = false,
-            level = level,
-            location = {
-                x = location.x,
-                y = location.y,
-                z = location.z,
+exports('StorageUnitsUpdate', function(id, key, value, skipRefresh)
+    if not id or not GlobalState[string.format("StorageUnit:%s", id)] then
+        return false
+    end
+
+    local p = promise.new()
+    exports['sandbox-base']:DatabaseGameUpdateOne({
+        collection = "storage_units",
+        query = {
+            _id = id,
+        },
+        update = {
+            ["$set"] = {
+                [key] = value,
             },
-            managedBy = managedBy,
-            lastAccessed = false,
-            passcode = "0000",
-        }
-
-        exports['sandbox-base']:DatabaseGameInsertOne({
-            collection = "storage_units",
-            document = doc,
-        }, function(success, result, insertedIds)
-            if success then
-                doc.id = insertedIds[1]
-                doc.location = location
-
-                local unitIds = GlobalState["StorageUnits"]
-                table.insert(unitIds, doc.id)
-                GlobalState["StorageUnits"] = unitIds
-
-                GlobalState[string.format("StorageUnit:%s", doc.id)] = doc
-
-                unitPasscodes[doc.id] = "0000"
-
-                p:resolve(doc.id)
-            else
-                p:resolve(false)
-            end
-        end)
-
-        return Citizen.Await(p)
-    end,
-    Update = function(self, id, key, value, skipRefresh)
-        if not id or not GlobalState[string.format("StorageUnit:%s", id)] then
-            return false
-        end
-
-        local p = promise.new()
-        exports['sandbox-base']:DatabaseGameUpdateOne({
-            collection = "storage_units",
-            query = {
-                _id = id,
-            },
-            update = {
-                ["$set"] = {
-                    [key] = value,
-                },
-            },
-        }, function(success, results)
-            if success and not skipRefresh then
-                if key ~= "passcode" then
-                    local unit = GlobalState[string.format("StorageUnit:%s", id)]
-                    if unit then
-                        unit[key] = value
-                        GlobalState[string.format("StorageUnit:%s", id)] = unit
-                    end
-                else
-                    unitPasscodes[id] = value
-                end
-            end
-
-            p:resolve(success)
-        end)
-        return Citizen.Await(p)
-    end,
-    Delete = function(self, id)
-        local p = promise.new()
-        exports['sandbox-base']:DatabaseGameDeleteOne({
-            collection = "storage_units",
-            query = {
-                _id = id,
-            },
-        }, function(success, result)
-            if success then
-                local newUnitIds = {}
-                for k, v in ipairs(GlobalState["StorageUnits"]) do
-                    if v ~= id then
-                        table.insert(newUnitIds, v)
-                    end
-                end
-
-                GlobalState["StorageUnits"] = newUnitIds
-                GlobalState[string.format("StorageUnit:%s", id)] = nil
-            end
-            p:resolve(success)
-        end)
-
-        return Citizen.Await(p)
-    end,
-    Sell = function(self, id, owner, seller)
-        local p = promise.new()
-        exports['sandbox-base']:DatabaseGameUpdateOne({
-            collection = "storage_units",
-            query = {
-                _id = id,
-            },
-            update = {
-                ["$set"] = {
-                    owner = owner,
-                    soldBy = seller,
-                    soldAt = os.time(),
-                    lastAccessed = os.time(),
-                },
-            },
-        }, function(success, results)
-            if success then
+        },
+    }, function(success, results)
+        if success and not skipRefresh then
+            if key ~= "passcode" then
                 local unit = GlobalState[string.format("StorageUnit:%s", id)]
                 if unit then
-                    unit["owner"] = owner
-                    unit["soldBy"] = seller
-                    unit["soldAt"] = os.time()
-                    unit["lastAccessed"] = os.time()
-
-                    unitLastAccessed[unit.id] = os.time()
-
+                    unit[key] = value
                     GlobalState[string.format("StorageUnit:%s", id)] = unit
                 end
-            end
-
-            p:resolve(success)
-        end)
-        return Citizen.Await(p)
-    end,
-    Get = function(self, id)
-        return GlobalState[string.format("StorageUnit:%s", id)]
-    end,
-    GetAll = function(self)
-        local allUnits = {}
-        for k, v in ipairs(GlobalState["StorageUnits"]) do
-            table.insert(allUnits, GlobalState[string.format("StorageUnit:%s", v)])
-        end
-
-        return allUnits
-    end,
-    GetAllManagedBy = function(self, managedBy)
-        local allUnits = {}
-        for k, v in ipairs(GlobalState["StorageUnits"]) do
-            local unit = GlobalState[string.format("StorageUnit:%s", v)]
-            if unit.managedBy == managedBy then
-                table.insert(allUnits, unit)
+            else
+                unitPasscodes[id] = value
             end
         end
 
-        return allUnits
-    end,
-    GetNearUnit = function(self, source)
-        local pedPos = GetEntityCoords(GetPlayerPed(source))
+        p:resolve(success)
+    end)
+    return Citizen.Await(p)
+end)
 
-        if GlobalState["StorageUnits"] == nil then
-            return false
-        else
-            local closest = nil
+exports('StorageUnitsDelete', function(id)
+    local p = promise.new()
+    exports['sandbox-base']:DatabaseGameDeleteOne({
+        collection = "storage_units",
+        query = {
+            _id = id,
+        },
+    }, function(success, result)
+        if success then
+            local newUnitIds = {}
             for k, v in ipairs(GlobalState["StorageUnits"]) do
-                local unit = GlobalState[string.format("StorageUnit:%s", v)]
-
-                if unit then
-                    local dist = #(pedPos - unit.location)
-                    if dist < 3.0 and (not closest or dist < closest.dist) then
-                        closest = {
-                            dist = dist,
-                            unitId = unit.id,
-                        }
-                    end
+                if v ~= id then
+                    table.insert(newUnitIds, v)
                 end
             end
-            return closest
-        end
-    end,
-}
 
-AddEventHandler("Proxy:Shared:RegisterReady", function(component)
-    exports["sandbox-base"]:RegisterComponent("StorageUnits", _STORAGEUNITS)
+            GlobalState["StorageUnits"] = newUnitIds
+            GlobalState[string.format("StorageUnit:%s", id)] = nil
+        end
+        p:resolve(success)
+    end)
+
+    return Citizen.Await(p)
+end)
+
+exports('StorageUnitsSell', function(id, owner, seller)
+    local p = promise.new()
+    exports['sandbox-base']:DatabaseGameUpdateOne({
+        collection = "storage_units",
+        query = {
+            _id = id,
+        },
+        update = {
+            ["$set"] = {
+                owner = owner,
+                soldBy = seller,
+                soldAt = os.time(),
+                lastAccessed = os.time(),
+            },
+        },
+    }, function(success, results)
+        if success then
+            local unit = GlobalState[string.format("StorageUnit:%s", id)]
+            if unit then
+                unit["owner"] = owner
+                unit["soldBy"] = seller
+                unit["soldAt"] = os.time()
+                unit["lastAccessed"] = os.time()
+
+                unitLastAccessed[unit.id] = os.time()
+
+                GlobalState[string.format("StorageUnit:%s", id)] = unit
+            end
+        end
+
+        p:resolve(success)
+    end)
+    return Citizen.Await(p)
+end)
+
+exports('StorageUnitsGet', function(id)
+    return GlobalState[string.format("StorageUnit:%s", id)]
+end)
+
+exports('StorageUnitsGetAll', function()
+    local allUnits = {}
+    for k, v in ipairs(GlobalState["StorageUnits"]) do
+        table.insert(allUnits, GlobalState[string.format("StorageUnit:%s", v)])
+    end
+
+    return allUnits
+end)
+
+exports('StorageUnitsGetAllManagedBy', function(managedBy)
+    local allUnits = {}
+    for k, v in ipairs(GlobalState["StorageUnits"]) do
+        local unit = GlobalState[string.format("StorageUnit:%s", v)]
+        if unit.managedBy == managedBy then
+            table.insert(allUnits, unit)
+        end
+    end
+
+    return allUnits
+end)
+
+exports('StorageUnitsGetNearUnit', function(source)
+    local pedPos = GetEntityCoords(GetPlayerPed(source))
+
+    if GlobalState["StorageUnits"] == nil then
+        return false
+    else
+        local closest = nil
+        for k, v in ipairs(GlobalState["StorageUnits"]) do
+            local unit = GlobalState[string.format("StorageUnit:%s", v)]
+
+            if unit then
+                local dist = #(pedPos - unit.location)
+                if dist < 3.0 and (not closest or dist < closest.dist) then
+                    closest = {
+                        dist = dist,
+                        unitId = unit.id,
+                    }
+                end
+            end
+        end
+        return closest
+    end
 end)
 
 function FormatStorageUnit(data)

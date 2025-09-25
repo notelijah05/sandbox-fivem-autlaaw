@@ -1,19 +1,5 @@
-AddEventHandler("Businesses:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	StorageUnits = exports["sandbox-base"]:FetchComponent("StorageUnits")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Businesses", {
-		"StorageUnits",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		TriggerEvent("Businesses:Client:Startup")
-	end)
+	TriggerEvent("Businesses:Client:Startup")
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")

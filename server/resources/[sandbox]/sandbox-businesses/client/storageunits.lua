@@ -6,7 +6,7 @@ AddEventHandler("Businesses:Client:Startup", function()
                 label = "Access Storage",
                 action = function()
                     exports['sandbox-hud']:InteractionHide()
-                    StorageUnits:Access()
+                    exports['sandbox-businesses']:StorageUnitsAccess()
                 end,
                 shouldShow = function()
                     return true
@@ -17,7 +17,7 @@ AddEventHandler("Businesses:Client:Startup", function()
                 label = "Raid Storage",
                 action = function()
                     exports['sandbox-hud']:InteractionHide()
-                    local nearUnit = StorageUnits:GetNearUnit()
+                    local nearUnit = exports['sandbox-businesses']:StorageUnitsGetNearUnit()
                     if nearUnit and nearUnit?.unitId then
                         local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
 
@@ -41,10 +41,10 @@ AddEventHandler("Businesses:Client:Startup", function()
                 label = "Manage",
                 action = function()
                     exports['sandbox-hud']:InteractionHide()
-                    StorageUnits:Manage()
+                    exports['sandbox-businesses']:StorageUnitsManage()
                 end,
                 shouldShow = function()
-                    local nearUnit = StorageUnits:GetNearUnit()
+                    local nearUnit = exports['sandbox-businesses']:StorageUnitsGetNearUnit()
                     if nearUnit and nearUnit?.unitId then
                         local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
 
@@ -58,15 +58,15 @@ AddEventHandler("Businesses:Client:Startup", function()
                 label = "Manage All",
                 action = function()
                     exports['sandbox-hud']:InteractionHide()
-                    local nearUnit = StorageUnits:GetNearUnit()
+                    local nearUnit = exports['sandbox-businesses']:StorageUnitsGetNearUnit()
                     if nearUnit and nearUnit?.unitId then
                         local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
 
-                        StorageUnits:ManageAll(unit.managedBy)
+                        exports['sandbox-businesses']:StorageUnitsManageAll(unit.managedBy)
                     end
                 end,
                 shouldShow = function()
-                    local nearUnit = StorageUnits:GetNearUnit()
+                    local nearUnit = exports['sandbox-businesses']:StorageUnitsGetNearUnit()
                     if nearUnit and nearUnit?.unitId then
                         local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
 
@@ -76,7 +76,7 @@ AddEventHandler("Businesses:Client:Startup", function()
             },
         })
     end, function()
-        return StorageUnits:GetNearUnit() and LocalPlayer.state.Character
+        return exports['sandbox-businesses']:StorageUnitsGetNearUnit() and LocalPlayer.state.Character
     end)
 
     exports["sandbox-base"]:RegisterClientCallback("StorageUnits:Passcode", function(code, cb)
@@ -106,131 +106,128 @@ AddEventHandler("Businesses:Client:Startup", function()
     end)
 end)
 
-_STORAGEUNITS = {
-    Access = function(self)
-        local nearUnit = StorageUnits:GetNearUnit()
-        if nearUnit and nearUnit?.unitId then
-            exports["sandbox-base"]:ServerCallback("StorageUnits:Access", nearUnit?.unitId)
-        end
-    end,
-    Manage = function(self, specificUnit)
-        local nearUnit = StorageUnits:GetNearUnit()
+exports('StorageUnitsAccess', function()
+    local nearUnit = exports['sandbox-businesses']:StorageUnitsGetNearUnit()
+    if nearUnit and nearUnit?.unitId then
+        exports["sandbox-base"]:ServerCallback("StorageUnits:Access", nearUnit?.unitId)
+    end
+end)
 
-        if specificUnit then
-            nearUnit = { unitId = specificUnit }
-        end
+exports('StorageUnitsManage', function(specificUnit)
+    local nearUnit = exports['sandbox-businesses']:StorageUnitsGetNearUnit()
 
-        if nearUnit and nearUnit?.unitId then
-            local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
+    if specificUnit then
+        nearUnit = { unitId = specificUnit }
+    end
+
+    if nearUnit and nearUnit?.unitId then
+        local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
+        if unit then
+            local menu = {
+                main = {
+                    label = "Manage " .. unit.label,
+                    items = {
+                        {
+                            label = "Storage Last Accessed",
+                            description = unit.lastAccessed and
+                                string.format("Unit Last Accessed %s ago.",
+                                    GetFormattedTimeFromSeconds(GetCloudTimeAsInt() - unit.lastAccessed)) or "Never",
+                        },
+                    }
+                },
+            }
+
+            if unit.owner and LocalPlayer.state.Character and LocalPlayer.state.Character:GetData("SID") == unit.owner.SID then
+                table.insert(menu.main.items, {
+                    label = "Set Passcode",
+                    description = "Change the passcode for your storage unit",
+                    data = { unit = nearUnit.unitId },
+                    event = "StorageUnits:ChangePasscode",
+                })
+            end
+
+            if exports['sandbox-jobs']:HasJob(unit.managedBy) then
+                if unit.owner then
+                    table.insert(menu.main.items, {
+                        label = "Current Unit Owner",
+                        description = string.format("Owned By %s %s (State ID: %s)", unit.owner.First,
+                            unit.owner.Last, unit.owner.SID),
+                    })
+
+                    table.insert(menu.main.items, {
+                        label = "Unit Sold By",
+                        description = string.format("Sold By %s %s (State ID: %s) %s ago.", unit.soldBy.First,
+                            unit.soldBy.Last, unit.soldBy.SID,
+                            GetFormattedTimeFromSeconds(GetCloudTimeAsInt() - unit.soldAt)),
+                    })
+                end
+            end
+
+            if exports['sandbox-jobs']:HasJob(unit.managedBy, false, false, false, false, "UNIT_SELL") then
+                table.insert(menu.main.items, {
+                    label = "Sell Storage Unit",
+                    description = "Set the new owner of the storage unit",
+                    data = { unit = nearUnit.unitId },
+                    event = "StorageUnits:StartSell",
+                })
+            end
+
+            exports['sandbox-hud']:ListMenuShow(menu)
+        end
+    end
+end)
+
+exports('StorageUnitsManageAll', function(managedBy)
+    local menu = {
+        main = {
+            label = "Manage All Storage Units",
+            items = {}
+        },
+    }
+
+    if GlobalState["StorageUnits"] then
+        for k, v in ipairs(GlobalState["StorageUnits"]) do
+            local unit = GlobalState[string.format("StorageUnit:%s", v)]
+            if unit and unit.managedBy == managedBy then
+                table.insert(menu.main.items, {
+                    label = unit.label,
+                    description = unit.owner and string.format("Owned By %s %s", unit.owner.First, unit.owner.Last) or
+                        "Not Owned",
+                    data = { unit = unit.id },
+                    event = "StorageUnits:Manage",
+                })
+            end
+        end
+    end
+
+    exports['sandbox-hud']:ListMenuShow(menu)
+end)
+
+exports('StorageUnitsGetNearUnit', function()
+    if LocalPlayer.state.currentRoute ~= 0 then
+        return false
+    end
+
+    local myCoords = GetEntityCoords(LocalPlayer.state.ped)
+
+    if GlobalState["StorageUnits"] == nil then
+        return false
+    else
+        local closest = nil
+        for k, v in ipairs(GlobalState["StorageUnits"]) do
+            local unit = GlobalState[string.format("StorageUnit:%s", v)]
             if unit then
-                local menu = {
-                    main = {
-                        label = "Manage " .. unit.label,
-                        items = {
-                            {
-                                label = "Storage Last Accessed",
-                                description = unit.lastAccessed and
-                                    string.format("Unit Last Accessed %s ago.",
-                                        GetFormattedTimeFromSeconds(GetCloudTimeAsInt() - unit.lastAccessed)) or "Never",
-                            },
-                        }
-                    },
-                }
-
-                if unit.owner and LocalPlayer.state.Character and LocalPlayer.state.Character:GetData("SID") == unit.owner.SID then
-                    table.insert(menu.main.items, {
-                        label = "Set Passcode",
-                        description = "Change the passcode for your storage unit",
-                        data = { unit = nearUnit.unitId },
-                        event = "StorageUnits:ChangePasscode",
-                    })
-                end
-
-                if exports['sandbox-jobs']:HasJob(unit.managedBy) then
-                    if unit.owner then
-                        table.insert(menu.main.items, {
-                            label = "Current Unit Owner",
-                            description = string.format("Owned By %s %s (State ID: %s)", unit.owner.First,
-                                unit.owner.Last, unit.owner.SID),
-                        })
-
-                        table.insert(menu.main.items, {
-                            label = "Unit Sold By",
-                            description = string.format("Sold By %s %s (State ID: %s) %s ago.", unit.soldBy.First,
-                                unit.soldBy.Last, unit.soldBy.SID,
-                                GetFormattedTimeFromSeconds(GetCloudTimeAsInt() - unit.soldAt)),
-                        })
-                    end
-                end
-
-                if exports['sandbox-jobs']:HasJob(unit.managedBy, false, false, false, false, "UNIT_SELL") then
-                    table.insert(menu.main.items, {
-                        label = "Sell Storage Unit",
-                        description = "Set the new owner of the storage unit",
-                        data = { unit = nearUnit.unitId },
-                        event = "StorageUnits:StartSell",
-                    })
-                end
-
-                exports['sandbox-hud']:ListMenuShow(menu)
-            end
-        end
-    end,
-    ManageAll = function(self, managedBy)
-        local menu = {
-            main = {
-                label = "Manage All Storage Units",
-                items = {}
-            },
-        }
-
-        if GlobalState["StorageUnits"] then
-            for k, v in ipairs(GlobalState["StorageUnits"]) do
-                local unit = GlobalState[string.format("StorageUnit:%s", v)]
-                if unit and unit.managedBy == managedBy then
-                    table.insert(menu.main.items, {
-                        label = unit.label,
-                        description = unit.owner and string.format("Owned By %s %s", unit.owner.First, unit.owner.Last) or
-                            "Not Owned",
-                        data = { unit = unit.id },
-                        event = "StorageUnits:Manage",
-                    })
+                local dist = #(myCoords - unit.location)
+                if dist < 3.0 and (not closest or dist < closest.dist) then
+                    closest = {
+                        dist = dist,
+                        unitId = unit.id,
+                    }
                 end
             end
         end
-
-        exports['sandbox-hud']:ListMenuShow(menu)
-    end,
-    GetNearUnit = function(self)
-        if LocalPlayer.state.currentRoute ~= 0 then
-            return false
-        end
-
-        local myCoords = GetEntityCoords(LocalPlayer.state.ped)
-
-        if GlobalState["StorageUnits"] == nil then
-            return false
-        else
-            local closest = nil
-            for k, v in ipairs(GlobalState["StorageUnits"]) do
-                local unit = GlobalState[string.format("StorageUnit:%s", v)]
-                if unit then
-                    local dist = #(myCoords - unit.location)
-                    if dist < 3.0 and (not closest or dist < closest.dist) then
-                        closest = {
-                            dist = dist,
-                            unitId = unit.id,
-                        }
-                    end
-                end
-            end
-            return closest
-        end
-    end,
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-    exports["sandbox-base"]:RegisterComponent("StorageUnits", _STORAGEUNITS)
+        return closest
+    end
 end)
 
 AddEventHandler("StorageUnits:ChangePasscode", function(data)
@@ -300,6 +297,6 @@ end)
 
 AddEventHandler("StorageUnits:Manage", function(data)
     if data?.unit then
-        StorageUnits:Manage(data.unit)
+        exports['sandbox-businesses']:StorageUnitsManage(data.unit)
     end
 end)
