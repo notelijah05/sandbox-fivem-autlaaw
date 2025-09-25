@@ -47,7 +47,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
         local pedCoords = GetEntityCoords(GLOBAL_PED)
         local inVehicleStorageZone, vehicleStorageZoneId = GetVehicleStorageAtCoords(pedCoords)
 
-        return inVehicleStorageZone or Properties:GetNearHouseGarage()
+        return inVehicleStorageZone or exports['sandbox-properties']:GetNearHouseGarage()
     end)
 end)
 
@@ -111,9 +111,9 @@ AddEventHandler('Vehicles:Client:StoreVehicle', function(entityData)
                     end
                 end)
             else
-                local propGarage = Properties:GetNearHouseGarage(vehicleCoords)
+                local propGarage = exports['sandbox-properties']:GetNearHouseGarage(vehicleCoords)
                 if propGarage and propGarage.propertyId then
-                    local prop = Properties:Get(propGarage.propertyId)
+                    local prop = exports['sandbox-properties']:Get(propGarage.propertyId)
                     if prop and prop.keys ~= nil and prop.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil then
                         exports["sandbox-base"]:ServerCallback('Vehicles:PutVehicleInPropertyStorage', {
                             VIN = vehState.VIN,
@@ -186,7 +186,7 @@ function OpenVehicleStorage()
             end
         end
     else
-        local propertyGarage = Properties:GetNearHouseGarage()
+        local propertyGarage = exports['sandbox-properties']:GetNearHouseGarage()
         if propertyGarage and propertyGarage.propertyId then
             local coords = vector4(propertyGarage.coords.x, propertyGarage.coords.y, propertyGarage.coords.z,
                 propertyGarage.coords.h)
@@ -337,7 +337,7 @@ function OpenVehicleStorageMenu(storageType, storageId, storedVehicleData, parki
     if storageType == 1 then
         storageName = _vehicleStorage[storageId].name
     elseif storageType == 2 then
-        local prop = Properties:Get(storageId)
+        local prop = exports['sandbox-properties']:Get(storageId)
         if prop and prop.label then
             storageName = prop.label
         end

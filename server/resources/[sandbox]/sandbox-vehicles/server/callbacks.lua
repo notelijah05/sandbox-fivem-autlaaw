@@ -104,10 +104,10 @@ function RegisterCallbacks()
             return
         end
 
-        local property = Properties:Get(storageId)
-        local maxParking = Properties:GetMaxParkingSpaces(storageId)
+        local property = exports['sandbox-properties']:Get(storageId)
+        local maxParking = exports['sandbox-properties']:GetMaxParkingSpaces(storageId)
 
-        if property and property.id and Properties.Keys:Has(property.id, character:GetData("ID")) and maxParking and maxParking > 0 then
+        if property and property.id and exports['sandbox-properties']:HasKey(property.id, character:GetData("ID")) and maxParking and maxParking > 0 then
             local characterId = character:GetData('SID')
             exports['sandbox-vehicles']:OwnedGetAll(0, false, false, function(vehicles)
                 local c = {}
@@ -328,9 +328,9 @@ function RegisterCallbacks()
 
         local vehicleOwner = vehicle:GetData('Owner')
         if vehicleOwner.Type == 0 and vehicle:GetData('Type') == 0 then
-            if Properties.Keys:HasBySID(data.storageId, vehicleOwner.Id) then
-                local property = Properties:Get(data.storageId)
-                local vehLimit = Properties:GetMaxParkingSpaces(data.storageId)
+            if exports['sandbox-properties']:HasKeyBySID(data.storageId, vehicleOwner.Id) then
+                local property = exports['sandbox-properties']:Get(data.storageId)
+                local vehLimit = exports['sandbox-properties']:GetMaxParkingSpaces(data.storageId)
                 if not vehLimit then
                     vehLimit = 0
                 end

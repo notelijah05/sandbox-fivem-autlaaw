@@ -1,13 +1,11 @@
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Lasers = exports["sandbox-base"]:FetchComponent("Lasers")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"Properties",
 		"Doors",
 		"Lasers",
 	}, function(error)

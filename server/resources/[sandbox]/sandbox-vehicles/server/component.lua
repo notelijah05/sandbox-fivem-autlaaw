@@ -8,26 +8,12 @@ LICENSE_PLATE_DATA = {}
 
 _savedVehiclePropertiesClusterfuck = {}
 
-AddEventHandler('Vehicles:Shared:DependencyUpdate', RetrieveComponents)
-function RetrieveComponents()
-    Properties = exports['sandbox-base']:FetchComponent('Properties')
-    RegisterChatCommands()
-end
-
 AddEventHandler('Core:Shared:Ready', function()
-    exports['sandbox-base']:RequestDependencies('Vehicles', {
-        'Properties',
-    }, function(error)
-        if #error > 0 then
-            return
-        end -- Do something to handle if not all dependencies loaded
-        RetrieveComponents()
-        RegisterCallbacks()
-        RegisterMiddleware()
-        RegisterItemUses()
-        RegisterPersonalPlateCallbacks()
-        Startup()
-    end)
+    RegisterCallbacks()
+    RegisterMiddleware()
+    RegisterItemUses()
+    RegisterPersonalPlateCallbacks()
+    Startup()
 end)
 
 function RegisterMiddleware()
@@ -426,7 +412,7 @@ exports("OwnedGetAll",
                     if not ignoreSpawned or (ignoreSpawned and not exports['sandbox-vehicles']:OwnedGetActive(v.VIN)) then
                         v.Spawned = exports['sandbox-vehicles']:OwnedGetActive(v.VIN)
                         if v.Storage and v.Storage.Type == 2 then
-                            local prop = Properties:Get(v.Storage.Id)
+                            local prop = exports['sandbox-properties']:Get(v.Storage.Id)
                             if prop and prop.id and prop.label then
                                 v.PropertyStorage = prop
                             end
@@ -763,7 +749,7 @@ exports("OwnedTrack", function(VIN)
             elseif c.Storage.Type == 1 then
                 p:resolve(exports['sandbox-vehicles']:GaragesGet(c.Storage.Id).coords)
             elseif c.Storage.Type == 2 then
-                local prop = Properties:Get(c.Storage.Id)
+                local prop = exports['sandbox-properties']:Get(c.Storage.Id)
                 if prop and prop.location and prop.location.garage then
                     p:resolve(vector3(prop.location.garage.x, prop.location.garage.y, prop.location.garage.z))
                 else

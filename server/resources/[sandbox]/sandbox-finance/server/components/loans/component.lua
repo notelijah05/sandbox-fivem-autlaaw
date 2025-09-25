@@ -226,7 +226,7 @@ exports("LoansMakePayment", function(source, loanId, inAdvanced, advancedPayment
 						if loan.Type == "vehicle" then
 							exports['sandbox-vehicles']:OwnedSeize(loan.AssetIdentifier, false)
 						elseif loan.Type == "property" then
-							Properties.Commerce:Foreclose(loan.AssetIdentifier, false)
+							exports['sandbox-properties']:Foreclose(loan.AssetIdentifier, false)
 						end
 					end
 

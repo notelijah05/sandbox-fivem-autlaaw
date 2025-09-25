@@ -19,7 +19,6 @@ end
 
 AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
@@ -176,7 +175,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"Properties",
 		"Status",
 		"Reputation",
 		"Doors",

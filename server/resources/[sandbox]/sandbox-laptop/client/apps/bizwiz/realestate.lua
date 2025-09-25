@@ -6,7 +6,7 @@ local locationTypes = {
 }
 
 RegisterNUICallback("Dyn8SearchProperties", function(d, cb)
-    local properties = Properties:GetProperties()
+    local properties = exports['sandbox-properties']:GetProperties()
 
     local data = {}
     if properties then
@@ -17,12 +17,12 @@ RegisterNUICallback("Dyn8SearchProperties", function(d, cb)
 
     cb({
         properties = data,
-        upgrades = Properties:GetUpgradesConfig(),
+        upgrades = exports['sandbox-properties']:GetUpgradesConfig(),
     })
 end)
 
 RegisterNUICallback("Dyn8MarkProperty", function(data, cb)
-    local prop = Properties:Get(data)
+    local prop = exports['sandbox-properties']:Get(data)
     if prop ~= nil then
         ClearGpsPlayerWaypoint()
         SetNewWaypoint(prop.location.front.x, prop.location.front.y)
@@ -70,7 +70,7 @@ RegisterNUICallback("Dyn8ChangePropertyLocations", function(data, cb)
 end)
 
 RegisterNUICallback("Dyn8ShowPropertyLocations", function(data, cb)
-    local prop = Properties:Get(data.property)
+    local prop = exports['sandbox-properties']:Get(data.property)
     if prop and prop.location then
         cb(true)
 

@@ -175,14 +175,12 @@ end
 
 AddEventHandler("Police:Shared:DependencyUpdate", PoliceComponents)
 function PoliceComponents()
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Properties",
 		"Status",
 		"Doors",
 	}, function(error)
@@ -353,7 +351,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		end)
 
 		exports['sandbox-hud']:InteractionRegisterMenu("pd-breach", "Breach", "bomb", function(data)
-			local prop = Properties:Get(data.propertyId)
+			local prop = exports['sandbox-properties']:Get(data.propertyId)
 			exports['sandbox-hud']:InteractionShowMenu({
 				{
 					icon = "house",
@@ -393,7 +391,7 @@ AddEventHandler("Core:Shared:Ready", function()
 			})
 		end, function()
 			if LocalPlayer.state.onDuty and LocalPlayer.state.onDuty == "police" then
-				return Properties:GetNearHouse() or exports['sandbox-apartments']:GetNearApartment()
+				return exports['sandbox-properties']:GetNearHouse() or exports['sandbox-apartments']:GetNearApartment()
 			else
 				return nil
 			end

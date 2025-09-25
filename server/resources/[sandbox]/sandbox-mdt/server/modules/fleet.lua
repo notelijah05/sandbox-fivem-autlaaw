@@ -35,7 +35,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
               elseif v.Storage.Type == 1 then
                 v.Storage.Name = exports['sandbox-vehicles']:GaragesGet(v.Storage.Id).name
               elseif v.Storage.Type == 2 then
-                local prop = Properties:Get(v.Storage.Id)
+                local prop = exports['sandbox-properties']:Get(v.Storage.Id)
                 v.Storage.Name = prop?.label
               end
             end

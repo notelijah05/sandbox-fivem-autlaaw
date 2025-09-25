@@ -20,13 +20,11 @@ _placingSearchItem = nil
 
 AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	ObjectPlacer = exports["sandbox-base"]:FetchComponent("ObjectPlacer")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Properties", {
-		"Properties",
 		"ObjectPlacer",
 	}, function(error)
 		if #error > 0 then
@@ -335,19 +333,19 @@ function CreatePropertyDoor(isBackdoor)
 			end
 
 			if isBackdoor then
-				return Properties:GetNearHouseBackdoor()
+				return exports['sandbox-properties']:GetNearHouseBackdoor()
 			else
-				return Properties:GetNearHouse()
+				return exports['sandbox-properties']:GetNearHouse()
 			end
 		end, function()
 			if not _propertiesLoaded then
 				return false
 			end
 			if isBackdoor then
-				local prop = Properties:GetNearHouseBackdoor()
+				local prop = exports['sandbox-properties']:GetNearHouseBackdoor()
 				return type(prop) == "table" and _properties[prop.propertyId]?.label or 'Property'
 			else
-				local prop = Properties:GetNearHouse()
+				local prop = exports['sandbox-properties']:GetNearHouse()
 				return type(prop) == "table" and _properties[prop.propertyId]?.label or 'Property'
 			end
 		end)
@@ -443,46 +441,70 @@ AddEventHandler('Characters:Client:Logout', function()
 	end
 end)
 
-PROPERTIES = {
-	Enter = function(self, id)
-		EnterProperty({
-			propertyId = id,
-		}, false)
-	end,
-	GetProperties = function(self)
-		if _propertiesLoaded then
-			return _properties
-		end
-		return false
-	end,
-	GetPropertiesWithAccess = function(self)
-		if LocalPlayer.state.loggedIn and _propertiesLoaded then
-			local props = {}
-			for k, v in pairs(_properties) do
-				if v and v.keys and v.keys[LocalPlayer.state.Character:GetData("ID")] then
-					table.insert(props, v)
-				end
-			end
+exports('Enter', function(id)
+	EnterProperty({
+		propertyId = id,
+	}, false)
+end)
 
-			return props
-		end
-		return false
-	end,
-	Get = function(self, pId)
-		return _properties[pId]
-	end,
-	GetUpgradesConfig = function(self)
-		return PropertyUpgrades
-	end,
-	GetNearHouse = function(self)
-		if LocalPlayer.state.currentRoute ~= 0 or not _propertiesLoaded then
-			return false
-		end
+exports('GetProperties', function()
+	if _propertiesLoaded then
+		return _properties
+	end
+	return false
+end)
 
-		local myPos = GetEntityCoords(LocalPlayer.state.ped)
-		local closest = nil
+exports('GetPropertiesWithAccess', function()
+	if LocalPlayer.state.loggedIn and _propertiesLoaded then
+		local props = {}
 		for k, v in pairs(_properties) do
-			local dist = #(myPos - vector3(v.location.front.x, v.location.front.y, v.location.front.z))
+			if v and v.keys and v.keys[LocalPlayer.state.Character:GetData("ID")] then
+				table.insert(props, v)
+			end
+		end
+
+		return props
+	end
+	return false
+end)
+
+exports('Get', function(pId)
+	return _properties[pId]
+end)
+
+exports('GetUpgradesConfig', function()
+	return PropertyUpgrades
+end)
+
+exports('GetNearHouse', function()
+	if LocalPlayer.state.currentRoute ~= 0 or not _propertiesLoaded then
+		return false
+	end
+
+	local myPos = GetEntityCoords(LocalPlayer.state.ped)
+	local closest = nil
+	for k, v in pairs(_properties) do
+		local dist = #(myPos - vector3(v.location.front.x, v.location.front.y, v.location.front.z))
+		if dist < 3.0 and (not closest or dist < closest.dist) then
+			closest = {
+				dist = dist,
+				propertyId = v.id,
+			}
+		end
+	end
+	return closest
+end)
+
+exports('GetNearHouseBackdoor', function()
+	if LocalPlayer.state.currentRoute ~= 0 or not _propertiesLoaded then
+		return false
+	end
+
+	local myPos = GetEntityCoords(LocalPlayer.state.ped)
+	local closest = nil
+	for k, v in pairs(_properties) do
+		if v.location.backdoor then
+			local dist = #(myPos - vector3(v.location.backdoor.x, v.location.backdoor.y, v.location.backdoor.z))
 			if dist < 3.0 and (not closest or dist < closest.dist) then
 				closest = {
 					dist = dist,
@@ -490,272 +512,252 @@ PROPERTIES = {
 				}
 			end
 		end
-		return closest
-	end,
-	GetNearHouseBackdoor = function(self)
-		if LocalPlayer.state.currentRoute ~= 0 or not _propertiesLoaded then
-			return false
-		end
+	end
+	return closest
+end)
 
-		local myPos = GetEntityCoords(LocalPlayer.state.ped)
-		local closest = nil
-		for k, v in pairs(_properties) do
-			if v.location.backdoor then
-				local dist = #(myPos - vector3(v.location.backdoor.x, v.location.backdoor.y, v.location.backdoor.z))
-				if dist < 3.0 and (not closest or dist < closest.dist) then
-					closest = {
-						dist = dist,
-						propertyId = v.id,
-					}
-				end
-			end
-		end
-		return closest
-	end,
-	GetNearHouseGarage = function(self, coordOverride)
-		if LocalPlayer.state.currentRoute ~= 0 or not _propertiesLoaded then
-			return false
-		end
+exports('GetNearHouseGarage', function(coordOverride)
+	if LocalPlayer.state.currentRoute ~= 0 or not _propertiesLoaded then
+		return false
+	end
 
-		local myPos = GetEntityCoords(LocalPlayer.state.ped)
-		local closest = nil
-		for k, v in pairs(_properties) do
-			if v.location.garage then
-				local dist = #(myPos - vector3(v.location.garage.x, v.location.garage.y, v.location.garage.z))
-				if dist < 3.0 and (not closest or dist < closest.dist) then
-					closest = {
-						coords = v.location.garage,
-						dist = dist,
-						propertyId = v.id,
-					}
-				end
-			end
-		end
-		return closest
-	end,
-	GetInside = function(self)
-		return _insideProperty
-	end,
-	Extras = {
-		Stash = function(self)
-			exports["sandbox-base"]:ServerCallback("Properties:Validate", {
-				id = GlobalState[string.format("%s:Property", LocalPlayer.state.ID)],
-				type = "stash",
-			})
-		end,
-		Closet = function(self)
-			exports["sandbox-base"]:ServerCallback("Properties:Validate", {
-				id = GlobalState[string.format("%s:Property", LocalPlayer.state.ID)],
-				type = "closet",
-			}, function(state)
-				if state then
-					exports['sandbox-ped']:WardrobeShow()
-				end
-			end)
-		end,
-		Logout = function(self)
-			exports["sandbox-base"]:ServerCallback("Properties:Validate", {
-				id = GlobalState[string.format("%s:Property", LocalPlayer.state.ID)],
-				type = "logout",
-			}, function(state)
-				if state then
-					Characters:Logout()
-				end
-			end)
-		end,
-	},
-	Keys = {
-		HasAccessWithData = function(self, key, value) -- Has Access to a Property with a specific data/key value
-			if LocalPlayer.state.loggedIn and _propertiesLoaded then
-				for _, propertyId in ipairs(_myPropertyKeys) do
-					local property = _properties[propertyId]
-					if property and property.data and ((value == nil and property.data[key]) or property.data[key] == value) then
-						return property.id
-					end
-				end
-			end
-			return false
-		end,
-	},
-	Furniture = {
-		GetCurrent = function(self, property)
-			if _insideProperty and _insideProperty.id == property._id then
-				for k, v in ipairs(_insideFurniture) do
-					v.dist = #(GetEntityCoords(LocalPlayer.state.ped) - vector3(v.coords.x, v.coords.y, v.coords.z))
-				end
-				return {
-					success = true,
-					furniture = _insideFurniture,
-					catalog = FurnitureConfig,
-					categories = FurnitureCategories,
+	local myPos = GetEntityCoords(LocalPlayer.state.ped)
+	local closest = nil
+	for k, v in pairs(_properties) do
+		if v.location.garage then
+			local dist = #(myPos - vector3(v.location.garage.x, v.location.garage.y, v.location.garage.z))
+			if dist < 3.0 and (not closest or dist < closest.dist) then
+				closest = {
+					coords = v.location.garage,
+					dist = dist,
+					propertyId = v.id,
 				}
 			end
-
-			return {
-				err = "Must be Inside the Property!"
-			}
-		end,
-		EditMode = function(self, state)
-			if state == nil then
-				state = not LocalPlayer.state.furnitureEdit
-			end
-
-			if _insideProperty then
-				SetFurnitureEditMode(state)
-			end
-		end,
-		Place = function(self, model, category, metadata, blockBrowse, skipPhone, startCoords, startRot)
-			if not _insideProperty then
-				return false
-			end
-
-			if not category then
-				category = FurnitureConfig[model].cat
-			end
-
-			if category == "search" then
-				_placingSearchItem = model
-			end
-
-			_allowBrowse = not blockBrowse
-
-			_placingFurniture = true
-			LocalPlayer.state.placingFurniture = true
-
-			_furnitureCategory = {}
-			for k, v in pairs(FurnitureConfig) do
-				if v.cat == category then
-					table.insert(_furnitureCategory, k)
-				end
-			end
-
-			table.sort(_furnitureCategory, function(a, b)
-				return (FurnitureConfig[a]?.id or 1) < (FurnitureConfig[b]?.id or 1)
-			end)
-
-			for k, v in ipairs(_furnitureCategory) do
-				if v == model then
-					_furnitureCategoryCurrent = k
-				end
-			end
-
-			local fData = FurnitureConfig[model]
-			if fData then
-				exports['sandbox-hud']:InfoOverlayShow(fData.name,
-					string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", model))
-			end
-
-			ObjectPlacer:Start(GetHashKey(model), "Furniture:Client:Place", metadata, true, "Furniture:Client:Cancel",
-				true, true, startCoords, nil, startRot)
-			if not skipPhone then
-				exports['sandbox-phone']:Close(true, true)
-			end
-			_skipPhone = skipPhone
-
-			DisablePauseMenu(true)
-
-			return true
-		end,
-		Move = function(self, id, skipPhone)
-			if not _insideProperty then
-				return false
-			end
-
-			_furnitureCategoryCurrent = nil
-
-			for k, v in ipairs(_insideFurniture) do
-				if v.id == id then
-					furn = v
-				end
-			end
-
-			if not furn then
-				return false
-			end
-
-			_placingFurniture = true
-			LocalPlayer.state.placingFurniture = true
-
-			local ns = {}
-			for k, v in ipairs(_spawnedFurniture) do
-				if v.id == id then
-					DeleteEntity(v.entity)
-					exports['sandbox-targeting']:RemoveEntity(v.entity)
-				else
-					table.insert(ns, v)
-				end
-			end
-			_spawnedFurniture = ns
-
-			local fData = FurnitureConfig[model]
-
-			ObjectPlacer:Start(GetHashKey(furn.model), "Furniture:Client:Move", { id = id }, true,
-				"Furniture:Client:CancelMove", true, true, furn.coords, furn.heading, furn.rotation)
-			if not skipPhone then
-				exports['sandbox-phone']:Close(true, true)
-			end
-			_skipPhone = skipPhone
-
-			DisablePauseMenu(true)
-
-			return true
-		end,
-		Delete = function(self, id)
-			if not _insideProperty then
-				return false
-			end
-
-			local catCounts = {
-				["storage"] = 0,
-			}
-			local fData
-			for k, v in ipairs(_insideFurniture) do
-				if v.id == id then
-					fData = FurnitureConfig[v.model]
-				else
-					local d = FurnitureConfig[v.model]
-					if not catCounts[d.cat] then
-						catCounts[d.cat] = 0
-					end
-
-					catCounts[d.cat] += 1
-				end
-			end
-
-			if fData and fData.cat == "storage" and catCounts["storage"] < 1 then
-				exports["sandbox-hud"]:NotifError("You Are Required to Have At Least One Storage Container!")
-				return false
-			end
-
-			local p = promise.new()
-
-			exports["sandbox-base"]:ServerCallback("Properties:DeleteFurniture", {
-				id = id,
-			}, function(success, furniture)
-				if success then
-					exports["sandbox-hud"]:NotifSuccess("Deleted Item")
-					for k, v in ipairs(furniture) do
-						v.dist = #(GetEntityCoords(LocalPlayer.state.ped) - vector3(v.coords.x, v.coords.y, v.coords.z))
-					end
-					p:resolve(furniture)
-				else
-					p:resolve(false)
-					exports["sandbox-hud"]:NotifError("Error")
-				end
-			end)
-
-			return Citizen.Await(p)
 		end
-	},
-	Interiors = {
-		Preview = function(self, int)
-			StartPreview(int)
-		end,
-	}
-}
+	end
+	return closest
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Properties", PROPERTIES)
+exports('GetInside', function()
+	return _insideProperty
+end)
+
+exports('Stash', function()
+	exports["sandbox-base"]:ServerCallback("Properties:Validate", {
+		id = GlobalState[string.format("%s:Property", LocalPlayer.state.ID)],
+		type = "stash",
+	})
+end)
+
+exports('Closet', function()
+	exports["sandbox-base"]:ServerCallback("Properties:Validate", {
+		id = GlobalState[string.format("%s:Property", LocalPlayer.state.ID)],
+		type = "closet",
+	}, function(state)
+		if state then
+			exports['sandbox-ped']:WardrobeShow()
+		end
+	end)
+end)
+
+exports('Logout', function()
+	exports["sandbox-base"]:ServerCallback("Properties:Validate", {
+		id = GlobalState[string.format("%s:Property", LocalPlayer.state.ID)],
+		type = "logout",
+	}, function(state)
+		if state then
+			Characters:Logout()
+		end
+	end)
+end)
+
+exports('HasAccessWithData', function(key, value)
+	if LocalPlayer.state.loggedIn and _propertiesLoaded then
+		for _, propertyId in ipairs(_myPropertyKeys) do
+			local property = _properties[propertyId]
+			if property and property.data and ((value == nil and property.data[key]) or property.data[key] == value) then
+				return property.id
+			end
+		end
+	end
+	return false
+end)
+
+exports('GetCurrent', function(property)
+	if _insideProperty and _insideProperty.id == property._id then
+		for k, v in ipairs(_insideFurniture) do
+			v.dist = #(GetEntityCoords(LocalPlayer.state.ped) - vector3(v.coords.x, v.coords.y, v.coords.z))
+		end
+		return {
+			success = true,
+			furniture = _insideFurniture,
+			catalog = FurnitureConfig,
+			categories = FurnitureCategories,
+		}
+	end
+
+	return {
+		err = "Must be Inside the Property!"
+	}
+end)
+
+exports('EditMode', function(state)
+	if state == nil then
+		state = not LocalPlayer.state.furnitureEdit
+	end
+
+	if _insideProperty then
+		SetFurnitureEditMode(state)
+	end
+end)
+
+exports('Place', function(model, category, metadata, blockBrowse, skipPhone, startCoords, startRot)
+	if not _insideProperty then
+		return false
+	end
+
+	if not category then
+		category = FurnitureConfig[model].cat
+	end
+
+	if category == "search" then
+		_placingSearchItem = model
+	end
+
+	_allowBrowse = not blockBrowse
+
+	_placingFurniture = true
+	LocalPlayer.state.placingFurniture = true
+
+	_furnitureCategory = {}
+	for k, v in pairs(FurnitureConfig) do
+		if v.cat == category then
+			table.insert(_furnitureCategory, k)
+		end
+	end
+
+	table.sort(_furnitureCategory, function(a, b)
+		return (FurnitureConfig[a]?.id or 1) < (FurnitureConfig[b]?.id or 1)
+	end)
+
+	for k, v in ipairs(_furnitureCategory) do
+		if v == model then
+			_furnitureCategoryCurrent = k
+		end
+	end
+
+	local fData = FurnitureConfig[model]
+	if fData then
+		exports['sandbox-hud']:InfoOverlayShow(fData.name,
+			string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", model))
+	end
+
+	ObjectPlacer:Start(GetHashKey(model), "Furniture:Client:Place", metadata, true, "Furniture:Client:Cancel",
+		true, true, startCoords, nil, startRot)
+	if not skipPhone then
+		exports['sandbox-phone']:Close(true, true)
+	end
+	_skipPhone = skipPhone
+
+	DisablePauseMenu(true)
+
+	return true
+end)
+
+exports('Move', function(id, skipPhone)
+	if not _insideProperty then
+		return false
+	end
+
+	_furnitureCategoryCurrent = nil
+
+	for k, v in ipairs(_insideFurniture) do
+		if v.id == id then
+			furn = v
+		end
+	end
+
+	if not furn then
+		return false
+	end
+
+	_placingFurniture = true
+	LocalPlayer.state.placingFurniture = true
+
+	local ns = {}
+	for k, v in ipairs(_spawnedFurniture) do
+		if v.id == id then
+			DeleteEntity(v.entity)
+			exports['sandbox-targeting']:RemoveEntity(v.entity)
+		else
+			table.insert(ns, v)
+		end
+	end
+	_spawnedFurniture = ns
+
+	local fData = FurnitureConfig[model]
+
+	ObjectPlacer:Start(GetHashKey(furn.model), "Furniture:Client:Move", { id = id }, true,
+		"Furniture:Client:CancelMove", true, true, furn.coords, furn.heading, furn.rotation)
+	if not skipPhone then
+		exports['sandbox-phone']:Close(true, true)
+	end
+	_skipPhone = skipPhone
+
+	DisablePauseMenu(true)
+
+	return true
+end)
+
+exports('Delete', function(id)
+	if not _insideProperty then
+		return false
+	end
+
+	local catCounts = {
+		["storage"] = 0,
+	}
+	local fData
+	for k, v in ipairs(_insideFurniture) do
+		if v.id == id then
+			fData = FurnitureConfig[v.model]
+		else
+			local d = FurnitureConfig[v.model]
+			if not catCounts[d.cat] then
+				catCounts[d.cat] = 0
+			end
+
+			catCounts[d.cat] += 1
+		end
+	end
+
+	if fData and fData.cat == "storage" and catCounts["storage"] < 1 then
+		exports["sandbox-hud"]:NotifError("You Are Required to Have At Least One Storage Container!")
+		return false
+	end
+
+	local p = promise.new()
+
+	exports["sandbox-base"]:ServerCallback("Properties:DeleteFurniture", {
+		id = id,
+	}, function(success, furniture)
+		if success then
+			exports["sandbox-hud"]:NotifSuccess("Deleted Item")
+			for k, v in ipairs(furniture) do
+				v.dist = #(GetEntityCoords(LocalPlayer.state.ped) - vector3(v.coords.x, v.coords.y, v.coords.z))
+			end
+			p:resolve(furniture)
+		else
+			p:resolve(false)
+			exports["sandbox-hud"]:NotifError("Error")
+		end
+	end)
+
+	return Citizen.Await(p)
+end)
+
+exports('Preview', function(int)
+	StartPreview(int)
 end)
 
 AddEventHandler("RealEstate:Client:AcceptTransfer", function()

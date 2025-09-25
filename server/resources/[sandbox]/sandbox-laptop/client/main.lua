@@ -17,13 +17,11 @@ AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
 		"Reputation",
-		"Properties",
 		"Laptop",
 	}, function(error)
 		if #error > 0 then

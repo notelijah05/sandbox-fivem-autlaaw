@@ -669,7 +669,7 @@ end)
 exports("CanBeStored", function(vehicle)
 	local vehicleCoords = GetEntityCoords(vehicle)
 	local inVehicleStorageZone, vehicleStorageZoneId = GetVehicleStorageAtCoords(vehicleCoords)
-	return inVehicleStorageZone or Properties:GetNearHouseGarage(vehicleCoords)
+	return inVehicleStorageZone or exports['sandbox-properties']:GetNearHouseGarage(vehicleCoords)
 end)
 
 exports("PropertiesGet", function(vehicle)

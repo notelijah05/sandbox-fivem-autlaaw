@@ -15,14 +15,12 @@ DOORS_PERMISSION_CACHE = {}
 
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
 		"Doors",
-		"Properties",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -211,7 +209,7 @@ DOORS = {
 						end
 					end
 				elseif v.type == "propertyData" then
-					if Properties.Keys:HasAccessWithData(v.key, v.value) then
+					if exports['sandbox-properties']:HasAccessWithData(v.key, v.value) then
 						return true
 					end
 				end

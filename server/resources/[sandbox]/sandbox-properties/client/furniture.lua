@@ -418,15 +418,15 @@ RegisterNetEvent("Furniture:Client:DeleteItem", function(property, id, furniture
 end)
 
 AddEventHandler("Furniture:Client:OnMove", function(entity, data)
-    Properties.Furniture:Move(data.id, true)
+    exports['sandbox-properties']:Move(data.id, true)
 end)
 
 AddEventHandler("Furniture:Client:OnDelete", function(entity, data)
-    Properties.Furniture:Delete(data.id)
+    exports['sandbox-properties']:Delete(data.id)
 end)
 
 AddEventHandler("Furniture:Client:OnClone", function(entity, data)
-    Properties.Furniture:Place(data.model, false, {}, false, true, GetEntityCoords(entity.entity), GetEntityRotation(entity.entity))
+    exports['sandbox-properties']:Place(data.model, false, {}, false, true, GetEntityCoords(entity.entity), GetEntityRotation(entity.entity))
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)

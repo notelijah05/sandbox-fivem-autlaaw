@@ -35,15 +35,15 @@ end)
 
 ---- TARGETTING EVENTS ----
 AddEventHandler("Properties:Client:Stash", function(t, data)
-	Properties.Extras:Stash()
+	exports['sandbox-properties']:Stash()
 end)
 
 AddEventHandler("Properties:Client:Closet", function(t, data)
-	Properties.Extras:Closet()
+	exports['sandbox-properties']:Closet()
 end)
 
 AddEventHandler("Properties:Client:Logout", function(t, data)
-	Properties.Extras:Logout()
+	exports['sandbox-properties']:Logout()
 end)
 
 AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
@@ -85,7 +85,7 @@ RegisterNetEvent("Properties:Client:AddBlips", function()
 		Wait(100)
 	end
 
-	local ownedProps = Properties:GetPropertiesWithAccess()
+	local ownedProps = exports['sandbox-properties']:GetPropertiesWithAccess()
 
 	if ownedProps then
 		for k, v in ipairs(ownedProps) do

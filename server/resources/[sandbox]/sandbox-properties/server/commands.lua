@@ -9,7 +9,7 @@ function RegisterChatCommands()
 			h = GetEntityHeading(ped),
 		}
 
-		Properties.Manage:Add(source, args[1], args[2], tonumber(args[3]), args[4], pos)
+		exports['sandbox-properties']:Add(source, args[1], args[2], tonumber(args[3]), args[4], pos)
 	end, {
 		help = "Add New Property To Database (Enter Is Where You're At)",
 		params = {
@@ -33,7 +33,7 @@ function RegisterChatCommands()
 	}, 4)
 
 	exports["sandbox-chat"]:RegisterAdminCommand("delprop", function(source, args, rawCommand)
-		if Properties.Manage:Delete(args[1]) then
+		if exports['sandbox-properties']:Delete(args[1]) then
 			exports["sandbox-chat"]:SendServerSingle(source, "Property Has Been Deleted")
 		end
 	end, {
@@ -56,7 +56,7 @@ function RegisterChatCommands()
 			h = GetEntityHeading(ped) + 0.0,
 		}
 
-		if Properties.Manage:AddFrontdoor(args[1], pos) then
+		if exports['sandbox-properties']:AddFrontdoor(args[1], pos) then
 			exports["sandbox-chat"]:SendServerSingle(source, "Frontdoor Added to Property: " .. args[1])
 		else
 			exports["sandbox-chat"]:SendServerSingle(source, "No Existing Property")
@@ -79,7 +79,7 @@ function RegisterChatCommands()
 			h = GetEntityHeading(ped) + 0.0,
 		}
 
-		if Properties.Manage:AddBackdoor(args[1], pos) then
+		if exports['sandbox-properties']:AddBackdoor(args[1], pos) then
 			exports["sandbox-chat"]:SendServerSingle(source, "Backdoor Added to Property: " .. args[1])
 		else
 			exports["sandbox-chat"]:SendServerSingle(source, "No Existing Property")
@@ -102,7 +102,7 @@ function RegisterChatCommands()
 			h = GetEntityHeading(ped) + 0.0,
 		}
 
-		if Properties.Manage:AddGarage(args[1], pos) then
+		if exports['sandbox-properties']:AddGarage(args[1], pos) then
 			exports["sandbox-chat"]:SendServerSingle(source, "Garage Added to Property: " .. args[1])
 		else
 			exports["sandbox-chat"]:SendServerSingle(source, "No Existing Property")
@@ -116,7 +116,7 @@ function RegisterChatCommands()
 	}, 1)
 
 	exports["sandbox-chat"]:RegisterAdminCommand("removegarage", function(source, args, rawCommand)
-		if Properties.Manage:AddGarage(args[1], false) then
+		if exports['sandbox-properties']:AddGarage(args[1], false) then
 			exports["sandbox-chat"]:SendServerSingle(source, "Garage Removed From Property: " .. args[1])
 		else
 			exports["sandbox-chat"]:SendServerSingle(source, "No Existing Property")
@@ -130,11 +130,11 @@ function RegisterChatCommands()
 	}, 1)
 
 	exports["sandbox-chat"]:RegisterAdminCommand("setint", function(source, args, rawCommand)
-		if Properties.Upgrades:SetInterior(args[1], args[2]) then
+		if exports['sandbox-properties']:UpgradeSetInterior(args[1], args[2]) then
 			exports["sandbox-chat"]:SendServerSingle(source, "Interior Set For Property: " .. args[1])
 
 			DeletePropertyFurniture(args[1])
-			Properties:ForceEveryoneLeave(args[1])
+			exports['sandbox-properties']:ForceEveryoneLeave(args[1])
 		else
 			exports["sandbox-chat"]:SendServerSingle(source, "No Existing Property")
 		end
@@ -155,7 +155,7 @@ function RegisterChatCommands()
 	exports["sandbox-chat"]:RegisterAdminCommand("setupgrade", function(source, args, rawCommand)
 		local level = tonumber(args[3])
 		if level and level > 0 then
-			if Properties.Upgrades:Set(args[1], args[2], level) then
+			if exports['sandbox-properties']:UpgradeSet(args[1], args[2], level) then
 				exports["sandbox-chat"]:SendServerSingle(source, "Upgrade Set For Property: " .. args[1])
 			else
 				exports["sandbox-chat"]:SendServerSingle(source, "No Existing Property")
@@ -180,7 +180,7 @@ function RegisterChatCommands()
 	}, 3)
 
 	exports["sandbox-chat"]:RegisterAdminCommand("setlabel", function(source, args, rawCommand)
-		if Properties.Manage:SetLabel(args[1], args[2]) then
+		if exports['sandbox-properties']:SetLabel(args[1], args[2]) then
 			exports["sandbox-chat"]:SendServerSingle(source, "Label Set For Property: " .. args[1])
 		else
 			exports["sandbox-chat"]:SendServerSingle(source, "No Existing Property")
@@ -202,7 +202,7 @@ function RegisterChatCommands()
 	exports["sandbox-chat"]:RegisterAdminCommand("setprice", function(source, args, rawCommand)
 		local price = tonumber(args[2])
 		if price and price > 0 then
-			if Properties.Manage:SetPrice(args[1], price) then
+			if exports['sandbox-properties']:SetPrice(args[1], price) then
 				exports["sandbox-chat"]:SendServerSingle(source, "Price Set For Property: " .. args[1])
 			else
 				exports["sandbox-chat"]:SendServerSingle(source, "No Existing Property")
@@ -223,7 +223,7 @@ function RegisterChatCommands()
 	}, 2)
 
 	exports["sandbox-chat"]:RegisterAdminCommand("setpropdata", function(source, args, rawCommand)
-		if Properties.Manage:SetData(args[1], args[2], ParseCommandData(args[3])) then
+		if exports['sandbox-properties']:SetData(args[1], args[2], ParseCommandData(args[3])) then
 			exports["sandbox-chat"]:SendServerSingle(source, "Data Set For Property: " .. args[1])
 		else
 			exports["sandbox-chat"]:SendServerSingle(source, "No Existing Property")
@@ -253,7 +253,7 @@ function RegisterChatCommands()
 			if char then
 				if _properties[args[2]] then
 					if
-						Properties.Commerce:Buy(args[2], {
+						exports['sandbox-properties']:Buy(args[2], {
 							Char = char:GetData("ID"),
 							SID = char:GetData("SID"),
 							First = char:GetData("First"),
@@ -288,7 +288,7 @@ function RegisterChatCommands()
 		local player = exports['sandbox-base']:FetchSource(source)
 		if player.Permissions:GetLevel() >= 100 then
 			if _properties[args[1]] then
-				if Properties.Commerce:Sell(args[1]) then
+				if exports['sandbox-properties']:Sell(args[1]) then
 					exports["sandbox-chat"]:SendSystemSingle(source, "Removed property owner")
 				else
 					exports["sandbox-chat"]:SendSystemSingle(source, "Failed to remove property owner")
@@ -312,13 +312,13 @@ function RegisterChatCommands()
 		if player.Permissions:GetLevel() >= 100 then
 			if _properties[args[1]] then
 				if args[2] == "1" then
-					if Properties.Commerce:Foreclose(args[1], true) then
+					if exports['sandbox-properties']:Foreclose(args[1], true) then
 						exports["sandbox-chat"]:SendSystemSingle(source, "Property Foreclosed")
 					else
 						exports["sandbox-chat"]:SendSystemSingle(source, "Failed to foreclose property")
 					end
 				else
-					if Properties.Commerce:Foreclose(args[1], false) then
+					if exports['sandbox-properties']:Foreclose(args[1], false) then
 						exports["sandbox-chat"]:SendSystemSingle(source, "Property Unforeclosed")
 					else
 						exports["sandbox-chat"]:SendSystemSingle(source, "Failed to Unforeclosed property")

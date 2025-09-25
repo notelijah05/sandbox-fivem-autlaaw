@@ -58,14 +58,12 @@ end)
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 
 function RetrieveComponents()
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	RegisterChatCommands()
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Properties",
 		"Reputation",
 	}, function(error)
 		if #error > 0 then

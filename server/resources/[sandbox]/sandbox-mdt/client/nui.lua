@@ -67,7 +67,7 @@ RegisterNUICallback("RosterSelect", function(data, cb)
 end)
 
 RegisterNUICallback("GetProperties", function(data, cb)
-	local properties = Properties:GetProperties()
+	local properties = exports['sandbox-properties']:GetProperties()
 
 	local data = {}
 	if properties then
@@ -80,7 +80,7 @@ RegisterNUICallback("GetProperties", function(data, cb)
 end)
 
 RegisterNUICallback("FindProperty", function(data, cb)
-	local prop = Properties:Get(data)
+	local prop = exports['sandbox-properties']:Get(data)
 	if prop ~= nil then
 		ClearGpsPlayerWaypoint()
 		SetNewWaypoint(prop.location.front.x, prop.location.front.y)

@@ -20,11 +20,11 @@ function DoesCharacterPassStorageRestrictions(source, charJobs, restriction)
             end
         elseif v.PropertyData and v.PropertyData.key then
             if isServer then
-                if Properties.Keys:HasAccessWithData(source, v.PropertyData.key, v.PropertyData.value) then
+                if exports['sandbox-properties']:HasAccessWithData(source, v.PropertyData.key, v.PropertyData.value) then
                     return true
                 end
             else
-                if Properties.Keys:HasAccessWithData(v.PropertyData.key, v.PropertyData.value) then
+                if exports['sandbox-properties']:HasAccessWithData(v.PropertyData.key, v.PropertyData.value) then
                     return true
                 end
             end

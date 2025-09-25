@@ -72,7 +72,7 @@ function RegisterCallbacks()
 					h = heading + 0.0
 				}
 
-				cb(Properties.Manage:AddGarage(data.property, pos))
+				cb(exports['sandbox-properties']:AddGarage(data.property, pos))
 			elseif data.location == "backdoor" then
 				local pos = {
 					x = coords.x + 0.0,
@@ -81,7 +81,7 @@ function RegisterCallbacks()
 					h = heading + 0.0
 				}
 
-				cb(Properties.Manage:AddBackdoor(data.property, pos))
+				cb(exports['sandbox-properties']:AddBackdoor(data.property, pos))
 			else
 				cb(false)
 			end
@@ -175,7 +175,7 @@ function RegisterCallbacks()
 			(property.keys ~= nil and property.keys[char:GetData("ID")])
 			or (not property.sold and exports['sandbox-jobs']:HasPermissionInJob(source, "realestate", "JOB_DOORS"))
 		then
-			cb(Properties.Utils:SetLock(data.id, data.state))
+			cb(exports['sandbox-properties']:SetLock(data.id, data.state))
 		else
 			cb(false)
 		end
@@ -244,7 +244,7 @@ function RegisterCallbacks()
 			if propertyUpgrades then
 				local thisUpgrade = propertyUpgrades[data.upgrade]
 				if thisUpgrade then
-					local currentLevel = Properties.Upgrades:Get(property.id, data.upgrade)
+					local currentLevel = exports['sandbox-properties']:UpgradeGet(property.id, data.upgrade)
 					local nextLevel = thisUpgrade.levels[currentLevel + 1]
 					local p = exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID"))
 					if nextLevel and nextLevel.price and p and p.Account then
@@ -261,7 +261,8 @@ function RegisterCallbacks()
 						})
 
 						if success then
-							local upgraded = Properties.Upgrades:Set(property.id, data.upgrade, currentLevel + 1)
+							local upgraded = exports['sandbox-properties']:UpgradeSet(property.id, data.upgrade,
+								currntLevel + 1)
 							if not upgraded then
 								exports['sandbox-base']:LoggerError("Properties",
 									string.format("SID %s Failed to Upgrade Property %s After Payment (%s - Level %s)",
@@ -315,14 +316,14 @@ function RegisterCallbacks()
 				})
 
 				if success then
-					local upgraded = Properties.Upgrades:SetInterior(property.id, data.int)
+					local upgraded = exports['sandbox-properties']:UpgradeSetInterior(property.id, data.int)
 					if not upgraded then
 						exports['sandbox-base']:LoggerError("Properties",
 							string.format("SID %s Failed to Upgrade Property %s After Payment (Interior - %s)",
 								char:GetData("SID"), property.id, data.int))
 					else
 						DeletePropertyFurniture(property.id)
-						Properties:ForceEveryoneLeave(property.id)
+						exports['sandbox-properties']:ForceEveryoneLeave(property.id)
 					end
 
 					cb(upgraded)
@@ -431,7 +432,7 @@ function RegisterCallbacks()
 																		.price,
 																		downPayment, loanWeeks)
 																if loanSuccess then
-																	Properties.Commerce:Buy(prop.id, {
+																	exports['sandbox-properties']:Buy(prop.id, {
 																		Char = targetChar:GetData("ID"),
 																		SID = targetChar:GetData("SID"),
 																		First = targetChar:GetData("First"),
@@ -496,7 +497,7 @@ function RegisterCallbacks()
 								prop.price,
 								'Purchase of ' .. prop.label, function(wasPayed, withAccount)
 									if wasPayed then
-										Properties.Commerce:Buy(prop.id, {
+										exports['sandbox-properties']:Buy(prop.id, {
 											Char = targetChar:GetData("ID"),
 											SID = targetChar:GetData("SID"),
 											First = targetChar:GetData("First"),
@@ -607,7 +608,7 @@ function RegisterCallbacks()
 										SID = owner:GetData("SID"),
 									}, function(accepted, stateId)
 										if accepted and stateId == newOwner:GetData("SID") then
-											if Properties.Commerce:Buy(prop.id, {
+											if exports['sandbox-properties']:Buy(prop.id, {
 													Char = newOwner:GetData("ID"),
 													SID = newOwner:GetData("SID"),
 													First = newOwner:GetData("First"),

@@ -137,7 +137,7 @@ exports('VehiclesView', function(VIN)
 			elseif vehicle.Storage.Type == 1 then
 				vehicle.Storage.Name = exports['sandbox-vehicles']:GaragesGet(vehicle.Storage.Id).name
 			elseif vehicle.Storage.Type == 2 then
-				local prop = Properties:Get(vehicle.Storage.Id)
+				local prop = exports['sandbox-properties']:Get(vehicle.Storage.Id)
 				vehicle.Storage.Name = prop?.label
 			end
 		end

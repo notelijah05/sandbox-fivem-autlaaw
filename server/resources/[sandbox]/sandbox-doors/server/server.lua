@@ -6,14 +6,12 @@ AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
 		"Doors",
 		"Pwnzor",
-		"Properties",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -283,7 +281,7 @@ function CheckPlayerAuth(source, doorPermissionData)
 					end
 				end
 			elseif v.type == "propertyData" then
-				if Properties.Keys:HasAccessWithData(source, v.key, v.value) then
+				if exports['sandbox-properties']:HasAccessWithData(source, v.key, v.value) then
 					return true
 				end
 			end

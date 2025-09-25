@@ -1,12 +1,10 @@
 AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Admin", {
-		"Properties",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then
@@ -138,7 +136,7 @@ function RegisterChatCommands()
 	}, -1)
 
 	exports["sandbox-chat"]:RegisterAdminCommand("cpproperty", function(source, args, rawCommand)
-		local nearProperty = Properties.Utils:IsNearProperty(source)
+		local nearProperty = exports['sandbox-properties']:IsNearProperty(source)
 		if nearProperty.propertyId then
 			TriggerClientEvent("Admin:Client:CopyClipboard", source, nearProperty.propertyId)
 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Copied Property ID")
@@ -148,9 +146,9 @@ function RegisterChatCommands()
 	}, 0)
 
 	exports["sandbox-chat"]:RegisterAdminCommand("property", function(source, args, rawCommand)
-		local nearProperty = Properties.Utils:IsNearProperty(source)
+		local nearProperty = exports['sandbox-properties']:IsNearProperty(source)
 		if nearProperty.propertyId then
-			local prop = Properties:Get(nearProperty.propertyId)
+			local prop = exports['sandbox-properties']:Get(nearProperty.propertyId)
 			if prop then
 				exports["sandbox-chat"]:SendSystemSingle(
 					source,

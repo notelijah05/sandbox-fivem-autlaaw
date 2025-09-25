@@ -21,27 +21,14 @@ _governmentJobData = {}
 
 local sentencedSuspects = {}
 
-AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	RegisterChatCommands()
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Properties",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterMiddleware()
-		Startup()
-		TriggerEvent("MDT:Server:RegisterCallbacks")
+	RegisterMiddleware()
+	Startup()
+	TriggerEvent("MDT:Server:RegisterCallbacks")
 
-		Wait(2500)
-		UpdateMDTJobsData()
-	end)
+	Wait(2500)
+	UpdateMDTJobsData()
+	RegisterChatCommands()
 end)
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)

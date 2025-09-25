@@ -7,26 +7,12 @@ _mdtLoggedIn = false
 
 local _bodycam = false
 
-AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Properties",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-
-		exports["sandbox-keybinds"]:Add("gov_mdt", "", "keyboard", "Gov - Open MDT", function()
-			ToggleMDT()
-		end)
-
-		RegisterBadgeCallbacks()
+	exports["sandbox-keybinds"]:Add("gov_mdt", "", "keyboard", "Gov - Open MDT", function()
+		ToggleMDT()
 	end)
+
+	RegisterBadgeCallbacks()
 end)
 
 AddEventHandler("Characters:Client:Spawn", function()
