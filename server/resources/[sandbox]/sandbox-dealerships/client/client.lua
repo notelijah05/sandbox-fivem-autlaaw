@@ -3,29 +3,15 @@ _withinShowroom = false
 _withinCatalog = false
 
 _justBoughtFuckingBike = {}
--- DEALERSHIPS = {}
-
-AddEventHandler("Dealerships:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	--Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
-end
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Dealerships", {
-		--'Dealerships',
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		CreateDealerships()
+	CreateDealerships()
 
-		CreateRentalSpots()
-		CreateBikeStands()
-		CreateGovermentFleetShops()
+	CreateRentalSpots()
+	CreateBikeStands()
+	CreateGovermentFleetShops()
 
-		CreateDonorDealerships()
-	end)
+	CreateDonorDealerships()
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")
@@ -43,10 +29,6 @@ AddEventHandler("Characters:Client:Logout", function()
 
 	_justBoughtFuckingBike = {}
 end)
-
--- AddEventHandler('Proxy:Shared:RegisterReady', function()
---     exports['sandbox-base']:RegisterComponent('Dealerships', DEALERSHIPS)
--- end)
 
 function CreatePolyzone(id, zone, data)
 	if zone.type == "poly" then
