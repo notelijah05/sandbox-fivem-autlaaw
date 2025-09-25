@@ -9,7 +9,6 @@ AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	EMS = exports["sandbox-base"]:FetchComponent("EMS")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Mechanic = exports["sandbox-base"]:FetchComponent("Mechanic")
 	Tow = exports["sandbox-base"]:FetchComponent("Tow")
 end
 
@@ -17,7 +16,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Targeting", {
 		"EMS",
 		"Reputation",
-		"Mechanic",
 		"Tow",
 	}, function(error)
 		if #error > 0 then

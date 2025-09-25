@@ -446,7 +446,7 @@ Config.VehicleMenu = {
 				and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(
 					entityData.entity
 				))
-				and Mechanic:CanAccessVehicleAsMechanic(entityData.entity)
+				and exports['sandbox-mechanic']:CanAccessVehicleAsMechanic(entityData.entity)
 			then
 				local engineHealth = GetVehicleEngineHealth(entityData.entity)
 				local bodyHealth = GetVehicleBodyHealth(entityData.entity)
@@ -469,7 +469,7 @@ Config.VehicleMenu = {
 				and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(
 					entityData.entity
 				))
-				and Mechanic:CanAccessVehicleAsMechanic(entityData.entity)
+				and exports['sandbox-mechanic']:CanAccessVehicleAsMechanic(entityData.entity)
 			then
 				return true
 			end
@@ -488,7 +488,7 @@ Config.VehicleMenu = {
 				and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(
 					entityData.entity
 				))
-				and Mechanic:CanAccessVehicleAsMechanic(entityData.entity)
+				and exports['sandbox-mechanic']:CanAccessVehicleAsMechanic(entityData.entity)
 			then
 				return true
 			end

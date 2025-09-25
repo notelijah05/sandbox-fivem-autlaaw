@@ -27,7 +27,7 @@ function RegisterChatCommands()
 
 	exports["sandbox-chat"]:RegisterCommand("ooc", function(source, args, rawCommand)
 		if #rawCommand:sub(4) > 0 then
-			Chat.Send:OOC(source, rawCommand:sub(4))
+			exports["sandbox-chat"]:SendOOC(source, rawCommand:sub(4))
 		end
 	end, {
 		help = "Out of Character Chat, THIS IS NOT A SUPPORT CHAT",
