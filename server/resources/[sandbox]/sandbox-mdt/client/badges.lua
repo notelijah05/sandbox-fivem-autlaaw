@@ -183,7 +183,7 @@ RegisterNetEvent("MDT:Client:ShowBadge", function(sender, data)
 		local dist = #(GetEntityCoords(senderPed) - GetEntityCoords(myPed))
 
 		if dist <= 4.0 and HasEntityClearLosToEntity(myPed, senderPed, 17) then
-			MDT.Badges:Open(data)
+			exports['sandbox-mdt']:BadgesOpen(data)
 		end
 	end
 end)
@@ -226,7 +226,7 @@ RegisterNetEvent("MDT:Client:ShowLicense", function(sender, data)
 		local dist = #(GetEntityCoords(senderPed) - GetEntityCoords(myPed))
 
 		if dist <= 4.0 and HasEntityClearLosToEntity(myPed, senderPed, 17) then
-			MDT.Licenses:Open(data)
+			exports['sandbox-mdt']:LicensesOpen(data)
 		end
 	end
 end)

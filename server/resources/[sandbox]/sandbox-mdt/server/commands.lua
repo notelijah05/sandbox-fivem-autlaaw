@@ -7,7 +7,7 @@ function RegisterChatCommands()
 				exports['sandbox-jobs']:HasJob(target:GetData("Source"), "police")
 				or exports['sandbox-jobs']:HasJob(target:GetData("Source"), "ems")
 			then
-				if MDT.People:Update(-1, target:GetData("SID"), "Callsign", newCallsign) then
+				if exports['sandbox-mdt']:PeopleUpdate(-1, target:GetData("SID"), "Callsign", newCallsign) then
 					exports["sandbox-chat"]:SendSystemSingle(source, "Updated Callsign")
 				else
 					exports["sandbox-chat"]:SendSystemSingle(source, "Error Updating Callsign")
@@ -101,7 +101,7 @@ function RegisterChatCommands()
 
 	exports["sandbox-chat"]:RegisterAdminCommand("addmdtsysadmin", function(source, args, rawCommand)
 		local targetStateId = math.tointeger(args[1])
-		local success = MDT.People:Update(-1, targetStateId, "MDTSystemAdmin", true)
+		local success = exports['sandbox-mdt']:PeopleUpdate(-1, targetStateId, "MDTSystemAdmin", true)
 		if success then
 			exports["sandbox-chat"]:SendSystemSingle(source, "Granted System Admin to State ID: " .. targetStateId)
 		else
@@ -119,7 +119,7 @@ function RegisterChatCommands()
 
 	exports["sandbox-chat"]:RegisterAdminCommand("removemdtsysadmin", function(source, args, rawCommand)
 		local targetStateId = math.tointeger(args[1])
-		local success = MDT.People:Update(-1, targetStateId, "MDTSystemAdmin", false)
+		local success = exports['sandbox-mdt']:PeopleUpdate(-1, targetStateId, "MDTSystemAdmin", false)
 		if success then
 			exports["sandbox-chat"]:SendSystemSingle(source, "Revoked System Admin from State ID: " .. targetStateId)
 		else

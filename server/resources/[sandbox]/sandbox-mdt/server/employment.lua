@@ -50,7 +50,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		}, data.JobId)
 
 		if char and data and data.SID and (hasPerms or isSystemAdmin) then
-			local charData = MDT.People:View(data.SID)
+			local charData = exports['sandbox-mdt']:PeopleView(data.SID)
 			if charData then
 				local canRemove = false
 				if isSystemAdmin then
@@ -131,7 +131,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		local newJobData = exports['sandbox-jobs']:DoesExist(data.data.Id, data.data.Workplace.Id, data.data.Grade.Id)
 
 		if char and data and data.SID and (hasPerms or isSystemAdmin) and newJobData then
-			local charData = MDT.People:View(data.SID)
+			local charData = exports['sandbox-mdt']:PeopleView(data.SID)
 			if charData then
 				local canDoItBitch = false
 				if isSystemAdmin then
@@ -222,7 +222,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		}, data.JobId)
 
 		if char and data and data.SID and (hasPerms or isSystemAdmin) then
-			local charData = MDT.People:View(data.SID)
+			local charData = exports['sandbox-mdt']:PeopleView(data.SID)
 			if charData then
 				local canRemove = false
 				if isSystemAdmin then
@@ -310,7 +310,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		}, data.JobId)
 
 		if char and data and data.SID and (hasPerms or isSystemAdmin) then
-			local charData = MDT.People:View(data.SID)
+			local charData = exports['sandbox-mdt']:PeopleView(data.SID)
 			if charData then
 				local canRemove = false
 				if isSystemAdmin then

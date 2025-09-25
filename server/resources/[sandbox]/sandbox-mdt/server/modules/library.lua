@@ -1,29 +1,27 @@
-_MDT.Library = {
-    Create = function(self, label, link, job, workplace)
-        local inserted = MySQL.insert.await("INSERT INTO mdt_library (label, link, job, workplace) VALUES (?, ?, ?, ?)",
-            {
-                label,
-                link,
-                job,
-                workplace and workplace or nil,
-            })
-
-        return inserted
-    end,
-    Delete = function(self, id)
-        MySQL.query.await("DELETE FROM mdt_library WHERE id = ?", {
-            id
+exports("LibraryCreate", function(label, link, job, workplace)
+    local inserted = MySQL.insert.await("INSERT INTO mdt_library (label, link, job, workplace) VALUES (?, ?, ?, ?)",
+        {
+            label,
+            link,
+            job,
+            workplace and workplace or nil,
         })
 
-        return true
-    end
-}
+    return inserted
+end)
 
+exports("LibraryDelete", function(id)
+    MySQL.query.await("DELETE FROM mdt_library WHERE id = ?", {
+        id
+    })
+
+    return true
+end)
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
     exports["sandbox-base"]:RegisterServerCallback("MDT:AddLibraryDocument", function(source, data, cb)
         if CheckMDTPermissions(source, true) then
-            cb(MDT.Library:Create(data.label, data.link, data.job, data.workplace))
+            cb(exports['sandbox-mdt']:LibraryCreate(data.label, data.link, data.job, data.workplace))
         else
             cb(false)
         end
@@ -31,7 +29,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
     exports["sandbox-base"]:RegisterServerCallback("MDT:RemoveLibraryDocument", function(source, data, cb)
         if CheckMDTPermissions(source, true) then
-            cb(MDT.Library:Delete(data.id))
+            cb(exports['sandbox-mdt']:LibraryDelete(data.id))
         else
             cb(false)
         end

@@ -1,4 +1,3 @@
-_MDT = _MDT or {}
 _bolos = {}
 _breakpoints = {
 	reduction = 50,
@@ -24,7 +23,6 @@ local sentencedSuspects = {}
 
 AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	RegisterChatCommands()
@@ -32,7 +30,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"MDT",
 		"Properties",
 		"Jail",
 	}, function(error)
@@ -47,10 +44,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		Wait(2500)
 		UpdateMDTJobsData()
 	end)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("MDT", _MDT)
 end)
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
@@ -247,7 +240,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char and CheckMDTPermissions(source, false) and data.report and data.suspect and data.suspect.id then
-			local id = MDT.Warrants:Create(data.report, data.suspect, data.notes, {
+			local id = exports['sandbox-mdt']:WarrantsCreate(data.report, data.suspect, data.notes, {
 				SID = char:GetData("SID"),
 				First = char:GetData("First"),
 				Last = char:GetData("Last"),

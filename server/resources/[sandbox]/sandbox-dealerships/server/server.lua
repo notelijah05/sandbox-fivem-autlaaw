@@ -3,14 +3,11 @@ _hashToVeh = {}
 AddEventHandler('Dealerships:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
-    MDT = exports['sandbox-base']:FetchComponent('MDT')
 end
 
 AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Dealerships', {
-        'Doors',
         'Dealerships',
-        'MDT',
     }, function(error)
         if #error > 0 then return end -- Do something to handle if not all dependencies loaded
         RetrieveComponents()
@@ -401,7 +398,7 @@ function RegisterCallbacks()
                 if vehicle then
                     if vehicle.Owner then
                         if vehicle.Owner.Type == 0 then
-                            local owner = MDT.People:View(vehicle.Owner.Id)
+                            local owner = exports['sandbox-mdt']:PeopleView(vehicle.Owner.Id)
                             vehicle.OwnerName = string.format("%s %s (%s)", owner.First, owner.Last, owner.SID)
                         elseif vehicle.Owner.Type == 1 or vehicle.Owner.Type == 2 then
                             local jobData = exports['sandbox-jobs']:DoesExist(vehicle.Owner.Id, vehicle.Owner.Workplace)
@@ -441,7 +438,7 @@ function RegisterCallbacks()
                         local vehModel = GetVehicleModelFromHash(data.dealerId, GetEntityModel(veh))
                         if vehModel then
                             local stockInfo = Dealerships.Stock:FetchDealerVehicle(data.dealerId, vehModel)
-                            local vehStrikes = MDT.Vehicles:GetStrikes(vehEnt.state.VIN) or 0
+                            local vehStrikes = exports['sandbox-mdt']:VehiclesGetStrikes(vehEnt.state.VIN) or 0
                             local remainingLoan = exports['sandbox-finance']:LoansHasRemainingPayments("vehicle",
                                 vehEnt.state.VIN, 14)
 
@@ -488,7 +485,7 @@ function RegisterCallbacks()
                     local vehModel = GetVehicleModelFromHash(data.dealerId, GetEntityModel(veh))
                     if vehModel then
                         local stockInfo = Dealerships.Stock:FetchDealerVehicle(data.dealerId, vehModel)
-                        local vehStrikes = MDT.Vehicles:GetStrikes(vehEnt.state.VIN) or 0
+                        local vehStrikes = exports['sandbox-mdt']:VehiclesGetStrikes(vehEnt.state.VIN) or 0
                         local remainingLoan = exports['sandbox-finance']:LoansHasRemainingPayments("vehicle",
                             vehEnt.state.VIN, 14)
 

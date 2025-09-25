@@ -1,9 +1,6 @@
 const uuid = require("uuid");
 const mdtAlerts = io.of("/mdt-alerts");
 
-let MDT = null;
-let EmergencyAlerts = null;
-
 const alertGroupStyles = {
   police_alerts: 1,
   ems_alerts: 2,
@@ -36,23 +33,6 @@ const typeNames = {
   lifeflight: "Life Flight",
   heat: "Heat",
 };
-
-AddEventHandler("Database:Shared:DependencyUpdate", RetrieveComponents);
-
-function RetrieveComponents() {
-  MDT = exports["sandbox-base"].FetchComponent("MDT");
-}
-
-AddEventHandler("Core:Shared:Ready", () => {
-  exports["sandbox-base"].RequestDependencies(
-    "WebSockets",
-    ["MDT"],
-    (error) => {
-      if (error.length > 0) return;
-      RetrieveComponents();
-    }
-  );
-});
 
 let units = {
   police: [

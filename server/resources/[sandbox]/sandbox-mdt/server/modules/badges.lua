@@ -8,7 +8,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
             badgeCooldowns[source] = GetGameTimer()
             local char = exports['sandbox-characters']:FetchCharacterSource(source)
             if char and CheckMDTPermissions(source, { 'PD_HIGH_COMMAND', 'SAFD_HIGH_COMMAND', 'DOJ_JUDGE', 'DOC_HIGH_COMMAND' }) then
-                local officer = MDT.People:View(data.SID)
+                local officer = exports['sandbox-mdt']:PeopleView(data.SID)
                 if officer then
                     local departmentName = false
                     local departmentData = false

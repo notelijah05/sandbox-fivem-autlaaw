@@ -9,7 +9,6 @@ local _bodycam = false
 
 AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 end
 
@@ -62,7 +61,7 @@ RegisterNetEvent("MDT:Client:Login", function(points, job, jobPermissions, attor
 
 	if data then
 		for k, v in pairs(data) do
-			MDT.Data:Set(k, v)
+			exports['sandbox-mdt']:DataSet(k, v)
 		end
 	end
 
@@ -96,8 +95,8 @@ RegisterNetEvent("MDT:Client:UpdateJobData", function(job, jobPermissions)
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
-	MDT:Close()
-	MDT.Badges:Close()
+	exports['sandbox-mdt']:Close()
+	exports['sandbox-mdt']:BadgesClose()
 	exports['sandbox-mdt']:EmergencyAlertsClose()
 
 	SendNUIMessage({
@@ -117,8 +116,8 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 RegisterNetEvent("UI:Client:Reset", function(manual)
-	MDT:Close()
-	MDT.Badges:Close()
+	exports['sandbox-mdt']:Close()
+	exports['sandbox-mdt']:BadgesClose()
 	exports['sandbox-mdt']:EmergencyAlertsClose()
 	SendNUIMessage({
 		type = "SET_BODYCAM",
@@ -148,14 +147,14 @@ function ToggleMDT()
 	if not _openCd and _mdtLoggedIn then
 		if not _mdtOpen then
 			_openCd = true
-			MDT:Open()
+			exports['sandbox-mdt']:Open()
 
 			CreateThread(function()
 				Wait(2000)
 				_openCd = false
 			end)
 		else
-			MDT:Close()
+			exports['sandbox-mdt']:Close()
 		end
 	end
 end

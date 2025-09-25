@@ -7,7 +7,6 @@ AddEventHandler("Police:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
-	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 end
@@ -16,7 +15,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Police",
 		"Handcuffs",
-		"MDT",
 		"Doors",
 		"Robbery"
 	}, function(error)
@@ -621,7 +619,7 @@ POLICE = {
 				else
 					local ownerName = "Unknown"
 					if vehicle.Owner.Type == 0 then
-						local owner = MDT.People:View(vehicle.Owner.Id)
+						local owner = exports['sandbox-mdt']:PeopleView(vehicle.Owner.Id)
 
 						ownerName = string.format("%s %s", owner.First, owner.Last)
 					elseif vehicle.Owner.Type == 1 then

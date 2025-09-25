@@ -4,13 +4,13 @@ AddEventHandler("MDT:Client:SetData", function(type, data, options)
 		Wait(1)
 	end
 
-	MDT.Data:Set(type, data)
+	exports['sandbox-mdt']:DataSet(type, data)
 end)
 
 RegisterNetEvent("MDT:Client:SetMultipleData", function(data)
 	if data then
 		for k, v in pairs(data) do
-			MDT.Data:Set(k, v)
+			exports['sandbox-mdt']:DataSet(k, v)
 		end
 	end
 end)
@@ -21,7 +21,7 @@ AddEventHandler("MDT:Client:AddData", function(type, data, id)
 		Wait(1)
 	end
 
-	MDT.Data:Add(type, data, id)
+	exports['sandbox-mdt']:DataAdd(type, data, id)
 end)
 
 RegisterNetEvent("MDT:Client:UpdateData")
@@ -30,7 +30,7 @@ AddEventHandler("MDT:Client:UpdateData", function(type, id, data)
 		Wait(1)
 	end
 
-	MDT.Data:Update(type, id, data)
+	exports['sandbox-mdt']:DataUpdate(type, id, data)
 end)
 
 RegisterNetEvent("MDT:Client:RemoveData")
@@ -39,7 +39,7 @@ AddEventHandler("MDT:Client:RemoveData", function(type, id)
 		Wait(1)
 	end
 
-	MDT.Data:Remove(type, id)
+	exports['sandbox-mdt']:DataRemove(type, id)
 end)
 
 RegisterNetEvent("MDT:Client:ResetData")
@@ -57,5 +57,5 @@ AddEventHandler("Characters:Client:Logout", function()
 		Wait(1)
 	end
 
-	MDT.Data:Reset()
+	exports['sandbox-mdt']:DataReset()
 end)
