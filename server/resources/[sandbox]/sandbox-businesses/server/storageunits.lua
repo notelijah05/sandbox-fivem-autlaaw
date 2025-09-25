@@ -38,8 +38,8 @@ AddEventHandler("Businesses:Server:Startup", function()
 
     exports["sandbox-chat"]:RegisterAdminCommand("unitcopy", function(source, args, rawCommand)
         local near = StorageUnits:GetNearUnit(source)
-        if near?.unitId then
-            exports['sandbox-base']:ExecuteClient(source, "Admin", "CopyClipboard", near?.unitId)
+        if near.unitId then
+            TriggerClientEvent("Admin:Client:CopyClipboard", source, near.unitId)
             exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Copied Storage Unit ID")
         end
     end, {

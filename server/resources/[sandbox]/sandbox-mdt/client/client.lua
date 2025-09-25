@@ -12,13 +12,11 @@ function RetrieveComponents()
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Admin = exports["sandbox-base"]:FetchComponent("Admin")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
 		"EmergencyAlerts",
-		"Admin",
 		"Properties",
 	}, function(error)
 		if #error > 0 then

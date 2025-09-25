@@ -42,13 +42,11 @@ local _playing = nil
 AddEventHandler("minigame:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
-	Admin = exports["sandbox-base"]:FetchComponent("Admin")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("minigame", {
 		"Jail",
-		"Admin",
 	}, function(error)
 		if #error > 0 then
 			return

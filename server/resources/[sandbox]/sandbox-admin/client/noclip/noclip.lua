@@ -2,81 +2,83 @@ NOCLIP_ACTIVE = false
 local noclipEntity = false
 local noclipMode = false
 
-ADMIN.NoClip = {
-    Toggle = function(self, mode)
-        if mode ~= nil then
-            noclipMode = mode
-        else
-            noclipMode = false
+exports("NoClipToggle", function(mode)
+    if mode ~= nil then
+        noclipMode = mode
+    else
+        noclipMode = false
+    end
+
+    if NOCLIP_ACTIVE then
+        exports['sandbox-admin']:NoClipStop()
+    else
+        exports['sandbox-admin']:NoClipStart()
+    end
+end)
+
+exports("NoClipStart", function()
+    if not NOCLIP_ACTIVE then
+        noclipEntity = PlayerPedId()
+        if IsPedInAnyVehicle(noclipEntity) then
+            noclipEntity = GetVehiclePedIsIn(noclipEntity, false)
         end
 
-        if NOCLIP_ACTIVE then
-            Admin.NoClip:Stop()
-        else
-            Admin.NoClip:Start()
-        end
-    end,
-    Start = function(self)
-        if not NOCLIP_ACTIVE then
-            noclipEntity = PlayerPedId()
-            if IsPedInAnyVehicle(noclipEntity) then
-                noclipEntity = GetVehiclePedIsIn(noclipEntity, false)
-            end
-
-            if not NetworkHasControlOfEntity(noclipEntity) then
-                noclipEntity = false
-                return
-            end
-
-            SetEntityInvincible(noclipEntity, true)
-            FreezeEntityPosition(noclipEntity, true)
-            SetEntityCollision(noclipEntity, false, false)
-
-            if not noclipMode then
-                SetEntityVisible(noclipEntity, false, false)
-
-                if noclipEntity ~= PlayerPedId() then
-                    SetEntityVisible(PlayerPedId(), false, false)
-                end
-            end
-
-            local entityCoords = GetEntityCoords(noclipEntity)
-            SetFreecamEnabled(true)
-            SetFreecamPosition(entityCoords.x, entityCoords.y, entityCoords.z, not noclipMode)
-            NOCLIP_ACTIVE = true
-        end
-    end,
-    Stop = function(self)
-        if NOCLIP_ACTIVE then
-            FreezeEntityPosition(noclipEntity, false)
-            if not LocalPlayer.state.isAdmin or not LocalPlayer.state.isGodmode then
-                SetEntityInvincible(noclipEntity, false)
-            end
-            SetEntityCollision(noclipEntity, true, true)
-            SetEntityVisible(noclipEntity, true, false)
-
-            FreezeEntityPosition(playerPed, false)
-            if not LocalPlayer.state.isAdmin or not LocalPlayer.state.isGodmode then
-                SetEntityInvincible(playerPed, false)
-            end
-            SetEntityCollision(playerPed, true, true)
-            SetEntityVisible(playerPed, true, false)
-
+        if not NetworkHasControlOfEntity(noclipEntity) then
             noclipEntity = false
-            SetFreecamEnabled(false)
-            noclipEntity = PlayerPedId()
-            NOCLIP_ACTIVE = false
+            return
         end
-    end,
-    IsActive = function(self)
-        return NOCLIP_ACTIVE
-    end,
-    GetPos = function(self)
-        if NOCLIP_ACTIVE then
-            return GetFreecamPosition()
+
+        SetEntityInvincible(noclipEntity, true)
+        FreezeEntityPosition(noclipEntity, true)
+        SetEntityCollision(noclipEntity, false, false)
+
+        if not noclipMode then
+            SetEntityVisible(noclipEntity, false, false)
+
+            if noclipEntity ~= PlayerPedId() then
+                SetEntityVisible(PlayerPedId(), false, false)
+            end
         end
-    end,
-}
+
+        local entityCoords = GetEntityCoords(noclipEntity)
+        SetFreecamEnabled(true)
+        SetFreecamPosition(entityCoords.x, entityCoords.y, entityCoords.z, not noclipMode)
+        NOCLIP_ACTIVE = true
+    end
+end)
+
+exports("NoClipStop", function()
+    if NOCLIP_ACTIVE then
+        FreezeEntityPosition(noclipEntity, false)
+        if not LocalPlayer.state.isAdmin or not LocalPlayer.state.isGodmode then
+            SetEntityInvincible(noclipEntity, false)
+        end
+        SetEntityCollision(noclipEntity, true, true)
+        SetEntityVisible(noclipEntity, true, false)
+
+        FreezeEntityPosition(playerPed, false)
+        if not LocalPlayer.state.isAdmin or not LocalPlayer.state.isGodmode then
+            SetEntityInvincible(playerPed, false)
+        end
+        SetEntityCollision(playerPed, true, true)
+        SetEntityVisible(playerPed, true, false)
+
+        noclipEntity = false
+        SetFreecamEnabled(false)
+        noclipEntity = PlayerPedId()
+        NOCLIP_ACTIVE = false
+    end
+end)
+
+exports("NoClipIsActive", function()
+    return NOCLIP_ACTIVE
+end)
+
+exports("NoClipGetPos", function()
+    if NOCLIP_ACTIVE then
+        return GetFreecamPosition()
+    end
+end)
 
 AddEventHandler('FreeCam:Update', function()
     local position = GetFreecamPosition()
@@ -90,10 +92,10 @@ end)
 
 RegisterNetEvent('Admin:Client:NoClip', function(mode)
     exports["sandbox-base"]:ServerCallback('Admin:NoClip', {
-        active = not Admin.NoClip:IsActive()
+        active = not exports['sandbox-admin']:NoClipIsActive()
     }, function(isAdmin)
         if isAdmin then
-            Admin.NoClip:Toggle(mode)
+            exports['sandbox-admin']:NoClipToggle(mode)
         end
     end)
 end)

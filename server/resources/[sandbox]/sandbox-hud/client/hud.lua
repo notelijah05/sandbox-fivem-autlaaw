@@ -58,13 +58,11 @@ end
 AddEventHandler("Hud:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Jail = exports["sandbox-base"]:FetchComponent("Jail")
-	Admin = exports["sandbox-base"]:FetchComponent("Admin")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hud", {
 		"Jail",
-		"Admin",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -607,8 +605,8 @@ function ShowIds()
 			nearPlayers = {}
 			local playerCoords = GetEntityCoords(LocalPlayer.state.ped)
 
-			if Admin.NoClip:IsActive() then
-				playerCoords = Admin.NoClip:GetPos()
+			if exports['sandbox-admin']:NoClipIsActive() then
+				playerCoords = exports['sandbox-admin']:NoClipGetPos()
 			end
 
 			for _, id in ipairs(GetActivePlayers()) do

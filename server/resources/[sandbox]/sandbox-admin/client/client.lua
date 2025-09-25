@@ -1,13 +1,11 @@
 AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Status = exports["sandbox-base"]:FetchComponent("Status")
-	Admin = exports["sandbox-base"]:FetchComponent("Admin")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Admin", {
 		"Status",
-		"Admin",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -15,16 +13,16 @@ AddEventHandler("Core:Shared:Ready", function()
 		RetrieveComponents()
 
 		exports["sandbox-keybinds"]:Add("admin_menu", "HOME", "keyboard", "[Admin] Open Admin Menu", function()
-			Admin:OpenMenu()
+			exports['sandbox-admin']:OpenMenu()
 		end)
 
 		exports["sandbox-keybinds"]:Add("admin_noclip", "END", "keyboard", "[Admin] Toggle NoClip", function()
 			if LocalPlayer.state.isStaff then
 				exports["sandbox-base"]:ServerCallback("Admin:NoClip", {
-					active = not Admin.NoClip:IsActive(),
+					active = not exports['sandbox-admin']:NoClipIsActive(),
 				}, function(isAdmin)
 					if isAdmin then
-						Admin.NoClip:Toggle()
+						exports['sandbox-admin']:NoClipToggle()
 					end
 				end)
 			end
@@ -46,22 +44,21 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-ADMIN = {
-	OpenMenu = function(self)
-		OpenMenu()
-	end,
-	CopyClipboard = function(self, txt)
-		CopyClipboard(txt)
-	end,
-}
+exports("OpenMenu", function()
+	OpenMenu()
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Admin", ADMIN)
+exports("CopyClipboard", function(txt)
+	CopyClipboard(txt)
+end)
+
+RegisterNetEvent("Admin:Client:CopyClipboard", function(data)
+	CopyClipboard(data)
 end)
 
 RegisterNetEvent("Characters:Client:Logout")
 AddEventHandler("Characters:Client:Logout", function()
-	Admin.NoClip:Stop()
+	exports['sandbox-admin']:NoClipStop()
 	_drawingCoords = false
 end)
 

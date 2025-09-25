@@ -123,7 +123,7 @@ function Print3DText(coords, text)
 end
 
 RegisterNUICallback("Dyn8CopyID", function(data, cb)
-    Admin:CopyClipboard(data)
+    exports['sandbox-admin']:CopyClipboard(data)
 
     cb(true)
 end)

@@ -488,7 +488,7 @@
 --             end
 
 --             adminMenu.Add:Button('Toggle NoClip', {}, function()
---                 Admin.NoClip:Toggle()
+--                 exports['sandbox-admin']:NoClipToggle()
 --             end)
 
 --             adminMenu:Show()

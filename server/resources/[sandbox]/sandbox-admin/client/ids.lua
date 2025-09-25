@@ -35,8 +35,8 @@ end
 
 local function showGamerTags()
     local curCoords = GetEntityCoords(PlayerPedId())
-    if Admin.NoClip:IsActive() then
-        curCoords = Admin.NoClip:GetPos()
+    if exports['sandbox-admin']:NoClipIsActive() then
+        curCoords = exports['sandbox-admin']:NoClipGetPos()
     end
 
     -- Per infinity this will only return players within 300m

@@ -140,8 +140,8 @@ function RegisterChatCommands()
 
 	exports["sandbox-chat"]:RegisterAdminCommand("cpproperty", function(source, args, rawCommand)
 		local nearProperty = Properties.Utils:IsNearProperty(source)
-		if nearProperty?.propertyId then
-			exports['sandbox-base']:ExecuteClient(source, "Admin", "CopyClipboard", nearProperty?.propertyId)
+		if nearProperty.propertyId then
+			TriggerClientEvent("Admin:Client:CopyClipboard", source, nearProperty.propertyId)
 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Copied Property ID")
 		end
 	end, {
@@ -150,7 +150,7 @@ function RegisterChatCommands()
 
 	exports["sandbox-chat"]:RegisterAdminCommand("property", function(source, args, rawCommand)
 		local nearProperty = Properties.Utils:IsNearProperty(source)
-		if nearProperty?.propertyId then
+		if nearProperty.propertyId then
 			local prop = Properties:Get(nearProperty.propertyId)
 			if prop then
 				exports["sandbox-chat"]:SendSystemSingle(
