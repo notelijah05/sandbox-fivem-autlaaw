@@ -180,7 +180,7 @@ function RunPlacementThread(
 		CreateThread(function()
 			while _placeData ~= nil and _placing do
 				if IsPedInAnyVehicle(myPed) then
-					ObjectPlacer:Cancel()
+					exports['sandbox-objects']:PlacerCancel()
 				end
 
 				local instructions = InstructionScaleform("instructional_buttons", showFurnitureButtons)
@@ -249,7 +249,7 @@ function RunPlacementThread(
 		CreateThread(function()
 			while _placeData ~= nil and _placing do
 				if IsPedInAnyVehicle(myPed) then
-					ObjectPlacer:Cancel()
+					exports['sandbox-objects']:PlacerCancel()
 				end
 
 				local instructions = InstructionScaleform("instructional_buttons", showFurnitureButtons, true)

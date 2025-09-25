@@ -141,13 +141,14 @@ AddEventHandler("Drugs:Client:Startup", function()
     end
 
     exports["sandbox-base"]:RegisterClientCallback("Drugs:Moonshine:PlaceStill", function(data, cb)
-        ObjectPlacer:Start(`prop_still`, "Drugs:Client:Moonshine:FinishPlacement", data, 2)
+        exports['sandbox-objects']:PlacerStart(`prop_still`, "Drugs:Client:Moonshine:FinishPlacement", data, 2)
         cb()
     end)
 
     exports["sandbox-base"]:RegisterClientCallback("Drugs:Moonshine:PlaceBarrel", function(data, cb)
-        ObjectPlacer:Start(`prop_wooden_barrel`, "Drugs:Client:Moonshine:FinishPlacementBarrel", data, 2)
-        cb()
+        exports['sandbox-objects']:PlacerStart(`prop_wooden_barrel`, "Drugs:Client:Moonshine:FinishPlacementBarrel", data,
+            2)
+        cb
     end)
 
     exports["sandbox-base"]:RegisterClientCallback("Drugs:Moonshine:Use", function(data, cb)

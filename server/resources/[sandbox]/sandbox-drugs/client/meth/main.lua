@@ -53,7 +53,7 @@ AddEventHandler("Drugs:Client:Startup", function()
     end
 
     exports["sandbox-base"]:RegisterClientCallback("Drugs:Meth:PlaceTable", function(data, cb)
-        ObjectPlacer:Start(`bkr_prop_meth_table01a`, "Drugs:Client:Meth:FinishPlacement", data, false)
+        exports['sandbox-objects']:PlacerStart(`bkr_prop_meth_table01a`, "Drugs:Client:Meth:FinishPlacement", data, false)
         cb()
     end)
 

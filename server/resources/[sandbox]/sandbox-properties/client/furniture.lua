@@ -244,14 +244,14 @@ function CycleFurniture(direction)
     end
 
     exports['sandbox-hud']:InfoOverlayClose()
-    ObjectPlacer:Cancel(true, true)
+    exports['sandbox-objects']:PlacerCancel(true, true)
     Wait(200)
     local fKey = _furnitureCategory[_furnitureCategoryCurrent]
     local fData = FurnitureConfig[fKey]
     if fData then
         exports['sandbox-hud']:InfoOverlayShow(fData.name, string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", fKey))
     end
-    ObjectPlacer:Start(GetHashKey(fKey), "Furniture:Client:Place", {}, true, "Furniture:Client:Cancel", true, true)
+    exports['sandbox-objects']:PlacerStart(GetHashKey(fKey), "Furniture:Client:Place", {}, true, "Furniture:Client:Cancel", true, true)
 end
 
 AddEventHandler("Furniture:Client:Place", function(data, placement)
