@@ -617,7 +617,7 @@ function EditScene(id, fuckface, data)
 	end)
 
 	_creationMenu:Show()
-end)
+end
 
 RegisterNetEvent("Scenes:Client:Creation", function(args, asStaff)
 	exports['sandbox-scenes']:BeginCreation(#args > 0 and table.concat(args, " ") or nil, asStaff)

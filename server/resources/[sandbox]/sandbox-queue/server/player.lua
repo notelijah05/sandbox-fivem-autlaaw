@@ -4,12 +4,12 @@ function PlayerClass(identifier, player, deferrals, steamName)
 	local prio = 0
 	local msg = ""
 
-	if Queue:HasCrashPriority(identifier) then
+	if exports['sandbox-queue']:HasCrashPriority(identifier) then
 		msg = msg .. "\n💥 Crash Priority | +50"
 		prio = prio + 50
 	end
 
-	local tempPrio = Queue:HasTempPriority(identifier)
+	local tempPrio = exports['sandbox-queue']:HasTempPriority(identifier)
 	if tempPrio then
 		msg = msg .. string.format("\n🦖 Temporary Priority | +%s", tempPrio.Priority)
 		prio = prio + tempPrio.Priority

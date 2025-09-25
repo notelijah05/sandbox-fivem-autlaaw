@@ -19,14 +19,14 @@ exports("DropAll", function()
 end)
 
 AddEventHandler("Core:Server:ForceAllSave", function()
-	COMPONENTS.Queue.Utils:CloseAndDrop()
+	exports['sandbox-queue']:CloseAndDrop()
 	exports["sandbox-base"]:DropAll()
 	TriggerEvent("Core:Server:ForceSave")
 end)
 
 AddEventHandler("txAdmin:events:scheduledRestart", function(eventData)
 	if eventData.secondsRemaining <= 60 then
-		COMPONENTS.Queue.Utils:CloseAndDrop()
+		exports['sandbox-queue']:CloseAndDrop()
 		exports["sandbox-base"]:DropAll()
 		TriggerEvent("Core:Server:ForceSave")
 	elseif not GlobalState["RestartLockdown"] and eventData.secondsRemaining <= (60 * 30) then

@@ -12,93 +12,81 @@ local privPlayerJoining = false
 local _dbReadyTime = 0
 local _dbReady = false
 
-AddEventHandler("Queue:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Queue = exports["sandbox-base"]:FetchComponent("Queue")
-end
-
 local APIWorking = false
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Queue", {
-		"Queue",
-	}, function(error)
-		if #error > 0 then return; end
-		RetrieveComponents()
+	Config.Server = exports['sandbox-base']:ConfigGetServer()
+	Config.Groups = exports['sandbox-base']:ConfigGetGroups()
+	queueActive = true
 
-		Config.Server = exports['sandbox-base']:ConfigGetServer()
-		Config.Groups = exports['sandbox-base']:ConfigGetGroups()
-		queueActive = true
+	exports["sandbox-chat"]:RegisterAdminCommand("queue", function(source, args, rawCommand)
+		local message = "Queue List"
 
-		exports["sandbox-chat"]:RegisterAdminCommand("queue", function(source, args, rawCommand)
-			local message = "Queue List"
-
-			for k, v in ipairs(QUEUE_PLAYERS_SORTED) do
-				local pData = QUEUE_PLAYERS_DATA[v]
-				if pData then
-					message = message .. string.format("<br>#%d - %s (%s)", k, pData.Name, v)
-				end
+		for k, v in ipairs(QUEUE_PLAYERS_SORTED) do
+			local pData = QUEUE_PLAYERS_DATA[v]
+			if pData then
+				message = message .. string.format("<br>#%d - %s (%s)", k, pData.Name, v)
 			end
-			exports["sandbox-chat"]:SendSystemSingle(source, message)
-		end, {
-			help = "Print the Queue",
-		})
+		end
+		exports["sandbox-chat"]:SendSystemSingle(source, message)
+	end, {
+		help = "Print the Queue",
+	})
 
-		exports["sandbox-chat"]:RegisterAdminCommand("yeetqueue", function(source, args, rawCommand)
-			for k, v in pairs(QUEUE_PLAYERS) do
-				if QUEUE_PLAYERS_DATA[k] then
-					QUEUE_PLAYERS_DATA[k].Deferrals.done("Deleted")
-				end
-
-				Queue.Queue:Pop(k, true)
+	exports["sandbox-chat"]:RegisterAdminCommand("yeetqueue", function(source, args, rawCommand)
+		for k, v in pairs(QUEUE_PLAYERS) do
+			if QUEUE_PLAYERS_DATA[k] then
+				QUEUE_PLAYERS_DATA[k].Deferrals.done("Deleted")
 			end
-			exports["sandbox-chat"]:SendSystemSingle(source, "Done")
-		end, {
-			help = "Yeet the Queue [DANGER!]",
-		})
 
-		exports["sandbox-chat"]:RegisterAdminCommand("maxplayers", function(source, args, rawCommand)
-			local max = tonumber(args[1])
-			if max and max > 0 and max < 500 then
-				MAX_PLAYERS = max
-				GlobalState["MaxPlayers"] = MAX_PLAYERS
-				SetConvarServerInfo("sv_maxclients", MAX_PLAYERS)
-				exports["sandbox-chat"]:SendSystemSingle(source, "Max Players Set")
-			end
-		end, {
-			params = {
-				{
-					name = "Max Player Count",
-					help = "Number",
-				},
+			exports['sandbox-queue']:Pop(k, true)
+		end
+		exports["sandbox-chat"]:SendSystemSingle(source, "Done")
+	end, {
+		help = "Yeet the Queue [DANGER!]",
+	})
+
+	exports["sandbox-chat"]:RegisterAdminCommand("maxplayers", function(source, args, rawCommand)
+		local max = tonumber(args[1])
+		if max and max > 0 and max < 500 then
+			MAX_PLAYERS = max
+			GlobalState["MaxPlayers"] = MAX_PLAYERS
+			SetConvarServerInfo("sv_maxclients", MAX_PLAYERS)
+			exports["sandbox-chat"]:SendSystemSingle(source, "Max Players Set")
+		end
+	end, {
+		params = {
+			{
+				name = "Max Player Count",
+				help = "Number",
 			},
-			help = "Set Max Players",
-		})
+		},
+		help = "Set Max Players",
+	})
 
-		exports["sandbox-chat"]:RegisterStaffCommand("tempprio", function(source, args, rawCommand)
-			local ident = args[1]
-			local prio = tonumber(args[2])
+	exports["sandbox-chat"]:RegisterStaffCommand("tempprio", function(source, args, rawCommand)
+		local ident = args[1]
+		local prio = tonumber(args[2])
 
-			if ident and prio and prio > 0 and prio <= 200 then
-				Queue:AddTempPriority(ident, prio)
-				exports["sandbox-chat"]:SendSystemSingle(source, "Priority Added")
-			else
-				exports["sandbox-chat"]:SendSystemSingle(source, "Error")
-			end
-		end, {
-			params = {
-				{
-					name = "Player Identifier",
-					help = "Player's FiveM Identifier (License)",
-				},
-				{
-					name = "Priority",
-					help = "Number (1-200)",
-				},
+		if ident and prio and prio > 0 and prio <= 200 then
+			exports['sandbox-queue']:AddTempPriority(ident, prio)
+			exports["sandbox-chat"]:SendSystemSingle(source, "Priority Added")
+		else
+			exports["sandbox-chat"]:SendSystemSingle(source, "Error")
+		end
+	end, {
+		params = {
+			{
+				name = "Player Identifier",
+				help = "Player's FiveM Identifier (License)",
 			},
-			help = "Add Temporary Priority",
-		})
-	end)
+			{
+				name = "Priority",
+				help = "Number (1-200)",
+			},
+		},
+		help = "Add Temporary Priority",
+	})
 
 	_dbReadyTime = GetGameTimer()
 	_dbReady = true
@@ -119,341 +107,351 @@ CONNECTING_PLAYERS_DATA = {}
 
 QUEUE_PLAYER_HISTORY = {} -- For remembering queue positions
 
-_QUEUE = {
-	HandleConnection = function(self, source, identifier, deferrals)
-		if not IsSteamRunning(source) then
-			deferrals.done(Config.Strings.SteamRequired)
-			return CancelEvent()
+local function SortQueue()
+	local sorted = getKeysSortedByValue(QUEUE_PLAYERS, function(a, b)
+		if a.priority ~= b.priority then
+			return a.priority > b.priority
 		end
 
-		local steamName = GetPlayerSteamName(source)
-		if not steamName then
-			deferrals.done(Config.Strings.SteamNameError)
-			return CancelEvent()
+		return a.joinedAt < b.joinedAt
+	end)
+
+	QUEUE_PLAYERS_SORTED = sorted
+end
+
+local function PopFromQueue(identifier, disconnect)
+	if QUEUE_PLAYERS[identifier] then
+		QUEUE_PLAYERS[identifier] = nil
+		local ply = QUEUE_PLAYERS_DATA[identifier]
+		if ply and disconnect then
+			Log(
+				string.format(
+					Config.Strings.Disconnected,
+					ply.Name,
+					ply.SteamName or ply.AccountID,
+					ply.Identifier
+				)
+			)
 		end
 
-		if GlobalState.IsProduction then
-			while GetGameTimer() < (_dbReadyTime + (Config.Settings.QueueDelay * (1000 * 60))) do
-				local min = math.floor(
-					(
-						(math.floor(_dbReadyTime / 1000) + (Config.Settings.QueueDelay * 60))
-						- math.floor(GetGameTimer() / 1000)
-					) / 60
-				)
-				local secs = math.floor(
-					(
-						(math.floor(_dbReadyTime / 1000) + (Config.Settings.QueueDelay * 60))
-						- math.floor(GetGameTimer() / 1000)
-					) - (min * 60)
-				)
+		QUEUE_PLAYERS_DATA[identifier] = nil
+		SortQueue()
+	end
+end
 
-				if min <= 0 then
-					deferrals.update(
-						string.format(Config.Strings.WaitingSeconds, secs, secs ~= 1 and "Seconds" or "Second")
+exports('HandleConnection', function(source, identifier, deferrals)
+	if not IsSteamRunning(source) then
+		deferrals.done(Config.Strings.SteamRequired)
+		return CancelEvent()
+	end
+
+	local steamName = GetPlayerSteamName(source)
+	if not steamName then
+		deferrals.done(Config.Strings.SteamNameError)
+		return CancelEvent()
+	end
+
+	if GlobalState.IsProduction then
+		while GetGameTimer() < (_dbReadyTime + (Config.Settings.QueueDelay * (1000 * 60))) do
+			local min = math.floor(
+				(
+					(math.floor(_dbReadyTime / 1000) + (Config.Settings.QueueDelay * 60))
+					- math.floor(GetGameTimer() / 1000)
+				) / 60
+			)
+			local secs = math.floor(
+				(
+					(math.floor(_dbReadyTime / 1000) + (Config.Settings.QueueDelay * 60))
+					- math.floor(GetGameTimer() / 1000)
+				) - (min * 60)
+			)
+
+			if min <= 0 then
+				deferrals.update(
+					string.format(Config.Strings.WaitingSeconds, secs, secs ~= 1 and "Seconds" or "Second")
+				)
+			else
+				deferrals.update(
+					string.format(
+						Config.Strings.Waiting,
+						min,
+						min ~= 1 and "Minutes" or "Minute",
+						secs,
+						secs ~= 1 and "Seconds" or "Second"
 					)
-				else
-					deferrals.update(
-						string.format(
-							Config.Strings.Waiting,
-							min,
-							min ~= 1 and "Minutes" or "Minute",
-							secs,
-							secs ~= 1 and "Seconds" or "Second"
-						)
-					)
-				end
-				Wait(100)
+				)
 			end
-		end
-
-		while not queueActive do
 			Wait(100)
 		end
+	end
 
-		Queue.Queue:Pop(identifier)
+	while not queueActive do
+		Wait(100)
+	end
 
-		local ply = PlayerClass(identifier, source, deferrals, steamName)
+	PopFromQueue(identifier)
 
-		if not ply:IsWhitelisted() then
-			if APIWorking and WebAPI then
-				deferrals.presentCard(Config.Cards.NotWhitelisted, function(data, rawData)
-					if data and data.linking then
-						deferrals.presentCard(Config.Cards.AccountLinking, function(linkData, linkRawData)
-							if linkData and linkData.code and not linkData.cancel then
-								-- Attempt to link account
-								local success = WebAPI:LinkAccount(identifier, linkData.code)
-								if success then
-									deferrals.done(Config.Strings.WebLinkComplete)
-								else
-									deferrals.done(Config.Strings.WebLinkError)
-								end
+	local ply = PlayerClass(identifier, source, deferrals, steamName)
+
+	if not ply:IsWhitelisted() then
+		if APIWorking and WebAPI then
+			deferrals.presentCard(Config.Cards.NotWhitelisted, function(data, rawData)
+				if data and data.linking then
+					deferrals.presentCard(Config.Cards.AccountLinking, function(linkData, linkRawData)
+						if linkData and linkData.code and not linkData.cancel then
+							-- Attempt to link account
+							local success = WebAPI:LinkAccount(identifier, linkData.code)
+							if success then
+								deferrals.done(Config.Strings.WebLinkComplete)
 							else
-								deferrals.done(Config.Strings.NotWhitelisted)
+								deferrals.done(Config.Strings.WebLinkError)
 							end
-						end)
-					else
-						deferrals.done(Config.Strings.NotWhitelisted)
-					end
-				end)
-			else
-				deferrals.done(Config.Strings.NotWhitelisted)
-			end
-			return CancelEvent()
+						else
+							deferrals.done(Config.Strings.NotWhitelisted)
+						end
+					end)
+				else
+					deferrals.done(Config.Strings.NotWhitelisted)
+				end
+			end)
+		else
+			deferrals.done(Config.Strings.NotWhitelisted)
+		end
+		return CancelEvent()
+	end
+
+	-- Banning Handled by TxAdmin
+
+	local time = GetGameTimer()
+	local joinedAt = GetGameTimer()
+	local useSavedPos = false
+	if QUEUE_PLAYER_HISTORY[identifier] and QUEUE_PLAYER_HISTORY[identifier].expires > GetGameTimer() then
+		joinedAt = QUEUE_PLAYER_HISTORY[identifier].joinedAt
+		useSavedPos = true
+	end
+
+	QUEUE_PLAYERS_DATA[identifier] = ply
+	QUEUE_PLAYERS[identifier] = {
+		priority = ply:GetPriority(),
+		joinedAt = joinedAt,
+		time = time,
+	}
+	QUEUE_PLAYER_HISTORY[identifier] = {
+		joinedAt = joinedAt,
+		expires = GetGameTimer() + (Config.Settings.SavePosition * 60000),
+	}
+
+	SortQueue()
+	Wait(1000)
+
+	local pos, total = exports['sandbox-queue']:GetPosition(identifier)
+	Log(
+		string.format(
+			Config.Strings.Add,
+			ply.Name,
+			ply.SteamName or ply.AccountID,
+			ply.Identifier,
+			pos,
+			total,
+			GetNumPlayerIndices(),
+			ply.Priority
+		)
+	)
+
+	while GetPlayerEndpoint(source) and not queueClosed and (
+			(not exports['sandbox-queue']:Check(identifier))
+			or (GetNumPlayerIndices() == MAX_PLAYERS)
+			or ((GetNumPlayerIndices() + CURRENT_CONNECTORS_COUNT + 1) > MAX_PLAYERS)
+			or ((GetNumPlayerIndices() + CURRENT_CONNECTORS_COUNT) >= MAX_PLAYERS)
+		) do
+		ply.Timer:Tick()
+		local pos, total = exports['sandbox-queue']:GetPosition(identifier)
+		local msg = ""
+		if ply.Priority > 0 then
+			msg = "\n\nTotal Priority of " .. ply.Priority .. ": " .. ply.Message
 		end
 
-		-- Banning Handled by TxAdmin
-
-		local time = GetGameTimer()
-		local joinedAt = GetGameTimer()
-		local useSavedPos = false
-		if QUEUE_PLAYER_HISTORY[identifier] and QUEUE_PLAYER_HISTORY[identifier].expires > GetGameTimer() then
-			joinedAt = QUEUE_PLAYER_HISTORY[identifier].joinedAt
-			useSavedPos = true
+		if useSavedPos then
+			msg = msg .. "\n\n🥳 You Were Returned to Your Saved Queue Position"
 		end
 
-		QUEUE_PLAYERS_DATA[identifier] = ply
-		QUEUE_PLAYERS[identifier] = {
-			priority = ply:GetPriority(),
-			joinedAt = joinedAt,
-			time = time,
-		}
-		QUEUE_PLAYER_HISTORY[identifier] = {
-			joinedAt = joinedAt,
-			expires = GetGameTimer() + (Config.Settings.SavePosition * 60000),
-		}
+		if pos == nil or total == nil then
+			print("Someone In Queue nil/nil ID:", ply.Identifier, "Data: ", identifier, pos, total,
+				json.encode(QUEUE_PLAYERS_DATA[identifier]), json.encode(QUEUE_PLAYERS[identifier]))
+		end
 
-		Queue.Queue:Sort()
-		Wait(1000)
+		ply.Deferrals.update(string.format(Config.Strings.Queued, pos, total, ply.Timer:Output(), msg))
 
-		local pos, total = Queue.Queue:GetPosition(identifier)
+		if QUEUE_PLAYER_HISTORY[identifier] then
+			QUEUE_PLAYER_HISTORY[identifier].expires = GetGameTimer() + (Config.Settings.SavePosition * 60000)
+		end
+
+		Wait(5000)
+	end
+
+	-- Can join the server now :)
+
+	if queueClosed then
+		deferrals.done(Config.Strings.PendingRestart)
+		PopFromQueue(identifier, true)
+		return CancelEvent()
+	end
+
+	if GetPlayerEndpoint(source) then
+		CURRENT_CONNECTORS[identifier] = {
+			source = source
+		}
+		CURRENT_CONNECTORS_COUNT += 1
+
+		ply.Deferrals.update(Config.Strings.Joining)
+		-- ply.Deferrals.handover({
+		-- 	name = ply.Name,
+		-- 	priority = ply.Priority,
+		-- 	priorityMessage = ply.Message,
+		-- })
+		Wait(500)
+		ply.Deferrals.done()
+
 		Log(
 			string.format(
-				Config.Strings.Add,
+				Config.Strings.Joined,
 				ply.Name,
 				ply.SteamName or ply.AccountID,
-				ply.Identifier,
-				pos,
-				total,
-				GetNumPlayerIndices(),
-				ply.Priority
+				ply.Identifier
 			)
 		)
 
-		while GetPlayerEndpoint(source) and not queueClosed and (
-				(not Queue.Queue:Check(identifier))
-				or (GetNumPlayerIndices() == MAX_PLAYERS)
-				or ((GetNumPlayerIndices() + CURRENT_CONNECTORS_COUNT + 1) > MAX_PLAYERS)
-				or ((GetNumPlayerIndices() + CURRENT_CONNECTORS_COUNT) >= MAX_PLAYERS)
-			) do
-			ply.Timer:Tick()
-			local pos, total = Queue.Queue:GetPosition(identifier)
-			local msg = ""
-			if ply.Priority > 0 then
-				msg = "\n\nTotal Priority of " .. ply.Priority .. ": " .. ply.Message
-			end
-
-			if useSavedPos then
-				msg = msg .. "\n\n🥳 You Were Returned to Your Saved Queue Position"
-			end
-
-			if pos == nil or total == nil then
-				print("Someone In Queue nil/nil ID:", ply.Identifier, "Data: ", identifier, pos, total,
-					json.encode(QUEUE_PLAYERS_DATA[identifier]), json.encode(QUEUE_PLAYERS[identifier]))
-			end
-
-			ply.Deferrals.update(string.format(Config.Strings.Queued, pos, total, ply.Timer:Output(), msg))
-
-			if QUEUE_PLAYER_HISTORY[identifier] then
-				QUEUE_PLAYER_HISTORY[identifier].expires = GetGameTimer() + (Config.Settings.SavePosition * 60000)
-			end
-
-			Wait(5000)
+		CONNECTING_PLAYERS_DATA[identifier] = ply
+		PopFromQueue(identifier)
+	else
+		if QUEUE_PLAYERS[identifier] and QUEUE_PLAYERS[identifier].time == time then
+			PopFromQueue(identifier, true)
 		end
+	end
+end)
 
-		-- Can join the server now :)
+exports('Sort', function()
+	SortQueue()
+end)
 
-		if queueClosed then
-			deferrals.done(Config.Strings.PendingRestart)
-			Queue.Queue:Pop(identifier, true)
-			return CancelEvent()
+exports('Pop', function(identifier, disconnect)
+	PopFromQueue(identifier, disconnect)
+end)
+
+exports('Check', function(identifier)
+	if QUEUE_PLAYERS_SORTED[1] == identifier then
+		return true
+	end
+	return false
+end)
+
+exports('GetCount', function()
+	local count = 0
+	for k, v in pairs(QUEUE_PLAYERS) do
+		count += 1
+	end
+	return count
+end)
+
+exports('GetPosition', function(identifier)
+	local count = 0
+	local found = nil
+	for k, v in ipairs(QUEUE_PLAYERS_SORTED) do
+		count += 1
+
+		if v == identifier then
+			found = k
 		end
+	end
 
-		if GetPlayerEndpoint(source) then
-			CURRENT_CONNECTORS[identifier] = {
-				source = source
-			}
-			CURRENT_CONNECTORS_COUNT += 1
+	return found, count
+end)
 
-			ply.Deferrals.update(Config.Strings.Joining)
-			-- ply.Deferrals.handover({
-			-- 	name = ply.Name,
-			-- 	priority = ply.Priority,
-			-- 	priorityMessage = ply.Message,
-			-- })
-			Wait(500)
-			ply.Deferrals.done()
+exports('CheckGhosts', function()
+	for k, v in pairs(CURRENT_CONNECTORS) do
+		if v and not GetPlayerEndpoint(v.source) then
+			CURRENT_CONNECTORS[k] = nil
+		end
+	end
 
-			Log(
-				string.format(
-					Config.Strings.Joined,
-					ply.Name,
-					ply.SteamName or ply.AccountID,
-					ply.Identifier
-				)
+	local count = 0
+	for k, v in pairs(CURRENT_CONNECTORS) do
+		if v then
+			count += 1
+		end
+	end
+
+	CURRENT_CONNECTORS_COUNT = count
+end)
+
+exports('AddCrashPriority', function(identifier, message)
+	-- for _, v in ipairs(Config.ExcludeDrop) do
+	-- 	if string.find(message, v) then
+	-- 		return
+	-- 	end
+	-- end
+
+	local ply = QUEUE_PLAYERS_DATA[identifier]
+	if ply then
+		Log(
+			string.format(
+				Config.Strings.Crash,
+				ply.Name,
+				ply.SteamName or ply.AccountID,
+				ply.Identifier
 			)
+		)
+	end
 
-			CONNECTING_PLAYERS_DATA[identifier] = ply
-			Queue.Queue:Pop(identifier)
-		else
-			if QUEUE_PLAYERS[identifier] and QUEUE_PLAYERS[identifier].time == time then
-				Queue.Queue:Pop(identifier, true)
-			end
+	table.insert(QUEUE_CRASH_PRIORITY, {
+		Identifier = identifier,
+		Grace = os.time() + (60 * 20),
+	})
+end)
+
+exports('HasCrashPriority', function(identifier)
+	for k, v in ipairs(QUEUE_CRASH_PRIORITY) do
+		if v.Identifier == identifier and os.time() < v.Grace then
+			return true
 		end
-	end,
-	Queue = {
-		Sort = function(self)
-			local sorted = getKeysSortedByValue(QUEUE_PLAYERS, function(a, b)
-				if a.priority ~= b.priority then
-					return a.priority > b.priority
-				end
+	end
+end)
 
-				return a.joinedAt < b.joinedAt
-			end)
+exports('AddTempPriority', function(identifier, prio)
+	exports['sandbox-queue']:RemoveTempPriority(identifier)
 
-			QUEUE_PLAYERS_SORTED = sorted
-		end,
-		Pop = function(self, identifier, disconnect)
-			if QUEUE_PLAYERS[identifier] then
-				QUEUE_PLAYERS[identifier] = nil
-				local ply = QUEUE_PLAYERS_DATA[identifier]
-				if ply and disconnect then
-					Log(
-						string.format(
-							Config.Strings.Disconnected,
-							ply.Name,
-							ply.SteamName or ply.AccountID,
-							ply.Identifier
-						)
-					)
-				end
+	table.insert(QUEUE_TEMP_PRIORITY, {
+		Identifier = identifier,
+		Priority = prio,
+	})
+end)
 
-				QUEUE_PLAYERS_DATA[identifier] = nil
-				Queue.Queue:Sort()
-			end
-		end,
-		Check = function(self, identifier)
-			if QUEUE_PLAYERS_SORTED[1] == identifier then
-				return true
-			end
-			return false
-		end,
-		GetCount = function(self)
-			local count = 0
-			for k, v in pairs(QUEUE_PLAYERS) do
-				count += 1
-			end
-			return count
-		end,
-		GetPosition = function(self, identifier)
-			local count = 0
-			local found = nil
-			for k, v in ipairs(QUEUE_PLAYERS_SORTED) do
-				count += 1
+exports('RemoveTempPriority', function(identifier)
+	for k, v in ipairs(QUEUE_TEMP_PRIORITY) do
+		if v.Identifier == identifier then
+			table.remove(QUEUE_TEMP_PRIORITY, k)
+		end
+	end
+end)
 
-				if v == identifier then
-					found = k
-				end
-			end
+exports('HasTempPriority', function(identifier)
+	for k, v in ipairs(QUEUE_TEMP_PRIORITY) do
+		if v.Identifier == identifier then
+			return v
+		end
+	end
+end)
 
-			return found, count
-		end,
-		CheckGhosts = function(self)
-			for k, v in pairs(CURRENT_CONNECTORS) do
-				if v and not GetPlayerEndpoint(v.source) then
-					CURRENT_CONNECTORS[k] = nil
-				end
-			end
+exports('CloseAndDrop', function()
+	queueClosed = true
 
-			local count = 0
-			for k, v in pairs(CURRENT_CONNECTORS) do
-				if v then
-					count += 1
-				end
-			end
-
-			CURRENT_CONNECTORS_COUNT = count
-		end,
-	},
-	AddCrashPriority = function(self, identifier, message)
-		-- for _, v in ipairs(Config.ExcludeDrop) do
-		-- 	if string.find(message, v) then
-		-- 		return
-		-- 	end
-		-- end
-
-		local ply = QUEUE_PLAYERS_DATA[identifier]
-		if ply then
-			Log(
-				string.format(
-					Config.Strings.Crash,
-					ply.Name,
-					ply.SteamName or ply.AccountID,
-					ply.Identifier
-				)
-			)
+	for k, v in pairs(QUEUE_PLAYERS) do
+		if QUEUE_PLAYERS_DATA[k] then
+			QUEUE_PLAYERS_DATA[k].Deferrals.done("Deleted")
 		end
 
-		table.insert(QUEUE_CRASH_PRIORITY, {
-			Identifier = identifier,
-			Grace = os.time() + (60 * 20),
-		})
-	end,
-	HasCrashPriority = function(self, identifier)
-		for k, v in ipairs(QUEUE_CRASH_PRIORITY) do
-			if v.Identifier == identifier and os.time() < v.Grace then
-				return true
-			end
-		end
-	end,
-	AddTempPriority = function(self, identifier, prio)
-		Queue:RemoveTempPriority(identifier)
-
-		table.insert(QUEUE_TEMP_PRIORITY, {
-			Identifier = identifier,
-			Priority = prio,
-		})
-	end,
-	RemoveTempPriority = function(self, identifier)
-		for k, v in ipairs(QUEUE_TEMP_PRIORITY) do
-			if v.Identifier == identifier then
-				table.remove(QUEUE_TEMP_PRIORITY, k)
-			end
-		end
-	end,
-	HasTempPriority = function(self, identifier)
-		for k, v in ipairs(QUEUE_TEMP_PRIORITY) do
-			if v.Identifier == identifier then
-				return v
-			end
-		end
-	end,
-	Utils = {
-		CloseAndDrop = function(self)
-			queueClosed = true
-
-			for k, v in pairs(QUEUE_PLAYERS) do
-				if QUEUE_PLAYERS_DATA[k] then
-					QUEUE_PLAYERS_DATA[k].Deferrals.done("Deleted")
-				end
-
-				Queue.Queue:Pop(k, true)
-			end
-		end
-	}
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Queue", _QUEUE)
+		PopFromQueue(k, true)
+	end
 end)
 
 AddEventHandler("playerConnecting", function(playerName, setKickReason, deferrals)
@@ -479,12 +477,7 @@ AddEventHandler("playerConnecting", function(playerName, setKickReason, deferral
 		return CancelEvent()
 	end
 
-	if Queue == nil then
-		deferrals.done(Config.Strings.NotReady)
-		return CancelEvent()
-	end
-
-	Queue:HandleConnection(_src, identifier, deferrals)
+	exports['sandbox-queue']:HandleConnection(_src, identifier, deferrals)
 end)
 
 AddEventHandler("playerDropped", function(message)
@@ -500,11 +493,11 @@ AddEventHandler("playerDropped", function(message)
 			CURRENT_CONNECTORS[license] = nil
 		end
 
-		Queue:AddCrashPriority(license, message)
+		exports['sandbox-queue']:AddCrashPriority(license, message)
 		if QUEUE_PLAYERS[license] then
 			print("lol someone just got playerDropped while in queue somehow", license, message)
 		end
-		-- Queue.Queue:Pop(license, true)
+		-- PopFromQueue(license, true)
 	end
 end)
 
@@ -538,7 +531,7 @@ AddEventHandler("Core:Server:SessionStarted", function()
 			})
 
 			CONNECTING_PLAYERS_DATA[license] = nil
-			Queue:RemoveTempPriority(license)
+			exports['sandbox-queue']:RemoveTempPriority(license)
 			return
 		end
 	end
@@ -578,11 +571,9 @@ end)
 
 CreateThread(function()
 	while true do
-		if Queue ~= nil then
-			GlobalState["QueueCount"] = Queue.Queue:GetCount()
+		GlobalState["QueueCount"] = exports['sandbox-queue']:GetCount()
 
-			Queue.Queue:CheckGhosts()
-		end
+		exports['sandbox-queue']:CheckGhosts()
 
 		Wait(20000)
 	end

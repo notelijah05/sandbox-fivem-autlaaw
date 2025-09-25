@@ -22,10 +22,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	}, {})
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Weed", WEED)
-end)
-
 function getStageByPct(pct)
 	local stagePct = 100 / (#Plants - 1)
 	return math.floor((pct / stagePct) + 1.5)
