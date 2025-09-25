@@ -3,328 +3,317 @@ local _swabCounter = 1
 
 local _generatedNames = {}
 
-AddEventHandler("Police:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Doors = exports["sandbox-base"]:FetchComponent("Doors")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Doors",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		PoliceItems()
-		RegisterCommands()
+	PoliceItems()
+	RegisterCommands()
 
-		GlobalState["PrisonLockdown"] = false
-		GlobalState["PrisonCellsLocked"] = false
-		GlobalState["PoliceCars"] = Config.PoliceCars
-		GlobalState["EMSCars"] = Config.EMSCars
+	GlobalState["PrisonLockdown"] = false
+	GlobalState["PrisonCellsLocked"] = false
+	GlobalState["PoliceCars"] = Config.PoliceCars
+	GlobalState["EMSCars"] = Config.EMSCars
 
-		for k, v in pairs(Config.Armories) do
-			exports['sandbox-base']:LoggerTrace("Police",
-				string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", v.id, v.name))
-			exports['sandbox-inventory']:PolyCreate(v)
+	for k, v in pairs(Config.Armories) do
+		exports['sandbox-base']:LoggerTrace("Police",
+			string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", v.id, v.name))
+		exports['sandbox-inventory']:PolyCreate(v)
+	end
+
+	exports['sandbox-inventory']:RegisterUse("spikes", "Police", function(source, slot, itemData)
+		if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
+			exports["sandbox-base"]:ClientCallback(source, "Police:DeploySpikes", {}, function(data)
+				if data ~= nil then
+					TriggerClientEvent("Police:Client:AddDeployedSpike", -1, data.positions, data.h, source)
+
+					local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
+					if (os.time() - itemData.durability >= newValue) then
+						exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+					else
+						exports['sandbox-inventory']:SetItemCreateDate(
+							slot.id,
+							newValue
+						)
+					end
+
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+						"You Deployed Spikes (Despawn In 20s)")
+				end
+			end)
 		end
+	end)
 
-		exports['sandbox-inventory']:RegisterUse("spikes", "Police", function(source, slot, itemData)
-			if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
-				exports["sandbox-base"]:ClientCallback(source, "Police:DeploySpikes", {}, function(data)
-					if data ~= nil then
-						TriggerClientEvent("Police:Client:AddDeployedSpike", -1, data.positions, data.h, source)
+	exports["sandbox-base"]:RegisterServerCallback("Police:GSRTest", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
-						local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
-						if (os.time() - itemData.durability >= newValue) then
-							exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
-						else
-							exports['sandbox-inventory']:SetItemCreateDate(
-								slot.id,
-								newValue
-							)
-						end
-
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
-							"You Deployed Spikes (Despawn In 20s)")
-					end
-				end)
-			end
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Police:GSRTest", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-
-			local pState = Player(source).state
-			if pState.onDuty == "police" or pState.onDuty == "ems" then
-				local target = Player(data)
-				if target ~= nil then
-					if target.state?.GSR ~= nil and (os.time() - target.state.GSR) <= (60 * 60) then
-						exports["sandbox-chat"]:SendSystemSingle(source, "GSR: Positive")
-					else
-						exports["sandbox-chat"]:SendSystemSingle(source, "GSR: Negative")
-					end
+		local pState = Player(source).state
+		if pState.onDuty == "police" or pState.onDuty == "ems" then
+			local target = Player(data)
+			if target ~= nil then
+				if target.state?.GSR ~= nil and (os.time() - target.state.GSR) <= (60 * 60) then
+					exports["sandbox-chat"]:SendSystemSingle(source, "GSR: Positive")
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
+					exports["sandbox-chat"]:SendSystemSingle(source, "GSR: Negative")
 				end
-			end
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Prison:SetLockdown", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			local pState = Player(source).state
-			-- add PD Alert
-			if char and (pState.onDuty == "prison" or pState.onDuty == "police") then
-				GlobalState["PrisonLockdown"] = not GlobalState["PrisonLockdown"]
-				GlobalState["PrisonCellsLocked"] = GlobalState["PrisonLockdown"]
-				for i = 1, 27 do
-					Doors:SetLock(string.format("prison_cell_%s", i), GlobalState["PrisonCellsLocked"])
-				end
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
-					string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
-					GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
-				cb(true, GlobalState["PrisonLockdown"])
 			else
-				cb(false)
-			end
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Prison:SetCellState", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			local pState = Player(source).state
-
-			if char and (pState.onDuty == "prison" or pState.onDuty == "police") then
-				GlobalState["PrisonCellsLocked"] = not GlobalState["PrisonCellsLocked"]
-				for i = 1, 27 do
-					Doors:SetLock(string.format("prison_cell_%s", i), GlobalState["PrisonCellsLocked"])
-				end
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
-					string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
-					GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
-				cb(true, GlobalState["PrisonCellsLocked"])
-			else
-				cb(false)
-			end
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Police:BACTest", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-
-			local pState = Player(source).state
-			if pState.onDuty == "police" or pState.onDuty == "ems" then
-				local target = Player(data)
-				if target ~= nil then
-					-- Great Code Kapp
-					if target.state.isDrunk and target.state.isDrunk > 0 then
-						if target.state.isDrunk >= 70 then
-							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.22% - Above Limit")
-						elseif target.state.isDrunk >= 40 then
-							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.13% - Above Limit")
-						elseif target.state.isDrunk >= 30 then
-							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.1% - Above Limit")
-						elseif target.state.isDrunk >= 25 then
-							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.085% - Above Limit")
-						elseif target.state.isDrunk >= 15 then
-							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.04% - Below Limit")
-						else
-							exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.025% - Below Limit")
-						end
-					else
-						exports["sandbox-chat"]:SendSystemSingle(source, "BAC: Not Drunk")
-					end
-				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
-				end
-			end
-
-			cb(true)
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Police:DNASwab", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-
-			local pState = Player(source).state
-			if char and pState.onDuty == "police" or pState.onDuty == "ems" then
-				local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
-				if tChar ~= nil then
-					local coords = GetEntityCoords(GetPlayerPed(data))
-					_swabCounter += 1
-
-					exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'evidence-dna', 1, {
-						EvidenceType = 'blood',
-						EvidenceId = string.format('%s-%s', os.date('%d%m%y-%H%M%S', os.time()), 950000 + _swabCounter),
-						EvidenceCoords = { x = coords.x, y = coords.y, z = coords.z },
-						EvidenceDNA = tChar:GetData("SID"),
-						EvidenceSwab = true,
-						EvidenceDegraded = false,
-					}, 1)
-
-					return
-				end
-
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
 			end
-		end)
+		end
+	end)
 
-		exports["sandbox-base"]:RegisterServerCallback("Police:Breach", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Prison:SetLockdown", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local pState = Player(source).state
+		-- add PD Alert
+		if char and (pState.onDuty == "prison" or pState.onDuty == "police") then
+			GlobalState["PrisonLockdown"] = not GlobalState["PrisonLockdown"]
+			GlobalState["PrisonCellsLocked"] = GlobalState["PrisonLockdown"]
+			for i = 1, 27 do
+				exports['sandbox-doors']:SetLock(string.format("prison_cell_%s", i), GlobalState
+					["PrisonCellsLocked"])
+			end
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
+				string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
+				GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
+			cb(true, GlobalState["PrisonLockdown"])
+		else
+			cb(false)
+		end
+	end)
 
-			if (data?.type == nil or data?.property == nil) then
-				cb(false)
+	exports["sandbox-base"]:RegisterServerCallback("Prison:SetCellState", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local pState = Player(source).state
+
+		if char and (pState.onDuty == "prison" or pState.onDuty == "police") then
+			GlobalState["PrisonCellsLocked"] = not GlobalState["PrisonCellsLocked"]
+			for i = 1, 27 do
+				exports['sandbox-doors']:SetLock(string.format("prison_cell_%s", i), GlobalState
+					["PrisonCellsLocked"])
+			end
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
+				string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
+				GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
+			cb(true, GlobalState["PrisonCellsLocked"])
+		else
+			cb(false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Police:BACTest", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+
+		local pState = Player(source).state
+		if pState.onDuty == "police" or pState.onDuty == "ems" then
+			local target = Player(data)
+			if target ~= nil then
+				-- Great Code Kapp
+				if target.state.isDrunk and target.state.isDrunk > 0 then
+					if target.state.isDrunk >= 70 then
+						exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.22% - Above Limit")
+					elseif target.state.isDrunk >= 40 then
+						exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.13% - Above Limit")
+					elseif target.state.isDrunk >= 30 then
+						exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.1% - Above Limit")
+					elseif target.state.isDrunk >= 25 then
+						exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.085% - Above Limit")
+					elseif target.state.isDrunk >= 15 then
+						exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.04% - Below Limit")
+					else
+						exports["sandbox-chat"]:SendSystemSingle(source, "BAC: 0.025% - Below Limit")
+					end
+				else
+					exports["sandbox-chat"]:SendSystemSingle(source, "BAC: Not Drunk")
+				end
+			else
+				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
+			end
+		end
+
+		cb(true)
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Police:DNASwab", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+
+		local pState = Player(source).state
+		if char and pState.onDuty == "police" or pState.onDuty == "ems" then
+			local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
+			if tChar ~= nil then
+				local coords = GetEntityCoords(GetPlayerPed(data))
+				_swabCounter += 1
+
+				exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'evidence-dna', 1, {
+					EvidenceType = 'blood',
+					EvidenceId = string.format('%s-%s', os.date('%d%m%y-%H%M%S', os.time()), 950000 + _swabCounter),
+					EvidenceCoords = { x = coords.x, y = coords.y, z = coords.z },
+					EvidenceDNA = tChar:GetData("SID"),
+					EvidenceSwab = true,
+					EvidenceDegraded = false,
+				}, 1)
+
 				return
 			end
 
-			if Player(source).state.onDuty == "police" then
-				_breached[data.type] = _breached[data.type] or {}
+			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
+		end
+	end)
 
-				if data.type == "property" then
-					if (_breached[data.type][data.property] or 0) > os.time() then
-						cb(true)
-						exports['sandbox-base']:ExecuteClient(source, "Properties", "Enter", data.property)
-					else
-						exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
-							if s then
-								_breached[data.type][data.property] = os.time() + (60 * 10)
-								exports['sandbox-base']:ExecuteClient(source, "Properties", "Enter", data.property)
-								cb(true)
-							else
-								cb(false)
-							end
-						end)
-					end
-				elseif data.type == "robbery" then
-					if (_breached[data.type][data.property] or 0) > os.time() then
-						TriggerEvent("Labor:Server:HouseRobbery:Breach", source, data.property)
+	exports["sandbox-base"]:RegisterServerCallback("Police:Breach", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
-						cb(true)
-					else
-						exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
-							if s then
-								TriggerEvent("Labor:Server:HouseRobbery:Breach", source, data.property)
+		if (data?.type == nil or data?.property == nil) then
+			cb(false)
+			return
+		end
 
-								cb(true)
-							else
-								cb(false)
-							end
-						end)
-					end
-				elseif data.type == "apartment" then
-					local aptTier = exports['sandbox-characters']:FetchGetOfflineData(data.property, "Apartment")
+		if Player(source).state.onDuty == "police" then
+			_breached[data.type] = _breached[data.type] or {}
 
-					if aptTier ~= nil then
-						local id = aptTier or 1
-						if id == aptTier then
-							if (_breached[data.type][data.property] or 0) > os.time() then
-								exports['sandbox-base']:ExecuteClient(source, "Apartment", "Enter", aptTier,
-									data.property)
-
-								return cb(data.property)
-							else
-								exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
-									if s then
-										_breached[data.type][data.property] = os.time() + (60 * 10)
-										exports['sandbox-base']:ExecuteClient(source, "Apartment", "Enter", aptTier,
-											data.property)
-
-										return cb(data.property)
-									else
-										cb(false)
-									end
-								end)
-							end
+			if data.type == "property" then
+				if (_breached[data.type][data.property] or 0) > os.time() then
+					cb(true)
+					exports['sandbox-base']:ExecuteClient(source, "Properties", "Enter", data.property)
+				else
+					exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
+						if s then
+							_breached[data.type][data.property] = os.time() + (60 * 10)
+							exports['sandbox-base']:ExecuteClient(source, "Properties", "Enter", data.property)
+							cb(true)
 						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-								"Target Does Not Reside Here")
-							return cb(false)
+							cb(false)
+						end
+					end)
+				end
+			elseif data.type == "robbery" then
+				if (_breached[data.type][data.property] or 0) > os.time() then
+					TriggerEvent("Labor:Server:HouseRobbery:Breach", source, data.property)
+
+					cb(true)
+				else
+					exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
+						if s then
+							TriggerEvent("Labor:Server:HouseRobbery:Breach", source, data.property)
+
+							cb(true)
+						else
+							cb(false)
+						end
+					end)
+				end
+			elseif data.type == "apartment" then
+				local aptTier = exports['sandbox-characters']:FetchGetOfflineData(data.property, "Apartment")
+
+				if aptTier ~= nil then
+					local id = aptTier or 1
+					if id == aptTier then
+						if (_breached[data.type][data.property] or 0) > os.time() then
+							exports['sandbox-base']:ExecuteClient(source, "Apartment", "Enter", aptTier,
+								data.property)
+
+							return cb(data.property)
+						else
+							exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
+								if s then
+									_breached[data.type][data.property] = os.time() + (60 * 10)
+									exports['sandbox-base']:ExecuteClient(source, "Apartment", "Enter", aptTier,
+										data.property)
+
+									return cb(data.property)
+								else
+									cb(false)
+								end
+							end)
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Target Not Online")
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"Target Does Not Reside Here")
 						return cb(false)
 					end
-				end
-			else
-				cb(false)
-			end
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Police:AccessRifleRack", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil then
-				local myDuty = Player(source).state.onDuty
-				if myDuty == 'police' then
-					local veh = GetVehiclePedIsIn(GetPlayerPed(source))
-					if veh ~= 0 then
-						if Config.PoliceCars[GetEntityModel(veh)] then
-							local entState = Entity(veh).state
-							if exports['sandbox-vehicles']:KeysHas(source, entState.VIN, 'police') then
-								exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
-									invType = 3,
-									owner = ("pdrack:%s"):format(entState.VIN),
-								}, function()
-									exports['sandbox-inventory']:OpenSecondary(source, 3,
-										("pdrack:%s"):format(entState.VIN))
-								end)
-							else
-								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-									"Can't Access The Locked Compartment")
-							end
-						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-								"Vehicle Not Outfitted With A Secured Compartment")
-						end
-					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not In A Vehicle")
-					end
-				elseif myDuty == 'prison' then
-					local veh = GetVehiclePedIsIn(GetPlayerPed(source))
-					if veh ~= 0 then
-						if Config.PoliceCars[GetEntityModel(veh)] then
-							local entState = Entity(veh).state
-							if exports['sandbox-vehicles']:KeysHas(source, entState.VIN, 'prison') then
-								exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
-									invType = 999,
-									owner = ("pdrack:%s"):format(entState.VIN),
-								}, function()
-									exports['sandbox-inventory']:OpenSecondary(source, 999,
-										("pdrack:%s"):format(entState.VIN))
-								end)
-							else
-								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-									"Can't Access The Locked Compartment")
-							end
-						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
-								"Vehicle Not Outfitted With A Secured Compartment")
-						end
-					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not In A Vehicle")
-					end
-				end
-			end
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Police:RemoveMask", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil and Player(source).state.onDuty == "police" then
-				local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
-				if tChar ~= nil then
-					exports['sandbox-ped']:MaskUnequip(data)
-				end
-			end
-		end)
-
-		exports["sandbox-base"]:RegisterServerCallback("Police:GetRadioChannel", function(source, data, cb)
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			if char ~= nil and Player(source).state.onDuty == "police" then
-				local tState = Player(tonumber(data)).state
-				if tState and tState?.onRadio then
-					exports["sandbox-chat"]:SendSystemSingle(source, string.format("Radio Frequency: %s", tState.onRadio))
 				else
-					exports["sandbox-chat"]:SendSystemSingle(source, string.format("Not On Radio"))
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Target Not Online")
+					return cb(false)
 				end
 			end
-		end)
+		else
+			cb(false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Police:AccessRifleRack", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			local myDuty = Player(source).state.onDuty
+			if myDuty == 'police' then
+				local veh = GetVehiclePedIsIn(GetPlayerPed(source))
+				if veh ~= 0 then
+					if Config.PoliceCars[GetEntityModel(veh)] then
+						local entState = Entity(veh).state
+						if exports['sandbox-vehicles']:KeysHas(source, entState.VIN, 'police') then
+							exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
+								invType = 3,
+								owner = ("pdrack:%s"):format(entState.VIN),
+							}, function()
+								exports['sandbox-inventory']:OpenSecondary(source, 3,
+									("pdrack:%s"):format(entState.VIN))
+							end)
+						else
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								"Can't Access The Locked Compartment")
+						end
+					else
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"Vehicle Not Outfitted With A Secured Compartment")
+					end
+				else
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not In A Vehicle")
+				end
+			elseif myDuty == 'prison' then
+				local veh = GetVehiclePedIsIn(GetPlayerPed(source))
+				if veh ~= 0 then
+					if Config.PoliceCars[GetEntityModel(veh)] then
+						local entState = Entity(veh).state
+						if exports['sandbox-vehicles']:KeysHas(source, entState.VIN, 'prison') then
+							exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
+								invType = 999,
+								owner = ("pdrack:%s"):format(entState.VIN),
+							}, function()
+								exports['sandbox-inventory']:OpenSecondary(source, 999,
+									("pdrack:%s"):format(entState.VIN))
+							end)
+						else
+							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								"Can't Access The Locked Compartment")
+						end
+					else
+						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							"Vehicle Not Outfitted With A Secured Compartment")
+					end
+				else
+					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not In A Vehicle")
+				end
+			end
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Police:RemoveMask", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil and Player(source).state.onDuty == "police" then
+			local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
+			if tChar ~= nil then
+				exports['sandbox-ped']:MaskUnequip(data)
+			end
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Police:GetRadioChannel", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil and Player(source).state.onDuty == "police" then
+			local tState = Player(tonumber(data)).state
+			if tState and tState?.onRadio then
+				exports["sandbox-chat"]:SendSystemSingle(source, string.format("Radio Frequency: %s", tState.onRadio))
+			else
+				exports["sandbox-chat"]:SendSystemSingle(source, string.format("Not On Radio"))
+			end
+		end
 	end)
 end)
 

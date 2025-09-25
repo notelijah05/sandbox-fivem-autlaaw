@@ -161,7 +161,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								_bcGlobalReset = os.time() + BC_RESET_TIME
 							end
 
-							Doors:SetLock("bobcat_extr", false)
+							exports['sandbox-doors']:SetLock("bobcat_extr", false)
 							if not _alerted or os.time() > _alerted then
 								exports['sandbox-robbery']:TriggerPDAlert(
 									source,
@@ -284,7 +284,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										_bcGlobalReset = os.time() + BC_RESET_TIME
 									end
 
-									Doors:SetLock("bobcat_front", false)
+									exports['sandbox-doors']:SetLock("bobcat_front", false)
 									if not _alerted or os.time() > _alerted then
 										exports['sandbox-robbery']:TriggerPDAlert(
 											source,
@@ -699,7 +699,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									isBobcat = true,
 									skipLeaveVeh = true,
 								}, function() end)
-								Doors:SetLock("bobcat_inner", false)
+								exports['sandbox-doors']:SetLock("bobcat_inner", false)
 								exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
 									"Doorlock Disengaged", 6000)
 								exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
@@ -711,7 +711,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								exports['sandbox-base']:LoggerInfo("Robbery",
 									string.format("%s %s (%s) Failed Hacking Bobcat Doors", char:GetData("First"),
 										char:GetData("Last"), char:GetData("SID")))
-								Doors:SetLock("bobcat_inner", true)
+								exports['sandbox-doors']:SetLock("bobcat_inner", true)
 								Status.Modify:Add(source, "PLAYER_STRESS", 6)
 
 								local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
@@ -1276,7 +1276,7 @@ AddEventHandler("Characters:Server:PlayerLoggedOut", RemoveC4)
 AddEventHandler("Characters:Server:PlayerDropped", RemoveC4)
 
 function SecureBobcat()
-	Doors:SetLock("bobcat_inner", true)
+	exports['sandbox-doors']:SetLock("bobcat_inner", true)
 	GlobalState["Bobcat:SecuredDoor"] = false
 	GlobalState["BobcatInProgress"] = false
 	GlobalState["Bobcat:Secured"] = true
@@ -1285,8 +1285,8 @@ function SecureBobcat()
 		_bcGlobalReset = os.time() + BC_RESET_TIME
 	end
 
-	Doors:SetLock("bobcat_front", true)
-	Doors:SetLock("bobcat_inner", true)
+	exports['sandbox-doors']:SetLock("bobcat_front", true)
+	exports['sandbox-doors']:SetLock("bobcat_inner", true)
 
 	for k, v in ipairs(_bobcatPeds) do
 		local ent = NetworkGetEntityFromNetworkId(v)
@@ -1309,9 +1309,9 @@ function SecureBobcat()
 end
 
 function ResetBobcat()
-	Doors:SetLock("bobcat_extr", true)
-	Doors:SetLock("bobcat_front", true)
-	Doors:SetLock("bobcat_inner", true)
+	exports['sandbox-doors']:SetLock("bobcat_extr", true)
+	exports['sandbox-doors']:SetLock("bobcat_front", true)
+	exports['sandbox-doors']:SetLock("bobcat_inner", true)
 
 	GlobalState["Bobcat:ExtrDoor"] = false
 	GlobalState["Bobcat:FrontDoor"] = false

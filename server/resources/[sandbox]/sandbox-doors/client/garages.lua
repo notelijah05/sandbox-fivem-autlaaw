@@ -943,7 +943,7 @@ function DoGarageKeyFobAction()
 		local playerCoords = GetEntityCoords(GLOBAL_PED)
 		local inZone = exports['sandbox-polyzone']:IsCoordsInZone(playerCoords, false, "door_garage_id")
 		if inZone and inZone.door_garage_id then
-			if Doors:CheckRestriction(inZone.door_garage_id) then
+			if exports['sandbox-doors']:CheckRestriction(inZone.door_garage_id) then
 				exports["sandbox-base"]:ServerCallback("Doors:ToggleLocks", inZone.door_garage_id,
 					function(success, newState)
 						if success then

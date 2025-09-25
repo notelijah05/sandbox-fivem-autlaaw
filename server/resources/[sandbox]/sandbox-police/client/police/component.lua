@@ -176,13 +176,11 @@ end
 AddEventHandler("Police:Shared:DependencyUpdate", PoliceComponents)
 function PoliceComponents()
 	Status = exports["sandbox-base"]:FetchComponent("Status")
-	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Status",
-		"Doors",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -489,8 +487,8 @@ AddEventHandler("Core:Shared:Ready", function()
 			[`mp_f_freemode_01`] = true,
 		}
 		exports["sandbox-base"]:RegisterClientCallback("Police:DoDetCord", function(data, cb)
-			local cDoorId, cDoorEnt, cDoorCoords = Doors:GetCurrentDoor()
-			if cDoorId and Doors:IsLocked(cDoorId) then
+			local cDoorId, cDoorEnt, cDoorCoords = exports['sandbox-doors']:GetCurrentDoor()
+			if cDoorId and exports['sandbox-doors']:IsLocked(cDoorId) then
 				CreateThread(function()
 					local playerPed = PlayerPedId()
 					local playerPos = GetEntityCoords(playerPed, false)

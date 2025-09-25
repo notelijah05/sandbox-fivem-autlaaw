@@ -49,7 +49,7 @@ function RegisterLBItemUses()
 				local myPos = GetEntityCoords(GetPlayerPed(source))
 
 				for k, v in pairs(lbThermPoints) do
-					if Doors:IsLocked(v.door) and #(v.coords - myPos) <= 1.5 then
+					if exports['sandbox-doors']:IsLocked(v.door) and #(v.coords - myPos) <= 1.5 then
 						if AreRequirementsUnlocked(v.requiredDoors) then
 							if not _lbInUse[k] then
 								_lbInUse[k] = source
@@ -108,7 +108,7 @@ function RegisterLBItemUses()
 												GlobalState["AntiShitlord"] = os.time() + (60 * math.random(10, 15))
 											end
 
-											Doors:SetLock(v.door, false)
+											exports['sandbox-doors']:SetLock(v.door, false)
 											GlobalState["Fleeca:Disable:lombank_legion"] = true
 											if not _lbAlerted or os.time() > _lbAlerted then
 												exports['sandbox-robbery']:TriggerPDAlert(
@@ -163,7 +163,7 @@ function RegisterLBItemUses()
 					6000
 				)
 			end
-		elseif pState.inLombankPower and not Doors:IsLocked("lombank_hidden_entrance") and IsLBPowerDisabled() then
+		elseif pState.inLombankPower and not exports['sandbox-doors']:IsLocked("lombank_hidden_entrance") and IsLBPowerDisabled() then
 			local pos = {
 				coords = vector3(50.79477, -818.1543, 31.59213),
 				heading = 253.851,
@@ -270,7 +270,7 @@ function RegisterLBItemUses()
 									exports["sandbox-sounds"]:PlayLocation(source, pos.coords, 15.0,
 										"power_small_complete_off.ogg", 0.1)
 
-									Doors:SetLock("lombank_lasers", false)
+									exports['sandbox-doors']:SetLock("lombank_lasers", false)
 									Status.Modify:Add(source, "PLAYER_STRESS", 3)
 									GlobalState["Fleeca:Disable:lombank_legion"] = true
 									if not _lbAlerted or os.time() > _lbAlerted then
@@ -461,7 +461,7 @@ function RegisterLBItemUses()
 												v.door
 											)
 										)
-										Doors:SetLock(v.door, true)
+										exports['sandbox-doors']:SetLock(v.door, true)
 										Status.Modify:Add(source, "PLAYER_STRESS", 6)
 
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)

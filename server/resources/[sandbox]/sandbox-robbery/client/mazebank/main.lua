@@ -1,12 +1,12 @@
 function NeedsReset()
 	for k, v in ipairs(_mbDoors) do
-		if not Doors:IsLocked(v.door) then
+		if not exports['sandbox-doors']:IsLocked(v.door) then
 			return true
 		end
 	end
 
 	for k, v in ipairs(_mbOfficeDoors) do
-		if not Doors:IsLocked(v.door) then
+		if not exports['sandbox-doors']:IsLocked(v.door) then
 			return true
 		end
 	end

@@ -20,13 +20,13 @@ function StartMazeBankThreads()
 	CreateThread(function()
 		while _threading do
 			local powerDisabled = IsMBPowerDisabled()
-			if not powerDisabled and not Doors:IsLocked("mazebank_offices") then
-				Doors:SetLock("mazebank_offices", true)
+			if not powerDisabled and not exports['sandbox-doors']:IsLocked("mazebank_offices") then
+				exports['sandbox-doors']:SetLock("mazebank_offices", true)
 				for k, v in ipairs(_mbOfficeDoors) do
-					Doors:SetLock(v.door, true)
+					exports['sandbox-doors']:SetLock(v.door, true)
 				end
-			elseif powerDisabled and Doors:IsLocked("mazebank_offices") then
-				Doors:SetLock("mazebank_offices", false)
+			elseif powerDisabled and exports['sandbox-doors']:IsLocked("mazebank_offices") then
+				exports['sandbox-doors']:SetLock("mazebank_offices", false)
 			end
 			Wait((1000 * 60) * 1)
 		end

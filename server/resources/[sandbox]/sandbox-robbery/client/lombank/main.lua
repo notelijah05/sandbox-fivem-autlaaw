@@ -1,12 +1,12 @@
 function LBNeedsReset()
 	for k, v in pairs(lbThermPoints) do
-		if not Doors:IsLocked(v.door) then
+		if not exports['sandbox-doors']:IsLocked(v.door) then
 			return true
 		end
 	end
 
 	for k, v in pairs(_lbHackPoints) do
-		if not Doors:IsLocked(v.door) then
+		if not exports['sandbox-doors']:IsLocked(v.door) then
 			return true
 		end
 	end
@@ -196,7 +196,7 @@ end)
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 	if type(data) == "table" then
 		if data.isDeath then
-			if not data.door or Doors:IsLocked(data.door) then
+			if not data.door or exports['sandbox-doors']:IsLocked(data.door) then
 				exports['sandbox-damage']:ApplyStandardDamage(10000, false, true)
 				TriggerServerEvent("Robbery:Server:Idiot", id)
 				if data.tpCoords ~= nil then
@@ -227,9 +227,9 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 					minDist = 2.0,
 					isEnabled = function(d, entity)
 						local coords = GetEntityCoords(entity.entity)
-						return not Doors:IsLocked("lombank_lower_gate")
-							and not Doors:IsLocked("lombank_lower_vault")
-							and not Doors:IsLocked(string.format("lombank_lower_room_%s", data.roomId))
+						return not exports['sandbox-doors']:IsLocked("lombank_lower_gate")
+							and not exports['sandbox-doors']:IsLocked("lombank_lower_vault")
+							and not exports['sandbox-doors']:IsLocked(string.format("lombank_lower_room_%s", data.roomId))
 							and GlobalState[string.format(
 								"Lombank:VaultRoom:%s:%s:%s",
 								d,

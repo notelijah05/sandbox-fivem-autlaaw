@@ -4,8 +4,8 @@ function PoliceItems()
         if pState.onDuty == "police" then
             exports["sandbox-base"]:ClientCallback(source, "Police:DoDetCord", {}, function(s, doorId)
                 if s and exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1) then
-                    Doors:SetLock(doorId, false)
-                    Doors:DisableDoor(doorId, 60 * 60)
+                    exports['sandbox-doors']:SetLock(doorId, false)
+                    exports['sandbox-doors']:DisableDoor(doorId, 60 * 60)
                 end
             end)
         end

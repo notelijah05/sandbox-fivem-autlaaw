@@ -21,7 +21,6 @@ AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
 
 local _sellerLocs = {
@@ -177,7 +176,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Robbery", {
 		"Status",
 		"Reputation",
-		"Doors",
 	}, function(error)
 		if #error > 0 then
 			return

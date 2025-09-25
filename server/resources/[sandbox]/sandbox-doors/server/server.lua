@@ -4,13 +4,11 @@ ELEVATOR_CACHE = {}
 
 AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Doors",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then
@@ -88,7 +86,7 @@ function RegisterCallbacks()
 
 		local targetDoor = _doorConfig[doorId]
 		if targetDoor and not IsDoorDisabled(doorId) and CheckPlayerAuth(source, targetDoor.restricted) then
-			local newState = Doors:SetLock(doorId)
+			local newState = exports['sandbox-doors']:SetLock(doorId)
 			if newState == nil then
 				cb(false, false)
 			else
@@ -106,7 +104,7 @@ function RegisterCallbacks()
 
 		local targetDoor = _doorConfig[doorId]
 		if targetDoor and targetDoor.canLockpick then
-			local newState = Doors:SetLock(doorId, false)
+			local newState = exports['sandbox-doors']:SetLock(doorId, false)
 			if newState == nil then
 				cb(false, false)
 			else
@@ -120,7 +118,7 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Doors:Elevators:ToggleLocks", function(source, data, cb)
 		local targetElevator = _elevatorConfig[data.elevator]
 		if targetElevator and targetElevator.canLock and CheckPlayerAuth(source, targetElevator.canLock) then
-			local newState = Doors:SetElevatorLock(data.elevator, data.floor)
+			local newState = exports['sandbox-doors']:SetElevatorLock(data.elevator, data.floor)
 			if newState == nil then
 				cb(false, false)
 			else
@@ -137,102 +135,100 @@ function RegisterCallbacks()
 	end)
 end
 
-DOORS = {
-	SetLock = function(self, doorId, newState, doneDouble)
-		if type(doorId) == "string" then
-			doorId = DOORS_IDS[doorId]
+exports('SetLock', function(doorId, newState, doneDouble)
+	if type(doorId) == "string" then
+		doorId = DOORS_IDS[doorId]
+	end
+
+	local doorData = _doorConfig[doorId]
+
+	if doorData then
+		local isLocked = DOORS_CACHE[doorId].locked
+		if newState == nil then
+			newState = not isLocked
 		end
 
-		local doorData = _doorConfig[doorId]
+		if newState ~= isLocked then
+			DOORS_CACHE[doorId].locked = newState
 
-		if doorData then
-			local isLocked = DOORS_CACHE[doorId].locked
-			if newState == nil then
-				newState = not isLocked
+			if DOORS_CACHE[doorId].forcedOpen then
+				DOORS_CACHE[doorId].forcedOpen = false
 			end
 
-			if newState ~= isLocked then
-				DOORS_CACHE[doorId].locked = newState
-
-				if DOORS_CACHE[doorId].forcedOpen then
-					DOORS_CACHE[doorId].forcedOpen = false
-				end
-
-				TriggerClientEvent("Doors:Client:UpdateState", -1, doorId, newState)
-				if doorData.double and not doneDouble then
-					Doors:SetLock(doorData.double, newState, true)
-				end
-			end
-			return newState
-		end
-		return nil
-	end,
-	IsLocked = function(self, doorId)
-		if type(doorId) == "string" then
-			doorId = DOORS_IDS[doorId]
-		end
-
-		local doorData = _doorConfig[doorId]
-		if doorData then
-			return DOORS_CACHE[doorId].locked
-		end
-		return false
-	end,
-	SetForcedOpen = function(self, doorId)
-		if type(doorId) == "string" then
-			doorId = DOORS_IDS[doorId]
-		end
-
-		if DOORS_CACHE[doorId] then
-			DOORS_CACHE[doorId].forcedOpen = true
-
-			TriggerClientEvent("Doors:Client:SetForcedOpen", -1, doorId)
-		end
-	end,
-	SetElevatorLock = function(self, elevatorId, floorId, newState)
-		local data = _elevatorConfig[elevatorId]
-
-		if
-			data
-			and ELEVATOR_CACHE[elevatorId]
-			and ELEVATOR_CACHE[elevatorId].floors
-			and ELEVATOR_CACHE[elevatorId].floors[floorId]
-		then
-			local isLocked = ELEVATOR_CACHE[elevatorId].floors[floorId].locked
-			if newState == nil then
-				newState = not isLocked
-			end
-
-			if data and newState ~= isLocked then
-				ELEVATOR_CACHE[elevatorId].floors[floorId].locked = newState
-				TriggerClientEvent("Doors:Client:UpdateElevatorState", -1, elevatorId, floorId, newState)
-			end
-			return newState
-		end
-		return nil
-	end,
-	DisableDoor = function(self, doorId, seconds, doneDouble)
-		if type(doorId) == "string" then
-			doorId = DOORS_IDS[doorId]
-		end
-
-		local doorData = _doorConfig[doorId]
-
-		if doorData then
-			local endTime = os.time() + seconds
-			DOORS_CACHE[doorId].disabledUntil = endTime
-
-			TriggerClientEvent("Doors:Client:DisableDoor", -1, doorId, endTime)
+			TriggerClientEvent("Doors:Client:UpdateState", -1, doorId, newState)
 			if doorData.double and not doneDouble then
-				Doors:DisableDoor(doorData.double, seconds, true)
+				exports['sandbox-doors']:SetLock(doorData.double, newState, true)
 			end
 		end
-		return nil
-	end,
-}
+		return newState
+	end
+	return nil
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Doors", DOORS)
+exports('IsLocked', function(doorId)
+	if type(doorId) == "string" then
+		doorId = DOORS_IDS[doorId]
+	end
+
+	local doorData = _doorConfig[doorId]
+	if doorData then
+		return DOORS_CACHE[doorId].locked
+	end
+	return false
+end)
+
+exports('SetForcedOpen', function(doorId)
+	if type(doorId) == "string" then
+		doorId = DOORS_IDS[doorId]
+	end
+
+	if DOORS_CACHE[doorId] then
+		DOORS_CACHE[doorId].forcedOpen = true
+
+		TriggerClientEvent("Doors:Client:SetForcedOpen", -1, doorId)
+	end
+end)
+
+exports('SetElevatorLock', function(elevatorId, floorId, newState)
+	local data = _elevatorConfig[elevatorId]
+
+	if
+		data
+		and ELEVATOR_CACHE[elevatorId]
+		and ELEVATOR_CACHE[elevatorId].floors
+		and ELEVATOR_CACHE[elevatorId].floors[floorId]
+	then
+		local isLocked = ELEVATOR_CACHE[elevatorId].floors[floorId].locked
+		if newState == nil then
+			newState = not isLocked
+		end
+
+		if data and newState ~= isLocked then
+			ELEVATOR_CACHE[elevatorId].floors[floorId].locked = newState
+			TriggerClientEvent("Doors:Client:UpdateElevatorState", -1, elevatorId, floorId, newState)
+		end
+		return newState
+	end
+	return nil
+end)
+
+exports('DisableDoor', function(doorId, seconds, doneDouble)
+	if type(doorId) == "string" then
+		doorId = DOORS_IDS[doorId]
+	end
+
+	local doorData = _doorConfig[doorId]
+
+	if doorData then
+		local endTime = os.time() + seconds
+		DOORS_CACHE[doorId].disabledUntil = endTime
+
+		TriggerClientEvent("Doors:Client:DisableDoor", -1, doorId, endTime)
+		if doorData.double and not doneDouble then
+			exports['sandbox-doors']:DisableDoor(doorData.double, seconds, true)
+		end
+	end
+	return nil
 end)
 
 function IsDoorDisabled(doorId)

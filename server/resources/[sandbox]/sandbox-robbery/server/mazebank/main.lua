@@ -89,14 +89,14 @@ function ResetMazeBank()
 		GlobalState[string.format("MazeBank:Offices:PC:%s", v.data.deskId)] = nil
 	end
 
-	Doors:SetLock("mazebank_offices", true)
+	exports['sandbox-doors']:SetLock("mazebank_offices", true)
 	exports['sandbox-cctv']:StateGroupOnline("mazebank")
 	for k, v in pairs(_mbDoors) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	for k, v in ipairs(_mbOfficeDoors) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	for k, v in ipairs(_mbHacks) do
@@ -131,14 +131,14 @@ function SecureMazeBank()
 		GlobalState[string.format("MazeBank:Offices:PC:%s", v.data.deskId)] = nil
 	end
 
-	Doors:SetLock("mazebank_offices", true)
+	exports['sandbox-doors']:SetLock("mazebank_offices", true)
 	exports['sandbox-cctv']:StateGroupOnline("mazebank")
 	for k, v in ipairs(_mbDoors) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	for k, v in ipairs(_mbOfficeDoors) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	for k, v in ipairs(_mbHacks) do
@@ -295,7 +295,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									GlobalState[string.format("MazeBank:Power:%s", data.boxId)] = _mbGlobalReset
 									TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 									if IsMBPowerDisabled() then
-										Doors:SetLock("mazebank_offices", false)
+										exports['sandbox-doors']:SetLock("mazebank_offices", false)
 										exports['sandbox-cctv']:StateGroupOffline("mazebank")
 										exports["sandbox-sounds"]:PlayLocation(
 											source,
@@ -324,7 +324,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										)
 										GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 									else
-										Doors:SetLock("mazebank_offices", true)
+										exports['sandbox-doors']:SetLock("mazebank_offices", true)
 										exports["sandbox-sounds"]:PlayLocation(
 											source,
 											data.ptFxPoint,
@@ -506,7 +506,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										GlobalState[string.format("MazeBank:Power:%s", data.boxId)] = _mbGlobalReset
 										TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 										if IsMBPowerDisabled() then
-											Doors:SetLock("mazebank_offices", false)
+											exports['sandbox-doors']:SetLock("mazebank_offices", false)
 											exports['sandbox-cctv']:StateGroupOffline("mazebank")
 											exports["sandbox-sounds"]:PlayLocation(
 												source,
@@ -536,7 +536,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											)
 											GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 										else
-											Doors:SetLock("mazebank_offices", true)
+											exports['sandbox-doors']:SetLock("mazebank_offices", true)
 											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,

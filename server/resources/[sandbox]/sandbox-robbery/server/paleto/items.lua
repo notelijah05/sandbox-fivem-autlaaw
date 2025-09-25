@@ -120,7 +120,7 @@ function RegisterPBItems()
 													250.0
 												)
 
-												Doors:SetLock("bank_savings_paleto_gate", false)
+												exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", false)
 												exports['sandbox-cctv']:StateGroupOffline("paleto")
 											else
 												exports["sandbox-sounds"]:PlayLocation(
@@ -130,7 +130,7 @@ function RegisterPBItems()
 													"power_small_complete_off.ogg",
 													0.1
 												)
-												Doors:SetLock("bank_savings_paleto_gate", true)
+												exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", true)
 												exports['sandbox-cctv']:StateGroupOnline("paleto")
 											end
 
@@ -196,7 +196,7 @@ function RegisterPBItems()
 					local myCoords = GetEntityCoords(ped)
 
 					for k, v in ipairs(_pbDoorThermite) do
-						if Doors:IsLocked(v.door) then
+						if exports['sandbox-doors']:IsLocked(v.door) then
 							if #(v.coords - myCoords) <= 1.5 then
 								if AreRequirementsUnlocked(v.requiredDoors) then
 									if not _pbInUse[v.door] then
@@ -258,7 +258,7 @@ function RegisterPBItems()
 															(60 * math.random(10, 15))
 													end
 
-													Doors:SetLock(v.door, false)
+													exports['sandbox-doors']:SetLock(v.door, false)
 													GlobalState["Fleeca:Disable:savings_paleto"] = true
 													if not _pbAlerted or os.time() > _pbAlerted then
 														exports['sandbox-robbery']:TriggerPDAlert(
@@ -308,7 +308,7 @@ function RegisterPBItems()
 						end
 					end
 
-					if Doors:IsLocked("bank_savings_paleto_security") then
+					if exports['sandbox-doors']:IsLocked("bank_savings_paleto_security") then
 						for k, v in ipairs(_pbSecurityPower) do
 							if #(v.coords - myCoords) <= 1.5 then
 								if AreRequirementsUnlocked(v.requiredDoors) then
@@ -386,9 +386,11 @@ function RegisterPBItems()
 													)
 
 													if IsSecurityAccessible() then
-														Doors:SetLock("bank_savings_paleto_security", false)
+														exports['sandbox-doors']:SetLock("bank_savings_paleto_security",
+															false)
 													else
-														Doors:SetLock("bank_savings_paleto_security", true)
+														exports['sandbox-doors']:SetLock("bank_savings_paleto_security",
+															true)
 													end
 
 													GlobalState["Fleeca:Disable:savings_paleto"] = true
@@ -554,7 +556,7 @@ function RegisterPBItems()
 													v.door
 												)
 											)
-											Doors:SetLock(v.door, true)
+											exports['sandbox-doors']:SetLock(v.door, true)
 											Status.Modify:Add(source, "PLAYER_STRESS", 6)
 
 											local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)

@@ -34,7 +34,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	StartPaletoThreads()
 
 	for k, v in ipairs(_pbDoorIds) do
-		Doors:SetLock(v, true)
+		exports['sandbox-doors']:SetLock(v, true)
 	end
 
 	exports["sandbox-base"]:RegisterServerCallback("Robbery:Paleto:SecureBank", function(source, data, cb)
@@ -101,8 +101,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 			table.insert(its, {
 				label = v.label,
 				data = v.data,
-				disabled = not Doors:IsLocked(v.doorId),
-				event = Doors:IsLocked(v.doorId) and "Robbery:Client:Paleto:Door" or nil,
+				disabled = not exports['sandbox-doors']:IsLocked(v.doorId),
+				event = exports['sandbox-doors']:IsLocked(v.doorId) and "Robbery:Client:Paleto:Door" or nil,
 			})
 		end
 		cb(its)
@@ -183,14 +183,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 								)
 							)
 						then
-							Doors:SetLock(data.data.door, false)
+							exports['sandbox-doors']:SetLock(data.data.door, false)
 							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Door Unlocked")
 
 							if _pbDoorsGarbage[data.data.id].requireCode then
 								exports['sandbox-inventory']:RemoveAll(char:GetData("SID"), 1, "paleto_access_codes")
 							end
 						else
-							Doors:SetLock(data.data.door, true)
+							exports['sandbox-doors']:SetLock(data.data.door, true)
 							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Access Code")
 							Status.Modify:Add(source, "PLAYER_STRESS", 6)
 						end
@@ -319,7 +319,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												250.0
 											)
 											GlobalState["Fleeca:Disable:savings_paleto"] = true
-											Doors:SetLock("bank_savings_paleto_gate", false)
+											exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", false)
 											RestorePowerThread()
 										else
 											exports["sandbox-sounds"]:PlayLocation(
@@ -329,7 +329,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												"power_small_complete_off.ogg",
 												0.1
 											)
-											Doors:SetLock("bank_savings_paleto_gate", true)
+											exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", true)
 										end
 										Status.Modify:Add(source, "PLAYER_STRESS", 3)
 									else
@@ -808,7 +808,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							6000
 						)
 						return
-					elseif Doors:IsLocked("bank_savings_paleto_vault") then
+					elseif exports['sandbox-doors']:IsLocked("bank_savings_paleto_vault") then
 						return
 					end
 					if not _pbInUse.drillPoints[data] then
@@ -923,7 +923,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							6000
 						)
 						return
-					elseif Doors:IsLocked(data.door) then
+					elseif exports['sandbox-doors']:IsLocked(data.door) then
 						return
 					end
 					if not _pbInUse.searchPoints[data.searchId] then
