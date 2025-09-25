@@ -6,12 +6,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	end, 2)
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Restaurant", _RESTAURANT)
-end)
-
-_RESTAURANT = {}
-
 function RunRestaurantJobUpdate(source, onSpawn)
 	local charJobs = exports['sandbox-jobs']:GetJobs(source)
 	local warmersList = {}

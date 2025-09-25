@@ -2,10 +2,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	Startup()
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Restaurant", _RESTAURANT)
-end)
-
 function Startup()
 	exports['sandbox-targeting']:ZonesAddBox("burgershot-clockinoff", "chess-clock", vector3(-1177.08, -896.98, 13.79),
 		0.4, 0.4, {
@@ -667,8 +663,6 @@ function Startup()
 			},
 		}, 3.0, true)
 end
-
-_RESTAURANT = {}
 
 RegisterNetEvent("Restaurant:Client:CreatePoly", function(pickups, warmersList, onSpawn)
 	for k, v in ipairs(pickups) do
