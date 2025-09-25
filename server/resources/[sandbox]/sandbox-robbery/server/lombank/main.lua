@@ -58,15 +58,16 @@ function LombankDisablePower(source)
 		GlobalState[string.format("Lombank:Power:%s", v.data.boxId)] = _lbGlobalReset
 	end
 
-	Robbery:TriggerPDAlert(source, vector3(77.775, -869.549, 31.398), "10-33", "Minor Power Grid Disruption", {
-		icon = 354,
-		size = 0.9,
-		color = 31,
-		duration = (60 * 5),
-	}, {
-		icon = "bolt-slash",
-		details = "Pillbox Hill",
-	}, false, 50.0)
+	exports['sandbox-robbery']:TriggerPDAlert(source, vector3(77.775, -869.549, 31.398), "10-33",
+		"Minor Power Grid Disruption", {
+			icon = 354,
+			size = 0.9,
+			color = 31,
+			duration = (60 * 5),
+		}, {
+			icon = "bolt-slash",
+			details = "Pillbox Hill",
+		}, false, 50.0)
 	GlobalState["Fleeca:Disable:lombank_legion"] = true
 
 	Doors:SetLock("lombank_hidden_entrance", false)
@@ -416,7 +417,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											"power_small_complete_off.ogg",
 											0.1
 										)
-										Robbery:TriggerPDAlert(
+										exports['sandbox-robbery']:TriggerPDAlert(
 											source,
 											vector3(77.775, -869.549, 31.398),
 											"10-33",
@@ -441,7 +442,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										exports["sandbox-sounds"]:PlayLocation(source, data.ptFxPoint, 15.0,
 											"power_small_off.ogg", 0.25)
 										if not _lbPowerAlerted or os.time() > _lbPowerAlerted then
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												GetEntityCoords(GetPlayerPed(source)),
 												"10-33",
@@ -616,7 +617,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												"power_small_complete_off.ogg",
 												0.1
 											)
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												vector3(77.775, -869.549, 31.398),
 												"10-33",
@@ -646,7 +647,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												0.25
 											)
 											if not _lbPowerAlerted or os.time() > _lbPowerAlerted then
-												Robbery:TriggerPDAlert(
+												exports['sandbox-robbery']:TriggerPDAlert(
 													source,
 													GetEntityCoords(GetPlayerPed(source)),
 													"10-33",

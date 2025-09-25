@@ -224,7 +224,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			Player(source).state.ATMRobbery = false
 
 			if not data.alarm then
-				Robbery:TriggerPDAlert(source, data.coords, "10-90", "ATM Robbery", {
+				exports['sandbox-robbery']:TriggerPDAlert(source, data.coords, "10-90", "ATM Robbery", {
 					icon = 521,
 					size = 0.9,
 					color = 31,
@@ -265,7 +265,7 @@ end
 
 RegisterNetEvent("Robbery:Server:ATM:AlertPolice", function(coords)
 	local src = source
-	Robbery:TriggerPDAlert(src, coords, "10-90", "ATM Robbery", {
+	exports['sandbox-robbery']:TriggerPDAlert(src, coords, "10-90", "ATM Robbery", {
 		icon = 521,
 		size = 0.9,
 		color = 31,

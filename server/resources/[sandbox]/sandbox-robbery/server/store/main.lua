@@ -628,7 +628,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 				if _storeAlerts[data.store] == nil or _storeAlerts[data.store] < os.time() then
 					_storeAlerts[data.store] = (os.time() + (60 * 5))
-					Robbery:TriggerPDAlert(source, _storeLocs[data.store].coords, "10-90", "Store Robbery", {
+					exports['sandbox-robbery']:TriggerPDAlert(source, _storeLocs[data.store].coords, "10-90",
+						"Store Robbery", {
 						icon = 628,
 						size = 0.9,
 						color = 31,
@@ -731,7 +732,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										or _storeAlerts[pState.storePoly] < os.time()
 									then
 										_storeAlerts[pState.storePoly] = (os.time() + (60 * 5))
-										Robbery:TriggerPDAlert(
+										exports['sandbox-robbery']:TriggerPDAlert(
 											source,
 											_storeLocs[pState.storePoly].coords,
 											"10-90",
@@ -963,12 +964,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 				)
 				_storeAlerts[data.store] = (os.time() + (60 * 5))
-				Robbery:TriggerPDAlert(source, _storeLocs[data.store].coords, "10-90", "Store Robbery", {
-					icon = 628,
-					size = 0.9,
-					color = 31,
-					duration = (60 * 5),
-				}, {
+				exports['sandbox-robbery']:TriggerPDAlert(source, _storeLocs[data.store].coords, "10-90", "Store Robbery",
+					{
+						icon = 628,
+						size = 0.9,
+						color = 31,
+						duration = (60 * 5),
+					}, {
 					icon = "shop",
 					details = "24/7",
 				}, data.store)

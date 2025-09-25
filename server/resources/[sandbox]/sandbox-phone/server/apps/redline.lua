@@ -944,7 +944,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						_races[key].total += 1
 					end
 
-					Robbery:TriggerPDAlert(
+					exports['sandbox-robbery']:TriggerPDAlert(
 						src,
 						vector3(
 							_trackData[key].Checkpoints[1].coords.x,

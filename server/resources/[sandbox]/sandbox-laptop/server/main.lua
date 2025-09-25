@@ -81,7 +81,6 @@ AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
 	RegisterChatCommands()
 end
@@ -90,7 +89,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
 		"Properties",
 		"Reputation",
-		"Robbery",
 	}, function(error)
 		if #error > 0 then
 			return

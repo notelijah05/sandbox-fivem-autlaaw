@@ -213,7 +213,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								end
 
 								if _robberyAlerts[pState.fleeca] == nil or _robberyAlerts[pState.fleeca] < os.time() then
-									Robbery:TriggerPDAlert(
+									exports['sandbox-robbery']:TriggerPDAlert(
 										source,
 										FLEECA_LOCATIONS[pState.fleeca].coords,
 										"10-90",
@@ -408,7 +408,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							GlobalState[string.format("Fleeca:Disable:%s", pState.fleeca)] = true
 
 							if _robberyAlerts[pState.fleeca] == nil or _robberyAlerts[pState.fleeca] < os.time() then
-								Robbery:TriggerPDAlert(
+								exports['sandbox-robbery']:TriggerPDAlert(
 									source,
 									GlobalState[string.format("FleecaRobberies:%s", pState.fleeca)].coords,
 									"10-90",
@@ -586,7 +586,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							_inUse.GateDoor[pState.fleeca] = source
 
 							if _robberyAlerts[pState.fleeca] == nil or _robberyAlerts[pState.fleeca] < os.time() then
-								Robbery:TriggerPDAlert(
+								exports['sandbox-robbery']:TriggerPDAlert(
 									source,
 									GlobalState[string.format("FleecaRobberies:%s", pState.fleeca)].coords,
 									"10-90",

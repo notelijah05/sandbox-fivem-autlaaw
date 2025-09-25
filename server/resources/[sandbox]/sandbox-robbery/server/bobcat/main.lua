@@ -163,7 +163,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 							Doors:SetLock("bobcat_extr", false)
 							if not _alerted or os.time() > _alerted then
-								Robbery:TriggerPDAlert(
+								exports['sandbox-robbery']:TriggerPDAlert(
 									source,
 									vector3(879.020, -2263.657, 30.468),
 									"10-90",
@@ -286,7 +286,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 									Doors:SetLock("bobcat_front", false)
 									if not _alerted or os.time() > _alerted then
-										Robbery:TriggerPDAlert(
+										exports['sandbox-robbery']:TriggerPDAlert(
 											source,
 											vector3(879.020, -2263.657, 30.468),
 											"10-90",
@@ -448,7 +448,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 													Entity(ent).state.wasThermited = true
 
-													Robbery:TriggerPDAlert(
+													exports['sandbox-robbery']:TriggerPDAlert(
 														source,
 														GetEntityCoords(ent),
 														"10-90",

@@ -3,7 +3,6 @@ function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
-	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
@@ -12,7 +11,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Reputation",
 		"Properties",
 		"Status",
-		"Robbery",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then

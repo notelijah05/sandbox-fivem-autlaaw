@@ -55,7 +55,7 @@ end)
 
 RegisterNetEvent("Robbery:Server:Signs:AlertPolice", function(coords)
 	local src = source
-	Robbery:TriggerPDAlert(src, coords, "10-90", "Street Sign Robbery", {
+	exports['sandbox-robbery']:TriggerPDAlert(src, coords, "10-90", "Street Sign Robbery", {
 		icon = 652,
 		size = 0.9,
 		color = 1,

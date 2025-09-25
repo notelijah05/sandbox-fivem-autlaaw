@@ -57,7 +57,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_bankStates.paleto.fookinLasers,
 						"bank_alarm.ogg"
 					)
-					Robbery.State:Update("paleto", "fookinLasers", false)
+					exports['sandbox-robbery']:StateUpdate("paleto", "fookinLasers", false)
 					_pbAlerted = false
 				end
 			end
@@ -66,20 +66,21 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Robbery:Paleto:TriggeredLaser", function(source, data, cb)
 		if not _bankStates.paleto.fookinLasers then
-			Robbery.State:Update("paleto", "fookinLasers", source)
+			exports['sandbox-robbery']:StateUpdate("paleto", "fookinLasers", source)
 			exports["sandbox-sounds"]:LoopLocation(source, vector3(-104.552, 6469.050, 35.981), 50.0, "bank_alarm.ogg",
 				0.15)
 			GlobalState["Fleeca:Disable:savings_paleto"] = true
 			if not _pbAlerted or os.time() > _pbAlerted then
-				Robbery:TriggerPDAlert(source, vector3(-111.130, 6462.485, 31.643), "10-33", "Bank Alarm Triggered", {
-					icon = 137,
-					size = 0.9,
-					color = 31,
-					duration = (60 * 5),
-				}, {
-					icon = "building-columns",
-					details = "Blaine County Savings Bank",
-				}, "paleto")
+				exports['sandbox-robbery']:TriggerPDAlert(source, vector3(-111.130, 6462.485, 31.643), "10-33",
+					"Bank Alarm Triggered", {
+						icon = 137,
+						size = 0.9,
+						color = 31,
+						duration = (60 * 5),
+					}, {
+						icon = "building-columns",
+						details = "Blaine County Savings Bank",
+					}, "paleto")
 				_pbAlerted = os.time() + (60 * 10)
 				Status.Modify:Add(source, "PLAYER_STRESS", 15)
 			end
@@ -133,7 +134,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						if not _pbGlobalReset or os.time() > _pbGlobalReset then
 							_pbGlobalReset = os.time() + PALETO_RESET_TIME
 						end
-						Robbery.State:Update("paleto", "vaultTerminal", _pbGlobalReset)
+						exports['sandbox-robbery']:StateUpdate("paleto", "vaultTerminal", _pbGlobalReset)
 					end
 				else
 				end
@@ -288,7 +289,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 											_pbGlobalReset = os.time() + PALETO_RESET_TIME
 										end
 
-										Robbery.State:Update("paleto", data.boxId, _pbGlobalReset, "electricalBoxes")
+										exports['sandbox-robbery']:StateUpdate("paleto", data.boxId, _pbGlobalReset,
+											"electricalBoxes")
 										TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 										if IsPaletoPowerDisabled() then
 											exports["sandbox-sounds"]:PlayLocation(
@@ -298,7 +300,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												"power_small_complete_off.ogg",
 												0.1
 											)
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												vector3(-195.586, 6338.740, 31.515),
 												"10-33",
@@ -431,7 +433,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 											_pbGlobalReset = os.time() + PALETO_RESET_TIME
 										end
 
-										Robbery.State:Update("paleto", data.pcId, _pbGlobalReset, "exploits")
+										exports['sandbox-robbery']:StateUpdate("paleto", data.pcId, _pbGlobalReset,
+											"exploits")
 										if IsPaletoExploitInstalled() then
 											exports['sandbox-phone']:EmailSend(
 												source,
@@ -577,7 +580,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											_pbGlobalReset = os.time() + PALETO_RESET_TIME
 										end
 
-										Robbery.State:Update("paleto", "workstation", _pbGlobalReset)
+										exports['sandbox-robbery']:StateUpdate("paleto", "workstation", _pbGlobalReset)
 										exports['sandbox-inventory']:AddItem(char:GetData("SID"), "paleto_access_codes",
 											1, {
 												AccessCodes = { _accessCodes.paleto[1] },
@@ -585,7 +588,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 										GlobalState["Fleeca:Disable:savings_paleto"] = true
 										if not _pbAlerted or os.time() > _pbAlerted then
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												vector3(-111.130, 6462.485, 31.643),
 												"10-90",
@@ -711,7 +714,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 											_pbGlobalReset = os.time() + PALETO_RESET_TIME
 										end
 
-										Robbery.State:Update("paleto", data.officeId, _pbGlobalReset, "officeHacks")
+										exports['sandbox-robbery']:StateUpdate("paleto", data.officeId, _pbGlobalReset,
+											"officeHacks")
 
 										if _accessCodes.paleto[data.officeId + 1] ~= nil then
 											exports['sandbox-inventory']:AddItem(char:GetData("SID"),
@@ -727,7 +731,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 										GlobalState["Fleeca:Disable:savings_paleto"] = true
 										if not _pbAlerted or os.time() > _pbAlerted then
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												vector3(-111.130, 6462.485, 31.643),
 												"10-90",
@@ -964,7 +968,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 								exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_pbSearchLoot,
 									char:GetData("SID"), 1)
 
-								Robbery.State:Update("paleto", data.searchId, _pbGlobalReset, "officeSearch")
+								exports['sandbox-robbery']:StateUpdate("paleto", data.searchId, _pbGlobalReset,
+									"officeSearch")
 								GlobalState["Fleeca:Disable:savings_paleto"] = true
 							end
 
@@ -1071,7 +1076,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								_pbGlobalReset = os.time() + PALETO_RESET_TIME
 							end
 
-							Robbery.State:Update("paleto", "officeSafe", _pbGlobalReset)
+							exports['sandbox-robbery']:StateUpdate("paleto", "officeSafe", _pbGlobalReset)
 
 							exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_pbLoot, char:GetData("SID"), 1)
 							exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
@@ -1086,7 +1091,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 							GlobalState["Fleeca:Disable:savings_paleto"] = true
 							if not _pbAlerted or os.time() > _pbAlerted then
-								Robbery:TriggerPDAlert(
+								exports['sandbox-robbery']:TriggerPDAlert(
 									source,
 									vector3(-111.130, 6462.485, 31.643),
 									"10-90",

@@ -6,13 +6,11 @@ local _generatedNames = {}
 AddEventHandler("Police:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
-	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
 		"Doors",
-		"Robbery"
 	}, function(error)
 		if #error > 0 then
 			return
@@ -459,12 +457,13 @@ end)
 RegisterNetEvent("Prison:Server:Lockdown:AlertPolice", function(state)
 	local src = source
 	if state then
-		Robbery:TriggerPDAlert(src, GetEntityCoords(GetPlayerPed(src)), "10-98", "Bolingbroke Penitentiary Lockdown", {
-			icon = 526,
-			size = 0.9,
-			color = 1,
-			duration = (60 * 5),
-		})
+		exports['sandbox-robbery']:TriggerPDAlert(src, GetEntityCoords(GetPlayerPed(src)), "10-98",
+			"Bolingbroke Penitentiary Lockdown", {
+				icon = 526,
+				size = 0.9,
+				color = 1,
+				duration = (60 * 5),
+			})
 	end
 	TriggerClientEvent("Prison:Client:JailAlarm", -1, state)
 end)

@@ -111,7 +111,7 @@ function RegisterLBItemUses()
 											Doors:SetLock(v.door, false)
 											GlobalState["Fleeca:Disable:lombank_legion"] = true
 											if not _lbAlerted or os.time() > _lbAlerted then
-												Robbery:TriggerPDAlert(
+												exports['sandbox-robbery']:TriggerPDAlert(
 													source,
 													vector3(8.976, -932.315, 29.903),
 													"10-90",
@@ -274,7 +274,7 @@ function RegisterLBItemUses()
 									Status.Modify:Add(source, "PLAYER_STRESS", 3)
 									GlobalState["Fleeca:Disable:lombank_legion"] = true
 									if not _lbAlerted or os.time() > _lbAlerted then
-										Robbery:TriggerPDAlert(
+										exports['sandbox-robbery']:TriggerPDAlert(
 											source,
 											vector3(8.976, -932.315, 29.903),
 											"10-90",
@@ -431,7 +431,7 @@ function RegisterLBItemUses()
 										Status.Modify:Add(source, "PLAYER_STRESS", 3)
 										GlobalState["Fleeca:Disable:lombank_legion"] = true
 										if not _lbAlerted or os.time() > _lbAlerted then
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												vector3(8.976, -932.315, 29.903),
 												"10-90",

@@ -135,7 +135,7 @@ function BuildMetaDataTable(cData, item, existing)
 		MetaData.Brew = Drugs.Moonshine.Barrel:Generate(1)
 	elseif itemExist.name == "paleto_access_codes" and not MetaData.AccessCodes then
 		MetaData.AccessCodes = {
-			Robbery:GetAccessCodes('paleto')[1]
+			exports['sandbox-robbery']:RobberyGetAccessCodes('paleto')[1]
 		}
 	elseif itemExist.name == "lsundg_invite" and cData then
 		MetaData.Inviter = {
@@ -161,7 +161,6 @@ AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Drugs = exports["sandbox-base"]:FetchComponent("Drugs")
-	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Laptop = exports["sandbox-base"]:FetchComponent("Laptop")
 end
 
@@ -169,7 +168,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Inventory", {
 		"Reputation",
 		"Drugs",
-		"Robbery",
 		"Laptop",
 	}, function(error)
 		if #error > 0 then

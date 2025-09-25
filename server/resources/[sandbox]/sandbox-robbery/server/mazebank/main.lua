@@ -61,15 +61,16 @@ function MazeBankDisablePower(source)
 		GlobalState[string.format("MazeBank:Power:%s", v.data.boxId)] = _mbGlobalReset
 	end
 
-	Robbery:TriggerPDAlert(source, vector3(-1332.651, -846.451, 17.080), "10-33", "Minor Power Grid Disruption", {
-		icon = 354,
-		size = 0.9,
-		color = 31,
-		duration = (60 * 5),
-	}, {
-		icon = "bolt-slash",
-		details = "Del Perro",
-	}, false, 50.0)
+	exports['sandbox-robbery']:TriggerPDAlert(source, vector3(-1332.651, -846.451, 17.080), "10-33",
+		"Minor Power Grid Disruption", {
+			icon = 354,
+			size = 0.9,
+			color = 31,
+			duration = (60 * 5),
+		}, {
+			icon = "bolt-slash",
+			details = "Del Perro",
+		}, false, 50.0)
 	GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 end
 
@@ -303,7 +304,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											"power_small_complete_off.ogg",
 											0.1
 										)
-										Robbery:TriggerPDAlert(
+										exports['sandbox-robbery']:TriggerPDAlert(
 											source,
 											vector3(-1332.651, -846.451, 17.080),
 											"10-33",
@@ -332,7 +333,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											0.25
 										)
 										if not _mbPowerAlerted or os.time() > _mbPowerAlerted then
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												GetEntityCoords(GetPlayerPed(source)),
 												"10-33",
@@ -515,7 +516,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												0.1
 											)
 
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												vector3(-1332.651, -846.451, 17.080),
 												"10-33",
@@ -544,7 +545,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												0.25
 											)
 											if not _mbPowerAlerted or os.time() > _mbPowerAlerted then
-												Robbery:TriggerPDAlert(
+												exports['sandbox-robbery']:TriggerPDAlert(
 													source,
 													GetEntityCoords(GetPlayerPed(source)),
 													"10-33",

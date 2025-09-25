@@ -84,7 +84,8 @@ function RegisterPBItems()
 											if not _pbGlobalReset or os.time() > _pbGlobalReset then
 												_pbGlobalReset = os.time() + PALETO_RESET_TIME
 											end
-											Robbery.State:Update("paleto", subStationId, _pbGlobalReset, "substations")
+											exports['sandbox-robbery']:StateUpdate("paleto", subStationId, _pbGlobalReset,
+												"substations")
 
 											TriggerEvent("Particles:Server:DoFx", substation.thermite.coords, "spark")
 
@@ -100,7 +101,7 @@ function RegisterPBItems()
 													"power_small_complete_off.ogg",
 													0.1
 												)
-												Robbery:TriggerPDAlert(
+												exports['sandbox-robbery']:TriggerPDAlert(
 													source,
 													vector3(-195.586, 6338.740, 31.515),
 													"10-33",
@@ -260,7 +261,7 @@ function RegisterPBItems()
 													Doors:SetLock(v.door, false)
 													GlobalState["Fleeca:Disable:savings_paleto"] = true
 													if not _pbAlerted or os.time() > _pbAlerted then
-														Robbery:TriggerPDAlert(
+														exports['sandbox-robbery']:TriggerPDAlert(
 															source,
 															vector3(-111.092, 6462.361, 31.643),
 															"10-90",
@@ -377,7 +378,7 @@ function RegisterPBItems()
 													if not _pbGlobalReset or os.time() > _pbGlobalReset then
 														_pbGlobalReset = os.time() + PALETO_RESET_TIME
 													end
-													Robbery.State:Update(
+													exports['sandbox-robbery']:StateUpdate(
 														"paleto",
 														v.powerId,
 														_pbGlobalReset,
@@ -392,7 +393,7 @@ function RegisterPBItems()
 
 													GlobalState["Fleeca:Disable:savings_paleto"] = true
 													if not _pbAlerted or os.time() > _pbAlerted then
-														Robbery:TriggerPDAlert(
+														exports['sandbox-robbery']:TriggerPDAlert(
 															source,
 															vector3(-111.130, 6462.485, 31.643),
 															"10-90",

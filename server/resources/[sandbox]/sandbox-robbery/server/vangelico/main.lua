@@ -112,15 +112,16 @@ AddEventHandler("Robbery:Server:Setup", function()
 				GlobalState[pId] = _caseResetTime
 
 				if _alerted == nil or _alerted < os.time() then
-					Robbery:TriggerPDAlert(source, vector3(-630.732, -237.111, 38.078), "10-90", "Armed Robbery", {
-						icon = 617,
-						size = 0.9,
-						color = 31,
-						duration = (60 * 5),
-					}, {
-						icon = "gem",
-						details = "Vangelico Jewelry",
-					}, "vangelico")
+					exports['sandbox-robbery']:TriggerPDAlert(source, vector3(-630.732, -237.111, 38.078), "10-90",
+						"Armed Robbery", {
+							icon = 617,
+							size = 0.9,
+							color = 31,
+							duration = (60 * 5),
+						}, {
+							icon = "gem",
+							details = "Vangelico Jewelry",
+						}, "vangelico")
 					_alerted = os.time() + (60 * 60)
 				end
 

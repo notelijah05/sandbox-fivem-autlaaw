@@ -22,7 +22,6 @@ function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
 end
 
@@ -180,7 +179,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Properties",
 		"Status",
 		"Reputation",
-		"Robbery",
 		"Doors",
 	}, function(error)
 		if #error > 0 then
@@ -333,48 +331,43 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Robbery", _ROBBERY)
+exports('TriggerPDAlert', function(source, coords, code, title, blip, description, cameraGroup, isArea)
+	exports["sandbox-base"]:ClientCallback(source, "EmergencyAlerts:GetStreetName", coords, function(location)
+		exports['sandbox-mdt']:EmergencyAlertsCreate(
+			code,
+			title,
+			"police_alerts",
+			location,
+			description,
+			false,
+			blip,
+			false,
+			isArea or false,
+			cameraGroup or false
+		)
+	end)
 end)
 
-_ROBBERY = {
-	TriggerPDAlert = function(self, source, coords, code, title, blip, description, cameraGroup, isArea)
-		exports["sandbox-base"]:ClientCallback(source, "EmergencyAlerts:GetStreetName", coords, function(location)
-			exports['sandbox-mdt']:EmergencyAlertsCreate(
-				code,
-				title,
-				"police_alerts",
-				location,
-				description,
-				false,
-				blip,
-				false,
-				isArea or false,
-				cameraGroup or false
-			)
-		end)
-	end,
-	GetAccessCodes = function(self, bankId)
-		return _accessCodes[bankId]
-	end,
-	State = {
-		Set = function(self, bank, state)
-			_bankStates[bank] = state
-			TriggerClientEvent("Robbery:Client:State:Set", -1, bank, state)
-		end,
-		Update = function(self, bank, key, value, tableId)
-			if _bankStates[bank] ~= nil then
-				if tableId then
-					_bankStates[bank][tableId] = _bankStates[bank][tableId] or {}
-					_bankStates[bank][tableId][key] = value
-				else
-					_bankStates[bank][key] = value
-				end
-				TriggerClientEvent("Robbery:Client:State:Update", -1, bank, key, value, tableId)
-			end
-		end,
-	},
-}
+exports('GetAccessCodes', function(bankId)
+	return _accessCodes[bankId]
+end)
+
+exports('StateSet', function(bank, state)
+	_bankStates[bank] = state
+	TriggerClientEvent("Robbery:Client:State:Set", -1, bank, state)
+end)
+
+exports('StateUpdate', function(bank, key, value, tableId)
+	if _bankStates[bank] ~= nil then
+		if tableId then
+			_bankStates[bank][tableId] = _bankStates[bank][tableId] or {}
+			_bankStates[bank][tableId][key] = value
+		else
+			_bankStates[bank][key] = value
+		end
+		TriggerClientEvent("Robbery:Client:State:Update", -1, bank, key, value, tableId)
+	end
+end)
 
 RegisterNetEvent("Robbery:Server:Idiot", function(id)
 	local src = source

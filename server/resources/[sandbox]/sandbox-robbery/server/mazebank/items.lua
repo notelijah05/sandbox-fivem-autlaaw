@@ -111,7 +111,7 @@ function RegisterMBItemUses()
 											_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
 											Doors:SetLock(v.door, false)
 											if not _mbAlerted or os.time() > _mbAlerted then
-												Robbery:TriggerPDAlert(
+												exports['sandbox-robbery']:TriggerPDAlert(
 													source,
 													vector3(-1332.651, -846.451, 17.080),
 													"10-90",

@@ -42,10 +42,6 @@ AddEventHandler("Robbery:Client:PickupItems", function()
 	exports["sandbox-base"]:ServerCallback("Robbery:Pickup", {})
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Robbery", _ROBBERY)
-end)
-
 RegisterNetEvent("Robbery:Client:State:Init", function(states)
 	_bankStates = states
 
@@ -133,5 +129,3 @@ AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
 		end
 	end)
 end)
-
-_ROBBERY = {}

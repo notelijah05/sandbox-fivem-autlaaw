@@ -40,28 +40,29 @@ function DisablePaletoPower(source)
 	end
 
 	for k, v in ipairs(_pbPCHackAreas) do
-		Robbery.State:Update("paleto", v.data.pcId, _pbGlobalReset, "exploits")
+		exports['sandbox-robbery']:StateUpdate("paleto", v.data.pcId, _pbGlobalReset, "exploits")
 	end
 
 	for k, v in ipairs(_pbSubStations) do
-		Robbery.State:Update("paleto", k, _pbGlobalReset, "substations")
+		exports['sandbox-robbery']:StateUpdate("paleto", k, _pbGlobalReset, "substations")
 	end
 
 	for k, v in ipairs(_pbPowerHacks) do
-		Robbery.State:Update("paleto", v.data.boxId, _pbGlobalReset, "electricalBoxes")
+		exports['sandbox-robbery']:StateUpdate("paleto", v.data.boxId, _pbGlobalReset, "electricalBoxes")
 	end
 
 	exports['sandbox-cctv']:StateGroupOffline("paleto")
 
-	Robbery:TriggerPDAlert(source, vector3(-195.586, 6338.740, 31.515), "10-33", "Regional Power Grid Disruption", {
-		icon = 354,
-		size = 0.9,
-		color = 31,
-		duration = (60 * 5),
-	}, {
-		icon = "bolt-slash",
-		details = "Paleto",
-	}, false, 250.0)
+	exports['sandbox-robbery']:TriggerPDAlert(source, vector3(-195.586, 6338.740, 31.515), "10-33",
+		"Regional Power Grid Disruption", {
+			icon = 354,
+			size = 0.9,
+			color = 31,
+			duration = (60 * 5),
+		}, {
+			icon = "bolt-slash",
+			details = "Paleto",
+		}, false, 250.0)
 
 	GlobalState["Fleeca:Disable:savings_paleto"] = true
 	Doors:SetLock("bank_savings_paleto_gate", false)
@@ -91,7 +92,7 @@ function ResetPaleto()
 		Doors:SetLock(v, true)
 	end
 
-	Robbery.State:Set("paleto", {
+	exports['sandbox-robbery']:StateSet("paleto", {
 		fookinLasers = false,
 		workstation = false,
 		vaultTerminal = false,
@@ -124,7 +125,7 @@ function SecurePaleto()
 		Doors:SetLock(v, true)
 	end
 
-	Robbery.State:Set("paleto", {
+	exports['sandbox-robbery']:StateSet("paleto", {
 		fookinLasers = false,
 		workstation = false,
 		vaultTerminal = false,

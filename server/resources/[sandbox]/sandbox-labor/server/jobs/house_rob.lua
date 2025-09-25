@@ -93,7 +93,7 @@ function StartAlarmCheck(joiner)
 					exports['sandbox-labor']:SendWorkgroupEvent(joiner,
 						string.format("HouseRobbery:Client:%s:AlarmTriggered", joiner))
 
-					Robbery:TriggerPDAlert(joiner,
+					exports['sandbox-robbery']:TriggerPDAlert(joiner,
 						vector3(_robbers[joiner].coords.x, _robbers[joiner].coords.y, _robbers[joiner].coords.z), "10-90",
 						"House Alarm", {
 							icon = 374,
@@ -399,12 +399,13 @@ AddEventHandler("Labor:Server:Startup", function()
 				exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 					string.format("HouseRobbery:Client:%s:AlarmTriggered", _joiners[source]))
 
-				Robbery:TriggerPDAlert(source, _robbers[_joiners[source]].coords, "10-90", "House Alarm", {
-					icon = 374,
-					size = 0.9,
-					color = 31,
-					duration = (60 * 5),
-				})
+				exports['sandbox-robbery']:TriggerPDAlert(source, _robbers[_joiners[source]].coords, "10-90",
+					"House Alarm", {
+						icon = 374,
+						size = 0.9,
+						color = 31,
+						duration = (60 * 5),
+					})
 			end
 		end
 	end)
@@ -580,7 +581,7 @@ AddEventHandler("Labor:Server:HouseRobbery:Queue", function(source, data)
 			SetPedArmour(p, 200)
 			TaskCombatPed(p, GetPlayerPed(source), 0, 16)
 
-			-- Robbery:TriggerPDAlert(joiner, intr.locations.front, "000", "House Alarm", {
+			-- exports['sandbox-robbery']:TriggerPDAlert(joiner, intr.locations.front, "000", "House Alarm", {
 			-- 	icon = 374,
 			-- 	size = 0.9,
 			-- 	color = 31,
