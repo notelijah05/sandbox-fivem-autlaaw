@@ -45,7 +45,7 @@ function RegisterPrisonStashStartup()
 
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:PrisonStash:Open", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		-- if not Jail:IsJailed(source) then
+		-- if not exports['sandbox-jail']:IsJailed(source) then
 		if char then
 			local _inventory = 5000
 			local _inventoryOwner = ("prisonstash:%s"):format(char:GetData("SID"))

@@ -33,7 +33,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					color = "transparent",
 				})
 
-				if not Jail:IsReleaseEligible(source) then
+				if not exports['sandbox-jail']:IsReleaseEligible(source) then
 					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					local jailed = char:GetData("Jailed")
 					jailed.Release = jailed.Release - _Prisoners[_joiners[source]].nodes.timeReduce

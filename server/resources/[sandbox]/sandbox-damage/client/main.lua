@@ -3,13 +3,11 @@ _reductions = 0
 AddEventHandler("Damage:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
     Status = exports["sandbox-base"]:FetchComponent("Status")
-    Jail = exports["sandbox-base"]:FetchComponent("Jail")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
     exports["sandbox-base"]:RequestDependencies("Damage", {
         "Status",
-        "Jail",
     }, function(error)
         if #error > 0 then
             return

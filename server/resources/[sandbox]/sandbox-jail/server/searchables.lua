@@ -192,7 +192,7 @@ function RegisterPrisonSearchStartup()
 	}, 1) -- hidden rep
 
 	exports["sandbox-base"]:RegisterServerCallback("Prison:Searchable:GetLootShit", function(source, data, cb)
-		if not Jail:IsJailed(source) then
+		if not exports['sandbox-jail']:IsJailed(source) then
 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You're not jailed.")
 			cb(false)
 			return

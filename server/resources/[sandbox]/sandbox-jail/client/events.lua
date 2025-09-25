@@ -62,7 +62,7 @@ AddEventHandler("Jail:Client:CheckSentence", function()
 end)
 
 AddEventHandler("Jail:Client:Released", function()
-	if Jail:IsJailed() and Jail:IsReleaseEligible() then
+	if exports['sandbox-jail']:IsJailed() and exports['sandbox-jail']:IsReleaseEligible() then
 		exports["sandbox-base"]:ServerCallback("Jail:Release", {}, function(s)
 			if s then
 				DoScreenFadeOut(1000)
@@ -130,7 +130,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			exports["sandbox-base"]:ServerCallback("Jail:Server:ExploitAttempt", 2)
 		end
 
-		if Jail:IsJailed() and not _doingMugshot then
+		if exports['sandbox-jail']:IsJailed() and not _doingMugshot then
 			TriggerEvent("Jail:Client:EnterJail")
 		end
 	elseif id == "prison-pickup" then

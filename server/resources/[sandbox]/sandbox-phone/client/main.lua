@@ -30,14 +30,12 @@ local _ignoreEvents = {
 
 AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Jail",
 		"Reputation",
 		"Properties",
 	}, function(error)
@@ -247,7 +245,7 @@ function TogglePhone()
 	end
 	if not _openCd then
 		if not exports['sandbox-hud']:IsDisabled() then
-			if not Jail:IsJailed() and hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE") then
+			if not exports['sandbox-jail']:IsJailed() and hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE") then
 				exports['sandbox-phone']:Open()
 			else
 				exports["sandbox-hud"]:NotifError("You Don't Have a Phone", 2000)

@@ -24,14 +24,12 @@ local sentencedSuspects = {}
 AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	RegisterChatCommands()
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("MDT", {
 		"Properties",
-		"Jail",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -692,7 +690,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("MDT:DOCGetPrisoners", function(source, data, cb)
-		cb(Jail:GetPrisoners())
+		cb(exports['sandbox-jail']:GetPrisoners())
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("MDT:DOCReduceSentence", function(source, data, cb)
@@ -700,7 +698,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		if char and CheckMDTPermissions(source, 'DOC_REDUCTION') and data.reduction then
 			local target = exports['sandbox-characters']:FetchBySID(data.SID)
 			if target then
-				if Jail:Reduce(target:GetData("Source"), data.reduction) then
+				if exports['sandbox-jail']:Reduce(target:GetData("Source"), data.reduction) then
 					exports['sandbox-base']:LoggerWarn(
 						"MDT",
 						string.format(

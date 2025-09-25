@@ -195,7 +195,7 @@ exports("NotificationAdd", function(title, description, time, duration, app, act
 	if
 		_settings.notifications
 		and (type(app) == "table" or (appUsable and not _settings.appNotifications[app]) or app == "comanager")
-		and not Jail:IsJailed()
+		and not exports['sandbox-jail']:IsJailed()
 	then
 		SendNUIMessage({
 			type = "NOTIF_ADD",

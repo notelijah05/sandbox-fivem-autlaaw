@@ -39,22 +39,6 @@ local propTwo_net = nil
 local _runGameThread = false
 local _playing = nil
 
-AddEventHandler("minigame:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Jail = exports["sandbox-base"]:FetchComponent("Jail")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("minigame", {
-		"Jail",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-	end)
-end)
-
 function deepcopy(orig)
 	local orig_type = type(orig)
 	local copy

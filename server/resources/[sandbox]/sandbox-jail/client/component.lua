@@ -4,14 +4,12 @@ _doingMugshot = false
 
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Reputation",
-		"Jail",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -83,7 +81,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					text = "Check Remaining Sentence",
 					event = "Jail:Client:CheckSentence",
 					isEnabled = function()
-						return Jail:IsJailed()
+						return exports['sandbox-jail']:IsJailed()
 					end,
 				},
 				{
@@ -91,7 +89,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					text = "Process Release",
 					event = "Jail:Client:Released",
 					isEnabled = function()
-						return Jail:IsJailed() and Jail:IsReleaseEligible()
+						return exports['sandbox-jail']:IsJailed() and exports['sandbox-jail']:IsReleaseEligible()
 					end,
 				},
 			},
@@ -262,29 +260,24 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Jail", _JAIL)
-end)
-
-_JAIL = {
-	IsJailed = function(self)
-		if LocalPlayer.state.Character == nil then
-			return false
-		else
-			local jailed = LocalPlayer.state.Character:GetData("Jailed")
-			if jailed and not jailed.Released then
-				return true
-			else
-				return false
-			end
-		end
-	end,
-	IsReleaseEligible = function(self)
+exports('IsJailed', function()
+	if LocalPlayer.state.Character == nil then
+		return false
+	else
 		local jailed = LocalPlayer.state.Character:GetData("Jailed")
-		if jailed and jailed.Duration < 9999 and GetCloudTimeAsInt() >= (jailed.Release or 0) then
+		if jailed and not jailed.Released then
 			return true
 		else
 			return false
 		end
-	end,
-}
+	end
+end)
+
+exports('IsReleaseEligible', function()
+	local jailed = LocalPlayer.state.Character:GetData("Jailed")
+	if jailed and jailed.Duration < 9999 and GetCloudTimeAsInt() >= (jailed.Release or 0) then
+		return true
+	else
+		return false
+	end
+end)

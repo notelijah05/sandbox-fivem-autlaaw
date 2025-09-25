@@ -4,7 +4,6 @@ function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Robbery = exports["sandbox-base"]:FetchComponent("Robbery")
-	Jail = exports["sandbox-base"]:FetchComponent("Jail")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
@@ -14,7 +13,6 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Properties",
 		"Status",
 		"Robbery",
-		"Jail",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then

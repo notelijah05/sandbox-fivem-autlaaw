@@ -154,7 +154,7 @@ RegisterNetEvent("Phone:Client:Phone:EndCall", function()
 end)
 
 RegisterNetEvent("Phone:Client:Phone:RecieveCall", function(id, number, limited)
-	if Jail:IsJailed() then
+	if exports['sandbox-jail']:IsJailed() then
 		TriggerEvent("Phone:Nui:Phone:EndCall")
 	else
 		exports['sandbox-phone']:CallReceive(id, number, limited)

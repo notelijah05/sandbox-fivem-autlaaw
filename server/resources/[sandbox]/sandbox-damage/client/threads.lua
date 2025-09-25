@@ -239,7 +239,7 @@ function StartThreads()
 					TriggerEvent("Ped:Client:Died")
 					TriggerServerEvent("Ped:Server:Died")
 
-					if (Jail:IsJailed() or not nearPlayer(100.0)) and not Config.Weapons[deathHash]?.minor then
+					if (exports['sandbox-jail']:IsJailed() or not nearPlayer(100.0)) and not Config.Weapons[deathHash]?.minor then
 						TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", "injuredPerson")
 					end
 					exports['sandbox-hud']:Dead(true)

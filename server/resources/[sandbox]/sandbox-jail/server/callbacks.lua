@@ -7,7 +7,7 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Jail:Validate", function(source, data, cb)
-		if not Jail:IsJailed(source) then
+		if not exports['sandbox-jail']:IsJailed(source) then
 			cb(false)
 		else
 			if data.type == "logout" then
@@ -23,7 +23,7 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Jail:Release", function(source, data, cb)
-		cb(Jail:Release(source))
+		cb(exports['sandbox-jail']:Release(source))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Jail:StartWork", function(source, data, cb)
