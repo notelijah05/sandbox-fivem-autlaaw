@@ -1,40 +1,96 @@
 _state = false
 _rate = GetResourceKvpInt("TAXI_RATE") or 10
 
-AddEventHandler("Taxi:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Taxi = exports["sandbox-base"]:FetchComponent("Taxi")
-end
+exports('HudShow', function()
+	local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
+	if _models[GetEntityModel(veh)] and GetPedInVehicleSeat(veh, -1) == LocalPlayer.state.ped then
+		_inVeh = veh
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Jail", {
-		"Taxi",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		exports["sandbox-keybinds"]:Add("taxi_increase_rate", "", "keyboard", "Taxi - Increase Rate", function()
-			Taxi.Rate:Increase()
-		end)
-
-		exports["sandbox-keybinds"]:Add("taxi_decrease_rate", "", "keyboard", "Taxi - Decrease Rate", function()
-			Taxi.Rate:Decrease()
-		end)
-
-		exports["sandbox-keybinds"]:Add("taxi_reset_trip", "", "keyboard", "Taxi - Reset Trip", function()
-			Taxi.Trip:Reset()
-		end)
-
-		exports["sandbox-keybinds"]:Add("taxi_toggle_hud", "", "keyboard", "Taxi - Toggle HUD", function()
-			Taxi.Hud:Toggle()
-		end)
-	end)
+		_state = true
+		DoTaxiThread(veh)
+		SendNUIMessage({
+			type = "APP_SHOW",
+			data = {
+				rate = _rate,
+			},
+		})
+	end
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Taxi", _TAXI)
+exports('HudHide', function()
+	_state = false
+	SendNUIMessage({
+		type = "APP_HIDE",
+	})
+end)
+
+exports('HudReset', function()
+	_state = false
+	SendNUIMessage({
+		type = "APP_RESET",
+	})
+end)
+
+exports('HudToggle', function()
+	if _state then
+		exports['sandbox-taxi']:HudHide()
+	else
+		exports['sandbox-taxi']:HudShow()
+	end
+end)
+
+exports('RateIncrease', function()
+	if _rate < 1000 then
+		_rate = _rate + 1
+		SetResourceKvpInt("TAXI_RATE", _rate)
+		SendNUIMessage({
+			type = "SET_RATE",
+			data = {
+				rate = _rate,
+			},
+		})
+	else
+		exports["sandbox-hud"]:NotifError("Rate Cannot Go Higher")
+	end
+end)
+
+exports('RateDecrease', function()
+	if _rate > 0 then
+		_rate = _rate - 1
+		SetResourceKvpInt("TAXI_RATE", _rate)
+		SendNUIMessage({
+			type = "SET_RATE",
+			data = {
+				rate = _rate,
+			},
+		})
+	else
+		exports["sandbox-hud"]:NotifError("Rate Cannot Go Lower")
+	end
+end)
+
+exports('TripReset', function()
+	SendNUIMessage({
+		type = "RESET_TRIP",
+	})
+end)
+
+AddEventHandler("Core:Shared:Ready", function()
+	exports["sandbox-keybinds"]:Add("taxi_increase_rate", "", "keyboard", "Taxi - Increase Rate", function()
+		exports['sandbox-taxi']:RateIncrease()
+	end)
+
+	exports["sandbox-keybinds"]:Add("taxi_decrease_rate", "", "keyboard", "Taxi - Decrease Rate", function()
+		exports['sandbox-taxi']:RateDecrease()
+	end)
+
+	exports["sandbox-keybinds"]:Add("taxi_reset_trip", "", "keyboard", "Taxi - Reset Trip", function()
+		exports['sandbox-taxi']:TripReset()
+	end)
+
+	exports["sandbox-keybinds"]:Add("taxi_toggle_hud", "", "keyboard", "Taxi - Toggle HUD", function()
+		exports['sandbox-taxi']:HudToggle()
+	end)
 end)
 
 local _threading = false
@@ -61,79 +117,3 @@ function DoTaxiThread(veh)
 		_threading = false
 	end)
 end
-
-_TAXI = {
-	Hud = {
-		Show = function(self)
-			local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
-			if _models[GetEntityModel(veh)] and GetPedInVehicleSeat(veh, -1) == LocalPlayer.state.ped then
-				_inVeh = veh
-
-				_state = true
-				DoTaxiThread(veh)
-				SendNUIMessage({
-					type = "APP_SHOW",
-					data = {
-						rate = _rate,
-					},
-				})
-			end
-		end,
-		Hide = function(self)
-			_state = false
-			SendNUIMessage({
-				type = "APP_HIDE",
-			})
-		end,
-		Reset = function(self)
-			_state = false
-			SendNUIMessage({
-				type = "APP_RESET",
-			})
-		end,
-		Toggle = function(self)
-			if _state then
-				Taxi.Hud:Hide()
-			else
-				Taxi.Hud:Show()
-			end
-		end,
-	},
-	Rate = {
-		Increase = function(self)
-			if _rate < 1000 then
-				_rate = _rate + 1
-				SetResourceKvpInt("TAXI_RATE", _rate)
-				SendNUIMessage({
-					type = "SET_RATE",
-					data = {
-						rate = _rate,
-					},
-				})
-			else
-				exports["sandbox-hud"]:NotifError("Rate Cannot Go Higher")
-			end
-		end,
-		Decrease = function(self)
-			if _rate > 0 then
-				_rate = _rate - 1
-				SetResourceKvpInt("TAXI_RATE", _rate)
-				SendNUIMessage({
-					type = "SET_RATE",
-					data = {
-						rate = _rate,
-					},
-				})
-			else
-				exports["sandbox-hud"]:NotifError("Rate Cannot Go Lower")
-			end
-		end,
-	},
-	Trip = {
-		Reset = function(self)
-			SendNUIMessage({
-				type = "RESET_TRIP",
-			})
-		end,
-	},
-}
