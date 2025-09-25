@@ -302,7 +302,7 @@ exports("LockpickExterior", function(config, canUnlockOwned, vehicle, cb)
 
 	if
 		not vehEnt.state.towObjective
-		and not Police:IsPdCar(vehicle)
+		and not exports['sandbox-police']:IsPdCar(vehicle)
 		and not vehEnt.state.noLockpick
 		and (not vehEnt.state.boostVehicle or vehEnt.state.boostVehicle == team)
 	then

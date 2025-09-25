@@ -50,9 +50,3 @@ AddEventHandler("Core:Shared:Ready", function()
 		end
 	end)
 end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Handcuffs", _HANDCUFFS)
-end)
-
-_HANDCUFFS = {}

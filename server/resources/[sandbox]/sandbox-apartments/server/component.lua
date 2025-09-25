@@ -3,13 +3,11 @@ _requestors = {}
 
 AddEventHandler("Apartment:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Apartment", {
-		"Police",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then
@@ -40,7 +38,7 @@ exports("Enter", function(source, targetType, target, wakeUp)
 			end
 		end
 
-		if Police:IsInBreach(source, "apartment", rTarget) then
+		if exports['sandbox-police']:IsInBreach(source, "apartment", rTarget) then
 			f = true
 		end
 	end

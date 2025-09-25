@@ -1,6 +1,7 @@
 _evald = {}
 
 local _calledForHelp = false
+
 AddEventHandler("Core:Shared:Ready", function()
 	exports['sandbox-hud']:InteractionRegisterMenu("call-911", "Call For Help", "siren-on", function(data)
 		exports['sandbox-hud']:InteractionHide()
@@ -83,15 +84,9 @@ AddEventHandler("Core:Shared:Ready", function()
 	end)
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("EMS", _EMS)
+exports('HaveEvaluated', function(id)
+	return _evald[id] ~= nil and _evald[id] > GetGameTimer()
 end)
-
-_EMS = {
-	HaveEvaluated = function(self, id)
-		return _evald[id] ~= nil and _evald[id] > GetGameTimer()
-	end,
-}
 
 RegisterNetEvent("Characters:Client:Spawn", function()
 	exports["sandbox-blips"]:Add("st_fiacre", "Hospital", vector3(1149.516, -1531.912, 35.381), 61, 42, 0.8)

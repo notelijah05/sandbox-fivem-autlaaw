@@ -197,7 +197,7 @@ function RegisterCallbacks()
                             if (allowedLevel >= vehicle.Owner.Level) then
                                 isAuthedForVehicle = true
 
-                                if Police:IsPdCar(vehicle.Vehicle) or Police:IsEMSCar(vehicle.Vehicle) then
+                                if exports['sandbox-police']:IsPdCar(vehicle.Vehicle) or exports['sandbox-police']:IsEMSCar(vehicle.Vehicle) then
                                     local callsign = character:GetData("Callsign")
 
                                     extraData.callsign = callsign

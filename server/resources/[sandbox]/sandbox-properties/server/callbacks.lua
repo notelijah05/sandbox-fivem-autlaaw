@@ -123,7 +123,7 @@ function RegisterCallbacks()
 		if
 			(property.keys ~= nil and property.keys[char:GetData("ID")])
 			or (not property.sold and exports['sandbox-jobs']:HasPermissionInJob(source, "realestate", "JOB_DOORS"))
-			or not property.locked or Police:IsInBreach(source, "property", data)
+			or not property.locked or exports['sandbox-police']:IsInBreach(source, "property", data)
 		then
 			local pInt = property.upgrades?.interior
 
@@ -190,7 +190,7 @@ function RegisterCallbacks()
 		elseif data.type == "logout" then
 			cb(property.keys and property.keys[char:GetData("ID")] ~= nil)
 		elseif data.type == "stash" then
-			if property.keys and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.stash or property.keys[char:GetData("ID")].Owner) and property.id or Police:IsInBreach(source, "property", property.id, true) then
+			if property.keys and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.stash or property.keys[char:GetData("ID")].Owner) and property.id or exports['sandbox-police']:IsInBreach(source, "property", property.id, true) then
 				local interior = PropertyInteriors[property.upgrades.interior]
 				local invType = 1000
 

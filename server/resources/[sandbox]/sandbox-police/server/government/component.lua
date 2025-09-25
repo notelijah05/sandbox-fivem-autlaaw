@@ -103,12 +103,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	})
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Government", _GOVT)
-end)
-
-_GOVT = {}
-
 RegisterNetEvent("Government:Server:Gavel", function()
 	TriggerClientEvent("Government:Client:Gavel", -1)
 end)

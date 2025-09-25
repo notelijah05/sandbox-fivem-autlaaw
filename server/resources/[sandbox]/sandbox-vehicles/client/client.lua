@@ -12,7 +12,6 @@ VEHICLE_HARNESS = false
 AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Police = exports["sandbox-base"]:FetchComponent("Police")
 end
 
 local vehicleDoorNames = {
@@ -27,7 +26,6 @@ local vehicleDoorNames = {
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Vehicles", {
 		"Properties",
-		"Police",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -313,7 +311,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						icon = "lightbulb-on",
 						label = "Neons",
 						shouldShow = function()
-							if VEHICLE_INSIDE and exports['sandbox-vehicles']:SyncNeonsHas() and not Police:IsPdCar(VEHICLE_INSIDE) then
+							if VEHICLE_INSIDE and exports['sandbox-vehicles']:SyncNeonsHas() and not exports['sandbox-police']:IsPdCar(VEHICLE_INSIDE) then
 								return true
 							end
 						end,

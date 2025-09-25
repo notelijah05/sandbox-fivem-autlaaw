@@ -86,7 +86,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 				return
 			end
 
-			if Police:IsPdCar(VEHICLE_INSIDE) then
+			if exports['sandbox-police']:IsPdCar(VEHICLE_INSIDE) then
 				exports["sandbox-hud"]:NotifError("How About No")
 				cb(false)
 				return

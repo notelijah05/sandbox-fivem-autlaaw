@@ -31,7 +31,7 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 
 				local vehClassData = _vehicleClasses[exports['sandbox-vehicles']:ClassGet(VEHICLE_INSIDE)]
 
-				if vehClassData and vehClassData.topSpeed and not Police:IsPdCar(VEHICLE_INSIDE) then
+				if vehClassData and vehClassData.topSpeed and not exports['sandbox-police']:IsPdCar(VEHICLE_INSIDE) then
 					-- UNCOMMENT THIS BELOW FOR THE HARD CAPPED TOP SPEEDS POG
 					VEHICLE_TOP_SPEED = vehClassData.topSpeed / 2.237
 				end

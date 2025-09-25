@@ -133,7 +133,7 @@ end
 
 function SetVehicleProperties(vehicle, props, data)
 	if DoesEntityExist(vehicle) and type(props) == "table" then
-		if Police:IsPdCar(vehicle) then
+		if exports['sandbox-police']:IsPdCar(vehicle) then
 			props.chameleonColor = 0
 			props.pearlescentColor = 0
 			props.plateIndex = 4
@@ -143,7 +143,7 @@ function SetVehicleProperties(vehicle, props, data)
 			props.dashboardColor = 0
 		end
 
-		if Police:IsPdCar(vehicle) or Police:IsEMSCar(vehicle) and data?.callsign and (type(data.callsign) == "string" or type(data.callsign) == "number") then
+		if exports['sandbox-police']:IsPdCar(vehicle) or exports['sandbox-police']:IsEMSCar(vehicle) and data?.callsign and (type(data.callsign) == "string" or type(data.callsign) == "number") then
 			local callsignData = tostring(data?.callsign)
 			if callsignData and #callsignData == 3 then
 				local callsign = tonumber(callsignData)

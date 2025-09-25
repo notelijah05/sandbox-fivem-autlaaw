@@ -47,7 +47,7 @@ exports("SyncNeonsIsDisabled", function()
 end)
 
 exports("SyncNeonsToggle", function(toggle)
-	if SYNC_DRIVING_VEHICLE and exports['sandbox-vehicles']:SyncNeonsHas() and CheckActionRateLimit("neons", 20) and not Police:IsPdCar(SYNC_DRIVING_VEHICLE) then
+	if SYNC_DRIVING_VEHICLE and exports['sandbox-vehicles']:SyncNeonsHas() and CheckActionRateLimit("neons", 20) and not exports['sandbox-police']:IsPdCar(SYNC_DRIVING_VEHICLE) then
 		local currentState = SYNCED_VEHICLES[SYNC_DRIVING_VEHICLE]
 		if currentState then
 			if not toggle then

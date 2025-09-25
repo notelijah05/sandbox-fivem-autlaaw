@@ -3,7 +3,6 @@ _charPropertyKeys = {}
 AddEventHandler("Properties:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Police = exports["sandbox-base"]:FetchComponent("Police")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	RegisterChatCommands()
 end
@@ -11,7 +10,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Properties", {
 		"Properties",
-		"Police",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then

@@ -175,7 +175,6 @@ end
 
 AddEventHandler("Police:Shared:DependencyUpdate", PoliceComponents)
 function PoliceComponents()
-	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Status = exports["sandbox-base"]:FetchComponent("Status")
 	Doors = exports["sandbox-base"]:FetchComponent("Doors")
@@ -183,7 +182,6 @@ end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Police", {
-		"Handcuffs",
 		"Properties",
 		"Status",
 		"Doors",
@@ -863,10 +861,6 @@ AddEventHandler("Police:Client:DoApartmentBreach", function(values, data)
 	end)
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Police", POLICE)
-end)
-
 RegisterNetEvent("Characters:Client:Spawn", function()
 	for k, v in ipairs(policeStationBlips) do
 		exports["sandbox-blips"]:Add("police_station_" .. k, "Police Department", v, 137, 38, 0.6)
@@ -885,14 +879,13 @@ RegisterNetEvent("Police:Client:GetTackled", function(s)
 	end
 end)
 
-POLICE = {
-	IsPdCar = function(self, entity)
-		return _pdModels[GetEntityModel(entity)]
-	end,
-	IsEMSCar = function(self, entity)
-		return _emsModels[GetEntityModel(entity)]
-	end
-}
+exports('IsPdCar', function(entity)
+	return _pdModels[GetEntityModel(entity)]
+end)
+
+exports('IsEMSCar', function(entity)
+	return _emsModels[GetEntityModel(entity)]
+end)
 
 function StupidRagdoll(tackleAnim)
 	local time = 3500

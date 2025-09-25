@@ -10,14 +10,12 @@ local _medsForSale = {
 AddEventHandler("Damage:Shared:DependencyUpdate", HospitalComponents)
 function HospitalComponents()
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
-	Handcuffs = exports["sandbox-base"]:FetchComponent("Handcuffs")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Hospital", {
 		"Labor",
-		"Handcuffs",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then
@@ -111,7 +109,7 @@ exports("HospitalICUSend", function(target)
 
 		CreateThread(function()
 			exports['sandbox-jobs']:DutyOff(target, Player(target).state.onDuty)
-			Handcuffs:UncuffTarget(-1, target)
+			exports['sandbox-police']:UncuffTarget(-1, target)
 			exports['sandbox-ped']:MaskUnequipNoItem(target)
 			exports['sandbox-inventory']:HoldingPut(target)
 		end)

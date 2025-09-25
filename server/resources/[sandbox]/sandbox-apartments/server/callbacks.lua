@@ -10,12 +10,12 @@ function RegisterCallbacks()
 				cb(char:GetData("SID") == GlobalState[string.format("%s:Apartment", source)])
 			elseif data.type == "logout" and isMyApartment then
 				cb(char:GetData("SID") == GlobalState[string.format("%s:Apartment", source)])
-			elseif data.type == "stash" and isMyApartment or Police:IsInBreach(source, "apartment", data.id, true) then
+			elseif data.type == "stash" and isMyApartment or exports['sandbox-police']:IsInBreach(source, "apartment", data.id, true) then
 				local invType = _aptData[char:GetData("Apartment") or 1].invEntity or 13
 				local isRaid = false
 				local invOwner = char:GetData("SID")
 
-				if Police:IsInBreach(source, "apartment", data.id, true) then
+				if exports['sandbox-police']:IsInBreach(source, "apartment", data.id, true) then
 					invOwner = pState.inApartment.id
 					isRaid = true
 				elseif pState.inApartment ~= nil and pState.inApartment.id ~= char:GetData("SID") then

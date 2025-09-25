@@ -12,7 +12,6 @@ AddEventHandler('Vehicles:Shared:DependencyUpdate', RetrieveComponents)
 function RetrieveComponents()
     Tow = exports['sandbox-base']:FetchComponent('Tow')
     Properties = exports['sandbox-base']:FetchComponent('Properties')
-    Police = exports['sandbox-base']:FetchComponent('Police')
     RegisterChatCommands()
 end
 
@@ -20,7 +19,6 @@ AddEventHandler('Core:Shared:Ready', function()
     exports['sandbox-base']:RequestDependencies('Vehicles', {
         'Tow',
         'Properties',
-        'Police',
     }, function(error)
         if #error > 0 then
             return

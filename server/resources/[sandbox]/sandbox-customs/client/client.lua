@@ -9,22 +9,8 @@ local withinCustoms = false
 local withinCustomsType = 0
 local showingAction = false
 
-AddEventHandler("VehicleCustoms:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Police = exports["sandbox-base"]:FetchComponent("Police")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("VehicleCustoms", {
-		"Police",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		CreateCustomsZones()
-	end)
+	CreateCustomsZones()
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")
@@ -156,9 +142,9 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 
 			if
 				(
-					Police:IsPdCar(DRIVING_VEHICLE)
+					exports['sandbox-police']:IsPdCar(DRIVING_VEHICLE)
 					and (LocalPlayer.state.onDuty ~= "police" and LocalPlayer.state.onDuty ~= "prison")
-				) or (Police:IsEMSCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty ~= "ems")
+				) or (exports['sandbox-police']:IsEMSCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty ~= "ems")
 			then
 				exports["sandbox-hud"]:NotifError("Authorized Vehicles & Personnel Only")
 				return
@@ -176,9 +162,9 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 		end
 
 		if
-			(Police:IsPdCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "police")
-			or (Police:IsPdCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "prison")
-			or (Police:IsEMSCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "ems")
+			(exports['sandbox-police']:IsPdCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "police")
+			or (exports['sandbox-police']:IsPdCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "prison")
+			or (exports['sandbox-police']:IsEMSCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "ems")
 		then
 			cost = 0
 		end

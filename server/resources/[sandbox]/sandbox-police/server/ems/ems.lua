@@ -3,10 +3,6 @@ AddEventHandler("Core:Shared:Ready", function()
 	EMSItems()
 end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("EMS", _EMS)
-end)
-
 RegisterNetEvent("EMS:Server:CheckICUPatients", function()
 	local src = source
 	local count = 0
@@ -310,5 +306,3 @@ RegisterNetEvent("EMS:Server:Panic", function(isAlpha)
 		end)
 	end
 end)
-
-_EMS = {}
