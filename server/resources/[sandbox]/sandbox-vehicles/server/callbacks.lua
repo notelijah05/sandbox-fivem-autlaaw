@@ -438,7 +438,7 @@ function RegisterCallbacks()
                 end
                 exports['sandbox-vehicles']:Delete(veh, function(success)
                     if success then
-                        Tow:PayoutPickup(source)
+                        exports['sandbox-tow']:PayoutPickup(source)
                     end
                     cb(success)
                 end)

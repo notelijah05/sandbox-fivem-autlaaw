@@ -515,7 +515,7 @@ Config.VehicleMenu = {
 		isEnabled = function(data, entityData)
 			local veh = entityData.entity
 			local vehEnt = Entity(veh)
-			if DoesEntityExist(veh) and Tow:IsTowTruck(veh) and not vehEnt.state.towingVehicle then
+			if DoesEntityExist(veh) and exports['sandbox-tow']:IsTowTruck(veh) and not vehEnt.state.towingVehicle then
 				local rearWheel = GetEntityBoneIndexByName(veh, "wheel_lr")
 				local rearWheelCoords = GetWorldPositionOfEntityBone(veh, rearWheel)
 				if #(rearWheelCoords - LocalPlayer.state.myPos) <= 3.0 then
@@ -535,7 +535,7 @@ Config.VehicleMenu = {
 		isEnabled = function(data, entityData)
 			local veh = entityData.entity
 			local vehEnt = Entity(veh)
-			if DoesEntityExist(veh) and Tow:IsTowTruck(veh) and vehEnt.state.towingVehicle then
+			if DoesEntityExist(veh) and exports['sandbox-tow']:IsTowTruck(veh) and vehEnt.state.towingVehicle then
 				local rearWheel = GetEntityBoneIndexByName(veh, "wheel_lr")
 				local rearWheelCoords = GetWorldPositionOfEntityBone(veh, rearWheel)
 				if #(rearWheelCoords - LocalPlayer.state.myPos) <= 3.0 then
