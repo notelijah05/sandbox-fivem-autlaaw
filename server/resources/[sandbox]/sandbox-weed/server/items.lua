@@ -8,7 +8,7 @@ function RegisterItems()
 					if data.error == nil then
 						exports['sandbox-inventory']:RemoveList(char:GetData("SID"), 1,
 							{ { name = "weedseed_male", count = 1 } })
-						local plant = Weed.Planting:Create(
+						local plant = exports['sandbox-weed']:PlantingCreate(
 							true,
 							{ x = data.coords.x, y = data.coords.y, z = data.coords.z },
 							data.material
@@ -18,7 +18,7 @@ function RegisterItems()
 							plant = plant,
 						}
 
-						Weed.Planting:Set(plant._id, false)
+						exports['sandbox-weed']:PlantingSet(plant._id, false)
 					else
 						if data.error == 2 then
 							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Need Better Soil")
@@ -44,7 +44,7 @@ function RegisterItems()
 					if data.error == nil then
 						exports['sandbox-inventory']:RemoveList(char:GetData("SID"), 1,
 							{ { name = "weedseed_female", count = 1 } })
-						local plant = Weed.Planting:Create(
+						local plant = exports['sandbox-weed']:PlantingCreate(
 							false,
 							{ x = data.coords.x, y = data.coords.y, z = data.coords.z },
 							data.material
@@ -54,7 +54,7 @@ function RegisterItems()
 							plant = plant,
 						}
 
-						Weed.Planting:Set(plant._id, false)
+						exports['sandbox-weed']:PlantingSet(plant._id, false)
 					else
 						if data.error == 2 then
 							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Need Better Soil")

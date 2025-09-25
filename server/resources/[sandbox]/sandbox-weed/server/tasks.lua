@@ -76,7 +76,7 @@ function RegisterTasks()
 				if (os.time() - v.plant.planted) >= Config.Lifetime then
 					exports['sandbox-base']:LoggerTrace("Weed",
 						"Deleting Weed Plant Because Some Dumb Cunt Didn't Harvest It")
-					Weed.Planting:Delete(k)
+					exports['sandbox-weed']:PlantingDelete(k)
 				else
 					if v.plant.growth < 100 then
 						local mat = Materials[v.plant.material]
@@ -89,16 +89,16 @@ function RegisterTasks()
 								end
 								v.plant.growth = v.plant.growth + (1 + phosphorus)
 								if v.stage ~= getStageByPct(v.plant.growth) then
-									local res = Weed.Planting:Set(k, true, true)
+									local res = exports['sandbox-weed']:PlantingSet(k, true, true)
 									if res then
 										table.insert(updatingStuff, res)
 									end
 								end
 							else
-								Weed.Planting:Delete(k)
+								exports['sandbox-weed']:PlantingDelete(k)
 							end
 						else
-							Weed.Planting:Delete(k)
+							exports['sandbox-weed']:PlantingDelete(k)
 						end
 					end
 				end
@@ -149,15 +149,15 @@ function RegisterTasks()
 
 							v.plant.water = v.plant.water - ((1.0 * (1.0 + (1.0 - potassium))) - gt.water)
 						else
-							Weed.Planting:Delete(k)
+							exports['sandbox-weed']:PlantingDelete(k)
 						end
 					else
-						Weed.Planting:Delete(k)
+						exports['sandbox-weed']:PlantingDelete(k)
 					end
 				else
 					exports['sandbox-base']:LoggerTrace("Weed",
 						"Deleting Weed Plant Because Some Dumb Cunt Didn't Water It")
-					Weed.Planting:Delete(k)
+					exports['sandbox-weed']:PlantingDelete(k)
 				end
 			end
 		end

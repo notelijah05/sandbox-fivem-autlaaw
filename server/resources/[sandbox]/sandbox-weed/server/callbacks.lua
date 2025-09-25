@@ -111,7 +111,7 @@ function RegisterCallbacks()
 										1
 									)
 								then
-									Weed.Planting:Delete(pid)
+									exports['sandbox-weed']:PlantingDelete(pid)
 									exports['sandbox-base']:LoggerInfo(
 										"Weed",
 										string.format(
@@ -132,7 +132,7 @@ function RegisterCallbacks()
 								end
 
 								if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "weed_bud", t, {}, 1) then
-									Weed.Planting:Delete(pid)
+									exports['sandbox-weed']:PlantingDelete(pid)
 									cb(true)
 								else
 									cb(false)
@@ -160,7 +160,7 @@ function RegisterCallbacks()
 		if char ~= nil then
 			if pid and _plants[pid] then
 				if checkNearPlant(source, pid) then
-					Weed.Planting:Delete(pid)
+					exports['sandbox-weed']:PlantingDelete(pid)
 					exports['sandbox-base']:LoggerInfo(
 						"Weed",
 						string.format(
@@ -188,7 +188,7 @@ function RegisterCallbacks()
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					if Player(source).state.onDuty == "police" then
-						Weed.Planting:Delete(pid)
+						exports['sandbox-weed']:PlantingDelete(pid)
 						exports['sandbox-base']:LoggerInfo(
 							"Weed",
 							string.format(
