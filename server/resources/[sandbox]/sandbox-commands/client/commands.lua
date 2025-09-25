@@ -1,33 +1,15 @@
-AddEventHandler("Commands:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Commands", {
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		exports["sandbox-base"]:RegisterClientCallback("Commands:SS", function(d, cb)
-			exports["screenshot-basic"]:requestScreenshotUpload(
-				string.format("https://discord.com/api/webhooks/%s", d),
-				"files[]",
-				function(data)
-					local image = json.decode(data)
-					cb(json.encode({ url = image.attachments[1].proxy_url }))
-				end
-			)
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Commands:SS", function(d, cb)
+		exports["screenshot-basic"]:requestScreenshotUpload(
+			string.format("https://discord.com/api/webhooks/%s", d),
+			"files[]",
+			function(data)
+				local image = json.decode(data)
+				cb(json.encode({ url = image.attachments[1].proxy_url }))
+			end
+		)
 	end)
 end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Commands", CMDS)
-end)
-
-CMDS = {}
 
 RegisterNetEvent("Commands:Client:TeleportToMarker", function()
 	local WaypointHandle = GetFirstBlipInfoId(8)
