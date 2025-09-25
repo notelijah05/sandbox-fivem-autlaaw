@@ -17,7 +17,7 @@ function Startup()
 				planted = v.planted,
 				water = v.water,
 				fertilizer = v.fertilizer_type and
-				{ type = v.fertilizer_type, value = v.fertilizer_value, time = v.fertilizer_time } or nil,
+					{ type = v.fertilizer_type, value = v.fertilizer_value, time = v.fertilizer_time } or nil,
 				_id = v.id
 			}
 			if os.time() - plant.planted <= Config.Lifetime then
@@ -31,7 +31,7 @@ function Startup()
 		exports['sandbox-base']:LoggerTrace("Weed", string.format("Loaded ^2%s^7 Weed Plants", count), { console = true })
 	end)
 
-	Reputation:Create("weed", "Weed", {
+	exports['sandbox-characters']:RepCreate("weed", "Weed", {
 		{ label = "Rank 1", value = 3000 },
 		{ label = "Rank 2", value = 6000 },
 		{ label = "Rank 3", value = 12000 },

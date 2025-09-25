@@ -126,7 +126,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	GlobalState["FleecaRobberies"] = t
 	StartFleecaThreads()
 
-	Reputation:Create("BankRobbery", "Bank Robberies", {
+	exports['sandbox-characters']:RepCreate("BankRobbery", "Bank Robberies", {
 		{ label = "Newbie", value = 10000 },
 		{ label = "Okay",   value = 20000 },
 		{ label = "Good",   value = 30000 },

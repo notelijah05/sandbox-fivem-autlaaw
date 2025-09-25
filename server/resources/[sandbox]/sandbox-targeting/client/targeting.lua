@@ -224,7 +224,7 @@ function OpenTargetingMenu(entityData, menu)
 			))
 			and (v.items == nil or v.items ~= nil and exports['sandbox-inventory']:CheckPlayerHasItems(v.items))
 			and (v.anyItems == nil or v.anyItems ~= nil and exports['sandbox-inventory']:CheckPlayerHasAnyItems(v.anyItems))
-			and (v.rep == nil or v.rep.level <= Reputation:GetLevel(v.rep.id))
+			and (v.rep == nil or v.rep.level <= exports['sandbox-characters']:RepGetLevel(v.rep.id))
 			and (not IsPedInAnyVehicle(GLOBAL_PED) or v.allowFromVehicle)
 		then
 			local menuItem = table.copy(v)
@@ -277,7 +277,7 @@ function CanOpenTargetingMenu(id, entityData)
 			))
 			and (v.items == nil or v.items ~= nil and exports['sandbox-inventory']:CheckPlayerHasItems(v.items))
 			and (v.anyItems == nil or v.anyItems ~= nil and exports['sandbox-inventory']:CheckPlayerHasAnyItems(v.anyItems))
-			and (v.rep == nil or v.rep.level <= Reputation:GetLevel(v.rep.id))
+			and (v.rep == nil or v.rep.level <= exports['sandbox-characters']:RepGetLevel(v.rep.id))
 			and (not IsPedInAnyVehicle(GLOBAL_PED) or v.allowFromVehicle)
 		then
 			availableItems += 1

@@ -1,18 +1,5 @@
-AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Labor", {
-		"Reputation",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		TriggerEvent("Labor:Client:Setup")
-	end)
+	TriggerEvent("Labor:Client:Setup")
 end)
 
 function Draw3DText(x, y, z, text)

@@ -1,24 +1,11 @@
 _plants = {}
 
-AddEventHandler("Weed:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Weed", {
-		"Reputation",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		Startup()
-		RegisterMiddleware()
-		RegisterCallbacks()
-		RegisterTasks()
-		RegisterItems()
-	end)
+	Startup()
+	RegisterMiddleware()
+	RegisterCallbacks()
+	RegisterTasks()
+	RegisterItems()
 end)
 
 function getStageByPct(pct)

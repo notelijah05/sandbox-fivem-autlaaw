@@ -68,7 +68,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:GetDetails", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			local chopLevel = Reputation:GetLevel(source, "Chopping")
+			local chopLevel = exports['sandbox-characters']:RepGetLevel(source, "Chopping")
 			local chops = nil
 			if chopLevel >= 3 or hasValue(char:GetData("States") or {}, "ACCESS_CHOPPER") then
 				chops = {
@@ -95,7 +95,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				for k, it in ipairs(marketItems) do
 					local v = table.copy(it)
 					if
-						(v.rep == nil or Reputation:GetLevel(source, v.rep) >= (v.repLvl or 1))
+						(v.rep == nil or exports['sandbox-characters']:RepGetLevel(source, v.rep) >= (v.repLvl or 1))
 						and (not v.vpn or hasVpn)
 						and (
 							not v.requireCurrency
@@ -114,14 +114,14 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			end
 
 			local canBoost = false
-			local requiredRepLevel = Reputation:GetLevel(source, _boostingRequiredRep.rep)
+			local requiredRepLevel = exports['sandbox-characters']:RepGetLevel(source, _boostingRequiredRep.rep)
 			if requiredRepLevel and requiredRepLevel >= _boostingRequiredRep.level then
 				canBoost = true
 			end
 
 			cb({
 				chopList = chops,
-				reputations = Reputation:ViewList(source, not data.phone and _lsuReps or _chopRep),
+				reputations = exports['sandbox-characters']:RepViewList(source, not data.phone and _lsuReps or _chopRep),
 				items = items,
 				banned = char:GetData("LSUNDGBan"),
 				canBoost = canBoost,
@@ -171,7 +171,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						if
 							(
 								marketItem.rep == nil
-								or Reputation:GetLevel(source, marketItem.rep) >= (marketItem.repLvl or 1)
+								or exports['sandbox-characters']:RepGetLevel(source, marketItem.rep) >= (marketItem.repLvl or 1)
 							)
 							and (not marketItem.vpn or hasVpn)
 							and (

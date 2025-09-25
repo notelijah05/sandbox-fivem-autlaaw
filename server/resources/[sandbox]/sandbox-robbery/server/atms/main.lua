@@ -102,7 +102,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	GlobalState["ATMRobberyTerminal"] = _robberyTerminal
 	GlobalState["ATMRobberyAreas"] = _robberyAreas
 
-	Reputation:Create("ATMRobbery", "ATM Hacking", {
+	exports['sandbox-characters']:RepCreate("ATMRobbery", "ATM Hacking", {
 		{ label = "Newbie", value = 1000 },
 		{ label = "Okay",   value = 2000 },
 		{ label = "Good",   value = 4000 },
@@ -135,7 +135,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					Player(source).state.ATMRobbery = math.random(4, 6)
 					GlobalState["ATMRobberyStartCD"] = os.time() + (60 * math.random(2, 5)) -- Cooldown
 
-					local repLvl = Reputation:GetLevel(source, "ATMRobbery")
+					local repLvl = exports['sandbox-characters']:RepGetLevel(source, "ATMRobbery")
 
 					local location = GetNewATMLocation(repLvl)
 					Player(source).state.ATMRobberyZone = location.id
@@ -177,9 +177,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 			local personalMax = GlobalState[string.format("ATMRobbery:%s", char:GetData("SID"))] or 0
 			GlobalState[string.format("ATMRobbery:%s", char:GetData("SID"))] = personalMax + 1
 
-			Reputation.Modify:Add(source, "ATMRobbery", 100)
+			exports['sandbox-characters']:RepAdd(source, "ATMRobbery", 100)
 
-			local repLvl = Reputation:GetLevel(source, "ATMRobbery")
+			local repLvl = exports['sandbox-characters']:RepGetLevel(source, "ATMRobbery")
 
 			if repLvl >= 4 then
 				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_atmLootHigh, char:GetData("SID"), 1)
@@ -235,7 +235,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			local personalMax = GlobalState[string.format("ATMRobbery:%s", char:GetData("SID"))] or 0
 			GlobalState[string.format("ATMRobbery:%s", char:GetData("SID"))] = personalMax + 1
 
-			Reputation.Modify:Remove(source, "ATMRobbery", 65)
+			exports['sandbox-characters']:RepRemove(source, "ATMRobbery", 65)
 
 			cb(true)
 		else

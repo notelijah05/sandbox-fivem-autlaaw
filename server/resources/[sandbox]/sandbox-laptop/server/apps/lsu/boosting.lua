@@ -218,7 +218,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         end
 
         for k, v in ipairs(team.Members) do
-            local reputation = Reputation:GetLevel(v.Source, _boostingRequiredRep.rep)
+            local reputation = exports['sandbox-characters']:RepGetLevel(v.Source, _boostingRequiredRep.rep)
             if not reputation or reputation < _boostingRequiredRep.level then
                 cb({ message = "Can't Join Queue - Some Team Members Have Insufficient Reputation" })
                 return
@@ -361,7 +361,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                 local boostingContracts = char:GetData("BoostingContracts") or {}
                 local perm = char:GetData("LaptopPermissions")
                 local team, isLeader = exports['sandbox-laptop']:TeamsGetByMemberSource(source)
-                local level = Reputation:GetLevel(source, "Boosting")
+                local level = exports['sandbox-characters']:RepGetLevel(source, "Boosting")
                 if level < 1 then
                     level = 1
                 end
@@ -790,7 +790,7 @@ end)
 exports('LSUndergroundBoostingRewardContract', function(source)
     local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char then
-        local level = Reputation:GetLevel(source, "Boosting")
+        local level = exports['sandbox-characters']:RepGetLevel(source, "Boosting")
         if level < 1 then
             level = 1
         end
@@ -933,7 +933,7 @@ exports('LSUndergroundBoostingStart', function(teamId, contract)
         local takenRep = math.floor(earningRep * 0.8)
 
         for k, v in ipairs(team.Members) do
-            Reputation.Modify:Remove(v.Source, "Boosting", takenRep)
+            exports['sandbox-characters']:RepRemove(v.Source, "Boosting", takenRep)
 
             if v.SID == contract.owner?.SID then
                 local cChar = exports['sandbox-characters']:FetchCharacterSource(v.Source)
@@ -1113,7 +1113,8 @@ exports('LSUndergroundBoostingComplete', function(teamId)
             end
 
             for k, v in ipairs(_boosting[teamId].members) do
-                Reputation.Modify:Add(v.Source, "Boosting", math.floor(_boosting[teamId].takenRep + earnedRep))
+                exports['sandbox-characters']:RepAdd(v.Source, "Boosting",
+                    math.floor(_boosting[teamId].takenRep + earnedRep))
 
                 if v.SID == _boosting[teamId].contractOwner?.SID then
                     local cChar = exports['sandbox-characters']:FetchCharacterSource(v.Source)

@@ -1,24 +1,11 @@
 ONLINE_CHARACTERS = {}
 
-AddEventHandler("Characters:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
+AddEventHandler("Core:Shared:Ready", function()
+	RegisterCallbacks()
+	RegisterMiddleware()
+	Startup()
 	RegisterCommands()
 	_spawnFuncs = {}
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Characters", {
-		"Reputation",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
-		RegisterMiddleware()
-		Startup()
-	end)
 end)
 
 exports("GetLastLocation", function(source)

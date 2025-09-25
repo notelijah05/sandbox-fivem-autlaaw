@@ -55,7 +55,7 @@ exports("CraftingBenchesRefresh", function(interior)
 						))
 						or (
 							v.restrictions.rep ~= nil
-							and Reputation:GetLevel(v.restrictions.rep.id) >= v.restrictions.rep.level
+							and exports['sandbox-characters']:RepGetLevel(v.restrictions.rep.id) >= v.restrictions.rep.level
 						)
 					then
 						local menu = {

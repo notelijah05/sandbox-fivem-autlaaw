@@ -96,7 +96,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	end
 	_ran = true
 
-	Reputation:Create("Pawn", "Pawn Shop", {
+	exports['sandbox-characters']:RepCreate("Pawn", "Pawn Shop", {
 		{ label = "Rank 1", value = 5000 },
 		{ label = "Rank 2", value = 10000 },
 		{ label = "Rank 3", value = 20000 },
@@ -109,7 +109,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		if char then
 			local pawning = _pawnItems[data]
 			if pawning then
-				local repLvl = Reputation:GetLevel(source, "Pawn")
+				local repLvl = exports['sandbox-characters']:RepGetLevel(source, "Pawn")
 
 				local money = 0
 				local earntRep = 0
@@ -128,7 +128,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 				if money > 0 then
 					exports['sandbox-finance']:WalletModify(source, money)
-					Reputation.Modify:Add(source, "Pawn", earntRep)
+					exports['sandbox-characters']:RepAdd(source, "Pawn", earntRep)
 				else
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have Nothing To Sell")
 				end

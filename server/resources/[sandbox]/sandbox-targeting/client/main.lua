@@ -5,37 +5,23 @@ targetableObjectModels = {}
 targetableEntities = {}
 interactionZones = {}
 
-AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Targeting", {
-		"Reputation",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
+	exports["sandbox-keybinds"]:Add("targeting_starts", "LMENU", "keyboard", "Targeting (Third Eye) (Hold)",
+		function()
+			if IS_SPAWNED and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isHardCuffed then
+				StartTargeting()
+			end
+		end, function()
+			if not inTargetingMenu then
+				StopTargeting()
+			end
+		end)
 
-		exports["sandbox-keybinds"]:Add("targeting_starts", "LMENU", "keyboard", "Targeting (Third Eye) (Hold)",
-			function()
-				if IS_SPAWNED and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isHardCuffed then
-					StartTargeting()
-				end
-			end, function()
-				if not inTargetingMenu then
-					StopTargeting()
-				end
-			end)
-
-		if LocalPlayer.state.loggedIn then
-			DeInitPolyzoneTargets()
-			Wait(100)
-			InitPolyzoneTargets()
-		end
-	end)
+	if LocalPlayer.state.loggedIn then
+		DeInitPolyzoneTargets()
+		Wait(100)
+		InitPolyzoneTargets()
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")

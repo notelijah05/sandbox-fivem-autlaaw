@@ -250,7 +250,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Garbage:Pawn:Sell", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local repLvl = Reputation:GetLevel(source, _JOB)
+		local repLvl = exports['sandbox-characters']:RepGetLevel(source, _JOB)
 
 		if repLvl > 0 then
 			local money = 0
@@ -276,7 +276,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	-- exports["sandbox-base"]:RegisterServerCallback("Gabage:Pawn:Buy", function(source, data, cb)
 	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
-	-- 	local repLvl = Reputation:GetLevel(source, _JOB)
+	-- 	local repLvl = exports['sandbox-characters']:RepGetLevel(source, _JOB)
 
 	-- 	if repLvl >= 3 then
 	-- 		cb(_pawnItems)
@@ -287,7 +287,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	-- exports["sandbox-base"]:RegisterServerCallback("Garbage:Pawn:BuyLimited", function(source, data, cb)
 	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
-	-- 	local repLvl = Reputation:GetLevel(source, _JOB)
+	-- 	local repLvl = exports['sandbox-characters']:RepGetLevel(source, _JOB)
 
 	-- 	if repLvl >= 3 then
 	-- 		if _pawnItems[data.index] and _pawnItems[data.index].qty > 0 then

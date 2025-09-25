@@ -233,7 +233,7 @@ AddEventHandler("Labor:Server:Startup", function()
 								exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 									string.format("CornerDealing:Client:%s:Action", _joiners[source]))
 
-								local repLevel = Reputation:GetLevel(source, "CornerDealing") or 0
+								local repLevel = exports['sandbox-characters']:RepGetLevel(source, "CornerDealing") or 0
 								local calcLvl = repLevel
 								if calcLvl < 1 then
 									calcLvl = 1
@@ -269,7 +269,7 @@ AddEventHandler("Labor:Server:Startup", function()
 									end
 								end
 
-								Reputation.Modify:Add(source, _JOB, repAdd)
+								exports['sandbox-characters']:RepAdd(source, _JOB, repAdd)
 
 								exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 									string.format("CornerDealing:Client:%s:RemoveTargetting", _joiners[source]))

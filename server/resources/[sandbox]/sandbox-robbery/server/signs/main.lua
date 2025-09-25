@@ -6,7 +6,7 @@ end)
 AddEventHandler("Characters:Server:PlayerDropped", PaletoClearSourceInUse)
 
 AddEventHandler("Robbery:Server:Setup", function()
-	Reputation:Create("SignRobbery", "Sign Robbery", {
+	exports['sandbox-characters']:RepCreate("SignRobbery", "Sign Robbery", {
 		{ label = "Newbie",   value = 1000 },
 		{ label = "Okay",     value = 2000 },
 		{ label = "Good",     value = 4000 },
@@ -41,7 +41,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				objects[#objects + 1] = { coords = data.coords, model = data.model }
 				TriggerClientEvent("Robbery:Client:DeleteSign", -1, data)
 				exports['sandbox-inventory']:AddItem(char:GetData("SID"), data.item, 1, {}, 1)
-				Reputation.Modify:Add(source, "SignRobbery", math.random(35, 75))
+				exports['sandbox-characters']:RepAdd(source, "SignRobbery", math.random(35, 75))
 				Player(source).state.SignRobbery = false
 				cb(true)
 				return

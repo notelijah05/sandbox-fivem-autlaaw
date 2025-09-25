@@ -76,7 +76,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				if v ~= nil then
 					local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 					if (
-							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+							exports['sandbox-characters']:RepHasLevel(v:GetData("Source"), "Chopping", 5) or
 							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
 						) and (not dutyData or dutyData.Id ~= "police") then
 						exports['sandbox-laptop']:AddNotification(
@@ -129,7 +129,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				if v ~= nil then
 					local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 					if (
-							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+							exports['sandbox-characters']:RepHasLevel(v:GetData("Source"), "Chopping", 5) or
 							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
 						) and (not dutyData or dutyData.Id ~= "police") then
 						exports['sandbox-laptop']:AddNotification(
@@ -170,7 +170,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				if v ~= nil then
 					local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 					if (
-							Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+							exports['sandbox-characters']:RepHasLevel(v:GetData("Source"), "Chopping", 5) or
 							hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
 						) and (not dutyData or dutyData.Id ~= "police") then
 						exports['sandbox-laptop']:AddNotification(
@@ -245,7 +245,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						if not _chopped[entState.VIN].parts[data.index] then
 							_chopped[entState.VIN].parts[data.index] = true
 
-							local repLevel = Reputation:GetLevel(source, "Chopping") or 0
+							local repLevel = exports['sandbox-characters']:RepGetLevel(source, "Chopping") or 0
 							local calcLvl = repLevel
 							if calcLvl < 1 then calcLvl = 1 end
 							calcLvl = math.ceil(calcLvl / 2)
@@ -277,7 +277,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						if not _chopped[entState.VIN].tires[data.index] then
 							_chopped[entState.VIN].tires[data.index] = true
 
-							local repLevel = Reputation:GetLevel(source, "Chopping") or 0
+							local repLevel = exports['sandbox-characters']:RepGetLevel(source, "Chopping") or 0
 							local calcLvl = repLevel
 							if calcLvl < 1 then calcLvl = 1 end
 							calcLvl = math.ceil(calcLvl / 2)
@@ -307,7 +307,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						if not _chopped[entState.VIN]?.body then
 							_chopped[entState.VIN].body = true
 
-							local repLevel = Reputation:GetLevel(source, "Chopping") or 0
+							local repLevel = exports['sandbox-characters']:RepGetLevel(source, "Chopping") or 0
 							local calcLvl = repLevel
 							if calcLvl < 1 then calcLvl = 1 end
 							calcLvl = math.ceil(calcLvl / 2)
@@ -349,7 +349,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 								exports['sandbox-finance']:WalletModify(source, math.random(200) + 200)
 							end
 
-							Reputation.Modify:Add(source, "Chopping", 250 * list.type)
+							exports['sandbox-characters']:RepAdd(source, "Chopping", 250 * list.type)
 							exports['sandbox-laptop']:LSUndergroundChoppingCreatePickupBox(source,
 								list?.entry?.hv or false, list.type)
 
@@ -494,7 +494,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 					personalLists[exports['sandbox-base']:SequenceGet("PersonalChopList")] = item.MetaData.ChopList
 					char:SetData("ChopLists", personalLists)
 
-					if hasValue(char:GetData("States") or {}, "ACCESS_LSUNDERGROUND") and Reputation:HasLevel(source, "Chopping", 3) then
+					if hasValue(char:GetData("States") or {}, "ACCESS_LSUNDERGROUND") and exports['sandbox-characters']:RepHasLevel(source, "Chopping", 3) then
 						exports['sandbox-laptop']:AddNotification(
 							source,
 							"New Personal Choplist",
@@ -617,11 +617,11 @@ exports('LSUndergroundChoppingFindList', function(source, vehNet)
 	if char ~= nil then
 		local pState = Player(source).state
 		local ent = NetworkGetEntityFromNetworkId(vehNet)
-		local chopLevel = Reputation:GetLevel(source, "Chopping")
+		local chopLevel = exports['sandbox-characters']:RepGetLevel(source, "Chopping")
 
 		if ent ~= nil then
 			local model = GetEntityModel(ent)
-			if pState.inChopZone == "chopping_public" and Reputation:GetLevel(source, "Salvaging") >= 7 then
+			if pState.inChopZone == "chopping_public" and exports['sandbox-characters']:RepGetLevel(source, "Salvaging") >= 7 then
 				local chopEntry = exports['sandbox-laptop']:LSUndergroundChoppingIsOnList(_publicChoplist.list, model)
 				if not chopEntry then
 					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Vehicle Not On Chop List")
@@ -635,7 +635,7 @@ exports('LSUndergroundChoppingFindList', function(source, vehNet)
 				pState.inChopZone == "chopping_private"
 				and (
 					hasValue(char:GetData("States") or {}, "ACCESS_LSUNDERGROUND") or
-					Reputation:HasLevel(source, "Chopping", 5)
+					exports['sandbox-characters']:RepHasLevel(source, "Chopping", 5)
 				)
 			then
 				local chopEntry = exports['sandbox-laptop']:LSUndergroundChoppingIsOnList(_vipChopList.list, model)
@@ -712,7 +712,7 @@ exports('LSUndergroundChoppingRemoveFromList', function(source, type, model, lis
 						if v ~= nil then
 							local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 							if (
-									Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+									exports['sandbox-characters']:RepHasLevel(v:GetData("Source"), "Chopping", 5) or
 									hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
 								) and (not dutyData or dutyData.Id ~= "police") then
 								exports['sandbox-laptop']:AddNotification(
@@ -763,7 +763,7 @@ exports('LSUndergroundChoppingRemoveFromList', function(source, type, model, lis
 						if v ~= nil then
 							local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 							if (
-									Reputation:HasLevel(v:GetData("Source"), "Chopping", 5) or
+									exports['sandbox-characters']:RepHasLevel(v:GetData("Source"), "Chopping", 5) or
 									hasValue(v:GetData("States") or {}, "ACCESS_LSUNDERGROUND")
 								) and (not dutyData or dutyData.Id ~= "police") then
 								exports['sandbox-laptop']:AddNotification(
@@ -818,7 +818,7 @@ exports('LSUndergroundChoppingCreatePickupBox', function(source, wasHv, type)
 	if char ~= nil then
 		local pickups = char:GetData("ChopPickups") or {}
 
-		local repLevel = Reputation:GetLevel(source, "Chopping") or 0
+		local repLevel = exports['sandbox-characters']:RepGetLevel(source, "Chopping") or 0
 		local calcLvl = repLevel
 		if calcLvl < 1 then calcLvl = 1 end
 		calcLvl = math.ceil(calcLvl / 2)
@@ -856,7 +856,7 @@ exports('LSUndergroundChoppingCreatePickupBox', function(source, wasHv, type)
 			)
 		end
 
-		local repLevel = Reputation:GetLevel(source, "Chopping") or 0
+		local repLevel = exports['sandbox-characters']:RepGetLevel(source, "Chopping") or 0
 		if repLevel >= 4 then
 			table.insert(
 				items,

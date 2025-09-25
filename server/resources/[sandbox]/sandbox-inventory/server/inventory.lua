@@ -157,103 +157,89 @@ function BuildMetaDataTable(cData, item, existing)
 	return MetaData
 end
 
-AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Reputation",
-	}, function(error)
-		if #error > 0 then
-			return
+	UpdateDatabaseItems()
+	LoadItemsFromDb()
+	--LoadItems()
+	RegisterCallbacks()
+	LoadEntityTypes()
+	LoadShops()
+	LoadPlayerShops()
+	SetupGarbage()
+
+	ClearDropZones()
+	ClearBrokenItems()
+	ClearLocalVehicleInventories()
+	CleanupExpiredCooldowns()
+	LoadCraftingCooldowns()
+
+	RegisterCommands()
+	RegisterStashCallbacks()
+	RegisterTestBench()
+	RegisterPublicSchematicBenches()
+	RegisterCraftingCallbacks()
+	RegisterDonorVanityItemsCallbacks()
+
+	local f = exports['sandbox-finance']:AccountsGetOrganization("government")
+	if f ~= true then
+		_govAccount = f.Account
+	end
+
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		TriggerLatentClientEvent("Inventory:Client:PolySetup", source, 50000, _polyInvs)
+
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local sid = char:GetData("SID")
+
+		_refreshAttchs[sid] = true
+		_refreshGangChain[sid] = true
+		refreshShit(sid, true)
+
+		TriggerLatentClientEvent("Weapons:Client:SetProps", source, 50000, _cachedProps)
+		if char:GetData("InventorySettings") == nil then
+			char:SetData("InventorySettings", _defInvSettings)
 		end
-		RetrieveComponents()
+	end, 1)
 
-		UpdateDatabaseItems()
-		LoadItemsFromDb()
-		--LoadItems()
-		RegisterCallbacks()
-		LoadEntityTypes()
-		LoadShops()
-		LoadPlayerShops()
-		SetupGarbage()
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local benches = {}
+		for k, v in pairs(_types) do
+			table.insert(benches, {
+				id = v.id,
+				label = v.label,
+				targeting = v.targeting,
+				location = v.location,
+				restrictions = v.restrictions,
+				canUseSchematics = v.canUseSchematics,
+			})
+		end
+		TriggerLatentClientEvent("Crafting:Client:CreateBenches", source, 50000, benches)
+		TriggerLatentClientEvent("Inventory:Client:DropzoneForceUpdate", source, 50000, _dropzones)
+		TriggerLatentClientEvent("Inventory:Client:BasicShop:Set", source, 50000, _playerShops)
+	end, 2)
 
-		ClearDropZones()
-		ClearBrokenItems()
-		ClearLocalVehicleInventories()
-		CleanupExpiredCooldowns()
-		LoadCraftingCooldowns()
+	exports['sandbox-base']:MiddlewareAdd("Characters:Created", function(source, cData)
+		local player = exports['sandbox-base']:FetchSource(source)
+		local docs = {}
 
-		RegisterCommands()
-		RegisterStashCallbacks()
-		RegisterTestBench()
-		RegisterPublicSchematicBenches()
-		RegisterCraftingCallbacks()
-		RegisterDonorVanityItemsCallbacks()
+		local slot = 1
+		for k, v in ipairs(Config.StartItems) do
+			local metadata = BuildMetaDataTable(cData, v.name)
 
-		local f = exports['sandbox-finance']:AccountsGetOrganization("government")
-		if f ~= true then
-			_govAccount = f.Account
+			if v.name == "choplist" then
+				metadata.ChopList = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(math.random(4, 8),
+					math.random(3, 5))
+				metadata.Owner = cData.SID
+			end
+
+			local insData = exports['sandbox-inventory']:AddItem(cData.SID, v.name, v.countTo, metadata, 1, false,
+				false, false, false,
+				slot, false, false, true)
+			slot += 1
 		end
 
-		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-			TriggerLatentClientEvent("Inventory:Client:PolySetup", source, 50000, _polyInvs)
-
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
-			local sid = char:GetData("SID")
-
-			_refreshAttchs[sid] = true
-			_refreshGangChain[sid] = true
-			refreshShit(sid, true)
-
-			TriggerLatentClientEvent("Weapons:Client:SetProps", source, 50000, _cachedProps)
-			if char:GetData("InventorySettings") == nil then
-				char:SetData("InventorySettings", _defInvSettings)
-			end
-		end, 1)
-
-		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-			local benches = {}
-			for k, v in pairs(_types) do
-				table.insert(benches, {
-					id = v.id,
-					label = v.label,
-					targeting = v.targeting,
-					location = v.location,
-					restrictions = v.restrictions,
-					canUseSchematics = v.canUseSchematics,
-				})
-			end
-			TriggerLatentClientEvent("Crafting:Client:CreateBenches", source, 50000, benches)
-			TriggerLatentClientEvent("Inventory:Client:DropzoneForceUpdate", source, 50000, _dropzones)
-			TriggerLatentClientEvent("Inventory:Client:BasicShop:Set", source, 50000, _playerShops)
-		end, 2)
-
-		exports['sandbox-base']:MiddlewareAdd("Characters:Created", function(source, cData)
-			local player = exports['sandbox-base']:FetchSource(source)
-			local docs = {}
-
-			local slot = 1
-			for k, v in ipairs(Config.StartItems) do
-				local metadata = BuildMetaDataTable(cData, v.name)
-
-				if v.name == "choplist" then
-					metadata.ChopList = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(math.random(4, 8),
-						math.random(3, 5))
-					metadata.Owner = cData.SID
-				end
-
-				local insData = exports['sandbox-inventory']:AddItem(cData.SID, v.name, v.countTo, metadata, 1, false,
-					false, false, false,
-					slot, false, false, true)
-				slot += 1
-			end
-
-			return true
-		end, 2)
-	end)
+		return true
+	end, 2)
 end)
 
 local function HandleLogout(source, cData)
@@ -448,7 +434,7 @@ function entityPermCheck(source, invType)
 			))
 			or (
 				shittyInvData.restriction.rep ~= nil
-				and Reputation:GetLevel(source, shittyInvData.restriction.rep.id) >= shittyInvData.restriction.rep.level
+				and exports['sandbox-characters']:RepGetLevel(source, shittyInvData.restriction.rep.id) >= shittyInvData.restriction.rep.level
 			)
 			or (shittyInvData.restriction.character ~= nil and shittyInvData.restriction.character == char:GetData(
 				"ID"
@@ -2872,7 +2858,7 @@ exports("Use", function(source, item, cb)
 				itemData.useRestrict.job.permissionKey or false
 			) and (not itemData.useRestrict.job.duty or Player(source).state.onDuty == itemData.useRestrict.job.id))
 			or (itemData.useRestrict.state and hasValue(char:GetData("States"), itemData.useRestrict.state))
-			or (itemData.useRestrict.rep ~= nil and Reputation:GetLevel(source, itemData.useRestrict.rep.id) >= itemData.useRestrict.rep.level)
+			or (itemData.useRestrict.rep ~= nil and exports['sandbox-characters']:RepGetLevel(source, itemData.useRestrict.rep.id) >= itemData.useRestrict.rep.level)
 			or (itemData.useRestrict.character ~= nil and itemData.useRestrict.character == char:GetData("ID"))
 			or (itemData.useRestrict.admin and plyr.Permissions:IsAdmin())
 		then

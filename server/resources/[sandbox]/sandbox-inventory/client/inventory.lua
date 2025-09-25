@@ -80,88 +80,75 @@ local function DoItemLoad(items)
 	_reloading = false
 end
 
-AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Reputation",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterKeyBinds()
-		RegisterRandomItems()
-		DoItemLoad()
-		CreateDonorVanityItems()
+	RegisterKeyBinds()
+	RegisterRandomItems()
+	DoItemLoad()
+	CreateDonorVanityItems()
 
-		exports["sandbox-base"]:RegisterClientCallback("Inventory:ForceClose", function(data, cb)
-			exports['sandbox-inventory']:CloseAll()
-			cb(true)
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Inventory:ForceClose", function(data, cb)
+		exports['sandbox-inventory']:CloseAll()
+		cb(true)
+	end)
 
-		exports["sandbox-base"]:RegisterClientCallback("Inventory:Container:Open", function(data, cb)
-			if SecondInventory.owner ~= nil then
-				exports["sandbox-base"]:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
-					_container = data.item
-					SecondInventory = { invType = _items[data.item.Name].container, owner = data.container }
-					cb(true)
-				end)
-			else
+	exports["sandbox-base"]:RegisterClientCallback("Inventory:Container:Open", function(data, cb)
+		if SecondInventory.owner ~= nil then
+			exports["sandbox-base"]:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
 				_container = data.item
 				SecondInventory = { invType = _items[data.item.Name].container, owner = data.container }
 				cb(true)
-			end
-		end)
+			end)
+		else
+			_container = data.item
+			SecondInventory = { invType = _items[data.item.Name].container, owner = data.container }
+			cb(true)
+		end
+	end)
 
-		exports["sandbox-base"]:RegisterClientCallback("Inventory:Compartment:Open", function(data, cb)
-			if SecondInventory.owner ~= nil then
-				exports["sandbox-base"]:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
-					SecondInventory = data
-					cb(true)
-				end)
-			else
+	exports["sandbox-base"]:RegisterClientCallback("Inventory:Compartment:Open", function(data, cb)
+		if SecondInventory.owner ~= nil then
+			exports["sandbox-base"]:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
 				SecondInventory = data
 				cb(true)
-			end
-		end)
-
-		exports["sandbox-base"]:RegisterClientCallback("Inventory:ItemUse", function(item, cb)
-			if item.anim and (not item.pbConfig or not item.pbConfig.animation) then
-				exports['sandbox-animations']:EmotesPlay(item.anim, false, item.time, true)
-			end
-
-			if item.pbConfig ~= nil then
-				exports['sandbox-hud']:Progress({
-					name = item.pbConfig.name,
-					duration = item.time,
-					label = item.pbConfig.label,
-					useWhileDead = item.pbConfig.useWhileDead,
-					canCancel = item.pbConfig.canCancel,
-					vehicle = item.pbConfig.vehicle,
-					disarm = item.pbConfig.disarm,
-					ignoreModifier = item.pbConfig.ignoreModifier or true,
-					animation = item.pbConfig.animation or false,
-					controlDisables = {
-						disableMovement = item.pbConfig.disableMovement,
-						disableCarMovement = item.pbConfig.disableCarMovement,
-						disableMouse = item.pbConfig.disableMouse,
-						disableCombat = item.pbConfig.disableCombat,
-					},
-				}, function(cancelled)
-					exports['sandbox-animations']:EmotesForceCancel()
-					cb(not cancelled)
-				end)
-			else
-				cb(true)
-			end
-		end)
-
-		CreateVendingMachines()
+			end)
+		else
+			SecondInventory = data
+			cb(true)
+		end
 	end)
+
+	exports["sandbox-base"]:RegisterClientCallback("Inventory:ItemUse", function(item, cb)
+		if item.anim and (not item.pbConfig or not item.pbConfig.animation) then
+			exports['sandbox-animations']:EmotesPlay(item.anim, false, item.time, true)
+		end
+
+		if item.pbConfig ~= nil then
+			exports['sandbox-hud']:Progress({
+				name = item.pbConfig.name,
+				duration = item.time,
+				label = item.pbConfig.label,
+				useWhileDead = item.pbConfig.useWhileDead,
+				canCancel = item.pbConfig.canCancel,
+				vehicle = item.pbConfig.vehicle,
+				disarm = item.pbConfig.disarm,
+				ignoreModifier = item.pbConfig.ignoreModifier or true,
+				animation = item.pbConfig.animation or false,
+				controlDisables = {
+					disableMovement = item.pbConfig.disableMovement,
+					disableCarMovement = item.pbConfig.disableCarMovement,
+					disableMouse = item.pbConfig.disableMouse,
+					disableCombat = item.pbConfig.disableCombat,
+				},
+			}, function(cancelled)
+				exports['sandbox-animations']:EmotesForceCancel()
+				cb(not cancelled)
+			end)
+		else
+			cb(true)
+		end
+	end)
+
+	CreateVendingMachines()
 end)
 
 RegisterNetEvent("Inventory:Client:LoadItems", DoItemLoad)

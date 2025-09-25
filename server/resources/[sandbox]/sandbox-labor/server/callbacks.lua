@@ -7,7 +7,7 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Labor:GetReputations", function(source, data, cb)
-		cb(Reputation:View(source))
+		cb(exports['sandbox-characters']:RepView(source))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Labor:AcceptRequest", function(source, data, cb)

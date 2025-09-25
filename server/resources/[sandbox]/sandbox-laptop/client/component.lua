@@ -130,7 +130,7 @@ exports('IsAppUsable', function(app)
 								return false
 							end
 						elseif k == "reputation" then
-							if not Reputation:HasLevel(v.repuation, appdata.restricted.repuationAmount or 0) then
+							if not exports['sandbox-characters']:RepHasLevel(v.repuation, appdata.restricted.repuationAmount or 0) then
 								return false
 							end
 						end

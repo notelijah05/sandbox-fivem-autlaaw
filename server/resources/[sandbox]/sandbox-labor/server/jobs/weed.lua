@@ -93,7 +93,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "weed_brick", 1) then
-					local repLevel = Reputation:GetLevel(source, "WeedRun") or 0
+					local repLevel = exports['sandbox-characters']:RepGetLevel(source, "WeedRun") or 0
 					local calcLvl = repLevel
 					if calcLvl < 1 then
 						calcLvl = 1

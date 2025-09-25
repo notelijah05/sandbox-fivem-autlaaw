@@ -182,7 +182,7 @@ local _jailSearchableLocs = {
 function RegisterPrisonSearchStartup()
 	GlobalState.JailSearchLocations = _jailSearchableLocs[_jailSearchDays[tostring(os.date("%w"))]]
 
-	Reputation:Create(_repName, "PrisonSearchRep", {
+	exports['sandbox-characters']:RepCreate(_repName, "PrisonSearchRep", {
 		{ label = "Rank 1",   value = 500 },
 		{ label = "Rank 2",   value = 1000 },
 		{ label = "Rank 3",   value = 2500 },
@@ -200,7 +200,7 @@ function RegisterPrisonSearchStartup()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char then
-			local _PlayerRep = Reputation:GetLevel(source, _repName) or 0
+			local _PlayerRep = exports['sandbox-characters']:RepGetLevel(source, _repName) or 0
 			local _found = math.random(100) >= math.random(90)
 			local _loot = _lootTables.low
 			local _rando = math.random(5, 10)
@@ -219,10 +219,10 @@ function RegisterPrisonSearchStartup()
 				end
 				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_loot, char:GetData("SID"), 1, 1,
 					false)
-				Reputation.Modify:Add(source, _repName, _rando)
+				exports['sandbox-characters']:RepAdd(source, _repName, _rando)
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "You found something!")
 			else
-				Reputation.Modify:Add(source, _repName, math.random(1, 3))
+				exports['sandbox-characters']:RepAdd(source, _repName, math.random(1, 3))
 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Info", "Nothing was found.")
 			end
 			cb(true)

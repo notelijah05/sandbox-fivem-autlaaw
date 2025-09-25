@@ -221,7 +221,7 @@ local function GenerateNodes(source)
 		local ultra = math.random(1000000)
 
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local repLevel = Reputation:GetLevel(source, "Mining") or 0
+		local repLevel = exports['sandbox-characters']:RepGetLevel(source, "Mining") or 0
 		local calcLvl = repLevel
 		if calcLvl < 1 then
 			calcLvl = 1
@@ -318,7 +318,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Mining:SellGem", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local repLvl = Reputation:GetLevel(source, _JOB)
+		local repLvl = exports['sandbox-characters']:RepGetLevel(source, _JOB)
 
 		if _gems[data] ~= nil and _gems[data].level <= repLvl then
 			local itemData = exports['sandbox-inventory']:ItemsGetData(data)

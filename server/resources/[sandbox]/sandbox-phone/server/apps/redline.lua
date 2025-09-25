@@ -547,7 +547,7 @@ function Payout(numRacers, results, isCompetitive)
 		if isCompetitive and v.place ~= nil then
 			local char = exports['sandbox-characters']:FetchBySID(v.sid)
 			if char ~= nil then
-				Reputation.Modify:Add(char:GetData("Source"), "Racing", 25 + (25 * (numRacers - v.place)))
+				exports['sandbox-characters']:RepAdd(char:GetData("Source"), "Racing", 25 + (25 * (numRacers - v.place)))
 				if v.reward ~= nil and v.reward.crypto > 0 then
 					exports['sandbox-finance']:CryptoExchangeAdd(_awardedCoin, char:GetData("CryptoWallet"),
 						v.reward.crypto)

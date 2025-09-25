@@ -5,13 +5,11 @@ local lastRefreshed = 0
 AddEventHandler("Jail:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Jail", {
 		"Pwnzor",
-		"Reputation",
 	}, function(error)
 		if #error > 0 then
 			return

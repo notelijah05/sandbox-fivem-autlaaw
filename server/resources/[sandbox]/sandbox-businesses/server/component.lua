@@ -1,36 +1,21 @@
 _pickups = {}
 
-AddEventHandler("Businesses:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Businesses", {
-		"Reputation",
-	}, function(error)
-		if #error > 0 then
-			exports['sandbox-base']:LoggerCritical("Businesses", "Failed To Load All Dependencies")
-			return
-		end
-		RetrieveComponents()
+	TriggerEvent("Businesses:Server:Startup")
 
-		TriggerEvent("Businesses:Server:Startup")
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		TriggerClientEvent(
+			"Taco:SetQueue",
+			source,
+			{ counter = GlobalState["TacoShop:Counter"], item = GlobalState["TacoShop:CurrentItem"] }
+		)
+	end, 2)
 
-		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-			TriggerClientEvent(
-				"Taco:SetQueue",
-				source,
-				{ counter = GlobalState["TacoShop:Counter"], item = GlobalState["TacoShop:CurrentItem"] }
-			)
-		end, 2)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		TriggerLatentClientEvent("Businesses:Client:CreatePoly", source, 50000, _pickups)
+	end, 2)
 
-		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-			TriggerLatentClientEvent("Businesses:Client:CreatePoly", source, 50000, _pickups)
-		end, 2)
-
-		Startup()
-	end)
+	Startup()
 end)
 
 function Startup()

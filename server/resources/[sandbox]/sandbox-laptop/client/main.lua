@@ -13,26 +13,12 @@ local _ignoreEvents = {
 	"Ped",
 }
 
-AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Laptop", {
-		"Reputation",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-
-		exports["sandbox-keybinds"]:Add("laptop_open", "", "keyboard", "Laptop - Open", function()
-			OpenLaptop()
-		end)
-
-		RegisterBoostingCallbacks()
+	exports["sandbox-keybinds"]:Add("laptop_open", "", "keyboard", "Laptop - Open", function()
+		OpenLaptop()
 	end)
+
+	RegisterBoostingCallbacks()
 end)
 
 function OpenLaptop()

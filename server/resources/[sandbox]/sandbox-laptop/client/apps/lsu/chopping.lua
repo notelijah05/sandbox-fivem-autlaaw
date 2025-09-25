@@ -22,7 +22,7 @@ local _vehBones = {
 }
 
 exports('ChoppingCreateBlips', function()
-	if Reputation:HasLevel("Salvaging", 7) or hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND") then
+	if exports['sandbox-characters']:RepHasLevel("Salvaging", 7) or hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND") then
 		_blips.public = exports["sandbox-blips"]:Add(
 			"chopping_public",
 			"LSUNDG Public Dropoff",
@@ -35,7 +35,7 @@ exports('ChoppingCreateBlips', function()
 		exports["sandbox-blips"]:Remove("chopping_public")
 	end
 
-	if Reputation:HasLevel("Salvaging", 7) and (Reputation:HasLevel("Chopping", 5) or hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND")) then
+	if exports['sandbox-characters']:RepHasLevel("Salvaging", 7) and (exports['sandbox-characters']:RepHasLevel("Chopping", 5) or hasValue(LocalPlayer.state.Character:GetData("States") or {}, "ACCESS_LSUNDERGROUND")) then
 		_blips.vip = exports["sandbox-blips"]:Add(
 			"chopping_private",
 			"LSUNDG Private Dropoff",
@@ -383,9 +383,9 @@ end
 
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 	if
-		(id == "chopping_public" and Reputation:HasLevel("Salvaging", 7))
+		(id == "chopping_public" and exports['sandbox-characters']:RepHasLevel("Salvaging", 7))
 		or (id == "chopping_private" and LocalPlayer.state.Character ~= nil and (
-			Reputation:HasLevel("Chopping", 5) or
+			exports['sandbox-characters']:RepHasLevel("Chopping", 5) or
 			hasValue(LocalPlayer.state.Character:GetData("States"), "ACCESS_LSUNDERGROUND")
 		))
 		or (id == "chopping_personal"

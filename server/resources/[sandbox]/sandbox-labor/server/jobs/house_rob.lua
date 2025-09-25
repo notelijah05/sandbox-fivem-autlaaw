@@ -641,7 +641,7 @@ AddEventHandler("HouseRobbery:Server:OnDuty", function(joiner, members, isWorkgr
 		return
 	end
 
-	local level = Reputation:GetLevel(joiner, "HouseRobbery") + 1
+	local level = exports['sandbox-characters']:RepGetLevel(joiner, "HouseRobbery") + 1
 	while (_cooldowns[level][char:GetData("ID")] or 0) > os.time() and level > 1 do
 		level = level - 1
 	end

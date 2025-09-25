@@ -19,7 +19,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		end
 	end
 
-	Reputation:Create("TacoDelivery", "Taco Delivery", {
+	exports['sandbox-characters']:RepCreate("TacoDelivery", "Taco Delivery", {
 		{ label = "Rank 1",   value = 500 },
 		{ label = "Rank 2",   value = 1000 },
 		{ label = "Rank 3",   value = 2500 },
@@ -28,7 +28,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		{ label = "Pls Stop", value = 7500 },
 	}, false) -- hidden rep
 
-	Reputation:Create("TacoCrafter", "Taco Artist", {
+	exports['sandbox-characters']:RepCreate("TacoCrafter", "Taco Artist", {
 		{ label = "Rank 1",   value = 500 },
 		{ label = "Rank 2",   value = 1000 },
 		{ label = "Rank 3",   value = 2500 },
@@ -189,12 +189,12 @@ AddEventHandler("Businesses:Server:Startup", function()
 					end
 
 					local _tacoArtistCash = math.random(15, 30)
-					local repLevel = Reputation:GetLevel(source, "TacoCrafter") or 0
+					local repLevel = exports['sandbox-characters']:RepGetLevel(source, "TacoCrafter") or 0
 					if repLevel > 0 then
 						_tacoArtistCash = math.floor(_tacoArtistCash * repLevel)
 					end
 					exports['sandbox-finance']:WalletModify(source, _tacoArtistCash)
-					Reputation.Modify:Add(source, "TacoCrafter", 1)
+					exports['sandbox-characters']:RepAdd(source, "TacoCrafter", 1)
 
 					cb(true)
 				end
@@ -227,7 +227,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 				local itemData = exports['sandbox-inventory']:ItemsGetData(_dropOffItem)
 
 				if itemData and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, _dropOffItem, _itemCount) then
-					local repLevel = Reputation:GetLevel(source, "TacoDelivery") or 0
+					local repLevel = exports['sandbox-characters']:RepGetLevel(source, "TacoDelivery") or 0
 					local repGained = 1
 					local _tacoDeliveryCash = math.random(15, 30)
 					if repLevel > 0 then
@@ -269,7 +269,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 					end
 
 					exports['sandbox-finance']:WalletModify(source, _tacoDeliveryCash)
-					Reputation.Modify:Add(source, "TacoDelivery", repGained)
+					exports['sandbox-characters']:RepAdd(source, "TacoDelivery", repGained)
 
 					cb(true)
 				end

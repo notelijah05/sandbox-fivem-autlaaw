@@ -40,7 +40,7 @@ function RegisterCommands()
 	exports["sandbox-chat"]:RegisterAdminCommand("addrep", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
-			Reputation.Modify:Add(char:GetData("Source"), args[2], tonumber(args[3]))
+			exports['sandbox-characters']:RepAdd(char:GetData("Source"), args[2], tonumber(args[3]))
 			exports["sandbox-chat"]:SendSystemSingle(
 				source,
 				string.format("%s Rep Added For %s To State ID %s", args[3], args[2], args[1])
@@ -69,7 +69,7 @@ function RegisterCommands()
 	exports["sandbox-chat"]:RegisterAdminCommand("remrep", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
-			Reputation.Modify:Remove(char:GetData("Source"), args[2], tonumber(args[3]))
+			exports['sandbox-characters']:RepRemove(char:GetData("Source"), args[2], tonumber(args[3]))
 			exports["sandbox-chat"]:SendSystemSingle(
 				source,
 				string.format("%s Rep Removed For %s From State ID %s", args[3], args[2], args[1])
@@ -98,7 +98,7 @@ function RegisterCommands()
 	exports["sandbox-chat"]:RegisterAdminCommand("getrep", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
-			local repLevel = Reputation:GetLevel(char:GetData("Source"), args[2])
+			local repLevel = exports['sandbox-characters']:RepGetLevel(char:GetData("Source"), args[2])
 			exports["sandbox-chat"]:SendSystemSingle(
 				source,
 				string.format("%s Rep Level For %s To State ID %s", repLevel, args[2], args[1])

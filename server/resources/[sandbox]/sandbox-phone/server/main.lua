@@ -55,42 +55,27 @@ AddEventHandler("onResourceStart", function(resource)
 	end
 end)
 
-AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
-
-function RetrieveComponents()
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	RegisterChatCommands()
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Reputation",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		-- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		Startup()
-		TriggerEvent("Phone:Server:RegisterMiddleware")
-		TriggerEvent("Phone:Server:RegisterCallbacks")
-		TriggerEvent("Phone:Server:Startup")
+	Startup()
+	RegisterChatCommands()
+	TriggerEvent("Phone:Server:RegisterMiddleware")
+	TriggerEvent("Phone:Server:RegisterCallbacks")
+	TriggerEvent("Phone:Server:Startup")
 
-		Reputation:Create("Racing", "LS Underground", {
-			{ label = "Rank 1",  value = 1000 },
-			{ label = "Rank 2",  value = 2500 },
-			{ label = "Rank 3",  value = 5000 },
-			{ label = "Rank 4",  value = 10000 },
-			{ label = "Rank 5",  value = 25000 },
-			{ label = "Rank 6",  value = 50000 },
-			{ label = "Rank 7",  value = 100000 },
-			{ label = "Rank 8",  value = 250000 },
-			{ label = "Rank 9",  value = 500000 },
-			{ label = "Rank 10", value = 1000000 },
-		}, true)
+	exports['sandbox-characters']:RepCreate("Racing", "LS Underground", {
+		{ label = "Rank 1",  value = 1000 },
+		{ label = "Rank 2",  value = 2500 },
+		{ label = "Rank 3",  value = 5000 },
+		{ label = "Rank 4",  value = 10000 },
+		{ label = "Rank 5",  value = 25000 },
+		{ label = "Rank 6",  value = 50000 },
+		{ label = "Rank 7",  value = 100000 },
+		{ label = "Rank 8",  value = 250000 },
+		{ label = "Rank 9",  value = 500000 },
+		{ label = "Rank 10", value = 1000000 },
+	}, true)
 
-		InitBizPhones()
-	end)
+	InitBizPhones()
 end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()

@@ -129,7 +129,7 @@ function RegisterFishingItems()
 	end)
 
 	exports['sandbox-inventory']:RegisterUse("fishing_net", "Labor", function(source, itemData)
-		local repLvl = Reputation:GetLevel(source, _JOB)
+		local repLvl = exports['sandbox-characters']:RepGetLevel(source, _JOB)
 
 		if repLvl < 3 then
 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",

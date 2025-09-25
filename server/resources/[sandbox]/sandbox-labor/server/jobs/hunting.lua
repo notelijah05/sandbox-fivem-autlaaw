@@ -124,7 +124,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Hunting:Sell", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local repLvl = Reputation:GetLevel(source, _JOB)
+		local repLvl = exports['sandbox-characters']:RepGetLevel(source, _JOB)
 
 		if _saleData[data] ~= nil then
 			if repLvl >= _saleData[data].rep then

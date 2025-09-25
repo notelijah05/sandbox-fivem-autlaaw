@@ -182,7 +182,7 @@ AddEventHandler("Labor:Client:Setup", function()
             event = "Fishing:Client:OpenShop",
             data = "fishing-supplies",
             isEnabled = function()
-                return Reputation:GetLevel("Fishing") < 3
+                return exports['sandbox-characters']:RepGetLevel("Fishing") < 3
             end,
         },
         {

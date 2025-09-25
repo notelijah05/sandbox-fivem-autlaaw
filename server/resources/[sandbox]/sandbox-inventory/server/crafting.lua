@@ -341,7 +341,7 @@ exports("CraftingGetBench", function(source, benchId)
 				))
 				or (
 					bench.restrictions.rep ~= nil
-					and Reputation:GetLevel(source, bench.restrictions.rep.id) >= bench.restrictions.rep.level
+					and exports['sandbox-characters']:RepGetLevel(source, bench.restrictions.rep.id) >= bench.restrictions.rep.level
 				)
 			)
 		then
@@ -440,7 +440,7 @@ function RegisterCraftingCallbacks()
 							))
 							or (
 								bench.restrictions.rep ~= nil
-								and Reputation:GetLevel(source, bench.restrictions.rep.id)
+								and exports['sandbox-characters']:RepGetLevel(source, bench.restrictions.rep.id)
 								>= bench.restrictions.rep.level
 							)
 						)

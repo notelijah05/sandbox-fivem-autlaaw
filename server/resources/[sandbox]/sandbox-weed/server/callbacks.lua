@@ -245,7 +245,7 @@ function RegisterCallbacks()
 						giving2 = "fertilizer_potassium"
 					end
 
-					--Reputation.Modify:Add(source, "weed", 1000)
+					--exports['sandbox-characters']:RepAdd(source, "weed", 1000)
 					exports['sandbox-inventory']:AddItem(char:GetData("SID"), giving, 2, {}, 1)
 					exports['sandbox-inventory']:AddItem(char:GetData("SID"), giving2, 2, {}, 1)
 				else

@@ -352,7 +352,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "oxy", math.random(3), {}, 1)
 				end
 
-				local repLevel = Reputation:GetLevel(source, "OxyRun") or 0
+				local repLevel = exports['sandbox-characters']:RepGetLevel(source, "OxyRun") or 0
 				local chance = 90
 
 				if repLevel >= 5 then

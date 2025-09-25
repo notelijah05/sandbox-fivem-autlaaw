@@ -154,7 +154,7 @@ exports("IsAppUsable", function(app)
 					))
 					or (
 						appdata.restricted.repuation
-						and Reputation:HasLevel(
+						and exports['sandbox-characters']:RepHasLevel(
 							appdata.restricted.repuation,
 							appdata.restricted.repuationAmount or 0
 						)

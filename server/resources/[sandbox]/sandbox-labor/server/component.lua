@@ -1,12 +1,10 @@
 AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Labor", {
-		"Reputation",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then
@@ -47,7 +45,7 @@ exports('RegisterJob', function(id, name, limit, salary, repAward, restrictions,
 		Timeout = timeout,
 	}
 
-	Reputation:Create(id, name, customRep or {
+	exports['sandbox-characters']:RepCreate(id, name, customRep or {
 		{ label = "Rank 1", value = 1500 },
 		{ label = "Rank 2", value = 3000 },
 		{ label = "Rank 3", value = 6000 },
@@ -280,7 +278,7 @@ exports('CompleteOffer', function(source, job)
 				})
 		end
 
-		Reputation.Modify:Add(source, job, _Jobs[job].RepAward)
+		exports['sandbox-characters']:RepAdd(source, job, _Jobs[job].RepAward)
 	end
 end)
 
@@ -338,7 +336,7 @@ exports('FailOffer', function(joiner, job, timeout)
 							if not paidOut[v3.ID] then
 								paidOut[v3.ID] = true
 								if not _Jobs[job]?.Timeout?.KeepRep then
-									Reputation.Modify:Remove(v3.ID, job, _Jobs[job].RepAward)
+									exports['sandbox-characters']:RepRemove(v3.ID, job, _Jobs[job].RepAward)
 								end
 							end
 						end
@@ -360,7 +358,7 @@ exports('FailOffer', function(joiner, job, timeout)
 			if not paidOut[v.Joiner] then
 				paidOut[v.Joiner] = true
 				if not _Jobs[job]?.Timeout?.KeepRep then
-					Reputation.Modify:Remove(joiner, job, _Jobs[job].RepAward)
+					exports['sandbox-characters']:RepRemove(joiner, job, _Jobs[job].RepAward)
 				end
 			end
 			TriggerEvent(string.format("%s:Server:CancelJob", job), joiner)

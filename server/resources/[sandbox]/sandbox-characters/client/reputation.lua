@@ -1,91 +1,74 @@
-AddEventHandler("Reputation:Shared:DependencyUpdate", RepComponents)
-function RepComponents()
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Reputation", {
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RepComponents()
-	end)
-end)
-
 local _reps = {}
-_REP = {
-	GetLevel = function(self, id)
-		if GlobalState[string.format("Rep:%s", id)] ~= nil then
-			local reps = LocalPlayer.state.Character:GetData("Reputations") or {}
+
+exports('RepGetLevel', function(id)
+	if GlobalState[string.format("Rep:%s", id)] ~= nil then
+		local reps = LocalPlayer.state.Character:GetData("Reputations") or {}
+		if reps[id] ~= nil then
+			local level = 0
 			if reps[id] ~= nil then
-				local level = 0
-				if reps[id] ~= nil then
-					for k, v in ipairs(GlobalState[string.format("Rep:%s", id)].levels) do
-						if v.value <= reps[id] then
-							level = k
-						end
+				for k, v in ipairs(GlobalState[string.format("Rep:%s", id)].levels) do
+					if v.value <= reps[id] then
+						level = k
 					end
-					return level
-				else
-					return 0
 				end
+				return level
 			else
 				return 0
 			end
 		else
 			return 0
 		end
-	end,
-	HasLevel = function(self, id, level)
-		if GlobalState[string.format("Rep:%s", id)] ~= nil then
-			local reps = LocalPlayer.state.Character:GetData("Reputations") or {}
+	else
+		return 0
+	end
+end)
+
+exports('RepHasLevel', function(id, level)
+	if GlobalState[string.format("Rep:%s", id)] ~= nil then
+		local reps = LocalPlayer.state.Character:GetData("Reputations") or {}
+		if reps[id] ~= nil then
+			local l = 0
 			if reps[id] ~= nil then
-				local l = 0
-				if reps[id] ~= nil then
-					for k, v in ipairs(GlobalState[string.format("Rep:%s", id)].levels) do
-						if v.value <= reps[id] then
-							l = k
-						end
+				for k, v in ipairs(GlobalState[string.format("Rep:%s", id)].levels) do
+					if v.value <= reps[id] then
+						l = k
 					end
-					return l >= level
-				else
-					return false
 				end
+				return l >= level
 			else
 				return false
 			end
 		else
 			return false
 		end
-	end,
-	GetLevelData = function(self, id)
-		if GlobalState[string.format("Rep:%s", id)] ~= nil then
-			local reps = LocalPlayer.state.Character:GetData("Reputations") or {}
+	else
+		return false
+	end
+end)
+
+exports('RepGetLevelData', function(id)
+	if GlobalState[string.format("Rep:%s", id)] ~= nil then
+		local reps = LocalPlayer.state.Character:GetData("Reputations") or {}
+		if reps[id] ~= nil then
+			local level = 0
 			if reps[id] ~= nil then
-				local level = 0
-				if reps[id] ~= nil then
-					for k, v in ipairs(GlobalState[string.format("Rep:%s", id)].levels) do
-						if v.value <= reps[id] then
-							level = {
-								level = k,
-								label = v.label,
-								value = v.value,
-							}
-						end
+				for k, v in ipairs(GlobalState[string.format("Rep:%s", id)].levels) do
+					if v.value <= reps[id] then
+						level = {
+							level = k,
+							label = v.label,
+							value = v.value,
+						}
 					end
-					return level
-				else
-					return 0
 				end
+				return level
 			else
 				return 0
 			end
 		else
 			return 0
 		end
-	end,
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Reputation", _REP)
+	else
+		return 0
+	end
 end)
