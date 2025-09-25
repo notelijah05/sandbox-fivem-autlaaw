@@ -36,7 +36,7 @@ COMPONENTS.Discord = {
 		return data
 	end,
 	GetMember = function(self, discord)
-		local endpoint = ("guilds/%s/members/%s"):format(COMPONENTS.Config.Groups.Server, discord)
+		local endpoint = ("guilds/%s/members/%s"):format(exports['sandbox-base']:ConfigGetServer().ID, discord)
 		return self:Request('GET', endpoint, {})
 	end
 }

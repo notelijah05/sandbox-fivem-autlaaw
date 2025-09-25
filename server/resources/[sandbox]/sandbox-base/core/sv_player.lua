@@ -251,12 +251,13 @@ function PlayerClass(source, data)
 	_data.Permissions = {
 		IsStaff = function(self)
 			for k, v in ipairs(_data:GetData("Groups")) do
+				local group = exports['sandbox-base']:ConfigGetGroupById(v)
 				if
-					COMPONENTS.Config.Groups[v] ~= nil
-					and type(COMPONENTS.Config.Groups[v].Permission) == "table"
+					group ~= nil
+					and type(group.Permission) == "table"
 					and (
-						COMPONENTS.Config.Groups[v].Permission.Group == "staff"
-						or COMPONENTS.Config.Groups[v].Permission.Group == "admin"
+						group.Permission.Group == "staff"
+						or group.Permission.Group == "admin"
 					)
 				then
 					return true
@@ -266,10 +267,11 @@ function PlayerClass(source, data)
 		end,
 		IsAdmin = function(self)
 			for k, v in ipairs(_data:GetData("Groups")) do
+				local group = exports['sandbox-base']:ConfigGetGroupById(v)
 				if
-					COMPONENTS.Config.Groups[v] ~= nil
-					and type(COMPONENTS.Config.Groups[v].Permission) == "table"
-					and COMPONENTS.Config.Groups[v].Permission.Group == "admin"
+					group ~= nil
+					and type(group.Permission) == "table"
+					and group.Permission.Group == "admin"
 				then
 					return true
 				end
@@ -279,12 +281,13 @@ function PlayerClass(source, data)
 		GetLevel = function(self)
 			local highest = 0
 			for k, v in ipairs(_data:GetData("Groups")) do
+				local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
 				if
-					COMPONENTS.Config.Groups[tostring(v)] ~= nil
-					and type(COMPONENTS.Config.Groups[tostring(v)].Permission) == "table"
+					group ~= nil
+					and type(group.Permission) == "table"
 				then
-					if COMPONENTS.Config.Groups[tostring(v)].Permission.Level > highest then
-						highest = COMPONENTS.Config.Groups[tostring(v)].Permission.Level
+					if group.Permission.Level > highest then
+						highest = group.Permission.Level
 					end
 				end
 			end
@@ -295,15 +298,16 @@ function PlayerClass(source, data)
 
 	local license = GetPlayerLicense(source)
 	for k, v in ipairs(_data:GetData("Groups")) do
+		local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
 		if
-			COMPONENTS.Config.Groups[tostring(v)] ~= nil
-			and type(COMPONENTS.Config.Groups[tostring(v)].Permission) == "table"
-			and COMPONENTS.Config.Groups[tostring(v)].Permission.Group
+			group ~= nil
+			and type(group.Permission) == "table"
+			and group.Permission.Group
 		then
 			ExecuteCommand(
 				("add_principal identifier.license:%s group.%s"):format(
 					license,
-					COMPONENTS.Config.Groups[tostring(v)].Permission.Group
+					group.Permission.Group
 				)
 			)
 		end

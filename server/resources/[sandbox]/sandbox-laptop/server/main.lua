@@ -79,7 +79,6 @@ end)
 AddEventHandler("Laptop:Shared:DependencyUpdate", RetrieveComponents)
 
 function RetrieveComponents()
-	Config = exports["sandbox-base"]:FetchComponent("Config")
 	MDT = exports["sandbox-base"]:FetchComponent("MDT")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
@@ -92,7 +91,6 @@ end
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Laptop", {
 		"Laptop",
-		"Config",
 		"MDT",
 		"Labor",
 		"Properties",

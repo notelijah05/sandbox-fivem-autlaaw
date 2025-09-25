@@ -5,16 +5,13 @@ server_script("@oxmysql/lib/MySQL.lua")
 client_script("@sandbox-pwnzor/client/check.lua")
 client_scripts({
 	"sh_init.lua",
-	"cl_init.lua",
 	"core/sh_*.lua",
 	"core/cl_*.lua",
-	"cl_config.lua",
 	"components/cl_*.lua",
 })
 
 server_scripts({
 	"sh_init.lua",
-	"sv_init.lua",
 	"sv_config.lua",
 	"core/sv_database.js",
 	"core/sv_generator.js",

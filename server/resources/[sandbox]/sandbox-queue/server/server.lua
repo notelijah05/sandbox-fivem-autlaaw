@@ -14,7 +14,6 @@ local _dbReady = false
 
 AddEventHandler("Queue:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	c = exports["sandbox-base"]:FetchComponent("Config")
 	Queue = exports["sandbox-base"]:FetchComponent("Queue")
 end
 
@@ -22,14 +21,13 @@ local APIWorking = false
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Queue", {
-		"Config",
 		"Queue",
 	}, function(error)
 		if #error > 0 then return; end
 		RetrieveComponents()
 
-		Config.Server = c.Server
-		Config.Groups = c.Groups
+		Config.Server = exports['sandbox-base']:ConfigGetServer()
+		Config.Groups = exports['sandbox-base']:ConfigGetGroups()
 		queueActive = true
 
 		exports["sandbox-chat"]:RegisterAdminCommand("queue", function(source, args, rawCommand)

@@ -1,13 +1,11 @@
 AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	C = exports["sandbox-base"]:FetchComponent("Config")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Admin", {
-		"Config",
 		"Properties",
 		"Pwnzor",
 	}, function(error)
@@ -25,11 +23,12 @@ AddEventHandler("Core:Shared:Ready", function()
 			if player and player.Permissions:IsStaff() then
 				local highestLevel, highestGroup, highestGroupName = 0, nil, nil
 				for k, v in ipairs(player:GetData('Groups')) do
-					if C.Groups[tostring(v)] ~= nil and (type(C.Groups[tostring(v)].Permission) == 'table') then
-						if C.Groups[tostring(v)].Permission.Level > highestLevel then
-							highestLevel = C.Groups[tostring(v)].Permission.Level
+					local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
+					if group and (type(group.Permission) == 'table') then
+						if group.Permission.Level > highestLevel then
+							highestLevel = group.Permission.Level
 							highestGroup = v
-							highestGroupName = C.Groups[tostring(v)].Name
+							highestGroupName = group.Name
 						end
 					end
 				end

@@ -1,6 +1,5 @@
 AddEventHandler("Labor:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Config = exports["sandbox-base"]:FetchComponent("Config")
 	Labor = exports["sandbox-base"]:FetchComponent("Labor")
 	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
 	Properties = exports["sandbox-base"]:FetchComponent("Properties")

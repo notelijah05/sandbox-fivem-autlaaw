@@ -79,10 +79,11 @@ function RegisterCallbacks()
                 if target.Permissions:IsStaff() then
                     local highestLevel = 0
                     for k, v in ipairs(target:GetData('Groups')) do
-                        if C.Groups[tostring(v)] ~= nil and (type(C.Groups[tostring(v)].Permission) == 'table') then
-                            if C.Groups[tostring(v)].Permission.Level > highestLevel then
-                                highestLevel = C.Groups[tostring(v)].Permission.Level
-                                staffGroupName = C.Groups[tostring(v)].Name
+                        local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
+                        if group and (type(group.Permission) == 'table') then
+                            if group.Permission.Level > highestLevel then
+                                highestLevel = group.Permission.Level
+                                staffGroupName = group.Name
                             end
                         end
                     end
@@ -171,10 +172,11 @@ function RegisterCallbacks()
                         if tData.IsStaff then
                             local highestLevel = 0
                             for k, v in ipairs(tData.Groups) do
-                                if C.Groups[tostring(v)] ~= nil and (type(C.Groups[tostring(v)].Permission) == 'table') then
-                                    if C.Groups[tostring(v)].Permission.Level > highestLevel then
-                                        highestLevel = C.Groups[tostring(v)].Permission.Level
-                                        tData.StaffGroup = C.Groups[tostring(v)].Name
+                                local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
+                                if group and (type(group.Permission) == 'table') then
+                                    if group.Permission.Level > highestLevel then
+                                        highestLevel = group.Permission.Level
+                                        tData.StaffGroup = group.Name
                                     end
                                 end
                             end
@@ -428,7 +430,7 @@ function RegisterCallbacks()
         local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsStaff() then
             local tData = {}
-            local allVehicles = Vehicles.Owned.GetAllActive()
+            local allVehicles = exports['sandbox-vehicles']:OwnedGetAllActive()
             for k, v in pairs(allVehicles) do
                 local entityId = v:GetData("EntityId")
                 local ent = Entity(entityId)

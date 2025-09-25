@@ -448,9 +448,10 @@ exports("PunishmentBanAccountID", function(aId, expires, reason, issuer)
 
 		if tPlayer:GetData("Source") ~= nil then
 			for k, v in ipairs(tPlayer:GetData("Groups")) do
-				if COMPONENTS.Config.Groups[tostring(v)].Permission then
-					if COMPONENTS.Config.Groups[tostring(v)].Permission.Level > tPerms then
-						tPerms = COMPONENTS.Config.Groups[tostring(v)].Permission.Level
+				local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
+				if group and group.Permission then
+					if group.Permission.Level > tPerms then
+						tPerms = group.Permission.Level
 					end
 				end
 			end
@@ -610,17 +611,19 @@ exports("PunishmentBanIdentifier", function(identifier, expires, reason, issuer)
 
 		if tPlayer:GetData("Source") ~= nil then
 			for k, v in ipairs(tPlayer:GetData("Groups")) do
-				if COMPONENTS.Config.Groups[tostring(v)].Permission then
-					if COMPONENTS.Config.Groups[tostring(v)].Permission.Level > tPerms then
-						tPerms = COMPONENTS.Config.Groups[tostring(v)].Permission.Level
+				local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
+				if group and group.Permission then
+					if group.Permission.Level > tPerms then
+						tPerms = group.Permission.Level
 					end
 				end
 			end
 		else
 			for k, v in ipairs(tPlayer:GetData("Groups")) do
-				if COMPONENTS.Config.Groups[tostring(v)].Permission then
-					if COMPONENTS.Config.Groups[tostring(v)].Permission.Level > tPerms then
-						tPerms = COMPONENTS.Config.Groups[tostring(v)].Permission.Level
+				local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
+				if group and group.Permission then
+					if group.Permission.Level > tPerms then
+						tPerms = group.Permission.Level
 					end
 				end
 			end

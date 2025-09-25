@@ -37,13 +37,14 @@ function PlayerClass(identifier, player, deferrals, steamName)
 	end
 
 	for _, group in ipairs(groups) do
-		if Config.Groups[group] and Config.Groups[group].Queue and Config.Groups[group].Queue.Priority > 0 then
-			prio = prio + tonumber(Config.Groups[group].Queue.Priority)
+		local groupData = exports['sandbox-base']:ConfigGetGroupById(group)
+		if groupData and groupData.Queue and groupData.Queue.Priority > 0 then
+			prio = prio + tonumber(groupData.Queue.Priority)
 
 			msg = msg .. "\n" .. string.format(
 				"%s | +%s",
-				Config.Groups[group].Queue.Message or Config.Groups[group].Name,
-				Config.Groups[group].Queue.Priority
+				groupData.Queue.Message or groupData.Name,
+				groupData.Queue.Priority
 			)
 		end
 	end

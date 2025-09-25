@@ -1,13 +1,11 @@
 AddEventHandler("Commands:Shared:DependencyUpdate", RetrieveComponents)
 function RetrieveComponents()
-	Config = exports["sandbox-base"]:FetchComponent("Config")
 	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
 	RegisterChatCommands()
 end
 
 AddEventHandler("Core:Shared:Ready", function()
 	exports["sandbox-base"]:RequestDependencies("Commands", {
-		"Config",
 		"Pwnzor",
 	}, function(error)
 		if #error > 0 then

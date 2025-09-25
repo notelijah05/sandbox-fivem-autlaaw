@@ -126,7 +126,7 @@ end)
 -- 			Short = res.data.game.short,
 -- 		}
 
--- 		COMPONENTS.Config.Groups = res.data.groups
+--		exports['sandbox-base']:ConfigUpdateGroups(res.data.groups)
 
 -- 		GlobalState.IsProduction = res.data.channel:upper() ~= "DEV"
 -- 		if COMPONENTS.Config.Server.Access then
