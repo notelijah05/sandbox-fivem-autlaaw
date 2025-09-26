@@ -36,8 +36,8 @@ end
 local firstLoad = true
 AddEventHandler("Core:Shared:Ready", function()
 	if firstLoad then
-		COMPONENTS.Spawn:InitCamera()
-		COMPONENTS.Spawn:Init()
+		exports['sandbox-characters']:SpawnInitCamera()
+		exports['sandbox-characters']:SpawnInit()
 		firstLoad = false
 	end
 end)

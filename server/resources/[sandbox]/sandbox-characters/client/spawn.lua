@@ -20,106 +20,101 @@ function FadeInWithTimeout(time, timeOut)
 	end
 end
 
-Spawn = {
-	Choosing = true,
-	InitCamera = function(self)
-		if not IsScreenFadedOut() then
-			FadeOutWithTimeout(500)
-		end
-
-		local ped = PlayerPedId()
-		SetEntityCoords(ped, -972.756, -2701.553, 41.45)
-		FreezeEntityPosition(ped, true)
-		SetEntityVisible(ped, false)
-		SetPlayerVisibleLocally(ped, false)
-
-		TransitionToBlurred(500)
-		cam = CreateCamWithParams(
-			"DEFAULT_SCRIPTED_CAMERA",
-			-972.756,
-			-2701.553,
-			41.45,
-			-12.335,
-			0.000,
-			118.395,
-			100.00,
-			false,
-			0
-		)
-		SetCamActiveWithInterp(cam, true, 900, true, true)
-		RenderScriptCams(true, false, 1, true, true)
-		DisplayRadar(false)
-	end,
-	Init = function(self)
-		FadeInWithTimeout(500)
-		Wait(500) -- Why the fuck does NUI just not do this without a wait here???
-		SetNuiFocus(true, true)
-		SendNUIMessage({ type = "APP_SHOW" })
-	end,
-	SpawnToWorld = function(self, data, cb)
+exports('SpawnInitCamera', function()
+	if not IsScreenFadedOut() then
 		FadeOutWithTimeout(500)
+	end
 
-		local player = PlayerPedId()
-		SetTimecycleModifier("default")
+	local ped = PlayerPedId()
+	SetEntityCoords(ped, -972.756, -2701.553, 41.45)
+	FreezeEntityPosition(ped, true)
+	SetEntityVisible(ped, false)
+	SetPlayerVisibleLocally(ped, false)
 
-		local model = `mp_f_freemode_01`
-		if tonumber(data.Gender) == 0 then
-			model = `mp_m_freemode_01`
-		end
+	TransitionToBlurred(500)
+	cam = CreateCamWithParams(
+		"DEFAULT_SCRIPTED_CAMERA",
+		-972.756,
+		-2701.553,
+		41.45,
+		-12.335,
+		0.000,
+		118.395,
+		100.00,
+		false,
+		0
+	)
+	SetCamActiveWithInterp(cam, true, 900, true, true)
+	RenderScriptCams(true, false, 1, true, true)
+	DisplayRadar(false)
+end)
 
-		RequestModel(model)
+exports('SpawnInit', function()
+	FadeInWithTimeout(500)
+	Wait(500) -- Why the fuck does NUI just not do this without a wait here???
+	SetNuiFocus(true, true)
+	SendNUIMessage({ type = "APP_SHOW" })
+end)
 
-		while not HasModelLoaded(model) do
-			Wait(500)
-		end
-		SetPlayerModel(PlayerId(), model)
-		player = PlayerPedId()
-		SetPedDefaultComponentVariation(player)
-		SetEntityAsMissionEntity(player, true, true)
-		SetModelAsNoLongerNeeded(model)
+exports('SpawnToWorld', function(data, cb)
+	FadeOutWithTimeout(500)
 
-		-- Safety check I guess
-		while not IsEntityFocus(player) do
-			ClearFocus()
-			Wait(1)
-		end
+	local player = PlayerPedId()
+	SetTimecycleModifier("default")
 
-		Wait(300)
+	local model = `mp_f_freemode_01`
+	if tonumber(data.Gender) == 0 then
+		model = `mp_m_freemode_01`
+	end
 
-		DestroyAllCams(true)
-		RenderScriptCams(false, true, 1, true, true)
-		FreezeEntityPosition(player, false)
+	RequestModel(model)
 
-		NetworkSetEntityInvisibleToNetwork(player, false)
-		SetEntityVisible(player, true)
-		FreezeEntityPosition(player, false)
+	while not HasModelLoaded(model) do
+		Wait(500)
+	end
+	SetPlayerModel(PlayerId(), model)
+	player = PlayerPedId()
+	SetPedDefaultComponentVariation(player)
+	SetEntityAsMissionEntity(player, true, true)
+	SetModelAsNoLongerNeeded(model)
 
-		cam = nil
+	-- Safety check I guess
+	while not IsEntityFocus(player) do
+		ClearFocus()
+		Wait(1)
+	end
 
-		SetPlayerInvincible(PlayerId(), false)
-		SetCanAttackFriendly(player, true, true)
-		NetworkSetFriendlyFireOption(true)
+	Wait(300)
 
-		SetEntityMaxHealth(player, 200)
-		SetEntityHealth(player, data.HP > 100 and data.HP or 200)
-		DisplayHud(true)
+	DestroyAllCams(true)
+	RenderScriptCams(false, true, 1, true, true)
+	FreezeEntityPosition(player, false)
 
-		if data.action ~= nil then
-			TriggerEvent(data.action, data.data)
-		else
-			SetEntityCoords(player, data.spawn.location.x, data.spawn.location.y, data.spawn.location.z)
-			FadeInWithTimeout(500)
-		end
+	NetworkSetEntityInvisibleToNetwork(player, false)
+	SetEntityVisible(player, true)
+	FreezeEntityPosition(player, false)
 
-		LocalPlayer.state.ped = player
+	cam = nil
 
-		SetNuiFocus(false)
+	SetPlayerInvincible(PlayerId(), false)
+	SetCanAttackFriendly(player, true, true)
+	NetworkSetFriendlyFireOption(true)
 
-		TriggerScreenblurFadeOut(500)
-		cb()
-	end,
-}
+	SetEntityMaxHealth(player, 200)
+	SetEntityHealth(player, data.HP > 100 and data.HP or 200)
+	DisplayHud(true)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Spawn", Spawn)
+	if data.action ~= nil then
+		TriggerEvent(data.action, data.data)
+	else
+		SetEntityCoords(player, data.spawn.location.x, data.spawn.location.y, data.spawn.location.z)
+		FadeInWithTimeout(500)
+	end
+
+	LocalPlayer.state.ped = player
+
+	SetNuiFocus(false)
+
+	TriggerScreenblurFadeOut(500)
+	cb()
 end)
