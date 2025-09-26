@@ -1,8 +1,11 @@
 _insideCasino = false
 _insideCasinoAudio = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	TriggerEvent("Casino:Client:Startup")
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		TriggerEvent("Casino:Client:Startup")
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")

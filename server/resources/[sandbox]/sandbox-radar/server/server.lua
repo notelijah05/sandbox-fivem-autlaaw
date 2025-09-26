@@ -1,7 +1,10 @@
 FLAGGED_PLATES = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterChatCommands()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterChatCommands()
+	end
 end)
 
 CreateThread(function()

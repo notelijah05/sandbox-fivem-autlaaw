@@ -1,24 +1,27 @@
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterGamesCallbacks()
-	TriggerEvent("Robbery:Client:Setup")
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterGamesCallbacks()
+		TriggerEvent("Robbery:Client:Setup")
 
-	CreateThread(function()
-		exports['sandbox-pedinteraction']:Add(
-			"RobToolsPickup",
-			GetHashKey("csb_anton"),
-			vector3(1129.422, -476.236, 65.485),
-			300.00,
-			25.0,
-			{
+		CreateThread(function()
+			exports['sandbox-pedinteraction']:Add(
+				"RobToolsPickup",
+				GetHashKey("csb_anton"),
+				vector3(1129.422, -476.236, 65.485),
+				300.00,
+				25.0,
 				{
-					icon = "hand",
-					text = "Pickup Items",
-					event = "Robbery:Client:PickupItems",
+					{
+						icon = "hand",
+						text = "Pickup Items",
+						event = "Robbery:Client:PickupItems",
+					},
 				},
-			},
-			"box-dollar"
-		)
-	end)
+				"box-dollar"
+			)
+		end)
+	end
 end)
 
 AddEventHandler("Robbery:Client:PickupItems", function()

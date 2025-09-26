@@ -1,9 +1,12 @@
-AddEventHandler("Core:Shared:Ready", function()
-	Startup()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		Startup()
 
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		RunRestaurantJobUpdate(source, true)
-	end, 2)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+			RunRestaurantJobUpdate(source, true)
+		end, 2)
+	end
 end)
 
 function RunRestaurantJobUpdate(source, onSpawn)

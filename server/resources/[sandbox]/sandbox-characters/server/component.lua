@@ -1,11 +1,13 @@
 ONLINE_CHARACTERS = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
-	RegisterMiddleware()
-	Startup()
-	RegisterCommands()
-	_spawnFuncs = {}
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+		RegisterMiddleware()
+		Startup()
+		RegisterCommands()
+	end
 end)
 
 exports("GetLastLocation", function(source)

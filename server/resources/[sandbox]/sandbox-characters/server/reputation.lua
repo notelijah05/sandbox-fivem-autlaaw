@@ -1,5 +1,8 @@
-AddEventHandler("Core:Shared:Ready", function()
-	RepItems()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RepItems()
+	end
 end)
 
 function RepItems()

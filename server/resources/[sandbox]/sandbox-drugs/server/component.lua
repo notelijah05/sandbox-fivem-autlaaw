@@ -21,27 +21,30 @@ function table.copy(t)
 	return setmetatable(u, getmetatable(t))
 end
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterItemUse()
-	RunDegenThread()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterItemUse()
+		RunDegenThread()
 
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local addictions = char:GetData("Addiction")
-			if char:GetData("Addiction") == nil then
-				char:SetData("Addiction", _addictionTemplate)
-			else
-				for k, v in pairs(_addictionTemplate) do
-					if addictions[k] == nil then
-						addictions[k] = table.copy(v)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char ~= nil then
+				local addictions = char:GetData("Addiction")
+				if char:GetData("Addiction") == nil then
+					char:SetData("Addiction", _addictionTemplate)
+				else
+					for k, v in pairs(_addictionTemplate) do
+						if addictions[k] == nil then
+							addictions[k] = table.copy(v)
+						end
 					end
+					char:SetData("Addiction", addictions)
 				end
-				char:SetData("Addiction", addictions)
 			end
-		end
-	end, 1)
+		end, 1)
 
-	TriggerEvent("Drugs:Server:Startup")
-	TriggerEvent("Drugs:Server:StartCookThreads")
+		TriggerEvent("Drugs:Server:Startup")
+		TriggerEvent("Drugs:Server:StartCookThreads")
+	end
 end)

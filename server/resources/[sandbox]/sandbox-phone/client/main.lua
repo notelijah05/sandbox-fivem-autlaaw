@@ -28,74 +28,77 @@ local _ignoreEvents = {
 	"PhoneSettings",
 }
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-keybinds"]:Add("phone_toggle", "M", "keyboard", "Phone - Open/Close", function()
-		TogglePhone()
-	end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-keybinds"]:Add("phone_toggle", "M", "keyboard", "Phone - Open/Close", function()
+			TogglePhone()
+		end)
 
-	exports["sandbox-keybinds"]:Add("phone_ansend", "", "keyboard", "Phone - Accept/End Call", function()
-		if _call ~= nil then
-			if _call.state == 1 then
-				exports['sandbox-phone']:CallAccept()
-			else
+		exports["sandbox-keybinds"]:Add("phone_ansend", "", "keyboard", "Phone - Accept/End Call", function()
+			if _call ~= nil then
+				if _call.state == 1 then
+					exports['sandbox-phone']:CallAccept()
+				else
+					exports['sandbox-phone']:CallEnd()
+				end
+			end
+		end)
+
+		exports["sandbox-keybinds"]:Add("phone_answer", "", "keyboard", "Phone - Accept Call", function()
+			if _call ~= nil then
+				if _call.state == 1 then
+					exports['sandbox-phone']:CallAccept()
+				end
+			end
+		end)
+
+		exports["sandbox-keybinds"]:Add("phone_end", "", "keyboard", "Phone - End Call", function()
+			if _call ~= nil then
 				exports['sandbox-phone']:CallEnd()
 			end
-		end
-	end)
+		end)
 
-	exports["sandbox-keybinds"]:Add("phone_answer", "", "keyboard", "Phone - Accept Call", function()
-		if _call ~= nil then
-			if _call.state == 1 then
-				exports['sandbox-phone']:CallAccept()
+		exports["sandbox-keybinds"]:Add("phone_mute", "", "keyboard", "Phone - Mute/Unmute Sound", function()
+			if _settings.volume > 0 then
+				_settings.volume = 0
+				exports["sandbox-sounds"]:PlayOne("mute.ogg", 0.1)
+			else
+				_settings.volume = 100
+				exports["sandbox-sounds"]:PlayOne("unmute.ogg", 0.1)
 			end
+			exports["sandbox-base"]:ServerCallback("Phone:Settings:Update", {
+				type = "volume",
+				val = _settings.volume,
+			})
+
+			-- Send this manually since we're blocking PhoneSettings
+			-- updates bcuz react rerendering makes me want to cry
+			SendNUIMessage({
+				type = "UPDATE_DATA",
+				data = {
+					type = "player",
+					id = "PhoneSettings",
+					key = "volume",
+					data = _settings.volume,
+				},
+			})
+		end)
+
+		for k, v in ipairs(_payphones) do
+			exports['sandbox-targeting']:AddObject(v, "phone-rotary", {
+				{
+					icon = "phone-volume",
+					text = "Use Payphone",
+					event = "Phone:Client:Payphone",
+					minDist = 2.0,
+					isEnabled = function()
+						return not exports['sandbox-phone']:IsOpen() and
+							not exports['sandbox-phone']:CallStatus()
+					end,
+				},
+			}, 3.0)
 		end
-	end)
-
-	exports["sandbox-keybinds"]:Add("phone_end", "", "keyboard", "Phone - End Call", function()
-		if _call ~= nil then
-			exports['sandbox-phone']:CallEnd()
-		end
-	end)
-
-	exports["sandbox-keybinds"]:Add("phone_mute", "", "keyboard", "Phone - Mute/Unmute Sound", function()
-		if _settings.volume > 0 then
-			_settings.volume = 0
-			exports["sandbox-sounds"]:PlayOne("mute.ogg", 0.1)
-		else
-			_settings.volume = 100
-			exports["sandbox-sounds"]:PlayOne("unmute.ogg", 0.1)
-		end
-		exports["sandbox-base"]:ServerCallback("Phone:Settings:Update", {
-			type = "volume",
-			val = _settings.volume,
-		})
-
-		-- Send this manually since we're blocking PhoneSettings
-		-- updates bcuz react rerendering makes me want to cry
-		SendNUIMessage({
-			type = "UPDATE_DATA",
-			data = {
-				type = "player",
-				id = "PhoneSettings",
-				key = "volume",
-				data = _settings.volume,
-			},
-		})
-	end)
-
-	for k, v in ipairs(_payphones) do
-		exports['sandbox-targeting']:AddObject(v, "phone-rotary", {
-			{
-				icon = "phone-volume",
-				text = "Use Payphone",
-				event = "Phone:Client:Payphone",
-				minDist = 2.0,
-				isEnabled = function()
-					return not exports['sandbox-phone']:IsOpen() and
-						not exports['sandbox-phone']:CallStatus()
-				end,
-			},
-		}, 3.0)
 	end
 end)
 

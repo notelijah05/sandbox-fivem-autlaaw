@@ -1,5 +1,8 @@
-AddEventHandler("Core:Shared:Ready", function()
-	TriggerEvent("Businesses:Client:Startup")
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		TriggerEvent("Businesses:Client:Startup")
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")

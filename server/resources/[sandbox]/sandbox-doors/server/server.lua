@@ -2,12 +2,15 @@ DOORS_CACHE = {}
 DOORS_IDS = {}
 ELEVATOR_CACHE = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
-	RegisterChatCommands()
-	--RegisterItems()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+		RegisterChatCommands()
+		--RegisterItems()
 
-	RunStartup()
+		RunStartup()
+	end
 end)
 
 local _startup = false

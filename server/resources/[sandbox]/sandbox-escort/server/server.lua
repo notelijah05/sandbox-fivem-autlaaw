@@ -1,6 +1,9 @@
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
-	RegisterMiddleware()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+		RegisterMiddleware()
+	end
 end)
 
 exports("EscortDo", function(source, data)

@@ -9,26 +9,29 @@ local customOffsets = {
 
 local _inTrunkVeh = nil
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPutIn", function(data, cb)
-		if NetworkDoesEntityExistWithNetworkId(data) then
-			InTrunk(NetToVeh(data))
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPulledOut", function(data, cb)
-		if LocalPlayer.state.inTrunk then
-			exports['sandbox-escort']:TrunkGetOut()
-
-			while LocalPlayer.state.inTrunk do
-				Wait(5)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPutIn", function(data, cb)
+			if NetworkDoesEntityExistWithNetworkId(data) then
+				InTrunk(NetToVeh(data))
 			end
+		end)
 
-			cb(true)
-		else
-			cb(false)
-		end
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPulledOut", function(data, cb)
+			if LocalPlayer.state.inTrunk then
+				exports['sandbox-escort']:TrunkGetOut()
+
+				while LocalPlayer.state.inTrunk do
+					Wait(5)
+				end
+
+				cb(true)
+			else
+				cb(false)
+			end
+		end)
+	end
 end)
 
 AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()

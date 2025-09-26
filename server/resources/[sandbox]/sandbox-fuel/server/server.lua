@@ -5,41 +5,44 @@ local depositData = {
 	transactions = 0,
 }
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
 
-	if not threading then
-		CreateThread(function()
-			while true do
-				Wait(1000 * 60 * 10)
-				if depositData.amount > 0 then
-					exports['sandbox-base']:LoggerTrace(
-						"Fuel",
-						string.format("Depositing ^2$%s^7 To ^3%s^7", math.abs(depositData.amount), bankAcc)
-					)
-					exports['sandbox-finance']:BalanceDeposit(bankAcc, math.abs(depositData.amount), {
-						type = "deposit",
-						title = "Fuel Services",
-						description = string.format(
-							"Payment For Fuel Services For %s Vehicles",
-							depositData.transactions
-						),
-						data = {},
-					}, true)
-					depositData = {
-						amount = 0,
-						transactions = 0,
-					}
+		if not threading then
+			CreateThread(function()
+				while true do
+					Wait(1000 * 60 * 10)
+					if depositData.amount > 0 then
+						exports['sandbox-base']:LoggerTrace(
+							"Fuel",
+							string.format("Depositing ^2$%s^7 To ^3%s^7", math.abs(depositData.amount), bankAcc)
+						)
+						exports['sandbox-finance']:BalanceDeposit(bankAcc, math.abs(depositData.amount), {
+							type = "deposit",
+							title = "Fuel Services",
+							description = string.format(
+								"Payment For Fuel Services For %s Vehicles",
+								depositData.transactions
+							),
+							data = {},
+						}, true)
+						depositData = {
+							amount = 0,
+							transactions = 0,
+						}
+					end
 				end
-			end
-		end)
-		threading = true
-	end
+			end)
+			threading = true
+		end
 
-	Wait(2000)
-	local f = exports['sandbox-finance']:AccountsGetOrganization("dgang")
-	if f ~= true then
-		bankAcc = f.Account
+		Wait(2000)
+		local f = exports['sandbox-finance']:AccountsGetOrganization("dgang")
+		if f ~= true then
+			bankAcc = f.Account
+		end
 	end
 end)
 

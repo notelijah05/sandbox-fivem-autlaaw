@@ -14,15 +14,18 @@ RegisterNetEvent("Evidence:Server:RecieveEvidence", function(newEvidence)
 	end
 end)
 
-AddEventHandler("Core:Shared:Ready", function()
-	StartDeletionThread()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		StartDeletionThread()
 
-	exports["sandbox-base"]:RegisterServerCallback("Evidence:Fetch", function(source, data, cb)
-		cb(EVIDENCE_CACHE)
-	end)
+		exports["sandbox-base"]:RegisterServerCallback("Evidence:Fetch", function(source, data, cb)
+			cb(EVIDENCE_CACHE)
+		end)
 
-	RegisterBallisticsCallbacks()
-	RegisterBallisticsItemUses()
+		RegisterBallisticsCallbacks()
+		RegisterBallisticsItemUses()
+	end
 end)
 
 local _deletionThead = false

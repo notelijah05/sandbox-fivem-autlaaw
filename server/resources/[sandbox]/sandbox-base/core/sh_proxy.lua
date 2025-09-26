@@ -19,9 +19,6 @@ AddEventHandler('onResourceStart', function(resource)
         if resource ~= GetCurrentResourceName() then
             TriggerEvent('Proxy:Shared:RegisterReady')
 
-            if GetGameTimer() > 10000 then
-                TriggerEvent('Core:Shared:Ready')
-            end
             collectgarbage()
         end
     end

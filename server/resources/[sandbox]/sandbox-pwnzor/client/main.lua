@@ -1,8 +1,6 @@
-local _r = false
-
-AddEventHandler("Core:Shared:Ready", function()
-	if not _r then
-		_r = true
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
 		RegisterEvents()
 		RegisterCommands()
 

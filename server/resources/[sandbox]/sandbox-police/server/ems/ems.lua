@@ -1,6 +1,9 @@
-AddEventHandler("Core:Shared:Ready", function()
-	EMSCallbacks()
-	EMSItems()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		EMSCallbacks()
+		EMSItems()
+	end
 end)
 
 RegisterNetEvent("EMS:Server:CheckICUPatients", function()

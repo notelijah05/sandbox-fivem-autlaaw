@@ -8,13 +8,16 @@ LICENSE_PLATE_DATA = {}
 
 _savedVehiclePropertiesClusterfuck = {}
 
-AddEventHandler('Core:Shared:Ready', function()
-    RegisterCallbacks()
-    RegisterMiddleware()
-    RegisterItemUses()
-    RegisterPersonalPlateCallbacks()
-    RegisterChatCommands()
-    Startup()
+AddEventHandler('onResourceStart', function(resource)
+    if resource == GetCurrentResourceName() then
+        Wait(1000)
+        RegisterCallbacks()
+        RegisterMiddleware()
+        RegisterItemUses()
+        RegisterPersonalPlateCallbacks()
+        RegisterChatCommands()
+        Startup()
+    end
 end)
 
 function RegisterMiddleware()

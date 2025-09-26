@@ -7,12 +7,15 @@ _mdtLoggedIn = false
 
 local _bodycam = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-keybinds"]:Add("gov_mdt", "", "keyboard", "Gov - Open MDT", function()
-		ToggleMDT()
-	end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-keybinds"]:Add("gov_mdt", "", "keyboard", "Gov - Open MDT", function()
+			ToggleMDT()
+		end)
 
-	RegisterBadgeCallbacks()
+		RegisterBadgeCallbacks()
+	end
 end)
 
 AddEventHandler("Characters:Client:Spawn", function()

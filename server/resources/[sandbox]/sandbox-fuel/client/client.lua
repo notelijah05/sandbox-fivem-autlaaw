@@ -15,41 +15,44 @@ local pumpModels = {
 	486135101, -- LTD Grove Gabz
 }
 
-AddEventHandler("Core:Shared:Ready", function()
-	CreateFuelStationPolyzones()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		CreateFuelStationPolyzones()
 
-	for k, v in ipairs(pumpModels) do
-		exports['sandbox-targeting']:AddObject(v, "gas-pump", {
-			{
-				text = "Refill Petrol Can",
-				icon = "gas-pump",
-				textFunc = function()
-					local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
-					local pct = current / 4500
-					return string.format(
-						"Refill Petrol Can ($%s)",
-						math.ceil(CalculateFuelCost(0, math.floor(100 - (pct * 100))))
-					)
-				end,
-				event = "Fuel:Client:FillCan",
-				minDist = 3.0,
-				isEnabled = function()
-					local isArmed, hash = GetCurrentPedWeapon(LocalPlayer.state.ped)
-					local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
-					local pct = current / 4500
-					local cCost = CalculateFuelCost(0, math.floor(100 - (pct * 100)))
-					if cCost then
-						local cost = math.ceil(cCost)
-						return (
-							isArmed
-							and hash == `WEAPON_PETROLCAN`
-							and GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`) < 4500
-							and LocalPlayer.state.Character:GetData("Cash") >= cost
+		for k, v in ipairs(pumpModels) do
+			exports['sandbox-targeting']:AddObject(v, "gas-pump", {
+				{
+					text = "Refill Petrol Can",
+					icon = "gas-pump",
+					textFunc = function()
+						local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
+						local pct = current / 4500
+						return string.format(
+							"Refill Petrol Can ($%s)",
+							math.ceil(CalculateFuelCost(0, math.floor(100 - (pct * 100))))
 						)
-					end
-				end,
-			},
-		}, 3.0)
+					end,
+					event = "Fuel:Client:FillCan",
+					minDist = 3.0,
+					isEnabled = function()
+						local isArmed, hash = GetCurrentPedWeapon(LocalPlayer.state.ped)
+						local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
+						local pct = current / 4500
+						local cCost = CalculateFuelCost(0, math.floor(100 - (pct * 100)))
+						if cCost then
+							local cost = math.ceil(cCost)
+							return (
+								isArmed
+								and hash == `WEAPON_PETROLCAN`
+								and GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`) < 4500
+								and LocalPlayer.state.Character:GetData("Cash") >= cost
+							)
+						end
+					end,
+				},
+			}, 3.0)
+		end
 	end
 end)
 

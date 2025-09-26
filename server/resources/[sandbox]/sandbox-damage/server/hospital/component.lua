@@ -7,28 +7,31 @@ local _medsForSale = {
 	{ item = "ifak",     coin = "MALD", price = 100, qty = -1, vpn = false, requireCurrency = true },
 }
 
-AddEventHandler("Core:Shared:Ready", function()
-	HospitalCallbacks()
-	HospitalMiddleware()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		HospitalCallbacks()
+		HospitalMiddleware()
 
-	GlobalState["HiddenHospital"] = {
-		coords = vector3(2810.023, 5977.588, 349.919),
-		heading = 146.641,
-	}
+		GlobalState["HiddenHospital"] = {
+			coords = vector3(2810.023, 5977.588, 349.919),
+			heading = 146.641,
+		}
 
-	exports['sandbox-pedinteraction']:VendorCreate("BlackmarketMeds", "ped", "Medical Supplies", `S_M_M_Paramedic_01`,
-		{
-			coords = vector3(2815.044, 5980.179, 349.928),
-			heading = 277.889,
-			scenario = "WORLD_HUMAN_CLIPBOARD",
-		}, _medsForSale, "pump-medical", "View Supplies", false, false, true)
+		exports['sandbox-pedinteraction']:VendorCreate("BlackmarketMeds", "ped", "Medical Supplies", `S_M_M_Paramedic_01`,
+			{
+				coords = vector3(2815.044, 5980.179, 349.928),
+				heading = 277.889,
+				scenario = "WORLD_HUMAN_CLIPBOARD",
+			}, _medsForSale, "pump-medical", "View Supplies", false, false, true)
 
-	exports["sandbox-chat"]:RegisterAdminCommand("clearbeds", function(source, args, rawCommand)
-		_inBed = {}
-	end, {
-		help = "Force Clear All Hospital Beds",
-		params = {},
-	}, -1)
+		exports["sandbox-chat"]:RegisterAdminCommand("clearbeds", function(source, args, rawCommand)
+			_inBed = {}
+		end, {
+			help = "Force Clear All Hospital Beds",
+			params = {},
+		}, -1)
+	end
 end)
 
 exports("HospitalRequestBed", function(source)

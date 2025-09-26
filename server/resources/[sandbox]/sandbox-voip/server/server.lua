@@ -23,31 +23,34 @@ function GetDefaultPlayerVOIPData(source)
 	}
 end
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterMiddleware()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterMiddleware()
 
-	local mAddress = GetConvar("ext_mumble_address", "")
-	if mAddress ~= "" then
-		GlobalState.MumbleAddress = mAddress
-		GlobalState.MumblePort = GetConvarInt("ext_mumble_port", 64738)
+		local mAddress = GetConvar("ext_mumble_address", "")
+		if mAddress ~= "" then
+			GlobalState.MumbleAddress = mAddress
+			GlobalState.MumblePort = GetConvarInt("ext_mumble_port", 64738)
+		end
+
+		--RegisterChatCommands()
+		exports['sandbox-inventory']:RegisterUse("radio", "VOIP", function(source, itemData)
+			TriggerClientEvent("Radio:Client:OpenUI", source, 1)
+		end)
+
+		exports['sandbox-inventory']:RegisterUse("radio_shitty", "VOIP", function(source, itemData)
+			TriggerClientEvent("Radio:Client:OpenUI", source, 3)
+		end)
+
+		exports['sandbox-inventory']:RegisterUse("radio_extendo", "VOIP", function(source, itemData)
+			TriggerClientEvent("Radio:Client:OpenUI", source, 2)
+		end)
+
+		exports['sandbox-inventory']:RegisterUse("megaphone", "VOIP", function(source, itemData)
+			TriggerClientEvent("VOIP:Client:Megaphone:Use", source, false)
+		end)
 	end
-
-	--RegisterChatCommands()
-	exports['sandbox-inventory']:RegisterUse("radio", "VOIP", function(source, itemData)
-		TriggerClientEvent("Radio:Client:OpenUI", source, 1)
-	end)
-
-	exports['sandbox-inventory']:RegisterUse("radio_shitty", "VOIP", function(source, itemData)
-		TriggerClientEvent("Radio:Client:OpenUI", source, 3)
-	end)
-
-	exports['sandbox-inventory']:RegisterUse("radio_extendo", "VOIP", function(source, itemData)
-		TriggerClientEvent("Radio:Client:OpenUI", source, 2)
-	end)
-
-	exports['sandbox-inventory']:RegisterUse("megaphone", "VOIP", function(source, itemData)
-		TriggerClientEvent("VOIP:Client:Megaphone:Use", source, false)
-	end)
 end)
 
 function RegisterMiddleware()

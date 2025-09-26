@@ -21,14 +21,17 @@ _governmentJobData = {}
 
 local sentencedSuspects = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterMiddleware()
-	Startup()
-	TriggerEvent("MDT:Server:RegisterCallbacks")
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterMiddleware()
+		Startup()
+		TriggerEvent("MDT:Server:RegisterCallbacks")
 
-	Wait(2500)
-	UpdateMDTJobsData()
-	RegisterChatCommands()
+		Wait(2500)
+		UpdateMDTJobsData()
+		RegisterChatCommands()
+	end
 end)
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)

@@ -1,23 +1,26 @@
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterMiddleware()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterMiddleware()
 
-	exports["sandbox-chat"]:RegisterCommand("me", function(source, args, rawCommand)
-		if #args > 0 then
-			local message = table.concat(args, " ")
-			TriggerClientEvent("Chat:Client:ReceiveMe", -1, source, GetGameTimer(), message)
-		else
-			exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
-		end
-	end, {
-		help = "Let People Know What You are Doing",
-		params = {},
-	}, -1)
+		exports["sandbox-chat"]:RegisterCommand("me", function(source, args, rawCommand)
+			if #args > 0 then
+				local message = table.concat(args, " ")
+				TriggerClientEvent("Chat:Client:ReceiveMe", -1, source, GetGameTimer(), message)
+			else
+				exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
+			end
+		end, {
+			help = "Let People Know What You are Doing",
+			params = {},
+		}, -1)
 
-	exports["sandbox-chat"]:RegisterStaffCommand("clearall", function(source, args, rawCommand)
-		exports["sandbox-chat"]:ClearAll()
-	end, {
-		help = "[Staff] Clear chat for everyone",
-	}, 0)
+		exports["sandbox-chat"]:RegisterStaffCommand("clearall", function(source, args, rawCommand)
+			exports["sandbox-chat"]:ClearAll()
+		end, {
+			help = "[Staff] Clear chat for everyone",
+		}, 0)
+	end
 end)
 
 function RegisterMiddleware()

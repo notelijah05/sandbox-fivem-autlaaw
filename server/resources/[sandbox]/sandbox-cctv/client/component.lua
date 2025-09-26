@@ -14,8 +14,11 @@ local currentTimecycle = nil
 local offline = false
 local canrotate = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterKeyBinds()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterKeyBinds()
+	end
 end)
 
 exports('View', function(camId)

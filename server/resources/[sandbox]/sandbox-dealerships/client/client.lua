@@ -4,14 +4,17 @@ _withinCatalog = false
 
 _justBoughtFuckingBike = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	CreateDealerships()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		CreateDealerships()
 
-	CreateRentalSpots()
-	CreateBikeStands()
-	CreateGovermentFleetShops()
+		CreateRentalSpots()
+		CreateBikeStands()
+		CreateGovermentFleetShops()
 
-	CreateDonorDealerships()
+		CreateDonorDealerships()
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")

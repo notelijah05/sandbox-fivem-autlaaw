@@ -1,5 +1,8 @@
-AddEventHandler("Core:Shared:Ready", function()
-	TriggerEvent("Labor:Client:Setup")
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		TriggerEvent("Labor:Client:Setup")
+	end
 end)
 
 function Draw3DText(x, y, z, text)

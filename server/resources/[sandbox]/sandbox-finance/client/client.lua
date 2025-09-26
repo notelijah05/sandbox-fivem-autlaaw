@@ -8,130 +8,133 @@ function TableLength(tbl)
 	return c
 end
 
-AddEventHandler("Core:Shared:Ready", function()
-	RunBankingStartup()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RunBankingStartup()
 
-	exports['sandbox-pedinteraction']:Add("paycheck", `ig_bankman`, vector3(253.193, 216.434, 105.282), 339.578, 25.0,
-		{
+		exports['sandbox-pedinteraction']:Add("paycheck", `ig_bankman`, vector3(253.193, 216.434, 105.282), 339.578, 25.0,
 			{
-				icon = "hand-holding-dollar",
-				text = "Get Paycheck",
-				event = "Finance:Client:Paycheck",
-				isEnabled = function()
-					return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
-				end,
-			},
-		}, "money-check-dollar")
+				{
+					icon = "hand-holding-dollar",
+					text = "Get Paycheck",
+					event = "Finance:Client:Paycheck",
+					isEnabled = function()
+						return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
+					end,
+				},
+			}, "money-check-dollar")
 
-	exports['sandbox-targeting']:ZonesAddBox(
-		"paycheck-fuckingcunt",
-		"money-check-dollar",
-		vector3(254.53, 216.58, 106.28),
-		0.8,
-		3.6,
-		{
-			name = "paycheck",
-			heading = 340,
-			--debugPoly=true,
-			minZ = 105.28,
-			maxZ = 108.28,
-		},
-		{
+		exports['sandbox-targeting']:ZonesAddBox(
+			"paycheck-fuckingcunt",
+			"money-check-dollar",
+			vector3(254.53, 216.58, 106.28),
+			0.8,
+			3.6,
 			{
-				icon = "hand-holding-dollar",
-				text = "Get Paycheck",
-				event = "Finance:Client:Paycheck",
-				isEnabled = function()
-					return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
-				end,
+				name = "paycheck",
+				heading = 340,
+				--debugPoly=true,
+				minZ = 105.28,
+				maxZ = 108.28,
 			},
-		},
-		3.0,
-		true
-	)
-
-	exports['sandbox-pedinteraction']:Add("paycheck-2", `ig_bankman`, vector3(17.568, -927.223, 28.903), 111.958,
-		25.0, {
 			{
-				icon = "hand-holding-dollar",
-				text = "Get Paycheck",
-				event = "Finance:Client:Paycheck",
-				isEnabled = function()
-					return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
-				end,
+				{
+					icon = "hand-holding-dollar",
+					text = "Get Paycheck",
+					event = "Finance:Client:Paycheck",
+					isEnabled = function()
+						return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
+					end,
+				},
 			},
-		}, "money-check-dollar")
+			3.0,
+			true
+		)
 
-	exports['sandbox-targeting']:ZonesAddBox(
-		"paycheck-fuckingcunt-2",
-		"money-check-dollar",
-		vector3(16.72, -927.74, 29.9),
-		2.0,
-		1.0,
-		{
-			name = "paycheck",
-			heading = 15,
-			--debugPoly=true,
-			minZ = 29.7,
-			maxZ = 31.3,
-		},
-		{
+		exports['sandbox-pedinteraction']:Add("paycheck-2", `ig_bankman`, vector3(17.568, -927.223, 28.903), 111.958,
+			25.0, {
+				{
+					icon = "hand-holding-dollar",
+					text = "Get Paycheck",
+					event = "Finance:Client:Paycheck",
+					isEnabled = function()
+						return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
+					end,
+				},
+			}, "money-check-dollar")
+
+		exports['sandbox-targeting']:ZonesAddBox(
+			"paycheck-fuckingcunt-2",
+			"money-check-dollar",
+			vector3(16.72, -927.74, 29.9),
+			2.0,
+			1.0,
 			{
-				icon = "hand-holding-dollar",
-				text = "Get Paycheck",
-				event = "Finance:Client:Paycheck",
-				isEnabled = function()
-					return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
-				end,
+				name = "paycheck",
+				heading = 15,
+				--debugPoly=true,
+				minZ = 29.7,
+				maxZ = 31.3,
 			},
-		},
-		3.0,
-		true
-	)
-
-	exports['sandbox-pedinteraction']:Add("paycheck-3", `ig_bankman`, vector3(-108.997, 6471.589, 30.634), 224.685,
-		25.0, {
 			{
-				icon = "hand-holding-dollar",
-				text = "Get Paycheck",
-				event = "Finance:Client:Paycheck",
-				isEnabled = function()
-					return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
-				end,
+				{
+					icon = "hand-holding-dollar",
+					text = "Get Paycheck",
+					event = "Finance:Client:Paycheck",
+					isEnabled = function()
+						return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
+					end,
+				},
 			},
-		}, "money-check-dollar")
+			3.0,
+			true
+		)
 
-	exports['sandbox-targeting']:ZonesAddBox(
-		"paycheck-fuckingcunt-3",
-		"money-check-dollar",
-		vector3(-109.04, 6471.68, 31.63),
-		1.6,
-		1.2,
-		{
-			name = "paycheck",
-			heading = 315,
-			--debugPoly=true,
-			minZ = 28.83,
-			maxZ = 32.83,
-		},
-		{
+		exports['sandbox-pedinteraction']:Add("paycheck-3", `ig_bankman`, vector3(-108.997, 6471.589, 30.634), 224.685,
+			25.0, {
+				{
+					icon = "hand-holding-dollar",
+					text = "Get Paycheck",
+					event = "Finance:Client:Paycheck",
+					isEnabled = function()
+						return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
+					end,
+				},
+			}, "money-check-dollar")
+
+		exports['sandbox-targeting']:ZonesAddBox(
+			"paycheck-fuckingcunt-3",
+			"money-check-dollar",
+			vector3(-109.04, 6471.68, 31.63),
+			1.6,
+			1.2,
 			{
-				icon = "hand-holding-dollar",
-				text = "Get Paycheck",
-				event = "Finance:Client:Paycheck",
-				isEnabled = function()
-					return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
-				end,
+				name = "paycheck",
+				heading = 315,
+				--debugPoly=true,
+				minZ = 28.83,
+				maxZ = 32.83,
 			},
-		},
-		3.0,
-		true
-	)
+			{
+				{
+					icon = "hand-holding-dollar",
+					text = "Get Paycheck",
+					event = "Finance:Client:Paycheck",
+					isEnabled = function()
+						return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
+					end,
+				},
+			},
+			3.0,
+			true
+		)
 
-	exports['sandbox-hud']:InteractionRegisterMenu("cash", "Show Cash", "dollar-sign", function()
-		TriggerServerEvent("Wallet:ShowCash")
-		exports['sandbox-hud']:InteractionHide()
-	end)
+		exports['sandbox-hud']:InteractionRegisterMenu("cash", "Show Cash", "dollar-sign", function()
+			TriggerServerEvent("Wallet:ShowCash")
+			exports['sandbox-hud']:InteractionHide()
+		end)
+	end
 end)
 
 RegisterNetEvent("UI:Client:Reset", function()

@@ -157,89 +157,92 @@ function BuildMetaDataTable(cData, item, existing)
 	return MetaData
 end
 
-AddEventHandler("Core:Shared:Ready", function()
-	UpdateDatabaseItems()
-	LoadItemsFromDb()
-	--LoadItems()
-	RegisterCallbacks()
-	LoadEntityTypes()
-	LoadShops()
-	LoadPlayerShops()
-	SetupGarbage()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		UpdateDatabaseItems()
+		LoadItemsFromDb()
+		--LoadItems()
+		RegisterCallbacks()
+		LoadEntityTypes()
+		LoadShops()
+		LoadPlayerShops()
+		SetupGarbage()
 
-	ClearDropZones()
-	ClearBrokenItems()
-	ClearLocalVehicleInventories()
-	CleanupExpiredCooldowns()
-	LoadCraftingCooldowns()
+		ClearDropZones()
+		ClearBrokenItems()
+		ClearLocalVehicleInventories()
+		CleanupExpiredCooldowns()
+		LoadCraftingCooldowns()
 
-	RegisterCommands()
-	RegisterStashCallbacks()
-	RegisterTestBench()
-	RegisterPublicSchematicBenches()
-	RegisterCraftingCallbacks()
-	RegisterDonorVanityItemsCallbacks()
+		RegisterCommands()
+		RegisterStashCallbacks()
+		RegisterTestBench()
+		RegisterPublicSchematicBenches()
+		RegisterCraftingCallbacks()
+		RegisterDonorVanityItemsCallbacks()
 
-	local f = exports['sandbox-finance']:AccountsGetOrganization("government")
-	if f ~= true then
-		_govAccount = f.Account
-	end
-
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		TriggerLatentClientEvent("Inventory:Client:PolySetup", source, 50000, _polyInvs)
-
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local sid = char:GetData("SID")
-
-		_refreshAttchs[sid] = true
-		_refreshGangChain[sid] = true
-		refreshShit(sid, true)
-
-		TriggerLatentClientEvent("Weapons:Client:SetProps", source, 50000, _cachedProps)
-		if char:GetData("InventorySettings") == nil then
-			char:SetData("InventorySettings", _defInvSettings)
+		local f = exports['sandbox-finance']:AccountsGetOrganization("government")
+		if f ~= true then
+			_govAccount = f.Account
 		end
-	end, 1)
 
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		local benches = {}
-		for k, v in pairs(_types) do
-			table.insert(benches, {
-				id = v.id,
-				label = v.label,
-				targeting = v.targeting,
-				location = v.location,
-				restrictions = v.restrictions,
-				canUseSchematics = v.canUseSchematics,
-			})
-		end
-		TriggerLatentClientEvent("Crafting:Client:CreateBenches", source, 50000, benches)
-		TriggerLatentClientEvent("Inventory:Client:DropzoneForceUpdate", source, 50000, _dropzones)
-		TriggerLatentClientEvent("Inventory:Client:BasicShop:Set", source, 50000, _playerShops)
-	end, 2)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+			TriggerLatentClientEvent("Inventory:Client:PolySetup", source, 50000, _polyInvs)
 
-	exports['sandbox-base']:MiddlewareAdd("Characters:Created", function(source, cData)
-		local player = exports['sandbox-base']:FetchSource(source)
-		local docs = {}
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			local sid = char:GetData("SID")
 
-		local slot = 1
-		for k, v in ipairs(Config.StartItems) do
-			local metadata = BuildMetaDataTable(cData, v.name)
+			_refreshAttchs[sid] = true
+			_refreshGangChain[sid] = true
+			refreshShit(sid, true)
 
-			if v.name == "choplist" then
-				metadata.ChopList = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(math.random(4, 8),
-					math.random(3, 5))
-				metadata.Owner = cData.SID
+			TriggerLatentClientEvent("Weapons:Client:SetProps", source, 50000, _cachedProps)
+			if char:GetData("InventorySettings") == nil then
+				char:SetData("InventorySettings", _defInvSettings)
+			end
+		end, 1)
+
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+			local benches = {}
+			for k, v in pairs(_types) do
+				table.insert(benches, {
+					id = v.id,
+					label = v.label,
+					targeting = v.targeting,
+					location = v.location,
+					restrictions = v.restrictions,
+					canUseSchematics = v.canUseSchematics,
+				})
+			end
+			TriggerLatentClientEvent("Crafting:Client:CreateBenches", source, 50000, benches)
+			TriggerLatentClientEvent("Inventory:Client:DropzoneForceUpdate", source, 50000, _dropzones)
+			TriggerLatentClientEvent("Inventory:Client:BasicShop:Set", source, 50000, _playerShops)
+		end, 2)
+
+		exports['sandbox-base']:MiddlewareAdd("Characters:Created", function(source, cData)
+			local player = exports['sandbox-base']:FetchSource(source)
+			local docs = {}
+
+			local slot = 1
+			for k, v in ipairs(Config.StartItems) do
+				local metadata = BuildMetaDataTable(cData, v.name)
+
+				if v.name == "choplist" then
+					metadata.ChopList = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(math.random(4, 8),
+						math.random(3, 5))
+					metadata.Owner = cData.SID
+				end
+
+				local insData = exports['sandbox-inventory']:AddItem(cData.SID, v.name, v.countTo, metadata, 1, false,
+					false, false, false,
+					slot, false, false, true)
+				slot += 1
 			end
 
-			local insData = exports['sandbox-inventory']:AddItem(cData.SID, v.name, v.countTo, metadata, 1, false,
-				false, false, false,
-				slot, false, false, true)
-			slot += 1
-		end
-
-		return true
-	end, 2)
+			return true
+		end, 2)
+	end
 end)
 
 local function HandleLogout(source, cData)

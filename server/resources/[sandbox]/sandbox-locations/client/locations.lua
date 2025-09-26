@@ -89,18 +89,20 @@ local _logoutLocations = {
     },
 }
 
-
-AddEventHandler('Core:Shared:Ready', function()
-    for k, v in ipairs(_logoutLocations) do
-        exports['sandbox-targeting']:ZonesAddBox("logout-location-" .. k, "person-from-portal", v.center, v.length,
-            v.width, v.options,
-            {
+AddEventHandler('onClientResourceStart', function(resource)
+    if resource == GetCurrentResourceName() then
+        Wait(1000)
+        for k, v in ipairs(_logoutLocations) do
+            exports['sandbox-targeting']:ZonesAddBox("logout-location-" .. k, "person-from-portal", v.center, v.length,
+                v.width, v.options,
                 {
-                    icon = "person-from-portal",
-                    text = "Logout",
-                    event = "Locations:Client:LogoutLocation",
-                },
-            }, 2.0, true)
+                    {
+                        icon = "person-from-portal",
+                        text = "Logout",
+                        event = "Locations:Client:LogoutLocation",
+                    },
+                }, 2.0, true)
+        end
     end
 end)
 

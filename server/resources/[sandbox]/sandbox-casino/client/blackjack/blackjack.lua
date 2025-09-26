@@ -524,6 +524,7 @@ end)
 
 AddEventHandler("onResourceStop", function(resource)
     if resource == GetCurrentResourceName() then
+        Wait(1000)
         CleanupBlackjack()
     end
 end)

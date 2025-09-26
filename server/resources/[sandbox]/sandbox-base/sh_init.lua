@@ -2,6 +2,7 @@ COMPONENTS = {}
 
 AddEventHandler("onResourceStart", function(resource)
 	if resource == GetCurrentResourceName() then
+		Wait(1000)
 		CreateThread(function()
 			local ver
 			repeat

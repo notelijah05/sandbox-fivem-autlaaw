@@ -1,15 +1,18 @@
 _charPropertyKeys = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
-	RegisterMiddleware()
-	RegisterChatCommands()
-	DefaultData()
-	Startup()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+		RegisterMiddleware()
+		RegisterChatCommands()
+		DefaultData()
+		Startup()
 
-	CreateFurnitureCallbacks()
+		CreateFurnitureCallbacks()
 
-	SetupPropertyCrafting()
+		SetupPropertyCrafting()
+	end
 end)
 
 exports('Add', function(source, type, interior, price, label, pos)

@@ -3,11 +3,15 @@ _characterLoaded, GLOBAL_PED = false, nil
 _interactionPeds = {}
 _spawnedInteractionPeds = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	-- exports['sandbox-pedinteraction']:Add('fuck', `a_m_y_soucent_04`, vector3(-810.171, -1311.092, 4.000), 332.419, 50.0, {
-	--     { icon = 'boxes-stacked', text = 'F', event = 'F', data = {}, minDist = 2.0, jobs = false },
-	-- })
-end)
+-- AddEventHandler('onClientResourceStart', function(resource)
+-- 		if resource == GetCurrentResourceName() then
+Wait(1000)
+-- 		exports['sandbox-pedinteraction']:Add('fuck', `a_m_y_soucent_04`, vector3(-810.171, -1311.092, 4.000), 332.419,
+-- 			50.0, {
+-- 			{ icon = 'boxes-stacked', text = 'F', event = 'F', data = {}, minDist = 2.0, jobs = false },
+-- 		})
+-- 	end
+-- end)
 
 RegisterNetEvent("Characters:Client:Spawn")
 AddEventHandler("Characters:Client:Spawn", function()

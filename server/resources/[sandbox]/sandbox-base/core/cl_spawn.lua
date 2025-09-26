@@ -3,10 +3,15 @@
 -- end)
 
 local firstLoad = true
-AddEventHandler("Core:Shared:Ready", function()
-	if firstLoad then
-		exports['sandbox-characters']:SpawnInitCamera()
-		exports['sandbox-characters']:SpawnInit()
-		firstLoad = false
+
+AddEventHandler("onClientResourceStart", function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		if firstLoad then
+			exports['sandbox-characters']:SpawnInitCamera()
+			exports['sandbox-characters']:SpawnInit()
+			firstLoad = false
+		end
+		return
 	end
 end)

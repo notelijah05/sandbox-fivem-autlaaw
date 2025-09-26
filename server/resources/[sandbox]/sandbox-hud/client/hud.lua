@@ -55,90 +55,93 @@ function GetMinimapAnchor()
 	return minimap
 end
 
-AddEventHandler("Core:Shared:Ready", function()
-	-- Hud.Minimap:Set()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		-- Hud.Minimap:Set()
 
-	SetBlipAlpha(GetNorthRadarBlip(), 0.0)
+		SetBlipAlpha(GetNorthRadarBlip(), 0.0)
 
-	SetMinimapComponentPosition("minimap", "L", "B", -0.0045, -0.0245, 0.150, 0.18888)
-	SetMinimapComponentPosition("minimap_mask", "L", "B", 0.020, 0.022, 0.111, 0.159)
-	SetMinimapComponentPosition("minimap_blur", "L", "B", -0.03, 0.002, 0.266, 0.237)
+		SetMinimapComponentPosition("minimap", "L", "B", -0.0045, -0.0245, 0.150, 0.18888)
+		SetMinimapComponentPosition("minimap_mask", "L", "B", 0.020, 0.022, 0.111, 0.159)
+		SetMinimapComponentPosition("minimap_blur", "L", "B", -0.03, 0.002, 0.266, 0.237)
 
-	SetRadarBigmapEnabled(true, false)
-	Wait(0)
-	SetRadarBigmapEnabled(false, false)
-	DisplayRadar(0)
+		SetRadarBigmapEnabled(true, false)
+		Wait(0)
+		SetRadarBigmapEnabled(false, false)
+		DisplayRadar(0)
 
-	SendNUIMessage({
-		type = "UPDATE_MM_POS",
-		data = { position = GetMinimapAnchor() },
-	})
+		SendNUIMessage({
+			type = "UPDATE_MM_POS",
+			data = { position = GetMinimapAnchor() },
+		})
 
-	exports["sandbox-keybinds"]:Add("show_interaction", "F1", "keyboard", "Hud - Show Interaction Menu", function()
-		if not IsPauseMenuActive() then
-			exports['sandbox-hud']:InteractionShow()
-		end
-	end)
+		exports["sandbox-keybinds"]:Add("show_interaction", "F1", "keyboard", "Hud - Show Interaction Menu", function()
+			if not IsPauseMenuActive() then
+				exports['sandbox-hud']:InteractionShow()
+			end
+		end)
 
-	-- exports["sandbox-keybinds"]:Add("map_zoom_in", "PageUp", "keyboard", "Minimap - Zoom In", function()
-	-- 	Hud.Minimap:In()
-	-- end)
+		-- exports["sandbox-keybinds"]:Add("map_zoom_in", "PageUp", "keyboard", "Minimap - Zoom In", function()
+		-- 	Hud.Minimap:In()
+		-- end)
 
-	-- exports["sandbox-keybinds"]:Add("map_zoom_out", "PageDown", "keyboard", "Minimap - Zoom Out", function()
-	-- 	Hud.Minimap:Out()
-	-- end)
+		-- exports["sandbox-keybinds"]:Add("map_zoom_out", "PageDown", "keyboard", "Minimap - Zoom Out", function()
+		-- 	Hud.Minimap:Out()
+		-- end)
 
-	exports["sandbox-keybinds"]:Add("ui_toggle", "F11", "keyboard", "Hud - Toggle HUD", function()
-		exports['sandbox-hud']:Toggle()
-	end)
+		exports["sandbox-keybinds"]:Add("ui_toggle", "F11", "keyboard", "Hud - Toggle HUD", function()
+			exports['sandbox-hud']:Toggle()
+		end)
 
-	exports["sandbox-keybinds"]:Add("ids_toggle", "u", "keyboard", "Hud - Toggle IDs", function()
-		if not _idsCd then
-			exports['sandbox-hud']:IDToggle()
-		end
-	end)
+		exports["sandbox-keybinds"]:Add("ids_toggle", "u", "keyboard", "Hud - Toggle IDs", function()
+			if not _idsCd then
+				exports['sandbox-hud']:IDToggle()
+			end
+		end)
 
-	exports["sandbox-base"]:RegisterClientCallback("HUD:GetTargetInfront", function(data, cb)
-		local originCoords = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, 0, 0.5, -0.5)
-		local destinationCoords = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, 0, 1.0, -0.5)
-		local castedRay = StartShapeTestSweptSphere(originCoords, destinationCoords, 1.0, 8, LocalPlayer.state.ped, 4)
-		local _, hitting, endCoords, surfaceNormal, entity = GetShapeTestResult(castedRay)
+		exports["sandbox-base"]:RegisterClientCallback("HUD:GetTargetInfront", function(data, cb)
+			local originCoords = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, 0, 0.5, -0.5)
+			local destinationCoords = GetOffsetFromEntityInWorldCoords(LocalPlayer.state.ped, 0, 1.0, -0.5)
+			local castedRay = StartShapeTestSweptSphere(originCoords, destinationCoords, 1.0, 8, LocalPlayer.state.ped, 4)
+			local _, hitting, endCoords, surfaceNormal, entity = GetShapeTestResult(castedRay)
 
-		if hitting == 1 then
-			local playerId = NetworkGetPlayerIndexFromPed(entity)
-			if playerId ~= 0 then
-				cb(GetPlayerServerId(playerId))
+			if hitting == 1 then
+				local playerId = NetworkGetPlayerIndexFromPed(entity)
+				if playerId ~= 0 then
+					cb(GetPlayerServerId(playerId))
+				else
+					cb(nil)
+				end
 			else
 				cb(nil)
 			end
-		else
-			cb(nil)
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterClientCallback("HUD:PutOnBlindfold", function(data, cb)
-		exports['sandbox-hud']:Progress({
-			name = "blindfold_action",
-			duration = 6000,
-			label = data,
-			useWhileDead = false,
-			canCancel = true,
-			disarm = false,
-			controlDisables = {
-				disableMovement = true,
-				disableCarMovement = true,
-				disableMouse = false,
-				disableCombat = true,
-			},
-			animation = {
-				animDict = "random@mugging4",
-				anim = "struggle_loop_b_thief",
-				flags = 49,
-			},
-		}, function(cancelled)
-			cb(not cancelled)
 		end)
-	end)
+
+		exports["sandbox-base"]:RegisterClientCallback("HUD:PutOnBlindfold", function(data, cb)
+			exports['sandbox-hud']:Progress({
+				name = "blindfold_action",
+				duration = 6000,
+				label = data,
+				useWhileDead = false,
+				canCancel = true,
+				disarm = false,
+				controlDisables = {
+					disableMovement = true,
+					disableCarMovement = true,
+					disableMouse = false,
+					disableCombat = true,
+				},
+				animation = {
+					animDict = "random@mugging4",
+					anim = "struggle_loop_b_thief",
+					flags = 49,
+				},
+			}, function(cancelled)
+				cb(not cancelled)
+			end)
+		end)
+	end
 end)
 
 function deepcopy(orig)

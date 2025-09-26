@@ -10,24 +10,27 @@ local isEnabled = true
 
 local _statusVals = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterStatuses()
-	RegisterOxygenCallbacks()
-	RegisterOxygenMenus()
-	CreateStressPolys()
-	RegisterDrunkCallbacks()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterStatuses()
+		RegisterOxygenCallbacks()
+		RegisterOxygenMenus()
+		CreateStressPolys()
+		RegisterDrunkCallbacks()
 
-	exports["sandbox-base"]:RegisterClientCallback("Status:Modify", function(data, cb)
-		if data.value > 0 then
-			exports['sandbox-status']:Add(data.name, data.value, data.addCd, data.isForced)
-		else
-			exports['sandbox-status']:Remove(data.name, data.value, data.addCd, data.isForced)
-		end
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Status:Modify", function(data, cb)
+			if data.value > 0 then
+				exports['sandbox-status']:Add(data.name, data.value, data.addCd, data.isForced)
+			else
+				exports['sandbox-status']:Remove(data.name, data.value, data.addCd, data.isForced)
+			end
+		end)
 
-	exports["sandbox-base"]:RegisterClientCallback("Status:StoreValues", function(data, cb)
-		cb(_statusVals)
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Status:StoreValues", function(data, cb)
+			cb(_statusVals)
+		end)
+	end
 end)
 
 exports('Register', function(name, max, icon, color, flash, modify, options)

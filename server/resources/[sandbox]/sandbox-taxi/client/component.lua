@@ -75,22 +75,25 @@ exports('TripReset', function()
 	})
 end)
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-keybinds"]:Add("taxi_increase_rate", "", "keyboard", "Taxi - Increase Rate", function()
-		exports['sandbox-taxi']:RateIncrease()
-	end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-keybinds"]:Add("taxi_increase_rate", "", "keyboard", "Taxi - Increase Rate", function()
+			exports['sandbox-taxi']:RateIncrease()
+		end)
 
-	exports["sandbox-keybinds"]:Add("taxi_decrease_rate", "", "keyboard", "Taxi - Decrease Rate", function()
-		exports['sandbox-taxi']:RateDecrease()
-	end)
+		exports["sandbox-keybinds"]:Add("taxi_decrease_rate", "", "keyboard", "Taxi - Decrease Rate", function()
+			exports['sandbox-taxi']:RateDecrease()
+		end)
 
-	exports["sandbox-keybinds"]:Add("taxi_reset_trip", "", "keyboard", "Taxi - Reset Trip", function()
-		exports['sandbox-taxi']:TripReset()
-	end)
+		exports["sandbox-keybinds"]:Add("taxi_reset_trip", "", "keyboard", "Taxi - Reset Trip", function()
+			exports['sandbox-taxi']:TripReset()
+		end)
 
-	exports["sandbox-keybinds"]:Add("taxi_toggle_hud", "", "keyboard", "Taxi - Toggle HUD", function()
-		exports['sandbox-taxi']:HudToggle()
-	end)
+		exports["sandbox-keybinds"]:Add("taxi_toggle_hud", "", "keyboard", "Taxi - Toggle HUD", function()
+			exports['sandbox-taxi']:HudToggle()
+		end)
+	end
 end)
 
 local _threading = false

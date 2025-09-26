@@ -1,22 +1,25 @@
 EDITING_VEHICLE = nil
 
-AddEventHandler('Core:Shared:Ready', function()
-    exports['sandbox-hud']:InteractionRegisterMenu("veh_wheels", false, "tire", function()
-        OpenWheelMenu()
-        exports['sandbox-hud']:InteractionHide()
-    end, function()
-        local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
+AddEventHandler('onClientResourceStart', function(resource)
+    if resource == GetCurrentResourceName() then
+        Wait(1000)
+        exports['sandbox-hud']:InteractionRegisterMenu("veh_wheels", false, "tire", function()
+            OpenWheelMenu()
+            exports['sandbox-hud']:InteractionHide()
+        end, function()
+            local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
 
-        local insideZone = exports['sandbox-polyzone']:IsCoordsInZone(pedCoords, false, 'veh_customs_wheels')
-        if
-            insideZone?.veh_customs_wheels
-            and LocalPlayer.state.onDuty
-            and insideZone.veh_customs_wheels == LocalPlayer.state.onDuty
-            and exports['sandbox-jobs']:HasJob(LocalPlayer.state.onDuty, false, false, 90) then
-            return true
-        end
-        return false
-    end)
+            local insideZone = exports['sandbox-polyzone']:IsCoordsInZone(pedCoords, false, 'veh_customs_wheels')
+            if
+                insideZone?.veh_customs_wheels
+                and LocalPlayer.state.onDuty
+                and insideZone.veh_customs_wheels == LocalPlayer.state.onDuty
+                and exports['sandbox-jobs']:HasJob(LocalPlayer.state.onDuty, false, false, 90) then
+                return true
+            end
+            return false
+        end)
+    end
 end)
 
 local fitmentVehicles = {}

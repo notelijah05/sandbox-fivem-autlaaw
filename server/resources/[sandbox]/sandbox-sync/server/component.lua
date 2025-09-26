@@ -47,9 +47,12 @@ local _isNight = false
 
 local started = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterChatCommands()
-	StartThreads()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterChatCommands()
+		StartThreads()
+	end
 end)
 
 function StartThreads()

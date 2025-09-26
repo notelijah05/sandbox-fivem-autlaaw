@@ -2,8 +2,11 @@
 local xSound = exports.xsound
 local Props = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterDjZones()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterDjZones()
+	end
 end)
 
 function RegisterDjZones()

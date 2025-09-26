@@ -3,10 +3,13 @@ _nearbyScenes = {}
 
 _hiddenScenes = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-keybinds"]:Add("scene_create", "", "keyboard", "Scenes - Create Scene", function()
-		exports['sandbox-scenes']:BeginCreation()
-	end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-keybinds"]:Add("scene_create", "", "keyboard", "Scenes - Create Scene", function()
+			exports['sandbox-scenes']:BeginCreation()
+		end)
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")

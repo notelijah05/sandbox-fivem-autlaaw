@@ -13,12 +13,15 @@ local _ignoreEvents = {
 	"Ped",
 }
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-keybinds"]:Add("laptop_open", "", "keyboard", "Laptop - Open", function()
-		OpenLaptop()
-	end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-keybinds"]:Add("laptop_open", "", "keyboard", "Laptop - Open", function()
+			OpenLaptop()
+		end)
 
-	RegisterBoostingCallbacks()
+		RegisterBoostingCallbacks()
+	end
 end)
 
 function OpenLaptop()

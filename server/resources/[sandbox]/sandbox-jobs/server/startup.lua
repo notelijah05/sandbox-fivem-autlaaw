@@ -1,19 +1,17 @@
-local _ranStartup = false
 JOB_CACHE = {}
 JOB_COUNT = 0
 
-_loaded = false
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterJobMiddleware()
+		RegisterJobCallbacks()
+		RegisterJobChatCommands()
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterJobMiddleware()
-	RegisterJobCallbacks()
-	RegisterJobChatCommands()
+		RunStartup()
 
-	_loaded = true
-
-	RunStartup()
-
-	TriggerEvent("Jobs:Server:Startup")
+		TriggerEvent("Jobs:Server:Startup")
+	end
 end)
 
 function FindAllJobs()
@@ -99,11 +97,6 @@ function RefreshAllJobData(job)
 end
 
 function RunStartup()
-	if _ranStartup then
-		return
-	end
-	_ranStartup = true
-
 	local function replaceExistingDefaultJob(_id, document)
 		local p = promise.new()
 		exports['sandbox-base']:DatabaseGameDeleteOne({

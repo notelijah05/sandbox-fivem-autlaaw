@@ -1,7 +1,10 @@
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterWardrobeCallbacks()
-	RegisterWardrobeMiddleware()
-	RegisterChatCommands()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterWardrobeCallbacks()
+		RegisterWardrobeMiddleware()
+		RegisterChatCommands()
+	end
 end)
 
 function RegisterChatCommands()

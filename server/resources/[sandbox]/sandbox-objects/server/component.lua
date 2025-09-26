@@ -1,112 +1,115 @@
 _tempIds = 1
 _placedProps = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	local props = MySQL.query.await("SELECT * FROM placed_props WHERE is_enabled = 1", {})
-	local restored = 0
-	for k, v in ipairs(props) do
-		if _placedProps[v.id] == nil or not DoesEntityExist(_placedProps[v.id]?.entity) then
-			local coords = json.decode(v.coords)
-			local rotation = json.decode(v.rotation)
-			_placedProps[v.id] = {
-				id = v.id,
-				type = v.type,
-				model = GetHashKey(v.model),
-				coords = coords,
-				heading = v.heading,
-				rotation = rotation,
-				created = math.ceil(v.created / 1000),
-				creator = v.creator,
-				isFrozen = v.is_frozen,
-				nameOverride = v.name_override,
-			}
-			restored += 1
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		local props = MySQL.query.await("SELECT * FROM placed_props WHERE is_enabled = 1", {})
+		local restored = 0
+		for k, v in ipairs(props) do
+			if _placedProps[v.id] == nil or not DoesEntityExist(_placedProps[v.id]?.entity) then
+				local coords = json.decode(v.coords)
+				local rotation = json.decode(v.rotation)
+				_placedProps[v.id] = {
+					id = v.id,
+					type = v.type,
+					model = GetHashKey(v.model),
+					coords = coords,
+					heading = v.heading,
+					rotation = rotation,
+					created = math.ceil(v.created / 1000),
+					creator = v.creator,
+					isFrozen = v.is_frozen,
+					nameOverride = v.name_override,
+				}
+				restored += 1
+			end
 		end
+		exports['sandbox-base']:LoggerTrace("Objects",
+			string.format("Restored ^2%s^7 Persistant Props From Database", restored))
+
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+			TriggerClientEvent("Objects:Client:SetupObjects", source, _placedProps)
+		end, 1)
+
+		exports["sandbox-chat"]:RegisterAdminCommand("addobj", function(source, args, rawCommand)
+			exports["sandbox-base"]:ClientCallback(source, "Objects:StartPlacement", {
+				model = GetHashKey(args[1]),
+				data = {
+					model = args[1],
+					type = tonumber(args[2]),
+					nameOverride = args[4],
+					isTemp = false,
+					isFrozen = args[3] == "1",
+				},
+			}, function() end)
+		end, {
+			help = "Create A Persistent Prop",
+			params = {
+				{
+					name = "Prop Model",
+					help = "Name for the prop model to spawn",
+				},
+				{
+					name = "Prop Type",
+					help = "Type of prop (0: Normal, 1: Has Inventory, 2: No Delete/Info Prompts)",
+				},
+				{
+					name = "Is Frozen?",
+					help = "Freeze entity? 1 = Yes, 0 = No",
+				},
+				{
+					name = "Name Override",
+					help = "Overrides the name displayed in inventory, put 0 to disable",
+				},
+			},
+		}, 4)
+
+		exports["sandbox-chat"]:RegisterAdminCommand("addtobj", function(source, args, rawCommand)
+			exports["sandbox-base"]:ClientCallback(source, "Objects:StartPlacement", {
+				model = GetHashKey(args[1]),
+				data = {
+					model = args[1],
+					type = tonumber(args[2]),
+					nameOverride = args[4],
+					isTemp = true,
+					isFrozen = args[3] == "1",
+				},
+			}, function() end)
+		end, {
+			help = "Create A Temporary Prop",
+			params = {
+				{
+					name = "Prop Model",
+					help = "Name for the prop model to spawn",
+				},
+				{
+					name = "Prop Type",
+					help = "Type of prop (0: Normal, 1: Has Inventory)",
+				},
+				{
+					name = "Is Frozen?",
+					help = "Freeze entity? 1 = Yes, 0 = No",
+				},
+				{
+					name = "Name Override",
+					help = "Overrides the name displayed in inventory, put 0 to disable",
+				},
+			},
+		}, 4)
+
+		exports["sandbox-chat"]:RegisterAdminCommand("deleteobj", function(source, args, rawCommand)
+			exports['sandbox-objects']:Delete(source, tonumber(args[1]))
+		end, {
+			help = "Delete a Prop",
+			params = {
+				{
+					name = "ID",
+					help = "ID of Object to Delete",
+				},
+			},
+		}, 1)
 	end
-	exports['sandbox-base']:LoggerTrace("Objects",
-		string.format("Restored ^2%s^7 Persistant Props From Database", restored))
-
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		TriggerClientEvent("Objects:Client:SetupObjects", source, _placedProps)
-	end, 1)
-
-	exports["sandbox-chat"]:RegisterAdminCommand("addobj", function(source, args, rawCommand)
-		exports["sandbox-base"]:ClientCallback(source, "Objects:StartPlacement", {
-			model = GetHashKey(args[1]),
-			data = {
-				model = args[1],
-				type = tonumber(args[2]),
-				nameOverride = args[4],
-				isTemp = false,
-				isFrozen = args[3] == "1",
-			},
-		}, function() end)
-	end, {
-		help = "Create A Persistent Prop",
-		params = {
-			{
-				name = "Prop Model",
-				help = "Name for the prop model to spawn",
-			},
-			{
-				name = "Prop Type",
-				help = "Type of prop (0: Normal, 1: Has Inventory, 2: No Delete/Info Prompts)",
-			},
-			{
-				name = "Is Frozen?",
-				help = "Freeze entity? 1 = Yes, 0 = No",
-			},
-			{
-				name = "Name Override",
-				help = "Overrides the name displayed in inventory, put 0 to disable",
-			},
-		},
-	}, 4)
-
-	exports["sandbox-chat"]:RegisterAdminCommand("addtobj", function(source, args, rawCommand)
-		exports["sandbox-base"]:ClientCallback(source, "Objects:StartPlacement", {
-			model = GetHashKey(args[1]),
-			data = {
-				model = args[1],
-				type = tonumber(args[2]),
-				nameOverride = args[4],
-				isTemp = true,
-				isFrozen = args[3] == "1",
-			},
-		}, function() end)
-	end, {
-		help = "Create A Temporary Prop",
-		params = {
-			{
-				name = "Prop Model",
-				help = "Name for the prop model to spawn",
-			},
-			{
-				name = "Prop Type",
-				help = "Type of prop (0: Normal, 1: Has Inventory)",
-			},
-			{
-				name = "Is Frozen?",
-				help = "Freeze entity? 1 = Yes, 0 = No",
-			},
-			{
-				name = "Name Override",
-				help = "Overrides the name displayed in inventory, put 0 to disable",
-			},
-		},
-	}, 4)
-
-	exports["sandbox-chat"]:RegisterAdminCommand("deleteobj", function(source, args, rawCommand)
-		exports['sandbox-objects']:Delete(source, tonumber(args[1]))
-	end, {
-		help = "Delete a Prop",
-		params = {
-			{
-				name = "ID",
-				help = "ID of Object to Delete",
-			},
-		},
-	}, 1)
 end)
 
 exports('Info', function(source, id)

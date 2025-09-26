@@ -4,87 +4,90 @@ _done = false
 _healEnd = nil
 _leavingBed = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	Init()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		Init()
 
-	while GlobalState["HiddenHospital"] == nil do
-		Wait(5)
-	end
+		while GlobalState["HiddenHospital"] == nil do
+			Wait(5)
+		end
 
-	exports['sandbox-pedinteraction']:Add("HiddenHospital", `s_m_m_doctor_01`, GlobalState["HiddenHospital"].coords,
-		GlobalState["HiddenHospital"].heading, 25.0, {
-			{
-				icon = "heart-pulse",
-				text = "Revive Escort (20 $MALD)",
-				event = "Hospital:Client:HiddenRevive",
-				data = LocalPlayer.state.isEscorting or {},
-				isEnabled = function()
-					if LocalPlayer.state.isEscorting ~= nil and not LocalPlayer.state.isDead then
-						local ps = Player(LocalPlayer.state.isEscorting).state
-						return ps.isDead and not (ps.deadData and ps.deadData.isMinor)
-					else
-						return false
-					end
-				end,
-			},
-		}, 'suitcase-medical', false, true, {
-			animDict = "mp_prison_break",
-			anim = "hack_loop",
-		})
+		exports['sandbox-pedinteraction']:Add("HiddenHospital", `s_m_m_doctor_01`, GlobalState["HiddenHospital"].coords,
+			GlobalState["HiddenHospital"].heading, 25.0, {
+				{
+					icon = "heart-pulse",
+					text = "Revive Escort (20 $MALD)",
+					event = "Hospital:Client:HiddenRevive",
+					data = LocalPlayer.state.isEscorting or {},
+					isEnabled = function()
+						if LocalPlayer.state.isEscorting ~= nil and not LocalPlayer.state.isDead then
+							local ps = Player(LocalPlayer.state.isEscorting).state
+							return ps.isDead and not (ps.deadData and ps.deadData.isMinor)
+						else
+							return false
+						end
+					end,
+				},
+			}, 'suitcase-medical', false, true, {
+				animDict = "mp_prison_break",
+				anim = "hack_loop",
+			})
 
-	exports['sandbox-polyzone']:CreateBox('hospital-check-in-zone-1', vector3(1146.37, -1538.66, 35.03), 2.8, 1.2, {
-		heading = 0,
-		--debugPoly=true,
-		minZ = 32.63,
-		maxZ = 36.63
-	}, {})
-
-	exports['sandbox-polyzone']:CreateBox('hospital-check-in-zone-2', vector3(1129.59, -1534.96, 35.03), 2.8, 1.2, {
-		heading = 3,
-		--debugPoly=true,
-		minZ = 32.63,
-		maxZ = 36.63
-	}, {})
-
-	exports['sandbox-polyzone']:CreateBox('hospital-check-in-zone-3', vector3(1142.82, -1537.74, 39.5), 2.8, 1.2, {
-		heading = 88,
-		--debugPoly=true,
-		minZ = 37.1,
-		maxZ = 41.1
-	}, {})
-
-	exports['sandbox-targeting']:ZonesAddBox("icu-checkout", "bell-concierge", vector3(1147.83, -1542.54, 39.5), 2.8,
-		0.8, {
-			name = "hospital",
+		exports['sandbox-polyzone']:CreateBox('hospital-check-in-zone-1', vector3(1146.37, -1538.66, 35.03), 2.8, 1.2, {
 			heading = 0,
 			--debugPoly=true,
-			minZ = 38.5,
-			maxZ = 41.1
-		}, {
-			{
-				icon = "bell-concierge",
-				text = "Request Personnel",
-				event = "Hospital:Client:RequestEMS",
-				isEnabled = function()
-					return (LocalPlayer.state.Character:GetData("ICU") ~= nil and not LocalPlayer.state.Character:GetData("ICU").Released) and
-						(not _done or _done < GetCloudTimeAsInt())
-				end,
-			}
-		})
+			minZ = 32.63,
+			maxZ = 36.63
+		}, {})
 
-	exports['sandbox-polyzone']:CreatePoly("hospital-icu-area", {
-		vector2(1144.3436279297, -1541.1220703125),
-		vector2(1144.3024902344, -1560.3250732422),
-		vector2(1148.193359375, -1560.3918457031),
-		vector2(1154.2583007812, -1560.4184570312),
-		vector2(1154.3413085938, -1555.5563964844),
-		vector2(1154.4481201172, -1548.7468261719),
-		vector2(1154.1629638672, -1540.7801513672)
-	}, {
-		--debugPoly=true,
-		minZ = 38.50,
-		maxZ = 40.53
-	})
+		exports['sandbox-polyzone']:CreateBox('hospital-check-in-zone-2', vector3(1129.59, -1534.96, 35.03), 2.8, 1.2, {
+			heading = 3,
+			--debugPoly=true,
+			minZ = 32.63,
+			maxZ = 36.63
+		}, {})
+
+		exports['sandbox-polyzone']:CreateBox('hospital-check-in-zone-3', vector3(1142.82, -1537.74, 39.5), 2.8, 1.2, {
+			heading = 88,
+			--debugPoly=true,
+			minZ = 37.1,
+			maxZ = 41.1
+		}, {})
+
+		exports['sandbox-targeting']:ZonesAddBox("icu-checkout", "bell-concierge", vector3(1147.83, -1542.54, 39.5), 2.8,
+			0.8, {
+				name = "hospital",
+				heading = 0,
+				--debugPoly=true,
+				minZ = 38.5,
+				maxZ = 41.1
+			}, {
+				{
+					icon = "bell-concierge",
+					text = "Request Personnel",
+					event = "Hospital:Client:RequestEMS",
+					isEnabled = function()
+						return (LocalPlayer.state.Character:GetData("ICU") ~= nil and not LocalPlayer.state.Character:GetData("ICU").Released) and
+							(not _done or _done < GetCloudTimeAsInt())
+					end,
+				}
+			})
+
+		exports['sandbox-polyzone']:CreatePoly("hospital-icu-area", {
+			vector2(1144.3436279297, -1541.1220703125),
+			vector2(1144.3024902344, -1560.3250732422),
+			vector2(1148.193359375, -1560.3918457031),
+			vector2(1154.2583007812, -1560.4184570312),
+			vector2(1154.3413085938, -1555.5563964844),
+			vector2(1154.4481201172, -1548.7468261719),
+			vector2(1154.1629638672, -1540.7801513672)
+		}, {
+			--debugPoly=true,
+			minZ = 38.50,
+			maxZ = 40.53
+		})
+	end
 end)
 
 AddEventHandler("Hospital:Client:RequestEMS", function()

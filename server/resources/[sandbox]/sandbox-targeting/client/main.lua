@@ -5,22 +5,25 @@ targetableObjectModels = {}
 targetableEntities = {}
 interactionZones = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-keybinds"]:Add("targeting_starts", "LMENU", "keyboard", "Targeting (Third Eye) (Hold)",
-		function()
-			if IS_SPAWNED and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isHardCuffed then
-				StartTargeting()
-			end
-		end, function()
-			if not inTargetingMenu then
-				StopTargeting()
-			end
-		end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-keybinds"]:Add("targeting_starts", "LMENU", "keyboard", "Targeting (Third Eye) (Hold)",
+			function()
+				if IS_SPAWNED and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isHardCuffed then
+					StartTargeting()
+				end
+			end, function()
+				if not inTargetingMenu then
+					StopTargeting()
+				end
+			end)
 
-	if LocalPlayer.state.loggedIn then
-		DeInitPolyzoneTargets()
-		Wait(100)
-		InitPolyzoneTargets()
+		if LocalPlayer.state.loggedIn then
+			DeInitPolyzoneTargets()
+			Wait(100)
+			InitPolyzoneTargets()
+		end
 	end
 end)
 

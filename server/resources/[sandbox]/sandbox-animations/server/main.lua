@@ -1,8 +1,11 @@
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
-	RegisterMiddleware()
-	RegisterChatCommands()
-	RegisterItems()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+		RegisterMiddleware()
+		RegisterChatCommands()
+		RegisterItems()
+	end
 end)
 
 function RegisterMiddleware()

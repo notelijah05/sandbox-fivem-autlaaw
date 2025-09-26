@@ -1,6 +1,9 @@
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
-	RegisterChatCommands()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+		RegisterChatCommands()
+	end
 end)
 
 function RegisterChatCommands()

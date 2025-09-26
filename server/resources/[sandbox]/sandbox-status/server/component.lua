@@ -3,26 +3,29 @@ Status = nil
 
 local _statuses = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
-	RegisterChatCommands()
-	registerUsables()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+		RegisterChatCommands()
+		registerUsables()
 
-	exports['sandbox-base']:MiddlewareAdd("Characters:Logout", function(source)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local p = promise.new()
-			exports["sandbox-base"]:ClientCallback(source, "Status:StoreValues", {}, function(vals)
-				local status = char:GetData("Status") or {}
-				for k, v in pairs(vals) do
-					status[k] = v
-				end
-				char:SetData("Status", status)
-				p:resolve(true)
-			end)
-			Citizen.Await(p)
-		end
-	end, 1)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Logout", function(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char ~= nil then
+				local p = promise.new()
+				exports["sandbox-base"]:ClientCallback(source, "Status:StoreValues", {}, function(vals)
+					local status = char:GetData("Status") or {}
+					for k, v in pairs(vals) do
+						status[k] = v
+					end
+					char:SetData("Status", status)
+					p:resolve(true)
+				end)
+				Citizen.Await(p)
+			end
+		end, 1)
+	end
 end)
 
 exports('Register', function(name, max, icon, tick, modify)

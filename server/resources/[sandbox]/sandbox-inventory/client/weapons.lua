@@ -5,174 +5,177 @@ local _ammo = nil
 
 local _interacting = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports['sandbox-hud']:InteractionRegisterMenu("weapon-attachments", false, "gun", function(data)
-		local menu = {}
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports['sandbox-hud']:InteractionRegisterMenu("weapon-attachments", false, "gun", function(data)
+			local menu = {}
 
-		if _equipped ~= nil and _equipped.MetaData and _equipped.MetaData.WeaponComponents ~= nil then
-			for k, v in pairs(_equipped.MetaData.WeaponComponents) do
-				local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
-				table.insert(menu, {
-					icon = "xmark",
-					label = string.format("Remove %s", itemData.label),
-					action = function()
-						exports['sandbox-hud']:InteractionHide()
-						TriggerEvent("Weapons:Client:RemoveAttachment", k)
-					end,
+			if _equipped ~= nil and _equipped.MetaData and _equipped.MetaData.WeaponComponents ~= nil then
+				for k, v in pairs(_equipped.MetaData.WeaponComponents) do
+					local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
+					table.insert(menu, {
+						icon = "xmark",
+						label = string.format("Remove %s", itemData.label),
+						action = function()
+							exports['sandbox-hud']:InteractionHide()
+							TriggerEvent("Weapons:Client:RemoveAttachment", k)
+						end,
+					})
+				end
+			end
+
+			exports['sandbox-hud']:InteractionShowMenu(menu)
+		end, function()
+			return _equipped ~= nil and _equipped.MetaData and _equipped.MetaData.WeaponComponents ~= nil
+		end)
+
+		exports["sandbox-base"]:RegisterClientCallback("Weapons:Check", function(data, cb)
+			if _equipped ~= nil then
+				cb({
+					id = _equipped.id,
+					item = _equipped.Name,
 				})
-			end
-		end
-
-		exports['sandbox-hud']:InteractionShowMenu(menu)
-	end, function()
-		return _equipped ~= nil and _equipped.MetaData and _equipped.MetaData.WeaponComponents ~= nil
-	end)
-
-	exports["sandbox-base"]:RegisterClientCallback("Weapons:Check", function(data, cb)
-		if _equipped ~= nil then
-			cb({
-				id = _equipped.id,
-				item = _equipped.Name,
-			})
-		else
-			cb(false)
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterClientCallback("Weapons:EquipAttachment", function(data, cb)
-		if _equipped ~= nil then
-			exports['sandbox-hud']:Progress({
-				name = "attch_action",
-				duration = 5000,
-				label = "Equipping " .. data,
-				useWhileDead = false,
-				canCancel = true,
-				ignoreModifier = true,
-				disarm = false,
-				controlDisables = {
-					disableMovement = false,
-					disableCarMovement = false,
-					disableMouse = false,
-					disableCombat = true,
-				},
-				-- animation = {
-				-- 	animDict = "weapons@rifle@lo@carbine_str",
-				-- 	anim = "reload_aim",
-				-- 	flags = 48,
-				-- },
-			}, function(status)
-				cb(not status)
-			end)
-		else
-			cb(false)
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterClientCallback("Weapons:Logout", function(data, cb)
-		if _equipped ~= nil then
-			_interacting = true
-			local ped = PlayerPedId()
-			local hash = GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
-			local itemData = _items[_equipped.Name]
-			local f, clip = GetAmmoInClip(ped, hash)
-
-			local data = {
-				ammo = GetAmmoInPedWeapon(ped, hash),
-				clip = clip,
-				slot = _equipped.Slot,
-			}
-
-			RemoveWeaponFromPed(ped, hash)
-			SetPedAmmoByType(ped, GetHashKey(itemData.ammoType), 0)
-			_equipped = nil
-			_equippedData = nil
-			_equippedHash = nil
-			TriggerEvent("Weapons:Client:SwitchedWeapon", false)
-			SendNUIMessage({
-				type = "SET_EQUIPPED",
-				data = {
-					item = _equipped,
-				}
-			})
-			cb(data)
-			_interacting = false
-		else
-			cb(nil)
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterClientCallback("Weapons:AddAmmo", function(data, cb)
-		if _equipped ~= nil and _items[_equipped.Name].ammoType == data.ammoType then
-			exports['sandbox-hud']:Progress({
-				name = "ammo_action",
-				duration = 2500,
-				label = "Loading Ammunition",
-				useWhileDead = false,
-				canCancel = true,
-				ignoreModifier = true,
-				disarm = false,
-				controlDisables = {
-					disableMovement = false,
-					disableCarMovement = false,
-					disableMouse = false,
-					disableCombat = true,
-				},
-				animation = {
-					animDict = "weapons@rifle@lo@carbine_str",
-					anim = "reload_aim",
-					flags = 48,
-				},
-				-- prop = {
-				-- 	model = "prop_ld_ammo_pack_01",
-				-- }
-			}, function(status)
-				if not status then
-					exports['sandbox-inventory']:WeaponsAmmoAdd(data)
-					cb(true)
-				end
-			end)
-		else
-			if _equipped == nil then
-				exports["sandbox-hud"]:NotifError("No Weapon Equipped")
 			else
-				exports["sandbox-hud"]:NotifError("Wrong Ammo Type")
+				cb(false)
 			end
+		end)
 
-			cb(false)
-		end
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Weapons:EquipAttachment", function(data, cb)
+			if _equipped ~= nil then
+				exports['sandbox-hud']:Progress({
+					name = "attch_action",
+					duration = 5000,
+					label = "Equipping " .. data,
+					useWhileDead = false,
+					canCancel = true,
+					ignoreModifier = true,
+					disarm = false,
+					controlDisables = {
+						disableMovement = false,
+						disableCarMovement = false,
+						disableMouse = false,
+						disableCombat = true,
+					},
+					-- animation = {
+					-- 	animDict = "weapons@rifle@lo@carbine_str",
+					-- 	anim = "reload_aim",
+					-- 	flags = 48,
+					-- },
+				}, function(status)
+					cb(not status)
+				end)
+			else
+				cb(false)
+			end
+		end)
 
-	exports["sandbox-base"]:RegisterClientCallback("Weapons:CanEquipParachute", function(data, cb)
-		if not IsPedInParachuteFreeFall(LocalPlayer.state.ped) and not IsPedFalling(LocalPlayer.state.ped) and (GetPedParachuteState(LocalPlayer.state.ped) == -1 or GetPedParachuteState(LocalPlayer.state.ped) == 0) then
-			exports['sandbox-hud']:ProgressWithTickEvent({
-				name = 'equipping_parachute',
-				duration = 3000,
-				label = 'Equipping Parachute',
-				useWhileDead = false,
-				canCancel = true,
-				ignoreModifier = true,
-				controlDisables = {
-					disableMovement = false,
-					disableCarMovement = false,
-					disableMouse = false,
-					disableCombat = true,
-				},
-				animation = {
-					anim = 'adjusttie',
-				},
-			}, function()
-				if not IsPedInParachuteFreeFall(LocalPlayer.state.ped) and not IsPedFalling(LocalPlayer.state.ped) and (GetPedParachuteState(LocalPlayer.state.ped) == -1 or GetPedParachuteState(LocalPlayer.state.ped) == 0) then
-					return
+		exports["sandbox-base"]:RegisterClientCallback("Weapons:Logout", function(data, cb)
+			if _equipped ~= nil then
+				_interacting = true
+				local ped = PlayerPedId()
+				local hash = GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
+				local itemData = _items[_equipped.Name]
+				local f, clip = GetAmmoInClip(ped, hash)
+
+				local data = {
+					ammo = GetAmmoInPedWeapon(ped, hash),
+					clip = clip,
+					slot = _equipped.Slot,
+				}
+
+				RemoveWeaponFromPed(ped, hash)
+				SetPedAmmoByType(ped, GetHashKey(itemData.ammoType), 0)
+				_equipped = nil
+				_equippedData = nil
+				_equippedHash = nil
+				TriggerEvent("Weapons:Client:SwitchedWeapon", false)
+				SendNUIMessage({
+					type = "SET_EQUIPPED",
+					data = {
+						item = _equipped,
+					}
+				})
+				cb(data)
+				_interacting = false
+			else
+				cb(nil)
+			end
+		end)
+
+		exports["sandbox-base"]:RegisterClientCallback("Weapons:AddAmmo", function(data, cb)
+			if _equipped ~= nil and _items[_equipped.Name].ammoType == data.ammoType then
+				exports['sandbox-hud']:Progress({
+					name = "ammo_action",
+					duration = 2500,
+					label = "Loading Ammunition",
+					useWhileDead = false,
+					canCancel = true,
+					ignoreModifier = true,
+					disarm = false,
+					controlDisables = {
+						disableMovement = false,
+						disableCarMovement = false,
+						disableMouse = false,
+						disableCombat = true,
+					},
+					animation = {
+						animDict = "weapons@rifle@lo@carbine_str",
+						anim = "reload_aim",
+						flags = 48,
+					},
+					-- prop = {
+					-- 	model = "prop_ld_ammo_pack_01",
+					-- }
+				}, function(status)
+					if not status then
+						exports['sandbox-inventory']:WeaponsAmmoAdd(data)
+						cb(true)
+					end
+				end)
+			else
+				if _equipped == nil then
+					exports["sandbox-hud"]:NotifError("No Weapon Equipped")
+				else
+					exports["sandbox-hud"]:NotifError("Wrong Ammo Type")
 				end
 
-				exports['sandbox-hud']:ProgressCancel()
-			end, function(cancelled)
-				cb(not cancelled)
-			end)
-		else
-			cb(false)
-		end
-	end)
+				cb(false)
+			end
+		end)
+
+		exports["sandbox-base"]:RegisterClientCallback("Weapons:CanEquipParachute", function(data, cb)
+			if not IsPedInParachuteFreeFall(LocalPlayer.state.ped) and not IsPedFalling(LocalPlayer.state.ped) and (GetPedParachuteState(LocalPlayer.state.ped) == -1 or GetPedParachuteState(LocalPlayer.state.ped) == 0) then
+				exports['sandbox-hud']:ProgressWithTickEvent({
+					name = 'equipping_parachute',
+					duration = 3000,
+					label = 'Equipping Parachute',
+					useWhileDead = false,
+					canCancel = true,
+					ignoreModifier = true,
+					controlDisables = {
+						disableMovement = false,
+						disableCarMovement = false,
+						disableMouse = false,
+						disableCombat = true,
+					},
+					animation = {
+						anim = 'adjusttie',
+					},
+				}, function()
+					if not IsPedInParachuteFreeFall(LocalPlayer.state.ped) and not IsPedFalling(LocalPlayer.state.ped) and (GetPedParachuteState(LocalPlayer.state.ped) == -1 or GetPedParachuteState(LocalPlayer.state.ped) == 0) then
+						return
+					end
+
+					exports['sandbox-hud']:ProgressCancel()
+				end, function(cancelled)
+					cb(not cancelled)
+				end)
+			else
+				cb(false)
+			end
+		end)
+	end
 end)
 
 RegisterNetEvent("Weapons:Client:Use", function(data)

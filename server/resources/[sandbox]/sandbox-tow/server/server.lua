@@ -3,174 +3,177 @@ local maxActive = 10
 
 _activeTowers = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RegisterServerCallback("Tow:RequestJob", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if not exports['sandbox-jobs']:HasJob(source, "tow") and char then
-			cb(exports['sandbox-jobs']:GiveJob(char:GetData("SID"), "tow", false, "employee"))
-		else
-			cb(false)
-		end
-	end)
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-base"]:RegisterServerCallback("Tow:RequestJob", function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if not exports['sandbox-jobs']:HasJob(source, "tow") and char then
+				cb(exports['sandbox-jobs']:GiveJob(char:GetData("SID"), "tow", false, "employee"))
+			else
+				cb(false)
+			end
+		end)
 
-	exports["sandbox-base"]:RegisterServerCallback("Tow:QuitJob", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if exports['sandbox-jobs']:HasJob(source, "tow") and char then
-			_activeTowers[source] = nil
-			cb(exports['sandbox-jobs']:RemoveJob(char:GetData("SID"), "tow"))
-		else
-			cb(false)
-		end
-	end)
+		exports["sandbox-base"]:RegisterServerCallback("Tow:QuitJob", function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if exports['sandbox-jobs']:HasJob(source, "tow") and char then
+				_activeTowers[source] = nil
+				cb(exports['sandbox-jobs']:RemoveJob(char:GetData("SID"), "tow"))
+			else
+				cb(false)
+			end
+		end)
 
-	exports["sandbox-base"]:RegisterServerCallback("Tow:OnDuty", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local dutyData = exports['sandbox-jobs']:DutyGetDutyData("tow")
-		if exports['sandbox-jobs']:HasJob(source, "tow") and char then
-			if not dutyData or (dutyData and dutyData.Count < maxActive) then
-				if exports['sandbox-jobs']:DutyOn(source, "tow", true) then
-					_activeTowers[source] = {
-						next = os.time() + (math.random(1, 3) * 60),
-					}
-					exports['sandbox-hud']:NotifInfo(source,
-						[[
+		exports["sandbox-base"]:RegisterServerCallback("Tow:OnDuty", function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			local dutyData = exports['sandbox-jobs']:DutyGetDutyData("tow")
+			if exports['sandbox-jobs']:HasJob(source, "tow") and char then
+				if not dutyData or (dutyData and dutyData.Count < maxActive) then
+					if exports['sandbox-jobs']:DutyOn(source, "tow", true) then
+						_activeTowers[source] = {
+							next = os.time() + (math.random(1, 3) * 60),
+						}
+						exports['sandbox-hud']:NotifInfo(source,
+							[[
                                 You are now on Duty as a Tow Truck Driver.<br><br>
                                 Get a Tow Truck from Jerry in the Tow Lot.<br>
                                 To Impound Vehicles, Bring them to the Tow Lot and
                                 Fill out the Paperwork.
                             ]],
-						10000,
-						"truck-tow"
-					)
-				else
-					exports['sandbox-hud']:NotifError(source, "Failed to Go On Duty",
-						5000, "truck-tow")
-				end
-			else
-				exports['sandbox-hud']:NotifError(source,
-					"Too Many Tow Employees on Duty", 5000, "truck-tow")
-			end
-		else
-			exports['sandbox-hud']:NotifError(source, "Failed to Go On Duty", 5000,
-				"truck-tow")
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Tow:OffDuty", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char and exports['sandbox-jobs']:DutyGet(source, "tow") then
-			local stateId = char:GetData("SID")
-			if not _activeTowVehicles[stateId] then
-				exports['sandbox-jobs']:DutyOff(source, "tow")
-				exports['sandbox-tow']:CleanupPickup(source)
-				_activeTowers[source] = nil
-				exports['sandbox-phone']:NotificationRemoveById(source, "TOW_OBJ")
-			else
-				exports['sandbox-hud']:NotifError(source,
-					"Return the Tow Truck Before Going Off Duty",
-					5000,
-					"truck-tow"
-				)
-			end
-		else
-			exports['sandbox-hud']:NotifError(source, "Failed to Go Off Duty", 5000,
-				"truck-tow")
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Tow:RequestTruck", function(source, spaceCoords, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char and Player(source).state.onDuty == "tow" then
-			local stateId = char:GetData("SID")
-			if not _activeTowVehicles[stateId] then
-				exports['sandbox-vehicles']:SpawnTemp(
-					source,
-					`flatbed`,
-					'automobile',
-					spaceCoords.xyz,
-					spaceCoords.w,
-					function(spawnedVehicle, VIN, plate)
-						if spawnedVehicle then
-							exports['sandbox-vehicles']:KeysAdd(source, VIN)
-
-							_activeTowVehicles[stateId] = {
-								SID = stateId,
-								veh = spawnedVehicle,
-								net = NetworkGetNetworkIdFromEntity(spawnedVehicle),
-								VIN = VIN,
-								plate = plate,
-							}
-
-							GlobalState[string.format("TowTrucks:%s", stateId)] =
-								NetworkGetNetworkIdFromEntity(spawnedVehicle)
-
-							exports['sandbox-hud']:NotifSuccess(source,
-								"Your Tow Truck Was Provided",
-								5000,
-								"truck-tow"
-							)
-							cb(spawnedVehicle)
-						else
-							exports['sandbox-hud']:NotifError(source,
-								"Truck Spawn Failed", 5000, "truck-tow")
-							cb(nil)
-						end
-					end,
-					{
-						Make = "MTL",
-						Model = "Flatbed",
-						Value = 50000,
-					}
-				)
-			else
-				exports['sandbox-hud']:NotifError(source, "We Already Gave You a Truck",
-					5000, "truck-tow")
-				cb(nil)
-			end
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Tow:ReturnTruck", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char then
-			local stateId = char:GetData("SID")
-			local hasTruck = _activeTowVehicles[stateId]
-			if hasTruck and hasTruck.veh and DoesEntityExist(hasTruck.veh) then
-				local truckCoords = GetEntityCoords(hasTruck.veh)
-				if #(truckCoords - _towSpaces[1].xyz) <= 20.0 then
-					exports['sandbox-vehicles']:Delete(hasTruck.veh, function(success)
-						if success then
-							_activeTowVehicles[stateId] = nil
-							GlobalState[string.format("TowTrucks:%s", stateId)] = false
-							exports['sandbox-hud']:NotifSuccess(source,
-								"Thanks for Returning Your Tow Truck",
-								5000,
-								"truck-tow"
-							)
-						else
-							exports['sandbox-hud']:NotifError(source,
-								"Error Returning Truck",
-								5000,
-								"truck-tow"
-							)
-						end
-					end)
+							10000,
+							"truck-tow"
+						)
+					else
+						exports['sandbox-hud']:NotifError(source, "Failed to Go On Duty",
+							5000, "truck-tow")
+					end
 				else
 					exports['sandbox-hud']:NotifError(source,
-						"Your Tow Truck Isn't Nearby",
+						"Too Many Tow Employees on Duty", 5000, "truck-tow")
+				end
+			else
+				exports['sandbox-hud']:NotifError(source, "Failed to Go On Duty", 5000,
+					"truck-tow")
+			end
+		end)
+
+		exports["sandbox-base"]:RegisterServerCallback("Tow:OffDuty", function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char and exports['sandbox-jobs']:DutyGet(source, "tow") then
+				local stateId = char:GetData("SID")
+				if not _activeTowVehicles[stateId] then
+					exports['sandbox-jobs']:DutyOff(source, "tow")
+					exports['sandbox-tow']:CleanupPickup(source)
+					_activeTowers[source] = nil
+					exports['sandbox-phone']:NotificationRemoveById(source, "TOW_OBJ")
+				else
+					exports['sandbox-hud']:NotifError(source,
+						"Return the Tow Truck Before Going Off Duty",
 						5000,
 						"truck-tow"
 					)
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
-					"You Don't Have a Truck to Return",
-					5000,
-					"truck-tow"
-				)
+				exports['sandbox-hud']:NotifError(source, "Failed to Go Off Duty", 5000,
+					"truck-tow")
 			end
-		end
-	end)
+		end)
+
+		exports["sandbox-base"]:RegisterServerCallback("Tow:RequestTruck", function(source, spaceCoords, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char and Player(source).state.onDuty == "tow" then
+				local stateId = char:GetData("SID")
+				if not _activeTowVehicles[stateId] then
+					exports['sandbox-vehicles']:SpawnTemp(
+						source,
+						`flatbed`,
+						'automobile',
+						spaceCoords.xyz,
+						spaceCoords.w,
+						function(spawnedVehicle, VIN, plate)
+							if spawnedVehicle then
+								exports['sandbox-vehicles']:KeysAdd(source, VIN)
+
+								_activeTowVehicles[stateId] = {
+									SID = stateId,
+									veh = spawnedVehicle,
+									net = NetworkGetNetworkIdFromEntity(spawnedVehicle),
+									VIN = VIN,
+									plate = plate,
+								}
+
+								GlobalState[string.format("TowTrucks:%s", stateId)] =
+									NetworkGetNetworkIdFromEntity(spawnedVehicle)
+
+								exports['sandbox-hud']:NotifSuccess(source,
+									"Your Tow Truck Was Provided",
+									5000,
+									"truck-tow"
+								)
+								cb(spawnedVehicle)
+							else
+								exports['sandbox-hud']:NotifError(source,
+									"Truck Spawn Failed", 5000, "truck-tow")
+								cb(nil)
+							end
+						end,
+						{
+							Make = "MTL",
+							Model = "Flatbed",
+							Value = 50000,
+						}
+					)
+				else
+					exports['sandbox-hud']:NotifError(source, "We Already Gave You a Truck",
+						5000, "truck-tow")
+					cb(nil)
+				end
+			end
+		end)
+
+		exports["sandbox-base"]:RegisterServerCallback("Tow:ReturnTruck", function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char then
+				local stateId = char:GetData("SID")
+				local hasTruck = _activeTowVehicles[stateId]
+				if hasTruck and hasTruck.veh and DoesEntityExist(hasTruck.veh) then
+					local truckCoords = GetEntityCoords(hasTruck.veh)
+					if #(truckCoords - _towSpaces[1].xyz) <= 20.0 then
+						exports['sandbox-vehicles']:Delete(hasTruck.veh, function(success)
+							if success then
+								_activeTowVehicles[stateId] = nil
+								GlobalState[string.format("TowTrucks:%s", stateId)] = false
+								exports['sandbox-hud']:NotifSuccess(source,
+									"Thanks for Returning Your Tow Truck",
+									5000,
+									"truck-tow"
+								)
+							else
+								exports['sandbox-hud']:NotifError(source,
+									"Error Returning Truck",
+									5000,
+									"truck-tow"
+								)
+							end
+						end)
+					else
+						exports['sandbox-hud']:NotifError(source,
+							"Your Tow Truck Isn't Nearby",
+							5000,
+							"truck-tow"
+						)
+					end
+				else
+					exports['sandbox-hud']:NotifError(source,
+						"You Don't Have a Truck to Return",
+						5000,
+						"truck-tow"
+					)
+				end
+			end
+		end)
+	end
 end)
 
 AddEventHandler("Vehicles:Server:Deleted", function(veh, VIN)

@@ -15,7 +15,10 @@ exports('UpdateJobData', function(source, returnValues)
 			if perms then
 				charJobPerms[v.Id] = perms
 			end
-			table.insert(jobData, exports['sandbox-jobs']:Get(v.Id))
+			local jobInfo = exports['sandbox-jobs']:Get(v.Id)
+			if jobInfo then
+				table.insert(jobData, jobInfo)
+			end
 		end
 	end
 

@@ -1,11 +1,14 @@
 _plants = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	Startup()
-	RegisterMiddleware()
-	RegisterCallbacks()
-	RegisterTasks()
-	RegisterItems()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		Startup()
+		RegisterMiddleware()
+		RegisterCallbacks()
+		RegisterTasks()
+		RegisterItems()
+	end
 end)
 
 function getStageByPct(pct)

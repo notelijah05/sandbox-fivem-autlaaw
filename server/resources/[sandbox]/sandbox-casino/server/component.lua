@@ -2,115 +2,118 @@ _casinoConfig = {}
 
 _casinoConfigLoaded = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	TriggerEvent("Casino:Server:Startup")
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		TriggerEvent("Casino:Server:Startup")
 
-	if GetConvar("casino_open", "false") == "true" then
-		GlobalState["CasinoOpen"] = true
-	else
-		GlobalState["CasinoOpen"] = false
-	end
-
-	exports["sandbox-base"]:RegisterServerCallback("Casino:OpenClose", function(source, data, cb)
-		if Player(source).state.onDuty == "casino" and data.state ~= GlobalState["CasinoOpen"] then
-			GlobalState["CasinoOpen"] = data.state
-
-			if GlobalState["CasinoOpen"] then
-				exports['sandbox-hud']:NotifSuccess(source, "Casino Opened")
-			else
-				exports['sandbox-hud']:NotifError(source, "Casino Closed")
-			end
+		if GetConvar("casino_open", "false") == "true" then
+			GlobalState["CasinoOpen"] = true
 		else
-			exports['sandbox-hud']:NotifError(source, "Error Opening/Closing Casino")
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Casino:BuyChips", function(source, amount, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char and amount and amount > 0 then
-			local amount = math.floor(amount)
-			if exports['sandbox-finance']:WalletModify(source, -amount) then
-				local total = exports['sandbox-casino']:ChipsModify(source, amount)
-				if total then
-					SendCasinoPhoneNotification(
-						source,
-						string.format("Purchased $%s in Chips", formatNumberToCurrency(amount)),
-						string.format("You now have a chip balance of $%s", formatNumberToCurrency(total))
-					)
-
-					return cb(true)
-				end
-			end
+			GlobalState["CasinoOpen"] = false
 		end
 
-		cb(false)
-	end)
+		exports["sandbox-base"]:RegisterServerCallback("Casino:OpenClose", function(source, data, cb)
+			if Player(source).state.onDuty == "casino" and data.state ~= GlobalState["CasinoOpen"] then
+				GlobalState["CasinoOpen"] = data.state
 
-	exports["sandbox-base"]:RegisterServerCallback("Casino:SellChips", function(source, amount, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char and amount and amount > 0 then
-			local amount = math.floor(amount)
-			local chipTotal = exports['sandbox-casino']:ChipsModify(source, -amount)
-			if chipTotal then
-				if exports['sandbox-finance']:WalletModify(source, amount) then
-					SendCasinoPhoneNotification(
-						source,
-						string.format("Cashed Out $%s of Chips", formatNumberToCurrency(amount)),
-						string.format("You now have a chip balance of $%s", formatNumberToCurrency(chipTotal))
-					)
-
-					return cb(true)
-				end
-			end
-		end
-
-		cb(false)
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Casino:PurchaseVIP", function(source, amount, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char then
-			if exports['sandbox-finance']:WalletModify(source, -10000) then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "diamond_vip", 1, {}, 1)
-				GiveCasinoFuckingMoney(source, "VIP Card", 10000)
-			else
-				exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
-			end
-		end
-
-		cb(true)
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Casino:GetBigWins", function(source, data, cb)
-		if Player(source).state.onDuty == "casino" then
-			exports['sandbox-base']:DatabaseGameFind({
-				collection = "casino_bigwins",
-				query = {},
-			}, function(success, results)
-				if success and #results > 0 then
-					cb(results)
+				if GlobalState["CasinoOpen"] then
+					exports['sandbox-hud']:NotifSuccess(source, "Casino Opened")
 				else
-					cb(false)
+					exports['sandbox-hud']:NotifError(source, "Casino Closed")
 				end
-			end)
-		else
+			else
+				exports['sandbox-hud']:NotifError(source, "Error Opening/Closing Casino")
+			end
+		end)
+
+		exports["sandbox-base"]:RegisterServerCallback("Casino:BuyChips", function(source, amount, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char and amount and amount > 0 then
+				local amount = math.floor(amount)
+				if exports['sandbox-finance']:WalletModify(source, -amount) then
+					local total = exports['sandbox-casino']:ChipsModify(source, amount)
+					if total then
+						SendCasinoPhoneNotification(
+							source,
+							string.format("Purchased $%s in Chips", formatNumberToCurrency(amount)),
+							string.format("You now have a chip balance of $%s", formatNumberToCurrency(total))
+						)
+
+						return cb(true)
+					end
+				end
+			end
+
 			cb(false)
-		end
-	end)
+		end)
 
-	exports["sandbox-chat"]:RegisterCommand("chips", function(source, args, rawCommand)
-		local chipTotal = exports['sandbox-casino']:ChipsGet(source)
+		exports["sandbox-base"]:RegisterServerCallback("Casino:SellChips", function(source, amount, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char and amount and amount > 0 then
+				local amount = math.floor(amount)
+				local chipTotal = exports['sandbox-casino']:ChipsModify(source, -amount)
+				if chipTotal then
+					if exports['sandbox-finance']:WalletModify(source, amount) then
+						SendCasinoPhoneNotification(
+							source,
+							string.format("Cashed Out $%s of Chips", formatNumberToCurrency(amount)),
+							string.format("You now have a chip balance of $%s", formatNumberToCurrency(chipTotal))
+						)
 
-		SendCasinoPhoneNotification(
-			source,
-			"Current Chip Balance",
-			string.format("Your current balance is $%s", formatNumberToCurrency(chipTotal))
-		)
-	end, {
-		help = "Show Casino Chip Balance",
-	})
+						return cb(true)
+					end
+				end
+			end
 
-	RunConfigStartup()
+			cb(false)
+		end)
+
+		exports["sandbox-base"]:RegisterServerCallback("Casino:PurchaseVIP", function(source, amount, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char then
+				if exports['sandbox-finance']:WalletModify(source, -10000) then
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "diamond_vip", 1, {}, 1)
+					GiveCasinoFuckingMoney(source, "VIP Card", 10000)
+				else
+					exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
+				end
+			end
+
+			cb(true)
+		end)
+
+		exports["sandbox-base"]:RegisterServerCallback("Casino:GetBigWins", function(source, data, cb)
+			if Player(source).state.onDuty == "casino" then
+				exports['sandbox-base']:DatabaseGameFind({
+					collection = "casino_bigwins",
+					query = {},
+				}, function(success, results)
+					if success and #results > 0 then
+						cb(results)
+					else
+						cb(false)
+					end
+				end)
+			else
+				cb(false)
+			end
+		end)
+
+		exports["sandbox-chat"]:RegisterCommand("chips", function(source, args, rawCommand)
+			local chipTotal = exports['sandbox-casino']:ChipsGet(source)
+
+			SendCasinoPhoneNotification(
+				source,
+				"Current Chip Balance",
+				string.format("Your current balance is $%s", formatNumberToCurrency(chipTotal))
+			)
+		end, {
+			help = "Show Casino Chip Balance",
+		})
+
+		RunConfigStartup()
+	end
 end)
 
 local _configStartup = false

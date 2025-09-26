@@ -30,12 +30,12 @@ AddEventHandler('Finance:Server:Startup', function()
     })
 
     exports["sandbox-chat"]:RegisterAdminCommand('testbilling', function(source, args, rawCommand)
-        exports['sandbox-hud']:NotifInfo(source,, 'Bill Created')
+        exports['sandbox-hud']:NotifInfo(source, 'Bill Created')
         exports['sandbox-finance']:BillingCreate(source, 'Some Random Fucking Business', 1500,
             'This is a shitty description of a test bill.',
             function(wasPayed)
                 if wasPayed then
-                    exports['sandbox-hud']:NotifSuccess(src,, 'Bill Accepted')
+                    exports['sandbox-hud']:NotifSuccess(src, 'Bill Accepted')
                 else
                     exports['sandbox-hud']:NotifError(src, 'Bill Declined')
                 end

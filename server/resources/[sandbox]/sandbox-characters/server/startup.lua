@@ -1,6 +1,7 @@
 Spawns = {}
 
 function Startup()
+	Wait(500)
 	exports['sandbox-base']:DatabaseGameFind({
 		collection = "locations",
 		query = {

@@ -14,82 +14,85 @@ local _dbReady = false
 
 local APIWorking = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	Config.Server = exports['sandbox-base']:ConfigGetServer()
-	Config.Groups = exports['sandbox-base']:ConfigGetGroups()
-	queueActive = true
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		Config.Server = exports['sandbox-base']:ConfigGetServer()
+		Config.Groups = exports['sandbox-base']:ConfigGetGroups()
+		queueActive = true
 
-	exports["sandbox-chat"]:RegisterAdminCommand("queue", function(source, args, rawCommand)
-		local message = "Queue List"
+		exports["sandbox-chat"]:RegisterAdminCommand("queue", function(source, args, rawCommand)
+			local message = "Queue List"
 
-		for k, v in ipairs(QUEUE_PLAYERS_SORTED) do
-			local pData = QUEUE_PLAYERS_DATA[v]
-			if pData then
-				message = message .. string.format("<br>#%d - %s (%s)", k, pData.Name, v)
+			for k, v in ipairs(QUEUE_PLAYERS_SORTED) do
+				local pData = QUEUE_PLAYERS_DATA[v]
+				if pData then
+					message = message .. string.format("<br>#%d - %s (%s)", k, pData.Name, v)
+				end
 			end
-		end
-		exports["sandbox-chat"]:SendSystemSingle(source, message)
-	end, {
-		help = "Print the Queue",
-	})
+			exports["sandbox-chat"]:SendSystemSingle(source, message)
+		end, {
+			help = "Print the Queue",
+		})
 
-	exports["sandbox-chat"]:RegisterAdminCommand("yeetqueue", function(source, args, rawCommand)
-		for k, v in pairs(QUEUE_PLAYERS) do
-			if QUEUE_PLAYERS_DATA[k] then
-				QUEUE_PLAYERS_DATA[k].Deferrals.done("Deleted")
+		exports["sandbox-chat"]:RegisterAdminCommand("yeetqueue", function(source, args, rawCommand)
+			for k, v in pairs(QUEUE_PLAYERS) do
+				if QUEUE_PLAYERS_DATA[k] then
+					QUEUE_PLAYERS_DATA[k].Deferrals.done("Deleted")
+				end
+
+				exports['sandbox-queue']:Pop(k, true)
 			end
+			exports["sandbox-chat"]:SendSystemSingle(source, "Done")
+		end, {
+			help = "Yeet the Queue [DANGER!]",
+		})
 
-			exports['sandbox-queue']:Pop(k, true)
-		end
-		exports["sandbox-chat"]:SendSystemSingle(source, "Done")
-	end, {
-		help = "Yeet the Queue [DANGER!]",
-	})
-
-	exports["sandbox-chat"]:RegisterAdminCommand("maxplayers", function(source, args, rawCommand)
-		local max = tonumber(args[1])
-		if max and max > 0 and max < 500 then
-			MAX_PLAYERS = max
-			GlobalState["MaxPlayers"] = MAX_PLAYERS
-			SetConvarServerInfo("sv_maxclients", MAX_PLAYERS)
-			exports["sandbox-chat"]:SendSystemSingle(source, "Max Players Set")
-		end
-	end, {
-		params = {
-			{
-				name = "Max Player Count",
-				help = "Number",
+		exports["sandbox-chat"]:RegisterAdminCommand("maxplayers", function(source, args, rawCommand)
+			local max = tonumber(args[1])
+			if max and max > 0 and max < 500 then
+				MAX_PLAYERS = max
+				GlobalState["MaxPlayers"] = MAX_PLAYERS
+				SetConvarServerInfo("sv_maxclients", MAX_PLAYERS)
+				exports["sandbox-chat"]:SendSystemSingle(source, "Max Players Set")
+			end
+		end, {
+			params = {
+				{
+					name = "Max Player Count",
+					help = "Number",
+				},
 			},
-		},
-		help = "Set Max Players",
-	})
+			help = "Set Max Players",
+		})
 
-	exports["sandbox-chat"]:RegisterStaffCommand("tempprio", function(source, args, rawCommand)
-		local ident = args[1]
-		local prio = tonumber(args[2])
+		exports["sandbox-chat"]:RegisterStaffCommand("tempprio", function(source, args, rawCommand)
+			local ident = args[1]
+			local prio = tonumber(args[2])
 
-		if ident and prio and prio > 0 and prio <= 200 then
-			exports['sandbox-queue']:AddTempPriority(ident, prio)
-			exports["sandbox-chat"]:SendSystemSingle(source, "Priority Added")
-		else
-			exports["sandbox-chat"]:SendSystemSingle(source, "Error")
-		end
-	end, {
-		params = {
-			{
-				name = "Player Identifier",
-				help = "Player's FiveM Identifier (License)",
+			if ident and prio and prio > 0 and prio <= 200 then
+				exports['sandbox-queue']:AddTempPriority(ident, prio)
+				exports["sandbox-chat"]:SendSystemSingle(source, "Priority Added")
+			else
+				exports["sandbox-chat"]:SendSystemSingle(source, "Error")
+			end
+		end, {
+			params = {
+				{
+					name = "Player Identifier",
+					help = "Player's FiveM Identifier (License)",
+				},
+				{
+					name = "Priority",
+					help = "Number (1-200)",
+				},
 			},
-			{
-				name = "Priority",
-				help = "Number (1-200)",
-			},
-		},
-		help = "Add Temporary Priority",
-	})
+			help = "Add Temporary Priority",
+		})
 
-	_dbReadyTime = GetGameTimer()
-	_dbReady = true
+		_dbReadyTime = GetGameTimer()
+		_dbReady = true
+	end
 end)
 
 QUEUE_PLAYERS_DATA = {}

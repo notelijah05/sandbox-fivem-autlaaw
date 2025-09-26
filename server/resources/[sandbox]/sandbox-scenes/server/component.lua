@@ -5,117 +5,120 @@ _hasLoadedScenes = false
 
 _spamCheck = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	LoadScenesFromDB()
-	StartExpirationThread()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		LoadScenesFromDB()
+		StartExpirationThread()
 
-	exports["sandbox-base"]:RegisterServerCallback("Scenes:Create", function(source, data, cb)
-		local player = exports['sandbox-base']:FetchSource(source)
-		local timeStamp = GetGameTimer()
+		exports["sandbox-base"]:RegisterServerCallback("Scenes:Create", function(source, data, cb)
+			local player = exports['sandbox-base']:FetchSource(source)
+			local timeStamp = GetGameTimer()
 
-		if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
-			return cb(false)
-		end
-
-		if player and data.scene and data.data then
-			local wasCreated = exports['sandbox-scenes']:Create(data.scene,
-				data.data.staff and player.Permissions:IsStaff())
-			if wasCreated then
-				_spamCheck[source] = timeStamp + 3500
-			end
-			cb(wasCreated)
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Scenes:Delete", function(source, sceneId, cb)
-		local player = exports['sandbox-base']:FetchSource(source)
-		local scene = _loadedScenes[sceneId]
-		local timeStamp = GetGameTimer()
-
-		if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
-			return cb(false)
-		end
-
-		if scene and player then
-			if scene.staff and not player.Permissions:IsStaff() then
-				return cb(false, true)
+			if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
+				return cb(false)
 			end
 
-			_spamCheck[source] = timeStamp + 5000
+			if player and data.scene and data.data then
+				local wasCreated = exports['sandbox-scenes']:Create(data.scene,
+					data.data.staff and player.Permissions:IsStaff())
+				if wasCreated then
+					_spamCheck[source] = timeStamp + 3500
+				end
+				cb(wasCreated)
+			end
+		end)
 
-			cb(exports['sandbox-scenes']:Delete(sceneId))
-		else
-			cb(false)
-		end
-	end)
+		exports["sandbox-base"]:RegisterServerCallback("Scenes:Delete", function(source, sceneId, cb)
+			local player = exports['sandbox-base']:FetchSource(source)
+			local scene = _loadedScenes[sceneId]
+			local timeStamp = GetGameTimer()
 
-	exports["sandbox-base"]:RegisterServerCallback("Scenes:CanEdit", function(source, sceneId, cb)
-		local player = exports['sandbox-base']:FetchSource(source)
-		local scene = _loadedScenes[sceneId]
-		local timeStamp = GetGameTimer()
-
-		if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
-			return cb(false, false)
-		end
-
-		if scene and player then
-			if scene.staff and not player.Permissions:IsStaff() then
-				return cb(false, player.Permissions:IsStaff())
+			if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
+				return cb(false)
 			end
 
-			_spamCheck[source] = timeStamp + 5000
+			if scene and player then
+				if scene.staff and not player.Permissions:IsStaff() then
+					return cb(false, true)
+				end
 
-			cb(true, player.Permissions:IsStaff())
-		else
-			cb(false, false)
-		end
-	end)
+				_spamCheck[source] = timeStamp + 5000
 
-	exports["sandbox-base"]:RegisterServerCallback("Scenes:Edit", function(source, data, cb)
-		local player = exports['sandbox-base']:FetchSource(source)
-		local scene = _loadedScenes[data.id]
-		local timeStamp = GetGameTimer()
+				cb(exports['sandbox-scenes']:Delete(sceneId))
+			else
+				cb(false)
+			end
+		end)
 
-		if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
-			return cb(false)
-		end
+		exports["sandbox-base"]:RegisterServerCallback("Scenes:CanEdit", function(source, sceneId, cb)
+			local player = exports['sandbox-base']:FetchSource(source)
+			local scene = _loadedScenes[sceneId]
+			local timeStamp = GetGameTimer()
 
-		if scene and player then
-			_spamCheck[source] = timeStamp + 5000
+			if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
+				return cb(false, false)
+			end
 
-			cb(exports['sandbox-scenes']:Edit(data.id, data.scene, player.Permissions:IsStaff()))
-		else
-			cb(false)
-		end
-	end)
+			if scene and player then
+				if scene.staff and not player.Permissions:IsStaff() then
+					return cb(false, player.Permissions:IsStaff())
+				end
 
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		TriggerClientEvent("Scenes:Client:RecieveScenes", source, _loadedScenes)
-	end, 5)
+				_spamCheck[source] = timeStamp + 5000
 
-	exports["sandbox-chat"]:RegisterCommand("scene", function(source, args, rawCommand)
-		TriggerClientEvent("Scenes:Client:Creation", source, args)
-	end, {
-		help = "Create a Scene (Look Where You Want to Place)",
-	})
+				cb(true, player.Permissions:IsStaff())
+			else
+				cb(false, false)
+			end
+		end)
 
-	exports["sandbox-chat"]:RegisterStaffCommand("scenestaff", function(source, args, rawCommand)
-		TriggerClientEvent("Scenes:Client:Creation", source, args, true)
-	end, {
-		help = "[Staff] Create a Scene (Look Where You Want to Place)",
-	})
+		exports["sandbox-base"]:RegisterServerCallback("Scenes:Edit", function(source, data, cb)
+			local player = exports['sandbox-base']:FetchSource(source)
+			local scene = _loadedScenes[data.id]
+			local timeStamp = GetGameTimer()
 
-	exports["sandbox-chat"]:RegisterCommand("scenedelete", function(source, args, rawCommand)
-		TriggerClientEvent("Scenes:Client:Deletion", source)
-	end, {
-		help = "Delete a Scene (Look at Scene You Want to Delete)",
-	})
+			if _spamCheck[source] and (timeStamp < _spamCheck[source]) and not player.Permissions:IsStaff() then
+				return cb(false)
+			end
 
-	exports["sandbox-chat"]:RegisterCommand("sceneedit", function(source, args, rawCommand)
-		TriggerClientEvent("Scenes:Client:StartEdit", source)
-	end, {
-		help = "Edit a Scene (Look at Scene You Want to Edit)",
-	})
+			if scene and player then
+				_spamCheck[source] = timeStamp + 5000
+
+				cb(exports['sandbox-scenes']:Edit(data.id, data.scene, player.Permissions:IsStaff()))
+			else
+				cb(false)
+			end
+		end)
+
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+			TriggerClientEvent("Scenes:Client:RecieveScenes", source, _loadedScenes)
+		end, 5)
+
+		exports["sandbox-chat"]:RegisterCommand("scene", function(source, args, rawCommand)
+			TriggerClientEvent("Scenes:Client:Creation", source, args)
+		end, {
+			help = "Create a Scene (Look Where You Want to Place)",
+		})
+
+		exports["sandbox-chat"]:RegisterStaffCommand("scenestaff", function(source, args, rawCommand)
+			TriggerClientEvent("Scenes:Client:Creation", source, args, true)
+		end, {
+			help = "[Staff] Create a Scene (Look Where You Want to Place)",
+		})
+
+		exports["sandbox-chat"]:RegisterCommand("scenedelete", function(source, args, rawCommand)
+			TriggerClientEvent("Scenes:Client:Deletion", source)
+		end, {
+			help = "Delete a Scene (Look at Scene You Want to Delete)",
+		})
+
+		exports["sandbox-chat"]:RegisterCommand("sceneedit", function(source, args, rawCommand)
+			TriggerClientEvent("Scenes:Client:StartEdit", source)
+		end, {
+			help = "Edit a Scene (Look at Scene You Want to Edit)",
+		})
+	end
 end)
 
 AddEventHandler("Characters:Server:PlayerDropped", function(source, message)

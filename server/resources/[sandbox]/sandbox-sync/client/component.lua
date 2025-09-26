@@ -9,21 +9,24 @@ local _isStoppedForceTime = 20
 local _inCayo = false
 local _inCayoStorm = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	if GlobalState["Sync:Winter"] then
-		SetForceVehicleTrails(true)
-		SetForcePedFootstepsTracks(true)
-		ForceSnowPass(true)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		if GlobalState["Sync:Winter"] then
+			SetForceVehicleTrails(true)
+			SetForcePedFootstepsTracks(true)
+			ForceSnowPass(true)
 
-		RequestScriptAudioBank("ICE_FOOTSTEPS", false)
-		RequestScriptAudioBank("SNOW_FOOTSTEPS", false)
-	else
-		SetForceVehicleTrails(false)
-		SetForcePedFootstepsTracks(false)
-		ForceSnowPass(false)
+			RequestScriptAudioBank("ICE_FOOTSTEPS", false)
+			RequestScriptAudioBank("SNOW_FOOTSTEPS", false)
+		else
+			SetForceVehicleTrails(false)
+			SetForcePedFootstepsTracks(false)
+			ForceSnowPass(false)
 
-		ReleaseNamedScriptAudioBank("ICE_FOOTSTEPS")
-		ReleaseNamedScriptAudioBank("SNOW_FOOTSTEPS")
+			ReleaseNamedScriptAudioBank("ICE_FOOTSTEPS")
+			ReleaseNamedScriptAudioBank("SNOW_FOOTSTEPS")
+		end
 	end
 end)
 

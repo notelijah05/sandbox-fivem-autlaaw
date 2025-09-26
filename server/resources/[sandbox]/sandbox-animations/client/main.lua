@@ -11,39 +11,42 @@ emoteBinds = {}
 
 _doingStateAnimation = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterKeybinds()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterKeybinds()
 
-	RegisterChairTargets()
+		RegisterChairTargets()
 
-	exports['sandbox-hud']:InteractionRegisterMenu("expressions", "Expressions", "face-grin-squint-tears", function()
-		exports['sandbox-hud']:InteractionHide()
-		exports['sandbox-animations']:OpenExpressionsMenu()
-	end)
+		exports['sandbox-hud']:InteractionRegisterMenu("expressions", "Expressions", "face-grin-squint-tears", function()
+			exports['sandbox-hud']:InteractionHide()
+			exports['sandbox-animations']:OpenExpressionsMenu()
+		end)
 
-	exports['sandbox-hud']:InteractionRegisterMenu("walks", "Walk Styles", "person-walking", function()
-		exports['sandbox-hud']:InteractionHide()
-		exports['sandbox-animations']:OpenWalksMenu()
-	end)
+		exports['sandbox-hud']:InteractionRegisterMenu("walks", "Walk Styles", "person-walking", function()
+			exports['sandbox-hud']:InteractionHide()
+			exports['sandbox-animations']:OpenWalksMenu()
+		end)
 
-	exports["sandbox-base"]:RegisterClientCallback("Selfie:Client:UploadPhoto", function(data, cb)
-		local options = {
-			encoding = "webp",
-			quality = 0.8,
-			headers = {
-				Authorization = string.format("%s", data.token),
-			},
-		}
-		exports["screenshot-basic"]:requestScreenshotUpload(
-			string.format("%s", data.api),
-			"image",
-			options,
-			function(data)
-				local image = json.decode(data)
-				cb(json.encode({ url = image.url }))
-			end
-		)
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Selfie:Client:UploadPhoto", function(data, cb)
+			local options = {
+				encoding = "webp",
+				quality = 0.8,
+				headers = {
+					Authorization = string.format("%s", data.token),
+				},
+			}
+			exports["screenshot-basic"]:requestScreenshotUpload(
+				string.format("%s", data.api),
+				"image",
+				options,
+				function(data)
+					local image = json.decode(data)
+					cb(json.encode({ url = image.url }))
+				end
+			)
+		end)
+	end
 end)
 
 local pauseListener = nil

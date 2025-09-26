@@ -1,21 +1,24 @@
 _pickups = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	TriggerEvent("Businesses:Server:Startup")
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		TriggerEvent("Businesses:Server:Startup")
 
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		TriggerClientEvent(
-			"Taco:SetQueue",
-			source,
-			{ counter = GlobalState["TacoShop:Counter"], item = GlobalState["TacoShop:CurrentItem"] }
-		)
-	end, 2)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+			TriggerClientEvent(
+				"Taco:SetQueue",
+				source,
+				{ counter = GlobalState["TacoShop:Counter"], item = GlobalState["TacoShop:CurrentItem"] }
+			)
+		end, 2)
 
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		TriggerLatentClientEvent("Businesses:Client:CreatePoly", source, 50000, _pickups)
-	end, 2)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+			TriggerLatentClientEvent("Businesses:Client:CreatePoly", source, 50000, _pickups)
+		end, 2)
 
-	Startup()
+		Startup()
+	end
 end)
 
 function Startup()

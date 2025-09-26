@@ -4,28 +4,31 @@ local wCombozone
 
 local polyDebug = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetZoneAtCoords", function(data, cb)
-		cb(exports['sandbox-polyzone']:GetZoneAtCoords(data))
-	end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetZoneAtCoords", function(data, cb)
+			cb(exports['sandbox-polyzone']:GetZoneAtCoords(data))
+		end)
 
-	exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetZonePlayerIn", function(data, cb)
-		local c = GetEntityCoords(LocalPlayer.state.ped)
-		cb(exports['sandbox-polyzone']:GetZoneAtCoords(vector3(c.x, c.y, c.z)))
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetZonePlayerIn", function(data, cb)
+			local c = GetEntityCoords(LocalPlayer.state.ped)
+			cb(exports['sandbox-polyzone']:GetZoneAtCoords(vector3(c.x, c.y, c.z)))
+		end)
 
-	exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetAllZonesAtCoords", function(data, cb)
-		cb(exports['sandbox-polyzone']:GetAllZonesAtCoords(data))
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetAllZonesAtCoords", function(data, cb)
+			cb(exports['sandbox-polyzone']:GetAllZonesAtCoords(data))
+		end)
 
-	exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetAllZonesPlayerIn", function(data, cb)
-		local c = GetEntityCoords(LocalPlayer.state.ped)
-		cb(exports['sandbox-polyzone']:GetAllZonesAtCoords(vector3(c.x, c.y, c.z)))
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Polyzone:GetAllZonesPlayerIn", function(data, cb)
+			local c = GetEntityCoords(LocalPlayer.state.ped)
+			cb(exports['sandbox-polyzone']:GetAllZonesAtCoords(vector3(c.x, c.y, c.z)))
+		end)
 
-	exports["sandbox-base"]:RegisterClientCallback("Polyzone:IsCoordsInZone", function(data, cb)
-		cb(exports['sandbox-polyzone']:IsCoordsInZone(data.coords, data.id, data.key, data.val))
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Polyzone:IsCoordsInZone", function(data, cb)
+			cb(exports['sandbox-polyzone']:IsCoordsInZone(data.coords, data.id, data.key, data.val))
+		end)
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")

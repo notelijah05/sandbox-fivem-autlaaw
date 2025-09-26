@@ -13,19 +13,22 @@ _showingDoorDisabled = false
 
 DOORS_PERMISSION_CACHE = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-keybinds"]:Add("doors_garage_fob", "f10", "keyboard", "Doors - Use Garage Keyfob", function()
-		DoGarageKeyFobAction()
-	end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-keybinds"]:Add("doors_garage_fob", "f10", "keyboard", "Doors - Use Garage Keyfob", function()
+			DoGarageKeyFobAction()
+		end)
 
-	exports["sandbox-base"]:RegisterClientCallback("Doors:GetCurrentDoor", function(data, cb)
-		cb(_lookingAtDoor)
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Doors:GetCurrentDoor", function(data, cb)
+			cb(_lookingAtDoor)
+		end)
 
-	CreateGaragePolyZones()
-	CreateElevators()
-	Wait(1000)
-	InitDoors()
+		CreateGaragePolyZones()
+		CreateElevators()
+		Wait(1000)
+		InitDoors()
+	end
 end)
 
 function InitDoors()

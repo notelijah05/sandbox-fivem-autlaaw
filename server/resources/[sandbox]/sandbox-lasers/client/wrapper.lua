@@ -22,36 +22,39 @@ function DeleteLasers()
 	end
 end
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:Start", function()
-		creationEnabled = true
-		inOriginMode = true
-		startCreation()
-	end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:Start", function()
+			creationEnabled = true
+			inOriginMode = true
+			startCreation()
+		end)
 
-	exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:End", function()
-		creationEnabled = false
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:End", function()
+			creationEnabled = false
+		end)
 
-	exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:Save", function()
-		if not originPoints or not targetPoints then
-			return
-		end
-		local name = GetUserInput("Enter name of laser:", "", 30)
-		if name == nil then
-			return
-		end
-		local laser = {
-			name = name,
-			originPoints = originPoints,
-			targetPoints = targetPoints,
-			travelTimeBetweenTargets = { 1.0, 1.0 },
-			waitTimeAtTargets = { 0.0, 0.0 },
-			randomTargetSelection = true,
-		}
-		TriggerServerEvent("Lasers:Server:Save", laser)
-		creationEnabled = false
-	end)
+		exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:Save", function()
+			if not originPoints or not targetPoints then
+				return
+			end
+			local name = GetUserInput("Enter name of laser:", "", 30)
+			if name == nil then
+				return
+			end
+			local laser = {
+				name = name,
+				originPoints = originPoints,
+				targetPoints = targetPoints,
+				travelTimeBetweenTargets = { 1.0, 1.0 },
+				waitTimeAtTargets = { 0.0, 0.0 },
+				randomTargetSelection = true,
+			}
+			TriggerServerEvent("Lasers:Server:Save", laser)
+			creationEnabled = false
+		end)
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()

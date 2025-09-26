@@ -2,8 +2,11 @@ local xSound = exports.xsound
 previousSongs = {}
 CurrentBooths = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+	end
 end)
 
 function RegisterCallbacks()

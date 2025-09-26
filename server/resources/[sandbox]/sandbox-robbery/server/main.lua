@@ -166,144 +166,147 @@ function GetFormattedTimeFromSeconds(seconds)
 	return timeString
 end
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCommands()
-	SetupQueues()
-	TriggerEvent("Robbery:Server:Setup")
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCommands()
+		SetupQueues()
+		TriggerEvent("Robbery:Server:Setup")
 
-	GlobalState["RobberiesDisabled"] = false
+		GlobalState["RobberiesDisabled"] = false
 
-	_accessCodes.paleto = {}
-	table.insert(_accessCodes.paleto, {
-		label = "Office #1",
-		code = math.random(1000, 9999),
-	})
-	table.insert(_accessCodes.paleto, {
-		label = "Office #2",
-		code = math.random(1000, 9999),
-	})
-	table.insert(_accessCodes.paleto, {
-		label = "Office #3",
-		code = math.random(1000, 9999),
-	})
-	table.insert(_accessCodes.paleto, {
-		label = "Office #3 Safe",
-		code = math.random(1000, 9999),
-	})
+		_accessCodes.paleto = {}
+		table.insert(_accessCodes.paleto, {
+			label = "Office #1",
+			code = math.random(1000, 9999),
+		})
+		table.insert(_accessCodes.paleto, {
+			label = "Office #2",
+			code = math.random(1000, 9999),
+		})
+		table.insert(_accessCodes.paleto, {
+			label = "Office #3",
+			code = math.random(1000, 9999),
+		})
+		table.insert(_accessCodes.paleto, {
+			label = "Office #3 Safe",
+			code = math.random(1000, 9999),
+		})
 
-	local pos1 = _heistSellerLocs[tostring(os.date("%w"))]
-	exports['sandbox-pedinteraction']:VendorCreate("HeistBlocks", "ped", "Devices", GetHashKey("HC_Hacker"), {
-		coords = vector3(pos1.x, pos1.y, pos1.z),
-		heading = pos1.w,
-		scenario = "WORLD_HUMAN_TOURIST_MOBILE",
-	}, _heistTools, "badge-dollar", "View Offers", false, 1, true, 60 * math.random(30, 60))
+		local pos1 = _heistSellerLocs[tostring(os.date("%w"))]
+		exports['sandbox-pedinteraction']:VendorCreate("HeistBlocks", "ped", "Devices", GetHashKey("HC_Hacker"), {
+			coords = vector3(pos1.x, pos1.y, pos1.z),
+			heading = pos1.w,
+			scenario = "WORLD_HUMAN_TOURIST_MOBILE",
+		}, _heistTools, "badge-dollar", "View Offers", false, 1, true, 60 * math.random(30, 60))
 
-	local pos = _sellerLocs[tostring(os.date("%w"))]
-	exports['sandbox-pedinteraction']:VendorCreate("HeistShit", "ped", "Rob Tools", GetHashKey("CS_NervousRon"), {
-			coords = vector3(pos.x, pos.y, pos.z),
-			heading = pos.w,
-		}, _toolsForSale, "badge-dollar", "View Offers", 1, false, true, 60 * math.random(30, 60),
-		60 * math.random(240, 360))
+		local pos = _sellerLocs[tostring(os.date("%w"))]
+		exports['sandbox-pedinteraction']:VendorCreate("HeistShit", "ped", "Rob Tools", GetHashKey("CS_NervousRon"), {
+				coords = vector3(pos.x, pos.y, pos.z),
+				heading = pos.w,
+			}, _toolsForSale, "badge-dollar", "View Offers", 1, false, true, 60 * math.random(30, 60),
+			60 * math.random(240, 360))
 
-	local pos2 = _schemSellerLocs[tostring(os.date("%w"))]
-	exports['sandbox-pedinteraction']:VendorCreate("ScamSchemSeller", "ped", "Dom's Deals",
-		GetHashKey("a_m_m_eastsa_02"), {
-			coords = vector3(pos2.x, pos2.y, pos2.z),
-			heading = pos2.w,
-		}, _schemSeller, "badge-dollar", "View Offers")
+		local pos2 = _schemSellerLocs[tostring(os.date("%w"))]
+		exports['sandbox-pedinteraction']:VendorCreate("ScamSchemSeller", "ped", "Dom's Deals",
+			GetHashKey("a_m_m_eastsa_02"), {
+				coords = vector3(pos2.x, pos2.y, pos2.z),
+				heading = pos2.w,
+			}, _schemSeller, "badge-dollar", "View Offers")
 
-	exports['sandbox-finance']:CryptoCoinCreate("HEIST", "HEIST", 100, false, false)
+		exports['sandbox-finance']:CryptoCoinCreate("HEIST", "HEIST", 100, false, false)
 
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		TriggerClientEvent("Robbery:Client:State:Init", source, _bankStates)
-	end)
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+			TriggerClientEvent("Robbery:Client:State:Init", source, _bankStates)
+		end)
 
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:Holdup:Do", function(source, data, cb)
-		local pChar = exports['sandbox-characters']:FetchCharacterSource(source)
-		local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
+		exports["sandbox-base"]:RegisterServerCallback("Robbery:Holdup:Do", function(source, data, cb)
+			local pChar = exports['sandbox-characters']:FetchCharacterSource(source)
+			local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
 
-		if pChar ~= nil and tChar ~= nil then
-			local pPed = GetPlayerPed(source)
-			local pLoc = GetEntityCoords(pPed)
-			local tPed = GetPlayerPed(data)
-			local tLoc = GetEntityCoords(pPed)
+			if pChar ~= nil and tChar ~= nil then
+				local pPed = GetPlayerPed(source)
+				local pLoc = GetEntityCoords(pPed)
+				local tPed = GetPlayerPed(data)
+				local tLoc = GetEntityCoords(pPed)
 
-			if #(vector3(pLoc.x, pLoc.y, pLoc.z) - vector3(tLoc.x, tLoc.y, tLoc.z)) <= 3.0 then
-				exports['sandbox-base']:LoggerInfo(
-					"Robbery",
-					string.format(
-						"%s %s (%s) Robbed %s %s (%s)",
-						pChar:GetData("First"),
-						pChar:GetData("Last"),
-						pChar:GetData("SID"),
-						tChar:GetData("First"),
-						tChar:GetData("Last"),
-						tChar:GetData("SID")
-					),
-					{
-						console = true,
-						file = true,
-						database = true,
-						discord = {
-							embed = true,
-							type = "info",
-							webhook = GetConvar("discord_log_webhook", ""),
-						},
-					}
-				)
+				if #(vector3(pLoc.x, pLoc.y, pLoc.z) - vector3(tLoc.x, tLoc.y, tLoc.z)) <= 3.0 then
+					exports['sandbox-base']:LoggerInfo(
+						"Robbery",
+						string.format(
+							"%s %s (%s) Robbed %s %s (%s)",
+							pChar:GetData("First"),
+							pChar:GetData("Last"),
+							pChar:GetData("SID"),
+							tChar:GetData("First"),
+							tChar:GetData("Last"),
+							tChar:GetData("SID")
+						),
+						{
+							console = true,
+							file = true,
+							database = true,
+							discord = {
+								embed = true,
+								type = "info",
+								webhook = GetConvar("discord_log_webhook", ""),
+							},
+						}
+					)
 
-				local amt = tChar:GetData("Cash")
-				if amt == 0 or exports['sandbox-finance']:WalletModify(data, -amt) then
-					if amt == 0 or exports['sandbox-finance']:WalletModify(source, amt) then
-						cb({
-							invType = 1,
-							owner = tChar:GetData("SID"),
-						})
+					local amt = tChar:GetData("Cash")
+					if amt == 0 or exports['sandbox-finance']:WalletModify(data, -amt) then
+						if amt == 0 or exports['sandbox-finance']:WalletModify(source, amt) then
+							cb({
+								invType = 1,
+								owner = tChar:GetData("SID"),
+							})
+						end
 					end
 				end
+			else
+				cb(false)
 			end
-		else
-			cb(false)
-		end
-	end)
+		end)
 
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:Pickup", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			if #(_pickups[char:GetData("SID")] or {}) > 0 then
-				for i = #_pickups[char:GetData("SID")], 1, -1 do
-					local v = _pickups[char:GetData("SID")][i]
-					local givingItem = exports['sandbox-inventory']:ItemsGetData(v.giving)
-					local receivingItem = exports['sandbox-inventory']:ItemsGetData(v.receiving)
+		exports["sandbox-base"]:RegisterServerCallback("Robbery:Pickup", function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char ~= nil then
+				if #(_pickups[char:GetData("SID")] or {}) > 0 then
+					for i = #_pickups[char:GetData("SID")], 1, -1 do
+						local v = _pickups[char:GetData("SID")][i]
+						local givingItem = exports['sandbox-inventory']:ItemsGetData(v.giving)
+						local receivingItem = exports['sandbox-inventory']:ItemsGetData(v.receiving)
 
-					if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.giving, 1) then
-						if exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.receiving, 1, {}, 1) then
-							table.remove(_pickups[char:GetData("SID")], i)
+						if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.giving, 1) then
+							if exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.receiving, 1, {}, 1) then
+								table.remove(_pickups[char:GetData("SID")], i)
+							else
+								exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.giving, 1, {}, 1)
+								exports['sandbox-hud']:NotifError(source,
+									string.format("Failed Adding x1 %s", receivingItem.label),
+									6000
+								)
+							end
 						else
-							exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.giving, 1, {}, 1)
 							exports['sandbox-hud']:NotifError(source,
-								string.format("Failed Adding x1 %s", receivingItem.label),
+								string.format("Failed Taking x1 %s", givingItem.label),
 								6000
 							)
 						end
-					else
-						exports['sandbox-hud']:NotifError(source,
-							string.format("Failed Taking x1 %s", givingItem.label),
-							6000
-						)
 					end
-				end
-				for k, v in pairs(_pickups[char:GetData("SID")]) do
-				end
+					for k, v in pairs(_pickups[char:GetData("SID")]) do
+					end
 
-				exports['sandbox-hud']:NotifSuccess(source,
-					"You've Picked Up All Available Items", 6000)
-			else
-				exports['sandbox-hud']:NotifError(source, "You Have Nothing To Pickup",
-					6000)
+					exports['sandbox-hud']:NotifSuccess(source,
+						"You've Picked Up All Available Items", 6000)
+				else
+					exports['sandbox-hud']:NotifError(source, "You Have Nothing To Pickup",
+						6000)
+				end
 			end
-		end
-	end)
+		end)
+	end
 end)
 
 exports('TriggerPDAlert', function(source, coords, code, title, blip, description, cameraGroup, isArea)

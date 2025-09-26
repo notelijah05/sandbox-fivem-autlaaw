@@ -4,8 +4,11 @@ AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
 	playerState.isHardCuffed = false
 end)
 
-AddEventHandler("Core:Shared:Ready", function()
-	HandcuffItems()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		HandcuffItems()
+	end
 end)
 
 function DoCuff(source, target, isHardCuffed, isForced)

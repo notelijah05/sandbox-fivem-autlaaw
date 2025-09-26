@@ -1,12 +1,15 @@
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
-	RegisterChatCommands()
-	Startup()
-	TriggerEvent("Locations:Server:Startup")
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+		RegisterChatCommands()
+		Startup()
+		TriggerEvent("Locations:Server:Startup")
+	end
 end)
 
 function RegisterCallbacks()
-	exports["sandbox-base"]:RegisterServerCallback("Locations:GetAll", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Locations:GetAll", {}, function(source, data, cb)
 		exports['sandbox-locations']:GetAll(data.type, cb)
 	end)
 end

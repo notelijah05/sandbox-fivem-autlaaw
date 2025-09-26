@@ -1,8 +1,11 @@
 _todaysDayNumber = nil
 _existingTree = nil
 
-AddEventHandler("Core:Shared:Ready", function()
-	TriggerEvent("Xmas:Client:RegisterStartups")
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		TriggerEvent("Xmas:Client:RegisterStartups")
+	end
 end)
 
 RegisterNetEvent("Xmas:Client:Init", function(dayNumber, tree, hasLooted)

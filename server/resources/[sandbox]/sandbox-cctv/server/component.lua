@@ -1,44 +1,47 @@
-AddEventHandler("Core:Shared:Ready", function()
-	SetupCameras()
-	RegisterChatCommands()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		SetupCameras()
+		RegisterChatCommands()
 
-	exports["sandbox-base"]:RegisterServerCallback("CCTV:PreviousInGroup", function(source, data, cb)
-		local pState = Player(source).state
-		if pState.inCCTVCam then
-			for i = pState.inCCTVCam.camId - 1, 0, -1 do
-				if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
-					return exports['sandbox-cctv']:View(source, i)
+		exports["sandbox-base"]:RegisterServerCallback("CCTV:PreviousInGroup", function(source, data, cb)
+			local pState = Player(source).state
+			if pState.inCCTVCam then
+				for i = pState.inCCTVCam.camId - 1, 0, -1 do
+					if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
+						return exports['sandbox-cctv']:View(source, i)
+					end
+				end
+
+				for i = #Config.Cameras, 0, -1 do
+					if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
+						return exports['sandbox-cctv']:View(source, i)
+					end
 				end
 			end
+		end)
 
-			for i = #Config.Cameras, 0, -1 do
-				if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
-					return exports['sandbox-cctv']:View(source, i)
+		exports["sandbox-base"]:RegisterServerCallback("CCTV:NextInGroup", function(source, data, cb)
+			local pState = Player(source).state
+			if pState.inCCTVCam then
+				for i = pState.inCCTVCam.camId + 1, #Config.Cameras do
+					if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
+						return exports['sandbox-cctv']:View(source, i)
+					end
+				end
+
+				for i = 1, #Config.Cameras do
+					if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
+						return exports['sandbox-cctv']:View(source, i)
+					end
 				end
 			end
-		end
-	end)
+		end)
 
-	exports["sandbox-base"]:RegisterServerCallback("CCTV:NextInGroup", function(source, data, cb)
-		local pState = Player(source).state
-		if pState.inCCTVCam then
-			for i = pState.inCCTVCam.camId + 1, #Config.Cameras do
-				if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
-					return exports['sandbox-cctv']:View(source, i)
-				end
-			end
-
-			for i = 1, #Config.Cameras do
-				if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
-					return exports['sandbox-cctv']:View(source, i)
-				end
-			end
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("CCTV:ViewGroup", function(source, data, cb)
-		exports['sandbox-cctv']:ViewGroup(source, data)
-	end)
+		exports["sandbox-base"]:RegisterServerCallback("CCTV:ViewGroup", function(source, data, cb)
+			exports['sandbox-cctv']:ViewGroup(source, data)
+		end)
+	end
 end)
 
 exports('View', function(source, camId)

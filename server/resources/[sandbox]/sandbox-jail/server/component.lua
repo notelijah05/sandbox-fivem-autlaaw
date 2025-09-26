@@ -2,13 +2,16 @@ local CACHE_TIME = 60000 -- 1 Minute(s)
 local cachedData = nil
 local lastRefreshed = 0
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCommands()
-	RegisterCallbacks()
-	RegisterMiddleware()
-	RegisterPrisonSearchStartup()
-	RegisterPrisonStashStartup()
-	RegisterPrisonCraftingStartup()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCommands()
+		RegisterCallbacks()
+		RegisterMiddleware()
+		RegisterPrisonSearchStartup()
+		RegisterPrisonStashStartup()
+		RegisterPrisonCraftingStartup()
+	end
 end)
 
 function RegisterCommands()

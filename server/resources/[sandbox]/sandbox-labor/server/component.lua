@@ -1,7 +1,10 @@
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
-	RegisterMiddleware()
-	TriggerEvent("Labor:Server:Startup")
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+		RegisterMiddleware()
+		TriggerEvent("Labor:Server:Startup")
+	end
 end)
 
 _Jobs = {}

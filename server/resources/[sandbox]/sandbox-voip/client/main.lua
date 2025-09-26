@@ -34,25 +34,28 @@ function RunStartup()
 	VOIP_SETTINGS = GetPlayerVOIPSettings()
 end
 
-AddEventHandler("Core:Shared:Ready", function()
-	RunStartup()
-	CreateMicrophonePolyzones()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RunStartup()
+		CreateMicrophonePolyzones()
 
-	exports["sandbox-keybinds"]:Add("voip_cycleproximity", "Z", "keyboard", "Voice - Cycle Proximity", function()
-		if _characterLoaded and PLAYER_CONNECTED then
-			exports["sandbox-voip"]:Cycle()
-		end
-	end)
+		exports["sandbox-keybinds"]:Add("voip_cycleproximity", "Z", "keyboard", "Voice - Cycle Proximity", function()
+			if _characterLoaded and PLAYER_CONNECTED then
+				exports["sandbox-voip"]:Cycle()
+			end
+		end)
 
-	exports["sandbox-keybinds"]:Add("voip_radio", "CAPITAL", "keyboard", "Voice - Radio - Push to Talk", function()
-		if _characterLoaded and PLAYER_CONNECTED and not LocalPlayer.state.isDead and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isHardCuffed then
-			RadioKeyDown()
-		end
-	end, function()
-		if _characterLoaded and PLAYER_CONNECTED then
-			RadioKeyUp()
-		end
-	end)
+		exports["sandbox-keybinds"]:Add("voip_radio", "CAPITAL", "keyboard", "Voice - Radio - Push to Talk", function()
+			if _characterLoaded and PLAYER_CONNECTED and not LocalPlayer.state.isDead and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isHardCuffed then
+				RadioKeyDown()
+			end
+		end, function()
+			if _characterLoaded and PLAYER_CONNECTED then
+				RadioKeyUp()
+			end
+		end)
+	end
 end)
 
 AddEventHandler("mumbleConnected", function()

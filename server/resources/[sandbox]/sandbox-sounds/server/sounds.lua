@@ -1,5 +1,8 @@
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+	end
 end)
 
 exports("PlayOne", function(clientNetId, soundFile, soundVolume)

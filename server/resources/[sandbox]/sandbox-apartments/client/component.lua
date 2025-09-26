@@ -2,66 +2,69 @@ local _pzs = {}
 local _inPoly = false
 local _menu = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	for k, v in ipairs(GlobalState["Apartments"]) do
-		local aptId = string.format("apt-%s", v)
-		local apt = GlobalState[string.format("Apartment:%s", v)]
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		for k, v in ipairs(GlobalState["Apartments"]) do
+			local aptId = string.format("apt-%s", v)
+			local apt = GlobalState[string.format("Apartment:%s", v)]
 
-		exports['sandbox-polyzone']:CreateBox(aptId, apt.coords, apt.length, apt.width, apt.options, {
-			tier = k
-		})
+			exports['sandbox-polyzone']:CreateBox(aptId, apt.coords, apt.length, apt.width, apt.options, {
+				tier = k
+			})
 
-		exports["sandbox-blips"]:Add(aptId, apt.name, apt.coords, 475, 25)
-		_pzs[aptId] = {
-			name = apt.name,
-			id = apt.id,
-		}
-	end
-
-	exports['sandbox-hud']:InteractionRegisterMenu("apt-exit", "Exit Apartment", "door-open", function(data)
-		exports['sandbox-hud']:InteractionHide()
-		exports['sandbox-apartments']:Exit()
-	end, function()
-		if
-			not LocalPlayer.state.isDead
-			and GlobalState[string.format("%s:", LocalPlayer.state.ID)] ~= nil
-		then
-			local p = GlobalState[string.format(
-				"Apartment:%s",
-				LocalPlayer.state.inApartment.type
-			)]
-
-			local dist = #(
-				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
-				- vector3(p.interior.spawn.x, p.interior.spawn.y, p.interior.spawn.z)
-			)
-			return dist <= 2.0
-		else
-			return false
+			exports["sandbox-blips"]:Add(aptId, apt.name, apt.coords, 475, 25)
+			_pzs[aptId] = {
+				name = apt.name,
+				id = apt.id,
+			}
 		end
-	end)
 
-	-- exports['sandbox-hud']:InteractionRegisterMenu("apt-visitors", "Check Visitors", "hand-back-fist", function(data)
-	-- 	exports['sandbox-hud']:InteractionHide()
-	-- 	CheckVisitors()
-	-- end, function()
-	-- 	if GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)] ~= nil then
-	-- 		local p = GlobalState[string.format(
-	-- 			"Apartment:%s",
-	-- 			GlobalState[string.format(
-	-- 				"Apartment:Interior:%s",
-	-- 				GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)]
-	-- 			)]
-	-- 		)]
-	-- 		local dist = #(
-	-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
-	-- 				- vector3(p.interior.spawn.x, p.interior.spawn.y, p.interior.spawn.z)
-	-- 			)
-	-- 		return dist <= 2.0
-	-- 	else
-	-- 		return false
-	-- 	end
-	-- end)
+		exports['sandbox-hud']:InteractionRegisterMenu("apt-exit", "Exit Apartment", "door-open", function(data)
+			exports['sandbox-hud']:InteractionHide()
+			exports['sandbox-apartments']:Exit()
+		end, function()
+			if
+				not LocalPlayer.state.isDead
+				and GlobalState[string.format("%s:", LocalPlayer.state.ID)] ~= nil
+			then
+				local p = GlobalState[string.format(
+					"Apartment:%s",
+					LocalPlayer.state.inApartment.type
+				)]
+
+				local dist = #(
+					vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
+					- vector3(p.interior.spawn.x, p.interior.spawn.y, p.interior.spawn.z)
+				)
+				return dist <= 2.0
+			else
+				return false
+			end
+		end)
+
+		-- exports['sandbox-hud']:InteractionRegisterMenu("apt-visitors", "Check Visitors", "hand-back-fist", function(data)
+		-- 	exports['sandbox-hud']:InteractionHide()
+		-- 	CheckVisitors()
+		-- end, function()
+		-- 	if GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)] ~= nil then
+		-- 		local p = GlobalState[string.format(
+		-- 			"Apartment:%s",
+		-- 			GlobalState[string.format(
+		-- 				"Apartment:Interior:%s",
+		-- 				GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)]
+		-- 			)]
+		-- 		)]
+		-- 		local dist = #(
+		-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
+		-- 				- vector3(p.interior.spawn.x, p.interior.spawn.y, p.interior.spawn.z)
+		-- 			)
+		-- 		return dist <= 2.0
+		-- 	else
+		-- 		return false
+		-- 	end
+		-- end)
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()

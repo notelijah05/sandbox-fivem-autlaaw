@@ -9,8 +9,11 @@ local withinCustoms = false
 local withinCustomsType = 0
 local showingAction = false
 
-AddEventHandler("Core:Shared:Ready", function()
-	CreateCustomsZones()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		CreateCustomsZones()
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")

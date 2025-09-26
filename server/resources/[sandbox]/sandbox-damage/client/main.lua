@@ -1,29 +1,32 @@
 _reductions = 0
 
-AddEventHandler("Core:Shared:Ready", function()
-    exports["sandbox-base"]:RegisterClientCallback("Damage:Heal", function(s)
-        if s then
-            LocalPlayer.state.deadData = {}
-            exports['sandbox-damage']:ReductionsReset()
-        end
-        exports['sandbox-damage']:Revive()
-    end)
+AddEventHandler('onClientResourceStart', function(resource)
+    if resource == GetCurrentResourceName() then
+        Wait(1000)
+        exports["sandbox-base"]:RegisterClientCallback("Damage:Heal", function(s)
+            if s then
+                LocalPlayer.state.deadData = {}
+                exports['sandbox-damage']:ReductionsReset()
+            end
+            exports['sandbox-damage']:Revive()
+        end)
 
-    exports["sandbox-base"]:RegisterClientCallback("Damage:FieldStabalize", function(s)
-        exports['sandbox-damage']:Revive(true)
-    end)
+        exports["sandbox-base"]:RegisterClientCallback("Damage:FieldStabalize", function(s)
+            exports['sandbox-damage']:Revive(true)
+        end)
 
-    exports["sandbox-base"]:RegisterClientCallback("Damage:Kill", function()
-        ApplyDamageToPed(LocalPlayer.state.ped, 10000)
-    end)
+        exports["sandbox-base"]:RegisterClientCallback("Damage:Kill", function()
+            ApplyDamageToPed(LocalPlayer.state.ped, 10000)
+        end)
 
-    exports["sandbox-base"]:RegisterClientCallback("Damage:Admin:Godmode", function(s)
-        if s then
-            exports['sandbox-hud']:ApplyBuff("godmode")
-        else
-            exports['sandbox-hud']:RemoveBuffType("godmode")
-        end
-    end)
+        exports["sandbox-base"]:RegisterClientCallback("Damage:Admin:Godmode", function(s)
+            if s then
+                exports['sandbox-hud']:ApplyBuff("godmode")
+            else
+                exports['sandbox-hud']:RemoveBuffType("godmode")
+            end
+        end)
+    end
 end)
 
 RegisterNetEvent("Characters:Client:Spawned", function()

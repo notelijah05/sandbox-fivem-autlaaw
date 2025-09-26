@@ -1,231 +1,234 @@
 _hashToVeh = {}
 
-AddEventHandler('Core:Shared:Ready', function()
-    RegisterCallbacks()
-    RegisterVehicleRentalCallbacks()
-    RegisterVehicleSaleCallbacks()
-    LoadDealershipShit()
+AddEventHandler('onResourceStart', function(resource)
+    if resource == GetCurrentResourceName() then
+        Wait(1000)
+        RegisterCallbacks()
+        RegisterVehicleRentalCallbacks()
+        RegisterVehicleSaleCallbacks()
+        LoadDealershipShit()
 
-    RegisterDonorVehicleSaleCallbacks()
+        RegisterDonorVehicleSaleCallbacks()
 
-    exports["sandbox-chat"]:RegisterAdminCommand("setstock", function(source, args, rawCommand)
-        local dealership, vehicle, modelType, amount, price, class, make, model, category = table.unpack(args)
-        amount = tonumber(amount)
-        price = tonumber(price)
+        exports["sandbox-chat"]:RegisterAdminCommand("setstock", function(source, args, rawCommand)
+            local dealership, vehicle, modelType, amount, price, class, make, model, category = table.unpack(args)
+            amount = tonumber(amount)
+            price = tonumber(price)
 
-        if amount and (price and price > 0) then
-            local res = exports['sandbox-dealerships']:StockAdd(dealership, vehicle, modelType, amount, {
-                class = class,
-                price = price,
-                make = make,
-                model = model,
-                category = category
-            })
+            if amount and (price and price > 0) then
+                local res = exports['sandbox-dealerships']:StockAdd(dealership, vehicle, modelType, amount, {
+                    class = class,
+                    price = price,
+                    make = make,
+                    model = model,
+                    category = category
+                })
 
-            if res and res.success then
-                if res.existed then
-                    exports["sandbox-chat"]:SendSystemSingle(source, "Success - Already Exists")
+                if res and res.success then
+                    if res.existed then
+                        exports["sandbox-chat"]:SendSystemSingle(source, "Success - Already Exists")
+                    else
+                        exports["sandbox-chat"]:SendSystemSingle(source, "Success")
+                    end
                 else
-                    exports["sandbox-chat"]:SendSystemSingle(source, "Success")
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
                 end
             else
-                exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
             end
-        else
-            exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
-        end
-    end, {
-        help = "[Admin] Set Stock in a Vehicle Dealership. Use \" for multiple words",
-        params = {
-            {
-                name = "Dealership ID",
-                help = "ID of the Dealership e.g pdm, tuna or redline",
+        end, {
+            help = "[Admin] Set Stock in a Vehicle Dealership. Use \" for multiple words",
+            params = {
+                {
+                    name = "Dealership ID",
+                    help = "ID of the Dealership e.g pdm, tuna or redline",
+                },
+                {
+                    name = "Vehicle ID",
+                    help = "ID of the Vehicle e.g faggio",
+                },
+                {
+                    name = "Model Type",
+                    help = "E.g automobile, bike, boat, heli, plane, submarine, trailer",
+                },
+                {
+                    name = "Amount",
+                    help = "Quantity of Vehicle To Add",
+                },
+                {
+                    name = "Data - Price",
+                    help = "Price of Vehicle (Before commission)",
+                },
+                {
+                    name = "Data - Class",
+                    help = "Class e.g B",
+                },
+                {
+                    name = "Data - Make",
+                    help = "Class e.g Pegassi",
+                },
+                {
+                    name = "Data - Model",
+                    help = "Class e.g Faggio",
+                },
+                {
+                    name = "Data - Category",
+                    help =
+                    "Category e.g. import, drift, coupe, tuner, compact, suv, sedans, muscle, sport, sportclassic, super, motorcycles, offroad, rally, van, utility, misc",
+                },
             },
-            {
-                name = "Vehicle ID",
-                help = "ID of the Vehicle e.g faggio",
-            },
-            {
-                name = "Model Type",
-                help = "E.g automobile, bike, boat, heli, plane, submarine, trailer",
-            },
-            {
-                name = "Amount",
-                help = "Quantity of Vehicle To Add",
-            },
-            {
-                name = "Data - Price",
-                help = "Price of Vehicle (Before commission)",
-            },
-            {
-                name = "Data - Class",
-                help = "Class e.g B",
-            },
-            {
-                name = "Data - Make",
-                help = "Class e.g Pegassi",
-            },
-            {
-                name = "Data - Model",
-                help = "Class e.g Faggio",
-            },
-            {
-                name = "Data - Category",
-                help =
-                "Category e.g. import, drift, coupe, tuner, compact, suv, sedans, muscle, sport, sportclassic, super, motorcycles, offroad, rally, van, utility, misc",
-            },
-        },
-    }, 9)
+        }, 9)
 
-    exports["sandbox-chat"]:RegisterAdminCommand("incstock", function(source, args, rawCommand)
-        local dealership, vehicle, amount = table.unpack(args)
-        amount = tonumber(amount)
+        exports["sandbox-chat"]:RegisterAdminCommand("incstock", function(source, args, rawCommand)
+            local dealership, vehicle, amount = table.unpack(args)
+            amount = tonumber(amount)
 
-        if amount and amount > 0 then
-            local res = exports['sandbox-dealerships']:StockIncrease(dealership, vehicle, amount)
+            if amount and amount > 0 then
+                local res = exports['sandbox-dealerships']:StockIncrease(dealership, vehicle, amount)
 
-            if res and res.success then
-                exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Increased Stock")
+                if res and res.success then
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Increased Stock")
+                else
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
+                end
             else
-                exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
             end
-        else
-            exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
-        end
-    end, {
-        help = "[Admin] Set stock for specific vehicle at Dealership. Use \" for multiple words",
-        params = {
-            {
-                name = "Dealership ID",
-                help = "ID of the Dealership e.g pdm or tuna",
+        end, {
+            help = "[Admin] Set stock for specific vehicle at Dealership. Use \" for multiple words",
+            params = {
+                {
+                    name = "Dealership ID",
+                    help = "ID of the Dealership e.g pdm or tuna",
+                },
+                {
+                    name = "Vehicle ID",
+                    help = "ID of the Vehicle e.g faggio",
+                },
+                {
+                    name = "Amount",
+                    help = "Quantity of Vehicle To Add",
+                },
             },
-            {
-                name = "Vehicle ID",
-                help = "ID of the Vehicle e.g faggio",
-            },
-            {
-                name = "Amount",
-                help = "Quantity of Vehicle To Add",
-            },
-        },
-    }, 3)
+        }, 3)
 
-    exports["sandbox-chat"]:RegisterAdminCommand("setstockprice", function(source, args, rawCommand)
-        local dealership, vehicle, price = table.unpack(args)
-        price = tonumber(price)
+        exports["sandbox-chat"]:RegisterAdminCommand("setstockprice", function(source, args, rawCommand)
+            local dealership, vehicle, price = table.unpack(args)
+            price = tonumber(price)
 
-        if price and price > 0 then
-            local res = exports['sandbox-dealerships']:StockUpdate(dealership, vehicle, {
-                ["data.price"] = price
-            })
+            if price and price > 0 then
+                local res = exports['sandbox-dealerships']:StockUpdate(dealership, vehicle, {
+                    ["data.price"] = price
+                })
 
-            if res and res.success then
-                exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Set Price to $" .. price)
+                if res and res.success then
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Set Price to $" .. price)
+                else
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
+                end
             else
-                exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
             end
-        else
-            exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
-        end
-    end, {
-        help = "[Admin] Set price for specific vehicle at Dealership.",
-        params = {
-            {
-                name = "Dealership ID",
-                help = "ID of the Dealership e.g pdm or tuna",
+        end, {
+            help = "[Admin] Set price for specific vehicle at Dealership.",
+            params = {
+                {
+                    name = "Dealership ID",
+                    help = "ID of the Dealership e.g pdm or tuna",
+                },
+                {
+                    name = "Vehicle ID",
+                    help = "ID of the Vehicle e.g faggio",
+                },
+                {
+                    name = "Price",
+                    help = "The updated price",
+                },
             },
-            {
-                name = "Vehicle ID",
-                help = "ID of the Vehicle e.g faggio",
-            },
-            {
-                name = "Price",
-                help = "The updated price",
-            },
-        },
-    }, 3)
+        }, 3)
 
-    exports["sandbox-chat"]:RegisterAdminCommand("setstockname", function(source, args, rawCommand)
-        local dealership, vehicle, make, model = table.unpack(args)
+        exports["sandbox-chat"]:RegisterAdminCommand("setstockname", function(source, args, rawCommand)
+            local dealership, vehicle, make, model = table.unpack(args)
 
-        if make and model then
-            local res = exports['sandbox-dealerships']:StockUpdate(dealership, vehicle, {
-                ["data.make"] = make,
-                ["data.model"] = model,
-            })
+            if make and model then
+                local res = exports['sandbox-dealerships']:StockUpdate(dealership, vehicle, {
+                    ["data.make"] = make,
+                    ["data.model"] = model,
+                })
 
-            if res and res.success then
-                exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Set Name to " .. make .. " " .. model)
+                if res and res.success then
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Set Name to " .. make .. " " .. model)
+                else
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
+                end
             else
-                exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
             end
-        else
-            exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
-        end
-    end, {
-        help = "[Admin] Set make and model name for specific vehicle at Dealership.",
-        params = {
-            {
-                name = "Dealership ID",
-                help = "ID of the Dealership e.g pdm or tuna",
+        end, {
+            help = "[Admin] Set make and model name for specific vehicle at Dealership.",
+            params = {
+                {
+                    name = "Dealership ID",
+                    help = "ID of the Dealership e.g pdm or tuna",
+                },
+                {
+                    name = "Vehicle ID",
+                    help = "ID of the Vehicle e.g faggio",
+                },
+                {
+                    name = "Make Name",
+                    help = "",
+                },
+                {
+                    name = "Model Name",
+                    help = "",
+                },
             },
-            {
-                name = "Vehicle ID",
-                help = "ID of the Vehicle e.g faggio",
-            },
-            {
-                name = "Make Name",
-                help = "",
-            },
-            {
-                name = "Model Name",
-                help = "",
-            },
-        },
-    }, 4)
+        }, 4)
 
-    exports["sandbox-chat"]:RegisterAdminCommand("setstockclass", function(source, args, rawCommand)
-        local dealership, vehicle, class = table.unpack(args)
+        exports["sandbox-chat"]:RegisterAdminCommand("setstockclass", function(source, args, rawCommand)
+            local dealership, vehicle, class = table.unpack(args)
 
-        if class then
-            local res = exports['sandbox-dealerships']:StockUpdate(dealership, vehicle, {
-                ["data.class"] = class
-            })
+            if class then
+                local res = exports['sandbox-dealerships']:StockUpdate(dealership, vehicle, {
+                    ["data.class"] = class
+                })
 
-            if res and res.success then
-                exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Set Class to " .. class)
+                if res and res.success then
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Set Class to " .. class)
+                else
+                    exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
+                end
             else
-                exports["sandbox-chat"]:SendSystemSingle(source, "Not In Stock")
+                exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
             end
-        else
-            exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Arguments")
-        end
-    end, {
-        help = "[Admin] Set class for specific vehicle at Dealership.",
-        params = {
-            {
-                name = "Dealership ID",
-                help = "ID of the Dealership e.g pdm or tuna",
+        end, {
+            help = "[Admin] Set class for specific vehicle at Dealership.",
+            params = {
+                {
+                    name = "Dealership ID",
+                    help = "ID of the Dealership e.g pdm or tuna",
+                },
+                {
+                    name = "Vehicle ID",
+                    help = "ID of the Vehicle e.g faggio",
+                },
+                {
+                    name = "Class",
+                    help = "The updated class",
+                },
             },
-            {
-                name = "Vehicle ID",
-                help = "ID of the Vehicle e.g faggio",
-            },
-            {
-                name = "Class",
-                help = "The updated class",
-            },
-        },
-    }, 3)
+        }, 3)
 
-    local allStock = exports['sandbox-dealerships']:StockFetchAll()
-    if allStock and #allStock > 0 then
-        for k, v in ipairs(allStock) do
-            if not _hashToVeh[v.dealership] then
-                _hashToVeh[v.dealership] = {}
+        local allStock = exports['sandbox-dealerships']:StockFetchAll()
+        if allStock and #allStock > 0 then
+            for k, v in ipairs(allStock) do
+                if not _hashToVeh[v.dealership] then
+                    _hashToVeh[v.dealership] = {}
+                end
+
+                _hashToVeh[v.dealership][GetHashKey(v.vehicle)] = v.vehicle
             end
-
-            _hashToVeh[v.dealership][GetHashKey(v.vehicle)] = v.vehicle
         end
     end
 end)

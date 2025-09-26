@@ -1,10 +1,13 @@
 _requests = {}
 _requestors = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
-	RegisterMiddleware()
-	Startup()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
+		RegisterMiddleware()
+		Startup()
+	end
 end)
 
 exports("Enter", function(source, targetType, target, wakeUp)

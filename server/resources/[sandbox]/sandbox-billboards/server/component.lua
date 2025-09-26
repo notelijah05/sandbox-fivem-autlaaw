@@ -1,45 +1,48 @@
-AddEventHandler("Core:Shared:Ready", function()
-    FetchBillboardsData()
+AddEventHandler('onResourceStart', function(resource)
+    if resource == GetCurrentResourceName() then
+        Wait(1000)
+        FetchBillboardsData()
 
-    exports["sandbox-chat"]:RegisterAdminCommand("setbillboard", function(source, args, rawCommand)
-        local billboardId, billboardUrl = args[1], args[2]
+        exports["sandbox-chat"]:RegisterAdminCommand("setbillboard", function(source, args, rawCommand)
+            local billboardId, billboardUrl = args[1], args[2]
 
-        if #billboardUrl <= 10 then
-            billboardUrl = false
-        end
-
-        exports['sandbox-billboards']:Set(billboardId, billboardUrl)
-    end, {
-        help = "Set a Billboard URL",
-        params = {
-            {
-                name = "ID",
-                help = "Billboard ID",
-            },
-            {
-                name = "URL",
-                help = "Billboard URL",
-            },
-        },
-    }, 2)
-
-    exports["sandbox-base"]:RegisterServerCallback("Billboards:UpdateURL", function(source, data, cb)
-        local billboardData = _billboardConfig[data and data.id]
-        if billboardData and billboardData.job and Player(source).state.onDuty == billboardData.job then
-            local billboardUrl = data.link
-            if #billboardUrl <= 5 then
+            if #billboardUrl <= 10 then
                 billboardUrl = false
             end
 
-            if not billboardUrl or exports['sandbox-base']:RegexTest(_billboardRegex, billboardUrl, "gim") then
-                cb(exports['sandbox-billboards']:Set(data.id, billboardUrl))
+            exports['sandbox-billboards']:Set(billboardId, billboardUrl)
+        end, {
+            help = "Set a Billboard URL",
+            params = {
+                {
+                    name = "ID",
+                    help = "Billboard ID",
+                },
+                {
+                    name = "URL",
+                    help = "Billboard URL",
+                },
+            },
+        }, 2)
+
+        exports["sandbox-base"]:RegisterServerCallback("Billboards:UpdateURL", function(source, data, cb)
+            local billboardData = _billboardConfig[data and data.id]
+            if billboardData and billboardData.job and Player(source).state.onDuty == billboardData.job then
+                local billboardUrl = data.link
+                if #billboardUrl <= 5 then
+                    billboardUrl = false
+                end
+
+                if not billboardUrl or exports['sandbox-base']:RegexTest(_billboardRegex, billboardUrl, "gim") then
+                    cb(exports['sandbox-billboards']:Set(data.id, billboardUrl))
+                else
+                    cb(false, true)
+                end
             else
-                cb(false, true)
+                cb(false)
             end
-        else
-            cb(false)
-        end
-    end)
+        end)
+    end
 end)
 
 exports("Set", function(id, url)

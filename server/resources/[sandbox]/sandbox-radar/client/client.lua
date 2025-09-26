@@ -10,38 +10,41 @@ RADAR_LAST_REAR_PLATE = false
 RADAR_LAST_FRONT_PLATE = false
 RECENT_FLAGS = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-keybinds"]:Add("radar_lock", "MULTIPLY", "keyboard", "Radar - Toggle Fast Lock", function()
-		if RADAR_LOCKED then
-			UnlockRadar()
-		else
-			LockRadar()
-		end
-	end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-keybinds"]:Add("radar_lock", "MULTIPLY", "keyboard", "Radar - Toggle Fast Lock", function()
+			if RADAR_LOCKED then
+				UnlockRadar()
+			else
+				LockRadar()
+			end
+		end)
 
-	exports["sandbox-keybinds"]:Add("radar_remote", "DIVIDE", "keyboard", "Radar - Open Menu/Remote", function()
-		OpenRadarRemote()
-	end)
+		exports["sandbox-keybinds"]:Add("radar_remote", "DIVIDE", "keyboard", "Radar - Open Menu/Remote", function()
+			OpenRadarRemote()
+		end)
 
-	exports["sandbox-keybinds"]:Add("radar_toggle", "SUBTRACT", "keyboard", "Radar - Show/Hide", function()
-		ToggleRadarIsDisabled()
-	end)
+		exports["sandbox-keybinds"]:Add("radar_toggle", "SUBTRACT", "keyboard", "Radar - Show/Hide", function()
+			ToggleRadarIsDisabled()
+		end)
 
-	exports["sandbox-keybinds"]:Add("heli_toggle", "E", "keyboard", "Heli Camera - Toggle", function()
-		StartHeliCamera()
-	end)
+		exports["sandbox-keybinds"]:Add("heli_toggle", "E", "keyboard", "Heli Camera - Toggle", function()
+			StartHeliCamera()
+		end)
 
-	exports["sandbox-keybinds"]:Add("heli_rappell", "X", "keyboard", "Heli - Rappel", function()
-		HeliRappel()
-	end)
+		exports["sandbox-keybinds"]:Add("heli_rappell", "X", "keyboard", "Heli - Rappel", function()
+			HeliRappel()
+		end)
 
-	-- exports["sandbox-keybinds"]:Add("heli_lock", "SPACE", "keyboard", "Heli Camera - Lock On/Off", function()
-	-- 	LockOnHeliCamera()
-	-- end)
+		-- exports["sandbox-keybinds"]:Add("heli_lock", "SPACE", "keyboard", "Heli Camera - Lock On/Off", function()
+		-- 	LockOnHeliCamera()
+		-- end)
 
-	-- exports["sandbox-keybinds"]:Add("heli_camera", "MOUSE_RIGHT", "MOUSE_BUTTON", "Heli Camera - Change Mode", function()
-	-- 	ChangeVision()
-	-- end)
+		-- exports["sandbox-keybinds"]:Add("heli_camera", "MOUSE_RIGHT", "MOUSE_BUTTON", "Heli Camera - Change Mode", function()
+		-- 	ChangeVision()
+		-- end)
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")

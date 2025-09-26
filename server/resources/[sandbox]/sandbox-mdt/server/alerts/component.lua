@@ -39,9 +39,12 @@ _alertsDefaultType = {
 	prison = _alertValidTypes.prison[1],
 }
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterEACallbacks()
-	StartAETrackingThreads()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterEACallbacks()
+		StartAETrackingThreads()
+	end
 end)
 
 emergencyAlertsData = {}

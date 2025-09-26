@@ -25,236 +25,103 @@ local _illegalBlacklist = {
 	government = true,
 }
 
-AddEventHandler("Core:Shared:Ready", function()
-	StartRestockThread()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		StartRestockThread()
 
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		local tmp = {}
-		for k, v in pairs(_created) do
-			tmp[v.id] = {
-				id = v.id,
-				type = v.type,
-				name = v.name,
-				model = v.model,
-				position = v.position,
-				iconOverride = v.iconOverride,
-				labelOverride = v.labelOverride,
-			}
-		end
-		TriggerClientEvent("Vendor:Client:Set", source, tmp)
-	end, 5)
-
-	exports["sandbox-base"]:RegisterServerCallback("Vendor:GetItems", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			if _created[data] ~= nil then
-				local itms = {}
-
-				local pState = Player(source).state
-				local cStates = char:GetData("States") or {}
-				local hasVpn = hasValue(cStates, "PHONE_VPN")
-				local vendorSales = char:GetData("Vendor") or {}
-
-				if _created[data] and not _illegalBlacklist[pState.onDuty or ""] then
-					for k, v in ipairs(_created[data].items) do
-						if
-							(v.rep == nil or exports['sandbox-characters']:RepGetLevel(source, v.rep) >= (v.repLvl or 1))
-							and (not v.vpn or hasVpn)
-							and (not v.state or hasValue(cStates, v.state))
-							and (not v.limited or v.limited and (not vendorSales[data] or not vendorSales[data][v.item] or not vendorSales[data][v.item][v.limited.id] or vendorSales[data][v.item][v.limited.id] < v.limited.qty))
-							and (v.ignoreUnique or (not _created[data].isUnique or (_bought[data][source] == nil or _bought[data][source][v.item] == nil or _bought[data][source][v.item] < _created[data].isUnique)))
-							and (not _created[data].isGlobalUnique or _globalBought[data][source] == nil or _globalBought[data][source] < _created[data].isGlobalUnique)
-							and (
-								not v.requireCurrency
-								or v.requireCurrency
-								and ((v.coin ~= nil and exports['sandbox-finance']:CryptoHas(source, v.coin, v.price)) or (v.coin == nil and exports['sandbox-finance']:WalletHas(
-									source,
-									v.price
-								)))
-							)
-						then
-							v.index = k
-
-							if
-								v.limited
-								and (
-									not vendorSales[data]
-									or not vendorSales[data][v.item]
-									or not vendorSales[data][v.item][v.limited.id]
-									or vendorSales[data][v.item][v.limited.id] < v.limited.qty
-								)
-							then
-								if
-									not vendorSales[data]
-									or not vendorSales[data][v.item]
-									or not vendorSales[data][v.item][v.limited.id]
-								then
-									v.qty = v.limited.qty
-								else
-									v.qty = v.limited.qty - vendorSales[data][v.item][v.limited.id]
-								end
-							end
-
-							if
-								_created[data].stockTimeDelay ~= false
-								and _created[data].stockTimeDelay > os.time()
-							then
-								v.delayed = true
-							else
-								v.delayed = false
-							end
-
-							table.insert(itms, v)
-						end
-					end
-
-					cb(itms)
-				else
-					exports['sandbox-base']:LoggerWarn(
-						"Vendor",
-						string.format(
-							"^3%s %s^7 (^3%s^7) Attempted to access an illegal flagged vendor (^3%s^7) while on duty as %s",
-							char:GetData("First"),
-							char:GetData("Last"),
-							char:GetData("SID"),
-							data,
-							pState.onDuty
-						)
-					)
-					cb({})
-				end
-			else
-				cb({})
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+			local tmp = {}
+			for k, v in pairs(_created) do
+				tmp[v.id] = {
+					id = v.id,
+					type = v.type,
+					name = v.name,
+					model = v.model,
+					position = v.position,
+					iconOverride = v.iconOverride,
+					labelOverride = v.labelOverride,
+				}
 			end
-		else
-			cb({})
-		end
-	end)
+			TriggerClientEvent("Vendor:Client:Set", source, tmp)
+		end, 5)
 
-	exports["sandbox-base"]:RegisterServerCallback("Vendor:BuyItem", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			if _created[data.id] ~= nil then
-				if not _created[data.id].stockTimeDelay or os.time() > _created[data.id].stockTimeDelay then
+		exports["sandbox-base"]:RegisterServerCallback("Vendor:GetItems", function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char ~= nil then
+				if _created[data] ~= nil then
+					local itms = {}
+
 					local pState = Player(source).state
 					local cStates = char:GetData("States") or {}
+					local hasVpn = hasValue(cStates, "PHONE_VPN")
 					local vendorSales = char:GetData("Vendor") or {}
 
-					local hasVpn = hasValue(cStates, "PHONE_VPN")
-					local itemData = _created[data.id].items[data.index]
-
-					if _created[data.id] and not _illegalBlacklist[pState.onDuty or ""] then
-						if itemData ~= nil and (itemData.qty == -1 or itemData.qty > 0) then
+					if _created[data] and not _illegalBlacklist[pState.onDuty or ""] then
+						for k, v in ipairs(_created[data].items) do
 							if
-								(
-									itemData.rep == nil
-									or exports['sandbox-characters']:RepGetLevel(source, itemData.rep) >= (itemData.repLvl or 1)
-								)
-								and (not itemData.vpn or hasVpn)
-								and (not itemData.state or hasValue(cStates, itemData.state))
-								and (not itemData.limited or itemData.limited and (not vendorSales[data] or not vendorSales[data][itemData.item] or not vendorSales[data][itemData.item][itemData.limited.id] or vendorSales[data][itemData.item][itemData.limited.id] < itemData.limited.qty))
-								and (itemData.ignoreUnique or (not _created[data.id].isUnique or _bought[data.id] == nil or _bought[data.id][source] == nil or _bought[data.id][source][itemData.item] == nil or _bought[data][source][itemData.item] < _created[data.id].isUnique))
-								and (not _created[data.id].isGlobalUnique or _globalBought[data.id][source] == nil or _globalBought[data.id][source] < _created[data.id].isGlobalUnique)
+								(v.rep == nil or exports['sandbox-characters']:RepGetLevel(source, v.rep) >= (v.repLvl or 1))
+								and (not v.vpn or hasVpn)
+								and (not v.state or hasValue(cStates, v.state))
+								and (not v.limited or v.limited and (not vendorSales[data] or not vendorSales[data][v.item] or not vendorSales[data][v.item][v.limited.id] or vendorSales[data][v.item][v.limited.id] < v.limited.qty))
+								and (v.ignoreUnique or (not _created[data].isUnique or (_bought[data][source] == nil or _bought[data][source][v.item] == nil or _bought[data][source][v.item] < _created[data].isUnique)))
+								and (not _created[data].isGlobalUnique or _globalBought[data][source] == nil or _globalBought[data][source] < _created[data].isGlobalUnique)
 								and (
-									not _created[data.id].requireCurrency
-									or _created[data.id].requireCurrency
-									and ((itemData.coin ~= nil and exports['sandbox-finance']:CryptoHas(
+									not v.requireCurrency
+									or v.requireCurrency
+									and ((v.coin ~= nil and exports['sandbox-finance']:CryptoHas(source, v.coin, v.price)) or (v.coin == nil and exports['sandbox-finance']:WalletHas(
 										source,
-										itemData.coin,
-										itemData.price
-									)) or exports['sandbox-finance']:WalletHas(source, itemData.price))
+										v.price
+									)))
 								)
 							then
-								if itemData.coin ~= nil then
-									local coinData = exports['sandbox-finance']:CryptoCoinGet(itemData.coin)
+								v.index = k
+
+								if
+									v.limited
+									and (
+										not vendorSales[data]
+										or not vendorSales[data][v.item]
+										or not vendorSales[data][v.item][v.limited.id]
+										or vendorSales[data][v.item][v.limited.id] < v.limited.qty
+									)
+								then
 									if
-										exports['sandbox-finance']:CryptoExchangeRemove(
-											itemData.coin,
-											char:GetData("CryptoWallet"),
-											itemData.price
-										)
+										not vendorSales[data]
+										or not vendorSales[data][v.item]
+										or not vendorSales[data][v.item][v.limited.id]
 									then
-										if itemData.qty ~= -1 then
-											_created[data.id].items[data.index].qty = itemData.qty - 1
-										end
-										_globalBought[data.id][source] = (_globalBought[data.id][source] or 0) + 1
-										_bought[data.id][source] = _bought[data.id][source] or {}
-										_bought[data.id][source][itemData.item] = (
-											_bought[data.id][source][itemData.item] or 0
-										) + 1
-
-										if itemData.limited then
-											local vendorSales = char:GetData("Vendor") or {}
-											vendorSales[data.id] = vendorSales[data.id] or {}
-											vendorSales[data.id][itemData.item] = vendorSales[data.id]
-												[itemData.item]
-												or {}
-											vendorSales[data.id][itemData.item][itemData.limited.id] = vendorSales
-												[data.id][itemData.item][itemData.limited.id]
-												or 0
-											vendorSales[data.id][itemData.item][itemData.limited.id] += 1
-
-											char:SetData("Vendor", vendorSales)
-										end
-
-										-- This probably should be handled some other way to be more dynamic
-										-- but for this a quick hack is fine
-										local md = {}
-										if itemData.item == "lsundg_invite" then
-											md.Inviter = {
-												SID = char:GetData("SID"),
-												First = char:GetData("First"),
-												Last = char:GetData("Last"),
-											}
-										end
-
-										cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemData.item, 1,
-											{}, 1))
+										v.qty = v.limited.qty
 									else
-										exports['sandbox-hud']:NotifError(source,
-											string.format("Not Enough %s", coinData.Name)
-										)
-									end
-								else
-									if exports['sandbox-finance']:WalletHas(source, itemData.price) then
-										if exports['sandbox-finance']:WalletModify(source, -itemData.price) then
-											if itemData.qty ~= -1 then
-												_created[data.id].items[data.index].qty = itemData.qty - 1
-											end
-											_globalBought[data.id][source] = (_globalBought[data.id][source] or 0)
-												+ 1
-											_bought[data.id][source] = _bought[data.id][source] or {}
-											_bought[data.id][source][itemData.item] = (
-												_bought[data.id][source][itemData.item] or 0
-											) + 1
-											cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"),
-												itemData.item, 1, {}, 1))
-										end
-									else
-										exports['sandbox-hud']:NotifError(source,
-											"Not Enough Cash")
+										v.qty = v.limited.qty - vendorSales[data][v.item][v.limited.id]
 									end
 								end
+
+								if
+									_created[data].stockTimeDelay ~= false
+									and _created[data].stockTimeDelay > os.time()
+								then
+									v.delayed = true
+								else
+									v.delayed = false
+								end
+
+								table.insert(itms, v)
 							end
-						else
-							exports['sandbox-hud']:NotifError(source,
-								"Item Not In Stock")
 						end
+
+						cb(itms)
 					else
 						exports['sandbox-base']:LoggerWarn(
 							"Vendor",
 							string.format(
-								"%s %s (%s) Attempted to buy %s from an illegal flagged vendor (%s) while on duty as %s",
+								"^3%s %s^7 (^3%s^7) Attempted to access an illegal flagged vendor (^3%s^7) while on duty as %s",
 								char:GetData("First"),
 								char:GetData("Last"),
 								char:GetData("SID"),
-								itemData.label,
-								data.id,
+								data,
 								pState.onDuty
 							)
-						)
-						exports['sandbox-hud']:NotifError(source,
-							"You shouldn't be doing this, logged & flagged :)"
 						)
 						cb({})
 					end
@@ -264,10 +131,146 @@ AddEventHandler("Core:Shared:Ready", function()
 			else
 				cb({})
 			end
-		else
-			cb({})
-		end
-	end)
+		end)
+
+		exports["sandbox-base"]:RegisterServerCallback("Vendor:BuyItem", function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char ~= nil then
+				if _created[data.id] ~= nil then
+					if not _created[data.id].stockTimeDelay or os.time() > _created[data.id].stockTimeDelay then
+						local pState = Player(source).state
+						local cStates = char:GetData("States") or {}
+						local vendorSales = char:GetData("Vendor") or {}
+
+						local hasVpn = hasValue(cStates, "PHONE_VPN")
+						local itemData = _created[data.id].items[data.index]
+
+						if _created[data.id] and not _illegalBlacklist[pState.onDuty or ""] then
+							if itemData ~= nil and (itemData.qty == -1 or itemData.qty > 0) then
+								if
+									(
+										itemData.rep == nil
+										or exports['sandbox-characters']:RepGetLevel(source, itemData.rep) >= (itemData.repLvl or 1)
+									)
+									and (not itemData.vpn or hasVpn)
+									and (not itemData.state or hasValue(cStates, itemData.state))
+									and (not itemData.limited or itemData.limited and (not vendorSales[data] or not vendorSales[data][itemData.item] or not vendorSales[data][itemData.item][itemData.limited.id] or vendorSales[data][itemData.item][itemData.limited.id] < itemData.limited.qty))
+									and (itemData.ignoreUnique or (not _created[data.id].isUnique or _bought[data.id] == nil or _bought[data.id][source] == nil or _bought[data.id][source][itemData.item] == nil or _bought[data][source][itemData.item] < _created[data.id].isUnique))
+									and (not _created[data.id].isGlobalUnique or _globalBought[data.id][source] == nil or _globalBought[data.id][source] < _created[data.id].isGlobalUnique)
+									and (
+										not _created[data.id].requireCurrency
+										or _created[data.id].requireCurrency
+										and ((itemData.coin ~= nil and exports['sandbox-finance']:CryptoHas(
+											source,
+											itemData.coin,
+											itemData.price
+										)) or exports['sandbox-finance']:WalletHas(source, itemData.price))
+									)
+								then
+									if itemData.coin ~= nil then
+										local coinData = exports['sandbox-finance']:CryptoCoinGet(itemData.coin)
+										if
+											exports['sandbox-finance']:CryptoExchangeRemove(
+												itemData.coin,
+												char:GetData("CryptoWallet"),
+												itemData.price
+											)
+										then
+											if itemData.qty ~= -1 then
+												_created[data.id].items[data.index].qty = itemData.qty - 1
+											end
+											_globalBought[data.id][source] = (_globalBought[data.id][source] or 0) + 1
+											_bought[data.id][source] = _bought[data.id][source] or {}
+											_bought[data.id][source][itemData.item] = (
+												_bought[data.id][source][itemData.item] or 0
+											) + 1
+
+											if itemData.limited then
+												local vendorSales = char:GetData("Vendor") or {}
+												vendorSales[data.id] = vendorSales[data.id] or {}
+												vendorSales[data.id][itemData.item] = vendorSales[data.id]
+													[itemData.item]
+													or {}
+												vendorSales[data.id][itemData.item][itemData.limited.id] = vendorSales
+													[data.id][itemData.item][itemData.limited.id]
+													or 0
+												vendorSales[data.id][itemData.item][itemData.limited.id] += 1
+
+												char:SetData("Vendor", vendorSales)
+											end
+
+											-- This probably should be handled some other way to be more dynamic
+											-- but for this a quick hack is fine
+											local md = {}
+											if itemData.item == "lsundg_invite" then
+												md.Inviter = {
+													SID = char:GetData("SID"),
+													First = char:GetData("First"),
+													Last = char:GetData("Last"),
+												}
+											end
+
+											cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemData.item, 1,
+												{}, 1))
+										else
+											exports['sandbox-hud']:NotifError(source,
+												string.format("Not Enough %s", coinData.Name)
+											)
+										end
+									else
+										if exports['sandbox-finance']:WalletHas(source, itemData.price) then
+											if exports['sandbox-finance']:WalletModify(source, -itemData.price) then
+												if itemData.qty ~= -1 then
+													_created[data.id].items[data.index].qty = itemData.qty - 1
+												end
+												_globalBought[data.id][source] = (_globalBought[data.id][source] or 0)
+													+ 1
+												_bought[data.id][source] = _bought[data.id][source] or {}
+												_bought[data.id][source][itemData.item] = (
+													_bought[data.id][source][itemData.item] or 0
+												) + 1
+												cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"),
+													itemData.item, 1, {}, 1))
+											end
+										else
+											exports['sandbox-hud']:NotifError(source,
+												"Not Enough Cash")
+										end
+									end
+								end
+							else
+								exports['sandbox-hud']:NotifError(source,
+									"Item Not In Stock")
+							end
+						else
+							exports['sandbox-base']:LoggerWarn(
+								"Vendor",
+								string.format(
+									"%s %s (%s) Attempted to buy %s from an illegal flagged vendor (%s) while on duty as %s",
+									char:GetData("First"),
+									char:GetData("Last"),
+									char:GetData("SID"),
+									itemData.label,
+									data.id,
+									pState.onDuty
+								)
+							)
+							exports['sandbox-hud']:NotifError(source,
+								"You shouldn't be doing this, logged & flagged :)"
+							)
+							cb({})
+						end
+					else
+						cb({})
+					end
+				else
+					cb({})
+				end
+			else
+				cb({})
+			end
+		end)
+	end
 end)
 
 exports("VendorCreate",

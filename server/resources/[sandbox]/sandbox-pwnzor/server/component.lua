@@ -138,34 +138,31 @@ CreateThread(function()
 	GlobalState["AFKTimer"] = Config.Components.AFK.Options.AFKTimer
 end)
 
-local _loaded = false
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterCallbacks()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterCallbacks()
 
-	if not _loaded then
 		CreateThread(function()
-			_loaded = true
-			while _loaded do
-				for k, v in ipairs(GetPlayers()) do
-					local mult = GetPlayerWeaponDamageModifier(v)
+			for k, v in ipairs(GetPlayers()) do
+				local mult = GetPlayerWeaponDamageModifier(v)
 
-					if mult > 1.0 then
-						local player = exports['sandbox-base']:FetchSource(tonumber(v))
-						if player and player:GetData("Character") then
-							exports['sandbox-base']:LoggerWarn(
-								"Pwnzor",
-								string.format(
-									"%s (%s) Had An Unusual Damage Modifier: %s",
-									player:GetData("Name"),
-									player:GetData("AccountID"),
-									mult
-								)
+				if mult > 1.0 then
+					local player = exports['sandbox-base']:FetchSource(tonumber(v))
+					if player and player:GetData("Character") then
+						exports['sandbox-base']:LoggerWarn(
+							"Pwnzor",
+							string.format(
+								"%s (%s) Had An Unusual Damage Modifier: %s",
+								player:GetData("Name"),
+								player:GetData("AccountID"),
+								mult
 							)
-						end
+						)
 					end
 				end
-				Wait(60000)
 			end
+			Wait(60000)
 		end)
 	end
 end)

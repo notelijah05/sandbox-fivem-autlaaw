@@ -63,7 +63,6 @@ AddEventHandler("Core:Server:StartupReady", function()
 		Wait(1000)
 
 		COMPONENTS.Proxy.ExportsReady = true
-		TriggerEvent("Proxy:Shared:ExportsReady")
 
 		SetupAPIHandler()
 		return
@@ -82,7 +81,6 @@ AddEventHandler("Database:Server:Ready", function(db)
 		COMPONENTS.Database = db
 	end
 	COMPONENTS.Proxy.DatabaseReady = true
-	TriggerEvent("Core:Shared:Ready")
 end)
 
 RegisterNetEvent("Core:Server:ResourceStopped", function(resource)

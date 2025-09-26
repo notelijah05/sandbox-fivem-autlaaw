@@ -44,9 +44,12 @@ AddEventHandler("Characters:Client:Spawn", function()
 	end)
 end)
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-chat"]:RefreshCommands()
-	exports["sandbox-chat"]:RefreshThemes()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-chat"]:RefreshCommands()
+		exports["sandbox-chat"]:RefreshThemes()
+	end
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()

@@ -1,14 +1,17 @@
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RegisterClientCallback("Commands:SS", function(d, cb)
-		exports["screenshot-basic"]:requestScreenshotUpload(
-			string.format("https://discord.com/api/webhooks/%s", d),
-			"files[]",
-			function(data)
-				local image = json.decode(data)
-				cb(json.encode({ url = image.attachments[1].proxy_url }))
-			end
-		)
-	end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-base"]:RegisterClientCallback("Commands:SS", function(d, cb)
+			exports["screenshot-basic"]:requestScreenshotUpload(
+				string.format("https://discord.com/api/webhooks/%s", d),
+				"files[]",
+				function(data)
+					local image = json.decode(data)
+					cb(json.encode({ url = image.attachments[1].proxy_url }))
+				end
+			)
+		end)
+	end
 end)
 
 RegisterNetEvent("Commands:Client:TeleportToMarker", function()

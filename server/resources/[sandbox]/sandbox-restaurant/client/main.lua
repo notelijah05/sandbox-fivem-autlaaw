@@ -1,5 +1,8 @@
-AddEventHandler("Core:Shared:Ready", function()
-	Startup()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		Startup()
+	end
 end)
 
 function Startup()

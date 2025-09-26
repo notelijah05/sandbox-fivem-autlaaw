@@ -308,7 +308,6 @@ CreateThread(function()
 	Wait(1000)
 
 	COMPONENTS.Proxy.ExportsReady = true
-	TriggerEvent("Core:Shared:Ready")
 	return
 end)
 

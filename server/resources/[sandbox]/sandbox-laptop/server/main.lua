@@ -72,41 +72,45 @@ local defaultPermissions = {
 
 AddEventHandler("onResourceStart", function(resource)
 	if resource == GetCurrentResourceName() then
+		Wait(1000)
 		TriggerClientEvent("Laptop:Client:SetApps", -1, LAPTOP_APPS)
 	end
 end)
 
-AddEventHandler("Core:Shared:Ready", function()
-	Startup()
-	RegisterChatCommands()
-	TriggerEvent("Laptop:Server:RegisterMiddleware")
-	TriggerEvent("Laptop:Server:RegisterCallbacks")
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		Startup()
+		RegisterChatCommands()
+		TriggerEvent("Laptop:Server:RegisterMiddleware")
+		TriggerEvent("Laptop:Server:RegisterCallbacks")
 
-	exports['sandbox-inventory']:RegisterUse("laptop", "Laptop", function(source, itemData)
-		TriggerClientEvent("Laptop:Client:Open", source)
-	end)
+		exports['sandbox-inventory']:RegisterUse("laptop", "Laptop", function(source, itemData)
+			TriggerClientEvent("Laptop:Client:Open", source)
+		end)
 
-	exports['sandbox-characters']:RepCreate("Chopping", "Vehicle Chopping", {
-		{ label = "Rank 1",  value = 1000 },
-		{ label = "Rank 2",  value = 2500 },
-		{ label = "Rank 3",  value = 5000 },
-		{ label = "Rank 4",  value = 10000 },
-		{ label = "Rank 5",  value = 25000 },
-		{ label = "Rank 6",  value = 50000 },
-		{ label = "Rank 7",  value = 100000 },
-		{ label = "Rank 8",  value = 250000 },
-		{ label = "Rank 9",  value = 500000 },
-		{ label = "Rank 10", value = 1000000 },
-	}, true)
+		exports['sandbox-characters']:RepCreate("Chopping", "Vehicle Chopping", {
+			{ label = "Rank 1",  value = 1000 },
+			{ label = "Rank 2",  value = 2500 },
+			{ label = "Rank 3",  value = 5000 },
+			{ label = "Rank 4",  value = 10000 },
+			{ label = "Rank 5",  value = 25000 },
+			{ label = "Rank 6",  value = 50000 },
+			{ label = "Rank 7",  value = 100000 },
+			{ label = "Rank 8",  value = 250000 },
+			{ label = "Rank 9",  value = 500000 },
+			{ label = "Rank 10", value = 1000000 },
+		}, true)
 
-	exports['sandbox-characters']:RepCreate("Boosting", "Boosting", {
-		{ label = "D",  value = 0 },
-		{ label = "C",  value = 6000 },
-		{ label = "B",  value = 15000 },
-		{ label = "A",  value = 50000 },
-		{ label = "A+", value = 120000 }, -- Get Scratching
-		{ label = "S+", value = 150000 },
-	}, true)
+		exports['sandbox-characters']:RepCreate("Boosting", "Boosting", {
+			{ label = "D",  value = 0 },
+			{ label = "C",  value = 6000 },
+			{ label = "B",  value = 15000 },
+			{ label = "A",  value = 50000 },
+			{ label = "A+", value = 120000 }, -- Get Scratching
+			{ label = "S+", value = 150000 },
+		}, true)
+	end
 end)
 
 AddEventHandler("Laptop:Server:RegisterMiddleware", function()

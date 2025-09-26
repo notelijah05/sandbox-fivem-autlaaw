@@ -18,95 +18,56 @@ _skipPhone = false
 
 _placingSearchItem = nil
 
-AddEventHandler("Core:Shared:Ready", function()
-	CreatePropertyDoor(false)
-	CreatePropertyDoor(true)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		CreatePropertyDoor(false)
+		CreatePropertyDoor(true)
 
-	exports['sandbox-hud']:InteractionRegisterMenu("house-exit", "Exit", "door-open", function(data)
-		exports['sandbox-hud']:InteractionHide()
-		ExitProperty(data, data == 'back')
-	end, function()
-		if _insideProperty and _insideInterior then
-			local interior = PropertyInteriors[_insideInterior]
+		exports['sandbox-hud']:InteractionRegisterMenu("house-exit", "Exit", "door-open", function(data)
+			exports['sandbox-hud']:InteractionHide()
+			ExitProperty(data, data == 'back')
+		end, function()
+			if _insideProperty and _insideInterior then
+				local interior = PropertyInteriors[_insideInterior]
 
-			if interior then
-				local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - interior.locations.front.coords)
+				if interior then
+					local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - interior.locations.front.coords)
 
-				if dist <= 2.0 then
-					return 'front'
-				elseif interior.locations.back then
-					backDist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - interior.locations.back.coords)
-					if backDist <= 2.0 then
-						return 'back'
+					if dist <= 2.0 then
+						return 'front'
+					elseif interior.locations.back then
+						backDist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - interior.locations.back.coords)
+						if backDist <= 2.0 then
+							return 'back'
+						end
 					end
 				end
 			end
-		end
 
-		return false
-	end)
-
-	exports['sandbox-hud']:InteractionRegisterMenu("house-lock", "Lock", "lock", function(data)
-		exports['sandbox-hud']:InteractionHide()
-		exports["sandbox-base"]:ServerCallback("Properties:ChangeLock", {
-			id = data,
-			state = true,
-		}, function(state)
-			if state then
-				exports["sandbox-hud"]:NotifSuccess("Property Locked")
-			else
-				exports["sandbox-hud"]:NotifError("Unable to Lock Property")
-			end
+			return false
 		end)
-	end, function()
-		if _insideProperty and _insideInterior and _propertiesLoaded then
-			if _properties[_insideProperty.id].locked then
-				return false
-			end
 
-			local interior = PropertyInteriors[_insideInterior]
+		exports['sandbox-hud']:InteractionRegisterMenu("house-lock", "Lock", "lock", function(data)
+			exports['sandbox-hud']:InteractionHide()
+			exports["sandbox-base"]:ServerCallback("Properties:ChangeLock", {
+				id = data,
+				state = true,
+			}, function(state)
+				if state then
+					exports["sandbox-hud"]:NotifSuccess("Property Locked")
+				else
+					exports["sandbox-hud"]:NotifError("Unable to Lock Property")
+				end
+			end)
+		end, function()
+			if _insideProperty and _insideInterior and _propertiesLoaded then
+				if _properties[_insideProperty.id].locked then
+					return false
+				end
 
-			local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - interior.locations.front.coords)
-			local backDist
-			if interior.locations.back then
-				backDist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - interior.locations.back.coords)
-			end
-
-			if (dist <= 2.0 or (backDist and backDist <= 2.0)) then
-				return _insideProperty.id
-			end
-		end
-
-		return false
-	end)
-
-	exports['sandbox-hud']:InteractionRegisterMenu("house-unlock", "Unlock", "unlock", function(data)
-		exports['sandbox-hud']:InteractionHide()
-		exports["sandbox-base"]:ServerCallback("Properties:ChangeLock", {
-			id = data,
-			state = false,
-		}, function(state)
-			if state then
-				exports["sandbox-hud"]:NotifSuccess("Property Unlocked")
-			else
-				exports["sandbox-hud"]:NotifError("Unable to Unlock Property")
-			end
-		end)
-	end, function()
-		if _insideProperty and _insideInterior and _propertiesLoaded then
-			local property = _properties[_insideProperty.id]
-			if
-				property.locked
-				and (
-					(property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil)
-					or (
-						not property.sold
-						and LocalPlayer.state.onDuty == "realestate"
-						and exports['sandbox-jobs']:HasPermissionInJob("realestate", "JOB_DOORS")
-					)
-				)
-			then
 				local interior = PropertyInteriors[_insideInterior]
+
 				local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - interior.locations.front.coords)
 				local backDist
 				if interior.locations.back then
@@ -116,46 +77,88 @@ AddEventHandler("Core:Shared:Ready", function()
 				if (dist <= 2.0 or (backDist and backDist <= 2.0)) then
 					return _insideProperty.id
 				end
+			end
+
+			return false
+		end)
+
+		exports['sandbox-hud']:InteractionRegisterMenu("house-unlock", "Unlock", "unlock", function(data)
+			exports['sandbox-hud']:InteractionHide()
+			exports["sandbox-base"]:ServerCallback("Properties:ChangeLock", {
+				id = data,
+				state = false,
+			}, function(state)
+				if state then
+					exports["sandbox-hud"]:NotifSuccess("Property Unlocked")
+				else
+					exports["sandbox-hud"]:NotifError("Unable to Unlock Property")
+				end
+			end)
+		end, function()
+			if _insideProperty and _insideInterior and _propertiesLoaded then
+				local property = _properties[_insideProperty.id]
+				if
+					property.locked
+					and (
+						(property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil)
+						or (
+							not property.sold
+							and LocalPlayer.state.onDuty == "realestate"
+							and exports['sandbox-jobs']:HasPermissionInJob("realestate", "JOB_DOORS")
+						)
+					)
+				then
+					local interior = PropertyInteriors[_insideInterior]
+					local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - interior.locations.front.coords)
+					local backDist
+					if interior.locations.back then
+						backDist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - interior.locations.back.coords)
+					end
+
+					if (dist <= 2.0 or (backDist and backDist <= 2.0)) then
+						return _insideProperty.id
+					end
+				else
+					return false
+				end
 			else
 				return false
 			end
-		else
+
 			return false
+		end)
+
+		for k, v in pairs(PropertyInteriors) do
+			if v.zone then
+				exports['sandbox-polyzone']:CreateBox(
+					string.format("property-int-zone-%s", k),
+					v.zone.center,
+					v.zone.length,
+					v.zone.width,
+					v.zone.options,
+					{
+						PROPERTY_INTERIOR_ZONE = true,
+					}
+				)
+			end
 		end
 
-		return false
-	end)
+		exports["sandbox-keybinds"]:Add("furniture_prev", "LEFT", "keyboard", "Furniture - Previous Item", function()
+			if _placingFurniture then
+				CycleFurniture()
+			elseif _previewingInterior and not _previewingInteriorSwitching then
+				PrevPreview()
+			end
+		end)
 
-	for k, v in pairs(PropertyInteriors) do
-		if v.zone then
-			exports['sandbox-polyzone']:CreateBox(
-				string.format("property-int-zone-%s", k),
-				v.zone.center,
-				v.zone.length,
-				v.zone.width,
-				v.zone.options,
-				{
-					PROPERTY_INTERIOR_ZONE = true,
-				}
-			)
-		end
+		exports["sandbox-keybinds"]:Add("furniture_next", "RIGHT", "keyboard", "Furniture - Next Item", function()
+			if _placingFurniture then
+				CycleFurniture(true)
+			elseif _previewingInterior and not _previewingInteriorSwitching then
+				NextPreview()
+			end
+		end)
 	end
-
-	exports["sandbox-keybinds"]:Add("furniture_prev", "LEFT", "keyboard", "Furniture - Previous Item", function()
-		if _placingFurniture then
-			CycleFurniture()
-		elseif _previewingInterior and not _previewingInteriorSwitching then
-			PrevPreview()
-		end
-	end)
-
-	exports["sandbox-keybinds"]:Add("furniture_next", "RIGHT", "keyboard", "Furniture - Next Item", function()
-		if _placingFurniture then
-			CycleFurniture(true)
-		elseif _previewingInterior and not _previewingInteriorSwitching then
-			NextPreview()
-		end
-	end)
 end)
 
 function CreatePropertyDoor(isBackdoor)

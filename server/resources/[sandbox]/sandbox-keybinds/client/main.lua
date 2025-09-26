@@ -3,12 +3,15 @@ local disableAllKeys = false
 local disabledKeys = {}
 _registeredKeybinds = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	-- Register the global binds from the config
-	for k, v in pairs(Config.GlobalKeybinds) do
-		_registeredKeybinds[k] = v
-		_registeredKeybinds[k].global = true
-		KeyMappingAdd(k, _registeredKeybinds[k])
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		-- Register the global binds from the config
+		for k, v in pairs(Config.GlobalKeybinds) do
+			_registeredKeybinds[k] = v
+			_registeredKeybinds[k].global = true
+			KeyMappingAdd(k, _registeredKeybinds[k])
+		end
 	end
 end)
 

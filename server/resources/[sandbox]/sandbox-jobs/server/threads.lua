@@ -1,10 +1,6 @@
 _payPeriod = 20
 
 CreateThread(function()
-    while not _loaded do
-        Wait(100)
-    end
-
     exports['sandbox-base']:LoggerInfo("Jobs", "Salary Thread Starting")
 
     while true do
@@ -27,8 +23,8 @@ CreateThread(function()
                         existing[dutyData.Id] = {
                             date = os.time(),
                             job = dutyData.Id,
-                            minutes = (existing[dutyData.Id]?.minutes or 0) + workedMinutes,
-                            total = (existing[dutyData.Id]?.total or 0) + salary,
+                            minutes = (existing[dutyData.Id].minutes or 0) + workedMinutes,
+                            total = (existing[dutyData.Id].total or 0) + salary,
                         }
                     else
                         existing[dutyData.Id] = {

@@ -116,23 +116,25 @@ exports("emit", (namespace, event, ...data) => {
 
 exports("generateSocketToken", generateSocketToken);
 
-on("Core:Shared:Ready", () => {
-  setTimeout(() => {
-    const token = generateSocketToken("mdt-alerts", {
-      source: 99,
-      job: "police",
-      callsign: "101",
-      development: true,
-    });
+on("onResourceStart", (resourceName) => {
+  if (resourceName === GetCurrentResourceName()) {
+    setTimeout(() => {
+      const token = generateSocketToken("mdt-alerts", {
+        source: 99,
+        job: "police",
+        callsign: "101",
+        development: true,
+      });
 
-    if (printDevToken) {
-      console.log("WebSocket Dev Token (Source 99): ", token);
-    }
+      if (printDevToken) {
+        console.log("WebSocket Dev Token (Source 99): ", token);
+      }
 
-    console.log(
-      `WebSocket Server Listening On: 4002 (${
-        conv.includes("https") ? "HTTPS" : "HTTP"
-      }) Sending URL: ${conv}`
-    );
-  }, 10000);
+      console.log(
+        `WebSocket Server Listening On: 4002 (${
+          conv.includes("https") ? "HTTPS" : "HTTP"
+        }) Sending URL: ${conv}`
+      );
+    }, 10000);
+  }
 });

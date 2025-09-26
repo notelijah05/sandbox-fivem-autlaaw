@@ -9,90 +9,93 @@ function table.copy(t)
 	return setmetatable(u, getmetatable(t))
 end
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterChatCommands()
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterChatCommands()
 
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local sid = char:GetData("SID")
-			if _deadCunts[sid] ~= nil then
-				local pState = Player(source).state
-				pState.isDead = true
-				pState.deadData = _deadCunts[sid].deadData
-				pState.isDeadTime = _deadCunts[sid].isDeadTime
-				pState.releaseTime = _deadCunts[sid].releaseTime
+		exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char ~= nil then
+				local sid = char:GetData("SID")
+				if _deadCunts[sid] ~= nil then
+					local pState = Player(source).state
+					pState.isDead = true
+					pState.deadData = _deadCunts[sid].deadData
+					pState.isDeadTime = _deadCunts[sid].isDeadTime
+					pState.releaseTime = _deadCunts[sid].releaseTime
 
-				Wait(100)
-			end
-
-			if char:GetData("Damage") ~= nil then
-				char:SetData("Damage", nil)
-			end
-			_damagedLimbs[char:GetData("SID")] = _damagedLimbs[char:GetData("SID")] or {}
-		end
-	end, 2)
-
-	exports["sandbox-base"]:RegisterServerCallback("Damage:GetLimbDamage", function(source, data, cb)
-		if data == nil or source == nil then
-			cb({})
-			return
-		end
-		local char = exports['sandbox-characters']:FetchCharacterSource(data)
-		if char ~= nil then
-			local damage = exports['sandbox-damage']:GetLimbDamage(char:GetData("SID"))
-
-			local menuData = {}
-
-			local reductions = char:GetData("HPReductions") or 0
-			if reductions > 0 then
-				if reductions > 1 then
-					table.insert(menuData, {
-						label = "Signs of Trauma",
-						description = "Signs of multiple major traumas (Health Reduced)",
-					})
-				else
-					table.insert(menuData, {
-						label = "Sign of Trauma",
-						description = "Sign of major trauma (Health Reduced)",
-					})
+					Wait(100)
 				end
+
+				if char:GetData("Damage") ~= nil then
+					char:SetData("Damage", nil)
+				end
+				_damagedLimbs[char:GetData("SID")] = _damagedLimbs[char:GetData("SID")] or {}
 			end
+		end, 2)
 
-			for k, v in pairs(damage) do
-				local descStr = ""
+		exports["sandbox-base"]:RegisterServerCallback("Damage:GetLimbDamage", function(source, data, cb)
+			if data == nil or source == nil then
+				cb({})
+				return
+			end
+			local char = exports['sandbox-characters']:FetchCharacterSource(data)
+			if char ~= nil then
+				local damage = exports['sandbox-damage']:GetLimbDamage(char:GetData("SID"))
 
-				local data = {}
-				for k2, v2 in pairs(v) do
-					if v2 > 0 then
-						table.insert(data, string.format("%s %s", v2, Config.DamageTypeLabels[k2]))
+				local menuData = {}
+
+				local reductions = char:GetData("HPReductions") or 0
+				if reductions > 0 then
+					if reductions > 1 then
+						table.insert(menuData, {
+							label = "Signs of Trauma",
+							description = "Signs of multiple major traumas (Health Reduced)",
+						})
+					else
+						table.insert(menuData, {
+							label = "Sign of Trauma",
+							description = "Sign of major trauma (Health Reduced)",
+						})
 					end
 				end
 
-				if #data > 0 then
+				for k, v in pairs(damage) do
+					local descStr = ""
+
+					local data = {}
+					for k2, v2 in pairs(v) do
+						if v2 > 0 then
+							table.insert(data, string.format("%s %s", v2, Config.DamageTypeLabels[k2]))
+						end
+					end
+
+					if #data > 0 then
+						table.insert(menuData, {
+							label = Config.BoneLabels[k],
+							description = table.concat(data, ", "),
+						})
+					end
+				end
+
+				if #menuData == 0 then
 					table.insert(menuData, {
-						label = Config.BoneLabels[k],
-						description = table.concat(data, ", "),
+						label = "No Observed Injuries",
 					})
 				end
+
+				cb(menuData)
 			end
+		end)
 
-			if #menuData == 0 then
-				table.insert(menuData, {
-					label = "No Observed Injuries",
-				})
+		exports["sandbox-base"]:RegisterServerCallback("Damage:SyncReductions", function(source, data, cb)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			if char ~= nil then
+				char:SetData("HPReductions", data)
 			end
-
-			cb(menuData)
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Damage:SyncReductions", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			char:SetData("HPReductions", data)
-		end
-	end)
+		end)
+	end
 end)
 
 exports("GetLimbDamage", function(sid)

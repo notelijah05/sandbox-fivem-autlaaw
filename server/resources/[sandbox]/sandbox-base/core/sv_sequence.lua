@@ -47,10 +47,13 @@ AddEventHandler("Core:Server:StartupReady", function()
 	end
 end)
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports['sandbox-base']:TasksRegister("sequence_save", 10, function()
-		exports['sandbox-base']:SequenceSave()
-	end)
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports['sandbox-base']:TasksRegister("sequence_save", 10, function()
+			exports['sandbox-base']:SequenceSave()
+		end)
+	end
 end)
 
 AddEventHandler("Core:Server:ForceSave", function()

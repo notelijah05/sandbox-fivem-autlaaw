@@ -1,25 +1,28 @@
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterTargets()
-	RegisterCallbacks()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterTargets()
+		RegisterCallbacks()
 
-	LoadWeedModels()
+		LoadWeedModels()
 
-	exports['sandbox-polyzone']:CreatePoly("casino_roof_weed_blocker", {
-		vector2(909.12774658203, 68.336456298828),
-		vector2(892.63311767578, 34.766555786133),
-		vector2(904.96075439453, 22.200096130371),
-		vector2(894.90655517578, 1.1801514625549),
-		vector2(922.87658691406, -17.753396987915),
-		vector2(932.50738525391, -8.3494606018066),
-		vector2(958.59307861328, -23.690893173218),
-		vector2(1018.4107055664, 62.70947265625),
-		vector2(984.884765625, 89.045021057129),
-		vector2(970.19580078125, 90.825546264648),
-		vector2(948.73913574219, 85.602745056152)
-	}, {
-		minZ = 105.0,
-		maxZ = 145.0
-	}, {})
+		exports['sandbox-polyzone']:CreatePoly("casino_roof_weed_blocker", {
+			vector2(909.12774658203, 68.336456298828),
+			vector2(892.63311767578, 34.766555786133),
+			vector2(904.96075439453, 22.200096130371),
+			vector2(894.90655517578, 1.1801514625549),
+			vector2(922.87658691406, -17.753396987915),
+			vector2(932.50738525391, -8.3494606018066),
+			vector2(958.59307861328, -23.690893173218),
+			vector2(1018.4107055664, 62.70947265625),
+			vector2(984.884765625, 89.045021057129),
+			vector2(970.19580078125, 90.825546264648),
+			vector2(948.73913574219, 85.602745056152)
+		}, {
+			minZ = 105.0,
+			maxZ = 145.0
+		}, {})
+	end
 end)
 
 function getStageByPct(pct)

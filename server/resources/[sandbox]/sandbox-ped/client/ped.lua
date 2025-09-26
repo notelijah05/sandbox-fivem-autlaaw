@@ -15,9 +15,12 @@ _glassesOff = false
 _vestOff = false
 attachedProps = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	RegisterInteraction()
-	CreateShops()
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		RegisterInteraction()
+		CreateShops()
+	end
 end)
 
 RegisterNetEvent("Ped:Client:RemoveGlasses", function()

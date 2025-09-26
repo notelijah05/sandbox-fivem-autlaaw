@@ -1,11 +1,14 @@
 _placedProps = {}
 
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RegisterClientCallback("Objects:StartPlacement", function(data, cb)
-		exports['sandbox-objects']:PlacerStart(data.model, "Objects:Client:FinishPlacement", data.data, true, nil,
-			true)
-		cb()
-	end)
+AddEventHandler('onClientResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(1000)
+		exports["sandbox-base"]:RegisterClientCallback("Objects:StartPlacement", function(data, cb)
+			exports['sandbox-objects']:PlacerStart(data.model, "Objects:Client:FinishPlacement", data.data, true, nil,
+				true)
+			cb()
+		end)
+	end
 end)
 
 AddEventHandler("Objects:Client:FinishPlacement", function(data, endCoords)
