@@ -82,6 +82,6 @@ end
 
 AddEventHandler("Vehicles:Client:ExitVehicle", function(veh)
 	if ResetVehicleHandlingOverrides(veh) then
-		Logger:Info("Vehicles", "Resetting Applied Handling Overrides For Vehicle")
+		exports['sandbox-base']:LoggerInfo("Vehicles", "Resetting Applied Handling Overrides For Vehicle")
 	end
 end)

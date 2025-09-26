@@ -13,15 +13,15 @@ local keysToDisable = {
 }
 
 AddEventHandler('Vehicles:Client:StartUp', function()
-	Keybinds:Add('veh_toggle_autodrive', 'Y', 'keyboard', 'Vehicle - Toggle Autopilot', function()
+	exports["sandbox-keybinds"]:Add('veh_toggle_autodrive', 'Y', 'keyboard', 'Vehicle - Toggle Autopilot', function()
 		if VEHICLE_INSIDE and DoesEntityExist(VEHICLE_INSIDE) and VEHICLE_SEAT == -1 then
-			if Vehicles.Engine:CheckKeys() then -- check if have keys
+			if exports['sandbox-vehicles']:EngineCheckKeys() then -- check if have keys
 				StartAutoPilot()
 			end
 		end
 	end)
 
-	Interaction:RegisterMenu("veh_autodrive_danger", false, "skull-crossbones", function()
+	exports['sandbox-hud']:InteractionRegisterMenu("veh_autodrive_danger", false, "skull-crossbones", function()
 		StopAutoPilot()
 		Wait(1000)
 		StartAutoPilot(true)
@@ -47,8 +47,8 @@ function StartAutoPilot(crazyMode)
 		-- //If no mark is set, wander.
 		if destination == vector3(0, 0, 0) then
 			TaskVehicleDriveWander(LocalPlayer.state.ped, vehicle, crazyMode and 200.0 or speed, flags)
-			Notification:Info(
-				string.format("Autodrive Wander On", Keybinds:GetKey("veh_toggle_autodrive")),
+			exports["sandbox-hud"]:NotifInfo(
+				string.format("Autodrive Wander On", exports["sandbox-keybinds"]:GetKey("veh_toggle_autodrive")),
 				8000,
 				"fas fa-car"
 			)
@@ -63,8 +63,8 @@ function StartAutoPilot(crazyMode)
 				flags,
 				20.0
 			)
-			Notification:Info(
-				string.format("Autodrive To Destination On", Keybinds:GetKey("veh_toggle_autodrive")),
+			exports["sandbox-hud"]:NotifInfo(
+				string.format("Autodrive To Destination On", exports["sandbox-keybinds"]:GetKey("veh_toggle_autodrive")),
 				8000,
 				"fas fa-car"
 			)
@@ -87,8 +87,8 @@ function StartAutoPilot(crazyMode)
 			end
 
 			ClearPedTasks(LocalPlayer.state.ped)
-			Notification:Info(
-				string.format("Autodrive Off", Keybinds:GetKey("veh_toggle_autodrive")),
+			exports["sandbox-hud"]:NotifInfo(
+				string.format("Autodrive Off", exports["sandbox-keybinds"]:GetKey("veh_toggle_autodrive")),
 				8000,
 				"fas fa-car"
 			)

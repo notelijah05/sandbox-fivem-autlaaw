@@ -17,7 +17,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
             local distCovered = #(vehCoords - LAST_VEH_POS)
             if distCovered >= 0.5 then -- Otherwise the vehicle isn't actually moving cunt
                 local distCoveredMiles = distCovered / 1609
-                local newMileage = Utils:Round(currentMileage + distCoveredMiles, 2)
+                local newMileage = exports['sandbox-base']:UtilsRound(currentMileage + distCoveredMiles, 2)
 
                 if (GetGameTimer() - lastReplicated) > 60000 then
                     lastReplicated = GetGameTimer()

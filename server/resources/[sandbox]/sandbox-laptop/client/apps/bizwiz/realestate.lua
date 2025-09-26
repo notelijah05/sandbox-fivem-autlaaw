@@ -6,7 +6,7 @@ local locationTypes = {
 }
 
 RegisterNUICallback("Dyn8SearchProperties", function(d, cb)
-    local properties = Properties:GetProperties()
+    local properties = exports['sandbox-properties']:GetProperties()
 
     local data = {}
     if properties then
@@ -17,12 +17,12 @@ RegisterNUICallback("Dyn8SearchProperties", function(d, cb)
 
     cb({
         properties = data,
-        upgrades = Properties:GetUpgradesConfig(),
+        upgrades = exports['sandbox-properties']:GetUpgradesConfig(),
     })
 end)
 
 RegisterNUICallback("Dyn8MarkProperty", function(data, cb)
-    local prop = Properties:Get(data)
+    local prop = exports['sandbox-properties']:Get(data)
     if prop ~= nil then
         ClearGpsPlayerWaypoint()
         SetNewWaypoint(prop.location.front.x, prop.location.front.y)
@@ -33,7 +33,7 @@ RegisterNUICallback("Dyn8MarkProperty", function(data, cb)
 end)
 
 RegisterNUICallback("Dyn8StartSale", function(data, cb)
-    Callbacks:ServerCallback("Properties:Dyn8:Sell", {
+    exports["sandbox-base"]:ServerCallback("Properties:Dyn8:Sell", {
         property = data.property,
         loan = data.type == 'loan',
         target = data.SID,
@@ -43,14 +43,14 @@ RegisterNUICallback("Dyn8StartSale", function(data, cb)
 end)
 
 RegisterNUICallback("Dyn8StartTransfer", function(data, cb)
-    Callbacks:ServerCallback("Properties:Dyn8:Transfer", {
+    exports["sandbox-base"]:ServerCallback("Properties:Dyn8:Transfer", {
         property = data.property,
         target = data.SID,
     }, cb)
 end)
 
 RegisterNUICallback("Dyn8RunCredit", function(data, cb)
-    Callbacks:ServerCallback(
+    exports["sandbox-base"]:ServerCallback(
         "Properties:Dyn8:CheckCredit",
         {
             target = data.term,
@@ -60,7 +60,7 @@ RegisterNUICallback("Dyn8RunCredit", function(data, cb)
 end)
 
 RegisterNUICallback("Dyn8ChangePropertyLocations", function(data, cb)
-    Callbacks:ServerCallback("Properties:EditProperty", data, function(success)
+    exports["sandbox-base"]:ServerCallback("Properties:EditProperty", data, function(success)
         if success and _drawingPropertyLocations then
             _drawingPropertyLocations = false
         end
@@ -70,7 +70,7 @@ RegisterNUICallback("Dyn8ChangePropertyLocations", function(data, cb)
 end)
 
 RegisterNUICallback("Dyn8ShowPropertyLocations", function(data, cb)
-    local prop = Properties:Get(data.property)
+    local prop = exports['sandbox-properties']:Get(data.property)
     if prop and prop.location then
         cb(true)
 
@@ -123,7 +123,7 @@ function Print3DText(coords, text)
 end
 
 RegisterNUICallback("Dyn8CopyID", function(data, cb)
-    Admin:CopyClipboard(data)
+    exports['sandbox-admin']:CopyClipboard(data)
 
     cb(true)
 end)

@@ -1,11 +1,11 @@
 AddEventHandler("Finance:Server:Startup", function()
-	Callbacks:RegisterServerCallback("Wallet:GetCash", function(source, data, cb)
-		cb(Wallet:Get(source))
+	exports["sandbox-base"]:RegisterServerCallback("Wallet:GetCash", function(source, data, cb)
+		cb(exports['sandbox-finance']:WalletGet(source))
 	end)
 
-	Callbacks:RegisterServerCallback("Wallet:GiveCash", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
-		local targetChar = Fetch:SID(data.target)
+	exports["sandbox-base"]:RegisterServerCallback("Wallet:GiveCash", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local targetChar = exports['sandbox-characters']:FetchBySID(data.target)
 
 		if char ~= nil and targetChar ~= nil then
 			local playerCoords = GetEntityCoords(GetPlayerPed(source))
@@ -14,49 +14,43 @@ AddEventHandler("Finance:Server:Startup", function()
 			if #(playerCoords - targetCoords) <= 5.0 then
 				local amount = math.tointeger(data.amount)
 				if amount and amount > 0 then
-					if Wallet:Modify(source, -amount, true) then
-						if Wallet:Modify(targetChar:GetData("Source"), amount, true) then
+					if exports['sandbox-finance']:WalletModify(source, -amount, true) then
+						if exports['sandbox-finance']:WalletModify(targetChar:GetData("Source"), amount, true) then
 							TriggerClientEvent('Finance:Client:HandOffCash', source)
-							Execute:Client(
-								source,
-								"Notification",
-								"Success",
+							exports['sandbox-hud']:NotifSuccess(source,
 								"You Gave $" .. formatNumberToCurrency(amount) .. " in Cash"
 							)
-							Execute:Client(
-								targetChar:GetData("Source"),
-								"Notification",
-								"Success",
+							exports['sandbox-hud']:NotifSuccess(targetChar:GetData("Source"),
 								"You Just Received $" .. formatNumberToCurrency(amount) .. " in Cash"
 							)
 							return
 						else
-							return Chat.Send.System:Single(source, "Error")
+							return exports["sandbox-chat"]:SendSystemSingle(source, "Error")
 						end
 					else
-						return Chat.Send.System:Single(source, "Not Enough Cash")
+						return exports["sandbox-chat"]:SendSystemSingle(source, "Not Enough Cash")
 					end
 				else
-					return Chat.Send.System:Single(source, "Invalid Amount")
+					return exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Amount")
 				end
 			else
-				return Chat.Send.System:Single(source, "Target Not Nearby")
+				return exports["sandbox-chat"]:SendSystemSingle(source, "Target Not Nearby")
 			end
 		else
 			cb(false)
 		end
 	end)
 
-	Chat:RegisterCommand("cash", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("cash", function(source, args, rawCommand)
 		ShowCash(source)
 	end, {
 		help = "Show Current Cash",
 	})
 
-	Chat:RegisterAdminCommand("addcash", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("addcash", function(source, args, rawCommand)
 		local addingAmount = tonumber(args[1])
 		if addingAmount and addingAmount > 0 then
-			Wallet:Modify(source, addingAmount)
+			exports['sandbox-finance']:WalletModify(source, addingAmount)
 		end
 	end, {
 		help = "Give Cash To Yourself",
@@ -68,11 +62,11 @@ AddEventHandler("Finance:Server:Startup", function()
 		},
 	}, 1)
 
-	Chat:RegisterCommand("givecash", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("givecash", function(source, args, rawCommand)
 		local target = tonumber(args[1])
 		if target and target > 0 then
-			local char = Fetch:CharacterSource(source)
-			local targetChar = Fetch:SID(target)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+			local targetChar = exports['sandbox-characters']:FetchBySID(target)
 
 			if char and targetChar and targetChar:GetData("Source") ~= char:GetData("Source") then
 				local playerCoords = GetEntityCoords(GetPlayerPed(source))
@@ -81,37 +75,31 @@ AddEventHandler("Finance:Server:Startup", function()
 				if #(playerCoords - targetCoords) <= 5.0 then
 					local amount = math.tointeger(args[2])
 					if amount and amount > 0 then
-						if Wallet:Modify(source, -amount, true) then
-							if Wallet:Modify(targetChar:GetData("Source"), amount, true) then
+						if exports['sandbox-finance']:WalletModify(source, -amount, true) then
+							if exports['sandbox-finance']:WalletModify(targetChar:GetData("Source"), amount, true) then
 								TriggerClientEvent('Finance:Client:HandOffCash', source)
-								Execute:Client(
-									source,
-									"Notification",
-									"Success",
+								exports['sandbox-hud']:NotifSuccess(source,
 									"You Gave $" .. formatNumberToCurrency(amount) .. " in Cash"
 								)
-								Execute:Client(
-									targetChar:GetData("Source"),
-									"Notification",
-									"Success",
+								exports['sandbox-hud']:NotifSuccess(targetChar:GetData("Source"),
 									"You Just Received $" .. formatNumberToCurrency(amount) .. " in Cash"
 								)
 								return
 							else
-								return Chat.Send.System:Single(source, "Error")
+								return exports["sandbox-chat"]:SendSystemSingle(source, "Error")
 							end
 						else
-							return Chat.Send.System:Single(source, "Not Enough Cash")
+							return exports["sandbox-chat"]:SendSystemSingle(source, "Not Enough Cash")
 						end
 					else
-						return Chat.Send.System:Single(source, "Invalid Amount")
+						return exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Amount")
 					end
 				else
-					return Chat.Send.System:Single(source, "Target Not Nearby")
+					return exports["sandbox-chat"]:SendSystemSingle(source, "Target Not Nearby")
 				end
 			end
 		end
-		Chat.Send.System:Single(source, "Invalid State ID")
+		exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
 	end, {
 		help = "Give Your Cash to a Person",
 		params = {
@@ -128,11 +116,8 @@ AddEventHandler("Finance:Server:Startup", function()
 end)
 
 function ShowCash(source)
-	Execute:Client(
-		source,
-		"Notification",
-		"Success",
-		"You have $" .. formatNumberToCurrency(Wallet:Get(source)),
+	exports['sandbox-hud']:NotifSuccess(source,
+		"You have $" .. formatNumberToCurrency(exports['sandbox-finance']:WalletGet(source)),
 		2500,
 		"money-bill-wave"
 	)

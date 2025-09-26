@@ -5,23 +5,23 @@ _inPursuitVehicleMegaphone = false
 
 AddEventHandler("Characters:Client:Spawn", function()
     Wait(500)
-    Buffs:RegisterBuff("pursuit-modes", "gauge-high", "#892020", -1, "permanent")
+    exports['sandbox-hud']:RegisterBuff("pursuit-modes", "gauge-high", "#892020", -1, "permanent")
 end)
 
 local _timeout = false
 
 AddEventHandler('Vehicles:Client:StartUp', function()
-    Interaction:RegisterMenu("vehicle-megaphone", false, "megaphone", function(data)
-        Interaction:Hide()
+    exports['sandbox-hud']:InteractionRegisterMenu("vehicle-megaphone", false, "megaphone", function(data)
+        exports['sandbox-hud']:InteractionHide()
         _inPursuitVehicleMegaphone = not _inPursuitVehicleMegaphone
         Entity(_inPursuitVehicle).state:set('VehicleMegaphone', _inPursuitVehicleMegaphone, true)
-        Callbacks:ServerCallback("Vehicles:Server:VehicleMegaphone", {}, function(data, cb)
+        exports["sandbox-base"]:ServerCallback("Vehicles:Server:VehicleMegaphone", {}, function(data, cb)
         end)
     end, function()
         return _inPursuitVehicle
     end)
 
-    Interaction:RegisterMenu("pursuit-modes", false, "car-on", function(data)
+    exports['sandbox-hud']:InteractionRegisterMenu("pursuit-modes", false, "car-on", function(data)
         if _inPursuitVehicleSettings then
             local menu = {}
             for k, v in pairs(_inPursuitVehicleSettings) do
@@ -29,11 +29,12 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                     icon = "gauge-high",
                     label = string.format("%s Class", v.name),
                     action = function()
-                        Interaction:Hide()
+                        exports['sandbox-hud']:InteractionHide()
 
                         _inPursuitVehicleMode = k
-                        UISounds.Play:FrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
-                        Notification:Standard("Switched to Pursuit Mode " .. v.name)
+                        exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Business_Restart",
+                            "DLC_Biker_Computer_Sounds")
+                        exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " .. v.name)
                         ApplyPursuitStuffToVehicle(_inPursuitVehicleMode)
 
                         Entity(_inPursuitVehicle).state:set('PursuitMode', _inPursuitVehicleMode, true)
@@ -44,15 +45,15 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                 })
             end
 
-            Interaction:ShowMenu(menu)
+            exports['sandbox-hud']:InteractionShowMenu(menu)
         end
     end, function()
         return _inPursuitVehicleSettings
     end)
 
-    Keybinds:Add('vehicle_pursuit_modes', '', 'keyboard', 'Vehicle - Pursuit Modes', function()
+    exports["sandbox-keybinds"]:Add('vehicle_pursuit_modes', '', 'keyboard', 'Vehicle - Pursuit Modes', function()
         if _inPursuitVehicle and _timeout then
-            Notification:Error("Cannot switch modes that quickly.")
+            exports["sandbox-hud"]:NotifError("Cannot switch modes that quickly.")
             return
         end
         if _inPursuitVehicle and not _timeout then
@@ -62,8 +63,9 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                 _inPursuitVehicleMode = 1
             end
 
-            UISounds.Play:FrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
-            Notification:Standard("Switched to Pursuit Mode " .. _inPursuitVehicleSettings[_inPursuitVehicleMode].name or
+            exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
+            exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " ..
+                _inPursuitVehicleSettings[_inPursuitVehicleMode].name or
                 _inPursuitVehicleMode)
             ApplyPursuitStuffToVehicle(_inPursuitVehicleMode)
 
@@ -91,8 +93,8 @@ AddEventHandler('Vehicles:Client:StartUp', function()
             if lastPursuitMode ~= nil and lastPursuitMode <= #_inPursuitVehicleSettings then
                 _inPursuitVehicleMode = lastPursuitMode
 
-                UISounds.Play:FrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
-                Notification:Standard("Switched to Pursuit Mode " ..
+                exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
+                exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " ..
                     _inPursuitVehicleSettings[_inPursuitVehicleMode].name or _inPursuitVehicleMode)
 
                 ApplyPursuitStuffToVehicle(lastPursuitMode)
@@ -114,7 +116,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                 _inPursuitVehicleMegaphone = false
                 local lastVehicleMegaphone = Entity(veh)?.state?.VehicleMegaphone
                 if lastVehicleMegaphone == true then
-                    Callbacks:ServerCallback("Vehicles:Server:VehicleMegaphone", function(data, cb)
+                    exports["sandbox-base"]:ServerCallback("Vehicles:Server:VehicleMegaphone", function(data, cb)
                     end)
                 end
 
@@ -218,10 +220,11 @@ function ApplyPursuitStuffToVehicle(mode)
             local percentage = (100 / (#_inPursuitVehicleSettings - 1)) * (mode - 1)
 
             print(_inPursuitVehicleSettings[_inPursuitVehicleMode].name)
-            Buffs:ApplyUniqueBuff("pursuit-modes", -1, _inPursuitVehicleSettings[_inPursuitVehicleMode].name)
+            exports['sandbox-hud']:ApplyUniqueBuff("pursuit-modes", -1,
+                _inPursuitVehicleSettings[_inPursuitVehicleMode].name)
             --TriggerEvent("Status:Client:Update", "pursuit-modes", percentage)
         else
-            Buffs:RemoveBuffType("pursuit-modes")
+            exports['sandbox-hud']:RemoveBuffType("pursuit-modes")
             --TriggerEvent("Status:Client:Update", "pursuit-modes", 0)
         end
     end
@@ -240,6 +243,6 @@ function RemovePursuitStuffFromVehicle(veh)
     SetVehicleLights(veh, 0)
     ToggleVehicleMod(veh, 22, false)
 
-    Buffs:RemoveBuffType("pursuit-modes")
+    exports['sandbox-hud']:RemoveBuffType("pursuit-modes")
     --TriggerEvent("Status:Client:Update", "pursuit-modes", 0)
 end

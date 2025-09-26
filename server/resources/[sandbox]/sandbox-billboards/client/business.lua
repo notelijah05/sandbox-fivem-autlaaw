@@ -8,16 +8,16 @@ function GetNewTVLink(id)
     end
 
     linkPromise = promise.new()
-    Input:Show("TVs", "URL - Imgur Only (i.imgur.com/example.png)", {
-		{
-			id = "name",
-			type = "text",
-			options = {
+    exports['sandbox-hud']:InputShow("TVs", "URL - Imgur Only (i.imgur.com/example.png)", {
+        {
+            id = "name",
+            type = "text",
+            options = {
                 helperText = string.format("Leave Blank to Reset - Resolution: %s x %s", width, height),
-				inputProps = {},
-			},
-		},
-	}, "Billboards:Client:RecieveTVLinkInput", {})
+                inputProps = {},
+            },
+        },
+    }, "Billboards:Client:RecieveTVLinkInput", {})
 
     return Citizen.Await(linkPromise)
 end
@@ -31,17 +31,17 @@ end)
 
 AddEventHandler("Billboards:Client:SetLink", function(e, data)
     local tvLink = GetNewTVLink(data.id)
-    Callbacks:ServerCallback("Billboards:UpdateURL", {
+    exports["sandbox-base"]:ServerCallback("Billboards:UpdateURL", {
         id = data.id,
         link = tvLink
     }, function(success, invalidUrl)
         if success then
-            Notification:Success("Updated Link!", 5000)
+            exports["sandbox-hud"]:NotifSuccess("Updated Link!", 5000)
         else
             if invalidUrl then
-                Notification:Error("Invalid URL - Imgur Links Only", 5000)
+                exports["sandbox-hud"]:NotifError("Invalid URL - Imgur Links Only", 5000)
             else
-                Notification:Error("Error", 5000)
+                exports["sandbox-hud"]:NotifError("Error", 5000)
             end
         end
     end)

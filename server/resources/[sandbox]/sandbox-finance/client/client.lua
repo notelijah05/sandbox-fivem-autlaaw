@@ -1,20 +1,5 @@
 local inBank = true
 
-AddEventHandler("Finance:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-end
-
 function TableLength(tbl)
 	local c = 0
 	for k, v in pairs(tbl) do
@@ -24,27 +9,10 @@ function TableLength(tbl)
 end
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Finance", {
-		"Utils",
-		"Callbacks",
-		"Logger",
-		"Interaction",
-		"Progress",
-		"Targeting",
-		"PedInteraction",
-		"Notification",
-		"Blips",
-		"Polyzone",
-		"Action",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
+	RunBankingStartup()
 
-		RunBankingStartup()
-
-		PedInteraction:Add("paycheck", `ig_bankman`, vector3(253.193, 216.434, 105.282), 339.578, 25.0, {
+	exports['sandbox-pedinteraction']:Add("paycheck", `ig_bankman`, vector3(253.193, 216.434, 105.282), 339.578, 25.0,
+		{
 			{
 				icon = "hand-holding-dollar",
 				text = "Get Paycheck",
@@ -55,34 +23,35 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}, "money-check-dollar")
 
-		Targeting.Zones:AddBox(
-			"paycheck-fuckingcunt",
-			"money-check-dollar",
-			vector3(254.53, 216.58, 106.28),
-			0.8,
-			3.6,
+	exports['sandbox-targeting']:ZonesAddBox(
+		"paycheck-fuckingcunt",
+		"money-check-dollar",
+		vector3(254.53, 216.58, 106.28),
+		0.8,
+		3.6,
+		{
+			name = "paycheck",
+			heading = 340,
+			--debugPoly=true,
+			minZ = 105.28,
+			maxZ = 108.28,
+		},
+		{
 			{
-				name = "paycheck",
-				heading = 340,
-				--debugPoly=true,
-				minZ = 105.28,
-				maxZ = 108.28,
+				icon = "hand-holding-dollar",
+				text = "Get Paycheck",
+				event = "Finance:Client:Paycheck",
+				isEnabled = function()
+					return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
+				end,
 			},
-			{
-				{
-					icon = "hand-holding-dollar",
-					text = "Get Paycheck",
-					event = "Finance:Client:Paycheck",
-					isEnabled = function()
-						return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
-					end,
-				},
-			},
-			3.0,
-			true
-		)
+		},
+		3.0,
+		true
+	)
 
-		PedInteraction:Add("paycheck-2", `ig_bankman`, vector3(17.568, -927.223, 28.903), 111.958, 25.0, {
+	exports['sandbox-pedinteraction']:Add("paycheck-2", `ig_bankman`, vector3(17.568, -927.223, 28.903), 111.958,
+		25.0, {
 			{
 				icon = "hand-holding-dollar",
 				text = "Get Paycheck",
@@ -93,34 +62,35 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}, "money-check-dollar")
 
-		Targeting.Zones:AddBox(
-			"paycheck-fuckingcunt-2",
-			"money-check-dollar",
-			vector3(16.72, -927.74, 29.9),
-			2.0,
-			1.0,
+	exports['sandbox-targeting']:ZonesAddBox(
+		"paycheck-fuckingcunt-2",
+		"money-check-dollar",
+		vector3(16.72, -927.74, 29.9),
+		2.0,
+		1.0,
+		{
+			name = "paycheck",
+			heading = 15,
+			--debugPoly=true,
+			minZ = 29.7,
+			maxZ = 31.3,
+		},
+		{
 			{
-				name = "paycheck",
-				heading = 15,
-				--debugPoly=true,
-				minZ = 29.7,
-				maxZ = 31.3,
+				icon = "hand-holding-dollar",
+				text = "Get Paycheck",
+				event = "Finance:Client:Paycheck",
+				isEnabled = function()
+					return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
+				end,
 			},
-			{
-				{
-					icon = "hand-holding-dollar",
-					text = "Get Paycheck",
-					event = "Finance:Client:Paycheck",
-					isEnabled = function()
-						return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
-					end,
-				},
-			},
-			3.0,
-			true
-		)
+		},
+		3.0,
+		true
+	)
 
-		PedInteraction:Add("paycheck-3", `ig_bankman`, vector3(-108.997, 6471.589, 30.634), 224.685, 25.0, {
+	exports['sandbox-pedinteraction']:Add("paycheck-3", `ig_bankman`, vector3(-108.997, 6471.589, 30.634), 224.685,
+		25.0, {
 			{
 				icon = "hand-holding-dollar",
 				text = "Get Paycheck",
@@ -131,37 +101,36 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}, "money-check-dollar")
 
-		Targeting.Zones:AddBox(
-			"paycheck-fuckingcunt-3",
-			"money-check-dollar",
-			vector3(-109.04, 6471.68, 31.63),
-			1.6,
-			1.2,
+	exports['sandbox-targeting']:ZonesAddBox(
+		"paycheck-fuckingcunt-3",
+		"money-check-dollar",
+		vector3(-109.04, 6471.68, 31.63),
+		1.6,
+		1.2,
+		{
+			name = "paycheck",
+			heading = 315,
+			--debugPoly=true,
+			minZ = 28.83,
+			maxZ = 32.83,
+		},
+		{
 			{
-				name = "paycheck",
-				heading = 315,
-				--debugPoly=true,
-				minZ = 28.83,
-				maxZ = 32.83,
+				icon = "hand-holding-dollar",
+				text = "Get Paycheck",
+				event = "Finance:Client:Paycheck",
+				isEnabled = function()
+					return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
+				end,
 			},
-			{
-				{
-					icon = "hand-holding-dollar",
-					text = "Get Paycheck",
-					event = "Finance:Client:Paycheck",
-					isEnabled = function()
-						return TableLength(LocalPlayer.state.Character:GetData("Salary") or {}) > 0
-					end,
-				},
-			},
-			3.0,
-			true
-		)
+		},
+		3.0,
+		true
+	)
 
-		Interaction:RegisterMenu("cash", "Show Cash", "dollar-sign", function()
-			TriggerServerEvent("Wallet:ShowCash")
-			Interaction:Hide()
-		end)
+	exports['sandbox-hud']:InteractionRegisterMenu("cash", "Show Cash", "dollar-sign", function()
+		TriggerServerEvent("Wallet:ShowCash")
+		exports['sandbox-hud']:InteractionHide()
 	end)
 end)
 
@@ -174,11 +143,12 @@ RegisterNetEvent("UI:Client:Reset", function()
 end)
 
 AddEventHandler("Finance:Client:Paycheck", function(entity, data)
-	Callbacks:ServerCallback("Finance:Paycheck", {}, function(s)
+	exports["sandbox-base"]:ServerCallback("Finance:Paycheck", {}, function(s)
 		if s.total > 0 then
-			Notification:Success(string.format("You Received $%s For %s Total Minutes Worked", s.total, s.minutes))
+			exports["sandbox-hud"]:NotifSuccess(string.format("You Received $%s For %s Total Minutes Worked", s.total,
+				s.minutes))
 		else
-			Notification:Error("You Need To Work To Earn A Paycheck")
+			exports["sandbox-hud"]:NotifError("You Need To Work To Earn A Paycheck")
 		end
 	end)
 end)
@@ -190,7 +160,7 @@ RegisterNUICallback("Close", function(data, cb)
 	})
 
 	if not inBank then
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "atm_removing",
 			duration = 1500,
 			label = "Removing Card",

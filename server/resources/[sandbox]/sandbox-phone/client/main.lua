@@ -28,164 +28,80 @@ local _ignoreEvents = {
 	"PhoneSettings",
 }
 
-AddEventHandler("Phone:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Labor = exports["sandbox-base"]:FetchComponent("Labor")
-	Jail = exports["sandbox-base"]:FetchComponent("Jail")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	NetSync = exports["sandbox-base"]:FetchComponent("NetSync")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	InfoOverlay = exports["sandbox-base"]:FetchComponent("InfoOverlay")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Notifications = exports["sandbox-base"]:FetchComponent("Notifications")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Phone", {
-		"Callbacks",
-		"Logger",
-		"Phone",
-		"Notification",
-		"UISounds",
-		"Sounds",
-		"Hud",
-		"Keybinds",
-		"Interaction",
-		"Inventory",
-		"Hud",
-		"Targeting",
-		"ListMenu",
-		"Labor",
-		"Jail",
-		"Blips",
-		"Reputation",
-		"Polyzone",
-		"NetSync",
-		"Vehicles",
-		"Progress",
-		"Jobs",
-		"Properties",
-		"InfoOverlay",
-		"Input",
-		"Animations",
-		"Notifications",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		Keybinds:Add("phone_toggle", "M", "keyboard", "Phone - Open/Close", function()
-			if Phone == nil then
-				return
-			end
+	exports["sandbox-keybinds"]:Add("phone_toggle", "M", "keyboard", "Phone - Open/Close", function()
+		TogglePhone()
+	end)
 
-			TogglePhone()
-		end)
-
-		Keybinds:Add("phone_ansend", "", "keyboard", "Phone - Accept/End Call", function()
-			if Phone == nil then
-				return
-			end
-
-			if _call ~= nil then
-				if _call.state == 1 then
-					Phone.Call:Accept()
-				else
-					Phone.Call:End()
-				end
-			end
-		end)
-
-		Keybinds:Add("phone_answer", "", "keyboard", "Phone - Accept Call", function()
-			if Phone == nil then
-				return
-			end
-
-			if _call ~= nil then
-				if _call.state == 1 then
-					Phone.Call:Accept()
-				end
-			end
-		end)
-
-		Keybinds:Add("phone_end", "", "keyboard", "Phone - End Call", function()
-			if Phone == nil then
-				return
-			end
-
-			if _call ~= nil then
-				Phone.Call:End()
-			end
-		end)
-
-		Keybinds:Add("phone_mute", "", "keyboard", "Phone - Mute/Unmute Sound", function()
-			if Phone == nil then
-				return
-			end
-
-			if _settings.volume > 0 then
-				_settings.volume = 0
-				Sounds.Play:One("mute.ogg", 0.1)
+	exports["sandbox-keybinds"]:Add("phone_ansend", "", "keyboard", "Phone - Accept/End Call", function()
+		if _call ~= nil then
+			if _call.state == 1 then
+				exports['sandbox-phone']:CallAccept()
 			else
-				_settings.volume = 100
-				Sounds.Play:One("unmute.ogg", 0.1)
+				exports['sandbox-phone']:CallEnd()
 			end
-			Callbacks:ServerCallback("Phone:Settings:Update", {
-				type = "volume",
-				val = _settings.volume,
-			})
-
-			-- Send this manually since we're blocking PhoneSettings
-			-- updates bcuz react rerendering makes me want to cry
-			SendNUIMessage({
-				type = "UPDATE_DATA",
-				data = {
-					type = "player",
-					id = "PhoneSettings",
-					key = "volume",
-					data = _settings.volume,
-				},
-			})
-		end)
-
-		for k, v in ipairs(_payphones) do
-			Targeting:AddObject(v, "phone-rotary", {
-				{
-					icon = "phone-volume",
-					text = "Use Payphone",
-					event = "Phone:Client:Payphone",
-					minDist = 2.0,
-					isEnabled = function()
-						return not Phone:IsOpen() and not Phone.Call:Status()
-					end,
-				},
-			}, 3.0)
 		end
 	end)
+
+	exports["sandbox-keybinds"]:Add("phone_answer", "", "keyboard", "Phone - Accept Call", function()
+		if _call ~= nil then
+			if _call.state == 1 then
+				exports['sandbox-phone']:CallAccept()
+			end
+		end
+	end)
+
+	exports["sandbox-keybinds"]:Add("phone_end", "", "keyboard", "Phone - End Call", function()
+		if _call ~= nil then
+			exports['sandbox-phone']:CallEnd()
+		end
+	end)
+
+	exports["sandbox-keybinds"]:Add("phone_mute", "", "keyboard", "Phone - Mute/Unmute Sound", function()
+		if _settings.volume > 0 then
+			_settings.volume = 0
+			exports["sandbox-sounds"]:PlayOne("mute.ogg", 0.1)
+		else
+			_settings.volume = 100
+			exports["sandbox-sounds"]:PlayOne("unmute.ogg", 0.1)
+		end
+		exports["sandbox-base"]:ServerCallback("Phone:Settings:Update", {
+			type = "volume",
+			val = _settings.volume,
+		})
+
+		-- Send this manually since we're blocking PhoneSettings
+		-- updates bcuz react rerendering makes me want to cry
+		SendNUIMessage({
+			type = "UPDATE_DATA",
+			data = {
+				type = "player",
+				id = "PhoneSettings",
+				key = "volume",
+				data = _settings.volume,
+			},
+		})
+	end)
+
+	for k, v in ipairs(_payphones) do
+		exports['sandbox-targeting']:AddObject(v, "phone-rotary", {
+			{
+				icon = "phone-volume",
+				text = "Use Payphone",
+				event = "Phone:Client:Payphone",
+				minDist = 2.0,
+				isEnabled = function()
+					return not exports['sandbox-phone']:IsOpen() and
+						not exports['sandbox-phone']:CallStatus()
+				end,
+			},
+		}, 3.0)
+	end
 end)
 
 AddEventHandler("Phone:Client:Payphone", function(entity, data)
 	if entity.entity ~= nil then
-		Phone:OpenPayphone()
+		exports['sandbox-phone']:OpenPayphone()
 	end
 end)
 
@@ -195,19 +111,19 @@ AddEventHandler("Characters:Client:Updated", function(key)
 	end
 
 	_settings = LocalPlayer.state.Character:GetData("PhoneSettings")
-	Phone.Data:Set("player", LocalPlayer.state.Character:GetData())
+	exports['sandbox-phone']:DataSet("player", LocalPlayer.state.Character:GetData())
 
 	if
 		key == "States"
 		and LocalPlayer.state.phoneOpen
 		and (not hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE"))
 	then
-		Phone:Close(true)
+		exports['sandbox-phone']:Close(true)
 	end
 end)
 
 RegisterNetEvent("Job:Client:DutyChanged", function(state)
-	Phone.Data:Set("onDuty", state)
+	exports['sandbox-phone']:DataSet("onDuty", state)
 end)
 
 RegisterNetEvent("UI:Client:Reset", function(manual)
@@ -220,20 +136,20 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 	if manual then
 		TriggerServerEvent("Phone:Server:UIReset")
 		if LocalPlayer.state.phoneOpen then
-			Phone:Close()
+			exports['sandbox-phone']:Close()
 		end
 	end
 end)
 
 AddEventHandler("UI:Client:Close", function(context)
 	if context ~= "phone" then
-		Phone:Close()
+		exports['sandbox-phone']:Close()
 	end
 end)
 
 AddEventHandler("Ped:Client:Died", function()
 	if LocalPlayer.state.phoneOpen then
-		Phone:Close()
+		exports['sandbox-phone']:Close()
 	end
 end)
 
@@ -251,27 +167,23 @@ local shareTypes = {
 }
 
 RegisterNetEvent("Phone:Client:ReceiveShare", function(share, time)
-	Phone.Notification:Add("Received QuickShare", shareTypes[share.type], time, 7500, {
+	exports['sandbox-phone']:NotificationAdd("Received QuickShare", shareTypes[share.type], time, 7500, {
 		color = "#18191e",
 		label = "Share",
 		icon = "share-nodes",
 	}, {
 		view = "USE_SHARE",
 	}, nil)
-	Phone:ReceiveShare(share)
+	exports['sandbox-phone']:ReceiveShare(share)
 end)
 
 AddEventHandler("Characters:Client:Spawn", function()
 	_loggedIn = true
 
-	while Phone == nil do
-		Wait(1)
-	end
-
 	if LocalPlayer.state.Character then
 		local settings = LocalPlayer.state.Character:GetData("PhoneSettings")
 		if settings then
-			Phone:SetExpanded(settings.Expanded)
+			exports['sandbox-phone']:SetExpanded(settings.Expanded)
 		end
 	end
 
@@ -317,15 +229,15 @@ function TogglePhone()
 		return
 	end
 	if not _openCd then
-		if not Hud:IsDisabled() then
-			if not Jail:IsJailed() and hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE") then
-				Phone:Open()
+		if not exports['sandbox-hud']:IsDisabled() then
+			if not exports['sandbox-jail']:IsJailed() and hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE") then
+				exports['sandbox-phone']:Open()
 			else
-				Notification:Error("You Don't Have a Phone", 2000)
+				exports["sandbox-hud"]:NotifError("You Don't Have a Phone", 2000)
 				LocalPlayer.state.phoneOpen = false
 			end
 		else
-			Phone:Close()
+			exports['sandbox-phone']:Close()
 		end
 
 		if not IsPedInAnyVehicle(PlayerPedId(), true) then
@@ -335,11 +247,11 @@ function TogglePhone()
 end
 
 AddEventHandler("Phone:Client:OpenLimited", function()
-	Phone:OpenLimited()
+	exports['sandbox-phone']:OpenLimited()
 end)
 
 AddEventHandler("Ped:Client:Died", function()
-	Phone:Close(true)
+	exports['sandbox-phone']:Close(true)
 end)
 
 RegisterNUICallback("CDExpired", function(data, cb)
@@ -349,25 +261,25 @@ end)
 
 RegisterNUICallback("Home", function(data, cb)
 	cb("OK")
-	Callbacks:ServerCallback("Phone:Apps:Home", data)
+	exports["sandbox-base"]:ServerCallback("Phone:Apps:Home", data)
 end)
 
 RegisterNUICallback("Dock", function(data, cb)
 	cb("OK")
-	Callbacks:ServerCallback("Phone:Apps:Dock", data)
+	exports["sandbox-base"]:ServerCallback("Phone:Apps:Dock", data)
 end)
 
 RegisterNUICallback("Reorder", function(data, cb)
 	cb("OK")
-	Callbacks:ServerCallback("Phone:Apps:Reorder", data)
+	exports["sandbox-base"]:ServerCallback("Phone:Apps:Reorder", data)
 end)
 
 RegisterNUICallback("UpdateAlias", function(data, cb)
-	Callbacks:ServerCallback("Phone:UpdateAlias", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:UpdateAlias", data, cb)
 end)
 
 RegisterNUICallback("UpdateProfile", function(data, cb)
-	Callbacks:ServerCallback("Phone:UpdateProfile", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:UpdateProfile", data, cb)
 end)
 
 RegisterNetEvent("Phone:Client:RestorePosition", function(data)
@@ -379,7 +291,7 @@ end)
 
 RegisterNUICallback("Phone:SavePosition", function(data, cb)
 	cb("OK")
-	Callbacks:ServerCallback("Phone:SavePosition", data)
+	exports["sandbox-base"]:ServerCallback("Phone:SavePosition", data)
 end)
 
 RegisterNUICallback("AcceptPopup", function(data, cb)
@@ -402,10 +314,10 @@ end)
 
 RegisterNUICallback("SaveShare", function(data, cb)
 	if data.type == "contacts" then
-		Callbacks:ServerCallback("Phone:Contacts:Create", data.data, function(nId)
+		exports["sandbox-base"]:ServerCallback("Phone:Contacts:Create", data.data, function(nId)
 			cb(nId)
 			if nId then
-				Phone.Data:Add("contacts", {
+				exports['sandbox-phone']:DataAdd("contacts", {
 					id = nId,
 					name = data.data.name,
 					number = data.data.number,
@@ -415,13 +327,13 @@ RegisterNUICallback("SaveShare", function(data, cb)
 			end
 		end)
 	elseif data.type == "documents" then
-		Callbacks:ServerCallback("Phone:Documents:RecieveShare", data.data, function(success)
+		exports["sandbox-base"]:ServerCallback("Phone:Documents:RecieveShare", data.data, function(success)
 			cb(success)
 			if success then
 				if success.update then
-					Phone.Data:Update("myDocuments", success.id, success)
+					exports['sandbox-phone']:DataUpdate("myDocuments", success.id, success)
 				else
-					Phone.Data:Add("myDocuments", success)
+					exports['sandbox-phone']:DataAdd("myDocuments", success)
 				end
 			end
 		end)
@@ -432,5 +344,5 @@ end)
 
 RegisterNUICallback("ShareMyContact", function(data, cb)
 	cb(true)
-	Callbacks:ServerCallback("Phone:ShareMyContact", {})
+	exports["sandbox-base"]:ServerCallback("Phone:ShareMyContact", {})
 end)

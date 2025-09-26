@@ -1,10 +1,10 @@
 AddEventHandler('Vehicles:Client:StartUp', function()
-    Callbacks:RegisterClientCallback('Vehicles:Transfers:GetTarget', function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback('Vehicles:Transfers:GetTarget', function(data, cb)
         if LocalPlayer.state.loggedIn then
             if VEHICLE_INSIDE then
                 return cb(VehToNet(VEHICLE_INSIDE))
             else
-                local data = Targeting:GetEntityPlayerIsLookingAt()
+                local data = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
                 if data and data.entity and DoesEntityExist(data.entity) and IsEntityAVehicle(data.entity) then
                     return cb(VehToNet(data.entity))
                 end
@@ -15,7 +15,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 end)
 
 RegisterNetEvent('Vehicles:Tranfers:BeginConfirmation', function(data)
-    Confirm:Show(
+    exports['sandbox-hud']:ConfirmShow(
         'Confirm Vehicle Ownership Transfer',
         {
             yes = 'Vehicles:Transfers:Confirm',
@@ -44,9 +44,9 @@ RegisterNetEvent('Vehicles:Tranfers:BeginConfirmation', function(data)
 end)
 
 AddEventHandler('Vehicles:Transfers:Confirm', function(data)
-    Callbacks:ServerCallback('Vehicles:Tranfers:CompleteTransfer', data)
+    exports["sandbox-base"]:ServerCallback('Vehicles:Tranfers:CompleteTransfer', data)
 end)
 
 AddEventHandler('Vehicles:Transfers:Deny', function(data)
-    Notification:Error('Vehicle Transfer Cancelled')
+    exports["sandbox-hud"]:NotifError('Vehicle Transfer Cancelled')
 end)

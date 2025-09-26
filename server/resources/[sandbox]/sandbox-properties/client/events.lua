@@ -2,7 +2,7 @@ _isEntering = false
 
 RegisterNetEvent("Properties:Client:Doorbell", function(propertyId)
 	if _insideProperty and propertyId == _insideProperty.id then
-		Sounds.Play:One("doorbell.ogg", 0.75)
+		exports["sandbox-sounds"]:PlayOne("doorbell.ogg", 0.75)
 	end
 end)
 
@@ -17,11 +17,11 @@ RegisterNetEvent("Properties:Client:InnerStuff", function(propertyData, int, fur
 
 	-- if wakeUp and intr.locations.wakeup then
 	-- 	Citizen.SetTimeout(250, function()
-	-- 		Animations.Emotes:WakeUp(intr.locations.wakeup)
+	-- 		exports['sandbox-animations']:EmotesWakeUp(intr.locations.wakeup)
 	-- 	end)
 	-- end
 
-	Sync:Stop(1)
+	exports["sandbox-sync"]:Stop(1)
 
 	CreatePropertyZones(propertyData.id, int)
 
@@ -30,20 +30,20 @@ RegisterNetEvent("Properties:Client:InnerStuff", function(propertyData, int, fur
 	_isEntering = false
 
 	Wait(500)
-	Sync:Stop(1)
+	exports["sandbox-sync"]:Stop(1)
 end)
 
 ---- TARGETTING EVENTS ----
 AddEventHandler("Properties:Client:Stash", function(t, data)
-	Properties.Extras:Stash()
+	exports['sandbox-properties']:Stash()
 end)
 
 AddEventHandler("Properties:Client:Closet", function(t, data)
-	Properties.Extras:Closet()
+	exports['sandbox-properties']:Closet()
 end)
 
 AddEventHandler("Properties:Client:Logout", function(t, data)
-	Properties.Extras:Logout()
+	exports['sandbox-properties']:Logout()
 end)
 
 AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
@@ -58,7 +58,7 @@ AddEventHandler("Properties:Client:Exit", function(t, data)
 end)
 
 AddEventHandler("Properties:Client:Crafting", function(t, data)
-	Crafting.Benches:Open('property-' .. data)
+	exports['sandbox-inventory']:CraftingBenchesOpen('property-' .. data)
 end)
 
 AddEventHandler("Properties:Client:Duty", function(t, data)
@@ -69,9 +69,9 @@ AddEventHandler("Properties:Client:Duty", function(t, data)
 	local property = _properties[data]
 	if property?.data?.jobDuty then
 		if LocalPlayer.state.onDuty == property?.data?.jobDuty then
-			Jobs.Duty:Off(property?.data?.jobDuty)
+			exports['sandbox-jobs']:DutyOff(property?.data?.jobDuty)
 		else
-			Jobs.Duty:On(property?.data?.jobDuty)
+			exports['sandbox-jobs']:DutyOn(property?.data?.jobDuty)
 		end
 	end
 end)
@@ -85,18 +85,18 @@ RegisterNetEvent("Properties:Client:AddBlips", function()
 		Wait(100)
 	end
 
-	local ownedProps = Properties:GetPropertiesWithAccess()
+	local ownedProps = exports['sandbox-properties']:GetPropertiesWithAccess()
 
 	if ownedProps then
 		for k, v in ipairs(ownedProps) do
 			if v.type == 'house' then
-				Blips:Add('property-' .. v.id, 'House: ' .. v.label,
+				exports["sandbox-blips"]:Add('property-' .. v.id, 'House: ' .. v.label,
 					vector3(v.location.front.x, v.location.front.y, v.location.front.z), 40, 53, 0.6, 2)
 			elseif v.type == 'office' then
-				Blips:Add('property-' .. v.id, 'Office: ' .. v.label,
+				exports["sandbox-blips"]:Add('property-' .. v.id, 'Office: ' .. v.label,
 					vector3(v.location.front.x, v.location.front.y, v.location.front.z), 475, 53, 0.6, 2)
 			elseif v.type == 'warehouse' then
-				Blips:Add('property-' .. v.id, 'Warehouse: ' .. v.label,
+				exports["sandbox-blips"]:Add('property-' .. v.id, 'Warehouse: ' .. v.label,
 					vector3(v.location.front.x, v.location.front.y, v.location.front.z), 473, 53, 0.6, 2)
 			end
 		end

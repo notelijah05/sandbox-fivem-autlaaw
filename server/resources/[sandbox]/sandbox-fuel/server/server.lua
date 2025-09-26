@@ -1,15 +1,3 @@
-AddEventHandler("Fuel:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Wallet = exports["sandbox-base"]:FetchComponent("Wallet")
-	Banking = exports["sandbox-base"]:FetchComponent("Banking")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-end
-
 local threading = false
 local bankAcc = nil
 local depositData = {
@@ -18,70 +6,55 @@ local depositData = {
 }
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Fuel", {
-		"Callbacks",
-		"Database",
-		"Utils",
-		"Fetch",
-		"Logger",
-		"Wallet",
-		"Banking",
-		"Phone",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
+	RegisterCallbacks()
 
-		if not threading then
-			CreateThread(function()
-				while true do
-					Wait(1000 * 60 * 10)
-					if depositData.amount > 0 then
-						Logger:Trace(
-							"Fuel",
-							string.format("Depositing ^2$%s^7 To ^3%s^7", math.abs(depositData.amount), bankAcc)
-						)
-						Banking.Balance:Deposit(bankAcc, math.abs(depositData.amount), {
-							type = "deposit",
-							title = "Fuel Services",
-							description = string.format(
-								"Payment For Fuel Services For %s Vehicles",
-								depositData.transactions
-							),
-							data = {},
-						}, true)
-						depositData = {
-							amount = 0,
-							transactions = 0,
-						}
-					end
+	if not threading then
+		CreateThread(function()
+			while true do
+				Wait(1000 * 60 * 10)
+				if depositData.amount > 0 then
+					exports['sandbox-base']:LoggerTrace(
+						"Fuel",
+						string.format("Depositing ^2$%s^7 To ^3%s^7", math.abs(depositData.amount), bankAcc)
+					)
+					exports['sandbox-finance']:BalanceDeposit(bankAcc, math.abs(depositData.amount), {
+						type = "deposit",
+						title = "Fuel Services",
+						description = string.format(
+							"Payment For Fuel Services For %s Vehicles",
+							depositData.transactions
+						),
+						data = {},
+					}, true)
+					depositData = {
+						amount = 0,
+						transactions = 0,
+					}
 				end
-			end)
-			threading = true
-		end
+			end
+		end)
+		threading = true
+	end
 
-		Wait(2000)
-		local f = Banking.Accounts:GetOrganization("dgang")
-		if f ~= true then
-			bankAcc = f.Account
-		end
-	end)
+	Wait(2000)
+	local f = exports['sandbox-finance']:AccountsGetOrganization("dgang")
+	if f ~= true then
+		bankAcc = f.Account
+	end
 end)
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Fuel:CheckBank", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Fuel:CheckBank", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data?.cost then
-			cb(Banking.Balance:Has(char:GetData("BankAccount"), data.cost))
+			cb(exports['sandbox-finance']:BalanceHas(char:GetData("BankAccount"), data.cost))
 		else
 			cb(false)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Fuel:CompleteFueling", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Fuel:CompleteFueling", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.vehNet and type(data.vehClass) == "number" and type(data.fuelAmount) == "number" then
 			local veh = NetworkGetEntityFromNetworkId(data.vehNet)
 			if veh and DoesEntityExist(veh) then
@@ -91,23 +64,24 @@ function RegisterCallbacks()
 				if vehState and vehState.state and totalCost then
 					local paymentSuccess = false
 					if data.useBank then
-						paymentSuccess = Banking.Balance:Charge(char:GetData("BankAccount"), math.abs(totalCost), {
-							type = 'bill',
-							title = 'Fuel Purchase',
-							description = 'Fuel Purchase',
-							data = {
-								vehicle = vehState.state.VIN,
-								fuel = data.fuelAmount,
-							}
-						})
+						paymentSuccess = exports['sandbox-finance']:BalanceCharge(char:GetData("BankAccount"),
+							math.abs(totalCost), {
+								type = 'bill',
+								title = 'Fuel Purchase',
+								description = 'Fuel Purchase',
+								data = {
+									vehicle = vehState.state.VIN,
+									fuel = data.fuelAmount,
+								}
+							})
 
 						if paymentSuccess then
-							Phone.Notification:Add(source,
+							exports['sandbox-phone']:NotificationAdd(source,
 								string.format("Fuel Purchase of $%s Successful", math.ceil(totalCost)), false, os.time(),
 								3000, "bank", {})
 						end
 					else
-						paymentSuccess = Wallet:Modify(source, -math.abs(totalCost), true)
+						paymentSuccess = exports['sandbox-finance']:WalletModify(source, -math.abs(totalCost), true)
 					end
 
 					if paymentSuccess then
@@ -126,8 +100,8 @@ function RegisterCallbacks()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Fuel:CompleteJerryFueling", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Fuel:CompleteJerryFueling", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.vehNet and type(data.newAmount) == "number" then
 			local veh = NetworkGetEntityFromNetworkId(data.vehNet)
 			if veh and DoesEntityExist(veh) then
@@ -143,8 +117,8 @@ function RegisterCallbacks()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Fuel:FillCan", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Fuel:FillCan", function(source, data, cb)
 		local totalCost = CalculateFuelCost(0, math.floor(100 - (data.pct * 100)))
-		cb(totalCost and Wallet:Modify(source, -math.abs(totalCost), true))
+		cb(totalCost and exports['sandbox-finance']:WalletModify(source, -math.abs(totalCost), true))
 	end)
 end

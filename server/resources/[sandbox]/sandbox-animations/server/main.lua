@@ -1,45 +1,13 @@
-AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Photos = exports["sandbox-base"]:FetchComponent("Photos")
-	RegisterChatCommands()
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Animations", {
-		"Database",
-		"Utils",
-		"Fetch",
-		"Callbacks",
-		"Chat",
-		"Execute",
-		"Animations",
-		"Middleware",
-		"Inventory",
-		"Photos",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
-		RegisterMiddleware()
-
-		RegisterItems()
-	end)
+	RegisterCallbacks()
+	RegisterMiddleware()
+	RegisterChatCommands()
+	RegisterItems()
 end)
 
 function RegisterMiddleware()
-	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("Animations") == nil then
 			char:SetData("Animations", { walk = "default", expression = "default", emoteBinds = {} })
 		end
@@ -47,7 +15,7 @@ function RegisterMiddleware()
 end
 
 function RegisterChatCommands()
-	Chat:RegisterCommand("e", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("e", function(source, args, rawCommand)
 		local emote = args[1]
 		if emote == "c" or emote == "cancel" then
 			TriggerClientEvent("Animations:Client:CharacterCancelEmote", source)
@@ -61,28 +29,28 @@ function RegisterChatCommands()
 			help = "Name of The Emote",
 		} },
 	})
-	Chat:RegisterCommand("emotes", function(source, args, rawCommand)
-		TriggerClientEvent("Execute:Client:Component", source, "Animations", "OpenMainEmoteMenu")
+	exports["sandbox-chat"]:RegisterCommand("emotes", function(source, args, rawCommand)
+		TriggerClientEvent("Animations:Client:OpenMainEmoteMenu", source)
 	end, {
 		help = "Open Emote Menu",
 	})
-	Chat:RegisterCommand("emotebinds", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("emotebinds", function(source, args, rawCommand)
 		TriggerClientEvent("Animations:Client:OpenEmoteBinds", source)
 	end, {
 		help = "Edit Emote Binds",
 	})
-	Chat:RegisterCommand("walks", function(source, args, rawCommand)
-		TriggerClientEvent("Execute:Client:Component", source, "Animations", "OpenWalksMenu")
+	exports["sandbox-chat"]:RegisterCommand("walks", function(source, args, rawCommand)
+		TriggerClientEvent("Animations:Client:OpenWalksMenu", source)
 	end, {
 		help = "Change Walk Style",
 	})
-	Chat:RegisterCommand("face", function(source, args, rawCommand)
-		TriggerClientEvent("Execute:Client:Component", source, "Animations", "OpenExpressionsMenu")
+	exports["sandbox-chat"]:RegisterCommand("face", function(source, args, rawCommand)
+		TriggerClientEvent("Animations:Client:OpenExpressionsMenu", source)
 	end, {
 		help = "Change Facial Expression",
 	})
-	Chat:RegisterCommand("selfie", function(source, args, rawCommand)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-chat"]:RegisterCommand("selfie", function(source, args, rawCommand)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			not Player(source).state.isCuffed
 			and not Player(source).state.isDead
@@ -90,7 +58,7 @@ function RegisterChatCommands()
 		then
 			TriggerClientEvent("Animations:Client:Selfie", source)
 		else
-			Execute:Client(source, "Notification", "Error", "You do not have a phone.")
+			exports['sandbox-hud']:NotifError(source, "You do not have a phone.")
 		end
 	end, {
 		help = "Open Selfie Mode",
@@ -98,60 +66,51 @@ function RegisterChatCommands()
 end
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Animations:UpdatePedFeatures", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Animations:UpdatePedFeatures", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			cb(Animations.PedFeatures:UpdateFeatureInfo(char, data.type, data.data))
+			cb(exports['sandbox-animations']:PedFeaturesUpdateFeatureInfo(char, data.type, data.data))
 		else
 			cb(false)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Animations:UpdateEmoteBinds", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Animations:UpdateEmoteBinds", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			cb(Animations.EmoteBinds:Update(char, data), data)
+			cb(exports['sandbox-animations']:EmoteBindsUpdate(char, data), data)
 		else
 			cb(false)
 		end
 	end)
 end
 
-ANIMATIONS = {
-	PedFeatures = {
-		UpdateFeatureInfo = function(self, char, type, data, cb)
-			if type == "walk" then
-				local currentData = char:GetData("Animations")
-				char:SetData(
-					"Animations",
-					{ walk = data, expression = currentData.expression, emoteBinds = currentData.emoteBinds }
-				)
-				return true
-			elseif type == "expression" then
-				local currentData = char:GetData("Animations")
-				char:SetData(
-					"Animations",
-					{ walk = currentData.walk, expression = data, emoteBinds = currentData.emoteBinds }
-				)
-				return true
-			end
-			return false
-		end,
-	},
-	EmoteBinds = {
-		Update = function(self, char, data, cb)
-			local currentData = char:GetData("Animations")
-			char:SetData(
-				"Animations",
-				{ walk = currentData.walk, expression = currentData.expression, emoteBinds = data }
-			)
-			return true
-		end,
-	},
-}
+exports("PedFeaturesUpdateFeatureInfo", function(char, type, data, cb)
+	if type == "walk" then
+		local currentData = char:GetData("Animations")
+		char:SetData(
+			"Animations",
+			{ walk = data, expression = currentData.expression, emoteBinds = currentData.emoteBinds }
+		)
+		return true
+	elseif type == "expression" then
+		local currentData = char:GetData("Animations")
+		char:SetData(
+			"Animations",
+			{ walk = currentData.walk, expression = data, emoteBinds = currentData.emoteBinds }
+		)
+		return true
+	end
+	return false
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Animations", ANIMATIONS)
+exports("EmoteBindsUpdate", function(char, data, cb)
+	local currentData = char:GetData("Animations")
+	char:SetData(
+		"Animations",
+		{ walk = currentData.walk, expression = currentData.expression, emoteBinds = data }
+	)
+	return true
 end)
 
 RegisterServerEvent("Animations:Server:ClearAttached", function(propsToDelete)
@@ -171,16 +130,17 @@ local pendingSend = false
 
 RegisterServerEvent("Selfie:CaptureSelfie", function()
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char then
 		if pendingSend then
-			Execute:Client(src, "Notification", "Warn", "Please wait while current photo is uploading", 2000)
+			exports['sandbox-hud']:NotifWarn(src,
+				"Please wait while current photo is uploading", 2000)
 			return
 		end
 		pendingSend = true
-		Execute:Client(src, "Notification", "Info", "Prepping Photo Upload", 2000)
+		exports['sandbox-hud']:NotifInfo(src, "Prepping Photo Upload", 2000)
 
-		Callbacks:ClientCallback(src, "Selfie:Client:UploadPhoto", {
+		exports["sandbox-base"]:ClientCallback(src, "Selfie:Client:UploadPhoto", {
 			api = tostring(GetConvar("phone_selfie_webhook", "")),
 			token = tostring(GetConvar("phone_selfie_token", "")),
 		}, function(ret)
@@ -188,20 +148,21 @@ RegisterServerEvent("Selfie:CaptureSelfie", function()
 				local _data = {
 					image_url = json.decode(ret).url,
 				}
-				local retval = Photos:Create(src, _data)
+				local retval = exports['sandbox-phone']:PhotosCreate(src, _data)
 				if retval then
 					pendingSend = false
 					TriggerClientEvent("Selfie:DoCloseSelfie", src)
-					Execute:Client(src, "Notification", "Success", "Photo uploaded successfully!", 2000)
+					exports['sandbox-hud']:NotifSuccess(src, "Photo uploaded successfully!",
+						2000)
 				else
 					pendingSend = false
 					TriggerClientEvent("Selfie:DoCloseSelfie", src)
-					Execute:Client(src, "Notification", "Error", "Error uploading photo!", 2000)
+					exports['sandbox-hud']:NotifError(src, "Error uploading photo!", 2000)
 				end
 			else
 				pendingSend = false
 				TriggerClientEvent("Selfie:DoCloseSelfie", src)
-				Execute:Client(src, "Notification", "Error", "Error uploading photo!", 2000)
+				exports['sandbox-hud']:NotifError(src, "Error uploading photo!", 2000)
 				print("^1ERROR: " .. data)
 			end
 		end)

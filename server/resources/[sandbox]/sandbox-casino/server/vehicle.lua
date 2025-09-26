@@ -1,13 +1,13 @@
 AddEventHandler("Casino:Server:Startup", function()
-    Chat:RegisterStaffCommand("setcasinovehicle", function(source, args, rawCommand)
-        Callbacks:ClientCallback(source, "Vehicles:Admin:GetVehicleInsideData", false, function(vehData)
+    exports["sandbox-chat"]:RegisterStaffCommand("setcasinovehicle", function(source, args, rawCommand)
+        exports["sandbox-base"]:ClientCallback(source, "Vehicles:Admin:GetVehicleInsideData", false, function(vehData)
             if vehData and vehData.model then
                 local newData = {
                     vehicle = vehData.model,
                     properties = vehData.properties,
                 }
 
-                if Casino.Config:Set("vehicle", newData) then
+                if exports['sandbox-casino']:ConfigSet("vehicle", newData) then
                     GlobalState["Casino:Vehicle"] = newData
                 end
             end
@@ -17,8 +17,8 @@ AddEventHandler("Casino:Server:Startup", function()
         params = {},
     }, 0)
 
-    Chat:RegisterStaffCommand("clearcasinovehicle", function(source, args, rawCommand)
-        if Casino.Config:Set("vehicle", false) then
+    exports["sandbox-chat"]:RegisterStaffCommand("clearcasinovehicle", function(source, args, rawCommand)
+        if exports['sandbox-casino']:ConfigSet("vehicle", false) then
             GlobalState["Casino:Vehicle"] = false
         end
     end, {
@@ -30,9 +30,9 @@ AddEventHandler("Casino:Server:Startup", function()
         Wait(250)
     end
 
-    GlobalState["Casino:Vehicle"] = Casino.Config:Get("vehicle")
+    GlobalState["Casino:Vehicle"] = exports['sandbox-casino']:ConfigGet("vehicle")
 
-    Chat:RegisterStaffCommand("refreshcasinoint", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterStaffCommand("refreshcasinoint", function(source, args, rawCommand)
         TriggerClientEvent("Casino:Client:RefreshInt", source)
     end, {
         help = "Refresh the Casino Interior",

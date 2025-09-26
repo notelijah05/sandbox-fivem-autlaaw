@@ -4,8 +4,6 @@ local _boostingReps = { Boosting = true }
 
 local _pendingMarketPickups = {}
 
-LAPTOP.LSUnderground = LAPTOP.LSUnderground or {}
-
 local _timeDelay = os.time() + (60 * math.random(30, 90))
 
 local marketItems = {
@@ -61,16 +59,16 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		while true do
 			Wait(wait * 1000)
 			marketItems = table.copy(_defMarket)
-			Logger:Info("Laptop - LSU", "Market Place Items Restocked")
+			exports['sandbox-base']:LoggerInfo("Laptop - LSU", "Market Place Items Restocked")
 		end
 	end)
 
 	GlobalState.LSUPickupLocation = locations[math.random(#locations)]
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:GetDetails", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:GetDetails", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			local chopLevel = Reputation:GetLevel(source, "Chopping")
+			local chopLevel = exports['sandbox-characters']:RepGetLevel(source, "Chopping")
 			local chops = nil
 			if chopLevel >= 3 or hasValue(char:GetData("States") or {}, "ACCESS_CHOPPER") then
 				chops = {
@@ -97,11 +95,11 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				for k, it in ipairs(marketItems) do
 					local v = table.copy(it)
 					if
-						(v.rep == nil or Reputation:GetLevel(source, v.rep) >= (v.repLvl or 1))
+						(v.rep == nil or exports['sandbox-characters']:RepGetLevel(source, v.rep) >= (v.repLvl or 1))
 						and (not v.vpn or hasVpn)
 						and (
 							not v.requireCurrency
-							or v.requireCurrency and v.coin ~= nil and Crypto:Has(source, v.coin, v.price)
+							or v.requireCurrency and v.coin ~= nil and exports['sandbox-finance']:CryptoHas(source, v.coin, v.price)
 						)
 					then
 						if _timeDelay > os.time() then
@@ -109,21 +107,21 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							v.delayed = true
 						end
 						v.id = k
-						v.itemData = Inventory.Items:GetData(v.item)
+						v.itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
 						table.insert(items, v)
 					end
 				end
 			end
 
 			local canBoost = false
-			local requiredRepLevel = Reputation:GetLevel(source, _boostingRequiredRep.rep)
+			local requiredRepLevel = exports['sandbox-characters']:RepGetLevel(source, _boostingRequiredRep.rep)
 			if requiredRepLevel and requiredRepLevel >= _boostingRequiredRep.level then
 				canBoost = true
 			end
 
 			cb({
 				chopList = chops,
-				reputations = Reputation:ViewList(source, not data.phone and _lsuReps or _chopRep),
+				reputations = exports['sandbox-characters']:RepViewList(source, not data.phone and _lsuReps or _chopRep),
 				items = items,
 				banned = char:GetData("LSUNDGBan"),
 				canBoost = canBoost,
@@ -133,8 +131,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Market:Checkout", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Market:Checkout", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and data and #data > 0 then
 			if os.time() > _timeDelay then
 				local requiredCoins = {}
@@ -154,7 +152,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				local failed = false
 
 				for k, v in ipairs(requiredCoins) do
-					if not Crypto:Has(source, k, v) then
+					if not exports['sandbox-finance']:CryptoHas(source, k, v) then
 						failed = true
 					end
 				end
@@ -173,7 +171,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						if
 							(
 								marketItem.rep == nil
-								or Reputation:GetLevel(source, marketItem.rep) >= (marketItem.repLvl or 1)
+								or exports['sandbox-characters']:RepGetLevel(source, marketItem.rep) >= (marketItem.repLvl or 1)
 							)
 							and (not marketItem.vpn or hasVpn)
 							and (
@@ -183,7 +181,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						then
 							if v.qty == -1 or v.qty >= v.quantity then
 								if
-									Crypto.Exchange:Remove(
+									exports['sandbox-finance']:CryptoExchangeRemove(
 										marketItem.coin,
 										char:GetData("CryptoWallet"),
 										math.floor(marketItem.price * v.quantity)
@@ -216,7 +214,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						extra = "Some of Your Items Weren't Delivered Due Processing Error"
 					end
 
-					Laptop.Notification:Add(
+					exports['sandbox-laptop']:AddNotification(
 						source,
 						"Your Order",
 						string.format(
@@ -252,8 +250,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:LSUnderground:Market:Collect", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Market:Collect", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pendingPickup = _pendingMarketPickups[char:GetData("SID")]
 			if pendingPickup then
@@ -261,12 +259,12 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 					Wait(1)
 					for k, v in ipairs(list) do
 						Wait(1)
-						Inventory:AddItem(char:GetData("SID"), v.item, v.quantity, {}, 1)
+						exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.item, v.quantity, {}, 1)
 					end
 				end
 
 				_pendingMarketPickups[char:GetData("SID")] = nil
-				Laptop.Notification:Add(
+				exports['sandbox-laptop']:AddNotification(
 					source,
 					"Your Order",
 					"Thanks for collecting your order.",
@@ -277,7 +275,8 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 					{}
 				)
 			else
-				Execute:Client(source, "Notification", "Error", "fack off, not got nufink' for u m8")
+				exports['sandbox-hud']:NotifError(source,
+					"fack off, not got nufink' for u m8")
 			end
 
 			cb(true)
@@ -286,13 +285,13 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("lsundg_invite", "LSUNDG", function(source, item, itemData)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-inventory']:RegisterUse("lsundg_invite", "LSUNDG", function(source, item, itemData)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 		if char ~= nil then
 			if not pState.onDuty or not _blacklistedJobs[pState.onDuty] then
 				if not hasValue(char:GetData("States") or {}, "ACCESS_LSUNDERGROUND") then
-					if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+					if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 						local states = char:GetData("States") or {}
 						table.insert(states, "ACCESS_LSUNDERGROUND")
 						char:SetData("States", states)
@@ -304,7 +303,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						-- TODO
 						--char:SetData("Apps", Laptop.Store.Install:Do("lsunderground", char:GetData("Apps"), "force"))
 
-						Phone.Email:Send(
+						exports['sandbox-phone']:EmailSend(
 							source,
 							"shadow@ls.undg",
 							os.time(),
@@ -325,7 +324,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						)
 
 						Citizen.SetTimeout(5000, function()
-							Laptop.Notification:Add(
+							exports['sandbox-laptop']:AddNotification(
 								source,
 								"Program Installed",
 								nil,
@@ -340,13 +339,12 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						end)
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Already A Member Of LS Underground")
+					exports['sandbox-hud']:NotifError(source,
+						"Already A Member Of LS Underground")
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "You Can't Use This Item")
+				exports['sandbox-hud']:NotifError(source, "You Can't Use This Item")
 			end
 		end
 	end)
 end)
-
-LAPTOP.LSU = {}

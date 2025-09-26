@@ -205,7 +205,7 @@ local _sellers = {
 
 AddEventHandler("Businesses:Client:Startup", function()
 	for k, v in ipairs(_sellers) do
-		PedInteraction:Add(string.format("SAGMASeller%s", k), v.model, v.coords, v.heading, 25.0, {
+		exports['sandbox-pedinteraction']:Add(string.format("SAGMASeller%s", k), v.model, v.coords, v.heading, 25.0, {
 			{
 				icon = "ring",
 				text = "Sell Gems",
@@ -221,7 +221,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 	end
 
 	for k, v in pairs(_sagmaPaintings) do
-		Targeting.Zones:AddBox("sagma-art-" .. k, "palette", v.coords, v.length, v.width, v.options, {
+		exports['sandbox-targeting']:ZonesAddBox("sagma-art-" .. k, "palette", v.coords, v.length, v.width, v.options, {
 			{
 				icon = "palette",
 				text = "Update Painting",
@@ -239,34 +239,35 @@ AddEventHandler("Businesses:Client:Startup", function()
 	end
 
 	for k, v in ipairs(_appraisalTables) do
-		Targeting.Zones:AddBox("sagma-table-" .. k, "table-picnic", v.coords, v.length, v.width, v.options, {
-			{
-				icon = "gem",
-				text = "View Gem Table",
-				event = "Businesses:Client:SAGMA:OpenTable",
-				data = { id = k },
-				jobPerms = {
-					{
-						job = "sagma",
-						reqDuty = true,
-						jobPerms = "JOB_USE_GEM_TABLE",
+		exports['sandbox-targeting']:ZonesAddBox("sagma-table-" .. k, "table-picnic", v.coords, v.length, v.width,
+			v.options, {
+				{
+					icon = "gem",
+					text = "View Gem Table",
+					event = "Businesses:Client:SAGMA:OpenTable",
+					data = { id = k },
+					jobPerms = {
+						{
+							job = "sagma",
+							reqDuty = true,
+							jobPerms = "JOB_USE_GEM_TABLE",
+						},
 					},
 				},
-			},
-			-- {
-			-- 	icon = "gem",
-			-- 	text = "Create Jewelry",
-			-- 	event = "Businesses:Client:SAGMA:OpenJewelryCrafting",
-			-- 	data = { id = k },
-			-- 	jobPerms = {
-			-- 		{
-			-- 			job = "sagma",
-			-- 			reqDuty = true,
-			-- 			jobPerms = "JOB_USE_JEWELRY_CRAFTING",
-			-- 		},
-			-- 	},
-			-- },
-		}, 3.0, true)
+				-- {
+				-- 	icon = "gem",
+				-- 	text = "Create Jewelry",
+				-- 	event = "Businesses:Client:SAGMA:OpenJewelryCrafting",
+				-- 	data = { id = k },
+				-- 	jobPerms = {
+				-- 		{
+				-- 			job = "sagma",
+				-- 			reqDuty = true,
+				-- 			jobPerms = "JOB_USE_JEWELRY_CRAFTING",
+				-- 		},
+				-- 	},
+				-- },
+			}, 3.0, true)
 	end
 end)
 
@@ -275,33 +276,33 @@ RegisterNetEvent("UI:Client:Reset", function()
 end)
 
 AddEventHandler("SAGMA:Client:Sell", function()
-	Callbacks:ServerCallback("Businesses:SAGMA:Sell", {})
+	exports["sandbox-base"]:ServerCallback("Businesses:SAGMA:Sell", {})
 end)
 
 AddEventHandler("Businesses:Client:SAGMA:OpenTable", function(e, data)
-	Inventory.Dumbfuck:Open({
+	exports['sandbox-inventory']:DumbfuckOpen({
 		invType = 132,
 		owner = data.id,
 	})
 end)
 
 AddEventHandler("Businesses:Client:SAGMA:OpenJewelryCrafting", function(e, data)
-	Crafting.Benches:Open("sagma-jewelry")
+	exports['sandbox-inventory']:CraftingBenchesOpen("sagma-jewelry")
 end)
 
 RegisterNetEvent("Businesses:Client:SAGMA:ViewGem", function(tableId, gemProps, quality, item)
 	LocalPlayer.state:set("inGemView", true, true)
-	-- HUD.GemTable:Open(quality)
-	Inventory.StaticTooltip:Open(item)
+	-- exports['sandbox-hud']:GemTableOpen(quality)
+	exports['sandbox-inventory']:StaticTooltipOpen(item)
 	local str = string.format("Gem Quality: %s%%", quality)
-	Notification:Standard(str, 5000, "gem")
+	exports["sandbox-hud"]:NotifStandard(str, 5000, "gem")
 	--ActivateTable(tableId, gemProps.color, quality, item)
 end)
 
 AddEventHandler("Keybinds:Client:KeyUp:cancel_action", function()
 	if LocalPlayer.state.inGemView then
-		HUD.GemTable:Close()
-		Inventory.StaticTooltip:Close()
+		exports['sandbox-hud']:GemTableClose()
+		exports['sandbox-inventory']:StaticTooltipClose()
 		LocalPlayer.state:set("inGemView", false, true)
 	end
 end)
@@ -356,8 +357,8 @@ function ActivateTable(tableId, color, quality, item)
 	Wait(1000)
 	local dirtLevel = (15 - math.floor(quality / 6.66)) + 0.0
 
-	HUD.GemTable:Open(quality)
-	Inventory.StaticTooltip:Open(item)
+	exports['sandbox-hud']:GemTableOpen(quality)
+	exports['sandbox-inventory']:StaticTooltipOpen(item)
 
 	_gemObj = CreateObject(prop, _tableConfig[tableId].createCoords, 0, 0)
 	FreezeEntityPosition(_gemObj, true)
@@ -379,8 +380,8 @@ end
 function CleanupTable()
 	RenderScriptCams(false, false, 0, 1, 0)
 	DeleteEntity(_gemObj)
-	HUD.GemTable:Close()
-	Inventory.StaticTooltip:Close()
+	exports['sandbox-hud']:GemTableClose()
+	exports['sandbox-inventory']:StaticTooltipClose()
 	if LocalPlayer.state.inGemTable then
 		LocalPlayer.state:set("inGemTable", false, true)
 	end

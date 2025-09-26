@@ -1,46 +1,6 @@
-AddEventHandler("Tow:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Tow = exports["sandbox-base"]:FetchComponent("Tow")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Tow", {
-		"Logger",
-		"Utils",
-		"Keybinds",
-		"Targeting",
-		"Jobs",
-		"Vehicles",
-		"Notification",
-		"Callbacks",
-		"Sounds",
-		"Progress",
-		"Polyzone",
-		"PedInteraction",
-		"Tow",
-		"Blips",
-		"Phone",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		PedInteraction:Add("veh_tow_jerry", `a_m_m_eastsa_01`, vector3(-247.645, -1183.099, 22.090), 312.942, 50.0, {
+	exports['sandbox-pedinteraction']:Add("veh_tow_jerry", `a_m_m_eastsa_01`, vector3(-247.645, -1183.099, 22.090),
+		312.942, 50.0, {
 			{
 				icon = "truck-tow",
 				text = "Request Tow Truck",
@@ -52,7 +12,8 @@ AddEventHandler("Core:Shared:Ready", function()
 					},
 				},
 				isEnabled = function()
-					return not GlobalState[string.format("TowTrucks:%s", LocalPlayer.state.Character:GetData("SID"))]
+					return not GlobalState
+						[string.format("TowTrucks:%s", LocalPlayer.state.Character:GetData("SID"))]
 				end,
 			},
 			{
@@ -71,23 +32,16 @@ AddEventHandler("Core:Shared:Ready", function()
 			},
 		}, "truck-tow", "WORLD_HUMAN_HANG_OUT_STREET")
 
-		Polyzone.Create:Box("tow_impound_zone", vector3(-236.96, -1173.44, 23.04), 19.4, 24.4, {
-			heading = 270,
-			minZ = 22.04,
-			maxZ = 26.04,
-		})
-	end)
+	exports['sandbox-polyzone']:CreateBox("tow_impound_zone", vector3(-236.96, -1173.44, 23.04), 19.4, 24.4, {
+		heading = 270,
+		minZ = 22.04,
+		maxZ = 26.04,
+	})
 end)
 
-_TOW = {
-	IsTowTruck = function(self, entity)
-		local model = GetEntityModel(entity)
-		return _towTrucks[model]
-	end,
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Tow", _TOW)
+exports('IsTowTruck', function(entity)
+	local model = GetEntityModel(entity)
+	return _towTrucks[model]
 end)
 
 local _towingAction = false
@@ -100,8 +54,8 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 		local targetVehicle = GetVehicleBehindTowTruck(truck, 8.0)
 		local canTow, errorMessage = CanFuckingTowVehicle(truck, targetVehicle)
 		if canTow then
-			Sounds.Play:Distance(5.0, "tow_truck.ogg", 0.2)
-			Progress:ProgressWithStartAndTick({
+			exports["sandbox-sounds"]:PlayDistance(5.0, "tow_truck.ogg", 0.2)
+			exports['sandbox-hud']:ProgressWithStartAndTick({
 				name = "tow_attaching",
 				duration = 1 * 1000,
 				label = "Starting Tow",
@@ -124,8 +78,8 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 			end, function()
 				local canTow, errorMessage = CanFuckingTowVehicle(truck, targetVehicle)
 				if not canTow then
-					Progress:Cancel()
-					Notification:Error(errorMessage, 5000, "truck-tow")
+					exports['sandbox-hud']:ProgressCancel()
+					exports["sandbox-hud"]:NotifError(errorMessage, 5000, "truck-tow")
 				end
 			end, function(wasCancelled)
 				_towingAction = false
@@ -133,20 +87,21 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 					local success = AttachVehicleToTow(truck, targetVehicle, truckModel)
 					if success then
 						truckState:set("towingVehicle", VehToNet(success), true)
-						Notification:Success("Vehicle Now on Tow Truck", 5000, "truck-tow")
+						exports["sandbox-hud"]:NotifSuccess("Vehicle Now on Tow Truck", 5000, "truck-tow")
 
 						if Entity(success).state.towObjective then
-							Blips:Remove("towjob-pickup")
-							Phone.Notification:Update("TOW_OBJ", "Yard Manager", "Great, bring it back to the yard")
+							exports["sandbox-blips"]:Remove("towjob-pickup")
+							exports['sandbox-phone']:NotificationUpdate("TOW_OBJ", "Yard Manager",
+								"Great, bring it back to the yard")
 						end
 					else
 						truckState:set("towingVehicle", false, true)
-						Notification:Error("Failed to Tow Vehicle", 5000, "truck-tow")
+						exports["sandbox-hud"]:NotifError("Failed to Tow Vehicle", 5000, "truck-tow")
 					end
 				end
 			end)
 		else
-			Notification:Error(errorMessage, 5000, "truck-tow")
+			exports["sandbox-hud"]:NotifError(errorMessage, 5000, "truck-tow")
 		end
 	end
 end)
@@ -159,22 +114,22 @@ AddEventHandler("Vehicles:Client:ReleaseTow", function(entityData)
 		if truckState.towingVehicle then
 			local success = DetachVehicleFromTow(truck, NetToVeh(truckState.towingVehicle))
 			if success then
-				Notification:Success("Vehicle Released from Truck", 5000, "truck-tow")
+				exports["sandbox-hud"]:NotifSuccess("Vehicle Released from Truck", 5000, "truck-tow")
 				truckState:set("towingVehicle", false, true)
 			end
 		else
-			Notification:Error("No Vehicle Being Towed", 5000, "truck-tow")
+			exports["sandbox-hud"]:NotifError("No Vehicle Being Towed", 5000, "truck-tow")
 		end
 	end
 end)
 
 RegisterNetEvent("Tow:Client:MarkPickup", function(coords, vehNet)
-	Blips:Add("towjob-pickup", "Vehicle Pickup", coords, 326, 65, 0.8, 2, false, true)
+	exports["sandbox-blips"]:Add("towjob-pickup", "Vehicle Pickup", coords, 326, 65, 0.8, 2, false, true)
 	SetEntityAsMissionEntity(NetToVeh(vehNet))
 end)
 
 RegisterNetEvent("Tow:Client:CleanupPickup", function()
-	Blips:Remove("towjob-pickup")
+	exports["sandbox-blips"]:Remove("towjob-pickup")
 end)
 
 function AttachVehicleToTow(towTruck, targetVeh, truckModel)

@@ -10,7 +10,7 @@
 --     end
 
 --     _menuOpen = true
---     Callbacks:ServerCallback('Admin:GetMenuData', {}, function(isAdmin, data)
+--     exports["sandbox-base"]:ServerCallback('Admin:GetMenuData', {}, function(isAdmin, data)
 --         if not isAdmin and data then
 --             OpenStaffMenu(data)
 --             return
@@ -18,7 +18,7 @@
 
 --         if data then
 --             adminSubMenus = {}
---             adminMenu = Menu:Create('adminMenu', 'Admin Menu', function(id, back)
+--             adminMenu = exports['sandbox-menu']:Create('adminMenu', 'Admin Menu', function(id, back)
 --                 _menuOpen = true
 --             end, function()
 --                 _menuOpen = false
@@ -35,7 +35,7 @@
 
 --             -- Active Player Management
 --             if data.playerData then
---                 adminSubMenus['activePlayers'] = Menu:Create('adminActivePlayers', 'Player Management')
+--                 adminSubMenus['activePlayers'] = exports['sandbox-menu']:Create('adminActivePlayers', 'Player Management')
 
 --                 -- adminSubMenus['activePlayers'].Add:Button('Revive All', {}, function()
 
@@ -52,10 +52,10 @@
 
 --                         local playerMenuId = 'adminActivePlayers-' .. player.Source
 
---                         adminSubMenus[playerMenuId] = Menu:Create(playerMenuId, string.format('Viewing Player: [%s] %s', player.Source, player.Name))
+--                         adminSubMenus[playerMenuId] = exports['sandbox-menu']:Create(playerMenuId, string.format('Viewing Player: [%s] %s', player.Source, player.Name))
 
 --                         -- PUNISH MENU
---                         adminSubMenus[playerMenuId.. '-punish'] = Menu:Create('adminActivePlayersPunish-' .. player.Source, string.format('Punish Player: [%s] %s', player.Source, player.Name))
+--                         adminSubMenus[playerMenuId.. '-punish'] = exports['sandbox-menu']:Create('adminActivePlayersPunish-' .. player.Source, string.format('Punish Player: [%s] %s', player.Source, player.Name))
 
 --                         adminSubMenus[playerMenuId.. '-punish'].Add:Text('Kick', { 'center', 'heading' })
 --                         adminSubMenus[playerMenuId.. '-punish'].Add:Input('Kick Reason', {
@@ -138,27 +138,27 @@
 --                         end
 
 --                         adminSubMenus[playerMenuId].Add:Button('Goto Player', { disabled = not player.Character, success = true }, function(data)
---                             Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
+--                             exports["sandbox-base"]:ServerCallback('Admin:PlayerTeleportAction', {
 --                                 action = 'GOTO',
 --                                 target = player.Source,
 --                             }, function(success)
 --                                 if success then
---                                     Notification:Success('Successfully Teleported to '.. player.Name)
+--                                     exports["sandbox-hud"]:NotifSuccess('Successfully Teleported to '.. player.Name)
 --                                 else
---                                     Notification:Error('Failed to Teleport to '.. player.Name)
+--                                     exports["sandbox-hud"]:NotifError('Failed to Teleport to '.. player.Name)
 --                                 end
 --                             end)
 --                         end)
 
 --                         adminSubMenus[playerMenuId].Add:Button('Bring Player', { disabled = not player.Character, success = true }, function(data)
---                             Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
+--                             exports["sandbox-base"]:ServerCallback('Admin:PlayerTeleportAction', {
 --                                 action = 'BRING',
 --                                 target = player.Source,
 --                             }, function(success)
 --                                 if success then
---                                     Notification:Success('Successfully Brought '.. player.Name)
+--                                     exports["sandbox-hud"]:NotifSuccess('Successfully Brought '.. player.Name)
 --                                 else
---                                     Notification:Error('Failed to Bring '.. player.Name)
+--                                     exports["sandbox-hud"]:NotifError('Failed to Bring '.. player.Name)
 --                                 end
 --                             end)
 --                         end)
@@ -171,7 +171,7 @@
 --                             if _attached then
 --                                 AdminStopAttach()
 --                             else
---                                 Callbacks:ServerCallback('Admin:AttachToPlayer', player.Source, function(targetCoords)
+--                                 exports["sandbox-base"]:ServerCallback('Admin:AttachToPlayer', player.Source, function(targetCoords)
 --                                     if targetCoords then
 --                                         AdminAttachToEntity(player.Source, targetCoords)
 --                                     else
@@ -182,14 +182,14 @@
 --                         end)
 
 --                         if player.Character then
---                             adminSubMenus[playerMenuId.. '-phone-perms'] = Menu:Create('adminPhonePerms-' .. player.Source, 'Update Phone Permissions')
+--                             adminSubMenus[playerMenuId.. '-phone-perms'] = exports['sandbox-menu']:Create('adminPhonePerms-' .. player.Source, 'Update Phone Permissions')
 --                             adminSubMenus[playerMenuId].Add:SubMenu('Phone Permissions', adminSubMenus[playerMenuId.. '-phone-perms'], {})
 
 --                             for appKey, perms in pairs(player.Character.PhonePermissions) do
 --                                 adminSubMenus[playerMenuId.. '-phone-perms'].Add:Text(appKey, { 'center', 'heading' })
 --                                 for permKey, permState in pairs(perms) do
 --                                     adminSubMenus[playerMenuId.. '-phone-perms'].Add:CheckBox(permKey, { selected = permState }, function(data)
---                                         Callbacks:ServerCallback('Admin:UpdatePhonePerms', {
+--                                         exports["sandbox-base"]:ServerCallback('Admin:UpdatePhonePerms', {
 --                                             target = player.Source,
 --                                             app = appKey,
 --                                             perm = permKey,
@@ -229,7 +229,7 @@
 --                 adminMenu.Add:SubMenu('Player Management', adminSubMenus['activePlayers'], {})
 --             end
 
---             adminSubMenus['recentDisconnects'] = Menu:Create('adminRecentDisconnects', 'Recent Disconnects')
+--             adminSubMenus['recentDisconnects'] = exports['sandbox-menu']:Create('adminRecentDisconnects', 'Recent Disconnects')
 --             if data.recentDisconnects then
 --                 if #data.recentDisconnects > 0 then
 --                     -- Highest Source should be at the top because it is the most recent disconnections
@@ -239,7 +239,7 @@
 
 --                     for _, player in ipairs(data.recentDisconnects) do
 --                         local playerMenuId = 'adminRecentDisconnects-' .. player.Source
---                         adminSubMenus[playerMenuId] = Menu:Create(playerMenuId, string.format('Disconnected Player: [%s] %s', player.Source, player.Name))
+--                         adminSubMenus[playerMenuId] = exports['sandbox-menu']:Create(playerMenuId, string.format('Disconnected Player: [%s] %s', player.Source, player.Name))
 
 --                         local hasReconnected = connectedIdentifiers[player.Identifier]
 
@@ -299,9 +299,9 @@
 --             end
 
 --             -- Teleportation
---             adminSubMenus['teleportationUtils'] = Menu:Create('adminTeleportUtils', 'Teleport')
+--             adminSubMenus['teleportationUtils'] = exports['sandbox-menu']:Create('adminTeleportUtils', 'Teleport')
 --             if data.spawnLocations then
---                 local spawnLocations = Menu:Create('adminSpawnLocations', 'Spawn Locations')
+--                 local spawnLocations = exports['sandbox-menu']:Create('adminSpawnLocations', 'Spawn Locations')
 --                 for _, location in ipairs(data.spawnLocations) do
 --                     if location.Name and location.Coords then
 --                         spawnLocations.Add:Button(location.Name, { success = true }, function()
@@ -347,7 +347,7 @@
 --             adminSubMenus['teleportationUtils'].Add:SubMenuBack('Go Back', {})
 --             adminMenu.Add:SubMenu('Teleportation', adminSubMenus['teleportationUtils'], {})
 
---             adminSubMenus['developerUtilities'] = Menu:Create('adminDevUtils', 'Developer Utilities')
+--             adminSubMenus['developerUtilities'] = exports['sandbox-menu']:Create('adminDevUtils', 'Developer Utilities')
 
 --             local playerPed = PlayerPedId()
 --             local playerCoords = GetEntityCoords(playerPed)
@@ -389,7 +389,7 @@
 
 --             local insideVehicle = GetVehiclePedIsIn(playerPed, true)
 --             if insideVehicle and insideVehicle > 0 and DoesEntityExist(insideVehicle) and NetworkHasControlOfEntity(insideVehicle) then
---                 adminSubMenus['vehicleUtilities'] = Menu:Create('adminVehUtils', 'Vehicle Utilities')
+--                 adminSubMenus['vehicleUtilities'] = exports['sandbox-menu']:Create('adminVehUtils', 'Vehicle Utilities')
 
 --                 local vehState = Entity(insideVehicle).state
 --                 local vehicleCoords = GetEntityCoords(insideVehicle)
@@ -453,14 +453,14 @@
 --                 end
 
 --                 adminSubMenus['vehicleUtilities'].Add:Button('Quick Repair', { success = true }, function()
---                     if Vehicles.Repair:Normal(insideVehicle) then
---                         Notification:Success('Repaired Vehicle')
+--                     if exports['sandbox-vehicles']:RepairNormal(insideVehicle) then
+--                         exports["sandbox-hud"]:NotifSuccess('Repaired Vehicle')
 --                     end
 --                 end)
 
 --                 adminSubMenus['vehicleUtilities'].Add:Button('Full Repair Inc. Degen Parts', { error = true }, function()
---                     if Vehicles.Repair:Full(insideVehicle) then
---                         Notification:Success('Repaired Vehicle Fully')
+--                     if exports['sandbox-vehicles']:RepairFull(insideVehicle) then
+--                         exports["sandbox-hud"]:NotifSuccess('Repaired Vehicle Fully')
 --                     end
 --                 end)
 
@@ -488,7 +488,7 @@
 --             end
 
 --             adminMenu.Add:Button('Toggle NoClip', {}, function()
---                 Admin.NoClip:Toggle()
+--                 exports['sandbox-admin']:NoClipToggle()
 --             end)
 
 --             adminMenu:Show()

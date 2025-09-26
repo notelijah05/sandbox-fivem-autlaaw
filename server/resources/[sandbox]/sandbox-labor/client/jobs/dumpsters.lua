@@ -68,7 +68,7 @@ end)
 
 function RegisterDumpsterStartup()
 	for k, v in ipairs(_DumpsterEntities) do
-		Targeting:AddObject(v.objectID, "dumpster", {
+		exports['sandbox-targeting']:AddObject(v.objectID, "dumpster", {
 			{
 				icon = "magnifying-glass",
 				isEnabled = function(data, entityData)
@@ -121,7 +121,7 @@ AddEventHandler("Inventory:Client:OpenDumpster", function(entity, data)
 			tostring(math.floor(entity.endCoords.y + 10000))
 		),
 	}
-	Callbacks:ServerCallback("Inventory:Dumpster:Open", _invData, function(s) end)
+	exports["sandbox-base"]:ServerCallback("Inventory:Dumpster:Open", _invData, function(s) end)
 end)
 
 AddEventHandler("Inventory:Client:HideInDumpster", function(entity, data)
@@ -130,17 +130,17 @@ AddEventHandler("Inventory:Client:HideInDumpster", function(entity, data)
 		identifier = entity.entity,
 		locked = math.random(1, 3),
 	}
-	Callbacks:ServerCallback("Inventory:Dumpster:HidePlayer", data, function(s, l)
+	exports["sandbox-base"]:ServerCallback("Inventory:Dumpster:HidePlayer", data, function(s, l)
 		if not s then
-			Notification:Error("You're not in the right state to hide in the dumpster.")
+			exports["sandbox-hud"]:NotifError("You're not in the right state to hide in the dumpster.")
 			return
 		end
 		if data.identifier == nil or type(data.identifier) == "boolean" then
-			Notification:Error("This is not a dumpster. Try again.")
+			exports["sandbox-hud"]:NotifError("This is not a dumpster. Try again.")
 			return
 		end
 		if not l then
-			Notification:Error("Dumpster is locked.")
+			exports["sandbox-hud"]:NotifError("Dumpster is locked.")
 			return
 		end
 		LocalPlayer.state.inDumpster = true
@@ -162,7 +162,7 @@ AddEventHandler("Inventory:Client:HideInDumpster", function(entity, data)
 			2,
 			true
 		)
-		Animations.Emotes:Play("laydown_garbage", false, nil, true)
+		exports['sandbox-animations']:EmotesPlay("laydown_garbage", false, nil, true)
 		SetEntityVisible(LocalPlayer.state.ped, false, 0)
 		_insideDumpster = true
 		_isLocked = false
@@ -170,7 +170,7 @@ AddEventHandler("Inventory:Client:HideInDumpster", function(entity, data)
 		TriggerEvent("Inventory:Client:DumpsterHideThread")
 
 		if not LocalPlayer.state.isCuffed and not LocalPlayer.state.isDead then
-			Action:Show("dumpsterdiving", "{keybind}secondary_action{/keybind} Exit Trash")
+			exports['sandbox-hud']:ActionShow("dumpsterdiving", "{keybind}secondary_action{/keybind} Exit Trash")
 		end
 	end)
 end)
@@ -178,10 +178,10 @@ end)
 AddEventHandler("Inventory:Client:SearchDumpster", function(entity, data)
 	-- print(entity.endCoords, entity.entity, data)
 
-	Callbacks:ServerCallback("Inventory:Server:AvailableDumpster", entity, function(s)
+	exports["sandbox-base"]:ServerCallback("Inventory:Server:AvailableDumpster", entity, function(s)
 		if s and entity then
 			if entity.entity == nil or type(entity.entity) == "boolean" then
-				Notification:Error("This is not a dumpster. Try again.")
+				exports["sandbox-hud"]:NotifError("This is not a dumpster. Try again.")
 				return
 			end
 			if not _searching then
@@ -194,7 +194,7 @@ AddEventHandler("Inventory:Client:SearchDumpster", function(entity, data)
 					dict = "creatures@rottweiler@move"
 					anim = "fetch_pickup"
 				end
-				Progress:Progress({
+				exports['sandbox-hud']:Progress({
 					name = "inv_dumpster_search",
 					duration = math.random(20, 25) * 1000,
 					label = "Searching Trash",
@@ -214,13 +214,13 @@ AddEventHandler("Inventory:Client:SearchDumpster", function(entity, data)
 					},
 				}, function(status)
 					if not status then
-						Callbacks:ServerCallback("Inventory:Server:SearchDumpster", entity, function(s) end)
+						exports["sandbox-base"]:ServerCallback("Inventory:Server:SearchDumpster", entity, function(s) end)
 					end
 					_searching = false
 				end)
 			end
 		else
-			Notification:Error("This dumpster has been searched.")
+			exports["sandbox-hud"]:NotifError("This dumpster has been searched.")
 		end
 	end)
 end)
@@ -242,8 +242,8 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 		_isLocked = false
 		_insideCurrentDumpster = nil
 		LocalPlayer.state.inDumpster = false
-		Animations.Emotes:ForceCancel()
-		Action:Hide("dumpsterdiving")
+		exports['sandbox-animations']:EmotesForceCancel()
+		exports['sandbox-hud']:ActionHide("dumpsterdiving")
 	end
 end)
 
@@ -263,7 +263,7 @@ RegisterNetEvent("Inventory:Client:DumpsterHideThread", function()
 		while LocalPlayer.state.inDumpster do
 			Wait(5)
 
-			Weapons:UnequipIfEquipped()
+			exports['sandbox-inventory']:WeaponsUnequipIfEquipped()
 
 			DisableControls()
 		end

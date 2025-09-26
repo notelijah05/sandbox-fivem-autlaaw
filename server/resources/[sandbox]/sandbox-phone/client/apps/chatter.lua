@@ -32,7 +32,7 @@ RegisterNetEvent("Phone:Client:Chatter:Notify", function(message, gData)
 		data = message,
 	})
 
-	Phone.Notification:Add(gData.label, message.message, message.timestamp, 6000, "chatter", {
+	exports['sandbox-phone']:NotificationAdd(gData.label, message.message, message.timestamp, 6000, "chatter", {
 		view = "channel/" .. message.group,
 	}, nil)
 
@@ -55,9 +55,10 @@ RegisterNetEvent("Phone:Client:Chatter:ReceiveInvite", function(invite)
 		},
 	})
 
-	Phone.Notification:Add(invite.label, "You Were Invited To A Group", invite.timestamp, 6000, "chatter", {
-		view = "join/" .. invite.group,
-	}, nil)
+	exports['sandbox-phone']:NotificationAdd(invite.label, "You Were Invited To A Group", invite.timestamp, 6000,
+		"chatter", {
+			view = "join/" .. invite.group,
+		}, nil)
 end)
 
 RegisterNetEvent("Phone:Client:Chatter:GroupDeleted", function(id)
@@ -79,33 +80,33 @@ RegisterNetEvent("Phone:Client:Chatter:UpdateGroup", function(data)
 end)
 
 RegisterNUICallback("Chatter:GetMessageCount", function(data, cb)
-	Callbacks:ServerCallback("Phone:Chatter:GetMessageCount", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Chatter:GetMessageCount", data, cb)
 end)
 RegisterNUICallback("Chatter:LoadMessages", function(data, cb)
-	Callbacks:ServerCallback("Phone:Chatter:LoadMessages", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Chatter:LoadMessages", data, cb)
 end)
 RegisterNUICallback("Chatter:SendMessage", function(data, cb)
-	Callbacks:ServerCallback("Phone:Chatter:SendMessage", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Chatter:SendMessage", data, cb)
 end)
 RegisterNUICallback("Chatter:CreateGroup", function(data, cb)
-	Callbacks:ServerCallback("Phone:Chatter:CreateGroup", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Chatter:CreateGroup", data, cb)
 end)
 RegisterNUICallback("Chatter:DeleteGroup", function(data, cb)
-	Callbacks:ServerCallback("Phone:Chatter:DeleteGroup", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Chatter:DeleteGroup", data, cb)
 end)
 RegisterNUICallback("Chatter:LeaveGroup", function(data, cb)
-	Callbacks:ServerCallback("Phone:Chatter:LeaveGroup", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Chatter:LeaveGroup", data, cb)
 end)
 RegisterNUICallback("Chatter:UpdateGroup", function(data, cb)
-	Callbacks:ServerCallback("Chatter:UpdateGroup", data, cb)
+	exports["sandbox-base"]:ServerCallback("Chatter:UpdateGroup", data, cb)
 end)
 
 RegisterNUICallback("Chatter:Invite:Send", function(data, cb)
-	Callbacks:ServerCallback("Chatter:Invite:Send", data, cb)
+	exports["sandbox-base"]:ServerCallback("Chatter:Invite:Send", data, cb)
 end)
 RegisterNUICallback("Chatter:Invite:Accept", function(data, cb)
-	Callbacks:ServerCallback("Chatter:Invite:Accept", data, cb)
+	exports["sandbox-base"]:ServerCallback("Chatter:Invite:Accept", data, cb)
 end)
 RegisterNUICallback("Chatter:Invite:Decline", function(data, cb)
-	Callbacks:ServerCallback("Chatter:Invite:Decline", data, cb)
+	exports["sandbox-base"]:ServerCallback("Chatter:Invite:Decline", data, cb)
 end)

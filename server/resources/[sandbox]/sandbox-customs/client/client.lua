@@ -9,52 +9,8 @@ local withinCustoms = false
 local withinCustomsType = 0
 local showingAction = false
 
-AddEventHandler("VehicleCustoms:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Game = exports["sandbox-base"]:FetchComponent("Game")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Menu = exports["sandbox-base"]:FetchComponent("Menu")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Police = exports["sandbox-base"]:FetchComponent("Police")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("VehicleCustoms", {
-		"Callbacks",
-		"Notification",
-		"Game",
-		"Action",
-		"Progress",
-		"Vehicles",
-		"Blips",
-		"Menu",
-		"Utils",
-		"Logger",
-		"Keybinds",
-		"Polyzone",
-		"PedInteraction",
-		"ListMenu",
-		"UISounds",
-		"Police",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		CreateCustomsZones()
-	end)
+	CreateCustomsZones()
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")
@@ -71,9 +27,9 @@ AddEventHandler("Characters:Client:Spawn", function()
 	for k, v in ipairs(_customsLocations) do
 		if v.blip then
 			if v.aircraft then
-				Blips:Add("veh_customs_" .. k, "Aircraft Vehicle Customs", v.blip, 643, 34, 0.6)
+				exports["sandbox-blips"]:Add("veh_customs_" .. k, "Aircraft Vehicle Customs", v.blip, 643, 34, 0.6)
 			else
-				Blips:Add("veh_customs_" .. k, "Vehicle Customs", v.blip, 643, 12, 0.6)
+				exports["sandbox-blips"]:Add("veh_customs_" .. k, "Vehicle Customs", v.blip, 643, 12, 0.6)
 			end
 		end
 	end
@@ -121,12 +77,12 @@ function CreateCustomsZones()
 		}
 
 		if v.zone and v.zone.type == "poly" and v.zone.points then
-			Polyzone.Create:Poly("veh_customs_" .. k, v.zone.points, {
+			exports['sandbox-polyzone']:CreatePoly("veh_customs_" .. k, v.zone.points, {
 				minZ = v.zone.minZ,
 				maxZ = v.zone.maxZ,
 			}, data)
 		elseif v.zone and v.zone.type == "box" and v.zone.center and v.zone.length and v.zone.width then
-			Polyzone.Create:Box("veh_customs_" .. k, v.zone.center, v.zone.length, v.zone.width, {
+			exports['sandbox-polyzone']:CreateBox("veh_customs_" .. k, v.zone.center, v.zone.length, v.zone.width, {
 				heading = v.zone.heading,
 				minZ = v.zone.minZ,
 				maxZ = v.zone.maxZ,
@@ -145,9 +101,9 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 				if CheckClassRestriction(DRIVING_VEHICLE_CLASS, locationData.restrictClass) then
 					showingAction = true
 					if withinCustomsType == 0 then
-						Action:Show("bennys", "{keybind}primary_action{/keybind} Customize Vehicle")
+						exports['sandbox-hud']:ActionShow("bennys", "{keybind}primary_action{/keybind} Customize Vehicle")
 					elseif withinCustomsType == 1 then
-						Action:Show("bennys", "{keybind}primary_action{/keybind} Repair Vehicle")
+						exports['sandbox-hud']:ActionShow("bennys", "{keybind}primary_action{/keybind} Repair Vehicle")
 					end
 				end
 			end
@@ -160,7 +116,7 @@ AddEventHandler("Polyzone:Exit", function(id, point, insideZone, data)
 		withinCustoms = false
 		ForceCloseVehicleCustoms()
 		if showingAction then
-			Action:Hide("bennys")
+			exports['sandbox-hud']:ActionHide("bennys")
 			showingAction = false
 		end
 	end
@@ -180,17 +136,17 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 			end
 
 			if not CheckJobRestriction(locationData.restrictJobs) then
-				Notification:Error("Authorized Vehicles & Personnel Only")
+				exports["sandbox-hud"]:NotifError("Authorized Vehicles & Personnel Only")
 				return
 			end
 
 			if
 				(
-					Police:IsPdCar(DRIVING_VEHICLE)
+					exports['sandbox-police']:IsPdCar(DRIVING_VEHICLE)
 					and (LocalPlayer.state.onDuty ~= "police" and LocalPlayer.state.onDuty ~= "prison")
-				) or (Police:IsEMSCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty ~= "ems")
+				) or (exports['sandbox-police']:IsEMSCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty ~= "ems")
 			then
-				Notification:Error("Authorized Vehicles & Personnel Only")
+				exports["sandbox-hud"]:NotifError("Authorized Vehicles & Personnel Only")
 				return
 			end
 		end
@@ -206,9 +162,9 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 		end
 
 		if
-			(Police:IsPdCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "police")
-			or (Police:IsPdCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "prison")
-			or (Police:IsEMSCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "ems")
+			(exports['sandbox-police']:IsPdCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "police")
+			or (exports['sandbox-police']:IsPdCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "prison")
+			or (exports['sandbox-police']:IsEMSCar(DRIVING_VEHICLE) and LocalPlayer.state.onDuty == "ems")
 		then
 			cost = 0
 		end
@@ -217,7 +173,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 
 		if withinCustomsType == 0 then
 			if bodyHealth < 1000 or engineHealth < 1000 then
-				ListMenu:Show({
+				exports['sandbox-hud']:ListMenuShow({
 					main = {
 						label = "Customs - Repair Required",
 						items = {
@@ -237,7 +193,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 			end
 		elseif withinCustomsType == 1 then
 			if bodyHealth < 1000 or engineHealth < 1000 then
-				ListMenu:Show({
+				exports['sandbox-hud']:ListMenuShow({
 					main = {
 						label = "Repair Shop",
 						items = {
@@ -252,7 +208,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 					},
 				})
 			else
-				Notification:Error("Vehicle Doesn't Need Repairs")
+				exports["sandbox-hud"]:NotifError("Vehicle Doesn't Need Repairs")
 			end
 		end
 	end
@@ -265,7 +221,7 @@ AddEventHandler("Vehicles:Client:OpenVehicleCustoms", function(data)
 	-- TODO: Do Repair Cash Payment & Check Success
 	DoSlowVehicleNormalRepair(data.cost, function(s)
 		if s then
-			Notification:Success("Repaired Vehicle For $" .. data.cost)
+			exports["sandbox-hud"]:NotifSuccess("Repaired Vehicle For $" .. data.cost)
 			if data.customs then
 				StartOpeningVehicleCustoms()
 			end
@@ -277,17 +233,17 @@ function StartOpeningVehicleCustoms()
 	if withinCustoms and DRIVING_VEHICLE then
 		local vehEnt = Entity(DRIVING_VEHICLE)
 		if vehEnt and vehEnt.state.VIN then
-			if Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
+			if exports['sandbox-vehicles']:KeysHas(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
 				OpenVehicleCustoms(
 					_customsLocations[withinCustoms] and _customsLocations[withinCustoms].canInstallPerformance,
 					_customsLocations[withinCustoms] and _customsLocations[withinCustoms].costMultiplier or 1.0,
 					_customsLocations[withinCustoms] and _customsLocations[withinCustoms].settings or {}
 				)
 			else
-				Notification:Error("Cannot Modify a Vehicle That You Don't Have Keys For")
+				exports["sandbox-hud"]:NotifError("Cannot Modify a Vehicle That You Don't Have Keys For")
 			end
 		else
-			Notification:Error("Error")
+			exports["sandbox-hud"]:NotifError("Error")
 		end
 	end
 end
@@ -311,7 +267,7 @@ function DoSlowVehicleNormalRepair(cost, cb)
 		time = 15000
 	end
 
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "vehicle_quick_repair",
 		duration = time,
 		label = "Repairing Vehicle",
@@ -326,12 +282,12 @@ function DoSlowVehicleNormalRepair(cost, cb)
 		},
 	}, function(cancelled)
 		if not cancelled and DRIVING_VEHICLE then
-			Callbacks:ServerCallback("Vehicles:CompleteRepair", {
+			exports["sandbox-base"]:ServerCallback("Vehicles:CompleteRepair", {
 				cost = cost,
 			}, function(success)
 				if success then
-					Vehicles.Repair:Normal(DRIVING_VEHICLE)
-					UISounds.Play:FrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
+					exports['sandbox-vehicles']:RepairNormal(DRIVING_VEHICLE)
+					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
 					cb(true)
 				else
 					cb(false)

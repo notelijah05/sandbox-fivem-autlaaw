@@ -4,28 +4,24 @@ function PaletoIsGloballyReady(source, isHack)
 		or (GlobalState["RestartLockdown"] and not GlobalState["PaletoInProgress"])
 	then
 		if isHack then
-			Execute:Client(source, "Notification", "Error", "Network Offline For A Storm, Check Back Later", 6000)
+			exports['sandbox-hud']:NotifError(source,
+				"Network Offline For A Storm, Check Back Later", 6000)
 		else
-			Execute:Client(
-				source,
-				"Notification",
-				"Error",
+			exports['sandbox-hud']:NotifError(source,
 				"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 				6000
 			)
 		end
 		return false
 	elseif (GlobalState["Duty:police"] or 0) < PALETO_REQUIRED_POLICE and not GlobalState["PaletoInProgress"] then
-		Execute:Client(
-			source,
-			"Notification",
-			"Error",
+		exports['sandbox-hud']:NotifError(source,
 			"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 			6000
 		)
 		return false
 	elseif GlobalState["RobberiesDisabled"] then
-		Execute:Client(source, "Notification", "Error", "Temporarily Disabled, Please See City Announcements", 6000)
+		exports['sandbox-hud']:NotifError(source,
+			"Temporarily Disabled, Please See City Announcements", 6000)
 		return false
 	end
 
@@ -38,31 +34,32 @@ function DisablePaletoPower(source)
 	end
 
 	for k, v in ipairs(_pbPCHackAreas) do
-		Robbery.State:Update("paleto", v.data.pcId, _pbGlobalReset, "exploits")
+		exports['sandbox-robbery']:StateUpdate("paleto", v.data.pcId, _pbGlobalReset, "exploits")
 	end
 
 	for k, v in ipairs(_pbSubStations) do
-		Robbery.State:Update("paleto", k, _pbGlobalReset, "substations")
+		exports['sandbox-robbery']:StateUpdate("paleto", k, _pbGlobalReset, "substations")
 	end
 
 	for k, v in ipairs(_pbPowerHacks) do
-		Robbery.State:Update("paleto", v.data.boxId, _pbGlobalReset, "electricalBoxes")
+		exports['sandbox-robbery']:StateUpdate("paleto", v.data.boxId, _pbGlobalReset, "electricalBoxes")
 	end
 
-	CCTV.State.Group:Offline("paleto")
+	exports['sandbox-cctv']:StateGroupOffline("paleto")
 
-	Robbery:TriggerPDAlert(source, vector3(-195.586, 6338.740, 31.515), "10-33", "Regional Power Grid Disruption", {
-		icon = 354,
-		size = 0.9,
-		color = 31,
-		duration = (60 * 5),
-	}, {
-		icon = "bolt-slash",
-		details = "Paleto",
-	}, false, 250.0)
-	
+	exports['sandbox-robbery']:TriggerPDAlert(source, vector3(-195.586, 6338.740, 31.515), "10-33",
+		"Regional Power Grid Disruption", {
+			icon = 354,
+			size = 0.9,
+			color = 31,
+			duration = (60 * 5),
+		}, {
+			icon = "bolt-slash",
+			details = "Paleto",
+		}, false, 250.0)
+
 	GlobalState["Fleeca:Disable:savings_paleto"] = true
-	Doors:SetLock("bank_savings_paleto_gate", false)
+	exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", false)
 	RestorePowerThread()
 end
 
@@ -86,10 +83,10 @@ function ResetPaleto()
 	end
 
 	for k, v in ipairs(_pbDoorIds) do
-		Doors:SetLock(v, true)
+		exports['sandbox-doors']:SetLock(v, true)
 	end
 
-	Robbery.State:Set("paleto", {
+	exports['sandbox-robbery']:StateSet("paleto", {
 		fookinLasers = false,
 		workstation = false,
 		vaultTerminal = false,
@@ -102,8 +99,8 @@ function ResetPaleto()
 	})
 	_pbGlobalReset = os.time() + PALETO_RESET_TIME
 
-	Doors:SetLock("bank_savings_paleto_gate", true)
-	CCTV.State.Group:Online("paleto")
+	exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", true)
+	exports['sandbox-cctv']:StateGroupOnline("paleto")
 
 	TriggerClientEvent("Robbery:Client:Paleto:ResetLasers", -1)
 
@@ -119,10 +116,10 @@ function SecurePaleto()
 	end
 
 	for k, v in ipairs(_pbDoorIds) do
-		Doors:SetLock(v, true)
+		exports['sandbox-doors']:SetLock(v, true)
 	end
 
-	Robbery.State:Set("paleto", {
+	exports['sandbox-robbery']:StateSet("paleto", {
 		fookinLasers = false,
 		workstation = false,
 		vaultTerminal = false,
@@ -135,8 +132,8 @@ function SecurePaleto()
 	})
 	_pbGlobalReset = os.time() + PALETO_RESET_TIME
 
-	Doors:SetLock("bank_savings_paleto_gate", true)
-	CCTV.State.Group:Online("paleto")
+	exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", true)
+	exports['sandbox-cctv']:StateGroupOnline("paleto")
 
 	TriggerClientEvent("Robbery:Client:Paleto:ResetLasers", -1)
 

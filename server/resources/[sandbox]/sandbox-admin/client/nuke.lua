@@ -8,12 +8,12 @@ RegisterNetEvent("Admin:Client:NukeCountdown", function()
     _awaitingNuke = true
 
     ShowNukeSprite()
-    Sounds.Play:One("nukeincome.ogg", 0.5)
+    exports["sandbox-sounds"]:PlayOne("nukeincome.ogg", 0.5)
 
     Wait(3000)
 
     for i = 1, 10 do
-        Sounds.Play:One("countbeep.ogg", 0.5)
+        exports["sandbox-sounds"]:PlayOne("countbeep.ogg", 0.5)
         Wait(2000)
     end
 end)
@@ -23,7 +23,7 @@ RegisterNetEvent("Admin:Client:Nuke", function()
         return
     end
 
-    Sounds.Play:One("nukeboom.ogg", 0.3)
+    exports["sandbox-sounds"]:PlayOne("nukeboom.ogg", 0.3)
 
     Wait(500)
 

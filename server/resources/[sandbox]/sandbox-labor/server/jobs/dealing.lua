@@ -24,15 +24,17 @@ local _toolsForSale = {
 }
 
 AddEventHandler("Labor:Server:Startup", function()
-    Vendor:Create("CornerDealer", false, "Unknown", false, {}, _toolsForSale, "badge-dollar", "View Offers", false, false, true)
+	exports['sandbox-pedinteraction']:VendorCreate("CornerDealer", false, "Unknown", false, {}, _toolsForSale,
+		"badge-dollar", "View Offers", false, false,
+		true)
 
-	Callbacks:RegisterServerCallback("CornerDealing:Enable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:Enable", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if not hasValue(states, "SCRIPT_CORNER_DEALING") then
 			table.insert(states, "SCRIPT_CORNER_DEALING")
 			char:SetData("States", states)
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				source,
 				"New Job Available",
 				"A new job is available, check it out.",
@@ -44,8 +46,8 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:Disable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:Disable", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if hasValue(states, "SCRIPT_CORNER_DEALING") then
 			for k, v in ipairs(states) do
@@ -58,31 +60,32 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:SyncPed", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:SyncPed", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _sellers[_joiners[source]].state == 1 then
 					_sellers[_joiners[source]].pedNet = data
-					
+
 					local ent = NetworkGetEntityFromNetworkId(data)
 					SetEntityDistanceCullingRadius(ent, 5000.0)
 
-					Labor.Workgroups:SendEvent(_joiners[source], string.format("CornerDealing:Client:%s:SyncPed", _joiners[source]), data)
+					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+						string.format("CornerDealing:Client:%s:SyncPed", _joiners[source]), data)
 				end
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:SyncEvent", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:SyncEvent", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _sellers[_joiners[source]].state == 0 then
 					TriggerClientEvent(
 						"CornerDealing:Client:DoSequence",
 						NetworkGetEntityOwner(NetworkGetEntityFromNetworkId(data.netId)),
-						data.event, 
+						data.event,
 						data.netId,
 						data.coords
 					)
@@ -91,14 +94,15 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:CheckCorner", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:CheckCorner", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 			if char ~= nil then
 				for k, v in ipairs(_cornerCds) do
 					if os.time() < v.expires and #(data.coords - v.coords) < 100.0 then
-						Execute:Client(source, "Notification", "Error", "Someone Has Recently Sold Around Here")
+						exports['sandbox-hud']:NotifError(source,
+							"Someone Has Recently Sold Around Here")
 						return cb(false)
 					end
 				end
@@ -113,31 +117,32 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:StartCornering", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:StartCornering", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 			if char ~= nil then
 				if _sellers[_joiners[source]].state == 0 then
 					_sellers[_joiners[source]].state = 1
 					_sellers[_joiners[source]].netId = data.netId
 					_sellers[_joiners[source]].corner = data.corner
-					Labor.Offers:Start(_joiners[source], _JOB, "Sell Product", 10)
-					Labor.Workgroups:SendEvent(_joiners[source], string.format("CornerDealing:Client:%s:StartSelling", _joiners[source]), data.netId, data.corner)
+					exports['sandbox-labor']:StartOffer(_joiners[source], _JOB, "Sell Product", 10)
+					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+						string.format("CornerDealing:Client:%s:StartSelling", _joiners[source]), data.netId, data.corner)
 				end
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:StopCornering", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:StopCornering", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			Labor.Offers:Fail(_joiners[source], _JOB)
+			exports['sandbox-labor']:FailOffer(_joiners[source], _JOB)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:GetSaleMenu", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:GetSaleMenu", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 			if char ~= nil then
 				if
@@ -152,7 +157,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						entState.seller = source
 						local items = {}
 
-						local weedCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "weed_baggy")
+						local weedCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "weed_baggy")
 						if weedCount > 0 then
 							table.insert(items, {
 								label = "Sell Weed",
@@ -162,7 +167,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							})
 						end
 
-						local oxyCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "oxy")
+						local oxyCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "oxy")
 						if oxyCount > 0 then
 							table.insert(items, {
 								label = "Sell Oxy",
@@ -172,7 +177,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							})
 						end
 
-						local methCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "meth_bag")
+						local methCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "meth_bag")
 						if methCount > 0 then
 							table.insert(items, {
 								label = "Sell Meth",
@@ -182,7 +187,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							})
 						end
 
-						local cokeCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "coke_bag")
+						local cokeCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "coke_bag")
 						if cokeCount > 0 then
 							table.insert(items, {
 								label = "Sell Cocaine",
@@ -207,9 +212,9 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:DoSale", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:DoSale", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if
 					_sellers[_joiners[source]].state == 1
@@ -220,19 +225,20 @@ AddEventHandler("Labor:Server:Startup", function()
 					local entState = Entity(ent).state
 
 					if entState?.seller == source then
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), data.item, 1)
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), data.item, 1)
 						if slot ~= nil then
-							if Inventory.Items:RemoveId(char:GetData("SID"), 1, slot) then
-								local itemData = Inventory.Items:GetData(data.item)
-	
-								Labor.Workgroups:SendEvent(_joiners[source], string.format("CornerDealing:Client:%s:Action", _joiners[source]))
-	
-								local repLevel = Reputation:GetLevel(source, "CornerDealing") or 0
+							if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot) then
+								local itemData = exports['sandbox-inventory']:ItemsGetData(data.item)
+
+								exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+									string.format("CornerDealing:Client:%s:Action", _joiners[source]))
+
+								local repLevel = exports['sandbox-characters']:RepGetLevel(source, "CornerDealing") or 0
 								local calcLvl = repLevel
 								if calcLvl < 1 then
 									calcLvl = 1
 								end
-	
+
 								local repAdd = 50
 								if data.item == "weed_baggy" then
 									repAdd = 25
@@ -241,7 +247,7 @@ AddEventHandler("Labor:Server:Startup", function()
 								if data.item == "meth_bag" or data.item == "coke_bag" then
 									local cashAdd = (itemData.price + (60 * calcLvl)) * (slot.Quality / 100)
 									-- print((itemData.price + (60 * calcLvl)), (slot.Quality / 100), cashAdd)
-									Wallet:Modify(source, cashAdd)
+									exports['sandbox-finance']:WalletModify(source, cashAdd)
 								else
 									local rand = math.random(100)
 									if rand >= (55 - (2 * calcLvl)) then
@@ -250,22 +256,25 @@ AddEventHandler("Labor:Server:Startup", function()
 											lower = math.ceil((itemData.price * (2 + calcLvl)) / 100)
 											higher = math.ceil((itemData.price * (4 + calcLvl)) / 100)
 										end
-										Inventory:AddItem(char:GetData("SID"), "moneyroll", math.random(lower, higher), {}, 1)
+										exports['sandbox-inventory']:AddItem(char:GetData("SID"), "moneyroll",
+											math.random(lower, higher),
+											{}, 1)
 									else
 										local cashAdd = itemData.price + (60 * calcLvl)
 										if data.item == "weed_baggy" then
 											cashAdd = (itemData.price * 2) + (60 * calcLvl)
 										end
-		
-										Wallet:Modify(source, cashAdd)
+
+										exports['sandbox-finance']:WalletModify(source, cashAdd)
 									end
 								end
-		
-								Reputation.Modify:Add(source, _JOB, repAdd)
-	
-								Labor.Workgroups:SendEvent(_joiners[source], string.format("CornerDealing:Client:%s:RemoveTargetting", _joiners[source]))
-	
-								if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
+
+								exports['sandbox-characters']:RepAdd(source, _JOB, repAdd)
+
+								exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+									string.format("CornerDealing:Client:%s:RemoveTargetting", _joiners[source]))
+
+								if exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true) then
 									if _sellers[_joiners[source]].pedNet ~= nil then
 										local ent = NetworkGetEntityFromNetworkId(_sellers[_joiners[source]].pedNet)
 										if DoesEntityExist(ent) then
@@ -276,18 +285,20 @@ AddEventHandler("Labor:Server:Startup", function()
 									_sellers[_joiners[source]].state = 0
 									_sellers[_joiners[source]].pedNet = nil
 									_sellers[_joiners[source]].netId = nil
-									Labor.Offers:Task(_joiners[source], _JOB, "Find A Corner")
+									exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Find A Corner")
 									Citizen.SetTimeout(5000, function()
-										Labor.Workgroups:SendEvent(_joiners[source], string.format("CornerDealing:Client:%s:EndSelling", _joiners[source]))
+										exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+											string.format("CornerDealing:Client:%s:EndSelling", _joiners[source]))
 									end)
 								else
 									Citizen.SetTimeout((math.random(15, 30) + 30) * 1000, function()
 										if _joiners[source] ~= nil then
-											Labor.Workgroups:SendEvent(_joiners[source], string.format("CornerDealing:Client:%s:SoldToPed", _joiners[source]))
+											exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+												string.format("CornerDealing:Client:%s:SoldToPed", _joiners[source]))
 										end
 									end)
 								end
-		
+
 								entState.seller = nil
 								cb(true)
 							else
@@ -308,12 +319,11 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:NoPeds", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:NoPeds", function(source, data, cb)
 		if _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _sellers[_joiners[source]]?.state == 1 then
-					
 					-- This shouldn't be possible, but yano yeah
 					if _sellers[_joiners[source]].pedNet ~= nil then
 						local ent = NetworkGetEntityFromNetworkId(_sellers[_joiners[source]].pedNet)
@@ -326,8 +336,8 @@ AddEventHandler("Labor:Server:Startup", function()
 					_sellers[_joiners[source]].state = 0
 					_sellers[_joiners[source]].pedNet = nil
 					_sellers[_joiners[source]].netId = nil
-					Labor.Offers:Task(_joiners[source], _JOB, "Find A Corner")
-					Phone.Notification:Add(
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Find A Corner")
+					exports['sandbox-phone']:NotificationAdd(
 						source,
 						"New Corner",
 						"Seems this corner dried up, find something else.",
@@ -336,15 +346,16 @@ AddEventHandler("Labor:Server:Startup", function()
 						"labor",
 						{}
 					)
-					Labor.Workgroups:SendEvent(_joiners[source], string.format("CornerDealing:Client:%s:EndSelling", _joiners[source]))
+					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+						string.format("CornerDealing:Client:%s:EndSelling", _joiners[source]))
 				end
 			end
 		end
 	end)
 
-	-- Callbacks:RegisterServerCallback("CornerDealing:PedDied", function(source, data, cb)
+	-- exports["sandbox-base"]:RegisterServerCallback("CornerDealing:PedDied", function(source, data, cb)
 	-- 	if _joiners[source] ~= nil then
-	-- 		local plyr = Fetch:Source(source)
+	-- 		local plyr = exports['sandbox-base']:FetchSource(source)
 	-- 		if plyr ~= nil then
 	-- 			local char = plyr:GetData("Character")
 	-- 			if char ~= nil then
@@ -357,9 +368,9 @@ AddEventHandler("Labor:Server:Startup", function()
 	-- 	end
 	-- end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:DestroyVehicle", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:DestroyVehicle", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _sellers[_joiners[source]].state == 1 then
 					if _sellers[_joiners[source]].pedNet ~= nil then
@@ -373,8 +384,8 @@ AddEventHandler("Labor:Server:Startup", function()
 					_sellers[_joiners[source]].state = 0
 					_sellers[_joiners[source]].pedNet = nil
 					_sellers[_joiners[source]].netId = nil
-					Labor.Offers:Task(_joiners[source], _JOB, "Find A Corner")
-					Phone.Notification:Add(
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Find A Corner")
+					exports['sandbox-phone']:NotificationAdd(
 						source,
 						"New Corner",
 						"Your vehicle was destroyed, find something new and head to a new corner.",
@@ -396,12 +407,11 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:PedTimeout", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:PedTimeout", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _sellers[_joiners[source]].state == 1 then
-
 					if _sellers[_joiners[source]].pedNet ~= nil then
 						local ent = NetworkGetEntityFromNetworkId(_sellers[_joiners[source]].pedNet)
 						if DoesEntityExist(ent) then
@@ -416,9 +426,9 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("CornerDealing:LeaveArea", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("CornerDealing:LeaveArea", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if _sellers[_joiners[source]].state == 1 then
 					if _sellers[_joiners[source]].pedNet ~= nil then
@@ -431,8 +441,8 @@ AddEventHandler("Labor:Server:Startup", function()
 					_sellers[_joiners[source]].state = 0
 					_sellers[_joiners[source]].pedNet = nil
 					_sellers[_joiners[source]].netId = nil
-					Labor.Offers:Task(_joiners[source], _JOB, "Find A Corner")
-					Phone.Notification:Add(
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Find A Corner")
+					exports['sandbox-phone']:NotificationAdd(
 						source,
 						"New Corner",
 						"Your vehicle got too far from the corner, find another place to sell.",
@@ -449,10 +459,10 @@ AddEventHandler("Labor:Server:Startup", function()
 end)
 
 AddEventHandler("CornerDealing:Server:OnDuty", function(joiner, members, isWorkgroup)
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	if char == nil then
-		Labor.Offers:Cancel(joiner, _JOB)
-		Labor.Duty:Off(_JOB, joiner, false, true)
+		exports['sandbox-labor']:CancelOffer(joiner, _JOB)
+		exports['sandbox-labor']:OffDuty(_JOB, joiner, false, true)
 		return
 	end
 
@@ -471,13 +481,13 @@ AddEventHandler("CornerDealing:Server:OnDuty", function(joiner, members, isWorkg
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner
-			local member = Fetch:CharacterSource(v.ID)
+			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
 			TriggerClientEvent("CornerDealing:Client:OnDuty", v.ID, joiner, os.time())
 		end
 	end
 
-	Labor.Offers:Task(joiner, _JOB, "Find A Corner")
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Find A Corner")
 end)
 
 AddEventHandler("CornerDealing:Server:OffDuty", function(source, joiner)

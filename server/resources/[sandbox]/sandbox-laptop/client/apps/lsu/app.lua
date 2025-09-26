@@ -10,32 +10,28 @@ AddEventHandler("Characters:Client:Spawn", function()
         Wait(100)
     end
 
-    PedInteraction:Add("lsu-pickup-guy", `s_m_y_dockwork_01`, GlobalState.LSUPickupLocation.coords,
+    exports['sandbox-pedinteraction']:Add("lsu-pickup-guy", `s_m_y_dockwork_01`, GlobalState.LSUPickupLocation.coords,
         GlobalState.LSUPickupLocation.heading, 50.0, {
-        {
-            icon = "box-taped",
-            text = "Collect Order",
-            event = "Laptop:Client:LSUnderground:Collect",
-        },
-    }, 'box-taped', 'WORLD_HUMAN_SMOKING', true)
+            {
+                icon = "box-taped",
+                text = "Collect Order",
+                event = "Laptop:Client:LSUnderground:Collect",
+            },
+        }, 'box-taped', 'WORLD_HUMAN_SMOKING', true)
 end)
 
-LAPTOP.LSUnderground = {
-
-}
-
 RegisterNUICallback("GetLSUDetails", function(data, cb)
-    Callbacks:ServerCallback("Laptop:LSUnderground:GetDetails", {}, function(data)
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:GetDetails", {}, function(data)
         cb(data)
     end)
 end)
 
 RegisterNUICallback("LSUNDG:Market:Checkout", function(data, cb)
-    Callbacks:ServerCallback("Laptop:LSUnderground:Market:Checkout", data, function(data)
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Market:Checkout", data, function(data)
         cb(data)
 
         if data?.success and data.coords then
-            Blips:Add(
+            exports["sandbox-blips"]:Add(
                 "lsu-pickup-location",
                 "LSUNDG Pickup Location",
                 data.coords,
@@ -54,20 +50,20 @@ RegisterNUICallback("LSUNDG:Market:Checkout", function(data, cb)
 end)
 
 RegisterNUICallback("Boosting:EnterQueue", function(data, cb)
-    Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:EnterQueue", {}, cb)
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:EnterQueue", {}, cb)
 end)
 
 RegisterNUICallback("Boosting:ExitQueue", function(data, cb)
-    Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:ExitQueue", {}, cb)
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:ExitQueue", {}, cb)
 end)
 
 RegisterNUICallback("Boosting:AcceptContract", function(data, cb)
-    Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:AcceptContract", data, function(res)
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:AcceptContract", data, function(res)
         if res?.success then
-            Laptop.Data:Add("disabledBoostingContracts", data.id)
+            exports['sandbox-laptop']:AddData("disabledBoostingContracts", data.id)
 
             Citizen.SetTimeout(120000, function()
-                Laptop.Data:Remove("disabledBoostingContracts", data.id)
+                exports['sandbox-laptop']:RemoveData("disabledBoostingContracts", data.id)
             end)
         end
 
@@ -76,15 +72,15 @@ RegisterNUICallback("Boosting:AcceptContract", function(data, cb)
 end)
 
 RegisterNUICallback("Boosting:TransferContract", function(data, cb)
-    Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:TransferContract", data, cb)
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:TransferContract", data, cb)
 end)
 
 RegisterNUICallback("Boosting:DeclineContract", function(data, cb)
-    Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:DeclineContract", data, cb)
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:DeclineContract", data, cb)
 end)
 
 AddEventHandler("Laptop:Client:LSUnderground:Collect", function()
-    Callbacks:ServerCallback("Laptop:LSUnderground:Market:Collect", {})
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Market:Collect", {})
 end)
 
 RegisterNUICallback("Boosting:Admin:CreateContract", function(data, cb)
@@ -99,17 +95,17 @@ RegisterNUICallback("Boosting:Admin:CreateContract", function(data, cb)
         end
     end
 
-    Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:Admin:CreateContract", data, cb)
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:Admin:CreateContract", data, cb)
 end)
 
 RegisterNUICallback("Boosting:Admin:GetBans", function(data, cb)
-    Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:Admin:GetBans", data, cb)
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:Admin:GetBans", data, cb)
 end)
 
 RegisterNUICallback("Boosting:Admin:Ban", function(data, cb)
-    Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:Admin:Ban", data, cb)
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:Admin:Ban", data, cb)
 end)
 
 RegisterNUICallback("Boosting:Admin:Unban", function(data, cb)
-    Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:Admin:Unban", data, cb)
+    exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:Admin:Unban", data, cb)
 end)

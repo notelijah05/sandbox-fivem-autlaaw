@@ -8,7 +8,7 @@ local _sellers = {
 
 AddEventHandler("Labor:Client:Setup", function()
 	for k, v in ipairs(_sellers) do
-		PedInteraction:Add(string.format("PawnSeller%s", k), v.model, v.coords, v.heading, 25.0, {
+		exports['sandbox-pedinteraction']:Add(string.format("PawnSeller%s", k), v.model, v.coords, v.heading, 25.0, {
 			{
 				icon = "ring",
 				text = "Sell Jewelry",
@@ -62,5 +62,5 @@ AddEventHandler("Labor:Client:Setup", function()
 end)
 
 AddEventHandler("Pawn:Client:Sell", function(e, data)
-	Callbacks:ServerCallback("Pawn:Sell", data)
+	exports["sandbox-base"]:ServerCallback("Pawn:Sell", data)
 end)

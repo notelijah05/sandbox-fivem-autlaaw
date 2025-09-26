@@ -49,7 +49,7 @@ function IsTruckAtCoords(coords)
 end
 
 AddEventHandler('entityCreated', function(entity)
-	if not DoesEntityExist(entity) or Vehicles == nil then
+	if not DoesEntityExist(entity) then
 		return
 	end
 
@@ -82,12 +82,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 	_moneyTruckSpawns = table.copy(_spawnHoldingShit)
 
-	Chat:RegisterAdminCommand("togglemoneytruck", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("togglemoneytruck", function(source, args, rawCommand)
 		_truckSpawnEnabled = not _truckSpawnEnabled
 		if _truckSpawnEnabled then
-			Chat.Send.System:Single(source, "Truck Spawns Enabled")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Truck Spawns Enabled")
 		else
-			Chat.Send.System:Single(source, "Truck Spawns Disabled")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Truck Spawns Disabled")
 		end
 	end, {
 		help = "Toggle Bobcat Truck Spawning",
@@ -113,7 +113,8 @@ function SpawnBobcatTruck(truckModel, skipCooldown)
 
 	if not IsTruckAtCoords(coords) then
 		table.remove(_moneyTruckSpawns, sel)
-		Vehicles:SpawnTemp(-1, truckModel, 'automobile', vector3(coords[1], coords[2], coords[3]), coords[4],
+		exports['sandbox-vehicles']:SpawnTemp(-1, truckModel, 'automobile', vector3(coords[1], coords[2], coords[3]),
+			coords[4],
 			function(veh, VIN)
 				_moneyTrucks[veh] = {
 					position = coords,
@@ -135,7 +136,7 @@ end
 
 local _blueGiven = false
 AddEventHandler("Robbery:Server:Setup", function()
-	Callbacks:RegisterServerCallback("Robbery:MoneyTruck:EnteredTruck", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MoneyTruck:EnteredTruck", function(source, data, cb)
 		local ent = NetworkGetEntityFromNetworkId(data)
 		if ent ~= 0 then
 			local entState = Entity(ent).state
@@ -150,7 +151,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 	end)
 
 
-	Callbacks:RegisterServerCallback("Robbery:MoneyTruck:CheckLoot", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MoneyTruck:CheckLoot", function(source, data, cb)
 		local pState = Player(source).state
 		local ent = NetworkGetEntityFromNetworkId(data)
 		if ent ~= 0 then
@@ -171,7 +172,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MoneyTruck:CancelLoot", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MoneyTruck:CancelLoot", function(source, data, cb)
 		local pState = Player(source).state
 		local ent = NetworkGetEntityFromNetworkId(data)
 		if ent ~= 0 then
@@ -192,14 +193,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MoneyTruck:Loot", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MoneyTruck:Loot", function(source, data, cb)
 		local pState = Player(source).state
 		local ent = NetworkGetEntityFromNetworkId(data)
 		if ent ~= 0 then
 			local entState = Entity(ent).state
 			if entState.wasThermited and not entState.wasLooted then
 				if entState.beingLooted == source then
-					local char = Fetch:CharacterSource(source)
+					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					if char ~= nil then
 						_moneyTrucks[ent] = {
 							position = _moneyTrucks[ent]?.position or GetEntityCoords(ent),
@@ -209,22 +210,23 @@ AddEventHandler("Robbery:Server:Setup", function()
 						}
 						Entity(ent).state.wasLooted = true
 
-						Logger:Info("Robbery",
+						exports['sandbox-base']:LoggerInfo("Robbery",
 							string.format("%s %s (%s) Looted A Money Truck (VIN: %s)", char:GetData("First"),
 								char:GetData("Last"), char:GetData("SID"), Entity(ent).state.VIN))
 
 						local model = GetEntityModel(ent)
 						if model == `stockade` then
-							Loot:CustomWeightedSetWithCount(_moneyTruckLoot.fleeca, char:GetData("SID"), 1)
-							Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_moneyTruckLoot.fleeca,
+								char:GetData("SID"), 1)
+							exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 								CryptoCoin = "HEIST",
 								Quantity = math.random(5, 6),
 							}, 1)
 							-- if math.random(100) <= 10 and not _blueGiven then
 							-- 	_blueGiven = true
-							-- 	Inventory:AddItem(char:GetData("SID"), "blue_dongle", 1, {}, 1)
+							-- 	exports['sandbox-inventory']:AddItem(char:GetData("SID"), "blue_dongle", 1, {}, 1)
 							-- else
-							-- 	Inventory:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
+							-- 	exports['sandbox-inventory']:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
 							-- end
 						end
 

@@ -1,19 +1,19 @@
 function RegisterGamesCallbacks()
-	Callbacks:RegisterClientCallback("Robbery:Games:Progress", DoProgress)
-	Callbacks:RegisterClientCallback("Robbery:Games:Lockpick", Lockpick)
-	Callbacks:RegisterClientCallback("Robbery:Games:Thermite", Thermite)
-	Callbacks:RegisterClientCallback("Robbery:Games:Laptop", Laptop)
-	Callbacks:RegisterClientCallback("Robbery:Games:Captcha", Captcha)
-	Callbacks:RegisterClientCallback("Robbery:Games:Tracking", Tracking)
-	Callbacks:RegisterClientCallback("Robbery:Games:Aim", Aim)
-	Callbacks:RegisterClientCallback("Robbery:Games:AimHack", AimHack)
-	Callbacks:RegisterClientCallback("Robbery:Games:Hack", Hack)
-	Callbacks:RegisterClientCallback("Robbery:Games:Drill", Drill)
-	Callbacks:RegisterClientCallback("Robbery:Games:SafeCrack", SafeCrack)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Games:Progress", DoProgress)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Games:Lockpick", Lockpick)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Games:Thermite", Thermite)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Games:Laptop", Laptop)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Games:Captcha", Captcha)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Games:Tracking", Tracking)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Games:Aim", Aim)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Games:AimHack", AimHack)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Games:Hack", Hack)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Games:Drill", Drill)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Games:SafeCrack", SafeCrack)
 end
 
 function DoProgress(data, cb)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "robbery_action",
 		duration = math.random(45, 60) * 1000,
 		label = data.config.label or "Doing A Thing",
@@ -95,7 +95,7 @@ function Aim(data, cb)
 		data,
 		function(isSuccess)
 			if isSuccess then
-				Callbacks:ServerCallback("Robbery:DoBombFx", {
+				exports["sandbox-base"]:ServerCallback("Robbery:DoBombFx", {
 					x = data.location.coords.x,
 					y = data.location.coords.y,
 					z = data.location.coords.z,

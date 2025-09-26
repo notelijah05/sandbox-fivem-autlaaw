@@ -1,50 +1,23 @@
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Locations", LOCATIONS)
-end)
-
-AddEventHandler("Locations:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Locations = exports["sandbox-base"]:FetchComponent("Locations")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Default = exports["sandbox-base"]:FetchComponent("Default")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Locations", {
-		"Database",
-		"Chat",
-		"Callbacks",
-		"Locations",
-		"Logger",
-		"Default",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
-		RegisterChatCommands()
-		Startup()
-		TriggerEvent("Locations:Server:Startup")
-	end)
+	RegisterCallbacks()
+	RegisterChatCommands()
+	Startup()
+	TriggerEvent("Locations:Server:Startup")
 end)
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Locations:GetAll", function(source, data, cb)
-		Locations:GetAll(data.type, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Locations:GetAll", function(source, data, cb)
+		exports['sandbox-locations']:GetAll(data.type, cb)
 	end)
 end
 
 function RegisterChatCommands()
-	Chat:RegisterAdminCommand("location", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("location", function(source, args, rawCommand)
 		local playerPed = GetPlayerPed(source)
 		local coords = GetEntityCoords(playerPed)
 		local heading = GetEntityHeading(playerPed)
 		if args[1]:lower() == "add" and args[2] then
-			Locations:Add(coords, heading, args[2], args[3])
+			exports['sandbox-locations']:Add(coords, heading, args[2], args[3])
 		end
 	end, {
 		help = "Add Location",
@@ -65,46 +38,45 @@ function RegisterChatCommands()
 	}, 3)
 end
 
-LOCATIONS = {
-	Add = function(self, coords, heading, type, name, cb)
-		local doc = {
-			Coords = {
-				x = coords.x,
-				y = coords.y,
-				z = coords.z,
-			},
-			Heading = heading,
-			Type = type,
-			Name = name,
-		}
-		Database.Game:insertOne({
-			collection = "locations",
-			document = doc,
-		}, function(success, results)
-			if not success then
-				return
-			end
+exports("Add", function(coords, heading, type, name, cb)
+	local doc = {
+		Coords = {
+			x = coords.x,
+			y = coords.y,
+			z = coords.z,
+		},
+		Heading = heading,
+		Type = type,
+		Name = name,
+	}
+	exports['sandbox-base']:DatabaseGameInsertOne({
+		collection = "locations",
+		document = doc,
+	}, function(success, results)
+		if not success then
+			return
+		end
 
-			TriggerEvent("Locations:Server:Added", type, doc)
-			if cb ~= nil then
-				cb(results > 0)
-			end
-		end)
-	end,
-	GetAll = function(self, type, cb)
-		Database.Game:find({
-			collection = "locations",
-			query = {
-				Type = type,
-			},
-		}, function(success, results)
-			if not success then
-				return
-			end
-			for k, location in ipairs(results) do
-				results[k].Coords = vector3(location.Coords.x, location.Coords.y, location.Coords.z)
-			end
-			cb(results)
-		end)
-	end,
-}
+		TriggerEvent("Locations:Server:Added", type, doc)
+		if cb ~= nil then
+			cb(results > 0)
+		end
+	end)
+end)
+
+exports("GetAll", function(type, cb)
+	exports['sandbox-base']:DatabaseGameFind({
+		collection = "locations",
+		query = {
+			Type = type,
+		},
+	}, function(success, results)
+		if not success then
+			return
+		end
+		for k, location in ipairs(results) do
+			results[k].Coords = vector3(location.Coords.x, location.Coords.y, location.Coords.z)
+		end
+		cb(results)
+	end)
+end)

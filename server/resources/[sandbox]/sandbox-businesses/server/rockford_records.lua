@@ -1,8 +1,7 @@
-
 AddEventHandler("Businesses:Server:Startup", function()
     GlobalState["rockford_dj"] = false
 
-    Callbacks:RegisterServerCallback("Businesses:ToggleRockfordStage", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Businesses:ToggleRockfordStage", function(source, data, cb)
         if Player(source).state.onDuty == "rockford_records" then
             GlobalState["rockford_dj"] = not GlobalState["rockford_dj"]
 

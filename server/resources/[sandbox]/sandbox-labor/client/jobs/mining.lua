@@ -32,7 +32,7 @@ local function SpawnOres()
 			local o = CreateObject(v.ore.object, v.location.x, v.location.y, v.location.z - 1.4, false, true, false)
 			PlaceObjectOnGroundProperly(o)
 			FreezeEntityPosition(o, true)
-			Targeting:AddEntity(o, "pickaxe", {
+			exports['sandbox-targeting']:AddEntity(o, "pickaxe", {
 				{
 					text = string.format("Mine %s", v.ore.label),
 					icon = "pickaxe",
@@ -41,7 +41,8 @@ local function SpawnOres()
 					minDist = 3.0,
 				},
 			}, 3.0)
-			local b = Blips:Add(string.format("MiningNode-%s", k), "Mining Node", v.location, 594, 0, 0.8)
+			local b = exports["sandbox-blips"]:Add(string.format("MiningNode-%s", k), "Mining Node", v.location, 594, 0,
+				0.8)
 
 			table.insert(_objs, {
 				ent = o,
@@ -60,9 +61,9 @@ local function DeleteNode(location)
 				vector3(v.data.location.x, v.data.location.y, v.data.location.z)
 				== vector3(location.x, location.y, location.z)
 			then
-				Targeting:RemoveEntity(v.ent)
+				exports['sandbox-targeting']:RemoveEntity(v.ent)
 				DeleteObject(v.ent)
-				Blips:Remove(v.blipId)
+				exports["sandbox-blips"]:Remove(v.blipId)
 
 				table.remove(_objs, k)
 				break
@@ -84,9 +85,9 @@ local function DespawnOres()
 			local v = _objs[i]
 
 			if v then
-				Targeting:RemoveEntity(v.ent)
+				exports['sandbox-targeting']:RemoveEntity(v.ent)
 				DeleteObject(v.ent)
-				Blips:Remove(v.blipId)
+				exports["sandbox-blips"]:Remove(v.blipId)
 			end
 
 			table.remove(_objs, i)
@@ -95,14 +96,14 @@ local function DespawnOres()
 end
 
 AddEventHandler("Labor:Client:Setup", function()
-	Polyzone.Create:Circle(_POLYID, vector3(2885.78, 2803.96, 54.76), 350.0, {
+	exports['sandbox-polyzone']:CreateCircle(_POLYID, vector3(2885.78, 2803.96, 54.76), 350.0, {
 		name = _POLYID,
 		useZ = false,
 		--debugPoly=true
 	})
 
 	for k, v in ipairs(_sellers) do
-		PedInteraction:Add(string.format("GemSeller%s", k), v.model, v.coords, v.heading, 25.0, {
+		exports['sandbox-pedinteraction']:Add(string.format("GemSeller%s", k), v.model, v.coords, v.heading, 25.0, {
 			{
 				icon = "sack-dollar",
 				text = "Sell Diamonds",
@@ -162,22 +163,23 @@ AddEventHandler("Labor:Client:Setup", function()
 		}, "gem")
 	end
 
-	PedInteraction:Add("MiningJob", `s_m_y_construct_02`, vector3(2741.874, 2791.691, 34.214), 155.045, 25.0, {
-		{
-			icon = "face-tongue-money",
-			text = "Sell Crushed Stone ($3/per)",
-			event = "Mining:Client:SellStone",
-		},
-		{
-			icon = "helmet-safety",
-			text = "Start Work",
-			event = "Mining:Client:StartJob",
-			tempjob = "Mining",
-			isEnabled = function()
-				return not _working
-			end,
-		},
-	}, "helmet-safety")
+	exports['sandbox-pedinteraction']:Add("MiningJob", `s_m_y_construct_02`, vector3(2741.874, 2791.691, 34.214), 155.045,
+		25.0, {
+			{
+				icon = "face-tongue-money",
+				text = "Sell Crushed Stone ($3/per)",
+				event = "Mining:Client:SellStone",
+			},
+			{
+				icon = "helmet-safety",
+				text = "Start Work",
+				event = "Mining:Client:StartJob",
+				tempjob = "Mining",
+				isEnabled = function()
+					return not _working
+				end,
+			},
+		}, "helmet-safety")
 end)
 
 local attempt = 0
@@ -205,7 +207,8 @@ RegisterNetEvent("Mining:Client:OnDuty", function(joiner, time)
 				local p = promise.new()
 				while attempt < 3 do
 					local p2 = promise.new()
-					Minigame.Play:RoundSkillbar((data?.ore?.factor or 0.75) * (data?.ore?.scale or 1.15),
+					exports['sandbox-games']:MinigamePlayRoundSkillbar(
+						(data?.ore?.factor or 0.75) * (data?.ore?.scale or 1.15),
 						(data?.ore?.size or 6) - attempt, {
 							onSuccess = function()
 								Wait(400)
@@ -240,10 +243,10 @@ RegisterNetEvent("Mining:Client:OnDuty", function(joiner, time)
 				end
 
 				local r = Citizen.Await(p)
-				Callbacks:ServerCallback("Mining:Server:MineNode", data)
+				exports["sandbox-base"]:ServerCallback("Mining:Server:MineNode", data)
 			end)
 		else
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "mining_action",
 				duration = math.random(40, 55) * 1000,
 				label = "Mining",
@@ -260,7 +263,7 @@ RegisterNetEvent("Mining:Client:OnDuty", function(joiner, time)
 				},
 			}, function(cancelled)
 				if not cancelled then
-					Callbacks:ServerCallback("Mining:Server:MineNode", data)
+					exports["sandbox-base"]:ServerCallback("Mining:Server:MineNode", data)
 				end
 			end)
 		end
@@ -293,25 +296,25 @@ RegisterNetEvent("Mining:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("Mining:Client:SellStone", function()
-	Callbacks:ServerCallback("Mining:SellStone", {})
+	exports["sandbox-base"]:ServerCallback("Mining:SellStone", {})
 end)
 
 AddEventHandler("Mining:Client:PuchaseAxe", function()
-	Callbacks:ServerCallback("Mining:PurchasePickaxe", {})
+	exports["sandbox-base"]:ServerCallback("Mining:PurchasePickaxe", {})
 end)
 
 AddEventHandler("Mining:Client:TurnIn", function()
-	Callbacks:ServerCallback("Mining:TurnIn", _joiner)
+	exports["sandbox-base"]:ServerCallback("Mining:TurnIn", _joiner)
 end)
 
 AddEventHandler("Mining:Client:SellGem", function(entity, data)
-	Callbacks:ServerCallback("Mining:SellGem", data)
+	exports["sandbox-base"]:ServerCallback("Mining:SellGem", data)
 end)
 
 AddEventHandler("Mining:Client:StartJob", function()
-	Callbacks:ServerCallback("Mining:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("Mining:StartJob", _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)

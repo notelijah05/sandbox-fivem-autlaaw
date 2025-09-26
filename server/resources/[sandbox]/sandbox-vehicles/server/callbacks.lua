@@ -1,17 +1,17 @@
 local _taggedVehs = {}
 
 function RegisterCallbacks()
-    Callbacks:RegisterServerCallback('Vehicles:GetKeys', function(source, VIN, cb)
-        Vehicles.Keys:Add(source, VIN)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GetKeys', function(source, VIN, cb)
+        exports['sandbox-vehicles']:KeysAdd(source, VIN)
         cb(true)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:ToggleLocks', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:ToggleLocks', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data.netId)
         local vehState = Entity(veh).state
         if DoesEntityExist(veh) and vehState.VIN and not vehState.wasThermited then
             local groupKeys = vehState.GroupKeys
-            if Vehicles.Keys:Has(source, vehState.VIN, vehState.GroupKeys) then
+            if exports['sandbox-vehicles']:KeysHas(source, vehState.VIN, vehState.GroupKeys) then
                 local newState = data.state
                 if newState == nil then 
                     newState = not vehState.Locked
@@ -25,12 +25,12 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-	Callbacks:RegisterServerCallback('Vehicles:Server:VehicleMegaphone', function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback('Vehicles:Server:VehicleMegaphone', function(source, data, cb)
         TriggerClientEvent("VOIP:Client:Megaphone:Use", source, true)
         cb(true)
     end)
 	
-    Callbacks:RegisterServerCallback('Vehicles:BreakOpenLock', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:BreakOpenLock', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data.netId)
         local vehState = Entity(veh).state
         if DoesEntityExist(veh) and vehState.VIN then
@@ -41,8 +41,8 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:GetVehiclesInStorage', function(source, storageId, cb)
-        local character = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GetVehiclesInStorage', function(source, storageId, cb)
+        local character = exports['sandbox-characters']:FetchCharacterSource(source)
         local storageData = _vehicleStorage[storageId]
         if not character or not storageData then
             cb(false)
@@ -58,9 +58,9 @@ function RegisterCallbacks()
             if type(storageData.fleet) == 'table' and myDuty then
                 for k, v in ipairs(storageData.fleet) do
                     if v.JobId == myDuty then
-                        local jobData = Jobs.Permissions:HasJob(source, v.JobId, v.WorkplaceId)
+                        local jobData = exports['sandbox-jobs']:HasJob(source, v.JobId, v.WorkplaceId)
                         if jobData then
-                            local jobPermissions = Jobs.Permissions:GetPermissionsFromJob(source, jobData.Id)
+                            local jobPermissions = exports['sandbox-jobs']:GetPermissionsFromJob(source, jobData.Id)
                             if jobPermissions then
                                 fleetFetch = {
                                     Id = jobData.Id,
@@ -74,7 +74,7 @@ function RegisterCallbacks()
             end
 
             local characterId = character:GetData('SID')
-            Vehicles.Owned:GetAll(storageData.vehType, 0, characterId, function(vehicles)
+            exports['sandbox-vehicles']:OwnedGetAll(storageData.vehType, 0, characterId, function(vehicles)
                 cb(vehicles)
             end, 1, storageId, true, fleetFetch, {
                 _id = 0,
@@ -91,25 +91,25 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:GetVehiclesInStorageSelect', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GetVehiclesInStorageSelect', function(source, data, cb)
         if data.VIN then
-            Vehicles.Owned:GetVIN(data.VIN, cb)
+            exports['sandbox-vehicles']:OwnedGetVIN(data.VIN, cb)
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:GetVehiclesInPropertyStorage', function(source, storageId, cb)
-        local character = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GetVehiclesInPropertyStorage', function(source, storageId, cb)
+        local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character then
             cb(false)
             return
         end
 
-        local property = Properties:Get(storageId)
-        local maxParking = Properties:GetMaxParkingSpaces(storageId)
+        local property = exports['sandbox-properties']:Get(storageId)
+        local maxParking = exports['sandbox-properties']:GetMaxParkingSpaces(storageId)
 
-        if property and property.id and Properties.Keys:Has(property.id, character:GetData("ID")) and maxParking and maxParking > 0 then
+        if property and property.id and exports['sandbox-properties']:HasKey(property.id, character:GetData("ID")) and maxParking and maxParking > 0 then
             local characterId = character:GetData('SID')
-            Vehicles.Owned:GetAll(0, false, false, function(vehicles)
+            exports['sandbox-vehicles']:OwnedGetAll(0, false, false, function(vehicles)
                 local c = {}
                 local charsToFetch = {}
 
@@ -122,7 +122,7 @@ function RegisterCallbacks()
                     end
                 end
 
-                Database.Game:find({
+                exports['sandbox-base']:DatabaseGameFind({
                     collection = 'characters',
                     query = {
                         SID = {
@@ -166,8 +166,8 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:RetrieveVehicleFromStorage', function(source, data, cb)
-        local character = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:RetrieveVehicleFromStorage', function(source, data, cb)
+        local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or not data or not data.VIN or not data.coords or not data.heading then
             cb(false)
             return
@@ -175,12 +175,12 @@ function RegisterCallbacks()
 
         local characterId = character:GetData('SID')
 
-        if Vehicles.Owned:GetActive(data.VIN) then
+        if exports['sandbox-vehicles']:OwnedGetActive(data.VIN) then
             cb(false)
             return
         end
 
-        Vehicles.Owned:GetVIN(data.VIN, function(vehicle)
+        exports['sandbox-vehicles']:OwnedGetVIN(data.VIN, function(vehicle)
 
             if vehicle and vehicle.VIN then
                 local isAuthedForVehicle = false
@@ -191,13 +191,13 @@ function RegisterCallbacks()
                     local onDuty = Player(source).state.onDuty
 
                     if onDuty and onDuty == vehicle.Owner.Id then
-                        local jobPermissions = Jobs.Permissions:GetPermissionsFromJob(source, vehicle.Owner.Id, vehicle.Owner.Workplace)
+                        local jobPermissions = exports['sandbox-jobs']:GetPermissionsFromJob(source, vehicle.Owner.Id, vehicle.Owner.Workplace)
                         if jobPermissions then
                             local allowedLevel = GetAllowedFleetVehicleLevelFromJobPermissions(jobPermissions)
                             if (allowedLevel >= vehicle.Owner.Level) then
                                 isAuthedForVehicle = true
 
-                                if Police:IsPdCar(vehicle.Vehicle) or Police:IsEMSCar(vehicle.Vehicle) then
+                                if exports['sandbox-police']:IsPdCar(vehicle.Vehicle) or exports['sandbox-police']:IsEMSCar(vehicle.Vehicle) then
                                     local callsign = character:GetData("Callsign")
 
                                     extraData.callsign = callsign
@@ -208,12 +208,12 @@ function RegisterCallbacks()
                 end
 
                 if isAuthedForVehicle then
-                    Vehicles.Owned:Spawn(source, vehicle.VIN, data.coords, data.heading, function(success, vehicleData, vehicleId)
+                    exports['sandbox-vehicles']:OwnedSpawn(source, vehicle.VIN, data.coords, data.heading, function(success, vehicleData, vehicleId)
                         if success then
-                            Vehicles.Keys:Add(source, vehicle.VIN)
+                            exports['sandbox-vehicles']:KeysAdd(source, vehicle.VIN)
 
                             if data.storageType == 2 and vehicle.Owner.Id ~= characterId then
-                                Vehicles.Keys:AddBySID(vehicle.Owner.Id, vehicle.VIN)
+                                exports['sandbox-vehicles']:KeysAddBySID(vehicle.Owner.Id, vehicle.VIN)
                             end
                         end
                         cb(success)
@@ -225,8 +225,8 @@ function RegisterCallbacks()
         end)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:PutVehicleInStorage', function(source, data, cb)
-        local character = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:PutVehicleInStorage', function(source, data, cb)
+        local character = exports['sandbox-characters']:FetchCharacterSource(source)
         local storageData = _vehicleStorage[data.storageId]
         if not character or not data or not data.VIN or not data.storageId or not storageData then
             cb(false)
@@ -234,13 +234,13 @@ function RegisterCallbacks()
         end
 
         if storageData.retrievalOnly then
-            Execute:Client(source, 'Notification', 'Error', 'Cannot Store Vehicles Here')
+            exports['sandbox-hud']:NotifError(src, 'Cannot Store Vehicles Here')
             cb(false)
             return
         end
 
         local characterId = character:GetData('SID')
-        local vehicle = Vehicles.Owned:GetActive(data.VIN)
+        local vehicle = exports['sandbox-vehicles']:OwnedGetActive(data.VIN)
 
         if not vehicle then
             cb(false)
@@ -257,7 +257,7 @@ function RegisterCallbacks()
                 local onDuty = Player(source).state.onDuty
 
                 if onDuty and onDuty == vehicleOwner.Id then
-                    local jobPermissions = Jobs.Permissions:GetPermissionsFromJob(source, vehicleOwner.Id, vehicleOwner.Workplace)
+                    local jobPermissions = exports['sandbox-jobs']:GetPermissionsFromJob(source, vehicleOwner.Id, vehicleOwner.Workplace)
                     if jobPermissions then
                         local allowedLevel = GetAllowedFleetVehicleLevelFromJobPermissions(jobPermissions)
                         if (allowedLevel >= vehicleOwner.Level) then
@@ -278,12 +278,12 @@ function RegisterCallbacks()
                     end
                 end
             else
-                Execute:Client(source, 'Notification', 'Error', 'Cannot Store This Vehicle Here')
+                exports['sandbox-hud']:NotifError(src, 'Cannot Store This Vehicle Here')
             end
         end
 
         if isAuthedForVehicle and vehicle:GetData('Type') == storageData.vehType then
-            Vehicles.Owned:Store(data.VIN, 1, data.storageId, function(success)
+            exports['sandbox-vehicles']:OwnedStore(data.VIN, 1, data.storageId, function(success)
                 cb(success)
             end)
         else
@@ -291,8 +291,8 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Vehicles:Impound:TagVehicle", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Vehicles:Impound:TagVehicle", function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local pState = Player(source).state
         if char ~= nil then
             if pState.onDuty == "police" then
@@ -311,15 +311,15 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:PutVehicleInPropertyStorage', function(source, data, cb)
-        local character = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:PutVehicleInPropertyStorage', function(source, data, cb)
+        local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or not data or not data.VIN or not data.storageId then
             cb(false)
             return
         end
 
         local characterId = character:GetData('SID')
-        local vehicle = Vehicles.Owned:GetActive(data.VIN)
+        local vehicle = exports['sandbox-vehicles']:OwnedGetActive(data.VIN)
 
         if not vehicle then
             cb(false)
@@ -328,15 +328,15 @@ function RegisterCallbacks()
 
         local vehicleOwner = vehicle:GetData('Owner')
         if vehicleOwner.Type == 0 and vehicle:GetData('Type') == 0 then
-            if Properties.Keys:HasBySID(data.storageId, vehicleOwner.Id) then
-                local property = Properties:Get(data.storageId)
-                local vehLimit = Properties:GetMaxParkingSpaces(data.storageId)
+            if exports['sandbox-properties']:HasKeyBySID(data.storageId, vehicleOwner.Id) then
+                local property = exports['sandbox-properties']:Get(data.storageId)
+                local vehLimit = exports['sandbox-properties']:GetMaxParkingSpaces(data.storageId)
                 if not vehLimit then
                     vehLimit = 0
                 end
 
                 if Vehicles.Owned.Properties:GetCount(data.storageId, vehicle:GetData('VIN')) < vehLimit then
-                    Vehicles.Owned:Store(data.VIN, 2, data.storageId, function(success)
+                    exports['sandbox-vehicles']:OwnedStore(data.VIN, 2, data.storageId, function(success)
                         cb(success)
                     end)
                 else
@@ -350,8 +350,8 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:Impound', function(source, data, cb)
-        local character = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:Impound', function(source, data, cb)
+        local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or not data.type or not data.vNet then
             cb(false)
             return
@@ -360,10 +360,10 @@ function RegisterCallbacks()
         local veh = NetworkGetEntityFromNetworkId(data.vNet)
         local myDuty = Player(source).state.onDuty
 
-        if DoesEntityExist(veh) and myDuty and Jobs.Permissions:HasPermission(source, _impoundConfig.RequiredPermission) or Jobs.Permissions:HasPermission(source, _impoundConfig.Police.RequiredPermission) then
+        if DoesEntityExist(veh) and myDuty and exports['sandbox-jobs']:HasPermission(source, _impoundConfig.RequiredPermission) or exports['sandbox-jobs']:HasPermission(source, _impoundConfig.Police.RequiredPermission) then
             local vState = Entity(veh).state
             if vState and vState.VIN and not vState.towObjective then
-                local ownedVehicle = Vehicles.Owned:GetActive(vState.VIN)
+                local ownedVehicle = exports['sandbox-vehicles']:OwnedGetActive(vState.VIN)
                 if ownedVehicle then
                     local impounderData = {
                         SID = character:GetData('SID'),
@@ -374,7 +374,7 @@ function RegisterCallbacks()
                     }
 
                     if _taggedVehs[vState.VIN] ~= nil then
-                        local c = Fetch:SID(_taggedVehs[vState.VIN].requester)
+                        local c = exports['sandbox-characters']:FetchBySID(_taggedVehs[vState.VIN].requester)
                         if c ~= nil then
                             local duty = Player(c:GetData("Source")).state.onDuty
                             impounderData = {
@@ -416,7 +416,7 @@ function RegisterCallbacks()
                 end
 
                 if myDuty == 'tow' and _taggedVehs[vState.VIN] ~= nil then
-                    Banking.Balance:Deposit(Banking.Accounts:GetPersonal(character:GetData("SID")).Account, 800, {
+                    exports['sandbox-finance']:BalanceDeposit(exports['sandbox-finance']:AccountsGetPersonal(character:GetData("SID")).Account, 800, {
                         type = 'paycheck',
                         title = "PD Tow Fee",
                         description = 'Your Fee For A Vehicle Pickup',
@@ -424,21 +424,21 @@ function RegisterCallbacks()
                     })
                 end
 
-                Vehicles:Delete(veh, function(success)
+                exports['sandbox-vehicles']:Delete(veh, function(success)
                     cb(success)
                 end)
             elseif vState and vState.towObjective then
                 if myDuty == 'tow' and _taggedVehs[vState.VIN] ~= nil then
-                    Banking.Balance:Deposit(Banking.Accounts:GetPersonal(character:GetData("SID")).Account, 800, {
+                    exports['sandbox-finance']:BalanceDeposit(exports['sandbox-finance']:AccountsGetPersonal(character:GetData("SID")).Account, 800, {
                         type = 'paycheck',
                         title = "PD Tow Fee",
                         description = 'Your Fee For A Vehicle Pickup',
                         data = 800
                     })
                 end
-                Vehicles:Delete(veh, function(success)
+                exports['sandbox-vehicles']:Delete(veh, function(success)
                     if success then
-                        Tow:PayoutPickup(source)
+                        exports['sandbox-tow']:PayoutPickup(source)
                     end
                     cb(success)
                 end)
@@ -450,20 +450,20 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:GetVehiclesInImpound', function(source, data, cb)
-        local character = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GetVehiclesInImpound', function(source, data, cb)
+        local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character then
             cb(false)
             return
         end
 
         local characterId = character:GetData('SID')
-        Vehicles.Owned:GetAll(0, 0, characterId, function(vehicles)
+        exports['sandbox-vehicles']:OwnedGetAll(0, 0, characterId, function(vehicles)
             for k, v in ipairs(vehicles) do
                 if v.Seized then
                     -- TODO: ADD ASSET FEE SEIZURE CHECK HERE
-                    if not Loans:HasBeenDefaulted("vehicle", v.VIN) then
-                        Vehicles.Owned:Seize(v.VIN, false)
+                    if not exports['sandbox-finance']:LoansHasBeenDefaulted("vehicle", v.VIN) then
+                        exports['sandbox-vehicles']:OwnedSeize(v.VIN, false)
                         v.Seized = false
                     end
                     Wait(100)
@@ -473,8 +473,8 @@ function RegisterCallbacks()
         end, 0, 0, false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:RetrieveVehicleFromImpound', function(source, data, cb)
-        local character = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:RetrieveVehicleFromImpound', function(source, data, cb)
+        local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or not data.VIN or not data.coords or not data.heading then
             cb(false)
             return
@@ -483,17 +483,17 @@ function RegisterCallbacks()
         local characterId = character:GetData('SID')
         local timeNow = os.time()
 
-        Vehicles.Owned:GetVIN(data.VIN, function(vehicle)
+        exports['sandbox-vehicles']:OwnedGetVIN(data.VIN, function(vehicle)
             if vehicle and vehicle.VIN and vehicle.Storage.Type == 0 and not vehicle.Seized then
 
                 if vehicle.Storage.Fine and vehicle.Storage.Fine > 0 then
-                    if not Wallet:Modify(source, -vehicle.Storage.Fine) then
+                    if not exports['sandbox-finance']:WalletModify(source, -vehicle.Storage.Fine) then
                         cb(false)
                         return
                     end
 
-                    local f = Banking.Accounts:GetOrganization("government")
-                    Banking.Balance:Deposit(f.Account, vehicle.Storage.Fin, false, true)
+                    local f = exports['sandbox-finance']:AccountsGetOrganization("government")
+                    exports['sandbox-finance']:BalanceDeposit(f.Account, vehicle.Storage.Fin, false, true)
                 end
 
 
@@ -503,11 +503,11 @@ function RegisterCallbacks()
                     return
                 end
 
-                Vehicles.Owned:Spawn(source, vehicle.VIN, data.coords, data.heading, function(success, vehicleData, vehicleId)
+                exports['sandbox-vehicles']:OwnedSpawn(source, vehicle.VIN, data.coords, data.heading, function(success, vehicleData, vehicleId)
                     if success then
-                        local vData = Vehicles.Owned:GetActive(vehicle.VIN)
+                        local vData = exports['sandbox-vehicles']:OwnedGetActive(vehicle.VIN)
                         vData:SetData('Storage', GetVehicleTypeDefaultStorage(vehicleData.Type))
-                        Vehicles.Keys:Add(source, vehicle.VIN)
+                        exports['sandbox-vehicles']:KeysAdd(source, vehicle.VIN)
                     end
                     cb(success)
                 end)
@@ -517,8 +517,8 @@ function RegisterCallbacks()
         end)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:CompleteCustoms', function(source, data, cb)
-        local character = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:CompleteCustoms', function(source, data, cb)
+        local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or type(data.cost) ~= 'number' or type(data.changes) ~= 'table' or not data.vNet then
             cb(false)
             return
@@ -527,8 +527,8 @@ function RegisterCallbacks()
         local veh = NetworkGetEntityFromNetworkId(data.vNet)
         local vehState = Entity(veh)
         if DoesEntityExist(veh) and vehState and vehState.state.VIN then
-            if Wallet:Modify(source, -math.abs(data.cost)) then
-                local vehicleData = Vehicles.Owned:GetActive(vehState.state.VIN)
+            if exports['sandbox-finance']:WalletModify(source, -math.abs(data.cost)) then
+                local vehicleData = exports['sandbox-vehicles']:OwnedGetActive(vehState.state.VIN)
                 local newProperties = false
                 if vehicleData and vehicleData:GetData('Properties') then
                     local currentProperties = vehicleData:GetData('Properties')
@@ -551,7 +551,7 @@ function RegisterCallbacks()
                     newProperties = currentProperties
                     vehicleData:SetData('Properties', currentProperties)
                     vehicleData:SetData('DirtLevel', 0.0)
-                    Vehicles.Owned:ForceSave(vehicleData:GetData('VIN'))
+                    exports['sandbox-vehicles']:OwnedForceSave(vehicleData:GetData('VIN'))
 
                 elseif vehState.state.PleaseDoNotFuckingDelete then
                     _savedVehiclePropertiesClusterfuck[vehState.state.VIN] = data.new
@@ -559,8 +559,8 @@ function RegisterCallbacks()
     
                 SetVehicleDirtLevel(veh, 0.0)
 
-                local f = Banking.Accounts:GetOrganization("dgang")
-                Banking.Balance:Deposit(f.Account, math.abs(data.cost), {
+                local f = exports['sandbox-finance']:AccountsGetOrganization("dgang")
+                exports['sandbox-finance']:BalanceDeposit(f.Account, math.abs(data.cost), {
                     type = 'deposit',
                     title = 'Benny\'s',
                     description = string.format("Benny's Vehicle Modifications For %s %s", character:GetData("First"), character:GetData("Last")),
@@ -576,8 +576,8 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:WheelFitment', function(source, data, cb)
-        local character = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:WheelFitment', function(source, data, cb)
+        local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or not data?.vNet then
             cb(false)
             return
@@ -586,7 +586,7 @@ function RegisterCallbacks()
         local veh = NetworkGetEntityFromNetworkId(data.vNet)
         local vehEnt = Entity(veh)
         if DoesEntityExist(veh) and vehEnt?.state?.VIN then
-            local vehicleData = Vehicles.Owned:GetActive(vehEnt.state.VIN)
+            local vehicleData = exports['sandbox-vehicles']:OwnedGetActive(vehEnt.state.VIN)
             if vehicleData then
                 local currentFitmentData = vehicleData:GetData("WheelFitment") or {}
                 for k, v in pairs(data.fitment) do
@@ -594,7 +594,7 @@ function RegisterCallbacks()
                 end
 
                 vehicleData:SetData('WheelFitment', currentFitmentData)
-                Vehicles.Owned:ForceSave(vehicleData:GetData('VIN'))
+                exports['sandbox-vehicles']:OwnedForceSave(vehicleData:GetData('VIN'))
                 vehEnt.state.WheelFitment = currentFitmentData
                 TriggerClientEvent('Fitment:Client:Update', -1, data.vNet, currentFitmentData)
             else
@@ -613,16 +613,16 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:CompleteRepair', function(source, data, cb)
-        local character = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:CompleteRepair', function(source, data, cb)
+        local character = exports['sandbox-characters']:FetchCharacterSource(source)
         if not character or type(data.cost) ~= 'number' then
             cb(false)
             return
         end
 
-        if Wallet:Modify(source, -math.abs(data.cost)) then
-            local f = Banking.Accounts:GetOrganization("dgang")
-            Banking.Balance:Deposit(f.Account, math.abs(data.cost), {
+        if exports['sandbox-finance']:WalletModify(source, -math.abs(data.cost)) then
+            local f = exports['sandbox-finance']:AccountsGetOrganization("dgang")
+            exports['sandbox-finance']:BalanceDeposit(f.Account, math.abs(data.cost), {
                 type = 'deposit',
                 title = 'Benny\'s Repair',
                 description = string.format("Benny's Vehicle Repair For %s %s", character:GetData("First"), character:GetData("Last")),
@@ -634,12 +634,12 @@ function RegisterCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:CleanVehicle', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:CleanVehicle', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data.vNet)
         local vehState = Entity(veh)
         if DoesEntityExist(veh) and vehState and vehState.state.VIN then
-            if not data.bill or (data.bill and Wallet:Modify(source, -100)) then
-                local vehicleData = Vehicles.Owned:GetActive(vehState.state.VIN)
+            if not data.bill or (data.bill and exports['sandbox-finance']:WalletModify(source, -100)) then
+                local vehicleData = exports['sandbox-vehicles']:OwnedGetActive(vehState.state.VIN)
                 if vehicleData then
                     vehicleData:SetData('DirtLevel', 0.0)
                 end
@@ -651,13 +651,13 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:RemoveFakePlate', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:RemoveFakePlate', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data)
         if veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
             if vehState.VIN and vehState.FakePlate then
-                local char = Fetch:CharacterSource(source)
-                local vehicle = Vehicles.Owned:GetActive(vehState.VIN)
+                local char = exports['sandbox-characters']:FetchCharacterSource(source)
+                local vehicle = exports['sandbox-vehicles']:OwnedGetActive(vehState.VIN)
                 if char and vehicle and vehicle:GetData('FakePlate') then
                     local fakePlateData = vehicle:GetData('FakePlateData')
                     local originalPlate = vehicle:GetData('RegisteredPlate')
@@ -668,10 +668,10 @@ function RegisterCallbacks()
 
                     vehState.FakePlate = false
 
-                    Vehicles.Owned:ForceSave(vehState.VIN)
+                    exports['sandbox-vehicles']:OwnedForceSave(vehState.VIN)
 
                     if fakePlateData and fakePlateData.Plate then
-                        Inventory:AddItem(char:GetData('SID'), 'fakeplates', 1, fakePlateData, 1)
+                        exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'fakeplates', 1, fakePlateData, 1)
                     end
 
                     cb(true, originalPlate)
@@ -682,7 +682,7 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:RemoveHarness', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:RemoveHarness', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data)
         if veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
@@ -696,13 +696,13 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:Tranfers:CompleteTransfer', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:Tranfers:CompleteTransfer', function(source, data, cb)
         local SID, VIN in data
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
         if SID and VIN and char then
-            local targetChar = Fetch:SID(SID)
-            local vehicle = Vehicles.Owned:GetActive(VIN)
+            local targetChar = exports['sandbox-characters']:FetchBySID(SID)
+            local vehicle = exports['sandbox-vehicles']:OwnedGetActive(VIN)
             if targetChar and vehicle and vehicle:GetData('Owner')?.Type == 0 and vehicle:GetData('Owner')?.Id == char:GetData('SID') and source ~= targetChar:GetData('Source') then
                 local ped = GetPlayerPed(source)
                 local targetPed = GetPlayerPed(targetChar:GetData('Source'))
@@ -725,9 +725,9 @@ function RegisterCallbacks()
                     vehicle:SetData('OwnerHistory', ownerHistory)
 
                     vehicle:SetData('Storage', GetVehicleTypeDefaultStorage(vehicle:GetData('Type')))
-                    Vehicles.Owned:ForceSave(VIN)
+                    exports['sandbox-vehicles']:OwnedForceSave(VIN)
 
-                    Phone.Notification:Add(
+                    exports['sandbox-phone']:NotificationAdd(
                         source,
                         "Vehicle Ownership",
                         "A vehicle was just transferred out of your ownership",
@@ -736,7 +736,7 @@ function RegisterCallbacks()
                         "garage",
                         {}
                     )
-                    Phone.Notification:Add(
+                    exports['sandbox-phone']:NotificationAdd(
                         targetChar:GetData('Source'),
                         "Vehicle Ownership",
                         "A vehicle was just transferred into your ownership",
@@ -746,24 +746,24 @@ function RegisterCallbacks()
                         {}
                     )
 
-                    Vehicles.Keys:Remove(source, VIN)
-                    Vehicles.Keys:Add(targetChar:GetData('Source'), VIN)
+                    exports['sandbox-vehicles']:KeysRemove(source, VIN)
+                    exports['sandbox-vehicles']:KeysAdd(targetChar:GetData('Source'), VIN)
                     return
                 else
-                    Execute:Client(source, 'Notification', 'Error', 'Cannot Transfer to Someone That Isn\'t Nearby')
+                    exports['sandbox-hud']:NotifError(src, 'Cannot Transfer to Someone That Isn\'t Nearby')
                 end
             end
         end
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:RemoveNitrous', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:RemoveNitrous', function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local veh = NetworkGetEntityFromNetworkId(data)
         if char and veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
             if vehState.VIN and vehState.Nitrous then
-                Inventory:AddItem(char:GetData('SID'), 'nitrous', 1, {
+                exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'nitrous', 1, {
                     Nitrous = math.floor(vehState.Nitrous)
                 }, 1, nil, nil, nil, nil, nil, nil, nil, true)
 
@@ -776,36 +776,30 @@ function RegisterCallbacks()
         cb(false)
     end)
 
-    Callbacks:RegisterServerCallback('Vehicles:GiveKeys', function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback('Vehicles:GiveKeys', function(source, data, cb)
         local veh = NetworkGetEntityFromNetworkId(data.netId)
         local vehState = Entity(veh).state
         if DoesEntityExist(veh) and vehState.VIN and not vehState.wasThermited then
             local groupKeys = vehState.GroupKeys
-            if Vehicles.Keys:Has(source, vehState.VIN, vehState.GroupKeys) then
+            if exports['sandbox-vehicles']:KeysHas(source, vehState.VIN, vehState.GroupKeys) then
                 if veh and DoesEntityExist(veh) then
                     local vehEnt = Entity(veh)
                     if
                         vehEnt
                         and vehEnt.state
                         and vehEnt.state.VIN
-                        and Vehicles.Keys:Has(source, vehEnt.state.VIN, false)
+                        and exports['sandbox-vehicles']:KeysHas(source, vehEnt.state.VIN, false)
                     then
                         for k, v in ipairs(data.sids) do
-                            Vehicles.Keys:Add(v, vehEnt.state.VIN)
-                            Execute:Client(
-                                v,
-                                "Notification",
-                                "Info",
+                            exports['sandbox-vehicles']:KeysAdd(v, vehEnt.state.VIN)
+                            exports['sandbox-hud']:NotifInfo(v,
                                 "You Received Keys to a Vehicle",
                                 3000,
                                 "key"
                             )
                         end
 
-                        Execute:Client(
-                            source,
-                            "Notification",
-                            "Success",
+                        exports['sandbox-hud']:NotifSuccess(source,
                             "You Gave Everyone Nearby Keys",
                             3000,
                             "key"

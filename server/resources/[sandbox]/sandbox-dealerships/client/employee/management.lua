@@ -10,7 +10,7 @@ AddEventHandler('Dealerships:Client:StartManagement', function(hit, data)
 end)
 
 function OpenDealerManagementMenu(dealer)
-    Callbacks:ServerCallback('Dealerships:GetDealershipData', { dealerId = dealer }, function(data)
+    exports["sandbox-base"]:ServerCallback('Dealerships:GetDealershipData', { dealerId = dealer }, function(data)
         local dealerData = _dealerships[dealer]
         if not data or not dealerData then
             return
@@ -19,13 +19,14 @@ function OpenDealerManagementMenu(dealer)
         manageMenuSub = {}
         updatingData = {}
 
-        manageMenu = Menu:Create('dmanageMenu', string.format('Manage %s', dealerData.abbreviation), function()
+        manageMenu = exports['sandbox-menu']:Create('dmanageMenu',
+            string.format('Manage %s', dealerData.abbreviation), function()
 
-        end, function()
-            manageMenu = nil
-            manageMenuSub = nil
-            collectgarbage()
-        end)
+            end, function()
+                manageMenu = nil
+                manageMenuSub = nil
+                collectgarbage()
+            end)
 
         manageMenu.Add:Slider('Dealership Profit %', {
             current = data.profitPercentage,
@@ -48,14 +49,14 @@ function OpenDealerManagementMenu(dealer)
         manageMenu.Add:Button('Save Changes', { success = true }, function()
             manageMenu:Close()
 
-            Callbacks:ServerCallback('Dealerships:UpdateDealershipData', {
+            exports["sandbox-base"]:ServerCallback('Dealerships:UpdateDealershipData', {
                 dealerId = dealer,
                 updating = updatingData,
             }, function(success)
                 if success then
-                    Notification:Success('Changes Saved Successfully', 2500, 'car-building')
+                    exports["sandbox-hud"]:NotifSuccess('Changes Saved Successfully', 2500, 'car-building')
                 else
-                    Notification:Error('Failed Saving Changes', 2500, 'car-building')
+                    exports["sandbox-hud"]:NotifError('Failed Saving Changes', 2500, 'car-building')
                 end
             end)
         end)

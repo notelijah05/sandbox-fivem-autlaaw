@@ -66,7 +66,7 @@ function StartThreads()
 								vehName = vehEnt.state.Make .. " " .. vehEnt.state.Model
 							end
 
-							EmergencyAlerts:CreateIfReported(500.0, "shotsfiredvehicle", true, {
+							exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(500.0, "shotsfiredvehicle", true, {
 								icon = "car",
 								details = vehName,
 								vehicleColor = {
@@ -76,9 +76,9 @@ function StartThreads()
 								},
 							})
 						elseif IsPedCurrentWeaponSilenced(LocalPlayer.state.ped) then
-							EmergencyAlerts:CreateIfReported(10.0, "shotsfired", true)
+							exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(10.0, "shotsfired", true)
 						else
-							EmergencyAlerts:CreateIfReported(900.0, "shotsfired", true)
+							exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(900.0, "shotsfired", true)
 						end
 					end
 					Wait(60000)
@@ -123,7 +123,7 @@ function StartThreads()
 					not _blacklistedWeps[GetCurrentPedWeapon(LocalPlayer.state.ped, true)]
 					and IsPlayerFreeAiming(LocalPlayer.state.PlayerID)
 				then
-					Status.Modify:Add("PLAYER_STRESS", 1, false, true)
+					exports['sandbox-status']:Add("PLAYER_STRESS", 1, false, true)
 					Wait(40000)
 				end
 				Wait(100)

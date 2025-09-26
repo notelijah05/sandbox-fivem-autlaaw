@@ -27,7 +27,7 @@ function CreateBizPhones()
     for k, v in pairs(GlobalState.BizPhones) do
         local object = CreateBizPhoneObject(v.coords, v.rotation)
 
-        Targeting:AddEntity(object, "phone-office", {
+        exports['sandbox-targeting']:AddEntity(object, "phone-office", {
             {
                 icon = "phone-volume",
                 text = "Phone",
@@ -176,7 +176,7 @@ function CleanupBizPhones()
 end
 
 AddEventHandler("Phone:Client:MakeBizCall", function(entityData, data)
-    Input:Show("Phone Number", "Number to Call", {
+    exports['sandbox-hud']:InputShow("Phone Number", "Number to Call", {
         {
             id = "number",
             type = "text",
@@ -193,53 +193,55 @@ AddEventHandler("Phone:Client:MakeBizCall", function(entityData, data)
 end)
 
 AddEventHandler("Phone:Client:MuteBiz", function(entityData, data)
-    Callbacks:ServerCallback("Phone:MuteBiz", data.id, function(success, state)
+    exports["sandbox-base"]:ServerCallback("Phone:MuteBiz", data.id, function(success, state)
         if success then
             if state then
-                Notification:Error("Muted Phone")
+                exports["sandbox-hud"]:NotifError("Muted Phone")
             else
-                Notification:Success("Unmuted Phone")
+                exports["sandbox-hud"]:NotifSuccess("Unmuted Phone")
             end
         else
-            Notification:Error("Error")
+            exports["sandbox-hud"]:NotifError("Error")
         end
     end)
 end)
 
 AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
     if values.number and data.id and GlobalState.BizPhones[data.id] then
-        Callbacks:ServerCallback("Phone:MakeBizCall", { id = data.id, number = values.number }, function(success)
-            LocalPlayer.state.bizCall = data.id
-            local startCoords = GlobalState.BizPhones[data.id].coords
+        exports["sandbox-base"]:ServerCallback("Phone:MakeBizCall", { id = data.id, number = values.number },
+            function(success)
+                LocalPlayer.state.bizCall = data.id
+                local startCoords = GlobalState.BizPhones[data.id].coords
 
-            if success then
-                CreateThread(function()
-                    Animations.Emotes:Play("phonecall2", true)
-                    Sounds.Loop:One("ringing.ogg", 0.1)
-                    InfoOverlay:Show("Dialing", string.format("Dailing Number: %s", values.number))
+                if success then
+                    CreateThread(function()
+                        exports['sandbox-animations']:EmotesPlay("phonecall2", true)
+                        exports["sandbox-sounds"]:LoopOne("ringing.ogg", 0.1)
+                        exports['sandbox-hud']:InfoOverlayShow("Dialing",
+                            string.format("Dailing Number: %s", values.number))
 
-                    while LocalPlayer.state.loggedIn and LocalPlayer.state.bizCall do
-                        if #(GetEntityCoords(LocalPlayer.state.ped) - startCoords) >= 10.0 then
-                            TriggerServerEvent("Phone:Server:ForceEndBizCall")
+                        while LocalPlayer.state.loggedIn and LocalPlayer.state.bizCall do
+                            if #(GetEntityCoords(LocalPlayer.state.ped) - startCoords) >= 10.0 then
+                                TriggerServerEvent("Phone:Server:ForceEndBizCall")
+                            end
+                            Wait(500)
                         end
-                        Wait(500)
-                    end
 
-                    Animations.Emotes:ForceCancel()
-                    Sounds.Stop:One("ringing.ogg")
-                    InfoOverlay:Close()
-                end)
-            else
-                Notification:Error("Failed to Make Call")
-            end
-        end)
+                        exports['sandbox-animations']:EmotesForceCancel()
+                        exports["sandbox-sounds"]:StopOne("ringing.ogg")
+                        exports['sandbox-hud']:InfoOverlayClose()
+                    end)
+                else
+                    exports["sandbox-hud"]:NotifError("Failed to Make Call")
+                end
+            end)
     end
 end)
 
 RegisterNetEvent("Phone:Client:Phone:AcceptBizCall", function(number)
     if LocalPlayer.state.bizCall then
-        InfoOverlay:Show("On Call", string.format("To Number: %s", number))
-        Sounds.Stop:One("ringing.ogg")
+        exports['sandbox-hud']:InfoOverlayShow("On Call", string.format("To Number: %s", number))
+        exports["sandbox-sounds"]:StopOne("ringing.ogg")
     end
 end)
 
@@ -247,32 +249,32 @@ RegisterNetEvent("Phone:Client:Biz:Recieve", function(id, coords, radius)
     if LocalPlayer.state.loggedIn and not GlobalState[string.format("BizPhone:%s:Muted", id)] then
         local myCoords = GetEntityCoords(LocalPlayer.state.ped)
         if #(myCoords - coords) <= 150.0 then
-            Sounds.Do.Loop:Location(string.format("bizphones-%s", id), coords, radius, "bizphone.ogg", 0.1)
+            exports["sandbox-sounds"]:LoopLocation(string.format("bizphones-%s", id), coords, radius, "bizphone.ogg", 0.1)
             Citizen.SetTimeout(30000, function()
-                Sounds.Do.Stop:Distance(string.format("bizphones-%s", id), "bizphone.ogg")
+                exports["sandbox-sounds"]:StopDistance(string.format("bizphones-%s", id), "bizphone.ogg")
             end)
         end
     end
 end)
 
 AddEventHandler("Phone:Client:DeclineBizCall", function(entityData, data)
-    Callbacks:ServerCallback("Phone:DeclineBizCall", data.id, function(success)
+    exports["sandbox-base"]:ServerCallback("Phone:DeclineBizCall", data.id, function(success)
         if not success then
-            Notification:Error("Failed to Decline Call")
+            exports["sandbox-hud"]:NotifError("Failed to Decline Call")
         end
     end)
 end)
 
 AddEventHandler("Phone:Client:AcceptBizCall", function(entityData, data)
     if data.id and GlobalState.BizPhones[data.id] then
-        Callbacks:ServerCallback("Phone:AcceptBizCall", data.id, function(success, callStr)
+        exports["sandbox-base"]:ServerCallback("Phone:AcceptBizCall", data.id, function(success, callStr)
             local startCoords = GlobalState.BizPhones[data.id].coords
             LocalPlayer.state.bizCall = data.id
 
             if success then
                 CreateThread(function()
-                    Animations.Emotes:Play("phonecall2", true)
-                    InfoOverlay:Show("On Call", string.format("From Number: %s", callStr))
+                    exports['sandbox-animations']:EmotesPlay("phonecall2", true)
+                    exports['sandbox-hud']:InfoOverlayShow("On Call", string.format("From Number: %s", callStr))
                     while LocalPlayer.state.loggedIn and LocalPlayer.state.bizCall do
                         if #(GetEntityCoords(LocalPlayer.state.ped) - startCoords) >= 10.0 then
                             TriggerServerEvent("Phone:Server:ForceEndBizCall")
@@ -280,25 +282,25 @@ AddEventHandler("Phone:Client:AcceptBizCall", function(entityData, data)
                         Wait(500)
                     end
 
-                    Animations.Emotes:ForceCancel()
-                    InfoOverlay:Close()
+                    exports['sandbox-animations']:EmotesForceCancel()
+                    exports['sandbox-hud']:InfoOverlayClose()
                 end)
             else
-                Notification:Error("Failed to Accept Call")
+                exports["sandbox-hud"]:NotifError("Failed to Accept Call")
             end
         end)
     end
 end)
 
 RegisterNetEvent("Phone:Client:Biz:Answered", function(id)
-    Sounds.Do.Stop:Distance(string.format("bizphones-%s", id), "bizphone.ogg")
+    exports["sandbox-sounds"]:StopDistance(string.format("bizphones-%s", id), "bizphone.ogg")
 end)
 
 RegisterNetEvent("Phone:Client:Biz:End", function(id)
-    Sounds.Do.Stop:Distance(string.format("bizphones-%s", id), "bizphone.ogg")
+    exports["sandbox-sounds"]:StopDistance(string.format("bizphones-%s", id), "bizphone.ogg")
 
     if LocalPlayer.state.bizCall and LocalPlayer.state.bizCall == id then
         LocalPlayer.state.bizCall = nil
-        Sounds.Play:One("ended.ogg", 0.15)
+        exports["sandbox-sounds"]:PlayOne("ended.ogg", 0.15)
     end
 end)

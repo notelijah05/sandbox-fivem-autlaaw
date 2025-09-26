@@ -1,5 +1,5 @@
 AddEventHandler("Vehicles:Client:StartUp", function()
-	Callbacks:RegisterClientCallback("Vehicles:UseCamberController", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:UseCamberController", function(data, cb)
 		local vehEnt = Entity(VEHICLE_INSIDE)
 		if
 			VEHICLE_INSIDE
@@ -7,8 +7,8 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			and IsEntityAVehicle(VEHICLE_INSIDE)
 			and GetPedInVehicleSeat(VEHICLE_INSIDE, -1) == LocalPlayer.state.ped
 		then
-			if Police:IsPdCar(VEHICLE_INSIDE) or Police:IsEMSCar(VEHICLE_INSIDE) then
-				Notification:Error("How About No")
+			if exports['sandbox-police']:IsPdCar(VEHICLE_INSIDE) or exports['sandbox-police']:IsEMSCar(VEHICLE_INSIDE) then
+				exports["sandbox-hud"]:NotifError("How About No")
 				cb(false)
 				return
 			end
@@ -26,7 +26,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 				return
 			end
 
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "vehicle_camber_controller",
 				duration = 5000,
 				label = "Plugging In Controller",

@@ -5,7 +5,8 @@ RegisterNetEvent("Weed:Client:Login", function(l)
 		Wait(10)
 	end
 
-	PedInteraction:Add("weed-dealer", `s_m_y_dealer_01`, vector3(l.coords.x, l.coords.y, l.coords.z), l.heading, 50.0, {
+	exports['sandbox-pedinteraction']:Add("weed-dealer", `s_m_y_dealer_01`, vector3(l.coords.x, l.coords.y, l.coords.z),
+	l.heading, 50.0, {
 		{
 			icon = "cannabis",
 			text = "Buy Package",
@@ -45,7 +46,7 @@ RegisterNetEvent("Weed:Client:Login", function(l)
 end)
 
 AddEventHandler("Weed:Client:Check", function(entity, data)
-	Callbacks:ServerCallback("Weed:CheckPlant", GetWeedPlant(entity.entity), function(data)
+	exports["sandbox-base"]:ServerCallback("Weed:CheckPlant", GetWeedPlant(entity.entity), function(data)
 		if data ~= nil then
 			local stageId = getStageByPct(data.plant.growth)
 			local stage = Plants[stageId]
@@ -127,9 +128,9 @@ AddEventHandler("Weed:Client:Check", function(entity, data)
 				},
 			}
 
-			local hasNitro = Inventory.Items:Has("fertilizer_nitrogen", 1)
-			local hasPhos = Inventory.Items:Has("fertilizer_phosphorus", 1)
-			local hasPotas = Inventory.Items:Has("fertilizer_potassium", 1)
+			local hasNitro = exports['sandbox-inventory']:ItemsHas("fertilizer_nitrogen", 1)
+			local hasPhos = exports['sandbox-inventory']:ItemsHas("fertilizer_phosphorus", 1)
+			local hasPotas = exports['sandbox-inventory']:ItemsHas("fertilizer_potassium", 1)
 
 			if hasNitro or hasPhos or hasPotas then
 				if hasNitro then
@@ -170,7 +171,7 @@ AddEventHandler("Weed:Client:Check", function(entity, data)
 				submenu = "deleteConfirm",
 			})
 
-			ListMenu:Show({
+			exports['sandbox-hud']:ListMenuShow({
 				main = {
 					label = string.format("Weed Plant Stage: %s", stageId),
 					items = items,
@@ -207,9 +208,9 @@ AddEventHandler("Weed:Client:Check", function(entity, data)
 end)
 
 AddEventHandler("Weed:Client:Fertilize", function(data)
-	if Inventory.Items:Has(string.format("fertilizer_%s", data.type), 1) then
-		ListMenu:Close()
-		Progress:Progress({
+	if exports['sandbox-inventory']:ItemsHas(string.format("fertilizer_%s", data.type), 1) then
+		exports['sandbox-hud']:ListMenuClose()
+		exports['sandbox-hud']:Progress({
 			name = "fertilize_weed",
 			duration = 15000,
 			label = "Fertilizing",
@@ -227,18 +228,18 @@ AddEventHandler("Weed:Client:Fertilize", function(data)
 			},
 		}, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("Weed:FertilizePlant", data, function(status) end)
+				exports["sandbox-base"]:ServerCallback("Weed:FertilizePlant", data, function(status) end)
 			end
 		end)
 	else
-		Notification:Error("You Don't Have Fertilizer")
+		exports["sandbox-hud"]:NotifError("You Don't Have Fertilizer")
 	end
 end)
 
 AddEventHandler("Weed:Client:Water", function(pId)
-	if Inventory.Items:Has("water", 1) then
-		ListMenu:Close()
-		Progress:Progress({
+	if exports['sandbox-inventory']:ItemsHas("water", 1) then
+		exports['sandbox-hud']:ListMenuClose()
+		exports['sandbox-hud']:Progress({
 			name = "water_weed",
 			duration = 6000,
 			label = "Watering",
@@ -254,14 +255,14 @@ AddEventHandler("Weed:Client:Water", function(pId)
 			},
 		}, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("Weed:WaterPlant", pId, function(status) end)
+				exports["sandbox-base"]:ServerCallback("Weed:WaterPlant", pId, function(status) end)
 			end
 		end)
 	end
 end)
 
 AddEventHandler("Weed:Client:Harvest", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "harvest_weed",
 		duration = 6000,
 		label = "Harvesting",
@@ -279,14 +280,14 @@ AddEventHandler("Weed:Client:Harvest", function(entity, data)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Weed:HarvestPlant", GetWeedPlant(entity.entity), function(status) end)
+			exports["sandbox-base"]:ServerCallback("Weed:HarvestPlant", GetWeedPlant(entity.entity), function(status) end)
 		end
 	end)
 end)
 
 AddEventHandler("Weed:Client:Harvest2", function(nId)
-	ListMenu:Close()
-	Progress:Progress({
+	exports['sandbox-hud']:ListMenuClose()
+	exports['sandbox-hud']:Progress({
 		name = "harvest_weed",
 		duration = 6000,
 		label = "Harvesting",
@@ -304,21 +305,21 @@ AddEventHandler("Weed:Client:Harvest2", function(nId)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Weed:HarvestPlant", nId, function(status) end)
+			exports["sandbox-base"]:ServerCallback("Weed:HarvestPlant", nId, function(status) end)
 		end
 	end)
 end)
 
 AddEventHandler("Weed:Client:Package", function()
-	Callbacks:ServerCallback("Weed:BuyPackage", {}, function(status) end)
+	exports["sandbox-base"]:ServerCallback("Weed:BuyPackage", {}, function(status) end)
 end)
 
 -- AddEventHandler("Weed:Client:Brick", function()
--- 	Callbacks:ServerCallback("Weed:SellBrick", {}, function(status) end)
+-- 	exports["sandbox-base"]:ServerCallback("Weed:SellBrick", {}, function(status) end)
 -- end)
 
 AddEventHandler("Weed:Client:Destroy", function(nId)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "destroy_weed",
 		duration = 8000,
 		label = "Destroying",
@@ -336,13 +337,13 @@ AddEventHandler("Weed:Client:Destroy", function(nId)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Weed:DestroyPlant", nId, function(status) end)
+			exports["sandbox-base"]:ServerCallback("Weed:DestroyPlant", nId, function(status) end)
 		end
 	end)
 end)
 
 AddEventHandler("Weed:Client:PDDestroy", function(entity)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "harvest_weed",
 		duration = 4000,
 		label = "Destroying",
@@ -360,7 +361,8 @@ AddEventHandler("Weed:Client:PDDestroy", function(entity)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Weed:PDDestroyPlant", GetWeedPlant(entity.entity), function(status) end)
+			exports["sandbox-base"]:ServerCallback("Weed:PDDestroyPlant", GetWeedPlant(entity.entity),
+				function(status) end)
 		end
 	end)
 end)

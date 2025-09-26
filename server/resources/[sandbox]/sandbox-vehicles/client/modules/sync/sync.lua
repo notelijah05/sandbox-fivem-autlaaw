@@ -206,5 +206,5 @@ AddEventHandler("Vehicle:Client:PickupBike", function(entityData)
         return
     end
 
-    Vehicles.Sync.Bike:Pickup(entityData.entity)
+    exports['sandbox-vehicles']:SyncBikePickup(entityData.entity)
 end)

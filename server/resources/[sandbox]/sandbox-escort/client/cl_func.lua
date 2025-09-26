@@ -4,7 +4,7 @@ local _gJobs = {
 }
 
 function DoEscort()
-	local cPlayer, Dist = Game.Players:GetClosestPlayer()
+	local cPlayer, Dist = exports['sandbox-base']:GamePlayersGetClosestPlayer()
 	local tarPlayer = GetPlayerServerId(cPlayer)
 	local closeDist = 1
 	if IsPedSwimming(LocalPlayer.state.ped) then
@@ -21,13 +21,13 @@ function DoEscort()
 				LocalPlayer.state.isEscorting == nil
 				and not IsPedInAnyVehicle(LocalPlayer.state.ped, true)
 				and not IsPedInAnyVehicle(GetPlayerPed(tarPlayer), true)
-				and not Hud:IsDisabledAllowDead()
+				and not exports['sandbox-hud']:IsDisabledAllowDead()
 				and not tState.isHospitalized
 				and (tState.isEscorting == nil and tState.myEscorter == nil)
 			then
-				Escort:DoEscort(tarPlayer, cPlayer)
+				exports['sandbox-escort']:DoEscort(tarPlayer, cPlayer)
 			elseif LocalPlayer.state.isEscorting ~= nil then
-				Escort:StopEscort()
+				exports['sandbox-escort']:StopEscort()
 			end
 		end
 	end
@@ -57,7 +57,7 @@ function StartEscortThread(t)
 		while LocalPlayer.state.isEscorting ~= nil do
 			Wait(500)
 			if not DoesEntityExist(ped) then
-				Escort:StopEscort()
+				exports['sandbox-escort']:StopEscort()
 			end
 		end
 	end)
@@ -78,7 +78,7 @@ RegisterNetEvent("Escort:Client:Escorted", function()
 	end
 
 	if LocalPlayer.state.doingAction then
-		Progress:Cancel()
+		exports['sandbox-hud']:ProgressCancel()
 	end
 
 	CreateThread(function()
@@ -124,7 +124,7 @@ RegisterNetEvent("Escort:Client:Escorted", function()
 end)
 
 AddEventHandler("Escort:Client:PutIn", function(entity, data)
-	Callbacks:ServerCallback("Escort:DoPutIn", {
+	exports["sandbox-base"]:ServerCallback("Escort:DoPutIn", {
 		veh = NetworkGetNetworkIdFromEntity(entity.entity),
 		class = GetVehicleClass(entity.entity),
 		seatCount = GetVehicleModelNumberOfSeats(GetEntityModel(entity.entity)),
@@ -165,7 +165,7 @@ AddEventHandler("Escort:Client:PullOut", function(entity, data)
 			dur = _gJobs[LocalPlayer.state.onDuty]
 		end
 
-		Progress:ProgressWithTickEvent({
+		exports['sandbox-hud']:ProgressWithTickEvent({
 			name = "unseat",
 			duration = dur,
 			label = "Unseating",
@@ -186,11 +186,11 @@ AddEventHandler("Escort:Client:PullOut", function(entity, data)
 			then
 				return
 			end
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 		end, function(cancelled)
 			if not cancelled then
 				local playerId = NetworkGetPlayerIndexFromPed(targetPed)
-				Escort:DoEscort(GetPlayerServerId(playerId), playerId)
+				exports['sandbox-escort']:DoEscort(GetPlayerServerId(playerId), playerId)
 			end
 		end)
 	end

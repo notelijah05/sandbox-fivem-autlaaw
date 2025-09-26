@@ -75,7 +75,7 @@ function SetupQueues()
 		for k, v in ipairs(_queues) do
 			_received[v.id] = {}
 
-			Tasks:Register(v.id, v.wait, function(data)
+			exports['sandbox-base']:TasksRegister(v.id, v.wait, function(data)
 				-- Don't Do Queue Stuff If Restart Lockdown Has Started
 				if GlobalState["RestartLockdown"] or (data.limited and _awarded[data.id]) then
 					return
@@ -88,7 +88,7 @@ function SetupQueues()
 					local index = math.random(#sources)
 					local src = tonumber(sources[index])
 
-					char = Fetch:CharacterSource(src)
+					char = exports['sandbox-characters']:FetchCharacterSource(src)
 					if char ~= nil then
 						local pState = Player(src).state
 
@@ -115,7 +115,7 @@ function SetupQueues()
 				end
 
 				if char ~= nil then
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Robbery Queue",
 						string.format(
 							"%s %s (%s) Was Chosen For ^3%s^7",
@@ -126,7 +126,7 @@ function SetupQueues()
 						)
 					)
 
-					Phone.Email:Send(
+					exports['sandbox-phone']:EmailSend(
 						char:GetData("Source"),
 						"unknown@sandboxrp.gg",
 						os.time(),
@@ -147,7 +147,8 @@ function SetupQueues()
 					})
 					_awarded[data.id] = true
 				else
-					Logger:Info("Robbery Queue", string.format("No Eligible Player Found For ^3%s^7", v.name))
+					exports['sandbox-base']:LoggerInfo("Robbery Queue",
+						string.format("No Eligible Player Found For ^3%s^7", v.name))
 				end
 			end, v, (v.wait - v.first))
 		end

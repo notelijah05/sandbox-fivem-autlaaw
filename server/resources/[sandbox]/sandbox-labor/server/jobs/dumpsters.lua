@@ -9,22 +9,22 @@ AddEventHandler("Labor:Server:Startup", function()
 end)
 
 function RegisterDumpsterStartup()
-	Reputation:Create(_repName, "Dumpster Diving", {
-		{ label = "Rank 1", value = 1000 },
-		{ label = "Rank 2", value = 2500 },
-		{ label = "Rank 3", value = 5000 },
-		{ label = "Rank 4", value = 10000 },
-		{ label = "Rank 5", value = 25000 },
-		{ label = "Rank 6", value = 50000 },
-		{ label = "Rank 7", value = 100000 },
-		{ label = "Rank 8", value = 250000 },
-		{ label = "Rank 9", value = 500000 },
+	exports['sandbox-characters']:RepCreate(_repName, "Dumpster Diving", {
+		{ label = "Rank 1",  value = 1000 },
+		{ label = "Rank 2",  value = 2500 },
+		{ label = "Rank 3",  value = 5000 },
+		{ label = "Rank 4",  value = 10000 },
+		{ label = "Rank 5",  value = 25000 },
+		{ label = "Rank 6",  value = 50000 },
+		{ label = "Rank 7",  value = 100000 },
+		{ label = "Rank 8",  value = 250000 },
+		{ label = "Rank 9",  value = 500000 },
 		{ label = "Rank 10", value = 1000000 },
 	})
 end
 
 function RegisterDumpsterCallbacks()
-	Callbacks:RegisterServerCallback("Inventory:Server:AvailableDumpster", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:AvailableDumpster", function(source, data, cb)
 		local _dumpsterId = data.entity
 		if data and _searchedDumpsters[_dumpsterId] == nil then
 			cb(true)
@@ -32,8 +32,8 @@ function RegisterDumpsterCallbacks()
 			cb(false)
 		end
 	end)
-	Callbacks:RegisterServerCallback("Inventory:Dumpster:HidePlayer", function(source, data, cb)
-		local plyr = Fetch:Source(source)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Dumpster:HidePlayer", function(source, data, cb)
+		local plyr = exports['sandbox-base']:FetchSource(source)
 		local _dumpsterId = data.identifier
 		local _locked = data.locked
 		if plyr ~= nil then
@@ -55,18 +55,18 @@ function RegisterDumpsterCallbacks()
 			cb(false, false)
 		end
 	end)
-	Callbacks:RegisterServerCallback("Inventory:Server:SearchDumpster", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:SearchDumpster", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local _dumpsterId = data.entity
 			if data and _searchedDumpsters[_dumpsterId] == nil then
 				_searchedDumpsters[_dumpsterId] = true
-				local _PlayerRep = Reputation:GetLevel(source, _repName) or 0
+				local _PlayerRep = exports['sandbox-characters']:RepGetLevel(source, _repName) or 0
 				local _found = math.random(100) >= math.random(75)
 				if _found then
 					if _PlayerRep >= 8 then
 						if math.random(100) >= math.random(75) then
-							Loot:CustomWeightedSetWithCountAndModifier(
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
 								_dumpsterLoot.high,
 								char:GetData("SID"),
 								1,
@@ -75,7 +75,7 @@ function RegisterDumpsterCallbacks()
 							)
 						end
 						if math.random(100) >= math.random(75) then
-							Loot:CustomWeightedSetWithCountAndModifier(
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
 								_dumpsterLoot.medium,
 								char:GetData("SID"),
 								1,
@@ -83,7 +83,7 @@ function RegisterDumpsterCallbacks()
 								false
 							)
 						end
-						Loot:CustomWeightedSetWithCountAndModifier(
+						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
@@ -92,7 +92,7 @@ function RegisterDumpsterCallbacks()
 						)
 					elseif _PlayerRep <= 7 and _PlayerRep >= 4 then
 						if math.random(100) >= math.random(75) then
-							Loot:CustomWeightedSetWithCountAndModifier(
+							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
 								_dumpsterLoot.medium,
 								char:GetData("SID"),
 								1,
@@ -100,14 +100,14 @@ function RegisterDumpsterCallbacks()
 								false
 							)
 						end
-						Loot:CustomWeightedSetWithCountAndModifier(
+						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
 							1,
 							false
 						)
-						Loot:CustomWeightedSetWithCountAndModifier(
+						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
@@ -115,14 +115,14 @@ function RegisterDumpsterCallbacks()
 							false
 						)
 					else
-						Loot:CustomWeightedSetWithCountAndModifier(
+						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
 							1,
 							false
 						)
-						Loot:CustomWeightedSetWithCountAndModifier(
+						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
@@ -130,15 +130,16 @@ function RegisterDumpsterCallbacks()
 							false
 						)
 					end
-					Reputation.Modify:Add(source, _repName, math.random(5, 10))
-					Execute:Client(source, "Notification", "Success", "You found something!")
+					exports['sandbox-characters']:RepAdd(source, _repName, math.random(5, 10))
+					exports['sandbox-hud']:NotifSuccess(source, "You found something!")
 				else
-					Reputation.Modify:Add(source, _repName, math.random(1, 3))
-					Execute:Client(source, "Notification", "Info", "Nothing was found.")
+					exports['sandbox-characters']:RepAdd(source, _repName, math.random(1, 3))
+					exports['sandbox-hud']:NotifInfo(source, "Nothing was found.")
 				end
 				cb(true)
 			else
-				Execute:Client(source, "Notification", "Error", "This dumpster has been searched already!")
+				exports['sandbox-hud']:NotifError(source,
+					"This dumpster has been searched already!")
 				cb(false)
 			end
 		else

@@ -6,7 +6,7 @@ function StartBobcatThreads()
     CreateThread(function()
         while _threading do
             if _bcGlobalReset ~= nil and os.time() > _bcGlobalReset then
-                Logger:Info("Robbery", "Bobcat Heist Has Been Reset")
+                exports['sandbox-base']:LoggerInfo("Robbery", "Bobcat Heist Has Been Reset")
                 ResetBobcat()
             end
             Wait(30000)

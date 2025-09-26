@@ -5,15 +5,16 @@ RegisterNetEvent("Inventory:Client:PolySetup", function(locs)
 		local data = GlobalState[string.format("Inventory:%s", v)]
 		if data ~= nil then
 			if data.data ~= nil then
-				data.data.isInventory = true 
+				data.data.isInventory = true
 			end
 
 			if data.type == "box" then
-				Polyzone.Create:Box(data.id, data.coords, data.length, data.width, data.options, data.data)
+				exports['sandbox-polyzone']:CreateBox(data.id, data.coords, data.length, data.width, data.options,
+					data.data)
 			elseif data.type == "poly" then
-				Polyzone.Create:Poly(data.id, data.points, data.options, data.data)
+				exports['sandbox-polyzone']:CreatePoly(data.id, data.points, data.options, data.data)
 			else
-				Polyzone.Create:Circle(data.id, data.coords, data.radius, data.options, data.data)
+				exports['sandbox-polyzone']:CreateCircle(data.id, data.coords, data.radius, data.options, data.data)
 			end
 		end
 	end
@@ -33,7 +34,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			and SecondInventory.owner == data.owner
 			and SecondInventory.invType == data.invType
 		then
-			Inventory.Close:All()
+			exports['sandbox-inventory']:CloseAll()
 		end
 		LocalPlayer.state:set("_inInvPoly", nil, false)
 		_inInvPoly = nil

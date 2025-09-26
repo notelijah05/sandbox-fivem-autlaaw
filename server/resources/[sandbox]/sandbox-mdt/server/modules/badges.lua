@@ -1,14 +1,14 @@
 local badgeCooldowns = {}
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-    Callbacks:RegisterServerCallback("MDT:PrintBadge", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("MDT:PrintBadge", function(source, data, cb)
         local now = GetGameTimer()
 
         if not badgeCooldowns[source] or (now - badgeCooldowns[source]) > 20000 then
             badgeCooldowns[source] = GetGameTimer()
-            local char = Fetch:CharacterSource(source)
+            local char = exports['sandbox-characters']:FetchCharacterSource(source)
             if char and CheckMDTPermissions(source, { 'PD_HIGH_COMMAND', 'SAFD_HIGH_COMMAND', 'DOJ_JUDGE', 'DOC_HIGH_COMMAND' }) then
-                local officer = MDT.People:View(data.SID)
+                local officer = exports['sandbox-mdt']:PeopleView(data.SID)
                 if officer then
                     local departmentName = false
                     local departmentData = false
@@ -22,9 +22,9 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
                             end
                         end
                     end
-    
+
                     if departmentData then
-                        Inventory:AddItem(char:GetData('SID'), 'government_badge', 1, {
+                        exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'government_badge', 1, {
                             ['Department Name'] = departmentName,
                             Title = titleData,
                             First = officer.First,
@@ -49,26 +49,28 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         end
     end)
 
-    Inventory.Items:RegisterUse("government_badge", "MDT", function(source, itemData)
+    exports['sandbox-inventory']:RegisterUse("government_badge", "MDT", function(source, itemData)
         if itemData and itemData.MetaData and itemData.MetaData.Department then
-            Callbacks:ClientCallback(source, "MDT:Client:CanShowBadge", itemData.MetaData, function(canShow)
-                TriggerClientEvent("MDT:Client:ShowBadge", -1, source, itemData.MetaData)
-            end)
+            exports["sandbox-base"]:ClientCallback(source, "MDT:Client:CanShowBadge", itemData.MetaData,
+                function(canShow)
+                    TriggerClientEvent("MDT:Client:ShowBadge", -1, source, itemData.MetaData)
+                end)
         end
     end)
 
-    Inventory.Items:RegisterUse("govid", "MDT", function(source, itemData)
-        local char = Fetch:CharacterSource(source)
+    exports['sandbox-inventory']:RegisterUse("govid", "MDT", function(source, itemData)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and itemData and itemData.MetaData and itemData.MetaData.StateID then
-            Callbacks:ClientCallback(source, "MDT:Client:CanShowLicense", itemData.MetaData, function(canShow)
-                TriggerClientEvent("MDT:Client:ShowLicense", -1, source, {
-                    SID = itemData.MetaData.StateID,
-                    Name = itemData.MetaData.Name,
-                    Gender = itemData.MetaData.Gender,
-                    DOB = itemData.MetaData.DOB,
-                    Mugshot = itemData.MetaData.Mugshot,
-                })
-            end)
+            exports["sandbox-base"]:ClientCallback(source, "MDT:Client:CanShowLicense", itemData.MetaData,
+                function(canShow)
+                    TriggerClientEvent("MDT:Client:ShowLicense", -1, source, {
+                        SID = itemData.MetaData.StateID,
+                        Name = itemData.MetaData.Name,
+                        Gender = itemData.MetaData.Gender,
+                        DOB = itemData.MetaData.DOB,
+                        Mugshot = itemData.MetaData.Mugshot,
+                    })
+                end)
         end
     end)
 end)

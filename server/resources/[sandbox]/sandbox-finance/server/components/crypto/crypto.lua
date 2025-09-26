@@ -1,17 +1,17 @@
 AddEventHandler("Finance:Server:Startup", function()
-	Middleware:Add("Characters:Creating", function(source, cData)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Creating", function(source, cData)
 		return { {
 			Crypto = {},
 		} }
 	end)
 
-	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and not char:GetData("CryptoWallet") then
 			local stateId = char:GetData("SID")
 			local generatedWallet = GenerateUniqueCrytoWallet()
 			if generatedWallet then
-				Logger:Trace(
+				exports['sandbox-base']:LoggerTrace(
 					"Banking",
 					string.format("Crypto Wallet (%s) Created for Character: %s", generatedWallet, stateId)
 				)
@@ -20,24 +20,25 @@ AddEventHandler("Finance:Server:Startup", function()
 		end
 	end, 3)
 
-	Callbacks:RegisterServerCallback("Crypto:GetAll", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Crypto:GetAll", function(source, data, cb)
 		cb(_cryptoCoins)
 	end)
 
-	Inventory.Items:RegisterUse("crypto_voucher", "RandomItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-inventory']:RegisterUse("crypto_voucher", "RandomItems", function(source, item)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if item.MetaData.CryptoCoin and ((item.MetaData.Quantity and tonumber(item.MetaData.Quantity) or 0) > 0) then
-			local data = Crypto.Coin:Get(item.MetaData.CryptoCoin)
+			local data = exports['sandbox-finance']:CryptoCoinGet(item.MetaData.CryptoCoin)
 
 			-- More dumb compatability stuff
 			if item.MetaData.CryptoCoin == "PLEB" then
 				item.MetaData.CryptoCoin = "MALD"
 			end
 
-			Crypto.Exchange:Add(item.MetaData.CryptoCoin, char:GetData("CryptoWallet"), item.MetaData.Quantity)
-			Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+			exports['sandbox-finance']:CryptoExchangeAdd(item.MetaData.CryptoCoin, char:GetData("CryptoWallet"),
+				item.MetaData.Quantity)
+			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 		else
-			Execute:Client(source, "Notification", "Error", "Invalid Voucher")
+			exports['sandbox-hud']:NotifError(source, "Invalid Voucher")
 		end
 	end)
 
@@ -110,7 +111,7 @@ function DoesCryptoWalletExist(wallet)
 	end
 
 	local p = promise.new()
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "characters",
 		query = {
 			CryptoWallet = wallet,

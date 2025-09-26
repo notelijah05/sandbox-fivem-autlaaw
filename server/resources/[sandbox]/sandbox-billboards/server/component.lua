@@ -1,122 +1,75 @@
-AddEventHandler("Billboards:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-    Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-    Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-    Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-    Billboards = exports["sandbox-base"]:FetchComponent("Billboards")
-    Regex = exports["sandbox-base"]:FetchComponent("Regex")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Billboards", {
-		"Fetch",
-		"Utils",
-        "Execute",
-        "Chat",
-		"Database",
-		"Middleware",
-		"Callbacks",
-		"Logger",
-		"Generator",
-		"Phone",
-		"Jobs",
-		"Vehicles",
-        "Inventory",
-        "Billboards",
-        "Regex",
-	}, function(error)
-		if #error > 0 then 
-            exports["sandbox-base"]:FetchComponent("Logger"):Critical("Billboards", "Failed To Load All Dependencies")
-			return
-		end
-		RetrieveComponents()
+    FetchBillboardsData()
 
-        FetchBillboardsData()
+    exports["sandbox-chat"]:RegisterAdminCommand("setbillboard", function(source, args, rawCommand)
+        local billboardId, billboardUrl = args[1], args[2]
 
-        Chat:RegisterAdminCommand("setbillboard", function(source, args, rawCommand)
-            local billboardId, billboardUrl = args[1], args[2]
+        if #billboardUrl <= 10 then
+            billboardUrl = false
+        end
 
-            if #billboardUrl <= 10 then
+        exports['sandbox-billboards']:Set(billboardId, billboardUrl)
+    end, {
+        help = "Set a Billboard URL",
+        params = {
+            {
+                name = "ID",
+                help = "Billboard ID",
+            },
+            {
+                name = "URL",
+                help = "Billboard URL",
+            },
+        },
+    }, 2)
+
+    exports["sandbox-base"]:RegisterServerCallback("Billboards:UpdateURL", function(source, data, cb)
+        local billboardData = _billboardConfig[data and data.id]
+        if billboardData and billboardData.job and Player(source).state.onDuty == billboardData.job then
+            local billboardUrl = data.link
+            if #billboardUrl <= 5 then
                 billboardUrl = false
             end
 
-            Billboards:Set(billboardId, billboardUrl)
-        end, {
-            help = "Set a Billboard URL",
-            params = {
-                {
-                    name = "ID",
-                    help = "Billboard ID",
-                },
-                {
-                    name = "URL",
-                    help = "Billboard URL",
-                },
-            },
-        }, 2)
-
-        Callbacks:RegisterServerCallback("Billboards:UpdateURL", function(source, data, cb)
-            local billboardData = _billboardConfig[data?.id]
-            if billboardData and billboardData.job and Player(source).state.onDuty == billboardData.job then
-                local billboardUrl = data.link
-                if #billboardUrl <= 5 then
-                    billboardUrl = false
-                end
-
-                if not billboardUrl or Regex:Test(_billboardRegex, billboardUrl, "gim") then
-                    cb(Billboards:Set(data.id, billboardUrl))
-                else
-                    cb(false, true)
-                end
+            if not billboardUrl or exports['sandbox-base']:RegexTest(_billboardRegex, billboardUrl, "gim") then
+                cb(exports['sandbox-billboards']:Set(data.id, billboardUrl))
             else
-                cb(false)
+                cb(false, true)
             end
-        end)
-	end)
+        else
+            cb(false)
+        end
+    end)
 end)
 
-_BILLBOARDS = {
-    Set = function(self, id, url)
-        if id and _billboardConfig[id] then
-            local updated = SetBillboardURL(id, url)
-            if updated then
-                GlobalState[string.format("Billboards:%s", id)] = url
+exports("Set", function(id, url)
+    if id and _billboardConfig[id] then
+        local updated = SetBillboardURL(id, url)
+        if updated then
+            GlobalState[string.format("Billboards:%s", id)] = url
 
-                TriggerClientEvent('Billboards:Client:UpdateBoardURL', -1, id, url)
+            TriggerClientEvent('Billboards:Client:UpdateBoardURL', -1, id, url)
 
-                return true
-            end
+            return true
         end
-        return false
-    end,
-    Get = function(self, id)
-        return GlobalState[string.format("Billboards:%s", id)]
-    end,
-    GetCategory = function(self, cat)
-        local cIds = {}
+    end
+    return false
+end)
 
-        for k,v in pairs(_billboardConfig) do
-            if v.category == cat then
-                table.insert(cIds, k)
-            end
+exports("Get", function(id)
+    return GlobalState[string.format("Billboards:%s", id)]
+end)
+
+exports("GetCategory", function(cat)
+    local cIds = {}
+
+    for k, v in pairs(_billboardConfig) do
+        if v.category == cat then
+            table.insert(cIds, k)
         end
+    end
 
-        return cIds
-    end,
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function(component)
-	exports["sandbox-base"]:RegisterComponent("Billboards", _BILLBOARDS)
+    return cIds
 end)
 
 local started = false
@@ -128,7 +81,7 @@ function FetchBillboardsData()
     local fetchedBillboards = {}
     local billboardIds = {}
 
-    Database.Game:find({
+    exports['sandbox-base']:DatabaseGameFind({
         collection = 'billboards',
         query = {}
     }, function(success, results)
@@ -140,7 +93,7 @@ function FetchBillboardsData()
             end
         end
 
-        for k,v in pairs(_billboardConfig) do
+        for k, v in pairs(_billboardConfig) do
             GlobalState[string.format("Billboards:%s", k)] = fetchedBillboards[k]
 
             table.insert(billboardIds, k)
@@ -151,7 +104,7 @@ end
 function SetBillboardURL(billboardId, url)
     local p = promise.new()
 
-    Database.Game:findOneAndUpdate({
+    exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
         collection = 'billboards',
         query = {
             billboardId = billboardId,

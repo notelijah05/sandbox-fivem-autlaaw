@@ -1,8 +1,8 @@
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Home:CreateDigiKey", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Home:CreateDigiKey", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			local property = Properties:Get(data.id)
+			local property = exports['sandbox-properties']:Get(data.id)
 			if property ~= nil then
 				local mykey = property.keys[char:GetData("ID")]
 				if mykey ~= nil and mykey.Owner then
@@ -17,20 +17,20 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						end
 
 						if charId ~= nil and property.keys[charId] ~= nil then
-							local onlineChar = Fetch:ID(data.target)
+							local onlineChar = exports['sandbox-characters']:FetchByID(data.target)
 							if onlineChar then
 								charSource = onlineChar:GetData("Source")
 							end
 
-							if Properties.Keys:Give({
-								ID = charId,
-								SID = property.keys[charId].SID,
-								First = property.keys[charId].First,
-								Last = property.keys[charId].Last,
-								Source = charSource,
-							}, data.id, false, data.permissions, true) then
+							if exports['sandbox-properties']:GiveKey({
+									ID = charId,
+									SID = property.keys[charId].SID,
+									First = property.keys[charId].First,
+									Last = property.keys[charId].Last,
+									Source = charSource,
+								}, data.id, false, data.permissions, true) then
 								if charSource then
-									Phone.Notification:Add(
+									exports['sandbox-phone']:NotificationAdd(
 										charSource,
 										"DigiKey Updated",
 										"One of your DigiKey's Have Been Updated",
@@ -50,17 +50,17 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 							cb({ error = true, code = 7 })
 						end
 					else
-						local tchar = Fetch:SID(data.target)
+						local tchar = exports['sandbox-characters']:FetchBySID(data.target)
 						if tchar ~= nil then
 							if property.keys[tchar:GetData("ID")] == nil then
-								if Properties.Keys:Give({
-									ID = tchar:GetData("ID"),
-									SID = tchar:GetData("SID"),
-									First = tchar:GetData("First"),
-									Last = tchar:GetData("Last"),
-									Source = tchar:GetData("Source"),
-								}, data.id, false, data.permissions) then
-									Phone.Notification:Add(
+								if exports['sandbox-properties']:GiveKey({
+										ID = tchar:GetData("ID"),
+										SID = tchar:GetData("SID"),
+										First = tchar:GetData("First"),
+										Last = tchar:GetData("Last"),
+										Source = tchar:GetData("Source"),
+									}, data.id, false, data.permissions) then
+									exports['sandbox-phone']:NotificationAdd(
 										tchar:GetData("Source"),
 										"DigiKey Issued",
 										"You've been given a new DigiKey",
@@ -93,17 +93,17 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Home:RevokeDigiKey", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Home:RevokeDigiKey", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			local property = Properties:Get(data.id)
+			local property = exports['sandbox-properties']:Get(data.id)
 			if property ~= nil then
 				local mykey = property.keys[char:GetData("ID")]
 				if mykey ~= nil and mykey.Owner then
-					if Properties.Keys:Take(data.target, data.id) then
-						local tchar = Fetch:ID(data.id)
+					if exports['sandbox-properties']:TakeKey(data.target, data.id) then
+						local tchar = exports['sandbox-characters']:FetchByID(data.id)
 						if tchar ~= nil then
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								tchar:GetData("Source"),
 								"DigiKey Revoked",
 								"One of your DigiKeys have been revoked",
@@ -130,15 +130,15 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Home:RemoveMyKey", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Home:RemoveMyKey", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			local property = Properties:Get(data.id)
+			local property = exports['sandbox-properties']:Get(data.id)
 			if property ~= nil then
 				local mykey = property.keys[char:GetData("ID")]
 				if mykey ~= nil and not mykey.Owner then
-					if Properties.Keys:Take(char:GetData("ID"), data.id) then
-						Phone.Notification:Add(
+					if exports['sandbox-properties']:TakeKey(char:GetData("ID"), data.id) then
+						exports['sandbox-phone']:NotificationAdd(
 							source,
 							"DigiKey Revoked",
 							"One of your DigiKeys have been revoked",
@@ -164,13 +164,13 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Home:LockProperty", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Home:LockProperty", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			local property = Properties:Get(data.id)
+			local property = exports['sandbox-properties']:Get(data.id)
 			if property ~= nil then
 				if property.keys ~= nil and property.keys[char:GetData("ID")] ~= nil then
-					cb(Properties.Utils:ToggleLock(data.id))
+					cb(exports['sandbox-properties']:ToggleLock(data.id))
 				else
 					cb(false)
 				end

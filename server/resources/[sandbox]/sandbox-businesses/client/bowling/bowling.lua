@@ -20,7 +20,7 @@ local insideBowlingStart = false
 -- end
 
 AddEventHandler('Businesses:Client:Startup', function()
-    Polyzone.Create:Box(
+    exports['sandbox-polyzone']:CreateBox(
         'bowling_alley',
         _bowlingZone.center,
         _bowlingZone.length,
@@ -31,7 +31,7 @@ AddEventHandler('Businesses:Client:Startup', function()
 
     for k, v in pairs(_bowlingAlleys) do
         if v.startZone then
-            Polyzone.Create:Box(
+            exports['sandbox-polyzone']:CreateBox(
                 'bowling_alley_start_' .. k,
                 v.startZone.center,
                 v.startZone.length,
@@ -45,7 +45,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         end
 
         if v.interactZone then
-            Targeting.Zones:AddBox(
+            exports['sandbox-targeting']:ZonesAddBox(
                 string.format("bowling-lane-%s", k),
                 "bowling-ball-pin",
                 v.interactZone.center,
@@ -92,7 +92,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         end
     end
 
-    Keybinds:Add('bowling_aim_right', 'RIGHT', 'keyboard', 'Bowling - Aim Right', function()
+    exports["sandbox-keybinds"]:Add('bowling_aim_right', 'RIGHT', 'keyboard', 'Bowling - Aim Right', function()
         if awaitingBowl then
             local heading = GetEntityHeading(LocalPlayer.state.ped) - 0.7
             if heading >= 50.0 then
@@ -101,7 +101,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         end
     end)
 
-    Keybinds:Add('bowling_aim_left', 'LEFT', 'keyboard', 'Bowling - Aim Left', function()
+    exports["sandbox-keybinds"]:Add('bowling_aim_left', 'LEFT', 'keyboard', 'Bowling - Aim Left', function()
         if awaitingBowl then
             local heading = GetEntityHeading(LocalPlayer.state.ped) + 0.7
             if heading <= 130.0 then
@@ -110,7 +110,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         end
     end)
 
-    Callbacks:RegisterClientCallback('Bowling:DoBowl', function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback('Bowling:DoBowl', function(data, cb)
         local bowlingResults = StartBowlingShit(data)
         cb(bowlingResults)
     end)
@@ -138,7 +138,7 @@ function CreateBowlingPins(center, skip)
 end
 
 function SendBowlingNotification(text, time)
-    Notification:Custom(text, time or 5000, 'bowling-ball-pin', {
+    exports["sandbox-hud"]:NotifCustom(text, time or 5000, 'bowling-ball-pin', {
         alert = {
             background = "#C05097",
         },
@@ -166,7 +166,7 @@ end
 
 function SkillCheckBowler()
     local p = promise.new()
-    Minigame.Play:RoundSkillbar(1.0, 5, {
+    exports['sandbox-games']:MinigamePlayRoundSkillbar(1.0, 5, {
         onSuccess = function()
             p:resolve(true)
         end,
@@ -206,7 +206,7 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
     Wait(1000)
 
     pressedBowl = false
-    Action:Show('bowling',
+    exports['sandbox-hud']:ActionShow('bowling',
         '{keybind}bowling_aim_left{/keybind} Aim Left | {keybind}bowling_aim_right{/keybind} Aim Right | {keybind}primary_action{/keybind} Bowl')
 
     local tm = 0
@@ -215,7 +215,7 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
         tm += 10
     end
 
-    Action:Hide('bowling')
+    exports['sandbox-hud']:ActionHide('bowling')
     awaitingBowl = false
 
     local skillCheck = SkillCheckBowler()
@@ -256,7 +256,7 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
                 for k, v in ipairs(pins) do
                     local entRotation = GetEntityRotation(v)
                     if not (entRotation.x <= 10.0 and entRotation.x >= -10.0 and entRotation.y <= 10.0 and entRotation.y >= -10.0 and entRotation.z <= 10.0 and entRotation.z >= -10.0) then
-                        Sounds.Play:Location(alleyData.endZone, 20.0, "bowling.ogg", 0.3)
+                        exports["sandbox-sounds"]:PlayLocation(alleyData.endZone, 20.0, "bowling.ogg", 0.3)
                         break
                     end
                 end
@@ -319,7 +319,7 @@ end
 local nickNamePromise
 function GetBowlingNickName()
     nickNamePromise = promise.new()
-    Input:Show('Bowling', 'Name', {
+    exports['sandbox-hud']:InputShow('Bowling', 'Name', {
         {
             id = 'name',
             type = 'text',
@@ -344,43 +344,43 @@ end)
 AddEventHandler('Bowling:Client:StartGame', function(entity, alleyId)
     local nickName = GetBowlingNickName()
     if nickName and string.len(nickName) >= 3 then
-        Callbacks:ServerCallback('Bowling:StartGame', {
+        exports["sandbox-base"]:ServerCallback('Bowling:StartGame', {
             alleyId = alleyId,
             nickName = nickName,
         }, function(success)
             if success then
                 SendBowlingNotification('Starting a Game of Bowling')
             else
-                Notification:Error('Couldn\'t Start Game', 5000, 'bowling-ball-pin')
+                exports["sandbox-hud"]:NotifError('Couldn\'t Start Game', 5000, 'bowling-ball-pin')
             end
         end)
     else
-        Notification:Error('Please provide a name longer than 2 letters', 5000, 'bowling-ball-pin')
+        exports["sandbox-hud"]:NotifError('Please provide a name longer than 2 letters', 5000, 'bowling-ball-pin')
     end
 end)
 
 AddEventHandler('Bowling:Client:JoinGame', function(entity, alleyId)
     local nickName = GetBowlingNickName()
     if nickName and string.len(nickName) >= 3 then
-        Callbacks:ServerCallback('Bowling:JoinGame', {
+        exports["sandbox-base"]:ServerCallback('Bowling:JoinGame', {
             alleyId = alleyId,
             nickName = nickName,
         }, function(success)
             if success then
                 SendBowlingNotification('Joined a Game of Bowling')
             else
-                Notification:Error('Couldn\'t Join Game', 5000, 'bowling-ball-pin')
+                exports["sandbox-hud"]:NotifError('Couldn\'t Join Game', 5000, 'bowling-ball-pin')
             end
         end)
     else
-        Notification:Error('Please provide a name longer than 2 letters', 5000, 'bowling-ball-pin')
+        exports["sandbox-hud"]:NotifError('Please provide a name longer than 2 letters', 5000, 'bowling-ball-pin')
     end
 end)
 
 AddEventHandler('Polyzone:Enter', function(id, testedPoint, insideZones, data)
     if data?.bowling_start then
         insideBowlingStart = data.bowling_start_id
-        Action:Show('bowling', '{keybind}primary_action{/keybind} Start Bowling')
+        exports['sandbox-hud']:ActionShow('bowling', '{keybind}primary_action{/keybind} Start Bowling')
 
         LoadRequestModel('prop_bowling_ball')
         LoadRequestModel('prop_bowling_pin')
@@ -390,7 +390,7 @@ end)
 AddEventHandler('Polyzone:Exit', function(id, testedPoint, insideZones, data)
     if insideBowlingStart and data?.bowling_start and data.bowling_start_id == insideBowlingStart then
         insideBowlingStart = false
-        Action:Hide('bowling')
+        exports['sandbox-hud']:ActionHide('bowling')
     end
 end)
 
@@ -401,7 +401,7 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
         local alley = GlobalState[string.format('Bowling:Alley:%s', insideBowlingStart)]
         if alley and not alley.finished and alley.currentPlayer == LocalPlayer.state.Character:GetData('SID') then
             if not _actionCD then
-                Action:Hide('bowling')
+                exports['sandbox-hud']:ActionHide('bowling')
                 TriggerServerEvent('Bowling:Server:StartBowling', insideBowlingStart)
                 _actionCD = true
                 Citizen.SetTimeout(30000, function()
@@ -409,39 +409,39 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
                 end)
             end
         else
-            Notification:Error('Not Your Turn', 5000, 'bowling-ball-pin')
+            exports["sandbox-hud"]:NotifError('Not Your Turn', 5000, 'bowling-ball-pin')
         end
     end
 end)
 
 AddEventHandler('Bowling:Client:EndGame', function(entity, alleyId)
-    Callbacks:ServerCallback('Bowling:EndGame', {
+    exports["sandbox-base"]:ServerCallback('Bowling:EndGame', {
         alleyId = alleyId,
     }, function(success)
         if success then
             SendBowlingNotification('Ended a Game of Bowling')
         else
-            Notification:Error('Couldn\'t End Game', 5000, 'bowling-ball-pin')
+            exports["sandbox-hud"]:NotifError('Couldn\'t End Game', 5000, 'bowling-ball-pin')
         end
     end)
 end)
 
 AddEventHandler('Bowling:Client:ResetAll', function()
-    Callbacks:ServerCallback('Bowling:ResetAll', {}, function(success)
+    exports["sandbox-base"]:ServerCallback('Bowling:ResetAll', {}, function(success)
         if success then
             SendBowlingNotification('Reset All')
         else
-            Notification:Error('Couldn\'t Reset', 5000, 'bowling-ball-pin')
+            exports["sandbox-hud"]:NotifError('Couldn\'t Reset', 5000, 'bowling-ball-pin')
         end
     end)
 end)
 
 AddEventHandler('Bowling:Client:ClearPins', function()
-    Callbacks:ServerCallback('Bowling:ClearPins', {}, function(success)
+    exports["sandbox-base"]:ServerCallback('Bowling:ClearPins', {}, function(success)
         if success then
             SendBowlingNotification('Cleared Pins')
         else
-            Notification:Error('Couldn\'t Clear Pins', 5000, 'bowling-ball-pin')
+            exports["sandbox-hud"]:NotifError('Couldn\'t Clear Pins', 5000, 'bowling-ball-pin')
         end
     end)
 end)

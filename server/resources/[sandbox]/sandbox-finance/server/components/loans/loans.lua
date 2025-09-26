@@ -4,7 +4,7 @@ function RunLoanStartup()
     if _ranStartup then return end
     _ranStartup = true
 
-    Database.Game:count({
+    exports['sandbox-base']:DatabaseGameCount({
         collection = 'loans',
         query = {
             Remaining = {
@@ -13,7 +13,7 @@ function RunLoanStartup()
         }
     }, function(success, count)
         if success then
-            Logger:Trace('Loans', 'Loaded ^2' .. count .. '^7 Active Loans')
+            exports['sandbox-base']:LoggerTrace('Loans', 'Loaded ^2' .. count .. '^7 Active Loans')
         end
     end)
 end
@@ -26,11 +26,11 @@ AddEventHandler('Finance:Server:Startup', function()
 end)
 
 function CreateLoanTasks()
-    Tasks:Register('loan_payment', 60, function()
+    exports['sandbox-base']:TasksRegister('loan_payment', 60, function()
         --RegisterCommand('testloans', function()
         local TASK_RUN_TIMESTAMP = os.time()
 
-        Database.Game:aggregate({
+        exports['sandbox-base']:DatabaseGameAggregate({
             collection = 'loans',
             aggregate = {
                 {
@@ -86,7 +86,7 @@ function CreateLoanTasks()
         }, function(success, results)
             if success then
                 -- Get All the Loans are now need to be defaulted and notify/seize
-                Database.Game:find({
+                exports['sandbox-base']:DatabaseGameFind({
                     collection = 'loans',
                     query = {
                         ['$expr'] = {
@@ -105,7 +105,7 @@ function CreateLoanTasks()
                             table.insert(updatingAssets, v.AssetIdentifier)
                         end
 
-                        Database.Game:update({
+                        exports['sandbox-base']:DatabaseGameUpdate({
                             collection = 'loans',
                             query = {
                                 AssetIdentifier = {
@@ -119,11 +119,12 @@ function CreateLoanTasks()
                             }
                         }, function(success, updated)
                             if success then
-                                Logger:Info('Loans', '^2' .. #results .. '^7 Loans Have Just Been Defaulted')
+                                exports['sandbox-base']:LoggerInfo('Loans',
+                                    '^2' .. #results .. '^7 Loans Have Just Been Defaulted')
                                 for k, v in ipairs(results) do
                                     if v.SID then
                                         DecreaseCharacterCreditScore(v.SID, _creditScoreConfig.removal.defaultedLoan)
-                                        local onlineChar = Fetch:SID(v.SID)
+                                        local onlineChar = exports['sandbox-characters']:FetchBySID(v.SID)
                                         if onlineChar then
                                             SendDefaultedLoanNotification(onlineChar:GetData('Source'), v)
                                         end
@@ -131,9 +132,9 @@ function CreateLoanTasks()
 
                                     if v.AssetIdentifier then
                                         if v.Type == 'vehicle' then
-                                            Vehicles.Owned:Seize(v.AssetIdentifier, true)
+                                            exports['sandbox-vehicles']:OwnedSeize(v.AssetIdentifier, true)
                                         elseif v.Type == 'property' then
-                                            Properties.Commerce:Foreclose(v.AssetIdentifier, true)
+                                            exports['sandbox-properties']:Foreclose(v.AssetIdentifier, true)
                                         end
                                     end
                                 end
@@ -143,7 +144,7 @@ function CreateLoanTasks()
                 end)
 
                 -- Notify if someone just missed a payment.
-                Database.Game:find({
+                exports['sandbox-base']:DatabaseGameFind({
                     collection = 'loans',
                     query = {
                         ['$expr'] = {
@@ -157,12 +158,13 @@ function CreateLoanTasks()
                     }
                 }, function(success, results)
                     if success and #results > 0 then
-                        Logger:Info('Loans', '^2' .. #results .. '^7 Loan Payments Were Just Missed')
+                        exports['sandbox-base']:LoggerInfo('Loans',
+                            '^2' .. #results .. '^7 Loan Payments Were Just Missed')
                         for k, v in ipairs(results) do
                             if v.SID then
                                 DecreaseCharacterCreditScore(v.SID, _creditScoreConfig.removal.missedLoanPayment)
 
-                                local onlineChar = Fetch:SID(v.SID)
+                                local onlineChar = exports['sandbox-characters']:FetchBySID(v.SID)
                                 if onlineChar then
                                     SendMissedLoanNotification(onlineChar:GetData('Source'), v)
                                 end
@@ -174,10 +176,10 @@ function CreateLoanTasks()
         end)
     end)
 
-    Tasks:Register('loan_reminder', 120, function()
+    exports['sandbox-base']:TasksRegister('loan_reminder', 120, function()
         local TASK_RUN_TIMESTAMP = os.time()
         -- Get All Loans That are Due Soon
-        Database.Game:find({
+        exports['sandbox-base']:DatabaseGameFind({
             collection = 'loans',
             query = {
                 Remaining = {
@@ -202,9 +204,10 @@ function CreateLoanTasks()
             if success and #results > 0 then
                 for k, v in ipairs(results) do
                     if v.SID then
-                        local onlineChar = Fetch:SID(v.SID)
+                        local onlineChar = exports['sandbox-characters']:FetchBySID(v.SID)
                         if onlineChar then
-                            Phone.Notification:Add(onlineChar:GetData("Source"), "Loan Payment Due",
+                            exports['sandbox-phone']:NotificationAdd(onlineChar:GetData("Source"),
+                                "Loan Payment Due",
                                 "You have a loan payment that is due very soon.", os.time(), 7500, "loans", {})
                         end
 
@@ -217,12 +220,13 @@ function CreateLoanTasks()
 end
 
 function SendMissedLoanNotification(source, loanData)
-    Phone.Notification:Add(source, "Loan Payment Missed", "You just missed a loan payment on one of your loans.",
+    exports['sandbox-phone']:NotificationAdd(source, "Loan Payment Missed",
+        "You just missed a loan payment on one of your loans.",
         os.time(), 7500, "loans", {})
 end
 
 function SendDefaultedLoanNotification(source, loanData)
-    Phone.Notification:Add(source, "Loan Defaulted",
+    exports['sandbox-phone']:NotificationAdd(source, "Loan Defaulted",
         "One of your loans just got defaulted and the assets are going to be seized.", os.time(), 7500, "loans", {})
 end
 

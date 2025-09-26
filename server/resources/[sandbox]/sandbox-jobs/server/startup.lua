@@ -4,57 +4,22 @@ JOB_COUNT = 0
 
 _loaded = false
 
-AddEventHandler("Jobs:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
-	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Jobs", {
-		"Database",
-		"Middleware",
-		"Callbacks",
-		"Logger",
-		"Utils",
-		"Fetch",
-		"Execute",
-		"Sequence",
-		"Generator",
-		"Chat",
-		"Jobs",
-		"Phone",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterJobMiddleware()
-		RegisterJobCallbacks()
-		RegisterJobChatCommands()
+	RegisterJobMiddleware()
+	RegisterJobCallbacks()
+	RegisterJobChatCommands()
 
-		_loaded = true
+	_loaded = true
 
-		RunStartup()
+	RunStartup()
 
-		TriggerEvent("Jobs:Server:Startup")
-	end)
+	TriggerEvent("Jobs:Server:Startup")
 end)
 
 function FindAllJobs()
 	local p = promise.new()
 
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "jobs",
 		query = {},
 	}, function(success, results)
@@ -79,7 +44,7 @@ function RefreshAllJobData(job)
 	TriggerEvent("Jobs:Server:UpdatedCache", job or -1)
 
 	local govPromise = promise.new()
-	Database.Game:aggregate({
+	exports['sandbox-base']:DatabaseGameAggregate({
 		collection = "jobs",
 		aggregate = {
 			{ ["$match"] = { Type = "Government" } },
@@ -108,7 +73,7 @@ function RefreshAllJobData(job)
 	end)
 
 	local companyPromise = promise.new()
-	Database.Game:aggregate({
+	exports['sandbox-base']:DatabaseGameAggregate({
 		collection = "jobs",
 		aggregate = {
 			{ ["$match"] = { Type = "Company" } },
@@ -141,19 +106,19 @@ function RunStartup()
 
 	local function replaceExistingDefaultJob(_id, document)
 		local p = promise.new()
-		Database.Game:deleteOne({
+		exports['sandbox-base']:DatabaseGameDeleteOne({
 			collection = "jobs",
 			query = {
 				_id = _id,
 			},
 		}, function(success, deleted)
 			if success then
-				Database.Game:insertOne({
+				exports['sandbox-base']:DatabaseGameInsertOne({
 					collection = "jobs",
 					document = document,
 				}, function(success, inserted)
 					if not success or inserted <= 0 then
-						Logger:Error("Jobs", "Error Inserting Job on Default Job Update")
+						exports['sandbox-base']:LoggerError("Jobs", "Error Inserting Job on Default Job Update")
 						p:resolve(false)
 					else
 						Wait(10000)
@@ -161,7 +126,7 @@ function RunStartup()
 					end
 				end)
 			else
-				Logger:Error("Jobs", "Error Deleting Job on Default Job Update")
+				exports['sandbox-base']:LoggerError("Jobs", "Error Deleting Job on Default Job Update")
 				p:resolve(false)
 			end
 		end)
@@ -170,12 +135,12 @@ function RunStartup()
 
 	local function insertDefaultJob(document)
 		local p = promise.new()
-		Database.Game:insertOne({
+		exports['sandbox-base']:DatabaseGameInsertOne({
 			collection = "jobs",
 			document = document,
 		}, function(success, inserted)
 			if not success or inserted <= 0 then
-				Logger:Error("Jobs", "Error Inserting Job on Default Job Update")
+				exports['sandbox-base']:LoggerError("Jobs", "Error Inserting Job on Default Job Update")
 				p:resolve(false)
 			else
 				p:resolve(true)
@@ -202,11 +167,11 @@ function RunStartup()
 
 	if #awaitingPromises > 0 then
 		Citizen.Await(promise.all(awaitingPromises))
-		Logger:Info("Jobs", "Inserted/Replaced ^2" .. #awaitingPromises .. "^7 Default Jobs")
+		exports['sandbox-base']:LoggerInfo("Jobs", "Inserted/Replaced ^2" .. #awaitingPromises .. "^7 Default Jobs")
 		jobsFetch = FindAllJobs()
 	end
 
 	RefreshAllJobData()
-	Logger:Trace("Jobs", string.format("Loaded ^2%s^7 Jobs", JOB_COUNT))
+	exports['sandbox-base']:LoggerTrace("Jobs", string.format("Loaded ^2%s^7 Jobs", JOB_COUNT))
 	TriggerEvent("Jobs:Server:CompleteStartup")
 end

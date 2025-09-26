@@ -81,18 +81,18 @@ AddEventHandler("Doors:Client:OpenElevator", function(hitEntity, data)
             return a.level < b.level
         end)
 
-        ListMenu:Show(menu)
+        exports['sandbox-hud']:ListMenuShow(menu)
     end
 end)
 
 AddEventHandler("Doors:Client:LockElevator", function(data)
     if ELEVATOR_STATE[data.elevator] and LocalPlayer.state.loggedIn then
-        Callbacks:ServerCallback("Doors:Elevators:ToggleLocks", data, function(success, newState)
+        exports["sandbox-base"]:ServerCallback("Doors:Elevators:ToggleLocks", data, function(success, newState)
             if success then
                 if newState then
-                    Notification:Error("Elevator Locked")
+                    exports["sandbox-hud"]:NotifError("Elevator Locked")
                 else
-                    Notification:Success("Elevator Unlocked")
+                    exports["sandbox-hud"]:NotifSuccess("Elevator Unlocked")
                 end
             end
         end)
@@ -105,8 +105,8 @@ AddEventHandler("Doors:Client:UseElevator", function(data)
     if elevatorData and elevatorData.floors and LocalPlayer.state.loggedIn then
         local floorData = elevatorData.floors[data.floor]
         if floorData and floorData.coords then
-            Callbacks:ServerCallback("Doors:Elevator:Validate", floorData, function()
-                Progress:ProgressWithTickEvent({
+            exports["sandbox-base"]:ServerCallback("Doors:Elevator:Validate", floorData, function()
+                exports['sandbox-hud']:ProgressWithTickEvent({
                     name = "door_elevator",
                     duration = 2000,
                     label = "Awaiting Elevator",
@@ -122,7 +122,7 @@ AddEventHandler("Doors:Client:UseElevator", function(data)
                     },
                 }, function()
                     if LocalPlayer.state.isCuffed then
-                        return Progress:Cancel()
+                        return exports['sandbox-hud']:ProgressCancel()
                     end
                 end, function(cancelled)
                     if not cancelled and not ELEVATOR_STATE[data.elevator].locked then
@@ -131,7 +131,7 @@ AddEventHandler("Doors:Client:UseElevator", function(data)
 
                         SetEntityCoords(GLOBAL_PED, floorData.coords.x, floorData.coords.y, floorData.coords.z)
                         SetEntityHeading(GLOBAL_PED, floorData.coords.w)
-                        Sounds.Play:Distance(5.0, "elevator-bell.ogg", 0.4)
+                        exports["sandbox-sounds"]:PlayDistance(5.0, "elevator-bell.ogg", 0.4)
                         Wait(250)
                         DoScreenFadeIn(500)
                     end
@@ -155,11 +155,11 @@ function CheckElevatorPermissions(restricted)
                 end
             elseif v.type == "job" then
                 if v.job then
-                    if Jobs.Permissions:HasJob(v.job, v.workplace, v.grade, v.gradeLevel, v.reqDuty, v.jobPermission) then
+                    if exports['sandbox-jobs']:HasJob(v.job, v.workplace, v.grade, v.gradeLevel, v.reqDuty, v.jobPermission) then
                         return true
                     end
                 elseif v.jobPermission then
-                    if Jobs.Permissions:HasPermission(v.jobPermission) then
+                    if exports['sandbox-jobs']:HasPermission(v.jobPermission) then
                         return true
                     end
                 end

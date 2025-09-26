@@ -2,29 +2,16 @@ local xSound = exports.xsound
 previousSongs = {}
 CurrentBooths = {}
 
-AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Animations", {
-		"Callbacks",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
-	end)
+	RegisterCallbacks()
 end)
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("sandbox-dj:server:songInfo", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("sandbox-dj:server:songInfo", function(source, data, cb)
 		cb(previousSongs)
 	end)
 
-	Callbacks:RegisterServerCallback("sandbox-dj:server:playMusic", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("sandbox-dj:server:playMusic", function(source, data, cb)
 		local src = source
 		local coords = GetEntityCoords(ped)
 		local zoneNum = data.zoneNum
@@ -63,7 +50,7 @@ function RegisterCallbacks()
 		cb(true, zoneNum)
 	end)
 
-	Callbacks:RegisterServerCallback("sandbox-dj:server:changeVolume", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("sandbox-dj:server:changeVolume", function(source, data, cb)
 		local src = source
 		local zoneNum = data.zoneNum
 		local volume = data.volume
@@ -86,7 +73,7 @@ function RegisterCallbacks()
 		cb(false, nil)
 	end)
 
-	Callbacks:RegisterServerCallback("sandbox-dj:server:stopMusic", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("sandbox-dj:server:stopMusic", function(source, data, cb)
 		local src = source
 		local zoneLabel = data.zoneName
 		if Config.Locations[data.zoneNum].playing then
@@ -97,7 +84,7 @@ function RegisterCallbacks()
 		TriggerClientEvent("sandbox-dj:client:playMusic", src, { zone = data.zoneNum })
 	end)
 
-	Callbacks:RegisterServerCallback("sandbox-dj:server:pauseMusic", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("sandbox-dj:server:pauseMusic", function(source, data, cb)
 		local src = source
 		local zoneLabel = data.zoneName
 		if Config.Locations[data.zoneNum].playing then
@@ -107,7 +94,7 @@ function RegisterCallbacks()
 		TriggerClientEvent("sandbox-dj:client:playMusic", src, { zone = data.zoneNum })
 	end)
 
-	Callbacks:RegisterServerCallback("sandbox-dj:server:resumeMusic", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("sandbox-dj:server:resumeMusic", function(source, data, cb)
 		local src = source
 		local zoneLabel = data.zoneName
 		if not Config.Locations[data.zoneNum].playing then

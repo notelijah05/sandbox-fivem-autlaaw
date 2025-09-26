@@ -12,6 +12,9 @@ local trunkOpen = false
 local _itemDefs = nil
 local _schems = {}
 
+local _playerDataOpen = false
+local _secondaryDataOpen = false
+
 function dropAnim(drop)
 	if LocalPlayer.state.doingAction then
 		return
@@ -77,143 +80,82 @@ local function DoItemLoad(items)
 	_reloading = false
 end
 
-AddEventHandler("Inventory:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Crafting = exports["sandbox-base"]:FetchComponent("Crafting")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Reputation = exports["sandbox-base"]:FetchComponent("Reputation")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
-
-	--Weapons = exports['sandbox-base']:FetchComponent('Weapons')
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Inventory", {
-		"Callbacks",
-		"Inventory",
-		"Utils",
-		"Notification",
-		"Action",
-		"Animations",
-		"Progress",
-		"Crafting",
-		"Interaction",
-		"Input",
-		"Targeting",
-		"UISounds",
-		"Blips",
-		"PedInteraction",
-		"Polyzone",
-		"Hud",
-		"Phone",
-		"Jobs",
-		"Reputation",
-		"Vehicles",
-		"Sounds",
-		"ListMenu",
-		"Buffs",
-		--'Weapons',
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterKeyBinds()
-		RegisterRandomItems()
-		DoItemLoad()
-		CreateDonorVanityItems()
+	RegisterKeyBinds()
+	RegisterRandomItems()
+	DoItemLoad()
+	CreateDonorVanityItems()
 
-		Callbacks:RegisterClientCallback("Inventory:ForceClose", function(data, cb)
-			Inventory.Close:All()
-			cb(true)
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Inventory:ForceClose", function(data, cb)
+		exports['sandbox-inventory']:CloseAll()
+		cb(true)
+	end)
 
-		Callbacks:RegisterClientCallback("Inventory:Container:Open", function(data, cb)
-			if SecondInventory.owner ~= nil then
-				Callbacks:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
-					_container = data.item
-					SecondInventory = { invType = _items[data.item.Name].container, owner = data.container }
-					cb(true)
-				end)
-			else
+	exports["sandbox-base"]:RegisterClientCallback("Inventory:Container:Open", function(data, cb)
+		if SecondInventory.owner ~= nil then
+			exports["sandbox-base"]:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
 				_container = data.item
 				SecondInventory = { invType = _items[data.item.Name].container, owner = data.container }
 				cb(true)
-			end
-		end)
+			end)
+		else
+			_container = data.item
+			SecondInventory = { invType = _items[data.item.Name].container, owner = data.container }
+			cb(true)
+		end
+	end)
 
-		Callbacks:RegisterClientCallback("Inventory:Compartment:Open", function(data, cb)
-			if SecondInventory.owner ~= nil then
-				Callbacks:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
-					SecondInventory = data
-					cb(true)
-				end)
-			else
+	exports["sandbox-base"]:RegisterClientCallback("Inventory:Compartment:Open", function(data, cb)
+		if SecondInventory.owner ~= nil then
+			exports["sandbox-base"]:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
 				SecondInventory = data
 				cb(true)
-			end
-		end)
-
-		Callbacks:RegisterClientCallback("Inventory:ItemUse", function(item, cb)
-			if item.anim and (not item.pbConfig or not item.pbConfig.animation) then
-				Animations.Emotes:Play(item.anim, false, item.time, true)
-			end
-
-			if item.pbConfig ~= nil then
-				Progress:Progress({
-					name = item.pbConfig.name,
-					duration = item.time,
-					label = item.pbConfig.label,
-					useWhileDead = item.pbConfig.useWhileDead,
-					canCancel = item.pbConfig.canCancel,
-					vehicle = item.pbConfig.vehicle,
-					disarm = item.pbConfig.disarm,
-					ignoreModifier = item.pbConfig.ignoreModifier or true,
-					animation = item.pbConfig.animation or false,
-					controlDisables = {
-						disableMovement = item.pbConfig.disableMovement,
-						disableCarMovement = item.pbConfig.disableCarMovement,
-						disableMouse = item.pbConfig.disableMouse,
-						disableCombat = item.pbConfig.disableCombat,
-					},
-				}, function(cancelled)
-					Animations.Emotes:ForceCancel()
-					cb(not cancelled)
-				end)
-			else
-				cb(true)
-			end
-		end)
-
-		CreateVendingMachines()
+			end)
+		else
+			SecondInventory = data
+			cb(true)
+		end
 	end)
+
+	exports["sandbox-base"]:RegisterClientCallback("Inventory:ItemUse", function(item, cb)
+		if item.anim and (not item.pbConfig or not item.pbConfig.animation) then
+			exports['sandbox-animations']:EmotesPlay(item.anim, false, item.time, true)
+		end
+
+		if item.pbConfig ~= nil then
+			exports['sandbox-hud']:Progress({
+				name = item.pbConfig.name,
+				duration = item.time,
+				label = item.pbConfig.label,
+				useWhileDead = item.pbConfig.useWhileDead,
+				canCancel = item.pbConfig.canCancel,
+				vehicle = item.pbConfig.vehicle,
+				disarm = item.pbConfig.disarm,
+				ignoreModifier = item.pbConfig.ignoreModifier or true,
+				animation = item.pbConfig.animation or false,
+				controlDisables = {
+					disableMovement = item.pbConfig.disableMovement,
+					disableCarMovement = item.pbConfig.disableCarMovement,
+					disableMouse = item.pbConfig.disableMouse,
+					disableCombat = item.pbConfig.disableCombat,
+				},
+			}, function(cancelled)
+				exports['sandbox-animations']:EmotesForceCancel()
+				cb(not cancelled)
+			end)
+		else
+			cb(true)
+		end
+	end)
+
+	CreateVendingMachines()
 end)
 
 RegisterNetEvent("Inventory:Client:LoadItems", DoItemLoad)
 
 RegisterNetEvent("Inventory:Client:ReloadItems", function()
 	_reloading = true
-	Notification.Persistent:Info("INVENTORY_RELOAD",
+	exports["sandbox-hud"]:NotifPersistentInfo("INVENTORY_RELOAD",
 		"Requesting Updated Item Definitions, Inventory Temporarily Unavailable")
 	TriggerServerEvent("Inventory:Server:ReloadItems")
 end)
@@ -232,8 +174,8 @@ end)
 RegisterNetEvent("Inventory:Client:ReceiveReload", function(items)
 	LoadItems()
 	DoItemLoad(items)
-	Notification.Persistent:Remove("INVENTORY_RELOAD")
-	Notification:Info("Item Reload Has Completed")
+	exports["sandbox-hud"]:NotifPersistentRemove("INVENTORY_RELOAD")
+	exports["sandbox-hud"]:NotifInfo("Item Reload Has Completed")
 end)
 
 function startCd()
@@ -249,8 +191,8 @@ RegisterNetEvent("UI:Client:Reset", function(force)
 		_startup = false
 		LoadItems()
 	end
-	Inventory.Close:All()
-	Inventory:Enable()
+	exports['sandbox-inventory']:CloseAll()
+	exports['sandbox-inventory']:Enable()
 end)
 
 RegisterNetEvent("Inventory:Client:Cache", function(inventory, refresh)
@@ -261,11 +203,11 @@ RegisterNetEvent("Inventory:Client:Open", function(inventory, inventory2)
 	if inventory ~= nil then
 		_openCd = true
 		LocalPlayer.state.inventoryOpen = true
-		Inventory.Set.Player:Inventory(inventory)
-		Inventory.Set.Player.Data.Open = true
+		exports['sandbox-inventory']:SetPlayerInventory(inventory)
+		_playerDataOpen = true
 
-		if inventory2?.crafting then
-			Inventory.Set.Secondary.Data.Open = true
+		if inventory2 and inventory2.crafting then
+			_secondaryDataOpen = true
 			SendNUIMessage({
 				type = "SET_MODE",
 				data = {
@@ -285,12 +227,12 @@ RegisterNetEvent("Inventory:Client:Open", function(inventory, inventory2)
 			})
 			SetNuiFocus(true, true)
 		else
-			if SecondInventory?.invType == 10 then
+			if SecondInventory and SecondInventory.invType == 10 then
 				dropAnim(true)
 			end
 
 			if inventory2 ~= nil then
-				Inventory.Set.Secondary:Inventory(inventory2)
+				exports['sandbox-inventory']:SetSecondaryInventory(inventory2)
 
 				SendNUIMessage({
 					type = "SET_MODE",
@@ -299,10 +241,10 @@ RegisterNetEvent("Inventory:Client:Open", function(inventory, inventory2)
 					},
 				})
 
-				Inventory.Set.Secondary.Data.Open = true
-				Inventory.Open:Secondary()
+				_secondaryDataOpen = true
+				exports['sandbox-inventory']:OpenSecondary()
 			else
-				Inventory.Set.Secondary.Data.Open = false
+				_secondaryDataOpen = false
 			end
 
 			SendNUIMessage({
@@ -324,9 +266,9 @@ end)
 
 RegisterNetEvent("Inventory:Client:Load", function(inventory, inventory2)
 	if inventory ~= nil then
-		Inventory.Set.Player:Inventory(inventory)
+		exports['sandbox-inventory']:SetPlayerInventory(inventory)
 		if inventory2 ~= nil then
-			Inventory.Set.Secondary:Inventory(inventory2)
+			exports['sandbox-inventory']:SetSecondaryInventory(inventory2)
 		end
 	else
 		LocalPlayer.state.inventoryOpen = false
@@ -347,368 +289,353 @@ end)
 
 AddEventHandler("Vehicles:Client:ExitVehicle", function()
 	if LocalPlayer.state.inventoryOpen then
-		Inventory.Close:All()
+		exports['sandbox-inventory']:CloseAll()
 	end
 end)
 
-INVENTORY = {
-	_required = { "IsEnabled", "Open", "Close", "Set", "Enable", "Disable", "Toggle", "Check" },
-	IsEnabled = function(self)
-		return _startup and not _openCd and not _timedCd and not Hud:IsDisabled()
-	end,
-	Open = {
-		Player = function(self, doSecondary)
-			if Inventory:IsEnabled() then
-				Phone:Close()
-				Interaction:Hide()
-				if not LocalPlayer.state.inventoryOpen then
-					LocalPlayer.state.inventoryOpen = true
-					TriggerServerEvent("Inventory:Server:Request", doSecondary and SecondInventory or false)
-				end
-			end
-		end,
-		Secondary = function(self)
-			SendNUIMessage({
-				type = "SHOW_SECONDARY_INVENTORY",
-			})
-		end,
-	},
-	Close = {
-		All = function(self)
-			SendNUIMessage({
-				type = "APP_HIDE",
-			})
-			SetNuiFocus(false, false)
+exports("IsEnabled", function()
+	return _startup and not _openCd and not _timedCd and not exports['sandbox-hud']:IsDisabled()
+end)
 
-			LocalPlayer.state.inventoryOpen = false
-			LocalPlayer.state.craftingOpen = false
-			Inventory.Set.Player.Data.Open = false
+exports("OpenPlayer", function(doSecondary)
+	if exports['sandbox-inventory']:IsEnabled() then
+		exports['sandbox-phone']:Close()
+		exports['sandbox-hud']:InteractionHide()
+		if not LocalPlayer.state.inventoryOpen then
+			LocalPlayer.state.inventoryOpen = true
+			TriggerServerEvent("Inventory:Server:Request", doSecondary and SecondInventory or false)
+		end
+	end
+end)
 
-			if trunkOpen and trunkOpen > 0 then
-				Vehicles.Sync.Doors:Shut(trunkOpen, 5, false)
-				trunkOpen = false
-			end
+exports("OpenSecondary", function()
+	SendNUIMessage({
+		type = "SHOW_SECONDARY_INVENTORY",
+	})
+end)
 
-			if Inventory.Set.Secondary.Data.Open then
-				Inventory.Close:Secondary()
-			end
-		end,
-		Secondary = function(self)
-			if trunkOpen and trunkOpen > 0 then
-				Vehicles.Sync.Doors:Shut(trunkOpen, 5, false)
-				trunkOpen = false
-			end
+exports("CloseAll", function()
+	SendNUIMessage({
+		type = "APP_HIDE",
+	})
+	SetNuiFocus(false, false)
 
-			if Inventory.Set.Secondary.Data.Open then
-				Callbacks:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
-					SecondInventory = {}
-					_container = nil
-					Inventory.Set.Secondary.Data.Open = false
-				end)
-			end
-		end,
-	},
-	Set = {
-		Player = {
-			Data = {
-				allowOpen = true,
-				Open = false,
-			},
-			Inventory = function(self, data)
-				if not data then
-					LocalPlayer.state.inventoryOpen = false
-					LocalPlayer.state.craftingOpen = false
-					Inventory.Set.Player.Data.Open = false
-					return
-				end
+	LocalPlayer.state.inventoryOpen = false
+	LocalPlayer.state.craftingOpen = false
+	_playerDataOpen = false
 
-				SendNUIMessage({
-					type = "SET_PLAYER_INVENTORY",
-					data = data,
-				})
-			end,
-			Slot = function(self, slot)
-				SendNUIMessage({
-					type = "SET_PLAYER_SLOT",
-					data = {
-						slot = slot,
-					},
-				})
-			end,
+	if trunkOpen and trunkOpen > 0 then
+		exports['sandbox-vehicles']:SyncDoorsShut(trunkOpen, 5, false)
+		trunkOpen = false
+	end
+
+	if _secondaryDataOpen then
+		exports['sandbox-inventory']:CloseSecondary()
+	end
+end)
+
+exports("CloseSecondary", function()
+	if trunkOpen and trunkOpen > 0 then
+		exports['sandbox-vehicles']:SyncDoorsShut(trunkOpen, 5, false)
+		trunkOpen = false
+	end
+
+	if _secondaryDataOpen then
+		exports["sandbox-base"]:ServerCallback("Inventory:CloseSecondary", SecondInventory, function()
+			SecondInventory = {}
+			_container = nil
+			_secondaryDataOpen = false
+		end)
+	end
+end)
+
+exports("SetPlayerInventory", function(data)
+	if not data then
+		LocalPlayer.state.inventoryOpen = false
+		LocalPlayer.state.craftingOpen = false
+		_playerDataOpen = false
+		return
+	end
+
+	SendNUIMessage({
+		type = "SET_PLAYER_INVENTORY",
+		data = data,
+	})
+end)
+
+exports("SetPlayerSlot", function(slot)
+	SendNUIMessage({
+		type = "SET_PLAYER_SLOT",
+		data = {
+			slot = slot,
 		},
-		Secondary = {
-			Data = {
-				Open = false,
-			},
-			Inventory = function(self, data)
-				Inventory.Set.Secondary.Data.Open = true
-				SendNUIMessage({
-					type = "SET_SECONDARY_INVENTORY",
-					data = data,
-				})
-			end,
-			Slot = function(self, slot)
-				SendNUIMessage({
-					type = "SET_SECONDARY_SLOT",
-					data = {
-						slot = slot,
-					},
-				})
-			end,
+	})
+end)
+
+exports("SetSecondaryInventory", function(data)
+	_secondaryDataOpen = true
+	SendNUIMessage({
+		type = "SET_SECONDARY_INVENTORY",
+		data = data,
+	})
+end)
+
+exports("SetSecondarySlot", function(slot)
+	SendNUIMessage({
+		type = "SET_SECONDARY_SLOT",
+		data = {
+			slot = slot,
 		},
-	},
-	Used = {
-		HotKey = function(self, control)
-			if not _hkCd and not _inUse and not Hud:IsDisabled() then
+	})
+end)
+
+exports("UsedHotKey", function(control)
+	if not _hkCd and not _inUse and not exports['sandbox-hud']:IsDisabled() then
+		SendNUIMessage({
+			type = "USE_ITEM_PLAYER",
+			data = {
+				originSlot = control,
+			},
+		})
+		_hkCd = true
+		exports["sandbox-base"]:ServerCallback("Inventory:UseSlot", { slot = control }, function(state)
+			if not state then
 				SendNUIMessage({
-					type = "USE_ITEM_PLAYER",
+					type = "SLOT_NOT_USED",
 					data = {
 						originSlot = control,
 					},
 				})
-				_hkCd = true
-				Callbacks:ServerCallback("Inventory:UseSlot", { slot = control }, function(state)
-					if not state then
-						SendNUIMessage({
-							type = "SLOT_NOT_USED",
-							data = {
-								originSlot = control,
-							},
-						})
-					end
-
-					Citizen.SetTimeout(3000, function()
-						_hkCd = false
-					end)
-				end)
-			end
-		end,
-	},
-	-- ALL OF THIS NEEDS TO BE VALIDATED SERVER SIDE
-	-- THIS IS BEING ADDED TO SAVE A CLIENT > SERVER > CLIENT CALL
-	Items = {
-		GetInstance = function(self, item)
-			if _cachedInventory == nil or _cachedInventory.inventory == nil or #_cachedInventory.inventory == 0 then
-				return nil
 			end
 
-			for k, v in ipairs(_cachedInventory.inventory) do
-				if v.Name == item
-					and (
-						_items[v.Name].durability == nil
-						or not _items[v.Name].isDestroyed
-						or (((v.CreateDate or 0) + _items[v.Name].durability) >= GetCloudTimeAsInt())
-
-					) then
-					return v
-				end
-			end
-		end,
-		GetCount = function(self, item, bundleWeapons)
-			local counts = Inventory.Items:GetCounts(bundleWeapons)
-			return counts[item] or 0
-		end,
-		GetCounts = function(self, bundleWeapons)
-			if _cachedInventory == nil or _cachedInventory.inventory == nil or #_cachedInventory.inventory == 0 then
-				return {}
-			end
-			local counts = {}
-
-			if LocalPlayer.state.Character == nil then
-				return counts
-			end
-
-			for k, v in ipairs(_cachedInventory.inventory) do
-				if _items[v.Name] then
-					if
-						_items[v.Name].durability == nil
-						or not _items[v.Name].isDestroyed
-						or (((v.CreateDate or 0) + _items[v.Name].durability) >= GetCloudTimeAsInt())
-					then
-						local itemData = Inventory.Items:GetData(v.Name)
-
-						if bundleWeapons and itemData?.weapon then
-							counts[itemData?.weapon] = (counts[itemData?.weapon] or 0) + v.Count
-						end
-						counts[v.Name] = (counts[v.Name] or 0) + v.Count
-					end
-				end
-			end
-
-			return counts
-		end,
-		GetTypeCounts = function(self)
-			local counts = {}
-
-			if LocalPlayer.state.Character == nil or _cachedInventory == nil or _items == nil then
-				return counts
-			end
-
-			for k, v in ipairs(_cachedInventory.inventory) do
-				if _items[v.Name] ~= nil then
-					if
-						_items[v.Name].durability == nil
-						or not _items[v.Name].isDestroyed
-						or (((v.CreateDate or 0) + _items[v.Name].durability) >= GetCloudTimeAsInt())
-					then
-						local itemData = Inventory.Items:GetData(v.Name)
-						counts[itemData.type] = (counts[itemData.type] or 0) + v.Count
-					end
-				end
-			end
-
-			return counts
-		end,
-		Has = function(self, item, count, bundleWeapons)
-			return Inventory.Items:GetCount(item, bundleWeapons) >= count
-		end,
-		HasType = function(self, itemType, count)
-			return (Inventory.Items:GetTypeCounts()[itemType] or 0) >= count
-		end,
-		GetData = function(self, name)
-			if name ~= nil then
-				return _items[name]
-			else
-				return _items
-			end
-		end,
-		GetWithStaticMetadata = function(self, masterKey, mainIdName, textureIdName, gender, data)
-			for k, v in pairs(_items) do
-				if
-					v.staticMetadata ~= nil
-					and v.staticMetadata[masterKey] ~= nil
-					and v.staticMetadata[masterKey][gender][mainIdName] == data[mainIdName]
-					and v.staticMetadata[masterKey][gender][textureIdName] == data[textureIdName]
-				then
-					return k
-				end
-			end
-
-			return nil
-		end,
-	},
-	Check = {
-		Player = {
-			HasItem = function(self, item, count)
-				return Inventory.Items:Has(item, count)
-			end,
-			HasItems = function(self, items)
-				for k, v in ipairs(items) do
-					if not Inventory.Items:Has(v.item, v.count, true) then
-						return false
-					end
-				end
-				return true
-			end,
-			HasAnyItems = function(self, items)
-				for k, v in ipairs(items) do
-					if Inventory.Items:Has(v.item, v.count) then
-						return true
-					end
-				end
-
-				return false
-			end,
-		},
-	},
-	Enable = function(self)
-		LocalPlayer.state.InventoryDisabled = false
-	end,
-	Disable = function(self)
-		LocalPlayer.state.InventoryDisabled = true
-	end,
-	Toggle = function(self)
-		LocalPlayer.state.InventoryDisabled = not LocalPlayer.state.InventoryDisabled
-	end,
-	Dumbfuck = {
-		Open = function(self, data)
-			Callbacks:ServerCallback("Inventory:Server:Open", data, function(state)
-				if state then
-					SecondInventory = { invType = data.invType, owner = data.owner }
-				end
+			Citizen.SetTimeout(3000, function()
+				_hkCd = false
 			end)
-		end,
-	},
-	Stash = {
-		Open = function(self, type, identifier)
-			Callbacks:ServerCallback("Stash:Server:Open", {
-				type = type,
-				identifier = identifier,
-			}, function(state)
-				if state ~= nil then
-					SecondInventory = state
-				end
-			end)
-		end,
-	},
-	Shop = {
-		Open = function(self, identifier)
-			Callbacks:ServerCallback("Shop:Server:Open", {
-				identifier = identifier,
-			}, function(state)
-				if state then
-					SecondInventory = { invType = state, owner = string.format("shop:%s", identifier) }
-				end
-			end)
-		end,
-	},
-	PlayerShop = {
-		Open = function(self, shopId)
-			Callbacks:ServerCallback("PlayerShop:Server:Open", {
-				id = shopId,
-			}, function(state)
-				if state then
-					SecondInventory = { invType = state, owner = shopId }
-				end
-			end)
-		end,
-	},
-	Search = {
-		Character = function(self, serverId)
-			Callbacks:ServerCallback("Inventory:Search", {
-				serverId = serverId,
-			}, function(owner)
-				if owner then
-					SecondInventory = { invType = 1, owner = owner }
-				end
-			end)
-		end,
-	},
-	StaticTooltip = {
-		Open = function(self, item)
-			SendNUIMessage({
-				type = "OPEN_STATIC_TOOLTIP",
-				data = {
-					item = item,
-				}
-			})
-		end,
-		Close = function(self)
-			SendNUIMessage({
-				type = "CLOSE_STATIC_TOOLTIP",
-			})
-		end,
-	},
-	UpdateCachedMD = function(self, slot, md, triggeredKey)
-		if _cachedInventory and _cachedInventory.inventory then
-			for k, v in ipairs(_cachedInventory.inventory) do
-				if v.Slot == slot then
-					v.MetaData = md
+		end)
+	end
+end)
 
-					local itemData = _items[v.Name]
-					if WEAPON_PROPS[itemData?.weapon or v.name] and triggeredKey == "WeaponComponents" then
+exports("ItemsGetInstance", function(item)
+	if _cachedInventory == nil or _cachedInventory.inventory == nil or #_cachedInventory.inventory == 0 then
+		return nil
+	end
 
-					end
+	for k, v in ipairs(_cachedInventory.inventory) do
+		if v.Name == item
+			and (
+				_items[v.Name].durability == nil
+				or not _items[v.Name].isDestroyed
+				or (((v.CreateDate or 0) + _items[v.Name].durability) >= GetCloudTimeAsInt())
 
-					return
+			) then
+			return v
+		end
+	end
+end)
+
+exports("ItemsGetCount", function(item, bundleWeapons)
+	local counts = exports['sandbox-inventory']:ItemsGetCounts(bundleWeapons)
+	return counts[item] or 0
+end)
+
+exports("ItemsGetCounts", function(bundleWeapons)
+	if _cachedInventory == nil or _cachedInventory.inventory == nil or #_cachedInventory.inventory == 0 then
+		return {}
+	end
+	local counts = {}
+
+	if LocalPlayer.state.Character == nil then
+		return counts
+	end
+
+	for k, v in ipairs(_cachedInventory.inventory) do
+		if _items[v.Name] then
+			if
+				_items[v.Name].durability == nil
+				or not _items[v.Name].isDestroyed
+				or (((v.CreateDate or 0) + _items[v.Name].durability) >= GetCloudTimeAsInt())
+			then
+				local itemData = exports['sandbox-inventory']:ItemsGetData(v.Name)
+
+				if bundleWeapons and itemData and itemData.weapon then
+					counts[itemData.weapon] = (counts[itemData.weapon] or 0) + v.Count
 				end
+				counts[v.Name] = (counts[v.Name] or 0) + v.Count
 			end
 		end
-	end,
-}
+	end
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Inventory", INVENTORY)
+	return counts
+end)
+
+exports("ItemsGetTypeCounts", function()
+	local counts = {}
+
+	if LocalPlayer.state.Character == nil or _cachedInventory == nil or _items == nil then
+		return counts
+	end
+
+	for k, v in ipairs(_cachedInventory.inventory) do
+		if _items[v.Name] ~= nil then
+			if
+				_items[v.Name].durability == nil
+				or not _items[v.Name].isDestroyed
+				or (((v.CreateDate or 0) + _items[v.Name].durability) >= GetCloudTimeAsInt())
+			then
+				local itemData = exports['sandbox-inventory']:ItemsGetData(v.Name)
+				counts[itemData.type] = (counts[itemData.type] or 0) + v.Count
+			end
+		end
+	end
+
+	return counts
+end)
+
+exports("ItemsHas", function(item, count, bundleWeapons)
+	return exports['sandbox-inventory']:ItemsGetCount(item, bundleWeapons) >= count
+end)
+
+exports("ItemsHasType", function(itemType, count)
+	return (exports['sandbox-inventory']:ItemsGetTypeCounts()[itemType] or 0) >= count
+end)
+
+exports("ItemsGetData", function(name)
+	if name ~= nil then
+		return _items[name]
+	else
+		return _items
+	end
+end)
+
+exports("ItemsGetWithStaticMetadata", function(masterKey, mainIdName, textureIdName, gender, data)
+	for k, v in pairs(_items) do
+		if
+			v.staticMetadata ~= nil
+			and v.staticMetadata[masterKey] ~= nil
+			and v.staticMetadata[masterKey][gender][mainIdName] == data[mainIdName]
+			and v.staticMetadata[masterKey][gender][textureIdName] == data[textureIdName]
+		then
+			return k
+		end
+	end
+
+	return nil
+end)
+
+exports("CheckPlayerHasItem", function(item, count)
+	return exports['sandbox-inventory']:ItemsHas(item, count)
+end)
+
+exports("CheckPlayerHasItems", function(items)
+	for k, v in ipairs(items) do
+		if not exports['sandbox-inventory']:ItemsHas(v.item, v.count, true) then
+			return false
+		end
+	end
+	return true
+end)
+
+exports("CheckPlayerHasAnyItems", function(items)
+	for k, v in ipairs(items) do
+		if exports['sandbox-inventory']:ItemsHas(v.item, v.count) then
+			return true
+		end
+	end
+
+	return false
+end)
+
+exports("Enable", function()
+	LocalPlayer.state.InventoryDisabled = false
+end)
+
+exports("Disable", function()
+	LocalPlayer.state.InventoryDisabled = true
+end)
+
+exports("Toggle", function()
+	LocalPlayer.state.InventoryDisabled = not LocalPlayer.state.InventoryDisabled
+end)
+
+exports("DumbfuckOpen", function(data)
+	exports["sandbox-base"]:ServerCallback("Inventory:Server:Open", data, function(state)
+		if state then
+			SecondInventory = { invType = data.invType, owner = data.owner }
+		end
+	end)
+end)
+
+exports("StashOpen", function(type, identifier)
+	exports["sandbox-base"]:ServerCallback("Stash:Server:Open", {
+		type = type,
+		identifier = identifier,
+	}, function(state)
+		if state ~= nil then
+			SecondInventory = state
+		end
+	end)
+end)
+
+exports("ShopOpen", function(identifier)
+	exports["sandbox-base"]:ServerCallback("Shop:Server:Open", {
+		identifier = identifier,
+	}, function(state)
+		if state then
+			SecondInventory = { invType = state, owner = string.format("shop:%s", identifier) }
+		end
+	end)
+end)
+
+exports("PlayerShopOpen", function(shopId)
+	exports["sandbox-base"]:ServerCallback("PlayerShop:Server:Open", {
+		id = shopId,
+	}, function(state)
+		if state then
+			SecondInventory = { invType = state, owner = shopId }
+		end
+	end)
+end)
+
+exports("SearchCharacter", function(serverId)
+	exports["sandbox-base"]:ServerCallback("Inventory:Search", {
+		serverId = serverId,
+	}, function(owner)
+		if owner then
+			SecondInventory = { invType = 1, owner = owner }
+		end
+	end)
+end)
+
+exports("StaticTooltipOpen", function(item)
+	SendNUIMessage({
+		type = "OPEN_STATIC_TOOLTIP",
+		data = {
+			item = item,
+		}
+	})
+end)
+
+exports("StaticTooltipClose", function()
+	SendNUIMessage({
+		type = "CLOSE_STATIC_TOOLTIP",
+	})
+end)
+
+exports("UpdateCachedMD", function(slot, md, triggeredKey)
+	if _cachedInventory and _cachedInventory.inventory then
+		for k, v in ipairs(_cachedInventory.inventory) do
+			if v.Slot == slot then
+				v.MetaData = md
+
+				local itemData = _items[v.Name]
+				if WEAPON_PROPS[itemData and itemData.weapon or v.name] and triggeredKey == "WeaponComponents" then
+
+				end
+
+				return
+			end
+		end
+	end
 end)
 
 local Sounds = {
@@ -721,7 +648,7 @@ local Sounds = {
 RegisterNUICallback("FrontEndSound", function(data, cb)
 	cb("ok")
 	if Sounds[data] ~= nil then
-		UISounds.Play:FrontEnd(Sounds[data].id, Sounds[data].sound, Sounds[data].library)
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(Sounds[data].id, Sounds[data].sound, Sounds[data].library)
 	end
 end)
 
@@ -732,32 +659,33 @@ end)
 
 RegisterNUICallback("SubmitAction", function(data, cb)
 	cb('OK')
-	Inventory.Close:All()
+	exports['sandbox-inventory']:CloseAll()
 	TriggerServerEvent("Inventory:Server:TriggerAction", data)
 end)
 
 RegisterNUICallback("Close", function(data, cb)
 	startCd()
 	cb(true)
-	Inventory.Close:All()
-	Inventory:Enable()
+	exports['sandbox-inventory']:CloseAll()
+	exports['sandbox-inventory']:Enable()
 end)
 
 RegisterNUICallback("Crashed", function(data, cb)
 	startCd()
 	cb(true)
-	Inventory.Close:All()
-	Inventory:Enable()
+	exports['sandbox-inventory']:CloseAll()
+	exports['sandbox-inventory']:Enable()
 	_openCd = false
 end)
 
 RegisterNUICallback("BrokeShit", function(data, cb)
 	startCd()
 	cb(true)
-	Inventory.Close:All()
-	Inventory:Enable()
+	exports['sandbox-inventory']:CloseAll()
+	exports['sandbox-inventory']:Enable()
 	_openCd = false
-	Notification:Error("Something Is Broken And Your Inventory Isn't Working, You May Need To Hard Nap To Fix")
+	exports["sandbox-hud"]:NotifError(
+		"Something Is Broken And Your Inventory Isn't Working, You May Need To Hard Nap To Fix")
 end)
 
 RegisterNetEvent("Inventory:Client:ReceiveItems", function(items)
@@ -765,7 +693,7 @@ RegisterNetEvent("Inventory:Client:ReceiveItems", function(items)
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()
-	Callbacks:ServerCallback("Inventory:Server:retreiveStores", {}, function(shopsData)
+	exports["sandbox-base"]:ServerCallback("Inventory:Server:retreiveStores", {}, function(shopsData)
 		Shops = shopsData
 		setupStores(shopsData)
 		startDropsTick()
@@ -792,14 +720,14 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 AddEventHandler("Ped:Client:Died", function()
-	Inventory.Close:All()
+	exports['sandbox-inventory']:CloseAll()
 end)
 
 AddEventHandler("Inventory:Client:Trunk", function(entity, data)
 	local vehClass = GetVehicleClass(entity.entity)
 	local vehModel = GetEntityModel(entity.entity)
 
-	Callbacks:ServerCallback("Inventory:OpenTrunk", {
+	exports["sandbox-base"]:ServerCallback("Inventory:OpenTrunk", {
 		netId = VehToNet(entity.entity),
 		class = vehClass,
 		model = vehModel,
@@ -816,7 +744,7 @@ AddEventHandler("Inventory:Client:Trunk", function(entity, data)
 			SetVehicleHasBeenOwnedByPlayer(entity.entity, true)
 			SetEntityAsMissionEntity(entity.entity, true, true)
 			--SetVehicleDoorOpen(entity.entity, 5, true, false)
-			Vehicles.Sync.Doors:Open(entity.entity, 5, false, false)
+			exports['sandbox-vehicles']:SyncDoorsOpen(entity.entity, 5, false, false)
 		end
 	end)
 end)
@@ -839,22 +767,22 @@ end)
 
 RegisterNetEvent("Inventory:Container:Remove", function(data, from)
 	if _container ~= nil and _container.Slot == from then
-		Inventory.Close:All()
+		exports['sandbox-inventory']:CloseAll()
 	end
 end)
 
 RegisterNetEvent("Inventory:Client:SetSlot", function(owner, type, slot)
-	if SecondInventory?.owner == owner and SecondInventory?.invType == type then
-		Inventory.Set.Secondary:Slot(slot)
+	if SecondInventory and SecondInventory.owner == owner and SecondInventory and SecondInventory.invType == type then
+		exports['sandbox-inventory']:SetSecondarySlot(slot)
 	else
-		Inventory.Set.Player:Slot(slot)
+		exports['sandbox-inventory']:SetPlayerSlot(slot)
 	end
 end)
 
 local runningId = 0
 RegisterNetEvent("Inventory:Client:Changed", function(type, item, count, slot)
 	if type == "holster" then
-		local equipped = Weapons:GetEquippedItem()
+		local equipped = exports['sandbox-inventory']:WeaponsGetEquippedItem()
 		if equipped ~= nil and equipped.Slot == slot and equipped.Name == item then
 			type = "Holstered"
 		else
@@ -876,9 +804,8 @@ RegisterNetEvent("Inventory:Client:Changed", function(type, item, count, slot)
 end)
 
 function OpenInventory()
-	if Inventory:IsEnabled() then
+	if exports['sandbox-inventory']:IsEnabled() then
 		local playerPed = PlayerPedId()
-		local plate
 		local requestSecondary = false
 		local isPedInVehicle = IsPedInAnyVehicle(playerPed, true)
 
@@ -904,8 +831,8 @@ function OpenInventory()
 		elseif not IsPedFalling(playerPed) and not IsPedClimbing(playerPed) and not IsPedDiving(playerPed) and not LocalPlayer.state.playingCasino then
 			if GetEntitySpeed(playerPed) < 8.0 then
 				local p = promise.new()
-				if Inventory:IsEnabled() then
-					Callbacks:ServerCallback("Inventory:CheckIfNearDropZone", {}, function(dropzone)
+				if exports['sandbox-inventory']:IsEnabled() then
+					exports["sandbox-base"]:ServerCallback("Inventory:CheckIfNearDropZone", {}, function(dropzone)
 						if dropzone ~= nil and not isPedInVehicle and not requestSecondary then
 							p:resolve({ invType = 10, owner = dropzone.id, position = dropzone.position })
 						else
@@ -930,7 +857,7 @@ function OpenInventory()
 			end
 		end
 
-		Inventory.Open:Player(requestSecondary)
+		exports['sandbox-inventory']:OpenPlayer(requestSecondary)
 		-- if requestSecondary then
 		-- 	TriggerServerEvent("Inventory:Server:requestSecondaryInventory", SecondInventory)
 		-- end
@@ -943,7 +870,7 @@ RegisterNUICallback("MergeSlot", function(data, cb)
 	data.model = SecondInventory.model
 	data.inventory = SecondInventory
 
-	Callbacks:ServerCallback("Inventory:MergeItem", data, function(success)
+	exports["sandbox-base"]:ServerCallback("Inventory:MergeItem", data, function(success)
 		if success and success.success then
 			if SecondInventory.netId then
 				local veh = NetToVeh(SecondInventory.netId)
@@ -959,7 +886,7 @@ RegisterNUICallback("MergeSlot", function(data, cb)
 			end
 		else
 			if success and success.reason then
-				Notification:Error(success.reason, 3600)
+				exports["sandbox-hud"]:NotifError(success.reason, 3600)
 			end
 		end
 	end)
@@ -971,7 +898,7 @@ RegisterNUICallback("SwapSlot", function(data, cb)
 	data.model = SecondInventory.model
 	data.inventory = SecondInventory
 
-	Callbacks:ServerCallback("Inventory:SwapItem", data, function(success)
+	exports["sandbox-base"]:ServerCallback("Inventory:SwapItem", data, function(success)
 		if success and success.success then
 			if SecondInventory.netId then
 				local veh = NetToVeh(SecondInventory.netId)
@@ -987,7 +914,7 @@ RegisterNUICallback("SwapSlot", function(data, cb)
 			end
 		else
 			if success and success.reason then
-				Notification:Error(success.reason, 3600)
+				exports["sandbox-hud"]:NotifError(success.reason, 3600)
 			end
 		end
 	end)
@@ -999,7 +926,7 @@ RegisterNUICallback("MoveSlot", function(data, cb)
 	data.model = SecondInventory.model
 	data.inventory = SecondInventory
 
-	Callbacks:ServerCallback("Inventory:MoveItem", data, function(success)
+	exports["sandbox-base"]:ServerCallback("Inventory:MoveItem", data, function(success)
 		if success and success.success then
 			if SecondInventory.netId then
 				local veh = NetToVeh(SecondInventory.netId)
@@ -1015,7 +942,7 @@ RegisterNUICallback("MoveSlot", function(data, cb)
 			end
 		else
 			if success and success.reason then
-				Notification:Error(success.reason, 3600)
+				exports["sandbox-hud"]:NotifError(success.reason, 3600)
 			end
 		end
 	end)
@@ -1025,11 +952,11 @@ RegisterNUICallback("SendNotify", function(data, cb)
 	cb("OK")
 	if data then
 		if data.alert == "success" then
-			Notification:Success(data.message, data.time)
+			exports["sandbox-hud"]:NotifSuccess(data.message, data.time)
 		elseif data.alert == "warning" then
 			Notification:Warning(data.message, data.time)
 		elseif data.alert == "error" then
-			Notification:Error(data.message, data.time)
+			exports["sandbox-hud"]:NotifError(data.message, data.time)
 		end
 	end
 end)
@@ -1039,7 +966,7 @@ RegisterNUICallback("UseItem", function(data, cb)
 	if LocalPlayer.state.doingAction then
 		return
 	end
-	Callbacks:ServerCallback("Inventory:UseItem", {
+	exports["sandbox-base"]:ServerCallback("Inventory:UseItem", {
 		slot = data.slot,
 		owner = data.owner,
 		invType = data.invType,
@@ -1048,12 +975,12 @@ end)
 
 RegisterNetEvent("Inventory:CloseUI", function()
 	startCd()
-	Inventory.Close:All()
-	Inventory:Enable()
+	exports['sandbox-inventory']:CloseAll()
+	exports['sandbox-inventory']:Enable()
 end)
 
 RegisterNetEvent("Inventory:Client:UpdateMetadata", function(slot, md, key)
-	Inventory:UpdateCachedMD(slot, md, key)
+	exports['sandbox-inventory']:UpdateCachedMD(slot, md, key)
 end)
 
 local _shops = {}
@@ -1104,7 +1031,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Set", function(shops)
 				end,
 			})
 		else
-			if Jobs.Permissions:HasPermissionInJob(v.job, "JOB_SHOP_CONTROL") then
+			if exports['sandbox-jobs']:HasPermissionInJob(v.job, "JOB_SHOP_CONTROL") then
 				table.insert(menus, {
 					icon = "octagon-check",
 					text = "Open Shop",
@@ -1126,7 +1053,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Set", function(shops)
 			end
 		end
 
-		PedInteraction:Add(
+		exports['sandbox-pedinteraction']:Add(
 			"player-shop-" .. v.id,
 			GetHashKey(v.ped_model or 'S_F_Y_SweatShop_01'),
 			vector3(v.position.x, v.position.y, v.position.z),
@@ -1140,7 +1067,7 @@ end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
 	for k, v in pairs(_shops) do
-		PedInteraction:Remove("player-shop-" .. v.id)
+		exports['sandbox-pedinteraction']:Remove("player-shop-" .. v.id)
 	end
 end)
 
@@ -1183,7 +1110,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Create", function(shop)
 			end,
 		})
 	else
-		if Jobs.Permissions:HasPermissionInJob(shop.job, "JOB_SHOP_CONTROL") then
+		if exports['sandbox-jobs']:HasPermissionInJob(shop.job, "JOB_SHOP_CONTROL") then
 			table.insert(menus, {
 				icon = "octagon-check",
 				text = "Open Shop",
@@ -1206,7 +1133,7 @@ RegisterNetEvent("Inventory:Client:BasicShop:Create", function(shop)
 	end
 
 
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"player-shop-" .. shop.id,
 		GetHashKey(shop.ped_model or 'S_F_Y_SweatShop_01'),
 		vector3(shop.position.x, shop.position.y, shop.position.z),
@@ -1218,11 +1145,11 @@ RegisterNetEvent("Inventory:Client:BasicShop:Create", function(shop)
 end)
 
 RegisterNetEvent("Inventory:Client:BasicShop:Delete", function(shopId)
-	PedInteraction:Remove("player-shop-" .. shopId)
+	exports['sandbox-pedinteraction']:Remove("player-shop-" .. shopId)
 end)
 
 RegisterNUICallback("AddToShop", function(data, cb)
-	Callbacks:ServerCallback("Inventory:PlayerShop:AddItem", data, cb)
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:AddItem", data, cb)
 end)
 
 RegisterNetEvent("StoreFailedPurchase", function(data)
@@ -1233,11 +1160,11 @@ RegisterNetEvent("StoreFailedPurchase", function(data)
 end)
 
 AddEventHandler("Shop:Client:BasicShop:Open", function(obj, shopId)
-	Inventory.PlayerShop:Open(shopId)
+	exports['sandbox-inventory']:PlayerShopOpen(shopId)
 end)
 
 AddEventHandler("Shop:Client:BasicShop:AddModerator", function(obj, shopId)
-	Input:Show(
+	exports['sandbox-hud']:InputShow(
 		"Add Shop Moderator",
 		"Add Shop Moderator",
 		{
@@ -1257,16 +1184,16 @@ AddEventHandler("Shop:Client:BasicShop:AddModerator", function(obj, shopId)
 end)
 
 AddEventHandler("Shop:Client:BasicShop:AddModeratorInput", function(values, shopId)
-	Callbacks:ServerCallback("Inventory:PlayerShop:AddModerator", {
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:AddModerator", {
 		shop = shopId,
 		sid = values.sid
 	})
 end)
 
 AddEventHandler("Shop:Client:BasicShop:ViewModerators", function(obj, shopId)
-	Callbacks:ServerCallback("Inventory:PlayerShop:ViewModerators", shopId, function(list)
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:ViewModerators", shopId, function(list)
 		if list then
-			ListMenu:Show({
+			exports['sandbox-hud']:ListMenuShow({
 				main = {
 					label = "Shop Moderators",
 					items = list,
@@ -1277,18 +1204,18 @@ AddEventHandler("Shop:Client:BasicShop:ViewModerators", function(obj, shopId)
 end)
 
 AddEventHandler("Shop:Client:BasicShop:RemoveModerator", function(data)
-	Callbacks:ServerCallback("Inventory:PlayerShop:RemoveModerator", data)
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:RemoveModerator", data)
 end)
 
 AddEventHandler("Shop:Client:BasicShop:OpenShop", function(obj, shopId)
-	Callbacks:ServerCallback("Inventory:PlayerShop:ChangeState", {
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:ChangeState", {
 		id = shopId,
 		state = true
 	})
 end)
 
 AddEventHandler("Shop:Client:BasicShop:CloseShop", function(obj, shopId)
-	Callbacks:ServerCallback("Inventory:PlayerShop:ChangeState", {
+	exports["sandbox-base"]:ServerCallback("Inventory:PlayerShop:ChangeState", {
 		id = shopId,
 		state = false
 	})

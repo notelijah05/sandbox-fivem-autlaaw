@@ -18,108 +18,110 @@ local IsInEmoteName = false
 
 local currentEmoteAllData = false
 
-ANIMATIONS.Emotes = {
-    Play = function(self, emote, fromUserInput, time, notCancellable, skipDisarm)
-        if IsInAnimation and fromUserInput and not IsAbleToCancel then
-            return
-        end
+exports("EmotesPlay", function(emote, fromUserInput, time, notCancellable, skipDisarm)
+    if IsInAnimation and fromUserInput and not IsAbleToCancel then
+        return
+    end
 
-        if fromUserInput and LocalPlayer.state.sitting then
-            return
-        end
+    if fromUserInput and LocalPlayer.state.sitting then
+        return
+    end
 
-        if fromUserInput and (IsPedBeingStunned(LocalPlayer.state.ped) or IsPedRagdoll(LocalPlayer.state.ped) or IsPedFalling(LocalPlayer.state.ped)) then
-            return Notification:Error('Cannot Do Animation Now')
-        end
+    if fromUserInput and (IsPedBeingStunned(LocalPlayer.state.ped) or IsPedRagdoll(LocalPlayer.state.ped) or IsPedFalling(LocalPlayer.state.ped)) then
+        return exports["sandbox-hud"]:NotifError('Cannot Do Animation Now')
+    end
 
-        if fromUserInput and LocalPlayer.state.playingCasino then
-            return Notification:Error('Cannot Do Animation Now')
-        end
+    if fromUserInput and LocalPlayer.state.playingCasino then
+        return exports["sandbox-hud"]:NotifError('Cannot Do Animation Now')
+    end
 
-        if IsInAnimation then
-            Animations.Emotes:ForceCancel()
-            Wait(250)
-        end
+    if IsInAnimation then
+        exports['sandbox-animations']:EmotesForceCancel()
+        Wait(250)
+    end
 
-        if emote ~= nil and type(emote) == 'string' then
-            local name = string.lower(emote)
-            local animInfo
+    if emote ~= nil and type(emote) == 'string' then
+        local name = string.lower(emote)
+        local animInfo
 
-            if AnimData.Emotes[name] ~= nil then
-                animInfo = AnimData.Emotes[name]
-            elseif AnimData.Dances[name] ~= nil then
-                animInfo = AnimData.Dances[name]
-            elseif AnimData.PropEmotes[name] ~= nil then
-                animInfo = AnimData.PropEmotes[name]
-            elseif AnimData.DogEmotes[name] ~= nil then
-                animInfo = AnimData.DogEmotes[name]
-            else
-                Notification:Error('Invalid Emote')
-            end
-            local animTime = (time ~= nil and tonumber(time) or nil)
-            local notCancellable = notCancellable ~= nil and notCancellable or false
-            if animInfo ~= nil then
-                DoAnEmote(animInfo, fromUserInput, animTime, notCancellable, emote, skipDisarm)
-            end
-        elseif emote ~= nil and type(emote) == 'table' then
-            local name = string.lower(emote.name)
-            local animInfo
+        if AnimData.Emotes[name] ~= nil then
+            animInfo = AnimData.Emotes[name]
+        elseif AnimData.Dances[name] ~= nil then
+            animInfo = AnimData.Dances[name]
+        elseif AnimData.PropEmotes[name] ~= nil then
+            animInfo = AnimData.PropEmotes[name]
+        elseif AnimData.DogEmotes[name] ~= nil then
+            animInfo = AnimData.DogEmotes[name]
+        else
+            exports["sandbox-hud"]:NotifError('Invalid Emote')
+        end
+        local animTime = (time ~= nil and tonumber(time) or nil)
+        local notCancellable = notCancellable ~= nil and notCancellable or false
+        if animInfo ~= nil then
+            DoAnEmote(animInfo, fromUserInput, animTime, notCancellable, emote, skipDisarm)
+        end
+    elseif emote ~= nil and type(emote) == 'table' then
+        local name = string.lower(emote.name)
+        local animInfo
 
-            if AnimData.Emotes[name] ~= nil then
-                animInfo = AnimData.Emotes[name]
-            elseif AnimData.Dances[name] ~= nil then
-                animInfo = AnimData.Dances[name]
-            elseif AnimData.PropEmotes[name] ~= nil then
-                animInfo = AnimData.PropEmotes[name]
-            elseif AnimData.DogEmotes[name] ~= nil then
-                animInfo = AnimData.DogEmotes[name]
-            else
-                Notification:Error('Invalid Emote')
-            end
-            if emote.prop then
-                animInfo.AdditionalOptions.Prop = emote.prop
-            end
-            local animTime = (time ~= nil and tonumber(time) or nil)
-            local notCancellable = notCancellable ~= nil and notCancellable or false
-            if animInfo ~= nil then
-                DoAnEmote(animInfo, fromUserInput, animTime, notCancellable, emote, skipDisarm)
-            end
+        if AnimData.Emotes[name] ~= nil then
+            animInfo = AnimData.Emotes[name]
+        elseif AnimData.Dances[name] ~= nil then
+            animInfo = AnimData.Dances[name]
+        elseif AnimData.PropEmotes[name] ~= nil then
+            animInfo = AnimData.PropEmotes[name]
+        elseif AnimData.DogEmotes[name] ~= nil then
+            animInfo = AnimData.DogEmotes[name]
+        else
+            exports["sandbox-hud"]:NotifError('Invalid Emote')
         end
-    end,
-    Cancel = function(self)
-        if IsAbleToCancel then
-            CancelEmote()
+        if emote.prop then
+            animInfo.AdditionalOptions.Prop = emote.prop
         end
-    end,
-    ForceCancel = function(self)
-        -- Force Cancel Regardless of If They Can
+        local animTime = (time ~= nil and tonumber(time) or nil)
+        local notCancellable = notCancellable ~= nil and notCancellable or false
+        if animInfo ~= nil then
+            DoAnEmote(animInfo, fromUserInput, animTime, notCancellable, emote, skipDisarm)
+        end
+    end
+end)
+
+exports("EmotesCancel", function()
+    if IsAbleToCancel then
         CancelEmote()
-    end,
-    Get = function(self)
-        if IsInAnimation then
-            return IsInEmoteName
-        end
-        return false
-    end,
-    WakeUp = function(self, pos)
-        LoadAnim("switch@franklin@bed")
+    end
+end)
 
-        local ped = PlayerPedId()
-        FreezeEntityPosition(ped, true)
+exports("EmotesForceCancel", function()
+    -- Force Cancel Regardless of If They Can
+    CancelEmote()
+end)
 
-        if pos then
-            SetEntityCoords(ped, pos.x + 0.0, pos.y + 0.0, pos.z + 0.0)
-            SetEntityHeading(ped, pos.h + 0.0)
-        end
+exports("EmotesGet", function()
+    if IsInAnimation then
+        return IsInEmoteName
+    end
+    return false
+end)
 
-        Wait(500)
+exports("EmotesWakeUp", function(pos)
+    LoadAnim("switch@franklin@bed")
 
-        TaskPlayAnim(ped, "switch@franklin@bed", "sleep_getup_rubeyes", 8.0, 8.0, -1, 8, 0, false, false, false)
+    local ped = PlayerPedId()
+    FreezeEntityPosition(ped, true)
 
-        Wait(5000)
-        FreezeEntityPosition(ped, false)
-    end,
-}
+    if pos then
+        SetEntityCoords(ped, pos.x + 0.0, pos.y + 0.0, pos.z + 0.0)
+        SetEntityHeading(ped, pos.h + 0.0)
+    end
+
+    Wait(500)
+
+    TaskPlayAnim(ped, "switch@franklin@bed", "sleep_getup_rubeyes", 8.0, 8.0, -1, 8, 0, false, false, false)
+
+    Wait(5000)
+    FreezeEntityPosition(ped, false)
+end)
 
 function AddPropToPlayer(prop1, bone, off1, off2, off3, rot1, rot2, rot3)
     local x, y, z = table.unpack(GetEntityCoords(LocalPlayer.state.ped))
@@ -156,7 +158,7 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
     end
 
     if Config.EnableEmoteCD and fromUserInput and _AnimCounter >= Config.AnimMaxEmotesCooldown then
-        return Notification:Error('Stop spamming emotes you pepega.')
+        return exports["sandbox-hud"]:NotifError('Stop spamming emotes you pepega.')
     end
 
     currentEmoteAllData = {
@@ -176,7 +178,7 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
         end
 
         if not skipDisarm then
-            Weapons:UnequipIfEquippedNoAnim()
+            exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
         end
 
         ChosenDict, ChosenAnimation = emoteData.AnDictionary, emoteData.AnAnim
@@ -258,7 +260,7 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
                 else
                     PtfxWait = emoteData.AdditionalOptions.PtfxWait
                     PtfxPrompt = true
-                    Notification:Info(emoteData.AdditionalOptions.PtfxInfo, 5000)
+                    exports["sandbox-hud"]:NotifInfo(emoteData.AdditionalOptions.PtfxInfo, 5000)
                     CreateThread(function()
                         while PtfxPrompt do
                             if IsControlPressed(0, 47) then
@@ -324,7 +326,7 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
 
         if not isLooped or forcedLength then
             Citizen.SetTimeout(animLength, function()
-                Animations.Emotes:ForceCancel()
+                exports['sandbox-animations']:EmotesForceCancel()
                 IsAbleToCancel = true
             end)
         end
@@ -336,8 +338,8 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
                         AnimationDuration, MovementType, 0, false, false, false)
                 end
 
-                if emoteData?.AdditionalOptions?.BlockVehicle and IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
-                    Animations.Emotes:ForceCancel()
+                if emoteData and emoteData.AdditionalOptions and emoteData.AdditionalOptions.BlockVehicle and IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
+                    exports['sandbox-animations']:EmotesForceCancel()
                 end
 
                 Wait(250)
@@ -379,16 +381,17 @@ function CancelEmote()
         LocalPlayer.state:set('animPtfx', false, true)
     end
 
-    local emoteOptions = currentEmoteAllData?.emoteData?.AdditionalOptions
-    if emoteOptions?.Prop then
-        if emoteOptions?.SecondProp then
+    local emoteOptions = currentEmoteAllData and currentEmoteAllData.emoteData and
+        currentEmoteAllData.emoteData.AdditionalOptions
+    if emoteOptions and emoteOptions.Prop then
+        if emoteOptions.SecondProp then
             TriggerServerEvent('Animations:Server:ClearAttached', {
-                [GetHashKey(emoteOptions?.Prop)] = true,
-                [GetHashKey(emoteOptions?.SecondProp)] = true
+                [GetHashKey(emoteOptions.Prop)] = true,
+                [GetHashKey(emoteOptions.SecondProp)] = true
             })
         else
             TriggerServerEvent('Animations:Server:ClearAttached', {
-                [GetHashKey(emoteOptions?.Prop)] = true
+                [GetHashKey(emoteOptions.Prop)] = true
             })
         end
     end
@@ -417,19 +420,19 @@ end
 RegisterNetEvent('Animations:Client:CharacterDoAnEmote')
 AddEventHandler('Animations:Client:CharacterDoAnEmote', function(emote)
     if LocalPlayer.state.loggedIn then
-        Animations.Emotes:Play(emote, true)
+        exports['sandbox-animations']:EmotesPlay(emote, true)
     end
 end)
 
 RegisterNetEvent('Animations:Client:CharacterCancelEmote')
 AddEventHandler('Animations:Client:CharacterCancelEmote', function()
     if LocalPlayer.state.loggedIn and not LocalPlayer.state.doingAction then
-        Animations.Emotes:Cancel()
+        exports['sandbox-animations']:EmotesCancel()
     end
 end)
 
 AddEventHandler('Ped:Client:Died', function()
-    Animations.Emotes:ForceCancel()
+    exports['sandbox-animations']:EmotesForceCancel()
 end)
 
 CreateThread(function()

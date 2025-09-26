@@ -164,7 +164,7 @@ local function GhostPlayer()
 						local veh = GetVehiclePedIsIn(ped)
 						if DoesEntityExist(veh) then
 							if #(myPos - GetEntityCoords(veh)) <= 100.0 then
-								Notification:Info("Police Nearby, Race Phasing Disabled")
+								exports["sandbox-hud"]:NotifInfo("Police Nearby, Race Phasing Disabled")
 								ghostingEnded = true
 								UnGhostPlayer()
 							end
@@ -182,7 +182,7 @@ RegisterNetEvent("Phone:Client:Redline:StoreTracks", function(tracks)
 
 	if not Phone then return end
 
-	Phone.Data:Set("tracks", _tracks)
+	exports['sandbox-phone']:DataSet("tracks", _tracks)
 end)
 
 RegisterNetEvent("Phone:Client:Redline:StoreSingleTrack", function(tId, track)
@@ -207,7 +207,7 @@ RegisterNetEvent("Phone:Client:Redline:StoreSingleTrack", function(tId, track)
 
 	if not Phone then return end
 
-	Phone.Data:Set("tracks", _tracks)
+	exports['sandbox-phone']:DataSet("tracks", _tracks)
 end)
 
 RegisterNetEvent("Phone:Client:Redline:Spawn", function(data)
@@ -364,7 +364,7 @@ RegisterNetEvent("Phone:Redline:NotifyDNF", function(id)
 		ghostingEnded = true
 		UnGhostPlayer()
 
-		UISounds.Play:FrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
 		SendNUIMessage({
 			type = "RACE_DNF",
 		})
@@ -380,7 +380,7 @@ RegisterNetEvent("Phone:Redline:NotifyDNF", function(id)
 end)
 
 RegisterNUICallback("CreateRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:CreateRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:CreateRace", data, function(res)
 		if res == nil or res.failed then
 			_activeRace = nil
 			cb(res or false)
@@ -405,13 +405,13 @@ RegisterNUICallback("CreateRace", function(data, cb)
 end)
 
 RegisterNUICallback("CancelRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:CancelRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:CancelRace", data, function(res)
 		cb(res)
 	end)
 end)
 
 RegisterNUICallback("PracticeTrack", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:GetTrack", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:GetTrack", data, function(res)
 		cb(res ~= nil)
 		if res ~= nil then
 			SetupTrack(res)
@@ -421,7 +421,7 @@ RegisterNUICallback("PracticeTrack", function(data, cb)
 end)
 
 RegisterNUICallback("JoinRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:JoinRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:JoinRace", data, function(res)
 		if res then
 			_activeRace = res
 
@@ -445,11 +445,11 @@ end)
 
 RegisterNUICallback("LeaveRace", function(data, cb)
 	UnGhostPlayer()
-	Callbacks:ServerCallback("Phone:Redline:LeaveRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:LeaveRace", data, function(res)
 		if _activeRace ~= nil then
 			_activeRace.dnf = true
 			Cleanup()
-			UISounds.Play:FrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
+			exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
 			SendNUIMessage({
 				type = "RACE_DNF",
 			})
@@ -482,7 +482,7 @@ RegisterNetEvent("Redline:Client:RemovedFromRace", function()
 	if _activeRace ~= nil then
 		_activeRace.dnf = true
 		Cleanup()
-		UISounds.Play:FrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
 		SendNUIMessage({
 			type = "RACE_DNF",
 		})
@@ -490,7 +490,7 @@ RegisterNetEvent("Redline:Client:RemovedFromRace", function()
 end)
 
 RegisterNUICallback("CreateTrack", function(data, cb)
-	Callbacks:ServerCallback("Phone:Permissions", {
+	exports["sandbox-base"]:ServerCallback("Phone:Permissions", {
 		redline = { "create" },
 	}, function(res)
 		cb(res)
@@ -503,7 +503,7 @@ end)
 
 RegisterNUICallback("FinishCreator", function(data, cb)
 	_creator = false
-	Callbacks:ServerCallback("Phone:Permissions", {
+	exports["sandbox-base"]:ServerCallback("Phone:Permissions", {
 		redline = { "create" },
 	}, function(res)
 		if res then
@@ -543,11 +543,11 @@ RegisterNUICallback("FinishCreator", function(data, cb)
 					end
 				end
 				_pendingTrack.Distance = quickMaths((_pendingTrack.Distance / 1609.34)) .. " Miles"
-				Callbacks:ServerCallback("Phone:Redline:SaveTrack", _pendingTrack, function(res2)
+				exports["sandbox-base"]:ServerCallback("Phone:Redline:SaveTrack", _pendingTrack, function(res2)
 					cb(res2)
 				end)
 			else
-				Notification:Error("Not Enough Checkpoints")
+				exports["sandbox-hud"]:NotifError("Not Enough Checkpoints")
 				cb(false)
 			end
 		else
@@ -557,11 +557,11 @@ RegisterNUICallback("FinishCreator", function(data, cb)
 end)
 
 RegisterNUICallback("DeleteTrack", function(data, cb)
-	Callbacks:ServerCallback("Phone:Permissions", {
+	exports["sandbox-base"]:ServerCallback("Phone:Permissions", {
 		redline = { "create" },
 	}, function(res)
 		if res then
-			Callbacks:ServerCallback("Phone:Redline:DeleteTrack", data, function(res2)
+			exports["sandbox-base"]:ServerCallback("Phone:Redline:DeleteTrack", data, function(res2)
 				cb(res2)
 			end)
 		else
@@ -571,11 +571,11 @@ RegisterNUICallback("DeleteTrack", function(data, cb)
 end)
 
 RegisterNUICallback("ResetTrackHistory", function(data, cb)
-	Callbacks:ServerCallback("Phone:Permissions", {
+	exports["sandbox-base"]:ServerCallback("Phone:Permissions", {
 		redline = { "create" },
 	}, function(res)
 		if res then
-			Callbacks:ServerCallback("Phone:Redline:ResetTrackHistory", data, function(res2)
+			exports["sandbox-base"]:ServerCallback("Phone:Redline:ResetTrackHistory", data, function(res2)
 				cb(res2)
 			end)
 		else
@@ -590,19 +590,19 @@ RegisterNUICallback("StopCreator", function(data, cb)
 end)
 
 RegisterNUICallback("StartRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:StartRace", _activeRace.id, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:StartRace", _activeRace.id, cb)
 end)
 
 RegisterNUICallback("EndRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:EndRace", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:EndRace", data, cb)
 end)
 
 RegisterNUICallback("SendInvite", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:SendInvite", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:SendInvite", data, cb)
 end)
 
 RegisterNUICallback("AcceptInvite", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:AcceptInvite", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:AcceptInvite", data, function(res)
 		if res then
 			_activeRace = res
 
@@ -624,11 +624,11 @@ RegisterNUICallback("AcceptInvite", function(data, cb)
 end)
 
 RegisterNUICallback("DeclineInvite", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:DeclineInvite", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:DeclineInvite", data, cb)
 end)
 
 RegisterNetEvent("Phone:Client:Redline:ReceiveInvite", function(data)
-	Phone.Notification:Add(
+	exports['sandbox-phone']:NotificationAdd(
 		"Received Event Invite",
 		string.format("%s Invited You To %s", data.sender, data.event),
 		GetCloudTimeAsInt(),
@@ -649,7 +649,7 @@ RegisterNetEvent("Phone:Client:Redline:ReceiveInvite", function(data)
 end)
 
 RegisterNUICallback("RemoveFromRace", function(data, cb)
-	Callbacks:ServerCallback("Phone:Redline:RemoveRacer", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Redline:RemoveRacer", data, cb)
 end)
 
 function FinishRace()
@@ -732,8 +732,8 @@ function StartRace()
 	local countdownMax = tonumber(_activeRace.countdown) or 20
 	local countdown = 0
 	while countdown < countdownMax and _activeRace ~= nil and _loggedIn do
-		Notification:Info(string.format("Race Starting In %s", countdownMax - countdown))
-		UISounds.Play:FrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
+		exports["sandbox-hud"]:NotifInfo(string.format("Race Starting In %s", countdownMax - countdown))
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
 		countdown = countdown + 1
 		Wait(1000)
 	end
@@ -743,8 +743,8 @@ function StartRace()
 	end
 
 	CreateThread(function()
-		Notification:Info("Race Started")
-		UISounds.Play:FrontEnd(-1, "GO", "HUD_MINI_GAME_SOUNDSET")
+		exports["sandbox-hud"]:NotifInfo("Race Started")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "GO", "HUD_MINI_GAME_SOUNDSET")
 		SendNUIMessage({
 			type = "RACE_START",
 			data = {
@@ -786,8 +786,8 @@ function StartRace()
 					cLp = cLp + 1
 					cCps = {}
 					if cLp <= tonumber(_activeRace.laps) then
-						Notification:Info(string.format("Lap %s", cLp))
-						UISounds.Play:FrontEnd(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET")
+						exports["sandbox-hud"]:NotifInfo(string.format("Lap %s", cLp))
+						exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET")
 
 						if lap_start ~= nil then
 							local lapEnd = GetGameTimer()
@@ -809,7 +809,7 @@ function StartRace()
 				if sCp ~= -1 then -- i think this is sprint?
 					SetBlipColour(blip, 0)
 					table.insert(cCps, cCp)
-					UISounds.Play:FrontEnd(-1, "CHECKPOINT_NORMAL", "HUD_MINI_GAME_SOUNDSET")
+					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_NORMAL", "HUD_MINI_GAME_SOUNDSET")
 
 					if _activeRace.phasing == "checkpoints" and cCp >= (_activeRace.phasingAdv + 1) then
 						ghostingEnded = true
@@ -839,9 +839,9 @@ function StartRace()
 					_activeRace.trackData.Type == "p2p" and #cCps == #_activeRace.trackData.Checkpoints
 					or cLp > tonumber(_activeRace.laps)
 				then
-					Notification:Info("Race Finished")
+					exports["sandbox-hud"]:NotifInfo("Race Finished")
 					Cleanup()
-					UISounds.Play:FrontEnd(-1, "FIRST_PLACE", "HUD_MINI_GAME_SOUNDSET")
+					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "FIRST_PLACE", "HUD_MINI_GAME_SOUNDSET")
 					SendNUIMessage({
 						type = "RACE_END",
 					})
@@ -1097,7 +1097,7 @@ function CreateCheckpoint()
 
 		AddRaceBlip(_pendingTrack.Checkpoints[#_pendingTrack.Checkpoints])
 	else
-		Notification:Error("Point Too Close To Last Point")
+		exports["sandbox-hud"]:NotifError("Point Too Close To Last Point")
 	end
 end
 

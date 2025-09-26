@@ -34,55 +34,24 @@ function RunStartup()
 	VOIP_SETTINGS = GetPlayerVOIPSettings()
 end
 
-AddEventHandler("VOIP:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("VOIP", {
-		"Callbacks",
-		"Notification",
-		"Logger",
-		"Hud",
-		"Keybinds",
-		"Utils",
-		"Sounds",
-		"Animations",
-		"Polyzone",
-		"VOIP",
-	}, function(error)
-		if #error > 0 then
-			return
+	RunStartup()
+	CreateMicrophonePolyzones()
+
+	exports["sandbox-keybinds"]:Add("voip_cycleproximity", "Z", "keyboard", "Voice - Cycle Proximity", function()
+		if _characterLoaded and PLAYER_CONNECTED then
+			exports["sandbox-voip"]:Cycle()
 		end
-		RetrieveComponents()
-		RunStartup()
-		CreateMicrophonePolyzones()
+	end)
 
-		Keybinds:Add("voip_cycleproximity", "Z", "keyboard", "Voice - Cycle Proximity", function()
-			if _characterLoaded and PLAYER_CONNECTED then
-				VOIP:Cycle()
-			end
-		end)
-
-		Keybinds:Add("voip_radio", "CAPITAL", "keyboard", "Voice - Radio - Push to Talk", function()
-			if _characterLoaded and PLAYER_CONNECTED and not LocalPlayer.state.isDead and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isHardCuffed then
-				RadioKeyDown()
-			end
-		end, function()
-			if _characterLoaded and PLAYER_CONNECTED then
-				RadioKeyUp()
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("voip_radio", "CAPITAL", "keyboard", "Voice - Radio - Push to Talk", function()
+		if _characterLoaded and PLAYER_CONNECTED and not LocalPlayer.state.isDead and not LocalPlayer.state.isCuffed and not LocalPlayer.state.isHardCuffed then
+			RadioKeyDown()
+		end
+	end, function()
+		if _characterLoaded and PLAYER_CONNECTED then
+			RadioKeyUp()
+		end
 	end)
 end)
 
@@ -114,7 +83,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 
 	CURRENT_VOICE_MODE = 2
 	CURRENT_VOICE_MODE_DATA = VOIP_CONFIG.Modes[CURRENT_VOICE_MODE]
-	Hud:UpdateVoip(2, false)
+	exports['sandbox-hud']:UpdateVoip(2, false)
 
 	local address, port = GetVOIPMumbleAddress()
 	MumbleSetServerAddress(address, port)
@@ -147,12 +116,12 @@ AddEventHandler("Characters:Client:Logout", function()
 	USING_MEGAPHONE = false
 
 	MumbleSetServerAddress("", 0)
-	Logger:Info("VOIP", "Disconnecting From Mumble (Character Logging Out)")
+	exports['sandbox-base']:LoggerInfo("VOIP", "Disconnecting From Mumble (Character Logging Out)")
 end)
 
 AddEventHandler("VOIP:Client:ConnectionState", function(state)
 	if state then
-		Logger:Info("VOIP", "Connected to Mumble Server")
+		exports['sandbox-base']:LoggerInfo("VOIP", "Connected to Mumble Server")
 
 		while not LocalPlayer.state.voiceChannel do
 			print("Waiting to Be Assigned Voice Channel")
@@ -174,7 +143,7 @@ AddEventHandler("VOIP:Client:ConnectionState", function(state)
 
 		MumbleSetTalkerProximity(CURRENT_VOICE_MODE_DATA.Range + 0.0)
 	else
-		Logger:Warn("VOIP", "Disconnected from Mumble Server")
+		exports['sandbox-base']:LoggerWarn("VOIP", "Disconnected from Mumble Server")
 		StopUsingMegaphone()
 	end
 
@@ -232,123 +201,112 @@ function UpdateVOIPIndicatorStatus()
 		end
 	end
 
-
-	Hud:UpdateVoip(stage, talking, indicatorIcon)
+	exports['sandbox-hud']:UpdateVoip(stage, talking, indicatorIcon)
 end
 
-_fuckingVOIP = {
-	Cycle = function(self, num)
-		if playerMuted or USING_MEGAPHONE or USING_MICROPHONE then
-			return
-		end
-		local newMode = CURRENT_VOICE_MODE + 1
-		if num then
-			newMode = num
-		end
-		if newMode > #VOIP_CONFIG.Modes then
-			newMode = 1
-		end
+exports("Cycle", function(num)
+	if playerMuted or USING_MEGAPHONE or USING_MICROPHONE then
+		return
+	end
+	local newMode = CURRENT_VOICE_MODE + 1
+	if num then
+		newMode = num
+	end
+	if newMode > #VOIP_CONFIG.Modes then
+		newMode = 1
+	end
 
-		CURRENT_VOICE_MODE = newMode
-		CURRENT_VOICE_MODE_DATA = VOIP_CONFIG.Modes[CURRENT_VOICE_MODE]
-		--MumbleSetAudioInputDistance(CURRENT_VOICE_MODE_DATA.Range + 0.0)
-		MumbleSetTalkerProximity(CURRENT_VOICE_MODE_DATA.Range + 0.0)
-		UpdateVOIPIndicatorStatus()
+	CURRENT_VOICE_MODE = newMode
+	CURRENT_VOICE_MODE_DATA = VOIP_CONFIG.Modes[CURRENT_VOICE_MODE]
+	--MumbleSetAudioInputDistance(CURRENT_VOICE_MODE_DATA.Range + 0.0)
+	MumbleSetTalkerProximity(CURRENT_VOICE_MODE_DATA.Range + 0.0)
+	UpdateVOIPIndicatorStatus()
 
-		LocalPlayer.state:set("proximity", CURRENT_VOICE_MODE_DATA.Range, false)
-		Logger:Trace("VOIP", "New Voice Range: " .. CURRENT_VOICE_MODE)
-	end,
-	ToggleVoice = function(self, plySource, enabled, voiceType, volume)
-		local volumeOverride = volume or GetVolumeForVoiceType(voiceType)
-		if volumeOverride then
-			MumbleSetVolumeOverrideByServerId(plySource, enabled and volumeOverride or -1.0)
-		else
-			MumbleSetVolumeOverrideByServerId(plySource, -1.0)
-		end
+	LocalPlayer.state:set("proximity", CURRENT_VOICE_MODE_DATA.Range, false)
+	exports['sandbox-base']:LoggerTrace("VOIP", "New Voice Range: " .. CURRENT_VOICE_MODE)
+end)
 
-		if enabled and voiceType and SUBMIX_DATA and SUBMIX_DATA[voiceType] then
-			MumbleSetSubmixForServerId(plySource, SUBMIX_DATA[voiceType])
-		else
-			MumbleSetVolumeOverrideByServerId(plySource, -1.0)
-			MumbleSetSubmixForServerId(plySource, -1)
-		end
-	end,
-	MicClicks = function(self, on, isLocal)
-		if on then
-			Sounds.Do.Play:One("mic_click_on.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
-		else
-			Sounds.Do.Play:One("mic_click_off.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
-		end
-	end,
-	SetPlayerTargets = function(self, ...)
-		local targets = { ... }
-		local addedPlayers = {
-			[PLAYER_SERVER_ID] = true,
-		}
+exports("ToggleVoice", function(plySource, enabled, voiceType, volume)
+	local volumeOverride = volume or GetVolumeForVoiceType(voiceType)
+	if volumeOverride then
+		MumbleSetVolumeOverrideByServerId(plySource, enabled and volumeOverride or -1.0)
+	else
+		MumbleSetVolumeOverrideByServerId(plySource, -1.0)
+	end
 
-		for i = 1, #targets do
-			for id, _ in pairs(targets[i]) do
-				if addedPlayers[id] and id ~= PLAYER_SERVER_ID then
-					goto continue
-				end
-				if not addedPlayers[id] then
-					addedPlayers[id] = true
-					MumbleAddVoiceTargetPlayerByServerId(1, id)
-				end
-				::continue::
+	if enabled and voiceType and SUBMIX_DATA and SUBMIX_DATA[voiceType] then
+		MumbleSetSubmixForServerId(plySource, SUBMIX_DATA[voiceType])
+	else
+		MumbleSetVolumeOverrideByServerId(plySource, -1.0)
+		MumbleSetSubmixForServerId(plySource, -1)
+	end
+end)
+
+exports("MicClicks", function(on, isLocal)
+	if on then
+		exports["sandbox-sounds"]:PlayOne("mic_click_on.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
+	else
+		exports["sandbox-sounds"]:PlayOne("mic_click_off.ogg", 0.1 * (VOIP_SETTINGS?.RadioClickVolume or 1.0))
+	end
+end)
+
+exports("SetPlayerTargets", function(...)
+	local targets = { ... }
+	local addedPlayers = {
+		[PLAYER_SERVER_ID] = true,
+	}
+
+	for i = 1, #targets do
+		for id, _ in pairs(targets[i]) do
+			if addedPlayers[id] and id ~= PLAYER_SERVER_ID then
+				goto continue
 			end
+			if not addedPlayers[id] then
+				addedPlayers[id] = true
+				MumbleAddVoiceTargetPlayerByServerId(1, id)
+			end
+			::continue::
 		end
-	end,
-	Settings = {
-		Volumes = {
-			Radio = {
-				Set = function(self, val)
-					if type(val) == "number" and val >= 0 and val <= 200 then
-						VOIP_SETTINGS = SetPlayerVOIPSetting("RadioVolume", val / 100)
-					end
+	end
+end)
 
-					return VOIP_SETTINGS.RadioVolume * 100
-				end,
-				Get = function(self)
-					if VOIP_SETTINGS then
-						return VOIP_SETTINGS.RadioVolume * 100
-					end
-				end,
-			},
-			RadioClicks = {
-				Set = function(self, val)
-					if type(val) == "number" and val >= 0 and val <= 200 then
-						VOIP_SETTINGS = SetPlayerVOIPSetting("RadioClickVolume", val / 100)
-					end
+exports("SetRadioVolume", function(val)
+	if type(val) == "number" and val >= 0 and val <= 200 then
+		VOIP_SETTINGS = SetPlayerVOIPSetting("RadioVolume", val / 100)
+	end
+	return VOIP_SETTINGS.RadioVolume * 100
+end)
 
-					return VOIP_SETTINGS.RadioClickVolume * 100
-				end,
-				Get = function(self)
-					if VOIP_SETTINGS then
-						return VOIP_SETTINGS.RadioClickVolume * 100
-					end
-				end,
-			},
-			Phone = {
-				Set = function(self, val)
-					if type(val) == "number" and val >= 0 and val <= 200 then
-						VOIP_SETTINGS = SetPlayerVOIPSetting("CallVolume", val / 100)
-					end
+exports("GetRadioVolume", function()
+	if VOIP_SETTINGS then
+		return VOIP_SETTINGS.RadioVolume * 100
+	end
+end)
 
-					return VOIP_SETTINGS.CallVolume * 100
-				end,
-				Get = function(self)
-					if VOIP_SETTINGS then
-						return VOIP_SETTINGS.CallVolume * 100
-					end
-				end,
-			},
-		},
-	},
-}
+exports("SetRadioClickVolume", function(val)
+	if type(val) == "number" and val >= 0 and val <= 200 then
+		VOIP_SETTINGS = SetPlayerVOIPSetting("RadioClickVolume", val / 100)
+	end
+	return VOIP_SETTINGS.RadioClickVolume * 100
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("VOIP", _fuckingVOIP)
+exports("GetRadioClickVolume", function()
+	if VOIP_SETTINGS then
+		return VOIP_SETTINGS.RadioClickVolume * 100
+	end
+end)
+
+exports("SetCallVolume", function(val)
+	if type(val) == "number" and val >= 0 and val <= 200 then
+		VOIP_SETTINGS = SetPlayerVOIPSetting("CallVolume", val / 100)
+	end
+	return VOIP_SETTINGS.CallVolume * 100
+end)
+
+exports("GetCallVolume", function()
+	if VOIP_SETTINGS then
+		return VOIP_SETTINGS.CallVolume * 100
+	end
 end)
 
 CreateThread(function()

@@ -3,7 +3,7 @@ RegisterNetEvent("EMS:Client:Test", function(src)
 end)
 
 function BuildTreatmentMenu(id)
-	Callbacks:ServerCallback("Damage:GetLimbDamage", id, function(menu)
+	exports["sandbox-base"]:ServerCallback("Damage:GetLimbDamage", id, function(menu)
 		local options = {}
 		local ped = GetPlayerPed(GetPlayerFromServerId(tonumber(id)))
 		local needsTreatment = false
@@ -15,7 +15,7 @@ function BuildTreatmentMenu(id)
 		})
 
 		if targetState.isDead then
-			if Jobs.Permissions:HasJob("ems") then
+			if exports['sandbox-jobs']:HasJob("ems") then
 				table.insert(options, {
 					label = string.format("Stabilize (Revive)"),
 					description = "Requires Trauma Kit",
@@ -25,7 +25,7 @@ function BuildTreatmentMenu(id)
 				needsTreatment = true
 			end
 		else
-			if Jobs.Permissions:HasJob("ems") then
+			if exports['sandbox-jobs']:HasJob("ems") then
 				local maxHp = GetEntityMaxHealth(ped) - 100
 				local hp = GetEntityHealth(ped) - 100
 
@@ -58,7 +58,7 @@ function BuildTreatmentMenu(id)
 			})
 		end
 
-		ListMenu:Show({
+		exports['sandbox-hud']:ListMenuShow({
 			main = {
 				label = "Patient Treatment",
 				items = options,

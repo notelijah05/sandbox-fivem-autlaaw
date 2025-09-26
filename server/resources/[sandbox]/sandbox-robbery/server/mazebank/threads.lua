@@ -9,7 +9,7 @@ function StartMazeBankThreads()
 		while _threading do
 			if _mbGlobalReset ~= nil then
 				if os.time() > _mbGlobalReset then
-					Logger:Info("Robbery", "Maze Bank Heist Has Been Reset")
+					exports['sandbox-base']:LoggerInfo("Robbery", "Maze Bank Heist Has Been Reset")
 					ResetMazeBank()
 				end
 			end
@@ -20,13 +20,13 @@ function StartMazeBankThreads()
 	CreateThread(function()
 		while _threading do
 			local powerDisabled = IsMBPowerDisabled()
-			if not powerDisabled and not Doors:IsLocked("mazebank_offices") then
-				Doors:SetLock("mazebank_offices", true)
+			if not powerDisabled and not exports['sandbox-doors']:IsLocked("mazebank_offices") then
+				exports['sandbox-doors']:SetLock("mazebank_offices", true)
 				for k, v in ipairs(_mbOfficeDoors) do
-					Doors:SetLock(v.door, true)
+					exports['sandbox-doors']:SetLock(v.door, true)
 				end
-			elseif powerDisabled and Doors:IsLocked("mazebank_offices") then
-				Doors:SetLock("mazebank_offices", false)
+			elseif powerDisabled and exports['sandbox-doors']:IsLocked("mazebank_offices") then
+				exports['sandbox-doors']:SetLock("mazebank_offices", false)
 			end
 			Wait((1000 * 60) * 1)
 		end
@@ -40,7 +40,7 @@ function StartMazeBankThreads()
 					and GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)].state == 2
 					and GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)].expires < os.time()
 				then
-					Logger:Info("Robbery", string.format("Maze Bank Door %s Opening", v.doorId))
+					exports['sandbox-base']:LoggerInfo("Robbery", string.format("Maze Bank Door %s Opening", v.doorId))
 					GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)] = {
 						state = 3,
 					}

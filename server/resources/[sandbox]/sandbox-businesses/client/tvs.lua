@@ -6,7 +6,7 @@ local scale = 0.08
 AddEventHandler('Businesses:Client:Startup', function()
     for k, v in pairs(_tvData) do
         if v.viewZone then
-            Polyzone.Create:Box(
+            exports['sandbox-polyzone']:CreateBox(
                 'tv_zone_' .. k,
                 v.viewZone.center,
                 v.viewZone.length,
@@ -20,7 +20,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         end
 
         if v.interactZone then
-            Targeting.Zones:AddBox(
+            exports['sandbox-targeting']:ZonesAddBox(
                 string.format("tv-interact-%s", k),
                 "tv",
                 v.interactZone.center,
@@ -157,7 +157,7 @@ end
 local linkPromise
 function GetNewTVLink()
     linkPromise = promise.new()
-    Input:Show('TVs', 'URL', {
+    exports['sandbox-hud']:InputShow('TVs', 'URL', {
         {
             id = 'name',
             type = 'text',
@@ -179,14 +179,14 @@ end)
 
 AddEventHandler('TVs:Client:SetLink', function(e, data)
     local tvLink = GetNewTVLink()
-    Callbacks:ServerCallback('TVs:UpdateTVLink', {
+    exports["sandbox-base"]:ServerCallback('TVs:UpdateTVLink', {
         tv = data,
         link = tvLink
     }, function(success)
         if success then
-            Notification:Success('Updated Link!', 5000, 'tv')
+            exports["sandbox-hud"]:NotifSuccess('Updated Link!', 5000, 'tv')
         else
-            Notification:Error('Error', 5000, 'tv')
+            exports["sandbox-hud"]:NotifError('Error', 5000, 'tv')
         end
     end)
 end)

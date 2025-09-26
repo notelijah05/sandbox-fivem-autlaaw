@@ -9,13 +9,8 @@
 	Fishing: ????
 ]]
 
-local _ran = false
 AddEventHandler("Labor:Server:Startup", function()
-	if _ran then
-		return
-	end
-	_ran = true
-	Labor.Jobs:Register(
+	exports['sandbox-labor']:RegisterJob(
 		"HouseRobbery",
 		"House Robbery",
 		4,
@@ -37,7 +32,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			Message = "If you wont do the job, I'll give it to someone else",
 		}
 	)
-	Labor.Jobs:Register(
+	exports['sandbox-labor']:RegisterJob(
 		"OxyRun",
 		"Oxy",
 		4,
@@ -59,7 +54,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			Message = "You took too damn long, maybe next time",
 		}
 	)
-	Labor.Jobs:Register(
+	exports['sandbox-labor']:RegisterJob(
 		"WeedRun",
 		"Weed Distribution",
 		0,
@@ -69,15 +64,15 @@ AddEventHandler("Labor:Server:Startup", function()
 			state = "SCRIPT_WEED_RUN",
 		},
 		{
-			{ label = "Rank 1", value = 1000 },
-			{ label = "Rank 2", value = 2500 },
-			{ label = "Rank 3", value = 5000 },
-			{ label = "Rank 4", value = 10000 },
-			{ label = "Rank 5", value = 25000 },
-			{ label = "Rank 6", value = 50000 },
-			{ label = "Rank 7", value = 100000 },
-			{ label = "Rank 8", value = 250000 },
-			{ label = "Rank 9", value = 500000 },
+			{ label = "Rank 1",  value = 1000 },
+			{ label = "Rank 2",  value = 2500 },
+			{ label = "Rank 3",  value = 5000 },
+			{ label = "Rank 4",  value = 10000 },
+			{ label = "Rank 5",  value = 25000 },
+			{ label = "Rank 6",  value = 50000 },
+			{ label = "Rank 7",  value = 100000 },
+			{ label = "Rank 8",  value = 250000 },
+			{ label = "Rank 9",  value = 500000 },
 			{ label = "Rank 10", value = 1000000 },
 		},
 		false,
@@ -87,7 +82,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			Message = "Let Me Know If You Want To Do More Runs",
 		}
 	)
-	Labor.Jobs:Register(
+	exports['sandbox-labor']:RegisterJob(
 		"CornerDealing",
 		"Corner Dealing",
 		4,
@@ -97,15 +92,15 @@ AddEventHandler("Labor:Server:Startup", function()
 			state = "SCRIPT_CORNER_DEALING",
 		},
 		{
-			{ label = "Rank 1", value = 1000 },
-			{ label = "Rank 2", value = 2500 },
-			{ label = "Rank 3", value = 5000 },
-			{ label = "Rank 4", value = 10000 },
-			{ label = "Rank 5", value = 25000 },
-			{ label = "Rank 6", value = 50000 },
-			{ label = "Rank 7", value = 100000 },
-			{ label = "Rank 8", value = 250000 },
-			{ label = "Rank 9", value = 500000 },
+			{ label = "Rank 1",  value = 1000 },
+			{ label = "Rank 2",  value = 2500 },
+			{ label = "Rank 3",  value = 5000 },
+			{ label = "Rank 4",  value = 10000 },
+			{ label = "Rank 5",  value = 25000 },
+			{ label = "Rank 6",  value = 50000 },
+			{ label = "Rank 7",  value = 100000 },
+			{ label = "Rank 8",  value = 250000 },
+			{ label = "Rank 9",  value = 500000 },
 			{ label = "Rank 10", value = 1000000 },
 		},
 		false,
@@ -116,11 +111,11 @@ AddEventHandler("Labor:Server:Startup", function()
 		}
 	)
 
-	Labor.Jobs:Register("Prison", "U SHOULDNT SEE THIS LOL", 0, 0, 0, {
+	exports['sandbox-labor']:RegisterJob("Prison", "U SHOULDNT SEE THIS LOL", 0, 0, 0, {
 		state = "SCRIPT_PRISON_JOB",
 	}, {}, true)
 
-	Labor.Jobs:Register("Hunting", "Hunting", 0, 1200, 80, false, {
+	exports['sandbox-labor']:RegisterJob("Hunting", "Hunting", 0, 1200, 80, false, {
 		{ label = "Rank 1", value = 1500 },
 		{ label = "Rank 2", value = 3000 },
 		{ label = "Rank 3", value = 6000 },
@@ -130,36 +125,36 @@ AddEventHandler("Labor:Server:Startup", function()
 		{ label = "Rank 7", value = 35000 },
 		{ label = "Rank 8", value = 40000 },
 	})
-	Labor.Jobs:Register("Mining", "Mining", 0, 1000, 75, false, {
+	exports['sandbox-labor']:RegisterJob("Mining", "Mining", 0, 1000, 75, false, {
 		{ label = "Rank 1", value = 1500 },
 		{ label = "Rank 2", value = 3000 },
 		{ label = "Rank 3", value = 7000 },
 		{ label = "Rank 4", value = 10000 },
 		{ label = "Rank 5", value = 12000 },
 	})
-	Labor.Jobs:Register("Farming", "Farming", 0, 1200, 75)
-	Labor.Jobs:Register("Salvaging", "Salvaging", 0, 1000, 75, false, {
-		{ label = "Rank 1", value = 1500 },
-		{ label = "Rank 2", value = 3000 },
-		{ label = "Rank 3", value = 7000 },
-		{ label = "Rank 4", value = 10000 },
-		{ label = "Rank 5", value = 12000 },
-		{ label = "Rank 6", value = 15000 },
-		{ label = "Rank 7", value = 18000 },
-		{ label = "Rank 8", value = 21000 },
-		{ label = "Rank 9", value = 24000 },
+	exports['sandbox-labor']:RegisterJob("Farming", "Farming", 0, 1200, 75)
+	exports['sandbox-labor']:RegisterJob("Salvaging", "Salvaging", 0, 1000, 75, false, {
+		{ label = "Rank 1",   value = 1500 },
+		{ label = "Rank 2",   value = 3000 },
+		{ label = "Rank 3",   value = 7000 },
+		{ label = "Rank 4",   value = 10000 },
+		{ label = "Rank 5",   value = 12000 },
+		{ label = "Rank 6",   value = 15000 },
+		{ label = "Rank 7",   value = 18000 },
+		{ label = "Rank 8",   value = 21000 },
+		{ label = "Rank 9",   value = 24000 },
 		{ label = "Pls Stop", value = 30000 },
 	})
-	Labor.Jobs:Register("Garbage", "Garbage", 0, 1500, 75, false, {
+	exports['sandbox-labor']:RegisterJob("Garbage", "Garbage", 0, 1500, 75, false, {
 		{ label = "Rank 1", value = 1500 },
 		{ label = "Rank 2", value = 3000 },
 		{ label = "Rank 3", value = 7000 },
 		{ label = "Rank 4", value = 10000 },
 		{ label = "Rank 5", value = 12000 },
 	})
-	Labor.Jobs:Register("Fishing", "Fishing", 0, 1000, 75)
+	exports['sandbox-labor']:RegisterJob("Fishing", "Fishing", 0, 1000, 75)
 
-	Labor.Jobs:Register("Coke", "THIS SHOULD NOT BE SEEN", 1, 0, 75, {
+	exports['sandbox-labor']:RegisterJob("Coke", "THIS SHOULD NOT BE SEEN", 1, 0, 75, {
 		state = "SCRIPT_COKE_RUN",
 	}, {
 		{ label = "Rank 1", value = 1500 },
@@ -169,5 +164,5 @@ AddEventHandler("Labor:Server:Startup", function()
 		{ label = "Rank 5", value = 12000 },
 	}, true)
 
-	--Labor.Jobs:Register("Trucking", "Trucking", 0, 1005, 100)
+	--exports['sandbox-labor']:RegisterJob("Trucking", "Trucking", 0, 1005, 100)
 end)

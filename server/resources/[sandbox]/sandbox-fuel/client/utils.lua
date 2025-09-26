@@ -14,7 +14,7 @@ end
 
 function IsVehicleInFuelZone(vehicle)
     local vehicleCoords = GetEntityCoords(vehicle)
-    local vehicleZone = Polyzone:IsCoordsInZone(vehicleCoords, false, 'fuel')
+    local vehicleZone = exports['sandbox-polyzone']:IsCoordsInZone(vehicleCoords, false, 'fuel')
     if vehicleZone and vehicleZone.fuel and CheckStationRestriction(vehicleZone.restricted, GetVehicleClass(vehicle)) then
         return vehicleZone.id
     end

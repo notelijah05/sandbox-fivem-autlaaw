@@ -1,5 +1,3 @@
-PHONE.Chopper = PHONE.Chopper or {}
-
 local marketItems = {
 	{
 		item = "chopping_invite",
@@ -22,36 +20,39 @@ local _blacklistedJobs = {
 }
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Vendor:Create("ChoperItems", "ped", "Items", `U_M_Y_SmugMech_01`, {
+	exports['sandbox-pedinteraction']:VendorCreate("ChoperItems", "ped", "Items", `U_M_Y_SmugMech_01`, {
 		coords = vector3(-623.589, -1681.736, 19.101),
 		heading = 228.222,
 		scenario = "WORLD_HUMAN_TOURIST_MOBILE",
 	}, marketItems, "badge-dollar", "View Offers", false, false, true)
 
-	Inventory.Items:RegisterUse("chopping_invite", "LSUNDG", function(source, item, itemData)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-inventory']:RegisterUse("chopping_invite", "LSUNDG", function(source, item, itemData)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pState = Player(source).state
 			if not pState.onDuty or not _blacklistedJobs[pState.onDuty] then
 				if not hasValue(char:GetData("States") or {}, "ACCESS_CHOPPER") then
-					if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+					if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 						local states = char:GetData("States") or {}
 						table.insert(states, "ACCESS_CHOPPER")
 						char:SetData("States", states)
 
-						char:SetData("Apps", Phone.Store.Install:Do("chopper", char:GetData("Apps"), "force"))
+						char:SetData("Apps",
+							exports['sandbox-phone']:StoreInstallDo("chopper", char:GetData("Apps"), "force"))
 
 						Citizen.SetTimeout(5000, function()
-							Phone.Notification:Add(source, "App Installed", nil, os.time(), 6000, "chopper", {
-								view = "",
-							}, nil)
+							exports['sandbox-phone']:NotificationAdd(source, "App Installed", nil, os.time(), 6000,
+								"chopper", {
+									view = "",
+								}, nil)
 						end)
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "You already have access to that app")
+					exports['sandbox-hud']:NotifError(source,
+						"You already have access to that app")
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "You Can't Use This Item")
+				exports['sandbox-hud']:NotifError(source, "You Can't Use This Item")
 			end
 		end
 	end)

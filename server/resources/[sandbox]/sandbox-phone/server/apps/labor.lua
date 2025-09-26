@@ -1,27 +1,25 @@
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-    Middleware:Add("Phone:Spawning", function(source, char)
+	exports['sandbox-base']:MiddlewareAdd("Phone:Spawning", function(source, char)
 		return {
 			{
 				type = "jobs",
-				data = Labor.Get:Jobs(),
+				data = exports['sandbox-labor']:GetJobs(),
 			},
 			{
 				type = "workGroups",
-				data = Labor.Get:Groups(),
+				data = exports['sandbox-labor']:GetGroups(),
 			},
 		}
 	end)
 end)
 
-PHONE.Labor = {}
-
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Labor:CreateWorkgroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Labor:CreateWorkgroup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myDuty = Player(source).state.onDuty
 
 		if myDuty and (myDuty == "police" or myDuty == "ems") then
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Labor",
 				string.format(
 					"%s %s (%s) Attempted To Create Workgroup (%s)",
@@ -40,25 +38,25 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 				cb(false)
 			else
-				cb(Labor.Workgroups:Create(source))
+				cb(exports['sandbox-labor']:CreateWorkgroup(source))
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Labor:DisbandWorkgroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Labor:DisbandWorkgroup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 			cb(false)
 		else
-			cb(Labor.Workgroups:Disband(source, true))
+			cb(exports['sandbox-labor']:DisbandWorkgroup(source, true))
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Labor:JoinWorkgroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Labor:JoinWorkgroup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myDuty = Player(source).state.onDuty
 		if myDuty and (myDuty == "police" or myDuty == "ems") then
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Labor",
 				string.format(
 					"%s %s (%s) Attempted To Join Workgroup (%s)",
@@ -77,25 +75,25 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 				cb(false)
 			else
-				cb(Labor.Workgroups:Request(data, source))
+				cb(exports['sandbox-labor']:RequestWorkgroup(data, source))
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Labor:LeaveWorkgroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Labor:LeaveWorkgroup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 			cb(false)
 		else
-			cb(Labor.Workgroups:Leave(data, source))
+			cb(exports['sandbox-labor']:LeaveWorkgroup(data, source))
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Labor:StartLaborJob", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Labor:StartLaborJob", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myDuty = Player(source).state.onDuty
 		if myDuty and (myDuty == "police" or myDuty == "ems") then
-			Logger:Trace(
+			exports['sandbox-base']:LoggerTrace(
 				"Labor",
 				string.format(
 					"%s %s (%s) Attempted To Double Dip Jobs (%s and %s)",
@@ -115,17 +113,17 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 				cb(false)
 			else
-				cb(Labor.Duty:On(data.job, source, data.isWorkgroup))
+				cb(exports['sandbox-labor']:OnDuty(data.job, source, data.isWorkgroup))
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Labor:QuitLaborJob", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Labor:QuitLaborJob", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
 			cb(false)
 		else
-			cb(Labor.Duty:Off(data, source))
+			cb(exports['sandbox-labor']:OffDuty(data, source))
 		end
 	end)
 end)

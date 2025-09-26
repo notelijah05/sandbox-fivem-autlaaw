@@ -1,11 +1,11 @@
 AddEventHandler("Vehicles:Client:EnterVehicle", function(currentVehicle, currentSeat)
 	GLOBAL_VEH = currentVehicle
-	Hud.Vehicle:Show()
+	exports['sandbox-hud']:VehicleShow()
 	--Hud.Minimap:Set()
 end)
 
 AddEventHandler("Vehicles:Client:ExitVehicle", function(currentVehicle, currentSeat)
-	Hud.Vehicle:Hide()
+	exports['sandbox-hud']:VehicleHide()
 	GLOBAL_VEH = nil
 end)
 
@@ -17,14 +17,14 @@ AddEventHandler("Characters:Client:Spawn", function()
 		},
 	})
 
-	Hud:Show()
+	exports['sandbox-hud']:Show()
 
 	DisplayRadar(hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
-	Hud:ShiftLocation(hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
+	exports['sandbox-hud']:ShiftLocation(hasValue(LocalPlayer.state.Character:GetData("States"), "GPS"))
 end)
 
 RegisterNetEvent("UI:Client:Reset", function(manual)
-	Hud:Hide()
+	exports['sandbox-hud']:Hide()
 	SendNUIMessage({
 		type = "UI_RESET",
 		data = {
@@ -41,21 +41,21 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 		})
 	end
 
-	Action:Hide()
-	ListMenu:Close()
-	Interaction:Hide()
-	Notification:Clear()
-	Confirm:Close()
-	Input:Close()
-	InfoOverlay:Close()
-	Hud.Meth:Close()
+	exports['sandbox-hud']:ActionHide()
+	exports['sandbox-hud']:ListMenuClose()
+	exports['sandbox-hud']:InteractionHide()
+	exports["sandbox-hud"]:NotifClear()
+	exports['sandbox-hud']:ConfirmClose()
+	exports['sandbox-hud']:InputClose()
+	exports['sandbox-hud']:InfoOverlayClose()
+	exports['sandbox-hud']:MethClose()
 
 	TriggerEvent("UI:Client:ResetFinished", manual)
 
 	if manual then
 		Wait(2500)
-		Hud:Show()
-		if Phone:IsOpen() or hasValue(LocalPlayer.state.Character:GetData("States"), "GPS") then
+		exports['sandbox-hud']:Show()
+		if exports['sandbox-phone']:IsOpen() or hasValue(LocalPlayer.state.Character:GetData("States"), "GPS") then
 			DisplayRadar(true)
 		end
 	end
@@ -104,31 +104,31 @@ RegisterNetEvent("Status:Client:Update", function(status, value)
 end)
 
 RegisterNetEvent("Progress:Client:Progress", function(action, cb)
-	Progress:Progress(action, cb)
+	exports['sandbox-hud']:Progress(action, cb)
 end)
 
 RegisterNetEvent("Progress:Client:ProgressWithStartEvent", function(action, start, finish)
-	Progress:ProgressWithStartEvent(action, start, finish)
+	exports['sandbox-hud']:ProgressWithStartEvent(action, start, finish)
 end)
 
 RegisterNetEvent("Progress:Client:ProgressWithTickEvent", function(action, tick, finish)
-	Progress:ProgressWithTickEvent(action, tick, finish)
+	exports['sandbox-hud']:ProgressWithTickEvent(action, tick, finish)
 end)
 
 RegisterNetEvent("Progress:Client:ProgressWithStartAndTick", function(action, start, tick, finish)
-	Progress:ProgressWithStartAndTick(action, start, tick, finish)
+	exports['sandbox-hud']:ProgressWithStartAndTick(action, start, tick, finish)
 end)
 
 RegisterNetEvent("Progress:Client:Cancel", function()
-	Progress:Cancel()
+	exports['sandbox-hud']:ProgressCancel()
 end)
 
 RegisterNetEvent("Progress:Client:Fail", function()
-	Progress:Fail()
+	exports['sandbox-hud']:ProgressFail()
 end)
 
 RegisterNUICallback("Progress:Finish", function(data, cb)
-	Progress:Finish()
+	exports['sandbox-hud']:ProgressFinish()
 	cb("ok")
 end)
 
@@ -186,7 +186,7 @@ RegisterNUICallback("CloseUI", function(data, cb)
 end)
 
 RegisterNUICallback("SaveConfig", function(data, cb)
-	Callbacks:ServerCallback("HUD:SaveConfig", data, function(s)
+	exports["sandbox-base"]:ServerCallback("HUD:SaveConfig", data, function(s)
 		cb(s)
 	end)
 end)

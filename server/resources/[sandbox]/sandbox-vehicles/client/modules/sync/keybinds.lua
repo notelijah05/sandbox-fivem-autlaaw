@@ -1,45 +1,49 @@
 AddEventHandler('Vehicles:Client:StartUp', function()
-    Keybinds:Add('emergency_lights', 'Q', 'keyboard', 'Vehicle - Toggle Emergency Lighting', function()
-        Vehicles.Sync.EmergencyLights:Toggle()
-    end)
+    exports["sandbox-keybinds"]:Add('emergency_lights', 'Q', 'keyboard', 'Vehicle - Toggle Emergency Lighting',
+        function()
+            exports['sandbox-vehicles']:SyncEmergencyLightsToggle()
+        end)
 
-    Keybinds:Add('emergency_sirens', 'LMENU', 'keyboard', 'Vehicle - Toggle Emergency Sirens', function()
-        Vehicles.Sync.EmergencySiren:Toggle()
-    end)
+    exports["sandbox-keybinds"]:Add('emergency_sirens', 'LMENU', 'keyboard', 'Vehicle - Toggle Emergency Sirens',
+        function()
+            exports['sandbox-vehicles']:SyncEmergencySirenToggle()
+        end)
 
-    Keybinds:Add('emergency_sirens_tone', 'R', 'keyboard', 'Vehicle - Cycle Emergency Siren Tone', function()
-        Vehicles.Sync.EmergencySiren:Cycle()
-    end)
+    exports["sandbox-keybinds"]:Add('emergency_sirens_tone', 'R', 'keyboard', 'Vehicle - Cycle Emergency Siren Tone',
+        function()
+            exports['sandbox-vehicles']:SyncEmergencySirenCycle()
+        end)
 
-    Keybinds:Add('emergency_airhorn', 'E', 'keyboard', 'Vehicle - Emergency Airhorn', function()
-        Vehicles.Sync.EmergencyAirhorn:Set(true)
+    exports["sandbox-keybinds"]:Add('emergency_airhorn', 'E', 'keyboard', 'Vehicle - Emergency Airhorn', function()
+        exports['sandbox-vehicles']:SyncEmergencyAirhornSet(true)
     end, function()
-        Vehicles.Sync.EmergencyAirhorn:Set(false)
+        exports['sandbox-vehicles']:SyncEmergencyAirhornSet(false)
     end)
 
-    Keybinds:Add('veh_indicators_hazards', '', 'keyboard', 'Vehicle - Indicator - Hazards', function()
-        Vehicles.Sync.Indicators:Set(0)
+    exports["sandbox-keybinds"]:Add('veh_indicators_hazards', '', 'keyboard', 'Vehicle - Indicator - Hazards', function()
+        exports['sandbox-vehicles']:SyncIndicatorsSet(0)
     end)
 
-    Keybinds:Add('veh_indicators_right', '', 'keyboard', 'Vehicle - Indicator - Right', function()
-        Vehicles.Sync.Indicators:Set(1)
+    exports["sandbox-keybinds"]:Add('veh_indicators_right', '', 'keyboard', 'Vehicle - Indicator - Right', function()
+        exports['sandbox-vehicles']:SyncIndicatorsSet(1)
     end)
 
-    Keybinds:Add('veh_indicators_left', '', 'keyboard', 'Vehicle - Indicator - Left', function()
-        Vehicles.Sync.Indicators:Set(2)
+    exports["sandbox-keybinds"]:Add('veh_indicators_left', '', 'keyboard', 'Vehicle - Indicator - Left', function()
+        exports['sandbox-vehicles']:SyncIndicatorsSet(2)
     end)
 
-    Keybinds:Add('veh_neons_toggle', '', 'keyboard', 'Vehicle - Toggle Neons/Underglow', function()
-        Vehicles.Sync.Neons:Toggle()
+    exports["sandbox-keybinds"]:Add('veh_neons_toggle', '', 'keyboard', 'Vehicle - Toggle Neons/Underglow', function()
+        exports['sandbox-vehicles']:SyncNeonsToggle()
     end)
 
-    Keybinds:Add('veh_bike_drop', 'G', 'keyboard', 'Vehicle - Put Down Bicycle', function()
-        Vehicles.Sync.Bike:Drop()
+    exports["sandbox-keybinds"]:Add('veh_bike_drop', 'G', 'keyboard', 'Vehicle - Put Down Bicycle', function()
+        exports['sandbox-vehicles']:SyncBikeDrop()
     end)
 
-    Keybinds:Add('veh_k9_leavevehicle', '', 'keyboard', 'Vehicle - K9 - Get Out of Vehicle', function()
-        if LocalPlayer.state.isK9Ped then
-            TriggerEvent("Vehicles:Client:K9LeaveVehicle")
-        end
-    end)
+    exports["sandbox-keybinds"]:Add('veh_k9_leavevehicle', '', 'keyboard', 'Vehicle - K9 - Get Out of Vehicle',
+        function()
+            if LocalPlayer.state.isK9Ped then
+                TriggerEvent("Vehicles:Client:K9LeaveVehicle")
+            end
+        end)
 end)

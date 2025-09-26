@@ -22,57 +22,35 @@ function DeleteLasers()
 	end
 end
 
-AddEventHandler("Lasers:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Game = exports["sandbox-base"]:FetchComponent("Game")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Lasers = exports["sandbox-base"]:FetchComponent("Lasers")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Lasers", {
-		"Logger",
-		"Callbacks",
-		"Game",
-		"Utils",
-		"Lasers",
-	}, function(error)
-		if #error > 0 then
+	exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:Start", function()
+		creationEnabled = true
+		inOriginMode = true
+		startCreation()
+	end)
+
+	exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:End", function()
+		creationEnabled = false
+	end)
+
+	exports["sandbox-base"]:RegisterClientCallback("Lasers:Create:Save", function()
+		if not originPoints or not targetPoints then
 			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-
-		Callbacks:RegisterClientCallback("Lasers:Create:Start", function()
-			creationEnabled = true
-			inOriginMode = true
-			startCreation()
-		end)
-
-		Callbacks:RegisterClientCallback("Lasers:Create:End", function()
-			creationEnabled = false
-		end)
-
-		Callbacks:RegisterClientCallback("Lasers:Create:Save", function()
-			if not originPoints or not targetPoints then
-				return
-			end
-			local name = GetUserInput("Enter name of laser:", "", 30)
-			if name == nil then
-				return
-			end
-			local laser = {
-				name = name,
-				originPoints = originPoints,
-				targetPoints = targetPoints,
-				travelTimeBetweenTargets = { 1.0, 1.0 },
-				waitTimeAtTargets = { 0.0, 0.0 },
-				randomTargetSelection = true,
-			}
-			TriggerServerEvent("Lasers:Server:Save", laser)
-			creationEnabled = false
-		end)
+		end
+		local name = GetUserInput("Enter name of laser:", "", 30)
+		if name == nil then
+			return
+		end
+		local laser = {
+			name = name,
+			originPoints = originPoints,
+			targetPoints = targetPoints,
+			travelTimeBetweenTargets = { 1.0, 1.0 },
+			waitTimeAtTargets = { 0.0, 0.0 },
+			randomTargetSelection = true,
+		}
+		TriggerServerEvent("Lasers:Server:Save", laser)
+		creationEnabled = false
 	end)
 end)
 
@@ -84,71 +62,72 @@ RegisterNetEvent("Characters:Client:Logout", function()
 	DeleteLasers()
 end)
 
-_LASERS = {
-	Create = function(self, id, originPoint, targetPoints, options, startEnabled, onHit)
-		_fookinLasers[id] = {
-			originPoint = originPoint,
-			targetPoints = targetPoints,
-			options = options,
-			startEnabled = startEnabled,
-			onHit = onHit,
-		}
-	end,
-	GetLaser = function(self, id)
-		return _fookinLasers[id].laser or nil
-	end,
-	GetActive = function(self, id)
-		if _fookinLasers[id] ~= nil then
-			return _fookinLasers[id].laser.getActive()
-		else
-			return false
-		end
-	end,
-	GetVisible = function(self, id)
-		if _fookinLasers[id] ~= nil then
-			return _fookinLasers[id].laser.getVisible()
-		else
-			return false
-		end
-	end,
-	GetMoving = function(self, id)
-		if _fookinLasers[id] ~= nil then
-			return _fookinLasers[id].laser.getMoving()
-		else
-			return false
-		end
-	end,
-	GetColor = function(self, id)
-		if _fookinLasers[id] ~= nil then
-			return _fookinLasers[id].laser.getColor()
-		else
-			return false
-		end
-	end,
-	Utils = {
-		SetActive = function(self, id, state)
-			if _fookinLasers[id] ~= nil and _fookinLasers[id].laser ~= nil then
-				_fookinLasers[id].laser.setActive(state)
-			end
-		end,
-		SetVisible = function(self, id, state)
-			if _fookinLasers[id] ~= nil and _fookinLasers[id].laser ~= nil then
-				_fookinLasers[id].laser.setVisible(state)
-			end
-		end,
-		SetMoving = function(self, id, state)
-			if _fookinLasers[id] ~= nil and _fookinLasers[id].laser ~= nil then
-				_fookinLasers[id].laser.setMoving(state)
-			end
-		end,
-		SetColor = function(self, id, r, g, b, a)
-			if _fookinLasers[id] ~= nil and _fookinLasers[id].laser ~= nil then
-				_fookinLasers[id].laser.setColor(r, g, b, a)
-			end
-		end,
-	},
-}
+exports('Create', function(id, originPoint, targetPoints, options, startEnabled, onHit)
+	_fookinLasers[id] = {
+		originPoint = originPoint,
+		targetPoints = targetPoints,
+		options = options,
+		startEnabled = startEnabled,
+		onHit = onHit,
+	}
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Lasers", _LASERS)
+exports('GetLaser', function(id)
+	return _fookinLasers[id].laser or nil
+end)
+
+exports('GetActive', function(id)
+	if _fookinLasers[id] ~= nil then
+		return _fookinLasers[id].laser.getActive()
+	else
+		return false
+	end
+end)
+
+exports('GetVisible', function(id)
+	if _fookinLasers[id] ~= nil then
+		return _fookinLasers[id].laser.getVisible()
+	else
+		return false
+	end
+end)
+
+exports('GetMoving', function(id)
+	if _fookinLasers[id] ~= nil then
+		return _fookinLasers[id].laser.getMoving()
+	else
+		return false
+	end
+end)
+
+exports('GetColor', function(id)
+	if _fookinLasers[id] ~= nil then
+		return _fookinLasers[id].laser.getColor()
+	else
+		return false
+	end
+end)
+
+exports('SetActive', function(id, state)
+	if _fookinLasers[id] ~= nil and _fookinLasers[id].laser ~= nil then
+		_fookinLasers[id].laser.setActive(state)
+	end
+end)
+
+exports('SetVisible', function(id, state)
+	if _fookinLasers[id] ~= nil and _fookinLasers[id].laser ~= nil then
+		_fookinLasers[id].laser.setVisible(state)
+	end
+end)
+
+exports('SetMoving', function(id, state)
+	if _fookinLasers[id] ~= nil and _fookinLasers[id].laser ~= nil then
+		_fookinLasers[id].laser.setMoving(state)
+	end
+end)
+
+exports('SetColor', function(id, r, g, b, a)
+	if _fookinLasers[id] ~= nil and _fookinLasers[id].laser ~= nil then
+		_fookinLasers[id].laser.setColor(r, g, b, a)
+	end
 end)

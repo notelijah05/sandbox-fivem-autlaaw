@@ -1,5 +1,5 @@
 AddEventHandler("Businesses:Client:Startup", function()
-	Polyzone.Create:Box("unicorn_offdutyzone", vector3(119.96, -1302.6, 29.12), 61.4, 67.4, {
+	exports['sandbox-polyzone']:CreateBox("unicorn_offdutyzone", vector3(119.96, -1302.6, 29.12), 61.4, 67.4, {
 		heading = 7,
 		--debugPoly=true,
 		minZ = 25.32,
@@ -9,7 +9,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Poly("autoexotics_offdutyzone", {
+	exports['sandbox-polyzone']:CreatePoly("autoexotics_offdutyzone", {
 		vector2(525.57733154297, -147.49894714355),
 		vector2(524.30938720703, -159.20474243164),
 		vector2(524.62188720703, -171.75160217285),
@@ -32,7 +32,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 20, -- Minutes
 	})
 
-	Polyzone.Create:Box("bahama_offdutyzone", vector3(-1387.98, -612.01, 30.22), 53.2, 39.8, {
+	exports['sandbox-polyzone']:CreateBox("bahama_offdutyzone", vector3(-1387.98, -612.01, 30.22), 53.2, 39.8, {
 		heading = 33,
 		--debugPoly=true,
 		minZ = 25.32,
@@ -42,7 +42,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("dreamworks_offdutyzone", vector3(-744.94, -1476.06, 5.0), 102.8, 118.4, {
+	exports['sandbox-polyzone']:CreateBox("dreamworks_offdutyzone", vector3(-744.94, -1476.06, 5.0), 102.8, 118.4, {
 		heading = 50,
 		--debugPoly=true,
 		minZ = 2.0,
@@ -52,7 +52,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 20, -- Minutes
 	})
 
-	Polyzone.Create:Box("rockford_records_offdutyzone", vector3(-990.76, -279.63, 39.05), 56.0, 72.6, {
+	exports['sandbox-polyzone']:CreateBox("rockford_records_offdutyzone", vector3(-990.76, -279.63, 39.05), 56.0, 72.6, {
 		heading = 298,
 		--debugPoly=true,
 		minZ = 33.05,
@@ -62,7 +62,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("triad_offdutyzone", vector3(-827.49, -712.77, 27.89), 57.6, 45.8, {
+	exports['sandbox-polyzone']:CreateBox("triad_offdutyzone", vector3(-827.49, -712.77, 27.89), 57.6, 45.8, {
 		heading = 0,
 		--debugPoly=true,
 		minZ = 5.89,
@@ -72,7 +72,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("lsfc_offdutyzone", vector3(1636.4, 4855.55, 33.14), 69.0, 50, {
+	exports['sandbox-polyzone']:CreateBox("lsfc_offdutyzone", vector3(1636.4, 4855.55, 33.14), 69.0, 50, {
 		heading = 7,
 		--debugPoly=true,
 		minZ = 18.54,
@@ -82,7 +82,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 10, -- Minutes
 	})
 
-	Polyzone.Create:Box("lasttrain_offdutyzone", vector3(-374.12, 279.15, 84.99), 57.4, 42.0, {
+	exports['sandbox-polyzone']:CreateBox("lasttrain_offdutyzone", vector3(-374.12, 279.15, 84.99), 57.4, 42.0, {
 		heading = 0,
 		--debugPoly=true,
 		minZ = 81.39,
@@ -92,7 +92,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("tequila_offdutyzone", vector3(-556.95, 286.15, 99.17), 42.2, 39.4, {
+	exports['sandbox-polyzone']:CreateBox("tequila_offdutyzone", vector3(-556.95, 286.15, 99.17), 42.2, 39.4, {
 		heading = 0,
 		--debugPoly=true,
 		minZ = 75.57,
@@ -102,7 +102,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("woods_saloon_offdutyzone", vector3(-305.68, 6269.82, 31.36), 26.8, 24.2, {
+	exports['sandbox-polyzone']:CreateBox("woods_saloon_offdutyzone", vector3(-305.68, 6269.82, 31.36), 26.8, 24.2, {
 		heading = 44,
 		--debugPoly=true,
 		minZ = 29.36,
@@ -112,7 +112,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 20, -- Minutes
 	})
 
-	-- Polyzone.Create:Box("pepega_pawn_offdutyzone", vector3(170.78, -1316.72, 29.36), 28.6, 46.6, {
+	-- exports['sandbox-polyzone']:CreateBox("pepega_pawn_offdutyzone", vector3(170.78, -1316.72, 29.36), 28.6, 46.6, {
 	-- 	heading = 330,
 	-- 	--debugPoly=true,
 	-- 	minZ = 28.36,
@@ -122,17 +122,18 @@ AddEventHandler("Businesses:Client:Startup", function()
 	-- 	goOffDutyTimer = 10, -- Minutes
 	-- })
 
-	Polyzone.Create:Box("pepega_pawn_hawick_offdutyzone", vector3(-321.67, -95.88, 47.05), 17.4, 59.2, {
-		heading = 340,
-		--debugPoly=true,
-		minZ = 44.25,
-		maxZ = 55.45,
-	}, {
-		goOffDuty = "pepega_pawn",
-		goOffDutyTimer = 10, -- Minutes
-	})
+	exports['sandbox-polyzone']:CreateBox("pepega_pawn_hawick_offdutyzone", vector3(-321.67, -95.88, 47.05), 17.4, 59.2,
+		{
+			heading = 340,
+			--debugPoly=true,
+			minZ = 44.25,
+			maxZ = 55.45,
+		}, {
+			goOffDuty = "pepega_pawn",
+			goOffDutyTimer = 10, -- Minutes
+		})
 
-	Polyzone.Create:Box("garcon_pawn_offdutyzone", vector3(-224.68, 6230.24, 31.49), 27.8, 24.2, {
+	exports['sandbox-polyzone']:CreateBox("garcon_pawn_offdutyzone", vector3(-224.68, 6230.24, 31.49), 27.8, 24.2, {
 		heading = 45,
 		--debugPoly=true,
 		minZ = 29.89,
@@ -142,7 +143,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 10, -- Minutes
 	})
 
-	Polyzone.Create:Box("uwu_offdutyzone", vector3(-590.48, -1084.29, 22.33), 85.4, 69.6, {
+	exports['sandbox-polyzone']:CreateBox("uwu_offdutyzone", vector3(-590.48, -1084.29, 22.33), 85.4, 69.6, {
 		heading = 1,
 		--debugPoly=true,
 		minZ = 18.33,
@@ -152,7 +153,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("pizza_this_offdutyzone", vector3(805.32, -750.21, 42.06), 50.8, 36.0, {
+	exports['sandbox-polyzone']:CreateBox("pizza_this_offdutyzone", vector3(805.32, -750.21, 42.06), 50.8, 36.0, {
 		heading = 0,
 		--debugPoly=true,
 		minZ = 17.86,
@@ -162,7 +163,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("prego_offdutyzone", vector3(-1120.35, -1453.0, 17.12), 24.5, 32.5, {
+	exports['sandbox-polyzone']:CreateBox("prego_offdutyzone", vector3(-1120.35, -1453.0, 17.12), 24.5, 32.5, {
 		heading = 305,
 		--debugPoly=true,
 		minZ = -7.08,
@@ -172,7 +173,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("noodle_offdutyzone", vector3(-1188.02, -1159.9, 18.06), 23.5, 32.5, {
+	exports['sandbox-polyzone']:CreateBox("noodle_offdutyzone", vector3(-1188.02, -1159.9, 18.06), 23.5, 32.5, {
 		heading = 195,
 		--debugPoly=true,
 		minZ = -6.14,
@@ -182,7 +183,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("pdm_offdutyzone", vector3(-34.61, -1096.26, 25.89), 70.0, 55.0, {
+	exports['sandbox-polyzone']:CreateBox("pdm_offdutyzone", vector3(-34.61, -1096.26, 25.89), 70.0, 55.0, {
 		heading = 340,
 		--debugPoly=true,
 		minZ = 24.89,
@@ -192,7 +193,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 10, -- Minutes
 	})
 
-	Polyzone.Create:Box("casino_offdutyzone", vector3(950.83, 45.03, 115.47), 120.0, 90.0, {
+	exports['sandbox-polyzone']:CreateBox("casino_offdutyzone", vector3(950.83, 45.03, 115.47), 120.0, 90.0, {
 		heading = 328,
 		--debugPoly=true,
 	}, {
@@ -200,7 +201,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 10, -- Minutes
 	})
 
-	Polyzone.Create:Box("bakery_offdutyzone", vector3(-1262.7, -290.64, 47.95), 30, 30, {
+	exports['sandbox-polyzone']:CreateBox("bakery_offdutyzone", vector3(-1262.7, -290.64, 47.95), 30, 30, {
 		heading = 27,
 		--debugPoly=true,
 		minZ = 35.15,
@@ -210,7 +211,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("jewel_offdutyzone", vector3(-708.2, -893.29, 27.58), 30, 30, {
+	exports['sandbox-polyzone']:CreateBox("jewel_offdutyzone", vector3(-708.2, -893.29, 27.58), 30, 30, {
 		heading = 0,
 		--debugPoly=true,
 		minZ = 15.58,
@@ -220,7 +221,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 10, -- Minutes
 	})
 
-	Polyzone.Create:Box("vangelico_offdutyzone", vector3(-384.17, 6047.39, 31.5), 26.1, 40.75, {
+	exports['sandbox-polyzone']:CreateBox("vangelico_offdutyzone", vector3(-384.17, 6047.39, 31.5), 26.1, 40.75, {
 		heading = 317,
 		--debugPoly=true,
 		minZ = 30.3,
@@ -230,17 +231,18 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("vangelico_grapeseed_offdutyzone", vector3(1646.25, 4883.42, 42.08), 20.6, 24.2, {
-		heading = 8,
-		--debugPoly=true,
-		minZ = 40.08,
-		maxZ = 49.08,
-	}, {
-		goOffDuty = "vangelico_grapeseed",
-		goOffDutyTimer = 15, -- Minutes
-	})
+	exports['sandbox-polyzone']:CreateBox("vangelico_grapeseed_offdutyzone", vector3(1646.25, 4883.42, 42.08), 20.6, 24.2,
+		{
+			heading = 8,
+			--debugPoly=true,
+			minZ = 40.08,
+			maxZ = 49.08,
+		}, {
+			goOffDuty = "vangelico_grapeseed",
+			goOffDutyTimer = 15, -- Minutes
+		})
 
-	Polyzone.Create:Box("beanmachine_offdutyzone", vector3(118.04, -1038.19, 29.36), 28.6, 19.6, {
+	exports['sandbox-polyzone']:CreateBox("beanmachine_offdutyzone", vector3(118.04, -1038.19, 29.36), 28.6, 19.6, {
 		heading = 340,
 		--debugPoly=true,
 		minZ = 28.36,
@@ -250,7 +252,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("burgershot_offdutyzone", vector3(-1185.72, -893.32, 14.03), 45.8, 30.6, {
+	exports['sandbox-polyzone']:CreateBox("burgershot_offdutyzone", vector3(-1185.72, -893.32, 14.03), 45.8, 30.6, {
 		heading = 300,
 		--debugPoly=true,
 		minZ = 11.83,
@@ -260,7 +262,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("rustybrowns_offdutyzone", vector3(154.81, 240.54, 106.92), 27.6, 21.4, {
+	exports['sandbox-polyzone']:CreateBox("rustybrowns_offdutyzone", vector3(154.81, 240.54, 106.92), 27.6, 21.4, {
 		heading = 340,
 		--debugPoly=true,
 		minZ = 105.32,
@@ -270,14 +272,14 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 15, -- Minutes
 	})
 
-	Polyzone.Create:Box("mba_offdutyzone", vector3(-322.88, -1969.15, 83.02), 206.0, 260.0, {
+	exports['sandbox-polyzone']:CreateBox("mba_offdutyzone", vector3(-322.88, -1969.15, 83.02), 206.0, 260.0, {
 		heading = 0,
 	}, {
 		goOffDuty = "mba",
 		goOffDutyTimer = 10, -- Minutes
 	})
 
-	Polyzone.Create:Box("tuna_offdutyzone", vector3(141.624, -3024.490, 7.041), 70.0, 70.0, {
+	exports['sandbox-polyzone']:CreateBox("tuna_offdutyzone", vector3(141.624, -3024.490, 7.041), 70.0, 70.0, {
 		heading = 180,
 		--debugPoly=true,
 		minZ = 3.89,
@@ -287,7 +289,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 20, -- Minutes
 	})
 
-	Polyzone.Create:Box("bennys_offdutyzone", vector3(-215.27, -1325.25, 49.27), 47.8, 68.8, {
+	exports['sandbox-polyzone']:CreateBox("bennys_offdutyzone", vector3(-215.27, -1325.25, 49.27), 47.8, 68.8, {
 		heading = 0,
 		--debugPoly=true,
 		minZ = 26.67,
@@ -297,7 +299,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 20, -- Minutes
 	})
 
-	Polyzone.Create:Box("ottos_offdutyzone", vector3(933.22, -963.35, 39.8), 58.4, 61.8, {
+	exports['sandbox-polyzone']:CreateBox("ottos_offdutyzone", vector3(933.22, -963.35, 39.8), 58.4, 61.8, {
 		heading = 0,
 		--debugPoly=true,
 		minZ = 34.07,
@@ -307,7 +309,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 20, -- Minutes
 	})
 
-	Polyzone.Create:Box("hayes_offdutyzone", vector3(-1416.83, -449.99, 41.01), 36.4, 47.7, {
+	exports['sandbox-polyzone']:CreateBox("hayes_offdutyzone", vector3(-1416.83, -449.99, 41.01), 36.4, 47.7, {
 		heading = 32,
 		--debugPoly=true,
 		minZ = 17.41,
@@ -317,7 +319,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 20, -- Minutes
 	})
 
-	Polyzone.Create:Box("harmony_offdutyzone", vector3(1183.8, 2650.36, 37.93), 50.0, 52.6, {
+	exports['sandbox-polyzone']:CreateBox("harmony_offdutyzone", vector3(1183.8, 2650.36, 37.93), 50.0, 52.6, {
 		heading = 358,
 		--debugPoly=true,
 		minZ = 14.33,
@@ -327,7 +329,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 20, -- Minutes
 	})
 
-	Polyzone.Create:Box("paleto_tuners_offdutyzone", vector3(157.02, 6401.64, 41.06), 112.2, 101.6, {
+	exports['sandbox-polyzone']:CreateBox("paleto_tuners_offdutyzone", vector3(157.02, 6401.64, 41.06), 112.2, 101.6, {
 		heading = 30,
 		--debugPoly=true,
 		minZ = 28.06,
@@ -337,7 +339,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		goOffDutyTimer = 20, -- Minutes
 	})
 
-	-- Polyzone.Create:Box("securoserv_offdutyzone", vector3(24.56, -112.35, 55.94), 31.0, 21.4, {
+	-- exports['sandbox-polyzone']:CreateBox("securoserv_offdutyzone", vector3(24.56, -112.35, 55.94), 31.0, 21.4, {
 	-- 	heading = 340,
 	-- 	--debugPoly=true,
 	-- 	minZ = 52.34,
@@ -357,7 +359,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 		if data.goOffDutyTimer and data.goOffDutyTimer > 0 then
 			pendingOffDuty = data.goOffDuty
 
-			Notification:Info(
+			exports["sandbox-hud"]:NotifInfo(
 				string.format(
 					"Leaving Business Area - You Will be Automatically Clocked Off in %s Minutes.",
 					data.goOffDutyTimer
@@ -368,12 +370,12 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			pendingTimeout = time
 			Citizen.SetTimeout(60000 * data.goOffDutyTimer, function()
 				if pendingOffDuty and LocalPlayer.state.onDuty == pendingOffDuty and pendingTimeout == time then
-					Jobs.Duty:Off(pendingOffDuty)
+					exports['sandbox-jobs']:DutyOff(pendingOffDuty)
 					LocalPlayer.state:set("sentOffDuty", pendingOffDuty, true)
 				end
 			end)
 		else
-			Jobs.Duty:Off(data.goOffDuty)
+			exports['sandbox-jobs']:DutyOff(data.goOffDuty)
 			LocalPlayer.state:set("sentOffDuty", data.goOffDuty, true)
 		end
 	end

@@ -14,7 +14,7 @@ function StartDashboardThread()
             end
 
             table.insert(t, {
-                count = Fetch:Count(),
+                count = exports['sandbox-base']:FetchCount(),
                 time = os.time(),
             })
 

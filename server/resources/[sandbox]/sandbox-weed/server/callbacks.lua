@@ -2,7 +2,7 @@ local _packagesAvailable = 5
 local _weedBuyers = {}
 
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Weed:CheckPlant", function(source, pid, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:CheckPlant", function(source, pid, cb)
 		if pid ~= nil and _plants[pid] then
 			if checkNearPlant(source, pid) then
 				cb({
@@ -17,28 +17,30 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:WaterPlant", function(source, pid, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:WaterPlant", function(source, pid, cb)
 		if pid ~= nil and _plants[pid] then
 			if checkNearPlant(source, pid) then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					if _plants[pid] ~= nil then
 						if _plants[pid].plant.water < 100 then
-							if Inventory.Items:Has(char:GetData("SID"), 1, "water", 1) then
-								Inventory.Items:Remove(char:GetData("SID"), 1, "water", 1)
+							if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "water", 1) then
+								exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "water", 1)
 								local amt = 10.0
 								if 100 - _plants[pid].plant.water < 10 then
 									amt = (100 - _plants[pid].plant.water) + 0.0
 								end
 								_plants[pid].plant.water = _plants[pid].plant.water + amt
 							else
-								Execute:Client(source, "Notification", "Error", "You Don't Have Water")
+								exports['sandbox-hud']:NotifError(source,
+									"You Don't Have Water")
 							end
 						else
-							Execute:Client(source, "Notification", "Error", "Plant Is Already Watered")
+							exports['sandbox-hud']:NotifError(source,
+								"Plant Is Already Watered")
 						end
 					else
-						Execute:Client(source, "Notification", "Error", "Invalid Plant")
+						exports['sandbox-hud']:NotifError(source, "Invalid Plant")
 					end
 				end
 			else
@@ -47,17 +49,17 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:FertilizePlant", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:FertilizePlant", function(source, data, cb)
 		if data and data.id and _plants[data.id] then
 			if checkNearPlant(source, data.id) then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					if _plants[data.id] ~= nil then
 						if _plants[data.id].plant.fertilizer == nil then
 							if
-								Inventory.Items:Has(char:GetData("SID"), 1, string.format("fertilizer_%s", data.type), 1)
+								exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, string.format("fertilizer_%s", data.type), 1)
 							then
-								Inventory.Items:Remove(
+								exports['sandbox-inventory']:Remove(
 									char:GetData("SID"),
 									1,
 									string.format("fertilizer_%s", data.type),
@@ -69,13 +71,15 @@ function RegisterCallbacks()
 									value = Config.Fertilizer[data.type].value,
 								}
 							else
-								Execute:Client(source, "Notification", "Error", "You Don't Have Fertilizer")
+								exports['sandbox-hud']:NotifError(source,
+									"You Don't Have Fertilizer")
 							end
 						else
-							Execute:Client(source, "Notification", "Error", "Plant Is Already Fertilized")
+							exports['sandbox-hud']:NotifError(source,
+								"Plant Is Already Fertilized")
 						end
 					else
-						Execute:Client(source, "Notification", "Error", "Invalid Plant")
+						exports['sandbox-hud']:NotifError(source, "Invalid Plant")
 					end
 				end
 			else
@@ -84,11 +88,11 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:HarvestPlant", function(source, pid, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:HarvestPlant", function(source, pid, cb)
 		if pid then
 			if checkNearPlant(source, pid) then
 				if _plants[pid] ~= nil then
-					local char = Fetch:CharacterSource(source)
+					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					if char ~= nil then
 						local stage = Plants[getStageByPct(_plants[pid].plant.growth)]
 						if stage.harvestable then
@@ -99,7 +103,7 @@ function RegisterCallbacks()
 									giving = "weedseed_female"
 								end
 								if
-									Inventory:AddItem(
+									exports['sandbox-inventory']:AddItem(
 										char:GetData("SID"),
 										giving,
 										math.random(math.ceil(_plants[pid].plant.output / 16)),
@@ -107,8 +111,8 @@ function RegisterCallbacks()
 										1
 									)
 								then
-									Weed.Planting:Delete(pid)
-									Logger:Info(
+									exports['sandbox-weed']:PlantingDelete(pid)
+									exports['sandbox-base']:LoggerInfo(
 										"Weed",
 										string.format(
 											"%s %s (%s) Harvested A Weed Plant",
@@ -127,8 +131,8 @@ function RegisterCallbacks()
 									t = 3
 								end
 
-								if Inventory:AddItem(char:GetData("SID"), "weed_bud", t, {}, 1) then
-									Weed.Planting:Delete(pid)
+								if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "weed_bud", t, {}, 1) then
+									exports['sandbox-weed']:PlantingDelete(pid)
 									cb(true)
 								else
 									cb(false)
@@ -151,13 +155,13 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:DestroyPlant", function(source, pid, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:DestroyPlant", function(source, pid, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if pid and _plants[pid] then
 				if checkNearPlant(source, pid) then
-					Weed.Planting:Delete(pid)
-					Logger:Info(
+					exports['sandbox-weed']:PlantingDelete(pid)
+					exports['sandbox-base']:LoggerInfo(
 						"Weed",
 						string.format(
 							"%s %s (%s) Destroyed A Weed Plant",
@@ -166,7 +170,7 @@ function RegisterCallbacks()
 							char:GetData("SID")
 						)
 					)
-					Execute:Client(source, "Notification", "Success", "Plant Has Been Destroyed")
+					exports['sandbox-hud']:NotifSuccess(source, "Plant Has Been Destroyed")
 				else
 					cb(nil)
 				end
@@ -178,14 +182,14 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:PDDestroyPlant", function(source, pid, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:PDDestroyPlant", function(source, pid, cb)
 		if pid and _plants[pid] then
 			if checkNearPlant(source, pid) then
-				local char = Fetch:CharacterSource(source)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char ~= nil then
 					if Player(source).state.onDuty == "police" then
-						Weed.Planting:Delete(pid)
-						Logger:Info(
+						exports['sandbox-weed']:PlantingDelete(pid)
+						exports['sandbox-base']:LoggerInfo(
 							"Weed",
 							string.format(
 								"%s %s (%s) PD Destroyed A Weed Plant",
@@ -194,7 +198,8 @@ function RegisterCallbacks()
 								char:GetData("SID")
 							)
 						)
-						Execute:Client(source, "Notification", "Success", "Plant Has Been Destroyed")
+						exports['sandbox-hud']:NotifSuccess(source,
+							"Plant Has Been Destroyed")
 					else
 						cb(nil)
 					end
@@ -209,13 +214,13 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Weed:BuyPackage", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Weed:BuyPackage", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char ~= nil then
 			if _packagesAvailable > 0 and not _weedBuyers[char:GetData("ID")] then
-				if Wallet:Modify(source, -Config.PackagePrice) then
-					Logger:Info(
+				if exports['sandbox-finance']:WalletModify(source, -Config.PackagePrice) then
+					exports['sandbox-base']:LoggerInfo(
 						"Weed",
 						string.format(
 							"%s %s (%s) Bought Weed Package",
@@ -240,11 +245,11 @@ function RegisterCallbacks()
 						giving2 = "fertilizer_potassium"
 					end
 
-					--Reputation.Modify:Add(source, "weed", 1000)
-					Inventory:AddItem(char:GetData("SID"), giving, 2, {}, 1)
-					Inventory:AddItem(char:GetData("SID"), giving2, 2, {}, 1)
+					--exports['sandbox-characters']:RepAdd(source, "weed", 1000)
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), giving, 2, {}, 1)
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), giving2, 2, {}, 1)
 				else
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Weed",
 						string.format(
 							"%s %s (%s) Bought Weed Package",
@@ -253,11 +258,11 @@ function RegisterCallbacks()
 							char:GetData("SID")
 						)
 					)
-					Execute:Client(source, "Notification", "Error", "Dont Have Enough Cash")
+					exports['sandbox-hud']:NotifError(source, "Dont Have Enough Cash")
 					cb(false)
 				end
 			else
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Weed",
 					string.format(
 						"%s %s (%s) Bought Weed Package",
@@ -267,9 +272,10 @@ function RegisterCallbacks()
 					)
 				)
 				if _packagesAvailable > 0 then
-					Execute:Client(source, "Notification", "Error", "You've Already Bought A Package")
+					exports['sandbox-hud']:NotifError(source,
+						"You've Already Bought A Package")
 				else
-					Execute:Client(source, "Notification", "Error", "No Packages Available")
+					exports['sandbox-hud']:NotifError(source, "No Packages Available")
 				end
 				cb(false)
 			end

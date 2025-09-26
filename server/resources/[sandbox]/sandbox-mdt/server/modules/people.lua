@@ -24,7 +24,7 @@ local requiredCharacterData = {
 function GetCharacterVehiclesData(sid)
 	local p = promise.new()
 
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "vehicles",
 		query = {
 			["Owner.Type"] = 0,
@@ -51,190 +51,192 @@ function GetCharacterVehiclesData(sid)
 	return Citizen.Await(p)
 end
 
-_MDT.People = {
-	Search = {
-		People = function(self, term)
-			local p = promise.new()
-			Database.Game:find({
-				collection = "characters",
-				query = {
-					["$and"] = {
+exports("PeopleSearchPeople", function(term)
+	local p = promise.new()
+	exports['sandbox-base']:DatabaseGameFind({
+		collection = "characters",
+		query = {
+			["$and"] = {
+				{
+					["$or"] = {
 						{
-							["$or"] = {
-								{
-									["$expr"] = {
-										["$regexMatch"] = {
-											input = {
-												["$concat"] = { "$First", " ", "$Last" },
-											},
-											regex = term,
-											options = "i",
-										},
+							["$expr"] = {
+								["$regexMatch"] = {
+									input = {
+										["$concat"] = { "$First", " ", "$Last" },
 									},
-								},
-								{
-									["$expr"] = {
-										["$regexMatch"] = {
-											input = {
-												["$toString"] = "$SID",
-											},
-											regex = term,
-											options = "i",
-										},
-									},
+									regex = term,
+									options = "i",
 								},
 							},
 						},
 						{
-							["$or"] = {
-								{ Deleted = false },
-								{ Deleted = {
-									["$exists"] = false,
-								} },
+							["$expr"] = {
+								["$regexMatch"] = {
+									input = {
+										["$toString"] = "$SID",
+									},
+									regex = term,
+									options = "i",
+								},
 							},
 						},
 					},
 				},
-				options = {
-					projection = requiredCharacterData,
-					limit = 12,
+				{
+					["$or"] = {
+						{ Deleted = false },
+						{
+							Deleted = {
+								["$exists"] = false,
+							}
+						},
+					},
 				},
-			}, function(success, results)
-				if not success then
-					p:resolve(false)
-					return
-				end
-				p:resolve(results)
-			end)
-			return Citizen.Await(p)
-		end,
-	},
-	View = function(self, id, requireAllData)
-		-- 5 DB Calls Here But IDK what else to do
-		local SID = tonumber(id)
-		local p = promise.new()
-		Database.Game:findOne({
-			collection = "characters",
-			query = {
-				SID = SID,
 			},
-			options = {
-				projection = requiredCharacterData,
-			},
-		}, function(success, character)
-			if not success or #character < 0 then
-				p:resolve(false)
-				return
-			end
+		},
+		options = {
+			projection = requiredCharacterData,
+			limit = 12,
+		},
+	}, function(success, results)
+		if not success then
+			p:resolve(false)
+			return
+		end
+		p:resolve(results)
+	end)
+	return Citizen.Await(p)
+end)
 
-			if requireAllData then
-				local vehicles = GetCharacterVehiclesData(SID)
-				local char = character[1]
-				local ownedBusinesses = {}
+exports("PeopleView", function(id, requireAllData)
+	-- 5 DB Calls Here But IDK what else to do
+	local SID = tonumber(id)
+	local p = promise.new()
+	exports['sandbox-base']:DatabaseGameFindOne({
+		collection = "characters",
+		query = {
+			SID = SID,
+		},
+		options = {
+			projection = requiredCharacterData,
+		},
+	}, function(success, character)
+		if not success or #character < 0 then
+			p:resolve(false)
+			return
+		end
 
-				if char.Jobs then
-					for k, v in ipairs(char.Jobs) do
-						local jobData = Jobs:Get(v.Id)
-						if jobData.Owner and jobData.Owner == char.SID then
-							table.insert(ownedBusinesses, v.Id)
-						end
+		if requireAllData then
+			local vehicles = GetCharacterVehiclesData(SID)
+			local char = character[1]
+			local ownedBusinesses = {}
+
+			if char.Jobs then
+				for k, v in ipairs(char.Jobs) do
+					local jobData = exports['sandbox-jobs']:Get(v.Id)
+					if jobData.Owner and jobData.Owner == char.SID then
+						table.insert(ownedBusinesses, v.Id)
 					end
 				end
+			end
 
-				local parole = MySQL.single.await("SELECT end, total, parole FROM character_parole WHERE SID = ?", {
-					SID
-				})
+			local parole = MySQL.single.await("SELECT end, total, parole FROM character_parole WHERE SID = ?", {
+				SID
+			})
 
-				local chargesData = MySQL.query.await("SELECT SID, charges FROM mdt_reports_people WHERE sentenced = ? AND type = ? AND SID = ? AND expunged = ?", {
+			local chargesData = MySQL.query.await(
+				"SELECT SID, charges FROM mdt_reports_people WHERE sentenced = ? AND type = ? AND SID = ? AND expunged = ?",
+				{
 					1,
 					"suspect",
 					SID,
 					0
 				})
 
-				local convictions = {}
-				for k,v in ipairs(chargesData) do
-					local c = json.decode(v.charges)
-					for _, ch in ipairs(c) do
-						table.insert(convictions, ch)
-					end
+			local convictions = {}
+			for k, v in ipairs(chargesData) do
+				local c = json.decode(v.charges)
+				for _, ch in ipairs(c) do
+					table.insert(convictions, ch)
 				end
-
-				p:resolve({
-					data = char,
-					parole = parole,
-					convictions = convictions,
-					vehicles = vehicles,
-					ownedBusinesses = ownedBusinesses,
-				})
-			else
-				p:resolve(character[1])
 			end
-		end)
-		return Citizen.Await(p)
-	end,
-	Update = function(self, requester, id, key, value)
-		local p = promise.new()
-		local logVal = value
-		if type(value) == "table" then
-			logVal = json.encode(value)
-		end
 
-		local update = {
-			["$set"] = {
-				[key] = value,
+			p:resolve({
+				data = char,
+				parole = parole,
+				convictions = convictions,
+				vehicles = vehicles,
+				ownedBusinesses = ownedBusinesses,
+			})
+		else
+			p:resolve(character[1])
+		end
+	end)
+	return Citizen.Await(p)
+end)
+
+exports("PeopleUpdate", function(requester, id, key, value)
+	local p = promise.new()
+	local logVal = value
+	if type(value) == "table" then
+		logVal = json.encode(value)
+	end
+
+	local update = {
+		["$set"] = {
+			[key] = value,
+		},
+	}
+
+	if requester == -1 then
+		update["$push"] = {
+			MDTHistory = {
+				Time = (os.time() * 1000),
+				Char = -1,
+				Log = string.format("System Updated Profile, Set %s To %s", key, logVal),
 			},
 		}
-
-		if requester == -1 then
-			update["$push"] = {
-				MDTHistory = {
-					Time = (os.time() * 1000),
-					Char = -1,
-					Log = string.format("System Updated Profile, Set %s To %s", key, logVal),
-				},
-			}
-		else
-			update["$push"] = {
-				MDTHistory = {
-					Time = (os.time() * 1000),
-					Char = requester:GetData("SID"),
-					Log = string.format(
-						"%s Updated Profile, Set %s To %s",
-						requester:GetData("First") .. " " .. requester:GetData("Last"),
-						key,
-						logVal
-					),
-				},
-			}
-		end
-
-		Database.Game:updateOne({
-			collection = "characters",
-			query = {
-				SID = id,
+	else
+		update["$push"] = {
+			MDTHistory = {
+				Time = (os.time() * 1000),
+				Char = requester:GetData("SID"),
+				Log = string.format(
+					"%s Updated Profile, Set %s To %s",
+					requester:GetData("First") .. " " .. requester:GetData("Last"),
+					key,
+					logVal
+				),
 			},
-			update = update,
-		}, function(success, results)
-			if success then
-				local target = Fetch:SID(id)
-				if target then
-					target:SetData(key, value)
-				end
+		}
+	end
 
-				if key == "Mugshot" then
-					Inventory:UpdateGovIDMugshot(id, value)
-				end
+	exports['sandbox-base']:DatabaseGameUpdateOne({
+		collection = "characters",
+		query = {
+			SID = id,
+		},
+		update = update,
+	}, function(success, results)
+		if success then
+			local target = exports['sandbox-characters']:FetchBySID(id)
+			if target then
+				target:SetData(key, value)
 			end
-			p:resolve(success)
-		end)
-		return Citizen.Await(p)
-	end,
-}
+
+			if key == "Mugshot" then
+				exports['sandbox-inventory']:UpdateGovIDMugshot(id, value)
+			end
+		end
+		p:resolve(success)
+	end)
+	return Citizen.Await(p)
+end)
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("MDT:InputSearch:people", function(source, data, cb)
-		Database.Game:find({
+	exports["sandbox-base"]:RegisterServerCallback("MDT:InputSearch:people", function(source, data, cb)
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "characters",
 			query = {
 				["$and"] = {
@@ -286,9 +288,9 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:InputSearch:job", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:InputSearch:job", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
-			Database.Game:find({
+			exports['sandbox-base']:DatabaseGameFind({
 				collection = "characters",
 				query = {
 					["$and"] = {
@@ -344,7 +346,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						SID = 1,
 						First = 1,
 						Last = 1,
-						Callsign = 1,	
+						Callsign = 1,
 					},
 					limit = 4,
 				},
@@ -360,9 +362,9 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:InputSearchSID", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:InputSearchSID", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
-			Database.Game:findOne({
+			exports['sandbox-base']:DatabaseGameFindOne({
 				collection = "characters",
 				query = {
 					SID = tonumber(data.term)
@@ -389,26 +391,26 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Search:people", function(source, data, cb)
-		cb(MDT.People.Search:People(data.term))
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Search:people", function(source, data, cb)
+		cb(exports['sandbox-mdt']:PeopleSearchPeople(data.term))
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:View:person", function(source, data, cb)
-		cb(MDT.People:View(data, true))
+	exports["sandbox-base"]:RegisterServerCallback("MDT:View:person", function(source, data, cb)
+		cb(exports['sandbox-mdt']:PeopleView(data, true))
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Update:person", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Update:person", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and CheckMDTPermissions(source, false) and data.SID then
-			cb(MDT.People:Update(char, data.SID, data.Key, data.Data))
+			cb(exports['sandbox-mdt']:PeopleUpdate(char, data.SID, data.Key, data.Data))
 		else
 			cb(false)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:CheckCallsign", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:CheckCallsign", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
-			Database.Game:findOne({
+			exports['sandbox-base']:DatabaseGameFindOne({
 				collection = "characters",
 				query = {
 					Callsign = data,

@@ -24,7 +24,7 @@ RegisterNetEvent("Drugs:Effects:RunSpeed", function(quality)
 	SetSwimMultiplierForPlayer(pId, total)
 
 	StatSetInt(`MP0_STAMINA`, 100, true)
-	Buffs:ApplyUniqueBuff("speed", _runSpeedTime, false)
+	exports['sandbox-hud']:ApplyUniqueBuff("speed", _runSpeedTime, false)
 	while _runSpeedTime > 0 and not LocalPlayer.state.isDead do
 		total = 1.0 + (speedMod * (1.0 - (loops / 100)))
 
@@ -39,7 +39,7 @@ RegisterNetEvent("Drugs:Effects:RunSpeed", function(quality)
 			SetPedToRagdoll(ped, math.random(5), math.random(5), 3, 0, 0, 0)
 		end
 	end
-	Buffs:RemoveBuffType("speed")
+	exports['sandbox-hud']:RemoveBuffType("speed")
 	StopScreenEffect("DrugsMichaelAliensFight")
 	_runSpeedTime = 0
 	SetRunSprintMultiplierForPlayer(pId, 1.0)
@@ -85,7 +85,7 @@ RegisterNetEvent("Drugs:Effects:Armor", function(quality)
 	_armorTime = (drugEffectQualityMulti * 6) * (1.0 - (addiction / 100))
 
 	local loops = 0
-	Buffs:ApplyUniqueBuff("armor", _armorTime, false)
+	exports['sandbox-hud']:ApplyUniqueBuff("armor", _armorTime, false)
 	while _armorTime > 0 and not LocalPlayer.state.isDead do
 		loops = loops + 1
 		Wait(1000)
@@ -99,7 +99,7 @@ RegisterNetEvent("Drugs:Effects:Armor", function(quality)
 		end
 	end
 	_armorTime = 0
-	Buffs:RemoveBuffType("armor")
+	exports['sandbox-hud']:RemoveBuffType("armor")
 end)
 
 local _healTime = 0
@@ -135,10 +135,10 @@ RegisterNetEvent("Drugs:Effects:Heal", function(quality)
 		drugEffectApplyHealthMulti = 3.0
 	end
 
-	Status.Modify:Add("PLAYER_DRUNK", math.ceil(10 * (1.0 + (drugEffectQuality / 100))))
+	exports['sandbox-status']:Add("PLAYER_DRUNK", math.ceil(10 * (1.0 + (drugEffectQuality / 100))))
 	_healTime = math.ceil(30 * (1.0 + (drugEffectQuality / 100)) * (1.0 - (addiction / 100)))
 	local loops = 0
-	Buffs:ApplyUniqueBuff("heal", _healTime, false)
+	exports['sandbox-hud']:ApplyUniqueBuff("heal", _healTime, false)
 	while _healTime > 0 and not LocalPlayer.state.isDead do
 		local ped = PlayerPedId()
 		loops = loops + 1
@@ -156,21 +156,21 @@ RegisterNetEvent("Drugs:Effects:Heal", function(quality)
 		end
 	end
 	_healTime = 0
-	Buffs:RemoveBuffType("heal")
+	exports['sandbox-hud']:RemoveBuffType("heal")
 end)
 
 RegisterNetEvent("Characters:Client:Spawned", function()
-	Buffs:RegisterBuff("speed", "bolt-lightning", "#8419C2", -1, "timed")
-	Buffs:RegisterBuff("armor", "shield-halved", "#4056b3", -1, "timed")
-	Buffs:RegisterBuff("heal", "trash-can", "#52984a", -1, "timed")
+	exports['sandbox-hud']:RegisterBuff("speed", "bolt-lightning", "#8419C2", -1, "timed")
+	exports['sandbox-hud']:RegisterBuff("armor", "shield-halved", "#4056b3", -1, "timed")
+	exports['sandbox-hud']:RegisterBuff("heal", "trash-can", "#52984a", -1, "timed")
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
 	_armorTime = 0
 	_runSpeedTime = 0
 
-	Buffs:RemoveBuffType("speed")
-	Buffs:RemoveBuffType("armor")
+	exports['sandbox-hud']:RemoveBuffType("speed")
+	exports['sandbox-hud']:RemoveBuffType("armor")
 end)
 
 AddEventHandler("Damage:Client:Triggers:EntityDamaged", function(victim, attacker, pWeapon, isMelee)
@@ -178,11 +178,11 @@ AddEventHandler("Damage:Client:Triggers:EntityDamaged", function(victim, attacke
 
 	if _armorTime > 0 and not Config.Weapons[pWeapon]?.isMinor then
 		_armorTime = 0
-		Buffs:RemoveBuffType("armor")
+		exports['sandbox-hud']:RemoveBuffType("armor")
 	end
 
 	if _healTime > 0 and not Config.Weapons[pWeapon]?.isMinor then
 		_healTime = 0
-		Buffs:RemoveBuffType("heal")
+		exports['sandbox-hud']:RemoveBuffType("heal")
 	end
 end)

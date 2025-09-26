@@ -2,14 +2,14 @@ local withinPedShop = false
 
 function CreateSpecificPolyzoneType(type, id, data)
 	if data.type == "poly" then
-		Polyzone.Create:Poly(id, data.points, {
+		exports['sandbox-polyzone']:CreatePoly(id, data.points, {
 			minZ = data.minZ,
 			maxZ = data.maxZ,
 		}, {
 			pedShop = type,
 		})
 	elseif data.type == "box" then
-		Polyzone.Create:Box(id, data.center, data.length, data.width, {
+		exports['sandbox-polyzone']:CreateBox(id, data.center, data.length, data.width, {
 			heading = data.heading,
 			minZ = data.minZ,
 			maxZ = data.maxZ,
@@ -38,19 +38,19 @@ end
 function CreateShopsBlips()
 	for k, v in ipairs(_clothingStores) do
 		if v.blip then
-			Blips:Add("clothing_store_" .. k, "Clothing Store", v.blip, 73, 44)
+			exports["sandbox-blips"]:Add("clothing_store_" .. k, "Clothing Store", v.blip, 73, 44)
 		end
 	end
 
 	for k, v in ipairs(_barberShops) do
-		Blips:Add("barber_shop_" .. k, "Barbers", v.center, 71, 42)
+		exports["sandbox-blips"]:Add("barber_shop_" .. k, "Barbers", v.center, 71, 42)
 	end
 
 	for k, v in ipairs(_tattooShops) do
-		Blips:Add("tattoo_shop_" .. k, "Tattoo Parlor", v.center, 75, 48)
+		exports["sandbox-blips"]:Add("tattoo_shop_" .. k, "Tattoo Parlor", v.center, 75, 48)
 	end
 
-	Blips:Add("plastic_surgery", "Plastic Surgeon", _plasticSurgery.center, 362, 7)
+	exports["sandbox-blips"]:Add("plastic_surgery", "Plastic Surgeon", _plasticSurgery.center, 362, 7)
 end
 
 function GetPedShopCost(t)
@@ -65,7 +65,7 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 	if data.pedShop then
 		withinPedShop = data.pedShop
 		local action =
-			"{keybind}primary_action{/keybind} Clothing Store ($%s) | {keybind}secondary_action{/keybind} Wardrobe"
+		"{keybind}primary_action{/keybind} Clothing Store ($%s) | {keybind}secondary_action{/keybind} Wardrobe"
 		if withinPedShop == "barber" then
 			action = "{keybind}primary_action{/keybind} Barber Shop ($%s)"
 		elseif withinPedShop == "tattoo" then
@@ -74,14 +74,14 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 			action = "{keybind}primary_action{/keybind} Plastic Surgery ($%s)"
 		end
 
-		Action:Show("pedshop", string.format(action, GetPedShopCost(withinPedShop)))
+		exports['sandbox-hud']:ActionShow("pedshop", string.format(action, GetPedShopCost(withinPedShop)))
 	end
 end)
 
 AddEventHandler("Polyzone:Exit", function(id, point, insideZone, data)
 	if withinPedShop and data and data.pedShop then
 		withinPedShop = false
-		Action:Hide("pedshop")
+		exports['sandbox-hud']:ActionHide("pedshop")
 	end
 end)
 
@@ -95,7 +95,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 		local playerPed = PlayerPedId()
 		local x, y, z = table.unpack(GetEntityCoords(playerPed))
 
-		Ped.Customization:Show(shopType, {
+		exports['sandbox-ped']:CustomizationShow(shopType, {
 			x = x,
 			y = y,
 			z = z,
@@ -123,7 +123,7 @@ RegisterNetEvent("Peds:Customization:Client:AdminAbuse", function(shopType)
 		_type = "tattoo"
 	end
 
-	Ped.Customization:Show(string.upper(_type), {
+	exports['sandbox-ped']:CustomizationShow(string.upper(_type), {
 		x = x,
 		y = y,
 		z = z,
@@ -138,6 +138,6 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 			shopType = string.upper(withinPedShop)
 		end
 
-		Wardrobe:Show()
+		exports['sandbox-ped']:WardrobeShow()
 	end
 end)

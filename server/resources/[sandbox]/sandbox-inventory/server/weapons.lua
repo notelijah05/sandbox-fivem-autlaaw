@@ -191,55 +191,30 @@ function tableContains(tbl, value)
 	return false
 end
 
-AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
-function WeaponsComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Weapons", {
-		"Fetch",
-		"Logger",
-		"Inventory",
-		"Weapons",
-		"Middleware",
-		"Callbacks",
-		"Pwnzor",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		WeaponsComponents()
-
-		Callbacks:RegisterServerCallback("Weapons:UseThrowable", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
-			if char ~= nil then
-				if INVENTORY.Items:RemoveSlot(char:GetData("SID"), data.Name, 1, data.Slot, 1) then
-					local slotExists = INVENTORY:SlotExists(char:GetData("SID"), data.Slot, 1)
-					if not slotExists then
-						TriggerClientEvent("Weapons:Client:ForceUnequip", source)
-					end
-
-					cb()
+	exports["sandbox-base"]:RegisterServerCallback("Weapons:UseThrowable", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			if exports['sandbox-inventory']:RemoveSlot(char:GetData("SID"), data.Name, 1, data.Slot, 1) then
+				local slotExists = exports['sandbox-inventory']:SlotExists(char:GetData("SID"), data.Slot, 1)
+				if not slotExists then
+					TriggerClientEvent("Weapons:Client:ForceUnequip", source)
 				end
-			else
+
 				cb()
 			end
-		end)
+		else
+			cb()
+		end
+	end)
 
-		Callbacks:RegisterServerCallback("Weapons:PossibleCheaterWarning", function(source, data, cb)
-			local char = Fetch:CharacterSource(source)
-			if char then
-				Logger:Warn("Pwnzor",
-					string.format("%s %s (%s) Had a Weapon They Weren't Supposed To (%s) (Known: %s)",
-						char:GetData("First"), char:GetData("Last"), char:GetData("SID"), data.h,
-						weaponCheaters[data.h] or "No"), {
+	exports["sandbox-base"]:RegisterServerCallback("Weapons:PossibleCheaterWarning", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char then
+			exports['sandbox-base']:LoggerWarn("Pwnzor",
+				string.format("%s %s (%s) Had a Weapon They Weren't Supposed To (%s) (Known: %s)",
+					char:GetData("First"), char:GetData("Last"), char:GetData("SID"), data.h,
+					weaponCheaters[data.h] or "No"), {
 					console = true,
 					file = false,
 					database = true,
@@ -251,15 +226,14 @@ AddEventHandler("Core:Shared:Ready", function()
 				}, {
 					data = data
 				})
-				Pwnzor:Screenshot(char:GetData("SID"), "Potential Weapon Exploit")
-			end
-			cb()
-		end)
+			exports['sandbox-pwnzor']:Screenshot(char:GetData("SID"), "Potential Weapon Exploit")
+		end
+		cb()
 	end)
 end)
 
 AddEventHandler("Characters:Server:PlayerDropped", function(source)
-	local plyr = Fetch:Source(source)
+	local plyr = exports['sandbox-base']:FetchSource(source)
 	local ped = GetPlayerPed(source)
 	for k, v in ipairs(GetAllObjects()) do
 		if GetEntityAttachedTo(v) == ped and _weaponModels[GetEntityModel(v)] then
@@ -268,53 +242,29 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source)
 	end
 end)
 
-WEAPONS = {
-	IsEligible = function(self, source)
-		local char = Fetch:CharacterSource(source)
-		local licenses = char:GetData("Licenses")
-		if licenses ~= nil and licenses.Weapons ~= nil then
-			return licenses.Weapons.Active
-		else
-			return false
-		end
-	end,
-	Save = function(self, source, id, ammo, clip)
-		INVENTORY:UpdateMetaData(id, {
-			ammo = ammo,
-			clip = clip,
-		})
-	end,
-	Purchase = function(self, sid, item, isScratched, isCompanyOwned)
-		if not isCompanyOwned then
-			local char = Fetch:SID(sid)
-			if char ~= nil then
-				local hash = GetHashKey(item.name)
-				local sn = string.format("SA-%s-%s", math.abs(hash), Sequence:Get(item.name))
-				local model = nil
-				if itemsDatabase[item.name] then
-					model = itemsDatabase[item.name].label
-				end
+exports("WeaponsIsEligible", function(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	local licenses = char:GetData("Licenses")
+	if licenses ~= nil and licenses.Weapons ~= nil then
+		return licenses.Weapons.Active
+	else
+		return false
+	end
+end)
 
-				if isScratched == nil then
-					isScratched = false
-				end
+exports("WeaponsSave", function(source, id, ammo, clip)
+	exports['sandbox-inventory']:UpdateMetaData(id, {
+		ammo = ammo,
+		clip = clip,
+	})
+end)
 
-				MySQL.insert(
-				'INSERT INTO firearms (serial, scratched, model, item, owner_sid, owner_name) VALUES(?, ?, ?, ?, ?, ?)',
-					{
-						sn,
-						isScratched,
-						model,
-						item.name,
-						sid,
-						string.format("%s %s", char:GetData("First"), char:GetData("Last"))
-					})
-
-				return sn
-			end
-		else
+exports("WeaponsPurchase", function(sid, item, isScratched, isCompanyOwned)
+	if not isCompanyOwned then
+		local char = exports['sandbox-characters']:FetchBySID(sid)
+		if char ~= nil then
 			local hash = GetHashKey(item.name)
-			local sn = string.format("SA-%s-%s", math.abs(hash), Sequence:Get(item.name))
+			local sn = string.format("SA-%s-%s", math.abs(hash), exports['sandbox-base']:SequenceGet(item.name))
 			local model = nil
 			if itemsDatabase[item.name] then
 				model = itemsDatabase[item.name].label
@@ -324,178 +274,121 @@ WEAPONS = {
 				isScratched = false
 			end
 
-			local flags = nil
-			if isCompanyOwned.stolen then
-				flags = {
-					{
-						Date = os.time() * 1000,
-						Type = "stolen",
-						Description = "Stolen In Armed Robbery"
-					}
-				}
-			end
-
-			MySQL.insert('INSERT INTO firearms (serial, scratched, model, item, owner_name) VALUES(?, ?, ?, ?, ?)', {
-				sn,
-				isScratched,
-				model,
-				item.name,
-				isCompanyOwned.name
-			})
+			MySQL.insert(
+				'INSERT INTO firearms (serial, scratched, model, item, owner_sid, owner_name) VALUES(?, ?, ?, ?, ?, ?)',
+				{
+					sn,
+					isScratched,
+					model,
+					item.name,
+					sid,
+					string.format("%s %s", char:GetData("First"), char:GetData("Last"))
+				})
 
 			return sn
 		end
-	end,
-	GetComponentItem = function(self, type, component)
-		for k, v in pairs(itemsDatabase) do
-			if v.component ~= nil and v.component.type == type and v.component.string == component then
-				return v.name
-			end
+	else
+		local hash = GetHashKey(item.name)
+		local sn = string.format("SA-%s-%s", math.abs(hash), exports['sandbox-base']:SequenceGet(item.name))
+		local model = nil
+		if itemsDatabase[item.name] then
+			model = itemsDatabase[item.name].label
 		end
-		return nil
-	end,
-	EquipAttachment = function(self, source, item)
-		local char = Fetch:CharacterSource(source)
-		if char ~= nil then
-			local p = promise.new()
-			Callbacks:ClientCallback(source, "Weapons:Check", {}, function(data)
-				if not data then
-					Execute:Client(source, "Notification", "Error", "No Weapon Equipped")
-					p:resolve(false)
-				else
-					local itemData = Inventory.Items:GetData(item.Name)
-					local weaponData = Inventory.Items:GetData(data.item)
-					if itemData ~= nil and itemData.component ~= nil then
-						if itemData.component.strings[weaponData.weapon or weaponData.name] ~= nil then
-							Callbacks:ClientCallback(
-								source,
-								"Weapons:EquipAttachment",
-								itemData.label,
-								function(notCancelled)
-									if notCancelled then
-										local slotData = INVENTORY:GetItem(data.id)
 
-										if slotData ~= nil then
-											slotData.MetaData = json.decode(slotData.MetaData or "{}")
-
-											local unequipItem = nil
-											local unequipCreated = nil
-											if
-												slotData.MetaData.WeaponComponents ~= nil
-												and slotData.MetaData.WeaponComponents[itemData.component.type]
-												~= nil
-											then
-												if
-													slotData.MetaData.WeaponComponents[itemData.component.type].attachment
-													== itemData.component.string
-												then
-													Execute:Client(
-														source,
-														"Notification",
-														"Error",
-														"Attachment Already Equipped"
-													)
-													return p:resolve(false)
-												end
-												unequipItem =
-													slotData.MetaData.WeaponComponents[itemData.component.type].item
-												unequipCreated =
-													slotData.MetaData.WeaponComponents[itemData.component.type].created
-											end
-
-											local comps = table.copy(slotData.MetaData.WeaponComponents or {})
-											comps[itemData.component.type] = {
-												type = itemData.component.type,
-												item = item.Name,
-												created = item.CreateDate,
-												attachment = itemData.component.strings
-												[weaponData.weapon or weaponData.name],
-											}
-
-											Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
-											if unequipItem ~= nil then
-												local returnData = Inventory.Items:GetData(unequipItem)
-												if returnData?.component?.returnItem then
-													INVENTORY:AddItem(item.Owner, unequipItem, 1, {}, 1, false, false,
-														false, false, false, unequipCreated or os.time())
-												end
-											end
-
-											INVENTORY:SetMetaDataKey(
-												slotData.id,
-												"WeaponComponents",
-												comps,
-												source
-											)
-
-											Wait(400)
-
-											SetGunPropData(source, char:GetData("SID"),
-												getInventory(source, char:GetData("SID"), 1, false), true)
-											TriggerClientEvent("Weapons:Client:UpdateAttachments", source, comps)
-
-											return p:resolve(true)
-										else
-											return p:resolve(false)
-										end
-									else
-										return p:resolve(false)
-									end
-								end
-							)
-						else
-							Execute:Client(source, "Notification", "Error", "This Does Not Fit On This Weapon")
-							return p:resolve(false)
-						end
-					else
-						Execute:Client(source, "Notification", "Error", "Something Was Not Defined")
-						return p:resolve(false)
-					end
-				end
-			end)
-
-			return Citizen.Await(p)
-		else
-			return false
+		if isScratched == nil then
+			isScratched = false
 		end
-	end,
-	RemoveAttachment = function(self, source, slotId, attachment)
-		local char = Fetch:CharacterSource(source)
-		if char ~= nil then
-			local slot = INVENTORY:GetSlot(char:GetData("SID"), slotId, 1)
-			if slot ~= nil then
-				if slot.MetaData.WeaponComponents ~= nil and slot.MetaData.WeaponComponents[attachment] ~= nil then
-					local itemData = Inventory.Items:GetData(slot.MetaData.WeaponComponents[attachment].item)
-					if itemData ~= nil then
-						INVENTORY:AddItem(char:GetData("SID"), itemData.name, 1, {}, 1, false, false, false, false, false,
-							slot.MetaData.WeaponComponents[attachment].created or os.time())
-						slot.MetaData.WeaponComponents[attachment] = nil
-						INVENTORY:SetMetaDataKey(
-							slot.id,
-							"WeaponComponents",
-							slot.MetaData.WeaponComponents,
-							source
-						)
-						TriggerClientEvent("Weapons:Client:UpdateAttachments", source, slot.MetaData.WeaponComponents)
-					end
+
+		local flags = nil
+		if isCompanyOwned.stolen then
+			flags = {
+				{
+					Date = os.time() * 1000,
+					Type = "stolen",
+					Description = "Stolen In Armed Robbery"
+				}
+			}
+		end
+
+		MySQL.insert('INSERT INTO firearms (serial, scratched, model, item, owner_name) VALUES(?, ?, ?, ?, ?)', {
+			sn,
+			isScratched,
+			model,
+			item.name,
+			isCompanyOwned.name
+		})
+
+		return sn
+	end
+end)
+
+exports("WeaponsGetComponentItem", function(type, component)
+	for k, v in pairs(itemsDatabase) do
+		if v.component ~= nil and v.component.type == type and v.component.string == component then
+			return v.name
+		end
+	end
+	return nil
+end)
+
+exports("WeaponsEquipAttachment", function(source, item)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local slot = exports['sandbox-inventory']:GetSlot(char:GetData("SID"), item.Slot, 1)
+		if slot ~= nil then
+			if slot.MetaData.WeaponComponents ~= nil and slot.MetaData.WeaponComponents[item.component] ~= nil then
+				local itemData = exports['sandbox-inventory']:ItemsGetData(slot.MetaData.WeaponComponents
+					[item.component].item)
+				if itemData ~= nil then
+					exports['sandbox-inventory']:RemoveSlot(char:GetData("SID"), itemData.name, 1, item.Slot, 1)
+					slot.MetaData.WeaponComponents[item.component] = nil
+					exports['sandbox-inventory']:SetMetaDataKey(
+						slot.id,
+						"WeaponComponents",
+						slot.MetaData.WeaponComponents,
+						source
+					)
+					TriggerClientEvent("Weapons:Client:UpdateAttachments", source, slot.MetaData.WeaponComponents)
 				end
 			end
 		end
-	end,
-}
+	end
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Weapons", WEAPONS)
+exports("WeaponsRemoveAttachment", function(source, slotId, attachment)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
+		local slot = exports['sandbox-inventory']:GetSlot(char:GetData("SID"), slotId, 1)
+		if slot ~= nil then
+			if slot.MetaData.WeaponComponents ~= nil and slot.MetaData.WeaponComponents[attachment] ~= nil then
+				local itemData = exports['sandbox-inventory']:ItemsGetData(slot.MetaData.WeaponComponents[attachment]
+					.item)
+				if itemData ~= nil then
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemData.name, 1, {}, 1, false, false,
+						false, false, false,
+						slot.MetaData.WeaponComponents[attachment].created or os.time())
+					slot.MetaData.WeaponComponents[attachment] = nil
+					exports['sandbox-inventory']:SetMetaDataKey(
+						slot.id,
+						"WeaponComponents",
+						slot.MetaData.WeaponComponents,
+						source
+					)
+					TriggerClientEvent("Weapons:Client:UpdateAttachments", source, slot.MetaData.WeaponComponents)
+				end
+			end
+		end
+	end
 end)
 
 RegisterNetEvent("Weapon:Server:UpdateAmmo", function(slot, ammo, clip)
-	Weapons:Save(source, slot, ammo, clip)
+	exports['sandbox-inventory']:WeaponsSave(source, slot, ammo, clip)
 end)
 
 RegisterNetEvent("Weapon:Server:UpdateAmmoDiff", function(diff, ammo, clip)
 	local _src = source
-	if diff?.id then
-		INVENTORY:UpdateMetaData(diff.id, {
+	if diff and diff.id then
+		exports['sandbox-inventory']:UpdateMetaData(diff.id, {
 			ammo = ammo,
 			clip = clip,
 		})
@@ -503,7 +396,7 @@ RegisterNetEvent("Weapon:Server:UpdateAmmoDiff", function(diff, ammo, clip)
 end)
 
 RegisterNetEvent("Weapons:Server:RemoveAttachment", function(slotId, attachment)
-	Weapons:RemoveAttachment(source, slotId, attachment)
+	exports['sandbox-inventory']:WeaponsRemoveAttachment(source, slotId, attachment)
 end)
 
 RegisterNetEvent("Weapons:Server:DoFlashFx", function(coords, netId)

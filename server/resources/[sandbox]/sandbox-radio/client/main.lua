@@ -23,43 +23,11 @@ local radioNames = {
 	"P6900 Radio",
 }
 
-AddEventHandler("Radio:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-end
-
 local radioChannelCycle = false
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Radio", {
-		"Callbacks",
-		"Notification",
-		"Action",
-		"Progress",
-		"VOIP",
-		"Keybinds",
-		"Utils",
-		"Sounds",
-		"Jobs",
-		"Weapons",
-		"Hud",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		Keybinds:Add("voip_radio_power", "", "keyboard", "Voice - Radio - Toggle Power On/Off", function()
+	exports["sandbox-keybinds"]:Add("voip_radio_power", "", "keyboard", "Voice - Radio - Toggle Power On/Off",
+		function()
 			if LocalPlayer.state.loggedIn and HAS_RADIO and not radioChannelCycle then
 				radioChannelCycle = true
 				ToggleRadioPower(false)
@@ -69,37 +37,36 @@ AddEventHandler("Core:Shared:Ready", function()
 			end
 		end)
 
-		Keybinds:Add("voip_radio_open", "", "keyboard", "Voice - Radio - Open Radio", function()
-			if LocalPlayer.state.loggedIn and HAS_RADIO and not LocalPlayer.state.doingAction then
-				if CanUseRadio(HAS_RADIO) then
-					OpenRadio()
-				end
+	exports["sandbox-keybinds"]:Add("voip_radio_open", "", "keyboard", "Voice - Radio - Open Radio", function()
+		if LocalPlayer.state.loggedIn and HAS_RADIO and not LocalPlayer.state.doingAction then
+			if CanUseRadio(HAS_RADIO) then
+				OpenRadio()
 			end
-		end)
+		end
+	end)
 
-		Keybinds:Add("voip_radio_vol_down", "", "keyboard", "Voice - Radio - Volume Down", function()
-			if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
-				RadioVolumeDown(true)
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("voip_radio_vol_down", "", "keyboard", "Voice - Radio - Volume Down", function()
+		if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
+			RadioVolumeDown(true)
+		end
+	end)
 
-		Keybinds:Add("voip_radio_vol_up", "", "keyboard", "Voice - Radio - Volume Up", function()
-			if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
-				RadioVolumeUp(true)
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("voip_radio_vol_up", "", "keyboard", "Voice - Radio - Volume Up", function()
+		if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
+			RadioVolumeUp(true)
+		end
+	end)
 
-		Keybinds:Add("voip_radio_next", "", "keyboard", "Voice - Radio - Channel Next", function()
-			if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
-				CycleRadioChannel(true)
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("voip_radio_next", "", "keyboard", "Voice - Radio - Channel Next", function()
+		if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
+			CycleRadioChannel(true)
+		end
+	end)
 
-		Keybinds:Add("voip_radio_prev", "", "keyboard", "Voice - Radio - Channel Prev.", function()
-			if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
-				CycleRadioChannel(false)
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("voip_radio_prev", "", "keyboard", "Voice - Radio - Channel Prev.", function()
+		if LocalPlayer.state.loggedIn and HAS_RADIO and RADIO_POWER then
+			CycleRadioChannel(false)
+		end
 	end)
 end)
 
@@ -110,12 +77,12 @@ AddEventHandler("Characters:Client:Spawn", function()
 	RADIO_FREQUENCY = 0
 	RADIO_FREQUENCY_NAME = ""
 
-	RADIO_VOLUME = VOIP.Settings.Volumes.Radio:Get()
-	RADIO_CLICKS_VOLUME = VOIP.Settings.Volumes.RadioClicks:Get()
+	RADIO_VOLUME = exports["sandbox-voip"]:GetRadioVolume()
+	RADIO_CLICKS_VOLUME = exports["sandbox-voip"]:GetRadioClickVolume()
 	HAS_RADIO = false
 	LocalPlayer.state.radioType = false
 
-	Hud:RegisterStatus("radio-freq", 0, 1000, "walkie-talkie", "#4056b3", false, false, {
+	exports['sandbox-hud']:RegisterStatus("radio-freq", 0, 1000, "walkie-talkie", "#4056b3", false, false, {
 		hideZero = true,
 		force = "numbers",
 	})
@@ -164,7 +131,7 @@ function OpenRadio()
 		type = "APP_SHOW",
 	})
 
-	Weapons:UnequipIfEquippedNoAnim()
+	exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
 	CreateThread(function()
 		local playerPed = PlayerPedId()
@@ -234,7 +201,7 @@ function SendUpdates()
 			frequency = RADIO_FREQUENCY,
 			frequencyName = RADIO_FREQUENCY_NAME,
 			power = RADIO_POWER,
-			volume = Utils:Round(RADIO_VOLUME, 0),
+			volume = exports['sandbox-base']:UtilsRound(RADIO_VOLUME, 0),
 			type = HAS_RADIO,
 			typeName = radioNames[HAS_RADIO] or "Radio",
 		},
@@ -260,20 +227,20 @@ function ToggleRadioPower(fromUI)
 		TriggerEvent("EmergencyAlerts:Client:RadioChannelChange", "0")
 		TriggerEvent("Status:Client:Update", "radio-freq", 0)
 		if not fromUI then
-			Notification:Error("Radio Turned Off", 2500)
+			exports["sandbox-hud"]:NotifError("Radio Turned Off", 2500)
 		end
-		Sounds.Do.Play:One("radiooff.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
+		exports["sandbox-sounds"]:PlayOne("radiooff.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
 		LocalPlayer.state:set("onRadio", false, true)
 	else
 		if not fromUI then
-			Notification:Success("Radio Turned On", 2500)
+			exports["sandbox-hud"]:NotifSuccess("Radio Turned On", 2500)
 		end
 		RADIO_POWER = true
 		if RADIO_FREQUENCY_LAST and RADIO_FREQUENCY_LAST > 0 then
 			SetCharacterRadioFrequency(RADIO_FREQUENCY_LAST, not fromUI)
 			LocalPlayer.state:set("onRadio", tostring(RADIO_FREQUENCY_LAST), true)
 		end
-		Sounds.Do.Play:One("radioon.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
+		exports["sandbox-sounds"]:PlayOne("radioon.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
 	end
 
 	SendUpdates()
@@ -295,10 +262,10 @@ function SetCharacterRadioFrequency(freq, notifyChange)
 					frequencyName = name
 				else
 					canUseFrequency = false
-					Notification:Error("Encrypted Radio Channel")
+					exports["sandbox-hud"]:NotifError("Encrypted Radio Channel")
 				end
 			else
-				Notification:Error("Out of Range Frequency With This Radio")
+				exports["sandbox-hud"]:NotifError("Out of Range Frequency With This Radio")
 				canUseFrequency = false
 			end
 		end
@@ -320,11 +287,11 @@ function SetCharacterRadioFrequency(freq, notifyChange)
 			TriggerEvent("Status:Client:Update", "radio-freq", maskRadio and "???.?" or RADIO_FREQUENCY)
 
 			if notifyChange then
-				Sounds.Do.Play:One("radioclick.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
+				exports["sandbox-sounds"]:PlayOne("radioclick.ogg", 0.05 * (RADIO_CLICKS_VOLUME / 100))
 				if frequencyName then
-					Notification:Info("Changed Radio Channel to " .. frequencyName)
+					exports["sandbox-hud"]:NotifInfo("Changed Radio Channel to " .. frequencyName)
 				else
-					Notification:Info("Changed Radio Channel to #" .. RADIO_FREQUENCY)
+					exports["sandbox-hud"]:NotifInfo("Changed Radio Channel to #" .. RADIO_FREQUENCY)
 				end
 			end
 		else
@@ -393,7 +360,7 @@ RegisterNetEvent("Characters:Client:SetData", function()
 			if RADIO_POWER then
 				RADIO_POWER = false
 				SetCharacterRadioFrequency(0)
-				Sounds.Do.Play:One("radioclick.ogg", 0.5 * (RADIO_CLICKS_VOLUME / 100))
+				exports["sandbox-sounds"]:PlayOne("radioclick.ogg", 0.5 * (RADIO_CLICKS_VOLUME / 100))
 			end
 
 			CloseRadio()
@@ -420,7 +387,7 @@ function GetHasRadioChannelAuth(freq)
 			return true, "Poggers"
 		end
 	elseif freq == 22 then
-		if Jobs.Permissions:HasJob("blackline") then
+		if exports['sandbox-jobs']:HasJob("blackline") then
 			return true, "Mald"
 		end
 	elseif freq < 100 then
@@ -468,8 +435,8 @@ end
 
 function SetRadioChannelFromInput(input)
 	if input ~= RADIO_FREQUENCY and HAS_RADIO then
-		Sounds.Do.Play:One("radioclick.ogg", 0.5 * (RADIO_CLICKS_VOLUME / 100))
-		SetCharacterRadioFrequency(Utils:Round(tonumber(input) or 0, 1))
+		exports["sandbox-sounds"]:PlayOne("radioclick.ogg", 0.5 * (RADIO_CLICKS_VOLUME / 100))
+		SetCharacterRadioFrequency(exports['sandbox-base']:UtilsRound(tonumber(input) or 0, 1))
 	end
 end
 
@@ -488,10 +455,10 @@ function RadioVolumeUp(notify)
 		newVolume = 200
 	end
 
-	RADIO_VOLUME = VOIP.Settings.Volumes.Radio:Set(newVolume)
+	RADIO_VOLUME = exports["sandbox-voip"]:SetRadioVolume(newVolume)
 
 	if notify then
-		Notification:Info("Radio Volume: " .. math.floor(RADIO_VOLUME) .. "%", 1500)
+		exports["sandbox-hud"]:NotifInfo("Radio Volume: " .. math.floor(RADIO_VOLUME) .. "%", 1500)
 	end
 
 	SendUpdates()
@@ -503,10 +470,10 @@ function RadioVolumeDown(notify)
 		newVolume = 0
 	end
 
-	RADIO_VOLUME = VOIP.Settings.Volumes.Radio:Set(newVolume)
+	RADIO_VOLUME = exports["sandbox-voip"]:SetRadioVolume(newVolume)
 
 	if notify then
-		Notification:Info("Radio Volume: " .. math.floor(RADIO_VOLUME) .. "%", 1500)
+		exports["sandbox-hud"]:NotifInfo("Radio Volume: " .. math.floor(RADIO_VOLUME) .. "%", 1500)
 	end
 
 	SendUpdates()
@@ -535,9 +502,9 @@ RegisterNUICallback("ClickVolumeUp", function(data, cb)
 			newVolume = 200
 		end
 
-		RADIO_CLICKS_VOLUME = VOIP.Settings.Volumes.RadioClicks:Set(newVolume)
+		RADIO_CLICKS_VOLUME = exports["sandbox-voip"]:SetRadioClickVolume(newVolume)
 
-		Sounds.Do.Play:One("radioclick.ogg", (RADIO_CLICKS_VOLUME / 100))
+		exports["sandbox-sounds"]:PlayOne("radioclick.ogg", (RADIO_CLICKS_VOLUME / 100))
 	end
 	cb("ok")
 end)
@@ -549,9 +516,9 @@ RegisterNUICallback("ClickVolumeDown", function(data, cb)
 			newVolume = 0
 		end
 
-		RADIO_CLICKS_VOLUME = VOIP.Settings.Volumes.RadioClicks:Set(newVolume)
+		RADIO_CLICKS_VOLUME = exports["sandbox-voip"]:SetRadioClickVolume(newVolume)
 
-		Sounds.Do.Play:One("radioclick.ogg", (RADIO_CLICKS_VOLUME / 100))
+		exports["sandbox-sounds"]:PlayOne("radioclick.ogg", (RADIO_CLICKS_VOLUME / 100))
 	end
 	cb("ok")
 end)

@@ -30,7 +30,8 @@ AddEventHandler("Casino:Client:Startup", function()
 
     for k, v in pairs(_rouletteTables) do
         local maxBet = formatNumberToCurrency(math.floor(_rouletteTablesConfig[k].maxBet))
-        Targeting.Zones:AddBox("casino-roulette-" .. k, "cards", v.polyzone.center, v.polyzone.length, v.polyzone.width,
+        exports['sandbox-targeting']:ZonesAddBox("casino-roulette-" .. k, "cards", v.polyzone.center, v.polyzone.length,
+            v.polyzone.width,
             v.polyzone.options, {
                 {
                     icon = "cards",
@@ -62,7 +63,7 @@ AddEventHandler("Casino:Client:Startup", function()
             }, 1.5, true)
     end
 
-    Keybinds:Add("casino_camera", "C", "keyboard", "Casino - Change Roulette Camera", function()
+    exports["sandbox-keybinds"]:Add("casino_camera", "C", "keyboard", "Casino - Change Roulette Camera", function()
         if _rouletteAtTable then
             RouletteChangeCameraMode(_rouletteAtTable)
         end
@@ -163,7 +164,7 @@ AddEventHandler("Casino:Client:JoinRoulette", function(_, data)
     local chairData = GetClosestRouletteChair(data.table)
 
     if chairData then
-        Callbacks:ServerCallback("Casino:JoinRoulette", { table = data.table, chair = chairData.chairId },
+        exports["sandbox-base"]:ServerCallback("Casino:JoinRoulette", { table = data.table, chair = chairData.chairId },
             function(success, table, chair)
                 if success then
                     _inSittingDownAnimation = true
@@ -173,8 +174,8 @@ AddEventHandler("Casino:Client:JoinRoulette", function(_, data)
 
                     LocalPlayer.state.playingCasino = true
 
-                    Animations.Emotes:ForceCancel()
-                    Weapons:UnequipIfEquippedNoAnim()
+                    exports['sandbox-animations']:EmotesForceCancel()
+                    exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
                     if _rouletteStatebagHandler then
                         RemoveStateBagChangeHandler(_rouletteStatebagHandler)
@@ -215,25 +216,25 @@ AddEventHandler("Casino:Client:JoinRoulette", function(_, data)
                             _rouletteStatebagHandler = nil
                         end
 
-                        InfoOverlay:Close()
+                        exports['sandbox-hud']:InfoOverlayClose()
 
                         LocalPlayer.state.playingCasino = false
                     end)
                 else
                     if table == "vip" then
-                        Notification:Error("You're Not a VIP Loser")
+                        exports["sandbox-hud"]:NotifError("You're Not a VIP Loser")
                     else
-                        Notification:Error("Someone Is Sat There")
+                        exports["sandbox-hud"]:NotifError("Someone Is Sat There")
                     end
                 end
             end)
     else
-        Notification:Error("Too Far From Chair")
+        exports["sandbox-hud"]:NotifError("Too Far From Chair")
     end
 end)
 
 function LeaveRoulette(skipAnim)
-    Callbacks:ServerCallback("Casino:LeaveRoulette", {}, function(success)
+    exports["sandbox-base"]:ServerCallback("Casino:LeaveRoulette", {}, function(success)
         if success then
             if not skipAnim then
                 RouletteStandUpAnim(_rouletteAtLocalChair)
@@ -245,7 +246,7 @@ function LeaveRoulette(skipAnim)
 
             _rouletteAtTable = false
             _rouletteAtLocalChair = false
-            InfoOverlay:Close()
+            exports['sandbox-hud']:InfoOverlayClose()
 
             if not skipAnim then
                 Wait(3000)
@@ -331,7 +332,7 @@ function RoulettePlaceChips(betType)
     end
 
     if betAmount then
-        Callbacks:ServerCallback("Casino:BetRoulette", {
+        exports["sandbox-base"]:ServerCallback("Casino:BetRoulette", {
             amount = betAmount,
             betId = betType,
         }, function(success)
@@ -383,7 +384,7 @@ function GetRouletteBetAmount()
     if res?.success and res?.data?.confirmBet then
         return res.data.confirmBet
     elseif res?.timeout then
-        Notification:Error("Ran Out of Time...")
+        exports["sandbox-hud"]:NotifError("Ran Out of Time...")
     end
     return false
 end
@@ -472,10 +473,10 @@ end
 
 function ShowRouletteGameStateUI(state)
     if state.Started then
-        InfoOverlay:Show("Roulette", "The Wheel is Spinning")
+        exports['sandbox-hud']:InfoOverlayShow("Roulette", "The Wheel is Spinning")
     else
         local myBets = 0
-        local myBalance = formatNumberToCurrency(math.floor(Casino.Chips:Get()))
+        local myBalance = formatNumberToCurrency(math.floor(exports['sandbox-casino']:ChipsGet()))
         local maxBet = formatNumberToCurrency(math.floor(_rouletteTablesConfig[state.Id]?.maxBet or 0))
         local showStartTime = ""
 
@@ -497,7 +498,7 @@ function ShowRouletteGameStateUI(state)
             showStartTime = string.format(" - Starts In %s Seconds", startsIn)
         end
 
-        InfoOverlay:Show(string.format("Roulette%s", showStartTime),
+        exports['sandbox-hud']:InfoOverlayShow(string.format("Roulette%s", showStartTime),
             string.format("My Balance: $%s<br><br>Placed Bets: $%s<br>Table Limit: $%s", myBalance,
                 formatNumberToCurrency(math.floor(myBets)), maxBet))
     end

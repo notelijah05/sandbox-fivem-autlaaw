@@ -77,7 +77,7 @@ end)
 
 AddEventHandler("Robbery:Client:Setup", function()
 	for k, v in ipairs(signObjects) do
-		Targeting:AddObject(v.model, "user-secret", {
+		exports['sandbox-targeting']:AddObject(v.model, "user-secret", {
 			{
 				text = string.format("Steal %s", v.label),
 				icon = "eye-evil",
@@ -103,7 +103,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 end)
 
 function DoStealSignsProgress(label, duration, anim, canCancel, cb)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "robbing_sign",
 		duration = duration,
 		label = label,
@@ -131,7 +131,7 @@ AddEventHandler("Robbery:Client:Signs:StealSign", function(data, entity)
 	local entityCoords = GetEntityCoords(data.entity)
 	local alarm = false
 	if not IsSignValid(entity.model) then
-		Notification:Error("Not a valid sign.")
+		exports["sandbox-hud"]:NotifError("Not a valid sign.")
 		return
 	end
 
@@ -154,7 +154,7 @@ AddEventHandler("Robbery:Client:Signs:StealSign", function(data, entity)
 				return
 			end
 
-			Minigame.Play:RoundSkillbar(1.0, 5, {
+			exports['sandbox-games']:MinigamePlayRoundSkillbar(1.0, 5, {
 				onSuccess = function(data)
 					while LocalPlayer.state.doingAction do -- Apparently this is dumb
 						Wait(100)
@@ -166,7 +166,7 @@ AddEventHandler("Robbery:Client:Signs:StealSign", function(data, entity)
 						"stealsign",
 						false,
 						function(status)
-							Callbacks:ServerCallback(
+							exports["sandbox-base"]:ServerCallback(
 								"Robbery:Signs:RemoveSign",
 								{ coords = entityCoords, model = entity.model, item = entity.item },
 								function(success)

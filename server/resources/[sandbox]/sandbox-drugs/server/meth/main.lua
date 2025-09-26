@@ -3,44 +3,50 @@ _inProgCooks = {}
 
 local bought = {}
 local _toolsForSale = {
-	{ id = 1, item = "meth_table", coin = "MALD", price = 400, qty = 5, vpn = true },
+    { id = 1, item = "meth_table", coin = "MALD", price = 400, qty = 5, vpn = true },
 }
 
 local _methSellerLocs = {
-	["0"] = vector4(-1199.910, 3839.323, 481.303, 3.028), -- Sunday
-	["1"] = vector4(-1199.910, 3839.323, 481.303, 3.028), -- Monday
-	["2"] = vector4(-302.883, 2521.718, 73.370, 96.139), -- Tuesday
-	["3"] = vector4(-382.379, 6087.801, 38.615, 255.065), -- Wednesday
-	["4"] = vector4(-302.883, 2521.718, 73.370, 96.139), -- Thursday
-	["5"] = vector4(-382.379, 6087.801, 38.615, 255.065), -- Friday
-	["6"] = vector4(-535.855, 2850.274, 26.935, 176.013), -- Saturday
+    ["0"] = vector4(-1199.910, 3839.323, 481.303, 3.028), -- Sunday
+    ["1"] = vector4(-1199.910, 3839.323, 481.303, 3.028), -- Monday
+    ["2"] = vector4(-302.883, 2521.718, 73.370, 96.139),  -- Tuesday
+    ["3"] = vector4(-382.379, 6087.801, 38.615, 255.065), -- Wednesday
+    ["4"] = vector4(-302.883, 2521.718, 73.370, 96.139),  -- Thursday
+    ["5"] = vector4(-382.379, 6087.801, 38.615, 255.065), -- Friday
+    ["6"] = vector4(-535.855, 2850.274, 26.935, 176.013), -- Saturday
 }
 
-_DRUGS = _DRUGS or {}
-_DRUGS.Meth = {
-    GenerateTable = function(self, tier)
-        local recipe = {
-            ingredients = {},
-            cookTimeMax = math.random(_tableTiers[tier].cookTimeMax)
-        }
+exports('MethGenerateTable', function(tier)
+    local recipe = {
+        ingredients = {},
+        cookTimeMax = math.random(_tableTiers[tier].cookTimeMax)
+    }
 
-        for i = 1, _tableTiers[tier].ingredients do
-            table.insert(recipe.ingredients, math.random(100))
-        end
+    for i = 1, _tableTiers[tier].ingredients do
+        table.insert(recipe.ingredients, math.random(100))
+    end
 
-        return MySQL.insert.await('INSERT INTO meth_tables (created, recipe, tier) VALUES(?, ?, ?)', { os.time(), json.encode(recipe), tier })
-    end,
-    GetTable = function(self, tableId)
-        return MySQL.single.await('SELECT id, tier, created, cooldown, recipe, active_cook FROM meth_tables WHERE id = ?', { tableId })
-    end,
-    IsTablePlaced = function(self, tableId)
-        return MySQL.single.await('SELECT COUNT(table_id) as Count FROM placed_meth_tables WHERE table_id = ?', { tableId })?.Count or 0 > 0
-    end,
-    CreatePlacedTable = function(self, tableId, owner, tier, coords, heading, created)
-        local itemInfo = Inventory.Items:GetData("meth_table")
-        local tableData = self:GetTable(tableId)
+    return MySQL.insert.await('INSERT INTO meth_tables (created, recipe, tier) VALUES(?, ?, ?)',
+        { os.time(), json.encode(recipe), tier })
+end)
 
-        MySQL.insert.await("INSERT INTO placed_meth_tables (table_id, owner, placed, expires, coords, heading) VALUES(?, ?, ?, ?, ?, ?)", {
+exports('MethGetTable', function(tableId)
+    return MySQL.single.await(
+        'SELECT id, tier, created, cooldown, recipe, active_cook FROM meth_tables WHERE id = ?', { tableId })
+end)
+
+exports('MethIsTablePlaced', function(tableId)
+    return MySQL.single.await('SELECT COUNT(table_id) as Count FROM placed_meth_tables WHERE table_id = ?',
+        { tableId })?.Count or 0 > 0
+end)
+
+exports('MethCreatePlacedTable', function(tableId, owner, tier, coords, heading, created)
+    local itemInfo = exports['sandbox-inventory']:ItemsGetData("meth_table")
+    local tableData = exports['sandbox-drugs']:MethGetTable(tableId)
+
+    MySQL.insert.await(
+        "INSERT INTO placed_meth_tables (table_id, owner, placed, expires, coords, heading) VALUES(?, ?, ?, ?, ?, ?)",
+        {
             tableId,
             owner,
             os.time(),
@@ -49,64 +55,68 @@ _DRUGS.Meth = {
             heading,
         })
 
-        local cookData = tableData.active_cook ~= nil and json.decode(tableData.active_cook) or {}
+    local cookData = tableData.active_cook ~= nil and json.decode(tableData.active_cook) or {}
 
-        _placedTables[tableId] = {
-            id = tableId,
-            owner = owner,
-            tier = tier,
-            placed = os.time(),
-            expires = created + itemInfo.durability,
-            cooldown = tableData.cooldown,
-            activeCook = tableData.active_cook ~= nil,
-            pickupReady = os.time() > (cookData?.end_time or 0),
-            coords = coords,
-            heading = heading,
-        }
+    _placedTables[tableId] = {
+        id = tableId,
+        owner = owner,
+        tier = tier,
+        placed = os.time(),
+        expires = created + itemInfo.durability,
+        cooldown = tableData.cooldown,
+        activeCook = tableData.active_cook ~= nil,
+        pickupReady = os.time() > (cookData?.end_time or 0),
+        coords = coords,
+        heading = heading,
+    }
 
-        TriggerClientEvent("Drugs:Client:Meth:CreateTable", -1, _placedTables[tableId])
-    end,
-    RemovePlacedTable = function(self, tableId)
-        local s = MySQL.query.await('DELETE FROM placed_meth_tables WHERE table_id = ?', { tableId })
-        if s.affectedRows > 0 then
-            _placedTables[tableId] = nil
-            TriggerClientEvent("Drugs:Client:Meth:RemoveTable", -1, tableId)
-        end
-        return s.affectedRows > 0
-    end,
-    StartTableCook = function(self, tableId, cooldown, recipe)
-        MySQL.query.await('UPDATE meth_tables SET cooldown = ?, active_cook = ? WHERE id = ?', { cooldown, json.encode(recipe), tableId })
-        _placedTables[tableId].cooldown = cooldown
-        _placedTables[tableId].activeCook = true
-        _placedTables[tableId].pickupReady = false
-        _inProgCooks[tableId] = recipe
+    TriggerClientEvent("Drugs:Client:Meth:CreateTable", -1, _placedTables[tableId])
+end)
 
-        TriggerClientEvent("Drugs:Client:Meth:UpdateTableData", -1, tableId, _placedTables[tableId])
-    end,
-    FinishTableCook = function(self, tableId)
-        MySQL.query.await('UPDATE meth_tables SET active_cook = NULL WHERE id = ?', { tableId })
-        _placedTables[tableId].activeCook = false
-        _placedTables[tableId].pickupReady = false
-        _inProgCooks[tableId] = nil
-        TriggerClientEvent("Drugs:Client:Meth:UpdateTableData", -1, tableId, _placedTables[tableId])
+exports('MethRemovePlacedTable', function(tableId)
+    local s = MySQL.query.await('DELETE FROM placed_meth_tables WHERE table_id = ?', { tableId })
+    if s.affectedRows > 0 then
+        _placedTables[tableId] = nil
+        TriggerClientEvent("Drugs:Client:Meth:RemoveTable", -1, tableId)
     end
-}
+    return s.affectedRows > 0
+end)
+
+exports('MethStartTableCook', function(tableId, cooldown, recipe)
+    MySQL.query.await('UPDATE meth_tables SET cooldown = ?, active_cook = ? WHERE id = ?',
+        { cooldown, json.encode(recipe), tableId })
+    _placedTables[tableId].cooldown = cooldown
+    _placedTables[tableId].activeCook = true
+    _placedTables[tableId].pickupReady = false
+    _inProgCooks[tableId] = recipe
+
+    TriggerClientEvent("Drugs:Client:Meth:UpdateTableData", -1, tableId, _placedTables[tableId])
+end)
+
+exports('MethFinishTableCook', function(tableId)
+    MySQL.query.await('UPDATE meth_tables SET active_cook = NULL WHERE id = ?', { tableId })
+    _placedTables[tableId].activeCook = false
+    _placedTables[tableId].pickupReady = false
+    _inProgCooks[tableId] = nil
+    TriggerClientEvent("Drugs:Client:Meth:UpdateTableData", -1, tableId, _placedTables[tableId])
+end)
 
 AddEventHandler("Drugs:Server:Startup", function()
     local mPos = _methSellerLocs[tostring(os.date("%w"))]
 
-    Vendor:Create("MethSeller", "ped", "Mike", `A_M_M_RurMeth_01`, {
-        coords = vector3(mPos.x, mPos.y, mPos.z),
-        heading = mPos.w,
-        scenario = "WORLD_HUMAN_CHEERING"
-    }, _toolsForSale, "badge-dollar", "View Offers", false, false, true, 60 * math.random(30, 60), 60 * math.random(300, 480))
+    exports['sandbox-pedinteraction']:VendorCreate("MethSeller", "ped", "Mike", `A_M_M_RurMeth_01`, {
+            coords = vector3(mPos.x, mPos.y, mPos.z),
+            heading = mPos.w,
+            scenario = "WORLD_HUMAN_CHEERING"
+        }, _toolsForSale, "badge-dollar", "View Offers", false, false, true, 60 * math.random(30, 60),
+        60 * math.random(300, 480))
 
     local tables = MySQL.query.await('SELECT * FROM placed_meth_tables WHERE expires > ?', { os.time() })
     for k, v in ipairs(tables) do
         if _placedTables[v.table_id] == nil or not DoesEntityExist(_placedTables[v.table_id]?.entity) then
-            local tableData = Drugs.Meth:GetTable(v.table_id)
+            local tableData = exports['sandbox-drugs']:MethGetTable(v.table_id)
             local coords = json.decode(v.coords)
-    
+
             local cookData = tableData.active_cook ~= nil and json.decode(tableData.active_cook) or {}
             _placedTables[v.table_id] = {
                 id = v.table_id,
@@ -130,21 +140,23 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end
 
-    Logger:Trace("Drugs:Meth", string.format("Restored ^2%s^7 Meth Tables", #tables))
+    exports['sandbox-base']:LoggerTrace("Drugs:Meth", string.format("Restored ^2%s^7 Meth Tables", #tables))
 
-    Middleware:Add("Characters:Spawning", function(source)
+    exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
         TriggerLatentClientEvent("Drugs:Client:Meth:SetupTables", source, 50000, _placedTables)
     end, 1)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:FinishTablePlacement", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:FinishTablePlacement", function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
-            local table = Inventory:GetItem(data.data)
+            local table = exports['sandbox-inventory']:GetItem(data.data)
             if table.Owner == tostring(char:GetData("SID")) then
                 local md = json.decode(table.MetaData)
-                local tableData = Drugs.Meth:GetTable(md.MethTable)
-                if Inventory.Items:RemoveId(char:GetData("SID"), 1, table) then
-                    Drugs.Meth:CreatePlacedTable(md.MethTable, char:GetData("SID"), tableData.tier, data.endCoords.coords, data.endCoords.rotation, table.CreateDate)
+                local tableData = exports['sandbox-drugs']:MethGetTable(md.MethTable)
+                if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, table) then
+                    exports['sandbox-drugs']:MethCreatePlacedTable(md.MethTable, char:GetData("SID"), tableData.tier,
+                        data.endCoords
+                        .coords, data.endCoords.rotation, table.CreateDate)
                     cb(true)
                 else
                     cb(false)
@@ -155,14 +167,14 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:PickupTable", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:PickupTable", function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data then
-                if Drugs.Meth:IsTablePlaced(data) then
-                    local tableData = Drugs.Meth:GetTable(data)
-                    if Drugs.Meth:RemovePlacedTable(data) then
-                        if Inventory:AddItem(char:GetData("SID"), "meth_table", 1, { MethTable = data }, 1, false, false, false, false, false, tableData.created, false) then
+                if exports['sandbox-drugs']:MethIsTablePlaced(data) then
+                    local tableData = exports['sandbox-drugs']:MethGetTable(data)
+                    if exports['sandbox-drugs']:MethRemovePlacedTable(data) then
+                        if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "meth_table", 1, { MethTable = data }, 1, false, false, false, false, false, tableData.created, false) then
                             cb(true)
                         else
                             cb(false)
@@ -181,8 +193,8 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:CheckTable", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:CheckTable", function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedTables[data] ~= nil then
                 if _placedTables[data].cooldown == nil or os.time() > _placedTables[data].cooldown then
@@ -198,19 +210,20 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:StartCooking", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:StartCooking", function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedTables[data.tableId] ~= nil then
                 if _placedTables[data.tableId].cooldown == nil or os.time() > _placedTables[data.tableId].cooldown then
-                    Drugs.Meth:StartTableCook(data.tableId, os.time() + (60 * 60 * 2), {
+                    exports['sandbox-drugs']:MethStartTableCook(data.tableId, os.time() + (60 * 60 * 2), {
                         start_time = os.time(),
                         end_time = os.time() + (60 * data.cookTime),
                         ingredients = data.ingredients,
                         cookTime = data.cookTime,
                     })
 
-                    Execute:Client(source, "Notification", "Success", string.format("Batch Started, Will Be Ready In %s Minutes", data.cookTime))
+                    exports['sandbox-hud']:NotifSuccess(source,
+                        string.format("Batch Started, Will Be Ready In %s Minutes", data.cookTime))
                     cb(true)
                 else
                     cb(false)
@@ -223,11 +236,11 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:PickupCook", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:PickupCook", function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedTables[data] ~= nil then
-                local tableData = Drugs.Meth:GetTable(data)
+                local tableData = exports['sandbox-drugs']:MethGetTable(data)
                 local targetData = json.decode(tableData.recipe)
                 if tableData.active_cook ~= nil then
                     local cookData = json.decode(tableData.active_cook)
@@ -240,11 +253,12 @@ AddEventHandler("Drugs:Server:Startup", function()
                             total += amt
                         end
 
-                        local cookPct = math.abs(cookData.cookTime - _tableTiers[tableData.tier].cookTimeMax) / _tableTiers[tableData.tier].cookTimeMax
+                        local cookPct = math.abs(cookData.cookTime - _tableTiers[tableData.tier].cookTimeMax) /
+                            _tableTiers[tableData.tier].cookTimeMax
                         local calc = total * cookPct
 
-                        if Inventory:AddItem(char:GetData("SID"), "meth_brick", 1, {}, 1, false, false, false, false, false, false, math.floor(100 - total)) then
-                            Drugs.Meth:FinishTableCook(data)
+                        if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "meth_brick", 1, {}, 1, false, false, false, false, false, false, math.floor(100 - total)) then
+                            exports['sandbox-drugs']:MethFinishTableCook(data)
                         end
                     else
                         cb(false)
@@ -260,11 +274,11 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:GetTableDetails", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:GetTableDetails", function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char ~= nil then
             if data and _placedTables[data] ~= nil then
-                local tableData = Drugs.Meth:GetTable(data)
+                local tableData = exports['sandbox-drugs']:MethGetTable(data)
 
                 local menu = {
                     main = {
@@ -278,12 +292,14 @@ AddEventHandler("Drugs:Server:Startup", function()
                     if timeUntil > 0 then
                         table.insert(menu.main.items, {
                             label = "On Cooldown",
-                            description = string.format("Available %s (in about %s)</li>", os.date("%m/%d/%Y %I:%M %p", tableData.cooldown), GetFormattedTimeFromSeconds(timeUntil)),
+                            description = string.format("Available %s (in about %s)</li>",
+                                os.date("%m/%d/%Y %I:%M %p", tableData.cooldown), GetFormattedTimeFromSeconds(timeUntil)),
                         })
                     else
                         table.insert(menu.main.items, {
                             label = "Cooldown Expired",
-                            description = string.format("Expired at %s</li>", os.date("%m/%d/%Y %I:%M %p", tableData.cooldown)),
+                            description = string.format("Expired at %s</li>",
+                                os.date("%m/%d/%Y %I:%M %p", tableData.cooldown)),
                         })
                     end
                 else
@@ -300,7 +316,8 @@ AddEventHandler("Drugs:Server:Startup", function()
                     if timeUntil > 0 then
                         table.insert(menu.main.items, {
                             label = "Cook Status",
-                            description = string.format("Finishes at %s (in about %s)", os.date("%m/%d/%Y %I:%M %p", cook.end_time), GetFormattedTimeFromSeconds(timeUntil)),
+                            description = string.format("Finishes at %s (in about %s)",
+                                os.date("%m/%d/%Y %I:%M %p", cook.end_time), GetFormattedTimeFromSeconds(timeUntil)),
                         })
                     else
                         table.insert(menu.main.items, {
@@ -324,10 +341,10 @@ AddEventHandler("Drugs:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:GetItems", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:GetItems", function(source, data, cb)
         local itms = {}
 
-        local char = Fetch:CharacterSource(source)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local hasVpn = hasValue(char:GetData("States"), "PHONE_VPN")
 
         for k, v in ipairs(_toolsForSale) do
@@ -340,18 +357,19 @@ AddEventHandler("Drugs:Server:Startup", function()
         cb(itms)
     end)
 
-    Callbacks:RegisterServerCallback("Drugs:Meth:BuyItem", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Drugs:Meth:BuyItem", function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local hasVpn = hasValue(char:GetData("States"), "PHONE_VPN")
 
         for k, v in ipairs(_toolsForSale) do
             if v.id == data then
-                local coinData = Crypto.Coin:Get(v.coin)
-                if Crypto.Exchange:Remove(v.coin, char:GetData("CryptoWallet"), v.price) then
-                    Inventory:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
+                local coinData = exports['sandbox-finance']:CryptoCoinGet(v.coin)
+                if exports['sandbox-finance']:CryptoExchangeRemove(v.coin, char:GetData("CryptoWallet"), v.price) then
+                    exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
                     _toolsForSale[v.item][char:GetData("SID")] = true
                 else
-                    Execute:Client(source, "Notification", "Error", string.format("Not Enough %s", coinData.Name), 6000)
+                    exports['sandbox-hud']:NotifError(source,
+                        string.format("Not Enough %s", coinData.Name), 6000)
                 end
             end
         end

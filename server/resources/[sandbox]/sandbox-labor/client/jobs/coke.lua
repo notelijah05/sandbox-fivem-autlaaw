@@ -96,7 +96,7 @@ local function SetupPeds(peds)
 end
 
 AddEventHandler("Labor:Client:Setup", function()
-	Callbacks:RegisterClientCallback("Labor:Coke:GetSpawnCoords", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Labor:Coke:GetSpawnCoords", function(data, cb)
 		local coords = {}
 		for i = 1, math.random(25, 50) do
 			local c = vector3(
@@ -110,7 +110,7 @@ AddEventHandler("Labor:Client:Setup", function()
 		cb(coords)
 	end)
 
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"CokeSeller",
 		`A_M_M_BevHills_02`,
 		vector3(GlobalState["CokeRuns"][1], GlobalState["CokeRuns"][2], GlobalState["CokeRuns"][3]),
@@ -156,11 +156,11 @@ AddEventHandler("Labor:Client:Setup", function()
 end)
 
 AddEventHandler("Coke:Client:StartWork", function()
-	Callbacks:ServerCallback("Coke:StartWork")
+	exports["sandbox-base"]:ServerCallback("Coke:StartWork")
 end)
 
 AddEventHandler("Coke:Client:Abort", function()
-	Callbacks:ServerCallback("Coke:Abort")
+	exports["sandbox-base"]:ServerCallback("Coke:Abort")
 end)
 
 RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
@@ -170,19 +170,20 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 
 	eventHandlers["receive"] = RegisterNetEvent(string.format("Coke:Client:%s:Receive", joiner), function()
 		_state = 1
-		_blip = Blips:Add("CokeDrop", "Unknown Contact", { x = 4495.498, y = -4514.340, z = 3.021 }, 306, 2, 1.4)
+		_blip = exports["sandbox-blips"]:Add("CokeDrop", "Unknown Contact", { x = 4495.498, y = -4514.340, z = 3.021 },
+			306, 2, 1.4)
 	end)
 
 	eventHandlers["poly-enter"] = AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZone, data)
 		if id == "cayo_perico" and _state == 1 then
-			Callbacks:ServerCallback("Coke:ArriveAtCayo", {}, function() end)
+			exports["sandbox-base"]:ServerCallback("Coke:ArriveAtCayo", {}, function() end)
 		elseif
 			id == "CokeDrop"
 			and _state == 3
 			and not _spawned
 			and _joiner == GetPlayerServerId(LocalPlayer.state.PlayerID)
 		then
-			Callbacks:ServerCallback("Coke:ArrivedAtPoint", {}, function(peds)
+			exports["sandbox-base"]:ServerCallback("Coke:ArrivedAtPoint", {}, function(peds)
 				if peds then
 					SetupPeds(peds)
 				end
@@ -194,7 +195,7 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 	eventHandlers["poly-exit"] = AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZone, data)
 		if id == "cayo_perico" then
 			if _state == 5 then
-				Callbacks:ServerCallback("Coke:LeftCayo", {}, function() end)
+				exports["sandbox-base"]:ServerCallback("Coke:LeftCayo", {}, function() end)
 			else
 			end
 		end
@@ -203,7 +204,7 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 	eventHandlers["cayo-contact"] = RegisterNetEvent(string.format("Coke:Client:%s:GoTo", joiner), function()
 		if _state == 1 then
 			_state = 2
-			PedInteraction:Add(
+			exports['sandbox-pedinteraction']:Add(
 				"CokeDrop",
 				GetHashKey("S_M_M_HairDress_01"),
 				vector3(4495.498, -4514.340, 3.021),
@@ -226,14 +227,14 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["cayo-start"] = AddEventHandler("Coke:Client:StartHeist", function()
-		Callbacks:ServerCallback("Coke:StartHeist", {}, function() end)
+		exports["sandbox-base"]:ServerCallback("Coke:StartHeist", {}, function() end)
 	end)
 
 	eventHandlers["cayo-setup"] = RegisterNetEvent(string.format("Coke:Client:%s:SetupHeist", joiner), function(drop)
 		_state = 3
 		_drop = drop
-		Blips:Remove("CokeDrop")
-		_blip = Blips:Add(
+		exports["sandbox-blips"]:Remove("CokeDrop")
+		_blip = exports["sandbox-blips"]:Add(
 			"CokeDrop",
 			"Unknown Objective",
 			{ x = _drop.coords.x, y = _drop.coords.y, z = _drop.coords.z },
@@ -245,7 +246,7 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 		SetBlipColour(_blipArea, 3)
 		SetBlipAlpha(_blipArea, 90)
 
-		Polyzone.Create:Circle("CokeDrop", _drop.coords, _drop.size * 2.0, {
+		exports['sandbox-polyzone']:CreateCircle("CokeDrop", _drop.coords, _drop.size * 2.0, {
 			--debugPoly = true
 		}, _drop)
 	end)
@@ -261,15 +262,16 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 
 	eventHandlers["go-back"] = RegisterNetEvent(string.format("Coke:Client:%s:GoBack", joiner), function()
 		_state = 5
-		Blips:Remove("CokeDrop")
+		exports["sandbox-blips"]:Remove("CokeDrop")
 		RemoveBlip(_blipArea)
-		Polyzone:Remove("CokeDrop")
-		_blip = Blips:Add("CokeDrop", "Unknown Contact", { x = 1292.455, y = -3170.885, z = 4.906 }, 306, 2, 1.4)
+		exports['sandbox-polyzone']:Remove("CokeDrop")
+		_blip = exports["sandbox-blips"]:Add("CokeDrop", "Unknown Contact", { x = 1292.455, y = -3170.885, z = 4.906 },
+			306, 2, 1.4)
 	end)
 
 	eventHandlers["setup-finish"] = RegisterNetEvent(string.format("Coke:Client:%s:SetupFinish", joiner), function()
 		_state = 6
-		PedInteraction:Add(
+		exports['sandbox-pedinteraction']:Add(
 			"CokeDrop",
 			GetHashKey("A_M_Y_Beach_01"),
 			vector3(1292.455, -3170.885, 4.906),
@@ -291,14 +293,14 @@ RegisterNetEvent("Coke:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["finish"] = AddEventHandler("Coke:Client:Finish", function()
-		Callbacks:ServerCallback("Coke:Finish", {}, function() end)
+		exports["sandbox-base"]:ServerCallback("Coke:Finish", {}, function() end)
 	end)
 end)
 
 AddEventHandler("Coke:Client:StartJob", function()
-	Callbacks:ServerCallback("Coke:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("Coke:StartJob", _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)
@@ -308,9 +310,9 @@ RegisterNetEvent("Coke:Client:OffDuty", function(time)
 		RemoveEventHandler(v)
 	end
 
-	PedInteraction:Remove("CokeDrop")
-	Polyzone:Remove("CokeDrop")
-	Blips:Remove("CokeDrop")
+	exports['sandbox-pedinteraction']:Remove("CokeDrop")
+	exports['sandbox-polyzone']:Remove("CokeDrop")
+	exports["sandbox-blips"]:Remove("CokeDrop")
 	RemoveBlip(_blipArea)
 
 	_joiner = nil

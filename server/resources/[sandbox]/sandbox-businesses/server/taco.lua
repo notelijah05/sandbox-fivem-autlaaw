@@ -15,29 +15,29 @@ AddEventHandler("Businesses:Server:Startup", function()
 	-- Create storage
 	if _tacoConfig.storage then
 		for _, storage in pairs(_tacoConfig.storage) do
-			Inventory.Poly:Create(storage)
+			exports['sandbox-inventory']:PolyCreate(storage)
 		end
 	end
 
-	Reputation:Create("TacoDelivery", "Taco Delivery", {
-		{ label = "Rank 1", value = 500 },
-		{ label = "Rank 2", value = 1000 },
-		{ label = "Rank 3", value = 2500 },
-		{ label = "Rank 4", value = 4000 },
-		{ label = "Rank 5", value = 5000 },
+	exports['sandbox-characters']:RepCreate("TacoDelivery", "Taco Delivery", {
+		{ label = "Rank 1",   value = 500 },
+		{ label = "Rank 2",   value = 1000 },
+		{ label = "Rank 3",   value = 2500 },
+		{ label = "Rank 4",   value = 4000 },
+		{ label = "Rank 5",   value = 5000 },
 		{ label = "Pls Stop", value = 7500 },
 	}, false) -- hidden rep
 
-	Reputation:Create("TacoCrafter", "Taco Artist", {
-		{ label = "Rank 1", value = 500 },
-		{ label = "Rank 2", value = 1000 },
-		{ label = "Rank 3", value = 2500 },
-		{ label = "Rank 4", value = 4000 },
-		{ label = "Rank 5", value = 5000 },
+	exports['sandbox-characters']:RepCreate("TacoCrafter", "Taco Artist", {
+		{ label = "Rank 1",   value = 500 },
+		{ label = "Rank 2",   value = 1000 },
+		{ label = "Rank 3",   value = 2500 },
+		{ label = "Rank 4",   value = 4000 },
+		{ label = "Rank 5",   value = 5000 },
 		{ label = "Pls Stop", value = 7500 },
 	}, false) -- hidden rep
 
-	Crafting:RegisterBench("TacoShopFood", "Taco Farmer Prep Table", {
+	exports['sandbox-inventory']:CraftingRegisterBench("TacoShopFood", "Taco Farmer Prep Table", {
 		actionString = "Packaging",
 		icon = "taco",
 		poly = {
@@ -58,8 +58,8 @@ AddEventHandler("Businesses:Server:Startup", function()
 		{
 			result = { name = "beef_taco", count = 4 },
 			items = {
-				{ name = "taco_cheese", count = 2 },
-				{ name = "taco_beef", count = 2 },
+				{ name = "taco_cheese",   count = 2 },
+				{ name = "taco_beef",     count = 2 },
 				{ name = "taco_tortilla", count = 4 },
 			},
 			time = 3000,
@@ -68,8 +68,8 @@ AddEventHandler("Businesses:Server:Startup", function()
 		{
 			result = { name = "tostada", count = 4 },
 			items = {
-				{ name = "taco_cheese", count = 2 },
-				{ name = "taco_beef", count = 2 },
+				{ name = "taco_cheese",   count = 2 },
+				{ name = "taco_beef",     count = 2 },
 				{ name = "taco_tortilla", count = 4 },
 			},
 			time = 3000,
@@ -78,8 +78,8 @@ AddEventHandler("Businesses:Server:Startup", function()
 		{
 			result = { name = "quesadilla", count = 4 },
 			items = {
-				{ name = "taco_cheese", count = 2 },
-				{ name = "taco_chicken", count = 2 },
+				{ name = "taco_cheese",   count = 2 },
+				{ name = "taco_chicken",  count = 2 },
 				{ name = "taco_tortilla", count = 4 },
 			},
 			time = 3000,
@@ -88,8 +88,8 @@ AddEventHandler("Businesses:Server:Startup", function()
 		{
 			result = { name = "burrito", count = 4 },
 			items = {
-				{ name = "taco_cheese", count = 2 },
-				{ name = "taco_chicken", count = 2 },
+				{ name = "taco_cheese",   count = 2 },
+				{ name = "taco_chicken",  count = 2 },
 				{ name = "taco_tortilla", count = 4 },
 			},
 			time = 3000,
@@ -98,8 +98,8 @@ AddEventHandler("Businesses:Server:Startup", function()
 		{
 			result = { name = "enchilada", count = 4 },
 			items = {
-				{ name = "taco_cheese", count = 2 },
-				{ name = "taco_beef", count = 2 },
+				{ name = "taco_cheese",   count = 2 },
+				{ name = "taco_beef",     count = 2 },
 				{ name = "taco_tortilla", count = 4 },
 			},
 			time = 3000,
@@ -109,7 +109,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 			result = { name = "carne_asada", count = 4 },
 			items = {
 				{ name = "taco_cheese", count = 2 },
-				{ name = "taco_steak", count = 4 },
+				{ name = "taco_steak",  count = 4 },
 			},
 			time = 3000,
 			animation = "mechanic",
@@ -117,16 +117,16 @@ AddEventHandler("Businesses:Server:Startup", function()
 		{
 			result = { name = "torta", count = 4 },
 			items = {
-				{ name = "taco_cheese", count = 2 },
+				{ name = "taco_cheese",  count = 2 },
 				{ name = "taco_chicken", count = 2 },
-				{ name = "torta_roll", count = 4 },
+				{ name = "torta_roll",   count = 4 },
 			},
 			time = 3000,
 			animation = "mechanic",
 		},
 	})
 
-	Crafting:RegisterBench("TacoShopDrinks", "Taco Farmer Fountain Drinks", {
+	exports['sandbox-inventory']:CraftingRegisterBench("TacoShopDrinks", "Taco Farmer Fountain Drinks", {
 		actionString = "Pouring",
 		icon = "glass",
 		poly = {
@@ -162,7 +162,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		},
 	})
 
-	Callbacks:RegisterServerCallback("Taco:GetNewQueueItem", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Taco:GetNewQueueItem", function(source, data, cb)
 		_currentCookItem = math.random(#_tacoFoodItems)
 		GlobalState["TacoShop:Counter"] = _deliveryCounter
 		GlobalState["TacoShop:CurrentItem"] = _currentCookItem
@@ -170,31 +170,31 @@ AddEventHandler("Businesses:Server:Startup", function()
 		cb(true)
 	end)
 
-	Callbacks:RegisterServerCallback("Taco:SetState", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Taco:SetState", function(source, data, cb)
 		TriggerClientEvent("Taco:PickupState", -1, data)
 		cb(true)
 	end)
 
-	Callbacks:RegisterServerCallback("Tacos:AddToQueue", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Tacos:AddToQueue", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			local count = Inventory.Items:GetCount(char:GetData("SID"), 1, data.item) or 0
+			local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, data.item) or 0
 			if count > 0 then
-				local itemData = Inventory.Items:GetData(data.item)
+				local itemData = exports['sandbox-inventory']:ItemsGetData(data.item)
 
-				if itemData and Inventory.Items:Remove(char:GetData("SID"), 1, data.item, _itemCount) then
+				if itemData and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, data.item, _itemCount) then
 					_deliveryCounter = _deliveryCounter + 1
 					if _deliveryCounter > _tacoQueue.maxQueue then
 						_deliveryCounter = _tacoQueue.maxQueue
 					end
 
 					local _tacoArtistCash = math.random(15, 30)
-					local repLevel = Reputation:GetLevel(source, "TacoCrafter") or 0
+					local repLevel = exports['sandbox-characters']:RepGetLevel(source, "TacoCrafter") or 0
 					if repLevel > 0 then
 						_tacoArtistCash = math.floor(_tacoArtistCash * repLevel)
 					end
-					Wallet:Modify(source, _tacoArtistCash)
-					Reputation.Modify:Add(source, "TacoCrafter", 1)
+					exports['sandbox-finance']:WalletModify(source, _tacoArtistCash)
+					exports['sandbox-characters']:RepAdd(source, "TacoCrafter", 1)
 
 					cb(true)
 				end
@@ -204,14 +204,14 @@ AddEventHandler("Businesses:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Tacos:Pickup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Tacos:Pickup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			_deliveryCounter = _deliveryCounter - 1
 			if _deliveryCounter < 0 then
 				_deliveryCounter = 0
 			end
-			Inventory:AddItem(char:GetData("SID"), _dropOffItem, 1, {}, 1)
+			exports['sandbox-inventory']:AddItem(char:GetData("SID"), _dropOffItem, 1, {}, 1)
 			GlobalState["TacoShop:Counter"] = _deliveryCounter
 			GlobalState["TacoShop:CurrentItem"] = _currentCookItem
 			TriggerClientEvent("Taco:SetQueue", -1, { counter = _deliveryCounter, item = _currentCookItem })
@@ -219,28 +219,29 @@ AddEventHandler("Businesses:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Tacos:Dropoff", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Tacos:Dropoff", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			local count = Inventory.Items:GetCount(char:GetData("SID"), 1, _dropOffItem) or 0
+			local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, _dropOffItem) or 0
 			if count > 0 then
-				local itemData = Inventory.Items:GetData(_dropOffItem)
+				local itemData = exports['sandbox-inventory']:ItemsGetData(_dropOffItem)
 
-				if itemData and Inventory.Items:Remove(char:GetData("SID"), 1, _dropOffItem, _itemCount) then
-					local repLevel = Reputation:GetLevel(source, "TacoDelivery") or 0
+				if itemData and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, _dropOffItem, _itemCount) then
+					local repLevel = exports['sandbox-characters']:RepGetLevel(source, "TacoDelivery") or 0
 					local repGained = 1
 					local _tacoDeliveryCash = math.random(15, 30)
 					if repLevel > 0 then
 						_tacoDeliveryCash = math.floor(_tacoDeliveryCash * repLevel)
 					end
 
-					if Inventory.Items:Has(char:GetData("SID"), 1, "moneyroll", 1) then
-						local _moneyRollCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "moneyroll")
-						local itemDataMoneyRoll = Inventory.Items:GetData("moneyroll")
+					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "moneyroll", 1) then
+						local _moneyRollCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1,
+							"moneyroll")
+						local itemDataMoneyRoll = exports['sandbox-inventory']:ItemsGetData("moneyroll")
 						if _moneyRollCount >= _maxRolls then
 							if
 								itemDataMoneyRoll
-								and Inventory.Items:Remove(char:GetData("SID"), 1, "moneyroll", _maxRolls)
+								and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "moneyroll", _maxRolls)
 							then
 								local _moneyRollOutput = math.floor(
 									((_tacoConfig.tacoPricing[repLevel] / 100) * itemDataMoneyRoll.price) * _maxRolls
@@ -249,13 +250,14 @@ AddEventHandler("Businesses:Server:Startup", function()
 								repGained = repGained + math.random(3)
 							end
 						end
-					elseif Inventory.Items:Has(char:GetData("SID"), 1, "moneyband", 1) then
-						local _moneyBandCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "moneyband")
-						local itemDataMoneyBand = Inventory.Items:GetData("moneyband")
+					elseif exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "moneyband", 1) then
+						local _moneyBandCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1,
+							"moneyband")
+						local itemDataMoneyBand = exports['sandbox-inventory']:ItemsGetData("moneyband")
 						if _moneyBandCount >= _maxBands then
 							if
 								itemDataMoneyBand
-								and Inventory.Items:Remove(char:GetData("SID"), 1, "moneyband", _maxBands)
+								and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "moneyband", _maxBands)
 							then
 								local _moneyBandOutput = math.floor(
 									((_tacoConfig.tacoPricing[repLevel] / 100) * itemDataMoneyBand.price) * _maxBands
@@ -266,8 +268,8 @@ AddEventHandler("Businesses:Server:Startup", function()
 						end
 					end
 
-					Wallet:Modify(source, _tacoDeliveryCash)
-					Reputation.Modify:Add(source, "TacoDelivery", repGained)
+					exports['sandbox-finance']:WalletModify(source, _tacoDeliveryCash)
+					exports['sandbox-characters']:RepAdd(source, "TacoDelivery", repGained)
 
 					cb(true)
 				end

@@ -190,7 +190,7 @@ end)
 RegisterNetEvent("Characters:Client:Spawn")
 AddEventHandler("Characters:Client:Spawn", function()
     Wait(1000)
-    Hud:RegisterStatus("boosting-timer", 0, 100, "timer", "#892020", false, false, {
+    exports['sandbox-hud']:RegisterStatus("boosting-timer", 0, 100, "timer", "#892020", false, false, {
         hideZero = true,
     })
 end)
@@ -203,7 +203,7 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:Start", function(data)
 
     if _boosting then
         if _boosting.pickUp then
-            Blips:Add(
+            exports["sandbox-blips"]:Add(
                 "boosting-contract",
                 "[Contract]: Target Vehicle",
                 _boosting.pickUp,
@@ -219,7 +219,7 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:Start", function(data)
             SetNewWaypoint(_boosting.pickUp.x, _boosting.pickUp.y)
         end
 
-        Polyzone.Create:Circle("boosting-dropoff", _boosting.dropOff, 30.0, {})
+        exports['sandbox-polyzone']:CreateCircle("boosting-dropoff", _boosting.dropOff, 30.0, {})
     end
 end)
 
@@ -231,7 +231,7 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:UpdateState", function(st
     _boosting.state = state
 
     if state == 1 then
-        Blips:Remove("boosting-contract")
+        exports["sandbox-blips"]:Remove("boosting-contract")
     elseif state == 2 then
         if data then
             _boosting.trackerDelay = data.trackerDelay
@@ -245,7 +245,7 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:UpdateState", function(st
                     if NetworkDoesEntityExistWithNetworkId(_boosting.vehicleNet) then
                         local veh = NetToVeh(_boosting.vehicleNet)
                         if veh == GetVehiclePedIsIn(LocalPlayer.state.ped, false) then
-                            UISounds.Play:FrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
+                            exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
                         end
                     end
 
@@ -254,8 +254,8 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:UpdateState", function(st
             end)
         end
     elseif state == 3 and _boosting.dropOff then
-        Notification.Persistent:Remove("boosting-trackers")
-        Blips:Add(
+        exports["sandbox-hud"]:NotifPersistentRemove("boosting-trackers")
+        exports["sandbox-blips"]:Add(
             "boosting-contract",
             "[Contract]: Dropoff Location",
             _boosting.dropOff,
@@ -274,13 +274,13 @@ RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:UpdateState", function(st
 end)
 
 RegisterNetEvent("Laptop:Client:LSUnderground:Boosting:TrackerNotificationUpdate", function(notif)
-    Notification.Persistent:Info("boosting-trackers", notif)
+    exports["sandbox-hud"]:NotifPersistentInfo("boosting-trackers", notif)
 end)
 
 AddEventHandler("Laptop:Client:LSUnderground:Boosting:AttemptExterior", function(veh)
     if _boosting and NetworkDoesEntityExistWithNetworkId(_boosting.vehicleNet) then
         if veh == NetToVeh(_boosting.vehicleNet) then
-            Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:Exterior", {},
+            exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:Exterior", {},
                 function(numPeds, makeDifficult, noAlert)
                     if numPeds then
                         --numPeds = 0
@@ -305,7 +305,7 @@ AddEventHandler("Laptop:Client:LSUnderground:Boosting:AttemptExterior", function
 
                                 Entity(ped).state:set('crimePed', true, true)
 
-                                local w = Utils:WeightedRandom(availableWeapons)
+                                local w = exports['sandbox-base']:UtilsWeightedRandom(availableWeapons)
                                 GiveWeaponToPed(ped, w, 99999, false, true)
                                 SetCurrentPedWeapon(ped, w, true)
 
@@ -384,7 +384,7 @@ AddEventHandler("Laptop:Client:LSUnderground:Boosting:SuccessIgnition", function
             local coords = GetEntityCoords(LocalPlayer.state.ped)
             local main, cross = GetStreetNameAtCoord(coords.x, coords.y, coords.z, Citizen.ResultAsInteger(),
                 Citizen.ResultAsInteger())
-            Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:Ignition", {
+            exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:Ignition", {
                 location = string.format("%s - %s", GetStreetNameFromHashKey(main),
                     GetLabelText(GetNameOfZone(coords.x, coords.y, coords.z)))
             }, function()
@@ -411,7 +411,7 @@ function BoostingTrackerCooldown()
 end
 
 function RegisterBoostingCallbacks()
-    Callbacks:RegisterClientCallback("Laptop:LSUnderground:Boosting:TrackerHacker", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Laptop:LSUnderground:Boosting:TrackerHacker", function(data, cb)
         local hackData = _trackerHacks[_boosting?.vehicleData?.class or "B"]
         if not hackData then
             hackData = _trackerHacks.B
@@ -422,13 +422,13 @@ function RegisterBoostingCallbacks()
             local veh = NetToVeh(_boosting.vehicleNet)
 
             if GetEntitySpeed(veh) >= 15.0 and GetPedInVehicleSeat(veh, 0) == LocalPlayer.state.ped then
-                Minigame.Play:Pattern(
+                exports['sandbox-games']:MinigamePlayPattern(
                     3,
                     hackData.duration,
                     hackData.rows,
                     math.random(hackData.lengthMin, hackData.lengthMax),
                     hackData.charSize,
-                    Utils:WeightedRandom(hackData.charSet), {
+                    exports['sandbox-base']:UtilsWeightedRandom(hackData.charSet), {
                         onSuccess = function()
                             BoostingTrackerCooldown()
                             cb(true, true)
@@ -472,7 +472,7 @@ AddEventHandler("Polyzone:Exit", function(id)
     if id == "boosting-dropoff" and inZone then
         inZone = false
         if _boosting and _boosting.state == 4 then
-            Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:LeftArea", {})
+            exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:LeftArea", {})
         end
     end
 end)
@@ -487,7 +487,7 @@ AddEventHandler("Vehicles:Client:ExitVehicle", function(veh)
         and veh == NetToVeh(_boosting.vehicleNet)
         and not CheckPDInZone(_boosting.dropOff, 60.0)
     then
-        Callbacks:ServerCallback("Laptop:LSUnderground:Boosting:DropOff", {})
+        exports["sandbox-base"]:ServerCallback("Laptop:LSUnderground:Boosting:DropOff", {})
     end
 end)
 
@@ -496,11 +496,11 @@ function CleanUpBoosting()
         LocalPlayer.state.isBoosting = false
         _boosting = nil
 
-        Polyzone:Remove("boosting-dropoff")
-        Blips:Remove("boosting-contract")
+        exports['sandbox-polyzone']:Remove("boosting-dropoff")
+        exports["sandbox-blips"]:Remove("boosting-contract")
 
         TriggerEvent("Status:Client:Update", "boosting-timer", 0)
-        Notification.Persistent:Remove("boosting-trackers")
+        exports["sandbox-hud"]:NotifPersistentRemove("boosting-trackers")
     end
 end
 
@@ -510,7 +510,7 @@ end)
 
 RegisterNetEvent("Laptop:Client:Teams:Set", function(teamData)
     if not teamData and wasBoosting then
-        Laptop.Notification:Remove("BOOSTING_CONTRACT")
+        exports['sandbox-laptop']:RemoveNotification("BOOSTING_CONTRACT")
 
         CleanUpBoosting()
     end

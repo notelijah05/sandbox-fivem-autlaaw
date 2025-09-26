@@ -18,41 +18,42 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 		for k, v in ipairs(_nodes.locations) do
 			local id = string.format("PrisonNode%s", v.data.id)
 
-			Blips:Add(id, data.blip.name, v.coords, data.blip.sprite or 188, data.blip.color or 56, 0.8)
+			exports["sandbox-blips"]:Add(id, data.blip.name, v.coords, data.blip.sprite or 188, data.blip.color or 56,
+				0.8)
 			if v.type == "box" then
-				Targeting.Zones:AddBox(id, "box-open-full", v.coords, v.length, v.width, v.options, {
+				exports['sandbox-targeting']:ZonesAddBox(id, "box-open-full", v.coords, v.length, v.width, v.options, {
 					{
 						icon = "hand-middle-finger",
 						text = data.action,
 						event = string.format("Labor:Client:%s:Action", joiner),
 						data = v.data,
-                        tempjob = "Prison",
+						tempjob = "Prison",
 						isEnabled = function(data)
 							return _working and _state == 1
 						end,
 					},
 				}, 3.0, true)
 			elseif v.type == "circle" then
-				Targeting.Zones:AddCircle(id, "box-open-full", v.coords, v.radius, v.options, {
+				exports['sandbox-targeting']:ZonesAddCircle(id, "box-open-full", v.coords, v.radius, v.options, {
 					{
 						icon = "hand-middle-finger",
 						text = data.action,
 						event = string.format("Labor:Client:%s:Action", joiner),
 						data = v.data,
-                        tempjob = "Prison",
+						tempjob = "Prison",
 						isEnabled = function(data)
 							return _working and _state == 1
 						end,
 					},
 				}, 3.0, true)
 			elseif v.type == "poly" then
-				Targeting.Zones:AddPoly(id, "box-open-full", v.points, v.options, {
+				exports['sandbox-targeting']:ZonesAddPoly(id, "box-open-full", v.points, v.options, {
 					{
 						icon = "hand-middle-finger",
 						text = data.action,
 						event = string.format("Labor:Client:%s:Action", joiner),
 						data = v.data,
-                        tempjob = "Prison",
+						tempjob = "Prison",
 						isEnabled = function(data)
 							return _working and _state == 1
 						end,
@@ -61,11 +62,11 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 			end
 		end
 
-        Targeting.Zones:Refresh()
+		exports['sandbox-targeting']:ZonesRefresh()
 	end)
 
 	eventHandlers["action"] = AddEventHandler(string.format("Labor:Client:%s:Action", joiner), function(ent, data)
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "prison_action",
 			duration = data.duration,
 			label = data.label,
@@ -80,11 +81,11 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 			animation = data.animation,
 		}, function(status)
 			if not status then
-				Callbacks:ServerCallback("Prison:Action", data.id, function(s)
+				exports["sandbox-base"]:ServerCallback("Prison:Action", data.id, function(s)
 					local id = string.format("PrisonNode%s", data.id)
-					Targeting.Zones:RemoveZone(id)
-					Blips:Remove(id)
-                    Targeting.Zones:Refresh()
+					exports['sandbox-targeting']:ZonesRemoveZone(id)
+					exports["sandbox-blips"]:Remove(id)
+					exports['sandbox-targeting']:ZonesRefresh()
 				end)
 			end
 		end)
@@ -94,10 +95,10 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 		if _nodes ~= nil then
 			for k, v in ipairs(_nodes.locations) do
 				local id = string.format("PrisonNode%s", v.id)
-				Targeting.Zones:RemoveZone(id)
-				Blips:Remove(id)
+				exports['sandbox-targeting']:ZonesRemoveZone(id)
+				exports["sandbox-blips"]:Remove(id)
 			end
-            Targeting.Zones:Refresh()
+			exports['sandbox-targeting']:ZonesRefresh()
 		end
 
 		_nodes = nil
@@ -106,9 +107,9 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("Prison:Client:StartJob", function()
-	Callbacks:ServerCallback("Prison:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("Prison:StartJob", _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)
@@ -121,10 +122,10 @@ RegisterNetEvent("Prison:Client:OffDuty", function(time)
 	if _nodes ~= nil then
 		for k, v in ipairs(_nodes.locations) do
 			local id = string.format("PrisonNode%s", v.id)
-			Targeting.Zones:RemoveZone(id)
-			Blips:Remove(id)
+			exports['sandbox-targeting']:ZonesRemoveZone(id)
+			exports["sandbox-blips"]:Remove(id)
 		end
-        Targeting.Zones:Refresh()
+		exports['sandbox-targeting']:ZonesRefresh()
 	end
 
 	_joiner = nil

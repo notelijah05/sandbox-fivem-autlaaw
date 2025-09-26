@@ -1,9 +1,9 @@
 local bizWizJobs = {}
 
 function CheckBusinessPermissions(source, permission)
-    local onDuty = Jobs.Duty:Get(source)
+	local onDuty = exports['sandbox-jobs']:DutyGet(source)
 	if onDuty and onDuty.Id and bizWizJobs[onDuty.Id] then
-		if (not permission) or Jobs.Permissions:HasPermissionInJob(source, onDuty.Id, permission) then
+		if (not permission) or exports['sandbox-jobs']:HasPermissionInJob(source, onDuty.Id, permission) then
 			return onDuty.Id
 		end
 	end
@@ -11,32 +11,33 @@ function CheckBusinessPermissions(source, permission)
 end
 
 AddEventHandler('Job:Server:DutyAdd', function(dutyData, source)
-	local job = Jobs.Permissions:HasJob(source, dutyData.Id)
+	local job = exports['sandbox-jobs']:HasJob(source, dutyData.Id)
 	if job then
 		local hasConfig = _bizWizConfig[job.Id]
-		local bizWiz = Jobs.Data:Get(job.Id, "bizWiz")
-	
+		local bizWiz = exports['sandbox-jobs']:DataGet(job.Id, "bizWiz")
+
 		if hasConfig then
 			bizWiz = hasConfig.type
 		end
-	
+
 		if job and bizWiz and _bizWizTypes[bizWiz] then
-			local bizWizLogo = Jobs.Data:Get(job.Id, "bizWizLogo")
+			local bizWizLogo = exports['sandbox-jobs']:DataGet(job.Id, "bizWizLogo")
 
 			if not bizWizLogo and hasConfig then
 				bizWizLogo = hasConfig.logo
 			end
 
 			bizWizJobs[job.Id] = true
-	
-			Laptop:UpdateJobData(source)
-			TriggerClientEvent("Laptop:Client:BizWiz:Login", source, bizWizLogo or "https://i.imgur.com/ORHSuSM.png", _bizWizTypes[bizWiz], GetBusinessNotices(job.Id))
+
+			exports['sandbox-laptop']:UpdateJobData(source)
+			TriggerClientEvent("Laptop:Client:BizWiz:Login", source, bizWizLogo or "https://i.imgur.com/ORHSuSM.png",
+				_bizWizTypes[bizWiz], GetBusinessNotices(job.Id))
 		end
 	end
 end)
 
 AddEventHandler('Job:Server:DutyRemove', function(dutyData, source, SID)
-    if bizWizJobs[dutyData.Id] then
+	if bizWizJobs[dutyData.Id] then
 		TriggerClientEvent("Laptop:Client:BizWiz:Logout", source)
 	end
 end)
@@ -53,10 +54,10 @@ function GetBusinessNotices(job)
 end
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-  Callbacks:RegisterServerCallback("Laptop:BizWiz:EmployeeSearch", function(source, data, cb)
-    local job = CheckBusinessPermissions(source)
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:EmployeeSearch", function(source, data, cb)
+		local job = CheckBusinessPermissions(source)
 		if job then
-			Database.Game:find({
+			exports['sandbox-base']:DatabaseGameFind({
 				collection = "characters",
 				query = {
 					["$and"] = {
@@ -116,22 +117,22 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:GetTwitterProfile", function(source, data, cb)
-    local job = CheckBusinessPermissions(source, "JOB_MANAGEMENT")
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:GetTwitterProfile", function(source, data, cb)
+		local job = CheckBusinessPermissions(source, "JOB_MANAGEMENT")
 		if job then
 			cb({
 				success = true,
-				pfp = Jobs.Data:Get(job, "TwitterAvatar")
+				pfp = exports['sandbox-jobs']:DataGet(job, "TwitterAvatar")
 			})
 		else
 			cb(false)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:SetTwitterProfile", function(source, data, cb)
-    local job = CheckBusinessPermissions(source, "JOB_MANAGEMENT")
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:SetTwitterProfile", function(source, data, cb)
+		local job = CheckBusinessPermissions(source, "JOB_MANAGEMENT")
 		if job then
-			local success = Jobs.Data:Set(job, "TwitterAvatar", data.profile)
+			local success = exports['sandbox-jobs']:DataSet(job, "TwitterAvatar", data.profile)
 			if success then
 				cb(data.profile)
 			else
@@ -142,15 +143,15 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:SendTweet", function(source, data, cb)
-    local job = CheckBusinessPermissions(source, "TABLET_TWEET")
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:SendTweet", function(source, data, cb)
+		local job = CheckBusinessPermissions(source, "TABLET_TWEET")
 		if job then
-			local jobData = Jobs:Get(job)
-			local avatar = Jobs.Data:Get(job, "TwitterAvatar")
-			
-			Phone.Twitter:Post(
-				-1, 
-				-1, 
+			local jobData = exports['sandbox-jobs']:Get(job)
+			local avatar = exports['sandbox-jobs']:DataGet(job, "TwitterAvatar")
+
+			exports['sandbox-phone']:TwitterPost(
+				-1,
+				-1,
 				{
 					name = jobData.Name,
 					picture = avatar,
@@ -167,18 +168,18 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Chat:RegisterAdminCommand("bizwizset", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("bizwizset", function(source, args, rawCommand)
 		local setting = args[2]
 		if setting == "false" then
 			setting = false
 		end
 
-    local res = Jobs.Data:Set(args[1], "bizWiz", setting)
+		local res = exports['sandbox-jobs']:DataSet(args[1], "bizWiz", setting)
 
 		if res?.success then
-			Chat.Send.System:Single(source, "Success")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Success")
 		else
-			Chat.Send.System:Single(source, "Failed")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
 		end
 	end, {
 		help = "[Admin] Grant a Business Access to BizWiz App",
@@ -194,18 +195,18 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		}
 	}, 2)
 
-	Chat:RegisterAdminCommand("bizwizlogo", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("bizwizlogo", function(source, args, rawCommand)
 		local setting = args[2]
 		if setting == "false" then
 			setting = false
 		end
 
-    local res = Jobs.Data:Set(args[1], "bizWizLogo", setting)
+		local res = exports['sandbox-jobs']:DataSet(args[1], "bizWizLogo", setting)
 
 		if res?.success then
-			Chat.Send.System:Single(source, "Success")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Success")
 		else
-			Chat.Send.System:Single(source, "Failed")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
 		end
 	end, {
 		help = "[Admin] Set BizWiz Logo",
@@ -221,34 +222,34 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		}
 	}, 2)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:ViewVehicleFleet", function(source, data, cb)
-    local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:ViewVehicleFleet", function(source, data, cb)
+		local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
 		if job then
-			Vehicles.Owned:GetAll(nil, 1, job, function(vehicles)
-        for k, v in ipairs(vehicles) do
-          if v.Storage then
-            if v.Storage.Type == 0 then
-              v.Storage.Name = Vehicles.Garages:Impound().name
-            elseif v.Storage.Type == 1 then
-              v.Storage.Name = Vehicles.Garages:Get(v.Storage.Id).name
-            elseif v.Storage.Type == 2 then
-              local prop = Properties:Get(v.Storage.Id)
-              v.Storage.Name = prop?.label
-            end
-          end
-        end
+			exports['sandbox-vehicles']:OwnedGetAll(nil, 1, job, function(vehicles)
+				for k, v in ipairs(vehicles) do
+					if v.Storage then
+						if v.Storage.Type == 0 then
+							v.Storage.Name = exports['sandbox-vehicles']:GaragesImpound().name
+						elseif v.Storage.Type == 1 then
+							v.Storage.Name = exports['sandbox-vehicles']:GaragesGet(v.Storage.Id).name
+						elseif v.Storage.Type == 2 then
+							local prop = exports['sandbox-properties']:Get(v.Storage.Id)
+							v.Storage.Name = prop?.label
+						end
+					end
+				end
 
-        cb(vehicles)
-      end)
+				cb(vehicles)
+			end)
 		else
 			cb(false)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Laptop:BizWiz:TrackFleetVehicle", function(source, data, cb)
-    local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:TrackFleetVehicle", function(source, data, cb)
+		local job = CheckBusinessPermissions(source, "FLEET_MANAGEMENT")
 		if job then
-			cb(Vehicles.Owned:Track(data.vehicle))
+			cb(exports['sandbox-vehicles']:OwnedTrack(data.vehicle))
 		else
 			cb(false)
 		end

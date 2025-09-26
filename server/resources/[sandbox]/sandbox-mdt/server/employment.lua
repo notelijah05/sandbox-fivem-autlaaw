@@ -1,6 +1,6 @@
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("MDT:Hire", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Hire", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
@@ -10,11 +10,11 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		}, data.JobId)
 
 		if char and data.SID and data.WorkplaceId and data.GradeId and (hasPerms or isSystemAdmin) then
-			local added = Jobs:GiveJob(data.SID, data.JobId, data.WorkplaceId, data.GradeId, true)
+			local added = exports['sandbox-jobs']:GiveJob(data.SID, data.JobId, data.WorkplaceId, data.GradeId, true)
 			cb(added)
 
 			if added then
-				Database.Game:updateOne({
+				exports['sandbox-base']:DatabaseGameUpdateOne({
 					collection = "characters",
 					query = {
 						SID = data.SID,
@@ -39,8 +39,8 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Fire", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Fire", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
@@ -50,13 +50,13 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		}, data.JobId)
 
 		if char and data and data.SID and (hasPerms or isSystemAdmin) then
-			local charData = MDT.People:View(data.SID)
+			local charData = exports['sandbox-mdt']:PeopleView(data.SID)
 			if charData then
 				local canRemove = false
 				if isSystemAdmin then
 					canRemove = true
 				else
-					local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
+					local plyrJob = exports['sandbox-jobs']:HasJob(source, loggedInJob)
 					for k, v in ipairs(charData.Jobs) do
 						if v.Id == data.JobId then
 							if plyrJob.Grade.Level > v.Grade.Level then
@@ -68,7 +68,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				end
 
 				if canRemove then
-					local removed = Jobs:RemoveJob(data.SID, data.JobId)
+					local removed = exports['sandbox-jobs']:RemoveJob(data.SID, data.JobId)
 					cb(removed)
 
 					if removed then
@@ -92,7 +92,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 							}
 						end
 
-						Database.Game:updateOne({
+						exports['sandbox-base']:DatabaseGameUpdateOne({
 							collection = "characters",
 							query = {
 								SID = data.SID,
@@ -101,7 +101,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						}, function(success, results)
 							if success then
 								if (data.JobId == "police" or data.JobId == "ems") then
-									local char = Fetch:SID(data.SID)
+									local char = exports['sandbox-characters']:FetchBySID(data.SID)
 									if char then
 										char:SetData("Callsign", false)
 									end
@@ -118,8 +118,8 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:ManageEmployment", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:ManageEmployment", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
@@ -128,16 +128,16 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 			'DOC_HIGH_COMMAND',
 		}, data.JobId)
 
-		local newJobData = Jobs:DoesExist(data.data.Id, data.data.Workplace.Id, data.data.Grade.Id)
+		local newJobData = exports['sandbox-jobs']:DoesExist(data.data.Id, data.data.Workplace.Id, data.data.Grade.Id)
 
 		if char and data and data.SID and (hasPerms or isSystemAdmin) and newJobData then
-			local charData = MDT.People:View(data.SID)
+			local charData = exports['sandbox-mdt']:PeopleView(data.SID)
 			if charData then
 				local canDoItBitch = false
 				if isSystemAdmin then
 					canDoItBitch = true
 				else
-					local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
+					local plyrJob = exports['sandbox-jobs']:HasJob(source, loggedInJob)
 					for k, v in ipairs(charData.Jobs) do
 						if v.Id == data.JobId then
 							if plyrJob.Grade.Level > v.Grade.Level and plyrJob.Grade.Level > newJobData.Grade.Level then
@@ -149,12 +149,13 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				end
 
 				if canDoItBitch then
-					local updated = Jobs:GiveJob(data.SID, newJobData.Id, newJobData.Workplace.Id, newJobData.Grade.Id)
+					local updated = exports['sandbox-jobs']:GiveJob(data.SID, newJobData.Id, newJobData.Workplace.Id,
+						newJobData.Grade.Id)
 
 					cb(updated)
 
 					if updated then
-						Database.Game:updateOne({
+						exports['sandbox-base']:DatabaseGameUpdateOne({
 							collection = "characters",
 							query = {
 								SID = data.SID,
@@ -183,8 +184,8 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-    Callbacks:RegisterServerCallback("MDT:Update:jobPermissions", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Update:jobPermissions", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
 			'PD_HIGH_COMMAND',
@@ -192,26 +193,26 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 			'DOC_HIGH_COMMAND',
 		}, data.JobId)
 
-		local targetData = Jobs:DoesExist(data.JobId, data.WorkplaceId, data.GradeId)
+		local targetData = exports['sandbox-jobs']:DoesExist(data.JobId, data.WorkplaceId, data.GradeId)
 
 		if char and data and data.UpdatedPermissions and (hasPerms or isSystemAdmin) and targetData then
-            local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
-            if isSystemAdmin or (plyrJob and plyrJob.Grade.Level > targetData.Grade.Level) then
-                cb(
-                    Jobs.Management.Grades:Edit(data.JobId, data.WorkplaceId, data.GradeId, {
-                        Permissions = data.UpdatedPermissions,
-                    })
-                )
-            else
-                cb(false)
-            end
+			local plyrJob = exports['sandbox-jobs']:HasJob(source, loggedInJob)
+			if isSystemAdmin or (plyrJob and plyrJob.Grade.Level > targetData.Grade.Level) then
+				cb(
+					exports['sandbox-jobs']:ManagementGradesEdit(data.JobId, data.WorkplaceId, data.GradeId, {
+						Permissions = data.UpdatedPermissions,
+					})
+				)
+			else
+				cb(false)
+			end
 		else
 			cb(false)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Suspend", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Suspend", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
@@ -221,13 +222,13 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		}, data.JobId)
 
 		if char and data and data.SID and (hasPerms or isSystemAdmin) then
-			local charData = MDT.People:View(data.SID)
+			local charData = exports['sandbox-mdt']:PeopleView(data.SID)
 			if charData then
 				local canRemove = false
 				if isSystemAdmin then
 					canRemove = true
 				else
-					local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
+					local plyrJob = exports['sandbox-jobs']:HasJob(source, loggedInJob)
 					for k, v in ipairs(charData.Jobs) do
 						if v.Id == data.JobId then
 							if plyrJob.Grade.Level > v.Grade.Level then
@@ -250,7 +251,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						Expires = os.time() + (60 * 60 * 24 * data.Length),
 					}
 
-					Database.Game:updateOne({
+					exports['sandbox-base']:DatabaseGameUpdateOne({
 						collection = "characters",
 						query = {
 							SID = data.SID,
@@ -274,14 +275,14 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						},
 					}, function(success, results)
 						if success then
-							local char = Fetch:SID(data.SID)
+							local char = exports['sandbox-characters']:FetchBySID(data.SID)
 							if char then
 								local suspensionShit = char:GetData("MDTSuspension") or {}
 
 								suspensionShit[data.JobId] = suspendData
 								char:SetData("MDTSuspension", suspensionShit)
 
-								Jobs.Duty:Off(char:GetData("Source"), data.JobId)
+								exports['sandbox-jobs']:DutyOff(char:GetData("Source"), data.JobId)
 							end
 
 							cb(true)
@@ -298,8 +299,8 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("MDT:Unsuspend", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("MDT:Unsuspend", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local isSystemAdmin = char:GetData('MDTSystemAdmin')
 		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
@@ -309,13 +310,13 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		}, data.JobId)
 
 		if char and data and data.SID and (hasPerms or isSystemAdmin) then
-			local charData = MDT.People:View(data.SID)
+			local charData = exports['sandbox-mdt']:PeopleView(data.SID)
 			if charData then
 				local canRemove = false
 				if isSystemAdmin then
 					canRemove = true
 				else
-					local plyrJob = Jobs.Permissions:HasJob(source, loggedInJob)
+					local plyrJob = exports['sandbox-jobs']:HasJob(source, loggedInJob)
 					for k, v in ipairs(charData.Jobs) do
 						if v.Id == data.JobId then
 							if plyrJob.Grade.Level > v.Grade.Level then
@@ -327,7 +328,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				end
 
 				if canRemove then
-					Database.Game:updateOne({
+					exports['sandbox-base']:DatabaseGameUpdateOne({
 						collection = "characters",
 						query = {
 							SID = data.SID,
@@ -350,7 +351,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						},
 					}, function(success, results)
 						if success then
-							local char = Fetch:SID(data.SID)
+							local char = exports['sandbox-characters']:FetchBySID(data.SID)
 							if char then
 								local suspensionShit = char:GetData("MDTSuspension") or {}
 								suspensionShit[data.JobId] = nil

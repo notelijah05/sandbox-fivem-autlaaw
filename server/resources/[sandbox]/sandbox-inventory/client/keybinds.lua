@@ -1,12 +1,12 @@
 function RegisterKeyBinds()
-	Keybinds:Add("open_hotbar", "", "keyboard", "Inventory - Show Hotbar", function()
+	exports["sandbox-keybinds"]:Add("open_hotbar", "", "keyboard", "Inventory - Show Hotbar", function()
 		if not _startup or _reloading or _loading then
 			return
 		end
 		OpenHotBar()
 	end)
 
-	Keybinds:Add("open_inventory", "TAB", "keyboard", "Inventory - Open Inventory", function()
+	exports["sandbox-keybinds"]:Add("open_inventory", "TAB", "keyboard", "Inventory - Open Inventory", function()
 		if not _startup or _reloading or _loading then
 			return
 		end
@@ -14,7 +14,7 @@ function RegisterKeyBinds()
 	end)
 
 	function HotBarAction(key)
-		Keybinds:Add(
+		exports["sandbox-keybinds"]:Add(
 			"hotbar_action_" .. tostring(key),
 			key,
 			"keyboard",
@@ -23,7 +23,7 @@ function RegisterKeyBinds()
 				if not _startup then
 					return
 				end
-				Inventory.Used:HotKey(key)
+				exports['sandbox-inventory']:UsedHotKey(key)
 			end
 		)
 	end

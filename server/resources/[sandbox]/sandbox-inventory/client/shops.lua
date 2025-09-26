@@ -26,7 +26,7 @@ function setupStores(shops)
 				end
 			end
 
-			PedInteraction:Add(
+			exports['sandbox-pedinteraction']:Add(
 				"shop-" .. v.id,
 				GetHashKey(v.npc),
 				vector3(v.coords.x, v.coords.y, v.coords.z),
@@ -38,7 +38,7 @@ function setupStores(shops)
 				v.icon or "shop"
 			)
 			if v.blip then
-				Blips:Add(
+				exports["sandbox-blips"]:Add(
 					"inventory_shop_" .. v.id,
 					v.name,
 					vector3(v.coords.x, v.coords.y, v.coords.z),
@@ -52,5 +52,5 @@ function setupStores(shops)
 end
 
 AddEventHandler("Shop:Client:OpenShop", function(obj, data)
-	Inventory.Shop:Open(data)
+	exports['sandbox-inventory']:ShopOpen(data)
 end)

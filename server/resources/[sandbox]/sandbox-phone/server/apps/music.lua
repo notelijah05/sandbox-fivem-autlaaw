@@ -9,7 +9,7 @@ _royaltyCompanies = {
 _startingPendingDepositThread = false
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Music:Server:SendRoyalties", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Music:Server:SendRoyalties", function(source, data, cb)
 		local song = data.title
 		local label = string.lower(data.label_name)
 
@@ -30,14 +30,14 @@ end)
 
 AddEventHandler("Phone:Server:Startup", function()
 	for k, v in pairs(_royaltyCompanies) do
-		local t = Banking.Accounts:GetOrganization(k)
+		local t = exports['sandbox-finance']:AccountsGetOrganization(k)
 		if t and t.Account then
 			_pendingShopDeposits[k] = {
 				bank = t.Account,
 				royalties = {},
 			}
 		else
-			Logger:Warn("Phone", string.format("Organization account not found for: %s", k))
+			exports['sandbox-base']:LoggerWarn("Phone", string.format("Organization account not found for: %s", k))
 		end
 	end
 
@@ -48,12 +48,12 @@ AddEventHandler("Phone:Server:Startup", function()
 				Wait(1000 * 60 * 60)
 				for k, v in pairs(_pendingShopDeposits) do
 					for k2, v2 in pairs(v.royalties) do
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Phone",
 							string.format("Depositing ^2$%s^7 To ^3%s^7 For Royalties", v2.total, v.bank)
 						)
 
-						Banking.Balance:Deposit(v.bank, v2.total, {
+						exports['sandbox-finance']:BalanceDeposit(v.bank, v2.total, {
 							type = "deposit",
 							title = "Royalty Fee",
 							description = string.format("Royalties for %s - Number of Plays %s", v2.song, v2.played),

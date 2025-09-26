@@ -67,7 +67,7 @@ local hospitalCheckin = {
 }
 
 function Init()
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"hospital-check-in-1",
 		`u_f_m_miranda_02`,
 		vector3(1125.869, -1531.991, 34.033),
@@ -77,7 +77,7 @@ function Init()
 		"notes-medical",
 		"WORLD_HUMAN_CLIPBOARD"
 	)
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"hospital-check-in-2",
 		`s_f_y_scrubs_01`,
 		vector3(1144.530, -1543.017, 34.033),
@@ -87,7 +87,7 @@ function Init()
 		"notes-medical",
 		"WORLD_HUMAN_CLIPBOARD"
 	)
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"hospital-check-in-3",
 		`s_f_y_scrubs_01`,
 		vector3(1135.842, -1539.658, 38.504),
@@ -99,7 +99,7 @@ function Init()
 	)
 
 	for k, v in ipairs(Config.BedModels) do
-		Targeting:AddObject(v, "stretcher", {
+		exports['sandbox-targeting']:AddObject(v, "stretcher", {
 			{
 				icon = "stretcher",
 				text = "Lay in Bed",
@@ -115,7 +115,7 @@ function Init()
 	end
 
 	for k, v in ipairs(Config.BedPolys) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("hospitalbed-%s", k),
 			"stretcher",
 			v.center,
@@ -139,10 +139,10 @@ end
 AddEventHandler("Hospital:Client:LaydownAnimation", function(hitting, coords)
 	SetEntityCoords(LocalPlayer.state.ped, coords.x, coords.y, coords.z)
 	SetEntityHeading(LocalPlayer.state.ped, coords.w)
-	Animations.Emotes:Play("passout3", true)
+	exports['sandbox-animations']:EmotesPlay("passout3", true)
 	LocalPlayer.state:set("isHospitalized", true, true)
 
-	while Animations.Emotes:Get() == "passout3" do
+	while exports['sandbox-animations']:EmotesGet() == "passout3" do
 		Wait(250)
 	end
 
@@ -151,11 +151,11 @@ AddEventHandler("Hospital:Client:LaydownAnimation", function(hitting, coords)
 end)
 
 AddEventHandler("Hospital:Client:RetreiveItems", function()
-	Callbacks:ServerCallback("Hospital:RetreiveItems")
+	exports["sandbox-base"]:ServerCallback("Hospital:RetreiveItems")
 end)
 
 AddEventHandler("Hospital:Client:HiddenRevive", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "ammo_action",
 		duration = (math.random(5) + 15) * 1000,
 		label = "Reviving",
@@ -173,9 +173,9 @@ AddEventHandler("Hospital:Client:HiddenRevive", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Hospital:HiddenRevive", {}, function(s)
+			exports["sandbox-base"]:ServerCallback("Hospital:HiddenRevive", {}, function(s)
 				if s then
-					Escort:StopEscort()
+					exports['sandbox-escort']:StopEscort()
 				end
 			end)
 		end
@@ -189,7 +189,7 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 AddEventHandler("Hospital:Client:CheckIn", function()
-	Progress:ProgressWithStartEvent({
+	exports['sandbox-hud']:ProgressWithStartEvent({
 		name = "hospital_action",
 		duration = 2500,
 		label = "Checking In",
@@ -210,7 +210,7 @@ AddEventHandler("Hospital:Client:CheckIn", function()
 		LocalPlayer.state:set("isHospitalized", true, true)
 	end, function(status)
 		if not status then
-			Hospital:CheckIn()
+			exports['sandbox-damage']:HospitalCheckIn()
 		else
 			LocalPlayer.state:set("isHospitalized", false, true)
 		end
@@ -218,7 +218,7 @@ AddEventHandler("Hospital:Client:CheckIn", function()
 end)
 
 RegisterNetEvent("Hospital:Client:GetOut", function()
-	Callbacks:ServerCallback("Hospital:LeaveBed", {}, function()
+	exports["sandbox-base"]:ServerCallback("Hospital:LeaveBed", {}, function()
 		_doing = false
 		LeaveBed()
 	end)
@@ -228,7 +228,7 @@ AddEventHandler("Hospital:Client:FindBed", function(event, data)
 	if not event then
 		return
 	end
-	Hospital:FindBed(event.entity)
+	exports['sandbox-damage']:HospitalFindBed(event.entity)
 end)
 
 RegisterNetEvent("Hospital:Client:ICU:Enter", function()

@@ -75,9 +75,9 @@ function LeaveBed()
 		end
 
 		if _reductions > 0 then
-			Buffs:ApplyUniqueBuff("weakness", -1)
+			exports['sandbox-hud']:ApplyUniqueBuff("weakness", -1)
 		else
-			Buffs:RemoveBuffType("weakness")
+			exports['sandbox-hud']:RemoveBuffType("weakness")
 		end
 
 		SetEntityInvincible(player, false)
@@ -86,9 +86,9 @@ function LeaveBed()
 		ClearPedTasksImmediately(player)
 	end
 
-	Callbacks:ServerCallback("Hospital:LeaveBed")
+	exports["sandbox-base"]:ServerCallback("Hospital:LeaveBed")
 	if _curBed ~= nil and not _curBed.freeBed then
-		Hospital:LeaveBed()
+		exports['sandbox-damage']:HospitalLeaveBed()
 	end
 
 	--FreezeEntityPosition(player, false)
@@ -100,7 +100,7 @@ function LeaveBed()
 
 	RenderScriptCams(0, true, 200, true, true)
 	DestroyCam(cam, false)
-	Hud.DeathTexts:Hide()
+	exports['sandbox-hud']:DeathTextsHide()
 	_curBed = nil
 	_leavingBed = false
 	LocalPlayer.state:set("isHospitalized", false, true)

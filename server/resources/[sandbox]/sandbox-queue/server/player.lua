@@ -4,12 +4,12 @@ function PlayerClass(identifier, player, deferrals, steamName)
 	local prio = 0
 	local msg = ""
 
-	if Queue:HasCrashPriority(identifier) then
+	if exports['sandbox-queue']:HasCrashPriority(identifier) then
 		msg = msg .. "\n💥 Crash Priority | +50"
 		prio = prio + 50
 	end
 
-	local tempPrio = Queue:HasTempPriority(identifier)
+	local tempPrio = exports['sandbox-queue']:HasTempPriority(identifier)
 	if tempPrio then
 		msg = msg .. string.format("\n🦖 Temporary Priority | +%s", tempPrio.Priority)
 		prio = prio + tempPrio.Priority
@@ -18,19 +18,33 @@ function PlayerClass(identifier, player, deferrals, steamName)
 	-- Default group for all players for now
 	local groups = { "whitelisted" }
 
-	-- Everyone is management when this convar is 1
-	if GetConvar("danger_everyone_is_admin", "") == "1" then
+	-- Player Permissions
+	if GetConvar("danger_everyone_is_admin", "") == "1" then -- Everyone is management when this convar is 1
 		table.insert(groups, "management")
+	else
+		local permissions = {
+			["queue.management"] = "management",
+			["queue.dev"] = "dev",
+			["queue.admin"] = "admin",
+			["queue.operations"] = "operations"
+		}
+
+		for permission, group in pairs(permissions) do
+			if IsPlayerAceAllowed(player, permission) then
+				table.insert(groups, group)
+			end
+		end
 	end
 
 	for _, group in ipairs(groups) do
-		if Config.Groups[group] and Config.Groups[group].Queue and Config.Groups[group].Queue.Priority > 0 then
-			prio = prio + tonumber(Config.Groups[group].Queue.Priority)
+		local groupData = exports['sandbox-base']:ConfigGetGroupById(group)
+		if groupData and groupData.Queue and groupData.Queue.Priority > 0 then
+			prio = prio + tonumber(groupData.Queue.Priority)
 
 			msg = msg .. "\n" .. string.format(
 				"%s | +%s",
-				Config.Groups[group].Queue.Message or Config.Groups[group].Name,
-				Config.Groups[group].Queue.Priority
+				groupData.Queue.Message or groupData.Name,
+				groupData.Queue.Priority
 			)
 		end
 	end
@@ -112,7 +126,7 @@ end
 function GetPlayerTokens(account)
 	local p = promise.new()
 
-	Database.Auth:findOne({
+	exports['sandbox-base']:DatabaseAuthFindOne({
 		collection = "tokens",
 		query = {
 			account = account,

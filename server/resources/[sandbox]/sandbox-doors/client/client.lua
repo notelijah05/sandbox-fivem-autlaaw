@@ -13,64 +13,19 @@ _showingDoorDisabled = false
 
 DOORS_PERMISSION_CACHE = {}
 
-AddEventHandler("Doors:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Game = exports["sandbox-base"]:FetchComponent("Game")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Menu = exports["sandbox-base"]:FetchComponent("Menu")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Doors = exports["sandbox-base"]:FetchComponent("Doors")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Doors", {
-		"Logger",
-		"Callbacks",
-		"Game",
-		"Utils",
-		"Menu",
-		"Notification",
-		"Action",
-		"Jobs",
-		"Targeting",
-		"ListMenu",
-		"Progress",
-		"Keybinds",
-		"UISounds",
-		"Sounds",
-		"Doors",
-		"Properties",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-
-		Keybinds:Add("doors_garage_fob", "f10", "keyboard", "Doors - Use Garage Keyfob", function()
-			DoGarageKeyFobAction()
-		end)
-
-		Callbacks:RegisterClientCallback("Doors:GetCurrentDoor", function(data, cb)
-			cb(_lookingAtDoor)
-		end)
-
-		CreateGaragePolyZones()
-		CreateElevators()
-		Wait(1000)
-		InitDoors()
+	exports["sandbox-keybinds"]:Add("doors_garage_fob", "f10", "keyboard", "Doors - Use Garage Keyfob", function()
+		DoGarageKeyFobAction()
 	end)
+
+	exports["sandbox-base"]:RegisterClientCallback("Doors:GetCurrentDoor", function(data, cb)
+		cb(_lookingAtDoor)
+	end)
+
+	CreateGaragePolyZones()
+	CreateElevators()
+	Wait(1000)
+	InitDoors()
 end)
 
 function InitDoors()
@@ -80,7 +35,7 @@ function InitDoors()
 	initLoaded = true
 	DOORS_STATE = {}
 	ELEVATOR_STATE = {}
-	Callbacks:ServerCallback("Doors:Fetch", {}, function(fetchedDoors, fetchedElevators)
+	exports["sandbox-base"]:ServerCallback("Doors:Fetch", {}, function(fetchedDoors, fetchedElevators)
 		for k, v in ipairs(_doorConfig) do
 			if v.id and not DOORS_IDS[v.id] then
 				DOORS_IDS[v.id] = k
@@ -149,7 +104,7 @@ function CreateElevators()
 end
 
 function CreateElevatorFloorTarget(zoneData, elevatorId, floorId, zoneId)
-	Targeting.Zones:AddBox(
+	exports['sandbox-targeting']:ZonesAddBox(
 		("elevators_" .. elevatorId .. "_level_" .. floorId .. "_" .. zoneId),
 		"elevator",
 		zoneData.center,
@@ -183,79 +138,75 @@ function CreateElevatorFloorTarget(zoneData, elevatorId, floorId, zoneId)
 	)
 end
 
-DOORS = {
-	IsLocked = function(self, doorId)
-		if type(doorId) == "string" then
-			doorId = DOORS_IDS[doorId]
-		end
+exports('IsLocked', function(doorId)
+	if type(doorId) == "string" then
+		doorId = DOORS_IDS[doorId]
+	end
 
-		if DOORS_STATE and DOORS_STATE[doorId] and DOORS_STATE[doorId].locked then
+	if DOORS_STATE and DOORS_STATE[doorId] and DOORS_STATE[doorId].locked then
+		return true
+	end
+	return false
+end)
+
+exports('CheckRestriction', function(doorId)
+	if not DOORS_STATE then
+		return false
+	end
+
+	if type(doorId) == "string" then
+		doorId = DOORS_IDS[doorId]
+	end
+
+	local doorData = DOORS_STATE[doorId]
+	if doorData and LocalPlayer.state.Character then
+		if type(doorData.restricted) ~= "table" then
 			return true
 		end
-		return false
-	end,
-	CheckRestriction = function(self, doorId)
-		if not DOORS_STATE then
-			return false
+
+		if exports['sandbox-jobs']:HasJob("dgang", false, false, 99, true) then
+			return true
 		end
 
-		if type(doorId) == "string" then
-			doorId = DOORS_IDS[doorId]
-		end
+		local stateId = LocalPlayer.state.Character:GetData("SID")
 
-		local doorData = DOORS_STATE[doorId]
-		if doorData and LocalPlayer.state.Character then
-			if type(doorData.restricted) ~= "table" then
-				return true
-			end
-
-			if Jobs.Permissions:HasJob("dgang", false, false, 99, true) then
-				return true
-			end
-
-			local stateId = LocalPlayer.state.Character:GetData("SID")
-
-			for k, v in ipairs(doorData.restricted) do
-				if v.type == "character" then
-					if stateId == v.SID then
+		for k, v in ipairs(doorData.restricted) do
+			if v.type == "character" then
+				if stateId == v.SID then
+					return true
+				end
+			elseif v.type == "job" then
+				if v.job then
+					if
+						exports['sandbox-jobs']:HasJob(
+							v.job,
+							v.workplace,
+							v.grade,
+							v.gradeLevel,
+							v.reqDuty,
+							v.jobPermission
+						)
+					then
 						return true
 					end
-				elseif v.type == "job" then
-					if v.job then
-						if
-							Jobs.Permissions:HasJob(
-								v.job,
-								v.workplace,
-								v.grade,
-								v.gradeLevel,
-								v.reqDuty,
-								v.jobPermission
-							)
-						then
-							return true
-						end
-					elseif v.jobPermission then
-						if Jobs.Permissions:HasPermission(v.jobPermission) then
-							return true
-						end
-					end
-				elseif v.type == "propertyData" then
-					if Properties.Keys:HasAccessWithData(v.key, v.value) then
+				elseif v.jobPermission then
+					if exports['sandbox-jobs']:HasPermission(v.jobPermission) then
 						return true
 					end
 				end
+			elseif v.type == "propertyData" then
+				if exports['sandbox-properties']:HasAccessWithData(v.key, v.value) then
+					return true
+				end
 			end
 		end
-		return false
-	end,
-	GetCurrentDoor = function(self)
-		return _lookingAtDoor or false, _lookingAtDoorEntity or false, _lookingAtDoorCoords or false,
-			_lookingAtDoorRadius or false, _lookingAtDoorSpecial or false
 	end
-}
+	return false
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Doors", DOORS)
+exports('GetCurrentDoor', function()
+	return _lookingAtDoor or false, _lookingAtDoorEntity or false, _lookingAtDoorCoords or false,
+		_lookingAtDoorRadius or false, _lookingAtDoorSpecial or false
 end)
 
 function CheckDoorAuth(doorId)
@@ -264,7 +215,7 @@ function CheckDoorAuth(doorId)
 		or (GetGameTimer() - DOORS_STATE[doorId].lastPermissionCheck) >= 60000
 		or DOORS_STATE[doorId].lastDutyCheck ~= _newDuty
 	then
-		DOORS_STATE[doorId].hasPermission = Doors:CheckRestriction(doorId)
+		DOORS_STATE[doorId].hasPermission = exports['sandbox-doors']:CheckRestriction(doorId)
 		DOORS_STATE[doorId].lastPermissionCheck = GetGameTimer()
 		DOORS_STATE[doorId].lastDutyCheck = LocalPlayer.state.onDuty
 		return DOORS_STATE[doorId].hasPermission
@@ -276,7 +227,7 @@ function StopShowingDoorInfo()
 	if not _showingDoorInfo then
 		return
 	end
-	Action:Hide("doors")
+	exports['sandbox-hud']:ActionHide("doors")
 	_showingDoorInfo = false
 end
 
@@ -286,13 +237,13 @@ function StartShowingDoorInfo(doorId)
 
 	if DOORS_STATE[doorId].disabledUntil and DOORS_STATE[doorId].disabledUntil > GetCloudTimeAsInt() then
 		_showingDoorDisabled = true
-		Action:Show("doors", "This Door is Disabled")
+		exports['sandbox-hud']:ActionShow("doors", "This Door is Disabled")
 		return
 	end
 
 	local actionMsg = "{keybind}primary_action{/keybind} "
 		.. (DOORS_STATE[doorId].locked and "Unlock Door" or "Lock Door")
-	Action:Show("doors", actionMsg)
+	exports['sandbox-hud']:ActionShow("doors", actionMsg)
 end
 
 function StartCharacterThreads()
@@ -362,9 +313,9 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 	if _lookingAtDoor and _showingDoorInfo and not _showingDoorDisabled then
 		StopShowingDoorInfo()
 		DoorAnim()
-		Callbacks:ServerCallback("Doors:ToggleLocks", _lookingAtDoor, function(success, newState)
+		exports["sandbox-base"]:ServerCallback("Doors:ToggleLocks", _lookingAtDoor, function(success, newState)
 			if success then
-				Sounds.Do.Play:One("doorlocks.ogg", 0.2)
+				exports["sandbox-sounds"]:PlayOne("doorlocks.ogg", 0.2)
 			end
 		end)
 	end

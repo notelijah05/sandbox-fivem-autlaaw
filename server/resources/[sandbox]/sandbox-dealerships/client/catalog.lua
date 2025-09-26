@@ -37,11 +37,11 @@ end
 
 function OpenCatalog(dealerId)
 	if not catalogMenuOpen then
-		Hud:Hide()
+		exports['sandbox-hud']:Hide()
 
 		DoScreenFadeOut(250)
 
-		Callbacks:ServerCallback("Dealerships:GetDealerStock", dealerId, function(stocks)
+		exports["sandbox-base"]:ServerCallback("Dealerships:GetDealerStock", dealerId, function(stocks)
 			catalogData = FormatDealerStockToCategories(stocks)
 
 			SetupCatalogCams()
@@ -59,12 +59,12 @@ end
 function SetCatalogVehicle(veh)
 	if not veh or (veh and GetEntityModel(catalogVeh) ~= GetHashKey(veh)) then -- Delete the vehicle
 		if catalogVeh and DoesEntityExist(catalogVeh) then
-			Game.Vehicles:Delete(catalogVeh)
+			exports['sandbox-base']:GameVehiclesDelete(catalogVeh)
 			catalogVeh = false
 		end
 
 		if veh then
-			Game.Vehicles:SpawnLocal(_catalog.vehicle.xyz, veh, _catalog.vehicle.w, function(veh)
+			exports['sandbox-base']:GameVehiclesSpawnLocal(_catalog.vehicle.xyz, veh, _catalog.vehicle.w, function(veh)
 				catalogVeh = veh
 
 				table.insert(allSpawnedCatalogVehicles, veh)
@@ -97,7 +97,7 @@ function GetVehicleDealerCarInformationText(vData)
 end
 
 function OpenCatalogMenu(catalogName)
-	catalogMenu = Menu:Create("dealerCatalog", catalogName .. " Vehicle Catalog", function()
+	catalogMenu = exports['sandbox-menu']:Create("dealerCatalog", catalogName .. " Vehicle Catalog", function()
 		catalogMenuOpen = true
 	end, function()
 		DestroyCatalogCams()
@@ -106,13 +106,13 @@ function OpenCatalogMenu(catalogName)
 
 		for k, v in ipairs(allSpawnedCatalogVehicles) do
 			if DoesEntityExist(v) then
-				Game.Vehicles:Delete(v)
+				exports['sandbox-base']:GameVehiclesDelete(v)
 			end
 		end
 
 		allSpawnedCatalogVehicles = {}
 
-		Hud:Show()
+		exports['sandbox-hud']:Show()
 		Wait(250)
 		catalogData = {}
 		catalogMenu = nil
@@ -122,7 +122,7 @@ function OpenCatalogMenu(catalogName)
 		catalogMenuOpen = false
 	end)
 
-	local orderedCategories = Utils:GetTableKeys(_catalogCategories)
+	local orderedCategories = exports['sandbox-base']:UtilsGetTableKeys(_catalogCategories)
 	table.sort(orderedCategories, function(a, b)
 		return _catalogCategories[a] < _catalogCategories[b]
 	end)
@@ -139,7 +139,7 @@ function OpenCatalogMenu(catalogName)
 				SetCatalogVehicle(catalogData.sorted[catalogCurrent][1].vehicle)
 			end
 
-			catalogSubMenus[cat] = Menu:Create(
+			catalogSubMenus[cat] = exports['sandbox-menu']:Create(
 				"dealerCatalogSub-" .. cat,
 				catalogName .. " Catalog - " .. _catalogCategories[cat] .. " Vehicles"
 			)

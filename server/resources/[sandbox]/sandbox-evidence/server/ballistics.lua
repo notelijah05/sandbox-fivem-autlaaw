@@ -1,22 +1,26 @@
 function RegisterBallisticsCallbacks()
-	Callbacks:RegisterServerCallback("Evidence:Ballistics:FileGun", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Evidence:Ballistics:FileGun", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.slotNum and data.serial then
 			-- Files a Gun So Evidence Can Be Found
-			local item = Inventory:GetSlot(char:GetData("SID"), data.slotNum, 1)
+			local item = exports['sandbox-inventory']:GetSlot(char:GetData("SID"), data.slotNum, 1)
 			if item and item.MetaData and (item.MetaData.ScratchedSerialNumber or item.MetaData.SerialNumber) then
 				local firearmRecord, policeWeapId
 
 				if item.MetaData.ScratchedSerialNumber and item.MetaData.ScratchedSerialNumber == data.serial then
-					firearmRecord = MySQL.single.await("SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?", {
-						item.MetaData.ScratchedSerialNumber,
-						1
-					})
+					firearmRecord = MySQL.single.await(
+						"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
+						{
+							item.MetaData.ScratchedSerialNumber,
+							1
+						})
 				elseif item.MetaData.SerialNumber and item.MetaData.SerialNumber == data.serial then
-					firearmRecord = MySQL.single.await("SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?", {
-						item.MetaData.SerialNumber,
-						0
-					})
+					firearmRecord = MySQL.single.await(
+						"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
+						{
+							item.MetaData.SerialNumber,
+							0
+						})
 				end
 
 				if firearmRecord then
@@ -29,7 +33,8 @@ function RegisterBallisticsCallbacks()
 							})
 
 							if item.MetaData.ScratchedSerialNumber then
-								Inventory:SetMetaDataKey(item.id, "PoliceWeaponId", firearmRecord.police_id, source)
+								exports['sandbox-inventory']:SetMetaDataKey(item.id, "PoliceWeaponId",
+									firearmRecord.police_id, source)
 							end
 
 							return cb(
@@ -55,9 +60,9 @@ function RegisterBallisticsCallbacks()
 end
 
 function RegisterBallisticsItemUses()
-	Inventory.Items:RegisterUse("evidence-projectile", "Evidence", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("evidence-projectile", "Evidence", function(source, itemData)
 		if itemData and itemData.MetaData and itemData.MetaData.EvidenceId and itemData.MetaData.EvidenceWeapon then
-			Callbacks:ClientCallback(source, "Polyzone:IsCoordsInZone", {
+			exports["sandbox-base"]:ClientCallback(source, "Polyzone:IsCoordsInZone", {
 				coords = GetEntityCoords(GetPlayerPed(source)),
 				key = "ballistics",
 				val = true,
@@ -65,10 +70,12 @@ function RegisterBallisticsItemUses()
 				if inZone then
 					if not itemData.MetaData.EvidenceDegraded then
 						local filedEvidence = GetEvidenceProjectileRecord(itemData.MetaData.EvidenceId)
-						local matchingWeapon = MySQL.single.await("SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND police_filed = ?", {
-							itemData.MetaData.EvidenceWeapon.serial,
-							1
-						})
+						local matchingWeapon = MySQL.single.await(
+							"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND police_filed = ?",
+							{
+								itemData.MetaData.EvidenceWeapon.serial,
+								1
+							})
 
 						if filedEvidence then -- Already Exists
 							TriggerClientEvent(
@@ -112,9 +119,9 @@ function RegisterBallisticsItemUses()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("evidence-dna", "Evidence", function(source, itemData)
+	exports['sandbox-inventory']:RegisterUse("evidence-dna", "Evidence", function(source, itemData)
 		if itemData and itemData.MetaData and itemData.MetaData.EvidenceId and itemData.MetaData.EvidenceDNA then
-			Callbacks:ClientCallback(source, "Polyzone:IsCoordsInZone", {
+			exports["sandbox-base"]:ClientCallback(source, "Polyzone:IsCoordsInZone", {
 				coords = GetEntityCoords(GetPlayerPed(source)),
 				key = "dna",
 				val = true,
@@ -145,7 +152,7 @@ end
 function GetEvidenceProjectileRecord(evidenceId)
 	local p = promise.new()
 
-	Database.Game:findOne({
+	exports['sandbox-base']:DatabaseGameFindOne({
 		collection = "firearms_projectiles",
 		query = {
 			Id = evidenceId,
@@ -163,7 +170,7 @@ end
 
 function CreateEvidenceProjectileRecord(document)
 	local p = promise.new()
-	Database.Game:insertOne({
+	exports['sandbox-base']:DatabaseGameInsertOne({
 		collection = "firearms_projectiles",
 		document = document,
 	}, function(success, result, insertId)
@@ -180,7 +187,7 @@ end
 function GetMatchingEvidenceProjectiles(weaponSerial)
 	local p = promise.new()
 
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "firearms_projectiles",
 		query = {
 			["Weapon.serial"] = weaponSerial,
@@ -204,7 +211,7 @@ end
 function GetCharacter(stateId)
 	local p = promise.new()
 
-	Database.Game:findOne({
+	exports['sandbox-base']:DatabaseGameFindOne({
 		collection = "characters",
 		query = {
 			SID = stateId,
@@ -233,31 +240,35 @@ function GetCharacter(stateId)
 end
 
 AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
-    local char = Fetch:CharacterSource(source)
-    if char ~= nil then
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char ~= nil then
 		local pState = Player(source).state
 		if pState.onDuty == "police" then
-            local its = Inventory:GetInventory(source, data.owner, data.invType)
-            if #its > 0 then
+			local its = exports['sandbox-inventory']:GetInventory(source, data.owner, data.invType)
+			if #its > 0 then
 				local item = its[1]
-                local md = json.decode(item.MetaData)
-                local itemData = Inventory.Items:GetData(item.Name)
-                if itemData ~= nil and itemData.type == 2 then
+				local md = json.decode(item.MetaData)
+				local itemData = exports['sandbox-inventory']:ItemsGetData(item.Name)
+				if itemData ~= nil and itemData.type == 2 then
 					if item and md and (md.ScratchedSerialNumber or md.SerialNumber) then
 						local firearmRecord, policeWeapId
-		
+
 						if md.ScratchedSerialNumber then
-							firearmRecord = MySQL.single.await("SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?", {
-								md.ScratchedSerialNumber,
-								1
-							})
+							firearmRecord = MySQL.single.await(
+								"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
+								{
+									md.ScratchedSerialNumber,
+									1
+								})
 						elseif md.SerialNumber then
-							firearmRecord = MySQL.single.await("SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?", {
-								md.SerialNumber,
-								0
-							})
+							firearmRecord = MySQL.single.await(
+								"SELECT serial, scratched, model, owner_sid, owner_name, police_filed, police_id FROM firearms WHERE serial = ? AND scratched = ?",
+								{
+									md.SerialNumber,
+									0
+								})
 						end
-						
+
 						if firearmRecord then
 							if not firearmRecord.police_filed then
 								local updated = false
@@ -266,23 +277,26 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 										1,
 										firearmRecord.serial,
 									})
-		
+
 									if md.ScratchedSerialNumber then
-										Inventory:SetMetaDataKey(item.id, "PoliceWeaponId", firearmRecord.police_id, source)
+										exports['sandbox-inventory']:SetMetaDataKey(item.id, "PoliceWeaponId",
+											firearmRecord.police_id,
+											source)
 									end
 
-									Inventory.Ballistics:Clear(source, data.owner, data.invType)
-									Callbacks:ClientCallback(source, "Evidence:RunBallistics", {
+									exports['sandbox-inventory']:BallisticsClear(source, data.owner, data.invType)
+									exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 										true,
 										false,
 										GetMatchingEvidenceProjectiles(firearmRecord.serial),
-										firearmRecord.scratched and string.format("PWI-%s", firearmRecord.police_id) or nil,
+										firearmRecord.scratched and string.format("PWI-%s", firearmRecord.police_id) or
+										nil,
 										md.SerialNumber or nil
 									})
 								end
 							else
-								Inventory.Ballistics:Clear(source, data.owner, data.invType)
-								Callbacks:ClientCallback(source, "Evidence:RunBallistics", {
+								exports['sandbox-inventory']:BallisticsClear(source, data.owner, data.invType)
+								exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 									true,
 									true,
 									GetMatchingEvidenceProjectiles(firearmRecord.serial),
@@ -291,8 +305,8 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 								})
 							end
 						else
-							Inventory.Ballistics:Clear(source, data.owner, data.invType)
-							Callbacks:ClientCallback(source, "Evidence:RunBallistics", {
+							exports['sandbox-inventory']:BallisticsClear(source, data.owner, data.invType)
+							exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 								false,
 								false,
 								false,
@@ -302,11 +316,10 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 							})
 						end
 					end
-
 				else
-					Execute:Client(source, "Notification", "Error", "Item Must Be A Weapon")
-                end
-            end
+					exports['sandbox-hud']:NotifError(source, "Item Must Be A Weapon")
+				end
+			end
 		end
-    end
+	end
 end)

@@ -59,50 +59,52 @@ local _sellers = {
 
 AddEventHandler("Businesses:Client:Startup", function()
 	for k, v in ipairs(_sellers) do
-		PedInteraction:Add(string.format("VANGELICOSeller%s", k), v.model, v.coords, v.heading, 25.0, {
+		exports['sandbox-pedinteraction']:Add(string.format("VANGELICOSeller%s", k), v.model, v.coords, v.heading, 25.0,
 			{
-				icon = "ring",
-				text = "Sell Gems",
-				event = "VANGELICO:Client:Sell",
-				jobPerms = {
-					{
-						job = "vangelico",
-						jobPerms = "JOB_SELL_GEMS",
+				{
+					icon = "ring",
+					text = "Sell Gems",
+					event = "VANGELICO:Client:Sell",
+					jobPerms = {
+						{
+							job = "vangelico",
+							jobPerms = "JOB_SELL_GEMS",
+						},
 					},
 				},
-			},
-		}, "sack-dollar")
+			}, "sack-dollar")
 	end
 
 	for k, v in ipairs(_appraisalTables) do
-		Targeting.Zones:AddBox("vangelico-table-" .. k, "table-picnic", v.coords, v.length, v.width, v.options, {
-			{
-				icon = "gem",
-				text = "View Gem Table",
-				event = "Businesses:Client:VANGELICO:OpenTable",
-				data = { id = k },
-				jobPerms = {
-					{
-						job = "vangelico",
-						reqDuty = true,
-						jobPerms = "JOB_USE_GEM_TABLE",
+		exports['sandbox-targeting']:ZonesAddBox("vangelico-table-" .. k, "table-picnic", v.coords, v.length, v.width,
+			v.options, {
+				{
+					icon = "gem",
+					text = "View Gem Table",
+					event = "Businesses:Client:VANGELICO:OpenTable",
+					data = { id = k },
+					jobPerms = {
+						{
+							job = "vangelico",
+							reqDuty = true,
+							jobPerms = "JOB_USE_GEM_TABLE",
+						},
 					},
 				},
-			},
-			{
-				icon = "gem",
-				text = "Create Jewelry",
-				event = "Businesses:Client:VANGELICO:OpenJewelryCrafting",
-				data = { id = k },
-				jobPerms = {
-					{
-						job = "vangelico",
-						reqDuty = true,
-						jobPerms = "JOB_USE_JEWELRY_CRAFTING",
+				{
+					icon = "gem",
+					text = "Create Jewelry",
+					event = "Businesses:Client:VANGELICO:OpenJewelryCrafting",
+					data = { id = k },
+					jobPerms = {
+						{
+							job = "vangelico",
+							reqDuty = true,
+							jobPerms = "JOB_USE_JEWELRY_CRAFTING",
+						},
 					},
 				},
-			},
-		}, 3.0, true)
+			}, 3.0, true)
 	end
 end)
 
@@ -111,33 +113,33 @@ RegisterNetEvent("UI:Client:Reset", function()
 end)
 
 AddEventHandler("VANGELICO:Client:Sell", function()
-	Callbacks:ServerCallback("Businesses:VANGELICO:Sell", {})
+	exports["sandbox-base"]:ServerCallback("Businesses:VANGELICO:Sell", {})
 end)
 
 AddEventHandler("Businesses:Client:VANGELICO:OpenTable", function(e, data)
-	Inventory.Dumbfuck:Open({
+	exports['sandbox-inventory']:DumbfuckOpen({
 		invType = 196,
 		owner = data.id,
 	})
 end)
 
 AddEventHandler("Businesses:Client:VANGELICO:OpenJewelryCrafting", function(e, data)
-	Crafting.Benches:Open("vangelico-jewelry")
+	exports['sandbox-inventory']:CraftingBenchesOpen("vangelico-jewelry")
 end)
 
 RegisterNetEvent("Businesses:Client:VANGELICO:ViewGem", function(tableId, gemProps, quality, item)
 	LocalPlayer.state:set("inGemViewVangelico", true, true)
-	-- HUD.GemTable:Open(quality)
-	Inventory.StaticTooltip:Open(item)
+	-- exports['sandbox-hud']:GemTableOpen(quality)
+	exports['sandbox-inventory']:StaticTooltipOpen(item)
 	local str = string.format("Gem Quality: %s%%", quality)
-	Notification:Standard(str, 5000, "gem")
+	exports["sandbox-hud"]:NotifStandard(str, 5000, "gem")
 	--ActivateTable(tableId, gemProps.color, quality, item)
 end)
 
 AddEventHandler("Keybinds:Client:KeyUp:cancel_action", function()
 	if LocalPlayer.state.inGemView then
-		HUD.GemTable:Close()
-		Inventory.StaticTooltip:Close()
+		exports['sandbox-hud']:GemTableClose()
+		exports['sandbox-inventory']:StaticTooltipClose()
 		LocalPlayer.state:set("inGemViewVangelico", false, true)
 	end
 end)
@@ -192,8 +194,8 @@ function ActivateTable(tableId, color, quality, item)
 	Wait(1000)
 	local dirtLevel = (15 - math.floor(quality / 6.66)) + 0.0
 
-	HUD.GemTable:Open(quality)
-	Inventory.StaticTooltip:Open(item)
+	exports['sandbox-hud']:GemTableOpen(quality)
+	exports['sandbox-inventory']:StaticTooltipOpen(item)
 
 	_gemObj = CreateObject(prop, _tableConfig[tableId].createCoords, 0, 0)
 	FreezeEntityPosition(_gemObj, true)
@@ -215,8 +217,8 @@ end
 function CleanupTable()
 	RenderScriptCams(false, false, 0, 1, 0)
 	DeleteEntity(_gemObj)
-	HUD.GemTable:Close()
-	Inventory.StaticTooltip:Close()
+	exports['sandbox-hud']:GemTableClose()
+	exports['sandbox-inventory']:StaticTooltipClose()
 	if LocalPlayer.state.inGemTableVangelico then
 		LocalPlayer.state:set("inGemTableVangelico", false, true)
 	end

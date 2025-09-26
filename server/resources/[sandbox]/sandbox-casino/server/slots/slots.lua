@@ -72,8 +72,8 @@ AddEventHandler("Casino:Server:Startup", function()
 
     --GlobalState["Casino:SlotMachines"] = _slotMachines
 
-    Callbacks:RegisterServerCallback("Casino:SlotMachineSit", function(source, machineId, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:SlotMachineSit", function(source, machineId, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or _slotMachines[machineId] then
             return cb(false)
         end
@@ -92,14 +92,14 @@ AddEventHandler("Casino:Server:Startup", function()
         cb(true)
     end)
 
-    Callbacks:RegisterServerCallback("Casino:SlotMachinePlay", function(source, data, cb)
-        --local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:SlotMachinePlay", function(source, data, cb)
+        --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local bet = math.floor(data.bet)
 
         if GlobalState["CasinoOpen"] and bet >= 100 and bet <= 2500 then
             for k, v in pairs(_slotMachines) do
                 if v and v.Source == source then
-                    if Casino.Chips:Modify(source, -bet) then
+                    if exports['sandbox-casino']:ChipsModify(source, -bet) then
                         GiveCasinoFuckingMoney(source, "Slots", bet)
                         SendCasinoSpentChipsPhoneNotification(source, bet)
 
@@ -107,16 +107,16 @@ AddEventHandler("Casino:Server:Startup", function()
 
                         local time = math.random(3, 5) * 1000
                         local sound = "no_win"
-                        local reel1 = Utils:WeightedRandom(slotRandom)
-                        local reel2 = Utils:WeightedRandom(slotRandom)
-                        local reel3 = Utils:WeightedRandom(slotRandom)
+                        local reel1 = exports['sandbox-base']:UtilsWeightedRandom(slotRandom)
+                        local reel2 = exports['sandbox-base']:UtilsWeightedRandom(slotRandom)
+                        local reel3 = exports['sandbox-base']:UtilsWeightedRandom(slotRandom)
 
                         local tripleChance = math.random(100)
                         local canHaveTriple = (tripleChance >= 60 and tripleChance <= 69)
 
                         if not canHaveTriple or slotValues[reel3] == "7" then
                             while slotValues[reel3] == slotValues[reel2] do
-                                reel3 = Utils:WeightedRandom(slotRandom)
+                                reel3 = exports['sandbox-base']:UtilsWeightedRandom(slotRandom)
                                 Wait(5)
                             end
                         end
@@ -158,10 +158,10 @@ AddEventHandler("Casino:Server:Startup", function()
 
                         Citizen.SetTimeout(time, function()
                             if _slotMachines[k] then
-                                local char = Fetch:CharacterSource(source)
+                                local char = exports['sandbox-characters']:FetchCharacterSource(source)
                                 if char then
                                     if winnings > 0 then
-                                        if Casino.Chips:Modify(source, winnings) then
+                                        if exports['sandbox-casino']:ChipsModify(source, winnings) then
                                             SendCasinoWonChipsPhoneNotification(source, winnings)
                                         end
 
@@ -177,7 +177,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
                         return cb(true, { reel1, reel2, reel3 }, time, sound, winnings)
                     else
-                        Execute:Client(source, "Notification", "Error", "Not Enough Chips")
+                        exports['sandbox-hud']:NotifError(source, "Not Enough Chips")
                         return cb(false)
                     end
                 end
@@ -189,8 +189,8 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:SlotMachineLeave", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:SlotMachineLeave", function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char then
             return cb(false)
         end

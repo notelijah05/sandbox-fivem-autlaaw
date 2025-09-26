@@ -18,35 +18,36 @@ AddEventHandler("Police:Client:ReEnableTracker", function()
 		return
 	end
 
-	Callbacks:ServerCallback("EmergencyAlerts:EnablePDTracker", {}, function(success)
+	exports["sandbox-base"]:ServerCallback("EmergencyAlerts:EnablePDTracker", {}, function(success)
 		if success then
-			Notification:Success("Tracker Re-Enabled")
+			exports["sandbox-hud"]:NotifSuccess("Tracker Re-Enabled")
 		else
-			Notification:Error("Failed to Re-Enable Tracker")
+			exports["sandbox-hud"]:NotifError("Failed to Re-Enable Tracker")
 		end
 	end)
 end)
 
 AddEventHandler("Police:Client:OnDuty", function()
 	if not LocalPlayer.state.Character:GetData("Callsign") then
-		Notification:Error("Callsign Not Set, Unable To Go On Duty")
+		exports["sandbox-hud"]:NotifError("Callsign Not Set, Unable To Go On Duty")
 		return
 	end
 
 	local susp = LocalPlayer.state.Character:GetData("MDTSuspension")
 	if susp and susp.police and susp.police.Expires > GetCloudTimeAsInt() then
 		local tr = GetFormattedTimeFromSeconds(susp.police.Expires - GetCloudTimeAsInt())
-		Notification:Error(string.format("You Have Been Suspended (%s Remaining), Unable To Go On Duty", tr))
+		exports["sandbox-hud"]:NotifError(string.format("You Have Been Suspended (%s Remaining), Unable To Go On Duty",
+			tr))
 		return
 	end
 
 	StatSetInt(`MP0_STAMINA`, 35, true)
-	Jobs.Duty:On("police")
+	exports['sandbox-jobs']:DutyOn("police")
 end)
 
 AddEventHandler("Police:Client:OffDuty", function()
 	StatSetInt(`MP0_STAMINA`, 25, true)
-	Jobs.Duty:Off("police")
+	exports['sandbox-jobs']:DutyOff("police")
 end)
 
 RegisterNetEvent("Job:Client:DutyChanged", function(state, job)
@@ -56,15 +57,15 @@ RegisterNetEvent("Job:Client:DutyChanged", function(state, job)
 end)
 
 AddEventHandler("Corrections:Client:OnDuty", function()
-	Jobs.Duty:On("prison")
+	exports['sandbox-jobs']:DutyOn("prison")
 end)
 
 AddEventHandler("Corrections:Client:OffDuty", function()
-	Jobs.Duty:Off("prison")
+	exports['sandbox-jobs']:DutyOff("prison")
 end)
 
 RegisterNetEvent("Police:Client:Search", function(hitting, data)
-	Inventory.Search:Character(hitting.serverId)
+	exports['sandbox-inventory']:SearchCharacter(hitting.serverId)
 	while not LocalPlayer.state.inventoryOpen do
 		Wait(1)
 	end
@@ -77,7 +78,7 @@ RegisterNetEvent("Police:Client:Search", function(hitting, data)
 					- GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(hitting.serverId)))
 				) > 3.0
 			then
-				Inventory.Close:All()
+				exports['sandbox-inventory']:CloseAll()
 			end
 			Wait(2)
 		end
@@ -89,7 +90,7 @@ RegisterNetEvent("Police:Client:RunPlate", function(hitting, data)
 	local vehEnt = Entity(veh)
 
 	if veh then
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "run_plate",
 			duration = 4000,
 			label = "Running Plate",
@@ -132,7 +133,7 @@ RegisterNetEvent("Police:Client:RunPlate", function(hitting, data)
 end)
 
 AddEventHandler("Police:Client:GetRadioChannel", function(entity, data)
-	Progress:ProgressWithTickEvent({
+	exports['sandbox-hud']:ProgressWithTickEvent({
 		name = "check_freq_action",
 		duration = 2000,
 		label = "Checking Radio Channel",
@@ -153,16 +154,16 @@ AddEventHandler("Police:Client:GetRadioChannel", function(entity, data)
 		if #(GetEntityCoords(LocalPlayer.state.ped) - GetEntityCoords(entity.entity)) <= 5.0 then
 			return
 		end
-		Progress:Cancel()
+		exports['sandbox-hud']:ProgressCancel()
 	end, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Police:GetRadioChannel", entity.serverId, function() end)
+			exports["sandbox-base"]:ServerCallback("Police:GetRadioChannel", entity.serverId, function() end)
 		end
 	end)
 end)
 
 AddEventHandler("Police:Client:GSR", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "gsr_action",
 		duration = 6000,
 		label = "Performing GSR Test",
@@ -180,13 +181,13 @@ AddEventHandler("Police:Client:GSR", function(entity, data)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Police:GSRTest", entity.serverId, function() end)
+			exports["sandbox-base"]:ServerCallback("Police:GSRTest", entity.serverId, function() end)
 		end
 	end)
 end)
 
 AddEventHandler("Police:Client:BAC", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "bac_action",
 		duration = 6000,
 		label = "Performing Blood Alcohol Test",
@@ -204,13 +205,13 @@ AddEventHandler("Police:Client:BAC", function(entity, data)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Police:BACTest", entity.serverId, function() end)
+			exports["sandbox-base"]:ServerCallback("Police:BACTest", entity.serverId, function() end)
 		end
 	end)
 end)
 
 AddEventHandler("Police:Client:DNASwab", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "dna_action",
 		duration = 6000,
 		label = "Performing DNA Swab",
@@ -228,7 +229,7 @@ AddEventHandler("Police:Client:DNASwab", function(entity, data)
 		},
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Police:DNASwab", entity.serverId, function() end)
+			exports["sandbox-base"]:ServerCallback("Police:DNASwab", entity.serverId, function() end)
 		end
 	end)
 end)
@@ -379,9 +380,9 @@ AddEventHandler("Police:Client:SpikeyBois", function(x, y, z, obj, cunts, owner)
 end)
 
 AddEventHandler("Police:Client:OpenLocker", function()
-	Callbacks:ServerCallback("MDT:OpenPersonalLocker", {}, function(success)
+	exports["sandbox-base"]:ServerCallback("MDT:OpenPersonalLocker", {}, function(success)
 		if not success then
-			Notification:Error("Callsign Not Set, Unable To Open Locker")
+			exports["sandbox-hud"]:NotifError("Callsign Not Set, Unable To Open Locker")
 		end
 	end)
 end)
@@ -399,5 +400,5 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 end)
 
 AddEventHandler("Police:Client:RemoveMask", function(entity, data)
-	Callbacks:ServerCallback("Police:RemoveMask", entity.serverId)
+	exports["sandbox-base"]:ServerCallback("Police:RemoveMask", entity.serverId)
 end)

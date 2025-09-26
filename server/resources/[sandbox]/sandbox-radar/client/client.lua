@@ -10,72 +10,38 @@ RADAR_LAST_REAR_PLATE = false
 RADAR_LAST_FRONT_PLATE = false
 RECENT_FLAGS = {}
 
-AddEventHandler("Targeting:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Player = exports["sandbox-base"]:FetchComponent("Player")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Radar", {
-		"Logger",
-		"Utils",
-		"Keybinds",
-		"Targeting",
-		"UISounds",
-		"Player",
-		"Jobs",
-		"EmergencyAlerts",
-		"Fetch",
-		"Notification",
-		"Vehicles",
-	}, function(error)
-		if #error > 0 then
-			return
+	exports["sandbox-keybinds"]:Add("radar_lock", "MULTIPLY", "keyboard", "Radar - Toggle Fast Lock", function()
+		if RADAR_LOCKED then
+			UnlockRadar()
+		else
+			LockRadar()
 		end
-		RetrieveComponents()
-
-		Keybinds:Add("radar_lock", "MULTIPLY", "keyboard", "Radar - Toggle Fast Lock", function()
-			if RADAR_LOCKED then
-				UnlockRadar()
-			else
-				LockRadar()
-			end
-		end)
-
-		Keybinds:Add("radar_remote", "DIVIDE", "keyboard", "Radar - Open Menu/Remote", function()
-			OpenRadarRemote()
-		end)
-
-		Keybinds:Add("radar_toggle", "SUBTRACT", "keyboard", "Radar - Show/Hide", function()
-			ToggleRadarIsDisabled()
-		end)
-
-		Keybinds:Add("heli_toggle", "E", "keyboard", "Heli Camera - Toggle", function()
-			StartHeliCamera()
-		end)
-
-		Keybinds:Add("heli_rappell", "X", "keyboard", "Heli - Rappel", function()
-			HeliRappel()
-		end)
-
-		-- Keybinds:Add("heli_lock", "SPACE", "keyboard", "Heli Camera - Lock On/Off", function()
-		-- 	LockOnHeliCamera()
-		-- end)
-
-		-- Keybinds:Add("heli_camera", "MOUSE_RIGHT", "MOUSE_BUTTON", "Heli Camera - Change Mode", function()
-		-- 	ChangeVision()
-		-- end)
 	end)
+
+	exports["sandbox-keybinds"]:Add("radar_remote", "DIVIDE", "keyboard", "Radar - Open Menu/Remote", function()
+		OpenRadarRemote()
+	end)
+
+	exports["sandbox-keybinds"]:Add("radar_toggle", "SUBTRACT", "keyboard", "Radar - Show/Hide", function()
+		ToggleRadarIsDisabled()
+	end)
+
+	exports["sandbox-keybinds"]:Add("heli_toggle", "E", "keyboard", "Heli Camera - Toggle", function()
+		StartHeliCamera()
+	end)
+
+	exports["sandbox-keybinds"]:Add("heli_rappell", "X", "keyboard", "Heli - Rappel", function()
+		HeliRappel()
+	end)
+
+	-- exports["sandbox-keybinds"]:Add("heli_lock", "SPACE", "keyboard", "Heli Camera - Lock On/Off", function()
+	-- 	LockOnHeliCamera()
+	-- end)
+
+	-- exports["sandbox-keybinds"]:Add("heli_camera", "MOUSE_RIGHT", "MOUSE_BUTTON", "Heli Camera - Change Mode", function()
+	-- 	ChangeVision()
+	-- end)
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")
@@ -133,7 +99,7 @@ function EnableRadar()
 				local data = {}
 				if RADAR_SETTINGS.frontRadar.transmit or RADAR_SETTINGS.rearRadar.transmit then
 					local vehCoords = GetEntityCoords(GLOBAL_VEH)
-					local vehHeading = Utils:Round(GetEntityHeading(GLOBAL_VEH), 0)
+					local vehHeading = exports['sandbox-base']:UtilsRound(GetEntityHeading(GLOBAL_VEH), 0)
 					if RADAR_SETTINGS.frontRadar.transmit then
 						local angleOffsets = GetAngleOffsets("Front", RADAR_SETTINGS.frontRadar.lane)
 						local offsetCoords =
@@ -145,12 +111,12 @@ function EnableRadar()
 						-- DrawMarker(28, GetEntityCoords(hittingVehicle), 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 255, 0, 0, 200, false, false, 2, false, false, false, false)
 
 						if hittingVehicle then
-							local targetHeading = Utils:Round(GetEntityHeading(hittingVehicle), 0)
+							local targetHeading = exports['sandbox-base']:UtilsRound(GetEntityHeading(hittingVehicle), 0)
 							local targetSpeed = GetEntityMPH(hittingVehicle)
 							local targetPlate = GetVehicleNumberPlateText(hittingVehicle)
 							local relativeDirection = GetEntityRelativeDirection(vehHeading, targetHeading, 110)
 
-							local class = Vehicles.Class:Get(hittingVehicle)
+							local class = exports['sandbox-vehicles']:ClassGet(hittingVehicle)
 							if Entity(hittingVehicle) and Entity(hittingVehicle).state.Class then
 								class = Entity(hittingVehicle).state.Class
 							end
@@ -208,12 +174,12 @@ function EnableRadar()
 						-- DrawMarker(28, GetEntityCoords(hittingVehicle), 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 255, 0, 0, 200, false, false, 2, false, false, false, false)
 
 						if hittingVehicle then
-							local targetHeading = Utils:Round(GetEntityHeading(hittingVehicle), 0)
+							local targetHeading = exports['sandbox-base']:UtilsRound(GetEntityHeading(hittingVehicle), 0)
 							local targetSpeed = GetEntityMPH(hittingVehicle)
 							local targetPlate = GetVehicleNumberPlateText(hittingVehicle)
 							local relativeDirection = GetEntityRelativeDirection(vehHeading, targetHeading, 110)
 
-							local class = Vehicles.Class:Get(hittingVehicle)
+							local class = exports['sandbox-vehicles']:ClassGet(hittingVehicle)
 							if Entity(hittingVehicle) and Entity(hittingVehicle).state.Class then
 								class = Entity(hittingVehicle).state.Class
 							end
@@ -326,7 +292,7 @@ function CheckPlateFlagged(direction, vehicle, plate)
 	if plateFlagged and not RECENT_FLAGS[plate] then
 		RECENT_FLAGS[plate] = true
 		PlayFlaggedAlert()
-		EmergencyAlerts:CreateClientAlert("Radar", "Flagged Plate Detected", "police_alerts",
+		exports['sandbox-mdt']:EmergencyAlertsCreateClientAlert("Radar", "Flagged Plate Detected", "police_alerts",
 			GetLocationData(GetEntityCoords(vehicle)), {
 				icon = "radar",
 				details = string.format(
@@ -344,9 +310,3 @@ function CheckPlateFlagged(direction, vehicle, plate)
 		return false
 	end
 end
-
--- RADAR = {}
-
--- AddEventHandler('Proxy:Shared:RegisterReady', function()
---     exports['sandbox-base']:RegisterComponent('Radar', RADAR)
--- end)

@@ -1,12 +1,12 @@
 function StartUsingMegaphone(vehAnim)
 	if PLAYER_CONNECTED and (not CALL_CHANNEL or CALL_CHANNEL <= 0) and not RADIO_TALKING and not USING_MICROPHONE then
 		CreateThread(function()
-			Logger:Info("VOIP", "Megaphone On")
+			exports['sandbox-base']:LoggerInfo("VOIP", "Megaphone On")
 			USING_MEGAPHONE = true
 			if vehAnim then
-				Animations.Emotes:Play("radio", false, false, true)
+				exports['sandbox-animations']:EmotesPlay("radio", false, false, true)
 			else
-				Animations.Emotes:Play("megaphone", false, false, true)
+				exports['sandbox-animations']:EmotesPlay("megaphone", false, false, true)
 			end
 			UpdateVOIPIndicatorStatus()
 			while
@@ -30,19 +30,19 @@ end
 
 function StopUsingMegaphone()
 	if USING_MEGAPHONE then
-		Logger:Info("VOIP", "Megaphone Off")
+		exports['sandbox-base']:LoggerInfo("VOIP", "Megaphone Off")
 		USING_MEGAPHONE = false
 		TriggerServerEvent("VOIP:Server:Megaphone:SetPlayerState", false)
 
 		MumbleSetTalkerProximity(CURRENT_VOICE_MODE_DATA.Range + 0.0)
-		Animations.Emotes:ForceCancel()
+		exports['sandbox-animations']:EmotesForceCancel()
 		UpdateVOIPIndicatorStatus()
 	end
 end
 
 RegisterNetEvent("VOIP:Client:Megaphone:SetPlayerState", function(targetSource, state)
 	if VOIP ~= nil and LocalPlayer.state.loggedIn then
-		VOIP:ToggleVoice(targetSource, state, "megaphone")
+		exports["sandbox-voip"]:ToggleVoice(targetSource, state, "megaphone")
 	end
 end)
 

@@ -6,7 +6,7 @@ local submitting = false
 local afkCd = false
 
 local function GetCode()
-	Callbacks:ServerCallback("Pwnzor:GetCode", {}, function(c)
+	exports["sandbox-base"]:ServerCallback("Pwnzor:GetCode", {}, function(c)
 		afkAnswer = c
 	end)
 end
@@ -21,7 +21,7 @@ local function ShowInput()
 		Wait(1)
 	end
 
-	Input:Show("Are You There?", string.format('Enter: "%s" To Prevent Being Kicked', afkAnswer), {
+	exports['sandbox-hud']:InputShow("Are You There?", string.format('Enter: "%s" To Prevent Being Kicked', afkAnswer), {
 		{
 			id = "code",
 			type = "text",
@@ -55,11 +55,11 @@ local function StartKickTimer()
 		while isAfk do
 			if time > AFKTimer then
 				if isAfk and not submitting and not (GlobalState["DisableAFK"] or false) then
-					Callbacks:ServerCallback("Pwnzor:AFK")
+					exports["sandbox-base"]:ServerCallback("Pwnzor:AFK")
 				end
 			end
 
-			Notification.Persistent:Error(
+			exports["sandbox-hud"]:NotifPersistentError(
 				"pwnzor-afk",
 				"You Will Be Kicked In " .. (AFKTimer - time) .. " Seconds For Being AFK"
 			)
@@ -83,10 +83,10 @@ end
 
 AddEventHandler("Pwnzor:Client:EnterAFKCode", function(vals, data)
 	submitting = true
-	Callbacks:ServerCallback("Pwnzor:EnterCode", vals.code, function(c)
+	exports["sandbox-base"]:ServerCallback("Pwnzor:EnterCode", vals.code, function(c)
 		if c then
 			afkAnswer = false
-			Notification.Persistent:Remove("pwnzor-afk")
+			exports["sandbox-hud"]:NotifPersistentRemove("pwnzor-afk")
 
 			isAfk = false
 			submitting = false

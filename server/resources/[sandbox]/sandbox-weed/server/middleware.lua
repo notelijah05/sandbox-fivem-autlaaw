@@ -1,7 +1,7 @@
 _weedDealer = Locations[tostring(os.date("%w"))]
 
 function RegisterMiddleware()
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		TriggerClientEvent("Weed:Client:Login", source, _weedDealer)
 
 		TriggerLatentClientEvent("Weed:Client:Objects:Init", source, 10000, _plants)

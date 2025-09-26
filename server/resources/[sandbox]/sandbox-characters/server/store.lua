@@ -8,7 +8,7 @@ function StoreData(source)
 		return
 	end
 	_saving[source] = true
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
 		local data = char:GetData()
 		local cId = data.ID
@@ -34,8 +34,8 @@ function StoreData(source)
 
 		data.LastPlayed = os.time() * 1000
 
-		Logger:Info("Characters", string.format("Saving Character %s", cId), { console = true })
-		Database.Game:updateOne({
+		exports['sandbox-base']:LoggerInfo("Characters", string.format("Saving Character %s", cId), { console = true })
+		exports['sandbox-base']:DatabaseGameUpdateOne({
 			collection = "characters",
 			query = {
 				_id = cId,
@@ -59,7 +59,7 @@ end
 
 -- 	-- while true do
 -- 	-- 	local v = Fetch:Next(_prevSaved)
--- 	-- 	Logger:Trace(
+-- 	-- 	exports['sandbox-base']:LoggerTrace(
 -- 	-- 		"Characters",
 -- 	-- 		string.format("BEFORE SAVE, _prevSaved: %s, v ~= nil: %s", _prevSaved, tostring(v ~= nil)),
 -- 	-- 		{ console = true }
@@ -73,9 +73,8 @@ end
 -- 	-- 	else
 -- 	-- 		_prevSaved = 0
 -- 	-- 	end
-
--- 	-- 	local c = Fetch:CountCharacters() or 1
--- 	-- 	Logger:Trace(
+-- 	-- 	local c = exports['sandbox-characters']:FetchCountCharacters() or 1
+-- 	-- 	exports['sandbox-base']:LoggerTrace(
 -- 	-- 		"Characters",
 -- 	-- 		string.format("AFTER SAVE, _prevSaved: %s, c: %s", _prevSaved, c),
 -- 	-- 		{ console = true }

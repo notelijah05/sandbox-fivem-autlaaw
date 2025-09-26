@@ -3,36 +3,10 @@ _characterLoaded, GLOBAL_PED = false, nil
 _interactionPeds = {}
 _spawnedInteractionPeds = {}
 
-AddEventHandler("PedInteraction:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Game = exports["sandbox-base"]:FetchComponent("Game")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("PedInteraction", {
-		"Callbacks",
-		"Notification",
-		"Game",
-		"Utils",
-		"Logger",
-		"Targeting",
-		"PedInteraction",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		-- PedInteraction:Add('fuck', `a_m_y_soucent_04`, vector3(-810.171, -1311.092, 4.000), 332.419, 50.0, {
-		--     { icon = 'boxes-stacked', text = 'F', event = 'F', data = {}, minDist = 2.0, jobs = false },
-		-- })
-	end)
+	-- exports['sandbox-pedinteraction']:Add('fuck', `a_m_y_soucent_04`, vector3(-810.171, -1311.092, 4.000), 332.419, 50.0, {
+	--     { icon = 'boxes-stacked', text = 'F', event = 'F', data = {}, minDist = 2.0, jobs = false },
+	-- })
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")
@@ -60,12 +34,12 @@ AddEventHandler("Characters:Client:Spawn", function()
 						)
 					elseif not inRange and _spawnedInteractionPeds[k] then
 						DeletePed(_spawnedInteractionPeds[k])
-						Targeting:RemovePed(_spawnedInteractionPeds[k])
+						exports['sandbox-targeting']:RemovePed(_spawnedInteractionPeds[k])
 						_spawnedInteractionPeds[k] = nil
 					end
 				elseif _spawnedInteractionPeds[k] then
 					DeletePed(_spawnedInteractionPeds[k])
-					Targeting:RemovePed(_spawnedInteractionPeds[k])
+					exports['sandbox-targeting']:RemovePed(_spawnedInteractionPeds[k])
 					_spawnedInteractionPeds[k] = nil
 				end
 			end
@@ -84,65 +58,63 @@ AddEventHandler("Characters:Client:Logout", function()
 	_spawnedInteractionPeds = {}
 end)
 
-_pedShit = {
-	Add = function(self, id, model, coords, heading, range, menu, icon, scenario, enabled, anim, component)
-		if id and model and type(coords) == "vector3" and type(heading) == "number" then
-			if enabled == nil then
-				enabled = true
-			end
-
-			if type(model) == "string" then
-				model = GetHashKey(model)
-			end
-
-			if not range then
-				range = 50.0
-			end
-
-			if not IsModelValid(model) or not IsModelAPed(model) then
-				Logger:Error("PedInteraction", "Failed to Add Ped ID: " .. id .. " - It's Model is Invalid")
-				return
-			end
-
-			_interactionPeds[id] = {
-				enabled = enabled,
-				range = range,
-				model = model,
-				coords = coords,
-				heading = heading,
-				icon = icon,
-				menu = menu,
-				scenario = scenario,
-				anim = anim,
-				component = component,
-			}
+exports("Add", function(id, model, coords, heading, range, menu, icon, scenario, enabled, anim, component)
+	if id and model and type(coords) == "vector3" and type(heading) == "number" then
+		if enabled == nil then
+			enabled = true
 		end
-	end,
-	Toggle = function(self, id, enabled)
-		if _interactionPeds[id] then
-			_interactionPeds[id].enabled = enabled
+
+		if type(model) == "string" then
+			model = GetHashKey(model)
 		end
-	end,
-	Remove = function(self, id)
-		if _interactionPeds[id] then
-			_interactionPeds[id] = nil
-			if _spawnedInteractionPeds[id] then
-				DeleteEntity(_spawnedInteractionPeds[id])
-				Targeting:RemovePed(_spawnedInteractionPeds[id])
-				_spawnedInteractionPeds[id] = nil
-			end
+
+		if not range then
+			range = 50.0
 		end
-	end,
-	GetPed = function(self, id)
+
+		if not IsModelValid(model) or not IsModelAPed(model) then
+			exports['sandbox-base']:LoggerError("PedInteraction",
+				"Failed to Add Ped ID: " .. id .. " - It's Model is Invalid")
+			return
+		end
+
+		_interactionPeds[id] = {
+			enabled = enabled,
+			range = range,
+			model = model,
+			coords = coords,
+			heading = heading,
+			icon = icon,
+			menu = menu,
+			scenario = scenario,
+			anim = anim,
+			component = component,
+		}
+	end
+end)
+
+exports("Toggle", function(id, enabled)
+	if _interactionPeds[id] then
+		_interactionPeds[id].enabled = enabled
+	end
+end)
+
+exports("Remove", function(id)
+	if _interactionPeds[id] then
+		_interactionPeds[id] = nil
 		if _spawnedInteractionPeds[id] then
-			return _spawnedInteractionPeds[id]
+			DeleteEntity(_spawnedInteractionPeds[id])
+			exports['sandbox-targeting']:RemovePed(_spawnedInteractionPeds[id])
+			_spawnedInteractionPeds[id] = nil
 		end
-		return false
-	end,
-}
+	end
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("PedInteraction", _pedShit)
+exports("GetPed", function(id)
+	if _spawnedInteractionPeds[id] then
+		return _spawnedInteractionPeds[id]
+	end
+	return false
 end)
 
 function CreateDumbAssPed(model, coords, heading, menu, icon, scenario, anim, component)
@@ -200,7 +172,7 @@ function CreateDumbAssPed(model, coords, heading, menu, icon, scenario, anim, co
 		if not icon then
 			icon = "person-sign"
 		end
-		Targeting:AddPed(ped, icon, menu)
+		exports['sandbox-targeting']:AddPed(ped, icon, menu)
 	end
 
 	return ped

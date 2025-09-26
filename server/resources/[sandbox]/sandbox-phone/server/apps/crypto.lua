@@ -3,12 +3,12 @@ AddEventHandler("Crypto:Server:Startup", function()
 		Wait(10)
 	end
 
-	Crypto.Coin:Create("Vroom", "VRM", 100, false, false)
-	Crypto.Coin:Create("Mald", "MALD", 250, true, 190)
+	exports['sandbox-finance']:CryptoCoinCreate("Vroom", "VRM", 100, false, false)
+	exports['sandbox-finance']:CryptoCoinCreate("Mald", "MALD", 250, true, 190)
 
 	-- Compatability since we're renaming MALD
-	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local myCrypto = char:GetData("Crypto")
 
 		if myCrypto.PLEB ~= nil then
@@ -20,26 +20,27 @@ AddEventHandler("Crypto:Server:Startup", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Crypto:Buy", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Crypto:Buy", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			return cb(Crypto.Exchange:Buy(data.Short, char:GetData("SID"), data.Quantity))
+			return cb(exports['sandbox-finance']:CryptoExchangeBuy(data.Short, char:GetData("SID"), data.Quantity))
 		end
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Crypto:Sell", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Crypto:Sell", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			return cb(Crypto.Exchange:Sell(data.Short, char:GetData("SID"), data.Quantity))
+			return cb(exports['sandbox-finance']:CryptoExchangeSell(data.Short, char:GetData("SID"), data.Quantity))
 		end
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Crypto:Transfer", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Crypto:Transfer", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and char:GetData("SID") ~= data.Target then
-			return cb(Crypto.Exchange:Transfer(data.Short, char:GetData("SID"), data.Target, data.Quantity))
+			return cb(exports['sandbox-finance']:CryptoExchangeTransfer(data.Short, char:GetData("SID"), data.Target,
+				data.Quantity))
 		end
 		cb(false)
 	end)

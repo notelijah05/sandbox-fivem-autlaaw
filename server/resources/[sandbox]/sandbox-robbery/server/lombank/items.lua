@@ -1,6 +1,6 @@
 function RegisterLBItemUses()
-	Inventory.Items:RegisterUse("thermite", "LombankRobbery", function(source, itemData)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-inventory']:RegisterUse("thermite", "LombankRobbery", function(source, itemData)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inLombank then
@@ -15,10 +15,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -27,19 +24,13 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -49,14 +40,14 @@ function RegisterLBItemUses()
 				local myPos = GetEntityCoords(GetPlayerPed(source))
 
 				for k, v in pairs(lbThermPoints) do
-					if Doors:IsLocked(v.door) and #(v.coords - myPos) <= 1.5 then
+					if exports['sandbox-doors']:IsLocked(v.door) and #(v.coords - myPos) <= 1.5 then
 						if AreRequirementsUnlocked(v.requiredDoors) then
 							if not _lbInUse[k] then
 								_lbInUse[k] = source
 								GlobalState["LombankInProgress"] = true
 
 								if
-									Inventory.Items:RemoveSlot(
+									exports['sandbox-inventory']:RemoveSlot(
 										itemData.Owner,
 										itemData.Name,
 										1,
@@ -64,7 +55,7 @@ function RegisterLBItemUses()
 										itemData.invType
 									)
 								then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Started Thermiting Lombank Door: %s",
@@ -74,7 +65,7 @@ function RegisterLBItemUses()
 											v.door
 										)
 									)
-									Callbacks:ClientCallback(source, "Robbery:Games:Thermite", {
+									exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
 										passes = 1,
 										location = v,
 										duration = 11000,
@@ -91,7 +82,7 @@ function RegisterLBItemUses()
 										data = {},
 									}, function(success)
 										if success then
-											Logger:Info(
+											exports['sandbox-base']:LoggerInfo(
 												"Robbery",
 												string.format(
 													"%s %s (%s) Successfully Thermited Lombank Door: %s",
@@ -108,10 +99,10 @@ function RegisterLBItemUses()
 												GlobalState["AntiShitlord"] = os.time() + (60 * math.random(10, 15))
 											end
 
-											Doors:SetLock(v.door, false)
+											exports['sandbox-doors']:SetLock(v.door, false)
 											GlobalState["Fleeca:Disable:lombank_legion"] = true
 											if not _lbAlerted or os.time() > _lbAlerted then
-												Robbery:TriggerPDAlert(
+												exports['sandbox-robbery']:TriggerPDAlert(
 													source,
 													vector3(8.976, -932.315, 29.903),
 													"10-90",
@@ -130,9 +121,9 @@ function RegisterLBItemUses()
 												)
 												_lbAlerted = os.time() + (60 * 10)
 											end
-											Status.Modify:Add(source, "PLAYER_STRESS", 3)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 										else
-											Status.Modify:Add(source, "PLAYER_STRESS", 6)
+											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 										end
 
 										_lbInUse[k] = false
@@ -143,10 +134,7 @@ function RegisterLBItemUses()
 									_lbInUse[k] = false
 								end
 							else
-								Execute:Client(
-									source,
-									"Notification",
-									"Error",
+								exports['sandbox-hud']:NotifError(source,
 									"Someone Is Already Interacting With This",
 									6000
 								)
@@ -155,15 +143,12 @@ function RegisterLBItemUses()
 					end
 				end
 			else
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
 			end
-		elseif pState.inLombankPower and not Doors:IsLocked("lombank_hidden_entrance") and IsLBPowerDisabled() then
+		elseif pState.inLombankPower and not exports['sandbox-doors']:IsLocked("lombank_hidden_entrance") and IsLBPowerDisabled() then
 			local pos = {
 				coords = vector3(50.79477, -818.1543, 31.59213),
 				heading = 253.851,
@@ -180,10 +165,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -192,19 +174,13 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -219,7 +195,7 @@ function RegisterLBItemUses()
 						GlobalState["LombankInProgress"] = true
 
 						if
-							Inventory.Items:RemoveSlot(
+							exports['sandbox-inventory']:RemoveSlot(
 								itemData.Owner,
 								itemData.Name,
 								1,
@@ -227,7 +203,7 @@ function RegisterLBItemUses()
 								itemData.invType
 							)
 						then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Thermiting Lombank Vault Power",
@@ -236,7 +212,7 @@ function RegisterLBItemUses()
 									char:GetData("SID")
 								)
 							)
-							Callbacks:ClientCallback(source, "Robbery:Games:Thermite", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
 								passes = 1,
 								location = pos,
 								duration = 25000,
@@ -253,7 +229,7 @@ function RegisterLBItemUses()
 								data = {},
 							}, function(success)
 								if success then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Successfully Thermited Lombank Vault Power",
@@ -267,13 +243,14 @@ function RegisterLBItemUses()
 									end
 
 									TriggerEvent("Particles:Server:DoFx", pos.coords, "spark")
-									Sounds.Play:Location(source, pos.coords, 15.0, "power_small_complete_off.ogg", 0.1)
+									exports["sandbox-sounds"]:PlayLocation(source, pos.coords, 15.0,
+										"power_small_complete_off.ogg", 0.1)
 
-									Doors:SetLock("lombank_lasers", false)
-									Status.Modify:Add(source, "PLAYER_STRESS", 3)
+									exports['sandbox-doors']:SetLock("lombank_lasers", false)
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 									GlobalState["Fleeca:Disable:lombank_legion"] = true
 									if not _lbAlerted or os.time() > _lbAlerted then
-										Robbery:TriggerPDAlert(
+										exports['sandbox-robbery']:TriggerPDAlert(
 											source,
 											vector3(8.976, -932.315, 29.903),
 											"10-90",
@@ -293,7 +270,7 @@ function RegisterLBItemUses()
 										_lbAlerted = os.time() + (60 * 10)
 									end
 								else
-									Status.Modify:Add(source, "PLAYER_STRESS", 6)
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 								end
 
 								_lbInUse.vaultPower = false
@@ -302,10 +279,7 @@ function RegisterLBItemUses()
 							_lbInUse.vaultPower = false
 						end
 					else
-						Execute:Client(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Is Already Interacting With This",
 							6000
 						)
@@ -314,10 +288,7 @@ function RegisterLBItemUses()
 					return
 				end
 			else
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -325,8 +296,8 @@ function RegisterLBItemUses()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("purple_laptop", "LombankRobbery", function(source, slot, itemData)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-inventory']:RegisterUse("purple_laptop", "LombankRobbery", function(source, slot, itemData)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inLombank then
@@ -344,10 +315,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -356,19 +324,13 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -380,7 +342,7 @@ function RegisterLBItemUses()
 						if AreRequirementsUnlocked(v.requiredDoors) then
 							if not _lbInUse[k] then
 								_lbInUse[k] = source
-								Logger:Info(
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Started Hacking Lombank Door: %s",
@@ -390,7 +352,7 @@ function RegisterLBItemUses()
 										v.door
 									)
 								)
-								Callbacks:ClientCallback(source, "Robbery:Games:Laptop", {
+								exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Laptop", {
 									location = {
 										coords = v.coords,
 										heading = v.heading,
@@ -399,7 +361,7 @@ function RegisterLBItemUses()
 									data = {},
 								}, function(success, data)
 									if success then
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Successfully Hacked Lombank Door: %s",
@@ -412,10 +374,7 @@ function RegisterLBItemUses()
 
 										local timer = math.random(2, 4)
 
-										Execute:Client(
-											source,
-											"Notification",
-											"Success",
+										exports['sandbox-hud']:NotifSuccess(source,
 											string.format("Time Lock Disengaging, Please Wait %s Minutes", timer),
 											6000
 										)
@@ -426,11 +385,11 @@ function RegisterLBItemUses()
 											expires = os.time() + (60 * timer),
 										})
 
-										Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
-										Status.Modify:Add(source, "PLAYER_STRESS", 3)
+										exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 										GlobalState["Fleeca:Disable:lombank_legion"] = true
 										if not _lbAlerted or os.time() > _lbAlerted then
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												vector3(8.976, -932.315, 29.903),
 												"10-90",
@@ -450,7 +409,7 @@ function RegisterLBItemUses()
 											_lbAlerted = os.time() + (60 * 10)
 										end
 									else
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Failed Hacking Lombank Door: %s",
@@ -460,23 +419,20 @@ function RegisterLBItemUses()
 												v.door
 											)
 										)
-										Doors:SetLock(v.door, true)
-										Status.Modify:Add(source, "PLAYER_STRESS", 6)
+										exports['sandbox-doors']:SetLock(v.door, true)
+										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 										if os.time() - itemData.durability >= newValue then
-											Inventory.Items:RemoveId(char:GetData("SID"), 1, slot)
+											exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
 										else
-											Inventory:SetItemCreateDate(slot.id, newValue)
+											exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 										end
 									end
 									_lbInUse[k] = false
 								end)
 							else
-								Execute:Client(
-									source,
-									"Notification",
-									"Error",
+								exports['sandbox-hud']:NotifError(source,
 									"Someone Else Is Already Doing A Thing",
 									6000
 								)
@@ -486,10 +442,7 @@ function RegisterLBItemUses()
 					end
 				end
 			else
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)

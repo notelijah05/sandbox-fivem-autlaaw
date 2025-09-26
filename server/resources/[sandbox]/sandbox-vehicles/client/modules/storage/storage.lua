@@ -24,13 +24,13 @@ AddEventHandler('Vehicles:Client:StartUp', function()
             }
 
             if v.zone and v.zone.type == 'poly' and v.zone.points then
-                Polyzone.Create:Poly('veh_storage_' .. k, v.zone.points, {
+                exports['sandbox-polyzone']:CreatePoly('veh_storage_' .. k, v.zone.points, {
                     minZ = v.zone.minZ,
                     maxZ = v.zone.maxZ,
                     debugPoly = false
                 }, data)
             elseif v.zone and v.zone.type == 'box' and v.zone.center and v.zone.length and v.zone.width then
-                Polyzone.Create:Box('veh_storage_' .. k, v.zone.center, v.zone.length, v.zone.width, {
+                exports['sandbox-polyzone']:CreateBox('veh_storage_' .. k, v.zone.center, v.zone.length, v.zone.width, {
                     heading = v.zone.heading,
                     minZ = v.zone.minZ,
                     maxZ = v.zone.maxZ,
@@ -40,14 +40,14 @@ AddEventHandler('Vehicles:Client:StartUp', function()
         end
     end
 
-    Interaction:RegisterMenu("veh_storage", false, "garage-open", function()
+    exports['sandbox-hud']:InteractionRegisterMenu("veh_storage", false, "garage-open", function()
         OpenVehicleStorage()
-        Interaction:Hide()
+        exports['sandbox-hud']:InteractionHide()
     end, function()
         local pedCoords = GetEntityCoords(GLOBAL_PED)
         local inVehicleStorageZone, vehicleStorageZoneId = GetVehicleStorageAtCoords(pedCoords)
 
-        return inVehicleStorageZone or Properties:GetNearHouseGarage()
+        return inVehicleStorageZone or exports['sandbox-properties']:GetNearHouseGarage()
     end)
 end)
 
@@ -55,7 +55,8 @@ AddEventHandler('Vehicles:Client:CharacterLogin', function()
     if _vehicleStorage then
         for k, v in pairs(_vehicleStorage) do
             if not v.restricted and not v.hideBlip then
-                Blips:Add('veh_storage_' .. k, v.name, v.coords, blipsForVehType[v.vehType], 12, 0.6, false, 10)
+                exports["sandbox-blips"]:Add('veh_storage_' .. k, v.name, v.coords, blipsForVehType[v.vehType], 12, 0.6,
+                    false, 10)
             end
         end
 
@@ -64,11 +65,11 @@ AddEventHandler('Vehicles:Client:CharacterLogin', function()
         -- Add Restricted Ones After so the Blips Appear With the Restricted Ones at the end of the list
         -- for k, v in pairs(_vehicleStorage) do
         --     if v.restricted then
-        --         local charJobs = Jobs.Permissions:GetJobs()
+        --         local charJobs = exports['sandbox-jobs']:GetJobs()
 
         --         if #charJobs > 0 then
         --             if DoesCharacterPassStorageRestrictions(-1, charJobs, v.restricted) then
-        --                 Blips:Add('veh_storage_'.. k, v.name .. ' [Restricted]', v.coords, blipsForVehType[v.vehType], 6, 0.45, false, 10)
+        --                 exports["sandbox-blips"]:Add('veh_storage_'.. k, v.name .. ' [Restricted]', v.coords, blipsForVehType[v.vehType], 6, 0.45, false, 10)
         --             end
         --         end
         --     end
@@ -77,7 +78,7 @@ AddEventHandler('Vehicles:Client:CharacterLogin', function()
 end)
 
 function GetVehicleStorageAtCoords(coords)
-    local insideZone = Polyzone:IsCoordsInZone(coords, false, 'veh_storage')
+    local insideZone = exports['sandbox-polyzone']:IsCoordsInZone(coords, false, 'veh_storage')
     if insideZone and insideZone.veh_storage and insideZone.veh_storage_id then
         return true, insideZone.veh_storage_id
     end
@@ -91,7 +92,7 @@ AddEventHandler('Vehicles:Client:StoreVehicle', function(entityData)
         local inVehicleStorageZone, vehicleStorageZoneId = GetVehicleStorageAtCoords(vehicleCoords)
         local vehState = Entity(entityData.entity).state
 
-        if vehState.EmergencyBoat and Vehicles:HasAccess(entityData.entity, true) and GetPedInVehicleSeat(entityData.entity) == 0 and GetEntitySpeed(entityData.entity) <= 1 then
+        if vehState.EmergencyBoat and exports['sandbox-vehicles']:HasAccess(entityData.entity, true) and GetPedInVehicleSeat(entityData.entity) == 0 and GetEntitySpeed(entityData.entity) <= 1 then
             TriggerServerEvent("Vehicles:Server:DeleteEmergencyBoat", VehToNet(entityData.entity))
             return
         end
@@ -99,44 +100,44 @@ AddEventHandler('Vehicles:Client:StoreVehicle', function(entityData)
         -- Also checks that nobody is in the drivers seat and that the vehicle is not moving
         if vehState and vehState.VIN and vehState.Owned and GetPedInVehicleSeat(entityData.entity) == 0 and GetEntitySpeed(entityData.entity) <= 1 then
             if inVehicleStorageZone and vehicleStorageZoneId then
-                Callbacks:ServerCallback('Vehicles:PutVehicleInStorage', {
+                exports["sandbox-base"]:ServerCallback('Vehicles:PutVehicleInStorage', {
                     VIN = vehState.VIN,
                     storageId = vehicleStorageZoneId,
                 }, function(success)
                     if success then
-                        Notification:Success('Stored Vehicle')
+                        exports["sandbox-hud"]:NotifSuccess('Stored Vehicle')
                     else
-                        Notification:Error('Error Storing Vehicle')
+                        exports["sandbox-hud"]:NotifError('Error Storing Vehicle')
                     end
                 end)
             else
-                local propGarage = Properties:GetNearHouseGarage(vehicleCoords)
+                local propGarage = exports['sandbox-properties']:GetNearHouseGarage(vehicleCoords)
                 if propGarage and propGarage.propertyId then
-                    local prop = Properties:Get(propGarage.propertyId)
+                    local prop = exports['sandbox-properties']:Get(propGarage.propertyId)
                     if prop and prop.keys ~= nil and prop.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil then
-                        Callbacks:ServerCallback('Vehicles:PutVehicleInPropertyStorage', {
+                        exports["sandbox-base"]:ServerCallback('Vehicles:PutVehicleInPropertyStorage', {
                             VIN = vehState.VIN,
                             storageId = propGarage.propertyId,
                         }, function(success, tooFull)
                             if success then
-                                Notification:Success('Stored Vehicle')
+                                exports["sandbox-hud"]:NotifSuccess('Stored Vehicle')
                             else
                                 if tooFull then
-                                    Notification:Error('Error Storing Vehicle - It\'s Full')
+                                    exports["sandbox-hud"]:NotifError('Error Storing Vehicle - It\'s Full')
                                 else
-                                    Notification:Error('Error Storing Vehicle')
+                                    exports["sandbox-hud"]:NotifError('Error Storing Vehicle')
                                 end
                             end
                         end)
                     else
-                        Notification:Error('Don\'t Have Keys to Garage')
+                        exports["sandbox-hud"]:NotifError('Don\'t Have Keys to Garage')
                     end
                 else
-                    Notification:Error('Error Storing Vehicle')
+                    exports["sandbox-hud"]:NotifError('Error Storing Vehicle')
                 end
             end
         else
-            Notification:Error('Error Storing Vehicle')
+            exports["sandbox-hud"]:NotifError('Error Storing Vehicle')
         end
     end
 end)
@@ -147,8 +148,8 @@ function OpenVehicleStorage()
     if inVehicleStorageZone and vehicleStorageZoneId then
         local myDuty = LocalPlayer.state.onDuty
         local vehStorageData = _vehicleStorage[vehicleStorageZoneId]
-        if not vehStorageData or (vehStorageData.restricted and not DoesCharacterPassStorageRestrictions(-1, Jobs.Permissions:GetJobs(), vehStorageData.restricted)) then
-            return Notification:Error('Invalid Permission To Access This Vehicle Storage')
+        if not vehStorageData or (vehStorageData.restricted and not DoesCharacterPassStorageRestrictions(-1, exports['sandbox-jobs']:GetJobs(), vehStorageData.restricted)) then
+            return exports["sandbox-hud"]:NotifError('Invalid Permission To Access This Vehicle Storage')
         end
 
         if vehStorageData and vehStorageData.spaces then
@@ -160,40 +161,42 @@ function OpenVehicleStorage()
             end
 
             if parkingSpace then
-                Callbacks:ServerCallback('Vehicles:GetVehiclesInStorage', vehicleStorageZoneId, function(storedVehicles)
-                    if not storedVehicles then
-                        Notification:Error('Error Fetching Vehicle Storage')
-                        return
-                    end
+                exports["sandbox-base"]:ServerCallback('Vehicles:GetVehiclesInStorage', vehicleStorageZoneId,
+                    function(storedVehicles)
+                        if not storedVehicles then
+                            exports["sandbox-hud"]:NotifError('Error Fetching Vehicle Storage')
+                            return
+                        end
 
-                    if #storedVehicles > 0 then
-                        cachedStorageShit = {
-                            storageType = 1,
-                            storageId = vehicleStorageZoneId,
-                            storedVehicleData = storedVehicles,
-                            parkingSpace = parkingSpace,
-                            characterDuty = myDuty
-                        }
-                        OpenVehicleStorageMenu(1, vehicleStorageZoneId, storedVehicles, parkingSpace, myDuty)
-                    else
-                        Notification:Error('Vehicle Storage Is Empty')
-                    end
-                end)
+                        if #storedVehicles > 0 then
+                            cachedStorageShit = {
+                                storageType = 1,
+                                storageId = vehicleStorageZoneId,
+                                storedVehicleData = storedVehicles,
+                                parkingSpace = parkingSpace,
+                                characterDuty = myDuty
+                            }
+                            OpenVehicleStorageMenu(1, vehicleStorageZoneId, storedVehicles, parkingSpace, myDuty)
+                        else
+                            exports["sandbox-hud"]:NotifError('Vehicle Storage Is Empty')
+                        end
+                    end)
             else
-                Notification:Error('Could Not Find Parking Space')
+                exports["sandbox-hud"]:NotifError('Could Not Find Parking Space')
             end
         end
     else
-        local propertyGarage = Properties:GetNearHouseGarage()
+        local propertyGarage = exports['sandbox-properties']:GetNearHouseGarage()
         if propertyGarage and propertyGarage.propertyId then
             local coords = vector4(propertyGarage.coords.x, propertyGarage.coords.y, propertyGarage.coords.z,
                 propertyGarage.coords.h)
 
             if IsParkingSpaceFree(coords) then
-                Callbacks:ServerCallback('Vehicles:GetVehiclesInPropertyStorage', propertyGarage.propertyId,
+                exports["sandbox-base"]:ServerCallback('Vehicles:GetVehiclesInPropertyStorage', propertyGarage
+                    .propertyId,
                     function(storedVehicles, data, characterId, characters)
                         if not storedVehicles then
-                            Notification:Error('Error Fetching Vehicle Storage')
+                            exports["sandbox-hud"]:NotifError('Error Fetching Vehicle Storage')
                             return
                         end
 
@@ -221,11 +224,11 @@ function OpenVehicleStorage()
                                 characters
                             )
                         else
-                            Notification:Error('Vehicle Storage Is Empty')
+                            exports["sandbox-hud"]:NotifError('Vehicle Storage Is Empty')
                         end
                     end)
             else
-                Notification:Error('Could Not Find Parking Space')
+                exports["sandbox-hud"]:NotifError('Could Not Find Parking Space')
             end
         end
     end
@@ -234,7 +237,7 @@ end
 function CleanupTempVehicle()
     for k, v in pairs(_tempVehicles) do
         if DoesEntityExist(v) then
-            Game.Vehicles:Delete(v)
+            exports['sandbox-base']:GameVehiclesDelete(v)
             _tempVehicles[k] = nil
         end
     end
@@ -334,7 +337,7 @@ function OpenVehicleStorageMenu(storageType, storageId, storedVehicleData, parki
     if storageType == 1 then
         storageName = _vehicleStorage[storageId].name
     elseif storageType == 2 then
-        local prop = Properties:Get(storageId)
+        local prop = exports['sandbox-properties']:Get(storageId)
         if prop and prop.label then
             storageName = prop.label
         end
@@ -461,7 +464,7 @@ function OpenVehicleStorageMenu(storageType, storageId, storedVehicleData, parki
         table.insert(storageMenu.main.items, {
             label = 'Fleet Vehicles',
             description = characterDuty and 'View Fleet Vehicles That You Have Access To' or
-            'This Requires You to Be On Duty',
+                'This Requires You to Be On Duty',
             submenu = 'fleet',
             disabled = not characterDuty,
         })
@@ -489,7 +492,7 @@ function OpenVehicleStorageMenu(storageType, storageId, storedVehicleData, parki
     end
 
     vehStorageMenuOpen = true
-    ListMenu:Show(storageMenu)
+    exports['sandbox-hud']:ListMenuShow(storageMenu)
 end
 
 AddEventHandler("Vehicles:Client:Storage:GoBack", function()
@@ -513,26 +516,27 @@ end)
 AddEventHandler("Vehicles:Client:Storage:Select", function(data)
     CleanupTempVehicle()
 
-    Callbacks:ServerCallback("Vehicles:GetVehiclesInStorageSelect", data, function(vehicle)
+    exports["sandbox-base"]:ServerCallback("Vehicles:GetVehiclesInStorageSelect", data, function(vehicle)
         if tempParkingSpace and vehicle then
             loadingVehicleStorageVehicle = true
 
-            Game.Vehicles:SpawnLocal(tempParkingSpace.xyz, vehicle.Vehicle, tempParkingSpace.w, function(veh)
-                table.insert(_tempVehicles, veh)
+            exports['sandbox-base']:GameVehiclesSpawnLocal(tempParkingSpace.xyz, vehicle.Vehicle, tempParkingSpace.w,
+                function(veh)
+                    table.insert(_tempVehicles, veh)
 
-                FreezeEntityPosition(veh, true)
-                SetEntityAlpha(veh, 155)
-                SetVehicleDoorsLocked(veh, 2)
-                if vehicle.Properties then
-                    SetVehicleProperties(veh, vehicle.Properties)
-                end
-                SetEntityCollision(veh, false, true)
-                if vehicle.RegisteredPlate then
-                    SetVehicleNumberPlateText(veh, vehicle.RegisteredPlate)
-                end
+                    FreezeEntityPosition(veh, true)
+                    SetEntityAlpha(veh, 155)
+                    SetVehicleDoorsLocked(veh, 2)
+                    if vehicle.Properties then
+                        SetVehicleProperties(veh, vehicle.Properties)
+                    end
+                    SetEntityCollision(veh, false, true)
+                    if vehicle.RegisteredPlate then
+                        SetVehicleNumberPlateText(veh, vehicle.RegisteredPlate)
+                    end
 
-                loadingVehicleStorageVehicle = false
-            end)
+                    loadingVehicleStorageVehicle = false
+                end)
         end
 
         local subMenu = {
@@ -632,13 +636,13 @@ AddEventHandler("Vehicles:Client:Storage:Select", function(data)
 
         subMenu.main.items = vehItems
 
-        ListMenu:Show(subMenu)
+        exports['sandbox-hud']:ListMenuShow(subMenu)
     end)
 end)
 
 AddEventHandler('Vehicles:Client:Storage:Retrieve', function(data)
     if loadingVehicleStorageVehicle then
-        Notification:Error('Awaiting Vehicle Load')
+        exports["sandbox-hud"]:NotifError('Awaiting Vehicle Load')
         Citizen.SetTimeout(2500, function()
             CleanupTempVehicle()
         end)
@@ -647,7 +651,7 @@ AddEventHandler('Vehicles:Client:Storage:Retrieve', function(data)
 
     if data.VIN and tempVehAppearanceData[data.VIN] and tempParkingSpace and tempCurrentStorageId then
         vehActuallySpawningOne = true
-        Callbacks:ServerCallback('Vehicles:RetrieveVehicleFromStorage', {
+        exports["sandbox-base"]:ServerCallback('Vehicles:RetrieveVehicleFromStorage', {
             coords = tempParkingSpace.xyz,
             heading = tempParkingSpace.w,
             VIN = data.VIN,
@@ -656,9 +660,9 @@ AddEventHandler('Vehicles:Client:Storage:Retrieve', function(data)
         }, function(success)
             CleanupTempVehicle()
             if success then
-                Notification:Info('Spawned Vehicle & Received Keys')
+                exports["sandbox-hud"]:NotifInfo('Spawned Vehicle & Received Keys')
             else
-                Notification:Error('Error') -- Very descriptive error message
+                exports["sandbox-hud"]:NotifError('Error') -- Very descriptive error message
             end
         end)
     end

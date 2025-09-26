@@ -40,11 +40,11 @@ AddEventHandler("gameEventTriggered", function(event, args)
 					local bodyHealthDiff = math.floor(LAST_DAMAGE_BODY - bodyHealth)
 
 					if engineHealthDiff > 0.0 then
-						Logger:Trace("Vehicles", "Engine Damaged - New Health: " .. engineHealth)
+						exports['sandbox-base']:LoggerTrace("Vehicles", "Engine Damaged - New Health: " .. engineHealth)
 					end
 
 					if bodyHealthDiff > 0.0 then
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Vehicles",
 							"Body Damage Taken: " .. bodyHealthDiff .. " - New Health: " .. bodyHealth
 						)
@@ -59,10 +59,10 @@ AddEventHandler("gameEventTriggered", function(event, args)
 							end
 
 							local stalling = true
-							Notification:Error("Engine Stalled")
+							exports["sandbox-hud"]:NotifError("Engine Stalled")
 							CreateThread(function()
 								while stalling do
-									Vehicles.Engine:Force(DAMAGE_VEHICLE, false)
+									exports['sandbox-vehicles']:EngineForce(DAMAGE_VEHICLE, false)
 									Wait(500)
 								end
 							end)

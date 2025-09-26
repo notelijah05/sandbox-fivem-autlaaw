@@ -46,7 +46,7 @@ AddEventHandler("Chat:Client:ReceiveMe", function(sender, uid, message, isDice)
 		isMe = true
 	end
 
-	exports["sandbox-base"]:FetchComponent("Logger"):Trace(
+	exports['sandbox-base']:LoggerTrace("Me",
 		"Me",
 		string.format(
 			"Sender Source: %s; Sender Player: %s; My Source: %s; My Ped: %s",

@@ -1,4 +1,4 @@
-function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, job)
+exports("RegisterCommand", function(command, callback, suggestion, arguments, job)
 	if job ~= nil then
 		if type(job) == "table" and #job > 0 then
 			for k, v in pairs(job) do
@@ -30,7 +30,7 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 	end
 
 	RegisterCommand(command, function(source, args, rawCommand)
-		local pData = Fetch:Source(source)
+		local pData = exports['sandbox-base']:FetchSource(source)
 		if pData ~= nil then
 			-- TODO : Implement character specific data for commands (IE Jobs)
 			local myDuty = Player(source).state.onDuty
@@ -46,24 +46,24 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 			if commands[command].job ~= nil then
 				for k, v in pairs(commands[command].job) do
 					if myDuty and myDuty == v.Id then
-						if Jobs.Permissions:HasJob(source, v.Id, v.Workplace, v.Grade, v.Level) then
+						if exports['sandbox-jobs']:HasJob(source, v.Id, v.Workplace, v.Grade, v.Level) then
 							if
 								(#args <= commands[command].args and #args == commands[command].args)
 								or commands[command].args == -1
 							then
-								local char = Fetch:CharacterSource(source)
-								Logger:Info(
+								local char = exports['sandbox-characters']:FetchCharacterSource(source)
+								exports['sandbox-base']:LoggerInfo(
 									"Commands",
 									string.format(
 										"%s (%s [%s]) Used A Job Command: %s.%s",
 										char
-												and string.format(
-													"%s %s (SID %s)",
-													char:GetData("First"),
-													char:GetData("Last"),
-													char:GetData("SID")
-												)
-											or "No Character",
+										and string.format(
+											"%s %s (SID %s)",
+											char:GetData("First"),
+											char:GetData("Last"),
+											char:GetData("SID")
+										)
+										or "No Character",
 										pData:GetData("Name"),
 										pData:GetData("AccountID"),
 										command,
@@ -81,7 +81,7 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 
 								callback(source, args, rawCommand)
 							else
-								Chat.Send.Server:Single(source, "Invalid Number Of Arguments")
+								exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
 							end
 						end
 					end
@@ -91,19 +91,19 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 					(#args <= commands[command].args and #args == commands[command].args)
 					or commands[command].args == -1
 				then
-					local char = Fetch:CharacterSource(source)
-					Logger:Info(
+					local char = exports['sandbox-characters']:FetchCharacterSource(source)
+					exports['sandbox-base']:LoggerInfo(
 						"Commands",
 						string.format(
 							"%s (%s [%s]) Used A Command: %s.%s",
 							char
-									and string.format(
-										"%s %s (SID %s)",
-										char:GetData("First"),
-										char:GetData("Last"),
-										char:GetData("SID")
-									)
-								or "No Character",
+							and string.format(
+								"%s %s (SID %s)",
+								char:GetData("First"),
+								char:GetData("Last"),
+								char:GetData("SID")
+							)
+							or "No Character",
 							pData:GetData("Name"),
 							pData:GetData("AccountID"),
 							command,
@@ -121,14 +121,14 @@ function CHAT.RegisterCommand(self, command, callback, suggestion, arguments, jo
 
 					callback(source, args, rawCommand)
 				else
-					Chat.Send.Server:Single(source, "Invalid Number Of Arguments")
+					exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
 				end
 			end
 		end
 	end, false)
-end
+end)
 
-function CHAT.RegisterAdminCommand(this, command, callback, suggestion, arguments)
+exports("RegisterAdminCommand", function(command, callback, suggestion, arguments)
 	commands[command] = {
 		cb = callback,
 		args = (arguments or -1),
@@ -147,7 +147,7 @@ function CHAT.RegisterAdminCommand(this, command, callback, suggestion, argument
 	end
 
 	RegisterCommand(command, function(source, args, rawCommand)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		if player ~= nil then
 			local argsStr = ""
 			if #args > 0 then
@@ -162,7 +162,7 @@ function CHAT.RegisterAdminCommand(this, command, callback, suggestion, argument
 					(#args <= commands[command].args and #args == commands[command].args)
 					or commands[command].args == -1
 				then
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Pwnzor",
 						string.format(
 							"%s (%s) Used An Admin Command: %s.%s",
@@ -187,10 +187,10 @@ function CHAT.RegisterAdminCommand(this, command, callback, suggestion, argument
 					)
 					callback(source, args, rawCommand)
 				else
-					Chat.Send.Server:Single(source, "Invalid Number Of Arguments")
+					exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
 				end
 			else
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Pwnzor",
 					string.format(
 						"%s (%s) Attempted To Use An Admin Command: %s.%s",
@@ -216,9 +216,9 @@ function CHAT.RegisterAdminCommand(this, command, callback, suggestion, argument
 			end
 		end
 	end, false)
-end
+end)
 
-function CHAT.RegisterStaffCommand(this, command, callback, suggestion, arguments)
+exports("RegisterStaffCommand", function(command, callback, suggestion, arguments)
 	commands[command] = {
 		cb = callback,
 		args = (arguments or -1),
@@ -237,7 +237,7 @@ function CHAT.RegisterStaffCommand(this, command, callback, suggestion, argument
 	end
 
 	RegisterCommand(command, function(source, args, rawCommand)
-		local player = Fetch:Source(source)
+		local player = exports['sandbox-base']:FetchSource(source)
 		if player ~= nil then
 			local argsStr = ""
 			if #args > 0 then
@@ -252,7 +252,7 @@ function CHAT.RegisterStaffCommand(this, command, callback, suggestion, argument
 					(#args <= commands[command].args and #args == commands[command].args)
 					or commands[command].args == -1
 				then
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Pwnzor",
 						string.format(
 							"%s (%s) Used A Staff Command: %s.%s",
@@ -277,10 +277,10 @@ function CHAT.RegisterStaffCommand(this, command, callback, suggestion, argument
 					)
 					callback(source, args, rawCommand)
 				else
-					Chat.Send.Server:Single(source, "Invalid Number Of Arguments")
+					exports["sandbox-chat"]:SendServerSingle(source, "Invalid Number Of Arguments")
 				end
 			else
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Pwnzor",
 					string.format(
 						"%s (%s) Attempted To Use A Staff Command: %s.%s",
@@ -306,4 +306,4 @@ function CHAT.RegisterStaffCommand(this, command, callback, suggestion, argument
 			end
 		end
 	end, false)
-end
+end)

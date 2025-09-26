@@ -42,33 +42,34 @@ AddEventHandler("Labor:Client:Setup", function()
     end
 
     if _queueLoc.coords == nil then return end
-    PedInteraction:Add("HouseRobbery", `csb_grove_str_dlr`, _queueLoc.coords, _queueLoc.heading, 25.0, {
+    exports['sandbox-pedinteraction']:Add("HouseRobbery", `csb_grove_str_dlr`, _queueLoc.coords, _queueLoc.heading, 25.0,
         {
-            icon = "house-chimney-crack",
-            text = "Do A Thing",
-            event = "HouseRobbery:Client:Enable",
-            data = {},
-            isEnabled = function()
-                return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_HOUSE_ROBBERY") and
-                    LocalPlayer.state.onDuty ~= "police"
-            end,
-        },
-    }, 'seal-question', 'WORLD_HUMAN_SMOKING')
+            {
+                icon = "house-chimney-crack",
+                text = "Do A Thing",
+                event = "HouseRobbery:Client:Enable",
+                data = {},
+                isEnabled = function()
+                    return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_HOUSE_ROBBERY") and
+                        LocalPlayer.state.onDuty ~= "police"
+                end,
+            },
+        }, 'seal-question', 'WORLD_HUMAN_SMOKING')
 
-    Callbacks:RegisterClientCallback("HouseRobbery:Lockpick", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("HouseRobbery:Lockpick", function(data, cb)
         _lpStage = 0
         DoLockpick({ timer = 1.0, base = 5 }, data, cb)
-        EmergencyAlerts:CreateIfReported(40.0, "bane", true)
+        exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(40.0, "bane", true)
     end)
 
-    Callbacks:RegisterClientCallback("HouseRobbery:AdvLockpick", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("HouseRobbery:AdvLockpick", function(data, cb)
         _lpStage = 0
         DoLockpick({ timer = 0.75, base = 8 }, data, cb)
-        EmergencyAlerts:CreateIfReported(40.0, "bane", true)
+        exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(40.0, "bane", true)
     end)
 
-    Interaction:RegisterMenu("house-robbery", "Enter House", "window-frame-open", function(data)
-        Interaction:Hide()
+    exports['sandbox-hud']:InteractionRegisterMenu("house-robbery", "Enter House", "window-frame-open", function(data)
+        exports['sandbox-hud']:InteractionHide()
         EnterHouse(data)
     end, function()
         if _working and _p ~= nil and _nodes ~= nil then
@@ -82,8 +83,8 @@ AddEventHandler("Labor:Client:Setup", function()
         return false
     end)
 
-    Interaction:RegisterMenu("house-robbery-exit", "Exit House", "door-open", function(data)
-        Interaction:Hide()
+    exports['sandbox-hud']:InteractionRegisterMenu("house-robbery-exit", "Exit House", "door-open", function(data)
+        exports['sandbox-hud']:InteractionHide()
         ExitHouse()
     end, function()
         if GlobalState[string.format("%s:RobbingHouse", LocalPlayer.state.ID)] ~= nil and _exit ~= nil then
@@ -101,16 +102,16 @@ function DoAlarm(pId)
     _threading = true
     CreateThread(function()
         while _threading and _working and (not _nodes.states.alarm.disabled and not _nodes.states.alarm.triggered) and LocalPlayer.state.inRobbedHouse do
-            Sounds.Play:One("alarm_warn.ogg", 0.1)
+            exports["sandbox-sounds"]:PlayOne("alarm_warn.ogg", 0.1)
             Wait(1000)
         end
-        Sounds.Stop:One("alarm_warn.ogg")
+        exports["sandbox-sounds"]:StopOne("alarm_warn.ogg")
         _threading = false
     end)
 end
 
 function ExitHouse()
-    Callbacks:ServerCallback("HouseRobbery:Exit", {}, function(propId, intr)
+    exports["sandbox-base"]:ServerCallback("HouseRobbery:Exit", {}, function(propId, intr)
         LocalPlayer.state.inRobbedHouse = false
 
         DoScreenFadeOut(1000)
@@ -118,10 +119,10 @@ function ExitHouse()
             Wait(10)
         end
 
-        Sounds.Stop:One("alarm_warn.ogg")
-        Sounds.Stop:One("house_alarm.ogg", 0.1)
+        exports["sandbox-sounds"]:StopOne("alarm_warn.ogg")
+        exports["sandbox-sounds"]:StopOne("house_alarm.ogg", 0.1)
 
-        Sounds.Play:One("door_close.ogg", 0.3)
+        exports["sandbox-sounds"]:PlayOne("door_close.ogg", 0.3)
         Wait(200)
 
         local f = GlobalState[string.format("Robbery:InProgress:%s", propId)]
@@ -141,25 +142,25 @@ function ExitHouse()
 
         if intr then
             for k, v in ipairs(intr.robberies.locations) do
-                Targeting.Zones:RemoveZone(string.format("house-robbery-%s", k))
+                exports['sandbox-targeting']:ZonesRemoveZone(string.format("house-robbery-%s", k))
             end
         end
 
         if _stuff ~= nil then
             for k, v in ipairs(_stuff.pois or {}) do
-                Targeting:RemoveEntity(v)
+                exports['sandbox-targeting']:RemoveEntity(v)
                 DeleteObject(v)
             end
         end
 
-        Targeting.Zones:Refresh()
+        exports['sandbox-targeting']:ZonesRefresh()
 
         if _state == 5 then
             _working = false
         end
 
         TriggerEvent('Interiors:Exit')
-        Sync:Start()
+        exports["sandbox-sync"]:Start()
 
         DoScreenFadeIn(1000)
         while not IsScreenFadedIn() do
@@ -168,7 +169,7 @@ function ExitHouse()
 
         Wait(1000)
 
-        Polyzone:Remove("property-house-rob-zone")
+        exports['sandbox-polyzone']:Remove("property-house-rob-zone")
     end)
 end
 
@@ -181,7 +182,7 @@ end)
 
 function EnterHouse()
     if _p ~= nil and _working then
-        Callbacks:ServerCallback("HouseRobbery:BreakIn", _p, function(r, f, exit)
+        exports["sandbox-base"]:ServerCallback("HouseRobbery:BreakIn", _p, function(r, f, exit)
             if r then
                 EnterHouseShit(f, exit)
             end
@@ -192,7 +193,7 @@ end
 function EnterHouseShit(f, exit)
     _exit = exit
 
-    Sounds.Play:One("door_open.ogg", 0.15)
+    exports["sandbox-sounds"]:PlayOne("door_open.ogg", 0.15)
 
     DoScreenFadeOut(1000)
     while not IsScreenFadedOut() do
@@ -213,7 +214,7 @@ function EnterHouseShit(f, exit)
 
     FreezeEntityPosition(PlayerPedId(), false)
 
-    Sync:Stop(1)
+    exports["sandbox-sync"]:Stop(1)
     TriggerEvent("Interiors:Enter", vector3(f.x, f.y, f.z))
 
     DoScreenFadeIn(1000)
@@ -239,9 +240,10 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
             DeleteWaypoint()
             SetNewWaypoint(data.coords.x, data.coords.y)
             if _blip then
-                Blips:Remove("HouseRobbery")
+                exports["sandbox-blips"]:Remove("HouseRobbery")
             end
-            _blip = Blips:Add("HouseRobbery", "Target House", { x = data.coords.x, y = data.coords.y, z = data.coords.z },
+            _blip = exports["sandbox-blips"]:Add("HouseRobbery", "Target House",
+                { x = data.coords.x, y = data.coords.y, z = data.coords.z },
                 40, 23, 0.9)
 
             CreateThread(function()
@@ -250,7 +252,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                     Wait(100)
                     dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - vector3(data.coords.x, data.coords.y, data.coords.z))
                 end
-                Callbacks:ServerCallback("HouseRobbery:ArrivedNear", {})
+                exports["sandbox-base"]:ServerCallback("HouseRobbery:ArrivedNear", {})
             end)
         end)
 
@@ -275,7 +277,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         function(data)
             _nodes = data
             _state = 4
-            Notification:Success("House Has Been Lockpicked")
+            exports["sandbox-hud"]:NotifSuccess("House Has Been Lockpicked")
         end)
 
     eventHandlers["do-hack"] = RegisterNetEvent(string.format("HouseRobbery:Client:%s:HackAlarm", joiner),
@@ -301,7 +303,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                 _nodes.states.alarm.triggered = true
 
                 if LocalPlayer.state.inRobbedHouse then
-                    Sounds.Loop:One("house_alarm.ogg", 0.1)
+                    exports["sandbox-sounds"]:LoopOne("house_alarm.ogg", 0.1)
                 end
             end
         end)
@@ -309,7 +311,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
     eventHandlers["search"] = RegisterNetEvent(string.format("HouseRobbery:Client:%s:Search", joiner),
         function(ent, data)
             if data.id and not _nodes.searched[data.id] then
-                Progress:ProgressWithTickEvent({
+                exports['sandbox-hud']:ProgressWithTickEvent({
                     name = "robbing_action",
                     duration = actionSpecifics[data.type] and (actionSpecifics[data.type][2] * 1000) or
                         ((math.random(15) + 15) * 1000),
@@ -330,11 +332,11 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                     if data.id and _nodes and not _nodes.searched[data.id] then
                         return
                     end
-                    Progress:Cancel()
+                    exports['sandbox-hud']:ProgressCancel()
                 end, function(cancelled)
                     if not cancelled then
-                        Status.Modify:Add("PLAYER_STRESS", 3, false, true)
-                        Callbacks:ServerCallback("HouseRobbery:Search", data.id)
+                        exports['sandbox-status']:Add("PLAYER_STRESS", 3, false, true)
+                        exports["sandbox-base"]:ServerCallback("HouseRobbery:Search", data.id)
                     end
                 end)
             end
@@ -343,7 +345,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
     eventHandlers["end"] = RegisterNetEvent(string.format("HouseRobbery:Client:%s:EndRobbery", joiner), function(data)
         _state = 5
         if _blip then
-            Blips:Remove("HouseRobbery")
+            exports["sandbox-blips"]:Remove("HouseRobbery")
         end
     end)
 
@@ -368,7 +370,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         table.insert(_stuff.pois, o)
 
         if _nodes.chances.alarm then
-            Targeting:AddEntity(o, "sensor-triangle-exclamation", {
+            exports['sandbox-targeting']:AddEntity(o, "sensor-triangle-exclamation", {
                 {
                     icon = "sensor-triangle-exclamation",
                     text = "Disable Alarm",
@@ -386,10 +388,10 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
             if (not _nodes.states.alarm.disabled and not _nodes.states.alarm.triggered) then
                 DoAlarm(_p)
             elseif _nodes.states.alarm.triggered then
-                Sounds.Play:One("house_alarm.ogg", 0.1)
+                exports["sandbox-sounds"]:PlayOne("house_alarm.ogg", 0.1)
             end
         else
-            Targeting:AddEntity(o, "sensor-triangle-exclamation", {
+            exports['sandbox-targeting']:AddEntity(o, "sensor-triangle-exclamation", {
                 {
                     icon = "sensor-triangle-exclamation",
                     text = "The Alarm Wasn't Armed",
@@ -410,7 +412,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         end
 
         for k, v in ipairs(intr.robberies.locations) do
-            Targeting.Zones:AddBox(
+            exports['sandbox-targeting']:ZonesAddBox(
                 string.format("house-robbery-%s", k),
                 "box-open-full",
                 v.coords,
@@ -438,10 +440,11 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         end
 
 
-        Targeting.Zones:Refresh()
+        exports['sandbox-targeting']:ZonesRefresh()
 
         if intr.zone then
-            Polyzone.Create:Box("property-house-rob-zone", intr.zone.center, intr.zone.length, intr.zone.width,
+            exports['sandbox-polyzone']:CreateBox("property-house-rob-zone", intr.zone.center, intr.zone.length,
+                intr.zone.width,
                 intr.zone.options, {})
         end
 
@@ -451,13 +454,13 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("HouseRobbery:Client:Enable", function()
-    Callbacks:ServerCallback('HouseRobbery:Enable', {})
+    exports["sandbox-base"]:ServerCallback('HouseRobbery:Enable', {})
 end)
 
 AddEventHandler("HouseRobbery:Client:StartJob", function()
-    Callbacks:ServerCallback('HouseRobbery:StartJob', _joiner, function(state)
+    exports["sandbox-base"]:ServerCallback('HouseRobbery:StartJob', _joiner, function(state)
         if not state then
-            Notification:Error("Unable To Start Job")
+            exports["sandbox-hud"]:NotifError("Unable To Start Job")
         end
     end)
 end)
@@ -487,11 +490,11 @@ AddEventHandler("HouseRobbery:Client:HackSuccess", function(data)
     _scPass = _scPass + 1
     if _scPass > 3 then
         _scPass = 1
-        Callbacks:ServerCallback("HouseRobbery:HackAlarm", {
+        exports["sandbox-base"]:ServerCallback("HouseRobbery:HackAlarm", {
             propertyId = data.pId,
             state = true
         }, function()
-            Notification:Success("Alarm Bypassed")
+            exports["sandbox-hud"]:NotifSuccess("Alarm Bypassed")
         end)
     else
         Wait(1500)
@@ -508,7 +511,7 @@ AddEventHandler("HouseRobbery:Client:HackFail", function(data)
 
     if _scFails > 2 then
         _scFails = 1
-        Callbacks:ServerCallback("HouseRobbery:HackAlarm", {
+        exports["sandbox-base"]:ServerCallback("HouseRobbery:HackAlarm", {
             propertyId = data.pId,
             state = false
         }, function()
@@ -523,7 +526,7 @@ end)
 
 local stageComplete = 0
 function DoLockpick(diff, data, cb)
-    Minigame.Play:RoundSkillbar((diff.timer + (0.2 * data.tier)), diff.base - stageComplete, {
+    exports['sandbox-games']:MinigamePlayRoundSkillbar((diff.timer + (0.2 * data.tier)), diff.base - stageComplete, {
         onSuccess = function()
             Wait(400)
             if stageComplete >= 3 then
@@ -550,7 +553,7 @@ function DoLockpick(diff, data, cb)
 end
 
 function DoHack(pId)
-    Minigame.Play:Sequencer(5, 300, 7500 - (1000 * _scPass), 3 + _scPass, true, {
+    exports['sandbox-games']:MinigamePlaySequencer(5, 300, 7500 - (1000 * _scPass), 3 + _scPass, true, {
         onSuccess = "HouseRobbery:Client:HackSuccess",
         onFail = "HouseRobbery:Client:HackFail",
     }, {

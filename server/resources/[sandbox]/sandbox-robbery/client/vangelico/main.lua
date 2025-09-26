@@ -31,7 +31,7 @@ local _weapons = {
 }
 
 AddEventHandler("Robbery:Client:Setup", function()
-	Polyzone.Create:Poly("vangelico", {
+	exports['sandbox-polyzone']:CreatePoly("vangelico", {
 		vector2(-627.94396972656, -240.6435546875),
 		vector2(-636.67626953125, -229.46875),
 		vector2(-620.25476074219, -220.87989807129),
@@ -42,7 +42,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		--debugPoly = true,
 	})
 
-	Targeting.Zones:AddBox("vangelico-pd", "calculator", vector3(-620.09, -223.81, 38.06), 1.0, 1.0, {
+	exports['sandbox-targeting']:ZonesAddBox("vangelico-pd", "calculator", vector3(-620.09, -223.81, 38.06), 1.0, 1.0, {
 		name = "vangelico-pd",
 		heading = 35,
 		--debugPoly = true,
@@ -72,7 +72,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 
 	for k, v in ipairs(GlobalState["VangelicoCases"]) do
 		local pId = string.format("Vangelico:Case:%s", k)
-		Targeting.Zones:AddBox(pId, "container-storage", v.coords, v.length, v.width, v.options, {
+		exports['sandbox-targeting']:ZonesAddBox(pId, "container-storage", v.coords, v.length, v.width, v.options, {
 			{
 				icon = "hammer",
 				text = "Smash Case",
@@ -102,7 +102,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 
 	-- for k, v in ipairs(_cabinets) do
 	-- 	local pId = string.format("Vangelico:Cabinet:%s", k)
-	-- 	Targeting.Zones:AddBox(pId, "container-storage", v.coords, v.length, v.width, v.options, {
+	-- 	exports['sandbox-targeting']:ZonesAddBox(pId, "container-storage", v.coords, v.length, v.width, v.options, {
 	-- 		{
 	-- 			icon = "cabinet-filing",
 	-- 			text = "Search Filing Cabinet",
@@ -120,7 +120,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 end)
 
 AddEventHandler("Robbery:Client:Vangelico:SecureStore", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "secure_vangelico",
 		duration = 30000,
 		label = "Securing",
@@ -137,14 +137,14 @@ AddEventHandler("Robbery:Client:Vangelico:SecureStore", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Vangelico:SecureStore")
+			exports["sandbox-base"]:ServerCallback("Robbery:Vangelico:SecureStore")
 		end
 	end)
 end)
 
 AddEventHandler("Polyzone:Enter", function(id, point, insideZones, data)
 	if id == "vangelico" then
-		Targeting:AddObject(GetHashKey("hei_prop_hei_keypad_03"), "calculator", {
+		exports['sandbox-targeting']:AddObject(GetHashKey("hei_prop_hei_keypad_03"), "calculator", {
 			-- {
 			-- 	icon = "bell-on",
 			-- 	text = "Disable Alarm",
@@ -194,7 +194,7 @@ end)
 
 AddEventHandler("Polyzone:Exit", function(id, point, insideZones, data)
 	if id == "vangelico" then
-		Targeting:RemoveObject(GetHashKey("hei_prop_hei_keypad_03"))
+		exports['sandbox-targeting']:RemoveObject(GetHashKey("hei_prop_hei_keypad_03"))
 	end
 end)
 
@@ -225,7 +225,7 @@ AddEventHandler("Robbery:Client:Vangelico:BreakCase", function(entity, data)
 
 		CreateThread(function()
 			Wait(600)
-			Sounds.Play:Location(data.coords, 10.0, "jewel_glass.ogg", 0.15)
+			exports["sandbox-sounds"]:PlayLocation(data.coords, 10.0, "jewel_glass.ogg", 0.15)
 			StartParticleFxLoopedAtCoord(
 				"scr_jewel_cab_smash",
 				data.coords.x,
@@ -242,7 +242,7 @@ AddEventHandler("Robbery:Client:Vangelico:BreakCase", function(entity, data)
 			)
 		end)
 
-		Progress:ProgressWithTickEvent({
+		exports['sandbox-hud']:ProgressWithTickEvent({
 			name = "vangelico_action",
 			duration = (math.random(10) * 1000) + 30000,
 			label = "Robbing",
@@ -269,10 +269,10 @@ AddEventHandler("Robbery:Client:Vangelico:BreakCase", function(entity, data)
 			then
 				return
 			end
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 		end, function(cancelled)
 			if not cancelled then
-				Callbacks:ServerCallback("Robbery:Vangelico:BreakCase", data.index)
+				exports["sandbox-base"]:ServerCallback("Robbery:Vangelico:BreakCase", data.index)
 			end
 		end)
 	end

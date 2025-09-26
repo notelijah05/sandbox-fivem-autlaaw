@@ -14,56 +14,15 @@ RegisterNetEvent("Evidence:Server:RecieveEvidence", function(newEvidence)
 	end
 end)
 
-AddEventHandler("Evidence:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-	Database = exports["sandbox-base"]:FetchComponent("Database")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Sequence = exports["sandbox-base"]:FetchComponent("Sequence")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Evidence", {
-		"Fetch",
-		"Utils",
-		"Execute",
-		"Chat",
-		"Database",
-		"Middleware",
-		"Callbacks",
-		"Logger",
-		"Generator",
-		"Phone",
-		"Jobs",
-		"Vehicles",
-		"Inventory",
-		"Sequence",
-	}, function(error)
-		if #error > 0 then
-			exports["sandbox-base"]:FetchComponent("Logger"):Critical("Evidence", "Failed To Load All Dependencies")
-			return
-		end
-		RetrieveComponents()
+	StartDeletionThread()
 
-		StartDeletionThread()
-
-		Callbacks:RegisterServerCallback("Evidence:Fetch", function(source, data, cb)
-			cb(EVIDENCE_CACHE)
-		end)
-
-		RegisterBallisticsCallbacks()
-		RegisterBallisticsItemUses()
+	exports["sandbox-base"]:RegisterServerCallback("Evidence:Fetch", function(source, data, cb)
+		cb(EVIDENCE_CACHE)
 	end)
+
+	RegisterBallisticsCallbacks()
+	RegisterBallisticsItemUses()
 end)
 
 local _deletionThead = false
@@ -120,19 +79,19 @@ end)
 
 RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 	local _src = source
-	local char = Fetch:CharacterSource(source)
-	if char and Jobs.Permissions:HasJob(_src, "police") then
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	if char and exports['sandbox-jobs']:HasJob(_src, "police") then
 		for k, v in ipairs(EVIDENCE_CACHE) do
 			if v.id == evidenceId then
 				if v.type == "paint_fragment" then
-					Inventory:AddItem(char:GetData("SID"), "evidence-paint", 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-paint", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
 						EvidenceColor = v.data and v.data.color,
 					}, 1)
 				elseif v.type == "projectile" then
-					Inventory:AddItem(char:GetData("SID"), "evidence-projectile", 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-projectile", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
@@ -141,7 +100,7 @@ RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 						EvidenceDegraded = v.data and v.data.tooDegraded,
 					}, 1)
 				elseif v.type == "casing" then
-					Inventory:AddItem(char:GetData("SID"), "evidence-casing", 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-casing", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
@@ -149,7 +108,7 @@ RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 						EvidenceAmmoType = (v.data and v.data.weapon) and v.data.weapon.ammoTypeName,
 					}, 1)
 				elseif v.type == "blood" then
-					Inventory:AddItem(char:GetData("SID"), "evidence-dna", 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-dna", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
@@ -170,15 +129,16 @@ local pendingSend = false
 
 RegisterServerEvent("Camara:CapturePhoto", function()
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 	if char then
 		if pendingSend then
-			Execute:Client(src, "Notification", "Warn", "Please wait while current photo is uploading", 2000)
+			exports['sandbox-hud']:NotifWarn(src,
+				"Please wait while current photo is uploading", 2000)
 			return
 		end
 		pendingSend = true
-		Execute:Client(src, "Notification", "Info", "Prepping Photo Upload", 2000)
+		exports['sandbox-hud']:NotifInfo(src, "Prepping Photo Upload", 2000)
 
 		local options = {
 			encoding = "webp",
@@ -215,11 +175,12 @@ RegisterServerEvent("Camara:CapturePhoto", function()
 			function(error)
 				if error then
 					pendingSend = false
-					Execute:Client(src, "Notification", "Error", "Error uploading photo!", 2000)
+					exports['sandbox-hud']:NotifError(src, "Error uploading photo!", 2000)
 					print("^1ERROR: " .. error .. "^7")
 				end
 				pendingSend = false
-				Execute:Client(src, "Notification", "Success", "Photo uploaded successfully!", 2000)
+				exports['sandbox-hud']:NotifSuccess(src, "Photo uploaded successfully!",
+					2000)
 			end
 		)
 	end

@@ -21,12 +21,12 @@ function ApplyLimp(ped)
 	if shouldLimp and not (LocalPlayer.state.onPainKillers or 0 > 0) then
 		if not LocalPlayer.state.isLimping then
 			LocalPlayer.state.isLimping = true
-			Animations.PedFeatures:RequestFeaturesUpdate()
+			exports['sandbox-animations']:PedFeaturesRequestFeaturesUpdate()
 		end
 	else
 		if LocalPlayer.state.isLimping then
 			LocalPlayer.state.isLimping = false
-			Animations.PedFeatures:RequestFeaturesUpdate()
+			exports['sandbox-animations']:PedFeaturesRequestFeaturesUpdate()
 		end
 	end
 end
@@ -75,17 +75,17 @@ end)
 
 function DoDeadEvent()
 	if LocalPlayer.state.isDead then
-		Weapons:UnequipIfEquippedNoAnim()
+		exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 		if not LocalPlayer.state.gameMode then
-			Buffs:RemoveBuffType("weakness")
+			exports['sandbox-hud']:RemoveBuffType("weakness")
 			DisableControls()
 			DeadAnimLoop()
 		else
-			Hud.DeathTexts:Hide()
+			exports['sandbox-hud']:DeathTextsHide()
 			TriggerEvent(string.format("Damage:Client:Gamemode:%s:Died", LocalPlayer.state.gameMode))
 		end
 	else
-		Hud.DeathTexts:Hide()
+		exports['sandbox-hud']:DeathTextsHide()
 		ClearPedTasksImmediately(PlayerPedId())
 		SetEntityInvincible(PlayerPedId(), LocalPlayer.state.isAdmin and LocalPlayer.state.isGodmode or false)
 	end
@@ -165,7 +165,7 @@ function DeadAnimLoop()
 
 			AnimpostfxStop("DeathFailMPIn")
 
-			Hud.DeathTexts:Hide()
+			exports['sandbox-hud']:DeathTextsHide()
 			ClearPedTasksImmediately(ped)
 			SetEntityInvincible(ped, LocalPlayer.state.isAdmin and LocalPlayer.state.isGodmode or false)
 

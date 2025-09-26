@@ -10,7 +10,7 @@ function StartPaletoThreads()
 		while _threading do
 			if _pbGlobalReset ~= nil then
 				if os.time() > _pbGlobalReset then
-					Logger:Info("Robbery", "Paleto Bank Heist Has Been Reset")
+					exports['sandbox-base']:LoggerInfo("Robbery", "Paleto Bank Heist Has Been Reset")
 					ResetPaleto()
 				end
 			end
@@ -28,12 +28,12 @@ function RestorePowerThread()
 		_powerThreading = true
 
 		CreateThread(function()
-			Logger:Info("Robbery", "Paleto Blackout Started")
+			exports['sandbox-base']:LoggerInfo("Robbery", "Paleto Blackout Started")
 			GlobalState["Sync:PaletoBlackout"] = true
 			Wait(1000 * (60 * 30))
 			GlobalState["Sync:PaletoBlackout"] = false
 			_powerThreading = false
-			Logger:Info("Robbery", "Paleto Blackout Ended")
+			exports['sandbox-base']:LoggerInfo("Robbery", "Paleto Blackout Ended")
 		end)
 	end
 end

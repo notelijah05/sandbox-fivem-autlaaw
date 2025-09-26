@@ -1,5 +1,5 @@
 function UpdateCharacterCasinoStats(source, statType, isWin, amount)
-    local char = Fetch:CharacterSource(source)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char then
         local p = promise.new()
 
@@ -24,7 +24,7 @@ function UpdateCharacterCasinoStats(source, statType, isWin, amount)
             }
         end
 
-        Database.Game:findOneAndUpdate({
+        exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
             collection = "casino_statistics",
             query = {
                 SID = char:GetData("SID"),
@@ -49,11 +49,11 @@ function UpdateCharacterCasinoStats(source, statType, isWin, amount)
 end
 
 function SaveCasinoBigWin(source, machine, prize, data)
-    local char = Fetch:CharacterSource(source)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char then
         local p = promise.new()
 
-        Database.Game:insertOne({
+        exports['sandbox-base']:DatabaseGameInsertOne({
             collection = 'casino_bigwins',
             document = {
                 Type = machine,

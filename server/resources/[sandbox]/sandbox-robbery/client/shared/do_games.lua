@@ -11,7 +11,7 @@ function DoLockpick(data, base, cb)
 		size = 2
 	end
 
-	Minigame.Play:RoundSkillbar(base + (0.2 * stageComplete), size, {
+	exports['sandbox-games']:MinigamePlayRoundSkillbar(base + (0.2 * stageComplete), size, {
 		onSuccess = function()
 			Wait(400)
 
@@ -39,7 +39,7 @@ function DoLockpick(data, base, cb)
 end
 
 function DoSequence(passes, config, data, cb)
-	Minigame.Play:Sequencer(
+	exports['sandbox-games']:MinigamePlaySequencer(
 		config.countdown or 3,
 		config.preview or 300,
 		(config.timer or 10000) - ((config.passReduce or 500) * _seqPass),
@@ -67,7 +67,7 @@ function DoSequence(passes, config, data, cb)
 end
 
 function DoMemory(passes, config, data, cb)
-	Minigame.Play:Memory(
+	exports['sandbox-games']:MinigamePlayMemory(
 		config.countdown or 3,
 		config.preview or 3000,
 		config.timer - ((config.passReduce or 300) * _memPass),
@@ -97,7 +97,7 @@ function DoMemory(passes, config, data, cb)
 end
 
 function DoCaptcha(passes, config, data, cb)
-	Minigame.Play:Captcha(
+	exports['sandbox-games']:MinigamePlayCaptcha(
 		config.countdown or 3,
 		config.timer or 1500,
 		config.limit - ((config.passReduce or 1000) * _capPass),
@@ -126,7 +126,7 @@ function DoCaptcha(passes, config, data, cb)
 end
 
 function DoAim(config, data, cb)
-	Minigame.Play:Aim(
+	exports['sandbox-games']:MinigamePlayAim(
 		config.countdown or 3,
 		config.limit or 15750,
 		config.timer or 1000,
@@ -155,7 +155,7 @@ function DoAim(config, data, cb)
 end
 
 function DoKeymaster(config, data, cb)
-	Minigame.Play:Keymaster(
+	exports['sandbox-games']:MinigamePlayKeymaster(
 		config.countdown or 3,
 		config.timer or { 2000, 4000 },
 		config.limit or 40000,
@@ -179,21 +179,22 @@ function DoKeymaster(config, data, cb)
 end
 
 function DoTracking(config, data, cb)
-	Minigame.Play:Tracking(config.countdown or 3, config.delay or 2500, config.limit or 20000, config.difficulty or 5, {
-		onSuccess = function(data)
-			cb(true, data)
-		end,
-		onFail = function(data)
-			cb(false, data)
-		end,
-	}, {
-		playableWhileDead = false,
-		animation = config.anim,
-	}, data)
+	exports['sandbox-games']:MinigamePlayTracking(config.countdown or 3, config.delay or 2500, config.limit or 20000,
+		config.difficulty or 5, {
+			onSuccess = function(data)
+				cb(true, data)
+			end,
+			onFail = function(data)
+				cb(false, data)
+			end,
+		}, {
+			playableWhileDead = false,
+			animation = config.anim,
+		}, data)
 end
 
 function DoIcons(config, data, cb)
-	Minigame.Play:Icons(
+	exports['sandbox-games']:MinigamePlayIcons(
 		config.countdown or 3,
 		config.timer or 5,
 		config.limit or 7500,
@@ -217,7 +218,7 @@ function DoIcons(config, data, cb)
 end
 
 function DoDrill(data, cb)
-	Minigame.Play:Drill({
+	exports['sandbox-games']:MinigamePlayDrill({
 		onSuccess = function(data)
 			cb(true, data)
 		end,
@@ -228,7 +229,7 @@ function DoDrill(data, cb)
 end
 
 function DoScrambler(passes, base, strikes, data, cb)
-	Minigame.Play:Scrambler(
+	exports['sandbox-games']:MinigamePlayScrambler(
 		3,
 		4000,
 		14000 + ((_scramPass or 1) * 4000),

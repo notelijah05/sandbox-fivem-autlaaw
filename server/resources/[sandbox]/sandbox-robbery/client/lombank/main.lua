@@ -1,12 +1,12 @@
 function LBNeedsReset()
 	for k, v in pairs(lbThermPoints) do
-		if not Doors:IsLocked(v.door) then
+		if not exports['sandbox-doors']:IsLocked(v.door) then
 			return true
 		end
 	end
 
 	for k, v in pairs(_lbHackPoints) do
-		if not Doors:IsLocked(v.door) then
+		if not exports['sandbox-doors']:IsLocked(v.door) then
 			return true
 		end
 	end
@@ -36,7 +36,7 @@ function IsLBPowerDisabled()
 end
 
 AddEventHandler("Robbery:Client:Setup", function()
-	Polyzone.Create:Poly("dumbcunt", {
+	exports['sandbox-polyzone']:CreatePoly("dumbcunt", {
 		vector2(-316.5087890625, -2439.6040039062),
 		vector2(-319.24176025391, -2436.7438964844),
 		vector2(-326.0520324707, -2431.16796875),
@@ -55,7 +55,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		door = "coke_garage",
 	})
 
-	Polyzone.Create:Poly("bank_lombank", {
+	exports['sandbox-polyzone']:CreatePoly("bank_lombank", {
 		vector2(-0.41744011640549, -933.08654785156),
 		vector2(14.137574195862, -893.74298095703),
 		vector2(47.590084075928, -905.93432617188),
@@ -65,7 +65,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		-- debugPoly = true,
 	})
 
-	Polyzone.Create:Poly("lombank_power", {
+	exports['sandbox-polyzone']:CreatePoly("lombank_power", {
 		vector2(43.716075897217, -811.39093017578),
 		vector2(43.310741424561, -812.01684570312),
 		vector2(46.399833679199, -813.21368408203),
@@ -83,7 +83,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		door = "lombank_hidden_entrance",
 	})
 
-	Targeting.Zones:AddBox("lombank_secure", "shield-keyhole", vector3(7.69, -923.1, 29.9), 2.8, 1.6, {
+	exports['sandbox-targeting']:ZonesAddBox("lombank_secure", "shield-keyhole", vector3(7.69, -923.1, 29.9), 2.8, 1.6, {
 		heading = 340,
 		--debugPoly=true,
 		minZ = 28.9,
@@ -104,7 +104,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		},
 	}, 3.0, true)
 
-	Polyzone.Create:Box("lombank_death", vector3(24.86, -921.78, 25.74), 7.4, 7.8, {
+	exports['sandbox-polyzone']:CreateBox("lombank_death", vector3(24.86, -921.78, 25.74), 7.4, 7.8, {
 		heading = 340,
 		--debugPoly=true,
 		minZ = 24.74,
@@ -116,14 +116,15 @@ AddEventHandler("Robbery:Client:Setup", function()
 	})
 
 	for k, v in ipairs(_lombankRooms) do
-		Polyzone.Create:Box(string.format("lombank_room_%s", v.roomId), v.coords, v.length, v.width, v.options, {
-			isLombankRoom = true,
-			roomId = v.roomId,
-		})
+		exports['sandbox-polyzone']:CreateBox(string.format("lombank_room_%s", v.roomId), v.coords, v.length, v.width,
+			v.options, {
+				isLombankRoom = true,
+				roomId = v.roomId,
+			})
 	end
 
 	for k, v in ipairs(_lbPowerBoxes) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("lombank_power_%s", v.data.boxId),
 			"box-taped",
 			v.coords,
@@ -164,7 +165,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(_lbUpperVaultPoints) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("lombank_upper_%s", v.wallId),
 			"bore-hole",
 			v.coords,
@@ -195,8 +196,8 @@ end)
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 	if type(data) == "table" then
 		if data.isDeath then
-			if not data.door or Doors:IsLocked(data.door) then
-				Damage.Apply:StandardDamage(10000, false, true)
+			if not data.door or exports['sandbox-doors']:IsLocked(data.door) then
+				exports['sandbox-damage']:ApplyStandardDamage(10000, false, true)
 				TriggerServerEvent("Robbery:Server:Idiot", id)
 				if data.tpCoords ~= nil then
 					ClearPedTasksImmediately(PlayerPedId())
@@ -217,7 +218,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 		LocalPlayer.state:set("inLombankPower", false, true)
 		LocalPlayer.state:set("lombankRoom", data.roomId, true)
 		for k, v in ipairs(_lbCarts) do
-			Targeting:AddObject(v, "treasure-chest", {
+			exports['sandbox-targeting']:AddObject(v, "treasure-chest", {
 				{
 					text = "Grab Loot",
 					icon = "hand",
@@ -226,9 +227,9 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 					minDist = 2.0,
 					isEnabled = function(d, entity)
 						local coords = GetEntityCoords(entity.entity)
-						return not Doors:IsLocked("lombank_lower_gate")
-							and not Doors:IsLocked("lombank_lower_vault")
-							and not Doors:IsLocked(string.format("lombank_lower_room_%s", data.roomId))
+						return not exports['sandbox-doors']:IsLocked("lombank_lower_gate")
+							and not exports['sandbox-doors']:IsLocked("lombank_lower_vault")
+							and not exports['sandbox-doors']:IsLocked(string.format("lombank_lower_room_%s", data.roomId))
 							and GlobalState[string.format(
 								"Lombank:VaultRoom:%s:%s:%s",
 								d,
@@ -257,13 +258,13 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			LocalPlayer.state:set("lombankRoom", false, true)
 		end
 		for k, v in ipairs(_lbCarts) do
-			Targeting:RemoveObject(v)
+			exports['sandbox-targeting']:RemoveObject(v)
 		end
 	end
 end)
 
 AddEventHandler("Robbery:Client:Lombank:StartSecuring", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "secure_lombank",
 		duration = 30000,
 		label = "Securing",
@@ -281,25 +282,25 @@ AddEventHandler("Robbery:Client:Lombank:StartSecuring", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Lombank:SecureBank", {})
+			exports["sandbox-base"]:ServerCallback("Robbery:Lombank:SecureBank", {})
 		end
 	end)
 end)
 
 AddEventHandler("Robbery:Client:Lombank:ElectricBox:Hack", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Lombank:ElectricBox:Hack", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Lombank:ElectricBox:Hack", data, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Lombank:ElectricBox:Thermite", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Lombank:ElectricBox:Thermite", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Lombank:ElectricBox:Thermite", data, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Lombank:Drill", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Lombank:Drill", data.id, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Lombank:Drill", data.id, function() end)
 end)
 
 AddEventHandler("Robbery:Client:Lombank:LootCart", function(entity, data)
-	Callbacks:ServerCallback(
+	exports["sandbox-base"]:ServerCallback(
 		"Robbery:Lombank:Vault:StartLootTrolley",
 		{ coords = GetEntityCoords(entity.entity) },
 		function(valid)
@@ -479,7 +480,7 @@ AddEventHandler("Robbery:Client:Lombank:LootCart", function(entity, data)
 				)
 				NetworkStartSynchronisedScene(Grab3)
 
-				Callbacks:ServerCallback(
+				exports["sandbox-base"]:ServerCallback(
 					"Robbery:Lombank:Vault:FinishLootTrolley",
 					{ coords = GetEntityCoords(entity.entity) }
 				)

@@ -27,11 +27,11 @@ function CreateCasinoShowcaseVehicle(vehData)
 
     if not vehData then return; end
 
-    Game.Vehicles:SpawnLocal(vector3(975.5, 40.41, 72.21), vehData.vehicle, 0.0, function(veh)
+    exports['sandbox-base']:GameVehiclesSpawnLocal(vector3(975.5, 40.41, 72.21), vehData.vehicle, 0.0, function(veh)
         _platformVehicle = veh
 
         if vehData.properties then
-            Vehicles.Properties:Set(veh, vehData.properties)
+            exports['sandbox-vehicles']:PropertiesSet(veh, vehData.properties)
         end
 
         FreezeEntityPosition(veh, true)
@@ -62,7 +62,7 @@ end
 
 function DeleteCasinoShowcaseVehicle()
     if _platformVehicle then
-        Game.Vehicles:Delete(_platformVehicle)
+        exports['sandbox-base']:GameVehiclesDelete(_platformVehicle)
         _platformVehicle = nil
     end
 end

@@ -10,13 +10,14 @@ function Startup()
 		for k, v in ipairs(results) do
 			local plant = {
 				isMale = v.is_male == 1,
-				location = {x = v.x, y = v.y, z = v.z},
+				location = { x = v.x, y = v.y, z = v.z },
 				growth = v.growth,
 				output = v.output,
 				material = v.material,
 				planted = v.planted,
 				water = v.water,
-				fertilizer = v.fertilizer_type and {type = v.fertilizer_type, value = v.fertilizer_value, time = v.fertilizer_time} or nil,
+				fertilizer = v.fertilizer_type and
+					{ type = v.fertilizer_type, value = v.fertilizer_value, time = v.fertilizer_time } or nil,
 				_id = v.id
 			}
 			if os.time() - plant.planted <= Config.Lifetime then
@@ -27,10 +28,10 @@ function Startup()
 				count = count + 1
 			end
 		end
-		Logger:Trace("Weed", string.format("Loaded ^2%s^7 Weed Plants", count), { console = true })
+		exports['sandbox-base']:LoggerTrace("Weed", string.format("Loaded ^2%s^7 Weed Plants", count), { console = true })
 	end)
-	
-	Reputation:Create("weed", "Weed", {
+
+	exports['sandbox-characters']:RepCreate("weed", "Weed", {
 		{ label = "Rank 1", value = 3000 },
 		{ label = "Rank 2", value = 6000 },
 		{ label = "Rank 3", value = 12000 },

@@ -5,65 +5,66 @@ _casinoWheelRotation = vec3(-0.000000, 9.000000, -31.843399)
 _spinningWheel = false
 
 AddEventHandler("Casino:Client:Startup", function()
-    Targeting.Zones:AddBox("casino-wheelspin", "circle-dashed", vector3(989.45, 42.64, 71.27), 1.0, 1.2, {
-        heading = 330,
-        --debugPoly=true,
-        minZ = 70.47,
-        maxZ = 73.27
-    }, {
+    exports['sandbox-targeting']:ZonesAddBox("casino-wheelspin", "circle-dashed", vector3(989.45, 42.64, 71.27), 1.0, 1.2,
         {
-            icon = "face-tongue-money",
-            text = "Spin the Wheel! ($1,500)",
-            event = "Casino:Client:StartSpin",
-            isEnabled = function()
-                return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
-                    not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
-            end,
-        },
-        {
-            icon = "gift-card",
-            text = "VIP Turbo Spin ($7,500)",
-            event = "Casino:Client:StartSpin",
-            data = { turbo = true },
-            isEnabled = function()
-                return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
-                    not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
-            end,
-        },
-        {
-            icon = "unlock",
-            text = "Unlock Wheel",
-            event = "Casino:Client:UnlockWheel",
-            jobPerms = {
-                {
-                    job = "casino",
-                    reqDuty = true,
-                }
+            heading = 330,
+            --debugPoly=true,
+            minZ = 70.47,
+            maxZ = 73.27
+        }, {
+            {
+                icon = "face-tongue-money",
+                text = "Spin the Wheel! ($1,500)",
+                event = "Casino:Client:StartSpin",
+                isEnabled = function()
+                    return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
+                        not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
+                end,
             },
-            isEnabled = function()
-                return GlobalState["Casino:WheelLocked"]
-            end,
-        },
-    }, 2.0, true)
+            {
+                icon = "gift-card",
+                text = "VIP Turbo Spin ($7,500)",
+                event = "Casino:Client:StartSpin",
+                data = { turbo = true },
+                isEnabled = function()
+                    return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
+                        not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
+                end,
+            },
+            {
+                icon = "unlock",
+                text = "Unlock Wheel",
+                event = "Casino:Client:UnlockWheel",
+                jobPerms = {
+                    {
+                        job = "casino",
+                        reqDuty = true,
+                    }
+                },
+                isEnabled = function()
+                    return GlobalState["Casino:WheelLocked"]
+                end,
+            },
+        }, 2.0, true)
 end)
 
 AddEventHandler("Casino:Client:UnlockWheel", function()
-    Callbacks:ServerCallback("Casino:UnlockWheel", {}, function(success)
+    exports["sandbox-base"]:ServerCallback("Casino:UnlockWheel", {}, function(success)
         if success then
-            Notification:Success("Wheel Unlocked")
+            exports["sandbox-hud"]:NotifSuccess("Wheel Unlocked")
         else
-            Notification:Error("Error")
+            exports["sandbox-hud"]:NotifError("Error")
         end
     end)
 end)
 
 AddEventHandler("Casino:Client:StartSpin", function(_, data)
-    Callbacks:ServerCallback("Casino:WheelStart", data, function(success, tooPoor)
+    exports["sandbox-base"]:ServerCallback("Casino:WheelStart", data, function(success, tooPoor)
         if success then
             LocalPlayer.state.playingCasino = true
 
-            Animations.Emotes:ForceCancel()
-            Weapons:UnequipIfEquippedNoAnim()
+            exports['sandbox-animations']:EmotesForceCancel()
+            exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
             local _lib = "anim_casino_a@amb@casino@games@lucky7wheel@male"
             -- if IsPedMale(playerPed) then
@@ -95,7 +96,7 @@ AddEventHandler("Casino:Client:StartSpin", function(_, data)
                 DisableAllControlActions(0)
             end
 
-            Callbacks:ServerCallback("Casino:WheelSpin", {})
+            exports["sandbox-base"]:ServerCallback("Casino:WheelSpin", {})
 
             TaskPlayAnim(LocalPlayer.state.ped, lib, "armraisedidle_to_spinningidle_high", 8.0, -8.0, -1, 0, 0, false,
                 false, false)
@@ -104,9 +105,9 @@ AddEventHandler("Casino:Client:StartSpin", function(_, data)
         else
             if tooPoor then
                 if data.turbo then
-                    Notification:Error("Not Enough Cash or No VIP Card")
+                    exports["sandbox-hud"]:NotifError("Not Enough Cash or No VIP Card")
                 else
-                    Notification:Error("Not Enough Cash")
+                    exports["sandbox-hud"]:NotifError("Not Enough Cash")
                 end
             end
         end

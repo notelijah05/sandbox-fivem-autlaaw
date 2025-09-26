@@ -5,49 +5,15 @@ local _jobs = {
 	tow = true,
 }
 
-AddEventHandler("EmergencyAlerts:Shared:DependencyUpdate", RetrievePDAComponents)
-function RetrievePDAComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Callbacks",
-		"Logger",
-		"Sounds",
-		"UISounds",
-		"EmergencyAlerts",
-		"Notification",
-		"Keybinds",
-		"Blips",
-		"CCTV",
-		"Progress",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrievePDAComponents()
-		RegisterCallbacks()
-		Keybinds:Add("emergency_alerts_toggle", "GRAVE", "keyboard", "Police - Toggle Alerts Panel", function()
+	RegisterCallbacks()
+	exports["sandbox-keybinds"]:Add("emergency_alerts_toggle", "GRAVE", "keyboard", "Police - Toggle Alerts Panel",
+		function()
 			local duty = LocalPlayer.state.onDuty
 			if _jobs[duty] and not LocalPlayer.state.isDead then
-				EmergencyAlerts:Open()
+				exports['sandbox-mdt']:EmergencyAlertsOpen()
 			end
 		end)
-	end)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("EmergencyAlerts", _pdAlerts)
 end)
 
 local _pTs = {
@@ -174,7 +140,7 @@ function nearNpc(dist, isGunshot)
 end
 
 function RegisterCallbacks()
-	Callbacks:RegisterClientCallback("EmergencyAlerts:GetStreetName", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("EmergencyAlerts:GetStreetName", function(data, cb)
 		local x, y, z = table.unpack(data)
 		local main, cross = GetStreetNameAtCoord(x, y, z, Citizen.ResultAsInteger(), Citizen.ResultAsInteger())
 
@@ -192,38 +158,42 @@ function RegisterCallbacks()
 end
 
 local ids = 0
-_pdAlerts = {
-	Open = function(self)
-		SendNUIMessage({
-			type = "SET_SHOWING",
-			data = {
-				state = true,
-			},
-		})
-		SetNuiFocus(true, true)
-	end,
-	Close = function(self)
-		SendNUIMessage({
-			type = "SET_SHOWING",
-			data = {
-				state = false,
-			},
-		})
-		SetNuiFocus(false, false)
-	end,
-	CreateIfReported = function(self, distance, type, isNpcTriggered, description)
-		if isNpcTriggered then
-			local ped = nearNpc(distance, type == "shotsfired" or type == "shotsfiredvehicle")
-			if ped ~= nil then
-				TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", type, description)
-				return true
-			end
-			return false
-		else
+
+exports("EmergencyAlertsOpen", function()
+	SendNUIMessage({
+		type = "SET_SHOWING",
+		data = {
+			state = true,
+		},
+	})
+	SetNuiFocus(true, true)
+end)
+
+exports("EmergencyAlertsClose", function()
+	SendNUIMessage({
+		type = "SET_SHOWING",
+		data = {
+			state = false,
+		},
+	})
+	SetNuiFocus(false, false)
+end)
+
+exports("EmergencyAlertsCreateIfReported", function(distance, type, isNpcTriggered, description)
+	if isNpcTriggered then
+		local ped = nearNpc(distance, type == "shotsfired" or type == "shotsfiredvehicle")
+		if ped ~= nil then
 			TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", type, description)
+			return true
 		end
-	end,
-	CreateClientAlert = function(self, code, title, eType, location, description, isPanic, blip, styleOverride, isArea, camera)
+		return false
+	else
+		TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", type, description)
+	end
+end)
+
+exports("EmergencyAlertsCreateClientAlert",
+	function(code, title, eType, location, description, isPanic, blip, styleOverride, isArea, camera)
 		local alert = {
 			id = string.format("local-%s-%s", GetGameTimer(), math.random(1000, 9999)),
 			code = code,
@@ -245,13 +215,12 @@ _pdAlerts = {
 				alert = alert,
 			},
 		})
-	end,
-}
+	end)
 
 RegisterNetEvent("EmergencyAlerts:Client:Open", function()
-	EmergencyAlerts:Open()
+	exports['sandbox-mdt']:EmergencyAlertsOpen()
 end)
 
 RegisterNetEvent("EmergencyAlerts:Client:Close", function()
-	EmergencyAlerts:Close()
+	exports['sandbox-mdt']:EmergencyAlertsClose()
 end)

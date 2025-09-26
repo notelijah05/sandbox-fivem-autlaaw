@@ -1,21 +1,23 @@
 RegisterNUICallback("CloseAlerts", function(data, cb)
 	cb("OK")
-	EmergencyAlerts:Close()
+	exports['sandbox-mdt']:EmergencyAlertsClose()
 end)
 
 RegisterNUICallback("ReceiveAlert", function(data, cb)
 	if data and data.id then
 		if data.panic then
-			Sounds.Play:Distance(15, "panic.ogg", 0.5)
+			exports["sandbox-sounds"]:PlayDistance(15, "panic.ogg", 0.5)
 		else
-			Sounds.Play:One("alert_normal.ogg", 0.5)
+			exports["sandbox-sounds"]:PlayOne("alert_normal.ogg", 0.5)
 		end
 
 		if data.blip and type(data.blip) == "table" and data.location ~= nil then
 			data.blip.id = string.format("emrg-%s", data.id)
 			data.blip.title = string.format("%s", data.title)
 
-			local eB = Blips:Add(data.blip.id, data.blip.title, data.location, data.blip.icon, data.blip.color, data.blip.size, 2, false, data.blip.flashing)
+			local eB = exports["sandbox-blips"]:Add(data.blip.id, data.blip.title, data.location, data.blip.icon,
+				data.blip.color,
+				data.blip.size, 2, false, data.blip.flashing)
 			SetBlipFlashes(eB, isPanic)
 			table.insert(_alertBlips, {
 				id = data.blip.id,
@@ -41,7 +43,7 @@ end)
 RegisterNUICallback("RemoveAlert", function(data, cb)
 	if data and data.id then
 		local id = string.format("emrg-%s", data.id)
-        Blips:Remove(id)
+		exports["sandbox-blips"]:Remove(id)
 
 		for k, v in ipairs(_alertBlips) do
 			if v.id == id then
@@ -54,15 +56,15 @@ RegisterNUICallback("RemoveAlert", function(data, cb)
 end)
 
 RegisterNUICallback("AssignedToAlert", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "Menu_Accept", "Phone_SoundSet_Default")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Menu_Accept", "Phone_SoundSet_Default")
 	cb("OK")
 end)
 
 RegisterNUICallback("RouteAlert", function(data, cb)
 	cb("OK")
 	if data.location then
-		UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
-		EmergencyAlerts:Close()
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+		exports['sandbox-mdt']:EmergencyAlertsClose()
 
 		if data.blip then
 			local f = false
@@ -75,7 +77,7 @@ RegisterNUICallback("RouteAlert", function(data, cb)
 			end
 
 			if not f then
-				local eB = Blips:Add(
+				local eB = exports["sandbox-blips"]:Add(
 					string.format("emrg-%s", data.id),
 					data.title,
 					data.location,
@@ -95,21 +97,21 @@ RegisterNUICallback("RouteAlert", function(data, cb)
 
 		ClearGpsPlayerWaypoint()
 		SetNewWaypoint(data.location.x, data.location.y)
-		Notification:Info("Alert Location Marked")
+		exports["sandbox-hud"]:NotifInfo("Alert Location Marked")
 	end
 end)
 
 RegisterNUICallback("ViewCamera", function(data, cb)
 	cb('OK')
 	if data.camera then
-		UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
-		EmergencyAlerts:Close()
-		Callbacks:ServerCallback("CCTV:ViewGroup", data.camera)
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+		exports['sandbox-mdt']:EmergencyAlertsClose()
+		exports["sandbox-base"]:ServerCallback("CCTV:ViewGroup", data.camera)
 	end
 end)
 
 RegisterNUICallback("SwapToRadio", function(data, cb)
 	cb("OK")
-	UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	TriggerEvent("Radio:Client:SetChannelFromInput", data.radio)
 end)

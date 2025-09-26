@@ -1,17 +1,17 @@
 _dropping = {}
-COMPONENTS.Players = COMPONENTS.Players or {}
-COMPONENTS.RecentDisconnects = COMPONENTS.RecentDisconnects or {}
+local _players = {}
+local _recentDisconnects = {}
 
 CreateThread(function()
 	while true do
-		for k, v in pairs(COMPONENTS.Players) do
+		for k, v in pairs(_players) do
 			if not GetPlayerEndpoint(k) and not _dropping[k] then
-				local char = COMPONENTS.Fetch:CharacterSource(k)
+				local char = exports['sandbox-characters']:FetchCharacterSource(k)
 				if char ~= nil then
 					TriggerEvent("Characters:Server:PlayerDropped", k, char:GetData())
 				end
-				COMPONENTS.Middleware:TriggerEvent("playerDropped", k, "Time Out")
-				COMPONENTS.Players[k] = nil
+				exports['sandbox-base']:MiddlewareTriggerEvent("playerDropped", k, "Time Out")
+				_players[k] = nil
 			end
 		end
 		Wait(60000)
@@ -19,16 +19,16 @@ CreateThread(function()
 end)
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()
-	COMPONENTS.Middleware:Add("playerDropped", function(source, message)
-		local player = COMPONENTS.Players[source]
+	exports['sandbox-base']:MiddlewareAdd("playerDropped", function(source, message)
+		local player = _players[source]
 		if player ~= nil then
 			local lastLocationMessage = ""
-			local lastCoords = COMPONENTS.Characters:GetLastLocation(source) or false
+			local lastCoords = exports['sandbox-characters']:GetLastLocation(source) or false
 			if lastCoords and type(lastCoords) == "vector3" then
 				lastLocationMessage = string.format(" [Coords: %s]", lastCoords)
 			end
 
-			COMPONENTS.Logger:Info(
+			exports['sandbox-base']:LoggerInfo(
 				"Base",
 				string.format(
 					"%s (%s) With Source %s Disconnected, Reason: %s%s",
@@ -49,10 +49,10 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 			)
 		end
 	end, 1)
-	COMPONENTS.Middleware:Add("playerDropped", function(source, message)
-		local player = COMPONENTS.Players[source]
+	exports['sandbox-base']:MiddlewareAdd("playerDropped", function(source, message)
+		local player = _players[source]
 		if player ~= nil then
-			local char = COMPONENTS.Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 			local pData = {
 				Source = source,
@@ -73,11 +73,11 @@ AddEventHandler("Proxy:Shared:RegisterReady", function()
 				DisconnectedTime = os.time(),
 			}
 
-			if #COMPONENTS.RecentDisconnects >= 60 then
-				table.remove(COMPONENTS.RecentDisconnects, 1)
+			if #_recentDisconnects >= 60 then
+				table.remove(_recentDisconnects, 1)
 			end
 
-			table.insert(COMPONENTS.RecentDisconnects, pData)
+			table.insert(_recentDisconnects, pData)
 		end
 	end, 2)
 end)
@@ -86,25 +86,25 @@ AddEventHandler("playerDropped", function(message)
 	local src = source
 	_dropping[src] = true
 
-	local char = COMPONENTS.Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		TriggerEvent("Characters:Server:PlayerDropped", src, char:GetData())
 	end
 
-	COMPONENTS.Middleware:TriggerEvent("playerDropped", src, message)
-	COMPONENTS.Players[src] = nil
+	exports['sandbox-base']:MiddlewareTriggerEvent("playerDropped", src, message)
+	_players[src] = nil
 	_dropping[src] = nil
 
 	if char ~= nil then
-		COMPONENTS.DataStore:DeleteStore(src, "Character")
+		exports["sandbox-base"]:DeleteStore(src, "Character")
 	end
-	COMPONENTS.DataStore:DeleteStore(src, "Player")
+	exports["sandbox-base"]:DeleteStore(src, "Player")
 	TriggerEvent("Characters:Server:DropCleanup", src)
 end)
 
 AddEventHandler("Core:Server:ForceUnload", function(source)
 	DropPlayer(source, "You were force unloaded but were still on the server, this was probably mistake.")
-	COMPONENTS.Players[source] = nil
+	_players[source] = nil
 	_dropping[source] = nil
 end)
 
@@ -125,14 +125,14 @@ AddEventHandler("Queue:Server:SessionActive", function(source, data)
 				AccountID = data.AccountID,
 				Avatar = data.Avatar,
 				Identifier = data.Identifier,
-				--Tokens = COMPONENTS.Player:CheckTokens(source, data.ID, data.Tokens),
+				--Tokens = exports["sandbox-base"]:CheckTokens(source, data.ID, data.Tokens),
 				GameName = GetPlayerName(source),
 			}
 
-			for k, v in pairs(COMPONENTS.Players) do
+			for k, v in pairs(_players) do
 				if v:GetData("AccountID") == pData.AccountID then
-					COMPONENTS.Players[k] = nil
-					COMPONENTS.Logger:Error(
+					_players[k] = nil
+					exports['sandbox-base']:LoggerError(
 						"Base",
 						string.format("%s Connected But Was Already Registered As A Player, Clearing", pData.AccountID)
 					)
@@ -145,14 +145,14 @@ AddEventHandler("Queue:Server:SessionActive", function(source, data)
 				end
 			end
 
-			COMPONENTS.Players[source] = PlayerClass(source, pData)
-			COMPONENTS.Routing:RoutePlayerToHiddenRoute(source)
-			COMPONENTS.Logger:Info(
+			_players[source] = PlayerClass(source, pData)
+			exports["sandbox-base"]:RoutePlayerToHiddenRoute(source)
+			exports['sandbox-base']:LoggerInfo(
 				"Base",
 				string.format(
 					"%s (%s) Connected With Source %s",
-					COMPONENTS.Players[source]:GetData("Name"),
-					COMPONENTS.Players[source]:GetData("AccountID"),
+					_players[source]:GetData("Name"),
+					_players[source]:GetData("AccountID"),
 					source
 				),
 				{
@@ -165,90 +165,99 @@ AddEventHandler("Queue:Server:SessionActive", function(source, data)
 				}
 			)
 
-			TriggerClientEvent("Player:Client:SetData", source, COMPONENTS.Players[source]:GetData())
+			TriggerClientEvent("Player:Client:SetData", source, _players[source]:GetData())
 
-			Player(source).state.isStaff = COMPONENTS.Players[source].Permissions:IsStaff()
-			Player(source).state.isAdmin = COMPONENTS.Players[source].Permissions:IsAdmin()
-			Player(source).state.isDev = COMPONENTS.Players[source].Permissions:GetLevel() >= 100
+			Player(source).state.isStaff = _players[source].Permissions:IsStaff()
+			Player(source).state.isAdmin = _players[source].Permissions:IsAdmin()
+			Player(source).state.isDev = _players[source].Permissions:GetLevel() >= 100
 
 			TriggerEvent("Player:Server:Connected", source)
 		end
 	end)
 end)
 
-COMPONENTS.Player = {
-	_required = {},
-	_name = "base",
-	CheckTokens = function(self, source, accountId, existing)
-		local p = promise.new()
+exports("CheckTokens", function(source, accountId, existing)
+	local p = promise.new()
 
-		local ctkns = {}
-		for i = 0, GetNumPlayerTokens(source) - 1 do
-			ctkns[GetPlayerToken(source, i)] = true
+	local ctkns = {}
+	for i = 0, GetNumPlayerTokens(source) - 1 do
+		ctkns[GetPlayerToken(source, i)] = true
+	end
+
+	if existing ~= nil then
+		for k, v in ipairs(existing) do
+			if ctkns[v] then
+				ctkns[v] = nil
+			end
+		end
+		for k, v in pairs(ctkns) do
+			table.insert(existing, k)
+		end
+		exports['sandbox-base']:DatabaseAuthUpdateOne({
+			collection = "tokens",
+			query = {
+				account = accountId,
+			},
+			update = {
+				["$set"] = {
+					tokens = existing,
+				},
+			},
+		}, function()
+			p:resolve(existing)
+		end)
+	else
+		local tkns = {}
+		for k, v in pairs(ctkns) do
+			table.insert(tkns, k)
 		end
 
-		if existing ~= nil then
-			for k, v in ipairs(existing) do
-				if ctkns[v] then
-					ctkns[v] = nil
-				end
-			end
-			for k, v in pairs(ctkns) do
-				table.insert(existing, k)
-			end
-			COMPONENTS.Database.Auth:updateOne({
-				collection = "tokens",
-				query = {
-					account = accountId,
+		exports['sandbox-base']:DatabaseAuthUpdateOne({
+			collection = "tokens",
+			query = {
+				account = accountId,
+			},
+			update = {
+				["$set"] = {
+					tokens = tkns,
 				},
-				update = {
-					["$set"] = {
-						tokens = existing,
-					},
-				},
-			}, function()
-				p:resolve(existing)
-			end)
-		else
-			local tkns = {}
-			for k, v in pairs(ctkns) do
-				table.insert(tkns, k)
-			end
+			},
+			options = {
+				upsert = true,
+			},
+		}, function()
+			p:resolve(tkns)
+		end)
+	end
 
-			COMPONENTS.Database.Auth:updateOne({
-				collection = "tokens",
-				query = {
-					account = accountId,
-				},
-				update = {
-					["$set"] = {
-						tokens = tkns,
-					},
-				},
-				options = {
-					upsert = true,
-				},
-			}, function()
-				p:resolve(tkns)
-			end)
-		end
+	return Citizen.Await(p)
+end)
 
-		return Citizen.Await(p)
-	end,
-}
+exports("GetPlayer", function(source)
+	return _players[source]
+end)
+
+exports("GetAllPlayers", function()
+	return _players
+end)
+
+exports("GetRecentDisconnects", function()
+	return _recentDisconnects
+end)
 
 function PlayerClass(source, data)
-	local _data = COMPONENTS.DataStore:CreateStore(source, "Player", data)
+	local _data = exports["sandbox-base"]:CreateStore(source, "Player", data)
 
 	_data.Permissions = {
 		IsStaff = function(self)
 			for k, v in ipairs(_data:GetData("Groups")) do
+				local group = exports['sandbox-base']:ConfigGetGroupById(v)
 				if
-					COMPONENTS.Config.Groups[v] ~= nil
-					and type(COMPONENTS.Config.Groups[v].Permission) == "table"
+					group ~= nil
+					and type(group.Permission) == "table"
 					and (
-						COMPONENTS.Config.Groups[v].Permission.Group == "staff"
-						or COMPONENTS.Config.Groups[v].Permission.Group == "admin"
+						group.Permission.Group == "staff"
+						or group.Permission.Group == "admin"
 					)
 				then
 					return true
@@ -258,10 +267,11 @@ function PlayerClass(source, data)
 		end,
 		IsAdmin = function(self)
 			for k, v in ipairs(_data:GetData("Groups")) do
+				local group = exports['sandbox-base']:ConfigGetGroupById(v)
 				if
-					COMPONENTS.Config.Groups[v] ~= nil
-					and type(COMPONENTS.Config.Groups[v].Permission) == "table"
-					and COMPONENTS.Config.Groups[v].Permission.Group == "admin"
+					group ~= nil
+					and type(group.Permission) == "table"
+					and group.Permission.Group == "admin"
 				then
 					return true
 				end
@@ -271,12 +281,13 @@ function PlayerClass(source, data)
 		GetLevel = function(self)
 			local highest = 0
 			for k, v in ipairs(_data:GetData("Groups")) do
+				local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
 				if
-					COMPONENTS.Config.Groups[tostring(v)] ~= nil
-					and type(COMPONENTS.Config.Groups[tostring(v)].Permission) == "table"
+					group ~= nil
+					and type(group.Permission) == "table"
 				then
-					if COMPONENTS.Config.Groups[tostring(v)].Permission.Level > highest then
-						highest = COMPONENTS.Config.Groups[tostring(v)].Permission.Level
+					if group.Permission.Level > highest then
+						highest = group.Permission.Level
 					end
 				end
 			end
@@ -287,15 +298,16 @@ function PlayerClass(source, data)
 
 	local license = GetPlayerLicense(source)
 	for k, v in ipairs(_data:GetData("Groups")) do
+		local group = exports['sandbox-base']:ConfigGetGroupById(tostring(v))
 		if
-			COMPONENTS.Config.Groups[tostring(v)] ~= nil
-			and type(COMPONENTS.Config.Groups[tostring(v)].Permission) == "table"
-			and COMPONENTS.Config.Groups[tostring(v)].Permission.Group
+			group ~= nil
+			and type(group.Permission) == "table"
+			and group.Permission.Group
 		then
 			ExecuteCommand(
 				("add_principal identifier.license:%s group.%s"):format(
 					license,
-					COMPONENTS.Config.Groups[tostring(v)].Permission.Group
+					group.Permission.Group
 				)
 			)
 		end

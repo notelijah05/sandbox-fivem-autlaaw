@@ -14,7 +14,7 @@ local _sessionWinnings = 0
 
 AddEventHandler("Casino:Client:Startup", function()
     for k, v in ipairs(_slotMachineObjects) do
-        Targeting:AddObject(v, "slot-machine", {
+        exports['sandbox-targeting']:AddObject(v, "slot-machine", {
             {
                 icon = "slot-machine",
                 text = "Use Machine",
@@ -91,7 +91,7 @@ AddEventHandler("Casino:Client:UseSlotMachine", function()
     local tableId, tableObj = GetClosestSlotMachine()
 
     if tableId then
-        Callbacks:ServerCallback("Casino:SlotMachineSit", tableId, function(success)
+        exports["sandbox-base"]:ServerCallback("Casino:SlotMachineSit", tableId, function(success)
             if success then
                 _satInChair = GetChairObjFromTable(tableId, tableObj)
                 _sessionSpent = 0
@@ -99,8 +99,8 @@ AddEventHandler("Casino:Client:UseSlotMachine", function()
 
                 LocalPlayer.state.playingCasino = true
 
-                Animations.Emotes:ForceCancel()
-                Weapons:UnequipIfEquippedNoAnim()
+                exports['sandbox-animations']:EmotesForceCancel()
+                exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
                 loadAnim("anim_casino_b@amb@casino@games@shared@player@")
 
@@ -144,11 +144,11 @@ AddEventHandler("Casino:Client:UseSlotMachine", function()
 
                 SetupSlotMachine()
             else
-                Notification:Error("Seat Taken")
+                exports["sandbox-hud"]:NotifError("Seat Taken")
             end
         end)
     else
-        Notification:Error("Not Close Enough to Machine")
+        exports["sandbox-hud"]:NotifError("Not Close Enough to Machine")
     end
 end)
 
@@ -206,7 +206,7 @@ AddEventHandler("Casino:Client:PlaySlotMachine", function(_, data)
 
         Wait(1000)
 
-        Callbacks:ServerCallback("Casino:SlotMachinePlay", data,
+        exports["sandbox-base"]:ServerCallback("Casino:SlotMachinePlay", data,
             function(success, reelRotations, timeOut, sound, wonAmount)
                 if success then
                     _sessionSpent += data.bet
@@ -263,9 +263,9 @@ end
 
 AddEventHandler("Casino:Client:LeaveSlotMachine", function()
     if _satInChair then
-        Callbacks:ServerCallback("Casino:SlotMachineLeave", {}, function(success)
+        exports["sandbox-base"]:ServerCallback("Casino:SlotMachineLeave", {}, function(success)
             if success then
-                InfoOverlay:Close()
+                exports['sandbox-hud']:InfoOverlayClose()
 
                 LocalPlayer.state.playingCasino = false
 
@@ -371,12 +371,12 @@ end
 function ShowSlotStateUI()
     if _satInChair then
         local machineName = _slotMachineNames[_satInChair.tableModel]
-        local myBalance = math.floor(Casino.Chips:Get())
+        local myBalance = math.floor(exports['sandbox-casino']:ChipsGet())
 
         local overlay = string.format("Chip Balance: $%s<br>Session Spent: $%s<br>Session Winnings: $%s",
             formatNumberToCurrency(myBalance), formatNumberToCurrency(math.floor(_sessionSpent)),
             formatNumberToCurrency(math.floor(_sessionWinnings)))
 
-        InfoOverlay:Show(machineName, overlay)
+        exports['sandbox-hud']:InfoOverlayShow(machineName, overlay)
     end
 end

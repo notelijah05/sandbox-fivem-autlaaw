@@ -16,13 +16,6 @@ RegisterNetEvent("__cfx_internal:serverPrint")
 
 RegisterNetEvent("_chat:messageEntered")
 
-AddEventHandler("CarPark:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Chat.Refresh:Commands()
-	Chat.Refresh:Themes()
-end
-
 AddEventHandler("Characters:Client:Spawn", function()
 	CreateThread(function()
 		SetTextChatEnabled(false)
@@ -52,14 +45,8 @@ AddEventHandler("Characters:Client:Spawn", function()
 end)
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("CarPark", {
-		"Chat",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-	end)
+	exports["sandbox-chat"]:RefreshCommands()
+	exports["sandbox-chat"]:RefreshThemes()
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
@@ -85,54 +72,45 @@ RegisterNetEvent("UI:Client:Reset", function(apps)
 	})
 end)
 
-CHAT = {
-	Open = function(self) end,
-	Close = function(self) end,
-	Refresh = {
-		Commands = function(self)
-			if GetRegisteredCommands then
-				local registeredCommands = GetRegisteredCommands()
+exports("RefreshCommands", function()
+	if GetRegisteredCommands then
+		local registeredCommands = GetRegisteredCommands()
 
-				local suggestions = {}
+		local suggestions = {}
 
-				for _, command in ipairs(registeredCommands) do
-					if IsAceAllowed(("command.%s"):format(command.name)) then
-						table.insert(suggestions, {
-							name = "/" .. command.name,
-							help = "",
-						})
-					end
-				end
-
-				TriggerEvent("chat:addSuggestions", suggestions)
+		for _, command in ipairs(registeredCommands) do
+			if IsAceAllowed(("command.%s"):format(command.name)) then
+				table.insert(suggestions, {
+					name = "/" .. command.name,
+					help = "",
+				})
 			end
-		end,
-		Themes = function(self)
-			local themes = {}
+		end
 
-			for resIdx = 0, GetNumResources() - 1 do
-				local resource = GetResourceByFindIndex(resIdx)
+		TriggerEvent("chat:addSuggestions", suggestions)
+	end
+end)
 
-				if GetResourceState(resource) == "started" then
-					local numThemes = GetNumResourceMetadata(resource, "chat_theme")
+exports("RefreshThemes", function()
+	local themes = {}
 
-					if numThemes > 0 then
-						local themeName = GetResourceMetadata(resource, "chat_theme")
-						local themeData = json.decode(GetResourceMetadata(resource, "chat_theme_extra") or "null")
+	for resIdx = 0, GetNumResources() - 1 do
+		local resource = GetResourceByFindIndex(resIdx)
 
-						if themeName and themeData then
-							themeData.baseUrl = "nui://" .. resource .. "/"
-							themes[themeName] = themeData
-						end
-					end
+		if GetResourceState(resource) == "started" then
+			local numThemes = GetNumResourceMetadata(resource, "chat_theme")
+
+			if numThemes > 0 then
+				local themeName = GetResourceMetadata(resource, "chat_theme")
+				local themeData = json.decode(GetResourceMetadata(resource, "chat_theme_extra") or "null")
+
+				if themeName and themeData then
+					themeData.baseUrl = "nui://" .. resource .. "/"
+					themes[themeName] = themeData
 				end
 			end
-		end,
-	},
-}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Chat", CHAT)
+		end
+	end
 end)
 
 --deprecated, use chat:addMessage
@@ -269,8 +247,8 @@ AddEventHandler("onClientResourceStart", function(resName)
 	Wait(500)
 
 	if Chat ~= nil then
-		Chat.Refresh:Commands()
-		Chat.Refresh:Themes()
+		exports["sandbox-chat"]:RefreshCommands()
+		exports["sandbox-chat"]:RefreshThemes()
 	end
 end)
 
@@ -278,8 +256,8 @@ AddEventHandler("onClientResourceStop", function(resName)
 	Wait(500)
 
 	if Chat ~= nil then
-		Chat.Refresh:Commands()
-		Chat.Refresh:Themes()
+		exports["sandbox-chat"]:RefreshCommands()
+		exports["sandbox-chat"]:RefreshThemes()
 	end
 end)
 
@@ -287,8 +265,8 @@ RegisterNUICallback("loaded", function(data, cb)
 	TriggerServerEvent("chat:init")
 
 	if Chat ~= nil then
-		Chat.Refresh:Commands()
-		Chat.Refresh:Themes()
+		exports["sandbox-chat"]:RefreshCommands()
+		exports["sandbox-chat"]:RefreshThemes()
 	end
 
 	cb("ok")

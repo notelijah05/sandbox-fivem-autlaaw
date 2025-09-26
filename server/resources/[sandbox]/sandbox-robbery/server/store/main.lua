@@ -577,7 +577,7 @@ function Threads()
 
 	CreateThread(function()
 		while true do
-			Logger:Trace("Robbery", "Resetting Store Alert States With Expired Emergency Alerts")
+			exports['sandbox-base']:LoggerTrace("Robbery", "Resetting Store Alert States With Expired Emergency Alerts")
 			for k, v in pairs(_storeAlerts) do
 				if v < os.time() then
 					_storeAlerts[k] = nil
@@ -594,8 +594,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 	GlobalState["StoreRobberies"] = _storeLocs
 	GlobalState["StoreSafes"] = _safes
 
-	Callbacks:RegisterServerCallback("Robbery:Store:Register", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:Register", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		local d = GlobalState[string.format("Register:%s:%s", data.coords[1], data.coords[2])]
 		if
@@ -606,37 +606,38 @@ AddEventHandler("Robbery:Server:Setup", function()
 		then
 			_cRegisterCooldowns[source] = os.time() + 5
 			if data.results then
-				Loot:CustomWeightedSetWithCount(_registerLoot, char:GetData("SID"), 1)
-				Wallet:Modify(source, (math.random(150) + 100))
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_registerLoot, char:GetData("SID"), 1)
+				exports['sandbox-finance']:WalletModify(source, (math.random(150) + 100))
 				cb(true)
 			else
-				Inventory.Items:Remove(char:GetData("SID"), 1, "lockpick", 1)
+				exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "lockpick", 1)
 
-				local slot = Inventory.Items:GetFirst(char:GetData("SID"), "lockpick", 1)
+				local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "lockpick", 1)
 				if slot ~= nil then
-					local itemData = Inventory.Items:GetData("lockpick")
+					local itemData = exports['sandbox-inventory']:ItemsGetData("lockpick")
 					local newValue = slot.CreateDate - math.ceil(itemData.durability / 2)
 					if success then
 						newValue = slot.CreateDate - math.ceil(itemData.durability / 8)
 					end
 					if os.time() - itemData.durability >= newValue then
-						Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+						exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						Inventory:SetItemCreateDate(slot.id, newValue)
+						exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 
 				if _storeAlerts[data.store] == nil or _storeAlerts[data.store] < os.time() then
 					_storeAlerts[data.store] = (os.time() + (60 * 5))
-					Robbery:TriggerPDAlert(source, _storeLocs[data.store].coords, "10-90", "Store Robbery", {
-						icon = 628,
-						size = 0.9,
-						color = 31,
-						duration = (60 * 5),
-					}, {
-						icon = "shop",
-						details = "24/7",
-					}, data.store)
+					exports['sandbox-robbery']:TriggerPDAlert(source, _storeLocs[data.store].coords, "10-90",
+						"Store Robbery", {
+							icon = 628,
+							size = 0.9,
+							color = 31,
+							duration = (60 * 5),
+						}, {
+							icon = "shop",
+							details = "24/7",
+						}, data.store)
 				end
 				cb(true)
 			end
@@ -645,39 +646,30 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:StartSafeCrack", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:StartSafeCrack", function(source, data, cb)
 		local pState = Player(source).state
 
 		if pState.storePoly ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				if
 					GlobalState[string.format("Safe:%s", data.id)] == nil
 					or os.time() > GlobalState[string.format("Safe:%s", data.id)].expires
 				then
 					if GetGameTimer() < STORE_SERVER_START_WAIT then
-						Execute:Client(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return cb(false)
 					elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-						Execute:Client(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return cb(false)
 					elseif GlobalState["RobberiesDisabled"] then
-						Execute:Client(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -686,12 +678,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if not _storeInUse[pState.storePoly] then
 						_storeInUse[pState.storePoly] = source
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), "safecrack_kit", 1)
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "safecrack_kit", 1)
 
 						if slot ~= nil then
-							local itemData = Inventory.Items:GetData(slot.Name)
+							local itemData = exports['sandbox-inventory']:ItemsGetData(slot.Name)
 
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Store Robbery (Safe) At Store %s",
@@ -702,7 +694,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								)
 							)
 
-							Callbacks:ClientCallback(source, "Robbery:Store:DoSafeCrack", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Store:DoSafeCrack", {
 								passes = 1,
 								config = {
 									countdown = 3,
@@ -716,13 +708,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 								},
 								data = {},
 							}, function(isSuccess, extra)
-								local itemData = Inventory.Items:GetData("safecrack_kit")
+								local itemData = exports['sandbox-inventory']:ItemsGetData("safecrack_kit")
 
 								local newValue = slot.CreateDate - math.ceil(itemData.durability / 2)
 								if os.time() - itemData.durability >= newValue then
-									Inventory.Items:RemoveId(char:GetData("SID"), 1, slot)
+									exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
 								else
-									Inventory:SetItemCreateDate(slot.id, newValue)
+									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if isSuccess then
@@ -731,7 +723,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										or _storeAlerts[pState.storePoly] < os.time()
 									then
 										_storeAlerts[pState.storePoly] = (os.time() + (60 * 5))
-										Robbery:TriggerPDAlert(
+										exports['sandbox-robbery']:TriggerPDAlert(
 											source,
 											_storeLocs[pState.storePoly].coords,
 											"10-90",
@@ -757,7 +749,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										source = source,
 										state = 1,
 									}
-									Logger:Trace(
+									exports['sandbox-base']:LoggerTrace(
 										"Robbery",
 										string.format("Safe %s Will Unlock At %s", data.id, obj.expires)
 									)
@@ -765,42 +757,33 @@ AddEventHandler("Robbery:Server:Setup", function()
 									GlobalState[string.format("Safe:%s", data.id)] = obj
 									GlobalState["StoreAntiShitlord"] = os.time() + (60 * math.random(5, 10))
 
-									Status.Modify:Add(source, "PLAYER_STRESS", 3)
-									Execute:Client(
-										source,
-										"Notification",
-										"Success",
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
+									exports['sandbox-hud']:NotifSuccess(source,
 										"Lock Disengage Initiated, Please Stand By",
 										6000
 									)
 								else
-									Status.Modify:Add(source, "PLAYER_STRESS", 6)
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 								end
 
 								_storeInUse[data.id] = nil
 							end)
 						else
 							_storeInUse[data.id] = nil
-							Execute:Client(
-								source,
-								"Notification",
-								"Error",
+							exports['sandbox-hud']:NotifError(source,
 								"Unable To Crack Safe, Do you have a working safe cracking kit?",
 								6000
 							)
 						end
 					else
 						_storeInUse[data.id] = nil
-						Execute:Client(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Unable To Crack Safe, Is Someone Already Doing It?",
 							6000
 						)
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Unable To Crack Safe", 6000)
+					exports['sandbox-hud']:NotifError(source, "Unable To Crack Safe", 6000)
 				end
 			end
 		end
@@ -808,63 +791,49 @@ AddEventHandler("Robbery:Server:Setup", function()
 		cb(false)
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:StartSafeSequence", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:StartSafeSequence", function(source, data, cb)
 		if GetGameTimer() < STORE_SERVER_START_WAIT then
-			Execute:Client(
-				source,
-				"Notification",
-				"Error",
+			exports['sandbox-hud']:NotifError(source,
 				"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 				6000
 			)
 			return cb(false)
 		elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-			Execute:Client(
-				source,
-				"Notification",
-				"Error",
+			exports['sandbox-hud']:NotifError(source,
 				"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 				6000
 			)
 			return cb(false)
 		elseif GlobalState["RobberiesDisabled"] then
-			Execute:Client(source, "Notification", "Error", "Temporarily Disabled, Please See City Announcements", 6000)
+			exports['sandbox-hud']:NotifError(source,
+				"Temporarily Disabled, Please See City Announcements", 6000)
 			return cb(false)
 		end
 
 		cb(true)
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:StartLockpick", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:StartLockpick", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				GlobalState[string.format("Register:%s:%s", data.x, data.y)] == nil
 				and not GlobalState["RestartLockdown"]
 			then
 				if GetGameTimer() < STORE_SERVER_START_WAIT then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 						6000
 					)
 					return
 				elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -876,7 +845,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					coords = data,
 					source = source,
 				}
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Robbery",
 					string.format(
 						"%s %s (%s) Started Store Robbery (Register) At Store %s",
@@ -897,41 +866,29 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:Safe", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:Safe", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if GlobalState[string.format("Safe:%s", data.id)] == nil and not GlobalState["RestartLockdown"] then
 			if GetGameTimer() < STORE_SERVER_START_WAIT then
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 					6000
 				)
 				return
 			elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 					6000
 				)
 				return
 			elseif GlobalState["RobberiesDisabled"] then
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)
 				return
 			elseif GlobalState["StoreAntiShitlord"] ~= nil and GlobalState["StoreAntiShitlord"] > os.time() then
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Security Measures Engaged, Come Back Later",
 					6000
 				)
@@ -942,14 +899,16 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if data.results then
 				state = 1
 				cb(true)
-				Execute:Client(source, "Notification", "Success", "Lock Disengage Initiated, Please Stand By", 6000)
+				exports['sandbox-hud']:NotifSuccess(source,
+					"Lock Disengage Initiated, Please Stand By", 6000)
 			else
 				-- Do something?
 				cb(true)
-				Execute:Client(source, "Notification", "Error", "You've Damaged The Electronics On The Lock", 6000)
+				exports['sandbox-hud']:NotifError(source,
+					"You've Damaged The Electronics On The Lock", 6000)
 			end
 			if _storeAlerts[data.store] == nil or _storeAlerts[data.store] < os.time() then
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Robbery",
 					string.format(
 						"%s %s (%s) Started Store Robbery (Safe) At Store %s",
@@ -960,15 +919,16 @@ AddEventHandler("Robbery:Server:Setup", function()
 					)
 				)
 				_storeAlerts[data.store] = (os.time() + (60 * 5))
-				Robbery:TriggerPDAlert(source, _storeLocs[data.store].coords, "10-90", "Store Robbery", {
-					icon = 628,
-					size = 0.9,
-					color = 31,
-					duration = (60 * 5),
-				}, {
-					icon = "shop",
-					details = "24/7",
-				}, data.store)
+				exports['sandbox-robbery']:TriggerPDAlert(source, _storeLocs[data.store].coords, "10-90", "Store Robbery",
+					{
+						icon = 628,
+						size = 0.9,
+						color = 31,
+						duration = (60 * 5),
+					}, {
+						icon = "shop",
+						details = "24/7",
+					}, data.store)
 			end
 			local obj = {
 				expires = (os.time() + 60 * 5),
@@ -978,36 +938,37 @@ AddEventHandler("Robbery:Server:Setup", function()
 				source = source,
 				state = state,
 			}
-			Logger:Trace("Robbery", string.format("Safe %s Will Unlock At %s", data.id, obj.expires))
+			exports['sandbox-base']:LoggerTrace("Robbery",
+				string.format("Safe %s Will Unlock At %s", data.id, obj.expires))
 			_robbedSafes[data.id] = obj
 			GlobalState[string.format("Safe:%s", data.id)] = obj
 			GlobalState["StoreAntiShitlord"] = os.time() + (60 * math.random(5, 10))
 		else
-			Logger:Error("Robbery", string.format("Safe %s Was Already Cracked", data.id))
+			exports['sandbox-base']:LoggerError("Robbery", string.format("Safe %s Was Already Cracked", data.id))
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:LootSafe", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:LootSafe", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if _robbedSafes[data.id] ~= nil and _robbedSafes[data.id].state == 2 then
 			_robbedSafes[data.id].state = 3
 			_robbedSafes[data.id].expires = (os.time() + 60 * math.random(30, 60))
 			GlobalState[string.format("Safe:%s", data.id)] = _robbedSafes[data.id]
 
-			Loot:CustomWeightedSetWithCount(_safeLoot, char:GetData("SID"), 1)
+			exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_safeLoot, char:GetData("SID"), 1)
 
 			if math.random(100) <= 5 then
-				Inventory:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
-				Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 					CryptoCoin = "HEIST",
 					Quantity = 2,
 				}, 1)
 			elseif math.random(100) <= 15 then
-				Inventory:AddItem(char:GetData("SID"), "gps_tracker", 1, {}, 1)
+				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "gps_tracker", 1, {}, 1)
 			end
 
-			Logger:Info(
+			exports['sandbox-base']:LoggerInfo(
 				"Robbery",
 				string.format(
 					"%s %s (%s) Looted %s Safe",
@@ -1017,29 +978,30 @@ AddEventHandler("Robbery:Server:Setup", function()
 					data.id
 				)
 			)
-			Wallet:Modify(source, (math.random(3000) + 2000))
-			Sounds.Stop:Location(_robbedSafes[data.id].source, _robbedSafes[data.id].coords, "alarm")
+			exports['sandbox-finance']:WalletModify(source, (math.random(3000) + 2000))
+			exports["sandbox-sounds"]:StopLocation(_robbedSafes[data.id].source, _robbedSafes[data.id].coords, "alarm")
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Store:SecureSafe", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:SecureSafe", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local myDuty = Player(source).state.onDuty
 
 			if myDuty and myDuty == "police" then
 				if _robbedSafes[data.id] ~= nil and _robbedSafes[data.id].state ~= 4 then
 					if _robbedSafes[data.id].state == 1 then
-						Chat.Send.Server:Single(source, "Safe Was Cracked, But Timelock Was Still Engaged")
+						exports["sandbox-chat"]:SendServerSingle(source,
+							"Safe Was Cracked, But Timelock Was Still Engaged")
 					elseif _robbedSafes[data.id].state == 2 then
-						Chat.Send.Server:Single(source, "Safe Was Cracked, And Timelock Disengaged")
+						exports["sandbox-chat"]:SendServerSingle(source, "Safe Was Cracked, And Timelock Disengaged")
 					elseif _robbedSafes[data.id].state == 3 then
-						Chat.Send.Server:Single(source, "Safe Was Cracked and looted")
+						exports["sandbox-chat"]:SendServerSingle(source, "Safe Was Cracked and looted")
 					end
 
 					_robbedSafes[data.id].state = 4
 					_robbedSafes[data.id].expires = (os.time() + 60 * math.random(30, 60))
-					Logger:Info(
+					exports['sandbox-base']:LoggerInfo(
 						"Robbery",
 						string.format(
 							"%s %s (%s) Secured %s Safe",
@@ -1050,7 +1012,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 						)
 					)
 					GlobalState[string.format("Safe:%s", data.id)] = _robbedSafes[data.id]
-					Sounds.Stop:Location(_robbedSafes[data.id].source, _robbedSafes[data.id].coords, "alarm")
+					exports["sandbox-sounds"]:StopLocation(_robbedSafes[data.id].source, _robbedSafes[data.id].coords,
+						"alarm")
 				end
 			end
 		end
@@ -1062,14 +1025,16 @@ CreateThread(function()
 		for k, v in pairs(_robbedSafes) do
 			if v.expires < os.time() then
 				if v.state == 1 then
-					Logger:Trace("Robbery", string.format("Safe %s Expired While State 1, Updating To State 2", k))
+					exports['sandbox-base']:LoggerTrace("Robbery",
+						string.format("Safe %s Expired While State 1, Updating To State 2", k))
 					_robbedSafes[k].expires = (os.time() + 60 * math.random(30, 60))
 					_robbedSafes[k].state = 2
 					GlobalState[string.format("Safe:%s", k)] = _robbedSafes[k]
-					Sounds.Play:Location(v.source, v.coords, 10, "alarm.ogg", 0.15)
+					exports["sandbox-sounds"]:PlayLocation(v.source, v.coords, 10, "alarm.ogg", 0.15)
 					-- Do something to alert
 				else
-					Logger:Trace("Robbery", string.format("Safe %s Expired While State 2, Resetting", k))
+					exports['sandbox-base']:LoggerTrace("Robbery",
+						string.format("Safe %s Expired While State 2, Resetting", k))
 					_robbedSafes[k] = nil
 					GlobalState[string.format("Safe:%s", k)] = nil
 				end

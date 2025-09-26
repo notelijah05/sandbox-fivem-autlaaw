@@ -3,7 +3,7 @@ function Log(log, flagsOverride)
 	if flagsOverride ~= nil then
 		flags = flagsOverride
 	end
-	TriggerEvent("Logger:Info", "Queue", log, flags)
+	exports['sandbox-base']:LoggerInfo("Queue", log, flags)
 end
 
 function GetPlayerLicense(source)

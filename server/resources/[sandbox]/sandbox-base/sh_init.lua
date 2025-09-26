@@ -6,12 +6,12 @@ AddEventHandler("onResourceStart", function(resource)
 			local ver
 			repeat
 				Wait(0)
-			until COMPONENTS.Convar.SBFW_VERSION ~= nil
+			until exports["sandbox-base"]:GetSbfwVersion() ~= nil
 
-			if COMPONENTS.Convar.SBFW_VERSION.value == "UNKNOWN" then
+			if exports["sandbox-base"]:GetSbfwVersion() == "UNKNOWN" then
 				ver = "^1Version Unknown"
 			else
-				ver = "^2v" .. COMPONENTS.Convar.SBFW_VERSION.value
+				ver = "^2v" .. exports["sandbox-base"]:GetSbfwVersion()
 			end
 
 			print([[

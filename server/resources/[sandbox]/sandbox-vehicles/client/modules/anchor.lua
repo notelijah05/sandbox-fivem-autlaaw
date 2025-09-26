@@ -7,7 +7,7 @@ function CanBeAnchored(vehicle)
     end
 
     if GetEntitySpeed(vehicle) > 3.0 then
-        Notification:Error('Boat Too Fast')
+        exports["sandbox-hud"]:NotifError('Boat Too Fast')
         return false
     end
 
@@ -43,7 +43,7 @@ AddEventHandler('Vehicles:Client:AnchorBoat', function(entity, data)
     end
 
     if CanBeAnchored(entity.entity) then
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "boat_anchor",
             duration = 5000,
             label = "Toggling Boat Anchor",

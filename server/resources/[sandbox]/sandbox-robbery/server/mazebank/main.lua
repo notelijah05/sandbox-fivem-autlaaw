@@ -23,8 +23,8 @@ local _purpDongie = false
 local _mbLoot = {
 	{ 60, { name = "moneyroll", min = 420, max = 500 } },
 	{ 33, { name = "moneyband", min = 42, max = 50 } },
-	{ 5, { name = "valuegoods", min = 26, max = 34 } },
-	{ 2, { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 30000, Random = 15000 } } } },
+	{ 5,  { name = "valuegoods", min = 26, max = 34 } },
+	{ 2,  { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 30000, Random = 15000 } } } },
 }
 
 function MazeBankClearSourceInUse(source)
@@ -61,15 +61,16 @@ function MazeBankDisablePower(source)
 		GlobalState[string.format("MazeBank:Power:%s", v.data.boxId)] = _mbGlobalReset
 	end
 
-	Robbery:TriggerPDAlert(source, vector3(-1332.651, -846.451, 17.080), "10-33", "Minor Power Grid Disruption", {
-		icon = 354,
-		size = 0.9,
-		color = 31,
-		duration = (60 * 5),
-	}, {
-		icon = "bolt-slash",
-		details = "Del Perro",
-	}, false, 50.0)
+	exports['sandbox-robbery']:TriggerPDAlert(source, vector3(-1332.651, -846.451, 17.080), "10-33",
+		"Minor Power Grid Disruption", {
+			icon = 354,
+			size = 0.9,
+			color = 31,
+			duration = (60 * 5),
+		}, {
+			icon = "bolt-slash",
+			details = "Del Perro",
+		}, false, 50.0)
 	GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 end
 
@@ -88,21 +89,21 @@ function ResetMazeBank()
 		GlobalState[string.format("MazeBank:Offices:PC:%s", v.data.deskId)] = nil
 	end
 
-	Doors:SetLock("mazebank_offices", true)
-	CCTV.State.Group:Online("mazebank")
+	exports['sandbox-doors']:SetLock("mazebank_offices", true)
+	exports['sandbox-cctv']:StateGroupOnline("mazebank")
 	for k, v in pairs(_mbDoors) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	for k, v in ipairs(_mbOfficeDoors) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	for k, v in ipairs(_mbHacks) do
 		GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)] = nil
 		TriggerClientEvent("Robbery:Client:MazeBank:CloseVaultDoor", -1, v)
 	end
-	
+
 	_heistCoin = false
 	_officesLooted = 1
 
@@ -130,14 +131,14 @@ function SecureMazeBank()
 		GlobalState[string.format("MazeBank:Offices:PC:%s", v.data.deskId)] = nil
 	end
 
-	Doors:SetLock("mazebank_offices", true)
-	CCTV.State.Group:Online("mazebank")
+	exports['sandbox-doors']:SetLock("mazebank_offices", true)
+	exports['sandbox-cctv']:StateGroupOnline("mazebank")
 	for k, v in ipairs(_mbDoors) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	for k, v in ipairs(_mbOfficeDoors) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	for k, v in ipairs(_mbHacks) do
@@ -163,14 +164,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 	StartMazeBankThreads()
 	RegisterMBItemUses()
 
-	Chat:RegisterAdminCommand("resetmb", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("resetmb", function(source, args, rawCommand)
 		ResetMazeBank()
 	end, {
 		help = "Force Reset Maze Bank Heist",
 	}, 0)
 
-	Callbacks:RegisterServerCallback("Robbery:MazeBank:SecureBank", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MazeBank:SecureBank", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if Player(source).state.onDuty == "police" then
 				SecureMazeBank()
@@ -178,8 +179,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MazeBank:ElectricBox:Hack", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MazeBank:ElectricBox:Hack", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -192,10 +193,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Network Offline For A Storm, Check Back Later",
 						6000
 					)
@@ -204,19 +202,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -225,19 +217,21 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("MazeBank:Power:%s", data.boxId)] ~= nil
 					and GlobalState[string.format("MazeBank:Power:%s", data.boxId)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-hud']:NotifError(source,
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 				if not _mbInUse.powerBoxes[data.boxId] then
 					_mbInUse.powerBoxes[data.boxId] = source
 					GlobalState["MazeBankInProgress"] = true
 
-					if Inventory.Items:Has(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), "adv_electronics_kit", 1)
-						local itemData = Inventory.Items:GetData("adv_electronics_kit")
+					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"),
+							"adv_electronics_kit", 1)
+						local itemData = exports['sandbox-inventory']:ItemsGetData("adv_electronics_kit")
 
 						if itemData ~= nil then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Hacking Maze Bank Power Box %s",
@@ -247,7 +241,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data.boxId
 								)
 							)
-							Callbacks:ClientCallback(source, "Robbery:Games:Hack", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Hack", {
 								config = {
 									countdown = 3,
 									timer = 5,
@@ -264,13 +258,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 									newValue = slot.CreateDate - (60 * 60 * 12)
 								end
 								if os.time() - itemData.durability >= newValue then
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									Inventory:SetItemCreateDate(slot.id, newValue)
+									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if success then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Successfully Hacked Maze Bank Power Box %s",
@@ -292,16 +286,16 @@ AddEventHandler("Robbery:Server:Setup", function()
 									GlobalState[string.format("MazeBank:Power:%s", data.boxId)] = _mbGlobalReset
 									TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 									if IsMBPowerDisabled() then
-										Doors:SetLock("mazebank_offices", false)
-										CCTV.State.Group:Offline("mazebank")
-										Sounds.Play:Location(
+										exports['sandbox-doors']:SetLock("mazebank_offices", false)
+										exports['sandbox-cctv']:StateGroupOffline("mazebank")
+										exports["sandbox-sounds"]:PlayLocation(
 											source,
 											data.ptFxPoint,
 											15.0,
 											"power_small_complete_off.ogg",
 											0.1
 										)
-										Robbery:TriggerPDAlert(
+										exports['sandbox-robbery']:TriggerPDAlert(
 											source,
 											vector3(-1332.651, -846.451, 17.080),
 											"10-33",
@@ -321,8 +315,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 										)
 										GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 									else
-										Doors:SetLock("mazebank_offices", true)
-										Sounds.Play:Location(
+										exports['sandbox-doors']:SetLock("mazebank_offices", true)
+										exports["sandbox-sounds"]:PlayLocation(
 											source,
 											data.ptFxPoint,
 											15.0,
@@ -330,7 +324,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											0.25
 										)
 										if not _mbPowerAlerted or os.time() > _mbPowerAlerted then
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												GetEntityCoords(GetPlayerPed(source)),
 												"10-33",
@@ -362,10 +356,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_mbInUse.powerBoxes[data.boxId] = false
 					end
 				else
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Someone Is Already Interacting With This",
 						6000
 					)
@@ -374,10 +365,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				return
 			else
 				_mbInUse.powerBoxes[data.boxId] = false
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -385,8 +373,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MazeBank:ElectricBox:Thermite", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MazeBank:ElectricBox:Thermite", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -399,10 +387,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -411,19 +396,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -432,7 +411,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("MazeBank:Power:%s", data.boxId)] ~= nil
 					and GlobalState[string.format("MazeBank:Power:%s", data.boxId)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-hud']:NotifError(source,
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 
@@ -451,9 +431,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_mbInUse.powerBoxes[data.boxId] = source
 						GlobalState["MazeBankInProgress"] = true
 
-						if Inventory.Items:Has(char:GetData("SID"), 1, "thermite", 1) then
-							if Inventory.Items:Remove(char:GetData("SID"), 1, "thermite", 1) then
-								Logger:Info(
+						if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "thermite", 1) then
+							if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "thermite", 1) then
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Started Thermiting Maze Bank Power Box %s",
@@ -463,7 +443,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										data.boxId
 									)
 								)
-								Callbacks:ClientCallback(source, "Robbery:Games:Thermite", {
+								exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
 									passes = 1,
 									location = data.thermitePoint,
 									duration = 25000,
@@ -480,7 +460,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data = {},
 								}, function(success)
 									if success then
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Successfully Thermited Maze Bank Power Box %s",
@@ -502,9 +482,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 										GlobalState[string.format("MazeBank:Power:%s", data.boxId)] = _mbGlobalReset
 										TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 										if IsMBPowerDisabled() then
-											Doors:SetLock("mazebank_offices", false)
-											CCTV.State.Group:Offline("mazebank")
-											Sounds.Play:Location(
+											exports['sandbox-doors']:SetLock("mazebank_offices", false)
+											exports['sandbox-cctv']:StateGroupOffline("mazebank")
+											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,
 												15.0,
@@ -512,7 +492,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												0.1
 											)
 
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												vector3(-1332.651, -846.451, 17.080),
 												"10-33",
@@ -532,8 +512,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 											)
 											GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 										else
-											Doors:SetLock("mazebank_offices", true)
-											Sounds.Play:Location(
+											exports['sandbox-doors']:SetLock("mazebank_offices", true)
+											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,
 												15.0,
@@ -541,7 +521,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												0.25
 											)
 											if not _mbPowerAlerted or os.time() > _mbPowerAlerted then
-												Robbery:TriggerPDAlert(
+												exports['sandbox-robbery']:TriggerPDAlert(
 													source,
 													GetEntityCoords(GetPlayerPed(source)),
 													"10-33",
@@ -571,13 +551,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end
 						else
 							_mbInUse.powerBoxes[data.boxId] = false
-							Execute:Client(source, "Notification", "Error", "You Need Thermite", 6000)
+							exports['sandbox-hud']:NotifError(source, "You Need Thermite",
+								6000)
 						end
 					else
-						Execute:Client(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Is Already Interacting With This",
 							6000
 						)
@@ -586,10 +564,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					return
 				end
 			else
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -597,8 +572,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MazeBank:Drill", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MazeBank:Drill", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -611,10 +586,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -623,19 +595,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -644,19 +610,20 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("MazeBank:Vault:Wall:%s", data)] ~= nil
 					and GlobalState[string.format("MazeBank:Vault:Wall:%s", data)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-hud']:NotifError(source,
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 				if not _mbInUse.drillPoints[data] then
 					_mbInUse.drillPoints[data] = source
 					GlobalState["MazeBankInProgress"] = true
 
-					if Inventory.Items:Has(char:GetData("SID"), 1, "drill", 1) then
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), "drill", 1)
-						local itemData = Inventory.Items:GetData("drill")
+					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "drill", 1) then
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "drill", 1)
+						local itemData = exports['sandbox-inventory']:ItemsGetData("drill")
 
 						if slot ~= nil then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Drilling Vault Box: %s",
@@ -666,7 +633,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data
 								)
 							)
-							Callbacks:ClientCallback(source, "Robbery:Games:Drill", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Drill", {
 								passes = 1,
 								duration = 25000,
 								config = {},
@@ -677,13 +644,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 									newValue = slot.CreateDate - (itemData.durability / 2)
 								end
 								if os.time() - itemData.durability >= newValue then
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									Inventory:SetItemCreateDate(slot.id, newValue)
+									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if success then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Successfully Drilled Vault Box: %s",
@@ -702,12 +669,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 									_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
 
-									Loot:CustomWeightedSetWithCount(_mbLoot, char:GetData("SID"), 1)
+									exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_mbLoot,
+										char:GetData("SID"), 1)
 
 									if not _purpDongie then
 										if math.random(100) <= 10 then
 											_purpDongie = source
-											Inventory:AddItem(char:GetData("SID"), "purple_dongle", 1, {}, 1)
+											exports['sandbox-inventory']:AddItem(char:GetData("SID"), "purple_dongle", 1,
+												{}, 1)
 										end
 									end
 
@@ -722,22 +691,16 @@ AddEventHandler("Robbery:Server:Setup", function()
 						end
 					else
 						_mbInUse.drillPoints[data] = false
-						Execute:Client(source, "Notification", "Error", "You Need A Drill", 6000)
+						exports['sandbox-hud']:NotifError(source, "You Need A Drill", 6000)
 					end
 				else
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Someone Is Already Interacting With This",
 						6000
 					)
 				end
 			else
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -745,8 +708,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:MazeBank:PC:Hack", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:MazeBank:PC:Hack", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -759,10 +722,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Network Offline For A Storm, Check Back Later",
 						6000
 					)
@@ -771,19 +731,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -794,12 +748,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					_mbInUse.officePcs[data.id] = source
 					GlobalState["MazeBankInProgress"] = true
 
-					if Inventory.Items:Has(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), "adv_electronics_kit", 1)
-						local itemData = Inventory.Items:GetData("adv_electronics_kit")
+					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"),
+							"adv_electronics_kit", 1)
+						local itemData = exports['sandbox-inventory']:ItemsGetData("adv_electronics_kit")
 
 						if itemData ~= nil then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Hacking Maze Bank PC %s",
@@ -809,7 +764,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data.id
 								)
 							)
-							Callbacks:ClientCallback(source, "Robbery:Games:Progress", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Progress", {
 								config = {
 									label = "Doing Hackermans Stuff",
 									anim = {
@@ -821,12 +776,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 								if success then
 									newValue = slot.CreateDate - (60 * 60 * 12)
 									if os.time() - itemData.durability >= newValue then
-										Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+										exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 									else
-										Inventory:SetItemCreateDate(slot.id, newValue)
+										exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 									end
 
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Successfully Hacked Maze Bank PC %s",
@@ -847,18 +802,18 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 									GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 									GlobalState[string.format("MazeBank:Offices:PC:%s", data.id)] = _mbGlobalReset
-									Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+									exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 										CryptoCoin = "MALD",
 										Quantity = math.random(120, 200),
 									}, 1)
 
 									if math.random(100) <= (33 * _officesLooted) and not _heistCoin then
 										_heistCoin = true
-										Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+										exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 											CryptoCoin = "HEIST",
 											Quantity = 6,
 										}, 1)
-									else 
+									else
 										_officesLooted += 1
 									end
 								end
@@ -872,10 +827,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_mbInUse.officePcs[data.id] = false
 					end
 				else
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Someone Is Already Interacting With This",
 						6000
 					)
@@ -883,10 +835,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 				return
 			else
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)

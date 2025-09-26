@@ -125,38 +125,16 @@ local function handleFlare(checkpoint)
 	end
 end
 
-local _waiting = false
 RegisterNetEvent("Phone:Client:Blueline:StoreTracks", function(tracks)
 	_tracks = tracks
 
-	if _waiting then
-		return
-	end
-	if Phone == nil then
-		_waiting = true
-		while Phone == nil do
-			Wait(1)
-		end
-	end
-
-	Phone.Data:Set("tracks_pd", _tracks)
+	exports['sandbox-phone']:DataSet("tracks_pd", _tracks)
 end)
 
-local _waiting2 = false
 RegisterNetEvent("Phone:Client:Blueline:StoreSingleTrack", function(tId, track)
 	_tracks[tId] = track
 
-	if _waiting2 then
-		return
-	end
-	if Phone == nil then
-		_waiting2 = true
-		while Phone == nil do
-			Wait(1)
-		end
-	end
-
-	Phone.Data:Set("tracks_pd", _tracks)
+	exports['sandbox-phone']:DataSet("tracks_pd", _tracks)
 end)
 
 RegisterNetEvent("Phone:Client:Blueline:Spawn", function(data)
@@ -247,14 +225,14 @@ end)
 RegisterNetEvent("Phone:Blueline:NotifyDNF", function(id)
 	_activeRace.dnf = true
 	CleanupPD()
-	UISounds.Play:FrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
 	SendNUIMessage({
 		type = "RACE_DNF",
 	})
 end)
 
 RegisterNUICallback("CreateRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:CreateRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:CreateRace", data, function(res)
 		if res == nil or res.failed then
 			_activeRace = nil
 			cb(res or false)
@@ -279,13 +257,13 @@ RegisterNUICallback("CreateRacePD", function(data, cb)
 end)
 
 RegisterNUICallback("CancelRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:CancelRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:CancelRace", data, function(res)
 		cb(res)
 	end)
 end)
 
 RegisterNUICallback("PracticeTrackPD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:GetTrack", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:GetTrack", data, function(res)
 		cb(res ~= nil)
 		if res ~= nil then
 			SetupTrackPD(res)
@@ -295,7 +273,7 @@ RegisterNUICallback("PracticeTrackPD", function(data, cb)
 end)
 
 RegisterNUICallback("JoinRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:JoinRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:JoinRace", data, function(res)
 		if res then
 			_activeRace = res
 
@@ -317,11 +295,11 @@ RegisterNUICallback("JoinRacePD", function(data, cb)
 end)
 
 RegisterNUICallback("LeaveRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:LeaveRace", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:LeaveRace", data, function(res)
 		if _activeRace ~= nil then
 			_activeRace.dnf = true
 			CleanupPD()
-			UISounds.Play:FrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
+			exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET")
 			SendNUIMessage({
 				type = "RACE_DNF",
 			})
@@ -331,7 +309,7 @@ RegisterNUICallback("LeaveRacePD", function(data, cb)
 end)
 
 RegisterNUICallback("CreateTrackPD", function(data, cb)
-	if Jobs.Permissions:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
+	if exports['sandbox-jobs']:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
 		_creator = true
 		CreatorThreadPD()
 		cb(true)
@@ -343,7 +321,7 @@ end)
 RegisterNUICallback("FinishCreatorPD", function(data, cb)
 	_creator = false
 
-	if Jobs.Permissions:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
+	if exports['sandbox-jobs']:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
 		if #_pendingTrack.Checkpoints > 2 then
 			_pendingTrack.Name = data.name
 			_pendingTrack.Type = data.type
@@ -380,11 +358,11 @@ RegisterNUICallback("FinishCreatorPD", function(data, cb)
 				end
 			end
 			_pendingTrack.Distance = quickMaths((_pendingTrack.Distance / 1609.34)) .. " Miles"
-			Callbacks:ServerCallback("Phone:Blueline:SaveTrack", _pendingTrack, function(res2)
+			exports["sandbox-base"]:ServerCallback("Phone:Blueline:SaveTrack", _pendingTrack, function(res2)
 				cb(res2)
 			end)
 		else
-			Notification:Error("Not Enough Checkpoints")
+			exports["sandbox-hud"]:NotifError("Not Enough Checkpoints")
 			cb(false)
 		end
 	else
@@ -393,8 +371,8 @@ RegisterNUICallback("FinishCreatorPD", function(data, cb)
 end)
 
 RegisterNUICallback("DeleteTrackPD", function(data, cb)
-	if Jobs.Permissions:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
-		Callbacks:ServerCallback("Phone:Blueline:DeleteTrack", data, function(res2)
+	if exports['sandbox-jobs']:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
+		exports["sandbox-base"]:ServerCallback("Phone:Blueline:DeleteTrack", data, function(res2)
 			cb(res2)
 		end)
 	else
@@ -403,8 +381,8 @@ RegisterNUICallback("DeleteTrackPD", function(data, cb)
 end)
 
 RegisterNUICallback("ResetTrackHistoryPD", function(data, cb)
-	if Jobs.Permissions:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
-		Callbacks:ServerCallback("Phone:Blueline:ResetTrackHistory", data, function(res2)
+	if exports['sandbox-jobs']:HasPermissionInJob("police", "PD_MANAGE_TRIALS") then
+		exports["sandbox-base"]:ServerCallback("Phone:Blueline:ResetTrackHistory", data, function(res2)
 			cb(res2)
 		end)
 	else
@@ -418,11 +396,11 @@ RegisterNUICallback("StopCreatorPD", function(data, cb)
 end)
 
 RegisterNUICallback("StartRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:StartRace", _activeRace.id, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:StartRace", _activeRace.id, cb)
 end)
 
 RegisterNUICallback("EndRacePD", function(data, cb)
-	Callbacks:ServerCallback("Phone:Blueline:EndRace", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Blueline:EndRace", data, cb)
 end)
 
 function IsInRacePD()
@@ -495,15 +473,15 @@ function StartRacePD()
 	local countdownMax = tonumber(_activeRace.countdown) or 20
 	local countdown = 0
 	while countdown < countdownMax do
-		Notification:Info(string.format("Race Starting In %s", countdownMax - countdown))
-		UISounds.Play:FrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
+		exports["sandbox-hud"]:NotifInfo(string.format("Race Starting In %s", countdownMax - countdown))
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
 		countdown = countdown + 1
 		Wait(1000)
 	end
 
 	CreateThread(function()
-		Notification:Info("Race Started")
-		UISounds.Play:FrontEnd(-1, "GO", "HUD_MINI_GAME_SOUNDSET")
+		exports["sandbox-hud"]:NotifInfo("Race Started")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "GO", "HUD_MINI_GAME_SOUNDSET")
 		SendNUIMessage({
 			type = "RACE_START",
 			data = {
@@ -541,8 +519,8 @@ function StartRacePD()
 					cLp = cLp + 1
 					cCps = {}
 					if cLp <= tonumber(_activeRace.laps) then
-						Notification:Info(string.format("Lap %s", cLp))
-						UISounds.Play:FrontEnd(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET")
+						exports["sandbox-hud"]:NotifInfo(string.format("Lap %s", cLp))
+						exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET")
 
 						if lap_start ~= nil then
 							local lapEnd = GetGameTimer()
@@ -565,7 +543,7 @@ function StartRacePD()
 					SetBlipColour(blip, 0)
 					SetBlipScale(blip, 0.75)
 					table.insert(cCps, cCp)
-					UISounds.Play:FrontEnd(-1, "CHECKPOINT_NORMAL", "HUD_MINI_GAME_SOUNDSET")
+					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_NORMAL", "HUD_MINI_GAME_SOUNDSET")
 					if cCp < #_activeRace.trackData.Checkpoints then
 						cCp = cCp + 1
 						SendNUIMessage({
@@ -589,9 +567,9 @@ function StartRacePD()
 					_activeRace.trackData.Type == "p2p" and #cCps == #_activeRace.trackData.Checkpoints
 					or cLp > tonumber(_activeRace.laps)
 				then
-					Notification:Info("Race Finished")
+					exports["sandbox-hud"]:NotifInfo("Race Finished")
 					CleanupPD()
-					UISounds.Play:FrontEnd(-1, "FIRST_PLACE", "HUD_MINI_GAME_SOUNDSET")
+					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "FIRST_PLACE", "HUD_MINI_GAME_SOUNDSET")
 					SendNUIMessage({
 						type = "RACE_END",
 					})
@@ -814,7 +792,7 @@ function CreateCheckpointPD()
 
 		AddRaceBlipPD(_pendingTrack.Checkpoints[#_pendingTrack.Checkpoints])
 	else
-		Notification:Error("Point Too Close To Last Point")
+		exports["sandbox-hud"]:NotifError("Point Too Close To Last Point")
 	end
 end
 

@@ -1,89 +1,50 @@
-AddEventHandler("Admin:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Menu = exports["sandbox-base"]:FetchComponent("Menu")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Status = exports["sandbox-base"]:FetchComponent("Status")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	VOIP = exports["sandbox-base"]:FetchComponent("VOIP")
-	Admin = exports["sandbox-base"]:FetchComponent("Admin")
-	NetSync = exports["sandbox-base"]:FetchComponent("NetSync")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Admin", {
-		"Callbacks",
-		"Utils",
-		"Logger",
-		"Menu",
-		"Notification",
-		"Status",
-		"Jobs",
-		"Keybinds",
-		"Vehicles",
-		"VOIP",
-		"Admin",
-		"NetSync",
-		"Sounds",
-	}, function(error)
-		if #error > 0 then
-			return
+	exports["sandbox-keybinds"]:Add("admin_menu", "HOME", "keyboard", "[Admin] Open Admin Menu", function()
+		exports['sandbox-admin']:OpenMenu()
+	end)
+
+	exports["sandbox-keybinds"]:Add("admin_noclip", "END", "keyboard", "[Admin] Toggle NoClip", function()
+		if LocalPlayer.state.isStaff then
+			exports["sandbox-base"]:ServerCallback("Admin:NoClip", {
+				active = not exports['sandbox-admin']:NoClipIsActive(),
+			}, function(isAdmin)
+				if isAdmin then
+					exports['sandbox-admin']:NoClipToggle()
+				end
+			end)
 		end
-		RetrieveComponents()
+	end)
 
-		Keybinds:Add("admin_menu", "HOME", "keyboard", "[Admin] Open Admin Menu", function()
-			Admin:OpenMenu()
-		end)
+	exports["sandbox-keybinds"]:Add("admin_debug1", "", "keyboard", "[Admin] Debug 1", function()
+		DoAdminVehicleAction("repair_engine")
+	end)
 
-		Keybinds:Add("admin_noclip", "END", "keyboard", "[Admin] Toggle NoClip", function()
-			if LocalPlayer.state.isStaff then
-				Callbacks:ServerCallback("Admin:NoClip", {
-					active = not Admin.NoClip:IsActive(),
-				}, function(isAdmin)
-					if isAdmin then
-						Admin.NoClip:Toggle()
-					end
-				end)
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("admin_debug2", "", "keyboard", "[Admin] Debug 2", function()
+		DoAdminVehicleAction("repair")
+	end)
 
-		Keybinds:Add("admin_debug1", "", "keyboard", "[Admin] Debug 1", function()
-			DoAdminVehicleAction("repair_engine")
-		end)
-
-		Keybinds:Add("admin_debug2", "", "keyboard", "[Admin] Debug 2", function()
-			DoAdminVehicleAction("repair")
-		end)
-
-		Keybinds:Add("admin_debug3", "", "keyboard", "[Admin] Debug IDs", function()
-			if LocalPlayer.state.isStaff then
-				ToggleAdminPlayerIDs()
-			end
-		end)
+	exports["sandbox-keybinds"]:Add("admin_debug3", "", "keyboard", "[Admin] Debug IDs", function()
+		if LocalPlayer.state.isStaff then
+			ToggleAdminPlayerIDs()
+		end
 	end)
 end)
 
-ADMIN = {
-	OpenMenu = function(self)
-		OpenMenu()
-	end,
-	CopyClipboard = function(self, txt)
-		CopyClipboard(txt)
-	end,
-}
+exports("OpenMenu", function()
+	OpenMenu()
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Admin", ADMIN)
+exports("CopyClipboard", function(txt)
+	CopyClipboard(txt)
+end)
+
+RegisterNetEvent("Admin:Client:CopyClipboard", function(data)
+	CopyClipboard(data)
 end)
 
 RegisterNetEvent("Characters:Client:Logout")
 AddEventHandler("Characters:Client:Logout", function()
-	Admin.NoClip:Stop()
+	exports['sandbox-admin']:NoClipStop()
 	_drawingCoords = false
 end)
 
@@ -189,16 +150,16 @@ function DoAdminVehicleAction(action)
 		and DoesEntityExist(insideVehicle)
 		and NetworkHasControlOfEntity(insideVehicle)
 	then
-		Callbacks:ServerCallback("Admin:CurrentVehicleAction", { action = action }, function(canDo)
+		exports["sandbox-base"]:ServerCallback("Admin:CurrentVehicleAction", { action = action }, function(canDo)
 			if canDo then
 				if action == "repair" then
-					if Vehicles.Repair:Normal(insideVehicle) then
+					if exports['sandbox-vehicles']:RepairNormal(insideVehicle) then
 					end
 				elseif action == "repair_full" then
-					if Vehicles.Repair:Full(insideVehicle) then
+					if exports['sandbox-vehicles']:RepairFull(insideVehicle) then
 					end
 				elseif action == "repair_engine" then
-					if Vehicles.Repair:Engine(insideVehicle) then
+					if exports['sandbox-vehicles']:RepairEngine(insideVehicle) then
 					end
 				end
 			end

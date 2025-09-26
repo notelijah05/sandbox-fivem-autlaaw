@@ -1,30 +1,31 @@
 function CreateDonorVanityItems()
 	for k, v in ipairs(_donorVanitys) do
-		PedInteraction:Add("donor_vanity_" .. k, v.ped.model, v.ped.location.xyz, v.ped.location.w, 50.0, {
-			{
-				icon = "boxes-stacked",
-				text = "Donator Item Purchases",
-				event = "DonorVanity:Client:Open",
-			},
-			{
-				icon = "receipt",
-				text = "View Unredeemed Purchases",
-				event = "DonorVanity:Client:ViewPending",
-			},
-		}, "comment-dollar", v.ped.scenario)
+		exports['sandbox-pedinteraction']:Add("donor_vanity_" .. k, v.ped.model, v.ped.location.xyz, v.ped.location.w,
+			50.0, {
+				{
+					icon = "boxes-stacked",
+					text = "Donator Item Purchases",
+					event = "DonorVanity:Client:Open",
+				},
+				{
+					icon = "receipt",
+					text = "View Unredeemed Purchases",
+					event = "DonorVanity:Client:ViewPending",
+				},
+			}, "comment-dollar", v.ped.scenario)
 	end
 end
 
 AddEventHandler("DonorVanity:Client:ViewPending", function(entityData, data)
-	Callbacks:ServerCallback("Inventory:DonorSales:GetPending", {}, function(menu)
-		ListMenu:Show(menu)
+	exports["sandbox-base"]:ServerCallback("Inventory:DonorSales:GetPending", {}, function(menu)
+		exports['sandbox-hud']:ListMenuShow(menu)
 	end)
 end)
 
 AddEventHandler("DonorVanity:Client:Open", function(entityData, data)
-	Callbacks:ServerCallback("Inventory:DonorSales:GetTokens", {}, function(data)
+	exports["sandbox-base"]:ServerCallback("Inventory:DonorSales:GetTokens", {}, function(data)
 		if not data or data.available == 0 then
-			return Notification:Error("No Pending Donator Purchases to Redeem")
+			return exports["sandbox-hud"]:NotifError("No Pending Donator Purchases to Redeem")
 		end
 
 		GenerateNewVanityItem()
@@ -32,11 +33,11 @@ AddEventHandler("DonorVanity:Client:Open", function(entityData, data)
 end)
 
 AddEventHandler("DonorVanity:Client:SubmitInput", function(data)
-	Callbacks:ServerCallback("Inventory:DonorSales:SubmitVanityItem", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Inventory:DonorSales:SubmitVanityItem", data, function() end)
 end)
 
 AddEventHandler("DonorDealer:Client:StartPurchase", function(data)
-	Confirm:Show(
+	exports['sandbox-hud']:ConfirmShow(
 		"Confirm Donator Vehicle Purchase",
 		{
 			yes = "DonorDealer:Client:ConfirmPurchase",
@@ -59,13 +60,13 @@ AddEventHandler("DonorDealer:Client:StartPurchase", function(data)
 end)
 
 AddEventHandler("DonorDealer:Client:ConfirmPurchase", function(data)
-	Callbacks:ServerCallback("Dealerships:DonorSales:Purchase", data)
+	exports["sandbox-base"]:ServerCallback("Dealerships:DonorSales:Purchase", data)
 end)
 
 local vanityPromise
 function GenerateNewVanityItem()
 	vanityPromise = promise.new()
-	Input:Show("New Vanity Item", "Vanity Item", {
+	exports['sandbox-hud']:InputShow("New Vanity Item", "Vanity Item", {
 		{
 			id = "vanity_item_label",
 			type = "text",
@@ -83,11 +84,13 @@ function GenerateNewVanityItem()
 			type = "text",
 			options = {
 				inputProps = {
-					pattern = [[((https?:\/\/(www\.)?(cdn\.discordapp\.com\/attachments\/[a-zA-Z\d]+\/[a-zA-z0-9_-]+)?)((i\.)?imgur\.com)?\/[a-zA-z0-9-_]+(\.png|\.jpg|\.jpeg|\.gif)?)]],
+					pattern =
+					[[((https?:\/\/(www\.)?(cdn\.discordapp\.com\/attachments\/[a-zA-Z\d]+\/[a-zA-z0-9_-]+)?)((i\.)?imgur\.com)?\/[a-zA-z0-9-_]+(\.png|\.jpg|\.jpeg|\.gif)?)]],
 					maxlength = 240,
 				},
 				label = "Item Image URL",
-				helperText = "Images must end in jpg, jpeg, png, or gif. Use imgur or discordapp for uploads. Max Length: 100",
+				helperText =
+				"Images must end in jpg, jpeg, png, or gif. Use imgur or discordapp for uploads. Max Length: 100",
 			},
 		},
 		{

@@ -4,12 +4,12 @@ local _joiners = {}
 local _sellers = {}
 
 AddEventHandler("Labor:Server:Startup", function()
-	WaitList:Create("weedrun", "individual_time", {
+	exports['sandbox-base']:WaitListCreate("weedrun", "individual_time", {
 		event = "Labor:Server:WeedRun:Queue",
 		delay = (1000 * 60) * 3,
 	})
 
-	Crafting:RegisterBench("WeedPackaging", "Weed Processing", {
+	exports['sandbox-inventory']:CraftingRegisterBench("WeedPackaging", "Weed Processing", {
 		actionString = "Packaging",
 		icon = "cannabis",
 		poly = {
@@ -31,7 +31,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			result = { name = "weed_brick", count = 1 },
 			items = {
 				{ name = "plastic_wrap", count = 2 },
-				{ name = "weed_bud", count = 200 },
+				{ name = "weed_bud",     count = 200 },
 			},
 			time = 8000,
 			animation = "mechanic",
@@ -39,7 +39,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		{
 			result = { name = "weed_baggy", count = 1 },
 			items = {
-				{ name = "baggy", count = 1 },
+				{ name = "baggy",    count = 1 },
 				{ name = "weed_bud", count = 2 },
 			},
 			time = 2000,
@@ -47,13 +47,13 @@ AddEventHandler("Labor:Server:Startup", function()
 		},
 	})
 
-	Callbacks:RegisterServerCallback("WeedRun:Enable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("WeedRun:Enable", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if not hasValue(states, "SCRIPT_WEED_RUN") then
 			table.insert(states, "SCRIPT_WEED_RUN")
 			char:SetData("States", states)
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				source,
 				"New Job Available",
 				"A new job is available, check it out.",
@@ -65,8 +65,8 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("WeedRun:Disable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("WeedRun:Disable", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if hasValue(states, "SCRIPT_WEED_RUN") then
 			for k, v in ipairs(states) do
@@ -79,7 +79,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("WeedRun:StartDropoff", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("WeedRun:StartDropoff", function(source, data, cb)
 		if _joiners[source] ~= nil then
 			TriggerEvent("EmergencyAlerts:Server:ServerDoPredefined", source, "oxysale")
 			cb(true)
@@ -88,24 +88,25 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("WeedRun:DoDropoff", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("WeedRun:DoDropoff", function(source, data, cb)
 		if _joiners[source] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
-				if Inventory.Items:Remove(char:GetData("SID"), 1, "weed_brick", 1) then
-					local repLevel = Reputation:GetLevel(source, "WeedRun") or 0
+				if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "weed_brick", 1) then
+					local repLevel = exports['sandbox-characters']:RepGetLevel(source, "WeedRun") or 0
 					local calcLvl = repLevel
 					if calcLvl < 1 then
 						calcLvl = 1
 					end
 
-					local itemData = Inventory.Items:GetData("weed_brick")
+					local itemData = exports['sandbox-inventory']:ItemsGetData("weed_brick")
 
 					local rand = math.random(100)
 					if rand >= (100 - (3 * calcLvl)) then
-						Inventory:AddItem(char:GetData("SID"), "moneyband", math.random(8, 10 + calcLvl), {}, 1)
+						exports['sandbox-inventory']:AddItem(char:GetData("SID"), "moneyband",
+							math.random(8, 10 + calcLvl), {}, 1)
 					elseif rand >= (55 - (2 * calcLvl)) then
-						Inventory:AddItem(
+						exports['sandbox-inventory']:AddItem(
 							char:GetData("SID"),
 							"moneyroll",
 							math.random(90, 100 + (2 * calcLvl)),
@@ -113,7 +114,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							1
 						)
 					else
-						Wallet:Modify(source, itemData.price + (30 * calcLvl))
+						exports['sandbox-finance']:WalletModify(source, itemData.price + (30 * calcLvl))
 					end
 
 					_sellers[_joiners[source]].state = 2
@@ -125,18 +126,18 @@ AddEventHandler("Labor:Server:Startup", function()
 								for k2, v2 in pairs(_Groups) do
 									if v2.Creator.ID == _joiners[source] then
 										for k3, v3 in ipairs(v2.Members) do
-											Labor.Offers:Complete(v3.ID, _JOB)
+											exports['sandbox-labor']:CompleteOffer(v3.ID, _JOB)
 										end
 									end
 								end
 							end
 
-							Labor.Offers:Complete(_joiners[source], _JOB)
+							exports['sandbox-labor']:CompleteOffer(_joiners[source], _JOB)
 						end
 					end
 
-					Labor.Offers:Task(_joiners[source], _JOB, "Wait For Next Delivery")
-					WaitList.Interact:Inactive("weedrun", _joiners[source])
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Wait For Next Delivery")
+					exports['sandbox-base']:WaitListInteractInactive("weedrun", _joiners[source])
 
 					cb(true)
 				else
@@ -152,10 +153,10 @@ AddEventHandler("Labor:Server:Startup", function()
 end)
 
 AddEventHandler("WeedRun:Server:OnDuty", function(joiner, members, isWorkgroup)
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	if char == nil then
-		Labor.Offers:Cancel(joiner, _JOB)
-		Labor.Duty:Off(_JOB, joiner, false, true)
+		exports['sandbox-labor']:CancelOffer(joiner, _JOB)
+		exports['sandbox-labor']:OffDuty(_JOB, joiner, false, true)
 		return
 	end
 
@@ -168,28 +169,28 @@ AddEventHandler("WeedRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 		state = 0,
 	}
 
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
 	TriggerClientEvent("WeedRun:Client:OnDuty", joiner, joiner, os.time())
 
-	Labor.Offers:Task(joiner, _JOB, "Wait For A Delivery")
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Wait For A Delivery")
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner
-			local member = Fetch:CharacterSource(v.ID)
+			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
 			TriggerClientEvent("WeedRun:Client:OnDuty", v.ID, joiner, os.time())
 		end
 	end
 
 	_offers[joiner].noExpire = true
-	WaitList.Interact:Add("weedrun", joiner, {
+	exports['sandbox-base']:WaitListInteractAdd("weedrun", joiner, {
 		joiner = joiner,
 	})
 end)
 
 AddEventHandler("WeedRun:Server:OffDuty", function(source, joiner)
-	WaitList.Interact:Remove("weedrun", _joiners[source])
+	exports['sandbox-base']:WaitListInteractRemove("weedrun", _joiners[source])
 	_joiners[source] = nil
 	TriggerClientEvent("WeedRun:Client:OffDuty", source)
 end)
@@ -199,8 +200,8 @@ AddEventHandler("Labor:Server:WeedRun:Queue", function(source, data)
 		_sellers[_joiners[source]].state = 1
 		_sellers[_joiners[source]].location = _weedSaleLocations[math.random(#_weedSaleLocations)]
 		_offers[_joiners[source]].noExpire = false
-		Labor.Offers:Task(_joiners[source], _JOB, "Deliver The Package")
-		Labor.Workgroups:SendEvent(
+		exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Deliver The Package")
+		exports['sandbox-labor']:SendWorkgroupEvent(
 			_joiners[source],
 			string.format("WeedRun:Client:%s:Receive", _joiners[source]),
 			_sellers[_joiners[source]].location,
@@ -208,5 +209,5 @@ AddEventHandler("Labor:Server:WeedRun:Queue", function(source, data)
 		)
 	end
 
-	WaitList.Interact:Active("weedrun", _joiners[source])
+	exports['sandbox-base']:WaitListInteractActive("weedrun", _joiners[source])
 end)

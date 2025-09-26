@@ -37,11 +37,11 @@ local _blacklistedCommands = {
 local _retrieved = {}
 
 function RegisterCallbacks()
-	Chat:RegisterStaffCommand("toggleafk", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterStaffCommand("toggleafk", function(source, args, rawCommand)
 		local disabled = GlobalState["DisableAFK"] or false
 		GlobalState["DisableAFK"] = not disabled
 
-		Chat.Send.System:Single(
+		exports["sandbox-chat"]:SendSystemSingle(
 			source,
 			string.format("AFK Kicking %s", GlobalState["DisableAFK"] and "Disabled" or "Enabled")
 		)
@@ -49,10 +49,10 @@ function RegisterCallbacks()
 		help = "Enabled/Disable AFK Kicks",
 	}, 0)
 
-	-- Chat:RegisterAdminCommand("pwnzorban", function(source, args, rawCommand)
-	-- 	local player = Fetch:SID(tonumber(args[1]))
+	-- exports["sandbox-chat"]:RegisterAdminCommand("pwnzorban", function(source, args, rawCommand)
+	-- 	local player = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 	-- 	if player ~= nil then
-	-- 		Punishment.Ban:Source(player:GetData("Source"), -1, args[2], "Pwnzor")
+	-- 		exports['sandbox-base']:PunishmentBanSource(player:GetData("Source"), -1, args[2], "Pwnzor")
 	-- 	end
 	-- end, {
 	-- 	help = "Fake Pwnzor Ban",
@@ -68,10 +68,10 @@ function RegisterCallbacks()
 	-- 	},
 	-- }, 2)
 
-	-- Chat:RegisterAdminCommand("pwnzorsource", function(source, args, rawCommand)
-	-- 	local player = Fetch:Source(tonumber(args[1]))
+	-- exports["sandbox-chat"]:RegisterAdminCommand("pwnzorsource", function(source, args, rawCommand)
+	-- 	local player = exports['sandbox-base']:FetchSource(tonumber(args[1]))
 	-- 	if player ~= nil then
-	-- 		Punishment.Ban:Source(tonumber(args[1]), -1, args[2], "Pwnzor")
+	-- 		exports['sandbox-base']:PunishmentBanSource(tonumber(args[1]), -1, args[2], "Pwnzor")
 	-- 	end
 	-- end, {
 	-- 	help = "Ban Player From Server",
@@ -87,47 +87,48 @@ function RegisterCallbacks()
 	-- 	},
 	-- }, 2)
 
-	Callbacks:RegisterServerCallback("Pwnzor:GetEvents", function(source, data, cb)
-		if not Pwnzor.Players:Get(source, "GetEvents") then
-			Pwnzor.Players:Set(source, "GetEvents")
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:GetEvents", function(source, data, cb)
+		if not exports['sandbox-pwnzor']:Get(source, "GetEvents") then
+			exports['sandbox-pwnzor']:Set(source, "GetEvents")
 			cb(_blacklistedClientEvents)
 		else
-			if not Fetch:Source(source).Permissions:IsAdmin() then
-				Punishment.Ban:Source(source, -1, "Attempt To Recall GetEvents", "Pwnzor")
+			if not exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
+				exports['sandbox-base']:PunishmentBanSource(source, -1, "Attempt To Recall GetEvents", "Pwnzor")
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:GetCommands", function(source, data, cb)
-		if not Pwnzor.Players:Get(source, "GetCommands") then
-			Pwnzor.Players:Set(source, "GetCommands")
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:GetCommands", function(source, data, cb)
+		if not exports['sandbox-pwnzor']:Get(source, "GetCommands") then
+			exports['sandbox-pwnzor']:Set(source, "GetCommands")
 			cb(_blacklistedCommands)
 		else
-			if not Fetch:Source(source).Permissions:IsAdmin() then
-				Punishment.Ban:Source(source, -1, "Attempt To Recall GetCommands", "Pwnzor")
+			if not exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
+				exports['sandbox-base']:PunishmentBanSource(source, -1, "Attempt To Recall GetCommands", "Pwnzor")
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:AFK", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:AFK", function(source, data, cb)
 		if Config.Components.AFK.Enabled then
-			Punishment:Kick(source, "You Were Kicked For Being AFK", "Pwnzor", true)
+			exports['sandbox-base']:PunishmentKick(source, "You Were Kicked For Being AFK", "Pwnzor", true)
 		end
 	end)
 
 	local _fovScreenshotLast = {}
 
-	Callbacks:RegisterServerCallback("Pwnzor:FOV", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:FOV", function(source, data, cb)
 		if Config.Components.FOV.Enabled then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			local fov = data.fov
 			if char then
 				if not _fovScreenshotLast[source] or (GetGameTimer() - _fovScreenshotLast[source]) > 30000 then
 					_fovScreenshotLast[source] = GetGameTimer()
-					Pwnzor:Screenshot(char:GetData("SID"), string.format("Detected Modified FOV: %s", fov))
+					exports['sandbox-pwnzor']:Screenshot(char:GetData("SID"),
+						string.format("Detected Modified FOV: %s", fov))
 				end
 
-				Logger:Warn(
+				exports['sandbox-base']:LoggerWarn(
 					"Pwnzor",
 					string.format(
 						"%s %s (%s) Detected Modified FOV: %s",
@@ -151,20 +152,21 @@ function RegisterCallbacks()
 				if Config.Components.FOV.Options.KickPlayer then
 					Wait(5000) -- need time to process screenshot
 
-					Punishment:Kick(src, string.format("Detected Modified FOV: %s", fov), "Pwnzor", true)
+					exports['sandbox-base']:PunishmentKick(src, string.format("Detected Modified FOV: %s", fov), "Pwnzor",
+						true)
 				end
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:AspectRatio", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:AspectRatio", function(source, data, cb)
 		if Config.Components.AspectRatio.Enabled then
 			local src = source
-			local char = Fetch:CharacterSource(src)
+			local char = exports['sandbox-characters']:FetchCharacterSource(src)
 			if char then
-				Pwnzor:Screenshot(char:GetData("SID"), "Detected Unusual Resolution")
+				exports['sandbox-pwnzor']:Screenshot(char:GetData("SID"), "Detected Unusual Resolution")
 
-				Logger:Warn(
+				exports['sandbox-base']:LoggerWarn(
 					"Pwnzor",
 					string.format(
 						"%s %s (%s) Detected Unusual Resolution",
@@ -187,16 +189,16 @@ function RegisterCallbacks()
 				if Config.Components.AspectRatio.Options.KickPlayer then
 					Wait(5000) -- need time to process screenshot
 
-					Punishment:Kick(src, "Detected Unusual Resolution", "Pwnzor", true)
+					exports['sandbox-base']:PunishmentKick(src, "Detected Unusual Resolution", "Pwnzor", true)
 				end
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:Trigger", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:Trigger", function(source, data, cb)
 		cb("💙 From Pwnzor 🙂")
-		if not Fetch:Source(source).Permissions:IsAdmin() then
-			Logger:Info(
+		if not exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
+			exports['sandbox-base']:LoggerInfo(
 				"Pwnzor",
 				string.format("Pwnzor Trigger For %s: %s (check) %s (match)", source, data.check, data.match),
 				{
@@ -210,7 +212,7 @@ function RegisterCallbacks()
 					},
 				}
 			)
-			Punishment.Ban:Source(
+			exports['sandbox-base']:PunishmentBanSource(
 				source,
 				-1,
 				string.format("Pwnzor Trigger: %s (check) %s (match)", data.check, data.match),
@@ -219,18 +221,18 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:GetCode", function(source, data, cb)
-		afkCodes[source] = Generator.Hacker.ingVerb()
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:GetCode", function(source, data, cb)
+		afkCodes[source] = exports['sandbox-base']:GeneratorHackerIngVerb()
 		cb(afkCodes[source])
 	end)
 
-	Callbacks:RegisterServerCallback("Pwnzor:EnterCode", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Pwnzor:EnterCode", function(source, data, cb)
 		if afkCodes[source] ~= nil then
 			if afkCodes[source] == data then
 				afkCodes[source] = nil
 				cb(true)
 			else
-				Execute:Client(source, "Notification", "Error", "Incorrect AFK Code")
+				exports['sandbox-hud']:NotifError(source, "Incorrect AFK Code")
 				cb(false)
 			end
 		else

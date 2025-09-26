@@ -1,43 +1,12 @@
-AddEventHandler("EMS:Shared:DependencyUpdate", EMSComponents)
-function EMSComponents()
-	Database = exports["sandbox-base"]:FetchComponent("Database")
-	Middleware = exports["sandbox-base"]:FetchComponent("Middleware")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("EMS", {
-		"Database",
-		"Middleware",
-		"Callbacks",
-		"Logger",
-		"Fetch",
-		"Inventory",
-		"Damage",
-		"Execute",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		EMSComponents()
-		EMSCallbacks()
-		EMSItems()
-	end)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("EMS", _EMS)
+	EMSCallbacks()
+	EMSItems()
 end)
 
 RegisterNetEvent("EMS:Server:CheckICUPatients", function()
 	local src = source
 	local count = 0
-	for k, v in ipairs(Fetch:AllCharacters()) do
+	for k, v in ipairs(exports['sandbox-characters']:FetchAllCharacters()) do
 		if v ~= nil then
 			if v:GetData("ICU") ~= nil and not v:GetData("ICU").Released then
 				count = count + 1
@@ -47,12 +16,13 @@ RegisterNetEvent("EMS:Server:CheckICUPatients", function()
 
 	if count > 0 then
 		if count == 1 then
-			Execute:Client(src, "Notification", "Info", "There Is 1 Patient In ICU")
+			exports['sandbox-hud']:NotifInfo(src, "There Is 1 Patient In ICU")
 		else
-			Execute:Client(src, "Notification", "Info", string.format("There Are %s Patients In ICU", count))
+			exports['sandbox-hud']:NotifInfo(src,
+				string.format("There Are %s Patients In ICU", count))
 		end
 	else
-		Execute:Client(src, "Notification", "Info", "There Are No Patients In ICU")
+		exports['sandbox-hud']:NotifInfo(src, "There Are No Patients In ICU")
 	end
 end)
 
@@ -62,13 +32,13 @@ RegisterNetEvent("EMS:Server:RequestHelp", function()
 end)
 
 function EMSCallbacks()
-	Callbacks:RegisterServerCallback("EMS:Stabilize", function(source, data, cb)
-		local myChar = Fetch:CharacterSource(source)
-		local char = Fetch:CharacterSource(tonumber(data))
+	exports["sandbox-base"]:RegisterServerCallback("EMS:Stabilize", function(source, data, cb)
+		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(tonumber(data))
 		if char ~= nil then
-			if Inventory.Items:Has(myChar:GetData("SID"), 1, "traumakit", 1) then
-				if Jobs.Permissions:HasJob(source, "ems") then
-					Logger:Info(
+			if exports['sandbox-inventory']:ItemsHas(myChar:GetData("SID"), 1, "traumakit", 1) then
+				if exports['sandbox-jobs']:HasJob(source, "ems") then
+					exports['sandbox-base']:LoggerInfo(
 						"EMS",
 						string.format(
 							"%s %s (%s) Stabilized %s %s (%s)",
@@ -85,7 +55,7 @@ function EMSCallbacks()
 							database = true,
 						}
 					)
-					Callbacks:ClientCallback(data, "Damage:FieldStabalize")
+					exports["sandbox-base"]:ClientCallback(data, "Damage:FieldStabalize")
 					cb({ error = false })
 				else
 					cb({ error = true, code = 3 })
@@ -98,11 +68,11 @@ function EMSCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("EMS:FieldTreatWounds", function(source, data, cb)
-		local myChar = Fetch:CharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems") then
-			if Inventory.Items:Has(myChar:GetData("SID"), 1, "traumakit", 1) then
-				Execute:Client(data, "Notification", "Success", "Your Wounds Were Treated")
+	exports["sandbox-base"]:RegisterServerCallback("EMS:FieldTreatWounds", function(source, data, cb)
+		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
+		if exports['sandbox-jobs']:HasJob(source, "ems") then
+			if exports['sandbox-inventory']:ItemsHas(myChar:GetData("SID"), 1, "traumakit", 1) then
+				exports['sandbox-hud']:NotifSuccess(data, "Your Wounds Were Treated")
 				cb({ error = false })
 			else
 				cb({ error = true, code = 2 })
@@ -112,11 +82,11 @@ function EMSCallbacks()
 		end
 	end)
 
-	-- Callbacks:RegisterServerCallback("EMS:ApplyGauze", function(source, data, cb)
-	-- 	local myChar = Fetch:CharacterSource(source)
-	-- 	if Jobs.Permissions:HasJob(source, "ems") then
-	-- 		if Inventory.Items:Remove(myChar:GetData("SID"), 1, "gauze", 1) then
-	-- 			local target = Fetch:Source(data)
+	-- exports["sandbox-base"]:RegisterServerCallback("EMS:ApplyGauze", function(source, data, cb)
+	-- 	local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
+	-- 	if exports['sandbox-jobs']:HasJob(source, "ems") then
+	-- 		if exports['sandbox-inventory']:Remove(myChar:GetData("SID"), 1, "gauze", 1) then
+	-- 			local target = exports['sandbox-base']:FetchSource(data)
 	-- 			if target ~= nil then
 	-- 				local tChar = target:GetData("Character")
 	-- 				if tChar ~= nil then
@@ -125,7 +95,7 @@ function EMSCallbacks()
 	-- 						dmg.Bleed = dmg.Bleed - 1
 	-- 						tChar:SetData("Damage", dmg)
 	-- 					else
-	-- 						Execute:Client(data, "Notification", "Error", "You continue bleeding through the gauze")
+	-- 						exports['sandbox-hud']:NotifError(data, "You continue bleeding through the gauze")
 	-- 					end
 	-- 					cb({ error = false })
 	-- 				else
@@ -142,21 +112,21 @@ function EMSCallbacks()
 	-- 	end
 	-- end)
 
-	Callbacks:RegisterServerCallback("EMS:ApplyBandage", function(source, data, cb)
-		local myChar = Fetch:CharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems") then
-			if Inventory.Items:Remove(myChar:GetData("SID"), 1, "bandage", 1) then
+	exports["sandbox-base"]:RegisterServerCallback("EMS:ApplyBandage", function(source, data, cb)
+		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
+		if exports['sandbox-jobs']:HasJob(source, "ems") then
+			if exports['sandbox-inventory']:Remove(myChar:GetData("SID"), 1, "bandage", 1) then
 				local ped = GetPlayerPed(data)
 				local currHp = GetEntityHealth(ped)
 				if currHp < (GetEntityMaxHealth(ped) * 0.75) then
 					local p = promise.new()
 
-					Callbacks:ClientCallback(data, "EMS:ApplyBandage", {}, function(s)
+					exports["sandbox-base"]:ClientCallback(data, "EMS:ApplyBandage", {}, function(s)
 						p:resolve(s)
 					end)
 
 					Citizen.Await(p)
-					Execute:Client(data, "Notification", "Success", "A Bandage Was Applied To You")
+					exports['sandbox-hud']:NotifSuccess(data, "A Bandage Was Applied To You")
 					cb({ error = false })
 				else
 					cb({ error = true, code = 3 })
@@ -169,12 +139,12 @@ function EMSCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("EMS:ApplyMorphine", function(source, data, cb)
-		local myChar = Fetch:CharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems") then
-			if Inventory.Items:Remove(myChar:GetData("SID"), 1, "morphine", 1) then
-				Damage.Effects:Painkiller(tonumber(data), 3)
-				Execute:Client(data, "Notification", "Success", "You Received A Morphine Shot")
+	exports["sandbox-base"]:RegisterServerCallback("EMS:ApplyMorphine", function(source, data, cb)
+		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
+		if exports['sandbox-jobs']:HasJob(source, "ems") then
+			if exports['sandbox-inventory']:Remove(myChar:GetData("SID"), 1, "morphine", 1) then
+				exports['sandbox-damage']:EffectsPainkiller(tonumber(data), 3)
+				exports['sandbox-hud']:NotifSuccess(data, "You Received A Morphine Shot")
 				cb({ error = false })
 			else
 				cb({ error = true, code = 2 })
@@ -184,23 +154,23 @@ function EMSCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("EMS:TreatWounds", function(source, data, cb)
-		local myChar = Fetch:CharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems") then
-			Callbacks:ClientCallback(data, "Damage:Heal", true)
+	exports["sandbox-base"]:RegisterServerCallback("EMS:TreatWounds", function(source, data, cb)
+		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
+		if exports['sandbox-jobs']:HasJob(source, "ems") then
+			exports["sandbox-base"]:ClientCallback(data, "Damage:Heal", true)
 			--TriggerClientEvent("Hospital:Client:GetOut", data)
-			Execute:Client(source, "Notification", "Success", "Patient Has Been Treated")
-			Execute:Client(data, "Notification", "Success", "You've Been Treated")
+			exports['sandbox-hud']:NotifSuccess(source, "Patient Has Been Treated")
+			exports['sandbox-hud']:NotifSuccess(data, "You've Been Treated")
 			cb({ error = false })
 		else
 			cb({ error = true, code = 1 })
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("EMS:CheckDamage", function(source, data, cb)
-		local myChar = Fetch:CharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems") or Jobs.Permissions:HasJob(source, "police") then
-			local tChar = Fetch:CharacterSource(data)
+	exports["sandbox-base"]:RegisterServerCallback("EMS:CheckDamage", function(source, data, cb)
+		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
+		if exports['sandbox-jobs']:HasJob(source, "ems") or exports['sandbox-jobs']:HasJob(source, "police") then
+			local tChar = exports['sandbox-characters']:FetchCharacterSource(data)
 			if tChar ~= nil then
 				cb(tChar:GetData("Damage"))
 			else
@@ -211,18 +181,18 @@ function EMSCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("EMS:DrugTest", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("EMS:DrugTest", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pState = Player(source).state
 			if pState.onDuty == "ems" then
-				local tarChar = Fetch:CharacterSource(data)
+				local tarChar = exports['sandbox-characters']:FetchCharacterSource(data)
 				if tarChar ~= nil then
 					local tarStates = tarChar:GetData("DrugStates") or {}
 					local output = {}
 					for k, v in pairs(tarStates) do
 						if v.expires > os.time() then
-							local item = Inventory.Items:GetData(v.item)
+							local item = exports['sandbox-inventory']:ItemsGetData(v.item)
 							if item and item.drugState ~= nil then
 								local pct = ((v.expires - os.time()) / item.drugState.duration) * 100
 								if pct <= 25 and pct >= 5 then
@@ -260,9 +230,9 @@ function EMSCallbacks()
 							str = str .. string.format("<li>%s</li>", v)
 						end
 						str = str .. "</ul>"
-						Chat.Send.Services:TestResult(source, str)
+						exports["sandbox-chat"]:SendTestResult(source, str)
 					else
-						Chat.Send.Services:TestResult(
+						exports["sandbox-chat"]:SendTestResult(
 							source,
 							"Drug Test Results:<br/><ul><li>All Results Are Negative</li></ul>"
 						)
@@ -277,16 +247,16 @@ end
 
 RegisterNetEvent("EMS:Server:Panic", function(isAlpha)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	local pState = Player(src).state
 	if pState.onDuty == "ems" then
 		local coords = GetEntityCoords(GetPlayerPed(src))
-		Callbacks:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
+		exports["sandbox-base"]:ClientCallback(src, "EmergencyAlerts:GetStreetName", coords, function(location)
 			if isAlpha then
-				EmergencyAlerts:Create(
+				exports['sandbox-mdt']:EmergencyAlertsCreate(
 					"13-A",
 					"Medic Down",
-					{"police_alerts", "ems_alerts"},
+					{ "police_alerts", "ems_alerts" },
 					location,
 					{
 						icon = "circle-exclamation",
@@ -308,10 +278,10 @@ RegisterNetEvent("EMS:Server:Panic", function(isAlpha)
 					2
 				)
 			else
-				EmergencyAlerts:Create(
+				exports['sandbox-mdt']:EmergencyAlertsCreate(
 					"13-B",
 					"Medic Down",
-					{"police_alerts", "ems_alerts"},
+					{ "police_alerts", "ems_alerts" },
 					location,
 					{
 						icon = "circle-exclamation",
@@ -336,5 +306,3 @@ RegisterNetEvent("EMS:Server:Panic", function(isAlpha)
 		end)
 	end
 end)
-
-_EMS = {}

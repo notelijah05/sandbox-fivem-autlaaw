@@ -1,8 +1,8 @@
 function SetupTree(treeData, hasLooted)
 	if _existingTree ~= nil then
 		DeleteEntity(_existingTree.entity)
-		Targeting:RemoveEntity(_existingTree.entity)
-		Blips:Remove("xmas_tree")
+		exports['sandbox-targeting']:RemoveEntity(_existingTree.entity)
+		exports["sandbox-blips"]:Remove("xmas_tree")
 		_existingTree = nil
 	end
 
@@ -14,7 +14,7 @@ function SetupTree(treeData, hasLooted)
 	FreezeEntityPosition(obj, true)
 	SetCanClimbOnEntity(obj, false)
 
-	Targeting:AddEntity(obj, "tree-christmas", {
+	exports['sandbox-targeting']:AddEntity(obj, "tree-christmas", {
 		{
 			icon = "gift",
 			text = "Pickup Gift",
@@ -25,7 +25,7 @@ function SetupTree(treeData, hasLooted)
 		},
 	})
 
-	Blips:Add(
+	exports["sandbox-blips"]:Add(
 		"xmas_tree",
 		"Christmas Tree",
 		vector3(treeData.location.x, treeData.location.y, treeData.location.z),
@@ -42,39 +42,38 @@ function SetupTree(treeData, hasLooted)
 end
 
 AddEventHandler("Xmas:Client:RegisterStartups", function()
-	Interaction:RegisterMenu("pickup-snowball", "Pickup Snowball", "ball-pile", function(data)
-		Interaction:Hide()
-		SNOWBALLS.Pickup()
+	exports['sandbox-hud']:InteractionRegisterMenu("pickup-snowball", "Pickup Snowball", "ball-pile", function(data)
+		exports['sandbox-hud']:InteractionHide()
+		exports['sandbox-xmas']:SnowballsPickup()
 	end, function()
-		return SNOWBALLS.CanPickup()
+		return exports['sandbox-xmas']:SnowballsCanPickup()
 	end)
 end)
 
-SNOWBALLS = {
-	Pickup = function(self)
-		Progress:Progress({
-			name = "snowball_pickup",
-			duration = 5000,
-			label = "Making a snowball",
-			canCancel = true,
-			controlDisables = {
-				disableMovement = true,
-				disableCarMovement = true,
-				disableMouse = false,
-				disableCombat = true,
-			},
-			animation = {
-				animDict = "anim@mp_snowball",
-				anim = "pickup_snowball",
-				flags = 49,
-			},
-		}, function(cancelled)
-			if not cancelled then
-				Callbacks:ServerCallback("Xmas:Server:PickupSnowball", {}, function(s) end)
-			end
-		end)
-	end,
-	CanPickup = function(self)
-		return CheckZone()
-	end,
-}
+exports("SnowballsPickup", function()
+	exports['sandbox-hud']:Progress({
+		name = "snowball_pickup",
+		duration = 5000,
+		label = "Making a snowball",
+		canCancel = true,
+		controlDisables = {
+			disableMovement = true,
+			disableCarMovement = true,
+			disableMouse = false,
+			disableCombat = true,
+		},
+		animation = {
+			animDict = "anim@mp_snowball",
+			anim = "pickup_snowball",
+			flags = 49,
+		},
+	}, function(cancelled)
+		if not cancelled then
+			exports["sandbox-base"]:ServerCallback("Xmas:Server:PickupSnowball", {}, function(s) end)
+		end
+	end)
+end)
+
+exports("SnowballsCanPickup", function()
+	return CheckZone()
+end)

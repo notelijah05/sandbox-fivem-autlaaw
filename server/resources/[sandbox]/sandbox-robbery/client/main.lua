@@ -1,93 +1,28 @@
-AddEventHandler("Robbery:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Phone = exports["sandbox-base"]:FetchComponent("Phone")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Doors = exports["sandbox-base"]:FetchComponent("Doors")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
-	Game = exports["sandbox-base"]:FetchComponent("Game")
-	NetSync = exports["sandbox-base"]:FetchComponent("NetSync")
-	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Lasers = exports["sandbox-base"]:FetchComponent("Lasers")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Robbery", {
-		"Logger",
-		"Callbacks",
-		"PedInteraction",
-		"Progress",
-		"Phone",
-		"Notification",
-		"Polyzone",
-		"Targeting",
-		"Progress",
-		"Minigame",
-		"Keybinds",
-		"Properties",
-		"Sounds",
-		"Interaction",
-		"Inventory",
-		"Action",
-		"Blips",
-		"EmergencyAlerts",
-		"Doors",
-		"ListMenu",
-		"Input",
-		"Game",
-		"NetSync",
-		"Damage",
-		"Lasers",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterGamesCallbacks()
-		TriggerEvent("Robbery:Client:Setup")
+	RegisterGamesCallbacks()
+	TriggerEvent("Robbery:Client:Setup")
 
-		CreateThread(function()
-			PedInteraction:Add(
-				"RobToolsPickup",
-				GetHashKey("csb_anton"),
-				vector3(1129.422, -476.236, 65.485),
-				300.00,
-				25.0,
+	CreateThread(function()
+		exports['sandbox-pedinteraction']:Add(
+			"RobToolsPickup",
+			GetHashKey("csb_anton"),
+			vector3(1129.422, -476.236, 65.485),
+			300.00,
+			25.0,
+			{
 				{
-					{
-						icon = "hand",
-						text = "Pickup Items",
-						event = "Robbery:Client:PickupItems",
-					},
+					icon = "hand",
+					text = "Pickup Items",
+					event = "Robbery:Client:PickupItems",
 				},
-				"box-dollar"
-			)
-		end)
+			},
+			"box-dollar"
+		)
 	end)
 end)
 
 AddEventHandler("Robbery:Client:PickupItems", function()
-	Callbacks:ServerCallback("Robbery:Pickup", {})
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Robbery", _ROBBERY)
+	exports["sandbox-base"]:ServerCallback("Robbery:Pickup", {})
 end)
 
 RegisterNetEvent("Robbery:Client:State:Init", function(states)
@@ -123,7 +58,7 @@ RegisterNetEvent("Robbery:Client:PrintState", function(heistId)
 end)
 
 AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
-	Progress:ProgressWithTickEvent({
+	exports['sandbox-hud']:ProgressWithTickEvent({
 		name = "holdup",
 		duration = 5000,
 		label = "Robbing",
@@ -150,11 +85,11 @@ AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
 		then
 			return
 		end
-		Progress:Cancel()
+		exports['sandbox-hud']:ProgressCancel()
 	end, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Robbery:Holdup:Do", entity.serverId, function(s)
-				Inventory.Dumbfuck:Open(s)
+			exports["sandbox-base"]:ServerCallback("Robbery:Holdup:Do", entity.serverId, function(s)
+				exports['sandbox-inventory']:DumbfuckOpen(s)
 
 				while not LocalPlayer.state.inventoryOpen do
 					Wait(1)
@@ -168,7 +103,7 @@ AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
 								- GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(entity.serverId)))
 							) > 3.0
 						then
-							Inventory.Close:All()
+							exports['sandbox-inventory']:CloseAll()
 						end
 						Wait(2)
 					end
@@ -177,5 +112,3 @@ AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
 		end
 	end)
 end)
-
-_ROBBERY = {}

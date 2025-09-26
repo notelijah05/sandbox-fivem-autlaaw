@@ -18,14 +18,16 @@ function RegisterCallbacks()
 					if v < (os.time() - (60 * 10)) then
 						local pState = Player(k).state
 						if not pState.isDev and not pState.isAdmin and not pState.isStaff then
-							Punishment:Kick(k, "You Were Kicked For Being AFK On Character Select", "Pwnzor", true)
+							exports['sandbox-base']:PunishmentKick(k, "You Were Kicked For Being AFK On Character Select",
+								"Pwnzor", true)
 						else
-							Logger:Warn("Characters", "Staff or Admin Was AFK, Removing From Checks")
+							exports['sandbox-base']:LoggerWarn("Characters",
+								"Staff or Admin Was AFK, Removing From Checks")
 							_fuckingBozos[k] = nil
 						end
 					elseif v < (os.time() - (60 * 5)) then
 						-- TODO: Implement better alert when at this stage when we have someway to do it
-						Execute:Client(k, "Notification", "Warn", "You Will Be Kicked Soon For Being AFK", 58000)
+						exports['sandbox-hud']:NotifWarn(k, "You Will Be Kicked Soon For Being AFK", 58000)
 					end
 				end
 			end
@@ -33,13 +35,13 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:GetServerData", function(source, data, cb)
-		while Fetch:Source(source) == nil do
+	exports["sandbox-base"]:RegisterServerCallback("Characters:GetServerData", function(source, data, cb)
+		while exports['sandbox-base']:FetchSource(source) == nil do
 			Wait(1000)
 		end
 
 		local motd = GetConvar("motd", "Welcome to SandboxRP")
-		Database.Game:find({
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "changelogs",
 			options = {
 				sort = {
@@ -61,9 +63,9 @@ function RegisterCallbacks()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:GetCharacters", function(source, data, cb)
-		local player = Fetch:Source(source)
-		Database.Game:find({
+	exports["sandbox-base"]:RegisterServerCallback("Characters:GetCharacters", function(source, data, cb)
+		local player = exports['sandbox-base']:FetchSource(source)
+		exports['sandbox-base']:DatabaseGameFind({
 			collection = "characters",
 			query = {
 				User = player:GetData("AccountID"),
@@ -84,7 +86,7 @@ function RegisterCallbacks()
 			end
 
 			local p = promise.new()
-			Database.Game:find({
+			exports['sandbox-base']:DatabaseGameFind({
 				collection = "peds",
 				query = {
 					Char = {
@@ -131,11 +133,11 @@ function RegisterCallbacks()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:CreateCharacter", function(source, data, cb)
-		local player = Fetch:Source(source)
+	exports["sandbox-base"]:RegisterServerCallback("Characters:CreateCharacter", function(source, data, cb)
+		local player = exports['sandbox-base']:FetchSource(source)
 
 		local p = promise.new()
-		Database.Game:count({
+		exports['sandbox-base']:DatabaseGameCount({
 			collection = "characters",
 			query = {
 				User = player:GetData("AccountID"),
@@ -154,7 +156,7 @@ function RegisterCallbacks()
 		local charCount = Citizen.Await(p)
 
 		if charCount < 3 or player.Permissions:IsStaff() then
-			local pNumber = Phone:GeneratePhoneNumber()
+			local pNumber = exports['sandbox-phone']:GeneratePhoneNumber()
 
 			local doc = {
 				User = player:GetData("AccountID"),
@@ -167,7 +169,7 @@ function RegisterCallbacks()
 				DOB = data.dob,
 				LastPlayed = -1,
 				Jobs = {},
-				SID = Sequence:Get("Character"),
+				SID = exports['sandbox-base']:SequenceGet("Character"),
 				Cash = 1000,
 				New = true,
 				Licenses = {
@@ -199,7 +201,7 @@ function RegisterCallbacks()
 				},
 			}
 
-			local extra = Middleware:TriggerEventWithData("Characters:Creating", source, doc)
+			local extra = exports['sandbox-base']:MiddlewareTriggerEventWithData("Characters:Creating", source, doc)
 			for k, v in ipairs(extra) do
 				for k2, v2 in pairs(v) do
 					if k2 ~= "ID" then
@@ -208,7 +210,7 @@ function RegisterCallbacks()
 				end
 			end
 
-			Database.Game:insertOne({
+			exports['sandbox-base']:DatabaseGameInsertOne({
 				collection = "characters",
 				document = doc,
 			}, function(success, result, insertedIds)
@@ -218,10 +220,10 @@ function RegisterCallbacks()
 				end
 				doc.ID = insertedIds[1]
 				TriggerEvent("Characters:Server:CharacterCreated", doc)
-				Middleware:TriggerEvent("Characters:Created", source, doc)
+				exports['sandbox-base']:MiddlewareTriggerEvent("Characters:Created", source, doc)
 				cb(doc)
 
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Characters",
 					string.format(
 						"%s [%s] Created a New Character %s %s (%s)",
@@ -243,9 +245,9 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:DeleteCharacter", function(source, data, cb)
-		local player = Fetch:Source(source)
-		Database.Game:findOne({
+	exports["sandbox-base"]:RegisterServerCallback("Characters:DeleteCharacter", function(source, data, cb)
+		local player = exports['sandbox-base']:FetchSource(source)
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
 			query = {
 				User = player:GetData("AccountID"),
@@ -257,7 +259,7 @@ function RegisterCallbacks()
 				return
 			end
 			local deletingChar = results[1]
-			Database.Game:updateOne({
+			exports['sandbox-base']:DatabaseGameUpdateOne({
 				collection = "characters",
 				query = {
 					User = player:GetData("AccountID"),
@@ -273,7 +275,7 @@ function RegisterCallbacks()
 				cb(success)
 
 				if success then
-					Logger:Warn(
+					exports['sandbox-base']:LoggerWarn(
 						"Characters",
 						string.format(
 							"%s [%s] Deleted Character %s %s (%s)",
@@ -297,9 +299,9 @@ function RegisterCallbacks()
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:GetSpawnPoints", function(source, data, cb)
-		local player = Fetch:Source(source)
-		Database.Game:findOne({
+	exports["sandbox-base"]:RegisterServerCallback("Characters:GetSpawnPoints", function(source, data, cb)
+		local player = exports['sandbox-base']:FetchSource(source)
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
 			query = {
 				User = player:GetData("AccountID"),
@@ -330,14 +332,14 @@ function RegisterCallbacks()
 					{
 						id = 1,
 						label = "Character Creation",
-						location = Apartment:GetInteriorLocation(results[1].Apartment or 1),
+						location = exports['sandbox-apartments']:GetInteriorLocation(results[1].Apartment or 1),
 					},
 				})
 			elseif results[1].Jailed and not results[1].Jailed.Released ~= nil then
 				cb({ Config.PrisonSpawn })
 			elseif results[1].ICU and not results[1].ICU.Released then
 				cb({ Config.ICUSpawn })
-			elseif hasLastLocation and Damage:WasDead(results[1].SID) then
+			elseif hasLastLocation and exports['sandbox-damage']:WasDead(results[1].SID) then
 				cb({
 					{
 						id = "LastLocation",
@@ -353,15 +355,17 @@ function RegisterCallbacks()
 					},
 				})
 			else
-				local spawns = Middleware:TriggerEventWithData("Characters:GetSpawnPoints", source, data, results[1])
+				local spawns = exports['sandbox-base']:MiddlewareTriggerEventWithData("Characters:GetSpawnPoints", source,
+					data,
+					results[1])
 				cb(spawns or {})
 			end
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:GetCharacterData", function(source, data, cb)
-		local player = Fetch:Source(source)
-		Database.Game:findOne({
+	exports["sandbox-base"]:RegisterServerCallback("Characters:GetCharacterData", function(source, data, cb)
+		local player = exports['sandbox-base']:FetchSource(source)
+		exports['sandbox-base']:DatabaseGameFindOne({
 			collection = "characters",
 			query = {
 				User = player:GetData("AccountID"),
@@ -384,7 +388,7 @@ function RegisterCallbacks()
 				Last = cData.Last,
 			})
 
-			local store = DataStore:CreateStore(source, "Character", cData)
+			local store = exports["sandbox-base"]:CreateStore(source, "Character", cData)
 			ONLINE_CHARACTERS[source] = store
 
 			_pleaseFuckingWorkSID[cData.SID] = source
@@ -392,15 +396,15 @@ function RegisterCallbacks()
 
 			GlobalState[string.format("SID:%s", source)] = cData.SID
 
-			Middleware:TriggerEvent("Characters:CharacterSelected", source)
+			exports['sandbox-base']:MiddlewareTriggerEvent("Characters:CharacterSelected", source)
 
 			cb(cData)
 		end)
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:Logout", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Characters:Logout", function(source, data, cb)
 		_fuckingBozos[source] = os.time()
-		local c = Fetch:CharacterSource(source)
+		local c = exports['sandbox-characters']:FetchCharacterSource(source)
 		if c ~= nil then
 			local cData = c:GetData()
 			if cData.SID and cData.ID then
@@ -410,18 +414,18 @@ function RegisterCallbacks()
 
 			TriggerEvent("Characters:Server:PlayerLoggedOut", source, cData)
 
-			Middleware:TriggerEvent("Characters:Logout", source)
+			exports['sandbox-base']:MiddlewareTriggerEvent("Characters:Logout", source)
 			ONLINE_CHARACTERS[source] = nil
 			GlobalState[string.format("SID:%s", source)] = nil
 			TriggerClientEvent("Characters:Client:Logout", source)
-			Routing:RoutePlayerToHiddenRoute(source)
-			DataStore:DeleteStore(source, "Character")
+			exports["sandbox-base"]:RoutePlayerToHiddenRoute(source)
+			exports["sandbox-base"]:DeleteStore(source, "Character")
 		end
 		cb("ok")
 	end)
 
-	Callbacks:RegisterServerCallback("Characters:GlobalSpawn", function(source, data, cb)
-		Routing:RoutePlayerToGlobalRoute(source)
+	exports["sandbox-base"]:RegisterServerCallback("Characters:GlobalSpawn", function(source, data, cb)
+		exports["sandbox-base"]:RoutePlayerToGlobalRoute(source)
 		cb()
 	end)
 end
@@ -439,7 +443,7 @@ AddEventHandler("Characters:Server:DropCleanup", function(source, cData)
 end)
 
 function HandleLastLocation(source)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 	if char ~= nil then
 		local lastLocation = _tempLastLocation[source]
@@ -465,24 +469,24 @@ AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
 end)
 
 function RegisterMiddleware()
-	Middleware:Add("Characters:Spawning", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
 		_fuckingBozos[source] = nil
 		TriggerClientEvent("Characters:Client:Spawned", source)
 	end, 100000)
-	Middleware:Add("Characters:ForceStore", function(source)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:ForceStore", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			StoreData(source)
 		end
 	end, 100000)
-	Middleware:Add("Characters:Logout", function(source)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Logout", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			StoreData(source)
 		end
 	end, 10000)
 
-	Middleware:Add("Characters:GetSpawnPoints", function(source, id)
+	exports['sandbox-base']:MiddlewareAdd("Characters:GetSpawnPoints", function(source, id)
 		if id then
 			local hasLastLocation = _lastSpawnLocations[id]
 			if hasLastLocation and hasLastLocation.time and (os.time() - hasLastLocation.time) <= (60 * 5) then
@@ -505,7 +509,7 @@ function RegisterMiddleware()
 		return {}
 	end, 1)
 
-	Middleware:Add("Characters:GetSpawnPoints", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:GetSpawnPoints", function(source)
 		local spawns = {}
 		for k, v in ipairs(Spawns) do
 			v.event = "Characters:GlobalSpawn"
@@ -514,14 +518,14 @@ function RegisterMiddleware()
 		return spawns
 	end, 5)
 
-	Middleware:Add("playerDropped", function(source, message)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-base']:MiddlewareAdd("playerDropped", function(source, message)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			StoreData(source)
 		end
 	end, 10000)
 
-	Middleware:Add("Characters:Logout", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Logout", function(source)
 		local pState = Player(source).state
 		if pState?.tpLocation then
 			_tempLastLocation[source] = pState?.tpLocation
@@ -531,7 +535,7 @@ function RegisterMiddleware()
 		HandleLastLocation(source)
 	end, 1)
 
-	Middleware:Add("playerDropped", HandleLastLocation, 6)
+	exports['sandbox-base']:MiddlewareAdd("playerDropped", HandleLastLocation, 6)
 end
 
 AddEventHandler("playerDropped", function()

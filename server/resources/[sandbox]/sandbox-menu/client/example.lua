@@ -2,25 +2,9 @@ local cam = nil
 local oPos = nil
 local oPosH = 0
 
-AddEventHandler("MenuExample:Shared:DependencyUpdate", RetrieveComponentsExample)
-function RetrieveComponentsExample()
-	Menu = exports["sandbox-base"]:FetchComponent("Menu")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("MenuExample", {
-		"Menu",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponentsExample()
-	end)
-end)
-
 RegisterNetEvent("Menu:Client:Test")
 AddEventHandler("Menu:Client:Test", function()
-	local menu = Menu:Create("menu1", "Menu 1")
+	local menu = exports['sandbox-menu']:Create("menu1", "Menu 1")
 	menu.Add:ColorPicker({ disabled = false, current = { r = 0, g = 255, b = 0 } }, function(data)
 		print(json.encode(data.data.color))
 	end)
@@ -42,7 +26,7 @@ AddEventHandler("Menu:Client:Test", function()
 	)
 	menu.Add:SubMenuBack("Back")
 
-	local root = Menu:Create("root", "Root Menu", function(id, back)
+	local root = exports['sandbox-menu']:Create("root", "Root Menu", function(id, back)
 		oPos = GetEntityCoords(PlayerPedId())
 		oPosH = GetEntityHeading(PlayerPedId())
 

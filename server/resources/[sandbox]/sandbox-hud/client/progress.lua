@@ -48,88 +48,81 @@ local _runProgressThread = false
 function runMdfr(duration)
 	local c = 0
 	CreateThread(function()
-		Buffs:ApplyUniqueBuff("prog_mod", duration / 1000, false)
+		exports['sandbox-hud']:BuffsApplyUniqueBuff("prog_mod", duration / 1000, false)
 		while LocalPlayer.state.loggedIn and c < duration / 1000 do
 			c = c + 1
 			Wait(1000)
 		end
-		Buffs:RemoveBuffType("prog_mod")
+		exports['sandbox-hud']:BuffsRemoveBuffType("prog_mod")
 		_mdfr = 1.0
 	end)
 end
 
-PROGRESS = {
-	_required = {
-		"CurrentAction",
-		"Progress",
-		"ProgressWithStartEvent",
-		"ProgressWithTickEvent",
-		"ProgressWithStartAndTick",
-		"Cancel",
-		"Fail",
-	},
-	CurrentAction = function(self)
-		return progress_action.name
-	end,
-	Progress = function(self, action, finish)
-		_doProgress(action, nil, nil, finish)
-	end,
-	ProgressWithStartEvent = function(self, action, start, finish)
-		_doProgress(action, start, nil, finish)
-	end,
-	ProgressWithTickEvent = function(self, action, tick, finish)
-		_doProgress(action, nil, tick, finish)
-	end,
-	ProgressWithStartAndTick = function(self, action, start, tick, finish)
-		_doProgress(action, start, tick, finish)
-	end,
-	Modifier = function(self, p, t)
-		if _mdfr ~= 1.0 then
-			return false
-		end
-		_mdfr = p / 100.0
-		runMdfr(t)
-		return true
-	end,
-	Cancel = function(self, force)
-		if progress_action == nil then
-			return
-		end
-		if progress_action.canCancel or force then
-			wasCancelled = true
-			_doFinish()
-			SendNUIMessage({
-				type = "CANCEL_PROGRESS",
-			})
-		end
-	end,
-	Fail = function(self)
+exports("ProgressCurrentAction", function()
+	return progress_action.name
+end)
+
+exports("Progress", function(action, finish)
+	_doProgress(action, nil, nil, finish)
+end)
+
+exports("ProgressWithStartEvent", function(action, start, finish)
+	_doProgress(action, start, nil, finish)
+end)
+
+exports("ProgressWithTickEvent", function(action, tick, finish)
+	_doProgress(action, nil, tick, finish)
+end)
+
+exports("ProgressWithStartAndTick", function(action, start, tick, finish)
+	_doProgress(action, start, tick, finish)
+end)
+
+exports("ProgressModifier", function(p, t)
+	if _mdfr ~= 1.0 then
+		return false
+	end
+	_mdfr = p / 100.0
+	runMdfr(t)
+	return true
+end)
+
+exports("ProgressCancel", function(force)
+	if progress_action == nil then
+		return
+	end
+	if progress_action.canCancel or force then
 		wasCancelled = true
 		_doFinish()
 		SendNUIMessage({
-			type = "FAIL_PROGRESS",
+			type = "CANCEL_PROGRESS",
 		})
-	end,
-	Finish = function(self)
-		wasFinished = true
-		_doFinish()
-	end,
-}
+	end
+end)
+
+exports("ProgressFail", function()
+	wasCancelled = true
+	_doFinish()
+	SendNUIMessage({
+		type = "FAIL_PROGRESS",
+	})
+end)
+
+exports("ProgressFinish", function()
+	wasFinished = true
+	_doFinish()
+end)
 
 AddEventHandler("Keybinds:Client:KeyUp:cancel_action", function()
 	if not LocalPlayer.state.doingAction then
 		return
 	end
-	Progress:Cancel()
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Progress", PROGRESS)
+	exports['sandbox-hud']:ProgressCancel()
 end)
 
 RegisterNetEvent("Characters:Client:Logout")
 AddEventHandler("Characters:Client:Logout", function()
-	Progress:Cancel()
+	exports['sandbox-hud']:ProgressCancel()
 end)
 
 function normalizePAct(passed)
@@ -190,7 +183,7 @@ function _doProgress(action, start, tick, finish)
 				while LocalPlayer.state.doingAction do
 					Wait(1)
 					if IsEntityDead(player) and not action.useWhileDead or not LocalPlayer.state.loggedIn then
-						Progress:Cancel()
+						exports['sandbox-hud']:ProgressCancel()
 					end
 				end
 
@@ -199,10 +192,10 @@ function _doProgress(action, start, tick, finish)
 				end
 			end)
 		else
-			Notification:Error("Already Doing An Action", 5000)
+			exports["sandbox-hud"]:NotifError("Already Doing An Action", 5000)
 		end
 	else
-		Notification:Error("Already Doing An Action", 5000)
+		exports["sandbox-hud"]:NotifError("Already Doing An Action", 5000)
 	end
 end
 
@@ -276,7 +269,7 @@ function _doActionStart(player, action)
 								end
 							end)
 						elseif action.animation.anim ~= nil then
-							Animations.Emotes:Play(action.animation.anim, false, action.duration, true)
+							exports['sandbox-animations']:EmotesPlay(action.animation.anim, false, action.duration, true)
 						else
 							if GetVehiclePedIsIn(LocalPlayer.state.ped) == 0 then
 								TaskStartScenarioInPlace(player, "PROP_HUMAN_BUM_BIN", 0, true)
@@ -285,7 +278,7 @@ function _doActionStart(player, action)
 					end
 
 					if action.disarm then
-						Weapons:UnequipIfEquippedNoAnim()
+						exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 					end
 
 					isAnim = true
@@ -396,7 +389,7 @@ function _doActionStart(player, action)
 				end
 
 				if action.vehicle and not IsPedInAnyVehicle(player) then
-					Progress:Fail()
+					exports['sandbox-hud']:ProgressFail()
 				end
 			end
 			Wait(0)
@@ -423,7 +416,7 @@ function _doCleanup(action)
 		if action.animation.animDict ~= nil and action.animation.anim ~= nil then
 			StopAnimTask(LocalPlayer.state.ped, action.animation.animDict, action.animation.anim, 1.0)
 		elseif action.animation.anim ~= nil then
-			Animations.Emotes:ForceCancel()
+			exports['sandbox-animations']:EmotesForceCancel()
 		else
 			if action.animation.task ~= nil and not IsPedInAnyVehicle(LocalPlayer.state.ped, true) then
 				ClearPedTasks(LocalPlayer.state.ped)

@@ -18,8 +18,8 @@ end
 
 function SetupTargetting()
 	for k, v in ipairs(_models) do
-		Targeting:RemoveObject(v)
-		Targeting:AddObject(v, "car", {
+		exports['sandbox-targeting']:RemoveObject(v)
+		exports['sandbox-targeting']:AddObject(v, "car", {
 			{
 				icon = "engine",
 				text = "Scrap",
@@ -35,7 +35,7 @@ function SetupTargetting()
 end
 
 AddEventHandler("Labor:Client:Setup", function()
-	Polyzone.Create:Poly(_POLYID, {
+	exports['sandbox-polyzone']:CreatePoly(_POLYID, {
 		vector2(2403.0769042969, 3160.6232910156),
 		vector2(2435.3303222656, 3160.5451660156),
 		vector2(2435.2749023438, 3026.3818359375),
@@ -49,46 +49,48 @@ AddEventHandler("Labor:Client:Setup", function()
 		vector2(2379.1826171875, 3104.9187011719),
 		vector2(2387.0463867188, 3126.4077148438)
 	}, {
-		name="scrap",
+		name = "scrap",
 		--debugPoly=true,
 		--minZ = 50.28173828125,
 		--maxZ = 51.348690032959
 	})
 
-	PedInteraction:Add("SalvagingJob", `s_m_y_construct_02`, vector3(2369.771, 3157.132, 47.209), 10.633, 25.0, {
-		{
-			icon = "helmet-safety",
-			text = "Start Work",
-			event = "Salvaging:Client:StartJob",
-			tempjob = "Salvaging",
-			isEnabled = function()
-				return not _working
-			end,
-		},
-		{
-			icon = "ballot-check",
-			text = "I've Finished",
-			event = "Salvaging:Client:TriggerDelivery",
-			tempjob = "Salvaging",
-			isEnabled = function()
-				return _working and _state == 2
-			end,
-		},
-		{
-			icon = "box-open-full",
-			text = "Here For My Pickup",
-			event = "Laptop:Client:LSUnderground:Chopping:Pickup",
-			isEnabled = function()
-				return LocalPlayer.state.Character:GetData("ChopPickups") ~= nil and #LocalPlayer.state.Character:GetData("ChopPickups") > 0
-			end,
-		},
-		{
-			icon = "list-timeline",
-			text = "View Current Requests",
-			event = "Laptop:Client:LSUnderground:Chopping:GetPublicList",
-			rep = { id = "Salvaging", level = 7 },
-		},
-	}, 'car-crash')
+	exports['sandbox-pedinteraction']:Add("SalvagingJob", `s_m_y_construct_02`, vector3(2369.771, 3157.132, 47.209),
+		10.633, 25.0, {
+			{
+				icon = "helmet-safety",
+				text = "Start Work",
+				event = "Salvaging:Client:StartJob",
+				tempjob = "Salvaging",
+				isEnabled = function()
+					return not _working
+				end,
+			},
+			{
+				icon = "ballot-check",
+				text = "I've Finished",
+				event = "Salvaging:Client:TriggerDelivery",
+				tempjob = "Salvaging",
+				isEnabled = function()
+					return _working and _state == 2
+				end,
+			},
+			{
+				icon = "box-open-full",
+				text = "Here For My Pickup",
+				event = "Laptop:Client:LSUnderground:Chopping:Pickup",
+				isEnabled = function()
+					return LocalPlayer.state.Character:GetData("ChopPickups") ~= nil and
+						#LocalPlayer.state.Character:GetData("ChopPickups") > 0
+				end,
+			},
+			{
+				icon = "list-timeline",
+				text = "View Current Requests",
+				event = "Laptop:Client:LSUnderground:Chopping:GetPublicList",
+				rep = { id = "Salvaging", level = 7 },
+			},
+		}, 'car-crash')
 end)
 
 RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
@@ -114,49 +116,52 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 			if id ~= _POLYID then return end
 			_inPoly = false
 			for k, v in ipairs(_models) do
-				Targeting:RemoveObject(v)
+				exports['sandbox-targeting']:RemoveObject(v)
 			end
 		end)
 
 		_blip = AddBlipForArea(2385.561, 3057.702, 48.153, 140.0, 80.0)
 		SetBlipColour(_blip, 79)
 
-		if _inPoly or (not _inPoly and Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped, false, _POLYID, true)) and _count < 15) then
+		if _inPoly or (not _inPoly and exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped, false, _POLYID, true)) and _count < 15) then
 			SetupTargetting()
 			_inPoly = true
 		end
 	end)
 
-	eventHandlers["update-state"] = RegisterNetEvent(string.format("Salvaging:Client:%s:EndScrapping", joiner), function()
-		_state = 2
-		if _blip ~= nil then
-			RemoveBlip(_blip)
-		end
-	
-		for k, v in ipairs(_models) do
-			Targeting:RemoveObject(v)
-		end
-	end)
+	eventHandlers["update-state"] = RegisterNetEvent(string.format("Salvaging:Client:%s:EndScrapping", joiner),
+		function()
+			_state = 2
+			if _blip ~= nil then
+				RemoveBlip(_blip)
+			end
 
-	eventHandlers["delivery"] = RegisterNetEvent(string.format("Salvaging:Client:%s:StartDelivery", joiner), function(point)
-		_state = 3
-		DeleteWaypoint()
-		SetNewWaypoint(point.coords.x, point.coords.y)
+			for k, v in ipairs(_models) do
+				exports['sandbox-targeting']:RemoveObject(v)
+			end
+		end)
 
-		_blip = Blips:Add("SalvDelivery", "Deliver Goods", point.coords, 478, 2, 1.4)
+	eventHandlers["delivery"] = RegisterNetEvent(string.format("Salvaging:Client:%s:StartDelivery", joiner),
+		function(point)
+			_state = 3
+			DeleteWaypoint()
+			SetNewWaypoint(point.coords.x, point.coords.y)
 
-		PedInteraction:Add("SalvagingDelivery", `mp_m_waremech_01`, point.coords, point.heading, 25.0, {
-			{
-				icon = "box-circle-check",
-				text = "Deliver Goods",
-				event = "Salvaging:Client:EndDelivery",
-				tempjob = "Salvaging",
-				isEnabled = function()
-					return _working and _state == 3
-				end,
-			},
-		}, 'box-circle-check')
-	end)
+			_blip = exports["sandbox-blips"]:Add("SalvDelivery", "Deliver Goods", point.coords, 478, 2, 1.4)
+
+			exports['sandbox-pedinteraction']:Add("SalvagingDelivery", `mp_m_waremech_01`, point.coords, point.heading,
+				25.0, {
+					{
+						icon = "box-circle-check",
+						text = "Deliver Goods",
+						event = "Salvaging:Client:EndDelivery",
+						tempjob = "Salvaging",
+						isEnabled = function()
+							return _working and _state == 3
+						end,
+					},
+				}, 'box-circle-check')
+		end)
 
 	eventHandlers["actions"] = RegisterNetEvent(string.format("Salvaging:Client:%s:Action", joiner), function(netid)
 		if _nodes then
@@ -165,19 +170,19 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 		_count = _count + 1
 		if _count >= 15 then
 			for k, v in ipairs(_models) do
-				Targeting:RemoveObject(v)
+				exports['sandbox-targeting']:RemoveObject(v)
 			end
 
 			if _blip ~= nil then
 				RemoveBlip(_blip)
-				Blips:Remove("SalvDelivery")
+				exports["sandbox-blips"]:Remove("SalvDelivery")
 			end
 		end
 	end)
 end)
 
 AddEventHandler("Salvaging:Client:ScrapCar", function(s, s2)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = 'salvaging_action',
 		duration = (math.random(15) + 25) * 1000,
 		label = "Scrapping Car",
@@ -196,26 +201,26 @@ AddEventHandler("Salvaging:Client:ScrapCar", function(s, s2)
 		}
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback('Salvaging:SalvageCar', NetworkGetNetworkIdFromEntity(s.entity))
+			exports["sandbox-base"]:ServerCallback('Salvaging:SalvageCar', NetworkGetNetworkIdFromEntity(s.entity))
 		end
 	end)
 end)
 
 AddEventHandler("Salvaging:Client:TriggerDelivery", function()
-    Callbacks:ServerCallback('Salvaging:TriggerDelivery', _joiner)
+	exports["sandbox-base"]:ServerCallback('Salvaging:TriggerDelivery', _joiner)
 end)
 
 AddEventHandler("Salvaging:Client:EndDelivery", function()
-    Callbacks:ServerCallback('Salvaging:EndDelivery', _joiner)
-	PedInteraction:Remove("SalvagingDelivery")
+	exports["sandbox-base"]:ServerCallback('Salvaging:EndDelivery', _joiner)
+	exports['sandbox-pedinteraction']:Remove("SalvagingDelivery")
 end)
 
 AddEventHandler("Salvaging:Client:StartJob", function()
-    Callbacks:ServerCallback('Salvaging:StartJob', _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback('Salvaging:StartJob', _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
-    end)
+	end)
 end)
 
 RegisterNetEvent("Salvaging:Client:OffDuty", function(time)
@@ -225,14 +230,14 @@ RegisterNetEvent("Salvaging:Client:OffDuty", function(time)
 
 	if _blip ~= nil then
 		RemoveBlip(_blip)
-		Blips:Remove("SalvDelivery")
+		exports["sandbox-blips"]:Remove("SalvDelivery")
 	end
 
 	for k, v in ipairs(_models) do
-		Targeting:RemoveObject(v)
+		exports['sandbox-targeting']:RemoveObject(v)
 	end
 
-	PedInteraction:Remove("SalvagingDelivery")
+	exports['sandbox-pedinteraction']:Remove("SalvagingDelivery")
 
 	eventHandlers = {}
 	_joiner = nil

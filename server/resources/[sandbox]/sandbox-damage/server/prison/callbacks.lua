@@ -1,32 +1,34 @@
 function PrisonHospitalCallbacks()
-	Callbacks:RegisterServerCallback("Hospital:PrisonHospitalRevive", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Hospital:PrisonHospitalRevive", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local p = Player(source).state
 		local cost = Config.PrisonCheckIn.Cost
 
-		Billing:Charge(source, cost, "Medical Services", "Use of facilities at Bolingbroke Infirmary")
+		exports['sandbox-finance']:BillingCharge(source, cost, "Medical Services",
+			"Use of facilities at Bolingbroke Infirmary")
 
-		local f = Banking.Accounts:GetOrganization("ems")
-		Banking.Balance:Deposit(f.Account, cost / 2, {
+		local f = exports['sandbox-finance']:AccountsGetOrganization("ems")
+		exports['sandbox-finance']:BalanceDeposit(f.Account, cost / 2, {
 			type = "deposit",
 			title = "Medical Treatment",
 			description = string.format("Medical Bill For %s %s", char:GetData("First"), char:GetData("Last")),
 			data = {},
 		}, true)
 
-		f = Banking.Accounts:GetOrganization("government")
-		Banking.Balance:Deposit(f.Account, cost / 2, {
+		f = exports['sandbox-finance']:AccountsGetOrganization("government")
+		exports['sandbox-finance']:BalanceDeposit(f.Account, cost / 2, {
 			type = "deposit",
 			title = "Medical Treatment",
 			description = string.format("Medical Bill For %s %s", char:GetData("First"), char:GetData("Last")),
 			data = {},
 		}, true)
 
-		local tChar = Fetch:CharacterSource(source)
+		local tChar = exports['sandbox-characters']:FetchCharacterSource(source)
 		if tChar ~= nil then
-			Callbacks:ClientCallback(tChar:GetData("Source"), "Damage:Heal", true)
+			exports["sandbox-base"]:ClientCallback(tChar:GetData("Source"), "Damage:Heal", true)
 		else
-			Execute:Client(source, "Notification", "Error", "An error has occured. Please report this.")
+			exports['sandbox-hud']:NotifError(source,
+				"An error has occured. Please report this.")
 		end
 
 		cb(true)

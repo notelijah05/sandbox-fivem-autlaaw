@@ -57,7 +57,7 @@ local cats = {
 
 AddEventHandler("Businesses:Client:Startup", function()
 	for k, v in ipairs(cats) do
-		PedInteraction:Add(
+		exports['sandbox-pedinteraction']:Add(
 			"uwu-cat-" .. k,
 			`a_c_cat_01`,
 			v.coords,
@@ -83,7 +83,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 		)
 	end
 
-	Polyzone.Create:Box("uwu_cafe_door", vector3(-581.05, -1068.09, 22.34), 3.0, 1.6, {
+	exports['sandbox-polyzone']:CreateBox("uwu_cafe_door", vector3(-581.05, -1068.09, 22.34), 3.0, 1.6, {
 		heading = 0,
 		--debugPoly=true,
 		minZ = 21.34,
@@ -95,61 +95,61 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 	if id == "uwu_cafe_door" then
 		local h = GetEntityHeading(LocalPlayer.state.ped)
 		if h > 310 or h < 50 then
-			Sounds.Play:Distance(15, "bell.ogg", 0.3)
+			exports["sandbox-sounds"]:PlayDistance(15, "bell.ogg", 0.3)
 		end
 	end
 end)
 
 AddEventHandler("Businesses:Client:PetCat", function(data)
 	if data.entity == nil then
-		Notification:Error("This is not a cat!")
+		exports["sandbox-hud"]:NotifError("This is not a cat!")
 		return
 	end
 	TaskTurnPedToFaceEntity(LocalPlayer.state.ped, data.entity, 1000)
 	Wait(1000)
-	Callbacks:ServerCallback("Businesses:Server:PetCat", data, function(success, newState)
+	exports["sandbox-base"]:ServerCallback("Businesses:Server:PetCat", data, function(success, newState)
 		if success then
-			Animations.Emotes:Play("petting", false, 3000, true)
+			exports['sandbox-animations']:EmotesPlay("petting", false, 3000, true)
 			Wait(3000)
-			Notification:Success("Feeling less stressful.")
+			exports["sandbox-hud"]:NotifSuccess("Feeling less stressful.")
 		end
 	end)
 end)
 
 RegisterNetEvent("Inventory:Client:Collectables:UseItem", function(itemName)
 	if itemName == "uwu_prize_b1" then -- brown
-		Animations.Emotes:Play("uwubrownplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwubrownplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b2" then -- orange
-		Animations.Emotes:Play("uwuorangeplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwuorangeplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b3" then -- red
-		Animations.Emotes:Play("uwuorangeplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwuorangeplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b4" then -- green
-		Animations.Emotes:Play("uwugreenplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwugreenplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b5" or itemName == "uwu_prize_b7" then -- pink
-		Animations.Emotes:Play("uwupurpleplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwupurpleplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b6" then -- yellow
-		Animations.Emotes:Play("uwuyellowplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwuyellowplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b8" then -- blue
-		Animations.Emotes:Play("uwublueplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwublueplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b9" then -- grey
-		Animations.Emotes:Play("uwuwasabiplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwuwasabiplush", false, false, false)
 	end
 
 	if itemName == "uwu_prize_b10" then -- sky blue
-		Animations.Emotes:Play("uwuprincessplush", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("uwuprincessplush", false, false, false)
 	end
 end)

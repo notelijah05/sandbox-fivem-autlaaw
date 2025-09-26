@@ -1,22 +1,24 @@
 function CreateGovermentFleetShops()
     for k, v in ipairs(_fleetConfig) do
         if v.interactionPed then
-            PedInteraction:Add('gov_fleet_shop_'.. v.job, v.interactionPed.model, v.interactionPed.coords, v.interactionPed.heading, v.interactionPed.range, {
-                {
-                    icon = 'cars',
-                    text = 'Purchase Fleet Vehicles',
-                    event = 'FleetDealers:Client:Open',
-                    data = { shop = k },
-                    jobPerms = {
-                        {
-                            job = v.job,
-                            permissionKey = v.requiredPermission,
-                            reqDuty = true,
-                            workplace = v.workplace,
-                        },
-                    }
-                },
-            }, 'cars', v.interactionPed.scenario)
+            exports['sandbox-pedinteraction']:Add('gov_fleet_shop_' .. v.job, v.interactionPed.model,
+                v.interactionPed.coords,
+                v.interactionPed.heading, v.interactionPed.range, {
+                    {
+                        icon = 'cars',
+                        text = 'Purchase Fleet Vehicles',
+                        event = 'FleetDealers:Client:Open',
+                        data = { shop = k },
+                        jobPerms = {
+                            {
+                                job = v.job,
+                                permissionKey = v.requiredPermission,
+                                reqDuty = true,
+                                workplace = v.workplace,
+                            },
+                        }
+                    },
+                }, 'cars', v.interactionPed.scenario)
         end
     end
 end
@@ -55,7 +57,7 @@ AddEventHandler('FleetDealers:Client:Open', function(entityData, data)
             for livery, liveryName in pairs(v.liveries) do
                 table.insert(menuData[vehicleSub].items, {
                     label = string.format('Purchase With %s Livery', liveryName),
-                    description = 'Price: $'.. formatNumberToCurrency(v.price),
+                    description = 'Price: $' .. formatNumberToCurrency(v.price),
                     event = 'FleetDealers:Client:ConfirmPurchase',
                     data = { jobName = shopData.jobName, shop = data.shop, vehicle = k, livery = livery, liveryName = liveryName, vehData = v },
                 })
@@ -63,23 +65,25 @@ AddEventHandler('FleetDealers:Client:Open', function(entityData, data)
 
             table.insert(menuData.main.items, {
                 label = v.make .. ' ' .. v.model,
-                description = string.format('Fleet Price: $%s<br>Available Liveries: %s', formatNumberToCurrency(v.price), Utils:GetTableLength(v.liveries)),
+                description = string.format('Fleet Price: $%s<br>Available Liveries: %s', formatNumberToCurrency(v.price),
+                    exports['sandbox-base']:UtilsGetTableLength(v.liveries)),
                 submenu = vehicleSub,
             })
         end
 
-        ListMenu:Show(menuData)
+        exports['sandbox-hud']:ListMenuShow(menuData)
     end
 end)
 
 AddEventHandler('FleetDealers:Client:ConfirmPurchase', function(data)
-    Confirm:Show(
+    exports['sandbox-hud']:ConfirmShow(
         string.format('Confirm %s Fleet Purchase', data.jobName),
         {
             yes = 'FleetDealers:Client:Purchase',
             no = 'FleetDealers:Client:CancelPurchase',
         },
-        string.format('Please Confirm the Purchase of a %s %s (%s Livery) for $%s', data.vehData.make, data.vehData.model, data.liveryName, formatNumberToCurrency(data.vehData.price)),
+        string.format('Please Confirm the Purchase of a %s %s (%s Livery) for $%s', data.vehData.make, data.vehData
+            .model, data.liveryName, formatNumberToCurrency(data.vehData.price)),
         data
     )
 end)

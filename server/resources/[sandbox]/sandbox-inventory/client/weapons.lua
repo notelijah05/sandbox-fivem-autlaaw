@@ -5,213 +5,183 @@ local _ammo = nil
 
 local _interacting = false
 
-AddEventHandler("Weapons:Shared:DependencyUpdate", WeaponsComponents)
-function WeaponsComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Weapons", {
-		"Callbacks",
-		"Notification",
-		"Weapons",
-		"Progress",
-		"Hud",
-		"Buffs",
-		"Interaction",
-		"Inventory",
-		"Sounds",
-	}, function(error)
-		if #error > 0 then
-			return
+	exports['sandbox-hud']:InteractionRegisterMenu("weapon-attachments", false, "gun", function(data)
+		local menu = {}
+
+		if _equipped ~= nil and _equipped.MetaData and _equipped.MetaData.WeaponComponents ~= nil then
+			for k, v in pairs(_equipped.MetaData.WeaponComponents) do
+				local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
+				table.insert(menu, {
+					icon = "xmark",
+					label = string.format("Remove %s", itemData.label),
+					action = function()
+						exports['sandbox-hud']:InteractionHide()
+						TriggerEvent("Weapons:Client:RemoveAttachment", k)
+					end,
+				})
+			end
 		end
-		WeaponsComponents()
 
-		Interaction:RegisterMenu("weapon-attachments", false, "gun", function(data)
-			local menu = {}
+		exports['sandbox-hud']:InteractionShowMenu(menu)
+	end, function()
+		return _equipped ~= nil and _equipped.MetaData and _equipped.MetaData.WeaponComponents ~= nil
+	end)
 
-			if _equipped ~= nil and _equipped.MetaData?.WeaponComponents ~= nil then
-				for k, v in pairs(_equipped.MetaData.WeaponComponents) do
-					local itemData = Inventory.Items:GetData(v.item)
-					table.insert(menu, {
-						icon = "xmark",
-						label = string.format("Remove %s", itemData.label),
-						action = function()
-							Interaction:Hide()
-							TriggerEvent("Weapons:Client:RemoveAttachment", k)
-						end,
-					})
-				end
-			end
+	exports["sandbox-base"]:RegisterClientCallback("Weapons:Check", function(data, cb)
+		if _equipped ~= nil then
+			cb({
+				id = _equipped.id,
+				item = _equipped.Name,
+			})
+		else
+			cb(false)
+		end
+	end)
 
-			Interaction:ShowMenu(menu)
-		end, function()
-			return _equipped ~= nil and _equipped.MetaData?.WeaponComponents ~= nil
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Weapons:EquipAttachment", function(data, cb)
+		if _equipped ~= nil then
+			exports['sandbox-hud']:Progress({
+				name = "attch_action",
+				duration = 5000,
+				label = "Equipping " .. data,
+				useWhileDead = false,
+				canCancel = true,
+				ignoreModifier = true,
+				disarm = false,
+				controlDisables = {
+					disableMovement = false,
+					disableCarMovement = false,
+					disableMouse = false,
+					disableCombat = true,
+				},
+				-- animation = {
+				-- 	animDict = "weapons@rifle@lo@carbine_str",
+				-- 	anim = "reload_aim",
+				-- 	flags = 48,
+				-- },
+			}, function(status)
+				cb(not status)
+			end)
+		else
+			cb(false)
+		end
+	end)
 
-		Callbacks:RegisterClientCallback("Weapons:Check", function(data, cb)
-			if _equipped ~= nil then
-				cb({
-					id = _equipped.id,
-					item = _equipped.Name,
-				})
-			else
-				cb(false)
-			end
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Weapons:Logout", function(data, cb)
+		if _equipped ~= nil then
+			_interacting = true
+			local ped = PlayerPedId()
+			local hash = GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
+			local itemData = _items[_equipped.Name]
+			local f, clip = GetAmmoInClip(ped, hash)
 
-		Callbacks:RegisterClientCallback("Weapons:EquipAttachment", function(data, cb)
-			if _equipped ~= nil then
-				Progress:Progress({
-					name = "attch_action",
-					duration = 5000,
-					label = "Equipping " .. data,
-					useWhileDead = false,
-					canCancel = true,
-					ignoreModifier = true,
-					disarm = false,
-					controlDisables = {
-						disableMovement = false,
-						disableCarMovement = false,
-						disableMouse = false,
-						disableCombat = true,
-					},
-					-- animation = {
-					-- 	animDict = "weapons@rifle@lo@carbine_str",
-					-- 	anim = "reload_aim",
-					-- 	flags = 48,
-					-- },
-				}, function(status)
-					cb(not status)
-				end)
-			else
-				cb(false)
-			end
-		end)
+			local data = {
+				ammo = GetAmmoInPedWeapon(ped, hash),
+				clip = clip,
+				slot = _equipped.Slot,
+			}
 
-		Callbacks:RegisterClientCallback("Weapons:Logout", function(data, cb)
-			if _equipped ~= nil then
-				_interacting = true
-				local ped = PlayerPedId()
-				local hash = GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
-				local itemData = _items[_equipped.Name]
-				local f, clip = GetAmmoInClip(ped, hash)
-
-				local data = {
-					ammo = GetAmmoInPedWeapon(ped, hash),
-					clip = clip,
-					slot = _equipped.Slot,
+			RemoveWeaponFromPed(ped, hash)
+			SetPedAmmoByType(ped, GetHashKey(itemData.ammoType), 0)
+			_equipped = nil
+			_equippedData = nil
+			_equippedHash = nil
+			TriggerEvent("Weapons:Client:SwitchedWeapon", false)
+			SendNUIMessage({
+				type = "SET_EQUIPPED",
+				data = {
+					item = _equipped,
 				}
+			})
+			cb(data)
+			_interacting = false
+		else
+			cb(nil)
+		end
+	end)
 
-				RemoveWeaponFromPed(ped, hash)
-				SetPedAmmoByType(ped, GetHashKey(itemData.ammoType), 0)
-				_equipped = nil
-				_equippedData = nil
-				_equippedHash = nil
-				TriggerEvent("Weapons:Client:SwitchedWeapon", false)
-				SendNUIMessage({
-					type = "SET_EQUIPPED",
-					data = {
-						item = _equipped,
-					}
-				})
-				cb(data)
-				_interacting = true
+	exports["sandbox-base"]:RegisterClientCallback("Weapons:AddAmmo", function(data, cb)
+		if _equipped ~= nil and _items[_equipped.Name].ammoType == data.ammoType then
+			exports['sandbox-hud']:Progress({
+				name = "ammo_action",
+				duration = 2500,
+				label = "Loading Ammunition",
+				useWhileDead = false,
+				canCancel = true,
+				ignoreModifier = true,
+				disarm = false,
+				controlDisables = {
+					disableMovement = false,
+					disableCarMovement = false,
+					disableMouse = false,
+					disableCombat = true,
+				},
+				animation = {
+					animDict = "weapons@rifle@lo@carbine_str",
+					anim = "reload_aim",
+					flags = 48,
+				},
+				-- prop = {
+				-- 	model = "prop_ld_ammo_pack_01",
+				-- }
+			}, function(status)
+				if not status then
+					exports['sandbox-inventory']:WeaponsAmmoAdd(data)
+					cb(true)
+				end
+			end)
+		else
+			if _equipped == nil then
+				exports["sandbox-hud"]:NotifError("No Weapon Equipped")
 			else
-				cb(nil)
+				exports["sandbox-hud"]:NotifError("Wrong Ammo Type")
 			end
-		end)
 
-		Callbacks:RegisterClientCallback("Weapons:AddAmmo", function(data, cb)
-			if _equipped ~= nil and _items[_equipped.Name].ammoType == data.ammoType then
-				Progress:Progress({
-					name = "ammo_action",
-					duration = 2500,
-					label = "Loading Ammunition",
-					useWhileDead = false,
-					canCancel = true,
-					ignoreModifier = true,
-					disarm = false,
-					controlDisables = {
-						disableMovement = false,
-						disableCarMovement = false,
-						disableMouse = false,
-						disableCombat = true,
-					},
-					animation = {
-						animDict = "weapons@rifle@lo@carbine_str",
-						anim = "reload_aim",
-						flags = 48,
-					},
-					-- prop = {
-					-- 	model = "prop_ld_ammo_pack_01",
-					-- }
-				}, function(status)
-					if not status then
-						Weapons.Ammo:Add(data)
-						cb(true)
-					end
-				end)
-			else
-				if _equipped == nil then
-					Notification:Error("No Weapon Equipped")
-				else
-					Notification:Error("Wrong Ammo Type")
+			cb(false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterClientCallback("Weapons:CanEquipParachute", function(data, cb)
+		if not IsPedInParachuteFreeFall(LocalPlayer.state.ped) and not IsPedFalling(LocalPlayer.state.ped) and (GetPedParachuteState(LocalPlayer.state.ped) == -1 or GetPedParachuteState(LocalPlayer.state.ped) == 0) then
+			exports['sandbox-hud']:ProgressWithTickEvent({
+				name = 'equipping_parachute',
+				duration = 3000,
+				label = 'Equipping Parachute',
+				useWhileDead = false,
+				canCancel = true,
+				ignoreModifier = true,
+				controlDisables = {
+					disableMovement = false,
+					disableCarMovement = false,
+					disableMouse = false,
+					disableCombat = true,
+				},
+				animation = {
+					anim = 'adjusttie',
+				},
+			}, function()
+				if not IsPedInParachuteFreeFall(LocalPlayer.state.ped) and not IsPedFalling(LocalPlayer.state.ped) and (GetPedParachuteState(LocalPlayer.state.ped) == -1 or GetPedParachuteState(LocalPlayer.state.ped) == 0) then
+					return
 				end
 
-				cb(false)
-			end
-		end)
-
-		Callbacks:RegisterClientCallback("Weapons:CanEquipParachute", function(data, cb)
-			if not IsPedInParachuteFreeFall(LocalPlayer.state.ped) and not IsPedFalling(LocalPlayer.state.ped) and (GetPedParachuteState(LocalPlayer.state.ped) == -1 or GetPedParachuteState(LocalPlayer.state.ped) == 0) then
-				Progress:ProgressWithTickEvent({
-					name = 'equipping_parachute',
-					duration = 3000,
-					label = 'Equipping Parachute',
-					useWhileDead = false,
-					canCancel = true,
-					ignoreModifier = true,
-					controlDisables = {
-						disableMovement = false,
-						disableCarMovement = false,
-						disableMouse = false,
-						disableCombat = true,
-					},
-					animation = {
-						anim = 'adjusttie',
-					},
-				}, function()
-					if not IsPedInParachuteFreeFall(LocalPlayer.state.ped) and not IsPedFalling(LocalPlayer.state.ped) and (GetPedParachuteState(LocalPlayer.state.ped) == -1 or GetPedParachuteState(LocalPlayer.state.ped) == 0) then
-						return
-					end
-
-					Progress:Cancel()
-				end, function(cancelled)
-					cb(not cancelled)
-				end)
-			else
-				cb(false)
-			end
-		end)
+				exports['sandbox-hud']:ProgressCancel()
+			end, function(cancelled)
+				cb(not cancelled)
+			end)
+		else
+			cb(false)
+		end
 	end)
 end)
 
 RegisterNetEvent("Weapons:Client:Use", function(data)
 	_interacting = true
 	if _equipped ~= nil and _equipped.Slot == data.Slot then
-		Weapons:Unequip(data)
+		exports['sandbox-inventory']:WeaponsUnequip(data)
 		TriggerEvent("Weapons:Client:Changed", nil)
 	else
-		Weapons:Equip(data)
+		exports['sandbox-inventory']:WeaponsEquip(data)
 		TriggerEvent("Weapons:Client:Changed", data)
 		SetWeaponsNoAutoswap(true)
 	end
@@ -227,7 +197,7 @@ end)
 RegisterNetEvent("Weapons:Client:Remove", function(data, from, diff)
 	_interacting = true
 	if _equipped ~= nil and _equipped.Slot == from then
-		Weapons:Unequip(data, diff)
+		exports['sandbox-inventory']:WeaponsUnequip(data, diff)
 	end
 	_interacting = false
 end)
@@ -235,7 +205,7 @@ end)
 RegisterNetEvent("Weapons:Client:ForceUnequip", function()
 	_interacting = true
 	if _equipped ~= nil then
-		Weapons:UnequipIfEquippedNoAnim()
+		exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 	end
 	_interacting = false
 end)
@@ -259,7 +229,7 @@ end)
 RegisterNetEvent("Weapons:Client:UpdateAttachments", function(components)
 	_interacting = true
 	if _equipped ~= nil then
-		local hash = Weapons:GetEquippedHash()
+		local hash = exports['sandbox-inventory']:WeaponsGetEquippedHash()
 		for k, v in pairs(_equipped.MetaData.WeaponComponents or {}) do
 			if components[k] == nil then
 				RemoveWeaponComponentFromPed(LocalPlayer.state.ped, hash, GetHashKey(v.attachment))
@@ -277,7 +247,7 @@ end)
 
 AddEventHandler("Weapons:Client:RemoveAttachment", function(attachment)
 	if _equipped ~= nil then
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "attch_action",
 			duration = 5000,
 			label = "Removing Attachment",
@@ -541,118 +511,121 @@ local anims = {
 	},
 }
 
-WEAPONS = {
-	GetEquippedHash = function(self)
-		if _equipped ~= nil then
-			return GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
-		else
-			return nil
-		end
-	end,
-	GetEquippedItem = function(self)
-		return _equipped
-	end,
-	IsEligible = function(self)
-		local licenses = LocalPlayer.state.Character:GetData("Licenses")
-		if licenses ~= nil and licenses.Weapons ~= nil then
-			return licenses.Weapons.Active
-		else
-			return false
-		end
-	end,
-	Equip = function(self, item)
-		local ped = PlayerPedId()
-		local hash = GetHashKey(_items[item.Name].weapon or item.Name)
-		local itemData = _items[item.Name]
+exports("WeaponsGetEquippedHash", function()
+	if _equipped ~= nil then
+		return GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
+	else
+		return nil
+	end
+end)
 
-		if Animations.Emotes:Get() then
-			return
-		end
+exports("WeaponsGetEquippedItem", function()
+	return _equipped
+end)
 
-		if _equipped ~= nil then
-			Weapons:Unequip(_equipped)
-		end
+exports("WeaponsIsEligible", function()
+	local licenses = LocalPlayer.state.Character:GetData("Licenses")
+	if licenses ~= nil and licenses.Weapons ~= nil then
+		return licenses.Weapons.Active
+	else
+		return false
+	end
+end)
 
-		-- print(string.format("Equipping Weapon, Total Ammo: %s, Clip: %s", item.MetaData.ammo or 0, item.MetaData.clip or 0))
-		if WEAPON_PROPS[item.Name] ~= nil then
-			anims.Draw:TH(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
+exports("WeaponsEquip", function(item)
+	local ped = PlayerPedId()
+	local hash = GetHashKey(_items[item.Name].weapon or item.Name)
+	local itemData = _items[item.Name]
+
+	if exports['sandbox-animations']:EmotesGet() then
+		return
+	end
+
+	if _equipped ~= nil then
+		exports['sandbox-inventory']:WeaponsUnequip(_equipped)
+	end
+
+	if WEAPON_PROPS[item.Name] ~= nil then
+		anims.Draw:TH(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
+			item, itemData)
+	else
+		if LocalPlayer.state.onDuty == "police" then
+			anims.Cop:Draw(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
 				item, itemData)
 		else
-			if LocalPlayer.state.onDuty == "police" then
-				anims.Cop:Draw(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
-					item, itemData)
-			else
-				anims.Draw:OH(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
-					item, itemData)
-			end
+			anims.Draw:OH(ped, hash, GetHashKey(itemData.ammoType), item.MetaData.ammo or 0, item.MetaData.clip or 0,
+				item, itemData)
 		end
+	end
 
-		_equipped = item
-		_equippedHash = hash
-		_equippedData = itemData
-		TriggerEvent("Weapons:Client:SwitchedWeapon", _equipped.Name, _equipped, _items[_equipped.Name])
-		TriggerServerEvent("Weapons:Server:Equipped", item.Slot)
-		SendNUIMessage({
-			type = "SET_EQUIPPED",
-			data = {
-				item = _equipped,
-			}
-		})
+	_equipped = item
+	_equippedHash = hash
+	_equippedData = itemData
+	TriggerEvent("Weapons:Client:SwitchedWeapon", _equipped.Name, _equipped, _items[_equipped.Name])
+	TriggerServerEvent("Weapons:Server:Equipped", item.Slot)
+	SendNUIMessage({
+		type = "SET_EQUIPPED",
+		data = {
+			item = _equipped,
+		}
+	})
 
-		RunDegenThread()
-	end,
-	UnequipIfEquipped = function(self)
-		if _equipped ~= nil then
-			Weapons:Unequip(_equipped)
-		end
-	end,
-	UnequipIfEquippedNoAnim = function(self)
-		if _equipped ~= nil then
-			local ped = PlayerPedId()
-			local itemData = _items[_equipped.Name]
-			UpdateAmmo(_equipped, diff)
-			SetPedAmmoByType(ped, GetHashKey(itemData.ammoType), 0)
-			SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
-			RemoveAllPedWeapons(ped)
-			_equipped = nil
-			_equippedData = nil
-			_equippedHash = nil
-			TriggerEvent("Weapons:Client:SwitchedWeapon", false)
-			TriggerServerEvent("Weapons:Server:Equipped", false)
-			SendNUIMessage({
-				type = "SET_EQUIPPED",
-				data = {
-					item = _equipped,
-				}
-			})
-		end
-	end,
-	Unequip = function(self, item, diff)
-		if item == nil then
-			return
-		end
-		local ped = PlayerPedId()
-		local hash = GetHashKey(_items[item.Name].weapon or item.Name)
-		local itemData = _items[item.Name]
-		UpdateAmmo(item, diff)
-		if WEAPON_PROPS[item.Name] ~= nil then
-			anims.Holster:TH(ped)
+	RunDegenThread()
+end)
+
+exports("WeaponsUnequip", function(item, diff)
+	if item == nil then
+		return
+	end
+	local ped = PlayerPedId()
+	local hash = GetHashKey(_items[item.Name].weapon or item.Name)
+	local itemData = _items[item.Name]
+	UpdateAmmo(item, diff)
+	if WEAPON_PROPS[item.Name] ~= nil then
+		anims.Holster:TH(ped)
+	else
+		if LocalPlayer.state.onDuty == "police" then
+			anims.Cop:Holster(ped)
 		else
-			if LocalPlayer.state.onDuty == "police" then
-				anims.Cop:Holster(ped)
-			else
-				anims.Holster:OH(ped)
-			end
+			anims.Holster:OH(ped)
 		end
+	end
 
+	SetPedAmmoByType(ped, GetHashKey(itemData.ammoType), 0)
+
+	if item.MetaData.WeaponComponents ~= nil then
+		for k, v in pairs(item.MetaData.WeaponComponents) do
+			RemoveWeaponComponentFromPed(ped, hash, v.attachment)
+		end
+	end
+
+	_equipped = nil
+	_equippedData = nil
+	_equippedHash = nil
+	TriggerEvent("Weapons:Client:SwitchedWeapon", false)
+	TriggerServerEvent("Weapons:Server:Equipped", false)
+	SendNUIMessage({
+		type = "SET_EQUIPPED",
+		data = {
+			item = _equipped,
+		}
+	})
+end)
+
+exports("WeaponsUnequipIfEquipped", function()
+	if _equipped ~= nil then
+		exports['sandbox-inventory']:WeaponsUnequip(_equipped)
+	end
+end)
+
+exports("WeaponsUnequipIfEquippedNoAnim", function()
+	if _equipped ~= nil then
+		local ped = PlayerPedId()
+		local itemData = _items[_equipped.Name]
+		UpdateAmmo(_equipped, diff)
 		SetPedAmmoByType(ped, GetHashKey(itemData.ammoType), 0)
-
-		if item.MetaData.WeaponComponents ~= nil then
-			for k, v in pairs(item.MetaData.WeaponComponents) do
-				RemoveWeaponComponentFromPed(ped, hash, v.attachment)
-			end
-		end
-
+		SetCurrentPedWeapon(ped, GetHashKey("WEAPON_UNARMED"), true)
+		RemoveAllPedWeapons(ped)
 		_equipped = nil
 		_equippedData = nil
 		_equippedHash = nil
@@ -664,20 +637,15 @@ WEAPONS = {
 				item = _equipped,
 			}
 		})
-	end,
-	Ammo = {
-		Add = function(self, item)
-			if _equipped ~= nil then
-				local ped = PlayerPedId()
-				local hash = GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
-				AddAmmoToPed(ped, hash, item.bulletCount or 10)
-			end
-		end,
-	},
-}
+	end
+end)
 
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Weapons", WEAPONS)
+exports("WeaponsAmmoAdd", function(item)
+	if _equipped ~= nil then
+		local ped = PlayerPedId()
+		local hash = GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
+		AddAmmoToPed(ped, hash, item.bulletCount or 10)
+	end
 end)
 
 function WeaponsThread()
@@ -706,7 +674,7 @@ function WeaponsThread()
 					if not ignoredHackerWeapons[hasHash] and hasHash ~= 0 and hasHash ~= _equippedHash then
 						RemoveAllPedWeapons(LocalPlayer.state.ped)
 						if not spammyFuck and not LocalPlayer.state.isDead and not ignoredWarningWeapons[hasHash] then
-							Callbacks:ServerCallback("Weapons:PossibleCheaterWarning", {
+							exports["sandbox-base"]:ServerCallback("Weapons:PossibleCheaterWarning", {
 								h = hasHash,
 								s = _equippedHash
 							}, function()
@@ -739,7 +707,7 @@ function WeaponsThread()
 							originSlot = slot,
 						},
 					})
-					Callbacks:ServerCallback("Weapons:UseThrowable", _equipped, function()
+					exports["sandbox-base"]:ServerCallback("Weapons:UseThrowable", _equipped, function()
 						SendNUIMessage({
 							type = "SLOT_NOT_USED",
 							data = {
@@ -794,8 +762,8 @@ function RunDegenThread()
 	CreateThread(function()
 		while _equipped ~= nil do
 			local itemData = _items[_equipped.Name]
-			if itemData.durability ~= nil and (GetCloudTimeAsInt() - (_equipped?.MetaData?.CreateDate or GetCloudTimeAsInt()) >= itemData.durability) then
-				Weapons:UnequipIfEquippedNoAnim()
+			if itemData.durability ~= nil and (GetCloudTimeAsInt() - (_equipped.MetaData and _equipped.MetaData.CreateDate or GetCloudTimeAsInt()) >= itemData.durability) then
+				exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 			end
 			Wait(10000)
 		end
@@ -846,9 +814,9 @@ function RunParachuteUpdate()
 		end
 
 		if hasChute then
-			Buffs:ApplyUniqueBuff("parachute", -1)
+			exports['sandbox-hud']:ApplyUniqueBuff("parachute", -1)
 		else
-			Buffs:RemoveBuffType("parachute")
+			exports['sandbox-hud']:RemoveBuffType("parachute")
 		end
 	end
 end
@@ -862,7 +830,7 @@ function StartParachuteThread()
 
 				if GetPedParachuteState(LocalPlayer.state.ped) >= 2 then
 					Wait(2500)
-					Callbacks:ServerCallback("Inventory:UsedParachute", {})
+					exports["sandbox-base"]:ServerCallback("Inventory:UsedParachute", {})
 					break
 				end
 			end
@@ -880,12 +848,12 @@ AddEventHandler("Weapons:Client:SwitchedWeapon", function()
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
-	Weapons:UnequipIfEquippedNoAnim()
+	exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()
 	Wait(1000)
-	Buffs:RegisterBuff("parachute", "parachute-box", "#A72929", -1, "permanent")
+	exports['sandbox-hud']:RegisterBuff("parachute", "parachute-box", "#A72929", -1, "permanent")
 end)
 
 local prevCoords = 0
@@ -939,13 +907,12 @@ function DoFlashFx(shakeAmp, time)
 	flashTimersRunning += 1
 	totalFlashShakeAmp += shakeAmp
 
-
 	AnimpostfxPlay("Dont_tazeme_bro", 0, true)
 	TaskPlayAnim(PlayerPedId(), "anim@heists@ornate_bank@thermal_charge", "cover_eyes_intro", 8.0, 8.0, time, 50, 8.0)
 	DisableFiring(time * 0.75)
 
-	Hud.Flashbang:Do(time, totalFlashShakeAmp)
-	Sounds.Loop:One("flashbang.ogg", 0.1 * totalFlashShakeAmp)
+	exports['sandbox-hud']:FlashbangDo(time, totalFlashShakeAmp)
+	exports["sandbox-sounds"]:LoopOne("flashbang.ogg", 0.1 * totalFlashShakeAmp)
 
 	Wait(time)
 
@@ -955,9 +922,9 @@ function DoFlashFx(shakeAmp, time)
 	if flashTimersRunning == 0 then
 		ClearPedTasks(PlayerPedId())
 		AnimpostfxStop("Dont_tazeme_bro")
-		Sounds.Fade:One("flashbang.ogg")
+		exports["sandbox-sounds"]:FadeOne("flashbang.ogg")
 	else
-		Sounds.Loop:One("flashbang.ogg", 0.1 * totalFlashShakeAmp)
+		exports["sandbox-sounds"]:LoopOne("flashbang.ogg", 0.1 * totalFlashShakeAmp)
 	end
 end
 
@@ -1001,7 +968,6 @@ RegisterNetEvent("Weapons:Client:DoFlashFx", function(x, y, z, stunTime, afterTi
 			result, hit, endCoords, surfNorm, entityHit = GetShapeTestResult(handle)
 			Wait(1)
 		end
-
 
 		playerHit = (result == 2) and (entityHit == PlayerPedId())
 

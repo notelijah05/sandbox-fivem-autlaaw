@@ -1,22 +1,22 @@
 function RegisterChatCommands()
-	Chat:RegisterAdminCommand("setcallsign", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("setcallsign", function(source, args, rawCommand)
 		local newCallsign = args[2]
-		local target = Fetch:SID(tonumber(args[1]))
+		local target = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if target ~= nil then
 			if
-				Jobs.Permissions:HasJob(target:GetData("Source"), "police")
-				or Jobs.Permissions:HasJob(target:GetData("Source"), "ems")
+				exports['sandbox-jobs']:HasJob(target:GetData("Source"), "police")
+				or exports['sandbox-jobs']:HasJob(target:GetData("Source"), "ems")
 			then
-				if MDT.People:Update(-1, target:GetData("SID"), "Callsign", newCallsign) then
-					Chat.Send.System:Single(source, "Updated Callsign")
+				if exports['sandbox-mdt']:PeopleUpdate(-1, target:GetData("SID"), "Callsign", newCallsign) then
+					exports["sandbox-chat"]:SendSystemSingle(source, "Updated Callsign")
 				else
-					Chat.Send.System:Single(source, "Error Updating Callsign")
+					exports["sandbox-chat"]:SendSystemSingle(source, "Error Updating Callsign")
 				end
 			else
-				Chat.Send.System:Single(source, "Target is not Emergency Personnel")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Target is not Emergency Personnel")
 			end
 		else
-			Chat.Send.System:Single(source, "Invalid State ID")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
 		end
 	end, {
 		help = "Assign a callsign to an emergency worker",
@@ -32,8 +32,8 @@ function RegisterChatCommands()
 		},
 	}, 2)
 
-	Chat:RegisterAdminCommand("reclaimcallsign", function(source, args, rawCommand)
-		Database.Game:findOneAndUpdate({
+	exports["sandbox-chat"]:RegisterAdminCommand("reclaimcallsign", function(source, args, rawCommand)
+		exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
 			collection = "characters",
 			query = {
 				Callsign = args[1],
@@ -53,14 +53,15 @@ function RegisterChatCommands()
 			},
 		}, function(success, results)
 			if success and results then
-				local char = Fetch:SID(results.SID)
+				local char = exports['sandbox-characters']:FetchBySID(results.SID)
 				if char then
 					char:SetData("Callsign", false)
 				end
 
-				Chat.Send.System:Single(source, string.format("Callsign Reclaimed From %s %s (%s)", results.First, results.Last, results.SID))
+				exports["sandbox-chat"]:SendSystemSingle(source,
+					string.format("Callsign Reclaimed From %s %s (%s)", results.First, results.Last, results.SID))
 			else
-				Chat.Send.System:Single(source, "Nobody With That Callsign")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Nobody With That Callsign")
 			end
 		end)
 	end, {
@@ -73,7 +74,7 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"mdt",
 		function(source, args, rawCommand)
 			TriggerClientEvent("MDT:Client:Toggle", source)
@@ -98,13 +99,13 @@ function RegisterChatCommands()
 		}
 	)
 
-	Chat:RegisterAdminCommand("addmdtsysadmin", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("addmdtsysadmin", function(source, args, rawCommand)
 		local targetStateId = math.tointeger(args[1])
-		local success = MDT.People:Update(-1, targetStateId, "MDTSystemAdmin", true)
+		local success = exports['sandbox-mdt']:PeopleUpdate(-1, targetStateId, "MDTSystemAdmin", true)
 		if success then
-			Chat.Send.System:Single(source, "Granted System Admin to State ID: " .. targetStateId)
+			exports["sandbox-chat"]:SendSystemSingle(source, "Granted System Admin to State ID: " .. targetStateId)
 		else
-			Chat.Send.System:Single(source, "Error Granting System Admin")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Error Granting System Admin")
 		end
 	end, {
 		help = "Grant MDT System Admin [Danger!]",
@@ -116,13 +117,13 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("removemdtsysadmin", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("removemdtsysadmin", function(source, args, rawCommand)
 		local targetStateId = math.tointeger(args[1])
-		local success = MDT.People:Update(-1, targetStateId, "MDTSystemAdmin", false)
+		local success = exports['sandbox-mdt']:PeopleUpdate(-1, targetStateId, "MDTSystemAdmin", false)
 		if success then
-			Chat.Send.System:Single(source, "Revoked System Admin from State ID: " .. targetStateId)
+			exports["sandbox-chat"]:SendSystemSingle(source, "Revoked System Admin from State ID: " .. targetStateId)
 		else
-			Chat.Send.System:Single(source, "Error Revoking System Admin")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Error Revoking System Admin")
 		end
 	end, {
 		help = "Revoke MDT System Admin",
@@ -134,7 +135,7 @@ function RegisterChatCommands()
 		},
 	}, 1)
 
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"clearblips",
 		function(source, args, rawCommand)
 			TriggerClientEvent("EmergencyAlerts:Client:Clear", source)

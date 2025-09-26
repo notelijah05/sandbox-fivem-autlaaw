@@ -1,6 +1,6 @@
 AddEventHandler('Dealerships:Client:StartRunningCredit', function(hit, data)
-    Input:Show(
-        "Run Credit Check & See Max Borrowable Amount", 
+    exports['sandbox-hud']:InputShow(
+        "Run Credit Check & See Max Borrowable Amount",
         "Customer State ID",
         {
             {
@@ -13,18 +13,18 @@ AddEventHandler('Dealerships:Client:StartRunningCredit', function(hit, data)
                 }
             },
         },
-        "Dealerships:Client:RecieveInput", 
+        "Dealerships:Client:RecieveInput",
         data
     )
 end)
 
 AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
-    Callbacks:ServerCallback('Dealerships:CheckPersonsCredit', {
+    exports["sandbox-base"]:ServerCallback('Dealerships:CheckPersonsCredit', {
         dealerId = data.dealerId,
         SID = values.SID,
     }, function(canBorrow, score, result)
         if canBorrow then
-            Confirm:Show(
+            exports['sandbox-hud']:ConfirmShow(
                 'Credit Check Results',
                 {},
                 string.format(
@@ -33,7 +33,7 @@ AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
                         of %s.
                     ]],
                     values.SID,
-                    formatNumberToCurrency(math.floor(Utils:Round(result, 0))),
+                    formatNumberToCurrency(math.floor(exports['sandbox-base']:UtilsRound(result, 0))),
                     score
                 ),
                 {},
@@ -42,12 +42,12 @@ AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
             )
         else
             if score and result then
-                Confirm:Show(
+                exports['sandbox-hud']:ConfirmShow(
                     'Credit Check Results',
                     {},
                     string.format(
                         [[
-                            State ID %s is not elegible for a vehicle loan. This is because they already have an active vehicle loan. At this time people can 
+                            State ID %s is not elegible for a vehicle loan. This is because they already have an active vehicle loan. At this time people can
                             only have a single vehicle loan.
                         ]],
                         values.SID,
@@ -58,7 +58,7 @@ AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
                     'Ok'
                 )
             elseif score and not result then
-                Confirm:Show(
+                exports['sandbox-hud']:ConfirmShow(
                     'Credit Check Results',
                     {},
                     string.format(
@@ -73,7 +73,7 @@ AddEventHandler('Dealerships:Client:RecieveInput', function(values, data)
                     'Ok'
                 )
             else
-                Confirm:Show(
+                exports['sandbox-hud']:ConfirmShow(
                     'Credit Check Results',
                     {},
                     [[

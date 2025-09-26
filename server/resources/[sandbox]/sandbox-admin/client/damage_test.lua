@@ -46,13 +46,13 @@ local function startWeaponTest(bone)
 			Wait(500)
 
 			if not HasEntityBeenDamagedByAnyPed(targetPed) and hitCount > 5 then
-				Notification:Info(("Weapon didn't reach the target, distance: %s"):format(distance))
+				exports["sandbox-hud"]:NotifInfo(("Weapon didn't reach the target, distance: %s"):format(distance))
 				print(("Weapon didn't reach the target, distance: %s"):format(distance))
 				return
 			end
 
 			if IsEntityDead(targetPed) then
-				Notification:Info(
+				exports["sandbox-hud"]:NotifInfo(
 					("hitCount: %s | weaponDamage: %s | distance: %s"):format(hitCount, weaponDamage, distance)
 				)
 				print(("hitCount: %s | weaponDamage: %s | distance: %s"):format(hitCount, weaponDamage, distance))
@@ -78,7 +78,7 @@ RegisterNetEvent("Admin:Client:DamageTest", function(mode)
 	if LocalPlayer.state.isAdmin then
 		local isArmed, hash = GetCurrentPedWeapon(LocalPlayer.state.ped)
 		if not isArmed then
-			Notification:Error("You Don't Have A Weapon Equipped, Idiot")
+			exports["sandbox-hud"]:NotifError("You Don't Have A Weapon Equipped, Idiot")
 			return
 		end
 

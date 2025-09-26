@@ -9,61 +9,37 @@ local customOffsets = {
 
 local _inTrunkVeh = nil
 
-AddEventHandler("Trunk:Shared:DependencyUpdate", TrunkComponents)
-function TrunkComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Escort = exports["sandbox-base"]:FetchComponent("Escort")
-	Trunk = exports["sandbox-base"]:FetchComponent("Trunk")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Trunk", {
-		"Callbacks",
-		"Logger",
-		"Notification",
-		"Action",
-		"Escort",
-		"Trunk",
-	}, function(error)
-		if #error > 0 then
-			return
+	exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPutIn", function(data, cb)
+		if NetworkDoesEntityExistWithNetworkId(data) then
+			InTrunk(NetToVeh(data))
 		end
-		TrunkComponents()
+	end)
 
-		Callbacks:RegisterClientCallback("Trunk:GetPutIn", function(data, cb)
-			if NetworkDoesEntityExistWithNetworkId(data) then
-				InTrunk(NetToVeh(data))
+	exports["sandbox-base"]:RegisterClientCallback("Trunk:GetPulledOut", function(data, cb)
+		if LocalPlayer.state.inTrunk then
+			exports['sandbox-escort']:TrunkGetOut()
+
+			while LocalPlayer.state.inTrunk do
+				Wait(5)
 			end
-		end)
 
-		Callbacks:RegisterClientCallback("Trunk:GetPulledOut", function(data, cb)
-			if LocalPlayer.state.inTrunk then
-				Trunk:GetOut()
-
-				while LocalPlayer.state.inTrunk do
-					Wait(5)
-				end
-
-				cb(true)
-			else
-				cb(false)
-			end
-		end)
+			cb(true)
+		else
+			cb(false)
+		end
 	end)
 end)
 
 AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 	if LocalPlayer.state.inTrunk and (not LocalPlayer.state.isDead and not LocalPlayer.state.isCuffed) then
-		Trunk:GetOut()
+		exports['sandbox-escort']:TrunkGetOut()
 	end
 end)
 
 AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 	if LocalPlayer.state.inTrunk and (not LocalPlayer.state.isDead and not LocalPlayer.state.isCuffed) then
-		Trunk:ToggleTrunk()
+		exports['sandbox-escort']:TrunkToggleTrunk()
 	end
 end)
 
@@ -155,7 +131,7 @@ function InTrunk(veh)
 		end
 
 		if not LocalPlayer.state.isCuffed and not LocalPlayer.state.isDead then
-			Action:Show(
+			exports['sandbox-hud']:ActionShow(
 				"trunk",
 				"{keybind}primary_action{/keybind} Exit Trunk | {keybind}secondary_action{/keybind} Open/Close Trunk"
 			)
@@ -188,13 +164,12 @@ function InTrunk(veh)
 			end
 
 			if not DoesEntityExist(veh) then
-				Trunk:GetOut()
+				exports['sandbox-escort']:TrunkGetOut()
 			end
 
 			if not IsEntityPlayingAnim(LocalPlayer.state.ped, animDict, anim, 3) then
 				TaskPlayAnim(LocalPlayer.state.ped, animDict, anim, 8.0, 8.0, -1, 1, 999.0, 0, 0, 0)
 			end
-
 
 			Wait(1)
 		end
@@ -205,7 +180,7 @@ function InTrunk(veh)
 				Wait(10)
 			end
 
-			Action:Hide("trunk")
+			exports['sandbox-hud']:ActionHide("trunk")
 			SetVehicleDoorOpen(_inTrunkVeh, 5, 1, 1)
 			UnmountTrunkCam()
 			DetachEntity(LocalPlayer.state.ped)
@@ -225,30 +200,26 @@ function InTrunk(veh)
 	end
 end
 
-_TRUNK = {
-	GetIn = function(self, veh)
-		InTrunk(veh)
-	end,
-	GetOut = function(self)
-		TriggerServerEvent("Trunk:Server:Exit", VehToNet(_inTrunkVeh))
-	end,
-	ToggleTrunk = function(self)
-		if GetVehicleDoorAngleRatio(_inTrunkVeh, 5) > 0.0 then
-			--SetVehicleDoorsShut(_inTrunkVeh, 5, true, false)
-			Vehicles.Sync.Doors:Shut(_inTrunkVeh, 5, true)
-		else
-			--SetVehicleDoorOpen(_inTrunkVeh, 5, true, true)
-			Vehicles.Sync.Doors:Open(_inTrunkVeh, 5, false, false)
-		end
-	end,
-}
+exports("TrunkGetIn", function(veh)
+	InTrunk(veh)
+end)
+
+exports("TrunkGetOut", function()
+	TriggerServerEvent("Trunk:Server:Exit", VehToNet(_inTrunkVeh))
+end)
+
+exports("TrunkToggleTrunk", function()
+	if GetVehicleDoorAngleRatio(_inTrunkVeh, 5) > 0.0 then
+		--SetVehicleDoorsShut(_inTrunkVeh, 5, true, false)
+		exports['sandbox-vehicles']:SyncDoorsShut(_inTrunkVeh, 5, true)
+	else
+		--SetVehicleDoorOpen(_inTrunkVeh, 5, true, true)
+		exports['sandbox-vehicles']:SyncDoorsOpen(_inTrunkVeh, 5, false, false)
+	end
+end)
 
 RegisterNetEvent("Trunk:Client:Exit", function()
 	LocalPlayer.state:set("inTrunk", false)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Trunk", _TRUNK)
 end)
 
 AddEventHandler("Trunk:Client:GetIn", function(entity, data)
@@ -257,14 +228,16 @@ end)
 
 AddEventHandler("Ped:Client:Died", function()
 	if LocalPlayer.state.inTrunk then
-		Trunk:GetOut()
+		exports['sandbox-escort']:TrunkGetOut()
 	end
 end)
 
 AddEventHandler("Trunk:Client:PutIn", function(entity, data)
-	Callbacks:ServerCallback("Trunk:PutIn", NetworkGetNetworkIdFromEntity(entity.entity), function(state) end)
+	exports["sandbox-base"]:ServerCallback("Trunk:PutIn", NetworkGetNetworkIdFromEntity(entity.entity),
+		function(state) end)
 end)
 
 AddEventHandler("Trunk:Client:PullOut", function(entity, data)
-	Callbacks:ServerCallback("Trunk:PullOut", NetworkGetNetworkIdFromEntity(entity.entity), function(state) end)
+	exports["sandbox-base"]:ServerCallback("Trunk:PullOut", NetworkGetNetworkIdFromEntity(entity.entity),
+		function(state) end)
 end)

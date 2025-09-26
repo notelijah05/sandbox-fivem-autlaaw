@@ -248,7 +248,7 @@ function InitBizPhones()
 	for k, v in pairs(_bizPhones) do
 		if not _bizPhoneNumbers[v.id] then
 			-- Needs Number Generating
-			local number = Phone:GeneratePhoneNumber()
+			local number = exports['sandbox-phone']:GeneratePhoneNumber()
 			v.number = number
 
 			_bizPhoneNumbers[v.id] = v.number

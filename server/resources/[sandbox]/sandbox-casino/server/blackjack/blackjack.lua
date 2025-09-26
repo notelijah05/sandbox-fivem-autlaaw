@@ -164,7 +164,7 @@ function StartBlackjackGame(tableId)
                                     nextCardCount = 0
                                     v.State = "stand"
                                 elseif state == "double" and nextCardCount == 2 then
-                                    if Casino.Chips:Modify(v.Source, -v.Bet) then
+                                    if exports['sandbox-casino']:ChipsModify(v.Source, -v.Bet) then
                                         SendCasinoSpentChipsPhoneNotification(v.Source, v.Bet)
                                         v.Bet = v.Bet * 2
 
@@ -328,7 +328,7 @@ function StartBlackjackGame(tableId)
                                     wonAmount = v.Bet * 2
                                 end
 
-                                if Casino.Chips:Modify(v.Source, wonAmount) then
+                                if exports['sandbox-casino']:ChipsModify(v.Source, wonAmount) then
                                     SendCasinoWonChipsPhoneNotification(v.Source, wonAmount)
                                 end
 
@@ -420,8 +420,8 @@ AddEventHandler("Casino:Server:Startup", function()
 
     GlobalState["Casino:BlackjackConfig"] = _blackjackTables
 
-    Callbacks:RegisterServerCallback("Casino:JoinBlackjack", function(source, chairId, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:JoinBlackjack", function(source, chairId, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or _blackjackPlayers[source] then
             return cb(false)
         end
@@ -429,7 +429,7 @@ AddEventHandler("Casino:Server:Startup", function()
         local tableId, localChairId = GetBlackjackTableId(chairId)
 
         if _blackjack[tableId] and not _blackjack[tableId].Seats[localChairId] then
-            if _blackjackTables[tableId].isVIP and not Inventory.Items:Has(char:GetData("SID"), 1, "diamond_vip", 1) then
+            if _blackjackTables[tableId].isVIP and not exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "diamond_vip", 1) then
                 return cb(false, "vip")
             end
 
@@ -457,8 +457,8 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:LeaveBlackjack", function(source, data, cb)
-        --local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:LeaveBlackjack", function(source, data, cb)
+        --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local blackjackPlayer = _blackjackPlayers[source]
         if not blackjackPlayer then
             return cb(false)
@@ -475,7 +475,7 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:StartBlackjack", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:StartBlackjack", function(source, data, cb)
         local blackjackPlayer = _blackjackPlayers[source]
         if not blackjackPlayer then
             return cb(false)
@@ -491,8 +491,8 @@ AddEventHandler("Casino:Server:Startup", function()
     end)
 
     -- Bet Confirmation
-    Callbacks:RegisterServerCallback("Casino:BetBlackjack", function(source, data, cb)
-        --local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:BetBlackjack", function(source, data, cb)
+        --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local blackjackPlayer = _blackjackPlayers[source]
         if not blackjackPlayer then
             return cb(false)
@@ -503,7 +503,7 @@ AddEventHandler("Casino:Server:Startup", function()
         end
 
         if _blackjack[blackjackPlayer.Table] and _blackjack[blackjackPlayer.Table].Seats[blackjackPlayer.LocalChair] then
-            if Casino.Chips:Modify(source, -data) then
+            if exports['sandbox-casino']:ChipsModify(source, -data) then
                 SendCasinoSpentChipsPhoneNotification(source, data)
 
                 _blackjack[blackjackPlayer.Table].Seats[blackjackPlayer.LocalChair].Bet = data
@@ -512,7 +512,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
                 cb(true, _blackjack[blackjackPlayer.Table])
             else
-                Execute:Client(source, "Notification", "Error", "Not Enough Chips")
+                exports['sandbox-hud']:NotifError(source, "Not Enough Chips")
                 cb(false)
             end
         else
@@ -533,7 +533,7 @@ end
 
 function GetHitStandResponse(src, currentHand, canDouble, currentBet)
     local p = promise.new()
-    Callbacks:ClientCallback(src, "Casino:Client:RequestHitStand",
+    exports["sandbox-base"]:ClientCallback(src, "Casino:Client:RequestHitStand",
         { currentHand = currentHand, canDouble = canDouble, currentBet = currentBet }, function(success, state)
             if p then
                 p:resolve({ success = success, state = state })

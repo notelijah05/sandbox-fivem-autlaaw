@@ -26,7 +26,7 @@ local carWashLocations = {
 
 AddEventHandler('Vehicles:Client:StartUp', function()
     for k, v in ipairs(carWashLocations) do
-        Polyzone.Create:Box('carwash_'.. k, v.center, v.length, v.width, v.options, {
+        exports['sandbox-polyzone']:CreateBox('carwash_' .. k, v.center, v.length, v.width, v.options, {
             carwash = true,
         })
     end
@@ -35,14 +35,14 @@ end)
 AddEventHandler('Polyzone:Enter', function(id, point, insideZone, data)
     if data.carwash and VEHICLE_INSIDE and VEHICLE_SEAT == -1 and not inCarWash then
         inCarWash = true
-        Action:Show('carwash', '{keybind}primary_action{/keybind} Use Car Wash for $100')
+        exports['sandbox-hud']:ActionShow('carwash', '{keybind}primary_action{/keybind} Use Car Wash for $100')
     end
 end)
 
 AddEventHandler('Polyzone:Exit', function(id, point, insideZone, data)
     if inCarWash and data and data.carwash then
         inCarWash = false
-        Action:Hide('carwash')
+        exports['sandbox-hud']:ActionHide('carwash')
     end
 end)
 
@@ -53,7 +53,7 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
                 local char = LocalPlayer.state.Character
                 if char and char:GetData('Cash') >= 250 then
                     usingCarWash = true
-                    Progress:Progress({
+                    exports['sandbox-hud']:Progress({
                         name = "vehicle_clean",
                         duration = 10 * 1000,
                         label = "Cleaning Vehicle",
@@ -69,27 +69,27 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
                     }, function(cancelled)
                         usingCarWash = false
                         if cancelled then return end
-                        Callbacks:ServerCallback('Vehicles:CleanVehicle', {
+                        exports["sandbox-base"]:ServerCallback('Vehicles:CleanVehicle', {
                             vNet = VehToNet(VEHICLE_INSIDE),
                             bill = true,
                         })
                     end)
                 else
-                    Notification:Error('Not Enough Cash')
+                    exports["sandbox-hud"]:NotifError('Not Enough Cash')
                 end
             else
-                Notification:Error('This Vehicle Isn\'t Dirty!')
+                exports["sandbox-hud"]:NotifError('This Vehicle Isn\'t Dirty!')
             end
         end
     end
 end)
 
 RegisterNetEvent('Vehicles:Client:CleaningKit', function()
-    local target = Targeting:GetEntityPlayerIsLookingAt()
+    local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
     if not usingCarWash and target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0 then
-        Animations.Emotes:Play('clean', false, 14000, true)
+        exports['sandbox-animations']:EmotesPlay('clean', false, 14000, true)
         usingCarWash = true
-        Progress:Progress({
+        exports['sandbox-hud']:Progress({
             name = "vehicle_clean",
             duration = 14000,
             label = "Cleaning Vehicle",
@@ -106,12 +106,12 @@ RegisterNetEvent('Vehicles:Client:CleaningKit', function()
             usingCarWash = false
             if cancelled then return end
             if DoesEntityExist(target.entity) and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0 then
-                Callbacks:ServerCallback('Vehicles:CleanVehicle', {
+                exports["sandbox-base"]:ServerCallback('Vehicles:CleanVehicle', {
                     vNet = VehToNet(target.entity),
                     bill = false,
                 }, function(success)
                     if success then
-                        Notification:Success('Vehicle Cleaned')
+                        exports["sandbox-hud"]:NotifSuccess('Vehicle Cleaned')
                     end
                 end)
             end

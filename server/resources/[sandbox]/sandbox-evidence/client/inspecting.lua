@@ -60,14 +60,15 @@ function StartInspecting()
 		inspecting = true
 		fetchedEvidenceCache = FetchEvidence()
 		nearbyEvidence = filterNearbyEvidence(fetchedEvidenceCache)
-		local NotifyStr = string.format("Camera - Press %s to exit", Keybinds:GetKey("emote_cancel"))
+		local NotifyStr = string.format("Camera - Press %s to exit", exports["sandbox-keybinds"]:GetKey("emote_cancel"))
 		if LocalPlayer.state.onDuty == "police" then
-			NotifyStr = string.format("Camera - Press %s to take a photo", Keybinds:GetKey("secondary_action"))
+			NotifyStr = string.format("Camera - Press %s to take a photo",
+					exports["sandbox-keybinds"]:GetKey("secondary_action"))
 				.. "<br/>"
-				.. string.format("Camera - Press %s to exit", Keybinds:GetKey("emote_cancel"))
+				.. string.format("Camera - Press %s to exit", exports["sandbox-keybinds"]:GetKey("emote_cancel"))
 		end
 		if ignoreFreeAim then
-			Notification.Persistent:Info("camera-info-notif2", NotifyStr, "camera")
+			exports["sandbox-hud"]:NotifPersistentInfo("camera-info-notif2", NotifyStr, "camera")
 		end
 		CreateThread(function()
 			while inspecting do
@@ -177,7 +178,7 @@ function StartInspecting()
 end
 
 function StopInspecting()
-	Notification.Persistent:Remove("camera-info-notif2")
+	exports["sandbox-hud"]:NotifPersistentRemove("camera-info-notif2")
 	if inspecting then
 		inspecting = false
 	end
@@ -185,7 +186,7 @@ end
 
 function FetchEvidence()
 	local p = promise.new()
-	Callbacks:ServerCallback("Evidence:Fetch", {}, function(evidence)
+	exports["sandbox-base"]:ServerCallback("Evidence:Fetch", {}, function(evidence)
 		p:resolve(evidence)
 	end)
 
@@ -208,13 +209,13 @@ function PickupClosestEvidence(localEvidence)
 
 			if closest and lastDist <= 1.75 then
 				if LocalPlayer.state.onDuty == "police" then
-					Animations.Emotes:Play("pickup", false, false, true, true)
+					exports['sandbox-animations']:EmotesPlay("pickup", false, false, true, true)
 					TriggerServerEvent("Evidence:Server:PickupEvidence", closest)
 					-- else
 					--     print('Destroy Evidence')
 				end
 			else
-				Notification:Error("Not Close Enough to Any Evidence")
+				exports["sandbox-hud"]:NotifError("Not Close Enough to Any Evidence")
 			end
 		end
 	end

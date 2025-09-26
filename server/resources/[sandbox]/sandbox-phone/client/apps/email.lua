@@ -7,7 +7,7 @@ RegisterNetEvent("Phone:Client:Email:Receive", function(email)
 		},
 	})
 	Wait(1e3)
-	Phone.Notification:Add(email.sender, email.subject, email.time, 6000, "email", {
+	exports['sandbox-phone']:NotificationAdd(email.sender, email.subject, email.time, 6000, "email", {
 		view = "view/" .. email.id,
 	}, nil)
 end)
@@ -24,12 +24,12 @@ end)
 
 RegisterNUICallback("ReadEmail", function(data, cb)
 	cb("OK")
-	Callbacks:ServerCallback("Phone:Email:Read", data)
+	exports["sandbox-base"]:ServerCallback("Phone:Email:Read", data)
 end)
 
 RegisterNUICallback("DeleteEmail", function(data, cb)
 	cb("OK")
-	Callbacks:ServerCallback("Phone:Email:Delete", data, function(res)
+	exports["sandbox-base"]:ServerCallback("Phone:Email:Delete", data, function(res)
 		cb(res)
 	end)
 end)

@@ -1,9 +1,9 @@
 local _moving = false
 
 function EnterProperty(data, backdoor)
-	Callbacks:ServerCallback("Properties:EnterProperty", data.propertyId, function(state, pId, int)
+	exports["sandbox-base"]:ServerCallback("Properties:EnterProperty", data.propertyId, function(state, pId, int)
 		if state then
-			Interaction:Hide()
+			exports['sandbox-hud']:InteractionHide()
 
 			DoScreenFadeOut(1000)
 			while not IsScreenFadedOut() do
@@ -16,7 +16,7 @@ function EnterProperty(data, backdoor)
 
 			local property = _properties[pId]
 
-			Sounds.Play:One("door_open.ogg", 0.3)
+			exports["sandbox-sounds"]:PlayOne("door_open.ogg", 0.3)
 			Wait(200)
 			FreezeEntityPosition(PlayerPedId(), true)
 			Wait(50)
@@ -51,7 +51,7 @@ function EnterProperty(data, backdoor)
 end
 
 function ExitProperty(data, backdoor)
-	Callbacks:ServerCallback("Properties:ExitProperty", {}, function(pId)
+	exports["sandbox-base"]:ServerCallback("Properties:ExitProperty", {}, function(pId)
 		_insideProperty = false
 		_insideInterior = false
 
@@ -71,28 +71,28 @@ function ExitProperty(data, backdoor)
 		DestroyFurniture(true)
 		SetFurnitureEditMode(false)
 		if _placingFurniture then
-			ObjectPlacer:Cancel(true, true)
-			Phone:ResetRoute()
+			exports['sandbox-objects']:PlacerCancel(true, true)
+			exports['sandbox-phone']:ResetRoute()
 			_placingFurniture = false
 			LocalPlayer.state.placingFurniture = false
 			LocalPlayer.state.furnitureEdit = false
 		end
 
 		TriggerEvent('Interiors:Exit')
-		Sync:Start()
+		exports["sandbox-sync"]:Start()
 
-		Sounds.Play:One("door_close.ogg", 0.3)
+		exports["sandbox-sounds"]:PlayOne("door_close.ogg", 0.3)
 		Wait(200)
 
 		FreezeEntityPosition(PlayerPedId(), true)
 		Wait(50)
 
-		-- Targeting.Zones:RemoveZone(string.format("property-%s-logout", pId))
-		-- Targeting.Zones:RemoveZone(string.format("property-%s-closet", pId))
-		-- Targeting.Zones:RemoveZone(string.format("property-%s-stash", pId))
-		Targeting.Zones:RemoveZone(string.format("property-%s-exit", pId))
-		Targeting.Zones:RemoveZone(string.format("property-%s-exit-back", pId))
-		--Polyzone:Remove("property-int-zone")
+		-- exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-logout", pId))
+		-- exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-closet", pId))
+		-- exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-stash", pId))
+		exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-exit", pId))
+		exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-exit-back", pId))
+		--exports['sandbox-polyzone']:Remove("property-int-zone")
 
 		if backdoor and property.location.backdoor then
 			SetEntityCoords(
@@ -133,7 +133,7 @@ function ExitProperty(data, backdoor)
 		end
 	end)
 
-	Notification.Persistent:Remove("furniture")
+	exports["sandbox-hud"]:NotifPersistentRemove("furniture")
 
 	if _previewingInterior then
 		EndPreview()

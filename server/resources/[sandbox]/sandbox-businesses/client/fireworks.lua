@@ -11,7 +11,7 @@ local fireworkProps = {
 }
 
 AddEventHandler("Businesses:Client:Startup", function()
-    Callbacks:RegisterClientCallback("Fireworks:Use", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Fireworks:Use", function(data, cb)
         local firework = fireworkProps[data]
         loadModel(firework.prop)
 
@@ -28,7 +28,7 @@ AddEventHandler("Businesses:Client:Startup", function()
         SetEntityHeading(prop, GetEntityHeading(LocalPlayer.state.ped))
         PlaceObjectOnGroundProperly(prop)
 
-        Notification:Info("RUN AWAY!")
+        exports["sandbox-hud"]:NotifInfo("RUN AWAY!")
 
         Wait(9000)
 

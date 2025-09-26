@@ -1,31 +1,5 @@
 local _created = {}
 
-AddEventHandler("Vendor:Shared:DependencyUpdate", RetrieveVendorComponents)
-function RetrieveVendorComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Vendor", {
-		"Callbacks",
-		"Logger",
-		"PedInteraction",
-		"Targeting",
-		"ListMenu",
-		"Inventory",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveVendorComponents()
-	end)
-end)
-
 RegisterNetEvent("Vendor:Client:Set", function(vendors)
 	for k, v in pairs(vendors) do
 		_created[v.id] = {
@@ -34,7 +8,7 @@ RegisterNetEvent("Vendor:Client:Set", function(vendors)
 		}
 
 		if v.type == "ped" then
-			PedInteraction:Add(v.id, v.model, v.position.coords, v.position.heading, 50.0, {
+			exports['sandbox-pedinteraction']:Add(v.id, v.model, v.position.coords, v.position.heading, 50.0, {
 				{
 					icon = v.iconOverride or "question",
 					text = v.labelOverride or "Buy Items",
@@ -46,7 +20,7 @@ RegisterNetEvent("Vendor:Client:Set", function(vendors)
 				},
 			}, v.iconOverride or "question", v.position.scenario or false, v.position.anim or nil)
 		elseif v.type == "poly" then
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				v.id,
 				v.iconOverride or "question",
 				v.position.coords,
@@ -84,7 +58,7 @@ RegisterNetEvent(
 			}
 
 			if type == "ped" then
-				PedInteraction:Add(id, model, position.coords, position.heading, 50.0, {
+				exports['sandbox-pedinteraction']:Add(id, model, position.coords, position.heading, 50.0, {
 					{
 						icon = iconOverride or "question",
 						text = labelOverride or "Buy Items",
@@ -97,7 +71,7 @@ RegisterNetEvent(
 					},
 				}, iconOverride or "question", position.scenario or false, position.anim or false)
 			elseif type == "poly" then
-				Targeting.Zones:AddBox(
+				exports['sandbox-targeting']:ZonesAddBox(
 					id,
 					iconOverride or "question",
 					position.coords,
@@ -127,9 +101,9 @@ RegisterNetEvent(
 RegisterNetEvent("Vendor:Client:Remove", function(id)
 	if LocalPlayer.state.loggedIn then
 		if _created[id].type == "ped" then
-			PedInteraction:Remove(id)
+			exports['sandbox-pedinteraction']:Remove(id)
 		elseif _created[id].type == "poly" then
-			Targeting.Zones:RemoveZone(id)
+			exports['sandbox-targeting']:ZonesRemoveZone(id)
 		end
 
 		_created[id] = nil
@@ -137,12 +111,12 @@ RegisterNetEvent("Vendor:Client:Remove", function(id)
 end)
 
 AddEventHandler("Vendor:Client:GetItems", function(entity, data)
-	Callbacks:ServerCallback("Vendor:GetItems", data.id, function(items)
+	exports["sandbox-base"]:ServerCallback("Vendor:GetItems", data.id, function(items)
 		local itemList = {}
 
 		if #items > 0 then
 			for k, v in ipairs(items) do
-				local itemData = Inventory.Items:GetData(v.item)
+				local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
 				if v.delayed then
 					table.insert(itemList, {
 						label = itemData.label,
@@ -179,7 +153,7 @@ AddEventHandler("Vendor:Client:GetItems", function(entity, data)
 			})
 		end
 
-		ListMenu:Show({
+		exports['sandbox-hud']:ListMenuShow({
 			main = {
 				label = _created[data.id].name,
 				items = itemList,
@@ -189,5 +163,5 @@ AddEventHandler("Vendor:Client:GetItems", function(entity, data)
 end)
 
 AddEventHandler("Vendor:Client:BuyItem", function(data)
-	Callbacks:ServerCallback("Vendor:BuyItem", data)
+	exports["sandbox-base"]:ServerCallback("Vendor:BuyItem", data)
 end)

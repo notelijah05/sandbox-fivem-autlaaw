@@ -1,10 +1,5 @@
-local _ran = false
-
 function DefaultData()
-    if _ran then return end
-
-    _ran = true
-    Default:Add('properties', 1590006209, {
+    exports['sandbox-base']:DefaultAdd('properties', 1590006209, {
         {
             interior = 1,
             price = 100000,

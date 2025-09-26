@@ -1,15 +1,12 @@
-Drilling = {}
-
-Drilling.Sounds = {
+local DrillingSounds = {
 	Playing = false,
 	Sound = nil,
 	PinSound = nil,
 	FailSound = nil,
 }
 
-Drilling.Pins = nil
-
-Drilling.DisabledControls = { 30, 31, 32, 33, 34, 35 }
+local DrillingPins = nil
+local DrillingDisabledControls = { 30, 31, 32, 33, 34, 35 }
 
 function loadModel(model)
 	if IsModelInCdimage(model) then
@@ -29,12 +26,12 @@ end
 
 function ShittyDrillAnim()
 	if
-		Drilling.DrillSpeed <= 0
+		DrillingSpeed <= 0
 		and not IsEntityPlayingAnim(LocalPlayer.state.ped, "anim@heists@fleeca_bank@drilling", "drill_straight_idle", 3)
 	then
 		TaskPlayAnim(LocalPlayer.state.ped, "anim@heists@fleeca_bank@drilling", "drill_straight_idle", 8.0, 8.0, -1, 33)
 	elseif
-		Drilling.DrillSpeed > 0
+		DrillingSpeed > 0
 		and not IsEntityPlayingAnim(
 			LocalPlayer.state.ped,
 			"anim@heists@fleeca_bank@drilling",
@@ -68,12 +65,12 @@ function YouFuckingSuck()
 		waitTime,
 		33
 	)
-	StopSound(Drilling.Sounds.Sound)
+	StopSound(DrillingSounds.Sound)
 
-	PlaySoundFrontend(Drilling.Sounds.FailSound, "Drill_Jam", "DLC_HEIST_FLEECA_SOUNDSET", true)
+	PlaySoundFrontend(DrillingSounds.FailSound, "Drill_Jam", "DLC_HEIST_FLEECA_SOUNDSET", true)
 	--ToggleDrillParticleFx( false, _drillPropHandle, ref _drillFx );
 	Wait(waitTime)
-	StopSound(Drilling.Sounds.FailSound)
+	StopSound(DrillingSounds.FailSound)
 end
 
 function CreateAndAttchProp()
@@ -105,31 +102,23 @@ function CreateAndAttchProp()
 
 	SetModelAsNoLongerNeeded(GetHashKey("hei_prop_heist_drill"))
 
-	Drilling.DrillProp = prop
+	DrillingProp = prop
 end
 
-Drilling.Start = function(callback)
-	if not Drilling.Active then
-		Drilling.Active = true
-		Drilling.Init()
-		Drilling.Update(callback)
-	end
-end
-
-Drilling.Init = function()
-	if Drilling.Scaleform then
-		Scaleforms.UnloadMovie(Drilling.Scaleform)
+local function DrillingInit()
+	if DrillingScaleform then
+		exports['sandbox-base']:ScaleformUnloadMovie(DrillingScaleform)
 	end
 
 	LoadAnim("anim@heists@fleeca_bank@drilling")
-	Drilling.Scaleform = Scaleforms.LoadMovie("DRILLING")
+	DrillingScaleform = exports['sandbox-base']:ScaleformLoadMovie("DRILLING")
 
-	Drilling.DrillSpeed = 0.0
-	Drilling.DrillPos = 0.0
-	Drilling.DrillTemp = 0.0
-	Drilling.HoleDepth = 0.0
+	DrillingSpeed = 0.0
+	DrillingPos = 0.0
+	DrillingTemp = 0.0
+	DrillingHoleDepth = 0.0
 
-	Drilling.Pins = {
+	DrillingPins = {
 		Pin1 = {
 			Position = 0.325,
 			Broken = false,
@@ -148,9 +137,9 @@ Drilling.Init = function()
 		},
 	}
 
-	Drilling.Sounds.Sound = GetSoundId()
-	Drilling.Sounds.PinSound = GetSoundId()
-	Drilling.Sounds.FailSound = GetSoundId()
+	DrillingSounds.Sound = GetSoundId()
+	DrillingSounds.PinSound = GetSoundId()
+	DrillingSounds.FailSound = GetSoundId()
 
 	RequestAmbientAudioBank("HEIST_FLEECA_DRILL")
 	RequestAmbientAudioBank("HEIST_FLEECA_DRILL_2")
@@ -164,150 +153,158 @@ Drilling.Init = function()
 
 	CreateAndAttchProp()
 
-	Scaleforms.PopFloat(Drilling.Scaleform, "SET_SPEED", 0.0)
-	Scaleforms.PopFloat(Drilling.Scaleform, "SET_DRILL_POSITION", 0.0)
-	Scaleforms.PopFloat(Drilling.Scaleform, "SET_TEMPERATURE", 0.0)
-	Scaleforms.PopFloat(Drilling.Scaleform, "SET_HOLE_DEPTH", 0.0)
+	exports['sandbox-base']:ScaleformPopFloat(DrillingScaleform, "SET_SPEED", 0.0)
+	exports['sandbox-base']:ScaleformPopFloat(DrillingScaleform, "SET_DRILL_POSITION", 0.0)
+	exports['sandbox-base']:ScaleformPopFloat(DrillingScaleform, "SET_TEMPERATURE", 0.0)
+	exports['sandbox-base']:ScaleformPopFloat(DrillingScaleform, "SET_HOLE_DEPTH", 0.0)
 
 	TaskPlayAnim(LocalPlayer.state.ped, "anim@heists@fleeca_bank@drilling", "drill_straight_idle", 8.0, 8.0, -1, 33)
 end
 
-Drilling.Update = function(callback)
+local function DrillingUpdate(callback)
 	FreezeEntityPosition(PlayerPedId(), true)
-	while Drilling.Active do
-		Drilling.Draw()
+	while DrillingActive do
+		exports['sandbox-games']:DrillingDraw()
 		ShittyDrillAnim()
-		--Drilling.DisableControls()
+		--exports['sandbox-games']:DrillingDisableControls()
 
-		for k, v in pairs(Drilling.Pins) do
-			if not v.Broken and Drilling.DrillPos >= v.Position then
-				PlaySoundFrontend(Drilling.Sounds.PinSound, "Drill_Pin_Break", "DLC_HEIST_FLEECA_SOUNDSET", true)
-				Drilling.Pins[k].Broken = true
+		for k, v in pairs(DrillingPins) do
+			if not v.Broken and DrillingPos >= v.Position then
+				PlaySoundFrontend(DrillingSounds.PinSound, "Drill_Pin_Break", "DLC_HEIST_FLEECA_SOUNDSET", true)
+				DrillingPins[k].Broken = true
 			end
 		end
 
-		if Drilling.DrillSpeed > 0 and Drilling.Sounds.Playing then
-			SetVariableOnSound(Drilling.Sounds.Sound, "DrillState", 0)
-		elseif Drilling.DrillSpeed > 0 and not Drilling.Sounds.Playing then
+		if DrillingSpeed > 0 and DrillingSounds.Playing then
+			SetVariableOnSound(DrillingSounds.Sound, "DrillState", 0)
+		elseif DrillingSpeed > 0 and not DrillingSounds.Playing then
 			PlaySoundFromEntity(
-				Drilling.Sounds.Sound,
+				DrillingSounds.Sound,
 				"Drill",
-				Drilling.DrillProp,
+				DrillingProp,
 				"DLC_HEIST_FLEECA_SOUNDSET",
 				false,
 				0
 			)
-			Drilling.Sounds.Playing = true
-		elseif Drilling.DrillSpeed <= 0 and Drilling.Sounds.Playing then
-			StopSound(Drilling.Sounds.Sound)
-			Drilling.Sounds.Playing = false
+			DrillingSounds.Playing = true
+		elseif DrillingSpeed <= 0 and DrillingSounds.Playing then
+			StopSound(DrillingSounds.Sound)
+			DrillingSounds.Playing = false
 		end
 
-		Drilling.HandleControls()
+		exports['sandbox-games']:DrillingHandleControls()
 
 		Wait(0)
 	end
 
 	FreezeEntityPosition(PlayerPedId(), false)
-	DeleteEntity(Drilling.DrillProp)
-	Drilling.DrillProp = nil
-	callback(Drilling.Result)
+	DeleteEntity(DrillingProp)
+	DrillingProp = nil
+	callback(DrillingResult)
 end
 
-Drilling.Draw = function()
-	DrawScaleformMovieFullscreen(Drilling.Scaleform, 255, 255, 255, 255, 255)
-end
+exports("DrillingStart", function(callback)
+	if not DrillingActive then
+		DrillingActive = true
+		DrillingInit()
+		DrillingUpdate(callback)
+	end
+end)
 
-Drilling.HandleControls = function()
-	local last_pos = Drilling.DrillPos
+exports("DrillingDraw", function()
+	DrawScaleformMovieFullscreen(DrillingScaleform, 255, 255, 255, 255, 255)
+end)
+
+exports("DrillingHandleControls", function()
+	local last_pos = DrillingPos
 	if IsControlJustPressed(0, 32) then
-		Drilling.DrillPos = math.min(1.0, Drilling.DrillPos + 0.01)
+		DrillingPos = math.min(1.0, DrillingPos + 0.01)
 	elseif IsControlPressed(0, 32) then
-		Drilling.DrillPos =
-			math.min(1.0, Drilling.DrillPos + (0.1 * GetFrameTime() / (math.max(0.1, Drilling.DrillTemp) * 10)))
+		DrillingPos =
+			math.min(1.0, DrillingPos + (0.1 * GetFrameTime() / (math.max(0.1, DrillingTemp) * 10)))
 	elseif IsControlJustPressed(0, 33) then
-		Drilling.DrillPos = math.max(0.0, Drilling.DrillPos - 0.01)
+		DrillingPos = math.max(0.0, DrillingPos - 0.01)
 	elseif IsControlPressed(0, 33) then
-		Drilling.DrillPos = math.max(0.0, Drilling.DrillPos - (0.1 * GetFrameTime()))
+		DrillingPos = math.max(0.0, DrillingPos - (0.1 * GetFrameTime()))
 	end
 
-	local last_speed = Drilling.DrillSpeed
+	local last_speed = DrillingSpeed
 	if IsControlJustPressed(0, 35) then
-		Drilling.DrillSpeed = math.min(1.0, Drilling.DrillSpeed + 0.05)
+		DrillingSpeed = math.min(1.0, DrillingSpeed + 0.05)
 	elseif IsControlPressed(0, 35) then
-		Drilling.DrillSpeed = math.min(1.0, Drilling.DrillSpeed + (0.5 * GetFrameTime()))
+		DrillingSpeed = math.min(1.0, DrillingSpeed + (0.5 * GetFrameTime()))
 	elseif IsControlJustPressed(0, 34) then
-		Drilling.DrillSpeed = math.max(0.0, Drilling.DrillSpeed - 0.05)
+		DrillingSpeed = math.max(0.0, DrillingSpeed - 0.05)
 	elseif IsControlPressed(0, 34) then
-		Drilling.DrillSpeed = math.max(0.0, Drilling.DrillSpeed - (0.5 * GetFrameTime()))
+		DrillingSpeed = math.max(0.0, DrillingSpeed - (0.5 * GetFrameTime()))
 	end
 
-	if Drilling.HoleDepth >= 0.1 and Drilling.DrillPos >= Drilling.HoleDepth then
-		SetVariableOnSound(Drilling.Sounds.Sound, "DrillState", 1.0)
+	if DrillingHoleDepth >= 0.1 and DrillingPos >= DrillingHoleDepth then
+		SetVariableOnSound(DrillingSounds.Sound, "DrillState", 1.0)
 	end
 
-	local last_temp = Drilling.DrillTemp
-	if last_pos < Drilling.DrillPos then
-		if Drilling.DrillSpeed > 0.4 then
-			if Drilling.HoleDepth >= 0.1 and Drilling.DrillPos >= Drilling.HoleDepth then
-				Drilling.DrillTemp =
-					math.min(1.0, Drilling.DrillTemp + ((0.05 * GetFrameTime()) * (Drilling.DrillSpeed * 10)))
+	local last_temp = DrillingTemp
+	if last_pos < DrillingPos then
+		if DrillingSpeed > 0.4 then
+			if DrillingHoleDepth >= 0.1 and DrillingPos >= DrillingHoleDepth then
+				DrillingTemp =
+					math.min(1.0, DrillingTemp + ((0.05 * GetFrameTime()) * (DrillingSpeed * 10)))
 			end
-			Scaleforms.PopFloat(Drilling.Scaleform, "SET_DRILL_POSITION", Drilling.DrillPos)
+			exports['sandbox-base']:ScaleformPopFloat(DrillingScaleform, "SET_DRILL_POSITION", DrillingPos)
 		else
-			if Drilling.DrillPos < 0.1 or Drilling.DrillPos < Drilling.HoleDepth then
-				Scaleforms.PopFloat(Drilling.Scaleform, "SET_DRILL_POSITION", Drilling.DrillPos)
+			if DrillingPos < 0.1 or DrillingPos < DrillingHoleDepth then
+				exports['sandbox-base']:ScaleformPopFloat(DrillingScaleform, "SET_DRILL_POSITION", DrillingPos)
 			else
-				if Drilling.DrillPos >= Drilling.HoleDepth then
-					Drilling.DrillTemp = math.min(1.0, Drilling.DrillTemp + (0.01 * GetFrameTime()))
+				if DrillingPos >= DrillingHoleDepth then
+					DrillingTemp = math.min(1.0, DrillingTemp + (0.01 * GetFrameTime()))
 				end
-				Drilling.DrillPos = last_pos
+				DrillingPos = last_pos
 			end
 		end
 	else
-		if Drilling.DrillPos < Drilling.HoleDepth then
-			if Drilling.DrillPos < Drilling.HoleDepth then
-				Drilling.DrillTemp = math.max(
+		if DrillingPos < DrillingHoleDepth then
+			if DrillingPos < DrillingHoleDepth then
+				DrillingTemp = math.max(
 					0.0,
-					Drilling.DrillTemp - ((0.05 * GetFrameTime()) * math.max(0.005, (Drilling.DrillSpeed * 10) / 2))
+					DrillingTemp - ((0.05 * GetFrameTime()) * math.max(0.005, (DrillingSpeed * 10) / 2))
 				)
 			end
 		end
 
-		if Drilling.DrillPos ~= Drilling.HoleDepth then
-			Scaleforms.PopFloat(Drilling.Scaleform, "SET_DRILL_POSITION", Drilling.DrillPos)
+		if DrillingPos ~= DrillingHoleDepth then
+			exports['sandbox-base']:ScaleformPopFloat(DrillingScaleform, "SET_DRILL_POSITION", DrillingPos)
 		end
 	end
 
-	if last_speed ~= Drilling.DrillSpeed then
-		Scaleforms.PopFloat(Drilling.Scaleform, "SET_SPEED", Drilling.DrillSpeed)
+	if last_speed ~= DrillingSpeed then
+		exports['sandbox-base']:ScaleformPopFloat(DrillingScaleform, "SET_SPEED", DrillingSpeed)
 	end
 
-	if last_temp ~= Drilling.DrillTemp then
-		Scaleforms.PopFloat(Drilling.Scaleform, "SET_TEMPERATURE", Drilling.DrillTemp)
+	if last_temp ~= DrillingTemp then
+		exports['sandbox-base']:ScaleformPopFloat(DrillingScaleform, "SET_TEMPERATURE", DrillingTemp)
 	end
 
-	if Drilling.DrillTemp >= 1.0 then
+	if DrillingTemp >= 1.0 then
 		YouFuckingSuck()
-		Drilling.Result = false
-		Drilling.Active = false
-	elseif Drilling.DrillPos >= 1.0 then
-		StopSound(Drilling.Sounds.Sound)
-		Drilling.Result = true
-		Drilling.Active = false
+		DrillingResult = false
+		DrillingActive = false
+	elseif DrillingPos >= 1.0 then
+		StopSound(DrillingSounds.Sound)
+		DrillingResult = true
+		DrillingActive = false
 	end
 
-	Drilling.HoleDepth = (Drilling.DrillPos > Drilling.HoleDepth and Drilling.DrillPos or Drilling.HoleDepth)
-end
+	DrillingHoleDepth = (DrillingPos > DrillingHoleDepth and DrillingPos or DrillingHoleDepth)
+end)
 
-Drilling.DisableControls = function()
-	for _, control in ipairs(Drilling.DisabledControls) do
+exports("DrillingDisableControls", function()
+	for _, control in ipairs(DrillingDisabledControls) do
 		DisableControlAction(0, control, true)
 	end
-end
+end)
 
-Drilling.EnableControls = function()
-	for _, control in ipairs(Drilling.DisabledControls) do
+exports("DrillingEnableControls", function()
+	for _, control in ipairs(DrillingDisabledControls) do
 		DisableControlAction(0, control, true)
 	end
-end
+end)

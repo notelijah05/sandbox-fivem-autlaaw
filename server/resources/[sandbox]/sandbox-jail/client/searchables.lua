@@ -8,7 +8,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 
 	if GlobalState.JailSearchLocations ~= nil then
 		for key, data in ipairs(GlobalState.JailSearchLocations) do
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				string.format("prison_search_%s", key),
 				"user-ninja",
 				data.coords,
@@ -37,11 +37,11 @@ AddEventHandler("Prison:Client:Target:Search", function(entity, data)
 	_CURRENT_SEARCH = true
 
 	if LocalPlayer.state.isK9Ped then
-		Animations.Emotes:Play("searchk9", false, nil, true)
+		exports['sandbox-animations']:EmotesPlay("searchk9", false, nil, true)
 	else
-		Animations.Emotes:Play("mechanic2", false, nil, true) -- or search
+		exports['sandbox-animations']:EmotesPlay("mechanic2", false, nil, true) -- or search
 	end
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "prison_target_search",
 		duration = math.random(12000, 18000),
 		label = "Searching Hidden Location",
@@ -56,14 +56,14 @@ AddEventHandler("Prison:Client:Target:Search", function(entity, data)
 		},
 	}, function(cancelled)
 		if not cancelled and _CURRENT_SEARCH then
-			Callbacks:ServerCallback("Prison:Searchable:GetLootShit", {}, function(success)
+			exports["sandbox-base"]:ServerCallback("Prison:Searchable:GetLootShit", {}, function(success)
 				-- if success then
 				-- 	print("success")
-				-- 	-- UISounds.Play:FrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
+				-- 	-- exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
 				-- else
 				-- 	print("failed")
 				-- end
-				Animations.Emotes:ForceCancel()
+				exports['sandbox-animations']:EmotesForceCancel()
 				_CURRENT_SEARCH = false
 			end)
 		else

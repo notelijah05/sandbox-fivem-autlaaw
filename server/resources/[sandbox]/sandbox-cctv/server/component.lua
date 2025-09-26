@@ -1,113 +1,89 @@
-AddEventHandler("Sync:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	CCTV = exports["sandbox-base"]:FetchComponent("CCTV")
-	RegisterChatCommands()
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("CCTV", {
-		"Callbacks",
-		"Fetch",
-		"Chat",
-		"CCTV",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		SetupCameras()
+	SetupCameras()
+	RegisterChatCommands()
 
-		Callbacks:RegisterServerCallback("CCTV:PreviousInGroup", function(source, data, cb)
-			local pState = Player(source).state
-			if pState.inCCTVCam then
-				for i = pState.inCCTVCam.camId - 1, 0, -1 do
-					if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
-						return CCTV:View(source, i)
-					end
-				end
-
-				for i = #Config.Cameras, 0, -1 do
-					if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
-						return CCTV:View(source, i)
-					end
+	exports["sandbox-base"]:RegisterServerCallback("CCTV:PreviousInGroup", function(source, data, cb)
+		local pState = Player(source).state
+		if pState.inCCTVCam then
+			for i = pState.inCCTVCam.camId - 1, 0, -1 do
+				if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
+					return exports['sandbox-cctv']:View(source, i)
 				end
 			end
-		end)
 
-		Callbacks:RegisterServerCallback("CCTV:NextInGroup", function(source, data, cb)
-			local pState = Player(source).state
-			if pState.inCCTVCam then
-				for i = pState.inCCTVCam.camId + 1, #Config.Cameras do
-					if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
-						return CCTV:View(source, i)
-					end
-				end
-				
-				for i = 1, #Config.Cameras do
-					if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
-						return CCTV:View(source, i)
-					end
+			for i = #Config.Cameras, 0, -1 do
+				if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
+					return exports['sandbox-cctv']:View(source, i)
 				end
 			end
-		end)
+		end
+	end)
 
-		Callbacks:RegisterServerCallback("CCTV:ViewGroup", function(source, data, cb)
-			CCTV:ViewGroup(source, data)
-		end)
+	exports["sandbox-base"]:RegisterServerCallback("CCTV:NextInGroup", function(source, data, cb)
+		local pState = Player(source).state
+		if pState.inCCTVCam then
+			for i = pState.inCCTVCam.camId + 1, #Config.Cameras do
+				if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
+					return exports['sandbox-cctv']:View(source, i)
+				end
+			end
+
+			for i = 1, #Config.Cameras do
+				if i ~= pState.inCCTVCam.camId and GlobalState[pState.inCCTVCam.camKey]?.group == Config.Cameras[i]?.group then
+					return exports['sandbox-cctv']:View(source, i)
+				end
+			end
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("CCTV:ViewGroup", function(source, data, cb)
+		exports['sandbox-cctv']:ViewGroup(source, data)
 	end)
 end)
 
-_CCTV = {
-    View = function(self, source, camId)
-        local pState = Player(source).state
-        if Config.AllowedJobs[pState.onDuty] or Fetch:Source(source).Permissions:IsAdmin() then
-			TriggerClientEvent("CCTV:Client:View", source, camId)
-		end
-    end,
-	ViewGroup = function(self, source, camGroup)
-		for k, v in ipairs(Config.Cameras) do
-			if v?.group == camGroup then
-				return CCTV:View(source, k)
-			end
-		end
+exports('View', function(source, camId)
+	local pState = Player(source).state
+	if Config.AllowedJobs[pState.onDuty] or exports['sandbox-base']:FetchSource(source).Permissions:IsAdmin() then
+		TriggerClientEvent("CCTV:Client:View", source, camId)
+	end
+end)
 
-		return nil
-	end,
-	State = {
-		Online = function(self, camId)
-			local camKey = string.format("CCTV:Camera:%s", camId)
-			if GlobalState[camKey] ~= nil then
-				GlobalState[camKey].isOnline = true
-			end
-		end,
-		Offline = function(self, camId)
-			local camKey = string.format("CCTV:Camera:%s", camId)
-			if GlobalState[camKey] ~= nil then
-				GlobalState[camKey].isOnline = false
-			end
-		end,
-		Group = {
-			Online = function(self, groupId)
-				for k, v in pairs(Config.Cameras) do
-					if v.group == groupId then
-						CCTV.State:Online(k)
-					end
-				end
-			end,
-			Offline = function(self, groupId)
-				for k, v in pairs(Config.Cameras) do
-					if v.group == groupId then
-						CCTV.State:Offline(k)
-					end
-				end
-			end,
-		}
-	},
-}
+exports('ViewGroup', function(source, camGroup)
+	for k, v in ipairs(Config.Cameras) do
+		if v?.group == camGroup then
+			return exports['sandbox-cctv']:View(source, k)
+		end
+	end
 
-AddEventHandler("Proxy:Shared:RegisterReady", function(component)
-	exports["sandbox-base"]:RegisterComponent("CCTV", _CCTV)
+	return nil
+end)
+
+exports('StateOnline', function(camId)
+	local camKey = string.format("CCTV:Camera:%s", camId)
+	if GlobalState[camKey] ~= nil then
+		GlobalState[camKey].isOnline = true
+	end
+end)
+
+exports('StateOffline', function(camId)
+	local camKey = string.format("CCTV:Camera:%s", camId)
+	if GlobalState[camKey] ~= nil then
+		GlobalState[camKey].isOnline = false
+	end
+end)
+
+exports('StateGroupOnline', function(groupId)
+	for k, v in pairs(Config.Cameras) do
+		if v.group == groupId then
+			exports['sandbox-cctv']:StateOnline(k)
+		end
+	end
+end)
+
+exports('StateGroupOffline', function(groupId)
+	for k, v in pairs(Config.Cameras) do
+		if v.group == groupId then
+			exports['sandbox-cctv']:StateOffline(k)
+		end
+	end
 end)

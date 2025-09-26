@@ -43,9 +43,9 @@ local _jailStashLocs = {
 function RegisterPrisonStashStartup()
 	GlobalState.JailStashLocations = _jailStashLocs
 
-	Callbacks:RegisterServerCallback("Inventory:PrisonStash:Open", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
-		-- if not Jail:IsJailed(source) then
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:PrisonStash:Open", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		-- if not exports['sandbox-jail']:IsJailed(source) then
 		if char then
 			local _inventory = 5000
 			local _inventoryOwner = ("prisonstash:%s"):format(char:GetData("SID"))
@@ -55,23 +55,23 @@ function RegisterPrisonStashStartup()
 				_inventoryOwner = "prisonstash:public"
 			end
 
-			Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+			exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 				invType = _inventory,
 				owner = _inventoryOwner,
 			}, function()
-				Inventory:OpenSecondary(source, _inventory, _inventoryOwner)
+				exports['sandbox-inventory']:OpenSecondary(source, _inventory, _inventoryOwner)
 			end)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Inventory:PrisonStash:Raid", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:PrisonStash:Raid", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.stateid then
 			if
 				Player(source).state.onDuty == "police" or Player(source).state.onDuty == "prison"
-				--and Jobs.Permissions:HasPermissionInJob(source, "police", "PD_RAID")
+			--and exports['sandbox-jobs']:HasPermissionInJob(source, "police", "PD_RAID")
 			then
-				-- Logger:Warn(
+				-- exports['sandbox-base']:LoggerWarn(
 				-- 	"Police",
 				-- 	string.format(
 				-- 		"Police Storage Unit Raid - Character %s %s (%s) - Accessing Storage Unit %s (%s)",
@@ -92,11 +92,11 @@ function RegisterPrisonStashStartup()
 				local _inventory = 5000
 				local _inventoryOwner = ("prisonstash:%s"):format(tonumber(data.stateid))
 				print("_inventoryOwner", _inventoryOwner)
-				Callbacks:ClientCallback(source, "Inventory:Compartment:Open", {
+				exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
 					invType = _inventory,
 					owner = _inventoryOwner,
 				}, function()
-					Inventory:OpenSecondary(source, _inventory, _inventoryOwner)
+					exports['sandbox-inventory']:OpenSecondary(source, _inventory, _inventoryOwner)
 				end)
 
 				cb(true)

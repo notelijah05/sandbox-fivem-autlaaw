@@ -1,7 +1,7 @@
 function StartUsingGag()
 	if PLAYER_CONNECTED and (not CALL_CHANNEL or CALL_CHANNEL <= 0) and not RADIO_TALKING and not USING_MICROPHONE then
 		CreateThread(function()
-			Logger:Info("VOIP", "Gag Enabled")
+			exports['sandbox-base']:LoggerInfo("VOIP", "Gag Enabled")
 			USING_GAG = true
 			UpdateVOIPIndicatorStatus()
 			while
@@ -23,7 +23,7 @@ end
 
 function StopUsingGag()
 	if USING_GAG then
-		Logger:Info("VOIP", "Gag Off")
+		exports['sandbox-base']:LoggerInfo("VOIP", "Gag Off")
 		USING_GAG = false
 		TriggerServerEvent("VOIP:Server:Gag:SetPlayerState", false)
 
@@ -33,7 +33,7 @@ end
 
 RegisterNetEvent("VOIP:Client:Gag:SetPlayerState", function(targetSource, state)
 	if VOIP ~= nil and LocalPlayer.state.loggedIn then
-		VOIP:ToggleVoice(targetSource, state, "gag")
+		exports["sandbox-voip"]:ToggleVoice(targetSource, state, "gag")
 	end
 end)
 

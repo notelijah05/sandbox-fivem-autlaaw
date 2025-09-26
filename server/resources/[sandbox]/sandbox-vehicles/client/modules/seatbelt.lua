@@ -13,80 +13,81 @@ local MIN_FLY_BELT = math.floor(49.2 * 2.237) -- 110mph
 local MIN_FLY_HARN = math.floor(89.5 * 2.237) -- 200mph
 
 AddEventHandler('Vehicles:Client:StartUp', function()
-    Keybinds:Add('vehicle_seatbelt', 'b', 'keyboard', 'Vehicle - Toggle Seatbelt / Harness', function()
-        if VEHICLE_INSIDE and not seatbeltExemptVehicles[VEHICLE_CLASS] then
-            local vState = Entity(VEHICLE_INSIDE)
-            if vState.state.Harness and vState.state.Harness > 0 and (VEHICLE_SEAT == -1 or VEHICLE_SEAT == 0) then
-                if not VEHICLE_SEATBELT then
-                    Progress:ProgressWithTickEvent({
-                        name = "vehicle_harness",
-                        duration = VEHICLE_SEATBELT and 1000 or 2000,
-                        label = VEHICLE_SEATBELT and "Removing Harness" or "Applying Harness",
-                        tickrate = 1000,
-                        useWhileDead = false,
-                        canCancel = true,
-                        disarm = false,
-                        ignoreModifier = true,
-                        controlDisables = {
-                            disableMovement = false,
-                            disableCarMovement = false,
-                            disableMouse = false,
-                            disableCombat = false,
-                        },
-                    }, function()
-                        if not VEHICLE_INSIDE then
-                            Progress:Fail()
-                        end
-                    end, function(cancelled)
-                        if not cancelled and VEHICLE_INSIDE then
-                            Sounds.Do.Play:One('seatbelt.ogg', 0.4)
+    exports["sandbox-keybinds"]:Add('vehicle_seatbelt', 'b', 'keyboard', 'Vehicle - Toggle Seatbelt / Harness',
+        function()
+            if VEHICLE_INSIDE and not seatbeltExemptVehicles[VEHICLE_CLASS] then
+                local vState = Entity(VEHICLE_INSIDE)
+                if vState.state.Harness and vState.state.Harness > 0 and (VEHICLE_SEAT == -1 or VEHICLE_SEAT == 0) then
+                    if not VEHICLE_SEATBELT then
+                        exports['sandbox-hud']:ProgressWithTickEvent({
+                            name = "vehicle_harness",
+                            duration = VEHICLE_SEATBELT and 1000 or 2000,
+                            label = VEHICLE_SEATBELT and "Removing Harness" or "Applying Harness",
+                            tickrate = 1000,
+                            useWhileDead = false,
+                            canCancel = true,
+                            disarm = false,
+                            ignoreModifier = true,
+                            controlDisables = {
+                                disableMovement = false,
+                                disableCarMovement = false,
+                                disableMouse = false,
+                                disableCombat = false,
+                            },
+                        }, function()
+                            if not VEHICLE_INSIDE then
+                                exports['sandbox-hud']:ProgressFail()
+                            end
+                        end, function(cancelled)
+                            if not cancelled and VEHICLE_INSIDE then
+                                exports["sandbox-sounds"]:PlayOne('seatbelt.ogg', 0.4)
+                                if VEHICLE_SEATBELT then
+                                    SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
+                                    VEHICLE_SEATBELT = false
+                                    VEHICLE_HARNESS = false
+                                else
+                                    SetFlyThroughWindscreenParams(MIN_FLY_HARN, 1.0, 17.0, 9999999.0)
+                                    VEHICLE_SEATBELT = true
+                                    VEHICLE_HARNESS = vState.state.Harness
+                                end
+                                TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
+                            end
+                        end)
+                    else
+                        if VEHICLE_INSIDE then
+                            exports["sandbox-sounds"]:PlayOne('seatbelt.ogg', 0.4)
                             if VEHICLE_SEATBELT then
                                 SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
                                 VEHICLE_SEATBELT = false
                                 VEHICLE_HARNESS = false
                             else
-                                SetFlyThroughWindscreenParams(MIN_FLY_HARN, 1.0, 17.0, 9999999.0)
+                                SetFlyThroughWindscreenParams(MIN_FLY_HARN, 1.0, 17.0, 99999999.0)
                                 VEHICLE_SEATBELT = true
                                 VEHICLE_HARNESS = vState.state.Harness
                             end
                             TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
                         end
-                    end)
+                    end
                 else
-                    if VEHICLE_INSIDE then
-                        Sounds.Do.Play:One('seatbelt.ogg', 0.4)
-                        if VEHICLE_SEATBELT then
-                            SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
-                            VEHICLE_SEATBELT = false
-                            VEHICLE_HARNESS = false
-                        else
-                            SetFlyThroughWindscreenParams(MIN_FLY_HARN, 1.0, 17.0, 99999999.0)
-                            VEHICLE_SEATBELT = true
-                            VEHICLE_HARNESS = vState.state.Harness
-                        end
-                        TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
+                    exports["sandbox-sounds"]:PlayOne('seatbelt.ogg', 0.4)
+                    VEHICLE_SEATBELT = not VEHICLE_SEATBELT
+                    TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
+                    if VEHICLE_SEATBELT then
+                        SetFlyThroughWindscreenParams(MIN_FLY_BELT, 40.0, 17.0, 500.0)
+                        exports["sandbox-hud"]:NotifSuccess('Seatbelt On')
+                    else
+                        SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
+                        exports["sandbox-hud"]:NotifError('Seatbelt Off')
                     end
                 end
-            else
-                Sounds.Do.Play:One('seatbelt.ogg', 0.4)
-                VEHICLE_SEATBELT = not VEHICLE_SEATBELT
-                TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
-                if VEHICLE_SEATBELT then
-                    SetFlyThroughWindscreenParams(MIN_FLY_BELT, 40.0, 17.0, 500.0)
-                    Notification:Success('Seatbelt On')
-                else
-                    SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
-                    Notification:Error('Seatbelt Off')
-                end
             end
-        end
-    end)
+        end)
 
-    Callbacks:RegisterClientCallback('Vehicles:InstallHarness', function(data, cb)
-        local target = Targeting:GetEntityPlayerIsLookingAt()
+    exports["sandbox-base"]:RegisterClientCallback('Vehicles:InstallHarness', function(data, cb)
+        local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
-            if Vehicles.Utils:IsCloseToVehicle(target.entity) then
-                Progress:Progress({
+            if exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target.entity) then
+                exports['sandbox-hud']:Progress({
                     name = "vehicle_installing_harness",
                     duration = 25000,
                     label = "Installing Harness",
@@ -102,7 +103,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                         anim = "mechanic2",
                     },
                 }, function(cancelled)
-                    if not cancelled and Vehicles.Utils:IsCloseToVehicle(target.entity) then
+                    if not cancelled and exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target.entity) then
                         cb(VehToNet(target.entity))
                     else
                         cb(false)
@@ -147,7 +148,7 @@ AddEventHandler('Vehicles:Client:EnterVehicle', function(v, seat)
                 if speedBuffers[2] ~= nil and GetEntitySpeedVector(VEHICLE_INSIDE, true).y > 1.0 and (speedBuffers[1] >= minSpeedActual) and ((speedBuffers[2] - speedBuffers[1]) > (speedBuffers[1] * 0.8)) then
                     -- if not VEHICLE_HARNESS or (VEHICLE_HARNESS and VEHICLE_HARNESS <= 0) then
                     --     if not VEHICLE_SEATBELT then
-                    --         Notification:Info('Maybe You Should be Wearing a Seatbelt...', 8000)
+                    --         exports["sandbox-hud"]:NotifInfo('Maybe You Should be Wearing a Seatbelt...', 8000)
                     --     end
 
                     --     local pedCoords = GetEntityCoords(GLOBAL_PED)
@@ -160,13 +161,13 @@ AddEventHandler('Vehicles:Client:EnterVehicle', function(v, seat)
                     --     local model = GetEntityModel(VEHICLE_INSIDE)
 
                     --     if IsThisModelAPlane(model) then
-                    --         EmergencyAlerts:CreateIfReported(300.0, "planeaccident", true)
+                    --         exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(300.0, "planeaccident", true)
                     --     elseif IsThisModelAHeli(model) then
-                    --         EmergencyAlerts:CreateIfReported(300.0, "heliaccident", true)
+                    --         exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(300.0, "heliaccident", true)
                     --     elseif IsThisModelABoat(model) or IsThisModelAJetski(model) then
-                    --         EmergencyAlerts:CreateIfReported(300.0, "boataccident", true)
+                    --         exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(300.0, "boataccident", true)
                     --     else
-                    --         EmergencyAlerts:CreateIfReported(300.0, "caraccident", true)
+                    --         exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(300.0, "caraccident", true)
                     --     end
                     -- else
                     --     print('harness get facked')

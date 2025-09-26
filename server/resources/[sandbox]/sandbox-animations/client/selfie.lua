@@ -20,17 +20,18 @@ end)
 function StartSelfieMode()
 	if not _selfie and not LocalPlayer.state.doingAction then
 		_selfie = true
-		Notification.Persistent:Info(
+		exports["sandbox-hud"]:NotifPersistentInfo(
 			"camera-info-notif",
-			string.format("Camera - Press %s to take a Selfie", Keybinds:GetKey("primary_action"))
+			string.format("Camera - Press %s to take a Selfie", exports["sandbox-keybinds"]:GetKey("primary_action"))
 			.. "<br/>"
-			.. string.format("Camera - Press %s to flip the camera", Keybinds:GetKey("secondary_action"))
+			.. string.format("Camera - Press %s to flip the camera",
+				exports["sandbox-keybinds"]:GetKey("secondary_action"))
 			.. "<br/>"
-			.. string.format("Camera - Press %s to cancel", Keybinds:GetKey("emote_cancel")),
+			.. string.format("Camera - Press %s to cancel", exports["sandbox-keybinds"]:GetKey("emote_cancel")),
 			"camera"
 		)
-		Inventory:Disable()
-		Hud:Hide()
+		exports['sandbox-inventory']:Disable()
+		exports['sandbox-hud']:Hide()
 		DestroyMobilePhone()
 		Wait(10)
 		CreateMobilePhone(0)
@@ -41,13 +42,13 @@ end
 
 function StopSelfieMode()
 	if _selfie then
-		Notification.Persistent:Remove("camera-info-notif")
+		exports["sandbox-hud"]:NotifPersistentRemove("camera-info-notif")
 		DestroyMobilePhone()
 		Wait(10)
 		CellCamDisableThisFrame(false)
 		CellCamActivate(false, false)
-		Inventory:Enable()
-		Hud:Show()
+		exports['sandbox-inventory']:Enable()
+		exports['sandbox-hud']:Show()
 		_selfie = false
 		_frontie = true
 	end
@@ -70,9 +71,9 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 		_frontie = not _frontie
 		CellFrontCamActivate(_frontie)
 		-- if _frontie == false then
-		-- 	Animations.Emotes:Play("filmshocking", false, false, false)
+		-- 	exports['sandbox-animations']:EmotesPlay("filmshocking", false, false, false)
 		-- else
-		-- 	Animations.Emotes:ForceCancel()
+		-- 	exports['sandbox-animations']:EmotesForceCancel()
 		-- end
 	end
 end)

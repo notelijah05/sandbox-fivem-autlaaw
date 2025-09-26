@@ -138,69 +138,40 @@ CreateThread(function()
 	GlobalState["AFKTimer"] = Config.Components.AFK.Options.AFKTimer
 end)
 
-AddEventHandler("Pwnzor:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Punishment = exports["sandbox-base"]:FetchComponent("Punishment")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Pwnzor = exports["sandbox-base"]:FetchComponent("Pwnzor")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Generator = exports["sandbox-base"]:FetchComponent("Generator")
-	Execute = exports["sandbox-base"]:FetchComponent("Execute")
-end
-
 local _loaded = false
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Pwnzor", {
-		"Punishment",
-		"Callbacks",
-		"Logger",
-		"Fetch",
-		"Pwnzor",
-		"Fetch",
-		"Chat",
-		"Generator",
-		"Execute",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
+	RegisterCallbacks()
 
-		if not _loaded then
-			CreateThread(function()
-				_loaded = true
-				while _loaded do
-					for k, v in ipairs(GetPlayers()) do
-						local mult = GetPlayerWeaponDamageModifier(v)
+	if not _loaded then
+		CreateThread(function()
+			_loaded = true
+			while _loaded do
+				for k, v in ipairs(GetPlayers()) do
+					local mult = GetPlayerWeaponDamageModifier(v)
 
-						if mult > 1.0 then
-							local player = Fetch:Source(tonumber(v))
-							if player and player:GetData("Character") then
-								Logger:Warn(
-									"Pwnzor",
-									string.format(
-										"%s (%s) Had An Unusual Damage Modifier: %s",
-										player:GetData("Name"),
-										player:GetData("AccountID"),
-										mult
-									)
+					if mult > 1.0 then
+						local player = exports['sandbox-base']:FetchSource(tonumber(v))
+						if player and player:GetData("Character") then
+							exports['sandbox-base']:LoggerWarn(
+								"Pwnzor",
+								string.format(
+									"%s (%s) Had An Unusual Damage Modifier: %s",
+									player:GetData("Name"),
+									player:GetData("AccountID"),
+									mult
 								)
-							end
+							)
 						end
 					end
-					Wait(60000)
 				end
-			end)
-		end
-	end)
+				Wait(60000)
+			end
+		end)
+	end
 end)
 
 AddEventHandler("playerDropped", function()
-	Pwnzor.Players:Disconnected(source)
+	exports['sandbox-pwnzor']:Disconnected(source)
 end)
 
 AddEventHandler("removeWeaponEvent", function(sender, data)
@@ -219,7 +190,7 @@ end)
 
 AddEventHandler("explosionEvent", function(sender, ev)
 	local src = tonumber(sender)
-	local player = Fetch:Source(src)
+	local player = exports['sandbox-base']:FetchSource(src)
 	for _, v in ipairs(Config.Components.Explosions.Options.Types) do
 		if ev.explosionType == v then
 			CancelEvent()
@@ -228,9 +199,9 @@ AddEventHandler("explosionEvent", function(sender, ev)
 				_blockedExplosions[src] ~= nil
 				and #_blockedExplosions[src] >= Config.Components.Explosions.Options.Count
 			then
-				local char = Fetch:CharacterSource(src)
+				local char = exports['sandbox-characters']:FetchCharacterSource(src)
 				if char then
-					Logger:Warn("Pwnzor",
+					exports['sandbox-base']:LoggerWarn("Pwnzor",
 						string.format("%s %s (%s) Triggered Explosion Detection With Explosion Type of %s",
 							char:GetData("First"), char:GetData("Last"), char:GetData("SID"), ev.explosionType), {
 							console = true,
@@ -242,9 +213,9 @@ AddEventHandler("explosionEvent", function(sender, ev)
 								webhook = GetConvar('discord_pwnzor_webhook', ''),
 							}
 						})
-					Pwnzor:Screenshot(char:GetData("SID"), "Potential Weapon Exploit")
+					exports['sandbox-pwnzor']:Screenshot(char:GetData("SID"), "Potential Weapon Exploit")
 				else
-					Logger:Warn("Pwnzor",
+					exports['sandbox-base']:LoggerWarn("Pwnzor",
 						string.format("Source %s Triggered Explosion Detection With Explosion Type of %s", src,
 							ev.explosionType), {
 							console = true,
@@ -277,8 +248,8 @@ AddEventHandler("entityCreating", function(entity)
 end)
 
 RegisterNetEvent("Pwnzor:Server:ResourceStarted", function(resource)
-	local plyr = Fetch:Source(source)
-	Logger:Info(
+	local plyr = exports['sandbox-base']:FetchSource(source)
+	exports['sandbox-base']:LoggerInfo(
 		"Pwnzor",
 		string.format("%s (%s) Started A Resource: %s", plyr:GetData("Name"), plyr:GetData("AccountID"), resource),
 		{
@@ -295,17 +266,17 @@ RegisterNetEvent("Pwnzor:Server:ResourceStarted", function(resource)
 end)
 
 RegisterNetEvent("Pwnzor:Server:ResourceStopped", function(resource)
-	local plyr = Fetch:Source(source)
+	local plyr = exports['sandbox-base']:FetchSource(source)
 
 	if Config.BanResources[resource] then
-		COMPONENTS.Punishment.Ban:Source(
+		exports['sandbox-base']:PunishmentBanSource(
 			plyr:GetData("Source"),
 			-1,
 			string.format("Blacklisted Resource Stopped: %s", resource),
 			"Pwnzor"
 		)
 	else
-		Logger:Info(
+		exports['sandbox-base']:LoggerInfo(
 			"Pwnzor",
 			string.format("%s (%s) Stopped A Resource: %s", plyr:GetData("Name"), plyr:GetData("AccountID"), resource),
 			{
@@ -335,70 +306,65 @@ end)
 -- 	end
 -- end)
 
-PWNZOR = PWNZOR
-	or {
-		_required = { "Players" },
-		Players = {
-			Disconnected = function(self, source)
-				_players[source] = nil
-			end,
-			Get = function(self, source, key)
-				if _players[source] == nil then
-					_players[source] = {}
-				end
+exports('Disconnected', function(source)
+	_players[source] = nil
+end)
 
-				return _players[source][key]
-			end,
-			Set = function(self, source, key)
-				_players[source][key] = true
-			end,
-			Unset = function(self, source, key)
-				_players[source][key] = nil
-			end,
-			TempPosIgnore = function(self, source)
-				_tmpIgnores[source] = os.time() + 60
-			end,
-		},
-		Screenshot = function(self, stateId, desc)
-			local char = Fetch:SID(stateId)
-			if char ~= nil then
-				local wh = GetConvar("discord_pwnzor_webhook", "")
-				if wh ~= nil and wh ~= "" then
-					exports["discord-screenshot"]:requestCustomClientScreenshotUploadToDiscord(
-						char:GetData("Source"),
-						tostring(wh),
+exports('Get', function(source, key)
+	if _players[source] == nil then
+		_players[source] = {}
+	end
+
+	return _players[source][key]
+end)
+
+exports('Set', function(source, key)
+	_players[source][key] = true
+end)
+
+exports('Unset', function(source, key)
+	_players[source][key] = nil
+end)
+
+exports('TempPosIgnore', function(source)
+	_tmpIgnores[source] = os.time() + 60
+end)
+
+exports('Screenshot', function(stateId, desc)
+	local char = exports['sandbox-characters']:FetchBySID(stateId)
+	if char ~= nil then
+		local wh = GetConvar("discord_pwnzor_webhook", "")
+		if wh ~= nil and wh ~= "" then
+			exports["discord-screenshot"]:requestCustomClientScreenshotUploadToDiscord(
+				char:GetData("Source"),
+				tostring(wh),
+				{
+					encoding = "webp",
+					quality = 1,
+				},
+				{
+					content = "",
+					embeds = {
 						{
-							encoding = "webp",
-							quality = 1,
-						},
-						{
-							content = "",
-							embeds = {
-								{
-									color = 3844857,
-									title = string.format("Screenshot from %s %s (%s) | %s", char:GetData("First"),
-										char:GetData("Last"), char:GetData("SID"), desc),
-								}
+							color = 3844857,
+							title = string.format("Screenshot from %s %s (%s) | %s", char:GetData("First"),
+								char:GetData("Last"), char:GetData("SID"), desc),
+						}
+					}
+				},
+				10000,
+				function(error)
+					if error then
+						exports['sandbox-base']:LoggerWarn(
+							"Pwnzor",
+							string.format("Failed to Screenshot SID %s", stateId),
+							{
+								console = true,
 							}
-						},
-						10000,
-						function(error)
-							if error then
-								Logger:Warn(
-									"Pwnzor",
-									string.format("Failed to Screenshot SID %s", stateId),
-									{
-										console = true,
-									}
-								)
-							end
-						end
-					)
+						)
+					end
 				end
-			end
+			)
 		end
-	}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Pwnzor", PWNZOR)
+	end
 end)

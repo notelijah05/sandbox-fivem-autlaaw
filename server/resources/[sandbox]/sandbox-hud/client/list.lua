@@ -1,31 +1,5 @@
-AddEventHandler("ListMenu:Shared:DependencyUpdate", RetrieveListComponents)
-function RetrieveListComponents()
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-end
-
-AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("ListMenu", {
-		"Notification",
-		"Utils",
-		"UISounds",
-		"ListMenu",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveListComponents()
-	end)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("ListMenu", LISTMENU)
-end)
-
 RegisterNetEvent("ListMenu:Client:Test", function()
-	ListMenu:Show({
+	exports['sandbox-hud']:ListMenuShow({
 		main = {
 			label = "Test Menu",
 			items = {
@@ -60,45 +34,44 @@ RegisterNetEvent("ListMenu:Client:Test", function()
 end)
 
 RegisterNUICallback("ListMenu:Clicked", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
-	ListMenu:Close()
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-hud']:ListMenuClose()
 	TriggerEvent(data.event, data.data)
 	cb("ok")
 end)
 
 RegisterNUICallback("ListMenu:Back", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "BACK", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	TriggerEvent("ListMenu:GoBack")
 	cb("ok")
 end)
 
 RegisterNUICallback("ListMenu:SubMenu", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "CONTINUE", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CONTINUE", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	TriggerEvent("ListMenu:EnterSubMenu", data.submenu)
 	cb("ok")
 end)
 
 RegisterNUICallback("ListMenu:Close", function(data, cb)
-	UISounds.Play:FrontEnd(-1, "CANCEL", "HUD_FRONTEND_DEFAULT_SOUNDSET")
-	ListMenu:Close()
+	exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CANCEL", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+	exports['sandbox-hud']:ListMenuClose()
 	TriggerEvent("ListMenu:Close")
 	cb("ok")
 end)
 
-LISTMENU = {
-	Show = function(self, menus)
-		SetNuiFocus(true, true)
-		SendNUIMessage({
-			type = "SET_LIST_MENU",
-			data = {
-				menus = menus,
-			},
-		})
-	end,
-	Close = function(self)
-		SetNuiFocus(false, false)
-		SendNUIMessage({
-			type = "CLOSE_LIST_MENU",
-		})
-	end,
-}
+exports("ListMenuShow", function(menus)
+	SetNuiFocus(true, true)
+	SendNUIMessage({
+		type = "SET_LIST_MENU",
+		data = {
+			menus = menus,
+		},
+	})
+end)
+
+exports("ListMenuClose", function()
+	SetNuiFocus(false, false)
+	SendNUIMessage({
+		type = "CLOSE_LIST_MENU",
+	})
+end)

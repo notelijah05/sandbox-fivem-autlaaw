@@ -35,8 +35,8 @@ function SendPedToPlayer(ped, coords)
 	SetEntityAsMissionEntity(ped, true, true)
 	SetTimeout((1000 * 60) * 2, function()
 		if not Entity(ped).state.boughtDrugs and _working then
-			Callbacks:ServerCallback("CornerDealing:PedTimeout", {})
-			NetSync:DeletePed(ped)
+			exports["sandbox-base"]:ServerCallback("CornerDealing:PedTimeout", {})
+			exports["sandbox-base"]:DeletePed(ped)
 		end
 	end)
 end
@@ -61,7 +61,7 @@ function DoHandoff(ped)
 end
 
 function AddTargetingShit(ped)
-	Targeting:AddPed(ped, "hands-holding-dollar", {
+	exports['sandbox-targeting']:AddPed(ped, "hands-holding-dollar", {
 		{
 			icon = "list-timeline",
 			text = "Sell Product",
@@ -112,36 +112,37 @@ AddEventHandler("Labor:Client:Setup", function()
 	if _queueLoc.coords == nil then
 		return
 	end
-	PedInteraction:Add("CornerDealing", GetHashKey("csb_grove_str_dlr"), _queueLoc.coords, _queueLoc.heading, 25.0, {
-		{
-			icon = "clock-nine",
-			text = "Sign Up",
-			event = "CornerDealing:Client:Enable",
-			data = {},
-			isEnabled = function()
-				return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_CORNER_DEALING")
-					and LocalPlayer.state.onDuty ~= "police"
-			end,
-		},
-		{
-			icon = "clock-nine",
-			text = "Sign Off",
-			event = "CornerDealing:Client:Disable",
-			data = {},
-			isEnabled = function()
-				return hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_CORNER_DEALING")
-					and LocalPlayer.state.onDuty ~= "police"
-			end,
-		},
-		{
-			icon = "list-radio",
-			text = "View Offers",
-			event = "Vendor:Client:GetItems",
-			data = {
-				id = "CornerDealer",
-			}
-		},
-	}, "seal-question", "WORLD_HUMAN_SMOKING")
+	exports['sandbox-pedinteraction']:Add("CornerDealing", GetHashKey("csb_grove_str_dlr"), _queueLoc.coords,
+		_queueLoc.heading, 25.0, {
+			{
+				icon = "clock-nine",
+				text = "Sign Up",
+				event = "CornerDealing:Client:Enable",
+				data = {},
+				isEnabled = function()
+					return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_CORNER_DEALING")
+						and LocalPlayer.state.onDuty ~= "police"
+				end,
+			},
+			{
+				icon = "clock-nine",
+				text = "Sign Off",
+				event = "CornerDealing:Client:Disable",
+				data = {},
+				isEnabled = function()
+					return hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_CORNER_DEALING")
+						and LocalPlayer.state.onDuty ~= "police"
+				end,
+			},
+			{
+				icon = "list-radio",
+				text = "View Offers",
+				event = "Vendor:Client:GetItems",
+				data = {
+					id = "CornerDealer",
+				}
+			},
+		}, "seal-question", "WORLD_HUMAN_SMOKING")
 end)
 
 RegisterNetEvent("CornerDealing:Client:DoSequence", function(seqType, netId, arg2)
@@ -203,7 +204,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		end
 
 		if _working and _state == 0 then
-			Callbacks:ServerCallback("CornerDealing:CheckCorner", {
+			exports["sandbox-base"]:ServerCallback("CornerDealing:CheckCorner", {
 				coords = GetEntityCoords(LocalPlayer.state.ped)
 			}, function(s)
 				if s then
@@ -212,9 +213,9 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 					LocalPlayer.state:set("cornering", true, true)
 					Entity(_SellingVeh).state:set("cornering", true, true)
 
-					Vehicles.Sync.Doors:Open(entity.entity, 5, true, true)
+					exports['sandbox-vehicles']:SyncDoorsOpen(entity.entity, 5, true, true)
 
-					Callbacks:ServerCallback("CornerDealing:StartCornering", {
+					exports["sandbox-base"]:ServerCallback("CornerDealing:StartCornering", {
 						netId = NetworkGetNetworkIdFromEntity(entity.entity),
 						corner = _SellingCorner,
 					})
@@ -225,7 +226,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 
 	eventHandlers["stop-cornering"] = AddEventHandler("CornerDealing:Client:StopCornering", function(data, entity)
 		if _working then
-			Callbacks:ServerCallback("CornerDealing:StopCornering")
+			exports["sandbox-base"]:ServerCallback("CornerDealing:StopCornering")
 		end
 	end)
 
@@ -266,9 +267,10 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 							if not ending then
 								if DoesEntityExist(_SellingVeh) then
 									if GetEntityHealth(_SellingVeh) == 0 or not IsVehicleDriveable(_SellingVeh) then
-										Logger:Trace("CornerDealing", "Vehicle Health 0 or Not Drivable")
+										exports['sandbox-base']:LoggerTrace("CornerDealing",
+											"Vehice Health 0 or Not Drivable")
 										ending = true
-										Callbacks:ServerCallback("CornerDealing:DestroyVehicle")
+										exports["sandbox-base"]:ServerCallback("CornerDealing:DestroyVehicle")
 									end
 								end
 							end
@@ -283,9 +285,9 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 								local myPos = GetEntityCoords(LocalPlayer.state.ped)
 								local vehPos = GetEntityCoords(_SellingVeh)
 								if #(vehPos - _SellingCorner) > 50.0 then
-									Logger:Trace("CornerDealing", "Vehicle Too Far From Corner")
+									exports['sandbox-base']:LoggerTrace("CornerDealing", "Vehicle Too Far From Corner")
 									ending = true
-									Callbacks:ServerCallback("CornerDealing:LeaveArea")
+									exports["sandbox-base"]:ServerCallback("CornerDealing:LeaveArea")
 								end
 							end
 							Wait(10)
@@ -342,7 +344,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 								else
 									if not Entity(_SellingPed).state.sentToPed then
 										if NetworkGetEntityIsNetworked(_SellingPed) then
-											Callbacks:ServerCallback(
+											exports["sandbox-base"]:ServerCallback(
 												"CornerDealing:SyncPed",
 												NetworkGetNetworkIdFromEntity(_SellingPed)
 											)
@@ -350,7 +352,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 											if NetworkHasControlOfEntity(_SellingPed) then
 												SendPedToPlayer(_SellingPed, _SellingCorner)
 											else
-												Callbacks:ServerCallback("CornderDealing:SyncEvent", {
+												exports["sandbox-base"]:ServerCallback("CornderDealing:SyncEvent", {
 													event = "goto",
 													netId = NetworkGetNetworkIdFromEntity(_SellingPed),
 													coords = _SellingCorner
@@ -365,7 +367,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 								end
 
 								if notFoundCount >= 10 then
-									Callbacks:ServerCallback("CornerDealing:NoPeds", {})
+									exports["sandbox-base"]:ServerCallback("CornerDealing:NoPeds", {})
 									return
 								end
 							end
@@ -386,7 +388,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:RemoveTargetting", joiner),
 		function()
 			if _SellingPed ~= nil then
-				Targeting:RemovePed(_SellingPed)
+				exports['sandbox-targeting']:RemovePed(_SellingPed)
 			end
 		end
 	)
@@ -395,7 +397,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:SoldToPed", joiner),
 		function()
 			if _SellingPed ~= nil then
-				Targeting:RemovePed(_SellingPed)
+				exports['sandbox-targeting']:RemovePed(_SellingPed)
 			end
 			_SellingPed = nil
 		end
@@ -405,7 +407,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:EndSelling", joiner),
 		function()
 			if _SellingPed ~= nil then
-				Targeting:RemovePed(_SellingPed)
+				exports['sandbox-targeting']:RemovePed(_SellingPed)
 			end
 			if _SellingVeh ~= nil then
 				Entity(_SellingVeh).state:set("cornering", false, true)
@@ -423,7 +425,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:PedDied", joiner),
 		function()
 			if _SellingPed ~= nil then
-				Targeting:RemovePed(_SellingPed)
+				exports['sandbox-targeting']:RemovePed(_SellingPed)
 			end
 			_SellingPed = nil
 		end
@@ -433,7 +435,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:PedTimeout", joiner),
 		function()
 			if _SellingPed ~= nil then
-				Targeting:RemovePed(_SellingPed)
+				exports['sandbox-targeting']:RemovePed(_SellingPed)
 			end
 			_SellingPed = nil
 		end
@@ -446,11 +448,11 @@ AddEventHandler("CornerDealing:Client:ShowMenu", function(entity, data)
 	end
 
 	if _working and _state == 1 then
-		Callbacks:ServerCallback("CornerDealing:GetSaleMenu", {
+		exports["sandbox-base"]:ServerCallback("CornerDealing:GetSaleMenu", {
 			netId = NetworkGetNetworkIdFromEntity(entity.entity),
 		}, function(data)
 			if data ~= nil and #data > 0 then
-				ListMenu:Show({
+				exports['sandbox-hud']:ListMenuShow({
 					main = {
 						label = "Corner Dealing",
 						items = data,
@@ -458,7 +460,7 @@ AddEventHandler("CornerDealing:Client:ShowMenu", function(entity, data)
 				})
 				_hasSellingMenu = true
 			else
-				Notification:Error("You Have Nothing To Sell")
+				exports["sandbox-hud"]:NotifError("You Have Nothing To Sell")
 			end
 		end)
 	end
@@ -466,14 +468,14 @@ end)
 
 AddEventHandler("CornerDealing:Client:Sell", function(data)
 	Entity(_SellingPed).state:set("boughtDrugs", true, true)
-	Callbacks:ServerCallback("CornerDealing:DoSale", {
+	exports["sandbox-base"]:ServerCallback("CornerDealing:DoSale", {
 		item = data,
 		netId = NetworkGetNetworkIdFromEntity(_SellingPed),
 	}, function(r)
 		if r then
 			local pda = math.random(100)
 			if pda >= 60 then
-				EmergencyAlerts:CreateIfReported(100.0, "oxysale", true)
+				exports['sandbox-mdt']:EmergencyAlertsCreateIfReported(100.0, "oxysale", true)
 			end
 
 			if NetworkHasControlOfEntity(_SellingPed) then
@@ -489,7 +491,7 @@ AddEventHandler("CornerDealing:Client:Sell", function(data)
 				if NetworkHasControlOfEntity(_SellingPed) then
 					DoHandoff(_SellingPed)
 				else
-					Callbacks:ServerCallback("CornderDealing:SyncEvent", {
+					exports["sandbox-base"]:ServerCallback("CornderDealing:SyncEvent", {
 						event = "handoff",
 						netId = NetworkGetNetworkIdFromEntity(_SellingPed),
 						coords = _SellingCorner
@@ -499,7 +501,7 @@ AddEventHandler("CornerDealing:Client:Sell", function(data)
 
 			PlayAmbientSpeech1(_SellingPed, 'Generic_Hi', 'Speech_Params_Force')
 			TaskTurnPedToFaceEntity(LocalPlayer.state.ped, _SellingPed, 1000)
-			Animations.Emotes:Play("handoff", false, 3000, true, true)
+			exports['sandbox-animations']:EmotesPlay("handoff", false, 3000, true, true)
 		end
 
 		_hasSellingMenu = false
@@ -507,9 +509,9 @@ AddEventHandler("CornerDealing:Client:Sell", function(data)
 end)
 
 AddEventHandler("CornerDealing:Client:StartJob", function()
-	Callbacks:ServerCallback("CornerDealing:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("CornerDealing:StartJob", _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)
@@ -520,14 +522,14 @@ RegisterNetEvent("CornerDealing:Client:OffDuty", function(time)
 	end
 
 	if _SellingPed ~= nil then
-		Targeting:RemovePed(_SellingPed)
+		exports['sandbox-targeting']:RemovePed(_SellingPed)
 	end
 	if _SellingVeh ~= nil then
 		Entity(_SellingVeh).state:set("cornering", false, true)
 	end
 
-	NetSync:SetEntityAsNoLongerNeeded(_SellingPed)
-	NetSync:SetPedKeepTask(_SellingPed, false)
+	exports["sandbox-base"]:SetEntityAsNoLongerNeeded(_SellingPed)
+	exports["sandbox-base"]:SetPedKeepTask(_SellingPed, false)
 	_SellingPed = nil
 	_SellingCorner = nil
 	_SellingVeh = nil
@@ -545,7 +547,7 @@ end)
 -- 				if IsEntityAPed(args[1]) then --both victim and killer are peds.
 -- 					local entState = Entity(args[1]).state
 -- 					if entState.isDrugBuyer == _joiner then
--- 						Callbacks:ServerCallback("CornerDealing:PedDied", {})
+-- 						exports["sandbox-base"]:ServerCallback("CornerDealing:PedDied", {})
 -- 					end
 -- 				end
 -- 			end
@@ -554,9 +556,9 @@ end)
 -- end)
 
 AddEventHandler("CornerDealing:Client:Enable", function()
-	Callbacks:ServerCallback("CornerDealing:Enable", {})
+	exports["sandbox-base"]:ServerCallback("CornerDealing:Enable", {})
 end)
 
 AddEventHandler("CornerDealing:Client:Disable", function()
-	Callbacks:ServerCallback("CornerDealing:Disable", {})
+	exports["sandbox-base"]:ServerCallback("CornerDealing:Disable", {})
 end)

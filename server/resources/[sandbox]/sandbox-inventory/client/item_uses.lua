@@ -14,7 +14,7 @@ function RunSpeed(modifier, duration, cd, ss)
 			AnimpostfxPlay("DrugsTrevorClownsFight", 0, true)
 		end
 
-		Buffs:ApplyUniqueBuff("speed", duration / 1000, false)
+		exports['sandbox-hud']:ApplyUniqueBuff("speed", duration / 1000, false)
 		SetTimeout(duration, function()
 			_runSpeed = false
 		end)
@@ -23,7 +23,7 @@ function RunSpeed(modifier, duration, cd, ss)
 			SetPedMoveRateOverride(PlayerPedId(), modifier)
 			Wait(1)
 		end
-		Buffs:RemoveBuffType("speed")
+		exports['sandbox-hud']:RemoveBuffType("speed")
 		SetPedMoveRateOverride(PlayerPedId(), 0.0)
 		AnimpostfxStop("DrugsTrevorClownsFight")
 		Wait(cd)
@@ -43,7 +43,7 @@ RegisterNetEvent("Inventory:Client:UseVanityItem", function(sender, action, item
 	end
 
 	if action == "overlay" then
-		Hud.Overlay:Show(itemData)
+		exports['sandbox-hud']:OverlayShow(itemData)
 	elseif action == "overlayall" then
 		if senderClient < 0 and not isMe then
 			return
@@ -58,12 +58,12 @@ RegisterNetEvent("Inventory:Client:UseVanityItem", function(sender, action, item
 			local dist = #(GetEntityCoords(senderPed) - GetEntityCoords(myPed))
 
 			if dist <= 4.0 and HasEntityClearLosToEntity(myPed, senderPed, 17) then
-				Hud.Overlay:Show(itemData)
+				exports['sandbox-hud']:OverlayShow(itemData)
 			end
 		end
 	end
 	Citizen.SetTimeout(10000, function()
-		Hud.Overlay:Hide()
+		exports['sandbox-hud']:OverlayHide()
 	end)
 end)
 
@@ -97,34 +97,34 @@ RegisterNetEvent("Inventory:Client:ArmourModifier", function(mod)
 end)
 
 RegisterNetEvent("Inventory:Client:RandomItems:BirthdayCake", function()
-	Sounds.Play:Distance(20.0, "birthday.ogg", 0.2)
-	Animations.Emotes:Play("cake", false, false, false)
+	exports["sandbox-sounds"]:PlayDistance(20.0, "birthday.ogg", 0.2)
+	exports['sandbox-animations']:EmotesPlay("cake", false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:RandomItems:BriefcaseCash", function()
-	Animations.Emotes:Play("suitcase2", false, false, false)
+	exports['sandbox-animations']:EmotesPlay("suitcase2", false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:ERP:ButtPlug", function(color)
-	Animations.Emotes:Play(string.format("erp_buttplug_%s", color), false, false, false)
+	exports['sandbox-animations']:EmotesPlay(string.format("erp_buttplug_%s", color), false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:ERP:Vibrator", function(color)
-	Sounds.Play:Distance(20.0, "vibrator.ogg", 0.2)
-	Animations.Emotes:Play(string.format("erp_vibrator_%s", color), false, false, false)
+	exports["sandbox-sounds"]:PlayDistance(20.0, "vibrator.ogg", 0.2)
+	exports['sandbox-animations']:EmotesPlay(string.format("erp_vibrator_%s", color), false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:RandomItems:Redlight", function()
-	Animations.Emotes:Play("redlight", false, false, false)
+	exports['sandbox-animations']:EmotesPlay("redlight", false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:Halloween:Pumpkin", function(emote)
-	Sounds.Play:Distance(20.0, "evillaugh.ogg", 0.2)
-	Animations.Emotes:Play(emote, false, false, false)
+	exports["sandbox-sounds"]:PlayDistance(20.0, "evillaugh.ogg", 0.2)
+	exports['sandbox-animations']:EmotesPlay(emote, false, false, false)
 end)
 
 RegisterNetEvent("Inventory:Client:Signs:UseSign", function(item)
 	if item.Name then
-		Animations.Emotes:Play(item.Name, false, false, false)
+		exports['sandbox-animations']:EmotesPlay(item.Name, false, false, false)
 	end
 end)

@@ -10,190 +10,154 @@ local isEnabled = true
 
 local _statusVals = {}
 
-AddEventHandler("Status:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Damage = exports["sandbox-base"]:FetchComponent("Damage")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Buffs = exports["sandbox-base"]:FetchComponent("Buffs")
-	Status = exports["sandbox-base"]:FetchComponent("Status")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Status", {
-		"Callbacks",
-		"Logger",
-		"Damage",
-		"Hud",
-		"Buffs",
-		"Status",
-		"Utils",
-		"Polyzone",
-		"Notification",
-		"Progress",
-		"Action",
-		"Blips",
-		"Animations",
-		"Interaction",
-	}, function(error)
-		if #error > 0 then
-			return
+	RegisterStatuses()
+	RegisterOxygenCallbacks()
+	RegisterOxygenMenus()
+	CreateStressPolys()
+	RegisterDrunkCallbacks()
+
+	exports["sandbox-base"]:RegisterClientCallback("Status:Modify", function(data, cb)
+		if data.value > 0 then
+			exports['sandbox-status']:Add(data.name, data.value, data.addCd, data.isForced)
+		else
+			exports['sandbox-status']:Remove(data.name, data.value, data.addCd, data.isForced)
 		end
-		RetrieveComponents()
-		RegisterStatuses()
-		RegisterOxygenCallbacks()
-		RegisterOxygenMenus()
-		CreateStressPolys()
-		RegisterDrunkCallbacks()
+	end)
 
-		Callbacks:RegisterClientCallback("Status:Modify", function(data, cb)
-			if data.value > 0 then
-				Status.Modify:Add(data.name, data.value, data.addCd, data.isForced)
-			else
-				Status.Modify:Remove(data.name, data.value, data.addCd, data.isForced)
-			end
-		end)
-
-		Callbacks:RegisterClientCallback("Status:StoreValues", function(data, cb)
-			cb(_statusVals)
-		end)
+	exports["sandbox-base"]:RegisterClientCallback("Status:StoreValues", function(data, cb)
+		cb(_statusVals)
 	end)
 end)
 
-STATUS = {
-	Register = function(self, name, max, icon, color, flash, modify, options)
-		local update = false
-		if _statuses[name] ~= nil then
-			update = true
-		end
+exports('Register', function(name, max, icon, color, flash, modify, options)
+	local update = false
+	if _statuses[name] ~= nil then
+		update = true
+	end
 
-		_statuses[name] = {
-			name = name,
-			max = max,
-			icon = icon,
-			color = color,
-			flash = flash,
-			modify = modify,
-			options = options,
-		}
+	_statuses[name] = {
+		name = name,
+		max = max,
+		icon = icon,
+		color = color,
+		flash = flash,
+		modify = modify,
+		options = options,
+	}
 
-		if options ~= nil and options.noReset then
-			_noResets[name] = true
-		end
+	if options ~= nil and options.noReset then
+		_noResets[name] = true
+	end
 
-		if not update then
-			_statusCount = _statusCount + 1
-		end
-	end,
-	GetRegistered = function(self)
-		return _statuses
-	end,
-	Get = {
-		All = function(self)
-			for k, v in pairs(_statuses) do
-				local statuses = _statuses
-				for k, v in pairs(_statuses) do
-					statuses[k].value = _statusVals[v.name]
-				end
-				return statuses
-			end
-		end,
-		Single = function(self, name)
-			local statuses = _statuses
-			for k, v in pairs(_statuses) do
-				if v.name == name then
-					statuses[k].value = _statusVals[v.name]
-					return statuses[k]
-				end
-			end
-		end,
-	},
-	Set = { -- Really much more performant to just interact directly with Decor natives ... but available just in case?
-		All = function(self, entity, value)
-			for k, v in pairs(_statuses) do
-				_statusVals[v.name] = value
-				TriggerEvent("Status:Client:Update", v.name, value)
-			end
-		end,
-		Single = function(self, name, value)
-			if _statuses[name] ~= nil then
-				_statusVals[name] = value
-				TriggerEvent("Status:Client:Update", name, value)
-			end
-		end,
-	},
-	Reset = function(self, entity, value)
+	if not update then
+		_statusCount = _statusCount + 1
+	end
+end)
+
+exports('GetRegistered', function()
+	return _statuses
+end)
+
+exports('GetAll', function()
+	for k, v in pairs(_statuses) do
+		local statuses = _statuses
 		for k, v in pairs(_statuses) do
-			if not _noResets[v.name] then
-				_statusVals[v.name] = v.max
-				TriggerEvent("Status:Client:Update", v.name, v.max)
-			end
+			statuses[k].value = _statusVals[v.name]
 		end
-	end,
-	Modify = {
-		Add = function(self, status, value, addCd, force)
-			if _statuses[status] ~= nil then
-				if
-					_statuses[status].max <= 0
-					and (
-						LocalPlayer.state[string.format("ignore%s", status)] ~= nil
-						and LocalPlayer.state[string.format("ignore%s", status)] > 0
-					)
-				then
-					return
-				end
+		return statuses
+	end
+end)
 
-				_statuses[status].modify(math.abs(value), force)
+exports('GetSingle', function(name)
+	local statuses = _statuses
+	for k, v in pairs(_statuses) do
+		if v.name == name then
+			statuses[k].value = _statusVals[v.name]
+			return statuses[k]
+		end
+	end
+end)
 
-				if addCd then
-					_recentCd[status] = 1
-				end
-			else
-				Logger:Error("Status", "Attempt To Add To Non-Existent Status")
-			end
-		end,
-		Remove = function(self, status, value, force)
-			if
-				_statuses[status].max >= 0
-				and (
-					LocalPlayer.state[string.format("ignore%s", status)] ~= nil
-					and LocalPlayer.state[string.format("ignore%s", status)] > 0
-				)
-			then
-				return
-			end
+-- Really much more performant to just interact directly with Decor natives ... but available just in case?
+exports('SetAll', function(entity, value)
+	for k, v in pairs(_statuses) do
+		_statusVals[v.name] = value
+		TriggerEvent("Status:Client:Update", v.name, value)
+	end
+end)
 
-			if _statuses[status] ~= nil then
-				_statuses[status].modify(-(math.abs(value)), force)
-			else
-				Logger:Error("Status", "Attempt To Remove From Non-Existent Status")
-			end
-		end,
-	},
-	Toggle = function(self)
-		isEnabled = not isEnabled
-	end,
-	Check = function(self)
-		return isEnabled
-	end,
-}
+exports('SetSingle', function(name, value)
+	if _statuses[name] ~= nil then
+		_statusVals[name] = value
+		TriggerEvent("Status:Client:Update", name, value)
+	end
+end)
+
+exports('Reset', function(entity, value)
+	for k, v in pairs(_statuses) do
+		if not _noResets[v.name] then
+			_statusVals[v.name] = v.max
+			TriggerEvent("Status:Client:Update", v.name, v.max)
+		end
+	end
+end)
+
+exports('Add', function(status, value, addCd, force)
+	if _statuses[status] ~= nil then
+		if
+			_statuses[status].max <= 0
+			and (
+				LocalPlayer.state[string.format("ignore%s", status)] ~= nil
+				and LocalPlayer.state[string.format("ignore%s", status)] > 0
+			)
+		then
+			return
+		end
+
+		_statuses[status].modify(math.abs(value), force)
+
+		if addCd then
+			_recentCd[status] = 1
+		end
+	else
+		exports['sandbox-base']:LoggerError("Status", "Attempt To Add To Non-Existent Status")
+	end
+end)
+
+exports('Remove', function(status, value, force)
+	if
+		_statuses[status].max >= 0
+		and (
+			LocalPlayer.state[string.format("ignore%s", status)] ~= nil
+			and LocalPlayer.state[string.format("ignore%s", status)] > 0
+		)
+	then
+		return
+	end
+
+	if _statuses[status] ~= nil then
+		_statuses[status].modify(-(math.abs(value)), force)
+	else
+		exports['sandbox-base']:LoggerError("Status", "Attempt To Remove From Non-Existent Status")
+	end
+end)
+
+exports('Toggle', function()
+	isEnabled = not isEnabled
+end)
+
+exports('Check', function()
+	return isEnabled
+end)
 
 local spawned = false
 
 RegisterNetEvent("Status:Client:Reset", function()
-	Callbacks:ServerCallback("Commands:ValidateAdmin", {}, function(isAdmin)
+	exports["sandbox-base"]:ServerCallback("Commands:ValidateAdmin", {}, function(isAdmin)
 		if isAdmin then
 			for k, v in pairs(_statuses) do
-				Status.Set:Single(v.name, v.max)
+				exports['sandbox-status']:SetSingle(v.name, v.max)
 			end
 		end
 	end)
@@ -207,12 +171,12 @@ RegisterNetEvent("Characters:Client:Spawn", function()
 	local ffs = GetCloudTimeAsInt()
 	_ts = ffs
 
-	Callbacks:ServerCallback("Status:Get", {}, function(results)
+	exports["sandbox-base"]:ServerCallback("Status:Get", {}, function(results)
 		results = results or {}
-		for k, v in pairs(Status:GetRegistered()) do
+		for k, v in pairs(exports['sandbox-status']:GetRegistered()) do
 			local val = results[v.name] or v.max
 			_statusVals[v.name] = val
-			Hud:RegisterStatus(v.name, val, v.max, v.icon, v.color, v.flash, false, v.options)
+			exports['sandbox-hud']:RegisterStatus(v.name, val, v.max, v.icon, v.color, v.flash, false, v.options)
 		end
 	end)
 
@@ -248,12 +212,12 @@ end)
 
 AddEventHandler("UI:Client:ResetFinished", function(manual)
 	if manual then
-		Callbacks:ServerCallback("Status:Get", {}, function(results)
-			for k, v in pairs(Status:GetRegistered()) do
+		exports["sandbox-base"]:ServerCallback("Status:Get", {}, function(results)
+			for k, v in pairs(exports['sandbox-status']:GetRegistered()) do
 				local val = results[v.name] or v.max
 
 				_statusVals[v.name] = val
-				Hud:RegisterStatus(v.name, val, v.max, v.icon, v.color, v.flash, false, v.options)
+				exports['sandbox-hud']:RegisterStatus(v.name, val, v.max, v.icon, v.color, v.flash, false, v.options)
 			end
 		end)
 	end
@@ -263,10 +227,6 @@ RegisterNetEvent("Characters:Client:Logout", function()
 	_ts = nil
 	spawned = false
 	isEnabled = true
-	Hud:ResetStatus()
+	exports['sandbox-hud']:ResetStatus()
 	_statusVals = {}
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Status", STATUS)
 end)

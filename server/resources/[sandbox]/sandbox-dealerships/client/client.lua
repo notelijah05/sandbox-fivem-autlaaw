@@ -3,65 +3,15 @@ _withinShowroom = false
 _withinCatalog = false
 
 _justBoughtFuckingBike = {}
--- DEALERSHIPS = {}
-
-AddEventHandler("Dealerships:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Game = exports["sandbox-base"]:FetchComponent("Game")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Menu = exports["sandbox-base"]:FetchComponent("Menu")
-	Hud = exports["sandbox-base"]:FetchComponent("Hud")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
-	Confirm = exports["sandbox-base"]:FetchComponent("Confirm")
-	--Dealerships = exports['sandbox-base']:FetchComponent('Dealerships')
-end
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Dealerships", {
-		"Logger",
-		"Utils",
-		"Game",
-		"Callbacks",
-		"Targeting",
-		"Jobs",
-		"Fetch",
-		"Polyzone",
-		"Blips",
-		"Action",
-		"Menu",
-		"Hud",
-		"Vehicles",
-		"ListMenu",
-		"PedInteraction",
-		"Notification",
-		"Input",
-		"Confirm",
-		--'Dealerships',
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		CreateDealerships()
+	CreateDealerships()
 
-		CreateRentalSpots()
-		CreateBikeStands()
-		CreateGovermentFleetShops()
+	CreateRentalSpots()
+	CreateBikeStands()
+	CreateGovermentFleetShops()
 
-		CreateDonorDealerships()
-	end)
+	CreateDonorDealerships()
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")
@@ -80,17 +30,14 @@ AddEventHandler("Characters:Client:Logout", function()
 	_justBoughtFuckingBike = {}
 end)
 
--- AddEventHandler('Proxy:Shared:RegisterReady', function()
---     exports['sandbox-base']:RegisterComponent('Dealerships', DEALERSHIPS)
--- end)
-
 function CreatePolyzone(id, zone, data)
 	if zone.type == "poly" then
-		Polyzone.Create:Poly("dealerships_" .. id, zone.points, zone.options, data)
+		exports['sandbox-polyzone']:CreatePoly("dealerships_" .. id, zone.points, zone.options, data)
 	elseif zone.type == "box" then
-		Polyzone.Create:Box("dealerships_" .. id, zone.center, zone.length, zone.width, zone.options, data)
+		exports['sandbox-polyzone']:CreateBox("dealerships_" .. id, zone.center, zone.length, zone.width, zone.options,
+			data)
 	elseif zone.type == "circle" then
-		Polyzone.Create:Circle("dealerships_" .. id, zone.center, zone.radius, zone.options, data)
+		exports['sandbox-polyzone']:CreateCircle("dealerships_" .. id, zone.center, zone.radius, zone.options, data)
 	end
 end
 
@@ -129,7 +76,7 @@ function CreateDealerships()
 		-- Targets
 		if data.zones and #data.zones.employeeInteracts > 0 then
 			for k, v in ipairs(data.zones.employeeInteracts) do
-				Targeting.Zones:AddBox(
+				exports['sandbox-targeting']:ZonesAddBox(
 					string.format("dealership_%s_employee_%s", dealerId, k),
 					"car-building",
 					v.center,
@@ -249,7 +196,7 @@ end
 function CreateDealershipBlips()
 	for dealerId, data in pairs(_dealerships) do
 		if data.blip then
-			Blips:Add(
+			exports["sandbox-blips"]:Add(
 				"dealership_" .. dealerId,
 				data.name,
 				data.blip.coords,
@@ -268,7 +215,7 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZones, data)
 			SpawnShowroom(data.dealerId)
 		elseif data.type == "catalog" and _dealerships[data.dealerId] then
 			_withinCatalog = data.dealerId
-			Action:Show(
+			exports['sandbox-hud']:ActionShow(
 				"pdm",
 				"{keybind}primary_action{/keybind} View " .. _dealerships[data.dealerId].abbreviation .. " Catalog"
 			)
@@ -282,7 +229,7 @@ AddEventHandler("Polyzone:Exit", function(id, point, insideZones, data)
 			DeleteShowroom(data.dealerId)
 			_withinShowroom = false
 		elseif data.type == "catalog" then
-			Action:Hide("pdm")
+			exports['sandbox-hud']:ActionHide("pdm")
 			_withinCatalog = false
 			ForceCloseCatalog()
 		end
@@ -291,7 +238,7 @@ end)
 
 AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 	if _withinCatalog then
-		Action:Hide("pdm")
+		exports['sandbox-hud']:ActionHide("pdm")
 		OpenCatalog(_withinCatalog)
 	end
 end)
@@ -299,9 +246,9 @@ end)
 AddEventHandler("Dealerships:Client:ToggleDuty", function(entityData, data)
 	if data and data.dealerId then
 		if data.state then
-			Jobs.Duty:On(data.dealerId)
+			exports['sandbox-jobs']:DutyOn(data.dealerId)
 		else
-			Jobs.Duty:Off(data.dealerId)
+			exports['sandbox-jobs']:DutyOff(data.dealerId)
 		end
 	end
 end)

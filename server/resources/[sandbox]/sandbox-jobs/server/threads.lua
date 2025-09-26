@@ -5,21 +5,21 @@ CreateThread(function()
         Wait(100)
     end
 
-    Logger:Info("Jobs", "Salary Thread Starting")
+    exports['sandbox-base']:LoggerInfo("Jobs", "Salary Thread Starting")
 
     while true do
         Wait(1000 * 60 * _payPeriod)
 
-        for k, v in pairs(Fetch:AllCharacters()) do
+        for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
             if v ~= nil then
                 local dutyData = _characterDuty[v:GetData('SID')]
                 if dutyData and not Player(v:GetData("Source")).state.gettingPaycheck then
                     local existing = v:GetData("Salary") or {}
                     local workedMinutes = math.floor((os.time() - dutyData.Time) / 60)
-                    local j = Jobs:Get(dutyData.Id)
+                    local j = exports['sandbox-jobs']:Get(dutyData.Id)
                     local salary = math.ceil((j.Salary * j.SalaryTier) * (workedMinutes / _payPeriod))
 
-                    Logger:Info("Jobs",
+                    exports['sandbox-base']:LoggerInfo("Jobs",
                         string.format("Adding Salary Data For ^3%s^7 (^2%s Minutes^7 - ^3$%s^7)", v:GetData("SID"),
                             workedMinutes, salary))
 

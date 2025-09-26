@@ -1,23 +1,21 @@
 local _playersContacts = {}
 
-PHONE.Contacts = {
-	IsContact = function(self, myId, targetNumber)
-		if _playersContacts[myId] ~= nil then
-			for k, v in ipairs(_playersContacts[myId]) do
-				if v.number == targetNumber then
-					return v
-				end
+exports("ContactsIsContact", function(myId, targetNumber)
+	if _playersContacts[myId] ~= nil then
+		for k, v in ipairs(_playersContacts[myId]) do
+			if v.number == targetNumber then
+				return v
 			end
-
-			return false
-		else
-			return false
 		end
-	end,
-}
+
+		return false
+	else
+		return false
+	end
+end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	Middleware:Add("Phone:Spawning", function(source, char)
+	exports['sandbox-base']:MiddlewareAdd("Phone:Spawning", function(source, char)
 		local contacts = MySQL.query.await(
 			"SELECT id, sid, number, name, avatar, color, favorite FROM character_contacts WHERE sid = ?",
 			{
@@ -37,8 +35,8 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Contacts:Create", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Contacts:Create", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			local id = MySQL.insert.await(
@@ -71,12 +69,12 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Contacts:Update", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Contacts:Update", function(source, data, cb)
 		if data.id == nil then
 			return cb(nil)
 		end
 
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 
@@ -112,8 +110,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Contacts:Delete", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Contacts:Delete", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 

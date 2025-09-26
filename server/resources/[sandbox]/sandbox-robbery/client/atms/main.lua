@@ -16,22 +16,23 @@ local _phoneApp = {
 
 AddEventHandler("Robbery:Client:Setup", function()
     local atmRobbery = GlobalState["ATMRobberyTerminal"]
-    Targeting.Zones:AddBox("atm-robbery-terminal", "bug", atmRobbery.coords, atmRobbery.length, atmRobbery.width,
+    exports['sandbox-targeting']:ZonesAddBox("atm-robbery-terminal", "bug", atmRobbery.coords, atmRobbery.length,
+    atmRobbery.width,
         atmRobbery.options, {
-        {
-            icon = "eye-evil",
-            text = "Do Illegal Things",
-            event = "Robbery:Client:ATM:UseTerminal",
-            item = "vpn",
-            data = {},
-            isEnabled = function(data, entity)
-                return not LocalPlayer.state.ATMRobbery or LocalPlayer.state.ATMRobbery <= 0
-            end,
-        },
-    }, 2.0)
+            {
+                icon = "eye-evil",
+                text = "Do Illegal Things",
+                event = "Robbery:Client:ATM:UseTerminal",
+                item = "vpn",
+                data = {},
+                isEnabled = function(data, entity)
+                    return not LocalPlayer.state.ATMRobbery or LocalPlayer.state.ATMRobbery <= 0
+                end,
+            },
+        }, 2.0)
 
     for k, v in ipairs(atmObjects) do
-        Targeting:AddObject(v, "money-from-bracket", {
+        exports['sandbox-targeting']:AddObject(v, "money-from-bracket", {
             {
                 text = "Run Exploit",
                 icon = 'eye-evil',
@@ -53,32 +54,34 @@ end)
 AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
     if GlobalState['Sync:IsNight'] then
         if (not GlobalState["ATMRobberyStartCD"]) or (GetCloudTimeAsInt() > GlobalState["ATMRobberyStartCD"]) then
-            Minigame.Play:Memory(5, 1200, 9000, 5, 5, 5, 2, {
+            exports['sandbox-games']:MinigamePlayMemory(5, 1200, 9000, 5, 5, 5, 2, {
                 onSuccess = function(data)
-                    Callbacks:ServerCallback("Robbery:ATM:StartJob", true, function(success, location)
+                    exports["sandbox-base"]:ServerCallback("Robbery:ATM:StartJob", true, function(success, location)
                         if success then
-                            Phone.Notification:AddWithId("ATMRobbery", "Started - Good Luck",
+                            exports['sandbox-phone']:NotificationAddWithId("ATMRobbery", "Started - Good Luck",
                                 "Access an ATM in the highlighted area", GetCloudTimeAsInt(), -1, {
-                                color = '#247919',
-                                label = 'Root',
-                                icon = 'terminal',
-                            }, {
-                                accept = "dicks",
-                            }, nil)
+                                    color = '#247919',
+                                    label = 'Root',
+                                    icon = 'terminal',
+                                }, {
+                                    accept = "dicks",
+                                }, nil)
 
                             StartATMRobbery(location, true)
                         else
                             if location then
-                                Phone.Notification:Add("No More!", "You already have done too much today...",
+                                exports['sandbox-phone']:NotificationAdd("No More!",
+                                    "You already have done too much today...",
                                     GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
                             end
                         end
                     end)
                 end,
                 onFail = function(data)
-                    Callbacks:ServerCallback("Robbery:ATM:StartJob", false, function() end)
+                    exports["sandbox-base"]:ServerCallback("Robbery:ATM:StartJob", false, function() end)
 
-                    Phone.Notification:Add("Not Today Failure", "Your skills are useless to us...", GetCloudTimeAsInt(),
+                    exports['sandbox-phone']:NotificationAdd("Not Today Failure", "Your skills are useless to us...",
+                        GetCloudTimeAsInt(),
                         7500, _phoneApp, {}, nil)
                 end,
             }, {
@@ -90,11 +93,13 @@ AddEventHandler("Robbery:Client:ATM:UseTerminal", function()
                 },
             }, {})
         else
-            Phone.Notification:Add("Busy at the Moment", "Sorry, please try again in a minute.", GetCloudTimeAsInt(),
+            exports['sandbox-phone']:NotificationAdd("Busy at the Moment", "Sorry, please try again in a minute.",
+                GetCloudTimeAsInt(),
                 7500, _phoneApp, {}, nil)
         end
     else
-        Phone.Notification:Add("Come Back Later", "Sorry, please try again when it's dark.", GetCloudTimeAsInt(), 7500,
+        exports['sandbox-phone']:NotificationAdd("Come Back Later", "Sorry, please try again when it's dark.",
+            GetCloudTimeAsInt(), 7500,
             _phoneApp, {}, nil)
     end
 end)
@@ -112,30 +117,31 @@ function StartATMRobbery(location, firstLocation)
     SetBlipColour(_blip, 1)
     SetBlipAlpha(_blip, 90)
 
-    Blips:Add("ATMRobbery", "Target Area", _atmZone.coords, 521, 6, 1.5)
+    exports["sandbox-blips"]:Add("ATMRobbery", "Target Area", _atmZone.coords, 521, 6, 1.5)
 
     ClearGpsPlayerWaypoint()
     SetNewWaypoint(_atmZone.coords.x, _atmZone.coords.y)
 
     if not firstLocation then
-        Phone.Notification:AddWithId("ATMRobbery", "Well Done - Next!", "Access an ATM in the new highlighted area",
+        exports['sandbox-phone']:NotificationAddWithId("ATMRobbery", "Well Done - Next!",
+            "Access an ATM in the new highlighted area",
             GetCloudTimeAsInt() * 1000, -1, _phoneApp, {
-            accept = "dicks",
-        }, nil)
+                accept = "dicks",
+            }, nil)
     end
 end
 
 function EndATMRobbery()
     RemoveBlip(_blip)
-    Blips:Remove("ATMRobbery")
+    exports["sandbox-blips"]:Remove("ATMRobbery")
 
     _blip = nil
 
-    Phone.Notification:Remove("ATMRobbery")
+    exports['sandbox-phone']:NotificationRemove("ATMRobbery")
 end
 
 function DoATMProgress(label, duration, canCancel, cb)
-    Progress:Progress({
+    exports['sandbox-hud']:Progress({
         name = "installing_atm_hack",
         duration = (math.random(10) + 10) * 1000,
         label = label,
@@ -166,7 +172,7 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
         alarm = true
 
         Citizen.SetTimeout(8000, function()
-            Sounds.Play:Location(coords, 20.0, "house_alarm.ogg", 0.05)
+            exports["sandbox-sounds"]:PlayLocation(coords, 20.0, "house_alarm.ogg", 0.05)
             TriggerServerEvent("Robbery:Server:ATM:AlertPolice", coords)
         end)
     end
@@ -177,20 +183,21 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
         local size = math.random(5, 7)
         local toGet = math.random(4, 6)
 
-        Minigame.Play:Memory(5, 1000, 8000, size, size, toGet, 1, {
+        exports['sandbox-games']:MinigamePlayMemory(5, 1000, 8000, size, size, toGet, 1, {
             onSuccess = function(data)
                 while LocalPlayer.state.doingAction do -- Apparently this is dumb
                     Wait(100)
                 end
 
                 DoATMProgress("Executing", (math.random(10) + 10) * 1000, false, function(status)
-                    Callbacks:ServerCallback("Robbery:ATM:HackATM", size, function(success, location)
+                    exports["sandbox-base"]:ServerCallback("Robbery:ATM:HackATM", size, function(success, location)
                         if success then
                             DoATMProgress("Uninstalling", (math.random(5) + 10) * 1000, false)
                             if location then
                                 StartATMRobbery(location, false)
                             else
-                                Phone.Notification:Add("Done", "We hope to work with you more in the future.",
+                                exports['sandbox-phone']:NotificationAdd("Done",
+                                    "We hope to work with you more in the future.",
                                     GetCloudTimeAsInt(), 7500, _phoneApp, {}, nil)
                             end
                         end
@@ -202,13 +209,13 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
                 end)
             end,
             onFail = function(data)
-                Sounds.Play:Location(coords, 20.0, "house_alarm.ogg", 0.05)
+                exports["sandbox-sounds"]:PlayLocation(coords, 20.0, "house_alarm.ogg", 0.05)
 
                 while LocalPlayer.state.doingAction do -- Apparently this is dumb
                     Wait(100)
                 end
 
-                Callbacks:ServerCallback("Robbery:ATM:FailHackATM", {
+                exports["sandbox-base"]:ServerCallback("Robbery:ATM:FailHackATM", {
                     coords = coords,
                     alarm = alarm,
                 }, function()
@@ -216,7 +223,8 @@ AddEventHandler('Robbery:Client:ATM:StartHack', function(entity)
 
                     EndATMRobbery()
 
-                    Phone.Notification:Add("Failed", "I can't believe you just did this.", GetCloudTimeAsInt(), 7500,
+                    exports['sandbox-phone']:NotificationAdd("Failed", "I can't believe you just did this.",
+                        GetCloudTimeAsInt(), 7500,
                         _phoneApp, {}, nil)
                 end)
             end,

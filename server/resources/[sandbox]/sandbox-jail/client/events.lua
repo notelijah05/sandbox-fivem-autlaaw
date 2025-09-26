@@ -5,7 +5,7 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 RegisterNetEvent("Jail:Client:EnterJail", function()
-	Sounds.Play:One("jailed.ogg", 0.075)
+	exports["sandbox-sounds"]:PlayOne("jailed.ogg", 0.075)
 	if not IsScreenFadedOut() then
 		DoScreenFadeOut(1000)
 		while not IsScreenFadedOut() do
@@ -30,7 +30,7 @@ end)
 
 AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 	if _inLogout then
-		Callbacks:ServerCallback("Jail:Validate", {
+		exports["sandbox-base"]:ServerCallback("Jail:Validate", {
 			id = GlobalState[string.format("%s:Apartment", LocalPlayer.state.ID)],
 			type = "logout",
 		}, function(state)
@@ -42,19 +42,19 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 end)
 
 AddEventHandler("Jail:Client:RetreiveItems", function()
-	Callbacks:ServerCallback("Jail:RetreiveItems")
+	exports["sandbox-base"]:ServerCallback("Jail:RetreiveItems")
 end)
 
 AddEventHandler("Jail:Client:CheckSentence", function()
 	local jailed = LocalPlayer.state.Character:GetData("Jailed")
 	if not jailed or GetCloudTimeAsInt() >= (jailed.Release or 0) then
-		Notification:Info("Time Served")
+		exports["sandbox-hud"]:NotifInfo("Time Served")
 	else
 		if jailed.Duration >= 9999 then
-			Notification:Info("You've Been Setenced To The 9's")
+			exports["sandbox-hud"]:NotifInfo("You've Been Setenced To The 9's")
 		else
 			local months = math.ceil((jailed.Release - GetCloudTimeAsInt()) / 60)
-			Notification:Info(
+			exports["sandbox-hud"]:NotifInfo(
 				string.format("You Have %s Months of Your %s Month Sentence Remaining", months, jailed.Duration)
 			)
 		end
@@ -62,15 +62,15 @@ AddEventHandler("Jail:Client:CheckSentence", function()
 end)
 
 AddEventHandler("Jail:Client:Released", function()
-	if Jail:IsJailed() and Jail:IsReleaseEligible() then
-		Callbacks:ServerCallback("Jail:Release", {}, function(s)
+	if exports['sandbox-jail']:IsJailed() and exports['sandbox-jail']:IsReleaseEligible() then
+		exports["sandbox-base"]:ServerCallback("Jail:Release", {}, function(s)
 			if s then
 				DoScreenFadeOut(1000)
 				while not IsScreenFadedOut() do
 					Wait(10)
 				end
 
-				Sounds.Play:One("release.ogg", 0.15)
+				exports["sandbox-sounds"]:PlayOne("release.ogg", 0.15)
 				SetEntityCoords(
 					LocalPlayer.state.ped,
 					Config.Release.coords.x,
@@ -100,14 +100,14 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 		_inPickup = true
 	elseif id == "prison-logout" then
 		_inLogout = true
-		Action:Show("logout", "{keybind}primary_action{/keybind} Switch Characters")
+		exports['sandbox-hud']:ActionShow("logout", "{keybind}primary_action{/keybind} Switch Characters")
 	end
 end)
 
 AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 	if id == "prison" and LocalPlayer.state.loggedIn then
 		if LocalPlayer.state.inTrunk then
-			Trunk:GetOut()
+			exports['sandbox-escort']:TrunkGetOut()
 
 			while LocalPlayer.state.inTrunk do
 				Wait(1)
@@ -115,8 +115,8 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 
 			Wait(2000)
 
-			Notification:Warn("Stop exploiting or you will be flighted")
-			Callbacks:ServerCallback("Jail:Server:ExploitAttempt", 1)
+			exports["sandbox-hud"]:NotifWarn("Stop exploiting or you will be flighted")
+			exports["sandbox-base"]:ServerCallback("Jail:Server:ExploitAttempt", 1)
 		end
 
 		if LocalPlayer.state.myEscorter ~= nil then
@@ -127,30 +127,30 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			end
 
 			Notification:Warn("Stop exploiting or you will be flighted")
-			Callbacks:ServerCallback("Jail:Server:ExploitAttempt", 2)
+			exports["sandbox-base"]:ServerCallback("Jail:Server:ExploitAttempt", 2)
 		end
 
-		if Jail:IsJailed() and not _doingMugshot then
+		if exports['sandbox-jail']:IsJailed() and not _doingMugshot then
 			TriggerEvent("Jail:Client:EnterJail")
 		end
 	elseif id == "prison-pickup" then
 		_inPickup = false
 	elseif id == "prison-logout" then
 		_inLogout = false
-		Action:Hide("logout")
+		exports['sandbox-hud']:ActionHide("logout")
 	end
 end)
 
 AddEventHandler("Jail:Client:StartWork", function()
-	Callbacks:ServerCallback("Jail:StartWork")
+	exports["sandbox-base"]:ServerCallback("Jail:StartWork")
 end)
 
 AddEventHandler("Jail:Client:QuitWork", function()
-	Callbacks:ServerCallback("Jail:QuitWork")
+	exports["sandbox-base"]:ServerCallback("Jail:QuitWork")
 end)
 
 AddEventHandler("Jail:Client:MakeFood", function()
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "prison_action",
 		duration = 12500,
 		label = "Making Food",
@@ -167,13 +167,13 @@ AddEventHandler("Jail:Client:MakeFood", function()
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Jail:MakeItem", "food")
+			exports["sandbox-base"]:ServerCallback("Jail:MakeItem", "food")
 		end
 	end)
 end)
 
 AddEventHandler("Jail:Client:MakeDrink", function()
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "prison_action",
 		duration = 12500,
 		label = "Making Drink",
@@ -190,13 +190,13 @@ AddEventHandler("Jail:Client:MakeDrink", function()
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Jail:MakeItem", "drink")
+			exports["sandbox-base"]:ServerCallback("Jail:MakeItem", "drink")
 		end
 	end)
 end)
 
 AddEventHandler("Jail:Client:MakeJuice", function(self, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "prison_action",
 		duration = 12500,
 		label = "Making Slushie",
@@ -213,7 +213,7 @@ AddEventHandler("Jail:Client:MakeJuice", function(self, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Jail:MakeJuice", data.name)
+			exports["sandbox-base"]:ServerCallback("Jail:MakeJuice", data.name)
 		end
 	end)
 end)

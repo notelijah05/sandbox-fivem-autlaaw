@@ -1,11 +1,11 @@
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("MDT:ViewVehicleFleet", function(source, data, cb)
-		local hasPerms, loggedInJob = CheckMDTPermissions(source, {
-			'FLEET_MANAGEMENT',
-		})
+  exports["sandbox-base"]:RegisterServerCallback("MDT:ViewVehicleFleet", function(source, data, cb)
+    local hasPerms, loggedInJob = CheckMDTPermissions(source, {
+      'FLEET_MANAGEMENT',
+    })
 
     if hasPerms and loggedInJob then
-      Database.Game:find({
+      exports['sandbox-base']:DatabaseGameFind({
         collection = "vehicles",
         query = {
           ['Owner.Type'] = 1,
@@ -31,11 +31,11 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
           for k, v in ipairs(results) do
             if v.Storage then
               if v.Storage.Type == 0 then
-                v.Storage.Name = Vehicles.Garages:Impound().name
+                v.Storage.Name = exports['sandbox-vehicles']:GaragesImpound().name
               elseif v.Storage.Type == 1 then
-                v.Storage.Name = Vehicles.Garages:Get(v.Storage.Id).name
+                v.Storage.Name = exports['sandbox-vehicles']:GaragesGet(v.Storage.Id).name
               elseif v.Storage.Type == 2 then
-                local prop = Properties:Get(v.Storage.Id)
+                local prop = exports['sandbox-properties']:Get(v.Storage.Id)
                 v.Storage.Name = prop?.label
               end
             end
@@ -49,16 +49,16 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
     else
       cb(false)
     end
-	end)
+  end)
 
-	Callbacks:RegisterServerCallback("MDT:SetAssignedDrivers", function(source, data, cb)
+  exports["sandbox-base"]:RegisterServerCallback("MDT:SetAssignedDrivers", function(source, data, cb)
     local hasPerms, loggedInJob = CheckMDTPermissions(source, {
-			'FLEET_MANAGEMENT',
-		})
+      'FLEET_MANAGEMENT',
+    })
 
     if hasPerms and loggedInJob and data.vehicle and data.assigned then
       local ass = {}
-      for k,v in ipairs(data.assigned) do
+      for k, v in ipairs(data.assigned) do
         table.insert(ass, {
           SID = v.SID,
           First = v.First,
@@ -67,7 +67,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         })
       end
 
-      Database.Game:updateOne({
+      exports['sandbox-base']:DatabaseGameUpdateOne({
         collection = "vehicles",
         query = {
           VIN = data.vehicle,
@@ -83,17 +83,17 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
     else
       cb(false)
     end
-	end)
+  end)
 
-  Callbacks:RegisterServerCallback("MDT:TrackFleetVehicle", function(source, data, cb)
+  exports["sandbox-base"]:RegisterServerCallback("MDT:TrackFleetVehicle", function(source, data, cb)
     local hasPerms, loggedInJob = CheckMDTPermissions(source, {
-			'FLEET_MANAGEMENT',
-		})
+      'FLEET_MANAGEMENT',
+    })
 
     if hasPerms and loggedInJob and data.vehicle then
-      cb(Vehicles.Owned:Track(data.vehicle))
+      cb(exports['sandbox-vehicles']:OwnedTrack(data.vehicle))
     else
       cb(false)
     end
-	end)
+  end)
 end)

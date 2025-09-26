@@ -28,8 +28,8 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local alias = char:GetData("Alias")
 		if alias.irc then
 			alias.irc = nil
@@ -37,8 +37,8 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		end
 	end, 1)
 
-	Middleware:Add("Characters:Spawning", function(source)
-		local sid = Fetch:CharacterSource(source):GetData("SID")
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local sid = exports['sandbox-characters']:FetchCharacterSource(source):GetData("SID")
 		_groups[sid] = MySQL.query.await(
 			"SELECT g.id, g.label, g.icon, g.owner, cg.joined_date, (SELECT UNIX_TIMESTAMP(MAX(m.timestamp)) AS timestamp FROM chatter_messages m WHERE m.group = cg.chatty_group) as last_message FROM character_chatter_groups cg INNER JOIN chatter_groups g ON g.id = cg.chatty_group WHERE cg.sid = ?",
 			{
@@ -64,8 +64,8 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Chatter:GetMessageCount", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:GetMessageCount", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			if _groups[sid] ~= nil then
@@ -97,8 +97,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Chatter:LoadMessages", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:LoadMessages", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			if _groups[sid] ~= nil then
@@ -132,8 +132,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Chatter:SendMessage", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:SendMessage", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			if _groups[sid] ~= nil then
@@ -184,8 +184,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Chatter:CreateGroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:CreateGroup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			local ts = os.time()
@@ -227,8 +227,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Chatter:LeaveGroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:LeaveGroup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			MySQL.query.await("DELETE FROM character_chatter_groups WHERE sid = ? AND chatty_group = ?", {
@@ -255,8 +255,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Chatter:DeleteGroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Chatter:DeleteGroup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 
@@ -329,8 +329,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Chatter:Invite:Send", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Chatter:Invite:Send", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 
@@ -345,7 +345,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					end
 
 					if inGroup then
-						local tChar = Fetch:SID(tonumber(data.sid))
+						local tChar = exports['sandbox-characters']:FetchBySID(tonumber(data.sid))
 						if tChar ~= nil then
 							local tsid = tChar:GetData("SID")
 							local tInGroup = false
@@ -395,9 +395,9 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Chatter:Invite:Accept", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Chatter:Invite:Accept", function(source, data, cb)
 		local cunt = tonumber(data)
-		local char = Fetch:CharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 
@@ -436,8 +436,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Chatter:Invite:Decline", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Chatter:Invite:Decline", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 			_invites[sid] = _invites[sid] or {}
@@ -452,8 +452,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Chatter:UpdateGroup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Chatter:UpdateGroup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 

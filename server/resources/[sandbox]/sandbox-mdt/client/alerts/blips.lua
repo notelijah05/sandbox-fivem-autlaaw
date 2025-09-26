@@ -6,7 +6,7 @@ _specialBlips = {}
 RegisterNetEvent("EmergencyAlerts:Client:Clear", function(eventRoutine)
     for i = 1, _blipCount do
         local id = string.format("emrg-%s", i)
-        Blips:Remove(id)
+        exports["sandbox-blips"]:Remove(id)
     end
 
     for k, v in ipairs(_alertBlips) do
@@ -16,7 +16,7 @@ RegisterNetEvent("EmergencyAlerts:Client:Clear", function(eventRoutine)
     _blipCount = 1
     _alertBlips = {}
 
-    Notification:Success("Blips Cleared & Reset")
+    exports["sandbox-hud"]:NotifSuccess("Blips Cleared & Reset")
 end)
 
 RegisterNetEvent("Job:Client:DutyChanged", function(state)
@@ -28,7 +28,7 @@ RegisterNetEvent("Job:Client:DutyChanged", function(state)
                     for k, v in ipairs(_alertBlips) do
                         if v.time <= GetCloudTimeAsInt() then
                             SetBlipFlashes(v.blip, false)
-                            Blips:Remove(v.id)
+                            exports["sandbox-blips"]:Remove(v.id)
                             RemoveBlip(v.blip)
                             table.remove(_alertBlips, k)
                         end
@@ -41,13 +41,13 @@ RegisterNetEvent("Job:Client:DutyChanged", function(state)
 
             for k, v in ipairs(_alertBlips) do
                 SetBlipFlashes(v.blip, false)
-                Blips:Remove(v.id)
+                exports["sandbox-blips"]:Remove(v.id)
                 RemoveBlip(v.blip)
                 table.remove(_alertBlips, k)
             end
 
             for k, v in pairs(_specialBlips) do
-                Blips:Remove(string.format("etb-%s", k))
+                exports["sandbox-blips"]:Remove(string.format("etb-%s", k))
             end
 
             _specialBlips = {}
@@ -62,7 +62,7 @@ RegisterNetEvent("EmergencyAlerts:Client:TrackerBlip",
                 if _specialBlips[uId] and DoesBlipExist(_specialBlips[uId]) then
                     SetBlipCoords(_specialBlips[uId], coords)
                 else
-                    local blip = Blips:Add(
+                    local blip = exports["sandbox-blips"]:Add(
                         string.format("etb-%s", uId),
                         title,
                         coords,
@@ -81,7 +81,7 @@ RegisterNetEvent("EmergencyAlerts:Client:TrackerBlip",
                     _specialBlips[uId] = blip
                 end
             elseif _specialBlips[uId] then
-                Blips:Remove(string.format("etb-%s", uId))
+                exports["sandbox-blips"]:Remove(string.format("etb-%s", uId))
                 _specialBlips[uId] = nil
             end
         end

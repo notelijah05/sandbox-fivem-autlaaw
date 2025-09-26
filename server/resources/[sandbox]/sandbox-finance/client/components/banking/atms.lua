@@ -65,7 +65,7 @@ local atmPolys = {
 
 function AddBankingATMs()
 	for k, v in ipairs(atmObjects) do
-		Targeting:AddObject(v, "money-from-bracket", {
+		exports['sandbox-targeting']:AddObject(v, "money-from-bracket", {
 			{
 				text = "Use ATM",
 				icon = "dollar-sign",
@@ -77,20 +77,21 @@ function AddBankingATMs()
 	end
 
 	for k, v in ipairs(atmPolys) do
-		Targeting.Zones:AddBox("atm-" .. k, "money-from-bracket", v.center, v.length, v.width, v.options, {
-			{
-				text = "Use ATM",
-				icon = "dollar-sign",
-				event = "Banking:Client:StartOpenATM",
-				data = {},
-				minDist = 3.0,
-			},
-		}, 3.0, true)
+		exports['sandbox-targeting']:ZonesAddBox("atm-" .. k, "money-from-bracket", v.center, v.length, v.width,
+			v.options, {
+				{
+					text = "Use ATM",
+					icon = "dollar-sign",
+					event = "Banking:Client:StartOpenATM",
+					data = {},
+					minDist = 3.0,
+				},
+			}, 3.0, true)
 	end
 end
 
 AddEventHandler("Banking:Client:StartOpenATM", function(entityData)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "atm_inserting",
 		duration = 3000,
 		label = "Inserting Card",

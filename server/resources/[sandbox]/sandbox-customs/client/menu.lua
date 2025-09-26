@@ -59,12 +59,12 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	isSaving = false
 
-	local originalData = Vehicles.Properties:Get(CUST_VEH)
+	local originalData = exports['sandbox-vehicles']:PropertiesGet(CUST_VEH)
 	local changingData = {
 		mods = {},
 	}
 
-	customsMenu = Menu:Create("vehicle_customs", "Vehicle Customs", function()
+	customsMenu = exports['sandbox-menu']:Create("vehicle_customs", "Vehicle Customs", function()
 		CUSTOMS_OPEN = true
 	end, function()
 		Wait(100)
@@ -72,12 +72,12 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		customsMenuSubs = nil
 		collectgarbage()
 
-		Notification.Persistent:Remove("veh_customs")
+		exports["sandbox-hud"]:NotifPersistentRemove("veh_customs")
 
 		if not isSaving then
-			Logger:Trace("VehicleCustoms", "Not Saving - Reset Mods")
-			Vehicles.Properties:Set(CUST_VEH, originalData)
-			Notification:Error("Changes Discarded - You Weren't Charged")
+			exports['sandbox-base']:LoggerTrace("VehicleCustoms", "Not Saving - Reset Mods")
+			exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, originalData)
+			exports["sandbox-hud"]:NotifError("Changes Discarded - You Weren't Charged")
 		end
 		CUSTOMS_OPEN = false
 	end, true)
@@ -87,20 +87,20 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		customsMenu.Add:Text("Current Total: $0", { "pad", "center", "code", "textLarge", "colorSuccess", "bold" })
 
 	SetVehicleModKit(CUST_VEH, 0)
-	Notification.Persistent:Standard("veh_customs", "Current Total: $" .. 0)
+	exports["sandbox-hud"]:NotifPersistentStandard("veh_customs", "Current Total: $" .. 0)
 
 	local function updateVehiclePropertyState()
-		Vehicles.Properties:Set(CUST_VEH, originalData)
-		Vehicles.Properties:Set(CUST_VEH, changingData)
+		exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, originalData)
+		exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, changingData)
 
 		local newCost = CalculateCustomsCost(changingData, costMultiplier)
-		Notification.Persistent:Standard("veh_customs", "Current Total: $" .. newCost)
+		exports["sandbox-hud"]:NotifPersistentStandard("veh_customs", "Current Total: $" .. newCost)
 		customsMenu.Update:Item(costElementId, "Current Total: $" .. newCost, {}, true)
 	end
 
 	-- PAINT STUFF
 
-	customsMenuSubs["paint"] = Menu:Create("vehicle_customs_paint", "Paint")
+	customsMenuSubs["paint"] = exports['sandbox-menu']:Create("vehicle_customs_paint", "Paint")
 
 	if not settings.GOVERNMENT_PAINT then
 		customsMenuSubs["paint"].Add:Text("Primary Paint Color", { "heading" })
@@ -318,7 +318,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	-- LIVERIES
 
-	customsMenuSubs["livery"] = Menu:Create("vehicle_customs_livery", "Liveries")
+	customsMenuSubs["livery"] = exports['sandbox-menu']:Create("vehicle_customs_livery", "Liveries")
 
 	local hasLiveries = false
 	local liveryCount = GetVehicleLiveryCount(CUST_VEH)
@@ -387,7 +387,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 	customsMenu.Add:SubMenu("Livery", customsMenuSubs["livery"], { disabled = not hasLiveries })
 
 	-- EXTRAS
-	customsMenuSubs["extras"] = Menu:Create("vehicle_customs_extras", "Extras")
+	customsMenuSubs["extras"] = exports['sandbox-menu']:Create("vehicle_customs_extras", "Extras")
 	local hasExtras = false
 
 	local extraItemIds = {}
@@ -454,7 +454,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 	customsMenu.Add:SubMenu("Extras", customsMenuSubs["extras"], { disabled = not hasExtras })
 
 	-- Lighting
-	customsMenuSubs["lighting"] = Menu:Create("vehicle_customs_lighting", "Lighting")
+	customsMenuSubs["lighting"] = exports['sandbox-menu']:Create("vehicle_customs_lighting", "Lighting")
 
 	customsMenuSubs["lighting"].Add:Text("Xenon Lights", { "heading" })
 	customsMenuSubs["lighting"].Add:CheckBox(
@@ -546,7 +546,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	-- Wheels & Tires
 
-	customsMenuSubs["wheels"] = Menu:Create("vehicle_customs_wheels", "Wheels")
+	customsMenuSubs["wheels"] = exports['sandbox-menu']:Create("vehicle_customs_wheels", "Wheels")
 
 	local wheelTypeList = {}
 	for k, v in pairs(_customsConfig.wheelTypes) do
@@ -711,7 +711,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 
 	-- Body Parts
 
-	customsMenuSubs["body_parts"] = Menu:Create("vehicle_customs_body_parts", "Body Parts")
+	customsMenuSubs["body_parts"] = exports['sandbox-menu']:Create("vehicle_customs_body_parts", "Body Parts")
 
 	for k, v in ipairs(_customsConfig.bodyParts) do
 		if v.mod == "horns" then
@@ -830,7 +830,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 	-- Performance Parts
 
 	if canInstallPerformance then
-		customsMenuSubs["performance"] = Menu:Create("vehicle_customs_performance", "Performance")
+		customsMenuSubs["performance"] = exports['sandbox-menu']:Create("vehicle_customs_performance", "Performance")
 
 		for k, v in ipairs(_customsConfig.performanceMods) do
 			local levelList = {
@@ -896,28 +896,28 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		local currentCost = CalculateCustomsCost(changingData, costMultiplier)
 		if LocalPlayer.state.Character:GetData("Cash") >= currentCost then
 			isSaving = true
-			Logger:Trace("VehicleCustoms", "Attept Mods Save")
+			exports['sandbox-base']:LoggerTrace("VehicleCustoms", "Attempt Mods Save")
 			customsMenu:Close()
 
-			Callbacks:ServerCallback("Vehicles:CompleteCustoms", {
+			exports["sandbox-base"]:ServerCallback("Vehicles:CompleteCustoms", {
 				vNet = VehToNet(CUST_VEH),
 				changes = changingData,
 				cost = currentCost,
-				new = Vehicles.Properties:Get(CUST_VEH),
+				new = exports['sandbox-vehicles']:PropertiesGet(CUST_VEH),
 			}, function(success, newNewData)
 				if success then
-					UISounds.Play:FrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
-					Notification:Success("New Modifications Saved & Paid For")
+					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET")
+					exports["sandbox-hud"]:NotifSuccess("New Modifications Saved & Paid For")
 					if newNewData then
-						Vehicles.Properties:Set(CUST_VEH, newNewData)
+						exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, newNewData)
 					end
 				else
-					Notification:Error("Error Saving Vehicle Modifications - Not Enough Money?")
-					Vehicles.Properties:Set(CUST_VEH, originalData)
+					exports["sandbox-hud"]:NotifError("Error Saving Vehicle Modifications - Not Enough Money?")
+					exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, originalData)
 				end
 			end)
 		else
-			Notification:Error("Not Enough Cash")
+			exports["sandbox-hud"]:NotifError("Not Enough Cash")
 		end
 	end)
 

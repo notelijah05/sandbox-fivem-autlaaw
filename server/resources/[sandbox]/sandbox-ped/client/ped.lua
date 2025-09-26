@@ -15,48 +15,9 @@ _glassesOff = false
 _vestOff = false
 attachedProps = {}
 
-AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Sync = exports["sandbox-base"]:FetchComponent("Sync")
-	Spawn = exports["sandbox-base"]:FetchComponent("Spawn")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Ped = exports["sandbox-base"]:FetchComponent("Ped")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	Wardrobe = exports["sandbox-base"]:FetchComponent("Wardrobe")
-	Apartment = exports["sandbox-base"]:FetchComponent("Apartment")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Ped", {
-		"Callbacks",
-		"Utils",
-		"UISounds",
-		"Blips",
-		"Notification",
-		"Sync",
-		"Spawn",
-		"Action",
-		"Polyzone",
-		"Ped",
-		"Interaction",
-		"Wardrobe",
-		"Apartment",
-		"Inventory",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterInteraction()
-		CreateShops()
-	end)
+	RegisterInteraction()
+	CreateShops()
 end)
 
 RegisterNetEvent("Ped:Client:RemoveGlasses", function()
@@ -82,8 +43,8 @@ RegisterNetEvent("Ped:Client:RemoveKevlar", function()
 end)
 
 function RegisterInteraction()
-	Interaction:RegisterMenu("ped_interact", false, "face-tired", function()
-		Interaction:ShowMenu({
+	exports['sandbox-hud']:InteractionRegisterMenu("ped_interact", false, "face-tired", function()
+		exports['sandbox-hud']:InteractionShowMenu({
 			{
 				icon = "masks-theater",
 				label = "Remove Mask",
@@ -91,8 +52,8 @@ function RegisterInteraction()
 					return LocalPed.customization.components.mask.drawableId ~= 0
 				end,
 				action = function()
-					Callbacks:ServerCallback("Ped:RemoveMask")
-					Interaction:Hide()
+					exports["sandbox-base"]:ServerCallback("Ped:RemoveMask")
+					exports['sandbox-hud']:InteractionHide()
 				end,
 			},
 			{
@@ -102,8 +63,8 @@ function RegisterInteraction()
 					return not LocalPed.customization.props.hat.disabled
 				end,
 				action = function()
-					Callbacks:ServerCallback("Ped:RemoveHat")
-					Interaction:Hide()
+					exports["sandbox-base"]:ServerCallback("Ped:RemoveHat")
+					exports['sandbox-hud']:InteractionHide()
 				end,
 			},
 			{
@@ -119,7 +80,7 @@ function RegisterInteraction()
 						Wait(500)
 						ClearPedProp(LocalPlayer.state.ped, 1)
 					end)
-					Interaction:Hide()
+					exports['sandbox-hud']:InteractionHide()
 				end,
 			},
 			{
@@ -140,7 +101,7 @@ function RegisterInteraction()
 							LocalPed.customization.props.glass.textureId
 						)
 					end)
-					Interaction:Hide()
+					exports['sandbox-hud']:InteractionHide()
 				end,
 			},
 			{
@@ -185,8 +146,8 @@ function RegisterInteraction()
 							)
 						end
 					end)
-					Interaction:Hide()
-					-- Interaction:ShowMenu({
+					exports['sandbox-hud']:InteractionHide()
+					-- exports['sandbox-hud']:InteractionShowMenu({
 					-- 	{
 					-- 		icon = "face-sunglasses",
 					-- 		label = "Put On Hat & Glasses",
@@ -218,7 +179,7 @@ function RegisterInteraction()
 					-- 					LocalPed.customization.props.glass.textureId
 					-- 				)
 					-- 			end)
-					-- 			Interaction:Hide()
+					-- 			exports['sandbox-hud']:InteractionHide()
 					-- 		end,
 					-- 	},
 					-- 	{
@@ -241,7 +202,7 @@ function RegisterInteraction()
 					-- 					LocalPed.customization.props.hat.textureId
 					-- 				)
 					-- 			end)
-					-- 			Interaction:Hide()
+					-- 			exports['sandbox-hud']:InteractionHide()
 					-- 		end,
 					-- 	},
 					-- 	{
@@ -265,7 +226,7 @@ function RegisterInteraction()
 					-- 					LocalPed.customization.props.glass.textureId
 					-- 				)
 					-- 			end)
-					-- 			Interaction:Hide()
+					-- 			exports['sandbox-hud']:InteractionHide()
 					-- 		end,
 					-- 	},
 					-- })
@@ -278,7 +239,7 @@ function RegisterInteraction()
 				not LocalPed.customization.props.hat.disabled
 				or not LocalPed.customization.props.glass.disabled
 				or (LocalPed.customization.components.mask.drawableId ~= 0)
-				or (Inventory.Items:GetWithStaticMetadata("accessory", "drawableId", "textureId", LocalPlayer.state.Character:GetData("Gender"), LocalPed.customization.components.accessory) ~= nil)
+				or (exports['sandbox-inventory']:ItemsGetWithStaticMetadata("accessory", "drawableId", "textureId", LocalPlayer.state.Character:GetData("Gender"), LocalPed.customization.components.accessory) ~= nil)
 			)
 	end)
 end
@@ -375,609 +336,496 @@ function AttachProp(propId, attachModel, boneNumberSent, x, y, z, xR, yR, zR, ke
 	SetModelAsNoLongerNeeded(attachModel)
 end
 
-PED = {
-	_required = {},
-	ApplyToPed = function(self, ped, skip, entityOverride)
-		local playerPed = entityOverride or PlayerPedId()
+exports("ApplyToPed", function(ped, skip, entityOverride)
+	local playerPed = entityOverride or PlayerPedId()
 
-		if not skip then
-			local gender = LocalPlayer.state.Character:GetData("Gender")
-			local gangChain = LocalPlayer.state.Character:GetData("GangChain")
-			local gangChainData = gangChain ~= nil and GlobalState["GangChains"][gangChain] or nil
+	if not skip then
+		local gender = LocalPlayer.state.Character:GetData("Gender")
+		local gangChain = LocalPlayer.state.Character:GetData("GangChain")
+		local gangChainData = gangChain ~= nil and GlobalState["GangChains"][gangChain] or nil
 
-			SetPedEyeColor(playerPed, ped.customization.eyeColor)
-			local playerModel = GetEntityModel(playerPed)
-			if playerModel == GetHashKey("mp_f_freemode_01") or playerModel == GetHashKey("mp_m_freemode_01") then
-				SetPedHeadBlendData(
+		SetPedEyeColor(playerPed, ped.customization.eyeColor)
+		local playerModel = GetEntityModel(playerPed)
+		if playerModel == GetHashKey("mp_f_freemode_01") or playerModel == GetHashKey("mp_m_freemode_01") then
+			SetPedHeadBlendData(
+				playerPed,
+				ped.customization.face.face1.index,
+				ped.customization.face.face2.index,
+				ped.customization.face.face3.index,
+				ped.customization.face.face1.texture,
+				ped.customization.face.face2.texture,
+				ped.customization.face.face3.index,
+				(ped.customization.face.face1.mix / 100) + 0.0,
+				(ped.customization.face.face2.mix / 100) + 0.0,
+				(ped.customization.face.face3.mix / 100) + 0.0,
+				false
+			)
+		end
+
+		-- for index, value in pairs(ped.customization.face.features) do
+		-- 	SetPedFaceFeature(playerPed, tonumber(index), (value / 100) + 0.0)
+		-- end
+
+		for i = 0, 20 do
+			local val = 0.0
+			if ped.customization.face.features[i] then
+				val = (ped.customization.face.features[i] / 100) + 0.0
+			elseif ped.customization.face.features[tostring(i)] then
+				val = (ped.customization.face.features[tostring(i)] / 100) + 0.0
+			end
+
+			SetPedFaceFeature(playerPed, i, val)
+		end
+
+		for k, value in pairs(ped.customization.overlay) do
+			if value.disabled then
+				SetPedHeadOverlay(playerPed, value.id, 255, (value.opacity / 100) + 0.0)
+			else
+				SetPedHeadOverlay(playerPed, value.id, value.index, (value.opacity / 100) + 0.0)
+
+				if value.color1 and value.color1 > 0 then
+					if type(value.color2) == "number" then
+						SetPedHeadOverlayColor(playerPed, value.id, 2, value.color1, 0)
+					else
+						SetPedHeadOverlayColor(playerPed, value.id, 2, value.color1, value.color2)
+					end
+				else
+					SetPedHeadOverlayColor(playerPed, value.id, 0, 0, 0)
+				end
+			end
+		end
+		for k, component in pairs(ped.customization.components) do
+			if gangChain ~= nil and gangChain ~= "NONE" and gangChainData ~= nil and gangChainData.type == "component" and gangChainData.componentId == component.componentId then
+				SetPedComponentVariation(
 					playerPed,
-					ped.customization.face.face1.index,
-					ped.customization.face.face2.index,
-					ped.customization.face.face3.index,
-					ped.customization.face.face1.texture,
-					ped.customization.face.face2.texture,
-					ped.customization.face.face3.index,
-					(ped.customization.face.face1.mix / 100) + 0.0,
-					(ped.customization.face.face2.mix / 100) + 0.0,
-					(ped.customization.face.face3.mix / 100) + 0.0,
-					false
+					gangChainData.componentId,
+					gangChainData.data[gender].drawableId,
+					gangChainData.data[gender].textureId,
+					gangChainData.data[gender].paletteId
+				)
+			else
+				SetPedComponentVariation(
+					playerPed,
+					component.componentId,
+					component.drawableId,
+					component.textureId,
+					component.paletteId
 				)
 			end
-
-			-- for index, value in pairs(ped.customization.face.features) do
-			-- 	SetPedFaceFeature(playerPed, tonumber(index), (value / 100) + 0.0)
-			-- end
-
-			for i = 0, 20 do
-				local val = 0.0
-				if ped.customization.face.features[i] then
-					val = (ped.customization.face.features[i] / 100) + 0.0
-				elseif ped.customization.face.features[tostring(i)] then
-					val = (ped.customization.face.features[tostring(i)] / 100) + 0.0
-				end
-
-				SetPedFaceFeature(playerPed, i, val)
+		end
+		SetPedHairColor(
+			playerPed,
+			ped.customization.colors.hair.color1.index,
+			ped.customization.colors.hair.color2.index
+		)
+		SetPedHeadOverlayColor(
+			playerPed,
+			1,
+			1,
+			ped.customization.colors.facialhair.color1.index,
+			ped.customization.colors.facialhair.color2.index
+		)
+		SetPedHeadOverlayColor(
+			playerPed,
+			2,
+			1,
+			ped.customization.colors.eyebrows.color1.index,
+			ped.customization.colors.eyebrows.color2.index
+		)
+		for k, prop in pairs(ped.customization.props) do
+			if prop.disabled or (not FROZEN and k == "glass" and _glassesOff) then
+				ClearPedProp(playerPed, prop.componentId)
+			else
+				SetPedPropIndex(playerPed, prop.componentId, prop.drawableId, prop.textureId)
 			end
+		end
 
-			for k, value in pairs(ped.customization.overlay) do
-				if value.disabled then
-					SetPedHeadOverlay(playerPed, value.id, 255, (value.opacity / 100) + 0.0)
-				else
-					SetPedHeadOverlay(playerPed, value.id, value.index, (value.opacity / 100) + 0.0)
+		SetPedEyeColor(playerPed, ped.customization.eyeColor)
+	end
 
-					if value.color1 and value.color1 > 0 then
-						if type(value.color2) == "number" then
-							SetPedHeadOverlayColor(playerPed, value.id, 2, value.color1, 0)
-						else
-							SetPedHeadOverlayColor(playerPed, value.id, 2, value.color1, value.color2)
-						end
+	ClearPedDecorations(playerPed)
+	if LocalPlayer.state.Character ~= nil then
+		if ped.customization.tattoos ~= nil then
+			local isMale = LocalPlayer.state.Character:GetData("Gender") == 0
+			for i, tattoo in ipairs(ped.customization.tattoos) do
+				if tattoo.Name ~= "" then
+					if isMale then
+						AddPedDecorationFromHashes(playerPed, tattoo.Collection, tattoo.HashNameMale)
 					else
-						SetPedHeadOverlayColor(playerPed, value.id, 0, 0, 0)
-					end
-				end
-			end
-			for k, component in pairs(ped.customization.components) do
-				if gangChain ~= nil and gangChain ~= "NONE" and gangChainData ~= nil and gangChainData.type == "component" and gangChainData.componentId == component.componentId then
-					SetPedComponentVariation(
-						playerPed,
-						gangChainData.componentId,
-						gangChainData.data[gender].drawableId,
-						gangChainData.data[gender].textureId,
-						gangChainData.data[gender].paletteId
-					)
-				else
-					SetPedComponentVariation(
-						playerPed,
-						component.componentId,
-						component.drawableId,
-						component.textureId,
-						component.paletteId
-					)
-				end
-			end
-			SetPedHairColor(
-				playerPed,
-				ped.customization.colors.hair.color1.index,
-				ped.customization.colors.hair.color2.index
-			)
-			SetPedHeadOverlayColor(
-				playerPed,
-				1,
-				1,
-				ped.customization.colors.facialhair.color1.index,
-				ped.customization.colors.facialhair.color2.index
-			)
-			SetPedHeadOverlayColor(
-				playerPed,
-				2,
-				1,
-				ped.customization.colors.eyebrows.color1.index,
-				ped.customization.colors.eyebrows.color2.index
-			)
-			for k, prop in pairs(ped.customization.props) do
-				if prop.disabled or (not FROZEN and k == "glass" and _glassesOff) then
-					ClearPedProp(playerPed, prop.componentId)
-				else
-					SetPedPropIndex(playerPed, prop.componentId, prop.drawableId, prop.textureId)
-				end
-			end
-
-			SetPedEyeColor(playerPed, ped.customization.eyeColor)
-		end
-
-		ClearPedDecorations(playerPed)
-		if LocalPlayer.state.Character ~= nil then
-			if ped.customization.tattoos ~= nil then
-				local isMale = LocalPlayer.state.Character:GetData("Gender") == 0
-				for i, tattoo in ipairs(ped.customization.tattoos) do
-					if tattoo.Name ~= "" then
-						if isMale then
-							AddPedDecorationFromHashes(playerPed, tattoo.Collection, tattoo.HashNameMale)
-						else
-							AddPedDecorationFromHashes(playerPed, tattoo.Collection, tattoo.HashNameFemale)
-						end
+						AddPedDecorationFromHashes(playerPed, tattoo.Collection, tattoo.HashNameFemale)
 					end
 				end
 			end
 		end
+	end
 
-		if ped.customization.hairOverlay and ped.customization.hairOverlay > -1 then
-			if ped.customization.hairOverlay > 0 and Config.CustomHairOverlays[ped.customization.hairOverlay] then
-				local overlay = Config.CustomHairOverlays[ped.customization.hairOverlay]
-				if overlay and overlay.collection and overlay.overlay then
-					AddPedDecorationFromHashes(
-						playerPed,
-						GetHashKey(overlay.collection),
-						GetHashKey(overlay.overlay)
-					)
-				end
-			end
-		else
-			local modelHairOverlays = Config.HairOverlays[GetEntityModel(playerPed)]
-			if modelHairOverlays and ped.customization.components?.hair?.drawableId then
-				local hairHasOverlays = modelHairOverlays[ped.customization.components.hair.drawableId]
-				if hairHasOverlays and hairHasOverlays.collection then
-					AddPedDecorationFromHashes(
-						playerPed,
-						GetHashKey(hairHasOverlays.collection),
-						GetHashKey(hairHasOverlays.overlay)
-					)
-				end
-			end
-		end
-	end,
-	Preview = function(self, entity, gender, ped, skip, gangChain)
-		local playerPed = entity
-
-		if not skip then
-			local gangChainData = gangChain ~= nil and GlobalState["GangChains"][gangChain] or nil
-
-			SetPedEyeColor(playerPed, ped.customization.eyeColor)
-			local playerModel = GetEntityModel(playerPed)
-			if playerModel == GetHashKey("mp_f_freemode_01") or playerModel == GetHashKey("mp_m_freemode_01") then
-				SetPedHeadBlendData(
+	if ped.customization.hairOverlay and ped.customization.hairOverlay > -1 then
+		if ped.customization.hairOverlay > 0 and Config.CustomHairOverlays[ped.customization.hairOverlay] then
+			local overlay = Config.CustomHairOverlays[ped.customization.hairOverlay]
+			if overlay and overlay.collection and overlay.overlay then
+				AddPedDecorationFromHashes(
 					playerPed,
-					ped.customization.face.face1.index,
-					ped.customization.face.face2.index,
-					ped.customization.face.face3.index,
-					ped.customization.face.face1.texture,
-					ped.customization.face.face2.texture,
-					ped.customization.face.face3.index,
-					(ped.customization.face.face1.mix / 100) + 0.0,
-					(ped.customization.face.face2.mix / 100) + 0.0,
-					(ped.customization.face.face3.mix / 100) + 0.0,
-					false
+					GetHashKey(overlay.collection),
+					GetHashKey(overlay.overlay)
 				)
 			end
+		end
+	else
+		local modelHairOverlays = Config.HairOverlays[GetEntityModel(playerPed)]
+		if modelHairOverlays and ped.customization.components and ped.customization.components.hair and ped.customization.components.hair.drawableId then
+			local hairHasOverlays = modelHairOverlays[ped.customization.components.hair.drawableId]
+			if hairHasOverlays and hairHasOverlays.collection then
+				AddPedDecorationFromHashes(
+					playerPed,
+					GetHashKey(hairHasOverlays.collection),
+					GetHashKey(hairHasOverlays.overlay)
+				)
+			end
+		end
+	end
+end)
 
-			-- for index, value in pairs(ped.customization.face.features) do
-			-- 	SetPedFaceFeature(playerPed, tonumber(index), (value / 100) + 0.0)
-			-- end
+exports("Preview", function(entity, gender, ped, skip, gangChain)
+	local playerPed = entity
 
-			for i = 0, 20 do
-				local val = 0.0
-				if ped.customization.face.features[i] then
-					val = (ped.customization.face.features[i] / 100) + 0.0
-				elseif ped.customization.face.features[tostring(i)] then
-					val = (ped.customization.face.features[tostring(i)] / 100) + 0.0
-				end
+	if not skip then
+		local gangChainData = gangChain ~= nil and GlobalState["GangChains"][gangChain] or nil
 
-				SetPedFaceFeature(playerPed, i, val)
+		SetPedEyeColor(playerPed, ped.customization.eyeColor)
+		local playerModel = GetEntityModel(playerPed)
+		if playerModel == GetHashKey("mp_f_freemode_01") or playerModel == GetHashKey("mp_m_freemode_01") then
+			SetPedHeadBlendData(
+				playerPed,
+				ped.customization.face.face1.index,
+				ped.customization.face.face2.index,
+				ped.customization.face.face3.index,
+				ped.customization.face.face1.texture,
+				ped.customization.face.face2.texture,
+				ped.customization.face.face3.index,
+				(ped.customization.face.face1.mix / 100) + 0.0,
+				(ped.customization.face.face2.mix / 100) + 0.0,
+				(ped.customization.face.face3.mix / 100) + 0.0,
+				false
+			)
+		end
+
+		for i = 0, 20 do
+			local val = 0.0
+			if ped.customization.face.features[i] then
+				val = (ped.customization.face.features[i] / 100) + 0.0
+			elseif ped.customization.face.features[tostring(i)] then
+				val = (ped.customization.face.features[tostring(i)] / 100) + 0.0
 			end
 
-			for k, value in pairs(ped.customization.overlay) do
-				if value.disabled then
-					SetPedHeadOverlay(playerPed, value.id, 255, (value.opacity / 100) + 0.0)
-				else
-					SetPedHeadOverlay(playerPed, value.id, value.index, (value.opacity / 100) + 0.0)
+			SetPedFaceFeature(playerPed, i, val)
+		end
 
-					if value.color1 and value.color1 > 0 then
-						if type(value.color2) == "number" then
-							SetPedHeadOverlayColor(playerPed, value.id, 2, value.color1, 0)
-						else
-							SetPedHeadOverlayColor(playerPed, value.id, 2, value.color1, value.color2)
-						end
+		for k, value in pairs(ped.customization.overlay) do
+			if value.disabled then
+				SetPedHeadOverlay(playerPed, value.id, 255, (value.opacity / 100) + 0.0)
+			else
+				SetPedHeadOverlay(playerPed, value.id, value.index, (value.opacity / 100) + 0.0)
+
+				if value.color1 and value.color1 > 0 then
+					if type(value.color2) == "number" then
+						SetPedHeadOverlayColor(playerPed, value.id, 2, value.color1, 0)
 					else
-						SetPedHeadOverlayColor(playerPed, value.id, 0, 0, 0)
+						SetPedHeadOverlayColor(playerPed, value.id, 2, value.color1, value.color2)
 					end
-				end
-			end
-			for k, component in pairs(ped.customization.components) do
-				if gangChain ~= nil and gangChain ~= "NONE" and gangChainData ~= nil and gangChainData.type == "component" and gangChainData.componentId == component.componentId then
-					SetPedComponentVariation(
-						playerPed,
-						gangChainData.componentId,
-						gangChainData.data[gender].drawableId,
-						gangChainData.data[gender].textureId,
-						gangChainData.data[gender].paletteId
-					)
 				else
-					SetPedComponentVariation(
-						playerPed,
-						component.componentId,
-						component.drawableId,
-						component.textureId,
-						component.paletteId
-					)
-				end
-			end
-			SetPedHairColor(
-				playerPed,
-				ped.customization.colors.hair.color1.index,
-				ped.customization.colors.hair.color2.index
-			)
-			SetPedHeadOverlayColor(
-				playerPed,
-				1,
-				1,
-				ped.customization.colors.facialhair.color1.index,
-				ped.customization.colors.facialhair.color2.index
-			)
-			SetPedHeadOverlayColor(
-				playerPed,
-				2,
-				1,
-				ped.customization.colors.eyebrows.color1.index,
-				ped.customization.colors.eyebrows.color2.index
-			)
-			for k, prop in pairs(ped.customization.props) do
-				if prop.disabled or (not FROZEN and k == "glass" and _glassesOff) then
-					ClearPedProp(playerPed, prop.componentId)
-				else
-					SetPedPropIndex(playerPed, prop.componentId, prop.drawableId, prop.textureId)
-				end
-			end
-
-			SetPedEyeColor(playerPed, ped.customization.eyeColor)
-		end
-
-		ClearPedDecorations(playerPed)
-		if LocalPlayer.state.Character ~= nil then
-			if ped.customization.tattoos ~= nil then
-				local isMale = gender == 0
-				for i, tattoo in ipairs(ped.customization.tattoos) do
-					if tattoo.Name ~= "" then
-						if isMale then
-							AddPedDecorationFromHashes(playerPed, tattoo.Collection, tattoo.HashNameMale)
-						else
-							AddPedDecorationFromHashes(playerPed, tattoo.Collection, tattoo.HashNameFemale)
-						end
-					end
+					SetPedHeadOverlayColor(playerPed, value.id, 0, 0, 0)
 				end
 			end
 		end
-
-		if ped.customization.hairOverlay and ped.customization.hairOverlay > -1 then
-			if ped.customization.hairOverlay > 0 and Config.CustomHairOverlays[ped.customization.hairOverlay] then
-				local overlay = Config.CustomHairOverlays[ped.customization.hairOverlay]
-				if overlay and overlay.collection and overlay.overlay then
-					AddPedDecorationFromHashes(
-						playerPed,
-						GetHashKey(overlay.collection),
-						GetHashKey(overlay.overlay)
-					)
-				end
+		for k, component in pairs(ped.customization.components) do
+			if gangChain ~= nil and gangChain ~= "NONE" and gangChainData ~= nil and gangChainData.type == "component" and gangChainData.componentId == component.componentId then
+				SetPedComponentVariation(
+					playerPed,
+					gangChainData.componentId,
+					gangChainData.data[gender].drawableId,
+					gangChainData.data[gender].textureId,
+					gangChainData.data[gender].paletteId
+				)
+			else
+				SetPedComponentVariation(
+					playerPed,
+					component.componentId,
+					component.drawableId,
+					component.textureId,
+					component.paletteId
+				)
 			end
-		else
-			local modelHairOverlays = Config.HairOverlays[GetEntityModel(playerPed)]
-			if modelHairOverlays and ped.customization.components?.hair?.drawableId then
-				local hairHasOverlays = modelHairOverlays[ped.customization.components.hair.drawableId]
-				if hairHasOverlays and hairHasOverlays.collection then
-					AddPedDecorationFromHashes(
-						playerPed,
-						GetHashKey(hairHasOverlays.collection),
-						GetHashKey(hairHasOverlays.overlay)
-					)
+		end
+		SetPedHairColor(
+			playerPed,
+			ped.customization.colors.hair.color1.index,
+			ped.customization.colors.hair.color2.index
+		)
+		SetPedHeadOverlayColor(
+			playerPed,
+			1,
+			1,
+			ped.customization.colors.facialhair.color1.index,
+			ped.customization.colors.facialhair.color2.index
+		)
+		SetPedHeadOverlayColor(
+			playerPed,
+			2,
+			1,
+			ped.customization.colors.eyebrows.color1.index,
+			ped.customization.colors.eyebrows.color2.index
+		)
+		for k, prop in pairs(ped.customization.props) do
+			if prop.disabled or (not FROZEN and k == "glass" and _glassesOff) then
+				ClearPedProp(playerPed, prop.componentId)
+			else
+				SetPedPropIndex(playerPed, prop.componentId, prop.drawableId, prop.textureId)
+			end
+		end
+
+		SetPedEyeColor(playerPed, ped.customization.eyeColor)
+	end
+
+	ClearPedDecorations(playerPed)
+	if LocalPlayer.state.Character ~= nil then
+		if ped.customization.tattoos ~= nil then
+			local isMale = gender == 0
+			for i, tattoo in ipairs(ped.customization.tattoos) do
+				if tattoo.Name ~= "" then
+					if isMale then
+						AddPedDecorationFromHashes(playerPed, tattoo.Collection, tattoo.HashNameMale)
+					else
+						AddPedDecorationFromHashes(playerPed, tattoo.Collection, tattoo.HashNameFemale)
+					end
 				end
 			end
 		end
-	end,
-	-- ApplyToPed = function(self, ped, skip)
-	-- 	local playerPed = PlayerPedId()
+	end
 
-	-- 	if not skip then
-	-- 		SetPedEyeColor(playerPed, ped.customization.eyeColor)
-	-- 		local playerModel = GetEntityModel(playerPed)
-	-- 		if playerModel == GetHashKey("mp_f_freemode_01") or playerModel == GetHashKey("mp_m_freemode_01") then
-	-- 			SetPedHeadBlendData(
-	-- 				playerPed,
-	-- 				ped.customization.face.face1.index,
-	-- 				ped.customization.face.face2.index,
-	-- 				ped.customization.face.face3.index,
-	-- 				ped.customization.face.face1.texture,
-	-- 				ped.customization.face.face2.texture,
-	-- 				ped.customization.face.face3.index,
-	-- 				(ped.customization.face.face1.mix / 100) + 0.0,
-	-- 				(ped.customization.face.face2.mix / 100) + 0.0,
-	-- 				(ped.customization.face.face3.mix / 100) + 0.0,
-	-- 				false
-	-- 			)
-	-- 		end
-	-- 		for index, value in pairs(ped.customization.face.features) do
-	-- 			SetPedFaceFeature(playerPed, tonumber(index), (value / 100) + 0.0)
-	-- 		end
-	-- 		for k, value in pairs(ped.customization.overlay) do
-	-- 			if value.disabled then
-	-- 				SetPedHeadOverlay(playerPed, value.id, 255, (value.opacity / 100) + 0.0)
-	-- 			else
-	-- 				SetPedHeadOverlay(playerPed, value.id, value.index, (value.opacity / 100) + 0.0)
-
-	-- 				if value.color1 and value.color1 > 0 then
-	-- 					if type(value.color2) == "number" then
-	-- 						SetPedHeadOverlayColor(playerPed, value.id, 2, value.color1, 0)
-	-- 					else
-	-- 						SetPedHeadOverlayColor(playerPed, value.id, 2, value.color1, value.color2)
-	-- 					end
-	-- 				else
-	-- 					SetPedHeadOverlayColor(playerPed, value.id, 0, 0, 0)
-	-- 				end
-	-- 			end
-	-- 		end
-	-- 		for k, component in pairs(ped.customization.components) do
-	-- 			SetPedComponentVariation(
-	-- 				playerPed,
-	-- 				component.componentId,
-	-- 				component.drawableId,
-	-- 				component.textureId,
-	-- 				component.paletteId
-	-- 			)
-	-- 		end
-	-- 		SetPedHairColor(
-	-- 			playerPed,
-	-- 			ped.customization.colors.hair.color1.index,
-	-- 			ped.customization.colors.hair.color2.index
-	-- 		)
-	-- 		SetPedHeadOverlayColor(
-	-- 			playerPed,
-	-- 			1,
-	-- 			1,
-	-- 			ped.customization.colors.facialhair.color1.index,
-	-- 			ped.customization.colors.facialhair.color2.index
-	-- 		)
-	-- 		SetPedHeadOverlayColor(
-	-- 			playerPed,
-	-- 			2,
-	-- 			1,
-	-- 			ped.customization.colors.eyebrows.color1.index,
-	-- 			ped.customization.colors.eyebrows.color2.index
-	-- 		)
-	-- 		for k, prop in pairs(ped.customization.props) do
-	-- 			if prop.disabled or (not FROZEN and k == "glass" and _glassesOff) then
-	-- 				ClearPedProp(playerPed, prop.componentId)
-	-- 			else
-	-- 				SetPedPropIndex(playerPed, prop.componentId, prop.drawableId, prop.textureId)
-	-- 			end
-	-- 		end
-	-- 	end
-
-	-- 	ClearPedDecorations(playerPed)
-	-- 	if LocalPlayer.state.Character ~= nil then
-	-- 		if ped.customization.tattoos ~= nil then
-	-- 			local isMale = LocalPlayer.state.Character:GetData("Gender") == 0
-	-- 			for i, tattoo in ipairs(ped.customization.tattoos) do
-	-- 				if tattoo.Name ~= "" then
-	-- 					if isMale then
-	-- 						AddPedDecorationFromHashes(playerPed, tattoo.Collection, tattoo.HashNameMale)
-	-- 					else
-	-- 						AddPedDecorationFromHashes(playerPed, tattoo.Collection, tattoo.HashNameFemale)
-	-- 					end
-	-- 				end
-	-- 			end
-	-- 		end
-	-- 	end
-
-	-- 	local modelHairOverlays = Config.HairOverlays[GetEntityModel(playerPed)]
-	-- 	if modelHairOverlays and ped.customization.components?.hair?.drawableId then
-	-- 		local hairHasOverlays = modelHairOverlays[ped.customization.components.hair.drawableId]
-	-- 		if hairHasOverlays and hairHasOverlays.collection then
-	-- 			AddPedDecorationFromHashes(
-	-- 				playerPed,
-	-- 				GetHashKey(hairHasOverlays.collection),
-	-- 				GetHashKey(hairHasOverlays.overlay)
-	-- 			)
-	-- 		end
-	-- 	end
-	-- end,
-	Creator = {
-		Start = function(self, data)
-			_data = data
-
-			LocalPlayer.state.inCreator = true
-			_currentState = "CREATOR"
-
-			Sync:Start()
-			Wait(300)
-			Sync:Stop(true)
-
-			FROZEN = true
-			local player = PlayerPedId()
-
-			SetTimecycleModifier("default")
-
-			local model = GetHashKey("mp_f_freemode_01")
-			if tonumber(data.Gender) == 0 then
-				model = GetHashKey("mp_m_freemode_01")
+	if ped.customization.hairOverlay and ped.customization.hairOverlay > -1 then
+		if ped.customization.hairOverlay > 0 and Config.CustomHairOverlays[ped.customization.hairOverlay] then
+			local overlay = Config.CustomHairOverlays[ped.customization.hairOverlay]
+			if overlay and overlay.collection and overlay.overlay then
+				AddPedDecorationFromHashes(
+					playerPed,
+					GetHashKey(overlay.collection),
+					GetHashKey(overlay.overlay)
+				)
 			end
-			if data.Ped.model ~= "" then
-				model = GetHashKey(data.Ped.model)
+		end
+	else
+		local modelHairOverlays = Config.HairOverlays[GetEntityModel(playerPed)]
+		if modelHairOverlays and ped.customization.components and ped.customization.components.hair and ped.customization.components.hair.drawableId then
+			local hairHasOverlays = modelHairOverlays[ped.customization.components.hair.drawableId]
+			if hairHasOverlays and hairHasOverlays.collection then
+				AddPedDecorationFromHashes(
+					playerPed,
+					GetHashKey(hairHasOverlays.collection),
+					GetHashKey(hairHasOverlays.overlay)
+				)
 			end
+		end
+	end
+end)
 
-			RequestModel(model)
+exports("CreatorStart", function(data)
+	_data = data
 
-			while not HasModelLoaded(model) do
-				Wait(500)
-			end
-			SetPlayerModel(PlayerId(), model)
-			player = PlayerPedId()
-			SetEntityMaxHealth(player, 200)
-			SetEntityHealth(player, GetEntityMaxHealth(player))
-			FreezePedCameraRotation(player, true)
-			SetPedDefaultComponentVariation(player)
-			SetEntityAsMissionEntity(player, true, true)
-			SetModelAsNoLongerNeeded(model)
-			Ped:ApplyToPed(LocalPed)
-			SetEntityCoords(player, _creatorLocation.x, _creatorLocation.y, _creatorLocation.z)
-			Wait(200)
-			SetEntityHeading(player, _creatorLocation.h)
+	LocalPlayer.state.inCreator = true
+	_currentState = "CREATOR"
 
-			PlayIdleAnimation()
+	exports["sandbox-sync"]:Start()
+	Wait(300)
+	exports["sandbox-sync"]:Stop(true)
 
-			TriggerServerEvent("Ped:EnterCreator")
+	FROZEN = true
+	local player = PlayerPedId()
 
+	SetTimecycleModifier("default")
+
+	local model = GetHashKey("mp_f_freemode_01")
+	if tonumber(data.Gender) == 0 then
+		model = GetHashKey("mp_m_freemode_01")
+	end
+	if data.Ped.model ~= "" then
+		model = GetHashKey(data.Ped.model)
+	end
+
+	RequestModel(model)
+
+	while not HasModelLoaded(model) do
+		Wait(500)
+	end
+	SetPlayerModel(PlayerId(), model)
+	player = PlayerPedId()
+	SetEntityMaxHealth(player, 200)
+	SetEntityHealth(player, GetEntityMaxHealth(player))
+	FreezePedCameraRotation(player, true)
+	SetPedDefaultComponentVariation(player)
+	SetEntityAsMissionEntity(player, true, true)
+	SetModelAsNoLongerNeeded(model)
+	exports['sandbox-ped']:ApplyToPed(LocalPed)
+	SetEntityCoords(player, _creatorLocation.x, _creatorLocation.y, _creatorLocation.z)
+	Wait(200)
+	SetEntityHeading(player, _creatorLocation.h)
+
+	PlayIdleAnimation()
+
+	TriggerServerEvent("Ped:EnterCreator")
+
+	SendNUIMessage({
+		type = "SET_TATTOOS_DATA",
+		data = {
+			data = PedTattoos
+		},
+	})
+
+	DoScreenFadeIn(500)
+	while not IsScreenFadedIn() do
+		Wait(10)
+	end
+
+	TriggerScreenblurFadeOut(500)
+
+	Camera.Activate(500)
+
+	NetworkSetEntityInvisibleToNetwork(player, false)
+	SetEntityVisible(player, true)
+	SetNuiFocus(true, true)
+	Wait(100)
+	SendNUIMessage({
+		type = "SET_STATE",
+		data = {
+			state = "CREATOR",
+		},
+	})
+	SendNUIMessage({
+		type = "APP_SHOW",
+	})
+end)
+
+exports("CreatorEnd", function()
+	exports["sandbox-sync"]:Start()
+	TriggerServerEvent("Ped:LeaveCreator")
+	Spawn:PlacePedIntoWorld(_data)
+	exports['sandbox-ped']:CustomizationHide()
+	LocalPlayer.state.inCreator = false
+	FROZEN = false
+	_data = nil
+
+	exports["sandbox-base"]:ServerCallback("Apartment:SpawnInside", {})
+end)
+
+exports("CustomizationShow", function(type, data)
+	FROZEN = true
+	local player = PlayerPedId()
+
+	LocalPed = LocalPlayer.state.Character:GetData("Ped")
+	exports['sandbox-ped']:ApplyToPed(LocalPed)
+	_currentState = type
+
+	Camera.Activate()
+
+	NetworkSetEntityInvisibleToNetwork(player, false)
+	SetEntityVisible(player, true)
+	SetNuiFocus(true, true)
+	Wait(100)
+
+	if type == "SURGERY" then
+		local p = promise.new()
+		exports["sandbox-base"]:ServerCallback("Ped:GetWhitelistedPeds", {}, function(wls)
 			SendNUIMessage({
-				type = "SET_TATTOOS_DATA",
+				type = "SET_WL_PEDS",
 				data = {
-					data = PedTattoos
+					data = wls,
 				},
 			})
 
-			DoScreenFadeIn(500)
-			while not IsScreenFadedIn() do
-				Wait(10)
-			end
+			p:resolve(true)
+		end)
+		Citizen.Await(p)
+	end
 
-			TriggerScreenblurFadeOut(500)
+	SendNUIMessage({
+		type = "SET_STATE",
+		data = {
+			state = type,
+		},
+	})
+	SendNUIMessage({
+		type = "APP_SHOW",
+	})
+end)
 
-			Camera.Activate(500)
+exports("CustomizationHide", function()
+	local player = PlayerPedId()
+	Camera.Deactivate()
+	SetNuiFocus(false, false)
+	_currentState = nil
+	FROZEN = false
+end)
 
-			NetworkSetEntityInvisibleToNetwork(player, false)
-			SetEntityVisible(player, true)
-			SetNuiFocus(true, true)
-			Wait(100)
-			SendNUIMessage({
-				type = "SET_STATE",
-				data = {
-					state = "CREATOR",
-				},
-			})
-			SendNUIMessage({
-				type = "APP_SHOW",
-			})
-		end,
-		End = function(self)
-			Sync:Start()
-			TriggerServerEvent("Ped:LeaveCreator")
-			Spawn:PlacePedIntoWorld(_data)
-			Ped.Customization:Hide()
-			LocalPlayer.state.inCreator = false
-			FROZEN = false
-			_data = nil
-
-			Callbacks:ServerCallback("Apartment:SpawnInside", {})
-		end,
-	},
-	Customization = {
-		Show = function(self, type, data)
-			FROZEN = true
-			local player = PlayerPedId()
-
-			LocalPed = LocalPlayer.state.Character:GetData("Ped")
-			Ped:ApplyToPed(LocalPed)
-			_currentState = type
-
-			Camera.Activate()
-
-			NetworkSetEntityInvisibleToNetwork(player, false)
-			SetEntityVisible(player, true)
-			SetNuiFocus(true, true)
-			Wait(100)
-
-			if type == "SURGERY" then
-				local p = promise.new()
-				Callbacks:ServerCallback("Ped:GetWhitelistedPeds", {}, function(wls)
-					SendNUIMessage({
-						type = "SET_WL_PEDS",
-						data = {
-							data = wls,
-						},
-					})
-
-					p:resolve(true)
-				end)
-				Citizen.Await(p)
-			end
-
-			SendNUIMessage({
-				type = "SET_STATE",
-				data = {
-					state = type,
-				},
-			})
-			SendNUIMessage({
-				type = "APP_SHOW",
-			})
-		end,
-		Hide = function(self)
-			local player = PlayerPedId()
-			Camera.Deactivate()
-			SetNuiFocus(false, false)
-			_currentState = nil
-			FROZEN = false
-		end,
-		Save = function(self, cb)
-			FROZEN = false
-			Callbacks:ServerCallback("Ped:MakePayment", {
-				type = _currentState,
-			}, function(status, paid)
-				if status then
-					if LocalPlayer.state.isNaked then
-						ToggleNekked(false)
-					end
-
-					Ped:ApplyToPed(LocalPed)
-					Callbacks:ServerCallback("Ped:SavePed", {
-						ped = LocalPed,
-					}, function(saved)
-						if _currentState == "CREATOR" then
-							Ped.Creator:End()
-						else
-							Ped.Customization:Hide()
-							Notification:Success(string.format("You Paid $%s", paid))
-						end
-					end)
-				else
-					Notification:Error("You Don't Have Enough Cash")
-				end
-				cb(status)
-			end)
-		end,
-		Cancel = function(self)
+exports("CustomizationSave", function(cb)
+	FROZEN = false
+	exports["sandbox-base"]:ServerCallback("Ped:MakePayment", {
+		type = _currentState,
+	}, function(status, paid)
+		if status then
 			if LocalPlayer.state.isNaked then
 				ToggleNekked(false)
 			end
 
-			Ped:ApplyToPed(LocalPlayer.state.Character:GetData("Ped"))
-
-			SendNUIMessage({
-				type = "SET_PED_DATA",
-				data = {
-					ped = LocalPlayer.state.Character:GetData("Ped"),
-					gender = LocalPlayer.state.Character:GetData("Gender"),
-				},
-			})
-			Ped.Customization:Hide()
-
-			Wait(1000) -- When naked it overrides the cancel so just do this again after a second for a lazy fix idk
-
-			local pData = LocalPlayer.state.Character:GetData("Ped")
-			if pData and GetEntityModel(PlayerPedId()) ~= GetHashKey(pData.model) then
-				SetPlayerModel(PlayerId(), GetHashKey(pData.model))
-			end
-
-			Ped:ApplyToPed(LocalPlayer.state.Character:GetData("Ped"))
-			return true
-		end,
-	},
-}
-LocalPed = {}
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Ped", PED)
+			exports['sandbox-ped']:ApplyToPed(LocalPed)
+			exports["sandbox-base"]:ServerCallback("Ped:SavePed", {
+				ped = LocalPed,
+			}, function(saved)
+				if _currentState == "CREATOR" then
+					exports['sandbox-ped']:CreatorEnd()
+				else
+					exports['sandbox-ped']:CustomizationHide()
+					exports["sandbox-hud"]:NotifSuccess(string.format("You Paid $%s", paid))
+				end
+			end)
+		else
+			exports["sandbox-hud"]:NotifError("You Don't Have Enough Cash")
+		end
+		cb(status)
+	end)
 end)
+
+exports("CustomizationCancel", function()
+	if LocalPlayer.state.isNaked then
+		ToggleNekked(false)
+	end
+
+	exports['sandbox-ped']:ApplyToPed(LocalPlayer.state.Character:GetData("Ped"))
+
+	SendNUIMessage({
+		type = "SET_PED_DATA",
+		data = {
+			ped = LocalPlayer.state.Character:GetData("Ped"),
+			gender = LocalPlayer.state.Character:GetData("Gender"),
+		},
+	})
+	exports['sandbox-ped']:CustomizationHide()
+
+	Wait(1000) -- When naked it overrides the cancel so just do this again after a second for a lazy fix idk
+
+	local pData = LocalPlayer.state.Character:GetData("Ped")
+	if pData and GetEntityModel(PlayerPedId()) ~= GetHashKey(pData.model) then
+		SetPlayerModel(PlayerId(), GetHashKey(pData.model))
+	end
+
+	exports['sandbox-ped']:ApplyToPed(LocalPlayer.state.Character:GetData("Ped"))
+	return true
+end)
+
+LocalPed = {}
 
 AddEventHandler("Characters:Client:Updated", function(key)
 	if key == "Ped" or key == "GangChain" then
 		LocalPed = LocalPlayer.state.Character:GetData("Ped")
-		Ped:ApplyToPed(LocalPed)
+		exports['sandbox-ped']:ApplyToPed(LocalPed)
 		SendNUIMessage({
 			type = "SET_PED_DATA",
 			data = {
@@ -987,35 +835,6 @@ AddEventHandler("Characters:Client:Updated", function(key)
 		})
 	end
 end)
-
--- AddEventHandler("Characters:Client:Updated", function(key)
--- 	print(key)
--- 	if key == "Ped" then
--- 		LocalPed = LocalPlayer.state.Character:GetData("Ped")
--- 		Ped:ApplyToPed(LocalPed)
--- 		SendNUIMessage({
--- 			type = "SET_PED_DATA",
--- 			data = {
--- 				ped = LocalPed,
--- 				gender = LocalPlayer.state.Character:GetData("Gender"),
--- 			},
--- 		})
--- 	elseif key == "GangChain" then
--- 		local gang = LocalPlayer.state.Character:GetData("GangChain")
--- 		if gang == nil then
--- 			RemoveAttached('GangChain')
--- 		else
--- 			AttachProp('GangChain', GlobalState["GangChains"][gang].prop, 10706, 0.111, 0.044, -0.481997, -1.75, 17.75, -163.75, true, true)
--- 		end
--- 	end
--- end)
-
--- RegisterNetEvent("Characters:Client:Spawn", function()
--- 	local gang = LocalPlayer.state.Character:GetData("GangChain")
--- 	if gang ~= nil and gang ~= "NONE" then
--- 		AttachProp('GangChain', GlobalState["GangChains"][gang].prop, 10706, 0.111, 0.044, -0.481997, -1.75, 17.75, -163.750, true, true)
--- 	end
--- end)
 
 function loadAnimDict(dict)
 	while not HasAnimDictLoaded(dict) do

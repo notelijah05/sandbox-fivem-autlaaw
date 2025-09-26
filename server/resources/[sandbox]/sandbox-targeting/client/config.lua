@@ -44,14 +44,14 @@ Config.VehicleMenu = {
 	{
 		icon = "gas-pump",
 		isEnabled = function(data, entityData)
-			if Vehicles ~= nil and Vehicles.Fuel:CanBeFueled(entityData.entity) then
+			if Vehicles ~= nil and exports['sandbox-fuel']:CanBeFueled(entityData.entity) then
 				return true
 			end
 			return false
 		end,
 		textFunc = function(data, entityData)
 			if Vehicles ~= nil then
-				local fuelData = Vehicles.Fuel:CanBeFueled(entityData.entity)
+				local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
 				if fuelData then
 					if fuelData.needsFuel then
 						return string.format("Refuel For $%d", fuelData.cost)
@@ -70,7 +70,7 @@ Config.VehicleMenu = {
 		icon = "credit-card",
 		isEnabled = function(data, entityData)
 			if Vehicles ~= nil then
-				local fuelData = Vehicles.Fuel:CanBeFueled(entityData.entity)
+				local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
 				if fuelData and fuelData.needsFuel then
 					return true
 				end
@@ -79,7 +79,7 @@ Config.VehicleMenu = {
 		end,
 		textFunc = function(data, entityData)
 			if Vehicles ~= nil then
-				local fuelData = Vehicles.Fuel:CanBeFueled(entityData.entity)
+				local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
 				if fuelData then
 					if fuelData.needsFuel then
 						return string.format("Refuel For $%d (Pay by Card)", fuelData.cost)
@@ -118,7 +118,7 @@ Config.VehicleMenu = {
 	{
 		icon = "garage-open",
 		isEnabled = function(data, entityData)
-			if Vehicles ~= nil and Vehicles:CanBeStored(entityData.entity) then
+			if Vehicles ~= nil and exports['sandbox-vehicles']:CanBeStored(entityData.entity) then
 				return true
 			end
 			return false
@@ -148,7 +148,7 @@ Config.VehicleMenu = {
 		text = "Give Keys",
 		isEnabled = function(data, entityData)
 			local vehEnt = Entity(entityData.entity)
-			return Vehicles ~= nil and Vehicles.Keys:Has(vehEnt.state.VIN, vehEnt.state.GroupKeys)
+			return Vehicles ~= nil and exports['sandbox-vehicles']:KeysHas(vehEnt.state.VIN, vehEnt.state.GroupKeys)
 		end,
 		event = "Vehicles:Client:GiveKeys",
 		data = {},
@@ -207,7 +207,7 @@ Config.VehicleMenu = {
 				and vehState.VIN
 				and not vehState.wasThermited
 				and Vehicles ~= nil
-				and Vehicles.Keys:Has(vehState.VIN)
+				and exports['sandbox-vehicles']:KeysHas(vehState.VIN)
 			then
 				return true
 			end
@@ -282,7 +282,7 @@ Config.VehicleMenu = {
 		},
 		isEnabled = function(data, entityData)
 			if entityData.entity and DoesEntityExist(entityData.entity) then
-				if Polyzone:IsCoordsInZone(GetEntityCoords(entityData.entity), "tow_impound_zone") then
+				if exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(entityData.entity), "tow_impound_zone") then
 					return true
 				end
 			end
@@ -293,8 +293,8 @@ Config.VehicleMenu = {
 	{
 		icon = "print-magnifying-glass",
 		isEnabled = function(data, entityData)
-			return Vehicles:HasAccess(entityData.entity)
-				and Vehicles.Utils:IsCloseToFrontOfVehicle(entityData.entity)
+			return exports['sandbox-vehicles']:HasAccess(entityData.entity)
+				and exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(entityData.entity)
 				and (GetVehicleDoorAngleRatio(entityData.entity, 4) >= 0.1)
 		end,
 		text = "Inspect VIN",
@@ -309,12 +309,12 @@ Config.VehicleMenu = {
 				local vehState = Entity(entityData.entity).state
 				if vehState.FakePlate then
 					return (
-							(Vehicles:HasAccess(entityData.entity, true))
+							(exports['sandbox-vehicles']:HasAccess(entityData.entity, true))
 							or LocalPlayer.state.onDuty == "police" and LocalPlayer.state.inPdStation
 						)
 						and (
-							Vehicles.Utils:IsCloseToRearOfVehicle(entityData.entity)
-							or Vehicles.Utils:IsCloseToFrontOfVehicle(entityData.entity)
+							exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity)
+							or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(entityData.entity)
 						)
 				end
 			end
@@ -331,7 +331,7 @@ Config.VehicleMenu = {
 			if DoesEntityExist(entityData.entity) then
 				local vehState = Entity(entityData.entity).state
 				if vehState.Harness and vehState.Harness > 0 then
-					return Vehicles:HasAccess(entityData.entity, true)
+					return exports['sandbox-vehicles']:HasAccess(entityData.entity, true)
 				end
 			end
 			return false
@@ -443,10 +443,10 @@ Config.VehicleMenu = {
 		isEnabled = function(data, entityData)
 			if
 				DoesEntityExist(entityData.entity)
-				and (Vehicles.Utils:IsCloseToRearOfVehicle(entityData.entity) or Vehicles.Utils:IsCloseToFrontOfVehicle(
+				and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(
 					entityData.entity
 				))
-				and Mechanic:CanAccessVehicleAsMechanic(entityData.entity)
+				and exports['sandbox-mechanic']:CanAccessVehicleAsMechanic(entityData.entity)
 			then
 				local engineHealth = GetVehicleEngineHealth(entityData.entity)
 				local bodyHealth = GetVehicleBodyHealth(entityData.entity)
@@ -466,10 +466,10 @@ Config.VehicleMenu = {
 		isEnabled = function(data, entityData)
 			if
 				DoesEntityExist(entityData.entity)
-				and (Vehicles.Utils:IsCloseToRearOfVehicle(entityData.entity) or Vehicles.Utils:IsCloseToFrontOfVehicle(
+				and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(
 					entityData.entity
 				))
-				and Mechanic:CanAccessVehicleAsMechanic(entityData.entity)
+				and exports['sandbox-mechanic']:CanAccessVehicleAsMechanic(entityData.entity)
 			then
 				return true
 			end
@@ -485,10 +485,10 @@ Config.VehicleMenu = {
 		isEnabled = function(data, entityData)
 			if
 				DoesEntityExist(entityData.entity)
-				and (Vehicles.Utils:IsCloseToRearOfVehicle(entityData.entity) or Vehicles.Utils:IsCloseToFrontOfVehicle(
+				and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(entityData.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(
 					entityData.entity
 				))
-				and Mechanic:CanAccessVehicleAsMechanic(entityData.entity)
+				and exports['sandbox-mechanic']:CanAccessVehicleAsMechanic(entityData.entity)
 			then
 				return true
 			end
@@ -515,7 +515,7 @@ Config.VehicleMenu = {
 		isEnabled = function(data, entityData)
 			local veh = entityData.entity
 			local vehEnt = Entity(veh)
-			if DoesEntityExist(veh) and Tow:IsTowTruck(veh) and not vehEnt.state.towingVehicle then
+			if DoesEntityExist(veh) and exports['sandbox-tow']:IsTowTruck(veh) and not vehEnt.state.towingVehicle then
 				local rearWheel = GetEntityBoneIndexByName(veh, "wheel_lr")
 				local rearWheelCoords = GetWorldPositionOfEntityBone(veh, rearWheel)
 				if #(rearWheelCoords - LocalPlayer.state.myPos) <= 3.0 then
@@ -535,7 +535,7 @@ Config.VehicleMenu = {
 		isEnabled = function(data, entityData)
 			local veh = entityData.entity
 			local vehEnt = Entity(veh)
-			if DoesEntityExist(veh) and Tow:IsTowTruck(veh) and vehEnt.state.towingVehicle then
+			if DoesEntityExist(veh) and exports['sandbox-tow']:IsTowTruck(veh) and vehEnt.state.towingVehicle then
 				local rearWheel = GetEntityBoneIndexByName(veh, "wheel_lr")
 				local rearWheelCoords = GetWorldPositionOfEntityBone(veh, rearWheel)
 				if #(rearWheelCoords - LocalPlayer.state.myPos) <= 3.0 then
@@ -604,7 +604,7 @@ Config.VehicleMenu = {
 			local rvModels = { [`cararv`] = true, [`guardianrv`] = true, [`sandroamer`] = true, [`sandkingrv`] = true }
 			return not LocalPlayer.state.isDead
 				and rvModels[GetEntityModel(entity.entity)]
-				and Vehicles:HasAccess(entity.entity)
+				and exports['sandbox-vehicles']:HasAccess(entity.entity)
 		end,
 		text = "Open Wardrobe",
 		event = "Wardrobe:Client:ShowBitch",
@@ -656,7 +656,8 @@ Config.VehicleMenu = {
 	{
 		icon = "car-garage",
 		isEnabled = function(data, entityData)
-			local inZone = Polyzone:IsCoordsInZone(GetEntityCoords(entityData.entity), false, "dealerBuyback")
+			local inZone = exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(entityData.entity), false,
+				"dealerBuyback")
 			if inZone then
 				return LocalPlayer.state.onDuty == inZone.dealerId
 			end

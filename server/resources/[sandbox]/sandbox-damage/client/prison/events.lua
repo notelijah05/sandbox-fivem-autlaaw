@@ -1,5 +1,5 @@
 function PrisonVisitation()
-	Polyzone.Create:Box("prison_visitation", vector3(1831.24, 2585.78, 46.01), 12.4, 8.2, {
+	exports['sandbox-polyzone']:CreateBox("prison_visitation", vector3(1831.24, 2585.78, 46.01), 12.4, 8.2, {
 		heading = 0,
 		--debugPoly=true,
 		minZ = 44.21,
@@ -12,7 +12,7 @@ function PrisonVisitation()
 end
 
 function PrisonHospitalInit()
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"PrisonHospital",
 		`s_m_m_doctor_01`,
 		vector3(1769.832, 2571.891, 44.730),
@@ -37,7 +37,7 @@ function PrisonHospitalInit()
 		"WORLD_HUMAN_CLIPBOARD"
 	)
 
-	Polyzone.Create:Box(
+	exports['sandbox-polyzone']:CreateBox(
 		"prison-hospital-check-in-zone",
 		Config.PrisonCheckIn.Coords,
 		Config.PrisonCheckIn.Width,
@@ -58,7 +58,7 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 	if id == "prison-hospital-check-in-zone" then
 		_inCheckInZone = true
 		if not LocalPlayer.state.isEscorted then
-			Action:Show(
+			exports['sandbox-hud']:ActionShow(
 				"medical",
 				"{keybind}primary_action{/keybind} Check In {key}$" .. Config.PrisonCheckIn.Cost .. "{/key}"
 			)
@@ -70,7 +70,7 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZone, data)
 			LocalPlayer.state:set("AllowEscorting", false, true)
 		end
 		if data.disableInventory then
-			Inventory:Disable()
+			exports['sandbox-inventory']:Disable()
 		end
 	end
 end)
@@ -78,14 +78,14 @@ end)
 AddEventHandler("Polyzone:Exit", function(id, point, insideZone, data)
 	if id == "prison-hospital-check-in-zone" then
 		_inCheckInZone = false
-		Action:Hide("medical")
+		exports['sandbox-hud']:ActionHide("medical")
 	end
 	if id == "prison_visitation" then
 		if data.disableEscorting then
 			LocalPlayer.state:set("AllowEscorting", true, true)
 		end
 		if data.disableInventory then
-			Inventory:Enable()
+			exports['sandbox-inventory']:Enable()
 		end
 	end
 end)
@@ -119,7 +119,7 @@ AddEventHandler("Hospital:Client:PrisonHospitalRevive", function(entity, data)
 		}
 	end
 
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "prison_hospital_revive_action",
 		duration = (math.random(10) + 45) * 1000,
 		label = "Healing",
@@ -139,9 +139,9 @@ AddEventHandler("Hospital:Client:PrisonHospitalRevive", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Hospital:PrisonHospitalRevive", {}, function(s)
+			exports["sandbox-base"]:ServerCallback("Hospital:PrisonHospitalRevive", {}, function(s)
 				if s then
-					Escort:StopEscort()
+					exports['sandbox-escort']:StopEscort()
 				end
 			end)
 		end

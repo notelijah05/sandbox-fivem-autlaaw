@@ -1,5 +1,5 @@
 AddEventHandler("Businesses:Client:Startup", function()
-	Polyzone.Create:Poly("cloud9-drift-area", {
+	exports['sandbox-polyzone']:CreatePoly("cloud9-drift-area", {
 		vector2(210.07374572754, -2536.0458984375),
 		vector2(146.61747741699, -2573.9255371094),
 		vector2(14.569815635681, -2559.7707519531),
@@ -21,37 +21,38 @@ AddEventHandler("Businesses:Client:Startup", function()
 		minZ = 2.260225296021,
 		maxZ = 8.55025100708,
 	})
-	Targeting.Zones:AddBox("cloud9-clockinoff-1", "chess-clock", vector3(-59.4912, -2517.1326, 7.40), 1.5, 2.7, {
-		heading = 325.0,
-		debugPoly = false,
-		minZ = 5.40,
-		maxZ = 9.40,
-	}, {
-		{
-			icon = "clipboard-check",
-			text = "Clock In",
-			event = "Restaurant:Client:ClockIn",
-			data = { job = "cloud9" },
-			jobPerms = {
-				{
-					job = "cloud9",
-					reqOffDuty = true,
+	exports['sandbox-targeting']:ZonesAddBox("cloud9-clockinoff-1", "chess-clock", vector3(-59.4912, -2517.1326, 7.40),
+		1.5, 2.7, {
+			heading = 325.0,
+			debugPoly = false,
+			minZ = 5.40,
+			maxZ = 9.40,
+		}, {
+			{
+				icon = "clipboard-check",
+				text = "Clock In",
+				event = "Restaurant:Client:ClockIn",
+				data = { job = "cloud9" },
+				jobPerms = {
+					{
+						job = "cloud9",
+						reqOffDuty = true,
+					},
 				},
 			},
-		},
-		{
-			icon = "clipboard",
-			text = "Clock Out",
-			event = "Restaurant:Client:ClockOut",
-			data = { job = "cloud9" },
-			jobPerms = {
-				{
-					job = "cloud9",
-					reqDuty = true,
+			{
+				icon = "clipboard",
+				text = "Clock Out",
+				event = "Restaurant:Client:ClockOut",
+				data = { job = "cloud9" },
+				jobPerms = {
+					{
+						job = "cloud9",
+						reqDuty = true,
+					},
 				},
 			},
-		},
-	}, 3.0, true)
+		}, 3.0, true)
 end)
 
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
@@ -78,7 +79,7 @@ function DeleteDriftStuff()
 end
 
 AddStateBagChangeHandler("cloud9_drift", nil, function(bagName, key, value, _unused, replicated)
-	if Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "cloud9-drift-area") then
+	if exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "cloud9-drift-area") then
 		if value then
 			DoDriftStuff()
 		else

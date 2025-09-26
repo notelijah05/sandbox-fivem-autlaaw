@@ -1,28 +1,24 @@
-local _ran = false
-
 function Startup()
-    if _ran then return end
-    _ran = true
-
-    Database.Game:count({
+    exports['sandbox-base']:DatabaseGameCount({
         collection = 'vehicles',
         query = {
             ['Owner.Type'] = 0,
         }
     }, function(success, count)
         if success then
-            Logger:Trace('Vehicles', string.format('Loaded ^2%s^7 Character Owned Vehicles', count))
+            exports['sandbox-base']:LoggerTrace('Vehicles',
+                string.format('Loaded ^2%s^7 Character Owned Vehicles', count))
         end
     end)
 
-    Database.Game:count({
+    exports['sandbox-base']:DatabaseGameCount({
         collection = 'vehicles',
         query = {
             ['Owner.Type'] = 1,
         }
     }, function(success, count)
         if success then
-            Logger:Trace('Vehicles', string.format('Loaded ^2%s^7 Fleet Owned Vehicles', count))
+            exports['sandbox-base']:LoggerTrace('Vehicles', string.format('Loaded ^2%s^7 Fleet Owned Vehicles', count))
         end
     end)
 
@@ -50,7 +46,7 @@ function Startup()
     --                 timeSpread = 2000
     --             end
 
-    --             Logger:Info('Vehicles', 'Running Periodical Save For '.. #savingVINs .. ' Vehicles')
+    --             exports['sandbox-base']:LoggerInfo('Vehicles', 'Running Periodical Save For '.. #savingVINs .. ' Vehicles')
 
     --             for k, v in ipairs(savingVINs) do
     --                 SaveVehicle(v)
@@ -75,7 +71,7 @@ function Startup()
                 if DoesEntityExist(v) then
                     local state = Entity(v).state
                     if state and not state.Owned and not state.SpawnTemp and state.LastDriven and state.LastDriven <= timeBefore then
-                        Vehicles:Delete(v, function() end)
+                        exports['sandbox-vehicles']:Delete(v, function() end)
                     end
                 end
             end

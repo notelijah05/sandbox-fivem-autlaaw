@@ -1,8 +1,8 @@
 function RegisterDonorVanityItemsCallbacks()
-	Callbacks:RegisterServerCallback("Inventory:DonorSales:GetPending", function(source, data, cb)
-		local plyr = Fetch:Source(source)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:DonorSales:GetPending", function(source, data, cb)
+		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
-			local pending = Inventory.Donator:GetPending(plyr:GetData("Identifier"), true)
+			local pending = exports['sandbox-inventory']:DonatorGetPending(plyr:GetData("Identifier"), true)
 			local mainMenuItems = {}
 			for k, v in ipairs(pending) do
 				if not v.redeemed then
@@ -35,11 +35,11 @@ function RegisterDonorVanityItemsCallbacks()
 
 		cb(false)
 	end)
-	Callbacks:RegisterServerCallback("Inventory:DonorSales:SubmitVanityItem", function(source, data, cb)
-		local plyr = Fetch:Source(source)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:DonorSales:SubmitVanityItem", function(source, data, cb)
+		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
-			local char = Fetch:CharacterSource(source)
-			
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
+
 			local label = data.vanity_item_label
 			local description = data.vanity_item_description
 			local image = data.vanity_item_image
@@ -48,7 +48,7 @@ function RegisterDonorVanityItemsCallbacks()
 
 			if label and description and image and amount and amount > 0 then
 				local sid = char:GetData("SID")
-				local pending = Inventory.Donator:GetPending(plyr:GetData("Identifier"), true)
+				local pending = exports['sandbox-inventory']:DonatorGetPending(plyr:GetData("Identifier"), true)
 				if #pending > 0 then
 					local foundToken = nil
 					for k, v in ipairs(pending) do
@@ -58,10 +58,10 @@ function RegisterDonorVanityItemsCallbacks()
 						end
 					end
 
-					if Inventory.Donator:RemovePending(plyr:GetData("Identifier"), foundToken) then
-						local t = Sequence:Get("VanityItem")
+					if exports['sandbox-inventory']:DonatorRemovePending(plyr:GetData("Identifier"), foundToken) then
+						local t = exports['sandbox-base']:SequenceGet("VanityItem")
 
-						local newItem = Inventory.ItemTemplate:Create(
+						local newItem = exports['sandbox-inventory']:ItemTemplateCreate(
 							string.format("vanityitem%s", t),
 							label,
 							description or "",
@@ -88,20 +88,19 @@ function RegisterDonorVanityItemsCallbacks()
 
 						itemsDatabase[newItem.name].isUsable = true
 
-						INVENTORY:AddItem(sid, newItem.name, amount, {}, 1)
+						exports['sandbox-inventory']:AddItem(sid, newItem.name, amount, {}, 1)
 
-						Execute:Client(source, "Notification", "Success", "Found unused vanity token!")
+						exports['sandbox-hud']:NotifSuccess(source,
+							"Found unused vanity token!")
 					else
-						Execute:Client(source, "Notification", "Error", "Uh this shouldn't happen.")
+						exports['sandbox-hud']:NotifError(source,
+							"Uh this shouldn't happen.")
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "No vanity tokens found.")
+					exports['sandbox-hud']:NotifError(source, "No vanity tokens found.")
 				end
 			else
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Something went wrong. Try again and make sure all fields are filled out properly!"
 				)
 			end
@@ -112,25 +111,25 @@ function RegisterDonorVanityItemsCallbacks()
 
 		cb(false)
 	end)
-	Callbacks:RegisterServerCallback("Inventory:DonorSales:GetTokens", function(source, data, cb)
-		local plyr = Fetch:Source(source)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:DonorSales:GetTokens", function(source, data, cb)
+		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
-			local res = Inventory.Donator:GetPending(plyr:GetData("Identifier"))
+			local res = exports['sandbox-inventory']:DonatorGetPending(plyr:GetData("Identifier"))
 			cb({ available = #res or 0 })
 		else
 			cb(false)
 		end
 	end)
 
-	Chat:RegisterAdminCommand("adddonatoritem", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("adddonatoritem", function(source, args, rawCommand)
 		local license = table.unpack(args)
 
 		if license then
-			local success = Inventory.Donator:AddPending(license)
+			local success = exports['sandbox-inventory']:DonatorAddPending(license)
 			if success then
-				Chat.Send.System:Single(source, "Successfully added donator vanity item token")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Successfully added donator vanity item token")
 			else
-				Chat.Send.System:Single(source, "Failed to add donator vanity item token")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Failed to add donator vanity item token")
 			end
 		end
 	end, {
@@ -143,20 +142,20 @@ function RegisterDonorVanityItemsCallbacks()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("getdonatoritem", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("getdonatoritem", function(source, args, rawCommand)
 		local license = table.unpack(args)
 
 		if license then
-			local res = Inventory.Donator:GetPending(license, true)
+			local res = exports['sandbox-inventory']:DonatorGetPending(license, true)
 			if res then
 				local message = string.format("Player Identifier: %s<br>", license)
 				for k, v in ipairs(res) do
 					message = message
 						.. string.format("<br>ID: %s<br>Redeemed: %s<br>", v.id, v.redeemed and "Yes" or "No")
 				end
-				Chat.Send.System:Single(source, message)
+				exports["sandbox-chat"]:SendSystemSingle(source, message)
 			else
-				Chat.Send.System:Single(source, "Failed")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Failed")
 			end
 		end
 	end, {
@@ -169,14 +168,14 @@ function RegisterDonorVanityItemsCallbacks()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("removedonatoritem", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("removedonatoritem", function(source, args, rawCommand)
 		local license, tokenId = table.unpack(args)
 		if license and tokenId then
-			local success = Inventory.Donator:DeletePending(license, tokenId)
+			local success = exports['sandbox-inventory']:DonatorDeletePending(license, tokenId)
 			if success then
-				Chat.Send.System:Single(source, "Successfully Removed Token")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Removed Token")
 			else
-				Chat.Send.System:Single(source, "Failed to remove token")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Failed to remove token")
 			end
 		end
 	end, {
@@ -193,59 +192,60 @@ function RegisterDonorVanityItemsCallbacks()
 		},
 	}, 2)
 
-	Inventory.Donator = {
-		AddPending = function(self, playerIdentifier, itemName, itemCount, data)
-			MySQL.insert("INSERT INTO donator_items (player, data, redeemed) VALUES(?, ?, ?)", {
-				playerIdentifier,
-				data and json.encode(data) or nil,
-				false,
-			})
+	exports("DonatorAddPending", function(playerIdentifier, itemName, itemCount, data)
+		MySQL.insert("INSERT INTO donator_items (player, data, redeemed) VALUES(?, ?, ?)", {
+			playerIdentifier,
+			data and json.encode(data) or nil,
+			false,
+		})
 
-			return true
-		end,
-		GetPending = function(self, playerIdentifier, includeRedeemed)
-			local results = {}
-			if includeRedeemed then
-				results = MySQL.query.await("SELECT id, player, redeemed, data FROM donator_items WHERE player = ?", {
+		return true
+	end)
+
+	exports("DonatorGetPending", function(playerIdentifier, includeRedeemed)
+		local results = {}
+		if includeRedeemed then
+			results = MySQL.query.await("SELECT id, player, redeemed, data FROM donator_items WHERE player = ?", {
+				playerIdentifier,
+			})
+		else
+			results = MySQL.query.await(
+				"SELECT id, player, redeemed, data FROM donator_items WHERE player = ? and redeemed = ?",
+				{
 					playerIdentifier,
-				})
-			else
-				results = MySQL.query.await(
-					"SELECT id, player, redeemed, data FROM donator_items WHERE player = ? and redeemed = ?",
-					{
-						playerIdentifier,
-						false,
-					}
-				)
-			end
+					false,
+				}
+			)
+		end
 
-			return results
-		end,
-		RemovePending = function(self, playerIdentifier, id)
-			local res = MySQL.query.await("UPDATE donator_items SET redeemed = ? WHERE id = ? AND player = ?", {
-				true,
-				id,
-				playerIdentifier,
-			})
+		return results
+	end)
 
-			return res.affectedRows > 0
-		end,
-		DeletePending = function(self, playerIdentifier, id)
-			local res = MySQL.query.await("DELETE FROM donator_items WHERE id = ? AND player = ?", {
-				id,
-				playerIdentifier,
-			})
+	exports("DonatorRemovePending", function(playerIdentifier, id)
+		local res = MySQL.query.await("UPDATE donator_items SET redeemed = ? WHERE id = ? AND player = ?", {
+			true,
+			id,
+			playerIdentifier,
+		})
 
-			return res.affectedRows > 0
-		end,
-	}
+		return res.affectedRows > 0
+	end)
+
+	exports("DonatorDeletePending", function(playerIdentifier, id)
+		local res = MySQL.query.await("DELETE FROM donator_items WHERE id = ? AND player = ?", {
+			id,
+			playerIdentifier,
+		})
+
+		return res.affectedRows > 0
+	end)
 end
 
 function TebexAddVanityItem(source, args)
 	local sid = table.unpack(args)
 	sid = tonumber(sid)
 	if sid == nil or sid == 0 then
-		Logger:Warn("Donator Vanity Item", "Provided SID (server ID) was empty.", {
+		exports['sandbox-base']:LoggerWarn("Donator Vanity Item", "Provided SID (server ID) was empty.", {
 			console = true,
 			file = false,
 			database = true,
@@ -257,17 +257,18 @@ function TebexAddVanityItem(source, args)
 		})
 		return
 	end
-	local player = Fetch:Source(sid)
+	local player = exports['sandbox-base']:FetchSource(sid)
 	if player then
 		local license = player:GetData("Identifier")
 		if license then
-			local success = Inventory.Donator:AddPending(license)
+			local success = exports['sandbox-inventory']:DonatorAddPending(license)
 			if success then
-				Chat.Send.System:Single(sid, "Successfully Added Donator Vanity Item Token")
+				exports["sandbox-chat"]:SendSystemSingle(sid, "Successfully Added Donator Vanity Item Token")
 			else
-				Chat.Send.System:Single(sid, "Failed")
+				exports["sandbox-chat"]:SendSystemSingle(sid, "Failed")
 			end
 		end
 	end
 end
+
 RegisterCommand("tebexaddvanityitem", TebexAddVanityItem, true)

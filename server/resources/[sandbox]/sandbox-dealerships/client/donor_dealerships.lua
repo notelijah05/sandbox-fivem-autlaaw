@@ -1,38 +1,39 @@
 function CreateDonorDealerships()
   for k, v in ipairs(_donorDealerships) do
-    PedInteraction:Add("donor_dealer_" .. k, v.ped.model, v.ped.location.xyz, v.ped.location.w, 50.0, {
+    exports['sandbox-pedinteraction']:Add("donor_dealer_" .. k, v.ped.model, v.ped.location.xyz, v.ped.location.w, 50.0,
       {
-        icon = "car-side",
-        text = "Donator Vehicle Purchases",
-        event = "DonorDealer:Client:Open",
-        data = { id = k },
-      },
-      {
-        icon = "receipt",
-        text = "View Unredeemed Purchases",
-        event = "DonorDealer:Client:ViewPending",
-        data = { id = k },
-      },
-    }, "comment-dollar", v.ped.scenario)
+        {
+          icon = "car-side",
+          text = "Donator Vehicle Purchases",
+          event = "DonorDealer:Client:Open",
+          data = { id = k },
+        },
+        {
+          icon = "receipt",
+          text = "View Unredeemed Purchases",
+          event = "DonorDealer:Client:ViewPending",
+          data = { id = k },
+        },
+      }, "comment-dollar", v.ped.scenario)
   end
 end
 
 AddEventHandler("DonorDealer:Client:ViewPending", function(entityData, data)
-  Callbacks:ServerCallback("Dealerships:DonorSales:GetPending", {}, function(menu)
-    ListMenu:Show(menu)
+  exports["sandbox-base"]:ServerCallback("Dealerships:DonorSales:GetPending", {}, function(menu)
+    exports['sandbox-hud']:ListMenuShow(menu)
   end)
 end)
 
 AddEventHandler("DonorDealer:Client:Open", function(entityData, data)
   local dealer = data.id
-  Callbacks:ServerCallback("Dealerships:DonorSales:GetStock", dealer, function(data)
+  exports["sandbox-base"]:ServerCallback("Dealerships:DonorSales:GetStock", dealer, function(data)
     if not data then
-      return Notification:Error("No Pending Donator Purchases to Redeem")
+      return exports["sandbox-hud"]:NotifError("No Pending Donator Purchases to Redeem")
     end
 
     local fData = FormatDealerStockToCategories(data.stock)
-  
-    local orderedCategories = Utils:GetTableKeys(_catalogCategories)
+
+    local orderedCategories = exports['sandbox-base']:UtilsGetTableKeys(_catalogCategories)
     table.sort(orderedCategories, function(a, b)
       return _catalogCategories[a] < _catalogCategories[b]
     end)
@@ -54,7 +55,7 @@ AddEventHandler("DonorDealer:Client:Open", function(entityData, data)
         })
 
         local sItems = {}
-  
+
         for k, v in ipairs(fData.sorted[cat]) do
           table.insert(sItems, {
             label = string.format("%s %s", v.make, v.model),
@@ -69,7 +70,7 @@ AddEventHandler("DonorDealer:Client:Open", function(entityData, data)
             }
           })
         end
-  
+
         menu[cat] = {
           label = _catalogCategories[cat],
           items = sItems
@@ -82,12 +83,12 @@ AddEventHandler("DonorDealer:Client:Open", function(entityData, data)
       items = mainMenuItems,
     }
 
-    ListMenu:Show(menu)
+    exports['sandbox-hud']:ListMenuShow(menu)
   end)
 end)
 
 AddEventHandler("DonorDealer:Client:StartPurchase", function(data)
-  Confirm:Show(
+  exports['sandbox-hud']:ConfirmShow(
     "Confirm Donator Vehicle Purchase",
     {
       yes = "DonorDealer:Client:ConfirmPurchase",
@@ -110,5 +111,5 @@ AddEventHandler("DonorDealer:Client:StartPurchase", function(data)
 end)
 
 AddEventHandler("DonorDealer:Client:ConfirmPurchase", function(data)
-  Callbacks:ServerCallback("Dealerships:DonorSales:Purchase", data)
+  exports["sandbox-base"]:ServerCallback("Dealerships:DonorSales:Purchase", data)
 end)

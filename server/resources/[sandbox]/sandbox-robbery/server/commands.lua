@@ -1,26 +1,23 @@
 function RegisterCommands()
-	Chat:RegisterAdminCommand("resetheist", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("resetheist", function(source, args, rawCommand)
 		if args[1] == "mazebank" then
 			ResetMazeBank()
-			Execute:Client(source, "Notification", "Success", "Maze Bank Heist Reset")
+			exports['sandbox-hud']:NotifSuccess(source, "Maze Bank Heist Reset")
 		elseif args[1] == "lombank" then
 			ResetLombank()
-			Execute:Client(source, "Notification", "Success", "Lombank Heist Reset")
+			exports['sandbox-hud']:NotifSuccess(source, "Lombank Heist Reset")
 		elseif args[1] == "paleto" then
 			ResetPaleto()
-			Execute:Client(source, "Notification", "Success", "Paleto Bank Heist Reset")
+			exports['sandbox-hud']:NotifSuccess(source, "Paleto Bank Heist Reset")
 		elseif args[1] == "bobcat" then
 			ResetBobcat()
 		elseif args[1]:find("fleeca") and FLEECA_LOCATIONS[args[1]] ~= nil then
 			ResetFleeca(args[1])
-			Execute:Client(
-				source,
-				"Notification",
-				"Success",
+			exports['sandbox-hud']:NotifSuccess(source,
 				string.format("Fleeca %s Reset", FLEECA_LOCATIONS[args[1]].label)
 			)
 		else
-			Execute:Client(source, "Notification", "Error", "Invalid Bank ID")
+			exports['sandbox-hud']:NotifError(source, "Invalid Bank ID")
 		end
 	end, {
 		help = "Force Reset Heist",
@@ -32,7 +29,7 @@ function RegisterCommands()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("disablepower", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("disablepower", function(source, args, rawCommand)
 		if args[1] == "mazebank" then
 			MazeBankDisablePower(source)
 		elseif args[1] == "lombank" then
@@ -40,7 +37,7 @@ function RegisterCommands()
 		elseif args[1] == "paleto" then
 			DisablePaletoPower(source)
 		else
-			Execute:Client(source, "Notification", "Error", "Invalid Bank ID")
+			exports['sandbox-hud']:NotifError(source, "Invalid Bank ID")
 		end
 	end, {
 		help = "Force Disable Power For Heist",
@@ -52,14 +49,14 @@ function RegisterCommands()
 		},
 	}, 1)
 
-	Chat:RegisterAdminCommand("checkheist", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("checkheist", function(source, args, rawCommand)
 		if args[1] ~= nil then
 			if args[1] == "mazebank" then
 				if not _mbGlobalReset then
-					Chat.Send.System:Single(source, "<b>Maze Bank</b>: Not Yet Hit")
+					exports["sandbox-chat"]:SendSystemSingle(source, "<b>Maze Bank</b>: Not Yet Hit")
 				else
 					if os.time() > _mbGlobalReset then
-						Chat.Send.System:Single(
+						exports["sandbox-chat"]:SendSystemSingle(
 							source,
 							string.format(
 								"<b>Maze Bank</b>: Expired (%s)",
@@ -67,7 +64,7 @@ function RegisterCommands()
 							)
 						)
 					else
-						Chat.Send.System:Single(
+						exports["sandbox-chat"]:SendSystemSingle(
 							source,
 							string.format(
 								"<b>Maze Bank</b>: On Cooldown (%s)",
@@ -78,10 +75,10 @@ function RegisterCommands()
 				end
 			elseif args[1] == "lombank" then
 				if not _lbGlobalReset then
-					Chat.Send.System:Single(source, "<b>Lombank</b>: Not Yet Hit")
+					exports["sandbox-chat"]:SendSystemSingle(source, "<b>Lombank</b>: Not Yet Hit")
 				else
 					if os.time() > _lbGlobalReset then
-						Chat.Send.System:Single(
+						exports["sandbox-chat"]:SendSystemSingle(
 							source,
 							string.format(
 								"<b>Lombank</b>: Expired (%s)",
@@ -89,7 +86,7 @@ function RegisterCommands()
 							)
 						)
 					else
-						Chat.Send.System:Single(
+						exports["sandbox-chat"]:SendSystemSingle(
 							source,
 							string.format(
 								"<b>Lombank</b>: On Cooldown (%s)",
@@ -100,10 +97,10 @@ function RegisterCommands()
 				end
 			elseif args[1] == "paleto" then
 				if not _pbGlobalReset then
-					Chat.Send.System:Single(source, "<b>Paleto</b>: Not Yet Hit")
+					exports["sandbox-chat"]:SendSystemSingle(source, "<b>Paleto</b>: Not Yet Hit")
 				else
 					if os.time() > _pbGlobalReset then
-						Chat.Send.System:Single(
+						exports["sandbox-chat"]:SendSystemSingle(
 							source,
 							string.format(
 								"<b>Paleto</b>: Expired (%s)",
@@ -111,7 +108,7 @@ function RegisterCommands()
 							)
 						)
 					else
-						Chat.Send.System:Single(
+						exports["sandbox-chat"]:SendSystemSingle(
 							source,
 							string.format(
 								"<b>Paleto</b>: On Cooldown (%s)",
@@ -122,10 +119,10 @@ function RegisterCommands()
 				end
 			elseif args[1] == "bobcat" then
 				if not _bcGlobalReset then
-					Chat.Send.System:Single(source, "<b>Bobcat</b>: Not Yet Hit")
+					exports["sandbox-chat"]:SendSystemSingle(source, "<b>Bobcat</b>: Not Yet Hit")
 				else
 					if os.time() > _bcGlobalReset then
-						Chat.Send.System:Single(
+						exports["sandbox-chat"]:SendSystemSingle(
 							source,
 							string.format(
 								"<b>Bobcat</b>: Expired (%s)",
@@ -133,7 +130,7 @@ function RegisterCommands()
 							)
 						)
 					else
-						Chat.Send.System:Single(
+						exports["sandbox-chat"]:SendSystemSingle(
 							source,
 							string.format(
 								"<b>Bobcat</b>: On Cooldown (%s)",
@@ -166,14 +163,15 @@ function RegisterCommands()
 					end
 				end
 				local str = str .. "</ul>"
-				Chat.Send.System:Single(source, str)
+				exports["sandbox-chat"]:SendSystemSingle(source, str)
 			elseif args[1]:find("fleeca") and FLEECA_LOCATIONS[args[1]] ~= nil then
 				local fleecaData = FLEECA_LOCATIONS[args[1]]
 				if not _fcGlobalReset[args[1]] then
-					Chat.Send.System:Single(source, string.format("Fleeca - %s: Not Yet Hit", fleecaData.label))
+					exports["sandbox-chat"]:SendSystemSingle(source,
+						string.format("Fleeca - %s: Not Yet Hit", fleecaData.label))
 				else
 					if os.time() > _fcGlobalReset[args[1]] then
-						Chat.Send.System:Single(
+						exports["sandbox-chat"]:SendSystemSingle(
 							source,
 							string.format(
 								"Fleeca - %s: Expired (%s)",
@@ -182,7 +180,7 @@ function RegisterCommands()
 							)
 						)
 					else
-						Chat.Send.System:Single(
+						exports["sandbox-chat"]:SendSystemSingle(
 							source,
 							string.format(
 								"Fleeca - %s: On Cooldown (%s)",
@@ -193,7 +191,7 @@ function RegisterCommands()
 					end
 				end
 			else
-				Execute:Client(source, "Notification", "Error", "Invalid Heist ID")
+				exports['sandbox-hud']:NotifError(source, "Invalid Heist ID")
 			end
 		else
 			local str = "<ul>"
@@ -293,7 +291,7 @@ function RegisterCommands()
 			end
 
 			local str = str .. "</ul>"
-			Chat.Send.System:Single(source, str)
+			exports["sandbox-chat"]:SendSystemSingle(source, str)
 		end
 	end, {
 		help = "Check Heist Cooldown",
@@ -305,10 +303,10 @@ function RegisterCommands()
 		},
 	}, -1)
 
-	Chat:RegisterAdminCommand("checkshitlord", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("checkshitlord", function(source, args, rawCommand)
 		if GlobalState["AntiShitlord"] ~= nil then
 			if os.time() > GlobalState["AntiShitlord"] then
-				Chat.Send.System:Single(
+				exports["sandbox-chat"]:SendSystemSingle(
 					source,
 					string.format(
 						"AntiShitlord: Expired (%s)",
@@ -316,7 +314,7 @@ function RegisterCommands()
 					)
 				)
 			else
-				Chat.Send.System:Single(
+				exports["sandbox-chat"]:SendSystemSingle(
 					source,
 					string.format(
 						"AntiShitlord: On Cooldown (%s)",
@@ -325,23 +323,23 @@ function RegisterCommands()
 				)
 			end
 		else
-			Chat.Send.System:Single(source, "AntiShitlord: Not Yet Triggered")
+			exports["sandbox-chat"]:SendSystemSingle(source, "AntiShitlord: Not Yet Triggered")
 		end
 	end, {
 		help = "Display AnitShitlord Cooldown Timer",
 	})
 
-	Chat:RegisterAdminCommand("resetshitlord", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("resetshitlord", function(source, args, rawCommand)
 		GlobalState["AntiShitlord"] = false
-		Chat.Send.System:Single(source, "<b>AntiShitlord</b>: Reset")
+		exports["sandbox-chat"]:SendSystemSingle(source, "<b>AntiShitlord</b>: Reset")
 	end, {
 		help = "Reset AnitShitlord Cooldown Timer",
 	})
 
-	Chat:RegisterAdminCommand("checkstoreshitlord", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("checkstoreshitlord", function(source, args, rawCommand)
 		if GlobalState["StoreAntiShitlord"] ~= nil then
 			if os.time() > GlobalState["StoreAntiShitlord"] then
-				Chat.Send.System:Single(
+				exports["sandbox-chat"]:SendSystemSingle(
 					source,
 					string.format(
 						"StoreAntiShitlord: Expired (%s)",
@@ -349,7 +347,7 @@ function RegisterCommands()
 					)
 				)
 			else
-				Chat.Send.System:Single(
+				exports["sandbox-chat"]:SendSystemSingle(
 					source,
 					string.format(
 						"StoreAntiShitlord: On Cooldown (%s)",
@@ -358,48 +356,48 @@ function RegisterCommands()
 				)
 			end
 		else
-			Chat.Send.System:Single(source, "StoreAntiShitlord: Not Yet Triggered")
+			exports["sandbox-chat"]:SendSystemSingle(source, "StoreAntiShitlord: Not Yet Triggered")
 		end
 	end, {
 		help = "Display AnitShitlord Cooldown Timer",
 	})
 
-	Chat:RegisterAdminCommand("resetstoreshitlord", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("resetstoreshitlord", function(source, args, rawCommand)
 		GlobalState["StoreAntiShitlord"] = false
-		Chat.Send.System:Single(source, "<b>StoreAntiShitlord</b>: Reset")
+		exports["sandbox-chat"]:SendSystemSingle(source, "<b>StoreAntiShitlord</b>: Reset")
 	end, {
 		help = "Reset StoreAntiShitlord Cooldown Timer",
 	})
 
-	Chat:RegisterAdminCommand("togglerobbery", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("togglerobbery", function(source, args, rawCommand)
 		GlobalState["RobberiesDisabled"] = not GlobalState["RobberiesDisabled"]
 		local str = "ENABLED"
 		if GlobalState["RobberiesDisabled"] then
 			str = "DISABLED"
 		end
-		Chat.Send.System:Single(source, string.format("<b>Robberies</b>: %s", str))
+		exports["sandbox-chat"]:SendSystemSingle(source, string.format("<b>Robberies</b>: %s", str))
 	end, {
 		help = "Enabled/Disables Robbries",
 	})
 
-	Chat:RegisterAdminCommand("robstatus", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("robstatus", function(source, args, rawCommand)
 		local str = "ENABLED"
 		if GlobalState["RobberiesDisabled"] then
 			str = "DISABLED"
 		end
-		Chat.Send.System:Single(source, string.format("<b>Robbery State</b>: %s", str))
+		exports["sandbox-chat"]:SendSystemSingle(source, string.format("<b>Robbery State</b>: %s", str))
 	end, {
 		help = "Enabled/Disables Robbries",
 	})
 
-	Chat:RegisterAdminCommand("disablelockdown", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("disablelockdown", function(source, args, rawCommand)
 		GlobalState["RestartLockdown"] = false
-		Chat.Send.System:Single(source, "<b>Restart Lockdown</b>: Disabled")
+		exports["sandbox-chat"]:SendSystemSingle(source, "<b>Restart Lockdown</b>: Disabled")
 	end, {
 		help = "Disable Restart Lockdown",
 	})
 
-	Chat:RegisterAdminCommand("heiststate", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("heiststate", function(source, args, rawCommand)
 		TriggerClientEvent("Robbery:Client:PrintState", source, args[1])
 	end, {
 		help = "Reset StoreAntiShitlord Cooldown Timer",

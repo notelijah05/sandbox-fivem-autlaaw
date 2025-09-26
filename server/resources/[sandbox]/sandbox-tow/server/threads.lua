@@ -14,9 +14,9 @@ CreateThread(function()
 
 				_inuse[cId] = k
 
-				Vehicles:SpawnTemp(
+				exports['sandbox-vehicles']:SpawnTemp(
 					-1,
-					Vehicles.RandomModel:DClass(),
+					exports['sandbox-vehicles']:RandomModelDClass(),
 					'automobile',
 					vector3(_spawns[cId][1], _spawns[cId][2], _spawns[cId][3]),
 					_spawns[cId][4],
@@ -30,7 +30,7 @@ CreateThread(function()
 						ent.towObjective = true
 						TriggerClientEvent("Tow:Client:MarkPickup", k, _spawns[cId], veh)
 
-						Phone.Notification:AddWithId(
+						exports['sandbox-phone']:NotificationAddWithId(
 							k,
 							"TOW_OBJ",
 							"Yard Manager",

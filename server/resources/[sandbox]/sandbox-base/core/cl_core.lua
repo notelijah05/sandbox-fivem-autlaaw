@@ -1,8 +1,3 @@
-COMPONENTS.Core = {
-	_required = { "Init" },
-	_name = "base",
-}
-
 CreateThread(function()
 	LocalPlayer.state.PlayerID = PlayerId()
 	StatSetInt(`MP0_STAMINA`, 25, true)
@@ -21,7 +16,7 @@ CreateThread(function()
 end)
 
 _baseThreading = false
-function COMPONENTS.Core.Init(self)
+function InitCore()
 	if _baseThreading then
 		return
 	end
@@ -303,7 +298,7 @@ CreateThread(function()
 		Wait(1)
 	end
 
-	COMPONENTS.Core:Init()
+	InitCore()
 
 	TriggerEvent("Proxy:Shared:RegisterReady")
 	for k, v in pairs(COMPONENTS) do

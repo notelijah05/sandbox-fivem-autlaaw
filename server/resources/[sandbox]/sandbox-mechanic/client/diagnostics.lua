@@ -32,7 +32,8 @@ AddEventHandler("Mechanic:Client:RunDiagnostics", function(entityData)
 					},
 					{
 						label = "Vehicle Mileage",
-						description = (vehEnt.state.Mileage and Utils:Round(vehEnt.state.Mileage, 2) or 0) .. " Miles",
+						description = (vehEnt.state.Mileage and exports['sandbox-base']:UtilsRound(vehEnt.state.Mileage, 2) or 0) ..
+							" Miles",
 						event = false,
 					},
 				},
@@ -66,13 +67,13 @@ AddEventHandler("Mechanic:Client:RunDiagnostics", function(entityData)
 
 				table.insert(menu.main.items, {
 					label = v,
-					description = Utils:Round(vehDamage[k], 2) .. "%",
+					description = exports['sandbox-base']:UtilsRound(vehDamage[k], 2) .. "%",
 					event = false,
 				})
 
 				if partData and partData.item then
-					local itemCount = Inventory.Items:GetCount(partData.item)
-					local itemData = Inventory.Items:GetData(partData.item)
+					local itemCount = exports['sandbox-inventory']:ItemsGetCount(partData.item)
+					local itemData = exports['sandbox-inventory']:ItemsGetData(partData.item)
 					local percentToFull = 100 - vehDamage[k]
 					local requiredToFix = math.ceil(percentToFull / partData.amount)
 
@@ -102,22 +103,22 @@ AddEventHandler("Mechanic:Client:RunDiagnostics", function(entityData)
 			end
 		end
 
-		ListMenu:Show(menu)
+		exports['sandbox-hud']:ListMenuShow(menu)
 	end
 end)
 
 AddEventHandler("Mechanic:Client:InstallMultipleRepairParts", function(data)
-	Callbacks:ServerCallback("Mechanic:InstallMultipleRepairParts", data, function(success)
+	exports["sandbox-base"]:ServerCallback("Mechanic:InstallMultipleRepairParts", data, function(success)
 		if not success then
-			Notification:Error("Unable to Install Multiple Parts")
+			exports["sandbox-hud"]:NotifError("Unable to Install Multiple Parts")
 		end
 	end)
 end)
 
 AddEventHandler("Mechanic:Client:RemovePerformanceUpgrade", function(data)
-	Callbacks:ServerCallback("Mechanic:RemovePerformanceUpgrade", data, function(success)
+	exports["sandbox-base"]:ServerCallback("Mechanic:RemovePerformanceUpgrade", data, function(success)
 		if not success then
-			Notification:Error("Unable to Remove Upgrade")
+			exports["sandbox-hud"]:NotifError("Unable to Remove Upgrade")
 		end
 	end)
 end)
@@ -189,6 +190,6 @@ AddEventHandler("Mechanic:Client:RunPerformanceDiagnostics", function(entityData
 			event = false,
 		})
 
-		ListMenu:Show(menu)
+		exports['sandbox-hud']:ListMenuShow(menu)
 	end
 end)

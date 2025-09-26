@@ -13,7 +13,7 @@ RegisterNetEvent("Job:Client:DutyChanged", function(state)
 	if state and _trackedJobs[state] then
 		CreateThread(function()
 			local mySID = LocalPlayer.state.Character:GetData("SID")
-			Logger:Trace("Tracking", "Start Emergency Tracking")
+			exports['sandbox-base']:LoggerTrace("Tracking", "Start Emergency Tracking")
 			while
 				LocalPlayer.state.loggedIn
 				and LocalPlayer.state.onDuty
@@ -74,7 +74,7 @@ RegisterNetEvent("Job:Client:DutyChanged", function(state)
 				end
 			end
 
-			Logger:Trace("Tracking", "Clear Emergency Tracking")
+			exports['sandbox-base']:LoggerTrace("Tracking", "Clear Emergency Tracking")
 
 			for k, v in pairs(_trackerBlips) do
 				RemoveBlip(v.blipId)
@@ -180,7 +180,7 @@ AddEventHandler("MDT:Client:DisableTracker", function(entity, data)
 		(playerState.onDuty == "police" or playerState.onDuty == "prison" or playerState.onDuty == "ems")
 		and not playerState.trackerDisabled
 	then
-		Progress:ProgressWithTickEvent({
+		exports['sandbox-hud']:ProgressWithTickEvent({
 			name = "disable_police_tracker",
 			duration = 10000,
 			label = "Disabling Tracker",
@@ -207,22 +207,23 @@ AddEventHandler("MDT:Client:DisableTracker", function(entity, data)
 			then
 				return
 			end
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 		end, function(cancelled)
 			if not cancelled then
 				if
 					(playerState.onDuty == "police" or playerState.onDuty == "prison" or playerState.onDuty == "ems")
 					and not playerState.trackerDisabled
 				then
-					Callbacks:ServerCallback("EmergencyAlerts:DisablePDTracker", entity.serverId, function(success)
-						if success then
-							Notification:Success("Disabled Their Tracker")
-						end
-					end)
+					exports["sandbox-base"]:ServerCallback("EmergencyAlerts:DisablePDTracker", entity.serverId,
+						function(success)
+							if success then
+								exports["sandbox-hud"]:NotifSuccess("Disabled Their Tracker")
+							end
+						end)
 				end
 			end
 		end)
 	else
-		Notification:Error("Unable to Disable Tracker")
+		exports["sandbox-hud"]:NotifError("Unable to Disable Tracker")
 	end
 end)

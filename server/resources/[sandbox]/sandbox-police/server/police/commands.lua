@@ -2,23 +2,23 @@ local _911Cds = {}
 local _311Cds = {}
 
 function RegisterCommands()
-	Chat:RegisterCommand("911", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("911", function(source, args, rawCommand)
 		if #rawCommand:sub(4) > 0 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
 				and hasValue(char:GetData("States"), "PHONE")
 			then
 				if _911Cds[source] == nil or os.time() >= _911Cds[source] then
-					Chat.Send.Services:Emergency(source, rawCommand:sub(4))
+					exports["sandbox-chat"]:SendEmergency(source, rawCommand:sub(4))
 					_911Cds[source] = os.time() + (60 * 1)
 					TriggerClientEvent("Animations:Client:DoPDCallEmote", source)
 				else
-					Chat.Send.System:Single(source, "You've Called 911 Recently")
+					exports["sandbox-chat"]:SendSystemSingle(source, "You've Called 911 Recently")
 				end
 			else
-				Chat.Send.System:Single(source, "You Find It Difficult To Call 911")
+				exports["sandbox-chat"]:SendSystemSingle(source, "You Find It Difficult To Call 911")
 			end
 		end
 	end, {
@@ -31,23 +31,23 @@ function RegisterCommands()
 		},
 	}, -1)
 
-	Chat:RegisterCommand("911a", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("911a", function(source, args, rawCommand)
 		if #rawCommand:sub(5) > 0 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
 				and hasValue(char:GetData("States"), "PHONE")
 			then
 				if _911Cds[source] == nil or os.time() >= _911Cds[source] then
-					Chat.Send.Services:EmergencyAnonymous(source, rawCommand:sub(5))
+					exports["sandbox-chat"]:SendEmergencyAnonymous(source, rawCommand:sub(5))
 					_911Cds[source] = os.time() + (60 * 1)
 					TriggerClientEvent("Animations:Client:DoPDCallEmote", source)
 				else
-					Chat.Send.System:Single(source, "You've Called 911 Recently")
+					exports["sandbox-chat"]:SendSystemSingle(source, "You've Called 911 Recently")
 				end
 			else
-				Chat.Send.System:Single(source, "You Find It Difficult To Call 911")
+				exports["sandbox-chat"]:SendSystemSingle(source, "You Find It Difficult To Call 911")
 			end
 		end
 	end, {
@@ -60,23 +60,23 @@ function RegisterCommands()
 		},
 	}, -1)
 
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"911r",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
-				local target = Fetch:SID(tonumber(args[1]))
-				local char = Fetch:CharacterSource(source)
+				local target = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if not hasValue(char:GetData("States"), "PHONE") then
-					Chat.Send.System:Single(source, "You Find It Difficult Replying to 911")
+					exports["sandbox-chat"]:SendSystemSingle(source, "You Find It Difficult Replying to 911")
 					return
 				end
 				if target ~= nil then
-					Chat.Send.Services:EmergencyRespond(source, target:GetData("Source"), args[2])
+					exports["sandbox-chat"]:SendEmergencyRespond(source, target:GetData("Source"), args[2])
 				else
-					Chat.Send.System:Single(source, "Invalid Target 2")
+					exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target 2")
 				end
 			else
-				Chat.Send.System:Single(source, "Invalid Target 1")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target 1")
 			end
 		end,
 		{
@@ -103,23 +103,23 @@ function RegisterCommands()
 		}
 	)
 
-	Chat:RegisterCommand("311", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("311", function(source, args, rawCommand)
 		if #rawCommand:sub(4) > 0 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
 				and hasValue(char:GetData("States"), "PHONE")
 			then
 				if _311Cds[source] == nil or os.time() >= _311Cds[source] then
-					Chat.Send.Services:NonEmergency(source, rawCommand:sub(4))
+					exports["sandbox-chat"]:SendNonEmergency(source, rawCommand:sub(4))
 					_311Cds[source] = os.time() + (60 * 1)
 					TriggerClientEvent("Animations:Client:DoPDCallEmote", source)
 				else
-					Chat.Send.System:Single(source, "You've Called 311 Recently")
+					exports["sandbox-chat"]:SendSystemSingle(source, "You've Called 311 Recently")
 				end
 			else
-				Chat.Send.System:Single(source, "You Find It Difficult To Call 311")
+				exports["sandbox-chat"]:SendSystemSingle(source, "You Find It Difficult To Call 311")
 			end
 		end
 	end, {
@@ -132,23 +132,23 @@ function RegisterCommands()
 		},
 	}, -1)
 
-	Chat:RegisterCommand("311a", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterCommand("311a", function(source, args, rawCommand)
 		if #rawCommand:sub(5) > 0 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
 				and hasValue(char:GetData("States"), "PHONE")
 			then
 				if _311Cds[source] == nil or os.time() >= _311Cds[source] then
-					Chat.Send.Services:NonEmergencyAnonymous(source, rawCommand:sub(5))
+					exports["sandbox-chat"]:SendNonEmergencyAnonymous(source, rawCommand:sub(5))
 					_311Cds[source] = os.time() + (60 * 1)
 					TriggerClientEvent("Animations:Client:DoPDCallEmote", source)
 				else
-					Chat.Send.System:Single(source, "You've Called 311 Recently")
+					exports["sandbox-chat"]:SendSystemSingle(source, "You've Called 311 Recently")
 				end
 			else
-				Chat.Send.System:Single(source, "You Find It Difficult To Call 311")
+				exports["sandbox-chat"]:SendSystemSingle(source, "You Find It Difficult To Call 311")
 			end
 		end
 	end, {
@@ -161,7 +161,7 @@ function RegisterCommands()
 		},
 	}, -1)
 
-	Chat:RegisterAdminCommand("testanim", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("testanim", function(source, args, rawCommand)
 		TriggerClientEvent("Test:Animation", source, args[1], args[2])
 	end, {
 		help = "Test",
@@ -177,29 +177,29 @@ function RegisterCommands()
 		},
 	}, 2)
 
-	Chat:RegisterAdminCommand("tems", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("tems", function(source, args, rawCommand)
 		TriggerClientEvent("EMS:Client:Test", source, source)
 	end, {
 		help = "Test",
 	}, -1)
 
-	Chat:RegisterCommand(
+	exports["sandbox-chat"]:RegisterCommand(
 		"311r",
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
-				local target = Fetch:SID(tonumber(args[1]))
-				local char = Fetch:CharacterSource(source)
+				local target = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if not hasValue(char:GetData("States"), "PHONE") then
-					Chat.Send.System:Single(source, "You Find It Difficult Replying to 311")
+					exports["sandbox-chat"]:SendSystemSingle(source, "You Find It Difficult Replying to 311")
 					return
 				end
 				if target ~= nil then
-					Chat.Send.Services:NonEmergencyRespond(source, target:GetData("Source"), args[2])
+					exports["sandbox-chat"]:SendNonEmergencyRespond(source, target:GetData("Source"), args[2])
 				else
-					Chat.Send.System:Single(source, "Invalid Target 2")
+					exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target 2")
 				end
 			else
-				Chat.Send.System:Single(source, "Invalid Target 1")
+				exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Target 1")
 			end
 		end,
 		{

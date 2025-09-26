@@ -144,9 +144,9 @@ function CheckRouletteWinners(tableId, bets, winningIndex)
 
     for k, v in pairs(totalsWon) do
         if v > 0 then
-            local char = Fetch:CharacterSource(k)
+            local char = exports['sandbox-characters']:FetchCharacterSource(k)
             if char then
-                if Casino.Chips:Modify(k, v) then
+                if exports['sandbox-casino']:ChipsModify(k, v) then
                     SendCasinoWonChipsPhoneNotification(k, v)
                 end
 
@@ -203,8 +203,8 @@ AddEventHandler("Casino:Server:Startup", function()
 
     GlobalState["Casino:RouletteConfig"] = _rouletteTables
 
-    Callbacks:RegisterServerCallback("Casino:JoinRoulette", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:JoinRoulette", function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or _roulettePlayers[source] then
             return cb(false)
         end
@@ -212,7 +212,7 @@ AddEventHandler("Casino:Server:Startup", function()
         local tableId, localChairId = data.table, data.chair
 
         if _roulette[tableId] and not _roulette[tableId].Seats[localChairId] then
-            if _rouletteTables[tableId].isVIP and not Inventory.Items:Has(char:GetData("SID"), 1, "diamond_vip", 1) then
+            if _rouletteTables[tableId].isVIP and not exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "diamond_vip", 1) then
                 return cb(false, "vip")
             end
 
@@ -240,8 +240,8 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:LeaveRoulette", function(source, data, cb)
-        --local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:LeaveRoulette", function(source, data, cb)
+        --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local blackjackPlayer = _roulettePlayers[source]
         if not blackjackPlayer then
             return cb(false)
@@ -259,8 +259,8 @@ AddEventHandler("Casino:Server:Startup", function()
     end)
 
     -- Bets
-    Callbacks:RegisterServerCallback("Casino:BetRoulette", function(source, data, cb)
-        --local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:BetRoulette", function(source, data, cb)
+        --local char = exports['sandbox-characters']:FetchCharacterSource(source)
         local roulettePlayer = _roulettePlayers[source]
         if not roulettePlayer or not data then
             return cb(false)
@@ -273,7 +273,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
         if (amount >= 100) and _roulette[roulettePlayer.Table] and not _roulette[roulettePlayer.Table].Started and _roulette[roulettePlayer.Table].Seats[roulettePlayer.LocalChair] then
             if (_roulette[roulettePlayer.Table].Seats[roulettePlayer.LocalChair].TotalBet + amount) <= _rouletteTables[roulettePlayer.Table].maxBet then
-                if Casino.Chips:Modify(source, -amount) then
+                if exports['sandbox-casino']:ChipsModify(source, -amount) then
                     --SendCasinoSpentChipsPhoneNotification(source, amount)
 
                     if amount > 10000 then
@@ -302,11 +302,11 @@ AddEventHandler("Casino:Server:Startup", function()
 
                     cb(true)
                 else
-                    Execute:Client(source, "Notification", "Error", "Not Enough Chips")
+                    exports['sandbox-hud']:NotifError(source, "Not Enough Chips")
                     cb(false)
                 end
             else
-                Execute:Client(source, "Notification", "Error", "Over Table Bet Limit")
+                exports['sandbox-hud']:NotifError(source, "Over Table Bet Limit")
                 cb(false)
             end
         else
@@ -314,7 +314,7 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Chat:RegisterAdminCommand("forceroulette", function(source, args, rawCommand)
+    exports["sandbox-chat"]:RegisterAdminCommand("forceroulette", function(source, args, rawCommand)
         local tid = tonumber(args[1])
         if _roulette[tid] then
             _roulette[tid].Starting = false

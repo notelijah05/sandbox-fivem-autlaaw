@@ -1,83 +1,14 @@
 _insideCasino = false
 _insideCasinoAudio = false
-_CASINO = _CASINO or {}
-
-AddEventHandler("Casino:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Game = exports["sandbox-base"]:FetchComponent("Game")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-	InfoOverlay = exports["sandbox-base"]:FetchComponent("InfoOverlay")
-	Casino = exports["sandbox-base"]:FetchComponent("Casino")
-end
 
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Casino", {
-		"Logger",
-		"Fetch",
-		"Callbacks",
-		"Game",
-		"Menu",
-		"Targeting",
-		"Notification",
-		"Utils",
-		"Animations",
-		"Polyzone",
-		"Jobs",
-		"Weapons",
-		"Progress",
-		"Vehicles",
-		"Targeting",
-		"ListMenu",
-		"Action",
-		"Sounds",
-		"PedInteraction",
-		"Blips",
-		"Keybinds",
-		"Minigame",
-		"Input",
-		"Interaction",
-		"Inventory",
-		"InfoOverlay",
-		"Casino",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-
-		TriggerEvent("Casino:Client:Startup")
-	end)
-end)
-
-AddEventHandler("Proxy:Shared:RegisterReady", function()
-	exports["sandbox-base"]:RegisterComponent("Casino", _CASINO)
+	TriggerEvent("Casino:Client:Startup")
 end)
 
 RegisterNetEvent("Characters:Client:Spawn")
 AddEventHandler("Characters:Client:Spawn", function()
-	Blips:Add("casino", "Diamond Casino & Resort", vector3(956.586, 36.004, 71.429), 680, 22, 1.0, 2, 11)
+	exports["sandbox-blips"]:Add("casino", "Diamond Casino & Resort", vector3(956.586, 36.004, 71.429), 680, 22, 1.0, 2,
+		11)
 
 	LocalPlayer.state.playingCasino = false
 end)
@@ -109,65 +40,66 @@ AddEventHandler("Casino:Client:Startup", function()
 	}
 
 	for k, v in ipairs(casinoDesks) do
-		Targeting.Zones:AddBox("casino-employee-" .. k, "slot-machine", v.center, v.length, v.width, v.options, {
-			{
-				icon = "clipboard-check",
-				text = "Clock In",
-				event = "Casino:Client:ClockIn",
-				data = { job = "casino" },
-				jobPerms = {
-					{
-						job = "casino",
-						reqOffDuty = true,
+		exports['sandbox-targeting']:ZonesAddBox("casino-employee-" .. k, "slot-machine", v.center, v.length, v.width,
+			v.options, {
+				{
+					icon = "clipboard-check",
+					text = "Clock In",
+					event = "Casino:Client:ClockIn",
+					data = { job = "casino" },
+					jobPerms = {
+						{
+							job = "casino",
+							reqOffDuty = true,
+						},
 					},
 				},
-			},
-			{
-				icon = "clipboard",
-				text = "Clock Out",
-				event = "Casino:Client:ClockOut",
-				data = { job = "casino" },
-				jobPerms = {
-					{
-						job = "casino",
-						reqDuty = true,
+				{
+					icon = "clipboard",
+					text = "Clock Out",
+					event = "Casino:Client:ClockOut",
+					data = { job = "casino" },
+					jobPerms = {
+						{
+							job = "casino",
+							reqDuty = true,
+						},
 					},
 				},
-			},
-			{
-				icon = "slot-machine",
-				text = "Close Casino",
-				event = "Casino:Client:OpenClose",
-				data = { state = false },
-				jobPerms = {
-					{
-						job = "casino",
-						reqDuty = true,
+				{
+					icon = "slot-machine",
+					text = "Close Casino",
+					event = "Casino:Client:OpenClose",
+					data = { state = false },
+					jobPerms = {
+						{
+							job = "casino",
+							reqDuty = true,
+						},
 					},
+					isEnabled = function()
+						return GlobalState["CasinoOpen"]
+					end,
 				},
-				isEnabled = function()
-					return GlobalState["CasinoOpen"]
-				end,
-			},
-			{
-				icon = "slot-machine",
-				text = "Open Casino",
-				event = "Casino:Client:OpenClose",
-				data = { state = true },
-				jobPerms = {
-					{
-						job = "casino",
-						reqDuty = true,
+				{
+					icon = "slot-machine",
+					text = "Open Casino",
+					event = "Casino:Client:OpenClose",
+					data = { state = true },
+					jobPerms = {
+						{
+							job = "casino",
+							reqDuty = true,
+						},
 					},
+					isEnabled = function()
+						return not GlobalState["CasinoOpen"]
+					end,
 				},
-				isEnabled = function()
-					return not GlobalState["CasinoOpen"]
-				end,
-			},
-		}, 3.0, true)
+			}, 3.0, true)
 	end
 
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"CasinoStaff1",
 		`u_f_m_casinoshop_01`,
 		vector3(965.357, 48.067, 70.701),
@@ -177,7 +109,7 @@ AddEventHandler("Casino:Client:Startup", function()
 		"seal-question",
 		"WORLD_HUMAN_STAND_IMPATIENT"
 	)
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"CasinoStaff2",
 		`s_m_y_casino_01`,
 		vector3(951.773, 21.896, 70.904),
@@ -188,14 +120,14 @@ AddEventHandler("Casino:Client:Startup", function()
 		"WORLD_HUMAN_GUARD_STAND"
 	)
 
-	Polyzone.Create:Box("casino_inside", vector3(1004.77, 38.26, 77.91), 129.2, 90.0, {
+	exports['sandbox-polyzone']:CreateBox("casino_inside", vector3(1004.77, 38.26, 77.91), 129.2, 90.0, {
 		heading = 305,
 		--debugPoly=true,
 		minZ = 62.71,
 		maxZ = 78.11,
 	}, {})
 
-	Polyzone.Create:Poly("casino_audio", {
+	exports['sandbox-polyzone']:CreatePoly("casino_audio", {
 		vector2(1031.4703369141, 69.031555175781),
 		vector2(1029.1315917969, 70.45630645752),
 		vector2(1020.2162475586, 74.967506408691),
@@ -230,7 +162,7 @@ AddEventHandler("Casino:Client:Startup", function()
 		maxZ = 74.785,
 	})
 
-	PedInteraction:Add(
+	exports['sandbox-pedinteraction']:Add(
 		"CasinoCashier",
 		`s_m_y_casino_01`,
 		vector3(990.372, 31.271, 70.466),
@@ -240,7 +172,7 @@ AddEventHandler("Casino:Client:Startup", function()
 		"seal-question"
 	)
 
-	Targeting.Zones:AddBox("casino-cashier", "cards", vector3(990.35, 31.18, 71.47), 5.4, 2, {
+	exports['sandbox-targeting']:ZonesAddBox("casino-cashier", "cards", vector3(990.35, 31.18, 71.47), 5.4, 2, {
 		heading = 330,
 		--debugPoly=true,
 		minZ = 70.47,
@@ -251,7 +183,7 @@ AddEventHandler("Casino:Client:Startup", function()
 			text = "Cash Out Chips",
 			event = "Casino:Client:StartChipSell",
 			isEnabled = function()
-				return Casino.Chips:Get() > 0
+				return exports['sandbox-casino']:ChipsGet(source) > 0
 			end,
 		},
 		{
@@ -289,22 +221,22 @@ end)
 
 AddEventHandler("Casino:Client:ClockIn", function(_, data)
 	if data and data.job then
-		Jobs.Duty:On(data.job)
+		exports['sandbox-jobs']:DutyOn(data.job)
 	end
 end)
 
 AddEventHandler("Casino:Client:ClockOut", function(_, data)
 	if data and data.job then
-		Jobs.Duty:Off(data.job)
+		exports['sandbox-jobs']:DutyOff(data.job)
 	end
 end)
 
 AddEventHandler("Casino:Client:OpenClose", function(_, data)
-	Callbacks:ServerCallback("Casino:OpenClose", data)
+	exports["sandbox-base"]:ServerCallback("Casino:OpenClose", data)
 end)
 
 AddEventHandler("Casino:Client:PurchaseVIP", function(_, data)
-	Callbacks:ServerCallback("Casino:PurchaseVIP", data)
+	exports["sandbox-base"]:ServerCallback("Casino:PurchaseVIP", data)
 end)
 
 RegisterNetEvent("Casino:Client:RefreshInt", function()

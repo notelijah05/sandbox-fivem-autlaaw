@@ -10,12 +10,12 @@ AddEventHandler("Casino:Server:Startup", function()
     GlobalState["Casino:WheelLastRotation"] = 0.0
     GlobalState["Casino:WheelLocked"] = false
 
-    Callbacks:RegisterServerCallback("Casino:WheelStart", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:WheelStart", function(source, data, cb)
         if not GlobalState["Casino:WheelStarted"] then
             if data?.turbo then
-                local char = Fetch:CharacterSource(source)
+                local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
-                if char and Wallet:Has(source, 7500) and Inventory.Items:Has(char:GetData("SID"), 1, "diamond_vip", 1) then
+                if char and exports['sandbox-finance']:WalletHas(source, 7500) and exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "diamond_vip", 1) then
                     GlobalState["Casino:WheelStarted"] = {
                         Source = source,
                         Turbo = true,
@@ -30,7 +30,7 @@ AddEventHandler("Casino:Server:Startup", function()
                     cb(false, true)
                 end
             else
-                if Wallet:Has(source, 1500) then
+                if exports['sandbox-finance']:WalletHas(source, 1500) then
                     GlobalState["Casino:WheelStarted"] = {
                         Source = source,
                         Turbo = false,
@@ -50,8 +50,8 @@ AddEventHandler("Casino:Server:Startup", function()
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:WheelSpin", function(source, data, cb)
-        if GlobalState["Casino:WheelStarted"] and GlobalState["Casino:WheelStarted"].Source == source and Wallet:Modify(source, GlobalState["Casino:WheelStarted"].Turbo and -7500 or -1500) then
+    exports["sandbox-base"]:RegisterServerCallback("Casino:WheelSpin", function(source, data, cb)
+        if GlobalState["Casino:WheelStarted"] and GlobalState["Casino:WheelStarted"].Source == source and exports['sandbox-finance']:WalletModify(source, GlobalState["Casino:WheelStarted"].Turbo and -7500 or -1500) then
             GlobalState["Casino:WheelSpinning"] = source
 
             if GlobalState["Casino:WheelStarted"].Turbo then
@@ -92,14 +92,14 @@ AddEventHandler("Casino:Server:Startup", function()
             _wheelSpins += 1
             if _wheelSpins > 10 then
                 _wheelSpins = 0
-                Casino.Config:Set("wheel-accumulator", _wheelAccumulator)
+                exports['sandbox-casino']:ConfigSet("wheel-accumulator", _wheelAccumulator)
             end
         else
             cb(false)
         end
     end)
 
-    Callbacks:RegisterServerCallback("Casino:UnlockWheel", function(source, data, cb)
+    exports["sandbox-base"]:RegisterServerCallback("Casino:UnlockWheel", function(source, data, cb)
         if Player(source).state.onDuty == "casino" and GlobalState["Casino:WheelLocked"] then
             GlobalState["Casino:WheelLocked"] = false
             cb(true)
@@ -112,11 +112,11 @@ AddEventHandler("Casino:Server:Startup", function()
         Wait(250)
     end
 
-    _wheelAccumulator = Casino.Config:Get("wheel-accumulator") or 0
+    _wheelAccumulator = exports['sandbox-casino']:ConfigGet("wheel-accumulator") or 0
 end)
 
 AddEventHandler("Core:Server:ForceSave", function()
-    Casino.Config:Set("wheel-accumulator", _wheelAccumulator)
+    exports['sandbox-casino']:ConfigSet("wheel-accumulator", _wheelAccumulator)
 end)
 
 function GenerateWheelPrize()
@@ -139,10 +139,10 @@ function GenerateWheelPrize()
         table.insert(prizes, { 5, { slice = 19, type = "vehicle", bigWin = true } })
     end
 
-    local randomPrize = Utils:WeightedRandom(prizes)
+    local randomPrize = exports['sandbox-base']:UtilsWeightedRandom(prizes)
 
     if randomPrize.bigWin then
-        Casino.Config:Set("wheel-accumulator", 0)
+        exports['sandbox-casino']:ConfigSet("wheel-accumulator", 0)
         _wheelAccumulator = 0
     end
 
@@ -172,7 +172,7 @@ function SpinTheFuckingWheel(slice)
 end
 
 function GiveWheelPrize(source, randomPrize)
-    local char = Fetch:CharacterSource(source)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char then
         local winValue = 0
 
@@ -190,7 +190,7 @@ function GiveWheelPrize(source, randomPrize)
                 end
             end
 
-            if Wallet:Modify(source, value) then
+            if exports['sandbox-finance']:WalletModify(source, value) then
                 winValue = value
 
                 if value >= 90000 then
@@ -209,14 +209,14 @@ function GiveWheelPrize(source, randomPrize)
                 end
             end
 
-            if Casino.Chips:Modify(source, value) then
+            if exports['sandbox-casino']:ChipsModify(source, value) then
                 SendCasinoWonChipsPhoneNotification(source, value)
 
                 winValue = value
                 _wheelAccumulator -= value
             end
         elseif randomPrize.type == "alcohol" then
-            Loot:CustomWeightedSetWithCount({
+            exports['sandbox-inventory']:LootCustomWeightedSetWithCount({
                 { 25, { name = "diamond_drink", min = 1, max = 1 } },
                 { 25, { name = "wine_glass", min = 1, max = 1 } },
                 { 25, { name = "whiskey_glass", min = 1, max = 1 } },

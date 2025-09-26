@@ -2,12 +2,7 @@ _warrants = {}
 _charges = {}
 _notices = {}
 
-local _ran = false
-
 function Startup()
-	if _ran then
-		return
-	end
 	RegisterTasks()
 
 	-- Set Expired Active Warrants to Expired
@@ -17,9 +12,9 @@ function Startup()
 	})
 
 	_charges = MySQL.query.await("SELECT * from mdt_charges")
-	Logger:Trace("MDT", "Loaded ^2" .. #_charges .. "^7 Charges", { console = true })
+	exports['sandbox-base']:LoggerTrace("MDT", "Loaded ^2" .. #_charges .. "^7 Charges", { console = true })
 
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "vehicles",
 		query = {
 			["Flags.0"] = { ["$exists"] = true },
@@ -40,12 +35,10 @@ function Startup()
 
 		for k, v in ipairs(results) do
 			if v.RegisteredPlate and v.Type == 0 then
-				Radar:AddFlaggedPlate(v.RegisteredPlate, "Vehicle Flagged in MDT")
+				exports['sandbox-radar']:AddFlaggedPlate(v.RegisteredPlate, "Vehicle Flagged in MDT")
 			end
 		end
 	end)
-
-	_ran = true
 
 	-- SetHttpHandler(function(req, res)
 	-- 	if req.path == '/charges' then
@@ -53,21 +46,29 @@ function Startup()
 	-- 	end
 	-- end)
 
-	Database.Game:update({
+	exports['sandbox-base']:DatabaseGameUpdate({
 		collection = "vehicles",
 		query = {
 			["$and"] = {
-				{ ["$nor"] = {
-					{ Strikes = { ["$elemMatch"] = {
-						Date = {
-							["$gte"] = (os.time() * 1000) - (60 * 60 * 24 * 30 * 1000)
-						}
-					}}}
-				}},
 				{
-					Strikes = { ["$elemMatch"] = {
-						Date = { ["$lte"] = (os.time() * 1000) - (60 * 60 * 24 * 30 * 1000) }
-					}}
+					["$nor"] = {
+						{
+							Strikes = {
+								["$elemMatch"] = {
+									Date = {
+										["$gte"] = (os.time() * 1000) - (60 * 60 * 24 * 30 * 1000)
+									}
+								}
+							}
+						}
+					}
+				},
+				{
+					Strikes = {
+						["$elemMatch"] = {
+							Date = { ["$lte"] = (os.time() * 1000) - (60 * 60 * 24 * 30 * 1000) }
+						}
+					}
 				}
 			},
 		},

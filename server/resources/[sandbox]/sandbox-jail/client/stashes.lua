@@ -13,7 +13,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 
 	if GlobalState.JailStashLocations ~= nil then
 		for key, data in ipairs(GlobalState.JailStashLocations) do
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				string.format("prison_stash_%s", key),
 				"lock",
 				data.coords,
@@ -36,13 +36,13 @@ AddEventHandler("Characters:Client:Spawn", function()
 						-- action = function()
 						-- 	local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
 
-						-- 	Callbacks:ServerCallback("StorageUnits:PoliceRaid", {
+						-- 	exports["sandbox-base"]:ServerCallback("StorageUnits:PoliceRaid", {
 						-- 		unit = nearUnit.unitId
 						-- 	}, function(success)
 						-- 		if not success then
-						-- 			Notification:Error("Error!")
+						-- 			exports["sandbox-hud"]:NotifError("Error!")
 						-- 		else
-						-- 			Sounds.Play:Location(LocalPlayer.state.myPos, 10, "breach.ogg", 0.15)
+						-- 			exports["sandbox-sounds"]:PlayLocation(LocalPlayer.state.myPos, 10, "breach.ogg", 0.15)
 						-- 		end
 						-- 	end)
 						-- end,
@@ -60,14 +60,14 @@ AddEventHandler("Characters:Client:Spawn", function()
 end)
 
 AddEventHandler("Prison:Client:Target:Stash", function(entity, data)
-	Callbacks:ServerCallback("Inventory:PrisonStash:Open", data.stashType)
+	exports["sandbox-base"]:ServerCallback("Inventory:PrisonStash:Open", data.stashType)
 end)
 
 AddEventHandler("Prison:Client:Stash:Raid", function(entity, data)
 	local menu = {}
 	local playerSID = nil
 
-	Input:Show("Prison Stash Raid", "Enter Prisoner State ID", {
+	exports['sandbox-hud']:InputShow("Prison Stash Raid", "Enter Prisoner State ID", {
 		{
 			id = "stateid",
 			type = "text",
@@ -85,13 +85,13 @@ end)
 
 AddEventHandler("Inventory:Client:PrisonStash:Raid", function(values, data)
 	if values and values.stateid and #values.stateid >= 1 then
-		Callbacks:ServerCallback("Inventory:PrisonStash:Raid", {
+		exports["sandbox-base"]:ServerCallback("Inventory:PrisonStash:Raid", {
 			stateid = values.stateid,
 		}, function(success)
 			-- if success then
-			-- 	Notification:Success("Updated Passcode")
+			-- 	exports["sandbox-hud"]:NotifSuccess("Updated Passcode")
 			-- else
-			-- 	Notification:Error("Failed to Update Passcode")
+			-- 	exports["sandbox-hud"]:NotifError("Failed to Update Passcode")
 			-- end
 		end)
 	end

@@ -150,7 +150,7 @@ end
 local linkPromise
 function GetBowlingTVLink()
     linkPromise = promise.new()
-    Input:Show('Bowling', 'URL', {
+    exports['sandbox-hud']:InputShow('Bowling', 'URL', {
         {
             id = 'name',
             type = 'text',
@@ -172,11 +172,11 @@ end)
 
 AddEventHandler('Bowling:Client:SetTV', function()
     local tvLink = GetBowlingTVLink()
-    Callbacks:ServerCallback('Bowling:UpdateTVLink', tvLink, function(success)
+    exports["sandbox-base"]:ServerCallback('Bowling:UpdateTVLink', tvLink, function(success)
         if success then
             SendBowlingNotification('Updated Link!')
         else
-            Notification:Error('Error', 5000, 'bowling-ball-pin')
+            exports["sandbox-hud"]:NotifError('Error', 5000, 'bowling-ball-pin')
         end
     end)
 end)

@@ -70,7 +70,7 @@ _bikeStandAvailable = {
 function CreateBikeStands()
 	for k, v in ipairs(_bikeStands) do
 		if v.interactionPed then
-			PedInteraction:Add(
+			exports['sandbox-pedinteraction']:Add(
 				"bike_stand_" .. k,
 				v.interactionPed.model,
 				v.coords,
@@ -94,14 +94,15 @@ end
 function CreateBikeStandBlips()
 	for k, v in ipairs(_bikeStands) do
 		if v.blip then
-			Blips:Add("bike_stand_" .. k, "Bicycle Stand", v.coords, v.blip.sprite, v.blip.color, v.blip.scale)
+			exports["sandbox-blips"]:Add("bike_stand_" .. k, "Bicycle Stand", v.coords, v.blip.sprite, v.blip.color,
+				v.blip.scale)
 		end
 	end
 end
 
 AddEventHandler("BikeStands:Client:Open", function(entityData, data)
 	if _justBoughtFuckingBike[data.location] then
-		return Notification:Error("You Just Bought a Bike off Me! Weirdo!")
+		return exports["sandbox-hud"]:NotifError("You Just Bought a Bike off Me! Weirdo!")
 	end
 
 	local menuData = {
@@ -120,7 +121,7 @@ AddEventHandler("BikeStands:Client:Open", function(entityData, data)
 		})
 	end
 
-	ListMenu:Show(menuData)
+	exports['sandbox-hud']:ListMenuShow(menuData)
 end)
 
 AddEventHandler("BikeStands:Client:Purchase", function(data)
@@ -131,7 +132,7 @@ AddEventHandler("BikeStands:Client:Purchase", function(data)
 			return
 		end
 
-		Callbacks:ServerCallback("BikeStand:Purchase", {
+		exports["sandbox-base"]:ServerCallback("BikeStand:Purchase", {
 			name = bikeData.name,
 			vehicleHash = bikeData.model,
 			price = bikeData.price,
@@ -140,9 +141,10 @@ AddEventHandler("BikeStands:Client:Purchase", function(data)
 		}, function(success)
 			if success then
 				_justBoughtFuckingBike[data.location] = true
-				Notification:Success(string.format("Purchased %s, It Has Been Brought out for You.", bikeData.name))
+				exports["sandbox-hud"]:NotifSuccess(string.format("Purchased %s, It Has Been Brought out for You.",
+					bikeData.name))
 			else
-				Notification:Error("Purchase Failed")
+				exports["sandbox-hud"]:NotifError("Purchase Failed")
 			end
 		end)
 	end

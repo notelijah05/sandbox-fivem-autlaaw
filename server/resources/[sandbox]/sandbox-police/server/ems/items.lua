@@ -1,28 +1,28 @@
 function EMSItems()
-	-- Inventory.Items:RegisterUse("tourniquet", "MedicalItems", function(source, item)
-	-- 	local char = Fetch:CharacterSource(source)
+	-- exports['sandbox-inventory']:RegisterUse("tourniquet", "MedicalItems", function(source, item)
+	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	-- 	if char:GetData("Damage").Bleed > 0 then
-	-- 		if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+	-- 		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 	-- 			Player(source).state.tourniquet = (
 	-- 					GetGameTimer() + ((1000 * 60 * 5) / char:GetData("Damage").Bleed or 1)
 	-- 				)
 	-- 		end
 	-- 	else
-	-- 		Execute:Client(source, "Notification", "Error", "You're Not Bleeding")
+	-- 		exports['sandbox-hud']:NotifError(source, "You're Not Bleeding")
 	-- 	end
 	-- end)
 
-	Inventory.Items:RegisterUse("morphine", "MedicalItems", function(source, item)
-		if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
-			Damage.Effects:Painkiller(source, 1)
+	exports['sandbox-inventory']:RegisterUse("morphine", "MedicalItems", function(source, item)
+		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+			exports['sandbox-damage']:EffectsPainkiller(source, 1)
 		end
 	end)
 
-	Inventory.Items:RegisterUse("oxy", "MedicalItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-inventory']:RegisterUse("oxy", "MedicalItems", function(source, item)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
-		if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
-			Damage.Effects:Painkiller(source, 2)
+		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+			exports['sandbox-damage']:EffectsPainkiller(source, 2)
 
 			if pState.healTicks ~= nil then
 				local f = pState.healTicks
@@ -38,17 +38,17 @@ function EMSItems()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("bandage", "MedicalItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-inventory']:RegisterUse("bandage", "MedicalItems", function(source, item)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local ped = GetPlayerPed(source)
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
 		local pState = Player(source).state
-		if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 			local heal = 10
 			if curr < (max * 0.75) then
 				local p = promise.new()
-				Callbacks:ClientCallback(source, "EMS:Heal", heal, function(s)
+				exports["sandbox-base"]:ClientCallback(source, "EMS:Heal", heal, function(s)
 					p:resolve(s)
 				end)
 				Citizen.Await(p)
@@ -68,19 +68,19 @@ function EMSItems()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("firstaid", "MedicalItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-inventory']:RegisterUse("firstaid", "MedicalItems", function(source, item)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local ped = GetPlayerPed(source)
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
 		local pState = Player(source).state
-		if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 			local p = promise.new()
 			local heal = 15
 			if curr + heal > max then
 				heal = max - curr
 			end
-			Callbacks:ClientCallback(source, "EMS:Heal", heal, function(s)
+			exports["sandbox-base"]:ClientCallback(source, "EMS:Heal", heal, function(s)
 				p:resolve(s)
 			end)
 			Citizen.Await(p)
@@ -102,19 +102,19 @@ function EMSItems()
 		end
 	end)
 
-	Inventory.Items:RegisterUse("ifak", "MedicalItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-inventory']:RegisterUse("ifak", "MedicalItems", function(source, item)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local ped = GetPlayerPed(source)
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
 		local pState = Player(source).state
-		if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 			local p = promise.new()
 			local heal = 30
 			if curr + heal > max then
 				heal = max - curr
 			end
-			Callbacks:ClientCallback(source, "EMS:Heal", heal, function(s)
+			exports["sandbox-base"]:ClientCallback(source, "EMS:Heal", heal, function(s)
 				p:resolve(s)
 			end)
 			Citizen.Await(p)
@@ -138,24 +138,24 @@ function EMSItems()
 		end
 	end)
 
-	-- Inventory.Items:RegisterUse("gauze", "MedicalItems", function(source, item)
-	-- 	local char = Fetch:CharacterSource(source)
-	-- 	if Inventory.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+	-- exports['sandbox-inventory']:RegisterUse("gauze", "MedicalItems", function(source, item)
+	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
+	-- 	if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 	-- 		local dmg = char:GetData("Damage")
 	-- 		if dmg.Bleed > 1 then
 	-- 			dmg.Bleed = dmg.Bleed - 1
 	-- 			char:SetData("Damage", dmg)
 	-- 		else
-	-- 			Execute:Client(source, "Notification", "Error", "You continue bleeding through the gauze")
+	-- 			exports['sandbox-hud']:NotifError(source, "You continue bleeding through the gauze")
 	-- 		end
 	-- 	end
 	-- end)
 
-	Inventory.Items:RegisterUse("medicalkit", "MedicalItems", function(source, item)
-		local char = Fetch:CharacterSource(source)
-		if Jobs.Permissions:HasJob(source, "ems", false, false, 2) then
+	exports['sandbox-inventory']:RegisterUse("medicalkit", "MedicalItems", function(source, item)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if exports['sandbox-jobs']:HasJob(source, "ems", false, false, 2) then
 			local myCoords = GetEntityCoords(GetPlayerPed(source))
-			for k, v in pairs(Fetch:AllCharacters()) do
+			for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 				if v ~= nil then
 					if v:GetData("Source") ~= source and Player(v:GetData("Source")).state.isHospitalized then
 						local tPos = GetEntityCoords(GetPlayerPed(v:GetData("Source")))
@@ -167,9 +167,9 @@ function EMSItems()
 					end
 				end
 			end
-			Execute:Client(source, "Notification", "Error", "Not Near Any Hospitalized Patients")
+			exports['sandbox-hud']:NotifError(source, "Not Near Any Hospitalized Patients")
 		else
-			Execute:Client(source, "Notification", "Error", "You're not trained to use this")
+			exports['sandbox-hud']:NotifError(source, "You're not trained to use this")
 		end
 	end)
 end

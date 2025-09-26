@@ -4,16 +4,16 @@ local _joiners = {}
 local _Prisoners = {}
 
 AddEventHandler("Labor:Server:Startup", function()
-	WaitList:Create("prison", "individual_time", {
+	exports['sandbox-base']:WaitListCreate("prison", "individual_time", {
 		event = "Labor:Server:Prison:Queue",
 		delay = 30000,
 	})
 
-	Callbacks:RegisterServerCallback("Prison:Action", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Prison:Action", function(source, data, cb)
 		if _joiners[source] ~= nil and _Prisoners[_joiners[source]] ~= nil then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
-				Labor.Offers:Update(_joiners[source], _JOB, 1, true, {
+				exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true, {
 					title = "Prison Labor",
 					label = "Prison",
 					icon = "link",
@@ -21,27 +21,24 @@ AddEventHandler("Labor:Server:Startup", function()
 				})
 			then
 				_Prisoners[_joiners[source]].state = 0
-				Wallet:Modify(source, 150)
-				Labor.Workgroups:SendEvent(
+				exports['sandbox-finance']:WalletModify(source, 150)
+				exports['sandbox-labor']:SendWorkgroupEvent(
 					_joiners[source],
 					string.format("Prison:Client:%s:Cleanup", _joiners[source])
 				)
-				Labor.Offers:Task(_joiners[source], _JOB, "Wait For Work", {
+				exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Wait For Work", {
 					title = "Prison Labor",
 					label = "Prison",
 					icon = "link",
 					color = "transparent",
 				})
 
-				if not Jail:IsReleaseEligible(source) then
-					local char = Fetch:CharacterSource(source)
+				if not exports['sandbox-jail']:IsReleaseEligible(source) then
+					local char = exports['sandbox-characters']:FetchCharacterSource(source)
 					local jailed = char:GetData("Jailed")
 					jailed.Release = jailed.Release - _Prisoners[_joiners[source]].nodes.timeReduce
 					char:SetData("Jailed", jailed)
-					Execute:Client(
-						source,
-						"Notification",
-						"Info",
+					exports['sandbox-hud']:NotifInfo(source,
 						string.format(
 							"Your Sentence Has Been Reduced By %s Months",
 							math.ceil(_Prisoners[_joiners[source]].nodes.timeReduce / 60)
@@ -49,24 +46,24 @@ AddEventHandler("Labor:Server:Startup", function()
 					)
 				end
 
-				WaitList.Interact:Inactive("prison", _joiners[source])
+				exports['sandbox-base']:WaitListInteractInactive("prison", _joiners[source])
 			end
 			cb(false)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Prison:TurnIn", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Prison:TurnIn", function(source, data, cb)
 		if _joiners[source] ~= nil and _Prisoners[_joiners[source]].tasks >= 3 then
-			local char = Fetch:CharacterSource(source)
+			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char:GetData("TempJob") == _JOB then
-				Labor.Offers:ManualFinish(_joiners[source], _JOB)
+				exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 				cb(true)
 			else
-				Execute:Client(source, "Notification", "Error", "Unable To Finish Job")
+				exports['sandbox-hud']:NotifError(source, "Unable To Finish Job")
 				cb(false)
 			end
 		else
-			Execute:Client(source, "Notification", "Error", "You've Not Completed All Routes")
+			exports['sandbox-hud']:NotifError(source, "You've Not Completed All Routes")
 			cb(false)
 		end
 	end)
@@ -85,12 +82,12 @@ AddEventHandler("Labor:Server:Prison:Queue", function(source, data)
 		_Prisoners[_joiners[source]].jobIndex = f
 		_Prisoners[_joiners[source]].nodes = deepcopy(_prisonJobs[f])
 
-		Labor.Workgroups:SendEvent(
+		exports['sandbox-labor']:SendWorkgroupEvent(
 			_joiners[source],
 			string.format("Prison:Client:%s:Receive", _joiners[source]),
 			_Prisoners[_joiners[source]].nodes
 		)
-		Labor.Offers:Start(
+		exports['sandbox-labor']:StartOffer(
 			_joiners[source],
 			_JOB,
 			_Prisoners[_joiners[source]].nodes.action,
@@ -115,18 +112,18 @@ AddEventHandler("Prison:Server:OnDuty", function(joiner, members, isWorkgroup)
 		state = 0,
 	}
 
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
 
 	TriggerClientEvent("Prison:Client:OnDuty", joiner, joiner, os.time())
-	Labor.Offers:Task(joiner, _JOB, "Wait For Work", {
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Wait For Work", {
 		title = "Prison Labor",
 		label = "Prison",
 		icon = "link",
 		color = "transparent",
 	})
 
-	WaitList.Interact:Add("prison", joiner, {
+	exports['sandbox-base']:WaitListInteractAdd("prison", joiner, {
 		joiner = joiner,
 	})
 end)
@@ -134,7 +131,7 @@ end)
 AddEventHandler("Prison:Server:OffDuty", function(source, joiner)
 	_joiners[source] = nil
 	TriggerClientEvent("Prison:Client:OffDuty", source)
-	WaitList.Interact:Remove("prison", source)
+	exports['sandbox-base']:WaitListInteractRemove("prison", source)
 end)
 
 AddEventHandler("Prison:Server:FinishJob", function(joiner)

@@ -14,7 +14,7 @@ function OpenControllerMenu()
 
     local editedFrontCamber, editedRearCamber
 
-    wheelMenu = Menu:Create('vehicle_wheels', 'Vehicle Wheels', function()
+    wheelMenu = exports['sandbox-menu']:Create('vehicle_wheels', 'Vehicle Wheels', function()
         wheelMenuOpen = true
 
         CreateThread(function()
@@ -45,7 +45,7 @@ function OpenControllerMenu()
     if fitmentState and fitmentState?.frontCamber then
         currentFrontCamberWidth = fitmentState?.frontCamber
     else
-        currentFrontCamberWidth = Utils:Round(GetVehicleWheelYRotation(EDITING_VEHICLE, 1) * 2, 2)
+        currentFrontCamberWidth = exports['sandbox-base']:UtilsRound(GetVehicleWheelYRotation(EDITING_VEHICLE, 1) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Front Track Camber', {
@@ -61,7 +61,7 @@ function OpenControllerMenu()
     if fitmentState and fitmentState?.rearCamber then
         currentRearCamberWidth = fitmentState?.rearCamber
     else
-        currentRearCamberWidth = Utils:Round(GetVehicleWheelYRotation(EDITING_VEHICLE, 3) * 2, 2)
+        currentRearCamberWidth = exports['sandbox-base']:UtilsRound(GetVehicleWheelYRotation(EDITING_VEHICLE, 3) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Rear Track Camber', {
@@ -74,10 +74,10 @@ function OpenControllerMenu()
     end)
 
     wheelMenu.Add:Button('Save', { success = true }, function()
-        Logger:Trace('Fitment', 'Attempt Save')
+        exports['sandbox-base']:LoggerTrace('Fitment', 'Attempt Save')
 
         if editedFrontCamber or editedRearCamber then
-            Callbacks:ServerCallback('Vehicles:WheelFitment', {
+            exports["sandbox-base"]:ServerCallback('Vehicles:WheelFitment', {
                 vNet = VehToNet(EDITING_VEHICLE),
                 fitment = {
                     rearCamber = editedRearCamber,
@@ -85,15 +85,15 @@ function OpenControllerMenu()
                 },
             }, function(success, newNewData)
                 if success then
-                    Notification:Success('Wheel Camber Saved')
+                    exports["sandbox-hud"]:NotifSuccess('Wheel Camber Saved')
                 else
-                    Notification:Error('Wheel Camber Saving Failed')
+                    exports["sandbox-hud"]:NotifError('Wheel Camber Saving Failed')
                 end
             end)
 
             wheelMenu:Close()
         else
-            Notification:Error('There Was Nothing to Save')
+            exports["sandbox-hud"]:NotifError('There Was Nothing to Save')
         end
     end)
 
@@ -102,9 +102,9 @@ function OpenControllerMenu()
     end)
 
     wheelMenu.Add:Button('Reset', { error = true }, function()
-        Logger:Trace('Fitment', 'Attempt Reset')
+        exports['sandbox-base']:LoggerTrace('Fitment', 'Attempt Reset')
 
-        Callbacks:ServerCallback('Vehicles:WheelFitment', {
+        exports["sandbox-base"]:ServerCallback('Vehicles:WheelFitment', {
             vNet = VehToNet(EDITING_VEHICLE),
             fitment = {
                 rearCamber = nil,
@@ -112,9 +112,9 @@ function OpenControllerMenu()
             },
         }, function(success, newNewData)
             if success then
-                Notification:Success('Wheel Camber Reset')
+                exports["sandbox-hud"]:NotifSuccess('Wheel Camber Reset')
             else
-                Notification:Error('Wheel Camber Reset Failed')
+                exports["sandbox-hud"]:NotifError('Wheel Camber Reset Failed')
             end
         end)
 

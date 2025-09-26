@@ -28,14 +28,14 @@ end)
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	LoadTracks()
 
-	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		TriggerLatentClientEvent("Phone:Client:Blueline:StoreTracks", source, 50000, _tracks)
 		TriggerClientEvent("Phone:Client:Blueline:Spawn", source, {
 			races = _races,
 		})
 	end, 2)
-	Middleware:Add("Phone:UIReset", function(source)
+	exports['sandbox-base']:MiddlewareAdd("Phone:UIReset", function(source)
 		TriggerLatentClientEvent("Phone:Client:Blueline:StoreTracks", source, 50000, _tracks)
 		TriggerClientEvent("Phone:Client:Blueline:Spawn", source, {
 			races = _races,
@@ -49,7 +49,7 @@ function ReloadRaceTracksPD()
 end
 
 function LeaveAnyRacePD(source)
-	local char = Fetch:CharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil and char:GetData("Callsign") then
 		local alias = tostring(char:GetData("Callsign"))
 		for k, v in pairs(_races) do
@@ -211,7 +211,7 @@ end
 -- TODO: Add check for player-owned vehicle
 RegisterServerEvent("Phone:Blueline:FinishRace", function(nId, data, laps, plate, vehName)
 	local src = source
-	local char = Fetch:CharacterSource(src)
+	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	local alias = tostring(char:GetData("Callsign"))
 
 	local vehEnt = Entity(NetworkGetEntityFromNetworkId(nId)).state
@@ -252,7 +252,7 @@ RegisterServerEvent("Phone:Blueline:FinishRace", function(nId, data, laps, plate
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Blueline:GetTrack", function(src, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:GetTrack", function(src, data, cb)
 		for k, v in ipairs(_tracks) do
 			if v.id == data then
 				cb(v)
@@ -262,8 +262,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		cb(nil)
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:SaveTrack", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:SaveTrack", function(src, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = tostring(char:GetData("Callsign"))
 
 		if alias ~= nil then
@@ -295,8 +295,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:DeleteTrack", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:DeleteTrack", function(src, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = tostring(char:GetData("Callsign"))
 		if alias ~= nil then
 			local qrys = {}
@@ -326,8 +326,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:ResetTrackHistory", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:ResetTrackHistory", function(src, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = tostring(char:GetData("Callsign"))
 		if alias ~= nil then
 			MySQL.query("DELETE FROM blueline_track_history WHERE track = ?", {
@@ -340,9 +340,9 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:CreateRace", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
-		if Jobs.Permissions:HasJob(src, "police", false, false, false, false, "PD_MANAGE_TRIALS") then
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:CreateRace", function(src, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
+		if exports['sandbox-jobs']:HasJob(src, "police", false, false, false, false, "PD_MANAGE_TRIALS") then
 			data.host_id = char:GetData("SID")
 			data.host_src = src
 			data.time = os.time()
@@ -376,12 +376,12 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 				_races[data.id] = table.copy(data)
 				_trackData[data.id] = table.copy(tmp)
-				for k, v in pairs(Fetch:AllCharacters()) do
+				for k, v in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
 					if v ~= nil then
 						TriggerClientEvent("Phone:Client:Blueline:CreateRace", v:GetData("Source"), data)
-						local dutyData = Jobs.Duty:Get(v:GetData("Source"))
+						local dutyData = exports['sandbox-jobs']:DutyGet(v:GetData("Source"))
 						if v:GetData("Source") ~= src and dutyData?.Id == "police" then
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								v:GetData("Source"),
 								string.format("New Event: %s", data.name),
 								string.format("%s created an event", v:GetData("Callsign")),
@@ -404,8 +404,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:CancelRace", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:CancelRace", function(src, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		if _races[data].host_id == char:GetData("SID") then
 			_races[data].state = -1
@@ -420,8 +420,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:StartRace", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:StartRace", function(src, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		if _races[data].host_id == char:GetData("SID") then
 			local ploc = GetEntityCoords(GetPlayerPed(src))
 			local dist = #(
@@ -449,8 +449,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:EndRace", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:EndRace", function(src, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 
 		if _races[data].host_id == char:GetData("SID") then
 			FinishRacePD(data)
@@ -459,8 +459,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:JoinRace", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:JoinRace", function(src, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = tostring(char:GetData("Callsign"))
 
 		for k, v in ipairs(_races) do
@@ -471,12 +471,12 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 
 		print(data)
-		if Jobs.Permissions:HasJob(src, "police") and alias ~= nil and _races[data].state == 0 then
+		if exports['sandbox-jobs']:HasJob(src, "police") and alias ~= nil and _races[data].state == 0 then
 			if
 				_races[data].class ~= "All"
 				and CheckVehicleAgainstClass(_races[data].class, char:GetData("Source")) == false
 			then
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					char:GetData("Source"),
 					"Unable to Join Race",
 					"This vehicle is not in the right class.",
@@ -499,8 +499,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Blueline:LeaveRace", function(src, data, cb)
-		local char = Fetch:CharacterSource(src)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Blueline:LeaveRace", function(src, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = tostring(char:GetData("Callsign"))
 
 		if alias ~= nil and _races[data].state == 0 then

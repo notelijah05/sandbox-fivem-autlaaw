@@ -1,0 +1,49 @@
+COMPONENTS.Discord = {
+	_required = { "Enabled", "GetMember" },
+	_name = "base",
+	Enabled = true,
+	Request = function(self, method, endpoint, jsondata)
+		local data = nil
+		PerformHttpRequest(
+			"https://discordapp.com/api/" .. endpoint,
+			function(errorCode, resultData, resultHeaders)
+				data = {
+					data = resultData,
+					code = errorCode,
+					headers = resultHeaders,
+				}
+
+				if data.code ~= nil and data.code ~= 200 then
+					exports['sandbox-base']:LoggerError("Discord", "Error: " .. data.code, { console = true })
+				end
+
+				if data.data ~= nil then
+					data.data = json.decode(data.data)
+				end
+			end,
+			method,
+			#jsondata > 0 and json.encode(jsondata) or "",
+			{
+				["Content-Type"] = "application/json",
+				["Authorization"] = "Bot " .. exports["sandbox-base"]:GetDiscordBotToken(),
+			}
+		)
+
+		while data == nil do
+			Wait(0)
+		end
+
+		return data
+	end,
+	GetMember = function(self, discord)
+		local endpoint = ("guilds/%s/members/%s"):format(exports['sandbox-base']:ConfigGetServer().ID, discord)
+		return self:Request('GET', endpoint, {})
+	end
+}
+
+CreateThread(function()
+	while true do
+		GlobalState["PlayerCount"] = exports['sandbox-base']:FetchCount()
+		Wait(30000)
+	end
+end)

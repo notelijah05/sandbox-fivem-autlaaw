@@ -5,8 +5,8 @@ local oxygenTank = nil
 local oxygenMask = nil
 
 AddEventHandler("Characters:Client:Spawn", function()
-	Buffs:RegisterBuff("oxygen-tank", "mask-ventilator", "#457F88", -1, "permanent")
-	Hud:RegisterStatus("oxygen", 100, 100, "lungs", "#457F88", true, false, {
+	exports['sandbox-hud']:RegisterBuff("oxygen-tank", "mask-ventilator", "#457F88", -1, "permanent")
+	exports['sandbox-hud']:RegisterStatus("oxygen", 100, 100, "lungs", "#457F88", true, false, {
 		hideHigh = true,
 		order = 3,
 	})
@@ -74,11 +74,11 @@ end)
 
 function RemoveScubaGear()
 	if IsPedSwimming(LocalPlayer.state.ped) then
-		Notification:Error("Can't Take Off Gear Whilst Swimming")
+		exports["sandbox-hud"]:NotifError("Can't Take Off Gear Whilst Swimming")
 		return
 	end
 
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "scuba_gear",
 		duration = 2500,
 		label = "Removing Scuba Gear",
@@ -97,7 +97,7 @@ function RemoveScubaGear()
 		if not cancelled then
 			oxygenDepletionRate = 1.25
 
-			Hud:RegisterStatus("oxygen", 100, 100, "lungs", "#457F88", true, true, {
+			exports['sandbox-hud']:RegisterStatus("oxygen", 100, 100, "lungs", "#457F88", true, true, {
 				hideHigh = true,
 				order = 3,
 			})
@@ -108,14 +108,14 @@ function RemoveScubaGear()
 end
 
 function RegisterOxygenCallbacks()
-	Callbacks:RegisterClientCallback("Status:UseScubaGear", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Status:UseScubaGear", function(data, cb)
 		if IsPedSwimming(LocalPlayer.state.ped) then
-			Notification:Error("Can't Put On Scuba Gear Whilst Swimming")
+			exports["sandbox-hud"]:NotifError("Can't Put On Scuba Gear Whilst Swimming")
 			return
 		end
 
 		if oxygenDepletionRate >= 1 then
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "scuba_gear",
 				duration = 5000,
 				label = "Fitting Scuba Gear",
@@ -135,7 +135,7 @@ function RegisterOxygenCallbacks()
 				if not cancelled then
 					oxygenDepletionRate = 0.025
 
-					Hud:RegisterStatus("oxygen", 100, 100, "mask-snorkel", "#457F88", true, true, {
+					exports['sandbox-hud']:RegisterStatus("oxygen", 100, 100, "mask-snorkel", "#457F88", true, true, {
 						hideHigh = false,
 						order = 3,
 					})
@@ -164,9 +164,9 @@ function RegisterOxygenCallbacks()
 end
 
 function RegisterOxygenMenus()
-	Interaction:RegisterMenu("scuba_gear", "Take Off Scuba Gear", "mask-snorkel", function()
+	exports['sandbox-hud']:InteractionRegisterMenu("scuba_gear", "Take Off Scuba Gear", "mask-snorkel", function()
 		RemoveScubaGear()
-		Interaction:Hide()
+		exports['sandbox-hud']:InteractionHide()
 	end, function()
 		return oxygenDepletionRate < 1
 	end)

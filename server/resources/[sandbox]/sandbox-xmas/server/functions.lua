@@ -8,6 +8,6 @@ function GenerateNewTree()
 		_treeLooted = {}
 
 		TriggerClientEvent("Xmas:Client:NewTree", -1, _currentTree)
-		Logger:Trace("Xmas", "Generated New Tree Location")
+		exports['sandbox-base']:LoggerTrace("Xmas", "Generated New Tree Location")
 	end
 end

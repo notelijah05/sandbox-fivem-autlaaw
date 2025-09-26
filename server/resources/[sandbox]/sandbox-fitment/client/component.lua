@@ -1,70 +1,21 @@
 EDITING_VEHICLE = nil
 
-AddEventHandler('Fitment:Shared:DependencyUpdate', RetrieveComponents)
-function RetrieveComponents()
-    Logger = exports['sandbox-base']:FetchComponent('Logger')
-    Fetch = exports['sandbox-base']:FetchComponent('Fetch')
-    Callbacks = exports['sandbox-base']:FetchComponent('Callbacks')
-    Game = exports['sandbox-base']:FetchComponent('Game')
-    Targeting = exports['sandbox-base']:FetchComponent('Targeting')
-    Utils = exports['sandbox-base']:FetchComponent('Utils')
-    Animations = exports['sandbox-base']:FetchComponent('Animations')
-    Notification = exports['sandbox-base']:FetchComponent('Notification')
-    Polyzone = exports['sandbox-base']:FetchComponent('Polyzone')
-    Jobs = exports['sandbox-base']:FetchComponent('Jobs')
-    Weapons = exports['sandbox-base']:FetchComponent('Weapons')
-    Progress = exports['sandbox-base']:FetchComponent('Progress')
-    Vehicles = exports['sandbox-base']:FetchComponent('Vehicles')
-    Targeting = exports['sandbox-base']:FetchComponent('Targeting')
-    ListMenu = exports['sandbox-base']:FetchComponent('ListMenu')
-    Action = exports['sandbox-base']:FetchComponent('Action')
-    Sounds = exports['sandbox-base']:FetchComponent('Sounds')
-    Menu = exports['sandbox-base']:FetchComponent('Menu')
-    Interaction = exports['sandbox-base']:FetchComponent('Interaction')
-end
-
 AddEventHandler('Core:Shared:Ready', function()
-    exports['sandbox-base']:RequestDependencies('Fitment', {
-        'Logger',
-        'Fetch',
-        'Callbacks',
-        'Game',
-        'Menu',
-        'Targeting',
-        'Notification',
-        'Utils',
-        'Animations',
-        'Polyzone',
-        'Jobs',
-        'Weapons',
-        'Progress',
-        'Vehicles',
-        'Targeting',
-        'ListMenu',
-        'Action',
-        'Sounds',
-        'Menu',
-        'Interaction',
-    }, function(error)
-        if #error > 0 then return; end
-        RetrieveComponents()
+    exports['sandbox-hud']:InteractionRegisterMenu("veh_wheels", false, "tire", function()
+        OpenWheelMenu()
+        exports['sandbox-hud']:InteractionHide()
+    end, function()
+        local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
 
-        Interaction:RegisterMenu("veh_wheels", false, "tire", function()
-            OpenWheelMenu()
-            Interaction:Hide()
-        end, function()
-            local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
-
-            local insideZone = Polyzone:IsCoordsInZone(pedCoords, false, 'veh_customs_wheels')
-            if
-                insideZone?.veh_customs_wheels
-                and LocalPlayer.state.onDuty
-                and insideZone.veh_customs_wheels == LocalPlayer.state.onDuty
-                and Jobs.Permissions:HasJob(LocalPlayer.state.onDuty, false, false, 90) then
-                return true
-            end
-            return false
-        end)
+        local insideZone = exports['sandbox-polyzone']:IsCoordsInZone(pedCoords, false, 'veh_customs_wheels')
+        if
+            insideZone?.veh_customs_wheels
+            and LocalPlayer.state.onDuty
+            and insideZone.veh_customs_wheels == LocalPlayer.state.onDuty
+            and exports['sandbox-jobs']:HasJob(LocalPlayer.state.onDuty, false, false, 90) then
+            return true
+        end
+        return false
     end)
 end)
 

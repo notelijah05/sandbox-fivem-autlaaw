@@ -1,13 +1,13 @@
 function RegisterCallbacks()
-	Callbacks:RegisterServerCallback("Jail:SpawnJailed", function(source, data, cb)
-		Routing:RoutePlayerToGlobalRoute(source)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Jail:SpawnJailed", function(source, data, cb)
+		exports["sandbox-base"]:RoutePlayerToGlobalRoute(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		TriggerClientEvent("Jail:Client:EnterJail", source)
 		cb(true)
 	end)
 
-	Callbacks:RegisterServerCallback("Jail:Validate", function(source, data, cb)
-		if not Jail:IsJailed(source) then
+	exports["sandbox-base"]:RegisterServerCallback("Jail:Validate", function(source, data, cb)
+		if not exports['sandbox-jail']:IsJailed(source) then
 			cb(false)
 		else
 			if data.type == "logout" then
@@ -18,41 +18,41 @@ function RegisterCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Jail:RetreiveItems", function(source, data, cb)
-		Inventory.Holding:Take(source)
+	exports["sandbox-base"]:RegisterServerCallback("Jail:RetreiveItems", function(source, data, cb)
+		exports['sandbox-inventory']:HoldingTake(source)
 	end)
 
-	Callbacks:RegisterServerCallback("Jail:Release", function(source, data, cb)
-		cb(Jail:Release(source))
+	exports["sandbox-base"]:RegisterServerCallback("Jail:Release", function(source, data, cb)
+		cb(exports['sandbox-jail']:Release(source))
 	end)
 
-	Callbacks:RegisterServerCallback("Jail:StartWork", function(source, data, cb)
-		Labor.Duty:On("Prison", source, false)
+	exports["sandbox-base"]:RegisterServerCallback("Jail:StartWork", function(source, data, cb)
+		exports['sandbox-labor']:OnDuty("Prison", source, false)
 	end)
 
-	Callbacks:RegisterServerCallback("Jail:QuitWork", function(source, data, cb)
-		Labor.Duty:Off("Prison", source, false, false)
+	exports["sandbox-base"]:RegisterServerCallback("Jail:QuitWork", function(source, data, cb)
+		exports['sandbox-labor']:OffDuty("Prison", source, false, false)
 	end)
 
-	Callbacks:RegisterServerCallback("Jail:MakeItem", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Jail:MakeItem", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if data == "food" or data == "drink" then
-			Inventory:AddItem(char:GetData("SID"), string.format("prison_%s", data), 1, {}, 1)
+			exports['sandbox-inventory']:AddItem(char:GetData("SID"), string.format("prison_%s", data), 1, {}, 1)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Jail:MakeJuice", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Jail:MakeJuice", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data then
-			Inventory:AddItem(char:GetData("SID"), data, 1, {}, 1)
+			exports['sandbox-inventory']:AddItem(char:GetData("SID"), data, 1, {}, 1)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Jail:Server:ExploitAttempt", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Jail:Server:ExploitAttempt", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
 			if data == 1 then
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Jail",
 					string.format(
 						"%s %s (%s) attempted to exploit out of prison in a trunk",
@@ -72,7 +72,7 @@ function RegisterCallbacks()
 					}
 				)
 			elseif data == 2 then
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Jail",
 					string.format(
 						"%s %s (%s) attempted to exploit out of prison by being escorted out",

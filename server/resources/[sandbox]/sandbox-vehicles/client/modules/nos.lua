@@ -35,7 +35,7 @@ local _NOSStart = 0
 local _NOSUsage = 0
 
 AddEventHandler("Vehicles:Client:StartUp", function()
-	Keybinds:Add("vehicle_nos", "", "keyboard", "NOS", function()
+	exports["sandbox-keybinds"]:Add("vehicle_nos", "", "keyboard", "NOS", function()
 		if VEHICLE_INSIDE and _hasNOS then
 			StartVehicleNOS()
 		end
@@ -45,7 +45,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		end
 	end)
 
-	Keybinds:Add("vehicle_nos_purge", "", "keyboard", "NOS - Purge", function()
+	exports["sandbox-keybinds"]:Add("vehicle_nos_purge", "", "keyboard", "NOS - Purge", function()
 		if VEHICLE_INSIDE and _hasNOS then
 			StartVehiclePurge()
 		end
@@ -55,25 +55,25 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		end
 	end)
 
-	Keybinds:Add("vehicle_nos_flow_up", "", "keyboard", "NOS - Increase Flow Rate", function()
+	exports["sandbox-keybinds"]:Add("vehicle_nos_flow_up", "", "keyboard", "NOS - Increase Flow Rate", function()
 		if VEHICLE_INSIDE and _hasNOS then
 			if _flowRate < 10 then
 				_flowRate = _flowRate + 1
-				Notification:Standard("Changed Flow Rate to " .. _flowRate)
+				exports["sandbox-hud"]:NotifStandard("Changed Flow Rate to " .. _flowRate)
 			end
 		end
 	end)
 
-	Keybinds:Add("vehicle_nos_flow_down", "", "keyboard", "NOS - Decrease Flow Rate", function()
+	exports["sandbox-keybinds"]:Add("vehicle_nos_flow_down", "", "keyboard", "NOS - Decrease Flow Rate", function()
 		if VEHICLE_INSIDE and _hasNOS then
 			if _flowRate > 1 then
 				_flowRate = _flowRate - 1
-				Notification:Standard("Changed Flow Rate to " .. _flowRate)
+				exports["sandbox-hud"]:NotifStandard("Changed Flow Rate to " .. _flowRate)
 			end
 		end
 	end)
 
-	Callbacks:RegisterClientCallback("Vehicles:InstallNitrous", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:InstallNitrous", function(data, cb)
 		if
 			VEHICLE_INSIDE
 			and DoesEntityExist(VEHICLE_INSIDE)
@@ -81,13 +81,13 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			and (GetPedInVehicleSeat(VEHICLE_INSIDE, -1) == LocalPlayer.state.ped or LocalPlayer.state.isDev)
 		then
 			if not IsToggleModOn(VEHICLE_INSIDE, 18) then
-				Notification:Error("Need a Turbo For This Mate")
+				exports["sandbox-hud"]:NotifError("Need a Turbo For This Mate")
 				cb(false)
 				return
 			end
 
-			if Police:IsPdCar(VEHICLE_INSIDE) then
-				Notification:Error("How About No")
+			if exports['sandbox-police']:IsPdCar(VEHICLE_INSIDE) then
+				exports["sandbox-hud"]:NotifError("How About No")
 				cb(false)
 				return
 			end
@@ -105,7 +105,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 				return
 			end
 
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "vehicle_installing_nitrous",
 				duration = 15000,
 				label = "Installing Nitrous Oxide",
@@ -147,7 +147,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 				EndVehicleNOS()
 				EndVehiclePurge()
 
-				Hud:NOS(0)
+				exports['sandbox-hud']:NOS(0)
 			end
 		end
 	end, true)
@@ -162,7 +162,7 @@ function DoInitNOSCheck(veh)
 		if vehEnt and vehEnt.state and vehEnt.state.VIN and vehEnt.state.Nitrous then
 			_hasNOS = vehEnt.state.Nitrous
 
-			Hud:NOS(math.ceil(_hasNOS))
+			exports['sandbox-hud']:NOS(math.ceil(_hasNOS))
 		end
 	end
 end
@@ -177,13 +177,13 @@ function StartVehicleNOS()
 		and not IsVehicleStopped(VEHICLE_INSIDE)
 	then
 		if _hasNOS <= 0.0 then
-			UISounds.Play:FrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")
-			Notification:Standard("No More Nitrous Left!")
+			exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")
+			exports["sandbox-hud"]:NotifStandard("No More Nitrous Left!")
 			return
 		end
 
 		if not IsVehicleEngineOn(VEHICLE_INSIDE) then
-			Notification:Standard("Turning the Engine On Would Help...")
+			exports["sandbox-hud"]:NotifStandard("Turning the Engine On Would Help...")
 			return
 		end
 
@@ -224,11 +224,11 @@ function StartVehicleNOS()
 					--print(_NOSUsage)
 
 					if (GetGameTimer() - _NOSStart) >= 4000 then
-						UISounds.Play:FrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")
+						exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")
 						SetVehicleEngineHealth(_veh, 0.0)
 						SetVehicleCanLeakPetrol(_veh, false)
 
-						Vehicles.Engine:Force(_veh, false)
+						exports['sandbox-vehicles']:EngineForce(_veh, false)
 
 						EndVehicleNOS()
 						break
@@ -255,7 +255,7 @@ function EndVehicleNOS()
 		_hasNOS -= _NOSUsage
 		_NOSUsage = 0.0
 
-		Hud:NOS(math.ceil(_hasNOS))
+		exports['sandbox-hud']:NOS(math.ceil(_hasNOS))
 
 		TriggerServerEvent("Vehicles:Server:SyncNitroEffect", _vehNet, false)
 
@@ -441,7 +441,7 @@ end
 
 AddEventHandler("Vehicles:Client:RemoveNitrous", function(entityData)
 	if VEHICLE_INSIDE and DoesEntityExist(VEHICLE_INSIDE) and _hasNOS then
-		Progress:Progress({
+		exports['sandbox-hud']:Progress({
 			name = "vehicle_removing_nitrous",
 			duration = 5000,
 			label = "Removing Nitrous Oxide",
@@ -460,24 +460,25 @@ AddEventHandler("Vehicles:Client:RemoveNitrous", function(entityData)
 		}, function(cancelled)
 			if
 				not cancelled
-				and Vehicles:HasAccess(VEHICLE_INSIDE, true)
+				and exports['sandbox-vehicles']:HasAccess(VEHICLE_INSIDE, true)
 				and GetPedInVehicleSeat(VEHICLE_INSIDE, -1) == LocalPlayer.state.ped
 			then
-				Callbacks:ServerCallback("Vehicles:RemoveNitrous", VehToNet(VEHICLE_INSIDE), function(success)
-					if success then
-						--Notification:Success('Removed Nitrous Successfully')
+				exports["sandbox-base"]:ServerCallback("Vehicles:RemoveNitrous", VehToNet(VEHICLE_INSIDE),
+					function(success)
+						if success then
+							--exports["sandbox-hud"]:NotifSuccess('Removed Nitrous Successfully')
 
-						_hasNOS = false
-						EndVehicleNOS()
-						EndVehiclePurge()
+							_hasNOS = false
+							EndVehicleNOS()
+							EndVehiclePurge()
 
-						Hud:NOS(0)
-					else
-						Notification:Error("Could not Remove Nitrous")
-					end
-				end)
+							exports['sandbox-hud']:NOS(0)
+						else
+							exports["sandbox-hud"]:NotifError("Could not Remove Nitrous")
+						end
+					end)
 			else
-				Notification:Error("Could not Remove Nitrous")
+				exports["sandbox-hud"]:NotifError("Could not Remove Nitrous")
 			end
 		end)
 	end

@@ -7,7 +7,7 @@ RegisterNetEvent("Phone:Client:Documents:ReceivedSignature", function(id, data)
 		},
 	})
 
-	Phone.Notification:Add(
+	exports['sandbox-phone']:NotificationAdd(
 		"Document Signed",
 		string.format("%s Signed Your Document", data.signed_name),
 		data.signed,
@@ -30,7 +30,7 @@ RegisterNetEvent("Phone:Client:Documents:SigReqReceived", function(id, data)
 	})
 
 	if data.signed ~= nil then
-		Phone.Notification:Add(
+		exports['sandbox-phone']:NotificationAdd(
 			"Document Signed",
 			string.format("%s Signed Your Document", data.signed_name),
 			data.signed,
@@ -54,25 +54,25 @@ RegisterNetEvent("Phone:Client:Documents:Deleted", function(id)
 end)
 
 RegisterNUICallback("EditDocument", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:Edit", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:Edit", data, cb)
 end)
 
 RegisterNUICallback("DeleteDocument", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:Delete", data.id, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:Delete", data.id, cb)
 end)
 
 RegisterNUICallback("CreateDocument", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:Create", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:Create", data, cb)
 end)
 
 RegisterNUICallback("ShareDocument", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:Share", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:Share", data, cb)
 end)
 
 RegisterNUICallback("SignDocument", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:Sign", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:Sign", data, cb)
 end)
 
 RegisterNUICallback("Documents:GetSignatures", function(data, cb)
-	Callbacks:ServerCallback("Phone:Documents:GetSignatures", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Documents:GetSignatures", data, cb)
 end)

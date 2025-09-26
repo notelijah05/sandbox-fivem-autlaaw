@@ -34,7 +34,7 @@ local poles = {
 }
 
 AddEventHandler('Businesses:Client:Startup', function()
-    Polyzone.Create:Poly('vu_dancers', {
+    exports['sandbox-polyzone']:CreatePoly('vu_dancers', {
         vector2(110.14764404297, -1288.5469970703),
         vector2(109.54054260254, -1287.9322509766),
         vector2(108.68753814697, -1287.7067871094),
@@ -59,7 +59,7 @@ AddEventHandler('Businesses:Client:Startup', function()
         maxZ = 30.55025100708
 	})
 
-    Polyzone.Create:Poly('vu_makeitrain', {
+    exports['sandbox-polyzone']:CreatePoly('vu_makeitrain', {
         vector2(104.21175384521, -1297.1346435547),
         vector2(104.99973297119, -1298.6086425781),
         vector2(113.97306060791, -1293.412109375),
@@ -86,8 +86,8 @@ AddEventHandler('Businesses:Client:Startup', function()
         maxZ = 28.55025100708
 	})
 
-    Interaction:RegisterMenu("vu_stripper_pole", "Vanilla Unicorn Dancers", "party-horn", function()
-        if Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn' and Jobs.Permissions:HasPermissionInJob('unicorn', 'STRIP_POLE') then
+    exports['sandbox-hud']:InteractionRegisterMenu("vu_stripper_pole", "Vanilla Unicorn Dancers", "party-horn", function()
+        if exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn' and exports['sandbox-jobs']:HasPermissionInJob('unicorn', 'STRIP_POLE') then
             local subMenu = {}
 
             for k, v in ipairs(poleDances) do
@@ -96,21 +96,21 @@ AddEventHandler('Businesses:Client:Startup', function()
                     label = 'Dance '.. k,
                     action = function()
                         TriggerEvent('Businesses:Client:PoleDance', k)
-                        Interaction:Hide()
+                        exports['sandbox-hud']:InteractionHide()
                     end,
                 })
             end
 
-            Interaction:ShowMenu(subMenu)
+            exports['sandbox-hud']:InteractionShowMenu(subMenu)
         else
-            Notification:Error('Invalid Permissions')
+            exports["sandbox-hud"]:NotifError('Invalid Permissions')
         end
     end, function()
-        return Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn'
+        return exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn'
     end)
 
-    Interaction:RegisterMenu("vu_makeitrain", 'Make It Rain', "money-bill-1-wave", function()
-        if not _makingItRain and Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_makeitrain') then
+    exports['sandbox-hud']:InteractionRegisterMenu("vu_makeitrain", 'Make It Rain', "money-bill-1-wave", function()
+        if not _makingItRain and exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_makeitrain') then
             local makeItRain = {
                 {
                     type = 'cash',
@@ -132,7 +132,7 @@ AddEventHandler('Businesses:Client:Startup', function()
             local subMenu = {}
 
             for k, v in ipairs(makeItRain) do
-                if v.type == 'cash' or Inventory.Check.Player:HasItem(v.type, 1) then
+                if v.type == 'cash' or exports['sandbox-inventory']:CheckPlayerHasItem(v.type, 1) then
                     table.insert(subMenu, {
                         icon = 'money-bill-1-wave',
                         label = v.text,
@@ -142,16 +142,16 @@ AddEventHandler('Businesses:Client:Startup', function()
                                 MakeItRainBitch(nearestStripper, v.type, v.time)
                             end
 
-                            Interaction:Hide()
+                            exports['sandbox-hud']:InteractionHide()
                         end,
                     })
                 end
             end
 
-            Interaction:ShowMenu(subMenu)
+            exports['sandbox-hud']:InteractionShowMenu(subMenu)
         end
     end, function()
-        return Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_makeitrain') and GetNearbyFuckingStripper()
+        return exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_makeitrain') and GetNearbyFuckingStripper()
     end)
 end)
 
@@ -159,7 +159,7 @@ RegisterNetEvent('Businesses:Client:PoleDance', function(dance)
     local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
     for k, v in ipairs(poles) do
         if #(v - pedCoords) <= 1.5 then
-            local cPlayer, dist = Game.Players:GetClosestPlayer()
+            local cPlayer, dist = exports['sandbox-base']:GamePlayersGetClosestPlayer()
 
             if dist == -1 or dist > 1.5 then
                 local poleDance = poleDances[dance]
@@ -172,10 +172,10 @@ RegisterNetEvent('Businesses:Client:PoleDance', function(dance)
                     )
                     SetEntityRotation(PlayerPedId(), 0.0, 0.0, 0.0)
 
-                    Animations.Emotes:Play(poleDance.anim, false, false, false)
+                    exports['sandbox-animations']:EmotesPlay(poleDance.anim, false, false, false)
                 end
             else
-                Notification:Error('Pole Taken')
+                exports["sandbox-hud"]:NotifError('Pole Taken')
             end
             return
         end
@@ -190,24 +190,24 @@ function MakeItRainBitch(targetSource, cashType, time)
 
     CreateThread(function()
         _makingItRain = true
-        Animations.Emotes:Play('makeitrain', false, false, false)
+        exports['sandbox-animations']:EmotesPlay('makeitrain', false, false, false)
 
         Wait(7500)
 
         while 
             _makingItRain
             and LocalPlayer.state.loggedIn
-            and Animations.Emotes:Get() == 'makeitrain'
+            and exports['sandbox-animations']:EmotesGet() == 'makeitrain'
             and IsDoingStripperDance(Player(targetSource).state.anim)
             and (#(GetEntityCoords(LocalPlayer.state.ped) - GetEntityCoords(targetPed)) <= 5.0)
         do
             local p = promise.new()
-            Callbacks:ServerCallback('VU:MakeItRain', {
+            exports["sandbox-base"]:ServerCallback('VU:MakeItRain', {
                 target = targetSource,
                 type = cashType,
             }, function(success, cd)
                 if not success then
-                    Notification:Error(cd and 'Reached Cooldown' or 'Error - Ran Out of Money')
+                    exports["sandbox-hud"]:NotifError(cd and 'Reached Cooldown' or 'Error - Ran Out of Money')
                     _makingItRain = false
                 end
 
@@ -219,7 +219,7 @@ function MakeItRainBitch(targetSource, cashType, time)
         end
 
         _makingItRain = false
-        Animations.Emotes:ForceCancel()
+        exports['sandbox-animations']:EmotesForceCancel()
     end)
 end
 

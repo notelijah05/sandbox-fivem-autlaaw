@@ -1,7 +1,7 @@
 local purgeMenu = nil
 
 AddEventHandler("Vehicles:Client:StartUp", function()
-	Callbacks:RegisterClientCallback("Vehicles:UsePurgeColorController", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:UsePurgeColorController", function(data, cb)
 		local vehEnt = Entity(VEHICLE_INSIDE)
 		if
 			VEHICLE_INSIDE
@@ -10,13 +10,13 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			and GetPedInVehicleSeat(VEHICLE_INSIDE, -1) == LocalPlayer.state.ped
 		then
 			if not vehEnt.state.Nitrous then
-				Notification:Error("Need Nitrous for this controller to work.")
+				exports["sandbox-hud"]:NotifError("Need Nitrous for this controller to work.")
 				cb(false)
 				return
 			end
 
-			if Police:IsPdCar(VEHICLE_INSIDE) or Police:IsEMSCar(VEHICLE_INSIDE) then
-				Notification:Error("How About No")
+			if exports['sandbox-police']:IsPdCar(VEHICLE_INSIDE) or exports['sandbox-police']:IsEMSCar(VEHICLE_INSIDE) then
+				exports["sandbox-hud"]:NotifError("How About No")
 				cb(false)
 				return
 			end
@@ -34,7 +34,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 				return
 			end
 
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "vehicle_purge_controller",
 				duration = 5000,
 				label = "Plugging In Controller",
@@ -61,15 +61,15 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		end
 	end)
 
-	Callbacks:RegisterClientCallback("Vehicles:UsePurgeColorControllerMenu", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Vehicles:UsePurgeColorControllerMenu", function(data, cb)
 		local changingData = {}
 		purgeMenu = {}
-		purgeMenu = Menu:Create("purge_controller_settings", "Purge Controller")
+		purgeMenu = exports['sandbox-menu']:Create("purge_controller_settings", "Purge Controller")
 
-	 	purgeMenu.Add:Text("Purge Color Picker", { "heading" })
+		purgeMenu.Add:Text("Purge Color Picker", { "heading" })
 
 		purgeMenu.Add:ColorPicker({
-			current = {r = data?.purgeColor?.r or 255, g = data?.purgeColor?.g or 255, b = data?.purgeColor?.b or 255},
+			current = { r = data?.purgeColor?.r or 255, g = data?.purgeColor?.g or 255, b = data?.purgeColor?.b or 255 },
 		}, function(retval)
 			changingData.purgeColor = {
 				r = retval.data.color.r,
@@ -84,7 +84,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			disabled = false,
 			current = data?.purgeLocation or "wheel_rf",
 			list = {
-				{ label = 'Wheels', value = "wheel_rf" },
+				{ label = 'Wheels',      value = "wheel_rf" },
 				{ label = 'Bonnet/Hood', value = "bonnet" },
 			}
 		}, function(retval)

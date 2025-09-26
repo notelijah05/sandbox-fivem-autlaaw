@@ -181,13 +181,13 @@ function DoesCharacterPassJobPermissions(jobPermissions)
 
 	for k, v in ipairs(jobPermissions) do
 		if v.job then
-			if not v.reqOffDuty or (v.reqOffDuty and (not Jobs.Duty:Get(v.job))) then
-				if Jobs.Permissions:HasJob(v.job, v.workplace, v.grade, v.gradeLevel, v.reqDuty, v.permissionKey) then
+			if not v.reqOffDuty or (v.reqOffDuty and (not exports['sandbox-jobs']:DutyGet(v.job))) then
+				if exports['sandbox-jobs']:HasJob(v.job, v.workplace, v.grade, v.gradeLevel, v.reqDuty, v.permissionKey) then
 					return true
 				end
 			end
 		elseif v.permissionKey then
-			if Jobs.Permissions:HasPermission(v.permissionKey) then
+			if exports['sandbox-jobs']:HasPermission(v.permissionKey) then
 				return true
 			end
 		end
@@ -218,13 +218,13 @@ function OpenTargetingMenu(entityData, menu)
 			and (entityData.type ~= "vehicle" or (entityData.type == "vehicle" and v.model == nil) or (entityData.type == "vehicle" and GetEntityModel(
 				entityData.entity
 			) == v.model))
-			and (v.item == nil or v.item ~= nil and Inventory.Check.Player:HasItem(
+			and (v.item == nil or v.item ~= nil and exports['sandbox-inventory']:CheckPlayerHasItem(
 				v.item,
 				v.itemCountFunc and v.itemCountFunc(v.data, entityData) or v.itemCount or 1
 			))
-			and (v.items == nil or v.items ~= nil and Inventory.Check.Player:HasItems(v.items))
-			and (v.anyItems == nil or v.anyItems ~= nil and Inventory.Check.Player:HasAnyItems(v.anyItems))
-			and (v.rep == nil or v.rep.level <= Reputation:GetLevel(v.rep.id))
+			and (v.items == nil or v.items ~= nil and exports['sandbox-inventory']:CheckPlayerHasItems(v.items))
+			and (v.anyItems == nil or v.anyItems ~= nil and exports['sandbox-inventory']:CheckPlayerHasAnyItems(v.anyItems))
+			and (v.rep == nil or v.rep.level <= exports['sandbox-characters']:RepGetLevel(v.rep.id))
 			and (not IsPedInAnyVehicle(GLOBAL_PED) or v.allowFromVehicle)
 		then
 			local menuItem = table.copy(v)
@@ -271,13 +271,13 @@ function CanOpenTargetingMenu(id, entityData)
 			and (entityData.type ~= "vehicle" or (entityData.type == "vehicle" and v.model == nil) or (entityData.type == "vehicle" and GetEntityModel(
 				entityData.entity
 			) == v.model))
-			and (v.item == nil or v.item ~= nil and Inventory.Check.Player:HasItem(
+			and (v.item == nil or v.item ~= nil and exports['sandbox-inventory']:CheckPlayerHasItem(
 				v.item,
 				v.itemCountFunc and v.itemCountFunc(v.data, entityData) or v.itemCount or 1
 			))
-			and (v.items == nil or v.items ~= nil and Inventory.Check.Player:HasItems(v.items))
-			and (v.anyItems == nil or v.anyItems ~= nil and Inventory.Check.Player:HasAnyItems(v.anyItems))
-			and (v.rep == nil or v.rep.level <= Reputation:GetLevel(v.rep.id))
+			and (v.items == nil or v.items ~= nil and exports['sandbox-inventory']:CheckPlayerHasItems(v.items))
+			and (v.anyItems == nil or v.anyItems ~= nil and exports['sandbox-inventory']:CheckPlayerHasAnyItems(v.anyItems))
+			and (v.rep == nil or v.rep.level <= exports['sandbox-characters']:RepGetLevel(v.rep.id))
 			and (not IsPedInAnyVehicle(GLOBAL_PED) or v.allowFromVehicle)
 		then
 			availableItems += 1
@@ -298,7 +298,7 @@ AddEventHandler("Targeting:Client:MenuSelect", function(event, data)
 	end
 	if event then
 		TriggerEvent(event, hittingTargetData, data)
-		UISounds.Play:FrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
 	end
 	StopTargeting()
 	hittingTargetData = false

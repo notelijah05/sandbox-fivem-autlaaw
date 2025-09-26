@@ -14,7 +14,7 @@ function OpenWheelMenu()
 
     local editedFrontTrack, editedRearTrack, editedWidth
 
-    wheelMenu = Menu:Create('vehicle_wheels', 'Vehicle Wheels', function()
+    wheelMenu = exports['sandbox-menu']:Create('vehicle_wheels', 'Vehicle Wheels', function()
         wheelMenuOpen = true
 
         CreateThread(function()
@@ -45,7 +45,7 @@ function OpenWheelMenu()
     if fitmentState and fitmentState?.frontTrack then
         currentFrontTrackWidth = fitmentState?.frontTrack
     else
-        currentFrontTrackWidth = Utils:Round(GetVehicleWheelXOffset(EDITING_VEHICLE, 1) * 2, 2)
+        currentFrontTrackWidth = exports['sandbox-base']:UtilsRound(GetVehicleWheelXOffset(EDITING_VEHICLE, 1) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Front Track Width', {
@@ -61,7 +61,7 @@ function OpenWheelMenu()
     if fitmentState and fitmentState?.rearTrack then
         currentRearTrackWidth = fitmentState?.rearTrack
     else
-        currentRearTrackWidth = Utils:Round(GetVehicleWheelXOffset(EDITING_VEHICLE, 3) * 2, 2)
+        currentRearTrackWidth = exports['sandbox-base']:UtilsRound(GetVehicleWheelXOffset(EDITING_VEHICLE, 3) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Rear Track Width', {
@@ -77,7 +77,7 @@ function OpenWheelMenu()
     if fitmentState and fitmentState?.rearTrack then
         currentWheelWidth = fitmentState?.rearTrack
     else
-        currentWheelWidth = Utils:Round(GetVehicleWheelWidth(EDITING_VEHICLE), 2)
+        currentWheelWidth = exports['sandbox-base']:UtilsRound(GetVehicleWheelWidth(EDITING_VEHICLE), 2)
     end
 
     wheelMenu.Add:Slider('Wheel Width', {
@@ -91,10 +91,10 @@ function OpenWheelMenu()
     end)
 
     wheelMenu.Add:Button('Save', { success = true }, function()
-        Logger:Trace('Fitment', 'Attept Save')
+        exports['sandbox-base']:LoggerTrace('Fitment', 'Attempt Save')
 
         if editedFrontTrack or editedRearTrack or editedWidth then
-            Callbacks:ServerCallback('Vehicles:WheelFitment', {
+            exports["sandbox-base"]:ServerCallback('Vehicles:WheelFitment', {
                 vNet = VehToNet(EDITING_VEHICLE),
                 fitment = {
                     rearTrack = editedRearTrack,
@@ -103,15 +103,15 @@ function OpenWheelMenu()
                 },
             }, function(success, newNewData)
                 if success then
-                    Notification:Success('Wheel Fitment Saved')
+                    exports["sandbox-hud"]:NotifSuccess('Wheel Fitment Saved')
                 else
-                    Notification:Error('Wheel Fitment Saving Failed')
+                    exports["sandbox-hud"]:NotifError('Wheel Fitment Saving Failed')
                 end
             end)
 
             wheelMenu:Close()
         else
-            Notification:Error('There Was Nothing to Save')
+            exports["sandbox-hud"]:NotifError('There Was Nothing to Save')
         end
     end)
 
@@ -120,9 +120,9 @@ function OpenWheelMenu()
     end)
 
     wheelMenu.Add:Button('Reset', { error = true }, function()
-        Logger:Trace('Fitment', 'Attept Reset')
+        exports['sandbox-base']:LoggerTrace('Fitment', 'Attempt Reset')
 
-        Callbacks:ServerCallback('Vehicles:WheelFitment', {
+        exports["sandbox-base"]:ServerCallback('Vehicles:WheelFitment', {
             vNet = VehToNet(EDITING_VEHICLE),
             fitment = {
                 rearTrack = nil,
@@ -131,9 +131,9 @@ function OpenWheelMenu()
             },
         }, function(success, newNewData)
             if success then
-                Notification:Success('Wheel Fitment Reset')
+                exports["sandbox-hud"]:NotifSuccess('Wheel Fitment Reset')
             else
-                Notification:Error('Wheel Fitment Reset Failed')
+                exports["sandbox-hud"]:NotifError('Wheel Fitment Reset Failed')
             end
         end)
 

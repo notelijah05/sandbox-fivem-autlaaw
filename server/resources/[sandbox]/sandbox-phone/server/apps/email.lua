@@ -1,57 +1,57 @@
-PHONE.Email = {
-	Read = function(self, charId, id)
-		return MySQL.update.await("UPDATE character_emails SET unread = ? WHERE id = ?", {
-			false,
-			id,
-		}) > 0
-	end,
-	Send = function(self, serverId, sender, time, subject, body, flags, expires)
-		local char = Fetch:CharacterSource(serverId)
-		if char ~= nil then
-			local id = MySQL.insert.await(
-				"INSERT INTO character_emails (sid, sender, subject, body, timestamp, flags, expires) VALUES(?, ?, ?, ?, FROM_UNIXTIME(?), ?, FROM_UNIXTIME(?))",
-				{
-					char:GetData("SID"),
-					sender,
-					subject,
-					body,
-					time,
-					flags and json.encode(flags) or nil,
-					expires,
-				}
-			)
+exports("EmailRead", function(charId, id)
+	return MySQL.update.await("UPDATE character_emails SET unread = ? WHERE id = ?", {
+		false,
+		id,
+	}) > 0
+end)
 
-			local doc = {
-				id = id,
-				owner = char:GetData("SID"),
-				sender = sender,
-				subject = subject,
-				body = body,
-				time = time,
-				unread = true,
-				flags = flags,
-				expires = expires,
+exports("EmailSend", function(serverId, sender, time, subject, body, flags, expires)
+	local char = exports['sandbox-characters']:FetchCharacterSource(serverId)
+	if char ~= nil then
+		local id = MySQL.insert.await(
+			"INSERT INTO character_emails (sid, sender, subject, body, timestamp, flags, expires) VALUES(?, ?, ?, ?, FROM_UNIXTIME(?), ?, FROM_UNIXTIME(?))",
+			{
+				char:GetData("SID"),
+				sender,
+				subject,
+				body,
+				time,
+				flags and json.encode(flags) or nil,
+				expires,
 			}
+		)
 
-			TriggerClientEvent("Phone:Client:Email:Receive", serverId, doc)
-		end
-	end,
-	Delete = function(self, charId, id)
-		MySQL.query("DELETE FROM character_emails WHERE sid = ? AND id = ?", {
-			charId,
-			id,
-		})
+		local doc = {
+			id = id,
+			owner = char:GetData("SID"),
+			sender = sender,
+			subject = subject,
+			body = body,
+			time = time,
+			unread = true,
+			flags = flags,
+			expires = expires,
+		}
 
-		local char = Fetch:SID(charId)
-		if char then
-			TriggerClientEvent("Phone:Client:Email:Delete", char:GetData("Source"), id)
-		end
-	end,
-}
+		TriggerClientEvent("Phone:Client:Email:Receive", serverId, doc)
+	end
+end)
+
+exports("EmailDelete", function(charId, id)
+	MySQL.query("DELETE FROM character_emails WHERE sid = ? AND id = ?", {
+		charId,
+		id,
+	})
+
+	local char = exports['sandbox-characters']:FetchBySID(charId)
+	if char then
+		TriggerClientEvent("Phone:Client:Email:Delete", char:GetData("Source"), id)
+	end
+end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	Middleware:Add("Characters:Spawning", function(source)
-		local char = Fetch:CharacterSource(source)
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local alias = char:GetData("Alias")
 		local profiles = char:GetData("Profiles") or {}
 
@@ -81,7 +81,8 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		end
 
 		if not profiles.email then
-			local emailaddr = string.format("%s_%s%s@sandboxrp.gg", char:GetData("First"), char:GetData("Last"), char:GetData("SID"))
+			local emailaddr = string.format("%s_%s%s@sandboxrp.gg", char:GetData("First"), char:GetData("Last"),
+				char:GetData("SID"))
 			local rid = MySQL.insert.await(
 				"INSERT INTO character_app_profiles (sid, app, name, picture, meta) VALUES(?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name), picture = VALUES(picture), meta = VALUES(meta)",
 				{
@@ -103,7 +104,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		end
 	end, 2)
 
-	Middleware:Add("Phone:Spawning", function(source, char)
+	exports['sandbox-base']:MiddlewareAdd("Phone:Spawning", function(source, char)
 		local emails = MySQL.rawExecute.await(
 			"SELECT id, sid, sender, subject, body, UNIX_TIMESTAMP(timestamp) as time, flags, expires FROM character_emails WHERE sid = ? AND (expires IS NULL or expires > NOW()) ORDER BY time DESC LIMIT 150",
 			{
@@ -125,14 +126,16 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 		}
 	end)
 
-	Middleware:Add("Phone:CreateProfiles", function(source, cData)
+	exports['sandbox-base']:MiddlewareAdd("Phone:CreateProfiles", function(source, cData)
 		local name = string.format("%s_%s%d@sandboxrp.gg", cData.First, cData.Last, cData.SID)
 
-		local id = MySQL.insert.await("INSERT INTO character_app_profiles (sid, app, name) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name), picture = VALUES(picture), meta = VALUES(meta)", {
-			cData.SID,
-			"email",
-			name,
-		})
+		local id = MySQL.insert.await(
+			"INSERT INTO character_app_profiles (sid, app, name) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name), picture = VALUES(picture), meta = VALUES(meta)",
+			{
+				cData.SID,
+				"email",
+				name,
+			})
 
 		return {
 			{
@@ -150,12 +153,12 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Chat:RegisterAdminCommand("email", function(source, args, rawCommand)
-		local char = Fetch:SID(tonumber(args[1]))
+	exports["sandbox-chat"]:RegisterAdminCommand("email", function(source, args, rawCommand)
+		local char = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 		if char ~= nil then
-			Phone.Email:Send(char:GetData("Source"), args[2], os.time(), args[3], args[4])
+			exports['sandbox-phone']:EmailSend(char:GetData("Source"), args[2], os.time(), args[3], args[4])
 		else
-			Chat.Send.System:Single(source, "Invalid State ID")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
 		end
 	end, {
 		help = "Send Email To Player",
@@ -179,18 +182,18 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		},
 	}, 4)
 
-	Callbacks:RegisterServerCallback("Phone:Email:Read", function(source, data, cb)
-		cb(Phone.Email:Read(data))
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Email:Read", function(source, data, cb)
+		cb(exports['sandbox-phone']:EmailRead(data))
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Email:Delete", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Email:Delete", function(source, data, cb)
 		local src = source
-		local char = Fetch:CharacterSource(src)
-		cb(Phone.Email:Delete(char:GetData("SID"), data))
+		local char = exports['sandbox-characters']:FetchCharacterSource(src)
+		cb(exports['sandbox-phone']:EmailDelete(char:GetData("SID"), data))
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Email:DeleteExpired", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Email:DeleteExpired", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local ids = MySQL.rawExecute.await(
 				"SELECT id FROM character_emails WHERE sid = ? AND expires IS NOT NULL and expires < NOW()",

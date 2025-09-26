@@ -45,7 +45,7 @@ local basicFish = {
 }
 
 AddEventHandler("Labor:Client:Setup", function()
-    Polyzone.Create:Poly("fishing_river_zancudo", {
+    exports['sandbox-polyzone']:CreatePoly("fishing_river_zancudo", {
         vector2(156.34146118164, 3416.5373535156),
         vector2(128.61988830566, 3429.1630859375),
         vector2(-4.1847929954529, 3131.1550292969),
@@ -87,7 +87,7 @@ AddEventHandler("Labor:Client:Setup", function()
         vector2(101.15602111816, 3113.7119140625)
     }, {}, { fishing_river = 2 })
 
-    Polyzone.Create:Poly("fishing_river_raton", {
+    exports['sandbox-polyzone']:CreatePoly("fishing_river_raton", {
         vector2(-181.28651428223, 4224.3120117188),
         --vector2(-449.234, 4569.082),
         vector2(-140.56726074219, 4259.6186523438),
@@ -111,7 +111,7 @@ AddEventHandler("Labor:Client:Setup", function()
         vector2(-279.20379638672, 4260.0610351562),
     }, {}, { fishing_river = 3 })
 
-    Polyzone.Create:Poly("fishing_ocean_shitty1", {
+    exports['sandbox-polyzone']:CreatePoly("fishing_ocean_shitty1", {
         vector2(-1837.213, -965.995),
         vector2(-1276.9390869141, -1926.0460205078),
         vector2(-688.33306884766, -2526.37109375),
@@ -130,19 +130,19 @@ AddEventHandler("Labor:Client:Setup", function()
         fishing_shitty_ocean_water = true,
     })
 
-    Polyzone.Create:Circle("fishing_ocean_shitty2", vector3(-2216.9, 2559.83, 66.16), 519.25, {}, {
+    exports['sandbox-polyzone']:CreateCircle("fishing_ocean_shitty2", vector3(-2216.9, 2559.83, 66.16), 519.25, {}, {
         fishing_shitty_ocean_water = true,
     })
 
-    Polyzone.Create:Circle("fishing_ocean_shitty3", vector3(-1796.15, -1182.05, 13.01), 95, {}, {
+    exports['sandbox-polyzone']:CreateCircle("fishing_ocean_shitty3", vector3(-1796.15, -1182.05, 13.01), 95, {}, {
         fishing_shitty_ocean_water = true,
     })
 
-    Polyzone.Create:Circle("fishing_ocean_shitty4", vector3(-3374.96, 968.46, 8.29), 69.0, {}, {
+    exports['sandbox-polyzone']:CreateCircle("fishing_ocean_shitty4", vector3(-3374.96, 968.46, 8.29), 69.0, {}, {
         fishing_shitty_ocean_water = true,
     })
 
-    Polyzone.Create:Poly("fishing_deep_ocean_water", {
+    exports['sandbox-polyzone']:CreatePoly("fishing_deep_ocean_water", {
         vector2(-1010.61, -4428.79),
         vector2(-2950.00, -3386.36),
         vector2(-3046.97, -1956.06),
@@ -182,7 +182,7 @@ AddEventHandler("Labor:Client:Setup", function()
             event = "Fishing:Client:OpenShop",
             data = "fishing-supplies",
             isEnabled = function()
-                return Reputation:GetLevel("Fishing") < 3
+                return exports['sandbox-characters']:RepGetLevel("Fishing") < 3
             end,
         },
         {
@@ -200,7 +200,7 @@ AddEventHandler("Labor:Client:Setup", function()
     Wait(2000)
 
     for k, v in ipairs(basicFish) do
-        local fishData = Inventory.Items:GetData(v)
+        local fishData = exports['sandbox-inventory']:ItemsGetData(v)
 
         if fishData then
             table.insert(shopData, {
@@ -217,7 +217,8 @@ AddEventHandler("Labor:Client:Setup", function()
     end
 
     for k, v in ipairs(fishingStores) do
-        PedInteraction:Add(string.format("FishingJob%s", k), `a_m_m_hillbilly_01`, v.coords, v.heading, 25.0, shopData,
+        exports['sandbox-pedinteraction']:Add(string.format("FishingJob%s", k), `a_m_m_hillbilly_01`, v.coords, v
+            .heading, 25.0, shopData,
             "fishing-rod")
     end
 end)
@@ -231,9 +232,9 @@ function CanFishHere()
         local result2, height = GetWaterHeightNoWaves(hittingCoord.x, hittingCoord.y, hittingCoord.z)
         if result2 then
             if height <= 0.5 then
-                if Polyzone:IsCoordsInZone(offsetCoords, false, "fishing_shitty_ocean_water") then
+                if exports['sandbox-polyzone']:IsCoordsInZone(offsetCoords, false, "fishing_shitty_ocean_water") then
                     return 4
-                elseif Polyzone:IsCoordsInZone(offsetCoords, "fishing_deep_ocean_water") then
+                elseif exports['sandbox-polyzone']:IsCoordsInZone(offsetCoords, "fishing_deep_ocean_water") then
                     return 5
                 else
                     return 6
@@ -242,7 +243,7 @@ function CanFishHere()
                 return 1
             end
         else
-            local inRiverZone = Polyzone:IsCoordsInZone(offsetCoords, false, "fishing_river")
+            local inRiverZone = exports['sandbox-polyzone']:IsCoordsInZone(offsetCoords, false, "fishing_river")
             if inRiverZone and inRiverZone.fishing_river then
                 return inRiverZone.fishing_river
             end
@@ -256,22 +257,22 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     local fishingLocation = GetEntityCoords(LocalPlayer.state.ped)
 
     if _isFishing then
-        Notification:Error("Already Fishing")
+        exports["sandbox-hud"]:NotifError("Already Fishing")
         return
     end
 
     if not fishingZone then
-        Notification:Error("Cannot Fish Here")
+        exports["sandbox-hud"]:NotifError("Cannot Fish Here")
         return
     end
 
     if LocalPlayer.state.doingAction then
-        Notification:Error("Already Doing Something")
+        exports["sandbox-hud"]:NotifError("Already Doing Something")
         return
     end
 
     if toolUsed == "net" and not IsNearBoat() then
-        Notification:Error("Have to Use a Fishing Net on a Boat")
+        exports["sandbox-hud"]:NotifError("Have to Use a Fishing Net on a Boat")
         return
     end
 
@@ -286,12 +287,13 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     end
 
     if fishingZone == 4 or fishingZone == 5 then
-        Notification.Persistent:Info("fishing-info-notif",
+        exports["sandbox-hud"]:NotifPersistentInfo("fishing-info-notif",
             string.format("Fishing - Press %s to Stop. Maybe you could try some deeper water for better fish!",
-                Keybinds:GetKey("cancel_action")), "fishing-rod")
+                exports["sandbox-keybinds"]:GetKey("cancel_action")), "fishing-rod")
     else
-        Notification.Persistent:Info("fishing-info-notif",
-            string.format("Fishing - Press %s to Stop", Keybinds:GetKey("cancel_action")), "fishing-rod")
+        exports["sandbox-hud"]:NotifPersistentInfo("fishing-info-notif",
+            string.format("Fishing - Press %s to Stop", exports["sandbox-keybinds"]:GetKey("cancel_action")),
+            "fishing-rod")
     end
 
     local tick = 0
@@ -318,7 +320,7 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     end
 
     _isFishing = false
-    Notification.Persistent:Remove("fishing-info-notif")
+    exports["sandbox-hud"]:NotifPersistentRemove("fishing-info-notif")
 end)
 
 function DoFishBite(zone, toolUsed)
@@ -358,7 +360,7 @@ function DoFishBite(zone, toolUsed)
         end
     end
 
-    local maxDiff = Utils:WeightedRandom(difficultyWeights)
+    local maxDiff = exports['sandbox-base']:UtilsWeightedRandom(difficultyWeights)
 
     for i = 1, maxDiff, 1 do
         if not DoFishingSkillbar(1.0 + (0.2 * maxDiff), 13 - maxDiff) then
@@ -368,13 +370,13 @@ function DoFishBite(zone, toolUsed)
         Wait(100)
     end
 
-    Callbacks:ServerCallback("Fishing:Catch", {
+    exports["sandbox-base"]:ServerCallback("Fishing:Catch", {
         zone = zone,
         toolUsed = toolUsed,
         difficulty = maxDiff,
     }, function(success, stopFishing)
         if not success and not stopFishing then
-            Notification:Warn("The Fish Got Away...", 5000, "fishing-rod")
+            exports["sandbox-hud"]:NotifWarn("The Fish Got Away...", 5000, "fishing-rod")
         end
 
         if stopFishing then
@@ -388,7 +390,7 @@ end
 
 function DoFishingSkillbar(timeLength, area)
     local p = promise.new()
-    Minigame.Play:RoundSkillbar(timeLength, area, {
+    exports['sandbox-games']:MinigamePlayRoundSkillbar(timeLength, area, {
         onSuccess = function()
             p:resolve(true)
         end,
@@ -404,7 +406,7 @@ end
 
 function HasCorrectBaitForZone(zone)
     local requiredBait = _fishingZoneBasicBait[zone]
-    if requiredBait and Inventory.Check.Player:HasItem(requiredBait, 1) then
+    if requiredBait and exports['sandbox-inventory']:CheckPlayerHasItem(requiredBait, 1) then
         return true
     end
     return false
@@ -437,7 +439,7 @@ RegisterNetEvent("Fishing:Client:OnDuty", function(joiner, time)
     _joiner = joiner
     DeleteWaypoint()
     SetNewWaypoint(fishingStores[1].coords.x, fishingStores[1].coords.y)
-    _blip = Blips:Add("FishingStart", "Shop Owner",
+    _blip = exports["sandbox-blips"]:Add("FishingStart", "Shop Owner",
         { x = fishingStores[1].coords.x, y = fishingStores[1].coords.y, z = fishingStores[1].coords.z }, 480, 2, 1.4)
 
     eventHandlers["startup"] = RegisterNetEvent(string.format("Fishing:Client:%s:Startup", joiner), function()
@@ -445,7 +447,7 @@ RegisterNetEvent("Fishing:Client:OnDuty", function(joiner, time)
         _state = 1
 
         if _blip ~= nil then
-            Blips:Remove("FishingStart")
+            exports["sandbox-blips"]:Remove("FishingStart")
             RemoveBlip(_blip)
         end
     end)
@@ -453,10 +455,10 @@ RegisterNetEvent("Fishing:Client:OnDuty", function(joiner, time)
     eventHandlers["finish"] = RegisterNetEvent(string.format("Fishing:Client:%s:Finish", joiner), function()
         _state = 2
         if _blip ~= nil then
-            Blips:Remove("FishingStart")
+            exports["sandbox-blips"]:Remove("FishingStart")
             RemoveBlip(_blip)
         end
-        _blip = Blips:Add("FishingStart", "Shop Owner",
+        _blip = exports["sandbox-blips"]:Add("FishingStart", "Shop Owner",
             { x = fishingStores[1].coords.x, y = fishingStores[1].coords.y, z = fishingStores[1].coords.z }, 480, 2, 1.4)
     end)
 
@@ -471,7 +473,7 @@ RegisterNetEvent("Fishing:Client:OffDuty", function(time)
     end
 
     if _blip ~= nil then
-        Blips:Remove("FishingStart")
+        exports["sandbox-blips"]:Remove("FishingStart")
         RemoveBlip(_blip)
     end
 
@@ -483,11 +485,11 @@ RegisterNetEvent("Fishing:Client:OffDuty", function(time)
 end)
 
 AddEventHandler("Fishing:Client:OpenShop", function(hitting, data)
-    Inventory.Shop:Open(data)
+    exports['sandbox-inventory']:ShopOpen(data)
 end)
 
 AddEventHandler("Fishing:Client:Sell", function(entity, data)
-    Callbacks:ServerCallback("Fishing:Sell", data.fish)
+    exports["sandbox-base"]:ServerCallback("Fishing:Sell", data.fish)
 end)
 
 

@@ -1,21 +1,21 @@
 AddEventHandler("Government:Client:OnDuty", function()
-	Jobs.Duty:On("government")
+	exports['sandbox-jobs']:DutyOn("government")
 end)
 
 AddEventHandler("Government:Client:OffDuty", function()
-	Jobs.Duty:Off("government")
+	exports['sandbox-jobs']:DutyOff("government")
 end)
 
 AddEventHandler("Government:Client:BuyID", function()
-	Callbacks:ServerCallback("Government:BuyID")
+	exports["sandbox-base"]:ServerCallback("Government:BuyID")
 end)
 
 AddEventHandler("Government:Client:DoLicenseBuy", function(license)
-	Callbacks:ServerCallback("Government:BuyLicense", license)
+	exports["sandbox-base"]:ServerCallback("Government:BuyLicense", license)
 end)
 
 AddEventHandler("Government:Client:DoWeaponsLicenseBuyPolice", function(license)
-	Callbacks:ServerCallback("Government:Client:DoWeaponsLicenseBuyPolice", {})
+	exports["sandbox-base"]:ServerCallback("Government:Client:DoWeaponsLicenseBuyPolice", {})
 end)
 
 AddEventHandler("Government:Client:BuyLicense", function()
@@ -95,7 +95,7 @@ AddEventHandler("Government:Client:BuyLicense", function()
 		end
 	end
 
-	ListMenu:Show({
+	exports['sandbox-hud']:ListMenuShow({
 		main = {
 			label = "Licensing Services",
 			items = items,

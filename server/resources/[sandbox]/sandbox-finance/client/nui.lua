@@ -1,9 +1,9 @@
 RegisterNUICallback("Bank:Fetch", function(data, cb)
-	Callbacks:ServerCallback("Banking:GetAccounts", {}, function(accounts)
+	exports["sandbox-base"]:ServerCallback("Banking:GetAccounts", {}, function(accounts)
 		cb({
 			accounts = accounts,
 		})
-		-- Callbacks:ServerCallback("Loans:GetLoans", {}, function(loans, creditScore)
+		-- exports["sandbox-base"]:ServerCallback("Loans:GetLoans", {}, function(loans, creditScore)
 		-- 	cb({
 		-- 		accounts = accounts,
 		-- 		transactions = transactions,
@@ -15,35 +15,35 @@ RegisterNUICallback("Bank:Fetch", function(data, cb)
 end)
 
 RegisterNUICallback("Bank:Register", function(data, cb)
-	Callbacks:ServerCallback("Banking:RegisterAccount", {
+	exports["sandbox-base"]:ServerCallback("Banking:RegisterAccount", {
 		type = data.type,
 		name = data.name,
 	}, cb)
 end)
 
 RegisterNUICallback("Bank:AddJoint", function(data, cb)
-	Callbacks:ServerCallback("Banking:AddJoint", {
+	exports["sandbox-base"]:ServerCallback("Banking:AddJoint", {
 		account = data.account,
 		target = tonumber(data.target),
 	}, cb)
 end)
 
 RegisterNUICallback("Bank:RemoveJoint", function(data, cb)
-	Callbacks:ServerCallback("Banking:RemoveJoint", {
+	exports["sandbox-base"]:ServerCallback("Banking:RemoveJoint", {
 		account = data.account,
 		target = tonumber(data.target),
 	}, cb)
 end)
 
 RegisterNUICallback("Bank:Rename", function(data, cb)
-	Callbacks:ServerCallback("Banking:RenameAccount", {
+	exports["sandbox-base"]:ServerCallback("Banking:RenameAccount", {
 		account = data.account,
 		name = data.name,
 	}, cb)
 end)
 
 RegisterNUICallback("Bank:Deposit", function(data, cb)
-	Callbacks:ServerCallback("Banking:DoAccountAction", {
+	exports["sandbox-base"]:ServerCallback("Banking:DoAccountAction", {
 		account = data.account,
 		action = "DEPOSIT",
 		amount = data.amount,
@@ -57,7 +57,7 @@ RegisterNUICallback("Bank:Deposit", function(data, cb)
 end)
 
 RegisterNUICallback("Bank:Withdraw", function(data, cb)
-	Callbacks:ServerCallback("Banking:DoAccountAction", {
+	exports["sandbox-base"]:ServerCallback("Banking:DoAccountAction", {
 		account = data.account,
 		action = "WITHDRAW",
 		amount = data.amount,
@@ -71,7 +71,7 @@ RegisterNUICallback("Bank:Withdraw", function(data, cb)
 end)
 
 RegisterNUICallback("Bank:Transfer", function(data, cb)
-	Callbacks:ServerCallback("Banking:DoAccountAction", {
+	exports["sandbox-base"]:ServerCallback("Banking:DoAccountAction", {
 		account = data.account,
 		action = "TRANSFER",
 		targetType = data.type,
@@ -87,5 +87,5 @@ RegisterNUICallback("Bank:Transfer", function(data, cb)
 end)
 
 RegisterNUICallback("Bank:GetTransactions", function(data, cb)
-	Callbacks:ServerCallback("Banking:GetAccountsTransactions", data, cb)
+	exports["sandbox-base"]:ServerCallback("Banking:GetAccountsTransactions", data, cb)
 end)

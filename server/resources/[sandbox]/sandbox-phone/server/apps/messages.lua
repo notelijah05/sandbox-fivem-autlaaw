@@ -1,26 +1,25 @@
-PHONE.Messages = {
-	Read = function(self, owner, number)
-		MySQL.query("UPDATE character_messages SET unread = ? WHERE owner = ? AND number = ?", {
-			0,
-			owner,
-			number,
-		})
-	end,
-	Delete = function(self, owner, number)
-		MySQL.query("DELETE FROM character_messages WHERE owner = ? AND number = ?", {
-			owner,
-			number,
-		})
-	end,
-}
+exports("MessagesRead", function(owner, number)
+	MySQL.query("UPDATE character_messages SET unread = ? WHERE owner = ? AND number = ?", {
+		0,
+		owner,
+		number,
+	})
+end)
+
+exports("MessagesDelete", function(owner, number)
+	MySQL.query("DELETE FROM character_messages WHERE owner = ? AND number = ?", {
+		owner,
+		number,
+	})
+end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
 
 end)
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
-	Callbacks:RegisterServerCallback("Phone:Message:InitLoad", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Message:InitLoad", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local messages = MySQL.rawExecute.await(
 				"SELECT MAX(t1.id) AS id, t1.owner, t1.number, t1.method, UNIX_TIMESTAMP(MAX(t1.time)) AS time, COUNT(*) AS count, t1.message, t1.unread FROM character_messages t1 WHERE t1.owner = ? GROUP BY t1.owner, t1.number",
@@ -35,8 +34,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Messages:LoadTexts", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Messages:LoadTexts", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local messages = MySQL.rawExecute.await(
 				"SELECT id, owner, number, method, unread, UNIX_TIMESTAMP(time) as time, message FROM character_messages WHERE owner = ? AND number = ? ORDER BY TIME DESC LIMIT 20 OFFSET ?",
@@ -52,8 +51,8 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Messages:SendMessage", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Messages:SendMessage", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local data2 = {
 			owner = data.number,
 			number = data.owner,
@@ -66,7 +65,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 		local params = {}
 		local qry =
-			"INSERT INTO character_messages (owner, number, method, unread, time, message) VALUES (?, ?, ?, ?, FROM_UNIXTIME(?), ?), (?, ?, ?, ?, FROM_UNIXTIME(?), ?);"
+		"INSERT INTO character_messages (owner, number, method, unread, time, message) VALUES (?, ?, ?, ?, FROM_UNIXTIME(?), ?), (?, ?, ?, ?, FROM_UNIXTIME(?), ?);"
 		table.insert(params, data.owner)
 		table.insert(params, data.number)
 		table.insert(params, 1)
@@ -84,10 +83,10 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local id = MySQL.query.await(qry, params)
 
 		if id then
-			local targetChar = Fetch:CharacterData("Phone", data.number)
+			local targetChar = exports['sandbox-characters']:FetchCharacterData("Phone", data.number)
 			if targetChar ~= nil then
 				data2.id = id.insertId + 1
-				data2.contact = Phone.Contacts:IsContact(targetChar:GetData("SID"), data2.number)
+				data2.contact = exports['sandbox-phone']:ContactsIsContact(targetChar:GetData("SID"), data2.number)
 				TriggerClientEvent("Phone:Client:Messages:Notify", targetChar:GetData("Source"), data2, false)
 			end
 			cb(id.insertId)
@@ -96,17 +95,17 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Messages:ReadConvo", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Messages:ReadConvo", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			Phone.Messages:Read(char:GetData("Phone"), data)
+			exports['sandbox-phone']:MessagesRead(char:GetData("Phone"), data)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Phone:Messages:DeleteConvo", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Phone:Messages:DeleteConvo", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			Phone.Messages:Delete(char:GetData("Phone"), data)
+			exports['sandbox-phone']:MessagesDelete(char:GetData("Phone"), data)
 			cb(true)
 		else
 			cb(false)

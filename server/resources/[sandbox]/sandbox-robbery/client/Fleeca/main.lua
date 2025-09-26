@@ -14,13 +14,14 @@ AddEventHandler("Robbery:Client:Setup", function()
 
 	for k, v in ipairs(GlobalState["FleecaRobberies"]) do
 		local bankData = GlobalState[string.format("FleecaRobberies:%s", v)]
-		Polyzone.Create:Box(bankData.id, bankData.coords, bankData.width, bankData.length, bankData.options)
+		exports['sandbox-polyzone']:CreateBox(bankData.id, bankData.coords, bankData.width, bankData.length,
+			bankData.options)
 		_polys[bankData.id] = true
 
 		SetupFleecaVaults(bankData)
 
 		if bankData.reset ~= nil then
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				string.format("fleeca-%s-reset", bankData.id),
 				"shield-keyhole",
 				bankData.reset.coords,
@@ -52,7 +53,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 									~= nil
 									and GlobalState[string.format("Fleeca:%s:VaultDoor", bankData.id)].state == 3
 								)
-								or (not Doors:IsLocked(string.format("%s_gate", LocalPlayer.state.fleeca)))
+								or (not exports['sandbox-doors']:IsLocked(string.format("%s_gate", LocalPlayer.state.fleeca)))
 							)
 						end,
 					},
@@ -63,8 +64,8 @@ AddEventHandler("Robbery:Client:Setup", function()
 		end
 	end
 
-	Callbacks:RegisterClientCallback("Robbery:Fleeca:Keypad:Vault", function(data, cb)
-		Minigame.Play:Keypad(data, 5, 10000, false, {
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Fleeca:Keypad:Vault", function(data, cb)
+		exports['sandbox-games']:MinigamePlayKeypad(data, 5, 10000, false, {
 			onSuccess = function(data)
 				cb(true, data)
 			end,
@@ -130,7 +131,7 @@ RegisterNetEvent("Robbery:Client:Fleeca:CloseVaultDoor", function(fleecaId)
 end)
 
 AddEventHandler("Robbery:Client:Fleeca:StartSecuring", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "secure_fleeca",
 		duration = 30000,
 		label = "Securing",
@@ -148,13 +149,13 @@ AddEventHandler("Robbery:Client:Fleeca:StartSecuring", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Fleeca:SecureBank", {})
+			exports["sandbox-base"]:ServerCallback("Robbery:Fleeca:SecureBank", {})
 		end
 	end)
 end)
 
 AddEventHandler("Robbery:Client:Fleeca:Drill", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Fleeca:Drill", data, function() end)
+	exports["sandbox-base"]:ServerCallback("Robbery:Fleeca:Drill", data, function() end)
 end)
 
 function OpenDoor(checkOrigin, door)
@@ -187,7 +188,7 @@ end
 
 function SetupFleecaVaults(bankData)
 	for k, v in ipairs(bankData.loots) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("fleeca-%s", v.options.name),
 			"bore-hole",
 			v.coords,
@@ -217,7 +218,7 @@ function SetupFleecaVaults(bankData)
 								LocalPlayer.state.fleeca,
 								v.options.name
 							)])
-							and (k <= 2 or not Doors:IsLocked(string.format("%s_gate", LocalPlayer.state.fleeca)))
+							and (k <= 2 or not exports['sandbox-doors']:IsLocked(string.format("%s_gate", LocalPlayer.state.fleeca)))
 					end,
 				},
 			},

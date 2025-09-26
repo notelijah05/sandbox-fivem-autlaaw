@@ -156,7 +156,7 @@ function LaptopShit(loc, data, cb)
 
 	DoKeymaster(data.config, data.data, function(isSuccess, data)
 		p:resolve(isSuccess)
-		NetSync:DeleteObject(laptop)
+		exports["sandbox-base"]:DeleteObject(laptop)
 		ClearPedTasksImmediately(ply)
 	end)
 
@@ -198,7 +198,7 @@ function CaptchaShit(loc, data, cb)
 
 	DoCaptcha(data.passes, data.config, data.data, function(isSuccess, data)
 		p:resolve(isSuccess)
-		NetSync:DeleteObject(laptop)
+		exports["sandbox-base"]:DeleteObject(laptop)
 		ClearPedTasksImmediately(ply)
 	end)
 
@@ -236,7 +236,7 @@ function ThermiteShit(loc, data, cb)
 
 		DoMemory(data.passes, data.config, data.data, function(isSuccess, extra)
 			if isSuccess then
-				Callbacks:ServerCallback("Robbery:DoThermiteFx", {
+				exports["sandbox-base"]:ServerCallback("Robbery:DoThermiteFx", {
 					delay = ((data.duration + 2000) or 13000),
 					netId = ObjToNet(bomba)
 				}, function() end)
@@ -286,7 +286,7 @@ function BombShit(loc, data, cb)
 
 		DoAim(data.config, data.data, function(isSuccess, extra)
 			if isSuccess then
-				Callbacks:ServerCallback("Robbery:DoThermiteFx", {
+				exports["sandbox-base"]:ServerCallback("Robbery:DoThermiteFx", {
 					delay = ((data.duration + 2000) or 13000),
 					netId = ObjToNet(bomba)
 				}, function() end)
@@ -344,7 +344,7 @@ function HackShit(data, cb)
 		doingShit = false
 		p:resolve(isSuccess)
 		StopAnimTask(ply, "amb@code_human_in_bus_passenger_idles@female@tablet@base", "base", 3.0)
-		NetSync:DeleteObject(_mdtProp)
+		exports["sandbox-base"]:DeleteObject(_mdtProp)
 		ClearPedTasksImmediately(ply)
 	end)
 
@@ -355,7 +355,7 @@ function TrackingGameShit(data, cb)
 	local p = promise:new()
 	DoTracking(data.config, data.data, function(isSuccess, data)
 		p:resolve(isSuccess)
-		NetSync:DeleteObject(laptop)
+		exports["sandbox-base"]:DeleteObject(laptop)
 		ClearPedTasksImmediately(ply)
 	end)
 	cb(Citizen.Await(p))

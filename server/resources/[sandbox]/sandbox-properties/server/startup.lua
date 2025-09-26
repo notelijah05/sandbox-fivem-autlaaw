@@ -1,5 +1,3 @@
-local _ran = false
-
 _properties = {}
 _insideProperties = {}
 
@@ -21,17 +19,13 @@ function doPropertyThings(property)
 end
 
 function Startup()
-	if _ran then
-		return
-	end
-
-	Database.Game:find({
+	exports['sandbox-base']:DatabaseGameFind({
 		collection = "properties",
 	}, function(success, results)
 		if not success then
 			return
 		end
-		Logger:Trace("Properties", "Loaded ^2" .. #results .. "^7 Properties", { console = true })
+		exports['sandbox-base']:LoggerTrace("Properties", "Loaded ^2" .. #results .. "^7 Properties", { console = true })
 
 		for k, v in ipairs(results) do
 			local p = doPropertyThings(v)
@@ -39,6 +33,4 @@ function Startup()
 			_properties[v._id] = p
 		end
 	end)
-
-	_ran = true
 end

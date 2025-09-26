@@ -15,78 +15,47 @@ local pumpModels = {
 	486135101, -- LTD Grove Gabz
 }
 
-AddEventHandler("Vehicles:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Vehicles", {
-		"Callbacks",
-		"Notification",
-		"Action",
-		"Vehicles",
-		"Utils",
-		"Progress",
-		"Polyzone",
-		"Blips",
-		"Targeting",
-		"Animations",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		CreateFuelStationPolyzones()
+	CreateFuelStationPolyzones()
 
-		for k, v in ipairs(pumpModels) do
-			Targeting:AddObject(v, "gas-pump", {
-				{
-					text = "Refill Petrol Can",
-					icon = "gas-pump",
-					textFunc = function()
-						local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
-						local pct = current / 4500
-						return string.format(
-							"Refill Petrol Can ($%s)",
-							math.ceil(CalculateFuelCost(0, math.floor(100 - (pct * 100))))
+	for k, v in ipairs(pumpModels) do
+		exports['sandbox-targeting']:AddObject(v, "gas-pump", {
+			{
+				text = "Refill Petrol Can",
+				icon = "gas-pump",
+				textFunc = function()
+					local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
+					local pct = current / 4500
+					return string.format(
+						"Refill Petrol Can ($%s)",
+						math.ceil(CalculateFuelCost(0, math.floor(100 - (pct * 100))))
+					)
+				end,
+				event = "Fuel:Client:FillCan",
+				minDist = 3.0,
+				isEnabled = function()
+					local isArmed, hash = GetCurrentPedWeapon(LocalPlayer.state.ped)
+					local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
+					local pct = current / 4500
+					local cCost = CalculateFuelCost(0, math.floor(100 - (pct * 100)))
+					if cCost then
+						local cost = math.ceil(cCost)
+						return (
+							isArmed
+							and hash == `WEAPON_PETROLCAN`
+							and GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`) < 4500
+							and LocalPlayer.state.Character:GetData("Cash") >= cost
 						)
-					end,
-					event = "Fuel:Client:FillCan",
-					minDist = 3.0,
-					isEnabled = function()
-						local isArmed, hash = GetCurrentPedWeapon(LocalPlayer.state.ped)
-						local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
-						local pct = current / 4500
-						local cCost = CalculateFuelCost(0, math.floor(100 - (pct * 100)))
-						if cCost then
-							local cost = math.ceil(cCost)
-							return (
-								isArmed
-								and hash == `WEAPON_PETROLCAN`
-								and GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`) < 4500
-								and LocalPlayer.state.Character:GetData("Cash") >= cost
-							)
-						end
-					end,
-				},
-			}, 3.0)
-		end
-	end)
+					end
+				end,
+			},
+		}, 3.0)
+	end
 end)
 
 function CreateFuelStationPolyzones()
 	for k, v in ipairs(Config.FuelStations) do
-		Polyzone.Create:Box("fuel_" .. k, v.center, v.length, v.width, {
+		exports['sandbox-polyzone']:CreateBox("fuel_" .. k, v.center, v.length, v.width, {
 			heading = v.heading,
 			minZ = v.minZ,
 			maxZ = v.maxZ,
@@ -102,7 +71,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 	-- Adding them on the map looks to dumb
 	-- for k, v in ipairs(Config.FuelStations) do
 	-- 	if not v.restricted then
-	-- 		Blips:Add('fuel-station-'.. k, 'Fuel Station', v.center, 361, 64, 0.4)
+	-- 		exports["sandbox-blips"]:Add('fuel-station-'.. k, 'Fuel Station', v.center, 361, 64, 0.4)
 	-- 	end
 	-- end
 end)
@@ -111,7 +80,7 @@ AddEventHandler("Fuel:Client:FillCan", function()
 	local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
 	local pct = current / 4500
 
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "fill_petrol_can",
 		duration = math.min(math.ceil(10 - (10 * pct)), 2) * 10000,
 		label = "Filling Petrol Can",
@@ -126,7 +95,7 @@ AddEventHandler("Fuel:Client:FillCan", function()
 		animation = nil,
 	}, function(cancelled)
 		if not cancelled then
-			Callbacks:ServerCallback("Fuel:FillCan", {
+			exports["sandbox-base"]:ServerCallback("Fuel:FillCan", {
 				current = current,
 				pct = pct,
 			}, function(s)
@@ -195,7 +164,7 @@ function RunFuelTick(veh)
 	if veh and IsVehicleEngineOn(veh) then
 		local vehState = Entity(veh).state
 		if type(vehState.Fuel) == "number" then
-			local vehRPM = Utils:Round(GetVehicleCurrentRpm(veh), 1)
+			local vehRPM = exports['sandbox-base']:UtilsRound(GetVehicleCurrentRpm(veh), 1)
 			local classUsage = Config.Classes[GetVehicleClass(veh)] or 1.0
 
 			local consumption = ((Config.Usage * Config.FuelUsage[vehRPM]) * classUsage) / 10
@@ -204,11 +173,11 @@ function RunFuelTick(veh)
 				consumption = consumption + 3.0
 			end
 
-			local newVal = Utils:Round(vehState.Fuel - consumption, 2)
+			local newVal = exports['sandbox-base']:UtilsRound(vehState.Fuel - consumption, 2)
 
 			if newVal <= 0.0 then
 				newVal = 0.0
-				Vehicles.Engine:Force(veh, false)
+				exports['sandbox-vehicles']:EngineForce(veh, false)
 			elseif newVal <= 5.0 then
 				if _lowtick >= 3 then
 					_lowtick = 0
@@ -251,30 +220,30 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 	local entState = Entity(entityData.entity).state
 	entState:set("beingFueled", GetPlayerServerId(LocalPlayer.state.PlayerID), true)
 
-	local fuelData = Vehicles.Fuel:CanBeFueled(entityData.entity)
+	local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
 	if not fuelData then
 		return
 	end
 
 	if not fuelData.needsFuel then
-		Notification:Error("Vehicle Does Not Need Refueling")
+		exports["sandbox-hud"]:NotifError("Vehicle Does Not Need Refueling")
 		return
 	end
 
 	if data.bank then
 		local p = promise.new()
-		Callbacks:ServerCallback("Fuel:CheckBank", fuelData, function(res)
+		exports["sandbox-base"]:ServerCallback("Fuel:CheckBank", fuelData, function(res)
 			p:resolve(res)
 		end)
 		local canAfford = Citizen.Await(p)
 
 		if not canAfford then
-			Notification:Error("Insufficient Bank Balance")
+			exports["sandbox-hud"]:NotifError("Insufficient Bank Balance")
 			return
 		end
 	else
 		if LocalPlayer.state.Character:GetData("Cash") < fuelData.cost then
-			Notification:Error("Not Enough Cash to Refuel")
+			exports["sandbox-hud"]:NotifError("Not Enough Cash to Refuel")
 			return
 		end
 	end
@@ -283,8 +252,8 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 	local time = math.min(math.ceil(fuelData.requiredFuel / 2), 40)
 	TaskTurnPedToFaceEntity(LocalPlayer.state.ped, entityData.entity, 3000)
 	Wait(2000)
-	Animations.Emotes:Play("fuel", false, nil, true)
-	Progress:ProgressWithStartAndTick({
+	exports['sandbox-animations']:EmotesPlay("fuel", false, nil, true)
+	exports['sandbox-hud']:ProgressWithStartAndTick({
 		name = "idle",
 		duration = time * 1000,
 		label = "Refueling Vehicle",
@@ -307,7 +276,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 
 		local entState = Entity(entityData.entity).state
 		if entState.beingFueled ~= nil and entState.beingFueled ~= GetPlayerServerId(LocalPlayer.state.PlayerID) then
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 		end
 
 		local playerCoords = GetEntityCoords(LocalPlayer.state.ped)
@@ -318,8 +287,8 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 			or IsEntityDead(entityData.entity)
 			or #(playerCoords - vehicleCoords) > 5.0
 		then
-			Animations.Emotes:ForceCancel()
-			Progress:Cancel()
+			exports['sandbox-animations']:EmotesForceCancel()
+			exports['sandbox-hud']:ProgressCancel()
 			return
 		end
 
@@ -342,7 +311,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 					NetworkExplodeVehicle(entityData.entity, true, true, true)
 				end
 
-				Notification:Info("Nice One Champ")
+				exports["sandbox-hud"]:NotifInfo("Nice One Champ")
 
 				Citizen.SetTimeout(60000, function()
 					for k, v in ipairs(_fuelFires) do
@@ -351,14 +320,14 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 					_fuelFires = nil
 				end)
 
-				Animations.Emotes:ForceCancel()
-				Progress:Cancel()
+				exports['sandbox-animations']:EmotesForceCancel()
+				exports['sandbox-hud']:ProgressCancel()
 				return
 			end
 		end
 	end, function(wasCancelled)
 		_fueling = false
-		Animations.Emotes:ForceCancel()
+		exports['sandbox-animations']:EmotesForceCancel()
 		local fuelAmount = fuelData.requiredFuel
 		if wasCancelled then
 			fuelAmount = math.ceil(fuelData.requiredFuel * (secondsElapsed / time))
@@ -367,16 +336,16 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 		local entState = Entity(entityData.entity).state
 		entState:set("beingFueled", nil, true)
 
-		Callbacks:ServerCallback("Fuel:CompleteFueling", {
+		exports["sandbox-base"]:ServerCallback("Fuel:CompleteFueling", {
 			vehNet = VehToNet(entityData.entity),
 			vehClass = GetVehicleClass(entityData.entity),
 			fuelAmount = fuelAmount,
 			useBank = data.bank,
 		}, function(success, amount)
 			if success and amount then
-				Notification:Success(string.format("Refueled Vehicle for $%d", amount))
+				exports["sandbox-hud"]:NotifSuccess(string.format("Refueled Vehicle for $%d", amount))
 			else
-				Notification:Error("Error Refueling")
+				exports["sandbox-hud"]:NotifError("Error Refueling")
 			end
 		end)
 	end)
@@ -402,7 +371,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 				end
 
 				if fuelAmount <= 0 then
-					return Notification:Error("The Petrol Can Is Empty")
+					return exports["sandbox-hud"]:NotifError("The Petrol Can Is Empty")
 				end
 
 				if requiredFuel < fuelAmount then
@@ -412,7 +381,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 
 				local time = math.ceil(fuelAmount / 2)
 
-				Progress:ProgressWithStartAndTick({
+				exports['sandbox-hud']:ProgressWithStartAndTick({
 					name = "idle",
 					duration = time * 1000,
 					label = "Refueling Vehicle",
@@ -455,7 +424,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 						or IsEntityDead(entityData.entity)
 						or #(playerCoords - vehicleCoords) > 5.0
 					then
-						Progress:Cancel()
+						exports['sandbox-hud']:ProgressCancel()
 						return
 					end
 
@@ -484,7 +453,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 								NetworkExplodeVehicle(entityData.entity, true, true, true)
 							end
 
-							Notification:Info("Nice One Champ")
+							exports["sandbox-hud"]:NotifInfo("Nice One Champ")
 
 							Citizen.SetTimeout(60000, function()
 								for k, v in ipairs(_fuelFires) do
@@ -493,7 +462,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 								_fuelFires = nil
 							end)
 
-							Progress:Cancel()
+							exports['sandbox-hud']:ProgressCancel()
 							return
 						end
 					end
@@ -506,19 +475,19 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 
 					SetPedAmmoByType(LocalPlayer.state.ped, `AMMO_PETROLCAN`, (fuelAmountAfterUse / 50 * 4500))
 
-					Callbacks:ServerCallback("Fuel:CompleteJerryFueling", {
+					exports["sandbox-base"]:ServerCallback("Fuel:CompleteJerryFueling", {
 						vehNet = VehToNet(entityData.entity),
 						newAmount = math.floor(vehState.Fuel + fuelAmount + 0.0),
 					}, function(success)
 						if success then
-							Notification:Success("Refueled Vehicle")
+							exports["sandbox-hud"]:NotifSuccess("Refueled Vehicle")
 						else
-							Notification:Error("Error Refueling")
+							exports["sandbox-hud"]:NotifError("Error Refueling")
 						end
 					end)
 				end)
 			else
-				Notification:Error("Vehicle Does Not Need Refueling")
+				exports["sandbox-hud"]:NotifError("Vehicle Does Not Need Refueling")
 			end
 		end
 	end

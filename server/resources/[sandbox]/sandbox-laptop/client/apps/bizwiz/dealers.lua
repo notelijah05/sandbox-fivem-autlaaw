@@ -1,16 +1,16 @@
 RegisterNUICallback("PDMGetDealerData", function(data, cb)
-	Callbacks:ServerCallback("Dealerships:GetDealershipData", { dealerId = LocalPlayer.state.onDuty }, cb)
+	exports["sandbox-base"]:ServerCallback("Dealerships:GetDealershipData", { dealerId = LocalPlayer.state.onDuty }, cb)
 end)
 
 RegisterNUICallback("PDMSaveDealerData", function(data, cb)
-	Callbacks:ServerCallback("Dealerships:UpdateDealershipData", {
+	exports["sandbox-base"]:ServerCallback("Dealerships:UpdateDealershipData", {
 		dealerId = LocalPlayer.state.onDuty,
 		updating = data.data,
 	}, cb)
 end)
 
 RegisterNUICallback("PDMGetStock", function(data, cb)
-	Callbacks:ServerCallback(
+	exports["sandbox-base"]:ServerCallback(
 		"Dealerships:Sales:FetchData",
 		LocalPlayer.state.onDuty,
 		function(authed, stocks, defaultInterestRate, dealerData)
@@ -28,7 +28,7 @@ RegisterNUICallback("PDMGetStock", function(data, cb)
 end)
 
 RegisterNUICallback("DealershipStartTestDrive", function(data, cb)
-	Callbacks:ServerCallback("Dealerships:Sales:TestDrive", {
+	exports["sandbox-base"]:ServerCallback("Dealerships:Sales:TestDrive", {
 		dealership = LocalPlayer.state.onDuty,
 		data = {
 			vehicle = data.vehicle,
@@ -43,7 +43,7 @@ RegisterNUICallback("DealershipStartTestDrive", function(data, cb)
 end)
 
 RegisterNUICallback("PDMRunCredit", function(data, cb)
-	Callbacks:ServerCallback(
+	exports["sandbox-base"]:ServerCallback(
 		"Dealerships:CheckPersonsCredit",
 		{ dealerId = LocalPlayer.state.onDuty, SID = data.term },
 		cb
@@ -51,7 +51,7 @@ RegisterNUICallback("PDMRunCredit", function(data, cb)
 end)
 
 RegisterNUICallback("PDMStartSale", function(data, cb)
-	Callbacks:ServerCallback("Dealerships:Sales:StartSale", {
+	exports["sandbox-base"]:ServerCallback("Dealerships:Sales:StartSale", {
 		dealership = LocalPlayer.state.onDuty,
 		type = data.type,
 		data = {
@@ -69,7 +69,7 @@ RegisterNUICallback("PDMStartSale", function(data, cb)
 end)
 
 RegisterNUICallback("PDMGetHistory", function(data, cb)
-	Callbacks:ServerCallback("Dealerships:FetchHistory", {
+	exports["sandbox-base"]:ServerCallback("Dealerships:FetchHistory", {
 		dealership = LocalPlayer.state.onDuty,
 		term = data.value,
 		category = data.category,
@@ -84,7 +84,7 @@ RegisterNUICallback("PDMGetHistory", function(data, cb)
 end)
 
 RegisterNUICallback("PDMGetOwner", function(data, cb)
-	Callbacks:ServerCallback(
+	exports["sandbox-base"]:ServerCallback(
 		"Dealerships:FetchCurrentOwner",
 		{ dealerId = LocalPlayer.state.onDuty, VIN = data.VIN },
 		function(penis)

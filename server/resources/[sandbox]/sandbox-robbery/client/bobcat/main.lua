@@ -17,7 +17,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 		RefreshInterior(interiorid)
 	end)
 
-	Polyzone.Create:Poly("bobcat", {
+	exports['sandbox-polyzone']:CreatePoly("bobcat", {
 		vector2(907.62103271484, -2256.4008789062),
 		vector2(884.54675292969, -2254.3540039062),
 		vector2(884.14483642578, -2258.1083984375),
@@ -40,35 +40,36 @@ AddEventHandler("Robbery:Client:Setup", function()
 		maxZ = 35.549388885498,
 	})
 
-	Targeting.Zones:AddBox("bobcat-secure", "shield-keyhole", vector3(876.94, -2262.69, 30.47), 0.8, 1.4, {
-		heading = 356,
-		--debugPoly=true,
-		minZ = 29.87,
-		maxZ = 31.47,
-	}, {
-		{
-			icon = "phone",
-			text = "Secure Building",
-			event = "Robbery:Client:Bobcat:StartSecuring",
-			jobPerms = {
-				{
-					job = "police",
-					reqDuty = true,
+	exports['sandbox-targeting']:ZonesAddBox("bobcat-secure", "shield-keyhole", vector3(876.94, -2262.69, 30.47), 0.8,
+		1.4, {
+			heading = 356,
+			--debugPoly=true,
+			minZ = 29.87,
+			maxZ = 31.47,
+		}, {
+			{
+				icon = "phone",
+				text = "Secure Building",
+				event = "Robbery:Client:Bobcat:StartSecuring",
+				jobPerms = {
+					{
+						job = "police",
+						reqDuty = true,
+					},
 				},
+				data = id,
+				isEnabled = function(s, s2)
+					return (
+						GlobalState["Bobcat:ExtrDoor"]
+						or GlobalState["Bobcat:FrontDoor"]
+						or GlobalState["Bobcat:SecuredDoor"]
+						or GlobalState["Bobcat:VaultDoor"]
+					) and not GlobalState["Bobcat:Secured"]
+				end,
 			},
-			data = id,
-			isEnabled = function(s, s2)
-				return (
-					GlobalState["Bobcat:ExtrDoor"]
-					or GlobalState["Bobcat:FrontDoor"]
-					or GlobalState["Bobcat:SecuredDoor"]
-					or GlobalState["Bobcat:VaultDoor"]
-				) and not GlobalState["Bobcat:Secured"]
-			end,
-		},
-	}, 3.0, true)
+		}, 3.0, true)
 
-	Targeting.Zones:AddBox("bobcat-c4", "bomb", vector3(873.44, -2294.37, 30.47), 1.4, 1.4, {
+	exports['sandbox-targeting']:ZonesAddBox("bobcat-c4", "bomb", vector3(873.44, -2294.37, 30.47), 1.4, 1.4, {
 		heading = 355,
 		-- debugPoly = true,
 		minZ = 29.47,
@@ -88,53 +89,55 @@ AddEventHandler("Robbery:Client:Setup", function()
 		},
 	}, 3.0, true)
 
-	Targeting.Zones:AddBox("bobcat-front-pc-hack", "computer", vector3(875.15, -2263.83, 30.47), 0.8, 1.2, {
-		heading = 354,
-		-- debugPoly = true,
-		minZ = 28.92,
-		maxZ = 31.32,
-	}, {
-		{
-			icon = "terminal",
-			text = "Hack Terminal",
-			event = "Robbery:Client:Bobcat:HackFrontPC",
-			item = "electronics_kit",
-			isEnabled = function(data)
-				return LocalPlayer.state.inBobcat
-					and not GlobalState["Bobcat:PCHacked"]
-					and GlobalState["Bobcat:ExtrDoor"]
-					and GlobalState["Bobcat:FrontDoor"]
-			end,
-		},
-	}, 3.0, true)
+	exports['sandbox-targeting']:ZonesAddBox("bobcat-front-pc-hack", "computer", vector3(875.15, -2263.83, 30.47), 0.8,
+		1.2, {
+			heading = 354,
+			-- debugPoly = true,
+			minZ = 28.92,
+			maxZ = 31.32,
+		}, {
+			{
+				icon = "terminal",
+				text = "Hack Terminal",
+				event = "Robbery:Client:Bobcat:HackFrontPC",
+				item = "electronics_kit",
+				isEnabled = function(data)
+					return LocalPlayer.state.inBobcat
+						and not GlobalState["Bobcat:PCHacked"]
+						and GlobalState["Bobcat:ExtrDoor"]
+						and GlobalState["Bobcat:FrontDoor"]
+				end,
+			},
+		}, 3.0, true)
 
-	Targeting.Zones:AddBox("bobcat-securiy-hack", "computer", vector3(887.07, -2299.13, 30.47), 3.0, 1.0, {
-		heading = 264,
-		-- debugPoly = true,
-		minZ = 29.47,
-		maxZ = 31.27,
-	}, {
-		{
-			icon = "terminal",
-			text = "Hack Terminal",
-			event = "Robbery:Client:Bobcat:HackSecuriyPC",
-			isEnabled = function(data)
-				return LocalPlayer.state.inBobcat
-					and not GlobalState["Bobcat:SecurityPCHacked"]
-					and GlobalState["Bobcat:ExtrDoor"]
-					and GlobalState["Bobcat:FrontDoor"]
-					and GlobalState["Bobcat:SecuredDoor"]
-					and GlobalState["Bobcat:SecurityDoor"]
-			end,
-		},
-	}, 3.0, true)
+	exports['sandbox-targeting']:ZonesAddBox("bobcat-securiy-hack", "computer", vector3(887.07, -2299.13, 30.47), 3.0,
+		1.0, {
+			heading = 264,
+			-- debugPoly = true,
+			minZ = 29.47,
+			maxZ = 31.27,
+		}, {
+			{
+				icon = "terminal",
+				text = "Hack Terminal",
+				event = "Robbery:Client:Bobcat:HackSecuriyPC",
+				isEnabled = function(data)
+					return LocalPlayer.state.inBobcat
+						and not GlobalState["Bobcat:SecurityPCHacked"]
+						and GlobalState["Bobcat:ExtrDoor"]
+						and GlobalState["Bobcat:FrontDoor"]
+						and GlobalState["Bobcat:SecuredDoor"]
+						and GlobalState["Bobcat:SecurityDoor"]
+				end,
+			},
+		}, 3.0, true)
 
 	while GlobalState["Bobcat:LootLocations"] == nil do
 		Wait(1)
 	end
 
 	for k, v in ipairs(GlobalState["Bobcat:LootLocations"]) do
-		Targeting.Zones:AddBox(
+		exports['sandbox-targeting']:ZonesAddBox(
 			string.format("bobcat-loot-%s", k),
 			"box-open-full",
 			v.coords,
@@ -162,13 +165,13 @@ AddEventHandler("Robbery:Client:Setup", function()
 		)
 	end
 
-	Callbacks:RegisterClientCallback("Robbery:Bobcat:SetupPeds", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Robbery:Bobcat:SetupPeds", function(data, cb)
 		SetupPeds(data.peds, data.isBobcat, data.skipLeaveVeh)
 	end)
 end)
 
 AddEventHandler("Robbery:Client:Bobcat:StartSecuring", function(entity, data)
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "secure_bobcat",
 		duration = 30000,
 		label = "Securing",
@@ -186,17 +189,17 @@ AddEventHandler("Robbery:Client:Bobcat:StartSecuring", function(entity, data)
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Bobcat:Secure", {})
+			exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:Secure", {})
 		end
 	end)
 end)
 
 -- AddEventHandler("Robbery:Client:Bobcat:HackFrontPC", function(entity, t)
--- 	Callbacks:ServerCallback("Robbery:Bobcat:CheckFrontPC", {}, function(data)
+-- 	exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:CheckFrontPC", {}, function(data)
 -- 		if data then
 -- 			_capPass = 1
 -- 			DoCaptcha(data.passes, data.config, data.data, function(isSuccess, extra)
--- 				Callbacks:ServerCallback("Robbery:Bobcat:FrontPCResults", {
+-- 				exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:FrontPCResults", {
 -- 					state = isSuccess,
 -- 				}, function() end)
 -- 			end)
@@ -205,11 +208,11 @@ end)
 -- end)
 
 -- AddEventHandler("Robbery:Client:Bobcat:HackSecurityPC", function(entity, t)
--- 	Callbacks:ServerCallback("Robbery:Bobcat:CheckSecurityPC", {}, function(data)
+-- 	exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:CheckSecurityPC", {}, function(data)
 -- 		if data then
 -- 			_capPass = 1
 -- 			DoCaptcha(data.passes, data.config, data.data, function(isSuccess, extra)
--- 				Callbacks:ServerCallback("Robbery:Bobcat:SecurityPCResults", {
+-- 				exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:SecurityPCResults", {
 -- 					state = isSuccess,
 -- 				}, function() end)
 -- 			end)
@@ -232,7 +235,7 @@ RegisterNetEvent("Robbery:Client:Bobcat:UpdateIPL", function(state)
 end)
 
 AddEventHandler("Robbery:Client:Bobcat:GrabC4", function()
-	Progress:Progress({
+	exports['sandbox-hud']:Progress({
 		name = "bobcat_c4",
 		duration = (math.random(5) + 5) * 1000,
 		label = "Grabbing Breach Charge",
@@ -250,15 +253,15 @@ AddEventHandler("Robbery:Client:Bobcat:GrabC4", function()
 		},
 	}, function(status)
 		if not status then
-			Callbacks:ServerCallback("Robbery:Bobcat:PickupC4", {}, function(s) end)
+			exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:PickupC4", {}, function(s) end)
 		end
 	end)
 end)
 
 AddEventHandler("Robbery:Client:Bobcat:GrabLoot", function(entity, data)
-	Callbacks:ServerCallback("Robbery:Bobcat:CheckLoot", data, function(s)
+	exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:CheckLoot", data, function(s)
 		if s then
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "bobcat_loot",
 				duration = (math.random(10) + 5) * 1000,
 				label = "Grabbing Fat Lewts",
@@ -276,9 +279,9 @@ AddEventHandler("Robbery:Client:Bobcat:GrabLoot", function(entity, data)
 				},
 			}, function(status)
 				if not status then
-					Callbacks:ServerCallback("Robbery:Bobcat:Loot", data, function(s2) end)
+					exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:Loot", data, function(s2) end)
 				else
-					Callbacks:ServerCallback("Robbery:Bobcat:CancelLoot", data, function(s2) end)
+					exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:CancelLoot", data, function(s2) end)
 				end
 			end)
 		end

@@ -18,6 +18,20 @@ DROP DATABASE IF EXISTS `database_ptr`;
 CREATE DATABASE IF NOT EXISTS `database_ptr` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
 USE `database_ptr`;
 
+DROP TABLE IF EXISTS `logs`;
+CREATE TABLE IF NOT EXISTS `logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` int(11) NOT NULL,
+  `level` int(11) NOT NULL,
+  `component` varchar(255) NOT NULL,
+  `log` text NOT NULL,
+  `data` longtext,
+  PRIMARY KEY (`id`),
+  KEY `date` (`date`),
+  KEY `level` (`level`),
+  KEY `component` (`component`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `app_profile_history`;
 CREATE TABLE IF NOT EXISTS `app_profile_history` (
   `sid` bigint(20) unsigned NOT NULL,

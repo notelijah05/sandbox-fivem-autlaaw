@@ -35,8 +35,8 @@ end
 
 local function showGamerTags()
     local curCoords = GetEntityCoords(PlayerPedId())
-    if Admin.NoClip:IsActive() then
-        curCoords = Admin.NoClip:GetPos()
+    if exports['sandbox-admin']:NoClipIsActive() then
+        curCoords = exports['sandbox-admin']:NoClipGetPos()
     end
 
     -- Per infinity this will only return players within 300m
@@ -92,10 +92,10 @@ function ToggleAdminPlayerIDs()
     isPlayerIDActive = not isPlayerIDActive
     if not isPlayerIDActive then
         -- Remove all gamer tags and clear out active table
-        Notification:Info("Player IDs Disabled")
+        exports["sandbox-hud"]:NotifInfo("Player IDs Disabled")
         cleanUpGamerTags()
     else
-        Notification:Info("Player IDs Enabled")
+        exports["sandbox-hud"]:NotifInfo("Player IDs Enabled")
         CreateThread(function()
             while isPlayerIDActive do
                 showGamerTags()

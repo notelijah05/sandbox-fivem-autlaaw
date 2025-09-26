@@ -8,7 +8,7 @@ function RegisterMetalDetectors()
 	_metalDetectorPropsLoaded = {}
 
 	for k, v in pairs(_metalDetectorLocations) do
-		Polyzone.Create:Box(string.format("%s-metal-detector-zone", k), v.coords, v.width, v.length, {
+		exports['sandbox-polyzone']:CreateBox(string.format("%s-metal-detector-zone", k), v.coords, v.width, v.length, {
 			heading = v.options.heading,
 			--debugPoly=true,
 			minZ = v.options.minZ,
@@ -46,8 +46,8 @@ end)
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 	for k, v in pairs(_metalDetectorLocations) do
 		if id == string.format("%s-metal-detector-zone", k) then
-			if Inventory.Items:HasType(2, 1) then
-				Callbacks:ServerCallback("MetalDetector:Server:Sync", v.coords, function() end)
+			if exports['sandbox-inventory']:ItemsHasType(2, 1) then
+				exports["sandbox-base"]:ServerCallback("MetalDetector:Server:Sync", v.coords, function() end)
 			end
 		end
 	end

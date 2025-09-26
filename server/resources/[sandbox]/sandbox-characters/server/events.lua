@@ -1,9 +1,9 @@
 RegisterServerEvent('Characters:Server:Spawning', function()
-    Middleware:TriggerEvent("Characters:Spawning", source)
+    exports['sandbox-base']:MiddlewareTriggerEvent("Characters:Spawning", source)
 end)
 
 RegisterServerEvent('Ped:LeaveCreator', function()
-    local char = Fetch:CharacterSource(source)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char ~= nil then
         if char:GetData("New") then
             char:SetData("New", false)

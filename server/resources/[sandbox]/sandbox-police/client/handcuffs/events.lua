@@ -1,7 +1,7 @@
 AddEventHandler("Handcuffs:Client:DoCuffBreak", function()
 	if _cuffPromise ~= nil then
 		_cuffPromise:resolve(true)
-		Notification:Success("You Broke Out Of The Cuffs")
+		exports["sandbox-hud"]:NotifSuccess("You Broke Out Of The Cuffs")
 	end
 end)
 
@@ -9,7 +9,7 @@ AddEventHandler("Handcuffs:Client:FailCuffBreak", function()
 	if _cuffPromise ~= nil then
 		ResetTimer()
 		_cuffPromise:resolve(false)
-		Notification:Error("Failed Breaking Out Of Cuffs")
+		exports["sandbox-hud"]:NotifError("Failed Breaking Out Of Cuffs")
 	end
 end)
 
@@ -50,7 +50,7 @@ RegisterNetEvent("Handcuffs:Client:UncuffingAnim", function()
 
 		loadAnimDict(animDict)
 
-		Weapons:UnequipIfEquipped()
+		exports['sandbox-inventory']:WeaponsUnequipIfEquipped()
 
 		while not HasAnimDictLoaded(animDict) do
 			Wait(0)
@@ -110,7 +110,7 @@ RegisterNetEvent("Handcuffs:Client:CuffThread", function(cId)
 			-- end
 			Wait(5)
 
-			Weapons:UnequipIfEquipped()
+			exports['sandbox-inventory']:WeaponsUnequipIfEquipped()
 
 			if not LocalPlayer.state.isHardCuffed and IsPedClimbing(LocalPlayer.state.ped) then
 				Wait(500)

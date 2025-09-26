@@ -27,7 +27,7 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 AddEventHandler("HUD:Client:RemoveBlindfold", function(entity, data)
-	Callbacks:ServerCallback("HUD:RemoveBlindfold", entity.serverId, function(s)
+	exports["sandbox-base"]:ServerCallback("HUD:RemoveBlindfold", entity.serverId, function(s)
 
 	end)
 end)

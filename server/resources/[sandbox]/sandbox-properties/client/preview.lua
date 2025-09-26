@@ -10,7 +10,7 @@ function StartPreview(int)
     end
 
     if not _insideInterior then
-        Notification:Error("Must be Inside Your Property to Preview Interiors", 8000)
+        exports["sandbox-hud"]:NotifError("Must be Inside Your Property to Preview Interiors", 8000)
         return false
     end
 
@@ -21,7 +21,7 @@ function StartPreview(int)
         _previewingInteriorCam = 1
         _previewingInteriorSwitching = true
 
-        Phone:Close(true)
+        exports['sandbox-phone']:Close(true)
 
         DoScreenFadeOut(250)
         while not IsScreenFadedOut() do
@@ -37,13 +37,13 @@ function StartPreview(int)
         DoScreenFadeIn(250)
         CameraLoop()
 
-        InfoOverlay:Show(_previewingInteriorData?.info?.name or "Unknown",
+        exports['sandbox-hud']:InfoOverlayShow(_previewingInteriorData?.info?.name or "Unknown",
             _previewingInterior and _previewingInterior[_previewingInteriorCam].name or "???")
 
         _previewingInteriorSwitching = false
         return true
     else
-        Notification:Error("Cannot Preview Interior")
+        exports["sandbox-hud"]:NotifError("Cannot Preview Interior")
     end
     return false
 end
@@ -61,7 +61,7 @@ function EndPreview()
     CleanupGTACamera()
     DoScreenFadeIn(250)
 
-    InfoOverlay:Close()
+    exports['sandbox-hud']:InfoOverlayClose()
     _previewingInterior = nil
     _previewingInteriorSwitching = false
 end
@@ -71,7 +71,7 @@ function PrevPreview()
         _previewingInteriorSwitching = true
         _previewingInteriorCam -= 1
 
-        InfoOverlay:Close()
+        exports['sandbox-hud']:InfoOverlayClose()
 
         DoScreenFadeOut(250)
         while not IsScreenFadedOut() do
@@ -86,7 +86,7 @@ function PrevPreview()
         DoScreenFadeIn(250)
         CameraLoop()
 
-        InfoOverlay:Show(_previewingInteriorData?.info?.name or "Unknown",
+        exports['sandbox-hud']:InfoOverlayShow(_previewingInteriorData?.info?.name or "Unknown",
             _previewingInterior[_previewingInteriorCam].name)
 
         _previewingInteriorSwitching = false
@@ -98,7 +98,7 @@ function NextPreview()
         _previewingInteriorSwitching = true
         _previewingInteriorCam += 1
 
-        InfoOverlay:Close()
+        exports['sandbox-hud']:InfoOverlayClose()
 
         DoScreenFadeOut(250)
         while not IsScreenFadedOut() do
@@ -113,7 +113,7 @@ function NextPreview()
         DoScreenFadeIn(250)
         CameraLoop()
 
-        InfoOverlay:Show(_previewingInteriorData?.info?.name or "Unknown",
+        exports['sandbox-hud']:InfoOverlayShow(_previewingInteriorData?.info?.name or "Unknown",
             _previewingInterior[_previewingInteriorCam].name)
 
         _previewingInteriorSwitching = false

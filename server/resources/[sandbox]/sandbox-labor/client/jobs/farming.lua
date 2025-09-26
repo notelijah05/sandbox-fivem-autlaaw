@@ -12,31 +12,32 @@ local eventHandlers = {}
 local _nodes = nil
 
 AddEventHandler("Labor:Client:Setup", function()
-	PedInteraction:Add("FarmingJob", `a_m_m_farmer_01`, vector3(2016.165, 4987.541, 41.098), 225.995, 25.0, {
-		{
-			icon = "wheat",
-			text = "Start Work",
-			event = "Farming:Client:StartJob",
-			tempjob = "Farming",
-			isEnabled = function()
-				return not _working
-			end,
-		},
-		{
-			icon = "clipboard-list-check",
-			text = "Finish Job",
-			event = "Farming:Client:TurnIn",
-			tempjob = "Farming",
-			isEnabled = function()
-				return _working and _tasks == 2
-			end,
-		},
-	}, 'helmet-safety', 'WORLD_HUMAN_CLIPBOARD')
+	exports['sandbox-pedinteraction']:Add("FarmingJob", `a_m_m_farmer_01`, vector3(2016.165, 4987.541, 41.098), 225.995,
+		25.0, {
+			{
+				icon = "wheat",
+				text = "Start Work",
+				event = "Farming:Client:StartJob",
+				tempjob = "Farming",
+				isEnabled = function()
+					return not _working
+				end,
+			},
+			{
+				icon = "clipboard-list-check",
+				text = "Finish Job",
+				event = "Farming:Client:TurnIn",
+				tempjob = "Farming",
+				isEnabled = function()
+					return _working and _tasks == 2
+				end,
+			},
+		}, 'helmet-safety', 'WORLD_HUMAN_CLIPBOARD')
 end)
 
 local _doing = false
 function DoAction(id)
-	Progress:ProgressWithTickEvent({
+	exports['sandbox-hud']:ProgressWithTickEvent({
 		name = 'farming_action',
 		duration = (math.random(10) + _actionBaseDur) * 1000,
 		label = _actionLabel,
@@ -59,11 +60,11 @@ function DoAction(id)
 				end
 			end
 		end
-		Progress:Cancel()
+		exports['sandbox-hud']:ProgressCancel()
 	end, function(cancelled)
 		_doing = false
 		if not cancelled then
-			Callbacks:ServerCallback("Farming:CompleteNode", id)
+			exports["sandbox-base"]:ServerCallback("Farming:CompleteNode", id)
 		end
 	end)
 end
@@ -72,7 +73,8 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 	_joiner = joiner
 	DeleteWaypoint()
 	SetNewWaypoint(2016.165, 4987.541)
-	_blip = Blips:Add("FarmingStart", "Farm Supervisor", { x = 2016.165, y = 4987.541, z = 0 }, 480, 2, 1.4)
+	_blip = exports["sandbox-blips"]:Add("FarmingStart", "Farm Supervisor", { x = 2016.165, y = 4987.541, z = 0 }, 480, 2,
+		1.4)
 
 	eventHandlers["keypress"] = AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
 		if _doing then return end
@@ -104,7 +106,7 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 
 	eventHandlers["startup"] = RegisterNetEvent(string.format("Farming:Client:%s:Startup", joiner),
 		function(nodes, actionLabel, baseDur, anim)
-			Blips:Remove("FarmingStart")
+			exports["sandbox-blips"]:Remove("FarmingStart")
 
 			if _nodes ~= nil then return end
 			_actionLabel = actionLabel
@@ -115,7 +117,8 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 			_nodes = nodes
 
 			for k, v in ipairs(_nodes) do
-				Blips:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0, 0.8)
+				exports["sandbox-blips"]:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0,
+					0.8)
 			end
 
 			CreateThread(function()
@@ -137,7 +140,7 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 	eventHandlers["actions"] = RegisterNetEvent(string.format("Farming:Client:%s:Action", joiner), function(data)
 		for k, v in ipairs(_nodes) do
 			if v.id == data then
-				Blips:Remove(string.format("FarmingNode-%s", v.id))
+				exports["sandbox-blips"]:Remove(string.format("FarmingNode-%s", v.id))
 				table.remove(_nodes, k)
 				break
 			end
@@ -149,16 +152,17 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 		_nodes = {}
 		DeleteWaypoint()
 		SetNewWaypoint(2016.165, 4987.541)
-		_blip = Blips:Add("FarmingStart", "Farm Supervisor", { x = 2016.165, y = 4987.541, z = 0 }, 480, 2, 1.4)
+		_blip = exports["sandbox-blips"]:Add("FarmingStart", "Farm Supervisor", { x = 2016.165, y = 4987.541, z = 0 },
+			480, 2, 1.4)
 	end)
 
 	eventHandlers["new-task"] = RegisterNetEvent(string.format("Farming:Client:%s:NewTask", joiner),
 		function(nodes, actionLabel, baseDur, anim)
-			Blips:Remove("FarmingStart")
+			exports["sandbox-blips"]:Remove("FarmingStart")
 
 			if #_nodes ~= 0 then
 				for k, v in ipairs(_nodes) do
-					Blips:Remove(string.format("FarmingNode-%s", v.id))
+					exports["sandbox-blips"]:Remove(string.format("FarmingNode-%s", v.id))
 				end
 			end
 
@@ -169,19 +173,20 @@ RegisterNetEvent("Farming:Client:OnDuty", function(joiner, time)
 			_tasks = _tasks + 1
 
 			for k, v in ipairs(_nodes) do
-				Blips:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0, 0.8)
+				exports["sandbox-blips"]:Add(string.format("FarmingNode-%s", v.id), "Farming Action", v.coords, 594, 0,
+					0.8)
 			end
 		end)
 end)
 
 AddEventHandler("Farming:Client:TurnIn", function()
-	Callbacks:ServerCallback('Farming:TurnIn', _joiner)
+	exports["sandbox-base"]:ServerCallback('Farming:TurnIn', _joiner)
 end)
 
 AddEventHandler("Farming:Client:StartJob", function()
-	Callbacks:ServerCallback('Farming:StartJob', _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback('Farming:StartJob', _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)
@@ -193,12 +198,12 @@ RegisterNetEvent("Farming:Client:OffDuty", function(time)
 
 	if _nodes ~= nil then
 		for k, v in ipairs(_nodes) do
-			Blips:Remove(string.format("FarmingNode-%s", v.id))
+			exports["sandbox-blips"]:Remove(string.format("FarmingNode-%s", v.id))
 		end
 	end
 
 	if _blip ~= nil then
-		Blips:Remove("FarmingStart")
+		exports["sandbox-blips"]:Remove("FarmingStart")
 	end
 
 	_joiner = nil

@@ -2,27 +2,8 @@
 local xSound = exports.xsound
 local Props = {}
 
-AddEventHandler("DJ:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Menu = exports["sandbox-base"]:FetchComponent("Menu")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("DJ", {
-		"Callbacks",
-		"Targeting",
-		"Menu",
-		"Notification",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
-		RegisterDjZones()
-	end)
+	RegisterDjZones()
 end)
 
 function RegisterDjZones()
@@ -34,7 +15,7 @@ function RegisterDjZones()
 
 	for k, v in ipairs(Config.Locations) do
 		if v.enableBooth then
-			Targeting.Zones:AddBox("dj-booth" .. k, "compact-disc", v.coords, 1.0, 1.0, {
+			exports['sandbox-targeting']:ZonesAddBox("dj-booth" .. k, "compact-disc", v.coords, 1.0, 1.0, {
 				name = "djbooth" .. k,
 				heading = 0,
 				--debugPoly=true,
@@ -89,7 +70,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 		volume = 0,
 	}
 	local p = promise.new()
-	Callbacks:ServerCallback("sandbox-dj:server:songInfo", {}, function(cb)
+	exports["sandbox-base"]:ServerCallback("sandbox-dj:server:songInfo", {}, function(cb)
 		p:resolve(cb)
 	end)
 	previousSongs = Citizen.Await(p)
@@ -135,7 +116,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 	local djMenu = {}
 	local djMenuSub = {}
 
-	djMenu = Menu:Create("djMenuPlayer", string.format("DJ Turntable"), function() end, function()
+	djMenu = exports['sandbox-menu']:Create("djMenuPlayer", string.format("DJ Turntable"), function() end, function()
 		djMenu = nil
 		djMenuSub = nil
 		collectgarbage()
@@ -153,26 +134,26 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 	}, function(data)
 		local song = data.data.value
 		if song == "" or song == nil then
-			Notification:Error("Empty text cannot be played dummy.", 2500, "fas fa-volume-off")
+			exports["sandbox-hud"]:NotifError("Empty text cannot be played dummy.", 2500, "fas fa-volume-off")
 			return
 		end
 		if not string.find(song, "youtu") then
 			song = "https://www.youtube.com/watch?v=" .. song
 		end
-		Callbacks:ServerCallback("sandbox-dj:server:playMusic", {
+		exports["sandbox-base"]:ServerCallback("sandbox-dj:server:playMusic", {
 			song = song,
 			zoneNum = boothId,
 		}, function(success, zoneNum)
 			if success then
 				TriggerEvent("sandbox-dj:client:playMusic", { zone = zoneNum })
-				Notification:Success("Loading link: " .. song, 2500, "fas fa-pause")
+				exports["sandbox-hud"]:NotifSuccess("Loading link: " .. song, 2500, "fas fa-pause")
 			else
-				Notification:Error("Failed to Load Song", 2500, "fas fa-volume-off")
+				exports["sandbox-hud"]:NotifError("Failed to Load Song", 2500, "fas fa-volume-off")
 			end
 		end)
 	end)
 
-	djMenuSub["songhistory"] = Menu:Create("djSongHistoryMenu", "Song History")
+	djMenuSub["songhistory"] = exports['sandbox-menu']:Create("djSongHistoryMenu", "Song History")
 	if previousSongs[booth] then
 		for _, v in pairs(previousSongs[booth]) do
 			djMenuSub["songhistory"].Add:Text(string.format("Song: %s", v), { "pad", "code", "center", "textLarge" })
@@ -186,33 +167,33 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 	if xSound:soundExists(booth) then
 		if xSound:isPlaying(booth) then
 			djMenu.Add:Button("Pause Music", { success = true }, function()
-				Callbacks:ServerCallback("sandbox-dj:server:pauseMusic", {
+				exports["sandbox-base"]:ServerCallback("sandbox-dj:server:pauseMusic", {
 					zoneName = booth,
 					zoneNum = boothId,
 				}, function(success)
 					if success then
-						Notification:Success("Paused Music", 2500, "fas fa-pause")
+						exports["sandbox-hud"]:NotifSuccess("Paused Music", 2500, "fas fa-pause")
 					else
-						Notification:Error("Failed to Pause Music", 2500, "fas fa-pause")
+						exports["sandbox-hud"]:NotifError("Failed to Pause Music", 2500, "fas fa-pause")
 					end
 				end)
 			end)
 		elseif xSound:isPaused(booth) then
 			djMenu.Add:Button("Resume Music", { success = true }, function()
-				Callbacks:ServerCallback("sandbox-dj:server:resumeMusic", {
+				exports["sandbox-base"]:ServerCallback("sandbox-dj:server:resumeMusic", {
 					zoneName = booth,
 					zoneNum = boothId,
 				}, function(success)
 					if success then
-						Notification:Success("Resume Music", 2500, "fas fa-play")
+						exports["sandbox-hud"]:NotifSuccess("Resume Music", 2500, "fas fa-play")
 					else
-						Notification:Error("Failed to Resume Music", 2500, "fas fa-play")
+						exports["sandbox-hud"]:NotifError("Failed to Resume Music", 2500, "fas fa-play")
 					end
 				end)
 			end)
 		end
 		-- i-_1Os7hVDw
-		djMenuSub["changevolume"] = Menu:Create("dj_change_volume", "Change Volume")
+		djMenuSub["changevolume"] = exports['sandbox-menu']:Create("dj_change_volume", "Change Volume")
 
 		djMenuSub["changevolume"].Add:Slider("Change Volume", {
 			current = song.volume,
@@ -234,7 +215,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 			if volume > 1.0 then
 				volume = 1.0
 			end
-			Callbacks:ServerCallback("sandbox-dj:server:changeVolume", {
+			exports["sandbox-base"]:ServerCallback("sandbox-dj:server:changeVolume", {
 				volume = volume,
 				zoneName = booth,
 				zoneNum = boothId,
@@ -242,13 +223,13 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 				if success then
 					song.volume = volume * 100
 					TriggerEvent("sandbox-dj:client:playMusic", { zone = zoneNum })
-					Notification:Success(
+					exports["sandbox-hud"]:NotifSuccess(
 						string.format("Changed Volume to %s/100", tostring(math.ceil(volume * 100))),
 						2500,
 						"fas fa-volume-off"
 					)
 				else
-					Notification:Error("Failed to Change Volume", 2500, "fas fa-volume-off")
+					exports["sandbox-hud"]:NotifError("Failed to Change Volume", 2500, "fas fa-volume-off")
 				end
 			end)
 		end)
@@ -257,14 +238,14 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 		djMenu.Add:SubMenu("Change Volume", djMenuSub["changevolume"], {})
 
 		djMenu.Add:Button("Stop Music", { success = true }, function()
-			Callbacks:ServerCallback("sandbox-dj:server:stopMusic", {
+			exports["sandbox-base"]:ServerCallback("sandbox-dj:server:stopMusic", {
 				zoneName = booth,
 				zoneNum = boothId,
 			}, function(success)
 				if success then
-					Notification:Success("Stop Music", 2500, "fas fa-stop")
+					exports["sandbox-hud"]:NotifSuccess("Stop Music", 2500, "fas fa-stop")
 				else
-					Notification:Error("Failed to Stop Music", 2500, "fas fa-stop")
+					exports["sandbox-hud"]:NotifError("Failed to Stop Music", 2500, "fas fa-stop")
 				end
 			end)
 		end)

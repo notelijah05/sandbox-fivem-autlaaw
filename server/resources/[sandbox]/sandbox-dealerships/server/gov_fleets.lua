@@ -1,13 +1,13 @@
 RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
     local src = source
     local shopData = _fleetConfig[shop]
-    local char = Fetch:CharacterSource(src)
-    if char and shopData and Jobs.Permissions:HasPermissionInJob(src, shopData.job, shopData.requiredPermission) then
+    local char = exports['sandbox-characters']:FetchCharacterSource(src)
+    if char and shopData and exports['sandbox-jobs']:HasPermissionInJob(src, shopData.job, shopData.requiredPermission) then
         local chosenVehicle = shopData.vehicles[vehicle]
         if chosenVehicle and chosenVehicle.liveries[livery] ~= nil then
-            local purchaseBankAccount = Banking.Accounts:GetOrganization(shopData.bankAccount)
+            local purchaseBankAccount = exports['sandbox-finance']:AccountsGetOrganization(shopData.bankAccount)
             if purchaseBankAccount and purchaseBankAccount.Account then
-                if Banking.Balance:Charge(purchaseBankAccount.Account, chosenVehicle.price, {
+                if exports['sandbox-finance']:BalanceCharge(purchaseBankAccount.Account, chosenVehicle.price, {
                         type = 'bill',
                         title = 'Fleet Vehicle Purchase',
                         description = string.format(
@@ -22,7 +22,7 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
                     local properties = table.copy(chosenVehicle.defaultProperties)
                     properties.livery = livery
                     Wait(200)
-                    Vehicles.Owned:AddToFleet(
+                    exports['sandbox-vehicles']:OwnedAddToFleet(
                         shopData.job,
                         false,
                         0,
@@ -37,33 +37,36 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
                         },
                         function(success, vehicle)
                             if success and vehicle then
-                                Execute:Client(src, 'Notification', 'Success',
+                                exports['sandbox-hud']:NotifSuccess(src,
                                     string.format(
-                                    'Fleet Vehicle Purchase of a %s %s was Successful.<br><br>VIN: %s<br>Plate: %s',
+                                        'Fleet Vehicle Purchase of a %s %s was Successful.<br><br>VIN: %s<br>Plate: %s',
                                         chosenVehicle.make, chosenVehicle.model, vehicle.VIN, vehicle.RegisteredPlate),
                                     5000, 'cars')
                             else
-                                Logger:Error('Dealerships',
+                                exports['sandbox-base']:LoggerError('Dealerships',
                                     string.format(
-                                    'Purchase of Fleet Vehicle Failed After Taking %s Cash from Bank Account: %s',
+                                        'Purchase of Fleet Vehicle Failed After Taking %s Cash from Bank Account: %s',
                                         chosenVehicle.price, purchaseBankAccount.Account))
-                                Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000,
+                                exports['sandbox-hud']:NotifError(src,
+                                    'Fleet Vehicle Purchase Failed', 5000,
                                     'cars')
                             end
                         end,
                         properties
                     )
                 else
-                    Execute:Client(src, 'Notification', 'Error',
+                    exports['sandbox-hud']:NotifError(src,
                         'Fleet Vehicle Purchase Failed - Not Enough Money in the Bank', 5000, 'cars')
                 end
             else
-                Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000, 'cars')
+                exports['sandbox-hud']:NotifError(src, 'Fleet Vehicle Purchase Failed', 5000,
+                    'cars')
             end
         else
-            Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed - Invalid Vehicle', 5000, 'cars')
+            exports['sandbox-hud']:NotifError(src,
+                'Fleet Vehicle Purchase Failed - Invalid Vehicle', 5000, 'cars')
         end
     else
-        Execute:Client(src, 'Notification', 'Error', 'Fleet Vehicle Purchase Failed', 5000, 'cars')
+        exports['sandbox-hud']:NotifError(src, 'Fleet Vehicle Purchase Failed', 5000, 'cars')
     end
 end)

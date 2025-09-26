@@ -1,77 +1,16 @@
-AddEventHandler("Billboards:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Game = exports["sandbox-base"]:FetchComponent("Game")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	Polyzone = exports["sandbox-base"]:FetchComponent("Polyzone")
-	Jobs = exports["sandbox-base"]:FetchComponent("Jobs")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
-	Progress = exports["sandbox-base"]:FetchComponent("Progress")
-	Vehicles = exports["sandbox-base"]:FetchComponent("Vehicles")
-	Targeting = exports["sandbox-base"]:FetchComponent("Targeting")
-	ListMenu = exports["sandbox-base"]:FetchComponent("ListMenu")
-	Action = exports["sandbox-base"]:FetchComponent("Action")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	PedInteraction = exports["sandbox-base"]:FetchComponent("PedInteraction")
-	Blips = exports["sandbox-base"]:FetchComponent("Blips")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	Minigame = exports["sandbox-base"]:FetchComponent("Minigame")
-	Input = exports["sandbox-base"]:FetchComponent("Input")
-	Interaction = exports["sandbox-base"]:FetchComponent("Interaction")
-	Inventory = exports["sandbox-base"]:FetchComponent("Inventory")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Billboards", {
-		"Logger",
-		"Fetch",
-		"Callbacks",
-		"Game",
-		"Menu",
-		"Targeting",
-		"Notification",
-		"Utils",
-		"Animations",
-		"Polyzone",
-		"Jobs",
-		"Weapons",
-		"Progress",
-		"Vehicles",
-		"Targeting",
-		"ListMenu",
-		"Action",
-		"Sounds",
-		"PedInteraction",
-		"Blips",
-		"Keybinds",
-		"Minigame",
-		"Input",
-		"Interaction",
-		"Inventory",
-	}, function(error)
-		if #error > 0 then
-			return
-		end
-		RetrieveComponents()
+	-- print('testing biatch')
+	-- local dui = CreateBillboardDUI('https://i.imgur.com/Zlf40QZ.png', 1024, 512)
+	-- AddReplaceTexture('ch2_03b_cg2_03b_bb', 'ch2_03b_bb_lowdown', dui.dictionary, dui.texture)
 
-		-- print('testing biatch')
-		-- local dui = CreateBillboardDUI('https://i.imgur.com/Zlf40QZ.png', 1024, 512)
-		-- AddReplaceTexture('ch2_03b_cg2_03b_bb', 'ch2_03b_bb_lowdown', dui.dictionary, dui.texture)
+	-- Wait(10000)
 
-		-- Wait(10000)
+	-- print(dui.id)
 
-		-- print(dui.id)
+	-- ReleaseBillboardDUI(dui.id)
+	-- RemoveReplaceTexture('ch2_03b_cg2_03b_bb', 'ch2_03b_bb_lowdown')
 
-		-- ReleaseBillboardDUI(dui.id)
-		-- RemoveReplaceTexture('ch2_03b_cg2_03b_bb', 'ch2_03b_bb_lowdown')
-
-		StartUp()
-	end)
+	StartUp()
 end)
 
 local started = false

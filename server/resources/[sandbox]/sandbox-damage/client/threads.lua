@@ -62,8 +62,8 @@ AddEventHandler("Damage:Client:Triggers:EntityDamaged", function(victim, attacke
 		}, true)
 		LocalPlayer.state:set("isDeadTime", deadTime, true)
 		LocalPlayer.state:set("releaseTime", releaseTime, true)
-		Hud.DeathTexts:Hide()
-		Hud.DeathTexts:Show("death", deadTime, releaseTime)
+		exports['sandbox-hud']:DeathTextsHide()
+		exports['sandbox-hud']:DeathTextsShow("death", deadTime, releaseTime)
 
 		TriggerEvent("Ped:Client:Died")
 		TriggerServerEvent("Ped:Server:Died")
@@ -77,9 +77,9 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 		_respawning = true
 		TriggerServerEvent("Escort:Server:ForceStop")
 
-		Hud.DeathTexts:Release()
+		exports['sandbox-hud']:DeathTextsRelease()
 		if not LocalPlayer.state.deadData?.isMinor then
-			Progress:Progress({
+			exports['sandbox-hud']:Progress({
 				name = "hospital_action",
 				duration = 10000,
 				label = "Respawning",
@@ -95,38 +95,38 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 				animation = false,
 			}, function(status)
 				if not status then
-					Callbacks:ServerCallback("Hospital:Respawn", {}, function(bedId)
+					exports["sandbox-base"]:ServerCallback("Hospital:Respawn", {}, function(bedId)
 						if bedId ~= nil then
 							TriggerServerEvent("Escort:Server:ForceStop")
 							_sendToHosp = bedId
 							LocalPlayer.state:set("isHospitalized", true, true)
 							Wait(250)
-							Hospital:SendToBed(Config.Beds[_sendToHosp], false, bedId)
+							exports['sandbox-damage']:HospitalSendToBed(Config.Beds[_sendToHosp], false, bedId)
 						else
-							Notification:Error("Unable To Respawn Yet, Please Wait")
+							exports["sandbox-hud"]:NotifError("Unable To Respawn Yet, Please Wait")
 						end
 					end)
 				else
-					Hud.DeathTexts:Show(LocalPlayer.state.deadData?.isMinor and "knockout" or "death",
+					exports['sandbox-hud']:DeathTextsShow(LocalPlayer.state.deadData?.isMinor and "knockout" or "death",
 						LocalPlayer.state.isDeadTime, LocalPlayer.state.releaseTime)
 				end
 				_respawning = false
 			end)
 		else
-			Damage:Revive()
+			exports['sandbox-damage']:Revive()
 			_respawning = false
 		end
 	end
 end)
 
 RegisterNetEvent("Damage:Client:Ticks:Heal", function()
-	Buffs:ApplyUniqueBuff("heal_ticks", #LocalPlayer.state.healTicks * 10, false, {
+	exports['sandbox-hud']:ApplyUniqueBuff("heal_ticks", #LocalPlayer.state.healTicks * 10, false, {
 		customMax = #LocalPlayer.state.healTicks * 10,
 	})
 end)
 
 RegisterNetEvent("Damage:Client:Ticks:Armor", function()
-	Buffs:ApplyUniqueBuff("armor_ticks", #LocalPlayer.state.armorTicks * 10, false, {
+	exports['sandbox-hud']:ApplyUniqueBuff("armor_ticks", #LocalPlayer.state.armorTicks * 10, false, {
 		customMax = #LocalPlayer.state.armorTicks * 10,
 	})
 end)
@@ -214,7 +214,7 @@ function StartThreads()
 
 					if not LocalPlayer.state.gameMode then
 						if isMinor and _reductions < 6 then
-							DAMAGE.Reductions:Increase(1)
+							exports['sandbox-damage']:ReductionsIncrease(1)
 						else
 							isMinor = false
 						end
@@ -230,7 +230,7 @@ function StartThreads()
 					}, true)
 					LocalPlayer.state:set("isDeadTime", deadTime, true)
 					LocalPlayer.state:set("releaseTime", releaseTime, true)
-					Hud.DeathTexts:Show(isMinor and "knockout" or "death", deadTime, releaseTime)
+					exports['sandbox-hud']:DeathTextsShow(isMinor and "knockout" or "death", deadTime, releaseTime)
 
 					while not LocalPlayer.state.isDead do
 						Wait(1)
@@ -239,16 +239,14 @@ function StartThreads()
 					TriggerEvent("Ped:Client:Died")
 					TriggerServerEvent("Ped:Server:Died")
 
-					if (Jail:IsJailed() or not nearPlayer(100.0)) and not Config.Weapons[deathHash]?.minor then
+					if (exports['sandbox-jail']:IsJailed() or not nearPlayer(100.0)) and not Config.Weapons[deathHash]?.minor then
 						TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", "injuredPerson")
 					end
-					Hud:Dead(true)
+					exports['sandbox-hud']:Dead(true)
 					DoDeadEvent()
 					--respawnCd(isMinor)
 					doingthedead = false
 				end
-			else
-
 			end
 			Wait(100)
 		end
@@ -265,7 +263,7 @@ function StartThreads()
 				local max = GetEntityMaxHealth(LocalPlayer.state.ped)
 
 				if chp >= max then
-					Buffs:RemoveBuffType("heal_ticks")
+					exports['sandbox-hud']:RemoveBuffType("heal_ticks")
 					LocalPlayer.state:set("healTicks", nil, true)
 				else
 					local heal = LocalPlayer.state.healTicks[1] or 0
@@ -274,14 +272,14 @@ function StartThreads()
 					end
 
 					if chp + heal <= max then
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Damage",
 							string.format("Heal Tick: %s (Original: %s)", heal, LocalPlayer.state.healTicks[1])
 						)
 						SetEntityHealth(LocalPlayer.state.ped, chp + heal)
 
 						if chp + heal >= max then
-							Buffs:RemoveBuffType("heal_ticks")
+							exports['sandbox-hud']:RemoveBuffType("heal_ticks")
 						end
 					end
 
@@ -290,7 +288,7 @@ function StartThreads()
 					if #t > 0 then
 						LocalPlayer.state:set("healTicks", t, true)
 					else
-						Buffs:RemoveBuffType("heal_ticks")
+						exports['sandbox-hud']:RemoveBuffType("heal_ticks")
 						LocalPlayer.state:set("healTicks", nil, true)
 					end
 				end
@@ -313,7 +311,7 @@ function StartThreads()
 				local max = GetPlayerMaxArmour(LocalPlayer.state.PlayerID)
 
 				if car >= max then
-					Buffs:RemoveBuffType("armor_ticks")
+					exports['sandbox-hud']:RemoveBuffType("armor_ticks")
 					LocalPlayer.state:set("armorTicks", nil, true)
 				else
 					local gen = LocalPlayer.state.armorTicks[1] or 0
@@ -322,14 +320,14 @@ function StartThreads()
 					end
 
 					if car + gen <= max then
-						Logger:Trace(
+						exports['sandbox-base']:LoggerTrace(
 							"Damage",
 							string.format("Armor Tick: %s (Original: %s)", gen, LocalPlayer.state.armorTicks[1])
 						)
 						SetPedArmour(LocalPlayer.state.ped, car + gen)
 
 						if chp + heal >= max then
-							Buffs:RemoveBuffType("armor_ticks")
+							exports['sandbox-hud']:RemoveBuffType("armor_ticks")
 						end
 					end
 
@@ -338,7 +336,7 @@ function StartThreads()
 					if #t > 0 then
 						LocalPlayer.state:set("armorTicks", t, true)
 					else
-						Buffs:RemoveBuffType("armor_ticks")
+						exports['sandbox-hud']:RemoveBuffType("armor_ticks")
 						LocalPlayer.state:set("armorTicks", nil, true)
 					end
 				end
@@ -375,7 +373,7 @@ function StartThreads()
 			elseif LocalPlayer.state.wasOnPainKillers then
 				LocalPlayer.state.wasOnPainKillers = false
 				-- SetPedToRagdoll(LocalPlayer.state.ped, 1500, 2000, 3, true, true, false)
-				-- Notification:Custom(Config.Strings.PainKillersExpired, 5000, "pills", Config.NotifStyle)
+				-- exports["sandbox-hud"]:NotifCustom(Config.Strings.PainKillersExpired, 5000, "pills", Config.NotifStyle)
 			end
 
 			if LocalPlayer.state.onDrugs ~= nil and LocalPlayer.state.onDrugs > 0 then
@@ -383,7 +381,7 @@ function StartThreads()
 			elseif LocalPlayer.state.wasOnDrugs then
 				LocalPlayer.state.wasOnDrugs = false
 				-- SetPedToRagdoll(LocalPlayer.state.ped, 1500, 2000, 3, true, true, false)
-				-- Notification:Custom(Config.Strings.AdrenalineExpired, 5000, "pills", Config.NotifStyle)
+				-- exports["sandbox-hud"]:NotifCustom(Config.Strings.AdrenalineExpired, 5000, "pills", Config.NotifStyle)
 			end
 
 			ApplyLimp(LocalPlayer.state.ped)

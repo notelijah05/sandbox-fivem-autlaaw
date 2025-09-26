@@ -114,7 +114,7 @@ function PlaceFurniture(v)
 
                 hasTargeting = true
 
-                Targeting:AddEntity(obj, icon, menu)
+                exports['sandbox-targeting']:AddEntity(obj, icon, menu)
             end
         end
 
@@ -126,7 +126,7 @@ function PlaceFurniture(v)
         })
 
         if LocalPlayer.state.furnitureEdit and not hasTargeting then
-            Targeting:AddEntity(obj, "draw-square", {
+            exports['sandbox-targeting']:AddEntity(obj, "draw-square", {
                 {
                     icon = "arrows-up-down-left-right",
                     text = "Move",
@@ -166,7 +166,7 @@ function DestroyFurniture(s)
         for k, v in ipairs(_spawnedFurniture) do
             DeleteEntity(v.entity)
             if not s then
-                Targeting:RemoveEntity(v.entity)
+                exports['sandbox-targeting']:RemoveEntity(v.entity)
             end
         end
 
@@ -179,7 +179,7 @@ function SetFurnitureEditMode(state)
         if state then
             for k, v in ipairs(_spawnedFurniture) do
                 if not v.targeting then
-                    Targeting:AddEntity(v.entity, "draw-square", {
+                    exports['sandbox-targeting']:AddEntity(v.entity, "draw-square", {
                         {
                             icon = "arrows-up-down-left-right",
                             text = "Move",
@@ -209,15 +209,15 @@ function SetFurnitureEditMode(state)
                 end
             end
 
-            Notification.Persistent:Standard("furniture", "Furniture Edit Mode Enabled - Third Eye Objects to Move or Delete Them")
+            exports["sandbox-hud"]:NotifPersistentStandard("furniture", "Furniture Edit Mode Enabled - Third Eye Objects to Move or Delete Them")
         else
             for k, v in ipairs(_spawnedFurniture) do
                 if not v.targeting then
-                    Targeting:RemoveEntity(v.entity)
+                    exports['sandbox-targeting']:RemoveEntity(v.entity)
                 end
             end
 
-            Notification.Persistent:Remove("furniture")
+            exports["sandbox-hud"]:NotifPersistentRemove("furniture")
         end
 
         LocalPlayer.state.furnitureEdit = state
@@ -243,15 +243,15 @@ function CycleFurniture(direction)
         end
     end
 
-    InfoOverlay:Close()
-    ObjectPlacer:Cancel(true, true)
+    exports['sandbox-hud']:InfoOverlayClose()
+    exports['sandbox-objects']:PlacerCancel(true, true)
     Wait(200)
     local fKey = _furnitureCategory[_furnitureCategoryCurrent]
     local fData = FurnitureConfig[fKey]
     if fData then
-        InfoOverlay:Show(fData.name, string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", fKey))
+        exports['sandbox-hud']:InfoOverlayShow(fData.name, string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", fKey))
     end
-    ObjectPlacer:Start(GetHashKey(fKey), "Furniture:Client:Place", {}, true, "Furniture:Client:Cancel", true, true)
+    exports['sandbox-objects']:PlacerStart(GetHashKey(fKey), "Furniture:Client:Place", {}, true, "Furniture:Client:Cancel", true, true)
 end
 
 AddEventHandler("Furniture:Client:Place", function(data, placement)
@@ -261,7 +261,7 @@ AddEventHandler("Furniture:Client:Place", function(data, placement)
             model = _placingSearchItem
         end
 
-        Callbacks:ServerCallback("Properties:PlaceFurniture", {
+        exports["sandbox-base"]:ServerCallback("Properties:PlaceFurniture", {
             model = model,
             coords = {
                 x = placement.coords.x,
@@ -276,17 +276,17 @@ AddEventHandler("Furniture:Client:Place", function(data, placement)
             data = data,
         }, function(success)
             if success then
-                Notification:Success("Placed Item")
+                exports["sandbox-hud"]:NotifSuccess("Placed Item")
             else
-                Notification:Error("Error")
+                exports["sandbox-hud"]:NotifError("Error")
             end
 
             _placingFurniture = false
             LocalPlayer.state.placingFurniture = false
-            InfoOverlay:Close()
+            exports['sandbox-hud']:InfoOverlayClose()
 
             if not _skipPhone then
-                Phone:Open()
+                exports['sandbox-phone']:Open()
             end
         end)
     end
@@ -299,19 +299,19 @@ AddEventHandler("Furniture:Client:Cancel", function()
         LocalPlayer.state.placingFurniture = false
 
         if not _skipPhone then
-            Phone:Open()
+            exports['sandbox-phone']:Open()
         end
 
         Wait(200)
         DisablePauseMenu(false)
-        InfoOverlay:Close()
+        exports['sandbox-hud']:InfoOverlayClose()
     end
 end)
 
 AddEventHandler("Furniture:Client:Move", function(data, placement)
     if _placingFurniture and data.id then
 
-        Callbacks:ServerCallback("Properties:MoveFurniture", {
+        exports["sandbox-base"]:ServerCallback("Properties:MoveFurniture", {
             id = data.id,
             coords = {
                 x = placement.coords.x,
@@ -325,17 +325,17 @@ AddEventHandler("Furniture:Client:Move", function(data, placement)
             },
         }, function(success)
             if success then
-                Notification:Success("Moved Item")
+                exports["sandbox-hud"]:NotifSuccess("Moved Item")
             else
-                Notification:Error("Error")
+                exports["sandbox-hud"]:NotifError("Error")
             end
 
             _placingFurniture = false
             LocalPlayer.state.placingFurniture = false
-            InfoOverlay:Close()
+            exports['sandbox-hud']:InfoOverlayClose()
 
             if not _skipPhone then
-                Phone:Open()
+                exports['sandbox-phone']:Open()
             end
         end)
     end
@@ -352,11 +352,11 @@ AddEventHandler("Furniture:Client:CancelMove", function(data)
             end
         end
 
-        Notification:Error("Move Cancelled")
+        exports["sandbox-hud"]:NotifError("Move Cancelled")
         _placingFurniture = false
         LocalPlayer.state.placingFurniture = false
         if not _skipPhone then
-            Phone:Open()
+            exports['sandbox-phone']:Open()
         end
 
         Wait(200)
@@ -379,7 +379,7 @@ RegisterNetEvent("Furniture:Client:MoveItem", function(property, id, item)
         for k, v in ipairs(_spawnedFurniture) do
             if v.id == id then
                 DeleteEntity(v.entity)
-                Targeting:RemoveEntity(v.entity)
+                exports['sandbox-targeting']:RemoveEntity(v.entity)
                 shouldUpdate = true
             else
                 table.insert(ns, v)
@@ -406,7 +406,7 @@ RegisterNetEvent("Furniture:Client:DeleteItem", function(property, id, furniture
         for k, v in ipairs(_spawnedFurniture) do
             if v.id == id then
                 DeleteEntity(v.entity)
-                Targeting:RemoveEntity(v.entity)
+                exports['sandbox-targeting']:RemoveEntity(v.entity)
             else
                 table.insert(ns, v)
             end
@@ -418,15 +418,15 @@ RegisterNetEvent("Furniture:Client:DeleteItem", function(property, id, furniture
 end)
 
 AddEventHandler("Furniture:Client:OnMove", function(entity, data)
-    Properties.Furniture:Move(data.id, true)
+    exports['sandbox-properties']:Move(data.id, true)
 end)
 
 AddEventHandler("Furniture:Client:OnDelete", function(entity, data)
-    Properties.Furniture:Delete(data.id)
+    exports['sandbox-properties']:Delete(data.id)
 end)
 
 AddEventHandler("Furniture:Client:OnClone", function(entity, data)
-    Properties.Furniture:Place(data.model, false, {}, false, true, GetEntityCoords(entity.entity), GetEntityRotation(entity.entity))
+    exports['sandbox-properties']:Place(data.model, false, {}, false, true, GetEntityCoords(entity.entity), GetEntityRotation(entity.entity))
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)

@@ -1,5 +1,3 @@
-local _ran = false
-
 _appData = {
 	{
 		name = "lsunderground",
@@ -13,7 +11,7 @@ _appData = {
 		store = true,
 		unread = 0,
 		restricted = {
-			state = {"ACCESS_LSUNDERGROUND", "PHONE_VPN", "RACE_DONGLE"},
+			state = { "ACCESS_LSUNDERGROUND", "PHONE_VPN", "RACE_DONGLE" },
 		},
 	},
 	{

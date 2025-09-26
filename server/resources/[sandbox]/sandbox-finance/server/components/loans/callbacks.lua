@@ -1,7 +1,7 @@
 function GetCharactersLoans(stateId)
     local p = promise.new()
 
-    Database.Game:find({
+    exports['sandbox-base']:DatabaseGameFind({
         collection = 'loans',
         query = {
             SID = stateId,
@@ -19,8 +19,8 @@ function GetCharactersLoans(stateId)
 end
 
 function RegisterLoanCallbacks()
-    Callbacks:RegisterServerCallback('Loans:GetLoans', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Loans:GetLoans', function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
             local SID = char:GetData('SID')
             local loans = GetCharactersLoans(SID)
@@ -33,11 +33,11 @@ function RegisterLoanCallbacks()
         end
     end)
 
-    Callbacks:RegisterServerCallback('Loans:Payment', function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
+    exports["sandbox-base"]:RegisterServerCallback('Loans:Payment', function(source, data, cb)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char and data and data.loan then
             local SID = char:GetData('SID')
-            local res = Loans:MakePayment(source, data.loan, data.paymentAhead, data.weeks)
+            local res = exports['sandbox-finance']:LoansMakePayment(source, data.loan, data.paymentAhead, data.weeks)
             if res and res.success then
                 cb(res, {
                     loans = GetCharactersLoans(SID),

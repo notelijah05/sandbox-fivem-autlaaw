@@ -19,7 +19,8 @@ AddEventHandler("Casino:Client:Startup", function()
 
     for k, v in pairs(_blackjackTables) do
         local maxBet = formatNumberToCurrency(math.floor(_blackjackTablesConfig[k].bet[#_blackjackTablesConfig[k].bet]))
-        Targeting.Zones:AddBox("casino-blackjack-" .. k, "cards", v.polyzone.center, v.polyzone.length, v.polyzone.width,
+        exports['sandbox-targeting']:ZonesAddBox("casino-blackjack-" .. k, "cards", v.polyzone.center, v.polyzone.length,
+            v.polyzone.width,
             v.polyzone.options, {
                 {
                     icon = "cards",
@@ -65,7 +66,7 @@ AddEventHandler("Casino:Client:Startup", function()
             }, 1.5, true)
     end
 
-    Callbacks:RegisterClientCallback("Casino:Client:RequestHitStand", function(data, cb)
+    exports["sandbox-base"]:RegisterClientCallback("Casino:Client:RequestHitStand", function(data, cb)
         local itemList = {
             {
                 label = "Stand",
@@ -88,7 +89,7 @@ AddEventHandler("Casino:Client:Startup", function()
                 description = "Double Down!",
                 event = "Casino:Client:RecievePromptData",
                 data = { state = "double" },
-                disabled = data.currentBet > Casino.Chips:Get()
+                disabled = data.currentBet > exports['sandbox-casino']:ChipsGet()
             })
         end
 
@@ -109,7 +110,7 @@ AddEventHandler("Casino:Client:Startup", function()
             end
         elseif res?.timeout then
             cb(false)
-            Notification:Error("Ran Out of Time...")
+            exports["sandbox-hud"]:NotifError("Ran Out of Time...")
         else
             cb(false)
         end
@@ -214,7 +215,7 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
     local tableId = blackjack_func_368(_BJclosestChair)
 
     if tableId == data.table then
-        Callbacks:ServerCallback("Casino:JoinBlackjack", _BJclosestChair, function(success, table, chair)
+        exports["sandbox-base"]:ServerCallback("Casino:JoinBlackjack", _BJclosestChair, function(success, table, chair)
             if success then
                 _inSittingDownAnimation = true
 
@@ -223,8 +224,8 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
 
                 LocalPlayer.state.playingCasino = true
 
-                Animations.Emotes:ForceCancel()
-                Weapons:UnequipIfEquippedNoAnim()
+                exports['sandbox-animations']:EmotesForceCancel()
+                exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
 
                 if _blackJackStatebagHandler then
                     RemoveStateBagChangeHandler(_blackJackStatebagHandler)
@@ -249,15 +250,15 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
                         _blackJackStatebagHandler = nil
                     end
 
-                    InfoOverlay:Close()
+                    exports['sandbox-hud']:InfoOverlayClose()
 
                     LocalPlayer.state.playingCasino = false
                 end)
             else
                 if table == "vip" then
-                    Notification:Error("You're Not a VIP Loser")
+                    exports["sandbox-hud"]:NotifError("You're Not a VIP Loser")
                 else
-                    Notification:Error("Someone Is Sat There")
+                    exports["sandbox-hud"]:NotifError("Someone Is Sat There")
                 end
             end
         end)
@@ -266,7 +267,7 @@ end)
 
 AddEventHandler("Casino:Client:StartBlackjack", function(_, data)
     if _BJsatAtTable and data?.table == _BJsatAtTable then
-        Callbacks:ServerCallback("Casino:StartBlackjack", {}, function(success)
+        exports["sandbox-base"]:ServerCallback("Casino:StartBlackjack", {}, function(success)
             if success then
 
             end
@@ -276,12 +277,12 @@ end)
 
 AddEventHandler("Casino:Client:LeaveBlackjack", function(_, data)
     if _BJsatAtTable and data?.table == _BJsatAtTable then
-        Callbacks:ServerCallback("Casino:LeaveBlackjack", {}, function(success)
+        exports["sandbox-base"]:ServerCallback("Casino:LeaveBlackjack", {}, function(success)
             if success then
                 _BJsatAtTable = false
                 _BJsatAtLocalChair = false
                 leaveBlackjackSeat()
-                InfoOverlay:Close()
+                exports['sandbox-hud']:InfoOverlayClose()
 
                 LocalPlayer.state.playingCasino = false
             end
@@ -316,7 +317,7 @@ RegisterNetEvent("Casino:Client:BlackjackConfirmBet", function(betAmounts, table
     _blackjackAwaitingResponse = false
 
     if res?.success and res?.data?.confirmBet and res.data.confirmBet >= 100 then
-        Callbacks:ServerCallback("Casino:BetBlackjack", res.data.confirmBet, function(success, gameData)
+        exports["sandbox-base"]:ServerCallback("Casino:BetBlackjack", res.data.confirmBet, function(success, gameData)
             if success then
                 DoBlackjackPlaceBetAnimation()
 
@@ -331,10 +332,10 @@ RegisterNetEvent("Casino:Client:BlackjackConfirmBet", function(betAmounts, table
             end
         end)
     elseif res?.timeout then
-        Notification:Error("Ran Out of Time...")
-        InfoOverlay:Close()
+        exports["sandbox-hud"]:NotifError("Ran Out of Time...")
+        exports['sandbox-hud']:InfoOverlayClose()
     else
-        InfoOverlay:Close()
+        exports['sandbox-hud']:InfoOverlayClose()
     end
 end)
 
@@ -486,7 +487,7 @@ RegisterNetEvent("Casino:Client:BlackjackGameFinished", function(tableId, played
         end
 
         if tableId == _BJsatAtTable then
-            InfoOverlay:Close()
+            exports['sandbox-hud']:InfoOverlayClose()
 
             if _blackJackStatebagHandler then
                 RemoveStateBagChangeHandler(_blackJackStatebagHandler)
@@ -532,7 +533,7 @@ function ShowGameStateUI(state)
         local dealerHand = CountBlackjackHand(state.DealerCards)
         local stateLabel = "Blackjack"
         local myHand = 0
-        local myBalance = math.floor(Casino.Chips:Get())
+        local myBalance = math.floor(exports['sandbox-casino']:ChipsGet())
         local myBet = 0
 
         if state.Status == 1 then
@@ -558,9 +559,9 @@ function ShowGameStateUI(state)
         overlay = overlay .. string.format("Dealer Hand: %s<br>", dealerHand)
         overlay = overlay .. string.format("My Hand: %s", myHand)
 
-        InfoOverlay:Show(stateLabel, overlay)
+        exports['sandbox-hud']:InfoOverlayShow(stateLabel, overlay)
     else
-        InfoOverlay:Show("Game Pending Start", "Waiting for all players to confirm their bets.")
+        exports['sandbox-hud']:InfoOverlayShow("Game Pending Start", "Waiting for all players to confirm their bets.")
     end
 end
 

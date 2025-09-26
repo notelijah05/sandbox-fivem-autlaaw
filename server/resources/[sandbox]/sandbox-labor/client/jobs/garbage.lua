@@ -60,54 +60,55 @@ loadAnimDict = function(dict)
 	end
 end
 AddEventHandler("Labor:Client:Setup", function()
-	PedInteraction:Add("GarbageJob", GetHashKey("s_m_y_garbage"), vector3(-348.940, -1570.224, 24.228), 340.561, 25.0, {
-		{
-			icon = "trash",
-			text = "Start Work",
-			event = "Garbage:Client:StartJob",
-			tempjob = "Garbage",
-			isEnabled = function()
-				return not _working
-			end,
-		},
-		{
-			icon = "handshake-angle",
-			text = "Borrow Garbage Truck",
-			event = "Garbage:Client:GarbageSpawn",
-			tempjob = "Garbage",
-			isEnabled = function()
-				return _working and _state == 1
-			end,
-		},
-		{
-			icon = "handshake-angle",
-			text = "Return Garbage Truck",
-			event = "Garbage:Client:GarbageSpawnRemove",
-			tempjob = "Garbage",
-			isEnabled = function()
-				return _working and _state == 3
-			end,
-		},
-		{
-			icon = "handshake-angle",
-			text = "Complete Job",
-			event = "Garbage:Client:TurnIn",
-			tempjob = "Garbage",
-			isEnabled = function()
-				return _working and _state == 4
-			end,
-		},
-	}, "trash")
+	exports['sandbox-pedinteraction']:Add("GarbageJob", GetHashKey("s_m_y_garbage"), vector3(-348.940, -1570.224, 24.228),
+		340.561, 25.0, {
+			{
+				icon = "trash",
+				text = "Start Work",
+				event = "Garbage:Client:StartJob",
+				tempjob = "Garbage",
+				isEnabled = function()
+					return not _working
+				end,
+			},
+			{
+				icon = "handshake-angle",
+				text = "Borrow Garbage Truck",
+				event = "Garbage:Client:GarbageSpawn",
+				tempjob = "Garbage",
+				isEnabled = function()
+					return _working and _state == 1
+				end,
+			},
+			{
+				icon = "handshake-angle",
+				text = "Return Garbage Truck",
+				event = "Garbage:Client:GarbageSpawnRemove",
+				tempjob = "Garbage",
+				isEnabled = function()
+					return _working and _state == 3
+				end,
+			},
+			{
+				icon = "handshake-angle",
+				text = "Complete Job",
+				event = "Garbage:Client:TurnIn",
+				tempjob = "Garbage",
+				isEnabled = function()
+					return _working and _state == 4
+				end,
+			},
+		}, "trash")
 
-	Callbacks:RegisterClientCallback("Garbage:DoingSomeAction", function(item, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Garbage:DoingSomeAction", function(item, cb)
 		local ped = PlayerPedId()
 		if item == "grabTrash" then
-			Animations.Emotes:Play("garbage", false, nil, true)
+			exports['sandbox-animations']:EmotesPlay("garbage", false, nil, true)
 		else
 			if item == "trashPutIn" then
-				Animations.Emotes:Play("garbagethrow", false, nil, true)
+				exports['sandbox-animations']:EmotesPlay("garbagethrow", false, nil, true)
 				SetTimeout(1250, function()
-					Animations.Emotes:ForceCancel()
+					exports['sandbox-animations']:EmotesForceCancel()
 					GarbageObject = nil
 				end)
 			end
@@ -120,13 +121,14 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	DeleteWaypoint()
 	SetNewWaypoint(-348.940, -1570.224)
 
-	_blip = Blips:Add("GarbageStart", "Sanitation Foreman", { x = -348.940, y = -1570.224, z = 0 }, 480, 2, 1.4)
+	_blip = exports["sandbox-blips"]:Add("GarbageStart", "Sanitation Foreman", { x = -348.940, y = -1570.224, z = 0 },
+		480, 2, 1.4)
 
 	eventHandlers["startup"] = RegisterNetEvent(string.format("Garbage:Client:%s:Startup", joiner), function()
 		_working = true
 		_state = 1
 		for k, v in ipairs(trashBins) do
-			Targeting:AddObject(v, "trash", {
+			exports['sandbox-targeting']:AddObject(v, "trash", {
 				{
 					icon = "trash",
 					text = "Grab Trash",
@@ -167,7 +169,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 		SetNewWaypoint(_route.coords)
 
 		if _blip ~= nil then
-			Blips:Remove("GarbageStart")
+			exports["sandbox-blips"]:Remove("GarbageStart")
 			RemoveBlip(_blip)
 			_blip = nil
 		end
@@ -184,11 +186,12 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 		DeleteWaypoint()
 		SetNewWaypoint(-334.989, -1562.966)
 		if _blip ~= nil then
-			Blips:Remove("GarbageStart")
+			exports["sandbox-blips"]:Remove("GarbageStart")
 			RemoveBlip(_blip)
 			_blip = nil
 		end
-		_blip = Blips:Add("GarbageStart", "Sanitation Foreman", { x = -348.940, y = -1570.224, z = 0 }, 480, 2, 1.4)
+		_blip = exports["sandbox-blips"]:Add("GarbageStart", "Sanitation Foreman", { x = -348.940, y = -1570.224, z = 0 },
+			480, 2, 1.4)
 		_state = 3
 	end)
 
@@ -199,7 +202,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 			GarbageObject = nil
 		end
 
-		Callbacks:ServerCallback("Garbage:TrashGrab", ObjToNet(entity.entity), function(s)
+		exports["sandbox-base"]:ServerCallback("Garbage:TrashGrab", ObjToNet(entity.entity), function(s)
 			if s then
 				LocalPlayer.state.carryingGarbabge = true
 			end
@@ -207,7 +210,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["toss-gabrage"] = AddEventHandler("Garbage:Client:TossBag", function()
-		Callbacks:ServerCallback("Garbage:TrashPutIn", {}, function(s)
+		exports["sandbox-base"]:ServerCallback("Garbage:TrashPutIn", {}, function(s)
 			if s then
 				LocalPlayer.state.carryingGarbabge = false
 			end
@@ -215,9 +218,9 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["spawn-truck"] = AddEventHandler("Garbage:Client:GarbageSpawn", function()
-		Callbacks:ServerCallback("Garbage:GarbageSpawn", {}, function(netId)
+		exports["sandbox-base"]:ServerCallback("Garbage:GarbageSpawn", {}, function(netId)
 			if netId == false then
-				Notification:Error("Attempting to spawn garbage truck you pepega.")
+				exports["sandbox-hud"]:NotifError("Attempting to spawn garbage truck you pepega.")
 				return
 			end
 			SetEntityAsMissionEntity(NetToVeh(netId))
@@ -225,7 +228,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["despawn-truck"] = AddEventHandler("Garbage:Client:GarbageSpawnRemove", function()
-		Callbacks:ServerCallback("Garbage:GarbageSpawnRemove", {})
+		exports["sandbox-base"]:ServerCallback("Garbage:GarbageSpawnRemove", {})
 	end)
 
 	eventHandlers["return-truck"] = RegisterNetEvent(string.format("Garbage:Client:%s:ReturnTruck", joiner), function()
@@ -233,24 +236,24 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	end)
 
 	eventHandlers["turn-in"] = AddEventHandler("Garbage:Client:TurnIn", function()
-		Callbacks:ServerCallback("Garbage:TurnIn", _joiner)
+		exports["sandbox-base"]:ServerCallback("Garbage:TurnIn", _joiner)
 	end)
 end)
 
 AddEventHandler("Garbage:Client:StartJob", function()
-	Callbacks:ServerCallback("Garbage:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("Garbage:StartJob", _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)
 
 AddEventHandler("Garbage:Client:Buy", function()
-	Callbacks:ServerCallback("Gabage:Pawn:Buy", {}, function(items)
+	exports["sandbox-base"]:ServerCallback("Gabage:Pawn:Buy", {}, function(items)
 		local itemList = {}
 
 		for k, v in ipairs(items) do
-			local itemData = Inventory.Items:GetData(v.item)
+			local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
 			if v.qty > 0 then
 				table.insert(itemList, {
 					label = itemData.label,
@@ -269,7 +272,7 @@ AddEventHandler("Garbage:Client:Buy", function()
 			end
 		end
 
-		ListMenu:Show({
+		exports['sandbox-hud']:ListMenuShow({
 			main = {
 				label = "Pawn Shop",
 				items = itemList,
@@ -279,7 +282,7 @@ AddEventHandler("Garbage:Client:Buy", function()
 end)
 
 AddEventHandler("Garbage:Client:Pawn:BuyLimited", function(data)
-	Callbacks:ServerCallback("Garbage:Pawn:BuyLimited", data)
+	exports["sandbox-base"]:ServerCallback("Garbage:Pawn:BuyLimited", data)
 end)
 
 RegisterNetEvent("Garbage:Client:OffDuty", function(time)
@@ -288,11 +291,11 @@ RegisterNetEvent("Garbage:Client:OffDuty", function(time)
 	end
 
 	for k, v in ipairs(trashBins) do
-		Targeting:RemoveObject(v)
+		exports['sandbox-targeting']:RemoveObject(v)
 	end
 
 	if _blip ~= nil then
-		Blips:Remove("GarbageStart")
+		exports["sandbox-blips"]:Remove("GarbageStart")
 		RemoveBlip(_blip)
 		_blip = nil
 	end

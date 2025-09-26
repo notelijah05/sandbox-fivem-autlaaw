@@ -1,8 +1,8 @@
 AddEventHandler("Vehicles:Client:StartUp", function()
-    Callbacks:RegisterClientCallback("Vehicles:GetPersonalPlate", function(data, cb)
-        local target = Targeting:GetEntityPlayerIsLookingAt()
+    exports["sandbox-base"]:RegisterClientCallback("Vehicles:GetPersonalPlate", function(data, cb)
+        local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
-            if Vehicles:HasAccess(target.entity) and (Vehicles.Utils:IsCloseToRearOfVehicle(target.entity) or Vehicles.Utils:IsCloseToFrontOfVehicle(target.entity)) then
+            if exports['sandbox-vehicles']:HasAccess(target.entity) and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)) then
                 local settingPlate = GetNewPersonalPlate()
 
                 if settingPlate then
@@ -18,31 +18,33 @@ AddEventHandler("Vehicles:Client:StartUp", function()
         end
     end)
 
-    PedInteraction:Add("donor_plates", `u_f_m_debbie_01`, vector3(-504.405, -182.683, 36.691), 290.319, 25.0, {
-        {
-          icon = "rectangle-wide",
-          text = "Donator License Plate Claim",
-          event = "Vehicles:Client:DonatorLicensePlateClaim",
-        },
-    }, "comment-dollar")
+    exports['sandbox-pedinteraction']:Add("donor_plates", `u_f_m_debbie_01`, vector3(-504.405, -182.683, 36.691), 290.319,
+        25.0, {
+            {
+                icon = "rectangle-wide",
+                text = "Donator License Plate Claim",
+                event = "Vehicles:Client:DonatorLicensePlateClaim",
+            },
+        }, "comment-dollar")
 end)
 
 local platePromise
 function GetNewPersonalPlate()
     platePromise = promise.new()
-    Input:Show("New Personal Plate", "Personal Plate", {
-		{
-			id = "plate",
-			type = "text",
-			options = {
-				inputProps = {
+    exports['sandbox-hud']:InputShow("New Personal Plate", "Personal Plate", {
+        {
+            id = "plate",
+            type = "text",
+            options = {
+                inputProps = {
                     pattern = "[A-HJ-NPR-Z0-9 ]+",
                     maxlength = 8,
                 },
-                helperText = "Plates cannot include the letters O, Q, I and must include at least 3 characters. SPACES FOR PADDING ARE ADDED AUTOMATICALLY!"
-			},
-		},
-	}, "Vehicles:Client:RecievePersonalPlateInput", {})
+                helperText =
+                "Plates cannot include the letters O, Q, I and must include at least 3 characters. SPACES FOR PADDING ARE ADDED AUTOMATICALLY!"
+            },
+        },
+    }, "Vehicles:Client:RecievePersonalPlateInput", {})
 
     return Citizen.Await(platePromise)
 end
@@ -62,16 +64,16 @@ AddEventHandler("Input:Closed", function()
 end)
 
 AddEventHandler("Vehicles:Client:DonatorLicensePlateClaim", function()
-    Callbacks:ServerCallback("Vehicles:CheckDonatorPersonalPlates", {}, function(data)
+    exports["sandbox-base"]:ServerCallback("Vehicles:CheckDonatorPersonalPlates", {}, function(data)
         if data and data > 0 then
-
             local menu = {
                 main = {
                     label = "Claim Donator License Plates",
                     items = {
                         {
                             label = "Information",
-                            description = "Please make sure that there is enough space in your inventory for your new license plates.<br>"
+                            description =
+                            "Please make sure that there is enough space in your inventory for your new license plates.<br>"
                         },
                     }
                 }
@@ -98,17 +100,17 @@ AddEventHandler("Vehicles:Client:DonatorLicensePlateClaim", function()
             end
 
 
-            ListMenu:Show(menu)
+            exports['sandbox-hud']:ListMenuShow(menu)
         else
-            Notification:Error("No Plates to Claim")
+            exports["sandbox-hud"]:NotifError("No Plates to Claim")
         end
     end)
 end)
 
 AddEventHandler("Vehicles:Client:DonatorLicensePlateClaimConfirm", function(data)
-    Callbacks:ServerCallback("Vehicles:ClaimDonatorPersonalPlates", data, function(success)
+    exports["sandbox-base"]:ServerCallback("Vehicles:ClaimDonatorPersonalPlates", data, function(success)
         if not success then
-            Notification:Error("Error")
+            exports["sandbox-hud"]:NotifError("Error")
         end
     end)
 end)

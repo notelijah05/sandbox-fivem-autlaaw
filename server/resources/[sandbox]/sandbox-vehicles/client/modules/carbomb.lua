@@ -6,10 +6,10 @@ local CAR_BOMB_SPEED = 0
 local CAR_BOMB_TICK_MAX = 0
 
 AddEventHandler('Vehicles:Client:StartUp', function()
-    Callbacks:RegisterClientCallback('Vehicles:UseCarBomb', function(data, cb)
-        local target = Targeting:GetEntityPlayerIsLookingAt()
+    exports["sandbox-base"]:RegisterClientCallback('Vehicles:UseCarBomb', function(data, cb)
+        local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
         if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
-            if Vehicles.Utils:IsCloseToVehicle(target.entity) then
+            if exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target.entity) then
                 local carBombConfig = GetCarBombConfig()
 
                 if type(carBombConfig.minSpeed) ~= 'number' then
@@ -20,7 +20,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                     return cb(false, 'Invalid Pre Explosion Time')
                 end
 
-                Progress:Progress({
+                exports['sandbox-hud']:Progress({
                     name = "vehicle_install_carbomb",
                     duration = 5000,
                     label = "Installing Car Bomb",
@@ -36,7 +36,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                         anim = "mechanic2",
                     },
                 }, function(cancelled)
-                    if not cancelled and Vehicles.Utils:IsCloseToVehicle(target.entity) then
+                    if not cancelled and exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target.entity) then
                         cb(VehToNet(target.entity), false, carBombConfig)
                     else
                         cb(false)
@@ -65,7 +65,7 @@ function DoCarBombDetonate(veh)
         PlaySoundFromEntity(-1, 'Beep_Red', veh, 'DLC_HEIST_HACKING_SNAKE_SOUNDS', true, true)
     end
 
-    NetSync:NetworkExplodeVehicle(veh, 1, 0)
+    exports["sandbox-base"]:NetworkExplodeVehicle(veh, 1, 0)
     ResetCarBomb()
 
     TriggerServerEvent('Vehicles:Server:RemoveBomb', VehToNet(veh))
@@ -93,7 +93,7 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh)
                         end
                     elseif GetVehicleMPH(veh) > CAR_BOMB_SPEED then
                         CAR_BOMB_ENABLED = true
-                        Notification:Warn(
+                        exports["sandbox-hud"]:NotifWarn(
                             "THIS VEHICLE HAS A BOMB - STAY ABOVE " ..
                             math.ceil(CAR_BOMB_SPEED) .. "MPH AND DO NOT LEAVE THE VEHICLE", 15000)
                     end
@@ -101,7 +101,7 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh)
                     CAR_BOMB_TIME -= 1
 
                     if CAR_BOMB_TIME <= 0 then
-                        Notification:Info("Bomb Disarmed", 10000)
+                        exports["sandbox-hud"]:NotifInfo("Bomb Disarmed", 10000)
 
                         ResetCarBomb()
                         TriggerServerEvent('Vehicles:Server:RemoveBomb', VehToNet(veh))
@@ -140,7 +140,7 @@ end)
 local linkPromise
 function GetCarBombConfig()
     linkPromise = promise.new()
-    Input:Show('Car Bomb', 'URL', {
+    exports['sandbox-hud']:InputShow('Car Bomb', 'URL', {
         {
             id = 'minSpeed',
             type = 'number',

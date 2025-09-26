@@ -58,27 +58,28 @@ function LombankDisablePower(source)
 		GlobalState[string.format("Lombank:Power:%s", v.data.boxId)] = _lbGlobalReset
 	end
 
-	Robbery:TriggerPDAlert(source, vector3(77.775, -869.549, 31.398), "10-33", "Minor Power Grid Disruption", {
-		icon = 354,
-		size = 0.9,
-		color = 31,
-		duration = (60 * 5),
-	}, {
-		icon = "bolt-slash",
-		details = "Pillbox Hill",
-	}, false, 50.0)
+	exports['sandbox-robbery']:TriggerPDAlert(source, vector3(77.775, -869.549, 31.398), "10-33",
+		"Minor Power Grid Disruption", {
+			icon = 354,
+			size = 0.9,
+			color = 31,
+			duration = (60 * 5),
+		}, {
+			icon = "bolt-slash",
+			details = "Pillbox Hill",
+		}, false, 50.0)
 	GlobalState["Fleeca:Disable:lombank_legion"] = true
 
-	Doors:SetLock("lombank_hidden_entrance", false)
-	Doors:SetLock("lombank_front_gate", false)
-	Doors:SetLock("lombank_upper_gate", false)
-	Doors:SetLock("lombank_lower_gate", false)
-	Doors:SetLock("lombank_lasers", false)
+	exports['sandbox-doors']:SetLock("lombank_hidden_entrance", false)
+	exports['sandbox-doors']:SetLock("lombank_front_gate", false)
+	exports['sandbox-doors']:SetLock("lombank_upper_gate", false)
+	exports['sandbox-doors']:SetLock("lombank_lower_gate", false)
+	exports['sandbox-doors']:SetLock("lombank_lasers", false)
 end
 
 function AreRequirementsUnlocked(reqs)
 	for k, v in ipairs(reqs or {}) do
-		if Doors:IsLocked(v) then
+		if exports['sandbox-doors']:IsLocked(v) then
 			return false
 		end
 	end
@@ -94,14 +95,14 @@ function ResetLombank()
 		GlobalState[string.format("Lombank:Upper:Wall:%s", v.wallId)] = nil
 	end
 
-	Doors:SetLock("lombank_lasers", true)
-	CCTV.State.Group:Online("lombank")
+	exports['sandbox-doors']:SetLock("lombank_lasers", true)
+	exports['sandbox-cctv']:StateGroupOnline("lombank")
 	for k, v in pairs(lbThermPoints) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	for k, v in pairs(_lbHackPoints) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	if #_lootedTrollys > 0 then
@@ -135,14 +136,14 @@ function SecureLombank()
 		GlobalState[string.format("Lombank:Upper:Wall:%s", v.wallId)] = nil
 	end
 
-	Doors:SetLock("lombank_lasers", true)
-	CCTV.State.Group:Online("lombank")
+	exports['sandbox-doors']:SetLock("lombank_lasers", true)
+	exports['sandbox-cctv']:StateGroupOnline("lombank")
 	for k, v in pairs(lbThermPoints) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	for k, v in pairs(_lbHackPoints) do
-		Doors:SetLock(v.door, true)
+		exports['sandbox-doors']:SetLock(v.door, true)
 	end
 
 	if #_lootedTrollys > 0 then
@@ -162,12 +163,12 @@ end
 
 local _lbUpperLoot = {
 	{ 98, { name = "moneyband", min = 80, max = 90 } },
-	{ 2, { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 65000, Random = 15000 } } } },
+	{ 2,  { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 65000, Random = 15000 } } } },
 }
 
 local _lbLoot = {
 	{ 98, { name = "moneyband", min = 55, max = 75 } },
-	{ 2, { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 450000, Random = 15000 } } } },
+	{ 2,  { name = "moneybag", min = 1, max = 1, metadata = { CustomAmt = { Min = 450000, Random = 15000 } } } },
 }
 
 _lbAlerted = false
@@ -180,8 +181,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 	RegisterLBItemUses()
 	StartLombankThreads()
 
-	Callbacks:RegisterServerCallback("Robbery:Lombank:SecureBank", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Lombank:SecureBank", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if Player(source).state.onDuty == "police" then
 				SecureLombank()
@@ -189,24 +190,24 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Lombank:Vault:StartLootTrolley", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Lombank:Vault:StartLootTrolley", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inLombank then
 			if
 				GlobalState[string.format(
-						"Lombank:VaultRoom:%s:%s:%s",
-						pState.lombankRoom,
-						math.ceil(data.coords.x),
-						math.ceil(data.coords.y)
-					)]
-					== nil
+					"Lombank:VaultRoom:%s:%s:%s",
+					pState.lombankRoom,
+					math.ceil(data.coords.x),
+					math.ceil(data.coords.y)
+				)]
+				== nil
 				and not _lbInUse.carts[string.format("%s-%s", math.ceil(data.coords.x), math.ceil(data.coords.y))]
-				and not Doors:IsLocked(lbThermPoints[string.format("lowerVaultRoom%s", pState.lombankRoom)].door)
+				and not exports['sandbox-doors']:IsLocked(lbThermPoints[string.format("lowerVaultRoom%s", pState.lombankRoom)].door)
 			then
 				GlobalState["LombankInProgress"] = true
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Robbery",
 					string.format(
 						"%s %s (%s) Started Looting Lombank Cart %s-%s In Room %s",
@@ -233,27 +234,27 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Lombank:Vault:FinishLootTrolley", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Lombank:Vault:FinishLootTrolley", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
 		if pState.inLombank then
 			if
 				GlobalState[string.format(
-						"Lombank:VaultRoom:%s:%s:%s",
-						pState.lombankRoom,
-						math.ceil(data.coords.x),
-						math.ceil(data.coords.y)
-					)]
-					== nil
+					"Lombank:VaultRoom:%s:%s:%s",
+					pState.lombankRoom,
+					math.ceil(data.coords.x),
+					math.ceil(data.coords.y)
+				)]
+				== nil
 				and _lbInUse.carts[string.format("%s-%s", math.ceil(data.coords.x), math.ceil(data.coords.y))] == source
-				and not Doors:IsLocked(lbThermPoints[string.format("lowerVaultRoom%s", pState.lombankRoom)].door)
+				and not exports['sandbox-doors']:IsLocked(lbThermPoints[string.format("lowerVaultRoom%s", pState.lombankRoom)].door)
 			then
-				Loot:CustomWeightedSetWithCount(_lbLoot, char:GetData("SID"), 1)
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_lbLoot, char:GetData("SID"), 1)
 
 				if math.random(100) <= (7 * _trolleysLooted) and not _heistCoin then
 					_heistCoin = true
-					Inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 						CryptoCoin = "HEIST",
 						Quantity = 8,
 					}, 1)
@@ -261,7 +262,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					_trolleysLooted += 1
 				end
 
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Robbery",
 					string.format(
 						"%s %s (%s) Finished Looting Lombank Cart %s-%s In Room %s",
@@ -291,8 +292,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Lombank:ElectricBox:Hack", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Lombank:ElectricBox:Hack", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -305,10 +306,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Network Offline For A Storm, Check Back Later",
 						6000
 					)
@@ -317,19 +315,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -338,7 +330,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("Lombank:Power:%s", data.boxId)] ~= nil
 					and GlobalState[string.format("Lombank:Power:%s", data.boxId)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-hud']:NotifError(source,
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 
@@ -346,12 +339,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					_lbInUse.powerBoxes[data.boxId] = source
 					GlobalState["LombankInProgress"] = true
 
-					if Inventory.Items:Has(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), "adv_electronics_kit", 1)
-						local itemData = Inventory.Items:GetData("adv_electronics_kit")
+					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"),
+							"adv_electronics_kit", 1)
+						local itemData = exports['sandbox-inventory']:ItemsGetData("adv_electronics_kit")
 
 						if itemData ~= nil then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started hacking Lombank Power Box %s",
@@ -361,7 +355,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data.boxId
 								)
 							)
-							Callbacks:ClientCallback(source, "Robbery:Games:Hack", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Hack", {
 								config = {
 									countdown = 3,
 									timer = 5,
@@ -378,13 +372,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 									newValue = slot.CreateDate - (60 * 60 * 12)
 								end
 								if os.time() - itemData.durability >= newValue then
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									Inventory:SetItemCreateDate(slot.id, newValue)
+									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if success then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Successfully Hacked Lombank Power Box %s",
@@ -405,16 +399,16 @@ AddEventHandler("Robbery:Server:Setup", function()
 									GlobalState[string.format("Lombank:Power:%s", data.boxId)] = _lbGlobalReset
 									TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 									if IsLBPowerDisabled() then
-										Doors:SetLock("lombank_hidden_entrance", false)
-										CCTV.State.Group:Offline("lombank")
-										Sounds.Play:Location(
+										exports['sandbox-doors']:SetLock("lombank_hidden_entrance", false)
+										exports['sandbox-cctv']:StateGroupOffline("lombank")
+										exports["sandbox-sounds"]:PlayLocation(
 											source,
 											data.ptFxPoint,
 											15.0,
 											"power_small_complete_off.ogg",
 											0.1
 										)
-										Robbery:TriggerPDAlert(
+										exports['sandbox-robbery']:TriggerPDAlert(
 											source,
 											vector3(77.775, -869.549, 31.398),
 											"10-33",
@@ -434,11 +428,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 										)
 										GlobalState["Fleeca:Disable:lombank_legion"] = true
 									else
-										Doors:SetLock("lombank_hidden_entrance", true)
-										Doors:SetLock("lombank_lasers", true)
-										Sounds.Play:Location(source, data.ptFxPoint, 15.0, "power_small_off.ogg", 0.25)
+										exports['sandbox-doors']:SetLock("lombank_hidden_entrance", true)
+										exports['sandbox-doors']:SetLock("lombank_lasers", true)
+										exports["sandbox-sounds"]:PlayLocation(source, data.ptFxPoint, 15.0,
+											"power_small_off.ogg", 0.25)
 										if not _lbPowerAlerted or os.time() > _lbPowerAlerted then
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												GetEntityCoords(GetPlayerPed(source)),
 												"10-33",
@@ -470,15 +465,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_lbInUse.powerBoxes[data.boxId] = false
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Someone Is Already Interacting With This", 6000)
+					exports['sandbox-hud']:NotifError(source,
+						"Someone Is Already Interacting With This", 6000)
 				end
 
 				return
 			else
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -486,8 +479,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Lombank:ElectricBox:Thermite", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Lombank:ElectricBox:Thermite", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -500,10 +493,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -512,19 +502,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -533,7 +517,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("Lombank:Power:%s", data.boxId)] ~= nil
 					and GlobalState[string.format("Lombank:Power:%s", data.boxId)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-hud']:NotifError(source,
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 
@@ -549,9 +534,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_lbInUse.powerBoxes[data.boxId] = source
 						GlobalState["LombankInProgress"] = true
 
-						if Inventory.Items:Has(char:GetData("SID"), 1, "thermite", 1) then
-							if Inventory.Items:Remove(char:GetData("SID"), 1, "thermite", 1) then
-								Logger:Info(
+						if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "thermite", 1) then
+							if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "thermite", 1) then
+								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
 										"%s %s (%s) Started Thermiting Lombank Power Box %s",
@@ -561,7 +546,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										data.boxId
 									)
 								)
-								Callbacks:ClientCallback(source, "Robbery:Games:Thermite", {
+								exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Thermite", {
 									passes = 1,
 									location = data.thermitePoint,
 									duration = 25000,
@@ -578,7 +563,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data = {},
 								}, function(success)
 									if success then
-										Logger:Info(
+										exports['sandbox-base']:LoggerInfo(
 											"Robbery",
 											string.format(
 												"%s %s (%s) Successfully Thermited Lombank Power Box %s",
@@ -602,16 +587,16 @@ AddEventHandler("Robbery:Server:Setup", function()
 										GlobalState[string.format("Lombank:Power:%s", data.boxId)] = _lbGlobalReset
 										TriggerEvent("Particles:Server:DoFx", data.ptFxPoint, "spark")
 										if IsLBPowerDisabled() then
-											Doors:SetLock("lombank_hidden_entrance", false)
-											CCTV.State.Group:Offline("lombank")
-											Sounds.Play:Location(
+											exports['sandbox-doors']:SetLock("lombank_hidden_entrance", false)
+											exports['sandbox-cctv']:StateGroupOffline("lombank")
+											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,
 												15.0,
 												"power_small_complete_off.ogg",
 												0.1
 											)
-											Robbery:TriggerPDAlert(
+											exports['sandbox-robbery']:TriggerPDAlert(
 												source,
 												vector3(77.775, -869.549, 31.398),
 												"10-33",
@@ -631,9 +616,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 											)
 											GlobalState["Fleeca:Disable:lombank_legion"] = true
 										else
-											Doors:SetLock("lombank_hidden_entrance", true)
-											Doors:SetLock("lombank_lasers", true)
-											Sounds.Play:Location(
+											exports['sandbox-doors']:SetLock("lombank_hidden_entrance", true)
+											exports['sandbox-doors']:SetLock("lombank_lasers", true)
+											exports["sandbox-sounds"]:PlayLocation(
 												source,
 												data.ptFxPoint,
 												15.0,
@@ -641,7 +626,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												0.25
 											)
 											if not _lbPowerAlerted or os.time() > _lbPowerAlerted then
-												Robbery:TriggerPDAlert(
+												exports['sandbox-robbery']:TriggerPDAlert(
 													source,
 													GetEntityCoords(GetPlayerPed(source)),
 													"10-33",
@@ -671,13 +656,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end
 						else
 							_lbInUse.powerBoxes[data.boxId] = false
-							Execute:Client(source, "Notification", "Error", "You Need Thermite", 6000)
+							exports['sandbox-hud']:NotifError(source, "You Need Thermite",
+								6000)
 						end
 					else
-						Execute:Client(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Is Already Interacting With This",
 							6000
 						)
@@ -686,10 +669,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					return
 				end
 			else
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -697,8 +677,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Lombank:Drill", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Lombank:Drill", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if
 				(
@@ -711,10 +691,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -723,19 +700,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					Execute:Client(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -744,19 +715,20 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("Lombank:Upper:Wall:%s", data)] ~= nil
 					and GlobalState[string.format("Lombank:Upper:Wall:%s", data)] > os.time()
 				then
-					Execute:Client(source, "Notification", "Error", "Electric Box Already Disabled", 6000)
+					exports['sandbox-hud']:NotifError(source,
+						"Electric Box Already Disabled", 6000)
 					return
 				end
 				if not _lbInUse.drillPoints[data] then
 					_lbInUse.drillPoints[data] = source
 					GlobalState["LombankInProgress"] = true
 
-					if Inventory.Items:Has(char:GetData("SID"), 1, "drill", 1) then
-						local slot = Inventory.Items:GetFirst(char:GetData("SID"), "drill", 1)
-						local itemData = Inventory.Items:GetData("drill")
+					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "drill", 1) then
+						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "drill", 1)
+						local itemData = exports['sandbox-inventory']:ItemsGetData("drill")
 
 						if slot ~= nil then
-							Logger:Info(
+							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
 								string.format(
 									"%s %s (%s) Started Drilling Vault Box: %s",
@@ -766,7 +738,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									data
 								)
 							)
-							Callbacks:ClientCallback(source, "Robbery:Games:Drill", {
+							exports["sandbox-base"]:ClientCallback(source, "Robbery:Games:Drill", {
 								passes = 1,
 								duration = 25000,
 								config = {},
@@ -777,13 +749,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 									newValue = slot.CreateDate - (60 * 60 * 12)
 								end
 								if os.time() - itemData.durability >= newValue then
-									Inventory.Items:RemoveId(slot.Owner, slot.invType, slot)
+									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									Inventory:SetItemCreateDate(slot.id, newValue)
+									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if success then
-									Logger:Info(
+									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
 											"%s %s (%s) Successfully Drilled Vault Box: %s",
@@ -801,7 +773,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 										_lbGlobalReset = os.time() + LOMBANK_RESET_TIME
 									end
 
-									Loot:CustomWeightedSetWithCount(_lbUpperLoot, char:GetData("SID"), 1)
+									exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_lbUpperLoot,
+										char:GetData("SID"), 1)
 
 									GlobalState[string.format("Lombank:Upper:Wall:%s", data)] = _lbGlobalReset
 									GlobalState["Fleeca:Disable:lombank_legion"] = true
@@ -814,16 +787,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 						end
 					else
 						_lbInUse.drillPoints[data] = false
-						Execute:Client(source, "Notification", "Error", "You Need A Drill", 6000)
+						exports['sandbox-hud']:NotifError(source, "You Need A Drill", 6000)
 					end
 				else
-					Execute:Client(source, "Notification", "Error", "Someone Is Already Interacting With This", 6000)
+					exports['sandbox-hud']:NotifError(source,
+						"Someone Is Already Interacting With This", 6000)
 				end
 			else
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)

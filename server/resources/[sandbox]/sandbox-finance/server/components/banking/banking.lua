@@ -41,13 +41,14 @@ function CreateBankAccount(accountType, owner, balance, name, account, jobAccess
         balance = 0
     end
 
-    local res = MySQL.insert.await('INSERT INTO bank_accounts (account, type, owner, balance, name) VALUES(?, ?, ?, ?, ?)', {
-        account,
-        accountType,
-        owner,
-        balance,
-        name,
-    })
+    local res = MySQL.insert.await(
+        'INSERT INTO bank_accounts (account, type, owner, balance, name) VALUES(?, ?, ?, ?, ?)', {
+            account,
+            accountType,
+            owner,
+            balance,
+            name,
+        })
 
     if res and jobAccess and #jobAccess > 0 then
         local qry = 'INSERT INTO bank_accounts_permissions (account, type, job, workplace, jobPermissions) VALUES '
@@ -81,11 +82,11 @@ end
 
 function GetDefaultBankAccountPermissions()
     return {
-        MANAGE = 'BANK_ACCOUNT_MANAGE', -- Can Manage The Account (IDK What this does yet)
-        WITHDRAW = 'BANK_ACCOUNT_WITHDRAW', -- Can Withdraw/Tranfer money
-        DEPOSIT = 'BANK_ACCOUNT_DEPOSIT', -- Can Deposit
+        MANAGE = 'BANK_ACCOUNT_MANAGE',             -- Can Manage The Account (IDK What this does yet)
+        WITHDRAW = 'BANK_ACCOUNT_WITHDRAW',         -- Can Withdraw/Tranfer money
+        DEPOSIT = 'BANK_ACCOUNT_DEPOSIT',           -- Can Deposit
         TRANSACTIONS = 'BANK_ACCOUNT_TRANSACTIONS', -- Can View Transaction History
-        BILL = 'BANK_ACCOUNT_BILL', -- Can Bill Using This Account
+        BILL = 'BANK_ACCOUNT_BILL',                 -- Can Bill Using This Account
         BALANCE = 'BANK_ACCOUNT_BALANCE',
     }
 end
@@ -99,20 +100,24 @@ function HasBankAccountPermission(source, accountData, permission, stateId)
         if accountData.Owner == tostring(stateId) then
             return true
         elseif permission ~= "MANAGE" then
-            local pData = MySQL.single.await("SELECT account, jointOwner FROM bank_accounts_permissions WHERE account = ? AND type = ? AND jointOwner = ?", {
-                accountData.Account,
-                1,
-                stateId
-            })
+            local pData = MySQL.single.await(
+                "SELECT account, jointOwner FROM bank_accounts_permissions WHERE account = ? AND type = ? AND jointOwner = ?",
+                {
+                    accountData.Account,
+                    1,
+                    stateId
+                })
             if pData and pData.account == accountData.Account then
                 return true
             end
         end
     elseif accountData.Type == 'organization' then
-        local pData = MySQL.query.await("SELECT account, job, workplace, jobPermissions FROM bank_accounts_permissions WHERE account = ? AND type = ?", {
-            accountData.Account,
-            0
-        })
+        local pData = MySQL.query.await(
+            "SELECT account, job, workplace, jobPermissions FROM bank_accounts_permissions WHERE account = ? AND type = ?",
+            {
+                accountData.Account,
+                0
+            })
 
         for k, v in ipairs(pData) do
             local jp = json.decode(v.jobPermissions or "{}")
@@ -121,7 +126,7 @@ function HasBankAccountPermission(source, accountData, permission, stateId)
                 fuckingWorkplace = v.workplace
             end
 
-            if Jobs.Permissions:HasJob(source, v.job, fuckingWorkplace, false, false, false, jp[permission]) then
+            if exports['sandbox-jobs']:HasJob(source, v.job, fuckingWorkplace, false, false, false, jp[permission]) then
                 return true
             end
         end

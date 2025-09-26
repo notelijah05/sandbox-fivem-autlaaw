@@ -62,7 +62,7 @@ RegisterNetEvent('Weed:Client:Objects:Init', function(plants)
             end
         end)
     else
-        Logger:Error('Weed', 'Failed to Load Weed Objects')
+        exports['sandbox-base']:LoggerError('Weed', 'Failed to Load Weed Objects')
     end
 end)
 

@@ -19,18 +19,18 @@ CreateThread(function()
 end)
 
 AddEventHandler("Labor:Server:Startup", function()
-	WaitList:Create("oxyrun", "individual_time", {
+	exports['sandbox-base']:WaitListCreate("oxyrun", "individual_time", {
 		event = "Labor:Server:OxyRun:Queue",
 		delay = (1000 * 60) * 5,
 		-- min = 10000,
 		-- max = 12000,
 	})
 
-	Chat:RegisterAdminCommand("addoxyrun", function(source, args, rawCommand)
+	exports["sandbox-chat"]:RegisterAdminCommand("addoxyrun", function(source, args, rawCommand)
 		if tonumber(args[1]) then
 			_availableRuns = _availableRuns + tonumber(args[1])
 		else
-			return Chat.Send.System:Single(source, "Invalid Amount")
+			return exports["sandbox-chat"]:SendSystemSingle(source, "Invalid Amount")
 		end
 	end, {
 		help = "Add Available Oxy Runs",
@@ -42,13 +42,13 @@ AddEventHandler("Labor:Server:Startup", function()
 		},
 	}, 1)
 
-	Callbacks:RegisterServerCallback("OxyRun:Enable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:Enable", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if not hasValue(states, "SCRIPT_OXY_RUN") then
 			table.insert(states, "SCRIPT_OXY_RUN")
 			char:SetData("States", states)
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				source,
 				"New Job Available",
 				"A new job is available, check it out.",
@@ -60,8 +60,8 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:Disable", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:Disable", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}
 		if hasValue(states, "SCRIPT_OXY_RUN") then
 			for k, v in ipairs(states) do
@@ -74,16 +74,16 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:EnteredCar", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:EnteredCar", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
 			and _sellers[_joiners[source]] ~= nil
 			and _sellers[_joiners[source]].state == 1
 		then
-			if not Vehicles.Owned:GetActive(data.VIN) then
-				if #Inventory:GetFreeSlotNumbers(data.VIN, 4, data.Class, data.Model) >= 10 then
+			if not exports['sandbox-vehicles']:OwnedGetActive(data.VIN) then
+				if #exports['sandbox-inventory']:GetFreeSlotNumbers(data.VIN, 4, data.Class, data.Model) >= 10 then
 					local exp = os.time() + (60 * 20)
 					_cooldowns[char:GetData("ID")] = exp
 					if isWorkgroup then
@@ -96,7 +96,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 					_sellers[_joiners[source]].vehicle = data
 					_sellers[_joiners[source]].state = 2
-					Labor.Offers:Task(_joiners[source], _JOB, "Go To The Pickup Location")
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Go To The Pickup Location")
 
 					CreateThread(function()
 						local ending = false
@@ -104,9 +104,9 @@ AddEventHandler("Labor:Server:Startup", function()
 						while _sellers[_joiners[source]] ~= nil do
 							if not ending then
 								if ent ~= nil and not DoesEntityExist(ent) then
-									Logger:Trace("OxyRun", "Vehicle No Longer Exists")
+									exports['sandbox-base']:LoggerTrace("OxyRun", "Vehicle No Longer Exists")
 									ending = true
-									Labor.Workgroups:SendEvent(
+									exports['sandbox-labor']:SendWorkgroupEvent(
 										_joiners[source],
 										string.format("OxyRun:Client:%s:VehiclePoofed", _joiners[source])
 									)
@@ -116,14 +116,14 @@ AddEventHandler("Labor:Server:Startup", function()
 						end
 					end)
 
-					Labor.Workgroups:SendEvent(
+					exports['sandbox-labor']:SendWorkgroupEvent(
 						_joiners[source],
 						string.format("OxyRun:Client:%s:StartPickup", _joiners[source]),
 						_oxyPickups[_selectedOxyPickup],
 						data
 					)
 				else
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						_joiners[source],
 						"Job Activity",
 						"Not Enough Room In This Vehicles Trunk",
@@ -137,8 +137,8 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:EnteredPickup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:EnteredPickup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -147,24 +147,24 @@ AddEventHandler("Labor:Server:Startup", function()
 		then
 			if _sellers[_joiners[source]].state == 2 then
 				_sellers[_joiners[source]].state = 3
-				Labor.Offers:Start(_joiners[source], _JOB, "Receive Product", 10)
+				exports['sandbox-labor']:StartOffer(_joiners[source], _JOB, "Receive Product", 10)
 			end
-			Labor.Workgroups:SendEvent(
+			exports['sandbox-labor']:SendWorkgroupEvent(
 				_joiners[source],
 				string.format("OxyRun:Client:%s:EligiblePickup", _joiners[source])
 			)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:CancelPickup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:CancelPickup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
-			Inventory.Items:Remove(_sellers[_joiners[source]].vehicle.VIN, 4, "contraband", false)
+			exports['sandbox-inventory']:Remove(_sellers[_joiners[source]].vehicle.VIN, 4, "contraband", false)
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:CheckPickup", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:CheckPickup", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -172,7 +172,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			and _sellers[_joiners[source]].state == 3
 		then
 			if
-				#Inventory:GetFreeSlotNumbers(
+				#exports['sandbox-inventory']:GetFreeSlotNumbers(
 					_sellers[_joiners[source]].vehicle.VIN,
 					4,
 					_sellers[_joiners[source]].vehicle.Class,
@@ -186,8 +186,8 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:PickupProduct", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:PickupProduct", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if
 			char:GetData("TempJob") == _JOB
@@ -198,14 +198,14 @@ AddEventHandler("Labor:Server:Startup", function()
 			local veh = GetVehiclePedIsIn(GetPlayerPed(source))
 			local vEnt = Entity(veh).state
 			if
-				#Inventory:GetFreeSlotNumbers(
+				#exports['sandbox-inventory']:GetFreeSlotNumbers(
 					vEnt.VIN,
 					4,
 					_sellers[_joiners[source]].vehicle.Class,
 					_sellers[_joiners[source]].vehicle.Model
 				) >= 1
 			then
-				Inventory:AddItem(
+				exports['sandbox-inventory']:AddItem(
 					vEnt.VIN,
 					"contraband",
 					1,
@@ -226,13 +226,13 @@ AddEventHandler("Labor:Server:Startup", function()
 					end
 				end
 
-				if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
+				if exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true) then
 					_sellers[_joiners[source]].state = 4
 					local rand = math.random(#_oxyLocations)
 					_sellers[_joiners[source]].location = rand
 
-					Labor.Offers:Task(_joiners[source], _JOB, "Head To The Sale Spot")
-					Labor.Workgroups:SendEvent(
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Head To The Sale Spot")
+					exports['sandbox-labor']:SendWorkgroupEvent(
 						_joiners[source],
 						string.format("OxyRun:Client:%s:StartSale", _joiners[source]),
 						_oxyLocations[rand]
@@ -243,8 +243,8 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:EnteredArea", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:EnteredArea", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -252,8 +252,8 @@ AddEventHandler("Labor:Server:Startup", function()
 			and _sellers[_joiners[source]].state == 4
 		then
 			_sellers[_joiners[source]].state = 5
-			Labor.Offers:Start(_joiners[source], _JOB, "Wait For Buyers", 10)
-			Labor.Workgroups:SendEvent(
+			exports['sandbox-labor']:StartOffer(_joiners[source], _JOB, "Wait For Buyers", 10)
+			exports['sandbox-labor']:SendWorkgroupEvent(
 				_joiners[source],
 				string.format("OxyRun:Client:%s:Near", _joiners[source])
 			)
@@ -269,8 +269,8 @@ AddEventHandler("Labor:Server:Startup", function()
 						local p = promise.new()
 
 						local randPed = math.random(#PedModels)
-						Callbacks:ClientCallback(_joiners[source], "OxyRun:GetSpawn", {
-							veh = Vehicles.RandomModel:DClass(),
+						exports["sandbox-base"]:ClientCallback(_joiners[source], "OxyRun:GetSpawn", {
+							veh = exports['sandbox-vehicles']:RandomModelDClass(),
 							ped = PedModels[randPed],
 						}, function(veh, ped)
 							if veh then
@@ -279,7 +279,7 @@ AddEventHandler("Labor:Server:Startup", function()
 									veh = veh,
 									ped = ped,
 								}
-								Labor.Workgroups:SendEvent(
+								exports['sandbox-labor']:SendWorkgroupEvent(
 									_joiners[source],
 									string.format("OxyRun:Client:%s:Spawn", _joiners[source]),
 									_sellers[_joiners[source]].pending
@@ -307,7 +307,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:DeleteShit", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:DeleteShit", function(source, data, cb)
 		if _joiners[source] and _sellers[_joiners[source]].pending ~= nil then
 			_sellers[_joiners[source]].cars[_sellers[_joiners[source]].pending.veh] = false
 			DeleteEntity(NetworkGetEntityFromNetworkId(_sellers[_joiners[source]].pending.ped))
@@ -316,8 +316,8 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:SellProduct", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:SellProduct", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -338,8 +338,8 @@ AddEventHandler("Labor:Server:Startup", function()
 				end
 			end
 
-			if Inventory.Items:Remove(char:GetData("SID"), 1, "contraband", 1) then
-				Labor.Workgroups:SendEvent(
+			if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "contraband", 1) then
+				exports['sandbox-labor']:SendWorkgroupEvent(
 					_joiners[source],
 					string.format("OxyRun:Client:%s:Action", _joiners[source])
 				)
@@ -349,16 +349,16 @@ AddEventHandler("Labor:Server:Startup", function()
 				local cashAdd = math.random(200) + 200
 
 				if math.random(100) >= 80 then
-					Inventory:AddItem(char:GetData("SID"), "oxy", math.random(3), {}, 1)
+					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "oxy", math.random(3), {}, 1)
 				end
 
-				local repLevel = Reputation:GetLevel(source, "OxyRun") or 0
+				local repLevel = exports['sandbox-characters']:RepGetLevel(source, "OxyRun") or 0
 				local chance = 90
 
 				if repLevel >= 5 then
 					chance = 50
 					if math.random(200) <= 1 then
-						Inventory:AddItem(char:GetData("SID"), "vpn", 1, {}, 1)
+						exports['sandbox-inventory']:AddItem(char:GetData("SID"), "vpn", 1, {}, 1)
 					end
 				elseif repLevel >= 3 then
 					chance = 70
@@ -371,7 +371,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					calcLvl = 1
 				end
 
-				local rollCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "moneyroll")
+				local rollCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "moneyroll")
 				if rollCount > 0 then
 					local rb = math.random(100)
 					if rb >= chance then
@@ -379,15 +379,15 @@ AddEventHandler("Labor:Server:Startup", function()
 						if rollCount <= 5 or take > rollCount then
 							take = rollCount
 						end
-						local itemData = Inventory.Items:GetData("moneyroll")
+						local itemData = exports['sandbox-inventory']:ItemsGetData("moneyroll")
 
-						if itemData and Inventory.Items:Remove(char:GetData("SID"), 1, "moneyroll", take) then
+						if itemData and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "moneyroll", take) then
 							cashAdd += (itemData.price * take)
 						end
 					end
 				end
 
-				local bandCount = Inventory.Items:GetCount(char:GetData("SID"), 1, "moneyband")
+				local bandCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "moneyband")
 				if bandCount > 0 then
 					local bb = math.random(100)
 					if bb >= chance then
@@ -395,20 +395,20 @@ AddEventHandler("Labor:Server:Startup", function()
 						if bandCount <= 3 or take > bandCount then
 							take = bandCount
 						end
-						local itemData = Inventory.Items:GetData("moneyband")
+						local itemData = exports['sandbox-inventory']:ItemsGetData("moneyband")
 
-						if itemData and Inventory.Items:Remove(char:GetData("SID"), 1, "moneyband", take) then
+						if itemData and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "moneyband", take) then
 							cashAdd += (itemData.price * take)
 						end
 					end
 				end
 
-				Wallet:Modify(source, math.floor(cashAdd * 0.7))
+				exports['sandbox-finance']:WalletModify(source, math.floor(cashAdd * 0.7))
 
-				if Labor.Offers:Update(_joiners[source], _JOB, 1, true) then
+				if exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true) then
 					_sellers[_joiners[source]].state = 6
-					Labor.Offers:Task(_joiners[source], _JOB, "Dump & Destroy The Vehicle")
-					Labor.Workgroups:SendEvent(
+					exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Dump & Destroy The Vehicle")
+					exports['sandbox-labor']:SendWorkgroupEvent(
 						_joiners[source],
 						string.format("OxyRun:Client:%s:EndSale", _joiners[source])
 					)
@@ -423,14 +423,14 @@ AddEventHandler("Labor:Server:Startup", function()
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:DestroyVehicle", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:DestroyVehicle", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
 			if _sellers[_joiners[source]].state == 6 then
 				_sellers[_joiners[source]].state = 7
-				Labor.Offers:ManualFinish(_joiners[source], _JOB)
+				exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 			else
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					_joiners[source],
 					"Job Activity",
 					"Vehicle Was Destroyed",
@@ -443,7 +443,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				if _sellers[_joiners[source]].isWorkgroup then
 					if #_sellers[_joiners[source]].members > 0 then
 						for k, v in ipairs(_sellers[_joiners[source]].members) do
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								v.ID,
 								"Job Activity",
 								"Vehicle Was Destroyed",
@@ -456,19 +456,19 @@ AddEventHandler("Labor:Server:Startup", function()
 					end
 				end
 
-				Labor.Offers:Fail(_joiners[source], _JOB)
+				exports['sandbox-labor']:FailOffer(_joiners[source], _JOB)
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:VehiclePoofed", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:VehiclePoofed", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _sellers[_joiners[source]] ~= nil then
 			if _sellers[_joiners[source]].state == 6 then
 				_sellers[_joiners[source]].state = 7
-				Labor.Offers:ManualFinish(_joiners[source], _JOB)
+				exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 			else
-				Phone.Notification:Add(
+				exports['sandbox-phone']:NotificationAdd(
 					_joiners[source],
 					"Job Activity",
 					"Vehicle Was Lost",
@@ -481,7 +481,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				if _sellers[_joiners[source]].isWorkgroup then
 					if #_sellers[_joiners[source]].members > 0 then
 						for k, v in ipairs(_sellers[_joiners[source]].members) do
-							Phone.Notification:Add(
+							exports['sandbox-phone']:NotificationAdd(
 								v.ID,
 								"Job Activity",
 								"Vehicle Was Lost",
@@ -500,13 +500,13 @@ AddEventHandler("Labor:Server:Startup", function()
 					DeleteEntity(NetworkGetEntityFromNetworkId(_sellers[_joiners[source]].pending.veh))
 				end
 
-				Labor.Offers:Fail(_joiners[source], _JOB)
+				exports['sandbox-labor']:FailOffer(_joiners[source], _JOB)
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("OxyRun:LeftZone", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("OxyRun:LeftZone", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			char:GetData("TempJob") == _JOB
 			and _joiners[source] ~= nil
@@ -514,7 +514,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			and _sellers[_joiners[source]] ~= nil
 			and _sellers[_joiners[source]].state < 6
 		then
-			Phone.Notification:Add(
+			exports['sandbox-phone']:NotificationAdd(
 				_joiners[source],
 				"Job Activity",
 				"You Left The Sale Area",
@@ -527,7 +527,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			if _sellers[_joiners[source]].isWorkgroup then
 				if #_sellers[_joiners[source]].members > 0 then
 					for k, v in ipairs(_sellers[_joiners[source]].members) do
-						Phone.Notification:Add(
+						exports['sandbox-phone']:NotificationAdd(
 							v.ID,
 							"Job Activity",
 							"You Left The Sale Area",
@@ -546,7 +546,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				DeleteEntity(NetworkGetEntityFromNetworkId(_sellers[_joiners[source]].pending.veh))
 			end
 
-			Labor.Offers:Fail(_joiners[source], _JOB)
+			exports['sandbox-labor']:FailOffer(_joiners[source], _JOB)
 		end
 	end)
 end)
@@ -554,7 +554,7 @@ end)
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
 	if _wasDoingIllegalShit[source] then
 		if cData ~= nil then
-			Inventory.Items:Remove(cData.SID, 1, "contraband", false, true)
+			exports['sandbox-inventory']:Remove(cData.SID, 1, "contraband", false, true)
 		end
 		_wasDoingIllegalShit[source] = nil
 	end
@@ -563,7 +563,7 @@ end)
 AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 	if _wasDoingIllegalShit[source] then
 		if cData ~= nil then
-			Inventory.Items:Remove(cData.SID, 1, "contraband", false, true)
+			exports['sandbox-inventory']:Remove(cData.SID, 1, "contraband", false, true)
 		end
 		_wasDoingIllegalShit[source] = nil
 	end
@@ -572,9 +572,9 @@ end)
 AddEventHandler("Labor:Server:OxyRun:Queue", function(source, data)
 	if _joiners[source] ~= nil then
 		if _availableRuns <= 0 then
-			Labor.Offers:Cancel(_joiners[source], _JOB)
-			Labor.Duty:Off(_JOB, _joiners[source], false, true)
-			Phone.Notification:Add(
+			exports['sandbox-labor']:CancelOffer(_joiners[source], _JOB)
+			exports['sandbox-labor']:OffDuty(_JOB, _joiners[source], false, true)
+			exports['sandbox-phone']:NotificationAdd(
 				_joiners[source],
 				"Job Activity",
 				"Sorry, ran out of jobs",
@@ -586,7 +586,7 @@ AddEventHandler("Labor:Server:OxyRun:Queue", function(source, data)
 			if isWorkgroup then
 				if #_sellers[_joiners[source]].members > 0 then
 					for k, v in ipairs(members) do
-						Phone.Notification:Add(
+						exports['sandbox-phone']:NotificationAdd(
 							v.ID,
 							"Job Activity",
 							"Sorry, ran out of jobs",
@@ -603,18 +603,18 @@ AddEventHandler("Labor:Server:OxyRun:Queue", function(source, data)
 
 		_sellers[_joiners[source]].state = 1
 		_offers[_joiners[source]].noExpire = false
-		Labor.Offers:Task(_joiners[source], _JOB, "Find A Vehicle")
+		exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Find A Vehicle")
 		TriggerClientEvent(string.format("OxyRun:Client:%s:Receive", _joiners[source]), -1)
 	end
 
-	WaitList.Interact:Remove("oxyrun", source)
+	exports['sandbox-base']:WaitListInteractRemove("oxyrun", source)
 end)
 
 AddEventHandler('entityRemoved', function(entity)
 	if GetEntityType(entity) == 2 then
 		local ent = Entity(entity)
 		if ent?.state?.oxyBuying and _sellers[ent?.state?.oxyBuying]?.pending then
-			Logger:Warn("Vehicles",
+			exports['sandbox-base']:LoggerWarn("Vehicles",
 				string.format("Oxy Vehicle For %s Deleted Unexpectedly, Clearing To Spawn New Vehicle",
 					ent?.state?.oxyBuying))
 			_sellers[_joiners[source]].cars[NetworkGetEntityFromNetworkId(_sellers[ent?.state?.oxyBuying].pending.veh)] = false
@@ -627,13 +627,14 @@ end)
 
 AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 	if _availableRuns <= 0 then
-		Labor.Offers:Cancel(joiner, _JOB)
-		Labor.Duty:Off(_JOB, joiner, false, true)
-		Phone.Notification:Add(joiner, "Job Activity", "No Jobs Available", os.time(), 6000, "labor", {})
+		exports['sandbox-labor']:CancelOffer(joiner, _JOB)
+		exports['sandbox-labor']:OffDuty(_JOB, joiner, false, true)
+		exports['sandbox-phone']:NotificationAdd(joiner, "Job Activity", "No Jobs Available", os.time(), 6000,
+			"labor", {})
 		if isWorkgroup then
 			if #members > 0 then
 				for k, v in ipairs(members) do
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						v.ID,
 						"Job Activity",
 						"No Jobs Available",
@@ -648,17 +649,17 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 		return
 	end
 
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	if char == nil then
-		Labor.Offers:Cancel(joiner, _JOB)
-		Labor.Duty:Off(_JOB, joiner, false, true)
+		exports['sandbox-labor']:CancelOffer(joiner, _JOB)
+		exports['sandbox-labor']:OffDuty(_JOB, joiner, false, true)
 		return
 	end
 
 	if (_cooldowns[char:GetData("ID")] or 0) > os.time() then
-		Labor.Offers:Cancel(joiner, _JOB)
-		Labor.Duty:Off(_JOB, joiner, false, true)
-		Phone.Notification:Add(
+		exports['sandbox-labor']:CancelOffer(joiner, _JOB)
+		exports['sandbox-labor']:OffDuty(_JOB, joiner, false, true)
+		exports['sandbox-phone']:NotificationAdd(
 			joiner,
 			"Job Activity",
 			"Not Eligible For Another Run",
@@ -670,7 +671,7 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 		if isWorkgroup then
 			if #members > 0 then
 				for k, v in ipairs(members) do
-					Phone.Notification:Add(
+					exports['sandbox-phone']:NotificationAdd(
 						v.ID,
 						"Job Activity",
 						"Your Group Is Not Eligible For Another Run. Please Wait",
@@ -688,9 +689,9 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 		if #members > 0 then
 			for k, v in ipairs(members) do
 				if (_cooldowns[v.CharID] or 0) > os.time() then
-					Labor.Offers:Cancel(joiner, _JOB)
-					Labor.Duty:Off(_JOB, joiner, false, true)
-					Phone.Notification:Add(
+					exports['sandbox-labor']:CancelOffer(joiner, _JOB)
+					exports['sandbox-labor']:OffDuty(_JOB, joiner, false, true)
+					exports['sandbox-phone']:NotificationAdd(
 						joiner,
 						"Job Activity",
 						"Cannot Give You A Job With This Group. Please Wait",
@@ -703,7 +704,7 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 						if #members > 0 then
 							for k2, v2 in ipairs(members) do
 								if v.ID == v2.ID then
-									Phone.Notification:Add(
+									exports['sandbox-phone']:NotificationAdd(
 										v2.ID,
 										"Job Activity",
 										"Not Eligible For Another Run. Please Wait",
@@ -713,7 +714,7 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 										{}
 									)
 								else
-									Phone.Notification:Add(
+									exports['sandbox-phone']:NotificationAdd(
 										v2.ID,
 										"Job Activity",
 										"Your Group Is Not Eligible For Another Run. Please Wait",
@@ -743,16 +744,16 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 		state = 0,
 	}
 
-	local char = Fetch:CharacterSource(joiner)
+	local char = exports['sandbox-characters']:FetchCharacterSource(joiner)
 	char:SetData("TempJob", _JOB)
 	TriggerClientEvent("OxyRun:Client:OnDuty", joiner, joiner, os.time())
 	_wasDoingIllegalShit[joiner] = true
 
-	Labor.Offers:Task(joiner, _JOB, "Wait For A Job")
+	exports['sandbox-labor']:TaskOffer(joiner, _JOB, "Wait For A Job")
 	if #members > 0 then
 		for k, v in ipairs(members) do
 			_joiners[v.ID] = joiner
-			local member = Fetch:CharacterSource(v.ID)
+			local member = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 			member:SetData("TempJob", _JOB)
 			TriggerClientEvent("OxyRun:Client:OnDuty", v.ID, joiner, os.time())
 			_wasDoingIllegalShit[v.ID] = true
@@ -760,13 +761,13 @@ AddEventHandler("OxyRun:Server:OnDuty", function(joiner, members, isWorkgroup)
 	end
 
 	_offers[joiner].noExpire = true
-	WaitList.Interact:Add("oxyrun", joiner, {
+	exports['sandbox-base']:WaitListInteractAdd("oxyrun", joiner, {
 		joiner = joiner,
 	})
 end)
 
 AddEventHandler("OxyRun:Server:OffDuty", function(source, joiner)
-	WaitList.Interact:Remove("oxyrun", _joiners[source])
+	exports['sandbox-base']:WaitListInteractRemove("oxyrun", _joiners[source])
 	_joiners[source] = nil
 	TriggerClientEvent("OxyRun:Client:OffDuty", source)
 end)
@@ -777,21 +778,21 @@ function Cleanup(src)
 		if _sellers[joiner].isWorkgroup then
 			if #_sellers[joiner].members > 0 then
 				for k, v in ipairs(_sellers[joiner].members) do
-					local mChar = Fetch:CharacterSource(v.ID)
+					local mChar = exports['sandbox-characters']:FetchCharacterSource(v.ID)
 					if mChar ~= nil then
-						Inventory.Items:Remove(mChar:GetData("SID"), 1, "contraband", false)
+						exports['sandbox-inventory']:Remove(mChar:GetData("SID"), 1, "contraband", false)
 					end
 				end
 			end
 		end
 
-		local jChar = Fetch:CharacterSource(joiner)
+		local jChar = exports['sandbox-characters']:FetchCharacterSource(joiner)
 		if jChar ~= nil then
-			Inventory.Items:Remove(jChar:GetData("SID"), 1, "contraband", false)
+			exports['sandbox-inventory']:Remove(jChar:GetData("SID"), 1, "contraband", false)
 		end
 
 		if _sellers[joiner].vehicle ~= nil then
-			Inventory.Items:Remove(_sellers[joiner].vehicle.VIN, 4, "contraband", false)
+			exports['sandbox-inventory']:Remove(_sellers[joiner].vehicle.VIN, 4, "contraband", false)
 		end
 
 		_availableRuns = _availableRuns - 1

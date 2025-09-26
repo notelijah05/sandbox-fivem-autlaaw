@@ -13,13 +13,13 @@ local badgeModels = {
 }
 
 function RegisterBadgeCallbacks()
-	Callbacks:RegisterClientCallback("MDT:Client:CanShowBadge", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("MDT:Client:CanShowBadge", function(data, cb)
 		if
 			not inBadgeAnim
 			and not _mdtOpen
 			and not LocalPlayer.state.doingAction
 			and not LocalPlayer.state.isDead
-			and not Animations.Emotes:Get()
+			and not exports['sandbox-animations']:EmotesGet()
 			and IsPedOnFoot(LocalPlayer.state.ped)
 		then
 			StartBadgeAnim(data.Department)
@@ -31,13 +31,13 @@ function RegisterBadgeCallbacks()
 		end
 	end)
 
-	Callbacks:RegisterClientCallback("MDT:Client:CanShowLicense", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("MDT:Client:CanShowLicense", function(data, cb)
 		if
 			not inBadgeAnim
 			and not _mdtOpen
 			and not LocalPlayer.state.doingAction
 			and not LocalPlayer.state.isDead
-			and not Animations.Emotes:Get()
+			and not exports['sandbox-animations']:EmotesGet()
 			and IsPedOnFoot(LocalPlayer.state.ped)
 		then
 			StartLicenseAnim()
@@ -157,7 +157,7 @@ RegisterNetEvent("MDT:Client:ShowBadge", function(sender, data)
 		isMe = true
 	end
 
-	Logger:Trace(
+	exports['sandbox-base']:LoggerTrace(
 		"MDT/Badge",
 		string.format(
 			"Sender Source: %s; Sender Player: %s; My Source: %s; My Ped: %s",
@@ -183,7 +183,7 @@ RegisterNetEvent("MDT:Client:ShowBadge", function(sender, data)
 		local dist = #(GetEntityCoords(senderPed) - GetEntityCoords(myPed))
 
 		if dist <= 4.0 and HasEntityClearLosToEntity(myPed, senderPed, 17) then
-			MDT.Badges:Open(data)
+			exports['sandbox-mdt']:BadgesOpen(data)
 		end
 	end
 end)
@@ -200,7 +200,7 @@ RegisterNetEvent("MDT:Client:ShowLicense", function(sender, data)
 		isMe = true
 	end
 
-	Logger:Trace(
+	exports['sandbox-base']:LoggerTrace(
 		"MDT/Badge",
 		string.format(
 			"Sender Source: %s; Sender Player: %s; My Source: %s; My Ped: %s",
@@ -226,7 +226,7 @@ RegisterNetEvent("MDT:Client:ShowLicense", function(sender, data)
 		local dist = #(GetEntityCoords(senderPed) - GetEntityCoords(myPed))
 
 		if dist <= 4.0 and HasEntityClearLosToEntity(myPed, senderPed, 17) then
-			MDT.Licenses:Open(data)
+			exports['sandbox-mdt']:LicensesOpen(data)
 		end
 	end
 end)

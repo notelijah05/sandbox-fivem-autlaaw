@@ -1,44 +1,44 @@
 AddEventHandler('Tow:Client:RequestJob', function()
-    Callbacks:ServerCallback('Tow:RequestJob', {}, function(success)
+    exports["sandbox-base"]:ServerCallback('Tow:RequestJob', {}, function(success)
         if success then
-            Notification:Success('You are Now Employed at Tow Yard', 5000, 'truck-tow')
+            exports["sandbox-hud"]:NotifSuccess('You are Now Employed at Tow Yard', 5000, 'truck-tow')
         else
-            Notification:Error('Employement Request Failed', 5000, 'truck-tow')
+            exports["sandbox-hud"]:NotifError('Employement Request Failed', 5000, 'truck-tow')
         end
     end)
 end)
 
 AddEventHandler('Tow:Client:QuitJob', function()
-    Callbacks:ServerCallback('Tow:QuitJob', {}, function(success)
+    exports["sandbox-base"]:ServerCallback('Tow:QuitJob', {}, function(success)
         if not success then
-            Notification:Error('Request to Quit Failed', 5000, 'truck-tow')
+            exports["sandbox-hud"]:NotifError('Request to Quit Failed', 5000, 'truck-tow')
         end
     end)
 end)
 
 AddEventHandler('Tow:Client:OnDuty', function()
-    Callbacks:ServerCallback('Tow:OnDuty', {})
+    exports["sandbox-base"]:ServerCallback('Tow:OnDuty', {})
 end)
 
 AddEventHandler('Tow:Client:OffDuty', function()
-    Callbacks:ServerCallback('Tow:OffDuty', {})
+    exports["sandbox-base"]:ServerCallback('Tow:OffDuty', {})
 end)
 
 AddEventHandler('Tow:Client:RequestTruck', function()
     local availableSpace = GetClosestAvailableParkingSpace(LocalPlayer.state.myPos, _towSpaces)
     if availableSpace then
-        Callbacks:ServerCallback('Tow:RequestTruck', availableSpace, function(vehNet)
+        exports["sandbox-base"]:ServerCallback('Tow:RequestTruck', availableSpace, function(vehNet)
             if vehNet ~= nil then
                 SetEntityAsMissionEntity(NetToVeh(vehNet))
             end
         end)
     else
-        Notification:Error('Parking Space Occupied, Move Out the Way!', 7500, 'truck-tow')
+        exports["sandbox-hud"]:NotifError('Parking Space Occupied, Move Out the Way!', 7500, 'truck-tow')
     end
 end)
 
 AddEventHandler('Tow:Client:ReturnTruck', function()
-    Callbacks:ServerCallback('Tow:ReturnTruck', {})
+    exports["sandbox-base"]:ServerCallback('Tow:ReturnTruck', {})
 end)
 
 AddEventHandler('Tow:Client:RequestImpound', function(entityData)
@@ -47,8 +47,8 @@ AddEventHandler('Tow:Client:RequestImpound', function(entityData)
         myTowTruck = NetToVeh(myTowTruck)
     end
 
-    if entityData and entityData.entity and DoesEntityExist(entityData.entity) and (not myTowTruck or myTowTruck ~= entityData.entity) and #(GetEntityCoords(entityData.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 10.0 and IsVehicleEmpty(entityData.entity) and Polyzone:IsCoordsInZone(GetEntityCoords(entityData.entity), 'tow_impound_zone') then
-        Progress:ProgressWithTickEvent({
+    if entityData and entityData.entity and DoesEntityExist(entityData.entity) and (not myTowTruck or myTowTruck ~= entityData.entity) and #(GetEntityCoords(entityData.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 10.0 and IsVehicleEmpty(entityData.entity) and exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(entityData.entity), 'tow_impound_zone') then
+        exports['sandbox-hud']:ProgressWithTickEvent({
             name = 'veh_impound',
             duration = 10 * 1000,
             label = 'Impounding Vehicle',
@@ -56,7 +56,7 @@ AddEventHandler('Tow:Client:RequestImpound', function(entityData)
             canCancel = true,
             vehicle = false,
             disarm = false,
-			ignoreModifier = true,
+            ignoreModifier = true,
             controlDisables = {
                 disableMovement = true,
                 disableCarMovement = true,
@@ -68,25 +68,25 @@ AddEventHandler('Tow:Client:RequestImpound', function(entityData)
             },
         }, function()
             if not DoesEntityExist(entityData.entity) or (#(GetEntityCoords(entityData.entity) - GetEntityCoords(LocalPlayer.state.ped)) > 10.0) or not IsVehicleEmpty(entityData.entity) then
-                Progress:Cancel()
+                exports['sandbox-hud']:ProgressCancel()
             end
         end, function(cancelled)
             if not cancelled and DoesEntityExist(entityData.entity) and (#(GetEntityCoords(entityData.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 10.0) and IsVehicleEmpty(entityData.entity) then
-                Callbacks:ServerCallback('Vehicles:Impound', {
+                exports["sandbox-base"]:ServerCallback('Vehicles:Impound', {
                     vNet = VehToNet(entityData.entity),
                     type = 'impound',
                 }, function(success)
                     if success then
-                        Notification:Success('Vehicle Impounded Successfully')
+                        exports["sandbox-hud"]:NotifSuccess('Vehicle Impounded Successfully')
                     else
-                        Notification:Error('Impound Failed Miserably')
+                        exports["sandbox-hud"]:NotifError('Impound Failed Miserably')
                     end
                 end)
             else
-                Notification:Error('Impound Failed')
+                exports["sandbox-hud"]:NotifError('Impound Failed')
             end
         end)
     else
-        Notification:Error('Cannot Impound That Vehicle')
+        exports["sandbox-hud"]:NotifError('Cannot Impound That Vehicle')
     end
 end)

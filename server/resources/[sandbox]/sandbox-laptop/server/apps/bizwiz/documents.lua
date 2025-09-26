@@ -1,185 +1,185 @@
-LAPTOP.BizWiz = LAPTOP.BizWiz or {}
+exports('BizWizDocumentsSearch', function(jobId, term)
+	if not term then term = '' end
+	local p = promise.new()
 
-LAPTOP.BizWiz.Documents = {
-	Search = function(self, jobId, term)
-        if not term then term = '' end
-		local p = promise.new()
+	local aggregation = {}
 
-        local aggregation = {}
-
-        table.insert(aggregation, {
-            ['$match'] = {
-                ['$or'] = {
-                    {
-                        title = { ['$regex'] = term, ['$options'] = 'i' }
-                    },
-					{
-                        ["$expr"] = {
-                            ["$regexMatch"] = {
-                                input = {
-									["$concat"] = { 
-										"$author.First", 
-										" ", 
-										"$author.Last", 
-										" ", 
-										{ ['$toString'] = "$author.SID" }
-									}
-                                },
-                                regex = term,
-                                options = "i",
-                            },
-                        },
-                    },
-                },
-				job = jobId,
-            },
-        })
-
-		Database.Game:aggregate({
-            collection = "business_documents",
-            aggregate = aggregation,
-        }, function(success, results)
-            if not success then
-				p:resolve(false)
-                return
-            end
-			p:resolve(results)
-        end)
-		return Citizen.Await(p)
-	end,
-	View = function(self, jobId, id)
-		local p = promise.new()
-        Database.Game:findOne({
-            collection = "business_documents",
-            query = {
-                job = jobId,
-                _id = id,
-            },
-        }, function(success, report)
-			if not report then
-				p:resolve(false)
-				return
-			end
-			p:resolve(report[1])
-        end)
-		return Citizen.Await(p)
-	end,
-	Create = function(self, jobId, data)
-		local p = promise.new()
-        data.job = jobId
-		Database.Game:insertOne({
-			collection = "business_documents",
-			document = data,
-		}, function(success, result, insertId)
-			if not success then
-				p:resolve(false)
-				return
-			end
-			p:resolve({
-				_id = insertId[1],
-			})
-		end)
-
-		return Citizen.Await(p)
-	end,
-	Update = function(self, jobId, id, char, report)
-		local p = promise.new()
-		Database.Game:updateOne({
-			collection = "business_documents",
-			query = {
-				_id = id,
-                job = jobId,
-			},
-			update = {
-				["$set"] = report,
-				["$push"] = {
-					history = {
-						Time = (os.time() * 1000),
-						Char = char:GetData("SID"),
-						Log = string.format(
-								"%s Updated Report",
-								char:GetData("First") .. " " .. char:GetData("Last")
-						),
+	table.insert(aggregation, {
+		['$match'] = {
+			['$or'] = {
+				{
+					title = { ['$regex'] = term, ['$options'] = 'i' }
+				},
+				{
+					["$expr"] = {
+						["$regexMatch"] = {
+							input = {
+								["$concat"] = {
+									"$author.First",
+									" ",
+									"$author.Last",
+									" ",
+									{ ['$toString'] = "$author.SID" }
+								}
+							},
+							regex = term,
+							options = "i",
+						},
 					},
 				},
 			},
-		}, function(success, result)
-			p:resolve(success)
-		end)
-		return Citizen.Await(p)
-	end,
-    Delete = function(self, jobId, id)
-        local p = promise.new()
+			job = jobId,
+		},
+	})
 
-        Database.Game:deleteOne({
-			collection = "business_documents",
-			query = {
-				_id = id,
-                job = jobId,
+	exports['sandbox-base']:DatabaseGameAggregate({
+		collection = "business_documents",
+		aggregate = aggregation,
+	}, function(success, results)
+		if not success then
+			p:resolve(false)
+			return
+		end
+		p:resolve(results)
+	end)
+	return Citizen.Await(p)
+end)
+
+exports('BizWizDocumentsView', function(jobId, id)
+	local p = promise.new()
+	exports['sandbox-base']:DatabaseGameFindOne({
+		collection = "business_documents",
+		query = {
+			job = jobId,
+			_id = id,
+		},
+	}, function(success, report)
+		if not report then
+			p:resolve(false)
+			return
+		end
+		p:resolve(report[1])
+	end)
+	return Citizen.Await(p)
+end)
+
+exports('BizWizDocumentsCreate', function(jobId, data)
+	local p = promise.new()
+	data.job = jobId
+	exports['sandbox-base']:DatabaseGameInsertOne({
+		collection = "business_documents",
+		document = data,
+	}, function(success, result, insertId)
+		if not success then
+			p:resolve(false)
+			return
+		end
+		p:resolve({
+			_id = insertId[1],
+		})
+	end)
+
+	return Citizen.Await(p)
+end)
+
+exports('BizWizDocumentsUpdate', function(jobId, id, char, report)
+	local p = promise.new()
+	exports['sandbox-base']:DatabaseGameUpdateOne({
+		collection = "business_documents",
+		query = {
+			_id = id,
+			job = jobId,
+		},
+		update = {
+			["$set"] = report,
+			["$push"] = {
+				history = {
+					Time = (os.time() * 1000),
+					Char = char:GetData("SID"),
+					Log = string.format(
+						"%s Updated Report",
+						char:GetData("First") .. " " .. char:GetData("Last")
+					),
+				},
 			},
-		}, function(success, deleted)
-			p:resolve(success)
-		end)
-		return Citizen.Await(p)
-    end,
-}
+		},
+	}, function(success, result)
+		p:resolve(success)
+	end)
+	return Citizen.Await(p)
+end)
+
+exports('BizWizDocumentsDelete', function(jobId, id)
+	local p = promise.new()
+
+	exports['sandbox-base']:DatabaseGameDeleteOne({
+		collection = "business_documents",
+		query = {
+			_id = id,
+			job = jobId,
+		},
+	}, function(success, deleted)
+		p:resolve(success)
+	end)
+	return Citizen.Await(p)
+end)
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-    Callbacks:RegisterServerCallback("Laptop:BizWiz:Document:Search", function(source, data, cb)
-        local job = CheckBusinessPermissions(source, 'TABLET_VIEW_DOCUMENT')
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Document:Search", function(source, data, cb)
+		local job = CheckBusinessPermissions(source, 'TABLET_VIEW_DOCUMENT')
 		if job then
-			cb(Laptop.BizWiz.Documents:Search(job, data.term))
+			cb(exports['sandbox-laptop']:BizWizDocumentsSearch(job, data.term))
 		else
 			cb(false)
 		end
-    end)
+	end)
 
-    Callbacks:RegisterServerCallback("Laptop:BizWiz:Document:Create", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
-        local job = CheckBusinessPermissions(source, 'TABLET_CREATE_DOCUMENT')
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Document:Create", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local job = CheckBusinessPermissions(source, 'TABLET_CREATE_DOCUMENT')
 		if job then
 			data.doc.author = {
 				SID = char:GetData("SID"),
 				First = char:GetData("First"),
 				Last = char:GetData("Last"),
 			}
-			cb(Laptop.BizWiz.Documents:Create(job, data.doc))
-        else
-            cb(false)
-        end
-    end)
-
-    Callbacks:RegisterServerCallback("Laptop:BizWiz:Document:Update", function(source, data, cb)
-        local char = Fetch:CharacterSource(source)
-        local job = CheckBusinessPermissions(source, 'TABLET_CREATE_DOCUMENT')
-		if char and job then
-            data.Report.lastUpdated = {
-                Time = (os.time() * 1000),
-                SID = char:GetData("SID"),
-                First = char:GetData("First"),
-                Last = char:GetData("Last"),
-            }
-			cb(Laptop.BizWiz.Documents:Update(job, data.id, char, data.Report))
-        else
-            cb(false)
-        end
-    end)
-
-    Callbacks:RegisterServerCallback("Laptop:BizWiz:Document:Delete", function(source, data, cb)
-        local job = CheckBusinessPermissions(source, 'TABLET_DELETE_DOCUMENT')
-		if job then
-			cb(Laptop.BizWiz.Documents:Delete(job, data.id))
-        else
-            cb(false)
-        end
-    end)
-
-    Callbacks:RegisterServerCallback("Laptop:BizWiz:Document:View", function(source, data, cb)
-        local job = CheckBusinessPermissions(source, 'TABLET_VIEW_DOCUMENT')
-		if job then
-			cb(Laptop.BizWiz.Documents:View(job, data))
-        else
+			cb(exports['sandbox-laptop']:BizWizDocumentsCreate(job, data.doc))
+		else
 			cb(false)
 		end
-    end)
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Document:Update", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local job = CheckBusinessPermissions(source, 'TABLET_CREATE_DOCUMENT')
+		if char and job then
+			data.Report.lastUpdated = {
+				Time = (os.time() * 1000),
+				SID = char:GetData("SID"),
+				First = char:GetData("First"),
+				Last = char:GetData("Last"),
+			}
+			cb(exports['sandbox-laptop']:BizWizDocumentsUpdate(job, data.id, char, data.Report))
+		else
+			cb(false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Document:Delete", function(source, data, cb)
+		local job = CheckBusinessPermissions(source, 'TABLET_DELETE_DOCUMENT')
+		if job then
+			cb(exports['sandbox-laptop']:BizWizDocumentsDelete(job, data.id))
+		else
+			cb(false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Document:View", function(source, data, cb)
+		local job = CheckBusinessPermissions(source, 'TABLET_VIEW_DOCUMENT')
+		if job then
+			cb(exports['sandbox-laptop']:BizWizDocumentsView(job, data))
+		else
+			cb(false)
+		end
+	end)
 end)

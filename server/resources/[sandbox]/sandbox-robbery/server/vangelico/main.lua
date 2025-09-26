@@ -63,8 +63,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 		GlobalState["Vangelico:State"] = nil
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Vangelico:BreakCase", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Vangelico:BreakCase", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pId = string.format("Vangelico:Case:%s", data)
 		if
 			(
@@ -78,17 +78,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 			)
 		then
 			if GlobalState["RobberiesDisabled"] then
-				Execute:Client(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)
 				return
 			end
 			if not GlobalState[pId] or GlobalState[pId] < os.time() and GlobalState["Vangelico:State"] ~= 2 then
-				Logger:Info(
+				exports['sandbox-base']:LoggerInfo(
 					"Robbery",
 					string.format(
 						"%s %s (%s) Broke Vangelico Case #%s",
@@ -112,40 +109,42 @@ AddEventHandler("Robbery:Server:Setup", function()
 				GlobalState[pId] = _caseResetTime
 
 				if _alerted == nil or _alerted < os.time() then
-					Robbery:TriggerPDAlert(source, vector3(-630.732, -237.111, 38.078), "10-90", "Armed Robbery", {
-						icon = 617,
-						size = 0.9,
-						color = 31,
-						duration = (60 * 5),
-					}, {
-						icon = "gem",
-						details = "Vangelico Jewelry",
-					}, "vangelico")
+					exports['sandbox-robbery']:TriggerPDAlert(source, vector3(-630.732, -237.111, 38.078), "10-90",
+						"Armed Robbery", {
+							icon = 617,
+							size = 0.9,
+							color = 31,
+							duration = (60 * 5),
+						}, {
+							icon = "gem",
+							details = "Vangelico Jewelry",
+						}, "vangelico")
 					_alerted = os.time() + (60 * 60)
 				end
 
 				local luck = math.random(100)
 				if luck >= 98 then
 					if luck == 100 then
-						--Inventory:AddItem(char:GetData("SID"), "valuegoods", 1, {}, 1)
+						--exports['sandbox-inventory']:AddItem(char:GetData("SID"), "valuegoods", 1, {}, 1)
 					end
-					Loot.Sets:Gem(char:GetData("SID"), 1)
+					exports['sandbox-inventory']:LootSetsGem(char:GetData("SID"), 1)
 				end
 
-				Loot:CustomWeightedSetWithCount(_loot, char:GetData("SID"), 1)
+				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_loot, char:GetData("SID"), 1)
 			end
 		end
 	end)
 
-	Callbacks:RegisterServerCallback("Robbery:Vangelico:SecureStore", function(source, data, cb)
-		local char = Fetch:CharacterSource(source)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Vangelico:SecureStore", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if _alerted ~= nil and _alerted >= os.time() then
 			PutShittyThingsOnCD()
 			GlobalState["Vangelico:State"] = 2
-			Execute:Client(source, "Notification", "Success", "Store Has Been Secure", 6000)
+			exports['sandbox-hud']:NotifSuccess(source, "Store Has Been Secure", 6000)
 		else
-			Execute:Client(source, "Notification", "Error", "Unable To Secure Store, No Recent Crime Reported", 6000)
-			Logger:Info(
+			exports['sandbox-hud']:NotifError(source,
+				"Unable To Secure Store, No Recent Crime Reported", 6000)
+			exports['sandbox-base']:LoggerInfo(
 				"Robbery",
 				string.format(
 					"%s %s (%s) Secured Vangelico",
@@ -154,7 +153,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					char:GetData("SID")
 				)
 			)
-			Logger:Warn(
+			exports['sandbox-base']:LoggerWarn(
 				"Characters",
 				string.format(
 					"Shitlord Cop Tried Securing Vangelico Without A Recent PD Alert %s %s (%s)",

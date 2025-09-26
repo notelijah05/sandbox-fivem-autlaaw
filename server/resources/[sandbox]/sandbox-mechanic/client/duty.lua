@@ -28,7 +28,7 @@ function CreateMechanicDutyPoints()
 				},
 			}
 
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				"mechanic_duty_" .. k,
 				"chess-clock",
 				v.dutyPoint.center,
@@ -68,7 +68,7 @@ function CreateMechanicDutyPoints()
 				},
 			}
 
-			Targeting.Zones:AddBox(
+			exports['sandbox-targeting']:ZonesAddBox(
 				"mechanic_duty2_" .. k,
 				"chess-clock",
 				v.dutyPoint2.center,
@@ -88,7 +88,7 @@ AddEventHandler("Mechanic:Client:OnDuty", function(_, job)
 		return
 	end
 
-	Jobs.Duty:On(job)
+	exports['sandbox-jobs']:DutyOn(job)
 end)
 
 AddEventHandler("Mechanic:Client:OffDuty", function(_, job)
@@ -96,5 +96,5 @@ AddEventHandler("Mechanic:Client:OffDuty", function(_, job)
 		return
 	end
 
-	Jobs.Duty:Off(job)
+	exports['sandbox-jobs']:DutyOff(job)
 end)

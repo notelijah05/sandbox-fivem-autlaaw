@@ -22,21 +22,21 @@ local poles = {
 }
 
 AddEventHandler("Businesses:Client:Startup", function()
-	Polyzone.Create:Circle("bh_dancers_1", vector3(-1393.78, -612.28, 30.32), 1.53, {
+	exports['sandbox-polyzone']:CreateCircle("bh_dancers_1", vector3(-1393.78, -612.28, 30.32), 1.53, {
 		name = "bh_dancers_1",
 		useZ = false,
 		minZ = 29.32,
 		maxZ = 32.32,
 		--debugPoly=true
 	})
-	Polyzone.Create:Circle("bh_dancers_2", vector3(-1390.82, -616.84, 29.72), 1.55, {
+	exports['sandbox-polyzone']:CreateCircle("bh_dancers_2", vector3(-1390.82, -616.84, 29.72), 1.55, {
 		name = "bh_dancers_2",
 		useZ = false,
 		minZ = 29.32,
 		maxZ = 32.32,
 		--debugPoly=true
 	})
-	Polyzone.Create:Circle("bh_dancers_3", vector3(-1387.79, -621.39, 29.72), 1.5, {
+	exports['sandbox-polyzone']:CreateCircle("bh_dancers_3", vector3(-1387.79, -621.39, 29.72), 1.5, {
 		name = "bh_dancers_3",
 		useZ = false,
 		minZ = 29.32,
@@ -44,22 +44,22 @@ AddEventHandler("Businesses:Client:Startup", function()
 		--debugPoly=true
 	})
 
-	Polyzone.Create:Box("bh_makeitrain", vector3(-1390.89, -616.98, 29.32), 6.0, 16.8, {
+	exports['sandbox-polyzone']:CreateBox("bh_makeitrain", vector3(-1390.89, -616.98, 29.32), 6.0, 16.8, {
 		heading = 302,
 		--debugPoly=true,
 		minZ = 28.32,
 		maxZ = 34.32,
 	})
 
-	Interaction:RegisterMenu("bh_stripper_pole", "Bahama Mamas Dancers", "party-horn", function()
+	exports['sandbox-hud']:InteractionRegisterMenu("bh_stripper_pole", "Bahama Mamas Dancers", "party-horn", function()
 		if
 			(
-				Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_1")
-				or Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_2")
-				or Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_3")
+				exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_1")
+				or exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_2")
+				or exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_3")
 			)
 			and LocalPlayer.state.onDuty == "bahama"
-			and Jobs.Permissions:HasPermissionInJob("bahama", "STRIP_POLE")
+			and exports['sandbox-jobs']:HasPermissionInJob("bahama", "STRIP_POLE")
 		then
 			local subMenu = {}
 
@@ -69,25 +69,25 @@ AddEventHandler("Businesses:Client:Startup", function()
 					label = "Dance " .. k,
 					action = function()
 						TriggerEvent("Businesses:Client:PoleDanceBH", k)
-						Interaction:Hide()
+						exports['sandbox-hud']:InteractionHide()
 					end,
 				})
 			end
 
-			Interaction:ShowMenu(subMenu)
+			exports['sandbox-hud']:InteractionShowMenu(subMenu)
 		else
-			Notification:Error("Invalid Permissions")
+			exports["sandbox-hud"]:NotifError("Invalid Permissions")
 		end
 	end, function()
 		return (
-			Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_1")
-			or Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_2")
-			or Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_3")
+			exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_1")
+			or exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_2")
+			or exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_dancers_3")
 		) and LocalPlayer.state.onDuty == "bahama"
 	end)
 
-	Interaction:RegisterMenu("bh_makeitrain", "Make It Rain", "money-bill-1-wave", function()
-		if not _makingItRain and Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_makeitrain") then
+	exports['sandbox-hud']:InteractionRegisterMenu("bh_makeitrain", "Make It Rain", "money-bill-1-wave", function()
+		if not _makingItRain and exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_makeitrain") then
 			local makeItRain = {
 				{
 					type = "cash",
@@ -109,7 +109,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 			local subMenu = {}
 
 			for k, v in ipairs(makeItRain) do
-				if v.type == "cash" or Inventory.Check.Player:HasItem(v.type, 1) then
+				if v.type == "cash" or exports['sandbox-inventory']:CheckPlayerHasItem(v.type, 1) then
 					table.insert(subMenu, {
 						icon = "money-bill-1-wave",
 						label = v.text,
@@ -119,16 +119,16 @@ AddEventHandler("Businesses:Client:Startup", function()
 								MakeItRainBitchBahama(nearestStripper, v.type, v.time)
 							end
 
-							Interaction:Hide()
+							exports['sandbox-hud']:InteractionHide()
 						end,
 					})
 				end
 			end
 
-			Interaction:ShowMenu(subMenu)
+			exports['sandbox-hud']:InteractionShowMenu(subMenu)
 		end
 	end, function()
-		return Polyzone:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_makeitrain")
+		return exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), "bh_makeitrain")
 			and GetNearbyFuckingStripper()
 	end)
 end)
@@ -137,7 +137,7 @@ RegisterNetEvent("Businesses:Client:PoleDanceBH", function(dance)
 	local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
 	for k, v in ipairs(poles) do
 		if #(v - pedCoords) <= 1.5 then
-			local cPlayer, dist = Game.Players:GetClosestPlayer()
+			local cPlayer, dist = exports['sandbox-base']:GamePlayersGetClosestPlayer()
 
 			if dist == -1 or dist > 1.5 then
 				local poleDance = poleDances[dance]
@@ -150,10 +150,10 @@ RegisterNetEvent("Businesses:Client:PoleDanceBH", function(dance)
 					-- )
 					-- SetEntityRotation(PlayerPedId(), 0.0, 0.0, 0.0)
 
-					Animations.Emotes:Play(poleDance.anim, false, false, false)
+					exports['sandbox-animations']:EmotesPlay(poleDance.anim, false, false, false)
 				end
 			else
-				Notification:Error("Pole Taken")
+				exports["sandbox-hud"]:NotifError("Pole Taken")
 			end
 			return
 		end
@@ -170,24 +170,24 @@ function MakeItRainBitchBahama(targetSource, cashType, time)
 
 	CreateThread(function()
 		_makingItRain = true
-		Animations.Emotes:Play("makeitrain", false, false, false)
+		exports['sandbox-animations']:EmotesPlay("makeitrain", false, false, false)
 
 		Wait(7500)
 
 		while
 			_makingItRain
 			and LocalPlayer.state.loggedIn
-			and Animations.Emotes:Get() == "makeitrain"
+			and exports['sandbox-animations']:EmotesGet() == "makeitrain"
 			and IsDoingStripperDance(Player(targetSource).state.anim)
 			and (#(GetEntityCoords(LocalPlayer.state.ped) - GetEntityCoords(targetPed)) <= 5.0)
 		do
 			local p = promise.new()
-			Callbacks:ServerCallback("BH:MakeItRain", {
+			exports["sandbox-base"]:ServerCallback("BH:MakeItRain", {
 				target = targetSource,
 				type = cashType,
 			}, function(success, cd)
 				if not success then
-					Notification:Error(cd and "Reached Cooldown" or "Error - Ran Out of Money")
+					exports["sandbox-hud"]:NotifError(cd and "Reached Cooldown" or "Error - Ran Out of Money")
 					_makingItRain = false
 				end
 
@@ -199,6 +199,6 @@ function MakeItRainBitchBahama(targetSource, cashType, time)
 		end
 
 		_makingItRain = false
-		Animations.Emotes:ForceCancel()
+		exports['sandbox-animations']:EmotesForceCancel()
 	end)
 end

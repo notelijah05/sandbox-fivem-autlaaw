@@ -110,7 +110,7 @@ function StartBait(item, loc)
 		if _baited and LocalPlayer.state.loggedIn then
 			local t = (1000 * 60 * math.random(1, baitConf.time))
 			Wait(t)
-			Callbacks:ServerCallback("Hunting:GenerateAnimal", item, function(r)
+			exports["sandbox-base"]:ServerCallback("Hunting:GenerateAnimal", item, function(r)
 				if r ~= nil then
 					SpawnAnimal(r, loc, baitConf)
 				end
@@ -185,11 +185,11 @@ end
 RegisterNetEvent("Hunting:Client:Polys", function(c)
 	_localConfig = c
 	for k, v in ipairs(_localConfig.Zones) do
-		Polyzone.Create:Circle(string.format("hunting%s", k), v.coords, v.radius, v.options)
+		exports['sandbox-polyzone']:CreateCircle(string.format("hunting%s", k), v.coords, v.radius, v.options)
 	end
 
 	for k, v in pairs(_localConfig.Animals) do
-		Targeting:AddPedModel(v.Model, "knife-kitchen", {
+		exports['sandbox-targeting']:AddPedModel(v.Model, "knife-kitchen", {
 			{
 				icon = "rabbit-running",
 				text = string.format("Harvest %s", v.Name),
@@ -227,12 +227,12 @@ RegisterNetEvent("Hunting:Client:Polys", function(c)
 end)
 
 AddEventHandler("Labor:Client:Setup", function()
-	Callbacks:RegisterClientCallback("Hunting:Client:CanShowMap", function(data, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Hunting:Client:CanShowMap", function(data, cb)
 		if
 			not inMapAnim
 			and not LocalPlayer.state.doingAction
 			and not LocalPlayer.state.isDead
-			and not Animations.Emotes:Get()
+			and not exports['sandbox-animations']:EmotesGet()
 			and IsPedOnFoot(LocalPlayer.state.ped)
 		then
 			cb(true)
@@ -244,7 +244,7 @@ AddEventHandler("Labor:Client:Setup", function()
 	end)
 
 	for k, v in ipairs(_sellers) do
-		PedInteraction:Add(string.format("HideSeller%s", k), v.model, v.coords, v.heading, 25.0, {
+		exports['sandbox-pedinteraction']:Add(string.format("HideSeller%s", k), v.model, v.coords, v.heading, 25.0, {
 			{
 				icon = "cart-shopping",
 				text = "Buy Stuff",
@@ -297,7 +297,7 @@ AddEventHandler("Labor:Client:Setup", function()
 		}, "paw", "WORLD_HUMAN_SMOKING")
 	end
 
-	PedInteraction:Add("HuntingJob", `cs_hunter`, _huntingStore, 227.201, 25.0, {
+	exports['sandbox-pedinteraction']:Add("HuntingJob", `cs_hunter`, _huntingStore, 227.201, 25.0, {
 		{
 			icon = "cart-shopping",
 			text = "Shop",
@@ -323,14 +323,14 @@ AddEventHandler("Labor:Client:Setup", function()
 		},
 	}, "deer")
 
-	Callbacks:RegisterClientCallback("Hunting:PlaceTrap", function(item, cb)
+	exports["sandbox-base"]:RegisterClientCallback("Hunting:PlaceTrap", function(item, cb)
 		if _baited then
 			return cb(false)
 		end
 
 		local dist = #(GetEntityCoords(LocalPlayer.state.ped) - _huntingStore)
 		if dist <= 300.0 then
-			Notification:Error("At Least Stop Being Lazy and Move Away From the Store")
+			exports["sandbox-hud"]:NotifError("At Least Stop Being Lazy and Move Away From the Store")
 			return cb(false)
 		end
 
@@ -344,7 +344,7 @@ AddEventHandler("Labor:Client:Setup", function()
 
 		if hit then
 			if gms[materialHash] then
-				Progress:Progress({
+				exports['sandbox-hud']:Progress({
 					name = "trap-action",
 					duration = (math.random(5) + 10) * 1000,
 					label = "Placing Bait",
@@ -366,11 +366,11 @@ AddEventHandler("Labor:Client:Setup", function()
 					end
 				end)
 			else
-				Notification:Error("Cannot Place Trap Here")
+				exports["sandbox-hud"]:NotifError("Cannot Place Trap Here")
 				cb(false)
 			end
 		else
-			Notification:Error("Cannot Place Trap Here")
+			exports["sandbox-hud"]:NotifError("Cannot Place Trap Here")
 			cb(false)
 		end
 	end)
@@ -380,14 +380,14 @@ RegisterNetEvent("Hunting:Client:OnDuty", function(joiner, time)
 	_joiner = joiner
 	DeleteWaypoint()
 	SetNewWaypoint(_huntingStore.x, _huntingStore.y)
-	_blip = Blips:Add("HuntingStart", "Shop Owner", _huntingStore, 480, 2, 1.4)
+	_blip = exports["sandbox-blips"]:Add("HuntingStart", "Shop Owner", _huntingStore, 480, 2, 1.4)
 
 	eventHandlers["startup"] = RegisterNetEvent(string.format("Hunting:Client:%s:Startup", joiner), function()
 		_working = true
 		_state = 1
 
 		if _blip ~= nil then
-			Blips:Remove("HuntingStart")
+			exports["sandbox-blips"]:Remove("HuntingStart")
 			RemoveBlip(_blip)
 		end
 	end)
@@ -395,10 +395,11 @@ RegisterNetEvent("Hunting:Client:OnDuty", function(joiner, time)
 	eventHandlers["finish"] = RegisterNetEvent(string.format("Hunting:Client:%s:Finish", joiner), function()
 		_state = 2
 		if _blip ~= nil then
-			Blips:Remove("HuntingStart")
+			exports["sandbox-blips"]:Remove("HuntingStart")
 			RemoveBlip(_blip)
 		end
-		_blip = Blips:Add("HuntingStart", "Shop Owner", { x = -676.4336, y = 5840.2813, z = 16.4404 }, 480, 2, 1.4)
+		_blip = exports["sandbox-blips"]:Add("HuntingStart", "Shop Owner", { x = -676.4336, y = 5840.2813, z = 16.4404 },
+			480, 2, 1.4)
 	end)
 
 	eventHandlers["end"] = RegisterNetEvent(string.format("Hunting:Client:%s:FinishJob", joiner), function()
@@ -407,23 +408,23 @@ RegisterNetEvent("Hunting:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("Hunting:Client:OpenShop", function()
-	Inventory.Shop:Open("hunting-supplies")
+	exports['sandbox-inventory']:ShopOpen("hunting-supplies")
 end)
 
 AddEventHandler("Hunting:Client:Sell", function(entity, data)
-	Callbacks:ServerCallback("Hunting:Sell", data.tier)
+	exports["sandbox-base"]:ServerCallback("Hunting:Sell", data.tier)
 end)
 
 AddEventHandler("Hunting:Client:StartJob", function()
-	Callbacks:ServerCallback("Hunting:StartJob", _joiner, function(state)
+	exports["sandbox-base"]:ServerCallback("Hunting:StartJob", _joiner, function(state)
 		if not state then
-			Notification:Error("Unable To Start Job")
+			exports["sandbox-hud"]:NotifError("Unable To Start Job")
 		end
 	end)
 end)
 
 AddEventHandler("Hunting:Client:FinishJob", function()
-	Callbacks:ServerCallback("Hunting:FinishJob", _joiner, function(state) end)
+	exports["sandbox-base"]:ServerCallback("Hunting:FinishJob", _joiner, function(state) end)
 end)
 
 AddEventHandler("Hunting:Client:Harvest", function(entity, data)
@@ -434,11 +435,12 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 	TaskTurnPedToFaceEntity(LocalPlayer.state.ped, entity.entity, -1)
 
 	if GetPedCauseOfDeath(entity.entity) ~= wepHash then
-		return Notification:Error("Can't Harvest. This Animal Definitely Wasn't Shot With a Hunting Rifle.")
+		return exports["sandbox-hud"]:NotifError(
+			"Can't Harvest. This Animal Definitely Wasn't Shot With a Hunting Rifle.")
 	end
 
 	Wait(1000)
-	Progress:ProgressWithTickEvent({
+	exports['sandbox-hud']:ProgressWithTickEvent({
 		name = "trap-action",
 		duration = 18000,
 		label = "Harvesting",
@@ -455,7 +457,7 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 		},
 	}, function()
 		if DecorGetBool(entity.entity, "HuntingHarvested") then
-			Progress:Cancel()
+			exports['sandbox-hud']:ProgressCancel()
 		end
 	end, function(cancelled)
 		if not cancelled and not DecorGetBool(entity.entity, "HuntingHarvested") then
@@ -463,11 +465,11 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 
 			if _localConfig.Animals[data] ~= nil and _localConfig.Animals[data].Illegal then
 				TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", "illegalHunting")
-				Status.Modify:Add("PLAYER_STRESS", 10, false, true)
+				exports['sandbox-status']:Add("PLAYER_STRESS", 10, false, true)
 			else
-				Status.Modify:Add("PLAYER_STRESS", 5, false, true)
+				exports['sandbox-status']:Add("PLAYER_STRESS", 5, false, true)
 			end
-			Callbacks:ServerCallback("Hunting:HarvestAnimal", {
+			exports["sandbox-base"]:ServerCallback("Hunting:HarvestAnimal", {
 				animal = data,
 				isSpawned = DecorGetBool(entity.entity, "HuntingSpawn")
 			})
@@ -478,9 +480,9 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 end)
 
 AddEventHandler("Hunting:Client:StartJob", function()
-	-- Callbacks:ServerCallback("Mining:StartJob", _joiner, function(state)
+	-- exports["sandbox-base"]:ServerCallback("Mining:StartJob", _joiner, function(state)
 	-- 	if not state then
-	-- 		Notification:Error("Unable To Start Job")
+	-- 		exports["sandbox-hud"]:NotifError("Unable To Start Job")
 	-- 	end
 	-- end)
 end)
@@ -491,7 +493,7 @@ RegisterNetEvent("Hunting:Client:OffDuty", function(time)
 	end
 
 	if _blip ~= nil then
-		Blips:Remove("HuntingStart")
+		exports["sandbox-blips"]:Remove("HuntingStart")
 		RemoveBlip(_blip)
 	end
 
@@ -506,12 +508,12 @@ RegisterNetEvent("Hunting:Client:ShowMap", function(data)
 		return
 	end
 
-	Logger:Trace(
+	exports['sandbox-base']:LoggerTrace(
 		"Hunting/Map",
 		string.format("My Source: %s; My Ped: %s; Map Type: %s", LocalPlayer.state.ID, LocalPlayer.state.ped, data.Name)
 	)
 
-	Hud.Overlay:Show(data)
+	exports['sandbox-hud']:OverlayShow(data)
 end)
 
 function StartMapAnim()
@@ -557,7 +559,7 @@ function StopMapAnim()
 	if inMapAnim then
 		StopAnimTask(PlayerPedId(), "amb@world_human_tourist_map@male@idle_b", "idle_d", 3.0)
 		DeleteEntity(licenseEntity)
-		Hud.Overlay:Hide()
+		exports['sandbox-hud']:OverlayHide()
 		inMapAnim = false
 	end
 end

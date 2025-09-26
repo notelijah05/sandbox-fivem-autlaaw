@@ -6,7 +6,7 @@ function OpenStaffMenu(data)
     _menuOpen = true
     if data then
         adminSubMenus = {}
-        adminMenu = Menu:Create('adminMenu', 'Staff Menu', function(id, back)
+        adminMenu = exports['sandbox-menu']:Create('adminMenu', 'Staff Menu', function(id, back)
             _menuOpen = true
         end, function()
             _menuOpen = false
@@ -23,7 +23,7 @@ function OpenStaffMenu(data)
 
         -- Active Player Management
         if data.playerData then
-            adminSubMenus['activePlayers'] = Menu:Create('adminActivePlayers', 'Player Management')
+            adminSubMenus['activePlayers'] = exports['sandbox-menu']:Create('adminActivePlayers', 'Player Management')
 
             if #data.playerData > 0 then
                 table.sort(data.playerData, function(a, b)
@@ -35,11 +35,12 @@ function OpenStaffMenu(data)
 
                     local playerMenuId = 'adminActivePlayers-' .. player.Source
 
-                    adminSubMenus[playerMenuId] = Menu:Create(playerMenuId,
+                    adminSubMenus[playerMenuId] = exports['sandbox-menu']:Create(playerMenuId,
                         string.format('Viewing Player: [%s] %s', player.Source, player.Name))
 
                     -- PUNISH MENU
-                    adminSubMenus[playerMenuId .. '-punish'] = Menu:Create('adminActivePlayersPunish-' .. player.Source,
+                    adminSubMenus[playerMenuId .. '-punish'] = exports['sandbox-menu']:Create(
+                        'adminActivePlayersPunish-' .. player.Source,
                         string.format('Punish Player: [%s] %s', player.Source, player.Name))
 
                     adminSubMenus[playerMenuId .. '-punish'].Add:Text('Kick', { 'center', 'heading' })
@@ -117,27 +118,27 @@ function OpenStaffMenu(data)
                     end
 
                     -- adminSubMenus[playerMenuId].Add:Button('Goto Player', { disabled = not player.Character, success = true }, function(data)
-                    --     Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
+                    --     exports["sandbox-base"]:ServerCallback('Admin:PlayerTeleportAction', {
                     --         action = 'GOTO',
                     --         target = player.Source,
                     --     }, function(success)
                     --         if success then
-                    --             Notification:Success('Successfully Teleported to '.. player.Name)
+                    --             exports["sandbox-hud"]:NotifSuccess('Successfully Teleported to '.. player.Name)
                     --         else
-                    --             Notification:Error('Failed to Teleport to '.. player.Name)
+                    --             exports["sandbox-hud"]:NotifError('Failed to Teleport to '.. player.Name)
                     --         end
                     --     end)
                     -- end)
 
                     -- adminSubMenus[playerMenuId].Add:Button('Bring Player', { disabled = not player.Character, success = true }, function(data)
-                    --     Callbacks:ServerCallback('Admin:PlayerTeleportAction', {
+                    --     exports["sandbox-base"]:ServerCallback('Admin:PlayerTeleportAction', {
                     --         action = 'BRING',
                     --         target = player.Source,
                     --     }, function(success)
                     --         if success then
-                    --             Notification:Success('Successfully Brought '.. player.Name)
+                    --             exports["sandbox-hud"]:NotifSuccess('Successfully Brought '.. player.Name)
                     --         else
-                    --             Notification:Error('Failed to Bring '.. player.Name)
+                    --             exports["sandbox-hud"]:NotifError('Failed to Bring '.. player.Name)
                     --         end
                     --     end)
                     -- end)
@@ -148,18 +149,19 @@ function OpenStaffMenu(data)
 
                     adminSubMenus[playerMenuId].Add:Button('Attach To (Spectate)',
                         { disabled = not player.Character, success = _attached }, function(data)
-                        if _attached then
-                            AdminStopAttach()
-                        else
-                            Callbacks:ServerCallback('Admin:AttachToPlayer', player.Source, function(targetCoords)
-                                if targetCoords then
-                                    AdminAttachToEntity(player.Source, targetCoords)
-                                else
-                                    AdminStopAttach()
-                                end
-                            end)
-                        end
-                    end)
+                            if _attached then
+                                AdminStopAttach()
+                            else
+                                exports["sandbox-base"]:ServerCallback('Admin:AttachToPlayer', player.Source,
+                                    function(targetCoords)
+                                        if targetCoords then
+                                            AdminAttachToEntity(player.Source, targetCoords)
+                                        else
+                                            AdminStopAttach()
+                                        end
+                                    end)
+                            end
+                        end)
 
                     local playerString
                     if player.Character then
@@ -185,7 +187,8 @@ function OpenStaffMenu(data)
             adminMenu.Add:SubMenu('Player Management', adminSubMenus['activePlayers'], {})
         end
 
-        adminSubMenus['recentDisconnects'] = Menu:Create('adminRecentDisconnects', 'Recent Disconnects')
+        adminSubMenus['recentDisconnects'] = exports['sandbox-menu']:Create('adminRecentDisconnects',
+            'Recent Disconnects')
         if data.recentDisconnects then
             if #data.recentDisconnects > 0 then
                 -- Highest Source should be at the top because it is the most recent disconnections
@@ -195,7 +198,7 @@ function OpenStaffMenu(data)
 
                 for _, player in ipairs(data.recentDisconnects) do
                     local playerMenuId = 'adminRecentDisconnects-' .. player.Source
-                    adminSubMenus[playerMenuId] = Menu:Create(playerMenuId,
+                    adminSubMenus[playerMenuId] = exports['sandbox-menu']:Create(playerMenuId,
                         string.format('Disconnected Player: [%s] %s', player.Source, player.Name))
 
                     local hasReconnected = connectedIdentifiers[player.Identifier]
@@ -270,7 +273,7 @@ function OpenStaffMenu(data)
 end
 
 RegisterNetEvent('Admin:Client:OpenStaffMenu', function()
-    Callbacks:ServerCallback('Admin:GetMenuData', {}, function(isAdmin, data)
+    exports["sandbox-base"]:ServerCallback('Admin:GetMenuData', {}, function(isAdmin, data)
         OpenStaffMenu(data)
     end)
 end)

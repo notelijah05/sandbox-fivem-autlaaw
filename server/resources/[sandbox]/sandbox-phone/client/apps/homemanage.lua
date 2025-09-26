@@ -1,7 +1,7 @@
 RegisterNUICallback("Home:GetMyProperties", function(data, cb)
-	local props = Properties:GetPropertiesWithAccess() or {}
+	local props = exports['sandbox-properties']:GetPropertiesWithAccess() or {}
 
-	local upgrades = Properties:GetUpgradesConfig()
+	local upgrades = exports['sandbox-properties']:GetUpgradesConfig()
 
 	cb({
 		properties = props,
@@ -14,42 +14,42 @@ RegisterNUICallback("Home:StartPlacement", function(data, cb)
 end)
 
 RegisterNUICallback("Home:CreateDigiKey", function(data, cb)
-	Callbacks:ServerCallback("Phone:Home:CreateDigiKey", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Home:CreateDigiKey", data, cb)
 end)
 
 RegisterNUICallback("Home:RevokeDigiKey", function(data, cb)
-	Callbacks:ServerCallback("Phone:Home:RevokeDigiKey", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Home:RevokeDigiKey", data, cb)
 end)
 
 RegisterNUICallback("Home:RemoveMyKey", function(data, cb)
-	Callbacks:ServerCallback("Phone:Home:RemoveMyKey", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Home:RemoveMyKey", data, cb)
 end)
 
 RegisterNUICallback("Home:LockProperty", function(data, cb)
-	Callbacks:ServerCallback("Phone:Home:LockProperty", data, cb)
+	exports["sandbox-base"]:ServerCallback("Phone:Home:LockProperty", data, cb)
 end)
 
 RegisterNUICallback("Home:EditMode", function(data, cb)
-	Properties.Furniture:EditMode()
+	exports['sandbox-properties']:EditMode()
 	cb("OK")
 end)
 
 RegisterNUICallback("Home:GetCurrentFurniture", function(data, cb)
-	local p = Properties.Furniture:GetCurrent(data.property)
+	local p = exports['sandbox-properties']:GetCurrent(data.property)
 	cb(p)
 end)
 
 RegisterNUICallback("Home:PlaceFurniture", function(data, cb)
 	-- model, category
-	cb(Properties.Furniture:Place(data.model, data.category))
+	cb(exports['sandbox-properties']:Place(data.model, data.category))
 end)
 
 RegisterNUICallback("Home:EditFurniture", function(data, cb)
-	cb(Properties.Furniture:Move(data.id))
+	cb(exports['sandbox-properties']:Move(data.id))
 end)
 
 RegisterNUICallback("Home:DeleteFurniture", function(data, cb)
-	cb(Properties.Furniture:Delete(data.id))
+	cb(exports['sandbox-properties']:Delete(data.id))
 end)
 
 RegisterNUICallback("Home:HighlightFurniture", function(data, cb)
@@ -59,16 +59,16 @@ end)
 
 RegisterNUICallback("PurchasePropertyInterior", function(data, cb)
 	-- data.int
-	Callbacks:ServerCallback("Properties:ChangeInterior", data, cb)
+	exports["sandbox-base"]:ServerCallback("Properties:ChangeInterior", data, cb)
 end)
 
 RegisterNUICallback("PurchasePropertyUpgrade", function(data, cb)
 	-- data.upgrade
-	Callbacks:ServerCallback("Properties:Upgrade", data, cb)
+	exports["sandbox-base"]:ServerCallback("Properties:Upgrade", data, cb)
 end)
 
 RegisterNUICallback("PreviewPropertyInterior", function(data, cb)
 	-- data.int
 	cb("OK")
-	Properties.Interiors:Preview(data.int)
+	exports['sandbox-properties']:Preview(data.int)
 end)

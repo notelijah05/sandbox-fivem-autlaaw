@@ -7,47 +7,12 @@ _mdtLoggedIn = false
 
 local _bodycam = false
 
-AddEventHandler("MDT:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Callbacks = exports["sandbox-base"]:FetchComponent("Callbacks")
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Notification = exports["sandbox-base"]:FetchComponent("Notification")
-	UISounds = exports["sandbox-base"]:FetchComponent("UISounds")
-	Sounds = exports["sandbox-base"]:FetchComponent("Sounds")
-	Keybinds = exports["sandbox-base"]:FetchComponent("Keybinds")
-	MDT = exports["sandbox-base"]:FetchComponent("MDT")
-	Animations = exports["sandbox-base"]:FetchComponent("Animations")
-	EmergencyAlerts = exports["sandbox-base"]:FetchComponent("EmergencyAlerts")
-	Weapons = exports["sandbox-base"]:FetchComponent("Weapons")
-	Properties = exports["sandbox-base"]:FetchComponent("Properties")
-	Admin = exports["sandbox-base"]:FetchComponent("Admin")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("MDT", {
-		"Callbacks",
-		"Logger",
-		"Notification",
-		"UISounds",
-		"Sounds",
-		"Keybinds",
-		"Animations",
-		"EmergencyAlerts",
-		"Weapons",
-		"Admin",
-		"Properties",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-
-		Keybinds:Add("gov_mdt", "", "keyboard", "Gov - Open MDT", function()
-			ToggleMDT()
-		end)
-
-		RegisterBadgeCallbacks()
+	exports["sandbox-keybinds"]:Add("gov_mdt", "", "keyboard", "Gov - Open MDT", function()
+		ToggleMDT()
 	end)
+
+	RegisterBadgeCallbacks()
 end)
 
 AddEventHandler("Characters:Client:Spawn", function()
@@ -82,7 +47,7 @@ RegisterNetEvent("MDT:Client:Login", function(points, job, jobPermissions, attor
 
 	if data then
 		for k, v in pairs(data) do
-			MDT.Data:Set(k, v)
+			exports['sandbox-mdt']:DataSet(k, v)
 		end
 	end
 
@@ -116,9 +81,9 @@ RegisterNetEvent("MDT:Client:UpdateJobData", function(job, jobPermissions)
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
-	MDT:Close()
-	MDT.Badges:Close()
-	EmergencyAlerts:Close()
+	exports['sandbox-mdt']:Close()
+	exports['sandbox-mdt']:BadgesClose()
+	exports['sandbox-mdt']:EmergencyAlertsClose()
 
 	SendNUIMessage({
 		type = "LOGOUT",
@@ -137,9 +102,9 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 RegisterNetEvent("UI:Client:Reset", function(manual)
-	MDT:Close()
-	MDT.Badges:Close()
-	EmergencyAlerts:Close()
+	exports['sandbox-mdt']:Close()
+	exports['sandbox-mdt']:BadgesClose()
+	exports['sandbox-mdt']:EmergencyAlertsClose()
 	SendNUIMessage({
 		type = "SET_BODYCAM",
 		data = {
@@ -148,7 +113,7 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 	})
 
 	if _bodycam and manual then
-		Sounds.Play:Distance(15, "bodycam.ogg", 0.1)
+		exports["sandbox-sounds"]:PlayDistance(15, "bodycam.ogg", 0.1)
 	end
 end)
 
@@ -160,7 +125,7 @@ AddEventHandler("MDT:Client:ToggleBodyCam", function()
 
 	_bodycam = not _bodycam
 	if _bodycam then
-		Sounds.Play:Distance(15, "bodycam.ogg", 0.05)
+		exports["sandbox-sounds"]:PlayDistance(15, "bodycam.ogg", 0.05)
 	end
 end)
 
@@ -168,14 +133,14 @@ function ToggleMDT()
 	if not _openCd and _mdtLoggedIn then
 		if not _mdtOpen then
 			_openCd = true
-			MDT:Open()
+			exports['sandbox-mdt']:Open()
 
 			CreateThread(function()
 				Wait(2000)
 				_openCd = false
 			end)
 		else
-			MDT:Close()
+			exports['sandbox-mdt']:Close()
 		end
 	end
 end

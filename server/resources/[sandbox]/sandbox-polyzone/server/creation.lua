@@ -1,80 +1,60 @@
-AddEventHandler("Polyzone:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-	Logger = exports["sandbox-base"]:FetchComponent("Logger")
-	Utils = exports["sandbox-base"]:FetchComponent("Utils")
-	Chat = exports["sandbox-base"]:FetchComponent("Chat")
-	Fetch = exports["sandbox-base"]:FetchComponent("Fetch")
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Polyzone", {
-		"Logger",
-		"Utils",
-		"Chat",
-		"Fetch",
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
+	exports["sandbox-chat"]:RegisterAdminCommand("pzcreate", function(src, args, raw)
+		TriggerClientEvent("polyzone:createcommand", src, args)
+	end, {
+		help = "Starts creation of a zone for PolyZone",
+		params = {
+			{ name = "zoneType", help = "Zone Type (circle, box, poly)" },
+		},
+	}, 1)
 
-		Chat:RegisterAdminCommand("pzcreate", function(src, args, raw)
-			TriggerClientEvent("polyzone:createcommand", src, args)
-		end, {
-			help = "Starts creation of a zone for PolyZone",
-			params = {
-				{ name = "zoneType", help = "Zone Type (circle, box, poly)" },
-			},
-		}, 1)
+	exports["sandbox-chat"]:RegisterAdminCommand("pzadd", function(src, args, raw)
+		TriggerClientEvent("polyzone:pzadd", src)
+	end, {
+		help = "Adds point to a zone",
+	})
 
-		Chat:RegisterAdminCommand("pzadd", function(src, args, raw)
-			TriggerClientEvent("polyzone:pzadd", src)
-		end, {
-			help = "Adds point to a zone",
-		})
+	exports["sandbox-chat"]:RegisterAdminCommand("pzundo", function(src, args, raw)
+		TriggerClientEvent("polyzone:pzundo", src)
+	end, {
+		help = "Undoes the last point added.",
+	})
 
-		Chat:RegisterAdminCommand("pzundo", function(src, args, raw)
-			TriggerClientEvent("polyzone:pzundo", src)
-		end, {
-			help = "Undoes the last point added.",
-		})
+	exports["sandbox-chat"]:RegisterAdminCommand("pzfinish", function(src, args, raw)
+		TriggerClientEvent("polyzone:pzfinish", src)
+	end, {
+		help = "Finishes and prints zone.",
+	})
 
-		Chat:RegisterAdminCommand("pzfinish", function(src, args, raw)
-			TriggerClientEvent("polyzone:pzfinish", src)
-		end, {
-			help = "Finishes and prints zone.",
-		})
+	exports["sandbox-chat"]:RegisterAdminCommand("pzlast", function(src, args, raw)
+		TriggerClientEvent("polyzone:pzlast", src)
+	end, {
+		help = "Starts creation of the last zone you finished (only works on BoxZone and CircleZone)",
+	})
 
-		Chat:RegisterAdminCommand("pzlast", function(src, args, raw)
-			TriggerClientEvent("polyzone:pzlast", src)
-		end, {
-			help = "Starts creation of the last zone you finished (only works on BoxZone and CircleZone)",
-		})
+	exports["sandbox-chat"]:RegisterAdminCommand("pzcancel", function(src, args, raw)
+		TriggerClientEvent("polyzone:pzcancel", src)
+	end, {
+		help = "Cancel zone creation.",
+	})
 
-		Chat:RegisterAdminCommand("pzcancel", function(src, args, raw)
-			TriggerClientEvent("polyzone:pzcancel", src)
-		end, {
-			help = "Cancel zone creation.",
-		})
+	exports["sandbox-chat"]:RegisterAdminCommand("pzcomboinfo", function(src, args, raw)
+		TriggerClientEvent("polyzone:pzcomboinfo", src)
+	end, {
+		help = "Prints some useful info for all created ComboZones.",
+	})
 
-		Chat:RegisterAdminCommand("pzcomboinfo", function(src, args, raw)
-			TriggerClientEvent("polyzone:pzcomboinfo", src)
-		end, {
-			help = "Prints some useful info for all created ComboZones.",
-		})
-
-		Chat:RegisterAdminCommand("pzdebug", function(src, args, raw)
-			TriggerClientEvent("Polyzone:Client:ToggleDebug", src)
-		end, {
-			help = "Toggle Polyzone Debug mode",
-		})
-	end)
+	exports["sandbox-chat"]:RegisterAdminCommand("pzdebug", function(src, args, raw)
+		TriggerClientEvent("Polyzone:Client:ToggleDebug", src)
+	end, {
+		help = "Toggle Polyzone Debug mode",
+	})
 end)
 
 RegisterNetEvent("polyzone:printPoly")
 AddEventHandler("polyzone:printPoly", function(zone)
 	local src = source
-	local player = Fetch:Source(src)
+	local player = exports['sandbox-base']:FetchSource(src)
 	if not player.Permissions:IsAdmin() then
 		return
 	end
@@ -89,7 +69,7 @@ end)
 RegisterNetEvent("polyzone:printCircle")
 AddEventHandler("polyzone:printCircle", function(zone)
 	local src = source
-	local player = Fetch:Source(src)
+	local player = exports['sandbox-base']:FetchSource(src)
 	if not player.Permissions:IsAdmin() then
 		return
 	end
@@ -104,7 +84,7 @@ end)
 RegisterNetEvent("polyzone:printBox")
 AddEventHandler("polyzone:printBox", function(zone)
 	local src = source
-	local player = Fetch:Source(src)
+	local player = exports['sandbox-base']:FetchSource(src)
 	if not player.Permissions:IsAdmin() then
 		return
 	end
