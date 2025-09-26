@@ -16,12 +16,12 @@ AddEventHandler("Core:Shared:Ready", function()
 			GlobalState["CasinoOpen"] = data.state
 
 			if GlobalState["CasinoOpen"] then
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Casino Opened")
+				exports['sandbox-hud']:NotifSuccess(source, "Casino Opened")
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Casino Closed")
+				exports['sandbox-hud']:NotifError(source, "Casino Closed")
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Error Opening/Closing Casino")
+			exports['sandbox-hud']:NotifError(source, "Error Opening/Closing Casino")
 		end
 	end)
 
@@ -74,7 +74,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "diamond_vip", 1, {}, 1)
 				GiveCasinoFuckingMoney(source, "VIP Card", 10000)
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
+				exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
 			end
 		end
 

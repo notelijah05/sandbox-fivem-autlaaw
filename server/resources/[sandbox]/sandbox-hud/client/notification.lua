@@ -212,3 +212,59 @@ exports('NotifPersistentRemove', function(id)
 		},
 	})
 end)
+
+RegisterNetEvent("HUD:Client:NotifClear", function()
+	exports['sandbox-hud']:NotifClear()
+end)
+
+RegisterNetEvent("HUD:Client:NotifSuccess", function(message, duration, icon)
+	exports['sandbox-hud']:NotifSuccess(message, duration, icon)
+end)
+
+RegisterNetEvent("HUD:Client:NotifWarn", function(message, duration, icon)
+	exports['sandbox-hud']:NotifWarn(message, duration, icon)
+end)
+
+RegisterNetEvent("HUD:Client:NotifError", function(message, duration, icon)
+	exports['sandbox-hud']:NotifError(message, duration, icon)
+end)
+
+RegisterNetEvent("HUD:Client:NotifInfo", function(message, duration, icon)
+	exports['sandbox-hud']:NotifInfo(message, duration, icon)
+end)
+
+RegisterNetEvent("HUD:Client:NotifStandard", function(message, duration, icon)
+	exports['sandbox-hud']:NotifStandard(message, duration, icon)
+end)
+
+RegisterNetEvent("HUD:Client:NotifCustom", function(message, duration, icon, style)
+	exports['sandbox-hud']:NotifCustom(message, duration, icon, style)
+end)
+
+RegisterNetEvent("HUD:Client:NotifPersistentSuccess", function(id, message, icon)
+	exports['sandbox-hud']:NotifPersistentSuccess(id, message, icon)
+end)
+
+RegisterNetEvent("HUD:Client:NotifPersistentWarn", function(id, message, icon)
+	exports['sandbox-hud']:NotifPersistentWarn(id, message, icon)
+end)
+
+RegisterNetEvent("HUD:Client:NotifPersistentError", function(id, message, icon)
+	exports['sandbox-hud']:NotifPersistentError(id, message, icon)
+end)
+
+RegisterNetEvent("HUD:Client:NotifPersistentInfo", function(id, message, icon)
+	exports['sandbox-hud']:NotifPersistentInfo(id, message, icon)
+end)
+
+RegisterNetEvent("HUD:Client:NotifPersistentStandard", function(id, message, icon)
+	exports['sandbox-hud']:NotifPersistentStandard(id, message, icon)
+end)
+
+RegisterNetEvent("HUD:Client:NotifPersistentCustom", function(id, message, icon, style)
+	exports['sandbox-hud']:NotifPersistentCustom(id, message, icon, style)
+end)
+
+RegisterNetEvent("HUD:Client:NotifPersistentRemove", function(id)
+	exports['sandbox-hud']:NotifPersistentRemove(id)
+end)

@@ -222,7 +222,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                         cookTime = data.cookTime,
                     })
 
-                    exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+                    exports['sandbox-hud']:NotifSuccess(source,
                         string.format("Batch Started, Will Be Ready In %s Minutes", data.cookTime))
                     cb(true)
                 else
@@ -368,7 +368,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                     exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
                     _toolsForSale[v.item][char:GetData("SID")] = true
                 else
-                    exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+                    exports['sandbox-hud']:NotifError(source,
                         string.format("Not Enough %s", coinData.Name), 6000)
                 end
             end

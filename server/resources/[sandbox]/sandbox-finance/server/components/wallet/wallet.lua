@@ -17,16 +17,10 @@ AddEventHandler("Finance:Server:Startup", function()
 					if exports['sandbox-finance']:WalletModify(source, -amount, true) then
 						if exports['sandbox-finance']:WalletModify(targetChar:GetData("Source"), amount, true) then
 							TriggerClientEvent('Finance:Client:HandOffCash', source)
-							exports['sandbox-base']:ExecuteClient(
-								source,
-								"Notification",
-								"Success",
+							exports['sandbox-hud']:NotifSuccess(source,
 								"You Gave $" .. formatNumberToCurrency(amount) .. " in Cash"
 							)
-							exports['sandbox-base']:ExecuteClient(
-								targetChar:GetData("Source"),
-								"Notification",
-								"Success",
+							exports['sandbox-hud']:NotifSuccess(targetChar:GetData("Source"),
 								"You Just Received $" .. formatNumberToCurrency(amount) .. " in Cash"
 							)
 							return
@@ -84,16 +78,10 @@ AddEventHandler("Finance:Server:Startup", function()
 						if exports['sandbox-finance']:WalletModify(source, -amount, true) then
 							if exports['sandbox-finance']:WalletModify(targetChar:GetData("Source"), amount, true) then
 								TriggerClientEvent('Finance:Client:HandOffCash', source)
-								exports['sandbox-base']:ExecuteClient(
-									source,
-									"Notification",
-									"Success",
+								exports['sandbox-hud']:NotifSuccess(source,
 									"You Gave $" .. formatNumberToCurrency(amount) .. " in Cash"
 								)
-								exports['sandbox-base']:ExecuteClient(
-									targetChar:GetData("Source"),
-									"Notification",
-									"Success",
+								exports['sandbox-hud']:NotifSuccess(targetChar:GetData("Source"),
 									"You Just Received $" .. formatNumberToCurrency(amount) .. " in Cash"
 								)
 								return
@@ -128,10 +116,7 @@ AddEventHandler("Finance:Server:Startup", function()
 end)
 
 function ShowCash(source)
-	exports['sandbox-base']:ExecuteClient(
-		source,
-		"Notification",
-		"Success",
+	exports['sandbox-hud']:NotifSuccess(source,
 		"You have $" .. formatNumberToCurrency(exports['sandbox-finance']:WalletGet(source)),
 		2500,
 		"money-bill-wave"

@@ -126,7 +126,7 @@ function RegisterItemUses()
 			updatingMetaData.Plate = Vehicles.Identification.Plate:Generate(true)
 			updatingMetaData.VIN = Vehicles.Identification.VIN:GenerateLocal() -- Might not be completely unique but odds are low and idc
 			updatingMetaData.OwnerName = exports['sandbox-base']:GeneratorNameFirst() ..
-			" " .. exports['sandbox-base']:GeneratorNameLast()
+				" " .. exports['sandbox-base']:GeneratorNameLast()
 			updatingMetaData.SID = exports['sandbox-base']:SequenceGet("Character")
 			updatingMetaData.Vehicle = exports['sandbox-vehicles']:RandomName()
 
@@ -169,9 +169,9 @@ function RegisterItemUses()
 						exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
 							itemData.invType)
 
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Fake Plate Installed")
+						exports['sandbox-hud']:NotifSuccess(source, "Fake Plate Installed")
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"A Fake Plate is Already Installed")
 					end
 				end
@@ -199,7 +199,7 @@ function RegisterItemUses()
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:UseCarBomb", {}, function(veh, reason, config)
 			if not veh then
 				if reason then
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", reason)
+					exports['sandbox-hud']:NotifError(source, reason)
 				end
 				return
 			end
@@ -223,13 +223,13 @@ function RegisterItemUses()
 						exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
 							itemData.invType)
 
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Car Bomb Installed")
+						exports['sandbox-hud']:NotifSuccess(source, "Car Bomb Installed")
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Vehicle Already Has Car Bomb")
 					end
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Error Installing Car Bomb")
+					exports['sandbox-hud']:NotifError(source, "Error Installing Car Bomb")
 				end
 			end
 		end)
@@ -249,7 +249,7 @@ function RegisterItemUses()
 
 				if exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
 					vehState.Harness = 10
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Harness Installed")
+					exports['sandbox-hud']:NotifSuccess(source, "Harness Installed")
 				end
 			end
 		end)
@@ -270,13 +270,13 @@ function RegisterItemUses()
 
 					if exports['sandbox-inventory']:RemoveId(itemData.Owner, itemData.invType, itemData) then
 						vehState.Nitrous = itemData.MetaData.Nitrous + 0.0
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+						exports['sandbox-hud']:NotifSuccess(source,
 							"Nitrous Oxide Installed")
 					end
 				end
 			end)
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "The Bottle is Empty!")
+			exports['sandbox-hud']:NotifError(source, "The Bottle is Empty!")
 		end
 	end)
 end
@@ -318,9 +318,9 @@ function UseCarPolish(source, itemData, type)
 				exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData
 					.invType)
 
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Polish Applied")
+				exports['sandbox-hud']:NotifSuccess(source, "Polish Applied")
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Vehicle Already Has That Polish and It Was Recently Installed")
 			end
 		end
@@ -352,9 +352,9 @@ function UsePurgeColorController(source, itemData)
 						if retval.purgeLocation then
 							vehState.PurgeLocation = retval.purgeLocation
 						end
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Purge Changes Applied")
+						exports['sandbox-hud']:NotifSuccess(source, "Purge Changes Applied")
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Changes were discarded")
+						exports['sandbox-hud']:NotifError(source, "Changes were discarded")
 					end
 				end)
 		end

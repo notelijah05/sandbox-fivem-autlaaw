@@ -155,7 +155,7 @@ AddEventHandler("Phone:Server:UpdateProfile", function(source, data)
 				}
 				char:SetData("Profiles", profiles)
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Username already in use")
+				exports['sandbox-hud']:NotifError(source, "Username already in use")
 			end
 		end
 	end

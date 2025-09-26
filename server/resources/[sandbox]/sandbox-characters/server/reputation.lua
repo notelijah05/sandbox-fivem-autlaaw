@@ -9,7 +9,7 @@ function RepItems()
 			exports['sandbox-characters']:RepAdd(source, item.MetaData.Reputation, item.MetaData.Amount)
 			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Voucher")
+			exports['sandbox-hud']:NotifError(source, "Invalid Voucher")
 		end
 	end)
 end

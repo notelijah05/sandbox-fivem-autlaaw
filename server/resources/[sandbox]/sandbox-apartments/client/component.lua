@@ -410,3 +410,7 @@ exports("ExtrasLogout", function()
 		end
 	end)
 end)
+
+RegisterNetEvent("Apartment:Client:Enter", function(targetType, target, wakeUp)
+	exports['sandbox-apartments']:ClientEnter(targetType, target, wakeUp)
+end)

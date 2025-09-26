@@ -747,6 +747,10 @@ exports('Preview', function(int)
 	StartPreview(int)
 end)
 
+RegisterNetEvent("Properties:Client:Enter", function(id)
+	exports['sandbox-properties']:EnterProperty(id)
+end)
+
 AddEventHandler("RealEstate:Client:AcceptTransfer", function()
 	TriggerServerEvent("RealEstate:Server:AcceptTransfer")
 end)

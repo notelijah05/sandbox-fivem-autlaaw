@@ -221,10 +221,7 @@ function SetupItemUses(itemData)
 			end
 
 			if itemsDatabase[item.Name].progressModifier ~= nil then
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Progress",
-					"Modifier",
+				exports['sandbox-hud']:NotifProgress(source,
 					itemsDatabase[item.Name].progressModifier.modifier,
 					math.random(
 						itemsDatabase[item.Name].progressModifier.min,
@@ -508,7 +505,7 @@ function RegisterCommands()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local tChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]), true)
 		if tChar == nil then
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "This player is not online")
+			exports['sandbox-hud']:NotifError(source, "This player is not online")
 			return
 		end
 
@@ -516,13 +513,10 @@ function RegisterCommands()
 		local tsid = tChar:GetData("SID")
 
 		MySQL.query.await("DELETE FROM inventory WHERE owner = ? AND type = ?", { sid, 1 })
-		exports['sandbox-base']:ExecuteClient(
-			tChar:GetData("Source"),
-			"Notification",
-			"Error",
+		exports['sandbox-hud']:NotifError(tChar:GetData("Source"),
 			"Your inventory was cleared by " .. tostring(tsid)
 		)
-		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+		exports['sandbox-hud']:NotifSuccess(source,
 			"You cleared the inventory of " .. tostring(sid))
 		refreshShit(tsid, true)
 	end, {
@@ -540,10 +534,7 @@ function RegisterCommands()
 
 		if Owner and Type then
 			MySQL.query.await("DELETE FROM inventory WHERE owner = ? AND type = ?", { Owner, Type })
-			exports['sandbox-base']:ExecuteClient(
-				source,
-				"Notification",
-				"Success",
+			exports['sandbox-hud']:NotifSuccess(source,
 				string.format("You cleared inventory of %s-%s", Owner, Type)
 			)
 		end
@@ -569,15 +560,12 @@ function RegisterCommands()
 				if itemExist.type ~= 2 then
 					exports['sandbox-inventory']:AddItem(char:GetData("SID"), args[1], tonumber(args[2]), {}, 1)
 				else
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You can only give items with this command, try /giveweapon"
 					)
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Item not located")
+				exports['sandbox-hud']:NotifError(source, "Item not located")
 			end
 		end
 	end, {
@@ -619,15 +607,12 @@ function RegisterCommands()
 						)
 					end
 				else
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You can only give weapons with this command, try /giveitem"
 					)
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Weapon not located")
+				exports['sandbox-hud']:NotifError(source, "Weapon not located")
 			end
 		end
 	end, {
@@ -677,7 +662,7 @@ function RegisterCommands()
 
 			exports['sandbox-inventory']:AddItem(char:GetData("SID"), newItem.name, amount, {}, 1)
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Wrong")
+			exports['sandbox-hud']:NotifError(source, "Wrong")
 		end
 	end, {
 		help = "Create a Vanity Item",
@@ -717,7 +702,7 @@ function RegisterCommands()
 				CustomItemAction = action,
 			}, 1)
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Wrong")
+			exports['sandbox-hud']:NotifError(source, "Wrong")
 		end
 	end, {
 		help = "Create a Vanity Item",
@@ -755,7 +740,7 @@ function RegisterCommands()
 			z = coords.z - 0.99,
 			h = h,
 		}, args[2], tonumber(args[1]), tonumber(args[3]), args[5] ~= "0" and args[5] or nil)
-		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Shop Created")
+		exports['sandbox-hud']:NotifSuccess(source, "Shop Created")
 	end, {
 		help = "Add New Player Shop",
 		params = {
@@ -784,7 +769,7 @@ function RegisterCommands()
 
 	exports["sandbox-chat"]:RegisterAdminCommand("delpshop", function(source, args, rawCommand)
 		exports['sandbox-inventory']:PlayerShopBasicDelete(tonumber(args[1]))
-		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Shop Deleted")
+		exports['sandbox-hud']:NotifSuccess(source, "Shop Deleted")
 	end, {
 		help = "Delete Player Shop",
 		params = {
@@ -797,7 +782,7 @@ function RegisterCommands()
 
 	exports["sandbox-chat"]:RegisterAdminCommand("reloaddbitems", function(source, args, rawCommand)
 		LoadItemsFromDb()
-		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Items Reloaded & Sent To Clients")
+		exports['sandbox-hud']:NotifSuccess(source, "Items Reloaded & Sent To Clients")
 	end, {
 		help = "Force reload item defintions from database",
 	}, 0)

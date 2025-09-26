@@ -37,7 +37,7 @@ function StartLombankThreads()
                     if v.forceOpen then
                         exports['sandbox-doors']:SetForcedOpen(v.door)
                     end
-                    exports['sandbox-base']:ExecuteClient(v.source, "Notification", "Info", "Door Unlocked")
+                    exports['sandbox-hud']:NotifInfo(v.source, "Door Unlocked")
                     table.remove(_unlockingDoors, i)
                 end
             end

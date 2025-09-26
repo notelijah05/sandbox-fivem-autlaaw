@@ -120,10 +120,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if not IsPaletoExploitInstalled() then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Bank Firewalls Still Active, Cannot Do This Yet",
 							6000
 						)
@@ -139,10 +136,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				else
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -162,10 +156,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if not IsPaletoExploitInstalled() then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Bank Firewalls Still Active, Cannot Do This Yet",
 							6000
 						)
@@ -184,14 +175,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 							)
 						then
 							exports['sandbox-doors']:SetLock(data.data.door, false)
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Door Unlocked")
+							exports['sandbox-hud']:NotifSuccess(source, "Door Unlocked")
 
 							if _pbDoorsGarbage[data.data.id].requireCode then
 								exports['sandbox-inventory']:RemoveAll(char:GetData("SID"), 1, "paleto_access_codes")
 							end
 						else
 							exports['sandbox-doors']:SetLock(data.data.door, true)
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Access Code")
+							exports['sandbox-hud']:NotifError(source, "Invalid Access Code")
 							exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 						end
 					else
@@ -200,10 +191,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				else
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -223,10 +211,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if not IsPaletoExploitInstalled() then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Power Grid Firewalls Still Active, Cannot Do This Yet",
 							6000
 						)
@@ -345,20 +330,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 							_pbInUse.powerBoxes[data.boxId] = false
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Is Already Interacting With This",
 							6000
 						)
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -381,7 +360,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_bankStates.paleto.exploits[data.pcId] ~= nil
 						and _bankStates.paleto.exploits[data.pcId] > os.time()
 					then
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Electric Box Already Disabled", 6000)
 						return
 					end
@@ -486,20 +465,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 							_pbInUse.pcHacks[data.pcId] = false
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Is Already Interacting With This",
 							6000
 						)
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -519,11 +492,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if not IsPaletoExploitInstalled() then
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Network Firewalls Still Active", 6000)
 						return
 					elseif _bankStates.paleto.workstation and _bankStates.paleto.workstation > os.time() then
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Workstation Has Already Been Hacked", 6000)
 						return
 					end
@@ -621,20 +594,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 							_pbInUse.workstation = false
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Is Already Interacting With This",
 							6000
 						)
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -657,10 +624,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_bankStates.paleto.officeHacks[data.officeId] ~= nil
 						and _bankStates.paleto.officeHacks[data.officeId] > os.time()
 					then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"This Workstation Has Already Been Comprimised",
 							6000
 						)
@@ -764,20 +728,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 							_pbInUse.officeHacks[data.officeId] = false
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Is Already Interacting With This",
 							6000
 						)
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -800,10 +758,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_bankStates.paleto.drillPoints[data] ~= nil
 						and _bankStates.paleto.officeHacks[data] > os.time()
 					then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"This Workstation Has Already Been Comprimised",
 							6000
 						)
@@ -874,14 +829,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end
 						else
 							_pbInUse.drillPoints[data] = false
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Need A Drill",
+							exports['sandbox-hud']:NotifError(source, "You Need A Drill",
 								6000)
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Is Already Interacting With This",
 							6000
 						)
@@ -889,10 +841,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				else
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -915,10 +864,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_bankStates.paleto.officeSearch[data.searchId] ~= nil
 						and _bankStates.paleto.officeSearch[data.searchId] > os.time()
 					then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"This Workstation Has Already Been Comprimised",
 							6000
 						)
@@ -976,10 +922,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							_pbInUse.searchPoints[data.searchId] = false
 						end, string.format("paleto_search_%s", data.searchId))
 					else
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Is Already Interacting With This",
 							6000
 						)
@@ -987,10 +930,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				else
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -1010,7 +950,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if _bankStates.paleto.officeSafe and _bankStates.paleto.officeSafe > os.time() then
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Safe Has Already Been Looted", 6000)
 						return
 					end
@@ -1054,7 +994,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if _bankStates.paleto.officeSafe and _bankStates.paleto.officeSafe > os.time() then
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Safe Has Already Been Looted", 6000)
 						return
 					end
@@ -1128,10 +1068,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						end
 					else
 						_pbInUse.officeSafe = false
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Is Already Interacting With This",
 							6000
 						)
@@ -1141,10 +1078,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				end
 			else
 				_pbInUse.officeSafe = false
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)

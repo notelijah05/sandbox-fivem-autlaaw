@@ -102,7 +102,7 @@ exports("HospitalICUSend", function(target)
 		exports['sandbox-pwnzor']:TempPosIgnore(target)
 		TriggerClientEvent("Hospital:Client:ICU:Sent", target)
 		TriggerClientEvent("Hospital:Client:ICU:Enter", target)
-		exports['sandbox-base']:ExecuteClient(target, "Notification", "Info", "You Were Admitted To ICU")
+		exports['sandbox-hud']:NotifInfo(target, "You Were Admitted To ICU")
 	else
 		return false
 	end
@@ -116,7 +116,7 @@ exports("HospitalICURelease", function(target)
 			Released = true,
 			Items = false,
 		})
-		exports['sandbox-base']:ExecuteClient(target, "Notification", "Info", "You Were Released From ICU")
+		exports['sandbox-hud']:NotifInfo(target, "You Were Released From ICU")
 	else
 		return false
 	end

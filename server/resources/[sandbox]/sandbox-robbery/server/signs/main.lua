@@ -25,10 +25,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		local atSign = Player(source).state.SignRobbery
 		if char and not atSign then
 			if GlobalState["RobberiesDisabled"] then
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)

@@ -123,7 +123,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					exports['sandbox-finance']:WalletModify(source, money)
 					exports['sandbox-characters']:RepAdd(source, "Pawn", earntRep)
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have Nothing To Sell")
+					exports['sandbox-hud']:NotifError(source, "You Have Nothing To Sell")
 				end
 			end
 		end

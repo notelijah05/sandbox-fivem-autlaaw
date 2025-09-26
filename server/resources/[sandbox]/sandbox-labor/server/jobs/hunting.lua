@@ -117,7 +117,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			end
 
 			if not found then
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Allowed To Hunt Here")
+				exports['sandbox-hud']:NotifError(source, "Not Allowed To Hunt Here")
 			end
 		end)
 	end)
@@ -135,11 +135,11 @@ AddEventHandler("Labor:Server:Startup", function()
 						exports['sandbox-finance']:WalletModify(source, _saleData[data].price * count)
 					end
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Have No Hides Of That Tier")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Must Prove Yourself First")
+				exports['sandbox-hud']:NotifError(source, "You Must Prove Yourself First")
 			end
 		end
 	end)
@@ -190,11 +190,11 @@ function RegisterHuntingItems()
 					end
 
 					if not found then
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Allowed To Hunt Here")
+						exports['sandbox-hud']:NotifError(source, "Not Allowed To Hunt Here")
 					end
 				end)
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Cannot Use Bait Yet")
+				exports['sandbox-hud']:NotifError(source, "You Cannot Use Bait Yet")
 			end
 		end)
 	end

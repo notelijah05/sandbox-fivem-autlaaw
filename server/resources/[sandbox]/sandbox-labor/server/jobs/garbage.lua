@@ -173,7 +173,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Speak with the Sanitation Foreman")
 					end)
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Truck Needs To Be With You")
+					exports['sandbox-hud']:NotifError(source, "Truck Needs To Be With You")
 				end
 			end
 		end
@@ -239,11 +239,11 @@ AddEventHandler("Labor:Server:Startup", function()
 				exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 				cb(true)
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Finish Job")
+				exports['sandbox-hud']:NotifError(source, "Unable To Finish Job")
 				cb(false)
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You've Not Completed All Routes")
+			exports['sandbox-hud']:NotifError(source, "You've Not Completed All Routes")
 			cb(false)
 		end
 	end)
@@ -266,10 +266,10 @@ AddEventHandler("Labor:Server:Startup", function()
 			if money > 0 then
 				exports['sandbox-finance']:WalletModify(source, money)
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have Nothing To Sell")
+				exports['sandbox-hud']:NotifError(source, "You Have Nothing To Sell")
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+			exports['sandbox-hud']:NotifError(source,
 				"You're Not Trusted Enough To Do This Yet")
 		end
 	end)
@@ -281,7 +281,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	-- 	if repLvl >= 3 then
 	-- 		cb(_pawnItems)
 	-- 	else
-	-- 		exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You're Not Trusted Enough To Do This Yet")
+	-- 		exports['sandbox-hud']:NotifError(source, "You're Not Trusted Enough To Do This Yet")
 	-- 	end
 	-- end)
 
@@ -306,13 +306,13 @@ AddEventHandler("Labor:Server:Startup", function()
 
 	-- 				cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"), _pawnItems[data.index].item, 1, {}, 1))
 	-- 			else
-	-- 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Crypto")
+	-- 				exports['sandbox-hud']:NotifError(source, "Not Enough Crypto")
 	-- 			end
 	-- 		else
-	-- 			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Item Not In Stock")
+	-- 			exports['sandbox-hud']:NotifError(source, "Item Not In Stock")
 	-- 		end
 	-- 	else
-	-- 		exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You're Not Trusted Enough To Do This Yet")
+	-- 		exports['sandbox-hud']:NotifError(source, "You're Not Trusted Enough To Do This Yet")
 	-- 	end
 	-- end)
 end)

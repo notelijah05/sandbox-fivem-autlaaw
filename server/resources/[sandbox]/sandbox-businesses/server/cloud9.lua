@@ -108,16 +108,15 @@ _DRIFT = {
 					licenses["Drift"].Suspended = true
 					char:SetData("Licenses", licenses)
 					exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", targetSrc)
-					exports['sandbox-base']:ExecuteClient(targetSrc, "Notification", "Error",
-						"Your Drift License has been revoked.")
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+					exports['sandbox-hud']:NotifError(targetSrc, "Your Drift License has been revoked.")
+					exports['sandbox-hud']:NotifSuccess(source,
 						"Revoking Drift License Successful")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "State ID Not Logged In")
+				exports['sandbox-hud']:NotifError(source, "State ID Not Logged In")
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Insufficient Privileges")
+			exports['sandbox-hud']:NotifError(source, "Insufficient Privileges")
 		end
 	end,
 	Give = function(self, sid, source)
@@ -162,24 +161,23 @@ _DRIFT = {
 								),
 								data = {},
 							}, true)
-							exports['sandbox-base']:ExecuteClient(targetSrc, "Notification", "Success",
-								"You've received a Drift License.")
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+							exports['sandbox-hud']:NotifSuccess(targetSrc, "You've received a Drift License.")
+							exports['sandbox-hud']:NotifSuccess(source,
 								"Drift License Given Successfully")
 						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							exports['sandbox-hud']:NotifError(source,
 								"Bank: Declined - Insufficient Funds")
 						end
 					end
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Drift License already exists!")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "State ID Not Logged In")
+				exports['sandbox-hud']:NotifError(source, "State ID Not Logged In")
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Insufficient Privileges")
+			exports['sandbox-hud']:NotifError(source, "Insufficient Privileges")
 		end
 	end,
 	Check = function(self, sid, source)

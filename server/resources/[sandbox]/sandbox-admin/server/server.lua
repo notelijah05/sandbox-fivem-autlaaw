@@ -36,7 +36,7 @@ end)
 function RegisterChatCommands()
 	exports["sandbox-chat"]:RegisterAdminCommand("weptest", function(source, args, rawCommand)
 		if GlobalState.IsProduction then
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+			exports['sandbox-hud']:NotifError(source,
 				"Cannot Use This On Production Servers")
 			return
 		end
@@ -111,7 +111,7 @@ function RegisterChatCommands()
 
 	exports["sandbox-chat"]:RegisterStaffCommand("cpcoords", function(source, args, rawCommand)
 		TriggerClientEvent("Admin:Client:CopyCoords", source, args[1])
-		exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Copied Coordinates")
+		exports['sandbox-hud']:NotifSuccess(source, "Copied Coordinates")
 	end, {
 		help = "[Dev] Copy Coords",
 		params = {
@@ -126,7 +126,7 @@ function RegisterChatCommands()
 		local nearProperty = exports['sandbox-properties']:IsNearProperty(source)
 		if nearProperty.propertyId then
 			TriggerClientEvent("Admin:Client:CopyClipboard", source, nearProperty.propertyId)
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Copied Property ID")
+			exports['sandbox-hud']:NotifSuccess(source, "Copied Property ID")
 		end
 	end, {
 		help = "[Dev] Copy Property ID of Closest Property",

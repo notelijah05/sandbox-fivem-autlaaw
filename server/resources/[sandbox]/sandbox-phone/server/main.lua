@@ -367,7 +367,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 				--TriggerEvent("Phone:Server:UpdateProfile", src, data)
 				cb(true)
 			else
-				exports['sandbox-base']:ExecuteClient(src, "Notification", "Error", "Alias already in use")
+				exports['sandbox-hud']:NotifError(src, "Alias already in use")
 				cb(false)
 			end
 		else

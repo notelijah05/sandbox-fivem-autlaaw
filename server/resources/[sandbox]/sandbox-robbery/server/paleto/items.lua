@@ -16,16 +16,13 @@ function RegisterPBItems()
 				then
 					if PaletoIsGloballyReady(source, true) then
 						if not IsPaletoExploitInstalled() then
-							exports['sandbox-base']:ExecuteClient(
-								source,
-								"Notification",
-								"Error",
+							exports['sandbox-hud']:NotifError(source,
 								"Substation Security Measures Still Engaged, This Would Not Be Effective",
 								6000
 							)
 							return
 						elseif (_bankStates.paleto.substations[subStationId] or 0) > os.time() then
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							exports['sandbox-hud']:NotifError(source,
 								"This Substation Is Already Disabled", 6000)
 							return
 						end
@@ -156,10 +153,7 @@ function RegisterPBItems()
 									_pbInUse.substations[subStationId] = false
 								end
 							else
-								exports['sandbox-base']:ExecuteClient(
-									source,
-									"Notification",
-									"Error",
+								exports['sandbox-hud']:NotifError(source,
 									"Someone Is Already Interacting With This",
 									6000
 								)
@@ -178,16 +172,13 @@ function RegisterPBItems()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if not IsPaletoExploitInstalled() then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Substation Security Measures Still Engaged, This Would Not Be Effective",
 							6000
 						)
 						return
 					elseif not IsPaletoPowerDisabled() then
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Regional Power Is Still Active", 6000)
 						return
 					end
@@ -293,10 +284,7 @@ function RegisterPBItems()
 											_pbInUse[v.door] = false
 										end
 									else
-										exports['sandbox-base']:ExecuteClient(
-											source,
-											"Notification",
-											"Error",
+										exports['sandbox-hud']:NotifError(source,
 											"Someone Else Is Already Doing A Thing",
 											6000
 										)
@@ -427,10 +415,7 @@ function RegisterPBItems()
 											_pbInUse.securityAccess[v.powerId] = false
 										end
 									else
-										exports['sandbox-base']:ExecuteClient(
-											source,
-											"Notification",
-											"Error",
+										exports['sandbox-hud']:NotifError(source,
 											"Someone Else Is Already Doing A Thing",
 											6000
 										)
@@ -461,19 +446,13 @@ function RegisterPBItems()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if not IsPaletoExploitInstalled() then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Network Firewalls Still Active, Cannot Do This Yet",
 							6000
 						)
 						return
 					elseif not _bankStates.paleto.vaultTerminal then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Terminal Security Override Still Enganged, Find A Way To Disable This",
 							6000
 						)
@@ -527,10 +506,7 @@ function RegisterPBItems()
 
 											local timer = math.random(2, 4)
 
-											exports['sandbox-base']:ExecuteClient(
-												source,
-												"Notification",
-												"Success",
+											exports['sandbox-hud']:NotifSuccess(source,
 												string.format("Time Lock Disengaging, Please Wait %s Minutes", timer),
 												6000
 											)
@@ -569,10 +545,7 @@ function RegisterPBItems()
 										_pbInUse[k] = false
 									end)
 								else
-									exports['sandbox-base']:ExecuteClient(
-										source,
-										"Notification",
-										"Error",
+									exports['sandbox-hud']:NotifError(source,
 										"Someone Else Is Already Doing A Thing",
 										6000
 									)
@@ -584,10 +557,7 @@ function RegisterPBItems()
 				else
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)

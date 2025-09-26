@@ -281,19 +281,13 @@ AddEventHandler("Core:Shared:Ready", function()
 							table.remove(_pickups[char:GetData("SID")], i)
 						else
 							exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.giving, 1, {}, 1)
-							exports['sandbox-base']:ExecuteClient(
-								source,
-								"Notification",
-								"Error",
+							exports['sandbox-hud']:NotifError(source,
 								string.format("Failed Adding x1 %s", receivingItem.label),
 								6000
 							)
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							string.format("Failed Taking x1 %s", givingItem.label),
 							6000
 						)
@@ -302,10 +296,10 @@ AddEventHandler("Core:Shared:Ready", function()
 				for k, v in pairs(_pickups[char:GetData("SID")]) do
 				end
 
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+				exports['sandbox-hud']:NotifSuccess(source,
 					"You've Picked Up All Available Items", 6000)
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have Nothing To Pickup",
+				exports['sandbox-hud']:NotifError(source, "You Have Nothing To Pickup",
 					6000)
 			end
 		end

@@ -30,7 +30,7 @@ function RegisterItemUse()
 					end)
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Cannot Use That Yet")
+				exports['sandbox-hud']:NotifError(source, "Cannot Use That Yet")
 			end
 		end
 	end)
@@ -57,10 +57,10 @@ function RegisterItemUse()
 						end)
 					end
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Need Meth To Smoke")
+					exports['sandbox-hud']:NotifError(source, "You Need Meth To Smoke")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Cannot Use That Yet")
+				exports['sandbox-hud']:NotifError(source, "Cannot Use That Yet")
 			end
 		end
 	end)
@@ -85,7 +85,7 @@ function RegisterItemUse()
 				)
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Ready Yet", 6000)
+			exports['sandbox-hud']:NotifError(source, "Not Ready Yet", 6000)
 		end
 	end)
 
@@ -105,7 +105,7 @@ function RegisterItemUse()
 	-- 					end)
 	-- 				end
 	-- 			else
-	-- 				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Cannot Use That Yet")
+	-- 				exports['sandbox-hud']:NotifError(source, "Cannot Use That Yet")
 	-- 			end
 	-- 		end
 	-- 	end
@@ -145,7 +145,7 @@ function RegisterItemUse()
 					end)
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Cannot Use That Yet")
+				exports['sandbox-hud']:NotifError(source, "Cannot Use That Yet")
 			end
 		end
 	end)
@@ -170,7 +170,7 @@ function RegisterItemUse()
 					end)
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Cannot Use That Yet")
+				exports['sandbox-hud']:NotifError(source, "Cannot Use That Yet")
 			end
 		end
 	end)

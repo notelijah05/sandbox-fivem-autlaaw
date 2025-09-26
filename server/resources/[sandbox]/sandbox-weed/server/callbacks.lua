@@ -32,15 +32,15 @@ function RegisterCallbacks()
 								end
 								_plants[pid].plant.water = _plants[pid].plant.water + amt
 							else
-								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								exports['sandbox-hud']:NotifError(source,
 									"You Don't Have Water")
 							end
 						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							exports['sandbox-hud']:NotifError(source,
 								"Plant Is Already Watered")
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Plant")
+						exports['sandbox-hud']:NotifError(source, "Invalid Plant")
 					end
 				end
 			else
@@ -71,15 +71,15 @@ function RegisterCallbacks()
 									value = Config.Fertilizer[data.type].value,
 								}
 							else
-								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								exports['sandbox-hud']:NotifError(source,
 									"You Don't Have Fertilizer")
 							end
 						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							exports['sandbox-hud']:NotifError(source,
 								"Plant Is Already Fertilized")
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Plant")
+						exports['sandbox-hud']:NotifError(source, "Invalid Plant")
 					end
 				end
 			else
@@ -170,7 +170,7 @@ function RegisterCallbacks()
 							char:GetData("SID")
 						)
 					)
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Plant Has Been Destroyed")
+					exports['sandbox-hud']:NotifSuccess(source, "Plant Has Been Destroyed")
 				else
 					cb(nil)
 				end
@@ -198,7 +198,7 @@ function RegisterCallbacks()
 								char:GetData("SID")
 							)
 						)
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+						exports['sandbox-hud']:NotifSuccess(source,
 							"Plant Has Been Destroyed")
 					else
 						cb(nil)
@@ -258,7 +258,7 @@ function RegisterCallbacks()
 							char:GetData("SID")
 						)
 					)
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Dont Have Enough Cash")
+					exports['sandbox-hud']:NotifError(source, "Dont Have Enough Cash")
 					cb(false)
 				end
 			else
@@ -272,10 +272,10 @@ function RegisterCallbacks()
 					)
 				)
 				if _packagesAvailable > 0 then
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You've Already Bought A Package")
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No Packages Available")
+					exports['sandbox-hud']:NotifError(source, "No Packages Available")
 				end
 				cb(false)
 			end

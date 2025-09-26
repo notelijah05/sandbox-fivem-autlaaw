@@ -133,12 +133,12 @@ RegisterServerEvent("Camara:CapturePhoto", function()
 
 	if char then
 		if pendingSend then
-			exports['sandbox-base']:ExecuteClient(src, "Notification", "Warn",
+			exports['sandbox-hud']:NotifWarn(src,
 				"Please wait while current photo is uploading", 2000)
 			return
 		end
 		pendingSend = true
-		exports['sandbox-base']:ExecuteClient(src, "Notification", "Info", "Prepping Photo Upload", 2000)
+		exports['sandbox-hud']:NotifInfo(src, "Prepping Photo Upload", 2000)
 
 		local options = {
 			encoding = "webp",
@@ -175,11 +175,11 @@ RegisterServerEvent("Camara:CapturePhoto", function()
 			function(error)
 				if error then
 					pendingSend = false
-					exports['sandbox-base']:ExecuteClient(src, "Notification", "Error", "Error uploading photo!", 2000)
+					exports['sandbox-hud']:NotifError(src, "Error uploading photo!", 2000)
 					print("^1ERROR: " .. error .. "^7")
 				end
 				pendingSend = false
-				exports['sandbox-base']:ExecuteClient(src, "Notification", "Success", "Photo uploaded successfully!",
+				exports['sandbox-hud']:NotifSuccess(src, "Photo uploaded successfully!",
 					2000)
 			end
 		)

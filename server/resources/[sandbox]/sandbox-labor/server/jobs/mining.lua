@@ -307,11 +307,11 @@ AddEventHandler("Labor:Server:Startup", function()
 				exports['sandbox-finance']:WalletModify(source, (3 * count))
 				cb(true)
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Remove Crushed Rock")
+				exports['sandbox-hud']:NotifError(source, "Unable To Remove Crushed Rock")
 				cb(false)
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have No Crushed Rock")
+			exports['sandbox-hud']:NotifError(source, "You Have No Crushed Rock")
 			cb(false)
 		end
 	end)
@@ -352,17 +352,11 @@ AddEventHandler("Labor:Server:Startup", function()
 								repLvl = repLvl,
 							},
 						})
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Info",
+					exports['sandbox-hud']:NotifInfo(source,
 						string.format("$%s Has Been Deposited Into Your Account", totalPayout)
 					)
 				else
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						string.format("You Don't Have Any %s's", itemData.label)
 					)
 				end
@@ -450,16 +444,16 @@ AddEventHandler("Labor:Server:Startup", function()
 							antiDouche[j] = false
 							exports['sandbox-labor']:ManualFinishOffer(j, _JOB)
 						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Node")
+							exports['sandbox-hud']:NotifError(source, "Invalid Node")
 						end
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Not Currently Requested To Mine Nodes")
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Incorrect Job")
+			exports['sandbox-hud']:NotifError(source, "Incorrect Job")
 		end
 	end)
 end)

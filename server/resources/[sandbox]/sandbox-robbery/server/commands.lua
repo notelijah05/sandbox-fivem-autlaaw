@@ -2,25 +2,22 @@ function RegisterCommands()
 	exports["sandbox-chat"]:RegisterAdminCommand("resetheist", function(source, args, rawCommand)
 		if args[1] == "mazebank" then
 			ResetMazeBank()
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Maze Bank Heist Reset")
+			exports['sandbox-hud']:NotifSuccess(source, "Maze Bank Heist Reset")
 		elseif args[1] == "lombank" then
 			ResetLombank()
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Lombank Heist Reset")
+			exports['sandbox-hud']:NotifSuccess(source, "Lombank Heist Reset")
 		elseif args[1] == "paleto" then
 			ResetPaleto()
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Paleto Bank Heist Reset")
+			exports['sandbox-hud']:NotifSuccess(source, "Paleto Bank Heist Reset")
 		elseif args[1] == "bobcat" then
 			ResetBobcat()
 		elseif args[1]:find("fleeca") and FLEECA_LOCATIONS[args[1]] ~= nil then
 			ResetFleeca(args[1])
-			exports['sandbox-base']:ExecuteClient(
-				source,
-				"Notification",
-				"Success",
+			exports['sandbox-hud']:NotifSuccess(source,
 				string.format("Fleeca %s Reset", FLEECA_LOCATIONS[args[1]].label)
 			)
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Bank ID")
+			exports['sandbox-hud']:NotifError(source, "Invalid Bank ID")
 		end
 	end, {
 		help = "Force Reset Heist",
@@ -40,7 +37,7 @@ function RegisterCommands()
 		elseif args[1] == "paleto" then
 			DisablePaletoPower(source)
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Bank ID")
+			exports['sandbox-hud']:NotifError(source, "Invalid Bank ID")
 		end
 	end, {
 		help = "Force Disable Power For Heist",
@@ -194,7 +191,7 @@ function RegisterCommands()
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Heist ID")
+				exports['sandbox-hud']:NotifError(source, "Invalid Heist ID")
 			end
 		else
 			local str = "<ul>"

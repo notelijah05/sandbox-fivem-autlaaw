@@ -114,18 +114,12 @@ AddEventHandler("Labor:Server:Startup", function()
 										},
 									}
 								)
-								exports['sandbox-base']:ExecuteClient(
-									source,
-									"Notification",
-									"Error",
+								exports['sandbox-hud']:NotifError(source,
 									string.format("Unable To Remove %s", itemData.label)
 								)
 							end
 						else
-							exports['sandbox-base']:ExecuteClient(
-								source,
-								"Notification",
-								"Error",
+							exports['sandbox-hud']:NotifError(source,
 								string.format("You Have No %s", itemData.label)
 							)
 						end

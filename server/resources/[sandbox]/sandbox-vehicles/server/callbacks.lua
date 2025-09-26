@@ -234,7 +234,7 @@ function RegisterCallbacks()
         end
 
         if storageData.retrievalOnly then
-            exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error', 'Cannot Store Vehicles Here')
+            exports['sandbox-hud']:NotifError(src, 'Cannot Store Vehicles Here')
             cb(false)
             return
         end
@@ -278,7 +278,7 @@ function RegisterCallbacks()
                     end
                 end
             else
-                exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error', 'Cannot Store This Vehicle Here')
+                exports['sandbox-hud']:NotifError(src, 'Cannot Store This Vehicle Here')
             end
         end
 
@@ -750,7 +750,7 @@ function RegisterCallbacks()
                     exports['sandbox-vehicles']:KeysAdd(targetChar:GetData('Source'), VIN)
                     return
                 else
-                    exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error', 'Cannot Transfer to Someone That Isn\'t Nearby')
+                    exports['sandbox-hud']:NotifError(src, 'Cannot Transfer to Someone That Isn\'t Nearby')
                 end
             end
         end
@@ -792,20 +792,14 @@ function RegisterCallbacks()
                     then
                         for k, v in ipairs(data.sids) do
                             exports['sandbox-vehicles']:KeysAdd(v, vehEnt.state.VIN)
-                            exports['sandbox-base']:ExecuteClient(
-                                v,
-                                "Notification",
-                                "Info",
+                            exports['sandbox-hud']:NotifInfo(v,
                                 "You Received Keys to a Vehicle",
                                 3000,
                                 "key"
                             )
                         end
 
-                        exports['sandbox-base']:ExecuteClient(
-                            source,
-                            "Notification",
-                            "Success",
+                        exports['sandbox-hud']:NotifSuccess(source,
                             "You Gave Everyone Nearby Keys",
                             3000,
                             "key"

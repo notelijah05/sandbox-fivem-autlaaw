@@ -32,10 +32,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					_activeTowers[source] = {
 						next = os.time() + (math.random(1, 3) * 60),
 					}
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Info",
+					exports['sandbox-hud']:NotifInfo(source,
 						[[
                                 You are now on Duty as a Tow Truck Driver.<br><br>
                                 Get a Tow Truck from Jerry in the Tow Lot.<br>
@@ -46,15 +43,15 @@ AddEventHandler("Core:Shared:Ready", function()
 						"truck-tow"
 					)
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Failed to Go On Duty",
+					exports['sandbox-hud']:NotifError(source, "Failed to Go On Duty",
 						5000, "truck-tow")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Too Many Tow Employees on Duty", 5000, "truck-tow")
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Failed to Go On Duty", 5000,
+			exports['sandbox-hud']:NotifError(source, "Failed to Go On Duty", 5000,
 				"truck-tow")
 		end
 	end)
@@ -69,17 +66,14 @@ AddEventHandler("Core:Shared:Ready", function()
 				_activeTowers[source] = nil
 				exports['sandbox-phone']:NotificationRemoveById(source, "TOW_OBJ")
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Return the Tow Truck Before Going Off Duty",
 					5000,
 					"truck-tow"
 				)
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Failed to Go Off Duty", 5000,
+			exports['sandbox-hud']:NotifError(source, "Failed to Go Off Duty", 5000,
 				"truck-tow")
 		end
 	end)
@@ -110,17 +104,14 @@ AddEventHandler("Core:Shared:Ready", function()
 							GlobalState[string.format("TowTrucks:%s", stateId)] =
 								NetworkGetNetworkIdFromEntity(spawnedVehicle)
 
-							exports['sandbox-base']:ExecuteClient(
-								source,
-								"Notification",
-								"Success",
+							exports['sandbox-hud']:NotifSuccess(source,
 								"Your Tow Truck Was Provided",
 								5000,
 								"truck-tow"
 							)
 							cb(spawnedVehicle)
 						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							exports['sandbox-hud']:NotifError(source,
 								"Truck Spawn Failed", 5000, "truck-tow")
 							cb(nil)
 						end
@@ -132,7 +123,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					}
 				)
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "We Already Gave You a Truck",
+				exports['sandbox-hud']:NotifError(source, "We Already Gave You a Truck",
 					5000, "truck-tow")
 				cb(nil)
 			end
@@ -151,19 +142,13 @@ AddEventHandler("Core:Shared:Ready", function()
 						if success then
 							_activeTowVehicles[stateId] = nil
 							GlobalState[string.format("TowTrucks:%s", stateId)] = false
-							exports['sandbox-base']:ExecuteClient(
-								source,
-								"Notification",
-								"Success",
+							exports['sandbox-hud']:NotifSuccess(source,
 								"Thanks for Returning Your Tow Truck",
 								5000,
 								"truck-tow"
 							)
 						else
-							exports['sandbox-base']:ExecuteClient(
-								source,
-								"Notification",
-								"Error",
+							exports['sandbox-hud']:NotifError(source,
 								"Error Returning Truck",
 								5000,
 								"truck-tow"
@@ -171,20 +156,14 @@ AddEventHandler("Core:Shared:Ready", function()
 						end
 					end)
 				else
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Your Tow Truck Isn't Nearby",
 						5000,
 						"truck-tow"
 					)
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"You Don't Have a Truck to Return",
 					5000,
 					"truck-tow"

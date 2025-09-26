@@ -703,7 +703,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                     end)
             end)
         else
-            exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Can't Use Right Now...")
+            exports['sandbox-hud']:NotifError(source, "Can't Use Right Now...")
         end
     end)
 

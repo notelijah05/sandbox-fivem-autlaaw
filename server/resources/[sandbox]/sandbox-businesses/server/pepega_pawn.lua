@@ -136,7 +136,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 					-- 	data = data,
 					-- }, true)
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have Nothing To Sell")
+					exports['sandbox-hud']:NotifError(source, "You Have Nothing To Sell")
 				end
 			end
 		end

@@ -251,7 +251,7 @@ function RegisterChatCommands()
 					Event = id,
 				}, 1)
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Race Event")
+				exports['sandbox-hud']:NotifError(source, "Invalid Race Event")
 			end
 		end
 	end, {

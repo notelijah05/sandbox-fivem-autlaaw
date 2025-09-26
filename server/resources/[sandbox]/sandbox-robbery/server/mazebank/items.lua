@@ -15,10 +15,7 @@ function RegisterMBItemUses()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -27,19 +24,13 @@ function RegisterMBItemUses()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -144,10 +135,7 @@ function RegisterMBItemUses()
 									_mbInUse[k] = false
 								end
 							else
-								exports['sandbox-base']:ExecuteClient(
-									source,
-									"Notification",
-									"Error",
+								exports['sandbox-hud']:NotifError(source,
 									"Someone Is Already Interacting With This",
 									6000
 								)
@@ -156,10 +144,7 @@ function RegisterMBItemUses()
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -186,10 +171,7 @@ function RegisterMBItemUses()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -198,19 +180,13 @@ function RegisterMBItemUses()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -259,10 +235,7 @@ function RegisterMBItemUses()
 
 											local timer = math.random(2, 4)
 
-											exports['sandbox-base']:ExecuteClient(
-												source,
-												"Notification",
-												"Success",
+											exports['sandbox-hud']:NotifSuccess(source,
 												string.format("Time Lock Disengaging, Please Wait %s Minutes", timer),
 												6000
 											)
@@ -302,10 +275,7 @@ function RegisterMBItemUses()
 										_mbInUse[k] = false
 									end)
 								else
-									exports['sandbox-base']:ExecuteClient(
-										source,
-										"Notification",
-										"Error",
+									exports['sandbox-hud']:NotifError(source,
 										"Someone Else Is Already Doing A Thing",
 										6000
 									)
@@ -317,10 +287,7 @@ function RegisterMBItemUses()
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -347,10 +314,7 @@ function RegisterMBItemUses()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -359,19 +323,13 @@ function RegisterMBItemUses()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -451,10 +409,7 @@ function RegisterMBItemUses()
 									_mbInUse[v.door] = false
 								end)
 							else
-								exports['sandbox-base']:ExecuteClient(
-									source,
-									"Notification",
-									"Error",
+								exports['sandbox-hud']:NotifError(source,
 									"Someone Else Is Already Doing A Thing",
 									6000
 								)
@@ -463,10 +418,7 @@ function RegisterMBItemUses()
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)

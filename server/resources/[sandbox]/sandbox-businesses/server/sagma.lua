@@ -32,10 +32,7 @@ AddEventHandler("Businesses:Server:Startup", function()
                         description = string.format("Sold %s Gems", totalSold),
                         data = {},
                     })
-                    exports['sandbox-base']:ExecuteClient(
-                        source,
-                        "Notification",
-                        "Success",
+                    exports['sandbox-hud']:NotifSuccess(source,
                         string.format("Sold %s Gems For $%s (Deposited To Company Account)", totalSold,
                             math.ceil(math.abs(totalPayout) * 0.8))
                     )
@@ -61,10 +58,7 @@ AddEventHandler("Businesses:Server:Startup", function()
                     data = data,
                 }, true)
             else
-                exports['sandbox-base']:ExecuteClient(
-                    source,
-                    "Notification",
-                    "Error",
+                exports['sandbox-hud']:NotifError(source,
                     "You Don't Have Any Gems To Sell"
                 )
             end

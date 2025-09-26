@@ -140,10 +140,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 				if dist <= 3.0 then
 					if s ~= nil and s > os.time() then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"You Notice The Door Lock Has Been Damaged",
 							6000
 						)
@@ -211,10 +208,7 @@ AddEventHandler("Labor:Server:Startup", function()
 
 				if dist <= 3.0 then
 					if s ~= nil and s > os.time() then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"You Notice The Door Lock Has Been Damaged",
 							6000
 						)

@@ -178,11 +178,11 @@ function HospitalCallbacks()
 					if tChar ~= nil then
 						exports["sandbox-base"]:ClientCallback(tChar:GetData("Source"), "Damage:Heal", true)
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
+						exports['sandbox-hud']:NotifError(source, "Invalid Target")
 					end
 				else
 					cb(false)
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Crypto")
+					exports['sandbox-hud']:NotifError(source, "Not Enough Crypto")
 				end
 			end
 		end

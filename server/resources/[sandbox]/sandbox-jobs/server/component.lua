@@ -194,14 +194,11 @@ exports("RemoveJob", function(stateId, jobId)
 			TriggerEvent("Jobs:Server:JobUpdate", source)
 
 			if removedJobData.Workplace and removedJobData.Workplace.Name then
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Info",
+				exports['sandbox-hud']:NotifInfo(source,
 					"No Longer Employed at " .. removedJobData.Workplace.Name
 				)
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
+				exports['sandbox-hud']:NotifInfo(source,
 					"No Longer Employed at " .. removedJobData.Name)
 			end
 
@@ -316,10 +313,7 @@ exports("DutyOn", function(source, jobId, hideNotify)
 
 			if not hideNotify then
 				if hasJob.Workplace then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Success",
+					exports['sandbox-hud']:NotifSuccess(source,
 						string.format(
 							"You're Now On Duty as %s - %s",
 							hasJob.Workplace.Name,
@@ -327,10 +321,7 @@ exports("DutyOn", function(source, jobId, hideNotify)
 						)
 					)
 				else
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Success",
+					exports['sandbox-hud']:NotifSuccess(source,
 						string.format("You're Now On Duty as %s - %s", hasJob.Name, hasJob.Grade.Name)
 					)
 				end
@@ -341,7 +332,7 @@ exports("DutyOn", function(source, jobId, hideNotify)
 	end
 
 	if not hideNotify then
-		exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Failed to Go On Duty")
+		exports['sandbox-hud']:NotifError(source, "Failed to Go On Duty")
 	end
 
 	return false
@@ -419,7 +410,7 @@ exports("DutyOff", function(source, jobId, hideNotify)
 			char:SetData("TimeClockedOn", allTimeWorked)
 
 			if not hideNotify then
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Info", "You're Now Off Duty")
+				exports['sandbox-hud']:NotifInfo(source, "You're Now Off Duty")
 			end
 
 			return true
@@ -427,7 +418,7 @@ exports("DutyOff", function(source, jobId, hideNotify)
 	end
 
 	if not hideNotify then
-		exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Failed to Go Off Duty")
+		exports['sandbox-hud']:NotifError(source, "Failed to Go Off Duty")
 	end
 
 	return false

@@ -1848,23 +1848,23 @@ function RegisterCallbacks()
 						if not isShopModerator(data.shop, tChar:GetData("Source")) then
 							exports['sandbox-inventory']:PlayerShopModeratorAdd(data.shop, tonumber(data.sid),
 								string.format("%s %s", tChar:GetData("First"), tChar:GetData("Last")))
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+							exports['sandbox-hud']:NotifSuccess(source,
 								string.format("%s %s Added As A Shop Moderator", tChar:GetData("First"),
 									tChar:GetData("Last")))
 						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							exports['sandbox-hud']:NotifError(source,
 								string.format("%s %s Is Already A Shop Moderator", tChar:GetData("First"),
 									tChar:GetData("Last")))
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target ID")
+						exports['sandbox-hud']:NotifError(source, "Invalid Target ID")
 					end
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You're Not The Owner Of This Shop")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Shop")
+				exports['sandbox-hud']:NotifError(source, "Invalid Shop")
 			end
 		end
 	end)
@@ -1876,13 +1876,13 @@ function RegisterCallbacks()
 			if _playerShops[data.shop] ~= nil then
 				if _playerShops[data.shop].owner == sid then
 					exports['sandbox-inventory']:PlayerShopModeratorRemove(data.shop, data.sid)
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Shop Moderator Removed")
+					exports['sandbox-hud']:NotifSuccess(source, "Shop Moderator Removed")
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					exports['sandbox-hud']:NotifError(source,
 						"You're Not The Owner Of This Shop")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Shop")
+				exports['sandbox-hud']:NotifError(source, "Invalid Shop")
 			end
 		end
 	end)
@@ -1922,7 +1922,7 @@ function RegisterCallbacks()
 				if not _playerShops[data.id].job or exports['sandbox-jobs']:HasPermissionInJob(source, _playerShops[data.id].job, "JOB_SHOP_CONTROL") then
 					GlobalState[string.format("BasicShop:%s", data.id)] = data.state
 
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+					exports['sandbox-hud']:NotifSuccess(source,
 						data.state and "Store Opened" or "Store Closed")
 
 					cb(true)
@@ -2912,7 +2912,7 @@ exports("Use", function(source, item, cb)
 			TriggerClientEvent("Inventory:Client:InUse", source, _inUse[source])
 			cb(used)
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Can't Use That")
+			exports['sandbox-hud']:NotifError(source, "You Can't Use That")
 			cb(false)
 		end
 	else
@@ -3094,13 +3094,13 @@ exports("HoldingPut", function(source)
 					MySQL.transaction.await(queries)
 					refreshShit(char:GetData("SID"))
 
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Retreived Items")
+					exports['sandbox-hud']:NotifSuccess(source, "Retreived Items")
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Not Enough Slots Available")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No Items To Retreive")
+				exports['sandbox-hud']:NotifError(source, "No Items To Retreive")
 			end
 		end
 
@@ -3141,13 +3141,13 @@ exports("HoldingTake", function(source)
 					MySQL.transaction.await(queries)
 					refreshShit(char:GetData("SID"), true)
 
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Retreived Items")
+					exports['sandbox-hud']:NotifSuccess(source, "Retreived Items")
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Not Enough Slots Available")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No Items To Retreive")
+				exports['sandbox-hud']:NotifError(source, "No Items To Retreive")
 			end
 		end
 
@@ -3216,7 +3216,7 @@ end)
 
 exports("SearchCharacter", function(src, tSrc, id)
 	exports["sandbox-base"]:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
-		exports['sandbox-base']:ExecuteClient(tSrc, "Notification", "Info", "You Were Searched")
+		exports['sandbox-hud']:NotifInfo(tSrc, "You Were Searched")
 		exports['sandbox-inventory']:OpenSecondary(src, 1, id)
 	end)
 end)

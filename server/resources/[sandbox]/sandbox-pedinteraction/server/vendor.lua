@@ -211,10 +211,7 @@ AddEventHandler("Core:Shared:Ready", function()
 										cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemData.item, 1,
 											{}, 1))
 									else
-										exports['sandbox-base']:ExecuteClient(
-											source,
-											"Notification",
-											"Error",
+										exports['sandbox-hud']:NotifError(source,
 											string.format("Not Enough %s", coinData.Name)
 										)
 									end
@@ -234,13 +231,13 @@ AddEventHandler("Core:Shared:Ready", function()
 												itemData.item, 1, {}, 1))
 										end
 									else
-										exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+										exports['sandbox-hud']:NotifError(source,
 											"Not Enough Cash")
 									end
 								end
 							end
 						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							exports['sandbox-hud']:NotifError(source,
 								"Item Not In Stock")
 						end
 					else
@@ -256,10 +253,7 @@ AddEventHandler("Core:Shared:Ready", function()
 								pState.onDuty
 							)
 						)
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"You shouldn't be doing this, logged & flagged :)"
 						)
 						cb({})

@@ -4,29 +4,23 @@ function PaletoIsGloballyReady(source, isHack)
 		or (GlobalState["RestartLockdown"] and not GlobalState["PaletoInProgress"])
 	then
 		if isHack then
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+			exports['sandbox-hud']:NotifError(source,
 				"Network Offline For A Storm, Check Back Later", 6000)
 		else
-			exports['sandbox-base']:ExecuteClient(
-				source,
-				"Notification",
-				"Error",
+			exports['sandbox-hud']:NotifError(source,
 				"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 				6000
 			)
 		end
 		return false
 	elseif (GlobalState["Duty:police"] or 0) < PALETO_REQUIRED_POLICE and not GlobalState["PaletoInProgress"] then
-		exports['sandbox-base']:ExecuteClient(
-			source,
-			"Notification",
-			"Error",
+		exports['sandbox-hud']:NotifError(source,
 			"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 			6000
 		)
 		return false
 	elseif GlobalState["RobberiesDisabled"] then
-		exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+		exports['sandbox-hud']:NotifError(source,
 			"Temporarily Disabled, Please See City Announcements", 6000)
 		return false
 	end

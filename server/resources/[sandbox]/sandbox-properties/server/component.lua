@@ -679,3 +679,7 @@ function table.copy(t)
 	end
 	return setmetatable(u, getmetatable(t))
 end
+
+exports('ClientEnter', function(source, id)
+	TriggerClientEvent("Properties:Client:Enter", source, id)
+end)

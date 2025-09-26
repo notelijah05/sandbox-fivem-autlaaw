@@ -198,7 +198,7 @@ exports('Release', function(source)
 			return false
 		end
 	else
-		exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Eligible For Release")
+		exports['sandbox-hud']:NotifError(source, "Not Eligible For Release")
 		return false
 	end
 end)

@@ -299,7 +299,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                         quality = (data.results.success / data.results.total) * 100
                     })
 
-                    exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+                    exports['sandbox-hud']:NotifSuccess(source,
                         string.format("Brew Started, Will Be Ready In %s Minutes",
                             _stillTiers[stillData.tier]?.cookTime or 30))
                     cb(true)
@@ -510,7 +510,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                             cb(false)
                         end
                     else
-                        exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+                        exports['sandbox-hud']:NotifError(source,
                             string.format("Missing Masson Jars, You Need %s Empty Jars",
                                 (_placedBarrels[data].brewData?.Drinks or 15)))
                         cb(false)
@@ -553,7 +553,7 @@ AddEventHandler("Drugs:Server:Startup", function()
     --                 exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
     --                 _toolsForSale[v.item][char:GetData("SID")] = true
     --             else
-    --                 exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", string.format("Not Enough %s", coinData.Name), 6000)
+    --                 exports['sandbox-hud']:NotifError(source, string.format("Not Enough %s", coinData.Name), 6000)
     --             end
     --         end
     --     end

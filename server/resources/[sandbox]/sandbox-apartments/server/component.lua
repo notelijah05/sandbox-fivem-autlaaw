@@ -106,3 +106,7 @@ exports("RequestsCreate", function(source, target, inZone)
 		})
 	end
 end)
+
+exports("ClientEnter", function(source, targetType, target, wakeUp)
+	TriggerClientEvent("Apartment:Client:Enter", source, targetType, target, wakeUp)
+end)

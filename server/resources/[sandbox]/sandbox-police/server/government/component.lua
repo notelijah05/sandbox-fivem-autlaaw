@@ -11,7 +11,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		if exports['sandbox-finance']:WalletModify(source, -500) then
 			exports['sandbox-inventory']:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
+			exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
 		end
 	end)
 
@@ -26,11 +26,11 @@ AddEventHandler("Core:Shared:Ready", function()
 
 					exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Unable To Purchase License")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
+				exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
 			end
 		else
 			exports['sandbox-base']:LoggerError(
@@ -41,7 +41,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					discord = true,
 				}
 			)
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Purchase License")
+			exports['sandbox-hud']:NotifError(source, "Unable To Purchase License")
 		end
 	end)
 
@@ -55,10 +55,10 @@ AddEventHandler("Core:Shared:Ready", function()
 					char:SetData("Licenses", licenses)
 					exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not Enough Cash")
+					exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You are Not PD")
+				exports['sandbox-hud']:NotifError(source, "You are Not PD")
 			end
 		end)
 

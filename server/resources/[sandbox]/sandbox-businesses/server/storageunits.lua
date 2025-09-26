@@ -42,7 +42,7 @@ AddEventHandler("Businesses:Server:Startup", function()
         local near = exports['sandbox-businesses']:StorageUnitsGetNearUnit(source)
         if near.unitId then
             TriggerClientEvent("Admin:Client:CopyClipboard", source, near.unitId)
-            exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Copied Storage Unit ID")
+            exports['sandbox-hud']:NotifSuccess(source, "Copied Storage Unit ID")
         end
     end, {
         help = "[Dev] Copy ID of Closest Storage Unit",

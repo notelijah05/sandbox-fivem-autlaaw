@@ -38,7 +38,7 @@ AddEventHandler("Finance:Server:Startup", function()
 				item.MetaData.Quantity)
 			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Voucher")
+			exports['sandbox-hud']:NotifError(source, "Invalid Voucher")
 		end
 	end)
 

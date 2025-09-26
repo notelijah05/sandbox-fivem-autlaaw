@@ -97,7 +97,7 @@ function RegisterRandomItems()
 	end)
 
 	exports['sandbox-inventory']:RegisterUse("briefcase_cash", "RandomItems", function(source, item)
-		exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No money to be found.")
+		exports['sandbox-hud']:NotifError(source, "No money to be found.")
 
 		-- local Winnings = 25000
 		-- local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -109,7 +109,7 @@ function RegisterRandomItems()
 		-- 	description = string.format("Lotto Earnings - $%s", Winnings),
 		-- 	data = Winnings
 		-- })
-		-- exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "You found a briefcase with $25,000!")
+		-- exports['sandbox-hud']:NotifSuccess(source, "You found a briefcase with $25,000!")
 	end)
 
 	exports['sandbox-inventory']:RegisterUse("cigarette_pack", "RandomItems", function(source, item)
@@ -122,7 +122,7 @@ function RegisterRandomItems()
 			end
 		else
 			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Pack Has No More Cigarettes In It")
+			exports['sandbox-hud']:NotifError(source, "Pack Has No More Cigarettes In It")
 		end
 	end)
 
@@ -136,7 +136,7 @@ function RegisterRandomItems()
 			end
 		else
 			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Box Has No More Donuts In It")
+			exports['sandbox-hud']:NotifError(source, "Box Has No More Donuts In It")
 		end
 	end)
 
@@ -170,7 +170,7 @@ function RegisterRandomItems()
 			end
 		else
 			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Box Has No More Donuts In It")
+			exports['sandbox-hud']:NotifError(source, "Box Has No More Donuts In It")
 		end
 	end)
 
@@ -210,7 +210,7 @@ function RegisterRandomItems()
 			end
 		else
 			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Box Has No More Donuts In It")
+			exports['sandbox-hud']:NotifError(source, "Box Has No More Donuts In It")
 		end
 	end)
 
@@ -235,7 +235,7 @@ function RegisterRandomItems()
 			end
 		else
 			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Box Has No More Donuts In It")
+			exports['sandbox-hud']:NotifError(source, "Box Has No More Donuts In It")
 		end
 	end)
 
@@ -283,12 +283,12 @@ function RegisterRandomItems()
 						table.insert(states, "SCRIPT_PARACHUTE")
 						char:SetData("States", states)
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Already Have Parachute Equipped")
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Cannot Equip Parachute")
+				exports['sandbox-hud']:NotifError(source, "Cannot Equip Parachute")
 			end
 		end)
 	end)

@@ -34,7 +34,7 @@ AddEventHandler("Core:Shared:Ready", function()
 						)
 					end
 
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+					exports['sandbox-hud']:NotifSuccess(source,
 						"You Deployed Spikes (Despawn In 20s)")
 				end
 			end)
@@ -54,7 +54,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					exports["sandbox-chat"]:SendSystemSingle(source, "GSR: Negative")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
+				exports['sandbox-hud']:NotifError(source, "Invalid Target")
 			end
 		end
 	end)
@@ -70,7 +70,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				exports['sandbox-doors']:SetLock(string.format("prison_cell_%s", i), GlobalState
 					["PrisonCellsLocked"])
 			end
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
+			exports['sandbox-hud']:NotifInfo(source,
 				string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
 				GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
 			cb(true, GlobalState["PrisonLockdown"])
@@ -89,7 +89,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				exports['sandbox-doors']:SetLock(string.format("prison_cell_%s", i), GlobalState
 					["PrisonCellsLocked"])
 			end
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Info",
+			exports['sandbox-hud']:NotifInfo(source,
 				string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
 				GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
 			cb(true, GlobalState["PrisonCellsLocked"])
@@ -124,7 +124,7 @@ AddEventHandler("Core:Shared:Ready", function()
 					exports["sandbox-chat"]:SendSystemSingle(source, "BAC: Not Drunk")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
+				exports['sandbox-hud']:NotifError(source, "Invalid Target")
 			end
 		end
 
@@ -153,7 +153,7 @@ AddEventHandler("Core:Shared:Ready", function()
 				return
 			end
 
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Target")
+			exports['sandbox-hud']:NotifError(source, "Invalid Target")
 		end
 	end)
 
@@ -171,12 +171,12 @@ AddEventHandler("Core:Shared:Ready", function()
 			if data.type == "property" then
 				if (_breached[data.type][data.property] or 0) > os.time() then
 					cb(true)
-					exports['sandbox-base']:ExecuteClient(source, "Properties", "Enter", data.property)
+					exports['sandbox-properties']:ClientEnter(source, data.property)
 				else
 					exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
 						if s then
 							_breached[data.type][data.property] = os.time() + (60 * 10)
-							exports['sandbox-base']:ExecuteClient(source, "Properties", "Enter", data.property)
+							exports['sandbox-properties']:ClientEnter(source, data.property)
 							cb(true)
 						else
 							cb(false)
@@ -206,16 +206,14 @@ AddEventHandler("Core:Shared:Ready", function()
 					local id = aptTier or 1
 					if id == aptTier then
 						if (_breached[data.type][data.property] or 0) > os.time() then
-							exports['sandbox-base']:ExecuteClient(source, "Apartment", "Enter", aptTier,
-								data.property)
+							exports['sandbox-apartments']:ClientEnter(aptTier, data.property)
 
 							return cb(data.property)
 						else
 							exports["sandbox-base"]:ClientCallback(source, "Police:Breach", {}, function(s)
 								if s then
 									_breached[data.type][data.property] = os.time() + (60 * 10)
-									exports['sandbox-base']:ExecuteClient(source, "Apartment", "Enter", aptTier,
-										data.property)
+									exports['sandbox-apartments']:ClientEnter(aptTier, data.property)
 
 									return cb(data.property)
 								else
@@ -224,12 +222,12 @@ AddEventHandler("Core:Shared:Ready", function()
 							end)
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Target Does Not Reside Here")
 						return cb(false)
 					end
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Target Not Online")
+					exports['sandbox-hud']:NotifError(source, "Target Not Online")
 					return cb(false)
 				end
 			end
@@ -256,15 +254,15 @@ AddEventHandler("Core:Shared:Ready", function()
 									("pdrack:%s"):format(entState.VIN))
 							end)
 						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							exports['sandbox-hud']:NotifError(source,
 								"Can't Access The Locked Compartment")
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Vehicle Not Outfitted With A Secured Compartment")
 					end
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not In A Vehicle")
+					exports['sandbox-hud']:NotifError(source, "Not In A Vehicle")
 				end
 			elseif myDuty == 'prison' then
 				local veh = GetVehiclePedIsIn(GetPlayerPed(source))
@@ -280,15 +278,15 @@ AddEventHandler("Core:Shared:Ready", function()
 									("pdrack:%s"):format(entState.VIN))
 							end)
 						else
-							exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+							exports['sandbox-hud']:NotifError(source,
 								"Can't Access The Locked Compartment")
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Vehicle Not Outfitted With A Secured Compartment")
 					end
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Not In A Vehicle")
+					exports['sandbox-hud']:NotifError(source, "Not In A Vehicle")
 				end
 			end
 		end

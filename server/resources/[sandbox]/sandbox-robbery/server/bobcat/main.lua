@@ -96,28 +96,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 			and #(_bobcatLocations.extrDoor.coords - myPos) <= 3.5
 		then
 			if GetGameTimer() < BC_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not GlobalState["BobcatInProgress"]) then
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 					6000
 				)
 				return
 			elseif (GlobalState["Duty:police"] or 0) < BC_REQUIRED_POLICE and not GlobalState["BobcatInProgress"] then
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 					6000
 				)
 				return
 			elseif GlobalState["RobberiesDisabled"] then
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)
@@ -191,7 +182,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					end)
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Someone Is Already Doing This",
+				exports['sandbox-hud']:NotifError(source, "Someone Is Already Doing This",
 					6000)
 			end
 		else
@@ -210,28 +201,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 					if
 						GetGameTimer() < BC_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not GlobalState["BobcatInProgress"])
 					then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return
 					elseif (GlobalState["Duty:police"] or 0) < BC_REQUIRED_POLICE and not GlobalState["BobcatInProgress"] then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return
 					elseif GlobalState["RobberiesDisabled"] then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -314,7 +296,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end)
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Is Already Doing This", 6000)
 					end
 				end
@@ -328,28 +310,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 							if
 								GetGameTimer() < BCT_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not entState.robberyInProgress)
 							then
-								exports['sandbox-base']:ExecuteClient(
-									source,
-									"Notification",
-									"Error",
+								exports['sandbox-hud']:NotifError(source,
 									"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 									6000
 								)
 								return
 							elseif (GlobalState["Duty:police"] or 0) < BCT_REQUIRED_POLICE and not entState.robberyInProgress then
-								exports['sandbox-base']:ExecuteClient(
-									source,
-									"Notification",
-									"Error",
+								exports['sandbox-hud']:NotifError(source,
 									"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 									6000
 								)
 								return
 							elseif GlobalState["RobberiesDisabled"] then
-								exports['sandbox-base']:ExecuteClient(
-									source,
-									"Notification",
-									"Error",
+								exports['sandbox-hud']:NotifError(source,
 									"Temporarily Disabled, Please See City Announcements",
 									6000
 								)
@@ -494,12 +467,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 											end)
 									end
 								else
-									exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+									exports['sandbox-hud']:NotifError(source,
 										"This Truck Has Already Been Hit",
 										6000)
 								end
 							else
-								exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+								exports['sandbox-hud']:NotifError(source,
 									"Someone Is Already Doing This", 6000)
 							end
 						end
@@ -528,28 +501,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local myPos = GetEntityCoords(GetPlayerPed(source))
 				if #(_bobcatLocations.vaultDoor.coords - myPos) <= 3.5 then
 					if GetGameTimer() < BC_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not GlobalState["BobcatInProgress"]) then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return
 					elseif (GlobalState["Duty:police"] or 0) < BC_REQUIRED_POLICE and not GlobalState["BobcatInProgress"] then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return
 					elseif GlobalState["RobberiesDisabled"] then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -604,10 +568,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end)
 						end
 					else
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Else Is Already Doing A Thing",
 							6000
 						)
@@ -637,28 +598,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 			then
 				if #(_bobcatLocations.securedDoor.coords - myCoords) <= 1.5 then
 					if GetGameTimer() < BC_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not GlobalState["BobcatInProgress"]) then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return
 					elseif (GlobalState["Duty:police"] or 0) < BC_REQUIRED_POLICE and not GlobalState["BobcatInProgress"] then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return
 					elseif GlobalState["RobberiesDisabled"] then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -700,7 +652,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									skipLeaveVeh = true,
 								}, function() end)
 								exports['sandbox-doors']:SetLock("bobcat_inner", false)
-								exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+								exports['sandbox-hud']:NotifSuccess(source,
 									"Doorlock Disengaged", 6000)
 								exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 
@@ -727,20 +679,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 							_bcInUse.securedDoor = false
 						end)
 					else
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Else Is Already Doing A Thing",
 							6000
 						)
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -758,10 +704,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if char ~= nil then
 				local pState = Player(source).state
 
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Info",
+				exports['sandbox-hud']:NotifInfo(source,
 					"Locating Truck...",
 					6000
 				)
@@ -770,10 +713,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local netId = SpawnBobcatTruck(m)
 
 				if not netId then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Unable To Locate A Truck",
 						6000
 					)
@@ -784,10 +724,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
 						if r then
 							exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
-							exports['sandbox-base']:ExecuteClient(
-								source,
-								"Notification",
-								"Success",
+							exports['sandbox-hud']:NotifSuccess(source,
 								"A Truck Has Been Marked On Your GPS",
 								6000
 							)
@@ -796,10 +733,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				end
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(
-				source,
-				"Notification",
-				"Error",
+			exports['sandbox-hud']:NotifError(source,
 				"No Trucks Currently Available, Try Again Later",
 				6000
 			)
@@ -816,10 +750,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if char ~= nil then
 				local pState = Player(source).state
 
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Info",
+				exports['sandbox-hud']:NotifInfo(source,
 					"Locating Truck...",
 					6000
 				)
@@ -827,10 +758,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local netId = SpawnBobcatTruck(`stockade`)
 
 				if not netId then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Unable To Locate A Truck",
 						6000
 					)
@@ -841,10 +769,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
 						if r then
 							exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
-							exports['sandbox-base']:ExecuteClient(
-								source,
-								"Notification",
-								"Success",
+							exports['sandbox-hud']:NotifSuccess(source,
 								"A Truck Has Been Marked On Your GPS",
 								6000
 							)
@@ -853,10 +778,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				end
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(
-				source,
-				"Notification",
-				"Error",
+			exports['sandbox-hud']:NotifError(source,
 				"No Trucks Currently Available, Try Again Later",
 				6000
 			)
@@ -873,10 +795,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if char ~= nil then
 				local pState = Player(source).state
 
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Info",
+				exports['sandbox-hud']:NotifInfo(source,
 					"Locating Truck...",
 					6000
 				)
@@ -884,10 +803,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local netId = SpawnBobcatTruck(`stockade`)
 
 				if not netId then
-					exports['sandbox-base']:ExecuteClient(
-						source,
-						"Notification",
-						"Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Unable To Locate A Truck",
 						6000
 					)
@@ -898,10 +814,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
 						if r then
 							exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
-							exports['sandbox-base']:ExecuteClient(
-								source,
-								"Notification",
-								"Success",
+							exports['sandbox-hud']:NotifSuccess(source,
 								"A Truck Has Been Marked On Your GPS",
 								6000
 							)
@@ -910,10 +823,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				end
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(
-				source,
-				"Notification",
-				"Error",
+			exports['sandbox-hud']:NotifError(source,
 				"No Trucks Currently Available, Try Again Later",
 				6000
 			)
@@ -939,28 +849,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 					and not GlobalState["Bobcat:Secured"]
 				then
 					if GetGameTimer() < BC_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not GlobalState["BobcatInProgress"]) then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return
 					elseif (GlobalState["Duty:police"] or 0) < BC_REQUIRED_POLICE and not GlobalState["BobcatInProgress"] then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return
 					elseif GlobalState["RobberiesDisabled"] then
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -979,10 +880,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						end
 						_bcInUse.grabC4 = false
 					else
-						exports['sandbox-base']:ExecuteClient(
-							source,
-							"Notification",
-							"Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Someone Else Is Already Doing A Thing",
 							6000
 						)
@@ -1174,7 +1072,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					string.format("%s %s (%s) Secured Bobcat Security", char:GetData("First"), char:GetData("Last"),
 						char:GetData("SID")))
 				SecureBobcat()
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "Building Secure", 6000)
+				exports['sandbox-hud']:NotifSuccess(source, "Building Secure", 6000)
 			end
 		end
 	end)

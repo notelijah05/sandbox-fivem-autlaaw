@@ -6,7 +6,7 @@ end)
 
 function RegisterChatCommands()
 	-- exports["sandbox-chat"]:RegisterAdminCommand("notif", function(source, args, rawCommand)
-	-- 	exports['sandbox-base']:ExecuteClient(source, "Notification", "Success", "This is a test, lul")
+	-- 	exports['sandbox-hud']:NotifSuccess(source, "This is a test, lul")
 	-- end, {
 	-- 	help = "Test Notification",
 	-- })

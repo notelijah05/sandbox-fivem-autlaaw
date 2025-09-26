@@ -90,20 +90,17 @@ function RegisterDonorVanityItemsCallbacks()
 
 						exports['sandbox-inventory']:AddItem(sid, newItem.name, amount, {}, 1)
 
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+						exports['sandbox-hud']:NotifSuccess(source,
 							"Found unused vanity token!")
 					else
-						exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+						exports['sandbox-hud']:NotifError(source,
 							"Uh this shouldn't happen.")
 					end
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "No vanity tokens found.")
+					exports['sandbox-hud']:NotifError(source, "No vanity tokens found.")
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(
-					source,
-					"Notification",
-					"Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Something went wrong. Try again and make sure all fields are filled out properly!"
 				)
 			end

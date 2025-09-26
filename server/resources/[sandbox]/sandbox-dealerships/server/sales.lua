@@ -17,8 +17,7 @@ RegisterNetEvent('Vehicles:Server:TestDriveTime', function(vNet)
             _activeTestDrives[dealership].startedTimer = true
 
             if timeRemaining > 0 then
-                exports['sandbox-base']:ExecuteClient(_src, "Notification", "Info", "Test Drive Time Remaining",
-                    timeRemaining * 1000, "car")
+                exports['sandbox-hud']:NotifInfo(_src, "Test Drive Time Remaining", timeRemaining * 1000, "car")
 
                 Citizen.SetTimeout(timeRemaining * 1000, function()
                     EndTestDrive(vehicle, dealership, _src)
@@ -34,8 +33,7 @@ function EndTestDrive(vehicle, dealership, _src)
     if vehicle and vehicle ~= 0 and DoesEntityExist(vehicle) then
         exports['sandbox-vehicles']:Delete(vehicle, function(success) end)
     else
-        exports['sandbox-base']:ExecuteClient(_src, "Notification", "Error",
-            "Cannot find vehicle to return. Test drive cancelled.", 3000, "car")
+        exports['sandbox-hud']:NotifError(_src, "Cannot find vehicle to return. Test drive cancelled.", 3000, "car")
     end
 
     if _dealerships[dealership].testdrive.setplayerback then
@@ -87,13 +85,13 @@ function RegisterVehicleSaleCallbacks()
                                 startedTimer = false,
                             }
 
-                            exports['sandbox-base']:ExecuteClient(source, "Notification", "Success",
+                            exports['sandbox-hud']:NotifSuccess(source,
                                 "Your Test Drive Vehicle Was Provided",
                                 5000, "car")
                             Entity(spawnedVehicle).state.testDrive = os.time() + timer
                             Entity(spawnedVehicle).state.testDriveDealership = dealership
                         else
-                            exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+                            exports['sandbox-hud']:NotifError(source,
                                 "Test Drive Vehicle Failed To Spawn", 5000,
                                 "car")
                         end
@@ -105,7 +103,7 @@ function RegisterVehicleSaleCallbacks()
                     }
                 )
             else
-                exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+                exports['sandbox-hud']:NotifError(source,
                     "We Already Gave You a Test Drive Vehicle", 5000, "car")
             end
             cb(true, 'Initiating Test Drive')
@@ -194,8 +192,7 @@ function RegisterVehicleSaleCallbacks()
                                                                 newQuantity = removeSuccess,
                                                             })
 
-                                                            exports['sandbox-base']:ExecuteClient(source, 'Notification',
-                                                                'Success',
+                                                            exports['sandbox-hud']:NotifSuccess(source,
                                                                 'Completed Sales Process - The Customer Received their Vehicle',
                                                                 7500, 'car-building')
                                                             SendCompletedCashSaleEmail({
@@ -226,22 +223,20 @@ function RegisterVehicleSaleCallbacks()
                                                             --     exports['sandbox-finance']:LoansCreditIncrease(targetCharacter:GetData('SID'), creditIncrease)
                                                             -- end
                                                         else
-                                                            exports['sandbox-base']:ExecuteClient(source, 'Notification',
-                                                                'Error',
+                                                            exports['sandbox-hud']:NotifError(source,
                                                                 'Error Completing Vehicle Sale', 5000, 'car-building')
-                                                            exports['sandbox-base']:ExecuteClient(targetSrc,
-                                                                'Notification', 'Error',
+                                                            exports['sandbox-hud']:NotifError(targetSrc,
                                                                 'Error Completing Vehicle Sale', 5000, 'car-building')
                                                         end
                                                     end, false, dealerData.storage)
                                             else
-                                                exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error',
+                                                exports['sandbox-hud']:NotifError(source,
                                                     'Error Completing Vehicle Sale', 5000, 'car-building')
-                                                exports['sandbox-base']:ExecuteClient(targetSrc, 'Notification', 'Error',
+                                                exports['sandbox-hud']:NotifError(targetSrc,
                                                     'Error Completing Vehicle Sale', 5000, 'car-building')
                                             end
                                         else
-                                            exports['sandbox-base']:ExecuteClient(source, 'Notification', 'Error',
+                                            exports['sandbox-hud']:NotifError(source,
                                                 'Payment Failed', 5000,
                                                 'car-building')
                                         end
@@ -279,8 +274,7 @@ function RegisterVehicleSaleCallbacks()
                                                         Source = targetSrc,
                                                     }, dealerData, saleVehicleData.data, downPaymentPercent, downPayment,
                                                     loanWeeks, perWeek, afterInterest, function()
-                                                        exports['sandbox-base']:ExecuteClient(source, 'Notification',
-                                                            'Info',
+                                                        exports['sandbox-hud']:NotifInfo(source,
                                                             'The Loan Terms Were Accepted by the Customer', 5000,
                                                             'car-building')
                                                         exports['sandbox-finance']:BillingCreate(
@@ -301,8 +295,8 @@ function RegisterVehicleSaleCallbacks()
                                                                             loanWeeks)
                                                                     if loanSuccess then
                                                                         local removeSuccess = exports
-                                                                        ['sandbox-dealerships']:StockRemove(
-                                                                            dealerData.id, saleVehicleData.vehicle, 1)
+                                                                            ['sandbox-dealerships']:StockRemove(
+                                                                                dealerData.id, saleVehicleData.vehicle, 1)
                                                                         if removeSuccess then
                                                                             exports['sandbox-vehicles']
                                                                                 :OwnedAddToCharacter(
@@ -386,9 +380,7 @@ function RegisterVehicleSaleCallbacks()
                                                                                                     })
 
                                                                                             exports['sandbox-base']
-                                                                                                :ExecuteClient(source,
-                                                                                                    'Notification',
-                                                                                                    'Success',
+                                                                                                :NotifSuccess(source,
                                                                                                     'Completed Sales Process - The Customer Received their Vehicle',
                                                                                                     7500, 'car-building')
                                                                                             SendCompletedLoanSaleEmail({
@@ -432,16 +424,12 @@ function RegisterVehicleSaleCallbacks()
                                                                                                 })
                                                                                         else
                                                                                             exports['sandbox-base']
-                                                                                                :ExecuteClient(source,
-                                                                                                    'Notification',
-                                                                                                    'Error',
+                                                                                                :NotifError(source,
                                                                                                     'Error Completing Vehicle Sale',
                                                                                                     5000,
                                                                                                     'car-building')
                                                                                             exports['sandbox-base']
-                                                                                                :ExecuteClient(targetSrc,
-                                                                                                    'Notification',
-                                                                                                    'Error',
+                                                                                                :NotifError(targetSrc,
                                                                                                     'Error Completing Vehicle Sale',
                                                                                                     5000,
                                                                                                     'car-building')
@@ -477,8 +465,7 @@ function RegisterVehicleSaleCallbacks()
                                                                         )
                                                                     end
                                                                 else
-                                                                    exports['sandbox-base']:ExecuteClient(source,
-                                                                        'Notification', 'Error',
+                                                                    exports['sandbox-hud']:NotifError(source,
                                                                         'Loan Downpayment Failed', 5000, 'car-building')
                                                                 end
                                                             end

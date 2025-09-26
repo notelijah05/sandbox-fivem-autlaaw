@@ -224,7 +224,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				cb(true)
 			else
 				if isInProg then
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Vehicle Already Being Chopped")
 				end
 				cb(false)
@@ -414,7 +414,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				end
 				char:SetData("ChopPickups", {})
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "You Have Nothing To Pickup")
+				exports['sandbox-hud']:NotifError(source, "You Have Nothing To Pickup")
 			end
 		end
 	end)
@@ -479,7 +479,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						)
 					end
 				else
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+					exports['sandbox-hud']:NotifError(source,
 						"Recently Requested Active Chop Lists")
 				end
 			end
@@ -532,7 +532,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 					end
 				end
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Cannot Use A List You Didn't Buy")
+				exports['sandbox-hud']:NotifError(source, "Cannot Use A List You Didn't Buy")
 			end
 		end
 	end)
@@ -594,7 +594,7 @@ exports('LSUndergroundChoppingInProgress', function(source, type, model, listId)
 	if type == 1 or type == 2 then
 		for k, v in pairs(_inProgress) do
 			if v.type == type and v.model == model and v.source ~= source then
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Vehicle Type Is Already Being Chopped")
 				return true
 			end
@@ -602,7 +602,7 @@ exports('LSUndergroundChoppingInProgress', function(source, type, model, listId)
 	elseif type == 3 then
 		for k, v in pairs(_inProgress) do
 			if v.type == type and v.model == model and v.source ~= source and v.listId == listId then
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Vehicle Type Is Already Being Chopped")
 				return true
 			end
@@ -624,7 +624,7 @@ exports('LSUndergroundChoppingFindList', function(source, vehNet)
 			if pState.inChopZone == "chopping_public" and exports['sandbox-characters']:RepGetLevel(source, "Salvaging") >= 7 then
 				local chopEntry = exports['sandbox-laptop']:LSUndergroundChoppingIsOnList(_publicChoplist.list, model)
 				if not chopEntry then
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Vehicle Not On Chop List")
+					exports['sandbox-hud']:NotifError(source, "Vehicle Not On Chop List")
 					return nil
 				elseif exports['sandbox-laptop']:LSUndergroundChoppingInProgress(source, 1, model) then
 					return nil
@@ -640,7 +640,7 @@ exports('LSUndergroundChoppingFindList', function(source, vehNet)
 			then
 				local chopEntry = exports['sandbox-laptop']:LSUndergroundChoppingIsOnList(_vipChopList.list, model)
 				if not chopEntry then
-					exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Vehicle Not On Chop List")
+					exports['sandbox-hud']:NotifError(source, "Vehicle Not On Chop List")
 					return nil
 				elseif exports['sandbox-laptop']:LSUndergroundChoppingInProgress(source, 2, model) then
 					return nil
@@ -659,15 +659,15 @@ exports('LSUndergroundChoppingFindList', function(source, vehNet)
 					end
 				end
 
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Vehicle Not On Chop List")
+				exports['sandbox-hud']:NotifError(source, "Vehicle Not On Chop List")
 				return nil
 			else
-				exports['sandbox-base']:ExecuteClient(source, "Notification", "Error",
+				exports['sandbox-hud']:NotifError(source,
 					"Not In A Valid Dropoff Location")
 				return nil
 			end
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Invalid Entity")
+			exports['sandbox-hud']:NotifError(source, "Invalid Entity")
 			return nil
 		end
 	end

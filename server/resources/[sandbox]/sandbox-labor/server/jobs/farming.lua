@@ -102,7 +102,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 			cb(true)
 		else
-			exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "Unable To Turn In Ore")
+			exports['sandbox-hud']:NotifError(source, "Unable To Turn In Ore")
 			cb(false)
 		end
 	end)

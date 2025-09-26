@@ -30,7 +30,7 @@ RegisterNetEvent("Vehicles:Server:RequestEmergencyBoat", function(parkingSpace)
 			end
 		)
 	else
-		exports['sandbox-base']:ExecuteClient(source, "Notification", "Error", "On Cooldown")
+		exports['sandbox-hud']:NotifError(source, "On Cooldown")
 	end
 end)
 
