@@ -1,55 +1,49 @@
 return {
-    Spawns = {
+    DefaultSpawns = {
         {
-            Type = "spawn",
-            Name = "Alta St",
-            Heading = 72.41,
-            Coords = {
-                x = -206.57,
-                y = -1015.18,
-                z = 30.14
-            }
+            id = 1,
+            label = "LSIA",
+            location = { x = -1044.84, y = -2749.85, z = 21.36, h = 0.0 },
         },
         {
-            Type = "spawn",
-            Name = "Bolingbroke Penitentiary",
-            Heading = 90.70865631103516,
-            Coords = {
-                x = 1850.5845947265625,
-                y = 2586.32958984375,
-                z = 45.6578369140625
-            }
+            id = 2,
+            label = "Alta St",
+            location = { x = -206.57, y = -1015.18, z = 30.14, h = 72.41 },
         },
         {
-            Type = "spawn",
-            Name = "Mission Row PD",
-            Heading = 87.87401580810547,
-            Coords = {
-                x = 436.6681213378906,
-                y = -974.4263916015625,
-                z = 30.7120361328125
-            }
+            id = 3,
+            label = "Bolingbroke Penitentiary",
+            location = { x = 1767.49, y = 2501.12, z = 45.72, h = 90.70 },
         },
         {
-            Type = "spawn",
-            Name = "Sandy PD",
-            Heading = 257.9527587890625,
-            Coords = {
-                x = 1866.09228515625,
-                y = 3688.2724609375,
-                z = 34.2674560546875
-            }
+            id = 4,
+            label = "Mission Row PD",
+            location = { x = 436.67, y = -974.42, z = 30.71, h = 87.87 },
         },
         {
-            Type = "spawn",
-            Name = "Paleto PD",
-            Heading = 0,
-            Coords = {
-                x = -448.32525634765625,
-                y = 6026.5712890625,
-                z = 31.4871826171875
-            }
-        }
+            id = 5,
+            label = "Sandy PD",
+            location = { x = 1866.09, y = 3688.27, z = 34.26, h = 257.95 },
+        },
+        {
+            id = 6,
+            label = "Paleto PD",
+            location = { x = -448.32, y = 6026.57, z = 31.48, h = 0.0 },
+        },
+    },
+    PrisonSpawn = {
+        id = 1,
+        icon = "link",
+        label = "Bolingbroke Penitentiary",
+        location = { x = 1767.49, y = 2501.12, z = 45.72, h = 0.0 },
+        event = "Jail:SpawnJailed",
+    },
+    ICUSpawn = {
+        id = 1,
+        icon = "hospital",
+        label = "St. Fiacre Intensive Care Unit",
+        location = { x = 1153.161, y = -1542.383, z = 39.537, h = 123.576 },
+        event = "Hospital:SpawnICU",
     },
     LogoutLocations = {
         -- { -- Mt Zonah

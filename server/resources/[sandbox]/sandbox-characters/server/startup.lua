@@ -1,7 +1,8 @@
+local Config = require('shared.config')
 Spawns = {}
 
 function Startup()
-	exports['sandbox-locations']:GetAll("spawn", function(results)
+	exports['sandbox-characters']:GetAllLocations("spawn", function(results)
 		if not results then
 			exports['sandbox-base']:LoggerError("Characters", "Failed to load spawn locations")
 			return
@@ -13,22 +14,11 @@ function Startup()
 		Spawns = { table.unpack(Config.DefaultSpawns) }
 		for k, v in ipairs(results) do
 			local spawn = {
-				id = v.Name, -- Use Name as id since we don't have _id from database anymore
-				label = v.Name,
-				location = { x = v.Coords.x, y = v.Coords.y, z = v.Coords.z, h = v.Heading },
+				id = v.id,
+				label = v.label,
+				location = { x = v.location.x, y = v.location.y, z = v.location.z, h = v.location.h },
 			}
 			table.insert(Spawns, spawn)
 		end
 	end)
 end
-
-AddEventHandler("Locations:Server:Added", function(type, location)
-	if type == "spawn" then
-		table.insert(Spawns, {
-			label = location.Name,
-			location = { x = location.Coords.x, y = location.Coords.y, z = location.Coords.z, h = location.Coords.h },
-		})
-		exports['sandbox-base']:LoggerInfo("Characters", "New Spawn Point Created: ^5" .. location.Name,
-			{ console = true })
-	end
-end)

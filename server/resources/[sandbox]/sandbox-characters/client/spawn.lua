@@ -1,3 +1,4 @@
+local Config = require('shared.config')
 local cam = nil
 
 local foTo = 0

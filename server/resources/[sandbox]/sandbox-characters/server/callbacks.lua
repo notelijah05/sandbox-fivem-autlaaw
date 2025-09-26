@@ -1,3 +1,4 @@
+local Config = require('shared.config')
 _tempLastLocation = {}
 _lastSpawnLocations = {}
 

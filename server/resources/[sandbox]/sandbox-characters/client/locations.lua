@@ -17,7 +17,7 @@ AddEventHandler('onClientResourceStart', function(resource)
     end
 end)
 
-exports("GetAll", function(type, cb)
+exports("GetAllLocations", function(type, cb)
     exports["sandbox-base"]:ServerCallback('Locations:GetAll', {
         type = type
     }, cb)
