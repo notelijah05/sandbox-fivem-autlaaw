@@ -62,7 +62,7 @@ function RegisterCallbacks()
     exports["sandbox-base"]:RegisterServerCallback('Admin:GetDisconnectedPlayerList', function(source, data, cb)
         local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsStaff() then
-            local rDs = exports['sandbox-base']:FetchComponent('RecentDisconnects')
+            local rDs = exports['sandbox-base']:GetRecentDisconnects()
             cb(rDs)
         else
             cb(false)
@@ -164,7 +164,7 @@ function RegisterCallbacks()
 
                 cb(tData)
             else
-                local rDs = exports['sandbox-base']:FetchComponent('RecentDisconnects')
+                local rDs = exports['sandbox-base']:GetRecentDisconnects()
                 for k, v in ipairs(rDs) do
                     if v.Source == data then
                         local tData = v
