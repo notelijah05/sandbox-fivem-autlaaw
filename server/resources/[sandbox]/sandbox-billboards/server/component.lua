@@ -84,51 +84,28 @@ function FetchBillboardsData()
     local fetchedBillboards = {}
     local billboardIds = {}
 
-    exports['sandbox-base']:DatabaseGameFind({
-        collection = 'billboards',
-        query = {}
-    }, function(success, results)
-        if success and #results > 0 then
-            for k, v in ipairs(results) do
-                if v.billboardId and v.billboardUrl then
-                    fetchedBillboards[v.billboardId] = v.billboardUrl
-                end
+    local result = MySQL.query.await('SELECT billboardId, billboardUrl FROM billboards')
+
+    if result and #result > 0 then
+        for k, v in ipairs(result) do
+            if v.billboardId and v.billboardUrl then
+                fetchedBillboards[v.billboardId] = v.billboardUrl
             end
         end
+    end
 
-        for k, v in pairs(_billboardConfig) do
-            GlobalState[string.format("Billboards:%s", k)] = fetchedBillboards[k]
+    for k, v in pairs(_billboardConfig) do
+        GlobalState[string.format("Billboards:%s", k)] = fetchedBillboards[k]
 
-            table.insert(billboardIds, k)
-        end
-    end)
+        table.insert(billboardIds, k)
+    end
 end
 
 function SetBillboardURL(billboardId, url)
-    local p = promise.new()
+    local result = MySQL.query.await(
+        'INSERT INTO billboards (billboardId, billboardUrl) VALUES (?, ?) ON DUPLICATE KEY UPDATE billboardUrl = ?',
+        { billboardId, url, url }
+    )
 
-    exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
-        collection = 'billboards',
-        query = {
-            billboardId = billboardId,
-        },
-        update = {
-            ['$set'] = {
-                billboardUrl = url,
-            },
-        },
-        options = {
-            returnDocument = 'after',
-            upsert = true,
-        }
-    }, function(success, results)
-        if success and results then
-            p:resolve(true)
-        else
-            p:resolve(false)
-        end
-    end)
-
-    local res = Citizen.Await(p)
-    return res
+    return result and result.affectedRows > 0
 end

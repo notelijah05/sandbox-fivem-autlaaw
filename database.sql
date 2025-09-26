@@ -18,6 +18,17 @@ DROP DATABASE IF EXISTS `database_ptr`;
 CREATE DATABASE IF NOT EXISTS `database_ptr` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
 USE `database_ptr`;
 
+DROP TABLE IF EXISTS `billboards`;
+CREATE TABLE IF NOT EXISTS `billboards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `billboardId` varchar(50) NOT NULL,
+  `billboardUrl` text,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `billboardId` (`billboardId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `logs`;
 CREATE TABLE IF NOT EXISTS `logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
