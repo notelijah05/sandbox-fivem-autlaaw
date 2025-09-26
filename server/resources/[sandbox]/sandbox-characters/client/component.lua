@@ -25,12 +25,12 @@ exports("Logout", function()
 		LocalPlayer.state.loggedIn = false
 		LocalPlayer.state:set('SID', nil, true)
 		exports['sandbox-hud']:ActionHide()
-		exports['sandbox-characters']:SpawnInitCamera()
+		exports["sandbox-base"]:FetchComponent("Spawn"):InitCamera()
 		SendNUIMessage({
 			type = "APP_RESET",
 		})
 		Wait(500)
-		exports["sandbox-characters"]:SpawnInit()
+		exports["sandbox-base"]:FetchComponent("Spawn"):Init()
 	end)
 end)
 

@@ -212,7 +212,7 @@ RegisterNUICallback("PlayCharacter", function(data, cb)
 	exports["sandbox-base"]:ServerCallback("Characters:GetCharacterData", data.character.ID, function(cData)
 		cData.spawn = data.spawn
 		TriggerEvent("Characters:Client:SetData", -1, cData, function()
-			exports["sandbox-characters"]:SpawnToWorld(cData, function()
+			exports["sandbox-base"]:FetchComponent("Spawn"):SpawnToWorld(cData, function()
 				LocalPlayer.state.canUsePhone = true
 				if data.spawn.event ~= nil then
 					exports["sandbox-base"]:ServerCallback(data.spawn.event, data.spawn, function()

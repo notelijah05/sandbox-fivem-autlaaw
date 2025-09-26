@@ -15,9 +15,22 @@ _glassesOff = false
 _vestOff = false
 attachedProps = {}
 
+AddEventHandler("Ped:Shared:DependencyUpdate", RetrieveComponents)
+function RetrieveComponents()
+	Spawn = exports["sandbox-base"]:FetchComponent("Spawn")
+end
+
 AddEventHandler("Core:Shared:Ready", function()
-	RegisterInteraction()
-	CreateShops()
+	exports["sandbox-base"]:RequestDependencies("Ped", {
+		"Spawn",
+	}, function(error)
+		if #error > 0 then
+			return
+		end -- Do something to handle if not all dependencies loaded
+		RetrieveComponents()
+		RegisterInteraction()
+		CreateShops()
+	end)
 end)
 
 RegisterNetEvent("Ped:Client:RemoveGlasses", function()
@@ -707,7 +720,7 @@ end)
 exports("CreatorEnd", function()
 	exports["sandbox-sync"]:Start()
 	TriggerServerEvent("Ped:LeaveCreator")
-	exports['sandbox-ped']:PlacePedIntoWorld(_data)
+	Spawn:PlacePedIntoWorld(_data)
 	exports['sandbox-ped']:CustomizationHide()
 	LocalPlayer.state.inCreator = false
 	FROZEN = false
