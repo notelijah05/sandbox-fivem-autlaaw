@@ -1,12 +1,6 @@
 Spawns = {}
 
-local _ran = false
-
 function Startup()
-	if _ran then
-		return
-	end
-
 	exports['sandbox-base']:DatabaseGameFind({
 		collection = "locations",
 		query = {
@@ -30,8 +24,6 @@ function Startup()
 			table.insert(Spawns, spawn)
 		end
 	end)
-
-	_ran = true
 end
 
 AddEventHandler("Locations:Server:Added", function(type, location)

@@ -9,12 +9,7 @@
 	Fishing: ????
 ]]
 
-local _ran = false
 AddEventHandler("Labor:Server:Startup", function()
-	if _ran then
-		return
-	end
-	_ran = true
 	exports['sandbox-labor']:RegisterJob(
 		"HouseRobbery",
 		"House Robbery",

@@ -2,12 +2,7 @@ _warrants = {}
 _charges = {}
 _notices = {}
 
-local _ran = false
-
 function Startup()
-	if _ran then
-		return
-	end
 	RegisterTasks()
 
 	-- Set Expired Active Warrants to Expired
@@ -44,8 +39,6 @@ function Startup()
 			end
 		end
 	end)
-
-	_ran = true
 
 	-- SetHttpHandler(function(req, res)
 	-- 	if req.path == '/charges' then

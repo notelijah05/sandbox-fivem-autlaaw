@@ -1,9 +1,4 @@
-local _ran = false
-
 function Startup()
-    if _ran then return end
-    _ran = true
-
     exports['sandbox-base']:DatabaseGameCount({
         collection = 'vehicles',
         query = {

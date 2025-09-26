@@ -1,5 +1,3 @@
-local _ran = false
-
 _appData = {
 	{
 		name = "phone",

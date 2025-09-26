@@ -215,33 +215,28 @@ AddEventHandler("Businesses:Server:Startup", function()
     end)
 end)
 
-local _ran = false
 function StorageUnitStartup()
-    if not _ran then
-        _ran = true
+    exports['sandbox-base']:DatabaseGameFind({
+        collection = "storage_units",
+        query = {},
+    }, function(success, results)
+        if not success then
+            return
+        end
+        exports['sandbox-base']:LoggerTrace("StorageUnits", "Loaded ^2" .. #results .. "^7 Storage Units",
+            { console = true })
+        local unitIds = {}
+        for k, v in ipairs(results) do
+            unitPasscodes[v._id] = v.passcode
 
-        exports['sandbox-base']:DatabaseGameFind({
-            collection = "storage_units",
-            query = {},
-        }, function(success, results)
-            if not success then
-                return
-            end
-            exports['sandbox-base']:LoggerTrace("StorageUnits", "Loaded ^2" .. #results .. "^7 Storage Units",
-                { console = true })
-            local unitIds = {}
-            for k, v in ipairs(results) do
-                unitPasscodes[v._id] = v.passcode
+            local unit = FormatStorageUnit(v)
+            table.insert(unitIds, unit.id)
 
-                local unit = FormatStorageUnit(v)
-                table.insert(unitIds, unit.id)
+            GlobalState[string.format("StorageUnit:%s", unit.id)] = unit
+        end
 
-                GlobalState[string.format("StorageUnit:%s", unit.id)] = unit
-            end
-
-            GlobalState["StorageUnits"] = unitIds
-        end)
-    end
+        GlobalState["StorageUnits"] = unitIds
+    end)
 end
 
 exports('StorageUnitsCreate', function(location, label, level, managedBy)

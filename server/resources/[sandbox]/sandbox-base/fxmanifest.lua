@@ -7,7 +7,7 @@ client_scripts({
 	"sh_init.lua",
 	"core/sh_*.lua",
 	"core/cl_*.lua",
-	"components/cl_*.lua",
+	"exports/cl_*.lua",
 })
 
 server_scripts({
@@ -18,7 +18,7 @@ server_scripts({
 	"core/sv_regex.js",
 	"core/sh_*.lua",
 	"core/sv_*.lua",
-	"components/sv_*.lua",
+	"exports/sv_*.lua",
 })
 
 files({

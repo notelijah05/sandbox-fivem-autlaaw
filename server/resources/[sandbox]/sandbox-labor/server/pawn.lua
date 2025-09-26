@@ -1,5 +1,3 @@
-local _ran = false
-
 local _pawnPricing = {
 	[0] = 10,
 	[1] = 20,
@@ -91,11 +89,6 @@ local _pawnItems = {
 }
 
 AddEventHandler("Labor:Server:Startup", function()
-	if _ran then
-		return
-	end
-	_ran = true
-
 	exports['sandbox-characters']:RepCreate("Pawn", "Pawn Shop", {
 		{ label = "Rank 1", value = 5000 },
 		{ label = "Rank 2", value = 10000 },

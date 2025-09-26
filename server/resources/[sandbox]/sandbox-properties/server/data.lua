@@ -1,9 +1,4 @@
-local _ran = false
-
 function DefaultData()
-    if _ran then return end
-
-    _ran = true
     exports['sandbox-base']:DefaultAdd('properties', 1590006209, {
         {
             interior = 1,

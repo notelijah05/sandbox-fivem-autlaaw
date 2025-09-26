@@ -1,5 +1,3 @@
-local _ran = false
-
 _properties = {}
 _insideProperties = {}
 
@@ -21,10 +19,6 @@ function doPropertyThings(property)
 end
 
 function Startup()
-	if _ran then
-		return
-	end
-
 	exports['sandbox-base']:DatabaseGameFind({
 		collection = "properties",
 	}, function(success, results)
@@ -39,6 +33,4 @@ function Startup()
 			_properties[v._id] = p
 		end
 	end)
-
-	_ran = true
 end
