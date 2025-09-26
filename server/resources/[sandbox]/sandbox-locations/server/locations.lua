@@ -1,9 +1,10 @@
+local Config = require('shared.Config')
+
 AddEventHandler('onResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
 		Wait(1000)
 		RegisterCallbacks()
 		RegisterChatCommands()
-		Startup()
 		TriggerEvent("Locations:Server:Startup")
 	end
 end)
@@ -52,34 +53,31 @@ exports("Add", function(coords, heading, type, name, cb)
 		Type = type,
 		Name = name,
 	}
-	exports['sandbox-base']:DatabaseGameInsertOne({
-		collection = "locations",
-		document = doc,
-	}, function(success, results)
-		if not success then
-			return
-		end
 
-		TriggerEvent("Locations:Server:Added", type, doc)
-		if cb ~= nil then
-			cb(results > 0)
-		end
-	end)
+	table.insert(Config.Spawns, doc)
+
+	exports['sandbox-base']:LoggerInfo("Locations", string.format("Added location: %s (%s)", name, type))
+
+	TriggerEvent("Locations:Server:Added", type, doc)
+	if cb ~= nil then
+		cb(true)
+	end
 end)
 
 exports("GetAll", function(type, cb)
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "locations",
-		query = {
-			Type = type,
-		},
-	}, function(success, results)
-		if not success then
-			return
+	local filtered = {}
+
+	for _, location in ipairs(Config.Spawns) do
+		if not type or location.Type == type then
+			local locationCopy = {
+				Coords = vector3(location.Coords.x, location.Coords.y, location.Coords.z),
+				Heading = location.Heading,
+				Type = location.Type,
+				Name = location.Name
+			}
+			table.insert(filtered, locationCopy)
 		end
-		for k, location in ipairs(results) do
-			results[k].Coords = vector3(location.Coords.x, location.Coords.y, location.Coords.z)
-		end
-		cb(results)
-	end)
+	end
+
+	cb(filtered)
 end)

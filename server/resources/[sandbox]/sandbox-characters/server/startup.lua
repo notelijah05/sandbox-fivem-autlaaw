@@ -1,14 +1,9 @@
 Spawns = {}
 
 function Startup()
-	Wait(500)
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "locations",
-		query = {
-			Type = "spawn",
-		},
-	}, function(success, results)
-		if not success then
+	exports['sandbox-locations']:GetAll("spawn", function(results)
+		if not results then
+			exports['sandbox-base']:LoggerError("Characters", "Failed to load spawn locations")
 			return
 		end
 
@@ -18,9 +13,9 @@ function Startup()
 		Spawns = { table.unpack(Config.DefaultSpawns) }
 		for k, v in ipairs(results) do
 			local spawn = {
-				id = v._id,
+				id = v.Name, -- Use Name as id since we don't have _id from database anymore
 				label = v.Name,
-				location = { x = v.Coords.x, y = v.Coords.y, z = v.Coords.z, h = v.Coords.h },
+				location = { x = v.Coords.x, y = v.Coords.y, z = v.Coords.z, h = v.Heading },
 			}
 			table.insert(Spawns, spawn)
 		end
