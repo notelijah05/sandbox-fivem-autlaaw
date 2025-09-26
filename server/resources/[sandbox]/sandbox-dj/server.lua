@@ -2,19 +2,8 @@ local xSound = exports.xsound
 previousSongs = {}
 CurrentBooths = {}
 
-AddEventHandler("Animations:Shared:DependencyUpdate", RetrieveComponents)
-function RetrieveComponents()
-end
-
 AddEventHandler("Core:Shared:Ready", function()
-	exports["sandbox-base"]:RequestDependencies("Animations", {
-	}, function(error)
-		if #error > 0 then
-			return
-		end -- Do something to handle if not all dependencies loaded
-		RetrieveComponents()
-		RegisterCallbacks()
-	end)
+	RegisterCallbacks()
 end)
 
 function RegisterCallbacks()
