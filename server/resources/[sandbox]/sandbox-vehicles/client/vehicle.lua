@@ -763,8 +763,12 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh, seat)
 	if vehEnt.state.VEH_IGNITION then
 		if not vehEnt.state.PlayerDriven then -- It was stolen directly with a ped in it, get keys
 			exports['sandbox-vehicles']:EngineForce(VEHICLE_INSIDE, true)
-			exports["sandbox-base"]:ServerCallback('Vehicles:GetKeys', vehEnt.state.VIN, function()
-				exports["sandbox-hud"]:NotifSuccess('You found the keys in the vehicle', 3000, 'key')
+			exports["sandbox-base"]:ServerCallback('Vehicles:GetKeys', vehEnt.state.VIN, function(success)
+				if success then
+					exports["sandbox-hud"]:NotifSuccess('You found the keys in the vehicle', 3000, 'key')
+				else
+					exports["sandbox-hud"]:NotifError('Couldn\'t find keys in the vehicle', 3000)
+				end
 			end)
 		end
 	else

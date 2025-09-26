@@ -13,6 +13,7 @@ AddEventHandler('Core:Shared:Ready', function()
     RegisterMiddleware()
     RegisterItemUses()
     RegisterPersonalPlateCallbacks()
+    RegisterChatCommands()
     Startup()
 end)
 
