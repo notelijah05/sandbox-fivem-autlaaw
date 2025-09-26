@@ -33,6 +33,7 @@ function FindAllJobs()
 end
 
 function RefreshAllJobData(job)
+	Wait(1000)
 	local jobsFetch = FindAllJobs()
 	JOB_COUNT = #jobsFetch
 	for k, v in ipairs(jobsFetch) do
@@ -97,6 +98,7 @@ function RefreshAllJobData(job)
 end
 
 function RunStartup()
+	Wait(1000)
 	local function replaceExistingDefaultJob(_id, document)
 		local p = promise.new()
 		exports['sandbox-base']:DatabaseGameDeleteOne({
