@@ -38,6 +38,18 @@ exports('UtilsGetTableLength', function(t)
     return count
 end)
 
+exports('CloneDeep', function(self, table)
+    local copy = {}
+    for k, v in pairs(table) do
+        if type(v) == "table" then
+            copy[k] = self:CloneDeep(v)
+        else
+            copy[k] = v
+        end
+    end
+    return copy
+end)
+
 exports('UtilsGetTableKeys', function(t)
     local keys = {}
     for k, v in pairs(t) do
