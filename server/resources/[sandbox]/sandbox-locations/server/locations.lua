@@ -1,4 +1,4 @@
-local Config = require('shared.Config')
+local Config = require('shared.config')
 
 AddEventHandler('onResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
