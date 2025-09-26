@@ -1,3 +1,7 @@
+AddEventHandler("Core:Shared:Ready", function()
+	RegisterChatCommands()
+end)
+
 exports("VisualsToggle", function(source)
 	TriggerClientEvent("Visuals:Client:Toggle", source)
 end)

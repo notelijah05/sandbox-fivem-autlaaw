@@ -1,6 +1,7 @@
 local _uircd = {}
 
 AddEventHandler("Core:Shared:Ready", function()
+	RegisterChatCommands()
 	exports['sandbox-base']:MiddlewareAdd("Characters:Creating", function(source, cData)
 		return {
 			{

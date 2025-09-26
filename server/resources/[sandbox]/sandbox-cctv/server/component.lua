@@ -1,5 +1,6 @@
 AddEventHandler("Core:Shared:Ready", function()
 	SetupCameras()
+	RegisterChatCommands()
 
 	exports["sandbox-base"]:RegisterServerCallback("CCTV:PreviousInGroup", function(source, data, cb)
 		local pState = Player(source).state
