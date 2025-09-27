@@ -38,11 +38,11 @@ exports('UtilsGetTableLength', function(t)
     return count
 end)
 
-exports('CloneDeep', function(self, table)
+exports('CloneDeep', function(table)
     local copy = {}
     for k, v in pairs(table) do
         if type(v) == "table" then
-            copy[k] = self:CloneDeep(v)
+            copy[k] = exports['sandbox-base']:CloneDeep(v)
         else
             copy[k] = v
         end
