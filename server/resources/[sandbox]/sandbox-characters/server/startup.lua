@@ -1,4 +1,3 @@
-local Config = require('shared.config')
 Spawns = {}
 
 function Startup()
@@ -11,7 +10,6 @@ function Startup()
 		exports['sandbox-base']:LoggerTrace("Characters", "Loaded ^2" .. #results .. "^7 Spawn Locations",
 			{ console = true })
 
-		Spawns = { table.unpack(Config.DefaultSpawns) }
 		for k, v in ipairs(results) do
 			local spawn = {
 				id = v.id,

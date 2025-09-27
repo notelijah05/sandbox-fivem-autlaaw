@@ -1,7 +1,6 @@
 local chatInputActive = false
 local chatInputActivating = false
 local chatHidden = true
-local chatLoaded = false
 
 RegisterNetEvent("chatMessage")
 RegisterNetEvent("chat:addTemplate")
@@ -249,32 +248,22 @@ end)
 AddEventHandler("onClientResourceStart", function(resName)
 	Wait(500)
 
-	if Chat ~= nil then
-		exports["sandbox-chat"]:RefreshCommands()
-		exports["sandbox-chat"]:RefreshThemes()
-	end
+	exports["sandbox-chat"]:RefreshCommands()
+	exports["sandbox-chat"]:RefreshThemes()
 end)
 
 AddEventHandler("onClientResourceStop", function(resName)
 	Wait(500)
 
-	if Chat ~= nil then
-		exports["sandbox-chat"]:RefreshCommands()
-		exports["sandbox-chat"]:RefreshThemes()
-	end
+	exports["sandbox-chat"]:RefreshCommands()
+	exports["sandbox-chat"]:RefreshThemes()
 end)
 
 RegisterNUICallback("loaded", function(data, cb)
 	TriggerServerEvent("chat:init")
 
-	if Chat ~= nil then
-		exports["sandbox-chat"]:RefreshCommands()
-		exports["sandbox-chat"]:RefreshThemes()
-	end
+	exports["sandbox-chat"]:RefreshCommands()
+	exports["sandbox-chat"]:RefreshThemes()
 
 	cb("ok")
-
-	Citizen.SetTimeout(5000, function()
-		chatLoaded = true
-	end)
 end)

@@ -17,7 +17,7 @@ exports("GetAllLocations", function(type, cb)
 	local filtered = {}
 
 	for _, location in ipairs(Config.DefaultSpawns) do
-		if not type or location.Type == type then
+		if not type or type == "spawn" then
 			local locationCopy = {
 				id = location.id,
 				label = location.label,
