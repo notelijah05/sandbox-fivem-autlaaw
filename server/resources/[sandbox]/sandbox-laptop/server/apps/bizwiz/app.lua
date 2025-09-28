@@ -57,60 +57,38 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:EmployeeSearch", function(source, data, cb)
 		local job = CheckBusinessPermissions(source)
 		if job then
-			exports['sandbox-base']:DatabaseGameFind({
-				collection = "characters",
-				query = {
-					["$and"] = {
-						{
-							["$or"] = {
-								{
-									["$expr"] = {
-										["$regexMatch"] = {
-											input = {
-												["$concat"] = { "$First", " ", "$Last" },
-											},
-											regex = data.term or "",
-											options = "i",
-										},
-									},
-								},
-								{
-									["$expr"] = {
-										["$regexMatch"] = {
-											input = {
-												["$toString"] = "$SID",
-											},
-											regex = data.term or "",
-											options = "i",
-										},
-									},
-								},
-							},
-						},
-						{
-							Jobs = {
-								["$elemMatch"] = {
-									Id = job,
-								},
-							},
-						},
-					}
-				},
-				options = {
-					projection = {
-						_id = 0,
-						SID = 1,
-						First = 1,
-						Last = 1,
-					},
-					limit = 4,
-				},
-			}, function(success, results)
-				if not success then
+			local query = [[
+                SELECT SID, First, Last, Jobs
+                FROM characters
+                WHERE (First LIKE @term OR Last LIKE @term OR SID LIKE @term)
+                LIMIT 4
+            ]]
+			local params = {
+				['@term'] = '%' .. (data.term or '') .. '%'
+			}
+
+			MySQL.Async.fetchAll(query, params, function(results)
+				if not results then
 					cb({})
 					return
 				end
-				cb(results)
+
+				local filteredResults = {}
+				for _, v in ipairs(results) do
+					local jobs = json.decode(v.Jobs)
+					for _, j in ipairs(jobs) do
+						if j.Id == job then
+							table.insert(filteredResults, {
+								SID = v.SID,
+								First = v.First,
+								Last = v.Last
+							})
+							break
+						end
+					end
+				end
+
+				cb(filteredResults)
 			end)
 		else
 			cb(false)

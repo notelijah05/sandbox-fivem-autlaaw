@@ -14,26 +14,6 @@ local fuckingCharProjection = {
     User = 1,
 }
 
-function GetSpawnLocations()
-    local p = promise.new()
-
-    exports['sandbox-base']:DatabaseGameFind({
-        collection = 'locations',
-        query = {
-            Type = 'spawn'
-        }
-    }, function(success, results)
-        if success and #results > 0 then
-            p:resolve(results)
-        else
-            p:resolve(false)
-        end
-    end)
-
-    local res = Citizen.Await(p)
-    return res
-end
-
 function RegisterCallbacks()
     exports["sandbox-base"]:RegisterServerCallback('Admin:GetPlayerList', function(source, data, cb)
         CreateThread(function()
@@ -110,21 +90,11 @@ function RegisterCallbacks()
                 local char = exports['sandbox-characters']:FetchCharacterSource(data)
 
                 local p = promise.new()
-                exports['sandbox-base']:DatabaseGameFind({
-                    collection = "characters",
-                    query = char and {
-                        User = target:GetData('AccountID'),
-                        SID = {
-                            ["$ne"] = char:GetData("SID")
-                        }
-                    } or {
-                        User = target:GetData('AccountID'),
-                    },
-                    options = {
-                        projection = fuckingCharProjection,
-                    }
-                }, function(success, results)
-                    if success and results and #results > 0 then
+                MySQL.Async.fetchAll('SELECT * FROM characters WHERE User = @user AND SID != @sid', {
+                    ['@user'] = target:GetData('AccountID'),
+                    ['@sid'] = char and char:GetData("SID") or nil
+                }, function(results)
+                    if results and #results > 0 then
                         p:resolve(results)
                     else
                         p:resolve({})
@@ -206,86 +176,50 @@ function RegisterCallbacks()
     exports["sandbox-base"]:RegisterServerCallback('Admin:GetAllPlayersByCharacter', function(source, data, cb)
         local player = exports['sandbox-base']:FetchSource(source)
         if player and player.Permissions:IsStaff() then
-            local matchQuery = {
-                User = { ["$exists"] = 1 },
-            }
+            local matchQuery = 'User IS NOT NULL'
+            local params = {}
 
             if #data.term > 0 then
-                matchQuery = {
-                    ["$and"] = {
-                        {
-                            ["$or"] = {
-                                {
-                                    ["$expr"] = {
-                                        ["$eq"] = {
-                                            { ["$toString"] = "$SID" },
-                                            data.term
-                                        }
-                                    },
-                                },
-                                {
-                                    ["$expr"] = {
-                                        ["$regexMatch"] = {
-                                            input = {
-                                                ["$concat"] = { "$First", " ", "$Last" },
-                                            },
-                                            regex = data.term,
-                                            options = "i",
-                                        },
-                                    },
-                                },
-                            }
-                        },
-                    }
-                }
+                matchQuery = matchQuery .. ' AND (SID = @term OR CONCAT(First, " ", Last) LIKE @term)'
+                params['@term'] = '%' .. data.term .. '%'
             end
 
-            exports['sandbox-base']:DatabaseGameAggregate({
-                collection = 'characters',
-                aggregate = {
-                    {
-                        ["$match"] = matchQuery,
-                    },
-                    {
-                        ["$project"] = fuckingCharProjection,
-                    },
-                    {
-                        ["$sort"] = {
-                            SID = -1
-                        }
-                    },
-                    {
-                        ['$facet'] = {
-                            data = {
-                                { ["$skip"] = (data.page - 1) * PER_PAGE },
-                                { ["$limit"] = PER_PAGE }
-                            },
-                            pagination = {
-                                { ["$count"] = "total" }
-                            }
-                        },
-                    }
-                }
-            }, function(success, results)
-                if success and results[1]?.data and results[1]?.pagination then
-                    local totalPages = results[1]?.pagination[1]?.total or 1
-                    local foundPlayers = results[1]?.data or {}
-                    local data = {}
+            local query = string.format([[
+                SELECT * FROM characters
+                WHERE %s
+                ORDER BY SID DESC
+                LIMIT @limit OFFSET @offset
+            ]], matchQuery)
 
-                    for k, v in ipairs(foundPlayers) do
-                        local isOnline = exports['sandbox-base']:FetchPlayerData("AccountID", v.User)
+            params['@limit'] = PER_PAGE
+            params['@offset'] = (data.page - 1) * PER_PAGE
 
-                        if isOnline then
-                            v.Online = isOnline:GetData("Source")
+            MySQL.Async.fetchAll(query, params, function(results)
+                if results and #results > 0 then
+                    local totalQuery = string.format([[
+                        SELECT COUNT(*) as total FROM characters
+                        WHERE %s
+                    ]], matchQuery)
+
+                    MySQL.Async.fetchAll(totalQuery, params, function(totalResults)
+                        local totalPages = math.ceil((totalResults[1].total or 1) / PER_PAGE)
+                        local data = {}
+
+                        for k, v in ipairs(results) do
+                            local isOnline = exports['sandbox-characters']:FetchByID(v.User)
+
+                            if isOnline then
+                                v.Online = isOnline:GetData("Source")
+                            end
+
+                            table.insert(data, v)
                         end
 
-                        table.insert(data, v)
-                    end
-
-                    cb({
-                        players = data,
-                        pages = totalPages,
-                    })
+                        cb({
+                            players = data,
+                            pages = totalPages,
+                        })
+                    end)
                 else
                     cb(false)
                 end

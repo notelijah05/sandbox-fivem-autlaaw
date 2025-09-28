@@ -358,28 +358,25 @@ AddEventHandler('onResourceStart', function(resource)
 		exports["sandbox-chat"]:RegisterAdminCommand("pedwhitelist", function(source, args, rawCommand)
 			local sid, model, label = tonumber(args[1]), args[2], args[3]
 			if sid and model and label then
-				exports['sandbox-base']:DatabaseGameFindOne({
-					collection = "characters",
-					query = {
-						SID = sid,
-					},
-					options = {
-						projection = {
-							SID = 1,
-						}
-					}
-				}, function(success, results)
-					if success and #results > 0 then
-						MySQL.insert.await("INSERT INTO whitelisted_peds (sid, model, label) VALUES (?, ?, ?)", {
-							sid,
-							model,
-							label
-						})
-
-						exports["sandbox-chat"]:SendSystemSingle(source,
-							string.format("Added Whitelisted Ped to State ID %s", sid))
+				MySQL.Async.fetchAll('SELECT SID FROM characters WHERE SID = @sid LIMIT 1', {
+					['@sid'] = sid
+				}, function(results)
+					if #results > 0 then
+						MySQL.Async.execute(
+							'INSERT INTO whitelisted_peds (sid, model, label) VALUES (@sid, @model, @label)', {
+								['@sid'] = sid,
+								['@model'] = model,
+								['@label'] = label
+							}, function(affectedRows)
+								if affectedRows > 0 then
+									Chat.Send.System:Single(source,
+										string.format("Added Whitelisted Ped to State ID %s", sid))
+								else
+									Chat.Send.System:Single(source, "Failed to add Whitelisted Ped")
+								end
+							end)
 					else
-						exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
+						Chat.Send.System:Single(source, "Invalid State ID")
 					end
 				end)
 			else
@@ -461,8 +458,6 @@ AddEventHandler('onResourceStart', function(resource)
 end)
 
 exports("Save", function(char, ped)
-	local p = promise.new()
-
 	-- On the Verge of Suicide (WHY??? Apparently it won't update in mongodb unless this is done)
 	if ped and ped.customization and ped.customization.face and ped.customization.face.features and type(ped.customization.face.features) == "table" then
 		for k, v in pairs(ped.customization.face.features) do
@@ -470,29 +465,18 @@ exports("Save", function(char, ped)
 		end
 	end
 
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "peds",
-		query = {
-			Char = char:GetData("ID"),
-		},
-		update = {
-			["$set"] = {
-				Ped = ped,
-			},
-		},
-		options = {
-			upsert = true,
-		},
-	}, function(success, results)
-		if not success then
-			return
-		end
-		char:SetData("Ped", ped)
+	local savePedQuery = MySQL.query.await([[
+		INSERT INTO `peds` (`char`, `ped`) VALUES (?, ?)
+		ON DUPLICATE KEY UPDATE `ped` = VALUES(`ped`)
+	  ]], { char:GetData("ID"), json.encode(ped) })
 
-		p:resolve(success)
-	end)
+	if not savePedQuery then
+		return false
+	end
 
-	return Citizen.Await(p)
+	char:SetData("Ped", ped)
+
+	return true
 end)
 
 exports("ApplyOutfit", function(source, outfit)
@@ -673,48 +657,57 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Ped:CheckPed", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			exports['sandbox-base']:DatabaseGameFindOne({
-				collection = "peds",
-				query = {
-					Char = char:GetData("ID"),
-				},
-			}, function(success, results)
-				if not success then
-					return
-				end
-				if #results == 0 then
-					local tmp = deepcopy(TemplateData)
+			local myPed = MySQL.single.await([[
+				SELECT * FROM `peds` WHERE `char` = ?
+			]], { char:GetData("ID") })
 
-					if char:GetData("Gender") == 0 then
-						tmp.model = "mp_m_freemode_01"
-					else
-						tmp.model = "mp_f_freemode_01"
-					end
+			if not myPed then
+				local tmp = deepcopy(TemplateData)
 
-					char:SetData("Ped", tmp)
-					cb({
-						existed = false,
-						ped = tmp,
-					})
+				if char:GetData("Gender") == 0 then
+					tmp.model = "mp_m_freemode_01"
 				else
-					local tmp = results[1].Ped
-					if tmp.model == "" then
-						if char:GetData("Gender") == 0 then
-							tmp.model = "mp_m_freemode_01"
-						else
-							tmp.model = "mp_f_freemode_01"
-						end
-					end
-
-					char:SetData("Ped", tmp)
-					cb({
-						existed = true,
-						ped = tmp,
-					})
+					tmp.model = "mp_f_freemode_01"
 				end
-			end)
-		else
-			cb(false)
+
+				char:SetData("Ped", tmp)
+				return cb({
+					existed = false,
+					ped = tmp,
+				})
+			end
+
+			local ped = json.decode(myPed.ped)
+
+			if not ped or next(ped) == nil then
+				local tmp = deepcopy(TemplateData)
+
+				if char:GetData("Gender") == 0 then
+					tmp.model = "mp_m_freemode_01"
+				else
+					tmp.model = "mp_f_freemode_01"
+				end
+
+				char:SetData("Ped", tmp)
+				return cb({
+					existed = false,
+					ped = tmp,
+				})
+			end
+
+			if ped.model == "" then
+				if char:GetData("Gender") == 0 then
+					ped.model = "mp_m_freemode_01"
+				else
+					ped.model = "mp_f_freemode_01"
+				end
+			end
+
+			char:SetData("Ped", ped)
+			cb({
+				existed = true,
+				ped = ped,
+			})
 		end
 	end)
 

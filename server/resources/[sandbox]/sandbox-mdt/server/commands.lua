@@ -33,37 +33,28 @@ function RegisterChatCommands()
 	}, 2)
 
 	exports["sandbox-chat"]:RegisterAdminCommand("reclaimcallsign", function(source, args, rawCommand)
-		exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
-			collection = "characters",
-			query = {
-				Callsign = args[1],
-			},
-			update = {
-				['$set'] = {
-					Callsign = false,
-				},
-			},
-			options = {
-				projection = {
-					SID = 1,
-					User = 1,
-					First = 1,
-					Last = 1,
-				},
-			},
-		}, function(success, results)
-			if success and results then
-				local char = exports['sandbox-characters']:FetchBySID(results.SID)
-				if char then
-					char:SetData("Callsign", false)
-				end
+		local callsign = args[1]
+		local result = MySQL.Sync.fetchAll('SELECT SID, User, First, Last FROM characters WHERE Callsign = @callsign', {
+			['@callsign'] = callsign
+		})
 
-				exports["sandbox-chat"]:SendSystemSingle(source,
-					string.format("Callsign Reclaimed From %s %s (%s)", results.First, results.Last, results.SID))
-			else
-				exports["sandbox-chat"]:SendSystemSingle(source, "Nobody With That Callsign")
+		if result and #result > 0 then
+			local char = result[1]
+			MySQL.Sync.execute('UPDATE characters SET Callsign = @newCallsign WHERE Callsign = @callsign', {
+				['@newCallsign'] = false,
+				['@callsign'] = callsign
+			})
+
+			local fetchedChar = Fetch:SID(char.SID)
+			if fetchedChar then
+				fetchedChar:SetData("Callsign", false)
 			end
-		end)
+
+			Chat.Send.System:Single(source,
+				string.format("Callsign Reclaimed From %s %s (%s)", char.First, char.Last, char.SID))
+		else
+			Chat.Send.System:Single(source, "Nobody With That Callsign")
+		end
 	end, {
 		help = "Force Reclaim a Callsign",
 		params = {

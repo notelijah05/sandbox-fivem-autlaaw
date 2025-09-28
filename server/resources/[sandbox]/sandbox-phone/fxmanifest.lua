@@ -8,7 +8,6 @@ fx_version("cerulean")
 game("gta5")
 client_script("@sandbox-base/exports/cl_error.lua")
 client_script("@sandbox-pwnzor/client/check.lua")
-server_script("@oxmysql/lib/MySQL.lua")
 
 ui_page("ui/dist/index.html")
 files({
@@ -28,6 +27,7 @@ client_scripts({
 })
 
 server_scripts({
+	'@oxmysql/lib/MySQL.lua',
 	"server/*.lua",
 	"server/apps/**/*.lua",
 })

@@ -270,7 +270,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						data.points,
 						data.fine,
 						data.jail,
-						data.parole?.parole or 0,
+						data.parole and data.parole.parole or 0,
 						json.encode({
 							type = data.sentence.type,
 							value = data.sentence.value,
@@ -312,68 +312,50 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				MySQL.transaction.await(transactions)
 
 				if data.sentence.revoke or data.points > 0 then
-					local needsUpdate = false
-					local licenseUpdate = {}
+					local character = MySQL.single.await('SELECT Licenses FROM characters WHERE SID = ?',
+						{ data.data.SID })
+					if character then
+						local licenses = json.decode(character.Licenses) or {}
 
-					if data.points > 0 then
-						needsUpdate = true
-
-						licenseUpdate['$inc'] = {
-							['Licenses.Drivers.Points'] = data.points
-						}
-					end
-
-					if data.sentence.revoke then
-						for k, v in pairs(data.sentence.revoke) do
-							if v then
-								if not licenseUpdate['$set'] then
-									licenseUpdate['$set'] = {}
-								end
-
-								needsUpdate = true
-
-								if k == 'drivers' then
-									licenseUpdate['$set']['Licenses.Drivers.Active'] = false
-									licenseUpdate['$set']['Licenses.Drivers.Suspended'] = true
-								elseif k == 'weapons' then
-									licenseUpdate['$set']['Licenses.Weapons.Active'] = false
-									licenseUpdate['$set']['Licenses.Weapons.Suspended'] = true
-								elseif k == 'hunting' then
-									licenseUpdate['$set']['Licenses.Hunting.Active'] = false
-									licenseUpdate['$set']['Licenses.Hunting.Suspended'] = true
-								elseif k == 'fishing' then
-									licenseUpdate['$set']['Licenses.Fishing.Active'] = false
-									licenseUpdate['$set']['Licenses.Fishing.Suspended'] = true
-								end
-							end
+						if data.points > 0 then
+							licenses.Drivers = licenses.Drivers or {}
+							licenses.Drivers.Points = (licenses.Drivers.Points or 0) + data.points
 						end
-					end
 
-					if needsUpdate then
-						local p = promise.new()
-						exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
-							collection = "characters",
-							query = {
-								SID = data.data.SID,
-							},
-							update = licenseUpdate,
-							options = {
-								returnDocument = 'after',
-							}
-						}, function(success, results)
-							if success and results and results.SID then
-								if results and results.Licenses then
-									local char = exports['sandbox-characters']:FetchBySID(results.SID)
-									if char then
-										char:SetData('Licenses', results.Licenses)
+						if data.sentence.revoke then
+							for k, v in pairs(data.sentence.revoke) do
+								if v then
+									licenses[k] = licenses[k] or {}
+									if k == 'drivers' then
+										licenses.Drivers = licenses.Drivers or {}
+										licenses.Drivers.Active = false
+										licenses.Drivers.Suspended = true
+									elseif k == 'weapons' then
+										licenses.Weapons = licenses.Weapons or {}
+										licenses.Weapons.Active = false
+										licenses.Weapons.Suspended = true
+									elseif k == 'hunting' then
+										licenses.Hunting = licenses.Hunting or {}
+										licenses.Hunting.Active = false
+										licenses.Hunting.Suspended = true
+									elseif k == 'fishing' then
+										licenses.Fishing = licenses.Fishing or {}
+										licenses.Fishing.Active = false
+										licenses.Fishing.Suspended = true
 									end
 								end
 							end
+						end
 
-							p:resolve(success)
-						end)
+						MySQL.update.await('UPDATE characters SET Licenses = ? WHERE SID = ?', {
+							json.encode(licenses),
+							data.data.SID
+						})
 
-						Citizen.Await(p)
+						local char = exports['sandbox-characters']:FetchBySID(data.data.SID)
+						if char then
+							char:SetData('Licenses', licenses)
+						end
 					end
 				end
 				cb(true)
@@ -425,62 +407,67 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("MDT:RosterView", function(source, data, cb)
-		exports['sandbox-base']:DatabaseGameFind({
-			collection = "characters",
-			query = {
-				Jobs = {
-					["$elemMatch"] = {
-						Id = data.job,
-					},
-				},
-			},
-			options = {
-				projection = {
-					_id = 0,
-					Mugshot = 1,
-					First = 1,
-					Last = 1,
-					SID = 1,
-					Callsign = 1,
-					["Jobs.$"] = 1,
-				},
-			},
-		}, function(success, results)
-			cb(results or {})
+		local query = [[
+			SELECT Mugshot, First, Last, SID, Callsign, Jobs
+			FROM characters
+		]]
+
+		MySQL.Async.fetchAll(query, {}, function(results)
+			if results then
+				local formattedResults = {}
+				for _, result in ipairs(results) do
+					local jobs = json.decode(result.Jobs)
+					for _, job in ipairs(jobs) do
+						if job.Id == data.job then
+							table.insert(formattedResults, {
+								Mugshot = result.Mugshot,
+								First = result.First,
+								Last = result.Last,
+								SID = result.SID,
+								Callsign = result.Callsign,
+								Jobs = jobs
+							})
+							break
+						end
+					end
+				end
+				cb(formattedResults)
+			else
+				cb({})
+			end
 		end)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("MDT:RosterSelect", function(source, data, cb)
-		exports['sandbox-base']:DatabaseGameFindOne({
-			collection = "characters",
-			query = {
-				SID = data.person,
-				Jobs = {
-					["$elemMatch"] = {
-						Id = data.job,
-					},
-				},
-			},
-			options = {
-				projection = {
-					_id = 0,
-					Mugshot = 1,
-					First = 1,
-					Last = 1,
-					SID = 1,
-					Callsign = 1,
-					MDTSuspension = 1,
-					MDTSystemAdmin = 1,
-					Qualifications = 1,
-					Phone = 1,
-					TimeClockedOn = 1,
-					LastClockOn = 1,
-					["Jobs.$"] = 1,
-				},
-			},
-		}, function(success, results)
-			if success and results then
-				cb(results[1])
+		local query = [[
+			SELECT Mugshot, First, Last, SID, Callsign, MDTSuspension, MDTSystemAdmin, Qualifications, Phone, TimeClockedOn, LastClockOn, Jobs
+			FROM characters
+			WHERE SID = @sid
+		]]
+
+		local params = {
+			['@sid'] = data.person
+		}
+
+		MySQL.Async.fetchAll(query, params, function(results)
+			if results and #results > 0 then
+				local character = results[1]
+				local jobs = json.decode(character.Jobs)
+				local jobFound = false
+
+				for _, job in ipairs(jobs) do
+					if job.Id == data.job then
+						jobFound = job
+						break
+					end
+				end
+
+				if jobFound then
+					character.Jobs = { jobFound }
+					cb(character)
+				else
+					cb(false)
+				end
 			else
 				cb(false)
 			end
@@ -491,66 +478,60 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if CheckMDTPermissions(source, 'REVOKE_LICENSE_SUSPENSIONS') then
-			local canUpdate = false
-			local licenseUpdate = {
-				['$set'] = {}
-			}
+			local character = MySQL.single.await('SELECT Licenses FROM characters WHERE SID = ?', { data.SID })
+			if character then
+				local licenses = json.decode(character.Licenses) or {}
+				local canUpdate = false
 
-			for k, v in pairs(data.unsuspend) do
-				if v then
-					canUpdate = true
+				for k, v in pairs(data.unsuspend) do
+					if v then
+						canUpdate = true
+						licenses[k] = licenses[k] or {}
+						licenses[k].Active = false
+						licenses[k].Suspended = false
 
-					licenseUpdate['$set'][string.format('Licenses.%s.Active', k)] = false
-					licenseUpdate['$set'][string.format('Licenses.%s.Suspended', k)] = false
-
-					if k == 'Drivers' then
-						licenseUpdate['$set']['Licenses.Drivers.Active'] = true
-						licenseUpdate['$set']['Licenses.Drivers.Points'] = 0
+						if k == 'Drivers' then
+							licenses.Drivers = licenses.Drivers or {}
+							licenses.Drivers.Active = true
+							licenses.Drivers.Points = 0
+						end
 					end
 				end
-			end
 
-			if canUpdate then
-				exports['sandbox-base']:LoggerWarn(
-					"MDT",
-					string.format(
-						"%s %s (%s) Revoked License Suspensions: %s From State ID %s",
-						char:GetData("First"),
-						char:GetData("Last"),
-						char:GetData("SID"),
-						json.encode(data.unsuspend),
+				if canUpdate then
+					exports['sandbox-base']:LoggerWarn(
+						"MDT",
+						string.format(
+							"%s %s (%s) Revoked License Suspensions: %s From State ID %s",
+							char:GetData("First"),
+							char:GetData("Last"),
+							char:GetData("SID"),
+							json.encode(data.unsuspend),
+							data.SID
+						),
+						{
+							console = true,
+							file = true,
+							database = true,
+							discord = {
+								embed = true,
+							},
+						}
+					)
+
+					MySQL.update.await('UPDATE characters SET Licenses = ? WHERE SID = ?', {
+						json.encode(licenses),
 						data.SID
-					),
-					{
-						console = true,
-						file = true,
-						database = true,
-						discord = {
-							embed = true,
-						},
-					}
-				)
+					})
 
-				exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
-					collection = "characters",
-					query = {
-						SID = data.SID,
-					},
-					update = licenseUpdate,
-					options = {
-						returnDocument = 'after',
-					}
-				}, function(success, results)
-					if success and results and results.SID and results.Licenses then
-						local char = exports['sandbox-characters']:FetchBySID(results.SID)
-						if char then
-							char:SetData('Licenses', results.Licenses)
-						end
-						cb(results.Licenses)
-					else
-						cb(false)
+					local char = exports['sandbox-characters']:FetchBySID(data.SID)
+					if char then
+						char:SetData('Licenses', licenses)
 					end
-				end)
+					cb(licenses)
+				else
+					cb(false)
+				end
 			else
 				cb(false)
 			end
@@ -583,30 +564,25 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				}
 			)
 
-			exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
-				collection = "characters",
-				query = {
-					SID = data.SID,
-				},
-				update = {
-					["$set"] = {
-						['Licenses.Drivers.Points'] = data.newPoints
-					}
-				},
-				options = {
-					returnDocument = 'after',
-				}
-			}, function(success, results)
-				if success and results and results.SID and results.Licenses then
-					local char = exports['sandbox-characters']:FetchBySID(results.SID)
-					if char then
-						char:SetData('Licenses', results.Licenses)
-					end
-					cb(results.Licenses)
-				else
-					cb(false)
+			local character = MySQL.single.await('SELECT Licenses FROM characters WHERE SID = ?', { data.SID })
+			if character then
+				local licenses = json.decode(character.Licenses) or {}
+				licenses.Drivers = licenses.Drivers or {}
+				licenses.Drivers.Points = data.newPoints
+
+				MySQL.update.await('UPDATE characters SET Licenses = ? WHERE SID = ?', {
+					json.encode(licenses),
+					data.SID
+				})
+
+				local char = exports['sandbox-characters']:FetchBySID(data.SID)
+				if char then
+					char:SetData('Licenses', licenses)
 				end
-			end)
+				cb(licenses)
+			else
+				cb(false)
+			end
 		else
 			cb(false)
 		end

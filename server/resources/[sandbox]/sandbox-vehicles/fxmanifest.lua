@@ -8,11 +8,13 @@ client_scripts({
 	'@sandbox-polyzone/client.lua',
 	'@sandbox-polyzone/BoxZone.lua',
 	'@sandbox-polyzone/EntityZone.lua',
-	"shared/**/*.lua",
 	"client/**/*.lua",
 })
 
 server_scripts({
-	"shared/**/*.lua",
 	"server/**/*.lua",
+})
+
+shared_scripts({
+	"shared/**/*.lua",
 })

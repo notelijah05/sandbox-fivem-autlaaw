@@ -1,73 +1,71 @@
 _aptData = {
 	{
-		name = "Richard's Tower",
+		name = "Elkridge Hotel",
 		invEntity = 13,
-		coords = vector3(-1274.351, 315.095, 64.512),
+		coords = vector3(285.77, -937.08, 29.32),
 		heading = 153.319,
-		length = 8.4,
-		width = 4.0,
+		length = 3.0,
+		width = 5.0,
 		options = {
-			heading = 0,
+			heading = 314,
 			--debugPoly=true,
-			minZ = 63.21,
-			maxZ = 67.21,
+			minZ = 28.32,
+			maxZ = 32.32,
 		},
 		interior = {
 			wakeup = {
-				x = 285.733,
-				y = -928.362,
-				z = -23.954,
-				h = 268.463,
+				x = 154.297,
+				y = -1005.266,
+				z = -99.976,
+				h = 179.907,
 			},
 			spawn = {
-				x = 291.069,
-				y = -924.995,
-				z = -22.995,
-				h = 174.465,
+				x = 151.556,
+				y = -1007.567,
+				z = -98.000,
+				h = 353.366,
 			},
 			locations = {
 				exit = {
-					coords = vector3(291.04, -924.59, -23.0),
-					length = 1.0,
-					width = 1.6,
+					coords = vector3(151.3, -1007.99, -99.0),
+					length = 1.4,
+					width = 1.8,
 					options = {
 						heading = 0,
 						--debugPoly=true,
-						minZ = -24.0,
-						maxZ = -21.4
+						minZ = -101.6,
+						maxZ = -97.6
 					},
 				},
 				wardrobe = {
-					coords = vector3(287.15, -922.39, -23.0),
-					length = 1.0,
+					coords = vector3(150.47, -1001.45, -99.0),
+					length = 2.0,
 					width = 2.0,
 					options = {
-						heading = 270,
+						heading = 0,
 						--debugPoly=true,
-						minZ = -24.0,
-						maxZ = -21.6
+						minZ = -101.6,
+						maxZ = -97.6
 					},
 				},
 				stash = {
-					coords = vector3(288.89, -924.91, -23.0),
-					length = 0.8,
+					coords = vector3(150.69, -1004.24, -99.0),
+					length = 3.0,
+					width = 1.0,
+					options = {
+						heading = 0,
+						--debugPoly=true,
+					},
+				},
+				logout = {
+					coords = vector3(154.31, -1004.52, -99.0),
+					length = 2.0,
 					width = 2.4,
 					options = {
 						heading = 0,
 						--debugPoly=true,
-						minZ = -24.0,
-						maxZ = -22.0
-					},
-				},
-				logout = {
-					coords = vector3(284.92, -928.52, -23.0),
-					length = 2.6,
-					width = 2.2,
-					options = {
-						heading = 0,
-						--debugPoly=true,
-						minZ = -24.0,
-						maxZ = -22.8
+						minZ = -102.8,
+						maxZ = -98.8
 					},
 				},
 			},

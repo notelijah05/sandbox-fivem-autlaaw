@@ -6,13 +6,15 @@ client_script("@sandbox-pwnzor/client/check.lua")
 server_script("@oxmysql/lib/MySQL.lua")
 
 client_scripts({
-	"shared/**/*.lua",
 	"client/**/*.lua",
 })
 
 server_scripts({
-	"shared/**/*.lua",
 	"server/**/*.lua",
+})
+
+shared_scripts({
+	"shared/**/*.lua",
 })
 
 ui_page("ui/dist/index.html")

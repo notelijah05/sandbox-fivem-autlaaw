@@ -42,16 +42,10 @@ function RegisterCallbacks()
 		end
 
 		local motd = GetConvar("motd", "Welcome to SandboxRP")
-		exports['sandbox-base']:DatabaseGameFind({
-			collection = "changelogs",
-			options = {
-				sort = {
-					date = -1,
-				},
-			},
-			limit = 1,
-		}, function(success, results)
-			if not success then
+		local query = 'SELECT * FROM `changelogs` ORDER BY `date` DESC LIMIT 1'
+
+		MySQL.Async.fetchAll(query, {}, function(results)
+			if not results then
 				cb({ changelog = nil, motd = "" })
 				return
 			end
@@ -66,341 +60,282 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:GetCharacters", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
-		exports['sandbox-base']:DatabaseGameFind({
-			collection = "characters",
-			query = {
-				User = player:GetData("AccountID"),
-				Deleted = {
-					["$ne"] = true,
-				},
-			},
-		}, function(success, results)
-			if not success then
-				cb(nil)
-				return
-			end
-			local cData = {}
+		local myCharacters = MySQL.query.await('SELECT * FROM `characters` WHERE `User` = @User AND `Deleted` = 0', {
+			["@User"] = player:GetData("AccountID"),
+		})
+		if #myCharacters == 0 then
+			return cb({})
+		end
 
-			local charsToFetch = {}
-			for k, v in ipairs(results) do
-				table.insert(charsToFetch, v._id)
-			end
+		local cData = {}
+		for k, v in ipairs(myCharacters) do
+			local pedData = MySQL.single.await(
+				[[
+			  SELECT * FROM `peds` WHERE `Char` = @Char
+			]],
+				{
+					["@Char"] = v.SID,
+				}
+			)
+			table.insert(cData, {
+				ID = v.SID,
+				First = v.First,
+				Last = v.Last,
+				Phone = v.Phone,
+				DOB = v.DOB,
+				Gender = v.Gender,
+				LastPlayed = v.LastPlayed,
+				Jobs = json.decode(v.Jobs),
+				SID = v.SID,
+				GangChain = json.decode(v.GangChain),
+				Preview = pedData and json.decode(pedData.ped) or false
+			})
+		end
 
-			local p = promise.new()
-			exports['sandbox-base']:DatabaseGameFind({
-				collection = "peds",
-				query = {
-					Char = {
-						["$in"] = charsToFetch,
-					},
-				},
-			}, function(s2, pedData)
-				if s2 and pedData then
-					p:resolve(pedData)
-				else
-					p:resolve({})
-				end
-			end)
-
-			local pedData = Citizen.Await(p)
-			local shit = {}
-
-			for k, v in ipairs(pedData) do
-				shit[v.Char] = v.Ped
-			end
-
-			for k, v in ipairs(results) do
-				table.insert(cData, {
-					ID = v._id,
-					First = v.First,
-					Last = v.Last,
-					Phone = v.Phone,
-					DOB = v.DOB,
-					Gender = v.Gender,
-					LastPlayed = v.LastPlayed,
-					Jobs = v.Jobs,
-					SID = v.SID,
-					GangChain = v.GangChain,
-					Preview = shit[v._id] or false,
-				})
-			end
-
-			local charLimit = 3
-			if player.Permissions:IsStaff() then
-				charLimit = 100
-			end
-
-			cb(cData, charLimit)
-		end)
+		player:SetData("Characters", cData)
+		cb(cData)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:CreateCharacter", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
 
-		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameCount({
-			collection = "characters",
-			query = {
-				User = player:GetData("AccountID"),
-				Deleted = {
-					["$ne"] = true,
+		local pNumber = exports['sandbox-phone']:GeneratePhoneNumber()
+		local doc = {
+			User = player:GetData("AccountID"),
+			First = data.first,
+			Last = data.last,
+			Phone = pNumber,
+			Gender = tonumber(data.gender),
+			Bio = data.bio,
+			Origin = data.origin,
+			DOB = data.dob,
+			LastPlayed = -1,
+			Jobs = {},
+			SID = exports['sandbox-base']:SequenceGet("Character"),
+			Cash = 1000,
+			New = true,
+			Licenses = {
+				Drivers = {
+					Active = true,
+					Points = 0,
+					Suspended = false,
+				},
+				Weapons = {
+					Active = false,
+					Suspended = false,
+				},
+				Hunting = {
+					Active = false,
+					Suspended = false,
+				},
+				Fishing = {
+					Active = false,
+					Suspended = false,
+				},
+				Pilot = {
+					Active = false,
+					Suspended = false,
+				},
+				Drift = {
+					Active = false,
+					Suspended = false,
 				},
 			},
-		}, function(success, count)
-			if success then
-				p:resolve(count)
-			else
-				p:resolve(3)
+		}
+
+		local extra = exports['sandbox-base']:MiddlewareTriggerEventWithData("Characters:Creating", source, doc) or {}
+		for k, v in ipairs(extra) do
+			for k2, v2 in pairs(v) do
+				if k2 ~= "ID" then
+					doc[k2] = v2
+				end
 			end
+		end
+
+		local dbData = exports['sandbox-base']:CloneDeep(doc)
+		for k, v in pairs(dbData) do
+			if type(v) == 'table' then
+				dbData[k] = json.encode(v)
+			end
+		end
+
+		local insertedCharacter = MySQL.insert.await('INSERT INTO `characters` SET ?', { dbData })
+		if insertedCharacter <= 0 then
+			return cb(nil)
+		end
+
+		doc.ID = insertedCharacter
+
+		TriggerEvent("Characters:Server:CharacterCreated", doc)
+		local success, result = pcall(function()
+			exports['sandbox-base']:MiddlewareTriggerEvent("Characters:Created", source, doc)
 		end)
 
-		local charCount = Citizen.Await(p)
-
-		if charCount < 3 or player.Permissions:IsStaff() then
-			local pNumber = exports['sandbox-phone']:GeneratePhoneNumber()
-
-			local doc = {
-				User = player:GetData("AccountID"),
-				First = data.first,
-				Last = data.last,
-				Phone = pNumber,
-				Gender = tonumber(data.gender),
-				Bio = data.bio,
-				Origin = data.origin,
-				DOB = data.dob,
-				LastPlayed = -1,
-				Jobs = {},
-				SID = exports['sandbox-base']:SequenceGet("Character"),
-				Cash = 1000,
-				New = true,
-				Licenses = {
-					Drivers = {
-						Active = true,
-						Points = 0,
-						Suspended = false,
-					},
-					Weapons = {
-						Active = false,
-						Suspended = false,
-					},
-					Hunting = {
-						Active = false,
-						Suspended = false,
-					},
-					Fishing = {
-						Active = false,
-						Suspended = false,
-					},
-					Pilot = {
-						Active = false,
-						Suspended = false,
-					},
-					Drift = {
-						Active = false,
-						Suspended = false,
-					},
-				},
-			}
-
-			local extra = exports['sandbox-base']:MiddlewareTriggerEventWithData("Characters:Creating", source, doc)
-			for k, v in ipairs(extra) do
-				for k2, v2 in pairs(v) do
-					if k2 ~= "ID" then
-						doc[k2] = v2
-					end
-				end
-			end
-
-			exports['sandbox-base']:DatabaseGameInsertOne({
-				collection = "characters",
-				document = doc,
-			}, function(success, result, insertedIds)
-				if not success then
-					cb(nil)
-					return nil
-				end
-				doc.ID = insertedIds[1]
-				TriggerEvent("Characters:Server:CharacterCreated", doc)
-				exports['sandbox-base']:MiddlewareTriggerEvent("Characters:Created", source, doc)
-				cb(doc)
-
-				exports['sandbox-base']:LoggerInfo(
-					"Characters",
-					string.format(
-						"%s [%s] Created a New Character %s %s (%s)",
-						player:GetData("Name"),
-						player:GetData("AccountID"),
-						doc.First,
-						doc.Last,
-						doc.SID
-					),
-					{
-						console = true,
-						file = true,
-						database = true,
-					}
-				)
-			end)
-		else
-			cb(nil)
+		if not success then
+			exports['sandbox-base']:LoggerError(
+				"Characters",
+				string.format("Error in Characters:Created middleware: %s", result)
+			)
 		end
+
+		exports['sandbox-base']:LoggerInfo(
+			"Characters",
+			string.format(
+				"%s [%s] Created a New Character %s %s (%s)",
+				player:GetData("Name"),
+				player:GetData("AccountID"),
+				doc.First,
+				doc.Last,
+				doc.SID
+			),
+			{
+				console = true,
+				file = true,
+				database = true,
+			}
+		)
+		return cb(doc)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:DeleteCharacter", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
-		exports['sandbox-base']:DatabaseGameFindOne({
-			collection = "characters",
-			query = {
-				User = player:GetData("AccountID"),
-				_id = data,
-			},
-		}, function(success, results)
-			if not success or not #results then
-				cb(nil)
-				return
-			end
-			local deletingChar = results[1]
-			exports['sandbox-base']:DatabaseGameUpdateOne({
-				collection = "characters",
-				query = {
-					User = player:GetData("AccountID"),
-					_id = data,
-				},
-				update = {
-					["$set"] = {
-						Deleted = true,
-					},
-				},
-			}, function(success, results)
-				TriggerEvent("Characters:Server:CharacterDeleted", data, deletingChar.SID)
-				cb(success)
+		local myCharacter = MySQL.single.await(
+			[[
+			SELECT * FROM `characters` WHERE `User` = @User AND `SID` = @ID
+		  ]],
+			{
+				["@User"] = player:GetData("AccountID"),
+				["@ID"] = data,
+			}
+		)
 
-				if success then
-					exports['sandbox-base']:LoggerWarn(
-						"Characters",
-						string.format(
-							"%s [%s] Deleted Character %s %s (%s)",
-							player:GetData("Name"),
-							player:GetData("AccountID"),
-							deletingChar.First,
-							deletingChar.Last,
-							deletingChar.SID
-						),
-						{
-							console = true,
-							file = true,
-							database = true,
-							discord = {
-								embed = true,
-							},
-						}
-					)
-				end
-			end)
-		end)
+		if myCharacter == nil then
+			return cb(nil)
+		end
+
+		local deletingChar = exports['sandbox-base']:CloneDeep(myCharacter)
+		local deletedCharacter = MySQL.update.await(
+			[[
+			UPDATE `characters` SET `Deleted` = 1 WHERE `User` = @User AND `SID` = @ID
+		  ]],
+			{
+				["@User"] = player:GetData("AccountID"),
+				["@ID"] = data,
+			}
+		)
+
+		if deletedCharacter then
+			TriggerEvent("Characters:Server:CharacterDeleted", data)
+			cb(true)
+
+			exports['sandbox-base']:LoggerWarn(
+				"Characters",
+				string.format(
+					"%s [%s] Deleted Character %s %s (%s)",
+					player:GetData("Name"),
+					player:GetData("AccountID"),
+					deletingChar.First,
+					deletingChar.Last,
+					deletingChar.SID
+				),
+				{
+					console = true,
+					file = true,
+					database = true,
+					discord = {
+						embed = true,
+					},
+				}
+			)
+		else
+			cb(false)
+		end
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:GetSpawnPoints", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
-		exports['sandbox-base']:DatabaseGameFindOne({
-			collection = "characters",
-			query = {
-				User = player:GetData("AccountID"),
-				_id = data,
-				Deleted = {
-					["$ne"] = true,
+		local myCharacter = MySQL.single.await(
+			[[
+			SELECT * FROM `characters` WHERE `User` = @User AND `SID` = @ID
+		  ]],
+			{
+				["@User"] = player:GetData("AccountID"),
+				["@ID"] = data,
+			}
+		)
+		if myCharacter == nil then
+			return cb(nil)
+		end
+		myCharacter.Jobs = json.decode(myCharacter.Jobs)
+		if myCharacter.New then
+			return cb({
+				{
+					id = 1,
+					label = "Character Creation",
+					location = exports['sandbox-apartments']:GetInteriorLocation(myCharacter.Apartment or 1),
 				},
-			},
-			options = {
-				projection = {
-					SID = 1,
-					New = 1,
-					Jailed = 1,
-					ICU = 1,
-					Apartment = 1,
-					Jobs = 1,
-				},
-			},
-		}, function(success, results)
-			if not success or not #results then
-				cb(nil)
-				return
+			})
+		elseif myCharacter.Jailed then
+			local JailedData = json.decode(myCharacter.JailedData)
+			-- and not myCharacter.Jailed.Released ~= nil
+			if not JailedData.Released then
+				return cb({ Config.PrisonSpawn })
 			end
-			local hasLastLocation = _lastSpawnLocations[results[1].ID]
+		elseif myCharacter.ICU then
+			local ICUData = json.decode(myCharacter.ICUData)
+			if not ICUData.Released then
+				return cb({ Config.ICUSpawn })
+			end
+		end
 
-			if results[1].New then
-				cb({
-					{
-						id = 1,
-						label = "Character Creation",
-						location = exports['sandbox-apartments']:GetInteriorLocation(results[1].Apartment or 1),
-					},
-				})
-			elseif results[1].Jailed and not results[1].Jailed.Released ~= nil then
-				cb({ Config.PrisonSpawn })
-			elseif results[1].ICU and not results[1].ICU.Released then
-				cb({ Config.ICUSpawn })
-			elseif hasLastLocation and exports['sandbox-damage']:WasDead(results[1].SID) then
-				cb({
-					{
-						id = "LastLocation",
-						label = "Last Location",
-						location = {
-							x = hasLastLocation.coords.x,
-							y = hasLastLocation.coords.y,
-							z = hasLastLocation.coords.z,
-							h = 0.0,
-						},
-						icon = "location",
-						event = "Characters:GlobalSpawn",
-					},
-				})
-			else
-				local spawns = exports['sandbox-base']:MiddlewareTriggerEventWithData("Characters:GetSpawnPoints", source,
-					data,
-					results[1])
-				cb(spawns or {})
-			end
-		end)
+		local spawns = exports['sandbox-base']:MiddlewareTriggerEventWithData("Characters:GetSpawnPoints", source, data,
+			myCharacter)
+		cb(spawns)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:GetCharacterData", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
-		exports['sandbox-base']:DatabaseGameFindOne({
-			collection = "characters",
-			query = {
-				User = player:GetData("AccountID"),
-				_id = data,
-			},
-		}, function(success, results)
-			if not success or not #results then
-				cb(nil)
-				return
+		local myCharacter = MySQL.single.await([[
+			SELECT * FROM `characters` WHERE `User` = @User AND `SID` = @ID
+			]],
+			{
+				["@User"] = player:GetData("AccountID"),
+				["@ID"] = data,
+			}
+		)
+
+		if myCharacter == nil then
+			return cb(nil)
+		end
+
+		local cData = myCharacter
+
+		for k, v in ipairs(TablesToDecode) do
+			if cData[v] then
+				cData[v] = json.decode(cData[v])
 			end
+		end
 
-			local cData = results[1]
-			cData.Source = source
-			cData.ID = results[1]._id
-			cData._id = nil
+		cData.Source = source
+		cData.ID = myCharacter.SID
 
-			player:SetData("Character", {
-				SID = cData.SID,
-				First = cData.First,
-				Last = cData.Last,
-			})
+		player:SetData("Character", {
+			SID = cData.SID,
+			First = cData.First,
+			Last = cData.Last,
+		})
 
-			local store = exports["sandbox-base"]:CreateStore(source, "Character", cData)
-			ONLINE_CHARACTERS[source] = store
+		local store = exports['sandbox-base']:CreateStore(source, "Character", cData)
+		ONLINE_CHARACTERS[source] = store
 
-			_pleaseFuckingWorkSID[cData.SID] = source
-			_pleaseFuckingWorkID[cData.ID] = source
+		_pleaseFuckingWorkSID[cData.SID] = source
+		_pleaseFuckingWorkID[cData.ID] = source
 
-			GlobalState[string.format("SID:%s", source)] = cData.SID
+		GlobalState[string.format("SID:%s", source)] = cData.SID
 
-			exports['sandbox-base']:MiddlewareTriggerEvent("Characters:CharacterSelected", source)
+		exports['sandbox-base']:MiddlewareTriggerEvent("Characters:CharacterSelected", source)
 
-			cb(cData)
-		end)
+		cb(cData)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:Logout", function(source, data, cb)
@@ -528,8 +463,8 @@ function RegisterMiddleware()
 
 	exports['sandbox-base']:MiddlewareAdd("Characters:Logout", function(source)
 		local pState = Player(source).state
-		if pState?.tpLocation then
-			_tempLastLocation[source] = pState?.tpLocation
+		if pState.tpLocation then
+			_tempLastLocation[source] = pState.tpLocation
 		else
 			_tempLastLocation[source] = GetEntityCoords(GetPlayerPed(source))
 		end
@@ -543,8 +478,8 @@ AddEventHandler("playerDropped", function()
 	local src = source
 	if DoesEntityExist(GetPlayerPed(src)) then
 		local pState = Player(src).state
-		if pState?.tpLocation then
-			_tempLastLocation[src] = pState?.tpLocation
+		if pState.tpLocation then
+			_tempLastLocation[src] = pState.tpLocation
 		else
 			_tempLastLocation[src] = GetEntityCoords(GetPlayerPed(src))
 		end

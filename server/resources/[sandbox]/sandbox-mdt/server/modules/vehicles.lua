@@ -1,27 +1,17 @@
 function GetVehicleOwnerData(sid)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "characters",
-		query = {
-			SID = sid,
-		},
-		options = {
-			projection = {
-				_id = 0,
-				First = 1,
-				Last = 1,
-				SID = 1,
-			},
-		},
-	}, function(success, character)
-		if success then
-			p:resolve(character[1])
+	MySQL.Async.fetchAll('SELECT First, Last, SID FROM characters WHERE SID = @sid', {
+		['@sid'] = sid
+	}, function(results)
+		if results[1] then
+			p:resolve(results[1])
 		else
 			p:resolve(nil)
 		end
 	end)
 
-	return Citizen.Await(p)
+	local res = Citizen.Await(p)
+	return res
 end
 
 exports('VehiclesSearch', function(term, page, perPage)

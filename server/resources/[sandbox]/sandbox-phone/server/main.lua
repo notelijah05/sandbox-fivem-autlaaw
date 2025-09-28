@@ -258,54 +258,26 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(src)
 		local alias = char:GetData("Alias") or {}
 		if data.unique then
-			local query = {
-				["Alias." .. data.app] = data.alias,
-				Phone = {
-					["$ne"] = char:GetData("Phone"),
-				},
-				Deleted = {
-					["$ne"] = true,
-				},
-			}
+			local query = 'SELECT 1 FROM characters WHERE Alias LIKE ? AND Phone IS NOT NULL AND Deleted = 0 LIMIT 1'
+			local params = { '%' .. data.alias .. '%', char:GetData("Phone") }
 
-			if data?.alias?.name ~= nil then
-				query = {
-					["Alias." .. data.app .. ".name"] = data.alias.name,
-					Phone = {
-						["$ne"] = char:GetData("Phone"),
-					},
-					Deleted = {
-						["$ne"] = true,
-					},
-				}
+			if data.alias and data.alias.name then
+				query = 'SELECT 1 FROM characters WHERE Alias LIKE ? AND Phone IS NOT NULL AND Deleted = 0 LIMIT 1'
+				params = { '%' .. data.alias.name .. '%', char:GetData("Phone") }
 			end
-			exports['sandbox-base']:DatabaseGameFind({
-				collection = "characters",
-				query = query,
-			}, function(success, results)
+
+			MySQL.Async.fetchAll(query, params, function(results)
 				if #results > 0 then
 					cb(false)
 				else
-					local upd = {
-						["Alias." .. data.app] = data.alias,
-					}
+					local currentAlias = alias
+					currentAlias[data.app] = data.alias
 
-					if data?.alias?.name ~= nil then
-						upd = {
-							["Alias." .. data.app .. ".name"] = data.alias.name,
-						}
-					end
-
-					exports['sandbox-base']:DatabaseGameUpdateOne({
-						collection = "characters",
-						query = {
-							_id = char:GetData('ID'),
-						},
-						update = {
-							["$set"] = upd,
-						},
-					}, function(success, updated)
-						if success then
+					MySQL.Async.execute('UPDATE characters SET Alias = ? WHERE _id = ?', {
+						json.encode(currentAlias),
+						char:GetData('ID')
+					}, function(affectedRows)
+						if affectedRows > 0 then
 							alias[data.app] = data.alias
 							char:SetData("Alias", alias)
 							cb(true)

@@ -710,7 +710,7 @@ end)
 exports("CreatorEnd", function()
 	exports["sandbox-sync"]:Start()
 	TriggerServerEvent("Ped:LeaveCreator")
-	Spawn:PlacePedIntoWorld(_data)
+	exports['sandbox-ped']:PlacePedIntoWorld(_data)
 	exports['sandbox-ped']:CustomizationHide()
 	LocalPlayer.state.inCreator = false
 	FROZEN = false

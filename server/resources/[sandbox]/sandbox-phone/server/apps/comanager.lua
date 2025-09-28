@@ -352,67 +352,41 @@ exports("CoManagerFetchAllAccessibleRosters", function(source)
 		end
 	end
 
-	local p = promise.new()
+	local results = MySQL.Sync.fetchAll(
+		'SELECT SID, First, Last, Phone, Jobs FROM characters WHERE SID NOT IN (@onlineCharacters)', {
+			['@onlineCharacters'] = onlineCharacters
+		})
 
-	local query = {
-		SID = {
-			["$nin"] = onlineCharacters,
-		},
-		Jobs = {
-			["$elemMatch"] = {
-				Id = {
-					["$in"] = exports['sandbox-base']:UtilsGetTableKeys(fetchingJobs),
-				},
-			},
-		},
-	}
+	if results and #results > 0 then
+		for _, c in ipairs(results) do
+			local jobs = json.decode(c.Jobs)
 
-	if workplaceId then
-		query.Jobs["$elemMatch"]["Workplace.Id"] = workplaceId
-	end
+			if jobs and #jobs > 0 then
+				for _, job in ipairs(jobs) do
+					if fetchingJobs[job.Id] and
 
-	if gradeId then
-		query.Jobs["$elemMatch"]["Grade.Id"] = gradeId
-	end
+						(not workplaceId or job.Workplace.Id == workplaceId) and
 
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "characters",
-		query = query,
-		options = {
-			projection = {
-				SID = 1,
-				First = 1,
-				Last = 1,
-				Phone = 1,
-				Jobs = 1,
-			},
-		},
-	}, function(success, results)
-		if success then
-			for _, c in ipairs(results) do
-				if c.Jobs and #c.Jobs > 0 then
-					for k, v in ipairs(c.Jobs) do
-						if fetchingJobs[v.Id] then
-							table.insert(fetchedRosterData[v.Id], {
-								Source = false,
-								SID = c.SID,
-								First = c.First,
-								Last = c.Last,
-								Phone = c.Phone,
-								JobData = v,
-							})
+						(not gradeId or job.Grade.Id == gradeId) then
+						if not fetchedRosterData[job.Id] then
+							fetchedRosterData[job.Id] = {}
 						end
+
+						table.insert(fetchedRosterData[job.Id], {
+
+							Source = false,
+							SID = c.SID,
+							First = c.First,
+							Last = c.Last,
+							Phone = c.Phone,
+							JobData = job,
+
+						})
 					end
 				end
 			end
-			p:resolve(true)
-		else
-			p:resolve(false)
 		end
-	end)
 
-	local res = Citizen.Await(p)
-	if res then
 		return fetchedRosterData
 	else
 		return false
@@ -447,53 +421,32 @@ exports("CoManagerFetchTimeWorked", function(source, jobId)
 			end
 		end
 
-		local p = promise.new()
+		local results = MySQL.Sync.fetchAll(
+			'SELECT SID, First, Last, Phone, LastClockOn, TimeClockedOn, Jobs FROM characters WHERE SID NOT IN (@onlineCharacters)',
+			{
+				['@onlineCharacters'] = onlineCharacters
+			}
+		)
 
-		local query = {
-			SID = {
-				["$nin"] = onlineCharacters,
-			},
-			Jobs = {
-				["$elemMatch"] = {
-					Id = jobId,
-				},
-			},
-		}
-
-		exports['sandbox-base']:DatabaseGameFind({
-			collection = "characters",
-			query = query,
-			options = {
-				projection = {
-					SID = 1,
-					First = 1,
-					Last = 1,
-					Phone = 1,
-					LastClockOn = 1,
-					TimeClockedOn = 1,
-				},
-			},
-		}, function(success, results)
-			if success then
-				for _, c in ipairs(results) do
-					table.insert(onlineShit, {
-						Source = false,
-						SID = c.SID,
-						First = c.First,
-						Last = c.Last,
-						Phone = c.Phone,
-						LastClockOn = c.LastClockOn,
-						TimeClockedOn = c.TimeClockedOn,
-					})
+		if results and #results > 0 then
+			for _, c in ipairs(results) do
+				local jobs = json.decode(c.Jobs)
+				if jobs and #jobs > 0 then
+					for _, job in ipairs(jobs) do
+						if job.Id == jobId then
+							table.insert(onlineShit, {
+								Source = false,
+								SID = c.SID,
+								First = c.First,
+								Last = c.Last,
+								Phone = c.Phone,
+								LastClockOn = c.LastClockOn,
+								TimeClockedOn = c.TimeClockedOn,
+							})
+						end
+					end
 				end
-				p:resolve(true)
-			else
-				p:resolve(false)
 			end
-		end)
-
-		local res = Citizen.Await(p)
-		if res then
 			return onlineShit
 		else
 			return false
@@ -504,13 +457,11 @@ end)
 
 function GetOfflineCharacter(stateId)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "characters",
-		query = {
-			SID = stateId,
-		},
-	}, function(success, results)
-		if success and #results > 0 then
+
+	MySQL.Async.fetchAll('SELECT * FROM characters WHERE SID = @stateId', {
+		['@stateId'] = stateId
+	}, function(results)
+		if results[1] then
 			p:resolve(results[1])
 		else
 			p:resolve(false)

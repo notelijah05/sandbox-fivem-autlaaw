@@ -60,44 +60,33 @@ function RegisterBankingCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Banking:AddJoint", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char and data?.target > 0 then
-			local p = promise.new()
-			exports['sandbox-base']:DatabaseGameFindOne({
-				collection = "characters",
-				query = {
-					SID = data.target,
-				}
-			}, function(success, results)
-				if success and results and #results > 0 then
-					local tChar = results[1]
-					if tChar.User == char:GetData("User") then
-						exports['sandbox-base']:LoggerInfo("Billing",
-							string.format(
-								"%s %s (%s) [%s] Tried Adding Their Other Character (SID: %s) To a Joint Bank Account (Account: %s).",
-								char:GetData("First"), char:GetData("Last"), char:GetData("SID"), char:GetData("User"),
-								tChar.SID, data.account), {
-								console = true,
-								file = true,
-								database = true,
-								discord = {
-									embed = true,
-									type = 'info',
-									webhook = GetConvar('discord_log_webhook', ''),
-								}
-							})
+		if char and data and data.target > 0 then
+			local results = MySQL.Sync.fetchAll('SELECT * FROM characters WHERE SID = @sid', {
+				['@sid'] = data.target
+			})
 
-						p:resolve(false)
-					else
-						p:resolve(true)
-					end
+			if results and #results > 0 then
+				local tChar = results[1]
+				if tChar.User == char:GetData("User") then
+					exports['sandbox-base']:LoggerInfo("Billing",
+						string.format(
+							"%s %s (%s) [%s] Tried Adding Their Other Character (SID: %s) To a Joint Bank Account (Account: %s).",
+							char:GetData("First"), char:GetData("Last"), char:GetData("SID"), char:GetData("User"),
+							tChar.SID, data.account), {
+							console = true,
+							file = true,
+							database = true,
+							discord = {
+								embed = true,
+								type = 'info',
+								webhook = GetConvar('discord_log_webhook', ''),
+							}
+						})
+
+					cb(false)
 				else
-					p:resolve(false)
+					cb(exports['sandbox-finance']:AccountsAddPersonalSavingsJointOwner(data.account, data.target))
 				end
-			end)
-
-			local canAdd = Citizen.Await(p)
-			if canAdd then
-				cb(exports['sandbox-finance']:AccountsAddPersonalSavingsJointOwner(data.account, data.target))
 			else
 				cb(false)
 			end
@@ -396,38 +385,35 @@ function RegisterBankingCallbacks()
 						local p = promise.new()
 
 						if targetAccount.Type == "personal" or targetAccount.Type == "personal_savings" then
-							exports['sandbox-base']:DatabaseGameFindOne({
-								collection = "characters",
-								query = {
-									SID = tonumber(targetAccount.Owner),
-								}
-							}, function(success, results)
-								if success and results and #results > 0 then
-									local tChar = results[1]
-									if tChar.User == char:GetData("User") and tChar.SID ~= char:GetData("SID") then
-										exports['sandbox-base']:LoggerInfo("Billing",
-											string.format(
-												"%s %s (%s) [%s] Tried Bank Transferring to their other character (SID: %s, Account: %s).",
-												char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
-												char:GetData("User"), tChar.SID, targetAccount.Account), {
-												console = true,
-												file = true,
-												database = true,
-												discord = {
-													embed = true,
-													type = 'info',
-													webhook = GetConvar('discord_log_webhook', ''),
-												}
-											})
+							local results = MySQL.Sync.fetchAll('SELECT * FROM characters WHERE SID = @sid', {
+								['@sid'] = tonumber(targetAccount.Owner)
+							})
 
-										p:resolve(false)
-									else
-										p:resolve(true)
-									end
-								else
+							if results and #results > 0 then
+								local tChar = results[1]
+								if tChar.User == char:GetData("User") and tChar.SID ~= char:GetData("SID") then
+									exports['sandbox-base']:LoggerInfo("Billing",
+										string.format(
+											"%s %s (%s) [%s] Tried Bank Transferring to their other character (SID: %s, Account: %s).",
+											char:GetData("First"), char:GetData("Last"), char:GetData("SID"),
+											char:GetData("User"), tChar.SID, targetAccount.Account), {
+											console = true,
+											file = true,
+											database = true,
+											discord = {
+												embed = true,
+												type = 'info',
+												webhook = GetConvar('discord_log_webhook', ''),
+											}
+										})
+
 									p:resolve(false)
+								else
+									p:resolve(true)
 								end
-							end)
+							else
+								p:resolve(false)
+							end
 						else
 							p:resolve(true)
 						end

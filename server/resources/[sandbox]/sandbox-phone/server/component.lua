@@ -92,20 +92,12 @@ function IsNumberInUse(number)
 		return true
 	end
 
-	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "characters",
-		query = {
-			phone = number,
-		},
-	}, function(success, results)
-		if not success then
-			p:resolve(true)
-		end
-		p:resolve(#results > 0)
-	end)
-
-	return Citizen.Await(p)
+	local result = MySQL.single.await([[SELECT `Phone` FROM `characters` WHERE `Phone` = @Phone]],
+		{ ["@Phone"] = number })
+	if result == nil then
+		return false
+	end
+	return true
 end
 
 function GeneratePhoneNumber()

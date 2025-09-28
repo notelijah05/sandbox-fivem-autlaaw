@@ -7,13 +7,15 @@ lua54("yes")
 
 client_scripts({
 	"interiors/**/*.lua",
-	"shared/**/*.lua",
 	"client/**/*.lua",
 })
 
 server_scripts({
 	"interiors/**/*.lua",
-	"shared/**/*.lua",
 	"sv_config.lua",
 	"server/**/*.lua",
+})
+
+shared_scripts({
+	"shared/**/*.lua",
 })

@@ -5,7 +5,6 @@ client_script("@sandbox-base/exports/cl_error.lua")
 client_script("@sandbox-pwnzor/client/check.lua")
 
 client_scripts({
-	"shared/**/*.lua",
 	"config/*.lua",
 	"client/utils.lua",
 	"client/main.lua",
@@ -22,7 +21,10 @@ client_scripts({
 })
 
 server_scripts({
-	"shared/**/*.lua",
 	"config/*.lua",
 	"server/*.lua",
+})
+
+shared_scripts({
+	"shared/**/*.lua",
 })

@@ -170,22 +170,28 @@ exports("CryptoExchangeAdd", function(coin, target, amount, skipAlert)
 
 		return true
 	else
-		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameUpdateOne({
-			collection = "characters",
-			query = {
-				CryptoWallet = target,
-			},
-			update = {
-				["$inc"] = {
-					[string.format("Crypto.%s", coin)] = amount,
-				},
-			},
-		}, function(success, res)
-			p:resolve(success)
-		end)
+		local results = MySQL.Sync.fetchAll('SELECT Crypto FROM characters WHERE CryptoWallet = @target', {
+			['@target'] = target
+		})
 
-		return Citizen.Await(p)
+		if results and #results > 0 then
+			local crypto = json.decode(results[1].Crypto) or {}
+			if crypto[coin] == nil then
+				crypto[coin] = 0
+			end
+
+			crypto[coin] = crypto[coin] + amount
+			local updatedCrypto = json.encode(crypto)
+
+			local success = MySQL.Sync.execute('UPDATE characters SET Crypto = @crypto WHERE CryptoWallet = @target', {
+				['@crypto'] = updatedCrypto,
+				['@target'] = target
+			})
+
+			return success > 0
+		else
+			return false
+		end
 	end
 end)
 
@@ -220,33 +226,24 @@ exports("CryptoExchangeRemove", function(coin, target, amount, skipAlert)
 			p:resolve(false)
 		end
 	else
-		exports['sandbox-base']:DatabaseGameFindOne({
-			collection = "characters",
-			query = {
-				CryptoWallet = target,
-			},
-		}, function(success, res)
-			if #res == 0 then
+		MySQL.Async.fetchAll('SELECT Crypto FROM characters WHERE CryptoWallet = @wallet LIMIT 1', {
+			['@wallet'] = target
+		}, function(results)
+			if #results == 0 then
 				p:resolve(false)
 				return
 			else
-				if res[1].Crypto[coin] >= amount then
-					exports['sandbox-base']:DatabaseGameUpdateOne({
-						collection = "characters",
-						query = {
-							CryptoWallet = target,
-						},
-						update = {
-							["$inc"] = {
-								[string.format("Crypto.%s", coin)] = amount,
-							},
-						},
-					}, function(success, res)
-						p:resolve(success)
+				local crypto = json.decode(results[1].Crypto) or {}
+				if crypto[coin] and crypto[coin] >= amount then
+					crypto[coin] = crypto[coin] - amount
+					MySQL.Async.execute('UPDATE characters SET Crypto = @crypto WHERE CryptoWallet = @wallet', {
+						['@crypto'] = json.encode(crypto),
+						['@wallet'] = target
+					}, function(affectedRows)
+						p:resolve(affectedRows > 0)
 					end)
 				else
 					p:resolve(false)
-					return
 				end
 			end
 		end)

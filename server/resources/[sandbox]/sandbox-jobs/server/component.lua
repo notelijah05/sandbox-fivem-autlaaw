@@ -112,15 +112,10 @@ exports("GiveJob", function(stateId, jobId, workplaceId, gradeId, noOverride)
 		return true
 	else
 		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameFindOne({
-			collection = "characters",
-			query = {
-				SID = stateId,
-			},
-		}, function(success, results)
-			if success and #results > 0 then
+		exports.oxmysql:execute('SELECT * FROM characters WHERE SID = ?', { stateId }, function(results)
+			if results and #results > 0 then
 				local charData = results[1]
-				local charJobData = charData.Jobs
+				local charJobData = json.decode(charData.Jobs)
 				if not charJobData then
 					charJobData = {}
 				end
@@ -138,23 +133,14 @@ exports("GiveJob", function(stateId, jobId, workplaceId, gradeId, noOverride)
 
 				table.insert(charJobData, newJob)
 
-				exports['sandbox-base']:DatabaseGameUpdateOne({
-					collection = "characters",
-					query = {
-						SID = stateId,
-					},
-					update = {
-						["$set"] = {
-							Jobs = charJobData,
-						},
-					},
-				}, function(success, updated)
-					if success and updated > 0 then
-						p:resolve(true)
-					else
-						p:resolve(false)
-					end
-				end)
+				exports.oxmysql:execute('UPDATE characters SET Jobs = ? WHERE SID = ?',
+					{ json.encode(charJobData), stateId }, function(updated)
+						if updated and updated.affectedRows > 0 then
+							p:resolve(true)
+						else
+							p:resolve(false)
+						end
+					end)
 			else
 				p:resolve(false)
 			end
@@ -206,16 +192,12 @@ exports("RemoveJob", function(stateId, jobId)
 		end
 	else
 		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameFindOne({
-			collection = "characters",
-			query = {
-				SID = stateId,
-			},
-		}, function(success, results)
-			if success and #results > 0 then
+		exports.oxmysql:execute('SELECT * FROM characters WHERE SID = ?', { stateId }, function(results)
+			if results and #results > 0 then
 				local charData = results[1]
-				local charJobData = charData.Jobs
+				local charJobData = json.decode(charData.Jobs)
 				if charJobData then
+					local found = false
 					for k, v in ipairs(charJobData) do
 						if v.Id == jobId then
 							found = true
@@ -224,23 +206,14 @@ exports("RemoveJob", function(stateId, jobId)
 					end
 
 					if found then
-						exports['sandbox-base']:DatabaseGameUpdateOne({
-							collection = "characters",
-							query = {
-								SID = stateId,
-							},
-							update = {
-								["$set"] = {
-									Jobs = charJobData,
-								},
-							},
-						}, function(success, updated)
-							if success and updated > 0 then
-								p:resolve(true)
-							else
-								p:resolve(false)
-							end
-						end)
+						exports.oxmysql:execute('UPDATE characters SET Jobs = ? WHERE SID = ?',
+							{ json.encode(charJobData), stateId }, function(updated)
+								if updated and updated.affectedRows > 0 then
+									p:resolve(true)
+								else
+									p:resolve(false)
+								end
+							end)
 					else
 						p:resolve(false)
 					end
@@ -1073,55 +1046,35 @@ exports("ManagementEmployeesGetAll", function(jobId, workplaceId, gradeId)
 
 	local p = promise.new()
 
-	local query = {
-		SID = {
-			["$nin"] = onlineCharacters,
-		},
-		Jobs = {
-			["$elemMatch"] = {
-				Id = jobId,
-			},
-		},
-	}
-
-	if workplaceId then
-		query.Jobs["$elemMatch"]["Workplace.Id"] = workplaceId
-	end
-
-	if gradeId then
-		query.Jobs["$elemMatch"]["Grade.Id"] = gradeId
-	end
-
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "characters",
-		query = query,
-	}, function(success, results)
-		if success then
-			for _, c in ipairs(results) do
-				if c.Jobs and #c.Jobs > 0 then
-					for k, v in ipairs(c.Jobs) do
-						if
-							v.Id == jobId
-							and (not workplaceId or (workplaceId and (v.Workplace and v.Workplace.Id == workplaceId)))
-							and (not gradeId or (v.Grade.Id == gradeId))
-						then
-							table.insert(jobCharacters, {
-								Source = false,
-								SID = c.SID,
-								First = c.First,
-								Last = c.Last,
-								Phone = c.Phone,
-								JobData = v,
-							})
+	MySQL.Async.fetchAll("SELECT * FROM characters WHERE SID NOT IN (?)", { table.concat(onlineCharacters, ",") },
+		function(results)
+			if results then
+				for _, c in ipairs(results) do
+					local jobs = json.decode(c.Jobs)
+					if jobs and #jobs > 0 then
+						for _, v in ipairs(jobs) do
+							if
+								v.Id == jobId
+								and (not workplaceId or (workplaceId and (v.Workplace and v.Workplace.Id == workplaceId)))
+								and (not gradeId or (v.Grade.Id == gradeId))
+							then
+								table.insert(jobCharacters, {
+									Source = false,
+									SID = c.SID,
+									First = c.First,
+									Last = c.Last,
+									Phone = c.Phone,
+									JobData = v,
+								})
+							end
 						end
 					end
 				end
+				p:resolve(true)
+			else
+				p:resolve(false)
 			end
-			p:resolve(true)
-		else
-			p:resolve(false)
-		end
-	end)
+		end)
 
 	local res = Citizen.Await(p)
 	if res then
@@ -1149,45 +1102,36 @@ exports("ManagementEmployeesUpdateAllJob", function(jobId, newJobName)
 		end
 	end
 
-	local query = {
-		SID = {
-			["$nin"] = onlineCharacters,
-		},
-		Jobs = {
-			["$elemMatch"] = {
-				Id = jobId,
-			},
-		},
-	}
-
-	local update = {
-		["$set"] = {
-			["Jobs.$[job].Name"] = newJobName,
-		},
-	}
-
-	local options = {
-		arrayFilters = {
-			{
-				["job.Id"] = jobId,
-			},
-		},
-	}
-
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameUpdate({
-		collection = "characters",
-		query = query,
-		update = update,
-		options = options,
-	}, function(success, updated)
-		if success then
-			p:resolve(updated)
-		else
-			p:resolve(false)
-		end
-	end)
+	MySQL.Async.fetchAll("SELECT * FROM characters WHERE SID NOT IN (?)", { table.concat(onlineCharacters, ",") },
+		function(results)
+			if results then
+				for _, c in ipairs(results) do
+					local jobs = json.decode(c.Jobs)
+					if jobs and #jobs > 0 then
+						for _, v in ipairs(jobs) do
+							if v.Id == jobId then
+								v.Name = newJobName
+							end
+						end
+						local updatedJobsJson = json.encode(jobs)
+						MySQL.Async.execute("UPDATE characters SET Jobs = @jobs WHERE SID = @sid", {
+							["@jobs"] = updatedJobsJson,
+							["@sid"] = c.SID
+						}, function(affectedRows)
+							if affectedRows > 0 then
+								p:resolve(true)
+							else
+								p:resolve(false)
+							end
+						end)
+					end
+				end
+			else
+				p:resolve(false)
+			end
+		end)
 
 	local res = Citizen.Await(p)
 	return res
@@ -1214,39 +1158,34 @@ exports("ManagementEmployeesUpdateAllWorkplace", function(jobId, workplaceId, ne
 		end
 	end
 
-	exports['sandbox-base']:DatabaseGameUpdate({
-		collection = "characters",
-		query = {
-			SID = {
-				["$nin"] = onlineCharacters,
-			},
-			Jobs = {
-				["$elemMatch"] = {
-					Type = "Government",
-					Id = jobId,
-					["Workplace.Id"] = workplaceId,
-				},
-			},
-		},
-		update = {
-			["$set"] = {
-				["Jobs.$[job].Workplace.Name"] = newWorkplaceName,
-			},
-		},
-		options = {
-			arrayFilters = {
-				{
-					["job.Id"] = jobId,
-				},
-			},
-		},
-	}, function(success, updated)
-		if success then
-			p:resolve(updated)
-		else
-			p:resolve(false)
-		end
-	end)
+	MySQL.Async.fetchAll("SELECT * FROM characters WHERE SID NOT IN (?)", { table.concat(onlineCharacters, ",") },
+		function(results)
+			if results then
+				for _, c in ipairs(results) do
+					local jobs = json.decode(c.Jobs)
+					if jobs and #jobs > 0 then
+						for _, v in ipairs(jobs) do
+							if v.Id == jobId and (v.Workplace and v.Workplace.Id == workplaceId) then
+								v.Workplace.Name = newWorkplaceName
+							end
+						end
+						local updatedJobsJson = json.encode(jobs)
+						MySQL.Async.execute("UPDATE characters SET Jobs = @jobs WHERE SID = @sid", {
+							["@jobs"] = updatedJobsJson,
+							["@sid"] = c.SID
+						}, function(affectedRows)
+							if affectedRows > 0 then
+								p:resolve(true)
+							else
+								p:resolve(false)
+							end
+						end)
+					end
+				end
+			else
+				p:resolve(false)
+			end
+		end)
 
 	local res = Citizen.Await(p)
 	return res
@@ -1285,67 +1224,44 @@ exports("ManagementEmployeesUpdateAllGrade", function(jobId, workplaceId, gradeI
 			end
 		end
 
-		local query = {}
-		local update = {}
-		local options = {}
+		MySQL.Async.fetchAll("SELECT * FROM characters WHERE SID NOT IN (?)", { table.concat(onlineCharacters, ",") },
+			function(results)
+				if results then
+					for _, c in ipairs(results) do
+						local jobs = json.decode(c.Jobs)
+						if jobs and #jobs > 0 then
+							for _, v in ipairs(jobs) do
+								if
+									v.Id == jobId
+									and (not workplaceId or (workplaceId and v.Workplace and (v.Workplace.Id == workplaceId)))
+									and v.Grade.Id == gradeId
+								then
+									if settingData.Name then
+										v.Grade.Name = settingData.Name
+									end
 
-		if workplaceId then
-			query = {
-				SID = {
-					["$nin"] = onlineCharacters,
-				},
-				Jobs = {
-					["$elemMatch"] = {
-						Id = jobId,
-						["Workplace.Id"] = workplaceId,
-						["Grade.Id"] = gradeId,
-					},
-				},
-			}
-		else
-			query = {
-				SID = {
-					["$nin"] = onlineCharacters,
-				},
-				Jobs = {
-					["$elemMatch"] = {
-						Id = jobId,
-						["Grade.Id"] = gradeId,
-					},
-				},
-			}
-		end
-
-		update = { ["$set"] = {} }
-
-		if settingData.Name then
-			update["$set"]["Jobs.$[job].Grade.Name"] = settingData.Name
-		end
-
-		if settingData.Level then
-			update["$set"]["Jobs.$[job].Grade.Level"] = settingData.Level
-		end
-
-		options = {
-			arrayFilters = {
-				{
-					["job.Id"] = jobId,
-				},
-			},
-		}
-
-		exports['sandbox-base']:DatabaseGameUpdate({
-			collection = "characters",
-			query = query,
-			update = update,
-			options = options,
-		}, function(success, updated)
-			if success then
-				p:resolve(updated)
-			else
-				p:resolve(false)
-			end
-		end)
+									if settingData.Level then
+										v.Grade.Level = settingData.Level
+									end
+								end
+							end
+							local updatedJobsJson = json.encode(jobs)
+							MySQL.Async.execute("UPDATE characters SET Jobs = @jobs WHERE SID = @sid", {
+								["@jobs"] = updatedJobsJson,
+								["@sid"] = c.SID
+							}, function(affectedRows)
+								if affectedRows > 0 then
+									p:resolve(true)
+								else
+									p:resolve(false)
+								end
+							end)
+						end
+					end
+				else
+					p:resolve(false)
+				end
+			end)
 
 		local res = Citizen.Await(p)
 		return res
@@ -1392,4 +1308,8 @@ exports("DataGet", function(jobId, key)
 	if key and JOB_CACHE[jobId] and JOB_CACHE[jobId].Data then
 		return JOB_CACHE[jobId].Data[key]
 	end
+end)
+
+exports("GetJobSpawns", function()
+	return _jobSpawns or {}
 end)

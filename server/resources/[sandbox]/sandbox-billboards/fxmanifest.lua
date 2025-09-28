@@ -8,13 +8,15 @@ author("Dr Nick")
 version("v1.0.0")
 url("https://www.mythicrp.com")
 
+client_scripts({
+	"client/**/*.lua",
+})
+
 server_scripts({
 	"@oxmysql/lib/MySQL.lua",
-	"shared/**/*.lua",
 	"server/**/*.lua",
 })
 
-client_scripts({
+shared_scripts({
 	"shared/**/*.lua",
-	"client/**/*.lua",
 })

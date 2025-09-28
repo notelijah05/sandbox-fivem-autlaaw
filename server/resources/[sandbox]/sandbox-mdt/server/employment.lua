@@ -14,24 +14,22 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 			cb(added)
 
 			if added then
-				exports['sandbox-base']:DatabaseGameUpdateOne({
-					collection = "characters",
-					query = {
-						SID = data.SID,
-					},
-					update = {
-						["$push"] = {
-							MDTHistory = {
-								Time = (os.time() * 1000),
-								Char = char:GetData("SID"),
-								Log = string.format(
-									"%s Hired Them To %s",
-									char:GetData("First") .. " " .. char:GetData("Last"),
-									json.encode(data)
-								),
-							},
-						},
-					},
+				local currentHistory = MySQL.single.await('SELECT MDTHistory FROM characters WHERE SID = ?', { data.SID })
+				local history = currentHistory and json.decode(currentHistory.MDTHistory) or {}
+
+				table.insert(history, {
+					Time = (os.time() * 1000),
+					Char = char:GetData("SID"),
+					Log = string.format(
+						"%s Hired Them To %s",
+						char:GetData("First") .. " " .. char:GetData("Last"),
+						json.encode(data)
+					),
+				})
+
+				MySQL.update.await('UPDATE characters SET MDTHistory = ? WHERE SID = ?', {
+					json.encode(history),
+					data.SID
 				})
 			end
 		else
@@ -72,33 +70,32 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 					cb(removed)
 
 					if removed then
-						local update = {
-							["$push"] = {
-								MDTHistory = {
-									Time = (os.time() * 1000),
-									Char = char:GetData("SID"),
-									Log = string.format(
-										"%s Fired Them From Job %s",
-										char:GetData("First") .. " " .. char:GetData("Last"),
-										data.JobId
-									),
-								},
-							},
-						}
+						local currentHistory = MySQL.single.await('SELECT MDTHistory FROM characters WHERE SID = ?',
+							{ data.SID })
+						local history = currentHistory and json.decode(currentHistory.MDTHistory) or {}
 
+						table.insert(history, {
+							Time = (os.time() * 1000),
+							Char = char:GetData("SID"),
+							Log = string.format(
+								"%s Fired Them From Job %s",
+								char:GetData("First") .. " " .. char:GetData("Last"),
+								data.JobId
+							),
+						})
+
+						local updateQuery = 'UPDATE characters SET MDTHistory = ?'
+						local updateParams = { json.encode(history) }
+
+						-- Add callsign update if needed
 						if (data.JobId == "police" or data.JobId == "ems" or data.JobId == "prison") then
-							update["$set"] = {
-								Callsign = false,
-							}
+							updateQuery = updateQuery .. ', Callsign = NULL'
 						end
 
-						exports['sandbox-base']:DatabaseGameUpdateOne({
-							collection = "characters",
-							query = {
-								SID = data.SID,
-							},
-							update = update,
-						}, function(success, results)
+						updateQuery = updateQuery .. ' WHERE SID = ?'
+						table.insert(updateParams, data.SID)
+
+						MySQL.update.await(updateQuery, updateParams, function(success, results)
 							if success then
 								if (data.JobId == "police" or data.JobId == "ems") then
 									local char = exports['sandbox-characters']:FetchBySID(data.SID)
@@ -155,24 +152,23 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 					cb(updated)
 
 					if updated then
-						exports['sandbox-base']:DatabaseGameUpdateOne({
-							collection = "characters",
-							query = {
-								SID = data.SID,
-							},
-							update = {
-								["$push"] = {
-									MDTHistory = {
-										Time = (os.time() * 1000),
-										Char = char:GetData("SID"),
-										Log = string.format(
-											"%s Promoted Them To %s",
-											char:GetData("First") .. " " .. char:GetData("Last"),
-											json.encode(newJobData)
-										),
-									},
-								},
-							},
+						local currentHistory = MySQL.single.await('SELECT MDTHistory FROM characters WHERE SID = ?',
+							{ data.SID })
+						local history = currentHistory and json.decode(currentHistory.MDTHistory) or {}
+
+						table.insert(history, {
+							Time = (os.time() * 1000),
+							Char = char:GetData("SID"),
+							Log = string.format(
+								"%s Promoted Them To %s",
+								char:GetData("First") .. " " .. char:GetData("Last"),
+								json.encode(newJobData)
+							),
+						})
+
+						MySQL.update.await('UPDATE characters SET MDTHistory = ? WHERE SID = ?', {
+							json.encode(history),
+							data.SID
 						})
 					end
 				else
@@ -251,37 +247,33 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 						Expires = os.time() + (60 * 60 * 24 * data.Length),
 					}
 
-					exports['sandbox-base']:DatabaseGameUpdateOne({
-						collection = "characters",
-						query = {
-							SID = data.SID,
-						},
-						update = {
-							["$push"] = {
-								MDTHistory = {
-									Time = (os.time() * 1000),
-									Char = char:GetData("SID"),
-									Log = string.format(
-										"%s Suspended Them From Job %s for %s Days",
-										char:GetData("First") .. " " .. char:GetData("Last"),
-										data.JobId,
-										data.Length
-									),
-								},
-							},
-							["$set"] = {
-								[string.format("MDTSuspension.%s", data.JobId)] = suspendData
-							}
-						},
+					local currentData = MySQL.single.await(
+						'SELECT MDTHistory, MDTSuspension FROM characters WHERE SID = ?', { data.SID })
+					local history = currentData and json.decode(currentData.MDTHistory) or {}
+					local suspension = currentData and json.decode(currentData.MDTSuspension) or {}
+
+					table.insert(history, {
+						Time = (os.time() * 1000),
+						Char = char:GetData("SID"),
+						Log = string.format(
+							"%s Suspended Them From Job %s for %s Days",
+							char:GetData("First") .. " " .. char:GetData("Last"),
+							data.JobId,
+							data.Length
+						),
+					})
+
+					suspension[data.JobId] = suspendData
+
+					MySQL.update.await('UPDATE characters SET MDTHistory = ?, MDTSuspension = ? WHERE SID = ?', {
+						json.encode(history),
+						json.encode(suspension),
+						data.SID
 					}, function(success, results)
 						if success then
 							local char = exports['sandbox-characters']:FetchBySID(data.SID)
 							if char then
-								local suspensionShit = char:GetData("MDTSuspension") or {}
-
-								suspensionShit[data.JobId] = suspendData
-								char:SetData("MDTSuspension", suspensionShit)
-
+								char:SetData("MDTSuspension", suspension)
 								exports['sandbox-jobs']:DutyOff(char:GetData("Source"), data.JobId)
 							end
 
@@ -328,34 +320,32 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				end
 
 				if canRemove then
-					exports['sandbox-base']:DatabaseGameUpdateOne({
-						collection = "characters",
-						query = {
-							SID = data.SID,
-						},
-						update = {
-							["$push"] = {
-								MDTHistory = {
-									Time = (os.time() * 1000),
-									Char = char:GetData("SID"),
-									Log = string.format(
-										"%s Revoked Suspension From Job %s",
-										char:GetData("First") .. " " .. char:GetData("Last"),
-										data.JobId
-									),
-								},
-							},
-							["$unset"] = {
-								[string.format("MDTSuspension.%s", data.JobId)] = true
-							}
-						},
+					local currentData = MySQL.single.await(
+						'SELECT MDTHistory, MDTSuspension FROM characters WHERE SID = ?', { data.SID })
+					local history = currentData and json.decode(currentData.MDTHistory) or {}
+					local suspension = currentData and json.decode(currentData.MDTSuspension) or {}
+
+					table.insert(history, {
+						Time = (os.time() * 1000),
+						Char = char:GetData("SID"),
+						Log = string.format(
+							"%s Revoked Suspension From Job %s",
+							char:GetData("First") .. " " .. char:GetData("Last"),
+							data.JobId
+						),
+					})
+
+					suspension[data.JobId] = nil
+
+					MySQL.update.await('UPDATE characters SET MDTHistory = ?, MDTSuspension = ? WHERE SID = ?', {
+						json.encode(history),
+						json.encode(suspension),
+						data.SID
 					}, function(success, results)
 						if success then
 							local char = exports['sandbox-characters']:FetchBySID(data.SID)
 							if char then
-								local suspensionShit = char:GetData("MDTSuspension") or {}
-								suspensionShit[data.JobId] = nil
-								char:SetData("MDTSuspension", suspensionShit)
+								char:SetData("MDTSuspension", suspension)
 							end
 
 							cb(true)

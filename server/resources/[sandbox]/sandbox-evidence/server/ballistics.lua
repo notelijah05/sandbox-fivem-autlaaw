@@ -209,34 +209,21 @@ function GetMatchingEvidenceProjectiles(weaponSerial)
 end
 
 function GetCharacter(stateId)
-	local p = promise.new()
-
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "characters",
-		query = {
-			SID = stateId,
-		},
-	}, function(success, results)
-		if success and #results > 0 then
-			local char = results[1]
-			if char and char.SID and char.First and char.Last then
-				local thisYear = os.date("%Y")
-				local pattern = "(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)"
-				local year, month, day, hour, minute, seconds = char.DOB:match(pattern)
-
-				p:resolve({
-					SID = char.SID,
-					First = char.First,
-					Last = char.Last,
-					Age = char.DOB and (tonumber(thisYear) - tonumber(year)) or "Unknown",
-				})
-			end
-		else
-			p:resolve(false)
+	local query = "SELECT * FROM characters WHERE SID = ?"
+	local results = MySQL.query.await(query, { stateId })
+	if results and #results > 0 then
+		local char = results[1]
+		if char and char.SID and char.First and char.Last then
+			return {
+				SID = char.SID,
+				First = char.First,
+				Last = char.Last,
+				Age = math.floor((os.time() - char.DOB) / 3.156e+7),
+			}
 		end
-	end)
-
-	return Citizen.Await(p)
+	else
+		return false
+	end
 end
 
 AddEventHandler('Evidence:Server:RunBallistics', function(source, data)

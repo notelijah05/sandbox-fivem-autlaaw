@@ -24,7 +24,7 @@ local requiredCharacterData = {
 function GetCharacterVehiclesData(sid)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameFind({
+	exports['sandbox-base']:DatabaseGameFindOne({
 		collection = "vehicles",
 		query = {
 			["Owner.Type"] = 0,
@@ -53,310 +53,176 @@ end
 
 exports("PeopleSearchPeople", function(term)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "characters",
-		query = {
-			["$and"] = {
-				{
-					["$or"] = {
-						{
-							["$expr"] = {
-								["$regexMatch"] = {
-									input = {
-										["$concat"] = { "$First", " ", "$Last" },
-									},
-									regex = term,
-									options = "i",
-								},
-							},
-						},
-						{
-							["$expr"] = {
-								["$regexMatch"] = {
-									input = {
-										["$toString"] = "$SID",
-									},
-									regex = term,
-									options = "i",
-								},
-							},
-						},
-					},
-				},
-				{
-					["$or"] = {
-						{ Deleted = false },
-						{
-							Deleted = {
-								["$exists"] = false,
-							}
-						},
-					},
-				},
-			},
-		},
-		options = {
-			projection = requiredCharacterData,
-			limit = 12,
-		},
-	}, function(success, results)
-		if not success then
-			p:resolve(false)
-			return
+	MySQL.query(
+		"SELECT SID, First, Last, DOB, Licenses FROM characters WHERE (CONCAT(First, ' ', Last) LIKE ? OR SID LIKE ?) AND (Deleted = 0 OR Deleted IS NULL) LIMIT 4",
+		{ "%" .. term .. "%", "%" .. term .. "%" },
+		function(results)
+			if not results then
+				p:resolve(false)
+				return
+			end
+			p:resolve(results)
 		end
-		p:resolve(results)
-	end)
+	)
 	return Citizen.Await(p)
 end)
 
 exports("PeopleView", function(id, requireAllData)
-	-- 5 DB Calls Here But IDK what else to do
 	local SID = tonumber(id)
-	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "characters",
-		query = {
-			SID = SID,
-		},
-		options = {
-			projection = requiredCharacterData,
-		},
-	}, function(success, character)
-		if not success or #character < 0 then
-			p:resolve(false)
-			return
-		end
 
-		if requireAllData then
-			local vehicles = GetCharacterVehiclesData(SID)
-			local char = character[1]
-			local ownedBusinesses = {}
+	local character = MySQL.single.await(
+		"SELECT SID, User, First, Last, Gender, Origin, Jobs, DOB, Callsign, Phone, Licenses, Qualifications, MDTSystemAdmin, MDTHistory, Attorney, LastClockOn, TimeClockedOn FROM characters WHERE SID = ? AND (Deleted = 0 OR Deleted IS NULL)",
+		{ SID }
+	)
 
-			if char.Jobs then
-				for k, v in ipairs(char.Jobs) do
-					local jobData = exports['sandbox-jobs']:Get(v.Id)
-					if jobData.Owner and jobData.Owner == char.SID then
-						table.insert(ownedBusinesses, v.Id)
-					end
+	if not character then
+		return false
+	end
+
+	if character.Origin then
+		character.Origin = json.decode(character.Origin)
+	end
+	if character.Jobs then
+		character.Jobs = json.decode(character.Jobs)
+	end
+	if character.Licenses then
+		character.Licenses = json.decode(character.Licenses)
+	end
+	if character.Qualifications then
+		character.Qualifications = json.decode(character.Qualifications)
+	end
+	if character.MDTHistory then
+		character.MDTHistory = json.decode(character.MDTHistory)
+	end
+	if character.LastClockOn then
+		character.LastClockOn = json.decode(character.LastClockOn)
+	end
+	if character.TimeClockedOn then
+		character.TimeClockedOn = json.decode(character.TimeClockedOn)
+	end
+
+	if requireAllData then
+		local vehicles = GetCharacterVehiclesData(SID)
+		local ownedBusinesses = {}
+
+		if character.Jobs then
+			for k, v in ipairs(character.Jobs) do
+				local jobData = exports['sandbox-jobs']:Get(v.Id)
+				if jobData and jobData.Owner and jobData.Owner == character.SID then
+					table.insert(ownedBusinesses, v.Id)
 				end
 			end
-
-			local parole = MySQL.single.await("SELECT end, total, parole FROM character_parole WHERE SID = ?", {
-				SID
-			})
-
-			local chargesData = MySQL.query.await(
-				"SELECT SID, charges FROM mdt_reports_people WHERE sentenced = ? AND type = ? AND SID = ? AND expunged = ?",
-				{
-					1,
-					"suspect",
-					SID,
-					0
-				})
-
-			local convictions = {}
-			for k, v in ipairs(chargesData) do
-				local c = json.decode(v.charges)
-				for _, ch in ipairs(c) do
-					table.insert(convictions, ch)
-				end
-			end
-
-			p:resolve({
-				data = char,
-				parole = parole,
-				convictions = convictions,
-				vehicles = vehicles,
-				ownedBusinesses = ownedBusinesses,
-			})
-		else
-			p:resolve(character[1])
 		end
-	end)
-	return Citizen.Await(p)
+
+		local parole = MySQL.single.await("SELECT end, total, parole FROM character_parole WHERE SID = ?", { SID })
+
+		local chargesData = MySQL.query.await(
+			"SELECT SID, charges FROM mdt_reports_people WHERE sentenced = ? AND type = ? AND SID = ? AND expunged = ?",
+			{ 1, "suspect", SID, 0 }
+		)
+
+		local convictions = {}
+		for k, v in ipairs(chargesData) do
+			local c = json.decode(v.charges)
+			for _, ch in ipairs(c) do
+				table.insert(convictions, ch)
+			end
+		end
+
+		return {
+			data = character,
+			parole = parole,
+			convictions = convictions,
+			vehicles = vehicles,
+			ownedBusinesses = ownedBusinesses,
+		}
+	else
+		return character
+	end
 end)
 
 exports("PeopleUpdate", function(requester, id, key, value)
-	local p = promise.new()
 	local logVal = value
 	if type(value) == "table" then
 		logVal = json.encode(value)
 	end
 
-	local update = {
-		["$set"] = {
-			[key] = value,
-		},
-	}
-
-	if requester == -1 then
-		update["$push"] = {
-			MDTHistory = {
-				Time = (os.time() * 1000),
-				Char = -1,
-				Log = string.format("System Updated Profile, Set %s To %s", key, logVal),
-			},
-		}
-	else
-		update["$push"] = {
-			MDTHistory = {
-				Time = (os.time() * 1000),
-				Char = requester:GetData("SID"),
-				Log = string.format(
-					"%s Updated Profile, Set %s To %s",
-					requester:GetData("First") .. " " .. requester:GetData("Last"),
-					key,
-					logVal
-				),
-			},
-		}
+	local currentHistory = MySQL.single.await("SELECT MDTHistory FROM characters WHERE SID = ?", { id })
+	local history = {}
+	if currentHistory and currentHistory.MDTHistory then
+		history = json.decode(currentHistory.MDTHistory) or {}
 	end
 
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "characters",
-		query = {
-			SID = id,
-		},
-		update = update,
-	}, function(success, results)
-		if success then
-			local target = exports['sandbox-characters']:FetchBySID(id)
-			if target then
-				target:SetData(key, value)
-			end
+	local newEntry = {
+		Time = (os.time() * 1000),
+		Char = requester == -1 and -1 or requester:GetData("SID"),
+		Log = requester == -1 and
+			string.format("System Updated Profile, Set %s To %s", key, logVal) or
+			string.format(
+				"%s Updated Profile, Set %s To %s",
+				requester:GetData("First") .. " " .. requester:GetData("Last"),
+				key,
+				logVal
+			)
+	}
+	table.insert(history, newEntry)
 
-			if key == "Mugshot" then
-				exports['sandbox-inventory']:UpdateGovIDMugshot(id, value)
-			end
+	local dbValue
+	if key == "MDTSystemAdmin" then
+		dbValue = (value == true or value == "true" or value == 1) and 1 or 0
+	elseif type(value) == "table" then
+		dbValue = json.encode(value)
+	else
+		dbValue = value
+	end
+
+	local success = MySQL.update.await(
+		"UPDATE characters SET " .. key .. " = ?, MDTHistory = ? WHERE SID = ?",
+		{ dbValue, json.encode(history), id }
+	)
+
+	if success then
+		local target = exports['sandbox-characters']:FetchBySID(id)
+		if target then
+			target:SetData(key, value)
 		end
-		p:resolve(success)
-	end)
-	return Citizen.Await(p)
+
+		if key == "Mugshot" then
+			exports['sandbox-inventory']:UpdateGovIDMugshot(id, value)
+		end
+	end
+
+	return success
 end)
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("MDT:InputSearch:people", function(source, data, cb)
-		exports['sandbox-base']:DatabaseGameFind({
-			collection = "characters",
-			query = {
-				["$and"] = {
-					{
-						["$or"] = {
-							{
-								["$expr"] = {
-									["$regexMatch"] = {
-										input = {
-											["$concat"] = { "$First", " ", "$Last" },
-										},
-										regex = data.term,
-										options = "i",
-									},
-								},
-							},
-							{
-								["$expr"] = {
-									["$regexMatch"] = {
-										input = {
-											["$toString"] = "$SID",
-										},
-										regex = data.term,
-										options = "i",
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			options = {
-				projection = {
-					_id = 0,
-					SID = 1,
-					First = 1,
-					Last = 1,
-					DOB = 1,
-					Licenses = 1,
-				},
-				limit = 4,
-			},
-		}, function(success, results)
-			if not success then
-				cb({})
-			else
-				cb(results)
+		MySQL.query(
+			"SELECT SID, First, Last, DOB, Licenses FROM characters WHERE (CONCAT(First, ' ', Last) LIKE ? OR SID LIKE ?) AND (Deleted = 0 OR Deleted IS NULL) LIMIT 4",
+			{ "%" .. data.term .. "%", "%" .. data.term .. "%" },
+			function(success, results)
+				if not success then
+					cb({})
+				else
+					cb(results or {})
+				end
 			end
-		end)
+		)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("MDT:InputSearch:job", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
-			exports['sandbox-base']:DatabaseGameFind({
-				collection = "characters",
-				query = {
-					["$and"] = {
-						{
-							["$or"] = {
-								{
-									["$expr"] = {
-										["$regexMatch"] = {
-											input = {
-												["$concat"] = { "$First", " ", "$Last" },
-											},
-											regex = data.term,
-											options = "i",
-										},
-									},
-								},
-								{
-									["$expr"] = {
-										["$regexMatch"] = {
-											input = {
-												["$toString"] = "$Callsign",
-											},
-											regex = data.term,
-											options = "i",
-										},
-									},
-								},
-								{
-									["$expr"] = {
-										["$regexMatch"] = {
-											input = {
-												["$toString"] = "$SID",
-											},
-											regex = data.term,
-											options = "i",
-										},
-									},
-								},
-							},
-						},
-						{
-							Jobs = {
-								["$elemMatch"] = {
-									Id = data.job,
-								},
-							},
-						},
-					},
-				},
-				options = {
-					projection = {
-						_id = 0,
-						SID = 1,
-						First = 1,
-						Last = 1,
-						Callsign = 1,
-					},
-					limit = 4,
-				},
-			}, function(success, results)
-				if not success then
-					cb({})
-				else
-					cb(results)
+			MySQL.query(
+				"SELECT SID, First, Last, Callsign FROM characters WHERE (CONCAT(First, ' ', Last) LIKE ? OR Callsign LIKE ? OR SID LIKE ?) AND JSON_CONTAINS(Jobs, JSON_OBJECT('Id', ?)) AND (Deleted = 0 OR Deleted IS NULL) LIMIT 4",
+				{ "%" .. data.term .. "%", "%" .. data.term .. "%", "%" .. data.term .. "%", data.job },
+				function(success, results)
+					if not success then
+						cb({})
+					else
+						cb(results or {})
+					end
 				end
-			end)
+			)
 		else
 			cb(false)
 		end
@@ -364,28 +230,17 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("MDT:InputSearchSID", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
-			exports['sandbox-base']:DatabaseGameFindOne({
-				collection = "characters",
-				query = {
-					SID = tonumber(data.term)
-				},
-				options = {
-					projection = {
-						_id = 0,
-						SID = 1,
-						First = 1,
-						Last = 1,
-						DOB = 1,
-						Licenses = 1,
-					},
-				},
-			}, function(success, results)
-				if not success then
-					cb({})
-				else
-					cb(results)
+			MySQL.single(
+				"SELECT SID, First, Last, DOB, Licenses FROM characters WHERE SID = ? AND (Deleted = 0 OR Deleted IS NULL)",
+				{ tonumber(data.term) },
+				function(success, results)
+					if not success then
+						cb({})
+					else
+						cb(results and { results } or {})
+					end
 				end
-			end)
+			)
 		else
 			cb(false)
 		end
@@ -410,21 +265,13 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("MDT:CheckCallsign", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then
-			exports['sandbox-base']:DatabaseGameFindOne({
-				collection = "characters",
-				query = {
-					Callsign = data,
-				},
-				options = {
-					projection = {
-						_id = 0,
-						SID = 1,
-						Callsign = 1,
-					},
-				},
-			}, function(success, results)
-				cb(#results == 0)
-			end)
+			MySQL.single(
+				"SELECT SID, Callsign FROM characters WHERE Callsign = ? AND (Deleted = 0 OR Deleted IS NULL)",
+				{ data },
+				function(success, results)
+					cb(not success or not results)
+				end
+			)
 		else
 			cb(false)
 		end

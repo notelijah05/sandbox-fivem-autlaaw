@@ -1,14 +1,13 @@
 function FetchCharacterJobsFromDB(stateId)
     local p = promise.new()
 
-    exports['sandbox-base']:DatabaseGameFindOne({
-        collection = 'characters',
-        query = {
-            SID = stateId,
-        }
-    }, function(success, results)
-        if success and #results > 0 then
-            p:resolve(results[1].Jobs or {})
+    MySQL.Async.fetchAll('SELECT Jobs FROM characters WHERE SID = @stateId', {
+        ['@stateId'] = stateId
+    }, function(results)
+        if results and #results > 0 then
+            local jobs = results[1].Jobs
+            local jobsdecode = json.decode(jobs) or {}
+            p:resolve(jobsdecode)
         else
             p:resolve(false)
         end

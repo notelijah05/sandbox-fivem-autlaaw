@@ -1,7 +1,7 @@
 exports("GetJobs", function()
 	local char = LocalPlayer.state.Character
 	if char then
-		local jobs = char:GetData("") or {}
+		local jobs = char:GetData("Jobs") or {}
 		return jobs
 	end
 	return false

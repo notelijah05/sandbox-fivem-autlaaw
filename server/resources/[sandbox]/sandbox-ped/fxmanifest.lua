@@ -22,8 +22,8 @@ client_scripts({
 	"client/**/*.lua",
 })
 
-server_script("@oxmysql/lib/MySQL.lua")
 server_scripts({
+	'@oxmysql/lib/MySQL.lua',
 	"config.lua",
 	"utils/*.lua",
 	"server/**/*.lua",

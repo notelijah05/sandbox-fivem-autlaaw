@@ -15,7 +15,7 @@ exports("GetLastLocation", function(source)
 	return _tempLastLocation[source] or false
 end)
 
-local TablesToDecode = {
+TablesToDecode = {
 	"Origin",
 	"Apps",
 	"Wardrobe",
@@ -46,5 +46,6 @@ local TablesToDecode = {
 	"Parole",
 	"LSUNDGBan",
 	"PhonePosition",
-	-- Maybe more to be added 
+	"Callsign",
+	-- Maybe more to be added
 }

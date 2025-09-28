@@ -45,7 +45,7 @@ RegisterNUICallback("GetData", function(data, cb)
 
 		FadeOutWithTimeout(500)
 
-		exports["sandbox-base"]:ServerCallback("Characters:GetCharacters", {}, function(characters, characterLimit)
+		exports["sandbox-base"]:ServerCallback("Characters:GetCharacters", {}, function(characters)
 			local ped = PlayerPedId()
 			SetEntityCoords(ped, 685.865, 576.222, 132.841, 0.0, 0.0, 0.0, false)
 			FreezeEntityPosition(ped, true)
@@ -141,7 +141,7 @@ RegisterNUICallback("GetData", function(data, cb)
 					changelog = serverData.changelog,
 					motd = serverData.motd,
 					characters = characters,
-					characterLimit = characterLimit,
+					characterLimit = 5,
 				},
 			})
 			SendNUIMessage({ type = "LOADING_HIDE" })

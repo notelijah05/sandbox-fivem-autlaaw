@@ -12,11 +12,14 @@ version("v1.0.0")
 url("https://www.mythicrp.com")
 
 server_scripts({
-	"shared/**/*.lua",
+	'@oxmysql/lib/MySQL.lua',
 	"server/**/*.lua",
 })
 
 client_scripts({
-	"shared/**/*.lua",
 	"client/**/*.lua",
+})
+
+shared_scripts({
+	"shared/**/*.lua",
 })

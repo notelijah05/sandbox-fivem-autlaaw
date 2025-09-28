@@ -95,32 +95,17 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                 local perm = char:GetData("LaptopPermissions")
 
                 if perm["lsunderground"] and perm["lsunderground"]["admin"] then
-                    exports['sandbox-base']:DatabaseGameFind({
-                        collection = "characters",
-                        query = {
-                            LSUNDGBan = {
-                                ["$exists"] = true,
-                            }
-                        },
-                        options = {
-                            projection = {
-                                SID = 1,
-                                First = 1,
-                                Last = 1,
-                                Alias = 1,
-                                LSUNDGBan = 1,
-                            }
-                        }
-
-                    }, function(success, results)
-                        if success and results then
+                    MySQL.Async.fetchAll([[
+                        SELECT SID, First, Last, Alias, LSUNDGBan
+                        FROM characters
+                        WHERE LSUNDGBan IS NOT NULL
+                    ]], {}, function(results)
+                        if results and #results > 0 then
                             local cunts = {}
-                            for k, v in ipairs(results) do
-                                v.RacingAlias = v.Profiles?.redline?.name
-
+                            for _, v in ipairs(results) do
+                                v.RacingAlias = v.Profiles and v.Profiles.redline and v.Profiles.redline.name or nil
                                 table.insert(cunts, v)
                             end
-
                             cb(cunts)
                         else
                             cb(false)
@@ -140,25 +125,27 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
             local perm = char:GetData("LaptopPermissions")
 
             if perm["lsunderground"] and perm["lsunderground"]["admin"] then
-                exports['sandbox-base']:DatabaseGameUpdateOne({
-                    collection = "characters",
-                    query = {
-                        SID = data.SID,
-                    },
-                    update = {
-                        ["$push"] = {
-                            LSUNDGBan = "Boosting",
-                        }
-                    }
-                }, function(success, result)
-                    if success and result > 0 then
-                        local targetChar = exports['sandbox-characters']:FetchBySID(data.SID)
-                        if targetChar then
-                            targetChar:SetData("LSUNDGBan", {
-                                "Boosting",
-                            })
-                        end
-                        cb(true)
+                MySQL.Async.fetchAll('SELECT LSUNDGBan FROM characters WHERE SID = @SID', {
+                    ['@SID'] = data.SID
+                }, function(results)
+                    if results and #results > 0 then
+                        local bans = results[1].LSUNDGBan and json.decode(results[1].LSUNDGBan) or {}
+                        table.insert(bans, "Boosting")
+
+                        MySQL.Async.execute('UPDATE characters SET LSUNDGBan = @bans WHERE SID = @SID', {
+                            ['@bans'] = json.encode(bans),
+                            ['@SID'] = data.SID
+                        }, function(affectedRows)
+                            if affectedRows > 0 then
+                                local targetChar = Fetch:SID(data.SID)
+                                if targetChar then
+                                    targetChar:SetData("LSUNDGBan", bans)
+                                end
+                                cb(true)
+                            else
+                                cb(false)
+                            end
+                        end)
                     else
                         cb(false)
                     end
@@ -178,23 +165,14 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                 local perm = char:GetData("LaptopPermissions")
 
                 if perm["lsunderground"] and perm["lsunderground"]["admin"] then
-                    exports['sandbox-base']:DatabaseGameUpdateOne({
-                        collection = "characters",
-                        query = {
-                            SID = data.SID,
-                        },
-                        update = {
-                            ["$unset"] = {
-                                LSUNDGBan = true,
-                            }
-                        }
-                    }, function(success, result)
-                        if success and result > 0 then
-                            local targetChar = exports['sandbox-characters']:FetchBySID(data.SID)
+                    MySQL.Async.execute('UPDATE characters SET LSUNDGBan = NULL WHERE SID = @SID', {
+                        ['@SID'] = data.SID
+                    }, function(affectedRows)
+                        if affectedRows > 0 then
+                            local targetChar = Fetch:SID(data.SID)
                             if targetChar then
                                 targetChar:SetData("LSUNDGBan", nil)
                             end
-
                             cb(true)
                         else
                             cb(false)

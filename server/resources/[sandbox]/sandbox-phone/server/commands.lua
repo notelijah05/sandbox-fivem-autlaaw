@@ -149,29 +149,7 @@ function RegisterChatCommands()
 				)
 			)
 		else
-			exports['sandbox-base']:DatabaseGameFindOne({
-				collection = "characters",
-				query = {
-					SID = sid,
-				},
-			}, function(success, results)
-				if success and #results > 0 then
-					local char = results[1]
-					exports["sandbox-chat"]:SendSystemSingle(
-						source,
-						string.format(
-							"Twitter Account Found With Name: %s. %s %s (SID: %s) [User: %s]",
-							twitterName,
-							char.First,
-							char.Last,
-							char.SID,
-							char.User
-						)
-					)
-				else
-					exports["sandbox-chat"]:SendSystemSingle(source, "No Twitter Account Found")
-				end
-			end)
+			exports["sandbox-chat"]:SendSystemSingle(source, "No Twitter Account Found")
 		end
 	end, {
 		help = "[Admin] Get Twitter Account Owner",

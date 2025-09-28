@@ -6,12 +6,14 @@ client_script("@sandbox-pwnzor/client/check.lua")
 
 client_scripts({
 	"config.lua",
-	"shared/*.lua",
 	"client/*.lua",
 })
 
 server_scripts({
 	"config.lua",
-	"shared/*.lua",
 	"server/*.lua",
+})
+
+shared_scripts({
+	"shared/**/*.lua",
 })

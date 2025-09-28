@@ -6,6 +6,7 @@ client_script("@sandbox-base/exports/cl_error.lua")
 client_script("@sandbox-pwnzor/client/check.lua")
 
 server_scripts({
+	'@oxmysql/lib/MySQL.lua',
 	"server/**/*.lua",
 })
 

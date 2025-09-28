@@ -41,22 +41,11 @@ exports('FetchBySID', function(value)
 end)
 
 exports('FetchGetOfflineData', function(stateId, key)
-	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "characters",
-		query = {
-			SID = stateId,
-		},
-		options = {
-			projection = {
-				[key] = true,
-			},
-		},
-	}, function(success, results)
-		if not success then
-			return p:resolve(nil)
-		end
-		return p:resolve(results[1][key])
-	end)
-	return Citizen.Await(p)
+	local offlineChar = MySQL.single.await("SELECT * FROM characters WHERE SID = @SID", {
+		["@SID"] = stateId,
+	})
+	if offlineChar == nil then
+		return nil
+	end
+	return TablesToDecode[key] and json.decode(offlineChar[key]) or offlineChar[key]
 end)

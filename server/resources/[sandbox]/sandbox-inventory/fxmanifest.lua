@@ -24,6 +24,11 @@ client_scripts({
 	"client/**/*.lua",
 })
 
+server_scripts({
+	"crafting_config.lua",
+	"server/**/*.lua",
+})
+
 shared_scripts({
 	"config.lua",
 	"items/**/*.lua",
@@ -32,9 +37,4 @@ shared_scripts({
 	"shared/weapon_props.lua",
 	"shared/weapon_components.lua",
 	"shared/weapon_recoil.lua",
-})
-
-server_scripts({
-	"crafting_config.lua",
-	"server/**/*.lua",
 })

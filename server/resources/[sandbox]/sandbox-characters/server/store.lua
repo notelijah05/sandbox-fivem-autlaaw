@@ -3,6 +3,15 @@ local _noUpdate = { "Source", "User", "_id", "ID", "First", "Last", "Phone", "DO
 
 local _saving = {}
 
+local function tableContains(tbl, value)
+	for k, v in pairs(tbl) do
+		if v == value then
+			return true
+		end
+	end
+	return false
+end
+
 function StoreData(source)
 	if _saving[source] then
 		return
@@ -34,18 +43,35 @@ function StoreData(source)
 
 		data.LastPlayed = os.time() * 1000
 
-		exports['sandbox-base']:LoggerInfo("Characters", string.format("Saving Character %s", cId), { console = true })
-		exports['sandbox-base']:DatabaseGameUpdateOne({
-			collection = "characters",
-			query = {
-				_id = cId,
-			},
-			update = {
-				["$set"] = data,
-			},
-		}, function()
-			_saving[source] = false
-		end)
+		exports['sandbox-base']:LoggerTrace("Characters", string.format("Saving Character %s", cId), { console = true })
+
+		local dbData = exports['sandbox-base']:CloneDeep(data)
+
+		for k, v in pairs(dbData) do
+			if type(v) == "table" then
+				dbData[k] = json.encode(v)
+			end
+		end
+
+		local updateFields = {}
+		for k, v in pairs(dbData) do
+			if not tableContains(_noUpdate, k) then
+				table.insert(updateFields, string.format("`%s` = @%s", k, k))
+			end
+		end
+
+		local query = string.format([[
+			UPDATE `characters` SET %s WHERE `SID` = @ID
+		]], table.concat(updateFields, ", "))
+
+		dbData['@ID'] = cId
+
+		local saveCharacter = MySQL.update.await(query, dbData)
+		_saving[source] = false
+
+		exports['sandbox-base']:LoggerTrace("Characters",
+			string.format("Character %s has been saved to the Database successfully", cId),
+			{ console = true })
 	end
 end
 

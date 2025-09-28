@@ -157,6 +157,88 @@ CREATE TABLE IF NOT EXISTS `business_phones` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+DROP TABLE IF EXISTS `characters`;
+CREATE TABLE IF NOT EXISTS `characters` (
+  `User` varchar(255) DEFAULT NULL,
+  `SID` int(11) NOT NULL AUTO_INCREMENT,
+  `First` varchar(255) DEFAULT NULL,
+  `Last` varchar(255) DEFAULT NULL,
+  `Gender` int(11) NOT NULL DEFAULT 0,
+  `New` tinyint(1) NOT NULL DEFAULT 1,
+  `Jailed` tinyint(1) NOT NULL DEFAULT 0,
+  `Origin` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Apps` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Wardrobe` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `DOB` longtext DEFAULT NULL,
+  `Cash` bigint(20) DEFAULT NULL,
+  `LastPlayed` longtext DEFAULT NULL,
+  `Jobs` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Apartment` int(11) DEFAULT NULL,
+  `PhoneSettings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Phone` varchar(255) DEFAULT NULL,
+  `Crypto` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Licenses` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Alias` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `PhonePermissions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `PhonePosition` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Addiction` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Animations` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Armor` int(11) NOT NULL DEFAULT 0,
+  `BankAccount` int(11) DEFAULT NULL,
+  `CryptoWallet` varchar(255) DEFAULT NULL,
+  `HP` int(11) DEFAULT 200,
+  `InventorySettings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `States` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Callsign` varchar(255) DEFAULT NULL,
+  `MDTHistory` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Qualifications` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `LastClockOn` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Salary` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `TimeClockedOn` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Reputations` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `GangChain` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Bio` varchar(255) DEFAULT NULL,
+  `JailedData` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `ICU` tinyint(1) DEFAULT NULL,
+  `ICUData` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Deleted` tinyint(1) DEFAULT 0,
+  `Status` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `Parole` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `MDTSystemAdmin` tinyint(1) NOT NULL DEFAULT 0,
+  `LaptopSettings` longtext DEFAULT NULL,
+  `LaptopPermissions` longtext DEFAULT NULL,
+  `LaptopApps` longtext DEFAULT NULL,
+  `HUDConfig` longtext DEFAULT NULL,
+  `Mugshot` varchar(255) DEFAULT NULL,
+  `Attorney` tinyint(1) DEFAULT 0,
+  `MDTSuspension` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`SID`) USING BTREE,
+  CONSTRAINT `Origin` CHECK (json_valid(`Origin`)),
+  CONSTRAINT `Apps` CHECK (json_valid(`Apps`)),
+  CONSTRAINT `Wardrobe` CHECK (json_valid(`Wardrobe`)),
+  CONSTRAINT `Jobs` CHECK (json_valid(`Jobs`)),
+  CONSTRAINT `PhoneSettings` CHECK (json_valid(`PhoneSettings`)),
+  CONSTRAINT `Crypto` CHECK (json_valid(`Crypto`)),
+  CONSTRAINT `Licenses` CHECK (json_valid(`Licenses`)),
+  CONSTRAINT `Alias` CHECK (json_valid(`Alias`)),
+  CONSTRAINT `PhonePermissions` CHECK (json_valid(`PhonePermissions`)),
+  CONSTRAINT `Addiction` CHECK (json_valid(`Addiction`)),
+  CONSTRAINT `Animations` CHECK (json_valid(`Animations`)),
+  CONSTRAINT `InventorySettings` CHECK (json_valid(`InventorySettings`)),
+  CONSTRAINT `States` CHECK (json_valid(`States`)),
+  CONSTRAINT `MDTHistory` CHECK (json_valid(`MDTHistory`)),
+  CONSTRAINT `Qualifications` CHECK (json_valid(`Qualifications`)),
+  CONSTRAINT `LastClockOn` CHECK (json_valid(`LastClockOn`)),
+  CONSTRAINT `Salary` CHECK (json_valid(`Salary`)),
+  CONSTRAINT `TimeClockedOn` CHECK (json_valid(`TimeClockedOn`)),
+  CONSTRAINT `Reputations` CHECK (json_valid(`Reputations`)),
+  CONSTRAINT `GangChain` CHECK (json_valid(`GangChain`)),
+  CONSTRAINT `JailedData` CHECK (json_valid(`JailedData`)),
+  CONSTRAINT `ICUData` CHECK (json_valid(`ICUData`)),
+  CONSTRAINT `Status` CHECK (json_valid(`Status`)),
+  CONSTRAINT `Parole` CHECK (json_valid(`Parole`))
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 DROP TABLE IF EXISTS `character_app_profiles`;
 CREATE TABLE IF NOT EXISTS `character_app_profiles` (
   `sid` bigint(20) unsigned NOT NULL,
@@ -751,6 +833,14 @@ CREATE TABLE IF NOT EXISTS `moonshine_stills` (
   `cooldown` int(11) DEFAULT NULL,
   `active_cook` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`active_cook`)),
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+DROP TABLE IF EXISTS `peds`;
+CREATE TABLE IF NOT EXISTS `peds` (
+  `char` varchar(255) NOT NULL,
+  `ped` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  PRIMARY KEY (`char`) USING BTREE,
+  CONSTRAINT `ped` CHECK (json_valid(`ped`))
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 DROP TABLE IF EXISTS `placed_meth_tables`;
