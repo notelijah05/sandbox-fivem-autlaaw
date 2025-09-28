@@ -122,36 +122,22 @@ function RegisterCallbacks()
                     end
                 end
 
-                exports['sandbox-base']:DatabaseGameFind({
-                    collection = 'characters',
-                    query = {
-                        SID = {
-                            ['$in'] = charsToFetch
-                        }
-                    },
-                    options = {
-                        projection = {
-                            SID = 1,
-                            First = 1,
-                            Last = 1,
-                            Phone = 1,
-                        }
-                    }
-                }, function(success, results)
-                    if success and #results > 0 then
-                        local dumbShit = {}
-                        for k, v in ipairs(results) do
-                            dumbShit[v.SID] = v
-                        end
-
-                        cb(vehicles, {
-                            current = Vehicles.Owned.Properties:GetCount(storageId),
-                            max = maxParking or 0
-                        }, characterId, dumbShit)
-                    else
-                        cb(false)
+                local query = "SELECT SID, First, Last, Phone FROM characters WHERE SID IN (" .. table.concat(charsToFetch, ",") .. ")"
+                local results = MySQL.query.await(query)
+                
+                if results and #results > 0 then
+                    local dumbShit = {}
+                    for k, v in ipairs(results) do
+                        dumbShit[v.SID] = v
                     end
-                end)
+                
+                    cb(vehicles, {
+                        current = Vehicles.Owned.Properties:GetCount(storageId),
+                        max = maxParking or 0
+                    }, characterId, dumbShit)
+                else
+                    cb(false)
+                end
             end, 2, storageId, true, false, {
                 _id = 0,
                 VIN = 1,
