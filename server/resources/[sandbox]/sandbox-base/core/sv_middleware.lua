@@ -7,11 +7,25 @@ local _ignored = {
 AddEventHandler('onResourceStart', function(resource)
     if COMPONENTS.Proxy.ExportsReady and not _ignored[resource] then
         if resource ~= GetCurrentResourceName() then
-            _middlewares = {}
-            collectgarbage()
+            ClearMiddleware(resource)
         end
     end
 end)
+
+function ClearMiddleware(resource)
+    for event, middlewares in pairs(_middlewares) do
+        for i = #middlewares, 1, -1 do
+            if middlewares[i].resource == resource then
+                table.remove(middlewares, i)
+            end
+        end
+
+        if #middlewares == 0 then
+            _middlewares[event] = nil
+        end
+    end
+    collectgarbage()
+end
 
 function MiddlewareTriggerEvent(event, source, ...)
     if _middlewares[event] then
@@ -45,7 +59,13 @@ function MiddlewareAdd(event, cb, prio)
         _middlewares[event] = {}
     end
 
-    table.insert(_middlewares[event], { cb = cb, prio = prio })
+    local resource = GetInvokingResource() or GetCurrentResourceName()
+
+    table.insert(_middlewares[event], {
+        cb = cb,
+        prio = prio,
+        resource = resource
+    })
     table.sort(_middlewares[event], function(a, b) return a.prio < b.prio end)
 end
 
