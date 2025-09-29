@@ -532,7 +532,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Phone:CoManager:FetchRoster", function(source, data, cb)
 		if data.ReqUpdate then
-			local updatedJobData = Phone:UpdateJobData(source, true)
+			local updatedJobData = exports['sandbox-phone']:UpdateJobData(source, true)
 			cb({
 				jobData = updatedJobData.jobData,
 				rosterData = exports['sandbox-phone']:CoManagerFetchAllAccessibleRosters(source),
