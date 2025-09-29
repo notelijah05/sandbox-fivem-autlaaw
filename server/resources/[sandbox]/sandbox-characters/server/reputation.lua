@@ -7,7 +7,7 @@ end)
 
 function RepItems()
 	exports['sandbox-inventory']:RegisterUse("rep_voucher", "RandomItems", function(source, item)
-		local char = exports['sandbox-characters']:RepFetchCharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if item.MetaData.Reputation and ((item.MetaData.Amount and tonumber(item.MetaData.Amount) or 0) > 0) then
 			exports['sandbox-characters']:RepAdd(source, item.MetaData.Reputation, item.MetaData.Amount)
 			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
@@ -28,7 +28,7 @@ end)
 
 exports('RepGetLevel', function(source, id)
 	if GlobalState[string.format("Rep:%s", id)] ~= nil then
-		local char = exports['sandbox-characters']:RepFetchCharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local reps = char:GetData("Reputations") or {}
 			local level = 0
@@ -59,7 +59,7 @@ exports('RepHasLevel', function(source, id, level)
 end)
 
 exports('RepView', function(source)
-	local char = exports['sandbox-characters']:RepFetchCharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
 		local reps = char:GetData("Reputations") or {}
 		local viewingData = {}
@@ -116,7 +116,7 @@ exports('RepView', function(source)
 end)
 
 exports('RepViewList', function(source, list)
-	local char = exports['sandbox-characters']:RepFetchCharacterSource(source)
+	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
 		local reps = char:GetData("Reputations") or {}
 		local viewingData = {}
@@ -175,7 +175,7 @@ end)
 exports('RepAdd', function(source, id, amount)
 	if GlobalState[string.format("Rep:%s", id)] ~= nil then
 		local rep = GlobalState[string.format("Rep:%s", id)]
-		local char = exports['sandbox-characters']:RepFetchCharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local reps = char:GetData("Reputations") or {}
 			if reps[id] ~= nil then
@@ -200,7 +200,7 @@ exports('RepRemove', function(source, id, amount)
 	if GlobalState[string.format("Rep:%s", id)] ~= nil then
 		local rep = GlobalState[string.format("Rep:%s", id)]
 
-		local char = exports['sandbox-characters']:RepFetchCharacterSource(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local reps = char:GetData("Reputations") or {}
 			if reps[id] ~= nil and (reps[id] - math.abs(amount) > 0) then
