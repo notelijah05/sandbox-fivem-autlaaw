@@ -47,5 +47,6 @@ TablesToDecode = {
 	"LSUNDGBan",
 	"PhonePosition",
 	"Callsign",
+	"HUDConfig",
 	-- Maybe more to be added
 }

@@ -285,7 +285,7 @@ function SetCharacterRadioFrequency(freq, notifyChange)
 			LocalPlayer.state:set("onRadio", tostring(RADIO_FREQUENCY), true)
 			SendUpdates()
 
-			local maskRadio = LocalPlayer.state.Character:GetData("HUDConfig")?.maskRadio or false
+			local maskRadio = LocalPlayer.state.Character:GetData("HUDConfig").maskRadio or false
 			TriggerEvent("EmergencyAlerts:Client:RadioChannelChange", tostring(RADIO_FREQUENCY))
 			TriggerEvent("Status:Client:Update", "radio-freq", maskRadio and "???.?" or RADIO_FREQUENCY)
 
@@ -305,7 +305,7 @@ end
 
 RegisterNetEvent("Characters:Client:Updated", function(k)
 	if k == "HUDConfig" and RADIO_FREQUENCY ~= 0 then
-		local maskRadio = LocalPlayer.state.Character:GetData("HUDConfig")?.maskRadio or false
+		local maskRadio = LocalPlayer.state.Character:GetData("HUDConfig").maskRadio or false
 		TriggerEvent("EmergencyAlerts:Client:RadioChannelChange", tostring(RADIO_FREQUENCY))
 		TriggerEvent("Status:Client:Update", "radio-freq", maskRadio and "???.?" or RADIO_FREQUENCY)
 	end
@@ -313,7 +313,7 @@ end)
 
 AddEventHandler("UI:Client:ResetFinished", function(manual)
 	if manual and RADIO_FREQUENCY then
-		local maskRadio = LocalPlayer.state.Character:GetData("HUDConfig")?.maskRadio or false
+		local maskRadio = LocalPlayer.state.Character:GetData("HUDConfig").maskRadio or false
 		TriggerEvent("EmergencyAlerts:Client:RadioChannelChange", tostring(RADIO_FREQUENCY))
 		TriggerEvent("Status:Client:Update", "radio-freq", maskRadio and "???.?" or RADIO_FREQUENCY)
 	end
