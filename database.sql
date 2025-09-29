@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `changelogs` (
 
 DROP TABLE IF EXISTS `characters`;
 CREATE TABLE IF NOT EXISTS `characters` (
-  `User` varchar(255) DEFAULT NULL,
+  `User` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `SID` int(11) NOT NULL AUTO_INCREMENT,
   `First` varchar(255) DEFAULT NULL,
   `Last` varchar(255) DEFAULT NULL,
@@ -199,6 +199,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `BankAccount` int(11) DEFAULT NULL,
   `CryptoWallet` varchar(255) DEFAULT NULL,
   `HP` int(11) DEFAULT 200,
+  `HPReductions` int(11) DEFAULT 0,
   `InventorySettings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `States` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `Callsign` varchar(255) DEFAULT NULL,
@@ -854,6 +855,19 @@ CREATE TABLE IF NOT EXISTS `peds` (
   PRIMARY KEY (`char`) USING BTREE,
   CONSTRAINT `ped` CHECK (json_valid(`ped`))
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+DROP TABLE IF EXISTS `whitelisted_peds`;
+CREATE TABLE IF NOT EXISTS `whitelisted_peds` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sid` int(11) NOT NULL,
+  `model` varchar(100) NOT NULL,
+  `label` varchar(255) NOT NULL,
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `sid` (`sid`),
+  KEY `model` (`model`),
+  CONSTRAINT `whitelisted_peds_sid_fk` FOREIGN KEY (`sid`) REFERENCES `characters` (`SID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 DROP TABLE IF EXISTS `placed_meth_tables`;
 CREATE TABLE IF NOT EXISTS `placed_meth_tables` (
