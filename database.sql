@@ -157,6 +157,18 @@ CREATE TABLE IF NOT EXISTS `business_phones` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+DROP TABLE IF EXISTS `changelogs`;
+CREATE TABLE IF NOT EXISTS `changelogs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL DEFAULT current_timestamp(),
+  `title` varchar(255) NOT NULL,
+  `content` longtext NOT NULL,
+  `version` varchar(50) DEFAULT NULL,
+  `author` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `date` (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `characters`;
 CREATE TABLE IF NOT EXISTS `characters` (
   `User` varchar(255) DEFAULT NULL,
