@@ -55,6 +55,8 @@ _aptData = {
 					options = {
 						heading = 0,
 						--debugPoly=true,
+						minZ = -101.6,
+						maxZ = -97.6
 					},
 				},
 				logout = {
