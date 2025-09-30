@@ -44,23 +44,20 @@ Config.VehicleMenu = {
 	{
 		icon = "gas-pump",
 		isEnabled = function(data, entityData)
-			if Vehicles ~= nil and exports['sandbox-fuel']:CanBeFueled(entityData.entity) then
+			if exports['sandbox-fuel']:CanBeFueled(entityData.entity) then
 				return true
 			end
 			return false
 		end,
 		textFunc = function(data, entityData)
-			if Vehicles ~= nil then
-				local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
-				if fuelData then
-					if fuelData.needsFuel then
-						return string.format("Refuel For $%d", fuelData.cost)
-					else
-						return "Fuel Tank Full"
-					end
+			local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
+			if fuelData then
+				if fuelData.needsFuel then
+					return string.format("Refuel For $%d", fuelData.cost)
+				else
+					return "Fuel Tank Full"
 				end
 			end
-			return ""
 		end,
 		event = "Vehicles:Client:StartFueling",
 		data = {},
@@ -69,23 +66,19 @@ Config.VehicleMenu = {
 	{
 		icon = "credit-card",
 		isEnabled = function(data, entityData)
-			if Vehicles ~= nil then
-				local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
-				if fuelData and fuelData.needsFuel then
-					return true
-				end
+			local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
+			if fuelData and fuelData.needsFuel then
+				return true
 			end
 			return false
 		end,
 		textFunc = function(data, entityData)
-			if Vehicles ~= nil then
-				local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
-				if fuelData then
-					if fuelData.needsFuel then
-						return string.format("Refuel For $%d (Pay by Card)", fuelData.cost)
-					else
-						return "Fuel Tank Full"
-					end
+			local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
+			if fuelData then
+				if fuelData.needsFuel then
+					return string.format("Refuel For $%d (Pay by Card)", fuelData.cost)
+				else
+					return "Fuel Tank Full"
 				end
 			end
 			return ""
@@ -101,8 +94,7 @@ Config.VehicleMenu = {
 		isEnabled = function(data, entityData)
 			local hasWeapon, weapon = GetCurrentPedWeapon(LocalPlayer.state.ped)
 			if
-				Vehicles ~= nil
-				and hasWeapon
+				hasWeapon
 				and weapon == `WEAPON_PETROLCAN`
 				and GetVehicleClass(entityData.entity) ~= 13
 			then
@@ -116,9 +108,9 @@ Config.VehicleMenu = {
 		minDist = 2.0,
 	},
 	{
-		icon = "garage-open",
+		icon = "warehouse",
 		isEnabled = function(data, entityData)
-			if Vehicles ~= nil and exports['sandbox-vehicles']:CanBeStored(entityData.entity) then
+			if exports['sandbox-vehicles']:CanBeStored(entityData.entity) then
 				return true
 			end
 			return false
@@ -148,7 +140,7 @@ Config.VehicleMenu = {
 		text = "Give Keys",
 		isEnabled = function(data, entityData)
 			local vehEnt = Entity(entityData.entity)
-			return Vehicles ~= nil and exports['sandbox-vehicles']:KeysHas(vehEnt.state.VIN, vehEnt.state.GroupKeys)
+			return exports['sandbox-vehicles']:KeysHas(vehEnt.state.VIN, vehEnt.state.GroupKeys)
 		end,
 		event = "Vehicles:Client:GiveKeys",
 		data = {},
@@ -206,7 +198,6 @@ Config.VehicleMenu = {
 				vehState
 				and vehState.VIN
 				and not vehState.wasThermited
-				and Vehicles ~= nil
 				and exports['sandbox-vehicles']:KeysHas(vehState.VIN)
 			then
 				return true

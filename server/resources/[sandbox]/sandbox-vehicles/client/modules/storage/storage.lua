@@ -40,7 +40,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
         end
     end
 
-    exports['sandbox-hud']:InteractionRegisterMenu("veh_storage", false, "garage-open", function()
+    exports['sandbox-hud']:InteractionRegisterMenu("veh_storage", "Open Garage", "warehouse", function()
         OpenVehicleStorage()
         exports['sandbox-hud']:InteractionHide()
     end, function()
