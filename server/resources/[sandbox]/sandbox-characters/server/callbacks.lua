@@ -108,7 +108,7 @@ function RegisterCallbacks()
 			Gender = tonumber(data.gender),
 			Bio = data.bio,
 			Origin = data.origin,
-			DOB = data.dob,
+			DOB = string.match(data.dob, "(%d%d%d%d%-%d%d%-%d%d)"),
 			LastPlayed = -1,
 			Jobs = {},
 			SID = exports['sandbox-base']:SequenceGet("Character"),
