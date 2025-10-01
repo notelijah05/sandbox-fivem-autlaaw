@@ -5,35 +5,35 @@ function RegisterChairTargets()
 	for k, v in ipairs(_sittableChairs) do
 		v.id = k
 		if v.prop then
-			exports['sandbox-targeting']:AddObject(v.prop, "chair", {
+			exports.ox_target:addModel(v.prop, {
 				{
-					text = "Sit",
-					icon = "chair",
+					name = "sit_chair",
+					label = "Sit",
+					icon = "fa-solid fa-chair",
 					event = "Animations:Client:Chair",
 					data = v,
-					minDist = 2.0,
+					distance = 2.0,
 				},
-			}, 1.8)
+			})
 		elseif v.polyzone then
-			exports['sandbox-targeting']:ZonesAddBox(
-				string.format("chair-%s", v.id),
-				"chair",
-				v.polyzone.center,
-				v.polyzone.length,
-				v.polyzone.width,
-				v.polyzone.options,
-				{
+			exports.ox_target:addBoxZone({
+				name = string.format("chair-%s", v.id),
+				coords = v.polyzone.center,
+				size = vec3(v.polyzone.width, v.polyzone.length,
+					math.abs(v.polyzone.options.maxZ - v.polyzone.options.minZ)),
+				rotation = v.polyzone.options.heading or 0,
+				debug = v.polyzone.options.debugPoly or false,
+				options = {
 					{
-						text = "Sit",
-						icon = "chair",
+						name = "sit_chair_zone",
+						label = "Sit",
+						icon = "fa-solid fa-chair",
 						event = "Animations:Client:Chair",
 						data = v,
-						minDist = 2.0,
+						distance = 2.0,
 					},
 				},
-				2.0,
-				true
-			)
+			})
 		end
 	end
 
@@ -45,13 +45,13 @@ function RegisterChairTargets()
 	end)
 end
 
-AddEventHandler("Animations:Client:Chair", function(entityData, data)
+AddEventHandler("Animations:Client:Chair", function(response)
 	if not isSitting and not IsInEmoteName and not LocalPlayer.state.myEscorter then
 		enterChairPosition = GetEntityCoords(LocalPlayer.state.ped)
 
-		local positioning =
-			GetOffsetFromEntityInWorldCoords(entityData.entity, data.xOff + 0.0, data.yOff + 0.0, data.zOff + 1.0)
-		local heading = GetEntityHeading(entityData.entity) or 0.0
+		local positioning
+		local heading = 0.0
+		local data = response.data
 
 		if data.polyzone then
 			positioning = vector3(
@@ -60,20 +60,48 @@ AddEventHandler("Animations:Client:Chair", function(entityData, data)
 				data.polyzone.center.z + data.zOff
 			)
 			heading = data.polyzone.options.heading or 0.0
-		end
-
-		if data.hOff then
-			heading += data.hOff
 		else
-			heading += 180.0
+			if response.entity and response.entity ~= 0 then
+				positioning = GetOffsetFromEntityInWorldCoords(response.entity, data.xOff + 0.0, data.yOff + 0.0,
+					data.zOff + 1.0)
+				heading = GetEntityHeading(response.entity) or 0.0
+			else
+				local playerCoords = GetEntityCoords(LocalPlayer.state.ped)
+				local nearestEntity = nil
+				local nearestDistance = math.huge
+
+				local objects = GetGamePool('CObject')
+				for _, obj in ipairs(objects) do
+					if GetEntityModel(obj) == data.prop then
+						local objCoords = GetEntityCoords(obj)
+						local distance = #(playerCoords - objCoords)
+						if distance < nearestDistance and distance < 3.0 then
+							nearestDistance = distance
+							nearestEntity = obj
+						end
+					end
+				end
+
+				if nearestEntity then
+					positioning = GetOffsetFromEntityInWorldCoords(nearestEntity, data.xOff + 0.0, data.yOff + 0.0,
+						data.zOff + 1.0)
+					heading = GetEntityHeading(nearestEntity) or 0.0
+				end
+			end
 		end
 
 		if positioning then
+			if data.hOff then
+				heading = heading + data.hOff
+			else
+				heading = heading + 180.0
+			end
+
 			TaskStartScenarioAtPosition(
 				LocalPlayer.state.ped,
 				"PROP_HUMAN_SEAT_CHAIR_MP_PLAYER",
 				positioning,
-				heading + 0.0,
+				heading,
 				0,
 				true,
 				true

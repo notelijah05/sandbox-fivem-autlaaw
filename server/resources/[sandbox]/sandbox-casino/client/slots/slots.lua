@@ -88,7 +88,6 @@ AddEventHandler("Casino:Client:Startup", function()
                     return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
                 end,
             },
-        }, 3.0)
         })
     end
 end)
