@@ -4,12 +4,12 @@ _interactionPeds = {}
 _spawnedInteractionPeds = {}
 
 -- AddEventHandler('onClientResourceStart', function(resource)
--- 		if resource == GetCurrentResourceName() then
-Wait(1000)
+-- 	if resource == GetCurrentResourceName() then
+-- 		Wait(1000)
 -- 		exports['sandbox-pedinteraction']:Add('fuck', `a_m_y_soucent_04`, vector3(-810.171, -1311.092, 4.000), 332.419,
 -- 			50.0, {
--- 			{ icon = 'boxes-stacked', text = 'F', event = 'F', data = {}, minDist = 2.0, jobs = false },
--- 		})
+-- 				{ icon = 'boxes-stacked', text = 'F', event = 'F', data = {}, minDist = 2.0, jobs = false },
+-- 			})
 -- 	end
 -- end)
 
@@ -173,10 +173,27 @@ function CreateDumbAssPed(model, coords, heading, menu, icon, scenario, anim, co
 	end
 
 	if menu then
-		if not icon then
-			icon = "person-sign"
+		local oxOptions = {}
+		for i, option in ipairs(menu) do
+			local oxOption = {
+				label = option.label or option.text,
+				icon = option.icon or "fa-solid fa-shop",
+				distance = option.distance or option.minDist or 2.0,
+				onSelect = function()
+					if option.event then
+						TriggerEvent(option.event, (option.data or {}))
+					end
+				end
+			}
+
+			if option.groups then
+				oxOption.groups = option.groups
+			end
+
+			table.insert(oxOptions, oxOption)
 		end
-		exports.ox_target:addEntity(ped, menu)
+
+		exports.ox_target:addLocalEntity(ped, oxOptions)
 	end
 
 	return ped

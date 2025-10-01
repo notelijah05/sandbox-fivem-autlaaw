@@ -992,11 +992,11 @@ RegisterNetEvent("Inventory:Client:BasicShop:Set", function(shops)
 	for k, v in pairs(shops) do
 		local menus = {
 			{
-				icon = "sack-dollar",
-				text = v.name or "Shop",
+				icon = "fa-solid fa-sack-dollar",
+				label = v.name or "Shop",
 				event = "Shop:Client:BasicShop:Open",
 				data = v.id,
-				isEnabled = function(data, ent)
+				canInteract = function(data, ent)
 					return GlobalState[string.format("BasicShop:%s", data)]
 				end,
 			}
@@ -1004,52 +1004,52 @@ RegisterNetEvent("Inventory:Client:BasicShop:Set", function(shops)
 
 		if v.job == nil and LocalPlayer.state.Character ~= nil and v.owner == LocalPlayer.state.Character:GetData("SID") then
 			table.insert(menus, {
-				icon = "sack-dollar",
-				text = "Add Shop Moderator",
+				icon = "fa-solid fa-sack-dollar",
+				label = "Add Shop Moderator",
 				event = "Shop:Client:BasicShop:AddModerator",
 				data = v.id,
 			})
 			table.insert(menus, {
-				icon = "bars",
-				text = "View Shop Moderator",
+				icon = "fa-solid fa-bars",
+				label = "View Shop Moderator",
 				event = "Shop:Client:BasicShop:ViewModerators",
 				data = v.id,
 			})
 			table.insert(menus, {
-				icon = "octagon-check",
-				text = "Open Shop",
+				icon = "fa-solid fa-octagon-check",
+				label = "Open Shop",
 				event = "Shop:Client:BasicShop:OpenShop",
 				data = v.id,
-				isEnabled = function(data, ent)
+				canInteract = function(data, ent)
 					return not GlobalState[string.format("BasicShop:%s", data)]
 				end,
 			})
 			table.insert(menus, {
-				icon = "octagon-xmark",
-				text = "Close Shop",
+				icon = "fa-solid fa-octagon-xmark",
+				label = "Close Shop",
 				event = "Shop:Client:BasicShop:CloseShop",
 				data = v.id,
-				isEnabled = function(data, ent)
+				canInteract = function(data, ent)
 					return GlobalState[string.format("BasicShop:%s", data)]
 				end,
 			})
 		else
 			if exports['sandbox-jobs']:HasPermissionInJob(v.job, "JOB_SHOP_CONTROL") then
 				table.insert(menus, {
-					icon = "octagon-check",
-					text = "Open Shop",
+					icon = "fa-solid fa-octagon-check",
+					label = "Open Shop",
 					event = "Shop:Client:BasicShop:OpenShop",
 					data = v.id,
-					isEnabled = function(data, ent)
+					canInteract = function(data, ent)
 						return not GlobalState[string.format("BasicShop:%s", data)]
 					end,
 				})
 				table.insert(menus, {
-					icon = "octagon-xmark",
-					text = "Close Shop",
+					icon = "fa-solid fa-octagon-xmark",
+					label = "Close Shop",
 					event = "Shop:Client:BasicShop:CloseShop",
 					data = v.id,
-					isEnabled = function(data, ent)
+					canInteract = function(data, ent)
 						return GlobalState[string.format("BasicShop:%s", data)]
 					end,
 				})
@@ -1077,11 +1077,11 @@ end)
 RegisterNetEvent("Inventory:Client:BasicShop:Create", function(shop)
 	local menus = {
 		{
-			icon = "sack-dollar",
-			text = shop.name or "Shop",
+			icon = "fa-solid fa-sack-dollar",
+			label = shop.name or "Shop",
 			event = "Shop:Client:BasicShop:Open",
 			data = shop.id,
-			isEnabled = function(data, ent)
+			canInteract = function(data, ent)
 				return GlobalState[string.format("BasicShop:%s", data)]
 			end,
 		}
@@ -1089,46 +1089,46 @@ RegisterNetEvent("Inventory:Client:BasicShop:Create", function(shop)
 
 	if shop.job == nil and LocalPlayer.state.Character ~= nil and tonumber(shop.owner) == LocalPlayer.state.Character:GetData("SID") then
 		table.insert(menus, {
-			icon = "sack-dollar",
-			text = "Add Shop Moderator",
+			icon = "fa-solid fa-sack-dollar",
+			label = "Add Shop Moderator",
 			event = "Shop:Client:BasicShop:AddModerator",
 			data = shop.id,
 		})
 		table.insert(menus, {
-			icon = "octagon-check",
-			text = "Open Shop",
+			icon = "fa-solid fa-octagon-check",
+			label = "Open Shop",
 			event = "Shop:Client:BasicShop:OpenShop",
 			data = shop.id,
-			isEnabled = function(data, ent)
+			canInteract = function(data, ent)
 				return not GlobalState[string.format("BasicShop:%s", data)]
 			end,
 		})
 		table.insert(menus, {
-			icon = "octagon-xmark",
-			text = "Close Shop",
+			icon = "fa-solid fa-octagon-xmark",
+			label = "Close Shop",
 			event = "Shop:Client:BasicShop:CloseShop",
 			data = shop.id,
-			isEnabled = function(data, ent)
+			canInteract = function(data, ent)
 				return GlobalState[string.format("BasicShop:%s", data)]
 			end,
 		})
 	else
 		if exports['sandbox-jobs']:HasPermissionInJob(shop.job, "JOB_SHOP_CONTROL") then
 			table.insert(menus, {
-				icon = "octagon-check",
-				text = "Open Shop",
+				icon = "fa-solid fa-octagon-check",
+				label = "Open Shop",
 				event = "Shop:Client:BasicShop:OpenShop",
 				data = shop.id,
-				isEnabled = function(data, ent)
+				canInteract = function(data, ent)
 					return not GlobalState[string.format("BasicShop:%s", data)]
 				end,
 			})
 			table.insert(menus, {
-				icon = "octagon-xmark",
-				text = "Close Shop",
+				icon = "fa-solid fa-octagon-xmark",
+				label = "Close Shop",
 				event = "Shop:Client:BasicShop:CloseShop",
 				data = shop.id,
-				isEnabled = function(data, ent)
+				canInteract = function(data, ent)
 					return GlobalState[string.format("BasicShop:%s", data)]
 				end,
 			})

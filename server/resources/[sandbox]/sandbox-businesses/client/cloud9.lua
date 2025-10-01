@@ -32,14 +32,14 @@ AddEventHandler("Businesses:Client:Startup", function()
 		maxZ = 9.40,
 		options = {
 			{
-				icon = "clipboard-check",
+				icon = "fa-solid fa-clipboard-check",
 				label = "Clock In",
 				event = "Restaurant:Client:ClockIn",
 				groups = { "cloud9" },
 				reqOffDuty = true,
 			},
 			{
-				icon = "clipboard",
+				icon = "fa-solid fa-clipboard",
 				label = "Clock Out",
 				event = "Restaurant:Client:ClockOut",
 				groups = { "cloud9" },

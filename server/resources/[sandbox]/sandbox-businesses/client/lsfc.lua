@@ -9,14 +9,14 @@ AddEventHandler("Businesses:Client:Startup", function()
 		maxZ = 33.34,
 		options = {
 			{
-				icon = "clipboard-check",
+				icon = "fa-solid fa-clipboard-check",
 				label = "Clock In",
 				event = "Restaurant:Client:ClockIn",
 				groups = { "lsfc" },
 				reqOffDuty = true,
 			},
 			{
-				icon = "clipboard",
+				icon = "fa-solid fa-clipboard",
 				label = "Clock Out",
 				event = "Restaurant:Client:ClockOut",
 				groups = { "lsfc" },

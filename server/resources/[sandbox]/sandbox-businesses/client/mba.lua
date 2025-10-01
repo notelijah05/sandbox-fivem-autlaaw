@@ -87,21 +87,21 @@ AddEventHandler("Businesses:Client:Startup", function()
 		maxZ = 39.05,
 		options = {
 			{
-				icon = "clipboard-check",
+				icon = "fa-solid fa-clipboard-check",
 				label = "Clock In",
 				event = "Businesses:Client:ClockIn",
 				groups = { "mba" },
 				reqOffDuty = true,
 			},
 			{
-				icon = "clipboard",
+				icon = "fa-solid fa-clipboard",
 				label = "Clock Out",
 				event = "Businesses:Client:ClockOut",
 				groups = { "mba" },
 				reqDuty = true,
 			},
 			{
-				icon = "wand-magic-sparkles",
+				icon = "fa-solid fa-wand-magic-sparkles",
 				label = "Event Setup",
 				event = "Businesses:Client:MBA:StartChangeInterior",
 				groups = { "mba" },

@@ -772,7 +772,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 
 		local locker = {
 			{
-				icon = "user-lock",
+				icon = "fa-solid fa-user-lock",
 				label = "Open Personal Locker",
 				event = "Police:Client:OpenLocker",
 				groups = { "police" },
@@ -855,7 +855,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 			maxZ = 36.23,
 			options = {
 				{
-					icon = "user-lock",
+					icon = "fa-solid fa-user-lock",
 					label = "Open Personal Locker",
 					event = "Police:Client:OpenLocker",
 					groups = { "ems" },

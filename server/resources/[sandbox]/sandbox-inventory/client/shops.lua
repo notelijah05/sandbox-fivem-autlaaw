@@ -6,7 +6,7 @@ function setupStores(shops)
 	for k, v in pairs(shops) do
 		if v.coords ~= nil then
 			local menu = {
-				icon = "sack-dollar",
+				icon = "fa-solid fa-sack-dollar",
 				text = v.name or "Shop",
 				event = "Shop:Client:OpenShop",
 				data = v.id,
