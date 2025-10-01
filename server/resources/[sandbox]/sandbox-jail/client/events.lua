@@ -35,7 +35,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 			type = "logout",
 		}, function(state)
 			if state then
-				Characters:Logout()
+				exports['sandbox-characters']:Logout()
 			end
 		end)
 	end
@@ -126,7 +126,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 				Wait(1)
 			end
 
-			Notification:Warn("Stop exploiting or you will be flighted")
+			exports["sandbox-hud"]:NotifWarn("Stop exploiting or you will be flighted")
 			exports["sandbox-base"]:ServerCallback("Jail:Server:ExploitAttempt", 2)
 		end
 

@@ -415,7 +415,7 @@ exports("ExtrasLogout", function()
 		type = "logout",
 	}, function(state)
 		if state then
-			Characters:Logout()
+			exports['sandbox-characters']:Logout()
 		end
 	end)
 end)

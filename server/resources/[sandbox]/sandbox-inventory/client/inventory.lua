@@ -957,7 +957,7 @@ RegisterNUICallback("SendNotify", function(data, cb)
 		if data.alert == "success" then
 			exports["sandbox-hud"]:NotifSuccess(data.message, data.time)
 		elseif data.alert == "warning" then
-			Notification:Warning(data.message, data.time)
+			exports["sandbox-hud"]:NotifWarn(data.message, data.time)
 		elseif data.alert == "error" then
 			exports["sandbox-hud"]:NotifError(data.message, data.time)
 		end
