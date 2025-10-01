@@ -17,36 +17,36 @@ AddEventHandler('onClientResourceStart', function(resource)
 		Wait(1000)
 		local govServices = {
 			{
-				icon = "id-card",
+				icon = "fa-solid fa-id-card",
 				text = "Purchase ID ($500)",
 				event = "Government:Client:BuyID",
 			},
 			{
-				icon = "file-certificate",
+				icon = "fa-solid fa-file-certificate",
 				text = "License Services",
 				event = "Government:Client:BuyLicense",
 			},
 			{
-				icon = "gavel",
+				icon = "fa-solid fa-gavel",
 				text = "Public Records",
 				event = "Government:Client:AccessPublicRecords",
 			},
 			{
-				icon = "clipboard-check",
+				icon = "fa-solid fa-clipboard-check",
 				text = "Go On Duty",
 				event = "Government:Client:OnDuty",
 				groups = { "government" },
 				reqOffDuty = true,
 			},
 			{
-				icon = "clipboard",
+				icon = "fa-solid fa-clipboard",
 				text = "Go Off Duty",
 				event = "Government:Client:OffDuty",
 				groups = { "government" },
 				reqDuty = true,
 			},
 			{
-				icon = "shop-lock",
+				icon = "fa-solid fa-shop-lock",
 				text = "DOJ Shop",
 				event = "Government:Client:DOJShop",
 				groups = { "government" },
@@ -86,21 +86,21 @@ AddEventHandler('onClientResourceStart', function(resource)
 				maxZ = v.options.maxZ,
 				options = {
 					{
-						icon = "clipboard-check",
+						icon = "fa-solid fa-clipboard-check",
 						label = "Go On Duty",
 						event = "Government:Client:OnDuty",
 						groups = { "government" },
 						reqDuty = false,
 					},
 					{
-						icon = "clipboard",
+						icon = "fa-solid fa-clipboard",
 						label = "Go Off Duty",
 						event = "Government:Client:OffDuty",
 						groups = { "government" },
 						reqDuty = true,
 					},
 					{
-						icon = "gavel",
+						icon = "fa-solid fa-gavel",
 						label = "Public Records",
 						event = "Government:Client:AccessPublicRecords",
 					},
@@ -125,7 +125,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 			maxZ = 39.37,
 			options = {
 				{
-					icon = "gavel",
+					icon = "fa-solid fa-gavel",
 					label = "Use Gavel",
 					event = "Government:Client:UseGavel",
 					-- groups = { "government" },

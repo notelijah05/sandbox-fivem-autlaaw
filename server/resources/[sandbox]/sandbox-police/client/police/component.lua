@@ -16,21 +16,21 @@ local _breached = {}
 
 local policeDutyPoint = {
 	{
-		icon = "clipboard-check",
+		icon = "fa-solid fa-clipboard-check",
 		label = "Go On Duty",
 		event = "Police:Client:OnDuty",
 		groups = { "police" },
 		reqOffDuty = true,
 	},
 	{
-		icon = "clipboard",
+		icon = "fa-solid fa-clipboard",
 		label = "Go Off Duty",
 		event = "Police:Client:OffDuty",
 		groups = { "police" },
 		reqDuty = true,
 	},
 	{
-		icon = "location-dot",
+		icon = "fa-solid fa-location-dot",
 		label = "Re-Enable Tracker",
 		event = "Police:Client:ReEnableTracker",
 		canInteract = function()

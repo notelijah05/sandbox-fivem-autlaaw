@@ -89,7 +89,7 @@ function CreateDealerships()
 					maxZ = v.options.maxZ,
 					options = {
 						{
-							icon = "car-garage",
+							icon = "fa-solid fa-car-garage",
 							label = "Edit Showroom",
 							event = "Dealerships:Client:ShowroomManagement",
 							onSelect = function()
@@ -102,7 +102,7 @@ function CreateDealerships()
 							end,
 						},
 						{
-							icon = "briefcase-clock",
+							icon = "fa-solid fa-briefcase-clock",
 							label = "Go On Duty",
 							event = "Dealerships:Client:ToggleDuty",
 							onSelect = function()
@@ -112,7 +112,7 @@ function CreateDealerships()
 							reqOffDuty = true,
 						},
 						{
-							icon = "briefcase-clock",
+							icon = "fa-solid fa-briefcase-clock",
 							label = "Go Off Duty",
 							event = "Dealerships:Client:ToggleDuty",
 							onSelect = function()
