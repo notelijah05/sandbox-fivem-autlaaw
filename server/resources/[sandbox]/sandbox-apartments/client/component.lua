@@ -368,10 +368,9 @@ exports("Exit", function()
 		Wait(100)
 		SetEntityHeading(PlayerPedId(), p.heading)
 
-		for k, v in pairs(p.interior.locations) do
-			local zoneName = string.format("apt-%s-%s", k, apartmentId)
-			if _apartmentZones[zoneName] then
-				exports.ox_target:removeZone(_apartmentZones[zoneName])
+		for zoneName, zoneId in pairs(_apartmentZones) do
+			if string.find(zoneName, string.format("apt-%s-", apartmentId)) then
+				exports.ox_target:removeZone(zoneId)
 				_apartmentZones[zoneName] = nil
 			end
 		end
