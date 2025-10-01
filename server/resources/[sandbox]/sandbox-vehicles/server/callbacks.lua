@@ -19,7 +19,7 @@ function RegisterCallbacks()
 
                 vehState.Locked = newState
                 SetVehicleDoorsLocked(veh, vehState.Locked and 2 or 1)
-                cb(true, vehState.Locked)
+                return cb(true, vehState.Locked)
             end
         end
         cb(false)
@@ -36,7 +36,7 @@ function RegisterCallbacks()
         if DoesEntityExist(veh) and vehState.VIN then
             vehState.Locked = false
             SetVehicleDoorsLocked(veh, vehState.Locked and 2 or 1)
-            cb(true, vehState.Locked)
+            return cb(true, vehState.Locked)
         end
         cb(false)
     end)
