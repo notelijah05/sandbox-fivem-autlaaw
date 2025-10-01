@@ -22,7 +22,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 			maxZ = v.options.maxZ,
 			options = {
 				{
-					icon = "unlock",
+					icon = "fa-solid fa-unlock",
 					label = "Crack Safe",
 					item = "safecrack_kit",
 					onSelect = function()
@@ -32,11 +32,11 @@ AddEventHandler("Robbery:Client:Setup", function()
 						return (
 							not GlobalState["StoreAntiShitlord"]
 							or GetCloudTimeAsInt() > GlobalState["StoreAntiShitlord"]
-						) and GlobalState[string.format("Safe:%s", data.id)] == nil
+						) and GlobalState[string.format("Safe:%s", v.data.id)] == nil
 					end,
 				},
 				{
-					icon = "terminal",
+					icon = "fa-solid fa-terminal",
 					label = "Use Sequencer",
 					item = "sequencer",
 					onSelect = function()
@@ -46,29 +46,29 @@ AddEventHandler("Robbery:Client:Setup", function()
 						return (
 							not GlobalState["StoreAntiShitlord"]
 							or GetCloudTimeAsInt() > GlobalState["StoreAntiShitlord"]
-						) and GlobalState[string.format("Safe:%s", data.id)] == nil
+						) and GlobalState[string.format("Safe:%s", v.data.id)] == nil
 					end,
 				},
 				{
-					icon = "fingerprint",
+					icon = "fa-solid fa-fingerprint",
 					label = "Open Safe",
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:OpenSafe", v.data)
 					end,
 					canInteract = function(data, entity)
-						local safeData = GlobalState[string.format("Safe:%s", data.id)]
+						local safeData = GlobalState[string.format("Safe:%s", v.data.id)]
 						return safeData ~= nil and safeData.state == 2
 					end,
 				},
 				{
-					icon = "shield-keyhole",
+					icon = "fa-solid fa-shield-keyhole",
 					label = "Secure Safe",
 					groups = { "police" },
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:SecureSafe", v.data)
 					end,
 					canInteract = function(data, entity)
-						local safeData = GlobalState[string.format("Safe:%s", data.id)]
+						local safeData = GlobalState[string.format("Safe:%s", v.data.id)]
 						return safeData ~= nil and safeData.state ~= 4
 					end,
 				},
@@ -92,15 +92,15 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 			exports.ox_target:removeModel(v)
 			exports.ox_target:addModel(v, {
 				{
-					icon = "cash-register",
+					icon = "fa-solid fa-cash-register",
 					label = "Lockpick Register",
 					item = "lockpick",
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:LockpickRegister", id)
 					end,
-					canInteract = function(s, s2)
-						local coords = GetEntityCoords(s2.entity)
-						return _polys[s]
+					canInteract = function(entity)
+						local coords = GetEntityCoords(entity)
+						return _polys[id]
 							and (
 								not GlobalState[string.format("Register:%s:%s", coords.x, coords.y)]
 								or (
@@ -221,22 +221,19 @@ AddEventHandler("Robbery:Client:Store:LockpickFail", function(data)
 	}, function(s) end)
 end)
 
-AddEventHandler("Robbery:Client:Store:ActualCrackSafe", function(entity, data)
-	if not entity or not _inPoly then
-		print('not in poly')
+AddEventHandler("Robbery:Client:Store:ActualCrackSafe", function(data)
+	if not _inPoly then
 		return
 	end
-	local coords = GetEntityCoords(entity.entity)
 	if GlobalState[string.format("Safe:%s", data.id)] == nil then
 		exports["sandbox-base"]:ServerCallback("Robbery:Store:StartSafeCrack", data, function(s) end)
 	end
 end)
 
-AddEventHandler("Robbery:Client:Store:SequenceSafe", function(entity, data)
-	if not entity or not _inPoly then
+AddEventHandler("Robbery:Client:Store:SequenceSafe", function(data)
+	if not _inPoly then
 		return
 	end
-	local coords = GetEntityCoords(entity.entity)
 	if GlobalState[string.format("Safe:%s", data.id)] == nil then
 		exports["sandbox-base"]:ServerCallback("Robbery:Store:StartSafeSequence", {}, function(r)
 			if r then
@@ -249,7 +246,7 @@ AddEventHandler("Robbery:Client:Store:SequenceSafe", function(entity, data)
 	end
 end)
 
-AddEventHandler("Robbery:Client:Store:OpenSafe", function(entity, data)
+AddEventHandler("Robbery:Client:Store:OpenSafe", function(data)
 	if not _inPoly then
 		return
 	end
@@ -257,7 +254,7 @@ AddEventHandler("Robbery:Client:Store:OpenSafe", function(entity, data)
 	exports["sandbox-base"]:ServerCallback("Robbery:Store:LootSafe", data, function(s) end)
 end)
 
-AddEventHandler("Robbery:Client:Store:SecureSafe", function(entity, data)
+AddEventHandler("Robbery:Client:Store:SecureSafe", function(data)
 	if not _inPoly then
 		return
 	end
