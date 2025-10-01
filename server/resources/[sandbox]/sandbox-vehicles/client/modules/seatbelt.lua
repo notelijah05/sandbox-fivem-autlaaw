@@ -83,7 +83,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
             end
         end)
 
-    Callbacks:RegisterClientCallback('Vehicles:InstallHarness', function(data, cb)
+    exports['sandbox-base']:RegisterClientCallback('Vehicles:InstallHarness', function(data, cb)
         local coords = GetEntityCoords(PlayerPedId())
         local maxDistance = 2.0
         local includePlayerVehicle = false
