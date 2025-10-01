@@ -20,7 +20,7 @@ local policeDutyPoint = {
 		label = "Go On Duty",
 		event = "Police:Client:OnDuty",
 		groups = { "police" },
-		reqDuty = false,
+		reqOffDuty = true,
 	},
 	{
 		icon = "clipboard",
