@@ -370,7 +370,9 @@ exports("Exit", function()
 
 		for zoneName, zoneId in pairs(_apartmentZones) do
 			if string.find(zoneName, string.format("apt-%s-", apartmentId)) then
-				exports.ox_target:removeZone(zoneId)
+				if exports.ox_target:zoneExists(zoneId) then
+					exports.ox_target:removeZone(zoneId)
+				end
 				_apartmentZones[zoneName] = nil
 			end
 		end

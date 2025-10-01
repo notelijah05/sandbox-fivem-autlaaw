@@ -93,7 +93,9 @@ RegisterNetEvent("Vendor:Client:Remove", function(id)
 		if _created[id].type == "ped" then
 			exports['sandbox-pedinteraction']:Remove(id)
 		elseif _created[id].type == "poly" then
-			exports.ox_target:removeZone(id)
+			if exports.ox_target:zoneExists(id) then
+				exports.ox_target:removeZone(id)
+			end
 		end
 
 		_created[id] = nil

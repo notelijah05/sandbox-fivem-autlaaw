@@ -367,7 +367,9 @@ AddEventHandler("Tacos:DeliverOrder", function(data)
 				_dropOffBlip = nil
 				_durationThread = false
 				_durationCheck = _durationTimer
-				exports.ox_target:removeZone(data.blipConfig.zoneId)
+				if exports.ox_target:zoneExists(data.blipConfig.zoneId) then
+					exports.ox_target:removeZone(data.blipConfig.zoneId)
+				end
 			end
 		end)
 	end)
@@ -382,7 +384,9 @@ function RunCleanUp()
 	LocalPlayer.state.TacoPickup = false
 	if _dropOffBlipCfg ~= nil then
 		exports["sandbox-blips"]:Remove(_dropOffBlipCfg.id)
-		exports.ox_target:removeZone(_dropOffBlipCfg.zoneId)
+		if exports.ox_target:zoneExists(_dropOffBlipCfg.zoneId) then
+			exports.ox_target:removeZone(_dropOffBlipCfg.zoneId)
+		end
 	end
 	_activeDropoffState = 0
 	_dropOffBlipCfg = nil

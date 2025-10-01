@@ -95,7 +95,9 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 			if not status then
 				exports["sandbox-base"]:ServerCallback("Prison:Action", data.id, function(s)
 					local id = string.format("PrisonNode%s", data.id)
-					exports.ox_target:removeZone(id)
+					if exports.ox_target:zoneExists(id) then
+						exports.ox_target:removeZone(id)
+					end
 					exports["sandbox-blips"]:Remove(id)
 				end)
 			end
@@ -106,7 +108,9 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 		if _nodes ~= nil then
 			for k, v in ipairs(_nodes.locations) do
 				local id = string.format("PrisonNode%s", v.id)
-				exports.ox_target:removeZone(id)
+				if exports.ox_target:zoneExists(id) then
+					exports.ox_target:removeZone(id)
+				end
 				exports["sandbox-blips"]:Remove(id)
 			end
 		end
@@ -132,7 +136,9 @@ RegisterNetEvent("Prison:Client:OffDuty", function(time)
 	if _nodes ~= nil then
 		for k, v in ipairs(_nodes.locations) do
 			local id = string.format("PrisonNode%s", v.id)
-			exports.ox_target:removeZone(id)
+			if exports.ox_target:zoneExists(id) then
+				exports.ox_target:removeZone(id)
+			end
 			exports["sandbox-blips"]:Remove(id)
 		end
 	end

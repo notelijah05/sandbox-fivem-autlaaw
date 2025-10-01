@@ -142,7 +142,9 @@ function ExitHouse()
 
         if intr then
             for k, v in ipairs(intr.robberies.locations) do
-                exports.ox_target:removeZone(string.format("house-robbery-%s", k))
+                if exports.ox_target:zoneExists(string.format("house-robbery-%s", k)) then
+                    exports.ox_target:removeZone(string.format("house-robbery-%s", k))
+                end
             end
         end
 

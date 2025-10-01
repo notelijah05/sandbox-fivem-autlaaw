@@ -197,7 +197,9 @@ end)
 
 AddEventHandler("Polyzone:Exit", function(id, point, insideZones, data)
 	if id == "vangelico" then
-		exports.ox_target:removeZone("hei_prop_hei_keypad_03")
+		if exports.ox_target:zoneExists("hei_prop_hei_keypad_03") then
+			exports.ox_target:removeZone("hei_prop_hei_keypad_03")
+		end
 	end
 end)
 

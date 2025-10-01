@@ -130,7 +130,9 @@ exports("CraftingBenchesRefresh", function(interior)
 						elseif v.targeting.ped ~= nil then
 							exports['sandbox-pedinteraction']:Remove(v.id)
 						elseif v.targeting.poly ~= nil then
-							exports.ox_target:removeZone(v.id)
+							if exports.ox_target:zoneExists(v.id) then
+								exports.ox_target:removeZone(v.id)
+							end
 						end
 					end
 				end

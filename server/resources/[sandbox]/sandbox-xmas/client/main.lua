@@ -46,7 +46,9 @@ end)
 RegisterNetEvent("Characters:Client:Logout", function()
 	if _existingTree ~= nil then
 		DeleteEntity(_existingTree.entity)
-		exports.ox_target:removeZone("legion-present")
+		if exports.ox_target:zoneExists("legion-present") then
+			exports.ox_target:removeZone("legion-present")
+		end
 		_existingTree = nil
 	end
 end)

@@ -197,9 +197,15 @@ function CreatePropertyZones(propertyId, int)
 end
 
 function DestroyPropertyZones(propertyId)
-    exports.ox_target:removeZone(string.format("property-%s-exit", propertyId))
-    exports.ox_target:removeZone(string.format("property-%s-exit-back", propertyId))
+    if exports.ox_target:zoneExists(string.format("property-%s-exit", propertyId)) then
+        exports.ox_target:removeZone(string.format("property-%s-exit", propertyId))
+    end
+    if exports.ox_target:zoneExists(string.format("property-%s-exit-back", propertyId)) then
+        exports.ox_target:removeZone(string.format("property-%s-exit-back", propertyId))
+    end
     exports.ox_target:removeZone(string.format("property-%s-warehouse", propertyId))
     exports.ox_target:removeZone(string.format("property-%s-office", propertyId))
-    exports.ox_target:removeZone(string.format("property-%s-crafting", propertyId))
+    if exports.ox_target:zoneExists(string.format("property-%s-crafting", propertyId)) then
+        exports.ox_target:removeZone(string.format("property-%s-crafting", propertyId))
+    end
 end
