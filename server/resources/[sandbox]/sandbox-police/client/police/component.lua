@@ -17,31 +17,23 @@ local _breached = {}
 local policeDutyPoint = {
 	{
 		icon = "clipboard-check",
-		text = "Go On Duty",
+		label = "Go On Duty",
 		event = "Police:Client:OnDuty",
-		jobPerms = {
-			{
-				job = "police",
-				reqOffDuty = true,
-			},
-		},
+		groups = { "police" },
+		reqDuty = false,
 	},
 	{
 		icon = "clipboard",
-		text = "Go Off Duty",
+		label = "Go Off Duty",
 		event = "Police:Client:OffDuty",
-		jobPerms = {
-			{
-				job = "police",
-				reqDuty = true,
-			},
-		},
+		groups = { "police" },
+		reqDuty = true,
 	},
 	{
 		icon = "location-dot",
-		text = "Re-Enable Tracker",
+		label = "Re-Enable Tracker",
 		event = "Police:Client:ReEnableTracker",
-		isEnabled = function()
+		canInteract = function()
 			return LocalPlayer.state.trackerDisabled
 		end,
 	},
@@ -280,12 +272,13 @@ AddEventHandler('onClientResourceStart', function(resource)
 						TriggerServerEvent("Police:Server:Slimjim")
 					end,
 					shouldShow = function()
-						local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
-						return target
-							and target.entity
-							and DoesEntityExist(target.entity)
-							and IsEntityAVehicle(target.entity)
-							and #(GetEntityCoords(target.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 2.0
+						local target = lib.getClosestVehicle(GetEntityCoords(cache.ped), 2.0, false)
+
+						if not target or not DoesEntityExist(target) then
+							return false
+						end
+
+						return IsEntityAVehicle(target)
 					end,
 				},
 				{
@@ -644,66 +637,93 @@ AddEventHandler('onClientResourceStart', function(resource)
 			end
 		end)
 
-		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-mrpd", "siren-on", vector3(441.96, -981.94, 30.69), 1.2,
-			1.2, {
-				heading = 356,
-				minZ = 30.49,
-				maxZ = 31.49,
-			}, policeDutyPoint, 2.0, true)
+		exports.ox_target:addBoxZone({
+			id = "pd-clockinoff-mrpd",
+			coords = vector3(441.96, -981.94, 30.69),
+			size = vector3(1.2, 1.2, 2.0),
+			rotation = 356,
+			debug = false,
+			minZ = 30.49,
+			maxZ = 31.49,
+			options = policeDutyPoint
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-sandy", "siren-on", vector3(1833.55, 3678.69, 34.19), 1.0,
-			3.0, {
-				heading = 30,
-				--debugPoly=true,
-				minZ = 33.79,
-				maxZ = 35.59
-			}, policeDutyPoint, 2.0, true)
+		exports.ox_target:addBoxZone({
+			id = "pd-clockinoff-sandy",
+			coords = vector3(1833.55, 3678.69, 34.19),
+			size = vector3(1.0, 3.0, 2.0),
+			rotation = 30,
+			debug = false,
+			minZ = 33.79,
+			maxZ = 35.59,
+			options = policeDutyPoint
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-pbpd", "siren-on", vector3(-447.18, 6013.36, 32.29), 0.8,
-			1.6, {
-				heading = 45,
-				minZ = 32.29,
-				maxZ = 32.89,
-			}, policeDutyPoint, 2.0, true)
+		exports.ox_target:addBoxZone({
+			id = "pd-clockinoff-pbpd",
+			coords = vector3(-447.18, 6013.36, 32.29),
+			size = vector3(0.8, 1.6, 2.0),
+			rotation = 45,
+			debug = false,
+			minZ = 32.29,
+			maxZ = 32.89,
+			options = policeDutyPoint
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-davis", "siren-on", vector3(381.37, -1595.84, 30.05), 2.0,
-			1.0, {
-				heading = 320,
-				minZ = 29.85,
-				maxZ = 31.05,
-			}, policeDutyPoint, 2.0, true)
+		exports.ox_target:addBoxZone({
+			id = "pd-clockinoff-davis",
+			coords = vector3(381.37, -1595.84, 30.05),
+			size = vector3(2.0, 1.0, 2.0),
+			rotation = 320,
+			debug = false,
+			minZ = 29.85,
+			maxZ = 31.05,
+			options = policeDutyPoint
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-lamesa", "siren-on", vector3(837.23, -1289.2, 28.24), 0.8,
-			2.2, {
-				heading = 0,
-				--debugPoly=true,
-				minZ = 27.24,
-				maxZ = 29.04,
-			}, policeDutyPoint, 2.0, true)
+		exports.ox_target:addBoxZone({
+			id = "pd-clockinoff-lamesa",
+			coords = vector3(837.23, -1289.2, 28.24),
+			size = vector3(0.8, 2.2, 2.0),
+			rotation = 0,
+			debug = false,
+			minZ = 27.24,
+			maxZ = 29.04,
+			options = policeDutyPoint
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-courthouse", "siren-on", vector3(-528.46, -189.44, 38.23),
-			1.0, 1.0, {
-				heading = 30,
-				--debugPoly=true,
-				minZ = 37.63,
-				maxZ = 39.23
-			}, policeDutyPoint, 2.0, true)
+		exports.ox_target:addBoxZone({
+			id = "pd-clockinoff-courthouse",
+			coords = vector3(-528.46, -189.44, 38.23),
+			size = vector3(1.0, 1.0, 2.0),
+			rotation = 30,
+			debug = false,
+			minZ = 37.63,
+			maxZ = 39.23,
+			options = policeDutyPoint
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-guardius", "siren-on", vector3(-1083.75, -247.15, 37.76),
-			1.2, 2, {
-				heading = 27,
-				--debugPoly=true,
-				minZ = 36.76,
-				maxZ = 38.96
-			}, policeDutyPoint, 2.0, true)
+		exports.ox_target:addBoxZone({
+			id = "pd-clockinoff-guardius",
+			coords = vector3(-1083.75, -247.15, 37.76),
+			size = vector3(1.2, 2.0, 2.0),
+			rotation = 27,
+			debug = false,
+			minZ = 36.76,
+			maxZ = 38.96,
+			options = policeDutyPoint
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("pd-clockinoff-guardius2", "siren-on", vector3(-1049.57, -231.01, 39.02),
-			1, 1, {
-				heading = 300,
-				--debugPoly=true,
-				minZ = 38.02,
-				maxZ = 40.22
-			}, policeDutyPoint, 2.0, true)
+		exports.ox_target:addBoxZone({
+			id = "pd-clockinoff-guardius2",
+			coords = vector3(-1049.57, -231.01, 39.02),
+			size = vector3(1.0, 1.0, 2.0),
+			rotation = 300,
+			debug = false,
+			minZ = 38.02,
+			maxZ = 40.22,
+			options = policeDutyPoint
+		})
 
 		for k, v in ipairs(_pdStationPolys) do
 			--print(v.options.name)
@@ -729,7 +749,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 				},
 				disarm = true,
 			}, function()
-				exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+				TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 			end, function(status)
 				if not status then
 					local h = GetEntityHeading(PlayerPedId())
@@ -753,84 +773,95 @@ AddEventHandler('onClientResourceStart', function(resource)
 		local locker = {
 			{
 				icon = "user-lock",
-				text = "Open Personal Locker",
+				label = "Open Personal Locker",
 				event = "Police:Client:OpenLocker",
-				jobPerms = {
-					{
-						job = "police",
-						reqDuty = false,
-					},
-				},
+				groups = { "police" },
 			},
 		}
 
-		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker", "siren-on", vector3(461.59, -1000.0, 30.69), 1.0,
-			3.8, {
-				heading = 0,
-				--debugPoly=true,
-				minZ = 29.69,
-				maxZ = 32.69,
-			}, locker, 3.0, true)
+		exports.ox_target:addBoxZone({
+			id = "police-shitty-locker",
+			coords = vector3(461.59, -1000.0, 30.69),
+			size = vector3(1.0, 3.8, 2.0),
+			rotation = 0,
+			debug = false,
+			minZ = 29.69,
+			maxZ = 32.69,
+			options = locker
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker-2", "siren-on", vector3(1841.51, 3682.08, 34.19),
-			2.0, 1, {
-				heading = 30,
-				--debugPoly=true,
-				minZ = 33.19,
-				maxZ = 35.59
-			}, locker, 3.0, true)
+		exports.ox_target:addBoxZone({
+			id = "police-shitty-locker-2",
+			coords = vector3(1841.51, 3682.08, 34.19),
+			size = vector3(2.0, 1.0, 2.0),
+			rotation = 30,
+			debug = false,
+			minZ = 33.19,
+			maxZ = 35.59,
+			options = locker
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker-3", "siren-on", vector3(-436.32, 6009.79, 37.0),
-			0.2, 2.2, {
-				heading = 45,
-				--debugPoly=true,
-				minZ = 36.3,
-				maxZ = 38.1,
-			}, locker, 3.0, true)
+		exports.ox_target:addBoxZone({
+			id = "police-shitty-locker-3",
+			coords = vector3(-436.32, 6009.79, 37.0),
+			size = vector3(0.2, 2.2, 2.0),
+			rotation = 45,
+			debug = false,
+			minZ = 36.3,
+			maxZ = 38.1,
+			options = locker
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker-4", "siren-on", vector3(360.08, -1592.9, 25.45),
-			0.5, 2.8, {
-				heading = 50,
-				--debugPoly=true,
-				minZ = 24.45,
-				maxZ = 27.45,
-			}, locker, 3.0, true)
+		exports.ox_target:addBoxZone({
+			id = "police-shitty-locker-4",
+			coords = vector3(360.08, -1592.9, 25.45),
+			size = vector3(0.5, 2.8, 2.0),
+			rotation = 50,
+			debug = false,
+			minZ = 24.45,
+			maxZ = 27.45,
+			options = locker
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker-5", "siren-on", vector3(844.8, -1286.55, 28.24),
-			2.0, 1.2, {
-				heading = 0,
-				--debugPoly=true,
-				minZ = 27.24,
-				maxZ = 29.84,
-			}, locker, 3.0, true)
+		exports.ox_target:addBoxZone({
+			id = "police-shitty-locker-5",
+			coords = vector3(844.8, -1286.55, 28.24),
+			size = vector3(2.0, 1.2, 2.0),
+			rotation = 0,
+			debug = false,
+			minZ = 27.24,
+			maxZ = 29.84,
+			options = locker
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("police-shitty-locker-6", "siren-on", vector3(-1061.09, -247.43, 39.74),
-			3.6, 1, {
-				heading = 27,
-				--debugPoly=true,
-				minZ = 38.74,
-				maxZ = 41.34
-			}, locker, 3.0, true)
+		exports.ox_target:addBoxZone({
+			id = "police-shitty-locker-6",
+			coords = vector3(-1061.09, -247.43, 39.74),
+			size = vector3(3.6, 1.0, 2.0),
+			rotation = 27,
+			debug = false,
+			minZ = 38.74,
+			maxZ = 41.34,
+			options = locker
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("ems-shitty-locker-1", "siren-on", vector3(1142.12, -1539.54, 35.03),
-			4.2, 0.6, {
-				heading = 0,
-				--debugPoly=true,
-				minZ = 32.23,
-				maxZ = 36.23
-			}, {
+		exports.ox_target:addBoxZone({
+			id = "ems-shitty-locker-1",
+			coords = vector3(1142.12, -1539.54, 35.03),
+			size = vector3(4.2, 0.6, 2.0),
+			rotation = 0,
+			debug = false,
+			minZ = 32.23,
+			maxZ = 36.23,
+			options = {
 				{
 					icon = "user-lock",
-					text = "Open Personal Locker",
+					label = "Open Personal Locker",
 					event = "Police:Client:OpenLocker",
-					jobPerms = {
-						{
-							job = "ems",
-							reqDuty = false,
-						},
-					},
+					groups = { "ems" },
 				},
-			}, 3.0, true)
+			}
+		})
 	end
 end)
 

@@ -128,20 +128,20 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 		_working = true
 		_state = 1
 		for k, v in ipairs(trashBins) do
-			exports['sandbox-targeting']:AddObject(v, "trash", {
+			exports.ox_target:addModel(v, {
 				{
 					icon = "trash",
-					text = "Grab Trash",
+					label = "Grab Trash",
 					event = "Garbage:Client:TrashGrab",
-					data = "Garbage",
-					isEnabled = function(data, entity)
+					distance = 3.0,
+					canInteract = function(data, entity)
 						return not _entities[ObjToNet(entity.entity)]
 							and LocalPlayer.state.inGarbagbeZone
 							and GarbageObject == nil
 							and _state == 2
 					end,
 				},
-			}, 3.0)
+			})
 		end
 
 		CreateThread(function()
@@ -291,7 +291,7 @@ RegisterNetEvent("Garbage:Client:OffDuty", function(time)
 	end
 
 	for k, v in ipairs(trashBins) do
-		exports['sandbox-targeting']:RemoveObject(v)
+		exports.ox_target:removeModel(v)
 	end
 
 	if _blip ~= nil then

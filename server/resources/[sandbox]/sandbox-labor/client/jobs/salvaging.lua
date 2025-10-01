@@ -18,19 +18,18 @@ end
 
 function SetupTargetting()
 	for k, v in ipairs(_models) do
-		exports['sandbox-targeting']:RemoveObject(v)
-		exports['sandbox-targeting']:AddObject(v, "car", {
+		exports.ox_target:removeModel(v)
+		exports.ox_target:addModel(v, {
 			{
 				icon = "engine",
-				text = "Scrap",
+				label = "Scrap",
 				event = "Salvaging:Client:ScrapCar",
-				tempjob = "Salvaging",
-				data = {},
-				isEnabled = function(s, s2)
+				distance = 3.0,
+				canInteract = function(s, s2)
 					return (_working and _inPoly and (_nodes ~= nil and not _nodes[NetworkGetNetworkIdFromEntity(s2.entity)]))
 				end,
 			}
-		}, 3.0)
+		})
 	end
 end
 
@@ -116,7 +115,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 			if id ~= _POLYID then return end
 			_inPoly = false
 			for k, v in ipairs(_models) do
-				exports['sandbox-targeting']:RemoveObject(v)
+				exports.ox_target:removeModel(v)
 			end
 		end)
 
@@ -137,7 +136,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 			end
 
 			for k, v in ipairs(_models) do
-				exports['sandbox-targeting']:RemoveObject(v)
+				exports.ox_target:removeModel(v)
 			end
 		end)
 
@@ -170,7 +169,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 		_count = _count + 1
 		if _count >= 15 then
 			for k, v in ipairs(_models) do
-				exports['sandbox-targeting']:RemoveObject(v)
+				exports.ox_target:removeModel(v)
 			end
 
 			if _blip ~= nil then
@@ -234,7 +233,7 @@ RegisterNetEvent("Salvaging:Client:OffDuty", function(time)
 	end
 
 	for k, v in ipairs(_models) do
-		exports['sandbox-targeting']:RemoveObject(v)
+		exports.ox_target:removeModel(v)
 	end
 
 	exports['sandbox-pedinteraction']:Remove("SalvagingDelivery")

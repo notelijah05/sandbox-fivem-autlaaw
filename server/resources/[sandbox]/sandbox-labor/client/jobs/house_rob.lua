@@ -142,18 +142,16 @@ function ExitHouse()
 
         if intr then
             for k, v in ipairs(intr.robberies.locations) do
-                exports['sandbox-targeting']:ZonesRemoveZone(string.format("house-robbery-%s", k))
+                exports.ox_target:removeZone(string.format("house-robbery-%s", k))
             end
         end
 
         if _stuff ~= nil then
             for k, v in ipairs(_stuff.pois or {}) do
-                exports['sandbox-targeting']:RemoveEntity(v)
+                exports.ox_target:removeEntity(v)
                 DeleteObject(v)
             end
         end
-
-        exports['sandbox-targeting']:ZonesRefresh()
 
         if _state == 5 then
             _working = false
@@ -370,14 +368,12 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         table.insert(_stuff.pois, o)
 
         if _nodes.chances.alarm then
-            exports['sandbox-targeting']:AddEntity(o, "sensor-triangle-exclamation", {
+            exports.ox_target:addEntity(o, {
                 {
                     icon = "sensor-triangle-exclamation",
-                    text = "Disable Alarm",
+                    label = "Disable Alarm",
                     event = string.format("HouseRobbery:Client:%s:HackAlarm", joiner),
-                    item = "electronics_kit",
-                    data = _p,
-                    isEnabled = function(data, entity)
+                    canInteract = function(data, entity)
                         return _working and _nodes ~= nil and _state == 4 and _nodes.chances.alarm and
                             not _nodes.states.alarm.disabled and not _nodes.states.alarm.triggered and
                             (_scPass <= 3 and _scFails <= 2)
@@ -391,10 +387,10 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                 exports["sandbox-sounds"]:PlayOne("house_alarm.ogg", 0.1)
             end
         else
-            exports['sandbox-targeting']:AddEntity(o, "sensor-triangle-exclamation", {
+            exports.ox_target:addEntity(o, {
                 {
                     icon = "sensor-triangle-exclamation",
-                    text = "The Alarm Wasn't Armed",
+                    label = "The Alarm Wasn't Armed",
                 },
             })
         end
@@ -412,35 +408,27 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         end
 
         for k, v in ipairs(intr.robberies.locations) do
-            exports['sandbox-targeting']:ZonesAddBox(
-                string.format("house-robbery-%s", k),
-                "box-open-full",
-                v.coords,
-                v.length,
-                v.width,
-                v.options,
-                {
+            exports.ox_target:addBoxZone({
+                id = string.format("house-robbery-%s", k),
+                coords = v.coords,
+                size = vector3(v.length, v.width, 2.0),
+                rotation = v.options.heading or 0,
+                debug = false,
+                minZ = v.options.minZ,
+                maxZ = v.options.maxZ,
+                options = {
                     {
                         icon = "magnifying-glass",
-                        text = "Search",
+                        label = "Search",
                         event = string.format("HouseRobbery:Client:%s:Search", joiner),
-                        data = {
-                            id = k,
-                            type = v.type,
-                        },
-                        isEnabled = function(data)
+                        canInteract = function(data)
                             return _working and _state == 4 and _nodes ~= nil and data.id and
                                 not _nodes.searched[data.id]
                         end,
                     },
-                },
-                3.0,
-                true
-            )
+                }
+            })
         end
-
-
-        exports['sandbox-targeting']:ZonesRefresh()
 
         if intr.zone then
             exports['sandbox-polyzone']:CreateBox("property-house-rob-zone", intr.zone.center, intr.zone.length,

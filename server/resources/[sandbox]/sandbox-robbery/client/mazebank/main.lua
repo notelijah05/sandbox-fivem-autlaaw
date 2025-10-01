@@ -68,94 +68,92 @@ AddEventHandler("Robbery:Client:Setup", function()
 		--debugPoly = true,
 	})
 
-	exports['sandbox-targeting']:ZonesAddBox("mazebanK_secure", "shield-keyhole", vector3(-1301.14, -826.27, 16.78), 1.4,
-		0.6, {
-			heading = 37,
-			--debugPoly = true,
-			minZ = 15.78,
-			maxZ = 17.38,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "mazebanK_secure",
+		coords = vector3(-1301.14, -826.27, 16.78),
+		size = vector3(1.4, 0.6, 2.0),
+		rotation = 37,
+		debug = false,
+		minZ = 15.78,
+		maxZ = 17.38,
+		options = {
 			{
 				icon = "phone",
-				text = "Secure Bank",
+				label = "Secure Bank",
 				event = "Robbery:Client:MazeBank:StartSecuring",
-				jobPerms = {
-					{
-						job = "police",
-						reqDuty = true,
-					},
-				},
-				data = {},
-				isEnabled = NeedsReset,
+				groups = { "police" },
+				canInteract = NeedsReset,
 			},
-		}, 3.0, true)
+		}
+	})
 
 	for k, v in ipairs(_mbElectric) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("mazebank_power_%s", v.data.boxId),
-			"box-taped",
-			v.coords,
-			v.length,
-			v.width,
-			v.options,
-			v.isThermite
-			and {
-				{
-					icon = "fire",
-					text = "Use Thermite",
-					item = "thermite",
-					event = "Robbery:Client:MazeBank:ElectricBox:Thermite",
-					data = v.data,
-					isEnabled = function(data, entity)
-						return not GlobalState["MazeBank:Secured"]
-							and (
-								not GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
-								or GetCloudTimeAsInt()
-								> GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
-							)
-					end,
-				},
-			}
-			or {
-				{
-					icon = "terminal",
-					text = "Hack Power Interface",
-					item = "adv_electronics_kit",
-					event = "Robbery:Client:MazeBank:ElectricBox:Hack",
-					data = v.data,
-					isEnabled = function(data, entity)
-						return not GlobalState["MazeBank:Secured"]
-							and (
-								not GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
-								or GetCloudTimeAsInt()
-								> GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
-							)
-					end,
-				},
-			},
-			3.0,
-			true
-		)
+		exports.ox_target:addBoxZone({
+			id = string.format("mazebank_power_%s", v.data.boxId),
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = v.isThermite
+				and {
+					{
+						icon = "fire",
+						label = "Use Thermite",
+						item = "thermite",
+						onSelect = function()
+							TriggerEvent("Robbery:Client:MazeBank:ElectricBox:Thermite", v.data)
+						end,
+						canInteract = function(data, entity)
+							return not GlobalState["MazeBank:Secured"]
+								and (
+									not GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
+									or GetCloudTimeAsInt()
+									> GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
+								)
+						end,
+					},
+				}
+				or {
+					{
+						icon = "terminal",
+						label = "Hack Power Interface",
+						item = "adv_electronics_kit",
+						onSelect = function()
+							TriggerEvent("Robbery:Client:MazeBank:ElectricBox:Hack", v.data)
+						end,
+						canInteract = function(data, entity)
+							return not GlobalState["MazeBank:Secured"]
+								and (
+									not GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
+									or GetCloudTimeAsInt()
+									> GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
+								)
+						end,
+					},
+				}
+		})
 	end
 
 	for k, v in ipairs(_mbDrillPoints) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("mazebanK_drill_%s", v.data.wallId),
-			"bore-hole",
-			v.coords,
-			v.length,
-			v.width,
-			v.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("mazebanK_drill_%s", v.data.wallId),
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "bore-hole",
-					text = "Use Drill",
+					label = "Use Drill",
 					item = "drill",
-					event = "Robbery:Client:MazeBank:Drill",
-					data = {
-						id = v.data.wallId,
-					},
-					isEnabled = function(data, entity)
+					onSelect = function()
+						TriggerEvent("Robbery:Client:MazeBank:Drill", v.data.wallId)
+					end,
+					canInteract = function(data, entity)
 						return not GlobalState["MazeBank:Secured"]
 							and (
 								not GlobalState[string.format("MazeBank:Vault:Wall:%s", data.id)]
@@ -164,30 +162,28 @@ AddEventHandler("Robbery:Client:Setup", function()
 							)
 					end,
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 	end
 
 	for k, v in ipairs(_mbDesks) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("mazebanK_workstation_%s", v.data.deskId),
-			"computer",
-			v.coords,
-			v.length,
-			v.width,
-			v.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("mazebanK_workstation_%s", v.data.deskId),
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "terminal",
-					text = "Hack Workstation",
+					label = "Hack Workstation",
 					item = "adv_electronics_kit",
-					event = "Robbery:Client:MazeBank:PC:Hack",
-					data = {
-						id = v.data.deskId,
-					},
-					isEnabled = function(data, entity)
+					onSelect = function()
+						TriggerEvent("Robbery:Client:MazeBank:PC:Hack", v.data.deskId)
+					end,
+					canInteract = function(data, entity)
 						return not GlobalState["MazeBank:Secured"]
 							and (
 								not GlobalState[string.format("MazeBank:Offices:PC:%s", data.id)]
@@ -196,10 +192,8 @@ AddEventHandler("Robbery:Client:Setup", function()
 							)
 					end,
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 	end
 end)
 

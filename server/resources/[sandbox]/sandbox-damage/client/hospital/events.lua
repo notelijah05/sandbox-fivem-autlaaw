@@ -1,41 +1,30 @@
 local hospitalCheckin = {
 	{
 		icon = "clipboard-check",
-		text = "Go On Duty",
+		label = "Go On Duty",
 		event = "EMS:Client:OnDuty",
-		jobPerms = {
-			{
-				job = "ems",
-				reqOffDuty = true,
-			},
-		},
+		groups = { "ems" },
+		reqOffDuty = true,
 	},
 	{
 		icon = "clipboard",
-		text = "Go Off Duty",
+		label = "Go Off Duty",
 		event = "EMS:Client:OffDuty",
-		jobPerms = {
-			{
-				job = "ems",
-				reqDuty = true,
-			},
-		},
+		groups = { "ems" },
+		reqDuty = true,
 	},
 	{
 		icon = "clipboard",
-		text = "Check ICU Patients",
+		label = "Check ICU Patients",
 		event = "EMS:Client:CheckICUPatients",
-		jobPerms = {
-			{
-				job = "ems",
-			},
-		},
+		groups = { "ems" },
+		reqDuty = true,
 	},
 	{
 		icon = "clipboard-list-check",
-		text = "Check In - $1500",
+		label = "Check In - $1500",
 		event = "Hospital:Client:CheckIn",
-		isEnabled = function()
+		canInteract = function()
 			if not GlobalState["Duty:ems"] or GlobalState["Duty:ems"] == 0 then
 				return not LocalPlayer.state.isEscorted
 					and (GlobalState["ems:pmc:doctor"] == nil or GlobalState["ems:pmc:doctor"] == 0)
@@ -45,9 +34,9 @@ local hospitalCheckin = {
 	},
 	{
 		icon = "clipboard-list-check",
-		text = "Check In - $1500",
+		label = "Check In - $1500",
 		event = "Hospital:Client:CheckIn",
-		isEnabled = function()
+		canInteract = function()
 			if GlobalState["Duty:ems"] and GlobalState["Duty:ems"] > 0 then
 				return not LocalPlayer.state.isEscorted
 					and (GlobalState["ems:pmc:doctor"] == nil or GlobalState["ems:pmc:doctor"] == 0)
@@ -57,9 +46,9 @@ local hospitalCheckin = {
 	},
 	{
 		icon = "hands-holding",
-		text = "Retrieve Items",
+		label = "Retrieve Items",
 		event = "Hospital:Client:RetreiveItems",
-		isEnabled = function()
+		canInteract = function()
 			return LocalPlayer.state.Character:GetData("ICU") == nil
 				or not LocalPlayer.state.Character:GetData("ICU").Items
 		end,
@@ -99,40 +88,41 @@ function Init()
 	)
 
 	for k, v in ipairs(Config.BedModels) do
-		exports['sandbox-targeting']:AddObject(v, "stretcher", {
+		exports.ox_target:addModel(v, {
 			{
 				icon = "stretcher",
-				text = "Lay in Bed",
+				label = "Lay in Bed",
 				event = "Hospital:Client:FindBed",
-				minDist = 1.5,
-				isEnabled = function()
+				distance = 1.5,
+				canInteract = function()
 					return LocalPlayer.state.isEscorting == nil
 						and LocalPlayer.state.myEscorter == nil
 						and not LocalPlayer.state.isHospitalized
 				end,
 			},
-		}, 1.5)
+		})
 	end
 
 	for k, v in ipairs(Config.BedPolys) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("hospitalbed-%s", k),
-			"stretcher",
-			v.center,
-			v.length,
-			v.width,
-			v.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("hospitalbed-%s", k),
+			coords = v.center,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "stretcher",
-					text = "Lay Down",
+					label = "Lay Down",
 					event = "Hospital:Client:LaydownAnimation",
-					data = v.laydown,
+					onSelect = function()
+						TriggerEvent("Hospital:Client:LaydownAnimation", v.laydown)
+					end,
 				},
-			},
-			1.5,
-			true
-		)
+			}
+		})
 	end
 end
 

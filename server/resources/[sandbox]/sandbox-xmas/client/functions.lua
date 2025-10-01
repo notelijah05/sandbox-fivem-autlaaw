@@ -1,7 +1,7 @@
 function SetupTree(treeData, hasLooted)
 	if _existingTree ~= nil then
 		DeleteEntity(_existingTree.entity)
-		exports['sandbox-targeting']:RemoveEntity(_existingTree.entity)
+		exports.ox_target:removeEntity(_existingTree.entity)
 		exports["sandbox-blips"]:Remove("xmas_tree")
 		_existingTree = nil
 	end
@@ -14,12 +14,12 @@ function SetupTree(treeData, hasLooted)
 	FreezeEntityPosition(obj, true)
 	SetCanClimbOnEntity(obj, false)
 
-	exports['sandbox-targeting']:AddEntity(obj, "tree-christmas", {
+	exports.ox_target:addEntity(obj, {
 		{
 			icon = "gift",
-			text = "Pickup Gift",
+			label = "Pickup Gift",
 			event = "Xmas:Client:Tree",
-			isEnabled = function(data, entity)
+			canInteract = function(data, entity)
 				return _existingTree ~= nil and not _existingTree.hasLooted
 			end,
 		},

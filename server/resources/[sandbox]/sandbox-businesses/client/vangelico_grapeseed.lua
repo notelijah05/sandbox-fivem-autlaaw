@@ -62,44 +62,37 @@ AddEventHandler("Businesses:Client:Startup", function()
 	end
 
 	for k, v in ipairs(_appraisalTables) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			"vangelico-grapeseed-table-" .. k,
-			"table-picnic",
-			v.coords,
-			v.length,
-			v.width,
-			v.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = "vangelico-grapeseed-table-" .. k,
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "gem",
-					text = "View Gem Table",
+					label = "View Gem Table",
 					event = "Businesses:Client:VANGELICOGRAPESEED:OpenTable",
-					data = { id = k },
-					jobPerms = {
-						{
-							job = "vangelico_grapeseed",
-							reqDuty = true,
-							jobPerms = "JOB_USE_GEM_TABLE",
-						},
-					},
+					groups = { "vangelico_grapeseed" },
+					reqDuty = true,
+					canInteract = function()
+						return LocalPlayer.state.jobPerms and LocalPlayer.state.jobPerms["JOB_USE_GEM_TABLE"]
+					end,
 				},
 				{
 					icon = "gem",
-					text = "Create Jewelry",
+					label = "Create Jewelry",
 					event = "Businesses:Client:VANGELICOGRAPESEED:OpenJewelryCrafting",
-					data = { id = k },
-					jobPerms = {
-						{
-							job = "vangelico_grapeseed",
-							reqDuty = true,
-							jobPerms = "JOB_USE_JEWELRY_CRAFTING",
-						},
-					},
+					groups = { "vangelico_grapeseed" },
+					reqDuty = true,
+					canInteract = function()
+						return LocalPlayer.state.jobPerms and LocalPlayer.state.jobPerms["JOB_USE_JEWELRY_CRAFTING"]
+					end,
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 	end
 end)
 
@@ -111,14 +104,14 @@ AddEventHandler("VANGELICOGRAPESEED:Client:Sell", function()
 	exports["sandbox-base"]:ServerCallback("Businesses:VANGELICOGRAPESEED:Sell", {})
 end)
 
-AddEventHandler("Businesses:Client:VANGELICOGRAPESEED:OpenTable", function(e, data)
+AddEventHandler("Businesses:Client:VANGELICOGRAPESEED:OpenTable", function(data)
 	exports['sandbox-inventory']:DumbfuckOpen({
 		invType = 221,
 		owner = data.id,
 	})
 end)
 
-AddEventHandler("Businesses:Client:VANGELICOGRAPESEED:OpenJewelryCrafting", function(e, data)
+AddEventHandler("Businesses:Client:VANGELICOGRAPESEED:OpenJewelryCrafting", function(data)
 	exports['sandbox-inventory']:CraftingBenchesOpen("vangelico_grapeseed-jewelry")
 end)
 

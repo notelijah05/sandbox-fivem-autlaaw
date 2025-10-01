@@ -4,9 +4,13 @@ function RegisterCallbacks()
             if VEHICLE_INSIDE then
                 return cb(VehToNet(VEHICLE_INSIDE))
             else
-                local data = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
-                if data and data.entity and DoesEntityExist(data.entity) and IsEntityAVehicle(data.entity) then
-                    return cb(VehToNet(data.entity))
+                local playerCoords = GetEntityCoords(PlayerPedId())
+                local maxDistance = 2.0
+                local includePlayerVehicle = false
+
+                local data = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
+                if data and DoesEntityExist(data) and IsEntityAVehicle(data) then
+                    return cb(VehToNet(data))
                 end
             end
         end

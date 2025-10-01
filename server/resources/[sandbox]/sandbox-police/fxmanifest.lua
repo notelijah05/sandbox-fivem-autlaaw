@@ -10,10 +10,13 @@ client_scripts({
 	"client/**/*.lua",
 })
 
-shared_scripts({
-	"shared/**/*.lua",
+server_scripts({
+	'@oxmysql/lib/MySQL.lua',
+	"server/**/*.lua",
 })
 
-server_scripts({
-	"server/**/*.lua",
+
+shared_scripts({
+	"@ox_lib/init.lua",
+	"shared/**/*.lua",
 })

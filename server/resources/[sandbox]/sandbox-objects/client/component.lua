@@ -69,45 +69,23 @@ exports('Create', function(id, type, creator, model, coords, heading, rotation, 
 		nameOverride = nameOverride,
 	}
 
-	exports['sandbox-targeting']:AddEntity(obj, "draw-square", {
+	exports.ox_target:addEntity(obj, {
 		{
 			icon = "eye",
-			text = "Open",
+			label = "Open",
 			event = "Objects:Client:OpenInventory",
-			data = {
-				id = id,
-				type = type,
-				creator = creator,
-				entity = obj,
-				model = model,
-				coords = coords,
-				heading = heading,
-				rotation = rotation,
-				isFrozen = isFrozen,
-				nameOverride = nameOverride,
-			},
-			isEnabled = function(data, entity)
+			distance = 3.0,
+			canInteract = function(data, entity)
 				local eState = Entity(entity.entity).state
 				return eState.isPlacedProp and _placedProps[entState.objectId].type == 1
 			end,
 		},
 		{
 			icon = "trash",
-			text = "Delete Object",
+			label = "Delete Object",
 			event = "Objects:Client:DeleteObject",
-			data = {
-				id = id,
-				type = type,
-				creator = creator,
-				entity = obj,
-				model = model,
-				coords = coords,
-				heading = heading,
-				rotation = rotation,
-				isFrozen = isFrozen,
-				nameOverride = nameOverride,
-			},
-			isEnabled = function(data, entity)
+			distance = 3.0,
+			canInteract = function(data, entity)
 				local eState = Entity(entity.entity).state
 				return eState.isPlacedProp
 					and (LocalPlayer.state.IsStaff or LocalPlayer.state.isAdmin or LocalPlayer.state.Character:GetData(
@@ -118,28 +96,17 @@ exports('Create', function(id, type, creator, model, coords, heading, rotation, 
 		},
 		{
 			icon = "info",
-			text = "View Object Details",
+			label = "View Object Details",
 			event = "Objects:Client:ViewData",
-			data = {
-				id = id,
-				type = type,
-				creator = creator,
-				entity = obj,
-				model = model,
-				coords = coords,
-				heading = heading,
-				rotation = rotation,
-				isFrozen = isFrozen,
-				nameOverride = nameOverride,
-			},
-			isEnabled = function(data, entity)
+			distance = 3.0,
+			canInteract = function(data, entity)
 				local eState = Entity(entity.entity).state
 				return eState.isPlacedProp
 					and (LocalPlayer.state.isStaff or LocalPlayer.state.isAdmin)
 					and _placedProps[entState.objectId].type ~= 2
 			end,
 		},
-	}, 3.0, true)
+	})
 end)
 
 exports('Delete', function(id)

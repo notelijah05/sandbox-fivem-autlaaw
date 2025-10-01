@@ -45,50 +45,46 @@ AddEventHandler('Businesses:Client:Startup', function()
         end
 
         if v.interactZone then
-            exports['sandbox-targeting']:ZonesAddBox(
-                string.format("bowling-lane-%s", k),
-                "bowling-ball-pin",
-                v.interactZone.center,
-                v.interactZone.length,
-                v.interactZone.width,
-                v.interactZone.options,
-                {
+            exports.ox_target:addBoxZone({
+                id = string.format("bowling-lane-%s", k),
+                coords = v.interactZone.center,
+                size = vector3(v.interactZone.length, v.interactZone.width, 2.0),
+                rotation = v.interactZone.options.heading or 0,
+                debug = false,
+                minZ = v.interactZone.options.minZ,
+                maxZ = v.interactZone.options.maxZ,
+                options = {
                     {
                         icon = "bowling-ball-pin",
-                        text = "Start Game",
+                        label = "Start Game",
                         event = "Bowling:Client:StartGame",
-                        data = k,
-                        isEnabled = function(data, entity)
-                            local alley = GlobalState[string.format('Bowling:Alley:%s', data)]
+                        canInteract = function()
+                            local alley = GlobalState[string.format('Bowling:Alley:%s', k)]
                             return not alley?.active
                         end,
                     },
                     {
                         icon = "bowling-ball-pin",
-                        text = "Join Game",
+                        label = "Join Game",
                         event = "Bowling:Client:JoinGame",
-                        data = k,
-                        isEnabled = function(data, entity)
-                            local alley = GlobalState[string.format('Bowling:Alley:%s', data)]
+                        canInteract = function()
+                            local alley = GlobalState[string.format('Bowling:Alley:%s', k)]
                             return alley?.active and #alley.players < 5 and
                                 not IsPlayerInBowlingAlley(alley.players, LocalPlayer.state.Character:GetData('SID'))
                         end,
                     },
                     {
                         icon = "bowling-ball-pin",
-                        text = "End Game",
+                        label = "End Game",
                         event = "Bowling:Client:EndGame",
-                        data = k,
-                        isEnabled = function(data, entity)
-                            local alley = GlobalState[string.format('Bowling:Alley:%s', data)]
+                        canInteract = function()
+                            local alley = GlobalState[string.format('Bowling:Alley:%s', k)]
                             return alley?.active and
                                 ((IsPlayerInBowlingAlley(alley.players, LocalPlayer.state.Character:GetData('SID')) and alley.finished) or LocalPlayer.state.onDuty == 'bowling')
                         end,
                     },
-                },
-                3.0,
-                true
-            )
+                }
+            })
         end
     end
 
@@ -341,7 +337,7 @@ AddEventHandler('Bowling:Client:RecieveInput', function(values)
     end
 end)
 
-AddEventHandler('Bowling:Client:StartGame', function(entity, alleyId)
+AddEventHandler('Bowling:Client:StartGame', function(alleyId)
     local nickName = GetBowlingNickName()
     if nickName and string.len(nickName) >= 3 then
         exports["sandbox-base"]:ServerCallback('Bowling:StartGame', {
@@ -359,7 +355,7 @@ AddEventHandler('Bowling:Client:StartGame', function(entity, alleyId)
     end
 end)
 
-AddEventHandler('Bowling:Client:JoinGame', function(entity, alleyId)
+AddEventHandler('Bowling:Client:JoinGame', function(alleyId)
     local nickName = GetBowlingNickName()
     if nickName and string.len(nickName) >= 3 then
         exports["sandbox-base"]:ServerCallback('Bowling:JoinGame', {
@@ -414,7 +410,7 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
     end
 end)
 
-AddEventHandler('Bowling:Client:EndGame', function(entity, alleyId)
+AddEventHandler('Bowling:Client:EndGame', function(alleyId)
     exports["sandbox-base"]:ServerCallback('Bowling:EndGame', {
         alleyId = alleyId,
     }, function(success)

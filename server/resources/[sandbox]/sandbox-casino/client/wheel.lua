@@ -5,47 +5,45 @@ _casinoWheelRotation = vec3(-0.000000, 9.000000, -31.843399)
 _spinningWheel = false
 
 AddEventHandler("Casino:Client:Startup", function()
-    exports['sandbox-targeting']:ZonesAddBox("casino-wheelspin", "circle-dashed", vector3(989.45, 42.64, 71.27), 1.0, 1.2,
-        {
-            heading = 330,
-            --debugPoly=true,
-            minZ = 70.47,
-            maxZ = 73.27
-        }, {
+    exports.ox_target:addBoxZone({
+        id = "casino-wheelspin",
+        coords = vector3(989.45, 42.64, 71.27),
+        size = vector3(1.0, 1.2, 2.8),
+        rotation = 330,
+        debug = false,
+        minZ = 70.47,
+        maxZ = 73.27,
+        options = {
             {
                 icon = "face-tongue-money",
-                text = "Spin the Wheel! ($1,500)",
+                label = "Spin the Wheel! ($1,500)",
                 event = "Casino:Client:StartSpin",
-                isEnabled = function()
+                canInteract = function()
                     return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
                         not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
                 end,
             },
             {
                 icon = "gift-card",
-                text = "VIP Turbo Spin ($7,500)",
+                label = "VIP Turbo Spin ($7,500)",
                 event = "Casino:Client:StartSpin",
-                data = { turbo = true },
-                isEnabled = function()
+                canInteract = function()
                     return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
                         not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
                 end,
             },
             {
                 icon = "unlock",
-                text = "Unlock Wheel",
+                label = "Unlock Wheel",
                 event = "Casino:Client:UnlockWheel",
-                jobPerms = {
-                    {
-                        job = "casino",
-                        reqDuty = true,
-                    }
-                },
-                isEnabled = function()
+                groups = { "casino" },
+                reqDuty = true,
+                canInteract = function()
                     return GlobalState["Casino:WheelLocked"]
                 end,
             },
-        }, 2.0, true)
+        }
+    })
 end)
 
 AddEventHandler("Casino:Client:UnlockWheel", function()
@@ -58,13 +56,13 @@ AddEventHandler("Casino:Client:UnlockWheel", function()
     end)
 end)
 
-AddEventHandler("Casino:Client:StartSpin", function(_, data)
+AddEventHandler("Casino:Client:StartSpin", function(data)
     exports["sandbox-base"]:ServerCallback("Casino:WheelStart", data, function(success, tooPoor)
         if success then
             LocalPlayer.state.playingCasino = true
 
             exports['sandbox-animations']:EmotesForceCancel()
-            exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+            TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 
             local _lib = "anim_casino_a@amb@casino@games@lucky7wheel@male"
             -- if IsPedMale(playerPed) then

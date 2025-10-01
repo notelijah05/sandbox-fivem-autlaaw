@@ -27,12 +27,13 @@ function CreateBizPhones()
     for k, v in pairs(GlobalState.BizPhones) do
         local object = CreateBizPhoneObject(v.coords, v.rotation)
 
-        exports['sandbox-targeting']:AddEntity(object, "phone-office", {
+        exports.ox_target:addEntity(object, {
             {
                 icon = "phone-volume",
-                text = "Phone",
+                label = "Phone",
                 event = "",
-                isEnabled = function(data, entity)
+                args = { id = v.id },
+                canInteract = function(data, entity)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData and pData.state > 1 then
@@ -40,7 +41,7 @@ function CreateBizPhones()
                         end
                     end
                 end,
-                textFunc = function(data, entity)
+                label = function(data, entity)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData then
@@ -51,23 +52,19 @@ function CreateBizPhones()
                             end
                         end
                     end
-
                     return ""
                 end,
-                data = {
-                    id = v.id,
-                },
-                jobPerms = {
-                    {
-                        job = v.job
-                    }
-                }
+                onSelect = function()
+                    TriggerEvent("Phone:Client:MakeBizCall", { id = v.id })
+                end,
+                groups = { v.job }
             },
             {
                 icon = "phone-arrow-up-right",
-                text = "Make Call",
+                label = "Make Call",
                 event = "Phone:Client:MakeBizCall",
-                isEnabled = function(data, entity)
+                args = { id = v.id },
+                canInteract = function(data, entity)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if not pData then
@@ -75,20 +72,17 @@ function CreateBizPhones()
                         end
                     end
                 end,
-                data = {
-                    id = v.id,
-                },
-                jobPerms = {
-                    {
-                        job = v.job
-                    }
-                }
+                onSelect = function()
+                    TriggerEvent("Phone:Client:MakeBizCall", { id = v.id })
+                end,
+                groups = { v.job }
             },
             {
                 icon = "phone",
-                text = "Answer Phone",
+                label = "Answer Phone",
                 event = "Phone:Client:AcceptBizCall",
-                isEnabled = function(data, entity)
+                args = { id = v.id },
+                canInteract = function(data, entity)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData and pData.state == 1 then
@@ -96,30 +90,26 @@ function CreateBizPhones()
                         end
                     end
                 end,
-                textFunc = function(data, entity)
+                label = function(data, entity)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData and pData.state == 1 then
                             return string.format("Answer Call From %s", pData.callingStr)
                         end
                     end
-
                     return ""
                 end,
-                data = {
-                    id = v.id,
-                },
-                jobPerms = {
-                    {
-                        job = v.job
-                    }
-                }
+                onSelect = function()
+                    TriggerEvent("Phone:Client:AcceptBizCall", { id = v.id })
+                end,
+                groups = { v.job }
             },
             {
                 icon = "phone-hangup",
-                text = "Hang Up",
+                label = "Hang Up",
                 event = "Phone:Client:DeclineBizCall",
-                isEnabled = function(data, entity)
+                args = { id = v.id },
+                canInteract = function(data, entity)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData then
@@ -127,38 +117,30 @@ function CreateBizPhones()
                         end
                     end
                 end,
-                data = {
-                    id = v.id,
-                },
-                jobPerms = {
-                    {
-                        job = v.job
-                    }
-                }
+                onSelect = function()
+                    TriggerEvent("Phone:Client:DeclineBizCall", { id = v.id })
+                end,
+                groups = { v.job }
             },
             {
                 icon = "phone-slash",
-                text = "Mute Phone",
+                label = "Mute Phone",
                 event = "Phone:Client:MuteBiz",
-                textFunc = function(data, entity)
+                args = { id = v.id },
+                label = function(data, entity)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s:Muted", data.id)]
                         if pData then
                             return "Unmute Phone"
                         end
                     end
-
                     return "Mute Phone"
                 end,
-                data = {
-                    id = v.id,
-                },
-                jobPerms = {
-                    {
-                        job = v.job
-                    }
-                }
-            },
+                onSelect = function()
+                    TriggerEvent("Phone:Client:MuteBiz", { id = v.id })
+                end,
+                groups = { v.job }
+            }
         })
 
         table.insert(_createdPhones, object)

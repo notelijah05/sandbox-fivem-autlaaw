@@ -20,27 +20,25 @@ AddEventHandler('Businesses:Client:Startup', function()
         end
 
         if v.interactZone then
-            exports['sandbox-targeting']:ZonesAddBox(
-                string.format("tv-interact-%s", k),
-                "tv",
-                v.interactZone.center,
-                v.interactZone.length,
-                v.interactZone.width,
-                v.interactZone.options,
-                {
+            exports.ox_target:addBoxZone({
+                id = string.format("tv-interact-%s", k),
+                coords = v.interactZone.center,
+                size = vector3(v.interactZone.length, v.interactZone.width, 2.0),
+                rotation = v.interactZone.options.heading or 0,
+                debug = false,
+                minZ = v.interactZone.options.minZ,
+                maxZ = v.interactZone.options.maxZ,
+                options = {
                     {
                         icon = "tv",
-                        text = "Set TV Link",
+                        label = "Set TV Link",
                         event = "TVs:Client:SetLink",
-                        data = k,
-                        jobPerms = {
-                            v.jobPerm,
-                        },
+                        groups = { v.jobPerm.job },
+                        reqDuty = v.jobPerm.reqDuty,
+                        reqOffDuty = v.jobPerm.reqOffDuty,
                     },
-                },
-                3.0,
-                true
-            )
+                }
+            })
         end
     end
 end)
@@ -177,7 +175,7 @@ AddEventHandler('TVs:Client:RecieveTVLinkInput', function(values)
     end
 end)
 
-AddEventHandler('TVs:Client:SetLink', function(e, data)
+AddEventHandler('TVs:Client:SetLink', function(data)
     local tvLink = GetNewTVLink()
     exports["sandbox-base"]:ServerCallback('TVs:UpdateTVLink', {
         tv = data,

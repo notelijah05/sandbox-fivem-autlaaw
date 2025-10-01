@@ -18,19 +18,23 @@ function RegisterDjZones()
 
 	for k, v in ipairs(Config.Locations) do
 		if v.enableBooth then
-			exports['sandbox-targeting']:ZonesAddBox("dj-booth" .. k, "compact-disc", v.coords, 1.0, 1.0, {
-				name = "djbooth" .. k,
-				heading = 0,
-				--debugPoly=true,
+			exports.ox_target:addBoxZone({
+				id = "dj-booth" .. k,
+				coords = v.coords,
+				size = vector3(1.0, 1.0, 3.0),
+				rotation = 0,
+				debug = false,
 				minZ = v.coords.z - 1.5,
 				maxZ = v.coords.z + 1.5,
-			}, {
-				{
-					icon = "compact-disc",
-					text = "Open Stereo",
-					event = "sandbox-dj:client:playMusic",
-					data = { zone = k },
-				},
+				options = {
+					{
+						icon = "compact-disc",
+						label = "Open Stereo",
+						onSelect = function()
+							TriggerEvent("sandbox-dj:client:playMusic", { zone = k })
+						end,
+					},
+				}
 			})
 
 			if v.prop then

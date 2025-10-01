@@ -79,118 +79,50 @@ function CreateDealerships()
 		-- Targets
 		if data.zones and #data.zones.employeeInteracts > 0 then
 			for k, v in ipairs(data.zones.employeeInteracts) do
-				exports['sandbox-targeting']:ZonesAddBox(
-					string.format("dealership_%s_employee_%s", dealerId, k),
-					"car-building",
-					v.center,
-					v.length,
-					v.width,
-					v.options,
-					{
+				exports.ox_target:addBoxZone({
+					id = string.format("dealership_%s_employee_%s", dealerId, k),
+					coords = v.center,
+					size = vector3(v.length, v.width, 2.0),
+					rotation = v.options.heading or 0,
+					debug = false,
+					minZ = v.options.minZ,
+					maxZ = v.options.maxZ,
+					options = {
 						{
 							icon = "car-garage",
-							text = "Edit Showroom",
+							label = "Edit Showroom",
 							event = "Dealerships:Client:ShowroomManagement",
-							data = { dealerId = dealerId },
-							jobPerms = {
-								{
-									job = dealerId,
-									reqDuty = true,
-									permissionKey = "dealership_showroom",
-								},
-							},
-						},
-						-- {
-						--     icon = 'magnifying-glass-dollar',
-						--     text = 'Run Credit Check',
-						--     event = 'Dealerships:Client:StartRunningCredit',
-						--     data = { dealerId = dealerId },
-						--     jobPerms = {
-						--         {
-						--             job = dealerId,
-						--             reqDuty = true,
-						--             permissionKey = 'dealership_sell',
-						--         }
-						--     },
-						-- },
-						-- {
-						--     icon = 'file-invoice-dollar',
-						--     text = 'Sell Vehicle',
-						--     event = 'Dealerships:Client:OpenSales',
-						--     data = { dealerId = dealerId },
-						--     jobPerms = {
-						--         {
-						--             job = dealerId,
-						--             reqDuty = true,
-						--             permissionKey = 'dealership_sell',
-						--         }
-						--     },
-						-- },
-						-- {
-						--     icon = 'memo-pad',
-						--     text = 'View Stock',
-						--     event = 'Dealerships:Client:StockViewing',
-						--     data = { dealerId = dealerId },
-						--     jobPerms = {
-						--         {
-						--             job = dealerId,
-						--             reqDuty = true,
-						--             permissionKey = 'dealership_stock',
-						--         }
-						--     },
-						-- },
-						-- {
-						--     icon = 'pen-to-square',
-						--     text = 'Dealer Management',
-						--     event = 'Dealerships:Client:StartManagement',
-						--     data = { dealerId = dealerId },
-						--     jobPerms = {
-						--         {
-						--             job = dealerId,
-						--             reqDuty = true,
-						--             permissionKey = 'dealership_manage',
-						--         }
-						--     },
-						-- },
-						{
-							icon = "briefcase-clock",
-							text = "Go On Duty",
-							event = "Dealerships:Client:ToggleDuty",
-							data = { dealerId = dealerId, state = true },
-							jobPerms = {
-								{
-									job = dealerId,
-									reqOffDuty = true,
-								},
-							},
+							onSelect = function()
+								TriggerEvent("Dealerships:Client:ShowroomManagement", { dealerId = dealerId })
+							end,
+							groups = { dealerId },
+							reqDuty = true,
+							canInteract = function()
+								return LocalPlayer.state.Character:HasPermission("dealership_showroom")
+							end,
 						},
 						{
 							icon = "briefcase-clock",
-							text = "Go Off Duty",
+							label = "Go On Duty",
 							event = "Dealerships:Client:ToggleDuty",
-							data = { dealerId = dealerId, state = false },
-							jobPerms = {
-								{
-									job = dealerId,
-									reqDuty = true,
-								},
-							},
+							onSelect = function()
+								TriggerEvent("Dealerships:Client:ToggleDuty", { dealerId = dealerId, state = true })
+							end,
+							groups = { dealerId },
+							reqOffDuty = true,
 						},
-						-- {
-						-- 	icon = "tablet-screen",
-						-- 	text = "Open Tablet",
-						-- 	event = "MDT:Client:Toggle",
-						-- 	data = {},
-						-- 	jobPerms = {
-						-- 		{
-						-- 			job = dealerId,
-						-- 			reqDuty = true,
-						-- 		},
-						-- 	},
-						-- },
-					},
-					3.5
-				)
+						{
+							icon = "briefcase-clock",
+							label = "Go Off Duty",
+							event = "Dealerships:Client:ToggleDuty",
+							onSelect = function()
+								TriggerEvent("Dealerships:Client:ToggleDuty", { dealerId = dealerId, state = false })
+							end,
+							groups = { dealerId },
+							reqDuty = true,
+						},
+					}
+				})
 			end
 		end
 	end

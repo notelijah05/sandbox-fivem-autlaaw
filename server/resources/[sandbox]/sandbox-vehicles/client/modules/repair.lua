@@ -241,10 +241,13 @@ end
 AddEventHandler("Vehicles:Client:StartUp", function()
 	exports["sandbox-base"]:RegisterClientCallback("Vehicles:RepairKit", function(type, cb)
 		if LocalPlayer.state.loggedIn then
-			local entity = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+			local coords = GetEntityCoords(PlayerPedId())
+			local maxDistance = 2.0
+			local includePlayerVehicle = false
 
-			if entity and entity.entity and CanRepairVehicle(entity.entity) then
-				local vehicle = entity.entity
+			local vehicle = lib.getClosestVehicle(coords, maxDistance, includePlayerVehicle)
+
+			if vehicle and DoesEntityExist(vehicle) and CanRepairVehicle(vehicle) then
 				if exports['sandbox-vehicles']:RepairNeedsKit(vehicle, type) then
 					TaskTurnPedToFaceEntity(GLOBAL_PED, vehicle, 1)
 					Wait(500)

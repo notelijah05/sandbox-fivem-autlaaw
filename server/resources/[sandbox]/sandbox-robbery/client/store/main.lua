@@ -12,60 +12,68 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(GlobalState["StoreSafes"]) do
-		exports['sandbox-targeting']:ZonesAddBox(v.id, "vault", v.coords, v.length, v.width, v.options, {
-			{
-				icon = "unlock",
-				text = "Crack Safe",
-				event = "Robbery:Client:Store:ActualCrackSafe",
-				item = "safecrack_kit",
-				data = v.data,
-				isEnabled = function(data, entity)
-					return (
-						not GlobalState["StoreAntiShitlord"]
-						or GetCloudTimeAsInt() > GlobalState["StoreAntiShitlord"]
-					) and GlobalState[string.format("Safe:%s", data.id)] == nil
-				end,
-			},
-			{
-				icon = "terminal",
-				text = "Use Sequencer",
-				event = "Robbery:Client:Store:SequenceSafe",
-				item = "sequencer",
-				data = v.data,
-				isEnabled = function(data, entity)
-					return (
-						not GlobalState["StoreAntiShitlord"]
-						or GetCloudTimeAsInt() > GlobalState["StoreAntiShitlord"]
-					) and GlobalState[string.format("Safe:%s", data.id)] == nil
-				end,
-			},
-			{
-				icon = "fingerprint",
-				text = "Open Safe",
-				event = "Robbery:Client:Store:OpenSafe",
-				data = v.data,
-				isEnabled = function(data, entity)
-					local safeData = GlobalState[string.format("Safe:%s", data.id)]
-					return safeData ~= nil and safeData.state == 2
-				end,
-			},
-			{
-				icon = "shield-keyhole",
-				text = "Secure Safe",
-				event = "Robbery:Client:Store:SecureSafe",
-				jobPerms = {
-					{
-						job = "police",
-						reqDuty = true,
-					},
+		exports.ox_target:addBoxZone({
+			id = v.id,
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
+				{
+					icon = "unlock",
+					label = "Crack Safe",
+					item = "safecrack_kit",
+					onSelect = function()
+						TriggerEvent("Robbery:Client:Store:ActualCrackSafe", v.data)
+					end,
+					canInteract = function(data, entity)
+						return (
+							not GlobalState["StoreAntiShitlord"]
+							or GetCloudTimeAsInt() > GlobalState["StoreAntiShitlord"]
+						) and GlobalState[string.format("Safe:%s", data.id)] == nil
+					end,
 				},
-				data = v.data,
-				isEnabled = function(data, entity)
-					local safeData = GlobalState[string.format("Safe:%s", data.id)]
-					return safeData ~= nil and safeData.state ~= 4
-				end,
-			},
-		}, 2.0)
+				{
+					icon = "terminal",
+					label = "Use Sequencer",
+					item = "sequencer",
+					onSelect = function()
+						TriggerEvent("Robbery:Client:Store:SequenceSafe", v.data)
+					end,
+					canInteract = function(data, entity)
+						return (
+							not GlobalState["StoreAntiShitlord"]
+							or GetCloudTimeAsInt() > GlobalState["StoreAntiShitlord"]
+						) and GlobalState[string.format("Safe:%s", data.id)] == nil
+					end,
+				},
+				{
+					icon = "fingerprint",
+					label = "Open Safe",
+					onSelect = function()
+						TriggerEvent("Robbery:Client:Store:OpenSafe", v.data)
+					end,
+					canInteract = function(data, entity)
+						local safeData = GlobalState[string.format("Safe:%s", data.id)]
+						return safeData ~= nil and safeData.state == 2
+					end,
+				},
+				{
+					icon = "shield-keyhole",
+					label = "Secure Safe",
+					groups = { "police" },
+					onSelect = function()
+						TriggerEvent("Robbery:Client:Store:SecureSafe", v.data)
+					end,
+					canInteract = function(data, entity)
+						local safeData = GlobalState[string.format("Safe:%s", data.id)]
+						return safeData ~= nil and safeData.state ~= 4
+					end,
+				},
+			}
+		})
 	end
 
 	exports["sandbox-base"]:RegisterClientCallback("Robbery:Store:DoSafeCrack", function(data, cb)
@@ -81,15 +89,16 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 		LocalPlayer.state:set("storePoly", id, true)
 		_inPoly = id
 		for k, v in ipairs(_models) do
-			exports['sandbox-targeting']:RemoveObject(v)
-			exports['sandbox-targeting']:AddObject(v, "cash-register", {
+			exports.ox_target:removeModel(v)
+			exports.ox_target:addModel(v, {
 				{
 					icon = "cash-register",
-					text = "Lockpick Register",
-					event = "Robbery:Client:Store:LockpickRegister",
+					label = "Lockpick Register",
 					item = "lockpick",
-					data = id,
-					isEnabled = function(s, s2)
+					onSelect = function()
+						TriggerEvent("Robbery:Client:Store:LockpickRegister", id)
+					end,
+					canInteract = function(s, s2)
 						local coords = GetEntityCoords(s2.entity)
 						return _polys[s]
 							and (
@@ -102,7 +111,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 							)
 					end,
 				},
-			}, 2.0)
+			})
 		end
 	end
 end)
@@ -115,7 +124,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 
 		_inPoly = nil
 		for k, v in ipairs(_models) do
-			exports['sandbox-targeting']:RemoveObject(v)
+			exports.ox_target:removeModel(v)
 		end
 	end
 end)

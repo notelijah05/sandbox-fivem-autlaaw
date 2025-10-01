@@ -1,6 +1,7 @@
 local _pzs = {}
 local _inPoly = false
 local _menu = false
+local _apartmentZones = {}
 
 AddEventHandler('onClientResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
@@ -133,89 +134,92 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 		end)
 	end
 
-	exports['sandbox-targeting']:ZonesAddBox(
-		string.format("apt-%s-exit", aptId),
-		"door-open",
-		p.interior.locations.exit.coords,
-		p.interior.locations.exit.length,
-		p.interior.locations.exit.width,
-		p.interior.locations.exit.options,
-		{
+	local exitZoneId = exports.ox_target:addBoxZone({
+		name = string.format("apt-%s-exit", aptId),
+		coords = p.interior.locations.exit.coords,
+		size = vec3(p.interior.locations.exit.width, p.interior.locations.exit.length,
+			math.abs(p.interior.locations.exit.options.maxZ - p.interior.locations.exit.options.minZ)),
+		rotation = p.interior.locations.exit.options.heading or 0,
+		debug = p.interior.locations.exit.options.debugPoly or false,
+		options = {
 			{
-				icon = "door-open",
-				text = "Exit",
+				name = "apt_exit",
+				label = "Exit",
+				icon = "fa-solid fa-door-open",
 				event = "Apartment:Client:ExitEvent",
 				data = unit,
+				distance = 3.0,
 			},
 		},
-		3.0,
-		true
-	)
+	})
+	_apartmentZones[string.format("apt-%s-exit", aptId)] = exitZoneId
 
-	exports['sandbox-targeting']:ZonesAddBox(
-		string.format("apt-%s-logout", aptId),
-		"bed-front",
-		p.interior.locations.logout.coords,
-		p.interior.locations.logout.length,
-		p.interior.locations.logout.width,
-		p.interior.locations.logout.options,
-		{
+	local logoutZoneId = exports.ox_target:addBoxZone({
+		name = string.format("apt-%s-logout", aptId),
+		coords = p.interior.locations.logout.coords,
+		size = vec3(p.interior.locations.logout.width, p.interior.locations.logout.length,
+			math.abs(p.interior.locations.logout.options.maxZ - p.interior.locations.logout.options.minZ)),
+		rotation = p.interior.locations.logout.options.heading or 0,
+		debug = p.interior.locations.logout.options.debugPoly or false,
+		options = {
 			{
-				icon = "bed-front",
-				text = "Switch Characters",
+				name = "apt_logout",
+				label = "Switch Characters",
+				icon = "fa-solid fa-bed",
 				event = "Apartment:Client:Logout",
 				data = unit,
-				isEnabled = function(data)
+				distance = 3.0,
+				canInteract = function()
 					return unit == LocalPlayer.state.Character:GetData("SID")
 				end,
 			},
 		},
-		3.0,
-		true
-	)
+	})
+	_apartmentZones[string.format("apt-%s-logout", aptId)] = logoutZoneId
 
-	exports['sandbox-targeting']:ZonesAddBox(
-		string.format("apt-%s-wardrobe", propertyId),
-		"shirt",
-		p.interior.locations.wardrobe.coords,
-		p.interior.locations.wardrobe.length,
-		p.interior.locations.wardrobe.width,
-		p.interior.locations.wardrobe.options,
-		{
+	local wardrobeZoneId = exports.ox_target:addBoxZone({
+		name = string.format("apt-%s-wardrobe", aptId),
+		coords = p.interior.locations.wardrobe.coords,
+		size = vec3(p.interior.locations.wardrobe.width, p.interior.locations.wardrobe.length,
+			math.abs(p.interior.locations.wardrobe.options.maxZ - p.interior.locations.wardrobe.options.minZ)),
+		rotation = p.interior.locations.wardrobe.options.heading or 0,
+		debug = p.interior.locations.wardrobe.options.debugPoly or false,
+		options = {
 			{
-				icon = "bars-staggered",
-				text = "Wardrobe",
+				name = "apt_wardrobe",
+				label = "Wardrobe",
+				icon = "fa-solid fa-shirt",
 				event = "Apartment:Client:Wardrobe",
 				data = unit,
-				isEnabled = function(data)
+				distance = 3.0,
+				canInteract = function()
 					return unit == LocalPlayer.state.Character:GetData("SID")
 				end,
 			},
 		},
-		3.0,
-		true
-	)
+	})
+	_apartmentZones[string.format("apt-%s-wardrobe", aptId)] = wardrobeZoneId
 
-	exports['sandbox-targeting']:ZonesAddBox(
-		string.format("property-%s-stash", propertyId),
-		"toolbox",
-		p.interior.locations.stash.coords,
-		p.interior.locations.stash.length,
-		p.interior.locations.stash.width,
-		p.interior.locations.stash.options,
-		{
+	local stashZoneId = exports.ox_target:addBoxZone({
+		name = string.format("apt-%s-stash", aptId),
+		coords = p.interior.locations.stash.coords,
+		size = vec3(p.interior.locations.stash.width, p.interior.locations.stash.length,
+			math.abs(p.interior.locations.stash.options.maxZ - p.interior.locations.stash.options.minZ)),
+		rotation = p.interior.locations.stash.options.heading or 0,
+		debug = p.interior.locations.stash.options.debugPoly or false,
+		options = {
 			{
-				icon = "toolbox",
-				text = "Stash",
+				name = "apt_stash",
+				label = "Stash",
+				icon = "fa-solid fa-box",
 				event = "Apartment:Client:Stash",
-				data = propertyId,
+				data = aptId,
+				distance = 2.0,
 			},
 		},
-		2.0,
-		true
-	)
+	})
+	_apartmentZones[string.format("apt-%s-stash", aptId)] = stashZoneId
 
-	exports['sandbox-targeting']:ZonesRefresh()
 	Wait(1000)
 	exports["sandbox-sync"]:Stop(1)
 end)
@@ -284,15 +288,15 @@ AddEventHandler("Apartment:Client:DoRequestEntry", function(values, data)
 	})
 end)
 
-AddEventHandler("Apartment:Client:Stash", function(t, data)
+AddEventHandler("Apartment:Client:Stash", function(response)
 	exports['sandbox-apartments']:ExtrasStash()
 end)
 
-AddEventHandler("Apartment:Client:Wardrobe", function(t, data)
+AddEventHandler("Apartment:Client:Wardrobe", function(response)
 	exports['sandbox-apartments']:ExtrasWardrobe()
 end)
 
-AddEventHandler("Apartment:Client:Logout", function(t, data)
+AddEventHandler("Apartment:Client:Logout", function(response)
 	exports['sandbox-apartments']:ExtrasLogout()
 end)
 
@@ -365,10 +369,12 @@ exports("Exit", function()
 		SetEntityHeading(PlayerPedId(), p.heading)
 
 		for k, v in pairs(p.interior.locations) do
-			exports['sandbox-targeting']:ZonesRemoveZone(string.format("apt-%s-%s", k, apartmentId))
+			local zoneName = string.format("apt-%s-%s", k, apartmentId)
+			if _apartmentZones[zoneName] then
+				exports.ox_target:removeZone(_apartmentZones[zoneName])
+				_apartmentZones[zoneName] = nil
+			end
 		end
-
-		exports['sandbox-targeting']:ZonesRefresh()
 
 		DoScreenFadeIn(1000)
 		while not IsScreenFadedIn() do

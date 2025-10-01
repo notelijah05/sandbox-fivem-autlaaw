@@ -1,8 +1,8 @@
 _spawnedFurniture = nil
 
 local _specCategories = {
-    .storage,
-    .beds,
+    storage = true,
+    beds = true,
 }
 
 function CreateFurniture(furniture)
@@ -42,35 +42,38 @@ function PlaceFurniture(v)
                 local menu = {
                     {
                         icon = "arrows-up-down-left-right",
-                        text = "Move",
-                        event = "Furniture:Client:OnMove",
-                        data = {
-                            id = v.id,
+                        label = "Move",
+                        onSelect = function()
+                            TriggerEvent("Furniture:Client:OnMove", {
+                                id = v.id,
+                            })
                         },
-                        isEnabled = function()
+                        canInteract = function()
                             return LocalPlayer.state.furnitureEdit
                         end
                     },
                     {
                         icon = "trash",
-                        text = "Delete",
-                        event = "Furniture:Client:OnDelete",
-                        data = {
-                            id = v.id,
+                        label = "Delete",
+                        onSelect = function()
+                            TriggerEvent("Furniture:Client:OnDelete", {
+                                id = v.id,
+                            })
                         },
-                        isEnabled = function()
+                        canInteract = function()
                             return LocalPlayer.state.furnitureEdit
                         end
                     },
                     {
                         icon = "clone",
-                        text = "Clone",
-                        event = "Furniture:Client:OnClone",
-                        data = {
-                            id = v.id,
-                            model = v.model,
-                        },
-                        isEnabled = function()
+                        label = "Clone",
+                        onSelect = function()
+                            TriggerEvent("Furniture:Client:OnClone", {
+                                id = v.id,
+                                model = v.model,
+                            })
+                        end,
+                        canInteract = function()
                             return LocalPlayer.state.furnitureEdit
                         end
                     },
@@ -81,32 +84,36 @@ function PlaceFurniture(v)
 
                     table.insert(menu, {
                         icon = "box-open-full",
-                        text = "Access Storage",
+                        label = "Access Storage",
                         event = "Properties:Client:Stash",
-                        isEnabled = function(data)
+                        canInteract = function(data)
                             if _insideProperty and _propertiesLoaded then
                                 local property = _properties[_insideProperty.id]
-                                return (property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil and (property.keys[LocalPlayer.state.Character:GetData("ID")].Permissions?.stash or property.keys[LocalPlayer.state.Character:GetData("ID")].Owner)) or LocalPlayer.state.onDuty == "police"
+                                return (property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil and (property.keys[LocalPlayer.state.Character:GetData("ID")].Permissions?.stash or property.keys[LocalPlayer.state.Character:GetData("ID")].Owner)) or
+                                    LocalPlayer.state.onDuty == "police"
                             end
                         end,
                     })
 
                     table.insert(menu, {
                         icon = "clothes-hanger",
-                        text = "Open Wardrobe",
-                        event = "Properties:Client:Closet",
+                        label = "Open Wardrobe",
+                        onSelect = function()
+                            TriggerEvent("Properties:Client:Closet")
+                        end,
                     })
                 elseif furnData.cat == "beds" then
                     icon = "bed"
 
                     table.insert(menu, {
                         icon = "bed",
-                        text = "Logout",
+                        label = "Logout",
                         event = "Properties:Client:Logout",
-                        isEnabled = function(data)
+                        canInteract = function(data)
                             if _insideProperty and _propertiesLoaded then
                                 local property = _properties[_insideProperty.id]
-                                return property.keys ~= nil and property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil
+                                return property.keys ~= nil and
+                                    property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil
                             end
                         end,
                     })
@@ -114,7 +121,7 @@ function PlaceFurniture(v)
 
                 hasTargeting = true
 
-                exports['sandbox-targeting']:AddEntity(obj, icon, menu)
+                exports.ox_target:addEntity(obj, menu)
             end
         end
 
@@ -126,38 +133,41 @@ function PlaceFurniture(v)
         })
 
         if LocalPlayer.state.furnitureEdit and not hasTargeting then
-            exports['sandbox-targeting']:AddEntity(obj, "draw-square", {
+            exports.ox_target:addEntity(obj, {
                 {
                     icon = "arrows-up-down-left-right",
-                    text = "Move",
-                    event = "Furniture:Client:OnMove",
-                    data = {
-                        id = v.id,
-                    },
+                    label = "Move",
+                    onSelect = function()
+                        TriggerEvent("Furniture:Client:OnMove", {
+                            id = v.id,
+                        })
+                    end,
                 },
                 {
                     icon = "trash",
-                    text = "Delete",
-                    event = "Furniture:Client:OnDelete",
-                    data = {
-                        id = v.id,
-                    },
+                    label = "Delete",
+                    onSelect = function()
+                        TriggerEvent("Furniture:Client:OnDelete", {
+                            id = v.id,
+                        })
+                    end,
                 },
                 {
                     icon = "clone",
-                    text = "Clone",
-                    event = "Furniture:Client:OnClone",
-                    data = {
-                        id = v.id,
-                        model = v.model,
-                    },
+                    label = "Clone",
+                    onSelect = function()
+                        TriggerEvent("Furniture:Client:OnClone", {
+                            id = v.id,
+                            model = v.model,
+                        })
+                    end,
                 },
             })
         end
 
         Wait(1)
     else
-       print("Failed to Load Model: " .. v.model)
+        print("Failed to Load Model: " .. v.model)
     end
 end
 
@@ -166,7 +176,7 @@ function DestroyFurniture(s)
         for k, v in ipairs(_spawnedFurniture) do
             DeleteEntity(v.entity)
             if not s then
-                exports['sandbox-targeting']:RemoveEntity(v.entity)
+                exports.ox_target:removeEntity(v.entity)
             end
         end
 
@@ -179,41 +189,45 @@ function SetFurnitureEditMode(state)
         if state then
             for k, v in ipairs(_spawnedFurniture) do
                 if not v.targeting then
-                    exports['sandbox-targeting']:AddEntity(v.entity, "draw-square", {
+                    exports.ox_target:addEntity(v.entity, {
                         {
                             icon = "arrows-up-down-left-right",
-                            text = "Move",
-                            event = "Furniture:Client:OnMove",
-                            data = {
-                                id = v.id,
-                            },
+                            label = "Move",
+                            onSelect = function()
+                                TriggerEvent("Furniture:Client:OnMove", {
+                                    id = v.id,
+                                })
+                            end,
                         },
                         {
                             icon = "trash",
-                            text = "Delete",
-                            event = "Furniture:Client:OnDelete",
-                            data = {
-                                id = v.id,
-                            },
+                            label = "Delete",
+                            onSelect = function()
+                                TriggerEvent("Furniture:Client:OnDelete", {
+                                    id = v.id,
+                                })
+                            end,
                         },
                         {
                             icon = "clone",
-                            text = "Clone",
-                            event = "Furniture:Client:OnClone",
-                            data = {
-                                id = v.id,
-                                model = v.model,
-                            },
+                            label = "Clone",
+                            onSelect = function()
+                                TriggerEvent("Furniture:Client:OnClone", {
+                                    id = v.id,
+                                    model = v.model,
+                                })
+                            end,
                         },
                     })
                 end
             end
 
-            exports["sandbox-hud"]:NotifPersistentStandard("furniture", "Furniture Edit Mode Enabled - Third Eye Objects to Move or Delete Them")
+            exports["sandbox-hud"]:NotifPersistentStandard("furniture",
+                "Furniture Edit Mode Enabled - Third Eye Objects to Move or Delete Them")
         else
             for k, v in ipairs(_spawnedFurniture) do
                 if not v.targeting then
-                    exports['sandbox-targeting']:RemoveEntity(v.entity)
+                    exports.ox_target:removeEntity(v.entity)
                 end
             end
 
@@ -249,9 +263,11 @@ function CycleFurniture(direction)
     local fKey = _furnitureCategory[_furnitureCategoryCurrent]
     local fData = FurnitureConfig[fKey]
     if fData then
-        exports['sandbox-hud']:InfoOverlayShow(fData.name, string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", fKey))
+        exports['sandbox-hud']:InfoOverlayShow(fData.name,
+            string.format("Category: %s | Model: %s", FurnitureCategories[fData.cat]?.name or "Unknown", fKey))
     end
-    exports['sandbox-objects']:PlacerStart(GetHashKey(fKey), "Furniture:Client:Place", {}, true, "Furniture:Client:Cancel", true, true)
+    exports['sandbox-objects']:PlacerStart(GetHashKey(fKey), "Furniture:Client:Place", {}, true,
+        "Furniture:Client:Cancel", true, true)
 end
 
 AddEventHandler("Furniture:Client:Place", function(data, placement)
@@ -310,7 +326,6 @@ end)
 
 AddEventHandler("Furniture:Client:Move", function(data, placement)
     if _placingFurniture and data.id then
-
         exports["sandbox-base"]:ServerCallback("Properties:MoveFurniture", {
             id = data.id,
             coords = {
@@ -373,13 +388,12 @@ end)
 
 RegisterNetEvent("Furniture:Client:MoveItem", function(property, id, item)
     if _insideProperty and _insideProperty.id == property and _spawnedFurniture then
-
         local ns = {}
         local shouldUpdate = false
         for k, v in ipairs(_spawnedFurniture) do
             if v.id == id then
                 DeleteEntity(v.entity)
-                exports['sandbox-targeting']:RemoveEntity(v.entity)
+                exports.ox_target:removeEntity(v.entity)
                 shouldUpdate = true
             else
                 table.insert(ns, v)
@@ -406,7 +420,7 @@ RegisterNetEvent("Furniture:Client:DeleteItem", function(property, id, furniture
         for k, v in ipairs(_spawnedFurniture) do
             if v.id == id then
                 DeleteEntity(v.entity)
-                exports['sandbox-targeting']:RemoveEntity(v.entity)
+                exports.ox_target:removeEntity(v.entity)
             else
                 table.insert(ns, v)
             end
@@ -426,7 +440,8 @@ AddEventHandler("Furniture:Client:OnDelete", function(entity, data)
 end)
 
 AddEventHandler("Furniture:Client:OnClone", function(entity, data)
-    exports['sandbox-properties']:Place(data.model, false, {}, false, true, GetEntityCoords(entity.entity), GetEntityRotation(entity.entity))
+    exports['sandbox-properties']:Place(data.model, false, {}, false, true, GetEntityCoords(entity.entity),
+        GetEntityRotation(entity.entity))
 end)
 
 AddEventHandler('onResourceStop', function(resourceName)
@@ -442,11 +457,11 @@ function DisablePauseMenu(state)
         _disablePause = state
         if _disablePause then
             CreateThread(function()
-				while _disablePause do
-					DisableControlAction(0, 200, true)
-					Wait(1)
-				end
-			end)
+                while _disablePause do
+                    DisableControlAction(0, 200, true)
+                    Wait(1)
+                end
+            end)
         end
     end
 end

@@ -30,37 +30,46 @@ AddEventHandler("Casino:Client:Startup", function()
 
     for k, v in pairs(_rouletteTables) do
         local maxBet = formatNumberToCurrency(math.floor(_rouletteTablesConfig[k].maxBet))
-        exports['sandbox-targeting']:ZonesAddBox("casino-roulette-" .. k, "cards", v.polyzone.center, v.polyzone.length,
-            v.polyzone.width,
-            v.polyzone.options, {
+        exports.ox_target:addBoxZone({
+            id = "casino-roulette-" .. k,
+            coords = v.polyzone.center,
+            size = vector3(v.polyzone.length, v.polyzone.width, 2.0),
+            rotation = v.polyzone.options.heading or 0,
+            debug = false,
+            minZ = v.polyzone.options.minZ,
+            maxZ = v.polyzone.options.maxZ,
+            options = {
                 {
                     icon = "cards",
-                    text = _rouletteTablesConfig[k].isVIP and string.format("Join VIP Game ($%s Max Bet)", maxBet) or
+                    label = _rouletteTablesConfig[k].isVIP and string.format("Join VIP Game ($%s Max Bet)", maxBet) or
                         string.format("Join Game ($%s Max Bet)", maxBet),
-                    event = "Casino:Client:JoinRoulette",
-                    data = { table = k },
-                    isEnabled = function()
+                    onSelect = function()
+                        TriggerEvent("Casino:Client:JoinRoulette", { table = k })
+                    end,
+                    canInteract = function()
                         return CanJoinRouletteTable(k) and not _rouletteAtTable and GlobalState["CasinoOpen"]
                     end,
                 },
                 {
                     icon = "cards",
-                    text = "Game Full",
-                    isEnabled = function()
+                    label = "Game Full",
+                    canInteract = function()
                         return not CanJoinRouletteTable(k) and not _rouletteAtTable
                     end,
                 },
                 {
                     icon = "cards",
-                    text = "Leave Game",
-                    event = "Casino:Client:LeaveRoulette",
-                    data = { table = k },
-                    isEnabled = function()
+                    label = "Leave Game",
+                    onSelect = function()
+                        TriggerEvent("Casino:Client:LeaveRoulette", { table = k })
+                    end,
+                    canInteract = function()
                         return _rouletteAtTable and not GlobalState[string.format("Casino:Roulette:%s", k)]?.Started and
                             not _rouletteHasChipsPlaced
                     end,
                 },
-            }, 1.5, true)
+            }
+        })
     end
 
     exports["sandbox-keybinds"]:Add("casino_camera", "C", "keyboard", "Casino - Change Roulette Camera", function()
@@ -175,7 +184,7 @@ AddEventHandler("Casino:Client:JoinRoulette", function(_, data)
                     LocalPlayer.state.playingCasino = true
 
                     exports['sandbox-animations']:EmotesForceCancel()
-                    exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+                    TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 
                     if _rouletteStatebagHandler then
                         RemoveStateBagChangeHandler(_rouletteStatebagHandler)

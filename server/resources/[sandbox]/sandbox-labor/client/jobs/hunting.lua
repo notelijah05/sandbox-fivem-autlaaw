@@ -189,14 +189,13 @@ RegisterNetEvent("Hunting:Client:Polys", function(c)
 	end
 
 	for k, v in pairs(_localConfig.Animals) do
-		exports['sandbox-targeting']:AddPedModel(v.Model, "knife-kitchen", {
+		exports.ox_target:addModel(v.Model, {
 			{
 				icon = "rabbit-running",
-				text = string.format("Harvest %s", v.Name),
+				label = string.format("Harvest %s", v.Name),
 				event = "Hunting:Client:Harvest",
-				minDist = 2.0,
-				data = v.ID,
-				isEnabled = function(data, entity)
+				distance = 2.0,
+				canInteract = function(data, entity)
 					local isEquipped, hash = GetCurrentPedWeapon(LocalPlayer.state.ped, 1)
 					return hash == knifeHash
 						and IsPedDeadOrDying(entity.entity)
@@ -212,17 +211,15 @@ RegisterNetEvent("Hunting:Client:Polys", function(c)
 			},
 			{
 				icon = "magnifying-glass",
-				text = "Inspect Corpse",
+				label = "Inspect Corpse",
 				event = "Hunting:Client:Inspect",
-				minDist = 2.0,
-				jobs = { "tow", "police" },
-				jobDuty = true,
-				data = v.ID,
-				isEnabled = function(data, entity)
+				distance = 2.0,
+				groups = { "tow", "police" },
+				canInteract = function(data, entity)
 					return IsPedDeadOrDying(entity.entity)
 				end,
 			},
-		}, 3.0)
+		})
 	end
 end)
 
@@ -260,7 +257,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				event = "Hunting:Client:Sell",
 				data = { tier = 1 },
 				rep = { id = "Hunting", level = 4 },
-				isEnabled = function()
+				canInteract = function()
 					return true
 				end,
 			},
@@ -270,7 +267,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				event = "Hunting:Client:Sell",
 				data = { tier = 2 },
 				rep = { id = "Hunting", level = 5 },
-				isEnabled = function()
+				canInteract = function()
 					return true
 				end,
 			},
@@ -280,7 +277,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				event = "Hunting:Client:Sell",
 				data = { tier = 3 },
 				rep = { id = "Hunting", level = 6 },
-				isEnabled = function()
+				canInteract = function()
 					return true
 				end,
 			},
@@ -290,7 +287,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				event = "Hunting:Client:Sell",
 				data = { tier = 4 },
 				rep = { id = "Hunting", level = 7 },
-				isEnabled = function()
+				canInteract = function()
 					return true
 				end,
 			},
@@ -308,7 +305,7 @@ AddEventHandler("Labor:Client:Setup", function()
 			text = "Check In",
 			event = "Hunting:Client:StartJob",
 			tempjob = "Hunting",
-			isEnabled = function()
+			canInteract = function()
 				return not _working
 			end,
 		},
@@ -317,7 +314,7 @@ AddEventHandler("Labor:Client:Setup", function()
 			text = "Finish Job",
 			event = "Hunting:Client:FinishJob",
 			tempjob = "Hunting",
-			isEnabled = function()
+			canInteract = function()
 				return _working and _state == 2
 			end,
 		},

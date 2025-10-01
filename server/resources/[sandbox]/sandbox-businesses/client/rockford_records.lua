@@ -2,34 +2,24 @@ local spawnedDJ = false
 local spawnedLaptop = false
 
 AddEventHandler("Businesses:Client:Startup", function()
-    exports['sandbox-targeting']:ZonesAddBox(
-        "rockford-stage",
-        "speakers",
-        vector3(-1004.11, -249.95, 39.47),
-        1.0,
-        1.2,
-        {
-            heading = 325,
-            --debugPoly=true,
-            minZ = 38.47,
-            maxZ = 40.27
-        },
-        {
+    exports.ox_target:addBoxZone({
+        id = "rockford-stage",
+        coords = vector3(-1004.11, -249.95, 39.47),
+        size = vector3(1.0, 1.2, 1.8),
+        rotation = 325,
+        debug = false,
+        minZ = 38.47,
+        maxZ = 40.27,
+        options = {
             {
                 icon = "speakers",
-                text = "Toggle DJ Stand",
+                label = "Toggle DJ Stand",
                 event = "Businesses:Client:RockfordStage",
-                jobPerms = {
-                    {
-                        job = "rockford_records",
-                        reqDuty = true,
-                    }
-                },
+                groups = { "rockford_records" },
+                reqDuty = true,
             },
-        },
-        3.0,
-        true
-    )
+        }
+    })
 
     exports['sandbox-polyzone']:CreateBox("rockford-stage-area", vector3(-1002.26, -257.48, 39.04), 12.2, 16.8, {
         heading = 323,

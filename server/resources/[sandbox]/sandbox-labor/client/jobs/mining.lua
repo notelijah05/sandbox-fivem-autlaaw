@@ -32,15 +32,14 @@ local function SpawnOres()
 			local o = CreateObject(v.ore.object, v.location.x, v.location.y, v.location.z - 1.4, false, true, false)
 			PlaceObjectOnGroundProperly(o)
 			FreezeEntityPosition(o, true)
-			exports['sandbox-targeting']:AddEntity(o, "pickaxe", {
+			exports.ox_target:addEntity(o, {
 				{
-					text = string.format("Mine %s", v.ore.label),
+					label = string.format("Mine %s", v.ore.label),
 					icon = "pickaxe",
 					event = string.format("Mining:Client:%s:Action", _joiner),
-					data = v,
-					minDist = 3.0,
+					distance = 3.0,
 				},
-			}, 3.0)
+			})
 			local b = exports["sandbox-blips"]:Add(string.format("MiningNode-%s", k), "Mining Node", v.location, 594, 0,
 				0.8)
 
@@ -61,7 +60,7 @@ local function DeleteNode(location)
 				vector3(v.data.location.x, v.data.location.y, v.data.location.z)
 				== vector3(location.x, location.y, location.z)
 			then
-				exports['sandbox-targeting']:RemoveEntity(v.ent)
+				exports.ox_target:removeEntity(v.ent)
 				DeleteObject(v.ent)
 				exports["sandbox-blips"]:Remove(v.blipId)
 
@@ -85,7 +84,7 @@ local function DespawnOres()
 			local v = _objs[i]
 
 			if v then
-				exports['sandbox-targeting']:RemoveEntity(v.ent)
+				exports.ox_target:removeEntity(v.ent)
 				DeleteObject(v.ent)
 				exports["sandbox-blips"]:Remove(v.blipId)
 			end

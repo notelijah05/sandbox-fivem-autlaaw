@@ -75,7 +75,7 @@ end)
 
 function DoDeadEvent()
 	if LocalPlayer.state.isDead then
-		exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+		TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 		if not LocalPlayer.state.gameMode then
 			exports['sandbox-hud']:RemoveBuffType("weakness")
 			DisableControls()

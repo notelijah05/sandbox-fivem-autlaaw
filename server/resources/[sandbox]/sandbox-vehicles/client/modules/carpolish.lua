@@ -3,9 +3,13 @@ local DIRT_MULT = false
 
 AddEventHandler('Vehicles:Client:StartUp', function()
     exports["sandbox-base"]:RegisterClientCallback('Vehicles:UseCarPolish', function(data, cb)
-        local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
-        if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
-            if exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target.entity) then
+        local playerCoords = GetEntityCoords(PlayerPedId())
+        local maxDistance = 2.0
+        local includePlayerVehicle = false
+
+        local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
+        if vehicle and DoesEntityExist(vehicle) and IsEntityAVehicle(vehicle) then
+            if exports['sandbox-vehicles']:UtilsIsCloseToVehicle(vehicle) then
                 exports['sandbox-hud']:Progress({
                     name = "vehicle_applying_polish",
                     duration = 5000,
@@ -22,8 +26,8 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                         anim = "maid",
                     },
                 }, function(cancelled)
-                    if not cancelled and exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target.entity) then
-                        cb(VehToNet(target.entity))
+                    if not cancelled and exports['sandbox-vehicles']:UtilsIsCloseToVehicle(vehicle) then
+                        cb(VehToNet(vehicle))
                     else
                         cb(false)
                     end

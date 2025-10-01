@@ -19,51 +19,62 @@ AddEventHandler("Casino:Client:Startup", function()
 
     for k, v in pairs(_blackjackTables) do
         local maxBet = formatNumberToCurrency(math.floor(_blackjackTablesConfig[k].bet[#_blackjackTablesConfig[k].bet]))
-        exports['sandbox-targeting']:ZonesAddBox("casino-blackjack-" .. k, "cards", v.polyzone.center, v.polyzone.length,
-            v.polyzone.width,
-            v.polyzone.options, {
+        exports.ox_target:addBoxZone({
+            id = "casino-blackjack-" .. k,
+            coords = v.polyzone.center,
+            size = vector3(v.polyzone.length, v.polyzone.width, 2.0),
+            rotation = v.polyzone.options.heading or 0,
+            debug = false,
+            minZ = v.polyzone.options.minZ,
+            maxZ = v.polyzone.options.maxZ,
+            options = {
                 {
                     icon = "cards",
-                    text = _blackjackTablesConfig[k].isVIP and string.format("Join VIP Game ($%s Max Bet)", maxBet) or
+                    label = _blackjackTablesConfig[k].isVIP and string.format("Join VIP Game ($%s Max Bet)", maxBet) or
                         string.format("Join Game ($%s Max Bet)", maxBet),
                     event = "Casino:Client:JoinBlackjack",
-                    data = { table = k },
-                    isEnabled = function()
+                    onSelect = function()
+                        TriggerEvent("Casino:Client:JoinBlackjack", { table = k })
+                    end,
+                    canInteract = function()
                         return CanJoinBlackjackTable(k) and not _BJsatAtTable and GlobalState["CasinoOpen"]
                     end,
                 },
                 {
                     icon = "cards",
-                    text = "Game Full",
-                    --event = "Casino:Client:JoinBlackjack",
-                    --data = { table = k },
-                    isEnabled = function()
+                    label = "Game Full",
+                    canInteract = function()
                         return not CanJoinBlackjackTable(k) and not _BJsatAtTable
                     end,
                 },
                 {
                     icon = "cards",
-                    text = "Leave Game",
+                    label = "Leave Game",
                     event = "Casino:Client:LeaveBlackjack",
-                    data = { table = k },
-                    isEnabled = function()
+                    onSelect = function()
+                        TriggerEvent("Casino:Client:LeaveBlackjack", { table = k })
+                    end,
+                    canInteract = function()
                         return _BJsatAtTable and not _inSittingDownAnimation and not _blackjackAwaitingResponse and
                             not GlobalState[string.format("Casino:Blackjack:%s", k)]?.Started
                     end,
                 },
                 {
                     icon = "play",
-                    text = _blackjackTablesConfig[k].isVIP and string.format("Start VIP Game ($%s Max Bet)", maxBet) or
+                    label = _blackjackTablesConfig[k].isVIP and string.format("Start VIP Game ($%s Max Bet)", maxBet) or
                         string.format("Start Game ($%s Max Bet)", maxBet),
                     event = "Casino:Client:StartBlackjack",
-                    data = { table = k },
-                    isEnabled = function()
+                    onSelect = function()
+                        TriggerEvent("Casino:Client:StartBlackjack", { table = k })
+                    end,
+                    canInteract = function()
                         return _BJsatAtTable and not _inSittingDownAnimation and not _blackjackAwaitingResponse and
                             not GlobalState[string.format("Casino:Blackjack:%s", k)]?.Started and
                             GlobalState["CasinoOpen"]
                     end,
                 },
-            }, 1.5, true)
+            }
+        })
     end
 
     exports["sandbox-base"]:RegisterClientCallback("Casino:Client:RequestHitStand", function(data, cb)
@@ -225,8 +236,7 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
                 LocalPlayer.state.playingCasino = true
 
                 exports['sandbox-animations']:EmotesForceCancel()
-                exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
-
+                TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
                 if _blackJackStatebagHandler then
                     RemoveStateBagChangeHandler(_blackJackStatebagHandler)
                     _blackJackStatebagHandler = nil

@@ -77,18 +77,19 @@ end)
 
 AddEventHandler("Robbery:Client:Setup", function()
 	for k, v in ipairs(signObjects) do
-		exports['sandbox-targeting']:AddObject(v.model, "user-secret", {
+		exports.ox_target:addModel(v.model, {
 			{
-				text = string.format("Steal %s", v.label),
+				label = string.format("Steal %s", v.label),
 				icon = "eye-evil",
-				event = "Robbery:Client:Signs:StealSign",
-				data = {
-					label = v.label,
-					model = v.model,
-					item = v.item,
-				},
-				minDist = 2.0,
-				isEnabled = function(data, entity)
+				onSelect = function()
+					TriggerEvent("Robbery:Client:Signs:StealSign", {
+						label = v.label,
+						model = v.model,
+						item = v.item,
+					})
+				end,
+				distance = 2.0,
+				canInteract = function(data, entity)
 					if
 						entity?.entity
 						and not HasObjectBeenBroken(entity?.entity)
@@ -98,7 +99,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					end
 				end,
 			},
-		}, 3.0)
+		})
 	end
 end)
 

@@ -14,76 +14,82 @@ local _sessionWinnings = 0
 
 AddEventHandler("Casino:Client:Startup", function()
     for k, v in ipairs(_slotMachineObjects) do
-        exports['sandbox-targeting']:AddObject(v, "slot-machine", {
+        exports.ox_target:addModel(v, {
             {
                 icon = "slot-machine",
-                text = "Use Machine",
+                label = "Use Machine",
                 event = "Casino:Client:UseSlotMachine",
-                minDist = 2.0,
-                isEnabled = function()
+                distance = 2.0,
+                canInteract = function()
                     return not _satInChair and GlobalState["CasinoOpen"]
                 end,
             },
             {
                 icon = "slot-machine",
-                text = "Leave Machine",
+                label = "Leave Machine",
                 event = "Casino:Client:LeaveSlotMachine",
-                minDist = 2.0,
-                isEnabled = function()
+                distance = 2.0,
+                canInteract = function()
                     return _satInChair
                 end,
             },
             {
                 icon = "play",
-                text = "Place $100 Bet",
-                event = "Casino:Client:PlaySlotMachine",
-                data = { bet = 100 },
-                minDist = 2.0,
-                isEnabled = function()
+                label = "Place $100 Bet",
+                onSelect = function()
+                    TriggerEvent("Casino:Client:PlaySlotMachine", { bet = 100 })
+                end,
+                distance = 2.0,
+                canInteract = function()
                     return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
                 end,
             },
             {
                 icon = "play",
-                text = "Place $250 Bet",
-                event = "Casino:Client:PlaySlotMachine",
-                data = { bet = 250 },
-                minDist = 2.0,
-                isEnabled = function()
+                label = "Place $250 Bet",
+                onSelect = function()
+                    TriggerEvent("Casino:Client:PlaySlotMachine", { bet = 250 })
+                end,
+                distance = 2.0,
+                canInteract = function()
                     return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
                 end,
             },
             {
                 icon = "play",
-                text = "Place $500 Bet",
-                event = "Casino:Client:PlaySlotMachine",
-                data = { bet = 500 },
-                minDist = 2.0,
-                isEnabled = function()
+                label = "Place $500 Bet",
+                onSelect = function()
+                    TriggerEvent("Casino:Client:PlaySlotMachine", { bet = 500 })
+                end,
+                distance = 2.0,
+                canInteract = function()
                     return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
                 end,
             },
             {
                 icon = "play",
-                text = "Place $1,000 Bet",
-                event = "Casino:Client:PlaySlotMachine",
-                data = { bet = 1000 },
-                minDist = 2.0,
-                isEnabled = function()
+                label = "Place $1,000 Bet",
+                onSelect = function()
+                    TriggerEvent("Casino:Client:PlaySlotMachine", { bet = 1000 })
+                end,
+                distance = 2.0,
+                canInteract = function()
                     return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
                 end,
             },
             {
                 icon = "play",
-                text = "Place $2,500 Bet",
-                event = "Casino:Client:PlaySlotMachine",
-                data = { bet = 2500 },
-                minDist = 2.0,
-                isEnabled = function()
+                label = "Place $2,500 Bet",
+                onSelect = function()
+                    TriggerEvent("Casino:Client:PlaySlotMachine", { bet = 2500 })
+                end,
+                distance = 2.0,
+                canInteract = function()
                     return _satInChair and not _spinningReels and GlobalState["CasinoOpen"]
                 end,
             },
         }, 3.0)
+        })
     end
 end)
 
@@ -100,7 +106,7 @@ AddEventHandler("Casino:Client:UseSlotMachine", function()
                 LocalPlayer.state.playingCasino = true
 
                 exports['sandbox-animations']:EmotesForceCancel()
-                exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+                TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 
                 loadAnim("anim_casino_b@amb@casino@games@shared@player@")
 

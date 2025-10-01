@@ -1,34 +1,27 @@
 AddEventHandler("Businesses:Client:Startup", function()
-	exports['sandbox-targeting']:ZonesAddBox("lsfc-clockinoff-1", "chess-clock", vector3(1617.97, 4832.24, 33.14), 1.6,
-		0.8, {
-			heading = 10.0,
-			debugPoly = false,
-			minZ = 32.14,
-			maxZ = 33.34,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "lsfc-clockinoff-1",
+		coords = vector3(1617.97, 4832.24, 33.14),
+		size = vector3(1.6, 0.8, 1.2),
+		rotation = 10.0,
+		debug = false,
+		minZ = 32.14,
+		maxZ = 33.34,
+		options = {
 			{
 				icon = "clipboard-check",
-				text = "Clock In",
+				label = "Clock In",
 				event = "Restaurant:Client:ClockIn",
-				data = { job = "lsfc" },
-				jobPerms = {
-					{
-						job = "lsfc",
-						reqOffDuty = true,
-					},
-				},
+				groups = { "lsfc" },
+				reqOffDuty = true,
 			},
 			{
 				icon = "clipboard",
-				text = "Clock Out",
+				label = "Clock Out",
 				event = "Restaurant:Client:ClockOut",
-				data = { job = "lsfc" },
-				jobPerms = {
-					{
-						job = "lsfc",
-						reqDuty = true,
-					},
-				},
+				groups = { "lsfc" },
+				reqDuty = true,
 			},
-		}, 3.0, true)
+		}
+	})
 end)

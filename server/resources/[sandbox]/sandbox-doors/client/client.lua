@@ -107,38 +107,34 @@ function CreateElevators()
 end
 
 function CreateElevatorFloorTarget(zoneData, elevatorId, floorId, zoneId)
-	exports['sandbox-targeting']:ZonesAddBox(
-		("elevators_" .. elevatorId .. "_level_" .. floorId .. "_" .. zoneId),
-		"elevator",
-		zoneData.center,
-		zoneData.length,
-		zoneData.width,
-		{
-			heading = zoneData.heading,
-			minZ = zoneData.minZ,
-			maxZ = zoneData.maxZ,
-		},
-		{
+	exports.ox_target:addBoxZone({
+		id = "elevators_" .. elevatorId .. "_level_" .. floorId .. "_" .. zoneId,
+		coords = zoneData.center,
+		size = vector3(zoneData.length, zoneData.width, 2.0),
+		rotation = zoneData.heading,
+		debug = false,
+		minZ = zoneData.minZ,
+		maxZ = zoneData.maxZ,
+		options = {
 			{
 				icon = "elevator",
-				text = "Use Elevator",
-				event = "Doors:Client:OpenElevator",
-				data = {
-					elevator = elevatorId,
-					floor = floorId,
+				label = "Use Elevator",
+				onSelect = function()
+					TriggerEvent("Doors:Client:OpenElevator", {
+						elevator = elevatorId,
+						floor = floorId,
+					})
 				},
-				minDist = 3.0,
-				isEnabled = function()
+				distance = 3.0,
+				canInteract = function()
 					return (
 						not LocalPlayer.state.Character:GetData("ICU")
 						or LocalPlayer.state.Character:GetData("ICU").Released
 					) and not LocalPlayer.state.isCuffed
 				end,
 			},
-		},
-		3.0,
-		true
-	)
+		}
+	})
 end
 
 exports('IsLocked', function(doorId)

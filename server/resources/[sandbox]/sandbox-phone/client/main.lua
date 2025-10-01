@@ -86,18 +86,18 @@ AddEventHandler('onClientResourceStart', function(resource)
 		end)
 
 		for k, v in ipairs(_payphones) do
-			exports['sandbox-targeting']:AddObject(v, "phone-rotary", {
+			exports.ox_target:addModel(v, {
 				{
 					icon = "phone-volume",
-					text = "Use Payphone",
+					label = "Use Payphone",
 					event = "Phone:Client:Payphone",
-					minDist = 2.0,
-					isEnabled = function()
+					distance = 2.0,
+					canInteract = function()
 						return not exports['sandbox-phone']:IsOpen() and
 							not exports['sandbox-phone']:CallStatus()
 					end,
 				},
-			}, 3.0)
+			})
 		end
 	end
 end)
@@ -119,7 +119,7 @@ AddEventHandler("Characters:Client:Updated", function(key)
 	if
 		key == "States"
 		and LocalPlayer.state.phoneOpen
-		and (not hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE"))
+		and exports.ox_inventory:Search('count', 'phone') == 0
 	then
 		exports['sandbox-phone']:Close(true)
 	end
@@ -233,7 +233,7 @@ function TogglePhone()
 	end
 	if not _openCd then
 		if not exports['sandbox-hud']:IsDisabled() then
-			if not exports['sandbox-jail']:IsJailed() and hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE") then
+			if not exports['sandbox-jail']:IsJailed() and exports.ox_inventory:Search('count', 'phone') > 0 then
 				exports['sandbox-phone']:Open()
 			else
 				exports["sandbox-hud"]:NotifError("You Don't Have a Phone", 2000)

@@ -38,12 +38,12 @@ AddEventHandler("Characters:Client:Spawn", function()
 						)
 					elseif not inRange and _spawnedInteractionPeds[k] then
 						DeletePed(_spawnedInteractionPeds[k])
-						exports['sandbox-targeting']:RemovePed(_spawnedInteractionPeds[k])
+						exports.ox_target:removeEntity(_spawnedInteractionPeds[k])
 						_spawnedInteractionPeds[k] = nil
 					end
 				elseif _spawnedInteractionPeds[k] then
 					DeletePed(_spawnedInteractionPeds[k])
-					exports['sandbox-targeting']:RemovePed(_spawnedInteractionPeds[k])
+					exports.ox_target:removeEntity(_spawnedInteractionPeds[k])
 					_spawnedInteractionPeds[k] = nil
 				end
 			end
@@ -108,7 +108,7 @@ exports("Remove", function(id)
 		_interactionPeds[id] = nil
 		if _spawnedInteractionPeds[id] then
 			DeleteEntity(_spawnedInteractionPeds[id])
-			exports['sandbox-targeting']:RemovePed(_spawnedInteractionPeds[id])
+			exports.ox_target:removeEntity(_spawnedInteractionPeds[id])
 			_spawnedInteractionPeds[id] = nil
 		end
 	end
@@ -176,7 +176,7 @@ function CreateDumbAssPed(model, coords, heading, menu, icon, scenario, anim, co
 		if not icon then
 			icon = "person-sign"
 		end
-		exports['sandbox-targeting']:AddPed(ped, icon, menu)
+		exports.ox_target:addEntity(ped, menu)
 	end
 
 	return ped

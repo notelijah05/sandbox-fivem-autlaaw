@@ -1,8 +1,12 @@
 AddEventHandler('Vehicles:Client:StartUp', function()
     exports["sandbox-base"]:RegisterClientCallback('Vehicles:GetFakePlateAddingVehicle', function(data, cb)
-        local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
-        if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) and CanModelHaveFakePlate(GetEntityModel(target.entity)) then
-            if exports['sandbox-vehicles']:HasAccess(target.entity, false, true) and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)) then
+        local coords = GetEntityCoords(PlayerPedId())
+        local maxDistance = 2.0
+        local includePlayerVehicle = false
+        local vehicle = lib.getClosestVehicle(coords, maxDistance, includePlayerVehicle)
+
+        if vehicle and DoesEntityExist(vehicle) and IsEntityAVehicle(vehicle) and CanModelHaveFakePlate(GetEntityModel(vehicle)) then
+            if exports['sandbox-vehicles']:HasAccess(vehicle, false, true) and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(vehicle) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(vehicle)) then
                 exports['sandbox-hud']:Progress({
                     name = "vehicle_adding_plate",
                     duration = 5000,
@@ -22,8 +26,8 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                         --flags = 15,
                     },
                 }, function(cancelled)
-                    if not cancelled and exports['sandbox-vehicles']:HasAccess(target.entity, true, true) and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)) then
-                        cb(VehToNet(target.entity))
+                    if not cancelled and exports['sandbox-vehicles']:HasAccess(vehicle, true, true) and (exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(vehicle) or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(vehicle)) then
+                        cb(VehToNet(vehicle))
                     else
                         cb(false)
                     end

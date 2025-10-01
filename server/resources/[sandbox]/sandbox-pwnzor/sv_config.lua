@@ -231,7 +231,6 @@ Config = {
 		["sandbox-police"] = true,
 		["sandbox-phone"] = true,
 		["sandbox-robbery"] = true,
-		["sandbox-targeting"] = true,
 		["screenshot-basic"] = true,
 	},
 }

@@ -35,35 +35,23 @@ AddEventHandler('onClientResourceStart', function(resource)
 				icon = "clipboard-check",
 				text = "Go On Duty",
 				event = "Government:Client:OnDuty",
-				jobPerms = {
-					{
-						job = "government",
-						reqOffDuty = true,
-					},
-				},
+				groups = { "government" },
+				reqOffDuty = true,
 			},
 			{
 				icon = "clipboard",
 				text = "Go Off Duty",
 				event = "Government:Client:OffDuty",
-				jobPerms = {
-					{
-						job = "government",
-						reqDuty = true,
-					},
-				},
+				groups = { "government" },
+				reqDuty = true,
 			},
 			{
 				icon = "shop-lock",
 				text = "DOJ Shop",
 				event = "Government:Client:DOJShop",
-				jobPerms = {
-					{
-						job = "government",
-						workplace = "doj",
-						reqDuty = true,
-					},
-				},
+				groups = { "government" },
+				workplace = "doj",
+				reqDuty = true,
 			},
 		}
 
@@ -76,43 +64,48 @@ AddEventHandler('onClientResourceStart', function(resource)
 			govServices,
 			"bell-concierge"
 		)
-		-- exports['sandbox-targeting']:ZonesAddBox("govt-services", "bell-concierge", vector3(-555.92, -186.01, 38.22), 2.0, 2.0, {
-		--     heading = 28,
-		--     --debugPoly=true,
+		-- exports.ox_target:addBoxZone({
+		--     id = "govt-services",
+		--     coords = vector3(-555.92, -186.01, 38.22),
+		--     size = vector3(2.0, 2.0, 2.0),
+		--     rotation = 28,
+		--     debug = false,
 		--     minZ = 37.22,
-		--     maxZ = 39.62
-		-- }, govServices, 3.0, true)
+		--     maxZ = 39.62,
+		--     options = govServices
+		-- })
 
 		for k, v in ipairs(govDutyPoints) do
-			exports['sandbox-targeting']:ZonesAddBox("gov-info-" .. k, "gavel", v.center, v.length, v.width, v.options, {
-				{
-					icon = "clipboard-check",
-					text = "Go On Duty",
-					event = "Government:Client:OnDuty",
-					jobPerms = {
-						{
-							job = "government",
-							reqOffDuty = true,
-						},
+			exports.ox_target:addBoxZone({
+				id = "gov-info-" .. k,
+				coords = v.center,
+				size = vector3(v.length, v.width, 2.0),
+				rotation = v.options.heading,
+				debug = false,
+				minZ = v.options.minZ,
+				maxZ = v.options.maxZ,
+				options = {
+					{
+						icon = "clipboard-check",
+						label = "Go On Duty",
+						event = "Government:Client:OnDuty",
+						groups = { "government" },
+						reqDuty = false,
 					},
-				},
-				{
-					icon = "clipboard",
-					text = "Go Off Duty",
-					event = "Government:Client:OffDuty",
-					jobPerms = {
-						{
-							job = "government",
-							reqDuty = true,
-						},
+					{
+						icon = "clipboard",
+						label = "Go Off Duty",
+						event = "Government:Client:OffDuty",
+						groups = { "government" },
+						reqDuty = true,
 					},
-				},
-				{
-					icon = "gavel",
-					text = "Public Records",
-					event = "Government:Client:AccessPublicRecords",
-				},
-			}, 3.0, true)
+					{
+						icon = "gavel",
+						label = "Public Records",
+						event = "Government:Client:AccessPublicRecords",
+					},
+				}
+			})
 		end
 
 		exports['sandbox-polyzone']:CreateBox("courtroom", vector3(-571.17, -207.02, 38.77), 18.2, 19.6, {
@@ -122,24 +115,24 @@ AddEventHandler('onClientResourceStart', function(resource)
 			maxZ = 47.37,
 		}, {})
 
-		exports['sandbox-targeting']:ZonesAddBox("court-gavel", "gavel", vector3(-575.8, -210.3, 38.77), 0.8, 0.8, {
-			heading = 30,
-			--debugPoly=true,
+		exports.ox_target:addBoxZone({
+			id = "court-gavel",
+			coords = vector3(-575.8, -210.3, 38.77),
+			size = vector3(0.8, 0.8, 2.0),
+			rotation = 30,
+			debug = false,
 			minZ = 37.77,
 			maxZ = 39.37,
-		}, {
-			{
-				icon = "gavel",
-				text = "Use Gavel",
-				event = "Government:Client:UseGavel",
-				-- jobPerms = {
-				--     {
-				--         job = 'government',
-				--         reqDuty = true,
-				--     }
-				-- },
-			},
-		}, 3.0, true)
+			options = {
+				{
+					icon = "gavel",
+					label = "Use Gavel",
+					event = "Government:Client:UseGavel",
+					-- groups = { "government" },
+					-- reqDuty = true,
+				},
+			}
+		})
 	end
 end)
 

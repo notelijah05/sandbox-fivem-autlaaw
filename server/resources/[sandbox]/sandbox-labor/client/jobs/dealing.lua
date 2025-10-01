@@ -61,17 +61,17 @@ function DoHandoff(ped)
 end
 
 function AddTargetingShit(ped)
-	exports['sandbox-targeting']:AddPed(ped, "hands-holding-dollar", {
+	exports.ox_target:addEntity(ped, {
 		{
 			icon = "list-timeline",
-			text = "Sell Product",
+			label = "Sell Product",
 			event = "CornerDealing:Client:ShowMenu",
-			minDist = 2.0,
-			isEnabled = function(data, entity)
+			distance = 2.0,
+			canInteract = function(data, entity)
 				return not Entity(entity.entity).state.boughtDrugs and not IsPedDeadOrDying(entity.entity)
 			end,
 		},
-	}, 3.0)
+	})
 end
 
 function getRandomIdle()
@@ -388,7 +388,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:RemoveTargetting", joiner),
 		function()
 			if _SellingPed ~= nil then
-				exports['sandbox-targeting']:RemovePed(_SellingPed)
+				exports.ox_target:removeEntity(_SellingPed)
 			end
 		end
 	)
@@ -397,7 +397,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:SoldToPed", joiner),
 		function()
 			if _SellingPed ~= nil then
-				exports['sandbox-targeting']:RemovePed(_SellingPed)
+				exports.ox_target:removeEntity(_SellingPed)
 			end
 			_SellingPed = nil
 		end
@@ -407,7 +407,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:EndSelling", joiner),
 		function()
 			if _SellingPed ~= nil then
-				exports['sandbox-targeting']:RemovePed(_SellingPed)
+				exports.ox_target:removeEntity(_SellingPed)
 			end
 			if _SellingVeh ~= nil then
 				Entity(_SellingVeh).state:set("cornering", false, true)
@@ -425,7 +425,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:PedDied", joiner),
 		function()
 			if _SellingPed ~= nil then
-				exports['sandbox-targeting']:RemovePed(_SellingPed)
+				exports.ox_target:removeEntity(_SellingPed)
 			end
 			_SellingPed = nil
 		end
@@ -435,7 +435,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		string.format("CornerDealing:Client:%s:PedTimeout", joiner),
 		function()
 			if _SellingPed ~= nil then
-				exports['sandbox-targeting']:RemovePed(_SellingPed)
+				exports.ox_target:removeEntity(_SellingPed)
 			end
 			_SellingPed = nil
 		end
@@ -522,7 +522,7 @@ RegisterNetEvent("CornerDealing:Client:OffDuty", function(time)
 	end
 
 	if _SellingPed ~= nil then
-		exports['sandbox-targeting']:RemovePed(_SellingPed)
+		exports.ox_target:removeEntity(_SellingPed)
 	end
 	if _SellingVeh ~= nil then
 		Entity(_SellingVeh).state:set("cornering", false, true)

@@ -51,33 +51,33 @@ end
 
 AddEventHandler("Drugs:Client:Startup", function()
     for k, v in ipairs(_stillModels) do
-        exports['sandbox-targeting']:AddObject(v, "kitchen-set", {
+        exports.ox_target:addModel(v, {
             {
-                text = "Dismantle Still (Destroys Still)",
+                label = "Dismantle Still (Destroys Still)",
                 icon = "hand",
                 event = "Drugs:Client:Moonshine:PickupStill",
-                minDist = 3.0,
-                isEnabled = function(data, entity)
+                distance = 3.0,
+                canInteract = function(data, entity)
                     local entState = Entity(entity.entity).state
                     return entState?.isMoonshineStill and
                         (LocalPlayer.state.onDuty == "police" or _barrels[entState?.stillId]?.owner == LocalPlayer.state.Character:GetData("SID"))
                 end,
             },
             {
-                text = "Still Info",
+                label = "Still Info",
                 icon = "block",
                 event = "Drugs:Client:Moonshine:StillDetails",
-                minDist = 3.0,
-                isEnabled = function(data, entity)
+                distance = 3.0,
+                canInteract = function(data, entity)
                     return Entity(entity.entity).state?.isMoonshineStill
                 end,
             },
             {
-                text = "Start Brewing",
+                label = "Start Brewing",
                 icon = "timer",
                 event = "Drugs:Client:Moonshine:StartCook",
-                minDist = 3.0,
-                isEnabled = function(data, entity)
+                distance = 3.0,
+                canInteract = function(data, entity)
                     local entState = Entity(entity.entity).state
                     return entState?.isMoonshineStill and
                         (not _stills[entState.stillId]?.cooldown or GetCloudTimeAsInt() > _stills[entState.stillId]?.cooldown) and
@@ -85,59 +85,58 @@ AddEventHandler("Drugs:Client:Startup", function()
                 end,
             },
             {
-                text = "Collect Brew",
+                label = "Collect Brew",
                 icon = "block",
                 event = "Drugs:Client:Moonshine:PickupCook",
-                minDist = 3.0,
-                isEnabled = function(data, entity)
+                distance = 3.0,
+                canInteract = function(data, entity)
                     local entState = Entity(entity.entity).state
                     return entState?.isMoonshineStill and _stills[entState.stillId]?.activeBrew and
                         _stills[entState.stillId]?.pickupReady and
                         (_stills[entState.stillId]?.owner == nil or _stills[entState.stillId]?.owner == LocalPlayer.state.Character:GetData("SID"))
                 end,
             },
-        }, 3.0)
+        })
     end
 
     for k, v in ipairs(_barrelModels) do
-        exports['sandbox-targeting']:AddObject(v, "prescription-bottle", {
+        exports.ox_target:addModel(v, {
             {
-                text = "Destroy Barrel",
+                label = "Destroy Barrel",
                 icon = "hand",
                 event = "Drugs:Client:Moonshine:PickupBarrel",
-                minDist = 3.0,
-                isEnabled = function(data, entity)
+                distance = 3.0,
+                canInteract = function(data, entity)
                     local entState = Entity(entity.entity).state
                     return entState?.isMoonshineBarrel and
                         (LocalPlayer.state.onDuty == "police" or _barrels[entState?.barrelId]?.owner == LocalPlayer.state.Character:GetData("SID"))
                 end,
             },
             {
-                text = "Barrel Info",
+                label = "Barrel Info",
                 icon = "block",
                 event = "Drugs:Client:Moonshine:BarrelDetails",
-                minDist = 3.0,
-                isEnabled = function(data, entity)
+                distance = 3.0,
+                canInteract = function(data, entity)
                     return Entity(entity.entity).state?.isMoonshineBarrel
                 end,
             },
             {
-                text = "Fill Jars",
-                textFunc = function(data, entity)
+                label = function(data, entity)
                     local entState = Entity(entity.entity).state
                     return string.format("Fill Jars (Requires %s Empty Jars)",
                         (_barrels[entState.barrelId]?.brewData?.Drinks or 15))
                 end,
                 icon = "block",
                 event = "Drugs:Client:Moonshine:PickupBrew",
-                minDist = 3.0,
-                isEnabled = function(data, entity)
+                distance = 3.0,
+                canInteract = function(data, entity)
                     local entState = Entity(entity.entity).state
                     return entState?.isMoonshineBarrel and _barrels[entState.barrelId]?.pickupReady and
                         (_barrels[entState.barrelId]?.owner == nil or _barrels[entState.barrelId]?.owner == LocalPlayer.state.Character:GetData("SID"))
                 end,
             },
-        }, 3.0)
+        })
     end
 
     exports["sandbox-base"]:RegisterClientCallback("Drugs:Moonshine:PlaceStill", function(data, cb)

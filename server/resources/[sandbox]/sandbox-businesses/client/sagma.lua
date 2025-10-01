@@ -221,53 +221,61 @@ AddEventHandler("Businesses:Client:Startup", function()
 	end
 
 	for k, v in pairs(_sagmaPaintings) do
-		exports['sandbox-targeting']:ZonesAddBox("sagma-art-" .. k, "palette", v.coords, v.length, v.width, v.options, {
-			{
-				icon = "palette",
-				text = "Update Painting",
-				event = "Billboards:Client:SetLink",
-				data = { id = k },
-				jobPerms = {
-					{
-						job = "sagma",
-						jobPerms = "JOB_USE_GEM_TABLE",
-						reqDuty = true,
-					},
+		exports.ox_target:addBoxZone({
+			id = "sagma-art-" .. k,
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
+				{
+					icon = "palette",
+					label = "Update Painting",
+					event = "Billboards:Client:SetLink",
+					groups = { "sagma" },
+					reqDuty = true,
+					canInteract = function()
+						return LocalPlayer.state.jobPerms and LocalPlayer.state.jobPerms["JOB_USE_GEM_TABLE"]
+					end,
 				},
-			},
-		}, 3.0, true)
+			}
+		})
 	end
 
 	for k, v in ipairs(_appraisalTables) do
-		exports['sandbox-targeting']:ZonesAddBox("sagma-table-" .. k, "table-picnic", v.coords, v.length, v.width,
-			v.options, {
+		exports.ox_target:addBoxZone({
+			id = "sagma-table-" .. k,
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "gem",
-					text = "View Gem Table",
+					label = "View Gem Table",
 					event = "Businesses:Client:SAGMA:OpenTable",
-					data = { id = k },
-					jobPerms = {
-						{
-							job = "sagma",
-							reqDuty = true,
-							jobPerms = "JOB_USE_GEM_TABLE",
-						},
-					},
+					groups = { "sagma" },
+					reqDuty = true,
+					canInteract = function()
+						return LocalPlayer.state.jobPerms and LocalPlayer.state.jobPerms["JOB_USE_GEM_TABLE"]
+					end,
 				},
 				-- {
 				-- 	icon = "gem",
-				-- 	text = "Create Jewelry",
+				-- 	label = "Create Jewelry",
 				-- 	event = "Businesses:Client:SAGMA:OpenJewelryCrafting",
-				-- 	data = { id = k },
-				-- 	jobPerms = {
-				-- 		{
-				-- 			job = "sagma",
-				-- 			reqDuty = true,
-				-- 			jobPerms = "JOB_USE_JEWELRY_CRAFTING",
-				-- 		},
-				-- 	},
+				-- 	groups = { "sagma" },
+				-- 	reqDuty = true,
+				-- 	canInteract = function()
+				-- 		return LocalPlayer.state.jobPerms and LocalPlayer.state.jobPerms["JOB_USE_JEWELRY_CRAFTING"]
+				-- 	end,
 				-- },
-			}, 3.0, true)
+			}
+		})
 	end
 end)
 
@@ -279,14 +287,14 @@ AddEventHandler("SAGMA:Client:Sell", function()
 	exports["sandbox-base"]:ServerCallback("Businesses:SAGMA:Sell", {})
 end)
 
-AddEventHandler("Businesses:Client:SAGMA:OpenTable", function(e, data)
+AddEventHandler("Businesses:Client:SAGMA:OpenTable", function(data)
 	exports['sandbox-inventory']:DumbfuckOpen({
 		invType = 132,
 		owner = data.id,
 	})
 end)
 
-AddEventHandler("Businesses:Client:SAGMA:OpenJewelryCrafting", function(e, data)
+AddEventHandler("Businesses:Client:SAGMA:OpenJewelryCrafting", function(data)
 	exports['sandbox-inventory']:CraftingBenchesOpen("sagma-jewelry")
 end)
 

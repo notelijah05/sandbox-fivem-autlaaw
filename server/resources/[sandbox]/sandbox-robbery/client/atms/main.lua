@@ -16,30 +16,35 @@ local _phoneApp = {
 
 AddEventHandler("Robbery:Client:Setup", function()
     local atmRobbery = GlobalState["ATMRobberyTerminal"]
-    exports['sandbox-targeting']:ZonesAddBox("atm-robbery-terminal", "bug", atmRobbery.coords, atmRobbery.length,
-    atmRobbery.width,
-        atmRobbery.options, {
+    exports.ox_target:addBoxZone({
+        id = "atm-robbery-terminal",
+        coords = atmRobbery.coords,
+        size = vector3(atmRobbery.length, atmRobbery.width, 2.0),
+        rotation = atmRobbery.options.heading or 0,
+        debug = false,
+        minZ = atmRobbery.options.minZ,
+        maxZ = atmRobbery.options.maxZ,
+        options = {
             {
                 icon = "eye-evil",
-                text = "Do Illegal Things",
+                label = "Do Illegal Things",
                 event = "Robbery:Client:ATM:UseTerminal",
                 item = "vpn",
-                data = {},
-                isEnabled = function(data, entity)
+                canInteract = function(data, entity)
                     return not LocalPlayer.state.ATMRobbery or LocalPlayer.state.ATMRobbery <= 0
                 end,
             },
-        }, 2.0)
+        }
+    })
 
     for k, v in ipairs(atmObjects) do
-        exports['sandbox-targeting']:AddObject(v, "money-from-bracket", {
+        exports.ox_target:addModel(v, {
             {
-                text = "Run Exploit",
+                label = "Run Exploit",
                 icon = 'eye-evil',
                 event = "Robbery:Client:ATM:StartHack",
-                data = {},
-                minDist = 2.0,
-                isEnabled = function(data, entity)
+                distance = 2.0,
+                canInteract = function(data, entity)
                     if LocalPlayer.state.ATMRobbery and LocalPlayer.state.ATMRobbery > 0 then
                         if _atmZone and #(_atmZone.coords - LocalPlayer.state.myPos) <= _atmZone.radius then
                             return true
@@ -47,7 +52,7 @@ AddEventHandler("Robbery:Client:Setup", function()
                     end
                 end,
             },
-        }, 3.0)
+        })
     end
 end)
 

@@ -85,8 +85,13 @@ AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
 end)
 
 RegisterNetEvent('Vehicles:Client:CleaningKit', function()
-    local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
-    if not usingCarWash and target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0 then
+    local playerCoords = GetEntityCoords(PlayerPedId())
+    local maxDistance = 2.0
+    local includePlayerVehicle = false
+
+    local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
+
+    if not usingCarWash and vehicle and DoesEntityExist(vehicle) and IsEntityAVehicle(vehicle) and #(GetEntityCoords(vehicle) - GetEntityCoords(GLOBAL_PED)) <= 2.0 then
         exports['sandbox-animations']:EmotesPlay('clean', false, 14000, true)
         usingCarWash = true
         exports['sandbox-hud']:Progress({
@@ -105,9 +110,9 @@ RegisterNetEvent('Vehicles:Client:CleaningKit', function()
         }, function(cancelled)
             usingCarWash = false
             if cancelled then return end
-            if DoesEntityExist(target.entity) and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0 then
+            if DoesEntityExist(vehicle) and #(GetEntityCoords(vehicle) - GetEntityCoords(GLOBAL_PED)) <= 2.0 then
                 exports["sandbox-base"]:ServerCallback('Vehicles:CleanVehicle', {
-                    vNet = VehToNet(target.entity),
+                    vNet = VehToNet(vehicle),
                     bill = false,
                 }, function(success)
                     if success then

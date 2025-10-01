@@ -7,7 +7,7 @@ end)
 
 exports("CraftingBenchesCleanup", function()
 	for k, v in ipairs(_benchObjs) do
-		exports['sandbox-targeting']:RemoveEntity(v)
+		exports.ox_target:removeEntity(v)
 		DeleteEntity(v)
 	end
 	_benchObjs = {}
@@ -61,42 +61,47 @@ exports("CraftingBenchesRefresh", function(interior)
 						local menu = {
 							{
 								icon = v.targeting.icon,
-								text = v.label,
+								label = v.label,
 								event = "Crafting:Client:OpenCrafting",
-								data = v,
-								jobPerms = v.restrictions.job ~= nil and {
-									{
-										job = v.restrictions.job.id,
-										workplace = v.restrictions.job.workplace,
-										reqDuty = v.restrictions.job.onDuty,
-										reqOffDuty = not v.restrictions.job.onDuty,
-									},
-								} or nil,
+								groups = v.restrictions.job ~= nil and { v.restrictions.job.id } or nil,
+								canInteract = function()
+									if v.restrictions.job then
+										return exports['sandbox-jobs']:HasJob(
+											v.restrictions.job.id,
+											v.restrictions.job.workplace,
+											v.restrictions.job.grade,
+											false,
+											false,
+											v.restrictions.job.permissionKey or "JOB_CRAFTING"
+										) and (v.restrictions.job.onDuty == LocalPlayer.state.duty)
+									end
+									return true
+								end,
 							},
 						}
 
 						if v.canUseSchematics then
 							table.insert(menu, {
 								icon = "memo-circle-check",
-								text = "Add Schematic To Bench",
+								label = "Add Schematic To Bench",
 								event = "Crafting:Client:AddSchematic",
-								data = v,
-								isEnabled = function(data, entityData)
-									return exports['sandbox-inventory']:ItemsHasType(17, 1)
+								groups = v.restrictions.job ~= nil and { v.restrictions.job.id } or nil,
+								canInteract = function()
+									return exports['sandbox-inventory']:ItemsHasType(17, 1) and
+										(v.restrictions.job == nil or (exports['sandbox-jobs']:HasJob(
+											v.restrictions.job.id,
+											v.restrictions.job.workplace,
+											v.restrictions.job.grade,
+											false,
+											false,
+											v.restrictions.job.permissionKey or "JOB_CRAFTING"
+										) and (v.restrictions.job.onDuty == LocalPlayer.state.duty)))
 								end,
-								jobPerms = v.restrictions.job ~= nil and {
-									{
-										job = v.restrictions.job.id,
-										workplace = v.restrictions.job.workplace,
-										reqDuty = v.restrictions.job.onDuty,
-										reqOffDuty = not v.restrictions.job.onDuty,
-									},
-								} or nil,
 							})
 						end
 
 						if obj ~= nil then
-							exports['sandbox-targeting']:AddEntity(obj, v.targeting.icon, menu)
+							exports.ox_target:addEntity(obj, menu)
 						elseif v.targeting.ped ~= nil then
 							exports['sandbox-pedinteraction']:Add(
 								v.id,
@@ -109,30 +114,27 @@ exports("CraftingBenchesRefresh", function(interior)
 								v.targeting.ped.task
 							)
 						elseif v.targeting.poly ~= nil then
-							exports['sandbox-targeting']:ZonesAddBox(
-								v.id,
-								v.targeting.icon,
-								v.targeting.poly.coords,
-								v.targeting.poly.w,
-								v.targeting.poly.l,
-								v.targeting.poly.options,
-								menu,
-								2.0,
-								true
-							)
+							exports.ox_target:addBoxZone({
+								id = v.id,
+								coords = v.targeting.poly.coords,
+								size = vector3(v.targeting.poly.w, v.targeting.poly.l, 2.0),
+								rotation = v.targeting.poly.options.heading or 0,
+								debug = false,
+								minZ = v.targeting.poly.options.minZ,
+								maxZ = v.targeting.poly.options.maxZ,
+								options = menu
+							})
 						end
 					else
 						if obj ~= nil then
 						elseif v.targeting.ped ~= nil then
 							exports['sandbox-pedinteraction']:Remove(v.id)
 						elseif v.targeting.poly ~= nil then
-							exports['sandbox-targeting']:ZonesRemoveZone(v.id)
+							exports.ox_target:removeZone(v.id)
 						end
 					end
 				end
 			end
-
-			exports['sandbox-targeting']:ZonesRefresh()
 		end
 	end
 end)

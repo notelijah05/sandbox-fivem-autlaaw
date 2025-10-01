@@ -13,48 +13,31 @@ AddEventHandler("Characters:Client:Spawn", function()
 
 	if GlobalState.JailStashLocations ~= nil then
 		for key, data in ipairs(GlobalState.JailStashLocations) do
-			exports['sandbox-targeting']:ZonesAddBox(
-				string.format("prison_stash_%s", key),
-				"lock",
-				data.coords,
-				data.width,
-				data.length,
-				data.options,
-				{
+			exports.ox_target:addBoxZone({
+				id = string.format("prison_stash_%s", key),
+				coords = data.coords,
+				size = vector3(data.width, data.length, 2.0),
+				rotation = data.options.heading or 0,
+				debug = false,
+				minZ = data.options.minZ,
+				maxZ = data.options.maxZ,
+				options = {
 					{
 						icon = "box",
-						text = data.stashType == "self" and "Open Stash" or "Open Public Stash",
+						label = data.stashType == "self" and "Open Stash" or "Open Public Stash",
 						event = "Prison:Client:Target:Stash",
-						data = {
-							stashType = data.stashType,
-						},
 					},
 					{
 						icon = "bomb",
-						text = "Raid Storage",
+						label = "Raid Storage",
 						event = "Prison:Client:Stash:Raid",
-						-- action = function()
-						-- 	local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
-
-						-- 	exports["sandbox-base"]:ServerCallback("StorageUnits:PoliceRaid", {
-						-- 		unit = nearUnit.unitId
-						-- 	}, function(success)
-						-- 		if not success then
-						-- 			exports["sandbox-hud"]:NotifError("Error!")
-						-- 		else
-						-- 			exports["sandbox-sounds"]:PlayLocation(LocalPlayer.state.myPos, 10, "breach.ogg", 0.15)
-						-- 		end
-						-- 	end)
-						-- end,
-						isEnabled = function()
+						canInteract = function()
 							return (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison")
 								and data.stashType == "self"
 						end,
 					},
-				},
-				2.0,
-				true
-			)
+				}
+			})
 		end
 	end
 end)

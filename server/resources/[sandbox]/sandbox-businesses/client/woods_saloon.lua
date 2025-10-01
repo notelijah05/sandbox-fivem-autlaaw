@@ -1,17 +1,23 @@
 AddEventHandler("Businesses:Client:Startup", function()
-	exports['sandbox-targeting']:ZonesAddBox("woods-saloon-clockinoff", "chess-clock", vector3(-307.4, 6268.38, 31.53), 1,
-		1, {
-		heading = 314,
-		--debugPoly=true,
+	exports.ox_target:addBoxZone({
+		id = "woods-saloon-clockinoff",
+		coords = vector3(-307.4, 6268.38, 31.53),
+		size = vector3(1.0, 1.0, 0.8),
+		rotation = 314,
+		debug = false,
 		minZ = 31.48,
 		maxZ = 32.28,
-	}, GetBusinessClockInMenu("woods_saloon"), 3.0, true)
+		options = GetBusinessClockInMenu("woods_saloon")
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("woods-saloon-clockinoff2", "chess-clock", vector3(-302.77, 6272.48, 31.53),
-		1, 1, {
-		heading = 313,
-		--debugPoly=true,
+	exports.ox_target:addBoxZone({
+		id = "woods-saloon-clockinoff2",
+		coords = vector3(-302.77, 6272.48, 31.53),
+		size = vector3(1.0, 1.0, 0.8),
+		rotation = 313,
+		debug = false,
 		minZ = 31.48,
 		maxZ = 32.28,
-	}, GetBusinessClockInMenu("woods_saloon"), 3.0, true)
+		options = GetBusinessClockInMenu("woods_saloon")
+	})
 end)

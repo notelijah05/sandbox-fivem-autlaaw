@@ -18,151 +18,138 @@ AddEventHandler('onClientResourceStart', function(resource)
 			Config.Pickup.options
 		)
 
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("bb-retreive", aptId),
-			"hands-holding",
-			Config.Retreival.coords,
-			Config.Retreival.length,
-			Config.Retreival.width,
-			Config.Retreival.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("bb-retreive", aptId),
+			coords = Config.Retreival.coords,
+			size = vector3(Config.Retreival.length, Config.Retreival.width, 2.0),
+			rotation = Config.Retreival.options.heading or 0,
+			debug = false,
+			minZ = Config.Retreival.options.minZ,
+			maxZ = Config.Retreival.options.maxZ,
+			options = {
 				{
 					icon = "hand-holding",
-					text = "Retrieve Items",
+					label = "Retrieve Items",
 					event = "Jail:Client:RetreiveItems",
-					isEnabled = function()
+					canInteract = function()
 						return _inPickup
 					end,
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("prison-inmates-list"),
-			"clipboard",
-			Config.VisitorLog.coords,
-			Config.VisitorLog.length,
-			Config.VisitorLog.width,
-			Config.VisitorLog.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("prison-inmates-list"),
+			coords = Config.VisitorLog.coords,
+			size = vector3(Config.VisitorLog.length, Config.VisitorLog.width, 2.0),
+			rotation = Config.VisitorLog.options.heading or 0,
+			debug = false,
+			minZ = Config.VisitorLog.options.minZ,
+			maxZ = Config.VisitorLog.options.maxZ,
+			options = {
 				{
 					icon = "users-viewfinder",
-					text = "View Inmates",
+					label = "View Inmates",
 					event = "Jail:Client:ViewInmates",
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox(
-			"prison-check",
-			"police-box",
-			Config.Payphone.coords,
-			Config.Payphone.length,
-			Config.Payphone.width,
-			Config.Payphone.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = "prison-check",
+			coords = Config.Payphone.coords,
+			size = vector3(Config.Payphone.length, Config.Payphone.width, 2.0),
+			rotation = Config.Payphone.options.heading or 0,
+			debug = false,
+			minZ = Config.Payphone.options.minZ,
+			maxZ = Config.Payphone.options.maxZ,
+			options = {
 				{
 					icon = "stopwatch",
-					text = "Check Remaining Sentence",
+					label = "Check Remaining Sentence",
 					event = "Jail:Client:CheckSentence",
-					isEnabled = function()
+					canInteract = function()
 						return exports['sandbox-jail']:IsJailed()
 					end,
 				},
 				{
 					icon = "person-from-portal",
-					text = "Process Release",
+					label = "Process Release",
 					event = "Jail:Client:Released",
-					isEnabled = function()
+					canInteract = function()
 						return exports['sandbox-jail']:IsJailed() and exports['sandbox-jail']:IsReleaseEligible()
 					end,
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox(
-			"prison-food",
-			"fork-knife",
-			Config.Cafeteria.Food.coords,
-			Config.Cafeteria.Food.length,
-			Config.Cafeteria.Food.width,
-			Config.Cafeteria.Food.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = "prison-food",
+			coords = Config.Cafeteria.Food.coords,
+			size = vector3(Config.Cafeteria.Food.length, Config.Cafeteria.Food.width, 2.0),
+			rotation = Config.Cafeteria.Food.options.heading or 0,
+			debug = false,
+			minZ = Config.Cafeteria.Food.options.minZ,
+			maxZ = Config.Cafeteria.Food.options.maxZ,
+			options = {
 				{
-					text = "Make Food",
+					label = "Make Food",
 					event = "Jail:Client:MakeFood",
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox(
-			"prison-drink",
-			"cup-straw-swoosh",
-			Config.Cafeteria.Drink.coords,
-			Config.Cafeteria.Drink.length,
-			Config.Cafeteria.Drink.width,
-			Config.Cafeteria.Drink.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = "prison-drink",
+			coords = Config.Cafeteria.Drink.coords,
+			size = vector3(Config.Cafeteria.Drink.length, Config.Cafeteria.Drink.width, 2.0),
+			rotation = Config.Cafeteria.Drink.options.heading or 0,
+			debug = false,
+			minZ = Config.Cafeteria.Drink.options.minZ,
+			maxZ = Config.Cafeteria.Drink.options.maxZ,
+			options = {
 				{
-					text = "Make Drink",
+					label = "Make Drink",
 					event = "Jail:Client:MakeDrink",
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox(
-			"prison-juice",
-			"cup-straw-swoosh",
-			Config.Cafeteria.Juice.coords,
-			Config.Cafeteria.Juice.length,
-			Config.Cafeteria.Juice.width,
-			Config.Cafeteria.Juice.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = "prison-juice",
+			coords = Config.Cafeteria.Juice.coords,
+			size = vector3(Config.Cafeteria.Juice.length, Config.Cafeteria.Juice.width, 2.0),
+			rotation = Config.Cafeteria.Juice.options.heading or 0,
+			debug = false,
+			minZ = Config.Cafeteria.Juice.options.minZ,
+			maxZ = Config.Cafeteria.Juice.options.maxZ,
+			options = {
 				{
-					text = "Make Fruit Punch",
+					label = "Make Fruit Punch",
 					event = "Jail:Client:MakeJuice",
-					data = {
-						name = "fruitpunchslushie",
-					},
 				},
 				{
-					text = "Make BerryRazz",
+					label = "Make BerryRazz",
 					event = "Jail:Client:MakeJuice",
-					data = {
-						name = "beatdownberryrazz",
-					},
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox(
-			"prison-payphone",
-			"square-phone-flip",
-			Config.Payphones.coords,
-			Config.Payphones.length,
-			Config.Payphones.width,
-			Config.Payphones.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = "prison-payphone",
+			coords = Config.Payphones.coords,
+			size = vector3(Config.Payphones.length, Config.Payphones.width, 2.0),
+			rotation = Config.Payphones.options.heading or 0,
+			debug = false,
+			minZ = Config.Payphones.options.minZ,
+			maxZ = Config.Payphones.options.maxZ,
+			options = {
 				{
-					text = "Use Payphone",
+					label = "Use Payphone",
 					event = "Phone:Client:OpenLimited",
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 
 		exports['sandbox-pedinteraction']:Add("PrisonJobs", `csb_janitor`, Config.Foreman.coords, Config.Foreman.heading,
 			25.0, {

@@ -4,81 +4,59 @@ function CreateMechanicDutyPoints()
 			local menu = {
 				{
 					icon = "clipboard-check",
-					text = "Go On Duty",
+					label = "Go On Duty",
 					event = "Mechanic:Client:OnDuty",
-					data = v.job,
-					jobPerms = {
-						{
-							job = v.job,
-							reqOffDuty = true,
-						},
-					},
+					groups = { v.job },
+					reqOffDuty = true,
 				},
 				{
 					icon = "clipboard",
-					text = "Go Off Duty",
+					label = "Go Off Duty",
 					event = "Mechanic:Client:OffDuty",
-					data = v.job,
-					jobPerms = {
-						{
-							job = v.job,
-							reqDuty = true,
-						},
-					},
+					groups = { v.job },
+					reqDuty = true,
 				},
 			}
 
-			exports['sandbox-targeting']:ZonesAddBox(
-				"mechanic_duty_" .. k,
-				"chess-clock",
-				v.dutyPoint.center,
-				v.dutyPoint.length,
-				v.dutyPoint.width,
-				v.dutyPoint.options,
-				menu,
-				3.0,
-				true
-			)
+			exports.ox_target:addBoxZone({
+				id = "mechanic_duty_" .. k,
+				coords = v.dutyPoint.center,
+				size = vector3(v.dutyPoint.length, v.dutyPoint.width, 2.0),
+				rotation = v.dutyPoint.options.heading or 0,
+				debug = false,
+				minZ = v.dutyPoint.options.minZ,
+				maxZ = v.dutyPoint.options.maxZ,
+				options = menu
+			})
 		end
 		if v.dutyPoint2 then
 			local menu = {
 				{
 					icon = "clipboard-check",
-					text = "Go On Duty",
+					label = "Go On Duty",
 					event = "Mechanic:Client:OnDuty",
-					data = v.job,
-					jobPerms = {
-						{
-							job = v.job,
-							reqOffDuty = true,
-						},
-					},
+					groups = { v.job },
+					reqOffDuty = true,
 				},
 				{
 					icon = "clipboard",
-					text = "Go Off Duty",
+					label = "Go Off Duty",
 					event = "Mechanic:Client:OffDuty",
-					data = v.job,
-					jobPerms = {
-						{
-							job = v.job,
-							reqDuty = true,
-						},
-					},
+					groups = { v.job },
+					reqDuty = true,
 				},
 			}
 
-			exports['sandbox-targeting']:ZonesAddBox(
-				"mechanic_duty2_" .. k,
-				"chess-clock",
-				v.dutyPoint2.center,
-				v.dutyPoint2.length,
-				v.dutyPoint2.width,
-				v.dutyPoint2.options,
-				menu,
-				3.0,
-				true
-			)
+			exports.ox_target:addBoxZone({
+				id = "mechanic_duty2_" .. k,
+				coords = v.dutyPoint2.center,
+				size = vector3(v.dutyPoint2.length, v.dutyPoint2.width, 2.0),
+				rotation = v.dutyPoint2.options.heading or 0,
+				debug = false,
+				minZ = v.dutyPoint2.options.minZ,
+				maxZ = v.dutyPoint2.options.maxZ,
+				options = menu
+			})
 		end
 	end
 end

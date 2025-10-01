@@ -30,80 +30,95 @@ AddEventHandler('onClientResourceStart', function(resource)
 			return LocalPlayer.state.onDuty == "prison" and LocalPlayer.state.isDead
 		end)
 
-		exports['sandbox-targeting']:ZonesAddBox("prison-lockdown-1", "door-closed", vector3(1771.76, 2491.75, 49.67),
-			4.8, 0.8, {
-				name = "prison-lockdown-target-1",
-				heading = 30,
-				--debugPoly=true,
-				minZ = 49.07,
-				maxZ = 50.07,
-			}, {
+		exports.ox_target:addBoxZone({
+			id = "prison-lockdown-1",
+			coords = vector3(1771.76, 2491.75, 49.67),
+			size = vector3(4.8, 0.8, 2.0),
+			rotation = 30,
+			debug = false,
+			minZ = 49.07,
+			maxZ = 50.07,
+			options = {
 				{
 					icon = "lock",
-					text = "Enable Lockdown",
+					label = "Enable Lockdown",
 					event = "Prison:Client:SetLockdown",
-					data = { state = true },
-					isEnabled = function()
+					onSelect = function()
+						TriggerEvent("Prison:Client:SetLockdown", { state = true })
+					end,
+					canInteract = function()
 						return not GlobalState["PrisonLockdown"]
 							and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison")
 					end,
 				},
 				{
 					icon = "lock-open",
-					text = "Disable Lockdown",
+					label = "Disable Lockdown",
 					event = "Prison:Client:SetLockdown",
-					data = { state = false },
-					isEnabled = function()
+					onSelect = function()
+						TriggerEvent("Prison:Client:SetLockdown", { state = false })
+					end,
+					canInteract = function()
 						return GlobalState["PrisonLockdown"]
 							and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison")
 					end,
 				},
-			}, 3.0, true)
+			}
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("prison-lockdown-2", "door-closed", vector3(1773.06, 2571.9, 45.73), 0.6,
-			0.4, {
-				name = "prison-lockdown-target-2",
-				heading = 0,
-				--debugPoly=true,
-				minZ = 45.93,
-				maxZ = 46.93,
-			}, {
+		exports.ox_target:addBoxZone({
+			id = "prison-lockdown-2",
+			coords = vector3(1773.06, 2571.9, 45.73),
+			size = vector3(0.6, 0.4, 2.0),
+			rotation = 0,
+			debug = false,
+			minZ = 45.93,
+			maxZ = 46.93,
+			options = {
 				{
 					icon = "lock",
-					text = "Enable Lockdown",
+					label = "Enable Lockdown",
 					event = "Prison:Client:SetLockdown",
-					data = { state = true },
-					isEnabled = function()
+					onSelect = function()
+						TriggerEvent("Prison:Client:SetLockdown", { state = true })
+					end,
+					canInteract = function()
 						return not GlobalState["PrisonLockdown"]
 							and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison")
 					end,
 				},
 				{
 					icon = "lock-open",
-					text = "Disable Lockdown",
+					label = "Disable Lockdown",
 					event = "Prison:Client:SetLockdown",
-					data = { state = false },
-					isEnabled = function()
+					onSelect = function()
+						TriggerEvent("Prison:Client:SetLockdown", { state = false })
+					end,
+					canInteract = function()
 						return GlobalState["PrisonLockdown"]
 							and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison")
 					end,
 				},
-			}, 3.0, true)
+			}
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("prison-doors-lockup", "door-closed", vector3(1774.88, 2492.29, 49.67),
-			2.2, 0.4, {
-				name = "prison-doors-lockup-cells",
-				heading = 30,
-				--debugPoly=true,
-				minZ = 49.77,
-				maxZ = 50.97,
-			}, {
+		exports.ox_target:addBoxZone({
+			id = "prison-doors-lockup",
+			coords = vector3(1774.88, 2492.29, 49.67),
+			size = vector3(2.2, 0.4, 2.0),
+			rotation = 30,
+			debug = false,
+			minZ = 49.77,
+			maxZ = 50.97,
+			options = {
 				{
 					icon = "lock",
-					text = "Lock Cell Doors",
+					label = "Lock Cell Doors",
 					event = "Prison:Client:SetCellState",
-					data = { state = true },
-					isEnabled = function()
+					onSelect = function()
+						TriggerEvent("Prison:Client:SetCellState", { state = true })
+					end,
+					canInteract = function()
 						return not GlobalState["PrisonCellsLocked"]
 							and not GlobalState["PrisonLockdown"]
 							and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison")
@@ -111,15 +126,18 @@ AddEventHandler('onClientResourceStart', function(resource)
 				},
 				{
 					icon = "lock-open",
-					text = "Unlock Cell Doors",
+					label = "Unlock Cell Doors",
 					event = "Prison:Client:SetCellState",
-					data = { state = false },
-					isEnabled = function()
+					onSelect = function()
+						TriggerEvent("Prison:Client:SetCellState", { state = false })
+					end,
+					canInteract = function()
 						return GlobalState["PrisonCellsLocked"]
 							and (LocalPlayer.state.onDuty == "police" or LocalPlayer.state.onDuty == "prison")
 					end,
 				},
-			}, 3.0, true)
+			}
+		})
 
 		exports['sandbox-hud']:InteractionRegisterMenu("prison-utils", "Corrections Utilities", "tablet-rugged",
 			function(data)
@@ -132,12 +150,13 @@ AddEventHandler('onClientResourceStart', function(resource)
 							TriggerServerEvent("Police:Server:Slimjim")
 						end,
 						shouldShow = function()
-							local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
-							return target
-								and target.entity
-								and DoesEntityExist(target.entity)
-								and IsEntityAVehicle(target.entity)
-								and #(GetEntityCoords(target.entity) - GetEntityCoords(LocalPlayer.state.ped)) <= 2.0
+							local target = lib.getClosestVehicle(GetEntityCoords(cache.ped), 2.0, false)
+
+							if not target or not DoesEntityExist(target) then
+								return false
+							end
+
+							return IsEntityAVehicle(target)
 						end,
 					},
 					{
@@ -167,197 +186,146 @@ AddEventHandler('onClientResourceStart', function(resource)
 				return LocalPlayer.state.onDuty == "prison"
 			end)
 
-		exports['sandbox-targeting']:ZonesAddBox("prison-clockinoff-1", "clipboard", vector3(1838.94, 2578.14, 46.01),
-			2.0, 0.8, {
-				heading = 305,
-				--debugPoly=true,
-				minZ = 45.81,
-				maxZ = 46.61,
-			}, {
+		exports.ox_target:addBoxZone({
+			id = "prison-clockinoff-1",
+			coords = vector3(1838.94, 2578.14, 46.01),
+			size = vector3(2.0, 0.8, 2.0),
+			rotation = 305,
+			debug = false,
+			minZ = 45.81,
+			maxZ = 46.61,
+			options = {
 				{
 					icon = "clipboard-check",
-					text = "Go On Duty",
+					label = "Go On Duty",
 					event = "Corrections:Client:OnDuty",
-					jobPerms = {
-						{
-							job = "prison",
-							reqOffDuty = true,
-						},
-					},
+					groups = { "prison" },
+					reqOffDuty = true,
 				},
 				{
 					icon = "clipboard",
-					text = "Go Off Duty",
+					label = "Go Off Duty",
 					event = "Corrections:Client:OffDuty",
-					jobPerms = {
-						{
-							job = "prison",
-							reqDuty = true,
-						},
-					},
+					groups = { "prison" },
+					reqDuty = true,
 				},
 				{
 					icon = "clipboard-check",
-					text = "Go On Duty (Medical)",
+					label = "Go On Duty (Medical)",
 					event = "EMS:Client:OnDuty",
-					jobPerms = {
-						{
-							job = "ems",
-							workplace = "prison",
-							reqOffDuty = true,
-						},
-					},
+					groups = { "ems" },
+					reqOffDuty = true,
 				},
 				{
 					icon = "clipboard",
-					text = "Go Off Duty (Medical)",
+					label = "Go Off Duty (Medical)",
 					event = "EMS:Client:OffDuty",
-					jobPerms = {
-						{
-							job = "ems",
-							workplace = "prison",
-							reqDuty = true,
-						},
-					},
+					groups = { "ems" },
+					reqDuty = true,
 				},
-			}, 2.0, true)
+			}
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("prison-clockinoff-2", "clipboard", vector3(1773.99, 2493.69, 49.67),
-			0.6, 0.4, {
-				heading = 30,
-				--debugPoly=true,
-				minZ = 50.02,
-				maxZ = 50.62,
-			}, {
+		exports.ox_target:addBoxZone({
+			id = "prison-clockinoff-2",
+			coords = vector3(1773.99, 2493.69, 49.67),
+			size = vector3(0.6, 0.4, 2.0),
+			rotation = 30,
+			debug = false,
+			minZ = 50.02,
+			maxZ = 50.62,
+			options = {
 				{
 					icon = "clipboard-check",
-					text = "Go On Duty",
+					label = "Go On Duty",
 					event = "Corrections:Client:OnDuty",
-					jobPerms = {
-						{
-							job = "prison",
-							reqOffDuty = true,
-						},
-					},
+					groups = { "prison" },
+					reqOffDuty = true,
 				},
 				{
 					icon = "clipboard",
-					text = "Go Off Duty",
+					label = "Go Off Duty",
 					event = "Corrections:Client:OffDuty",
-					jobPerms = {
-						{
-							job = "prison",
-							reqDuty = true,
-						},
-					},
+					groups = { "prison" },
+					reqDuty = true,
 				},
 				{
 					icon = "clipboard-check",
-					text = "Go On Duty (Medical)",
+					label = "Go On Duty (Medical)",
 					event = "EMS:Client:OnDuty",
-					jobPerms = {
-						{
-							job = "ems",
-							workplace = "prison",
-							reqOffDuty = true,
-						},
-					},
+					groups = { "ems" },
+					reqOffDuty = true,
 				},
 				{
 					icon = "clipboard",
-					text = "Go Off Duty (Medical)",
+					label = "Go Off Duty (Medical)",
 					event = "EMS:Client:OffDuty",
-					jobPerms = {
-						{
-							job = "ems",
-							workplace = "prison",
-							reqDuty = true,
-						},
-					},
+					groups = { "ems" },
+					reqDuty = true,
 				},
-			}, 2.0, true)
+			}
+		})
 
-		exports['sandbox-targeting']:ZonesAddBox("prison-clockinoff-3", "clipboard", vector3(1768.84, 2573.73, 45.73),
-			1.4, 0.6, {
-				heading = 0,
-				--debugPoly=true,
-				minZ = 45.13,
-				maxZ = 46.13,
-			}, {
+		exports.ox_target:addBoxZone({
+			id = "prison-clockinoff-3",
+			coords = vector3(1768.84, 2573.73, 45.73),
+			size = vector3(1.4, 0.6, 2.0),
+			rotation = 0,
+			debug = false,
+			minZ = 45.13,
+			maxZ = 46.13,
+			options = {
 				{
 					icon = "clipboard-check",
-					text = "Go On Duty",
+					label = "Go On Duty",
 					event = "Corrections:Client:OnDuty",
-					jobPerms = {
-						{
-							job = "prison",
-							reqOffDuty = true,
-						},
-					},
+					groups = { "prison" },
+					reqOffDuty = true,
 				},
 				{
 					icon = "clipboard",
-					text = "Go Off Duty",
+					label = "Go Off Duty",
 					event = "Corrections:Client:OffDuty",
-					jobPerms = {
-						{
-							job = "prison",
-							reqDuty = true,
-						},
-					},
+					groups = { "prison" },
+					reqDuty = true,
 				},
 				{
 					icon = "clipboard-check",
-					text = "Go On Duty (Medical)",
+					label = "Go On Duty (Medical)",
 					event = "EMS:Client:OnDuty",
-					jobPerms = {
-						{
-							job = "ems",
-							workplace = "prison",
-							reqOffDuty = true,
-						},
-					},
+					groups = { "ems" },
+					reqOffDuty = true,
 				},
 				{
 					icon = "clipboard",
-					text = "Go Off Duty (Medical)",
+					label = "Go Off Duty (Medical)",
 					event = "EMS:Client:OffDuty",
-					jobPerms = {
-						{
-							job = "ems",
-							workplace = "prison",
-							reqDuty = true,
-						},
-					},
+					groups = { "ems" },
+					reqDuty = true,
 				},
-			}, 2.0, true)
+			}
+		})
 
 		local locker = {
 			{
 				icon = "user-lock",
-				text = "Open Personal Locker",
+				label = "Open Personal Locker",
 				event = "Police:Client:OpenLocker",
-				jobPerms = {
-					{
-						job = "prison",
-						reqDuty = false,
-					},
-					{
-						job = "ems",
-						workplace = "prison",
-						reqDuty = true,
-					},
-				},
+				groups = { "prison", "ems" },
+				reqDuty = true,
 			},
 		}
 
-		exports['sandbox-targeting']:ZonesAddBox("prison-shitty-locker", "siren-on", vector3(1833.2, 2574.06, 46.01), 5.4,
-			0.4, {
-				heading = 0,
-				--debugPoly=true,
-				minZ = 45.01,
-				maxZ = 47.01,
-			}, locker, 3.0, true)
+		exports.ox_target:addBoxZone({
+			id = "prison-shitty-locker",
+			coords = vector3(1833.2, 2574.06, 46.01),
+			size = vector3(5.4, 0.4, 2.0),
+			rotation = 0,
+			debug = false,
+			minZ = 45.01,
+			maxZ = 47.01,
+			options = locker
+		})
 	end
 end)
 

@@ -13,20 +13,23 @@ AddEventHandler('onClientResourceStart', function(resource)
 				local duty = LocalPlayer.state.onDuty
 				if duty and _mechanicJobs[duty] then
 					local installingPartData = _mechanicItemsToParts[part]
-					local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+					local playerCoords = GetEntityCoords(PlayerPedId())
+					local maxDistance = 2.0
+					local includePlayerVehicle = false
+
+					local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 					if
 						installingPartData
-						and target
-						and target.entity
-						and DoesEntityExist(target.entity)
-						and IsEntityAVehicle(target.entity)
+						and vehicle
+						and DoesEntityExist(vehicle)
+						and IsEntityAVehicle(vehicle)
 						and (
-							(#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
-							or exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
-							or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
+							(#(GetEntityCoords(vehicle) - LocalPlayer.state.myPos) <= 5.0)
+							or exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(vehicle)
+							or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(vehicle)
 						)
 					then
-						local vehEnt = Entity(target.entity)
+						local vehEnt = Entity(vehicle)
 						local vehClass = vehEnt.state.Class
 						local vehDamage = vehEnt.state.DamagedParts
 
@@ -44,7 +47,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 							(not requiresHighGradeParts and installingPartData.regular)
 							or (requiresHighGradeParts and installingPartData.hperformance)
 						then
-							if GetIsVehicleEngineRunning(target.entity) then
+							if GetIsVehicleEngineRunning(vehicle) then
 								exports["sandbox-hud"]:NotifError("Turn Off the Engine")
 								return cb(false)
 							end
@@ -54,7 +57,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 								return cb(false)
 							end
 
-							TaskTurnPedToFaceEntity(LocalPlayer.state.ped, target.entity, 1.0)
+							TaskTurnPedToFaceEntity(LocalPlayer.state.ped, vehicle, 1.0)
 							Wait(750)
 
 							local repairLength = (installingPartData.time or 15) * quantity
@@ -79,11 +82,11 @@ AddEventHandler('onClientResourceStart', function(resource)
 								_repairingVehicle = true
 							end, function()
 								if
-									not DoesEntityExist(target.entity)
+									not DoesEntityExist(vehicle)
 									or not (
-										exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
-										or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
-										or (#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
+										exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(vehicle)
+										or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(vehicle)
+										or (#(GetEntityCoords(vehicle) - LocalPlayer.state.myPos) <= 5.0)
 									)
 								then
 									exports['sandbox-hud']:ProgressCancel()
@@ -93,7 +96,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 								if not wasCancelled then
 									if
 										exports['sandbox-vehicles']:RepairPart(
-											target.entity,
+											vehicle,
 											installingPartData.part,
 											(installingPartData.amount * quantity)
 										)
@@ -123,40 +126,43 @@ AddEventHandler('onClientResourceStart', function(resource)
 			if LocalPlayer.state.loggedIn and not _repairingVehicle then
 				local duty = LocalPlayer.state.onDuty
 				if duty and _mechanicJobs[duty] then
-					local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+					local playerCoords = GetEntityCoords(PlayerPedId())
+					local maxDistance = 2.0
+					local includePlayerVehicle = false
+
+					local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 					if
-						target
-						and target.entity
-						and DoesEntityExist(target.entity)
-						and IsEntityAVehicle(target.entity)
+						vehicle
+						and DoesEntityExist(vehicle)
+						and IsEntityAVehicle(vehicle)
 						and (
-							(#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
-							or exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
-							or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
+							(#(GetEntityCoords(vehicle) - LocalPlayer.state.myPos) <= 5.0)
+							or exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(vehicle)
+							or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(vehicle)
 						)
 					then
 						if
-							GlobalState["PoliceCars"][GetEntityModel(target.entity)]
-							or GlobalState["EMSCars"][GetEntityModel(target.entity)]
+							GlobalState["PoliceCars"][GetEntityModel(vehicle)]
+							or GlobalState["EMSCars"][GetEntityModel(vehicle)]
 						then
 							exports["sandbox-hud"]:NotifError("Vehicle cannot be modified.")
 							return
 						end
-						if GetIsVehicleEngineRunning(target.entity) then
+						if GetIsVehicleEngineRunning(vehicle) then
 							exports["sandbox-hud"]:NotifError("Turn Off the Engine")
 							return cb(false)
 						end
 
-						SetVehicleModKit(target.entity, 0)
+						SetVehicleModKit(vehicle, 0)
 
-						if part.toggleMod and IsToggleModOn(target.entity, part.modType) then
+						if part.toggleMod and IsToggleModOn(vehicle, part.modType) then
 							exports["sandbox-hud"]:NotifError("Vehicle Already Has Upgrade of That Level")
 							return cb(false)
 						end
 
 						if not part.toggleMod then
-							local maxUpgradable = GetNumVehicleMods(target.entity, part.modType) - 1
-							local currentUpgrade = GetVehicleMod(target.entity, part.modType)
+							local maxUpgradable = GetNumVehicleMods(vehicle, part.modType) - 1
+							local currentUpgrade = GetVehicleMod(vehicle, part.modType)
 							if part.modIndex > maxUpgradable then
 								exports["sandbox-hud"]:NotifError("Vehicle Does Not Support That Upgrade")
 								return cb(false)
@@ -173,7 +179,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 							return cb(false)
 						end
 
-						TaskTurnPedToFaceEntity(LocalPlayer.state.ped, target.entity, 1.0)
+						TaskTurnPedToFaceEntity(LocalPlayer.state.ped, vehicle, 1.0)
 						Wait(750)
 
 						local repairLength = part.time or 25
@@ -198,11 +204,11 @@ AddEventHandler('onClientResourceStart', function(resource)
 							_repairingVehicle = true
 						end, function()
 							if
-								not DoesEntityExist(target.entity)
+								not DoesEntityExist(vehicle)
 								or not (
-									exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
-									or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
-									or (#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
+									exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(vehicle)
+									or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(vehicle)
+									or (#(GetEntityCoords(vehicle) - LocalPlayer.state.myPos) <= 5.0)
 								)
 							then
 								exports['sandbox-hud']:ProgressCancel()
@@ -211,12 +217,12 @@ AddEventHandler('onClientResourceStart', function(resource)
 							_repairingVehicle = false
 							if not wasCancelled then
 								if part.toggleMod then
-									ToggleVehicleMod(target.entity, part.modType, true)
+									ToggleVehicleMod(vehicle, part.modType, true)
 								else
-									SetVehicleMod(target.entity, part.modType, part.modIndex, false)
+									SetVehicleMod(vehicle, part.modType, part.modIndex, false)
 								end
 
-								cb(true, VehToNet(target.entity))
+								cb(true, VehToNet(vehicle))
 								exports["sandbox-hud"]:NotifSuccess("Part Installed")
 							else
 								cb(false)
@@ -233,33 +239,36 @@ AddEventHandler('onClientResourceStart', function(resource)
 			if LocalPlayer.state.loggedIn and not _repairingVehicle then
 				local duty = LocalPlayer.state.onDuty
 				if duty and _mechanicJobs[duty] then
-					local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+					local playerCoords = GetEntityCoords(PlayerPedId())
+					local maxDistance = 2.0
+					local includePlayerVehicle = false
+
+					local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 					if
-						target
-						and target.entity
-						and DoesEntityExist(target.entity)
-						and IsEntityAVehicle(target.entity)
+						vehicle
+						and DoesEntityExist(vehicle)
+						and IsEntityAVehicle(vehicle)
 						and (
-							(#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
-							or exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
-							or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
+							(#(GetEntityCoords(vehicle) - LocalPlayer.state.myPos) <= 5.0)
+							or exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(vehicle)
+							or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(vehicle)
 						)
 					then
 						if
-							GlobalState["PoliceCars"][GetEntityModel(target.entity)]
-							or GlobalState["EMSCars"][GetEntityModel(target.entity)]
+							GlobalState["PoliceCars"][GetEntityModel(vehicle)]
+							or GlobalState["EMSCars"][GetEntityModel(vehicle)]
 						then
 							exports["sandbox-hud"]:NotifError("Vehicle cannot be modified.")
 							return
 						end
-						if GetIsVehicleEngineRunning(target.entity) then
+						if GetIsVehicleEngineRunning(vehicle) then
 							exports["sandbox-hud"]:NotifError("Turn Off the Engine")
 							return cb(false)
 						end
 
-						SetVehicleModKit(target.entity, 0)
+						SetVehicleModKit(vehicle, 0)
 
-						local currentUpgrade = GetVehicleMod(target.entity, part.partType)
+						local currentUpgrade = GetVehicleMod(vehicle, part.partType)
 
 						if currentUpgrade == -1 then
 							exports["sandbox-hud"]:NotifError("This vehicle part cannot be removed.")
@@ -271,7 +280,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 							return cb(false)
 						end
 
-						TaskTurnPedToFaceEntity(LocalPlayer.state.ped, target.entity, 1.0)
+						TaskTurnPedToFaceEntity(LocalPlayer.state.ped, vehicle, 1.0)
 						Wait(750)
 
 						local repairLength = part.time or 25
@@ -296,11 +305,11 @@ AddEventHandler('onClientResourceStart', function(resource)
 							_repairingVehicle = true
 						end, function()
 							if
-								not DoesEntityExist(target.entity)
+								not DoesEntityExist(vehicle)
 								or not (
-									exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(target.entity)
-									or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(target.entity)
-									or (#(GetEntityCoords(target.entity) - LocalPlayer.state.myPos) <= 5.0)
+									exports['sandbox-vehicles']:UtilsIsCloseToRearOfVehicle(vehicle)
+									or exports['sandbox-vehicles']:UtilsIsCloseToFrontOfVehicle(vehicle)
+									or (#(GetEntityCoords(vehicle) - LocalPlayer.state.myPos) <= 5.0)
 								)
 							then
 								exports['sandbox-hud']:ProgressCancel()
@@ -308,9 +317,9 @@ AddEventHandler('onClientResourceStart', function(resource)
 						end, function(wasCancelled)
 							_repairingVehicle = false
 							if not wasCancelled then
-								SetVehicleMod(target.entity, part.partType, -1, false)
+								SetVehicleMod(vehicle, part.partType, -1, false)
 
-								cb(true, VehToNet(target.entity))
+								cb(true, VehToNet(vehicle))
 								exports["sandbox-hud"]:NotifSuccess("Part Uninstalled")
 							else
 								cb(false)

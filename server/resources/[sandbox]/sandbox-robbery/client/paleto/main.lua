@@ -100,72 +100,67 @@ AddEventHandler("Robbery:Client:Setup", function()
 		)
 	end
 
-	exports['sandbox-targeting']:ZonesAddBox("paleto_secure", "shield-keyhole", vector3(-109.57, 6461.51, 31.64), 0.6,
-		0.4, {
-			heading = 315,
-			--debugPoly=true,
-			minZ = 31.24,
-			maxZ = 32.84,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "paleto_secure",
+		coords = vector3(-109.57, 6461.51, 31.64),
+		size = vector3(0.6, 0.4, 2.0),
+		rotation = 315,
+		debug = false,
+		minZ = 31.24,
+		maxZ = 32.84,
+		options = {
 			{
 				icon = "phone",
-				text = "Secure Bank",
+				label = "Secure Bank",
 				event = "Robbery:Client:Paleto:StartSecuring",
-				jobPerms = {
-					{
-						job = "police",
-						reqDuty = true,
-					},
-				},
-				data = {},
-				isEnabled = PaletoNeedsReset,
+				groups = { "police" },
+				canInteract = PaletoNeedsReset,
 			},
 			{
 				icon = "bell-on",
-				text = "Disable Alarm",
+				label = "Disable Alarm",
 				event = "Robbery:Client:Paleto:DisableAlarm",
-				jobPerms = {
-					{
-						job = "police",
-						reqDuty = true,
-					},
-				},
-				data = {},
-				isEnabled = function()
+				groups = { "police" },
+				canInteract = function()
 					return _bankStates.paleto.fookinLasers
 				end,
 			},
-		}, 3.0, true)
+		}
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("paleto_security", "shield-keyhole", vector3(-91.76, 6464.78, 31.63), 1.4,
-		0.8, {
-			heading = 315,
-			--debugPoly=true,
-			minZ = 30.63,
-			maxZ = 32.43,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "paleto_security",
+		coords = vector3(-91.76, 6464.78, 31.63),
+		size = vector3(1.4, 0.8, 2.0),
+		rotation = 315,
+		debug = false,
+		minZ = 30.63,
+		maxZ = 32.43,
+		options = {
 			{
 				icon = "bell-on",
-				text = "Access Door Controls",
+				label = "Access Door Controls",
 				event = "Robbery:Client:Paleto:Doors",
-				data = {},
-				isEnabled = function(data, entity)
+				canInteract = function(data, entity)
 					return IsPaletoExploitInstalled() and
 						not exports['sandbox-doors']:IsLocked("bank_savings_paleto_security")
 				end,
 			},
-		}, 3.0, true)
+		}
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("paleto_hack_workstation", "terminal", vector3(-106.12, 6473.87, 31.63), 1.2,
-		0.6, {
-			heading = 315,
-			--debugPoly=true,
-			minZ = 31.03,
-			maxZ = 32.43,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "paleto_hack_workstation",
+		coords = vector3(-106.12, 6473.87, 31.63),
+		size = vector3(1.2, 0.6, 2.0),
+		rotation = 315,
+		debug = false,
+		minZ = 31.03,
+		maxZ = 32.43,
+		options = {
 			{
 				icon = "binary-lock",
-				text = "Breach Network",
+				label = "Breach Network",
 				items = {
 					{
 						item = "adv_electronics_kit",
@@ -177,28 +172,28 @@ AddEventHandler("Robbery:Client:Setup", function()
 					},
 				},
 				event = "Robbery:Client:Paleto:Workstation",
-				data = {},
-				isEnabled = function(data, entity)
+				canInteract = function(data, entity)
 					return IsPaletoExploitInstalled()
 						and LocalPlayer.state.inPaletoWSPoint
 						and (not _bankStates.paleto.workstation or GetCloudTimeAsInt() > _bankStates.paleto.workstation)
 				end,
 			},
-		}, 3.0, true)
+		}
+	})
 
 	for k, v in ipairs(_pbOfficeHacks) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("paleto_officehack_%s", k),
-			"terminal",
-			v.coords,
-			v.length,
-			v.width,
-			v.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("paleto_officehack_%s", k),
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "binary-lock",
-					text = "Upload Exploit",
-					event = "Robbery:Client:Paleto:OfficeHack",
+					label = "Upload Exploit",
 					items = {
 						{
 							item = "adv_electronics_kit",
@@ -209,8 +204,10 @@ AddEventHandler("Robbery:Client:Setup", function()
 							count = 1,
 						},
 					},
-					data = v.data,
-					isEnabled = function(data, entity)
+					onSelect = function()
+						TriggerEvent("Robbery:Client:Paleto:OfficeHack", v.data)
+					end,
+					canInteract = function(data, entity)
 						return IsPaletoExploitInstalled()
 							and (
 								not _bankStates.paleto.officeHacks[v.data.officeId]
@@ -218,36 +215,34 @@ AddEventHandler("Robbery:Client:Setup", function()
 							)
 					end,
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 	end
 
 	for k, v in ipairs(_pbPowerHacks) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("paleto_electricbox_%s", k),
-			"box-taped",
-			v.coords,
-			v.length,
-			v.width,
-			v.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("paleto_electricbox_%s", k),
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "terminal",
-					text = "Hack Power Interface",
+					label = "Hack Power Interface",
 					item = "adv_electronics_kit",
-					event = "Robbery:Client:Paleto:ElectricBox:Hack",
-					data = v.data,
-					isEnabled = function(data, entity)
+					onSelect = function()
+						TriggerEvent("Robbery:Client:Paleto:ElectricBox:Hack", v.data)
+					end,
+					canInteract = function(data, entity)
 						return not _bankStates.paleto.electricalBoxes[data.boxId]
 							or GetCloudTimeAsInt() > _bankStates.paleto.electricalBoxes[data.boxId]
 					end,
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 	end
 
 	for k, v in ipairs(_pbLasers) do
@@ -266,21 +261,23 @@ AddEventHandler("Robbery:Client:Setup", function()
 	end
 
 	for k, v in ipairs(_pbDrillPoints) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("paleto_drillpoint_%s", v.data.drillId),
-			"bore-hole",
-			v.coords,
-			v.length,
-			v.width,
-			v.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("paleto_drillpoint_%s", v.data.drillId),
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "bore-hole",
-					text = "Use Drill",
+					label = "Use Drill",
 					item = "drill",
-					event = "Robbery:Client:Paleto:Drill",
-					data = v.data,
-					isEnabled = function(data, entity)
+					onSelect = function()
+						TriggerEvent("Robbery:Client:Paleto:Drill", v.data)
+					end,
+					canInteract = function(data, entity)
 						return IsPaletoExploitInstalled()
 							and not exports['sandbox-doors']:IsLocked("bank_savings_paleto_vault")
 							and (
@@ -289,47 +286,50 @@ AddEventHandler("Robbery:Client:Setup", function()
 							)
 					end,
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 	end
 
-	exports['sandbox-targeting']:ZonesAddBox("paleto_office_safe", "vault", vector3(-105.27, 6480.67, 31.63), 0.8, 0.6, {
-		heading = 45,
-		--debugPoly=true,
+	exports.ox_target:addBoxZone({
+		id = "paleto_office_safe",
+		coords = vector3(-105.27, 6480.67, 31.63),
+		size = vector3(0.8, 0.6, 2.0),
+		rotation = 45,
+		debug = false,
 		minZ = 31.43,
 		maxZ = 32.83,
-	}, {
-		{
-			icon = "unlock",
-			text = "Crack Safe",
-			event = "Robbery:Client:Paleto:Safe",
-			item = "paleto_access_codes",
-			data = {},
-			isEnabled = function(data, entity)
-				return IsPaletoExploitInstalled()
-					and not exports['sandbox-doors']:IsLocked("bank_savings_paleto_office_3")
-					and (not _bankStates.paleto.officeSafe or GetCloudTimeAsInt() > _bankStates.paleto.officeSafe)
-			end,
-		},
-	}, 3.0, true)
+		options = {
+			{
+				icon = "unlock",
+				label = "Crack Safe",
+				event = "Robbery:Client:Paleto:Safe",
+				item = "paleto_access_codes",
+				canInteract = function(data, entity)
+					return IsPaletoExploitInstalled()
+						and not exports['sandbox-doors']:IsLocked("bank_savings_paleto_office_3")
+						and (not _bankStates.paleto.officeSafe or GetCloudTimeAsInt() > _bankStates.paleto.officeSafe)
+				end,
+			},
+		}
+	})
 
 	for k, v in ipairs(_pbOfficeSearch) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("paleto_searchpoint_%s", v.data.searchId),
-			"magnifying-glass",
-			v.coords,
-			v.length,
-			v.width,
-			v.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("paleto_searchpoint_%s", v.data.searchId),
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "magnifying-glass",
-					text = "Search",
-					event = "Robbery:Client:Paleto:Search",
-					data = v.data,
-					isEnabled = function(data, entity)
+					label = "Search",
+					onSelect = function()
+						TriggerEvent("Robbery:Client:Paleto:Search", v.data)
+					end,
+					canInteract = function(data, entity)
 						return IsPaletoExploitInstalled()
 							and not exports['sandbox-doors']:IsLocked(data.door)
 							and (
@@ -338,10 +338,8 @@ AddEventHandler("Robbery:Client:Setup", function()
 							)
 					end,
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 	end
 end)
 
@@ -359,15 +357,16 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 	elseif data.subStationId ~= nil then
 		LocalPlayer.state:set("inSubStation", data.subStationId, true)
 	elseif data.pcId ~= nil then
-		exports['sandbox-targeting']:AddObject(GetHashKey("xm_prop_base_staff_desk_02"), "computer", {
+		exports.ox_target:addModel(GetHashKey("xm_prop_base_staff_desk_02"), {
 			{
-				text = "Upload Exploit",
+				label = "Upload Exploit",
 				icon = "terminal",
-				event = "Robbery:Client:Paleto:Upload",
+				onSelect = function()
+					TriggerEvent("Robbery:Client:Paleto:Upload", data)
+				end,
 				item = "adv_electronics_kit",
-				data = data,
-				minDist = 2.0,
-				isEnabled = function(data, entity)
+				distance = 2.0,
+				canInteract = function(data, entity)
 					return (not GlobalState["Paleto:Secured"] or GetCloudTimeAsInt() > GlobalState["Paleto:Secured"])
 						and (
 							not _bankStates.paleto.exploits[data.pcId]
@@ -375,7 +374,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 						)
 				end,
 			},
-		}, 3.0)
+		})
 	elseif id == "paleto_power" then
 		LocalPlayer.state:set("inPaletoPower", true, true)
 	end
@@ -399,7 +398,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			LocalPlayer.state:set("inSubStation", false, true)
 		end
 	elseif data.pcId ~= nil then
-		exports['sandbox-targeting']:RemoveObject(GetHashKey("xm_prop_base_staff_desk_02"))
+		exports.ox_target:removeModel(GetHashKey("xm_prop_base_staff_desk_02"))
 	elseif id == "paleto_power" then
 		LocalPlayer.state:set("inPaletoPower", false, true)
 	end

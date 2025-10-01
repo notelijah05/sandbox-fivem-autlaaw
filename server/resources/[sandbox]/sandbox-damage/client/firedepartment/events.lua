@@ -36,31 +36,31 @@ function SAFDInit()
 	-- )
 
 	for k, v in ipairs(safdCheckin) do
-		exports['sandbox-targeting']:ZonesAddBox("safd-checkin-" .. k, "chess-clock", v.coords, v.length, v.width,
-			v.options, {
+		exports.ox_target:addBoxZone({
+			id = "safd-checkin-" .. k,
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading,
+			debug = v.options.debugPoly,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "clipboard-check",
-					text = "Go On Duty",
+					label = "Go On Duty",
 					event = "EMS:Client:OnDuty",
-					jobPerms = {
-						{
-							job = "ems",
-							reqOffDuty = true,
-						},
-					},
+					groups = { "ems" },
+					reqOffDuty = true,
 				},
 				{
 					icon = "clipboard",
-					text = "Go Off Duty",
+					label = "Go Off Duty",
 					event = "EMS:Client:OffDuty",
-					jobPerms = {
-						{
-							job = "ems",
-							reqDuty = true,
-						},
-					},
+					groups = { "ems" },
+					reqDuty = true,
 				},
-			}, 3.0, true)
+			}
+		})
 	end
 end
 

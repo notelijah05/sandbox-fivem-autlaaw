@@ -77,51 +77,41 @@ RegisterNetEvent("Businesses:Client:MBA:InteriorUpdate", function(v)
 end)
 
 AddEventHandler("Businesses:Client:Startup", function()
-	exports['sandbox-targeting']:ZonesAddBox("mba-event-management", "wand-magic-sparkles",
-		vector3(-288.47, -1949.26, 38.05), 5.0, 1.0, {
-			heading = 50,
-			--debugPoly=true,
-			minZ = 37.05,
-			maxZ = 39.05
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "mba-event-management",
+		coords = vector3(-288.47, -1949.26, 38.05),
+		size = vector3(5.0, 1.0, 2.0),
+		rotation = 50,
+		debug = false,
+		minZ = 37.05,
+		maxZ = 39.05,
+		options = {
 			{
 				icon = "clipboard-check",
-				text = "Clock In",
+				label = "Clock In",
 				event = "Businesses:Client:ClockIn",
-				data = { job = "mba" },
-				jobPerms = {
-					{
-						job = "mba",
-						reqOffDuty = true,
-					}
-				},
+				groups = { "mba" },
+				reqOffDuty = true,
 			},
 			{
 				icon = "clipboard",
-				text = "Clock Out",
+				label = "Clock Out",
 				event = "Businesses:Client:ClockOut",
-				data = { job = "mba" },
-				jobPerms = {
-					{
-						job = "mba",
-						reqDuty = true,
-					}
-				},
+				groups = { "mba" },
+				reqDuty = true,
 			},
 			{
 				icon = "wand-magic-sparkles",
-				text = "Event Setup",
+				label = "Event Setup",
 				event = "Businesses:Client:MBA:StartChangeInterior",
-				data = {},
-				jobPerms = {
-					{
-						job = "mba",
-						reqDuty = true,
-						permissionKey = 'JOB_SET_MBA',
-					}
-				},
+				groups = { "mba" },
+				reqDuty = true,
+				canInteract = function()
+					return LocalPlayer.state.jobPerms and LocalPlayer.state.jobPerms["JOB_SET_MBA"]
+				end,
 			},
-		}, 3.0, true)
+		}
+	})
 end)
 
 AddEventHandler("Businesses:Client:MBA:StartChangeInterior", function()

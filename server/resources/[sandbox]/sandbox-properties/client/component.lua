@@ -678,7 +678,7 @@ exports('Move', function(id, skipPhone)
 	for k, v in ipairs(_spawnedFurniture) do
 		if v.id == id then
 			DeleteEntity(v.entity)
-			exports['sandbox-targeting']:RemoveEntity(v.entity)
+			exports.ox_target:removeEntity(v.entity)
 		else
 			table.insert(ns, v)
 		end

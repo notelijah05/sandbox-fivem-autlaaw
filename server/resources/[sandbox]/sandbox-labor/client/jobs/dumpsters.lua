@@ -68,47 +68,44 @@ end)
 
 function RegisterDumpsterStartup()
 	for k, v in ipairs(_DumpsterEntities) do
-		exports['sandbox-targeting']:AddObject(v.objectID, "dumpster", {
+		exports.ox_target:addModel(v.objectID, {
 			{
 				icon = "magnifying-glass",
-				isEnabled = function(data, entityData)
+				label = "Search Trash",
+				event = "Inventory:Client:SearchDumpster",
+				distance = 1.5,
+				canInteract = function(data, entityData)
 					if entityData ~= nil and v.objectID == entityData.model then
 						return true
 					end
 					return false
 				end,
-				text = "Search Trash",
-				event = "Inventory:Client:SearchDumpster",
-				data = {},
-				minDist = 1.5,
 			},
 			{
 				icon = "box-open",
-				isEnabled = function(data, entityData)
+				label = "Open Trash",
+				event = "Inventory:Client:OpenDumpster",
+				distance = 1.5,
+				canInteract = function(data, entityData)
 					if entityData ~= nil and v.objectID == entityData.model then
 						return true
 					end
 					return false
 				end,
-				text = "Open Trash",
-				event = "Inventory:Client:OpenDumpster",
-				data = {},
-				minDist = 1.5,
 			},
 			-- {
 			-- 	icon = "trash-can-slash",
-			-- 	isEnabled = function(data, entityData)
+			-- 	label = "Hide In Dumpster",
+			-- 	event = "Inventory:Client:HideInDumpster",
+			-- 	distance = 1.5,
+			-- 	canInteract = function(data, entityData)
 			-- 		if entityData ~= nil and v.objectID == entityData.model then
 			-- 			return true
 			-- 		end
 			-- 		return false
 			-- 	end,
-			-- 	text = "Hide In Dumpster",
-			-- 	event = "Inventory:Client:HideInDumpster",
-			-- 	data = {},
-			-- 	minDist = 1.5,
 			-- },
-		}, 2.0)
+		})
 	end
 end
 

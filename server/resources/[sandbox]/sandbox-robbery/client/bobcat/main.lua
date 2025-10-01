@@ -40,25 +40,23 @@ AddEventHandler("Robbery:Client:Setup", function()
 		maxZ = 35.549388885498,
 	})
 
-	exports['sandbox-targeting']:ZonesAddBox("bobcat-secure", "shield-keyhole", vector3(876.94, -2262.69, 30.47), 0.8,
-		1.4, {
-			heading = 356,
-			--debugPoly=true,
-			minZ = 29.87,
-			maxZ = 31.47,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "bobcat-secure",
+		coords = vector3(876.94, -2262.69, 30.47),
+		size = vector3(0.8, 1.4, 2.0),
+		rotation = 356,
+		debug = false,
+		minZ = 29.87,
+		maxZ = 31.47,
+		options = {
 			{
 				icon = "phone",
-				text = "Secure Building",
-				event = "Robbery:Client:Bobcat:StartSecuring",
-				jobPerms = {
-					{
-						job = "police",
-						reqDuty = true,
-					},
-				},
-				data = id,
-				isEnabled = function(s, s2)
+				label = "Secure Building",
+				groups = { "police" },
+				onSelect = function()
+					TriggerEvent("Robbery:Client:Bobcat:StartSecuring", id)
+				end,
+				canInteract = function()
 					return (
 						GlobalState["Bobcat:ExtrDoor"]
 						or GlobalState["Bobcat:FrontDoor"]
@@ -67,61 +65,71 @@ AddEventHandler("Robbery:Client:Setup", function()
 					) and not GlobalState["Bobcat:Secured"]
 				end,
 			},
-		}, 3.0, true)
+		}
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("bobcat-c4", "bomb", vector3(873.44, -2294.37, 30.47), 1.4, 1.4, {
-		heading = 355,
-		-- debugPoly = true,
+	exports.ox_target:addBoxZone({
+		id = "bobcat-c4",
+		coords = vector3(873.44, -2294.37, 30.47),
+		size = vector3(1.4, 1.4, 2.0),
+		rotation = 355,
+		debug = false,
 		minZ = 29.47,
 		maxZ = 31.67,
-	}, {
-		{
-			icon = "bomb",
-			text = "Grab Breaching Charge",
-			event = "Robbery:Client:Bobcat:GrabC4",
-			isEnabled = function(data)
-				return LocalPlayer.state.inBobcat
-					and not GlobalState["BobcatC4"]
-					and GlobalState["Bobcat:ExtrDoor"]
-					and GlobalState["Bobcat:FrontDoor"]
-					and GlobalState["Bobcat:SecuredDoor"]
-			end,
-		},
-	}, 3.0, true)
+		options = {
+			{
+				icon = "bomb",
+				label = "Grab Breaching Charge",
+				event = "Robbery:Client:Bobcat:GrabC4",
+				canInteract = function()
+					return LocalPlayer.state.inBobcat
+						and not GlobalState["BobcatC4"]
+						and GlobalState["Bobcat:ExtrDoor"]
+						and GlobalState["Bobcat:FrontDoor"]
+						and GlobalState["Bobcat:SecuredDoor"]
+				end,
+			},
+		}
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("bobcat-front-pc-hack", "computer", vector3(875.15, -2263.83, 30.47), 0.8,
-		1.2, {
-			heading = 354,
-			-- debugPoly = true,
-			minZ = 28.92,
-			maxZ = 31.32,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "bobcat-front-pc-hack",
+		coords = vector3(875.15, -2263.83, 30.47),
+		size = vector3(0.8, 1.2, 2.0),
+		rotation = 354,
+		debug = false,
+		minZ = 28.92,
+		maxZ = 31.32,
+		options = {
 			{
 				icon = "terminal",
-				text = "Hack Terminal",
+				label = "Hack Terminal",
 				event = "Robbery:Client:Bobcat:HackFrontPC",
 				item = "electronics_kit",
-				isEnabled = function(data)
+				canInteract = function()
 					return LocalPlayer.state.inBobcat
 						and not GlobalState["Bobcat:PCHacked"]
 						and GlobalState["Bobcat:ExtrDoor"]
 						and GlobalState["Bobcat:FrontDoor"]
 				end,
 			},
-		}, 3.0, true)
+		}
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("bobcat-securiy-hack", "computer", vector3(887.07, -2299.13, 30.47), 3.0,
-		1.0, {
-			heading = 264,
-			-- debugPoly = true,
-			minZ = 29.47,
-			maxZ = 31.27,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "bobcat-securiy-hack",
+		coords = vector3(887.07, -2299.13, 30.47),
+		size = vector3(3.0, 1.0, 2.0),
+		rotation = 264,
+		debug = false,
+		minZ = 29.47,
+		maxZ = 31.27,
+		options = {
 			{
 				icon = "terminal",
-				text = "Hack Terminal",
+				label = "Hack Terminal",
 				event = "Robbery:Client:Bobcat:HackSecuriyPC",
-				isEnabled = function(data)
+				canInteract = function()
 					return LocalPlayer.state.inBobcat
 						and not GlobalState["Bobcat:SecurityPCHacked"]
 						and GlobalState["Bobcat:ExtrDoor"]
@@ -130,39 +138,45 @@ AddEventHandler("Robbery:Client:Setup", function()
 						and GlobalState["Bobcat:SecurityDoor"]
 				end,
 			},
-		}, 3.0, true)
+		}
+	})
 
 	while GlobalState["Bobcat:LootLocations"] == nil do
 		Wait(1)
 	end
 
 	for k, v in ipairs(GlobalState["Bobcat:LootLocations"]) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("bobcat-loot-%s", k),
-			"box-open-full",
-			v.coords,
-			v.width,
-			v.length,
-			v.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("bobcat-loot-%s", k),
+			coords = v.coords,
+			size = vector3(v.width, v.length, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "hand",
-					text = "Grab Loot",
+					label = "Grab Loot",
 					event = "Robbery:Client:Bobcat:GrabLoot",
-					data = v.data,
-					isEnabled = function(data)
+					onSelect = function()
+						exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:CheckLoot", v.data, function(s)
+							if s then
+								exports["sandbox-base"]:ServerCallback("Robbery:Bobcat:Loot", v.data, function(s2) end)
+							end
+						end)
+					end,
+					canInteract = function()
 						return LocalPlayer.state.inBobcat
 							and GlobalState["Bobcat:ExtrDoor"]
 							and GlobalState["Bobcat:FrontDoor"]
 							and GlobalState["Bobcat:SecuredDoor"]
 							and GlobalState["Bobcat:VaultDoor"]
-							and not GlobalState[string.format("Bobcat:Loot:%s", data.id)]
+							and not GlobalState[string.format("Bobcat:Loot:%s", v.data.id)]
 					end,
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 	end
 
 	exports["sandbox-base"]:RegisterClientCallback("Robbery:Bobcat:SetupPeds", function(data, cb)

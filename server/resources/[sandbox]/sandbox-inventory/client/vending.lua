@@ -21,14 +21,15 @@ local vendingMachines = {
 
 function CreateVendingMachines()
 	for k, v in ipairs(vendingMachines) do
-		exports['sandbox-targeting']:AddObject(v.model, v.icon, {
+		exports.ox_target:addModel(v.model, {
 			{
-				text = v.text or "Use Vending Machine",
+				label = v.text or "Use Vending Machine",
 				icon = v.icon,
-				event = "Shop:Client:OpenShop",
-				data = v.shop,
-				minDist = 3.0,
+				onSelect = function()
+					TriggerEvent("Shop:Client:OpenShop", v.shop)
+				end,
+				distance = 3.0,
 			},
-		}, 3.0)
+		})
 	end
 end

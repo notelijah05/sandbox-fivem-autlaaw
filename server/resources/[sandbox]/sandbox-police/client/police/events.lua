@@ -64,8 +64,8 @@ AddEventHandler("Corrections:Client:OffDuty", function()
 	exports['sandbox-jobs']:DutyOff("prison")
 end)
 
-RegisterNetEvent("Police:Client:Search", function(hitting, data)
-	exports['sandbox-inventory']:SearchCharacter(hitting.serverId)
+RegisterNetEvent("Police:Client:Search", function(data)
+	exports['sandbox-inventory']:SearchCharacter(data.serverId)
 	while not LocalPlayer.state.inventoryOpen do
 		Wait(1)
 	end
@@ -75,7 +75,7 @@ RegisterNetEvent("Police:Client:Search", function(hitting, data)
 			if
 				#(
 					GetEntityCoords(LocalPlayer.state.ped)
-					- GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(hitting.serverId)))
+					- GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(data.serverId)))
 				) > 3.0
 			then
 				exports['sandbox-inventory']:CloseAll()

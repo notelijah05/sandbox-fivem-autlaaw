@@ -8,27 +8,26 @@ AddEventHandler("Characters:Client:Spawn", function()
 
 	if GlobalState.JailSearchLocations ~= nil then
 		for key, data in ipairs(GlobalState.JailSearchLocations) do
-			exports['sandbox-targeting']:ZonesAddBox(
-				string.format("prison_search_%s", key),
-				"user-ninja",
-				data.coords,
-				data.width,
-				data.length,
-				data.options,
-				{
+			exports.ox_target:addBoxZone({
+				id = string.format("prison_search_%s", key),
+				coords = data.coords,
+				size = vector3(data.width, data.length, 2.0),
+				rotation = data.options.heading or 0,
+				debug = false,
+				minZ = data.options.minZ,
+				maxZ = data.options.maxZ,
+				options = {
 					{
 						icon = "magnifying-glass",
-						text = "Search",
+						label = "Search",
 						event = "Prison:Client:Target:Search",
-						isEnabled = function(_, entity)
+						canInteract = function(_, entity)
 							local jailed = LocalPlayer.state.Character:GetData("Jailed")
 							return jailed or (jailed and GlobalState["OS:Time"] < jailed.Release)
 						end,
 					},
-				},
-				2.0,
-				true
-			)
+				}
+			})
 		end
 	end
 end)

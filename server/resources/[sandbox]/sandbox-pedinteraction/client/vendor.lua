@@ -20,28 +20,23 @@ RegisterNetEvent("Vendor:Client:Set", function(vendors)
 				},
 			}, v.iconOverride or "question", v.position.scenario or false, v.position.anim or nil)
 		elseif v.type == "poly" then
-			exports['sandbox-targeting']:ZonesAddBox(
-				v.id,
-				v.iconOverride or "question",
-				v.position.coords,
-				v.position.length,
-				v.position.width,
-				v.position.options,
-				{
+			exports.ox_target:addBoxZone({
+				id = v.id,
+				coords = v.position.coords,
+				size = vector3(v.position.length, v.position.width, 2.0),
+				rotation = v.position.options.heading or 0,
+				debug = false,
+				minZ = v.position.options.minZ,
+				maxZ = v.position.options.maxZ,
+				options = {
 					{
 						icon = v.iconOverride or "question",
-						text = v.labelOverride or "Buy Items",
+						label = v.labelOverride or "Buy Items",
 						event = "Vendor:Client:GetItems",
-						data = {
-							id = v.id,
-						},
-						minDist = 2.0,
-						jobs = false,
+						distance = 2.0,
 					},
-				},
-				3.0,
-				true
-			)
+				}
+			})
 		end
 	end
 end)
@@ -71,28 +66,23 @@ RegisterNetEvent(
 					},
 				}, iconOverride or "question", position.scenario or false, position.anim or false)
 			elseif type == "poly" then
-				exports['sandbox-targeting']:ZonesAddBox(
-					id,
-					iconOverride or "question",
-					position.coords,
-					position.length,
-					position.width,
-					position.options,
-					{
+				exports.ox_target:addBoxZone({
+					id = id,
+					coords = position.coords,
+					size = vector3(position.length, position.width, 2.0),
+					rotation = position.options.heading or 0,
+					debug = false,
+					minZ = position.options.minZ,
+					maxZ = position.options.maxZ,
+					options = {
 						{
 							icon = iconOverride or "question",
-							text = labelOverride or "Buy Items",
+							label = labelOverride or "Buy Items",
 							event = "Vendor:Client:GetItems",
-							data = {
-								id = id,
-							},
-							minDist = 2.0,
-							jobs = false,
+							distance = 2.0,
 						},
-					},
-					3.0,
-					true
-				)
+					}
+				})
 			end
 		end
 	end
@@ -103,7 +93,7 @@ RegisterNetEvent("Vendor:Client:Remove", function(id)
 		if _created[id].type == "ped" then
 			exports['sandbox-pedinteraction']:Remove(id)
 		elseif _created[id].type == "poly" then
-			exports['sandbox-targeting']:ZonesRemoveZone(id)
+			exports.ox_target:removeZone(id)
 		end
 
 		_created[id] = nil

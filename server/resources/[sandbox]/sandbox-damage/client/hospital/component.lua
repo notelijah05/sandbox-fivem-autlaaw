@@ -55,24 +55,26 @@ AddEventHandler('onClientResourceStart', function(resource)
 			maxZ = 41.1
 		}, {})
 
-		exports['sandbox-targeting']:ZonesAddBox("icu-checkout", "bell-concierge", vector3(1147.83, -1542.54, 39.5), 2.8,
-			0.8, {
-				name = "hospital",
-				heading = 0,
-				--debugPoly=true,
-				minZ = 38.5,
-				maxZ = 41.1
-			}, {
+		exports.ox_target:addBoxZone({
+			id = "icu-checkout",
+			coords = vector3(1147.83, -1542.54, 39.5),
+			size = vector3(2.8, 0.8, 2.6),
+			rotation = 0,
+			debug = false,
+			minZ = 38.5,
+			maxZ = 41.1,
+			options = {
 				{
 					icon = "bell-concierge",
-					text = "Request Personnel",
+					label = "Request Personnel",
 					event = "Hospital:Client:RequestEMS",
-					isEnabled = function()
+					canInteract = function()
 						return (LocalPlayer.state.Character:GetData("ICU") ~= nil and not LocalPlayer.state.Character:GetData("ICU").Released) and
 							(not _done or _done < GetCloudTimeAsInt())
 					end,
 				}
-			})
+			}
+		})
 
 		exports['sandbox-polyzone']:CreatePoly("hospital-icu-area", {
 			vector2(1144.3436279297, -1541.1220703125),

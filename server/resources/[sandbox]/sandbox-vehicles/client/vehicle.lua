@@ -845,16 +845,19 @@ end)
 
 RegisterNetEvent("Vehicles:Client:AttemptSlimJim", function()
 	if not VEHICLE_INSIDE and _characterLoaded then
-		local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+		local playerCoords = GetEntityCoords(PlayerPedId())
+		local maxDistance = 2.0
+		local includePlayerVehicle = false
+
+		local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 		if
-			target
-			and target.entity
-			and DoesEntityExist(target.entity)
-			and IsEntityAVehicle(target.entity)
-			and IsThisModelACar(GetEntityModel(target.entity))
-			and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0
+			vehicle
+			and DoesEntityExist(vehicle)
+			and IsEntityAVehicle(vehicle)
+			and IsThisModelACar(GetEntityModel(vehicle))
+			and #(GetEntityCoords(vehicle) - GetEntityCoords(GLOBAL_PED)) <= 2.0
 		then
-			exports['sandbox-vehicles']:SlimJim(target.entity)
+			exports['sandbox-vehicles']:SlimJim(vehicle)
 		end
 	end
 end)
@@ -864,17 +867,20 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		print("Vehicles:Slimjim")
 		if _characterLoaded and LocalPlayer.state.onDuty == "police" then
 			if not VEHICLE_INSIDE then
-				local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+				local playerCoords = GetEntityCoords(PlayerPedId())
+				local maxDistance = 2.0
+				local includePlayerVehicle = false
+
+				local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 				if
-					target
-					and target.entity
-					and DoesEntityExist(target.entity)
-					and IsEntityAVehicle(target.entity)
-					and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0
+					vehicle
+					and DoesEntityExist(vehicle)
+					and IsEntityAVehicle(vehicle)
+					and #(GetEntityCoords(vehicle) - GetEntityCoords(GLOBAL_PED)) <= 2.0
 				then
 					local vehClass = _vehicleClasses.C
 					if vehClass and vehClass.advLockpick then
-						exports['sandbox-vehicles']:LockpickExterior(vehClass.advLockpick.exterior, data, target.entity,
+						exports['sandbox-vehicles']:LockpickExterior(vehClass.advLockpick.exterior, data, vehicle,
 							cb)
 					else
 						exports["sandbox-hud"]:NotifError("Cannot Slimjim This Vehicle")
@@ -907,19 +913,22 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					cb(false, false)
 				end
 			else
-				local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+				local playerCoords = GetEntityCoords(PlayerPedId())
+				local maxDistance = 2.0
+				local includePlayerVehicle = false
+
+				local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 				if
-					target
-					and target.entity
-					and DoesEntityExist(target.entity)
-					and IsEntityAVehicle(target.entity)
-					and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0
+					vehicle
+					and DoesEntityExist(vehicle)
+					and IsEntityAVehicle(vehicle)
+					and #(GetEntityCoords(vehicle) - GetEntityCoords(GLOBAL_PED)) <= 2.0
 				then
-					local vehClass = _vehicleClasses[exports['sandbox-vehicles']:ClassGet(target.entity)]
-					local boostOverride = Entity(target.entity).state.boostForceHack
+					local vehClass = _vehicleClasses[exports['sandbox-vehicles']:ClassGet(vehicle)]
+					local boostOverride = Entity(vehicle).state.boostForceHack
 
 					if vehClass and vehClass.lockpick and not boostOverride then
-						exports['sandbox-vehicles']:LockpickExterior(vehClass.lockpick.exterior, data, target.entity, cb)
+						exports['sandbox-vehicles']:LockpickExterior(vehClass.lockpick.exterior, data, vehicle, cb)
 					else
 						exports["sandbox-hud"]:NotifError("Cannot Lockpick This Vehicle")
 					end
@@ -949,19 +958,22 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					cb(false, false)
 				end
 			else
-				local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+				local playerCoords = GetEntityCoords(PlayerPedId())
+				local maxDistance = 2.0
+				local includePlayerVehicle = false
+
+				local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 				if
-					target
-					and target.entity
-					and DoesEntityExist(target.entity)
-					and IsEntityAVehicle(target.entity)
-					and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0
+					vehicle
+					and DoesEntityExist(vehicle)
+					and IsEntityAVehicle(vehicle)
+					and #(GetEntityCoords(vehicle) - GetEntityCoords(GLOBAL_PED)) <= 2.0
 				then
-					local vehClass = _vehicleClasses[exports['sandbox-vehicles']:ClassGet(target.entity)]
-					local boostOverride = Entity(target.entity).state.boostForceHack
+					local vehClass = _vehicleClasses[exports['sandbox-vehicles']:ClassGet(vehicle)]
+					local boostOverride = Entity(vehicle).state.boostForceHack
 
 					if vehClass and vehClass.advLockpick and not boostOverride then
-						exports['sandbox-vehicles']:LockpickExterior(vehClass.advLockpick.exterior, data, target.entity,
+						exports['sandbox-vehicles']:LockpickExterior(vehClass.advLockpick.exterior, data, vehicle,
 							cb)
 					else
 						exports["sandbox-hud"]:NotifError("Cannot Lockpick This Vehicle")
@@ -989,17 +1001,20 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					cb(false, false)
 				end
 			else
-				local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+				local playerCoords = GetEntityCoords(PlayerPedId())
+				local maxDistance = 2.0
+				local includePlayerVehicle = false
+
+				local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 				if
-					target
-					and target.entity
-					and DoesEntityExist(target.entity)
-					and IsEntityAVehicle(target.entity)
-					and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0
+					vehicle
+					and DoesEntityExist(vehicle)
+					and IsEntityAVehicle(vehicle)
+					and #(GetEntityCoords(vehicle) - GetEntityCoords(GLOBAL_PED)) <= 2.0
 				then
-					local vehClass = _vehicleClasses[exports['sandbox-vehicles']:ClassGet(target.entity)]
+					local vehClass = _vehicleClasses[exports['sandbox-vehicles']:ClassGet(vehicle)]
 					if vehClass and vehClass.hack then
-						exports['sandbox-vehicles']:HackExterior(vehClass.hack.exterior, data, target.entity, cb)
+						exports['sandbox-vehicles']:HackExterior(vehClass.hack.exterior, data, vehicle, cb)
 					else
 						exports["sandbox-hud"]:NotifError("Cannot Hack This Vehicle")
 					end
@@ -1026,17 +1041,20 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					cb(false, false)
 				end
 			else
-				local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+				local playerCoords = GetEntityCoords(PlayerPedId())
+				local maxDistance = 2.0
+				local includePlayerVehicle = false
+
+				local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 				if
-					target
-					and target.entity
-					and DoesEntityExist(target.entity)
-					and IsEntityAVehicle(target.entity)
-					and #(GetEntityCoords(target.entity) - GetEntityCoords(GLOBAL_PED)) <= 2.0
+					vehicle
+					and DoesEntityExist(vehicle)
+					and IsEntityAVehicle(vehicle)
+					and #(GetEntityCoords(vehicle) - GetEntityCoords(GLOBAL_PED)) <= 2.0
 				then
-					local vehClass = _vehicleClasses[exports['sandbox-vehicles']:ClassGet(target.entity)]
+					local vehClass = _vehicleClasses[exports['sandbox-vehicles']:ClassGet(vehicle)]
 					if vehClass and vehClass.advHack then
-						exports['sandbox-vehicles']:HackExterior(vehClass.advHack.exterior, data, target.entity, cb)
+						exports['sandbox-vehicles']:HackExterior(vehClass.advHack.exterior, data, vehicle, cb)
 					else
 						exports["sandbox-hud"]:NotifError("Cannot Hack This Vehicle")
 					end

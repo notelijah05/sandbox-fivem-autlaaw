@@ -43,63 +43,51 @@ AddEventHandler("Casino:Client:Startup", function()
 	}
 
 	for k, v in ipairs(casinoDesks) do
-		exports['sandbox-targeting']:ZonesAddBox("casino-employee-" .. k, "slot-machine", v.center, v.length, v.width,
-			v.options, {
+		exports.ox_target:addBoxZone({
+			id = "casino-employee-" .. k,
+			coords = v.center,
+			size = vector3(v.length, v.width, 1.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "clipboard-check",
-					text = "Clock In",
+					label = "Clock In",
 					event = "Casino:Client:ClockIn",
-					data = { job = "casino" },
-					jobPerms = {
-						{
-							job = "casino",
-							reqOffDuty = true,
-						},
-					},
+					groups = { "casino" },
+					reqOffDuty = true,
 				},
 				{
 					icon = "clipboard",
-					text = "Clock Out",
+					label = "Clock Out",
 					event = "Casino:Client:ClockOut",
-					data = { job = "casino" },
-					jobPerms = {
-						{
-							job = "casino",
-							reqDuty = true,
-						},
-					},
+					groups = { "casino" },
+					reqDuty = true,
 				},
 				{
 					icon = "slot-machine",
-					text = "Close Casino",
+					label = "Close Casino",
 					event = "Casino:Client:OpenClose",
-					data = { state = false },
-					jobPerms = {
-						{
-							job = "casino",
-							reqDuty = true,
-						},
-					},
-					isEnabled = function()
+					groups = { "casino" },
+					reqDuty = true,
+					canInteract = function()
 						return GlobalState["CasinoOpen"]
 					end,
 				},
 				{
 					icon = "slot-machine",
-					text = "Open Casino",
+					label = "Open Casino",
 					event = "Casino:Client:OpenClose",
-					data = { state = true },
-					jobPerms = {
-						{
-							job = "casino",
-							reqDuty = true,
-						},
-					},
-					isEnabled = function()
+					groups = { "casino" },
+					reqDuty = true,
+					canInteract = function()
 						return not GlobalState["CasinoOpen"]
 					end,
 				},
-			}, 3.0, true)
+			}
+		})
 	end
 
 	exports['sandbox-pedinteraction']:Add(
@@ -175,31 +163,35 @@ AddEventHandler("Casino:Client:Startup", function()
 		"seal-question"
 	)
 
-	exports['sandbox-targeting']:ZonesAddBox("casino-cashier", "cards", vector3(990.35, 31.18, 71.47), 5.4, 2, {
-		heading = 330,
-		--debugPoly=true,
+	exports.ox_target:addBoxZone({
+		id = "casino-cashier",
+		coords = vector3(990.35, 31.18, 71.47),
+		size = vector3(5.4, 2.0, 2.8),
+		rotation = 330,
+		debug = false,
 		minZ = 70.47,
 		maxZ = 73.27,
-	}, {
-		{
-			icon = "inbox-out",
-			text = "Cash Out Chips",
-			event = "Casino:Client:StartChipSell",
-			isEnabled = function()
-				return exports['sandbox-casino']:ChipsGet(source) > 0
-			end,
-		},
-		{
-			icon = "inbox-in",
-			text = "Purchase Chips",
-			event = "Casino:Client:StartChipPurchase",
-		},
-		{
-			icon = "gift-card",
-			text = "Purchase VIP Card ($10,000, 1 Week)",
-			event = "Casino:Client:PurchaseVIP",
-		},
-	}, 3.0, true)
+		options = {
+			{
+				icon = "inbox-out",
+				label = "Cash Out Chips",
+				event = "Casino:Client:StartChipSell",
+				canInteract = function()
+					return exports['sandbox-casino']:ChipsGet(source) > 0
+				end,
+			},
+			{
+				icon = "inbox-in",
+				label = "Purchase Chips",
+				event = "Casino:Client:StartChipPurchase",
+			},
+			{
+				icon = "gift-card",
+				label = "Purchase VIP Card ($10,000, 1 Week)",
+				event = "Casino:Client:PurchaseVIP",
+			},
+		}
+	})
 end)
 
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
@@ -222,23 +214,23 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 	end
 end)
 
-AddEventHandler("Casino:Client:ClockIn", function(_, data)
+AddEventHandler("Casino:Client:ClockIn", function(data)
 	if data and data.job then
 		exports['sandbox-jobs']:DutyOn(data.job)
 	end
 end)
 
-AddEventHandler("Casino:Client:ClockOut", function(_, data)
+AddEventHandler("Casino:Client:ClockOut", function(data)
 	if data and data.job then
 		exports['sandbox-jobs']:DutyOff(data.job)
 	end
 end)
 
-AddEventHandler("Casino:Client:OpenClose", function(_, data)
+AddEventHandler("Casino:Client:OpenClose", function(data)
 	exports["sandbox-base"]:ServerCallback("Casino:OpenClose", data)
 end)
 
-AddEventHandler("Casino:Client:PurchaseVIP", function(_, data)
+AddEventHandler("Casino:Client:PurchaseVIP", function(data)
 	exports["sandbox-base"]:ServerCallback("Casino:PurchaseVIP", data)
 end)
 

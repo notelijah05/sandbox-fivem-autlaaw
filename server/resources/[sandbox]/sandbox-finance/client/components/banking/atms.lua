@@ -3,6 +3,9 @@ local atmObjects = {
 	`prop_atm_02`,
 	`prop_atm_03`,
 	`prop_fleeca_atm`,
+	`prop_atm_01_dam`,
+	`hei_prop_atm`,
+	`ch_prop_ch_atm01`
 }
 
 local atmPolys = {
@@ -65,28 +68,34 @@ local atmPolys = {
 
 function AddBankingATMs()
 	for k, v in ipairs(atmObjects) do
-		exports['sandbox-targeting']:AddObject(v, "money-from-bracket", {
+		exports.ox_target:addModel(v, {
 			{
-				text = "Use ATM",
+				label = "Use ATM",
 				icon = "dollar-sign",
 				event = "Banking:Client:StartOpenATM",
-				data = {},
-				minDist = 3.0,
+				distance = 3.0,
 			},
-		}, 3.0)
+		})
 	end
 
 	for k, v in ipairs(atmPolys) do
-		exports['sandbox-targeting']:ZonesAddBox("atm-" .. k, "money-from-bracket", v.center, v.length, v.width,
-			v.options, {
+		exports.ox_target:addBoxZone({
+			id = "atm-" .. k,
+			coords = v.center,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
-					text = "Use ATM",
+					label = "Use ATM",
 					icon = "dollar-sign",
 					event = "Banking:Client:StartOpenATM",
-					data = {},
-					minDist = 3.0,
+					distance = 3.0,
 				},
-			}, 3.0, true)
+			}
+		})
 	end
 end
 

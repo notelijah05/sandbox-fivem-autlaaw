@@ -27,42 +27,48 @@ AddEventHandler("Businesses:Client:Startup", function()
 		maxZ = 32.28,
 	})
 
-	exports['sandbox-targeting']:ZonesAddBox(string.format("TacoShop_SelfServe"), "store",
-		vector3(15.38, -1599.99, 29.38), 1.3, 0.6, {
-			name = "shop",
-			heading = 320,
-			--debugPoly=true,
-			minZ = 25.78,
-			maxZ = 29.78,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "TacoShop_SelfServe",
+		coords = vector3(15.38, -1599.99, 29.38),
+		size = vector3(1.3, 0.6, 4.0),
+		rotation = 320,
+		debug = false,
+		minZ = 25.78,
+		maxZ = 29.78,
+		options = {
 			{
 				icon = "store",
-				text = "Shop Taco Ingredients",
+				label = "Shop Taco Ingredients",
 				event = "Taco:Client:TacoShop",
 			},
-		}, 2.0, true)
+		}
+	})
 
 	-- Setup Pickup
 	for k, v in pairs(_tacoConfig.sharedPickup) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("TacoSharedPickup-%s", k),
-			"box-open",
-			v.coords,
-			v.length,
-			v.width,
-			v.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("TacoSharedPickup-%s", k),
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "box-open",
-					text = "Order Pickup",
+					label = "Order Pickup",
 					event = "Businesses:Client:Pickup",
-					data = v.data,
-					allowFromVehicle = v.driveThru or false,
+					canInteract = function()
+						-- Check if player is in vehicle and driveThru is enabled
+						if v.driveThru then
+							return IsPedInAnyVehicle(LocalPlayer.state.ped, false)
+						end
+						return true
+					end,
 				},
-			},
-			v.driveThru and 5.0 or 2.0,
-			true
-		)
+			}
+		})
 	end
 
 	-- Setup Event Handlers
@@ -311,26 +317,22 @@ function FetchDropOffLocation()
 			end)
 		end
 
-		exports['sandbox-targeting']:ZonesAddBox(
-			_dropOffBlipCfg.zoneId,
-			"box-open-full",
-			_tacoDropOffs[_randomDropoff].coords,
-			_tacoDropOffs[_randomDropoff].length,
-			_tacoDropOffs[_randomDropoff].width,
-			_tacoDropOffs[_randomDropoff].options,
-			{
+		exports.ox_target:addBoxZone({
+			id = _dropOffBlipCfg.zoneId,
+			coords = _tacoDropOffs[_randomDropoff].coords,
+			size = vector3(_tacoDropOffs[_randomDropoff].length, _tacoDropOffs[_randomDropoff].width, 2.0),
+			rotation = _tacoDropOffs[_randomDropoff].options.heading or 0,
+			debug = false,
+			minZ = _tacoDropOffs[_randomDropoff].options.minZ,
+			maxZ = _tacoDropOffs[_randomDropoff].options.maxZ,
+			options = {
 				{
 					icon = "box",
-					text = "Deliver Order",
+					label = "Deliver Order",
 					event = "Tacos:DeliverOrder",
-					data = { blipConfig = _dropOffBlipCfg },
 				},
-			},
-			3.0,
-			true
-		)
-
-		exports['sandbox-targeting']:ZonesRefresh()
+			}
+		})
 	end
 end
 
@@ -338,7 +340,7 @@ AddEventHandler("Taco:Client:TacoShop", function()
 	exports['sandbox-inventory']:ShopOpen("taco-shop-self")
 end)
 
-AddEventHandler("Tacos:DeliverOrder", function(_, data)
+AddEventHandler("Tacos:DeliverOrder", function(data)
 	exports['sandbox-hud']:Progress({
 		name = "taco_dropoff",
 		duration = 3000,
@@ -365,8 +367,7 @@ AddEventHandler("Tacos:DeliverOrder", function(_, data)
 				_dropOffBlip = nil
 				_durationThread = false
 				_durationCheck = _durationTimer
-				exports['sandbox-targeting']:ZonesRemoveZone(data.blipConfig.zoneId)
-				exports['sandbox-targeting']:ZonesRefresh()
+				exports.ox_target:removeZone(data.blipConfig.zoneId)
 			end
 		end)
 	end)
@@ -381,7 +382,7 @@ function RunCleanUp()
 	LocalPlayer.state.TacoPickup = false
 	if _dropOffBlipCfg ~= nil then
 		exports["sandbox-blips"]:Remove(_dropOffBlipCfg.id)
-		exports['sandbox-targeting']:ZonesRemoveZone(_dropOffBlipCfg.zoneId)
+		exports.ox_target:removeZone(_dropOffBlipCfg.zoneId)
 	end
 	_activeDropoffState = 0
 	_dropOffBlipCfg = nil

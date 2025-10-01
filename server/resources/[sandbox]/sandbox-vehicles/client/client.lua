@@ -374,16 +374,19 @@ AddEventHandler("Vehicles:Client:Actions:ToggleDoor", function(doorNum)
 	local vehicle = VEHICLE_INSIDE
 
 	if not vehicle then
-		local targetVehicle = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+		local playerCoords = GetEntityCoords(PlayerPedId())
+		local maxDistance = 2.0
+		local includePlayerVehicle = false
+
+		local targetVehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 		if
 			targetVehicle
-			and targetVehicle.entity
-			and DoesEntityExist(targetVehicle.entity)
-			and GetEntitySpeed(targetVehicle.entity) <= 2.0
-			and GetPedInVehicleSeat(targetVehicle.entity, -1) == 0
-			and GetVehicleDoorLockStatus(targetVehicle.entity) == 1
+			and DoesEntityExist(targetVehicle)
+			and GetEntitySpeed(targetVehicle) <= 2.0
+			and GetPedInVehicleSeat(targetVehicle, -1) == 0
+			and GetVehicleDoorLockStatus(targetVehicle) == 1
 		then
-			vehicle = targetVehicle.entity
+			vehicle = targetVehicle
 		else
 			return
 		end
@@ -407,15 +410,18 @@ AddEventHandler("Vehicles:Client:Actions:ToggleWindow", function(winNum)
 	local vehicle = VEHICLE_INSIDE
 
 	if not vehicle then
-		local targetVehicle = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
+		local playerCoords = GetEntityCoords(PlayerPedId())
+		local maxDistance = 2.0
+		local includePlayerVehicle = false
+
+		local targetVehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 		if
 			targetVehicle
-			and targetVehicle.entity
-			and DoesEntityExist(targetVehicle.entity)
-			and GetEntitySpeed(targetVehicle.entity) <= 2.0
-			and GetPedInVehicleSeat(targetVehicle.entity, -1) == 0
+			and DoesEntityExist(targetVehicle)
+			and GetEntitySpeed(targetVehicle) <= 2.0
+			and GetPedInVehicleSeat(targetVehicle, -1) == 0
 		then
-			vehicle = targetVehicle.entity
+			vehicle = targetVehicle
 		else
 			return
 		end

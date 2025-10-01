@@ -42,28 +42,25 @@ AddEventHandler("Robbery:Client:Setup", function()
 		--debugPoly = true,
 	})
 
-	exports['sandbox-targeting']:ZonesAddBox("vangelico-pd", "calculator", vector3(-620.09, -223.81, 38.06), 1.0, 1.0, {
-		name = "vangelico-pd",
-		heading = 35,
-		--debugPoly = true,
+	exports.ox_target:addBoxZone({
+		id = "vangelico-pd",
+		coords = vector3(-620.09, -223.81, 38.06),
+		size = vector3(1.0, 1.0, 1.2),
+		rotation = 35,
+		debug = false,
 		minZ = 37.91,
 		maxZ = 39.11,
-	}, {
-		{
-			icon = "calculator",
-			text = "Secure Store",
-			event = "Robbery:Client:Vangelico:SecureStore",
-			data = {},
-			jobPerms = {
-				{
-					job = "police",
-					reqDuty = true,
-				},
+		options = {
+			{
+				icon = "calculator",
+				label = "Secure Store",
+				event = "Robbery:Client:Vangelico:SecureStore",
+				groups = { "police" },
+				canInteract = function()
+					return GlobalState["Vangelico:State"] == 1
+				end,
 			},
-			isEnabled = function(data)
-				return GlobalState["Vangelico:State"] == 1
-			end,
-		},
+		}
 	})
 
 	while not GlobalState["VangelicoCases"] do
@@ -72,54 +69,64 @@ AddEventHandler("Robbery:Client:Setup", function()
 
 	for k, v in ipairs(GlobalState["VangelicoCases"]) do
 		local pId = string.format("Vangelico:Case:%s", k)
-		exports['sandbox-targeting']:ZonesAddBox(pId, "container-storage", v.coords, v.length, v.width, v.options, {
-			{
-				icon = "hammer",
-				text = "Smash Case",
-				event = "Robbery:Client:Vangelico:BreakCase",
-				data = {
-					index = k,
-					coords = v.coords,
+		exports.ox_target:addBoxZone({
+			id = pId,
+			coords = v.coords,
+			size = vector3(v.length, v.width, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
+				{
+					icon = "hammer",
+					label = "Smash Case",
+					event = "Robbery:Client:Vangelico:BreakCase",
+					canInteract = function()
+						return (
+								(GlobalState["Duty:police"] or 0) >= GlobalState["VangelicoRequiredPd"]
+								or GlobalState["Vangelico:InProgress"]
+							)
+							and not GlobalState["RobberiesDisabled"]
+							and (not GlobalState["RestartLockdown"] or (GlobalState["RestartLockdown"] and GlobalState["Vangelico:InProgress"]))
+							and
+							(not GlobalState["AntiShitlord"] or GetCloudTimeAsInt() > GlobalState["AntiShitlord"] or GlobalState["Vangelico:InProgress"])
+							and GlobalState["Vangelico:State"] ~= 2
+							and (
+								(not GlobalState[pId] or GlobalState[pId] < GetCloudTimeAsInt())
+								and _weapons[GetSelectedPedWeapon(LocalPlayer.state.ped)]
+							)
+					end,
 				},
-				isEnabled = function(data)
-					return (
-							(GlobalState["Duty:police"] or 0) >= GlobalState["VangelicoRequiredPd"]
-							or GlobalState["Vangelico:InProgress"]
-						)
-						and not GlobalState["RobberiesDisabled"]
-						and (not GlobalState["RestartLockdown"] or (GlobalState["RestartLockdown"] and GlobalState["Vangelico:InProgress"]))
-						and
-						(not GlobalState["AntiShitlord"] or GetCloudTimeAsInt() > GlobalState["AntiShitlord"] or GlobalState["Vangelico:InProgress"])
-						and GlobalState["Vangelico:State"] ~= 2
-						and (
-							(not GlobalState[pId] or GlobalState[pId] < GetCloudTimeAsInt())
-							and _weapons[GetSelectedPedWeapon(LocalPlayer.state.ped)]
-						)
-				end,
-			},
-		}, 3.0, true)
+			}
+		})
 	end
 
 	-- for k, v in ipairs(_cabinets) do
 	-- 	local pId = string.format("Vangelico:Cabinet:%s", k)
-	-- 	exports['sandbox-targeting']:ZonesAddBox(pId, "container-storage", v.coords, v.length, v.width, v.options, {
-	-- 		{
-	-- 			icon = "cabinet-filing",
-	-- 			text = "Search Filing Cabinet",
-	-- 			event = "Robbery:Client:Vangelico:SearchCabinet",
-	-- 			data = {
-	-- 				index = k,
-	-- 				coords = v.coords,
+	-- 	exports.ox_target:addBoxZone({
+	-- 		id = pId,
+	-- 		coords = v.coords,
+	-- 		size = vector3(v.length, v.width, 2.0),
+	-- 		rotation = v.options.heading or 0,
+	-- 		debug = false,
+	-- 		minZ = v.options.minZ,
+	-- 		maxZ = v.options.maxZ,
+	-- 		options = {
+	-- 			{
+	-- 				icon = "cabinet-filing",
+	-- 				label = "Search Filing Cabinet",
+	-- 				event = "Robbery:Client:Vangelico:SearchCabinet",
+	-- 				canInteract = function()
+	-- 					return not GlobalState[pId] and _weapons[GetSelectedPedWeapon(LocalPlayer.state.ped)]
+	-- 				end,
 	-- 			},
-	-- 			isEnabled = function(data)
-	-- 				return not GlobalState[pId] and _weapons[GetSelectedPedWeapon(LocalPlayer.state.ped)]
-	-- 			end,
-	-- 		},
-	-- 	}, 3.0, true)
+	-- 		}
+	-- 	})
 	-- end
 end)
 
-AddEventHandler("Robbery:Client:Vangelico:SecureStore", function(entity, data)
+AddEventHandler("Robbery:Client:Vangelico:SecureStore", function(data)
 	exports['sandbox-hud']:Progress({
 		name = "secure_vangelico",
 		duration = 30000,
@@ -144,15 +151,13 @@ end)
 
 AddEventHandler("Polyzone:Enter", function(id, point, insideZones, data)
 	if id == "vangelico" then
-		exports['sandbox-targeting']:AddObject(GetHashKey("hei_prop_hei_keypad_03"), "calculator", {
+		exports.ox_target:addModel(GetHashKey("hei_prop_hei_keypad_03"), {
 			-- {
 			-- 	icon = "bell-on",
-			-- 	text = "Disable Alarm",
+			-- 	label = "Disable Alarm",
 			-- 	event = "Robbery:Client:Vangelico:DisableAlarm",
-			-- 	jobs = { "police" },
-			-- 	jobDuty = true,
-			-- 	data = {},
-			-- 	isEnabled = function()
+			-- 	groups = { "police" },
+			-- 	canInteract = function()
 			-- 		local dist = #(
 			-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
 			-- 				- _pdAlarm
@@ -162,11 +167,10 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZones, data)
 			-- },
 			-- {
 			-- 	icon = "terminal",
-			-- 	text = "Hack Keypad",
+			-- 	label = "Hack Keypad",
 			-- 	event = "Robbery:Client:Vangelico:HackKeypad",
 			-- 	item = "sequencer",
-			-- 	data = {},
-			-- 	isEnabled = function()
+			-- 	canInteract = function()
 			-- 		local dist = #(
 			-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
 			-- 				- _officeHack
@@ -176,11 +180,10 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZones, data)
 			-- },
 			-- {
 			-- 	icon = "address-card",
-			-- 	text = "Use Keycard",
+			-- 	label = "Use Keycard",
 			-- 	event = "Robbery:Client:Vangelico:UseKeycard",
 			-- 	item = "xg_keycard",
-			-- 	data = {},
-			-- 	isEnabled = function()
+			-- 	canInteract = function()
 			-- 		local dist = #(
 			-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
 			-- 				- _officeHack
@@ -188,13 +191,13 @@ AddEventHandler("Polyzone:Enter", function(id, point, insideZones, data)
 			-- 		return dist <= 2.0 and not GlobalState["Vangelico:Lockdown"]
 			-- 	end,
 			-- },
-		}, 3.0)
+		})
 	end
 end)
 
 AddEventHandler("Polyzone:Exit", function(id, point, insideZones, data)
 	if id == "vangelico" then
-		exports['sandbox-targeting']:RemoveObject(GetHashKey("hei_prop_hei_keypad_03"))
+		exports.ox_target:removeZone("hei_prop_hei_keypad_03")
 	end
 end)
 
@@ -214,7 +217,7 @@ function loadAnimation()
 	Wait(2200)
 end
 
-AddEventHandler("Robbery:Client:Vangelico:BreakCase", function(entity, data)
+AddEventHandler("Robbery:Client:Vangelico:BreakCase", function(data)
 	local pId = string.format("Vangelico:Case:%s", data.index)
 	if
 		(not GlobalState[pId] or GlobalState[pId] < GetCloudTimeAsInt())

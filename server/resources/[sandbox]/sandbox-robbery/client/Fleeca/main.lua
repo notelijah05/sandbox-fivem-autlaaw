@@ -21,26 +21,23 @@ AddEventHandler("Robbery:Client:Setup", function()
 		SetupFleecaVaults(bankData)
 
 		if bankData.reset ~= nil then
-			exports['sandbox-targeting']:ZonesAddBox(
-				string.format("fleeca-%s-reset", bankData.id),
-				"shield-keyhole",
-				bankData.reset.coords,
-				bankData.reset.length,
-				bankData.reset.width,
-				bankData.reset.options,
-				{
+			exports.ox_target:addBoxZone({
+				id = string.format("fleeca-%s-reset", bankData.id),
+				coords = bankData.reset.coords,
+				size = vector3(bankData.reset.length, bankData.reset.width, 2.0),
+				rotation = bankData.reset.options.heading or 0,
+				debug = false,
+				minZ = bankData.reset.options.minZ,
+				maxZ = bankData.reset.options.maxZ,
+				options = {
 					{
 						icon = "phone",
-						text = "Secure Bank",
-						event = "Robbery:Client:Fleeca:StartSecuring",
-						jobPerms = {
-							{
-								job = "police",
-								reqDuty = true,
-							},
-						},
-						data = bankData.id,
-						isEnabled = function(s, s2)
+						label = "Secure Bank",
+						groups = { "police" },
+						onSelect = function()
+							TriggerEvent("Robbery:Client:Fleeca:StartSecuring", bankData.id)
+						end,
+						canInteract = function()
 							return (
 								(
 									GlobalState[string.format("Fleeca:%s:VaultDoor", LocalPlayer.state.fleeca)]
@@ -57,10 +54,8 @@ AddEventHandler("Robbery:Client:Setup", function()
 							)
 						end,
 					},
-				},
-				2.0,
-				true
-			)
+				}
+			})
 		end
 	end
 
@@ -188,25 +183,23 @@ end
 
 function SetupFleecaVaults(bankData)
 	for k, v in ipairs(bankData.loots) do
-		exports['sandbox-targeting']:ZonesAddBox(
-			string.format("fleeca-%s", v.options.name),
-			"bore-hole",
-			v.coords,
-			v.width,
-			v.length,
-			v.options,
-			{
+		exports.ox_target:addBoxZone({
+			id = string.format("fleeca-%s", v.options.name),
+			coords = v.coords,
+			size = vector3(v.width, v.length, 2.0),
+			rotation = v.options.heading or 0,
+			debug = false,
+			minZ = v.options.minZ,
+			maxZ = v.options.maxZ,
+			options = {
 				{
 					icon = "bore-hole",
-					text = "Use Drill",
+					label = "Use Drill",
 					item = "drill",
-					event = "Robbery:Client:Fleeca:Drill",
-					data = {
-						bank = bankData.id,
-						index = k,
-						id = v.options.name,
-					},
-					isEnabled = function()
+					onSelect = function()
+						TriggerEvent("Robbery:Client:Fleeca:Drill", bankData.id, k, v.options.name)
+					end,
+					canInteract = function()
 						return GlobalState[string.format("Fleeca:%s:VaultDoor", LocalPlayer.state.fleeca)] ~= nil
 							and GlobalState[string.format("Fleeca:%s:VaultDoor", LocalPlayer.state.fleeca)].state == 3
 							and (GlobalState[string.format(
@@ -221,9 +214,7 @@ function SetupFleecaVaults(bankData)
 							and (k <= 2 or not exports['sandbox-doors']:IsLocked(string.format("%s_gate", LocalPlayer.state.fleeca)))
 					end,
 				},
-			},
-			3.0,
-			true
-		)
+			}
+		})
 	end
 end

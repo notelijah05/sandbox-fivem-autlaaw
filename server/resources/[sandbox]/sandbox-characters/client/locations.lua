@@ -4,15 +4,22 @@ AddEventHandler('onClientResourceStart', function(resource)
     if resource == GetCurrentResourceName() then
         Wait(1000)
         for k, v in ipairs(Config.LogoutLocations) do
-            exports['sandbox-targeting']:ZonesAddBox("logout-location-" .. k, "person-from-portal", v.center, v.length,
-                v.width, v.options,
-                {
+            exports.ox_target:addBoxZone({
+                id = "logout-location-" .. k,
+                coords = v.center,
+                size = vector3(v.length, v.width, 2.0),
+                rotation = v.options.heading or 0,
+                debug = false,
+                minZ = v.options.minZ,
+                maxZ = v.options.maxZ,
+                options = {
                     {
                         icon = "person-from-portal",
-                        text = "Logout",
+                        label = "Logout",
                         event = "Locations:Client:LogoutLocation",
                     },
-                }, 2.0, true)
+                }
+            })
         end
     end
 end)

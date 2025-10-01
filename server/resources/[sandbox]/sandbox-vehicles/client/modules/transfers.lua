@@ -1,12 +1,17 @@
-AddEventHandler('Vehicles:Client:StartUp', function()
-    exports["sandbox-base"]:RegisterClientCallback('Vehicles:Transfers:GetTarget', function(data, cb)
+AddEventHandler("Vehicles:Client:StartUp", function()
+    exports["sandbox-base"]:RegisterClientCallback("Vehicles:Transfers:GetTarget", function(data, cb)
         if LocalPlayer.state.loggedIn then
             if VEHICLE_INSIDE then
                 return cb(VehToNet(VEHICLE_INSIDE))
             else
-                local data = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
-                if data and data.entity and DoesEntityExist(data.entity) and IsEntityAVehicle(data.entity) then
-                    return cb(VehToNet(data.entity))
+                local coords = GetEntityCoords(PlayerPedId())
+                local maxDistance = 2.0
+                local includePlayerVehicle = false
+
+                local target = lib.getClosestVehicle(coords, maxDistance, includePlayerVehicle)
+
+                if target and DoesEntityExist(target) and IsEntityAVehicle(target) then
+                    return cb(VehToNet(target))
                 end
             end
         end
@@ -48,5 +53,5 @@ AddEventHandler('Vehicles:Transfers:Confirm', function(data)
 end)
 
 AddEventHandler('Vehicles:Transfers:Deny', function(data)
-    exports["sandbox-hud"]:NotifError('Vehicle Transfer Cancelled')
+    exports['sandbox-hud']:NotifError('Vehicle Transfer Cancelled')
 end)

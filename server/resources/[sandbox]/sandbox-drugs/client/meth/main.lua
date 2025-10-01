@@ -5,32 +5,32 @@ local _tableModels = {
 
 AddEventHandler("Drugs:Client:Startup", function()
     for k, v in ipairs(_tableModels) do
-        exports['sandbox-targeting']:AddObject(v, "table-picnic", {
+        exports.ox_target:addModel(v, {
             {
-                text = "Pickup Table",
+                label = "Pickup Table",
                 icon = "hand",
                 event = "Drugs:Client:Meth:PickupTable",
-                minDist = 3.0,
-                isEnabled = function(data, entity)
+                distance = 3.0,
+                canInteract = function(data, entity)
                     local entState = Entity(entity.entity).state
                     return entState?.isMethTable and not _methTables[entState?.methTable]?.activeCook
                 end,
             },
             {
-                text = "Table Info",
+                label = "Table Info",
                 icon = "block",
                 event = "Drugs:Client:Meth:TableDetails",
-                minDist = 3.0,
-                isEnabled = function(data, entity)
+                distance = 3.0,
+                canInteract = function(data, entity)
                     return Entity(entity.entity).state?.isMethTable
                 end,
             },
             {
-                text = "Start Batch",
+                label = "Start Batch",
                 icon = "timer",
                 event = "Drugs:Client:Meth:StartCook",
-                minDist = 3.0,
-                isEnabled = function(data, entity)
+                distance = 3.0,
+                canInteract = function(data, entity)
                     local entState = Entity(entity.entity).state
                     return entState?.isMethTable and
                         (not _methTables[entState.methTable]?.cooldown or GetCloudTimeAsInt() > _methTables[entState.methTable]?.cooldown) and
@@ -38,18 +38,18 @@ AddEventHandler("Drugs:Client:Startup", function()
                 end,
             },
             {
-                text = "Collect Batch",
+                label = "Collect Batch",
                 icon = "block",
                 event = "Drugs:Client:Meth:PickupCook",
-                minDist = 3.0,
-                isEnabled = function(data, entity)
+                distance = 3.0,
+                canInteract = function(data, entity)
                     local entState = Entity(entity.entity).state
                     return entState?.isMethTable and _methTables[entState?.methTable]?.activeCook and
                         _methTables[entState?.methTable]?.pickupReady and
                         (_methTables[entState.methTable].owner == nil or _methTables[entState.methTable].owner == LocalPlayer.state.Character:GetData("SID"))
                 end,
             },
-        }, 3.0)
+        })
     end
 
     exports["sandbox-base"]:RegisterClientCallback("Drugs:Meth:PlaceTable", function(data, cb)

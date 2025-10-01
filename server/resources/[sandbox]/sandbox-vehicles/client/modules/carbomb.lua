@@ -7,9 +7,13 @@ local CAR_BOMB_TICK_MAX = 0
 
 AddEventHandler('Vehicles:Client:StartUp', function()
     exports["sandbox-base"]:RegisterClientCallback('Vehicles:UseCarBomb', function(data, cb)
-        local target = exports['sandbox-targeting']:GetEntityPlayerIsLookingAt()
-        if target and target.entity and DoesEntityExist(target.entity) and IsEntityAVehicle(target.entity) then
-            if exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target.entity) then
+        local playerCoords = GetEntityCoords(PlayerPedId())
+        local maxDistance = 2.0
+        local includePlayerVehicle = false
+
+        local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
+        if vehicle and DoesEntityExist(vehicle) and IsEntityAVehicle(vehicle) then
+            if exports['sandbox-vehicles']:UtilsIsCloseToVehicle(vehicle) then
                 local carBombConfig = GetCarBombConfig()
 
                 if type(carBombConfig.minSpeed) ~= 'number' then
@@ -36,8 +40,8 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                         anim = "mechanic2",
                     },
                 }, function(cancelled)
-                    if not cancelled and exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target.entity) then
-                        cb(VehToNet(target.entity), false, carBombConfig)
+                    if not cancelled and exports['sandbox-vehicles']:UtilsIsCloseToVehicle(vehicle) then
+                        cb(VehToNet(vehicle), false, carBombConfig)
                     else
                         cb(false)
                     end

@@ -51,6 +51,6 @@ function setupStores(shops)
 	end
 end
 
-AddEventHandler("Shop:Client:OpenShop", function(obj, data)
+AddEventHandler("Shop:Client:OpenShop", function(data)
 	exports['sandbox-inventory']:ShopOpen(data)
 end)

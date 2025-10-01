@@ -5,67 +5,69 @@ function CreatePropertyZones(propertyId, int)
 
     local interior = PropertyInteriors[int]
     if interior then
-        exports['sandbox-targeting']:ZonesAddBox(
-            string.format("property-%s-exit", propertyId),
-            "door-open",
-            interior.locations.front.polyzone.center,
-            interior.locations.front.polyzone.length,
-            interior.locations.front.polyzone.width,
-            interior.locations.front.polyzone.options,
-            {
+        exports.ox_target:addBoxZone({
+            id = string.format("property-%s-exit", propertyId),
+            coords = interior.locations.front.polyzone.center,
+            size = vector3(interior.locations.front.polyzone.length, interior.locations.front.polyzone.width, 2.0),
+            rotation = interior.locations.front.polyzone.options.heading or 0,
+            debug = false,
+            minZ = interior.locations.front.polyzone.options.minZ,
+            maxZ = interior.locations.front.polyzone.options.maxZ,
+            options = {
                 {
                     icon = "door-open",
-                    text = "Exit",
-                    event = "Properties:Client:Exit",
-                    data = {
-                        property = propertyId,
-                        backdoor = false,
-                    },
+                    label = "Exit",
+                    onSelect = function()
+                        TriggerEvent("Properties:Client:Exit", {
+                            property = propertyId,
+                            backdoor = false,
+                        })
+                    end,
                 },
-            },
-            2.0,
-            true
-        )
+            }
+        })
 
         if interior.locations.back then
-            exports['sandbox-targeting']:ZonesAddBox(
-                string.format("property-%s-exit-back", propertyId),
-                "door-open",
-                interior.locations.back.polyzone.center,
-                interior.locations.back.polyzone.length,
-                interior.locations.back.polyzone.width,
-                interior.locations.back.polyzone.options,
-                {
+            exports.ox_target:addBoxZone({
+                id = string.format("property-%s-exit-back", propertyId),
+                coords = interior.locations.back.polyzone.center,
+                size = vector3(interior.locations.back.polyzone.length, interior.locations.back.polyzone.width, 2.0),
+                rotation = interior.locations.back.polyzone.options.heading or 0,
+                debug = false,
+                minZ = interior.locations.back.polyzone.options.minZ,
+                maxZ = interior.locations.back.polyzone.options.maxZ,
+                options = {
                     {
                         icon = "door-open",
-                        text = "Exit",
-                        event = "Properties:Client:Exit",
-                        data = {
-                            property = propertyId,
-                            backdoor = true,
-                        },
+                        label = "Exit",
+                        onSelect = function()
+                            TriggerEvent("Properties:Client:Exit", {
+                                property = propertyId,
+                                backdoor = true,
+                            })
+                        end,
                     },
-                },
-                2.0,
-                true
-            )
+                }
+            })
         end
 
         if interior.locations.office then
-            exports['sandbox-targeting']:ZonesAddBox(
-                string.format("property-%s-office", propertyId),
-                "phone-office",
-                interior.locations.office.polyzone.center,
-                interior.locations.office.polyzone.length,
-                interior.locations.office.polyzone.width,
-                interior.locations.office.polyzone.options,
-                {
+            exports.ox_target:addBoxZone({
+                id = string.format("property-%s-office", propertyId),
+                coords = interior.locations.office.polyzone.center,
+                size = vector3(interior.locations.office.polyzone.length, interior.locations.office.polyzone.width, 2.0),
+                rotation = interior.locations.office.polyzone.options.heading or 0,
+                debug = false,
+                minZ = interior.locations.office.polyzone.options.minZ,
+                maxZ = interior.locations.office.polyzone.options.maxZ,
+                options = {
                     {
                         icon = "box-open-full",
-                        text = "Access Storage",
-                        event = "Properties:Client:Stash",
-                        data = propertyId,
-                        isEnabled = function(data)
+                        label = "Access Storage",
+                        onSelect = function()
+                            TriggerEvent("Properties:Client:Stash", propertyId)
+                        end,
+                        canInteract = function(data)
                             if not _propertiesLoaded then
                                 return false
                             end
@@ -76,10 +78,11 @@ function CreatePropertyZones(propertyId, int)
                     },
                     {
                         icon = "clipboard",
-                        text = "Go On/Off Duty",
-                        event = "Properties:Client:Duty",
-                        data = propertyId,
-                        isEnabled = function(data)
+                        label = "Go On/Off Duty",
+                        onSelect = function()
+                            TriggerEvent("Properties:Client:Duty", propertyId)
+                        end,
+                        canInteract = function(data)
                             if not _propertiesLoaded then
                                 return false
                             end
@@ -89,27 +92,28 @@ function CreatePropertyZones(propertyId, int)
                                 property?.data?.jobDuty
                         end,
                     },
-                },
-                2.0,
-                true
-            )
+                }
+            })
         end
 
         if interior.locations.warehouse then
-            exports['sandbox-targeting']:ZonesAddBox(
-                string.format("property-%s-warehouse", propertyId),
-                "warehouse-full",
-                interior.locations.warehouse.polyzone.center,
-                interior.locations.warehouse.polyzone.length,
-                interior.locations.warehouse.polyzone.width,
-                interior.locations.warehouse.polyzone.options,
-                {
+            exports.ox_target:addBoxZone({
+                id = string.format("property-%s-warehouse", propertyId),
+                coords = interior.locations.warehouse.polyzone.center,
+                size = vector3(interior.locations.warehouse.polyzone.length, interior.locations.warehouse.polyzone.width,
+                    2.0),
+                rotation = interior.locations.warehouse.polyzone.options.heading or 0,
+                debug = false,
+                minZ = interior.locations.warehouse.polyzone.options.minZ,
+                maxZ = interior.locations.warehouse.polyzone.options.maxZ,
+                options = {
                     {
                         icon = "box-open-full",
-                        text = "Access Storage",
-                        event = "Properties:Client:Stash",
-                        data = propertyId,
-                        isEnabled = function(data)
+                        label = "Access Storage",
+                        onSelect = function()
+                            TriggerEvent("Properties:Client:Stash", propertyId)
+                        end,
+                        canInteract = function(data)
                             if not _propertiesLoaded then
                                 return false
                             end
@@ -118,20 +122,19 @@ function CreatePropertyZones(propertyId, int)
                                 property.keys[LocalPlayer.state.Character:GetData("ID")] ~= nil
                         end,
                     },
-                },
-                2.0,
-                true
-            )
+                }
+            })
         end
 
         if interior.locations.crafting and GlobalState[string.format("Property:Crafting:%s", propertyId)] then
             local menu = {
                 {
                     icon = "box-open-full",
-                    text = "Access Storage",
-                    event = "Properties:Client:Stash",
-                    data = propertyId,
-                    isEnabled = function(data)
+                    label = "Access Storage",
+                    onSelect = function()
+                        TriggerEvent("Properties:Client:Stash", propertyId)
+                    end,
+                    canInteract = function(data)
                         if not _propertiesLoaded then
                             return false
                         end
@@ -142,10 +145,11 @@ function CreatePropertyZones(propertyId, int)
                 },
                 {
                     icon = "screwdriver-wrench",
-                    text = "Use Bench",
-                    event = "Properties:Client:Crafting",
-                    data = propertyId,
-                    isEnabled = function(data)
+                    label = "Use Bench",
+                    onSelect = function()
+                        TriggerEvent("Properties:Client:Crafting", propertyId)
+                    end,
+                    canInteract = function(data)
                         if not _propertiesLoaded then
                             return false
                         end
@@ -158,12 +162,14 @@ function CreatePropertyZones(propertyId, int)
             if GlobalState[string.format("Property:Crafting:%s", propertyId)].schematics then
                 table.insert(menu, {
                     icon = "memo-circle-check",
-                    text = "Add Schematic To Bench",
+                    label = "Add Schematic To Bench",
                     event = "Crafting:Client:AddSchematic",
-                    data = {
-                        id = string.format("property-%s", propertyId),
-                    },
-                    isEnabled = function(data, entityData)
+                    onSelect = function()
+                        TriggerEvent("Crafting:Client:AddSchematic", {
+                            id = string.format("property-%s", propertyId),
+                        })
+                    end,
+                    canInteract = function(data, entityData)
                         if not _propertiesLoaded then
                             return false
                         end
@@ -173,28 +179,27 @@ function CreatePropertyZones(propertyId, int)
                 })
             end
 
-            exports['sandbox-targeting']:ZonesAddBox(
-                string.format("property-%s-crafting", propertyId),
-                "screwdriver-wrench",
-                interior.locations.crafting.polyzone.center,
-                interior.locations.crafting.polyzone.length,
-                interior.locations.crafting.polyzone.width,
-                interior.locations.crafting.polyzone.options,
-                menu,
-                2.0,
-                true
-            )
+            exports.ox_target:addBoxZone({
+                id = string.format("property-%s-crafting", propertyId),
+                coords = interior.locations.crafting.polyzone.center,
+                size = vector3(interior.locations.crafting.polyzone.length, interior.locations.crafting.polyzone.width,
+                    2.0),
+                rotation = interior.locations.crafting.polyzone.options.heading or 0,
+                debug = false,
+                minZ = interior.locations.crafting.polyzone.options.minZ,
+                maxZ = interior.locations.crafting.polyzone.options.maxZ,
+                options = menu
+            })
         end
 
         Wait(1000)
-        exports['sandbox-targeting']:ZonesRefresh()
     end
 end
 
 function DestroyPropertyZones(propertyId)
-    exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-exit", propertyId))
-    exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-exit-back", propertyId))
-    exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-warehouse", propertyId))
-    exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-office", propertyId))
-    exports['sandbox-targeting']:ZonesRemoveZone(string.format("property-%s-crafting", propertyId))
+    exports.ox_target:removeZone(string.format("property-%s-exit", propertyId))
+    exports.ox_target:removeZone(string.format("property-%s-exit-back", propertyId))
+    exports.ox_target:removeZone(string.format("property-%s-warehouse", propertyId))
+    exports.ox_target:removeZone(string.format("property-%s-office", propertyId))
+    exports.ox_target:removeZone(string.format("property-%s-crafting", propertyId))
 end

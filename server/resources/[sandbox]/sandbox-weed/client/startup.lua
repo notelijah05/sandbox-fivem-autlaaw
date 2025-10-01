@@ -1,6 +1,6 @@
 function RegisterTargets()
 	for k, v in ipairs(Plants) do
-		exports['sandbox-targeting']:AddObject(v.model, "cannabis", v.targeting, 3.0)
+		exports.ox_target:addModel(v.model, v.targeting)
 	end
 end
 

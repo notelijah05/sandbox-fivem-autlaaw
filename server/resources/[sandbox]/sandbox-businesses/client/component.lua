@@ -116,51 +116,43 @@ RegisterNetEvent("Businesses:Client:CreatePoly", function(pickups, onSpawn)
 	for k, v in ipairs(pickups) do
 		local data = GlobalState[string.format("Businesses:Pickup:%s", v)]
 		if data ~= nil then
-			exports['sandbox-targeting']:ZonesAddBox(data.id, "box-open", data.coords, data.width, data.length,
-				data.options, {
+			exports.ox_target:addBoxZone({
+				id = data.id,
+				coords = data.coords,
+				size = vector3(data.width, data.length, 2.0),
+				rotation = data.options.heading or 0,
+				debug = false,
+				minZ = data.options.minZ,
+				maxZ = data.options.maxZ,
+				options = {
 					{
 						icon = "box-open",
-						text = string.format("Pickup Order (#%s)", data.num),
+						label = string.format("Pickup Order (#%s)", data.num),
 						event = "Businesses:Client:Pickup",
-						data = data.data,
 					},
 					{
 						icon = "money-check-dollar-pen",
-						text = "Set Contactless Payment",
+						label = "Set Contactless Payment",
 						event = "Businesses:Client:CreateContactlessPayment",
-						isEnabled = function(data)
+						groups = { data.job },
+						reqDuty = true,
+						canInteract = function()
 							return not GlobalState[string.format("PendingContactless:%s", data.id)]
 						end,
-						data = data,
-						jobPerms = {
-							{
-								job = data.job,
-								reqDuty = true,
-							},
-						},
 					},
 					{
 						icon = "money-check-dollar-pen",
-						text = "Clear Contactless Payment",
+						label = "Clear Contactless Payment",
 						event = "Businesses:Client:ClearContactlessPayment",
-						isEnabled = function(data)
+						groups = { data.job },
+						reqDuty = true,
+						canInteract = function()
 							return GlobalState[string.format("PendingContactless:%s", data.id)]
 						end,
-						data = data,
-						jobPerms = {
-							{
-								job = data.job,
-								reqDuty = true,
-							},
-						},
 					},
 					{
 						icon = "money-check-dollar",
-						isEnabled = function(data)
-							return GlobalState[string.format("PendingContactless:%s", data.id)]
-								and GlobalState[string.format("PendingContactless:%s", data.id)] > 0
-						end,
-						textFunc = function(data)
+						label = function()
 							if
 								GlobalState[string.format("PendingContactless:%s", data.id)]
 								and GlobalState[string.format("PendingContactless:%s", data.id)] > 0
@@ -172,15 +164,20 @@ RegisterNetEvent("Businesses:Client:CreatePoly", function(pickups, onSpawn)
 							end
 						end,
 						event = "Businesses:Client:PayContactlessPayment",
-						data = data,
-						item = "phone",
+						items = { "phone" },
+						reqDuty = true,
+						canInteract = function()
+							return GlobalState[string.format("PendingContactless:%s", data.id)]
+								and GlobalState[string.format("PendingContactless:%s", data.id)] > 0
+						end,
 					},
-				}, 2.0, true)
+				}
+			})
 		end
 	end
 end)
 
-AddEventHandler("Businesses:Client:Pickup", function(entity, data)
+AddEventHandler("Businesses:Client:Pickup", function(data)
 	exports['sandbox-inventory']:DumbfuckOpen(data.inventory)
 end)
 
@@ -188,324 +185,277 @@ function GetBusinessClockInMenu(businessName)
 	return {
 		{
 			icon = "clipboard-check",
-			text = "Clock In",
+			label = "Clock In",
 			event = "Businesses:Client:ClockIn",
-			data = { job = businessName },
-			jobPerms = {
-				{
-					job = businessName,
-					reqOffDuty = true,
-				},
-			},
+			groups = { businessName },
+			reqOffDuty = true,
 		},
 		{
 			icon = "clipboard",
-			text = "Clock Out",
+			label = "Clock Out",
 			event = "Businesses:Client:ClockOut",
-			data = { job = businessName },
-			jobPerms = {
-				{
-					job = businessName,
-					reqDuty = true,
-				},
-			},
+			groups = { businessName },
+			reqDuty = true,
 		},
 	}
 end
 
 AddEventHandler("Businesses:Client:Startup", function()
-	exports['sandbox-targeting']:ZonesAddBox("digitalden-clockinoff", "chess-clock", vector3(384.17, -830.31, 29.3), 1.2,
-		0.8, {
-			heading = 0,
-			--debugPoly=true,
-			minZ = 28.7,
-			maxZ = 30.3,
-		}, GetBusinessClockInMenu("digitalden"), 3.0, true)
+	exports.ox_target:addBoxZone({
+		id = "digitalden-clockinoff",
+		coords = vector3(384.17, -830.31, 29.3),
+		size = vector3(1.2, 0.8, 1.6),
+		rotation = 0,
+		debug = false,
+		minZ = 28.7,
+		maxZ = 30.3,
+		options = GetBusinessClockInMenu("digitalden")
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("securoserv-clockinoff", "chess-clock", vector3(19.99, -119.98, 56.22), 2,
-		1.0, {
-			heading = 340,
-			--debugPoly=true,
-			minZ = 55.22,
-			maxZ = 57.42,
-		}, GetBusinessClockInMenu("securoserv"), 3.0, true)
+	exports.ox_target:addBoxZone({
+		id = "securoserv-clockinoff",
+		coords = vector3(19.99, -119.98, 56.22),
+		size = vector3(2.0, 1.0, 2.2),
+		rotation = 340,
+		debug = false,
+		minZ = 55.22,
+		maxZ = 57.42,
+		options = GetBusinessClockInMenu("securoserv")
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("pepega_pawn-clockinoff", "chess-clock", vector3(-328.13, -90.89, 47.05),
-		2.6, 0.6, {
-			heading = 340,
-			--debugPoly=true,
-			minZ = 45.65,
-			maxZ = 47.85,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "pepega_pawn-clockinoff",
+		coords = vector3(-328.13, -90.89, 47.05),
+		size = vector3(2.6, 0.6, 2.2),
+		rotation = 340,
+		debug = false,
+		minZ = 45.65,
+		maxZ = 47.85,
+		options = {
 			{
 				icon = "clipboard-check",
-				text = "Clock In",
+				label = "Clock In",
 				event = "Businesses:Client:ClockIn",
-				data = { job = "pepega_pawn" },
-				jobPerms = {
-					{
-						job = "pepega_pawn",
-						reqOffDuty = true,
-					},
-				},
+				groups = { "pepega_pawn" },
+				reqOffDuty = true,
 			},
 			{
 				icon = "clipboard",
-				text = "Clock Out",
+				label = "Clock Out",
 				event = "Businesses:Client:ClockOut",
-				data = { job = "pepega_pawn" },
-				jobPerms = {
-					{
-						job = "pepega_pawn",
-						reqDuty = true,
-					},
-				},
+				groups = { "pepega_pawn" },
+				reqDuty = true,
 			},
 			-- {
 			-- 	icon = "tv",
-			-- 	text = "Set TV Link",
+			-- 	label = "Set TV Link",
 			-- 	event = "Billboards:Client:SetLink",
-			-- 	data = { id = "business_pepega" },
-			-- 	jobPerms = {
-			-- 		{
-			-- 			job = "pepega_pawn",
-			-- 			reqDuty = true,
-			-- 		},
-			-- 	},
+			-- 	groups = { "pepega_pawn" },
+			--  reqDuty = true,
 			-- },
-		}, 3.0, true)
+		}
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("garcon_pawn-clockinoff", "chess-clock", vector3(-216.49, 6231.88, 31.79),
-		1.8, 1.0, {
-			heading = 315,
-			--debugPoly=true,
-			minZ = 28.39,
-			maxZ = 32.39,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "garcon_pawn-clockinoff",
+		coords = vector3(-216.49, 6231.88, 31.79),
+		size = vector3(1.8, 1.0, 4.0),
+		rotation = 315,
+		debug = false,
+		minZ = 28.39,
+		maxZ = 32.39,
+		options = {
 			{
 				icon = "clipboard-check",
-				text = "Clock In",
+				label = "Clock In",
 				event = "Businesses:Client:ClockIn",
-				data = { job = "garcon_pawn" },
-				jobPerms = {
-					{
-						job = "garcon_pawn",
-						reqOffDuty = true,
-					},
-				},
+				groups = { "garcon_pawn" },
+				reqOffDuty = true,
 			},
 			{
 				icon = "clipboard",
-				text = "Clock Out",
+				label = "Clock Out",
 				event = "Businesses:Client:ClockOut",
-				data = { job = "garcon_pawn" },
-				jobPerms = {
-					{
-						job = "garcon_pawn",
-						reqDuty = true,
-					},
-				},
+				groups = { "garcon_pawn" },
+				reqDuty = true,
 			},
-		}, 3.0, true)
+		}
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("sagma-clockinoff", "chess-clock", vector3(-422.48, 31.83, 46.23), 1, 1, {
-		heading = 8,
-		--debugPoly=true,
+	exports.ox_target:addBoxZone({
+		id = "sagma-clockinoff",
+		coords = vector3(-422.48, 31.83, 46.23),
+		size = vector3(1.0, 1.0, 1.2),
+		rotation = 8,
+		debug = false,
 		minZ = 46.03,
 		maxZ = 47.23,
-	}, GetBusinessClockInMenu("sagma"), 3.0, true)
+		options = GetBusinessClockInMenu("sagma")
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("sagma-clockinoff2", "chess-clock", vector3(-491.26, 31.8, 46.3), 1, 1, {
-		heading = 355,
-		--debugPoly=true,
+	exports.ox_target:addBoxZone({
+		id = "sagma-clockinoff2",
+		coords = vector3(-491.26, 31.8, 46.3),
+		size = vector3(1.0, 1.0, 1.0),
+		rotation = 355,
+		debug = false,
 		minZ = 46.1,
 		maxZ = 47.1,
-	}, GetBusinessClockInMenu("sagma"), 3.0, true)
+		options = GetBusinessClockInMenu("sagma")
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("jewel-clockinoff", "chess-clock", vector3(-708.553, -900.005, 23.819), 0.5,
-		0.5, {
-			heading = 356,
-			--debugPoly=true,
-			minZ = 23.219,
-			maxZ = 24.219,
-		}, GetBusinessClockInMenu("jewel"), 3.0, true)
+	exports.ox_target:addBoxZone({
+		id = "jewel-clockinoff",
+		coords = vector3(-708.553, -900.005, 23.819),
+		size = vector3(0.5, 0.5, 1.0),
+		rotation = 356,
+		debug = false,
+		minZ = 23.219,
+		maxZ = 24.219,
+		options = GetBusinessClockInMenu("jewel")
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("vangelico-clockinoff", "chess-clock", vector3(-382.69, 6046.2, 31.51), 0.6,
-		0.4, {
-			heading = 45,
-			--debugPoly=true,
-			minZ = 31.16,
-			maxZ = 31.91,
-		}, GetBusinessClockInMenu("vangelico"), 3.0, true)
+	exports.ox_target:addBoxZone({
+		id = "vangelico-clockinoff",
+		coords = vector3(-382.69, 6046.2, 31.51),
+		size = vector3(0.6, 0.4, 0.75),
+		rotation = 45,
+		debug = false,
+		minZ = 31.16,
+		maxZ = 31.91,
+		options = GetBusinessClockInMenu("vangelico")
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox(
-		"vangelico_grapeseed-clockinoff",
-		"chess-clock",
-		vector3(1651.47, 4880.55, 42.16),
-		0.6,
-		0.4,
-		{
-			heading = 8,
-			--debugPoly=true,
-			minZ = 38.56,
-			maxZ = 42.56,
-		},
-		GetBusinessClockInMenu("vangelico_grapeseed"),
-		3.0,
-		true
-	)
+	exports.ox_target:addBoxZone({
+		id = "vangelico_grapeseed-clockinoff",
+		coords = vector3(1651.47, 4880.55, 42.16),
+		size = vector3(0.6, 0.4, 4.0),
+		rotation = 8,
+		debug = false,
+		minZ = 38.56,
+		maxZ = 42.56,
+		options = GetBusinessClockInMenu("vangelico_grapeseed")
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("tuner-tvs", "tv", vector3(125.35, -3014.88, 7.04), 0.8, 2.0, {
-		heading = 0,
-		--debugPoly=true,
+	exports.ox_target:addBoxZone({
+		id = "tuner-tvs",
+		coords = vector3(125.35, -3014.88, 7.04),
+		size = vector3(0.8, 2.0, 1.0),
+		rotation = 0,
+		debug = false,
 		minZ = 6.64,
 		maxZ = 7.64,
-	}, {
-		{
-			icon = "tv",
-			text = "Set TV Link",
-			event = "Billboards:Client:SetLink",
-			data = { id = "business_tuner" },
-			jobPerms = {
-				{
-					job = "tuna",
-					reqDuty = true,
-				},
+		options = {
+			{
+				icon = "tv",
+				label = "Set TV Link",
+				event = "Billboards:Client:SetLink",
+				groups = { "tuna" },
+				reqDuty = true,
 			},
-		},
-	}, 3.0, true)
+		}
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("paleto_tuners-clockinoff", "chess-clock", vector3(178.55, 6382.73, 31.27),
-		2.0, 1.4, {
-			heading = 28,
-			--debugPoly=true,
-			minZ = 30.27,
-			maxZ = 32.07,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "paleto_tuners-clockinoff",
+		coords = vector3(178.55, 6382.73, 31.27),
+		size = vector3(2.0, 1.4, 1.8),
+		rotation = 28,
+		debug = false,
+		minZ = 30.27,
+		maxZ = 32.07,
+		options = {
 			{
 				icon = "clipboard-check",
-				text = "Clock In",
+				label = "Clock In",
 				event = "Businesses:Client:ClockIn",
-				data = { job = "paleto_tuners" },
-				jobPerms = {
-					{
-						job = "paleto_tuners",
-						reqOffDuty = true,
-					},
-				},
+				groups = { "paleto_tuners" },
+				reqOffDuty = true,
 			},
 			{
 				icon = "clipboard",
-				text = "Clock Out",
+				label = "Clock Out",
 				event = "Businesses:Client:ClockOut",
-				data = { job = "paleto_tuners" },
-				jobPerms = {
-					{
-						job = "paleto_tuners",
-						reqDuty = true,
-					},
-				},
+				groups = { "paleto_tuners" },
+				reqDuty = true,
 			},
 			{
 				icon = "tv",
-				text = "Set TV Link",
+				label = "Set TV Link",
 				event = "Billboards:Client:SetLink",
-				data = { id = "business_paleto_tuners" },
-				jobPerms = {
-					{
-						job = "paleto_tuners",
-						reqDuty = true,
-					},
-				},
+				groups = { "paleto_tuners" },
+				reqDuty = true,
 			},
-		}, 3.0, true)
+		}
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("paleto_tuners-clockinoff2", "chess-clock", vector3(149.34, 6378.17, 31.27),
-		1.4, 1.8, {
-			heading = 26,
-			--debugPoly=true,
-			minZ = 30.27,
-			maxZ = 31.87,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "paleto_tuners-clockinoff2",
+		coords = vector3(149.34, 6378.17, 31.27),
+		size = vector3(1.4, 1.8, 1.6),
+		rotation = 26,
+		debug = false,
+		minZ = 30.27,
+		maxZ = 31.87,
+		options = {
 			{
 				icon = "clipboard-check",
-				text = "Clock In",
+				label = "Clock In",
 				event = "Businesses:Client:ClockIn",
-				data = { job = "paleto_tuners" },
-				jobPerms = {
-					{
-						job = "paleto_tuners",
-						reqOffDuty = true,
-					},
-				},
+				groups = { "paleto_tuners" },
+				reqOffDuty = true,
 			},
 			{
 				icon = "clipboard",
-				text = "Clock Out",
+				label = "Clock Out",
 				event = "Businesses:Client:ClockOut",
-				data = { job = "paleto_tuners" },
-				jobPerms = {
-					{
-						job = "paleto_tuners",
-						reqDuty = true,
-					},
-				},
+				groups = { "paleto_tuners" },
+				reqDuty = true,
 			},
 			{
 				icon = "tv",
-				text = "Set TV Link",
+				label = "Set TV Link",
 				event = "Billboards:Client:SetLink",
-				data = { id = "business_paleto_tuners" },
-				jobPerms = {
-					{
-						job = "paleto_tuners",
-						reqDuty = true,
-					},
-				},
+				groups = { "paleto_tuners" },
+				reqDuty = true,
 			},
-		}, 3.0, true)
+		}
+	})
 
-	exports['sandbox-targeting']:ZonesAddBox("blackline-clockinoff", "circle-dot", vector3(946.64, -1744.41, 21.03), 2.2,
-		2.2, {
-			heading = 0,
-			--debugPoly=true,
-			minZ = 20.03,
-			maxZ = 22.43,
-		}, {
+	exports.ox_target:addBoxZone({
+		id = "blackline-clockinoff",
+		coords = vector3(946.64, -1744.41, 21.03),
+		size = vector3(2.2, 2.2, 2.4),
+		rotation = 0,
+		debug = false,
+		minZ = 20.03,
+		maxZ = 22.43,
+		options = {
 			{
 				icon = "clipboard-check",
-				text = "Clock In",
+				label = "Clock In",
 				event = "Businesses:Client:ClockIn",
-				data = { job = "blackline" },
-				jobPerms = {
-					{
-						job = "blackline",
-						reqOffDuty = true,
-					},
-				},
+				groups = { "blackline" },
+				reqOffDuty = true,
 			},
 			{
 				icon = "clipboard",
-				text = "Clock Out",
+				label = "Clock Out",
 				event = "Businesses:Client:ClockOut",
-				data = { job = "blackline" },
-				jobPerms = {
-					{
-						job = "blackline",
-						reqDuty = true,
-					},
-				},
+				groups = { "blackline" },
+				reqDuty = true,
 			},
-		}, 3.0, true)
+		}
+	})
 end)
 
-AddEventHandler("Businesses:Client:ClockIn", function(_, data)
+AddEventHandler("Businesses:Client:ClockIn", function(data)
 	if data and data.job then
 		exports['sandbox-jobs']:DutyOn(data.job)
 	end
 end)
 
-AddEventHandler("Businesses:Client:ClockOut", function(_, data)
+AddEventHandler("Businesses:Client:ClockOut", function(data)
 	if data and data.job then
 		exports['sandbox-jobs']:DutyOff(data.job)
 	end

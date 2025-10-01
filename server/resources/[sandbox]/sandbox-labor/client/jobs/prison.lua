@@ -21,48 +21,60 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 			exports["sandbox-blips"]:Add(id, data.blip.name, v.coords, data.blip.sprite or 188, data.blip.color or 56,
 				0.8)
 			if v.type == "box" then
-				exports['sandbox-targeting']:ZonesAddBox(id, "box-open-full", v.coords, v.length, v.width, v.options, {
-					{
-						icon = "hand-middle-finger",
-						text = data.action,
-						event = string.format("Labor:Client:%s:Action", joiner),
-						data = v.data,
-						tempjob = "Prison",
-						isEnabled = function(data)
-							return _working and _state == 1
-						end,
-					},
-				}, 3.0, true)
+				exports.ox_target:addBoxZone({
+					id = id,
+					coords = v.coords,
+					size = vector3(v.length, v.width, 2.0),
+					rotation = v.options.heading or 0,
+					debug = false,
+					minZ = v.options.minZ,
+					maxZ = v.options.maxZ,
+					options = {
+						{
+							icon = "hand-middle-finger",
+							label = data.action,
+							event = string.format("Labor:Client:%s:Action", joiner),
+							canInteract = function(data)
+								return _working and _state == 1
+							end,
+						},
+					}
+				})
 			elseif v.type == "circle" then
-				exports['sandbox-targeting']:ZonesAddCircle(id, "box-open-full", v.coords, v.radius, v.options, {
-					{
-						icon = "hand-middle-finger",
-						text = data.action,
-						event = string.format("Labor:Client:%s:Action", joiner),
-						data = v.data,
-						tempjob = "Prison",
-						isEnabled = function(data)
-							return _working and _state == 1
-						end,
-					},
-				}, 3.0, true)
+				exports.ox_target:addSphereZone({
+					id = id,
+					coords = v.coords,
+					radius = v.radius,
+					debug = false,
+					options = {
+						{
+							icon = "hand-middle-finger",
+							label = data.action,
+							event = string.format("Labor:Client:%s:Action", joiner),
+							canInteract = function(data)
+								return _working and _state == 1
+							end,
+						},
+					}
+				})
 			elseif v.type == "poly" then
-				exports['sandbox-targeting']:ZonesAddPoly(id, "box-open-full", v.points, v.options, {
-					{
-						icon = "hand-middle-finger",
-						text = data.action,
-						event = string.format("Labor:Client:%s:Action", joiner),
-						data = v.data,
-						tempjob = "Prison",
-						isEnabled = function(data)
-							return _working and _state == 1
-						end,
-					},
-				}, 3.0, true)
+				exports.ox_target:addPolyZone({
+					id = id,
+					points = v.points,
+					debug = false,
+					options = {
+						{
+							icon = "hand-middle-finger",
+							label = data.action,
+							event = string.format("Labor:Client:%s:Action", joiner),
+							canInteract = function(data)
+								return _working and _state == 1
+							end,
+						},
+					}
+				})
 			end
 		end
-
-		exports['sandbox-targeting']:ZonesRefresh()
 	end)
 
 	eventHandlers["action"] = AddEventHandler(string.format("Labor:Client:%s:Action", joiner), function(ent, data)
@@ -83,9 +95,8 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 			if not status then
 				exports["sandbox-base"]:ServerCallback("Prison:Action", data.id, function(s)
 					local id = string.format("PrisonNode%s", data.id)
-					exports['sandbox-targeting']:ZonesRemoveZone(id)
+					exports.ox_target:removeZone(id)
 					exports["sandbox-blips"]:Remove(id)
-					exports['sandbox-targeting']:ZonesRefresh()
 				end)
 			end
 		end)
@@ -95,10 +106,9 @@ RegisterNetEvent("Prison:Client:OnDuty", function(joiner, time)
 		if _nodes ~= nil then
 			for k, v in ipairs(_nodes.locations) do
 				local id = string.format("PrisonNode%s", v.id)
-				exports['sandbox-targeting']:ZonesRemoveZone(id)
+				exports.ox_target:removeZone(id)
 				exports["sandbox-blips"]:Remove(id)
 			end
-			exports['sandbox-targeting']:ZonesRefresh()
 		end
 
 		_nodes = nil
@@ -122,10 +132,9 @@ RegisterNetEvent("Prison:Client:OffDuty", function(time)
 	if _nodes ~= nil then
 		for k, v in ipairs(_nodes.locations) do
 			local id = string.format("PrisonNode%s", v.id)
-			exports['sandbox-targeting']:ZonesRemoveZone(id)
+			exports.ox_target:removeZone(id)
 			exports["sandbox-blips"]:Remove(id)
 		end
-		exports['sandbox-targeting']:ZonesRefresh()
 	end
 
 	_joiner = nil

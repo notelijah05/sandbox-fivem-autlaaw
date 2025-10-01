@@ -21,11 +21,9 @@ AddEventHandler('onClientResourceStart', function(resource)
 		CreateFuelStationPolyzones()
 
 		for k, v in ipairs(pumpModels) do
-			exports['sandbox-targeting']:AddObject(v, "gas-pump", {
+			exports.ox_target:addModel(v, {
 				{
-					text = "Refill Petrol Can",
-					icon = "gas-pump",
-					textFunc = function()
+					label = function()
 						local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
 						local pct = current / 4500
 						return string.format(
@@ -33,9 +31,10 @@ AddEventHandler('onClientResourceStart', function(resource)
 							math.ceil(CalculateFuelCost(0, math.floor(100 - (pct * 100))))
 						)
 					end,
+					icon = "gas-pump",
 					event = "Fuel:Client:FillCan",
-					minDist = 3.0,
-					isEnabled = function()
+					distance = 3.0,
+					canInteract = function()
 						local isArmed, hash = GetCurrentPedWeapon(LocalPlayer.state.ped)
 						local current = GetAmmoInPedWeapon(LocalPlayer.state.ped, `WEAPON_PETROLCAN`)
 						local pct = current / 4500
@@ -51,7 +50,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 						end
 					end,
 				},
-			}, 3.0)
+			})
 		end
 	end
 end)
