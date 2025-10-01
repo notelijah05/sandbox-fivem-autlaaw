@@ -14,15 +14,10 @@ function setupStores(shops)
 
 			if v.restriction ~= nil then
 				if v.restriction.job ~= nil then
-					menu.jobPerms = {
-						{
-							job = v.restriction.job.id,
-							workplace = v.restriction.job.workplace,
-							grade = v.restriction.job.grade,
-							permissionKey = v.restriction.job.permissionKey,
-							reqDuty = true,
-						}
-					}
+					menu.groups = { v.restriction.job.id }
+					menu.permissionKey = v.restriction.job.permissionKey
+					menu.reqDuty = true
+					menu.workplace = v.restriction.job.workplace
 				end
 			end
 

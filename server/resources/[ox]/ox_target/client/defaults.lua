@@ -943,9 +943,7 @@ Config.VehicleMenu = {
         event = "Dealerships:Client:StartBuyback",
         data = {},
         minDist = 5.0,
-        groups = {
-            permissionKey = "dealership_buyback",
-        },
+        permissionKey = "dealership_buyback",
     },
 }
 
@@ -975,6 +973,7 @@ for _, menuItem in ipairs(Config.VehicleMenu) do
             reqDuty = menuItem.reqDuty or false,
             reqOffDuty = menuItem.reqOffDuty or false,
             workplace = menuItem.workplace or nil,
+            permissionKey = menuItem.permissionKey or nil,
             model = menuItem.model or nil,
             canInteract = canInteractFn,
         })

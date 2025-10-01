@@ -179,16 +179,16 @@ function CreateDumbAssPed(model, coords, heading, menu, icon, scenario, anim, co
 				label = option.label or option.text,
 				icon = option.icon or "fa-solid fa-shop",
 				distance = option.distance or option.minDist or 2.0,
+				groups = option.groups or {},
+				permissionKey = option.permissionKey or nil,
+				reqDuty = option.reqDuty or false,
+				workplace = option.workplace or nil,
 				onSelect = function()
 					if option.event then
 						TriggerEvent(option.event, (option.data or {}))
 					end
 				end
 			}
-
-			if option.groups then
-				oxOption.groups = option.groups
-			end
 
 			table.insert(oxOptions, oxOption)
 		end

@@ -9,14 +9,10 @@ function CreateGovermentFleetShops()
                         text = 'Purchase Fleet Vehicles',
                         event = 'FleetDealers:Client:Open',
                         data = { shop = k },
-                        jobPerms = {
-                            {
-                                job = v.job,
-                                permissionKey = v.requiredPermission,
-                                reqDuty = true,
-                                workplace = v.workplace,
-                            },
-                        }
+                        groups = { v.job },
+                        permissionKey = v.requiredPermission,
+                        reqDuty = true,
+                        workplace = v.workplace,
                     },
                 }, 'cars', v.interactionPed.scenario)
         end
