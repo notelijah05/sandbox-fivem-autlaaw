@@ -80,7 +80,7 @@ exports("DutyOn", function(jobId, cb)
 		end
 	end
 
-	exports["sandbox-base"]:ServerCallback(":OnDuty", jobId, function(success)
+	exports["sandbox-base"]:ServerCallback("Jobs:OnDuty", jobId, function(success)
 		if cb then
 			cb(success)
 		end
@@ -88,7 +88,7 @@ exports("DutyOn", function(jobId, cb)
 end)
 
 exports("DutyOff", function(jobId, cb)
-	exports["sandbox-base"]:ServerCallback(":OffDuty", jobId, function(success)
+	exports["sandbox-base"]:ServerCallback("Jobs:OffDuty", jobId, function(success)
 		if cb then
 			cb(success)
 		end
