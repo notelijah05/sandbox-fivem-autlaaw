@@ -18,6 +18,35 @@ DROP DATABASE IF EXISTS `database_ptr`;
 CREATE DATABASE IF NOT EXISTS `database_ptr` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
 USE `database_ptr`;
 
+DROP TABLE IF EXISTS `vehicles`;
+CREATE TABLE IF NOT EXISTS `vehicles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `VIN` varchar(50) NOT NULL,
+  `Type` int(11) NOT NULL DEFAULT 0,
+  `Make` varchar(100) NOT NULL,
+  `Model` varchar(100) NOT NULL,
+  `RegisteredPlate` varchar(20) NOT NULL,
+  `RegistrationDate` datetime DEFAULT NULL,
+  `OwnerType` int(11) NOT NULL DEFAULT 0,
+  `OwnerId` int(11) NOT NULL,
+  `OwnerWorkplace` int(11) DEFAULT NULL,
+  `StorageType` int(11) DEFAULT NULL,
+  `StorageId` varchar(50) DEFAULT NULL,
+  `Properties` longtext DEFAULT NULL,
+  `Created` datetime NOT NULL DEFAULT current_timestamp(),
+  `LastSave` bigint(20) DEFAULT NULL,
+  `ModelType` varchar(50) DEFAULT 'automobile',
+  `Vehicle` int(11) DEFAULT 0,
+  `Glovebox` longtext DEFAULT NULL,
+  `Trunk` longtext DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `VIN` (`VIN`),
+  KEY `OwnerType` (`OwnerType`),
+  KEY `OwnerId` (`OwnerId`),
+  KEY `RegisteredPlate` (`RegisteredPlate`),
+  CONSTRAINT `Properties` CHECK (json_valid(`Properties`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `billboards`;
 CREATE TABLE IF NOT EXISTS `billboards` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -225,6 +254,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `Mugshot` varchar(255) DEFAULT NULL,
   `Attorney` tinyint(1) DEFAULT 0,
   `MDTSuspension` tinyint(1) DEFAULT 0,
+  `Inventory` longtext DEFAULT NULL,
   PRIMARY KEY (`SID`) USING BTREE,
   CONSTRAINT `Origin` CHECK (json_valid(`Origin`)),
   CONSTRAINT `Apps` CHECK (json_valid(`Apps`)),

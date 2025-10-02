@@ -13,7 +13,6 @@ AddEventHandler('onResourceStart', function(resource)
         Wait(1000)
         RegisterCallbacks()
         RegisterMiddleware()
-        RegisterItemUses()
         RegisterPersonalPlateCallbacks()
         RegisterChatCommands()
         Startup()
@@ -65,7 +64,6 @@ local tempVehicleStoreShit = { '_id', 'VIN', 'EntityId', 'LastSave', 'Flags', 'S
 function SaveVehicle(VIN)
     local veh = exports['sandbox-vehicles']:OwnedGetActive(VIN)
     if veh then
-        local p = promise.new()
         local vehEnt = veh:GetData('EntityId')
         local vehState = Entity(vehEnt).state
 
@@ -100,19 +98,11 @@ function SaveVehicle(VIN)
 
         veh:SetData('LastSave', os.time())
 
-        exports['sandbox-base']:DatabaseGameUpdateOne({
-            collection = 'vehicles',
-            query = {
-                VIN = VIN,
-            },
-            update = {
-                ["$set"] = data,
-            },
-        }, function(success, res)
-            p:resolve(success)
-        end)
+        local success = MySQL.update.await(
+            "UPDATE vehicles SET Properties = ?, LastSave = ? WHERE VIN = ?",
+            { json.encode(data), os.time(), VIN }
+        )
 
-        local success = Citizen.Await(p)
         return success
     else
         return false
@@ -301,43 +291,52 @@ exports("OwnedAdd",
                 Type = vehicleType,
                 Vehicle = vehicleHash,
                 ModelType = modelType,
-
                 VIN = VIN,
                 RegisteredPlate = plate,
                 FakePlate = false,
                 Fuel = math.random(90, 100),
-
-                Owner = ownerData,
-                Storage = storageData,
-
+                OwnerType = ownerData.Type,
+                OwnerId = ownerData.Id,
+                OwnerWorkplace = ownerData.Workplace,
+                StorageType = storageData and storageData.Type or 0,
+                StorageId = storageData and storageData.Id or 0,
                 Make = infoData.make or 'Unknown',
                 Model = infoData.model or 'Unknown',
                 Class = infoData.class or 'Unknown',
                 Value = infoData.value or false,
-
                 Donator = infoData.donatorFlag,
-
                 FirstSpawn = true,
                 Properties = type(properties) == 'table' and properties or false,
-
                 RegistrationDate = os.time(),
-
                 Mileage = 0,
-
                 DirtLevel = 0.0,
             }
 
-            exports['sandbox-base']:DatabaseGameInsertOne({
-                collection = 'vehicles',
-                document = doc,
-            }, function(success, insertedAmount, insertedIds)
-                if success and insertedAmount > 0 then
-                    doc._id = insertedIds[1]
-                    cb(true, doc)
-                else
-                    cb(false)
-                end
-            end)
+            local success = MySQL.insert.await(
+                "INSERT INTO vehicles (VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, Properties, Created, LastSave) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), FROM_UNIXTIME(?))",
+                {
+                    VIN,
+                    vehicleType,
+                    doc.Make,
+                    doc.Model,
+                    plate or '',
+                    ownerData.Type,
+                    ownerData.Id,
+                    ownerData.Workplace,
+                    storageData and storageData.Type or 0,
+                    storageData and storageData.Id or 0,
+                    json.encode(doc),
+                    os.time(),
+                    os.time()
+                }
+            )
+
+            if success then
+                doc._id = success
+                cb(true, doc)
+            else
+                cb(false)
+            end
         else
             cb(false)
         end
@@ -351,85 +350,138 @@ exports("OwnedGetActive", function(VIN)
 end)
 
 exports("OwnedGetVIN", function(VIN, cb)
-    exports['sandbox-base']:DatabaseGameFindOne({
-        collection = 'vehicles',
-        query = {
-            VIN = VIN,
-        }
-    }, function(success, results)
-        if success and #results > 0 then
-            local vehicle = results[1]
-            cb(vehicle)
-        else
-            cb(false)
+    local vehicle = MySQL.single.await(
+        "SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, Properties, ModelType FROM vehicles WHERE VIN = ?",
+        { VIN }
+    )
+
+    if vehicle then
+        if vehicle.Properties and vehicle.Properties ~= "" then
+            local success, properties = pcall(json.decode, vehicle.Properties)
+            if success and properties then
+                for k, v in pairs(properties) do
+                    vehicle[k] = v
+                end
+            end
         end
-    end)
+
+        vehicle.Owner = {
+            Type = vehicle.OwnerType,
+            Id = vehicle.OwnerId,
+            Workplace = vehicle.OwnerWorkplace
+        }
+
+        vehicle.Storage = {
+            Type = vehicle.StorageType,
+            Id = vehicle.StorageId
+        }
+
+        local defaultDamagedParts = {
+            Axle = 100.0,
+            Radiator = 100.0,
+            Transmission = 100.0,
+            Brakes = 100.0,
+            FuelInjectors = 100.0,
+            Clutch = 100.0,
+            Electronics = 100.0,
+        }
+
+        if not vehicle.DamagedParts or type(vehicle.DamagedParts) ~= 'table' then
+            vehicle.DamagedParts = defaultDamagedParts
+        else
+            for k, v in pairs(defaultDamagedParts) do
+                if vehicle.DamagedParts[k] == nil then
+                    vehicle.DamagedParts[k] = v
+                end
+            end
+        end
+
+        cb(vehicle)
+    else
+        cb(false)
+    end
 end)
 
 exports("OwnedGetAll",
     function(vehType, ownerType, ownerId, cb, storageType, storageId, ignoreSpawned, checkFleetOwner, projection)
-        local orQuery = {}
+        local whereConditions = {}
+        local params = {}
 
         if ownerType and ownerId then
-            table.insert(orQuery, {
-                ['Owner.Type'] = ownerType,
-                ['Owner.Id'] = ownerId,
-            })
+            table.insert(whereConditions, "OwnerType = ? AND OwnerId = ?")
+            table.insert(params, ownerType)
+            table.insert(params, ownerId)
         end
 
         if checkFleetOwner and checkFleetOwner.Id then
-            table.insert(orQuery, {
-                ['Owner.Type'] = 1,
-                ['Owner.Id'] = checkFleetOwner.Id,
-                ['Owner.Workplace'] = {
-                    ['$in'] = { checkFleetOwner.Workplace, false },
-                },
-                ['Owner.Level'] = {
-                    ['$lte'] = type(checkFleetOwner.Level) == 'number' and checkFleetOwner.Level or 0,
-                },
-            })
+            table.insert(whereConditions,
+                "(OwnerType = 1 AND OwnerId = ? AND (OwnerWorkplace = ? OR OwnerWorkplace IS NULL) AND OwnerLevel <= ?)")
+            table.insert(params, checkFleetOwner.Id)
+            table.insert(params, checkFleetOwner.Workplace or false)
+            table.insert(params, type(checkFleetOwner.Level) == 'number' and checkFleetOwner.Level or 0)
         end
 
-        local query = {
-            ['$or'] = #orQuery > 0 and orQuery or nil,
-        }
-
         if storageType and storageId then
-            query['Storage.Type'] = storageType
-            query['Storage.Id'] = storageId
+            table.insert(whereConditions, "StorageType = ? AND StorageId = ?")
+            table.insert(params, storageType)
+            table.insert(params, storageId)
         end
 
         if type(vehType) == 'number' then
-            query['Type'] = vehType
+            table.insert(whereConditions, "Type = ?")
+            table.insert(params, vehType)
         end
 
-        exports['sandbox-base']:DatabaseGameFind({
-            collection = 'vehicles',
-            query = query,
-            options = {
-                projection = projection,
-            }
-        }, function(success, results)
-            if success then
-                local vehicles = {}
-                for k, v in ipairs(results) do
-                    if not ignoreSpawned or (ignoreSpawned and not exports['sandbox-vehicles']:OwnedGetActive(v.VIN)) then
-                        v.Spawned = exports['sandbox-vehicles']:OwnedGetActive(v.VIN)
-                        if v.Storage and v.Storage.Type == 2 then
-                            local prop = exports['sandbox-properties']:Get(v.Storage.Id)
-                            if prop and prop.id and prop.label then
-                                v.PropertyStorage = prop
-                            end
-                        end
-                        table.insert(vehicles, v)
-                    end
-                end
+        local whereClause = ""
+        if #whereConditions > 0 then
+            whereClause = "WHERE " .. table.concat(whereConditions, " OR ")
+        end
 
-                cb(vehicles)
-            else
-                cb(false)
+        local results = MySQL.query.await(
+            "SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, Properties FROM vehicles " ..
+            whereClause,
+            params
+        )
+
+        if results then
+            local vehicles = {}
+            for k, v in ipairs(results) do
+                if not ignoreSpawned or (ignoreSpawned and not exports['sandbox-vehicles']:OwnedGetActive(v.VIN)) then
+                    if v.Properties then
+                        local properties = json.decode(v.Properties) or {}
+                        for propKey, propValue in pairs(properties) do
+                            v[propKey] = propValue
+                        end
+                    end
+
+                    v.Owner = {
+                        Type = v.OwnerType,
+                        Id = v.OwnerId,
+                        Workplace = v.OwnerWorkplace
+                    }
+
+                    v.Storage = {
+                        Type = v.StorageType,
+                        Id = v.StorageId
+                    }
+
+                    v.Spawned = exports['sandbox-vehicles']:OwnedGetActive(v.VIN)
+
+                    if v.Storage and v.Storage.Type == 2 then
+                        local prop = exports['sandbox-properties']:Get(v.Storage.Id)
+                        if prop and prop.id and prop.label then
+                            v.PropertyStorage = prop
+                        end
+                    end
+
+                    table.insert(vehicles, v)
+                end
             end
-        end)
+
+            cb(vehicles)
+        else
+            cb(false)
+        end
     end)
 
 exports("OwnedGetAllActive", function()
@@ -442,7 +494,6 @@ exports("OwnedSpawn", function(source, VIN, coords, heading, cb, extraData)
             local spawnedVehicle = CreateFuckingVehicle(vehicle.ModelType, vehicle.Vehicle, coords,
                 (heading and heading + 0.0 or 0.0))
             if spawnedVehicle then
-                -- Set State
                 local vehState = Entity(spawnedVehicle).state
 
                 vehState.ServerEntity = spawnedVehicle
@@ -646,30 +697,20 @@ exports("OwnedPropertiesGet", function(propertyId, ownerStateId, cb)
 end)
 
 exports("OwnedPropertiesGetCount", function(propertyId, ignoreVIN)
-    local p = promise.new()
-    local query = {
-        ['Storage.Type'] = 2,
-        ['Storage.Id'] = propertyId
-    }
+    local whereConditions = { "StorageType = 2", "StorageId = ?" }
+    local params = { propertyId }
 
     if ignoreVIN then
-        query['VIN'] = {
-            ['$ne'] = ignoreVIN
-        }
+        table.insert(whereConditions, "VIN != ?")
+        table.insert(params, ignoreVIN)
     end
 
-    exports['sandbox-base']:DatabaseGameCount({
-        collection = 'vehicles',
-        query = query,
-    }, function(success, count)
-        if success then
-            p:resolve(count)
-        else
-            p:resolve(false)
-        end
-    end)
+    local count = MySQL.scalar.await(
+        "SELECT COUNT(*) FROM vehicles WHERE " .. table.concat(whereConditions, " AND "),
+        params
+    )
 
-    return Citizen.Await(p)
+    return count or 0
 end)
 
 exports("OwnedSeize", function(VIN, seizeState) -- Vehicle Siezure for Loans
@@ -688,45 +729,24 @@ exports("OwnedSeize", function(VIN, seizeState) -- Vehicle Siezure for Loans
         local success = SaveVehicle(VIN)
         return success
     else -- Vehicle is stored, update DB directly
-        local p = promise.new()
-        exports['sandbox-vehicles']:OwnedGetVIN(VIN, function(vehicle)
-            if vehicle and vehicle.VIN then
-                local updatingStorage
-                if vehicle.Storage.Type > 0 then -- Not Impounded
-                    updatingStorage = {
-                        Type = 0,
-                        Id = 0,
-                        Fine = 0,
-                        TimeHold = false,
-                    }
-                end
+        local updatingStorage = nil
+        local vehicle = MySQL.single.await("SELECT StorageType, StorageId FROM vehicles WHERE VIN = ?", { VIN })
 
-                exports['sandbox-base']:DatabaseGameUpdateOne({
-                    collection = 'vehicles',
-                    query = {
-                        VIN = VIN,
-                    },
-                    update = {
-                        ['$set'] = {
-                            Seized = seizeState,
-                            SeizedTime = (seizeState and os.time() or false),
-                            Storage = updatingStorage
-                        }
-                    }
-                }, function(success, updated)
-                    if success and updated > 0 then
-                        p:resolve(true)
-                    else
-                        p:resolve(false)
-                    end
-                end)
-            else
-                p:resolve(false)
-            end
-        end)
+        if vehicle and vehicle.StorageType > 0 then -- Not Impounded
+            updatingStorage = {
+                Type = 0,
+                Id = 0,
+                Fine = 0,
+                TimeHold = false,
+            }
+        end
 
-        local res = Citizen.Await(p)
-        return res
+        local success = MySQL.update.await(
+            "UPDATE vehicles SET Properties = JSON_SET(COALESCE(Properties, '{}'), '$.Seized', ?, '$.SeizedTime', ?, '$.Storage', ?) WHERE VIN = ?",
+            { seizeState, seizeState and os.time() or false, json.encode(updatingStorage), VIN }
+        )
+
+        return success
     end
 end)
 

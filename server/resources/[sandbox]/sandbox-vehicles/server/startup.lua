@@ -1,26 +1,21 @@
 function Startup()
-    exports['sandbox-base']:DatabaseGameCount({
-        collection = 'vehicles',
-        query = {
-            ['Owner.Type'] = 0,
-        }
-    }, function(success, count)
-        if success then
-            exports['sandbox-base']:LoggerTrace('Vehicles',
-                string.format('Loaded ^2%s^7 Character Owned Vehicles', count))
-        end
-    end)
+    local charVehicleCount = MySQL.scalar.await(
+        "SELECT COUNT(*) FROM vehicles WHERE OwnerType = 0"
+    )
 
-    exports['sandbox-base']:DatabaseGameCount({
-        collection = 'vehicles',
-        query = {
-            ['Owner.Type'] = 1,
-        }
-    }, function(success, count)
-        if success then
-            exports['sandbox-base']:LoggerTrace('Vehicles', string.format('Loaded ^2%s^7 Fleet Owned Vehicles', count))
-        end
-    end)
+    if charVehicleCount then
+        exports['sandbox-base']:LoggerTrace('Vehicles',
+            string.format('Loaded ^2%s^7 Character Owned Vehicles', charVehicleCount))
+    end
+
+    local fleetVehicleCount = MySQL.scalar.await(
+        "SELECT COUNT(*) FROM vehicles WHERE OwnerType = 1"
+    )
+
+    if fleetVehicleCount then
+        exports['sandbox-base']:LoggerTrace('Vehicles',
+            string.format('Loaded ^2%s^7 Fleet Owned Vehicles', fleetVehicleCount))
+    end
 
     -- CreateThread(function()
     --     -- Let the server startup, no vehicles need to be saved in the first 2 mins

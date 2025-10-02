@@ -552,35 +552,36 @@ function RegisterCommands()
 		},
 	}, 2)
 
-	exports["sandbox-chat"]:RegisterAdminCommand("giveitem", function(source, args, rawCommand)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source, true)
-		if char and tostring(args[1]) ~= nil and tonumber(args[2]) ~= nil then
-			local itemExist = itemsDatabase[args[1]]
-			if itemExist then
-				if itemExist.type ~= 2 then
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), args[1], tonumber(args[2]), {}, 1)
-				else
-					exports['sandbox-hud']:NotifError(source,
-						"You can only give items with this command, try /giveweapon"
-					)
-				end
-			else
-				exports['sandbox-hud']:NotifError(source, "Item not located")
-			end
-		end
-	end, {
-		help = "Give Item",
-		params = {
-			{
-				name = "Item Name",
-				help = "The name of the Item",
-			},
-			{
-				name = "Item Count",
-				help = "The count of the Item",
-			},
-		},
-	}, 2)
+	-- exports["sandbox-chat"]:RegisterAdminCommand("giveitem", function(source, args, rawCommand)
+	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source, true)
+	-- 	if char and tostring(args[1]) ~= nil and tonumber(args[2]) ~= nil then
+	-- 		local itemExist = itemsDatabase[args[1]]
+	-- 		if itemExist then
+	-- 			if itemExist.type ~= 2 then
+	-- 				exports['sandbox-inventory']:AddItem(char:GetData("SID"), args[1], tonumber(args[2]), {}, 1)
+	-- 				exports['ox_inventory']:AddItem(char:GetData("SID"), args[1], tonumber(args[2]), {})
+	-- 			else
+	-- 				exports['sandbox-hud']:NotifError(source,
+	-- 					"You can only give items with this command, try /giveweapon"
+	-- 				)
+	-- 			end
+	-- 		else
+	-- 			exports['sandbox-hud']:NotifError(source, "Item not located")
+	-- 		end
+	-- 	end
+	-- end, {
+	-- 	help = "Give Item",
+	-- 	params = {
+	-- 		{
+	-- 			name = "Item Name",
+	-- 			help = "The name of the Item",
+	-- 		},
+	-- 		{
+	-- 			name = "Item Count",
+	-- 			help = "The count of the Item",
+	-- 		},
+	-- 	},
+	-- }, 2)
 
 	exports["sandbox-chat"]:RegisterAdminCommand("giveweapon", function(source, args, rawCommand)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)

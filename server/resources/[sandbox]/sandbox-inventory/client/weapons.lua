@@ -208,7 +208,7 @@ end)
 RegisterNetEvent("Weapons:Client:ForceUnequip", function()
 	_interacting = true
 	if _equipped ~= nil then
-		exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+		TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 	end
 	_interacting = false
 end)
@@ -669,33 +669,33 @@ function WeaponsThread()
 		[-646649097] = true
 	}
 
-	CreateThread(function()
-		while LocalPlayer.state.loggedIn do
-			if IsPedArmed(LocalPlayer.state.ped, 6) then
-				local hasWeapon, hasHash = GetCurrentPedWeapon(LocalPlayer.state.ped, 1)
-				if hasWeapon and not LocalPlayer.state.holstering then
-					if not ignoredHackerWeapons[hasHash] and hasHash ~= 0 and hasHash ~= _equippedHash then
-						RemoveAllPedWeapons(LocalPlayer.state.ped)
-						if not spammyFuck and not LocalPlayer.state.isDead and not ignoredWarningWeapons[hasHash] then
-							exports["sandbox-base"]:ServerCallback("Weapons:PossibleCheaterWarning", {
-								h = hasHash,
-								s = _equippedHash
-							}, function()
+	-- CreateThread(function()
+	-- 	while LocalPlayer.state.loggedIn do
+	-- 		if IsPedArmed(LocalPlayer.state.ped, 6) then
+	-- 			local hasWeapon, hasHash = GetCurrentPedWeapon(LocalPlayer.state.ped, 1)
+	-- 			if hasWeapon and not LocalPlayer.state.holstering then
+	-- 				if not ignoredHackerWeapons[hasHash] and hasHash ~= 0 and hasHash ~= _equippedHash then
+	-- 					RemoveAllPedWeapons(LocalPlayer.state.ped)
+	-- 					if not spammyFuck and not LocalPlayer.state.isDead and not ignoredWarningWeapons[hasHash] then
+	-- 						exports["sandbox-base"]:ServerCallback("Weapons:PossibleCheaterWarning", {
+	-- 							h = hasHash,
+	-- 							s = _equippedHash
+	-- 						}, function()
 
-							end)
+	-- 						end)
 
-							spammyFuck = true
-							Citizen.SetTimeout(10000, function()
-								spammyFuck = false
-							end)
-						end
-					end
-				end
-			end
+	-- 						spammyFuck = true
+	-- 						Citizen.SetTimeout(10000, function()
+	-- 							spammyFuck = false
+	-- 						end)
+	-- 					end
+	-- 				end
+	-- 			end
+	-- 		end
 
-			Wait(500)
-		end
-	end)
+	-- 		Wait(500)
+	-- 	end
+	-- end)
 
 	CreateThread(function()
 		while LocalPlayer.state.loggedIn do
@@ -766,7 +766,7 @@ function RunDegenThread()
 		while _equipped ~= nil do
 			local itemData = _items[_equipped.Name]
 			if itemData.durability ~= nil and (GetCloudTimeAsInt() - (_equipped.MetaData and _equipped.MetaData.CreateDate or GetCloudTimeAsInt()) >= itemData.durability) then
-				exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+				TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 			end
 			Wait(10000)
 		end
@@ -851,7 +851,7 @@ AddEventHandler("Weapons:Client:SwitchedWeapon", function()
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
-	exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+	TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 end)
 
 RegisterNetEvent("Characters:Client:Spawn", function()

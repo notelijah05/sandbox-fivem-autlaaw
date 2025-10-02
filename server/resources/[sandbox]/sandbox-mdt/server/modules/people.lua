@@ -24,29 +24,8 @@ local requiredCharacterData = {
 function GetCharacterVehiclesData(sid)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "vehicles",
-		query = {
-			["Owner.Type"] = 0,
-			["Owner.Id"] = sid,
-		},
-		options = {
-			projection = {
-				_id = 0,
-				Type = 1,
-				VIN = 1,
-				Make = 1,
-				Model = 1,
-				RegisteredPlate = 1,
-			}
-		}
-	}, function(success, vehicles)
-		if not success then
-			p:resolve({})
-		else
-			p:resolve(vehicles)
-		end
-	end)
+	local vehicles = MySQL.query.await("SELECT * FROM vehicles WHERE OwnerId = ?", { sid })
+	p:resolve(vehicles)
 
 	return Citizen.Await(p)
 end

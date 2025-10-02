@@ -827,7 +827,7 @@ function _doGameStart(player, action)
 							end
 						end
 						if action.disarm then
-							exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+							TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 						end
 					end
 

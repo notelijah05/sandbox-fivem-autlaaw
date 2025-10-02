@@ -256,7 +256,7 @@ local function GrappleThreads()
 					grapple.activate()
 					TriggerServerEvent("Inventory:Server:DegradeLastUsed", 25)
 					Wait(1000)
-					exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+					TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 				end
 			end
 			Wait(0)

@@ -493,170 +493,168 @@ exports('IsInBreach', function(source, type, id, extraCheck)
 end)
 
 exports('RunPlate', function(source, plate, wasEntity)
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "vehicles",
-		query = {
-			["$or"] = {
-				{
-					RegisteredPlate = plate,
-				},
-				{
-					FakePlate = plate,
-				}
-			},
-		},
-	}, function(success, results)
-		if not success or #results == 0 then
-			local stolen = exports['sandbox-radar']:CheckPlate(plate)
-			if stolen then
-				if not _generatedNames[plate] then
-					_generatedNames[plate] = string.format(
-						"%s %s",
-						exports['sandbox-base']:GeneratorNameFirst(),
-						exports['sandbox-base']:GeneratorNameLast()
-					)
-				end
+	local results = MySQL.query.await(
+		"SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, Properties FROM vehicles WHERE RegisteredPlate = ? OR JSON_EXTRACT(Properties, '$.FakePlate') = ?",
+		{ plate, plate }
+	)
 
-				if wasEntity then
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"<b>Owner</b>: %s<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
-							_generatedNames[plate],
-							wasEntity.VIN,
-							wasEntity.model,
-							plate,
-							stolen
-						)
-					)
-				else
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"<b>Owner</b>: %s<br /><b>VIN</b>: Unknown<br /><b>Make & Model</b>: Unknown<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
-							_generatedNames[plate],
-							plate,
-							stolen
-						)
-					)
-				end
-			elseif wasEntity then
-				if not _generatedNames[plate] then
-					_generatedNames[plate] = string.format(
-						"%s %s",
-						exports['sandbox-base']:GeneratorNameFirst(),
-						exports['sandbox-base']:GeneratorNameLast()
-					)
-				end
+	if not results or #results == 0 then
+		local stolen = exports['sandbox-radar']:CheckPlate(plate)
+		if stolen then
+			if not _generatedNames[plate] then
+				_generatedNames[plate] = string.format(
+					"%s %s",
+					exports['sandbox-base']:GeneratorNameFirst(),
+					exports['sandbox-base']:GeneratorNameLast()
+				)
+			end
 
+			if wasEntity then
 				exports["sandbox-chat"]:SendDispatch(
 					source,
 					string.format(
-						"<b>Owner</b>: %s<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown",
+						"<b>Owner</b>: %s<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
 						_generatedNames[plate],
 						wasEntity.VIN,
 						wasEntity.model,
-						plate
+						plate,
+						stolen
 					)
 				)
 			else
-				exports["sandbox-chat"]:SendDispatch(source, "No Plate Match")
+				exports["sandbox-chat"]:SendDispatch(
+					source,
+					string.format(
+						"<b>Owner</b>: %s<br /><b>VIN</b>: Unknown<br /><b>Make & Model</b>: Unknown<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
+						_generatedNames[plate],
+						plate,
+						stolen
+					)
+				)
 			end
-			return
-		end
+		elseif wasEntity then
+			if not _generatedNames[plate] then
+				_generatedNames[plate] = string.format(
+					"%s %s",
+					exports['sandbox-base']:GeneratorNameFirst(),
+					exports['sandbox-base']:GeneratorNameLast()
+				)
+			end
 
-		if #results > 1 then
-			exports["sandbox-chat"]:SendDispatch(source, "Multiple Matches, Please Use MDT")
+			exports["sandbox-chat"]:SendDispatch(
+				source,
+				string.format(
+					"<b>Owner</b>: %s<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown",
+					_generatedNames[plate],
+					wasEntity.VIN,
+					wasEntity.model,
+					plate
+				)
+			)
 		else
-			local vehicle = results[1]
-			if vehicle.FakePlate and vehicle.FakePlateData then
-				local stolen = exports['sandbox-radar']:CheckPlate(plate)
-				if stolen then
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
-							vehicle.FakePlateData.OwnerName,
-							vehicle.FakePlateData.SID,
-							vehicle.FakePlateData.VIN,
-							vehicle.FakePlateData.Vehicle or string.format('%s %s', vehicle.Make, vehicle.Model),
-							vehicle.FakePlate,
-							stolen
-						)
+			exports["sandbox-chat"]:SendDispatch(source, "No Plate Match")
+		end
+		return
+	end
+
+	if #results > 1 then
+		exports["sandbox-chat"]:SendDispatch(source, "Multiple Matches, Please Use MDT")
+	else
+		local vehicle = results[1]
+
+		local properties = {}
+		if vehicle.Properties then
+			properties = json.decode(vehicle.Properties) or {}
+		end
+
+		if properties.FakePlate and properties.FakePlateData then
+			local stolen = exports['sandbox-radar']:CheckPlate(plate)
+			if stolen then
+				exports["sandbox-chat"]:SendDispatch(
+					source,
+					string.format(
+						"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
+						properties.FakePlateData.OwnerName,
+						properties.FakePlateData.SID,
+						properties.FakePlateData.VIN,
+						properties.FakePlateData.Vehicle or string.format('%s %s', vehicle.Make, vehicle.Model),
+						properties.FakePlate,
+						stolen
 					)
-				else
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown",
-							vehicle.FakePlateData.OwnerName,
-							vehicle.FakePlateData.SID,
-							vehicle.FakePlateData.VIN,
-							vehicle.FakePlateData.Vehicle or string.format('%s %s', vehicle.Make, vehicle.Model),
-							vehicle.FakePlate
-						)
-					)
-				end
+				)
 			else
-				local ownerName = "Unknown"
-				if vehicle.Owner.Type == 0 then
-					local owner = exports['sandbox-mdt']:PeopleView(vehicle.Owner.Id)
-
+				exports["sandbox-chat"]:SendDispatch(
+					source,
+					string.format(
+						"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown",
+						properties.FakePlateData.OwnerName,
+						properties.FakePlateData.SID,
+						properties.FakePlateData.VIN,
+						properties.FakePlateData.Vehicle or string.format('%s %s', vehicle.Make, vehicle.Model),
+						properties.FakePlate
+					)
+				)
+			end
+		else
+			local ownerName = "Unknown"
+			if vehicle.OwnerType == 0 then
+				local owner = exports['sandbox-mdt']:PeopleView(vehicle.OwnerId)
+				if owner then
 					ownerName = string.format("%s %s", owner.First, owner.Last)
-				elseif vehicle.Owner.Type == 1 then
-					local jobData = exports['sandbox-jobs']:DoesExist(vehicle.Owner.Id, vehicle.Owner.Workplace)
-					if jobData then
-						if jobData.Workplace then
-							ownerName = string.format('%s (%s)', jobData.Name, jobData.Workplace.Name)
-						else
-							ownerName = jobData.Name
-						end
-					end
 				end
-
-				local stolen = false
-				if vehicle.Flags then
-					for k, v in ipairs(vehicle.Flags) do
-						if v.Type == "stolen" then
-							stolen = v.Description
-							break
-						end
+			elseif vehicle.OwnerType == 1 then
+				local jobData = exports['sandbox-jobs']:DoesExist(vehicle.OwnerId, vehicle.OwnerWorkplace)
+				if jobData then
+					if jobData.Workplace then
+						ownerName = string.format('%s (%s)', jobData.Name, jobData.Workplace.Name)
+					else
+						ownerName = jobData.Name
 					end
-				end
-
-				if stolen then
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s %s<br /><b>Plate</b>: %s<br /><b>Class</b>: %s<br /><br /><b>Vehicle Reported Stolen</b>: %s",
-							ownerName,
-							vehicle.Owner.Id,
-							vehicle.VIN,
-							vehicle.Make,
-							vehicle.Model,
-							vehicle.RegisteredPlate,
-							vehicle.Class,
-							stolen
-						)
-					)
-				else
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"Owner: %s (%s)\nVIN: %s\nMake & Model: %s %s\nPlate: %s\nClass: %s",
-							ownerName,
-							vehicle.Owner.Id,
-							vehicle.VIN,
-							vehicle.Make,
-							vehicle.Model,
-							vehicle.RegisteredPlate,
-							vehicle.Class
-						)
-					)
 				end
 			end
+
+			local stolen = false
+			if properties.Flags then
+				for k, v in ipairs(properties.Flags) do
+					if v.Type == "stolen" then
+						stolen = v.Description
+						break
+					end
+				end
+			end
+
+			if stolen then
+				exports["sandbox-chat"]:SendDispatch(
+					source,
+					string.format(
+						"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s %s<br /><b>Plate</b>: %s<br /><b>Class</b>: %s<br /><br /><b>Vehicle Reported Stolen</b>: %s",
+						ownerName,
+						vehicle.OwnerId,
+						vehicle.VIN,
+						vehicle.Make,
+						vehicle.Model,
+						vehicle.RegisteredPlate,
+						vehicle.Type,
+						stolen
+					)
+				)
+			else
+				exports["sandbox-chat"]:SendDispatch(
+					source,
+					string.format(
+						"Owner: %s (%s)\nVIN: %s\nMake & Model: %s %s\nPlate: %s\nClass: %s",
+						ownerName,
+						vehicle.OwnerId,
+						vehicle.VIN,
+						vehicle.Make,
+						vehicle.Model,
+						vehicle.RegisteredPlate,
+						vehicle.Type
+					)
+				)
+			end
 		end
-	end)
+	end
 end)
 
 exports('IsPdCar', function(model)

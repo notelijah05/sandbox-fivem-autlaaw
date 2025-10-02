@@ -1,17 +1,29 @@
 function RegisterItems()
-    exports['sandbox-inventory']:RegisterUse('camping_chair', 'Animations', function(source, itemData)
-        TriggerClientEvent('Animations:Client:CampChair', source)
+    exports('camping_chair', function(event, item, inventory, slot, data)
+        if event == 'usingItem' then
+            TriggerClientEvent('Animations:Client:CampChair', inventory.id)
+            return
+        end
     end)
 
-    exports['sandbox-inventory']:RegisterUse('beanbag', 'Animations', function(source, itemData)
-        TriggerClientEvent('Animations:Client:BeanBag', source)
+    exports('beanbag', function(event, item, inventory, slot, data)
+        if event == 'usingItem' then
+            TriggerClientEvent('Animations:Client:BeanBag', inventory.id)
+            return
+        end
     end)
 
-    exports['sandbox-inventory']:RegisterUse('binoculars', 'Animations', function(source, itemData)
-        TriggerClientEvent('Animations:Client:Binoculars', source)
+    exports('binoculars', function(event, item, inventory, slot, data)
+        if event == 'usingItem' then
+            TriggerClientEvent('Animations:Client:Binoculars', inventory.id)
+            return
+        end
     end)
 
-    exports['sandbox-inventory']:RegisterUse('camera', 'Animations', function(source, itemData)
-        TriggerClientEvent('Animations:Client:Camera', source)
+    exports('camera', function(event, item, inventory, slot, data)
+        if event == 'usingItem' then
+            TriggerClientEvent('Animations:Client:Camera', inventory.id)
+            return
+        end
     end)
 end

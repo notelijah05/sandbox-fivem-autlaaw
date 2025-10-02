@@ -134,7 +134,7 @@ function OpenRadio()
 		type = "APP_SHOW",
 	})
 
-	exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+	TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 
 	CreateThread(function()
 		local playerPed = PlayerPedId()

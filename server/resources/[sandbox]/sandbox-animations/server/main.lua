@@ -53,11 +53,10 @@ function RegisterChatCommands()
 		help = "Change Facial Expression",
 	})
 	exports["sandbox-chat"]:RegisterCommand("selfie", function(source, args, rawCommand)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			not Player(source).state.isCuffed
 			and not Player(source).state.isDead
-			and hasValue(char:GetData("States"), "PHONE")
+			and exports.ox_inventory:Search('count', 'phone') > 0
 		then
 			TriggerClientEvent("Animations:Client:Selfie", source)
 		else

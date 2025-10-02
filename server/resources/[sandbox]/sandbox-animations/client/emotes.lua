@@ -178,7 +178,7 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
         end
 
         if not skipDisarm then
-            exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+            TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
         end
 
         ChosenDict, ChosenAnimation = emoteData.AnDictionary, emoteData.AnAnim

@@ -5,7 +5,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 		Wait(1000)
 		exports["sandbox-keybinds"]:Add("escort", "k", "keyboard", "Escort", function()
 			if _timeout then
-				exports["sandbox-hud"]:NotifError("Stop spamming you pepega.")
+				--exports["sandbox-hud"]:NotifError("Stop spamming you pepega.")
 				return
 			end
 			_timeout = true

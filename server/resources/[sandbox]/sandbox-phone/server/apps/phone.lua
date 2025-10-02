@@ -288,7 +288,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			end
 
 			local target = exports['sandbox-characters']:FetchCharacterData("Phone", data.number)
-			if target ~= nil and hasValue(target:GetData("States"), "PHONE") then
+			if target ~= nil and exports.ox_inventory:Search('count', 'phone') > 0 then
 				if _calls[target:GetData("Source")] == nil then
 					cb(true)
 
@@ -612,7 +612,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil and data and data.id and data.number and _bizPhones[data.id] and not _bizPhones[data.id].call and exports['sandbox-jobs']:HasJob(source, _bizPhones[data.id].job) and data.number ~= char:GetData("Phone") then
 			local target = exports['sandbox-characters']:FetchCharacterData("Phone", data.number)
-			if target ~= nil and hasValue(target:GetData("States"), "PHONE") then
+			if target ~= nil and exports.ox_inventory:Search('count', 'phone') > 0 then
 				if _calls[target:GetData("Source")] == nil then
 					cb(true)
 

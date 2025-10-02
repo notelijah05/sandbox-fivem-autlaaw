@@ -91,48 +91,19 @@ function IsVINOwned(vin)
 		return true
 	end
 
-	local p = promise.new()
+	local result = MySQL.single.await(
+		"SELECT VIN FROM vehicles WHERE VIN = ?",
+		{ vin }
+	)
 
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "vehicles",
-		query = {
-			VIN = vin,
-		},
-	}, function(success, results)
-		if success and #results > 0 then
-			p:resolve(true)
-		else
-			p:resolve(false)
-		end
-	end)
-
-	local res = Citizen.Await(p)
-	return res
+	return result ~= nil
 end
 
 function IsPlateOwned(plate)
-	local p = promise.new()
+	local result = MySQL.single.await(
+		"SELECT RegisteredPlate FROM vehicles WHERE RegisteredPlate = ? OR JSON_EXTRACT(Properties, '$.FakePlate') = ?",
+		{ plate, plate }
+	)
 
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "vehicles",
-		query = {
-			["$or"] = {
-				{
-					RegisteredPlate = plate,
-				},
-				{
-					FakePlate = plate,
-				},
-			},
-		},
-	}, function(success, results)
-		if success and #results > 0 then
-			p:resolve(true)
-		else
-			p:resolve(false)
-		end
-	end)
-
-	local res = Citizen.Await(p)
-	return res
+	return result ~= nil
 end

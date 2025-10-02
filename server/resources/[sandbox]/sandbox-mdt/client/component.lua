@@ -12,7 +12,7 @@ exports("Open", function()
 		SetNuiFocus(true, true)
 
 		exports['sandbox-animations']:EmotesForceCancel()
-		exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+		TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 
 		CreateThread(function()
 			local playerPed = PlayerPedId()

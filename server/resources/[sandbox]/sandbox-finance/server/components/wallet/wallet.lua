@@ -48,10 +48,7 @@ AddEventHandler("Finance:Server:Startup", function()
 	})
 
 	exports["sandbox-chat"]:RegisterAdminCommand("addcash", function(source, args, rawCommand)
-		local addingAmount = tonumber(args[1])
-		if addingAmount and addingAmount > 0 then
-			exports['sandbox-finance']:WalletModify(source, addingAmount)
-		end
+		exports['ox_inventory']:addCash(source, tonumber(args[1]))
 	end, {
 		help = "Give Cash To Yourself",
 		params = {
