@@ -10,7 +10,16 @@ require 'client.debug'
 require 'client.defaults'
 require 'client.compat.qtarget'
 
-local SendNuiMessage = SendNuiMessage
+local function toggleNuiFrame(shouldShow)
+    SetNuiFocus(shouldShow, shouldShow)
+    utils.sendReactMessage('setVisible', shouldShow)
+end
+
+RegisterNUICallback('hideFrame', function(_, cb)
+    toggleNuiFrame(false)
+    cb({})
+end)
+
 local GetEntityCoords = GetEntityCoords
 local GetEntityType = GetEntityType
 local HasEntityClearLosToEntity = HasEntityClearLosToEntity
@@ -231,7 +240,7 @@ local function startTargeting()
         end
 
         if hasTarget and (zonesChanged or entityChanged and hasTarget > 1) then
-            SendNuiMessage('{"event": "leftTarget"}')
+            utils.sendReactMessage('leftTarget')
 
             if entityChanged then options:wipe() end
 
@@ -298,7 +307,7 @@ local function startTargeting()
             if hasTarget and hidden == totalOptions then
                 if hasTarget and hasTarget ~= 1 then
                     hasTarget = false
-                    SendNuiMessage('{"event": "leftTarget"}')
+                    utils.sendReactMessage('leftTarget')
                 end
             elseif menuChanged or hasTarget ~= 1 and hidden ~= totalOptions then
                 hasTarget = options.size
@@ -314,11 +323,10 @@ local function startTargeting()
                         })
                 end
 
-                SendNuiMessage(json.encode({
-                    event = 'setTarget',
+                utils.sendReactMessage('setTarget', {
                     options = options,
                     zones = zones,
-                }, { sort_keys = true }))
+                })
             end
 
             menuChanged = false
@@ -340,7 +348,7 @@ local function startTargeting()
     end
 
     state.setNuiFocus(false)
-    SendNuiMessage('{"event": "visible", "state": false}')
+    utils.sendReactMessage('visible', false)
     table.wipe(currentTarget)
     options:wipe()
 
