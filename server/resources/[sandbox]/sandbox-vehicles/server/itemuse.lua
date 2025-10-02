@@ -308,9 +308,12 @@ exports('harness', function(event, item, inventory, slot, data)
 					return
 				end
 
-				if exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot) then
-					vehState.Harness = 10
-					exports['sandbox-hud']:NotifSuccess(inventory.id, "Harness Installed")
+				local slotData = inventory.items[slot]
+				if slotData then
+					if exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slotData.metadata, slot) then
+						vehState.Harness = 10
+						exports['sandbox-hud']:NotifSuccess(inventory.id, "Harness Installed")
+					end
 				end
 			end
 		end)

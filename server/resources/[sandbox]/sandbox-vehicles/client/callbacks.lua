@@ -6,7 +6,7 @@ function RegisterCallbacks()
             else
                 local playerCoords = GetEntityCoords(PlayerPedId())
                 local maxDistance = 5.0
-                local includePlayerVehicle = false
+                local includePlayerVehicle = true
 
                 local data = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
                 if data and DoesEntityExist(data) and IsEntityAVehicle(data) then

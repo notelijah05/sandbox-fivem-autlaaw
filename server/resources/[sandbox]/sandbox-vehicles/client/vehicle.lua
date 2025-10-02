@@ -847,7 +847,7 @@ RegisterNetEvent("Vehicles:Client:AttemptSlimJim", function()
 	if not VEHICLE_INSIDE and _characterLoaded then
 		local playerCoords = GetEntityCoords(PlayerPedId())
 		local maxDistance = 2.0
-		local includePlayerVehicle = false
+		local includePlayerVehicle = true
 
 		local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 		if
@@ -869,7 +869,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			if not VEHICLE_INSIDE then
 				local playerCoords = GetEntityCoords(PlayerPedId())
 				local maxDistance = 2.0
-				local includePlayerVehicle = false
+				local includePlayerVehicle = true
 
 				local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 				if
@@ -915,7 +915,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			else
 				local playerCoords = GetEntityCoords(PlayerPedId())
 				local maxDistance = 2.0
-				local includePlayerVehicle = false
+				local includePlayerVehicle = true
 
 				local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 				if
@@ -960,7 +960,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			else
 				local playerCoords = GetEntityCoords(PlayerPedId())
 				local maxDistance = 2.0
-				local includePlayerVehicle = false
+				local includePlayerVehicle = true
 
 				local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 				if
@@ -1003,7 +1003,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			else
 				local playerCoords = GetEntityCoords(PlayerPedId())
 				local maxDistance = 2.0
-				local includePlayerVehicle = false
+				local includePlayerVehicle = true
 
 				local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 				if
@@ -1043,7 +1043,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			else
 				local playerCoords = GetEntityCoords(PlayerPedId())
 				local maxDistance = 2.0
-				local includePlayerVehicle = false
+				local includePlayerVehicle = true
 
 				local vehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 				if

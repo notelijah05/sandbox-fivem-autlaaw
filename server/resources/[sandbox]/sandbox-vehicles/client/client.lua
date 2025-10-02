@@ -376,7 +376,7 @@ AddEventHandler("Vehicles:Client:Actions:ToggleDoor", function(doorNum)
 	if not vehicle then
 		local playerCoords = GetEntityCoords(PlayerPedId())
 		local maxDistance = 2.0
-		local includePlayerVehicle = false
+		local includePlayerVehicle = true
 
 		local targetVehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 		if
@@ -412,7 +412,7 @@ AddEventHandler("Vehicles:Client:Actions:ToggleWindow", function(winNum)
 	if not vehicle then
 		local playerCoords = GetEntityCoords(PlayerPedId())
 		local maxDistance = 2.0
-		local includePlayerVehicle = false
+		local includePlayerVehicle = true
 
 		local targetVehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 		if

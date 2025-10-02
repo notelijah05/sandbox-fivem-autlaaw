@@ -86,12 +86,19 @@ AddEventHandler('Vehicles:Client:StartUp', function()
     exports['sandbox-base']:RegisterClientCallback('Vehicles:InstallHarness', function(data, cb)
         local coords = GetEntityCoords(PlayerPedId())
         local maxDistance = 2.0
-        local includePlayerVehicle = false
+        local includePlayerVehicle = true
 
         local target = lib.getClosestVehicle(coords, maxDistance, includePlayerVehicle)
 
         if target and DoesEntityExist(target) and IsEntityAVehicle(target) then
             if exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target) then
+                local vehState = Entity(target).state
+                if vehState.Harness and vehState.Harness > 0 then
+                    exports['sandbox-hud']:NotifError("Vehicle already has a harness installed")
+                    cb(false)
+                    return
+                end
+
                 exports['sandbox-hud']:Progress({
                     name = "vehicle_installing_harness",
                     duration = 25000,

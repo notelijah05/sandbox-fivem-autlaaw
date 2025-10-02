@@ -143,7 +143,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 			function(data)
 				exports['sandbox-hud']:InteractionShowMenu({
 					{
-						icon = "lock-keyhole-open",
+						icon = "lock-open",
 						label = "Slimjim Vehicle",
 						action = function()
 							exports['sandbox-hud']:InteractionHide()

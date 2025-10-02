@@ -265,14 +265,14 @@ AddEventHandler('onClientResourceStart', function(resource)
 		exports['sandbox-hud']:InteractionRegisterMenu("police-utils", "Police Utilities", "tablet", function(data)
 			exports['sandbox-hud']:InteractionShowMenu({
 				{
-					icon = "lock-keyhole-open",
+					icon = "lock-open",
 					label = "Slimjim Vehicle",
 					action = function()
 						exports['sandbox-hud']:InteractionHide()
 						TriggerServerEvent("Police:Server:Slimjim")
 					end,
 					shouldShow = function()
-						local target = lib.getClosestVehicle(GetEntityCoords(cache.ped), 2.0, false)
+						local target = lib.getClosestVehicle(GetEntityCoords(cache.ped), 2.0, true)
 
 						if not target or not DoesEntityExist(target) then
 							return false

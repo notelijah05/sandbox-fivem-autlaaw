@@ -6,7 +6,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
             else
                 local coords = GetEntityCoords(PlayerPedId())
                 local maxDistance = 2.0
-                local includePlayerVehicle = false
+                local includePlayerVehicle = true
 
                 local target = lib.getClosestVehicle(coords, maxDistance, includePlayerVehicle)
 

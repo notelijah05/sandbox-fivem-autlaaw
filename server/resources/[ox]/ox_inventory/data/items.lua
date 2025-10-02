@@ -258,6 +258,7 @@ return {
     ['harness'] = {
         label = 'Harness',
         weight = 160,
+        consume = 0,
         server = {
             export = 'sandbox-vehicles.harness'
         }
