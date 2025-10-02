@@ -8,4 +8,5 @@ export interface TargetOption {
 export interface TargetData {
   options?: Record<string, TargetOption[]>;
   zones?: TargetOption[][];
+  targetIcon?: string;
 }

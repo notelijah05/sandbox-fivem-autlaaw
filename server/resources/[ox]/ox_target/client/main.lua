@@ -5,6 +5,7 @@ lib.locale()
 local utils = require 'client.utils'
 local state = require 'client.state'
 local options = require 'client.api'.getTargetOptions()
+local config = require 'config'
 
 require 'client.debug'
 require 'client.defaults'
@@ -42,6 +43,21 @@ local toggleHotkey = GetConvarInt('ox_target:toggleHotkey', 0) == 1
 local mouseButton = GetConvarInt('ox_target:leftClick', 1) == 1 and 24 or 25
 local debug = GetConvarInt('ox_target:debug', 0) == 1
 local vec0 = vec3(0, 0, 0)
+
+local function getTargetIcon(entityType, entityHit)
+    if entityType == 1 then
+        if IsPedAPlayer(entityHit) then
+            return config.icons.player
+        else
+            return config.icons.ped
+        end
+    elseif entityType == 2 then
+        local vehicleClass = GetVehicleClass(entityHit)
+        return config.vehicleIcons[vehicleClass] or config.icons.entity
+    else
+        return config.icons.entity
+    end
+end
 
 ---@param option OxTargetOption
 ---@param distance number
@@ -326,6 +342,7 @@ local function startTargeting()
                 utils.sendReactMessage('setTarget', {
                     options = options,
                     zones = zones,
+                    targetIcon = getTargetIcon(entityType, entityHit),
                 })
             end
 

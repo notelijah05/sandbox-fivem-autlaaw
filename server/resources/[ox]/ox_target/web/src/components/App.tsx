@@ -8,6 +8,9 @@ import { debugData } from "../utils/debugData";
 const App: React.FC = () => {
   const [targetData, setTargetData] = useState<TargetData>({});
   const [eyeHover, setEyeHover] = useState(false);
+  const [currentIcon, setCurrentIcon] = useState("fa-solid fa-circle");
+  const [isIconChanging, setIsIconChanging] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   // debug data (set this to test while in web)
   useEffect(() => {
@@ -16,6 +19,7 @@ const App: React.FC = () => {
         {
           action: "setTarget",
           data: {
+            targetIcon: "car", // Change this for the actual target icon to change
             options: {
               global: [
                 {
@@ -44,17 +48,40 @@ const App: React.FC = () => {
   useNuiEvent("leftTarget", () => {
     setTargetData({});
     setEyeHover(false);
+    setIsIconChanging(true);
+    setTimeout(() => {
+      setCurrentIcon("fa-solid fa-circle");
+      setIsIconChanging(false);
+    }, 150);
   });
 
   useNuiEvent<TargetData>("setTarget", (data) => {
     setTargetData(data);
     setEyeHover(true);
+
+    const newIcon = data.targetIcon
+      ? `fa-solid fa-${data.targetIcon}`
+      : "fa-solid fa-circle";
+    if (newIcon !== currentIcon) {
+      setIsIconChanging(true);
+      setTimeout(() => {
+        setCurrentIcon(newIcon);
+        setIsIconChanging(false);
+      }, 150);
+    }
   });
 
   useNuiEvent<boolean>("visible", (visible) => {
+    setIsVisible(visible);
+
     if (!visible) {
       setTargetData({});
       setEyeHover(false);
+      setIsIconChanging(true);
+      setTimeout(() => {
+        setCurrentIcon("fa-solid fa-circle");
+        setIsIconChanging(false);
+      }, 150);
     }
   });
 
@@ -99,13 +126,24 @@ const App: React.FC = () => {
       .filter(Boolean);
   };
 
+  const getIconSize = () => {
+    if (targetData.targetIcon) {
+      return "text-xl";
+    }
+    return "text-xs";
+  };
+
+  if (!isVisible) {
+    return null;
+  }
+
   return (
     <div className="w-full absolute bottom-1/2 text-center transform translate-y-1/2">
       <div className="flex justify-center items-center">
         <i
-          className={`fa-solid fa-circle text-md ${
+          className={`${currentIcon} ${getIconSize()} transition-all duration-300 ${
             eyeHover ? "text-blue-400" : "text-gray-200"
-          }`}
+          } ${isIconChanging ? "opacity-0 scale-75" : "opacity-100 scale-100"}`}
         />
       </div>
 
