@@ -29,7 +29,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 			function()
 				if VEHICLE_INSIDE and VEHICLE_SEAT == -1 then
 					if IsPauseMenuActive() ~= 1 then
-						exports['sandbox-vehicles']:EngineToggle(VEHICLE_INSIDE)
+						exports['sandbox-vehicles']:EngineToggle()
 					end
 				end
 			end)

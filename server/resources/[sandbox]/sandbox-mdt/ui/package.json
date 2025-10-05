@@ -11,7 +11,7 @@
 		"@babel/plugin-proposal-class-properties": "^7.18.6",
 		"@ckeditor/ckeditor5-build-classic": "^33.0.0",
 		"@ckeditor/ckeditor5-react": "^4.0.1",
-		"mythic-ckeditor": "git+https://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:x-oauth-basic@github.com/mythicrp/ckeditor.git",
+		"mythic-ckeditor": "git+https://github.com/ISKinGeR/mythicrp-ckeditor-backup.git",
 		"@emotion/react": "^11.9.0",
 		"@emotion/styled": "^11.8.1",
 		"@fortawesome/fontawesome-svg-core": "^6.4.0",

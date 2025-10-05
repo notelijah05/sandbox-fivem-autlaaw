@@ -111,11 +111,12 @@ end
 
 AddEventHandler("Inventory:Client:OpenDumpster", function(entity, data)
 	-- print(entity.endCoords, entity.entity, data)
+	local coords = entity.endCoords or GetEntityCoords(entity.entity)
 	local _invData = {
 		identifier = string.format(
 			"dumpster|%s|%s",
-			tostring(math.floor(entity.endCoords.x + 10000)),
-			tostring(math.floor(entity.endCoords.y + 10000))
+			tostring(math.floor(coords.x + 10000)),
+			tostring(math.floor(coords.y + 10000))
 		),
 	}
 	exports["sandbox-base"]:ServerCallback("Inventory:Dumpster:Open", _invData, function(s) end)

@@ -494,7 +494,7 @@ end)
 
 exports('RunPlate', function(source, plate, wasEntity)
 	local results = MySQL.query.await(
-		"SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, Properties FROM vehicles WHERE RegisteredPlate = ? OR JSON_EXTRACT(Properties, '$.FakePlate') = ?",
+		"SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, Class, Properties FROM vehicles WHERE RegisteredPlate = ? OR JSON_EXTRACT(Properties, '$.FakePlate') = ?",
 		{ plate, plate }
 	)
 
@@ -634,7 +634,7 @@ exports('RunPlate', function(source, plate, wasEntity)
 						vehicle.Make,
 						vehicle.Model,
 						vehicle.RegisteredPlate,
-						vehicle.Type,
+						vehicle.Class,
 						stolen
 					)
 				)
@@ -649,7 +649,7 @@ exports('RunPlate', function(source, plate, wasEntity)
 						vehicle.Make,
 						vehicle.Model,
 						vehicle.RegisteredPlate,
-						vehicle.Type
+						vehicle.Class
 					)
 				)
 			end

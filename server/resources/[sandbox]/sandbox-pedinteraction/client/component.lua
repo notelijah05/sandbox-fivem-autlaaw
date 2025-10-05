@@ -38,12 +38,12 @@ AddEventHandler("Characters:Client:Spawn", function()
 						)
 					elseif not inRange and _spawnedInteractionPeds[k] then
 						DeletePed(_spawnedInteractionPeds[k])
-						exports.ox_target:removeEntity(_spawnedInteractionPeds[k])
+						exports.ox_target:removeLocalEntity(_spawnedInteractionPeds[k])
 						_spawnedInteractionPeds[k] = nil
 					end
 				elseif _spawnedInteractionPeds[k] then
 					DeletePed(_spawnedInteractionPeds[k])
-					exports.ox_target:removeEntity(_spawnedInteractionPeds[k])
+					exports.ox_target:removeLocalEntity(_spawnedInteractionPeds[k])
 					_spawnedInteractionPeds[k] = nil
 				end
 			end
@@ -108,7 +108,7 @@ exports("Remove", function(id)
 		_interactionPeds[id] = nil
 		if _spawnedInteractionPeds[id] then
 			DeleteEntity(_spawnedInteractionPeds[id])
-			exports.ox_target:removeEntity(_spawnedInteractionPeds[id])
+			exports.ox_target:removeLocalEntity(_spawnedInteractionPeds[id])
 			_spawnedInteractionPeds[id] = nil
 		end
 	end
@@ -179,7 +179,7 @@ function CreateDumbAssPed(model, coords, heading, menu, icon, scenario, anim, co
 				label = option.label or option.text,
 				icon = option.icon or "fa-solid fa-shop",
 				distance = option.distance or option.minDist or 2.0,
-				groups = option.groups or {},
+				groups = option.groups or nil,
 				permissionKey = option.permissionKey or nil,
 				reqDuty = option.reqDuty or false,
 				workplace = option.workplace or nil,
