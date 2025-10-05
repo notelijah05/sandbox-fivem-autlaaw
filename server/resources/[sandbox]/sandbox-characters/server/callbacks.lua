@@ -282,7 +282,7 @@ function RegisterCallbacks()
 				return cb({ Config.PrisonSpawn })
 			end
 		elseif myCharacter.ICU then
-			local ICUData = json.decode(myCharacter.ICUData)
+			local ICUData = json.decode(myCharacter.ICU)
 			if not ICUData.Released then
 				return cb({ Config.ICUSpawn })
 			end

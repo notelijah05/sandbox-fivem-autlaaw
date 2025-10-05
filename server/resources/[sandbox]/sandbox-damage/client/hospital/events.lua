@@ -21,7 +21,7 @@ local hospitalCheckin = {
 		reqDuty = true,
 	},
 	{
-		icon = "fa-solid fa-clipboard-list-check",
+		icon = "fa-solid fa-clipboard-check",
 		label = "Check In - $1500",
 		event = "Hospital:Client:CheckIn",
 		canInteract = function()
@@ -33,7 +33,7 @@ local hospitalCheckin = {
 		end,
 	},
 	{
-		icon = "fa-solid fa-clipboard-list-check",
+		icon = "fa-solid fa-clipboard-check",
 		label = "Check In - $1500",
 		event = "Hospital:Client:CheckIn",
 		canInteract = function()

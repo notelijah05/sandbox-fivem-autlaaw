@@ -241,8 +241,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `GangChain` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `Bio` varchar(255) DEFAULT NULL,
   `JailedData` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `ICU` tinyint(1) DEFAULT NULL,
-  `ICUData` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `ICU` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `Deleted` tinyint(1) DEFAULT 0,
   `Status` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `Parole` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
@@ -277,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   CONSTRAINT `Reputations` CHECK (json_valid(`Reputations`)),
   CONSTRAINT `GangChain` CHECK (json_valid(`GangChain`)),
   CONSTRAINT `JailedData` CHECK (json_valid(`JailedData`)),
-  CONSTRAINT `ICUData` CHECK (json_valid(`ICUData`)),
+  CONSTRAINT `ICU` CHECK (json_valid(`ICU`)),
   CONSTRAINT `Status` CHECK (json_valid(`Status`)),
   CONSTRAINT `Parole` CHECK (json_valid(`Parole`))
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;

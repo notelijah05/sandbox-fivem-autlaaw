@@ -90,9 +90,7 @@ export default ({ jobs, groups, myGroup, loading, onRefresh }) => {
 					{Boolean(player.TempJob) && (
 						<Tooltip title="Quit Job">
 							<IconButton onClick={onQuit}>
-								<FontAwesomeIcon
-									icon={['fad', 'person-from-portal']}
-								/>
+								<FontAwesomeIcon icon={['fas', 'bell-slash']} />
 							</IconButton>
 						</Tooltip>
 					)}
