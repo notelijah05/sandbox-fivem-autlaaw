@@ -245,17 +245,18 @@ AddEventHandler("Labor:Client:Setup", function()
 			{
 				icon = "cart-shopping",
 				text = "Buy Stuff",
-				event = "Vendor:Client:GetItems",
-				data = {
-					id = "HuntingBaits",
-				},
+				onSelect = function()
+					TriggerEvent("Vendor:Client:GetItems", { id = "HuntingBaits" })
+				end,
+				data = { id = "HuntingBaits" },
 				rep = { id = "Hunting", level = 2 },
 			},
 			{
 				icon = "sack-dollar",
 				text = "Sell Tier 1 Hides",
-				event = "Hunting:Client:Sell",
-				data = { tier = 1 },
+				onSelect = function()
+					TriggerEvent("Hunting:Client:Sell", nil, { tier = 1 })
+				end,
 				rep = { id = "Hunting", level = 4 },
 				canInteract = function()
 					return true
@@ -264,8 +265,9 @@ AddEventHandler("Labor:Client:Setup", function()
 			{
 				icon = "sack-dollar",
 				text = "Sell Tier 2 Hides",
-				event = "Hunting:Client:Sell",
-				data = { tier = 2 },
+				onSelect = function()
+					TriggerEvent("Hunting:Client:Sell", nil, { tier = 2 })
+				end,
 				rep = { id = "Hunting", level = 5 },
 				canInteract = function()
 					return true
@@ -274,8 +276,9 @@ AddEventHandler("Labor:Client:Setup", function()
 			{
 				icon = "sack-dollar",
 				text = "Sell Tier 3 Hides",
-				event = "Hunting:Client:Sell",
-				data = { tier = 3 },
+				onSelect = function()
+					TriggerEvent("Hunting:Client:Sell", nil, { tier = 3 })
+				end,
 				rep = { id = "Hunting", level = 6 },
 				canInteract = function()
 					return true
@@ -284,8 +287,9 @@ AddEventHandler("Labor:Client:Setup", function()
 			{
 				icon = "sack-dollar",
 				text = "Sell Tier 4 Hides",
-				event = "Hunting:Client:Sell",
-				data = { tier = 4 },
+				onSelect = function()
+					TriggerEvent("Hunting:Client:Sell", nil, { tier = 4 })
+				end,
 				rep = { id = "Hunting", level = 7 },
 				canInteract = function()
 					return true

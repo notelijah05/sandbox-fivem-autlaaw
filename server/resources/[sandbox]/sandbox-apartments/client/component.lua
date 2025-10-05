@@ -146,8 +146,9 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 				name = "apt_exit",
 				label = "Exit",
 				icon = "fa-solid fa-door-open",
-				event = "Apartment:Client:ExitEvent",
-				data = unit,
+				onSelect = function()
+					TriggerEvent("Apartment:Client:ExitEvent", unit)
+				end,
 				distance = 3.0,
 			},
 		},
@@ -166,8 +167,9 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 				name = "apt_logout",
 				label = "Switch Characters",
 				icon = "fa-solid fa-bed",
-				event = "Apartment:Client:Logout",
-				data = unit,
+				onSelect = function()
+					TriggerEvent("Apartment:Client:Logout", unit)
+				end,
 				distance = 3.0,
 				canInteract = function()
 					return unit == LocalPlayer.state.Character:GetData("SID")
@@ -189,8 +191,9 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 				name = "apt_wardrobe",
 				label = "Wardrobe",
 				icon = "fa-solid fa-shirt",
-				event = "Apartment:Client:Wardrobe",
-				data = unit,
+				onSelect = function()
+					TriggerEvent("Apartment:Client:Wardrobe", unit)
+				end,
 				distance = 3.0,
 				canInteract = function()
 					return unit == LocalPlayer.state.Character:GetData("SID")
@@ -212,8 +215,9 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 				name = "apt_stash",
 				label = "Stash",
 				icon = "fa-solid fa-box",
-				event = "Apartment:Client:Stash",
-				data = aptId,
+				onSelect = function()
+					TriggerEvent("Apartment:Client:Stash", aptId)
+				end,
 				distance = 2.0,
 			},
 		},
