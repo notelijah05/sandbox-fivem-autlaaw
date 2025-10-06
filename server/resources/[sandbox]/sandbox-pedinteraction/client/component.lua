@@ -38,16 +38,12 @@ AddEventHandler("Characters:Client:Spawn", function()
 						)
 					elseif not inRange and _spawnedInteractionPeds[k] then
 						DeletePed(_spawnedInteractionPeds[k])
-						if exports.ox_target:hasLocalEntity(_spawnedInteractionPeds[k]) then
-							exports.ox_target:removeLocalEntity(_spawnedInteractionPeds[k])
-						end
+						exports.ox_target:removeLocalEntity(_spawnedInteractionPeds[k])
 						_spawnedInteractionPeds[k] = nil
 					end
 				elseif _spawnedInteractionPeds[k] then
 					DeletePed(_spawnedInteractionPeds[k])
-					if exports.ox_target:hasLocalEntity(_spawnedInteractionPeds[k]) then
-						exports.ox_target:removeLocalEntity(_spawnedInteractionPeds[k])
-					end
+					exports.ox_target:removeLocalEntity(_spawnedInteractionPeds[k])
 					_spawnedInteractionPeds[k] = nil
 				end
 			end
