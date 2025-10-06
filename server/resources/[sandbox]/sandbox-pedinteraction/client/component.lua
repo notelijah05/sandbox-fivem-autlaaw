@@ -192,7 +192,10 @@ function CreateDumbAssPed(model, coords, heading, menu, icon, scenario, anim, co
 					if option.event then
 						TriggerEvent(option.event, (option.data or {}))
 					end
-				end
+				end,
+				canInteract = option.isEnabled or function()
+					return true
+				end,
 			}
 
 			table.insert(oxOptions, oxOption)
