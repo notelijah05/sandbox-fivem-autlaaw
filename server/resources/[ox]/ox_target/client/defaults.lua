@@ -385,10 +385,10 @@ Config.VehicleMenu = {
             end
             return ""
         end,
-        event = "Vehicles:Client:StartFueling",
-        data = {
-            bank = true,
-        },
+        onSelect = function(data)
+            data.bank = true
+            TriggerEvent("Vehicles:Client:StartFueling", data)
+        end,
         minDist = 2.0,
     },
     {

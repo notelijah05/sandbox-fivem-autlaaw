@@ -375,7 +375,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                     icon = "sensor-triangle-exclamation",
                     label = "Disable Alarm",
                     event = string.format("HouseRobbery:Client:%s:HackAlarm", joiner),
-                    canInteract = function(data, entity)
+                    canInteract = function()
                         return _working and _nodes ~= nil and _state == 4 and _nodes.chances.alarm and
                             not _nodes.states.alarm.disabled and not _nodes.states.alarm.triggered and
                             (_scPass <= 3 and _scFails <= 2)

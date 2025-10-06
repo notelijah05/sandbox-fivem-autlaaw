@@ -35,7 +35,7 @@ function CreateBizPhones()
                     TriggerEvent("Phone:Client:MakeBizCall", { id = v.id })
                 end,
                 groups = { v.job },
-                canInteract = function(data, entity)
+                canInteract = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData and pData.state > 1 then
@@ -43,7 +43,7 @@ function CreateBizPhones()
                         end
                     end
                 end,
-                label = function(data, entity)
+                label = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData then
@@ -65,7 +65,7 @@ function CreateBizPhones()
                     TriggerEvent("Phone:Client:MakeBizCall", { id = v.id })
                 end,
                 groups = { v.job },
-                canInteract = function(data, entity)
+                canInteract = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if not pData then
@@ -81,7 +81,7 @@ function CreateBizPhones()
                     TriggerEvent("Phone:Client:AcceptBizCall", { id = v.id })
                 end,
                 groups = { v.job },
-                canInteract = function(data, entity)
+                canInteract = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData and pData.state == 1 then
@@ -89,7 +89,7 @@ function CreateBizPhones()
                         end
                     end
                 end,
-                label = function(data, entity)
+                label = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData and pData.state == 1 then
@@ -106,7 +106,7 @@ function CreateBizPhones()
                     TriggerEvent("Phone:Client:DeclineBizCall", { id = v.id })
                 end,
                 groups = { v.job },
-                canInteract = function(data, entity)
+                canInteract = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData then
@@ -123,7 +123,7 @@ function CreateBizPhones()
                     TriggerEvent("Phone:Client:MuteBiz", { id = v.id })
                 end,
                 groups = { v.job },
-                label = function(data, entity)
+                label = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s:Muted", data.id)]
                         if pData then

@@ -30,7 +30,7 @@ AddEventHandler("Robbery:Client:Setup", function()
                 label = "Do Illegal Things",
                 event = "Robbery:Client:ATM:UseTerminal",
                 item = "vpn",
-                canInteract = function(data, entity)
+                canInteract = function()
                     return not LocalPlayer.state.ATMRobbery or LocalPlayer.state.ATMRobbery <= 0
                 end,
             },
@@ -44,7 +44,7 @@ AddEventHandler("Robbery:Client:Setup", function()
                 icon = 'eye-evil',
                 event = "Robbery:Client:ATM:StartHack",
                 distance = 2.0,
-                canInteract = function(data, entity)
+                canInteract = function()
                     if LocalPlayer.state.ATMRobbery and LocalPlayer.state.ATMRobbery > 0 then
                         if _atmZone and #(_atmZone.coords - LocalPlayer.state.myPos) <= _atmZone.radius then
                             return true

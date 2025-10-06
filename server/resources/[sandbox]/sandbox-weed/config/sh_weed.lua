@@ -24,33 +24,27 @@ Materials = {
 }
 
 Plants = {
-    {
+	{
 		model = GetHashKey("bzzz_plants_weed_green_small"),
 		offset = 0.0,
 		harvestable = false,
 		targeting = {
 			{
-				icon = "magnifying-glass",
+				icon = "fa-solid fa-magnifying-glass",
 				text = "Check",
 				event = "Weed:Client:Check",
-				data = {},
-				isEnabled = function(data, entity)
-					return GetWeedPlant(entity.entity)
+				canInteract = function(entity)
+					return GetWeedPlant(entity)
 				end,
 			},
 			{
-				icon = "hand-scissors",
+				icon = "fa-solid fa-hand-scissors",
 				text = "Destroy Plant",
 				event = "Weed:Client:PDDestroy",
-				jobPerms = {
-					{
-						job = "police",
-						reqDuty = true,
-					}
-				},
-				data = {},
-				isEnabled = function(data, entity)
-					return GetWeedPlant(entity.entity)
+				groups = { "police" },
+				reqDuty = true,
+				canInteract = function(entity)
+					return GetWeedPlant(entity)
 				end,
 			},
 		},
@@ -61,27 +55,21 @@ Plants = {
 		harvestable = false,
 		targeting = {
 			{
-				icon = "magnifying-glass",
+				icon = "fa-solid fa-magnifying-glass",
 				text = "Check",
 				event = "Weed:Client:Check",
-				data = {},
-				isEnabled = function(data, entity)
-					return GetWeedPlant(entity.entity)
+				canInteract = function(entity)
+					return GetWeedPlant(entity)
 				end,
 			},
 			{
-				icon = "hand-scissors",
+				icon = "fa-solid fa-hand-scissors",
 				text = "Destroy Plant",
 				event = "Weed:Client:PDDestroy",
-				jobPerms = {
-					{
-						job = "police",
-						reqDuty = true,
-					}
-				},
-				data = {},
-				isEnabled = function(data, entity)
-					return GetWeedPlant(entity.entity)
+				groups = { "police" },
+				reqDuty = true,
+				canInteract = function(entity)
+					return GetWeedPlant(entity)
 				end,
 			},
 		},
@@ -92,67 +80,54 @@ Plants = {
 		harvestable = false,
 		targeting = {
 			{
-				icon = "magnifying-glass",
+				icon = "fa-solid fa-magnifying-glass",
 				text = "Check",
 				event = "Weed:Client:Check",
-				data = {},
-				isEnabled = function(data, entity)
-					return GetWeedPlant(entity.entity)
+				canInteract = function(entity)
+					return GetWeedPlant(entity)
 				end,
 			},
 			{
-				icon = "hand-scissors",
+				icon = "fa-solid fa-hand-scissors",
 				text = "Destroy Plant",
 				event = "Weed:Client:PDDestroy",
-				jobPerms = {
-					{
-						job = "police",
-						reqDuty = true,
-					}
-				},
-				data = {},
-				isEnabled = function(data, entity)
-					return GetWeedPlant(entity.entity)
+				groups = { "police" },
+				reqDuty = true,
+				canInteract = function(entity)
+					return GetWeedPlant(entity)
 				end,
 			},
 		},
 	},
-    {
+	{
 		model = GetHashKey("bzzz_plants_weed_green_bud"),
 		offset = 0.0,
 		harvestable = false,
 		targeting = {
 			{
-				icon = "magnifying-glass",
+				icon = "fa-solid fa-magnifying-glass",
 				text = "Check",
 				event = "Weed:Client:Check",
-				data = {},
-				isEnabled = function(data, entity)
+				canInteract = function(entity)
 					return GetWeedPlant(entity.entity)
 				end,
 			},
 			{
-				icon = "sack",
+				icon = "fa-solid fa-sack",
 				text = "Harvest",
 				event = "Weed:Client:Harvest",
-				data = {},
-				isEnabled = function(data, entity)
-					return GetWeedPlant(entity.entity)
+				canInteract = function(entity)
+					return GetWeedPlant(entity)
 				end,
 			},
 			{
-				icon = "hand-scissors",
+				icon = "fa-solid fa-hand-scissors",
 				text = "Destroy Plant",
 				event = "Weed:Client:PDDestroy",
-				jobPerms = {
-					{
-						job = "police",
-						reqDuty = true,
-					}
-				},
-				data = {},
-				isEnabled = function(data, entity)
-					return GetWeedPlant(entity.entity)
+				groups = { "police" },
+				reqDuty = true,
+				canInteract = function(entity)
+					return GetWeedPlant(entity)
 				end,
 			},
 		},
@@ -163,36 +138,29 @@ Plants = {
 		harvestable = true,
 		targeting = {
 			{
-				icon = "magnifying-glass",
+				icon = "fa-solid fa-magnifying-glass",
 				text = "Check",
 				event = "Weed:Client:Check",
-				data = {},
-				isEnabled = function(data, entity)
-					return GetWeedPlant(entity.entity)
+				canInteract = function(entity)
+					return GetWeedPlant(entity)
 				end,
 			},
 			{
-				icon = "sack",
+				icon = "fa-solid fa-sack",
 				text = "Harvest",
 				event = "Weed:Client:Harvest",
-				data = {},
-				isEnabled = function(data, entity)
-					return GetWeedPlant(entity.entity)
+				canInteract = function(entity)
+					return GetWeedPlant(entity)
 				end,
 			},
 			{
-				icon = "hand-scissors",
+				icon = "fa-solid fa-hand-scissors",
 				text = "Destroy Plant",
 				event = "Weed:Client:PDDestroy",
-				jobPerms = {
-					{
-						job = "police",
-						reqDuty = true,
-					}
-				},
-				data = {},
-				isEnabled = function(data, entity)
-					return GetWeedPlant(entity.entity)
+				groups = { "police" },
+				reqDuty = true,
+				canInteract = function(entity)
+					return GetWeedPlant(entity)
 				end,
 			},
 		},
@@ -203,27 +171,21 @@ Plants = {
 	-- 	harvestable = false,
 	-- 	targeting = {
 	-- 		{
-	-- 			icon = "magnifying-glass",
+	-- 			icon = "fa-solid fa-magnifying-glass",
 	-- 			text = "Check",
 	-- 			event = "Weed:Client:Check",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "hand-scissors",
+	-- 			icon = "fa-solid fa-hand-scissors",
 	-- 			text = "Destroy Plant",
 	-- 			event = "Weed:Client:PDDestroy",
-	-- 			jobPerms = {
-	-- 				{
-	-- 					job = "police",
-	-- 					reqDuty = true,
-	-- 				}
-	-- 			},
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			groups = { "police" },
+	-- 			reqDuty = true,
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 	},
@@ -234,27 +196,21 @@ Plants = {
 	-- 	harvestable = false,
 	-- 	targeting = {
 	-- 		{
-	-- 			icon = "magnifying-glass",
+	-- 			icon = "fa-solid fa-magnifying-glass",
 	-- 			text = "Check",
 	-- 			event = "Weed:Client:Check",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "hand-scissors",
+	-- 			icon = "fa-solid fa-hand-scissors",
 	-- 			text = "Destroy Plant",
 	-- 			event = "Weed:Client:PDDestroy",
-	-- 			jobPerms = {
-	-- 				{
-	-- 					job = "police",
-	-- 					reqDuty = true,
-	-- 				}
-	-- 			},
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			groups = { "police" },
+	-- 			reqDuty = true,
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 	},
@@ -265,27 +221,21 @@ Plants = {
 	-- 	harvestable = false,
 	-- 	targeting = {
 	-- 		{
-	-- 			icon = "magnifying-glass",
+	-- 			icon = "fa-solid fa-magnifying-glass",
 	-- 			text = "Check",
 	-- 			event = "Weed:Client:Check",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "hand-scissors",
+	-- 			icon = "fa-solid fa-hand-scissors",
 	-- 			text = "Destroy Plant",
 	-- 			event = "Weed:Client:PDDestroy",
-	-- 			jobPerms = {
-	-- 				{
-	-- 					job = "police",
-	-- 					reqDuty = true,
-	-- 				}
-	-- 			},
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			groups = { "police" },
+	-- 			reqDuty = true,
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 	},
@@ -296,27 +246,21 @@ Plants = {
 	-- 	harvestable = false,
 	-- 	targeting = {
 	-- 		{
-	-- 			icon = "magnifying-glass",
+	-- 			icon = "fa-solid fa-magnifying-glass",
 	-- 			text = "Check",
 	-- 			event = "Weed:Client:Check",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "hand-scissors",
+	-- 			icon = "fa-solid fa-hand-scissors",
 	-- 			text = "Destroy Plant",
 	-- 			event = "Weed:Client:PDDestroy",
-	-- 			jobPerms = {
-	-- 				{
-	-- 					job = "police",
-	-- 					reqDuty = true,
-	-- 				}
-	-- 			},
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			groups = { "police" },
+	-- 			reqDuty = true,
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 	},
@@ -327,27 +271,21 @@ Plants = {
 	-- 	harvestable = false,
 	-- 	targeting = {
 	-- 		{
-	-- 			icon = "magnifying-glass",
+	-- 			icon = "fa-solid fa-magnifying-glass",
 	-- 			text = "Check",
 	-- 			event = "Weed:Client:Check",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "hand-scissors",
+	-- 			icon = "fa-solid fa-hand-scissors",
 	-- 			text = "Destroy Plant",
 	-- 			event = "Weed:Client:PDDestroy",
-	-- 			jobPerms = {
-	-- 				{
-	-- 					job = "police",
-	-- 					reqDuty = true,
-	-- 				}
-	-- 			},
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			groups = { "police" },
+	-- 			reqDuty = true,
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 	},
@@ -358,36 +296,29 @@ Plants = {
 	-- 	harvestable = true,
 	-- 	targeting = {
 	-- 		{
-	-- 			icon = "magnifying-glass",
+	-- 			icon = "fa-solid fa-magnifying-glass",
 	-- 			text = "Check",
 	-- 			event = "Weed:Client:Check",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "sack",
+	-- 			icon = "fa-solid fa-sack",
 	-- 			text = "Harvest",
 	-- 			event = "Weed:Client:Harvest",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "hand-scissors",
+	-- 			icon = "fa-solid fa-hand-scissors",
 	-- 			text = "Destroy Plant",
 	-- 			event = "Weed:Client:PDDestroy",
-	-- 			jobs = { "police" },
-	-- 			jobPerms = {
-	-- 				{
-	-- 					job = "police",
-	-- 					reqDuty = true,
-	-- 				}
-	-- 			},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			groups = { "police" },
+	-- 			reqDuty = true,
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 	},
@@ -398,36 +329,29 @@ Plants = {
 	-- 	harvestable = true,
 	-- 	targeting = {
 	-- 		{
-	-- 			icon = "magnifying-glass",
+	-- 			icon = "fa-solid fa-magnifying-glass",
 	-- 			text = "Check",
 	-- 			event = "Weed:Client:Check",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "sack",
+	-- 			icon = "fa-solid fa-sack",
 	-- 			text = "Harvest",
 	-- 			event = "Weed:Client:Harvest",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "hand-scissors",
+	-- 			icon = "fa-solid fa-hand-scissors",
 	-- 			text = "Destroy Plant",
 	-- 			event = "Weed:Client:PDDestroy",
-	-- 			jobPerms = {
-	-- 				{
-	-- 					job = "police",
-	-- 					reqDuty = true,
-	-- 				}
-	-- 			},
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			groups = { "police" },
+	-- 			reqDuty = true,
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 	},
@@ -438,36 +362,29 @@ Plants = {
 	-- 	harvestable = true,
 	-- 	targeting = {
 	-- 		{
-	-- 			icon = "magnifying-glass",
+	-- 			icon = "fa-solid fa-magnifying-glass",
 	-- 			text = "Check",
 	-- 			event = "Weed:Client:Check",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "sack",
+	-- 			icon = "fa-solid fa-sack",
 	-- 			text = "Harvest",
 	-- 			event = "Weed:Client:Harvest",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "hand-scissors",
+	-- 			icon = "fa-solid fa-hand-scissors",
 	-- 			text = "Destroy Plant",
 	-- 			event = "Weed:Client:PDDestroy",
-	-- 			jobPerms = {
-	-- 				{
-	-- 					job = "police",
-	-- 					reqDuty = true,
-	-- 				}
-	-- 			},
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			groups = { "police" },
+	-- 			reqDuty = true,
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 	},
@@ -477,23 +394,21 @@ Plants = {
 	-- 	offset = -0.4,
 	-- 	targeting = {
 	-- 		{
-	-- 			icon = "magnifying-glass",
+	-- 			icon = "fa-solid fa-magnifying-glass",
 	-- 			text = "Check",
 	-- 			event = "Weed:Client:Check",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "hand-scissors",
+	-- 			icon = "fa-solid fa-hand-scissors",
 	-- 			text = "Confiscate",
 	-- 			event = "Weed:Client:Confiscate",
-	-- 			jobs = { "police" },
-	-- 			jobDuty = true,
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			groups = { "police" },
+	-- 			reqDuty = true,
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 	},
@@ -503,23 +418,21 @@ Plants = {
 	-- 	offset = -0.4,
 	-- 	targeting = {
 	-- 		{
-	-- 			icon = "magnifying-glass",
+	-- 			icon = "fa-solid fa-magnifying-glass",
 	-- 			text = "Check",
 	-- 			event = "Weed:Client:Check",
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 		{
-	-- 			icon = "hand-scissors",
+	-- 			icon = "fa-solid fa-hand-scissors",
 	-- 			text = "Confiscate",
 	-- 			event = "Weed:Client:Confiscate",
-	-- 			jobs = { "police" },
-	-- 			jobDuty = true,
-	-- 			data = {},
-	-- 			isEnabled = function(data, entity)
-	-- 				return GetWeedPlant(entity.entity)
+	-- 			groups = { "police" },
+	-- 			reqDuty = true,
+	-- 			canInteract = function(entity)
+	-- 				return GetWeedPlant(entity)
 	-- 			end,
 	-- 		},
 	-- 	},

@@ -70,36 +70,42 @@ function RegisterDumpsterStartup()
 	for k, v in ipairs(_DumpsterEntities) do
 		exports.ox_target:addModel(v.objectID, {
 			{
-				icon = "magnifying-glass",
+				icon = "fa-solid fa-magnifying-glass",
 				label = "Search Trash",
-				event = "Inventory:Client:SearchDumpster",
+				onSelect = function(data)
+					TriggerEvent("Inventory:Client:SearchDumpster", data.entity)
+				end,
 				distance = 1.5,
-				canInteract = function(data, entityData)
-					if entityData ~= nil and v.objectID == entityData.model then
+				canInteract = function(entity)
+					if entity ~= nil and v.objectID == GetEntityModel(entity) then
 						return true
 					end
 					return false
 				end,
 			},
 			{
-				icon = "box-open",
+				icon = "fa-solid fa-box-open",
 				label = "Open Trash",
-				event = "Inventory:Client:OpenDumpster",
+				onSelect = function(data)
+					TriggerEvent("Inventory:Client:OpenDumpster", data.entity)
+				end,
 				distance = 1.5,
-				canInteract = function(data, entityData)
-					if entityData ~= nil and v.objectID == entityData.model then
+				canInteract = function(entity)
+					if entity ~= nil and v.objectID == GetEntityModel(entity) then
 						return true
 					end
 					return false
 				end,
 			},
 			-- {
-			-- 	icon = "trash-can-slash",
+			-- 	icon = "fa-solid fa-trash-can-slash",
 			-- 	label = "Hide In Dumpster",
-			-- 	event = "Inventory:Client:HideInDumpster",
+			-- 	onSelect = function(data)
+			-- 		TriggerEvent("Inventory:Client:HideInDumpster", data.entity)
+			-- 	end,
 			-- 	distance = 1.5,
-			-- 	canInteract = function(data, entityData)
-			-- 		if entityData ~= nil and v.objectID == entityData.model then
+			-- 	canInteract = function(entity)
+			-- 		if entity ~= nil and v.objectID == GetEntityModel(entity) then
 			-- 			return true
 			-- 		end
 			-- 		return false
@@ -109,9 +115,8 @@ function RegisterDumpsterStartup()
 	end
 end
 
-AddEventHandler("Inventory:Client:OpenDumpster", function(entity, data)
-	-- print(entity.endCoords, entity.entity, data)
-	local coords = entity.endCoords or GetEntityCoords(entity.entity)
+AddEventHandler("Inventory:Client:OpenDumpster", function(entity)
+	local coords = GetEntityCoords(entity)
 	local _invData = {
 		identifier = string.format(
 			"dumpster|%s|%s",
@@ -122,10 +127,9 @@ AddEventHandler("Inventory:Client:OpenDumpster", function(entity, data)
 	exports["sandbox-base"]:ServerCallback("Inventory:Dumpster:Open", _invData, function(s) end)
 end)
 
-AddEventHandler("Inventory:Client:HideInDumpster", function(entity, data)
-	-- print(entity.endCoords, entity.entity, data)
+AddEventHandler("Inventory:Client:HideInDumpster", function(entity)
 	local data = {
-		identifier = entity.entity,
+		identifier = entity,
 		locked = math.random(1, 3),
 	}
 	exports["sandbox-base"]:ServerCallback("Inventory:Dumpster:HidePlayer", data, function(s, l)
@@ -173,18 +177,16 @@ AddEventHandler("Inventory:Client:HideInDumpster", function(entity, data)
 	end)
 end)
 
-AddEventHandler("Inventory:Client:SearchDumpster", function(entity, data)
-	-- print(entity.endCoords, entity.entity, data)
-
+AddEventHandler("Inventory:Client:SearchDumpster", function(entity)
 	exports["sandbox-base"]:ServerCallback("Inventory:Server:AvailableDumpster", entity, function(s)
 		if s and entity then
-			if entity.entity == nil or type(entity.entity) == "boolean" then
+			if entity == nil or type(entity) == "boolean" then
 				exports["sandbox-hud"]:NotifError("This is not a dumpster. Try again.")
 				return
 			end
 			if not _searching then
 				_searching = true
-				TaskTurnPedToFaceEntity(LocalPlayer.state.ped, entity.entity, 3000)
+				TaskTurnPedToFaceEntity(LocalPlayer.state.ped, entity, 3000)
 				Wait(2000)
 				local dict = "amb@prop_human_bum_bin@base"
 				local anim = "base"

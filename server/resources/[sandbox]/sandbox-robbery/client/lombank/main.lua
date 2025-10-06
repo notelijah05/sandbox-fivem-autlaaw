@@ -139,7 +139,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 						onSelect = function()
 							TriggerEvent("Robbery:Client:Lombank:ElectricBox:Thermite", v.data)
 						end,
-						canInteract = function(data, entity)
+						canInteract = function(data)
 							return not GlobalState[string.format("Lombank:Power:%s", data.boxId)]
 								or GetCloudTimeAsInt()
 								> GlobalState[string.format("Lombank:Power:%s", data.boxId)]
@@ -154,7 +154,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 						onSelect = function()
 							TriggerEvent("Robbery:Client:Lombank:ElectricBox:Hack", v.data)
 						end,
-						canInteract = function(data, entity)
+						canInteract = function(data)
 							return not GlobalState[string.format("Lombank:Power:%s", data.boxId)]
 								or GetCloudTimeAsInt() > GlobalState[string.format("Lombank:Power:%s", data.boxId)]
 						end,
@@ -180,7 +180,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Lombank:Drill", v.wallId)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function(data)
 						return not GlobalState[string.format("Lombank:Upper:Wall:%s", data.id)]
 							or GetCloudTimeAsInt() > GlobalState[string.format("Lombank:Upper:Wall:%s", data.id)]
 					end,

@@ -141,7 +141,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 				icon = "bell-on",
 				label = "Access Door Controls",
 				event = "Robbery:Client:Paleto:Doors",
-				canInteract = function(data, entity)
+				canInteract = function()
 					return IsPaletoExploitInstalled() and
 						not exports['sandbox-doors']:IsLocked("bank_savings_paleto_security")
 				end,
@@ -172,7 +172,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					},
 				},
 				event = "Robbery:Client:Paleto:Workstation",
-				canInteract = function(data, entity)
+				canInteract = function()
 					return IsPaletoExploitInstalled()
 						and LocalPlayer.state.inPaletoWSPoint
 						and (not _bankStates.paleto.workstation or GetCloudTimeAsInt() > _bankStates.paleto.workstation)
@@ -207,7 +207,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Paleto:OfficeHack", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function()
 						return IsPaletoExploitInstalled()
 							and (
 								not _bankStates.paleto.officeHacks[v.data.officeId]
@@ -236,7 +236,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Paleto:ElectricBox:Hack", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function(data)
 						return not _bankStates.paleto.electricalBoxes[data.boxId]
 							or GetCloudTimeAsInt() > _bankStates.paleto.electricalBoxes[data.boxId]
 					end,
@@ -277,7 +277,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Paleto:Drill", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function(data)
 						return IsPaletoExploitInstalled()
 							and not exports['sandbox-doors']:IsLocked("bank_savings_paleto_vault")
 							and (
@@ -304,7 +304,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 				label = "Crack Safe",
 				event = "Robbery:Client:Paleto:Safe",
 				item = "paleto_access_codes",
-				canInteract = function(data, entity)
+				canInteract = function()
 					return IsPaletoExploitInstalled()
 						and not exports['sandbox-doors']:IsLocked("bank_savings_paleto_office_3")
 						and (not _bankStates.paleto.officeSafe or GetCloudTimeAsInt() > _bankStates.paleto.officeSafe)
@@ -329,7 +329,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Paleto:Search", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function(data)
 						return IsPaletoExploitInstalled()
 							and not exports['sandbox-doors']:IsLocked(data.door)
 							and (
@@ -366,7 +366,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 				end,
 				item = "adv_electronics_kit",
 				distance = 2.0,
-				canInteract = function(data, entity)
+				canInteract = function(data)
 					return (not GlobalState["Paleto:Secured"] or GetCloudTimeAsInt() > GlobalState["Paleto:Secured"])
 						and (
 							not _bankStates.paleto.exploits[data.pcId]

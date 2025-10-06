@@ -11,8 +11,8 @@ AddEventHandler("Drugs:Client:Startup", function()
                 icon = "hand",
                 event = "Drugs:Client:Meth:PickupTable",
                 distance = 3.0,
-                canInteract = function(data, entity)
-                    local entState = Entity(entity.entity).state
+                canInteract = function(entity)
+                    local entState = Entity(entity).state
                     return entState?.isMethTable and not _methTables[entState?.methTable]?.activeCook
                 end,
             },
@@ -21,8 +21,8 @@ AddEventHandler("Drugs:Client:Startup", function()
                 icon = "block",
                 event = "Drugs:Client:Meth:TableDetails",
                 distance = 3.0,
-                canInteract = function(data, entity)
-                    return Entity(entity.entity).state?.isMethTable
+                canInteract = function(entity)
+                    return Entity(entity).state?.isMethTable
                 end,
             },
             {
@@ -30,8 +30,8 @@ AddEventHandler("Drugs:Client:Startup", function()
                 icon = "timer",
                 event = "Drugs:Client:Meth:StartCook",
                 distance = 3.0,
-                canInteract = function(data, entity)
-                    local entState = Entity(entity.entity).state
+                canInteract = function(entity)
+                    local entState = Entity(entity).state
                     return entState?.isMethTable and
                         (not _methTables[entState.methTable]?.cooldown or GetCloudTimeAsInt() > _methTables[entState.methTable]?.cooldown) and
                         (_methTables[entState.methTable].owner == nil or _methTables[entState.methTable].owner == LocalPlayer.state.Character:GetData("SID"))
@@ -42,8 +42,8 @@ AddEventHandler("Drugs:Client:Startup", function()
                 icon = "block",
                 event = "Drugs:Client:Meth:PickupCook",
                 distance = 3.0,
-                canInteract = function(data, entity)
-                    local entState = Entity(entity.entity).state
+                canInteract = function(entity)
+                    local entState = Entity(entity).state
                     return entState?.isMethTable and _methTables[entState?.methTable]?.activeCook and
                         _methTables[entState?.methTable]?.pickupReady and
                         (_methTables[entState.methTable].owner == nil or _methTables[entState.methTable].owner == LocalPlayer.state.Character:GetData("SID"))

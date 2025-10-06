@@ -89,10 +89,10 @@ AddEventHandler("Robbery:Client:Setup", function()
 					})
 				end,
 				distance = 2.0,
-				canInteract = function(data, entity)
+				canInteract = function(entity)
 					if
-						entity?.entity
-						and not HasObjectBeenBroken(entity?.entity)
+						entity
+						and not HasObjectBeenBroken(entity)
 						and not LocalPlayer.state.ATMRobbery
 					then
 						return true

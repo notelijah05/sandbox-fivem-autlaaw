@@ -169,7 +169,7 @@ function CreatePropertyZones(propertyId, int)
                             id = string.format("property-%s", propertyId),
                         })
                     end,
-                    canInteract = function(data, entityData)
+                    canInteract = function()
                         if not _propertiesLoaded then
                             return false
                         end

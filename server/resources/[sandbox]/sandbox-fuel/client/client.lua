@@ -218,11 +218,11 @@ function LowFuelEffects(veh)
 	end)
 end
 
-AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
-	local entState = Entity(entityData.entity).state
+AddEventHandler("Vehicles:Client:StartFueling", function(data)
+	local entState = Entity(data.entity).state
 	entState:set("beingFueled", GetPlayerServerId(LocalPlayer.state.PlayerID), true)
 
-	local fuelData = exports['sandbox-fuel']:CanBeFueled(entityData.entity)
+	local fuelData = exports['sandbox-fuel']:CanBeFueled(data.entity)
 	if not fuelData then
 		return
 	end
@@ -252,7 +252,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 
 	local secondsElapsed = 0
 	local time = math.min(math.ceil(fuelData.requiredFuel / 2), 40)
-	TaskTurnPedToFaceEntity(LocalPlayer.state.ped, entityData.entity, 3000)
+	TaskTurnPedToFaceEntity(LocalPlayer.state.ped, data.entity, 3000)
 	Wait(2000)
 	exports['sandbox-animations']:EmotesPlay("fuel", false, nil, true)
 	exports['sandbox-hud']:ProgressWithStartAndTick({
@@ -276,17 +276,17 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 	end, function()
 		secondsElapsed = secondsElapsed + 1
 
-		local entState = Entity(entityData.entity).state
+		local entState = Entity(data.entity).state
 		if entState.beingFueled ~= nil and entState.beingFueled ~= GetPlayerServerId(LocalPlayer.state.PlayerID) then
 			exports['sandbox-hud']:ProgressCancel()
 		end
 
 		local playerCoords = GetEntityCoords(LocalPlayer.state.ped)
-		local vehicleCoords = GetEntityCoords(entityData.entity)
+		local vehicleCoords = GetEntityCoords(data.entity)
 		if
 			not LocalPlayer.state.loggedIn
-			or not DoesEntityExist(entityData.entity)
-			or IsEntityDead(entityData.entity)
+			or not DoesEntityExist(data.entity)
+			or IsEntityDead(data.entity)
 			or #(playerCoords - vehicleCoords) > 5.0
 		then
 			exports['sandbox-animations']:EmotesForceCancel()
@@ -294,7 +294,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 			return
 		end
 
-		if GetIsVehicleEngineRunning(entityData.entity) then
+		if GetIsVehicleEngineRunning(data.entity) then
 			math.randomseed(GetGameTimer())
 			local chance = math.random(0, 200)
 			if chance == 69 then
@@ -309,8 +309,8 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 				end
 
 				-- For Good Measure 🙂
-				if NetworkHasControlOfEntity(entityData.entity) then
-					NetworkExplodeVehicle(entityData.entity, true, true, true)
+				if NetworkHasControlOfEntity(data.entity) then
+					NetworkExplodeVehicle(data.entity, true, true, true)
 				end
 
 				exports["sandbox-hud"]:NotifInfo("Nice One Champ")
@@ -335,12 +335,12 @@ AddEventHandler("Vehicles:Client:StartFueling", function(entityData, data)
 			fuelAmount = math.ceil(fuelData.requiredFuel * (secondsElapsed / time))
 		end
 
-		local entState = Entity(entityData.entity).state
+		local entState = Entity(data.entity).state
 		entState:set("beingFueled", nil, true)
 
 		exports["sandbox-base"]:ServerCallback("Fuel:CompleteFueling", {
-			vehNet = VehToNet(entityData.entity),
-			vehClass = GetVehicleClass(entityData.entity),
+			vehNet = VehToNet(data.entity),
+			vehClass = GetVehicleClass(data.entity),
 			fuelAmount = fuelAmount,
 			useBank = data.bank,
 		}, function(success, amount)

@@ -24,9 +24,9 @@ function RegisterDumpsterStartup()
 end
 
 function RegisterDumpsterCallbacks()
-	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:AvailableDumpster", function(source, data, cb)
-		local _dumpsterId = data.entity
-		if data and _searchedDumpsters[_dumpsterId] == nil then
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:AvailableDumpster", function(source, entity, cb)
+		local _dumpsterId = entity
+		if entity and _searchedDumpsters[_dumpsterId] == nil then
 			cb(true)
 		else
 			cb(false)
@@ -55,11 +55,11 @@ function RegisterDumpsterCallbacks()
 			cb(false, false)
 		end
 	end)
-	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:SearchDumpster", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:SearchDumpster", function(source, entity, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			local _dumpsterId = data.entity
-			if data and _searchedDumpsters[_dumpsterId] == nil then
+			local _dumpsterId = entity
+			if entity and _searchedDumpsters[_dumpsterId] == nil then
 				_searchedDumpsters[_dumpsterId] = true
 				local _PlayerRep = exports['sandbox-characters']:RepGetLevel(source, _repName) or 0
 				local _found = math.random(100) >= math.random(75)

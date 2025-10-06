@@ -28,7 +28,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:ActualCrackSafe", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function()
 						return (
 							not GlobalState["StoreAntiShitlord"]
 							or GetCloudTimeAsInt() > GlobalState["StoreAntiShitlord"]
@@ -42,7 +42,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:SequenceSafe", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function()
 						return (
 							not GlobalState["StoreAntiShitlord"]
 							or GetCloudTimeAsInt() > GlobalState["StoreAntiShitlord"]
@@ -55,7 +55,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:OpenSafe", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function()
 						local safeData = GlobalState[string.format("Safe:%s", v.data.id)]
 						return safeData ~= nil and safeData.state == 2
 					end,
@@ -67,7 +67,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:SecureSafe", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function()
 						local safeData = GlobalState[string.format("Safe:%s", v.data.id)]
 						return safeData ~= nil and safeData.state ~= 4
 					end,

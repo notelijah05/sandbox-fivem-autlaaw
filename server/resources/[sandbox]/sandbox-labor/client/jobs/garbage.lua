@@ -134,8 +134,8 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 					label = "Grab Trash",
 					event = "Garbage:Client:TrashGrab",
 					distance = 3.0,
-					canInteract = function(data, entity)
-						return not _entities[ObjToNet(entity.entity)]
+					canInteract = function(entity)
+						return not _entities[ObjToNet(entity)]
 							and LocalPlayer.state.inGarbagbeZone
 							and GarbageObject == nil
 							and _state == 2

@@ -11,45 +11,28 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 			icon = "fa-solid fa-truck",
 			text = "Request Tow Job",
 			event = "Tow:Client:RequestJob",
-			isEnabled = function(data, entityData)
-				if not exports['sandbox-jobs']:HasJob('tow') then
-					return true
-				end
-				return false
-			end,
+			groups = { "tow" },
 		},
 		{
 			icon = "fa-solid fa-right-from-bracket",
 			text = "Quit Tow Job",
 			event = "Tow:Client:QuitJob",
-			jobPerms = {
-				{
-					job = "tow",
-					reqOffDuty = true,
-				},
-			},
+			groups = { "tow" },
+			reqOffDuty = true,
 		},
 		{
 			icon = "fa-solid fa-clipboard-check",
 			text = "Tow - Go On Duty",
 			event = "Tow:Client:OnDuty",
-			jobPerms = {
-				{
-					job = "tow",
-					reqOffDuty = true,
-				},
-			},
+			groups = { "tow" },
+			reqOffDuty = true,
 		},
 		{
 			icon = "fa-solid fa-clipboard",
 			text = "Tow - Go Off Duty",
 			event = "Tow:Client:OffDuty",
-			jobPerms = {
-				{
-					job = "tow",
-					reqDuty = true,
-				},
-			},
+			groups = { "tow" },
+			reqDuty = true,
 		},
 	}, 'truck-tow', 'WORLD_HUMAN_CLIPBOARD')
 end)

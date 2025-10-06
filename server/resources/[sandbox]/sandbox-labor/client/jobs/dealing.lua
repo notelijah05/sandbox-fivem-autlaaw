@@ -67,8 +67,8 @@ function AddTargetingShit(ped)
 			label = "Sell Product",
 			event = "CornerDealing:Client:ShowMenu",
 			distance = 2.0,
-			canInteract = function(data, entity)
-				return not Entity(entity.entity).state.boughtDrugs and not IsPedDeadOrDying(entity.entity)
+			canInteract = function(entity)
+				return not Entity(entity).state.boughtDrugs and not IsPedDeadOrDying(entity)
 			end,
 		},
 	})
@@ -224,7 +224,7 @@ RegisterNetEvent("CornerDealing:Client:OnDuty", function(joiner, time)
 		end
 	end)
 
-	eventHandlers["stop-cornering"] = AddEventHandler("CornerDealing:Client:StopCornering", function(data, entity)
+	eventHandlers["stop-cornering"] = AddEventHandler("CornerDealing:Client:StopCornering", function()
 		if _working then
 			exports["sandbox-base"]:ServerCallback("CornerDealing:StopCornering")
 		end
