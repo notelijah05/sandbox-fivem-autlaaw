@@ -74,8 +74,8 @@ local function shouldHide(option, distance, endCoords, entityHit, entityType, en
         return true
     end
 
-    if option.groups or option.reqDuty or option.reqOffDuty or option.workplace or option.permissionKey or option.tempjob then
-        if not utils.hasPlayerGotGroup(option.groups, option.reqDuty, option.reqOffDuty, option.workplace, option.permissionKey, option.tempjob) then
+    if option.groups or option.reqDuty or option.reqOffDuty or option.workplace or option.permissionKey or option.tempjob or option.rep then
+        if not utils.hasPlayerGotGroup(option.groups, option.reqDuty, option.reqOffDuty, option.workplace, option.permissionKey, option.tempjob, option.rep) then
             return true
         end
     end

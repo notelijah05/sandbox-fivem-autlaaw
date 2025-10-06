@@ -188,6 +188,7 @@ function CreateDumbAssPed(model, coords, heading, menu, icon, scenario, anim, co
 				reqDuty = option.reqDuty or false,
 				workplace = option.workplace or nil,
 				tempjob = option.tempjob or nil,
+				rep = option.rep or nil,
 				onSelect = function()
 					if option.event then
 						TriggerEvent(option.event, (option.data or {}))
