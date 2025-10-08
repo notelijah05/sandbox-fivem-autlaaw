@@ -67,52 +67,52 @@ AddEventHandler("Labor:Dumpster:RegisterDumpsters", function()
 end)
 
 function RegisterDumpsterStartup()
-	for k, v in ipairs(_DumpsterEntities) do
-		exports.ox_target:addModel(v.objectID, {
-			{
-				icon = "fa-solid fa-magnifying-glass",
-				label = "Search Trash",
-				onSelect = function(data)
-					TriggerEvent("Inventory:Client:SearchDumpster", data.entity)
-				end,
-				distance = 1.5,
-				canInteract = function(entity)
-					if entity ~= nil and v.objectID == GetEntityModel(entity) then
-						return true
-					end
-					return false
-				end,
-			},
-			{
-				icon = "fa-solid fa-box-open",
-				label = "Open Trash",
-				onSelect = function(data)
-					TriggerEvent("Inventory:Client:OpenDumpster", data.entity)
-				end,
-				distance = 1.5,
-				canInteract = function(entity)
-					if entity ~= nil and v.objectID == GetEntityModel(entity) then
-						return true
-					end
-					return false
-				end,
-			},
-			-- {
-			-- 	icon = "fa-solid fa-trash-can-slash",
-			-- 	label = "Hide In Dumpster",
-			-- 	onSelect = function(data)
-			-- 		TriggerEvent("Inventory:Client:HideInDumpster", data.entity)
-			-- 	end,
-			-- 	distance = 1.5,
-			-- 	canInteract = function(entity)
-			-- 		if entity ~= nil and v.objectID == GetEntityModel(entity) then
-			-- 			return true
-			-- 		end
-			-- 		return false
-			-- 	end,
-			-- },
-		})
-	end
+	-- for k, v in ipairs(_DumpsterEntities) do
+	-- 	exports.ox_target:addModel(v.objectID, {
+	-- 		{
+	-- 			icon = "fa-solid fa-magnifying-glass",
+	-- 			label = "Search Trash",
+	-- 			onSelect = function(data)
+	-- 				TriggerEvent("Inventory:Client:SearchDumpster", data.entity)
+	-- 			end,
+	-- 			distance = 1.5,
+	-- 			canInteract = function(entity)
+	-- 				if entity ~= nil and v.objectID == GetEntityModel(entity) then
+	-- 					return true
+	-- 				end
+	-- 				return false
+	-- 			end,
+	-- 		},
+	-- 		{
+	-- 			icon = "fa-solid fa-box-open",
+	-- 			label = "Open Trash",
+	-- 			onSelect = function(data)
+	-- 				TriggerEvent("Inventory:Client:OpenDumpster", data.entity)
+	-- 			end,
+	-- 			distance = 1.5,
+	-- 			canInteract = function(entity)
+	-- 				if entity ~= nil and v.objectID == GetEntityModel(entity) then
+	-- 					return true
+	-- 				end
+	-- 				return false
+	-- 			end,
+	-- 		},
+	-- 		{
+	-- 			icon = "fa-solid fa-trash-can-slash",
+	-- 			label = "Hide In Dumpster",
+	-- 			onSelect = function(data)
+	-- 				TriggerEvent("Inventory:Client:HideInDumpster", data.entity)
+	-- 			end,
+	-- 			distance = 1.5,
+	-- 			canInteract = function(entity)
+	-- 				if entity ~= nil and v.objectID == GetEntityModel(entity) then
+	-- 					return true
+	-- 				end
+	-- 				return false
+	-- 			end,
+	-- 		},
+	-- 	})
+	-- end
 end
 
 AddEventHandler("Inventory:Client:OpenDumpster", function(entity)

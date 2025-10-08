@@ -1,193 +1,148 @@
-exports('lockpick', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
+function RegisterItemUses()
+	exports.ox_inventory:RegisterUse("lockpick", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
-			exports["sandbox-base"]:ClientCallback(inventory.id, "Vehicles:Lockpick", true, function(using, success)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:Lockpick", true, function(using, success)
 				if using then
-					local currentDurability = slot.metadata and slot.metadata.durability or 100
-					local newDurability
-
+					local newValue = slot.CreateDate - (60 * 60 * 24)
 					if success then
-						newDurability = currentDurability - 20
-						exports.ox_inventory:SetDurability(inventory.id, slot.slot, newDurability)
-					else
-						newDurability = currentDurability - 50
-						exports.ox_inventory:SetDurability(inventory.id, slot.slot, newDurability)
+						newValue = slot.CreateDate - (60 * 60 * 12)
 					end
-
-					if newDurability <= 0 then
-						exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot)
+					if (os.time() - itemData.durability >= newValue) then
+						exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						exports.ox_inventory:SetDurability(inventory.id, slot.slot, newDurability)
+						exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 			end)
 		end)
-		return
-	end
-end)
+	end)
 
-exports('adv_lockpick', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
+	exports.ox_inventory:RegisterUse("adv_lockpick", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
-			exports["sandbox-base"]:ClientCallback(inventory.id, "Vehicles:AdvLockpick", true, function(using, success)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:AdvLockpick", true, function(using, success)
 				if using then
-					local currentDurability = slot.metadata and slot.metadata.durability or 100
-					local newDurability
-
+					local newValue = slot.CreateDate - (60 * 60 * 24)
 					if success then
-						newDurability = currentDurability - 15
-					else
-						newDurability = currentDurability - 40
+						newValue = slot.CreateDate - (60 * 60 * 12)
 					end
-
-					if newDurability <= 0 then
-						exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot)
+					if (os.time() - itemData.durability >= newValue) then
+						exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						exports.ox_inventory:SetDurability(inventory.id, slot.slot, newDurability)
+						exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 			end)
 		end)
-		return
-	end
-end)
+	end)
 
-exports('electronics_kit', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
+	exports.ox_inventory:RegisterUse("electronics_kit", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
-			exports["sandbox-base"]:ClientCallback(inventory.id, "Vehicles:Hack", true, function(using, success)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:Hack", true, function(using, success)
 				if using then
-					local currentDurability = slot.metadata and slot.metadata.durability or 100
-					local newDurability
-
+					local newValue = slot.CreateDate - (60 * 60 * 24)
 					if success then
-						newDurability = currentDurability - 25
-					else
-						newDurability = currentDurability - 60
+						newValue = slot.CreateDate - (60 * 60 * 12)
 					end
-
-					if newDurability <= 0 then
-						exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot)
+					if (os.time() - itemData.durability >= newValue) then
+						exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						exports.ox_inventory:SetDurability(inventory.id, slot.slot, newDurability)
+						exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 			end)
 		end)
-		return
-	end
-end)
+	end)
 
-exports('adv_electronics_kit', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
+	exports.ox_inventory:RegisterUse("adv_electronics_kit", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(500, function()
-			exports["sandbox-base"]:ClientCallback(inventory.id, "Vehicles:AdvHack", true, function(using, success)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:AdvHack", true, function(using, success)
 				if using then
-					local currentDurability = slot.metadata and slot.metadata.durability or 100
-					local newDurability
-
+					local newValue = slot.CreateDate - (60 * 60 * 24)
 					if success then
-						newDurability = currentDurability - 20
-					else
-						newDurability = currentDurability - 50
+						newValue = slot.CreateDate - (60 * 60 * 12)
 					end
-
-					if newDurability <= 0 then
-						exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot)
+					if (os.time() - itemData.durability >= newValue) then
+						exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						exports.ox_inventory:SetDurability(inventory.id, slot.slot, newDurability)
+						exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 			end)
 		end)
-		return
-	end
-end)
+	end)
 
-exports('screwdriver', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
+	exports.ox_inventory:RegisterUse("screwdriver", "Vehicles", function(source, slot, itemData)
 		Citizen.SetTimeout(1500, function()
-			exports["sandbox-base"]:ClientCallback(inventory.id, "Vehicles:Lockpick", {
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:Lockpick", {
 				{
 					base = 4000,
 					mod = 900,
 				},
 				{
+
 					base = 3500,
 					mod = 900,
 				},
 				false
 			}, function(using, success)
 				if using then
-					local currentDurability = slot.metadata and slot.metadata.durability or 100
-					local newDurability
-
+					local newValue = slot.CreateDate - (60 * 60 * 24)
 					if success then
-						newDurability = currentDurability - 30
-					else
-						newDurability = currentDurability - 70
+						newValue = slot.CreateDate - (60 * 60 * 12)
 					end
-
-					if newDurability <= 0 then
-						exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot)
+					if (os.time() - itemData.durability >= newValue) then
+						exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						exports.ox_inventory:SetDurability(inventory.id, slot.slot, newDurability)
+						exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 			end)
 		end)
-		return
-	end
-end)
+	end)
 
-exports('repairkit', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
-		exports["sandbox-base"]:ClientCallback(inventory.id, "Vehicles:RepairKit", false, function(success)
+	exports.ox_inventory:RegisterUse("repairkit", "Vehicles", function(source, itemData)
+		exports["sandbox-base"]:ClientCallback(source, "Vehicles:RepairKit", false, function(success)
 			if success then
-				exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot)
+				exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData
+					.invType)
 			end
 		end)
-		return
-	end
-end)
+	end)
 
-exports('repairkitadv', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
-		exports["sandbox-base"]:ClientCallback(inventory.id, "Vehicles:RepairKit", true, function(success)
+	exports.ox_inventory:RegisterUse("repairkitadv", "Vehicles", function(source, itemData)
+		exports["sandbox-base"]:ClientCallback(source, "Vehicles:RepairKit", true, function(success)
 			if success then
-				exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot)
+				exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData
+					.invType)
 			end
 		end)
-		return
-	end
-end)
+	end)
 
-exports('fakeplates', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
-		local currentMeta = item.metadata or {}
+	exports.ox_inventory:RegisterUse("fakeplates", "Vehicles", function(source, itemData)
+		local currentMeta = itemData.MetaData or {}
 		if not currentMeta.Plate then -- Data needs generating
 			local updatingMetaData = {}
 
 			updatingMetaData.Plate = Vehicles.Identification.Plate:Generate(true)
-			updatingMetaData.VIN = Vehicles.Identification.VIN:GenerateLocal()
+			updatingMetaData.VIN = Vehicles.Identification.VIN:GenerateLocal() -- Might not be completely unique but odds are low and idc
 			updatingMetaData.OwnerName = exports['sandbox-base']:GeneratorNameFirst() ..
 				" " .. exports['sandbox-base']:GeneratorNameLast()
 			updatingMetaData.SID = exports['sandbox-base']:SequenceGet("Character")
 			updatingMetaData.Vehicle = exports['sandbox-vehicles']:RandomName()
 
-			currentMeta = exports.ox_inventory:SetMetadata(inventory.id, slot.slot, updatingMetaData)
+			currentMeta = exports.ox_inventory:UpdateMetaData(itemData.id, updatingMetaData)
 		end
 
 		if not currentMeta.Vehicle then
 			currentMeta.Vehicle = exports['sandbox-vehicles']:RandomName()
 
-			exports.ox_inventory:SetMetadata(inventory.id, slot.slot, {
+			exports.ox_inventory:UpdateMetaData(iitemData.id, {
 				Vehicle = currentMeta.Vehicle
 			})
 		end
 
 		if currentMeta then
-			exports["sandbox-base"]:ClientCallback(inventory.id, "Vehicles:GetFakePlateAddingVehicle", {}, function(veh)
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:GetFakePlateAddingVehicle", {}, function(veh)
 				if not veh then
 					return
 				end
@@ -211,60 +166,46 @@ exports('fakeplates', function(event, item, inventory, slot, data)
 
 						exports['sandbox-vehicles']:OwnedForceSave(vehState.VIN)
 
-						exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot)
+						exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
+							itemData.invType)
 
-						exports['sandbox-hud']:NotifSuccess(inventory.id, "Fake Plate Installed")
+						exports['sandbox-hud']:NotifSuccess(source, "Fake Plate Installed")
 					else
-						exports['sandbox-hud']:NotifError(inventory.id,
+						exports['sandbox-hud']:NotifError(source,
 							"A Fake Plate is Already Installed")
 					end
 				end
 			end)
 		end
-		return
-	end
-end)
+	end)
 
-exports('carpolish', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
-		UseCarPolish(inventory.id, item, inventory, slot, 1)
-		return
-	end
-end)
+	exports.ox_inventory:RegisterUse("carpolish", "Vehicles", function(source, itemData)
+		UseCarPolish(source, itemData, 1)
+	end)
 
-exports('carpolish_high', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
-		UseCarPolish(inventory.id, item, inventory, slot, 2)
-		return
-	end
-end)
+	exports.ox_inventory:RegisterUse("carpolish_high", "Vehicles", function(source, itemData)
+		UseCarPolish(source, itemData, 2)
+	end)
 
-exports('carclean', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
-		TriggerClientEvent("Vehicles:Client:CleaningKit", inventory.id)
-		return
-	end
-end)
+	exports.ox_inventory:RegisterUse("carclean", "Vehicles", function(source, itemData)
+		TriggerClientEvent("Vehicles:Client:CleaningKit", source)
+	end)
 
-exports('purgecontroller', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
-		UsePurgeColorController(inventory.id, item, inventory, slot)
-		return
-	end
-end)
+	exports.ox_inventory:RegisterUse("purgecontroller", "Vehicles", function(source, itemData)
+		UsePurgeColorController(source, itemData)
+	end)
 
-exports('car_bomb', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
-		exports["sandbox-base"]:ClientCallback(inventory.id, "Vehicles:UseCarBomb", {}, function(veh, reason, config)
+	exports.ox_inventory:RegisterUse("car_bomb", "Vehicles", function(source, itemData)
+		exports["sandbox-base"]:ClientCallback(source, "Vehicles:UseCarBomb", {}, function(veh, reason, config)
 			if not veh then
 				if reason then
-					exports['sandbox-hud']:NotifError(inventory.id, reason)
+					exports['sandbox-hud']:NotifError(source, reason)
 				end
 				return
 			end
 			veh = NetworkGetEntityFromNetworkId(veh)
 			if veh and DoesEntityExist(veh) then
-				local char = exports['sandbox-characters']:FetchCharacterSource(inventory.id)
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if char then
 					local vehState = Entity(veh).state
 					if not vehState.VIN then
@@ -279,25 +220,23 @@ exports('car_bomb', function(event, item, inventory, slot, data)
 							InstalledBy = char:GetData("SID"),
 						}
 
-						exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot)
+						exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
+							itemData.invType)
 
-						exports['sandbox-hud']:NotifSuccess(inventory.id, "Car Bomb Installed")
+						exports['sandbox-hud']:NotifSuccess(source, "Car Bomb Installed")
 					else
-						exports['sandbox-hud']:NotifError(inventory.id,
+						exports['sandbox-hud']:NotifError(source,
 							"Vehicle Already Has Car Bomb")
 					end
 				else
-					exports['sandbox-hud']:NotifError(inventory.id, "Error Installing Car Bomb")
+					exports['sandbox-hud']:NotifError(source, "Error Installing Car Bomb")
 				end
 			end
 		end)
-		return
-	end
-end)
+	end)
 
-exports('harness', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
-		exports["sandbox-base"]:ClientCallback(inventory.id, "Vehicles:InstallHarness", {}, function(veh)
+	exports.ox_inventory:RegisterUse("harness", "Vehicles", function(source, itemData)
+		exports["sandbox-base"]:ClientCallback(source, "Vehicles:InstallHarness", {}, function(veh)
 			if not veh then
 				return
 			end
@@ -308,23 +247,17 @@ exports('harness', function(event, item, inventory, slot, data)
 					return
 				end
 
-				local slotData = inventory.items[slot]
-				if slotData then
-					if exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slotData.metadata, slot) then
-						vehState.Harness = 10
-						exports['sandbox-hud']:NotifSuccess(inventory.id, "Harness Installed")
-					end
+				if exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
+					vehState.Harness = 10
+					exports['sandbox-hud']:NotifSuccess(source, "Harness Installed")
 				end
 			end
 		end)
-		return
-	end
-end)
+	end)
 
-exports('nitrous', function(event, item, inventory, slot, data)
-	if event == 'usingItem' then
-		if item?.metadata?.Nitrous and item?.metadata?.Nitrous > 0 then
-			exports["sandbox-base"]:ClientCallback(inventory.id, "Vehicles:InstallNitrous", {}, function(veh)
+	exports.ox_inventory:RegisterUse("nitrous", "Vehicles", function(source, itemData)
+		if itemData?.MetaData?.Nitrous and itemData?.MetaData?.Nitrous > 0 then
+			exports["sandbox-base"]:ClientCallback(source, "Vehicles:InstallNitrous", {}, function(veh)
 				if not veh then
 					return
 				end
@@ -335,20 +268,18 @@ exports('nitrous', function(event, item, inventory, slot, data)
 						return
 					end
 
-					if exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot) then
-						vehState.Nitrous = item.metadata.Nitrous + 0.0
-						exports['sandbox-hud']:NotifSuccess(inventory.id,
+					if exports.ox_inventory:RemoveId(itemData.Owner, itemData.invType, itemData) then
+						vehState.Nitrous = itemData.MetaData.Nitrous + 0.0
+						exports['sandbox-hud']:NotifSuccess(source,
 							"Nitrous Oxide Installed")
 					end
 				end
 			end)
 		else
-			exports['sandbox-hud']:NotifError(inventory.id, "The Bottle is Empty!")
-			return false
+			exports['sandbox-hud']:NotifError(source, "The Bottle is Empty!")
 		end
-		return
-	end
-end)
+	end)
+end
 
 local polishTypes = {
 	{                          -- Normal Polish
@@ -361,9 +292,9 @@ local polishTypes = {
 	}
 }
 
-function UseCarPolish(source, item, inventory, slot, type)
+function UseCarPolish(source, itemData, type)
 	local typeData = polishTypes[type]
-	if not typeData then return end
+	if not type then return end
 
 	exports["sandbox-base"]:ClientCallback(source, "Vehicles:UseCarPolish", {}, function(veh)
 		if not veh then
@@ -378,13 +309,14 @@ function UseCarPolish(source, item, inventory, slot, type)
 
 			if (not vehState.Polish) or (vehState.Polish?.Type ~= type) or (vehState.Polish?.Time and (os.time() - vehState.Polish?.Time) >= (60 * 60 * 24)) then
 				vehState.Polish = {
-					Type = type,
+					Type = t,
 					Expires = os.time() + typeData.length,
 					Time = os.time(),
 					Mult = typeData.multiplier,
 				}
 
-				exports.ox_inventory:RemoveItem(inventory.id, item.name, 1, slot.metadata, slot.slot)
+				exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData
+					.invType)
 
 				exports['sandbox-hud']:NotifSuccess(source, "Polish Applied")
 			else
@@ -395,7 +327,7 @@ function UseCarPolish(source, item, inventory, slot, type)
 	end)
 end
 
-function UsePurgeColorController(source, item, inventory, slot)
+function UsePurgeColorController(source, itemData)
 	exports["sandbox-base"]:ClientCallback(source, "Vehicles:UsePurgeColorController", {}, function(veh)
 		if not veh then
 			return
