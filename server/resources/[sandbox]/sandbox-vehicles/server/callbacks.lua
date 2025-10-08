@@ -657,7 +657,7 @@ function RegisterCallbacks()
                     exports['sandbox-vehicles']:OwnedForceSave(vehState.VIN)
 
                     if fakePlateData and fakePlateData.Plate then
-                        exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'fakeplates', 1, fakePlateData, 1)
+                        exports.ox_inventory:AddItem(char:GetData('SID'), 'fakeplates', 1, fakePlateData, 1)
                     end
 
                     cb(true, originalPlate)
@@ -749,7 +749,7 @@ function RegisterCallbacks()
         if char and veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
             if vehState.VIN and vehState.Nitrous then
-                exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'nitrous', 1, {
+                exports.ox_inventory:AddItem(char:GetData('SID'), 'nitrous', 1, {
                     Nitrous = math.floor(vehState.Nitrous)
                 }, 1, nil, nil, nil, nil, nil, nil, nil, true)
 
