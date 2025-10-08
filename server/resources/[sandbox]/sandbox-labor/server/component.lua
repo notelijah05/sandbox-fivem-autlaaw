@@ -400,7 +400,7 @@ exports('CreateWorkgroup', function(source)
 
 		local name = { First = char:GetData("First"), Last = char:GetData("Last") }
 		if hasValue(char:GetData("States") or {}, "PHONE_VPN") then
-			local vpn = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
+			local vpn = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
 			name = vpn.MetaData.VpnName
 		end
 
@@ -483,7 +483,7 @@ exports('JoinWorkgroup', function(creator, source)
 
 					local name = { First = char:GetData("First"), Last = char:GetData("Last") }
 					if hasValue(char:GetData("States") or {}, "PHONE_VPN") then
-						local vpn = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
+						local vpn = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
 						name = vpn.MetaData.VpnName
 					end
 
@@ -550,7 +550,7 @@ exports('RequestWorkgroup', function(group, source)
 
 						local name = { First = char:GetData("First"), Last = char:GetData("Last") }
 						if hasValue(char:GetData("States") or {}, "PHONE_VPN") then
-							local vpn = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
+							local vpn = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "vpn", 1)
 							name = vpn.MetaData.VpnName
 						end
 

@@ -50,7 +50,7 @@ RegisterNetEvent("Handcuffs:Client:UncuffingAnim", function()
 
 		loadAnimDict(animDict)
 
-		exports['sandbox-inventory']:WeaponsUnequipIfEquipped()
+		exports.ox_inventory:WeaponsUnequipIfEquipped()
 
 		while not HasAnimDictLoaded(animDict) do
 			Wait(0)
@@ -110,7 +110,7 @@ RegisterNetEvent("Handcuffs:Client:CuffThread", function(cId)
 			-- end
 			Wait(5)
 
-			exports['sandbox-inventory']:WeaponsUnequipIfEquipped()
+			exports.ox_inventory:WeaponsUnequipIfEquipped()
 
 			if not LocalPlayer.state.isHardCuffed and IsPedClimbing(LocalPlayer.state.ped) then
 				Wait(500)

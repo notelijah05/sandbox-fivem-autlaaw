@@ -6,43 +6,43 @@ RegisterNetEvent("Weed:Client:Login", function(l)
 	end
 
 	exports['sandbox-pedinteraction']:Add("weed-dealer", `s_m_y_dealer_01`, vector3(l.coords.x, l.coords.y, l.coords.z),
-	l.heading, 50.0, {
-		{
-			icon = "cannabis",
-			text = "Buy Package",
-			event = "Weed:Client:Package",
-		},
-		-- {
-		-- 	icon = "sack",
-		-- 	text = "Sell Bricks",
-		-- 	event = "Weed:Client:Brick",
-		-- 	item = "weed_brick",
-		-- 	rep = {
-		-- 		id = 'weed',
-		-- 		level = 3,
-		-- 	},
-		-- },
-		{
-			icon = "clock-nine",
-			text = "Sign In",
-			event = "WeedRun:Client:Enable",
-			data = {},
-			isEnabled = function()
-				return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_WEED_RUN")
-					and LocalPlayer.state.onDuty ~= "police"
-			end,
-		},
-		{
-			icon = "clock-nine",
-			text = "Sign Out",
-			event = "WeedRun:Client:Disabled",
-			data = {},
-			isEnabled = function()
-				return hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_WEED_RUN")
-					and LocalPlayer.state.onDuty ~= "police"
-			end,
-		},
-	}, "sack-dollar", "WORLD_HUMAN_DRUG_DEALER", true)
+		l.heading, 50.0, {
+			{
+				icon = "cannabis",
+				text = "Buy Package",
+				event = "Weed:Client:Package",
+			},
+			-- {
+			-- 	icon = "sack",
+			-- 	text = "Sell Bricks",
+			-- 	event = "Weed:Client:Brick",
+			-- 	item = "weed_brick",
+			-- 	rep = {
+			-- 		id = 'weed',
+			-- 		level = 3,
+			-- 	},
+			-- },
+			{
+				icon = "clock-nine",
+				text = "Sign In",
+				event = "WeedRun:Client:Enable",
+				data = {},
+				isEnabled = function()
+					return not hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_WEED_RUN")
+						and LocalPlayer.state.onDuty ~= "police"
+				end,
+			},
+			{
+				icon = "clock-nine",
+				text = "Sign Out",
+				event = "WeedRun:Client:Disabled",
+				data = {},
+				isEnabled = function()
+					return hasValue(LocalPlayer.state.Character:GetData("States") or {}, "SCRIPT_WEED_RUN")
+						and LocalPlayer.state.onDuty ~= "police"
+				end,
+			},
+		}, "sack-dollar", "WORLD_HUMAN_DRUG_DEALER", true)
 end)
 
 AddEventHandler("Weed:Client:Check", function(entity, data)
@@ -128,9 +128,9 @@ AddEventHandler("Weed:Client:Check", function(entity, data)
 				},
 			}
 
-			local hasNitro = exports['sandbox-inventory']:ItemsHas("fertilizer_nitrogen", 1)
-			local hasPhos = exports['sandbox-inventory']:ItemsHas("fertilizer_phosphorus", 1)
-			local hasPotas = exports['sandbox-inventory']:ItemsHas("fertilizer_potassium", 1)
+			local hasNitro = exports.ox_inventory:ItemsHas("fertilizer_nitrogen", 1)
+			local hasPhos = exports.ox_inventory:ItemsHas("fertilizer_phosphorus", 1)
+			local hasPotas = exports.ox_inventory:ItemsHas("fertilizer_potassium", 1)
 
 			if hasNitro or hasPhos or hasPotas then
 				if hasNitro then
@@ -208,7 +208,7 @@ AddEventHandler("Weed:Client:Check", function(entity, data)
 end)
 
 AddEventHandler("Weed:Client:Fertilize", function(data)
-	if exports['sandbox-inventory']:ItemsHas(string.format("fertilizer_%s", data.type), 1) then
+	if exports.ox_inventory:ItemsHas(string.format("fertilizer_%s", data.type), 1) then
 		exports['sandbox-hud']:ListMenuClose()
 		exports['sandbox-hud']:Progress({
 			name = "fertilize_weed",
@@ -237,7 +237,7 @@ AddEventHandler("Weed:Client:Fertilize", function(data)
 end)
 
 AddEventHandler("Weed:Client:Water", function(pId)
-	if exports['sandbox-inventory']:ItemsHas("water", 1) then
+	if exports.ox_inventory:ItemsHas("water", 1) then
 		exports['sandbox-hud']:ListMenuClose()
 		exports['sandbox-hud']:Progress({
 			name = "water_weed",

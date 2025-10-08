@@ -162,7 +162,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 					ShowTacoQueue()
 					return
 				end
-				if exports['sandbox-inventory']:CheckPlayerHasItem(_tacoFoodItems[_currentCookItem].item, 1) then
+				if exports.ox_inventory:CheckPlayerHasItem(_tacoFoodItems[_currentCookItem].item, 1) then
 					exports['sandbox-hud']:Progress({
 						name = "taco_queue",
 						duration = 2500,
@@ -337,7 +337,7 @@ function FetchDropOffLocation()
 end
 
 AddEventHandler("Taco:Client:TacoShop", function()
-	exports['sandbox-inventory']:ShopOpen("taco-shop-self")
+	exports.ox_inventory:ShopOpen("taco-shop-self")
 end)
 
 AddEventHandler("Tacos:DeliverOrder", function(data)

@@ -196,11 +196,11 @@ AddEventHandler("Labor:Server:Startup", function()
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _Garbage[_joiners[source]] ~= nil then
 			local luck = math.random(100)
 			if luck >= 80 then
-				exports['sandbox-inventory']:LootCustomSet(_highClassLoot, char:GetData("SID"), 1, math.random(5, 20))
+				exports.ox_inventory:LootCustomSet(_highClassLoot, char:GetData("SID"), 1, math.random(5, 20))
 			elseif luck >= 50 then
-				exports['sandbox-inventory']:LootCustomSet(_lootTable, char:GetData("SID"), 1, math.random(5, 20))
+				exports.ox_inventory:LootCustomSet(_lootTable, char:GetData("SID"), 1, math.random(5, 20))
 			end
-			exports['sandbox-inventory']:AddItem(char:GetData("SID"), "recycledgoods", math.random(10), {}, 1)
+			exports.ox_inventory:AddItem(char:GetData("SID"), "recycledgoods", math.random(10), {}, 1)
 
 			exports["sandbox-base"]:ClientCallback(source, "Garbage:DoingSomeAction", "trashPutIn")
 			if exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true) then
@@ -255,9 +255,9 @@ AddEventHandler("Labor:Server:Startup", function()
 		if repLvl > 0 then
 			local money = 0
 			for k, v in ipairs(_jewelryItems) do
-				local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, v.item) or 0
+				local count = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, v.item) or 0
 				if count > 0 then
-					if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.item, count) then
+					if exports.ox_inventory:Remove(char:GetData("SID"), 1, v.item, count) then
 						money = money + math.floor(_jewelryPrices[repLvl] * v.ratio) * count
 					end
 				end
@@ -304,7 +304,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	-- 					{}
 	-- 				)
 
-	-- 				cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"), _pawnItems[data.index].item, 1, {}, 1))
+	-- 				cb(exports.ox_inventory:AddItem(char:GetData("SID"), _pawnItems[data.index].item, 1, {}, 1))
 	-- 			else
 	-- 				exports['sandbox-hud']:NotifError(source, "Not Enough Crypto")
 	-- 			end

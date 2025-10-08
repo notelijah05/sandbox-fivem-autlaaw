@@ -8,7 +8,7 @@ AddEventHandler('onResourceStart', function(resource)
 		for k, v in ipairs(_mechanicShopStorageCrafting) do
 			if v.partCrafting then
 				for benchId, bench in ipairs(v.partCrafting) do
-					exports['sandbox-inventory']:CraftingRegisterBench(string.format("mech-%s-%s", v.job, benchId),
+					exports.ox_inventory:CraftingRegisterBench(string.format("mech-%s-%s", v.job, benchId),
 						bench.label, bench.targeting, {
 							x = bench.targeting.poly.coords.x,
 							y = bench.targeting.poly.coords.y,
@@ -25,7 +25,7 @@ AddEventHandler('onResourceStart', function(resource)
 
 			if v.partStorage then
 				for storageId, storage in ipairs(v.partStorage) do
-					exports['sandbox-inventory']:PolyCreate(storage)
+					exports.ox_inventory:PolyCreate(storage)
 				end
 			end
 		end

@@ -215,7 +215,7 @@ function RegisterCallbacks()
 					invType = invType,
 					owner = invId,
 				}, function()
-					exports['sandbox-inventory']:OpenSecondary(
+					exports.ox_inventory:OpenSecondary(
 						source,
 						invType,
 						invId,

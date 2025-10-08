@@ -1,7 +1,7 @@
 AddEventHandler('onResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
 		Wait(1000)
-		exports['sandbox-inventory']:RegisterUse("camber_controller", "Vehicles", function(source, item)
+		exports.ox_inventory:RegisterUse("camber_controller", "Vehicles", function(source, item)
 			exports["sandbox-base"]:ClientCallback(source, "Vehicles:UseCamberController", {}, function(veh)
 				if not veh then
 					return

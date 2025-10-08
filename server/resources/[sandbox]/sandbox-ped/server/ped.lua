@@ -505,7 +505,7 @@ exports("MaskUnequip", function(source)
 	if char ~= nil then
 		local ped = char:GetData("Ped")
 
-		local itemId = exports['sandbox-inventory']:GetWithStaticMetadata(
+		local itemId = exports.ox_inventory:GetWithStaticMetadata(
 			"mask",
 			"drawableId",
 			"textureId",
@@ -518,7 +518,7 @@ exports("MaskUnequip", function(source)
 			md = {}
 		end
 
-		if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
+		if exports.ox_inventory:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
 			ped.customization.components.mask = {
 				componentId = 1,
 				drawableId = 0,
@@ -561,7 +561,7 @@ exports("HatUnequip", function(source)
 	if char ~= nil then
 		local ped = char:GetData("Ped")
 
-		local itemId = exports['sandbox-inventory']:GetWithStaticMetadata(
+		local itemId = exports.ox_inventory:GetWithStaticMetadata(
 			"hat",
 			"drawableId",
 			"textureId",
@@ -574,7 +574,7 @@ exports("HatUnequip", function(source)
 			md = {}
 		end
 
-		if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
+		if exports.ox_inventory:AddItem(char:GetData("SID"), itemId, 1, md, 1) then
 			ped.customization.props.hat = {
 				componentId = 0,
 				drawableId = 0,
@@ -599,7 +599,7 @@ exports("NecklaceUnequip", function(source)
 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
 		local ped = char:GetData("Ped")
-		local itemId = exports['sandbox-inventory']:GetWithStaticMetadata(
+		local itemId = exports.ox_inventory:GetWithStaticMetadata(
 			"accessory",
 			"drawableId",
 			"textureId",
@@ -608,7 +608,7 @@ exports("NecklaceUnequip", function(source)
 		) or "accessory"
 
 		if itemId ~= "accessory" then
-			if exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemId, 1, {}, 1) then
+			if exports.ox_inventory:AddItem(char:GetData("SID"), itemId, 1, {}, 1) then
 				ped.customization.components.accessory = {
 					componentId = 7,
 					drawableId = 0,

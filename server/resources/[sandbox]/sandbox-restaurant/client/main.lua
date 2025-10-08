@@ -701,7 +701,7 @@ RegisterNetEvent("Restaurant:Client:CreatePoly", function(pickups, warmersList, 
 end)
 
 AddEventHandler("Restaurant:Client:Pickup", function(entity, data)
-	exports['sandbox-inventory']:DumbfuckOpen(data.inventory)
+	exports.ox_inventory:DumbfuckOpen(data.inventory)
 end)
 
 AddEventHandler("Restaurant:Client:ClockIn", function(_, data)

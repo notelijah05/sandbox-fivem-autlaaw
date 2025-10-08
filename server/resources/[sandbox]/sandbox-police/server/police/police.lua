@@ -17,10 +17,10 @@ AddEventHandler('onResourceStart', function(resource)
 		for k, v in pairs(Config.Armories) do
 			exports['sandbox-base']:LoggerTrace("Police",
 				string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", v.id, v.name))
-			exports['sandbox-inventory']:PolyCreate(v)
+			exports.ox_inventory:PolyCreate(v)
 		end
 
-		exports['sandbox-inventory']:RegisterUse("spikes", "Police", function(source, slot, itemData)
+		exports.ox_inventory:RegisterUse("spikes", "Police", function(source, slot, itemData)
 			if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
 				exports["sandbox-base"]:ClientCallback(source, "Police:DeploySpikes", {}, function(data)
 					if data ~= nil then
@@ -28,9 +28,9 @@ AddEventHandler('onResourceStart', function(resource)
 
 						local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 						if (os.time() - itemData.durability >= newValue) then
-							exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+							exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 						else
-							exports['sandbox-inventory']:SetItemCreateDate(
+							exports.ox_inventory:SetItemCreateDate(
 								slot.id,
 								newValue
 							)
@@ -143,7 +143,7 @@ AddEventHandler('onResourceStart', function(resource)
 					local coords = GetEntityCoords(GetPlayerPed(data))
 					_swabCounter += 1
 
-					exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'evidence-dna', 1, {
+					exports.ox_inventory:AddItem(char:GetData('SID'), 'evidence-dna', 1, {
 						EvidenceType = 'blood',
 						EvidenceId = string.format('%s-%s', os.date('%d%m%y-%H%M%S', os.time()), 950000 + _swabCounter),
 						EvidenceCoords = { x = coords.x, y = coords.y, z = coords.z },
@@ -252,7 +252,7 @@ AddEventHandler('onResourceStart', function(resource)
 									invType = 3,
 									owner = ("pdrack:%s"):format(entState.VIN),
 								}, function()
-									exports['sandbox-inventory']:OpenSecondary(source, 3,
+									exports.ox_inventory:OpenSecondary(source, 3,
 										("pdrack:%s"):format(entState.VIN))
 								end)
 							else
@@ -276,7 +276,7 @@ AddEventHandler('onResourceStart', function(resource)
 									invType = 999,
 									owner = ("pdrack:%s"):format(entState.VIN),
 								}, function()
-									exports['sandbox-inventory']:OpenSecondary(source, 999,
+									exports.ox_inventory:OpenSecondary(source, 999,
 										("pdrack:%s"):format(entState.VIN))
 								end)
 							else

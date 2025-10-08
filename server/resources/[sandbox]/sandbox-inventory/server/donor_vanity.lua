@@ -2,7 +2,7 @@ function RegisterDonorVanityItemsCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:DonorSales:GetPending", function(source, data, cb)
 		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
-			local pending = exports['sandbox-inventory']:DonatorGetPending(plyr:GetData("Identifier"), true)
+			local pending = exports.ox_inventory:DonatorGetPending(plyr:GetData("Identifier"), true)
 			local mainMenuItems = {}
 			for k, v in ipairs(pending) do
 				if not v.redeemed then
@@ -48,7 +48,7 @@ function RegisterDonorVanityItemsCallbacks()
 
 			if label and description and image and amount and amount > 0 then
 				local sid = char:GetData("SID")
-				local pending = exports['sandbox-inventory']:DonatorGetPending(plyr:GetData("Identifier"), true)
+				local pending = exports.ox_inventory:DonatorGetPending(plyr:GetData("Identifier"), true)
 				if #pending > 0 then
 					local foundToken = nil
 					for k, v in ipairs(pending) do
@@ -58,10 +58,10 @@ function RegisterDonorVanityItemsCallbacks()
 						end
 					end
 
-					if exports['sandbox-inventory']:DonatorRemovePending(plyr:GetData("Identifier"), foundToken) then
+					if exports.ox_inventory:DonatorRemovePending(plyr:GetData("Identifier"), foundToken) then
 						local t = exports['sandbox-base']:SequenceGet("VanityItem")
 
-						local newItem = exports['sandbox-inventory']:ItemTemplateCreate(
+						local newItem = exports.ox_inventory:ItemTemplateCreate(
 							string.format("vanityitem%s", t),
 							label,
 							description or "",
@@ -88,7 +88,7 @@ function RegisterDonorVanityItemsCallbacks()
 
 						itemsDatabase[newItem.name].isUsable = true
 
-						exports['sandbox-inventory']:AddItem(sid, newItem.name, amount, {}, 1)
+						exports.ox_inventory:AddItem(sid, newItem.name, amount, {}, 1)
 
 						exports['sandbox-hud']:NotifSuccess(source,
 							"Found unused vanity token!")
@@ -114,7 +114,7 @@ function RegisterDonorVanityItemsCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:DonorSales:GetTokens", function(source, data, cb)
 		local plyr = exports['sandbox-base']:FetchSource(source)
 		if plyr then
-			local res = exports['sandbox-inventory']:DonatorGetPending(plyr:GetData("Identifier"))
+			local res = exports.ox_inventory:DonatorGetPending(plyr:GetData("Identifier"))
 			cb({ available = #res or 0 })
 		else
 			cb(false)
@@ -125,7 +125,7 @@ function RegisterDonorVanityItemsCallbacks()
 		local license = table.unpack(args)
 
 		if license then
-			local success = exports['sandbox-inventory']:DonatorAddPending(license)
+			local success = exports.ox_inventory:DonatorAddPending(license)
 			if success then
 				exports["sandbox-chat"]:SendSystemSingle(source, "Successfully added donator vanity item token")
 			else
@@ -146,7 +146,7 @@ function RegisterDonorVanityItemsCallbacks()
 		local license = table.unpack(args)
 
 		if license then
-			local res = exports['sandbox-inventory']:DonatorGetPending(license, true)
+			local res = exports.ox_inventory:DonatorGetPending(license, true)
 			if res then
 				local message = string.format("Player Identifier: %s<br>", license)
 				for k, v in ipairs(res) do
@@ -171,7 +171,7 @@ function RegisterDonorVanityItemsCallbacks()
 	exports["sandbox-chat"]:RegisterAdminCommand("removedonatoritem", function(source, args, rawCommand)
 		local license, tokenId = table.unpack(args)
 		if license and tokenId then
-			local success = exports['sandbox-inventory']:DonatorDeletePending(license, tokenId)
+			local success = exports.ox_inventory:DonatorDeletePending(license, tokenId)
 			if success then
 				exports["sandbox-chat"]:SendSystemSingle(source, "Successfully Removed Token")
 			else
@@ -261,7 +261,7 @@ function TebexAddVanityItem(source, args)
 	if player then
 		local license = player:GetData("Identifier")
 		if license then
-			local success = exports['sandbox-inventory']:DonatorAddPending(license)
+			local success = exports.ox_inventory:DonatorAddPending(license)
 			if success then
 				exports["sandbox-chat"]:SendSystemSingle(sid, "Successfully Added Donator Vanity Item Token")
 			else

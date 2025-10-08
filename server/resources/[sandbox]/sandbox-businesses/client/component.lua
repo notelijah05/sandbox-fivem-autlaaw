@@ -178,7 +178,7 @@ RegisterNetEvent("Businesses:Client:CreatePoly", function(pickups, onSpawn)
 end)
 
 AddEventHandler("Businesses:Client:Pickup", function(data)
-	exports['sandbox-inventory']:DumbfuckOpen(data.inventory)
+	exports.ox_inventory:DumbfuckOpen(data.inventory)
 end)
 
 function GetBusinessClockInMenu(businessName)

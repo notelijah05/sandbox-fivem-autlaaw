@@ -225,10 +225,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 					_mbInUse.powerBoxes[data.boxId] = source
 					GlobalState["MazeBankInProgress"] = true
 
-					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
-						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"),
+					if exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
+						local slot = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"),
 							"adv_electronics_kit", 1)
-						local itemData = exports['sandbox-inventory']:ItemsGetData("adv_electronics_kit")
+						local itemData = exports.ox_inventory:ItemsGetData("adv_electronics_kit")
 
 						if itemData ~= nil then
 							exports['sandbox-base']:LoggerInfo(
@@ -258,9 +258,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 									newValue = slot.CreateDate - (60 * 60 * 12)
 								end
 								if os.time() - itemData.durability >= newValue then
-									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+									exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+									exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if success then
@@ -431,8 +431,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_mbInUse.powerBoxes[data.boxId] = source
 						GlobalState["MazeBankInProgress"] = true
 
-						if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "thermite", 1) then
-							if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "thermite", 1) then
+						if exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "thermite", 1) then
+							if exports.ox_inventory:Remove(char:GetData("SID"), 1, "thermite", 1) then
 								exports['sandbox-base']:LoggerInfo(
 									"Robbery",
 									string.format(
@@ -618,9 +618,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 					_mbInUse.drillPoints[data] = source
 					GlobalState["MazeBankInProgress"] = true
 
-					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "drill", 1) then
-						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "drill", 1)
-						local itemData = exports['sandbox-inventory']:ItemsGetData("drill")
+					if exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "drill", 1) then
+						local slot = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "drill", 1)
+						local itemData = exports.ox_inventory:ItemsGetData("drill")
 
 						if slot ~= nil then
 							exports['sandbox-base']:LoggerInfo(
@@ -644,9 +644,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 									newValue = slot.CreateDate - (itemData.durability / 2)
 								end
 								if os.time() - itemData.durability >= newValue then
-									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+									exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+									exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if success then
@@ -669,13 +669,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 									_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
 
-									exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_mbLoot,
+									exports.ox_inventory:LootCustomWeightedSetWithCount(_mbLoot,
 										char:GetData("SID"), 1)
 
 									if not _purpDongie then
 										if math.random(100) <= 10 then
 											_purpDongie = source
-											exports['sandbox-inventory']:AddItem(char:GetData("SID"), "purple_dongle", 1,
+											exports.ox_inventory:AddItem(char:GetData("SID"), "purple_dongle", 1,
 												{}, 1)
 										end
 									end
@@ -748,10 +748,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 					_mbInUse.officePcs[data.id] = source
 					GlobalState["MazeBankInProgress"] = true
 
-					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
-						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"),
+					if exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "adv_electronics_kit", 1) then
+						local slot = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"),
 							"adv_electronics_kit", 1)
-						local itemData = exports['sandbox-inventory']:ItemsGetData("adv_electronics_kit")
+						local itemData = exports.ox_inventory:ItemsGetData("adv_electronics_kit")
 
 						if itemData ~= nil then
 							exports['sandbox-base']:LoggerInfo(
@@ -776,9 +776,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 								if success then
 									newValue = slot.CreateDate - (60 * 60 * 12)
 									if os.time() - itemData.durability >= newValue then
-										exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+										exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 									else
-										exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+										exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 									end
 
 									exports['sandbox-base']:LoggerInfo(
@@ -802,14 +802,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 									GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 									GlobalState[string.format("MazeBank:Offices:PC:%s", data.id)] = _mbGlobalReset
-									exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+									exports.ox_inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 										CryptoCoin = "MALD",
 										Quantity = math.random(120, 200),
 									}, 1)
 
 									if math.random(100) <= (33 * _officesLooted) and not _heistCoin then
 										_heistCoin = true
-										exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+										exports.ox_inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 											CryptoCoin = "HEIST",
 											Quantity = 6,
 										}, 1)

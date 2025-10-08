@@ -39,7 +39,7 @@ function EMSCallbacks()
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
 		local char = exports['sandbox-characters']:FetchCharacterSource(tonumber(data))
 		if char ~= nil then
-			if exports['sandbox-inventory']:ItemsHas(myChar:GetData("SID"), 1, "traumakit", 1) then
+			if exports.ox_inventory:ItemsHas(myChar:GetData("SID"), 1, "traumakit", 1) then
 				if exports['sandbox-jobs']:HasJob(source, "ems") then
 					exports['sandbox-base']:LoggerInfo(
 						"EMS",
@@ -74,7 +74,7 @@ function EMSCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("EMS:FieldTreatWounds", function(source, data, cb)
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
 		if exports['sandbox-jobs']:HasJob(source, "ems") then
-			if exports['sandbox-inventory']:ItemsHas(myChar:GetData("SID"), 1, "traumakit", 1) then
+			if exports.ox_inventory:ItemsHas(myChar:GetData("SID"), 1, "traumakit", 1) then
 				exports['sandbox-hud']:NotifSuccess(data, "Your Wounds Were Treated")
 				cb({ error = false })
 			else
@@ -88,7 +88,7 @@ function EMSCallbacks()
 	-- exports["sandbox-base"]:RegisterServerCallback("EMS:ApplyGauze", function(source, data, cb)
 	-- 	local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
 	-- 	if exports['sandbox-jobs']:HasJob(source, "ems") then
-	-- 		if exports['sandbox-inventory']:Remove(myChar:GetData("SID"), 1, "gauze", 1) then
+	-- 		if exports.ox_inventory:Remove(myChar:GetData("SID"), 1, "gauze", 1) then
 	-- 			local target = exports['sandbox-base']:FetchSource(data)
 	-- 			if target ~= nil then
 	-- 				local tChar = target:GetData("Character")
@@ -118,7 +118,7 @@ function EMSCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("EMS:ApplyBandage", function(source, data, cb)
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
 		if exports['sandbox-jobs']:HasJob(source, "ems") then
-			if exports['sandbox-inventory']:Remove(myChar:GetData("SID"), 1, "bandage", 1) then
+			if exports.ox_inventory:Remove(myChar:GetData("SID"), 1, "bandage", 1) then
 				local ped = GetPlayerPed(data)
 				local currHp = GetEntityHealth(ped)
 				if currHp < (GetEntityMaxHealth(ped) * 0.75) then
@@ -145,7 +145,7 @@ function EMSCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("EMS:ApplyMorphine", function(source, data, cb)
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
 		if exports['sandbox-jobs']:HasJob(source, "ems") then
-			if exports['sandbox-inventory']:Remove(myChar:GetData("SID"), 1, "morphine", 1) then
+			if exports.ox_inventory:Remove(myChar:GetData("SID"), 1, "morphine", 1) then
 				exports['sandbox-damage']:EffectsPainkiller(tonumber(data), 3)
 				exports['sandbox-hud']:NotifSuccess(data, "You Received A Morphine Shot")
 				cb({ error = false })
@@ -195,7 +195,7 @@ function EMSCallbacks()
 					local output = {}
 					for k, v in pairs(tarStates) do
 						if v.expires > os.time() then
-							local item = exports['sandbox-inventory']:ItemsGetData(v.item)
+							local item = exports.ox_inventory:ItemsGetData(v.item)
 							if item and item.drugState ~= nil then
 								local pct = ((v.expires - os.time()) / item.drugState.duration) * 100
 								if pct <= 25 and pct >= 5 then

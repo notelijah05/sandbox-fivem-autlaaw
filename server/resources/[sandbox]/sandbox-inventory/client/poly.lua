@@ -34,7 +34,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			and SecondInventory.owner == data.owner
 			and SecondInventory.invType == data.invType
 		then
-			exports['sandbox-inventory']:CloseAll()
+			exports.ox_inventory:CloseAll()
 		end
 		LocalPlayer.state:set("_inInvPoly", nil, false)
 		_inInvPoly = nil

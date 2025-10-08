@@ -409,7 +409,7 @@ RegisterNetEvent("Hunting:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("Hunting:Client:OpenShop", function()
-	exports['sandbox-inventory']:ShopOpen("hunting-supplies")
+	exports.ox_inventory:ShopOpen("hunting-supplies")
 end)
 
 AddEventHandler("Hunting:Client:Sell", function(entity, data)

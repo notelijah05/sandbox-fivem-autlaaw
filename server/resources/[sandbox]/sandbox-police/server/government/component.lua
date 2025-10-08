@@ -11,7 +11,7 @@ AddEventHandler('onResourceStart', function(resource)
 		exports["sandbox-base"]:RegisterServerCallback("Government:BuyID", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if exports['sandbox-finance']:WalletModify(source, -500) then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
+				exports.ox_inventory:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
 			else
 				exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
 			end
@@ -64,7 +64,7 @@ AddEventHandler('onResourceStart', function(resource)
 				end
 			end)
 
-		-- exports['sandbox-inventory']:PolyCreate({
+		-- exports.ox_inventory:PolyCreate({
 		-- 	id = "doj-chief-justice-safe",
 		-- 	type = "box",
 		-- 	coords = vector3(-586.32, -213.18, 42.84),
@@ -84,7 +84,7 @@ AddEventHandler('onResourceStart', function(resource)
 		-- 	},
 		-- })
 
-		exports['sandbox-inventory']:PolyCreate({
+		exports.ox_inventory:PolyCreate({
 			id = "doj-storage",
 			type = "box",
 			coords = vector3(-586.64, -203.5, 38.23),

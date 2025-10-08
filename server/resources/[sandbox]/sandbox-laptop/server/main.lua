@@ -85,7 +85,7 @@ AddEventHandler('onResourceStart', function(resource)
 		TriggerEvent("Laptop:Server:RegisterMiddleware")
 		TriggerEvent("Laptop:Server:RegisterCallbacks")
 
-		exports['sandbox-inventory']:RegisterUse("laptop", "Laptop", function(source, itemData)
+		exports.ox_inventory:RegisterUse("laptop", "Laptop", function(source, itemData)
 			TriggerClientEvent("Laptop:Client:Open", source)
 		end)
 

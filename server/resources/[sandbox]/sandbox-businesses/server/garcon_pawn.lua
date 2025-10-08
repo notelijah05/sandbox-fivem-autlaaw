@@ -90,11 +90,11 @@ AddEventHandler("Businesses:Server:Startup", function()
 				local data = {}
 				for category, pawning in pairs(_pawnItems) do
 					for k, v in ipairs(pawning) do
-						local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, v.item) or 0
+						local count = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, v.item) or 0
 						if count > 0 then
-							local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
+							local itemData = exports.ox_inventory:ItemsGetData(v.item)
 
-							if itemData and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.item, count) then
+							if itemData and exports.ox_inventory:Remove(char:GetData("SID"), 1, v.item, count) then
 								money += itemData.price * count
 								soldCount += count
 								table.insert(

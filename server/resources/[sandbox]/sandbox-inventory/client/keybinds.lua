@@ -23,7 +23,7 @@ function RegisterKeyBinds()
 				if not _startup then
 					return
 				end
-				exports['sandbox-inventory']:UsedHotKey(key)
+				exports.ox_inventory:UsedHotKey(key)
 			end
 		)
 	end

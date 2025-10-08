@@ -63,7 +63,7 @@ RegisterNetEvent("Handcuffs:Server:HardCuff", function(target)
 	local tPos = GetEntityCoords(GetPlayerPed(target))
 
 	if #(vector3(mPos.x, mPos.y, mPos.z) - vector3(tPos.x, tPos.y, tPos.z)) <= 1.5 then
-		if exports['sandbox-inventory']:ItemsHasAnyItems(src, Config.CuffItems) then
+		if exports.ox_inventory:ItemsHasAnyItems(src, Config.CuffItems) then
 			if
 				not Player(target).state.isCuffed
 				or (Player(target).state.isCuffed and not Player(target).state.isHardCuffed)
@@ -89,7 +89,7 @@ RegisterNetEvent("Handcuffs:Server:SoftCuff", function(target)
 	local tPos = GetEntityCoords(GetPlayerPed(target))
 
 	if #(vector3(mPos.x, mPos.y, mPos.z) - vector3(tPos.x, tPos.y, tPos.z)) <= 1.5 then
-		if exports['sandbox-inventory']:ItemsHasAnyItems(src, Config.CuffItems) then
+		if exports.ox_inventory:ItemsHasAnyItems(src, Config.CuffItems) then
 			local pState = Player(target).state
 			if not pState.isCuffed or (pState.isCuffed and pState.isHardCuffed) then
 				exports['sandbox-police']:SoftCuffTarget(src, target, false)
@@ -113,7 +113,7 @@ RegisterNetEvent("Handcuffs:Server:Uncuff", function(target)
 	local tPos = GetEntityCoords(GetPlayerPed(target))
 
 	if #(vector3(mPos.x, mPos.y, mPos.z) - vector3(tPos.x, tPos.y, tPos.z)) <= 1.5 then
-		if exports['sandbox-inventory']:ItemsHasAnyItems(src, Config.CuffItems) then
+		if exports.ox_inventory:ItemsHasAnyItems(src, Config.CuffItems) then
 			if Player(target).state.isCuffed then
 				exports['sandbox-police']:UncuffTarget(src, target)
 			end

@@ -174,7 +174,7 @@ function CreatePropertyZones(propertyId, int)
                             return false
                         end
 
-                        return exports['sandbox-inventory']:ItemsHasType(17, 1)
+                        return exports.ox_inventory:ItemsHasType(17, 1)
                     end,
                 })
             end

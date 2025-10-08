@@ -216,17 +216,17 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 						local model = GetEntityModel(ent)
 						if model == `stockade` then
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_moneyTruckLoot.fleeca,
+							exports.ox_inventory:LootCustomWeightedSetWithCount(_moneyTruckLoot.fleeca,
 								char:GetData("SID"), 1)
-							exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+							exports.ox_inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 								CryptoCoin = "HEIST",
 								Quantity = math.random(5, 6),
 							}, 1)
 							-- if math.random(100) <= 10 and not _blueGiven then
 							-- 	_blueGiven = true
-							-- 	exports['sandbox-inventory']:AddItem(char:GetData("SID"), "blue_dongle", 1, {}, 1)
+							-- 	exports.ox_inventory:AddItem(char:GetData("SID"), "blue_dongle", 1, {}, 1)
 							-- else
-							-- 	exports['sandbox-inventory']:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
+							-- 	exports.ox_inventory:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
 							-- end
 						end
 

@@ -249,10 +249,10 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							local calcLvl = repLevel
 							if calcLvl < 1 then calcLvl = 1 end
 							calcLvl = math.ceil(calcLvl / 2)
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
 								char:GetData("SID"), 1,
 								calcLvl)
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
 								char:GetData("SID"), 1,
 								calcLvl)
 						end
@@ -281,10 +281,10 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							local calcLvl = repLevel
 							if calcLvl < 1 then calcLvl = 1 end
 							calcLvl = math.ceil(calcLvl / 2)
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
 								char:GetData("SID"), 1,
 								calcLvl)
-							exports['sandbox-inventory']:AddItem(char:GetData("SID"), 'rubber',
+							exports.ox_inventory:AddItem(char:GetData("SID"), 'rubber',
 								math.random(12, 78) * calcLvl, {}, 1)
 						end
 						return cb(true)
@@ -312,21 +312,21 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							if calcLvl < 1 then calcLvl = 1 end
 							calcLvl = math.ceil(calcLvl / 2)
 
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
 								char:GetData("SID"), 1,
 								calcLvl)
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
 								char:GetData("SID"), 1,
 								calcLvl)
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
 								char:GetData("SID"), 1,
 								calcLvl)
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_lootTables.materials,
 								char:GetData("SID"), 1,
 								calcLvl)
 
 							if list?.entry?.hv then
-								exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+								exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 									_lootTables.materials, char:GetData("SID"), 1,
 									calcLvl)
 
@@ -408,7 +408,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 
 			if #pickups > 0 then
 				for k, v in ipairs(pickups) do
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "parts_box", 1, {
+					exports.ox_inventory:AddItem(char:GetData("SID"), "parts_box", 1, {
 						Items = v.Items,
 					}, 1)
 				end
@@ -485,11 +485,11 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			end
 		end)
 
-	exports['sandbox-inventory']:RegisterUse("choplist", "Chopping", function(source, item, itemData)
+	exports.ox_inventory:RegisterUse("choplist", "Chopping", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if not item.MetaData.Owner or item.MetaData.Owner == char:GetData("SID") then
-				if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+				if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 					local personalLists = char:GetData("ChopLists") or {}
 					personalLists[exports['sandbox-base']:SequenceGet("PersonalChopList")] = item.MetaData.ChopList
 					char:SetData("ChopLists", personalLists)
@@ -824,33 +824,33 @@ exports('LSUndergroundChoppingCreatePickupBox', function(source, wasHv, type)
 		calcLvl = math.ceil(calcLvl / 2)
 
 		local items = {
-			exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+			exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
 				char:GetData("SID"), 1, calcLvl, true),
-			exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+			exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
 				char:GetData("SID"), 1, calcLvl, true),
-			exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+			exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
 				char:GetData("SID"), 1, calcLvl, true),
 		}
 
 		if wasHv then
 			table.insert(
 				items,
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
+				exports.ox_inventory:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
 					1, true)
 			)
 			table.insert(
 				items,
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
+				exports.ox_inventory:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
 					1, true)
 			)
 			table.insert(
 				items,
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
+				exports.ox_inventory:LootCustomWeightedSetWithCount(_boxTables.materials, char:GetData("SID"),
 					1, true)
 			)
 			table.insert(
 				items,
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+				exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
 					char:GetData("SID"), 1, calcLvl,
 					true)
 			)
@@ -860,14 +860,14 @@ exports('LSUndergroundChoppingCreatePickupBox', function(source, wasHv, type)
 		if repLevel >= 4 then
 			table.insert(
 				items,
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+				exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
 					char:GetData("SID"), 1, calcLvl,
 					true)
 			)
 			if repLevel >= 5 then
 				table.insert(
 					items,
-					exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
+					exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_boxTables.materials,
 						char:GetData("SID"), 1, calcLvl,
 						true)
 				)

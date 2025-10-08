@@ -9,7 +9,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		delay = (1000 * 60) * 3,
 	})
 
-	exports['sandbox-inventory']:CraftingRegisterBench("WeedPackaging", "Weed Processing", {
+	exports.ox_inventory:CraftingRegisterBench("WeedPackaging", "Weed Processing", {
 		actionString = "Packaging",
 		icon = "cannabis",
 		poly = {
@@ -92,21 +92,21 @@ AddEventHandler("Labor:Server:Startup", function()
 		if _joiners[source] ~= nil then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
-				if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "weed_brick", 1) then
+				if exports.ox_inventory:Remove(char:GetData("SID"), 1, "weed_brick", 1) then
 					local repLevel = exports['sandbox-characters']:RepGetLevel(source, "WeedRun") or 0
 					local calcLvl = repLevel
 					if calcLvl < 1 then
 						calcLvl = 1
 					end
 
-					local itemData = exports['sandbox-inventory']:ItemsGetData("weed_brick")
+					local itemData = exports.ox_inventory:ItemsGetData("weed_brick")
 
 					local rand = math.random(100)
 					if rand >= (100 - (3 * calcLvl)) then
-						exports['sandbox-inventory']:AddItem(char:GetData("SID"), "moneyband",
+						exports.ox_inventory:AddItem(char:GetData("SID"), "moneyband",
 							math.random(8, 10 + calcLvl), {}, 1)
 					elseif rand >= (55 - (2 * calcLvl)) then
-						exports['sandbox-inventory']:AddItem(
+						exports.ox_inventory:AddItem(
 							char:GetData("SID"),
 							"moneyroll",
 							math.random(90, 100 + (2 * calcLvl)),

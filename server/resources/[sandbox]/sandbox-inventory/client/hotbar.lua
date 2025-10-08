@@ -20,7 +20,7 @@ function OpenHotBar()
 			type = "HOTBAR_SHOW",
 			data = {
 				items = GetHBItems(),
-				equipped = exports['sandbox-inventory']:WeaponsGetEquippedItem(),
+				equipped = exports.ox_inventory:WeaponsGetEquippedItem(),
 			},
 		})
 		CreateThread(function()

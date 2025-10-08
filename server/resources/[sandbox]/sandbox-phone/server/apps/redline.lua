@@ -94,7 +94,7 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	exports['sandbox-inventory']:RegisterUse("alias_changer", "LSUNDG", function(source, item, itemData)
+	exports.ox_inventory:RegisterUse("alias_changer", "LSUNDG", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local _AppName = "redline"
 		if char ~= nil then
@@ -121,7 +121,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 				})
 				MySQL.transaction(queries)
 
-				exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+				exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 
 				profiles[_AppName] = nil
 				char:SetData("Profiles", profiles)
@@ -139,7 +139,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 				"An error has occured clearing your alias. Please contact IT.")
 		end
 	end)
-	exports['sandbox-inventory']:RegisterUse("event_invite", "LSUNDG", function(source, item, itemData)
+	exports.ox_inventory:RegisterUse("event_invite", "LSUNDG", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			if item.MetaData.Event and _races[item.MetaData.Event] then
@@ -191,7 +191,7 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 
 						_raceInvites[item.MetaData.Event][string.lower(alias)] = nil
 
-						exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
+						exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
 					end
 				end
 			else

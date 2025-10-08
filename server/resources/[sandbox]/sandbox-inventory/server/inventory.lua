@@ -73,11 +73,11 @@ function BuildMetaDataTable(cData, item, existing)
 	if itemExist.type == 2 then
 		if not MetaData.SerialNumber and not itemExist.noSerial then
 			if MetaData.Scratched then
-				MetaData.ScratchedSerialNumber = exports['sandbox-inventory']:WeaponsPurchase(cData.SID, itemExist, true,
+				MetaData.ScratchedSerialNumber = exports.ox_inventory:WeaponsPurchase(cData.SID, itemExist, true,
 					MetaData.Company)
 				MetaData.Scratched = nil
 			else
-				MetaData.SerialNumber = exports['sandbox-inventory']:WeaponsPurchase(cData.SID, itemExist, false,
+				MetaData.SerialNumber = exports.ox_inventory:WeaponsPurchase(cData.SID, itemExist, false,
 					MetaData.Company)
 			end
 			MetaData.Company = nil
@@ -234,7 +234,7 @@ AddEventHandler('onResourceStart', function(resource)
 					metadata.Owner = cData.SID
 				end
 
-				local insData = exports['sandbox-inventory']:AddItem(cData.SID, v.name, v.countTo, metadata, 1, false,
+				local insData = exports.ox_inventory:AddItem(cData.SID, v.name, v.countTo, metadata, 1, false,
 					false, false, false,
 					slot, false, false, true)
 				slot += 1
@@ -294,7 +294,7 @@ RegisterNetEvent("Inventory:Server:DegradeLastUsed", function(degradeAmt)
 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		if _lastUsedItem[src] then
-			local slot = exports['sandbox-inventory']:GetItem(_lastUsedItem[src])
+			local slot = exports.ox_inventory:GetItem(_lastUsedItem[src])
 
 			if slot then
 				local itemData = itemsDatabase[slot.Name]
@@ -302,9 +302,9 @@ RegisterNetEvent("Inventory:Server:DegradeLastUsed", function(degradeAmt)
 				local newValue = slot.CreateDate - math.floor(itemData.durability * (degradeAmt / 100))
 
 				if (os.time() - itemData.durability >= newValue) then
-					exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+					exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 				else
-					exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+					exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 				end
 			end
 		end
@@ -312,7 +312,7 @@ RegisterNetEvent("Inventory:Server:DegradeLastUsed", function(degradeAmt)
 end)
 
 function sendRefreshForClient(_src, owner, invType, slot)
-	--local data = exports['sandbox-inventory']:GetSlot(owner, slot, invType)
+	--local data = exports.ox_inventory:GetSlot(owner, slot, invType)
 	TriggerClientEvent("Inventory:Client:SetSlot", _src, owner, invType, slot)
 end
 
@@ -403,7 +403,7 @@ function refreshShit(sid, adding)
 			invType = 1,
 			capacity = LoadedEntitys[1].capacity,
 			owner = sid,
-			isWeaponEligble = exports['sandbox-inventory']:WeaponsIsEligible(source),
+			isWeaponEligble = exports.ox_inventory:WeaponsIsEligible(source),
 			qualifications = char:GetData("Qualifications") or {},
 		}, _refreshAttchs[sid] ~= nil)
 
@@ -635,7 +635,7 @@ function DoMerge(source, data, cb)
 				(item.type ~= 2
 					or (
 						item.type == 2
-						and (not item.requiresLicense or item.requiresLicense and exports['sandbox-inventory']:WeaponsIsEligible(source))
+						and (not item.requiresLicense or item.requiresLicense and exports.ox_inventory:WeaponsIsEligible(source))
 					))
 				and (not item.qualification or hasValue(char:GetData("Qualifications"), item.qualification))
 			then
@@ -671,7 +671,7 @@ function DoMerge(source, data, cb)
 				end
 
 				if paid then
-					local insData = exports['sandbox-inventory']:AddItem(char:GetData("SID"), data.name, data.countTo, {},
+					local insData = exports.ox_inventory:AddItem(char:GetData("SID"), data.name, data.countTo, {},
 						data.invTypeTo,
 						false, false, false, false, data.slotTo, false, false, false, true)
 					CreateStoreLog(data.ownerFrom, data.name, data.countTo or 1, char:GetData("SID"), insData.MetaData, 0)
@@ -693,8 +693,8 @@ function DoMerge(source, data, cb)
 	elseif entityFrom.playerShop and data.ownerFrom ~= data.ownerTo and data.invTypeFrom ~= data.invTypeTo then
 		if _playerShops[data.ownerFrom] then
 			local isMod = isShopModerator(data.ownerFrom, source)
-			local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
-			local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+			local slotFrom = exports.ox_inventory:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
+			local slotTo = exports.ox_inventory:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 			if slotFrom ~= nil then
 				local cost = math.ceil((slotFrom.Price * tonumber(data.countTo)))
@@ -831,8 +831,8 @@ function DoMerge(source, data, cb)
 			return cb({ reason = "Cannot Do That" })
 		end
 
-		local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
-		local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+		local slotFrom = exports.ox_inventory:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
+		local slotTo = exports.ox_inventory:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 		if slotFrom == nil or slotTo == nil then
 			cb({ reason = "Item No Longer In That Slot" })
@@ -1005,8 +1005,8 @@ function DoSwap(source, data, cb)
 		sendRefreshForClient(source, data.ownerTo, data.invTypeTo, data.slotTo)
 		return
 	else
-		local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
-		local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+		local slotFrom = exports.ox_inventory:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
+		local slotTo = exports.ox_inventory:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 		if slotFrom == nil or slotTo == nil then
 			cb({ reason = "Item No Longer In That Slot" })
@@ -1205,7 +1205,7 @@ function DoMove(source, data, cb)
 				(item.type ~= 2
 					or (
 						item.type == 2
-						and (not item.requiresLicense or item.requiresLicense and exports['sandbox-inventory']:WeaponsIsEligible(source))
+						and (not item.requiresLicense or item.requiresLicense and exports.ox_inventory:WeaponsIsEligible(source))
 					))
 				and (not item.qualification or hasValue(char:GetData("Qualifications"), item.qualification))
 			then
@@ -1238,7 +1238,7 @@ function DoMove(source, data, cb)
 				end
 
 				if paid then
-					local insData = exports['sandbox-inventory']:AddItem(char:GetData("SID"), data.name, data.countTo, {},
+					local insData = exports.ox_inventory:AddItem(char:GetData("SID"), data.name, data.countTo, {},
 						data.invTypeTo,
 						false, false, false, false, data.slotTo, false, false, false, true)
 					CreateStoreLog(data.ownerFrom, data.name, data.countTo or 1, char:GetData("SID"), insData.MetaData, 0)
@@ -1270,8 +1270,8 @@ function DoMove(source, data, cb)
 	elseif entityFrom.playerShop and data.ownerFrom ~= data.ownerTo and data.invTypeFrom ~= data.invTypeTo then
 		if _playerShops[data.ownerFrom] then
 			local isMod = isShopModerator(data.ownerFrom, source)
-			local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
-			local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+			local slotFrom = exports.ox_inventory:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
+			local slotTo = exports.ox_inventory:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 			if slotFrom ~= nil then
 				local cost = math.ceil((slotFrom.Price * tonumber(data.countTo)))
@@ -1439,8 +1439,8 @@ function DoMove(source, data, cb)
 			return cb({ reason = "Cannot Do That" })
 		end
 
-		local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
-		local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+		local slotFrom = exports.ox_inventory:GetSlot(data.ownerFrom, data.slotFrom, data.invTypeFrom)
+		local slotTo = exports.ox_inventory:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 		if slotFrom == nil then
 			cb({ reason = "Item No Longer In That Slot" })
@@ -1608,8 +1608,8 @@ end
 function CreateDZIfNotExist(source, coords)
 	local route = Player(source).state.currentRoute
 	local id = string.format("%s:%s:%s", math.ceil(coords.x), math.ceil(coords.y), route)
-	if not exports['sandbox-inventory']:DropExists(route, id) then
-		exports['sandbox-inventory']:CreateDropzone(route, coords)
+	if not exports.ox_inventory:DropExists(route, id) then
+		exports.ox_inventory:CreateDropzone(route, coords)
 	end
 end
 
@@ -1630,7 +1630,7 @@ function RegisterCallbacks()
 		local dist = #(vector3(myCoords.x, myCoords.y, myCoords.z) - vector3(vehCoords.x, vehCoords.y, vehCoords.z))
 		local lock = GetVehicleDoorLockStatus(veh)
 		if dist < 8 and (lock == 0 or lock == 1) then
-			exports['sandbox-inventory']:OpenSecondary(source, 4, Entity(veh).state.VIN, data.class or false,
+			exports.ox_inventory:OpenSecondary(source, 4, Entity(veh).state.VIN, data.class or false,
 				data.model or false)
 			cb(true)
 		else
@@ -1640,10 +1640,10 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:UseItem", function(source, data, cb)
 		if entityPermCheck(source, data.invType) then
-			local slot = exports['sandbox-inventory']:GetOldestInSlot(data.owner, data.slot, data.invType)
+			local slot = exports.ox_inventory:GetOldestInSlot(data.owner, data.slot, data.invType)
 			if slot ~= nil then
 				_lastUsedItem[source] = slot.id
-				exports['sandbox-inventory']:Use(source, slot, cb)
+				exports.ox_inventory:Use(source, slot, cb)
 			else
 				sendRefreshForClient(source, data.owner, data.invType, data.slot)
 				cb(false)
@@ -1655,11 +1655,11 @@ function RegisterCallbacks()
 		if data and data.slot then
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
-				local slotFrom = exports['sandbox-inventory']:GetOldestInSlot(char:GetData("SID"), data.slot, 1)
+				local slotFrom = exports.ox_inventory:GetOldestInSlot(char:GetData("SID"), data.slot, 1)
 				if slotFrom ~= nil then
 					if slotFrom.Count or 0 > 0 then
 						_lastUsedItem[source] = slotFrom.id
-						exports['sandbox-inventory']:Use(source, slotFrom, function(yea)
+						exports.ox_inventory:Use(source, slotFrom, function(yea)
 							if not yea then
 								sendRefreshForClient(source, char:GetData("SID"), 1, slotFrom)
 							end
@@ -1685,7 +1685,7 @@ function RegisterCallbacks()
 		local playerPed = GetPlayerPed(source)
 		local playerCoords = GetEntityCoords(playerPed)
 		local route = Player(source).state.currentRoute
-		cb(exports['sandbox-inventory']:CheckDropZones(route, vector3(playerCoords.x, playerCoords.y, playerCoords.z)))
+		cb(exports.ox_inventory:CheckDropZones(route, vector3(playerCoords.x, playerCoords.y, playerCoords.z)))
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:retreiveStores", function(source, data, cb)
@@ -1695,7 +1695,7 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:Search", function(source, data, cb)
 		local dest = exports['sandbox-characters']:FetchCharacterSource(data.serverId)
 		if dest ~= nil then
-			exports['sandbox-inventory']:SearchCharacter(source, data.serverId, dest:GetData("SID"))
+			exports.ox_inventory:SearchCharacter(source, data.serverId, dest:GetData("SID"))
 			cb(dest:GetData("SID"))
 		else
 			cb(false)
@@ -1707,7 +1707,7 @@ function RegisterCallbacks()
 		local pState = Player(source).state
 
 		if dest and pState.onDuty ~= nil and pState.onDuty == "police" and exports['sandbox-jobs']:HasPermissionInJob(source, 'police', 'PD_RAID') then
-			exports['sandbox-inventory']:OpenSecondary(source, data.invType, data.owner, data.class or false,
+			exports.ox_inventory:OpenSecondary(source, data.invType, data.owner, data.class or false,
 				data.model or false, true)
 		end
 	end)
@@ -1717,7 +1717,7 @@ function RegisterCallbacks()
 			invType = 4000,
 			owner = data.identifier,
 		}, function()
-			exports['sandbox-inventory']:OpenSecondary(source, 4000, data.identifier)
+			exports.ox_inventory:OpenSecondary(source, 4000, data.identifier)
 		end)
 		cb()
 	end)
@@ -1727,12 +1727,12 @@ function RegisterCallbacks()
 			refreshShit(inventory.owner)
 		elseif inventory.invType == 10 then
 			local route = Player(source).state.currentRoute
-			local exists = exports['sandbox-inventory']:DropExists(route, inventory.owner)
-			local hasItems = exports['sandbox-inventory']:HasItems(inventory.owner, 10)
+			local exists = exports.ox_inventory:DropExists(route, inventory.owner)
+			local hasItems = exports.ox_inventory:HasItems(inventory.owner, 10)
 			if inventory.position ~= nil and hasItems and not exists then
-				exports['sandbox-inventory']:CreateDropzone(route, inventory.position)
+				exports.ox_inventory:CreateDropzone(route, inventory.position)
 			elseif exists and not hasItems then
-				exports['sandbox-inventory']:RemoveDropzone(route, inventory.owner)
+				exports.ox_inventory:RemoveDropzone(route, inventory.owner)
 			end
 		else
 			if _refreshAttchs[inventory.owner] then
@@ -1755,11 +1755,11 @@ function RegisterCallbacks()
 			local sid = char:GetData("SID")
 			if _playerShops[data.ownerTo] ~= nil then
 				if isShopModerator(data.ownerTo, source) then
-					local slotFrom = exports['sandbox-inventory']:GetSlot(data.ownerFrom, data.slotFrom, data
+					local slotFrom = exports.ox_inventory:GetSlot(data.ownerFrom, data.slotFrom, data
 						.invTypeFrom)
 					if slotFrom ~= nil then
 						local item = itemsDatabase[slotFrom.Name]
-						local slotTo = exports['sandbox-inventory']:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
+						local slotTo = exports.ox_inventory:GetSlot(data.ownerTo, data.slotTo, data.invTypeTo)
 
 						if slotTo == nil or slotTo.Price == data.price then
 							local itemIds = MySQL.rawExecute.await(
@@ -1849,7 +1849,7 @@ function RegisterCallbacks()
 					local tChar = exports['sandbox-characters']:FetchBySID(tonumber(data.sid))
 					if tChar ~= nil then
 						if not isShopModerator(data.shop, tChar:GetData("Source")) then
-							exports['sandbox-inventory']:PlayerShopModeratorAdd(data.shop, tonumber(data.sid),
+							exports.ox_inventory:PlayerShopModeratorAdd(data.shop, tonumber(data.sid),
 								string.format("%s %s", tChar:GetData("First"), tChar:GetData("Last")))
 							exports['sandbox-hud']:NotifSuccess(source,
 								string.format("%s %s Added As A Shop Moderator", tChar:GetData("First"),
@@ -1878,7 +1878,7 @@ function RegisterCallbacks()
 			local sid = char:GetData("SID")
 			if _playerShops[data.shop] ~= nil then
 				if _playerShops[data.shop].owner == sid then
-					exports['sandbox-inventory']:PlayerShopModeratorRemove(data.shop, data.sid)
+					exports.ox_inventory:PlayerShopModeratorRemove(data.shop, data.sid)
 					exports['sandbox-hud']:NotifSuccess(source, "Shop Moderator Removed")
 				else
 					exports['sandbox-hud']:NotifError(source,
@@ -1974,13 +1974,13 @@ RegisterNetEvent("Inventory:Server:Request", function(secondary)
 		invType = 1,
 		capacity = LoadedEntitys[1].capacity,
 		owner = char:GetData("SID"),
-		isWeaponEligble = exports['sandbox-inventory']:WeaponsIsEligible(src),
+		isWeaponEligble = exports.ox_inventory:WeaponsIsEligible(src),
 		qualifications = char:GetData("Qualifications") or {},
 		loaded = false,
 	}
 
 	if secondary and secondary.crafting then
-		local benchDetails = exports['sandbox-inventory']:CraftingGetBench(source, secondary.id)
+		local benchDetails = exports.ox_inventory:CraftingGetBench(source, secondary.id)
 		if benchDetails ~= nil then
 			benchDetails.crafting = true
 			benchDetails.bench = secondary.id
@@ -1994,7 +1994,7 @@ RegisterNetEvent("Inventory:Server:Request", function(secondary)
 	else
 		TriggerClientEvent("Inventory:Client:Open", src, plyrInvData,
 			secondary and
-			exports['sandbox-inventory']:GetSecondaryData(src, secondary.invType, secondary.owner,
+			exports.ox_inventory:GetSecondaryData(src, secondary.invType, secondary.owner,
 				secondary.class or false,
 				secondary.model or false) or nil)
 		plyrInvData.inventory = getInventory(src, char:GetData("SID"), 1)
@@ -2002,7 +2002,7 @@ RegisterNetEvent("Inventory:Server:Request", function(secondary)
 		--TriggerClientEvent("Inventory:Client:Cache", src, plyrInvData)
 		TriggerClientEvent("Inventory:Client:Load", src, plyrInvData,
 			secondary and
-			exports['sandbox-inventory']:GetSecondary(src, secondary.invType, secondary.owner, secondary.class or false,
+			exports.ox_inventory:GetSecondary(src, secondary.invType, secondary.owner, secondary.class or false,
 				secondary.model or false) or nil)
 	end
 end)
@@ -2187,14 +2187,14 @@ exports("OpenSecondary",
 				invType = 1,
 				capacity = LoadedEntitys[1].capacity,
 				owner = char:GetData("SID"),
-				isWeaponEligble = exports['sandbox-inventory']:WeaponsIsEligible(_src),
+				isWeaponEligble = exports.ox_inventory:WeaponsIsEligible(_src),
 				qualifications = char:GetData("Qualifications") or {},
 			}
 
 			TriggerEvent("Inventory:Server:Opened", _src, Owner, invType)
 
 			TriggerClientEvent("Inventory:Client:Open", _src, plyrInvData,
-				exports['sandbox-inventory']:GetSecondaryData(_src, invType, Owner, vehClass, vehModel, isRaid,
+				exports.ox_inventory:GetSecondaryData(_src, invType, Owner, vehClass, vehModel, isRaid,
 					nameOverride, slotOverride, capacityOverride))
 
 			plyrInvData.inventory = getInventory(_src, char:GetData("SID"), 1)
@@ -2202,7 +2202,7 @@ exports("OpenSecondary",
 
 			TriggerClientEvent("Inventory:Client:Cache", _src, plyrInvData)
 			TriggerClientEvent("Inventory:Client:Load", _src, plyrInvData,
-				exports['sandbox-inventory']:GetSecondary(_src, invType, Owner, vehClass, vehModel, isRaid,
+				exports.ox_inventory:GetSecondary(_src, invType, Owner, vehClass, vehModel, isRaid,
 					nameOverride, slotOverride, capacityOverride))
 		end
 	end)
@@ -2249,7 +2249,7 @@ exports("GetMatchingSlot", function(Owner, Name, Count, Type)
 end)
 
 exports("GetFreeSlotNumbers", function(Owner, invType, vehClass, vehModel, src)
-	local result = exports['sandbox-inventory']:GetSlots(Owner, invType)
+	local result = exports.ox_inventory:GetSlots(Owner, invType)
 	local occupiedTable = {}
 	local unOccupiedSlots = {}
 	for k, v in ipairs(result) do
@@ -2320,7 +2320,7 @@ exports("GetOldestInSlot", function(Owner, Slot, Type)
 
 	if item ~= nil then
 		item.MetaData = json.decode(item.MetaData or "{}")
-		item.Count = exports['sandbox-inventory']:CountInSlot(Owner, Slot, Type)
+		item.Count = exports.ox_inventory:CountInSlot(Owner, Slot, Type)
 	end
 
 	return item
@@ -2368,7 +2368,7 @@ exports("AddItem",
 				end
 
 				local slotsNeeded = math.ceil(Count / (itemExist.isStackable or 1))
-				local slots = exports['sandbox-inventory']:GetFreeSlotNumbers(Owner, invType, vehClass, vehModel)
+				local slots = exports.ox_inventory:GetFreeSlotNumbers(Owner, invType, vehClass, vehModel)
 				local slotsData = {}
 				if Slot then
 					table.insert(slotsData, {
@@ -2400,15 +2400,15 @@ exports("AddItem",
 						route = GetEntityRoutingBucket(entity)
 					end
 
-					local dz = exports['sandbox-inventory']:CheckDropZones(route, coords)
+					local dz = exports.ox_inventory:CheckDropZones(route, coords)
 					local tOwn = nil
 					if dz == nil then
-						tOwn = exports['sandbox-inventory']:CreateDropzone(route, coords)
+						tOwn = exports.ox_inventory:CreateDropzone(route, coords)
 					else
 						tOwn = dz.id
 					end
 
-					local t = exports['sandbox-inventory']:GetFreeSlotNumbers(tOwn, 10, vehClass, vehModel)
+					local t = exports.ox_inventory:GetFreeSlotNumbers(tOwn, 10, vehClass, vehModel)
 					for k, v in ipairs(t) do
 						if #slotsData < slotsNeeded then
 							table.insert(slotsData, {
@@ -2465,13 +2465,13 @@ exports("AddItem",
 					end
 
 					local c = Count > (itemExist.isStackable or 1) and (itemExist.isStackable or 1) or Count
-					local mSlot = exports['sandbox-inventory']:GetMatchingSlot(v.owner, Name, c, v.type)
+					local mSlot = exports.ox_inventory:GetMatchingSlot(v.owner, Name, c, v.type)
 					if mSlot == nil then
-						retval = exports['sandbox-inventory']:AddSlot(v.owner, Name, c, MetaData, v.slot, v
+						retval = exports.ox_inventory:AddSlot(v.owner, Name, c, MetaData, v.slot, v
 							.type, forceCreateDate or false,
 							quality or false)
 					else
-						retval = exports['sandbox-inventory']:AddSlot(v.owner, Name, c, MetaData, mSlot, v.type,
+						retval = exports.ox_inventory:AddSlot(v.owner, Name, c, MetaData, mSlot, v.type,
 							forceCreateDate or false,
 							quality or false)
 					end
@@ -2508,7 +2508,7 @@ exports("AddSlot", function(Owner, Name, Count, MetaData, Slot, Type, forceCreat
 	end
 
 	if Slot == nil then
-		local freeSlots = exports['sandbox-inventory']:GetFreeSlotNumbers(Owner, Type)
+		local freeSlots = exports.ox_inventory:GetFreeSlotNumbers(Owner, Type)
 		if #freeSlots == 0 then
 			exports['sandbox-base']:LoggerError("Inventory",
 				"[AddSlot] No Available Slots For " .. Owner .. ":" .. Type .. " And Passed Slot Was Nil")
@@ -2607,7 +2607,7 @@ exports("SetItemCreateDate", function(id, value)
 end)
 
 exports("SetMetaDataKey", function(id, key, value, source)
-	local slot = exports['sandbox-inventory']:GetItem(id)
+	local slot = exports.ox_inventory:GetItem(id)
 	if slot ~= nil then
 		local md = json.decode(slot.MetaData or "{}")
 		md[key] = value
@@ -2631,7 +2631,7 @@ exports("UpdateMetaData", function(id, updatingMeta)
 		return false
 	end
 
-	local slot = exports['sandbox-inventory']:GetItem(id)
+	local slot = exports.ox_inventory:GetItem(id)
 	if slot ~= nil then
 		local md = json.decode(slot.MetaData or "{}")
 
@@ -2655,7 +2655,7 @@ exports("ItemsGetData", function(item)
 end)
 
 exports("ItemsGetCount", function(owner, invType, item)
-	local counts = exports['sandbox-inventory']:ItemsGetCounts(owner, invType)
+	local counts = exports.ox_inventory:ItemsGetCounts(owner, invType)
 	return counts[item] or 0
 end)
 
@@ -2759,7 +2759,7 @@ exports("ItemsHasItems", function(source, items)
 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	local charId = char:GetData("SID")
 	for k, v in ipairs(items) do
-		if not exports['sandbox-inventory']:ItemsHas(charId, 1, v.item, v.count) then
+		if not exports.ox_inventory:ItemsHas(charId, 1, v.item, v.count) then
 			return false
 		end
 	end
@@ -2771,7 +2771,7 @@ exports("ItemsHasAnyItems", function(source, items)
 	local charId = char:GetData("SID")
 
 	for k, v in ipairs(items) do
-		if exports['sandbox-inventory']:ItemsHas(charId, 1, v.item, v.count) then
+		if exports.ox_inventory:ItemsHas(charId, 1, v.item, v.count) then
 			return true
 		end
 	end
@@ -2999,7 +2999,7 @@ exports("RemoveAll", function(owner, type, item)
 end)
 
 exports("RemoveSlot", function(Owner, Name, Count, Slot, invType)
-	local slot = exports['sandbox-inventory']:GetSlot(Owner, Slot, invType)
+	local slot = exports.ox_inventory:GetSlot(Owner, Slot, invType)
 	if slot == nil then
 		exports['sandbox-base']:LoggerError(
 			"Inventory",
@@ -3046,7 +3046,7 @@ end)
 
 exports("RemoveList", function(owner, invType, items)
 	for k, v in ipairs(items) do
-		exports['sandbox-inventory']:Remove(owner, invType, v.name, v.count)
+		exports.ox_inventory:Remove(owner, invType, v.name, v.count)
 	end
 end)
 
@@ -3073,7 +3073,7 @@ exports("HoldingPut", function(source)
 			local inv = getInventory(source, char:GetData("SID"), 1)
 
 			if #inv > 0 then
-				local freeSlots = exports['sandbox-inventory']:GetFreeSlotNumbers(char:GetData("SID"), 2)
+				local freeSlots = exports.ox_inventory:GetFreeSlotNumbers(char:GetData("SID"), 2)
 
 				if #inv <= #freeSlots then
 					local queries = {}
@@ -3120,7 +3120,7 @@ exports("HoldingTake", function(source)
 			local inv = getInventory(source, char:GetData("SID"), 2)
 
 			if #inv > 0 then
-				local freeSlots = exports['sandbox-inventory']:GetFreeSlotNumbers(char:GetData("SID"), 1)
+				local freeSlots = exports.ox_inventory:GetFreeSlotNumbers(char:GetData("SID"), 1)
 
 				if #inv <= #freeSlots then
 					local queries = {}
@@ -3167,7 +3167,7 @@ exports("BallisticsClear", function(source, ballisticId, ballisticType)
 			local inv = getInventory(source, ballisticId, ballisticType)
 
 			if #inv > 0 then
-				local freeSlots = exports['sandbox-inventory']:GetFreeSlotNumbers(char:GetData("SID"), 1)
+				local freeSlots = exports.ox_inventory:GetFreeSlotNumbers(char:GetData("SID"), 1)
 
 				if #inv <= #freeSlots then
 					local queries = {}
@@ -3204,29 +3204,29 @@ exports("ContainerOpen", function(src, item, identifier)
 		item = item,
 		container = ("container:%s"):format(identifier),
 	}, function()
-		exports['sandbox-inventory']:OpenSecondary(src, itemsDatabase[item.Name].container,
+		exports.ox_inventory:OpenSecondary(src, itemsDatabase[item.Name].container,
 			("container:%s"):format(identifier))
 	end)
 end)
 
 exports("StashOpen", function(src, invType, identifier)
-	exports['sandbox-inventory']:OpenSecondary(src, invType, ("stash:%s"):format(identifier))
+	exports.ox_inventory:OpenSecondary(src, invType, ("stash:%s"):format(identifier))
 end)
 
 exports("ShopOpen", function(src, identifier)
-	exports['sandbox-inventory']:OpenSecondary(src, 11, ("shop:%s"):format(identifier))
+	exports.ox_inventory:OpenSecondary(src, 11, ("shop:%s"):format(identifier))
 end)
 
 exports("SearchCharacter", function(src, tSrc, id)
 	exports["sandbox-base"]:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
 		exports['sandbox-hud']:NotifInfo(tSrc, "You Were Searched")
-		exports['sandbox-inventory']:OpenSecondary(src, 1, id)
+		exports.ox_inventory:OpenSecondary(src, 1, id)
 	end)
 end)
 
 exports("Rob", function(src, tSrc, id)
 	exports["sandbox-base"]:ClientCallback(tSrc, "Inventory:ForceClose", {}, function(state)
-		exports['sandbox-inventory']:OpenSecondary(src, 1, id)
+		exports.ox_inventory:OpenSecondary(src, 1, id)
 	end)
 end)
 

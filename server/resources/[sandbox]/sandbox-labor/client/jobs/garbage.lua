@@ -253,7 +253,7 @@ AddEventHandler("Garbage:Client:Buy", function()
 		local itemList = {}
 
 		for k, v in ipairs(items) do
-			local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
+			local itemData = exports.ox_inventory:ItemsGetData(v.item)
 			if v.qty > 0 then
 				table.insert(itemList, {
 					label = itemData.label,

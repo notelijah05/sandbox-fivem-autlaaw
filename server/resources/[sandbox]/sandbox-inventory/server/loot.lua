@@ -1,15 +1,15 @@
 exports("LootItemClass", function(owner, invType, class, count)
-	return exports['sandbox-inventory']:AddItem(owner, itemClasses[class][math.random(#itemClasses[class])], count, {},
+	return exports.ox_inventory:AddItem(owner, itemClasses[class][math.random(#itemClasses[class])], count, {},
 		invType)
 end)
 
 exports("LootCustomSet", function(set, owner, invType, count)
-	return exports['sandbox-inventory']:AddItem(owner, set[math.random(#set)], count, {}, invType)
+	return exports.ox_inventory:AddItem(owner, set[math.random(#set)], count, {}, invType)
 end)
 
 exports("LootCustomSetWithCount", function(set, owner, invType)
 	local i = set[math.random(#set)]
-	return exports['sandbox-inventory']:AddItem(owner, i.name, math.random(i.min or 0, i.max), {}, invType)
+	return exports.ox_inventory:AddItem(owner, i.name, math.random(i.min or 0, i.max), {}, invType)
 end)
 
 -- Export for adding weighted set item
@@ -20,7 +20,7 @@ end)
 exports("LootCustomWeightedSet", function(set, owner, invType)
 	local randomItem = exports['sandbox-base']:UtilsWeightedRandom(set)
 	if randomItem then
-		return exports['sandbox-inventory']:AddItem(owner, randomItem, 1, {}, invType)
+		return exports.ox_inventory:AddItem(owner, randomItem, 1, {}, invType)
 	end
 end)
 
@@ -38,7 +38,7 @@ exports("LootCustomWeightedSetWithCount", function(set, owner, invType, dontAdd)
 				count = math.random(randomItem.min or 1, randomItem.max)
 			}
 		else
-			return exports['sandbox-inventory']:AddItem(owner, randomItem.name,
+			return exports.ox_inventory:AddItem(owner, randomItem.name,
 				math.random(randomItem.min or 1, randomItem.max),
 				randomItem.metadata or {}, invType)
 		end
@@ -59,7 +59,7 @@ exports("LootCustomWeightedSetWithCountAndModifier", function(set, owner, invTyp
 				count = math.random(randomItem.min or 1, randomItem.max) * modifier
 			}
 		else
-			return exports['sandbox-inventory']:AddItem(owner, randomItem.name,
+			return exports.ox_inventory:AddItem(owner, randomItem.name,
 				math.random(randomItem.min or 1, randomItem.max) * modifier, randomItem.metadata or {}, invType)
 		end
 	end
@@ -75,7 +75,7 @@ exports("LootSetsGem", function(owner, invType)
 		{ 25, "citrine" },
 		{ 75, "opal" },
 	})
-	return exports['sandbox-inventory']:AddItem(owner, randomGem, 1, {}, invType)
+	return exports.ox_inventory:AddItem(owner, randomGem, 1, {}, invType)
 end)
 
 exports("LootSetsGemRandom", function(owner, invType, day)
@@ -102,7 +102,7 @@ exports("LootSetsGemRandom", function(owner, invType, day)
 		})
 	end
 
-	return exports['sandbox-inventory']:AddItem(owner, randomGem, 1, {}, invType)
+	return exports.ox_inventory:AddItem(owner, randomGem, 1, {}, invType)
 end)
 
 exports("LootSetsOre", function(owner, invType, count)
@@ -111,5 +111,5 @@ exports("LootSetsOre", function(owner, invType, count)
 		{ 18, "silverore" },
 		{ 50, "ironore" },
 	})
-	return exports['sandbox-inventory']:AddItem(owner, randomOre, count, {}, invType)
+	return exports.ox_inventory:AddItem(owner, randomOre, count, {}, invType)
 end)

@@ -99,7 +99,7 @@ exports("HospitalICUSend", function(target)
 			exports['sandbox-jobs']:DutyOff(target, Player(target).state.onDuty)
 			exports['sandbox-police']:UncuffTarget(-1, target)
 			exports['sandbox-ped']:MaskUnequipNoItem(target)
-			exports['sandbox-inventory']:HoldingPut(target)
+			exports.ox_inventory:HoldingPut(target)
 		end)
 
 		exports['sandbox-pwnzor']:TempPosIgnore(target)
@@ -133,7 +133,7 @@ exports("HospitalICUGetItems", function(target)
 			Released = true,
 			Items = true,
 		})
-		exports['sandbox-inventory']:HoldingTake(target)
+		exports.ox_inventory:HoldingTake(target)
 	else
 		return false
 	end

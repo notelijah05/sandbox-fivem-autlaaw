@@ -19,7 +19,7 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Jail:RetreiveItems", function(source, data, cb)
-		exports['sandbox-inventory']:HoldingTake(source)
+		exports.ox_inventory:HoldingTake(source)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Jail:Release", function(source, data, cb)
@@ -37,14 +37,14 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Jail:MakeItem", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if data == "food" or data == "drink" then
-			exports['sandbox-inventory']:AddItem(char:GetData("SID"), string.format("prison_%s", data), 1, {}, 1)
+			exports.ox_inventory:AddItem(char:GetData("SID"), string.format("prison_%s", data), 1, {}, 1)
 		end
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Jail:MakeJuice", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data then
-			exports['sandbox-inventory']:AddItem(char:GetData("SID"), data, 1, {}, 1)
+			exports.ox_inventory:AddItem(char:GetData("SID"), data, 1, {}, 1)
 		end
 	end)
 

@@ -167,7 +167,7 @@ exports("PeopleUpdate", function(requester, id, key, value)
 		end
 
 		if key == "Mugshot" then
-			exports['sandbox-inventory']:UpdateGovIDMugshot(id, value)
+			exports.ox_inventory:UpdateGovIDMugshot(id, value)
 		end
 	end
 

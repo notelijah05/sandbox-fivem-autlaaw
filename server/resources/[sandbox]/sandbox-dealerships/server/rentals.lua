@@ -61,7 +61,7 @@ function RegisterVehicleRentalCallbacks()
 
                                 cb(true, plate)
 
-                                exports['sandbox-inventory']:AddItem(renterSID, 'rental_papers', 1, {
+                                exports.ox_inventory:AddItem(renterSID, 'rental_papers', 1, {
                                     Renter = renterName,
                                     Vehicle = rentalVehicleData.make .. ' ' .. rentalVehicleData.model,
                                     Plate = not rentalVehicleData.noPlate and plate or 'No Plate',

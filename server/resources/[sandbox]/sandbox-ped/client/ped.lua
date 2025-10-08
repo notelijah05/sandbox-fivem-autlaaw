@@ -242,7 +242,7 @@ function RegisterInteraction()
 				not LocalPed.customization.props.hat.disabled
 				or not LocalPed.customization.props.glass.disabled
 				or (LocalPed.customization.components.mask.drawableId ~= 0)
-				or (exports['sandbox-inventory']:ItemsGetWithStaticMetadata("accessory", "drawableId", "textureId", LocalPlayer.state.Character:GetData("Gender"), LocalPed.customization.components.accessory) ~= nil)
+				or (exports.ox_inventory:ItemsGetWithStaticMetadata("accessory", "drawableId", "textureId", LocalPlayer.state.Character:GetData("Gender"), LocalPed.customization.components.accessory) ~= nil)
 			)
 	end)
 end

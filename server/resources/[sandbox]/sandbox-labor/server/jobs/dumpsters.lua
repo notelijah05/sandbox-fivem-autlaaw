@@ -66,7 +66,7 @@ function RegisterDumpsterCallbacks()
 				if _found then
 					if _PlayerRep >= 8 then
 						if math.random(100) >= math.random(75) then
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 								_dumpsterLoot.high,
 								char:GetData("SID"),
 								1,
@@ -75,7 +75,7 @@ function RegisterDumpsterCallbacks()
 							)
 						end
 						if math.random(100) >= math.random(75) then
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 								_dumpsterLoot.medium,
 								char:GetData("SID"),
 								1,
@@ -83,7 +83,7 @@ function RegisterDumpsterCallbacks()
 								false
 							)
 						end
-						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+						exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
@@ -92,7 +92,7 @@ function RegisterDumpsterCallbacks()
 						)
 					elseif _PlayerRep <= 7 and _PlayerRep >= 4 then
 						if math.random(100) >= math.random(75) then
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 								_dumpsterLoot.medium,
 								char:GetData("SID"),
 								1,
@@ -100,14 +100,14 @@ function RegisterDumpsterCallbacks()
 								false
 							)
 						end
-						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+						exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
 							1,
 							false
 						)
-						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+						exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
@@ -115,14 +115,14 @@ function RegisterDumpsterCallbacks()
 							false
 						)
 					else
-						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+						exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
 							1,
 							false
 						)
-						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+						exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,

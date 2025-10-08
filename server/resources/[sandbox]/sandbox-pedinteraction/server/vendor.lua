@@ -210,7 +210,7 @@ AddEventHandler('onResourceStart', function(resource)
 												}
 											end
 
-											cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemData.item, 1,
+											cb(exports.ox_inventory:AddItem(char:GetData("SID"), itemData.item, 1,
 												{}, 1))
 										else
 											exports['sandbox-hud']:NotifError(source,
@@ -229,7 +229,7 @@ AddEventHandler('onResourceStart', function(resource)
 												_bought[data.id][source][itemData.item] = (
 													_bought[data.id][source][itemData.item] or 0
 												) + 1
-												cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"),
+												cb(exports.ox_inventory:AddItem(char:GetData("SID"),
 													itemData.item, 1, {}, 1))
 											end
 										else

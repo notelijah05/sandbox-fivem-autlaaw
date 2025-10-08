@@ -263,7 +263,7 @@ RegisterNetEvent("Inventory:Client:DumpsterHideThread", function()
 		while LocalPlayer.state.inDumpster do
 			Wait(5)
 
-			exports['sandbox-inventory']:WeaponsUnequipIfEquipped()
+			exports.ox_inventory:WeaponsUnequipIfEquipped()
 
 			DisableControls()
 		end

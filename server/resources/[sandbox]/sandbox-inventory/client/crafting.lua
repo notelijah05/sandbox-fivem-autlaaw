@@ -14,7 +14,7 @@ exports("CraftingBenchesCleanup", function()
 end)
 
 exports("CraftingBenchesRefresh", function(interior)
-	exports['sandbox-inventory']:CraftingBenchesCleanup()
+	exports.ox_inventory:CraftingBenchesCleanup()
 
 	if _benches then
 		for k, v in ipairs(_benches) do
@@ -87,7 +87,7 @@ exports("CraftingBenchesRefresh", function(interior)
 								event = "Crafting:Client:AddSchematic",
 								groups = v.restrictions.job ~= nil and { v.restrictions.job.id } or nil,
 								canInteract = function()
-									return exports['sandbox-inventory']:ItemsHasType(17, 1) and
+									return exports.ox_inventory:ItemsHasType(17, 1) and
 										(v.restrictions.job == nil or (exports['sandbox-jobs']:HasJob(
 											v.restrictions.job.id,
 											v.restrictions.job.workplace,
@@ -145,29 +145,29 @@ _benchObjs = {}
 _benches = nil
 RegisterNetEvent("Crafting:Client:CreateBenches", function(benches)
 	_benches = benches
-	exports['sandbox-inventory']:CraftingBenchesRefresh(nil)
+	exports.ox_inventory:CraftingBenchesRefresh(nil)
 end)
 
 AddEventHandler("Characters:Client:Updated", function(key)
 	if key == -1 then
-		exports['sandbox-inventory']:CraftingBenchesRefresh(nil)
+		exports.ox_inventory:CraftingBenchesRefresh(nil)
 	end
 end)
 
 RegisterNetEvent("Job:Client:DutyChanged", function(state)
-	exports['sandbox-inventory']:CraftingBenchesRefresh(nil)
+	exports.ox_inventory:CraftingBenchesRefresh(nil)
 end)
 
 RegisterNetEvent("Crafting:Client:ForceBenchRefresh", function()
-	exports['sandbox-inventory']:CraftingBenchesRefresh(nil)
+	exports.ox_inventory:CraftingBenchesRefresh(nil)
 end)
 
 RegisterNetEvent("Characters:Client:Logout", function()
-	exports['sandbox-inventory']:CraftingBenchesCleanup()
+	exports.ox_inventory:CraftingBenchesCleanup()
 end)
 
 AddEventHandler("Crafting:Client:OpenCrafting", function(ent, data)
-	exports['sandbox-inventory']:CraftingBenchesOpen(data.id)
+	exports.ox_inventory:CraftingBenchesOpen(data.id)
 end)
 
 AddEventHandler("Crafting:Client:AddSchematic", function(ent, data)

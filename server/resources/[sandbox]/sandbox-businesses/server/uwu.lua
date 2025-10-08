@@ -12,53 +12,53 @@ local _uwuPrizes = {
 }
 
 AddEventHandler("Businesses:Server:Startup", function()
-	exports['sandbox-inventory']:RegisterUse("uwu_prize_box", "Businesses", function(source, item)
+	exports.ox_inventory:RegisterUse("uwu_prize_box", "Businesses", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "uwu_prize_box", 1) then
-			if exports['sandbox-inventory']:RemoveSlot(item.Owner, "uwu_prize_box", 1, item.Slot, 1) then
+		if exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "uwu_prize_box", 1) then
+			if exports.ox_inventory:RemoveSlot(item.Owner, "uwu_prize_box", 1, item.Slot, 1) then
 				local prize = exports['sandbox-base']:UtilsWeightedRandom(_uwuPrizes)
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), prize, 1, {}, 1)
+				exports.ox_inventory:AddItem(char:GetData("SID"), prize, 1, {}, 1)
 			end
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("uwu_prize_b1", "Businesses", function(source, item)
+	exports.ox_inventory:RegisterUse("uwu_prize_b1", "Businesses", function(source, item)
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("uwu_prize_b2", "Businesses", function(source, item)
+	exports.ox_inventory:RegisterUse("uwu_prize_b2", "Businesses", function(source, item)
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("uwu_prize_b3", "Businesses", function(source, item)
+	exports.ox_inventory:RegisterUse("uwu_prize_b3", "Businesses", function(source, item)
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("uwu_prize_b4", "Businesses", function(source, item)
+	exports.ox_inventory:RegisterUse("uwu_prize_b4", "Businesses", function(source, item)
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("uwu_prize_b5", "Businesses", function(source, item)
+	exports.ox_inventory:RegisterUse("uwu_prize_b5", "Businesses", function(source, item)
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("uwu_prize_b6", "Businesses", function(source, item)
+	exports.ox_inventory:RegisterUse("uwu_prize_b6", "Businesses", function(source, item)
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("uwu_prize_b7", "Businesses", function(source, item)
+	exports.ox_inventory:RegisterUse("uwu_prize_b7", "Businesses", function(source, item)
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("uwu_prize_b8", "Businesses", function(source, item)
+	exports.ox_inventory:RegisterUse("uwu_prize_b8", "Businesses", function(source, item)
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("uwu_prize_b9", "Businesses", function(source, item)
+	exports.ox_inventory:RegisterUse("uwu_prize_b9", "Businesses", function(source, item)
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("uwu_prize_b10", "Businesses", function(source, item)
+	exports.ox_inventory:RegisterUse("uwu_prize_b10", "Businesses", function(source, item)
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
 

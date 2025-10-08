@@ -127,7 +127,7 @@ end)
 AddEventHandler("Keybinds:Client:KeyUp:cancel_action", function()
 	if LocalPlayer.state.inGemView then
 		exports['sandbox-hud']:GemTableClose()
-		exports['sandbox-inventory']:StaticTooltipClose()
+		--exports['sandbox-inventory']:StaticTooltipClose()
 		LocalPlayer.state:set("inGemViewVangelicoGrapeseed", false, true)
 	end
 end)
@@ -183,7 +183,7 @@ function ActivateTable(tableId, color, quality, item)
 	local dirtLevel = (15 - math.floor(quality / 6.66)) + 0.0
 
 	exports['sandbox-hud']:GemTableOpen(quality)
-	exports['sandbox-inventory']:StaticTooltipOpen(item)
+	--exports['sandbox-inventory']:StaticTooltipOpen(item)
 
 	_gemObj = CreateObject(prop, _tableConfig[tableId].createCoords, 0, 0)
 	FreezeEntityPosition(_gemObj, true)
@@ -206,7 +206,7 @@ function CleanupTable()
 	RenderScriptCams(false, false, 0, 1, 0)
 	DeleteEntity(_gemObj)
 	exports['sandbox-hud']:GemTableClose()
-	exports['sandbox-inventory']:StaticTooltipClose()
+	--exports['sandbox-inventory']:StaticTooltipClose()
 	if LocalPlayer.state.inGemTableVangelico then
 		LocalPlayer.state:set("inGemTableVangelicoGrapeseed", false, true)
 	end

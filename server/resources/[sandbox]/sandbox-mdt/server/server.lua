@@ -634,7 +634,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				invType = 44,
 				owner = ("evidencelocker:%s"):format(caseNum),
 			}, function()
-				exports['sandbox-inventory']:OpenSecondary(source, 44, ("evidencelocker:%s"):format(caseNum))
+				exports.ox_inventory:OpenSecondary(source, 44, ("evidencelocker:%s"):format(caseNum))
 			end)
 		end
 	end)
@@ -648,7 +648,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				invType = 45,
 				owner = ("pdlocker:%s"):format(char:GetData('SID')),
 			}, function()
-				exports['sandbox-inventory']:OpenSecondary(source, 45, ("pdlocker:%s"):format(char:GetData('SID')))
+				exports.ox_inventory:OpenSecondary(source, 45, ("pdlocker:%s"):format(char:GetData('SID')))
 			end)
 		else
 			cb(false)

@@ -129,7 +129,7 @@ AddEventHandler("Objects:Client:ViewData", function(entity, data)
 end)
 
 AddEventHandler("Objects:Client:OpenInventory", function(entity, data)
-	exports['sandbox-inventory']:DumbfuckOpen({
+	exports.ox_inventory:DumbfuckOpen({
 		invType = 138,
 		owner = Entity(entity).state.objectId,
 	})

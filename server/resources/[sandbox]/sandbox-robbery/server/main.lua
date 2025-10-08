@@ -275,14 +275,14 @@ AddEventHandler('onResourceStart', function(resource)
 				if #(_pickups[char:GetData("SID")] or {}) > 0 then
 					for i = #_pickups[char:GetData("SID")], 1, -1 do
 						local v = _pickups[char:GetData("SID")][i]
-						local givingItem = exports['sandbox-inventory']:ItemsGetData(v.giving)
-						local receivingItem = exports['sandbox-inventory']:ItemsGetData(v.receiving)
+						local givingItem = exports.ox_inventory:ItemsGetData(v.giving)
+						local receivingItem = exports.ox_inventory:ItemsGetData(v.receiving)
 
-						if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.giving, 1) then
-							if exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.receiving, 1, {}, 1) then
+						if exports.ox_inventory:Remove(char:GetData("SID"), 1, v.giving, 1) then
+							if exports.ox_inventory:AddItem(char:GetData("SID"), v.receiving, 1, {}, 1) then
 								table.remove(_pickups[char:GetData("SID")], i)
 							else
-								exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.giving, 1, {}, 1)
+								exports.ox_inventory:AddItem(char:GetData("SID"), v.giving, 1, {}, 1)
 								exports['sandbox-hud']:NotifError(source,
 									string.format("Failed Adding x1 %s", receivingItem.label),
 									6000

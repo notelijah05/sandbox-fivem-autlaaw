@@ -1,12 +1,12 @@
 function RegisterMechanicItems()
     for k, v in pairs(_mechanicItemsToParts) do
-        exports['sandbox-inventory']:RegisterUse(k, 'Mechanic', function(source, itemData)
+        exports.ox_inventory:RegisterUse(k, 'Mechanic', function(source, itemData)
             exports["sandbox-base"]:ClientCallback(source, 'Mechanic:StartInstall', {
                 part = itemData.Name,
                 quantity = 1,
             }, function(success)
                 if success then
-                    exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
+                    exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
                         itemData.invType)
                 end
             end)
@@ -14,14 +14,14 @@ function RegisterMechanicItems()
     end
 
     for k, v in pairs(_mechanicItemsToUpgrades) do
-        exports['sandbox-inventory']:RegisterUse(k, 'Mechanic', function(source, itemData)
+        exports.ox_inventory:RegisterUse(k, 'Mechanic', function(source, itemData)
             local partData = _mechanicItemsToUpgrades[itemData.Name]
 
             if partData then
                 exports["sandbox-base"]:ClientCallback(source, 'Mechanic:StartUpgradeInstall', partData,
                     function(success, veh)
                         if success and veh then
-                            exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
+                            exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
                                 itemData.invType)
 
                             local veh = NetworkGetEntityFromNetworkId(veh)

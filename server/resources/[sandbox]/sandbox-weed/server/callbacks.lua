@@ -24,8 +24,8 @@ function RegisterCallbacks()
 				if char ~= nil then
 					if _plants[pid] ~= nil then
 						if _plants[pid].plant.water < 100 then
-							if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "water", 1) then
-								exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "water", 1)
+							if exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "water", 1) then
+								exports.ox_inventory:Remove(char:GetData("SID"), 1, "water", 1)
 								local amt = 10.0
 								if 100 - _plants[pid].plant.water < 10 then
 									amt = (100 - _plants[pid].plant.water) + 0.0
@@ -57,9 +57,9 @@ function RegisterCallbacks()
 					if _plants[data.id] ~= nil then
 						if _plants[data.id].plant.fertilizer == nil then
 							if
-								exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, string.format("fertilizer_%s", data.type), 1)
+								exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, string.format("fertilizer_%s", data.type), 1)
 							then
-								exports['sandbox-inventory']:Remove(
+								exports.ox_inventory:Remove(
 									char:GetData("SID"),
 									1,
 									string.format("fertilizer_%s", data.type),
@@ -103,7 +103,7 @@ function RegisterCallbacks()
 									giving = "weedseed_female"
 								end
 								if
-									exports['sandbox-inventory']:AddItem(
+									exports.ox_inventory:AddItem(
 										char:GetData("SID"),
 										giving,
 										math.random(math.ceil(_plants[pid].plant.output / 16)),
@@ -131,7 +131,7 @@ function RegisterCallbacks()
 									t = 3
 								end
 
-								if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "weed_bud", t, {}, 1) then
+								if exports.ox_inventory:AddItem(char:GetData("SID"), "weed_bud", t, {}, 1) then
 									exports['sandbox-weed']:PlantingDelete(pid)
 									cb(true)
 								else
@@ -246,8 +246,8 @@ function RegisterCallbacks()
 					end
 
 					--exports['sandbox-characters']:RepAdd(source, "weed", 1000)
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), giving, 2, {}, 1)
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), giving2, 2, {}, 1)
+					exports.ox_inventory:AddItem(char:GetData("SID"), giving, 2, {}, 1)
+					exports.ox_inventory:AddItem(char:GetData("SID"), giving2, 2, {}, 1)
 				else
 					exports['sandbox-base']:LoggerInfo(
 						"Weed",

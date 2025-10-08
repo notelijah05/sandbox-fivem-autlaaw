@@ -87,14 +87,14 @@ RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 		for k, v in ipairs(EVIDENCE_CACHE) do
 			if v.id == evidenceId then
 				if v.type == "paint_fragment" then
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-paint", 1, {
+					exports.ox_inventory:AddItem(char:GetData("SID"), "evidence-paint", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
 						EvidenceColor = v.data and v.data.color,
 					}, 1)
 				elseif v.type == "projectile" then
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-projectile", 1, {
+					exports.ox_inventory:AddItem(char:GetData("SID"), "evidence-projectile", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
@@ -103,7 +103,7 @@ RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 						EvidenceDegraded = v.data and v.data.tooDegraded,
 					}, 1)
 				elseif v.type == "casing" then
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-casing", 1, {
+					exports.ox_inventory:AddItem(char:GetData("SID"), "evidence-casing", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
@@ -111,7 +111,7 @@ RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 						EvidenceAmmoType = (v.data and v.data.weapon) and v.data.weapon.ammoTypeName,
 					}, 1)
 				elseif v.type == "blood" then
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-dna", 1, {
+					exports.ox_inventory:AddItem(char:GetData("SID"), "evidence-dna", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },

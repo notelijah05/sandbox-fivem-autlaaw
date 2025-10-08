@@ -73,7 +73,7 @@ AddEventHandler('onResourceStart', function(resource)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char then
 				if exports['sandbox-finance']:WalletModify(source, -10000) then
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "diamond_vip", 1, {}, 1)
+					exports.ox_inventory:AddItem(char:GetData("SID"), "diamond_vip", 1, {}, 1)
 					GiveCasinoFuckingMoney(source, "VIP Card", 10000)
 				else
 					exports['sandbox-hud']:NotifError(source, "Not Enough Cash")

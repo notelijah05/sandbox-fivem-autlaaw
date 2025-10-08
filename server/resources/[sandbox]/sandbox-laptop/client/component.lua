@@ -1,7 +1,7 @@
 _tabletProp = nil
 
 exports('Open', function()
-	exports['sandbox-inventory']:CloseAll()
+	exports.ox_inventory:CloseAll()
 	exports['sandbox-animations']:EmotesForceCancel()
 	exports['sandbox-hud']:InteractionHide()
 	LocalPlayer.state.laptopOpen = true

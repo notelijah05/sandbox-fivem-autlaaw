@@ -5,7 +5,7 @@ return {
         degrade = 60,
         client = {
             image = 'burger_chicken.png',
-            status = { hunger = 200000 },
+            status = { Add = { PLAYER_HUNGER = 20 } },
             anim = 'eating',
             prop = 'burger',
             usetime = 2500,
@@ -72,7 +72,7 @@ return {
         label = 'Burger',
         weight = 220,
         client = {
-            status = { hunger = 200000 },
+            status = { Add = { PLAYER_HUNGER = 20 } },
             anim = 'eating',
             prop = 'burger',
             usetime = 2500,
@@ -84,7 +84,7 @@ return {
         label = 'Sprunk',
         weight = 350,
         client = {
-            status = { thirst = 200000 },
+            status = { Add = { PLAYER_THIRST = 20 } },
             anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
             prop = { model = `prop_ld_can_01`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
             usetime = 2500,
@@ -114,14 +114,10 @@ return {
         consume = 0
     },
 
-    ['govid'] = {
-        label = 'Government ID',
-        weight = 0,
-        stack = false,
-        close = true,
-        consume = 0,
-        server = {
-            export = 'sandbox-mdt.govid'
+    ['identification'] = {
+        label = 'Identification',
+        client = {
+            image = 'card_id.png'
         }
     },
 
@@ -137,148 +133,6 @@ return {
         }
     },
 
-    ['lockpick'] = {
-        label = 'Lockpick',
-        weight = 160,
-        consume = 0,
-        close = true,
-        degrade = 20160, -- 2 Weeks
-        server = {
-            export = 'sandbox-vehicles.lockpick'
-        }
-    },
-
-    ['adv_lockpick'] = {
-        label = 'Advanced Lockpick',
-        weight = 160,
-        consume = 0,
-        close = true,
-        degrade = 20160, -- 2 Weeks
-        server = {
-            export = 'sandbox-vehicles.adv_lockpick'
-        }
-    },
-
-    ['electronics_kit'] = {
-        label = 'Electronics Kit',
-        weight = 160,
-        consume = 0,
-        close = true,
-        degrade = 20160, -- 2 Weeks
-        server = {
-            export = 'sandbox-vehicles.electronics_kit'
-        }
-    },
-
-    ['adv_electronics_kit'] = {
-        label = 'Advanced Electronics Kit',
-        weight = 160,
-        consume = 0,
-        close = true,
-        degrade = 20160, -- 2 Weeks
-        server = {
-            export = 'sandbox-vehicles.adv_electronics_kit'
-        }
-    },
-
-    ['screwdriver'] = {
-        label = 'Screwdriver',
-        weight = 160,
-        consume = 0,
-        degrade = 40320, -- 4 Weeks
-        server = {
-            export = 'sandbox-vehicles.screwdriver'
-        }
-    },
-
-    ['repairkit'] = {
-        label = 'Repair Kit',
-        weight = 160,
-        server = {
-            export = 'sandbox-vehicles.repairkit'
-        }
-    },
-
-    ['adv_repairkit'] = {
-        label = 'Advanced Repair Kit',
-        weight = 160,
-        server = {
-            export = 'sandbox-vehicles.adv_repairkit'
-        }
-    },
-
-    ['fakeplates'] = {
-        label = 'Fake Plates',
-        weight = 160,
-        server = {
-            export = 'sandbox-vehicles.fakeplates'
-        }
-    },
-
-    ['carpolish'] = {
-        label = 'Car Polish',
-        weight = 160,
-        server = {
-            export = 'sandbox-vehicles.carpolish'
-        }
-    },
-
-    ['carpolish_high'] = {
-        label = 'Car Polish High',
-        weight = 160,
-        server = {
-            export = 'sandbox-vehicles.carpolish_high'
-        }
-    },
-
-    ['carclean'] = {
-        label = 'Car Clean',
-        weight = 160,
-        server = {
-            export = 'sandbox-vehicles.carclean'
-        }
-    },
-
-    ['purgecontroller'] = {
-        label = 'Purge Controller',
-        weight = 160,
-        server = {
-            export = 'sandbox-vehicles.purgecontroller'
-        }
-    },
-
-    ['car_bomb'] = {
-        label = 'Car Bomb',
-        weight = 160,
-        server = {
-            export = 'sandbox-vehicles.car_bomb'
-        }
-    },
-
-    ['harness'] = {
-        label = 'Harness',
-        weight = 160,
-        consume = 0,
-        server = {
-            export = 'sandbox-vehicles.harness'
-        }
-    },
-
-    ['nitrous'] = {
-        label = 'Nitrous',
-        weight = 160,
-        server = {
-            export = 'sandbox-vehicles.nitrous'
-        }
-    },
-
-    ['phone'] = {
-        label = 'Phone',
-        weight = 190,
-        stack = false,
-        consume = 0,
-    },
-
     ['money'] = {
         label = 'Money',
     },
@@ -287,32 +141,12 @@ return {
         label = 'Mustard',
         weight = 500,
         client = {
-            status = { hunger = 25000, thirst = 25000 },
+            status = { Add = { PLAYER_HUNGER = 25, PLAYER_THIRST = 25 } },
             anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
             prop = { model = `prop_food_mustard`, pos = vec3(0.01, 0.0, -0.07), rot = vec3(1.0, 1.0, -1.5) },
             usetime = 2500,
             notification = 'You.. drank mustard'
         }
-    },
-
-    ['water'] = {
-        label = 'Water',
-        weight = 500,
-        client = {
-            status = { thirst = 200000 },
-            anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-            prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
-            usetime = 2500,
-            cancel = true,
-            notification = 'You drank some refreshing water'
-        }
-    },
-
-    ['radio'] = {
-        label = 'Radio',
-        weight = 1000,
-        stack = false,
-        allowArmed = true
     },
 
     ['armour'] = {
@@ -342,49 +176,5 @@ return {
     ['scrapmetal'] = {
         label = 'Scrap Metal',
         weight = 80,
-    },
-
-    ['camping_chair'] = {
-        label = 'Camping Chair',
-        weight = 10,
-        stack = false,
-        close = true,
-        consume = 0,
-        server = {
-            export = 'sandbox-animations.camping_chair'
-        }
-    },
-
-    ['beanbag'] = {
-        label = 'Bean Bag',
-        weight = 10,
-        stack = false,
-        close = true,
-        consume = 0,
-        server = {
-            export = 'sandbox-animations.beanbag'
-        }
-    },
-
-    ['binoculars'] = {
-        label = 'Binoculars',
-        weight = 10,
-        stack = false,
-        close = true,
-        consume = 0,
-        server = {
-            export = 'sandbox-animations.binoculars'
-        }
-    },
-
-    ['camera'] = {
-        label = 'Camera',
-        weight = 10,
-        stack = false,
-        close = true,
-        consume = 0,
-        server = {
-            export = 'sandbox-animations.camera'
-        }
     },
 }

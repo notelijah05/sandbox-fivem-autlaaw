@@ -2,23 +2,23 @@ local _jobName = "vangelico"
 
 AddEventHandler("Businesses:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Businesses:VANGELICO:OpenTable", function(source, data, cb)
-		exports['sandbox-inventory']:OpenSecondary(source, 196, data)
+		exports.ox_inventory:OpenSecondary(source, 196, data)
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Businesses:VANGELICO:Sell", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if exports['sandbox-jobs']:HasJob(source, _jobName, false, false, false, false, "JOB_SELL_GEMS") then
-			local its = exports['sandbox-inventory']:GetAllOfTypeNoStack(char:GetData("SID"), 1, 11)
+			local its = exports.ox_inventory:GetAllOfTypeNoStack(char:GetData("SID"), 1, 11)
 
 			if its and #its > 0 then
 				local totalSold = 0
 				local totalPayout = 0
 				for k, v in ipairs(its) do
 					local md = json.decode(v.MetaData)
-					local itemData = exports['sandbox-inventory']:ItemsGetData(v.Name)
+					local itemData = exports.ox_inventory:ItemsGetData(v.Name)
 					local gemWorth = (itemData.price * ((md.Quality or 1) / 100))
 
-					if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, v) then
+					if exports.ox_inventory:RemoveId(char:GetData("SID"), 1, v) then
 						totalPayout += gemWorth
 						totalSold += 1
 					end
@@ -70,10 +70,10 @@ AddEventHandler("Businesses:Server:VANGELICO:ViewGem", function(source, data)
 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
 		if exports['sandbox-jobs']:HasJob(source, _jobName, false, false, false, true, "JOB_USE_GEM_TABLE") then
-			local its = exports['sandbox-inventory']:GetInventory(source, data.owner, data.invType)
+			local its = exports.ox_inventory:GetInventory(source, data.owner, data.invType)
 			if #its > 0 then
 				local md = json.decode(its[1].MetaData)
-				local itemData = exports['sandbox-inventory']:ItemsGetData(its[1].Name)
+				local itemData = exports.ox_inventory:ItemsGetData(its[1].Name)
 				if itemData ~= nil and itemData.type == 11 and itemData.gemProperties ~= nil then
 					TriggerClientEvent(
 						"Businesses:Client:VANGELICO:ViewGem",

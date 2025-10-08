@@ -13,7 +13,7 @@ local _accessoryItems = {
 
 function RegisterItemUses()
 	for k, v in ipairs(_maskItems) do
-		exports['sandbox-inventory']:RegisterUse(v, "Ped", function(source, item)
+		exports.ox_inventory:RegisterUse(v, "Ped", function(source, item)
 			if not Player(source).state.isCuffed then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if item.MetaData.mask then
@@ -24,14 +24,14 @@ function RegisterItemUses()
 						exports['sandbox-ped']:MaskUnequip(source)
 					end
 					exports['sandbox-ped']:MaskEquip(source, item.MetaData.mask)
-					exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+					exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 				end
 			end
 		end)
 	end
 
 	for k, v in ipairs(_hatItems) do
-		exports['sandbox-inventory']:RegisterUse(v, "Ped", function(source, item)
+		exports.ox_inventory:RegisterUse(v, "Ped", function(source, item)
 			if not Player(source).state.isCuffed then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if item.MetaData.hat then
@@ -42,14 +42,14 @@ function RegisterItemUses()
 						exports['sandbox-ped']:HatUnequip(source)
 					end
 					exports['sandbox-ped']:HatEquip(source, item.MetaData.hat)
-					exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+					exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 				end
 			end
 		end)
 	end
 
 	for k, v in ipairs(_accessoryItems) do
-		exports['sandbox-inventory']:RegisterUse(v, "Ped", function(source, item)
+		exports.ox_inventory:RegisterUse(v, "Ped", function(source, item)
 			if not Player(source).state.isCuffed then
 				local char = exports['sandbox-characters']:FetchCharacterSource(source)
 				if item.MetaData.accessory then
@@ -66,7 +66,7 @@ function RegisterItemUses()
 						or item.MetaData.accessory[tostring(char:GetData("Gender"))]
 						or item.MetaData.accessory
 					)
-					exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+					exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 				end
 			end
 		end)

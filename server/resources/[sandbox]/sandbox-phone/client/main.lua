@@ -249,6 +249,8 @@ function TogglePhone()
 	end
 end
 
+exports('TogglePhone', TogglePhone)
+
 AddEventHandler("Phone:Client:OpenLimited", function()
 	exports['sandbox-phone']:OpenLimited()
 end)

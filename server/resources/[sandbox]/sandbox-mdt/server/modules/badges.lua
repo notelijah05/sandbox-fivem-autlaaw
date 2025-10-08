@@ -24,7 +24,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
                     end
 
                     if departmentData then
-                        exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'government_badge', 1, {
+                        exports.ox_inventory:AddItem(char:GetData('SID'), 'government_badge', 1, {
                             ['Department Name'] = departmentName,
                             Title = titleData,
                             First = officer.First,
@@ -49,7 +49,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         end
     end)
 
-    exports['sandbox-inventory']:RegisterUse("government_badge", "MDT", function(source, itemData)
+    exports.ox_inventory:RegisterUse("government_badge", "MDT", function(source, itemData)
         if itemData and itemData.MetaData and itemData.MetaData.Department then
             exports["sandbox-base"]:ClientCallback(source, "MDT:Client:CanShowBadge", itemData.MetaData,
                 function(canShow)

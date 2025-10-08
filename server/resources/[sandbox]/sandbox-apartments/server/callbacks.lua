@@ -26,7 +26,7 @@ function RegisterCallbacks()
 					invType = invType,
 					owner = invOwner,
 				}, function()
-					exports['sandbox-inventory']:OpenSecondary(source, invType, invOwner, false, false, isRaid)
+					exports.ox_inventory:OpenSecondary(source, invType, invOwner, false, false, isRaid)
 				end)
 
 				cb(true)

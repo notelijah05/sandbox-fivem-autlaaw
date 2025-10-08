@@ -84,7 +84,7 @@ AddEventHandler("EMS:Client:CheckICUPatients", function()
 end)
 
 AddEventHandler("EMS:Client:Stabilize", function(target, idk)
-	if exports['sandbox-inventory']:ItemsHas("traumakit", 1) then
+	if exports.ox_inventory:ItemsHas("traumakit", 1) then
 		exports['sandbox-hud']:ProgressWithStartEvent({
 			name = "ems_eval",
 			duration = 10000,
@@ -122,7 +122,7 @@ AddEventHandler("EMS:Client:Stabilize", function(target, idk)
 end)
 
 -- AddEventHandler("EMS:Client:ApplyTourniquet", function(data)
--- 	if exports['sandbox-inventory']:ItemsHas("tourniquet", 1) then
+-- 	if exports.ox_inventory:ItemsHas("tourniquet", 1) then
 -- 		exports['sandbox-hud']:ProgressWithStartEvent({
 -- 			name = "ems_eval",
 -- 			duration = 4000,
@@ -160,7 +160,7 @@ end)
 -- end)
 
 AddEventHandler("EMS:Client:FieldTreatWounds", function(data)
-	if exports['sandbox-inventory']:ItemsHas("traumakit", 1) then
+	if exports.ox_inventory:ItemsHas("traumakit", 1) then
 		exports['sandbox-hud']:ProgressWithStartEvent({
 			name = "ems_eval",
 			duration = 4000,
@@ -201,7 +201,7 @@ AddEventHandler("EMS:Client:FieldTreatWounds", function(data)
 end)
 
 AddEventHandler("EMS:Client:ApplyBandage", function(data)
-	if exports['sandbox-inventory']:ItemsHas("bandage", 1) then
+	if exports.ox_inventory:ItemsHas("bandage", 1) then
 		exports['sandbox-hud']:ProgressWithStartEvent({
 			name = "ems_eval",
 			duration = 3000,
@@ -239,7 +239,7 @@ AddEventHandler("EMS:Client:ApplyBandage", function(data)
 end)
 
 AddEventHandler("EMS:Client:ApplyMorphine", function(data)
-	if exports['sandbox-inventory']:ItemsHas("morphine", 1) then
+	if exports.ox_inventory:ItemsHas("morphine", 1) then
 		exports['sandbox-hud']:ProgressWithStartEvent({
 			name = "ems_eval",
 			duration = 3000,

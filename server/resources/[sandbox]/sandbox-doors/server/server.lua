@@ -59,7 +59,7 @@ function RegisterChatCommands()
 end
 
 -- function RegisterItems()
---     exports['sandbox-inventory']:RegisterUse('lockpick', 'Doors', function(source, item)
+--     exports.ox_inventory:RegisterUse('lockpick', 'Doors', function(source, item)
 --         TriggerClientEvent('Doors:Client:AttemptLockpick', source, item)
 --     end)
 -- end

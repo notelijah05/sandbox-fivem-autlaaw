@@ -188,7 +188,7 @@ end
 function SetupGarbage()
 	if _trashCans then
 		for storageId, storage in ipairs(_trashCans) do
-			exports['sandbox-inventory']:PolyCreate(storage)
+			exports.ox_inventory:PolyCreate(storage)
 		end
 	end
 end
@@ -199,8 +199,8 @@ function SetupItemUses(itemData)
 	end
 
 	if itemData.type == 1 and itemsDatabase[itemData.name].statusChange ~= nil then
-		exports['sandbox-inventory']:RegisterUse(itemData.name, "StatusConsumable", function(source, item) -- Foo
-			exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+		exports.ox_inventory:RegisterUse(itemData.name, "StatusConsumable", function(source, item) -- Foo
+			exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 
 			if itemsDatabase[item.Name].statusChange.Add ~= nil then
 				for k, v in pairs(itemsDatabase[item.Name].statusChange.Add) do
@@ -255,26 +255,26 @@ function SetupItemUses(itemData)
 			end
 		end)
 	elseif itemData.type == 2 then
-		exports['sandbox-inventory']:RegisterUse(itemData.name, "Weapons", function(source, item)
+		exports.ox_inventory:RegisterUse(itemData.name, "Weapons", function(source, item)
 			TriggerClientEvent("Weapons:Client:Use", source, item)
 		end)
 	elseif itemData.type == 9 then
-		exports['sandbox-inventory']:RegisterUse(itemData.name, "Ammo", function(source, item)
+		exports.ox_inventory:RegisterUse(itemData.name, "Ammo", function(source, item)
 			exports["sandbox-base"]:ClientCallback(source, "Weapons:AddAmmo", itemsDatabase[item.Name], function(state)
 				if state then
-					exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+					exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 				end
 			end)
 		end)
 	elseif itemData.type == 10 then
-		exports['sandbox-inventory']:RegisterUse(itemData.name, "Containers", function(source, item)
-			exports['sandbox-inventory']:ContainerOpen(source, item, item.MetaData.Container)
+		exports.ox_inventory:RegisterUse(itemData.name, "Containers", function(source, item)
+			exports.ox_inventory:ContainerOpen(source, item, item.MetaData.Container)
 		end)
 	elseif itemData.imitate and itemsDatabase[itemData.imitate] ~= nil and itemsDatabase[itemData.imitate].isUsable then
 		itemsDatabase[itemData.name].isUsable = true
 		itemsDatabase[itemData.name].closeUi = itemsDatabase[itemData.imitate].closeUi
 	elseif itemData.gangChain ~= nil then
-		exports['sandbox-inventory']:RegisterUse(itemData.name, "GangChains", function(source, item)
+		exports.ox_inventory:RegisterUse(itemData.name, "GangChains", function(source, item)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if itemData.gangChain ~= nil then
 				if itemData.gangChain ~= char:GetData("GangChain") then
@@ -289,13 +289,13 @@ function SetupItemUses(itemData)
 			end
 		end)
 	elseif itemData.type == 16 and itemData.component ~= nil then
-		exports['sandbox-inventory']:RegisterUse(itemData.name, "WeaponAttachments", function(source, item)
-			exports['sandbox-inventory']:WeaponsEquipAttachment(source, item)
+		exports.ox_inventory:RegisterUse(itemData.name, "WeaponAttachments", function(source, item)
+			exports.ox_inventory:WeaponsEquipAttachment(source, item)
 		end)
 	end
 
 	if itemData.drugState ~= nil then
-		exports['sandbox-inventory']:RegisterUse(itemData.name, "DrugStates", function(source, item)
+		exports.ox_inventory:RegisterUse(itemData.name, "DrugStates", function(source, item)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local drugStates = char:GetData("DrugStates") or {}
@@ -309,11 +309,11 @@ function SetupItemUses(itemData)
 	end
 
 	if itemData.phoneCase ~= nil then
-		exports['sandbox-inventory']:RegisterUse(itemData.name, "PhoneCase", function(source, item)
+		exports.ox_inventory:RegisterUse(itemData.name, "PhoneCase", function(source, item)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source, true)
 			if char ~= nil then
 				char:SetData("PhoneCase", itemData.phoneCase)
-				exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+				exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
 			end
 		end)
 	end
@@ -474,7 +474,7 @@ function RegisterCommands()
 				char:GetData("SID")
 			)
 		)
-		exports['sandbox-inventory']:OpenSecondary(source, 1, tonumber(args[1]))
+		exports.ox_inventory:OpenSecondary(source, 1, tonumber(args[1]))
 	end, {
 		help = "Open Secondary Inventory",
 		params = {
@@ -558,7 +558,7 @@ function RegisterCommands()
 	-- 		local itemExist = itemsDatabase[args[1]]
 	-- 		if itemExist then
 	-- 			if itemExist.type ~= 2 then
-	-- 				exports['sandbox-inventory']:AddItem(char:GetData("SID"), args[1], tonumber(args[2]), {}, 1)
+	-- 				exports.ox_inventory:AddItem(char:GetData("SID"), args[1], tonumber(args[2]), {}, 1)
 	-- 				exports['ox_inventory']:AddItem(char:GetData("SID"), args[1], tonumber(args[2]), {})
 	-- 			else
 	-- 				exports['sandbox-hud']:NotifError(source,
@@ -592,14 +592,14 @@ function RegisterCommands()
 				if itemExist.type == 2 then
 					local sid = char:GetData("SID")
 					if itemExist.isThrowable then
-						exports['sandbox-inventory']:AddItem(sid, weapon, tonumber(args[2]), { ammo = 1, clip = 0 }, 1)
+						exports.ox_inventory:AddItem(sid, weapon, tonumber(args[2]), { ammo = 1, clip = 0 }, 1)
 					else
 						local ammo = 0
 						if args[2] ~= nil then
 							ammo = tonumber(args[2])
 						end
 
-						exports['sandbox-inventory']:AddItem(
+						exports.ox_inventory:AddItem(
 							sid,
 							weapon,
 							1,
@@ -641,7 +641,7 @@ function RegisterCommands()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and label and image and amount and amount > 0 then
 			local t = exports['sandbox-base']:SequenceGet("VanityItem")
-			local newItem = exports['sandbox-inventory']:ItemTemplateCreate(
+			local newItem = exports.ox_inventory:ItemTemplateCreate(
 				string.format("vanityitem%s", t),
 				label,
 				text,
@@ -661,7 +661,7 @@ function RegisterCommands()
 				}
 			)
 
-			exports['sandbox-inventory']:AddItem(char:GetData("SID"), newItem.name, amount, {}, 1)
+			exports.ox_inventory:AddItem(char:GetData("SID"), newItem.name, amount, {}, 1)
 		else
 			exports['sandbox-hud']:NotifError(source, "Wrong")
 		end
@@ -696,7 +696,7 @@ function RegisterCommands()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
 		if char and label and image and amount and amount > 0 then
-			exports['sandbox-inventory']:AddItem(char:GetData("SID"), "vanityitem", amount, {
+			exports.ox_inventory:AddItem(char:GetData("SID"), "vanityitem", amount, {
 				CustomItemLabel = label,
 				CustomItemImage = image,
 				CustomItemText = text or "",
@@ -735,7 +735,7 @@ function RegisterCommands()
 		local coords = GetEntityCoords(GetPlayerPed(source))
 		local h = GetEntityHeading(GetPlayerPed(source))
 
-		exports['sandbox-inventory']:PlayerShopBasicCreate(args[4], {
+		exports.ox_inventory:PlayerShopBasicCreate(args[4], {
 			x = coords.x,
 			y = coords.y,
 			z = coords.z - 0.99,
@@ -769,7 +769,7 @@ function RegisterCommands()
 	}, 5)
 
 	exports["sandbox-chat"]:RegisterAdminCommand("delpshop", function(source, args, rawCommand)
-		exports['sandbox-inventory']:PlayerShopBasicDelete(tonumber(args[1]))
+		exports.ox_inventory:PlayerShopBasicDelete(tonumber(args[1]))
 		exports['sandbox-hud']:NotifSuccess(source, "Shop Deleted")
 	end, {
 		help = "Delete Player Shop",

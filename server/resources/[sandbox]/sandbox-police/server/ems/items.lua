@@ -1,8 +1,8 @@
 function EMSItems()
-	-- exports['sandbox-inventory']:RegisterUse("tourniquet", "MedicalItems", function(source, item)
+	-- exports.ox_inventory:RegisterUse("tourniquet", "MedicalItems", function(source, item)
 	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	-- 	if char:GetData("Damage").Bleed > 0 then
-	-- 		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+	-- 		if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 	-- 			Player(source).state.tourniquet = (
 	-- 					GetGameTimer() + ((1000 * 60 * 5) / char:GetData("Damage").Bleed or 1)
 	-- 				)
@@ -12,16 +12,16 @@ function EMSItems()
 	-- 	end
 	-- end)
 
-	exports['sandbox-inventory']:RegisterUse("morphine", "MedicalItems", function(source, item)
-		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+	exports.ox_inventory:RegisterUse("morphine", "MedicalItems", function(source, item)
+		if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 			exports['sandbox-damage']:EffectsPainkiller(source, 1)
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("oxy", "MedicalItems", function(source, item)
+	exports.ox_inventory:RegisterUse("oxy", "MedicalItems", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
-		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+		if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 			exports['sandbox-damage']:EffectsPainkiller(source, 2)
 
 			if pState.healTicks ~= nil then
@@ -38,13 +38,13 @@ function EMSItems()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("bandage", "MedicalItems", function(source, item)
+	exports.ox_inventory:RegisterUse("bandage", "MedicalItems", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local ped = GetPlayerPed(source)
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
 		local pState = Player(source).state
-		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+		if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 			local heal = 10
 			if curr < (max * 0.75) then
 				local p = promise.new()
@@ -68,13 +68,13 @@ function EMSItems()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("firstaid", "MedicalItems", function(source, item)
+	exports.ox_inventory:RegisterUse("firstaid", "MedicalItems", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local ped = GetPlayerPed(source)
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
 		local pState = Player(source).state
-		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+		if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 			local p = promise.new()
 			local heal = 15
 			if curr + heal > max then
@@ -102,13 +102,13 @@ function EMSItems()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("ifak", "MedicalItems", function(source, item)
+	exports.ox_inventory:RegisterUse("ifak", "MedicalItems", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local ped = GetPlayerPed(source)
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
 		local pState = Player(source).state
-		if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+		if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 			local p = promise.new()
 			local heal = 30
 			if curr + heal > max then
@@ -138,9 +138,9 @@ function EMSItems()
 		end
 	end)
 
-	-- exports['sandbox-inventory']:RegisterUse("gauze", "MedicalItems", function(source, item)
+	-- exports.ox_inventory:RegisterUse("gauze", "MedicalItems", function(source, item)
 	-- 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
-	-- 	if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+	-- 	if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 	-- 		local dmg = char:GetData("Damage")
 	-- 		if dmg.Bleed > 1 then
 	-- 			dmg.Bleed = dmg.Bleed - 1
@@ -151,7 +151,7 @@ function EMSItems()
 	-- 	end
 	-- end)
 
-	exports['sandbox-inventory']:RegisterUse("medicalkit", "MedicalItems", function(source, item)
+	exports.ox_inventory:RegisterUse("medicalkit", "MedicalItems", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if exports['sandbox-jobs']:HasJob(source, "ems", false, false, 2) then
 			local myCoords = GetEntityCoords(GetPlayerPed(source))

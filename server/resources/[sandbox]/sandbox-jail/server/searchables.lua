@@ -217,7 +217,7 @@ function RegisterPrisonSearchStartup()
 					_loot = _lootTables.high
 					-- maybe give a fucking rifle or some shit kekw
 				end
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(_loot, char:GetData("SID"), 1, 1,
+				exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_loot, char:GetData("SID"), 1, 1,
 					false)
 				exports['sandbox-characters']:RepAdd(source, _repName, _rando)
 				exports['sandbox-hud']:NotifSuccess(source, "You found something!")

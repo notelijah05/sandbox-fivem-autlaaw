@@ -58,7 +58,7 @@ AddEventHandler("Properties:Client:Exit", function(t, data)
 end)
 
 AddEventHandler("Properties:Client:Crafting", function(t, data)
-	exports['sandbox-inventory']:CraftingBenchesOpen('property-' .. data)
+	exports.ox_inventory:CraftingBenchesOpen('property-' .. data)
 end)
 
 AddEventHandler("Properties:Client:Duty", function(t, data)

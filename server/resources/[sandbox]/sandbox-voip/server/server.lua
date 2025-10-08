@@ -35,19 +35,19 @@ AddEventHandler('onResourceStart', function(resource)
 		end
 
 		--RegisterChatCommands()
-		exports['sandbox-inventory']:RegisterUse("radio", "VOIP", function(source, itemData)
+		exports.ox_inventory:RegisterUse("radio", "VOIP", function(source, itemData)
 			TriggerClientEvent("Radio:Client:OpenUI", source, 1)
 		end)
 
-		exports['sandbox-inventory']:RegisterUse("radio_shitty", "VOIP", function(source, itemData)
+		exports.ox_inventory:RegisterUse("radio_shitty", "VOIP", function(source, itemData)
 			TriggerClientEvent("Radio:Client:OpenUI", source, 3)
 		end)
 
-		exports['sandbox-inventory']:RegisterUse("radio_extendo", "VOIP", function(source, itemData)
+		exports.ox_inventory:RegisterUse("radio_extendo", "VOIP", function(source, itemData)
 			TriggerClientEvent("Radio:Client:OpenUI", source, 2)
 		end)
 
-		exports['sandbox-inventory']:RegisterUse("megaphone", "VOIP", function(source, itemData)
+		exports.ox_inventory:RegisterUse("megaphone", "VOIP", function(source, itemData)
 			TriggerClientEvent("VOIP:Client:Megaphone:Use", source, false)
 		end)
 	end

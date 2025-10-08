@@ -42,7 +42,7 @@ AddEventHandler("Inventory:Client:ItemsLoaded", function()
 	while Laptop == nil do
 		Wait(10)
 	end
-	exports['sandbox-laptop']:SetData("items", exports['sandbox-inventory']:ItemsGetData())
+	exports['sandbox-laptop']:SetData("items", exports.ox_inventory:ItemsGetData())
 end)
 
 AddEventHandler("Characters:Client:Updated", function(key)

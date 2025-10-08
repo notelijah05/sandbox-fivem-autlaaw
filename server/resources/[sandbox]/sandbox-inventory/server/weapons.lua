@@ -197,8 +197,8 @@ AddEventHandler('onResourceStart', function(resource)
 		exports["sandbox-base"]:RegisterServerCallback("Weapons:UseThrowable", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
-				if exports['sandbox-inventory']:RemoveSlot(char:GetData("SID"), data.Name, 1, data.Slot, 1) then
-					local slotExists = exports['sandbox-inventory']:SlotExists(char:GetData("SID"), data.Slot, 1)
+				if exports.ox_inventory:RemoveSlot(char:GetData("SID"), data.Name, 1, data.Slot, 1) then
+					local slotExists = exports.ox_inventory:SlotExists(char:GetData("SID"), data.Slot, 1)
 					if not slotExists then
 						TriggerClientEvent("Weapons:Client:ForceUnequip", source)
 					end
@@ -256,7 +256,7 @@ exports("WeaponsIsEligible", function(source)
 end)
 
 exports("WeaponsSave", function(source, id, ammo, clip)
-	exports['sandbox-inventory']:UpdateMetaData(id, {
+	exports.ox_inventory:UpdateMetaData(id, {
 		ammo = ammo,
 		clip = clip,
 	})
@@ -337,15 +337,15 @@ end)
 exports("WeaponsEquipAttachment", function(source, item)
 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
-		local slot = exports['sandbox-inventory']:GetSlot(char:GetData("SID"), item.Slot, 1)
+		local slot = exports.ox_inventory:GetSlot(char:GetData("SID"), item.Slot, 1)
 		if slot ~= nil then
 			if slot.MetaData.WeaponComponents ~= nil and slot.MetaData.WeaponComponents[item.component] ~= nil then
-				local itemData = exports['sandbox-inventory']:ItemsGetData(slot.MetaData.WeaponComponents
+				local itemData = exports.ox_inventory:ItemsGetData(slot.MetaData.WeaponComponents
 					[item.component].item)
 				if itemData ~= nil then
-					exports['sandbox-inventory']:RemoveSlot(char:GetData("SID"), itemData.name, 1, item.Slot, 1)
+					exports.ox_inventory:RemoveSlot(char:GetData("SID"), itemData.name, 1, item.Slot, 1)
 					slot.MetaData.WeaponComponents[item.component] = nil
-					exports['sandbox-inventory']:SetMetaDataKey(
+					exports.ox_inventory:SetMetaDataKey(
 						slot.id,
 						"WeaponComponents",
 						slot.MetaData.WeaponComponents,
@@ -361,17 +361,17 @@ end)
 exports("WeaponsRemoveAttachment", function(source, slotId, attachment)
 	local char = exports['sandbox-characters']:FetchCharacterSource(source)
 	if char ~= nil then
-		local slot = exports['sandbox-inventory']:GetSlot(char:GetData("SID"), slotId, 1)
+		local slot = exports.ox_inventory:GetSlot(char:GetData("SID"), slotId, 1)
 		if slot ~= nil then
 			if slot.MetaData.WeaponComponents ~= nil and slot.MetaData.WeaponComponents[attachment] ~= nil then
-				local itemData = exports['sandbox-inventory']:ItemsGetData(slot.MetaData.WeaponComponents[attachment]
+				local itemData = exports.ox_inventory:ItemsGetData(slot.MetaData.WeaponComponents[attachment]
 					.item)
 				if itemData ~= nil then
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemData.name, 1, {}, 1, false, false,
+					exports.ox_inventory:AddItem(char:GetData("SID"), itemData.name, 1, {}, 1, false, false,
 						false, false, false,
 						slot.MetaData.WeaponComponents[attachment].created or os.time())
 					slot.MetaData.WeaponComponents[attachment] = nil
-					exports['sandbox-inventory']:SetMetaDataKey(
+					exports.ox_inventory:SetMetaDataKey(
 						slot.id,
 						"WeaponComponents",
 						slot.MetaData.WeaponComponents,
@@ -385,13 +385,13 @@ exports("WeaponsRemoveAttachment", function(source, slotId, attachment)
 end)
 
 RegisterNetEvent("Weapon:Server:UpdateAmmo", function(slot, ammo, clip)
-	exports['sandbox-inventory']:WeaponsSave(source, slot, ammo, clip)
+	exports.ox_inventory:WeaponsSave(source, slot, ammo, clip)
 end)
 
 RegisterNetEvent("Weapon:Server:UpdateAmmoDiff", function(diff, ammo, clip)
 	local _src = source
 	if diff and diff.id then
-		exports['sandbox-inventory']:UpdateMetaData(diff.id, {
+		exports.ox_inventory:UpdateMetaData(diff.id, {
 			ammo = ammo,
 			clip = clip,
 		})
@@ -399,7 +399,7 @@ RegisterNetEvent("Weapon:Server:UpdateAmmoDiff", function(diff, ammo, clip)
 end)
 
 RegisterNetEvent("Weapons:Server:RemoveAttachment", function(slotId, attachment)
-	exports['sandbox-inventory']:WeaponsRemoveAttachment(source, slotId, attachment)
+	exports.ox_inventory:WeaponsRemoveAttachment(source, slotId, attachment)
 end)
 
 RegisterNetEvent("Weapons:Server:DoFlashFx", function(coords, netId)

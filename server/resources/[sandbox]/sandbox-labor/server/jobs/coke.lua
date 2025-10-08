@@ -138,7 +138,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					SetVehicleDoorsLocked(veh, 1)
 					_active.entity = veh
 					_active.VIN = Entity(veh).state.VIN
-					exports['sandbox-inventory']:AddItem(_active.VIN, "coke_brick", 4, {}, 4)
+					exports.ox_inventory:AddItem(_active.VIN, "coke_brick", 4, {}, 4)
 					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 						string.format("Coke:Client:%s:GoTo", _joiners[source]))
 				end

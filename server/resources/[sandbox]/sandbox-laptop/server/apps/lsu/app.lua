@@ -107,7 +107,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 							v.delayed = true
 						end
 						v.id = k
-						v.itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
+						v.itemData = exports.ox_inventory:ItemsGetData(v.item)
 						table.insert(items, v)
 					end
 				end
@@ -259,7 +259,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 					Wait(1)
 					for k, v in ipairs(list) do
 						Wait(1)
-						exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.item, v.quantity, {}, 1)
+						exports.ox_inventory:AddItem(char:GetData("SID"), v.item, v.quantity, {}, 1)
 					end
 				end
 
@@ -285,13 +285,13 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("lsundg_invite", "LSUNDG", function(source, item, itemData)
+	exports.ox_inventory:RegisterUse("lsundg_invite", "LSUNDG", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 		if char ~= nil then
 			if not pState.onDuty or not _blacklistedJobs[pState.onDuty] then
 				if not hasValue(char:GetData("States") or {}, "ACCESS_LSUNDERGROUND") then
-					if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+					if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 						local states = char:GetData("States") or {}
 						table.insert(states, "ACCESS_LSUNDERGROUND")
 						char:SetData("States", states)

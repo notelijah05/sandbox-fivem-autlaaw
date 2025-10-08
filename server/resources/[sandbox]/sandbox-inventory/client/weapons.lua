@@ -13,7 +13,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 
 			if _equipped ~= nil and _equipped.MetaData and _equipped.MetaData.WeaponComponents ~= nil then
 				for k, v in pairs(_equipped.MetaData.WeaponComponents) do
-					local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
+					local itemData = exports.ox_inventory:ItemsGetData(v.item)
 					table.insert(menu, {
 						icon = "xmark",
 						label = string.format("Remove %s", itemData.label),
@@ -129,7 +129,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 					-- }
 				}, function(status)
 					if not status then
-						exports['sandbox-inventory']:WeaponsAmmoAdd(data)
+						exports.ox_inventory:WeaponsAmmoAdd(data)
 						cb(true)
 					end
 				end)
@@ -181,10 +181,10 @@ end)
 RegisterNetEvent("Weapons:Client:Use", function(data)
 	_interacting = true
 	if _equipped ~= nil and _equipped.Slot == data.Slot then
-		exports['sandbox-inventory']:WeaponsUnequip(data)
+		exports.ox_inventory:WeaponsUnequip(data)
 		TriggerEvent("Weapons:Client:Changed", nil)
 	else
-		exports['sandbox-inventory']:WeaponsEquip(data)
+		exports.ox_inventory:WeaponsEquip(data)
 		TriggerEvent("Weapons:Client:Changed", data)
 		SetWeaponsNoAutoswap(true)
 	end
@@ -200,7 +200,7 @@ end)
 RegisterNetEvent("Weapons:Client:Remove", function(data, from, diff)
 	_interacting = true
 	if _equipped ~= nil and _equipped.Slot == from then
-		exports['sandbox-inventory']:WeaponsUnequip(data, diff)
+		exports.ox_inventory:WeaponsUnequip(data, diff)
 	end
 	_interacting = false
 end)
@@ -232,7 +232,7 @@ end)
 RegisterNetEvent("Weapons:Client:UpdateAttachments", function(components)
 	_interacting = true
 	if _equipped ~= nil then
-		local hash = exports['sandbox-inventory']:WeaponsGetEquippedHash()
+		local hash = exports.ox_inventory:WeaponsGetEquippedHash()
 		for k, v in pairs(_equipped.MetaData.WeaponComponents or {}) do
 			if components[k] == nil then
 				RemoveWeaponComponentFromPed(LocalPlayer.state.ped, hash, GetHashKey(v.attachment))
@@ -545,7 +545,7 @@ exports("WeaponsEquip", function(item)
 	end
 
 	if _equipped ~= nil then
-		exports['sandbox-inventory']:WeaponsUnequip(_equipped)
+		exports.ox_inventory:WeaponsUnequip(_equipped)
 	end
 
 	if WEAPON_PROPS[item.Name] ~= nil then
@@ -617,7 +617,7 @@ end)
 
 exports("WeaponsUnequipIfEquipped", function()
 	if _equipped ~= nil then
-		exports['sandbox-inventory']:WeaponsUnequip(_equipped)
+		exports.ox_inventory:WeaponsUnequip(_equipped)
 	end
 end)
 

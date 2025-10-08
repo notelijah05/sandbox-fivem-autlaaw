@@ -59,7 +59,7 @@ AddEventHandler('onResourceStart', function(resource)
 					exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Removing Blindfold",
 						function(isSuccess)
 							if isSuccess then
-								if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "blindfold", 1, {}, 1) then
+								if exports.ox_inventory:AddItem(char:GetData("SID"), "blindfold", 1, {}, 1) then
 									tarState.isBlindfolded = false
 									TriggerClientEvent("VOIP:Client:Gag:Use", data)
 								else
@@ -78,7 +78,7 @@ AddEventHandler('onResourceStart', function(resource)
 			end
 		end)
 
-		exports['sandbox-inventory']:RegisterUse("blindfold", "HUD", function(source, item, itemData)
+		exports.ox_inventory:RegisterUse("blindfold", "HUD", function(source, item, itemData)
 			exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
 				if target ~= nil then
 					local tarState = Player(target).state
@@ -87,7 +87,7 @@ AddEventHandler('onResourceStart', function(resource)
 							function(isSuccess)
 								if isSuccess then
 									if tarState.isCuffed then
-										if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+										if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 											tarState.isBlindfolded = true
 											TriggerClientEvent("VOIP:Client:Gag:Use", target)
 										else

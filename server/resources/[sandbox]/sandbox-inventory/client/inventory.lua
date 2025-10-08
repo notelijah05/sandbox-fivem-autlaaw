@@ -89,7 +89,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 		CreateDonorVanityItems()
 
 		exports["sandbox-base"]:RegisterClientCallback("Inventory:ForceClose", function(data, cb)
-			exports['sandbox-inventory']:CloseAll()
+			exports.ox_inventory:CloseAll()
 			cb(true)
 		end)
 
@@ -194,8 +194,8 @@ RegisterNetEvent("UI:Client:Reset", function(force)
 		_startup = false
 		LoadItems()
 	end
-	exports['sandbox-inventory']:CloseAll()
-	exports['sandbox-inventory']:Enable()
+	exports.ox_inventory:CloseAll()
+	exports.ox_inventory:Enable()
 end)
 
 RegisterNetEvent("Inventory:Client:Cache", function(inventory, refresh)
@@ -206,7 +206,7 @@ RegisterNetEvent("Inventory:Client:Open", function(inventory, inventory2)
 	if inventory ~= nil then
 		_openCd = true
 		LocalPlayer.state.inventoryOpen = true
-		exports['sandbox-inventory']:SetPlayerInventory(inventory)
+		exports.ox_inventory:SetPlayerInventory(inventory)
 		_playerDataOpen = true
 
 		if inventory2 and inventory2.crafting then
@@ -235,7 +235,7 @@ RegisterNetEvent("Inventory:Client:Open", function(inventory, inventory2)
 			end
 
 			if inventory2 ~= nil then
-				exports['sandbox-inventory']:SetSecondaryInventory(inventory2)
+				exports.ox_inventory:SetSecondaryInventory(inventory2)
 
 				SendNUIMessage({
 					type = "SET_MODE",
@@ -245,7 +245,7 @@ RegisterNetEvent("Inventory:Client:Open", function(inventory, inventory2)
 				})
 
 				_secondaryDataOpen = true
-				exports['sandbox-inventory']:OpenSecondary()
+				exports.ox_inventory:OpenSecondary()
 			else
 				_secondaryDataOpen = false
 			end
@@ -269,9 +269,9 @@ end)
 
 RegisterNetEvent("Inventory:Client:Load", function(inventory, inventory2)
 	if inventory ~= nil then
-		exports['sandbox-inventory']:SetPlayerInventory(inventory)
+		exports.ox_inventory:SetPlayerInventory(inventory)
 		if inventory2 ~= nil then
-			exports['sandbox-inventory']:SetSecondaryInventory(inventory2)
+			exports.ox_inventory:SetSecondaryInventory(inventory2)
 		end
 	else
 		LocalPlayer.state.inventoryOpen = false
@@ -292,7 +292,7 @@ end)
 
 AddEventHandler("Vehicles:Client:ExitVehicle", function()
 	if LocalPlayer.state.inventoryOpen then
-		exports['sandbox-inventory']:CloseAll()
+		exports.ox_inventory:CloseAll()
 	end
 end)
 
@@ -301,7 +301,7 @@ exports("IsEnabled", function()
 end)
 
 exports("OpenPlayer", function(doSecondary)
-	if exports['sandbox-inventory']:IsEnabled() then
+	if exports.ox_inventory:IsEnabled() then
 		exports['sandbox-phone']:Close()
 		exports['sandbox-hud']:InteractionHide()
 		if not LocalPlayer.state.inventoryOpen then
@@ -333,7 +333,7 @@ exports("CloseAll", function()
 	end
 
 	if _secondaryDataOpen then
-		exports['sandbox-inventory']:CloseSecondary()
+		exports.ox_inventory:CloseSecondary()
 	end
 end)
 
@@ -437,7 +437,7 @@ exports("ItemsGetInstance", function(item)
 end)
 
 exports("ItemsGetCount", function(item, bundleWeapons)
-	local counts = exports['sandbox-inventory']:ItemsGetCounts(bundleWeapons)
+	local counts = exports.ox_inventory:ItemsGetCounts(bundleWeapons)
 	return counts[item] or 0
 end)
 
@@ -458,7 +458,7 @@ exports("ItemsGetCounts", function(bundleWeapons)
 				or not _items[v.Name].isDestroyed
 				or (((v.CreateDate or 0) + _items[v.Name].durability) >= GetCloudTimeAsInt())
 			then
-				local itemData = exports['sandbox-inventory']:ItemsGetData(v.Name)
+				local itemData = exports.ox_inventory:ItemsGetData(v.Name)
 
 				if bundleWeapons and itemData and itemData.weapon then
 					counts[itemData.weapon] = (counts[itemData.weapon] or 0) + v.Count
@@ -485,7 +485,7 @@ exports("ItemsGetTypeCounts", function()
 				or not _items[v.Name].isDestroyed
 				or (((v.CreateDate or 0) + _items[v.Name].durability) >= GetCloudTimeAsInt())
 			then
-				local itemData = exports['sandbox-inventory']:ItemsGetData(v.Name)
+				local itemData = exports.ox_inventory:ItemsGetData(v.Name)
 				counts[itemData.type] = (counts[itemData.type] or 0) + v.Count
 			end
 		end
@@ -495,11 +495,11 @@ exports("ItemsGetTypeCounts", function()
 end)
 
 exports("ItemsHas", function(item, count, bundleWeapons)
-	return exports['sandbox-inventory']:ItemsGetCount(item, bundleWeapons) >= count
+	return exports.ox_inventory:ItemsGetCount(item, bundleWeapons) >= count
 end)
 
 exports("ItemsHasType", function(itemType, count)
-	return (exports['sandbox-inventory']:ItemsGetTypeCounts()[itemType] or 0) >= count
+	return (exports.ox_inventory:ItemsGetTypeCounts()[itemType] or 0) >= count
 end)
 
 exports("ItemsGetData", function(name)
@@ -526,12 +526,12 @@ exports("ItemsGetWithStaticMetadata", function(masterKey, mainIdName, textureIdN
 end)
 
 exports("CheckPlayerHasItem", function(item, count)
-	return exports['sandbox-inventory']:ItemsHas(item, count)
+	return exports.ox_inventory:ItemsHas(item, count)
 end)
 
 exports("CheckPlayerHasItems", function(items)
 	for k, v in ipairs(items) do
-		if not exports['sandbox-inventory']:ItemsHas(v.item, v.count, true) then
+		if not exports.ox_inventory:ItemsHas(v.item, v.count, true) then
 			return false
 		end
 	end
@@ -540,7 +540,7 @@ end)
 
 exports("CheckPlayerHasAnyItems", function(items)
 	for k, v in ipairs(items) do
-		if exports['sandbox-inventory']:ItemsHas(v.item, v.count) then
+		if exports.ox_inventory:ItemsHas(v.item, v.count) then
 			return true
 		end
 	end
@@ -662,30 +662,30 @@ end)
 
 RegisterNUICallback("SubmitAction", function(data, cb)
 	cb('OK')
-	exports['sandbox-inventory']:CloseAll()
+	exports.ox_inventory:CloseAll()
 	TriggerServerEvent("Inventory:Server:TriggerAction", data)
 end)
 
 RegisterNUICallback("Close", function(data, cb)
 	startCd()
 	cb(true)
-	exports['sandbox-inventory']:CloseAll()
-	exports['sandbox-inventory']:Enable()
+	exports.ox_inventory:CloseAll()
+	exports.ox_inventory:Enable()
 end)
 
 RegisterNUICallback("Crashed", function(data, cb)
 	startCd()
 	cb(true)
-	exports['sandbox-inventory']:CloseAll()
-	exports['sandbox-inventory']:Enable()
+	exports.ox_inventory:CloseAll()
+	exports.ox_inventory:Enable()
 	_openCd = false
 end)
 
 RegisterNUICallback("BrokeShit", function(data, cb)
 	startCd()
 	cb(true)
-	exports['sandbox-inventory']:CloseAll()
-	exports['sandbox-inventory']:Enable()
+	exports.ox_inventory:CloseAll()
+	exports.ox_inventory:Enable()
 	_openCd = false
 	exports["sandbox-hud"]:NotifError(
 		"Something Is Broken And Your Inventory Isn't Working, You May Need To Hard Nap To Fix")
@@ -723,7 +723,7 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 AddEventHandler("Ped:Client:Died", function()
-	exports['sandbox-inventory']:CloseAll()
+	exports.ox_inventory:CloseAll()
 end)
 
 AddEventHandler("Inventory:Client:Trunk", function(entity, data)
@@ -770,22 +770,22 @@ end)
 
 RegisterNetEvent("Inventory:Container:Remove", function(data, from)
 	if _container ~= nil and _container.Slot == from then
-		exports['sandbox-inventory']:CloseAll()
+		exports.ox_inventory:CloseAll()
 	end
 end)
 
 RegisterNetEvent("Inventory:Client:SetSlot", function(owner, type, slot)
 	if SecondInventory and SecondInventory.owner == owner and SecondInventory and SecondInventory.invType == type then
-		exports['sandbox-inventory']:SetSecondarySlot(slot)
+		exports.ox_inventory:SetSecondarySlot(slot)
 	else
-		exports['sandbox-inventory']:SetPlayerSlot(slot)
+		exports.ox_inventory:SetPlayerSlot(slot)
 	end
 end)
 
 local runningId = 0
 RegisterNetEvent("Inventory:Client:Changed", function(type, item, count, slot)
 	if type == "holster" then
-		local equipped = exports['sandbox-inventory']:WeaponsGetEquippedItem()
+		local equipped = exports.ox_inventory:WeaponsGetEquippedItem()
 		if equipped ~= nil and equipped.Slot == slot and equipped.Name == item then
 			type = "Holstered"
 		else
@@ -807,7 +807,7 @@ RegisterNetEvent("Inventory:Client:Changed", function(type, item, count, slot)
 end)
 
 function OpenInventory()
-	if exports['sandbox-inventory']:IsEnabled() then
+	if exports.ox_inventory:IsEnabled() then
 		local playerPed = PlayerPedId()
 		local requestSecondary = false
 		local isPedInVehicle = IsPedInAnyVehicle(playerPed, true)
@@ -834,7 +834,7 @@ function OpenInventory()
 		elseif not IsPedFalling(playerPed) and not IsPedClimbing(playerPed) and not IsPedDiving(playerPed) and not LocalPlayer.state.playingCasino then
 			if GetEntitySpeed(playerPed) < 8.0 then
 				local p = promise.new()
-				if exports['sandbox-inventory']:IsEnabled() then
+				if exports.ox_inventory:IsEnabled() then
 					exports["sandbox-base"]:ServerCallback("Inventory:CheckIfNearDropZone", {}, function(dropzone)
 						if dropzone ~= nil and not isPedInVehicle and not requestSecondary then
 							p:resolve({ invType = 10, owner = dropzone.id, position = dropzone.position })
@@ -860,7 +860,7 @@ function OpenInventory()
 			end
 		end
 
-		exports['sandbox-inventory']:OpenPlayer(requestSecondary)
+		exports.ox_inventory:OpenPlayer(requestSecondary)
 		-- if requestSecondary then
 		-- 	TriggerServerEvent("Inventory:Server:requestSecondaryInventory", SecondInventory)
 		-- end
@@ -978,12 +978,12 @@ end)
 
 RegisterNetEvent("Inventory:CloseUI", function()
 	startCd()
-	exports['sandbox-inventory']:CloseAll()
-	exports['sandbox-inventory']:Enable()
+	exports.ox_inventory:CloseAll()
+	exports.ox_inventory:Enable()
 end)
 
 RegisterNetEvent("Inventory:Client:UpdateMetadata", function(slot, md, key)
-	exports['sandbox-inventory']:UpdateCachedMD(slot, md, key)
+	exports.ox_inventory:UpdateCachedMD(slot, md, key)
 end)
 
 local _shops = {}
@@ -1163,7 +1163,7 @@ RegisterNetEvent("StoreFailedPurchase", function(data)
 end)
 
 AddEventHandler("Shop:Client:BasicShop:Open", function(obj, shopId)
-	exports['sandbox-inventory']:PlayerShopOpen(shopId)
+	exports.ox_inventory:PlayerShopOpen(shopId)
 end)
 
 AddEventHandler("Shop:Client:BasicShop:AddModerator", function(obj, shopId)

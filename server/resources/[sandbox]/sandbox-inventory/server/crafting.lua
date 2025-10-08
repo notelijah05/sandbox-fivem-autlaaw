@@ -184,13 +184,13 @@ exports("CraftingCraftStart", function(crafterSource, crafter, bench, schemId, q
 	local makingItem = recipe.result
 	local reqSlotPerItem = itemsDatabase[makingItem.name].isStackable or 1
 	local totalRequiredSlots = math.ceil((makingItem.count * qty) / reqSlotPerItem)
-	local freeSlots = exports['sandbox-inventory']:GetFreeSlotNumbers(crafter, 1)
+	local freeSlots = exports.ox_inventory:GetFreeSlotNumbers(crafter, 1)
 	if #freeSlots < totalRequiredSlots then
 		return { error = true, message = "Inventory Full" }
 	end
 
 	for k, v in pairs(reagents) do
-		if not exports['sandbox-inventory']:ItemsHas(crafter, 1, k, v) then
+		if not exports.ox_inventory:ItemsHas(crafter, 1, k, v) then
 			return { error = true, message = "Missing Ingredients" }
 		end
 	end
@@ -207,7 +207,7 @@ exports("CraftingCraftStart", function(crafterSource, crafter, bench, schemId, q
 	end
 
 	for k, v in pairs(reagents) do
-		if not exports['sandbox-inventory']:Remove(crafter, 1, k, v, true) then
+		if not exports.ox_inventory:Remove(crafter, 1, k, v, true) then
 			return false
 		end
 	end
@@ -229,7 +229,7 @@ exports("CraftingCraftStart", function(crafterSource, crafter, bench, schemId, q
 			end
 		end
 
-		if exports['sandbox-inventory']:AddItem(crafter, recipe.result.name, recipe.result.count * qty, meta, 1) then
+		if exports.ox_inventory:AddItem(crafter, recipe.result.name, recipe.result.count * qty, meta, 1) then
 			local inv = getInventory(crafterSource, crafter, 1)
 			if _types[bench].isPubSchemTable then
 				local bId = string.format("%s:%s", bench, crafter)
@@ -284,7 +284,7 @@ end)
 
 exports("CraftingSchematicsAdd", function(bench, item, stateID)
 	if _types[bench] ~= nil and _schematics[itemsDatabase[item].schematic] ~= nil then
-		if not exports['sandbox-inventory']:CraftingSchematicsHas(bench, item, stateID) then
+		if not exports.ox_inventory:CraftingSchematicsHas(bench, item, stateID) then
 			if _types[bench].isPubSchemTable then
 				if _playerSchems[stateID] == nil then
 					GetCharacterPublicSchems(stateID, true)
@@ -379,7 +379,7 @@ function RegisterCraftingCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Crafting:Craft", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			cb(exports['sandbox-inventory']:CraftingCraftStart(source, char:GetData("SID"), data.bench, data.result,
+			cb(exports.ox_inventory:CraftingCraftStart(source, char:GetData("SID"), data.bench, data.result,
 				data.qty))
 		else
 			cb(nil)
@@ -389,12 +389,12 @@ function RegisterCraftingCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Crafting:GetSchematics", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			local schems = exports['sandbox-inventory']:GetAllOfType(char:GetData("SID"), 1, 17)
+			local schems = exports.ox_inventory:GetAllOfType(char:GetData("SID"), 1, 17)
 			local list = {}
 			for k, v in pairs(schems) do
-				local itemData = exports['sandbox-inventory']:ItemsGetData(v.Name)
-				if itemData and itemData.schematic ~= nil and _schematics[itemData.schematic] ~= nil and not exports['sandbox-inventory']:CraftingSchematicsHas(data.id, itemData.schematic, char:GetData("SID")) then
-					local result = exports['sandbox-inventory']:ItemsGetData(_schematics[itemData.schematic].result.name)
+				local itemData = exports.ox_inventory:ItemsGetData(v.Name)
+				if itemData and itemData.schematic ~= nil and _schematics[itemData.schematic] ~= nil and not exports.ox_inventory:CraftingSchematicsHas(data.id, itemData.schematic, char:GetData("SID")) then
+					local result = exports.ox_inventory:ItemsGetData(_schematics[itemData.schematic].result.name)
 					if result ~= nil then
 						table.insert(list, {
 							label = itemData.label,
@@ -416,7 +416,7 @@ function RegisterCraftingCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Crafting:UseSchematic", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			if exports['sandbox-inventory']:ItemsHasId(char:GetData("SID"), 1, data.schematic.id) then
+			if exports.ox_inventory:ItemsHasId(char:GetData("SID"), 1, data.schematic.id) then
 				local bench = _types[data.bench]
 				if bench ~= nil then
 					if
@@ -445,8 +445,8 @@ function RegisterCraftingCallbacks()
 							)
 						)
 					then
-						if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, data.schematic) then
-							if exports['sandbox-inventory']:CraftingSchematicsAdd(data.bench, data.schematic.Name, char:GetData("SID")) then
+						if exports.ox_inventory:RemoveId(char:GetData("SID"), 1, data.schematic) then
+							if exports.ox_inventory:CraftingSchematicsAdd(data.bench, data.schematic.Name, char:GetData("SID")) then
 								TriggerClientEvent("Crafting:Client:ForceBenchRefresh", source)
 								cb(true)
 							else
@@ -484,7 +484,7 @@ end)
 
 function RegisterTestBench()
 	for k, v in ipairs(CraftingTables) do
-		exports['sandbox-inventory']:CraftingRegisterBench(
+		exports.ox_inventory:CraftingRegisterBench(
 			string.format("crafting-%s", k),
 			v.label,
 			v.targetConfig,
@@ -497,7 +497,7 @@ end
 
 function RegisterPublicSchematicBenches()
 	for k, v in ipairs(PublicSchematicTables) do
-		exports['sandbox-inventory']:CraftingRegisterBench(
+		exports.ox_inventory:CraftingRegisterBench(
 			string.format("public-%s", v.id),
 			"Use Tool Bench",
 			v.targetConfig,

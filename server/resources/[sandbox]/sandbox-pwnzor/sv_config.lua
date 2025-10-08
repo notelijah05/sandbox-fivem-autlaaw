@@ -226,7 +226,6 @@ Config = {
 		["sandbox-commands"] = true,
 		["sandbox-escort"] = true,
 		["sandbox-hud"] = true,
-		["sandbox-inventory"] = true,
 		["sandbox-menu"] = true,
 		["sandbox-police"] = true,
 		["sandbox-phone"] = true,

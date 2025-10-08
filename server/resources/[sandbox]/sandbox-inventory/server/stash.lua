@@ -3,7 +3,7 @@ function RegisterStashCallbacks()
 		if GlobalState[string.format("%s:Property", source)] ~= nil then
 			local pid = GlobalState[string.format("%s:Property", source)]
 			if not _openInvs[string.format("%s-%s", 13, pid)] then
-				exports['sandbox-inventory']:StashOpen(source, 13, pid)
+				exports.ox_inventory:StashOpen(source, 13, pid)
 				cb({ type = 13, owner = string.format("stash:%s", pid) })
 			else
 				cb(nil)
@@ -18,7 +18,7 @@ function RegisterStashCallbacks()
 		if shopLocations[k] ~= nil then
 			local entId = shopLocations[k].entityId
 			if not _openInvs[string.format("%s-%s", entId, data.identifier)] then
-				exports['sandbox-inventory']:OpenSecondary(source, entId, ("shop:%s"):format(data.identifier))
+				exports.ox_inventory:OpenSecondary(source, entId, ("shop:%s"):format(data.identifier))
 				cb(entId)
 			else
 				cb(false)
@@ -31,7 +31,7 @@ function RegisterStashCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:Open", function(source, data, cb)
 		if not _openInvs[string.format("%s-%s", data.invType, data.owner)] then
 			if entityPermCheck(source, data.invType) then
-				exports['sandbox-inventory']:OpenSecondary(source, data.invType, data.owner, data.class or false,
+				exports.ox_inventory:OpenSecondary(source, data.invType, data.owner, data.class or false,
 					data.model or false)
 				cb(true)
 			else
@@ -45,7 +45,7 @@ function RegisterStashCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("PlayerShop:Server:Open", function(source, data, cb)
 		if _playerShops[data.id] then
 			if not _openInvs[string.format("200-%s", data.id)] then
-				exports['sandbox-inventory']:OpenSecondary(source, 200, data.id)
+				exports.ox_inventory:OpenSecondary(source, 200, data.id)
 				cb(200)
 			else
 				cb(false)

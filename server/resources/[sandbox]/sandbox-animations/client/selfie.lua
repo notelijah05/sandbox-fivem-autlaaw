@@ -30,7 +30,7 @@ function StartSelfieMode()
 			.. string.format("Camera - Press %s to cancel", exports["sandbox-keybinds"]:GetKey("emote_cancel")),
 			"camera"
 		)
-		exports['sandbox-inventory']:Disable()
+		exports.ox_inventory:Disable()
 		exports['sandbox-hud']:Hide()
 		DestroyMobilePhone()
 		Wait(10)
@@ -47,7 +47,7 @@ function StopSelfieMode()
 		Wait(10)
 		CellCamDisableThisFrame(false)
 		CellCamActivate(false, false)
-		exports['sandbox-inventory']:Enable()
+		exports.ox_inventory:Enable()
 		exports['sandbox-hud']:Show()
 		_selfie = false
 		_frontie = true

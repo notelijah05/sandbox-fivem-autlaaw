@@ -32,7 +32,7 @@ function Startup()
 				-- )
 
 				if bench.targeting.manual then
-					exports['sandbox-inventory']:CraftingRegisterBench(string.format("%s-%s", v.Job, benchId),
+					exports.ox_inventory:CraftingRegisterBench(string.format("%s-%s", v.Job, benchId),
 						bench.label, bench.targeting, {}, {
 							job = {
 								id = v.Job,
@@ -40,7 +40,7 @@ function Startup()
 							},
 						}, bench.recipes)
 				else
-					exports['sandbox-inventory']:CraftingRegisterBench(string.format("%s-%s", k, benchId), bench.label,
+					exports.ox_inventory:CraftingRegisterBench(string.format("%s-%s", k, benchId), bench.label,
 						bench.targeting, {
 							x = 0,
 							y = 0,
@@ -62,7 +62,7 @@ function Startup()
 				-- 	"Businesses",
 				-- 	string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", storage.id, v.Name)
 				-- )
-				exports['sandbox-inventory']:PolyCreate(storage)
+				exports.ox_inventory:PolyCreate(storage)
 			end
 		end
 

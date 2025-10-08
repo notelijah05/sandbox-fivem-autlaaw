@@ -606,23 +606,23 @@ AddEventHandler("Robbery:Server:Setup", function()
 		then
 			_cRegisterCooldowns[source] = os.time() + 5
 			if data.results then
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_registerLoot, char:GetData("SID"), 1)
+				exports.ox_inventory:LootCustomWeightedSetWithCount(_registerLoot, char:GetData("SID"), 1)
 				exports['sandbox-finance']:WalletModify(source, (math.random(150) + 100))
 				cb(true)
 			else
-				exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "lockpick", 1)
+				exports.ox_inventory:Remove(char:GetData("SID"), 1, "lockpick", 1)
 
-				local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "lockpick", 1)
+				local slot = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "lockpick", 1)
 				if slot ~= nil then
-					local itemData = exports['sandbox-inventory']:ItemsGetData("lockpick")
+					local itemData = exports.ox_inventory:ItemsGetData("lockpick")
 					local newValue = slot.CreateDate - math.ceil(itemData.durability / 2)
 					if success then
 						newValue = slot.CreateDate - math.ceil(itemData.durability / 8)
 					end
 					if os.time() - itemData.durability >= newValue then
-						exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+						exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+						exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 
@@ -678,10 +678,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if not _storeInUse[pState.storePoly] then
 						_storeInUse[pState.storePoly] = source
-						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "safecrack_kit", 1)
+						local slot = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "safecrack_kit", 1)
 
 						if slot ~= nil then
-							local itemData = exports['sandbox-inventory']:ItemsGetData(slot.Name)
+							local itemData = exports.ox_inventory:ItemsGetData(slot.Name)
 
 							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
@@ -708,13 +708,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 								},
 								data = {},
 							}, function(isSuccess, extra)
-								local itemData = exports['sandbox-inventory']:ItemsGetData("safecrack_kit")
+								local itemData = exports.ox_inventory:ItemsGetData("safecrack_kit")
 
 								local newValue = slot.CreateDate - math.ceil(itemData.durability / 2)
 								if os.time() - itemData.durability >= newValue then
-									exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
+									exports.ox_inventory:RemoveId(char:GetData("SID"), 1, slot)
 								else
-									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+									exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if isSuccess then
@@ -956,16 +956,16 @@ AddEventHandler("Robbery:Server:Setup", function()
 			_robbedSafes[data.id].expires = (os.time() + 60 * math.random(30, 60))
 			GlobalState[string.format("Safe:%s", data.id)] = _robbedSafes[data.id]
 
-			exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_safeLoot, char:GetData("SID"), 1)
+			exports.ox_inventory:LootCustomWeightedSetWithCount(_safeLoot, char:GetData("SID"), 1)
 
 			if math.random(100) <= 5 then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+				exports.ox_inventory:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
+				exports.ox_inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 					CryptoCoin = "HEIST",
 					Quantity = 2,
 				}, 1)
 			elseif math.random(100) <= 15 then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "gps_tracker", 1, {}, 1)
+				exports.ox_inventory:AddItem(char:GetData("SID"), "gps_tracker", 1, {}, 1)
 			end
 
 			exports['sandbox-base']:LoggerInfo(

@@ -88,7 +88,7 @@ function PrivatePlateStuff(char, source, itemData)
             vehState.RegisteredPlate = newPlate
 
             exports['sandbox-vehicles']:OwnedForceSave(vehState.VIN)
-            exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
+            exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 
             exports['sandbox-hud']:NotifSuccess(source, "Personal Plate Setup")
             exports['sandbox-base']:LoggerInfo('Vehicles',
@@ -100,7 +100,7 @@ function PrivatePlateStuff(char, source, itemData)
 end
 
 function RegisterPersonalPlateCallbacks()
-    exports['sandbox-inventory']:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
+    exports.ox_inventory:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or (Player(source).state.onDuty ~= "government" and Player(source).state.onDuty ~= "dgang") then
             exports['sandbox-hud']:NotifError(source, "Error")
@@ -110,7 +110,7 @@ function RegisterPersonalPlateCallbacks()
         PrivatePlateStuff(char, source, itemData)
     end)
 
-    exports['sandbox-inventory']:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
+    exports.ox_inventory:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char then
             exports['sandbox-hud']:NotifError(source, "Error")
@@ -206,7 +206,7 @@ function RegisterPersonalPlateCallbacks()
                 local isRemoved = exports['sandbox-vehicles']:DonatorPlatesRemove(plyr:GetData("Identifier"), data)
 
                 if isRemoved then
-                    exports['sandbox-inventory']:AddItem(char:GetData("SID"), "personal_plates_donator", data, {}, 1)
+                    exports.ox_inventory:AddItem(char:GetData("SID"), "personal_plates_donator", data, {}, 1)
                     cb(true)
 
                     exports['sandbox-base']:LoggerWarn(
