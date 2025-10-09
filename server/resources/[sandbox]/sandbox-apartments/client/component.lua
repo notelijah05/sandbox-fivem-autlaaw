@@ -428,3 +428,12 @@ end)
 RegisterNetEvent("Apartment:Client:Enter", function(targetType, target, wakeUp)
 	exports['sandbox-apartments']:ClientEnter(targetType, target, wakeUp)
 end)
+
+AddEventHandler("Characters:Client:Logout", function()
+	for k, v in pairs(_apartmentZones) do
+		if exports.ox_target:zoneExists(v) then
+			exports.ox_target:removeZone(v)
+		end
+		_apartmentZones[k] = nil
+	end
+end)
