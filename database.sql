@@ -200,6 +200,7 @@ CREATE TABLE IF NOT EXISTS `changelogs` (
 
 DROP TABLE IF EXISTS `characters`;
 CREATE TABLE IF NOT EXISTS `characters` (
+  `License` varchar(255) DEFAULT NULL,
   `User` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `SID` int(11) NOT NULL AUTO_INCREMENT,
   `First` varchar(255) DEFAULT NULL,

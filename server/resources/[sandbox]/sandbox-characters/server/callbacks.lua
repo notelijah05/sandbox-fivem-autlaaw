@@ -78,6 +78,7 @@ function RegisterCallbacks()
 				}
 			)
 			table.insert(cData, {
+				License = v.License,
 				ID = v.SID,
 				First = v.First,
 				Last = v.Last,
@@ -100,7 +101,31 @@ function RegisterCallbacks()
 		local player = exports['sandbox-base']:FetchSource(source)
 
 		local pNumber = exports['sandbox-phone']:GeneratePhoneNumber()
+		local playerIdentifiers = GetPlayerIdentifiers(source)
+		local prioritizedIdentifier = nil -- If Steam ID is available, save that as character license because it's short and simple
+
+		for _, id in ipairs(playerIdentifiers) do
+			if string.sub(id, 1, string.len("steam:")) == "steam:" then
+				prioritizedIdentifier = id
+				break
+			end
+		end
+
+		if not prioritizedIdentifier then
+			for _, id in ipairs(playerIdentifiers) do
+				if string.sub(id, 1, string.len("license:")) == "license:" then
+					prioritizedIdentifier = id
+					break
+				end
+			end
+		end
+
+		if not prioritizedIdentifier then
+			prioritizedIdentifier = player:GetData("Identifier")
+		end
+
 		local doc = {
+			License = prioritizedIdentifier,
 			User = player:GetData("AccountID"),
 			First = data.first,
 			Last = data.last,
