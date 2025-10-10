@@ -506,13 +506,6 @@ CREATE TABLE IF NOT EXISTS `firearms_flags` (
   KEY `serial` (`serial`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-CREATE TABLE IF NOT EXISTS `inventory` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `owner` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  `type` int(11) unsigned NOT NULL DEFAULT 0,
-  `slot` int(11) NOT NULL,
-  `item_id` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  `quality` int(11) NOT NULL DEFAULT 0,
 DROP TABLE IF EXISTS `mdt_charges`;
 CREATE TABLE IF NOT EXISTS `mdt_charges` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -888,13 +881,6 @@ CREATE TABLE IF NOT EXISTS `placed_props` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
-CREATE TABLE IF NOT EXISTS `player_shops` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `ped_model` varchar(256) DEFAULT NULL,
-  `position` text NOT NULL,
-  `owner` int(10) unsigned NOT NULL,
-  `owner_bank` int(11) NOT NULL,
 DROP TABLE IF EXISTS `redline_racer_history`;
 CREATE TABLE IF NOT EXISTS `redline_racer_history` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
