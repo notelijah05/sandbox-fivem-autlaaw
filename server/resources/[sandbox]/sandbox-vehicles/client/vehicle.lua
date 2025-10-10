@@ -144,7 +144,7 @@ end)
 exports("EngineOff", function(customMessage)
 	local vehEnt = Entity(VEHICLE_INSIDE)
 	exports['sandbox-vehicles']:EngineForce(VEHICLE_INSIDE, false)
-	exports["sandbox-hud"]:NotifInfo(customMessage and customMessage or 'Engine Turned Off', 1500, 'engine')
+	exports["sandbox-hud"]:NotifInfo(customMessage and customMessage or 'Engine Turned Off', 1500, 'car')
 
 	if exports['sandbox-vehicles']:KeysHas(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
 		exports['sandbox-hud']:ActionShow('engine', '{keybind}toggle_engine{/keybind} Turn Engine On')
@@ -157,7 +157,7 @@ exports("EngineOn", function()
 
 	if exports['sandbox-vehicles']:KeysHas(vehEnt.state.VIN, vehEnt.state.GroupKeys) then
 		exports['sandbox-vehicles']:EngineForce(VEHICLE_INSIDE, true)
-		exports["sandbox-hud"]:NotifInfo('Engine Turned On', 1500, 'engine')
+		exports["sandbox-hud"]:NotifInfo('Engine Turned On', 1500, 'car-on')
 	else
 		exports["sandbox-hud"]:NotifError('You Don\'t Have Keys For This Vehicle', 3000, 'key')
 	end
