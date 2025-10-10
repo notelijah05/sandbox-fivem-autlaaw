@@ -230,7 +230,6 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `CryptoWallet` varchar(255) DEFAULT NULL,
   `HP` int(11) DEFAULT 200,
   `HPReductions` int(11) DEFAULT 0,
-  `InventorySettings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `States` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `Callsign` varchar(255) DEFAULT NULL,
   `MDTHistory` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
@@ -507,7 +506,6 @@ CREATE TABLE IF NOT EXISTS `firearms_flags` (
   KEY `serial` (`serial`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-DROP TABLE IF EXISTS `inventory`;
 CREATE TABLE IF NOT EXISTS `inventory` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `owner` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -515,68 +513,6 @@ CREATE TABLE IF NOT EXISTS `inventory` (
   `slot` int(11) NOT NULL,
   `item_id` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `quality` int(11) NOT NULL DEFAULT 0,
-  `information` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `creationDate` bigint(20) NOT NULL DEFAULT 0,
-  `expiryDate` bigint(20) NOT NULL DEFAULT -1,
-  `price` int(11) unsigned NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `item_id_only` (`item_id`),
-  KEY `expiryDate` (`expiryDate`),
-  KEY `owner` (`owner`,`type`) USING BTREE,
-  KEY `type` (`type`) USING BTREE,
-  KEY `owner_type_itemid` (`owner`,`type`,`item_id`) USING BTREE,
-  KEY `itemidslotname` (`owner`,`type`,`slot`,`item_id`) USING BTREE,
-  KEY `owner_type_slot` (`owner`,`type`,`slot`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=353 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-DROP TABLE IF EXISTS `inventory_shop_logs`;
-CREATE TABLE IF NOT EXISTS `inventory_shop_logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` datetime NOT NULL DEFAULT current_timestamp(),
-  `inventory` varchar(255) NOT NULL DEFAULT '0',
-  `item` varchar(255) NOT NULL DEFAULT '0',
-  `count` int(11) NOT NULL DEFAULT 0,
-  `itemId` bigint(20) DEFAULT NULL,
-  `buyer` int(11) NOT NULL DEFAULT 0,
-  `metadata` varchar(512) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-DROP TABLE IF EXISTS `item_template`;
-CREATE TABLE IF NOT EXISTS `item_template` (
-  `name` char(64) CHARACTER SET big5 COLLATE big5_bin NOT NULL,
-  `label` varchar(128) NOT NULL,
-  `description` varchar(256) DEFAULT NULL,
-  `type` int(11) NOT NULL,
-  `rarity` int(11) NOT NULL,
-  `iconOverride` varchar(256) DEFAULT NULL,
-  `price` int(10) unsigned NOT NULL DEFAULT 0,
-  `weapon` varchar(256) DEFAULT NULL,
-  `state` varchar(256) DEFAULT NULL,
-  `weight` int(10) unsigned NOT NULL DEFAULT 0,
-  `imitate` char(64) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
-  `isStackable` int(10) unsigned DEFAULT NULL,
-  `closeUi` tinyint(1) NOT NULL DEFAULT 0,
-  `metalic` tinyint(1) NOT NULL DEFAULT 0,
-  `durability` bigint(20) unsigned DEFAULT NULL,
-  `isUsable` tinyint(1) NOT NULL DEFAULT 0,
-  `isDestroyed` tinyint(1) NOT NULL DEFAULT 0,
-  `isRemoved` tinyint(1) NOT NULL DEFAULT 0,
-  `gun` tinyint(1) NOT NULL DEFAULT 0,
-  `requiresLicense` tinyint(1) NOT NULL DEFAULT 0,
-  `qualification` varchar(32) DEFAULT NULL,
-  `ammoType` varchar(32) DEFAULT NULL,
-  `bulletCount` int(10) unsigned DEFAULT NULL,
-  `container` int(10) unsigned DEFAULT NULL,
-  `staticMetadata` longtext DEFAULT NULL,
-  `component` longtext DEFAULT NULL,
-  `animConfig` longtext DEFAULT NULL,
-  `statusChange` longtext DEFAULT NULL,
-  `extra` longtext DEFAULT NULL,
-  `schematic` varchar(64) DEFAULT NULL,
-  PRIMARY KEY (`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
-
 DROP TABLE IF EXISTS `mdt_charges`;
 CREATE TABLE IF NOT EXISTS `mdt_charges` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -952,7 +888,6 @@ CREATE TABLE IF NOT EXISTS `placed_props` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
-DROP TABLE IF EXISTS `player_shops`;
 CREATE TABLE IF NOT EXISTS `player_shops` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL,
@@ -960,18 +895,6 @@ CREATE TABLE IF NOT EXISTS `player_shops` (
   `position` text NOT NULL,
   `owner` int(10) unsigned NOT NULL,
   `owner_bank` int(11) NOT NULL,
-  `job` varchar(64) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-DROP TABLE IF EXISTS `player_shops_moderators`;
-CREATE TABLE IF NOT EXISTS `player_shops_moderators` (
-  `shop` int(10) unsigned NOT NULL,
-  `name` varchar(512) DEFAULT NULL,
-  `sid` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`shop`,`sid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
 DROP TABLE IF EXISTS `redline_racer_history`;
 CREATE TABLE IF NOT EXISTS `redline_racer_history` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

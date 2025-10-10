@@ -2,6 +2,8 @@ local Inventory = require 'modules.inventory.server'
 local ItemList = require 'modules.items.shared'
 local Items = require 'modules.items.server'
 
+_polyInvs = {}
+
 AddEventHandler("onResourceStart", function(resource)
     if resource ~= GetCurrentResourceName() then return end
     RegisterRandomItems()
@@ -799,7 +801,6 @@ exports('GetAllOfTypeNoStack', function(Owner, invType, itemType)
 end)
 
 exports('RegisterUse', function(name, id, cb)
-    print('RegisterUse', name, id, cb)
     if not itemUseContext[name] then
         itemUseContext[name] = {}
         itemUseContext[name][id] = cb
@@ -892,6 +893,11 @@ end)
 
 exports('Rob', function(src, tSrc, id)
     exports.ox_inventory:forceOpenInventory(src, 'player', tSrc)
+end)
+
+exports("PolyCreate", function(data)
+    table.insert(_polyInvs, data.id)
+    GlobalState[string.format("Inventory:%s", data.id)] = data
 end)
 
 function RegisterRandomItems()

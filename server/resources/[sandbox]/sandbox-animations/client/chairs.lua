@@ -53,7 +53,7 @@ AddEventHandler("Animations:Client:Chair", function(response)
 
 		local positioning
 		local heading = 0.0
-		local data = response.data
+		local data = response
 
 		if data.polyzone then
 			positioning = vector3(
