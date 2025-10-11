@@ -69,7 +69,7 @@ function SaveVehicle(VIN)
 
         veh:SetData('DirtLevel', GetVehicleDirtLevel(vehEnt))
 
-        veh:SetData('Fuel', vehState.Fuel)
+        veh:SetData('Fuel', tonumber(vehState.Fuel))
         veh:SetData('Damage', vehState.Damage)
         veh:SetData('DamagedParts', vehState.DamagedParts)
         veh:SetData('Mileage', vehState.Mileage)
@@ -98,9 +98,87 @@ function SaveVehicle(VIN)
 
         veh:SetData('LastSave', os.time())
 
+        local updateData = {
+            Type = data.Type or 0,
+            Make = data.Make or 'Unknown',
+            Model = data.Model or 'Unknown',
+            RegisteredPlate = data.RegisteredPlate or '',
+            OwnerType = data.Owner and data.Owner.Type or data.OwnerType or 0,
+            OwnerId = data.Owner and data.Owner.Id or data.OwnerId or 0,
+            OwnerWorkplace = data.Owner and data.Owner.Workplace or data.OwnerWorkplace or false,
+            StorageType = data.Storage and data.Storage.Type or data.StorageType or 0,
+            StorageId = data.Storage and data.Storage.Id or data.StorageId or 0,
+            FirstSpawn = data.FirstSpawn or false,
+            Mileage = data.Mileage or 0,
+            Fuel = tonumber(data.Fuel) or 100,
+            DirtLevel = math.min(math.max(data.DirtLevel or 0, 0), 10.0),
+            Value = data.Value or 0,
+            Class = data.Class or 'Unknown',
+            Vehicle = data.Vehicle or 0,
+            FakePlate = data.FakePlate or false,
+            RegistrationDate = data.RegistrationDate or os.time(),
+            Damage = json.encode(data.Damage or {}),
+            DamagedParts = json.encode(data.DamagedParts or {}),
+            Polish = json.encode(data.Polish or {}),
+            PurgeColor = json.encode(data.PurgeColor or {}),
+            PurgeLocation = data.PurgeLocation or '',
+            Harness = data.Harness or 0,
+            Nitrous = data.Nitrous or 0,
+            NeonsDisabled = data.NeonsDisabled or false,
+            WheelFitment = json.encode(data.WheelFitment or {}),
+            Donator = data.Donator or false,
+            Seized = data.Seized or false,
+            SeizedTime = data.SeizedTime or false,
+            Properties = json.encode(data.Properties or {}),
+            LastSave = os.time()
+        }
+
         local success = MySQL.update.await(
-            "UPDATE vehicles SET Properties = ?, LastSave = ? WHERE VIN = ?",
-            { json.encode(data), os.time(), VIN }
+            "UPDATE vehicles SET " ..
+            "Type = ?, Make = ?, Model = ?, RegisteredPlate = ?, " ..
+            "OwnerType = ?, OwnerId = ?, OwnerWorkplace = ?, " ..
+            "StorageType = ?, StorageId = ?, " ..
+            "FirstSpawn = ?, Mileage = ?, Fuel = ?, DirtLevel = ?, " ..
+            "Value = ?, Class = ?, Vehicle = ?, FakePlate = ?, RegistrationDate = ?, " ..
+            "Damage = ?, DamagedParts = ?, Polish = ?, PurgeColor = ?, " ..
+            "PurgeLocation = ?, Harness = ?, Nitrous = ?, NeonsDisabled = ?, " ..
+            "WheelFitment = ?, Donator = ?, Seized = ?, SeizedTime = ?, " ..
+            "Properties = ?, LastSave = ? WHERE VIN = ?",
+            {
+                updateData.Type,
+                updateData.Make,
+                updateData.Model,
+                updateData.RegisteredPlate,
+                updateData.OwnerType,
+                updateData.OwnerId,
+                updateData.OwnerWorkplace,
+                updateData.StorageType,
+                updateData.StorageId,
+                updateData.FirstSpawn,
+                updateData.Mileage,
+                updateData.Fuel,
+                updateData.DirtLevel,
+                updateData.Value,
+                updateData.Class,
+                updateData.Vehicle,
+                updateData.FakePlate,
+                updateData.RegistrationDate,
+                updateData.Damage,
+                updateData.DamagedParts,
+                updateData.Polish,
+                updateData.PurgeColor,
+                updateData.PurgeLocation,
+                updateData.Harness,
+                updateData.Nitrous,
+                updateData.NeonsDisabled,
+                updateData.WheelFitment,
+                updateData.Donator,
+                updateData.Seized,
+                updateData.SeizedTime,
+                updateData.Properties,
+                updateData.LastSave,
+                VIN
+            }
         )
 
         return success
@@ -313,7 +391,11 @@ exports("OwnedAdd",
             }
 
             local success = MySQL.insert.await(
-                "INSERT INTO vehicles (VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, Properties, Created, LastSave) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), FROM_UNIXTIME(?))",
+                "INSERT INTO vehicles (VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, " ..
+                "FirstSpawn, Mileage, Fuel, DirtLevel, Value, Class, Vehicle, FakePlate, RegistrationDate, " ..
+                "Damage, DamagedParts, Polish, PurgeColor, PurgeLocation, Harness, Nitrous, NeonsDisabled, " ..
+                "WheelFitment, Donator, Seized, SeizedTime, Properties, Created, LastSave) " ..
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), FROM_UNIXTIME(?))",
                 {
                     VIN,
                     vehicleType,
@@ -325,7 +407,28 @@ exports("OwnedAdd",
                     ownerData.Workplace,
                     storageData and storageData.Type or 0,
                     storageData and storageData.Id or 0,
-                    json.encode(doc),
+                    doc.FirstSpawn or false,
+                    doc.Mileage or 0,
+                    doc.Fuel or 100,
+                    math.min(math.max(doc.DirtLevel or 0, 0), 10.0),
+                    doc.Value or 0,
+                    doc.Class or 'Unknown',
+                    doc.Vehicle or 0,
+                    doc.FakePlate or false,
+                    doc.RegistrationDate or os.time(),
+                    json.encode(doc.Damage or {}),
+                    json.encode(doc.DamagedParts or {}),
+                    json.encode(doc.Polish or {}),
+                    json.encode(doc.PurgeColor or {}),
+                    doc.PurgeLocation or '',
+                    doc.Harness or 0,
+                    doc.Nitrous or 0,
+                    doc.NeonsDisabled or false,
+                    json.encode(doc.WheelFitment or {}),
+                    doc.Donator or false,
+                    doc.Seized or false,
+                    doc.SeizedTime or false,
+                    json.encode(doc.Properties or {}),
                     os.time(),
                     os.time()
                 }
@@ -351,17 +454,53 @@ end)
 
 exports("OwnedGetVIN", function(VIN, cb)
     local vehicle = MySQL.single.await(
-        "SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, Properties, ModelType FROM vehicles WHERE VIN = ?",
+        "SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, " ..
+        "FirstSpawn, Mileage, Fuel, DirtLevel, Value, Class, Vehicle, FakePlate, RegistrationDate, " ..
+        "Damage, DamagedParts, Polish, PurgeColor, PurgeLocation, Harness, Nitrous, NeonsDisabled, " ..
+        "WheelFitment, Donator, Seized, SeizedTime, Properties, ModelType FROM vehicles WHERE VIN = ?",
         { VIN }
     )
 
     if vehicle then
+        if vehicle.Damage and vehicle.Damage ~= "" then
+            local success, damage = pcall(json.decode, vehicle.Damage)
+            if success and damage then
+                vehicle.Damage = damage
+            end
+        end
+
+        if vehicle.DamagedParts and vehicle.DamagedParts ~= "" then
+            local success, damagedParts = pcall(json.decode, vehicle.DamagedParts)
+            if success and damagedParts then
+                vehicle.DamagedParts = damagedParts
+            end
+        end
+
+        if vehicle.Polish and vehicle.Polish ~= "" then
+            local success, polish = pcall(json.decode, vehicle.Polish)
+            if success and polish then
+                vehicle.Polish = polish
+            end
+        end
+
+        if vehicle.PurgeColor and vehicle.PurgeColor ~= "" then
+            local success, purgeColor = pcall(json.decode, vehicle.PurgeColor)
+            if success and purgeColor then
+                vehicle.PurgeColor = purgeColor
+            end
+        end
+
+        if vehicle.WheelFitment and vehicle.WheelFitment ~= "" then
+            local success, wheelFitment = pcall(json.decode, vehicle.WheelFitment)
+            if success and wheelFitment then
+                vehicle.WheelFitment = wheelFitment
+            end
+        end
+
         if vehicle.Properties and vehicle.Properties ~= "" then
             local success, properties = pcall(json.decode, vehicle.Properties)
             if success and properties then
-                for k, v in pairs(properties) do
-                    vehicle[k] = v
-                end
+                vehicle.Properties = properties
             end
         end
 
@@ -438,7 +577,10 @@ exports("OwnedGetAll",
         end
 
         local results = MySQL.query.await(
-            "SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, Properties FROM vehicles " ..
+            "SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, " ..
+            "FirstSpawn, Mileage, Fuel, DirtLevel, Value, Class, Vehicle, FakePlate, RegistrationDate, " ..
+            "Damage, DamagedParts, Polish, PurgeColor, PurgeLocation, Harness, Nitrous, NeonsDisabled, " ..
+            "WheelFitment, Donator, Seized, SeizedTime, Properties FROM vehicles " ..
             whereClause,
             params
         )
@@ -447,10 +589,45 @@ exports("OwnedGetAll",
             local vehicles = {}
             for k, v in ipairs(results) do
                 if not ignoreSpawned or (ignoreSpawned and not exports['sandbox-vehicles']:OwnedGetActive(v.VIN)) then
-                    if v.Properties then
-                        local properties = json.decode(v.Properties) or {}
-                        for propKey, propValue in pairs(properties) do
-                            v[propKey] = propValue
+                    if v.Damage and v.Damage ~= "" then
+                        local success, damage = pcall(json.decode, v.Damage)
+                        if success and damage then
+                            v.Damage = damage
+                        end
+                    end
+
+                    if v.DamagedParts and v.DamagedParts ~= "" then
+                        local success, damagedParts = pcall(json.decode, v.DamagedParts)
+                        if success and damagedParts then
+                            v.DamagedParts = damagedParts
+                        end
+                    end
+
+                    if v.Polish and v.Polish ~= "" then
+                        local success, polish = pcall(json.decode, v.Polish)
+                        if success and polish then
+                            v.Polish = polish
+                        end
+                    end
+
+                    if v.PurgeColor and v.PurgeColor ~= "" then
+                        local success, purgeColor = pcall(json.decode, v.PurgeColor)
+                        if success and purgeColor then
+                            v.PurgeColor = purgeColor
+                        end
+                    end
+
+                    if v.WheelFitment and v.WheelFitment ~= "" then
+                        local success, wheelFitment = pcall(json.decode, v.WheelFitment)
+                        if success and wheelFitment then
+                            v.WheelFitment = wheelFitment
+                        end
+                    end
+
+                    if v.Properties and v.Properties ~= "" then
+                        local success, properties = pcall(json.decode, v.Properties)
+                        if success and properties then
+                            v.Properties = properties
                         end
                     end
 
@@ -502,7 +679,7 @@ exports("OwnedSpawn", function(source, VIN, coords, heading, cb, extraData)
                 vehState.PlayerDriven = true
                 vehState.VIN = vehicle.VIN
                 vehState.RegisteredPlate = vehicle.RegisteredPlate
-                vehState.Fuel = vehicle.Fuel
+                vehState.Fuel = tonumber(vehicle.Fuel) or 100
                 vehState.Locked = true
                 SetVehicleDoorsLocked(spawnedVehicle, 2)
 
@@ -587,6 +764,91 @@ exports("OwnedSpawn", function(source, VIN, coords, heading, cb, extraData)
                 local vehicleStore = exports['sandbox-vehicles']:StoresCreate(vehicle.VIN, vehicle)
 
                 vehicleStore:SetData('EntityId', spawnedVehicle)
+
+                if vehicle.Properties then
+                    vehicleStore:SetData('Properties', vehicle.Properties)
+                else
+                    local defaultProperties = {
+                        windowTint = -1,
+                        plateIndex = 0,
+                        wheels = 7,
+                        interiorColor = 111,
+                        wheelColor = 0,
+                        color2 = { r = 8, g = 8, b = 8 },
+                        pearlescentColor = 16,
+                        tyreSmokeColor = { r = 255, g = 255, b = 255 },
+                        livery = -1,
+                        neonColor = { r = 255, g = 255, b = 255 },
+                        mods = {
+                            trimB = -1,
+                            sideSkirt = -1,
+                            brakes = -1,
+                            doorSpeaker = -1,
+                            windows = -1,
+                            vanityPlate = -1,
+                            airFilter = -1,
+                            xenonColor = 255,
+                            roof = -1,
+                            frontWheels = -1,
+                            frame = -1,
+                            exhaust = -1,
+                            suspension = -1,
+                            grille = -1,
+                            steeringWheel = -1,
+                            spoilers = -1,
+                            transmission = -1,
+                            aerials = -1,
+                            seats = -1,
+                            engine = -1,
+                            tank = -1,
+                            dashboard = -1,
+                            dial = -1,
+                            rearBumper = -1,
+                            frontBumper = -1,
+                            struts = -1,
+                            customTiresR = false,
+                            rightFender = -1,
+                            trunk = -1,
+                            horns = -1,
+                            hood = -1,
+                            archCover = -1,
+                            customTiresF = false,
+                            ornaments = -1,
+                            xenon = false,
+                            shifterLeavers = -1,
+                            armor = -1,
+                            fender = -1,
+                            hydrolic = -1,
+                            backWheels = -1,
+                            plateHolder = -1,
+                            speakers = -1,
+                            turbo = false,
+                            aPlate = -1,
+                            engineBlock = -1,
+                            trimA = -1
+                        },
+                        paintType = { 0, 0 },
+                        color1 = { r = 8, g = 8, b = 8 },
+                        extras = {
+                            [0] = false,
+                            [1] = false,
+                            [2] = false,
+                            [3] = false,
+                            [4] = false,
+                            [5] = false,
+                            [6] = false,
+                            [7] = false,
+                            [8] = false,
+                            [9] = false,
+                            [10] = false,
+                            [11] = false,
+                            [12] = false
+                        },
+                        tyreSmoke = false,
+                        neonEnabled = { false, false, false, false }
+                    }
+                    vehicleStore:SetData('Properties', defaultProperties)
+                end
                 ACTIVE_OWNED_VEHICLES[vehicle.VIN] = vehicleStore
                 cb(true, vehicle, spawnedVehicle)
 

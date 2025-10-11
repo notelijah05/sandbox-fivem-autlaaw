@@ -518,7 +518,17 @@ function RegisterCallbacks()
                 local newProperties = false
                 if vehicleData and vehicleData:GetData('Properties') then
                     local currentProperties = vehicleData:GetData('Properties')
-    
+
+                    if not currentProperties or type(currentProperties) ~= 'table' then
+                        currentProperties = {}
+                    end
+                    if not currentProperties.mods then
+                        currentProperties.mods = {}
+                    end
+                    if not currentProperties.extras then
+                        currentProperties.extras = {}
+                    end
+
                     for k, v in pairs(data.changes) do
                         if k == 'mods' then
                             for mod, val in pairs(v) do

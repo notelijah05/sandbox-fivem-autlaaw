@@ -3,16 +3,71 @@ function GetVehicleOwnerData(sid)
 	return result
 end
 
+local function DecodeJsonField(field, defaultValue)
+	if field and type(field) == "string" then
+		local success, decoded = pcall(json.decode, field)
+		if success and decoded then
+			return decoded
+		end
+	end
+	return defaultValue or {}
+end
+
+local function DecodeVehicleJsonFields(vehicle)
+	vehicle.Properties = DecodeJsonField(vehicle.Properties, {})
+	vehicle.Damage = DecodeJsonField(vehicle.Damage, {})
+	vehicle.DamagedParts = DecodeJsonField(vehicle.DamagedParts, {})
+	vehicle.Polish = DecodeJsonField(vehicle.Polish, {})
+	vehicle.PurgeColor = DecodeJsonField(vehicle.PurgeColor, {})
+	vehicle.WheelFitment = DecodeJsonField(vehicle.WheelFitment, {})
+
+	if vehicle.Properties and type(vehicle.Properties) == "table" then
+		if vehicle.Properties.Strikes and type(vehicle.Properties.Strikes) == "string" then
+			local success, strikes = pcall(json.decode, vehicle.Properties.Strikes)
+			if success and strikes and type(strikes) == "table" then
+				vehicle.Properties.Strikes = strikes
+			else
+				vehicle.Properties.Strikes = {}
+			end
+		elseif not vehicle.Properties.Strikes then
+			vehicle.Properties.Strikes = {}
+		end
+
+		if vehicle.Properties.Flags and type(vehicle.Properties.Flags) == "string" then
+			local success, flags = pcall(json.decode, vehicle.Properties.Flags)
+			if success and flags and type(flags) == "table" then
+				local isArray = false
+				for k, v in pairs(flags) do
+					if type(k) == "number" then
+						isArray = true
+						break
+					end
+				end
+
+				if not isArray then
+					vehicle.Properties.Flags = { flags }
+				else
+					vehicle.Properties.Flags = flags
+				end
+			else
+				vehicle.Properties.Flags = {}
+			end
+		elseif not vehicle.Properties.Flags then
+			vehicle.Properties.Flags = {}
+		end
+
+		vehicle.Strikes = vehicle.Properties.Strikes or {}
+		vehicle.Flags = vehicle.Properties.Flags or {}
+	end
+end
+
 exports('VehiclesSearch', function(term, page, perPage)
-	-- Add parameter validation and defaults
 	page = page or 1
 	perPage = perPage or 10
 
-	-- Ensure they are numbers
 	page = tonumber(page) or 1
 	perPage = tonumber(perPage) or 10
 
-	-- Ensure minimum values
 	page = math.max(1, page)
 	perPage = math.max(1, perPage)
 
@@ -58,38 +113,7 @@ exports('VehiclesSearch', function(term, page, perPage)
 	for i = 1, #results do
 		local vehicle = results[i]
 		if vehicle then
-			if vehicle.Properties and type(vehicle.Properties) == "string" then
-				local success, properties = pcall(json.decode, vehicle.Properties)
-				if success and properties then
-					vehicle.Properties = properties
-				else
-					vehicle.Properties = {}
-				end
-			elseif not vehicle.Properties then
-				vehicle.Properties = {}
-			end
-
-			if vehicle.Damage and type(vehicle.Damage) == "string" then
-				local success, damage = pcall(json.decode, vehicle.Damage)
-				if success and damage then
-					vehicle.Damage = damage
-				else
-					vehicle.Damage = {}
-				end
-			elseif not vehicle.Damage then
-				vehicle.Damage = {}
-			end
-
-			if vehicle.DamagedParts and type(vehicle.DamagedParts) == "string" then
-				local success, damagedParts = pcall(json.decode, vehicle.DamagedParts)
-				if success and damagedParts then
-					vehicle.DamagedParts = damagedParts
-				else
-					vehicle.DamagedParts = {}
-				end
-			elseif not vehicle.DamagedParts then
-				vehicle.DamagedParts = {}
-			end
+			DecodeVehicleJsonFields(vehicle)
 
 			vehicle.Type = vehicle.Type or 0
 			vehicle.Make = vehicle.Make or "Unknown"
@@ -105,6 +129,64 @@ exports('VehiclesSearch', function(term, page, perPage)
 			vehicle.Value = vehicle.Value or 0
 			vehicle.FirstSpawn = vehicle.FirstSpawn or 0
 			vehicle.FakePlate = vehicle.FakePlate or 0
+			if vehicle.OwnerType == 0 then
+				vehicle.Owner = {
+					Type = vehicle.OwnerType,
+					Id = vehicle.OwnerId,
+					Person = GetVehicleOwnerData(vehicle.OwnerId)
+				}
+			elseif vehicle.OwnerType == 1 or vehicle.OwnerType == 2 then
+				local jobData = exports['sandbox-jobs']:DoesExist(vehicle.OwnerId, vehicle.OwnerWorkplace)
+				if jobData then
+					local jobName = jobData.Name
+					if jobData.Workplace then
+						jobName = string.format('%s (%s)', jobData.Name, jobData.Workplace.Name)
+					end
+					if vehicle.OwnerType == 2 then
+						jobName = jobName .. " (Dealership Buyback)"
+					end
+					vehicle.Owner = {
+						Type = vehicle.OwnerType,
+						Id = vehicle.OwnerId,
+						Workplace = vehicle.OwnerWorkplace,
+						JobName = jobName
+					}
+				else
+					vehicle.Owner = {
+						Type = vehicle.OwnerType,
+						Id = vehicle.OwnerId,
+						Workplace = vehicle.OwnerWorkplace,
+						JobName = "Unknown Organization"
+					}
+				end
+			else
+				vehicle.Owner = {
+					Type = vehicle.OwnerType,
+					Id = vehicle.OwnerId,
+					Workplace = vehicle.OwnerWorkplace
+				}
+			end
+
+			if vehicle.StorageType ~= nil then
+				local storageName = nil
+				if vehicle.StorageType == 0 then
+					storageName = exports['sandbox-vehicles']:GaragesImpound().name
+				elseif vehicle.StorageType == 1 then
+					local garage = exports['sandbox-vehicles']:GaragesGet(vehicle.StorageId)
+					storageName = garage and garage.name or nil
+				elseif vehicle.StorageType == 2 then
+					local prop = exports['sandbox-properties']:Get(vehicle.StorageId)
+					storageName = prop and prop.label or nil
+				end
+
+				if storageName then
+					vehicle.Storage = {
+						Type = vehicle.StorageType,
+						Id = vehicle.StorageId,
+						Name = storageName
+					}
+				end
+			end
 
 			table.insert(processedResults, vehicle)
 		end
@@ -132,9 +214,7 @@ exports('VehiclesView', function(VIN)
 		return false
 	end
 
-	if vehicle.Properties then
-		vehicle.Properties = json.decode(vehicle.Properties)
-	end
+	DecodeVehicleJsonFields(vehicle)
 
 	if vehicle.OwnerType == 0 then
 		vehicle.Owner = {
@@ -199,7 +279,7 @@ exports('VehiclesFlagsAdd', function(VIN, data, plate)
 	)
 
 	if success and plate then
-		exports['sandbox-radar']:FlagPlate(plate, data)
+		exports['sandbox-radar']:AddFlaggedPlate(plate, data)
 	end
 
 	return success
@@ -212,7 +292,7 @@ exports('VehiclesFlagsRemove', function(VIN, plate)
 	)
 
 	if success and plate then
-		exports['sandbox-radar']:UnflagPlate(plate)
+		exports['sandbox-radar']:RemoveFlaggedPlate(plate)
 	end
 
 	return success
@@ -237,12 +317,11 @@ exports('VehiclesGetStrikes', function(VIN)
 		return 0
 	end
 
+	DecodeVehicleJsonFields(vehicle)
+
 	local strikes = 0
-	if vehicle.Properties then
-		local properties = json.decode(vehicle.Properties)
-		if properties and properties.Strikes and #properties.Strikes > 0 then
-			strikes = #properties.Strikes
-		end
+	if vehicle.Strikes and type(vehicle.Strikes) == "table" and #vehicle.Strikes > 0 then
+		strikes = #vehicle.Strikes
 	end
 
 	return strikes
