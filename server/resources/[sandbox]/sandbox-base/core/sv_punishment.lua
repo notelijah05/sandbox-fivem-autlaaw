@@ -1,32 +1,27 @@
 exports("PunishmentCheckBan", function(key, value)
-	local retVal = -1 -- Fuck You Lua
-
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseAuthFindOne({
-		collection = "bans",
-		query = {
-			[key] = value,
-			active = true,
-		},
-	}, function(success, results, insertedIds)
-		if not success then
-			exports['sandbox-base']:LoggerError(
-				"[^8Error^7] Error in insertOne: " .. tostring(results),
-				{ console = true, file = true, database = true }
-			)
-			return
-		end
 
-		if #results > 0 then
+	local query = 'SELECT * FROM bans WHERE `' .. key .. '` = ? AND active = 1'
+	exports.oxmysql:execute(query, { value }, function(results)
+		if results and #results > 0 then
 			for k, v in ipairs(results) do
 				if v.expires < os.time() and v.expires ~= -1 then
-					exports['sandbox-base']:DatabaseAuthUpdateOne({
-						collection = "bans",
-						query = { _id = v._id },
-						update = { ["$set"] = { active = false } },
-					})
+					exports.oxmysql:execute(
+						'UPDATE bans SET active = 0 WHERE id = ?',
+						{ v.id },
+						function(affectedRows)
+						end
+					)
 				else
-					return p:resolve(v)
+					if v.tokens then
+						v.tokens = json.decode(v.tokens)
+					end
+					if v.unbanned then
+						v.unbanned = json.decode(v.unbanned)
+					end
+					v._id = v.id
+					p:resolve(v)
+					return
 				end
 			end
 			p:resolve(nil)
@@ -133,21 +128,17 @@ exports("PunishmentKick", function(source, reason, issuer, afk)
 end)
 
 exports("PunishmentUnbanBanID", function(id, issuer)
-	if exports['sandbox-base']:PunishmentCheckBan("_id", id) then
+	if exports['sandbox-base']:PunishmentCheckBan("id", id) then
 		local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 
-		exports['sandbox-base']:DatabaseAuthFind({
-			collection = "bans",
-			query = {
-				_id = id,
-				active = true,
-			},
-		}, function(success, results)
-			if exports['sandbox-base']:PunishmentActionsUnban(results, iPlayer) then
-				exports["sandbox-chat"]:SendServerSingle(
-					iPlayer:GetData("Source"),
-					string.format("%s Has Been Revoked", id)
-				)
+		exports.oxmysql:execute('SELECT * FROM bans WHERE id = ? AND active = 1', { id }, function(results)
+			if results and #results > 0 then
+				if exports['sandbox-base']:PunishmentActionsUnban(results, iPlayer) then
+					exports["sandbox-chat"]:SendServerSingle(
+						iPlayer:GetData("Source"),
+						string.format("%s Has Been Revoked", id)
+					)
+				end
 			end
 		end)
 	end
@@ -165,22 +156,18 @@ exports("PunishmentUnbanAccountID", function(aId, issuer)
 
 		local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 
-		exports['sandbox-base']:DatabaseAuthFind({
-			collection = "bans",
-			query = {
-				account = aId,
-				active = true,
-			},
-		}, function(success, results)
-			if exports['sandbox-base']:PunishmentActionsUnban(results, iPlayer) then
-				exports["sandbox-chat"]:SendServerSingle(
-					iPlayer:GetData("Source"),
-					string.format(
-						"%s (Account: %s) Has Been Unbanned",
-						tPlayer:GetData("Name"),
-						tPlayer:GetData("AccountID")
+		exports.oxmysql:execute('SELECT * FROM bans WHERE account = ? AND active = 1', { aId }, function(results)
+			if results and #results > 0 then
+				if exports['sandbox-base']:PunishmentActionsUnban(results, iPlayer) then
+					exports["sandbox-chat"]:SendServerSingle(
+						iPlayer:GetData("Source"),
+						string.format(
+							"%s (Account: %s) Has Been Unbanned",
+							tPlayer:GetData("Name"),
+							tPlayer:GetData("AccountID")
+						)
 					)
-				)
+				end
 			end
 		end)
 
@@ -205,24 +192,21 @@ exports("PunishmentUnbanIdentifier", function(identifier, issuer)
 		end
 		local iPlayer = exports['sandbox-base']:FetchSource(issuer)
 
-		exports['sandbox-base']:DatabaseAuthFind({
-			collection = "bans",
-			query = {
-				identifier = identifier,
-				active = true,
-			},
-		}, function(success, results)
-			if exports['sandbox-base']:PunishmentActionsUnban(results, iPlayer) then
-				exports["sandbox-chat"]:SendServerSingle(
-					iPlayer:GetData("Source"),
-					string.format(
-						"%s (Identifier: %s) Has Been Unbanned",
-						tPlayer:GetData("Name"),
-						tPlayer:GetData("Identifier")
-					)
-				)
-			end
-		end)
+		exports.oxmysql:execute('SELECT * FROM bans WHERE identifier = ? AND active = 1', { identifier },
+			function(results)
+				if results and #results > 0 then
+					if exports['sandbox-base']:PunishmentActionsUnban(results, iPlayer) then
+						exports["sandbox-chat"]:SendServerSingle(
+							iPlayer:GetData("Source"),
+							string.format(
+								"%s (Identifier: %s) Has Been Unbanned",
+								tPlayer:GetData("Name"),
+								tPlayer:GetData("Identifier")
+							)
+						)
+					end
+				end
+			end)
 
 		if dbf then
 			tPlayer:DeleteStore()
@@ -691,81 +675,91 @@ exports("PunishmentActionsKick", function(tSource, reason, issuer)
 	DropPlayer(tSource, string.format("Kicked From The Server By %s\nReason: %s", issuer, reason))
 end)
 
+-- Helper function
+function handleBanResult(banId, tSource, reason, expires, expStr, mask)
+	if mask then
+		reason = "💙 From Pwnzor 🙂"
+	end
+
+	if tSource ~= nil then
+		if expires ~= -1 then
+			DropPlayer(
+				tSource,
+				string.format(
+					"You're Banned, Appeal in Discord\n\nReason: %s\nExpires: %s\nID: %s",
+					reason,
+					expStr,
+					banId
+				)
+			)
+		else
+			DropPlayer(
+				tSource,
+				string.format(
+					"You're Permanently Banned, Appeal in Discord\n\nReason: %s\nID: %s",
+					reason,
+					banId
+				)
+			)
+		end
+	end
+end
+
 exports("PunishmentActionsBan",
 	function(tSource, tAccount, tIdentifier, tName, tTokens, reason, expires, expStr, issuer, issuerId, mask)
-		local orStatement = {}
+		local p = promise.new()
+
+		local whereConditions = { "active = 1" }
+		local params = {}
+
 		if tAccount then
-			table.insert(orStatement, {
-				account = tAccount,
-			})
+			table.insert(whereConditions, "account = ?")
+			table.insert(params, tAccount)
 		end
 
 		if tIdentifier then
-			table.insert(orStatement, {
-				identifier = tIdentifier,
-			})
+			table.insert(whereConditions, "identifier = ?")
+			table.insert(params, tIdentifier)
 		end
 
-		local p = promise.new()
+		local whereClause = table.concat(whereConditions, " OR ")
 
-		exports['sandbox-base']:DatabaseAuthFindOneAndUpdate({
-			collection = "bans",
-			query = {
-				active = true,
-				["$or"] = orStatement,
-			},
-			update = {
-				["$set"] = {
-					account = tAccount,
-					identifier = tIdentifier,
-					expires = expires,
-					reason = reason,
-					issuer = issuer,
-					active = true,
-					started = os.time(),
-				},
-				["$addToSet"] = {
-					tokens = { ["$each"] = tTokens },
-				},
-			},
-			options = {
-				returnDocument = "after",
-				upsert = true,
-			},
-		}, function(success, results)
-			p:resolve(success)
-			if not success then
-				return exports['sandbox-base']:LoggerError(
-					"[^8Error^7] Error in insertOne: " .. tostring(results),
-					{ console = true, file = true, database = true, discord = { embed = true, type = "error" } }
+		exports.oxmysql:execute('SELECT * FROM bans WHERE ' .. whereClause, params, function(existingResults)
+			if existingResults and #existingResults > 0 then
+				local banId = existingResults[1].id
+				local tokensJson = json.encode(tTokens)
+
+				exports.oxmysql:execute(
+					'UPDATE bans SET account = ?, identifier = ?, expires = ?, reason = ?, issuer = ?, active = 1, started = ?, tokens = ? WHERE id = ?',
+					{ tAccount, tIdentifier, expires, reason, issuer, os.time(), tokensJson, banId },
+					function(affectedRows)
+						if affectedRows > 0 then
+							p:resolve(true)
+							handleBanResult(banId, tSource, reason, expires, expStr, mask)
+						else
+							p:resolve(false)
+						end
+					end
 				)
-			end
+			else
+				local tokensJson = json.encode(tTokens)
 
-			if mask then
-				reason = "💙 From Pwnzor 🙂"
-			end
-
-			if tSource ~= nil then
-				if expires ~= -1 then
-					DropPlayer(
-						tSource,
-						string.format(
-							"You're Banned, Appeal in Discord\n\nReason: %s\nExpires: %s\nID: %s",
-							reason,
-							expStr,
-							results._id
-						)
-					)
-				else
-					DropPlayer(
-						tSource,
-						string.format(
-							"You're Permanently Banned, Appeal in Discord\n\nReason: %s\nID: %s",
-							reason,
-							results._id
-						)
-					)
-				end
+				exports.oxmysql:execute(
+					'INSERT INTO bans (account, identifier, expires, reason, issuer, active, started, tokens) VALUES (?, ?, ?, ?, ?, 1, ?, ?)',
+					{ tAccount, tIdentifier, expires, reason, issuer, os.time(), tokensJson },
+					function(result)
+						if result and result.insertId then
+							p:resolve(true)
+							handleBanResult(result.insertId, tSource, reason, expires, expStr, mask)
+						else
+							exports['sandbox-base']:LoggerError(
+								"[^8Error^7] Error inserting ban: " .. tostring(result),
+								{ console = true, file = true, database = true, discord = { embed = true, type = "error" } }
+							)
+							p:resolve(false)
+						end
+					end
+				)
 			end
 		end)
 
@@ -775,15 +769,28 @@ exports("PunishmentActionsBan",
 exports("PunishmentActionsUnban", function(ids, issuer)
 	local _ids = {}
 	for k, v in ipairs(ids) do
-		exports['sandbox-base']:DatabaseAuthUpdateOne({
-			collection = "bans",
-			query = { _id = v._id, active = true },
-			update = {
-				["$set"] = { active = false, unbanned = { issuer = issuer:GetData("Name"), date = os.time() } },
-			},
+		if v.tokens then
+			v.tokens = json.decode(v.tokens)
+		end
+		if v.unbanned then
+			v.unbanned = json.decode(v.unbanned)
+		end
+
+		v._id = v.id
+
+		local unbannedJson = json.encode({
+			issuer = issuer:GetData("Name"),
+			date = os.time()
 		})
 
-		table.insert(_ids, v._id)
+		exports.oxmysql:execute(
+			'UPDATE bans SET active = 0, unbanned = ? WHERE id = ? AND active = 1',
+			{ unbannedJson, v.id },
+			function(affectedRows)
+			end
+		)
+
+		table.insert(_ids, v.id)
 	end
 
 	exports['sandbox-base']:LoggerInfo(

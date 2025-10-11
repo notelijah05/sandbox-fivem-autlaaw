@@ -199,41 +199,39 @@ exports("CheckTokens", function(source, accountId, existing)
 		for k, v in pairs(ctkns) do
 			table.insert(existing, k)
 		end
-		exports['sandbox-base']:DatabaseAuthUpdateOne({
-			collection = "tokens",
-			query = {
-				account = accountId,
-			},
-			update = {
-				["$set"] = {
-					tokens = existing,
-				},
-			},
-		}, function()
-			p:resolve(existing)
-		end)
+
+		local tokensJson = json.encode(existing)
+		exports.oxmysql:execute(
+			'UPDATE tokens SET tokens = ? WHERE account = ?',
+			{ tokensJson, accountId },
+			function(affectedRows)
+				if affectedRows > 0 then
+					p:resolve(existing)
+				else
+					exports.oxmysql:execute(
+						'INSERT INTO tokens (account, tokens) VALUES (?, ?)',
+						{ accountId, tokensJson },
+						function(insertId)
+							p:resolve(existing)
+						end
+					)
+				end
+			end
+		)
 	else
 		local tkns = {}
 		for k, v in pairs(ctkns) do
 			table.insert(tkns, k)
 		end
 
-		exports['sandbox-base']:DatabaseAuthUpdateOne({
-			collection = "tokens",
-			query = {
-				account = accountId,
-			},
-			update = {
-				["$set"] = {
-					tokens = tkns,
-				},
-			},
-			options = {
-				upsert = true,
-			},
-		}, function()
-			p:resolve(tkns)
-		end)
+		local tokensJson = json.encode(tkns)
+		exports.oxmysql:execute(
+			'INSERT INTO tokens (account, tokens) VALUES (?, ?) ON DUPLICATE KEY UPDATE tokens = ?',
+			{ accountId, tokensJson, tokensJson },
+			function(result)
+				p:resolve(tkns)
+			end
+		)
 	end
 
 	return Citizen.Await(p)

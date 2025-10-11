@@ -125,6 +125,27 @@ CREATE TABLE IF NOT EXISTS `bank_accounts_transactions` (
   KEY `account` (`account`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `bans`;
+CREATE TABLE IF NOT EXISTS `bans` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `account` INT(11) DEFAULT NULL,
+    `identifier` VARCHAR(255) DEFAULT NULL,
+    `expires` INT(11) NOT NULL,
+    `reason` TEXT NOT NULL,
+    `issuer` VARCHAR(255) NOT NULL,
+    `active` TINYINT(1) NOT NULL DEFAULT 1,
+    `started` INT(11) NOT NULL,
+    `tokens` LONGTEXT DEFAULT NULL,
+    `unbanned` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `account` (`account`),
+    KEY `identifier` (`identifier`),
+    KEY `active` (`active`),
+    KEY `expires` (`expires`),
+    CONSTRAINT `tokens` CHECK (json_valid(`tokens`)),
+    CONSTRAINT `unbanned` CHECK (json_valid(`unbanned`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `bench_schematics`;
 CREATE TABLE IF NOT EXISTS `bench_schematics` (
   `bench` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -1289,6 +1310,14 @@ CREATE TABLE `storage_units` (
     PRIMARY KEY (`_id`) USING BTREE,
     CONSTRAINT `location` CHECK (json_valid(`location`))
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+DROP TABLE IF EXISTS `tokens`;
+CREATE TABLE IF NOT EXISTS `tokens` (
+    `account` VARCHAR(255) NOT NULL,
+    `tokens` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`account`),
+    CONSTRAINT `tokens` CHECK (json_valid(`tokens`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `weed`;
 CREATE TABLE IF NOT EXISTS `weed` (
