@@ -62,10 +62,7 @@ AddEventHandler("Core:Server:StartupReady", function()
 
 		Wait(1000)
 
-		COMPONENTS.Proxy.ExportsReady = true
-
 		SetupAPIHandler()
-		return
 	end)
 end)
 

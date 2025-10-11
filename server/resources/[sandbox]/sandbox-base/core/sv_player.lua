@@ -1,6 +1,7 @@
 _dropping = {}
 local _players = {}
 local _recentDisconnects = {}
+local _middlewareRegistered = false
 
 CreateThread(function()
 	while true do
@@ -19,6 +20,11 @@ CreateThread(function()
 end)
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()
+	if _middlewareRegistered then
+		return
+	end
+	_middlewareRegistered = true
+
 	exports['sandbox-base']:MiddlewareAdd("playerDropped", function(source, message)
 		local player = _players[source]
 		if player ~= nil then

@@ -1,21 +1,18 @@
-local _req = { 'ExportsReady' }
+local _req = {}
 local _deps = {}
-if IsDuplicityVersion() then _req = { 'ExportsReady', 'DatabaseReady' } end
+if IsDuplicityVersion() then _req = { 'DatabaseReady' } end
 
 local _ignored = {
-    pac_os = true,
-    pac_iec = true,
     ["screenshot-basic"] = true,
 }
 
 COMPONENTS.Proxy = {
     _required = _req,
     _name = 'base',
-    ExportsReady = false,
 }
 
 AddEventHandler('onResourceStart', function(resource)
-    if COMPONENTS.Proxy.ExportsReady and not _ignored[resource] then
+    if not _ignored[resource] then
         if resource ~= GetCurrentResourceName() then
             TriggerEvent('Proxy:Shared:RegisterReady')
 

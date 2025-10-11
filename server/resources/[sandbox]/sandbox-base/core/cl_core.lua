@@ -307,7 +307,6 @@ CreateThread(function()
 
 	Wait(1000)
 
-	COMPONENTS.Proxy.ExportsReady = true
 	return
 end)
 
