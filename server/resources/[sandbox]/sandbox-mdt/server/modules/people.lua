@@ -69,6 +69,15 @@ exports("PeopleView", function(id, requireAllData)
 	end
 	if character.Qualifications then
 		character.Qualifications = json.decode(character.Qualifications)
+		if type(character.Qualifications) == "table" and not character.Qualifications[1] then
+			local quals = {}
+			for k, v in pairs(character.Qualifications) do
+				table.insert(quals, k)
+			end
+			character.Qualifications = quals
+		elseif type(character.Qualifications) ~= "table" then
+			character.Qualifications = {}
+		end
 	end
 	if character.MDTHistory then
 		character.MDTHistory = json.decode(character.MDTHistory)
