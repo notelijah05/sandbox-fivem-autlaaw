@@ -930,6 +930,48 @@ CREATE TABLE IF NOT EXISTS `placed_props` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+DROP TABLE IF EXISTS `properties`;
+CREATE TABLE IF NOT EXISTS `properties` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) NOT NULL,
+  `label` varchar(255) NOT NULL,
+  `price` int(11) NOT NULL DEFAULT 0,
+  `sold` tinyint(1) NOT NULL DEFAULT 0,
+  `owner` varchar(255) DEFAULT NULL,
+  `location` longtext DEFAULT NULL,
+  `upgrades` longtext DEFAULT NULL,
+  `locked` tinyint(1) NOT NULL DEFAULT 1,
+  `keys` longtext DEFAULT NULL,
+  `data` longtext DEFAULT NULL,
+  `foreclosed` tinyint(1) NOT NULL DEFAULT 0,
+  `soldAt` int(11) DEFAULT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `type` (`type`),
+  KEY `owner` (`owner`),
+  KEY `sold` (`sold`),
+  CONSTRAINT `location` CHECK (json_valid(`location`)),
+  CONSTRAINT `upgrades` CHECK (json_valid(`upgrades`)),
+  CONSTRAINT `keys` CHECK (json_valid(`keys`)),
+  CONSTRAINT `data` CHECK (json_valid(`data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+DROP TABLE IF EXISTS `properties_furniture`;
+CREATE TABLE IF NOT EXISTS `properties_furniture` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `property` varchar(255) NOT NULL,
+  `furniture` longtext DEFAULT NULL,
+  `updatedTime` int(11) DEFAULT NULL,
+  `updatedBy` longtext DEFAULT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `property` (`property`),
+  CONSTRAINT `furniture` CHECK (json_valid(`furniture`)),
+  CONSTRAINT `updatedBy` CHECK (json_valid(`updatedBy`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
 DROP TABLE IF EXISTS `redline_racer_history`;
 CREATE TABLE IF NOT EXISTS `redline_racer_history` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

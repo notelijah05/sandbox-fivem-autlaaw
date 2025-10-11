@@ -18,46 +18,48 @@ end)
 exports('Add', function(source, type, interior, price, label, pos)
 	if PropertyTypes[type] then
 		if PropertyInteriors[interior] and PropertyInteriors[interior].type == type then
-			local p = promise.new()
 			local doc = {
 				type = type,
 				label = label,
 				price = price,
 				sold = false,
-				owner = false,
+				owner = nil,
 				location = {
 					front = pos,
 				},
 				upgrades = {
 					interior = interior,
-				}
+				},
+				locked = true,
+				keys = {},
+				data = {},
+				foreclosed = false
 			}
 
-			exports['sandbox-base']:DatabaseGameInsertOne({
-				collection = "properties",
-				document = doc,
-			}, function(success, result, insertedIds)
-				if success then
-					doc.id = insertedIds[1]
-					doc.interior = interior
-					doc.locked = true
+			local locationJson = json.encode(doc.location)
+			local upgradesJson = json.encode(doc.upgrades)
+			local keysJson = json.encode(doc.keys)
+			local dataJson = json.encode(doc.data)
 
-					for k, v in pairs(doc.location) do
-						for k2, v2 in pairs(v) do
-							doc.location[k][k2] = doc.location[k][k2] + 0.0
-						end
+			exports.oxmysql:execute(
+				'INSERT INTO properties (type, label, price, sold, owner, location, upgrades, locked, `keys`, data, foreclosed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				{
+					doc.type, doc.label, doc.price, doc.sold and 1 or 0, doc.owner, locationJson,
+					upgradesJson, doc.locked and 1 or 0, keysJson, dataJson, doc.foreclosed and 1 or 0
+				}, function(result)
+					if result and result.insertId then
+						doc.id = result.insertId
+						_properties[result.insertId] = doc
+
+						exports["sandbox-chat"]:SendServerSingle(source,
+							"Property Added, Property ID: " .. result.insertId)
+						TriggerClientEvent("Properties:Client:Update", -1, result.insertId, doc)
+					else
+						exports["sandbox-chat"]:SendServerSingle(source, "Failed to save property to database")
 					end
+				end)
 
-					_properties[doc.id] = doc
-
-					exports["sandbox-chat"]:SendServerSingle(source, "Property Added, Property ID: " .. doc.id)
-
-					TriggerClientEvent("Properties:Client:Update", -1, doc.id, doc)
-				end
-
-				p:resolve(success)
-			end)
-			return Citizen.Await(p)
+			return true
 		else
 			exports["sandbox-chat"]:SendServerSingle(source, "Invalid Interior Combination")
 			return false
@@ -74,27 +76,23 @@ exports('AddFrontdoor', function(id, pos)
 	end
 
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-		update = {
-			["$set"] = {
-				['location.front'] = pos,
-			},
-		},
-	}, function(success, results)
-		if success then
-			if _properties[id] and _properties[id].location then
-				_properties[id].location.front = pos
+	local currentLocation = _properties[id] and _properties[id].location or {}
+	currentLocation.front = pos
+	local locationJson = json.encode(currentLocation)
 
-				TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+	exports.oxmysql:execute('UPDATE properties SET location = ? WHERE id = ?', { locationJson, id },
+		function(affectedRows)
+			if affectedRows > 0 then
+				if _properties[id] and _properties[id].location then
+					_properties[id].location.front = pos
+
+					TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+				end
+				p:resolve(true)
+			else
+				p:resolve(false)
 			end
-		end
-
-		p:resolve(success)
-	end)
+		end)
 	return Citizen.Await(p)
 end)
 
@@ -104,27 +102,23 @@ exports('AddBackdoor', function(id, pos)
 	end
 
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-		update = {
-			["$set"] = {
-				['location.backdoor'] = pos,
-			},
-		},
-	}, function(success, results)
-		if success then
-			if _properties[id] and _properties[id].location then
-				_properties[id].location.backdoor = pos
+	local currentLocation = _properties[id] and _properties[id].location or {}
+	currentLocation.backdoor = pos
+	local locationJson = json.encode(currentLocation)
 
-				TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+	exports.oxmysql:execute('UPDATE properties SET location = ? WHERE id = ?', { locationJson, id },
+		function(affectedRows)
+			if affectedRows > 0 then
+				if _properties[id] and _properties[id].location then
+					_properties[id].location.backdoor = pos
+
+					TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+				end
+				p:resolve(true)
+			else
+				p:resolve(false)
 			end
-		end
-
-		p:resolve(success)
-	end)
+		end)
 	return Citizen.Await(p)
 end)
 
@@ -134,27 +128,23 @@ exports('AddGarage', function(id, pos)
 	end
 
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-		update = {
-			["$set"] = {
-				['location.garage'] = pos,
-			},
-		},
-	}, function(success, results)
-		if success then
-			if _properties[id] and _properties[id].location then
-				_properties[id].location.garage = pos
+	local currentLocation = _properties[id] and _properties[id].location or {}
+	currentLocation.garage = pos
+	local locationJson = json.encode(currentLocation)
 
-				TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+	exports.oxmysql:execute('UPDATE properties SET location = ? WHERE id = ?', { locationJson, id },
+		function(affectedRows)
+			if affectedRows > 0 then
+				if _properties[id] and _properties[id].location then
+					_properties[id].location.garage = pos
+
+					TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+				end
+				p:resolve(true)
+			else
+				p:resolve(false)
 			end
-		end
-
-		p:resolve(success)
-	end)
+		end)
 	return Citizen.Await(p)
 end)
 
@@ -164,26 +154,17 @@ exports('SetLabel', function(id, label)
 	end
 
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-		update = {
-			["$set"] = {
-				label = label,
-			},
-		},
-	}, function(success, results)
-		if success then
+	exports.oxmysql:execute('UPDATE properties SET label = ? WHERE id = ?', { label, id }, function(affectedRows)
+		if affectedRows > 0 then
 			if _properties[id] and _properties[id].label then
 				_properties[id].label = label
 
 				TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
 			end
+			p:resolve(true)
+		else
+			p:resolve(false)
 		end
-
-		p:resolve(success)
 	end)
 	return Citizen.Await(p)
 end)
@@ -194,26 +175,17 @@ exports('SetPrice', function(id, price)
 	end
 
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-		update = {
-			["$set"] = {
-				price = price,
-			},
-		},
-	}, function(success, results)
-		if success then
+	exports.oxmysql:execute('UPDATE properties SET price = ? WHERE id = ?', { price, id }, function(affectedRows)
+		if affectedRows > 0 then
 			if _properties[id] and _properties[id].price then
 				_properties[id].price = price
 
 				TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
 			end
+			p:resolve(true)
+		else
+			p:resolve(false)
 		end
-
-		p:resolve(success)
 	end)
 	return Citizen.Await(p)
 end)
@@ -224,45 +196,37 @@ exports('SetData', function(id, key, value)
 	end
 
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-		update = {
-			["$set"] = {
-				[string.format('data.%s', key)] = value,
-			},
-		},
-	}, function(success, results)
-		if success then
+	local currentData = _properties[id] and _properties[id].data or {}
+	currentData[key] = value
+	local dataJson = json.encode(currentData)
+
+	exports.oxmysql:execute('UPDATE properties SET data = ? WHERE id = ?', { dataJson, id }, function(affectedRows)
+		if affectedRows > 0 then
 			if _properties[id] then
 				if not _properties[id].data then _properties[id].data = {} end
 				_properties[id].data[key] = value
 
 				TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
 			end
+			p:resolve(true)
+		else
+			p:resolve(false)
 		end
-
-		p:resolve(success)
 	end)
 	return Citizen.Await(p)
 end)
 
 exports('Delete', function(id)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameDeleteOne({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-	}, function(success, result)
-		if success then
+	exports.oxmysql:execute('DELETE FROM properties WHERE id = ?', { id }, function(affectedRows)
+		if affectedRows > 0 then
 			_properties[id] = nil
 
 			TriggerClientEvent("Properties:Client:Update", -1, id, nil)
+			p:resolve(true)
+		else
+			p:resolve(false)
 		end
-		p:resolve(success)
 	end)
 	return Citizen.Await(p)
 end)
@@ -281,28 +245,24 @@ exports('UpgradeSet', function(id, upgrade, level)
 			end
 
 			local p = promise.new()
-			exports['sandbox-base']:DatabaseGameUpdateOne({
-				collection = "properties",
-				query = {
-					_id = id,
-				},
-				update = {
-					["$set"] = {
-						[string.format('upgrades.%s', upgrade)] = level,
-					},
-				},
-			}, function(success, results)
-				if success then
-					if _properties[id] then
-						if not _properties[id].upgrades then _properties[id].upgrades = {} end
-						_properties[id].upgrades[upgrade] = level
+			local currentUpgrades = _properties[id] and _properties[id].upgrades or {}
+			currentUpgrades[upgrade] = level
+			local upgradesJson = json.encode(currentUpgrades)
 
-						TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+			exports.oxmysql:execute('UPDATE properties SET upgrades = ? WHERE id = ?', { upgradesJson, id },
+				function(affectedRows)
+					if affectedRows > 0 then
+						if _properties[id] then
+							if not _properties[id].upgrades then _properties[id].upgrades = {} end
+							_properties[id].upgrades[upgrade] = level
+
+							TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+						end
+						p:resolve(true)
+					else
+						p:resolve(false)
 					end
-				end
-
-				p:resolve(success)
-			end)
+				end)
 			return Citizen.Await(p)
 		end
 	end
@@ -347,28 +307,24 @@ exports('UpgradeSetInterior', function(id, interior)
 
 		if intData and intData.type == property.type then
 			local p = promise.new()
-			exports['sandbox-base']:DatabaseGameUpdateOne({
-				collection = "properties",
-				query = {
-					_id = id,
-				},
-				update = {
-					["$set"] = {
-						["upgrades.interior"] = interior,
-					},
-				},
-			}, function(success, results)
-				if success then
-					if _properties[id] then
-						if not _properties[id].upgrades then _properties[id].upgrades = {} end
-						_properties[id].upgrades["interior"] = interior
+			local currentUpgrades = _properties[id] and _properties[id].upgrades or {}
+			currentUpgrades.interior = interior
+			local upgradesJson = json.encode(currentUpgrades)
 
-						TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+			exports.oxmysql:execute('UPDATE properties SET upgrades = ? WHERE id = ?', { upgradesJson, id },
+				function(affectedRows)
+					if affectedRows > 0 then
+						if _properties[id] then
+							if not _properties[id].upgrades then _properties[id].upgrades = {} end
+							_properties[id].upgrades["interior"] = interior
+
+							TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+						end
+						p:resolve(true)
+					else
+						p:resolve(false)
 					end
-				end
-
-				p:resolve(success)
-			end)
+				end)
 			return Citizen.Await(p)
 		end
 	end
@@ -376,86 +332,64 @@ end)
 
 exports('Sell', function(id)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-		update = {
-			["$set"] = {
-				sold = false,
-				owner = false,
-			},
-			["$unset"] = {
-				keys = true,
-			},
-		},
-	}, function(success, results)
-		if success and _properties[id] then
-			_properties[id].sold = false
+	exports.oxmysql:execute('UPDATE properties SET sold = 0, owner = NULL, `keys` = NULL WHERE id = ?', { id },
+		function(affectedRows)
+			if affectedRows > 0 and _properties[id] then
+				_properties[id].sold = false
 
-			if _properties[id].keys then
-				for k, v in pairs(_properties[id].keys) do
-					local t = _charPropertyKeys[v.Char]
-					if t ~= nil then
-						for k2, v2 in ipairs(t) do
-							if v2 == id then
-								table.remove(t, k2)
-								_charPropertyKeys[v.Char] = t
-								break
+				if _properties[id].keys then
+					for k, v in pairs(_properties[id].keys) do
+						local t = _charPropertyKeys[v.Char]
+						if t ~= nil then
+							for k2, v2 in ipairs(t) do
+								if v2 == id then
+									table.remove(t, k2)
+									_charPropertyKeys[v.Char] = t
+									break
+								end
 							end
 						end
 					end
 				end
-			end
 
-			_properties[id].keys = nil
-			TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
-		end
-		p:resolve(success)
-	end)
+				_properties[id].keys = nil
+				TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+				p:resolve(true)
+			else
+				p:resolve(false)
+			end
+		end)
 	return Citizen.Await(p)
 end)
 
 exports('Buy', function(id, owner, payment)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-		update = {
-			["$set"] = {
-				soldAt = os.time(),
-				sold = true,
-				owner = owner,
-				keys = {
-					[owner.Char] = owner,
-				},
-			},
-		},
-	}, function(success, results)
-		if success then
-			_properties[id].sold = true
-			_properties[id].keys = {
-				[owner.Char] = owner,
-			}
-			_properties[id].soldAt = os.time()
+	local keysData = { [owner.Char] = owner }
+	local keysJson = json.encode(keysData)
 
-			if _charPropertyKeys[owner.Char] ~= nil then
-				local t = _charPropertyKeys[owner.Char]
-				table.insert(t, propertyId)
-				_charPropertyKeys[owner.Char] = t
+	exports.oxmysql:execute('UPDATE properties SET soldAt = ?, sold = 1, owner = ?, `keys` = ? WHERE id = ?',
+		{ os.time(), owner, keysJson, id }, function(affectedRows)
+			if affectedRows > 0 then
+				_properties[id].sold = true
+				_properties[id].keys = keysData
+				_properties[id].soldAt = os.time()
+
+				if _charPropertyKeys[owner.Char] ~= nil then
+					local t = _charPropertyKeys[owner.Char]
+					table.insert(t, id)
+					_charPropertyKeys[owner.Char] = t
+				else
+					_charPropertyKeys[owner.Char] = {
+						id,
+					}
+				end
+
+				TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+				p:resolve(true)
 			else
-				_charPropertyKeys[owner.Char] = {
-					propertyId,
-				}
+				p:resolve(false)
 			end
-
-			TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
-		end
-		p:resolve(success)
-	end)
+		end)
 
 	return Citizen.Await(p)
 end)
@@ -466,28 +400,19 @@ exports('Foreclose', function(id, state)
 	end
 
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-		update = {
-			["$set"] = {
-				foreclosed = state,
-				foreclosedTime = state and os.time() or false,
-			},
-		},
-	}, function(success, results)
-		if success then
-			if _properties[id] then
-				_properties[id].foreclosed = state
+	exports.oxmysql:execute('UPDATE properties SET foreclosed = ? WHERE id = ?', { state and 1 or 0, id },
+		function(affectedRows)
+			if affectedRows > 0 then
+				if _properties[id] then
+					_properties[id].foreclosed = state
 
-				TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+					TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
+				end
+				p:resolve(true)
+			else
+				p:resolve(false)
 			end
-		end
-
-		p:resolve(success)
-	end)
+		end)
 	return Citizen.Await(p)
 end)
 
@@ -529,29 +454,22 @@ end)
 exports('GiveKey', function(charData, id, isOwner, permissions, updating)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-		update = {
-			["$set"] = {
-				[string.format("keys.%s", charData.ID)] = {
-					Char = charData.ID,
-					First = charData.First,
-					Last = charData.Last,
-					SID = charData.SID,
-					Owner = isOwner,
-					Permissions = permissions,
-				},
-			},
-		},
-		options = {
-			returnDocument = 'after',
-		},
-	}, function(success, result)
-		if success then
-			_properties[id] = doPropertyThings(result)
+	local currentKeys = _properties[id] and _properties[id].keys or {}
+	currentKeys[charData.ID] = {
+		Char = charData.ID,
+		First = charData.First,
+		Last = charData.Last,
+		SID = charData.SID,
+		Owner = isOwner,
+		Permissions = permissions,
+	}
+	local keysJson = json.encode(currentKeys)
+
+	exports.oxmysql:execute('UPDATE properties SET `keys` = ? WHERE id = ?', { keysJson, id }, function(affectedRows)
+		if affectedRows > 0 then
+			if _properties[id] then
+				_properties[id].keys = currentKeys
+			end
 
 			TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
 
@@ -566,8 +484,10 @@ exports('GiveKey', function(charData, id, isOwner, permissions, updating)
 					}
 				end
 			end
+			p:resolve(true)
+		else
+			p:resolve(false)
 		end
-		p:resolve(success)
 
 		if charData.Source then
 			TriggerClientEvent("Properties:Client:AddBlips", charData.Source)
@@ -580,22 +500,15 @@ end)
 exports('TakeKey', function(target, id)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
-		collection = "properties",
-		query = {
-			_id = id,
-		},
-		update = {
-			["$unset"] = {
-				[string.format("keys.%s", target)] = true,
-			},
-		},
-		options = {
-			returnDocument = 'after',
-		},
-	}, function(success, result)
-		if success then
-			_properties[id] = doPropertyThings(result)
+	local currentKeys = _properties[id] and _properties[id].keys or {}
+	currentKeys[target] = nil
+	local keysJson = json.encode(currentKeys)
+
+	exports.oxmysql:execute('UPDATE properties SET `keys` = ? WHERE id = ?', { keysJson, id }, function(affectedRows)
+		if affectedRows > 0 then
+			if _properties[id] then
+				_properties[id].keys = currentKeys
+			end
 
 			TriggerClientEvent("Properties:Client:Update", -1, id, _properties[id])
 
@@ -610,8 +523,10 @@ exports('TakeKey', function(target, id)
 
 				_charPropertyKeys[target] = t
 			end
+			p:resolve(true)
+		else
+			p:resolve(false)
 		end
-		p:resolve(success)
 	end)
 	return Citizen.Await(p)
 end)
@@ -667,7 +582,7 @@ end)
 exports('GetMaxParkingSpaces', function(propertyId)
 	local property = _properties[propertyId]
 	if property then
-		local garageLevel = property?.upgrades?.garage or 1
+		local garageLevel = (property.upgrades and property.upgrades.garage) or 1
 
 		if garageLevel and garageLevel >= 1 and PropertyGarage[property.type] and PropertyGarage[property.type][garageLevel] then
 			return PropertyGarage[property.type][garageLevel].parking

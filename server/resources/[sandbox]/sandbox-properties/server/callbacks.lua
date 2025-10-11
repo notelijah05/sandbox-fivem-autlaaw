@@ -94,7 +94,7 @@ function RegisterCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 		if property ~= nil and char then
-			local pInt = property.upgrades?.interior
+			local pInt = (property.upgrades and property.upgrades.interior)
 
 			local routeId = exports["sandbox-base"]:RequestRouteId("Properties:" .. data.id, false)
 			exports["sandbox-base"]:AddPlayerToRoute(source, routeId)
@@ -111,7 +111,7 @@ function RegisterCallbacks()
 
 			TriggerLatentClientEvent("Properties:Client:InnerStuff", source, 50000, property, pInt, furniture)
 
-			Player(source).state.tpLocation = property?.location?.front
+			Player(source).state.tpLocation = (property.location and property.location.front)
 		end
 		cb(true)
 	end)
@@ -125,7 +125,7 @@ function RegisterCallbacks()
 			or (not property.sold and exports['sandbox-jobs']:HasPermissionInJob(source, "realestate", "JOB_DOORS"))
 			or not property.locked or exports['sandbox-police']:IsInBreach(source, "property", data)
 		then
-			local pInt = property.upgrades?.interior
+			local pInt = (property.upgrades and property.upgrades.interior)
 
 			exports['sandbox-pwnzor']:TempPosIgnore(source)
 			local routeId = exports["sandbox-base"]:RequestRouteId("Properties:" .. data, false)
@@ -139,7 +139,7 @@ function RegisterCallbacks()
 
 			_insideProperties[property.id][source] = char:GetData("SID")
 
-			Player(source).state.tpLocation = property?.location?.front
+			Player(source).state.tpLocation = (property.location and property.location.front)
 
 			local furniture = GetPropertyFurniture(property.id, pInt)
 
@@ -190,7 +190,7 @@ function RegisterCallbacks()
 		elseif data.type == "logout" then
 			cb(property.keys and property.keys[char:GetData("ID")] ~= nil)
 		elseif data.type == "stash" then
-			if property.keys and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.stash or property.keys[char:GetData("ID")].Owner) and property.id or exports['sandbox-police']:IsInBreach(source, "property", property.id, true) then
+			if property.keys and property.keys[char:GetData("ID")] ~= nil and ((property.keys[char:GetData("ID")].Permissions and property.keys[char:GetData("ID")].Permissions.stash) or property.keys[char:GetData("ID")].Owner) and property.id or exports['sandbox-police']:IsInBreach(source, "property", property.id, true) then
 				local interior = PropertyInteriors[property.upgrades.interior]
 				local invType = 1000
 
@@ -200,7 +200,7 @@ function RegisterCallbacks()
 				if interior.inventoryOverride then
 					invType = interior.inventoryOverride
 				else
-					local level = property.upgrades?.storage or 1
+					local level = (property.upgrades and property.upgrades.storage) or 1
 					if PropertyStorage[property.type] and PropertyStorage[property.type][level] then
 						local storage = PropertyStorage[property.type][level]
 
@@ -239,7 +239,7 @@ function RegisterCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 
-		if char and property.keys and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.upgrade or property.keys[char:GetData("ID")].Owner) then
+		if char and property.keys and property.keys[char:GetData("ID")] ~= nil and ((property.keys[char:GetData("ID")].Permissions and property.keys[char:GetData("ID")].Permissions.upgrade) or property.keys[char:GetData("ID")].Owner) then
 			local propertyUpgrades = PropertyUpgrades[property.type]
 			if propertyUpgrades then
 				local thisUpgrade = propertyUpgrades[data.upgrade]
@@ -262,7 +262,7 @@ function RegisterCallbacks()
 
 						if success then
 							local upgraded = exports['sandbox-properties']:UpgradeSet(property.id, data.upgrade,
-								currntLevel + 1)
+								currentLevel + 1)
 							if not upgraded then
 								exports['sandbox-base']:LoggerError("Properties",
 									string.format("SID %s Failed to Upgrade Property %s After Payment (%s - Level %s)",
@@ -286,8 +286,8 @@ function RegisterCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local property = _properties[data.id]
 
-		if char and data.int and property.keys and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.upgrade or property.keys[char:GetData("ID")].Owner) then
-			local oldInterior = PropertyInteriors[property?.upgrades?.interior]
+		if char and data.int and property.keys and property.keys[char:GetData("ID")] ~= nil and ((property.keys[char:GetData("ID")].Permissions and property.keys[char:GetData("ID")].Permissions.upgrade) or property.keys[char:GetData("ID")].Owner) then
+			local oldInterior = PropertyInteriors[(property.upgrades and property.upgrades.interior)]
 			local newInterior = PropertyInteriors[data.int]
 			local p = exports['sandbox-finance']:AccountsGetPersonal(char:GetData("SID"))
 
@@ -306,7 +306,8 @@ function RegisterCallbacks()
 				local success = exports['sandbox-finance']:BalanceCharge(p.Account, price, {
 					type = "bill",
 					title = "Property Upgrade",
-					description = string.format("Upgrade Interior to %s on %s", (newInterior.info?.name or data.int),
+					description = string.format("Upgrade Interior to %s on %s",
+						((newInterior.info and newInterior.info.name) or data.int),
 						property.label),
 					data = {
 						property = property.id,
@@ -338,45 +339,43 @@ function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Properties:Dyn8:Search", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			local qry = {
-				label = {
-					["$regex"] = data,
-					["$options"] = "i",
-				},
-				sold = false,
-			}
+			local whereClause = "label LIKE ?"
+			local params = { "%" .. data .. "%" }
 
-			if Player(source).state.onDuty == 'realestate' then
-				qry = {
-					label = {
-						["$regex"] = data,
-						["$options"] = "i",
-					},
-				}
+			if Player(source).state.onDuty ~= 'realestate' then
+				whereClause = whereClause .. " AND sold = 0"
 			end
 
-			exports['sandbox-base']:DatabaseGameAggregate({
-				collection = "properties",
-				aggregate = {
-					{
-						["$match"] = {
-							label = {
-								["$regex"] = data,
-								["$options"] = "i",
-							},
-						},
-					},
-					{
-						['$limit'] = 80
-					},
-				},
-			}, function(success, results)
-				if not success then
-					cb(false)
-					return
-				end
-				cb(results)
-			end)
+			exports.oxmysql:execute('SELECT * FROM properties WHERE ' .. whereClause .. ' LIMIT 80', params,
+				function(results)
+					if not results then
+						cb(false)
+						return
+					end
+
+					local convertedResults = {}
+					for k, v in ipairs(results) do
+						local property = {
+							_id = v.id,
+							id = v.id,
+							type = v.type,
+							label = v.label,
+							price = v.price,
+							sold = v.sold == 1,
+							owner = v.owner,
+							location = v.location and json.decode(v.location) or nil,
+							upgrades = v.upgrades and json.decode(v.upgrades) or nil,
+							locked = v.locked == 1,
+							keys = v.keys and json.decode(v.keys) or nil,
+							data = v.data and json.decode(v.data) or nil,
+							foreclosed = v.foreclosed == 1,
+							soldAt = v.soldAt
+						}
+						table.insert(convertedResults, property)
+					end
+
+					cb(convertedResults)
+				end)
 		else
 			cb(false)
 		end
@@ -402,7 +401,7 @@ function RegisterCallbacks()
 							local defaultInterestRate = exports['sandbox-finance']:LoansGetDefaultInterestRate()
 
 							if #hasLoans <= 1 then
-								if loanData?.maxBorrowable and loanData.maxBorrowable > 0 and defaultInterestRate then
+								if (loanData and loanData.maxBorrowable) and loanData.maxBorrowable > 0 and defaultInterestRate then
 									local downPaymentPercent, loanWeeks = math.tointeger(data.deposit),
 										math.tointeger(data.time)
 									if downPaymentPercent and loanWeeks then
@@ -566,7 +565,7 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Properties:Dyn8:CheckCredit", function(source, data, cb)
-		local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(data?.target))
+		local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(data.target))
 		if targetChar then
 			local creditCheck = exports['sandbox-finance']:LoansGetAllowedLoanAmount(targetChar:GetData('SID'),
 				'property')
