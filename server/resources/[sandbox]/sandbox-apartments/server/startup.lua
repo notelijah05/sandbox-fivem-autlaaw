@@ -82,6 +82,15 @@ function Startup()
 		v.id = k
 		GlobalState[string.format("Apartment:%s", k)] = v
 		table.insert(aptIds, k)
+
+
+		exports.ox_inventory:RegisterStash(
+			string.format("apartment_%s", k),
+			string.format("%s Stash", v.name),
+			50,
+			100000,
+			k
+		)
 	end
 
 	GlobalState["Apartments"] = aptIds

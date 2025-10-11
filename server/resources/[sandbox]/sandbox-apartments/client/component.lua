@@ -397,10 +397,15 @@ exports("GetNearApartment", function()
 end)
 
 exports("ExtrasStash", function()
-	exports["sandbox-base"]:ServerCallback("Apartment:Validate", {
-		id = GlobalState[string.format("%s:", LocalPlayer.state.ID)],
-		type = "stash",
-	})
+	local apartmentType = LocalPlayer.state.inApartment.type
+	local characterSID = LocalPlayer.state.Character:GetData("SID")
+
+	if characterSID then
+		exports.ox_inventory:openInventory('stash', {
+			id = string.format("apartment_%s", apartmentType),
+			owner = characterSID
+		})
+	end
 end)
 
 exports("ExtrasWardrobe", function()
