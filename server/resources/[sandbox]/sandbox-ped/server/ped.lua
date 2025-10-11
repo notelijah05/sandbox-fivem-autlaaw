@@ -458,7 +458,6 @@ AddEventHandler('onResourceStart', function(resource)
 end)
 
 exports("Save", function(char, ped)
-	-- On the Verge of Suicide (WHY??? Apparently it won't update in mongodb unless this is done)
 	if ped and ped.customization and ped.customization.face and ped.customization.face.features and type(ped.customization.face.features) == "table" then
 		for k, v in pairs(ped.customization.face.features) do
 			ped.customization.face.features[tostring(k)] = v

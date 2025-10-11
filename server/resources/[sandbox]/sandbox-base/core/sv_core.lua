@@ -39,31 +39,7 @@ AddEventHandler("txAdmin:events:scheduledRestart", function(eventData)
 end)
 
 AddEventHandler("Core:Server:StartupReady", function()
-	CreateThread(function()
-		while not exports or exports[GetCurrentResourceName()] == nil do
-			Wait(1)
-		end
-
-		TriggerEvent(
-			"Database:Server:Initialize",
-			exports["sandbox-base"]:GetAuthUrl(),
-			exports["sandbox-base"]:GetAuthDb(),
-			exports["sandbox-base"]:GetGameUrl(),
-			exports["sandbox-base"]:GetGameDb()
-		)
-		while not COMPONENTS.Proxy.DatabaseReady do
-			Wait(1)
-		end
-
-		TriggerEvent("Proxy:Shared:RegisterReady")
-		for k, v in pairs(COMPONENTS) do
-			TriggerEvent("Proxy:Shared:ExtendReady", k)
-		end
-
-		Wait(1000)
-
-		SetupAPIHandler()
-	end)
+	SetupAPIHandler()
 end)
 
 -- CreateThread(function()
@@ -72,13 +48,6 @@ end)
 -- 		Wait(1000)
 -- 	end
 -- end)
-
-AddEventHandler("Database:Server:Ready", function(db)
-	if COMPONENTS.Database == nil and db ~= nil then
-		COMPONENTS.Database = db
-	end
-	COMPONENTS.Proxy.DatabaseReady = true
-end)
 
 RegisterNetEvent("Core:Server:ResourceStopped", function(resource)
 	local src = source
