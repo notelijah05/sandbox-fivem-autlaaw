@@ -503,6 +503,60 @@ CREATE TABLE IF NOT EXISTS `crafting_cooldowns` (
   `expires` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+DROP TABLE IF EXISTS `dealer_data`;
+CREATE TABLE IF NOT EXISTS `dealer_data` (
+    `dealership` VARCHAR(255) NOT NULL,
+    `sales` INT DEFAULT 0,
+    `revenue` DECIMAL(15,2) DEFAULT 0,
+    `inventory` LONGTEXT DEFAULT NULL,
+    `settings` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`dealership`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `dealer_records`;
+CREATE TABLE IF NOT EXISTS `dealer_records` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `dealership` VARCHAR(255) NOT NULL,
+    `time` INT(11) NOT NULL,
+    `seller` LONGTEXT DEFAULT NULL,
+    `buyer` LONGTEXT DEFAULT NULL,
+    `vehicle` LONGTEXT DEFAULT NULL,
+    `price` DECIMAL(15,2) DEFAULT 0,
+    `commission` DECIMAL(15,2) DEFAULT 0,
+    PRIMARY KEY (`id`),
+    KEY `dealership` (`dealership`),
+    KEY `time` (`time`),
+    CONSTRAINT `seller` CHECK (json_valid(`seller`)),
+    CONSTRAINT `buyer` CHECK (json_valid(`buyer`)),
+    CONSTRAINT `vehicle` CHECK (json_valid(`vehicle`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `dealer_records_buybacks`;
+CREATE TABLE IF NOT EXISTS `dealer_records_buybacks` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `dealership` VARCHAR(255) NOT NULL,
+    `time` INT(11) NOT NULL,
+    `seller` LONGTEXT DEFAULT NULL,
+    `buyer` LONGTEXT DEFAULT NULL,
+    `vehicle` LONGTEXT DEFAULT NULL,
+    `price` DECIMAL(15,2) DEFAULT 0,
+    `commission` DECIMAL(15,2) DEFAULT 0,
+    PRIMARY KEY (`id`),
+    KEY `dealership` (`dealership`),
+    KEY `time` (`time`),
+    CONSTRAINT `seller` CHECK (json_valid(`seller`)),
+    CONSTRAINT `buyer` CHECK (json_valid(`buyer`)),
+    CONSTRAINT `vehicle` CHECK (json_valid(`vehicle`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `dealer_showrooms`;
+CREATE TABLE IF NOT EXISTS `dealer_showrooms` (
+    `dealership` VARCHAR(255) NOT NULL,
+    `showroom` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`dealership`),
+    CONSTRAINT `showroom` CHECK (json_valid(`showroom`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `dealer_stock`;
 CREATE TABLE IF NOT EXISTS `dealer_stock` (
   `dealership` varchar(255) NOT NULL,
@@ -542,6 +596,20 @@ CREATE TABLE IF NOT EXISTS `donator_plates` (
   `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`player`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+DROP TABLE IF EXISTS `donator_vehicles`;
+CREATE TABLE IF NOT EXISTS `donator_vehicles` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `player` VARCHAR(255) NOT NULL,
+    `class` VARCHAR(50) NOT NULL,
+    `redeemed` TINYINT(1) NOT NULL DEFAULT 0,
+    `data` LONGTEXT DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `player` (`player`),
+    KEY `redeemed` (`redeemed`),
+    CONSTRAINT `data` CHECK (json_valid(`data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `donor_created_item`;
 CREATE TABLE IF NOT EXISTS `donor_created_item` (

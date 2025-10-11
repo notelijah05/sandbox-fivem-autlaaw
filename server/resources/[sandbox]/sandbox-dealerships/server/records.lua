@@ -2,24 +2,14 @@
 exports('RecordsGet', function(dealership)
     if _dealerships[dealership] then
         local p = promise.new()
-        exports['sandbox-base']:DatabaseGameFind({
-            collection = 'dealer_records',
-            query = {
-                dealership = dealership,
-            },
-            options = {
-                limit = 100,
-                sort = {
-                    time = -1,
-                },
-            }
-        }, function(success, results)
-            if success then
-                p:resolve(results or {})
-            else
-                p:resolve(false)
-            end
-        end)
+        exports.oxmysql:execute('SELECT * FROM dealer_records WHERE dealership = ? ORDER BY time DESC LIMIT 100',
+            { dealership }, function(results)
+                if results then
+                    p:resolve(results or {})
+                else
+                    p:resolve(false)
+                end
+            end)
         return Citizen.Await(p)
     end
     return false
@@ -34,78 +24,30 @@ exports('RecordsGetPage', function(category, term, dealership, page, perPage)
             skip = perPage * (page - 1)
         end
 
-        local orQuery = {
-            {
-                ["$expr"] = {
-                    ["$regexMatch"] = {
-                        input = {
-                            ["$concat"] = {
-                                { ['$convert'] = { input = "$seller.First", to = "string", onError = "error" } },
-                                " ",
-                                { ['$convert'] = { input = "$seller.Last", to = "string", onError = "error" } }
-                            },
-                        },
-                        regex = term,
-                        options = "i",
-                    },
-                },
-            },
-            {
-                ["$expr"] = {
-                    ["$regexMatch"] = {
-                        input = {
-                            ["$concat"] = { "$buyer.First", " ", "$buyer.Last" },
-                        },
-                        regex = term,
-                        options = "i",
-                    },
-                },
-            },
-            {
-                ["$expr"] = {
-                    ["$regexMatch"] = {
-                        input = {
-                            ["$concat"] = { "$vehicle.data.make", " ", "$vehicle.data.model" },
-                        },
-                        regex = term,
-                        options = "i",
-                    },
-                },
-            },
-        }
-
-        local andQuery = {
-            {
-                dealership = dealership,
-            },
-        }
+        local whereConditions = { "dealership = ?" }
+        local params = { dealership }
 
         if #term > 0 then
-            table.insert(andQuery, {
-                ["$or"] = orQuery,
-            })
+            table.insert(whereConditions,
+                "(CONCAT(JSON_UNQUOTE(JSON_EXTRACT(seller, '$.First')), ' ', JSON_UNQUOTE(JSON_EXTRACT(seller, '$.Last'))) LIKE ? OR CONCAT(JSON_UNQUOTE(JSON_EXTRACT(buyer, '$.First')), ' ', JSON_UNQUOTE(JSON_EXTRACT(buyer, '$.Last'))) LIKE ? OR CONCAT(JSON_UNQUOTE(JSON_EXTRACT(vehicle, '$.data.make')), ' ', JSON_UNQUOTE(JSON_EXTRACT(vehicle, '$.data.model'))) LIKE ?)")
+            local searchTerm = "%" .. term .. "%"
+            table.insert(params, searchTerm)
+            table.insert(params, searchTerm)
+            table.insert(params, searchTerm)
         end
 
         if category ~= "all" then
-            table.insert(andQuery, {
-                ["vehicle.data.category"] = category,
-            })
+            table.insert(whereConditions, "JSON_UNQUOTE(JSON_EXTRACT(vehicle, '$.data.category')) = ?")
+            table.insert(params, category)
         end
 
-        exports['sandbox-base']:DatabaseGameFind({
-            collection = 'dealer_records',
-            query = {
-                ["$and"] = andQuery,
-            },
-            options = {
-                sort = {
-                    time = -1,
-                },
-                skip = skip,
-                limit = perPage + 1,
-            }
-        }, function(success, results)
-            if success then
+        local whereClause = table.concat(whereConditions, " AND ")
+        local query = "SELECT * FROM dealer_records WHERE " .. whereClause .. " ORDER BY time DESC LIMIT ? OFFSET ?"
+        table.insert(params, perPage + 1)
+        table.insert(params, skip)
+
+        exports.oxmysql:execute(query, params, function(results)
+            if results then
                 local more = false
                 if #results > perPage then
                     more = true
@@ -129,12 +71,18 @@ exports('RecordsCreate', function(dealership, document)
     if type(document) == 'table' then
         document.dealership = dealership
         local p = promise.new()
-        exports['sandbox-base']:DatabaseGameInsertOne({
-            collection = 'dealer_records',
-            document = document,
-        }, function(success, inserted)
-            p:resolve(success and inserted > 0)
-        end)
+
+        local sellerJson = document.seller and json.encode(document.seller) or nil
+        local buyerJson = document.buyer and json.encode(document.buyer) or nil
+        local vehicleJson = document.vehicle and json.encode(document.vehicle) or nil
+
+        exports.oxmysql:execute(
+            'INSERT INTO dealer_records (dealership, time, seller, buyer, vehicle, price, commission) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            { document.dealership, document.time, sellerJson, buyerJson, vehicleJson, document.price, document
+                .commission },
+            function(insertId)
+                p:resolve(insertId and insertId > 0)
+            end)
         return Citizen.Await(p)
     end
     return false
@@ -144,12 +92,18 @@ exports('RecordsCreateBuyBack', function(dealership, document)
     if type(document) == 'table' then
         document.dealership = dealership
         local p = promise.new()
-        exports['sandbox-base']:DatabaseGameInsertOne({
-            collection = 'dealer_records_buybacks',
-            document = document,
-        }, function(success, inserted)
-            p:resolve(success and inserted > 0)
-        end)
+
+        local sellerJson = document.seller and json.encode(document.seller) or nil
+        local buyerJson = document.buyer and json.encode(document.buyer) or nil
+        local vehicleJson = document.vehicle and json.encode(document.vehicle) or nil
+
+        exports.oxmysql:execute(
+            'INSERT INTO dealer_records_buybacks (dealership, time, seller, buyer, vehicle, price, commission) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            { document.dealership, document.time, sellerJson, buyerJson, vehicleJson, document.price, document
+                .commission },
+            function(insertId)
+                p:resolve(insertId and insertId > 0)
+            end)
         return Citizen.Await(p)
     end
     return false
