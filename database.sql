@@ -185,6 +185,35 @@ CREATE TABLE IF NOT EXISTS `business_configs` (
     PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE IF EXISTS `business_documents`;
+CREATE TABLE IF NOT EXISTS `business_documents` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `job` VARCHAR(255) NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `content` LONGTEXT DEFAULT NULL,
+    `author` LONGTEXT DEFAULT NULL,
+    `history` LONGTEXT DEFAULT NULL,
+    `lastUpdated` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `job` (`job`),
+    KEY `title` (`title`),
+    CONSTRAINT `author` CHECK (json_valid(`author`)),
+    CONSTRAINT `history` CHECK (json_valid(`history`)),
+    CONSTRAINT `lastUpdated` CHECK (json_valid(`lastUpdated`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `business_notices`;
+CREATE TABLE IF NOT EXISTS `business_notices` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `job` VARCHAR(255) NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `content` LONGTEXT DEFAULT NULL,
+    `author` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `job` (`job`),
+    CONSTRAINT `author` CHECK (json_valid(`author`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `business_phones`;
 CREATE TABLE IF NOT EXISTS `business_phones` (
   `id` char(50) NOT NULL DEFAULT 'AUTO_INCREMENT',

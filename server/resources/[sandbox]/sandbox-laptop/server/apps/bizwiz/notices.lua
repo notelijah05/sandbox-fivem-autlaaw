@@ -10,27 +10,29 @@ exports('BizWizNoticesCreate', function(source, job, data)
 			Last = char:GetData("Last"),
 		}
 
-		exports['sandbox-base']:DatabaseGameInsertOne({
-			collection = "business_notices",
-			document = data,
-		}, function(success, result, insertIds)
-			if not success then
-				p:resolve(false)
-				return
-			end
+		local authorJson = json.encode(data.author)
 
-			data._id = insertIds[1]
-			table.insert(_businessNotices, data)
+		exports.oxmysql:execute(
+			'INSERT INTO business_notices (job, title, content, author) VALUES (?, ?, ?, ?)',
+			{ data.job, data.title, data.content, authorJson },
+			function(result)
+				if result and result.insertId then
+					data._id = result.insertId
+					table.insert(_businessNotices, data)
 
-			local jobDutyData = exports['sandbox-jobs']:DutyGetDutyData(job)
-			if jobDutyData and jobDutyData.DutyPlayers then
-				for k, v in ipairs(jobDutyData.DutyPlayers) do
-					TriggerClientEvent("Laptop:Client:AddData", v, "businessNotices", data)
+					local jobDutyData = exports['sandbox-jobs']:DutyGetDutyData(job)
+					if jobDutyData and jobDutyData.DutyPlayers then
+						for k, v in ipairs(jobDutyData.DutyPlayers) do
+							TriggerClientEvent("Laptop:Client:AddData", v, "businessNotices", data)
+						end
+					end
+
+					p:resolve(result.insertId)
+				else
+					p:resolve(false)
 				end
 			end
-
-			p:resolve(insertIds[1])
-		end)
+		)
 		return Citizen.Await(p)
 	end
 	return false
@@ -38,49 +40,44 @@ end)
 
 exports('BizWizNoticesDelete', function(job, id)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameDeleteOne({
-		collection = "business_notices",
-		query = {
-			_id = id,
-			job = job,
-		},
-	}, function(success, deleted)
-		if not success then
+	exports.oxmysql:execute('DELETE FROM business_notices WHERE id = ? AND job = ?', { id, job }, function(affectedRows)
+		if affectedRows > 0 then
+			for k, v in ipairs(_businessNotices) do
+				if v._id == id then
+					table.remove(_businessNotices, k)
+					break
+				end
+			end
+
+			local jobDutyData = exports['sandbox-jobs']:DutyGetDutyData(job)
+			if jobDutyData and jobDutyData.DutyPlayers then
+				for k, v in ipairs(jobDutyData.DutyPlayers) do
+					TriggerClientEvent("Laptop:Client:RemoveData", v, "businessNotices", id)
+				end
+			end
+
+			p:resolve(true)
+		else
 			p:resolve(false)
-			return
 		end
-
-		for k, v in ipairs(_businessNotices) do
-			if v._id == id then
-				table.remove(_businessNotices, k)
-				break
-			end
-		end
-
-		local jobDutyData = exports['sandbox-jobs']:DutyGetDutyData(job)
-		if jobDutyData and jobDutyData.DutyPlayers then
-			for k, v in ipairs(jobDutyData.DutyPlayers) do
-				TriggerClientEvent("Laptop:Client:RemoveData", v, "businessNotices", id)
-			end
-		end
-
-		p:resolve(true)
 	end)
 	return Citizen.Await(p)
 end)
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "business_notices",
-		query = {},
-	}, function(success, results)
-		if not success then
-			return
-		end
+	exports.oxmysql:execute('SELECT * FROM business_notices', {}, function(results)
+		if results then
+			for i, notice in ipairs(results) do
+				if notice.author then
+					notice.author = json.decode(notice.author)
+				end
+				notice._id = notice.id
+			end
 
-		exports['sandbox-base']:LoggerTrace("Laptop", "[BizWiz] Loaded ^2" .. #results .. "^7 Business Notices",
-			{ console = true })
-		_businessNotices = results
+			exports['sandbox-base']:LoggerTrace("Laptop", "[BizWiz] Loaded ^2" .. #results .. "^7 Business Notices",
+				{ console = true })
+			_businessNotices = results
+		end
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Laptop:BizWiz:Notice:Create", function(source, data, cb)
