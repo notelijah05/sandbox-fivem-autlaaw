@@ -429,6 +429,7 @@ RegisterNetEvent("Apartment:Client:Enter", function(targetType, target, wakeUp)
 	exports['sandbox-apartments']:ClientEnter(targetType, target, wakeUp)
 end)
 
+RegisterNetEvent("Characters:Client:Logout")
 AddEventHandler("Characters:Client:Logout", function()
 	for k, v in pairs(_apartmentZones) do
 		if exports.ox_target:zoneExists(v) then

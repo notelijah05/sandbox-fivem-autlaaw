@@ -16,7 +16,16 @@ AddEventHandler("onResourceStart", function(resource)
         end
 
         if item then
-            local inventory = Inventory(tonumber(args[1])) --[[@as OxInventory]]
+            local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
+
+            if not targetChar then
+                exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+                return
+            end
+
+            local targetPlayer = targetChar:GetData("Source")
+
+            local inventory = Inventory(targetPlayer) --[[@as OxInventory]]
             local count = tonumber(args[3]) and math.max(tonumber(args[3]), 1) or 1
 
             local success, response = Inventory.AddItem(inventory, item.name, count,
@@ -30,7 +39,7 @@ AddEventHandler("onResourceStart", function(resource)
             if not success then
                 exports['sandbox-hud']:NotifError(source,
                     string.format("Failed to give %sx %s to SID: %s (%s)", count, item.name, args[1], response))
-                return Citizen.Trace(('Failed to give %sx %s to player %s (%s)'):format(count, item.name, args[1],
+                return Citizen.Trace(('Failed to give %sx %s to SID %s (%s)'):format(count, item.name, args[1],
                     response))
             end
 
@@ -38,30 +47,39 @@ AddEventHandler("onResourceStart", function(resource)
 
             if server.loglevel > 0 then
                 lib.logger(sourceInventory.owner, 'admin',
-                    ('"%s" gave %sx %s to "%s"'):format(sourceInventory.label, count, item.name, inventory.label))
+                    ('"%s" gave %sx %s to SID "%s"'):format(sourceInventory.label, count, item.name, args[1]))
             end
         end
     end, {
-        help = "Gives an item to a player with the given id",
+        help = "Gives an item to a player with the given SID",
         params = {
-            { name = 'Target', help = 'The player to receive the item' },
-            { name = 'Item',   help = 'The name of the item' },
-            { name = 'Count',  help = 'The amount of the item to add' },
-            { name = 'Type',   help = 'Sets the "type" metadata to the value' },
+            { name = 'SID',   help = 'The SID of the player to receive the item' },
+            { name = 'Item',  help = 'The name of the item' },
+            { name = 'Count', help = 'The amount of the item to add' },
+            { name = 'Type',  help = 'Sets the "type" metadata to the value' },
         },
     }, -1)
 
     exports["sandbox-chat"]:RegisterAdminCommand("removeitem", function(source, args, rawCommand)
         local item = Items(args[2])
         if item then
-            local inventory = Inventory(tonumber(args[1])) --[[@as OxInventory]]
+            local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
+
+            if not targetChar then
+                exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+                return
+            end
+
+            local targetPlayer = targetChar:GetData("Source")
+
+            local inventory = Inventory(targetPlayer) --[[@as OxInventory]]
             local count = tonumber(args[3]) and math.max(tonumber(args[3]), 1) or 1
 
             local success, response = Inventory.RemoveItem(inventory, item.name, count,
                 args[4] and { type = tonumber(args[4]) or args[4] }, nil, true)
 
             if not success then
-                return Citizen.Trace(('Failed to remove %sx %s from player %s (%s)'):format(count, item.name, args[1],
+                return Citizen.Trace(('Failed to remove %sx %s from SID %s (%s)'):format(count, item.name, args[1],
                     response))
             end
 
@@ -69,54 +87,62 @@ AddEventHandler("onResourceStart", function(resource)
 
             if server.loglevel > 0 then
                 lib.logger(sourceInventory.owner, 'admin',
-                    ('"%s" removed %sx %s from "%s"'):format(sourceInventory.label, count, item.name, inventory.label))
+                    ('"%s" removed %sx %s from SID "%s"'):format(sourceInventory.label, count, item.name, args[1]))
             end
         end
     end, {
-        help = "Removes an item from a player with the given id",
+        help = "Removes an item from a player with the given SID",
         params = {
-            { name = 'Target', help = 'The player to remove the item from' },
-            { name = 'Item',   help = 'The name of the item' },
-            { name = 'Count',  help = 'The amount of the item to remove' },
-            { name = 'Type',   help = 'Only remove items with a matching metadata "type"' },
+            { name = 'SID',   help = 'The SID of the player to remove the item from' },
+            { name = 'Item',  help = 'The name of the item' },
+            { name = 'Count', help = 'The amount of the item to remove' },
+            { name = 'Type',  help = 'Only remove items with a matching metadata "type"' },
         },
     }, -1)
 
     exports["sandbox-chat"]:RegisterAdminCommand("setitem", function(source, args, rawCommand)
-        local target = args.target
-        local item = Items(args.item)
-        local count = args.count or 1
-        local type = args.type
+        local item = Items(args[2])
+        local count = args[3] or 1
+        local type = args[4]
 
         if item then
-            local inventory = Inventory(target) --[[@as OxInventory]]
+            local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
+
+            if not targetChar then
+                exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+                return
+            end
+
+            local targetPlayer = targetChar:GetData("Source")
+
+            local inventory = Inventory(targetPlayer) --[[@as OxInventory]]
             local success, response = exports.ox_inventory:SetItem(inventory, item.name, count or 0,
                 type and { type = tonumber(type) or type })
 
             if not success then
-                return Trace(('Failed to set %s count to %sx for player %s (%s)'):format(item.name, count,
-                    target, response))
+                return Trace(('Failed to set %s count to %sx for SID %s (%s)'):format(item.name, count,
+                    args[1], response))
             end
 
-            source = Inventory(source) or { label = 'console', owner = 'console' }
+            local sourceInventory = Inventory(source) or { label = 'console', owner = 'console' }
 
             if server.loglevel > 0 then
-                lib.logger(source.owner, 'admin',
-                    ('"%s" set "%s" %s count to %sx'):format(source.label, inventory.label, item.name, count))
+                lib.logger(sourceInventory.owner, 'admin',
+                    ('"%s" set SID "%s" %s count to %sx'):format(sourceInventory.label, args[1], item.name, count))
             end
         end
     end, {
-        help = 'Sets the item count for a player, removing or adding as needed',
+        help = "Sets the item count for a player with the given SID, removing or adding as needed",
         params = {
-            { name = 'target', type = 'playerId',                                     help = 'The player to set the items for' },
-            { name = 'item',   type = 'string',                                       help = 'The name of the item' },
-            { name = 'count',  type = 'number',                                       help = 'The amount of items to set',     optional = true },
-            { name = 'type',   help = 'Add or remove items with the metadata "type"', optional = true },
+            { name = 'SID',   help = 'The SID of the player to set the items for' },
+            { name = 'Item',  help = 'The name of the item' },
+            { name = 'Count', help = 'The amount of the item to set' },
+            { name = 'Type',  help = 'Sets the "type" metadata to the value' },
         },
-    })
+    }, -1)
 
     exports["sandbox-chat"]:RegisterAdminCommand("clearevidence", function(source, args, rawCommand)
-        local locker = args.locker
+        local locker = args[1]
         if not server.isPlayerBoss then return end
 
         local inventory = Inventory(source)
@@ -127,61 +153,107 @@ AddEventHandler("onResourceStart", function(resource)
             MySQL.query('DELETE FROM ox_inventory WHERE name = ?', { ('evidence-%s'):format(locker) })
         end
     end, {
-        help = 'Clears a police evidence locker with the given id',
+        help = "Clears a police evidence locker with the given id",
         params = {
-            { name = 'locker', type = 'number', help = 'The locker id to clear' },
+            { name = 'locker', help = 'The locker id to clear' },
         },
-    })
+    }, 1)
 
-    exports["sandbox-chat"]:RegisterAdminCommand("takeinv", function(source, args, rawCommand)
-        local target = args.target
-        exports.ox_inventory:ConfiscateInventory(target)
+    exports["sandbox-chat"]:RegisterAdminCommand("confiscateinv", function(source, args, rawCommand)
+        local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
+
+        if not targetChar then
+            exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+            return
+        end
+
+        local targetPlayer = targetChar:GetData("Source")
+
+        exports.ox_inventory:ConfiscateInventory(targetPlayer)
+        exports['sandbox-hud']:NotifSuccess(source, "Confiscated inventory for SID: " .. args[1])
     end, {
-        help = 'Confiscates the target inventory, to restore with /returninv',
+        help = "Confiscates the target inventory by SID, to restore with /returninv",
         params = {
-            { name = 'target', type = 'playerId', help = 'The player to confiscate items from' },
+            { name = 'SID', help = 'The SID of the player to confiscate items from' },
         },
-    })
+    }, 1)
 
     exports["sandbox-chat"]:RegisterAdminCommand("returninv", function(source, args, rawCommand)
-        local target = args.target
-        exports.ox_inventory:ReturnInventory(target)
+        local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
+
+        if not targetChar then
+            exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+            return
+        end
+
+        local targetPlayer = targetChar:GetData("Source")
+
+        exports.ox_inventory:ReturnInventory(targetPlayer)
+        exports['sandbox-hud']:NotifSuccess(source, "Returned inventory for SID: " .. args[1])
     end, {
-        help = 'Restores a previously confiscated inventory for the target',
+        help = 'Restores a previously confiscated inventory for the target by SID',
         params = {
-            { name = 'target', type = 'playerId', help = 'The player to return items to' },
+            { name = 'SID', help = 'The SID of the player to return items to' },
         },
-    })
+    }, 1)
 
     exports["sandbox-chat"]:RegisterAdminCommand("clearinv", function(source, args, rawCommand)
-        local invId = args.invId
-        exports.ox_inventory:ClearInventory(tonumber(invId) or invId == 'me' and source or invId)
+        if args[1] == 'me' then
+            exports.ox_inventory:ClearInventory(source)
+            exports['sandbox-hud']:NotifSuccess(source, "Cleared your inventory")
+            return
+        end
+
+        local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
+
+        if not targetChar then
+            exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+            return
+        end
+
+        local targetPlayer = targetChar:GetData("Source")
+
+        exports.ox_inventory:ClearInventory(targetPlayer)
+        exports['sandbox-hud']:NotifSuccess(source, "Cleared inventory for SID: " .. args[1])
     end, {
-        help = 'Wipes all items from the target inventory',
+        help = 'Wipes all items from the target inventory (supports SID or "me")',
         params = {
-            { name = 'invId', help = 'The inventory to wipe items from' },
+            { name = 'SID', help = 'The SID or "me" to wipe items from' },
         },
-    })
+    }, 1)
 
     exports["sandbox-chat"]:RegisterAdminCommand("saveinv", function(source, args, rawCommand)
-        local lock = args.lock
+        local lock = args[1]
         exports.ox_inventory:SaveInventories(lock == 'true', false)
     end, {
         help = 'Save all pending inventory changes to the database',
         params = {
             { name = 'lock', help = 'Lock inventory access, until restart or saved without a lock', optional = true },
         },
-    })
+    }, -1)
 
     exports["sandbox-chat"]:RegisterAdminCommand("viewinv", function(source, args, rawCommand)
-        local invId = args.invId
-        exports.ox_inventory:InspectInventory(source, tonumber(invId) or invId)
+        if args[1] == 'me' then
+            exports.ox_inventory:InspectInventory(source, source)
+            return
+        end
+
+        local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
+
+        if not targetChar then
+            exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+            return
+        end
+
+        local targetPlayer = targetChar:GetData("Source")
+
+        exports.ox_inventory:InspectInventory(source, targetPlayer)
     end, {
-        help = 'Inspect the target inventory without allowing interactions',
+        help = 'Inspect the target inventory without allowing interactions (supports SID or "me")',
         params = {
-            { name = 'invId', help = 'The inventory to inspect' },
+            { name = 'SID', help = 'The SID or "me" to inspect' },
         },
-    })
+    }, 1)
 end)
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", server.playerDropped)
@@ -194,7 +266,7 @@ local function loadPlayerInv(src, newPlayer)
     local name = string.format('%s %s', char:GetData("First"), char:GetData("Last"))
     server.setPlayerInventory({ identifier = id, name = name, source = src })
 
-    Wait(3000)
+    --Wait(3000)
 
     exports.ox_inventory:SetItem(src, 'money', cash)
     if newPlayer then
