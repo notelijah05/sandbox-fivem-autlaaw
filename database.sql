@@ -186,6 +186,13 @@ CREATE TABLE IF NOT EXISTS `business_phones` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+CREATE TABLE IF NOT EXISTS `business_tvs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tv` varchar(255) DEFAULT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 DROP TABLE IF EXISTS `changelogs`;
 CREATE TABLE IF NOT EXISTS `changelogs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
