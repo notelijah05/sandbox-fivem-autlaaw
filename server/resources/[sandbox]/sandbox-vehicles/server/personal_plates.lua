@@ -250,68 +250,46 @@ end
 
 exports("DonatorPlatesAdd", function(playerIdentifier)
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameUpdateOne({
-        collection = "donator_plates",
-        query = {
-            player = playerIdentifier,
-        },
-        update = {
-            ["$inc"] = {
-                pending = 1
-            }
-        },
-        options = {
-            upsert = true,
-        }
-    }, function(success)
-        p:resolve(success)
-    end)
+
+    exports.oxmysql:execute('UPDATE donator_plates SET pending = pending + 1 WHERE player = ?', { playerIdentifier },
+        function(affectedRows)
+            if affectedRows > 0 then
+                p:resolve(true)
+            else
+                exports.oxmysql:insert(
+                    'INSERT INTO donator_plates (player, pending, redeemed) VALUES (?, 1, 0) ON DUPLICATE KEY UPDATE pending = pending + 1',
+                    { playerIdentifier }, function(insertId)
+                        p:resolve(insertId and insertId > 0)
+                    end)
+            end
+        end)
 
     return Citizen.Await(p)
 end)
 
 exports("DonatorPlatesCheck", function(playerIdentifier)
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameFindOne({
-        collection = "donator_plates",
-        query = {
-            player = playerIdentifier,
-        },
-    }, function(success, results)
-        if success then
-            p:resolve(results)
-        else
-            p:resolve(false)
-        end
-    end)
 
-    local res = Citizen.Await(p)
+    exports.oxmysql:execute('SELECT pending, redeemed FROM donator_plates WHERE player = ?', { playerIdentifier },
+        function(result)
+            if result and #result > 0 then
+                p:resolve(result[1])
+            else
+                p:resolve(false)
+            end
+        end)
 
-    if res and res[1] and res[1].player then
-        return res[1]
-    end
-    return false
+    return Citizen.Await(p)
 end)
 
 exports("DonatorPlatesRemove", function(playerIdentifier, amount)
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameUpdateOne({
-        collection = "donator_plates",
-        query = {
-            player = playerIdentifier,
-            pending = {
-                ["$gte"] = amount
-            }
-        },
-        update = {
-            ["$inc"] = {
-                pending = -amount,
-                redeemed = amount,
-            }
-        },
-    }, function(success)
-        p:resolve(success)
-    end)
+
+    exports.oxmysql:execute(
+        'UPDATE donator_plates SET pending = pending - ?, redeemed = redeemed + ? WHERE player = ? AND pending >= ?',
+        { amount, amount, playerIdentifier, amount }, function(affectedRows)
+            p:resolve(affectedRows > 0)
+        end)
 
     return Citizen.Await(p)
 end)

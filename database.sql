@@ -464,6 +464,16 @@ CREATE TABLE IF NOT EXISTS `donator_items` (
   KEY `player_redeemed` (`player`,`redeemed`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
+DROP TABLE IF EXISTS `donator_plates`;
+CREATE TABLE IF NOT EXISTS `donator_plates` (
+  `player` varchar(255) NOT NULL,
+  `pending` int(11) NOT NULL DEFAULT 0,
+  `redeemed` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`player`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
 DROP TABLE IF EXISTS `donor_created_item`;
 CREATE TABLE IF NOT EXISTS `donor_created_item` (
   `sid` int(11) NOT NULL,
