@@ -28,32 +28,27 @@ end)
 
 exports("LoansGetPlayerLoans", function(stateId, type)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "loans",
-		query = {
-			SID = stateId,
-			Type = type,
-			["$or"] = {
-				{
-					Remaining = {
-						["$gt"] = 0,
-					},
-				},
-				{
-					Remaining = 0,
-					LastPayment = {
-						["$gte"] = os.time() + (60 * 60 * 24 * 1),
-					},
-				},
-			},
-		},
-	}, function(success, results)
-		if not success then
-			p:resolve(false)
-			return
-		end
-		p:resolve(results)
-	end)
+	local currentTime = os.time()
+	local oneDayAgo = currentTime - (60 * 60 * 24 * 1)
+
+	exports.oxmysql:execute(
+		'SELECT * FROM loans WHERE SID = ? AND Type = ? AND (Remaining > 0 OR (Remaining = 0 AND LastPayment >= ?))',
+		{ stateId, type, oneDayAgo },
+		function(results)
+			if results then
+				for k, v in ipairs(results) do
+					if v.paymentHistory then
+						v.paymentHistory = json.decode(v.paymentHistory)
+					end
+					if v.terms then
+						v.terms = json.decode(v.terms)
+					end
+				end
+				p:resolve(results)
+			else
+				p:resolve(false)
+			end
+		end)
 	return Citizen.Await(p)
 end)
 
@@ -84,16 +79,18 @@ exports("LoansCreateVehicleLoan", function(targetSource, VIN, totalCost, downPay
 			LastPayment = 0,
 		}
 
-		exports['sandbox-base']:DatabaseGameInsertOne({
-			collection = "loans",
-			document = doc,
-		}, function(success, inserted)
-			if success and inserted > 0 then
-				p:resolve(true)
-			else
-				p:resolve(false)
-			end
-		end)
+		exports.oxmysql:execute(
+			'INSERT INTO loans (Creation, SID, Type, AssetIdentifier, Defaulted, InterestRate, Total, Remaining, Paid, DownPayment, TotalPayments, PaidPayments, MissablePayments, MissedPayments, TotalMissedPayments, NextPayment, LastPayment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			{ doc.Creation, doc.SID, doc.Type, doc.AssetIdentifier, doc.Defaulted and 1 or 0, doc.InterestRate, doc
+				.Total, doc.Remaining, doc.Paid, doc.DownPayment, doc.TotalPayments, doc.PaidPayments, doc
+				.MissablePayments, doc.MissedPayments, doc.TotalMissedPayments, doc.NextPayment, doc.LastPayment },
+			function(insertId)
+				if insertId and insertId > 0 then
+					p:resolve(true)
+				else
+					p:resolve(false)
+				end
+			end)
 
 		local res = Citizen.Await(p)
 		return res
@@ -128,16 +125,18 @@ exports("LoansCreatePropertyLoan", function(targetSource, propertyId, totalCost,
 			LastPayment = 0,
 		}
 
-		exports['sandbox-base']:DatabaseGameInsertOne({
-			collection = "loans",
-			document = doc,
-		}, function(success, inserted)
-			if success and inserted > 0 then
-				p:resolve(true)
-			else
-				p:resolve(false)
-			end
-		end)
+		exports.oxmysql:execute(
+			'INSERT INTO loans (Creation, SID, Type, AssetIdentifier, Defaulted, InterestRate, Total, Remaining, Paid, DownPayment, TotalPayments, PaidPayments, MissablePayments, MissedPayments, TotalMissedPayments, NextPayment, LastPayment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			{ doc.Creation, doc.SID, doc.Type, doc.AssetIdentifier, doc.Defaulted and 1 or 0, doc.InterestRate, doc
+				.Total, doc.Remaining, doc.Paid, doc.DownPayment, doc.TotalPayments, doc.PaidPayments, doc
+				.MissablePayments, doc.MissedPayments, doc.TotalMissedPayments, doc.NextPayment, doc.LastPayment },
+			function(insertId)
+				if insertId and insertId > 0 then
+					p:resolve(true)
+				else
+					p:resolve(false)
+				end
+			end)
 
 		local res = Citizen.Await(p)
 		return res
@@ -301,30 +300,25 @@ end)
 exports("LoansHasRemainingPayments", function(assetType, assetId, checkAge)
 	-- checkAge (check if older than certain age (days))
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "loans",
-		query = {
-			Type = assetType,
-			AssetIdentifier = assetId,
-		},
-	}, function(success, results)
-		if success and #results > 0 then
-			local l = results[1]
+	exports.oxmysql:execute('SELECT * FROM loans WHERE Type = ? AND AssetIdentifier = ?', { assetType, assetId },
+		function(results)
+			if results and #results > 0 then
+				local l = results[1]
 
-			if checkAge and l.Creation >= (os.time() - (60 * 60 * 24 * checkAge)) then
-				p:resolve(true)
-				return
-			end
+				if checkAge and l.Creation >= (os.time() - (60 * 60 * 24 * checkAge)) then
+					p:resolve(true)
+					return
+				end
 
-			if l and l.Remaining and l.Remaining > 0 then
-				p:resolve(true)
+				if l and l.Remaining and l.Remaining > 0 then
+					p:resolve(true)
+				else
+					p:resolve(false)
+				end
 			else
 				p:resolve(false)
 			end
-		else
-			p:resolve(false)
-		end
-	end)
+		end)
 
 	return Citizen.Await(p)
 end)
@@ -348,37 +342,33 @@ end)
 exports("LoansHasBeenDefaulted", function(assetType, assetId)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "loans",
-		query = {
-			Type = assetType,
-			AssetIdentifier = assetId,
-			Defaulted = true,
-		},
-	}, function(success, results)
-		if success and #results > 0 then
-			local l = results[1]
+	exports.oxmysql:execute('SELECT * FROM loans WHERE Type = ? AND AssetIdentifier = ? AND Defaulted = ?',
+		{ assetType, assetId, 1 }, function(results)
+			if results and #results > 0 then
+				local l = results[1]
 
-			p:resolve(l)
-		else
-			p:resolve(false)
-		end
-	end)
+				p:resolve(l)
+			else
+				p:resolve(false)
+			end
+		end)
 
 	return Citizen.Await(p)
 end)
 
 function GetLoanByID(loanId, stateId)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "loans",
-		query = {
-			_id = loanId,
-			SID = stateId,
-		},
-	}, function(success, results)
-		if success and #results > 0 then
-			p:resolve(results[1])
+	exports.oxmysql:execute('SELECT * FROM loans WHERE id = ? AND SID = ?', { loanId, stateId }, function(results)
+		if results and #results > 0 then
+			local loan = results[1]
+			if loan.paymentHistory then
+				loan.paymentHistory = json.decode(loan.paymentHistory)
+			end
+			if loan.terms then
+				loan.terms = json.decode(loan.terms)
+			end
+			loan.Defaulted = loan.Defaulted == 1
+			p:resolve(loan)
 		else
 			p:resolve(false)
 		end
@@ -390,19 +380,52 @@ end
 
 function UpdateLoanById(loanId, update)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "loans",
-		query = {
-			_id = loanId,
-		},
-		update = update,
-	}, function(success, updated)
-		if success and updated > 0 then
-			p:resolve(true)
-		else
-			p:resolve(false)
+
+	local setParts = {}
+	local incParts = {}
+	local values = {}
+
+	if update["$set"] then
+		for k, v in pairs(update["$set"]) do
+			if k == "Defaulted" then
+				table.insert(setParts, k .. " = ?")
+				table.insert(values, v and 1 or 0)
+			else
+				table.insert(setParts, k .. " = ?")
+				table.insert(values, v)
+			end
 		end
-	end)
+	end
+
+	if update["$inc"] then
+		for k, v in pairs(update["$inc"]) do
+			table.insert(incParts, k .. " = " .. k .. " + ?")
+			table.insert(values, v)
+		end
+	end
+
+	local updateParts = {}
+	for _, part in ipairs(setParts) do
+		table.insert(updateParts, part)
+	end
+	for _, part in ipairs(incParts) do
+		table.insert(updateParts, part)
+	end
+
+	if #updateParts > 0 then
+		local query = "UPDATE loans SET " .. table.concat(updateParts, ", ") .. " WHERE id = ?"
+		table.insert(values, loanId)
+
+		exports.oxmysql:execute(query, values, function(affectedRows)
+			if affectedRows and affectedRows > 0 then
+				p:resolve(true)
+			else
+				p:resolve(false)
+			end
+		end)
+	else
+		p:resolve(false)
+	end
 
 	local res = Citizen.Await(p)
 	return res

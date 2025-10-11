@@ -686,6 +686,43 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   CONSTRAINT `Data` CHECK (json_valid(`Data`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
+DROP TABLE IF EXISTS `loans`;
+CREATE TABLE IF NOT EXISTS `loans` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `Creation` INT(11) NOT NULL,
+    `SID` VARCHAR(255) NOT NULL,
+    `Type` VARCHAR(50) NOT NULL,
+    `AssetIdentifier` VARCHAR(255) NOT NULL,
+    `Defaulted` TINYINT(1) NOT NULL DEFAULT 0,
+    `InterestRate` DECIMAL(5,2) NOT NULL,
+    `Total` DECIMAL(15,2) NOT NULL,
+    `Remaining` DECIMAL(15,2) NOT NULL,
+    `Paid` DECIMAL(15,2) NOT NULL,
+    `DownPayment` DECIMAL(15,2) NOT NULL,
+    `TotalPayments` INT(11) NOT NULL,
+    `PaidPayments` INT(11) NOT NULL,
+    `MissablePayments` INT(11) NOT NULL,
+    `MissedPayments` INT(11) NOT NULL,
+    `TotalMissedPayments` INT(11) NOT NULL,
+    `NextPayment` INT(11) NOT NULL,
+    `LastPayment` INT(11) NOT NULL,
+    `paymentHistory` LONGTEXT DEFAULT NULL,
+    `terms` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `SID` (`SID`),
+    KEY `Type` (`Type`),
+    KEY `AssetIdentifier` (`AssetIdentifier`),
+    CONSTRAINT `paymentHistory` CHECK (json_valid(`paymentHistory`)),
+    CONSTRAINT `terms` CHECK (json_valid(`terms`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `loans_credit_scores`;
+CREATE TABLE IF NOT EXISTS `loans_credit_scores` (
+    `SID` VARCHAR(255) NOT NULL,
+    `Score` INT(11) NOT NULL DEFAULT 0,
+    PRIMARY KEY (`SID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `mdt_charges`;
 CREATE TABLE IF NOT EXISTS `mdt_charges` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
