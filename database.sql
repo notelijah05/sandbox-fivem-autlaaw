@@ -201,6 +201,24 @@ CREATE TABLE IF NOT EXISTS `business_tvs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+DROP TABLE IF EXISTS `casino_bigwins`;
+CREATE TABLE IF NOT EXISTS `casino_bigwins` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `player_name` VARCHAR(255) NOT NULL,
+    `game` VARCHAR(100) NOT NULL,
+    `amount` DECIMAL(15,2) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `game` (`game`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `casino_config`;
+CREATE TABLE IF NOT EXISTS `casino_config` (
+    `key` VARCHAR(255) NOT NULL,
+    `data` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`key`),
+    CONSTRAINT `data` CHECK (json_valid(`data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `changelogs`;
 CREATE TABLE IF NOT EXISTS `changelogs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

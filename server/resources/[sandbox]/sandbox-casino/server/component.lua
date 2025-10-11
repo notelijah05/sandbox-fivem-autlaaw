@@ -85,11 +85,8 @@ AddEventHandler('onResourceStart', function(resource)
 
 		exports["sandbox-base"]:RegisterServerCallback("Casino:GetBigWins", function(source, data, cb)
 			if Player(source).state.onDuty == "casino" then
-				exports['sandbox-base']:DatabaseGameFind({
-					collection = "casino_bigwins",
-					query = {},
-				}, function(success, results)
-					if success and #results > 0 then
+				exports.oxmysql:execute('SELECT * FROM casino_bigwins', {}, function(results)
+					if results and #results > 0 then
 						cb(results)
 					else
 						cb(false)
@@ -121,11 +118,8 @@ function RunConfigStartup()
 	if not _configStartup then
 		_configStartup = true
 
-		exports['sandbox-base']:DatabaseGameFind({
-			collection = "casino_config",
-			query = {},
-		}, function(success, results)
-			if success and #results > 0 then
+		exports.oxmysql:execute('SELECT * FROM casino_config', {}, function(results)
+			if results and #results > 0 then
 				for k, v in ipairs(results) do
 					_casinoConfig[v.key] = v.data
 				end
@@ -171,30 +165,20 @@ end)
 exports("ConfigSet", function(key, data)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
-		collection = "casino_config",
-		query = {
-			key = key,
-		},
-		update = {
-			["$set"] = {
-				data = data,
-			},
-		},
-		options = {
-			returnDocument = "after",
-			upsert = true,
-		},
-	}, function(success, results)
-		if success and results then
-			_casinoConfig[key] = data
-			p:resolve(true)
-		else
-			p:resolve(false)
-		end
+	exports.oxmysql:execute(
+		'INSERT INTO casino_config (`key`, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data = ?',
+		{ key, json.encode(data), json.encode(data) },
+		function(affectedRows)
+			local success = affectedRows > 0
+			if success then
+				_casinoConfig[key] = data
+				p:resolve(true)
+			else
+				p:resolve(false)
+			end
 
-		_casinoConfigLoaded = true
-	end)
+			_casinoConfigLoaded = true
+		end)
 
 	local res = Citizen.Await(p)
 	return res
