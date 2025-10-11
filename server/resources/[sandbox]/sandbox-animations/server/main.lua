@@ -135,7 +135,7 @@ RegisterServerEvent("Selfie:CaptureSelfie", function()
 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char then
 		if pendingSend then
-			exports['sandbox-hud']:Notification(src, "warn",
+			exports['sandbox-hud']:Notification(src, "warning",
 				"Please wait while current photo is uploading", 2000)
 			return
 		end

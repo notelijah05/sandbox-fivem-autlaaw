@@ -115,7 +115,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 
 			Wait(2000)
 
-			exports["sandbox-hud"]:Notification("warn", "Stop exploiting or you will be flighted")
+			exports["sandbox-hud"]:Notification("warning", "Stop exploiting or you will be flighted")
 			exports["sandbox-base"]:ServerCallback("Jail:Server:ExploitAttempt", 1)
 		end
 
@@ -126,7 +126,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 				Wait(1)
 			end
 
-			exports["sandbox-hud"]:Notification("warn", "Stop exploiting or you will be flighted")
+			exports["sandbox-hud"]:Notification("warning", "Stop exploiting or you will be flighted")
 			exports["sandbox-base"]:ServerCallback("Jail:Server:ExploitAttempt", 2)
 		end
 

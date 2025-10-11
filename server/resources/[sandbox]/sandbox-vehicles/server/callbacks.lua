@@ -220,7 +220,7 @@ function RegisterCallbacks()
         end
 
         if storageData.retrievalOnly then
-            exports['sandbox-hud']:NotifError(src, 'Cannot Store Vehicles Here')
+            exports['sandbox-hud']:Notification(src, "error", 'Cannot Store Vehicles Here')
             cb(false)
             return
         end
@@ -264,7 +264,7 @@ function RegisterCallbacks()
                     end
                 end
             else
-                exports['sandbox-hud']:NotifError(src, 'Cannot Store This Vehicle Here')
+                exports['sandbox-hud']:Notification(src, "error", 'Cannot Store This Vehicle Here')
             end
         end
 
@@ -736,7 +736,7 @@ function RegisterCallbacks()
                     exports['sandbox-vehicles']:KeysAdd(targetChar:GetData('Source'), VIN)
                     return
                 else
-                    exports['sandbox-hud']:NotifError(src, 'Cannot Transfer to Someone That Isn\'t Nearby')
+                    exports['sandbox-hud']:Notification(src, "error", 'Cannot Transfer to Someone That Isn\'t Nearby')
                 end
             end
         end
@@ -778,14 +778,14 @@ function RegisterCallbacks()
                     then
                         for k, v in ipairs(data.sids) do
                             exports['sandbox-vehicles']:KeysAdd(v, vehEnt.state.VIN)
-                            exports['sandbox-hud']:NotifInfo(v,
+                            exports['sandbox-hud']:Notification("info", v,
                                 "You Received Keys to a Vehicle",
                                 3000,
                                 "key"
                             )
                         end
 
-                        exports['sandbox-hud']:NotifSuccess(source,
+                        exports['sandbox-hud']:Notification(source, "success",
                             "You Gave Everyone Nearby Keys",
                             3000,
                             "key"

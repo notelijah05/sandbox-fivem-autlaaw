@@ -136,7 +136,7 @@ RegisterServerEvent("Camara:CapturePhoto", function()
 
 	if char then
 		if pendingSend then
-			exports['sandbox-hud']:Notification(src, "warn",
+			exports['sandbox-hud']:Notification(src, "warning",
 				"Please wait while current photo is uploading", 2000)
 			return
 		end

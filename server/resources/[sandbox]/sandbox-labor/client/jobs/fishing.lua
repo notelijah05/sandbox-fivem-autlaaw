@@ -376,7 +376,7 @@ function DoFishBite(zone, toolUsed)
         difficulty = maxDiff,
     }, function(success, stopFishing)
         if not success and not stopFishing then
-            exports["sandbox-hud"]:Notification("warn", "The Fish Got Away...", 5000, "fishing-rod")
+            exports["sandbox-hud"]:Notification("warning", "The Fish Got Away...", 5000, "fishing-rod")
         end
 
         if stopFishing then

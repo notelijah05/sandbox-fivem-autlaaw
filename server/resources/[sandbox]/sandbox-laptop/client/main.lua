@@ -29,7 +29,7 @@ function OpenLaptop()
 		_loggedIn
 		and not exports['sandbox-hud']:IsDisabled()
 		and not exports['sandbox-jail']:IsJailed()
-		and hasValue(LocalPlayer.state.Character:GetData("States"), "LAPTOP")
+		and not (exports.ox_inventory:Search('count', 'laptop') == 0)
 		and not LocalPlayer.state.laptopOpen
 	then
 		exports['sandbox-laptop']:Open()
@@ -45,17 +45,13 @@ AddEventHandler("Inventory:Client:ItemsLoaded", function()
 	exports['sandbox-laptop']:SetData("items", exports.ox_inventory:ItemsGetData())
 end)
 
-AddEventHandler("Characters:Client:Updated", function(key)
-	if hasValue(_ignoreEvents, key) then
-		return
-	end
+AddEventHandler("Characters:Client:Updated", function()
 	_settings = LocalPlayer.state.Character:GetData("LaptopSettings")
 	exports['sandbox-laptop']:SetData("player", LocalPlayer.state.Character:GetData())
 
 	if
-		key == "States"
-		and LocalPlayer.state.laptopOpen
-		and (not hasValue(LocalPlayer.state.Character:GetData("States"), "LAPTOP"))
+		LocalPlayer.state.laptopOpen
+		and not (exports.ox_inventory:Search('count', 'laptop') == 0)
 	then
 		exports['sandbox-laptop']:Close(true)
 	end

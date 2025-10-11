@@ -28,7 +28,7 @@ function RegisterCallbacks()
 						end
 					elseif v < (os.time() - (60 * 5)) then
 						-- TODO: Implement better alert when at this stage when we have someway to do it
-						exports['sandbox-hud']:Notification("warn", k, "You Will Be Kicked Soon For Being AFK", 58000)
+						exports['sandbox-hud']:Notification("warning", k, "You Will Be Kicked Soon For Being AFK", 58000)
 					end
 				end
 			end

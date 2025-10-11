@@ -97,7 +97,7 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh)
                         end
                     elseif GetVehicleMPH(veh) > CAR_BOMB_SPEED then
                         CAR_BOMB_ENABLED = true
-                        exports["sandbox-hud"]:Notification("warn",
+                        exports["sandbox-hud"]:Notification("warning",
                             "THIS VEHICLE HAS A BOMB - STAY ABOVE " ..
                             math.ceil(CAR_BOMB_SPEED) .. "MPH AND DO NOT LEAVE THE VEHICLE", 15000)
                     end
