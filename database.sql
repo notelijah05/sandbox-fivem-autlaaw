@@ -533,6 +533,28 @@ CREATE TABLE IF NOT EXISTS `firearms_flags` (
   KEY `serial` (`serial`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
+DROP TABLE IF EXISTS `jobs`;
+CREATE TABLE IF NOT EXISTS `jobs` (
+  `Id` varchar(255) NOT NULL,
+  `Name` varchar(255) NOT NULL,
+  `Type` varchar(255) NOT NULL,
+  `Workplaces` longtext DEFAULT NULL,
+  `Grades` longtext DEFAULT NULL,
+  `Salary` int(11) NOT NULL DEFAULT 0,
+  `SalaryTier` int(11) NOT NULL DEFAULT 0,
+  `LastUpdated` bigint(20) NOT NULL DEFAULT 0,
+  `Data` longtext DEFAULT NULL,
+  `Owner` int(11) DEFAULT NULL,
+  `Custom` tinyint(1) DEFAULT 0,
+  `Hidden` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`Id`),
+  KEY `Type` (`Type`),
+  KEY `Owner` (`Owner`),
+  CONSTRAINT `Workplaces` CHECK (json_valid(`Workplaces`)),
+  CONSTRAINT `Grades` CHECK (json_valid(`Grades`)),
+  CONSTRAINT `Data` CHECK (json_valid(`Data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
 DROP TABLE IF EXISTS `mdt_charges`;
 CREATE TABLE IF NOT EXISTS `mdt_charges` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

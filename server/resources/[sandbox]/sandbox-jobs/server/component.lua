@@ -608,20 +608,29 @@ exports("ManagementCreate", function(name, ownerSID)
 				},
 			}
 
-			exports['sandbox-base']:DatabaseGameInsertOne({
-				collection = "jobs",
-				document = document,
-			}, function(success, inserted)
-				if success and inserted > 0 then
-					RefreshAllJobData(document.Id)
+			local insertResult = MySQL.insert.await(
+				'INSERT INTO jobs (Id, Name, Type, Workplaces, Grades, Salary, SalaryTier, LastUpdated, Owner, Custom, Hidden) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				{
+					document.Id,
+					document.Name,
+					document.Type,
+					json.encode(document.Workplaces or {}),
+					json.encode(document.Grades or {}),
+					document.Salary,
+					document.SalaryTier,
+					os.time(),
+					document.Owner,
+					document.Custom and 1 or 0,
+					document.Hidden and 1 or 0
+				})
 
-					exports['sandbox-jobs']:GiveJob(ownerSID, document.Id, false, "owner")
-
-					p:resolve(document)
-				else
-					p:resolve(false)
-				end
-			end)
+			if insertResult and insertResult > 0 then
+				RefreshAllJobData(document.Id)
+				exports['sandbox-jobs']:GiveJob(ownerSID, document.Id, false, "owner")
+				p:resolve(document)
+			else
+				p:resolve(false)
+			end
 
 			local res = Citizen.Await(p)
 			return res
@@ -666,27 +675,30 @@ exports("ManagementEdit", function(jobId, settingData)
 		end
 
 		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameUpdateOne({
-			collection = "jobs",
-			query = {
-				Id = jobId,
-			},
-			update = {
-				["$set"] = actualSettingData,
-			},
-		}, function(success, res)
-			if success then
-				RefreshAllJobData(jobId)
 
-				if actualSettingData.Name then
-					exports['sandbox-jobs']:ManagementEmployeesUpdateAllJob(jobId, actualSettingData.Name)
-				end
+		local setClause = {}
+		local values = {}
+		for k, v in pairs(actualSettingData) do
+			table.insert(setClause, k .. " = ?")
+			table.insert(values, v)
+		end
+		table.insert(values, jobId)
 
-				p:resolve(true)
-			else
-				p:resolve(false)
+		local query = "UPDATE jobs SET " .. table.concat(setClause, ", ") .. " WHERE Id = ?"
+
+		local updateResult = MySQL.update.await(query, values)
+
+		if updateResult and updateResult > 0 then
+			RefreshAllJobData(jobId)
+
+			if actualSettingData.Name then
+				exports['sandbox-jobs']:ManagementEmployeesUpdateAllJob(jobId, actualSettingData.Name)
 			end
-		end)
+
+			p:resolve(true)
+		else
+			p:resolve(false)
+		end
 
 		local res = Citizen.Await(p)
 		return {
@@ -704,33 +716,40 @@ end)
 exports("ManagementWorkplaceEdit", function(jobId, workplaceId, newWorkplaceName)
 	if exports['sandbox-jobs']:DoesExist(jobId, workplaceId) then
 		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameUpdateOne({
-			collection = "jobs",
-			query = {
-				Type = "Government",
-				Id = jobId,
-				["Workplaces.Id"] = workplaceId,
-			},
-			update = {
-				["$set"] = {
-					["Workplaces.$[workplace].Name"] = newWorkplaceName,
-				},
-			},
-			options = {
-				arrayFilters = {
-					{ ["workplace.Id"] = workplaceId },
-				},
-			},
-		}, function(success, res)
-			if success then
-				RefreshAllJobData(jobId)
-				exports['sandbox-jobs']:ManagementEmployeesUpdateAllWorkplace(jobId, workplaceId, newWorkplaceName)
 
-				p:resolve(true)
+		local results = MySQL.query.await('SELECT Workplaces FROM jobs WHERE Id = ? AND Type = "Government"', { jobId })
+
+		if results and #results > 0 then
+			local workplaces = json.decode(results[1].Workplaces or '[]')
+			local updated = false
+
+			for _, workplace in ipairs(workplaces) do
+				if workplace.Id == workplaceId then
+					workplace.Name = newWorkplaceName
+					updated = true
+					break
+				end
+			end
+
+			if updated then
+				local updateResult = MySQL.update.await('UPDATE jobs SET Workplaces = ? WHERE Id = ?', {
+					json.encode(workplaces),
+					jobId
+				})
+
+				if updateResult and updateResult > 0 then
+					RefreshAllJobData(jobId)
+					exports['sandbox-jobs']:ManagementEmployeesUpdateAllWorkplace(jobId, workplaceId, newWorkplaceName)
+					p:resolve(true)
+				else
+					p:resolve(false)
+				end
 			else
 				p:resolve(false)
 			end
-		end)
+		else
+			p:resolve(false)
+		end
 
 		local res = Citizen.Await(p)
 		return {
@@ -760,10 +779,6 @@ exports("ManagementGradesCreate", function(jobId, workplaceId, gradeName, gradeL
 		end
 
 		if not exports['sandbox-jobs']:DoesExist(jobId, workplaceId, gradeId) then
-			local query = {}
-			local update = {}
-			local options = {}
-
 			local gradeData = {
 				Id = gradeId,
 				Name = gradeName,
@@ -772,57 +787,64 @@ exports("ManagementGradesCreate", function(jobId, workplaceId, gradeName, gradeL
 			}
 
 			if workplaceId then
-				query = {
-					Type = "Government",
-					Id = jobId,
-					["Workplaces.Id"] = workplaceId,
-				}
+				local results = MySQL.query.await('SELECT Workplaces FROM jobs WHERE Id = ? AND Type = "Government"',
+					{ jobId })
 
-				update = {
-					["$push"] = {
-						["Workplaces.$[workplace].Grades"] = gradeData,
-					},
-				}
+				if results and #results > 0 then
+					local workplaces = json.decode(results[1].Workplaces or '[]')
+					local updated = false
 
-				options = {
-					arrayFilters = {
-						{
-							["workplace.Id"] = workplaceId,
-						},
-					},
-					multi = true,
-				}
-			else
-				query = {
-					Type = "Company",
-					Id = jobId,
-				}
+					for _, workplace in ipairs(workplaces) do
+						if workplace.Id == workplaceId then
+							if not workplace.Grades then
+								workplace.Grades = {}
+							end
+							table.insert(workplace.Grades, gradeData)
+							updated = true
+							break
+						end
+					end
 
-				update = {
-					["$push"] = {
-						Grades = gradeData,
-					},
-				}
+					if updated then
+						local updateResult = MySQL.update.await('UPDATE jobs SET Workplaces = ? WHERE Id = ?', {
+							json.encode(workplaces),
+							jobId
+						})
 
-				options = {
-					multi = true,
-				}
-			end
-
-			exports['sandbox-base']:DatabaseGameUpdateOne({
-				collection = "jobs",
-				query = query,
-				update = update,
-				options = options,
-			}, function(success, updated)
-				if success then
-					RefreshAllJobData(jobId)
-
-					p:resolve(true)
+						if updateResult and updateResult > 0 then
+							RefreshAllJobData(jobId)
+							p:resolve(true)
+						else
+							p:resolve(false)
+						end
+					else
+						p:resolve(false)
+					end
 				else
 					p:resolve(false)
 				end
-			end)
+			else
+				local results = MySQL.query.await('SELECT Grades FROM jobs WHERE Id = ? AND Type = "Company"', { jobId })
+
+				if results and #results > 0 then
+					local grades = json.decode(results[1].Grades or '[]')
+					table.insert(grades, gradeData)
+
+					local updateResult = MySQL.update.await('UPDATE jobs SET Grades = ? WHERE Id = ?', {
+						json.encode(grades),
+						jobId
+					})
+
+					if updateResult and updateResult > 0 then
+						RefreshAllJobData(jobId)
+						p:resolve(true)
+					else
+						p:resolve(false)
+					end
+				else
+					p:resolve(false)
+				end
+			end
 
 			local res = Citizen.Await(p)
 			return {
@@ -846,77 +868,94 @@ end)
 exports("ManagementGradesEdit", function(jobId, workplaceId, gradeId, settingData)
 	if exports['sandbox-jobs']:DoesExist(jobId, workplaceId, gradeId) then
 		local p = promise.new()
-		local query = {}
-		local update = {}
-		local options = {}
 
 		if workplaceId then
-			query = {
-				Type = "Government",
-				Id = jobId,
-				["Workplaces.Id"] = workplaceId,
-				["Workplaces.Grades.Id"] = gradeId,
-			}
+			local results = MySQL.query.await('SELECT Workplaces FROM jobs WHERE Id = ? AND Type = "Government"',
+				{ jobId })
 
-			update = {
-				["$set"] = {},
-			}
+			if results and #results > 0 then
+				local workplaces = json.decode(results[1].Workplaces or '[]')
+				local updated = false
 
-			for k, v in pairs(settingData) do
-				if k ~= "Id" then
-					local updateKey = string.format("Workplaces.$[workplace].Grades.$[grade].%s", k)
-					update["$set"][updateKey] = v
+				for _, workplace in ipairs(workplaces) do
+					if workplace.Id == workplaceId then
+						if workplace.Grades then
+							for _, grade in ipairs(workplace.Grades) do
+								if grade.Id == gradeId then
+									for k, v in pairs(settingData) do
+										if k ~= "Id" then
+											grade[k] = v
+										end
+									end
+									updated = true
+									break
+								end
+							end
+						end
+						break
+					end
 				end
-			end
 
-			options = {
-				arrayFilters = {
-					{
-						["workplace.Id"] = workplaceId,
-					},
-					{
-						["grade.Id"] = gradeId,
-					},
-				},
-			}
-		else
-			query = {
-				Type = "Company",
-				Id = jobId,
-				["Grades.Id"] = gradeId,
-			}
+				if updated then
+					local updateResult = MySQL.update.await('UPDATE jobs SET Workplaces = ? WHERE Id = ?', {
+						json.encode(workplaces),
+						jobId
+					})
 
-			update = {
-				["$set"] = {},
-			}
-
-			for k, v in pairs(settingData) do
-				if k ~= "Id" then
-					local updateKey = string.format("Grades.$[grade].%s", k)
-					update["$set"][updateKey] = v
+					if updateResult and updateResult > 0 then
+						RefreshAllJobData(jobId)
+						exports['sandbox-jobs']:ManagementEmployeesUpdateAllGrade(jobId, workplaceId, gradeId,
+							settingData)
+						p:resolve(true)
+					else
+						p:resolve(false)
+					end
+				else
+					p:resolve(false)
 				end
-			end
-
-			options = {
-				arrayFilters = { { ["grade.Id"] = gradeId } },
-			}
-		end
-
-		exports['sandbox-base']:DatabaseGameUpdateOne({
-			collection = "jobs",
-			query = query,
-			update = update,
-			options = options,
-		}, function(success, updated)
-			if success then
-				RefreshAllJobData(jobId)
-				exports['sandbox-jobs']:ManagementEmployeesUpdateAllGrade(jobId, workplaceId, gradeId, settingData)
-
-				p:resolve(true)
 			else
 				p:resolve(false)
 			end
-		end)
+		else
+			local results = MySQL.query.await('SELECT Grades FROM jobs WHERE Id = ? AND Type = "Company"', { jobId })
+
+			if results and #results > 0 then
+				local grades = json.decode(results[1].Grades or '[]')
+				local updated = false
+
+				for _, grade in ipairs(grades) do
+					if grade.Id == gradeId then
+						for k, v in pairs(settingData) do
+							if k ~= "Id" then
+								grade[k] = v
+							end
+						end
+						updated = true
+						break
+					end
+				end
+
+				if updated then
+					local updateResult = MySQL.update.await('UPDATE jobs SET Grades = ? WHERE Id = ?', {
+						json.encode(grades),
+						jobId
+					})
+
+					if updateResult and updateResult > 0 then
+						RefreshAllJobData(jobId)
+						exports['sandbox-jobs']:ManagementEmployeesUpdateAllGrade(jobId, workplaceId, gradeId,
+							settingData)
+						p:resolve(true)
+					else
+						p:resolve(false)
+					end
+				else
+					p:resolve(false)
+				end
+			else
+				p:resolve(false)
+			end
+		end
 
 		local res = Citizen.Await(p)
 		return {
@@ -936,66 +975,82 @@ exports("ManagementGradesDelete", function(jobId, workplaceId, gradeId)
 	if #peopleWithJobGrade <= 0 then
 		if exports['sandbox-jobs']:DoesExist(jobId, workplaceId, gradeId) then
 			local p = promise.new()
-			local query = {}
-			local update = {}
-			local options = {}
 
 			if workplaceId then
-				query = {
-					Type = "Government",
-					Id = jobId,
-					["Workplaces.Id"] = workplaceId,
-				}
+				local results = MySQL.query.await('SELECT Workplaces FROM jobs WHERE Id = ? AND Type = "Government"',
+					{ jobId })
 
-				update = {
-					["$pull"] = {
-						["Workplaces.$[workplace].Grades"] = {
-							Id = gradeId,
-						},
-					},
-				}
+				if results and #results > 0 then
+					local workplaces = json.decode(results[1].Workplaces or '[]')
+					local updated = false
 
-				options = {
-					arrayFilters = {
-						{
-							["workplace.Id"] = workplaceId,
-						},
-					},
-					multi = true,
-				}
-			else
-				query = {
-					Type = "Company",
-					Id = jobId,
-				}
+					for _, workplace in ipairs(workplaces) do
+						if workplace.Id == workplaceId then
+							if workplace.Grades then
+								for i, grade in ipairs(workplace.Grades) do
+									if grade.Id == gradeId then
+										table.remove(workplace.Grades, i)
+										updated = true
+										break
+									end
+								end
+							end
+							break
+						end
+					end
 
-				update = {
-					["$pull"] = {
-						Grades = {
-							Id = gradeId,
-						},
-					},
-				}
+					if updated then
+						local updateResult = MySQL.update.await('UPDATE jobs SET Workplaces = ? WHERE Id = ?', {
+							json.encode(workplaces),
+							jobId
+						})
 
-				options = {
-					multi = true,
-				}
-			end
-
-			exports['sandbox-base']:DatabaseGameUpdateOne({
-				collection = "jobs",
-				query = query,
-				update = update,
-				options = options,
-			}, function(success, updated)
-				if success then
-					RefreshAllJobData(jobId)
-
-					p:resolve(true)
+						if updateResult and updateResult > 0 then
+							RefreshAllJobData(jobId)
+							p:resolve(true)
+						else
+							p:resolve(false)
+						end
+					else
+						p:resolve(false)
+					end
 				else
 					p:resolve(false)
 				end
-			end)
+			else
+				local results = MySQL.query.await('SELECT Grades FROM jobs WHERE Id = ? AND Type = "Company"', { jobId })
+
+				if results and #results > 0 then
+					local grades = json.decode(results[1].Grades or '[]')
+					local updated = false
+
+					for i, grade in ipairs(grades) do
+						if grade.Id == gradeId then
+							table.remove(grades, i)
+							updated = true
+							break
+						end
+					end
+
+					if updated then
+						local updateResult = MySQL.update.await('UPDATE jobs SET Grades = ? WHERE Id = ?', {
+							json.encode(grades),
+							jobId
+						})
+
+						if updateResult and updateResult > 0 then
+							RefreshAllJobData(jobId)
+							p:resolve(true)
+						else
+							p:resolve(false)
+						end
+					else
+						p:resolve(false)
+					end
+				else
+					p:resolve(false)
+				end
+			end
 
 			local res = Citizen.Await(p)
 			return {
@@ -1271,25 +1326,28 @@ end)
 exports("DataSet", function(jobId, key, val)
 	if exports['sandbox-jobs']:DoesExist(jobId) and key then
 		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameUpdateOne({
-			collection = "jobs",
-			query = {
-				Id = jobId,
-			},
-			update = {
-				["$set"] = {
-					[string.format("Data.%s", key)] = val,
-				},
-			},
-		}, function(success, res)
-			if success then
-				RefreshAllJobData(jobId)
 
+		local results = MySQL.query.await('SELECT * FROM jobs WHERE Id = ?', { jobId })
+
+		if results and #results > 0 then
+			local jobData = results[1]
+			local data = json.decode(jobData.Data or '{}')
+			data[key] = val
+
+			local updateResult = MySQL.update.await('UPDATE jobs SET Data = ? WHERE Id = ?', {
+				json.encode(data),
+				jobId
+			})
+
+			if updateResult and updateResult > 0 then
+				RefreshAllJobData(jobId)
 				p:resolve(true)
 			else
 				p:resolve(false)
 			end
-		end)
+		else
+			p:resolve(false)
+		end
 
 		local res = Citizen.Await(p)
 		return {

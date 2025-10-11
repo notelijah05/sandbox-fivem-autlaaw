@@ -167,7 +167,7 @@ end)
 
 exports('AddNotification', function(title, description, time, duration, app, actions, notifData)
 	if
-		not LocalPlayer.state.loggedIn or not hasValue(LocalPlayer.state.Character:GetData("States"), "LAPTOP")
+		not LocalPlayer.state.loggedIn or not (exports.ox_inventory:Search('count', 'laptop') == 0)
 	then
 		return
 	end
