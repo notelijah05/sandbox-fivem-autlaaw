@@ -451,6 +451,23 @@ CREATE TABLE IF NOT EXISTS `crafting_cooldowns` (
   `expires` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+DROP TABLE IF EXISTS `dealer_stock`;
+CREATE TABLE IF NOT EXISTS `dealer_stock` (
+  `dealership` varchar(255) NOT NULL,
+  `vehicle` varchar(255) NOT NULL,
+  `modelType` varchar(255) DEFAULT NULL,
+  `data` longtext DEFAULT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 0,
+  `lastStocked` int(11) DEFAULT NULL,
+  `lastPurchase` int(11) DEFAULT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `dealership_vehicle` (`dealership`, `vehicle`),
+  KEY `dealership` (`dealership`),
+  KEY `vehicle` (`vehicle`),
+  CONSTRAINT `data` CHECK (json_valid(`data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
 DROP TABLE IF EXISTS `donator_items`;
 CREATE TABLE IF NOT EXISTS `donator_items` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

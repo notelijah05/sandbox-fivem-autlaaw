@@ -1,10 +1,12 @@
 exports('StockFetchAll', function()
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameFind({
-        collection = 'dealer_stock',
-        query = {}
-    }, function(success, result)
-        if success then
+    exports.oxmysql:execute('SELECT * FROM dealer_stock', {}, function(result)
+        if result then
+            for i, record in ipairs(result) do
+                if record.data then
+                    record.data = json.decode(record.data)
+                end
+            end
             p:resolve(result)
         else
             p:resolve(false)
@@ -15,13 +17,13 @@ end)
 
 exports('StockFetchDealer', function(dealerId)
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameFind({
-        collection = 'dealer_stock',
-        query = {
-            dealership = dealerId,
-        }
-    }, function(success, result)
-        if success then
+    exports.oxmysql:execute('SELECT * FROM dealer_stock WHERE dealership = ?', { dealerId }, function(result)
+        if result then
+            for i, record in ipairs(result) do
+                if record.data then
+                    record.data = json.decode(record.data)
+                end
+            end
             p:resolve(result)
         else
             p:resolve(false)
@@ -32,19 +34,17 @@ end)
 
 exports('StockFetchDealerVehicle', function(dealerId, vehModel)
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameFindOne({
-        collection = 'dealer_stock',
-        query = {
-            dealership = dealerId,
-            vehicle = vehModel,
-        }
-    }, function(success, result)
-        if success and #result > 0 then
-            p:resolve(result[1])
-        else
-            p:resolve(false)
-        end
-    end)
+    exports.oxmysql:execute('SELECT * FROM dealer_stock WHERE dealership = ? AND vehicle = ?', { dealerId, vehModel },
+        function(result)
+            if result and #result > 0 then
+                if result[1].data then
+                    result[1].data = json.decode(result[1].data)
+                end
+                p:resolve(result[1])
+            else
+                p:resolve(false)
+            end
+        end)
     return Citizen.Await(p)
 end)
 
@@ -63,52 +63,31 @@ exports('StockAdd', function(dealerId, vehModel, modelType, quantity, vehData)
         local isStocked = exports['sandbox-dealerships']:StockFetchDealerVehicle(dealerId, vehModel)
         local p = promise.new()
         if isStocked then -- The vehicle is already stocked
-            exports['sandbox-base']:DatabaseGameUpdateOne({
-                collection = 'dealer_stock',
-                query = {
-                    dealership = dealerId,
-                    vehicle = vehModel,
-                },
-                update = {
-                    ['$inc'] = {
-                        quantity = quantity,
-                    },
-                    ['$set'] = {
-                        data = vehData,
-                        lastStocked = os.time(),
-                    }
-                }
-            }, function(success, result)
-                if success and result > 0 then
-                    p:resolve({
-                        success = true,
-                        existed = true,
-                    })
-                else
-                    p:resolve(false)
-                end
-            end)
+            exports.oxmysql:execute(
+                'UPDATE dealer_stock SET quantity = quantity + ?, data = ?, lastStocked = ? WHERE dealership = ? AND vehicle = ?',
+                { quantity, json.encode(vehData), os.time(), dealerId, vehModel }, function(result)
+                    if result and result.affectedRows > 0 then
+                        p:resolve({
+                            success = true,
+                            existed = true,
+                        })
+                    else
+                        p:resolve(false)
+                    end
+                end)
         else
-            exports['sandbox-base']:DatabaseGameInsertOne({
-                collection = 'dealer_stock',
-                document = {
-                    dealership = dealerId,
-                    vehicle = vehModel,
-                    modelType = modelType,
-                    data = vehData,
-                    quantity = quantity,
-                    lastStocked = os.time(),
-                }
-            }, function(success, result)
-                if success and result > 0 then
-                    p:resolve({
-                        success = true,
-                        existed = false,
-                    })
-                else
-                    p:resolve(false)
-                end
-            end)
+            exports.oxmysql:insert(
+                'INSERT INTO dealer_stock (dealership, vehicle, modelType, data, quantity, lastStocked) VALUES (?, ?, ?, ?, ?, ?)',
+                { dealerId, vehModel, modelType, json.encode(vehData), quantity, os.time() }, function(insertId)
+                    if insertId and insertId > 0 then
+                        p:resolve({
+                            success = true,
+                            existed = false,
+                        })
+                    else
+                        p:resolve(false)
+                    end
+                end)
         end
         return Citizen.Await(p)
     end
@@ -120,27 +99,15 @@ exports('StockIncrease', function(dealerId, vehModel, amount)
         local isStocked = exports['sandbox-dealerships']:StockFetchDealerVehicle(dealerId, vehModel)
         if isStocked then -- The vehicle is already stocked
             local p = promise.new()
-            exports['sandbox-base']:DatabaseGameUpdateOne({
-                collection = 'dealer_stock',
-                query = {
-                    dealership = dealerId,
-                    vehicle = vehModel,
-                },
-                update = {
-                    ['$inc'] = {
-                        quantity = amount,
-                    },
-                    ['$set'] = {
-                        lastStocked = os.time(),
-                    }
-                }
-            }, function(success, result)
-                if success and result > 0 then
-                    p:resolve({ success = true })
-                else
-                    p:resolve(false)
-                end
-            end)
+            exports.oxmysql:execute(
+                'UPDATE dealer_stock SET quantity = quantity + ?, lastStocked = ? WHERE dealership = ? AND vehicle = ?',
+                { amount, os.time(), dealerId, vehModel }, function(result)
+                    if result and result.affectedRows > 0 then
+                        p:resolve({ success = true })
+                    else
+                        p:resolve(false)
+                    end
+                end)
             return Citizen.Await(p)
         else
             return false
@@ -154,17 +121,25 @@ exports('StockUpdate', function(dealerId, vehModel, setting)
         local isStocked = exports['sandbox-dealerships']:StockFetchDealerVehicle(dealerId, vehModel)
         if isStocked then -- The vehicle is already stocked
             local p = promise.new()
-            exports['sandbox-base']:DatabaseGameUpdateOne({
-                collection = 'dealer_stock',
-                query = {
-                    dealership = dealerId,
-                    vehicle = vehModel,
-                },
-                update = {
-                    ['$set'] = setting
-                }
-            }, function(success, result)
-                if success and result > 0 then
+            local updateFields = {}
+            local updateValues = {}
+
+            for key, value in pairs(setting) do
+                table.insert(updateFields, key .. " = ?")
+                if key == "data" and type(value) == "table" then
+                    table.insert(updateValues, json.encode(value))
+                else
+                    table.insert(updateValues, value)
+                end
+            end
+
+            local query = "UPDATE dealer_stock SET " ..
+                table.concat(updateFields, ", ") .. " WHERE dealership = ? AND vehicle = ?"
+            table.insert(updateValues, dealerId)
+            table.insert(updateValues, vehModel)
+
+            exports.oxmysql:execute(query, updateValues, function(result)
+                if result and result.affectedRows > 0 then
                     p:resolve({ success = true })
                 else
                     p:resolve(false)
@@ -201,25 +176,15 @@ exports('StockRemove', function(dealerId, vehModel, quantity)
             local newQuantity = isStocked.quantity - quantity
             if newQuantity >= 0 then
                 local p = promise.new()
-                exports['sandbox-base']:DatabaseGameUpdateOne({
-                    collection = 'dealer_stock',
-                    query = {
-                        dealership = dealerId,
-                        vehicle = vehModel,
-                    },
-                    update = {
-                        ['$set'] = {
-                            quantity = newQuantity,
-                            lastPurchase = os.time(),
-                        }
-                    }
-                }, function(success, result)
-                    if success and result > 0 then
-                        p:resolve(newQuantity)
-                    else
-                        p:resolve(false)
-                    end
-                end)
+                exports.oxmysql:execute(
+                    'UPDATE dealer_stock SET quantity = ?, lastPurchase = ? WHERE dealership = ? AND vehicle = ?',
+                    { newQuantity, os.time(), dealerId, vehModel }, function(result)
+                        if result and result.affectedRows > 0 then
+                            p:resolve(newQuantity)
+                        else
+                            p:resolve(false)
+                        end
+                    end)
                 return Citizen.Await(p)
             end
         end

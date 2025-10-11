@@ -20,36 +20,19 @@ function LoadDealershipShit()
     -- })
 
 
-    exports['sandbox-base']:DefaultAdd(
-        "dealer_stock",
-        1630877439,
-        {
-            {
-                vehicle = "faggio",
-                quantity = 10,
-                dealership = "pdm",
-                data = {
-                    class = "M",
-                    price = 16000,
-                    make = "Pegassi",
-                    model = "Faggio",
-                    category = "motorcycles"
-                },
-                lastStocked = os.time(),
-            },
-            {
-                vehicle = "seminole",
-                quantity = 10,
-                dealership = "pdm",
-                data = {
-                    class = "C",
-                    price = 30500,
-                    make = "Canis",
-                    model = "Seminole",
-                    category = "suv"
-                },
-                lastStocked = os.time(),
-            },
-        }
-    )
+    exports['sandbox-dealerships']:StockAdd("pdm", "faggio", "motorcycle", 10, {
+        class = "M",
+        price = 16000,
+        make = "Pegassi",
+        model = "Faggio",
+        category = "motorcycles"
+    })
+
+    exports['sandbox-dealerships']:StockAdd("pdm", "seminole", "automobile", 10, {
+        class = "C",
+        price = 30500,
+        make = "Canis",
+        model = "Seminole",
+        category = "suv"
+    })
 end
