@@ -2,8 +2,6 @@ local Inventory = require 'modules.inventory.server'
 local ItemList = require 'modules.items.shared'
 local Items = require 'modules.items.server'
 
-_polyInvs = {}
-
 AddEventHandler("onResourceStart", function(resource)
     if resource ~= GetCurrentResourceName() then return end
     RegisterRandomItems()
@@ -348,10 +346,10 @@ function server.hasBalance(source, amt)
     local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char ~= nil then
         local sid = char:GetData("SID")
-        local f = Banking.Accounts:GetPersonal(sid)
+        local f = exports['sandbox-finance']:AccountsGetPersonal(sid)
 
         if f ~= nil then
-            if Banking.Balance:Has(f.Account, amt) then
+            if exports['sandbox-finance']:BalanceHas(f.Account, amt) then
                 return true
             end
 
@@ -368,10 +366,10 @@ function server.withdrawMoney(source, amt, itemLabel, count)
     local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char ~= nil then
         local sid = char:GetData("SID")
-        local f = Banking.Accounts:GetPersonal(sid)
+        local f = exports['sandbox-finance']:AccountsGetPersonal(sid)
 
         if f ~= nil then
-            if Banking.Balance:Withdraw(f.Account, amt, {
+            if exports['sandbox-finance']:BalanceWithdraw(f.Account, amt, {
                     type = "withdraw",
                     title = "Shop Purchase",
                     description = string.format("Bought %s $%s", count, itemLabel),
@@ -474,7 +472,6 @@ local function convertItemDataOxToOld(item)
     } or nil
 end
 
-
 local function formatDateToAmerican(date_string)
     local year, month, day = date_string:match("^(%d+)%-(%d+)%-(%d+)T")
 
@@ -550,7 +547,8 @@ function BuildMetaDataTable(cData, item, existing)
             MetaData.StateID)
     elseif itemExist.name == "choplist" then
         MetaData.Owner = cData.SID
-        MetaData.ChopList = Laptop.LSUnderground.Chopping:GenerateList(math.random(4, 8), math.random(3, 5))
+        MetaData.ChopList = exports['sandbox-laptop']:LSUndergroundChoppingGenerateList(math.random(4, 8),
+            math.random(3, 5))
         local chopListString = ""
         for i = 1, #MetaData.ChopList do
             chopListString = chopListString .. MetaData.ChopList[i].name .. ((i == #MetaData.ChopList and "") or "  \n")
@@ -599,9 +597,9 @@ function BuildMetaDataTable(cData, item, existing)
     elseif itemExist.name == "rusty_pd" then
         MetaData.Count = 12
     elseif itemExist.name == "meth_table" and not MetaData.MethTable then
-        MetaData.MethTable = Drugs.Meth:GenerateTable(1)
+        MetaData.MethTable = exports['sandbox-drugs']:MethGenerateTable(1)
     elseif itemExist.name == "adv_meth_table" and not MetaData.MethTable then
-        MetaData.MethTable = Drugs.Meth:GenerateTable(2)
+        MetaData.MethTable = exports['sandbox-drugs']:MethGenerateTable(2)
     elseif itemExist.name == "meth_brick" and not MetaData.Finished then
         MetaData.Finished = os.time() + (60 * 60 * 24)
         if not MetaData.Quality then
@@ -620,9 +618,9 @@ function BuildMetaDataTable(cData, item, existing)
         MetaData.Zone = methRouteRandom
         MetaData.description = "Route: " .. methRouteRandom .. ""
     elseif itemExist.name == "moonshine_still" and not MetaData.Still then
-        MetaData.Still = Drugs.Moonshine.Still:Generate(1)
+        MetaData.Still = exports['sandbox-drugs']:MoonshineStillGenerate(1)
     elseif itemExist.name == "moonshine_barrel" and not MetaData.Brew then
-        MetaData.Brew = Drugs.Moonshine.Barrel:Generate(1)
+        MetaData.Brew = exports['sandbox-drugs']:MoonshineBarrelGenerate(1)
     elseif itemExist.name == "lsundg_invite" and cData then
         MetaData.Inviter = {
             SID = cData.SID,
@@ -967,11 +965,6 @@ exports('Rob', function(src, tSrc, id)
     exports.ox_inventory:forceOpenInventory(src, 'player', tSrc)
 end)
 
-exports("PolyCreate", function(data)
-    table.insert(_polyInvs, data.id)
-    GlobalState[string.format("Inventory:%s", data.id)] = data
-end)
-
 function RegisterRandomItems()
     exports.ox_inventory:RegisterUse("vanityitem", "VanityItems", function(source, item, itemData)
         if item?.MetaData?.CustomItemAction == "overlay" then
@@ -1223,14 +1216,14 @@ function RegisterRandomItems()
         TriggerClientEvent('Inventory:Client:RandomItems:BirthdayCake', source)
     end)
 
-    -- INVENTORY.Items:RegisterUse("parachute", "RandomItems", function(source, item)
+    -- exports.ox_inventory:RegisterUse("parachute", "RandomItems", function(source, item)
     -- 	exports["sandbox-base"]:ClientCallback(source, "Weapons:CanEquipParachute", {}, function(canEquip)
     -- 		if canEquip then
     -- 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
     -- 			if char then
     -- 				local states = char:GetData("States") or {}
     -- 				if not hasValue(states, "SCRIPT_PARACHUTE") then
-    -- 					INVENTORY.Items:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
+    -- 					exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
 
     -- 					table.insert(states, "SCRIPT_PARACHUTE")
     -- 					char:SetData("States", states)
