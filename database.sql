@@ -653,6 +653,17 @@ CREATE TABLE IF NOT EXISTS `firearms_flags` (
   KEY `serial` (`serial`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
+DROP TABLE IF EXISTS `firearms_projectiles`;
+CREATE TABLE IF NOT EXISTS `firearms_projectiles` (
+    `Id` VARCHAR(255) NOT NULL,
+    `Weapon` LONGTEXT DEFAULT NULL,
+    `Coords` LONGTEXT DEFAULT NULL,
+    `AmmoType` VARCHAR(100) DEFAULT NULL,
+    PRIMARY KEY (`Id`),
+    CONSTRAINT `Weapon` CHECK (json_valid(`Weapon`)),
+    CONSTRAINT `Coords` CHECK (json_valid(`Coords`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `jobs`;
 CREATE TABLE IF NOT EXISTS `jobs` (
   `Id` varchar(255) NOT NULL,

@@ -152,14 +152,16 @@ end
 function GetEvidenceProjectileRecord(evidenceId)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "firearms_projectiles",
-		query = {
-			Id = evidenceId,
-		},
-	}, function(success, results)
-		if success and #results > 0 and results[1] then
-			p:resolve(results[1])
+	exports.oxmysql:execute('SELECT * FROM firearms_projectiles WHERE Id = ?', { evidenceId }, function(results)
+		if results and #results > 0 and results[1] then
+			local record = results[1]
+			if record.Weapon then
+				record.Weapon = json.decode(record.Weapon)
+			end
+			if record.Coords then
+				record.Coords = json.decode(record.Coords)
+			end
+			p:resolve(record)
 		else
 			p:resolve(false)
 		end
@@ -170,16 +172,19 @@ end
 
 function CreateEvidenceProjectileRecord(document)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameInsertOne({
-		collection = "firearms_projectiles",
-		document = document,
-	}, function(success, result, insertId)
-		if success then
-			p:resolve(document)
-		else
-			p:resolve(false)
-		end
-	end)
+	local weaponJson = json.encode(document.Weapon)
+	local coordsJson = json.encode(document.Coords)
+
+	exports.oxmysql:execute(
+		'INSERT INTO firearms_projectiles (Id, Weapon, Coords, AmmoType) VALUES (?, ?, ?, ?)',
+		{ document.Id, weaponJson, coordsJson, document.AmmoType },
+		function(insertId)
+			if insertId and insertId > 0 then
+				p:resolve(document)
+			else
+				p:resolve(false)
+			end
+		end)
 
 	return Citizen.Await(p)
 end
@@ -187,23 +192,20 @@ end
 function GetMatchingEvidenceProjectiles(weaponSerial)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "firearms_projectiles",
-		query = {
-			["Weapon.serial"] = weaponSerial,
-		},
-	}, function(success, results)
-		if success and #results > 0 then
-			local foundEvidence = {}
+	exports.oxmysql:execute(
+		'SELECT Id FROM firearms_projectiles WHERE JSON_UNQUOTE(JSON_EXTRACT(Weapon, "$.serial")) = ?', { weaponSerial },
+		function(results)
+			if results and #results > 0 then
+				local foundEvidence = {}
 
-			for k, v in ipairs(results) do
-				table.insert(foundEvidence, v.Id)
+				for k, v in ipairs(results) do
+					table.insert(foundEvidence, v.Id)
+				end
+				p:resolve(foundEvidence)
+			else
+				p:resolve({})
 			end
-			p:resolve(foundEvidence)
-		else
-			p:resolve({})
-		end
-	end)
+		end)
 
 	return Citizen.Await(p)
 end
