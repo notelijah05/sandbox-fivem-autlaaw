@@ -1154,6 +1154,18 @@ CREATE TABLE IF NOT EXISTS `redline_track_history` (
   CONSTRAINT `track_history_track` FOREIGN KEY (`track`) REFERENCES `redline_tracks` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
+DROP TABLE IF EXISTS `scenes`;
+CREATE TABLE IF NOT EXISTS `scenes` (
+  `_id` int(11) NOT NULL AUTO_INCREMENT,
+  `coords` text NOT NULL,
+  `length` int(11) DEFAULT NULL,
+  `expires` bigint(20) DEFAULT NULL,
+  `staff` tinyint(1) DEFAULT NULL,
+  `distance` float DEFAULT NULL,
+  `route` int(11) DEFAULT NULL,
+  PRIMARY KEY (`_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
 DROP TABLE IF EXISTS `sequence`;
 CREATE TABLE IF NOT EXISTS `sequence` (
   `id` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
