@@ -222,6 +222,25 @@ CREATE TABLE IF NOT EXISTS `business_phones` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+DROP TABLE IF EXISTS `business_receipts`;
+CREATE TABLE IF NOT EXISTS `business_receipts` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `job` VARCHAR(255) NOT NULL,
+    `customerName` VARCHAR(255) DEFAULT NULL,
+    `amount` DECIMAL(15,2) DEFAULT 0,
+    `items` LONGTEXT DEFAULT NULL,
+    `author` LONGTEXT DEFAULT NULL,
+    `history` LONGTEXT DEFAULT NULL,
+    `lastUpdated` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `job` (`job`),
+    KEY `customerName` (`customerName`),
+    CONSTRAINT `items` CHECK (json_valid(`items`)),
+    CONSTRAINT `author` CHECK (json_valid(`author`)),
+    CONSTRAINT `history` CHECK (json_valid(`history`)),
+    CONSTRAINT `lastUpdated` CHECK (json_valid(`lastUpdated`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `business_tvs`;
 CREATE TABLE IF NOT EXISTS `business_tvs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
