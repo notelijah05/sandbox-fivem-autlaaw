@@ -178,6 +178,13 @@ CREATE TABLE IF NOT EXISTS `blueline_track_history` (
   CONSTRAINT `pd_track_history_track` FOREIGN KEY (`track`) REFERENCES `blueline_tracks` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
+DROP TABLE IF EXISTS `business_configs`;
+CREATE TABLE IF NOT EXISTS `business_configs` (
+    `key` VARCHAR(255) NOT NULL,
+    `value` TEXT DEFAULT NULL,
+    PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `business_phones`;
 CREATE TABLE IF NOT EXISTS `business_phones` (
   `id` char(50) NOT NULL DEFAULT 'AUTO_INCREMENT',
@@ -186,6 +193,7 @@ CREATE TABLE IF NOT EXISTS `business_phones` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+DROP TABLE IF EXISTS `business_tvs`;
 CREATE TABLE IF NOT EXISTS `business_tvs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tv` varchar(255) DEFAULT NULL,
@@ -273,7 +281,6 @@ CREATE TABLE IF NOT EXISTS `characters` (
   CONSTRAINT `PhonePermissions` CHECK (json_valid(`PhonePermissions`)),
   CONSTRAINT `Addiction` CHECK (json_valid(`Addiction`)),
   CONSTRAINT `Animations` CHECK (json_valid(`Animations`)),
-  CONSTRAINT `InventorySettings` CHECK (json_valid(`InventorySettings`)),
   CONSTRAINT `States` CHECK (json_valid(`States`)),
   CONSTRAINT `MDTHistory` CHECK (json_valid(`MDTHistory`)),
   CONSTRAINT `Qualifications` CHECK (json_valid(`Qualifications`)),
