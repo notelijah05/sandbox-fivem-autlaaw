@@ -30,22 +30,21 @@ const parseDutyTime = (dutyTime, job) => {
 	if (dutyTime && dutyTime[job]) {
 		const afterTime = moment().subtract(7, 'days').unix();
 		let timeWorked = 0;
-		dutyTime[job].forEach(t => {
+		dutyTime[job].forEach((t) => {
 			if (t.time >= afterTime) {
 				timeWorked += t.minutes;
 			}
 		});
 
 		if (timeWorked > 0) {
-			return moment.duration(timeWorked, "minutes").humanize();
+			return moment.duration(timeWorked, 'minutes').humanize();
 		} else {
 			return '0 minutes';
 		}
-
 	} else {
 		return '0 minutes';
 	}
-}
+};
 
 const checkSuspension = (data, job) => {
 	const now = moment().unix();
@@ -53,10 +52,10 @@ const checkSuspension = (data, job) => {
 		return {
 			...data[job],
 			ExpiresIn: moment(data[job].Expires * 1000).fromNow(true),
-			ExpiresAt: moment(data[job].Expires * 1000).format("LLL")
-		}
+			ExpiresAt: moment(data[job].Expires * 1000).format('LLL'),
+		};
 	}
-}
+};
 
 const useStyles = makeStyles((theme) => ({
 	wrapper: {
@@ -100,15 +99,19 @@ export default ({ selectedJob, officer, onUpdate }) => {
 	const classes = useStyles();
 	const hasPerm = usePermissions();
 	const user = useSelector((state) => state.app.user);
-	const myJob = useSelector(state => state.app.govJob);
-	const jobData = useSelector(state => state.data.data.governmentJobsData)?.[selectedJob];
-	const availablePermissions = useSelector(state => state.data.data.permissions);
-	const availableQualifications = useSelector(state => state.data.data.qualifications);
+	const myJob = useSelector((state) => state.app.govJob);
+	const jobData = useSelector((state) => state.data.data.governmentJobsData)?.[selectedJob];
+	const availablePermissions = useSelector((state) => state.data.data.permissions);
+	const availableQualifications = useSelector((state) => state.data.data.qualifications);
 
-	const officerGovJobData = officer.Jobs?.find(j => j.Id == selectedJob);
+	const officerGovJobData = officer.Jobs?.find((j) => j.Id == selectedJob);
 	if (!officerGovJobData) return null;
 
-	const isHighCommand = hasPerm('PD_HIGH_COMMAND') || hasPerm('SAFD_HIGH_COMMAND') || hasPerm('DOJ_JUDGE') || hasPerm('DOC_HIGH_COMMAND');
+	const isHighCommand =
+		hasPerm('PD_HIGH_COMMAND') ||
+		hasPerm('SAFD_HIGH_COMMAND') ||
+		hasPerm('DOJ_JUDGE') ||
+		hasPerm('DOC_HIGH_COMMAND');
 	const canFire = hasPerm('MDT_FIRE') || isHighCommand;
 	const canPromote = hasPerm('MDT_PROMOTE') || isHighCommand;
 	const canEdit = hasPerm('MDT_EDIT_EMPLOYEE') || isHighCommand;
@@ -138,8 +141,8 @@ export default ({ selectedJob, officer, onUpdate }) => {
 	useEffect(() => {
 		setPicture(false);
 		setCallsign(false);
-		setPJob(officer.Jobs?.find(j => j.Id == selectedJob));
-		setPendingQual(officer.Qualifications ?? Array());
+		setPJob(officer.Jobs?.find((j) => j.Id == selectedJob));
+		setPendingQual(Array.isArray(officer.Qualifications) ? officer.Qualifications : Array());
 		setPending({
 			picture: officer.Mugshot ?? '',
 			callsign: Boolean(officer.Callsign) ? officer.Callsign : '',
@@ -180,9 +183,7 @@ export default ({ selectedJob, officer, onUpdate }) => {
 		}
 
 		try {
-			let res = await (
-				await Nui.send('CheckCallsign', parseInt(pending.callsign))
-			).json();
+			let res = await (await Nui.send('CheckCallsign', parseInt(pending.callsign))).json();
 
 			if (res) {
 				let res2 = await (
@@ -214,7 +215,7 @@ export default ({ selectedJob, officer, onUpdate }) => {
 				await Nui.send('ManageEmployment', {
 					SID: officer.SID,
 					data: pJob,
-					JobId: myJob?.Id
+					JobId: myJob?.Id,
 				})
 			).json();
 			if (res) {
@@ -285,14 +286,14 @@ export default ({ selectedJob, officer, onUpdate }) => {
 		if (isNaN(parseInt(suspendDays))) {
 			toast.error('Unable to Suspend Employee');
 			return;
-		};
+		}
 
 		try {
 			let res = await (
 				await Nui.send('SuspendEmployee', {
 					SID: officer.SID,
 					JobId: pJob.Id,
-					Length: parseInt(suspendDays)
+					Length: parseInt(suspendDays),
 				})
 			).json();
 
@@ -331,7 +332,7 @@ export default ({ selectedJob, officer, onUpdate }) => {
 
 	const onPrintBadge = async () => {
 		try {
-			await Nui.send('Close', {})
+			await Nui.send('Close', {});
 			Nui.send('PrintBadge', {
 				SID: officer.SID,
 				JobId: pJob?.Id,
@@ -339,49 +340,35 @@ export default ({ selectedJob, officer, onUpdate }) => {
 		} catch (err) {
 			console.log(err);
 		}
-	}
+	};
 
 	return (
 		<div className={classes.wrapper}>
 			<Grid container style={{ height: '100%' }}>
-				{(officer.SID != user.SID && !officer.MDTSystemAdmin) && <Grid item xs={12}>
-					<ButtonGroup fullWidth>
-						{canPromote && <Button onClick={() => setJobEdit(true)}>
-							Edit
-						</Button>}
-						{canFire && <Button onClick={() => setJobFire(true)}>
-							Fire
-						</Button>}
-						{(canFire && !isSuspended && (pJob.Id === 'police' || pJob.Id === 'ems')) && <Button onClick={() => setJobSuspend(true)}>
-							Suspend
-						</Button>}
-						{(canFire && isSuspended && (pJob.Id === 'police' || pJob.Id === 'ems')) && <Button onClick={() => setRevokingSuspend(true)}>
-							Revoke Suspension
-						</Button>}
-						{isHighCommand && <Button onClick={() => setQualEdit(true)}>
-							Qual.
-						</Button>}
-						{isHighCommand && <Button onClick={() => onPrintBadge()}>
-							Badge
-						</Button>}
-						{isHighCommand && <Button onClick={() => setQualEdit(true)}>
-							Qualifications
-						</Button>}
-						{isHighCommand && <Button onClick={() => onPrintBadge()}>
-							Badge
-						</Button>}
-					</ButtonGroup>
-				</Grid>}
-				{(isHighCommand && officer.SID === user.SID) && <Grid item xs={12}>
-					<ButtonGroup fullWidth>
-						<Button onClick={() => setQualEdit(true)}>
-							Qualifications
-						</Button>
-						<Button onClick={() => onPrintBadge()}>
-							Badge
-						</Button>
-					</ButtonGroup>
-				</Grid>}
+				{officer.SID != user.SID && !officer.MDTSystemAdmin && (
+					<Grid item xs={12}>
+						<ButtonGroup fullWidth>
+							{canPromote && <Button onClick={() => setJobEdit(true)}>Edit</Button>}
+							{canFire && <Button onClick={() => setJobFire(true)}>Fire</Button>}
+							{canFire && !isSuspended && (pJob.Id === 'police' || pJob.Id === 'ems') && (
+								<Button onClick={() => setJobSuspend(true)}>Suspend</Button>
+							)}
+							{canFire && isSuspended && (pJob.Id === 'police' || pJob.Id === 'ems') && (
+								<Button onClick={() => setRevokingSuspend(true)}>Revoke Suspension</Button>
+							)}
+							{isHighCommand && <Button onClick={() => setQualEdit(true)}>Qualifications</Button>}
+							{isHighCommand && <Button onClick={() => onPrintBadge()}>Badge</Button>}
+						</ButtonGroup>
+					</Grid>
+				)}
+				{isHighCommand && officer.SID === user.SID && (
+					<Grid item xs={12}>
+						<ButtonGroup fullWidth>
+							<Button onClick={() => setQualEdit(true)}>Qualifications</Button>
+							<Button onClick={() => onPrintBadge()}>Badge</Button>
+						</ButtonGroup>
+					</Grid>
+				)}
 				<Grid item xs={6}>
 					<div className={classes.inner} style={{ marginRight: 10 }}>
 						<Avatar
@@ -392,40 +379,25 @@ export default ({ selectedJob, officer, onUpdate }) => {
 						/>
 						<List>
 							<ListItem>
-								<ListItemText
-									primary="State ID"
-									secondary={officer.SID}
-								/>
+								<ListItemText primary="State ID" secondary={officer.SID} />
 							</ListItem>
 							<ListItem>
-								<ListItemText
-									primary="Name"
-									secondary={`${officer.First} ${officer.Last}`}
-								/>
+								<ListItemText primary="Name" secondary={`${officer.First} ${officer.Last}`} />
 							</ListItem>
-							{(pJob.Id === 'police' || (pJob.Id === 'ems' && pJob.Workplace?.Id === 'safd') || (pJob.Id === "prison" && pJob.Workplace?.Id == "corrections")) && <ListItem>
-								<ListItemText
-									onClick={
-										canEdit
-											? () => setCallsign(true)
-											: null
-									}
-									className={
-										canEdit ? classes.hoverable : ''
-									}
-									primary="Callsign"
-									secondary={
-										Boolean(officer.Callsign)
-											? officer.Callsign
-											: 'Not Set'
-									}
-								/>
-							</ListItem>}
+							{(pJob.Id === 'police' ||
+								(pJob.Id === 'ems' && pJob.Workplace?.Id === 'safd') ||
+								(pJob.Id === 'prison' && pJob.Workplace?.Id == 'corrections')) && (
+								<ListItem>
+									<ListItemText
+										onClick={canEdit ? () => setCallsign(true) : null}
+										className={canEdit ? classes.hoverable : ''}
+										primary="Callsign"
+										secondary={Boolean(officer.Callsign) ? officer.Callsign : 'Not Set'}
+									/>
+								</ListItem>
+							)}
 							<ListItem>
-								<ListItemText
-									primary="Phone Number"
-									secondary={officer.Phone}
-								/>
+								<ListItemText primary="Phone Number" secondary={officer.Phone} />
 							</ListItem>
 						</List>
 					</div>
@@ -433,38 +405,38 @@ export default ({ selectedJob, officer, onUpdate }) => {
 				<Grid item xs={6}>
 					<div className={classes.inner} style={{ marginLeft: 10 }}>
 						<List>
-							{isSuspended && <ListItem>
-								<ListItemText
-									primary="Suspended"
-									secondary={`This person has ${isSuspended.ExpiresIn} remaining of their ${isSuspended.Length} day suspension. Expires At: ${isSuspended.ExpiresAt}`}
-								/>
-							</ListItem>}
-							{isSuspended && <ListItem>
-								<ListItemText
-									primary="Suspended By"
-									secondary={`[${isSuspended.Actioned.Callsign}] ${isSuspended.Actioned.First[0]}. ${isSuspended.Actioned.Last}`}
-								/>
-							</ListItem>}
+							{isSuspended && (
+								<ListItem>
+									<ListItemText
+										primary="Suspended"
+										secondary={`This person has ${isSuspended.ExpiresIn} remaining of their ${isSuspended.Length} day suspension. Expires At: ${isSuspended.ExpiresAt}`}
+									/>
+								</ListItem>
+							)}
+							{isSuspended && (
+								<ListItem>
+									<ListItemText
+										primary="Suspended By"
+										secondary={`[${isSuspended.Actioned.Callsign}] ${isSuspended.Actioned.First[0]}. ${isSuspended.Actioned.Last}`}
+									/>
+								</ListItem>
+							)}
 							<ListItem>
-								<ListItemText
-									primary="Department"
-									secondary={officerGovJobData?.Workplace?.Name}
-								/>
+								<ListItemText primary="Department" secondary={officerGovJobData?.Workplace?.Name} />
 							</ListItem>
 							<ListItem>
-								<ListItemText
-									primary="Rank"
-									secondary={officerGovJobData?.Grade?.Name}
-								/>
+								<ListItemText primary="Rank" secondary={officerGovJobData?.Grade?.Name} />
 							</ListItem>
 							<ListItem>
 								<ListItemText
 									primary="Qualifications"
 									secondary={
-										Boolean(officer.Qualifications) && officer.Qualifications.length > 0
-											? officer.Qualifications
-												.map(q => availableQualifications[q]?.name ?? 'Unknown')
-												.join(', ')
+										Boolean(officer.Qualifications) &&
+										Array.isArray(officer.Qualifications) &&
+										officer.Qualifications.length > 0
+											? officer.Qualifications.map(
+													(q) => availableQualifications[q]?.name ?? 'Unknown',
+											  ).join(', ')
 											: 'No Qualifications'
 									}
 								/>
@@ -472,25 +444,33 @@ export default ({ selectedJob, officer, onUpdate }) => {
 							<ListItem>
 								<ListItemText
 									primary="Permissions"
-									secondary={
-										Object.keys(jobData.Workplaces.find(w => w.Id == officerGovJobData?.Workplace?.Id)?.Grades.find(g => g.Id == officerGovJobData?.Grade.Id)?.Permissions)
-											.map(k => availablePermissions[k]?.name ?? 'Unknown')
-											.join(', ')
-									}
+									secondary={Object.keys(
+										jobData.Workplaces.find(
+											(w) => w.Id == officerGovJobData?.Workplace?.Id,
+										)?.Grades.find((g) => g.Id == officerGovJobData?.Grade.Id)?.Permissions,
+									)
+										.map((k) => availablePermissions[k]?.name ?? 'Unknown')
+										.join(', ')}
 								/>
 							</ListItem>
-							{officer?.LastClockOn?.[pJob.Id] && <ListItem>
-								<ListItemText
-									primary="Last Clocked On"
-									secondary={`${pJob.Name}: ${moment(officer?.LastClockOn?.[pJob.Id] * 1000).format('LLL')} (${moment(officer?.LastClockOn?.[pJob.Id] * 1000).fromNow()})`}
-								/>
-							</ListItem>}
-							{officer?.TimeClockedOn?.[pJob.Id] && <ListItem button onClick={() => setViewingDutyHours(true)}>
-								<ListItemText
-									primary="Time Worked in the Last Week"
-									secondary={`${pJob.Name}: ${parseDutyTime(officer.TimeClockedOn, pJob.Id)}`}
-								/>
-							</ListItem>}
+							{officer?.LastClockOn?.[pJob.Id] && (
+								<ListItem>
+									<ListItemText
+										primary="Last Clocked On"
+										secondary={`${pJob.Name}: ${moment(
+											officer?.LastClockOn?.[pJob.Id] * 1000,
+										).format('LLL')} (${moment(officer?.LastClockOn?.[pJob.Id] * 1000).fromNow()})`}
+									/>
+								</ListItem>
+							)}
+							{officer?.TimeClockedOn?.[pJob.Id] && (
+								<ListItem button onClick={() => setViewingDutyHours(true)}>
+									<ListItemText
+										primary="Time Worked in the Last Week"
+										secondary={`${pJob.Name}: ${parseDutyTime(officer.TimeClockedOn, pJob.Id)}`}
+									/>
+								</ListItem>
+							)}
 						</List>
 					</div>
 				</Grid>
@@ -502,11 +482,7 @@ export default ({ selectedJob, officer, onUpdate }) => {
 				onSubmit={onSavePicture}
 				onClose={() => setPicture(false)}
 			>
-				<Avatar
-					className={classes.avatar}
-					src={pending.picture}
-					alt={officer.First}
-				/>
+				<Avatar className={classes.avatar} src={pending.picture} alt={officer.First} />
 				<TextField
 					fullWidth
 					required
@@ -563,15 +539,17 @@ export default ({ selectedJob, officer, onUpdate }) => {
 				<TextField
 					select
 					fullWidth
-					disabled={!isHighCommand || pJob.Id === "ems"}
+					disabled={!isHighCommand || pJob.Id === 'ems'}
 					label="Department"
 					className={classes.editorField}
 					value={pJob.Workplace.Id}
 					onChange={(e) =>
 						setPJob({
 							...pJob,
-							Workplace: jobData.Workplaces.find(w => w.Id == e.target.value),
-							Grade: jobData.Workplaces.find(w => w.Id == e.target.value)?.Grades.sort((a, b) => a.Level - b.Level)[0],
+							Workplace: jobData.Workplaces.find((w) => w.Id == e.target.value),
+							Grade: jobData.Workplaces.find((w) => w.Id == e.target.value)?.Grades.sort(
+								(a, b) => a.Level - b.Level,
+							)[0],
 						})
 					}
 				>
@@ -591,20 +569,14 @@ export default ({ selectedJob, officer, onUpdate }) => {
 					onChange={(e) =>
 						setPJob({
 							...pJob,
-							Grade: jobData.Workplaces.find(
-								(w) => w.Id == pJob.Workplace.Id
-							)?.Grades.find(
-								(g) => g.Id == e.target.value
+							Grade: jobData.Workplaces.find((w) => w.Id == pJob.Workplace.Id)?.Grades.find(
+								(g) => g.Id == e.target.value,
 							),
 						})
 					}
 				>
-					{jobData.Workplaces.find(w => w.Id == pJob.Workplace.Id)?.Grades.map(g => (
-						<MenuItem
-							key={g.Id}
-							value={g.Id}
-							disabled={!hasPerm(true) && g.Level >= myJob.Grade.Level}
-						>
+					{jobData.Workplaces.find((w) => w.Id == pJob.Workplace.Id)?.Grades.map((g) => (
+						<MenuItem key={g.Id} value={g.Id} disabled={!hasPerm(true) && g.Level >= myJob.Grade.Level}>
 							{g.Name}
 						</MenuItem>
 					))}
@@ -619,17 +591,13 @@ export default ({ selectedJob, officer, onUpdate }) => {
 				onClose={() => setQualEdit(false)}
 			>
 				<FormControl fullWidth className={classes.editorField}>
-					<InputLabel>
-						Qualifications
-					</InputLabel>
+					<InputLabel>Qualifications</InputLabel>
 					<Select
 						multiple
 						fullWidth
 						value={pendingQuals}
 						onChange={onQualChange}
-						input={
-							<OutlinedInput fullWidth label="Qualifications" />
-						}
+						input={<OutlinedInput fullWidth label="Qualifications" />}
 						renderValue={(selected) => (
 							<Box style={{ display: 'flex', flexWrap: 'wrap' }}>
 								{selected.map((value) => (
@@ -643,26 +611,30 @@ export default ({ selectedJob, officer, onUpdate }) => {
 						)}
 					>
 						{Object.keys(availableQualifications)
-							.filter(qual => {
+							.filter((qual) => {
 								const data = availableQualifications[qual];
 								if (data) {
 									if (!data.restrict) return true;
 
-									if (data.restrict.weapon && (pJob.Id == "police" || pJob.Id === "prison")) {
+									if (data.restrict.weapon && (pJob.Id == 'police' || pJob.Id === 'prison')) {
 										return true;
 									}
 
-									if (data.restrict.job && data.restrict.job === pJob.Id && (!data.restrict.workplace || data.restrict.workplace == pJob?.Workplace?.Id)) {
-										return true
+									if (
+										data.restrict.job &&
+										data.restrict.job === pJob.Id &&
+										(!data.restrict.workplace || data.restrict.workplace == pJob?.Workplace?.Id)
+									) {
+										return true;
 									}
 								}
 								return false;
-							}).map(qual => (
+							})
+							.map((qual) => (
 								<MenuItem key={`q-${qual}`} value={qual}>
 									{availableQualifications[qual]?.name}
 								</MenuItem>
-							)
-							)}
+							))}
 					</Select>
 				</FormControl>
 			</Modal>
@@ -677,9 +649,8 @@ export default ({ selectedJob, officer, onUpdate }) => {
 			>
 				<DialogContent>
 					<DialogContentText>
-						Are you sure you want to terminate{' '}
-						{officerGovJobData?.Workplace?.Name} {officerGovJobData?.Grade.Name}{' '}
-						{officer.First} {officer.Last}?
+						Are you sure you want to terminate {officerGovJobData?.Workplace?.Name}{' '}
+						{officerGovJobData?.Grade.Name} {officer.First} {officer.Last}?
 					</DialogContentText>
 				</DialogContent>
 			</Modal>
@@ -707,15 +678,12 @@ export default ({ selectedJob, officer, onUpdate }) => {
 							pattern: '0-9',
 						},
 					}}
-					onChange={(e) =>
-						setSuspendDays(e.target.value)
-					}
+					onChange={(e) => setSuspendDays(e.target.value)}
 				/>
 				<DialogContent>
 					<DialogContentText>
-						Are you sure you want to suspend{' '}
-						{officerGovJobData?.Workplace?.Name} {officerGovJobData?.Grade.Name}{' '}
-						{officer.First} {officer.Last} for {suspendDays} days?
+						Are you sure you want to suspend {officerGovJobData?.Workplace?.Name}{' '}
+						{officerGovJobData?.Grade.Name} {officer.First} {officer.Last} for {suspendDays} days?
 					</DialogContentText>
 				</DialogContent>
 			</Modal>
@@ -730,9 +698,8 @@ export default ({ selectedJob, officer, onUpdate }) => {
 			>
 				<DialogContent>
 					<DialogContentText>
-						Are you sure you want to revoke the suspension for{' '}
-						{officerGovJobData?.Workplace?.Name} {officerGovJobData?.Grade.Name}{' '}
-						{officer.First} {officer.Last}?
+						Are you sure you want to revoke the suspension for {officerGovJobData?.Workplace?.Name}{' '}
+						{officerGovJobData?.Grade.Name} {officer.First} {officer.Last}?
 					</DialogContentText>
 				</DialogContent>
 			</Modal>
@@ -744,9 +711,16 @@ export default ({ selectedJob, officer, onUpdate }) => {
 			>
 				<DialogContent>
 					<DialogContentText>
-						{officer.TimeClockedOn && officer.TimeClockedOn[pJob.Id] && officer.TimeClockedOn[pJob.Id].map(session => {
-							return <p>{moment(session.time * 1000).format('LLL')} - {moment.duration(session.minutes, "minutes").humanize()}</p>
-						})}
+						{officer.TimeClockedOn &&
+							officer.TimeClockedOn[pJob.Id] &&
+							officer.TimeClockedOn[pJob.Id].map((session) => {
+								return (
+									<p>
+										{moment(session.time * 1000).format('LLL')} -{' '}
+										{moment.duration(session.minutes, 'minutes').humanize()}
+									</p>
+								);
+							})}
 					</DialogContentText>
 				</DialogContent>
 			</Modal>

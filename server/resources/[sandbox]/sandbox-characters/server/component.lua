@@ -30,7 +30,6 @@ TablesToDecode = {
 	"LaptopSettings",
 	"LaptopPermissions",
 	"Animations",
-	"InventorySettings",
 	"States",
 	"MDTHistory",
 	"MDTSuspension",
