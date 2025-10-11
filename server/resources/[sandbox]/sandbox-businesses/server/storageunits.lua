@@ -95,25 +95,25 @@ AddEventHandler("Businesses:Server:Startup", function()
 
     exports["sandbox-base"]:RegisterServerCallback("StorageUnits:Access", function(source, data, cb)
         local unit = GlobalState[string.format("StorageUnit:%s", data)]
-        if unit and unitPasscodes[unit.id] and unit.owner then
-            exports["sandbox-base"]:ClientCallback(source, "StorageUnits:Passcode", unitPasscodes[unit.id],
-                function(success, data)
-                    if success and data.entered == unitPasscodes[unit.id] then
-                        local storageType = unitEntities[unit.level] or 3000
-                        local storageOwner = string.format("storage-unit:%s", unit.id)
-                        exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
-                            invType = storageType,
-                            owner = storageOwner,
-                        }, function()
-                            exports.ox_inventory:OpenSecondary(source, storageType, storageOwner)
+        if unit and unitPasscodes[unit.id] then
+            if unit.owner and type(unit.owner) == "table" then
+                exports["sandbox-base"]:ClientCallback(source, "StorageUnits:Passcode", unitPasscodes[unit.id],
+                    function(success, data)
+                        if success and data.entered == unitPasscodes[unit.id] then
+                            TriggerClientEvent("StorageUnits:OpenStash", source, unit.id)
 
                             unitLastAccessed[unit.id] = os.time()
-
                             unit.lastAccessed = os.time()
                             GlobalState[string.format("StorageUnit:%s", unit.id)] = unit
-                        end)
-                    end
-                end)
+                        end
+                    end)
+            else
+                TriggerClientEvent("StorageUnits:OpenStash", source, unit.id)
+
+                unitLastAccessed[unit.id] = os.time()
+                unit.lastAccessed = os.time()
+                GlobalState[string.format("StorageUnit:%s", unit.id)] = unit
+            end
         end
 
         cb(true)
@@ -195,14 +195,7 @@ AddEventHandler("Businesses:Server:Startup", function()
                         }
                     )
 
-                    local storageType = unitEntities[unit.level] or 3000
-                    local storageOwner = string.format("storage-unit:%s", unit.id)
-                    exports["sandbox-base"]:ClientCallback(source, "Inventory:Compartment:Open", {
-                        invType = storageType,
-                        owner = storageOwner,
-                    }, function()
-                        exports.ox_inventory:OpenSecondary(source, storageType, storageOwner)
-                    end)
+                    TriggerClientEvent("StorageUnits:OpenStash", source, unit.id)
 
                     cb(true)
                 else
@@ -216,26 +209,44 @@ AddEventHandler("Businesses:Server:Startup", function()
 end)
 
 function StorageUnitStartup()
-    exports['sandbox-base']:DatabaseGameFind({
-        collection = "storage_units",
-        query = {},
-    }, function(success, results)
-        if not success then
-            return
+    exports.oxmysql:execute('SELECT * FROM storage_units', {}, function(results)
+        if results then
+            exports['sandbox-base']:LoggerTrace("StorageUnits", "Loaded ^2" .. #results .. "^7 Storage Units",
+                { console = true })
+            local unitIds = {}
+            for k, v in ipairs(results) do
+                unitPasscodes[v._id] = v.passcode
+
+                if v.location then
+                    v.location = json.decode(v.location)
+                end
+                if v.owner and v.owner ~= -1 and v.owner ~= 0 then
+                    if type(v.owner) == "string" then
+                        v.owner = json.decode(v.owner)
+                    end
+                else
+                    v.owner = false
+                end
+                if v.soldBy then
+                    v.soldBy = json.decode(v.soldBy)
+                end
+
+                local unit = FormatStorageUnit(v)
+                table.insert(unitIds, unit.id)
+
+                GlobalState[string.format("StorageUnit:%s", unit.id)] = unit
+
+                exports.ox_inventory:RegisterStash(
+                    string.format("storage_unit_%s", unit.id),
+                    string.format("Storage Unit %s", unit.label),
+                    50,     -- slots
+                    100000, -- weight
+                    unit.id -- stash identifier
+                )
+            end
+
+            GlobalState["StorageUnits"] = unitIds
         end
-        exports['sandbox-base']:LoggerTrace("StorageUnits", "Loaded ^2" .. #results .. "^7 Storage Units",
-            { console = true })
-        local unitIds = {}
-        for k, v in ipairs(results) do
-            unitPasscodes[v._id] = v.passcode
-
-            local unit = FormatStorageUnit(v)
-            table.insert(unitIds, unit.id)
-
-            GlobalState[string.format("StorageUnit:%s", unit.id)] = unit
-        end
-
-        GlobalState["StorageUnits"] = unitIds
     end)
 end
 
@@ -248,7 +259,7 @@ exports('StorageUnitsCreate', function(location, label, level, managedBy)
 
     local doc = {
         label = label,
-        owner = false,
+        owner = -1,
         level = level,
         location = {
             x = location.x,
@@ -256,31 +267,41 @@ exports('StorageUnitsCreate', function(location, label, level, managedBy)
             z = location.z,
         },
         managedBy = managedBy,
-        lastAccessed = false,
+        lastAccessed = nil,
         passcode = "0000",
     }
 
-    exports['sandbox-base']:DatabaseGameInsertOne({
-        collection = "storage_units",
-        document = doc,
-    }, function(success, result, insertedIds)
-        if success then
-            doc.id = insertedIds[1]
-            doc.location = location
+    local locationJson = json.encode(doc.location)
 
-            local unitIds = GlobalState["StorageUnits"]
-            table.insert(unitIds, doc.id)
-            GlobalState["StorageUnits"] = unitIds
+    exports.oxmysql:execute(
+        'INSERT INTO storage_units (label, owner, level, location, managedBy, lastAccessed, passcode) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        { doc.label, doc.owner, doc.level, locationJson, doc.managedBy, doc.lastAccessed, doc.passcode },
+        function(result)
+            if result and result.insertId then
+                doc.id = result.insertId
+                doc.location = location
 
-            GlobalState[string.format("StorageUnit:%s", doc.id)] = doc
+                local unitIds = GlobalState["StorageUnits"]
+                table.insert(unitIds, doc.id)
+                GlobalState["StorageUnits"] = unitIds
 
-            unitPasscodes[doc.id] = "0000"
+                GlobalState[string.format("StorageUnit:%s", doc.id)] = doc
 
-            p:resolve(doc.id)
-        else
-            p:resolve(false)
-        end
-    end)
+                unitPasscodes[doc.id] = "0000"
+
+                exports.ox_inventory:RegisterStash(
+                    string.format("storage_unit_%s", doc.id),
+                    string.format("Storage Unit %s", doc.label),
+                    50,     -- slots
+                    100000, -- weight
+                    doc.id  -- stash identifier
+                )
+
+                p:resolve(doc.id)
+            else
+                p:resolve(false)
+            end
+        end)
 
     return Citizen.Await(p)
 end)
@@ -291,42 +312,38 @@ exports('StorageUnitsUpdate', function(id, key, value, skipRefresh)
     end
 
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameUpdateOne({
-        collection = "storage_units",
-        query = {
-            _id = id,
-        },
-        update = {
-            ["$set"] = {
-                [key] = value,
-            },
-        },
-    }, function(success, results)
-        if success and not skipRefresh then
-            if key ~= "passcode" then
-                local unit = GlobalState[string.format("StorageUnit:%s", id)]
-                if unit then
-                    unit[key] = value
-                    GlobalState[string.format("StorageUnit:%s", id)] = unit
-                end
-            else
-                unitPasscodes[id] = value
-            end
-        end
 
-        p:resolve(success)
-    end)
+    local updateValue = value
+    if key == "location" and type(value) == "table" then
+        updateValue = json.encode(value)
+    end
+
+    exports.oxmysql:execute(
+        'UPDATE storage_units SET `' .. key .. '` = ? WHERE _id = ?',
+        { updateValue, id },
+        function(affectedRows)
+            local success = affectedRows > 0
+            if success and not skipRefresh then
+                if key ~= "passcode" then
+                    local unit = GlobalState[string.format("StorageUnit:%s", id)]
+                    if unit then
+                        unit[key] = value
+                        GlobalState[string.format("StorageUnit:%s", id)] = unit
+                    end
+                else
+                    unitPasscodes[id] = value
+                end
+            end
+
+            p:resolve(success)
+        end)
     return Citizen.Await(p)
 end)
 
 exports('StorageUnitsDelete', function(id)
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameDeleteOne({
-        collection = "storage_units",
-        query = {
-            _id = id,
-        },
-    }, function(success, result)
+    exports.oxmysql:execute('DELETE FROM storage_units WHERE _id = ?', { id }, function(affectedRows)
+        local success = affectedRows > 0
         if success then
             local newUnitIds = {}
             for k, v in ipairs(GlobalState["StorageUnits"]) do
@@ -337,6 +354,8 @@ exports('StorageUnitsDelete', function(id)
 
             GlobalState["StorageUnits"] = newUnitIds
             GlobalState[string.format("StorageUnit:%s", id)] = nil
+
+            exports.ox_inventory:RemoveStash(string.format("storage_unit_%s", id))
         end
         p:resolve(success)
     end)
@@ -346,36 +365,31 @@ end)
 
 exports('StorageUnitsSell', function(id, owner, seller)
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameUpdateOne({
-        collection = "storage_units",
-        query = {
-            _id = id,
-        },
-        update = {
-            ["$set"] = {
-                owner = owner,
-                soldBy = seller,
-                soldAt = os.time(),
-                lastAccessed = os.time(),
-            },
-        },
-    }, function(success, results)
-        if success then
-            local unit = GlobalState[string.format("StorageUnit:%s", id)]
-            if unit then
-                unit["owner"] = owner
-                unit["soldBy"] = seller
-                unit["soldAt"] = os.time()
-                unit["lastAccessed"] = os.time()
+    local ownerJson = json.encode(owner)
+    local sellerJson = json.encode(seller)
+    local currentTime = os.time()
 
-                unitLastAccessed[unit.id] = os.time()
+    exports.oxmysql:execute(
+        'UPDATE storage_units SET owner = ?, soldBy = ?, soldAt = ?, lastAccessed = ? WHERE _id = ?',
+        { ownerJson, sellerJson, currentTime, currentTime, id },
+        function(affectedRows)
+            local success = affectedRows > 0
+            if success then
+                local unit = GlobalState[string.format("StorageUnit:%s", id)]
+                if unit then
+                    unit["owner"] = owner
+                    unit["soldBy"] = seller
+                    unit["soldAt"] = currentTime
+                    unit["lastAccessed"] = currentTime
 
-                GlobalState[string.format("StorageUnit:%s", id)] = unit
+                    unitLastAccessed[unit.id] = currentTime
+
+                    GlobalState[string.format("StorageUnit:%s", id)] = unit
+                end
             end
-        end
 
-        p:resolve(success)
-    end)
+            p:resolve(success)
+        end)
     return Citizen.Await(p)
 end)
 
@@ -438,17 +452,10 @@ end
 
 function SaveStorageUnitLastAccess()
     for k, v in pairs(unitLastAccessed) do
-        exports['sandbox-base']:DatabaseGameUpdateOne({
-            collection = "storage_units",
-            query = {
-                _id = k,
-            },
-            update = {
-                ["$set"] = {
-                    lastAccessed = v,
-                },
-            },
-        })
+        exports.oxmysql:execute(
+            'UPDATE storage_units SET lastAccessed = ? WHERE _id = ?',
+            { v, k }
+        )
     end
 end
 

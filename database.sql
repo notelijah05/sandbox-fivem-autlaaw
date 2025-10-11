@@ -1055,6 +1055,20 @@ CREATE TABLE IF NOT EXISTS `shop_bank_accounts` (
   PRIMARY KEY (`shop`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+DROP TABLE IF EXISTS `storage_units`;
+CREATE TABLE `storage_units` (
+    `_id` INT(11) NOT NULL AUTO_INCREMENT,
+    `label` VARCHAR(255) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+    `owner` INT(11) NULL DEFAULT -1,
+    `level` VARCHAR(255) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+    `location` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
+    `managedBy` VARCHAR(255) NULL DEFAULT NULL,
+    `lastAccessed` DATETIME NULL DEFAULT NULL,
+    `passcode` VARCHAR(255) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+    PRIMARY KEY (`_id`) USING BTREE,
+    CONSTRAINT `location` CHECK (json_valid(`location`))
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 DROP TABLE IF EXISTS `weed`;
 CREATE TABLE IF NOT EXISTS `weed` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,

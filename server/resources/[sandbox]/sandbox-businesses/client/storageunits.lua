@@ -48,7 +48,7 @@ AddEventHandler("Businesses:Client:Startup", function()
                     if nearUnit and nearUnit?.unitId then
                         local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
 
-                        return (unit.owner and unit.owner.SID == LocalPlayer.state.Character:GetData("SID")) or
+                        return (unit.owner and type(unit.owner) == "table" and unit.owner.SID == LocalPlayer.state.Character:GetData("SID")) or
                             exports['sandbox-jobs']:HasJob(unit.managedBy)
                     end
                 end,
@@ -113,6 +113,16 @@ exports('StorageUnitsAccess', function()
     end
 end)
 
+RegisterNetEvent("StorageUnits:OpenStash", function(unitId)
+    local SID = LocalPlayer.state.Character:GetData("SID")
+    if SID then
+        exports.ox_inventory:openInventory('stash', {
+            id = string.format("storage_unit_%s", unitId),
+            owner = SID
+        })
+    end
+end)
+
 exports('StorageUnitsManage', function(specificUnit)
     local nearUnit = exports['sandbox-businesses']:StorageUnitsGetNearUnit()
 
@@ -137,7 +147,7 @@ exports('StorageUnitsManage', function(specificUnit)
                 },
             }
 
-            if unit.owner and LocalPlayer.state.Character and LocalPlayer.state.Character:GetData("SID") == unit.owner.SID then
+            if unit.owner and type(unit.owner) == "table" and LocalPlayer.state.Character and LocalPlayer.state.Character:GetData("SID") == unit.owner.SID then
                 table.insert(menu.main.items, {
                     label = "Set Passcode",
                     description = "Change the passcode for your storage unit",
@@ -147,7 +157,7 @@ exports('StorageUnitsManage', function(specificUnit)
             end
 
             if exports['sandbox-jobs']:HasJob(unit.managedBy) then
-                if unit.owner then
+                if unit.owner and type(unit.owner) == "table" then
                     table.insert(menu.main.items, {
                         label = "Current Unit Owner",
                         description = string.format("Owned By %s %s (State ID: %s)", unit.owner.First,
@@ -191,7 +201,8 @@ exports('StorageUnitsManageAll', function(managedBy)
             if unit and unit.managedBy == managedBy then
                 table.insert(menu.main.items, {
                     label = unit.label,
-                    description = unit.owner and string.format("Owned By %s %s", unit.owner.First, unit.owner.Last) or
+                    description = unit.owner and type(unit.owner) == "table" and
+                        string.format("Owned By %s %s", unit.owner.First, unit.owner.Last) or
                         "Not Owned",
                     data = { unit = unit.id },
                     event = "StorageUnits:Manage",
