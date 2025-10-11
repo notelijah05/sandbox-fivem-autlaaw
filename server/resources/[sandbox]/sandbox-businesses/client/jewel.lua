@@ -119,7 +119,7 @@ RegisterNetEvent("Businesses:Client:JEWEL:ViewGem", function(tableId, gemProps, 
 	-- exports['sandbox-hud']:GemTableOpen(quality)
 	--exports.ox_inventory:StaticTooltipOpen(item)
 	local str = string.format("Gem Quality: %s%%", quality)
-	exports["sandbox-hud"]:NotifStandard(str, 5000, "gem")
+	exports["sandbox-hud"]:Notification("standard", str, 5000, "gem")
 	--ActivateTable(tableId, gemProps.color, quality, item)
 end)
 

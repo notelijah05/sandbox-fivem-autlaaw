@@ -102,7 +102,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 			if _deliveryCounter > 0 then
 				exports['sandbox-hud']:ActionHide("tacopickup")
 				if _lastCook + _gracePeriod > GetGameTimer() then
-					exports["sandbox-hud"]:NotifError(
+					exports["sandbox-hud"]:Notification("error",
 						string.format(
 							"You must wait to swap to deliveries! (%s seconds)",
 							math.floor((_lastCook + _gracePeriod - GetGameTimer()) / 1000)
@@ -153,7 +153,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 			if _deliveryCounter < _tacoQueue.maxQueue then
 				exports['sandbox-hud']:ActionHide("tacoqueue")
 				if _lastDelivery + _gracePeriod > GetGameTimer() then
-					exports["sandbox-hud"]:NotifError(
+					exports["sandbox-hud"]:Notification("error",
 						string.format(
 							"You must wait to swap to start prepping food! (%s seconds)",
 							math.floor((_lastDelivery + _gracePeriod - GetGameTimer()) / 1000)
@@ -189,18 +189,19 @@ AddEventHandler("Businesses:Client:Startup", function()
 									GetNewQueueItem()
 									_lastCook = GetGameTimer()
 								else
-									exports["sandbox-hud"]:NotifError("You do not have the proper item to bag.")
+									exports["sandbox-hud"]:Notification("error",
+										"You do not have the proper item to bag.")
 									ShowTacoQueue()
 								end
 							end
 						)
 					end)
 				else
-					exports["sandbox-hud"]:NotifError("You do not have the proper item to bag.")
+					exports["sandbox-hud"]:Notification("error", "You do not have the proper item to bag.")
 					ShowTacoQueue()
 				end
 			else
-				exports["sandbox-hud"]:NotifError("The queue is full.")
+				exports["sandbox-hud"]:Notification("error", "The queue is full.")
 				exports['sandbox-hud']:ActionHide("tacoqueue")
 				ShowTacoQueue()
 			end
@@ -308,7 +309,7 @@ function FetchDropOffLocation()
 					)
 					if _durationCheck <= 0 then
 						_durationCheck = 0
-						exports["sandbox-hud"]:NotifError("You failed to deliver the order in time.")
+						exports["sandbox-hud"]:Notification("error", "You failed to deliver the order in time.")
 						RunCleanUp()
 						return
 					end

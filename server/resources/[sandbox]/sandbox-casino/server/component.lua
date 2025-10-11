@@ -18,12 +18,12 @@ AddEventHandler('onResourceStart', function(resource)
 				GlobalState["CasinoOpen"] = data.state
 
 				if GlobalState["CasinoOpen"] then
-					exports['sandbox-hud']:NotifSuccess(source, "Casino Opened")
+					exports['sandbox-hud']:Notification(source, "success", "Casino Opened")
 				else
-					exports['sandbox-hud']:NotifError(source, "Casino Closed")
+					exports['sandbox-hud']:Notification(source, "error", "Casino Closed")
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "Error Opening/Closing Casino")
+				exports['sandbox-hud']:Notification(source, "error", "Error Opening/Closing Casino")
 			end
 		end)
 
@@ -76,7 +76,7 @@ AddEventHandler('onResourceStart', function(resource)
 					exports.ox_inventory:AddItem(char:GetData("SID"), "diamond_vip", 1, {}, 1)
 					GiveCasinoFuckingMoney(source, "VIP Card", 10000)
 				else
-					exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
+					exports['sandbox-hud']:Notification(source, "error", "Not Enough Cash")
 				end
 			end
 

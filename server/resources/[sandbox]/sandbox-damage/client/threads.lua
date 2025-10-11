@@ -103,7 +103,7 @@ AddEventHandler("Keybinds:Client:KeyUp:secondary_action", function()
 							Wait(250)
 							exports['sandbox-damage']:HospitalSendToBed(Config.Beds[_sendToHosp], false, bedId)
 						else
-							exports["sandbox-hud"]:NotifError("Unable To Respawn Yet, Please Wait")
+							exports["sandbox-hud"]:Notification("error", "Unable To Respawn Yet, Please Wait")
 						end
 					end)
 				else
@@ -373,7 +373,7 @@ function StartThreads()
 			elseif LocalPlayer.state.wasOnPainKillers then
 				LocalPlayer.state.wasOnPainKillers = false
 				-- SetPedToRagdoll(LocalPlayer.state.ped, 1500, 2000, 3, true, true, false)
-				-- exports["sandbox-hud"]:NotifCustom(Config.Strings.PainKillersExpired, 5000, "pills", Config.NotifStyle)
+				-- exports["sandbox-hud"]:Notification("custom", Config.Strings.PainKillersExpired, 5000, "pills", Config.NotifStyle)
 			end
 
 			if LocalPlayer.state.onDrugs ~= nil and LocalPlayer.state.onDrugs > 0 then
@@ -381,7 +381,7 @@ function StartThreads()
 			elseif LocalPlayer.state.wasOnDrugs then
 				LocalPlayer.state.wasOnDrugs = false
 				-- SetPedToRagdoll(LocalPlayer.state.ped, 1500, 2000, 3, true, true, false)
-				-- exports["sandbox-hud"]:NotifCustom(Config.Strings.AdrenalineExpired, 5000, "pills", Config.NotifStyle)
+				-- exports["sandbox-hud"]:Notification("custom", Config.Strings.AdrenalineExpired, 5000, "pills", Config.NotifStyle)
 			end
 
 			ApplyLimp(LocalPlayer.state.ped)

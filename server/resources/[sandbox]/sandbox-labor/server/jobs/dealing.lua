@@ -101,7 +101,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			if char ~= nil then
 				for k, v in ipairs(_cornerCds) do
 					if os.time() < v.expires and #(data.coords - v.coords) < 100.0 then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Someone Has Recently Sold Around Here")
 						return cb(false)
 					end

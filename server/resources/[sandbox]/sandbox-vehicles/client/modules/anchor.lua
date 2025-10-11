@@ -7,7 +7,7 @@ function CanBeAnchored(vehicle)
     end
 
     if GetEntitySpeed(vehicle) > 3.0 then
-        exports["sandbox-hud"]:NotifError('Boat Too Fast')
+        exports["sandbox-hud"]:Notification("error", 'Boat Too Fast')
         return false
     end
 

@@ -78,7 +78,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			)
 		then
 			if GlobalState["RobberiesDisabled"] then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)
@@ -140,9 +140,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 		if _alerted ~= nil and _alerted >= os.time() then
 			PutShittyThingsOnCD()
 			GlobalState["Vangelico:State"] = 2
-			exports['sandbox-hud']:NotifSuccess(source, "Store Has Been Secure", 6000)
+			exports['sandbox-hud']:Notification(source, "success", "Store Has Been Secure", 6000)
 		else
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"Unable To Secure Store, No Recent Crime Reported", 6000)
 			exports['sandbox-base']:LoggerInfo(
 				"Robbery",

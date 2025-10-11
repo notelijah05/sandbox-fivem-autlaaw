@@ -131,14 +131,14 @@ function RegisterDumpsterCallbacks()
 						)
 					end
 					exports['sandbox-characters']:RepAdd(source, _repName, math.random(5, 10))
-					exports['sandbox-hud']:NotifSuccess(source, "You found something!")
+					exports['sandbox-hud']:Notification(source, "success", "You found something!")
 				else
 					exports['sandbox-characters']:RepAdd(source, _repName, math.random(1, 3))
-					exports['sandbox-hud']:NotifInfo(source, "Nothing was found.")
+					exports['sandbox-hud']:Notification(source, "info", "Nothing was found.")
 				end
 				cb(true)
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"This dumpster has been searched already!")
 				cb(false)
 			end

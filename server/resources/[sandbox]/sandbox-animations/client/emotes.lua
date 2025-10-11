@@ -28,11 +28,11 @@ exports("EmotesPlay", function(emote, fromUserInput, time, notCancellable, skipD
     end
 
     if fromUserInput and (IsPedBeingStunned(LocalPlayer.state.ped) or IsPedRagdoll(LocalPlayer.state.ped) or IsPedFalling(LocalPlayer.state.ped)) then
-        return exports["sandbox-hud"]:NotifError('Cannot Do Animation Now')
+        return exports["sandbox-hud"]:Notification("error", 'Cannot Do Animation Now')
     end
 
     if fromUserInput and LocalPlayer.state.playingCasino then
-        return exports["sandbox-hud"]:NotifError('Cannot Do Animation Now')
+        return exports["sandbox-hud"]:Notification("error", 'Cannot Do Animation Now')
     end
 
     if IsInAnimation then
@@ -53,7 +53,7 @@ exports("EmotesPlay", function(emote, fromUserInput, time, notCancellable, skipD
         elseif AnimData.DogEmotes[name] ~= nil then
             animInfo = AnimData.DogEmotes[name]
         else
-            exports["sandbox-hud"]:NotifError('Invalid Emote')
+            exports["sandbox-hud"]:Notification("error", 'Invalid Emote')
         end
         local animTime = (time ~= nil and tonumber(time) or nil)
         local notCancellable = notCancellable ~= nil and notCancellable or false
@@ -73,7 +73,7 @@ exports("EmotesPlay", function(emote, fromUserInput, time, notCancellable, skipD
         elseif AnimData.DogEmotes[name] ~= nil then
             animInfo = AnimData.DogEmotes[name]
         else
-            exports["sandbox-hud"]:NotifError('Invalid Emote')
+            exports["sandbox-hud"]:Notification("error", 'Invalid Emote')
         end
         if emote.prop then
             animInfo.AdditionalOptions.Prop = emote.prop
@@ -158,7 +158,7 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
     end
 
     if Config.EnableEmoteCD and fromUserInput and _AnimCounter >= Config.AnimMaxEmotesCooldown then
-        return exports["sandbox-hud"]:NotifError('Stop spamming emotes you pepega.')
+        return exports["sandbox-hud"]:Notification("error", 'Stop spamming emotes you pepega.')
     end
 
     currentEmoteAllData = {
@@ -260,7 +260,7 @@ function DoAnEmote(emoteData, fromUserInput, length, notCancellable, emoteName, 
                 else
                     PtfxWait = emoteData.AdditionalOptions.PtfxWait
                     PtfxPrompt = true
-                    exports["sandbox-hud"]:NotifInfo(emoteData.AdditionalOptions.PtfxInfo, 5000)
+                    exports["sandbox-hud"]:Notification("info", emoteData.AdditionalOptions.PtfxInfo, 5000)
                     CreateThread(function()
                         while PtfxPrompt do
                             if IsControlPressed(0, 47) then

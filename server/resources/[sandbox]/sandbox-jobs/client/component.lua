@@ -72,7 +72,7 @@ end)
 exports("DutyOn", function(jobId, cb)
 	if jobId then
 		if exports['sandbox-jobs']:DutyGet(jobId) then
-			exports["sandbox-hud"]:NotifError("Already On Duty as that Job")
+			exports["sandbox-hud"]:Notification("error", "Already On Duty as that Job")
 			if cb then
 				cb(false)
 			end

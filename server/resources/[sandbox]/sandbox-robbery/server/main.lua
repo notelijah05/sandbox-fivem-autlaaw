@@ -283,13 +283,13 @@ AddEventHandler('onResourceStart', function(resource)
 								table.remove(_pickups[char:GetData("SID")], i)
 							else
 								exports.ox_inventory:AddItem(char:GetData("SID"), v.giving, 1, {}, 1)
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									string.format("Failed Adding x1 %s", receivingItem.label),
 									6000
 								)
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								string.format("Failed Taking x1 %s", givingItem.label),
 								6000
 							)
@@ -298,10 +298,10 @@ AddEventHandler('onResourceStart', function(resource)
 					for k, v in pairs(_pickups[char:GetData("SID")]) do
 					end
 
-					exports['sandbox-hud']:NotifSuccess(source,
+					exports['sandbox-hud']:Notification(source, "success",
 						"You've Picked Up All Available Items", 6000)
 				else
-					exports['sandbox-hud']:NotifError(source, "You Have Nothing To Pickup",
+					exports['sandbox-hud']:Notification(source, "error", "You Have Nothing To Pickup",
 						6000)
 				end
 			end

@@ -306,7 +306,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Network Offline For A Storm, Check Back Later",
 						6000
 					)
@@ -315,13 +315,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -330,7 +330,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("Lombank:Power:%s", data.boxId)] ~= nil
 					and GlobalState[string.format("Lombank:Power:%s", data.boxId)] > os.time()
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Electric Box Already Disabled", 6000)
 					return
 				end
@@ -465,13 +465,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 						_lbInUse.powerBoxes[data.boxId] = false
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Someone Is Already Interacting With This", 6000)
 				end
 
 				return
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -493,7 +493,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -502,13 +502,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -517,7 +517,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("Lombank:Power:%s", data.boxId)] ~= nil
 					and GlobalState[string.format("Lombank:Power:%s", data.boxId)] > os.time()
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Electric Box Already Disabled", 6000)
 					return
 				end
@@ -656,11 +656,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end
 						else
 							_lbInUse.powerBoxes[data.boxId] = false
-							exports['sandbox-hud']:NotifError(source, "You Need Thermite",
+							exports['sandbox-hud']:Notification(source, "error", "You Need Thermite",
 								6000)
 						end
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Someone Is Already Interacting With This",
 							6000
 						)
@@ -669,7 +669,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					return
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -691,7 +691,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -700,13 +700,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -715,7 +715,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					GlobalState[string.format("Lombank:Upper:Wall:%s", data)] ~= nil
 					and GlobalState[string.format("Lombank:Upper:Wall:%s", data)] > os.time()
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Electric Box Already Disabled", 6000)
 					return
 				end
@@ -787,14 +787,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 						end
 					else
 						_lbInUse.drillPoints[data] = false
-						exports['sandbox-hud']:NotifError(source, "You Need A Drill", 6000)
+						exports['sandbox-hud']:Notification(source, "error", "You Need A Drill", 6000)
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Someone Is Already Interacting With This", 6000)
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)

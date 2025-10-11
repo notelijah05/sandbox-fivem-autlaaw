@@ -149,11 +149,11 @@ AddEventHandler("Casino:Client:UseSlotMachine", function()
 
                 SetupSlotMachine()
             else
-                exports["sandbox-hud"]:NotifError("Seat Taken")
+                exports["sandbox-hud"]:Notification("error", "Seat Taken")
             end
         end)
     else
-        exports["sandbox-hud"]:NotifError("Not Close Enough to Machine")
+        exports["sandbox-hud"]:Notification("error", "Not Close Enough to Machine")
     end
 end)
 

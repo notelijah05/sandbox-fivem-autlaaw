@@ -53,7 +53,7 @@ exports("PedFeaturesSetWalk", function(walk, label)
                 { type = 'walk', data = 'default' },
                 function(success)
                     if success then
-                        exports["sandbox-hud"]:NotifInfo('Reset Walking Style', 5000)
+                        exports["sandbox-hud"]:Notification("info", 'Reset Walking Style', 5000)
                     end
                 end)
         else
@@ -61,7 +61,7 @@ exports("PedFeaturesSetWalk", function(walk, label)
             exports["sandbox-base"]:ServerCallback('Animations:UpdatePedFeatures', { type = 'walk', data = walk },
                 function(success)
                     if success then
-                        exports["sandbox-hud"]:NotifSuccess('Saved Walking Style: ' .. label, 5000)
+                        exports["sandbox-hud"]:Notification("success", 'Saved Walking Style: ' .. label, 5000)
                     end
                 end)
         end
@@ -73,7 +73,7 @@ exports("PedFeaturesSetWalk", function(walk, label)
                 { type = 'walk', data = 'default' },
                 function(success)
                     if success then
-                        exports["sandbox-hud"]:NotifInfo('Reset Walking Style', 5000)
+                        exports["sandbox-hud"]:Notification("info", 'Reset Walking Style', 5000)
                     end
                 end)
         else
@@ -84,7 +84,7 @@ exports("PedFeaturesSetWalk", function(walk, label)
             exports["sandbox-base"]:ServerCallback('Animations:UpdatePedFeatures', { type = 'walk', data = walk },
                 function(success)
                     if success then
-                        exports["sandbox-hud"]:NotifSuccess('Saved Walking Style: ' .. label, 5000)
+                        exports["sandbox-hud"]:Notification("success", 'Saved Walking Style: ' .. label, 5000)
                     end
                 end)
         end
@@ -99,7 +99,7 @@ exports("PedFeaturesSetExpression", function(expression, label)
             { type = 'expression', data = 'default' },
             function(success)
                 if success then
-                    exports["sandbox-hud"]:NotifInfo('Expression Reset', 5000)
+                    exports["sandbox-hud"]:Notification("info", 'Expression Reset', 5000)
                 end
             end)
     else
@@ -109,7 +109,7 @@ exports("PedFeaturesSetExpression", function(expression, label)
             { type = 'expression', data = expression },
             function(success)
                 if success then
-                    exports["sandbox-hud"]:NotifSuccess('Saved Expression: ' .. label, 5000)
+                    exports["sandbox-hud"]:Notification("success", 'Saved Expression: ' .. label, 5000)
                 end
             end)
     end

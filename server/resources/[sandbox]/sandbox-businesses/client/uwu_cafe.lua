@@ -102,7 +102,7 @@ end)
 
 AddEventHandler("Businesses:Client:PetCat", function(data)
 	if data.entity == nil then
-		exports["sandbox-hud"]:NotifError("This is not a cat!")
+		exports["sandbox-hud"]:Notification("error", "This is not a cat!")
 		return
 	end
 	TaskTurnPedToFaceEntity(LocalPlayer.state.ped, data.entity, 1000)
@@ -111,7 +111,7 @@ AddEventHandler("Businesses:Client:PetCat", function(data)
 		if success then
 			exports['sandbox-animations']:EmotesPlay("petting", false, 3000, true)
 			Wait(3000)
-			exports["sandbox-hud"]:NotifSuccess("Feeling less stressful.")
+			exports["sandbox-hud"]:Notification("success", "Feeling less stressful.")
 		end
 	end)
 end)

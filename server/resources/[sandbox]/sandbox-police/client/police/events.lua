@@ -20,24 +20,25 @@ AddEventHandler("Police:Client:ReEnableTracker", function()
 
 	exports["sandbox-base"]:ServerCallback("EmergencyAlerts:EnablePDTracker", {}, function(success)
 		if success then
-			exports["sandbox-hud"]:NotifSuccess("Tracker Re-Enabled")
+			exports["sandbox-hud"]:Notification("success", "Tracker Re-Enabled")
 		else
-			exports["sandbox-hud"]:NotifError("Failed to Re-Enable Tracker")
+			exports["sandbox-hud"]:Notification("error", "Failed to Re-Enable Tracker")
 		end
 	end)
 end)
 
 AddEventHandler("Police:Client:OnDuty", function()
 	if not LocalPlayer.state.Character:GetData("Callsign") then
-		exports["sandbox-hud"]:NotifError("Callsign Not Set, Unable To Go On Duty")
+		exports["sandbox-hud"]:Notification("error", "Callsign Not Set, Unable To Go On Duty")
 		return
 	end
 
 	local susp = LocalPlayer.state.Character:GetData("MDTSuspension")
 	if susp and susp.police and susp.police.Expires > GetCloudTimeAsInt() then
 		local tr = GetFormattedTimeFromSeconds(susp.police.Expires - GetCloudTimeAsInt())
-		exports["sandbox-hud"]:NotifError(string.format("You Have Been Suspended (%s Remaining), Unable To Go On Duty",
-			tr))
+		exports["sandbox-hud"]:Notification("error",
+			string.format("You Have Been Suspended (%s Remaining), Unable To Go On Duty",
+				tr))
 		return
 	end
 
@@ -382,7 +383,7 @@ end)
 AddEventHandler("Police:Client:OpenLocker", function()
 	exports["sandbox-base"]:ServerCallback("MDT:OpenPersonalLocker", {}, function(success)
 		if not success then
-			exports["sandbox-hud"]:NotifError("Callsign Not Set, Unable To Open Locker")
+			exports["sandbox-hud"]:Notification("error", "Callsign Not Set, Unable To Open Locker")
 		end
 	end)
 end)

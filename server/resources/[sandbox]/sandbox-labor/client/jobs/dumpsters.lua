@@ -134,15 +134,15 @@ AddEventHandler("Inventory:Client:HideInDumpster", function(entity)
 	}
 	exports["sandbox-base"]:ServerCallback("Inventory:Dumpster:HidePlayer", data, function(s, l)
 		if not s then
-			exports["sandbox-hud"]:NotifError("You're not in the right state to hide in the dumpster.")
+			exports["sandbox-hud"]:Notification("error", "You're not in the right state to hide in the dumpster.")
 			return
 		end
 		if data.identifier == nil or type(data.identifier) == "boolean" then
-			exports["sandbox-hud"]:NotifError("This is not a dumpster. Try again.")
+			exports["sandbox-hud"]:Notification("error", "This is not a dumpster. Try again.")
 			return
 		end
 		if not l then
-			exports["sandbox-hud"]:NotifError("Dumpster is locked.")
+			exports["sandbox-hud"]:Notification("error", "Dumpster is locked.")
 			return
 		end
 		LocalPlayer.state.inDumpster = true
@@ -181,7 +181,7 @@ AddEventHandler("Inventory:Client:SearchDumpster", function(entity)
 	exports["sandbox-base"]:ServerCallback("Inventory:Server:AvailableDumpster", entity, function(s)
 		if s and entity then
 			if entity == nil or type(entity) == "boolean" then
-				exports["sandbox-hud"]:NotifError("This is not a dumpster. Try again.")
+				exports["sandbox-hud"]:Notification("error", "This is not a dumpster. Try again.")
 				return
 			end
 			if not _searching then
@@ -220,7 +220,7 @@ AddEventHandler("Inventory:Client:SearchDumpster", function(entity)
 				end)
 			end
 		else
-			exports["sandbox-hud"]:NotifError("This dumpster has been searched.")
+			exports["sandbox-hud"]:Notification("error", "This dumpster has been searched.")
 		end
 	end)
 end)

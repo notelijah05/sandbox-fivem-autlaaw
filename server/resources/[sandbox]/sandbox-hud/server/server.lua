@@ -63,14 +63,14 @@ AddEventHandler('onResourceStart', function(resource)
 									tarState.isBlindfolded = false
 									TriggerClientEvent("VOIP:Client:Gag:Use", data)
 								else
-									exports['sandbox-hud']:NotifError(source,
+									exports['sandbox-hud']:Notification(source, "error",
 										"Failed Adding Item")
 									cb(false)
 								end
 							end
 						end)
 				else
-					exports['sandbox-hud']:NotifError(source, "Target Not Blindfolded")
+					exports['sandbox-hud']:Notification(source, "error", "Target Not Blindfolded")
 					cb(false)
 				end
 			else
@@ -91,21 +91,21 @@ AddEventHandler('onResourceStart', function(resource)
 											tarState.isBlindfolded = true
 											TriggerClientEvent("VOIP:Client:Gag:Use", target)
 										else
-											exports['sandbox-hud']:NotifError(source,
+											exports['sandbox-hud']:Notification(source, "error",
 												"Failed Removing Item")
 										end
 									else
-										exports['sandbox-hud']:NotifError(source,
+										exports['sandbox-hud']:Notification(source, "error",
 											"Target Not Cuffed")
 									end
 								end
 							end)
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Target Already Blindfolded")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Nobody Near To Blindfold")
+					exports['sandbox-hud']:Notification(source, "error", "Nobody Near To Blindfold")
 				end
 			end)
 		end)
@@ -140,7 +140,7 @@ function RegisterChatCommands()
 	})
 
 	-- exports["sandbox-chat"]:RegisterAdminCommand("notif", function(source, args, rawCommand)
-	-- 	exports['sandbox-hud']:NotifSuccess(source, "This is a test, lul")
+	-- 	exports['sandbox-hud']:Notification(source, "success", "This is a test, lul")
 	-- end, {
 	-- 	help = "Test Notification",
 	-- })

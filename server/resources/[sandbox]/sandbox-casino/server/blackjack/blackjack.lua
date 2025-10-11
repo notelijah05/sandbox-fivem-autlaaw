@@ -512,7 +512,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
                 cb(true, _blackjack[blackjackPlayer.Table])
             else
-                exports['sandbox-hud']:NotifError(source, "Not Enough Chips")
+                exports['sandbox-hud']:Notification(source, "error", "Not Enough Chips")
                 cb(false)
             end
         else

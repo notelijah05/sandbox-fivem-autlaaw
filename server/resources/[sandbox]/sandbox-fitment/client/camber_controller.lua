@@ -85,15 +85,15 @@ function OpenControllerMenu()
                 },
             }, function(success, newNewData)
                 if success then
-                    exports["sandbox-hud"]:NotifSuccess('Wheel Camber Saved')
+                    exports["sandbox-hud"]:Notification("success", 'Wheel Camber Saved')
                 else
-                    exports["sandbox-hud"]:NotifError('Wheel Camber Saving Failed')
+                    exports["sandbox-hud"]:Notification("error", 'Wheel Camber Saving Failed')
                 end
             end)
 
             wheelMenu:Close()
         else
-            exports["sandbox-hud"]:NotifError('There Was Nothing to Save')
+            exports["sandbox-hud"]:Notification("error", 'There Was Nothing to Save')
         end
     end)
 
@@ -112,9 +112,9 @@ function OpenControllerMenu()
             },
         }, function(success, newNewData)
             if success then
-                exports["sandbox-hud"]:NotifSuccess('Wheel Camber Reset')
+                exports["sandbox-hud"]:Notification("success", 'Wheel Camber Reset')
             else
-                exports["sandbox-hud"]:NotifError('Wheel Camber Reset Failed')
+                exports["sandbox-hud"]:Notification("error", 'Wheel Camber Reset Failed')
             end
         end)
 

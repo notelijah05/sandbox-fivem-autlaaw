@@ -10,7 +10,7 @@ function StartPreview(int)
     end
 
     if not _insideInterior then
-        exports["sandbox-hud"]:NotifError("Must be Inside Your Property to Preview Interiors", 8000)
+        exports["sandbox-hud"]:Notification("error", "Must be Inside Your Property to Preview Interiors", 8000)
         return false
     end
 
@@ -43,7 +43,7 @@ function StartPreview(int)
         _previewingInteriorSwitching = false
         return true
     else
-        exports["sandbox-hud"]:NotifError("Cannot Preview Interior")
+        exports["sandbox-hud"]:Notification("error", "Cannot Preview Interior")
     end
     return false
 end

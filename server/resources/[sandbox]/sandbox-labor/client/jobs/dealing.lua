@@ -460,7 +460,7 @@ AddEventHandler("CornerDealing:Client:ShowMenu", function(entity, data)
 				})
 				_hasSellingMenu = true
 			else
-				exports["sandbox-hud"]:NotifError("You Have Nothing To Sell")
+				exports["sandbox-hud"]:Notification("error", "You Have Nothing To Sell")
 			end
 		end)
 	end
@@ -511,7 +511,7 @@ end)
 AddEventHandler("CornerDealing:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback("CornerDealing:StartJob", _joiner, function(state)
 		if not state then
-			exports["sandbox-hud"]:NotifError("Unable To Start Job")
+			exports["sandbox-hud"]:Notification("error", "Unable To Start Job")
 		end
 	end)
 end)

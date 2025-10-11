@@ -9,7 +9,7 @@ AddEventHandler("onResourceStart", function(resource)
     exports["sandbox-chat"]:RegisterAdminCommand("giveitem", function(source, args, rawCommand)
         local item = Items(args[2])
         if not item then
-            exports['sandbox-hud']:NotifError(source, "Item not found")
+            exports['sandbox-hud']:Notification(source, "error", "Item not found")
             return
         end
 
@@ -17,7 +17,7 @@ AddEventHandler("onResourceStart", function(resource)
             local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 
             if not targetChar then
-                exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+                exports['sandbox-hud']:Notification(source, "error", "Player with SID " .. args[1] .. " not found online")
                 return
             end
 
@@ -30,12 +30,12 @@ AddEventHandler("onResourceStart", function(resource)
                 args[4] and { type = tonumber(args[4]) or args[4] })
 
             if success then
-                exports['sandbox-hud']:NotifSuccess(source,
+                exports['sandbox-hud']:Notification(source, "success",
                     string.format("You gave %sx %s to SID: %s", count, item.name, args[1]))
             end
 
             if not success then
-                exports['sandbox-hud']:NotifError(source,
+                exports['sandbox-hud']:Notification(source, "error",
                     string.format("Failed to give %sx %s to SID: %s (%s)", count, item.name, args[1], response))
                 return Citizen.Trace(('Failed to give %sx %s to SID %s (%s)'):format(count, item.name, args[1],
                     response))
@@ -64,7 +64,7 @@ AddEventHandler("onResourceStart", function(resource)
             local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 
             if not targetChar then
-                exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+                exports['sandbox-hud']:Notification(source, "error", "Player with SID " .. args[1] .. " not found online")
                 return
             end
 
@@ -107,7 +107,7 @@ AddEventHandler("onResourceStart", function(resource)
             local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 
             if not targetChar then
-                exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+                exports['sandbox-hud']:Notification(source, "error", "Player with SID " .. args[1] .. " not found online")
                 return
             end
 
@@ -161,14 +161,14 @@ AddEventHandler("onResourceStart", function(resource)
         local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 
         if not targetChar then
-            exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+            exports['sandbox-hud']:Notification(source, "error", "Player with SID " .. args[1] .. " not found online")
             return
         end
 
         local targetPlayer = targetChar:GetData("Source")
 
         exports.ox_inventory:ConfiscateInventory(targetPlayer)
-        exports['sandbox-hud']:NotifSuccess(source, "Confiscated inventory for SID: " .. args[1])
+        exports['sandbox-hud']:Notification(source, "success", "Confiscated inventory for SID: " .. args[1])
     end, {
         help = "Confiscates the target inventory by SID, to restore with /returninv",
         params = {
@@ -180,14 +180,14 @@ AddEventHandler("onResourceStart", function(resource)
         local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 
         if not targetChar then
-            exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+            exports['sandbox-hud']:Notification(source, "error", "Player with SID " .. args[1] .. " not found online")
             return
         end
 
         local targetPlayer = targetChar:GetData("Source")
 
         exports.ox_inventory:ReturnInventory(targetPlayer)
-        exports['sandbox-hud']:NotifSuccess(source, "Returned inventory for SID: " .. args[1])
+        exports['sandbox-hud']:Notification(source, "success", "Returned inventory for SID: " .. args[1])
     end, {
         help = 'Restores a previously confiscated inventory for the target by SID',
         params = {
@@ -198,21 +198,21 @@ AddEventHandler("onResourceStart", function(resource)
     exports["sandbox-chat"]:RegisterAdminCommand("clearinv", function(source, args, rawCommand)
         if args[1] == 'me' then
             exports.ox_inventory:ClearInventory(source)
-            exports['sandbox-hud']:NotifSuccess(source, "Cleared your inventory")
+            exports['sandbox-hud']:Notification(source, "success", "Cleared your inventory")
             return
         end
 
         local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 
         if not targetChar then
-            exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+            exports['sandbox-hud']:Notification(source, "error", "Player with SID " .. args[1] .. " not found online")
             return
         end
 
         local targetPlayer = targetChar:GetData("Source")
 
         exports.ox_inventory:ClearInventory(targetPlayer)
-        exports['sandbox-hud']:NotifSuccess(source, "Cleared inventory for SID: " .. args[1])
+        exports['sandbox-hud']:Notification(source, "success", "Cleared inventory for SID: " .. args[1])
     end, {
         help = 'Wipes all items from the target inventory (supports SID or "me")',
         params = {
@@ -239,7 +239,7 @@ AddEventHandler("onResourceStart", function(resource)
         local targetChar = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
 
         if not targetChar then
-            exports['sandbox-hud']:NotifError(source, "Player with SID " .. args[1] .. " not found online")
+            exports['sandbox-hud']:Notification(source, "error", "Player with SID " .. args[1] .. " not found online")
             return
         end
 
@@ -1036,7 +1036,7 @@ function RegisterRandomItems()
     end)
 
     exports.ox_inventory:RegisterUse("briefcase_cash", "RandomItems", function(source, item)
-        exports['sandbox-hud']:NotifError(source, "No money to be found.")
+        exports['sandbox-hud']:Notification(source, "error", "No money to be found.")
 
         -- local Winnings = 25000
         -- local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -1048,7 +1048,7 @@ function RegisterRandomItems()
         -- 	description = string.format("Lotto Earnings - $%s", Winnings),
         -- 	data = Winnings
         -- })
-        -- exports['sandbox-hud']:NotifSuccess(source, "You found a briefcase with $25,000!")
+        -- exports['sandbox-hud']:Notification(source, "success", "You found a briefcase with $25,000!")
     end)
 
     exports.ox_inventory:RegisterUse("cigarette_pack", "RandomItems", function(source, item)
@@ -1063,7 +1063,7 @@ function RegisterRandomItems()
             end
         else
             exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
-            exports['sandbox-hud']:NotifError(source, "Pack Has No More Cigarettes In It")
+            exports['sandbox-hud']:Notification(source, "error", "Pack Has No More Cigarettes In It")
         end
     end)
 
@@ -1078,7 +1078,7 @@ function RegisterRandomItems()
             end
         else
             exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
-            exports['sandbox-hud']:NotifError(source, "Box Has No More Donuts In It")
+            exports['sandbox-hud']:Notification(source, "error", "Box Has No More Donuts In It")
         end
     end)
 
@@ -1113,7 +1113,7 @@ function RegisterRandomItems()
             end
         else
             exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
-            exports['sandbox-hud']:NotifError(source, "Box Has No More Donuts In It")
+            exports['sandbox-hud']:Notification(source, "error", "Box Has No More Donuts In It")
         end
     end)
 
@@ -1154,7 +1154,7 @@ function RegisterRandomItems()
             end
         else
             exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
-            exports['sandbox-hud']:NotifError(source, "Box Has No More Donuts In It")
+            exports['sandbox-hud']:Notification(source, "error", "Box Has No More Donuts In It")
         end
     end)
 
@@ -1180,7 +1180,7 @@ function RegisterRandomItems()
             end
         else
             exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
-            exports['sandbox-hud']:NotifError(source, "Box Has No More Donuts In It")
+            exports['sandbox-hud']:Notification(source, "error", "Box Has No More Donuts In It")
         end
     end)
 
@@ -1228,11 +1228,11 @@ function RegisterRandomItems()
     -- 					table.insert(states, "SCRIPT_PARACHUTE")
     -- 					char:SetData("States", states)
     -- 				else
-    -- 					exports['sandbox-hud']:NotifError(source, "Already Have Parachute Equipped")
+    -- 					exports['sandbox-hud']:Notification(source, "error", "Already Have Parachute Equipped")
     -- 				end
     -- 			end
     -- 		else
-    -- 			exports['sandbox-hud']:NotifError(source, "Cannot Equip Parachute")
+    -- 			exports['sandbox-hud']:Notification(source, "error", "Cannot Equip Parachute")
     -- 		end
     -- 	end)
     -- end)

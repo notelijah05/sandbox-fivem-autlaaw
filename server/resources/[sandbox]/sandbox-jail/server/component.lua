@@ -201,7 +201,7 @@ exports('Release', function(source)
 			return false
 		end
 	else
-		exports['sandbox-hud']:NotifError(source, "Not Eligible For Release")
+		exports['sandbox-hud']:Notification(source, "error", "Not Eligible For Release")
 		return false
 	end
 end)

@@ -8,7 +8,7 @@ function EMSItems()
 	-- 				)
 	-- 		end
 	-- 	else
-	-- 		exports['sandbox-hud']:NotifError(source, "You're Not Bleeding")
+	-- 		exports['sandbox-hud']:Notification(source, "error", "You're Not Bleeding")
 	-- 	end
 	-- end)
 
@@ -146,7 +146,7 @@ function EMSItems()
 	-- 			dmg.Bleed = dmg.Bleed - 1
 	-- 			char:SetData("Damage", dmg)
 	-- 		else
-	-- 			exports['sandbox-hud']:NotifError(source, "You continue bleeding through the gauze")
+	-- 			exports['sandbox-hud']:Notification(source, "error", "You continue bleeding through the gauze")
 	-- 		end
 	-- 	end
 	-- end)
@@ -167,9 +167,9 @@ function EMSItems()
 					end
 				end
 			end
-			exports['sandbox-hud']:NotifError(source, "Not Near Any Hospitalized Patients")
+			exports['sandbox-hud']:Notification(source, "error", "Not Near Any Hospitalized Patients")
 		else
-			exports['sandbox-hud']:NotifError(source, "You're not trained to use this")
+			exports['sandbox-hud']:Notification(source, "error", "You're not trained to use this")
 		end
 	end)
 end

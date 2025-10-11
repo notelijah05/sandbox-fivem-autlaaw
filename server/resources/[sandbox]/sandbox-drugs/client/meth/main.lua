@@ -268,7 +268,7 @@ AddEventHandler("Drugs:Client:Meth:StartCook", function(entity, data)
                     end
                 end)
             else
-                exports["sandbox-hud"]:NotifError("Table Is Not Ready")
+                exports["sandbox-hud"]:Notification("error", "Table Is Not Ready")
             end
         end)
     end
@@ -366,7 +366,7 @@ AddEventHandler("Drugs:Client:Meth:PickupCook", function(entity, data)
                 exports["sandbox-base"]:ServerCallback("Drugs:Meth:PickupCook", entState.methTable, function(s)
                     if s then
                     else
-                        exports["sandbox-hud"]:NotifError("Table Is Not Ready")
+                        exports["sandbox-hud"]:Notification("error", "Table Is Not Ready")
                     end
                 end)
             end

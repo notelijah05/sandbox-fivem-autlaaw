@@ -108,15 +108,15 @@ _DRIFT = {
 					licenses["Drift"].Suspended = true
 					char:SetData("Licenses", licenses)
 					exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", targetSrc)
-					exports['sandbox-hud']:NotifError(targetSrc, "Your Drift License has been revoked.")
-					exports['sandbox-hud']:NotifSuccess(source,
+					exports['sandbox-hud']:Notification(targetSrc, "error", "Your Drift License has been revoked.")
+					exports['sandbox-hud']:Notification(source, "success",
 						"Revoking Drift License Successful")
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "State ID Not Logged In")
+				exports['sandbox-hud']:Notification(source, "error", "State ID Not Logged In")
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "Insufficient Privileges")
+			exports['sandbox-hud']:Notification(source, "error", "Insufficient Privileges")
 		end
 	end,
 	Give = function(self, sid, source)
@@ -161,23 +161,23 @@ _DRIFT = {
 								),
 								data = {},
 							}, true)
-							exports['sandbox-hud']:NotifSuccess(targetSrc, "You've received a Drift License.")
-							exports['sandbox-hud']:NotifSuccess(source,
+							exports['sandbox-hud']:Notification(targetSrc, "success", "You've received a Drift License.")
+							exports['sandbox-hud']:Notification(source, "success",
 								"Drift License Given Successfully")
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Bank: Declined - Insufficient Funds")
 						end
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Drift License already exists!")
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "State ID Not Logged In")
+				exports['sandbox-hud']:Notification(source, "error", "State ID Not Logged In")
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "Insufficient Privileges")
+			exports['sandbox-hud']:Notification(source, "error", "Insufficient Privileges")
 		end
 	end,
 	Check = function(self, sid, source)

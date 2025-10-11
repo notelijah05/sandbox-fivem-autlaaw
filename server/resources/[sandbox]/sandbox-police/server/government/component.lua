@@ -13,7 +13,7 @@ AddEventHandler('onResourceStart', function(resource)
 			if exports['sandbox-finance']:WalletModify(source, -500) then
 				exports.ox_inventory:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
 			else
-				exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
+				exports['sandbox-hud']:Notification(source, "error", "Not Enough Cash")
 			end
 		end)
 
@@ -28,11 +28,11 @@ AddEventHandler('onResourceStart', function(resource)
 
 						exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Unable To Purchase License")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
+					exports['sandbox-hud']:Notification(source, "error", "Not Enough Cash")
 				end
 			else
 				exports['sandbox-base']:LoggerError(
@@ -43,7 +43,7 @@ AddEventHandler('onResourceStart', function(resource)
 						discord = true,
 					}
 				)
-				exports['sandbox-hud']:NotifError(source, "Unable To Purchase License")
+				exports['sandbox-hud']:Notification(source, "error", "Unable To Purchase License")
 			end
 		end)
 
@@ -57,10 +57,10 @@ AddEventHandler('onResourceStart', function(resource)
 						char:SetData("Licenses", licenses)
 						exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
 					else
-						exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
+						exports['sandbox-hud']:Notification(source, "error", "Not Enough Cash")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "You are Not PD")
+					exports['sandbox-hud']:Notification(source, "error", "You are Not PD")
 				end
 			end)
 

@@ -1,79 +1,33 @@
-exports('NotifClear', function(source)
-    TriggerClientEvent("HUD:Client:NotifClear", source)
-end)
-
-exports('NotifSuccess', function(source, message, duration, icon)
+exports('Notification', function(source, notifType, message, duration, icon, style, id)
     if duration == nil then
         duration = 2500
     end
 
-    TriggerClientEvent("HUD:Client:NotifSuccess", source, message, duration, icon)
-end)
+    local notification = {
+        type = notifType,
+        message = message,
+        duration = duration,
+        icon = icon,
+    }
 
-exports('NotifWarn', function(source, message, duration, icon)
-    if duration == nil then
-        duration = 2500
+    if style then
+        notification.style = style
     end
 
-    TriggerClientEvent("HUD:Client:NotifWarn", source, message, duration, icon)
-end)
-
-exports('NotifError', function(source, message, duration, icon)
-    if duration == nil then
-        duration = 2500
+    if duration == -1 then -- If duration = -1, the notification will be persistent
+        if id == nil then
+            return
+        end
+        notification._id = id
     end
 
-    TriggerClientEvent("HUD:Client:NotifError", source, message, duration, icon)
-end)
-
-exports('NotifInfo', function(source, message, duration, icon)
-    if duration == nil then
-        duration = 2500
+    if notification.type == "remove" then
+        TriggerClientEvent("HUD:Client:NotificationRemove", source, id)
     end
 
-    TriggerClientEvent("HUD:Client:NotifInfo", source, message, duration, icon)
-end)
-
-exports('NotifStandard', function(source, message, duration, icon)
-    if duration == nil then
-        duration = 2500
+    if notification.type == "clear" then
+        TriggerClientEvent("HUD:Client:NotificationClear", source)
     end
 
-    TriggerClientEvent("HUD:Client:NotifStandard", source, message, duration, icon)
-end)
-
-exports('NotifCustom', function(source, message, duration, icon, style)
-    if duration == nil then
-        duration = 2500
-    end
-
-    TriggerClientEvent("HUD:Client:NotifCustom", source, message, duration, icon, style)
-end)
-
-exports('NotifPersistentSuccess', function(source, id, message, icon)
-    TriggerClientEvent("HUD:Client:NotifPersistentSuccess", source, id, message, icon)
-end)
-
-exports('NotifPersistentWarn', function(source, id, message, icon)
-    TriggerClientEvent("HUD:Client:NotifPersistentWarn", source, id, message, icon)
-end)
-
-exports('NotifPersistentError', function(source, id, message, icon)
-    TriggerClientEvent("HUD:Client:NotifPersistentError", source, id, message, icon)
-end)
-
-exports('NotifPersistentInfo', function(source, id, message, icon)
-    TriggerClientEvent("HUD:Client:NotifPersistentInfo", source, id, message, icon)
-end)
-
-exports('NotifPersistentStandard', function(source, id, message, icon)
-    TriggerClientEvent("HUD:Client:NotifPersistentStandard", source, id, message, icon)
-end)
-
-exports('NotifPersistentCustom', function(source, id, message, icon, style)
-    TriggerClientEvent("HUD:Client:NotifPersistentCustom", source, id, message, icon, style)
-end)
-
-exports('NotifPersistentRemove', function(source, id)
-    TriggerClientEvent("HUD:Client:NotifPersistentRemove", source, id)
+    TriggerClientEvent("HUD:Client:Notification", source, notification)
 end)

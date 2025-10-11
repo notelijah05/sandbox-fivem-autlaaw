@@ -197,16 +197,16 @@ function HeliRappel()
 		then
 			if _hasRappel == false then
 				_hasRappel = true
-				exports["sandbox-hud"]:NotifInfo("Prepping Rappel")
+				exports["sandbox-hud"]:Notification("info", "Prepping Rappel")
 				PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", false)
 				TaskRappelFromHeli(LocalPlayer.state.ped, 1)
 				Wait(10000)
 				_hasRappel = false
 			else
-				exports["sandbox-hud"]:NotifError("Rappel is already being initiated!")
+				exports["sandbox-hud"]:Notification("error", "Rappel is already being initiated!")
 			end
 		else
-			exports["sandbox-hud"]:NotifInfo("Cannot rappel from this seat")
+			exports["sandbox-hud"]:Notification("info", "Cannot rappel from this seat")
 			PlaySoundFrontend(-1, "5_Second_Timer", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS", false)
 		end
 	end

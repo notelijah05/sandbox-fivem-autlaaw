@@ -66,14 +66,14 @@ AddEventHandler('Vehicles:Client:RemoveFakePlate', function(entityData)
                 exports["sandbox-base"]:ServerCallback('Vehicles:RemoveFakePlate', VehToNet(entityData.entity),
                     function(success, plate)
                         if success then
-                            exports["sandbox-hud"]:NotifSuccess('Removed Plate Successfully')
+                            exports["sandbox-hud"]:Notification("success", 'Removed Plate Successfully')
                             SetVehicleNumberPlateText(entityData.entity, plate)
                         else
-                            exports["sandbox-hud"]:NotifError('Could not Remove Plate')
+                            exports["sandbox-hud"]:Notification("error", 'Could not Remove Plate')
                         end
                     end)
             else
-                exports["sandbox-hud"]:NotifError('Could not Remove Plate')
+                exports["sandbox-hud"]:Notification("error", 'Could not Remove Plate')
             end
         end)
     end
@@ -104,13 +104,13 @@ AddEventHandler('Vehicles:Client:RemoveHarness', function(entityData)
                 exports["sandbox-base"]:ServerCallback('Vehicles:RemoveHarness', VehToNet(entityData.entity),
                     function(success)
                         if success then
-                            exports["sandbox-hud"]:NotifSuccess('Removed Harness Successfully')
+                            exports["sandbox-hud"]:Notification("success", 'Removed Harness Successfully')
                         else
-                            exports["sandbox-hud"]:NotifError('Could not Remove Harness')
+                            exports["sandbox-hud"]:Notification("error", 'Could not Remove Harness')
                         end
                     end)
             else
-                exports["sandbox-hud"]:NotifError('Could not Remove Harness')
+                exports["sandbox-hud"]:Notification("error", 'Could not Remove Harness')
             end
         end)
     end

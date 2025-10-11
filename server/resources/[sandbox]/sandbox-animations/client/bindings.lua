@@ -2,7 +2,7 @@ exports("EmoteBindsUpdate", function(newBinds)
 	exports["sandbox-base"]:ServerCallback("Animations:UpdateEmoteBinds", newBinds, function(success, data)
 		if success then
 			emoteBinds = data
-			exports["sandbox-hud"]:NotifSuccess("Successfully Updated and Saved Keybinds", 5000)
+			exports["sandbox-hud"]:Notification("success", "Successfully Updated and Saved Keybinds", 5000)
 		end
 	end)
 end)

@@ -99,10 +99,11 @@ AddEventHandler('VehicleRentals:Client:ConfirmRental', function(data)
             bank = data.bank,
         }, function(success, plate)
             if success then
-                exports["sandbox-hud"]:NotifSuccess('Rental Purchased, It is Parked Nearby. Rental Vehicle Plate: ' ..
+                exports["sandbox-hud"]:Notification("success",
+                    'Rental Purchased, It is Parked Nearby. Rental Vehicle Plate: ' ..
                     plate)
             else
-                exports["sandbox-hud"]:NotifError('Rental Purchase Failed')
+                exports["sandbox-hud"]:Notification("error", 'Rental Purchase Failed')
             end
         end)
     end
@@ -143,10 +144,10 @@ AddEventHandler('VehicleRentals:Client:ReturnRental', function(entityData, data)
             if #menu.main.items > 0 then
                 exports['sandbox-hud']:ListMenuShow(menu)
             else
-                exports["sandbox-hud"]:NotifError('You Have no Vehicle Rentals to Return')
+                exports["sandbox-hud"]:Notification("error", 'You Have no Vehicle Rentals to Return')
             end
         else
-            exports["sandbox-hud"]:NotifError('You Have no Vehicle Rentals to Return')
+            exports["sandbox-hud"]:Notification("error", 'You Have no Vehicle Rentals to Return')
         end
     end)
 end)
@@ -157,7 +158,7 @@ AddEventHandler('VehicleRentals:Client:ConfirmReturnRental', function(data)
             VIN = data.VIN,
         }, function(success)
             if success then
-                exports["sandbox-hud"]:NotifSuccess('Rental Returned & Deposit Returned')
+                exports["sandbox-hud"]:Notification("success", 'Rental Returned & Deposit Returned')
             end
         end)
     end

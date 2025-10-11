@@ -21,17 +21,17 @@ function RegisterItems()
 						exports['sandbox-weed']:PlantingSet(plant._id, false)
 					else
 						if data.error == 2 then
-							exports['sandbox-hud']:NotifError(source, "Need Better Soil")
+							exports['sandbox-hud']:Notification(source, "error", "Need Better Soil")
 						elseif data.error == 3 then
-							exports['sandbox-hud']:NotifError(source, "Too Close")
+							exports['sandbox-hud']:Notification(source, "error", "Too Close")
 						end
 					end
 				end)
 			else
-				exports['sandbox-hud']:NotifError(source, "Can't Plan While In A Vehicle")
+				exports['sandbox-hud']:Notification(source, "error", "Can't Plan While In A Vehicle")
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "Plant Needs Natural Light")
+			exports['sandbox-hud']:Notification(source, "error", "Plant Needs Natural Light")
 		end
 	end)
 
@@ -57,17 +57,17 @@ function RegisterItems()
 						exports['sandbox-weed']:PlantingSet(plant._id, false)
 					else
 						if data.error == 2 then
-							exports['sandbox-hud']:NotifError(source, "Need Better Soil")
+							exports['sandbox-hud']:Notification(source, "error", "Need Better Soil")
 						elseif data.error == 3 then
-							exports['sandbox-hud']:NotifError(source, "Too Close")
+							exports['sandbox-hud']:Notification(source, "error", "Too Close")
 						end
 					end
 				end)
 			else
-				exports['sandbox-hud']:NotifError(source, "Can't Plan While In A Vehicle")
+				exports['sandbox-hud']:Notification(source, "error", "Can't Plan While In A Vehicle")
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "Plant Needs Natural Light")
+			exports['sandbox-hud']:Notification(source, "error", "Plant Needs Natural Light")
 		end
 	end)
 
@@ -85,7 +85,7 @@ function RegisterItems()
 				end
 			end)
 		else
-			exports['sandbox-hud']:NotifError(source, "You need bud you fucking idiot")
+			exports['sandbox-hud']:Notification(source, "error", "You need bud you fucking idiot")
 		end
 	end)
 
@@ -118,7 +118,7 @@ function RegisterItems()
 				end
 			end)
 		else
-			exports['sandbox-hud']:NotifError(source, "You need 200 bud you fucking idiot")
+			exports['sandbox-hud']:Notification(source, "error", "You need 200 bud you fucking idiot")
 		end
 	end)
 
@@ -136,7 +136,7 @@ function RegisterItems()
 				end
 			end)
 		else
-			exports['sandbox-hud']:NotifError(source, "You need 200 bud you fucking idiot")
+			exports['sandbox-hud']:Notification(source, "error", "You need 200 bud you fucking idiot")
 		end
 	end)
 end

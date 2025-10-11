@@ -19,7 +19,7 @@ function DoCuff(source, target, isHardCuffed, isForced)
 		forced = isForced,
 	}, function(result)
 		if result == -1 then
-			exports['sandbox-hud']:NotifError(source, "Unable To Cuff Player")
+			exports['sandbox-hud']:Notification(source, "error", "Unable To Cuff Player")
 		else
 			local playerState = Player(target).state
 			local ped = GetPlayerPed(target)
@@ -27,7 +27,7 @@ function DoCuff(source, target, isHardCuffed, isForced)
 				ClearPedTasksImmediately(GetPlayerPed(target))
 				ClearPedTasksImmediately(GetPlayerPed(source))
 
-				exports['sandbox-hud']:NotifError(source, "Suspect Broke Out Of The Cuffs")
+				exports['sandbox-hud']:Notification(source, "error", "Suspect Broke Out Of The Cuffs")
 				exports["sandbox-sounds"]:PlayDistance(target, 10, "handcuff_break.ogg", 0.35)
 				--exports["sandbox-sounds"]:PlayOne(target, "handcuff_break.ogg", 0.35)
 				playerState.isCuffed = false
@@ -35,7 +35,7 @@ function DoCuff(source, target, isHardCuffed, isForced)
 				SetPedConfigFlag(ped, 120, false)
 				SetPedConfigFlag(ped, 121, false)
 			else
-				exports['sandbox-hud']:NotifSuccess(source, "You Cuffed A Player")
+				exports['sandbox-hud']:Notification(source, "success", "You Cuffed A Player")
 				exports["sandbox-sounds"]:PlayDistance(target, 10, "handcuff_on.ogg", 0.55)
 				CreateThread(function()
 					Wait(1050)
@@ -70,11 +70,11 @@ RegisterNetEvent("Handcuffs:Server:HardCuff", function(target)
 			then
 				exports['sandbox-police']:HardCuffTarget(src, target, false)
 			else
-				exports['sandbox-hud']:NotifError(source, "Target Already Hard Cuffed")
+				exports['sandbox-hud']:Notification(source, "error", "Target Already Hard Cuffed")
 			end
 		end
 	else
-		exports['sandbox-hud']:NotifError(source, "Target Too Far")
+		exports['sandbox-hud']:Notification(source, "error", "Target Too Far")
 	end
 end)
 
@@ -127,12 +127,12 @@ exports('SelfToggle', function(source)
 	if source ~= nil then
 		if not Player(source).state.isCuffed then
 			DoCuff(source, source, false, false)
-			exports['sandbox-hud']:NotifError(source, "Nobody Around To Cuff")
+			exports['sandbox-hud']:Notification(source, "error", "Nobody Around To Cuff")
 		else
 			exports['sandbox-police']:UncuffTarget(source, source)
 		end
 	else
-		exports['sandbox-hud']:NotifError(source, "Nobody To Cuff")
+		exports['sandbox-hud']:Notification(source, "error", "Nobody To Cuff")
 	end
 end)
 
@@ -146,12 +146,12 @@ exports('ToggleCuffs', function(source)
 					DoCuff(source, target, false, false)
 					return
 				end
-				exports['sandbox-hud']:NotifError(source, "Nobody Around To Cuff")
+				exports['sandbox-hud']:Notification(source, "error", "Nobody Around To Cuff")
 			else
 				exports['sandbox-police']:UncuffTarget(source, target)
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "Nobody To Cuff")
+			exports['sandbox-hud']:Notification(source, "error", "Nobody To Cuff")
 		end
 	end)
 end)
@@ -166,12 +166,12 @@ exports('SoftCuff', function(source)
 					DoCuff(source, target, false, false)
 					return
 				end
-				exports['sandbox-hud']:NotifError(source, "Nobody Around To Cuff")
+				exports['sandbox-hud']:Notification(source, "error", "Nobody Around To Cuff")
 			else
-				exports['sandbox-hud']:NotifError(source, "Player Already Cuffed")
+				exports['sandbox-hud']:Notification(source, "error", "Player Already Cuffed")
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "Nobody To Cuff")
+			exports['sandbox-hud']:Notification(source, "error", "Nobody To Cuff")
 		end
 	end)
 end)
@@ -183,7 +183,7 @@ exports('SoftCuffTarget', function(source, target, forced)
 		DoCuff(source, target, false, forced)
 		return
 	end
-	exports['sandbox-hud']:NotifError(source, "Nobody Around To Cuff")
+	exports['sandbox-hud']:Notification(source, "error", "Nobody Around To Cuff")
 end)
 
 exports('HardCuff', function(source)
@@ -196,12 +196,12 @@ exports('HardCuff', function(source)
 					DoCuff(source, target, true, false)
 					return
 				end
-				exports['sandbox-hud']:NotifError(source, "Nobody Around To Cuff")
+				exports['sandbox-hud']:Notification(source, "error", "Nobody Around To Cuff")
 			else
-				exports['sandbox-hud']:NotifError(source, "Player Already Cuffed")
+				exports['sandbox-hud']:Notification(source, "error", "Player Already Cuffed")
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "Nobody To Cuff")
+			exports['sandbox-hud']:Notification(source, "error", "Nobody To Cuff")
 		end
 	end)
 end)
@@ -213,7 +213,7 @@ exports('HardCuffTarget', function(source, target, forced)
 		DoCuff(source, target, true, forced)
 		return
 	end
-	exports['sandbox-hud']:NotifError(source, "Nobody Around To Cuff")
+	exports['sandbox-hud']:Notification(source, "error", "Nobody Around To Cuff")
 end)
 
 exports('Uncuff', function(source)
@@ -222,10 +222,10 @@ exports('Uncuff', function(source)
 			if Player(target).state.isCuffed then
 				exports['sandbox-police']:UncuffTarget(source, target)
 			else
-				exports['sandbox-hud']:NotifError(source, "Player Is Not Cuffed")
+				exports['sandbox-hud']:Notification(source, "error", "Player Is Not Cuffed")
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "Nobody To Cuff")
+			exports['sandbox-hud']:Notification(source, "error", "Nobody To Cuff")
 		end
 	end)
 end)
@@ -247,7 +247,7 @@ exports('UncuffTarget', function(source, target)
 			SetPedConfigFlag(ped, 121, false)
 		else
 			if source ~= -1 then
-				exports['sandbox-hud']:NotifError(source, "Unable To Uncuff Player")
+				exports['sandbox-hud']:Notification(source, "error", "Unable To Uncuff Player")
 			end
 		end
 	end)

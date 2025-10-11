@@ -120,7 +120,7 @@ RegisterNetEvent("Businesses:Client:VANGELICOGRAPESEED:ViewGem", function(tableI
 	-- exports['sandbox-hud']:GemTableOpen(quality)
 	exports['sandbox-inventory']:StaticTooltipOpen(item)
 	local str = string.format("Gem Quality: %s%%", quality)
-	exports["sandbox-hud"]:NotifStandard(str, 5000, "gem")
+	exports["sandbox-hud"]:Notification("standard", str, 5000, "gem")
 	--ActivateTable(tableId, gemProps.color, quality, item)
 end)
 

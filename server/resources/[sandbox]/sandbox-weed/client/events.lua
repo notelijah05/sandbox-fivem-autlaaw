@@ -232,7 +232,7 @@ AddEventHandler("Weed:Client:Fertilize", function(data)
 			end
 		end)
 	else
-		exports["sandbox-hud"]:NotifError("You Don't Have Fertilizer")
+		exports["sandbox-hud"]:Notification("error", "You Don't Have Fertilizer")
 	end
 end)
 

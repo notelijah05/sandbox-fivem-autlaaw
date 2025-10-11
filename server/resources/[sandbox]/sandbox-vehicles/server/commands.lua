@@ -276,19 +276,19 @@ function RegisterChatCommands()
 
 							exports['sandbox-vehicles']:OwnedForceSave(ent.state.VIN)
 
-							exports['sandbox-hud']:NotifSuccess(source, "Done")
+							exports['sandbox-hud']:Notification(source, "success", "Done")
 						else
 							ent.state.ForcedAudio = audio
 							TriggerClientEvent("Vehicle:Client:ForceAudio", -1, veh.vehicle, audio)
 
-							exports['sandbox-hud']:NotifSuccess(source, "Done")
+							exports['sandbox-hud']:Notification(source, "success", "Done")
 						end
 						return
 					end
 				end
 			end
 
-			exports['sandbox-hud']:NotifError(source, "Error")
+			exports['sandbox-hud']:Notification(source, "error", "Error")
 		end)
 	end, {
 		help = "Force Overrides a Vehicle Engine Audio & Saves It",
@@ -383,14 +383,14 @@ function RegisterChatCommands()
 					then
 						for k, v in ipairs(sids) do
 							exports['sandbox-vehicles']:KeysAdd(v, vehEnt.state.VIN)
-							exports['sandbox-hud']:NotifInfo(v,
+							exports['sandbox-hud']:Notification("info", v,
 								"You Received Keys to a Vehicle",
 								3000,
 								"key"
 							)
 						end
 
-						exports['sandbox-hud']:NotifSuccess(source,
+						exports['sandbox-hud']:Notification(source, "success",
 							"You Gave Everyone Nearby Keys",
 							3000,
 							"key"
@@ -419,13 +419,13 @@ function RegisterChatCommands()
 							local remainingLoan = exports['sandbox-finance']:LoansHasRemainingPayments("vehicle",
 								vehEnt.state.VIN)
 							if remainingLoan then
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Cannot transfer vehicle with an active loan.")
 								return
 							end
 
 							if vehEnt?.state?.Donator then
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Cannot transfer this vehicle.")
 								return
 							end
@@ -443,7 +443,7 @@ function RegisterChatCommands()
 				return
 			end
 		end
-		exports['sandbox-hud']:NotifError(src, 'Invalid State ID')
+		exports['sandbox-hud']:Notification(src, "error", 'Invalid State ID')
 	end, {
 		help = "Transfer Ownership of the Vehicle You Are Looking at or In to Another Person",
 		params = {

@@ -100,14 +100,14 @@ AddEventHandler("Labor:Server:Startup", function()
 			if (count) > 0 then
 				if exports.ox_inventory:Remove(char:GetData("SID"), 1, itemData.name, count) then
 					if Player(char:GetData('Source')).state.onDuty == 'police' or Player(char:GetData('Source')).state.onDuty == 'ems' then
-						exports['sandbox-hud']:NotifSuccess(source,
+						exports['sandbox-hud']:Notification(source, "success",
 							"Thanks for the donation! No money for you kek")
 					else
 						exports['sandbox-finance']:WalletModify(source, itemData.price * count)
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "You Have No " .. itemData.label)
+				exports['sandbox-hud']:Notification(source, "error", "You Have No " .. itemData.label)
 			end
 		end
 	end)
@@ -132,7 +132,7 @@ function RegisterFishingItems()
 		local repLvl = exports['sandbox-characters']:RepGetLevel(source, _JOB)
 
 		if repLvl < 3 then
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"Your Net is Tangled and You Don't Know What to Do...")
 			return
 		end

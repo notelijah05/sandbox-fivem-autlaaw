@@ -133,7 +133,7 @@ function ExitProperty(data, backdoor)
 		end
 	end)
 
-	exports["sandbox-hud"]:NotifPersistentRemove("furniture")
+	exports["sandbox-hud"]:Notification("remove", "furniture")
 
 	if _previewingInterior then
 		EndPreview()

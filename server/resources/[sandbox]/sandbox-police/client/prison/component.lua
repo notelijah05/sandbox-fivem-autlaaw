@@ -337,10 +337,10 @@ AddEventHandler("Prison:Client:SetLockdown", function(entity, data)
 		exports["sandbox-base"]:ServerCallback("Prison:SetLockdown", data.state, function(success, state)
 			if success then
 				if state then
-					exports["sandbox-hud"]:NotifSuccess("Lockdown Initiated")
+					exports["sandbox-hud"]:Notification("success", "Lockdown Initiated")
 					TriggerServerEvent("Prison:Server:Lockdown:AlertPolice", state)
 				else
-					exports["sandbox-hud"]:NotifSuccess("Lockdown Disabled")
+					exports["sandbox-hud"]:Notification("success", "Lockdown Disabled")
 					TriggerServerEvent("Prison:Server:Lockdown:AlertPolice", state)
 				end
 
@@ -348,7 +348,7 @@ AddEventHandler("Prison:Client:SetLockdown", function(entity, data)
 					_PROGRESS_LOCKDOWN = false
 				end)
 			else
-				exports["sandbox-hud"]:NotifSuccess("Unauthorized!")
+				exports["sandbox-hud"]:Notification("success", "Unauthorized!")
 			end
 		end)
 	end
@@ -362,9 +362,9 @@ AddEventHandler("Prison:Client:SetCellState", function(entity, data)
 		exports["sandbox-base"]:ServerCallback("Prison:SetCellState", data.state, function(success, state)
 			if success then
 				if state then
-					exports["sandbox-hud"]:NotifSuccess("Cell Doors Locked")
+					exports["sandbox-hud"]:Notification("success", "Cell Doors Locked")
 				else
-					exports["sandbox-hud"]:NotifSuccess("Cell Doors Unlocked")
+					exports["sandbox-hud"]:Notification("success", "Cell Doors Unlocked")
 				end
 
 				-- TriggerEvent("Prison:Client:JailAlarm", data.state)
@@ -372,7 +372,7 @@ AddEventHandler("Prison:Client:SetCellState", function(entity, data)
 					_PROGRESS_DOORS = false
 				end)
 			else
-				exports["sandbox-hud"]:NotifSuccess("Unauthorized!")
+				exports["sandbox-hud"]:Notification("success", "Unauthorized!")
 			end
 		end)
 	end

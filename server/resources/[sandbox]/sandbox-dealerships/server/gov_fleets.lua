@@ -37,7 +37,7 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
                         },
                         function(success, vehicle)
                             if success and vehicle then
-                                exports['sandbox-hud']:NotifSuccess(src,
+                                exports['sandbox-hud']:Notification(src, "success",
                                     string.format(
                                         'Fleet Vehicle Purchase of a %s %s was Successful.<br><br>VIN: %s<br>Plate: %s',
                                         chosenVehicle.make, chosenVehicle.model, vehicle.VIN, vehicle.RegisteredPlate),
@@ -47,7 +47,7 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
                                     string.format(
                                         'Purchase of Fleet Vehicle Failed After Taking %s Cash from Bank Account: %s',
                                         chosenVehicle.price, purchaseBankAccount.Account))
-                                exports['sandbox-hud']:NotifError(src,
+                                exports['sandbox-hud']:Notification(src, "error",
                                     'Fleet Vehicle Purchase Failed', 5000,
                                     'cars')
                             end
@@ -55,18 +55,18 @@ RegisterNetEvent('FleetDealers:Server:Purchase', function(shop, vehicle, livery)
                         properties
                     )
                 else
-                    exports['sandbox-hud']:NotifError(src,
+                    exports['sandbox-hud']:Notification(src, "error",
                         'Fleet Vehicle Purchase Failed - Not Enough Money in the Bank', 5000, 'cars')
                 end
             else
-                exports['sandbox-hud']:NotifError(src, 'Fleet Vehicle Purchase Failed', 5000,
+                exports['sandbox-hud']:Notification(src, "error", 'Fleet Vehicle Purchase Failed', 5000,
                     'cars')
             end
         else
-            exports['sandbox-hud']:NotifError(src,
+            exports['sandbox-hud']:Notification(src, "error",
                 'Fleet Vehicle Purchase Failed - Invalid Vehicle', 5000, 'cars')
         end
     else
-        exports['sandbox-hud']:NotifError(src, 'Fleet Vehicle Purchase Failed', 5000, 'cars')
+        exports['sandbox-hud']:Notification(src, "error", 'Fleet Vehicle Purchase Failed', 5000, 'cars')
     end
 end)

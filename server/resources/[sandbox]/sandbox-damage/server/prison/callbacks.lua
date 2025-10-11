@@ -27,7 +27,7 @@ function PrisonHospitalCallbacks()
 		if tChar ~= nil then
 			exports["sandbox-base"]:ClientCallback(tChar:GetData("Source"), "Damage:Heal", true)
 		else
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"An error has occured. Please report this.")
 		end
 

@@ -275,7 +275,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 					{}
 				)
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"fack off, not got nufink' for u m8")
 			end
 
@@ -339,11 +339,11 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 						end)
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Already A Member Of LS Underground")
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "You Can't Use This Item")
+				exports['sandbox-hud']:Notification(source, "error", "You Can't Use This Item")
 			end
 		end
 	end)

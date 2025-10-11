@@ -15,7 +15,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -24,13 +24,13 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -134,7 +134,7 @@ function RegisterLBItemUses()
 									_lbInUse[k] = false
 								end
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Someone Is Already Interacting With This",
 									6000
 								)
@@ -143,7 +143,7 @@ function RegisterLBItemUses()
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -165,7 +165,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -174,13 +174,13 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -279,7 +279,7 @@ function RegisterLBItemUses()
 							_lbInUse.vaultPower = false
 						end
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Someone Is Already Interacting With This",
 							6000
 						)
@@ -288,7 +288,7 @@ function RegisterLBItemUses()
 					return
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -315,7 +315,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -324,13 +324,13 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -374,7 +374,7 @@ function RegisterLBItemUses()
 
 										local timer = math.random(2, 4)
 
-										exports['sandbox-hud']:NotifSuccess(source,
+										exports['sandbox-hud']:Notification(source, "success",
 											string.format("Time Lock Disengaging, Please Wait %s Minutes", timer),
 											6000
 										)
@@ -432,7 +432,7 @@ function RegisterLBItemUses()
 									_lbInUse[k] = false
 								end)
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Someone Else Is Already Doing A Thing",
 									6000
 								)
@@ -442,7 +442,7 @@ function RegisterLBItemUses()
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)

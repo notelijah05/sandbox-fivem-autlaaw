@@ -102,7 +102,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 			cb(true)
 		else
-			exports['sandbox-hud']:NotifError(source, "Unable To Turn In Farm")
+			exports['sandbox-hud']:Notification(source, "error", "Unable To Turn In Farm")
 			cb(false)
 		end
 	end)

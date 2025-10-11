@@ -30,7 +30,7 @@ function registerUsables()
 			currentMeta = exports.ox_inventory:UpdateMetaData(itemData.id, currentMeta)
 			exports.ox_inventory:AddItem(itemData.Owner, "wine_glass", 1, {}, 1)
 		else
-			exports['sandbox-hud']:NotifError(source, "Bottle is Empty!")
+			exports['sandbox-hud']:Notification(source, "error", "Bottle is Empty!")
 		end
 	end)
 

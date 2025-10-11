@@ -28,7 +28,7 @@ AddEventHandler("Businesses:Client:Startup", function()
         SetEntityHeading(prop, GetEntityHeading(LocalPlayer.state.ped))
         PlaceObjectOnGroundProperly(prop)
 
-        exports["sandbox-hud"]:NotifInfo("RUN AWAY!")
+        exports["sandbox-hud"]:Notification("info", "RUN AWAY!")
 
         Wait(9000)
 

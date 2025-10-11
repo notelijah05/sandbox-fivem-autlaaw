@@ -127,10 +127,11 @@ end)
 AddEventHandler("Finance:Client:Paycheck", function(entity, data)
 	exports["sandbox-base"]:ServerCallback("Finance:Paycheck", {}, function(s)
 		if s.total > 0 then
-			exports["sandbox-hud"]:NotifSuccess(string.format("You Received $%s For %s Total Minutes Worked", s.total,
-				s.minutes))
+			exports["sandbox-hud"]:Notification("success",
+				string.format("You Received $%s For %s Total Minutes Worked", s.total,
+					s.minutes))
 		else
-			exports["sandbox-hud"]:NotifError("You Need To Work To Earn A Paycheck")
+			exports["sandbox-hud"]:Notification("error", "You Need To Work To Earn A Paycheck")
 		end
 	end)
 end)

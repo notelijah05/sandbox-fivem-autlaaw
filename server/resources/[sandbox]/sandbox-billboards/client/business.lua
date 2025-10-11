@@ -36,12 +36,12 @@ AddEventHandler("Billboards:Client:SetLink", function(e, data)
         link = tvLink
     }, function(success, invalidUrl)
         if success then
-            exports["sandbox-hud"]:NotifSuccess("Updated Link!", 5000)
+            exports["sandbox-hud"]:Notification("success", "Updated Link!", 5000)
         else
             if invalidUrl then
-                exports["sandbox-hud"]:NotifError("Invalid URL - Imgur Links Only", 5000)
+                exports["sandbox-hud"]:Notification("error", "Invalid URL - Imgur Links Only", 5000)
             else
-                exports["sandbox-hud"]:NotifError("Error", 5000)
+                exports["sandbox-hud"]:Notification("error", "Error", 5000)
             end
         end
     end)

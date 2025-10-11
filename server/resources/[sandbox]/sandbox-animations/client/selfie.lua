@@ -20,7 +20,7 @@ end)
 function StartSelfieMode()
 	if not _selfie and not LocalPlayer.state.doingAction then
 		_selfie = true
-		exports["sandbox-hud"]:NotifPersistentInfo(
+		exports["sandbox-hud"]:Notification("info", -1,
 			"camera-info-notif",
 			string.format("Camera - Press %s to take a Selfie", exports["sandbox-keybinds"]:GetKey("primary_action"))
 			.. "<br/>"
@@ -42,7 +42,7 @@ end
 
 function StopSelfieMode()
 	if _selfie then
-		exports["sandbox-hud"]:NotifPersistentRemove("camera-info-notif")
+		exports["sandbox-hud"]:Notification("remove", "camera-info-notif")
 		DestroyMobilePhone()
 		Wait(10)
 		CellCamDisableThisFrame(false)

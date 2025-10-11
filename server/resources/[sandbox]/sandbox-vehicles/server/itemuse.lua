@@ -169,9 +169,9 @@ function RegisterItemUses()
 						exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
 							itemData.invType)
 
-						exports['sandbox-hud']:NotifSuccess(source, "Fake Plate Installed")
+						exports['sandbox-hud']:Notification(source, "success", "Fake Plate Installed")
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"A Fake Plate is Already Installed")
 					end
 				end
@@ -199,7 +199,7 @@ function RegisterItemUses()
 		exports["sandbox-base"]:ClientCallback(source, "Vehicles:UseCarBomb", {}, function(veh, reason, config)
 			if not veh then
 				if reason then
-					exports['sandbox-hud']:NotifError(source, reason)
+					exports['sandbox-hud']:Notification(source, "error", reason)
 				end
 				return
 			end
@@ -223,13 +223,13 @@ function RegisterItemUses()
 						exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot,
 							itemData.invType)
 
-						exports['sandbox-hud']:NotifSuccess(source, "Car Bomb Installed")
+						exports['sandbox-hud']:Notification(source, "success", "Car Bomb Installed")
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Vehicle Already Has Car Bomb")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Error Installing Car Bomb")
+					exports['sandbox-hud']:Notification(source, "error", "Error Installing Car Bomb")
 				end
 			end
 		end)
@@ -249,7 +249,7 @@ function RegisterItemUses()
 
 				if exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
 					vehState.Harness = 10
-					exports['sandbox-hud']:NotifSuccess(source, "Harness Installed")
+					exports['sandbox-hud']:Notification(source, "success", "Harness Installed")
 				end
 			end
 		end)
@@ -270,13 +270,13 @@ function RegisterItemUses()
 
 					if exports.ox_inventory:RemoveId(itemData.Owner, itemData.invType, itemData) then
 						vehState.Nitrous = itemData.MetaData.Nitrous + 0.0
-						exports['sandbox-hud']:NotifSuccess(source,
+						exports['sandbox-hud']:Notification(source, "success",
 							"Nitrous Oxide Installed")
 					end
 				end
 			end)
 		else
-			exports['sandbox-hud']:NotifError(source, "The Bottle is Empty!")
+			exports['sandbox-hud']:Notification(source, "error", "The Bottle is Empty!")
 		end
 	end)
 end
@@ -318,9 +318,9 @@ function UseCarPolish(source, itemData, type)
 				exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData
 					.invType)
 
-				exports['sandbox-hud']:NotifSuccess(source, "Polish Applied")
+				exports['sandbox-hud']:Notification(source, "success", "Polish Applied")
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Vehicle Already Has That Polish and It Was Recently Installed")
 			end
 		end
@@ -352,9 +352,9 @@ function UsePurgeColorController(source, itemData)
 						if retval.purgeLocation then
 							vehState.PurgeLocation = retval.purgeLocation
 						end
-						exports['sandbox-hud']:NotifSuccess(source, "Purge Changes Applied")
+						exports['sandbox-hud']:Notification(source, "success", "Purge Changes Applied")
 					else
-						exports['sandbox-hud']:NotifError(source, "Changes were discarded")
+						exports['sandbox-hud']:Notification(source, "error", "Changes were discarded")
 					end
 				end)
 		end

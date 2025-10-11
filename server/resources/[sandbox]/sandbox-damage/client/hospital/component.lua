@@ -106,7 +106,7 @@ exports("HospitalCheckIn", function()
 			LocalPlayer.state:set("isHospitalized", true, true)
 			exports['sandbox-damage']:HospitalSendToBed(Config.Beds[bed], false, bed)
 		else
-			exports["sandbox-hud"]:NotifError('No Beds Available')
+			exports["sandbox-hud"]:Notification("error", 'No Beds Available')
 		end
 	end)
 end)
@@ -144,7 +144,7 @@ exports("HospitalSendToBed", function(bed, isRp, bedId)
 			end)
 		end
 	else
-		exports["sandbox-hud"]:NotifError('Invalid Bed or Bed Occupied')
+		exports["sandbox-hud"]:Notification("error", 'Invalid Bed or Bed Occupied')
 	end
 end)
 

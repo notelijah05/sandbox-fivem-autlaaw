@@ -132,7 +132,7 @@ AddEventHandler("Robbery:Client:Signs:StealSign", function(data, entity)
 	local entityCoords = GetEntityCoords(data.entity)
 	local alarm = false
 	if not IsSignValid(entity.model) then
-		exports["sandbox-hud"]:NotifError("Not a valid sign.")
+		exports["sandbox-hud"]:Notification("error", "Not a valid sign.")
 		return
 	end
 

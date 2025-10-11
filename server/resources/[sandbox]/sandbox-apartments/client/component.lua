@@ -114,7 +114,7 @@ end)
 
 -- 			exports['sandbox-hud']:ListMenuShow(menu)
 -- 		else
--- 			exports["sandbox-hud"]:NotifError("You Have No Requesting Visitors")
+-- 			exports["sandbox-hud"]:Notification("error", "You Have No Requesting Visitors")
 -- 		end
 -- 	end)
 -- end

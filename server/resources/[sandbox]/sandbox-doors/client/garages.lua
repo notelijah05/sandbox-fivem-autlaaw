@@ -960,7 +960,7 @@ function DoGarageKeyFobAction()
 				if not secretMode then
 					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Hack_Failed",
 						"DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS")
-					exports["sandbox-hud"]:NotifError("Not Authorized")
+					exports["sandbox-hud"]:Notification("error", "Not Authorized")
 				end
 			end
 		end

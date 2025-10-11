@@ -19,13 +19,13 @@ RegisterNetEvent("EMS:Server:CheckICUPatients", function()
 
 	if count > 0 then
 		if count == 1 then
-			exports['sandbox-hud']:NotifInfo(src, "There Is 1 Patient In ICU")
+			exports['sandbox-hud']:Notification(src, "info", "There Is 1 Patient In ICU")
 		else
-			exports['sandbox-hud']:NotifInfo(src,
+			exports['sandbox-hud']:Notification(src, "info",
 				string.format("There Are %s Patients In ICU", count))
 		end
 	else
-		exports['sandbox-hud']:NotifInfo(src, "There Are No Patients In ICU")
+		exports['sandbox-hud']:Notification(src, "info", "There Are No Patients In ICU")
 	end
 end)
 
@@ -75,7 +75,7 @@ function EMSCallbacks()
 		local myChar = exports['sandbox-characters']:FetchCharacterSource(source)
 		if exports['sandbox-jobs']:HasJob(source, "ems") then
 			if exports.ox_inventory:ItemsHas(myChar:GetData("SID"), 1, "traumakit", 1) then
-				exports['sandbox-hud']:NotifSuccess(data, "Your Wounds Were Treated")
+				exports['sandbox-hud']:Notification("success", data, "Your Wounds Were Treated")
 				cb({ error = false })
 			else
 				cb({ error = true, code = 2 })
@@ -98,7 +98,7 @@ function EMSCallbacks()
 	-- 						dmg.Bleed = dmg.Bleed - 1
 	-- 						tChar:SetData("Damage", dmg)
 	-- 					else
-	-- 						exports['sandbox-hud']:NotifError(data, "You continue bleeding through the gauze")
+	-- 						exports['sandbox-hud']:Notification("error", data, "You continue bleeding through the gauze")
 	-- 					end
 	-- 					cb({ error = false })
 	-- 				else
@@ -129,7 +129,7 @@ function EMSCallbacks()
 					end)
 
 					Citizen.Await(p)
-					exports['sandbox-hud']:NotifSuccess(data, "A Bandage Was Applied To You")
+					exports['sandbox-hud']:Notification("success", data, "A Bandage Was Applied To You")
 					cb({ error = false })
 				else
 					cb({ error = true, code = 3 })
@@ -147,7 +147,7 @@ function EMSCallbacks()
 		if exports['sandbox-jobs']:HasJob(source, "ems") then
 			if exports.ox_inventory:Remove(myChar:GetData("SID"), 1, "morphine", 1) then
 				exports['sandbox-damage']:EffectsPainkiller(tonumber(data), 3)
-				exports['sandbox-hud']:NotifSuccess(data, "You Received A Morphine Shot")
+				exports['sandbox-hud']:Notification("success", data, "You Received A Morphine Shot")
 				cb({ error = false })
 			else
 				cb({ error = true, code = 2 })
@@ -162,8 +162,8 @@ function EMSCallbacks()
 		if exports['sandbox-jobs']:HasJob(source, "ems") then
 			exports["sandbox-base"]:ClientCallback(data, "Damage:Heal", true)
 			--TriggerClientEvent("Hospital:Client:GetOut", data)
-			exports['sandbox-hud']:NotifSuccess(source, "Patient Has Been Treated")
-			exports['sandbox-hud']:NotifSuccess(data, "You've Been Treated")
+			exports['sandbox-hud']:Notification(source, "success", "Patient Has Been Treated")
+			exports['sandbox-hud']:Notification("success", data, "You've Been Treated")
 			cb({ error = false })
 		else
 			cb({ error = true, code = 1 })

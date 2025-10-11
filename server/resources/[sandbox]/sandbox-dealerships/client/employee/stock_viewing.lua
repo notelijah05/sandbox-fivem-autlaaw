@@ -13,7 +13,8 @@ function ViewDealershipStocks(dealerId)
         exports["sandbox-base"]:ServerCallback('Dealerships:StockViewing:FetchData', dealerId,
             function(authed, stocks, serverTime, dealerProfitPercent)
                 if not authed then
-                    exports["sandbox-hud"]:NotifError('You\'re Not Authorized to View Stock', 3500, 'car-building')
+                    exports["sandbox-hud"]:Notification("error", 'You\'re Not Authorized to View Stock', 3500,
+                        'car-building')
                     return
                 end
 

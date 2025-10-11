@@ -657,19 +657,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 					or os.time() > GlobalState[string.format("Safe:%s", data.id)].expires
 				then
 					if GetGameTimer() < STORE_SERVER_START_WAIT then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return cb(false)
 					elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return cb(false)
 					elseif GlobalState["RobberiesDisabled"] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -758,7 +758,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									GlobalState["StoreAntiShitlord"] = os.time() + (60 * math.random(5, 10))
 
 									exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
-									exports['sandbox-hud']:NotifSuccess(source,
+									exports['sandbox-hud']:Notification(source, "success",
 										"Lock Disengage Initiated, Please Stand By",
 										6000
 									)
@@ -770,20 +770,20 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end)
 						else
 							_storeInUse[data.id] = nil
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Unable To Crack Safe, Do you have a working safe cracking kit?",
 								6000
 							)
 						end
 					else
 						_storeInUse[data.id] = nil
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Unable To Crack Safe, Is Someone Already Doing It?",
 							6000
 						)
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Unable To Crack Safe", 6000)
+					exports['sandbox-hud']:Notification(source, "error", "Unable To Crack Safe", 6000)
 				end
 			end
 		end
@@ -793,19 +793,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:StartSafeSequence", function(source, data, cb)
 		if GetGameTimer() < STORE_SERVER_START_WAIT then
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 				6000
 			)
 			return cb(false)
 		elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 				6000
 			)
 			return cb(false)
 		elseif GlobalState["RobberiesDisabled"] then
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"Temporarily Disabled, Please See City Announcements", 6000)
 			return cb(false)
 		end
@@ -821,19 +821,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 				and not GlobalState["RestartLockdown"]
 			then
 				if GetGameTimer() < STORE_SERVER_START_WAIT then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 						6000
 					)
 					return
 				elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -870,25 +870,25 @@ AddEventHandler("Robbery:Server:Setup", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if GlobalState[string.format("Safe:%s", data.id)] == nil and not GlobalState["RestartLockdown"] then
 			if GetGameTimer() < STORE_SERVER_START_WAIT then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 					6000
 				)
 				return
 			elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 					6000
 				)
 				return
 			elseif GlobalState["RobberiesDisabled"] then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)
 				return
 			elseif GlobalState["StoreAntiShitlord"] ~= nil and GlobalState["StoreAntiShitlord"] > os.time() then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Security Measures Engaged, Come Back Later",
 					6000
 				)
@@ -899,12 +899,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if data.results then
 				state = 1
 				cb(true)
-				exports['sandbox-hud']:NotifSuccess(source,
+				exports['sandbox-hud']:Notification(source, "success",
 					"Lock Disengage Initiated, Please Stand By", 6000)
 			else
 				-- Do something?
 				cb(true)
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"You've Damaged The Electronics On The Lock", 6000)
 			end
 			if _storeAlerts[data.store] == nil or _storeAlerts[data.store] < os.time() then

@@ -32,7 +32,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 						description = string.format("Sold %s Gems", totalSold),
 						data = {},
 					})
-					exports['sandbox-hud']:NotifSuccess(source,
+					exports['sandbox-hud']:Notification(source, "success",
 						string.format(
 							"Sold %s Gems For $%s (Deposited To Company Account)",
 							totalSold,
@@ -60,7 +60,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 					data = data,
 				}, true)
 			else
-				exports['sandbox-hud']:NotifError(source, "You Don't Have Any Gems To Sell")
+				exports['sandbox-hud']:Notification(source, "error", "You Don't Have Any Gems To Sell")
 			end
 		end
 	end)

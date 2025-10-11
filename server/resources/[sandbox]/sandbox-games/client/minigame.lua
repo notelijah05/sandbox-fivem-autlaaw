@@ -770,10 +770,10 @@ function _playGame(params, action)
 				end
 			end)
 		else
-			exports["sandbox-hud"]:NotifError("Already Doing An Action", 5000)
+			exports["sandbox-hud"]:Notification("error", "Already Doing An Action", 5000)
 		end
 	else
-		exports["sandbox-hud"]:NotifError("Already Doing An Action", 5000)
+		exports["sandbox-hud"]:Notification("error", "Already Doing An Action", 5000)
 	end
 end
 

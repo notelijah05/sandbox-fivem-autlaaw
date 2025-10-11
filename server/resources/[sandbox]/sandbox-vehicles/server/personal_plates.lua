@@ -41,18 +41,18 @@ function PrivatePlateStuff(char, source, itemData)
         if veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
             if not vehState.VIN then
-                exports['sandbox-hud']:NotifError(source, "Error")
+                exports['sandbox-hud']:Notification(source, "error", "Error")
                 return
             end
 
             local vehicle = exports['sandbox-vehicles']:OwnedGetActive(vehState.VIN)
             if not vehicle then
-                exports['sandbox-hud']:NotifError(source, "Can't Do It on This Vehicle")
+                exports['sandbox-hud']:Notification(source, "error", "Can't Do It on This Vehicle")
                 return
             end
 
             if vehicle:GetData("FakePlate") then
-                exports['sandbox-hud']:NotifError(source, "Can't Do It on This Vehicle")
+                exports['sandbox-hud']:Notification(source, "error", "Can't Do It on This Vehicle")
                 return
             end
 
@@ -60,12 +60,12 @@ function PrivatePlateStuff(char, source, itemData)
             local newPlate = IsPersonalPlateValid(plate)
 
             if not newPlate then
-                exports['sandbox-hud']:NotifError(source, "Invalid Plate Formatting")
+                exports['sandbox-hud']:Notification(source, "error", "Invalid Plate Formatting")
                 return
             end
 
             if IsPersonalPlateTaken(newPlate) then
-                exports['sandbox-hud']:NotifError(source, "That Plate is Taken")
+                exports['sandbox-hud']:Notification(source, "error", "That Plate is Taken")
                 return
             end
 
@@ -90,11 +90,11 @@ function PrivatePlateStuff(char, source, itemData)
             exports['sandbox-vehicles']:OwnedForceSave(vehState.VIN)
             exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 
-            exports['sandbox-hud']:NotifSuccess(source, "Personal Plate Setup")
+            exports['sandbox-hud']:Notification(source, "success", "Personal Plate Setup")
             exports['sandbox-base']:LoggerInfo('Vehicles',
                 string.format("Personal Plate Change For Vehicle: %s. %s -> %s", vehState.VIN, originalPlate, newPlate))
         else
-            exports['sandbox-hud']:NotifError(source, "Error")
+            exports['sandbox-hud']:Notification(source, "error", "Error")
         end
     end)
 end
@@ -103,7 +103,7 @@ function RegisterPersonalPlateCallbacks()
     exports.ox_inventory:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char or (Player(source).state.onDuty ~= "government" and Player(source).state.onDuty ~= "dgang") then
-            exports['sandbox-hud']:NotifError(source, "Error")
+            exports['sandbox-hud']:Notification(source, "error", "Error")
             return
         end
 
@@ -113,7 +113,7 @@ function RegisterPersonalPlateCallbacks()
     exports.ox_inventory:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if not char then
-            exports['sandbox-hud']:NotifError(source, "Error")
+            exports['sandbox-hud']:Notification(source, "error", "Error")
             return
         end
 

@@ -36,11 +36,11 @@ end
 --         local doorData = DOORS_STATE[showingDoorInfo]
 --         if doorData and doorData.lock then
 --             if not doorData.lockpickable then
---                 return exports["sandbox-hud"]:NotifError('You can\'t lockpick this door, it\'s too strong')
+--                 return exports["sandbox-hud"]:Notification("error", 'You can\'t lockpick this door, it\'s too strong')
 --             elseif Doors:IsAuthorized(doorData) then
---                 return exports["sandbox-hud"]:NotifError('You can\'t lockpick a door that you have the keys for...')
+--                 return exports["sandbox-hud"]:Notification("error", 'You can\'t lockpick a door that you have the keys for...')
 --             elseif not IsAbleToLockpick(showingDoorInfo) then
---                 return exports["sandbox-hud"]:NotifError('You have already tried lockpicking this door multiple times, it doesn\'t work...')
+--                 return exports["sandbox-hud"]:Notification("error", 'You have already tried lockpicking this door multiple times, it doesn\'t work...')
 --             end
 
 --             local doorDist = #(GetEntityCoords(GLOBAL_PED) - doorData.interactionCoords)
@@ -53,10 +53,10 @@ end
 --                         AddLockpickFailedAttempt(showingDoorInfo)
 --                         if math.random(100) <= 40 then -- 40% chance of lockpick breaking or it is just incompetence
 --                             exports["sandbox-base"]:ServerCallback('Inventory:Server:RemoveItem', { item = item }, function(done)
---                                 exports["sandbox-hud"]:NotifError('Your lockpick broke trying to pick that lock')
+--                                 exports["sandbox-hud"]:Notification("error", 'Your lockpick broke trying to pick that lock')
 --                             end)
 --                         else
---                             exports["sandbox-hud"]:NotifError('You were unable to pick that lock')
+--                             exports["sandbox-hud"]:Notification("error", 'You were unable to pick that lock')
 --                         end
 --                     end)
 --                 end
@@ -81,7 +81,7 @@ end
 --                     if not status then
 --                         exports["sandbox-base"]:ServerCallback('Doors:ToggleLock', { doorId = showingDoorInfo, state = false, bylockpick = true }, function(success, newState)
 --                             if success and not newState then
---                                 exports["sandbox-hud"]:NotifSuccess('You lockpicked the door, it is now open')
+--                                 exports["sandbox-hud"]:Notification("success", 'You lockpicked the door, it is now open')
 --                             end
 --                         end)
 --                     end

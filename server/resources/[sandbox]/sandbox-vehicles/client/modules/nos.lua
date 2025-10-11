@@ -59,7 +59,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		if VEHICLE_INSIDE and _hasNOS then
 			if _flowRate < 10 then
 				_flowRate = _flowRate + 1
-				exports["sandbox-hud"]:NotifStandard("Changed Flow Rate to " .. _flowRate)
+				exports["sandbox-hud"]:Notification("standard", "Changed Flow Rate to " .. _flowRate)
 			end
 		end
 	end)
@@ -68,7 +68,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 		if VEHICLE_INSIDE and _hasNOS then
 			if _flowRate > 1 then
 				_flowRate = _flowRate - 1
-				exports["sandbox-hud"]:NotifStandard("Changed Flow Rate to " .. _flowRate)
+				exports["sandbox-hud"]:Notification("standard", "Changed Flow Rate to " .. _flowRate)
 			end
 		end
 	end)
@@ -81,13 +81,13 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			and (GetPedInVehicleSeat(VEHICLE_INSIDE, -1) == LocalPlayer.state.ped or LocalPlayer.state.isDev)
 		then
 			if not IsToggleModOn(VEHICLE_INSIDE, 18) then
-				exports["sandbox-hud"]:NotifError("Need a Turbo For This Mate")
+				exports["sandbox-hud"]:Notification("error", "Need a Turbo For This Mate")
 				cb(false)
 				return
 			end
 
 			if exports['sandbox-police']:IsPdCar(VEHICLE_INSIDE) then
-				exports["sandbox-hud"]:NotifError("How About No")
+				exports["sandbox-hud"]:Notification("error", "How About No")
 				cb(false)
 				return
 			end
@@ -178,12 +178,12 @@ function StartVehicleNOS()
 	then
 		if _hasNOS <= 0.0 then
 			exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "TIMER_STOP", "HUD_MINI_GAME_SOUNDSET")
-			exports["sandbox-hud"]:NotifStandard("No More Nitrous Left!")
+			exports["sandbox-hud"]:Notification("standard", "No More Nitrous Left!")
 			return
 		end
 
 		if not IsVehicleEngineOn(VEHICLE_INSIDE) then
-			exports["sandbox-hud"]:NotifStandard("Turning the Engine On Would Help...")
+			exports["sandbox-hud"]:Notification("standard", "Turning the Engine On Would Help...")
 			return
 		end
 
@@ -466,7 +466,7 @@ AddEventHandler("Vehicles:Client:RemoveNitrous", function(entityData)
 				exports["sandbox-base"]:ServerCallback("Vehicles:RemoveNitrous", VehToNet(VEHICLE_INSIDE),
 					function(success)
 						if success then
-							--exports["sandbox-hud"]:NotifSuccess('Removed Nitrous Successfully')
+							--exports["sandbox-hud"]:Notification("success", 'Removed Nitrous Successfully')
 
 							_hasNOS = false
 							EndVehicleNOS()
@@ -474,11 +474,11 @@ AddEventHandler("Vehicles:Client:RemoveNitrous", function(entityData)
 
 							exports['sandbox-hud']:NOS(0)
 						else
-							exports["sandbox-hud"]:NotifError("Could not Remove Nitrous")
+							exports["sandbox-hud"]:Notification("error", "Could not Remove Nitrous")
 						end
 					end)
 			else
-				exports["sandbox-hud"]:NotifError("Could not Remove Nitrous")
+				exports["sandbox-hud"]:Notification("error", "Could not Remove Nitrous")
 			end
 		end)
 	end

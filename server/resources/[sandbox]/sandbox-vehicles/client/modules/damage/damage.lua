@@ -59,7 +59,7 @@ AddEventHandler("gameEventTriggered", function(event, args)
 							end
 
 							local stalling = true
-							exports["sandbox-hud"]:NotifError("Engine Stalled")
+							exports["sandbox-hud"]:Notification("error", "Engine Stalled")
 							CreateThread(function()
 								while stalling do
 									exports['sandbox-vehicles']:EngineForce(DAMAGE_VEHICLE, false)

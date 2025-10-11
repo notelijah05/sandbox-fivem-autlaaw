@@ -76,7 +76,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 
 			exports['sandbox-hud']:InteractionShowMenu(subMenu)
 		else
-			exports["sandbox-hud"]:NotifError("Invalid Permissions")
+			exports["sandbox-hud"]:Notification("error", "Invalid Permissions")
 		end
 	end, function()
 		return (
@@ -153,7 +153,7 @@ RegisterNetEvent("Businesses:Client:PoleDanceBH", function(dance)
 					exports['sandbox-animations']:EmotesPlay(poleDance.anim, false, false, false)
 				end
 			else
-				exports["sandbox-hud"]:NotifError("Pole Taken")
+				exports["sandbox-hud"]:Notification("error", "Pole Taken")
 			end
 			return
 		end
@@ -187,7 +187,7 @@ function MakeItRainBitchBahama(targetSource, cashType, time)
 				type = cashType,
 			}, function(success, cd)
 				if not success then
-					exports["sandbox-hud"]:NotifError(cd and "Reached Cooldown" or "Error - Ran Out of Money")
+					exports["sandbox-hud"]:Notification("error", cd and "Reached Cooldown" or "Error - Ran Out of Money")
 					_makingItRain = false
 				end
 

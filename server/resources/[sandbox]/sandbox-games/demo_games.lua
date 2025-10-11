@@ -11,7 +11,7 @@ end)
 
 AddEventHandler("Minigame:Client:DemoSkillbarSuccess", function(data)
 	if scDelay <= 1000 then
-		exports["sandbox-hud"]:NotifSuccess("Won All The Things")
+		exports["sandbox-hud"]:Notification("success", "Won All The Things")
 		scDelay = 5000
 		scPass = 1
 	else
@@ -23,7 +23,7 @@ AddEventHandler("Minigame:Client:DemoSkillbarSuccess", function(data)
 end)
 
 AddEventHandler("Minigame:Client:DemoSkillbarFail", function(data)
-	exports["sandbox-hud"]:NotifError("Skill Check Failed")
+	exports["sandbox-hud"]:Notification("error", "Skill Check Failed")
 	scDelay = 5000
 	scPass = 1
 end)
@@ -41,12 +41,12 @@ RegisterNetEvent("Minigame:Client:Scanner", function()
 end)
 
 AddEventHandler("Minigame:Client:DemoScannerPerfect", function(data)
-	exports["sandbox-hud"]:NotifSuccess("PERFECTION!")
+	exports["sandbox-hud"]:Notification("success", "PERFECTION!")
 end)
 
 AddEventHandler("Minigame:Client:DemoScannerSuccess", function(data)
 	if scanPass >= 5 then
-		exports["sandbox-hud"]:NotifSuccess("Won All The Things")
+		exports["sandbox-hud"]:Notification("success", "Won All The Things")
 		scanPass = 1
 	else
 		scanPass = scanPass + 1
@@ -56,7 +56,7 @@ AddEventHandler("Minigame:Client:DemoScannerSuccess", function(data)
 end)
 
 AddEventHandler("Minigame:Client:DemoScannerFail", function(data)
-	exports["sandbox-hud"]:NotifError("Scanner Failed")
+	exports["sandbox-hud"]:Notification("error", "Scanner Failed")
 	scanPass = 1
 end)
 
@@ -72,12 +72,12 @@ RegisterNetEvent("Minigame:Client:Sequencer", function()
 end)
 
 AddEventHandler("Minigame:Client:DemoSequencerPerfect", function(data)
-	exports["sandbox-hud"]:NotifSuccess("PERFECTION!")
+	exports["sandbox-hud"]:Notification("success", "PERFECTION!")
 end)
 
 AddEventHandler("Minigame:Client:DemoSequencerSuccess", function(data)
 	if seqPass >= 3 then
-		exports["sandbox-hud"]:NotifSuccess("Won All The Things")
+		exports["sandbox-hud"]:Notification("success", "Won All The Things")
 		seqPass = 1
 	else
 		seqPass = seqPass + 1
@@ -87,7 +87,7 @@ AddEventHandler("Minigame:Client:DemoSequencerSuccess", function(data)
 end)
 
 AddEventHandler("Minigame:Client:DemoSequencerFail", function(data)
-	exports["sandbox-hud"]:NotifError("Sequencer Failed")
+	exports["sandbox-hud"]:Notification("error", "Sequencer Failed")
 	seqPass = 1
 end)
 
@@ -101,11 +101,11 @@ RegisterNetEvent("Minigame:Client:Keypad", function()
 end)
 
 AddEventHandler("Minigame:Client:DemoKeypadSuccess", function(data)
-	exports["sandbox-hud"]:NotifSuccess("Won All The Things")
+	exports["sandbox-hud"]:Notification("success", "Won All The Things")
 end)
 
 AddEventHandler("Minigame:Client:DemoKeypadFail", function(data)
-	exports["sandbox-hud"]:NotifError("Keypad Failed")
+	exports["sandbox-hud"]:Notification("error", "Keypad Failed")
 end)
 
 --[[ SCRAMBLER DEMO ]]
@@ -139,15 +139,15 @@ function dothingy()
 end
 
 AddEventHandler("Minigame:Client:DemoScramblerPerfect", function(data)
-	exports["sandbox-hud"]:NotifSuccess("PERFECTION!")
+	exports["sandbox-hud"]:Notification("success", "PERFECTION!")
 end)
 
 AddEventHandler("Minigame:Client:DemoScramblerSuccess", function(data)
-	exports["sandbox-hud"]:NotifSuccess("Won All The Things")
+	exports["sandbox-hud"]:Notification("success", "Won All The Things")
 end)
 
 AddEventHandler("Minigame:Client:DemoScramblerFail", function(data)
-	exports["sandbox-hud"]:NotifError("Sequencer Failed")
+	exports["sandbox-hud"]:Notification("error", "Sequencer Failed")
 end)
 
 --[[ MEMORY DEMO ]]
@@ -162,13 +162,13 @@ RegisterNetEvent("Minigame:Client:Memory", function()
 end)
 
 AddEventHandler("Minigame:Client:DemoMemoryPerfect", function(data)
-	exports["sandbox-hud"]:NotifSuccess("PERFECTION!")
+	exports["sandbox-hud"]:Notification("success", "PERFECTION!")
 	memPass = 1
 end)
 
 AddEventHandler("Minigame:Client:DemoMemorySuccess", function(data)
 	if memPass >= 4 then
-		exports["sandbox-hud"]:NotifSuccess("Won All The Things")
+		exports["sandbox-hud"]:Notification("success", "Won All The Things")
 		memPass = 1
 	else
 		memPass = memPass + 1
@@ -178,7 +178,7 @@ AddEventHandler("Minigame:Client:DemoMemorySuccess", function(data)
 end)
 
 AddEventHandler("Minigame:Client:DemoMemoryFail", function(data)
-	exports["sandbox-hud"]:NotifError("Memory Failed")
+	exports["sandbox-hud"]:Notification("error", "Memory Failed")
 	memPass = 1
 end)
 
@@ -194,7 +194,7 @@ end)
 
 AddEventHandler("Minigame:Client:DemoSlidersSuccess", function(data)
 	if slidersPass >= 4 then
-		exports["sandbox-hud"]:NotifSuccess("Won All The Things")
+		exports["sandbox-hud"]:Notification("success", "Won All The Things")
 		slidersPass = 1
 	else
 		slidersPass = slidersPass + 1
@@ -204,6 +204,6 @@ AddEventHandler("Minigame:Client:DemoSlidersSuccess", function(data)
 end)
 
 AddEventHandler("Minigame:Client:DemoSlidersFail", function(data)
-	exports["sandbox-hud"]:NotifError("Sliders Failed")
+	exports["sandbox-hud"]:Notification("error", "Sliders Failed")
 	slidersPass = 1
 end)

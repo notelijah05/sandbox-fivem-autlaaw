@@ -97,7 +97,7 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh)
                         end
                     elseif GetVehicleMPH(veh) > CAR_BOMB_SPEED then
                         CAR_BOMB_ENABLED = true
-                        exports["sandbox-hud"]:NotifWarn(
+                        exports["sandbox-hud"]:Notification("warn",
                             "THIS VEHICLE HAS A BOMB - STAY ABOVE " ..
                             math.ceil(CAR_BOMB_SPEED) .. "MPH AND DO NOT LEAVE THE VEHICLE", 15000)
                     end
@@ -105,7 +105,7 @@ AddEventHandler('Vehicles:Client:BecameDriver', function(veh)
                     CAR_BOMB_TIME -= 1
 
                     if CAR_BOMB_TIME <= 0 then
-                        exports["sandbox-hud"]:NotifInfo("Bomb Disarmed", 10000)
+                        exports["sandbox-hud"]:Notification("info", "Bomb Disarmed", 10000)
 
                         ResetCarBomb()
                         TriggerServerEvent('Vehicles:Server:RemoveBomb', VehToNet(veh))

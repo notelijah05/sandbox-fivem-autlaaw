@@ -78,7 +78,7 @@ function RegisterVehicleRentalCallbacks()
                             Model = rentalVehicleData.model,
                         })
                 else
-                    exports['sandbox-hud']:NotifError(source, 'Not Enough Money to Rent', 5000)
+                    exports['sandbox-hud']:Notification(source, "error", 'Not Enough Money to Rent', 5000)
                     cb(false)
                 end
             else

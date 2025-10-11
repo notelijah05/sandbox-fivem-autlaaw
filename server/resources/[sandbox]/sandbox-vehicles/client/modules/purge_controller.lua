@@ -10,13 +10,13 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			and GetPedInVehicleSeat(VEHICLE_INSIDE, -1) == LocalPlayer.state.ped
 		then
 			if not vehEnt.state.Nitrous then
-				exports["sandbox-hud"]:NotifError("Need Nitrous for this controller to work.")
+				exports["sandbox-hud"]:Notification("error", "Need Nitrous for this controller to work.")
 				cb(false)
 				return
 			end
 
 			if exports['sandbox-police']:IsPdCar(VEHICLE_INSIDE) or exports['sandbox-police']:IsEMSCar(VEHICLE_INSIDE) then
-				exports["sandbox-hud"]:NotifError("How About No")
+				exports["sandbox-hud"]:Notification("error", "How About No")
 				cb(false)
 				return
 			end

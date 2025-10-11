@@ -173,7 +173,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
 
                         end)
                     else
-                        exports["sandbox-hud"]:NotifError("Not Enough Room In Your Trunk")
+                        exports["sandbox-hud"]:Notification("error", "Not Enough Room In Your Trunk")
                     end
                 end)
             end
@@ -350,7 +350,7 @@ end)
 AddEventHandler("OxyRun:Client:StartJob", function()
     exports["sandbox-base"]:ServerCallback('OxyRun:StartJob', _joiner, function(state)
         if not state then
-            exports["sandbox-hud"]:NotifError("Unable To Start Job")
+            exports["sandbox-hud"]:Notification("error", "Unable To Start Job")
         end
     end)
 end)

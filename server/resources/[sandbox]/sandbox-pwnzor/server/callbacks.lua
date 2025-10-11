@@ -232,7 +232,7 @@ function RegisterCallbacks()
 				afkCodes[source] = nil
 				cb(true)
 			else
-				exports['sandbox-hud']:NotifError(source, "Incorrect AFK Code")
+				exports['sandbox-hud']:Notification(source, "error", "Incorrect AFK Code")
 				cb(false)
 			end
 		else

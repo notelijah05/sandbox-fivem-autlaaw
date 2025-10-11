@@ -106,7 +106,7 @@ AddEventHandler("Vehicles:Client:DonatorLicensePlateClaim", function()
 
             exports['sandbox-hud']:ListMenuShow(menu)
         else
-            exports["sandbox-hud"]:NotifError("No Plates to Claim")
+            exports["sandbox-hud"]:Notification("error", "No Plates to Claim")
         end
     end)
 end)
@@ -114,7 +114,7 @@ end)
 AddEventHandler("Vehicles:Client:DonatorLicensePlateClaimConfirm", function(data)
     exports["sandbox-base"]:ServerCallback("Vehicles:ClaimDonatorPersonalPlates", data, function(success)
         if not success then
-            exports["sandbox-hud"]:NotifError("Error")
+            exports["sandbox-hud"]:Notification("error", "Error")
         end
     end)
 end)

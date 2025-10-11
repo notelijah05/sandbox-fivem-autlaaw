@@ -362,7 +362,7 @@ RegisterNUICallback("FinishCreatorPD", function(data, cb)
 				cb(res2)
 			end)
 		else
-			exports["sandbox-hud"]:NotifError("Not Enough Checkpoints")
+			exports["sandbox-hud"]:Notification("error", "Not Enough Checkpoints")
 			cb(false)
 		end
 	else
@@ -473,14 +473,14 @@ function StartRacePD()
 	local countdownMax = tonumber(_activeRace.countdown) or 20
 	local countdown = 0
 	while countdown < countdownMax do
-		exports["sandbox-hud"]:NotifInfo(string.format("Race Starting In %s", countdownMax - countdown))
+		exports["sandbox-hud"]:Notification("info", string.format("Race Starting In %s", countdownMax - countdown))
 		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET")
 		countdown = countdown + 1
 		Wait(1000)
 	end
 
 	CreateThread(function()
-		exports["sandbox-hud"]:NotifInfo("Race Started")
+		exports["sandbox-hud"]:Notification("info", "Race Started")
 		exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "GO", "HUD_MINI_GAME_SOUNDSET")
 		SendNUIMessage({
 			type = "RACE_START",
@@ -519,7 +519,7 @@ function StartRacePD()
 					cLp = cLp + 1
 					cCps = {}
 					if cLp <= tonumber(_activeRace.laps) then
-						exports["sandbox-hud"]:NotifInfo(string.format("Lap %s", cLp))
+						exports["sandbox-hud"]:Notification("info", string.format("Lap %s", cLp))
 						exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET")
 
 						if lap_start ~= nil then
@@ -567,7 +567,7 @@ function StartRacePD()
 					_activeRace.trackData.Type == "p2p" and #cCps == #_activeRace.trackData.Checkpoints
 					or cLp > tonumber(_activeRace.laps)
 				then
-					exports["sandbox-hud"]:NotifInfo("Race Finished")
+					exports["sandbox-hud"]:Notification("info", "Race Finished")
 					CleanupPD()
 					exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "FIRST_PLACE", "HUD_MINI_GAME_SOUNDSET")
 					SendNUIMessage({
@@ -792,7 +792,7 @@ function CreateCheckpointPD()
 
 		AddRaceBlipPD(_pendingTrack.Checkpoints[#_pendingTrack.Checkpoints])
 	else
-		exports["sandbox-hud"]:NotifError("Point Too Close To Last Point")
+		exports["sandbox-hud"]:Notification("error", "Point Too Close To Last Point")
 	end
 end
 

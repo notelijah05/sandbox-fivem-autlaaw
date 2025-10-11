@@ -27,11 +27,11 @@ exports("WalletModify", function(source, amount, skipNotify)
 
 			if not skipNotify then
 				if amount < 0 then
-					exports['sandbox-hud']:NotifInfo(source,
+					exports['sandbox-hud']:Notification(source, "info",
 						string.format("You Paid $%s In Cash", formatNumberToCurrency(math.floor(math.abs(amount))))
 					)
 				else
-					exports['sandbox-hud']:NotifSuccess(source,
+					exports['sandbox-hud']:Notification(source, "success",
 						string.format("You Received $%s In Cash", formatNumberToCurrency(math.floor(amount)))
 					)
 				end

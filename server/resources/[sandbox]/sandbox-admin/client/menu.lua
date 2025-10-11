@@ -143,9 +143,9 @@
 --                                 target = player.Source,
 --                             }, function(success)
 --                                 if success then
---                                     exports["sandbox-hud"]:NotifSuccess('Successfully Teleported to '.. player.Name)
+--                                     exports["sandbox-hud"]:Notification('success', 'Successfully Teleported to '.. player.Name)
 --                                 else
---                                     exports["sandbox-hud"]:NotifError('Failed to Teleport to '.. player.Name)
+--                                     exports["sandbox-hud"]:Notification('error', 'Failed to Teleport to '.. player.Name)
 --                                 end
 --                             end)
 --                         end)
@@ -156,9 +156,9 @@
 --                                 target = player.Source,
 --                             }, function(success)
 --                                 if success then
---                                     exports["sandbox-hud"]:NotifSuccess('Successfully Brought '.. player.Name)
+--                                     exports["sandbox-hud"]:Notification('success', 'Successfully Brought '.. player.Name)
 --                                 else
---                                     exports["sandbox-hud"]:NotifError('Failed to Bring '.. player.Name)
+--                                     exports["sandbox-hud"]:Notification('error', 'Failed to Bring '.. player.Name)
 --                                 end
 --                             end)
 --                         end)
@@ -454,13 +454,13 @@
 
 --                 adminSubMenus['vehicleUtilities'].Add:Button('Quick Repair', { success = true }, function()
 --                     if exports['sandbox-vehicles']:RepairNormal(insideVehicle) then
---                         exports["sandbox-hud"]:NotifSuccess('Repaired Vehicle')
+--                         exports["sandbox-hud"]:Notification('success', 'Repaired Vehicle')
 --                     end
 --                 end)
 
 --                 adminSubMenus['vehicleUtilities'].Add:Button('Full Repair Inc. Degen Parts', { error = true }, function()
 --                     if exports['sandbox-vehicles']:RepairFull(insideVehicle) then
---                         exports["sandbox-hud"]:NotifSuccess('Repaired Vehicle Fully')
+--                         exports["sandbox-hud"]:Notification('success', 'Repaired Vehicle Fully')
 --                     end
 --                 end)
 

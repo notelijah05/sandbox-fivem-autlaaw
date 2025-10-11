@@ -120,7 +120,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			or (os.time() > GlobalState["ATMRobberyStartCD"]) and GlobalState["Sync:IsNight"]
 		then
 			if GlobalState["RobberiesDisabled"] then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)
@@ -158,7 +158,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			or (os.time() > _ATMRobberyCDs[char:GetData("SID")])
 		then
 			if GlobalState["RobberiesDisabled"] then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)

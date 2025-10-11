@@ -5,7 +5,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 		Wait(1000)
 		exports["sandbox-keybinds"]:Add("escort", "k", "keyboard", "Escort", function()
 			if _timeout then
-				--exports["sandbox-hud"]:NotifError("Stop spamming you pepega.")
+				--exports["sandbox-hud"]:Notification("error", "Stop spamming you pepega.")
 				return
 			end
 			_timeout = true
@@ -25,7 +25,7 @@ end)
 exports("DoEscort", function(target, tPlayer)
 	if target ~= nil then
 		if LocalPlayer.state.AllowEscorting == false then
-			exports["sandbox-hud"]:NotifError("Unable to escort in this location.")
+			exports["sandbox-hud"]:Notification("error", "Unable to escort in this location.")
 			return
 		end
 		exports["sandbox-base"]:ServerCallback("Escort:DoEscort", {

@@ -36,7 +36,7 @@ exports('PlacerEnd', function()
         if _placeData?.cancelEvent then
             TriggerEvent(_placeData.cancelEvent, _placeData.data, true)
         end
-        exports["sandbox-hud"]:NotifError("Invalid Object Placement")
+        exports["sandbox-hud"]:Notification("error", "Invalid Object Placement")
     end
 
     placementCoords = nil
@@ -51,7 +51,7 @@ exports('PlacerCancel', function(skipNotification, skipEvent)
     end
 
     if not skipNotification then
-        exports["sandbox-hud"]:NotifError("Object Placement Cancelled")
+        exports["sandbox-hud"]:Notification("error", "Object Placement Cancelled")
     end
 
     placementCoords = nil

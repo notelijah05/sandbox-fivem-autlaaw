@@ -359,7 +359,7 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 		if data.goOffDutyTimer and data.goOffDutyTimer > 0 then
 			pendingOffDuty = data.goOffDuty
 
-			exports["sandbox-hud"]:NotifInfo(
+			exports["sandbox-hud"]:Notification("info",
 				string.format(
 					"Leaving Business Area - You Will be Automatically Clocked Off in %s Minutes.",
 					data.goOffDutyTimer

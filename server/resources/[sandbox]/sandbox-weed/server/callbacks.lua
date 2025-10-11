@@ -32,15 +32,15 @@ function RegisterCallbacks()
 								end
 								_plants[pid].plant.water = _plants[pid].plant.water + amt
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"You Don't Have Water")
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Plant Is Already Watered")
 						end
 					else
-						exports['sandbox-hud']:NotifError(source, "Invalid Plant")
+						exports['sandbox-hud']:Notification(source, "error", "Invalid Plant")
 					end
 				end
 			else
@@ -71,15 +71,15 @@ function RegisterCallbacks()
 									value = Config.Fertilizer[data.type].value,
 								}
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"You Don't Have Fertilizer")
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Plant Is Already Fertilized")
 						end
 					else
-						exports['sandbox-hud']:NotifError(source, "Invalid Plant")
+						exports['sandbox-hud']:Notification(source, "error", "Invalid Plant")
 					end
 				end
 			else
@@ -170,7 +170,7 @@ function RegisterCallbacks()
 							char:GetData("SID")
 						)
 					)
-					exports['sandbox-hud']:NotifSuccess(source, "Plant Has Been Destroyed")
+					exports['sandbox-hud']:Notification(source, "success", "Plant Has Been Destroyed")
 				else
 					cb(nil)
 				end
@@ -198,7 +198,7 @@ function RegisterCallbacks()
 								char:GetData("SID")
 							)
 						)
-						exports['sandbox-hud']:NotifSuccess(source,
+						exports['sandbox-hud']:Notification(source, "success",
 							"Plant Has Been Destroyed")
 					else
 						cb(nil)
@@ -258,7 +258,7 @@ function RegisterCallbacks()
 							char:GetData("SID")
 						)
 					)
-					exports['sandbox-hud']:NotifError(source, "Dont Have Enough Cash")
+					exports['sandbox-hud']:Notification(source, "error", "Dont Have Enough Cash")
 					cb(false)
 				end
 			else
@@ -272,10 +272,10 @@ function RegisterCallbacks()
 					)
 				)
 				if _packagesAvailable > 0 then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You've Already Bought A Package")
 				else
-					exports['sandbox-hud']:NotifError(source, "No Packages Available")
+					exports['sandbox-hud']:Notification(source, "error", "No Packages Available")
 				end
 				cb(false)
 			end

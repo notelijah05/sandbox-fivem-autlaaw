@@ -82,7 +82,7 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 				local canTow, errorMessage = CanFuckingTowVehicle(truck, targetVehicle)
 				if not canTow then
 					exports['sandbox-hud']:ProgressCancel()
-					exports["sandbox-hud"]:NotifError(errorMessage, 5000, "truck-tow")
+					exports["sandbox-hud"]:Notification("error", errorMessage, 5000, "truck-tow")
 				end
 			end, function(wasCancelled)
 				_towingAction = false
@@ -90,7 +90,7 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 					local success = AttachVehicleToTow(truck, targetVehicle, truckModel)
 					if success then
 						truckState:set("towingVehicle", VehToNet(success), true)
-						exports["sandbox-hud"]:NotifSuccess("Vehicle Now on Tow Truck", 5000, "truck-tow")
+						exports["sandbox-hud"]:Notification("success", "Vehicle Now on Tow Truck", 5000, "truck-tow")
 
 						if Entity(success).state.towObjective then
 							exports["sandbox-blips"]:Remove("towjob-pickup")
@@ -99,12 +99,12 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 						end
 					else
 						truckState:set("towingVehicle", false, true)
-						exports["sandbox-hud"]:NotifError("Failed to Tow Vehicle", 5000, "truck-tow")
+						exports["sandbox-hud"]:Notification("error", "Failed to Tow Vehicle", 5000, "truck-tow")
 					end
 				end
 			end)
 		else
-			exports["sandbox-hud"]:NotifError(errorMessage, 5000, "truck-tow")
+			exports["sandbox-hud"]:Notification("error", errorMessage, 5000, "truck-tow")
 		end
 	end
 end)
@@ -117,11 +117,11 @@ AddEventHandler("Vehicles:Client:ReleaseTow", function(entityData)
 		if truckState.towingVehicle then
 			local success = DetachVehicleFromTow(truck, NetToVeh(truckState.towingVehicle))
 			if success then
-				exports["sandbox-hud"]:NotifSuccess("Vehicle Released from Truck", 5000, "truck-tow")
+				exports["sandbox-hud"]:Notification("success", "Vehicle Released from Truck", 5000, "truck-tow")
 				truckState:set("towingVehicle", false, true)
 			end
 		else
-			exports["sandbox-hud"]:NotifError("No Vehicle Being Towed", 5000, "truck-tow")
+			exports["sandbox-hud"]:Notification("error", "No Vehicle Being Towed", 5000, "truck-tow")
 		end
 	end
 end)

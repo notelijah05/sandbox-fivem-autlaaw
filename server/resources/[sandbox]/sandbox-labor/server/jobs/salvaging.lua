@@ -94,7 +94,7 @@ AddEventHandler("Labor:Server:Startup", function()
 				_deliveryLocs[math.random(#_deliveryLocs)]
 			)
 		else
-			exports['sandbox-hud']:NotifError(source, "Not On That Step")
+			exports['sandbox-hud']:Notification(source, "error", "Not On That Step")
 		end
 	end)
 
@@ -113,16 +113,16 @@ AddEventHandler("Labor:Server:Startup", function()
 					exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 					cb(true)
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Unable To Remove Packaged Parts")
 					cb(false)
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "You Have No Packaged Parts")
+				exports['sandbox-hud']:Notification(source, "error", "You Have No Packaged Parts")
 				cb(false)
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "Unable To Turn In Packaged Parts")
+			exports['sandbox-hud']:Notification(source, "error", "Unable To Turn In Packaged Parts")
 			cb(false)
 		end
 	end)

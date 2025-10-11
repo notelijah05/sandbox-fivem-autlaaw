@@ -228,7 +228,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(data)
 	end
 
 	if not fuelData.needsFuel then
-		exports["sandbox-hud"]:NotifError("Vehicle Does Not Need Refueling")
+		exports["sandbox-hud"]:Notification("error", "Vehicle Does Not Need Refueling")
 		return
 	end
 
@@ -240,12 +240,12 @@ AddEventHandler("Vehicles:Client:StartFueling", function(data)
 		local canAfford = Citizen.Await(p)
 
 		if not canAfford then
-			exports["sandbox-hud"]:NotifError("Insufficient Bank Balance")
+			exports["sandbox-hud"]:Notification("error", "Insufficient Bank Balance")
 			return
 		end
 	else
 		if LocalPlayer.state.Character:GetData("Cash") < fuelData.cost then
-			exports["sandbox-hud"]:NotifError("Not Enough Cash to Refuel")
+			exports["sandbox-hud"]:Notification("error", "Not Enough Cash to Refuel")
 			return
 		end
 	end
@@ -313,7 +313,7 @@ AddEventHandler("Vehicles:Client:StartFueling", function(data)
 					NetworkExplodeVehicle(data.entity, true, true, true)
 				end
 
-				exports["sandbox-hud"]:NotifInfo("Nice One Champ")
+				exports["sandbox-hud"]:Notification("info", "Nice One Champ")
 
 				Citizen.SetTimeout(60000, function()
 					for k, v in ipairs(_fuelFires) do
@@ -345,9 +345,9 @@ AddEventHandler("Vehicles:Client:StartFueling", function(data)
 			useBank = data.bank,
 		}, function(success, amount)
 			if success and amount then
-				exports["sandbox-hud"]:NotifSuccess(string.format("Refueled Vehicle for $%d", amount))
+				exports["sandbox-hud"]:Notification("success", string.format("Refueled Vehicle for $%d", amount))
 			else
-				exports["sandbox-hud"]:NotifError("Error Refueling")
+				exports["sandbox-hud"]:Notification("error", "Error Refueling")
 			end
 		end)
 	end)
@@ -373,7 +373,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 				end
 
 				if fuelAmount <= 0 then
-					return exports["sandbox-hud"]:NotifError("The Petrol Can Is Empty")
+					return exports["sandbox-hud"]:Notification("error", "The Petrol Can Is Empty")
 				end
 
 				if requiredFuel < fuelAmount then
@@ -455,7 +455,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 								NetworkExplodeVehicle(entityData.entity, true, true, true)
 							end
 
-							exports["sandbox-hud"]:NotifInfo("Nice One Champ")
+							exports["sandbox-hud"]:Notification("info", "Nice One Champ")
 
 							Citizen.SetTimeout(60000, function()
 								for k, v in ipairs(_fuelFires) do
@@ -482,14 +482,14 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 						newAmount = math.floor(vehState.Fuel + fuelAmount + 0.0),
 					}, function(success)
 						if success then
-							exports["sandbox-hud"]:NotifSuccess("Refueled Vehicle")
+							exports["sandbox-hud"]:Notification("success", "Refueled Vehicle")
 						else
-							exports["sandbox-hud"]:NotifError("Error Refueling")
+							exports["sandbox-hud"]:Notification("error", "Error Refueling")
 						end
 					end)
 				end)
 			else
-				exports["sandbox-hud"]:NotifError("Vehicle Does Not Need Refueling")
+				exports["sandbox-hud"]:Notification("error", "Vehicle Does Not Need Refueling")
 			end
 		end
 	end

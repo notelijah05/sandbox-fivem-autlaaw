@@ -300,7 +300,7 @@ end)
 AddEventHandler("Coke:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback("Coke:StartJob", _joiner, function(state)
 		if not state then
-			exports["sandbox-hud"]:NotifError("Unable To Start Job")
+			exports["sandbox-hud"]:Notification("error", "Unable To Start Job")
 		end
 	end)
 end)

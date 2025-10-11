@@ -45,9 +45,9 @@ AddEventHandler("Dealerships:Client:StartBuyback", function(entity, data)
             )
         else
             if data then
-                exports["sandbox-hud"]:NotifError(data)
+                exports["sandbox-hud"]:Notification("error", data)
             else
-                exports["sandbox-hud"]:NotifError("Error")
+                exports["sandbox-hud"]:Notification("error", "Error")
             end
         end
     end)
@@ -60,5 +60,5 @@ AddEventHandler("Dealerships:BuyBack:Confirm", function(data)
 end)
 
 AddEventHandler("Dealerships:BuyBack:Deny", function(data)
-    exports["sandbox-hud"]:NotifError("Vehicle Buy Back Cancelled")
+    exports["sandbox-hud"]:Notification("error", "Vehicle Buy Back Cancelled")
 end)

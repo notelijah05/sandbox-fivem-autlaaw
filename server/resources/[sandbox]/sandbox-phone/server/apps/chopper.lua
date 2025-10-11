@@ -48,11 +48,11 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						end)
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You already have access to that app")
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "You Can't Use This Item")
+				exports['sandbox-hud']:Notification(source, "error", "You Can't Use This Item")
 			end
 		end
 	end)

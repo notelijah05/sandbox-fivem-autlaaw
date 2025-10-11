@@ -72,9 +72,9 @@ AddEventHandler("Inventory:Client:PrisonStash:Raid", function(values, data)
 			stateid = values.stateid,
 		}, function(success)
 			-- if success then
-			-- 	exports["sandbox-hud"]:NotifSuccess("Updated Passcode")
+			-- 	exports["sandbox-hud"]:Notification("success", "Updated Passcode")
 			-- else
-			-- 	exports["sandbox-hud"]:NotifError("Failed to Update Passcode")
+			-- 	exports["sandbox-hud"]:Notification("error", "Failed to Update Passcode")
 			-- end
 		end)
 	end

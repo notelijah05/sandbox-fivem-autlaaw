@@ -25,7 +25,7 @@ AddEventHandler("Businesses:Client:Startup", function()
                             unit = nearUnit.unitId
                         }, function(success)
                             if not success then
-                                exports["sandbox-hud"]:NotifError("Error!")
+                                exports["sandbox-hud"]:Notification("error", "Error!")
                             else
                                 exports["sandbox-sounds"]:PlayLocation(LocalPlayer.state.myPos, 10, "breach.ogg", 0.15)
                             end
@@ -254,9 +254,9 @@ AddEventHandler("StorageUnits:Client:NewPasscode", function(values, data)
             passcode = values.passcode,
         }, function(success)
             if success then
-                exports["sandbox-hud"]:NotifSuccess("Updated Passcode")
+                exports["sandbox-hud"]:Notification("success", "Updated Passcode")
             else
-                exports["sandbox-hud"]:NotifError("Failed to Update Passcode")
+                exports["sandbox-hud"]:Notification("error", "Failed to Update Passcode")
             end
         end)
     end
@@ -284,13 +284,13 @@ AddEventHandler("StorageUnits:Client:SellUnit", function(values, data)
                 SID = stateId,
             }, function(success)
                 if success then
-                    exports["sandbox-hud"]:NotifSuccess("Storage Unit Sold")
+                    exports["sandbox-hud"]:Notification("success", "Storage Unit Sold")
                 else
-                    exports["sandbox-hud"]:NotifError("Failed to Sell Storage Unit")
+                    exports["sandbox-hud"]:Notification("error", "Failed to Sell Storage Unit")
                 end
             end)
         else
-            exports["sandbox-hud"]:NotifError("Invalid State ID")
+            exports["sandbox-hud"]:Notification("error", "Invalid State ID")
         end
     end
 end)

@@ -1,7 +1,7 @@
 AddEventHandler("Handcuffs:Client:DoCuffBreak", function()
 	if _cuffPromise ~= nil then
 		_cuffPromise:resolve(true)
-		exports["sandbox-hud"]:NotifSuccess("You Broke Out Of The Cuffs")
+		exports["sandbox-hud"]:Notification("success", "You Broke Out Of The Cuffs")
 	end
 end)
 
@@ -9,7 +9,7 @@ AddEventHandler("Handcuffs:Client:FailCuffBreak", function()
 	if _cuffPromise ~= nil then
 		ResetTimer()
 		_cuffPromise:resolve(false)
-		exports["sandbox-hud"]:NotifError("Failed Breaking Out Of Cuffs")
+		exports["sandbox-hud"]:Notification("error", "Failed Breaking Out Of Cuffs")
 	end
 end)
 

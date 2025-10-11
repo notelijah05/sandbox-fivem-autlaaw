@@ -33,7 +33,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			-- 	source,
 			-- 	string.format("%s", "Double dipping jobs is not allowed. Don't do it again - instead, go off duty.")
 			-- )
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				'Double dipping jobs is not allowed. Instead, go off duty.')
 			cb(false)
 		else
@@ -72,7 +72,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			-- 	source,
 			-- 	string.format("%s", "Double dipping jobs is not allowed. Don't do it again - instead, go off duty.")
 			-- )
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				'Double dipping jobs is not allowed. Instead, go off duty.')
 			cb(false)
 		else
@@ -112,7 +112,7 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			-- 	source,
 			-- 	string.format("%s", "Double dipping jobs is not allowed. Don't do it again - instead, go off duty.")
 			-- )
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				'Double dipping jobs is not allowed. Instead, go off duty.')
 			cb(false)
 		else

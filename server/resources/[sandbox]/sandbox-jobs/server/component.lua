@@ -180,11 +180,11 @@ exports("RemoveJob", function(stateId, jobId)
 			TriggerEvent("Jobs:Server:JobUpdate", source)
 
 			if removedJobData.Workplace and removedJobData.Workplace.Name then
-				exports['sandbox-hud']:NotifInfo(source,
+				exports['sandbox-hud']:Notification(source, "info",
 					"No Longer Employed at " .. removedJobData.Workplace.Name
 				)
 			else
-				exports['sandbox-hud']:NotifInfo(source,
+				exports['sandbox-hud']:Notification(source, "info",
 					"No Longer Employed at " .. removedJobData.Name)
 			end
 
@@ -286,7 +286,7 @@ exports("DutyOn", function(source, jobId, hideNotify)
 
 			if not hideNotify then
 				if hasJob.Workplace then
-					exports['sandbox-hud']:NotifSuccess(source,
+					exports['sandbox-hud']:Notification(source, "success",
 						string.format(
 							"You're Now On Duty as %s - %s",
 							hasJob.Workplace.Name,
@@ -294,7 +294,7 @@ exports("DutyOn", function(source, jobId, hideNotify)
 						)
 					)
 				else
-					exports['sandbox-hud']:NotifSuccess(source,
+					exports['sandbox-hud']:Notification(source, "success",
 						string.format("You're Now On Duty as %s - %s", hasJob.Name, hasJob.Grade.Name)
 					)
 				end
@@ -305,7 +305,7 @@ exports("DutyOn", function(source, jobId, hideNotify)
 	end
 
 	if not hideNotify then
-		exports['sandbox-hud']:NotifError(source, "Failed to Go On Duty")
+		exports['sandbox-hud']:Notification(source, "error", "Failed to Go On Duty")
 	end
 
 	return false
@@ -383,7 +383,7 @@ exports("DutyOff", function(source, jobId, hideNotify)
 			char:SetData("TimeClockedOn", allTimeWorked)
 
 			if not hideNotify then
-				exports['sandbox-hud']:NotifInfo(source, "You're Now Off Duty")
+				exports['sandbox-hud']:Notification(source, "info", "You're Now Off Duty")
 			end
 
 			return true
@@ -391,7 +391,7 @@ exports("DutyOff", function(source, jobId, hideNotify)
 	end
 
 	if not hideNotify then
-		exports['sandbox-hud']:NotifError(source, "Failed to Go Off Duty")
+		exports['sandbox-hud']:Notification(source, "error", "Failed to Go Off Duty")
 	end
 
 	return false

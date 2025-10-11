@@ -38,7 +38,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					local jailed = char:GetData("Jailed")
 					jailed.Release = jailed.Release - _Prisoners[_joiners[source]].nodes.timeReduce
 					char:SetData("Jailed", jailed)
-					exports['sandbox-hud']:NotifInfo(source,
+					exports['sandbox-hud']:Notification(source, "info",
 						string.format(
 							"Your Sentence Has Been Reduced By %s Months",
 							math.ceil(_Prisoners[_joiners[source]].nodes.timeReduce / 60)
@@ -59,11 +59,11 @@ AddEventHandler("Labor:Server:Startup", function()
 				exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 				cb(true)
 			else
-				exports['sandbox-hud']:NotifError(source, "Unable To Finish Job")
+				exports['sandbox-hud']:Notification(source, "error", "Unable To Finish Job")
 				cb(false)
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "You've Not Completed All Routes")
+			exports['sandbox-hud']:Notification(source, "error", "You've Not Completed All Routes")
 			cb(false)
 		end
 	end)

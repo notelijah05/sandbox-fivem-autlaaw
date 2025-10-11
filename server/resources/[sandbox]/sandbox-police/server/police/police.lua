@@ -36,7 +36,7 @@ AddEventHandler('onResourceStart', function(resource)
 							)
 						end
 
-						exports['sandbox-hud']:NotifSuccess(source,
+						exports['sandbox-hud']:Notification(source, "success",
 							"You Deployed Spikes (Despawn In 20s)")
 					end
 				end)
@@ -56,7 +56,7 @@ AddEventHandler('onResourceStart', function(resource)
 						exports["sandbox-chat"]:SendSystemSingle(source, "GSR: Negative")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Invalid Target")
+					exports['sandbox-hud']:Notification(source, "error", "Invalid Target")
 				end
 			end
 		end)
@@ -72,7 +72,7 @@ AddEventHandler('onResourceStart', function(resource)
 					exports['sandbox-doors']:SetLock(string.format("prison_cell_%s", i), GlobalState
 						["PrisonCellsLocked"])
 				end
-				exports['sandbox-hud']:NotifInfo(source,
+				exports['sandbox-hud']:Notification(source, "info",
 					string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
 					GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
 				cb(true, GlobalState["PrisonLockdown"])
@@ -91,7 +91,7 @@ AddEventHandler('onResourceStart', function(resource)
 					exports['sandbox-doors']:SetLock(string.format("prison_cell_%s", i), GlobalState
 						["PrisonCellsLocked"])
 				end
-				exports['sandbox-hud']:NotifInfo(source,
+				exports['sandbox-hud']:Notification(source, "info",
 					string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
 					GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
 				cb(true, GlobalState["PrisonCellsLocked"])
@@ -126,7 +126,7 @@ AddEventHandler('onResourceStart', function(resource)
 						exports["sandbox-chat"]:SendSystemSingle(source, "BAC: Not Drunk")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Invalid Target")
+					exports['sandbox-hud']:Notification(source, "error", "Invalid Target")
 				end
 			end
 
@@ -155,7 +155,7 @@ AddEventHandler('onResourceStart', function(resource)
 					return
 				end
 
-				exports['sandbox-hud']:NotifError(source, "Invalid Target")
+				exports['sandbox-hud']:Notification(source, "error", "Invalid Target")
 			end
 		end)
 
@@ -224,12 +224,12 @@ AddEventHandler('onResourceStart', function(resource)
 								end)
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Target Does Not Reside Here")
 							return cb(false)
 						end
 					else
-						exports['sandbox-hud']:NotifError(source, "Target Not Online")
+						exports['sandbox-hud']:Notification(source, "error", "Target Not Online")
 						return cb(false)
 					end
 				end
@@ -256,15 +256,15 @@ AddEventHandler('onResourceStart', function(resource)
 										("pdrack:%s"):format(entState.VIN))
 								end)
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Can't Access The Locked Compartment")
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Vehicle Not Outfitted With A Secured Compartment")
 						end
 					else
-						exports['sandbox-hud']:NotifError(source, "Not In A Vehicle")
+						exports['sandbox-hud']:Notification(source, "error", "Not In A Vehicle")
 					end
 				elseif myDuty == 'prison' then
 					local veh = GetVehiclePedIsIn(GetPlayerPed(source))
@@ -280,15 +280,15 @@ AddEventHandler('onResourceStart', function(resource)
 										("pdrack:%s"):format(entState.VIN))
 								end)
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Can't Access The Locked Compartment")
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Vehicle Not Outfitted With A Secured Compartment")
 						end
 					else
-						exports['sandbox-hud']:NotifError(source, "Not In A Vehicle")
+						exports['sandbox-hud']:Notification(source, "error", "Not In A Vehicle")
 					end
 				end
 			end

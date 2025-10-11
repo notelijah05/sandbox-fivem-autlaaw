@@ -236,7 +236,7 @@ function TogglePhone()
 			if not exports['sandbox-jail']:IsJailed() and exports.ox_inventory:Search('count', 'phone') > 0 then
 				exports['sandbox-phone']:Open()
 			else
-				exports["sandbox-hud"]:NotifError("You Don't Have a Phone", 2000)
+				exports["sandbox-hud"]:Notification("error", "You Don't Have a Phone", 2000)
 				LocalPlayer.state.phoneOpen = false
 			end
 		else

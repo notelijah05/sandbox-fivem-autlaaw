@@ -786,11 +786,11 @@ exports("CustomizationSave", function(cb)
 					exports['sandbox-ped']:CreatorEnd()
 				else
 					exports['sandbox-ped']:CustomizationHide()
-					exports["sandbox-hud"]:NotifSuccess(string.format("You Paid $%s", paid))
+					exports["sandbox-hud"]:Notification("success", string.format("You Paid $%s", paid))
 				end
 			end)
 		else
-			exports["sandbox-hud"]:NotifError("You Don't Have Enough Cash")
+			exports["sandbox-hud"]:Notification("error", "You Don't Have Enough Cash")
 		end
 		cb(status)
 	end)

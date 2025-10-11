@@ -82,7 +82,7 @@ function RegisterEACallbacks()
 						end
 					end)
 
-				exports['sandbox-hud']:NotifInfo(target, "Your Tracker Has Been Disabled")
+				exports['sandbox-hud']:Notification("info", target, "Your Tracker Has Been Disabled")
 				cb(true)
 				return
 			end

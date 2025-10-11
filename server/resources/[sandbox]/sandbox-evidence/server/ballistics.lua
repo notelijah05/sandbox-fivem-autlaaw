@@ -304,7 +304,7 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 						end
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Item Must Be A Weapon")
+					exports['sandbox-hud']:Notification(source, "error", "Item Must Be A Weapon")
 				end
 			end
 		end
