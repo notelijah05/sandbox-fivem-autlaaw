@@ -321,10 +321,26 @@ function PlayerClass(source, data)
 end
 
 function GetPlayerLicense(source)
-	for _, id in ipairs(GetPlayerIdentifiers(source)) do
-		if string.sub(id, 1, string.len("license:")) == "license:" then
-			local license = string.sub(id, string.len("license:") + 1)
-			return license
+	local playerIds = GetPlayerIdentifiers(source)
+	local prioritizedId = nil
+
+	for _, id in ipairs(playerIds) do
+		if string.sub(id, 1, string.len("steam:")) == "steam:" then
+			prioritizedId = id
+			break
 		end
 	end
+
+	if not prioritizedId then
+		for _, id in ipairs(playerIds) do
+			if string.sub(id, 1, string.len("license:")) == "license:" then
+				prioritizedId = id
+				break
+			end
+		end
+	end
+
+	return prioritizedId
 end
+
+exports('GetPlayerLicense', GetPlayerLicense)

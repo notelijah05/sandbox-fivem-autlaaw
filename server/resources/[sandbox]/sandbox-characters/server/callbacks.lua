@@ -60,9 +60,11 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:GetCharacters", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
-		local myCharacters = MySQL.query.await('SELECT * FROM `characters` WHERE `User` = @User AND `Deleted` = 0', {
-			["@User"] = player:GetData("AccountID"),
-		})
+		local license = exports['sandbox-base']:GetPlayerLicense(source)
+		local myCharacters = MySQL.query.await('SELECT * FROM `characters` WHERE `License` = @License AND `Deleted` = 0',
+			{
+				["@License"] = license,
+			})
 		if #myCharacters == 0 then
 			return cb({})
 		end
@@ -224,12 +226,13 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:DeleteCharacter", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
+		local license = exports['sandbox-base']:GetPlayerLicense(source)
 		local myCharacter = MySQL.single.await(
 			[[
-			SELECT * FROM `characters` WHERE `User` = @User AND `SID` = @ID
+			SELECT * FROM `characters` WHERE `License` = @License AND `SID` = @ID
 		  ]],
 			{
-				["@User"] = player:GetData("AccountID"),
+				["@License"] = license,
 				["@ID"] = data,
 			}
 		)
@@ -241,10 +244,10 @@ function RegisterCallbacks()
 		local deletingChar = exports['sandbox-base']:CloneDeep(myCharacter)
 		local deletedCharacter = MySQL.update.await(
 			[[
-			UPDATE `characters` SET `Deleted` = 1 WHERE `User` = @User AND `SID` = @ID
+			UPDATE `characters` SET `Deleted` = 1 WHERE `License` = @License AND `SID` = @ID
 		  ]],
 			{
-				["@User"] = player:GetData("AccountID"),
+				["@License"] = license,
 				["@ID"] = data,
 			}
 		)
@@ -279,12 +282,13 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:GetSpawnPoints", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
+		local license = exports['sandbox-base']:GetPlayerLicense(source)
 		local myCharacter = MySQL.single.await(
 			[[
-			SELECT * FROM `characters` WHERE `User` = @User AND `SID` = @ID
+			SELECT * FROM `characters` WHERE `License` = @License AND `SID` = @ID
 		  ]],
 			{
-				["@User"] = player:GetData("AccountID"),
+				["@License"] = license,
 				["@ID"] = data,
 			}
 		)
@@ -320,11 +324,12 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:GetCharacterData", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
+		local license = exports['sandbox-base']:GetPlayerLicense(source)
 		local myCharacter = MySQL.single.await([[
-			SELECT * FROM `characters` WHERE `User` = @User AND `SID` = @ID
+			SELECT * FROM `characters` WHERE `License` = @License AND `SID` = @ID
 			]],
 			{
-				["@User"] = player:GetData("AccountID"),
+				["@License"] = license,
 				["@ID"] = data,
 			}
 		)
