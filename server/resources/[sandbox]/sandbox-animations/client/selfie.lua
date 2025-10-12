@@ -20,15 +20,18 @@ end)
 function StartSelfieMode()
 	if not _selfie and not LocalPlayer.state.doingAction then
 		_selfie = true
-		exports["sandbox-hud"]:Notification("info", -1,
-			"camera-info-notif",
+		exports["sandbox-hud"]:Notification(
+			"info",
 			string.format("Camera - Press %s to take a Selfie", exports["sandbox-keybinds"]:GetKey("primary_action"))
 			.. "<br/>"
 			.. string.format("Camera - Press %s to flip the camera",
 				exports["sandbox-keybinds"]:GetKey("secondary_action"))
 			.. "<br/>"
 			.. string.format("Camera - Press %s to cancel", exports["sandbox-keybinds"]:GetKey("emote_cancel")),
-			"camera"
+			-1,
+			"camera",
+			nil,
+			"camera-info-notif"
 		)
 		exports.ox_inventory:Disable()
 		exports['sandbox-hud']:Hide()
@@ -42,7 +45,7 @@ end
 
 function StopSelfieMode()
 	if _selfie then
-		exports["sandbox-hud"]:Notification("remove", "camera-info-notif")
+		exports["sandbox-hud"]:Notification("remove", nil, nil, nil, nil, "camera-info-notif")
 		DestroyMobilePhone()
 		Wait(10)
 		CellCamDisableThisFrame(false)

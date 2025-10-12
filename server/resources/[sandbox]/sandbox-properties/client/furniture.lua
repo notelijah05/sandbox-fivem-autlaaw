@@ -223,8 +223,12 @@ function SetFurnitureEditMode(state)
                 end
             end
 
-            exports["sandbox-hud"]:Notification("standard", -1, "furniture",
-                "Furniture Edit Mode Enabled - Third Eye Objects to Move or Delete Them")
+            exports["sandbox-hud"]:Notification("standard",
+                "Furniture Edit Mode Enabled - Third Eye Objects to Move or Delete Them",
+                -1,
+                nil,
+                nil,
+                "furniture")
         else
             for k, v in ipairs(_spawnedFurniture) do
                 if not v.targeting then
@@ -232,7 +236,7 @@ function SetFurnitureEditMode(state)
                 end
             end
 
-            exports["sandbox-hud"]:Notification("remove", "furniture")
+            exports["sandbox-hud"]:Notification("remove", nil, nil, nil, nil, "furniture")
         end
 
         LocalPlayer.state.furnitureEdit = state

@@ -28,12 +28,14 @@ exports('Notification', function(notifType, message, duration, icon, style, id)
                 id = id,
             },
         })
+        return
     end
 
     if notification.type == "clear" then
         SendNUIMessage({
             type = "CLEAR_ALERTS",
         })
+        return
     end
 
     SendNUIMessage({

@@ -287,13 +287,20 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     end
 
     if fishingZone == 4 or fishingZone == 5 then
-        exports["sandbox-hud"]:Notification("info", -1, "fishing-info-notif",
+        exports["sandbox-hud"]:Notification("info",
             string.format("Fishing - Press %s to Stop. Maybe you could try some deeper water for better fish!",
-                exports["sandbox-keybinds"]:GetKey("cancel_action")), "fishing-rod")
+                exports["sandbox-keybinds"]:GetKey("cancel_action")),
+            -1,
+            "fishing-rod",
+            nil,
+            "fishing-info-notif")
     else
-        exports["sandbox-hud"]:Notification("info", -1, "fishing-info-notif",
+        exports["sandbox-hud"]:Notification("info",
             string.format("Fishing - Press %s to Stop", exports["sandbox-keybinds"]:GetKey("cancel_action")),
-            "fishing-rod")
+            -1,
+            "fishing-rod",
+            nil,
+            "fishing-info-notif")
     end
 
     local tick = 0
@@ -320,7 +327,7 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     end
 
     _isFishing = false
-    exports["sandbox-hud"]:Notification("remove", "fishing-info-notif")
+    exports["sandbox-hud"]:Notification("remove", nil, nil, nil, nil, "fishing-info-notif")
 end)
 
 function DoFishBite(zone, toolUsed)

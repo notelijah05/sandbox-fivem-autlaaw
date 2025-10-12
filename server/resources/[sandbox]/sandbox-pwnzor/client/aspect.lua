@@ -12,7 +12,7 @@ if Config.AspectRatio.Enabled then
 					SetTimecycleModifier("Glasses_BlackOut")
 				elseif res and IsWide then
 					IsWide = false
-					exports["sandbox-hud"]:Notification("remove", "pwnzor-aspectchecker")
+					exports["sandbox-hud"]:Notification("remove", nil, nil, nil, nil, "pwnzor-aspectchecker")
 					ClearTimecycleModifier()
 				end
 			end
@@ -39,9 +39,12 @@ function startTimer()
 	CreateThread(function()
 		while IsWide do
 			Wait(1000)
-			exports["sandbox-hud"]:Notification("error", -1,
-				"pwnzor-aspectchecker",
-				string.format("You will get kicked in %s seconds. Change your resolution to 16:9", timer)
+			exports["sandbox-hud"]:Notification("error",
+				string.format("You will get kicked in %s seconds. Change your resolution to 16:9", timer),
+				-1,
+				nil,
+				nil,
+				"pwnzor-aspectchecker"
 			)
 		end
 	end)

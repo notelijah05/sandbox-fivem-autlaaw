@@ -68,7 +68,7 @@ function StartInspecting()
 				.. string.format("Camera - Press %s to exit", exports["sandbox-keybinds"]:GetKey("emote_cancel"))
 		end
 		if ignoreFreeAim then
-			exports["sandbox-hud"]:Notification("info", -1, "camera-info-notif2", NotifyStr, "camera")
+			exports["sandbox-hud"]:Notification("info", NotifyStr, -1, "camera", nil, "camera-info-notif2")
 		end
 		CreateThread(function()
 			while inspecting do
@@ -178,7 +178,7 @@ function StartInspecting()
 end
 
 function StopInspecting()
-	exports["sandbox-hud"]:Notification("remove", "camera-info-notif2")
+	exports["sandbox-hud"]:Notification("remove", nil, nil, nil, nil, "camera-info-notif2")
 	if inspecting then
 		inspecting = false
 	end

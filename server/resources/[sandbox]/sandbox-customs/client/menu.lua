@@ -72,7 +72,7 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		customsMenuSubs = nil
 		collectgarbage()
 
-		exports["sandbox-hud"]:Notification("remove", "veh_customs")
+		exports["sandbox-hud"]:Notification("remove", nil, nil, nil, nil, "veh_customs")
 
 		if not isSaving then
 			exports['sandbox-base']:LoggerTrace("VehicleCustoms", "Not Saving - Reset Mods")
@@ -87,14 +87,15 @@ function OpenVehicleCustoms(canInstallPerformance, costMultiplier, settings)
 		customsMenu.Add:Text("Current Total: $0", { "pad", "center", "code", "textLarge", "colorSuccess", "bold" })
 
 	SetVehicleModKit(CUST_VEH, 0)
-	exports["sandbox-hud"]:Notification("standard", -1, "veh_customs", "Current Total: $" .. 0)
+	exports["sandbox-hud"]:Notification("standard", "Current Total: $" .. 0, -1, "veh_customs", nil, "veh_customs")
 
 	local function updateVehiclePropertyState()
 		exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, originalData)
 		exports['sandbox-vehicles']:PropertiesSet(CUST_VEH, changingData)
 
 		local newCost = CalculateCustomsCost(changingData, costMultiplier)
-		exports["sandbox-hud"]:Notification("standard", -1, "veh_customs", "Current Total: $" .. newCost)
+		exports["sandbox-hud"]:Notification("standard", "Current Total: $" .. newCost, -1, "veh_customs", nil,
+			"veh_customs")
 		customsMenu.Update:Item(costElementId, "Current Total: $" .. newCost, {}, true)
 	end
 
