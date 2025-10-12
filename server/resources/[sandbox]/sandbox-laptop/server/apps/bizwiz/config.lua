@@ -423,27 +423,27 @@ _bizWizTypes = {
 
 _bizWizConfig = {
 	pdm = {
-		logo = "https://i.imgur.com/EU7HQji.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/pdm.png',
 		type = "dealerships",
 	},
 	tuna = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/tuna.png',
 		type = "dealership_mechanic",
 	},
 	hayes = {
-		logo = "https://i.imgur.com/tgShkKW.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/hayes.png',
 		type = "mechanic",
 	},
 	realestate = {
-		logo = "https://i.imgur.com/XbKVB4k.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/realestate.png',
 		type = "realestate",
 	},
 	autoexotics = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/autoexotics.png',
 		type = "mechanic",
 	},
 	ottos = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/ottos.png',
 		type = "mechanic",
 	},
 	bennys = {
@@ -451,7 +451,7 @@ _bizWizConfig = {
 		type = "mechanic",
 	},
 	redline = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/redline.png',
 		type = "mechanic",
 	},
 	harmony = {
@@ -459,11 +459,11 @@ _bizWizConfig = {
 		type = "mechanic",
 	},
 	casino = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/casino.png',
 		type = "casino",
 	},
 	burgershot = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/burgershot.png',
 		type = "default",
 	},
 	rustybrowns = {
@@ -475,7 +475,7 @@ _bizWizConfig = {
 		type = "default",
 	},
 	beanmachine = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/beanmachine.png',
 		type = "default",
 	},
 	cloud9 = {
@@ -483,15 +483,15 @@ _bizWizConfig = {
 		type = "default",
 	},
 	uwu = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/uwu.png',
 		type = "default",
 	},
 	demonetti_storage = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/demonetti_storage.png',
 		type = "default",
 	},
 	sagma = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/sagma.png',
 		type = "default",
 	},
 	jewel = {
@@ -507,31 +507,31 @@ _bizWizConfig = {
 		type = "default",
 	},
 	tequila = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/tequila.png',
 		type = "default",
 	},
 	woods_saloon = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/woods_saloon.png',
 		type = "default",
 	},
 	prego = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/prego.png',
 		type = "default",
 	},
 	pizza_this = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/pizza_this.png',
 		type = "default",
 	},
 	bakery = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/bakery.png',
 		type = "default",
 	},
 	noodle = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/noodle.png',
 		type = "default",
 	},
 	lasttrain = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/lasttrain.png',
 		type = "default",
 	},
 	rockford_records = {
@@ -547,11 +547,11 @@ _bizWizConfig = {
 		type = "default",
 	},
 	securoserv = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = "https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/securoserv.png",
 		type = "default",
 	},
 	unicorn = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = "https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/unicorn.png",
 		type = "default",
 	},
 	bahama = {
@@ -591,7 +591,7 @@ _bizWizConfig = {
 		type = "mechanic",
 	},
 	dreamworks = {
-		logo = "https://i.imgur.com/aSXFH3P.png",
+		logo = 'https://raw.githubusercontent.com/Mythic-Framework/mythic-images/main/dreamworks.png',
 		type = "mechanic",
 	},
 }

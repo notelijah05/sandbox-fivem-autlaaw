@@ -39,9 +39,6 @@ end
 RegisterNetEvent("Laptop:Client:Open", OpenLaptop)
 
 AddEventHandler("Inventory:Client:ItemsLoaded", function()
-	while Laptop == nil do
-		Wait(10)
-	end
 	exports['sandbox-laptop']:SetData("items", exports.ox_inventory:ItemsGetData())
 end)
 

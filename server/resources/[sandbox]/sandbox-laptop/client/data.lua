@@ -1,7 +1,4 @@
 RegisterNetEvent("Laptop:Client:SetData", function(type, data, options)
-	while Laptop == nil do
-		Wait(10)
-	end
 	exports['sandbox-laptop']:SetData(type, data)
 end)
 
