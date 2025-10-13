@@ -23,3 +23,9 @@ function HandcuffItems()
 	-- 	end)
 	-- end)
 end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		HandcuffItems()
+	end
+end)

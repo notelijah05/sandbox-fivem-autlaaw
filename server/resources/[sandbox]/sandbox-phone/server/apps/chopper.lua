@@ -20,12 +20,15 @@ local _blacklistedJobs = {
 }
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
+	RegisterItems()
 	exports['sandbox-pedinteraction']:VendorCreate("ChoperItems", "ped", "Items", `U_M_Y_SmugMech_01`, {
 		coords = vector3(-623.589, -1681.736, 19.101),
 		heading = 228.222,
 		scenario = "WORLD_HUMAN_TOURIST_MOBILE",
 	}, marketItems, "badge-dollar", "View Offers", false, false, true)
+end)
 
+function RegisterItems()
 	exports.ox_inventory:RegisterUse("chopping_invite", "LSUNDG", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
@@ -56,4 +59,10 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 			end
 		end
 	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
 end)

@@ -31,6 +31,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 		end
 	end
 
+	RegisterItems()
 
 	exports["sandbox-chat"]:RegisterAdminCommand('choplists', function(source, args, rawCommand)
 		if args[1] == "all" then
@@ -484,7 +485,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 				end
 			end
 		end)
+end)
 
+function RegisterItems()
 	exports.ox_inventory:RegisterUse("choplist", "Chopping", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
@@ -536,6 +539,12 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			end
 		end
 	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
 end)
 
 function TableLength(tbl)

@@ -5,9 +5,14 @@ AddEventHandler('onResourceStart', function(resource)
 	end
 end)
 
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RepItems()
+	end
+end)
+
 function RepItems()
 	exports.ox_inventory:RegisterUse("rep_voucher", "RandomItems", function(source, item)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if item.MetaData.Reputation and ((item.MetaData.Amount and tonumber(item.MetaData.Amount) or 0) > 0) then
 			exports['sandbox-characters']:RepAdd(source, item.MetaData.Reputation, item.MetaData.Amount)
 			exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)

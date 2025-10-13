@@ -114,6 +114,7 @@ function GetFleecaIds()
 end
 
 AddEventHandler("Robbery:Server:Setup", function()
+	RegisterItems()
 	local t = {}
 	for k, v in pairs(FLEECA_LOCATIONS) do
 		_inProgress[v.id] = false
@@ -330,7 +331,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 			end
 		end
 	end)
+end)
 
+function RegisterItems()
 	exports.ox_inventory:RegisterUse("green_laptop", "FleecaRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
@@ -770,4 +773,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 			exports['sandbox-hud']:Notification(source, "error", "Not Ready Yet", 6000)
 		end
 	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
 end)

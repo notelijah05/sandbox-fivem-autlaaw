@@ -11,3 +11,9 @@ function PoliceItems()
         end
     end)
 end
+
+RegisterNetEvent('ox_inventory:ready', function()
+    if GetResourceState(GetCurrentResourceName()) == 'started' then
+        PoliceItems()
+    end
+end)

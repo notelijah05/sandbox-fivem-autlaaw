@@ -94,6 +94,65 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
+	RegisterItems()
+
+	exports['sandbox-pedinteraction']:VendorCreate("RaceGear", "poly", "Race Gear", false, {
+			coords = vector3(707.286, -967.542, 30.468),
+			length = 0.8,
+			width = 0.6,
+			options = {
+				heading = 185,
+				--debugPoly=true,
+				minZ = 28.97,
+				maxZ = 32.97,
+			},
+		}, _raceItems, "flag-checkered", "View Items", false, false, true, 60 * math.random(30, 60),
+		60 * math.random(240, 360))
+
+	LoadTracks()
+
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local alias = char:GetData("Alias") or {}
+		local profiles = char:GetData("Profiles") or {}
+
+		if alias.redline then
+			local rid = MySQL.insert.await("INSERT INTO character_app_profiles (app, sid, name) VALUES(?, ?, ?)", {
+				"redline",
+				char:GetData("SID"),
+				alias.redline,
+			})
+
+			profiles.redline = {
+				sid = char:GetData("SID"),
+				app = "redline",
+				name = alias.redline,
+				picture = nil,
+				meta = {},
+			}
+
+			alias.redline = nil
+			char:SetData("Alias", alias)
+			char:SetData("Profiles", profiles)
+		end
+	end, 2)
+
+	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		TriggerLatentClientEvent("Phone:Client:Redline:StoreTracks", source, 50000, _tracks)
+		TriggerClientEvent("Phone:Client:Redline:Spawn", source, {
+			races = _races,
+		})
+	end, 2)
+	exports['sandbox-base']:MiddlewareAdd("Phone:UIReset", function(source)
+		TriggerLatentClientEvent("Phone:Client:Redline:StoreTracks", source, 50000, _tracks)
+		TriggerClientEvent("Phone:Client:Redline:Spawn", source, {
+			races = _races,
+		})
+	end, 2)
+end)
+
+function RegisterItems()
 	exports.ox_inventory:RegisterUse("alias_changer", "LSUNDG", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local _AppName = "redline"
@@ -199,61 +258,12 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 			end
 		end
 	end)
+end
 
-	exports['sandbox-pedinteraction']:VendorCreate("RaceGear", "poly", "Race Gear", false, {
-			coords = vector3(707.286, -967.542, 30.468),
-			length = 0.8,
-			width = 0.6,
-			options = {
-				heading = 185,
-				--debugPoly=true,
-				minZ = 28.97,
-				maxZ = 32.97,
-			},
-		}, _raceItems, "flag-checkered", "View Items", false, false, true, 60 * math.random(30, 60),
-		60 * math.random(240, 360))
-
-	LoadTracks()
-
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local alias = char:GetData("Alias") or {}
-		local profiles = char:GetData("Profiles") or {}
-
-		if alias.redline then
-			local rid = MySQL.insert.await("INSERT INTO character_app_profiles (app, sid, name) VALUES(?, ?, ?)", {
-				"redline",
-				char:GetData("SID"),
-				alias.redline,
-			})
-
-			profiles.redline = {
-				sid = char:GetData("SID"),
-				app = "redline",
-				name = alias.redline,
-				picture = nil,
-				meta = {},
-			}
-
-			alias.redline = nil
-			char:SetData("Alias", alias)
-			char:SetData("Profiles", profiles)
-		end
-	end, 2)
-
-	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		TriggerLatentClientEvent("Phone:Client:Redline:StoreTracks", source, 50000, _tracks)
-		TriggerClientEvent("Phone:Client:Redline:Spawn", source, {
-			races = _races,
-		})
-	end, 2)
-	exports['sandbox-base']:MiddlewareAdd("Phone:UIReset", function(source)
-		TriggerLatentClientEvent("Phone:Client:Redline:StoreTracks", source, 50000, _tracks)
-		TriggerClientEvent("Phone:Client:Redline:Spawn", source, {
-			races = _races,
-		})
-	end, 2)
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
 end)
 
 AddEventHandler("Phone:Server:UpdateProfile", function(source, data)

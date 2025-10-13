@@ -53,3 +53,9 @@ function RegisterMechanicItems()
         end)
     end
 end
+
+RegisterNetEvent('ox_inventory:ready', function()
+    if GetResourceState(GetCurrentResourceName()) == 'started' then
+        RegisterMechanicItems()
+    end
+end)

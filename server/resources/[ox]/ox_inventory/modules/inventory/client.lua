@@ -377,6 +377,10 @@ Inventory.Stashes = setmetatable(lib.load('data.stashes'), {
                                 icon = stash.target.icon or 'fas fa-warehouse',
                                 label = stash.target.label or locale('open_stash'),
                                 groups = stash.groups,
+                                reqDuty = stash.reqDuty,             -- Let ox_target handle this
+                                reqOffDuty = stash.reqOffDuty,       -- Let ox_target handle this
+                                workplace = stash.workplace,         -- Let ox_target handle this
+                                permissionKey = stash.permissionKey, -- Let ox_target handle this
                                 onSelect = function()
                                     exports.ox_inventory:openInventory('stash', stash.name)
                                 end,

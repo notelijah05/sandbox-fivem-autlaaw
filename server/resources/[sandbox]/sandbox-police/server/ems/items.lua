@@ -173,3 +173,9 @@ function EMSItems()
 		end
 	end)
 end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		EMSItems()
+	end
+end)

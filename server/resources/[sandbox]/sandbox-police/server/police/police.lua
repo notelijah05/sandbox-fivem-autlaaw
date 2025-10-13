@@ -8,34 +8,12 @@ AddEventHandler('onResourceStart', function(resource)
 		Wait(1000)
 		PoliceItems()
 		RegisterCommands()
+		RegisterItems()
 
 		GlobalState["PrisonLockdown"] = false
 		GlobalState["PrisonCellsLocked"] = false
 		GlobalState["PoliceCars"] = Config.PoliceCars
 		GlobalState["EMSCars"] = Config.EMSCars
-
-		exports.ox_inventory:RegisterUse("spikes", "Police", function(source, slot, itemData)
-			if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
-				exports["sandbox-base"]:ClientCallback(source, "Police:DeploySpikes", {}, function(data)
-					if data ~= nil then
-						TriggerClientEvent("Police:Client:AddDeployedSpike", -1, data.positions, data.h, source)
-
-						local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
-						if (os.time() - itemData.durability >= newValue) then
-							exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
-						else
-							exports.ox_inventory:SetItemCreateDate(
-								slot.id,
-								newValue
-							)
-						end
-
-						exports['sandbox-hud']:Notification(source, "success",
-							"You Deployed Spikes (Despawn In 20s)")
-					end
-				end)
-			end
-		end)
 
 		exports["sandbox-base"]:RegisterServerCallback("Police:GSRTest", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -309,6 +287,37 @@ AddEventHandler('onResourceStart', function(resource)
 				end
 			end
 		end)
+	end
+end)
+
+function RegisterItems()
+	exports.ox_inventory:RegisterUse("spikes", "Police", function(source, slot, itemData)
+		if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
+			exports["sandbox-base"]:ClientCallback(source, "Police:DeploySpikes", {}, function(data)
+				if data ~= nil then
+					TriggerClientEvent("Police:Client:AddDeployedSpike", -1, data.positions, data.h, source)
+
+					local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
+					if (os.time() - itemData.durability >= newValue) then
+						exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
+					else
+						exports.ox_inventory:SetItemCreateDate(
+							slot.id,
+							newValue
+						)
+					end
+
+					exports['sandbox-hud']:Notification(source, "success",
+						"You Deployed Spikes (Despawn In 20s)")
+				end
+			end)
+		end
+	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
 	end
 end)
 

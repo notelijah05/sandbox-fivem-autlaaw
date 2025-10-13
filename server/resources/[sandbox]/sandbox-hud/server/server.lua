@@ -3,6 +3,7 @@ local _uircd = {}
 AddEventHandler('onResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
 		Wait(1000)
+		RegisterItems()
 		RegisterChatCommands()
 		exports['sandbox-base']:MiddlewareAdd("Characters:Creating", function(source, cData)
 			return {
@@ -77,38 +78,46 @@ AddEventHandler('onResourceStart', function(resource)
 				cb(false)
 			end
 		end)
+	end
+end)
 
-		exports.ox_inventory:RegisterUse("blindfold", "HUD", function(source, item, itemData)
-			exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
-				if target ~= nil then
-					local tarState = Player(target).state
-					if not tarState.isBlindfolded then
-						exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Blindfolding",
-							function(isSuccess)
-								if isSuccess then
-									if tarState.isCuffed then
-										if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
-											tarState.isBlindfolded = true
-											TriggerClientEvent("VOIP:Client:Gag:Use", target)
-										else
-											exports['sandbox-hud']:Notification(source, "error",
-												"Failed Removing Item")
-										end
+function RegisterItems()
+	exports.ox_inventory:RegisterUse("blindfold", "HUD", function(source, item, itemData)
+		exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
+			if target ~= nil then
+				local tarState = Player(target).state
+				if not tarState.isBlindfolded then
+					exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Blindfolding",
+						function(isSuccess)
+							if isSuccess then
+								if tarState.isCuffed then
+									if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+										tarState.isBlindfolded = true
+										TriggerClientEvent("VOIP:Client:Gag:Use", target)
 									else
 										exports['sandbox-hud']:Notification(source, "error",
-											"Target Not Cuffed")
+											"Failed Removing Item")
 									end
+								else
+									exports['sandbox-hud']:Notification(source, "error",
+										"Target Not Cuffed")
 								end
-							end)
-					else
-						exports['sandbox-hud']:Notification(source, "error",
-							"Target Already Blindfolded")
-					end
+							end
+						end)
 				else
-					exports['sandbox-hud']:Notification(source, "error", "Nobody Near To Blindfold")
+					exports['sandbox-hud']:Notification(source, "error",
+						"Target Already Blindfolded")
 				end
-			end)
+			else
+				exports['sandbox-hud']:Notification(source, "error", "Nobody Near To Blindfold")
+			end
 		end)
+	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
 	end
 end)
 

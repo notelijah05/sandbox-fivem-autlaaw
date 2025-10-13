@@ -175,3 +175,9 @@ function RegisterItemUse()
 		end
 	end)
 end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItemUse()
+	end
+end)

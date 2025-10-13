@@ -210,6 +210,12 @@ AddEventHandler("Fishing:Server:OnDuty", function(joiner, members, isWorkgroup)
 	end
 end)
 
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterFishingItems()
+	end
+end)
+
 AddEventHandler("Fishing:Server:OffDuty", function(source, joiner)
 	_joiners[source] = nil
 	TriggerClientEvent("Fishing:Client:OffDuty", source)

@@ -27,6 +27,7 @@ AddEventHandler('onResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
 		Wait(1000)
 		RegisterMiddleware()
+		RegisterItems()
 
 		local mAddress = GetConvar("ext_mumble_address", "")
 		if mAddress ~= "" then
@@ -35,21 +36,30 @@ AddEventHandler('onResourceStart', function(resource)
 		end
 
 		--RegisterChatCommands()
-		exports.ox_inventory:RegisterUse("radio", "VOIP", function(source, itemData)
-			TriggerClientEvent("Radio:Client:OpenUI", source, 1)
-		end)
+	end
+end)
 
-		exports.ox_inventory:RegisterUse("radio_shitty", "VOIP", function(source, itemData)
-			TriggerClientEvent("Radio:Client:OpenUI", source, 3)
-		end)
+function RegisterItems()
+	exports.ox_inventory:RegisterUse("radio", "VOIP", function(source, itemData)
+		TriggerClientEvent("Radio:Client:OpenUI", source, 1)
+	end)
 
-		exports.ox_inventory:RegisterUse("radio_extendo", "VOIP", function(source, itemData)
-			TriggerClientEvent("Radio:Client:OpenUI", source, 2)
-		end)
+	exports.ox_inventory:RegisterUse("radio_shitty", "VOIP", function(source, itemData)
+		TriggerClientEvent("Radio:Client:OpenUI", source, 3)
+	end)
 
-		exports.ox_inventory:RegisterUse("megaphone", "VOIP", function(source, itemData)
-			TriggerClientEvent("VOIP:Client:Megaphone:Use", source, false)
-		end)
+	exports.ox_inventory:RegisterUse("radio_extendo", "VOIP", function(source, itemData)
+		TriggerClientEvent("Radio:Client:OpenUI", source, 2)
+	end)
+
+	exports.ox_inventory:RegisterUse("megaphone", "VOIP", function(source, itemData)
+		TriggerClientEvent("VOIP:Client:Megaphone:Use", source, false)
+	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
 	end
 end)
 

@@ -200,6 +200,12 @@ function RegisterHuntingItems()
 	end
 end
 
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterHuntingItems()
+	end
+end)
+
 AddEventHandler("Hunting:Server:OnDuty", function(joiner, members, isWorkgroup)
 	_joiners[joiner] = joiner
 	_hunting[joiner] = {

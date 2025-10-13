@@ -116,6 +116,8 @@ AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
 end)
 
 AddEventHandler("Labor:Server:Startup", function()
+	RegisterItems()
+
 	--SetupHouseData()
 
 	exports['sandbox-base']:WaitListCreate("houserobbery", "individual_time", {
@@ -124,142 +126,6 @@ AddEventHandler("Labor:Server:Startup", function()
 	})
 
 	GlobalState["Robbery:InProgress"] = {}
-
-	exports.ox_inventory:RegisterUse("lockpick", "Robbery", function(source, slot, itemData)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-
-		if
-			char
-			and char:GetData("TempJob") == _JOB
-			and _joiners[source] ~= nil
-			and _robbers[_joiners[source]] ~= nil
-			and _robbers[_joiners[source]].state == 2
-		then
-			if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
-				local dist = #(GetEntityCoords(GetPlayerPed(source)) - vector3(_robbers[_joiners[source]].coords.x, _robbers[_joiners[source]].coords.y, _robbers[_joiners[source]].coords.z))
-
-				if dist <= 3.0 then
-					if s ~= nil and s > os.time() then
-						exports['sandbox-hud']:Notification(source, "error",
-							"You Notice The Door Lock Has Been Damaged",
-							6000
-						)
-					else
-						_robbers[_joiners[source]].state = 3
-						exports["sandbox-base"]:ClientCallback(
-							source,
-							"HouseRobbery:Lockpick",
-							{ property = _robbers[_joiners[source]].property, tier = _robbers[_joiners[source]].tier },
-							function(success)
-								local newValue = slot.CreateDate - (60 * 60 * 24)
-								if success then
-									newValue = slot.CreateDate - (60 * 60 * 12)
-								end
-								if (os.time() - itemData.durability >= newValue) then
-									exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
-								else
-									exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
-								end
-
-								local tier = _robbers[_joiners[source]].tier
-								if success then
-									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier)
-									exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
-										string.format("HouseRobbery:Client:%s:Lockpicked", _joiners[source]),
-										_robbers[_joiners[source]].nodes)
-
-									exports['sandbox-labor']:StartOffer(
-										_joiners[source],
-										_JOB,
-										"Search Areas",
-										#HouseRobberyInteriors[tier].robberies.locations
-									)
-
-									if _robbers[_joiners[source]].nodes.chances.alarm then
-										StartAlarmCheck(_joiners[source])
-									end
-
-									_robbers[_joiners[source]].state = 4
-								else
-									_robbers[_joiners[source]].state = 2
-									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier * 2)
-								end
-							end
-						)
-					end
-				end
-			else
-			end
-		end
-	end)
-
-	exports.ox_inventory:RegisterUse("adv_lockpick", "Robbery", function(source, slot, itemData)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-
-		if
-			char
-			and char:GetData("TempJob") == _JOB
-			and _joiners[source] ~= nil
-			and _robbers[_joiners[source]] ~= nil
-			and _robbers[_joiners[source]].state == 2
-		then
-			if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
-				local dist = #(GetEntityCoords(GetPlayerPed(source)) - vector3(_robbers[_joiners[source]].coords.x, _robbers[_joiners[source]].coords.y, _robbers[_joiners[source]].coords.z))
-
-				if dist <= 3.0 then
-					if s ~= nil and s > os.time() then
-						exports['sandbox-hud']:Notification(source, "error",
-							"You Notice The Door Lock Has Been Damaged",
-							6000
-						)
-					else
-						_robbers[_joiners[source]].state = 3
-						exports["sandbox-base"]:ClientCallback(
-							source,
-							"HouseRobbery:AdvLockpick",
-							{ property = _robbers[_joiners[source]].property, tier = _robbers[_joiners[source]].tier },
-							function(success)
-								local newValue = slot.CreateDate - (60 * 60 * 24)
-								if success then
-									newValue = slot.CreateDate - (60 * 60 * 12)
-								end
-								if (os.time() - itemData.durability >= newValue) then
-									exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
-								else
-									exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
-								end
-
-								local tier = _robbers[_joiners[source]].tier
-								if success then
-									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier)
-									exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
-										string.format("HouseRobbery:Client:%s:Lockpicked", _joiners[source]),
-										_robbers[_joiners[source]].nodes)
-
-									exports['sandbox-labor']:StartOffer(
-										_joiners[source],
-										_JOB,
-										"Search Areas",
-										#HouseRobberyInteriors[tier].robberies.locations
-									)
-
-									if _robbers[_joiners[source]].nodes.chances.alarm then
-										StartAlarmCheck(_joiners[source])
-									end
-
-									_robbers[_joiners[source]].state = 4
-								else
-									_robbers[_joiners[source]].state = 2
-									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier * 2)
-								end
-							end
-						)
-					end
-				end
-			else
-			end
-		end
-	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("HouseRobbery:Enable", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -442,6 +308,150 @@ AddEventHandler("Labor:Server:Startup", function()
 			end
 		end
 	end)
+end)
+
+function RegisterItems()
+	exports.ox_inventory:RegisterUse("lockpick", "Robbery", function(source, slot, itemData)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+
+		if
+			char
+			and char:GetData("TempJob") == _JOB
+			and _joiners[source] ~= nil
+			and _robbers[_joiners[source]] ~= nil
+			and _robbers[_joiners[source]].state == 2
+		then
+			if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
+				local dist = #(GetEntityCoords(GetPlayerPed(source)) - vector3(_robbers[_joiners[source]].coords.x, _robbers[_joiners[source]].coords.y, _robbers[_joiners[source]].coords.z))
+
+				if dist <= 3.0 then
+					if s ~= nil and s > os.time() then
+						exports['sandbox-hud']:Notification(source, "error",
+							"You Notice The Door Lock Has Been Damaged",
+							6000
+						)
+					else
+						_robbers[_joiners[source]].state = 3
+						exports["sandbox-base"]:ClientCallback(
+							source,
+							"HouseRobbery:Lockpick",
+							{ property = _robbers[_joiners[source]].property, tier = _robbers[_joiners[source]].tier },
+							function(success)
+								local newValue = slot.CreateDate - (60 * 60 * 24)
+								if success then
+									newValue = slot.CreateDate - (60 * 60 * 12)
+								end
+								if (os.time() - itemData.durability >= newValue) then
+									exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
+								else
+									exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
+								end
+
+								local tier = _robbers[_joiners[source]].tier
+								if success then
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier)
+									exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+										string.format("HouseRobbery:Client:%s:Lockpicked", _joiners[source]),
+										_robbers[_joiners[source]].nodes)
+
+									exports['sandbox-labor']:StartOffer(
+										_joiners[source],
+										_JOB,
+										"Search Areas",
+										#HouseRobberyInteriors[tier].robberies.locations
+									)
+
+									if _robbers[_joiners[source]].nodes.chances.alarm then
+										StartAlarmCheck(_joiners[source])
+									end
+
+									_robbers[_joiners[source]].state = 4
+								else
+									_robbers[_joiners[source]].state = 2
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier * 2)
+								end
+							end
+						)
+					end
+				end
+			else
+			end
+		end
+	end)
+
+	exports.ox_inventory:RegisterUse("adv_lockpick", "Robbery", function(source, slot, itemData)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+
+		if
+			char
+			and char:GetData("TempJob") == _JOB
+			and _joiners[source] ~= nil
+			and _robbers[_joiners[source]] ~= nil
+			and _robbers[_joiners[source]].state == 2
+		then
+			if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
+				local dist = #(GetEntityCoords(GetPlayerPed(source)) - vector3(_robbers[_joiners[source]].coords.x, _robbers[_joiners[source]].coords.y, _robbers[_joiners[source]].coords.z))
+
+				if dist <= 3.0 then
+					if s ~= nil and s > os.time() then
+						exports['sandbox-hud']:Notification(source, "error",
+							"You Notice The Door Lock Has Been Damaged",
+							6000
+						)
+					else
+						_robbers[_joiners[source]].state = 3
+						exports["sandbox-base"]:ClientCallback(
+							source,
+							"HouseRobbery:AdvLockpick",
+							{ property = _robbers[_joiners[source]].property, tier = _robbers[_joiners[source]].tier },
+							function(success)
+								local newValue = slot.CreateDate - (60 * 60 * 24)
+								if success then
+									newValue = slot.CreateDate - (60 * 60 * 12)
+								end
+								if (os.time() - itemData.durability >= newValue) then
+									exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
+								else
+									exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
+								end
+
+								local tier = _robbers[_joiners[source]].tier
+								if success then
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier)
+									exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
+										string.format("HouseRobbery:Client:%s:Lockpicked", _joiners[source]),
+										_robbers[_joiners[source]].nodes)
+
+									exports['sandbox-labor']:StartOffer(
+										_joiners[source],
+										_JOB,
+										"Search Areas",
+										#HouseRobberyInteriors[tier].robberies.locations
+									)
+
+									if _robbers[_joiners[source]].nodes.chances.alarm then
+										StartAlarmCheck(_joiners[source])
+									end
+
+									_robbers[_joiners[source]].state = 4
+								else
+									_robbers[_joiners[source]].state = 2
+									exports['sandbox-status']:Add(source, "PLAYER_STRESS", tier * 2)
+								end
+							end
+						)
+					end
+				end
+			else
+			end
+		end
+	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
 end)
 
 AddEventHandler("Labor:Server:HouseRobbery:Breach", function(source, house)

@@ -1,4 +1,5 @@
 AddEventHandler("Finance:Server:Startup", function()
+	RegisterItems()
 	exports['sandbox-base']:MiddlewareAdd("Characters:Creating", function(source, cData)
 		return { {
 			Crypto = {},
@@ -24,6 +25,10 @@ AddEventHandler("Finance:Server:Startup", function()
 		cb(_cryptoCoins)
 	end)
 
+	TriggerEvent("Crypto:Server:Startup")
+end)
+
+function RegisterItems()
 	exports.ox_inventory:RegisterUse("crypto_voucher", "RandomItems", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if item.MetaData.CryptoCoin and ((item.MetaData.Quantity and tonumber(item.MetaData.Quantity) or 0) > 0) then
@@ -41,8 +46,12 @@ AddEventHandler("Finance:Server:Startup", function()
 			exports['sandbox-hud']:Notification(source, "error", "Invalid Voucher")
 		end
 	end)
+end
 
-	TriggerEvent("Crypto:Server:Startup")
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
 end)
 
 local _todaysGenerated = {}

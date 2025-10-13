@@ -6,6 +6,8 @@ AddEventHandler("onResourceStart", function(resource)
     if resource ~= GetCurrentResourceName() then return end
     RegisterRandomItems()
 
+    TriggerEvent('ox_inventory:ready')
+
     exports["sandbox-chat"]:RegisterAdminCommand("giveitem", function(source, args, rawCommand)
         local item = Items(args[2])
         if not item then

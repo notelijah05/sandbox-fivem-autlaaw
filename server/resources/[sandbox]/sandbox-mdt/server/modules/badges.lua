@@ -1,6 +1,7 @@
 local badgeCooldowns = {}
 
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
+    RegisterItems()
     exports["sandbox-base"]:RegisterServerCallback("MDT:PrintBadge", function(source, data, cb)
         local now = GetGameTimer()
 
@@ -48,7 +49,9 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
             cb(false)
         end
     end)
+end)
 
+function RegisterItems()
     exports.ox_inventory:RegisterUse("government_badge", "MDT", function(source, itemData)
         if itemData and itemData.MetaData and itemData.MetaData.Department then
             exports["sandbox-base"]:ClientCallback(source, "MDT:Client:CanShowBadge", itemData.MetaData,
@@ -73,4 +76,10 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
                 end)
         end
     end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+    if GetResourceState(GetCurrentResourceName()) == 'started' then
+        RegisterItems()
+    end
 end)

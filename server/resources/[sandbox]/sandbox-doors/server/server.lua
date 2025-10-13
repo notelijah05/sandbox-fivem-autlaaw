@@ -64,6 +64,12 @@ end
 --     end)
 -- end
 
+-- RegisterNetEvent('ox_inventory:ready', function()
+-- 	if GetResourceState(GetCurrentResourceName()) == 'started' then
+-- 		RegisterItems()
+-- 	end
+-- end)
+
 function RegisterCallbacks()
 	exports["sandbox-base"]:RegisterServerCallback("Doors:Fetch", function(source, data, cb)
 		cb(DOORS_CACHE, ELEVATOR_CACHE)

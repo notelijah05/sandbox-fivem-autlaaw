@@ -85,9 +85,7 @@ AddEventHandler('onResourceStart', function(resource)
 		TriggerEvent("Laptop:Server:RegisterMiddleware")
 		TriggerEvent("Laptop:Server:RegisterCallbacks")
 
-		exports.ox_inventory:RegisterUse("laptop", "Laptop", function(source, itemData)
-			TriggerClientEvent("Laptop:Client:Open", source)
-		end)
+		RegisterItems()
 
 		exports['sandbox-characters']:RepCreate("Chopping", "Vehicle Chopping", {
 			{ label = "Rank 1",  value = 1000 },
@@ -110,6 +108,18 @@ AddEventHandler('onResourceStart', function(resource)
 			{ label = "A+", value = 120000 }, -- Get Scratching
 			{ label = "S+", value = 150000 },
 		}, true)
+	end
+end)
+
+function RegisterItems()
+	exports.ox_inventory:RegisterUse("laptop", "Laptop", function(source, itemData)
+		TriggerClientEvent("Laptop:Client:Open", source)
+	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
 	end
 end)
 

@@ -54,6 +54,8 @@ local locations = {
 }
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
+	RegisterItems()
+
 	CreateThread(function()
 		local wait = 60 * math.random(120, 240)
 		while true do
@@ -284,7 +286,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			cb(false)
 		end
 	end)
+end)
 
+function RegisterItems()
 	exports.ox_inventory:RegisterUse("lsundg_invite", "LSUNDG", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
@@ -347,4 +351,10 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
 			end
 		end
 	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
 end)

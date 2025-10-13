@@ -281,6 +281,12 @@ function RegisterItemUses()
 	end)
 end
 
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItemUses()
+	end
+end)
+
 local polishTypes = {
 	{                          -- Normal Polish
 		length = (60 * 60 * 24 * 7), -- Lasts for a week

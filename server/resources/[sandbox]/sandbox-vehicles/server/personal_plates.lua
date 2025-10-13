@@ -100,26 +100,7 @@ function PrivatePlateStuff(char, source, itemData)
 end
 
 function RegisterPersonalPlateCallbacks()
-    exports.ox_inventory:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if not char or (Player(source).state.onDuty ~= "government" and Player(source).state.onDuty ~= "dgang") then
-            exports['sandbox-hud']:Notification(source, "error", "Error")
-            return
-        end
-
-        PrivatePlateStuff(char, source, itemData)
-    end)
-
-    exports.ox_inventory:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if not char then
-            exports['sandbox-hud']:Notification(source, "error", "Error")
-            return
-        end
-
-        PrivatePlateStuff(char, source, itemData)
-    end)
-
+    RegisterItems()
     exports["sandbox-chat"]:RegisterAdminCommand("adddonatorplates", function(source, args, rawCommand)
         local license = table.unpack(args)
 
@@ -239,6 +220,34 @@ function RegisterPersonalPlateCallbacks()
         end
     end)
 end
+
+function RegisterItems()
+    exports.ox_inventory:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
+        if not char or (Player(source).state.onDuty ~= "government" and Player(source).state.onDuty ~= "dgang") then
+            exports['sandbox-hud']:Notification(source, "error", "Error")
+            return
+        end
+
+        PrivatePlateStuff(char, source, itemData)
+    end)
+
+    exports.ox_inventory:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
+        if not char then
+            exports['sandbox-hud']:Notification(source, "error", "Error")
+            return
+        end
+
+        PrivatePlateStuff(char, source, itemData)
+    end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+    if GetResourceState(GetCurrentResourceName()) == 'started' then
+        RegisterItems()
+    end
+end)
 
 -- Citizen.SetTimeout(2500, function()
 --     print(IsPersonalPlateValid('FFFF'))

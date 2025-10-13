@@ -11,7 +11,7 @@ local _uwuPrizes = {
 	{ 200,  "uwu_prize_b7" }, -- moon pink bear
 }
 
-AddEventHandler("Businesses:Server:Startup", function()
+function RegisterItems()
 	exports.ox_inventory:RegisterUse("uwu_prize_box", "Businesses", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "uwu_prize_box", 1) then
@@ -61,7 +61,9 @@ AddEventHandler("Businesses:Server:Startup", function()
 	exports.ox_inventory:RegisterUse("uwu_prize_b10", "Businesses", function(source, item)
 		TriggerClientEvent("Inventory:Client:Collectables:UseItem", source, item.Name)
 	end)
+end
 
+AddEventHandler("Businesses:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Businesses:Server:PetCat", function(source, data, cb)
 		if source == nil then
 			return
@@ -74,4 +76,10 @@ AddEventHandler("Businesses:Server:Startup", function()
 			cb(false)
 		end
 	end)
+end)
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
 end)

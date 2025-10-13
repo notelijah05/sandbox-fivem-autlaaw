@@ -149,6 +149,12 @@ function RegisterBallisticsItemUses()
 	end)
 end
 
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterBallisticsItemUses()
+	end
+end)
+
 function GetEvidenceProjectileRecord(evidenceId)
 	local p = promise.new()
 

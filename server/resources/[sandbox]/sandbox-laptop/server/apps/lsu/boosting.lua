@@ -38,6 +38,7 @@ AddEventHandler("Characters:Server:PlayerLoggedOut", HandleCharacterLogout)
 AddEventHandler("Characters:Server:PlayerDropped", HandleCharacterLogout)
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
+    RegisterItems()
     exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:CreateContract",
         function(source, data, cb)
             local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -554,6 +555,10 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         cb()
     end)
 
+    SetupBoostingQueue()
+end)
+
+function RegisterItems()
     exports.ox_inventory:RegisterUse("boosting_tracking_disabler", "Boosting", function(source, slot, itemData)
         local team = exports['sandbox-laptop']:TeamsGetByMemberSource(source)
         local ped = GetPlayerPed(source)
@@ -684,8 +689,12 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
             exports['sandbox-hud']:Notification(source, "error", "Can't Use Right Now...")
         end
     end)
+end
 
-    SetupBoostingQueue()
+RegisterNetEvent('ox_inventory:ready', function()
+    if GetResourceState(GetCurrentResourceName()) == 'started' then
+        RegisterItems()
+    end
 end)
 
 AddEventHandler("Laptop:Server:LSUnderground:Boosting:ActionRequest", function(source, data, action)

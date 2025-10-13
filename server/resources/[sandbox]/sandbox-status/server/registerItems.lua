@@ -58,3 +58,9 @@ function registerUsables()
 		end)
 	end)
 end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		registerUsables()
+	end
+end)
