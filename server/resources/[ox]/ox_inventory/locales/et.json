@@ -58,6 +58,7 @@
   "items_returned": "Su asjad on tagastatud",
   "item_unauthorised": "Sul pole luba seda asja osta",
   "item_unlicensed": "Sa pole litsentsitud, et seda asja endale osta",
+  "item_unqualified": "Sa pole kvalifitseeritud, et seda asja osta",
   "item_not_enough": "Sul pole piisavalt %s",
   "cannot_afford": "Sul ei ole pangas piisavalt raha (puudu %s)",
   "stash_lowgrade": "Sa pole autoriseeritud, et seda asja osta",

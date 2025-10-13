@@ -58,6 +58,7 @@
   "items_returned": "Twoje przedmioty zostały zwrócone",
   "item_unauthorised": "Nie posiadasz autoryzacji do zakupu tego przedmiotu",
   "item_unlicensed": "Nie posiadasz licencji do zakupu tego przedmiotu",
+  "item_unqualified": "Nie posiadasz kwalifikacji do zakupu tego przedmiotu",
   "item_not_enough": "Nie posiadasz wystarczająco dużo %s",
   "cannot_afford": "Nie stać cię na to (brakuje ci %s)",
   "stash_lowgrade": "Nie posiadasz autoryzacji do tego przedmiotu",

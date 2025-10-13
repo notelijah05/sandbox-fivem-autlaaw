@@ -55,6 +55,7 @@
   "items_returned": "Vaši predmeti so bili vrnjeni",
   "item_unauthorised": "Niste pooblaščeni za nakup tega izdelka",
   "item_unlicensed": "Nimate licence za nakup tega izdelka",
+  "item_unqualified": "Nimate kvalifikacije za nakup tega izdelka",
   "item_not_enough": "Nimate dovolj %s",
   "cannot_afford": "Tega si ne morete privoščiti (manjka %s)",
   "stash_lowgrade": "Niste pooblaščeni za prevzem tega predmeta",

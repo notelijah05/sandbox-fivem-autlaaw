@@ -58,6 +58,7 @@
   "items_returned": "Tvoje předměty ti byly navráceny",
   "item_unauthorised": "Nemáš pravomoce k zakoupení tohoto předmětu",
   "item_unlicensed": "Nemáš průkaz na zakoupení tohoto předmětu",
+  "item_unqualified": "Nemáš kvalifikaci na zakoupení tohoto předmětu",
   "item_not_enough": "Nemáš dostatek %s",
   "cannot_afford": "Toto si nemůžeš dovolit (chybí %s)",
   "stash_lowgrade": "Na tento předmět nemáš pravomoce",

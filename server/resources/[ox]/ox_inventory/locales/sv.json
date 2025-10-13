@@ -54,6 +54,7 @@
   "items_returned": "Du har fått tillbaka dina föremål",
   "item_unauthorised": "Du har inte behörighet att köpa det",
   "item_unlicensed": "Du har inte tillgång till att köpa saken",
+  "item_unqualified": "Du har inte tillgång till att köpa saken",
   "item_not_enough": "Du har inte tillräckligt %s",
   "cannot_afford": "Du har inte råd (saknas %s)",
   "stash_lowgrade": "Du har inte behörighet att ta detta föremål",

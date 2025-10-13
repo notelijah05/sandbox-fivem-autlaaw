@@ -331,15 +331,51 @@ end)
 function server.setPlayerData(player)
     local jobs = exports['sandbox-characters']:FetchCharacterSource(player.source):GetData('Jobs')
     local newGroups = {}
+    local workplaces = {}
     for i = 1, #jobs do
         local job = jobs[i]
         newGroups[job.Id] = job.Grade.Level
+
+        if job.Workplace then
+            workplaces[job.Id] = job.Workplace
+        end
     end
     return {
         identifier = player.identifier,
         source = player.source,
         groups = newGroups,
+        workplaces = workplaces,
     }
+end
+
+function server.hasWorkplace(inv, workplace)
+    if not inv.player.workplaces then return false end
+
+    if type(workplace) == 'table' then
+        for _, wp in pairs(workplace) do
+            for jobId, playerWorkplace in pairs(inv.player.workplaces) do
+                if playerWorkplace == wp then
+                    return true, jobId, playerWorkplace
+                end
+            end
+        end
+    else
+        for jobId, playerWorkplace in pairs(inv.player.workplaces) do
+            if playerWorkplace == workplace then
+                return true, jobId, playerWorkplace
+            end
+        end
+    end
+
+    return false
+end
+
+function server.isOnDuty(source)
+    local player = Player(source)
+    if not player then return false end
+
+    local onDuty = player.state.onDuty
+    return onDuty and onDuty ~= false
 end
 
 function server.hasBalance(source, amt)
@@ -409,6 +445,7 @@ function server.hasLicense(source, name)
     return char:GetData("Licenses")?[name]?.Active
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function server.hasQualification(source, name)
     local char = exports['sandbox-characters']:FetchCharacterSource(source)
 

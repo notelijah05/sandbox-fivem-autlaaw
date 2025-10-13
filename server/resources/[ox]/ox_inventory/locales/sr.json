@@ -1,4 +1,3 @@
-
 {
   "ui_use": "Koristi",
   "ui_give": "Daj",
@@ -59,6 +58,7 @@
   "items_returned": "Vasi predmeti su vraceni",
   "item_unauthorised": "Niste autorizovani da kupite taj predmet",
   "item_unlicensed": "Nemate dozvolu da kupite taj predmet",
+  "item_unqualified": "Nemate kvalifikaciju da kupite taj predmet",
   "item_not_enough": "Nemate dovoljno %s",
   "cannot_afford": "Nemate dovoljno novca (nedostaje %s)",
   "stash_lowgrade": "Niste autorizovani da koristite taj predmet",

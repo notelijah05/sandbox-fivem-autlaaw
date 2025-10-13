@@ -58,6 +58,7 @@
   "items_returned": "物品已被歸還",
   "item_unauthorised": "無權購買此商品",
   "item_unlicensed": "無購買此物品的許可",
+  "item_unqualified": "你沒有資格購買此物品",
   "item_not_enough": "你沒有足夠的 %s",
   "cannot_afford": "無法得到該物品 (缺少 %s)",
   "stash_lowgrade": "無權獲取此物品",

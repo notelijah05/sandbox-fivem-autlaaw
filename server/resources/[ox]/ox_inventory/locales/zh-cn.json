@@ -58,6 +58,7 @@
   "items_returned": "您的物品已被退回",
   "item_unauthorised": "您无权购买此商品",
   "item_unlicensed": "您无权购买此商品",
+  "item_unqualified": "您没有资格购买此物品",
   "item_not_enough": "您没有足够的 %s",
   "cannot_afford": "您买不起 (需要 %s)",
   "stash_lowgrade": "您无权携带此物品",

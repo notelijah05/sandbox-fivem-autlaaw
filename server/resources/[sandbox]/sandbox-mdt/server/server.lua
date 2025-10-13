@@ -763,3 +763,45 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		end
 	end)
 end)
+
+exports.ox_inventory:registerHook('buyItem', function(payload)
+	if payload.itemName and payload.metadata.serial and (payload.metadata.registered or payload.fromSlot.metadata.registered) then
+		local char = exports['sandbox-characters']:FetchCharacterSource(payload.source)
+
+		if char then
+			local firstName = char:GetData('First')
+			local lastName = char:GetData('Last')
+			local sid = char:GetData('SID')
+
+			exports['sandbox-mdt']:FirearmRegister(
+				payload.metadata.serial,
+				payload.itemName,
+				sid,
+				firstName .. ' ' .. lastName
+			)
+		end
+	end
+
+	return true
+end)
+
+exports.ox_inventory:registerHook('createItem', function(payload)
+	if payload.item.name:find('WEAPON_') and payload.metadata.serial then
+		local char = exports['sandbox-characters']:FetchCharacterSource(payload.inventoryId)
+
+		if char then
+			local firstName = char:GetData('First')
+			local lastName = char:GetData('Last')
+			local sid = char:GetData('SID')
+
+			exports['sandbox-mdt']:FirearmRegister(
+				payload.metadata.serial,
+				payload.item.name,
+				sid,
+				firstName .. ' ' .. lastName
+			)
+		end
+	end
+
+	return true
+end)

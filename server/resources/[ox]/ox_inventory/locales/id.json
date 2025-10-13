@@ -55,6 +55,7 @@
   "items_returned": "Barang-barang Anda telah dikembalikan",
   "item_unauthorised": "Anda tidak diizinkan untuk membeli barang ini",
   "item_unlicensed": "Anda tidak memiliki lisensi untuk membeli barang ini",
+  "item_unqualified": "Anda tidak memiliki kualifikasi untuk membeli barang ini",
   "item_not_enough": "Anda tidak punya cukup %s",
   "cannot_afford": "Anda tidak mampu membelinya (kurang %s)",
   "stash_lowgrade": "Anda tidak diizinkan mengambil barang ini",

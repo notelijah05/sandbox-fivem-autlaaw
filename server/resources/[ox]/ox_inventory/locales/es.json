@@ -57,6 +57,7 @@
   "items_returned": "Tus artículos han sido devueltos",
   "item_unauthorised": "No estás autorizado para comprar este artículo",
   "item_unlicensed": "No estás licenciado para comprar este artículo",
+  "item_unqualified": "No estás cualificado para comprar este artículo",
   "item_not_enough": "No tienes suficiente %s",
   "cannot_afford": "No puedes permitirte eso (falta %s)",
   "stash_lowgrade": "No estás autorizado a tomar este artículo",
@@ -88,5 +89,5 @@
   "crafting_bench": "Banco de trabajo",
   "open_crafting_bench": "Abrir banco de trabajo",
   "not_enough_durability": "%s no tiene suficiente durabilidad",
-  "storage": "Maletero",
+  "storage": "Maletero"
 }

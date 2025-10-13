@@ -55,6 +55,7 @@
   "items_returned": "Je items zijn teruggegeven",
   "item_unauthorised": "Je bent niet geautoriseerd om dit item te kopen",
   "item_unlicensed": "Je bent niet gelicenseerd om dit item te kopen",
+  "item_unqualified": "Je bent niet gekwalificeerd om dit item te kopen",
   "item_not_enough": "Je hebt niet genoeg %s",
   "cannot_afford": "Je kan dit niet veroorloven (%s mist)",
   "stash_lowgrade": "Je bent niet geautoriseerd om dit item te pakken",

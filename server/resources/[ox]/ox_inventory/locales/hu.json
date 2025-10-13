@@ -58,6 +58,7 @@
   "items_returned": "Tárgyaid visszaadva",
   "item_unauthorised": "Nincs jogosultságod a tárgy vásárlására",
   "item_unlicensed": "Nincs engedélyed a tárgy vásárlásához",
+  "item_unqualified": "Nincs kvalifikáciod a tárgy vásárlásához",
   "item_not_enough": "Neked nincs elég %s",
   "cannot_afford": "Nem végrehajtható (%s hiányzik)",
   "stash_lowgrade": "Nincs jogosultságod a tárgy felvételére",

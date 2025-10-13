@@ -76,7 +76,17 @@ local function onExitShop(point)
 end
 
 local function hasShopAccess(shop)
-    return not shop.groups or client.hasGroup(shop.groups)
+    local hasGroupAccess = not shop.groups or client.hasGroup(shop.groups)
+    local hasWorkplaceAccess = not shop.workplace or client.hasWorkplace(shop.workplace)
+    local hasDutyAccess = not shop.reqDuty or client.isOnDuty()
+    return hasGroupAccess and hasWorkplaceAccess and hasDutyAccess
+end
+
+local function getShopName(shop, target)
+    if target and target.name then
+        return target.name
+    end
+    return nil
 end
 
 local function wipeShops()
@@ -131,6 +141,9 @@ local function refreshShops()
                 for i = 1, #shop.targets do
                     local target = shop.targets[i]
                     local shopid = ('%s-%s'):format(type, i)
+                    local locationName = getShopName(shop, target)
+                    local locationLabel = locationName and locale('open_label', locationName) or
+                        (shop.label or locale('open_label', shop.name))
 
                     if target.ped then
                         id += 1
@@ -145,7 +158,7 @@ local function refreshShops()
                             blip = blip and hasShopAccess(shop) and createBlip(blip, target.loc),
                             ped = target.ped,
                             scenario = target.scenario,
-                            label = label,
+                            label = locationLabel,
                             groups = shop.groups,
                             icon = shop.icon or 'fas fa-shopping-basket',
                             iconColor = target.iconColor,
@@ -163,7 +176,7 @@ local function refreshShops()
                                 {
                                     name = shopid,
                                     icon = shop.icon or 'fas fa-shopping-basket',
-                                    label = label,
+                                    label = locationLabel,
                                     groups = shop.groups,
                                     onSelect = function()
                                         client.openInventory('shop', { id = i, type = type })
@@ -184,7 +197,9 @@ local function refreshShops()
             local shopPrompt = { icon = 'fas fa-shopping-basket' }
 
             for i = 1, #shop.locations do
-                local coords = shop.locations[i]
+                local location = shop.locations[i]
+                local coords = location.coords or location
+                local locationLabel = shop.label or locale('open_label', shop.name)
                 id += 1
 
                 shops[id] = lib.points.new(coords, 16, {
@@ -196,7 +211,7 @@ local function refreshShops()
                     marker = client.shopmarker,
                     prompt = {
                         options = shop.icon and { icon = shop.icon } or shopPrompt,
-                        message = ('**%s**  \n%s'):format(label,
+                        message = ('**%s**  \n%s'):format(locationLabel,
                             locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
                     },
                     nearby = Utils.nearbyMarker,

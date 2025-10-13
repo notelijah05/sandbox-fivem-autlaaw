@@ -55,6 +55,7 @@
   "items_returned": "تم إرجاع البنود الخاصة بك",
   "item_unauthorised": "أنت غير مصرح لك بشراء هذا البند",
   "item_unlicensed": "أنت غير مرخص لشراء هذا البند",
+  "item_unqualified": "أنت غير مؤهل لشراء هذا البند",
   "item_not_enough": "%s ليس لديك ما يكفي",
   "cannot_afford": "(%s) لا يمكنك تحمل ذلك",
   "stash_lowgrade": "أنت غير مخول لأخذ هذا البند",

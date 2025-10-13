@@ -58,6 +58,7 @@
   "items_returned": "Eşyalarınız geri verildi",
   "item_unauthorised": "Bu öğeyi satın alma yetkiniz bulunmamakta",
   "item_unlicensed": "Bu öğeyi satın almak için lisansınız bulunmamakta",
+  "item_unqualified": "Bu öğeyi satın almak için yetkiniz bulunmamakta",
   "item_not_enough": "Yeteri kadar %s 'ınız yok",
   "cannot_afford": "Bunu alamazsınız (%s yok)",
   "stash_lowgrade": "Bu öğeyi almaya yetkiniz yok",

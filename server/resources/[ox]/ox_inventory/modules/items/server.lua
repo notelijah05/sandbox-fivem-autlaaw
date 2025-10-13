@@ -144,8 +144,7 @@ local function GenerateSerial(text)
         return text
     end
 
-    return ('%s%s%s'):format(math.random(100000, 999999), text == nil and GenerateText(3) or text,
-        math.random(100000, 999999))
+    return ('%s-%s'):format(text == nil and GenerateText(3) or text, math.random(1000000000, 9999999999))
 end
 
 local function setItemDurability(item, metadata)

@@ -26,21 +26,33 @@ RegisterNetEvent("Characters:Client:Logout", client.onLogout)
 RegisterNetEvent("Characters:Client:Spawn", function()
     local data = LocalPlayer.state.Character:GetData('Jobs') or {}
     local newGroups = {}
+    local workplaces = {}
     for i = 1, #data do
         local job = data[i]
         newGroups[job.Id] = job.Grade.Level
+
+        if job.Workplace then
+            workplaces[job.Id] = job.Workplace
+        end
     end
     client.setPlayerData("groups", newGroups)
+    client.setPlayerData("workplaces", workplaces)
 end)
 
 RegisterNetEvent("Characters:Client:SetData", function(key, data)
     if key == 'Jobs' then
         local newGroups = {}
+        local workplaces = {}
         for i = 1, #data do
             local job = data[i]
             newGroups[job.Id] = job.Grade.Level
+
+            if job.Workplace then
+                workplaces[job.Id] = job.Workplace
+            end
         end
         client.setPlayerData("groups", newGroups)
+        client.setPlayerData("workplaces", workplaces)
     else
         client.setPlayerData(key, data)
     end

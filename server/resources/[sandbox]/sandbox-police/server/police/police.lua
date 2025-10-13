@@ -14,12 +14,6 @@ AddEventHandler('onResourceStart', function(resource)
 		GlobalState["PoliceCars"] = Config.PoliceCars
 		GlobalState["EMSCars"] = Config.EMSCars
 
-		for k, v in pairs(Config.Armories) do
-			exports['sandbox-base']:LoggerTrace("Police",
-				string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", v.id, v.name))
-			exports.ox_inventory:PolyCreate(v)
-		end
-
 		exports.ox_inventory:RegisterUse("spikes", "Police", function(source, slot, itemData)
 			if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
 				exports["sandbox-base"]:ClientCallback(source, "Police:DeploySpikes", {}, function(data)

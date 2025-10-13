@@ -58,6 +58,7 @@
   "items_returned": "Tavarasi on palautettu",
   "item_unauthorised": "Sinulla ei ole lupaa ostaa tätä tuotetta",
   "item_unlicensed": "Sinulla ei ole aselupaa tähän tuotteeseen",
+  "item_unqualified": "Sinulla ei ole kvalifikaatiota tähän tuoteeseen",
   "item_not_enough": "Sinulla ei ole tarpeeksi %s",
   "cannot_afford": "Sinulla ei ole varaa (puuttuu %s)",
   "stash_lowgrade": "Sinulla ei ole oikeutta ottaa tätä itemiä",

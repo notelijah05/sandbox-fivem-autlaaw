@@ -55,6 +55,7 @@
   "items_returned": "I tuoi oggetti sono stati restituiti",
   "item_unauthorised": "Non sei autorizzato a comprare questo oggetto",
   "item_unlicensed": "Non hai la licenza per acquistare questo oggetto",
+  "item_unqualified": "Non sei qualificato per acquistare questo oggetto",
   "item_not_enough": "Non hai abbastanza %s",
   "cannot_afford": "Non te lo puoi permettere (mancano %s)",
   "stash_lowgrade": "Non sei autorizzato a prendere questo oggetto",
