@@ -63,46 +63,6 @@ AddEventHandler('onResourceStart', function(resource)
 					exports['sandbox-hud']:Notification(source, "error", "You are Not PD")
 				end
 			end)
-
-		-- exports.ox_inventory:PolyCreate({
-		-- 	id = "doj-chief-justice-safe",
-		-- 	type = "box",
-		-- 	coords = vector3(-586.32, -213.18, 42.84),
-		-- 	width = 0.6,
-		-- 	length = 1.0,
-		-- 	options = {
-		-- 		heading = 30,
-		-- 		--debugPoly=true,
-		-- 		minZ = 41.84,
-		-- 		maxZ = 44.24,
-		-- 	},
-		-- 	data = {
-		-- 		inventory = {
-		-- 			invType = 46,
-		-- 			owner = "doj-chief-justice-safe",
-		-- 		},
-		-- 	},
-		-- })
-
-		exports.ox_inventory:PolyCreate({
-			id = "doj-storage",
-			type = "box",
-			coords = vector3(-586.64, -203.5, 38.23),
-			length = 0.8,
-			width = 1.4,
-			options = {
-				heading = 30,
-				--debugPoly=true,
-				minZ = 37.23,
-				maxZ = 39.43,
-			},
-			data = {
-				inventory = {
-					invType = 116,
-					owner = "doj-storage",
-				},
-			},
-		})
 	end
 end)
 

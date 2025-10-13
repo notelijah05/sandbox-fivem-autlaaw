@@ -124,4 +124,42 @@ return {
         weight = 70000,
         groups = { "ems" }
     },
+
+    -- {
+    --     target = {
+    --         loc = vec3(-586.32, -213.18, 42.84),
+    --         length = 0.8,
+    --         width = 1.0,
+    --         heading = 30,
+    --         minZ = 41.84,
+    --         maxZ = 44.24,
+    --         label = 'Open Safe'
+    --     },
+    --     name = 'doj-chief-justice-storage',
+    --     label = 'Chief Justice Storage',
+    --     owner = false,
+    --     slots = 70,
+    --     weight = 70000,
+    --     groups = { "government" }
+    --     workplace = "doj"
+    -- },
+
+    {
+        target = {
+            loc = vec3(-586.64, -203.5, 38.23),
+            length = 0.8,
+            width = 1.4,
+            heading = 30,
+            minZ = 37.23,
+            maxZ = 39.43,
+            label = 'Open Storage'
+        },
+        name = 'doj-storage',
+        label = 'DOJ Storage',
+        owner = false,
+        slots = 70,
+        weight = 70000,
+        groups = { "government" },
+        workplace = "doj"
+    },
 }
