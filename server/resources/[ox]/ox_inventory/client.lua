@@ -1985,7 +1985,7 @@ RegisterNUICallback('buyItem', function(data, cb)
 
     if message then
         --lib.notify(message)
-        exports['sandbox-hud']:Notification("info", message)
+        exports['sandbox-hud']:Notification(message.type, message.description)
     end
 
     cb(response)
