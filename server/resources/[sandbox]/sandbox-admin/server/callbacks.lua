@@ -104,6 +104,19 @@ function RegisterCallbacks()
 
                 local chars = Citizen.Await(p)
 
+                for i, char in ipairs(chars) do
+                    if char.Jobs then
+                        local success, parsed = pcall(json.decode, char.Jobs)
+                        if success then
+                            chars[i].Jobs = parsed
+                        else
+                            chars[i].Jobs = {}
+                        end
+                    else
+                        chars[i].Jobs = {}
+                    end
+                end
+
                 local tData = {
                     Source = target:GetData('Source'),
                     Name = target:GetData('Name'),
