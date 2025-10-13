@@ -1303,6 +1303,10 @@ function RegisterRandomItems()
         end
     end)
 
+    exports.ox_inventory:RegisterUse("laptop", "Laptop", function(source)
+        TriggerClientEvent("Laptop:Client:Open", source)
+    end)
+
     exports["sandbox-base"]:RegisterServerCallback("Inventory:UsedParachute", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
         if char then
