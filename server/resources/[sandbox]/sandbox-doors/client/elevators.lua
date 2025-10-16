@@ -1,4 +1,4 @@
-AddEventHandler("Doors:Client:OpenElevator", function(hitEntity, data)
+AddEventHandler("Doors:Client:OpenElevator", function(data)
     if not ELEVATOR_STATE then
         return
     end
