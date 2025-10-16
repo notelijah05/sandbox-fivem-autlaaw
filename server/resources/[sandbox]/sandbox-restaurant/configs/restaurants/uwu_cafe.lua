@@ -219,28 +219,6 @@ table.insert(Config.Restaurants, {
             },
         },
     },
-    Storage = {
-        {
-            id = "uwu-freezer",
-            type = "box",
-            coords = vector3(-589.43, -1066.88, 22.34),
-            width = 3.8,
-            length = 3.8,
-            options = {
-                heading = 0,
-                --debugPoly = true,
-                minZ = 21.34,
-                maxZ = 23.94
-            },
-			data = {
-                business = "uwu",
-                inventory = {
-                    invType = 57,
-                    owner = "uwu-freezer",
-                },
-			},
-        },
-    },
     Pickups = {
         {
             id = "uwu-pickup-1",

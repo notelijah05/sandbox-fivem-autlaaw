@@ -42,28 +42,6 @@ table.insert(Config.Businesses, {
         --     },
         -- },
     },
-    Storage = {
-        {
-            id = "securoserv-storage",
-            type = "box",
-            coords = vector3(20.04, -100.54, 56.18),
-            length = 1.0,
-            width = 3.2,
-            options = {
-                heading = 70,
-                --debugPoly=true,
-                minZ = 55.18,
-                maxZ = 57.98
-            },
-            data = {
-                business = "securoserv",
-                inventory = {
-                    invType = 113,
-                    owner = "securoserv-storage",
-                },
-            },
-        },
-    },
     Pickups = {
         -- {
         --     id = "digitalden-pickup-1",

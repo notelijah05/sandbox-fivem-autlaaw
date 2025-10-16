@@ -82,28 +82,6 @@ table.insert(Config.Restaurants, {
 			},
 		},
 	},
-	Storage = {
-		{
-			id = "rustybrowns-storage",
-			type = "box",
-			coords = vector3(158.21, 247.93, 107.05),
-			width = 2,
-			length = 1.4,
-			options = {
-				heading = 340,
-				--debugPoly=true,
-				minZ = 104.65,
-				maxZ = 108.65,
-			},
-			data = {
-				business = "rustybrowns",
-				inventory = {
-					invType = 206,
-					owner = "rustybrowns-storage",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{
 			id = "rustybrowns-pickup-1",

@@ -32,28 +32,6 @@ table.insert(Config.Restaurants, {
 			},
 		},
 	},
-	Storage = {
-		{
-			id = "unicorn-storage",
-			type = "box",
-			coords = vector3(132.78, -1287.97, 29.27),
-			width = 2.0,
-			length = 1.0,
-			options = {
-				heading = 300,
-				--debugPoly=true,
-				minZ = 28.27,
-				maxZ = 30.67,
-			},
-			data = {
-				business = "unicorn",
-				inventory = {
-					invType = 83,
-					owner = "unicorn-storage",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{
 			id = "unicorn-pickup-1",

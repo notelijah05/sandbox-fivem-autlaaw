@@ -105,28 +105,6 @@ table.insert(Config.Restaurants, {
             },
         },
     },
-    Storage = {
-        {
-            id = "bakery-storage",
-            type = "box",
-            coords = vector3(-1259.49, -281.17, 37.38),
-            width = 2.0,
-            length = 3.4,
-            options = {
-                heading = 21,
-                --debugPoly=true,
-                minZ = 36.38,
-                maxZ = 38.58
-            },
-			data = {
-                business = "bakery",
-                inventory = {
-                    invType = 87,
-                    owner = "bakery-storage",
-                },
-			},
-        },
-    },
     Pickups = {
         {
             id = "bakery-pickup-1",

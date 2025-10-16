@@ -143,28 +143,6 @@ table.insert(Config.Restaurants, {
             },
         },
     },
-    Storage = {
-        {
-            id = "beanmachine-fridge",
-            type = "box",
-            coords = vector3(123.59, -1039.2, 29.28),
-            width = 2.0,
-            length = 2.0,
-            options = {
-                heading = 340,
-                --debugPoly=true,
-                minZ = 28.08,
-                maxZ = 30.28
-            },
-			data = {
-                business = "beanmachine",
-                inventory = {
-                    invType = 79,
-                    owner = "beanmachine-fridge",
-                },
-			},
-        },
-    },
     Pickups = {
         {
             id = "beanmachine-pickup-1",

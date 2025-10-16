@@ -116,68 +116,6 @@ table.insert(Config.Restaurants, {
             },
         },
     },
-    Storage = {
-        {
-            id = "prego-freezer",
-            type = "box",
-            coords = vector3(-1124.56, -1458.42, 5.11),
-            length = 1.4,
-            width = 2.4,
-            options = {
-                heading = 35,
-                --debugPoly=true,
-                minZ = 4.11,
-                maxZ = 6.51
-            },
-			data = {
-                business = "prego",
-                inventory = {
-                    invType = 128,
-                    owner = "prego-freezer",
-                },
-			},
-        },
-        {
-            id = "prego-fridge",
-            type = "box",
-            coords = vector3(-1119.02, -1452.57, 5.11),
-            width = 1.0,
-            length = 1.0,
-            options = {
-                heading = 30,
-                --debugPoly=true,
-                minZ = 4.11,
-                maxZ = 6.31
-            },
-			data = {
-                business = "prego",
-                inventory = {
-                    invType = 129,
-                    owner = "prego-fridge-1",
-                },
-			},
-        },
-        {
-            id = "prego-wine",
-            type = "box",
-            coords = vector3(-1120.07, -1456.97, 2.03),
-            width = 1.2,
-            length = 1.2,
-            options = {
-                heading = 35,
-                --debugPoly=true,
-                minZ = 1.03,
-                maxZ = 3.43
-            },
-			data = {
-                business = "prego",
-                inventory = {
-                    invType = 130,
-                    owner = "prego-wine",
-                },
-			},
-        },
-    },
     Pickups = {
         {
             id = "prego-pickup-1",

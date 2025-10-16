@@ -158,68 +158,6 @@ table.insert(Config.Restaurants, {
             },
         },
     },
-    Storage = {
-        {
-            id = "pizza_this-freezer",
-            type = "box",
-            coords = vector3(802.49, -758.53, 26.78),
-            width = 3.0,
-            length = 3.6,
-            options = {
-                heading = 1,
-                --debugPoly=true,
-                minZ = 25.78,
-                maxZ = 29.58
-            },
-			data = {
-                business = "pizza_this",
-                inventory = {
-                    invType = 59,
-                    owner = "pizza_this-freezer",
-                },
-			},
-        },
-        {
-            id = "pizza_this-fridge",
-            type = "box",
-            coords = vector3(813.35, -749.39, 26.78),
-            width = 1.0,
-            length = 2.4,
-            options = {
-                heading = 0,
-                --debugPoly=true,
-                minZ = 25.78,
-                maxZ = 27.38
-            },
-			data = {
-                business = "pizza_this",
-                inventory = {
-                    invType = 60,
-                    owner = "pizza_this-fridge-1",
-                },
-			},
-        },
-        {
-            id = "pizza_this-wine",
-            type = "box",
-            coords = vector3(809.33, -761.47, 22.3),
-            width = 1.2,
-            length = 2.2,
-            options = {
-                heading = 0,
-                --debugPoly=true,
-                minZ = 21.3,
-                maxZ = 23.3
-            },
-			data = {
-                business = "pizza_this",
-                inventory = {
-                    invType = 77,
-                    owner = "pizza_this-wine",
-                },
-			},
-        },
-    },
     Pickups = {
         {
             id = "pizza_this-pickup-1",

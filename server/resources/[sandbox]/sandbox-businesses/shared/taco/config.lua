@@ -17,27 +17,6 @@ _tacoConfig = {
 		[5] = 80,
 		[6] = 90,
 	},
-	storage = {
-		{
-			id = "taco_shop-storage-1",
-			type = "box",
-			coords = vector3(8.0, -1603.23, 29.38),
-			length = 1.8,
-			width = 1.6,
-			options = {
-				heading = 320,
-				--debugPoly=true,
-				minZ = 26.58,
-				maxZ = 30.58,
-			},
-			data = {
-				inventory = {
-					invType = 995,
-					owner = "taco_shop-storage-1",
-				},
-			},
-		},
-	},
 	sharedPickup = {
 		{
 			coords = vector3(14.91, -1601.54, 29.38),
