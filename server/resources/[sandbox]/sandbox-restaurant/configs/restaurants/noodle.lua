@@ -98,28 +98,6 @@ table.insert(Config.Restaurants, {
             },
         },
     },
-    Storage = {
-        {
-            id = "noodle-freezer",
-            type = "box",
-            coords = vector3(-1183.76, -1155.12, 7.67),
-            width = 1.0,
-            length = 1.4,
-            options = {
-                heading = 15,
-                --debugPoly=true,
-                minZ = 6.67,
-                maxZ = 9.07
-            },
-			data = {
-                business = "noodle",
-                inventory = {
-                    invType = 89,
-                    owner = "noodle-freezer",
-                },
-			},
-        },
-    },
     Pickups = {
         {
             id = "noodle-pickup-1",

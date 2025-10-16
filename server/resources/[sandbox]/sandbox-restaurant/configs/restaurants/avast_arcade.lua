@@ -1,28 +1,6 @@
 table.insert(Config.Restaurants, {
     Name = "Avast Arcade",
     Job = "avast_arcade",
-    Storage = {
-        {
-            id = "avast_fridge",
-            type = "box",
-            coords = vector3(-1656.03, -1058.7, 12.16),
-            width = 2.2,
-            length = 1.0,
-            options = {
-                heading = 320,
-                --debugPoly=true,
-                minZ = 11.16,
-                maxZ = 13.56
-            },
-			data = {
-                business = "avast_arcade",
-                inventory = {
-                    invType = 78,
-                    owner = "avast_fridge",
-                },
-			},
-        },
-    },
     Pickups = {
         {
             id = "avast-pickup-1",

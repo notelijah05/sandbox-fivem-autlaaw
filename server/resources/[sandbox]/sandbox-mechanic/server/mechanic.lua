@@ -22,12 +22,6 @@ AddEventHandler('onResourceStart', function(resource)
 						}, bench.recipes, bench.canUseSchematics)
 				end
 			end
-
-			if v.partStorage then
-				for storageId, storage in ipairs(v.partStorage) do
-					exports.ox_inventory:PolyCreate(storage)
-				end
-			end
 		end
 	end
 end)

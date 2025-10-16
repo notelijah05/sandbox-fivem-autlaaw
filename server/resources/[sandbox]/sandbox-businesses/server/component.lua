@@ -56,16 +56,6 @@ function Startup()
 			end
 		end
 
-		if v.Storage then
-			for _, storage in pairs(v.Storage) do
-				-- exports['sandbox-base']:LoggerTrace(
-				-- 	"Businesses",
-				-- 	string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", storage.id, v.Name)
-				-- )
-				exports.ox_inventory:PolyCreate(storage)
-			end
-		end
-
 		if v.Pickups then
 			for num, pickup in pairs(v.Pickups) do
 				table.insert(_pickups, pickup.id)

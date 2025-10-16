@@ -12,13 +12,6 @@ AddEventHandler("Businesses:Server:Startup", function()
 	GlobalState["TacoShop:CurrentItem"] = _currentCookItem
 	TriggerClientEvent("Taco:SetQueue", -1, { counter = _deliveryCounter, item = _currentCookItem })
 
-	-- Create storage
-	if _tacoConfig.storage then
-		for _, storage in pairs(_tacoConfig.storage) do
-			exports.ox_inventory:PolyCreate(storage)
-		end
-	end
-
 	exports['sandbox-characters']:RepCreate("TacoDelivery", "Taco Delivery", {
 		{ label = "Rank 1",   value = 500 },
 		{ label = "Rank 2",   value = 1000 },

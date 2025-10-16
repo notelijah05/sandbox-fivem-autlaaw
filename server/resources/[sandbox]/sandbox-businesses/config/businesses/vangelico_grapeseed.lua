@@ -1060,68 +1060,6 @@ table.insert(Config.Businesses, {
 			},
 		},
 	},
-	Storage = {
-		{
-			id = "vangelico-grapeseed-safe-1",
-			type = "box",
-			coords = vector3(1648.58, 4875.25, 42.16),
-			length = 1.6,
-			width = 1.0,
-			options = {
-				heading = 8.0,
-				--debugPoly=true,
-				minZ = 38.56,
-				maxZ = 44.56,
-			},
-			data = {
-				business = "vangelico_grapeseed",
-				inventory = {
-					invType = 217,
-					owner = "vangelico-grapeseed-safe-1",
-				},
-			},
-		},
-		{
-			id = "vangelico-grapeseed-storage-1",
-			type = "box",
-			coords = vector3(1650.22, 4875.44, 42.16),
-			length = 1.6,
-			width = 2.4,
-			options = {
-				heading = 8.0,
-				--debugPoly=true,
-				minZ = 38.56,
-				maxZ = 44.56,
-			},
-			data = {
-				business = "vangelico_grapeseed",
-				inventory = {
-					invType = 218,
-					owner = "vangelico-grapeseed-storage-1",
-				},
-			},
-		},
-		{
-			id = "vangelico-grapeseed-storage-2",
-			type = "box",
-			coords = vector3(1647.05, 4879.75, 42.16),
-			length = 1.4,
-			width = 2.0,
-			options = {
-				heading = 8.0,
-				--debugPoly=true,
-				minZ = 38.76,
-				maxZ = 44.56,
-			},
-			data = {
-				business = "vangelico_grapeseed",
-				inventory = {
-					invType = 219,
-					owner = "vangelico-grapeseed-storage-2",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{
 			id = "vangelico-grapeseed-pickup-1",

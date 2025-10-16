@@ -243,28 +243,6 @@ table.insert(Config.Restaurants, {
 			},
 		},
 	},
-	Storage = {
-		{
-			id = "burgershot-freezer",
-			type = "box",
-			coords = vector3(-1192.9, -898.69, 13.8),
-			width = 2.4,
-			length = 2.2,
-			options = {
-				heading = 35,
-				--debugPoly=true,
-				minZ = 12.6,
-				maxZ = 15.2,
-			},
-			data = {
-				business = "burgershot",
-				inventory = {
-					invType = 23,
-					owner = "burgershot-freezer",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{ -- Burger Shot
 			id = "burgershot-pickup-1",

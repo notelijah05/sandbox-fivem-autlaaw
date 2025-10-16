@@ -282,48 +282,6 @@ table.insert(Config.Restaurants, {
 			},
 		},
 	},
-	Storage = {
-		{
-			id = "mba-storage-1",
-			type = "box",
-			coords = vector3(-289.955, -1936.476, 41.045),
-			width = 1.6,
-			length = 1.0,
-			options = {
-				heading = 322.915,
-				--debugPoly=true,
-				minZ = 39.18,
-				maxZ = 43.58,
-			},
-			data = {
-				business = "mba",
-				inventory = {
-					invType = 145,
-					owner = "mba-storage-1",
-				},
-			},
-		},
-		{
-			id = "mba-storage-2",
-			type = "box",
-			coords = vector3(-289.337, -1935.401, 30.146),
-			width = 1.2,
-			length = 1.0,
-			options = {
-				heading = 291.033,
-				--debugPoly=true,
-				minZ = 28.18,
-				maxZ = 32.58,
-			},
-			data = {
-				business = "mba",
-				inventory = {
-					invType = 144,
-					owner = "mba-storage-2",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{
 			id = "mba-pickup-1",

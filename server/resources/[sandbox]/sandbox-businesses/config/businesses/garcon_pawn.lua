@@ -42,28 +42,6 @@ table.insert(Config.Businesses, {
 		--     },
 		-- },
 	},
-	Storage = {
-		{
-			id = "garcon-pawn-storage",
-			type = "box",
-			coords = vector3(-217.28, 6230.52, 31.79),
-			length = 1.4,
-			width = 1.8,
-			options = {
-				heading = 315,
-				--debugPoly=true,
-				minZ = 29.59,
-				maxZ = 33.59,
-			},
-			data = {
-				business = "garcon_pawn",
-				inventory = {
-					invType = 222,
-					owner = "garcon_pawn-storage",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{
 			id = "garcon-pawn-pickup-1",

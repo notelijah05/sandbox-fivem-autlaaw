@@ -111,28 +111,6 @@ table.insert(Config.Restaurants, {
 			},
 		},
 	},
-	Storage = {
-		{
-			id = "woods-saloon-storage",
-			type = "box",
-			coords = vector3(-305.63, 6271.79, 31.53),
-			width = 5.6,
-			length = 1.4,
-			options = {
-				heading = 225,
-				--debugPoly=true,
-				minZ = 30.28,
-				maxZ = 32.48,
-			},
-			data = {
-				business = "woods_saloon",
-				inventory = {
-					invType = 162,
-					owner = "woods-saloon-storage",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{
 			id = "woods-saloon-pickup-1",

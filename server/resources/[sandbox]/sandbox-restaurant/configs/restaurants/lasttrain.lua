@@ -179,28 +179,6 @@ table.insert(Config.Restaurants, {
 			},
 		},
 	},
-	Storage = {
-		{
-			id = "lasttrain-freezer",
-			type = "box",
-			coords = vector3(-383.95, 265.61, 86.46),
-			width = 1.4,
-			length = 0.8,
-			options = {
-				heading = 305,
-				--debugPoly = true,
-				minZ = 85.0,
-				maxZ = 87.66,
-			},
-			data = {
-				business = "lasttrain",
-				inventory = {
-					invType = 31,
-					owner = "lasttrain-freezer",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{
 			id = "lasttrain-pickup-1",

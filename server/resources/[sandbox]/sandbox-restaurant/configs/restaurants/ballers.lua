@@ -32,28 +32,6 @@ table.insert(Config.Restaurants, {
 			},
 		},
 	},
-	Storage = {
-		{
-			id = "ballers-clubhouse-storage",
-			type = "box",
-			coords = vector3(-1.96, -1827.12, 29.15),
-			length = 1.0,
-			width = 1.2,
-			options = {
-				heading = 320,
-				--debugPoly=true,
-				minZ = 26.35,
-				maxZ = 30.35,
-			},
-			data = {
-				business = "ballers",
-				inventory = {
-					invType = 229,
-					owner = "ballers_storage",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{
 			id = "ballers-clubhouse-pickup-1",
