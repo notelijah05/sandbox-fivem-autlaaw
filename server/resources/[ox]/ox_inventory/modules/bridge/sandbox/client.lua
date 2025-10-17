@@ -114,7 +114,7 @@ exports('ItemsGetData', function(name)
 end)
 
 exports('ItemsGetWithStaticMetadata', function(masterKey, mainIdName, textureIdName, gender, data)
-    for k, v in pairs(_items) do
+    for k, v in pairs(Items) do
         if
             v.staticMetadata ~= nil
             and v.staticMetadata[masterKey] ~= nil
@@ -194,7 +194,7 @@ end)
 exports('AmmoAdd', function(item)
     if _equipped ~= nil then
         local ped = PlayerPedId()
-        local hash = GetHashKey(_items[_equipped.Name].weapon or _equipped.Name)
+        local hash = GetHashKey(Items[_equipped.Name].weapon or _equipped.Name)
         AddAmmoToPed(ped, hash, item.bulletCount or 10)
     end
 end)
@@ -620,7 +620,7 @@ end)
 -- 	if not item then
 -- 		_grappleEquipped = false
 -- 	else
--- 		if GetHashKey(_items[item.Name].weapon or item.Name) == GRAPPLEHASH then
+-- 		if GetHashKey(Items[item.Name].weapon or item.Name) == GRAPPLEHASH then
 -- 			_grappleEquipped = true
 -- 			GrappleThreads()
 -- 		end
