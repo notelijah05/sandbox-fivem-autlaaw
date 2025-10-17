@@ -5,7 +5,18 @@ exports('RecordsGet', function(dealership)
         exports.oxmysql:execute('SELECT * FROM dealer_records WHERE dealership = ? ORDER BY time DESC LIMIT 100',
             { dealership }, function(results)
                 if results then
-                    p:resolve(results or {})
+                    for i, record in ipairs(results) do
+                        if record.seller then
+                            record.seller = json.decode(record.seller)
+                        end
+                        if record.buyer then
+                            record.buyer = json.decode(record.buyer)
+                        end
+                        if record.vehicle then
+                            record.vehicle = json.decode(record.vehicle)
+                        end
+                    end
+                    p:resolve(results)
                 else
                     p:resolve(false)
                 end
@@ -24,30 +35,41 @@ exports('RecordsGetPage', function(category, term, dealership, page, perPage)
             skip = perPage * (page - 1)
         end
 
-        local whereConditions = { "dealership = ?" }
+        local query = 'SELECT * FROM dealer_records WHERE dealership = ?'
         local params = { dealership }
 
-        if #term > 0 then
-            table.insert(whereConditions,
-                "(CONCAT(JSON_UNQUOTE(JSON_EXTRACT(seller, '$.First')), ' ', JSON_UNQUOTE(JSON_EXTRACT(seller, '$.Last'))) LIKE ? OR CONCAT(JSON_UNQUOTE(JSON_EXTRACT(buyer, '$.First')), ' ', JSON_UNQUOTE(JSON_EXTRACT(buyer, '$.Last'))) LIKE ? OR CONCAT(JSON_UNQUOTE(JSON_EXTRACT(vehicle, '$.data.make')), ' ', JSON_UNQUOTE(JSON_EXTRACT(vehicle, '$.data.model'))) LIKE ?)")
-            local searchTerm = "%" .. term .. "%"
-            table.insert(params, searchTerm)
-            table.insert(params, searchTerm)
-            table.insert(params, searchTerm)
-        end
-
         if category ~= "all" then
-            table.insert(whereConditions, "JSON_UNQUOTE(JSON_EXTRACT(vehicle, '$.data.category')) = ?")
+            query = query .. ' AND JSON_EXTRACT(vehicle, "$.data.category") = ?'
             table.insert(params, category)
         end
 
-        local whereClause = table.concat(whereConditions, " AND ")
-        local query = "SELECT * FROM dealer_records WHERE " .. whereClause .. " ORDER BY time DESC LIMIT ? OFFSET ?"
+        if term and #term > 0 then
+            query = query ..
+                ' AND (JSON_EXTRACT(seller, "$.First") LIKE ? OR JSON_EXTRACT(seller, "$.Last") LIKE ? OR JSON_EXTRACT(buyer, "$.First") LIKE ? OR JSON_EXTRACT(buyer, "$.Last") LIKE ? OR JSON_EXTRACT(vehicle, "$.data.make") LIKE ? OR JSON_EXTRACT(vehicle, "$.data.model") LIKE ?)'
+            local searchTerm = '%' .. term .. '%'
+            for i = 1, 6 do
+                table.insert(params, searchTerm)
+            end
+        end
+
+        query = query .. ' ORDER BY time DESC LIMIT ? OFFSET ?'
         table.insert(params, perPage + 1)
         table.insert(params, skip)
 
         exports.oxmysql:execute(query, params, function(results)
             if results then
+                for i, record in ipairs(results) do
+                    if record.seller then
+                        record.seller = json.decode(record.seller)
+                    end
+                    if record.buyer then
+                        record.buyer = json.decode(record.buyer)
+                    end
+                    if record.vehicle then
+                        record.vehicle = json.decode(record.vehicle)
+                    end
+                end
+
                 local more = false
                 if #results > perPage then
                     more = true
@@ -82,7 +104,7 @@ exports('RecordsCreate', function(dealership, document)
                 .commission },
             function(insertId)
                 p:resolve(insertId and (type(insertId) == "number" and insertId > 0) or
-                (type(insertId) == "table" and insertId.insertId and insertId.insertId > 0))
+                    (type(insertId) == "table" and insertId.insertId and insertId.insertId > 0))
             end)
         return Citizen.Await(p)
     end
@@ -94,16 +116,16 @@ exports('RecordsCreateBuyBack', function(dealership, document)
         document.dealership = dealership
         local p = promise.new()
 
-        local sellerJson = document.seller and json.encode(document.seller) or nil
-        local buyerJson = document.buyer and json.encode(document.buyer) or nil
         local vehicleJson = document.vehicle and json.encode(document.vehicle) or nil
+        local previousOwnerJson = document.previousOwner and json.encode(document.previousOwner) or nil
+        local buyerJson = document.buyer and json.encode(document.buyer) or nil
 
         exports.oxmysql:execute(
-            'INSERT INTO dealer_records_buybacks (dealership, time, seller, buyer, vehicle, price, commission) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            { document.dealership, document.time, sellerJson, buyerJson, vehicleJson, document.price, document
-                .commission },
+            'INSERT INTO dealer_records_buybacks (dealership, time, vehicle, previousOwner, buyer) VALUES (?, ?, ?, ?, ?)',
+            { document.dealership, document.time, vehicleJson, previousOwnerJson, buyerJson },
             function(insertId)
-                p:resolve(insertId and insertId > 0)
+                p:resolve(insertId and (type(insertId) == "number" and insertId > 0) or
+                    (type(insertId) == "table" and insertId.insertId and insertId.insertId > 0))
             end)
         return Citizen.Await(p)
     end
