@@ -185,8 +185,9 @@ exports("DataReset", function()
 end)
 
 exports("NotificationAdd", function(title, description, time, duration, app, actions, notifData)
+	local phoneItem = exports.ox_inventory:getUtilitySlotItem(8)
 	if
-		not LocalPlayer.state.loggedIn or exports.ox_inventory:getUtilitySlotItem(8) == nil or exports.ox_inventory:getUtilitySlotItem(8).durability <= 0
+		not LocalPlayer.state.loggedIn or (phoneItem == nil or phoneItem.metadata.durability <= 0)
 	then
 		return
 	end

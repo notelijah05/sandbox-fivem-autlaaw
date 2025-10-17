@@ -56,7 +56,10 @@ function RegisterChatCommands()
 		if
 			not Player(source).state.isCuffed
 			and not Player(source).state.isDead
-			and exports.ox_inventory:getUtilitySlotItem(source, 8) ~= nil and exports.ox_inventory:getUtilitySlotItem(source, 8).durability > 0
+			and (function()
+				local phoneItem = exports.ox_inventory:getUtilitySlotItem(source, 8)
+				return phoneItem ~= nil and phoneItem.metadata.durability > 0
+			end)()
 		then
 			TriggerClientEvent("Animations:Client:Selfie", source)
 		else
