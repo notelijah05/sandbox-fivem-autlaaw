@@ -81,7 +81,8 @@ exports('RecordsCreate', function(dealership, document)
             { document.dealership, document.time, sellerJson, buyerJson, vehicleJson, document.price, document
                 .commission },
             function(insertId)
-                p:resolve(insertId and insertId > 0)
+                p:resolve(insertId and (type(insertId) == "number" and insertId > 0) or
+                (type(insertId) == "table" and insertId.insertId and insertId.insertId > 0))
             end)
         return Citizen.Await(p)
     end
