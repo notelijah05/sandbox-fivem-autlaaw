@@ -320,81 +320,110 @@ local _pendingHires = {}
 local _pendingXfers = {}
 
 exports("CoManagerFetchAllAccessibleRosters", function(source)
-	local playersJobs = exports['sandbox-jobs']:GetJobs(source)
-	local fetchedRosterData = {}
-	local fetchingJobs = {}
-	for k, v in ipairs(playersJobs) do
-		if not hasValue(_blacklistedJobs, v.Id) then
-			fetchingJobs[v.Id] = true
-			fetchedRosterData[v.Id] = {}
-		end
-	end
-
-	local onlineCharacters = {}
-	for _, char in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
-		if char ~= nil then
-			table.insert(onlineCharacters, char:GetData("SID"))
-			local jobs = char:GetData("Jobs")
-			if jobs and #jobs > 0 then
-				for k, v in ipairs(jobs) do
-					if fetchingJobs[v.Id] then
-						table.insert(fetchedRosterData[v.Id], {
-							Source = char:GetData("Source"),
-							SID = char:GetData("SID"),
-							First = char:GetData("First"),
-							Last = char:GetData("Last"),
-							Phone = char:GetData("Phone"),
-							JobData = v,
-						})
-					end
-				end
+	local success, result = pcall(function()
+		local playersJobs = exports['sandbox-jobs']:GetJobs(source)
+		local fetchedRosterData = {}
+		local fetchingJobs = {}
+		for k, v in ipairs(playersJobs) do
+			if not hasValue(_blacklistedJobs, v.Id) then
+				fetchingJobs[v.Id] = true
+				fetchedRosterData[v.Id] = {}
 			end
 		end
-	end
 
-	local results = MySQL.Sync.fetchAll(
-		'SELECT SID, First, Last, Phone, Jobs FROM characters WHERE SID NOT IN (@onlineCharacters)', {
-			['@onlineCharacters'] = onlineCharacters
-		})
-
-	if results and #results > 0 then
-		for _, c in ipairs(results) do
-			local jobs = json.decode(c.Jobs)
-
-			if jobs and #jobs > 0 then
-				for _, job in ipairs(jobs) do
-					if fetchingJobs[job.Id] and
-
-						(not workplaceId or job.Workplace.Id == workplaceId) and
-
-						(not gradeId or job.Grade.Id == gradeId) then
-						if not fetchedRosterData[job.Id] then
-							fetchedRosterData[job.Id] = {}
+		local onlineCharacters = {}
+		for _, char in pairs(exports['sandbox-characters']:FetchAllCharacters()) do
+			if char ~= nil then
+				table.insert(onlineCharacters, char:GetData("SID"))
+				local jobs = char:GetData("Jobs")
+				if jobs and #jobs > 0 then
+					for k, v in ipairs(jobs) do
+						if fetchingJobs[v.Id] then
+							table.insert(fetchedRosterData[v.Id], {
+								Source = char:GetData("Source"),
+								SID = char:GetData("SID"),
+								First = char:GetData("First"),
+								Last = char:GetData("Last"),
+								Phone = char:GetData("Phone"),
+								JobData = v,
+							})
 						end
-
-						table.insert(fetchedRosterData[job.Id], {
-
-							Source = false,
-							SID = c.SID,
-							First = c.First,
-							Last = c.Last,
-							Phone = c.Phone,
-							JobData = job,
-
-						})
 					end
 				end
 			end
 		end
 
-		return fetchedRosterData
+		local results
+		if #onlineCharacters > 0 then
+			local placeholders = {}
+			for i = 1, #onlineCharacters do
+				table.insert(placeholders, "?")
+			end
+			local query = 'SELECT SID, First, Last, Phone, Jobs FROM characters WHERE SID NOT IN (' ..
+				table.concat(placeholders, ',') .. ')'
+			results = MySQL.Sync.fetchAll(query, onlineCharacters)
+		else
+			results = MySQL.Sync.fetchAll('SELECT SID, First, Last, Phone, Jobs FROM characters')
+		end
+
+		if results and #results > 0 then
+			for _, c in ipairs(results) do
+				local jobs = {}
+				if c.Jobs and c.Jobs ~= "" then
+					local success, decoded = pcall(json.decode, c.Jobs)
+					if success and decoded then
+						jobs = decoded
+					else
+						jobs = {}
+					end
+				end
+
+				if jobs and #jobs > 0 then
+					for _, job in ipairs(jobs) do
+						if fetchingJobs[job.Id] then
+							if not fetchedRosterData[job.Id] then
+								fetchedRosterData[job.Id] = {}
+							end
+
+							table.insert(fetchedRosterData[job.Id], {
+								Source = false,
+								SID = c.SID,
+								First = c.First,
+								Last = c.Last,
+								Phone = c.Phone,
+								JobData = job,
+							})
+						end
+					end
+				end
+			end
+		end
+
+		local hasData = false
+		for jobId, roster in pairs(fetchedRosterData) do
+			if #roster > 0 then
+				hasData = true
+				break
+			end
+		end
+
+		if hasData then
+			return fetchedRosterData
+		else
+			return false
+		end
+	end)
+
+	if success then
+		return result
 	else
 		return false
 	end
 end)
 
 exports("CoManagerFetchTimeWorked", function(source, jobId)
-	if exports['sandbox-jobs']:HasJob(source, jobId, false, false, false, false, "JOB_MANAGEMENT") then
+	local jobData = exports['sandbox-jobs']:HasJob(source, jobId, false, false, false, false, "JOB_MANAGEMENT")
+	if jobData then
 		local onlineCharacters = {}
 
 		local onlineShit = {}
@@ -421,16 +450,32 @@ exports("CoManagerFetchTimeWorked", function(source, jobId)
 			end
 		end
 
-		local results = MySQL.Sync.fetchAll(
-			'SELECT SID, First, Last, Phone, LastClockOn, TimeClockedOn, Jobs FROM characters WHERE SID NOT IN (@onlineCharacters)',
-			{
-				['@onlineCharacters'] = onlineCharacters
-			}
-		)
+		local results
+		if #onlineCharacters > 0 then
+			local placeholders = {}
+			for i = 1, #onlineCharacters do
+				table.insert(placeholders, "?")
+			end
+			local query =
+				'SELECT SID, First, Last, Phone, LastClockOn, TimeClockedOn, Jobs FROM characters WHERE SID NOT IN (' ..
+				table.concat(placeholders, ',') .. ')'
+			results = MySQL.Sync.fetchAll(query, onlineCharacters)
+		else
+			results = MySQL.Sync.fetchAll(
+				'SELECT SID, First, Last, Phone, LastClockOn, TimeClockedOn, Jobs FROM characters')
+		end
 
 		if results and #results > 0 then
 			for _, c in ipairs(results) do
-				local jobs = json.decode(c.Jobs)
+				local jobs = {}
+				if c.Jobs and c.Jobs ~= "" then
+					local success, decoded = pcall(json.decode, c.Jobs)
+					if success and decoded then
+						jobs = decoded
+					else
+						jobs = {}
+					end
+				end
 				if jobs and #jobs > 0 then
 					for _, job in ipairs(jobs) do
 						if job.Id == jobId then
@@ -447,12 +492,16 @@ exports("CoManagerFetchTimeWorked", function(source, jobId)
 					end
 				end
 			end
+		end
+
+		if #onlineShit > 0 then
 			return onlineShit
 		else
 			return false
 		end
+	else
+		return false
 	end
-	return false
 end)
 
 function GetOfflineCharacter(stateId)

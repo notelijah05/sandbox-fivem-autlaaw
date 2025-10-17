@@ -1101,7 +1101,17 @@ exports("ManagementEmployeesGetAll", function(jobId, workplaceId, gradeId)
 
 	local p = promise.new()
 
-	MySQL.Async.fetchAll("SELECT * FROM characters WHERE SID NOT IN (?)", { table.concat(onlineCharacters, ",") },
+	local query = "SELECT * FROM characters"
+	local params = {}
+	if #onlineCharacters > 0 then
+		local placeholders = {}
+		for i = 1, #onlineCharacters do
+			table.insert(placeholders, "?")
+		end
+		query = query .. " WHERE SID NOT IN (" .. table.concat(placeholders, ',') .. ")"
+		params = onlineCharacters
+	end
+	MySQL.Async.fetchAll(query, params,
 		function(results)
 			if results then
 				for _, c in ipairs(results) do
@@ -1159,7 +1169,17 @@ exports("ManagementEmployeesUpdateAllJob", function(jobId, newJobName)
 
 	local p = promise.new()
 
-	MySQL.Async.fetchAll("SELECT * FROM characters WHERE SID NOT IN (?)", { table.concat(onlineCharacters, ",") },
+	local query = "SELECT * FROM characters"
+	local params = {}
+	if #onlineCharacters > 0 then
+		local placeholders = {}
+		for i = 1, #onlineCharacters do
+			table.insert(placeholders, "?")
+		end
+		query = query .. " WHERE SID NOT IN (" .. table.concat(placeholders, ',') .. ")"
+		params = onlineCharacters
+	end
+	MySQL.Async.fetchAll(query, params,
 		function(results)
 			if results then
 				for _, c in ipairs(results) do
@@ -1213,7 +1233,17 @@ exports("ManagementEmployeesUpdateAllWorkplace", function(jobId, workplaceId, ne
 		end
 	end
 
-	MySQL.Async.fetchAll("SELECT * FROM characters WHERE SID NOT IN (?)", { table.concat(onlineCharacters, ",") },
+	local query = "SELECT * FROM characters"
+	local params = {}
+	if #onlineCharacters > 0 then
+		local placeholders = {}
+		for i = 1, #onlineCharacters do
+			table.insert(placeholders, "?")
+		end
+		query = query .. " WHERE SID NOT IN (" .. table.concat(placeholders, ',') .. ")"
+		params = onlineCharacters
+	end
+	MySQL.Async.fetchAll(query, params,
 		function(results)
 			if results then
 				for _, c in ipairs(results) do
@@ -1279,7 +1309,17 @@ exports("ManagementEmployeesUpdateAllGrade", function(jobId, workplaceId, gradeI
 			end
 		end
 
-		MySQL.Async.fetchAll("SELECT * FROM characters WHERE SID NOT IN (?)", { table.concat(onlineCharacters, ",") },
+		local query = "SELECT * FROM characters"
+		local params = {}
+		if #onlineCharacters > 0 then
+			local placeholders = {}
+			for i = 1, #onlineCharacters do
+				table.insert(placeholders, "?")
+			end
+			query = query .. " WHERE SID NOT IN (" .. table.concat(placeholders, ',') .. ")"
+			params = onlineCharacters
+		end
+		MySQL.Async.fetchAll(query, params,
 			function(results)
 				if results then
 					for _, c in ipairs(results) do
