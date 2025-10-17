@@ -25,7 +25,7 @@ AddEventHandler("Businesses:Client:Startup", function()
                             unit = nearUnit.unitId
                         }, function(success)
                             if not success then
-                                exports["sandbox-hud"]:NotifError("Error!")
+                                exports["sandbox-hud"]:Notification("error", "Error!")
                             else
                                 exports["sandbox-sounds"]:PlayLocation(LocalPlayer.state.myPos, 10, "breach.ogg", 0.15)
                             end
@@ -48,7 +48,7 @@ AddEventHandler("Businesses:Client:Startup", function()
                     if nearUnit and nearUnit?.unitId then
                         local unit = GlobalState[string.format("StorageUnit:%s", nearUnit.unitId)]
 
-                        return (unit.owner and unit.owner.SID == LocalPlayer.state.Character:GetData("SID")) or
+                        return (unit.owner and type(unit.owner) == "table" and unit.owner.SID == LocalPlayer.state.Character:GetData("SID")) or
                             exports['sandbox-jobs']:HasJob(unit.managedBy)
                     end
                 end,
@@ -113,6 +113,16 @@ exports('StorageUnitsAccess', function()
     end
 end)
 
+RegisterNetEvent("StorageUnits:OpenStash", function(unitId)
+    local SID = LocalPlayer.state.Character:GetData("SID")
+    if SID then
+        exports.ox_inventory:openInventory('stash', {
+            id = string.format("storage_unit_%s", unitId),
+            owner = SID
+        })
+    end
+end)
+
 exports('StorageUnitsManage', function(specificUnit)
     local nearUnit = exports['sandbox-businesses']:StorageUnitsGetNearUnit()
 
@@ -137,7 +147,7 @@ exports('StorageUnitsManage', function(specificUnit)
                 },
             }
 
-            if unit.owner and LocalPlayer.state.Character and LocalPlayer.state.Character:GetData("SID") == unit.owner.SID then
+            if unit.owner and type(unit.owner) == "table" and LocalPlayer.state.Character and LocalPlayer.state.Character:GetData("SID") == unit.owner.SID then
                 table.insert(menu.main.items, {
                     label = "Set Passcode",
                     description = "Change the passcode for your storage unit",
@@ -147,7 +157,7 @@ exports('StorageUnitsManage', function(specificUnit)
             end
 
             if exports['sandbox-jobs']:HasJob(unit.managedBy) then
-                if unit.owner then
+                if unit.owner and type(unit.owner) == "table" then
                     table.insert(menu.main.items, {
                         label = "Current Unit Owner",
                         description = string.format("Owned By %s %s (State ID: %s)", unit.owner.First,
@@ -191,7 +201,8 @@ exports('StorageUnitsManageAll', function(managedBy)
             if unit and unit.managedBy == managedBy then
                 table.insert(menu.main.items, {
                     label = unit.label,
-                    description = unit.owner and string.format("Owned By %s %s", unit.owner.First, unit.owner.Last) or
+                    description = unit.owner and type(unit.owner) == "table" and
+                        string.format("Owned By %s %s", unit.owner.First, unit.owner.Last) or
                         "Not Owned",
                     data = { unit = unit.id },
                     event = "StorageUnits:Manage",
@@ -254,9 +265,9 @@ AddEventHandler("StorageUnits:Client:NewPasscode", function(values, data)
             passcode = values.passcode,
         }, function(success)
             if success then
-                exports["sandbox-hud"]:NotifSuccess("Updated Passcode")
+                exports["sandbox-hud"]:Notification("success", "Updated Passcode")
             else
-                exports["sandbox-hud"]:NotifError("Failed to Update Passcode")
+                exports["sandbox-hud"]:Notification("error", "Failed to Update Passcode")
             end
         end)
     end
@@ -284,13 +295,13 @@ AddEventHandler("StorageUnits:Client:SellUnit", function(values, data)
                 SID = stateId,
             }, function(success)
                 if success then
-                    exports["sandbox-hud"]:NotifSuccess("Storage Unit Sold")
+                    exports["sandbox-hud"]:Notification("success", "Storage Unit Sold")
                 else
-                    exports["sandbox-hud"]:NotifError("Failed to Sell Storage Unit")
+                    exports["sandbox-hud"]:Notification("error", "Failed to Sell Storage Unit")
                 end
             end)
         else
-            exports["sandbox-hud"]:NotifError("Invalid State ID")
+            exports["sandbox-hud"]:Notification("error", "Invalid State ID")
         end
     end
 end)

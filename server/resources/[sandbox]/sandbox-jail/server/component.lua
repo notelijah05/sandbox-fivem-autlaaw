@@ -127,7 +127,7 @@ exports('Sentence', function(source, target, duration)
 			exports['sandbox-jobs']:DutyOff(target, Player(target).state.onDuty)
 			exports['sandbox-police']:UncuffTarget(-1, target)
 			exports['sandbox-ped']:MaskUnequipNoItem(target)
-			exports['sandbox-inventory']:HoldingPut(target)
+			exports.ox_inventory:HoldingPut(target)
 		end)
 
 		TriggerClientEvent("Jail:Client:Jailed", target)
@@ -201,7 +201,7 @@ exports('Release', function(source)
 			return false
 		end
 	else
-		exports['sandbox-hud']:NotifError(source, "Not Eligible For Release")
+		exports['sandbox-hud']:Notification(source, "error", "Not Eligible For Release")
 		return false
 	end
 end)

@@ -113,11 +113,11 @@ exports("SetLocks", function(veh, state)
 		if success then
 			UnlockAnim()
 			if newState then
-				exports["sandbox-hud"]:NotifError("Vehicle Locked")
+				exports["sandbox-hud"]:Notification("error", "Vehicle Locked")
 				exports["sandbox-sounds"]:PlayOne("central-locking.ogg", 0.2)
 				DoVehicleLockShit(veh)
 			else
-				exports["sandbox-hud"]:NotifSuccess("Vehicle Unlocked")
+				exports["sandbox-hud"]:Notification("success", "Vehicle Unlocked")
 				exports["sandbox-sounds"]:PlayOne("central-locking.ogg", 0.2)
 				DoVehicleUnlockShit(veh)
 			end

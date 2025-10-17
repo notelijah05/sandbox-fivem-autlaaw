@@ -22,7 +22,7 @@ end)
 AddEventHandler('Keybinds:Client:KeyUp:primary_action', function()
     if _withinBallistics and LocalPlayer.state.loggedIn then
         exports['sandbox-hud']:ActionHide('ballistics')
-        exports['sandbox-inventory']:DumbfuckOpen({
+        exports.ox_inventory:DumbfuckOpen({
             invType = 212,
             owner = _ballisticsId,
         })
@@ -32,7 +32,7 @@ end)
 RegisterNetEvent('Evidence:Client:FiledProjectile',
     function(tooDegraded, success, alreadyFiled, filedEvidenceData, matchingWeaponData, evidenceId)
         if tooDegraded then
-            return exports["sandbox-hud"]:NotifError('Projectile too Degraded to Run Ballistics')
+            return exports["sandbox-hud"]:Notification("error", 'Projectile too Degraded to Run Ballistics')
         end
 
         exports['sandbox-animations']:EmotesPlay('type3', false, 5500, true, true)
@@ -53,9 +53,9 @@ RegisterNetEvent('Evidence:Client:FiledProjectile',
             if not status then
                 if success then
                     if alreadyFiled then
-                        exports["sandbox-hud"]:NotifSuccess('Projectile Was Already Filed', 7500)
+                        exports["sandbox-hud"]:Notification("success", 'Projectile Was Already Filed', 7500)
                     else
-                        exports["sandbox-hud"]:NotifSuccess('Projectile Filed Successfully', 7500)
+                        exports["sandbox-hud"]:Notification("success", 'Projectile Filed Successfully', 7500)
                     end
 
                     local desc, label
@@ -93,7 +93,7 @@ RegisterNetEvent('Evidence:Client:FiledProjectile',
                         })
                     end
                 else
-                    exports["sandbox-hud"]:NotifError('Ballistics Testing Failed')
+                    exports["sandbox-hud"]:Notification("error", 'Ballistics Testing Failed')
                 end
             end
         end)

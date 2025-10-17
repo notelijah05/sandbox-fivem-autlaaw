@@ -15,10 +15,10 @@ end)
 AddEventHandler("Wardrobe:Client:SaveExisting", function(data)
 	exports["sandbox-base"]:ServerCallback("Wardrobe:SaveExisting", data.index, function(state)
 		if state then
-			exports["sandbox-hud"]:NotifSuccess("Outfit Saved")
+			exports["sandbox-hud"]:Notification("success", "Outfit Saved")
 			exports['sandbox-ped']:WardrobeShow()
 		else
-			exports["sandbox-hud"]:NotifError("Unable to Save Outfit")
+			exports["sandbox-hud"]:Notification("error", "Unable to Save Outfit")
 		end
 	end)
 end)
@@ -29,10 +29,10 @@ AddEventHandler("Wardrobe:Client:DoSave", function(values, data)
 		name = values.name,
 	}, function(state)
 		if state then
-			exports["sandbox-hud"]:NotifSuccess("Outfit Saved")
+			exports["sandbox-hud"]:Notification("success", "Outfit Saved")
 			exports['sandbox-ped']:WardrobeShow()
 		else
-			exports["sandbox-hud"]:NotifError("Unable to Save Outfit")
+			exports["sandbox-hud"]:Notification("error", "Unable to Save Outfit")
 		end
 	end)
 end)
@@ -47,7 +47,7 @@ end)
 AddEventHandler("Wardrobe:Client:Delete:Yes", function(data)
 	exports["sandbox-base"]:ServerCallback("Wardrobe:Delete", data, function(s)
 		if s then
-			exports["sandbox-hud"]:NotifSuccess("Outfit Deleted")
+			exports["sandbox-hud"]:Notification("success", "Outfit Deleted")
 			exports['sandbox-ped']:WardrobeShow()
 		end
 	end)
@@ -57,9 +57,9 @@ AddEventHandler("Wardrobe:Client:Equip", function(data)
 	exports["sandbox-base"]:ServerCallback("Wardrobe:Equip", data.index, function(state)
 		if state then
 			exports["sandbox-sounds"]:PlayOne("outfit_change.ogg", 0.3)
-			exports["sandbox-hud"]:NotifSuccess("Outfit Equipped")
+			exports["sandbox-hud"]:Notification("success", "Outfit Equipped")
 		else
-			exports["sandbox-hud"]:NotifError("Unable to Equip Outfit")
+			exports["sandbox-hud"]:Notification("error", "Unable to Equip Outfit")
 		end
 	end)
 end)

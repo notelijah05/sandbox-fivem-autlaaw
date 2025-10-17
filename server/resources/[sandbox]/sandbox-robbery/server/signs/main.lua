@@ -3,7 +3,9 @@ local objects = {}
 AddEventHandler("Characters:Server:PlayerLoggedOut", function(source)
 	Player(source).state.SignRobbery = false
 end)
-AddEventHandler("Characters:Server:PlayerDropped", PaletoClearSourceInUse)
+AddEventHandler("Characters:Server:PlayerDropped", function(source)
+	Player(source).state.SignRobbery = false
+end)
 
 AddEventHandler("Robbery:Server:Setup", function()
 	exports['sandbox-characters']:RepCreate("SignRobbery", "Sign Robbery", {
@@ -23,27 +25,35 @@ AddEventHandler("Robbery:Server:Setup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Robbery:Signs:RemoveSign", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local atSign = Player(source).state.SignRobbery
-		if char and not atSign then
-			if GlobalState["RobberiesDisabled"] then
-				exports['sandbox-hud']:NotifError(source,
-					"Temporarily Disabled, Please See City Announcements",
-					6000
-				)
-				return
-			end
 
-			local sourceCoords = GetEntityCoords(GetPlayerPed(source))
-			if #(sourceCoords - data.coords) < 4 then
-				Player(source).state.SignRobbery = true
-				objects[#objects + 1] = { coords = data.coords, model = data.model }
-				TriggerClientEvent("Robbery:Client:DeleteSign", -1, data)
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), data.item, 1, {}, 1)
-				exports['sandbox-characters']:RepAdd(source, "SignRobbery", math.random(35, 75))
-				Player(source).state.SignRobbery = false
-				cb(true)
-				return
-			end
+		if not char then
 			cb(false)
+			return
+		end
+
+		if atSign then
+			cb(false)
+			return
+		end
+
+		if GlobalState["RobberiesDisabled"] then
+			exports['sandbox-hud']:Notification(source, "error",
+				"Temporarily Disabled, Please See City Announcements",
+				6000
+			)
+			cb(false)
+			return
+		end
+
+		local sourceCoords = GetEntityCoords(GetPlayerPed(source))
+		if #(sourceCoords - data.coords) < 4 then
+			Player(source).state.SignRobbery = true
+			objects[#objects + 1] = { coords = data.coords, model = data.model }
+			TriggerClientEvent("Robbery:Client:DeleteSign", -1, data)
+			exports.ox_inventory:AddItem(char:GetData("SID"), data.item, 1, {}, 1)
+			exports['sandbox-characters']:RepAdd(source, "SignRobbery", math.random(35, 75))
+			Player(source).state.SignRobbery = false
+			cb(true)
 		else
 			cb(false)
 		end

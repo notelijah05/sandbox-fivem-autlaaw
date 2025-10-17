@@ -37,7 +37,7 @@ end
 exports("Open", function()
 	_limited = false
 	_payphone = false
-	exports['sandbox-inventory']:CloseAll()
+	exports.ox_inventory:CloseAll()
 	exports['sandbox-hud']:InteractionHide()
 	LocalPlayer.state.phoneOpen = true
 	DisplayRadar(true)
@@ -50,7 +50,7 @@ end)
 exports("OpenLimited", function()
 	_limited = true
 	_payphone = false
-	exports['sandbox-inventory']:CloseAll()
+	exports.ox_inventory:CloseAll()
 	exports['sandbox-hud']:InteractionHide()
 	LocalPlayer.state.phoneOpen = true
 	PhonePlayIn()
@@ -61,7 +61,7 @@ end)
 exports("OpenPayphone", function()
 	_limited = true
 	_payphone = true
-	exports['sandbox-inventory']:CloseAll()
+	exports.ox_inventory:CloseAll()
 	exports['sandbox-hud']:InteractionHide()
 	LocalPlayer.state.phoneOpen = true
 	PhonePlayIn()
@@ -185,8 +185,9 @@ exports("DataReset", function()
 end)
 
 exports("NotificationAdd", function(title, description, time, duration, app, actions, notifData)
+	local phoneItem = exports.ox_inventory:getUtilitySlotItem(8)
 	if
-		not LocalPlayer.state.loggedIn or not hasValue(LocalPlayer.state.Character:GetData("States"), "PHONE")
+		not LocalPlayer.state.loggedIn or (phoneItem == nil or phoneItem.metadata.durability <= 0)
 	then
 		return
 	end

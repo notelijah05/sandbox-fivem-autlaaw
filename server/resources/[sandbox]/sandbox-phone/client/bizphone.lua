@@ -31,9 +31,11 @@ function CreateBizPhones()
             {
                 icon = "phone-volume",
                 label = "Phone",
-                event = "",
-                args = { id = v.id },
-                canInteract = function(data, entity)
+                onSelect = function()
+                    TriggerEvent("Phone:Client:MakeBizCall", { id = v.id })
+                end,
+                groups = { v.job },
+                canInteract = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData and pData.state > 1 then
@@ -41,7 +43,7 @@ function CreateBizPhones()
                         end
                     end
                 end,
-                label = function(data, entity)
+                label = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData then
@@ -54,17 +56,16 @@ function CreateBizPhones()
                     end
                     return ""
                 end,
-                onSelect = function()
-                    TriggerEvent("Phone:Client:MakeBizCall", { id = v.id })
-                end,
-                groups = { v.job }
             },
             {
                 icon = "phone-arrow-up-right",
                 label = "Make Call",
                 event = "Phone:Client:MakeBizCall",
-                args = { id = v.id },
-                canInteract = function(data, entity)
+                onSelect = function()
+                    TriggerEvent("Phone:Client:MakeBizCall", { id = v.id })
+                end,
+                groups = { v.job },
+                canInteract = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if not pData then
@@ -72,17 +73,15 @@ function CreateBizPhones()
                         end
                     end
                 end,
-                onSelect = function()
-                    TriggerEvent("Phone:Client:MakeBizCall", { id = v.id })
-                end,
-                groups = { v.job }
             },
             {
                 icon = "phone",
                 label = "Answer Phone",
-                event = "Phone:Client:AcceptBizCall",
-                args = { id = v.id },
-                canInteract = function(data, entity)
+                onSelect = function()
+                    TriggerEvent("Phone:Client:AcceptBizCall", { id = v.id })
+                end,
+                groups = { v.job },
+                canInteract = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData and pData.state == 1 then
@@ -90,7 +89,7 @@ function CreateBizPhones()
                         end
                     end
                 end,
-                label = function(data, entity)
+                label = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData and pData.state == 1 then
@@ -99,17 +98,15 @@ function CreateBizPhones()
                     end
                     return ""
                 end,
-                onSelect = function()
-                    TriggerEvent("Phone:Client:AcceptBizCall", { id = v.id })
-                end,
-                groups = { v.job }
             },
             {
                 icon = "phone-hangup",
                 label = "Hang Up",
-                event = "Phone:Client:DeclineBizCall",
-                args = { id = v.id },
-                canInteract = function(data, entity)
+                onSelect = function()
+                    TriggerEvent("Phone:Client:DeclineBizCall", { id = v.id })
+                end,
+                groups = { v.job },
+                canInteract = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s", data.id)]
                         if pData then
@@ -117,17 +114,16 @@ function CreateBizPhones()
                         end
                     end
                 end,
-                onSelect = function()
-                    TriggerEvent("Phone:Client:DeclineBizCall", { id = v.id })
-                end,
-                groups = { v.job }
             },
             {
                 icon = "phone-slash",
                 label = "Mute Phone",
                 event = "Phone:Client:MuteBiz",
-                args = { id = v.id },
-                label = function(data, entity)
+                onSelect = function()
+                    TriggerEvent("Phone:Client:MuteBiz", { id = v.id })
+                end,
+                groups = { v.job },
+                label = function(data)
                     if data then
                         local pData = GlobalState[string.format("BizPhone:%s:Muted", data.id)]
                         if pData then
@@ -136,10 +132,6 @@ function CreateBizPhones()
                     end
                     return "Mute Phone"
                 end,
-                onSelect = function()
-                    TriggerEvent("Phone:Client:MuteBiz", { id = v.id })
-                end,
-                groups = { v.job }
             }
         })
 
@@ -178,12 +170,12 @@ AddEventHandler("Phone:Client:MuteBiz", function(entityData, data)
     exports["sandbox-base"]:ServerCallback("Phone:MuteBiz", data.id, function(success, state)
         if success then
             if state then
-                exports["sandbox-hud"]:NotifError("Muted Phone")
+                exports["sandbox-hud"]:Notification("error", "Muted Phone")
             else
-                exports["sandbox-hud"]:NotifSuccess("Unmuted Phone")
+                exports["sandbox-hud"]:Notification("success", "Unmuted Phone")
             end
         else
-            exports["sandbox-hud"]:NotifError("Error")
+            exports["sandbox-hud"]:Notification("error", "Error")
         end
     end)
 end)
@@ -214,7 +206,7 @@ AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
                         exports['sandbox-hud']:InfoOverlayClose()
                     end)
                 else
-                    exports["sandbox-hud"]:NotifError("Failed to Make Call")
+                    exports["sandbox-hud"]:Notification("error", "Failed to Make Call")
                 end
             end)
     end
@@ -242,7 +234,7 @@ end)
 AddEventHandler("Phone:Client:DeclineBizCall", function(entityData, data)
     exports["sandbox-base"]:ServerCallback("Phone:DeclineBizCall", data.id, function(success)
         if not success then
-            exports["sandbox-hud"]:NotifError("Failed to Decline Call")
+            exports["sandbox-hud"]:Notification("error", "Failed to Decline Call")
         end
     end)
 end)
@@ -268,7 +260,7 @@ AddEventHandler("Phone:Client:AcceptBizCall", function(entityData, data)
                     exports['sandbox-hud']:InfoOverlayClose()
                 end)
             else
-                exports["sandbox-hud"]:NotifError("Failed to Accept Call")
+                exports["sandbox-hud"]:Notification("error", "Failed to Accept Call")
             end
         end)
     end

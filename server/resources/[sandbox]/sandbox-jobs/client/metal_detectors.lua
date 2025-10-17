@@ -46,7 +46,7 @@ end)
 AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 	for k, v in pairs(_metalDetectorLocations) do
 		if id == string.format("%s-metal-detector-zone", k) then
-			if exports['sandbox-inventory']:ItemsHasType(2, 1) then
+			if exports.ox_inventory:ItemsHasType(2, 1) then
 				exports["sandbox-base"]:ServerCallback("MetalDetector:Server:Sync", v.coords, function() end)
 			end
 		end

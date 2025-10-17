@@ -18,6 +18,52 @@ DROP DATABASE IF EXISTS `database_ptr`;
 CREATE DATABASE IF NOT EXISTS `database_ptr` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
 USE `database_ptr`;
 
+DROP TABLE IF EXISTS `vehicles`;
+CREATE TABLE IF NOT EXISTS `vehicles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `VIN` varchar(50) NOT NULL,
+  `Type` int(11) NOT NULL DEFAULT 0,
+  `Make` varchar(100) NOT NULL,
+  `Model` varchar(100) NOT NULL,
+  `RegisteredPlate` varchar(20) NOT NULL,
+  `RegistrationDate` int(11) DEFAULT 0,
+  `OwnerType` int(11) NOT NULL DEFAULT 0,
+  `OwnerId` int(11) NOT NULL,
+  `OwnerWorkplace` int(11) DEFAULT NULL,
+  `StorageType` int(11) DEFAULT NULL,
+  `StorageId` varchar(50) DEFAULT NULL,
+  `FirstSpawn` boolean DEFAULT FALSE,
+  `Mileage` decimal(10,2) DEFAULT 0.00,
+  `Fuel` decimal(5,2) DEFAULT 100.00,
+  `DirtLevel` decimal(4,2) DEFAULT 0.00,
+  `Value` int(11) DEFAULT 0,
+  `Class` varchar(10) DEFAULT 'Unknown',
+  `Vehicle` int(11) DEFAULT 0,
+  `FakePlate` boolean DEFAULT FALSE,
+  `Damage` json DEFAULT NULL,
+  `DamagedParts` json DEFAULT NULL,
+  `Polish` json DEFAULT NULL,
+  `PurgeColor` json DEFAULT NULL,
+  `PurgeLocation` varchar(50) DEFAULT '',
+  `Harness` int(11) DEFAULT 0,
+  `Nitrous` int(11) DEFAULT 0,
+  `NeonsDisabled` boolean DEFAULT FALSE,
+  `WheelFitment` json DEFAULT NULL,
+  `Donator` boolean DEFAULT FALSE,
+  `Seized` boolean DEFAULT FALSE,
+  `SeizedTime` int(11) DEFAULT 0,
+  `Properties` longtext DEFAULT NULL,
+  `Created` datetime NOT NULL DEFAULT current_timestamp(),
+  `LastSave` bigint(20) DEFAULT NULL,
+  `ModelType` varchar(50) DEFAULT 'automobile',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `VIN` (`VIN`),
+  KEY `OwnerType` (`OwnerType`),
+  KEY `OwnerId` (`OwnerId`),
+  KEY `RegisteredPlate` (`RegisteredPlate`),
+  CONSTRAINT `Properties` CHECK (json_valid(`Properties`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `billboards`;
 CREATE TABLE IF NOT EXISTS `billboards` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -96,6 +142,27 @@ CREATE TABLE IF NOT EXISTS `bank_accounts_transactions` (
   KEY `account` (`account`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `bans`;
+CREATE TABLE IF NOT EXISTS `bans` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `account` INT(11) DEFAULT NULL,
+    `identifier` VARCHAR(255) DEFAULT NULL,
+    `expires` INT(11) NOT NULL,
+    `reason` TEXT NOT NULL,
+    `issuer` VARCHAR(255) NOT NULL,
+    `active` TINYINT(1) NOT NULL DEFAULT 1,
+    `started` INT(11) NOT NULL,
+    `tokens` LONGTEXT DEFAULT NULL,
+    `unbanned` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `account` (`account`),
+    KEY `identifier` (`identifier`),
+    KEY `active` (`active`),
+    KEY `expires` (`expires`),
+    CONSTRAINT `tokens` CHECK (json_valid(`tokens`)),
+    CONSTRAINT `unbanned` CHECK (json_valid(`unbanned`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `bench_schematics`;
 CREATE TABLE IF NOT EXISTS `bench_schematics` (
   `bench` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -149,6 +216,42 @@ CREATE TABLE IF NOT EXISTS `blueline_track_history` (
   CONSTRAINT `pd_track_history_track` FOREIGN KEY (`track`) REFERENCES `blueline_tracks` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
+DROP TABLE IF EXISTS `business_configs`;
+CREATE TABLE IF NOT EXISTS `business_configs` (
+    `key` VARCHAR(255) NOT NULL,
+    `value` TEXT DEFAULT NULL,
+    PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `business_documents`;
+CREATE TABLE IF NOT EXISTS `business_documents` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `job` VARCHAR(255) NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `content` LONGTEXT DEFAULT NULL,
+    `author` LONGTEXT DEFAULT NULL,
+    `history` LONGTEXT DEFAULT NULL,
+    `lastUpdated` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `job` (`job`),
+    KEY `title` (`title`),
+    CONSTRAINT `author` CHECK (json_valid(`author`)),
+    CONSTRAINT `history` CHECK (json_valid(`history`)),
+    CONSTRAINT `lastUpdated` CHECK (json_valid(`lastUpdated`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `business_notices`;
+CREATE TABLE IF NOT EXISTS `business_notices` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `job` VARCHAR(255) NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `content` LONGTEXT DEFAULT NULL,
+    `author` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `job` (`job`),
+    CONSTRAINT `author` CHECK (json_valid(`author`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `business_phones`;
 CREATE TABLE IF NOT EXISTS `business_phones` (
   `id` char(50) NOT NULL DEFAULT 'AUTO_INCREMENT',
@@ -156,6 +259,71 @@ CREATE TABLE IF NOT EXISTS `business_phones` (
   `muted` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+DROP TABLE IF EXISTS `business_receipts`;
+CREATE TABLE IF NOT EXISTS `business_receipts` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `job` VARCHAR(255) NOT NULL,
+    `customerName` VARCHAR(255) DEFAULT NULL,
+    `amount` DECIMAL(15,2) DEFAULT 0,
+    `items` LONGTEXT DEFAULT NULL,
+    `author` LONGTEXT DEFAULT NULL,
+    `history` LONGTEXT DEFAULT NULL,
+    `lastUpdated` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `job` (`job`),
+    KEY `customerName` (`customerName`),
+    CONSTRAINT `items` CHECK (json_valid(`items`)),
+    CONSTRAINT `author` CHECK (json_valid(`author`)),
+    CONSTRAINT `history` CHECK (json_valid(`history`)),
+    CONSTRAINT `lastUpdated` CHECK (json_valid(`lastUpdated`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `business_tvs`;
+CREATE TABLE IF NOT EXISTS `business_tvs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tv` varchar(255) DEFAULT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+DROP TABLE IF EXISTS `casino_bigwins`;
+CREATE TABLE IF NOT EXISTS `casino_bigwins` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `player_name` VARCHAR(255) NOT NULL,
+    `game` VARCHAR(100) NOT NULL,
+    `amount` DECIMAL(15,2) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `game` (`game`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `casino_config`;
+CREATE TABLE IF NOT EXISTS `casino_config` (
+    `key` VARCHAR(255) NOT NULL,
+    `data` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`key`),
+    CONSTRAINT `data` CHECK (json_valid(`data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `casino_statistics`;
+CREATE TABLE IF NOT EXISTS `casino_statistics` (
+    `SID` VARCHAR(255) NOT NULL,
+    `slots` LONGTEXT DEFAULT NULL,
+    `poker` LONGTEXT DEFAULT NULL,
+    `blackjack` LONGTEXT DEFAULT NULL,
+    `roulette` LONGTEXT DEFAULT NULL,
+    `AmountWon` LONGTEXT DEFAULT NULL,
+    `AmountLost` LONGTEXT DEFAULT NULL,
+    `TotalAmountWon` DECIMAL(15,2) DEFAULT 0,
+    `TotalAmountLost` DECIMAL(15,2) DEFAULT 0,
+    PRIMARY KEY (`SID`),
+    CONSTRAINT `slots` CHECK (json_valid(`slots`)),
+    CONSTRAINT `poker` CHECK (json_valid(`poker`)),
+    CONSTRAINT `blackjack` CHECK (json_valid(`blackjack`)),
+    CONSTRAINT `roulette` CHECK (json_valid(`roulette`)),
+    CONSTRAINT `AmountWon` CHECK (json_valid(`AmountWon`)),
+    CONSTRAINT `AmountLost` CHECK (json_valid(`AmountLost`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `changelogs`;
 CREATE TABLE IF NOT EXISTS `changelogs` (
@@ -171,6 +339,7 @@ CREATE TABLE IF NOT EXISTS `changelogs` (
 
 DROP TABLE IF EXISTS `characters`;
 CREATE TABLE IF NOT EXISTS `characters` (
+  `License` varchar(255) DEFAULT NULL,
   `User` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `SID` int(11) NOT NULL AUTO_INCREMENT,
   `First` varchar(255) DEFAULT NULL,
@@ -200,7 +369,6 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `CryptoWallet` varchar(255) DEFAULT NULL,
   `HP` int(11) DEFAULT 200,
   `HPReductions` int(11) DEFAULT 0,
-  `InventorySettings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `States` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `Callsign` varchar(255) DEFAULT NULL,
   `MDTHistory` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
@@ -212,8 +380,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `GangChain` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `Bio` varchar(255) DEFAULT NULL,
   `JailedData` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `ICU` tinyint(1) DEFAULT NULL,
-  `ICUData` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `ICU` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `Deleted` tinyint(1) DEFAULT 0,
   `Status` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `Parole` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
@@ -225,6 +392,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `Mugshot` varchar(255) DEFAULT NULL,
   `Attorney` tinyint(1) DEFAULT 0,
   `MDTSuspension` tinyint(1) DEFAULT 0,
+  `Inventory` longtext DEFAULT NULL,
   PRIMARY KEY (`SID`) USING BTREE,
   CONSTRAINT `Origin` CHECK (json_valid(`Origin`)),
   CONSTRAINT `Apps` CHECK (json_valid(`Apps`)),
@@ -237,7 +405,6 @@ CREATE TABLE IF NOT EXISTS `characters` (
   CONSTRAINT `PhonePermissions` CHECK (json_valid(`PhonePermissions`)),
   CONSTRAINT `Addiction` CHECK (json_valid(`Addiction`)),
   CONSTRAINT `Animations` CHECK (json_valid(`Animations`)),
-  CONSTRAINT `InventorySettings` CHECK (json_valid(`InventorySettings`)),
   CONSTRAINT `States` CHECK (json_valid(`States`)),
   CONSTRAINT `MDTHistory` CHECK (json_valid(`MDTHistory`)),
   CONSTRAINT `Qualifications` CHECK (json_valid(`Qualifications`)),
@@ -247,7 +414,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   CONSTRAINT `Reputations` CHECK (json_valid(`Reputations`)),
   CONSTRAINT `GangChain` CHECK (json_valid(`GangChain`)),
   CONSTRAINT `JailedData` CHECK (json_valid(`JailedData`)),
-  CONSTRAINT `ICUData` CHECK (json_valid(`ICUData`)),
+  CONSTRAINT `ICU` CHECK (json_valid(`ICU`)),
   CONSTRAINT `Status` CHECK (json_valid(`Status`)),
   CONSTRAINT `Parole` CHECK (json_valid(`Parole`))
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -422,6 +589,77 @@ CREATE TABLE IF NOT EXISTS `crafting_cooldowns` (
   `expires` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+DROP TABLE IF EXISTS `dealer_data`;
+CREATE TABLE IF NOT EXISTS `dealer_data` (
+    `dealership` VARCHAR(255) NOT NULL,
+    `sales` INT DEFAULT 0,
+    `revenue` DECIMAL(15,2) DEFAULT 0,
+    `inventory` LONGTEXT DEFAULT NULL,
+    `settings` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`dealership`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `dealer_records`;
+CREATE TABLE IF NOT EXISTS `dealer_records` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `dealership` VARCHAR(255) NOT NULL,
+    `time` INT(11) NOT NULL,
+    `seller` LONGTEXT DEFAULT NULL,
+    `buyer` LONGTEXT DEFAULT NULL,
+    `vehicle` LONGTEXT DEFAULT NULL,
+    `price` DECIMAL(15,2) DEFAULT 0,
+    `commission` DECIMAL(15,2) DEFAULT 0,
+    PRIMARY KEY (`id`),
+    KEY `dealership` (`dealership`),
+    KEY `time` (`time`),
+    CONSTRAINT `seller` CHECK (json_valid(`seller`)),
+    CONSTRAINT `buyer` CHECK (json_valid(`buyer`)),
+    CONSTRAINT `vehicle` CHECK (json_valid(`vehicle`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `dealer_records_buybacks`;
+CREATE TABLE IF NOT EXISTS `dealer_records_buybacks` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `dealership` VARCHAR(255) NOT NULL,
+    `time` INT(11) NOT NULL,
+    `seller` LONGTEXT DEFAULT NULL,
+    `buyer` LONGTEXT DEFAULT NULL,
+    `vehicle` LONGTEXT DEFAULT NULL,
+    `price` DECIMAL(15,2) DEFAULT 0,
+    `commission` DECIMAL(15,2) DEFAULT 0,
+    PRIMARY KEY (`id`),
+    KEY `dealership` (`dealership`),
+    KEY `time` (`time`),
+    CONSTRAINT `seller` CHECK (json_valid(`seller`)),
+    CONSTRAINT `buyer` CHECK (json_valid(`buyer`)),
+    CONSTRAINT `vehicle` CHECK (json_valid(`vehicle`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `dealer_showrooms`;
+CREATE TABLE IF NOT EXISTS `dealer_showrooms` (
+    `dealership` VARCHAR(255) NOT NULL,
+    `showroom` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`dealership`),
+    CONSTRAINT `showroom` CHECK (json_valid(`showroom`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `dealer_stock`;
+CREATE TABLE IF NOT EXISTS `dealer_stock` (
+  `dealership` varchar(255) NOT NULL,
+  `vehicle` varchar(255) NOT NULL,
+  `modelType` varchar(255) DEFAULT NULL,
+  `data` longtext DEFAULT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 0,
+  `lastStocked` int(11) DEFAULT NULL,
+  `lastPurchase` int(11) DEFAULT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `dealership_vehicle` (`dealership`, `vehicle`),
+  KEY `dealership` (`dealership`),
+  KEY `vehicle` (`vehicle`),
+  CONSTRAINT `data` CHECK (json_valid(`data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
 DROP TABLE IF EXISTS `donator_items`;
 CREATE TABLE IF NOT EXISTS `donator_items` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -434,6 +672,30 @@ CREATE TABLE IF NOT EXISTS `donator_items` (
   KEY `id_player` (`id`,`player`) USING BTREE,
   KEY `player_redeemed` (`player`,`redeemed`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+DROP TABLE IF EXISTS `donator_plates`;
+CREATE TABLE IF NOT EXISTS `donator_plates` (
+  `player` varchar(255) NOT NULL,
+  `pending` int(11) NOT NULL DEFAULT 0,
+  `redeemed` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`player`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+DROP TABLE IF EXISTS `donator_vehicles`;
+CREATE TABLE IF NOT EXISTS `donator_vehicles` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `player` VARCHAR(255) NOT NULL,
+    `class` VARCHAR(50) NOT NULL,
+    `redeemed` TINYINT(1) NOT NULL DEFAULT 0,
+    `data` LONGTEXT DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `player` (`player`),
+    KEY `redeemed` (`redeemed`),
+    CONSTRAINT `data` CHECK (json_valid(`data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `donor_created_item`;
 CREATE TABLE IF NOT EXISTS `donor_created_item` (
@@ -477,75 +739,75 @@ CREATE TABLE IF NOT EXISTS `firearms_flags` (
   KEY `serial` (`serial`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-DROP TABLE IF EXISTS `inventory`;
-CREATE TABLE IF NOT EXISTS `inventory` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `owner` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  `type` int(11) unsigned NOT NULL DEFAULT 0,
-  `slot` int(11) NOT NULL,
-  `item_id` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  `quality` int(11) NOT NULL DEFAULT 0,
-  `information` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `creationDate` bigint(20) NOT NULL DEFAULT 0,
-  `expiryDate` bigint(20) NOT NULL DEFAULT -1,
-  `price` int(11) unsigned NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `item_id_only` (`item_id`),
-  KEY `expiryDate` (`expiryDate`),
-  KEY `owner` (`owner`,`type`) USING BTREE,
-  KEY `type` (`type`) USING BTREE,
-  KEY `owner_type_itemid` (`owner`,`type`,`item_id`) USING BTREE,
-  KEY `itemidslotname` (`owner`,`type`,`slot`,`item_id`) USING BTREE,
-  KEY `owner_type_slot` (`owner`,`type`,`slot`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=353 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+DROP TABLE IF EXISTS `firearms_projectiles`;
+CREATE TABLE IF NOT EXISTS `firearms_projectiles` (
+    `Id` VARCHAR(255) NOT NULL,
+    `Weapon` LONGTEXT DEFAULT NULL,
+    `Coords` LONGTEXT DEFAULT NULL,
+    `AmmoType` VARCHAR(100) DEFAULT NULL,
+    PRIMARY KEY (`Id`),
+    CONSTRAINT `Weapon` CHECK (json_valid(`Weapon`)),
+    CONSTRAINT `Coords` CHECK (json_valid(`Coords`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `inventory_shop_logs`;
-CREATE TABLE IF NOT EXISTS `inventory_shop_logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` datetime NOT NULL DEFAULT current_timestamp(),
-  `inventory` varchar(255) NOT NULL DEFAULT '0',
-  `item` varchar(255) NOT NULL DEFAULT '0',
-  `count` int(11) NOT NULL DEFAULT 0,
-  `itemId` bigint(20) DEFAULT NULL,
-  `buyer` int(11) NOT NULL DEFAULT 0,
-  `metadata` varchar(512) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-DROP TABLE IF EXISTS `item_template`;
-CREATE TABLE IF NOT EXISTS `item_template` (
-  `name` char(64) CHARACTER SET big5 COLLATE big5_bin NOT NULL,
-  `label` varchar(128) NOT NULL,
-  `description` varchar(256) DEFAULT NULL,
-  `type` int(11) NOT NULL,
-  `rarity` int(11) NOT NULL,
-  `iconOverride` varchar(256) DEFAULT NULL,
-  `price` int(10) unsigned NOT NULL DEFAULT 0,
-  `weapon` varchar(256) DEFAULT NULL,
-  `state` varchar(256) DEFAULT NULL,
-  `weight` int(10) unsigned NOT NULL DEFAULT 0,
-  `imitate` char(64) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
-  `isStackable` int(10) unsigned DEFAULT NULL,
-  `closeUi` tinyint(1) NOT NULL DEFAULT 0,
-  `metalic` tinyint(1) NOT NULL DEFAULT 0,
-  `durability` bigint(20) unsigned DEFAULT NULL,
-  `isUsable` tinyint(1) NOT NULL DEFAULT 0,
-  `isDestroyed` tinyint(1) NOT NULL DEFAULT 0,
-  `isRemoved` tinyint(1) NOT NULL DEFAULT 0,
-  `gun` tinyint(1) NOT NULL DEFAULT 0,
-  `requiresLicense` tinyint(1) NOT NULL DEFAULT 0,
-  `qualification` varchar(32) DEFAULT NULL,
-  `ammoType` varchar(32) DEFAULT NULL,
-  `bulletCount` int(10) unsigned DEFAULT NULL,
-  `container` int(10) unsigned DEFAULT NULL,
-  `staticMetadata` longtext DEFAULT NULL,
-  `component` longtext DEFAULT NULL,
-  `animConfig` longtext DEFAULT NULL,
-  `statusChange` longtext DEFAULT NULL,
-  `extra` longtext DEFAULT NULL,
-  `schematic` varchar(64) DEFAULT NULL,
-  PRIMARY KEY (`name`) USING BTREE
+DROP TABLE IF EXISTS `jobs`;
+CREATE TABLE IF NOT EXISTS `jobs` (
+  `Id` varchar(255) NOT NULL,
+  `Name` varchar(255) NOT NULL,
+  `Type` varchar(255) NOT NULL,
+  `Workplaces` longtext DEFAULT NULL,
+  `Grades` longtext DEFAULT NULL,
+  `Salary` int(11) NOT NULL DEFAULT 0,
+  `SalaryTier` int(11) NOT NULL DEFAULT 0,
+  `LastUpdated` bigint(20) NOT NULL DEFAULT 0,
+  `Data` longtext DEFAULT NULL,
+  `Owner` int(11) DEFAULT NULL,
+  `Custom` tinyint(1) DEFAULT 0,
+  `Hidden` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`Id`),
+  KEY `Type` (`Type`),
+  KEY `Owner` (`Owner`),
+  CONSTRAINT `Workplaces` CHECK (json_valid(`Workplaces`)),
+  CONSTRAINT `Grades` CHECK (json_valid(`Grades`)),
+  CONSTRAINT `Data` CHECK (json_valid(`Data`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
+DROP TABLE IF EXISTS `loans`;
+CREATE TABLE IF NOT EXISTS `loans` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `Creation` INT(11) NOT NULL,
+    `SID` VARCHAR(255) NOT NULL,
+    `Type` VARCHAR(50) NOT NULL,
+    `AssetIdentifier` VARCHAR(255) NOT NULL,
+    `Defaulted` TINYINT(1) NOT NULL DEFAULT 0,
+    `InterestRate` DECIMAL(5,2) NOT NULL,
+    `Total` DECIMAL(15,2) NOT NULL,
+    `Remaining` DECIMAL(15,2) NOT NULL,
+    `Paid` DECIMAL(15,2) NOT NULL,
+    `DownPayment` DECIMAL(15,2) NOT NULL,
+    `TotalPayments` INT(11) NOT NULL,
+    `PaidPayments` INT(11) NOT NULL,
+    `MissablePayments` INT(11) NOT NULL,
+    `MissedPayments` INT(11) NOT NULL,
+    `TotalMissedPayments` INT(11) NOT NULL,
+    `NextPayment` INT(11) NOT NULL,
+    `LastPayment` INT(11) NOT NULL,
+    `paymentHistory` LONGTEXT DEFAULT NULL,
+    `terms` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `SID` (`SID`),
+    KEY `Type` (`Type`),
+    KEY `AssetIdentifier` (`AssetIdentifier`),
+    CONSTRAINT `paymentHistory` CHECK (json_valid(`paymentHistory`)),
+    CONSTRAINT `terms` CHECK (json_valid(`terms`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `loans_credit_scores`;
+CREATE TABLE IF NOT EXISTS `loans_credit_scores` (
+    `SID` VARCHAR(255) NOT NULL,
+    `Score` INT(11) NOT NULL DEFAULT 0,
+    PRIMARY KEY (`SID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `mdt_charges`;
 CREATE TABLE IF NOT EXISTS `mdt_charges` (
@@ -922,25 +1184,47 @@ CREATE TABLE IF NOT EXISTS `placed_props` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
-DROP TABLE IF EXISTS `player_shops`;
-CREATE TABLE IF NOT EXISTS `player_shops` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL,
-  `ped_model` varchar(256) DEFAULT NULL,
-  `position` text NOT NULL,
-  `owner` int(10) unsigned NOT NULL,
-  `owner_bank` int(11) NOT NULL,
-  `job` varchar(64) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+DROP TABLE IF EXISTS `properties`;
+CREATE TABLE IF NOT EXISTS `properties` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) NOT NULL,
+  `label` varchar(255) NOT NULL,
+  `price` int(11) NOT NULL DEFAULT 0,
+  `sold` tinyint(1) NOT NULL DEFAULT 0,
+  `owner` varchar(255) DEFAULT NULL,
+  `location` longtext DEFAULT NULL,
+  `upgrades` longtext DEFAULT NULL,
+  `locked` tinyint(1) NOT NULL DEFAULT 1,
+  `keys` longtext DEFAULT NULL,
+  `data` longtext DEFAULT NULL,
+  `foreclosed` tinyint(1) NOT NULL DEFAULT 0,
+  `soldAt` int(11) DEFAULT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `type` (`type`),
+  KEY `owner` (`owner`),
+  KEY `sold` (`sold`),
+  CONSTRAINT `location` CHECK (json_valid(`location`)),
+  CONSTRAINT `upgrades` CHECK (json_valid(`upgrades`)),
+  CONSTRAINT `keys` CHECK (json_valid(`keys`)),
+  CONSTRAINT `data` CHECK (json_valid(`data`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
-DROP TABLE IF EXISTS `player_shops_moderators`;
-CREATE TABLE IF NOT EXISTS `player_shops_moderators` (
-  `shop` int(10) unsigned NOT NULL,
-  `name` varchar(512) DEFAULT NULL,
-  `sid` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`shop`,`sid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+DROP TABLE IF EXISTS `properties_furniture`;
+CREATE TABLE IF NOT EXISTS `properties_furniture` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `property` varchar(255) NOT NULL,
+  `furniture` longtext DEFAULT NULL,
+  `updatedTime` int(11) DEFAULT NULL,
+  `updatedBy` longtext DEFAULT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `property` (`property`),
+  CONSTRAINT `furniture` CHECK (json_valid(`furniture`)),
+  CONSTRAINT `updatedBy` CHECK (json_valid(`updatedBy`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 DROP TABLE IF EXISTS `redline_racer_history`;
 CREATE TABLE IF NOT EXISTS `redline_racer_history` (
@@ -1004,6 +1288,18 @@ CREATE TABLE IF NOT EXISTS `redline_track_history` (
   CONSTRAINT `track_history_track` FOREIGN KEY (`track`) REFERENCES `redline_tracks` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
+DROP TABLE IF EXISTS `scenes`;
+CREATE TABLE IF NOT EXISTS `scenes` (
+  `_id` int(11) NOT NULL AUTO_INCREMENT,
+  `coords` text NOT NULL,
+  `length` int(11) DEFAULT NULL,
+  `expires` bigint(20) DEFAULT NULL,
+  `staff` tinyint(1) DEFAULT NULL,
+  `distance` float DEFAULT NULL,
+  `route` int(11) DEFAULT NULL,
+  PRIMARY KEY (`_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+
 DROP TABLE IF EXISTS `sequence`;
 CREATE TABLE IF NOT EXISTS `sequence` (
   `id` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -1017,6 +1313,28 @@ CREATE TABLE IF NOT EXISTS `shop_bank_accounts` (
   `bank` int(10) unsigned NOT NULL,
   PRIMARY KEY (`shop`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+DROP TABLE IF EXISTS `storage_units`;
+CREATE TABLE `storage_units` (
+    `_id` INT(11) NOT NULL AUTO_INCREMENT,
+    `label` VARCHAR(255) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+    `owner` INT(11) NULL DEFAULT -1,
+    `level` VARCHAR(255) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+    `location` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
+    `managedBy` VARCHAR(255) NULL DEFAULT NULL,
+    `lastAccessed` DATETIME NULL DEFAULT NULL,
+    `passcode` VARCHAR(255) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+    PRIMARY KEY (`_id`) USING BTREE,
+    CONSTRAINT `location` CHECK (json_valid(`location`))
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+DROP TABLE IF EXISTS `tokens`;
+CREATE TABLE IF NOT EXISTS `tokens` (
+    `account` VARCHAR(255) NOT NULL,
+    `tokens` LONGTEXT DEFAULT NULL,
+    PRIMARY KEY (`account`),
+    CONSTRAINT `tokens` CHECK (json_valid(`tokens`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `weed`;
 CREATE TABLE IF NOT EXISTS `weed` (

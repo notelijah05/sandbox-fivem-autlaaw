@@ -1,20 +1,19 @@
 exports('ShowroomLoad', function()
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameFind({
-        collection = 'dealer_showrooms',
-    }, function(success, results)
+    exports.oxmysql:execute('SELECT * FROM dealer_showrooms', {}, function(results)
         local showRoomData = {}
-        if success and #results > 0 then
+        if results and #results > 0 then
             for k, v in ipairs(results) do
                 if _dealerships[v.dealership] then
-                    showRoomData[v.dealership] = v.showroom or {}
+                    local showroom = v.showroom and json.decode(v.showroom) or {}
+                    showRoomData[v.dealership] = showroom
                 end
             end
 
             GlobalState.DealershipShowrooms = showRoomData
             showroomsLoaded = true
         end
-        p:resolve(success)
+        p:resolve(results ~= nil)
     end)
     return Citizen.Await(p)
 end)
@@ -26,31 +25,24 @@ exports('ShowroomUpdate', function(dealershipId, showroom)
         end
 
         local p = promise.new()
-        exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
-            collection = 'dealer_showrooms',
-            query = { dealership = dealershipId },
-            update = {
-                ['$set'] = {
-                    dealership = dealershipId,
-                    showroom = showroom,
-                }
-            },
-            options = {
-                upsert = true,
-            }
-        }, function(success, result)
-            if success then
-                -- FiveM is dumb
-                local currentData = GlobalState.DealershipShowrooms
-                currentData[dealershipId] = showroom
-                GlobalState.DealershipShowrooms = currentData
+        local showroomJson = json.encode(showroom)
 
-                TriggerClientEvent('Dealerships:Client:ShowroomUpdate', -1, dealershipId)
-                p:resolve(showroom)
-            else
-                p:resolve(false)
-            end
-        end)
+        exports.oxmysql:execute(
+            'INSERT INTO dealer_showrooms (dealership, showroom) VALUES (?, ?) ON DUPLICATE KEY UPDATE showroom = ?',
+            { dealershipId, showroomJson, showroomJson },
+            function(affectedRows)
+                if affectedRows and affectedRows > 0 then
+                    -- FiveM is dumb
+                    local currentData = GlobalState.DealershipShowrooms
+                    currentData[dealershipId] = showroom
+                    GlobalState.DealershipShowrooms = currentData
+
+                    TriggerClientEvent('Dealerships:Client:ShowroomUpdate', -1, dealershipId)
+                    p:resolve(showroom)
+                else
+                    p:resolve(false)
+                end
+            end)
         return Citizen.Await(p)
     end
     return false

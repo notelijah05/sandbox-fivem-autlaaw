@@ -68,28 +68,6 @@ table.insert(Config.Restaurants, {
     -- 		},
     -- 	},
     -- },
-    Storage = {
-        {
-            id = "bobs_balls_fridge",
-            type = "box",
-            coords = vector3(757.43, -766.4, 26.34),
-            width = 1.0,
-            length = 0.8,
-            options = {
-                heading = 0,
-                --debugPoly=true,
-                minZ = 25.34,
-                maxZ = 27.54
-            },
-			data = {
-                business = "bowling",
-                inventory = {
-                    invType = 68,
-                    owner = "bobs_balls_fridge",
-                },
-			},
-        },
-    },
     Pickups = {
         {
             id = "bobs_balls-pickup-1",

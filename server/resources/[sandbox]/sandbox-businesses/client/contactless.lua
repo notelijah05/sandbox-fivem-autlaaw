@@ -26,13 +26,13 @@ AddEventHandler("Businesses:Client:CreateContactlessPayment", function(_, data)
                     description = input.description
                 }, function(success, res)
                     if success then
-                        exports["sandbox-hud"]:NotifSuccess("Contactless Terminal Set, Now Get Them to Pay!")
+                        exports["sandbox-hud"]:Notification("success", "Contactless Terminal Set, Now Get Them to Pay!")
                     else
-                        exports["sandbox-hud"]:NotifError(res or "Error")
+                        exports["sandbox-hud"]:Notification("error", res or "Error")
                     end
                 end)
             else
-                exports["sandbox-hud"]:NotifError("Maximum Contactless Amount is $10,000")
+                exports["sandbox-hud"]:Notification("error", "Maximum Contactless Amount is $10,000")
             end
         end
     end
@@ -45,9 +45,9 @@ AddEventHandler("Businesses:Client:ClearContactlessPayment", function(_, data)
             terminalId = data.id,
         }, function(success, res)
             if success then
-                exports["sandbox-hud"]:NotifSuccess("Contactless Terminal Cleared")
+                exports["sandbox-hud"]:Notification("success", "Contactless Terminal Cleared")
             else
-                exports["sandbox-hud"]:NotifError(res or "Error")
+                exports["sandbox-hud"]:Notification("error", res or "Error")
             end
         end)
     end

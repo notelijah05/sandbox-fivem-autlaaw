@@ -49,9 +49,9 @@ end)
 AddEventHandler("Casino:Client:UnlockWheel", function()
     exports["sandbox-base"]:ServerCallback("Casino:UnlockWheel", {}, function(success)
         if success then
-            exports["sandbox-hud"]:NotifSuccess("Wheel Unlocked")
+            exports["sandbox-hud"]:Notification("success", "Wheel Unlocked")
         else
-            exports["sandbox-hud"]:NotifError("Error")
+            exports["sandbox-hud"]:Notification("error", "Error")
         end
     end)
 end)
@@ -103,9 +103,9 @@ AddEventHandler("Casino:Client:StartSpin", function(data)
         else
             if tooPoor then
                 if data.turbo then
-                    exports["sandbox-hud"]:NotifError("Not Enough Cash or No VIP Card")
+                    exports["sandbox-hud"]:Notification("error", "Not Enough Cash or No VIP Card")
                 else
-                    exports["sandbox-hud"]:NotifError("Not Enough Cash")
+                    exports["sandbox-hud"]:Notification("error", "Not Enough Cash")
                 end
             end
         end

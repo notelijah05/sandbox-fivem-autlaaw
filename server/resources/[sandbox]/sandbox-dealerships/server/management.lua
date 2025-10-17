@@ -2,11 +2,8 @@ _managementData = {}
 
 exports('ManagementLoadData', function()
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameFind({
-        collection = 'dealer_data',
-        query = {}
-    }, function(success, results)
-        if success then
+    exports.oxmysql:execute('SELECT * FROM dealer_data', {}, function(results)
+        if results then
             local fuckface = {}
             for k, v in ipairs(results) do
                 if v.dealership then
@@ -38,25 +35,17 @@ exports('ManagementSetData', function(dealerId, key, val)
         dealerData[key] = val
 
         local p = promise.new()
-        exports['sandbox-base']:DatabaseGameUpdateOne({
-            collection = 'dealer_data',
-            query = {
-                dealership = dealerId,
-            },
-            update = {
-                ['$set'] = dealerData
-            },
-            options = {
-                upsert = true,
-            }
-        }, function(success, results)
-            if success then
-                _managementData[dealerId] = dealerData
-                p:resolve(_managementData[dealerId])
-            else
-                p:resolve(false)
-            end
-        end)
+        exports.oxmysql:execute(
+            'INSERT INTO dealer_data (dealership, ' .. key .. ') VALUES (?, ?) ON DUPLICATE KEY UPDATE ' .. key .. ' = ?',
+            { dealerId, val, val },
+            function(affectedRows)
+                if affectedRows and affectedRows > 0 then
+                    _managementData[dealerId] = dealerData
+                    p:resolve(_managementData[dealerId])
+                else
+                    p:resolve(false)
+                end
+            end)
         return Citizen.Await(p)
     end
     return false
@@ -74,19 +63,23 @@ exports('ManagementSetMultipleData', function(dealerId, updatingData)
         end
 
         local p = promise.new()
-        exports['sandbox-base']:DatabaseGameUpdateOne({
-            collection = 'dealer_data',
-            query = {
-                dealership = dealerId,
-            },
-            update = {
-                ['$set'] = dealerData
-            },
-            options = {
-                upsert = true,
-            }
-        }, function(success, results)
-            if success then
+
+        local setParts = {}
+        local values = {}
+        for k, v in pairs(updatingData) do
+            table.insert(setParts, k .. ' = ?')
+            table.insert(values, v)
+        end
+
+        local query = 'INSERT INTO dealer_data (dealership, ' ..
+            table.concat(setParts, ', ') ..
+            ') VALUES (?, ' ..
+            string.rep('?, ', #values - 1) .. '?) ON DUPLICATE KEY UPDATE ' .. table.concat(setParts, ', ')
+        table.insert(values, 1, dealerId)
+        table.insert(values, dealerId)
+
+        exports.oxmysql:execute(query, values, function(affectedRows)
+            if affectedRows and affectedRows > 0 then
                 _managementData[dealerId] = dealerData
                 p:resolve(_managementData[dealerId])
             else

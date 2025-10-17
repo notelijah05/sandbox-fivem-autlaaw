@@ -13,7 +13,6 @@ AddEventHandler('onResourceStart', function(resource)
         Wait(1000)
         RegisterCallbacks()
         RegisterMiddleware()
-        RegisterItemUses()
         RegisterPersonalPlateCallbacks()
         RegisterChatCommands()
         Startup()
@@ -65,13 +64,12 @@ local tempVehicleStoreShit = { '_id', 'VIN', 'EntityId', 'LastSave', 'Flags', 'S
 function SaveVehicle(VIN)
     local veh = exports['sandbox-vehicles']:OwnedGetActive(VIN)
     if veh then
-        local p = promise.new()
         local vehEnt = veh:GetData('EntityId')
         local vehState = Entity(vehEnt).state
 
         veh:SetData('DirtLevel', GetVehicleDirtLevel(vehEnt))
 
-        veh:SetData('Fuel', vehState.Fuel)
+        veh:SetData('Fuel', tonumber(vehState.Fuel))
         veh:SetData('Damage', vehState.Damage)
         veh:SetData('DamagedParts', vehState.DamagedParts)
         veh:SetData('Mileage', vehState.Mileage)
@@ -100,19 +98,89 @@ function SaveVehicle(VIN)
 
         veh:SetData('LastSave', os.time())
 
-        exports['sandbox-base']:DatabaseGameUpdateOne({
-            collection = 'vehicles',
-            query = {
-                VIN = VIN,
-            },
-            update = {
-                ["$set"] = data,
-            },
-        }, function(success, res)
-            p:resolve(success)
-        end)
+        local updateData = {
+            Type = data.Type or 0,
+            Make = data.Make or 'Unknown',
+            Model = data.Model or 'Unknown',
+            RegisteredPlate = data.RegisteredPlate or '',
+            OwnerType = data.Owner and data.Owner.Type or data.OwnerType or 0,
+            OwnerId = data.Owner and data.Owner.Id or data.OwnerId or 0,
+            OwnerWorkplace = data.Owner and data.Owner.Workplace or data.OwnerWorkplace or false,
+            StorageType = data.Storage and data.Storage.Type or data.StorageType or 0,
+            StorageId = data.Storage and data.Storage.Id or data.StorageId or 0,
+            FirstSpawn = data.FirstSpawn or false,
+            Mileage = data.Mileage or 0,
+            Fuel = tonumber(data.Fuel) or 100,
+            DirtLevel = math.min(math.max(data.DirtLevel or 0, 0), 10.0),
+            Value = data.Value or 0,
+            Class = data.Class or 'Unknown',
+            Vehicle = data.Vehicle or 0,
+            FakePlate = data.FakePlate or false,
+            RegistrationDate = data.RegistrationDate or os.time(),
+            Damage = json.encode(data.Damage or {}),
+            DamagedParts = json.encode(data.DamagedParts or {}),
+            Polish = json.encode(data.Polish or {}),
+            PurgeColor = json.encode(data.PurgeColor or {}),
+            PurgeLocation = data.PurgeLocation or '',
+            Harness = data.Harness or 0,
+            Nitrous = data.Nitrous or 0,
+            NeonsDisabled = data.NeonsDisabled or false,
+            WheelFitment = json.encode(data.WheelFitment or {}),
+            Donator = data.Donator or false,
+            Seized = data.Seized or false,
+            SeizedTime = data.SeizedTime or false,
+            Properties = json.encode(data.Properties or {}),
+            LastSave = os.time()
+        }
 
-        local success = Citizen.Await(p)
+        local success = MySQL.update.await(
+            "UPDATE vehicles SET " ..
+            "Type = ?, Make = ?, Model = ?, RegisteredPlate = ?, " ..
+            "OwnerType = ?, OwnerId = ?, OwnerWorkplace = ?, " ..
+            "StorageType = ?, StorageId = ?, " ..
+            "FirstSpawn = ?, Mileage = ?, Fuel = ?, DirtLevel = ?, " ..
+            "Value = ?, Class = ?, Vehicle = ?, FakePlate = ?, RegistrationDate = ?, " ..
+            "Damage = ?, DamagedParts = ?, Polish = ?, PurgeColor = ?, " ..
+            "PurgeLocation = ?, Harness = ?, Nitrous = ?, NeonsDisabled = ?, " ..
+            "WheelFitment = ?, Donator = ?, Seized = ?, SeizedTime = ?, " ..
+            "Properties = ?, LastSave = ? WHERE VIN = ?",
+            {
+                updateData.Type,
+                updateData.Make,
+                updateData.Model,
+                updateData.RegisteredPlate,
+                updateData.OwnerType,
+                updateData.OwnerId,
+                updateData.OwnerWorkplace,
+                updateData.StorageType,
+                updateData.StorageId,
+                updateData.FirstSpawn,
+                updateData.Mileage,
+                updateData.Fuel,
+                updateData.DirtLevel,
+                updateData.Value,
+                updateData.Class,
+                updateData.Vehicle,
+                updateData.FakePlate,
+                updateData.RegistrationDate,
+                updateData.Damage,
+                updateData.DamagedParts,
+                updateData.Polish,
+                updateData.PurgeColor,
+                updateData.PurgeLocation,
+                updateData.Harness,
+                updateData.Nitrous,
+                updateData.NeonsDisabled,
+                updateData.WheelFitment,
+                updateData.Donator,
+                updateData.Seized,
+                updateData.SeizedTime,
+                updateData.Properties,
+                updateData.LastSave,
+                VIN
+            }
+        )
+
         return success
     else
         return false
@@ -301,43 +369,77 @@ exports("OwnedAdd",
                 Type = vehicleType,
                 Vehicle = vehicleHash,
                 ModelType = modelType,
-
                 VIN = VIN,
                 RegisteredPlate = plate,
                 FakePlate = false,
                 Fuel = math.random(90, 100),
-
-                Owner = ownerData,
-                Storage = storageData,
-
+                OwnerType = ownerData.Type,
+                OwnerId = ownerData.Id,
+                OwnerWorkplace = ownerData.Workplace,
+                StorageType = storageData and storageData.Type or 0,
+                StorageId = storageData and storageData.Id or 0,
                 Make = infoData.make or 'Unknown',
                 Model = infoData.model or 'Unknown',
                 Class = infoData.class or 'Unknown',
                 Value = infoData.value or false,
-
                 Donator = infoData.donatorFlag,
-
                 FirstSpawn = true,
                 Properties = type(properties) == 'table' and properties or false,
-
                 RegistrationDate = os.time(),
-
                 Mileage = 0,
-
                 DirtLevel = 0.0,
             }
 
-            exports['sandbox-base']:DatabaseGameInsertOne({
-                collection = 'vehicles',
-                document = doc,
-            }, function(success, insertedAmount, insertedIds)
-                if success and insertedAmount > 0 then
-                    doc._id = insertedIds[1]
-                    cb(true, doc)
-                else
-                    cb(false)
-                end
-            end)
+            local success = MySQL.insert.await(
+                "INSERT INTO vehicles (VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, " ..
+                "FirstSpawn, Mileage, Fuel, DirtLevel, Value, Class, Vehicle, FakePlate, RegistrationDate, " ..
+                "Damage, DamagedParts, Polish, PurgeColor, PurgeLocation, Harness, Nitrous, NeonsDisabled, " ..
+                "WheelFitment, Donator, Seized, SeizedTime, Properties, Created, LastSave) " ..
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(?), FROM_UNIXTIME(?))",
+                {
+                    VIN,
+                    vehicleType,
+                    doc.Make,
+                    doc.Model,
+                    plate or '',
+                    ownerData.Type,
+                    ownerData.Id,
+                    ownerData.Workplace,
+                    storageData and storageData.Type or 0,
+                    storageData and storageData.Id or 0,
+                    doc.FirstSpawn or false,
+                    doc.Mileage or 0,
+                    doc.Fuel or 100,
+                    math.min(math.max(doc.DirtLevel or 0, 0), 10.0),
+                    doc.Value or 0,
+                    doc.Class or 'Unknown',
+                    doc.Vehicle or 0,
+                    doc.FakePlate or false,
+                    doc.RegistrationDate or os.time(),
+                    json.encode(doc.Damage or {}),
+                    json.encode(doc.DamagedParts or {}),
+                    json.encode(doc.Polish or {}),
+                    json.encode(doc.PurgeColor or {}),
+                    doc.PurgeLocation or '',
+                    doc.Harness or 0,
+                    doc.Nitrous or 0,
+                    doc.NeonsDisabled or false,
+                    json.encode(doc.WheelFitment or {}),
+                    doc.Donator or false,
+                    doc.Seized or false,
+                    doc.SeizedTime or false,
+                    json.encode(doc.Properties or {}),
+                    os.time(),
+                    os.time()
+                }
+            )
+
+            if success then
+                doc._id = success
+                cb(true, doc)
+            else
+                cb(false)
+            end
         else
             cb(false)
         end
@@ -351,85 +453,212 @@ exports("OwnedGetActive", function(VIN)
 end)
 
 exports("OwnedGetVIN", function(VIN, cb)
-    exports['sandbox-base']:DatabaseGameFindOne({
-        collection = 'vehicles',
-        query = {
-            VIN = VIN,
-        }
-    }, function(success, results)
-        if success and #results > 0 then
-            local vehicle = results[1]
-            cb(vehicle)
-        else
-            cb(false)
+    local vehicle = MySQL.single.await(
+        "SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, " ..
+        "FirstSpawn, Mileage, Fuel, DirtLevel, Value, Class, Vehicle, FakePlate, RegistrationDate, " ..
+        "Damage, DamagedParts, Polish, PurgeColor, PurgeLocation, Harness, Nitrous, NeonsDisabled, " ..
+        "WheelFitment, Donator, Seized, SeizedTime, Properties, ModelType FROM vehicles WHERE VIN = ?",
+        { VIN }
+    )
+
+    if vehicle then
+        if vehicle.Damage and vehicle.Damage ~= "" then
+            local success, damage = pcall(json.decode, vehicle.Damage)
+            if success and damage then
+                vehicle.Damage = damage
+            end
         end
-    end)
+
+        if vehicle.DamagedParts and vehicle.DamagedParts ~= "" then
+            local success, damagedParts = pcall(json.decode, vehicle.DamagedParts)
+            if success and damagedParts then
+                vehicle.DamagedParts = damagedParts
+            end
+        end
+
+        if vehicle.Polish and vehicle.Polish ~= "" then
+            local success, polish = pcall(json.decode, vehicle.Polish)
+            if success and polish then
+                vehicle.Polish = polish
+            end
+        end
+
+        if vehicle.PurgeColor and vehicle.PurgeColor ~= "" then
+            local success, purgeColor = pcall(json.decode, vehicle.PurgeColor)
+            if success and purgeColor then
+                vehicle.PurgeColor = purgeColor
+            end
+        end
+
+        if vehicle.WheelFitment and vehicle.WheelFitment ~= "" then
+            local success, wheelFitment = pcall(json.decode, vehicle.WheelFitment)
+            if success and wheelFitment then
+                vehicle.WheelFitment = wheelFitment
+            end
+        end
+
+        if vehicle.Properties and vehicle.Properties ~= "" then
+            local success, properties = pcall(json.decode, vehicle.Properties)
+            if success and properties then
+                vehicle.Properties = properties
+            end
+        end
+
+        vehicle.Owner = {
+            Type = vehicle.OwnerType,
+            Id = vehicle.OwnerId,
+            Workplace = vehicle.OwnerWorkplace
+        }
+
+        vehicle.Storage = {
+            Type = vehicle.StorageType,
+            Id = vehicle.StorageId
+        }
+
+        local defaultDamagedParts = {
+            Axle = 100.0,
+            Radiator = 100.0,
+            Transmission = 100.0,
+            Brakes = 100.0,
+            FuelInjectors = 100.0,
+            Clutch = 100.0,
+            Electronics = 100.0,
+        }
+
+        if not vehicle.DamagedParts or type(vehicle.DamagedParts) ~= 'table' then
+            vehicle.DamagedParts = defaultDamagedParts
+        else
+            for k, v in pairs(defaultDamagedParts) do
+                if vehicle.DamagedParts[k] == nil then
+                    vehicle.DamagedParts[k] = v
+                end
+            end
+        end
+
+        cb(vehicle)
+    else
+        cb(false)
+    end
 end)
 
 exports("OwnedGetAll",
     function(vehType, ownerType, ownerId, cb, storageType, storageId, ignoreSpawned, checkFleetOwner, projection)
-        local orQuery = {}
+        local whereConditions = {}
+        local params = {}
 
         if ownerType and ownerId then
-            table.insert(orQuery, {
-                ['Owner.Type'] = ownerType,
-                ['Owner.Id'] = ownerId,
-            })
+            table.insert(whereConditions, "OwnerType = ? AND OwnerId = ?")
+            table.insert(params, ownerType)
+            table.insert(params, ownerId)
         end
 
         if checkFleetOwner and checkFleetOwner.Id then
-            table.insert(orQuery, {
-                ['Owner.Type'] = 1,
-                ['Owner.Id'] = checkFleetOwner.Id,
-                ['Owner.Workplace'] = {
-                    ['$in'] = { checkFleetOwner.Workplace, false },
-                },
-                ['Owner.Level'] = {
-                    ['$lte'] = type(checkFleetOwner.Level) == 'number' and checkFleetOwner.Level or 0,
-                },
-            })
+            table.insert(whereConditions,
+                "(OwnerType = 1 AND OwnerId = ? AND (OwnerWorkplace = ? OR OwnerWorkplace IS NULL) AND OwnerLevel <= ?)")
+            table.insert(params, checkFleetOwner.Id)
+            table.insert(params, checkFleetOwner.Workplace or false)
+            table.insert(params, type(checkFleetOwner.Level) == 'number' and checkFleetOwner.Level or 0)
         end
 
-        local query = {
-            ['$or'] = #orQuery > 0 and orQuery or nil,
-        }
-
         if storageType and storageId then
-            query['Storage.Type'] = storageType
-            query['Storage.Id'] = storageId
+            table.insert(whereConditions, "StorageType = ? AND StorageId = ?")
+            table.insert(params, storageType)
+            table.insert(params, storageId)
         end
 
         if type(vehType) == 'number' then
-            query['Type'] = vehType
+            table.insert(whereConditions, "Type = ?")
+            table.insert(params, vehType)
         end
 
-        exports['sandbox-base']:DatabaseGameFind({
-            collection = 'vehicles',
-            query = query,
-            options = {
-                projection = projection,
-            }
-        }, function(success, results)
-            if success then
-                local vehicles = {}
-                for k, v in ipairs(results) do
-                    if not ignoreSpawned or (ignoreSpawned and not exports['sandbox-vehicles']:OwnedGetActive(v.VIN)) then
-                        v.Spawned = exports['sandbox-vehicles']:OwnedGetActive(v.VIN)
-                        if v.Storage and v.Storage.Type == 2 then
-                            local prop = exports['sandbox-properties']:Get(v.Storage.Id)
-                            if prop and prop.id and prop.label then
-                                v.PropertyStorage = prop
-                            end
-                        end
-                        table.insert(vehicles, v)
-                    end
-                end
+        local whereClause = ""
+        if #whereConditions > 0 then
+            whereClause = "WHERE " .. table.concat(whereConditions, " OR ")
+        end
 
-                cb(vehicles)
-            else
-                cb(false)
+        local results = MySQL.query.await(
+            "SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, " ..
+            "FirstSpawn, Mileage, Fuel, DirtLevel, Value, Class, Vehicle, FakePlate, RegistrationDate, " ..
+            "Damage, DamagedParts, Polish, PurgeColor, PurgeLocation, Harness, Nitrous, NeonsDisabled, " ..
+            "WheelFitment, Donator, Seized, SeizedTime, Properties FROM vehicles " ..
+            whereClause,
+            params
+        )
+
+        if results then
+            local vehicles = {}
+            for k, v in ipairs(results) do
+                if not ignoreSpawned or (ignoreSpawned and not exports['sandbox-vehicles']:OwnedGetActive(v.VIN)) then
+                    if v.Damage and v.Damage ~= "" then
+                        local success, damage = pcall(json.decode, v.Damage)
+                        if success and damage then
+                            v.Damage = damage
+                        end
+                    end
+
+                    if v.DamagedParts and v.DamagedParts ~= "" then
+                        local success, damagedParts = pcall(json.decode, v.DamagedParts)
+                        if success and damagedParts then
+                            v.DamagedParts = damagedParts
+                        end
+                    end
+
+                    if v.Polish and v.Polish ~= "" then
+                        local success, polish = pcall(json.decode, v.Polish)
+                        if success and polish then
+                            v.Polish = polish
+                        end
+                    end
+
+                    if v.PurgeColor and v.PurgeColor ~= "" then
+                        local success, purgeColor = pcall(json.decode, v.PurgeColor)
+                        if success and purgeColor then
+                            v.PurgeColor = purgeColor
+                        end
+                    end
+
+                    if v.WheelFitment and v.WheelFitment ~= "" then
+                        local success, wheelFitment = pcall(json.decode, v.WheelFitment)
+                        if success and wheelFitment then
+                            v.WheelFitment = wheelFitment
+                        end
+                    end
+
+                    if v.Properties and v.Properties ~= "" then
+                        local success, properties = pcall(json.decode, v.Properties)
+                        if success and properties then
+                            v.Properties = properties
+                        end
+                    end
+
+                    v.Owner = {
+                        Type = v.OwnerType,
+                        Id = v.OwnerId,
+                        Workplace = v.OwnerWorkplace
+                    }
+
+                    v.Storage = {
+                        Type = v.StorageType,
+                        Id = v.StorageId
+                    }
+
+                    v.Spawned = exports['sandbox-vehicles']:OwnedGetActive(v.VIN)
+
+                    if v.Storage and v.Storage.Type == 2 then
+                        local prop = exports['sandbox-properties']:Get(v.Storage.Id)
+                        if prop and prop.id and prop.label then
+                            v.PropertyStorage = prop
+                        end
+                    end
+
+                    table.insert(vehicles, v)
+                end
             end
-        end)
+
+            cb(vehicles)
+        else
+            cb(false)
+        end
     end)
 
 exports("OwnedGetAllActive", function()
@@ -442,7 +671,6 @@ exports("OwnedSpawn", function(source, VIN, coords, heading, cb, extraData)
             local spawnedVehicle = CreateFuckingVehicle(vehicle.ModelType, vehicle.Vehicle, coords,
                 (heading and heading + 0.0 or 0.0))
             if spawnedVehicle then
-                -- Set State
                 local vehState = Entity(spawnedVehicle).state
 
                 vehState.ServerEntity = spawnedVehicle
@@ -451,7 +679,7 @@ exports("OwnedSpawn", function(source, VIN, coords, heading, cb, extraData)
                 vehState.PlayerDriven = true
                 vehState.VIN = vehicle.VIN
                 vehState.RegisteredPlate = vehicle.RegisteredPlate
-                vehState.Fuel = vehicle.Fuel
+                vehState.Fuel = tonumber(vehicle.Fuel) or 100
                 vehState.Locked = true
                 SetVehicleDoorsLocked(spawnedVehicle, 2)
 
@@ -536,6 +764,91 @@ exports("OwnedSpawn", function(source, VIN, coords, heading, cb, extraData)
                 local vehicleStore = exports['sandbox-vehicles']:StoresCreate(vehicle.VIN, vehicle)
 
                 vehicleStore:SetData('EntityId', spawnedVehicle)
+
+                if vehicle.Properties then
+                    vehicleStore:SetData('Properties', vehicle.Properties)
+                else
+                    local defaultProperties = {
+                        windowTint = -1,
+                        plateIndex = 0,
+                        wheels = 7,
+                        interiorColor = 111,
+                        wheelColor = 0,
+                        color2 = { r = 8, g = 8, b = 8 },
+                        pearlescentColor = 16,
+                        tyreSmokeColor = { r = 255, g = 255, b = 255 },
+                        livery = -1,
+                        neonColor = { r = 255, g = 255, b = 255 },
+                        mods = {
+                            trimB = -1,
+                            sideSkirt = -1,
+                            brakes = -1,
+                            doorSpeaker = -1,
+                            windows = -1,
+                            vanityPlate = -1,
+                            airFilter = -1,
+                            xenonColor = 255,
+                            roof = -1,
+                            frontWheels = -1,
+                            frame = -1,
+                            exhaust = -1,
+                            suspension = -1,
+                            grille = -1,
+                            steeringWheel = -1,
+                            spoilers = -1,
+                            transmission = -1,
+                            aerials = -1,
+                            seats = -1,
+                            engine = -1,
+                            tank = -1,
+                            dashboard = -1,
+                            dial = -1,
+                            rearBumper = -1,
+                            frontBumper = -1,
+                            struts = -1,
+                            customTiresR = false,
+                            rightFender = -1,
+                            trunk = -1,
+                            horns = -1,
+                            hood = -1,
+                            archCover = -1,
+                            customTiresF = false,
+                            ornaments = -1,
+                            xenon = false,
+                            shifterLeavers = -1,
+                            armor = -1,
+                            fender = -1,
+                            hydrolic = -1,
+                            backWheels = -1,
+                            plateHolder = -1,
+                            speakers = -1,
+                            turbo = false,
+                            aPlate = -1,
+                            engineBlock = -1,
+                            trimA = -1
+                        },
+                        paintType = { 0, 0 },
+                        color1 = { r = 8, g = 8, b = 8 },
+                        extras = {
+                            [0] = false,
+                            [1] = false,
+                            [2] = false,
+                            [3] = false,
+                            [4] = false,
+                            [5] = false,
+                            [6] = false,
+                            [7] = false,
+                            [8] = false,
+                            [9] = false,
+                            [10] = false,
+                            [11] = false,
+                            [12] = false
+                        },
+                        tyreSmoke = false,
+                        neonEnabled = { false, false, false, false }
+                    }
+                    vehicleStore:SetData('Properties', defaultProperties)
+                end
                 ACTIVE_OWNED_VEHICLES[vehicle.VIN] = vehicleStore
                 cb(true, vehicle, spawnedVehicle)
 
@@ -646,30 +959,20 @@ exports("OwnedPropertiesGet", function(propertyId, ownerStateId, cb)
 end)
 
 exports("OwnedPropertiesGetCount", function(propertyId, ignoreVIN)
-    local p = promise.new()
-    local query = {
-        ['Storage.Type'] = 2,
-        ['Storage.Id'] = propertyId
-    }
+    local whereConditions = { "StorageType = 2", "StorageId = ?" }
+    local params = { propertyId }
 
     if ignoreVIN then
-        query['VIN'] = {
-            ['$ne'] = ignoreVIN
-        }
+        table.insert(whereConditions, "VIN != ?")
+        table.insert(params, ignoreVIN)
     end
 
-    exports['sandbox-base']:DatabaseGameCount({
-        collection = 'vehicles',
-        query = query,
-    }, function(success, count)
-        if success then
-            p:resolve(count)
-        else
-            p:resolve(false)
-        end
-    end)
+    local count = MySQL.scalar.await(
+        "SELECT COUNT(*) FROM vehicles WHERE " .. table.concat(whereConditions, " AND "),
+        params
+    )
 
-    return Citizen.Await(p)
+    return count or 0
 end)
 
 exports("OwnedSeize", function(VIN, seizeState) -- Vehicle Siezure for Loans
@@ -688,45 +991,24 @@ exports("OwnedSeize", function(VIN, seizeState) -- Vehicle Siezure for Loans
         local success = SaveVehicle(VIN)
         return success
     else -- Vehicle is stored, update DB directly
-        local p = promise.new()
-        exports['sandbox-vehicles']:OwnedGetVIN(VIN, function(vehicle)
-            if vehicle and vehicle.VIN then
-                local updatingStorage
-                if vehicle.Storage.Type > 0 then -- Not Impounded
-                    updatingStorage = {
-                        Type = 0,
-                        Id = 0,
-                        Fine = 0,
-                        TimeHold = false,
-                    }
-                end
+        local updatingStorage = nil
+        local vehicle = MySQL.single.await("SELECT StorageType, StorageId FROM vehicles WHERE VIN = ?", { VIN })
 
-                exports['sandbox-base']:DatabaseGameUpdateOne({
-                    collection = 'vehicles',
-                    query = {
-                        VIN = VIN,
-                    },
-                    update = {
-                        ['$set'] = {
-                            Seized = seizeState,
-                            SeizedTime = (seizeState and os.time() or false),
-                            Storage = updatingStorage
-                        }
-                    }
-                }, function(success, updated)
-                    if success and updated > 0 then
-                        p:resolve(true)
-                    else
-                        p:resolve(false)
-                    end
-                end)
-            else
-                p:resolve(false)
-            end
-        end)
+        if vehicle and vehicle.StorageType > 0 then -- Not Impounded
+            updatingStorage = {
+                Type = 0,
+                Id = 0,
+                Fine = 0,
+                TimeHold = false,
+            }
+        end
 
-        local res = Citizen.Await(p)
-        return res
+        local success = MySQL.update.await(
+            "UPDATE vehicles SET Properties = JSON_SET(COALESCE(Properties, '{}'), '$.Seized', ?, '$.SeizedTime', ?, '$.Storage', ?) WHERE VIN = ?",
+            { seizeState, seizeState and os.time() or false, json.encode(updatingStorage), VIN }
+        )
+
+        return success
     end
 end)
 

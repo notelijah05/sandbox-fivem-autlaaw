@@ -606,23 +606,23 @@ AddEventHandler("Robbery:Server:Setup", function()
 		then
 			_cRegisterCooldowns[source] = os.time() + 5
 			if data.results then
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_registerLoot, char:GetData("SID"), 1)
+				exports.ox_inventory:LootCustomWeightedSetWithCount(_registerLoot, char:GetData("SID"), 1)
 				exports['sandbox-finance']:WalletModify(source, (math.random(150) + 100))
 				cb(true)
 			else
-				exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "lockpick", 1)
+				exports.ox_inventory:Remove(char:GetData("SID"), 1, "lockpick", 1)
 
-				local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "lockpick", 1)
+				local slot = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "lockpick", 1)
 				if slot ~= nil then
-					local itemData = exports['sandbox-inventory']:ItemsGetData("lockpick")
+					local itemData = exports.ox_inventory:ItemsGetData("lockpick")
 					local newValue = slot.CreateDate - math.ceil(itemData.durability / 2)
 					if success then
 						newValue = slot.CreateDate - math.ceil(itemData.durability / 8)
 					end
 					if os.time() - itemData.durability >= newValue then
-						exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+						exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 					else
-						exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+						exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 					end
 				end
 
@@ -657,19 +657,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 					or os.time() > GlobalState[string.format("Safe:%s", data.id)].expires
 				then
 					if GetGameTimer() < STORE_SERVER_START_WAIT then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return cb(false)
 					elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return cb(false)
 					elseif GlobalState["RobberiesDisabled"] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -678,10 +678,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if not _storeInUse[pState.storePoly] then
 						_storeInUse[pState.storePoly] = source
-						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "safecrack_kit", 1)
+						local slot = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "safecrack_kit", 1)
 
 						if slot ~= nil then
-							local itemData = exports['sandbox-inventory']:ItemsGetData(slot.Name)
+							local itemData = exports.ox_inventory:ItemsGetData(slot.Name)
 
 							exports['sandbox-base']:LoggerInfo(
 								"Robbery",
@@ -708,13 +708,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 								},
 								data = {},
 							}, function(isSuccess, extra)
-								local itemData = exports['sandbox-inventory']:ItemsGetData("safecrack_kit")
+								local itemData = exports.ox_inventory:ItemsGetData("safecrack_kit")
 
 								local newValue = slot.CreateDate - math.ceil(itemData.durability / 2)
 								if os.time() - itemData.durability >= newValue then
-									exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
+									exports.ox_inventory:RemoveId(char:GetData("SID"), 1, slot)
 								else
-									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+									exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if isSuccess then
@@ -758,7 +758,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									GlobalState["StoreAntiShitlord"] = os.time() + (60 * math.random(5, 10))
 
 									exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
-									exports['sandbox-hud']:NotifSuccess(source,
+									exports['sandbox-hud']:Notification(source, "success",
 										"Lock Disengage Initiated, Please Stand By",
 										6000
 									)
@@ -770,20 +770,20 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end)
 						else
 							_storeInUse[data.id] = nil
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Unable To Crack Safe, Do you have a working safe cracking kit?",
 								6000
 							)
 						end
 					else
 						_storeInUse[data.id] = nil
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Unable To Crack Safe, Is Someone Already Doing It?",
 							6000
 						)
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Unable To Crack Safe", 6000)
+					exports['sandbox-hud']:Notification(source, "error", "Unable To Crack Safe", 6000)
 				end
 			end
 		end
@@ -793,19 +793,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 	exports["sandbox-base"]:RegisterServerCallback("Robbery:Store:StartSafeSequence", function(source, data, cb)
 		if GetGameTimer() < STORE_SERVER_START_WAIT then
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 				6000
 			)
 			return cb(false)
 		elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 				6000
 			)
 			return cb(false)
 		elseif GlobalState["RobberiesDisabled"] then
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"Temporarily Disabled, Please See City Announcements", 6000)
 			return cb(false)
 		end
@@ -821,19 +821,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 				and not GlobalState["RestartLockdown"]
 			then
 				if GetGameTimer() < STORE_SERVER_START_WAIT then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 						6000
 					)
 					return
 				elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -870,25 +870,25 @@ AddEventHandler("Robbery:Server:Setup", function()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if GlobalState[string.format("Safe:%s", data.id)] == nil and not GlobalState["RestartLockdown"] then
 			if GetGameTimer() < STORE_SERVER_START_WAIT then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"You Notice The Register Has An Extra Lock On It Securing It For A Storm, Maybe Check Back Later",
 					6000
 				)
 				return
 			elseif (GlobalState["Duty:police"] or 0) < STORE_REQUIRED_POLICE then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 					6000
 				)
 				return
 			elseif GlobalState["RobberiesDisabled"] then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)
 				return
 			elseif GlobalState["StoreAntiShitlord"] ~= nil and GlobalState["StoreAntiShitlord"] > os.time() then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Security Measures Engaged, Come Back Later",
 					6000
 				)
@@ -899,12 +899,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if data.results then
 				state = 1
 				cb(true)
-				exports['sandbox-hud']:NotifSuccess(source,
+				exports['sandbox-hud']:Notification(source, "success",
 					"Lock Disengage Initiated, Please Stand By", 6000)
 			else
 				-- Do something?
 				cb(true)
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"You've Damaged The Electronics On The Lock", 6000)
 			end
 			if _storeAlerts[data.store] == nil or _storeAlerts[data.store] < os.time() then
@@ -956,16 +956,16 @@ AddEventHandler("Robbery:Server:Setup", function()
 			_robbedSafes[data.id].expires = (os.time() + 60 * math.random(30, 60))
 			GlobalState[string.format("Safe:%s", data.id)] = _robbedSafes[data.id]
 
-			exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_safeLoot, char:GetData("SID"), 1)
+			exports.ox_inventory:LootCustomWeightedSetWithCount(_safeLoot, char:GetData("SID"), 1)
 
 			if math.random(100) <= 5 then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+				exports.ox_inventory:AddItem(char:GetData("SID"), "green_dongle", 1, {}, 1)
+				exports.ox_inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 					CryptoCoin = "HEIST",
 					Quantity = 2,
 				}, 1)
 			elseif math.random(100) <= 15 then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "gps_tracker", 1, {}, 1)
+				exports.ox_inventory:AddItem(char:GetData("SID"), "gps_tracker", 1, {}, 1)
 			end
 
 			exports['sandbox-base']:LoggerInfo(

@@ -85,10 +85,6 @@ AddEventHandler('onResourceStart', function(resource)
 		TriggerEvent("Laptop:Server:RegisterMiddleware")
 		TriggerEvent("Laptop:Server:RegisterCallbacks")
 
-		exports['sandbox-inventory']:RegisterUse("laptop", "Laptop", function(source, itemData)
-			TriggerClientEvent("Laptop:Client:Open", source)
-		end)
-
 		exports['sandbox-characters']:RepCreate("Chopping", "Vehicle Chopping", {
 			{ label = "Rank 1",  value = 1000 },
 			{ label = "Rank 2",  value = 2500 },

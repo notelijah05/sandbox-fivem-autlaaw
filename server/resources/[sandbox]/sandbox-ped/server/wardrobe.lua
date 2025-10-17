@@ -27,13 +27,13 @@ function RegisterChatCommands()
 		end
 
 		if char ~= nil then
-			exports['sandbox-hud']:NotifInfo(source,
+			exports['sandbox-hud']:Notification(source, "info",
 				string.format("Ped Menu is given to State ID: %s", char:GetData("SID")),
 				2000
 			)
 			TriggerClientEvent("Peds:Customization:Client:AdminAbuse", char:GetData("Source"), shopType)
 		else
-			exports['sandbox-hud']:NotifError(source, "Player is not online.", 2000)
+			exports['sandbox-hud']:Notification(source, "error", "Player is not online.", 2000)
 		end
 	end, {
 		help = "Show Ped Menu for Player",

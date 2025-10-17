@@ -28,7 +28,7 @@ function RegisterCallbacks()
 						end
 					elseif v < (os.time() - (60 * 5)) then
 						-- TODO: Implement better alert when at this stage when we have someway to do it
-						exports['sandbox-hud']:NotifWarn(k, "You Will Be Kicked Soon For Being AFK", 58000)
+						exports['sandbox-hud']:Notification("warning", k, "You Will Be Kicked Soon For Being AFK", 58000)
 					end
 				end
 			end
@@ -60,9 +60,11 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:GetCharacters", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
-		local myCharacters = MySQL.query.await('SELECT * FROM `characters` WHERE `User` = @User AND `Deleted` = 0', {
-			["@User"] = player:GetData("AccountID"),
-		})
+		local license = exports['sandbox-base']:GetPlayerLicense(source)
+		local myCharacters = MySQL.query.await('SELECT * FROM `characters` WHERE `License` = @License AND `Deleted` = 0',
+			{
+				["@License"] = license,
+			})
 		if #myCharacters == 0 then
 			return cb({})
 		end
@@ -78,6 +80,7 @@ function RegisterCallbacks()
 				}
 			)
 			table.insert(cData, {
+				License = v.License,
 				ID = v.SID,
 				First = v.First,
 				Last = v.Last,
@@ -100,7 +103,31 @@ function RegisterCallbacks()
 		local player = exports['sandbox-base']:FetchSource(source)
 
 		local pNumber = exports['sandbox-phone']:GeneratePhoneNumber()
+		local playerIdentifiers = GetPlayerIdentifiers(source)
+		local prioritizedIdentifier = nil -- If Steam ID is available, save that as character license because it's short and simple
+
+		for _, id in ipairs(playerIdentifiers) do
+			if string.sub(id, 1, string.len("steam:")) == "steam:" then
+				prioritizedIdentifier = id
+				break
+			end
+		end
+
+		if not prioritizedIdentifier then
+			for _, id in ipairs(playerIdentifiers) do
+				if string.sub(id, 1, string.len("license:")) == "license:" then
+					prioritizedIdentifier = id
+					break
+				end
+			end
+		end
+
+		if not prioritizedIdentifier then
+			prioritizedIdentifier = player:GetData("Identifier")
+		end
+
 		local doc = {
+			License = prioritizedIdentifier,
 			User = player:GetData("AccountID"),
 			First = data.first,
 			Last = data.last,
@@ -199,12 +226,13 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:DeleteCharacter", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
+		local license = exports['sandbox-base']:GetPlayerLicense(source)
 		local myCharacter = MySQL.single.await(
 			[[
-			SELECT * FROM `characters` WHERE `User` = @User AND `SID` = @ID
+			SELECT * FROM `characters` WHERE `License` = @License AND `SID` = @ID
 		  ]],
 			{
-				["@User"] = player:GetData("AccountID"),
+				["@License"] = license,
 				["@ID"] = data,
 			}
 		)
@@ -216,10 +244,10 @@ function RegisterCallbacks()
 		local deletingChar = exports['sandbox-base']:CloneDeep(myCharacter)
 		local deletedCharacter = MySQL.update.await(
 			[[
-			UPDATE `characters` SET `Deleted` = 1 WHERE `User` = @User AND `SID` = @ID
+			UPDATE `characters` SET `Deleted` = 1 WHERE `License` = @License AND `SID` = @ID
 		  ]],
 			{
-				["@User"] = player:GetData("AccountID"),
+				["@License"] = license,
 				["@ID"] = data,
 			}
 		)
@@ -254,12 +282,13 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:GetSpawnPoints", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
+		local license = exports['sandbox-base']:GetPlayerLicense(source)
 		local myCharacter = MySQL.single.await(
 			[[
-			SELECT * FROM `characters` WHERE `User` = @User AND `SID` = @ID
+			SELECT * FROM `characters` WHERE `License` = @License AND `SID` = @ID
 		  ]],
 			{
-				["@User"] = player:GetData("AccountID"),
+				["@License"] = license,
 				["@ID"] = data,
 			}
 		)
@@ -282,7 +311,7 @@ function RegisterCallbacks()
 				return cb({ Config.PrisonSpawn })
 			end
 		elseif myCharacter.ICU then
-			local ICUData = json.decode(myCharacter.ICUData)
+			local ICUData = json.decode(myCharacter.ICU)
 			if not ICUData.Released then
 				return cb({ Config.ICUSpawn })
 			end
@@ -295,11 +324,12 @@ function RegisterCallbacks()
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:GetCharacterData", function(source, data, cb)
 		local player = exports['sandbox-base']:FetchSource(source)
+		local license = exports['sandbox-base']:GetPlayerLicense(source)
 		local myCharacter = MySQL.single.await([[
-			SELECT * FROM `characters` WHERE `User` = @User AND `SID` = @ID
+			SELECT * FROM `characters` WHERE `License` = @License AND `SID` = @ID
 			]],
 			{
-				["@User"] = player:GetData("AccountID"),
+				["@License"] = license,
 				["@ID"] = data,
 			}
 		)

@@ -82,15 +82,15 @@ exports('BeginCreation', function(text, staff)
 	local hitting, endCoords, entity = GetEntityPlayerIsLookingAt(15.0, LocalPlayer.state.ped)
 
 	if not hitting then
-		return exports["sandbox-hud"]:NotifError("Cannot Place Here")
+		return exports["sandbox-hud"]:Notification("error", "Cannot Place Here")
 	end
 
 	if #(GetEntityCoords(LocalPlayer.state.ped) - endCoords) > 5.0 then
-		return exports["sandbox-hud"]:NotifError("Cannot Place That Far Away")
+		return exports["sandbox-hud"]:Notification("error", "Cannot Place That Far Away")
 	end
 
 	if IsEntityAVehicle(entity) or IsEntityAPed(entity) then
-		return exports["sandbox-hud"]:NotifError("Cannot Place On a Vehicle or Person")
+		return exports["sandbox-hud"]:Notification("error", "Cannot Place On a Vehicle or Person")
 	end
 
 	exports['sandbox-hud']:InputShow(
@@ -134,12 +134,12 @@ exports('Deletion', function()
 
 			exports["sandbox-base"]:ServerCallback("Scenes:Delete", lastId, function(success, invalidPermissions)
 				if success then
-					exports["sandbox-hud"]:NotifSuccess("Scene Deleted")
+					exports["sandbox-hud"]:Notification("success", "Scene Deleted")
 				else
 					if invalidPermissions then
-						exports["sandbox-hud"]:NotifError("Invalid Permissions to Delete This Scene")
+						exports["sandbox-hud"]:Notification("error", "Invalid Permissions to Delete This Scene")
 					else
-						exports["sandbox-hud"]:NotifError("Failed to Delete Scene")
+						exports["sandbox-hud"]:Notification("error", "Failed to Delete Scene")
 					end
 				end
 			end)
@@ -166,7 +166,7 @@ exports('Edit', function()
 				if success then
 					EditScene(lastId, _loadedScenes[lastId], { staff = isStaff })
 				else
-					exports["sandbox-hud"]:NotifError("Invalid Permissions to Edit This Scene")
+					exports["sandbox-hud"]:Notification("error", "Invalid Permissions to Edit This Scene")
 				end
 			end)
 		end
@@ -188,7 +188,7 @@ AddEventHandler("Scenes:Client:OpenOptionsMenu", function(values, data)
 	creatingSceneData.text.text = SanitizeEmojis(values.text)
 
 	if (creatingSceneData.text.text == nil or creatingSceneData.text.text == "") then
-		exports["sandbox-hud"]:NotifError("Scene Creation Cancelled - No Valid Characters In Scene Text")
+		exports["sandbox-hud"]:Notification("error", "Scene Creation Cancelled - No Valid Characters In Scene Text")
 		return
 	end
 
@@ -207,7 +207,7 @@ AddEventHandler("Scenes:Client:OpenOptionsMenu", function(values, data)
 		CreateThread(function()
 			while _creationOpen do
 				if #(GetEntityCoords(LocalPlayer.state.ped) - creatingSceneData.coords) > 10.0 then
-					exports["sandbox-hud"]:NotifError("Scene Creation Cancelled - Too Far Away")
+					exports["sandbox-hud"]:Notification("error", "Scene Creation Cancelled - Too Far Away")
 
 					_creationMenu:Close()
 					break
@@ -395,9 +395,9 @@ AddEventHandler("Scenes:Client:OpenOptionsMenu", function(values, data)
 			data = data,
 		}, function(success)
 			if success then
-				exports["sandbox-hud"]:NotifSuccess("Scene Placed")
+				exports["sandbox-hud"]:Notification("success", "Scene Placed")
 			else
-				exports["sandbox-hud"]:NotifError("Failed to Place Scene")
+				exports["sandbox-hud"]:Notification("error", "Failed to Place Scene")
 			end
 		end)
 
@@ -428,7 +428,7 @@ function EditScene(id, fuckface, data)
 		CreateThread(function()
 			while _creationOpen do
 				if #(GetEntityCoords(LocalPlayer.state.ped) - creatingSceneData.coords) > 10.0 then
-					exports["sandbox-hud"]:NotifError("Scene Edit Cancelled - Too Far Away")
+					exports["sandbox-hud"]:Notification("error", "Scene Edit Cancelled - Too Far Away")
 
 					_creationMenu:Close()
 					break
@@ -610,9 +610,9 @@ function EditScene(id, fuckface, data)
 			data = data,
 		}, function(success)
 			if success then
-				exports["sandbox-hud"]:NotifSuccess("Scene Edited")
+				exports["sandbox-hud"]:Notification("success", "Scene Edited")
 			else
-				exports["sandbox-hud"]:NotifError("Failed to Edit Scene")
+				exports["sandbox-hud"]:Notification("error", "Failed to Edit Scene")
 			end
 		end)
 

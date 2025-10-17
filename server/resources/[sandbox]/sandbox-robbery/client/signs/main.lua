@@ -80,19 +80,20 @@ AddEventHandler("Robbery:Client:Setup", function()
 		exports.ox_target:addModel(v.model, {
 			{
 				label = string.format("Steal %s", v.label),
-				icon = "eye-evil",
-				onSelect = function()
+				icon = "fa-solid fa-arrows-to-eye",
+				onSelect = function(data)
 					TriggerEvent("Robbery:Client:Signs:StealSign", {
 						label = v.label,
 						model = v.model,
 						item = v.item,
+						entity = data.entity,
 					})
 				end,
 				distance = 2.0,
-				canInteract = function(data, entity)
+				canInteract = function(entity)
 					if
-						entity?.entity
-						and not HasObjectBeenBroken(entity?.entity)
+						entity
+						and not HasObjectBeenBroken(entity)
 						and not LocalPlayer.state.ATMRobbery
 					then
 						return true
@@ -127,12 +128,19 @@ function DoStealSignsProgress(label, duration, anim, canCancel, cb)
 	end)
 end
 
-AddEventHandler("Robbery:Client:Signs:StealSign", function(data, entity)
+AddEventHandler("Robbery:Client:Signs:StealSign", function(data)
 	local coords = GetEntityCoords(LocalPlayer.state.ped)
-	local entityCoords = GetEntityCoords(data.entity)
+	local entity = GetClosestObjectOfType(coords.x, coords.y, coords.z, 5.0, data.model, false, false, false)
+	if not entity or not DoesEntityExist(entity) then
+		exports["sandbox-hud"]:Notification("error", "Sign not found.")
+		return
+	end
+
+	local entityCoords = GetEntityCoords(entity)
 	local alarm = false
-	if not IsSignValid(entity.model) then
-		exports["sandbox-hud"]:NotifError("Not a valid sign.")
+	local signData = data
+	if not IsSignValid(data.model) then
+		exports["sandbox-hud"]:Notification("error", "Not a valid sign.")
 		return
 	end
 
@@ -146,7 +154,7 @@ AddEventHandler("Robbery:Client:Signs:StealSign", function(data, entity)
 	end
 
 	DoStealSignsProgress(
-		string.format("Stealing %s", entity.label),
+		string.format("Stealing %s", data.label),
 		(math.random(10) + 20) * 1000,
 		"weld",
 		true,
@@ -162,14 +170,14 @@ AddEventHandler("Robbery:Client:Signs:StealSign", function(data, entity)
 					end
 
 					DoStealSignsProgress(
-						string.format("Removing %s from Ground", entity.label),
+						string.format("Removing %s from Ground", signData.label),
 						(math.random(10) + 10) * 1000,
 						"stealsign",
 						false,
 						function(status)
 							exports["sandbox-base"]:ServerCallback(
 								"Robbery:Signs:RemoveSign",
-								{ coords = entityCoords, model = entity.model, item = entity.item },
+								{ coords = entityCoords, model = signData.model, item = signData.item },
 								function(success)
 									if success then
 										TriggerServerEvent("Robbery:Server:Signs:AlertPolice", coords)

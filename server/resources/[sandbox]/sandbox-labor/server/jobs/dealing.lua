@@ -101,7 +101,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			if char ~= nil then
 				for k, v in ipairs(_cornerCds) do
 					if os.time() < v.expires and #(data.coords - v.coords) < 100.0 then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Someone Has Recently Sold Around Here")
 						return cb(false)
 					end
@@ -157,7 +157,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						entState.seller = source
 						local items = {}
 
-						local weedCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "weed_baggy")
+						local weedCount = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, "weed_baggy")
 						if weedCount > 0 then
 							table.insert(items, {
 								label = "Sell Weed",
@@ -167,7 +167,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							})
 						end
 
-						local oxyCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "oxy")
+						local oxyCount = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, "oxy")
 						if oxyCount > 0 then
 							table.insert(items, {
 								label = "Sell Oxy",
@@ -177,7 +177,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							})
 						end
 
-						local methCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "meth_bag")
+						local methCount = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, "meth_bag")
 						if methCount > 0 then
 							table.insert(items, {
 								label = "Sell Meth",
@@ -187,7 +187,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							})
 						end
 
-						local cokeCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "coke_bag")
+						local cokeCount = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, "coke_bag")
 						if cokeCount > 0 then
 							table.insert(items, {
 								label = "Sell Cocaine",
@@ -225,10 +225,10 @@ AddEventHandler("Labor:Server:Startup", function()
 					local entState = Entity(ent).state
 
 					if entState?.seller == source then
-						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), data.item, 1)
+						local slot = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), data.item, 1)
 						if slot ~= nil then
-							if exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot) then
-								local itemData = exports['sandbox-inventory']:ItemsGetData(data.item)
+							if exports.ox_inventory:RemoveId(char:GetData("SID"), 1, slot) then
+								local itemData = exports.ox_inventory:ItemsGetData(data.item)
 
 								exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 									string.format("CornerDealing:Client:%s:Action", _joiners[source]))
@@ -256,7 +256,7 @@ AddEventHandler("Labor:Server:Startup", function()
 											lower = math.ceil((itemData.price * (2 + calcLvl)) / 100)
 											higher = math.ceil((itemData.price * (4 + calcLvl)) / 100)
 										end
-										exports['sandbox-inventory']:AddItem(char:GetData("SID"), "moneyroll",
+										exports.ox_inventory:AddItem(char:GetData("SID"), "moneyroll",
 											math.random(lower, higher),
 											{}, 1)
 									else

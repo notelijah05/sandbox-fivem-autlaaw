@@ -102,7 +102,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 			if _deliveryCounter > 0 then
 				exports['sandbox-hud']:ActionHide("tacopickup")
 				if _lastCook + _gracePeriod > GetGameTimer() then
-					exports["sandbox-hud"]:NotifError(
+					exports["sandbox-hud"]:Notification("error",
 						string.format(
 							"You must wait to swap to deliveries! (%s seconds)",
 							math.floor((_lastCook + _gracePeriod - GetGameTimer()) / 1000)
@@ -153,7 +153,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 			if _deliveryCounter < _tacoQueue.maxQueue then
 				exports['sandbox-hud']:ActionHide("tacoqueue")
 				if _lastDelivery + _gracePeriod > GetGameTimer() then
-					exports["sandbox-hud"]:NotifError(
+					exports["sandbox-hud"]:Notification("error",
 						string.format(
 							"You must wait to swap to start prepping food! (%s seconds)",
 							math.floor((_lastDelivery + _gracePeriod - GetGameTimer()) / 1000)
@@ -162,7 +162,7 @@ AddEventHandler("Businesses:Client:Startup", function()
 					ShowTacoQueue()
 					return
 				end
-				if exports['sandbox-inventory']:CheckPlayerHasItem(_tacoFoodItems[_currentCookItem].item, 1) then
+				if exports.ox_inventory:CheckPlayerHasItem(_tacoFoodItems[_currentCookItem].item, 1) then
 					exports['sandbox-hud']:Progress({
 						name = "taco_queue",
 						duration = 2500,
@@ -189,18 +189,19 @@ AddEventHandler("Businesses:Client:Startup", function()
 									GetNewQueueItem()
 									_lastCook = GetGameTimer()
 								else
-									exports["sandbox-hud"]:NotifError("You do not have the proper item to bag.")
+									exports["sandbox-hud"]:Notification("error",
+										"You do not have the proper item to bag.")
 									ShowTacoQueue()
 								end
 							end
 						)
 					end)
 				else
-					exports["sandbox-hud"]:NotifError("You do not have the proper item to bag.")
+					exports["sandbox-hud"]:Notification("error", "You do not have the proper item to bag.")
 					ShowTacoQueue()
 				end
 			else
-				exports["sandbox-hud"]:NotifError("The queue is full.")
+				exports["sandbox-hud"]:Notification("error", "The queue is full.")
 				exports['sandbox-hud']:ActionHide("tacoqueue")
 				ShowTacoQueue()
 			end
@@ -308,7 +309,7 @@ function FetchDropOffLocation()
 					)
 					if _durationCheck <= 0 then
 						_durationCheck = 0
-						exports["sandbox-hud"]:NotifError("You failed to deliver the order in time.")
+						exports["sandbox-hud"]:Notification("error", "You failed to deliver the order in time.")
 						RunCleanUp()
 						return
 					end
@@ -337,7 +338,7 @@ function FetchDropOffLocation()
 end
 
 AddEventHandler("Taco:Client:TacoShop", function()
-	exports['sandbox-inventory']:ShopOpen("taco-shop-self")
+	exports.ox_inventory:ShopOpen("taco-shop-self")
 end)
 
 AddEventHandler("Tacos:DeliverOrder", function(data)

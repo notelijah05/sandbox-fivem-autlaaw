@@ -59,9 +59,12 @@ local function StartKickTimer()
 				end
 			end
 
-			exports["sandbox-hud"]:NotifPersistentError(
-				"pwnzor-afk",
-				"You Will Be Kicked In " .. (AFKTimer - time) .. " Seconds For Being AFK"
+			exports["sandbox-hud"]:Notification("error",
+				"You Will Be Kicked In " .. (AFKTimer - time) .. " Seconds For Being AFK",
+				-1,
+				nil,
+				nil,
+				"pwnzor-afk"
 			)
 
 			time += 1
@@ -86,7 +89,7 @@ AddEventHandler("Pwnzor:Client:EnterAFKCode", function(vals, data)
 	exports["sandbox-base"]:ServerCallback("Pwnzor:EnterCode", vals.code, function(c)
 		if c then
 			afkAnswer = false
-			exports["sandbox-hud"]:NotifPersistentRemove("pwnzor-afk")
+			exports["sandbox-hud"]:Notification("remove", nil, nil, nil, nil, "pwnzor-afk")
 
 			isAfk = false
 			submitting = false

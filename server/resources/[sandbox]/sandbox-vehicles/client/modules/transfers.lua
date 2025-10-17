@@ -6,7 +6,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
             else
                 local coords = GetEntityCoords(PlayerPedId())
                 local maxDistance = 2.0
-                local includePlayerVehicle = false
+                local includePlayerVehicle = true
 
                 local target = lib.getClosestVehicle(coords, maxDistance, includePlayerVehicle)
 
@@ -53,5 +53,5 @@ AddEventHandler('Vehicles:Transfers:Confirm', function(data)
 end)
 
 AddEventHandler('Vehicles:Transfers:Deny', function(data)
-    exports['sandbox-hud']:NotifError('Vehicle Transfer Cancelled')
+    exports['sandbox-hud']:Notification("error", 'Vehicle Transfer Cancelled')
 end)

@@ -220,7 +220,7 @@ function RegisterCallbacks()
         end
 
         if storageData.retrievalOnly then
-            exports['sandbox-hud']:NotifError(src, 'Cannot Store Vehicles Here')
+            exports['sandbox-hud']:Notification(src, "error", 'Cannot Store Vehicles Here')
             cb(false)
             return
         end
@@ -264,7 +264,7 @@ function RegisterCallbacks()
                     end
                 end
             else
-                exports['sandbox-hud']:NotifError(src, 'Cannot Store This Vehicle Here')
+                exports['sandbox-hud']:Notification(src, "error", 'Cannot Store This Vehicle Here')
             end
         end
 
@@ -518,7 +518,17 @@ function RegisterCallbacks()
                 local newProperties = false
                 if vehicleData and vehicleData:GetData('Properties') then
                     local currentProperties = vehicleData:GetData('Properties')
-    
+
+                    if not currentProperties or type(currentProperties) ~= 'table' then
+                        currentProperties = {}
+                    end
+                    if not currentProperties.mods then
+                        currentProperties.mods = {}
+                    end
+                    if not currentProperties.extras then
+                        currentProperties.extras = {}
+                    end
+
                     for k, v in pairs(data.changes) do
                         if k == 'mods' then
                             for mod, val in pairs(v) do
@@ -657,7 +667,7 @@ function RegisterCallbacks()
                     exports['sandbox-vehicles']:OwnedForceSave(vehState.VIN)
 
                     if fakePlateData and fakePlateData.Plate then
-                        exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'fakeplates', 1, fakePlateData, 1)
+                        exports.ox_inventory:AddItem(char:GetData('SID'), 'fakeplates', 1, fakePlateData, 1)
                     end
 
                     cb(true, originalPlate)
@@ -736,7 +746,7 @@ function RegisterCallbacks()
                     exports['sandbox-vehicles']:KeysAdd(targetChar:GetData('Source'), VIN)
                     return
                 else
-                    exports['sandbox-hud']:NotifError(src, 'Cannot Transfer to Someone That Isn\'t Nearby')
+                    exports['sandbox-hud']:Notification(src, "error", 'Cannot Transfer to Someone That Isn\'t Nearby')
                 end
             end
         end
@@ -749,7 +759,7 @@ function RegisterCallbacks()
         if char and veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
             if vehState.VIN and vehState.Nitrous then
-                exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'nitrous', 1, {
+                exports.ox_inventory:AddItem(char:GetData('SID'), 'nitrous', 1, {
                     Nitrous = math.floor(vehState.Nitrous)
                 }, 1, nil, nil, nil, nil, nil, nil, nil, true)
 
@@ -778,14 +788,14 @@ function RegisterCallbacks()
                     then
                         for k, v in ipairs(data.sids) do
                             exports['sandbox-vehicles']:KeysAdd(v, vehEnt.state.VIN)
-                            exports['sandbox-hud']:NotifInfo(v,
+                            exports['sandbox-hud']:Notification("info", v,
                                 "You Received Keys to a Vehicle",
                                 3000,
                                 "key"
                             )
                         end
 
-                        exports['sandbox-hud']:NotifSuccess(source,
+                        exports['sandbox-hud']:Notification(source, "success",
                             "You Gave Everyone Nearby Keys",
                             3000,
                             "key"

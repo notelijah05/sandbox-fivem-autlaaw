@@ -56,28 +56,6 @@ table.insert(Config.Restaurants, {
 			},
 		},
 	},
-	Storage = {
-		{
-			id = "tequila-storage",
-			type = "box",
-			coords = vector3(-568.57, 291.2, 79.18),
-			width = 1.6,
-			length = 1.0,
-			options = {
-				heading = 355,
-				--debugPoly=true,
-				minZ = 78.18,
-				maxZ = 80.58,
-			},
-			data = {
-				business = "tequila",
-				inventory = {
-					invType = 81,
-					owner = "tequila-storage",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{
 			id = "tequila-pickup-1",

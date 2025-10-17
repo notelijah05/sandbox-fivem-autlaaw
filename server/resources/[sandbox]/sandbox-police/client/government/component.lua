@@ -155,5 +155,5 @@ RegisterNetEvent("Government:Client:Gavel", function()
 end)
 
 AddEventHandler("Government:Client:DOJShop", function()
-	exports['sandbox-inventory']:ShopOpen("doj-shop")
+	exports.ox_inventory:ShopOpen("doj-shop")
 end)

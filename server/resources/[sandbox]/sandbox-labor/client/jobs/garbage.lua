@@ -134,8 +134,8 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 					label = "Grab Trash",
 					event = "Garbage:Client:TrashGrab",
 					distance = 3.0,
-					canInteract = function(data, entity)
-						return not _entities[ObjToNet(entity.entity)]
+					canInteract = function(entity)
+						return not _entities[ObjToNet(entity)]
 							and LocalPlayer.state.inGarbagbeZone
 							and GarbageObject == nil
 							and _state == 2
@@ -220,7 +220,7 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	eventHandlers["spawn-truck"] = AddEventHandler("Garbage:Client:GarbageSpawn", function()
 		exports["sandbox-base"]:ServerCallback("Garbage:GarbageSpawn", {}, function(netId)
 			if netId == false then
-				exports["sandbox-hud"]:NotifError("Attempting to spawn garbage truck you pepega.")
+				exports["sandbox-hud"]:Notification("error", "Attempting to spawn garbage truck you pepega.")
 				return
 			end
 			SetEntityAsMissionEntity(NetToVeh(netId))
@@ -243,7 +243,7 @@ end)
 AddEventHandler("Garbage:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback("Garbage:StartJob", _joiner, function(state)
 		if not state then
-			exports["sandbox-hud"]:NotifError("Unable To Start Job")
+			exports["sandbox-hud"]:Notification("error", "Unable To Start Job")
 		end
 	end)
 end)
@@ -253,7 +253,7 @@ AddEventHandler("Garbage:Client:Buy", function()
 		local itemList = {}
 
 		for k, v in ipairs(items) do
-			local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
+			local itemData = exports.ox_inventory:ItemsGetData(v.item)
 			if v.qty > 0 then
 				table.insert(itemList, {
 					label = itemData.label,

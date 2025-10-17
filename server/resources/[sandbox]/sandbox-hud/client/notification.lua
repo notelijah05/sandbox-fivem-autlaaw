@@ -1,9 +1,3 @@
-exports('NotifClear', function()
-    SendNUIMessage({
-        type = "CLEAR_ALERTS",
-    })
-end)
-
 exports('Notification', function(notifType, message, duration, icon, style, id)
     if duration == nil then
         duration = 2500
@@ -20,11 +14,28 @@ exports('Notification', function(notifType, message, duration, icon, style, id)
         notification.style = style
     end
 
-    if duration == -1 then
+    if duration == -1 then -- If duration = -1, the notification will be persistent
         if id == nil then
             return
         end
         notification._id = id
+    end
+
+    if notification.type == "remove" then
+        SendNUIMessage({
+            type = "HIDE_ALERT",
+            data = {
+                id = id,
+            },
+        })
+        return
+    end
+
+    if notification.type == "clear" then
+        SendNUIMessage({
+            type = "CLEAR_ALERTS",
+        })
+        return
     end
 
     SendNUIMessage({
@@ -35,119 +46,15 @@ exports('Notification', function(notifType, message, duration, icon, style, id)
     })
 end)
 
-exports('NotifSuccess', function(message, duration, icon)
-    exports['sandbox-hud']:Notification("success", message, duration, icon)
+RegisterNetEvent("HUD:Client:NotificationClear", function()
+    exports['sandbox-hud']:Notification("clear")
 end)
 
-exports('NotifWarn', function(message, duration, icon)
-    exports['sandbox-hud']:Notification("warning", message, duration, icon)
+RegisterNetEvent("HUD:Client:NotificationRemove", function(id)
+    exports['sandbox-hud']:Notification("remove", id)
 end)
 
-exports('NotifError', function(message, duration, icon)
-    exports['sandbox-hud']:Notification("error", message, duration, icon)
-end)
-
-exports('NotifInfo', function(message, duration, icon)
-    exports['sandbox-hud']:Notification("info", message, duration, icon)
-end)
-
-exports('NotifStandard', function(message, duration, icon)
-    exports['sandbox-hud']:Notification("standard", message, duration, icon)
-end)
-
-exports('NotifCustom', function(message, duration, icon, style)
-    exports['sandbox-hud']:Notification("custom", message, duration, icon, style)
-end)
-
-exports('NotifPersistentSuccess', function(id, message, icon)
-    exports['sandbox-hud']:Notification("success", message, -1, icon, nil, id)
-end)
-
-exports('NotifPersistentWarn', function(id, message, icon)
-    exports['sandbox-hud']:Notification("warning", message, -1, icon, nil, id)
-end)
-
-exports('NotifPersistentError', function(id, message, icon)
-    exports['sandbox-hud']:Notification("error", message, -1, icon, nil, id)
-end)
-
-exports('NotifPersistentInfo', function(id, message, icon)
-    exports['sandbox-hud']:Notification("info", message, -1, icon, nil, id)
-end)
-
-exports('NotifPersistentStandard', function(id, message, icon)
-    exports['sandbox-hud']:Notification("standard", message, -1, icon, nil, id)
-end)
-
-exports('NotifPersistentCustom', function(id, message, icon, style)
-    exports['sandbox-hud']:Notification("custom", message, -1, icon, style, id)
-end)
-
-exports('NotifPersistentRemove', function(id)
-    SendNUIMessage({
-        type = "HIDE_ALERT",
-        data = {
-            id = id,
-        },
-    })
-end)
-
-RegisterNetEvent("HUD:Client:NotifClear", function()
-    exports['sandbox-hud']:NotifClear()
-end)
-
-RegisterNetEvent("HUD:Client:NotifSuccess", function(message, duration, icon)
-    exports['sandbox-hud']:NotifSuccess(message, duration, icon)
-end)
-
-RegisterNetEvent("HUD:Client:NotifWarn", function(message, duration, icon)
-    exports['sandbox-hud']:NotifWarn(message, duration, icon)
-end)
-
-RegisterNetEvent("HUD:Client:NotifError", function(message, duration, icon)
-    exports['sandbox-hud']:NotifError(message, duration, icon)
-end)
-
-RegisterNetEvent("HUD:Client:NotifInfo", function(message, duration, icon)
-    exports['sandbox-hud']:NotifInfo(message, duration, icon)
-end)
-
-RegisterNetEvent("HUD:Client:NotifStandard", function(message, duration, icon)
-    exports['sandbox-hud']:NotifStandard(message, duration, icon)
-end)
-
-RegisterNetEvent("HUD:Client:NotifCustom", function(message, duration, icon, style)
-    exports['sandbox-hud']:NotifCustom(message, duration, icon, style)
-end)
-
-RegisterNetEvent("HUD:Client:NotifPersistentSuccess", function(id, message, icon)
-    exports['sandbox-hud']:NotifPersistentSuccess(id, message, icon)
-end)
-
-RegisterNetEvent("HUD:Client:NotifPersistentWarn", function(id, message, icon)
-    exports['sandbox-hud']:NotifPersistentWarn(id, message, icon)
-end)
-
-RegisterNetEvent("HUD:Client:NotifPersistentError", function(id, message, icon)
-    exports['sandbox-hud']:NotifPersistentError(id, message, icon)
-end)
-
-RegisterNetEvent("HUD:Client:NotifPersistentInfo", function(id, message, icon)
-    exports['sandbox-hud']:NotifPersistentInfo(id, message, icon)
-end)
-
-RegisterNetEvent("HUD:Client:NotifPersistentStandard", function(id, message, icon)
-    exports['sandbox-hud']:NotifPersistentStandard(id, message, icon)
-end)
-
-RegisterNetEvent("HUD:Client:NotifPersistentCustom", function(id, message, icon, style)
-    exports['sandbox-hud']:NotifPersistentCustom(id, message, icon, style)
-end)
-
-RegisterNetEvent("HUD:Client:NotifPersistentRemove", function(id)
-    exports['sandbox-hud']:NotifPersistentRemove(id)
-end)
-
-RegisterNetEvent("HUD:Client:Notification", function(notifType, message, duration, icon, style, id)
-    exports['sandbox-hud']:Notification(notifType, message, duration, icon, style, id)
+RegisterNetEvent("HUD:Client:Notification", function(notification)
+    exports['sandbox-hud']:Notification(notification.type, notification.message, notification.duration, notification
+        .icon, notification.style, notification._id)
 end)

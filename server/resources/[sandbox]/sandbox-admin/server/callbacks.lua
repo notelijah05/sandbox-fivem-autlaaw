@@ -90,8 +90,9 @@ function RegisterCallbacks()
                 local char = exports['sandbox-characters']:FetchCharacterSource(data)
 
                 local p = promise.new()
-                MySQL.Async.fetchAll('SELECT * FROM characters WHERE User = @user AND SID != @sid', {
-                    ['@user'] = target:GetData('AccountID'),
+                local targetLicense = exports['sandbox-base']:GetPlayerLicense(data)
+                MySQL.Async.fetchAll('SELECT * FROM characters WHERE License = @license AND SID != @sid', {
+                    ['@license'] = targetLicense,
                     ['@sid'] = char and char:GetData("SID") or nil
                 }, function(results)
                     if results and #results > 0 then
@@ -102,6 +103,19 @@ function RegisterCallbacks()
                 end)
 
                 local chars = Citizen.Await(p)
+
+                for i, char in ipairs(chars) do
+                    if char.Jobs then
+                        local success, parsed = pcall(json.decode, char.Jobs)
+                        if success then
+                            chars[i].Jobs = parsed
+                        else
+                            chars[i].Jobs = {}
+                        end
+                    else
+                        chars[i].Jobs = {}
+                    end
+                end
 
                 local tData = {
                     Source = target:GetData('Source'),

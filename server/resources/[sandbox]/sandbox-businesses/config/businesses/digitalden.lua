@@ -42,68 +42,6 @@ table.insert(Config.Businesses, {
             },
         },
     },
-    Storage = {
-        {
-            id = "digitalden-storage",
-            type = "box",
-            coords = vector3(382.66, -830.16, 29.3),
-            width = 1.4,
-            length = 1.0,
-            options = {
-                heading = 0,
-                --debugPoly=true,
-                minZ = 28.3,
-                maxZ = 30.9
-            },
-            data = {
-                business = "digitalden",
-                inventory = {
-                    invType = 100,
-                    owner = "digitalden-storage",
-                },
-            },
-        },
-        {
-            id = "digitalden-storage-2",
-            type = "box",
-            coords = vector3(382.15, -818.72, 29.3),
-            width = 3.6,
-            length = 3.6,
-            options = {
-                heading = 0,
-                --debugPoly=true,
-                minZ = 28.3,
-                maxZ = 30.7
-            },
-            data = {
-                business = "digitalden",
-                inventory = {
-                    invType = 101,
-                    owner = "digitalden-storage-2",
-                },
-            },
-        },
-        {
-            id = "digitalden-storage-3",
-            type = "box",
-            coords = vector3(374.35, -818.37, 29.3),
-            width = 2.0,
-            length = 2.0,
-            options = {
-                heading = 0,
-                --debugPoly=true,
-                minZ = 28.3,
-                maxZ = 30.7
-            },
-            data = {
-                business = "digitalden",
-                inventory = {
-                    invType = 101,
-                    owner = "digitalden-storage-3",
-                },
-            },
-        },
-    },
     Pickups = {
         {
             id = "digitalden-pickup-1",

@@ -24,9 +24,9 @@ function RegisterDumpsterStartup()
 end
 
 function RegisterDumpsterCallbacks()
-	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:AvailableDumpster", function(source, data, cb)
-		local _dumpsterId = data.entity
-		if data and _searchedDumpsters[_dumpsterId] == nil then
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:AvailableDumpster", function(source, entity, cb)
+		local _dumpsterId = entity
+		if entity and _searchedDumpsters[_dumpsterId] == nil then
 			cb(true)
 		else
 			cb(false)
@@ -55,18 +55,18 @@ function RegisterDumpsterCallbacks()
 			cb(false, false)
 		end
 	end)
-	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:SearchDumpster", function(source, data, cb)
+	exports["sandbox-base"]:RegisterServerCallback("Inventory:Server:SearchDumpster", function(source, entity, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
-			local _dumpsterId = data.entity
-			if data and _searchedDumpsters[_dumpsterId] == nil then
+			local _dumpsterId = entity
+			if entity and _searchedDumpsters[_dumpsterId] == nil then
 				_searchedDumpsters[_dumpsterId] = true
 				local _PlayerRep = exports['sandbox-characters']:RepGetLevel(source, _repName) or 0
 				local _found = math.random(100) >= math.random(75)
 				if _found then
 					if _PlayerRep >= 8 then
 						if math.random(100) >= math.random(75) then
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 								_dumpsterLoot.high,
 								char:GetData("SID"),
 								1,
@@ -75,7 +75,7 @@ function RegisterDumpsterCallbacks()
 							)
 						end
 						if math.random(100) >= math.random(75) then
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 								_dumpsterLoot.medium,
 								char:GetData("SID"),
 								1,
@@ -83,7 +83,7 @@ function RegisterDumpsterCallbacks()
 								false
 							)
 						end
-						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+						exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
@@ -92,7 +92,7 @@ function RegisterDumpsterCallbacks()
 						)
 					elseif _PlayerRep <= 7 and _PlayerRep >= 4 then
 						if math.random(100) >= math.random(75) then
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+							exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 								_dumpsterLoot.medium,
 								char:GetData("SID"),
 								1,
@@ -100,14 +100,14 @@ function RegisterDumpsterCallbacks()
 								false
 							)
 						end
-						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+						exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
 							1,
 							false
 						)
-						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+						exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
@@ -115,14 +115,14 @@ function RegisterDumpsterCallbacks()
 							false
 						)
 					else
-						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+						exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
 							1,
 							false
 						)
-						exports['sandbox-inventory']:LootCustomWeightedSetWithCountAndModifier(
+						exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(
 							_dumpsterLoot.low,
 							char:GetData("SID"),
 							1,
@@ -131,14 +131,14 @@ function RegisterDumpsterCallbacks()
 						)
 					end
 					exports['sandbox-characters']:RepAdd(source, _repName, math.random(5, 10))
-					exports['sandbox-hud']:NotifSuccess(source, "You found something!")
+					exports['sandbox-hud']:Notification(source, "success", "You found something!")
 				else
 					exports['sandbox-characters']:RepAdd(source, _repName, math.random(1, 3))
-					exports['sandbox-hud']:NotifInfo(source, "Nothing was found.")
+					exports['sandbox-hud']:Notification(source, "info", "Nothing was found.")
 				end
 				cb(true)
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"This dumpster has been searched already!")
 				cb(false)
 			end

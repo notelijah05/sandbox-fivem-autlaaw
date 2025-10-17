@@ -177,7 +177,7 @@ AddEventHandler("Casino:Server:Startup", function()
 
                         return cb(true, { reel1, reel2, reel3 }, time, sound, winnings)
                     else
-                        exports['sandbox-hud']:NotifError(source, "Not Enough Chips")
+                        exports['sandbox-hud']:Notification(source, "error", "Not Enough Chips")
                         return cb(false)
                     end
                 end

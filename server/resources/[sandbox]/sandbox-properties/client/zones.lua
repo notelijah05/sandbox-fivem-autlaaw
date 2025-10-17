@@ -15,7 +15,7 @@ function CreatePropertyZones(propertyId, int)
             maxZ = interior.locations.front.polyzone.options.maxZ,
             options = {
                 {
-                    icon = "door-open",
+                    icon = "fa-solid fa-door-open",
                     label = "Exit",
                     onSelect = function()
                         TriggerEvent("Properties:Client:Exit", {
@@ -38,7 +38,7 @@ function CreatePropertyZones(propertyId, int)
                 maxZ = interior.locations.back.polyzone.options.maxZ,
                 options = {
                     {
-                        icon = "door-open",
+                        icon = "fa-solid fa-door-open",
                         label = "Exit",
                         onSelect = function()
                             TriggerEvent("Properties:Client:Exit", {
@@ -62,7 +62,7 @@ function CreatePropertyZones(propertyId, int)
                 maxZ = interior.locations.office.polyzone.options.maxZ,
                 options = {
                     {
-                        icon = "box-open-full",
+                        icon = "fa-solid fa-box-open-full",
                         label = "Access Storage",
                         onSelect = function()
                             TriggerEvent("Properties:Client:Stash", propertyId)
@@ -77,7 +77,7 @@ function CreatePropertyZones(propertyId, int)
                         end,
                     },
                     {
-                        icon = "clipboard",
+                        icon = "fa-solid fa-clipboard",
                         label = "Go On/Off Duty",
                         onSelect = function()
                             TriggerEvent("Properties:Client:Duty", propertyId)
@@ -108,7 +108,7 @@ function CreatePropertyZones(propertyId, int)
                 maxZ = interior.locations.warehouse.polyzone.options.maxZ,
                 options = {
                     {
-                        icon = "box-open-full",
+                        icon = "fa-solid fa-box-open-full",
                         label = "Access Storage",
                         onSelect = function()
                             TriggerEvent("Properties:Client:Stash", propertyId)
@@ -129,7 +129,7 @@ function CreatePropertyZones(propertyId, int)
         if interior.locations.crafting and GlobalState[string.format("Property:Crafting:%s", propertyId)] then
             local menu = {
                 {
-                    icon = "box-open-full",
+                    icon = "fa-solid fa-box-open-full",
                     label = "Access Storage",
                     onSelect = function()
                         TriggerEvent("Properties:Client:Stash", propertyId)
@@ -144,7 +144,7 @@ function CreatePropertyZones(propertyId, int)
                     end,
                 },
                 {
-                    icon = "screwdriver-wrench",
+                    icon = "fa-solid fa-screwdriver-wrench",
                     label = "Use Bench",
                     onSelect = function()
                         TriggerEvent("Properties:Client:Crafting", propertyId)
@@ -161,7 +161,7 @@ function CreatePropertyZones(propertyId, int)
 
             if GlobalState[string.format("Property:Crafting:%s", propertyId)].schematics then
                 table.insert(menu, {
-                    icon = "memo-circle-check",
+                    icon = "fa-solid fa-memo-circle-check",
                     label = "Add Schematic To Bench",
                     event = "Crafting:Client:AddSchematic",
                     onSelect = function()
@@ -169,12 +169,12 @@ function CreatePropertyZones(propertyId, int)
                             id = string.format("property-%s", propertyId),
                         })
                     end,
-                    canInteract = function(data, entityData)
+                    canInteract = function()
                         if not _propertiesLoaded then
                             return false
                         end
 
-                        return exports['sandbox-inventory']:ItemsHasType(17, 1)
+                        return exports.ox_inventory:ItemsHasType(17, 1)
                     end,
                 })
             end
@@ -197,15 +197,9 @@ function CreatePropertyZones(propertyId, int)
 end
 
 function DestroyPropertyZones(propertyId)
-    if exports.ox_target:zoneExists(string.format("property-%s-exit", propertyId)) then
-        exports.ox_target:removeZone(string.format("property-%s-exit", propertyId))
-    end
-    if exports.ox_target:zoneExists(string.format("property-%s-exit-back", propertyId)) then
-        exports.ox_target:removeZone(string.format("property-%s-exit-back", propertyId))
-    end
+    exports.ox_target:removeZone(string.format("property-%s-exit", propertyId))
+    exports.ox_target:removeZone(string.format("property-%s-exit-back", propertyId))
     exports.ox_target:removeZone(string.format("property-%s-warehouse", propertyId))
     exports.ox_target:removeZone(string.format("property-%s-office", propertyId))
-    if exports.ox_target:zoneExists(string.format("property-%s-crafting", propertyId)) then
-        exports.ox_target:removeZone(string.format("property-%s-crafting", propertyId))
-    end
+    exports.ox_target:removeZone(string.format("property-%s-crafting", propertyId))
 end

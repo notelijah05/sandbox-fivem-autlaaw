@@ -75,8 +75,8 @@ exports('Create', function(id, type, creator, model, coords, heading, rotation, 
 			label = "Open",
 			event = "Objects:Client:OpenInventory",
 			distance = 3.0,
-			canInteract = function(data, entity)
-				local eState = Entity(entity.entity).state
+			canInteract = function(entity)
+				local eState = Entity(entity).state
 				return eState.isPlacedProp and _placedProps[entState.objectId].type == 1
 			end,
 		},
@@ -85,8 +85,8 @@ exports('Create', function(id, type, creator, model, coords, heading, rotation, 
 			label = "Delete Object",
 			event = "Objects:Client:DeleteObject",
 			distance = 3.0,
-			canInteract = function(data, entity)
-				local eState = Entity(entity.entity).state
+			canInteract = function(entity)
+				local eState = Entity(entity).state
 				return eState.isPlacedProp
 					and (LocalPlayer.state.IsStaff or LocalPlayer.state.isAdmin or LocalPlayer.state.Character:GetData(
 						"SID"
@@ -99,8 +99,8 @@ exports('Create', function(id, type, creator, model, coords, heading, rotation, 
 			label = "View Object Details",
 			event = "Objects:Client:ViewData",
 			distance = 3.0,
-			canInteract = function(data, entity)
-				local eState = Entity(entity.entity).state
+			canInteract = function(entity)
+				local eState = Entity(entity).state
 				return eState.isPlacedProp
 					and (LocalPlayer.state.isStaff or LocalPlayer.state.isAdmin)
 					and _placedProps[entState.objectId].type ~= 2
@@ -119,18 +119,18 @@ exports('Delete', function(id)
 end)
 
 AddEventHandler("Objects:Client:DeleteObject", function(entity, data)
-	if Entity(entity.entity).state.isPlacedProp then
-		TriggerServerEvent("Objects:Server:Delete", Entity(entity.entity).state.objectId)
+	if Entity(entity).state.isPlacedProp then
+		TriggerServerEvent("Objects:Server:Delete", Entity(entity).state.objectId)
 	end
 end)
 
 AddEventHandler("Objects:Client:ViewData", function(entity, data)
-	TriggerServerEvent("Objects:Server:View", Entity(entity.entity).state.objectId)
+	TriggerServerEvent("Objects:Server:View", Entity(entity).state.objectId)
 end)
 
 AddEventHandler("Objects:Client:OpenInventory", function(entity, data)
-	exports['sandbox-inventory']:DumbfuckOpen({
+	exports.ox_inventory:DumbfuckOpen({
 		invType = 138,
-		owner = Entity(entity.entity).state.objectId,
+		owner = Entity(entity).state.objectId,
 	})
 end)

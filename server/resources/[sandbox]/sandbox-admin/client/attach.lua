@@ -10,11 +10,11 @@ local _isInvis = false
 RegisterNetEvent('Admin:Client:Invisible', function()
     if _isInvis then
         SetEntityVisible(LocalPlayer.state.ped, true)
-        exports["sandbox-hud"]:NotifInfo("Invisibility: Off")
+        exports["sandbox-hud"]:Notification("info", "Invisibility: Off")
         _isInvis = false
     else
         SetEntityVisible(LocalPlayer.state.ped, false)
-        exports["sandbox-hud"]:NotifInfo("Invisibility: On")
+        exports["sandbox-hud"]:Notification("info", "Invisibility: On")
         _isInvis = true
     end
 end)
@@ -143,11 +143,11 @@ local function toggleSpectate(targetPed, targetPlayerId)
         isSpectateEnabled = false
 
         if not lastSpectateLocation then
-            exports["sandbox-hud"]:NotifError('Last location previous to spectate was not stored properly')
+            exports["sandbox-hud"]:Notification("error", 'Last location previous to spectate was not stored properly')
         end
 
         if not storedTargetPed then
-            exports["sandbox-hud"]:NotifError("Target ped was not stored to unspectate")
+            exports["sandbox-hud"]:Notification("error", "Target ped was not stored to unspectate")
         end
 
         DoScreenFadeOut(500)
@@ -201,7 +201,7 @@ local function cleanupFailedResolve()
 
     DoScreenFadeIn(500)
 
-    exports["sandbox-hud"]:NotifError("Failed to Spectate")
+    exports["sandbox-hud"]:Notification("error", "Failed to Spectate")
 end
 
 RegisterNetEvent('Admin:Client:Attach', function(tSource, tCoord, tData)
@@ -276,8 +276,8 @@ function AdminStopAttach()
     if isSpectateEnabled then
         toggleSpectate(storedTargetPed)
         preparePlayerForSpec(false)
-        exports["sandbox-hud"]:NotifInfo("Detaching from Player")
+        exports["sandbox-hud"]:Notification("info", "Detaching from Player")
     else
-        exports["sandbox-hud"]:NotifInfo("Not attached to anyone")
+        exports["sandbox-hud"]:Notification("info", "Not attached to anyone")
     end
 end

@@ -89,21 +89,15 @@ function doLog(level, component, log, flags, data)
 			logFile:close()
 		end
 
-		local databaseReady = false
-		if COMPONENTS and COMPONENTS.Proxy and COMPONENTS.Proxy.DatabaseReady then
-			databaseReady = COMPONENTS.Proxy.DatabaseReady
-		end
 
-		if databaseReady then
-			if GlobalState.IsProduction and flags.database then
-				exports.oxmysql:insert('INSERT INTO logs (date, level, component, log, data) VALUES (?, ?, ?, ?, ?)', {
-					os.time(),
-					level,
-					component,
-					log,
-					json.encode(data or {})
-				})
-			end
+		if GlobalState.IsProduction and flags.database then
+			exports.oxmysql:insert('INSERT INTO logs (date, level, component, log, data) VALUES (?, ?, ?, ?, ?)', {
+				os.time(),
+				level,
+				component,
+				log,
+				json.encode(data or {})
+			})
 		end
 
 		if GlobalState.IsProduction and flags.discord then

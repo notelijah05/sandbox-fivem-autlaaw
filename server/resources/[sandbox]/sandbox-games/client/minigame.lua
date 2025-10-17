@@ -770,10 +770,10 @@ function _playGame(params, action)
 				end
 			end)
 		else
-			exports["sandbox-hud"]:NotifError("Already Doing An Action", 5000)
+			exports["sandbox-hud"]:Notification("error", "Already Doing An Action", 5000)
 		end
 	else
-		exports["sandbox-hud"]:NotifError("Already Doing An Action", 5000)
+		exports["sandbox-hud"]:Notification("error", "Already Doing An Action", 5000)
 	end
 end
 
@@ -827,7 +827,7 @@ function _doGameStart(player, action)
 							end
 						end
 						if action.disarm then
-							exports['sandbox-inventory']:WeaponsUnequipIfEquippedNoAnim()
+							TriggerEvent('ox_inventory:disarm', LocalPlayer.state.ped, true)
 						end
 					end
 

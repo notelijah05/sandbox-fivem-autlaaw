@@ -53,15 +53,17 @@ function RegisterChatCommands()
 		help = "Change Facial Expression",
 	})
 	exports["sandbox-chat"]:RegisterCommand("selfie", function(source, args, rawCommand)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if
 			not Player(source).state.isCuffed
 			and not Player(source).state.isDead
-			and hasValue(char:GetData("States"), "PHONE")
+			and (function()
+				local phoneItem = exports.ox_inventory:getUtilitySlotItem(source, 8)
+				return phoneItem ~= nil and phoneItem.metadata.durability > 0
+			end)()
 		then
 			TriggerClientEvent("Animations:Client:Selfie", source)
 		else
-			exports['sandbox-hud']:NotifError(source, "You do not have a phone.")
+			exports['sandbox-hud']:Notification(source, "error", "You do not have a phone.")
 		end
 	end, {
 		help = "Open Selfie Mode",
@@ -136,12 +138,12 @@ RegisterServerEvent("Selfie:CaptureSelfie", function()
 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char then
 		if pendingSend then
-			exports['sandbox-hud']:NotifWarn(src,
+			exports['sandbox-hud']:Notification(src, "warning",
 				"Please wait while current photo is uploading", 2000)
 			return
 		end
 		pendingSend = true
-		exports['sandbox-hud']:NotifInfo(src, "Prepping Photo Upload", 2000)
+		exports['sandbox-hud']:Notification(src, "info", "Prepping Photo Upload", 2000)
 
 		exports["sandbox-base"]:ClientCallback(src, "Selfie:Client:UploadPhoto", {
 			api = tostring(GetConvar("phone_selfie_webhook", "")),
@@ -155,17 +157,17 @@ RegisterServerEvent("Selfie:CaptureSelfie", function()
 				if retval then
 					pendingSend = false
 					TriggerClientEvent("Selfie:DoCloseSelfie", src)
-					exports['sandbox-hud']:NotifSuccess(src, "Photo uploaded successfully!",
+					exports['sandbox-hud']:Notification(src, "success", "Photo uploaded successfully!",
 						2000)
 				else
 					pendingSend = false
 					TriggerClientEvent("Selfie:DoCloseSelfie", src)
-					exports['sandbox-hud']:NotifError(src, "Error uploading photo!", 2000)
+					exports['sandbox-hud']:Notification(src, "error", "Error uploading photo!", 2000)
 				end
 			else
 				pendingSend = false
 				TriggerClientEvent("Selfie:DoCloseSelfie", src)
-				exports['sandbox-hud']:NotifError(src, "Error uploading photo!", 2000)
+				exports['sandbox-hud']:Notification(src, "error", "Error uploading photo!", 2000)
 				print("^1ERROR: " .. data)
 			end
 		end)

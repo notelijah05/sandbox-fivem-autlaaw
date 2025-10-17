@@ -3,6 +3,7 @@ local _uircd = {}
 AddEventHandler('onResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
 		Wait(1000)
+		RegisterItems()
 		RegisterChatCommands()
 		exports['sandbox-base']:MiddlewareAdd("Characters:Creating", function(source, cData)
 			return {
@@ -59,56 +60,64 @@ AddEventHandler('onResourceStart', function(resource)
 					exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Removing Blindfold",
 						function(isSuccess)
 							if isSuccess then
-								if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "blindfold", 1, {}, 1) then
+								if exports.ox_inventory:AddItem(char:GetData("SID"), "blindfold", 1, {}, 1) then
 									tarState.isBlindfolded = false
 									TriggerClientEvent("VOIP:Client:Gag:Use", data)
 								else
-									exports['sandbox-hud']:NotifError(source,
+									exports['sandbox-hud']:Notification(source, "error",
 										"Failed Adding Item")
 									cb(false)
 								end
 							end
 						end)
 				else
-					exports['sandbox-hud']:NotifError(source, "Target Not Blindfolded")
+					exports['sandbox-hud']:Notification(source, "error", "Target Not Blindfolded")
 					cb(false)
 				end
 			else
 				cb(false)
 			end
 		end)
+	end
+end)
 
-		exports['sandbox-inventory']:RegisterUse("blindfold", "HUD", function(source, item, itemData)
-			exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
-				if target ~= nil then
-					local tarState = Player(target).state
-					if not tarState.isBlindfolded then
-						exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Blindfolding",
-							function(isSuccess)
-								if isSuccess then
-									if tarState.isCuffed then
-										if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
-											tarState.isBlindfolded = true
-											TriggerClientEvent("VOIP:Client:Gag:Use", target)
-										else
-											exports['sandbox-hud']:NotifError(source,
-												"Failed Removing Item")
-										end
+function RegisterItems()
+	exports.ox_inventory:RegisterUse("blindfold", "HUD", function(source, item, itemData)
+		exports["sandbox-base"]:ClientCallback(source, "HUD:GetTargetInfront", {}, function(target)
+			if target ~= nil then
+				local tarState = Player(target).state
+				if not tarState.isBlindfolded then
+					exports["sandbox-base"]:ClientCallback(source, "HUD:PutOnBlindfold", "Blindfolding",
+						function(isSuccess)
+							if isSuccess then
+								if tarState.isCuffed then
+									if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+										tarState.isBlindfolded = true
+										TriggerClientEvent("VOIP:Client:Gag:Use", target)
 									else
-										exports['sandbox-hud']:NotifError(source,
-											"Target Not Cuffed")
+										exports['sandbox-hud']:Notification(source, "error",
+											"Failed Removing Item")
 									end
+								else
+									exports['sandbox-hud']:Notification(source, "error",
+										"Target Not Cuffed")
 								end
-							end)
-					else
-						exports['sandbox-hud']:NotifError(source,
-							"Target Already Blindfolded")
-					end
+							end
+						end)
 				else
-					exports['sandbox-hud']:NotifError(source, "Nobody Near To Blindfold")
+					exports['sandbox-hud']:Notification(source, "error",
+						"Target Already Blindfolded")
 				end
-			end)
+			else
+				exports['sandbox-hud']:Notification(source, "error", "Nobody Near To Blindfold")
+			end
 		end)
+	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
 	end
 end)
 
@@ -140,7 +149,7 @@ function RegisterChatCommands()
 	})
 
 	-- exports["sandbox-chat"]:RegisterAdminCommand("notif", function(source, args, rawCommand)
-	-- 	exports['sandbox-hud']:NotifSuccess(source, "This is a test, lul")
+	-- 	exports['sandbox-hud']:Notification(source, "success", "This is a test, lul")
 	-- end, {
 	-- 	help = "Test Notification",
 	-- })

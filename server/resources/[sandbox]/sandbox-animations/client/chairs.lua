@@ -10,8 +10,9 @@ function RegisterChairTargets()
 					name = "sit_chair",
 					label = "Sit",
 					icon = "fa-solid fa-chair",
-					event = "Animations:Client:Chair",
-					data = v,
+					onSelect = function()
+						TriggerEvent("Animations:Client:Chair", v)
+					end,
 					distance = 2.0,
 				},
 			})
@@ -28,8 +29,9 @@ function RegisterChairTargets()
 						name = "sit_chair_zone",
 						label = "Sit",
 						icon = "fa-solid fa-chair",
-						event = "Animations:Client:Chair",
-						data = v,
+						onSelect = function()
+							TriggerEvent("Animations:Client:Chair", v)
+						end,
 						distance = 2.0,
 					},
 				},
@@ -51,7 +53,7 @@ AddEventHandler("Animations:Client:Chair", function(response)
 
 		local positioning
 		local heading = 0.0
-		local data = response.data
+		local data = response
 
 		if data.polyzone then
 			positioning = vector3(

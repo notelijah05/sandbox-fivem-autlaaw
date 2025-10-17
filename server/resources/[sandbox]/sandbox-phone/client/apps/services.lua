@@ -8,10 +8,10 @@ RegisterNUICallback("Services:SetGPS", function(data, cb)
 	if data.location then
 		DeleteWaypoint()
 		SetNewWaypoint(data.location.x, data.location.y)
-		exports["sandbox-hud"]:NotifSuccess("GPS route set")
+		exports["sandbox-hud"]:Notification("success", "GPS route set")
 		cb("OK")
 	else
 		cb(false)
-		exports["sandbox-hud"]:NotifError("Error setting waypoint.")
+		exports["sandbox-hud"]:Notification("error", "Error setting waypoint.")
 	end
 end)

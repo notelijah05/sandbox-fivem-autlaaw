@@ -50,7 +50,7 @@ exports('RateIncrease', function()
 			},
 		})
 	else
-		exports["sandbox-hud"]:NotifError("Rate Cannot Go Higher")
+		exports["sandbox-hud"]:Notification("error", "Rate Cannot Go Higher")
 	end
 end)
 
@@ -65,7 +65,7 @@ exports('RateDecrease', function()
 			},
 		})
 	else
-		exports["sandbox-hud"]:NotifError("Rate Cannot Go Lower")
+		exports["sandbox-hud"]:Notification("error", "Rate Cannot Go Lower")
 	end
 end)
 

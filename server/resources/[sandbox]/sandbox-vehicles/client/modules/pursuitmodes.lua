@@ -34,7 +34,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                         _inPursuitVehicleMode = k
                         exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Business_Restart",
                             "DLC_Biker_Computer_Sounds")
-                        exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " .. v.name)
+                        exports["sandbox-hud"]:Notification("standard", "Switched to Pursuit Mode " .. v.name)
                         ApplyPursuitStuffToVehicle(_inPursuitVehicleMode)
 
                         Entity(_inPursuitVehicle).state:set('PursuitMode', _inPursuitVehicleMode, true)
@@ -53,7 +53,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 
     exports["sandbox-keybinds"]:Add('vehicle_pursuit_modes', '', 'keyboard', 'Vehicle - Pursuit Modes', function()
         if _inPursuitVehicle and _timeout then
-            exports["sandbox-hud"]:NotifError("Cannot switch modes that quickly.")
+            exports["sandbox-hud"]:Notification("error", "Cannot switch modes that quickly.")
             return
         end
         if _inPursuitVehicle and not _timeout then
@@ -64,7 +64,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
             end
 
             exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
-            exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " ..
+            exports["sandbox-hud"]:Notification("standard", "Switched to Pursuit Mode " ..
                 _inPursuitVehicleSettings[_inPursuitVehicleMode].name or
                 _inPursuitVehicleMode)
             ApplyPursuitStuffToVehicle(_inPursuitVehicleMode)
@@ -94,7 +94,7 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                 _inPursuitVehicleMode = lastPursuitMode
 
                 exports['sandbox-sounds']:UISoundsPlayFrontEnd(-1, "Business_Restart", "DLC_Biker_Computer_Sounds")
-                exports["sandbox-hud"]:NotifStandard("Switched to Pursuit Mode " ..
+                exports["sandbox-hud"]:Notification("standard", "Switched to Pursuit Mode " ..
                     _inPursuitVehicleSettings[_inPursuitVehicleMode].name or _inPursuitVehicleMode)
 
                 ApplyPursuitStuffToVehicle(lastPursuitMode)

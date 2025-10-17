@@ -92,10 +92,10 @@ function ToggleAdminPlayerIDs()
     isPlayerIDActive = not isPlayerIDActive
     if not isPlayerIDActive then
         -- Remove all gamer tags and clear out active table
-        exports["sandbox-hud"]:NotifInfo("Player IDs Disabled")
+        exports["sandbox-hud"]:Notification("info", "Player IDs Disabled")
         cleanUpGamerTags()
     else
-        exports["sandbox-hud"]:NotifInfo("Player IDs Enabled")
+        exports["sandbox-hud"]:Notification("info", "Player IDs Enabled")
         CreateThread(function()
             while isPlayerIDActive do
                 showGamerTags()

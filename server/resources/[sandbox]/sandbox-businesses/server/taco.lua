@@ -12,13 +12,6 @@ AddEventHandler("Businesses:Server:Startup", function()
 	GlobalState["TacoShop:CurrentItem"] = _currentCookItem
 	TriggerClientEvent("Taco:SetQueue", -1, { counter = _deliveryCounter, item = _currentCookItem })
 
-	-- Create storage
-	if _tacoConfig.storage then
-		for _, storage in pairs(_tacoConfig.storage) do
-			exports['sandbox-inventory']:PolyCreate(storage)
-		end
-	end
-
 	exports['sandbox-characters']:RepCreate("TacoDelivery", "Taco Delivery", {
 		{ label = "Rank 1",   value = 500 },
 		{ label = "Rank 2",   value = 1000 },
@@ -37,7 +30,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		{ label = "Pls Stop", value = 7500 },
 	}, false) -- hidden rep
 
-	exports['sandbox-inventory']:CraftingRegisterBench("TacoShopFood", "Taco Farmer Prep Table", {
+	exports.ox_inventory:CraftingRegisterBench("TacoShopFood", "Taco Farmer Prep Table", {
 		actionString = "Packaging",
 		icon = "taco",
 		poly = {
@@ -126,7 +119,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 		},
 	})
 
-	exports['sandbox-inventory']:CraftingRegisterBench("TacoShopDrinks", "Taco Farmer Fountain Drinks", {
+	exports.ox_inventory:CraftingRegisterBench("TacoShopDrinks", "Taco Farmer Fountain Drinks", {
 		actionString = "Pouring",
 		icon = "glass",
 		poly = {
@@ -178,11 +171,11 @@ AddEventHandler("Businesses:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Tacos:AddToQueue", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, data.item) or 0
+			local count = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, data.item) or 0
 			if count > 0 then
-				local itemData = exports['sandbox-inventory']:ItemsGetData(data.item)
+				local itemData = exports.ox_inventory:ItemsGetData(data.item)
 
-				if itemData and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, data.item, _itemCount) then
+				if itemData and exports.ox_inventory:Remove(char:GetData("SID"), 1, data.item, _itemCount) then
 					_deliveryCounter = _deliveryCounter + 1
 					if _deliveryCounter > _tacoQueue.maxQueue then
 						_deliveryCounter = _tacoQueue.maxQueue
@@ -211,7 +204,7 @@ AddEventHandler("Businesses:Server:Startup", function()
 			if _deliveryCounter < 0 then
 				_deliveryCounter = 0
 			end
-			exports['sandbox-inventory']:AddItem(char:GetData("SID"), _dropOffItem, 1, {}, 1)
+			exports.ox_inventory:AddItem(char:GetData("SID"), _dropOffItem, 1, {}, 1)
 			GlobalState["TacoShop:Counter"] = _deliveryCounter
 			GlobalState["TacoShop:CurrentItem"] = _currentCookItem
 			TriggerClientEvent("Taco:SetQueue", -1, { counter = _deliveryCounter, item = _currentCookItem })
@@ -222,11 +215,11 @@ AddEventHandler("Businesses:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Tacos:Dropoff", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, _dropOffItem) or 0
+			local count = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, _dropOffItem) or 0
 			if count > 0 then
-				local itemData = exports['sandbox-inventory']:ItemsGetData(_dropOffItem)
+				local itemData = exports.ox_inventory:ItemsGetData(_dropOffItem)
 
-				if itemData and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, _dropOffItem, _itemCount) then
+				if itemData and exports.ox_inventory:Remove(char:GetData("SID"), 1, _dropOffItem, _itemCount) then
 					local repLevel = exports['sandbox-characters']:RepGetLevel(source, "TacoDelivery") or 0
 					local repGained = 1
 					local _tacoDeliveryCash = math.random(15, 30)
@@ -234,14 +227,14 @@ AddEventHandler("Businesses:Server:Startup", function()
 						_tacoDeliveryCash = math.floor(_tacoDeliveryCash * repLevel)
 					end
 
-					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "moneyroll", 1) then
-						local _moneyRollCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1,
+					if exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "moneyroll", 1) then
+						local _moneyRollCount = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1,
 							"moneyroll")
-						local itemDataMoneyRoll = exports['sandbox-inventory']:ItemsGetData("moneyroll")
+						local itemDataMoneyRoll = exports.ox_inventory:ItemsGetData("moneyroll")
 						if _moneyRollCount >= _maxRolls then
 							if
 								itemDataMoneyRoll
-								and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "moneyroll", _maxRolls)
+								and exports.ox_inventory:Remove(char:GetData("SID"), 1, "moneyroll", _maxRolls)
 							then
 								local _moneyRollOutput = math.floor(
 									((_tacoConfig.tacoPricing[repLevel] / 100) * itemDataMoneyRoll.price) * _maxRolls
@@ -250,14 +243,14 @@ AddEventHandler("Businesses:Server:Startup", function()
 								repGained = repGained + math.random(3)
 							end
 						end
-					elseif exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "moneyband", 1) then
-						local _moneyBandCount = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1,
+					elseif exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "moneyband", 1) then
+						local _moneyBandCount = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1,
 							"moneyband")
-						local itemDataMoneyBand = exports['sandbox-inventory']:ItemsGetData("moneyband")
+						local itemDataMoneyBand = exports.ox_inventory:ItemsGetData("moneyband")
 						if _moneyBandCount >= _maxBands then
 							if
 								itemDataMoneyBand
-								and exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "moneyband", _maxBands)
+								and exports.ox_inventory:Remove(char:GetData("SID"), 1, "moneyband", _maxBands)
 							then
 								local _moneyBandOutput = math.floor(
 									((_tacoConfig.tacoPricing[repLevel] / 100) * itemDataMoneyBand.price) * _maxBands

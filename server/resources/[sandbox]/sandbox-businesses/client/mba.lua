@@ -143,9 +143,9 @@ AddEventHandler("Businesses:Client:MBA:ChangeInterior", function(values)
 	if values?.interior then
 		exports["sandbox-base"]:ServerCallback("MBA:ChangeInterior", values.interior, function(success)
 			if success then
-				exports["sandbox-hud"]:NotifSuccess("Updated")
+				exports["sandbox-hud"]:Notification("success", "Updated")
 			else
-				exports["sandbox-hud"]:NotifError("Failed to Change Event Floor")
+				exports["sandbox-hud"]:Notification("error", "Failed to Change Event Floor")
 			end
 		end)
 	end

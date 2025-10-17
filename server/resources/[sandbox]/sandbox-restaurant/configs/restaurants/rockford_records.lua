@@ -31,28 +31,6 @@ table.insert(Config.Restaurants, {
     		},
     	},
     },
-    Storage = {
-        {
-            id = "rockford_records-storage",
-            type = "box",
-            coords = vector3(-984.61, -263.24, 38.47),
-            length = 1.8,
-            width = 6.0,
-            options = {
-                heading = 297,
-                --debugPoly=true,
-                minZ = 37.47,
-                maxZ = 40.87
-            },
-			data = {
-                business = "rockford_records",
-                inventory = {
-                    invType = 109,
-                    owner = "rockford_records-storage",
-                },
-			},
-        },
-    },
     Pickups = {
         {
             id = "rockford_records-pickup-1",

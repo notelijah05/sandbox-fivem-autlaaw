@@ -46,56 +46,56 @@ function CronTick()
     end)
 end
 
-COMPONENTS.Cron = {
-    _required = { 'Register', 'Delete', 'Pause', 'Resume', 'Skip' },
-    _name = 'base',
-    Register = function(self, id, day, hour, min, cb)
-        if _jobs[id] ~= nil then
-            exports['sandbox-base']:LoggerWarn('Cron', 'Overriding Already Existing Cron Job: ' .. id,
-                { console = true })
-        end
-
-        _jobs[id] = {
-            id = id,
-            day = day,
-            hour = hour,
-            min = min,
-            pause = false,
-            skip = false,
-            callback = cb
-        }
-    end,
-    Delete = function(self, id)
-        if _jobs[id] ~= nil then
-            _jobs[id] = nil
-        else
-            exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Delete Non-Existing Cron Job: ' .. id,
-                { console = true })
-        end
-    end,
-    Pause = function(self, id)
-        if _jobs[id] ~= nil then
-            _jobs[id].pause = true
-        else
-            exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Pause Non-Existing Cron Job: ' .. id,
-                { console = true })
-        end
-    end,
-    Resume = function(self, id)
-        if _jobs[id] ~= nil then
-            _jobs[id].pause = false
-        else
-            exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Resume Non-Existing Cron Job: ' .. id,
-                { console = true })
-        end
-    end,
-    Skip = function(self, id)
-        if _jobs[id] ~= nil then
-            _jobs[id].skip = false
-            _jobs[id].pause = false
-        else
-            exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Skip Non-Existing Cron Job: ' .. id,
-                { console = true })
-        end
+exports('CronRegister', function(id, day, hour, min, cb)
+    if _jobs[id] ~= nil then
+        exports['sandbox-base']:LoggerWarn('Cron', 'Overriding Already Existing Cron Job: ' .. id,
+            { console = true })
     end
-}
+
+    _jobs[id] = {
+        id = id,
+        day = day,
+        hour = hour,
+        min = min,
+        pause = false,
+        skip = false,
+        callback = cb
+    }
+end)
+
+exports('CronDelete', function(id)
+    if _jobs[id] ~= nil then
+        _jobs[id] = nil
+    else
+        exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Delete Non-Existing Cron Job: ' .. id,
+            { console = true })
+    end
+end)
+
+exports('CronPause', function(id)
+    if _jobs[id] ~= nil then
+        _jobs[id].pause = true
+    else
+        exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Pause Non-Existing Cron Job: ' .. id,
+            { console = true })
+    end
+end)
+
+exports('CronResume', function(id)
+    if _jobs[id] ~= nil then
+        _jobs[id].pause = false
+    else
+        exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Resume Non-Existing Cron Job: ' .. id,
+            { console = true })
+    end
+end)
+
+exports('CronSkip', function(id)
+    if _jobs[id] ~= nil then
+        _jobs[id].skip = false
+        _jobs[id].pause = false
+    else
+        exports['sandbox-base']:LoggerWarn('Cron', 'Attempt To Skip Non-Existing Cron Job: ' .. id,
+            { console = true })
+    end
+end)

@@ -99,13 +99,13 @@ exports("HospitalICUSend", function(target)
 			exports['sandbox-jobs']:DutyOff(target, Player(target).state.onDuty)
 			exports['sandbox-police']:UncuffTarget(-1, target)
 			exports['sandbox-ped']:MaskUnequipNoItem(target)
-			exports['sandbox-inventory']:HoldingPut(target)
+			exports.ox_inventory:HoldingPut(target)
 		end)
 
 		exports['sandbox-pwnzor']:TempPosIgnore(target)
 		TriggerClientEvent("Hospital:Client:ICU:Sent", target)
 		TriggerClientEvent("Hospital:Client:ICU:Enter", target)
-		exports['sandbox-hud']:NotifInfo(target, "You Were Admitted To ICU")
+		exports['sandbox-hud']:Notification("info", target, "You Were Admitted To ICU")
 	else
 		return false
 	end
@@ -119,7 +119,7 @@ exports("HospitalICURelease", function(target)
 			Released = true,
 			Items = false,
 		})
-		exports['sandbox-hud']:NotifInfo(target, "You Were Released From ICU")
+		exports['sandbox-hud']:Notification("info", target, "You Were Released From ICU")
 	else
 		return false
 	end
@@ -133,7 +133,7 @@ exports("HospitalICUGetItems", function(target)
 			Released = true,
 			Items = true,
 		})
-		exports['sandbox-inventory']:HoldingTake(target)
+		exports.ox_inventory:HoldingTake(target)
 	else
 		return false
 	end

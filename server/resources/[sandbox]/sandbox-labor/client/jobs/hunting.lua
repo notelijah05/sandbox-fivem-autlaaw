@@ -245,17 +245,18 @@ AddEventHandler("Labor:Client:Setup", function()
 			{
 				icon = "cart-shopping",
 				text = "Buy Stuff",
-				event = "Vendor:Client:GetItems",
-				data = {
-					id = "HuntingBaits",
-				},
+				onSelect = function()
+					TriggerEvent("Vendor:Client:GetItems", { id = "HuntingBaits" })
+				end,
+				data = { id = "HuntingBaits" },
 				rep = { id = "Hunting", level = 2 },
 			},
 			{
 				icon = "sack-dollar",
 				text = "Sell Tier 1 Hides",
-				event = "Hunting:Client:Sell",
-				data = { tier = 1 },
+				onSelect = function()
+					TriggerEvent("Hunting:Client:Sell", nil, { tier = 1 })
+				end,
 				rep = { id = "Hunting", level = 4 },
 				canInteract = function()
 					return true
@@ -264,8 +265,9 @@ AddEventHandler("Labor:Client:Setup", function()
 			{
 				icon = "sack-dollar",
 				text = "Sell Tier 2 Hides",
-				event = "Hunting:Client:Sell",
-				data = { tier = 2 },
+				onSelect = function()
+					TriggerEvent("Hunting:Client:Sell", nil, { tier = 2 })
+				end,
 				rep = { id = "Hunting", level = 5 },
 				canInteract = function()
 					return true
@@ -274,8 +276,9 @@ AddEventHandler("Labor:Client:Setup", function()
 			{
 				icon = "sack-dollar",
 				text = "Sell Tier 3 Hides",
-				event = "Hunting:Client:Sell",
-				data = { tier = 3 },
+				onSelect = function()
+					TriggerEvent("Hunting:Client:Sell", nil, { tier = 3 })
+				end,
 				rep = { id = "Hunting", level = 6 },
 				canInteract = function()
 					return true
@@ -284,8 +287,9 @@ AddEventHandler("Labor:Client:Setup", function()
 			{
 				icon = "sack-dollar",
 				text = "Sell Tier 4 Hides",
-				event = "Hunting:Client:Sell",
-				data = { tier = 4 },
+				onSelect = function()
+					TriggerEvent("Hunting:Client:Sell", nil, { tier = 4 })
+				end,
 				rep = { id = "Hunting", level = 7 },
 				canInteract = function()
 					return true
@@ -327,7 +331,7 @@ AddEventHandler("Labor:Client:Setup", function()
 
 		local dist = #(GetEntityCoords(LocalPlayer.state.ped) - _huntingStore)
 		if dist <= 300.0 then
-			exports["sandbox-hud"]:NotifError("At Least Stop Being Lazy and Move Away From the Store")
+			exports["sandbox-hud"]:Notification("error", "At Least Stop Being Lazy and Move Away From the Store")
 			return cb(false)
 		end
 
@@ -363,11 +367,11 @@ AddEventHandler("Labor:Client:Setup", function()
 					end
 				end)
 			else
-				exports["sandbox-hud"]:NotifError("Cannot Place Trap Here")
+				exports["sandbox-hud"]:Notification("error", "Cannot Place Trap Here")
 				cb(false)
 			end
 		else
-			exports["sandbox-hud"]:NotifError("Cannot Place Trap Here")
+			exports["sandbox-hud"]:Notification("error", "Cannot Place Trap Here")
 			cb(false)
 		end
 	end)
@@ -405,7 +409,7 @@ RegisterNetEvent("Hunting:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("Hunting:Client:OpenShop", function()
-	exports['sandbox-inventory']:ShopOpen("hunting-supplies")
+	exports.ox_inventory:ShopOpen("hunting-supplies")
 end)
 
 AddEventHandler("Hunting:Client:Sell", function(entity, data)
@@ -415,7 +419,7 @@ end)
 AddEventHandler("Hunting:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback("Hunting:StartJob", _joiner, function(state)
 		if not state then
-			exports["sandbox-hud"]:NotifError("Unable To Start Job")
+			exports["sandbox-hud"]:Notification("error", "Unable To Start Job")
 		end
 	end)
 end)
@@ -432,7 +436,7 @@ AddEventHandler("Hunting:Client:Harvest", function(entity, data)
 	TaskTurnPedToFaceEntity(LocalPlayer.state.ped, entity.entity, -1)
 
 	if GetPedCauseOfDeath(entity.entity) ~= wepHash then
-		return exports["sandbox-hud"]:NotifError(
+		return exports["sandbox-hud"]:Notification("error",
 			"Can't Harvest. This Animal Definitely Wasn't Shot With a Hunting Rifle.")
 	end
 
@@ -479,7 +483,7 @@ end)
 AddEventHandler("Hunting:Client:StartJob", function()
 	-- exports["sandbox-base"]:ServerCallback("Mining:StartJob", _joiner, function(state)
 	-- 	if not state then
-	-- 		exports["sandbox-hud"]:NotifError("Unable To Start Job")
+	-- 		exports["sandbox-hud"]:Notification("error", "Unable To Start Job")
 	-- 	end
 	-- end)
 end)

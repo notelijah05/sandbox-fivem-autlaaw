@@ -1,5 +1,5 @@
 function RegisterPBItems()
-	exports['sandbox-inventory']:RegisterUse("thermite", "PaletoRobbery", function(source, slot, itemData)
+	exports.ox_inventory:RegisterUse("thermite", "PaletoRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -16,13 +16,13 @@ function RegisterPBItems()
 				then
 					if PaletoIsGloballyReady(source, true) then
 						if not IsPaletoExploitInstalled() then
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Substation Security Measures Still Engaged, This Would Not Be Effective",
 								6000
 							)
 							return
 						elseif (_bankStates.paleto.substations[subStationId] or 0) > os.time() then
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"This Substation Is Already Disabled", 6000)
 							return
 						end
@@ -32,7 +32,7 @@ function RegisterPBItems()
 								_pbInUse.substations[subStationId] = source
 								GlobalState["PaletoInProgress"] = true
 
-								if exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
+								if exports.ox_inventory:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
 									exports['sandbox-base']:LoggerInfo(
 										"Robbery",
 										string.format(
@@ -153,7 +153,7 @@ function RegisterPBItems()
 									_pbInUse.substations[subStationId] = false
 								end
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Someone Is Already Interacting With This",
 									6000
 								)
@@ -172,13 +172,13 @@ function RegisterPBItems()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if not IsPaletoExploitInstalled() then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Substation Security Measures Still Engaged, This Would Not Be Effective",
 							6000
 						)
 						return
 					elseif not IsPaletoPowerDisabled() then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Regional Power Is Still Active", 6000)
 						return
 					end
@@ -195,7 +195,7 @@ function RegisterPBItems()
 										GlobalState["PaletoInProgress"] = true
 
 										if
-											exports['sandbox-inventory']:RemoveSlot(
+											exports.ox_inventory:RemoveSlot(
 												slot.Owner,
 												slot.Name,
 												1,
@@ -284,7 +284,7 @@ function RegisterPBItems()
 											_pbInUse[v.door] = false
 										end
 									else
-										exports['sandbox-hud']:NotifError(source,
+										exports['sandbox-hud']:Notification(source, "error",
 											"Someone Else Is Already Doing A Thing",
 											6000
 										)
@@ -305,7 +305,7 @@ function RegisterPBItems()
 										GlobalState["PaletoInProgress"] = true
 
 										if
-											exports['sandbox-inventory']:RemoveSlot(
+											exports.ox_inventory:RemoveSlot(
 												slot.Owner,
 												slot.Name,
 												1,
@@ -415,7 +415,7 @@ function RegisterPBItems()
 											_pbInUse.securityAccess[v.powerId] = false
 										end
 									else
-										exports['sandbox-hud']:NotifError(source,
+										exports['sandbox-hud']:Notification(source, "error",
 											"Someone Else Is Already Doing A Thing",
 											6000
 										)
@@ -429,7 +429,7 @@ function RegisterPBItems()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("yellow_laptop", "PaletoRobbery", function(source, slot, itemData)
+	exports.ox_inventory:RegisterUse("yellow_laptop", "PaletoRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -446,13 +446,13 @@ function RegisterPBItems()
 			then
 				if PaletoIsGloballyReady(source, true) then
 					if not IsPaletoExploitInstalled() then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Network Firewalls Still Active, Cannot Do This Yet",
 							6000
 						)
 						return
 					elseif not _bankStates.paleto.vaultTerminal then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Terminal Security Override Still Enganged, Find A Way To Disable This",
 							6000
 						)
@@ -506,7 +506,7 @@ function RegisterPBItems()
 
 											local timer = math.random(2, 4)
 
-											exports['sandbox-hud']:NotifSuccess(source,
+											exports['sandbox-hud']:Notification(source, "success",
 												string.format("Time Lock Disengaging, Please Wait %s Minutes", timer),
 												6000
 											)
@@ -517,7 +517,7 @@ function RegisterPBItems()
 												expires = os.time() + (60 * timer),
 											})
 
-											exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot,
+											exports.ox_inventory:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot,
 												1)
 											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 											GlobalState["Fleeca:Disable:savings_paleto"] = true
@@ -537,15 +537,15 @@ function RegisterPBItems()
 
 											local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 											if os.time() - itemData.durability >= newValue then
-												exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
+												exports.ox_inventory:RemoveId(char:GetData("SID"), 1, slot)
 											else
-												exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+												exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 											end
 										end
 										_pbInUse[k] = false
 									end)
 								else
-									exports['sandbox-hud']:NotifError(source,
+									exports['sandbox-hud']:Notification(source, "error",
 										"Someone Else Is Already Doing A Thing",
 										6000
 									)
@@ -557,7 +557,7 @@ function RegisterPBItems()
 				else
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -565,3 +565,9 @@ function RegisterPBItems()
 		end
 	end)
 end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterPBItems()
+	end
+end)

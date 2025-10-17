@@ -277,7 +277,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
         function(data)
             _nodes = data
             _state = 4
-            exports["sandbox-hud"]:NotifSuccess("House Has Been Lockpicked")
+            exports["sandbox-hud"]:Notification("success", "House Has Been Lockpicked")
         end)
 
     eventHandlers["do-hack"] = RegisterNetEvent(string.format("HouseRobbery:Client:%s:HackAlarm", joiner),
@@ -375,7 +375,7 @@ RegisterNetEvent("HouseRobbery:Client:OnDuty", function(joiner, time)
                     icon = "sensor-triangle-exclamation",
                     label = "Disable Alarm",
                     event = string.format("HouseRobbery:Client:%s:HackAlarm", joiner),
-                    canInteract = function(data, entity)
+                    canInteract = function()
                         return _working and _nodes ~= nil and _state == 4 and _nodes.chances.alarm and
                             not _nodes.states.alarm.disabled and not _nodes.states.alarm.triggered and
                             (_scPass <= 3 and _scFails <= 2)
@@ -450,7 +450,7 @@ end)
 AddEventHandler("HouseRobbery:Client:StartJob", function()
     exports["sandbox-base"]:ServerCallback('HouseRobbery:StartJob', _joiner, function(state)
         if not state then
-            exports["sandbox-hud"]:NotifError("Unable To Start Job")
+            exports["sandbox-hud"]:Notification("error", "Unable To Start Job")
         end
     end)
 end)
@@ -484,7 +484,7 @@ AddEventHandler("HouseRobbery:Client:HackSuccess", function(data)
             propertyId = data.pId,
             state = true
         }, function()
-            exports["sandbox-hud"]:NotifSuccess("Alarm Bypassed")
+            exports["sandbox-hud"]:Notification("success", "Alarm Bypassed")
         end)
     else
         Wait(1500)

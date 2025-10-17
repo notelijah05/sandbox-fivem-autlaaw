@@ -92,7 +92,7 @@ AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
 	end, function(cancelled)
 		if not cancelled then
 			exports["sandbox-base"]:ServerCallback("Robbery:Holdup:Do", entity.serverId, function(s)
-				exports['sandbox-inventory']:DumbfuckOpen(s)
+				exports.ox_inventory:DumbfuckOpen(s)
 
 				while not LocalPlayer.state.inventoryOpen do
 					Wait(1)
@@ -106,7 +106,7 @@ AddEventHandler("Robbery:Client:Holdup:Do", function(entity, data)
 								- GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(entity.serverId)))
 							) > 3.0
 						then
-							exports['sandbox-inventory']:CloseAll()
+							exports.ox_inventory:CloseAll()
 						end
 						Wait(2)
 					end

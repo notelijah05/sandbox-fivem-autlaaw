@@ -284,10 +284,6 @@ function InitCore()
 end
 
 CreateThread(function()
-	while not exports or exports[GetCurrentResourceName()] == nil do
-		Wait(1)
-	end
-
 	local ped = PlayerPedId()
 	FreezeEntityPosition(ped, true)
 	SetEntityVisible(ped, false)
@@ -301,14 +297,7 @@ CreateThread(function()
 	InitCore()
 
 	TriggerEvent("Proxy:Shared:RegisterReady")
-	for k, v in pairs(COMPONENTS) do
-		TriggerEvent("Proxy:Shared:ExtendReady", k)
-	end
-
 	Wait(1000)
-
-	COMPONENTS.Proxy.ExportsReady = true
-	return
 end)
 
 AddEventHandler("onResourceStopped", function(resourceName)

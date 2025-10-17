@@ -114,6 +114,7 @@ function GetFleecaIds()
 end
 
 AddEventHandler("Robbery:Server:Setup", function()
+	RegisterItems()
 	local t = {}
 	for k, v in pairs(FLEECA_LOCATIONS) do
 		_inProgress[v.id] = false
@@ -146,19 +147,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 				)
 			then
 				if GetGameTimer() < SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not _inProgress[pState.fleeca]) then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
 					return
 				elseif (GlobalState["Duty:police"] or 0) < REQUIRED_POLICE and not _inProgress[pState.fleeca] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState['RobberiesDisabled'] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -171,9 +172,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 					_inUse.Loot[data.id] = source
 					GlobalState["MazeBankInProgress"] = true
 
-					if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "drill", 1) then
-						local slot = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), "drill", 1)
-						local itemData = exports['sandbox-inventory']:ItemsGetData("drill")
+					if exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "drill", 1) then
+						local slot = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), "drill", 1)
+						local itemData = exports.ox_inventory:ItemsGetData("drill")
 
 						if slot ~= nil then
 							exports['sandbox-base']:LoggerInfo(
@@ -198,9 +199,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 									newValue = slot.CreateDate - (itemData.durability / 5)
 								end
 								if os.time() - itemData.durability >= newValue then
-									exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+									exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 								else
-									exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+									exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 								end
 
 								if _robberyAlerts[pState.fleeca] == nil or _robberyAlerts[pState.fleeca] < os.time() then
@@ -245,11 +246,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 										GlobalState["AntiShitlord"] = os.time() + (60 * math.random(10, 15))
 									end
 
-									exports['sandbox-inventory']:LootCustomWeightedSetWithCount(
+									exports.ox_inventory:LootCustomWeightedSetWithCount(
 										_vaultLoot.trolley[lootData?.type?.type or "cash"],
 										char:GetData("SID"), 1)
 									if math.random(100) <= 3 then
-										exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+										exports.ox_inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 											CryptoCoin = "HEIST",
 											Quantity = 4
 										}, 1)
@@ -258,7 +259,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									if _redDongies[pState.fleeca] == nil then
 										if data.index > 2 and math.random(100) <= (1 * data.index) then
 											_redDongies[pState.fleeca] = source
-											exports['sandbox-inventory']:AddItem(char:GetData("SID"), "red_dongle", 1, {},
+											exports.ox_inventory:AddItem(char:GetData("SID"), "red_dongle", 1, {},
 												1)
 										end
 									end
@@ -280,16 +281,16 @@ AddEventHandler("Robbery:Server:Setup", function()
 						end
 					else
 						_inUse.Loot[data.id] = false
-						exports['sandbox-hud']:NotifError(source, "You Need A Drill", 6000)
+						exports['sandbox-hud']:Notification(source, "error", "You Need A Drill", 6000)
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Someone Is Already Interacting With This",
 						6000
 					)
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -330,8 +331,10 @@ AddEventHandler("Robbery:Server:Setup", function()
 			end
 		end
 	end)
+end)
 
-	exports['sandbox-inventory']:RegisterUse("green_laptop", "FleecaRobbery", function(source, slot, itemData)
+function RegisterItems()
+	exports.ox_inventory:RegisterUse("green_laptop", "FleecaRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -343,19 +346,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local bankData = GlobalState[string.format("FleecaRobberies:%s", pState.fleeca)]
 				if #(bankData.points.vaultPC.coords - playerCoords) <= 1.5 then
 					if GetGameTimer() < SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not _inProgress[pState.fleeca]) then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return
 					elseif (GlobalState["Duty:police"] or 0) < REQUIRED_POLICE and not _inProgress[pState.fleeca] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return
 					elseif GlobalState['RobberiesDisabled'] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -433,11 +436,11 @@ AddEventHandler("Robbery:Server:Setup", function()
 											expires = os.time() + (60 * timer),
 										}
 										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
-										exports['sandbox-hud']:NotifSuccess(source,
+										exports['sandbox-hud']:Notification(source, "success",
 											string.format("Time Lock Disengaging, Please Wait %s Minutes", timer),
 											6000
 										)
-										exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+										exports.ox_inventory:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 									else
 										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 
@@ -447,9 +450,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 												pState.fleeca))
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 2)
 										if (os.time() - itemData.durability >= newValue) then
-											exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+											exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 										else
-											exports['sandbox-inventory']:SetItemCreateDate(
+											exports.ox_inventory:SetItemCreateDate(
 												slot.id,
 												newValue
 											)
@@ -459,7 +462,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								end, pState.fleeca
 							)
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Someone Else Is Doing A Thing", 6000)
 						end
 						return
@@ -467,7 +470,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 						GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)] == nil
 						and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].state == 1
 					then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Unable To Insert, Appears The Computer Has Been Tampered With",
 							6000
 						)
@@ -476,14 +479,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 						and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].state == 4
 						and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].expires > os.time()
 					then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Access Denied: Emergency Security Overrides Enabled",
 							6000
 						)
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -491,7 +494,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("thermite", "FleecaRobbery", function(source, slot, itemData)
+	exports.ox_inventory:RegisterUse("thermite", "FleecaRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -503,19 +506,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local bankData = GlobalState[string.format("FleecaRobberies:%s", pState.fleeca)]
 				if #(bankData.points.vaultGate.coords - playerCoords) <= 1.5 then
 					if GetGameTimer() < SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not _inProgress[pState.fleeca]) then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return
 					elseif (GlobalState["Duty:police"] or 0) < REQUIRED_POLICE and not _inProgress[pState.fleeca] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return
 					elseif GlobalState['RobberiesDisabled'] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -562,7 +565,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								_robberyAlerts[pState.fleeca] = os.time() + 60 * 20
 							end
 
-							exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+							exports.ox_inventory:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 							exports["sandbox-base"]:ClientCallback(
 								source,
 								"Robbery:Games:Thermite",
@@ -594,7 +597,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 										}
 										exports['sandbox-doors']:SetLock(string.format("%s_gate", pState.fleeca), false)
 										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
-										exports['sandbox-hud']:NotifSuccess(source,
+										exports['sandbox-hud']:Notification(source, "success",
 											"Doorlock Disengaged", 6000)
 									else
 										exports['sandbox-base']:LoggerInfo("Robbery",
@@ -607,13 +610,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 								end, pState.fleeca
 							)
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Someone Else Is Doing A Thing", 6000)
 						end
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -621,7 +624,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("fleeca_card", "FleecaRobbery", function(source, itemData)
+	exports.ox_inventory:RegisterUse("fleeca_card", "FleecaRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -636,19 +639,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 						<= 1.5
 					then
 						if GetGameTimer() < SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not _inProgress[pState.fleeca]) then
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 								6000
 							)
 							return
 						elseif (GlobalState["Duty:police"] or 0) < REQUIRED_POLICE and not _inProgress[pState.fleeca] then
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 								6000
 							)
 							return
 						elseif GlobalState['RobberiesDisabled'] then
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Temporarily Disabled, Please See City Announcements",
 								6000
 							)
@@ -691,7 +694,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 												expires = os.time() + (60 * timer),
 											}
 											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
-											exports['sandbox-hud']:NotifSuccess(source,
+											exports['sandbox-hud']:Notification(source, "success",
 												string.format("Time Lock Disengaging, Please Wait %s Minutes", timer),
 												6000
 											)
@@ -707,7 +710,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 											}
 											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 										end
-										exports['sandbox-inventory']:RemoveSlot(
+										exports.ox_inventory:RemoveSlot(
 											itemData.Owner,
 											itemData.Name,
 											1,
@@ -718,7 +721,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 									end
 								)
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Someone Else Is Doing A Thing", 6000)
 							end
 							return
@@ -726,7 +729,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)] == nil
 							and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].state == 1
 						then
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Unable To Insert, Appears The Computer Has Been Tampered With",
 								6000
 							)
@@ -735,27 +738,27 @@ AddEventHandler("Robbery:Server:Setup", function()
 							and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].state == 4
 							and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].expires > os.time()
 						then
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Access Denied: Emergency Security Overrides Enabled",
 								6000
 							)
 						end
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 						6000
 					)
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Invalid Access Card: Incorrect Location", 6000)
 				return
 			end
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("moneybag", "FleecaRobbery", function(source, itemData)
+	exports.ox_inventory:RegisterUse("moneybag", "FleecaRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if os.time() >= itemData.MetaData.Finished then
 			local amt = itemData.MetaData?.CustomAmt and
@@ -764,10 +767,16 @@ AddEventHandler("Robbery:Server:Setup", function()
 			exports['sandbox-base']:LoggerInfo("Robbery",
 				string.format("%s %s (%s) Used A Money Bag, Received $%s", char:GetData("First"), char:GetData("Last"),
 					char:GetData("SID"), amt))
-			exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
+			exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 			exports['sandbox-finance']:WalletModify(source, amt)
 		else
-			exports['sandbox-hud']:NotifError(source, "Not Ready Yet", 6000)
+			exports['sandbox-hud']:Notification(source, "error", "Not Ready Yet", 6000)
 		end
 	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
 end)

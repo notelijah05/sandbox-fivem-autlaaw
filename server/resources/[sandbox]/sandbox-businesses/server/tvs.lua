@@ -8,18 +8,15 @@ AddEventHandler('Businesses:Server:Startup', function()
             end
         end
 
-        exports['sandbox-base']:DatabaseGameFind({
-            collection = 'business_tvs',
-            query = {}
-        }, function(success, results)
-            if success and #results > 0 then
-                for k, v in pairs(results) do
-                    if v.tv and _tvData[v.tv] then
-                        GlobalState[string.format('TVsLink:%s', v.tv)] = v.link
-                    end
+        local results = MySQL.query.await("SELECT * FROM business_tvs")
+
+        if results and #results > 0 then
+            for k, v in pairs(results) do
+                if v.tv and _tvData[v.tv] then
+                    GlobalState[string.format('TVsLink:%s', v.tv)] = v.link
                 end
             end
-        end)
+        end
     end
 
     exports["sandbox-base"]:RegisterServerCallback('TVs:UpdateTVLink', function(source, data, cb)
@@ -43,30 +40,18 @@ AddEventHandler('Businesses:Server:Startup', function()
 end)
 
 function SetBusinessTVLink(tvId, link)
-    local p = promise.new()
+    local result = MySQL.update.await([[
+          UPDATE business_tvs
+          SET link = ?
+          WHERE tv = ?
+      ]], { link, tvId })
 
-    exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
-        collection = 'business_tvs',
-        query = {
-            tv = tvId,
-        },
-        update = {
-            ['$set'] = {
-                link = link,
-            },
-        },
-        options = {
-            returnDocument = 'after',
-            upsert = true,
-        }
-    }, function(success, results)
-        if success and results then
-            p:resolve(results.link)
-        else
-            p:resolve(false)
-        end
-    end)
+    if result.affectedRows == 0 then
+        MySQL.insert.await([[
+              INSERT INTO business_tvs (tv, link)
+              VALUES (?, ?)
+          ]], { tvId, link })
+    end
 
-    local res = Citizen.Await(p)
-    return res
+    return link
 end

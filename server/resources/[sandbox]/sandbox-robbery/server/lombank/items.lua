@@ -1,5 +1,5 @@
 function RegisterLBItemUses()
-	exports['sandbox-inventory']:RegisterUse("thermite", "LombankRobbery", function(source, itemData)
+	exports.ox_inventory:RegisterUse("thermite", "LombankRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -15,7 +15,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -24,13 +24,13 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -47,7 +47,7 @@ function RegisterLBItemUses()
 								GlobalState["LombankInProgress"] = true
 
 								if
-									exports['sandbox-inventory']:RemoveSlot(
+									exports.ox_inventory:RemoveSlot(
 										itemData.Owner,
 										itemData.Name,
 										1,
@@ -134,7 +134,7 @@ function RegisterLBItemUses()
 									_lbInUse[k] = false
 								end
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Someone Is Already Interacting With This",
 									6000
 								)
@@ -143,7 +143,7 @@ function RegisterLBItemUses()
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -165,7 +165,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -174,13 +174,13 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -195,7 +195,7 @@ function RegisterLBItemUses()
 						GlobalState["LombankInProgress"] = true
 
 						if
-							exports['sandbox-inventory']:RemoveSlot(
+							exports.ox_inventory:RemoveSlot(
 								itemData.Owner,
 								itemData.Name,
 								1,
@@ -279,7 +279,7 @@ function RegisterLBItemUses()
 							_lbInUse.vaultPower = false
 						end
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Someone Is Already Interacting With This",
 							6000
 						)
@@ -288,7 +288,7 @@ function RegisterLBItemUses()
 					return
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -296,7 +296,7 @@ function RegisterLBItemUses()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("purple_laptop", "LombankRobbery", function(source, slot, itemData)
+	exports.ox_inventory:RegisterUse("purple_laptop", "LombankRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -315,7 +315,7 @@ function RegisterLBItemUses()
 					GetGameTimer() < LOMBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["LombankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -324,13 +324,13 @@ function RegisterLBItemUses()
 					(GlobalState["Duty:police"] or 0) < LOMBANK_REQUIRED_POLICE
 					and not GlobalState["LombankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -374,7 +374,7 @@ function RegisterLBItemUses()
 
 										local timer = math.random(2, 4)
 
-										exports['sandbox-hud']:NotifSuccess(source,
+										exports['sandbox-hud']:Notification(source, "success",
 											string.format("Time Lock Disengaging, Please Wait %s Minutes", timer),
 											6000
 										)
@@ -385,7 +385,7 @@ function RegisterLBItemUses()
 											expires = os.time() + (60 * timer),
 										})
 
-										exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+										exports.ox_inventory:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 										GlobalState["Fleeca:Disable:lombank_legion"] = true
 										if not _lbAlerted or os.time() > _lbAlerted then
@@ -424,15 +424,15 @@ function RegisterLBItemUses()
 
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 										if os.time() - itemData.durability >= newValue then
-											exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
+											exports.ox_inventory:RemoveId(char:GetData("SID"), 1, slot)
 										else
-											exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+											exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 										end
 									end
 									_lbInUse[k] = false
 								end)
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Someone Else Is Already Doing A Thing",
 									6000
 								)
@@ -442,7 +442,7 @@ function RegisterLBItemUses()
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -450,3 +450,9 @@ function RegisterLBItemUses()
 		end
 	end)
 end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterLBItemUses()
+	end
+end)

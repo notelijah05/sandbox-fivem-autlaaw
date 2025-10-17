@@ -32,28 +32,6 @@ table.insert(Config.Restaurants, {
 			},
 		},
 	},
-	Storage = {
-		{
-			id = "bahama-storage",
-			type = "box",
-			coords = vector3(-1377.012, -634.215, 30.320),
-			width = 2.0,
-			length = 1.0,
-			options = {
-				heading = 215.0,
-				--debugPoly=true,
-				minZ = 29.320,
-				maxZ = 31.320,
-			},
-			data = {
-				business = "bahama",
-				inventory = {
-					invType = 157,
-					owner = "bahama-storage",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{
 			id = "bahama-pickup-1",

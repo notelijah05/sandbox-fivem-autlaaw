@@ -1,7 +1,7 @@
 _tabletProp = nil
 
 exports('Open', function()
-	exports['sandbox-inventory']:CloseAll()
+	exports.ox_inventory:CloseAll()
 	exports['sandbox-animations']:EmotesForceCancel()
 	exports['sandbox-hud']:InteractionHide()
 	LocalPlayer.state.laptopOpen = true
@@ -167,7 +167,7 @@ end)
 
 exports('AddNotification', function(title, description, time, duration, app, actions, notifData)
 	if
-		not LocalPlayer.state.loggedIn or not hasValue(LocalPlayer.state.Character:GetData("States"), "LAPTOP")
+		not LocalPlayer.state.loggedIn or not (exports.ox_inventory:Search('count', 'laptop') == 0)
 	then
 		return
 	end

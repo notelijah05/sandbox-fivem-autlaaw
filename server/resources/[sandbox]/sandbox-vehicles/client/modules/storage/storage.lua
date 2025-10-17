@@ -105,9 +105,9 @@ AddEventHandler('Vehicles:Client:StoreVehicle', function(entityData)
                     storageId = vehicleStorageZoneId,
                 }, function(success)
                     if success then
-                        exports["sandbox-hud"]:NotifSuccess('Stored Vehicle')
+                        exports["sandbox-hud"]:Notification("success", 'Stored Vehicle')
                     else
-                        exports["sandbox-hud"]:NotifError('Error Storing Vehicle')
+                        exports["sandbox-hud"]:Notification("error", 'Error Storing Vehicle')
                     end
                 end)
             else
@@ -120,24 +120,24 @@ AddEventHandler('Vehicles:Client:StoreVehicle', function(entityData)
                             storageId = propGarage.propertyId,
                         }, function(success, tooFull)
                             if success then
-                                exports["sandbox-hud"]:NotifSuccess('Stored Vehicle')
+                                exports["sandbox-hud"]:Notification("success", 'Stored Vehicle')
                             else
                                 if tooFull then
-                                    exports["sandbox-hud"]:NotifError('Error Storing Vehicle - It\'s Full')
+                                    exports["sandbox-hud"]:Notification("error", 'Error Storing Vehicle - It\'s Full')
                                 else
-                                    exports["sandbox-hud"]:NotifError('Error Storing Vehicle')
+                                    exports["sandbox-hud"]:Notification("error", 'Error Storing Vehicle')
                                 end
                             end
                         end)
                     else
-                        exports["sandbox-hud"]:NotifError('Don\'t Have Keys to Garage')
+                        exports["sandbox-hud"]:Notification("error", 'Don\'t Have Keys to Garage')
                     end
                 else
-                    exports["sandbox-hud"]:NotifError('Error Storing Vehicle')
+                    exports["sandbox-hud"]:Notification("error", 'Error Storing Vehicle')
                 end
             end
         else
-            exports["sandbox-hud"]:NotifError('Error Storing Vehicle')
+            exports["sandbox-hud"]:Notification("error", 'Error Storing Vehicle')
         end
     end
 end)
@@ -149,7 +149,7 @@ function OpenVehicleStorage()
         local myDuty = LocalPlayer.state.onDuty
         local vehStorageData = _vehicleStorage[vehicleStorageZoneId]
         if not vehStorageData or (vehStorageData.restricted and not DoesCharacterPassStorageRestrictions(-1, exports['sandbox-jobs']:GetJobs(), vehStorageData.restricted)) then
-            return exports["sandbox-hud"]:NotifError('Invalid Permission To Access This Vehicle Storage')
+            return exports["sandbox-hud"]:Notification("error", 'Invalid Permission To Access This Vehicle Storage')
         end
 
         if vehStorageData and vehStorageData.spaces then
@@ -164,7 +164,7 @@ function OpenVehicleStorage()
                 exports["sandbox-base"]:ServerCallback('Vehicles:GetVehiclesInStorage', vehicleStorageZoneId,
                     function(storedVehicles)
                         if not storedVehicles then
-                            exports["sandbox-hud"]:NotifError('Error Fetching Vehicle Storage')
+                            exports["sandbox-hud"]:Notification("error", 'Error Fetching Vehicle Storage')
                             return
                         end
 
@@ -178,11 +178,11 @@ function OpenVehicleStorage()
                             }
                             OpenVehicleStorageMenu(1, vehicleStorageZoneId, storedVehicles, parkingSpace, myDuty)
                         else
-                            exports["sandbox-hud"]:NotifError('Vehicle Storage Is Empty')
+                            exports["sandbox-hud"]:Notification("error", 'Vehicle Storage Is Empty')
                         end
                     end)
             else
-                exports["sandbox-hud"]:NotifError('Could Not Find Parking Space')
+                exports["sandbox-hud"]:Notification("error", 'Could Not Find Parking Space')
             end
         end
     else
@@ -196,7 +196,7 @@ function OpenVehicleStorage()
                     .propertyId,
                     function(storedVehicles, data, characterId, characters)
                         if not storedVehicles then
-                            exports["sandbox-hud"]:NotifError('Error Fetching Vehicle Storage')
+                            exports["sandbox-hud"]:Notification("error", 'Error Fetching Vehicle Storage')
                             return
                         end
 
@@ -224,11 +224,11 @@ function OpenVehicleStorage()
                                 characters
                             )
                         else
-                            exports["sandbox-hud"]:NotifError('Vehicle Storage Is Empty')
+                            exports["sandbox-hud"]:Notification("error", 'Vehicle Storage Is Empty')
                         end
                     end)
             else
-                exports["sandbox-hud"]:NotifError('Could Not Find Parking Space')
+                exports["sandbox-hud"]:Notification("error", 'Could Not Find Parking Space')
             end
         end
     end
@@ -642,7 +642,7 @@ end)
 
 AddEventHandler('Vehicles:Client:Storage:Retrieve', function(data)
     if loadingVehicleStorageVehicle then
-        exports["sandbox-hud"]:NotifError('Awaiting Vehicle Load')
+        exports["sandbox-hud"]:Notification("error", 'Awaiting Vehicle Load')
         Citizen.SetTimeout(2500, function()
             CleanupTempVehicle()
         end)
@@ -660,9 +660,9 @@ AddEventHandler('Vehicles:Client:Storage:Retrieve', function(data)
         }, function(success)
             CleanupTempVehicle()
             if success then
-                exports["sandbox-hud"]:NotifInfo('Spawned Vehicle & Received Keys')
+                exports["sandbox-hud"]:Notification("info", 'Spawned Vehicle & Received Keys')
             else
-                exports["sandbox-hud"]:NotifError('Error') -- Very descriptive error message
+                exports["sandbox-hud"]:Notification("error", 'Error') -- Very descriptive error message
             end
         end)
     end

@@ -114,7 +114,7 @@ end)
 
 -- 			exports['sandbox-hud']:ListMenuShow(menu)
 -- 		else
--- 			exports["sandbox-hud"]:NotifError("You Have No Requesting Visitors")
+-- 			exports["sandbox-hud"]:Notification("error", "You Have No Requesting Visitors")
 -- 		end
 -- 	end)
 -- end
@@ -146,8 +146,9 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 				name = "apt_exit",
 				label = "Exit",
 				icon = "fa-solid fa-door-open",
-				event = "Apartment:Client:ExitEvent",
-				data = unit,
+				onSelect = function()
+					TriggerEvent("Apartment:Client:ExitEvent", unit)
+				end,
 				distance = 3.0,
 			},
 		},
@@ -166,8 +167,9 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 				name = "apt_logout",
 				label = "Switch Characters",
 				icon = "fa-solid fa-bed",
-				event = "Apartment:Client:Logout",
-				data = unit,
+				onSelect = function()
+					TriggerEvent("Apartment:Client:Logout", unit)
+				end,
 				distance = 3.0,
 				canInteract = function()
 					return unit == LocalPlayer.state.Character:GetData("SID")
@@ -189,8 +191,9 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 				name = "apt_wardrobe",
 				label = "Wardrobe",
 				icon = "fa-solid fa-shirt",
-				event = "Apartment:Client:Wardrobe",
-				data = unit,
+				onSelect = function()
+					TriggerEvent("Apartment:Client:Wardrobe", unit)
+				end,
 				distance = 3.0,
 				canInteract = function()
 					return unit == LocalPlayer.state.Character:GetData("SID")
@@ -212,8 +215,9 @@ RegisterNetEvent("Apartment:Client:InnerStuff", function(aptId, unit, wakeUp)
 				name = "apt_stash",
 				label = "Stash",
 				icon = "fa-solid fa-box",
-				event = "Apartment:Client:Stash",
-				data = aptId,
+				onSelect = function()
+					TriggerEvent("Apartment:Client:Stash", aptId)
+				end,
 				distance = 2.0,
 			},
 		},
@@ -393,10 +397,15 @@ exports("GetNearApartment", function()
 end)
 
 exports("ExtrasStash", function()
-	exports["sandbox-base"]:ServerCallback("Apartment:Validate", {
-		id = GlobalState[string.format("%s:", LocalPlayer.state.ID)],
-		type = "stash",
-	})
+	local apartmentType = LocalPlayer.state.inApartment.type
+	local characterSID = LocalPlayer.state.Character:GetData("SID")
+
+	if characterSID then
+		exports.ox_inventory:openInventory('stash', {
+			id = string.format("apartment_%s", apartmentType),
+			owner = characterSID
+		})
+	end
 end)
 
 exports("ExtrasWardrobe", function()
@@ -423,4 +432,14 @@ end)
 
 RegisterNetEvent("Apartment:Client:Enter", function(targetType, target, wakeUp)
 	exports['sandbox-apartments']:ClientEnter(targetType, target, wakeUp)
+end)
+
+RegisterNetEvent("Characters:Client:Logout")
+AddEventHandler("Characters:Client:Logout", function()
+	for k, v in pairs(_apartmentZones) do
+		if exports.ox_target:zoneExists(v) then
+			exports.ox_target:removeZone(v)
+		end
+		_apartmentZones[k] = nil
+	end
 end)

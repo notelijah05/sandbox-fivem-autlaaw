@@ -1,9 +1,9 @@
 AddEventHandler('Tow:Client:RequestJob', function()
     exports["sandbox-base"]:ServerCallback('Tow:RequestJob', {}, function(success)
         if success then
-            exports["sandbox-hud"]:NotifSuccess('You are Now Employed at Tow Yard', 5000, 'truck-tow')
+            exports["sandbox-hud"]:Notification("success", 'You are Now Employed at Tow Yard', 5000, 'truck-tow')
         else
-            exports["sandbox-hud"]:NotifError('Employement Request Failed', 5000, 'truck-tow')
+            exports["sandbox-hud"]:Notification("error", 'Employement Request Failed', 5000, 'truck-tow')
         end
     end)
 end)
@@ -11,7 +11,7 @@ end)
 AddEventHandler('Tow:Client:QuitJob', function()
     exports["sandbox-base"]:ServerCallback('Tow:QuitJob', {}, function(success)
         if not success then
-            exports["sandbox-hud"]:NotifError('Request to Quit Failed', 5000, 'truck-tow')
+            exports["sandbox-hud"]:Notification("error", 'Request to Quit Failed', 5000, 'truck-tow')
         end
     end)
 end)
@@ -33,7 +33,7 @@ AddEventHandler('Tow:Client:RequestTruck', function()
             end
         end)
     else
-        exports["sandbox-hud"]:NotifError('Parking Space Occupied, Move Out the Way!', 7500, 'truck-tow')
+        exports["sandbox-hud"]:Notification("error", 'Parking Space Occupied, Move Out the Way!', 7500, 'truck-tow')
     end
 end)
 
@@ -77,16 +77,16 @@ AddEventHandler('Tow:Client:RequestImpound', function(entityData)
                     type = 'impound',
                 }, function(success)
                     if success then
-                        exports["sandbox-hud"]:NotifSuccess('Vehicle Impounded Successfully')
+                        exports["sandbox-hud"]:Notification("success", 'Vehicle Impounded Successfully')
                     else
-                        exports["sandbox-hud"]:NotifError('Impound Failed Miserably')
+                        exports["sandbox-hud"]:Notification("error", 'Impound Failed Miserably')
                     end
                 end)
             else
-                exports["sandbox-hud"]:NotifError('Impound Failed')
+                exports["sandbox-hud"]:Notification("error", 'Impound Failed')
             end
         end)
     else
-        exports["sandbox-hud"]:NotifError('Cannot Impound That Vehicle')
+        exports["sandbox-hud"]:Notification("error", 'Cannot Impound That Vehicle')
     end
 end)

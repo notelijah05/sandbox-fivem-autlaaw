@@ -7,7 +7,7 @@ function CreateFurnitureCallbacks()
             local insideProperty = GlobalState[string.format("%s:Property", source)]
             if insideProperty and data.model and data.coords and data.rotation then
                 local property = _properties[insideProperty]
-                if property and (property.keys ~= nil and property.keys[char:GetData("ID")]) and _loadedFurniture[property.id] and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.furniture or property.keys[char:GetData("ID")].Owner) then
+                if property and (property.keys ~= nil and property.keys[char:GetData("ID")]) and _loadedFurniture[property.id] and property.keys[char:GetData("ID")] ~= nil and ((property.keys[char:GetData("ID")].Permissions and property.keys[char:GetData("ID")].Permissions.furniture) or property.keys[char:GetData("ID")].Owner) then
                     local fData = FurnitureConfig[data.model]
                     if fData then
                         local currentId = 0
@@ -58,7 +58,7 @@ function CreateFurnitureCallbacks()
             local insideProperty = GlobalState[string.format("%s:Property", source)]
             if insideProperty and data.id and data.coords and data.rotation then
                 local property = _properties[insideProperty]
-                if property and (property.keys ~= nil and property.keys[char:GetData("ID")]) and _loadedFurniture[property.id] and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.furniture or property.keys[char:GetData("ID")].Owner) then
+                if property and (property.keys ~= nil and property.keys[char:GetData("ID")]) and _loadedFurniture[property.id] and property.keys[char:GetData("ID")] ~= nil and ((property.keys[char:GetData("ID")].Permissions and property.keys[char:GetData("ID")].Permissions.furniture) or property.keys[char:GetData("ID")].Owner) then
                     local index = 0
                     for k, v in ipairs(_loadedFurniture[property.id]) do
                         if v.id == data.id then
@@ -102,7 +102,7 @@ function CreateFurnitureCallbacks()
             local insideProperty = GlobalState[string.format("%s:Property", source)]
             if insideProperty and data.id then
                 local property = _properties[insideProperty]
-                if property and (property.keys ~= nil and property.keys[char:GetData("ID")]) and _loadedFurniture[property.id] and property.keys[char:GetData("ID")] ~= nil and (property.keys[char:GetData("ID")].Permissions?.furniture or property.keys[char:GetData("ID")].Owner) then
+                if property and (property.keys ~= nil and property.keys[char:GetData("ID")]) and _loadedFurniture[property.id] and property.keys[char:GetData("ID")] ~= nil and ((property.keys[char:GetData("ID")].Permissions and property.keys[char:GetData("ID")].Permissions.furniture) or property.keys[char:GetData("ID")].Owner) then
                     local nF = {}
                     for k, v in ipairs(_loadedFurniture[property.id]) do
                         if v.id ~= data.id then
@@ -142,15 +142,13 @@ function GetPropertyFurniture(pId, pInt)
     end
 
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameFindOne({
-        collection = "properties_furniture",
-        query = { property = pId },
-    }, function(success, results)
-        if success and #results > 0 and results[1] and results[1].furniture then
-            p:resolve(results[1].furniture)
+    exports.oxmysql:execute('SELECT * FROM properties_furniture WHERE property = ?', { pId }, function(results)
+        if results and #results > 0 and results[1] and results[1].furniture then
+            local furniture = json.decode(results[1].furniture)
+            p:resolve(furniture)
         else
             local interior = PropertyInteriors[pInt]
-            if interior?.defaultFurniture then
+            if interior and interior.defaultFurniture then
                 p:resolve(table.copy(interior.defaultFurniture))
             else
                 p:resolve({})
@@ -171,21 +169,13 @@ function SetPropertyFurniture(pId, newFurniture, updater)
     end
     local p = promise.new()
 
-    exports['sandbox-base']:DatabaseGameUpdateOne({
-        collection = "properties_furniture",
-        query = { property = pId },
-        update = {
-            ["$set"] = {
-                furniture = newFurniture,
-                updatedTime = os.time(),
-                updatedBy = updater,
-            },
-        },
-        options = {
-            upsert = true
-        }
-    }, function(success, updated)
-        p:resolve(success)
+    local furnitureJson = json.encode(newFurniture)
+    local updatedByJson = json.encode(updater)
+
+    exports.oxmysql:execute(
+    'INSERT INTO properties_furniture (property, furniture, updatedTime, updatedBy) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE furniture = VALUES(furniture), updatedTime = VALUES(updatedTime), updatedBy = VALUES(updatedBy)',
+        { pId, furnitureJson, os.time(), updatedByJson }, function(affectedRows)
+        p:resolve(affectedRows > 0)
     end)
 
     local res = Citizen.Await(p)
@@ -201,11 +191,8 @@ end
 function DeletePropertyFurniture(pId)
     local p = promise.new()
 
-    exports['sandbox-base']:DatabaseGameDeleteOne({
-        collection = "properties_furniture",
-        query = { property = pId },
-    }, function(success)
-        p:resolve(success)
+    exports.oxmysql:execute('DELETE FROM properties_furniture WHERE property = ?', { pId }, function(affectedRows)
+        p:resolve(affectedRows > 0)
     end)
 
     local res = Citizen.Await(p)

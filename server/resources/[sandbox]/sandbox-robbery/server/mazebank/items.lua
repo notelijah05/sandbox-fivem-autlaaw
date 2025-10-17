@@ -1,5 +1,5 @@
 function RegisterMBItemUses()
-	exports['sandbox-inventory']:RegisterUse("thermite", "MazeBankRobbery", function(source, itemData)
+	exports.ox_inventory:RegisterUse("thermite", "MazeBankRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -15,7 +15,7 @@ function RegisterMBItemUses()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -24,13 +24,13 @@ function RegisterMBItemUses()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -47,7 +47,7 @@ function RegisterMBItemUses()
 								GlobalState["MazeBankInProgress"] = true
 
 								if
-									exports['sandbox-inventory']:RemoveSlot(
+									exports.ox_inventory:RemoveSlot(
 										itemData.Owner,
 										itemData.Name,
 										1,
@@ -135,7 +135,7 @@ function RegisterMBItemUses()
 									_mbInUse[k] = false
 								end
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Someone Is Already Interacting With This",
 									6000
 								)
@@ -144,7 +144,7 @@ function RegisterMBItemUses()
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -152,7 +152,7 @@ function RegisterMBItemUses()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("red_laptop", "MazeBankRobbery", function(source, slot, itemData)
+	exports.ox_inventory:RegisterUse("red_laptop", "MazeBankRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -171,7 +171,7 @@ function RegisterMBItemUses()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -180,13 +180,13 @@ function RegisterMBItemUses()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -235,12 +235,12 @@ function RegisterMBItemUses()
 
 											local timer = math.random(2, 4)
 
-											exports['sandbox-hud']:NotifSuccess(source,
+											exports['sandbox-hud']:Notification(source, "success",
 												string.format("Time Lock Disengaging, Please Wait %s Minutes", timer),
 												6000
 											)
 
-											exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot,
+											exports.ox_inventory:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot,
 												1)
 											_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
 											GlobalState[string.format("MazeBank:ManualDoor:%s", v.doorId)] = {
@@ -264,9 +264,9 @@ function RegisterMBItemUses()
 
 											local newValue = slot.CreateDate - (60 * 60 * 24)
 											if os.time() - itemData.durability >= newValue then
-												exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+												exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 											else
-												exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+												exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 											end
 
 											_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
@@ -275,7 +275,7 @@ function RegisterMBItemUses()
 										_mbInUse[k] = false
 									end)
 								else
-									exports['sandbox-hud']:NotifError(source,
+									exports['sandbox-hud']:Notification(source, "error",
 										"Someone Else Is Already Doing A Thing",
 										6000
 									)
@@ -287,7 +287,7 @@ function RegisterMBItemUses()
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -295,7 +295,7 @@ function RegisterMBItemUses()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("adv_lockpick", "MazeBankRobbery", function(source, slot, itemData)
+	exports.ox_inventory:RegisterUse("adv_lockpick", "MazeBankRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -314,7 +314,7 @@ function RegisterMBItemUses()
 					GetGameTimer() < MAZEBANK_SERVER_START_WAIT
 					or (GlobalState["RestartLockdown"] and not GlobalState["MazeBankInProgress"])
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 						6000
 					)
@@ -323,13 +323,13 @@ function RegisterMBItemUses()
 					(GlobalState["Duty:police"] or 0) < MAZEBANK_REQUIRED_POLICE
 					and not GlobalState["MazeBankInProgress"]
 				then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 						6000
 					)
 					return
 				elseif GlobalState["RobberiesDisabled"] then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Temporarily Disabled, Please See City Announcements",
 						6000
 					)
@@ -362,9 +362,9 @@ function RegisterMBItemUses()
 										newValue = slot.CreateDate - (60 * 60 * 12)
 									end
 									if os.time() - itemData.durability >= newValue then
-										exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+										exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
 									else
-										exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+										exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 									end
 
 									if success then
@@ -401,15 +401,15 @@ function RegisterMBItemUses()
 
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 										if os.time() - itemData.durability >= newValue then
-											exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
+											exports.ox_inventory:RemoveId(char:GetData("SID"), 1, slot)
 										else
-											exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+											exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
 										end
 									end
 									_mbInUse[v.door] = false
 								end)
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Someone Else Is Already Doing A Thing",
 									6000
 								)
@@ -418,7 +418,7 @@ function RegisterMBItemUses()
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -426,3 +426,9 @@ function RegisterMBItemUses()
 		end
 	end)
 end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterMBItemUses()
+	end
+end)

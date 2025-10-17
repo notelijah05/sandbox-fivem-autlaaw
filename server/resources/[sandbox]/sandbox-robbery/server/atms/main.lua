@@ -120,7 +120,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			or (os.time() > GlobalState["ATMRobberyStartCD"]) and GlobalState["Sync:IsNight"]
 		then
 			if GlobalState["RobberiesDisabled"] then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)
@@ -158,7 +158,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			or (os.time() > _ATMRobberyCDs[char:GetData("SID")])
 		then
 			if GlobalState["RobberiesDisabled"] then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)
@@ -176,9 +176,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 			local repLvl = exports['sandbox-characters']:RepGetLevel(source, "ATMRobbery")
 
 			if repLvl >= 4 then
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_atmLootHigh, char:GetData("SID"), 1)
+				exports.ox_inventory:LootCustomWeightedSetWithCount(_atmLootHigh, char:GetData("SID"), 1)
 			else
-				exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_atmLoot, char:GetData("SID"), 1)
+				exports.ox_inventory:LootCustomWeightedSetWithCount(_atmLoot, char:GetData("SID"), 1)
 			end
 
 			local chance = 15
@@ -186,7 +186,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				chance = 22
 			end
 			if math.random(100) < chance and repLvl >= 2 then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
+				exports.ox_inventory:AddItem(char:GetData("SID"), "crypto_voucher", 1, {
 					CryptoCoin = "HEIST",
 					Quantity = math.random(2, repLvl + 1),
 				}, 1)

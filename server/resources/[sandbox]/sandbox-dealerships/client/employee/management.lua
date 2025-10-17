@@ -54,9 +54,9 @@ function OpenDealerManagementMenu(dealer)
                 updating = updatingData,
             }, function(success)
                 if success then
-                    exports["sandbox-hud"]:NotifSuccess('Changes Saved Successfully', 2500, 'car-building')
+                    exports["sandbox-hud"]:Notification("success", 'Changes Saved Successfully', 2500, 'car-building')
                 else
-                    exports["sandbox-hud"]:NotifError('Failed Saving Changes', 2500, 'car-building')
+                    exports["sandbox-hud"]:Notification("error", 'Failed Saving Changes', 2500, 'car-building')
                 end
             end)
         end)

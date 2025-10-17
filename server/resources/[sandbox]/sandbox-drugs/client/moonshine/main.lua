@@ -57,8 +57,8 @@ AddEventHandler("Drugs:Client:Startup", function()
                 icon = "hand",
                 event = "Drugs:Client:Moonshine:PickupStill",
                 distance = 3.0,
-                canInteract = function(data, entity)
-                    local entState = Entity(entity.entity).state
+                canInteract = function(entity)
+                    local entState = Entity(entity).state
                     return entState?.isMoonshineStill and
                         (LocalPlayer.state.onDuty == "police" or _barrels[entState?.stillId]?.owner == LocalPlayer.state.Character:GetData("SID"))
                 end,
@@ -68,8 +68,8 @@ AddEventHandler("Drugs:Client:Startup", function()
                 icon = "block",
                 event = "Drugs:Client:Moonshine:StillDetails",
                 distance = 3.0,
-                canInteract = function(data, entity)
-                    return Entity(entity.entity).state?.isMoonshineStill
+                canInteract = function(entity)
+                    return Entity(entity).state?.isMoonshineStill
                 end,
             },
             {
@@ -77,8 +77,8 @@ AddEventHandler("Drugs:Client:Startup", function()
                 icon = "timer",
                 event = "Drugs:Client:Moonshine:StartCook",
                 distance = 3.0,
-                canInteract = function(data, entity)
-                    local entState = Entity(entity.entity).state
+                canInteract = function(entity)
+                    local entState = Entity(entity).state
                     return entState?.isMoonshineStill and
                         (not _stills[entState.stillId]?.cooldown or GetCloudTimeAsInt() > _stills[entState.stillId]?.cooldown) and
                         (_stills[entState.stillId].owner == nil or _stills[entState.stillId].owner == LocalPlayer.state.Character:GetData("SID"))
@@ -89,8 +89,8 @@ AddEventHandler("Drugs:Client:Startup", function()
                 icon = "block",
                 event = "Drugs:Client:Moonshine:PickupCook",
                 distance = 3.0,
-                canInteract = function(data, entity)
-                    local entState = Entity(entity.entity).state
+                canInteract = function(entity)
+                    local entState = Entity(entity).state
                     return entState?.isMoonshineStill and _stills[entState.stillId]?.activeBrew and
                         _stills[entState.stillId]?.pickupReady and
                         (_stills[entState.stillId]?.owner == nil or _stills[entState.stillId]?.owner == LocalPlayer.state.Character:GetData("SID"))
@@ -106,8 +106,8 @@ AddEventHandler("Drugs:Client:Startup", function()
                 icon = "hand",
                 event = "Drugs:Client:Moonshine:PickupBarrel",
                 distance = 3.0,
-                canInteract = function(data, entity)
-                    local entState = Entity(entity.entity).state
+                canInteract = function(entity)
+                    local entState = Entity(entity).state
                     return entState?.isMoonshineBarrel and
                         (LocalPlayer.state.onDuty == "police" or _barrels[entState?.barrelId]?.owner == LocalPlayer.state.Character:GetData("SID"))
                 end,
@@ -117,21 +117,21 @@ AddEventHandler("Drugs:Client:Startup", function()
                 icon = "block",
                 event = "Drugs:Client:Moonshine:BarrelDetails",
                 distance = 3.0,
-                canInteract = function(data, entity)
-                    return Entity(entity.entity).state?.isMoonshineBarrel
+                canInteract = function(entity)
+                    return Entity(entity).state?.isMoonshineBarrel
                 end,
             },
             {
-                label = function(data, entity)
-                    local entState = Entity(entity.entity).state
+                label = function(entity)
+                    local entState = Entity(entity).state
                     return string.format("Fill Jars (Requires %s Empty Jars)",
                         (_barrels[entState.barrelId]?.brewData?.Drinks or 15))
                 end,
                 icon = "block",
                 event = "Drugs:Client:Moonshine:PickupBrew",
                 distance = 3.0,
-                canInteract = function(data, entity)
-                    local entState = Entity(entity.entity).state
+                canInteract = function(entity)
+                    local entState = Entity(entity).state
                     return entState?.isMoonshineBarrel and _barrels[entState.barrelId]?.pickupReady and
                         (_barrels[entState.barrelId]?.owner == nil or _barrels[entState.barrelId]?.owner == LocalPlayer.state.Character:GetData("SID"))
                 end,
@@ -426,7 +426,7 @@ AddEventHandler("Drugs:Client:Moonshine:StartCook", function(entity, data)
                     end
                 end)
             else
-                exports["sandbox-hud"]:NotifError("Still Is Not Ready")
+                exports["sandbox-hud"]:Notification("error", "Still Is Not Ready")
             end
         end)
     end
@@ -456,7 +456,7 @@ AddEventHandler("Drugs:Client:Moonshine:PickupCook", function(entity, data)
                 exports["sandbox-base"]:ServerCallback("Drugs:Moonshine:PickupCook", entState.stillId, function(s)
                     if s then
                     else
-                        exports["sandbox-hud"]:NotifError("Still Is Not Ready")
+                        exports["sandbox-hud"]:Notification("error", "Still Is Not Ready")
                     end
                 end)
             end
@@ -466,7 +466,7 @@ end)
 
 AddEventHandler("Drugs:Client:Moonshine:PickupBrew", function(entity, data)
     local entState = Entity(entity.entity).state
-    if exports['sandbox-inventory']:ItemsHas("moonshine_jar", (_barrels[entState.barrelId]?.brewData?.Drinks or 15), false) then
+    if exports.ox_inventory:ItemsHas("moonshine_jar", (_barrels[entState.barrelId]?.brewData?.Drinks or 15), false) then
         local entState = Entity(entity.entity).state
         if entState.isMoonshineBarrel and entState.barrelId then
             exports['sandbox-hud']:Progress({
@@ -493,7 +493,7 @@ AddEventHandler("Drugs:Client:Moonshine:PickupBrew", function(entity, data)
             end)
         end
     else
-        exports["sandbox-hud"]:NotifError(string.format("Missing Empty Jars (Requires %s Empty Jars",
+        exports["sandbox-hud"]:Notification("error", string.format("Missing Empty Jars (Requires %s Empty Jars",
             (_barrels[entState.barrelId]?.brewData?.Drinks or 15)))
     end
 end)

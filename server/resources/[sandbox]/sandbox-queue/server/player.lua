@@ -126,14 +126,10 @@ end
 function GetPlayerTokens(account)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseAuthFindOne({
-		collection = "tokens",
-		query = {
-			account = account,
-		}
-	}, function(success, results)
-		if success and #results > 0 and results[1].tokens then
-			p:resolve(results[1].tokens)
+	exports.oxmysql:execute('SELECT tokens FROM tokens WHERE account = ?', { account }, function(results)
+		if results and #results > 0 and results[1].tokens then
+			local tokens = json.decode(results[1].tokens)
+			p:resolve(tokens)
 		else
 			p:resolve(nil)
 		end

@@ -200,7 +200,7 @@ AddEventHandler("Labor:Client:Setup", function()
     Wait(2000)
 
     for k, v in ipairs(basicFish) do
-        local fishData = exports['sandbox-inventory']:ItemsGetData(v)
+        local fishData = exports.ox_inventory:ItemsGetData(v)
 
         if fishData then
             table.insert(shopData, {
@@ -257,22 +257,22 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     local fishingLocation = GetEntityCoords(LocalPlayer.state.ped)
 
     if _isFishing then
-        exports["sandbox-hud"]:NotifError("Already Fishing")
+        exports["sandbox-hud"]:Notification("error", "Already Fishing")
         return
     end
 
     if not fishingZone then
-        exports["sandbox-hud"]:NotifError("Cannot Fish Here")
+        exports["sandbox-hud"]:Notification("error", "Cannot Fish Here")
         return
     end
 
     if LocalPlayer.state.doingAction then
-        exports["sandbox-hud"]:NotifError("Already Doing Something")
+        exports["sandbox-hud"]:Notification("error", "Already Doing Something")
         return
     end
 
     if toolUsed == "net" and not IsNearBoat() then
-        exports["sandbox-hud"]:NotifError("Have to Use a Fishing Net on a Boat")
+        exports["sandbox-hud"]:Notification("error", "Have to Use a Fishing Net on a Boat")
         return
     end
 
@@ -287,13 +287,20 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     end
 
     if fishingZone == 4 or fishingZone == 5 then
-        exports["sandbox-hud"]:NotifPersistentInfo("fishing-info-notif",
+        exports["sandbox-hud"]:Notification("info",
             string.format("Fishing - Press %s to Stop. Maybe you could try some deeper water for better fish!",
-                exports["sandbox-keybinds"]:GetKey("cancel_action")), "fishing-rod")
+                exports["sandbox-keybinds"]:GetKey("cancel_action")),
+            -1,
+            "fishing-rod",
+            nil,
+            "fishing-info-notif")
     else
-        exports["sandbox-hud"]:NotifPersistentInfo("fishing-info-notif",
+        exports["sandbox-hud"]:Notification("info",
             string.format("Fishing - Press %s to Stop", exports["sandbox-keybinds"]:GetKey("cancel_action")),
-            "fishing-rod")
+            -1,
+            "fishing-rod",
+            nil,
+            "fishing-info-notif")
     end
 
     local tick = 0
@@ -320,7 +327,7 @@ RegisterNetEvent("Fishing:Client:StartFishing", function(toolUsed)
     end
 
     _isFishing = false
-    exports["sandbox-hud"]:NotifPersistentRemove("fishing-info-notif")
+    exports["sandbox-hud"]:Notification("remove", nil, nil, nil, nil, "fishing-info-notif")
 end)
 
 function DoFishBite(zone, toolUsed)
@@ -376,7 +383,7 @@ function DoFishBite(zone, toolUsed)
         difficulty = maxDiff,
     }, function(success, stopFishing)
         if not success and not stopFishing then
-            exports["sandbox-hud"]:NotifWarn("The Fish Got Away...", 5000, "fishing-rod")
+            exports["sandbox-hud"]:Notification("warning", "The Fish Got Away...", 5000, "fishing-rod")
         end
 
         if stopFishing then
@@ -406,7 +413,7 @@ end
 
 function HasCorrectBaitForZone(zone)
     local requiredBait = _fishingZoneBasicBait[zone]
-    if requiredBait and exports['sandbox-inventory']:CheckPlayerHasItem(requiredBait, 1) then
+    if requiredBait and exports.ox_inventory:CheckPlayerHasItem(requiredBait, 1) then
         return true
     end
     return false
@@ -485,7 +492,7 @@ RegisterNetEvent("Fishing:Client:OffDuty", function(time)
 end)
 
 AddEventHandler("Fishing:Client:OpenShop", function(hitting, data)
-    exports['sandbox-inventory']:ShopOpen(data)
+    exports.ox_inventory:ShopOpen(data)
 end)
 
 AddEventHandler("Fishing:Client:Sell", function(entity, data)

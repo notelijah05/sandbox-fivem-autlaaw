@@ -141,7 +141,7 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 	}, function(data)
 		local song = data.data.value
 		if song == "" or song == nil then
-			exports["sandbox-hud"]:NotifError("Empty text cannot be played dummy.", 2500, "fas fa-volume-off")
+			exports["sandbox-hud"]:Notification("error", "Empty text cannot be played dummy.", 2500, "fas fa-volume-off")
 			return
 		end
 		if not string.find(song, "youtu") then
@@ -153,9 +153,9 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 		}, function(success, zoneNum)
 			if success then
 				TriggerEvent("sandbox-dj:client:playMusic", { zone = zoneNum })
-				exports["sandbox-hud"]:NotifSuccess("Loading link: " .. song, 2500, "fas fa-pause")
+				exports["sandbox-hud"]:Notification("success", "Loading link: " .. song, 2500, "fas fa-pause")
 			else
-				exports["sandbox-hud"]:NotifError("Failed to Load Song", 2500, "fas fa-volume-off")
+				exports["sandbox-hud"]:Notification("error", "Failed to Load Song", 2500, "fas fa-volume-off")
 			end
 		end)
 	end)
@@ -179,9 +179,9 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 					zoneNum = boothId,
 				}, function(success)
 					if success then
-						exports["sandbox-hud"]:NotifSuccess("Paused Music", 2500, "fas fa-pause")
+						exports["sandbox-hud"]:Notification("success", "Paused Music", 2500, "fas fa-pause")
 					else
-						exports["sandbox-hud"]:NotifError("Failed to Pause Music", 2500, "fas fa-pause")
+						exports["sandbox-hud"]:Notification("error", "Failed to Pause Music", 2500, "fas fa-pause")
 					end
 				end)
 			end)
@@ -192,9 +192,9 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 					zoneNum = boothId,
 				}, function(success)
 					if success then
-						exports["sandbox-hud"]:NotifSuccess("Resume Music", 2500, "fas fa-play")
+						exports["sandbox-hud"]:Notification("success", "Resume Music", 2500, "fas fa-play")
 					else
-						exports["sandbox-hud"]:NotifError("Failed to Resume Music", 2500, "fas fa-play")
+						exports["sandbox-hud"]:Notification("error", "Failed to Resume Music", 2500, "fas fa-play")
 					end
 				end)
 			end)
@@ -230,13 +230,13 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 				if success then
 					song.volume = volume * 100
 					TriggerEvent("sandbox-dj:client:playMusic", { zone = zoneNum })
-					exports["sandbox-hud"]:NotifSuccess(
+					exports["sandbox-hud"]:Notification("success",
 						string.format("Changed Volume to %s/100", tostring(math.ceil(volume * 100))),
 						2500,
 						"fas fa-volume-off"
 					)
 				else
-					exports["sandbox-hud"]:NotifError("Failed to Change Volume", 2500, "fas fa-volume-off")
+					exports["sandbox-hud"]:Notification("error", "Failed to Change Volume", 2500, "fas fa-volume-off")
 				end
 			end)
 		end)
@@ -250,9 +250,9 @@ RegisterNetEvent("sandbox-dj:client:playMusic", function(data)
 				zoneNum = boothId,
 			}, function(success)
 				if success then
-					exports["sandbox-hud"]:NotifSuccess("Stop Music", 2500, "fas fa-stop")
+					exports["sandbox-hud"]:Notification("success", "Stop Music", 2500, "fas fa-stop")
 				else
-					exports["sandbox-hud"]:NotifError("Failed to Stop Music", 2500, "fas fa-stop")
+					exports["sandbox-hud"]:Notification("error", "Failed to Stop Music", 2500, "fas fa-stop")
 				end
 			end)
 		end)

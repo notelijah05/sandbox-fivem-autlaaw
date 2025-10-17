@@ -76,15 +76,15 @@ AddEventHandler("Labor:Server:Startup", function()
 					if not GlobalState["CokeRunCD"] or os.time() > GlobalState["CokeRunCD"] then
 						exports['sandbox-labor']:OnDuty("Coke", source, true)
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Someone Has Already Done This Recently")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Someone Else Is Already Doing This")
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"You Don't Have Enough Cash, Come Back When You Do")
 			end
 		end
@@ -103,7 +103,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					char:SetData("CokeCD", os.time())
 					_active = nil
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Too Late, You Cannot Cancel This Now")
 				end
 			end
@@ -138,7 +138,7 @@ AddEventHandler("Labor:Server:Startup", function()
 					SetVehicleDoorsLocked(veh, 1)
 					_active.entity = veh
 					_active.VIN = Entity(veh).state.VIN
-					exports['sandbox-inventory']:AddItem(_active.VIN, "coke_brick", 4, {}, 4)
+					exports.ox_inventory:AddItem(_active.VIN, "coke_brick", 4, {}, 4)
 					exports['sandbox-labor']:SendWorkgroupEvent(_joiners[source],
 						string.format("Coke:Client:%s:GoTo", _joiners[source]))
 				end

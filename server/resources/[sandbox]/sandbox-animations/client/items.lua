@@ -1,23 +1,23 @@
 RegisterNetEvent("Animations:Client:CampChair", function()
-	-- if LocalPlayer.state.loggedIn then
-	-- 	local inAnim = exports['sandbox-animations']:EmotesGet()
-	-- 	if inAnim and inAnim == "campchair" then
-	-- 		exports['sandbox-animations']:EmotesCancel()
-	-- 	elseif not inAnim then
-	-- 		exports['sandbox-animations']:EmotesPlay("campchair", false, false, false)
-	-- 	end
-	-- end
+	if LocalPlayer.state.loggedIn then
+		local inAnim = exports['sandbox-animations']:EmotesGet()
+		if inAnim and inAnim == "campchair" then
+			exports['sandbox-animations']:EmotesCancel()
+		elseif not inAnim then
+			exports['sandbox-animations']:EmotesPlay("campchair", false, false, false)
+		end
+	end
 end)
 
 RegisterNetEvent("Animations:Client:BeanBag", function()
-	-- if LocalPlayer.state.loggedIn then
-	-- 	local inAnim = exports['sandbox-animations']:EmotesGet()
-	-- 	if inAnim and inAnim == "beanbag" then
-	-- 		exports['sandbox-animations']:EmotesCancel()
-	-- 	elseif not inAnim then
-	-- 		exports['sandbox-animations']:EmotesPlay("beanbag", false, false, false)
-	-- 	end
-	-- end
+	if LocalPlayer.state.loggedIn then
+		local inAnim = exports['sandbox-animations']:EmotesGet()
+		if inAnim and inAnim == "beanbag" then
+			exports['sandbox-animations']:EmotesCancel()
+		elseif not inAnim then
+			exports['sandbox-animations']:EmotesPlay("beanbag", false, false, false)
+		end
+	end
 end)
 
 local binocularConfig = {

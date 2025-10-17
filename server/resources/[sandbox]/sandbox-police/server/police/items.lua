@@ -1,9 +1,9 @@
 function PoliceItems()
-    exports['sandbox-inventory']:RegisterUse("det_cord", "PDItems", function(source, slot, itemData)
+    exports.ox_inventory:RegisterUse("det_cord", "PDItems", function(source, slot, itemData)
         local pState = Player(source).state
         if pState.onDuty == "police" then
             exports["sandbox-base"]:ClientCallback(source, "Police:DoDetCord", {}, function(s, doorId)
-                if s and exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1) then
+                if s and exports.ox_inventory:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1) then
                     exports['sandbox-doors']:SetLock(doorId, false)
                     exports['sandbox-doors']:DisableDoor(doorId, 60 * 60)
                 end
@@ -11,3 +11,9 @@ function PoliceItems()
         end
     end)
 end
+
+RegisterNetEvent('ox_inventory:ready', function()
+    if GetResourceState(GetCurrentResourceName()) == 'started' then
+        PoliceItems()
+    end
+end)

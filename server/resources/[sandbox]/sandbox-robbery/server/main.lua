@@ -275,21 +275,21 @@ AddEventHandler('onResourceStart', function(resource)
 				if #(_pickups[char:GetData("SID")] or {}) > 0 then
 					for i = #_pickups[char:GetData("SID")], 1, -1 do
 						local v = _pickups[char:GetData("SID")][i]
-						local givingItem = exports['sandbox-inventory']:ItemsGetData(v.giving)
-						local receivingItem = exports['sandbox-inventory']:ItemsGetData(v.receiving)
+						local givingItem = exports.ox_inventory:ItemsGetData(v.giving)
+						local receivingItem = exports.ox_inventory:ItemsGetData(v.receiving)
 
-						if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.giving, 1) then
-							if exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.receiving, 1, {}, 1) then
+						if exports.ox_inventory:Remove(char:GetData("SID"), 1, v.giving, 1) then
+							if exports.ox_inventory:AddItem(char:GetData("SID"), v.receiving, 1, {}, 1) then
 								table.remove(_pickups[char:GetData("SID")], i)
 							else
-								exports['sandbox-inventory']:AddItem(char:GetData("SID"), v.giving, 1, {}, 1)
-								exports['sandbox-hud']:NotifError(source,
+								exports.ox_inventory:AddItem(char:GetData("SID"), v.giving, 1, {}, 1)
+								exports['sandbox-hud']:Notification(source, "error",
 									string.format("Failed Adding x1 %s", receivingItem.label),
 									6000
 								)
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								string.format("Failed Taking x1 %s", givingItem.label),
 								6000
 							)
@@ -298,10 +298,10 @@ AddEventHandler('onResourceStart', function(resource)
 					for k, v in pairs(_pickups[char:GetData("SID")]) do
 					end
 
-					exports['sandbox-hud']:NotifSuccess(source,
+					exports['sandbox-hud']:Notification(source, "success",
 						"You've Picked Up All Available Items", 6000)
 				else
-					exports['sandbox-hud']:NotifError(source, "You Have Nothing To Pickup",
+					exports['sandbox-hud']:Notification(source, "error", "You Have Nothing To Pickup",
 						6000)
 				end
 			end

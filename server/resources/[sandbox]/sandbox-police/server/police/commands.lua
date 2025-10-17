@@ -4,11 +4,13 @@ local _311Cds = {}
 function RegisterCommands()
 	exports["sandbox-chat"]:RegisterCommand("911", function(source, args, rawCommand)
 		if #rawCommand:sub(4) > 0 then
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
-				and hasValue(char:GetData("States"), "PHONE")
+				and ((function()
+					local phoneItem = exports.ox_inventory:getUtilitySlotItem(source, 8)
+					return phoneItem ~= nil and phoneItem.metadata.durability > 0
+				end)())
 			then
 				if _911Cds[source] == nil or os.time() >= _911Cds[source] then
 					exports["sandbox-chat"]:SendEmergency(source, rawCommand:sub(4))
@@ -33,11 +35,13 @@ function RegisterCommands()
 
 	exports["sandbox-chat"]:RegisterCommand("911a", function(source, args, rawCommand)
 		if #rawCommand:sub(5) > 0 then
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
-				and hasValue(char:GetData("States"), "PHONE")
+				and ((function()
+					local phoneItem = exports.ox_inventory:getUtilitySlotItem(source, 8)
+					return phoneItem ~= nil and phoneItem.metadata.durability > 0
+				end)())
 			then
 				if _911Cds[source] == nil or os.time() >= _911Cds[source] then
 					exports["sandbox-chat"]:SendEmergencyAnonymous(source, rawCommand:sub(5))
@@ -65,8 +69,10 @@ function RegisterCommands()
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
 				local target = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
-				local char = exports['sandbox-characters']:FetchCharacterSource(source)
-				if not hasValue(char:GetData("States"), "PHONE") then
+				if ((function()
+						local phoneItem = exports.ox_inventory:getUtilitySlotItem(source, 8)
+						return phoneItem == nil or phoneItem.metadata.durability <= 0
+					end)()) then
 					exports["sandbox-chat"]:SendSystemSingle(source, "You Find It Difficult Replying to 911")
 					return
 				end
@@ -105,11 +111,13 @@ function RegisterCommands()
 
 	exports["sandbox-chat"]:RegisterCommand("311", function(source, args, rawCommand)
 		if #rawCommand:sub(4) > 0 then
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
-				and hasValue(char:GetData("States"), "PHONE")
+				and ((function()
+					local phoneItem = exports.ox_inventory:getUtilitySlotItem(source, 8)
+					return phoneItem ~= nil and phoneItem.metadata.durability > 0
+				end)())
 			then
 				if _311Cds[source] == nil or os.time() >= _311Cds[source] then
 					exports["sandbox-chat"]:SendNonEmergency(source, rawCommand:sub(4))
@@ -134,11 +142,13 @@ function RegisterCommands()
 
 	exports["sandbox-chat"]:RegisterCommand("311a", function(source, args, rawCommand)
 		if #rawCommand:sub(5) > 0 then
-			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if
 				not Player(source).state.isCuffed
 				and not Player(source).state.isDead
-				and hasValue(char:GetData("States"), "PHONE")
+				and ((function()
+					local phoneItem = exports.ox_inventory:getUtilitySlotItem(source, 8)
+					return phoneItem ~= nil and phoneItem.metadata.durability > 0
+				end)())
 			then
 				if _311Cds[source] == nil or os.time() >= _311Cds[source] then
 					exports["sandbox-chat"]:SendNonEmergencyAnonymous(source, rawCommand:sub(5))
@@ -188,8 +198,10 @@ function RegisterCommands()
 		function(source, args, rawCommand)
 			if tonumber(args[1]) then
 				local target = exports['sandbox-characters']:FetchBySID(tonumber(args[1]))
-				local char = exports['sandbox-characters']:FetchCharacterSource(source)
-				if not hasValue(char:GetData("States"), "PHONE") then
+				if ((function()
+						local phoneItem = exports.ox_inventory:getUtilitySlotItem(source, 8)
+						return phoneItem == nil or phoneItem.metadata.durability <= 0
+					end)()) then
 					exports["sandbox-chat"]:SendSystemSingle(source, "You Find It Difficult Replying to 311")
 					return
 				end

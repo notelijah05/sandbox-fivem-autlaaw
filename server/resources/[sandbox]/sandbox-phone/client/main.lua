@@ -88,7 +88,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 		for k, v in ipairs(_payphones) do
 			exports.ox_target:addModel(v, {
 				{
-					icon = "phone-volume",
+					icon = "fa-solid fa-phone-volume",
 					label = "Use Payphone",
 					event = "Phone:Client:Payphone",
 					distance = 2.0,
@@ -119,7 +119,10 @@ AddEventHandler("Characters:Client:Updated", function(key)
 	if
 		key == "States"
 		and LocalPlayer.state.phoneOpen
-		and exports.ox_inventory:Search('count', 'phone') == 0
+		and (function()
+			local phoneItem = exports.ox_inventory:getUtilitySlotItem(8)
+			return phoneItem == nil or phoneItem.metadata.durability <= 0
+		end)()
 	then
 		exports['sandbox-phone']:Close(true)
 	end
@@ -233,10 +236,11 @@ function TogglePhone()
 	end
 	if not _openCd then
 		if not exports['sandbox-hud']:IsDisabled() then
-			if not exports['sandbox-jail']:IsJailed() and exports.ox_inventory:Search('count', 'phone') > 0 then
+			local phoneItem = exports.ox_inventory:getUtilitySlotItem(8)
+			if (phoneItem ~= nil and phoneItem.metadata.durability > 0) then
 				exports['sandbox-phone']:Open()
 			else
-				exports["sandbox-hud"]:NotifError("You Don't Have a Phone", 2000)
+				exports["sandbox-hud"]:Notification("error", "You Don't Have a Phone", 2000)
 				LocalPlayer.state.phoneOpen = false
 			end
 		else
@@ -248,6 +252,8 @@ function TogglePhone()
 		end
 	end
 end
+
+exports('TogglePhone', TogglePhone)
 
 AddEventHandler("Phone:Client:OpenLimited", function()
 	exports['sandbox-phone']:OpenLimited()

@@ -47,7 +47,7 @@ function StartAutoPilot(crazyMode)
 		-- //If no mark is set, wander.
 		if destination == vector3(0, 0, 0) then
 			TaskVehicleDriveWander(LocalPlayer.state.ped, vehicle, crazyMode and 200.0 or speed, flags)
-			exports["sandbox-hud"]:NotifInfo(
+			exports["sandbox-hud"]:Notification("info",
 				string.format("Autodrive Wander On", exports["sandbox-keybinds"]:GetKey("veh_toggle_autodrive")),
 				8000,
 				"fas fa-car"
@@ -63,7 +63,7 @@ function StartAutoPilot(crazyMode)
 				flags,
 				20.0
 			)
-			exports["sandbox-hud"]:NotifInfo(
+			exports["sandbox-hud"]:Notification("info",
 				string.format("Autodrive To Destination On", exports["sandbox-keybinds"]:GetKey("veh_toggle_autodrive")),
 				8000,
 				"fas fa-car"
@@ -87,7 +87,7 @@ function StartAutoPilot(crazyMode)
 			end
 
 			ClearPedTasks(LocalPlayer.state.ped)
-			exports["sandbox-hud"]:NotifInfo(
+			exports["sandbox-hud"]:Notification("info",
 				string.format("Autodrive Off", exports["sandbox-keybinds"]:GetKey("veh_toggle_autodrive")),
 				8000,
 				"fas fa-car"

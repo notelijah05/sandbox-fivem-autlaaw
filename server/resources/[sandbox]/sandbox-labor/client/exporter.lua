@@ -15,7 +15,7 @@ AddEventHandler("Labor:Client:Export:GetMenu", function()
 end)
 
 AddEventHandler("Labor:Client:Export:Sell", function(data)
-	local itemData = exports['sandbox-inventory']:ItemsGetData(data.item)
+	local itemData = exports.ox_inventory:ItemsGetData(data.item)
 	exports['sandbox-hud']:ConfirmShow(
 		string.format("Mass Export %s at $%s/unit?", itemData.label, data.price),
 		{

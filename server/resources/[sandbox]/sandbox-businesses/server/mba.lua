@@ -30,27 +30,18 @@ function SetMBAInterior(interior)
     end
 
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameUpdateOne({
-        collection = "business_configs",
-        query = {
-            key = "mba_setup",
-        },
-        update = {
-            ["$set"] = {
-                value = interior,
-            },
-        },
-        options = {
-            upsert = true,
-        }
-    }, function(success, results)
-        if success then
-            GlobalState["MBA:Interior"] = interior
-            TriggerClientEvent("Businesses:Client:MBA:InteriorUpdate", -1, interior)
-        end
+    exports.oxmysql:execute(
+        'INSERT INTO business_configs (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?',
+        { "mba_setup", interior, interior },
+        function(affectedRows)
+            local success = affectedRows > 0
+            if success then
+                GlobalState["MBA:Interior"] = interior
+                TriggerClientEvent("Businesses:Client:MBA:InteriorUpdate", -1, interior)
+            end
 
-        p:resolve(success)
-    end)
+            p:resolve(success)
+        end)
 
     local res = Citizen.Await(p)
     return res
@@ -61,16 +52,16 @@ AddEventHandler("Businesses:Server:Startup", function()
         _hasFetched = true
 
         local p = promise.new()
-        exports['sandbox-base']:DatabaseGameFindOne({
-            collection = "business_configs",
-            query = {
-                key = "mba_setup"
-            }
-        }, function(success, results)
-            if success and results and #results > 0 and results[1]?.value then
+        exports.oxmysql:execute('SELECT value FROM business_configs WHERE `key` = ?', { "mba_setup" }, function(results)
+            if results and #results > 0 and results[1].value then
                 p:resolve(results[1].value)
             else
-                p:resolve(defaultSetup)
+                exports.oxmysql:execute(
+                    'INSERT INTO business_configs (`key`, value) VALUES (?, ?)',
+                    { "mba_setup", defaultSetup },
+                    function(insertId)
+                        p:resolve(defaultSetup)
+                    end)
             end
         end)
 

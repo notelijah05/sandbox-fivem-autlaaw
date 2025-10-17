@@ -20,7 +20,8 @@ function OpenDealershipSales(dealerId)
         exports["sandbox-base"]:ServerCallback('Dealerships:Sales:FetchData', dealerId,
             function(authed, stocks, serverTime, defaultInterestRate, dealerMData)
                 if not authed then
-                    exports["sandbox-hud"]:NotifError('You\'re Not Authorized to Make Sales', 3500, 'car-building')
+                    exports["sandbox-hud"]:Notification("error", 'You\'re Not Authorized to Make Sales', 3500,
+                        'car-building')
                     return
                 end
 

@@ -103,15 +103,15 @@ function OpenWheelMenu()
                 },
             }, function(success, newNewData)
                 if success then
-                    exports["sandbox-hud"]:NotifSuccess('Wheel Fitment Saved')
+                    exports["sandbox-hud"]:Notification("success", 'Wheel Fitment Saved')
                 else
-                    exports["sandbox-hud"]:NotifError('Wheel Fitment Saving Failed')
+                    exports["sandbox-hud"]:Notification("error", 'Wheel Fitment Saving Failed')
                 end
             end)
 
             wheelMenu:Close()
         else
-            exports["sandbox-hud"]:NotifError('There Was Nothing to Save')
+            exports["sandbox-hud"]:Notification("error", 'There Was Nothing to Save')
         end
     end)
 
@@ -131,9 +131,9 @@ function OpenWheelMenu()
             },
         }, function(success, newNewData)
             if success then
-                exports["sandbox-hud"]:NotifSuccess('Wheel Fitment Reset')
+                exports["sandbox-hud"]:Notification("success", 'Wheel Fitment Reset')
             else
-                exports["sandbox-hud"]:NotifError('Wheel Fitment Reset Failed')
+                exports["sandbox-hud"]:Notification("error", 'Wheel Fitment Reset Failed')
             end
         end)
 

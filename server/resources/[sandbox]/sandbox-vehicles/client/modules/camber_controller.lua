@@ -8,7 +8,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			and GetPedInVehicleSeat(VEHICLE_INSIDE, -1) == LocalPlayer.state.ped
 		then
 			if exports['sandbox-police']:IsPdCar(VEHICLE_INSIDE) or exports['sandbox-police']:IsEMSCar(VEHICLE_INSIDE) then
-				exports["sandbox-hud"]:NotifError("How About No")
+				exports["sandbox-hud"]:Notification("error", "How About No")
 				cb(false)
 				return
 			end

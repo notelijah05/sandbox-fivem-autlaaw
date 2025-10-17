@@ -55,9 +55,9 @@ AddEventHandler('onClientResourceStart', function(resource)
 				state = true,
 			}, function(state)
 				if state then
-					exports["sandbox-hud"]:NotifSuccess("Property Locked")
+					exports["sandbox-hud"]:Notification("success", "Property Locked")
 				else
-					exports["sandbox-hud"]:NotifError("Unable to Lock Property")
+					exports["sandbox-hud"]:Notification("error", "Unable to Lock Property")
 				end
 			end)
 		end, function()
@@ -89,9 +89,9 @@ AddEventHandler('onClientResourceStart', function(resource)
 				state = false,
 			}, function(state)
 				if state then
-					exports["sandbox-hud"]:NotifSuccess("Property Unlocked")
+					exports["sandbox-hud"]:Notification("success", "Property Unlocked")
 				else
-					exports["sandbox-hud"]:NotifError("Unable to Unlock Property")
+					exports["sandbox-hud"]:Notification("error", "Unable to Unlock Property")
 				end
 			end)
 		end, function()
@@ -194,9 +194,9 @@ function CreatePropertyDoor(isBackdoor)
 							state = false,
 						}, function(state)
 							if state then
-								exports["sandbox-hud"]:NotifSuccess("Property Unlocked")
+								exports["sandbox-hud"]:Notification("success", "Property Unlocked")
 							else
-								exports["sandbox-hud"]:NotifError("Unable to Unlock Property")
+								exports["sandbox-hud"]:Notification("error", "Unable to Unlock Property")
 							end
 							exports['sandbox-hud']:InteractionHide()
 						end)
@@ -229,9 +229,9 @@ function CreatePropertyDoor(isBackdoor)
 							state = true,
 						}, function(state)
 							if state then
-								exports["sandbox-hud"]:NotifSuccess("Property Locked")
+								exports["sandbox-hud"]:Notification("success", "Property Locked")
 							else
-								exports["sandbox-hud"]:NotifError("Unable to Unlock Property")
+								exports["sandbox-hud"]:Notification("error", "Unable to Unlock Property")
 							end
 							exports['sandbox-hud']:InteractionHide()
 						end)
@@ -260,7 +260,7 @@ function CreatePropertyDoor(isBackdoor)
 					icon = "house-chimney-crack",
 					label = "Property is Foreclosed",
 					action = function()
-						exports["sandbox-hud"]:NotifError(
+						exports["sandbox-hud"]:Notification("error",
 							'This Property Has Been Foreclosed! This is why you should pay your property loans...', 10000)
 					end,
 					shouldShow = function()
@@ -298,9 +298,9 @@ function CreatePropertyDoor(isBackdoor)
 						exports["sandbox-base"]:ServerCallback("Properties:RequestAgent", data.propertyId,
 							function(state)
 								if state then
-									exports["sandbox-hud"]:NotifSuccess("Notification Sent")
+									exports["sandbox-hud"]:Notification("success", "Notification Sent")
 								else
-									exports["sandbox-hud"]:NotifError("Unable To Send Notification")
+									exports["sandbox-hud"]:Notification("error", "Unable To Send Notification")
 								end
 								exports['sandbox-hud']:InteractionHide()
 							end)
@@ -362,14 +362,14 @@ end)
 local showingAllPropsBlips = false
 RegisterNetEvent("Properties:Client:ShowAllPropertyBlips", function(show)
 	if showingAllPropsBlips then
-		exports["sandbox-hud"]:NotifInfo("Property Blips Hidden")
+		exports["sandbox-hud"]:Notification("info", "Property Blips Hidden")
 		for k, v in ipairs(_AllHousesBlips) do
 			RemoveBlip(v)
 		end
 		_AllHousesBlips = {}
 		showingAllPropsBlips = false
 	else
-		exports["sandbox-hud"]:NotifInfo("Property Blips Enabled")
+		exports["sandbox-hud"]:Notification("info", "Property Blips Enabled")
 		showingAllPropsBlips = true
 		AddTextEntry("PROPERTYBLIP", "Properties Available")
 		AddTextEntry("PROPERTYBLIPS", "Properties Sold")
@@ -722,7 +722,7 @@ exports('Delete', function(id)
 	end
 
 	if fData and fData.cat == "storage" and catCounts["storage"] < 1 then
-		exports["sandbox-hud"]:NotifError("You Are Required to Have At Least One Storage Container!")
+		exports["sandbox-hud"]:Notification("error", "You Are Required to Have At Least One Storage Container!")
 		return false
 	end
 
@@ -732,14 +732,14 @@ exports('Delete', function(id)
 		id = id,
 	}, function(success, furniture)
 		if success then
-			exports["sandbox-hud"]:NotifSuccess("Deleted Item")
+			exports["sandbox-hud"]:Notification("success", "Deleted Item")
 			for k, v in ipairs(furniture) do
 				v.dist = #(GetEntityCoords(LocalPlayer.state.ped) - vector3(v.coords.x, v.coords.y, v.coords.z))
 			end
 			p:resolve(furniture)
 		else
 			p:resolve(false)
-			exports["sandbox-hud"]:NotifError("Error")
+			exports["sandbox-hud"]:Notification("error", "Error")
 		end
 	end)
 

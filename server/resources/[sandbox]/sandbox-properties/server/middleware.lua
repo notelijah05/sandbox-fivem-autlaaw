@@ -8,64 +8,50 @@ function RegisterMiddleware()
 	exports['sandbox-base']:MiddlewareAdd("Characters:GetSpawnPoints", function(source, charId)
 		local p = promise.new()
 
-		exports['sandbox-base']:DatabaseGameFind({
-			collection = "properties",
-			query = {
-				[string.format("keys.%s", charId)] = {
-					["$exists"] = true,
-				},
-				foreclosed = {
-					["$ne"] = true,
-				},
-				type = {
-					["$nin"] = {
-						"container",
-						"warehouse",
-					}
-				}
-			},
-		}, function(success, results)
-			if not success or not #results then
-				p:resolve({})
-				return
-			end
-			local spawns = {}
+		exports.oxmysql:execute(
+			'SELECT * FROM properties WHERE JSON_EXTRACT(`keys`, CONCAT("$.", ?)) IS NOT NULL AND foreclosed = 0 AND type NOT IN (?, ?)',
+			{ charId, "container", "warehouse" }, function(results)
+				if not results or not #results then
+					p:resolve({})
+					return
+				end
+				local spawns = {}
 
-			local keys = {}
+				local keys = {}
 
-			for k, v in pairs(results) do
-				table.insert(keys, v._id)
-				local property = _properties[v._id]
-				if property ~= nil then
-					local interior = property.upgrades?.interior
-					local interiorData = PropertyInteriors[interior]
+				for k, v in ipairs(results) do
+					table.insert(keys, v.id)
+					local property = _properties[v.id]
+					if property ~= nil then
+						local interior = property.upgrades and property.upgrades.interior
+						local interiorData = PropertyInteriors[interior]
 
-					local icon = "house"
-					if property.type == "warehouse" then
-						icon = "warehouse"
-					elseif property.type == "office" then
-						icon = "building"
-					end
+						local icon = "house"
+						if property.type == "warehouse" then
+							icon = "warehouse"
+						elseif property.type == "office" then
+							icon = "building"
+						end
 
-					if interiorData ~= nil then
-						table.insert(spawns, {
-							id = property.id,
-							label = property.label,
-							location = {
-								x = interiorData.locations.front.coords.x,
-								y = interiorData.locations.front.coords.y,
-								z = interiorData.locations.front.coords.z,
-								h = interiorData.locations.front.heading,
-							},
-							icon = icon,
-							event = "Properties:SpawnInside",
-						})
+						if interiorData ~= nil then
+							table.insert(spawns, {
+								id = property.id,
+								label = property.label,
+								location = {
+									x = interiorData.locations.front.coords.x,
+									y = interiorData.locations.front.coords.y,
+									z = interiorData.locations.front.coords.z,
+									h = interiorData.locations.front.heading,
+								},
+								icon = icon,
+								event = "Properties:SpawnInside",
+							})
+						end
 					end
 				end
-			end
-			_charPropertyKeys[charId] = keys
-			p:resolve(spawns)
-		end)
+				_charPropertyKeys[charId] = keys
+				p:resolve(spawns)
+			end)
 
 		return Citizen.Await(p)
 	end, 3)
@@ -82,7 +68,7 @@ AddEventHandler("Characters:Server:PlayerLoggedOut", function(source, cData)
 		GlobalState[string.format("%s:Property", source)] = nil
 	end
 
-	if Player(source)?.state?.tpLocation then
+	if Player(source) and Player(source).state and Player(source).state.tpLocation then
 		Player(source).state.tpLocation = nil
 	end
 end)
@@ -98,7 +84,7 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 		GlobalState[string.format("%s:Property", source)] = nil
 	end
 
-	if Player(source)?.state?.tpLocation then
+	if Player(source) and Player(source).state and Player(source).state.tpLocation then
 		Player(source).state.tpLocation = nil
 	end
 end)

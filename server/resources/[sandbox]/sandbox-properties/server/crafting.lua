@@ -473,7 +473,7 @@ _propertyCrafting = {
 
 function SetupPropertyCrafting()
 	for k, v in ipairs(_propertyCrafting) do
-		exports['sandbox-inventory']:CraftingRegisterBench("property-" .. v.id, false, false, false, v.restrictions,
+		exports.ox_inventory:CraftingRegisterBench("property-" .. v.id, false, false, false, v.restrictions,
 			v.recipies, v.canUseSchematics)
 		GlobalState[string.format("Property:Crafting:%s", v.id)] = {
 			crafting = true,

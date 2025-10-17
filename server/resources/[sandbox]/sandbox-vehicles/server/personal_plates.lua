@@ -41,18 +41,18 @@ function PrivatePlateStuff(char, source, itemData)
         if veh and DoesEntityExist(veh) then
             local vehState = Entity(veh).state
             if not vehState.VIN then
-                exports['sandbox-hud']:NotifError(source, "Error")
+                exports['sandbox-hud']:Notification(source, "error", "Error")
                 return
             end
 
             local vehicle = exports['sandbox-vehicles']:OwnedGetActive(vehState.VIN)
             if not vehicle then
-                exports['sandbox-hud']:NotifError(source, "Can't Do It on This Vehicle")
+                exports['sandbox-hud']:Notification(source, "error", "Can't Do It on This Vehicle")
                 return
             end
 
             if vehicle:GetData("FakePlate") then
-                exports['sandbox-hud']:NotifError(source, "Can't Do It on This Vehicle")
+                exports['sandbox-hud']:Notification(source, "error", "Can't Do It on This Vehicle")
                 return
             end
 
@@ -60,12 +60,12 @@ function PrivatePlateStuff(char, source, itemData)
             local newPlate = IsPersonalPlateValid(plate)
 
             if not newPlate then
-                exports['sandbox-hud']:NotifError(source, "Invalid Plate Formatting")
+                exports['sandbox-hud']:Notification(source, "error", "Invalid Plate Formatting")
                 return
             end
 
             if IsPersonalPlateTaken(newPlate) then
-                exports['sandbox-hud']:NotifError(source, "That Plate is Taken")
+                exports['sandbox-hud']:Notification(source, "error", "That Plate is Taken")
                 return
             end
 
@@ -88,38 +88,19 @@ function PrivatePlateStuff(char, source, itemData)
             vehState.RegisteredPlate = newPlate
 
             exports['sandbox-vehicles']:OwnedForceSave(vehState.VIN)
-            exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
+            exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType)
 
-            exports['sandbox-hud']:NotifSuccess(source, "Personal Plate Setup")
+            exports['sandbox-hud']:Notification(source, "success", "Personal Plate Setup")
             exports['sandbox-base']:LoggerInfo('Vehicles',
                 string.format("Personal Plate Change For Vehicle: %s. %s -> %s", vehState.VIN, originalPlate, newPlate))
         else
-            exports['sandbox-hud']:NotifError(source, "Error")
+            exports['sandbox-hud']:Notification(source, "error", "Error")
         end
     end)
 end
 
 function RegisterPersonalPlateCallbacks()
-    exports['sandbox-inventory']:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if not char or (Player(source).state.onDuty ~= "government" and Player(source).state.onDuty ~= "dgang") then
-            exports['sandbox-hud']:NotifError(source, "Error")
-            return
-        end
-
-        PrivatePlateStuff(char, source, itemData)
-    end)
-
-    exports['sandbox-inventory']:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
-        local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        if not char then
-            exports['sandbox-hud']:NotifError(source, "Error")
-            return
-        end
-
-        PrivatePlateStuff(char, source, itemData)
-    end)
-
+    RegisterItems()
     exports["sandbox-chat"]:RegisterAdminCommand("adddonatorplates", function(source, args, rawCommand)
         local license = table.unpack(args)
 
@@ -206,7 +187,7 @@ function RegisterPersonalPlateCallbacks()
                 local isRemoved = exports['sandbox-vehicles']:DonatorPlatesRemove(plyr:GetData("Identifier"), data)
 
                 if isRemoved then
-                    exports['sandbox-inventory']:AddItem(char:GetData("SID"), "personal_plates_donator", data, {}, 1)
+                    exports.ox_inventory:AddItem(char:GetData("SID"), "personal_plates_donator", data, {}, 1)
                     cb(true)
 
                     exports['sandbox-base']:LoggerWarn(
@@ -240,6 +221,34 @@ function RegisterPersonalPlateCallbacks()
     end)
 end
 
+function RegisterItems()
+    exports.ox_inventory:RegisterUse("personal_plates", "Vehicles", function(source, itemData)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
+        if not char or (Player(source).state.onDuty ~= "government" and Player(source).state.onDuty ~= "dgang") then
+            exports['sandbox-hud']:Notification(source, "error", "Error")
+            return
+        end
+
+        PrivatePlateStuff(char, source, itemData)
+    end)
+
+    exports.ox_inventory:RegisterUse("personal_plates_donator", "Vehicles", function(source, itemData)
+        local char = exports['sandbox-characters']:FetchCharacterSource(source)
+        if not char then
+            exports['sandbox-hud']:Notification(source, "error", "Error")
+            return
+        end
+
+        PrivatePlateStuff(char, source, itemData)
+    end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+    if GetResourceState(GetCurrentResourceName()) == 'started' then
+        RegisterItems()
+    end
+end)
+
 -- Citizen.SetTimeout(2500, function()
 --     print(IsPersonalPlateValid('FFFF'))
 --     print(IsPersonalPlateValid('FFFFF'))
@@ -250,68 +259,46 @@ end
 
 exports("DonatorPlatesAdd", function(playerIdentifier)
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameUpdateOne({
-        collection = "donator_plates",
-        query = {
-            player = playerIdentifier,
-        },
-        update = {
-            ["$inc"] = {
-                pending = 1
-            }
-        },
-        options = {
-            upsert = true,
-        }
-    }, function(success)
-        p:resolve(success)
-    end)
+
+    exports.oxmysql:execute('UPDATE donator_plates SET pending = pending + 1 WHERE player = ?', { playerIdentifier },
+        function(affectedRows)
+            if affectedRows > 0 then
+                p:resolve(true)
+            else
+                exports.oxmysql:insert(
+                    'INSERT INTO donator_plates (player, pending, redeemed) VALUES (?, 1, 0) ON DUPLICATE KEY UPDATE pending = pending + 1',
+                    { playerIdentifier }, function(insertId)
+                        p:resolve(insertId and insertId > 0)
+                    end)
+            end
+        end)
 
     return Citizen.Await(p)
 end)
 
 exports("DonatorPlatesCheck", function(playerIdentifier)
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameFindOne({
-        collection = "donator_plates",
-        query = {
-            player = playerIdentifier,
-        },
-    }, function(success, results)
-        if success then
-            p:resolve(results)
-        else
-            p:resolve(false)
-        end
-    end)
 
-    local res = Citizen.Await(p)
+    exports.oxmysql:execute('SELECT pending, redeemed FROM donator_plates WHERE player = ?', { playerIdentifier },
+        function(result)
+            if result and #result > 0 then
+                p:resolve(result[1])
+            else
+                p:resolve(false)
+            end
+        end)
 
-    if res and res[1] and res[1].player then
-        return res[1]
-    end
-    return false
+    return Citizen.Await(p)
 end)
 
 exports("DonatorPlatesRemove", function(playerIdentifier, amount)
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameUpdateOne({
-        collection = "donator_plates",
-        query = {
-            player = playerIdentifier,
-            pending = {
-                ["$gte"] = amount
-            }
-        },
-        update = {
-            ["$inc"] = {
-                pending = -amount,
-                redeemed = amount,
-            }
-        },
-    }, function(success)
-        p:resolve(success)
-    end)
+
+    exports.oxmysql:execute(
+        'UPDATE donator_plates SET pending = pending - ?, redeemed = redeemed + ? WHERE player = ? AND pending >= ?',
+        { amount, amount, playerIdentifier, amount }, function(affectedRows)
+            p:resolve(affectedRows > 0)
+        end)
 
     return Citizen.Await(p)
 end)

@@ -14,31 +14,17 @@ function Startup()
 	_charges = MySQL.query.await("SELECT * from mdt_charges")
 	exports['sandbox-base']:LoggerTrace("MDT", "Loaded ^2" .. #_charges .. "^7 Charges", { console = true })
 
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "vehicles",
-		query = {
-			["Flags.0"] = { ["$exists"] = true },
-		},
-		options = {
-			projection = {
-				_id = 0,
-				Type = 1,
-				VIN = 1,
-				Flags = 1,
-				RegisteredPlate = 1,
-			},
-		},
-	}, function(success, results)
-		if not success then
-			return
-		end
+	local flaggedVehicles = MySQL.query.await(
+		"SELECT Type, VIN, Properties, RegisteredPlate FROM vehicles WHERE JSON_EXTRACT(Properties, '$.Flags') IS NOT NULL"
+	)
 
-		for k, v in ipairs(results) do
+	if flaggedVehicles then
+		for k, v in ipairs(flaggedVehicles) do
 			if v.RegisteredPlate and v.Type == 0 then
 				exports['sandbox-radar']:AddFlaggedPlate(v.RegisteredPlate, "Vehicle Flagged in MDT")
 			end
 		end
-	end)
+	end
 
 	-- SetHttpHandler(function(req, res)
 	-- 	if req.path == '/charges' then
@@ -46,42 +32,36 @@ function Startup()
 	-- 	end
 	-- end)
 
-	exports['sandbox-base']:DatabaseGameUpdate({
-		collection = "vehicles",
-		query = {
-			["$and"] = {
-				{
-					["$nor"] = {
-						{
-							Strikes = {
-								["$elemMatch"] = {
-									Date = {
-										["$gte"] = (os.time() * 1000) - (60 * 60 * 24 * 30 * 1000)
-									}
-								}
-							}
-						}
-					}
-				},
-				{
-					Strikes = {
-						["$elemMatch"] = {
-							Date = { ["$lte"] = (os.time() * 1000) - (60 * 60 * 24 * 30 * 1000) }
-						}
-					}
-				}
-			},
-		},
-		update = {
-			["$pull"] = {
-				Strikes = {
-					Date = {
-						["$lte"] = (os.time() * 1000) - (60 * 60 * 24 * 30 * 1000),
-					}
-				}
-			}
-		}
-	}, function(success, results)
+	local thirtyDaysAgo = (os.time() * 1000) - (60 * 60 * 24 * 30 * 1000)
 
-	end)
+	local vehiclesWithOldStrikes = MySQL.query.await(
+		"SELECT VIN, Properties FROM vehicles WHERE JSON_EXTRACT(Properties, '$.Strikes') IS NOT NULL"
+	)
+
+	if vehiclesWithOldStrikes then
+		for k, vehicle in ipairs(vehiclesWithOldStrikes) do
+			if vehicle.Properties then
+				local properties = json.decode(vehicle.Properties)
+				if properties and properties.Strikes then
+					local updatedStrikes = {}
+					local hasRecentStrikes = false
+
+					for _, strike in ipairs(properties.Strikes) do
+						if strike.Date and strike.Date > thirtyDaysAgo then
+							table.insert(updatedStrikes, strike)
+							hasRecentStrikes = true
+						end
+					end
+
+					if #updatedStrikes ~= #properties.Strikes then
+						properties.Strikes = updatedStrikes
+						MySQL.update.await(
+							"UPDATE vehicles SET Properties = ? WHERE VIN = ?",
+							{ json.encode(properties), vehicle.VIN }
+						)
+					end
+				end
+			end
+		end
+	end
 end

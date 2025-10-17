@@ -168,7 +168,7 @@ function PlaceFurniture(v)
 
         Wait(1)
     else
-        exports["sandbox-hud"]:NotifError("Failed to Load Model: " .. v.model)
+        exports["sandbox-hud"]:Notification("error", "Failed to Load Model: " .. v.model)
     end
 end
 
@@ -223,8 +223,12 @@ function SetFurnitureEditMode(state)
                 end
             end
 
-            exports["sandbox-hud"]:NotifPersistentStandard("furniture",
-                "Furniture Edit Mode Enabled - Third Eye Objects to Move or Delete Them")
+            exports["sandbox-hud"]:Notification("standard",
+                "Furniture Edit Mode Enabled - Third Eye Objects to Move or Delete Them",
+                -1,
+                nil,
+                nil,
+                "furniture")
         else
             for k, v in ipairs(_spawnedFurniture) do
                 if not v.targeting then
@@ -232,7 +236,7 @@ function SetFurnitureEditMode(state)
                 end
             end
 
-            exports["sandbox-hud"]:NotifPersistentRemove("furniture")
+            exports["sandbox-hud"]:Notification("remove", nil, nil, nil, nil, "furniture")
         end
 
         LocalPlayer.state.furnitureEdit = state
@@ -265,7 +269,8 @@ function CycleFurniture(direction)
     local fData = FurnitureConfig[fKey]
     if fData then
         exports['sandbox-hud']:InfoOverlayShow(fData.name,
-            string.format("Category: %s | Model: %s", (FurnitureCategories[fData.cat] and FurnitureCategories[fData.cat].name or "Unknown"), fKey))
+            string.format("Category: %s | Model: %s",
+                (FurnitureCategories[fData.cat] and FurnitureCategories[fData.cat].name or "Unknown"), fKey))
     end
     exports['sandbox-objects']:PlacerStart(GetHashKey(fKey), "Furniture:Client:Place", {}, true,
         "Furniture:Client:Cancel", true, true)
@@ -293,9 +298,9 @@ AddEventHandler("Furniture:Client:Place", function(data, placement)
             data = data,
         }, function(success)
             if success then
-                exports["sandbox-hud"]:NotifSuccess("Placed Item")
+                exports["sandbox-hud"]:Notification("success", "Placed Item")
             else
-                exports["sandbox-hud"]:NotifError("Error")
+                exports["sandbox-hud"]:Notification("error", "Error")
             end
 
             _placingFurniture = false
@@ -341,9 +346,9 @@ AddEventHandler("Furniture:Client:Move", function(data, placement)
             },
         }, function(success)
             if success then
-                exports["sandbox-hud"]:NotifSuccess("Moved Item")
+                exports["sandbox-hud"]:Notification("success", "Moved Item")
             else
-                exports["sandbox-hud"]:NotifError("Error")
+                exports["sandbox-hud"]:Notification("error", "Error")
             end
 
             _placingFurniture = false
@@ -368,7 +373,7 @@ AddEventHandler("Furniture:Client:CancelMove", function(data)
             end
         end
 
-        exports["sandbox-hud"]:NotifError("Move Cancelled")
+        exports["sandbox-hud"]:Notification("error", "Move Cancelled")
         _placingFurniture = false
         LocalPlayer.state.placingFurniture = false
         if not _skipPhone then

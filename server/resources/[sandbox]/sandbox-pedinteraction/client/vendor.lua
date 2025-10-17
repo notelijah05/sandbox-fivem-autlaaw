@@ -108,7 +108,7 @@ AddEventHandler("Vendor:Client:GetItems", function(entity, data)
 
 		if #items > 0 then
 			for k, v in ipairs(items) do
-				local itemData = exports['sandbox-inventory']:ItemsGetData(v.item)
+				local itemData = exports.ox_inventory:ItemsGetData(v.item)
 				if v.delayed then
 					table.insert(itemList, {
 						label = itemData.label,

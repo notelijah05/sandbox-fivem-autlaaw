@@ -62,6 +62,23 @@ exports("FirearmFlagsRemove", function(firearmSerial, flagId)
 	return true
 end)
 
+exports("FirearmRegister", function(serial, model, ownerSid, ownerName)
+	local existing = MySQL.single.await(
+		"SELECT serial FROM firearms WHERE serial = ?", { serial }
+	)
+
+	if existing then
+		return false
+	end
+
+	local result = MySQL.query.await(
+		"INSERT INTO firearms (serial, model, item, owner_sid, owner_name, purchased) VALUES (?, ?, ?, ?, ?, NOW())",
+		{ serial, model, model, ownerSid, ownerName }
+	)
+
+	return result and true or false
+end)
+
 AddEventHandler("MDT:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("MDT:Search:firearm", function(source, data, cb)
 		if CheckMDTPermissions(source, false) then

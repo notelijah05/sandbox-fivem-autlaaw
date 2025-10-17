@@ -34,15 +34,15 @@ RegisterNetEvent("Properties:Client:InnerStuff", function(propertyData, int, fur
 end)
 
 ---- TARGETTING EVENTS ----
-AddEventHandler("Properties:Client:Stash", function(t, data)
+AddEventHandler("Properties:Client:Stash", function(data)
 	exports['sandbox-properties']:Stash()
 end)
 
-AddEventHandler("Properties:Client:Closet", function(t, data)
+AddEventHandler("Properties:Client:Closet", function(data)
 	exports['sandbox-properties']:Closet()
 end)
 
-AddEventHandler("Properties:Client:Logout", function(t, data)
+AddEventHandler("Properties:Client:Logout", function(data)
 	exports['sandbox-properties']:Logout()
 end)
 
@@ -53,15 +53,15 @@ AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 	end
 end)
 
-AddEventHandler("Properties:Client:Exit", function(t, data)
+AddEventHandler("Properties:Client:Exit", function(data)
 	ExitProperty(data.property, data.backdoor)
 end)
 
-AddEventHandler("Properties:Client:Crafting", function(t, data)
-	exports['sandbox-inventory']:CraftingBenchesOpen('property-' .. data)
+AddEventHandler("Properties:Client:Crafting", function(data)
+	exports.ox_inventory:CraftingBenchesOpen('property-' .. data)
 end)
 
-AddEventHandler("Properties:Client:Duty", function(t, data)
+AddEventHandler("Properties:Client:Duty", function(data)
 	if not _propertiesLoaded then
 		return
 	end

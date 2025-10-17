@@ -9,45 +9,43 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	exports["sandbox-base"]:RegisterServerCallback("Phone:Dyn8:Search", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char then
-			local qry = {
-				label = {
-					["$regex"] = data,
-					["$options"] = "i",
-				},
-				sold = false,
-			}
+			local whereClause = "label LIKE ?"
+			local params = { "%" .. data .. "%" }
 
-			if Player(source).state.onDuty == 'realestate' then
-				qry = {
-					label = {
-						["$regex"] = data,
-						["$options"] = "i",
-					},
-				}
+			if Player(source).state.onDuty ~= 'realestate' then
+				whereClause = whereClause .. " AND sold = 0"
 			end
 
-			exports['sandbox-base']:DatabaseGameAggregate({
-				collection = "properties",
-				aggregate = {
-					{
-						["$match"] = {
-							label = {
-								["$regex"] = data,
-								["$options"] = "i",
-							},
-						},
-					},
-					{
-						['$limit'] = 80
-					},
-				},
-			}, function(success, results)
-				if not success then
-					cb(false)
-					return
-				end
-				cb(results)
-			end)
+			exports.oxmysql:execute('SELECT * FROM properties WHERE ' .. whereClause .. ' LIMIT 80', params,
+				function(results)
+					if not results then
+						cb(false)
+						return
+					end
+
+					local convertedResults = {}
+					for k, v in ipairs(results) do
+						local property = {
+							_id = v.id,
+							id = v.id,
+							type = v.type,
+							label = v.label,
+							price = v.price,
+							sold = v.sold == 1,
+							owner = v.owner,
+							location = v.location and json.decode(v.location) or nil,
+							upgrades = v.upgrades and json.decode(v.upgrades) or nil,
+							locked = v.locked == 1,
+							keys = v.keys and json.decode(v.keys) or nil,
+							data = v.data and json.decode(v.data) or nil,
+							foreclosed = v.foreclosed == 1,
+							soldAt = v.soldAt
+						}
+						table.insert(convertedResults, property)
+					end
+
+					cb(convertedResults)
+				end)
 		else
 			cb(false)
 		end

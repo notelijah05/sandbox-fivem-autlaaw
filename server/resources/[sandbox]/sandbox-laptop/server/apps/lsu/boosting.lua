@@ -38,6 +38,7 @@ AddEventHandler("Characters:Server:PlayerLoggedOut", HandleCharacterLogout)
 AddEventHandler("Characters:Server:PlayerDropped", HandleCharacterLogout)
 
 AddEventHandler("Laptop:Server:RegisterCallbacks", function()
+    RegisterItems()
     exports["sandbox-base"]:RegisterServerCallback("Laptop:LSUnderground:Boosting:Admin:CreateContract",
         function(source, data, cb)
             local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -554,7 +555,11 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
         cb()
     end)
 
-    exports['sandbox-inventory']:RegisterUse("boosting_tracking_disabler", "Boosting", function(source, slot, itemData)
+    SetupBoostingQueue()
+end)
+
+function RegisterItems()
+    exports.ox_inventory:RegisterUse("boosting_tracking_disabler", "Boosting", function(source, slot, itemData)
         local team = exports['sandbox-laptop']:TeamsGetByMemberSource(source)
         local ped = GetPlayerPed(source)
         local inVeh = GetVehiclePedIsIn(ped, false)
@@ -575,9 +580,9 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                                 local newValue = slot.CreateDate - (60 * 60 * 12)
 
                                 if (os.time() - itemData.durability >= newValue) then
-                                    exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
+                                    exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
                                 else
-                                    exports['sandbox-inventory']:SetItemCreateDate(slot.id, newValue)
+                                    exports.ox_inventory:SetItemCreateDate(slot.id, newValue)
                                 end
 
                                 _boosting[team.ID].trackerCount = _boosting[team.ID].trackerCount + 1
@@ -681,11 +686,15 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                     end)
             end)
         else
-            exports['sandbox-hud']:NotifError(source, "Can't Use Right Now...")
+            exports['sandbox-hud']:Notification(source, "error", "Can't Use Right Now...")
         end
     end)
+end
 
-    SetupBoostingQueue()
+RegisterNetEvent('ox_inventory:ready', function()
+    if GetResourceState(GetCurrentResourceName()) == 'started' then
+        RegisterItems()
+    end
 end)
 
 AddEventHandler("Laptop:Server:LSUnderground:Boosting:ActionRequest", function(source, data, action)

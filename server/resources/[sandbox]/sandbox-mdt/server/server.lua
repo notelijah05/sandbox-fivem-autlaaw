@@ -455,6 +455,19 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				local jobs = json.decode(character.Jobs)
 				local jobFound = false
 
+				if character.Qualifications then
+					character.Qualifications = json.decode(character.Qualifications)
+					if type(character.Qualifications) == "table" and not character.Qualifications[1] then
+						local quals = {}
+						for k, v in pairs(character.Qualifications) do
+							table.insert(quals, k)
+						end
+						character.Qualifications = quals
+					elseif type(character.Qualifications) ~= "table" then
+						character.Qualifications = {}
+					end
+				end
+
 				for _, job in ipairs(jobs) do
 					if job.Id == data.job then
 						jobFound = job
@@ -634,7 +647,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				invType = 44,
 				owner = ("evidencelocker:%s"):format(caseNum),
 			}, function()
-				exports['sandbox-inventory']:OpenSecondary(source, 44, ("evidencelocker:%s"):format(caseNum))
+				exports.ox_inventory:OpenSecondary(source, 44, ("evidencelocker:%s"):format(caseNum))
 			end)
 		end
 	end)
@@ -648,7 +661,7 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 				invType = 45,
 				owner = ("pdlocker:%s"):format(char:GetData('SID')),
 			}, function()
-				exports['sandbox-inventory']:OpenSecondary(source, 45, ("pdlocker:%s"):format(char:GetData('SID')))
+				exports.ox_inventory:OpenSecondary(source, 45, ("pdlocker:%s"):format(char:GetData('SID')))
 			end)
 		else
 			cb(false)
@@ -749,4 +762,46 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 			})
 		end
 	end)
+end)
+
+exports.ox_inventory:registerHook('buyItem', function(payload)
+	if payload.itemName and payload.metadata.serial and (payload.metadata.registered or payload.fromSlot.metadata.registered) then
+		local char = exports['sandbox-characters']:FetchCharacterSource(payload.source)
+
+		if char then
+			local firstName = char:GetData('First')
+			local lastName = char:GetData('Last')
+			local sid = char:GetData('SID')
+
+			exports['sandbox-mdt']:FirearmRegister(
+				payload.metadata.serial,
+				payload.itemName,
+				sid,
+				firstName .. ' ' .. lastName
+			)
+		end
+	end
+
+	return true
+end)
+
+exports.ox_inventory:registerHook('createItem', function(payload)
+	if payload.item.name:find('WEAPON_') and payload.metadata.serial then
+		local char = exports['sandbox-characters']:FetchCharacterSource(payload.inventoryId)
+
+		if char then
+			local firstName = char:GetData('First')
+			local lastName = char:GetData('Last')
+			local sid = char:GetData('SID')
+
+			exports['sandbox-mdt']:FirearmRegister(
+				payload.metadata.serial,
+				payload.item.name,
+				sid,
+				firstName .. ' ' .. lastName
+			)
+		end
+	end
+
+	return true
 end)

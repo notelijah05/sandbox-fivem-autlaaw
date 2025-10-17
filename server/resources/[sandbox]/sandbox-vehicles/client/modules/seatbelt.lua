@@ -74,10 +74,10 @@ AddEventHandler('Vehicles:Client:StartUp', function()
                     TriggerEvent('Vehicles:Client:Seatbelt', VEHICLE_SEATBELT)
                     if VEHICLE_SEATBELT then
                         SetFlyThroughWindscreenParams(MIN_FLY_BELT, 40.0, 17.0, 500.0)
-                        exports["sandbox-hud"]:NotifSuccess('Seatbelt On')
+                        exports["sandbox-hud"]:Notification("success", 'Seatbelt On')
                     else
                         SetFlyThroughWindscreenParams(MIN_FLY_NO_SB, 1.0, 17.0, 1.0)
-                        exports["sandbox-hud"]:NotifError('Seatbelt Off')
+                        exports["sandbox-hud"]:Notification("error", 'Seatbelt Off')
                     end
                 end
             end
@@ -86,12 +86,19 @@ AddEventHandler('Vehicles:Client:StartUp', function()
     exports['sandbox-base']:RegisterClientCallback('Vehicles:InstallHarness', function(data, cb)
         local coords = GetEntityCoords(PlayerPedId())
         local maxDistance = 2.0
-        local includePlayerVehicle = false
+        local includePlayerVehicle = true
 
         local target = lib.getClosestVehicle(coords, maxDistance, includePlayerVehicle)
 
         if target and DoesEntityExist(target) and IsEntityAVehicle(target) then
             if exports['sandbox-vehicles']:UtilsIsCloseToVehicle(target) then
+                local vehState = Entity(target).state
+                if vehState.Harness and vehState.Harness > 0 then
+                    exports['sandbox-hud']:Notification("error", "Vehicle already has a harness installed")
+                    cb(false)
+                    return
+                end
+
                 exports['sandbox-hud']:Progress({
                     name = "vehicle_installing_harness",
                     duration = 25000,
@@ -153,7 +160,7 @@ AddEventHandler('Vehicles:Client:EnterVehicle', function(v, seat)
                 if speedBuffers[2] ~= nil and GetEntitySpeedVector(VEHICLE_INSIDE, true).y > 1.0 and (speedBuffers[1] >= minSpeedActual) and ((speedBuffers[2] - speedBuffers[1]) > (speedBuffers[1] * 0.8)) then
                     -- if not VEHICLE_HARNESS or (VEHICLE_HARNESS and VEHICLE_HARNESS <= 0) then
                     --     if not VEHICLE_SEATBELT then
-                    --         exports["sandbox-hud"]:NotifInfo('Maybe You Should be Wearing a Seatbelt...', 8000)
+                    --         exports["sandbox-hud"]:Notification("info", 'Maybe You Should be Wearing a Seatbelt...', 8000)
                     --     end
 
                     --     local pedCoords = GetEntityCoords(GLOBAL_PED)

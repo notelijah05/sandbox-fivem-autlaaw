@@ -2,125 +2,145 @@ exports('BizWizDocumentsSearch', function(jobId, term)
 	if not term then term = '' end
 	local p = promise.new()
 
-	local aggregation = {}
+	local query =
+	'SELECT * FROM business_documents WHERE job = ? AND (title LIKE ? OR CONCAT(JSON_UNQUOTE(JSON_EXTRACT(author, "$.First")), " ", JSON_UNQUOTE(JSON_EXTRACT(author, "$.Last")), " ", JSON_UNQUOTE(JSON_EXTRACT(author, "$.SID"))) LIKE ?)'
+	local searchTerm = '%' .. term .. '%'
 
-	table.insert(aggregation, {
-		['$match'] = {
-			['$or'] = {
-				{
-					title = { ['$regex'] = term, ['$options'] = 'i' }
-				},
-				{
-					["$expr"] = {
-						["$regexMatch"] = {
-							input = {
-								["$concat"] = {
-									"$author.First",
-									" ",
-									"$author.Last",
-									" ",
-									{ ['$toString'] = "$author.SID" }
-								}
-							},
-							regex = term,
-							options = "i",
-						},
-					},
-				},
-			},
-			job = jobId,
-		},
-	})
-
-	exports['sandbox-base']:DatabaseGameAggregate({
-		collection = "business_documents",
-		aggregate = aggregation,
-	}, function(success, results)
-		if not success then
+	exports.oxmysql:execute(query, { jobId, searchTerm, searchTerm }, function(results)
+		if results then
+			for i, doc in ipairs(results) do
+				if doc.author then
+					doc.author = json.decode(doc.author)
+				end
+				if doc.history then
+					doc.history = json.decode(doc.history)
+				end
+				if doc.lastUpdated then
+					doc.lastUpdated = json.decode(doc.lastUpdated)
+				end
+				doc._id = doc.id
+			end
+			p:resolve(results)
+		else
 			p:resolve(false)
-			return
 		end
-		p:resolve(results)
 	end)
 	return Citizen.Await(p)
 end)
 
 exports('BizWizDocumentsView', function(jobId, id)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "business_documents",
-		query = {
-			job = jobId,
-			_id = id,
-		},
-	}, function(success, report)
-		if not report then
+	exports.oxmysql:execute('SELECT * FROM business_documents WHERE job = ? AND id = ?', { jobId, id }, function(results)
+		if results and #results > 0 then
+			local doc = results[1]
+			if doc.author then
+				doc.author = json.decode(doc.author)
+			end
+			if doc.history then
+				doc.history = json.decode(doc.history)
+			end
+			if doc.lastUpdated then
+				doc.lastUpdated = json.decode(doc.lastUpdated)
+			end
+			doc._id = doc.id
+			p:resolve(doc)
+		else
 			p:resolve(false)
-			return
 		end
-		p:resolve(report[1])
 	end)
 	return Citizen.Await(p)
 end)
 
 exports('BizWizDocumentsCreate', function(jobId, data)
 	local p = promise.new()
-	data.job = jobId
-	exports['sandbox-base']:DatabaseGameInsertOne({
-		collection = "business_documents",
-		document = data,
-	}, function(success, result, insertId)
-		if not success then
-			p:resolve(false)
-			return
+
+	local authorJson = data.author and json.encode(data.author) or nil
+	local historyJson = data.history and json.encode(data.history) or nil
+	local lastUpdatedJson = data.lastUpdated and json.encode(data.lastUpdated) or nil
+
+	exports.oxmysql:execute(
+		'INSERT INTO business_documents (job, title, content, author, history, lastUpdated) VALUES (?, ?, ?, ?, ?, ?)',
+		{ jobId, data.title, data.content, authorJson, historyJson, lastUpdatedJson },
+		function(result)
+			if result and result.insertId then
+				p:resolve({
+					_id = result.insertId,
+				})
+			else
+				p:resolve(false)
+			end
 		end
-		p:resolve({
-			_id = insertId[1],
-		})
-	end)
+	)
 
 	return Citizen.Await(p)
 end)
 
 exports('BizWizDocumentsUpdate', function(jobId, id, char, report)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameUpdateOne({
-		collection = "business_documents",
-		query = {
-			_id = id,
-			job = jobId,
-		},
-		update = {
-			["$set"] = report,
-			["$push"] = {
-				history = {
+
+	exports.oxmysql:execute('SELECT history FROM business_documents WHERE id = ? AND job = ?', { id, jobId },
+		function(results)
+			if results and #results > 0 then
+				local currentHistory = results[1].history and json.decode(results[1].history) or {}
+
+				table.insert(currentHistory, {
 					Time = (os.time() * 1000),
 					Char = char:GetData("SID"),
 					Log = string.format(
 						"%s Updated Report",
 						char:GetData("First") .. " " .. char:GetData("Last")
 					),
-				},
-			},
-		},
-	}, function(success, result)
-		p:resolve(success)
-	end)
+				})
+
+				local authorJson = report.author and json.encode(report.author) or nil
+				local historyJson = json.encode(currentHistory)
+				local lastUpdatedJson = report.lastUpdated and json.encode(report.lastUpdated) or nil
+
+				local updateFields = {}
+				local params = {}
+
+				if report.title then
+					table.insert(updateFields, "title = ?")
+					table.insert(params, report.title)
+				end
+				if report.content then
+					table.insert(updateFields, "content = ?")
+					table.insert(params, report.content)
+				end
+				if authorJson then
+					table.insert(updateFields, "author = ?")
+					table.insert(params, authorJson)
+				end
+				if lastUpdatedJson then
+					table.insert(updateFields, "lastUpdated = ?")
+					table.insert(params, lastUpdatedJson)
+				end
+
+				table.insert(updateFields, "history = ?")
+				table.insert(params, historyJson)
+				table.insert(params, id)
+				table.insert(params, jobId)
+
+				local query = 'UPDATE business_documents SET ' ..
+					table.concat(updateFields, ', ') .. ' WHERE id = ? AND job = ?'
+
+				exports.oxmysql:execute(query, params, function(affectedRows)
+					p:resolve(affectedRows > 0)
+				end)
+			else
+				p:resolve(false)
+			end
+		end)
 	return Citizen.Await(p)
 end)
 
 exports('BizWizDocumentsDelete', function(jobId, id)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameDeleteOne({
-		collection = "business_documents",
-		query = {
-			_id = id,
-			job = jobId,
-		},
-	}, function(success, deleted)
-		p:resolve(success)
-	end)
+	exports.oxmysql:execute('DELETE FROM business_documents WHERE id = ? AND job = ?', { id, jobId },
+		function(affectedRows)
+			p:resolve(affectedRows > 0)
+		end)
 	return Citizen.Await(p)
 end)
 

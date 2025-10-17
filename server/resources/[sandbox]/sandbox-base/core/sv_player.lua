@@ -1,6 +1,7 @@
 _dropping = {}
 local _players = {}
 local _recentDisconnects = {}
+local _middlewareRegistered = false
 
 CreateThread(function()
 	while true do
@@ -19,6 +20,11 @@ CreateThread(function()
 end)
 
 AddEventHandler("Proxy:Shared:RegisterReady", function()
+	if _middlewareRegistered then
+		return
+	end
+	_middlewareRegistered = true
+
 	exports['sandbox-base']:MiddlewareAdd("playerDropped", function(source, message)
 		local player = _players[source]
 		if player ~= nil then
@@ -193,41 +199,39 @@ exports("CheckTokens", function(source, accountId, existing)
 		for k, v in pairs(ctkns) do
 			table.insert(existing, k)
 		end
-		exports['sandbox-base']:DatabaseAuthUpdateOne({
-			collection = "tokens",
-			query = {
-				account = accountId,
-			},
-			update = {
-				["$set"] = {
-					tokens = existing,
-				},
-			},
-		}, function()
-			p:resolve(existing)
-		end)
+
+		local tokensJson = json.encode(existing)
+		exports.oxmysql:execute(
+			'UPDATE tokens SET tokens = ? WHERE account = ?',
+			{ tokensJson, accountId },
+			function(affectedRows)
+				if affectedRows > 0 then
+					p:resolve(existing)
+				else
+					exports.oxmysql:execute(
+						'INSERT INTO tokens (account, tokens) VALUES (?, ?)',
+						{ accountId, tokensJson },
+						function(insertId)
+							p:resolve(existing)
+						end
+					)
+				end
+			end
+		)
 	else
 		local tkns = {}
 		for k, v in pairs(ctkns) do
 			table.insert(tkns, k)
 		end
 
-		exports['sandbox-base']:DatabaseAuthUpdateOne({
-			collection = "tokens",
-			query = {
-				account = accountId,
-			},
-			update = {
-				["$set"] = {
-					tokens = tkns,
-				},
-			},
-			options = {
-				upsert = true,
-			},
-		}, function()
-			p:resolve(tkns)
-		end)
+		local tokensJson = json.encode(tkns)
+		exports.oxmysql:execute(
+			'INSERT INTO tokens (account, tokens) VALUES (?, ?) ON DUPLICATE KEY UPDATE tokens = ?',
+			{ accountId, tokensJson, tokensJson },
+			function(result)
+				p:resolve(tkns)
+			end
+		)
 	end
 
 	return Citizen.Await(p)
@@ -317,10 +321,26 @@ function PlayerClass(source, data)
 end
 
 function GetPlayerLicense(source)
-	for _, id in ipairs(GetPlayerIdentifiers(source)) do
-		if string.sub(id, 1, string.len("license:")) == "license:" then
-			local license = string.sub(id, string.len("license:") + 1)
-			return license
+	local playerIds = GetPlayerIdentifiers(source)
+	local prioritizedId = nil
+
+	for _, id in ipairs(playerIds) do
+		if string.sub(id, 1, string.len("steam:")) == "steam:" then
+			prioritizedId = id
+			break
 		end
 	end
+
+	if not prioritizedId then
+		for _, id in ipairs(playerIds) do
+			if string.sub(id, 1, string.len("license:")) == "license:" then
+				prioritizedId = id
+				break
+			end
+		end
+	end
+
+	return prioritizedId
 end
+
+exports('GetPlayerLicense', GetPlayerLicense)

@@ -39,7 +39,7 @@ AddEventHandler("Labor:Server:Startup", function()
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _farming[_joiners[source]] ~= nil then
 			for k, v in ipairs(_farming[_joiners[source]].nodes) do
 				if v.id == data then
-					exports['sandbox-inventory']:LootCustomSetWithCount(_farming[_joiners[source]].job.loot,
+					exports.ox_inventory:LootCustomSetWithCount(_farming[_joiners[source]].job.loot,
 						char:GetData("SID"), 1)
 					exports['sandbox-labor']:SendWorkgroupEvent(
 						_joiners[source],
@@ -102,7 +102,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 			cb(true)
 		else
-			exports['sandbox-hud']:NotifError(source, "Unable To Turn In Ore")
+			exports['sandbox-hud']:Notification(source, "error", "Unable To Turn In Farm")
 			cb(false)
 		end
 	end)

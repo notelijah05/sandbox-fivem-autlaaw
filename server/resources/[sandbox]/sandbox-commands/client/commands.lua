@@ -30,8 +30,8 @@ RegisterNetEvent("Commands:Client:TeleportToMarker", function()
 
 			Wait(5)
 		end
-		exports["sandbox-hud"]:NotifSuccess("Teleported")
+		exports["sandbox-hud"]:Notification("success", "Teleported")
 	else
-		exports["sandbox-hud"]:NotifError("Please place your waypoint.")
+		exports["sandbox-hud"]:Notification("error", "Please place your waypoint.")
 	end
 end)

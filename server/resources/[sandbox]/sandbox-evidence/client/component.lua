@@ -162,9 +162,11 @@ AddEventHandler('onClientResourceStart', function(resource)
 				if not status then
 					if success then
 						if alreadyFiled then
-							exports["sandbox-hud"]:NotifSuccess('Ballistics Filed Successfully - Gun Was Already Filed')
+							exports["sandbox-hud"]:Notification("success",
+								'Ballistics Filed Successfully - Gun Was Already Filed')
 						else
-							exports["sandbox-hud"]:NotifSuccess('Ballistics Filed Successfully - Gun Now Filed')
+							exports["sandbox-hud"]:Notification("success",
+								'Ballistics Filed Successfully - Gun Now Filed')
 						end
 
 						local items = {}
@@ -213,7 +215,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 							},
 						})
 					else
-						exports["sandbox-hud"]:NotifError('Ballistics Testing Failed')
+						exports["sandbox-hud"]:Notification("error", 'Ballistics Testing Failed')
 					end
 				end
 			end)

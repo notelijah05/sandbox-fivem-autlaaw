@@ -102,7 +102,7 @@ end
 
 AddEventHandler("BikeStands:Client:Open", function(entityData, data)
 	if _justBoughtFuckingBike[data.location] then
-		return exports["sandbox-hud"]:NotifError("You Just Bought a Bike off Me! Weirdo!")
+		return exports["sandbox-hud"]:Notification("error", "You Just Bought a Bike off Me! Weirdo!")
 	end
 
 	local menuData = {
@@ -141,10 +141,11 @@ AddEventHandler("BikeStands:Client:Purchase", function(data)
 		}, function(success)
 			if success then
 				_justBoughtFuckingBike[data.location] = true
-				exports["sandbox-hud"]:NotifSuccess(string.format("Purchased %s, It Has Been Brought out for You.",
-					bikeData.name))
+				exports["sandbox-hud"]:Notification("success",
+					string.format("Purchased %s, It Has Been Brought out for You.",
+						bikeData.name))
 			else
-				exports["sandbox-hud"]:NotifError("Purchase Failed")
+				exports["sandbox-hud"]:Notification("error", "Purchase Failed")
 			end
 		end)
 	end

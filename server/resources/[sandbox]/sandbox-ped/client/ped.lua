@@ -242,7 +242,7 @@ function RegisterInteraction()
 				not LocalPed.customization.props.hat.disabled
 				or not LocalPed.customization.props.glass.disabled
 				or (LocalPed.customization.components.mask.drawableId ~= 0)
-				or (exports['sandbox-inventory']:ItemsGetWithStaticMetadata("accessory", "drawableId", "textureId", LocalPlayer.state.Character:GetData("Gender"), LocalPed.customization.components.accessory) ~= nil)
+				or (exports.ox_inventory:ItemsGetWithStaticMetadata("accessory", "drawableId", "textureId", LocalPlayer.state.Character:GetData("Gender"), LocalPed.customization.components.accessory) ~= nil)
 			)
 	end)
 end
@@ -786,11 +786,11 @@ exports("CustomizationSave", function(cb)
 					exports['sandbox-ped']:CreatorEnd()
 				else
 					exports['sandbox-ped']:CustomizationHide()
-					exports["sandbox-hud"]:NotifSuccess(string.format("You Paid $%s", paid))
+					exports["sandbox-hud"]:Notification("success", string.format("You Paid $%s", paid))
 				end
 			end)
 		else
-			exports["sandbox-hud"]:NotifError("You Don't Have Enough Cash")
+			exports["sandbox-hud"]:Notification("error", "You Don't Have Enough Cash")
 		end
 		cb(status)
 	end)

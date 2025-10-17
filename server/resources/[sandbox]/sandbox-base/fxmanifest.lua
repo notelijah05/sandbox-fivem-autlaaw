@@ -13,7 +13,6 @@ client_scripts({
 server_scripts({
 	"sh_init.lua",
 	"sv_config.lua",
-	"core/sv_database.js",
 	"core/sv_generator.js",
 	"core/sv_regex.js",
 	"core/sh_*.lua",

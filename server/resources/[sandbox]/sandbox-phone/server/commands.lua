@@ -225,11 +225,11 @@ function RegisterChatCommands()
 			local id, count = args[1], tonumber(args[2])
 
 			if IsRedlineRace(id) then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "event_invite", count, {
+				exports.ox_inventory:AddItem(char:GetData("SID"), "event_invite", count, {
 					Event = id,
 				}, 1)
 			else
-				exports['sandbox-hud']:NotifError(source, "Invalid Race Event")
+				exports['sandbox-hud']:Notification(source, "error", "Invalid Race Event")
 			end
 		end
 	end, {

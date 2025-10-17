@@ -15,7 +15,7 @@ AddEventHandler("Casino:Server:Startup", function()
             if data?.turbo then
                 local char = exports['sandbox-characters']:FetchCharacterSource(source)
 
-                if char and exports['sandbox-finance']:WalletHas(source, 7500) and exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "diamond_vip", 1) then
+                if char and exports['sandbox-finance']:WalletHas(source, 7500) and exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "diamond_vip", 1) then
                     GlobalState["Casino:WheelStarted"] = {
                         Source = source,
                         Turbo = true,
@@ -216,7 +216,7 @@ function GiveWheelPrize(source, randomPrize)
                 _wheelAccumulator -= value
             end
         elseif randomPrize.type == "alcohol" then
-            exports['sandbox-inventory']:LootCustomWeightedSetWithCount({
+            exports.ox_inventory:LootCustomWeightedSetWithCount({
                 { 25, { name = "diamond_drink", min = 1, max = 1 } },
                 { 25, { name = "wine_glass", min = 1, max = 1 } },
                 { 25, { name = "whiskey_glass", min = 1, max = 1 } },

@@ -72,8 +72,8 @@ AddEventHandler("Mechanic:Client:RunDiagnostics", function(entityData)
 				})
 
 				if partData and partData.item then
-					local itemCount = exports['sandbox-inventory']:ItemsGetCount(partData.item)
-					local itemData = exports['sandbox-inventory']:ItemsGetData(partData.item)
+					local itemCount = exports.ox_inventory:ItemsGetCount(partData.item)
+					local itemData = exports.ox_inventory:ItemsGetData(partData.item)
 					local percentToFull = 100 - vehDamage[k]
 					local requiredToFix = math.ceil(percentToFull / partData.amount)
 
@@ -110,7 +110,7 @@ end)
 AddEventHandler("Mechanic:Client:InstallMultipleRepairParts", function(data)
 	exports["sandbox-base"]:ServerCallback("Mechanic:InstallMultipleRepairParts", data, function(success)
 		if not success then
-			exports["sandbox-hud"]:NotifError("Unable to Install Multiple Parts")
+			exports["sandbox-hud"]:Notification("error", "Unable to Install Multiple Parts")
 		end
 	end)
 end)
@@ -118,7 +118,7 @@ end)
 AddEventHandler("Mechanic:Client:RemovePerformanceUpgrade", function(data)
 	exports["sandbox-base"]:ServerCallback("Mechanic:RemovePerformanceUpgrade", data, function(success)
 		if not success then
-			exports["sandbox-hud"]:NotifError("Unable to Remove Upgrade")
+			exports["sandbox-hud"]:Notification("error", "Unable to Remove Upgrade")
 		end
 	end)
 end)

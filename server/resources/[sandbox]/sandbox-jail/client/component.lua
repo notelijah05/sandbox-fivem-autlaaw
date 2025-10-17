@@ -177,7 +177,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 
 			exports['sandbox-phone']:Close()
 			exports['sandbox-hud']:InteractionHide()
-			exports['sandbox-inventory']:CloseAll()
+			exports.ox_inventory:CloseAll()
 
 			DoScreenFadeOut(1000)
 			while not IsScreenFadedOut() do

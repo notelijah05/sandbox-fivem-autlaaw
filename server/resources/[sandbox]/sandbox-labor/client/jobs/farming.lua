@@ -15,7 +15,7 @@ AddEventHandler("Labor:Client:Setup", function()
 	exports['sandbox-pedinteraction']:Add("FarmingJob", `a_m_m_farmer_01`, vector3(2016.165, 4987.541, 41.098), 225.995,
 		25.0, {
 			{
-				icon = "wheat",
+				icon = "fa-solid fa-wheat-awn",
 				text = "Start Work",
 				event = "Farming:Client:StartJob",
 				tempjob = "Farming",
@@ -24,7 +24,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				end,
 			},
 			{
-				icon = "clipboard-list-check",
+				icon = "fa-solid fa-clipboard-check",
 				text = "Finish Job",
 				event = "Farming:Client:TurnIn",
 				tempjob = "Farming",
@@ -186,7 +186,7 @@ end)
 AddEventHandler("Farming:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback('Farming:StartJob', _joiner, function(state)
 		if not state then
-			exports["sandbox-hud"]:NotifError("Unable To Start Job")
+			exports["sandbox-hud"]:Notification("error", "Unable To Start Job")
 		end
 	end)
 end)

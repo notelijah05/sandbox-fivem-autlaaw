@@ -28,7 +28,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:ActualCrackSafe", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function()
 						return (
 							not GlobalState["StoreAntiShitlord"]
 							or GetCloudTimeAsInt() > GlobalState["StoreAntiShitlord"]
@@ -42,7 +42,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:SequenceSafe", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function()
 						return (
 							not GlobalState["StoreAntiShitlord"]
 							or GetCloudTimeAsInt() > GlobalState["StoreAntiShitlord"]
@@ -55,7 +55,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:OpenSafe", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function()
 						local safeData = GlobalState[string.format("Safe:%s", v.data.id)]
 						return safeData ~= nil and safeData.state == 2
 					end,
@@ -67,7 +67,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:SecureSafe", v.data)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function()
 						local safeData = GlobalState[string.format("Safe:%s", v.data.id)]
 						return safeData ~= nil and safeData.state ~= 4
 					end,
@@ -180,7 +180,7 @@ AddEventHandler("Robbery:Client:Store:LockpickRegister", function(entity, data)
 	then
 		exports["sandbox-base"]:ServerCallback("Robbery:Store:StartLockpick", coords, function(s)
 			if s then
-				if exports['sandbox-inventory']:ItemsHas("lockpick", 1) then
+				if exports.ox_inventory:ItemsHas("lockpick", 1) then
 					_lpPass = 1
 					LPScan(coords)
 				end
@@ -237,7 +237,7 @@ AddEventHandler("Robbery:Client:Store:SequenceSafe", function(data)
 	if GlobalState[string.format("Safe:%s", data.id)] == nil then
 		exports["sandbox-base"]:ServerCallback("Robbery:Store:StartSafeSequence", {}, function(r)
 			if r then
-				if exports['sandbox-inventory']:ItemsHas("sequencer", 1) then
+				if exports.ox_inventory:ItemsHas("sequencer", 1) then
 					_scPass = 1
 					SCSeq(data)
 				end

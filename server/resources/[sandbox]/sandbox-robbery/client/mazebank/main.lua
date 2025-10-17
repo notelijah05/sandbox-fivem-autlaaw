@@ -105,7 +105,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 						onSelect = function()
 							TriggerEvent("Robbery:Client:MazeBank:ElectricBox:Thermite", v.data)
 						end,
-						canInteract = function(data, entity)
+						canInteract = function(data)
 							return not GlobalState["MazeBank:Secured"]
 								and (
 									not GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
@@ -123,7 +123,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 						onSelect = function()
 							TriggerEvent("Robbery:Client:MazeBank:ElectricBox:Hack", v.data)
 						end,
-						canInteract = function(data, entity)
+						canInteract = function(data)
 							return not GlobalState["MazeBank:Secured"]
 								and (
 									not GlobalState[string.format("MazeBank:Power:%s", data.boxId)]
@@ -153,7 +153,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:MazeBank:Drill", v.data.wallId)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function(data)
 						return not GlobalState["MazeBank:Secured"]
 							and (
 								not GlobalState[string.format("MazeBank:Vault:Wall:%s", data.id)]
@@ -183,7 +183,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					onSelect = function()
 						TriggerEvent("Robbery:Client:MazeBank:PC:Hack", v.data.deskId)
 					end,
-					canInteract = function(data, entity)
+					canInteract = function(data)
 						return not GlobalState["MazeBank:Secured"]
 							and (
 								not GlobalState[string.format("MazeBank:Offices:PC:%s", data.id)]

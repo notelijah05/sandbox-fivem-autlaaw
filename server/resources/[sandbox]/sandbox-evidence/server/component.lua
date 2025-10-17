@@ -87,14 +87,14 @@ RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 		for k, v in ipairs(EVIDENCE_CACHE) do
 			if v.id == evidenceId then
 				if v.type == "paint_fragment" then
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-paint", 1, {
+					exports.ox_inventory:AddItem(char:GetData("SID"), "evidence-paint", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
 						EvidenceColor = v.data and v.data.color,
 					}, 1)
 				elseif v.type == "projectile" then
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-projectile", 1, {
+					exports.ox_inventory:AddItem(char:GetData("SID"), "evidence-projectile", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
@@ -103,7 +103,7 @@ RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 						EvidenceDegraded = v.data and v.data.tooDegraded,
 					}, 1)
 				elseif v.type == "casing" then
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-casing", 1, {
+					exports.ox_inventory:AddItem(char:GetData("SID"), "evidence-casing", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
@@ -111,7 +111,7 @@ RegisterNetEvent("Evidence:Server:PickupEvidence", function(evidenceId)
 						EvidenceAmmoType = (v.data and v.data.weapon) and v.data.weapon.ammoTypeName,
 					}, 1)
 				elseif v.type == "blood" then
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), "evidence-dna", 1, {
+					exports.ox_inventory:AddItem(char:GetData("SID"), "evidence-dna", 1, {
 						EvidenceType = v.type,
 						EvidenceId = v.id,
 						EvidenceCoords = { x = v.coords.x, y = v.coords.y, z = v.coords.z },
@@ -136,12 +136,12 @@ RegisterServerEvent("Camara:CapturePhoto", function()
 
 	if char then
 		if pendingSend then
-			exports['sandbox-hud']:NotifWarn(src,
+			exports['sandbox-hud']:Notification(src, "warning",
 				"Please wait while current photo is uploading", 2000)
 			return
 		end
 		pendingSend = true
-		exports['sandbox-hud']:NotifInfo(src, "Prepping Photo Upload", 2000)
+		exports['sandbox-hud']:Notification(src, "info", "Prepping Photo Upload", 2000)
 
 		local options = {
 			encoding = "webp",
@@ -178,11 +178,11 @@ RegisterServerEvent("Camara:CapturePhoto", function()
 			function(error)
 				if error then
 					pendingSend = false
-					exports['sandbox-hud']:NotifError(src, "Error uploading photo!", 2000)
+					exports['sandbox-hud']:Notification(src, "error", "Error uploading photo!", 2000)
 					print("^1ERROR: " .. error .. "^7")
 				end
 				pendingSend = false
-				exports['sandbox-hud']:NotifSuccess(src, "Photo uploaded successfully!",
+				exports['sandbox-hud']:Notification(src, "success", "Photo uploaded successfully!",
 					2000)
 			end
 		)

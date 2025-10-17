@@ -20,19 +20,22 @@ local _blacklistedJobs = {
 }
 
 AddEventHandler("Phone:Server:RegisterCallbacks", function()
+	RegisterItems()
 	exports['sandbox-pedinteraction']:VendorCreate("ChoperItems", "ped", "Items", `U_M_Y_SmugMech_01`, {
 		coords = vector3(-623.589, -1681.736, 19.101),
 		heading = 228.222,
 		scenario = "WORLD_HUMAN_TOURIST_MOBILE",
 	}, marketItems, "badge-dollar", "View Offers", false, false, true)
+end)
 
-	exports['sandbox-inventory']:RegisterUse("chopping_invite", "LSUNDG", function(source, item, itemData)
+function RegisterItems()
+	exports.ox_inventory:RegisterUse("chopping_invite", "LSUNDG", function(source, item, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local pState = Player(source).state
 			if not pState.onDuty or not _blacklistedJobs[pState.onDuty] then
 				if not hasValue(char:GetData("States") or {}, "ACCESS_CHOPPER") then
-					if exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+					if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
 						local states = char:GetData("States") or {}
 						table.insert(states, "ACCESS_CHOPPER")
 						char:SetData("States", states)
@@ -48,12 +51,18 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 						end)
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You already have access to that app")
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "You Can't Use This Item")
+				exports['sandbox-hud']:Notification(source, "error", "You Can't Use This Item")
 			end
 		end
 	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
 end)

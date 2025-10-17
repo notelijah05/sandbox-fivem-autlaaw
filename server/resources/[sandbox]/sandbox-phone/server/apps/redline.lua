@@ -94,111 +94,7 @@ AddEventHandler("Characters:Server:PlayerDropped", function(source, cData)
 end)
 
 AddEventHandler("Phone:Server:RegisterMiddleware", function()
-	exports['sandbox-inventory']:RegisterUse("alias_changer", "LSUNDG", function(source, item, itemData)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local _AppName = "redline"
-		if char ~= nil then
-			local profiles = char:GetData("Profiles") or {}
-
-			if profiles[_AppName] ~= nil then
-				local queries = {}
-				table.insert(queries, {
-					query = "INSERT INTO app_profile_history (sid, app, name, picture, meta) VALUES(?, ?, ?, ?, ?)",
-					values = {
-						char:GetData("SID"),
-						_AppName,
-						profiles[_AppName].name,
-						profiles[_AppName].picture,
-						json.encode(profiles[_AppName].meta or {}),
-					},
-				})
-				table.insert(queries, {
-					query = "DELETE FROM character_app_profiles WHERE sid = ? AND app = ?",
-					values = {
-						char:GetData("SID"),
-						_AppName,
-					},
-				})
-				MySQL.transaction(queries)
-
-				exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
-
-				profiles[_AppName] = nil
-				char:SetData("Profiles", profiles)
-				exports['sandbox-hud']:NotifSuccess(source, string.format(
-					"Alias Cleared For %s %s (%s) For %s",
-					char:GetData("First"),
-					char:GetData("Last"),
-					char:GetData("SID"),
-					_AppName
-				))
-			else
-			end
-		else
-			exports['sandbox-hud']:NotifError(source,
-				"An error has occured clearing your alias. Please contact IT.")
-		end
-	end)
-	exports['sandbox-inventory']:RegisterUse("event_invite", "LSUNDG", function(source, item, itemData)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			if item.MetaData.Event and _races[item.MetaData.Event] then
-				local sid = char:GetData("SID")
-				local alias = char:GetData("Profiles")?.redline?.name
-				if alias then
-					for k, v in ipairs(_races) do
-						if v.state == 0 then
-							if _races[k].racers[alias] ~= nil then
-								_races[k].racers[alias] = nil
-								TriggerClientEvent("Phone:Client:Redline:LeaveRace", -1, k, alias)
-							end
-						end
-					end
-
-					if
-						_races[item.MetaData.Event].class ~= "All"
-						and not CheckVehicleAgainstClass(_races[item.MetaData.Event].class, source)
-					then
-						exports['sandbox-phone']:NotificationAdd(
-							source,
-							"Unable to Join Race",
-							"This vehicle is not in the right class.",
-							os.time(),
-							10000,
-							"redline",
-							{}
-						)
-						return
-					else
-						_races[item.MetaData.Event].racers[alias] = {
-							source = source,
-							sid = sid,
-						}
-						TriggerClientEvent("Redline:Client:JoinedEvent", source, _races[item.MetaData.Event])
-						TriggerClientEvent("Phone:Client:Redline:JoinRace", -1, item.MetaData.Event, alias,
-							_races[item.MetaData.Event].racers[alias])
-
-
-						exports['sandbox-phone']:NotificationAdd(
-							source,
-							"Joined Event",
-							string.format("You Have Joined %s", _races[item.MetaData.Event].name),
-							os.time(),
-							10000,
-							"redline",
-							{}
-						)
-
-						_raceInvites[item.MetaData.Event][string.lower(alias)] = nil
-
-						exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
-					end
-				end
-			else
-				exports['sandbox-hud']:NotifError(source, "Invalid Event ID")
-			end
-		end
-	end)
+	RegisterItems()
 
 	exports['sandbox-pedinteraction']:VendorCreate("RaceGear", "poly", "Race Gear", false, {
 			coords = vector3(707.286, -967.542, 30.468),
@@ -256,6 +152,120 @@ AddEventHandler("Phone:Server:RegisterMiddleware", function()
 	end, 2)
 end)
 
+function RegisterItems()
+	exports.ox_inventory:RegisterUse("alias_changer", "LSUNDG", function(source, item, itemData)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		local _AppName = "redline"
+		if char ~= nil then
+			local profiles = char:GetData("Profiles") or {}
+
+			if profiles[_AppName] ~= nil then
+				local queries = {}
+				table.insert(queries, {
+					query = "INSERT INTO app_profile_history (sid, app, name, picture, meta) VALUES(?, ?, ?, ?, ?)",
+					values = {
+						char:GetData("SID"),
+						_AppName,
+						profiles[_AppName].name,
+						profiles[_AppName].picture,
+						json.encode(profiles[_AppName].meta or {}),
+					},
+				})
+				table.insert(queries, {
+					query = "DELETE FROM character_app_profiles WHERE sid = ? AND app = ?",
+					values = {
+						char:GetData("SID"),
+						_AppName,
+					},
+				})
+				MySQL.transaction(queries)
+
+				exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1)
+
+				profiles[_AppName] = nil
+				char:SetData("Profiles", profiles)
+				exports['sandbox-hud']:Notification(source, "success", string.format(
+					"Alias Cleared For %s %s (%s) For %s",
+					char:GetData("First"),
+					char:GetData("Last"),
+					char:GetData("SID"),
+					_AppName
+				))
+			else
+			end
+		else
+			exports['sandbox-hud']:Notification(source, "error",
+				"An error has occured clearing your alias. Please contact IT.")
+		end
+	end)
+	exports.ox_inventory:RegisterUse("event_invite", "LSUNDG", function(source, item, itemData)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			if item.MetaData.Event and _races[item.MetaData.Event] then
+				local sid = char:GetData("SID")
+				local alias = char:GetData("Profiles")?.redline?.name
+				if alias then
+					for k, v in ipairs(_races) do
+						if v.state == 0 then
+							if _races[k].racers[alias] ~= nil then
+								_races[k].racers[alias] = nil
+								TriggerClientEvent("Phone:Client:Redline:LeaveRace", -1, k, alias)
+							end
+						end
+					end
+
+					if
+						_races[item.MetaData.Event].class ~= "All"
+						and not CheckVehicleAgainstClass(_races[item.MetaData.Event].class, source)
+					then
+						exports['sandbox-phone']:NotificationAdd(
+							source,
+							"Unable to Join Race",
+							"This vehicle is not in the right class.",
+							os.time(),
+							10000,
+							"redline",
+							{}
+						)
+						return
+					else
+						_races[item.MetaData.Event].racers[alias] = {
+							source = source,
+							sid = sid,
+						}
+						TriggerClientEvent("Redline:Client:JoinedEvent", source, _races[item.MetaData.Event])
+						TriggerClientEvent("Phone:Client:Redline:JoinRace", -1, item.MetaData.Event, alias,
+							_races[item.MetaData.Event].racers[alias])
+
+
+						exports['sandbox-phone']:NotificationAdd(
+							source,
+							"Joined Event",
+							string.format("You Have Joined %s", _races[item.MetaData.Event].name),
+							os.time(),
+							10000,
+							"redline",
+							{}
+						)
+
+						_raceInvites[item.MetaData.Event][string.lower(alias)] = nil
+
+						exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, item.invType)
+					end
+				end
+			else
+				exports['sandbox-hud']:Notification(source, "error", "Invalid Event ID")
+			end
+		end
+	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
+end)
+
 AddEventHandler("Phone:Server:UpdateProfile", function(source, data)
 	if data.app == "redline" then
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -290,7 +300,7 @@ AddEventHandler("Phone:Server:UpdateProfile", function(source, data)
 				}
 				char:SetData("Profiles", profiles)
 			else
-				exports['sandbox-hud']:NotifError(source, "Alias already in use")
+				exports['sandbox-hud']:Notification(source, "error", "Alias already in use")
 			end
 		end
 	end

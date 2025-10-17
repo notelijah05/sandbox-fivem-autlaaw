@@ -11,9 +11,9 @@ AddEventHandler('onResourceStart', function(resource)
 		exports["sandbox-base"]:RegisterServerCallback("Government:BuyID", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if exports['sandbox-finance']:WalletModify(source, -500) then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
+				exports.ox_inventory:AddItem(char:GetData("SID"), "govid", 1, {}, 1)
 			else
-				exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
+				exports['sandbox-hud']:Notification(source, "error", "Not Enough Cash")
 			end
 		end)
 
@@ -28,11 +28,11 @@ AddEventHandler('onResourceStart', function(resource)
 
 						exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Unable To Purchase License")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
+					exports['sandbox-hud']:Notification(source, "error", "Not Enough Cash")
 				end
 			else
 				exports['sandbox-base']:LoggerError(
@@ -43,7 +43,7 @@ AddEventHandler('onResourceStart', function(resource)
 						discord = true,
 					}
 				)
-				exports['sandbox-hud']:NotifError(source, "Unable To Purchase License")
+				exports['sandbox-hud']:Notification(source, "error", "Unable To Purchase License")
 			end
 		end)
 
@@ -57,52 +57,12 @@ AddEventHandler('onResourceStart', function(resource)
 						char:SetData("Licenses", licenses)
 						exports['sandbox-base']:MiddlewareTriggerEvent("Characters:ForceStore", source)
 					else
-						exports['sandbox-hud']:NotifError(source, "Not Enough Cash")
+						exports['sandbox-hud']:Notification(source, "error", "Not Enough Cash")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "You are Not PD")
+					exports['sandbox-hud']:Notification(source, "error", "You are Not PD")
 				end
 			end)
-
-		-- exports['sandbox-inventory']:PolyCreate({
-		-- 	id = "doj-chief-justice-safe",
-		-- 	type = "box",
-		-- 	coords = vector3(-586.32, -213.18, 42.84),
-		-- 	width = 0.6,
-		-- 	length = 1.0,
-		-- 	options = {
-		-- 		heading = 30,
-		-- 		--debugPoly=true,
-		-- 		minZ = 41.84,
-		-- 		maxZ = 44.24,
-		-- 	},
-		-- 	data = {
-		-- 		inventory = {
-		-- 			invType = 46,
-		-- 			owner = "doj-chief-justice-safe",
-		-- 		},
-		-- 	},
-		-- })
-
-		exports['sandbox-inventory']:PolyCreate({
-			id = "doj-storage",
-			type = "box",
-			coords = vector3(-586.64, -203.5, 38.23),
-			length = 0.8,
-			width = 1.4,
-			options = {
-				heading = 30,
-				--debugPoly=true,
-				minZ = 37.23,
-				maxZ = 39.43,
-			},
-			data = {
-				inventory = {
-					invType = 116,
-					owner = "doj-storage",
-				},
-			},
-		})
 	end
 end)
 

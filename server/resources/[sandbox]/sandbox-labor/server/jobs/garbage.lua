@@ -173,7 +173,7 @@ AddEventHandler("Labor:Server:Startup", function()
 						exports['sandbox-labor']:TaskOffer(_joiners[source], _JOB, "Speak with the Sanitation Foreman")
 					end)
 				else
-					exports['sandbox-hud']:NotifError(source, "Truck Needs To Be With You")
+					exports['sandbox-hud']:Notification(source, "error", "Truck Needs To Be With You")
 				end
 			end
 		end
@@ -196,11 +196,11 @@ AddEventHandler("Labor:Server:Startup", function()
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _Garbage[_joiners[source]] ~= nil then
 			local luck = math.random(100)
 			if luck >= 80 then
-				exports['sandbox-inventory']:LootCustomSet(_highClassLoot, char:GetData("SID"), 1, math.random(5, 20))
+				exports.ox_inventory:LootCustomSet(_highClassLoot, char:GetData("SID"), 1, math.random(5, 20))
 			elseif luck >= 50 then
-				exports['sandbox-inventory']:LootCustomSet(_lootTable, char:GetData("SID"), 1, math.random(5, 20))
+				exports.ox_inventory:LootCustomSet(_lootTable, char:GetData("SID"), 1, math.random(5, 20))
 			end
-			exports['sandbox-inventory']:AddItem(char:GetData("SID"), "recycledgoods", math.random(10), {}, 1)
+			exports.ox_inventory:AddItem(char:GetData("SID"), "recycledgoods", math.random(10), {}, 1)
 
 			exports["sandbox-base"]:ClientCallback(source, "Garbage:DoingSomeAction", "trashPutIn")
 			if exports['sandbox-labor']:UpdateOffer(_joiners[source], _JOB, 1, true) then
@@ -239,11 +239,11 @@ AddEventHandler("Labor:Server:Startup", function()
 				exports['sandbox-labor']:ManualFinishOffer(_joiners[source], _JOB)
 				cb(true)
 			else
-				exports['sandbox-hud']:NotifError(source, "Unable To Finish Job")
+				exports['sandbox-hud']:Notification(source, "error", "Unable To Finish Job")
 				cb(false)
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "You've Not Completed All Routes")
+			exports['sandbox-hud']:Notification(source, "error", "You've Not Completed All Routes")
 			cb(false)
 		end
 	end)
@@ -255,9 +255,9 @@ AddEventHandler("Labor:Server:Startup", function()
 		if repLvl > 0 then
 			local money = 0
 			for k, v in ipairs(_jewelryItems) do
-				local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, v.item) or 0
+				local count = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, v.item) or 0
 				if count > 0 then
-					if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, v.item, count) then
+					if exports.ox_inventory:Remove(char:GetData("SID"), 1, v.item, count) then
 						money = money + math.floor(_jewelryPrices[repLvl] * v.ratio) * count
 					end
 				end
@@ -266,10 +266,10 @@ AddEventHandler("Labor:Server:Startup", function()
 			if money > 0 then
 				exports['sandbox-finance']:WalletModify(source, money)
 			else
-				exports['sandbox-hud']:NotifError(source, "You Have Nothing To Sell")
+				exports['sandbox-hud']:Notification(source, "error", "You Have Nothing To Sell")
 			end
 		else
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"You're Not Trusted Enough To Do This Yet")
 		end
 	end)
@@ -281,7 +281,7 @@ AddEventHandler("Labor:Server:Startup", function()
 	-- 	if repLvl >= 3 then
 	-- 		cb(_pawnItems)
 	-- 	else
-	-- 		exports['sandbox-hud']:NotifError(source, "You're Not Trusted Enough To Do This Yet")
+	-- 		exports['sandbox-hud']:Notification(source, "error", "You're Not Trusted Enough To Do This Yet")
 	-- 	end
 	-- end)
 
@@ -304,15 +304,15 @@ AddEventHandler("Labor:Server:Startup", function()
 	-- 					{}
 	-- 				)
 
-	-- 				cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"), _pawnItems[data.index].item, 1, {}, 1))
+	-- 				cb(exports.ox_inventory:AddItem(char:GetData("SID"), _pawnItems[data.index].item, 1, {}, 1))
 	-- 			else
-	-- 				exports['sandbox-hud']:NotifError(source, "Not Enough Crypto")
+	-- 				exports['sandbox-hud']:Notification(source, "error", "Not Enough Crypto")
 	-- 			end
 	-- 		else
-	-- 			exports['sandbox-hud']:NotifError(source, "Item Not In Stock")
+	-- 			exports['sandbox-hud']:Notification(source, "error", "Item Not In Stock")
 	-- 		end
 	-- 	else
-	-- 		exports['sandbox-hud']:NotifError(source, "You're Not Trusted Enough To Do This Yet")
+	-- 		exports['sandbox-hud']:Notification(source, "error", "You're Not Trusted Enough To Do This Yet")
 	-- 	end
 	-- end)
 end)

@@ -5,47 +5,57 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
     })
 
     if hasPerms and loggedInJob then
-      exports['sandbox-base']:DatabaseGameFind({
-        collection = "vehicles",
-        query = {
-          ['Owner.Type'] = 1,
-          ['Owner.Id'] = loggedInJob,
-        },
-        options = {
-          projection = {
-            _id = 0,
-            VIN = 1,
-            Make = 1,
-            Model = 1,
-            Type = 1,
-            Owner = 1,
-            Storage = 1,
-            GovAssigned = 1,
-            Storage = 1,
-            RegistrationDate = 1,
-            RegisteredPlate = 1,
+      local results = MySQL.query.await(
+        "SELECT VIN, Make, Model, Type, OwnerType, OwnerId, OwnerWorkplace, StorageType, StorageId, Properties, RegistrationDate, RegisteredPlate FROM vehicles WHERE OwnerType = ? AND OwnerId = ?",
+        { 1, loggedInJob }
+      )
+
+      if results then
+        for k, v in ipairs(results) do
+          if v.Properties then
+            local properties = json.decode(v.Properties)
+            v.GovAssigned = properties and properties.GovAssigned or nil
+          end
+
+          v.Owner = {
+            Type = v.OwnerType,
+            Id = v.OwnerId,
+            Workplace = v.OwnerWorkplace
           }
-        }
-      }, function(success, results)
-        if success then
-          for k, v in ipairs(results) do
-            if v.Storage then
-              if v.Storage.Type == 0 then
-                v.Storage.Name = exports['sandbox-vehicles']:GaragesImpound().name
-              elseif v.Storage.Type == 1 then
-                v.Storage.Name = exports['sandbox-vehicles']:GaragesGet(v.Storage.Id).name
-              elseif v.Storage.Type == 2 then
-                local prop = exports['sandbox-properties']:Get(v.Storage.Id)
-                v.Storage.Name = prop?.label
-              end
+
+          if v.StorageType ~= nil then
+            local storageName = nil
+            if v.StorageType == 0 then
+              storageName = exports['sandbox-vehicles']:GaragesImpound().name
+            elseif v.StorageType == 1 then
+              local garage = exports['sandbox-vehicles']:GaragesGet(v.StorageId)
+              storageName = garage and garage.name or nil
+            elseif v.StorageType == 2 then
+              local prop = exports['sandbox-properties']:Get(v.StorageId)
+              storageName = prop and prop.label or nil
+            end
+
+            if storageName then
+              v.Storage = {
+                Type = v.StorageType,
+                Id = v.StorageId,
+                Name = storageName
+              }
             end
           end
 
-          cb(results)
-        else
-          cb(false)
+          v.OwnerType = nil
+          v.OwnerId = nil
+          v.OwnerWorkplace = nil
+          v.StorageType = nil
+          v.StorageId = nil
+          v.Properties = nil
         end
-      end)
+
+        cb(results)
+      else
+        cb(false)
+      end
     else
       cb(false)
     end
@@ -67,19 +77,12 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
         })
       end
 
-      exports['sandbox-base']:DatabaseGameUpdateOne({
-        collection = "vehicles",
-        query = {
-          VIN = data.vehicle,
-        },
-        update = {
-          ["$set"] = {
-            GovAssigned = ass,
-          },
-        },
-      }, function(success, result)
-        cb(success)
-      end)
+      local success = MySQL.update.await(
+        "UPDATE vehicles SET Properties = JSON_SET(COALESCE(Properties, '{}'), '$.GovAssigned', ?) WHERE VIN = ?",
+        { json.encode(ass), data.vehicle }
+      )
+
+      cb(success)
     else
       cb(false)
     end

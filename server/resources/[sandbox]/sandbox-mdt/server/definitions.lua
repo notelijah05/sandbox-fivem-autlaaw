@@ -358,7 +358,7 @@ _permissions = {
 		restrict = {
 			job = 'prison',
 			workplace = 'corrections',
-		}	
+		}
 	}
 }
 
@@ -445,6 +445,10 @@ _qualifications = {
 	},
 	['EMS_DIVING'] = {
 		name = 'Scuba Cert.',
+		restrict = {
+			job = 'ems',
+			workplace = 'safd',
+		}
 	},
 	['EMS_FTO'] = {
 		name = 'Diving Cert.',

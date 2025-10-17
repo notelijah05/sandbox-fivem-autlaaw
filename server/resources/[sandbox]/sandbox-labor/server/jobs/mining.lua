@@ -301,17 +301,17 @@ end
 AddEventHandler("Labor:Server:Startup", function()
 	exports["sandbox-base"]:RegisterServerCallback("Mining:SellStone", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, "crushedrock")
+		local count = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, "crushedrock")
 		if (count or 0) > 0 then
-			if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "crushedrock", count) then
+			if exports.ox_inventory:Remove(char:GetData("SID"), 1, "crushedrock", count) then
 				exports['sandbox-finance']:WalletModify(source, (3 * count))
 				cb(true)
 			else
-				exports['sandbox-hud']:NotifError(source, "Unable To Remove Crushed Rock")
+				exports['sandbox-hud']:Notification(source, "error", "Unable To Remove Crushed Rock")
 				cb(false)
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "You Have No Crushed Rock")
+			exports['sandbox-hud']:Notification(source, "error", "You Have No Crushed Rock")
 			cb(false)
 		end
 	end)
@@ -321,21 +321,21 @@ AddEventHandler("Labor:Server:Startup", function()
 		local repLvl = exports['sandbox-characters']:RepGetLevel(source, _JOB)
 
 		if _gems[data] ~= nil and _gems[data].level <= repLvl then
-			local itemData = exports['sandbox-inventory']:ItemsGetData(data)
+			local itemData = exports.ox_inventory:ItemsGetData(data)
 			if itemData ~= nil then
-				local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, data)
+				local count = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, data)
 
 				if count > 0 then
 					local totalPayout = 0
 					for i = 1, count do
-						local item = exports['sandbox-inventory']:ItemsGetFirst(char:GetData("SID"), data, 1)
+						local item = exports.ox_inventory:ItemsGetFirst(char:GetData("SID"), data, 1)
 						if item then
 							local payout = itemData.price * ((item.MetaData.Quality / 100) - _payoutCuts[repLvl])
 							if payout <= 0 then
 								payout = 100
 							end
 
-							if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, data, 1) then
+							if exports.ox_inventory:Remove(char:GetData("SID"), 1, data, 1) then
 								totalPayout = math.ceil(totalPayout + payout)
 							end
 						end
@@ -352,11 +352,11 @@ AddEventHandler("Labor:Server:Startup", function()
 								repLvl = repLvl,
 							},
 						})
-					exports['sandbox-hud']:NotifInfo(source,
+					exports['sandbox-hud']:Notification(source, "info",
 						string.format("$%s Has Been Deposited Into Your Account", totalPayout)
 					)
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						string.format("You Don't Have Any %s's", itemData.label)
 					)
 				end
@@ -389,7 +389,7 @@ AddEventHandler("Labor:Server:Startup", function()
 							vector3(node.location.x, node.location.y, node.location.z)
 							== vector3(data.location.x, data.location.y, data.location.z)
 						then
-							exports['sandbox-inventory']:AddItem(char:GetData("SID"), "crushedrock", math.random(8), {},
+							exports.ox_inventory:AddItem(char:GetData("SID"), "crushedrock", math.random(8), {},
 								1)
 
 							local luck = math.random(100)
@@ -400,7 +400,7 @@ AddEventHandler("Labor:Server:Startup", function()
 									or (not data.failed and node.luck <= 10)
 								then
 									if node.ore.count > 1 then
-										exports['sandbox-inventory']:AddItem(
+										exports.ox_inventory:AddItem(
 											char:GetData("SID"),
 											node.ore.item,
 											math.random(node.ore.count),
@@ -408,7 +408,7 @@ AddEventHandler("Labor:Server:Startup", function()
 											1
 										)
 									else
-										exports['sandbox-inventory']:AddItem(char:GetData("SID"), node.ore.item, 1, {}, 1)
+										exports.ox_inventory:AddItem(char:GetData("SID"), node.ore.item, 1, {}, 1)
 									end
 								end
 							else
@@ -417,7 +417,7 @@ AddEventHandler("Labor:Server:Startup", function()
 									or (luck >= 95)
 									or (not data.failed and node.luck <= 10)
 								then
-									exports['sandbox-inventory']:LootCustomWeightedSetWithCount({
+									exports.ox_inventory:LootCustomWeightedSetWithCount({
 										{ 30, { name = "amethyst", max = 1 } },
 										{ 30, { name = "citrine", max = 1 } },
 										{ 40, { name = "opal", max = 1 } },
@@ -444,16 +444,16 @@ AddEventHandler("Labor:Server:Startup", function()
 							antiDouche[j] = false
 							exports['sandbox-labor']:ManualFinishOffer(j, _JOB)
 						else
-							exports['sandbox-hud']:NotifError(source, "Invalid Node")
+							exports['sandbox-hud']:Notification(source, "error", "Invalid Node")
 						end
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Not Currently Requested To Mine Nodes")
 			end
 		else
-			exports['sandbox-hud']:NotifError(source, "Incorrect Job")
+			exports['sandbox-hud']:Notification(source, "error", "Incorrect Job")
 		end
 	end)
 end)

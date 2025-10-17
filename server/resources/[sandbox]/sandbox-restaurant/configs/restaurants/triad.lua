@@ -31,28 +31,6 @@ table.insert(Config.Restaurants, {
     		},
     	},
     },
-    Storage = {
-        {
-            id = "triad-storage",
-            type = "box",
-            coords = vector3(-810.51, -733.09, 23.78),
-            width = 5,
-            length = 5,
-            options = {
-                heading = 0,
-                --debugPoly=true,
-                minZ = 22.78,
-                maxZ = 25.98
-            },
-			data = {
-                business = "triad",
-                inventory = {
-                    invType = 98,
-                    owner = "triad-storage",
-                },
-			},
-        },
-    },
     Pickups = {
         {
             id = "triad-pickup-1",

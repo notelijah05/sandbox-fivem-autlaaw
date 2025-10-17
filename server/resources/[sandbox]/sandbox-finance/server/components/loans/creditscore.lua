@@ -1,12 +1,7 @@
 function GetCharacterCreditScore(stateId)
     local p = promise.new()
-    exports['sandbox-base']:DatabaseGameFindOne({
-        collection = 'loans_credit_scores',
-        query = {
-            SID = stateId,
-        }
-    }, function(success, results)
-        if success and #results > 0 then
+    exports.oxmysql:execute('SELECT Score FROM loans_credit_scores WHERE SID = ?', { stateId }, function(results)
+        if results and #results > 0 then
             p:resolve(results[1].Score)
         else
             p:resolve(_creditScoreConfig.default)
@@ -28,27 +23,16 @@ function SetCharacterCreditScore(stateId, score)
         score = _creditScoreConfig.min
     end
 
-    exports['sandbox-base']:DatabaseGameFindOneAndUpdate({
-        collection = 'loans_credit_scores',
-        query = {
-            SID = stateId,
-        },
-        update = {
-            ['$set'] = {
-                Score = score,
-            },
-        },
-        options = {
-            returnDocument = 'after',
-            upsert = true,
-        }
-    }, function(success, results)
-        if success and results then
-            p:resolve(results.Score)
-        else
-            p:resolve(false)
-        end
-    end)
+    exports.oxmysql:execute(
+        'INSERT INTO loans_credit_scores (SID, Score) VALUES (?, ?) ON DUPLICATE KEY UPDATE Score = ?',
+        { stateId, score, score },
+        function(affectedRows)
+            if affectedRows and affectedRows > 0 then
+                p:resolve(score)
+            else
+                p:resolve(false)
+            end
+        end)
 
     local res = Citizen.Await(p)
     return res

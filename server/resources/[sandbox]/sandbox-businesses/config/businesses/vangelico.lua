@@ -1060,68 +1060,6 @@ table.insert(Config.Businesses, {
 			},
 		},
 	},
-	Storage = {
-		{
-			id = "vangelico-safe-1",
-			type = "box",
-			coords = vector3(-383.68, 6052.27, 31.51),
-			length = 1,
-			width = 1.4,
-			options = {
-				heading = 315.0,
-				--debugPoly=true,
-				minZ = 30.11,
-				maxZ = 32.71,
-			},
-			data = {
-				business = "vangelico",
-				inventory = {
-					invType = 193,
-					owner = "vangelico-safe-1",
-				},
-			},
-		},
-		{
-			id = "vangelico-storage-1",
-			type = "box",
-			coords = vector3(-384.58, 6050.94, 31.51),
-			length = 2.2,
-			width = 2.0,
-			options = {
-				heading = 315.0,
-				--debugPoly=true,
-				minZ = 29.11,
-				maxZ = 33.11,
-			},
-			data = {
-				business = "vangelico",
-				inventory = {
-					invType = 194,
-					owner = "vangelico-storage-1",
-				},
-			},
-		},
-		{
-			id = "vangelico-storage-2",
-			type = "box",
-			coords = vector3(-379.68, 6049.42, 31.51),
-			length = 1.4,
-			width = 1.0,
-			options = {
-				heading = 45.0,
-				--debugPoly=true,
-				minZ = 28.71,
-				maxZ = 32.71,
-			},
-			data = {
-				business = "vangelico",
-				inventory = {
-					invType = 210,
-					owner = "vangelico-storage-2",
-				},
-			},
-		},
-	},
 	Pickups = {
 		{
 			id = "vangelico-pickup-1",

@@ -103,7 +103,7 @@ AddEventHandler('Businesses:Client:Startup', function()
 
             exports['sandbox-hud']:InteractionShowMenu(subMenu)
         else
-            exports["sandbox-hud"]:NotifError('Invalid Permissions')
+            exports["sandbox-hud"]:Notification("error", 'Invalid Permissions')
         end
     end, function()
         return exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped), 'vu_dancers') and LocalPlayer.state.onDuty == 'unicorn'
@@ -132,7 +132,7 @@ AddEventHandler('Businesses:Client:Startup', function()
             local subMenu = {}
 
             for k, v in ipairs(makeItRain) do
-                if v.type == 'cash' or exports['sandbox-inventory']:CheckPlayerHasItem(v.type, 1) then
+                if v.type == 'cash' or exports.ox_inventory:CheckPlayerHasItem(v.type, 1) then
                     table.insert(subMenu, {
                         icon = 'money-bill-1-wave',
                         label = v.text,
@@ -175,7 +175,7 @@ RegisterNetEvent('Businesses:Client:PoleDance', function(dance)
                     exports['sandbox-animations']:EmotesPlay(poleDance.anim, false, false, false)
                 end
             else
-                exports["sandbox-hud"]:NotifError('Pole Taken')
+                exports["sandbox-hud"]:Notification("error", 'Pole Taken')
             end
             return
         end
@@ -207,7 +207,7 @@ function MakeItRainBitch(targetSource, cashType, time)
                 type = cashType,
             }, function(success, cd)
                 if not success then
-                    exports["sandbox-hud"]:NotifError(cd and 'Reached Cooldown' or 'Error - Ran Out of Money')
+                    exports["sandbox-hud"]:Notification("error", cd and 'Reached Cooldown' or 'Error - Ran Out of Money')
                     _makingItRain = false
                 end
 

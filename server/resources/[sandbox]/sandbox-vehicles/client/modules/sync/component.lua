@@ -242,7 +242,7 @@ exports("SyncBikePickup", function(vehicle)
 					1,
 					true
 				)
-				exports["sandbox-hud"]:NotifInfo(
+				exports["sandbox-hud"]:Notification("info",
 					self,
 					string.format("Press [%s] to drop the bike",
 						exports["sandbox-keybinds"]:GetKey("veh_bike_drop")),

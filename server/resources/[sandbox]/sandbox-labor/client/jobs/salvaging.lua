@@ -57,7 +57,7 @@ AddEventHandler("Labor:Client:Setup", function()
 	exports['sandbox-pedinteraction']:Add("SalvagingJob", `s_m_y_construct_02`, vector3(2369.771, 3157.132, 47.209),
 		10.633, 25.0, {
 			{
-				icon = "helmet-safety",
+				icon = "fa-solid fa-helmet-safety",
 				text = "Start Work",
 				event = "Salvaging:Client:StartJob",
 				tempjob = "Salvaging",
@@ -66,7 +66,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				end,
 			},
 			{
-				icon = "ballot-check",
+				icon = "fa-solid fa-table-list",
 				text = "I've Finished",
 				event = "Salvaging:Client:TriggerDelivery",
 				tempjob = "Salvaging",
@@ -75,7 +75,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				end,
 			},
 			{
-				icon = "box-open-full",
+				icon = "fa-solid fa-box-open",
 				text = "Here For My Pickup",
 				event = "Laptop:Client:LSUnderground:Chopping:Pickup",
 				isEnabled = function()
@@ -84,7 +84,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				end,
 			},
 			{
-				icon = "list-timeline",
+				icon = "fa-solid fa-list",
 				text = "View Current Requests",
 				event = "Laptop:Client:LSUnderground:Chopping:GetPublicList",
 				rep = { id = "Salvaging", level = 7 },
@@ -217,7 +217,7 @@ end)
 AddEventHandler("Salvaging:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback('Salvaging:StartJob', _joiner, function(state)
 		if not state then
-			exports["sandbox-hud"]:NotifError("Unable To Start Job")
+			exports["sandbox-hud"]:Notification("error", "Unable To Start Job")
 		end
 	end)
 end)

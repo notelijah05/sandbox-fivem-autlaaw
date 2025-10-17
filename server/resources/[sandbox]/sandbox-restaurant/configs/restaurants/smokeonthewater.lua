@@ -4,9 +4,6 @@ table.insert(Config.Restaurants, {
     -- Benches = {
 
     -- },
-    -- Storage = {
-
-    -- },
     Pickups = {
         {
             id = "weed-pickup-1",

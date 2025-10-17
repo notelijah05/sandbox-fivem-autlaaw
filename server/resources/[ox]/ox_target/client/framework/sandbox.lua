@@ -1,7 +1,7 @@
 local utils = require 'client.utils'
 
 ---@diagnostic disable-next-line: duplicate-set-field
-function utils.hasPlayerGotGroup(filter, reqDuty, reqOffDuty, workplace, permissionKey)
+function utils.hasPlayerGotGroup(filter, reqDuty, reqOffDuty, workplace, permissionKey, tempjob, rep)
     local function checkJob(jobName)
         if type(jobName) ~= "string" then
             return false
@@ -47,10 +47,42 @@ function utils.hasPlayerGotGroup(filter, reqDuty, reqOffDuty, workplace, permiss
             end
         end
 
+        if tempjob ~= nil then
+            local playerTempJob = LocalPlayer.state.Character:GetData("TempJob")
+            local hasTempJob = playerTempJob == tempjob
+            if not hasTempJob then
+                return false
+            end
+        end
+
+        if rep ~= nil then
+            local hasRep = exports['sandbox-characters']:RepGetLevel(rep.id) >= rep.level
+            if not hasRep then
+                return false
+            end
+        end
+
         return true
     end
 
     local filterType = type(filter)
+
+    -- This is for when filter is nil and option(s) are not nil
+    if filter == nil and tempjob ~= nil then
+        local playerTempJob = LocalPlayer.state.Character:GetData("TempJob")
+        local hasTempJob = playerTempJob == tempjob
+        return hasTempJob
+    end
+
+    if filter == nil and permissionKey ~= nil then
+        local hasPermission = exports['sandbox-jobs']:HasPermission(permissionKey)
+        return hasPermission
+    end
+
+    if filter == nil and rep ~= nil then
+        local hasRep = exports['sandbox-characters']:RepGetLevel(rep.id) >= rep.level
+        return hasRep
+    end
 
     if filterType == "string" then
         return checkJob(filter)
@@ -113,6 +145,20 @@ function utils.hasPlayerGotGroup(filter, reqDuty, reqOffDuty, workplace, permiss
                             if permissionKey ~= nil then
                                 local hasPermission = exports['sandbox-jobs']:HasPermissionInJob(jobName, permissionKey)
                                 if not hasPermission then
+                                    goto continue
+                                end
+                            end
+
+                            if tempjob ~= nil then
+                                local hasTempJob = LocalPlayer.state.Character:GetData("TempJob") == tempjob
+                                if not hasTempJob then
+                                    goto continue
+                                end
+                            end
+
+                            if rep ~= nil then
+                                local hasRep = exports['sandbox-characters']:RepGetLevel(rep.id) >= rep.level
+                                if not hasRep then
                                     goto continue
                                 end
                             end

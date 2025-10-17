@@ -19,7 +19,7 @@ function SetupTree(treeData, hasLooted)
 			icon = "gift",
 			label = "Pickup Gift",
 			event = "Xmas:Client:Tree",
-			canInteract = function(data, entity)
+			canInteract = function()
 				return _existingTree ~= nil and not _existingTree.hasLooted
 			end,
 		},

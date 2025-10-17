@@ -97,7 +97,7 @@ RegisterNUICallback("RouteAlert", function(data, cb)
 
 		ClearGpsPlayerWaypoint()
 		SetNewWaypoint(data.location.x, data.location.y)
-		exports["sandbox-hud"]:NotifInfo("Alert Location Marked")
+		exports["sandbox-hud"]:Notification("info", "Alert Location Marked")
 	end
 end)
 

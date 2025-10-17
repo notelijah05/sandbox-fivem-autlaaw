@@ -24,23 +24,23 @@ function RegisterCallbacks()
 				if char ~= nil then
 					if _plants[pid] ~= nil then
 						if _plants[pid].plant.water < 100 then
-							if exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, "water", 1) then
-								exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, "water", 1)
+							if exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, "water", 1) then
+								exports.ox_inventory:Remove(char:GetData("SID"), 1, "water", 1)
 								local amt = 10.0
 								if 100 - _plants[pid].plant.water < 10 then
 									amt = (100 - _plants[pid].plant.water) + 0.0
 								end
 								_plants[pid].plant.water = _plants[pid].plant.water + amt
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"You Don't Have Water")
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Plant Is Already Watered")
 						end
 					else
-						exports['sandbox-hud']:NotifError(source, "Invalid Plant")
+						exports['sandbox-hud']:Notification(source, "error", "Invalid Plant")
 					end
 				end
 			else
@@ -57,9 +57,9 @@ function RegisterCallbacks()
 					if _plants[data.id] ~= nil then
 						if _plants[data.id].plant.fertilizer == nil then
 							if
-								exports['sandbox-inventory']:ItemsHas(char:GetData("SID"), 1, string.format("fertilizer_%s", data.type), 1)
+								exports.ox_inventory:ItemsHas(char:GetData("SID"), 1, string.format("fertilizer_%s", data.type), 1)
 							then
-								exports['sandbox-inventory']:Remove(
+								exports.ox_inventory:Remove(
 									char:GetData("SID"),
 									1,
 									string.format("fertilizer_%s", data.type),
@@ -71,15 +71,15 @@ function RegisterCallbacks()
 									value = Config.Fertilizer[data.type].value,
 								}
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"You Don't Have Fertilizer")
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Plant Is Already Fertilized")
 						end
 					else
-						exports['sandbox-hud']:NotifError(source, "Invalid Plant")
+						exports['sandbox-hud']:Notification(source, "error", "Invalid Plant")
 					end
 				end
 			else
@@ -103,7 +103,7 @@ function RegisterCallbacks()
 									giving = "weedseed_female"
 								end
 								if
-									exports['sandbox-inventory']:AddItem(
+									exports.ox_inventory:AddItem(
 										char:GetData("SID"),
 										giving,
 										math.random(math.ceil(_plants[pid].plant.output / 16)),
@@ -131,7 +131,7 @@ function RegisterCallbacks()
 									t = 3
 								end
 
-								if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "weed_bud", t, {}, 1) then
+								if exports.ox_inventory:AddItem(char:GetData("SID"), "weed_bud", t, {}, 1) then
 									exports['sandbox-weed']:PlantingDelete(pid)
 									cb(true)
 								else
@@ -170,7 +170,7 @@ function RegisterCallbacks()
 							char:GetData("SID")
 						)
 					)
-					exports['sandbox-hud']:NotifSuccess(source, "Plant Has Been Destroyed")
+					exports['sandbox-hud']:Notification(source, "success", "Plant Has Been Destroyed")
 				else
 					cb(nil)
 				end
@@ -198,7 +198,7 @@ function RegisterCallbacks()
 								char:GetData("SID")
 							)
 						)
-						exports['sandbox-hud']:NotifSuccess(source,
+						exports['sandbox-hud']:Notification(source, "success",
 							"Plant Has Been Destroyed")
 					else
 						cb(nil)
@@ -246,8 +246,8 @@ function RegisterCallbacks()
 					end
 
 					--exports['sandbox-characters']:RepAdd(source, "weed", 1000)
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), giving, 2, {}, 1)
-					exports['sandbox-inventory']:AddItem(char:GetData("SID"), giving2, 2, {}, 1)
+					exports.ox_inventory:AddItem(char:GetData("SID"), giving, 2, {}, 1)
+					exports.ox_inventory:AddItem(char:GetData("SID"), giving2, 2, {}, 1)
 				else
 					exports['sandbox-base']:LoggerInfo(
 						"Weed",
@@ -258,7 +258,7 @@ function RegisterCallbacks()
 							char:GetData("SID")
 						)
 					)
-					exports['sandbox-hud']:NotifError(source, "Dont Have Enough Cash")
+					exports['sandbox-hud']:Notification(source, "error", "Dont Have Enough Cash")
 					cb(false)
 				end
 			else
@@ -272,10 +272,10 @@ function RegisterCallbacks()
 					)
 				)
 				if _packagesAvailable > 0 then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You've Already Bought A Package")
 				else
-					exports['sandbox-hud']:NotifError(source, "No Packages Available")
+					exports['sandbox-hud']:Notification(source, "error", "No Packages Available")
 				end
 				cb(false)
 			end

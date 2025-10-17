@@ -5,7 +5,7 @@ local _ignored = {
 }
 
 AddEventHandler('onResourceStart', function(resource)
-    if COMPONENTS.Proxy.ExportsReady and not _ignored[resource] then
+    if not _ignored[resource] then
         if resource ~= GetCurrentResourceName() then
             ClearMiddleware(resource)
         end

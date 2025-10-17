@@ -29,7 +29,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 			function()
 				if VEHICLE_INSIDE and VEHICLE_SEAT == -1 then
 					if IsPauseMenuActive() ~= 1 then
-						exports['sandbox-vehicles']:EngineToggle(VEHICLE_INSIDE)
+						exports['sandbox-vehicles']:EngineToggle()
 					end
 				end
 			end)
@@ -98,7 +98,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 							if #fuckingSeats > 0 then
 								exports['sandbox-hud']:InteractionShowMenu(fuckingSeats)
 							else
-								exports["sandbox-hud"]:NotifError("No Seats Free")
+								exports["sandbox-hud"]:Notification("error", "No Seats Free")
 							end
 						end,
 					},
@@ -219,7 +219,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 							if VEHICLE_INSIDE then
 								local vehEnt = Entity(VEHICLE_INSIDE)
 								if vehEnt and vehEnt.state and vehEnt.state.Mileage then
-									exports["sandbox-hud"]:NotifInfo(
+									exports["sandbox-hud"]:Notification("info",
 										"This Vehicle Has " .. vehEnt.state.Mileage .. " Miles on the Odometer",
 										10000
 									)
@@ -245,7 +245,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 							if VEHICLE_INSIDE then
 								local vehEnt = Entity(VEHICLE_INSIDE)
 								if vehEnt and vehEnt.state and vehEnt.state.Nitrous then
-									exports["sandbox-hud"]:NotifStandard(
+									exports["sandbox-hud"]:Notification("standard",
 										"Nitrous Remaining: " ..
 										exports['sandbox-base']:UtilsRound(vehEnt.state.Nitrous, 2) .. "%",
 										10000
@@ -365,7 +365,7 @@ AddEventHandler("Vehicles:Client:Actions:SwitchSeat", function(seatNum)
 	if GetPedInVehicleSeat(VEHICLE_INSIDE, seatNum) == 0 then
 		SetPedIntoVehicle(GLOBAL_PED, VEHICLE_INSIDE, seatNum)
 	else
-		exports["sandbox-hud"]:NotifError("Seat Occupied")
+		exports["sandbox-hud"]:Notification("error", "Seat Occupied")
 	end
 end)
 
@@ -376,7 +376,7 @@ AddEventHandler("Vehicles:Client:Actions:ToggleDoor", function(doorNum)
 	if not vehicle then
 		local playerCoords = GetEntityCoords(PlayerPedId())
 		local maxDistance = 2.0
-		local includePlayerVehicle = false
+		local includePlayerVehicle = true
 
 		local targetVehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 		if
@@ -412,7 +412,7 @@ AddEventHandler("Vehicles:Client:Actions:ToggleWindow", function(winNum)
 	if not vehicle then
 		local playerCoords = GetEntityCoords(PlayerPedId())
 		local maxDistance = 2.0
-		local includePlayerVehicle = false
+		local includePlayerVehicle = true
 
 		local targetVehicle = lib.getClosestVehicle(playerCoords, maxDistance, includePlayerVehicle)
 		if

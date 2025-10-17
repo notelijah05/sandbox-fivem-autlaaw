@@ -66,18 +66,18 @@ AddEventHandler("Labor:Server:Startup", function()
 
 		if isSpawned then -- Only Allow Hides for Baited Animals
 			if luck >= 90 then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "hide_tier4", 1, {}, 1)
+				exports.ox_inventory:AddItem(char:GetData("SID"), "hide_tier4", 1, {}, 1)
 			elseif luck >= 80 then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "hide_tier3", 1, {}, 1)
+				exports.ox_inventory:AddItem(char:GetData("SID"), "hide_tier3", 1, {}, 1)
 			elseif luck >= 70 then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "hide_tier2", 1, {}, 1)
+				exports.ox_inventory:AddItem(char:GetData("SID"), "hide_tier2", 1, {}, 1)
 			elseif luck >= 50 then
-				exports['sandbox-inventory']:AddItem(char:GetData("SID"), "hide_tier1", 1, {}, 1)
+				exports.ox_inventory:AddItem(char:GetData("SID"), "hide_tier1", 1, {}, 1)
 			end
 		end
 
 		if #HuntingSrvConfig.Loot[animal] > 0 then
-			exports['sandbox-inventory']:LootCustomSetWithCount(HuntingSrvConfig.Loot[animal], char:GetData("SID"), 1)
+			exports.ox_inventory:LootCustomSetWithCount(HuntingSrvConfig.Loot[animal], char:GetData("SID"), 1)
 		end
 
 		if char:GetData("TempJob") == _JOB and _joiners[source] ~= nil and _hunting[_joiners[source]] ~= nil then
@@ -117,7 +117,7 @@ AddEventHandler("Labor:Server:Startup", function()
 			end
 
 			if not found then
-				exports['sandbox-hud']:NotifError(source, "Not Allowed To Hunt Here")
+				exports['sandbox-hud']:Notification(source, "error", "Not Allowed To Hunt Here")
 			end
 		end)
 	end)
@@ -128,32 +128,32 @@ AddEventHandler("Labor:Server:Startup", function()
 
 		if _saleData[data] ~= nil then
 			if repLvl >= _saleData[data].rep then
-				local count = exports['sandbox-inventory']:ItemsGetCount(char:GetData("SID"), 1, _saleData[data].item) or
+				local count = exports.ox_inventory:ItemsGetCount(char:GetData("SID"), 1, _saleData[data].item) or
 					0
 				if count > 0 then
-					if exports['sandbox-inventory']:Remove(char:GetData("SID"), 1, _saleData[data].item, count) then
+					if exports.ox_inventory:Remove(char:GetData("SID"), 1, _saleData[data].item, count) then
 						exports['sandbox-finance']:WalletModify(source, _saleData[data].price * count)
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Have No Hides Of That Tier")
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "You Must Prove Yourself First")
+				exports['sandbox-hud']:Notification(source, "error", "You Must Prove Yourself First")
 			end
 		end
 	end)
 end)
 
 function RegisterHuntingItems()
-	exports['sandbox-inventory']:RegisterUse("hunting_map_dark", "HuntingMap", function(source, itemData)
+	exports.ox_inventory:RegisterUse("hunting_map_dark", "HuntingMap", function(source, itemData)
 		if itemData then
 			exports["sandbox-base"]:ClientCallback(source, "Hunting:Client:CanShowMap", itemData, function(canShow)
 				TriggerClientEvent("Hunting:Client:ShowMap", source, itemData)
 			end)
 		end
 	end)
-	exports['sandbox-inventory']:RegisterUse("hunting_map_light", "HuntingMap", function(source, itemData)
+	exports.ox_inventory:RegisterUse("hunting_map_light", "HuntingMap", function(source, itemData)
 		if itemData then
 			exports["sandbox-base"]:ClientCallback(source, "Hunting:Client:CanShowMap", itemData, function(canShow)
 				TriggerClientEvent("Hunting:Client:ShowMap", source, itemData)
@@ -162,7 +162,7 @@ function RegisterHuntingItems()
 	end)
 
 	for k, v in pairs(HuntingConfig.Baits) do
-		exports['sandbox-inventory']:RegisterUse(k, "Hunting", function(source, item)
+		exports.ox_inventory:RegisterUse(k, "Hunting", function(source, item)
 			if
 				_baitCds[source] == nil
 				or (os.time() - _baitCds[source]) >= HuntingConfig.Baits[item.Name].cooldown * 60
@@ -178,7 +178,7 @@ function RegisterHuntingItems()
 									function(successful)
 										if successful then
 											_baitCds[source] = os.time()
-											exports['sandbox-inventory']:RemoveSlot(item.Owner, item.Name, 1, item.Slot,
+											exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot,
 												1)
 										end
 									end)
@@ -190,15 +190,21 @@ function RegisterHuntingItems()
 					end
 
 					if not found then
-						exports['sandbox-hud']:NotifError(source, "Not Allowed To Hunt Here")
+						exports['sandbox-hud']:Notification(source, "error", "Not Allowed To Hunt Here")
 					end
 				end)
 			else
-				exports['sandbox-hud']:NotifError(source, "You Cannot Use Bait Yet")
+				exports['sandbox-hud']:Notification(source, "error", "You Cannot Use Bait Yet")
 			end
 		end)
 	end
 end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterHuntingItems()
+	end
+end)
 
 AddEventHandler("Hunting:Server:OnDuty", function(joiner, members, isWorkgroup)
 	_joiners[joiner] = joiner

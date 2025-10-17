@@ -19,18 +19,32 @@ function doPropertyThings(property)
 end
 
 function Startup()
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "properties",
-	}, function(success, results)
-		if not success then
+	exports.oxmysql:execute('SELECT * FROM properties', {}, function(results)
+		if not results then
 			return
 		end
 		exports['sandbox-base']:LoggerTrace("Properties", "Loaded ^2" .. #results .. "^7 Properties", { console = true })
 
 		for k, v in ipairs(results) do
-			local p = doPropertyThings(v)
+			local property = {
+				_id = v.id,
+				id = v.id,
+				type = v.type,
+				label = v.label,
+				price = v.price,
+				sold = v.sold == 1,
+				owner = v.owner,
+				location = v.location and json.decode(v.location) or nil,
+				upgrades = v.upgrades and json.decode(v.upgrades) or nil,
+				locked = v.locked == 1,
+				keys = v.keys and json.decode(v.keys) or nil,
+				data = v.data and json.decode(v.data) or nil,
+				foreclosed = v.foreclosed == 1,
+				soldAt = v.soldAt
+			}
 
-			_properties[v._id] = p
+			local p = doPropertyThings(property)
+			_properties[v.id] = p
 		end
 	end)
 end

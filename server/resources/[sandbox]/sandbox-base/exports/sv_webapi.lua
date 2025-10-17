@@ -113,14 +113,14 @@ end)
 
 -- 		return false
 -- 	else
--- 		COMPONENTS.Config.Server = {
--- 			ID = res.data.id,
--- 			Name = res.data.name,
--- 			Access = res.data.restricted,
--- 			Channel = res.data.channel,
--- 			Region = res.data.region,
--- 		}
--- 		COMPONENTS.Config.Game = {
+-- 		local serverConfig = exports['sandbox-base']:ConfigGetServer()
+-- 		serverConfig.ID = res.data.id
+-- 		serverConfig.Name = res.data.name
+-- 		serverConfig.Access = res.data.restricted
+-- 		serverConfig.Channel = res.data.channel
+-- 		serverConfig.Region = res.data.region
+
+-- 		GlobalState.GameConfig = {
 -- 			ID = res.data.game.id,
 -- 			Name = res.data.game.name,
 -- 			Short = res.data.game.short,
@@ -129,13 +129,14 @@ end)
 --		exports['sandbox-base']:ConfigUpdateGroups(res.data.groups)
 
 -- 		GlobalState.IsProduction = res.data.channel:upper() ~= "DEV"
--- 		if COMPONENTS.Config.Server.Access then
+-- 		local serverConfig = exports['sandbox-base']:ConfigGetServer()
+-- 		if serverConfig.Access then
 -- 			exports['sandbox-base']:LoggerTrace(
 -- 				"Core",
 -- 				string.format(
 -- 					"Server ^2#%s^7 - ^2%s^7 Authenticated, Running With Access Restrictions",
--- 					tostring(COMPONENTS.Config.Server.ID),
--- 					COMPONENTS.Config.Server.Name
+-- 					tostring(serverConfig.ID),
+-- 					serverConfig.Name
 -- 				),
 -- 				{ console = true }
 -- 			)
@@ -144,8 +145,8 @@ end)
 -- 				"Core",
 -- 				string.format(
 -- 					"Server ^2#%s^7 - ^2%s^7 Authenticated, Running With No Access Restriction",
--- 					tostring(COMPONENTS.Config.Server.ID),
--- 					COMPONENTS.Config.Server.Name
+-- 					tostring(serverConfig.ID),
+-- 					serverConfig.Name
 -- 				),
 -- 				{ console = true }
 -- 			)

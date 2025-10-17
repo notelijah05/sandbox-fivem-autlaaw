@@ -58,12 +58,12 @@ function RegisterChatCommands()
         if Player(source).state.isGodmode then
             SetPlayerInvincible(source, false)
             Player(source).state.isGodmode = false
-            exports['sandbox-hud']:NotifInfo(source, "God Mode Disabled")
+            exports['sandbox-hud']:Notification(source, "info", "God Mode Disabled")
             exports["sandbox-base"]:ClientCallback(source, "Damage:Admin:Godmode", false)
         else
             SetPlayerInvincible(source, true)
             Player(source).state.isGodmode = true
-            exports['sandbox-hud']:NotifInfo(source, "God Mode Enabled")
+            exports['sandbox-hud']:Notification(source, "info", "God Mode Enabled")
             exports["sandbox-base"]:ClientCallback(source, "Damage:Admin:Godmode", true)
         end
     end, {

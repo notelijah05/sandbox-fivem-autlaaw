@@ -8,40 +8,12 @@ AddEventHandler('onResourceStart', function(resource)
 		Wait(1000)
 		PoliceItems()
 		RegisterCommands()
+		RegisterItems()
 
 		GlobalState["PrisonLockdown"] = false
 		GlobalState["PrisonCellsLocked"] = false
 		GlobalState["PoliceCars"] = Config.PoliceCars
 		GlobalState["EMSCars"] = Config.EMSCars
-
-		for k, v in pairs(Config.Armories) do
-			exports['sandbox-base']:LoggerTrace("Police",
-				string.format("Registering Poly Inventory ^2%s^7 For ^3%s^7", v.id, v.name))
-			exports['sandbox-inventory']:PolyCreate(v)
-		end
-
-		exports['sandbox-inventory']:RegisterUse("spikes", "Police", function(source, slot, itemData)
-			if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
-				exports["sandbox-base"]:ClientCallback(source, "Police:DeploySpikes", {}, function(data)
-					if data ~= nil then
-						TriggerClientEvent("Police:Client:AddDeployedSpike", -1, data.positions, data.h, source)
-
-						local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
-						if (os.time() - itemData.durability >= newValue) then
-							exports['sandbox-inventory']:RemoveId(slot.Owner, slot.invType, slot)
-						else
-							exports['sandbox-inventory']:SetItemCreateDate(
-								slot.id,
-								newValue
-							)
-						end
-
-						exports['sandbox-hud']:NotifSuccess(source,
-							"You Deployed Spikes (Despawn In 20s)")
-					end
-				end)
-			end
-		end)
 
 		exports["sandbox-base"]:RegisterServerCallback("Police:GSRTest", function(source, data, cb)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
@@ -56,7 +28,7 @@ AddEventHandler('onResourceStart', function(resource)
 						exports["sandbox-chat"]:SendSystemSingle(source, "GSR: Negative")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Invalid Target")
+					exports['sandbox-hud']:Notification(source, "error", "Invalid Target")
 				end
 			end
 		end)
@@ -72,7 +44,7 @@ AddEventHandler('onResourceStart', function(resource)
 					exports['sandbox-doors']:SetLock(string.format("prison_cell_%s", i), GlobalState
 						["PrisonCellsLocked"])
 				end
-				exports['sandbox-hud']:NotifInfo(source,
+				exports['sandbox-hud']:Notification(source, "info",
 					string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
 					GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
 				cb(true, GlobalState["PrisonLockdown"])
@@ -91,7 +63,7 @@ AddEventHandler('onResourceStart', function(resource)
 					exports['sandbox-doors']:SetLock(string.format("prison_cell_%s", i), GlobalState
 						["PrisonCellsLocked"])
 				end
-				exports['sandbox-hud']:NotifInfo(source,
+				exports['sandbox-hud']:Notification(source, "info",
 					string.format("Cell Door State: %s", GlobalState["PrisonCellsLocked"]),
 					GlobalState["PrisonCellsLocked"] and "Locked" or "Unlocked")
 				cb(true, GlobalState["PrisonCellsLocked"])
@@ -126,7 +98,7 @@ AddEventHandler('onResourceStart', function(resource)
 						exports["sandbox-chat"]:SendSystemSingle(source, "BAC: Not Drunk")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Invalid Target")
+					exports['sandbox-hud']:Notification(source, "error", "Invalid Target")
 				end
 			end
 
@@ -143,7 +115,7 @@ AddEventHandler('onResourceStart', function(resource)
 					local coords = GetEntityCoords(GetPlayerPed(data))
 					_swabCounter += 1
 
-					exports['sandbox-inventory']:AddItem(char:GetData('SID'), 'evidence-dna', 1, {
+					exports.ox_inventory:AddItem(char:GetData('SID'), 'evidence-dna', 1, {
 						EvidenceType = 'blood',
 						EvidenceId = string.format('%s-%s', os.date('%d%m%y-%H%M%S', os.time()), 950000 + _swabCounter),
 						EvidenceCoords = { x = coords.x, y = coords.y, z = coords.z },
@@ -155,7 +127,7 @@ AddEventHandler('onResourceStart', function(resource)
 					return
 				end
 
-				exports['sandbox-hud']:NotifError(source, "Invalid Target")
+				exports['sandbox-hud']:Notification(source, "error", "Invalid Target")
 			end
 		end)
 
@@ -224,12 +196,12 @@ AddEventHandler('onResourceStart', function(resource)
 								end)
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Target Does Not Reside Here")
 							return cb(false)
 						end
 					else
-						exports['sandbox-hud']:NotifError(source, "Target Not Online")
+						exports['sandbox-hud']:Notification(source, "error", "Target Not Online")
 						return cb(false)
 					end
 				end
@@ -252,19 +224,19 @@ AddEventHandler('onResourceStart', function(resource)
 									invType = 3,
 									owner = ("pdrack:%s"):format(entState.VIN),
 								}, function()
-									exports['sandbox-inventory']:OpenSecondary(source, 3,
+									exports.ox_inventory:OpenSecondary(source, 3,
 										("pdrack:%s"):format(entState.VIN))
 								end)
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Can't Access The Locked Compartment")
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Vehicle Not Outfitted With A Secured Compartment")
 						end
 					else
-						exports['sandbox-hud']:NotifError(source, "Not In A Vehicle")
+						exports['sandbox-hud']:Notification(source, "error", "Not In A Vehicle")
 					end
 				elseif myDuty == 'prison' then
 					local veh = GetVehiclePedIsIn(GetPlayerPed(source))
@@ -276,19 +248,19 @@ AddEventHandler('onResourceStart', function(resource)
 									invType = 999,
 									owner = ("pdrack:%s"):format(entState.VIN),
 								}, function()
-									exports['sandbox-inventory']:OpenSecondary(source, 999,
+									exports.ox_inventory:OpenSecondary(source, 999,
 										("pdrack:%s"):format(entState.VIN))
 								end)
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Can't Access The Locked Compartment")
 							end
 						else
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"Vehicle Not Outfitted With A Secured Compartment")
 						end
 					else
-						exports['sandbox-hud']:NotifError(source, "Not In A Vehicle")
+						exports['sandbox-hud']:Notification(source, "error", "Not In A Vehicle")
 					end
 				end
 			end
@@ -315,6 +287,37 @@ AddEventHandler('onResourceStart', function(resource)
 				end
 			end
 		end)
+	end
+end)
+
+function RegisterItems()
+	exports.ox_inventory:RegisterUse("spikes", "Police", function(source, slot, itemData)
+		if GetVehiclePedIsIn(GetPlayerPed(source)) == 0 then
+			exports["sandbox-base"]:ClientCallback(source, "Police:DeploySpikes", {}, function(data)
+				if data ~= nil then
+					TriggerClientEvent("Police:Client:AddDeployedSpike", -1, data.positions, data.h, source)
+
+					local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
+					if (os.time() - itemData.durability >= newValue) then
+						exports.ox_inventory:RemoveId(slot.Owner, slot.invType, slot)
+					else
+						exports.ox_inventory:SetItemCreateDate(
+							slot.id,
+							newValue
+						)
+					end
+
+					exports['sandbox-hud']:Notification(source, "success",
+						"You Deployed Spikes (Despawn In 20s)")
+				end
+			end)
+		end
+	end)
+end
+
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
 	end
 end)
 
@@ -493,170 +496,168 @@ exports('IsInBreach', function(source, type, id, extraCheck)
 end)
 
 exports('RunPlate', function(source, plate, wasEntity)
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "vehicles",
-		query = {
-			["$or"] = {
-				{
-					RegisteredPlate = plate,
-				},
-				{
-					FakePlate = plate,
-				}
-			},
-		},
-	}, function(success, results)
-		if not success or #results == 0 then
-			local stolen = exports['sandbox-radar']:CheckPlate(plate)
-			if stolen then
-				if not _generatedNames[plate] then
-					_generatedNames[plate] = string.format(
-						"%s %s",
-						exports['sandbox-base']:GeneratorNameFirst(),
-						exports['sandbox-base']:GeneratorNameLast()
-					)
-				end
+	local results = MySQL.query.await(
+		"SELECT VIN, Type, Make, Model, RegisteredPlate, OwnerType, OwnerId, OwnerWorkplace, Class, Properties FROM vehicles WHERE RegisteredPlate = ? OR JSON_EXTRACT(Properties, '$.FakePlate') = ?",
+		{ plate, plate }
+	)
 
-				if wasEntity then
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"<b>Owner</b>: %s<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
-							_generatedNames[plate],
-							wasEntity.VIN,
-							wasEntity.model,
-							plate,
-							stolen
-						)
-					)
-				else
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"<b>Owner</b>: %s<br /><b>VIN</b>: Unknown<br /><b>Make & Model</b>: Unknown<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
-							_generatedNames[plate],
-							plate,
-							stolen
-						)
-					)
-				end
-			elseif wasEntity then
-				if not _generatedNames[plate] then
-					_generatedNames[plate] = string.format(
-						"%s %s",
-						exports['sandbox-base']:GeneratorNameFirst(),
-						exports['sandbox-base']:GeneratorNameLast()
-					)
-				end
+	if not results or #results == 0 then
+		local stolen = exports['sandbox-radar']:CheckPlate(plate)
+		if stolen then
+			if not _generatedNames[plate] then
+				_generatedNames[plate] = string.format(
+					"%s %s",
+					exports['sandbox-base']:GeneratorNameFirst(),
+					exports['sandbox-base']:GeneratorNameLast()
+				)
+			end
 
+			if wasEntity then
 				exports["sandbox-chat"]:SendDispatch(
 					source,
 					string.format(
-						"<b>Owner</b>: %s<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown",
+						"<b>Owner</b>: %s<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
 						_generatedNames[plate],
 						wasEntity.VIN,
 						wasEntity.model,
-						plate
+						plate,
+						stolen
 					)
 				)
 			else
-				exports["sandbox-chat"]:SendDispatch(source, "No Plate Match")
+				exports["sandbox-chat"]:SendDispatch(
+					source,
+					string.format(
+						"<b>Owner</b>: %s<br /><b>VIN</b>: Unknown<br /><b>Make & Model</b>: Unknown<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
+						_generatedNames[plate],
+						plate,
+						stolen
+					)
+				)
 			end
-			return
-		end
+		elseif wasEntity then
+			if not _generatedNames[plate] then
+				_generatedNames[plate] = string.format(
+					"%s %s",
+					exports['sandbox-base']:GeneratorNameFirst(),
+					exports['sandbox-base']:GeneratorNameLast()
+				)
+			end
 
-		if #results > 1 then
-			exports["sandbox-chat"]:SendDispatch(source, "Multiple Matches, Please Use MDT")
+			exports["sandbox-chat"]:SendDispatch(
+				source,
+				string.format(
+					"<b>Owner</b>: %s<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown",
+					_generatedNames[plate],
+					wasEntity.VIN,
+					wasEntity.model,
+					plate
+				)
+			)
 		else
-			local vehicle = results[1]
-			if vehicle.FakePlate and vehicle.FakePlateData then
-				local stolen = exports['sandbox-radar']:CheckPlate(plate)
-				if stolen then
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
-							vehicle.FakePlateData.OwnerName,
-							vehicle.FakePlateData.SID,
-							vehicle.FakePlateData.VIN,
-							vehicle.FakePlateData.Vehicle or string.format('%s %s', vehicle.Make, vehicle.Model),
-							vehicle.FakePlate,
-							stolen
-						)
+			exports["sandbox-chat"]:SendDispatch(source, "No Plate Match")
+		end
+		return
+	end
+
+	if #results > 1 then
+		exports["sandbox-chat"]:SendDispatch(source, "Multiple Matches, Please Use MDT")
+	else
+		local vehicle = results[1]
+
+		local properties = {}
+		if vehicle.Properties then
+			properties = json.decode(vehicle.Properties) or {}
+		end
+
+		if properties.FakePlate and properties.FakePlateData then
+			local stolen = exports['sandbox-radar']:CheckPlate(plate)
+			if stolen then
+				exports["sandbox-chat"]:SendDispatch(
+					source,
+					string.format(
+						"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown<br /><br />%s",
+						properties.FakePlateData.OwnerName,
+						properties.FakePlateData.SID,
+						properties.FakePlateData.VIN,
+						properties.FakePlateData.Vehicle or string.format('%s %s', vehicle.Make, vehicle.Model),
+						properties.FakePlate,
+						stolen
 					)
-				else
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown",
-							vehicle.FakePlateData.OwnerName,
-							vehicle.FakePlateData.SID,
-							vehicle.FakePlateData.VIN,
-							vehicle.FakePlateData.Vehicle or string.format('%s %s', vehicle.Make, vehicle.Model),
-							vehicle.FakePlate
-						)
-					)
-				end
+				)
 			else
-				local ownerName = "Unknown"
-				if vehicle.Owner.Type == 0 then
-					local owner = exports['sandbox-mdt']:PeopleView(vehicle.Owner.Id)
-
+				exports["sandbox-chat"]:SendDispatch(
+					source,
+					string.format(
+						"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s<br /><b>Plate</b>: %s<br /><b>Class</b>: Unknown",
+						properties.FakePlateData.OwnerName,
+						properties.FakePlateData.SID,
+						properties.FakePlateData.VIN,
+						properties.FakePlateData.Vehicle or string.format('%s %s', vehicle.Make, vehicle.Model),
+						properties.FakePlate
+					)
+				)
+			end
+		else
+			local ownerName = "Unknown"
+			if vehicle.OwnerType == 0 then
+				local owner = exports['sandbox-mdt']:PeopleView(vehicle.OwnerId)
+				if owner then
 					ownerName = string.format("%s %s", owner.First, owner.Last)
-				elseif vehicle.Owner.Type == 1 then
-					local jobData = exports['sandbox-jobs']:DoesExist(vehicle.Owner.Id, vehicle.Owner.Workplace)
-					if jobData then
-						if jobData.Workplace then
-							ownerName = string.format('%s (%s)', jobData.Name, jobData.Workplace.Name)
-						else
-							ownerName = jobData.Name
-						end
-					end
 				end
-
-				local stolen = false
-				if vehicle.Flags then
-					for k, v in ipairs(vehicle.Flags) do
-						if v.Type == "stolen" then
-							stolen = v.Description
-							break
-						end
+			elseif vehicle.OwnerType == 1 then
+				local jobData = exports['sandbox-jobs']:DoesExist(vehicle.OwnerId, vehicle.OwnerWorkplace)
+				if jobData then
+					if jobData.Workplace then
+						ownerName = string.format('%s (%s)', jobData.Name, jobData.Workplace.Name)
+					else
+						ownerName = jobData.Name
 					end
-				end
-
-				if stolen then
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s %s<br /><b>Plate</b>: %s<br /><b>Class</b>: %s<br /><br /><b>Vehicle Reported Stolen</b>: %s",
-							ownerName,
-							vehicle.Owner.Id,
-							vehicle.VIN,
-							vehicle.Make,
-							vehicle.Model,
-							vehicle.RegisteredPlate,
-							vehicle.Class,
-							stolen
-						)
-					)
-				else
-					exports["sandbox-chat"]:SendDispatch(
-						source,
-						string.format(
-							"Owner: %s (%s)\nVIN: %s\nMake & Model: %s %s\nPlate: %s\nClass: %s",
-							ownerName,
-							vehicle.Owner.Id,
-							vehicle.VIN,
-							vehicle.Make,
-							vehicle.Model,
-							vehicle.RegisteredPlate,
-							vehicle.Class
-						)
-					)
 				end
 			end
+
+			local stolen = false
+			if properties.Flags then
+				for k, v in ipairs(properties.Flags) do
+					if v.Type == "stolen" then
+						stolen = v.Description
+						break
+					end
+				end
+			end
+
+			if stolen then
+				exports["sandbox-chat"]:SendDispatch(
+					source,
+					string.format(
+						"<b>Owner</b>: %s (%s)<br /><b>VIN</b>: %s<br /><b>Make & Model</b>: %s %s<br /><b>Plate</b>: %s<br /><b>Class</b>: %s<br /><br /><b>Vehicle Reported Stolen</b>: %s",
+						ownerName,
+						vehicle.OwnerId,
+						vehicle.VIN,
+						vehicle.Make,
+						vehicle.Model,
+						vehicle.RegisteredPlate,
+						vehicle.Class,
+						stolen
+					)
+				)
+			else
+				exports["sandbox-chat"]:SendDispatch(
+					source,
+					string.format(
+						"Owner: %s (%s)\nVIN: %s\nMake & Model: %s %s\nPlate: %s\nClass: %s",
+						ownerName,
+						vehicle.OwnerId,
+						vehicle.VIN,
+						vehicle.Make,
+						vehicle.Model,
+						vehicle.RegisteredPlate,
+						vehicle.Class
+					)
+				)
+			end
 		end
-	end)
+	end
 end)
 
 exports('IsPdCar', function(model)

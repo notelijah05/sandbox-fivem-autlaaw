@@ -29,10 +29,12 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					myDuty
 				)
 			)
-			DropPlayer(
-				source,
-				string.format("%s", "Double dipping jobs is not allowed. Don't do it again - instead, go off duty.")
-			)
+			-- DropPlayer(
+			-- 	source,
+			-- 	string.format("%s", "Double dipping jobs is not allowed. Don't do it again - instead, go off duty.")
+			-- )
+			exports['sandbox-hud']:Notification(source, "error",
+				'Double dipping jobs is not allowed. Instead, go off duty.')
 			cb(false)
 		else
 			if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
@@ -66,10 +68,12 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					myDuty
 				)
 			)
-			DropPlayer(
-				source,
-				string.format("%s", "Double dipping jobs is not allowed. Don't do it again - instead, go off duty.")
-			)
+			-- DropPlayer(
+			-- 	source,
+			-- 	string.format("%s", "Double dipping jobs is not allowed. Don't do it again - instead, go off duty.")
+			-- )
+			exports['sandbox-hud']:Notification(source, "error",
+				'Double dipping jobs is not allowed. Instead, go off duty.')
 			cb(false)
 		else
 			if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then
@@ -104,10 +108,12 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 					data.job
 				)
 			)
-			DropPlayer(
-				source,
-				string.format("%s", "Double dipping jobs is not allowed. Don't do it again - instead, go off duty.")
-			)
+			-- DropPlayer(
+			-- 	source,
+			-- 	string.format("%s", "Double dipping jobs is not allowed. Don't do it again - instead, go off duty.")
+			-- )
+			exports['sandbox-hud']:Notification(source, "error",
+				'Double dipping jobs is not allowed. Instead, go off duty.')
 			cb(false)
 		else
 			if char:GetData("ICU") ~= nil and not char:GetData("ICU").Released then

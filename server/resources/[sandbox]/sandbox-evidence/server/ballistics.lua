@@ -3,7 +3,7 @@ function RegisterBallisticsCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.slotNum and data.serial then
 			-- Files a Gun So Evidence Can Be Found
-			local item = exports['sandbox-inventory']:GetSlot(char:GetData("SID"), data.slotNum, 1)
+			local item = exports.ox_inventory:GetSlot(char:GetData("SID"), data.slotNum, 1)
 			if item and item.MetaData and (item.MetaData.ScratchedSerialNumber or item.MetaData.SerialNumber) then
 				local firearmRecord, policeWeapId
 
@@ -33,7 +33,7 @@ function RegisterBallisticsCallbacks()
 							})
 
 							if item.MetaData.ScratchedSerialNumber then
-								exports['sandbox-inventory']:SetMetaDataKey(item.id, "PoliceWeaponId",
+								exports.ox_inventory:SetMetaDataKey(item.id, "PoliceWeaponId",
 									firearmRecord.police_id, source)
 							end
 
@@ -60,7 +60,7 @@ function RegisterBallisticsCallbacks()
 end
 
 function RegisterBallisticsItemUses()
-	exports['sandbox-inventory']:RegisterUse("evidence-projectile", "Evidence", function(source, itemData)
+	exports.ox_inventory:RegisterUse("evidence-projectile", "Evidence", function(source, itemData)
 		if itemData and itemData.MetaData and itemData.MetaData.EvidenceId and itemData.MetaData.EvidenceWeapon then
 			exports["sandbox-base"]:ClientCallback(source, "Polyzone:IsCoordsInZone", {
 				coords = GetEntityCoords(GetPlayerPed(source)),
@@ -119,7 +119,7 @@ function RegisterBallisticsItemUses()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("evidence-dna", "Evidence", function(source, itemData)
+	exports.ox_inventory:RegisterUse("evidence-dna", "Evidence", function(source, itemData)
 		if itemData and itemData.MetaData and itemData.MetaData.EvidenceId and itemData.MetaData.EvidenceDNA then
 			exports["sandbox-base"]:ClientCallback(source, "Polyzone:IsCoordsInZone", {
 				coords = GetEntityCoords(GetPlayerPed(source)),
@@ -149,17 +149,25 @@ function RegisterBallisticsItemUses()
 	end)
 end
 
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterBallisticsItemUses()
+	end
+end)
+
 function GetEvidenceProjectileRecord(evidenceId)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameFindOne({
-		collection = "firearms_projectiles",
-		query = {
-			Id = evidenceId,
-		},
-	}, function(success, results)
-		if success and #results > 0 and results[1] then
-			p:resolve(results[1])
+	exports.oxmysql:execute('SELECT * FROM firearms_projectiles WHERE Id = ?', { evidenceId }, function(results)
+		if results and #results > 0 and results[1] then
+			local record = results[1]
+			if record.Weapon then
+				record.Weapon = json.decode(record.Weapon)
+			end
+			if record.Coords then
+				record.Coords = json.decode(record.Coords)
+			end
+			p:resolve(record)
 		else
 			p:resolve(false)
 		end
@@ -170,16 +178,19 @@ end
 
 function CreateEvidenceProjectileRecord(document)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameInsertOne({
-		collection = "firearms_projectiles",
-		document = document,
-	}, function(success, result, insertId)
-		if success then
-			p:resolve(document)
-		else
-			p:resolve(false)
-		end
-	end)
+	local weaponJson = json.encode(document.Weapon)
+	local coordsJson = json.encode(document.Coords)
+
+	exports.oxmysql:execute(
+		'INSERT INTO firearms_projectiles (Id, Weapon, Coords, AmmoType) VALUES (?, ?, ?, ?)',
+		{ document.Id, weaponJson, coordsJson, document.AmmoType },
+		function(insertId)
+			if insertId and insertId > 0 then
+				p:resolve(document)
+			else
+				p:resolve(false)
+			end
+		end)
 
 	return Citizen.Await(p)
 end
@@ -187,23 +198,20 @@ end
 function GetMatchingEvidenceProjectiles(weaponSerial)
 	local p = promise.new()
 
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "firearms_projectiles",
-		query = {
-			["Weapon.serial"] = weaponSerial,
-		},
-	}, function(success, results)
-		if success and #results > 0 then
-			local foundEvidence = {}
+	exports.oxmysql:execute(
+		'SELECT Id FROM firearms_projectiles WHERE JSON_UNQUOTE(JSON_EXTRACT(Weapon, "$.serial")) = ?', { weaponSerial },
+		function(results)
+			if results and #results > 0 then
+				local foundEvidence = {}
 
-			for k, v in ipairs(results) do
-				table.insert(foundEvidence, v.Id)
+				for k, v in ipairs(results) do
+					table.insert(foundEvidence, v.Id)
+				end
+				p:resolve(foundEvidence)
+			else
+				p:resolve({})
 			end
-			p:resolve(foundEvidence)
-		else
-			p:resolve({})
-		end
-	end)
+		end)
 
 	return Citizen.Await(p)
 end
@@ -231,11 +239,11 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 	if char ~= nil then
 		local pState = Player(source).state
 		if pState.onDuty == "police" then
-			local its = exports['sandbox-inventory']:GetInventory(source, data.owner, data.invType)
+			local its = exports.ox_inventory:GetInventory(source, data.owner, data.invType)
 			if #its > 0 then
 				local item = its[1]
 				local md = json.decode(item.MetaData)
-				local itemData = exports['sandbox-inventory']:ItemsGetData(item.Name)
+				local itemData = exports.ox_inventory:ItemsGetData(item.Name)
 				if itemData ~= nil and itemData.type == 2 then
 					if item and md and (md.ScratchedSerialNumber or md.SerialNumber) then
 						local firearmRecord, policeWeapId
@@ -266,12 +274,12 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 									})
 
 									if md.ScratchedSerialNumber then
-										exports['sandbox-inventory']:SetMetaDataKey(item.id, "PoliceWeaponId",
+										exports.ox_inventory:SetMetaDataKey(item.id, "PoliceWeaponId",
 											firearmRecord.police_id,
 											source)
 									end
 
-									exports['sandbox-inventory']:BallisticsClear(source, data.owner, data.invType)
+									exports.ox_inventory:BallisticsClear(source, data.owner, data.invType)
 									exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 										true,
 										false,
@@ -282,7 +290,7 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 									})
 								end
 							else
-								exports['sandbox-inventory']:BallisticsClear(source, data.owner, data.invType)
+								exports.ox_inventory:BallisticsClear(source, data.owner, data.invType)
 								exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 									true,
 									true,
@@ -292,7 +300,7 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 								})
 							end
 						else
-							exports['sandbox-inventory']:BallisticsClear(source, data.owner, data.invType)
+							exports.ox_inventory:BallisticsClear(source, data.owner, data.invType)
 							exports["sandbox-base"]:ClientCallback(source, "Evidence:RunBallistics", {
 								false,
 								false,
@@ -304,7 +312,7 @@ AddEventHandler('Evidence:Server:RunBallistics', function(source, data)
 						end
 					end
 				else
-					exports['sandbox-hud']:NotifError(source, "Item Must Be A Weapon")
+					exports['sandbox-hud']:Notification(source, "error", "Item Must Be A Weapon")
 				end
 			end
 		end

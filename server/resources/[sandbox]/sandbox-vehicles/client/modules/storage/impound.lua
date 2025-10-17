@@ -11,45 +11,28 @@ AddEventHandler('Vehicles:Client:StartUp', function()
 			icon = "fa-solid fa-truck",
 			text = "Request Tow Job",
 			event = "Tow:Client:RequestJob",
-			isEnabled = function(data, entityData)
-				if not exports['sandbox-jobs']:HasJob('tow') then
-					return true
-				end
-				return false
-			end,
+			groups = { "tow" },
 		},
 		{
 			icon = "fa-solid fa-right-from-bracket",
 			text = "Quit Tow Job",
 			event = "Tow:Client:QuitJob",
-			jobPerms = {
-				{
-					job = "tow",
-					reqOffDuty = true,
-				},
-			},
+			groups = { "tow" },
+			reqOffDuty = true,
 		},
 		{
 			icon = "fa-solid fa-clipboard-check",
 			text = "Tow - Go On Duty",
 			event = "Tow:Client:OnDuty",
-			jobPerms = {
-				{
-					job = "tow",
-					reqOffDuty = true,
-				},
-			},
+			groups = { "tow" },
+			reqOffDuty = true,
 		},
 		{
 			icon = "fa-solid fa-clipboard",
 			text = "Tow - Go Off Duty",
 			event = "Tow:Client:OffDuty",
-			jobPerms = {
-				{
-					job = "tow",
-					reqDuty = true,
-				},
-			},
+			groups = { "tow" },
+			reqDuty = true,
 		},
 	}, 'truck-tow', 'WORLD_HUMAN_CLIPBOARD')
 end)
@@ -246,14 +229,14 @@ AddEventHandler('Vehicles:Client:Tow', function(data)
 						requester = LocalPlayer.state.Character:GetData("SID"),
 					}, function()
 						TriggerServerEvent("EmergencyAlerts:Server:DoPredefined", "towRequest")
-						exports["sandbox-hud"]:NotifSuccess('Tow Requested')
+						exports["sandbox-hud"]:Notification("success", 'Tow Requested')
 					end)
 				else
-					exports["sandbox-hud"]:NotifError('Tow Request Failed')
+					exports["sandbox-hud"]:Notification("error", 'Tow Request Failed')
 				end
 			end)
 		else
-			exports["sandbox-hud"]:NotifError('Cannot Request Tow On That Vehicle Anymore...')
+			exports["sandbox-hud"]:Notification("error", 'Cannot Request Tow On That Vehicle Anymore...')
 		end
 	end
 end)
@@ -291,17 +274,17 @@ AddEventHandler('Vehicles:Client:Impound', function(data)
 						level = data.level,
 					}, function(success)
 						if success then
-							exports["sandbox-hud"]:NotifSuccess('Vehicle Impounded')
+							exports["sandbox-hud"]:Notification("success", 'Vehicle Impounded')
 						else
-							exports["sandbox-hud"]:NotifError('Impound Failed')
+							exports["sandbox-hud"]:Notification("error", 'Impound Failed')
 						end
 					end)
 				else
-					exports["sandbox-hud"]:NotifError('Impound Failed')
+					exports["sandbox-hud"]:Notification("error", 'Impound Failed')
 				end
 			end)
 		else
-			exports["sandbox-hud"]:NotifError('Cannot Impound That Vehicle Anymore...')
+			exports["sandbox-hud"]:Notification("error", 'Cannot Impound That Vehicle Anymore...')
 		end
 	end
 end)
@@ -425,7 +408,7 @@ AddEventHandler('Vehicles:Client:TowReleaseMenu', function()
 
 			exports['sandbox-hud']:ListMenuShow(impoundMenu)
 		else
-			exports["sandbox-hud"]:NotifInfo('None of Your Vehicles Are Impounded')
+			exports["sandbox-hud"]:Notification("info", 'None of Your Vehicles Are Impounded')
 		end
 	end)
 end)
@@ -441,14 +424,14 @@ AddEventHandler('Vehicles:Client:TowRequestRelease', function(data)
 				heading = freeImpoundSpace.w,
 			}, function(success)
 				if success then
-					exports["sandbox-hud"]:NotifSuccess(
+					exports["sandbox-hud"]:Notification("success",
 						'Vehicle Retrieved From Impound. It is Parked in the Lot Outside', 10000)
 				else
-					exports["sandbox-hud"]:NotifError('Error Retrieving From Impound')
+					exports["sandbox-hud"]:Notification("error", 'Error Retrieving From Impound')
 				end
 			end)
 		else
-			exports["sandbox-hud"]:NotifError('Impound Parking Lot Full')
+			exports["sandbox-hud"]:Notification("error", 'Impound Parking Lot Full')
 		end
 	end
 end)

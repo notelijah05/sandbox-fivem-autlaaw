@@ -210,10 +210,10 @@ AddEventHandler('onResourceStart', function(resource)
 												}
 											end
 
-											cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"), itemData.item, 1,
+											cb(exports.ox_inventory:AddItem(char:GetData("SID"), itemData.item, 1,
 												{}, 1))
 										else
-											exports['sandbox-hud']:NotifError(source,
+											exports['sandbox-hud']:Notification(source, "error",
 												string.format("Not Enough %s", coinData.Name)
 											)
 										end
@@ -229,17 +229,17 @@ AddEventHandler('onResourceStart', function(resource)
 												_bought[data.id][source][itemData.item] = (
 													_bought[data.id][source][itemData.item] or 0
 												) + 1
-												cb(exports['sandbox-inventory']:AddItem(char:GetData("SID"),
+												cb(exports.ox_inventory:AddItem(char:GetData("SID"),
 													itemData.item, 1, {}, 1))
 											end
 										else
-											exports['sandbox-hud']:NotifError(source,
+											exports['sandbox-hud']:Notification(source, "error",
 												"Not Enough Cash")
 										end
 									end
 								end
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Item Not In Stock")
 							end
 						else
@@ -255,7 +255,7 @@ AddEventHandler('onResourceStart', function(resource)
 									pState.onDuty
 								)
 							)
-							exports['sandbox-hud']:NotifError(source,
+							exports['sandbox-hud']:Notification(source, "error",
 								"You shouldn't be doing this, logged & flagged :)"
 							)
 							cb({})

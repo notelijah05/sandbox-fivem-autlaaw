@@ -1,5 +1,8 @@
+local _ranStartup = false
 JOB_CACHE = {}
 JOB_COUNT = 0
+
+_loaded = false
 
 AddEventHandler('onResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
@@ -8,6 +11,8 @@ AddEventHandler('onResourceStart', function(resource)
 		RegisterJobCallbacks()
 		RegisterJobChatCommands()
 
+		_loaded = true
+
 		RunStartup()
 
 		TriggerEvent("Jobs:Server:Startup")
@@ -15,133 +20,130 @@ AddEventHandler('onResourceStart', function(resource)
 end)
 
 function FindAllJobs()
-	local p = promise.new()
+	local results = MySQL.query.await('SELECT * FROM jobs', {})
 
-	exports['sandbox-base']:DatabaseGameFind({
-		collection = "jobs",
-		query = {},
-	}, function(success, results)
-		if success and #results > 0 then
-			p:resolve(results)
-		else
-			p:resolve({})
-		end
-	end)
-
-	local res = Citizen.Await(p)
-	return res
+	if results and #results > 0 then
+		return results
+	else
+		return {}
+	end
 end
 
 function RefreshAllJobData(job)
-	Wait(1000)
 	local jobsFetch = FindAllJobs()
 	JOB_COUNT = #jobsFetch
 	for k, v in ipairs(jobsFetch) do
 		JOB_CACHE[v.Id] = v
+		if v.Workplaces ~= nil then
+			JOB_CACHE[v.Id].Workplaces = json.decode(v.Workplaces or {})
+		end
+
+		if v.Grades ~= nil then
+			JOB_CACHE[v.Id].Grades = json.decode(v.Grades or {})
+		end
 	end
 
 	TriggerEvent("Jobs:Server:UpdatedCache", job or -1)
 
-	local govPromise = promise.new()
-	exports['sandbox-base']:DatabaseGameAggregate({
-		collection = "jobs",
-		aggregate = {
-			{ ["$match"] = { Type = "Government" } },
-			{
-				["$project"] = {
-					["Type"] = 1,
-					["Id"] = 1,
-					["Name"] = 1,
-					["Workplaces.Grades"] = 1,
-					["Workplaces.Id"] = 1,
-				},
-			},
-			{ ["$unwind"] = "$Workplaces" },
-			{ ["$unwind"] = "$Workplaces.Grades" },
-		},
-	}, function(success, results)
-		if success and #results > 0 then
-			for k, v in ipairs(results) do
-				local key = string.format("JobPerms:%s:%s:%s", v.Id, v.Workplaces.Id, v.Workplaces.Grades.Id)
-				GlobalState[key] = v.Workplaces.Grades.Permissions
-			end
-			govPromise:resolve(true)
-		else
-			govPromise:resolve(false)
-		end
-	end)
+	local govResults = MySQL.query.await([[
+		  SELECT Id, Name, Grades, Salary, SalaryTier, LastUpdated, Workplaces
+		  FROM jobs
+		  WHERE Type = "Government"
+	  ]], {})
 
-	local companyPromise = promise.new()
-	exports['sandbox-base']:DatabaseGameAggregate({
-		collection = "jobs",
-		aggregate = {
-			{ ["$match"] = { Type = "Company" } },
-			{ ["$project"] = { ["Type"] = 1, ["Id"] = 1, ["Name"] = 1, ["Grades"] = 1 } },
-			{ ["$unwind"] = "$Grades" },
-		},
-	}, function(success, results)
-		if success and #results > 0 then
-			for k, v in ipairs(results) do
-				local key = string.format("JobPerms:%s:false:%s", v.Id, v.Grades.Id)
-				GlobalState[key] = v.Grades.Permissions
+	if govResults and #govResults > 0 then
+		for _, v in ipairs(govResults) do
+			local Workplaces = json.decode(v.Workplaces)
+			for _, Workplace in ipairs(Workplaces) do
+				for _, Grade in ipairs(Workplace.Grades) do
+					local key = string.format("JobPerms:%s:%s:%s", v.Id, Workplace.Id, Grade.Id)
+					GlobalState[key] = Grade.Permissions
+				end
 			end
-			companyPromise:resolve(true)
-		else
-			companyPromise:resolve(false)
 		end
-	end)
+	end
 
-	return Citizen.Await(promise.all({
-		govPromise,
-		companyPromise,
-	}))
+	local companyResults = MySQL.query.await([[
+		  SELECT Id, Name, Grades, Salary, SalaryTier, LastUpdated, Workplaces
+		  FROM jobs
+		  WHERE Type = "Company"
+	  ]], {})
+
+	if companyResults and #companyResults > 0 then
+		for _, v in ipairs(companyResults) do
+			local Grades = json.decode(v.Grades)
+			for _, Grade in ipairs(Grades) do
+				local key = string.format("JobPerms:%s:false:%s", v.Id, Grade.Id)
+				GlobalState[key] = Grade.Permissions
+			end
+		end
+	end
+
+	return true
 end
 
 function RunStartup()
-	Wait(1000)
+	if _ranStartup then
+		return
+	end
+	_ranStartup = true
+
 	local function replaceExistingDefaultJob(_id, document)
-		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameDeleteOne({
-			collection = "jobs",
-			query = {
-				_id = _id,
-			},
-		}, function(success, deleted)
-			if success then
-				exports['sandbox-base']:DatabaseGameInsertOne({
-					collection = "jobs",
-					document = document,
-				}, function(success, inserted)
-					if not success or inserted <= 0 then
-						exports['sandbox-base']:LoggerError("Jobs", "Error Inserting Job on Default Job Update")
-						p:resolve(false)
-					else
-						Wait(10000)
-						p:resolve(true)
-					end
-				end)
+		local deleteResult = MySQL.query.await('DELETE FROM jobs WHERE Id = ?', { _id })
+
+		if deleteResult > 0 then
+			local insertResult = MySQL.insert.await(
+				'INSERT INTO jobs (Id, Name, Type, Workplaces, Grades, Salary, SalaryTier, LastUpdated, Owner, Custom, Hidden) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				{
+					_id,
+					document.Name,
+					document.Type,
+					json.encode(document.Workplaces),
+					json.encode(document.Grades),
+					document.Salary,
+					document.SalaryTier,
+					document.LastUpdated,
+					document.Owner,
+					document.Custom and 1 or 0,
+					document.Hidden and 1 or 0
+				})
+
+			if insertResult then
+				Citizen.Wait(10000)
+				return true
 			else
-				exports['sandbox-base']:LoggerError("Jobs", "Error Deleting Job on Default Job Update")
-				p:resolve(false)
+				exports['sandbox-base']:LoggerError("Jobs", "Error Inserting Job on Default Job Update")
+				return false
 			end
-		end)
-		return p
+		else
+			exports['sandbox-base']:LoggerError("Jobs", "Error Deleting Job on Default Job Update")
+			return false
+		end
 	end
 
 	local function insertDefaultJob(document)
-		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameInsertOne({
-			collection = "jobs",
-			document = document,
-		}, function(success, inserted)
-			if not success or inserted <= 0 then
-				exports['sandbox-base']:LoggerError("Jobs", "Error Inserting Job on Default Job Update")
-				p:resolve(false)
-			else
-				p:resolve(true)
-			end
-		end)
-		return p
+		local insertResult = MySQL.insert.await(
+			'INSERT INTO jobs (Id, Name, Type, Workplaces, Grades, LastUpdated, Salary, SalaryTier, Owner, Custom, Hidden) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			{
+				document.Id,
+				document.Name,
+				document.Type,
+				json.encode(document.Workplaces),
+				json.encode(document.Grades),
+				document.LastUpdated,
+				document.Salary,
+				document.SalaryTier,
+				document.Owner,
+				document.Custom and 1 or 0,
+				document.Hidden and 1 or 0
+			})
+
+		if insertResult then
+			return true
+		else
+			exports['sandbox-base']:LoggerError('Jobs', 'Error Inserting Job on Default Job Update')
+			return false
+		end
 	end
 
 	local jobsFetch = FindAllJobs()
@@ -150,20 +152,13 @@ function RunStartup()
 		currentData[v.Id] = v
 	end
 
-	local awaitingPromises = {}
 	for k, v in ipairs(_defaultJobData) do
 		local currentDataForJob = currentData[v.Id]
-		if currentDataForJob and currentDataForJob.LastUpdated < v.LastUpdated then
-			table.insert(awaitingPromises, replaceExistingDefaultJob(currentDataForJob._id, v))
+		if currentDataForJob and v.LastUpdated < v.LastUpdated then
+			replaceExistingDefaultJob(currentDataForJob._id, v)
 		elseif not currentDataForJob then
-			table.insert(awaitingPromises, insertDefaultJob(v))
+			insertDefaultJob(v)
 		end
-	end
-
-	if #awaitingPromises > 0 then
-		Citizen.Await(promise.all(awaitingPromises))
-		exports['sandbox-base']:LoggerInfo("Jobs", "Inserted/Replaced ^2" .. #awaitingPromises .. "^7 Default Jobs")
-		jobsFetch = FindAllJobs()
 	end
 
 	RefreshAllJobData()

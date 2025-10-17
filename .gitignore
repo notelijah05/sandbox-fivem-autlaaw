@@ -1,7 +1,6 @@
 artifact/
 txData/
 server/cache
-server/db
 .vscode/
 .yarn/
 *.bat
@@ -22,5 +21,4 @@ polyzone_created_zones.txt
 
 server/created_doors_data.txt
 
-coord-line/
-server/resources/\[sandbox\]/sandbox-pwnzor2/pac.db
+/server/db

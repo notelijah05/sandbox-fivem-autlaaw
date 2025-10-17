@@ -17,10 +17,10 @@ AddEventHandler("Finance:Server:Startup", function()
 					if exports['sandbox-finance']:WalletModify(source, -amount, true) then
 						if exports['sandbox-finance']:WalletModify(targetChar:GetData("Source"), amount, true) then
 							TriggerClientEvent('Finance:Client:HandOffCash', source)
-							exports['sandbox-hud']:NotifSuccess(source,
+							exports['sandbox-hud']:Notification(source, "success",
 								"You Gave $" .. formatNumberToCurrency(amount) .. " in Cash"
 							)
-							exports['sandbox-hud']:NotifSuccess(targetChar:GetData("Source"),
+							exports['sandbox-hud']:Notification("success", targetChar:GetData("Source"),
 								"You Just Received $" .. formatNumberToCurrency(amount) .. " in Cash"
 							)
 							return
@@ -48,10 +48,7 @@ AddEventHandler("Finance:Server:Startup", function()
 	})
 
 	exports["sandbox-chat"]:RegisterAdminCommand("addcash", function(source, args, rawCommand)
-		local addingAmount = tonumber(args[1])
-		if addingAmount and addingAmount > 0 then
-			exports['sandbox-finance']:WalletModify(source, addingAmount)
-		end
+		exports.ox_inventory:addCash(source, tonumber(args[1]))
 	end, {
 		help = "Give Cash To Yourself",
 		params = {
@@ -78,10 +75,10 @@ AddEventHandler("Finance:Server:Startup", function()
 						if exports['sandbox-finance']:WalletModify(source, -amount, true) then
 							if exports['sandbox-finance']:WalletModify(targetChar:GetData("Source"), amount, true) then
 								TriggerClientEvent('Finance:Client:HandOffCash', source)
-								exports['sandbox-hud']:NotifSuccess(source,
+								exports['sandbox-hud']:Notification(source, "success",
 									"You Gave $" .. formatNumberToCurrency(amount) .. " in Cash"
 								)
-								exports['sandbox-hud']:NotifSuccess(targetChar:GetData("Source"),
+								exports['sandbox-hud']:Notification("success", targetChar:GetData("Source"),
 									"You Just Received $" .. formatNumberToCurrency(amount) .. " in Cash"
 								)
 								return
@@ -116,7 +113,7 @@ AddEventHandler("Finance:Server:Startup", function()
 end)
 
 function ShowCash(source)
-	exports['sandbox-hud']:NotifSuccess(source,
+	exports['sandbox-hud']:Notification(source, "success",
 		"You have $" .. formatNumberToCurrency(exports['sandbox-finance']:WalletGet(source)),
 		2500,
 		"money-bill-wave"

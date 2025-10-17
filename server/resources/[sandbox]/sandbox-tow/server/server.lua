@@ -34,7 +34,7 @@ AddEventHandler('onResourceStart', function(resource)
 						_activeTowers[source] = {
 							next = os.time() + (math.random(1, 3) * 60),
 						}
-						exports['sandbox-hud']:NotifInfo(source,
+						exports['sandbox-hud']:Notification(source, "info",
 							[[
                                 You are now on Duty as a Tow Truck Driver.<br><br>
                                 Get a Tow Truck from Jerry in the Tow Lot.<br>
@@ -45,15 +45,15 @@ AddEventHandler('onResourceStart', function(resource)
 							"truck-tow"
 						)
 					else
-						exports['sandbox-hud']:NotifError(source, "Failed to Go On Duty",
+						exports['sandbox-hud']:Notification(source, "error", "Failed to Go On Duty",
 							5000, "truck-tow")
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Too Many Tow Employees on Duty", 5000, "truck-tow")
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "Failed to Go On Duty", 5000,
+				exports['sandbox-hud']:Notification(source, "error", "Failed to Go On Duty", 5000,
 					"truck-tow")
 			end
 		end)
@@ -68,14 +68,14 @@ AddEventHandler('onResourceStart', function(resource)
 					_activeTowers[source] = nil
 					exports['sandbox-phone']:NotificationRemoveById(source, "TOW_OBJ")
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Return the Tow Truck Before Going Off Duty",
 						5000,
 						"truck-tow"
 					)
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "Failed to Go Off Duty", 5000,
+				exports['sandbox-hud']:Notification(source, "error", "Failed to Go Off Duty", 5000,
 					"truck-tow")
 			end
 		end)
@@ -106,14 +106,14 @@ AddEventHandler('onResourceStart', function(resource)
 								GlobalState[string.format("TowTrucks:%s", stateId)] =
 									NetworkGetNetworkIdFromEntity(spawnedVehicle)
 
-								exports['sandbox-hud']:NotifSuccess(source,
+								exports['sandbox-hud']:Notification(source, "success",
 									"Your Tow Truck Was Provided",
 									5000,
 									"truck-tow"
 								)
 								cb(spawnedVehicle)
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Truck Spawn Failed", 5000, "truck-tow")
 								cb(nil)
 							end
@@ -125,7 +125,7 @@ AddEventHandler('onResourceStart', function(resource)
 						}
 					)
 				else
-					exports['sandbox-hud']:NotifError(source, "We Already Gave You a Truck",
+					exports['sandbox-hud']:Notification(source, "error", "We Already Gave You a Truck",
 						5000, "truck-tow")
 					cb(nil)
 				end
@@ -144,13 +144,13 @@ AddEventHandler('onResourceStart', function(resource)
 							if success then
 								_activeTowVehicles[stateId] = nil
 								GlobalState[string.format("TowTrucks:%s", stateId)] = false
-								exports['sandbox-hud']:NotifSuccess(source,
+								exports['sandbox-hud']:Notification(source, "success",
 									"Thanks for Returning Your Tow Truck",
 									5000,
 									"truck-tow"
 								)
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Error Returning Truck",
 									5000,
 									"truck-tow"
@@ -158,14 +158,14 @@ AddEventHandler('onResourceStart', function(resource)
 							end
 						end)
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Your Tow Truck Isn't Nearby",
 							5000,
 							"truck-tow"
 						)
 					end
 				else
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"You Don't Have a Truck to Return",
 						5000,
 						"truck-tow"

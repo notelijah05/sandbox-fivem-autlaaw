@@ -158,19 +158,22 @@ exports('Create', function(scene, isStaff)
 		scene.text.text = SanitizeEmojis(scene.text.text)
 
 		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameInsertOne({
-			collection = "scenes",
-			document = scene,
-		}, function(success, result, insertedIds)
-			if success then
-				scene._id = insertedIds[1]
-				p:resolve(scene)
-				_loadedScenes[scene._id] = scene
-				TriggerClientEvent("Scenes:Client:AddScene", -1, scene._id, scene)
-			else
-				p:resolve(false)
-			end
-		end)
+		local coordsJson = json.encode(scene.coords)
+		local textJson = json.encode(scene.text)
+
+		exports.oxmysql:execute(
+			'INSERT INTO scenes (coords, length, expires, staff, distance, route, text) VALUES (?, ?, ?, ?, ?, ?, ?)',
+			{ coordsJson, scene.length, scene.expires, scene.staff and 1 or 0, scene.distance, scene.route or 0, textJson },
+			function(insertId)
+				if insertId and insertId > 0 then
+					scene._id = insertId
+					p:resolve(scene)
+					_loadedScenes[scene._id] = scene
+					TriggerClientEvent("Scenes:Client:AddScene", -1, scene._id, scene)
+				else
+					p:resolve(false)
+				end
+			end)
 
 		return Citizen.Await(p)
 	end
@@ -209,25 +212,23 @@ exports('Edit', function(id, newData, isStaff)
 		newData._id = nil
 
 		local p = promise.new()
-		exports['sandbox-base']:DatabaseGameUpdateOne({
-			collection = "scenes",
-			query = {
-				_id = id,
-			},
-			update = {
-				["$set"] = newData,
-			},
-		}, function(success, result)
-			-- print(success, result)
-			if success then
-				newData._id = id
-				p:resolve(newData)
-				_loadedScenes[id] = newData
-				TriggerClientEvent("Scenes:Client:AddScene", -1, newData._id, newData)
-			else
-				p:resolve(false)
-			end
-		end)
+		local coordsJson = json.encode(newData.coords)
+		local textJson = json.encode(newData.text)
+
+		exports.oxmysql:execute(
+			'UPDATE scenes SET coords = ?, length = ?, expires = ?, staff = ?, distance = ?, route = ?, text = ? WHERE _id = ?',
+			{ coordsJson, newData.length, newData.expires, newData.staff and 1 or 0, newData.distance, newData.route or 0,
+				textJson, id },
+			function(affectedRows)
+				if affectedRows and affectedRows > 0 then
+					newData._id = id
+					p:resolve(newData)
+					_loadedScenes[id] = newData
+					TriggerClientEvent("Scenes:Client:AddScene", -1, newData._id, newData)
+				else
+					p:resolve(false)
+				end
+			end)
 
 		return Citizen.Await(p)
 	end
@@ -235,12 +236,8 @@ end)
 
 exports('Delete', function(id)
 	local p = promise.new()
-	exports['sandbox-base']:DatabaseGameDeleteOne({
-		collection = "scenes",
-		query = {
-			_id = id,
-		},
-	}, function(success, deleted)
+	exports.oxmysql:execute('DELETE FROM scenes WHERE _id = ?', { id }, function(affectedRows)
+		local success = affectedRows and affectedRows > 0
 		p:resolve(success)
 
 		if success and _loadedScenes[id] then
@@ -255,37 +252,21 @@ end)
 function DeleteExpiredScenes(deleteRouted)
 	local p = promise.new()
 
-	local query = {
-		staff = false,
-		expires = {
-			["$lte"] = os.time(),
-		},
-	}
+	local currentTime = os.time()
+	local query
+	local params = {}
 
-	if deleteRouted then -- Delete Routed
-		query = {
-			["$or"] = {
-				{
-					staff = false,
-					expires = {
-						["$lte"] = os.time(),
-					},
-				},
-				{
-					route = {
-						["$ne"] = 0,
-					},
-				},
-			},
-		}
+	if deleteRouted then
+		query = 'DELETE FROM scenes WHERE (staff = ? AND expires <= ?) OR route != ?'
+		params = { 0, currentTime, 0 }
+	else
+		query = 'DELETE FROM scenes WHERE staff = ? AND expires <= ?'
+		params = { 0, currentTime }
 	end
 
-	exports['sandbox-base']:DatabaseGameDelete({
-		collection = "scenes",
-		query = query,
-	}, function(success, deleted)
-		if success then
-			p:resolve(deleted)
+	exports.oxmysql:execute(query, params, function(affectedRows)
+		if affectedRows then
+			p:resolve(affectedRows)
 		else
 			p:resolve(false)
 		end
@@ -299,12 +280,17 @@ function LoadScenesFromDB()
 		_hasLoadedScenes = true
 		DeleteExpiredScenes(true)
 
-		exports['sandbox-base']:DatabaseGameFind({
-			collection = "scenes",
-			query = {},
-		}, function(success, results)
-			if success and #results > 0 then
+		exports.oxmysql:execute('SELECT * FROM scenes', {}, function(results)
+			if results and #results > 0 then
 				for k, v in ipairs(results) do
+					if v.coords then
+						v.coords = json.decode(v.coords)
+					end
+					if v.text then
+						v.text = json.decode(v.text)
+					end
+					v.staff = v.staff == 1
+
 					_loadedScenes[v._id] = v
 				end
 			end

@@ -79,8 +79,350 @@ AddEventHandler("Characters:Server:PlayerDropped", BobcatClearSourceInUse)
 AddEventHandler("Robbery:Server:Setup", function()
 	StartBobcatThreads()
 	GlobalState["Bobcat:LootLocations"] = _bobcatLootLocs
+	RegisterItems()
 
-	exports['sandbox-inventory']:RegisterUse("thermite", "BobcatRobbery", function(source, itemData)
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:PickupC4", function(source, data, cb)
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			local pState = Player(source).state
+
+			if pState.inBobcat then
+				if
+					(
+						not GlobalState["AntiShitlord"]
+						or os.time() > GlobalState["AntiShitlord"]
+						or GlobalState["BobcatInProgress"]
+					)
+					and not GlobalState["BobcatC4"]
+					and GlobalState["Bobcat:ExtrDoor"]
+					and GlobalState["Bobcat:FrontDoor"]
+					and GlobalState["Bobcat:SecuredDoor"]
+					and not GlobalState["Bobcat:Secured"]
+				then
+					if GetGameTimer() < BC_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not GlobalState["BobcatInProgress"]) then
+						exports['sandbox-hud']:Notification(source, "error",
+							"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
+							6000
+						)
+						return
+					elseif (GlobalState["Duty:police"] or 0) < BC_REQUIRED_POLICE and not GlobalState["BobcatInProgress"] then
+						exports['sandbox-hud']:Notification(source, "error",
+							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
+							6000
+						)
+						return
+					elseif GlobalState["RobberiesDisabled"] then
+						exports['sandbox-hud']:Notification(source, "error",
+							"Temporarily Disabled, Please See City Announcements",
+							6000
+						)
+						return
+					end
+
+					if not _bcInUse.grabC4 then
+						_bcInUse.grabC4 = source
+						if exports.ox_inventory:AddItem(char:GetData("SID"), "bobcat_charge", 1, {}, 1) then
+							GlobalState["BobcatC4"] = char:GetData("SID")
+							GlobalState["BobcatInProgress"] = true
+
+							if not _bcGlobalReset then
+								_bcGlobalReset = os.time() + BC_RESET_TIME
+							end
+						end
+						_bcInUse.grabC4 = false
+					else
+						exports['sandbox-hud']:Notification(source, "error",
+							"Someone Else Is Already Doing A Thing",
+							6000
+						)
+					end
+				end
+			end
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:DoThermiteFx", function(source, data, cb)
+		TriggerClientEvent("Robbery:Client:ThermiteFx", -1, data.delay or 13000, data.netId)
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:DoBombFx", function(source, data, cb)
+		TriggerClientEvent("Robbery:Client:BombFx", source, data)
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:DoDetCordFx", function(source, data, cb)
+		TriggerClientEvent("Robbery:Client:DetCordFx", -1, data)
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:DoDetCordFx", function(source, data, cb)
+		TriggerClientEvent("Robbery:Client:DetCordFx", -1, data)
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:CheckLoot", function(source, data, cb)
+		local pState = Player(source).state
+
+		if
+			pState.inBobcat
+			and (not GlobalState["AntiShitlord"] or os.time() > GlobalState["AntiShitlord"] or GlobalState["BobcatInProgress"])
+			and GlobalState["Bobcat:ExtrDoor"]
+			and GlobalState["Bobcat:FrontDoor"]
+			and GlobalState["Bobcat:SecuredDoor"]
+			and GlobalState["Bobcat:VaultDoor"]
+			and not GlobalState["Bobcat:Secured"]
+			and not GlobalState[string.format("Bobcat:Loot:%s", data.id)]
+			and _bobcatLootLocs[data.id] ~= nil
+		then
+			if not _bcInUse.loot[data.id] then
+				GlobalState[string.format("Bobcat:Loot:%s", data.id)] = true
+				_bcInUse.loot[data.id] = source
+				cb(true)
+			else
+				cb(false)
+			end
+		else
+			cb(false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:CancelLoot", function(source, data, cb)
+		local pState = Player(source).state
+
+		if
+			pState.inBobcat
+			and (not GlobalState["AntiShitlord"] or os.time() > GlobalState["AntiShitlord"] or GlobalState["BobcatInProgress"])
+			and GlobalState["Bobcat:ExtrDoor"]
+			and GlobalState["Bobcat:FrontDoor"]
+			and GlobalState["Bobcat:SecuredDoor"]
+			and GlobalState["Bobcat:VaultDoor"]
+			and _bobcatLootLocs[data.id] ~= nil
+		then
+			if _bcInUse.loot[data.id] == source then
+				GlobalState[string.format("Bobcat:Loot:%s", data.id)] = false
+				_bcInUse.loot[data.id] = false
+				cb(true)
+			else
+				cb(false)
+			end
+		else
+			cb(false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:Loot", function(source, data, cb)
+		local pState = Player(source).state
+
+		if
+			pState.inBobcat
+			and (not GlobalState["AntiShitlord"] or os.time() > GlobalState["AntiShitlord"] or GlobalState["BobcatInProgress"])
+			and GlobalState["Bobcat:ExtrDoor"]
+			and GlobalState["Bobcat:FrontDoor"]
+			and GlobalState["Bobcat:SecuredDoor"]
+			and GlobalState["Bobcat:VaultDoor"]
+			and not GlobalState["Bobcat:Secured"]
+			and _bobcatLootLocs[data.id] ~= nil
+		then
+			if _bcInUse.loot[data.id] == source then
+				local actualData = _bobcatLootLocs[data.id]
+				if actualData.data.type == data.type then
+					local char = exports['sandbox-characters']:FetchCharacterSource(source)
+					if char ~= nil then
+						local sid = char:GetData("SID")
+						exports['sandbox-base']:LoggerInfo("Robbery",
+							string.format("%s %s (%s) Looted Bobcat Loot Crate #%s", char:GetData("First"),
+								char:GetData("Last"), sid, data.id))
+
+						for i = 1, actualData.data.amount do
+							exports.ox_inventory:LootCustomWeightedSetWithCount(_bobcatLootTable[data.type], sid,
+								1)
+						end
+						if math.random(100) <= actualData.data.bonus then
+							exports.ox_inventory:LootCustomWeightedSetWithCount(_bobcatLootTable[data.type], sid,
+								1)
+						end
+
+						-- Only give schematic in 1 box
+						if data.id == 1 then
+							local t = deepcopy(_bobcatSchems)
+							local schem = math.random(#t)
+							while #t > 0 and exports.ox_inventory:CraftingSchematicsHasAny(sid, t[schem]) do
+								table.remove(t, schem)
+								if #t > 0 then
+									schem = math.random(#t)
+								else
+									schem = 0
+								end
+							end
+
+							if t[schem] ~= nil then
+								exports.ox_inventory:AddItem(sid, t[schem], 1, {}, 1)
+							else
+								t = deepcopy(_bobcatC2Schems)
+								schem = math.random(#t)
+								while #t > 0 and exports.ox_inventory:CraftingSchematicsHasAny(sid, t[schem]) do
+									table.remove(t, schem)
+									if #t > 0 then
+										schem = math.random(#t)
+									else
+										schem = 0
+									end
+								end
+
+								if t[schem] ~= nil then
+									exports.ox_inventory:AddItem(sid, t[schem], 1, {}, 1)
+								else
+									if not exports.ox_inventory:CraftingSchematicsHasAny(sid, "schematic_grapple_gun") then
+										exports.ox_inventory:AddItem(sid, "schematic_grapple_gun", 1, {}, 1)
+									else
+										exports.ox_inventory:AddItem(sid,
+											_bobcatCombined[math.random(#_bobcatCombined)], 1, {}, 1)
+									end
+								end
+							end
+						elseif data.id == 4 then
+							local t = deepcopy(_bobcatAttchSchems)
+							local schem = math.random(#t)
+							while #t > 0 and exports.ox_inventory:CraftingSchematicsHasAny(sid, t[schem]) do
+								table.remove(t, schem)
+								schem = math.random(#t)
+							end
+
+							if t[schem] ~= nil then
+								exports.ox_inventory:AddItem(sid, t[schem], 1, {}, 1)
+							else
+								exports.ox_inventory:AddItem(sid,
+									_bobcatAttchSchems[math.random(#_bobcatAttchSchems)], 1, {}, 1)
+							end
+						end
+
+						if not _bcGlobalReset then
+							_bcGlobalReset = os.time() + BC_RESET_TIME
+						end
+
+						_bcInUse.loot[data.id] = false
+					else
+						_bcInUse.loot[data.id] = false
+						cb(false)
+					end
+				else
+					GlobalState[string.format("Bobcat:Loot:%s", data.id)] = true
+					_bcInUse.loot[data.id] = false
+					-- Dumb cunt trying to cheat :)
+					cb(false)
+				end
+			end
+		else
+			cb(false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:Secure", function(source, data, cb)
+		local pState = Player(source).state
+		local char = exports['sandbox-characters']:FetchCharacterSource(source)
+		if char ~= nil then
+			if pState.onDuty == "police" then
+				exports['sandbox-base']:LoggerInfo("Robbery",
+					string.format("%s %s (%s) Secured Bobcat Security", char:GetData("First"), char:GetData("Last"),
+						char:GetData("SID")))
+				SecureBobcat()
+				exports['sandbox-hud']:Notification(source, "success", "Building Secure", 6000)
+			end
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:CheckFrontPC", function(source, data, cb)
+		if not _bcInUse.frontPc and not GlobalState["Bobcat:PCHacked"] then
+			_bcInUse.frontPc = source
+			cb({
+				passes = 3,
+				config = {
+					preview = 3,
+					timer = 1500,
+					limit = 15000,
+					difficulty = 4,
+					difficulty2 = 2,
+					anim = {
+						anim = "type",
+					},
+				},
+				data = {},
+			})
+		else
+			cb(false)
+		end
+	end)
+
+	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:FrontPCResults", function(source, data, cb)
+		if _bcInUse.frontPc == source and not GlobalState["Bobcat:PCHacked"] then
+			if data?.state then
+				local char = exports['sandbox-characters']:FetchCharacterSource(source)
+				if char ~= nil then
+					if exports.ox_inventory:AddItem(char:GetData("SID"), "bobcat_tracker", 1, {}, 1) then
+						_bcInUse.frontPc = false
+						GlobalState["Bobcat:PCHacked"] = true
+						cb(true)
+					else
+						cb(false)
+					end
+				else
+					cb(false)
+				end
+			else
+				cb(false)
+			end
+		else
+			cb(false)
+		end
+	end)
+
+	-- exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:CheckSecurityPC", function(source, data, cb)
+	-- 	if not _bcInUse.securityPc and not GlobalState["Bobcat:SecurityPCHacked"] then
+	-- 		_bcInUse.securityPc = source
+	-- 		cb({
+	-- 			passes = 3,
+	-- 			config = {
+	-- 				preview = 3,
+	-- 				timer = 1500,
+	-- 				limit = 15000,
+	-- 				difficulty = 4,
+	-- 				difficulty2 = 2,
+	-- 				anim = {
+	-- 					anim = "type",
+	-- 				},
+	-- 			},
+	-- 			data = {},
+	-- 		})
+	-- 	else
+	-- 		cb(false)
+	-- 	end
+	-- end)
+
+	-- exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:SecurityPCResults", function(source, data, cb)
+	-- 	if _bcInUse.frontPc == source and not GlobalState["Bobcat:SecurityPCHacked"] then
+	-- 		if data then
+	-- 			local plyr = exports['sandbox-base']:FetchSource(source)
+	-- 			if plyr ~= nil then
+	-- 				local char = plyr:GetData("Character")
+	-- 				if char ~= nil then
+	-- 					if exports.ox_inventory:AddItem(char:GetData("SID"), "moneytruck_map", 1, {}, 1) then
+	-- 						_bcInUse.securityPc = false
+	-- 						GlobalState["Bobcat:SecurityPCHacked"] = true
+	-- 					end
+	-- 				else
+	-- 					cb(false)
+	-- 				end
+	-- 			else
+	-- 				cb(false)
+	-- 			end
+	-- 		else
+	-- 			cb(false)
+	-- 		end
+	-- 	else
+	-- 		cb(false)
+	-- 	end
+	-- end)
+end)
+
+function RegisterItems()
+	exports.ox_inventory:RegisterUse("thermite", "BobcatRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -96,19 +438,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 			and #(_bobcatLocations.extrDoor.coords - myPos) <= 3.5
 		then
 			if GetGameTimer() < BC_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not GlobalState["BobcatInProgress"]) then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 					6000
 				)
 				return
 			elseif (GlobalState["Duty:police"] or 0) < BC_REQUIRED_POLICE and not GlobalState["BobcatInProgress"] then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 					6000
 				)
 				return
 			elseif GlobalState["RobberiesDisabled"] then
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporarily Disabled, Please See City Announcements",
 					6000
 				)
@@ -117,7 +459,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 			if not _bcInUse.extrDoor then
 				_bcInUse.extrDoor = source
-				if exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
+				if exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
 					exports['sandbox-base']:LoggerInfo("Robbery",
 						string.format("%s %s (%s) Started Thermiting Bobcat Exterior Door", char:GetData("First"),
 							char:GetData("Last"), char:GetData("SID")))
@@ -182,7 +524,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 					end)
 				end
 			else
-				exports['sandbox-hud']:NotifError(source, "Someone Is Already Doing This",
+				exports['sandbox-hud']:Notification(source, "error", "Someone Is Already Doing This",
 					6000)
 			end
 		else
@@ -201,19 +543,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 					if
 						GetGameTimer() < BC_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not GlobalState["BobcatInProgress"])
 					then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return
 					elseif (GlobalState["Duty:police"] or 0) < BC_REQUIRED_POLICE and not GlobalState["BobcatInProgress"] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return
 					elseif GlobalState["RobberiesDisabled"] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -222,7 +564,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if not _bcInUse.frontDoor then
 						_bcInUse.frontDoor = source
-						if exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
+						if exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
 							exports['sandbox-base']:LoggerInfo("Robbery",
 								string.format("%s %s (%s) Started Thermiting Bobcat Interior Door", char:GetData("First"),
 									char:GetData("Last"), char:GetData("SID")))
@@ -296,7 +638,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end)
 						end
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Someone Is Already Doing This", 6000)
 					end
 				end
@@ -310,19 +652,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 							if
 								GetGameTimer() < BCT_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not entState.robberyInProgress)
 							then
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 									6000
 								)
 								return
 							elseif (GlobalState["Duty:police"] or 0) < BCT_REQUIRED_POLICE and not entState.robberyInProgress then
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 									6000
 								)
 								return
 							elseif GlobalState["RobberiesDisabled"] then
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Temporarily Disabled, Please See City Announcements",
 									6000
 								)
@@ -333,7 +675,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 								entState.robberyInProgress = source
 								if not entState.wasThermited then
 									if
-										exports['sandbox-inventory']:RemoveSlot(
+										exports.ox_inventory:RemoveSlot(
 											itemData.Owner,
 											itemData.Name,
 											1,
@@ -467,12 +809,12 @@ AddEventHandler("Robbery:Server:Setup", function()
 											end)
 									end
 								else
-									exports['sandbox-hud']:NotifError(source,
+									exports['sandbox-hud']:Notification(source, "error",
 										"This Truck Has Already Been Hit",
 										6000)
 								end
 							else
-								exports['sandbox-hud']:NotifError(source,
+								exports['sandbox-hud']:Notification(source, "error",
 									"Someone Is Already Doing This", 6000)
 							end
 						end
@@ -481,7 +823,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("bobcat_charge", "BobcatRobbery", function(source, itemData)
+	exports.ox_inventory:RegisterUse("bobcat_charge", "BobcatRobbery", function(source, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -501,19 +843,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local myPos = GetEntityCoords(GetPlayerPed(source))
 				if #(_bobcatLocations.vaultDoor.coords - myPos) <= 3.5 then
 					if GetGameTimer() < BC_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not GlobalState["BobcatInProgress"]) then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return
 					elseif (GlobalState["Duty:police"] or 0) < BC_REQUIRED_POLICE and not GlobalState["BobcatInProgress"] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return
 					elseif GlobalState["RobberiesDisabled"] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -522,7 +864,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 					if not _bcInUse.useC4 then
 						_bcInUse.useC4 = source
-						if exports['sandbox-inventory']:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
+						if exports.ox_inventory:RemoveSlot(itemData.Owner, itemData.Name, 1, itemData.Slot, itemData.invType) then
 							exports['sandbox-base']:LoggerInfo("Robbery",
 								string.format("%s %s (%s) Started Breaching Bobcat Vault", char:GetData("First"),
 									char:GetData("Last"), char:GetData("SID")))
@@ -568,7 +910,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 							end)
 						end
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Someone Else Is Already Doing A Thing",
 							6000
 						)
@@ -578,7 +920,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("blue_laptop", "BobcatRobbery", function(source, slot, itemData)
+	exports.ox_inventory:RegisterUse("blue_laptop", "BobcatRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
 
@@ -598,19 +940,19 @@ AddEventHandler("Robbery:Server:Setup", function()
 			then
 				if #(_bobcatLocations.securedDoor.coords - myCoords) <= 1.5 then
 					if GetGameTimer() < BC_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not GlobalState["BobcatInProgress"]) then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
 							6000
 						)
 						return
 					elseif (GlobalState["Duty:police"] or 0) < BC_REQUIRED_POLICE and not GlobalState["BobcatInProgress"] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
 							6000
 						)
 						return
 					elseif GlobalState["RobberiesDisabled"] then
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Temporarily Disabled, Please See City Announcements",
 							6000
 						)
@@ -652,9 +994,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 									skipLeaveVeh = true,
 								}, function() end)
 								exports['sandbox-doors']:SetLock("bobcat_inner", false)
-								exports['sandbox-hud']:NotifSuccess(source,
+								exports['sandbox-hud']:Notification(source, "success",
 									"Doorlock Disengaged", 6000)
-								exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+								exports.ox_inventory:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
 
 								if not _bcGlobalReset then
 									_bcGlobalReset = os.time() + BC_RESET_TIME
@@ -668,9 +1010,9 @@ AddEventHandler("Robbery:Server:Setup", function()
 
 								local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
 								if (os.time() - itemData.durability >= newValue) then
-									exports['sandbox-inventory']:RemoveId(char:GetData("SID"), 1, slot)
+									exports.ox_inventory:RemoveId(char:GetData("SID"), 1, slot)
 								else
-									exports['sandbox-inventory']:SetItemCreateDate(
+									exports.ox_inventory:SetItemCreateDate(
 										slot.id,
 										newValue
 									)
@@ -679,14 +1021,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 							_bcInUse.securedDoor = false
 						end)
 					else
-						exports['sandbox-hud']:NotifError(source,
+						exports['sandbox-hud']:Notification(source, "error",
 							"Someone Else Is Already Doing A Thing",
 							6000
 						)
 					end
 				end
 			else
-				exports['sandbox-hud']:NotifError(source,
+				exports['sandbox-hud']:Notification(source, "error",
 					"Temporary Emergency Systems Enabled, Check Beck In A Bit",
 					6000
 				)
@@ -694,7 +1036,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("gps_tracker", "BobcatRobbery", function(source, slot, itemData)
+	exports.ox_inventory:RegisterUse("gps_tracker", "BobcatRobbery", function(source, slot, itemData)
 		if _truckSpawnEnabled then
 			if #_moneyTruckSpawns == 0 then
 				_moneyTruckSpawns = table.copy(_spawnHoldingShit)
@@ -704,7 +1046,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if char ~= nil then
 				local pState = Player(source).state
 
-				exports['sandbox-hud']:NotifInfo(source,
+				exports['sandbox-hud']:Notification(source, "info",
 					"Locating Truck...",
 					6000
 				)
@@ -713,7 +1055,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local netId = SpawnBobcatTruck(m)
 
 				if not netId then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Unable To Locate A Truck",
 						6000
 					)
@@ -723,8 +1065,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 							char:GetData("Last"), char:GetData("SID")))
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
 						if r then
-							exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
-							exports['sandbox-hud']:NotifSuccess(source,
+							exports.ox_inventory:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+							exports['sandbox-hud']:Notification(source, "success",
 								"A Truck Has Been Marked On Your GPS",
 								6000
 							)
@@ -733,14 +1075,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 				end
 			end
 		else
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"No Trucks Currently Available, Try Again Later",
 				6000
 			)
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("fleeca_tracker", "BobcatRobbery", function(source, slot, itemData)
+	exports.ox_inventory:RegisterUse("fleeca_tracker", "BobcatRobbery", function(source, slot, itemData)
 		if _truckSpawnEnabled then
 			if #_moneyTruckSpawns == 0 then
 				_moneyTruckSpawns = table.copy(_spawnHoldingShit)
@@ -750,7 +1092,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if char ~= nil then
 				local pState = Player(source).state
 
-				exports['sandbox-hud']:NotifInfo(source,
+				exports['sandbox-hud']:Notification(source, "info",
 					"Locating Truck...",
 					6000
 				)
@@ -758,7 +1100,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local netId = SpawnBobcatTruck(`stockade`)
 
 				if not netId then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Unable To Locate A Truck",
 						6000
 					)
@@ -768,8 +1110,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 							char:GetData("Last"), char:GetData("SID")))
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
 						if r then
-							exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
-							exports['sandbox-hud']:NotifSuccess(source,
+							exports.ox_inventory:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+							exports['sandbox-hud']:Notification(source, "success",
 								"A Truck Has Been Marked On Your GPS",
 								6000
 							)
@@ -778,14 +1120,14 @@ AddEventHandler("Robbery:Server:Setup", function()
 				end
 			end
 		else
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"No Trucks Currently Available, Try Again Later",
 				6000
 			)
 		end
 	end)
 
-	exports['sandbox-inventory']:RegisterUse("bobcat_tracker", "BobcatRobbery", function(source, slot, itemData)
+	exports.ox_inventory:RegisterUse("bobcat_tracker", "BobcatRobbery", function(source, slot, itemData)
 		if _truckSpawnEnabled then
 			if #_moneyTruckSpawns == 0 then
 				_moneyTruckSpawns = table.copy(_spawnHoldingShit)
@@ -795,7 +1137,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 			if char ~= nil then
 				local pState = Player(source).state
 
-				exports['sandbox-hud']:NotifInfo(source,
+				exports['sandbox-hud']:Notification(source, "info",
 					"Locating Truck...",
 					6000
 				)
@@ -803,7 +1145,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				local netId = SpawnBobcatTruck(`stockade`)
 
 				if not netId then
-					exports['sandbox-hud']:NotifError(source,
+					exports['sandbox-hud']:Notification(source, "error",
 						"Unable To Locate A Truck",
 						6000
 					)
@@ -813,8 +1155,8 @@ AddEventHandler("Robbery:Server:Setup", function()
 							char:GetData("Last"), char:GetData("SID")))
 					exports["sandbox-base"]:ClientCallback(source, "Robbery:MoneyTruck:MarkTruck", netId, function(r)
 						if r then
-							exports['sandbox-inventory']:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
-							exports['sandbox-hud']:NotifSuccess(source,
+							exports.ox_inventory:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, 1)
+							exports['sandbox-hud']:Notification(source, "success",
 								"A Truck Has Been Marked On Your GPS",
 								6000
 							)
@@ -823,351 +1165,18 @@ AddEventHandler("Robbery:Server:Setup", function()
 				end
 			end
 		else
-			exports['sandbox-hud']:NotifError(source,
+			exports['sandbox-hud']:Notification(source, "error",
 				"No Trucks Currently Available, Try Again Later",
 				6000
 			)
 		end
 	end)
+end
 
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:PickupC4", function(source, data, cb)
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			local pState = Player(source).state
-
-			if pState.inBobcat then
-				if
-					(
-						not GlobalState["AntiShitlord"]
-						or os.time() > GlobalState["AntiShitlord"]
-						or GlobalState["BobcatInProgress"]
-					)
-					and not GlobalState["BobcatC4"]
-					and GlobalState["Bobcat:ExtrDoor"]
-					and GlobalState["Bobcat:FrontDoor"]
-					and GlobalState["Bobcat:SecuredDoor"]
-					and not GlobalState["Bobcat:Secured"]
-				then
-					if GetGameTimer() < BC_SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not GlobalState["BobcatInProgress"]) then
-						exports['sandbox-hud']:NotifError(source,
-							"You Notice The Door Is Barricaded For A Storm, Maybe Check Back Later",
-							6000
-						)
-						return
-					elseif (GlobalState["Duty:police"] or 0) < BC_REQUIRED_POLICE and not GlobalState["BobcatInProgress"] then
-						exports['sandbox-hud']:NotifError(source,
-							"Enhanced Security Measures Enabled, Maybe Check Back Later When Things Feel Safer",
-							6000
-						)
-						return
-					elseif GlobalState["RobberiesDisabled"] then
-						exports['sandbox-hud']:NotifError(source,
-							"Temporarily Disabled, Please See City Announcements",
-							6000
-						)
-						return
-					end
-
-					if not _bcInUse.grabC4 then
-						_bcInUse.grabC4 = source
-						if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "bobcat_charge", 1, {}, 1) then
-							GlobalState["BobcatC4"] = char:GetData("SID")
-							GlobalState["BobcatInProgress"] = true
-
-							if not _bcGlobalReset then
-								_bcGlobalReset = os.time() + BC_RESET_TIME
-							end
-						end
-						_bcInUse.grabC4 = false
-					else
-						exports['sandbox-hud']:NotifError(source,
-							"Someone Else Is Already Doing A Thing",
-							6000
-						)
-					end
-				end
-			end
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:DoThermiteFx", function(source, data, cb)
-		TriggerClientEvent("Robbery:Client:ThermiteFx", -1, data.delay or 13000, data.netId)
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:DoBombFx", function(source, data, cb)
-		TriggerClientEvent("Robbery:Client:BombFx", source, data)
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:DoDetCordFx", function(source, data, cb)
-		TriggerClientEvent("Robbery:Client:DetCordFx", -1, data)
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:DoDetCordFx", function(source, data, cb)
-		TriggerClientEvent("Robbery:Client:DetCordFx", -1, data)
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:CheckLoot", function(source, data, cb)
-		local pState = Player(source).state
-
-		if
-			pState.inBobcat
-			and (not GlobalState["AntiShitlord"] or os.time() > GlobalState["AntiShitlord"] or GlobalState["BobcatInProgress"])
-			and GlobalState["Bobcat:ExtrDoor"]
-			and GlobalState["Bobcat:FrontDoor"]
-			and GlobalState["Bobcat:SecuredDoor"]
-			and GlobalState["Bobcat:VaultDoor"]
-			and not GlobalState["Bobcat:Secured"]
-			and not GlobalState[string.format("Bobcat:Loot:%s", data.id)]
-			and _bobcatLootLocs[data.id] ~= nil
-		then
-			if not _bcInUse.loot[data.id] then
-				GlobalState[string.format("Bobcat:Loot:%s", data.id)] = true
-				_bcInUse.loot[data.id] = source
-				cb(true)
-			else
-				cb(false)
-			end
-		else
-			cb(false)
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:CancelLoot", function(source, data, cb)
-		local pState = Player(source).state
-
-		if
-			pState.inBobcat
-			and (not GlobalState["AntiShitlord"] or os.time() > GlobalState["AntiShitlord"] or GlobalState["BobcatInProgress"])
-			and GlobalState["Bobcat:ExtrDoor"]
-			and GlobalState["Bobcat:FrontDoor"]
-			and GlobalState["Bobcat:SecuredDoor"]
-			and GlobalState["Bobcat:VaultDoor"]
-			and _bobcatLootLocs[data.id] ~= nil
-		then
-			if _bcInUse.loot[data.id] == source then
-				GlobalState[string.format("Bobcat:Loot:%s", data.id)] = false
-				_bcInUse.loot[data.id] = false
-				cb(true)
-			else
-				cb(false)
-			end
-		else
-			cb(false)
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:Loot", function(source, data, cb)
-		local pState = Player(source).state
-
-		if
-			pState.inBobcat
-			and (not GlobalState["AntiShitlord"] or os.time() > GlobalState["AntiShitlord"] or GlobalState["BobcatInProgress"])
-			and GlobalState["Bobcat:ExtrDoor"]
-			and GlobalState["Bobcat:FrontDoor"]
-			and GlobalState["Bobcat:SecuredDoor"]
-			and GlobalState["Bobcat:VaultDoor"]
-			and not GlobalState["Bobcat:Secured"]
-			and _bobcatLootLocs[data.id] ~= nil
-		then
-			if _bcInUse.loot[data.id] == source then
-				local actualData = _bobcatLootLocs[data.id]
-				if actualData.data.type == data.type then
-					local char = exports['sandbox-characters']:FetchCharacterSource(source)
-					if char ~= nil then
-						local sid = char:GetData("SID")
-						exports['sandbox-base']:LoggerInfo("Robbery",
-							string.format("%s %s (%s) Looted Bobcat Loot Crate #%s", char:GetData("First"),
-								char:GetData("Last"), sid, data.id))
-
-						for i = 1, actualData.data.amount do
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_bobcatLootTable[data.type], sid,
-								1)
-						end
-						if math.random(100) <= actualData.data.bonus then
-							exports['sandbox-inventory']:LootCustomWeightedSetWithCount(_bobcatLootTable[data.type], sid,
-								1)
-						end
-
-						-- Only give schematic in 1 box
-						if data.id == 1 then
-							local t = deepcopy(_bobcatSchems)
-							local schem = math.random(#t)
-							while #t > 0 and exports['sandbox-inventory']:CraftingSchematicsHasAny(sid, t[schem]) do
-								table.remove(t, schem)
-								if #t > 0 then
-									schem = math.random(#t)
-								else
-									schem = 0
-								end
-							end
-
-							if t[schem] ~= nil then
-								exports['sandbox-inventory']:AddItem(sid, t[schem], 1, {}, 1)
-							else
-								t = deepcopy(_bobcatC2Schems)
-								schem = math.random(#t)
-								while #t > 0 and exports['sandbox-inventory']:CraftingSchematicsHasAny(sid, t[schem]) do
-									table.remove(t, schem)
-									if #t > 0 then
-										schem = math.random(#t)
-									else
-										schem = 0
-									end
-								end
-
-								if t[schem] ~= nil then
-									exports['sandbox-inventory']:AddItem(sid, t[schem], 1, {}, 1)
-								else
-									if not exports['sandbox-inventory']:CraftingSchematicsHasAny(sid, "schematic_grapple_gun") then
-										exports['sandbox-inventory']:AddItem(sid, "schematic_grapple_gun", 1, {}, 1)
-									else
-										exports['sandbox-inventory']:AddItem(sid,
-											_bobcatCombined[math.random(#_bobcatCombined)], 1, {}, 1)
-									end
-								end
-							end
-						elseif data.id == 4 then
-							local t = deepcopy(_bobcatAttchSchems)
-							local schem = math.random(#t)
-							while #t > 0 and exports['sandbox-inventory']:CraftingSchematicsHasAny(sid, t[schem]) do
-								table.remove(t, schem)
-								schem = math.random(#t)
-							end
-
-							if t[schem] ~= nil then
-								exports['sandbox-inventory']:AddItem(sid, t[schem], 1, {}, 1)
-							else
-								exports['sandbox-inventory']:AddItem(sid,
-									_bobcatAttchSchems[math.random(#_bobcatAttchSchems)], 1, {}, 1)
-							end
-						end
-
-						if not _bcGlobalReset then
-							_bcGlobalReset = os.time() + BC_RESET_TIME
-						end
-
-						_bcInUse.loot[data.id] = false
-					else
-						_bcInUse.loot[data.id] = false
-						cb(false)
-					end
-				else
-					GlobalState[string.format("Bobcat:Loot:%s", data.id)] = true
-					_bcInUse.loot[data.id] = false
-					-- Dumb cunt trying to cheat :)
-					cb(false)
-				end
-			end
-		else
-			cb(false)
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:Secure", function(source, data, cb)
-		local pState = Player(source).state
-		local char = exports['sandbox-characters']:FetchCharacterSource(source)
-		if char ~= nil then
-			if pState.onDuty == "police" then
-				exports['sandbox-base']:LoggerInfo("Robbery",
-					string.format("%s %s (%s) Secured Bobcat Security", char:GetData("First"), char:GetData("Last"),
-						char:GetData("SID")))
-				SecureBobcat()
-				exports['sandbox-hud']:NotifSuccess(source, "Building Secure", 6000)
-			end
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:CheckFrontPC", function(source, data, cb)
-		if not _bcInUse.frontPc and not GlobalState["Bobcat:PCHacked"] then
-			_bcInUse.frontPc = source
-			cb({
-				passes = 3,
-				config = {
-					preview = 3,
-					timer = 1500,
-					limit = 15000,
-					difficulty = 4,
-					difficulty2 = 2,
-					anim = {
-						anim = "type",
-					},
-				},
-				data = {},
-			})
-		else
-			cb(false)
-		end
-	end)
-
-	exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:FrontPCResults", function(source, data, cb)
-		if _bcInUse.frontPc == source and not GlobalState["Bobcat:PCHacked"] then
-			if data?.state then
-				local char = exports['sandbox-characters']:FetchCharacterSource(source)
-				if char ~= nil then
-					if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "bobcat_tracker", 1, {}, 1) then
-						_bcInUse.frontPc = false
-						GlobalState["Bobcat:PCHacked"] = true
-						cb(true)
-					else
-						cb(false)
-					end
-				else
-					cb(false)
-				end
-			else
-				cb(false)
-			end
-		else
-			cb(false)
-		end
-	end)
-
-	-- exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:CheckSecurityPC", function(source, data, cb)
-	-- 	if not _bcInUse.securityPc and not GlobalState["Bobcat:SecurityPCHacked"] then
-	-- 		_bcInUse.securityPc = source
-	-- 		cb({
-	-- 			passes = 3,
-	-- 			config = {
-	-- 				preview = 3,
-	-- 				timer = 1500,
-	-- 				limit = 15000,
-	-- 				difficulty = 4,
-	-- 				difficulty2 = 2,
-	-- 				anim = {
-	-- 					anim = "type",
-	-- 				},
-	-- 			},
-	-- 			data = {},
-	-- 		})
-	-- 	else
-	-- 		cb(false)
-	-- 	end
-	-- end)
-
-	-- exports["sandbox-base"]:RegisterServerCallback("Robbery:Bobcat:SecurityPCResults", function(source, data, cb)
-	-- 	if _bcInUse.frontPc == source and not GlobalState["Bobcat:SecurityPCHacked"] then
-	-- 		if data then
-	-- 			local plyr = exports['sandbox-base']:FetchSource(source)
-	-- 			if plyr ~= nil then
-	-- 				local char = plyr:GetData("Character")
-	-- 				if char ~= nil then
-	-- 					if exports['sandbox-inventory']:AddItem(char:GetData("SID"), "moneytruck_map", 1, {}, 1) then
-	-- 						_bcInUse.securityPc = false
-	-- 						GlobalState["Bobcat:SecurityPCHacked"] = true
-	-- 					end
-	-- 				else
-	-- 					cb(false)
-	-- 				end
-	-- 			else
-	-- 				cb(false)
-	-- 			end
-	-- 		else
-	-- 			cb(false)
-	-- 		end
-	-- 	else
-	-- 		cb(false)
-	-- 	end
-	-- end)
+RegisterNetEvent('ox_inventory:ready', function()
+	if GetResourceState(GetCurrentResourceName()) == 'started' then
+		RegisterItems()
+	end
 end)
 
 AddEventHandler("Characters:Server:PlayerLoggedOut", RemoveC4)
@@ -1238,7 +1247,7 @@ end
 
 function RemoveC4(source, cData)
 	if cData ~= nil then
-		exports['sandbox-inventory']:RemoveAll(cData.SID, 1, "bobcat_charge")
+		exports.ox_inventory:RemoveAll(cData.SID, 1, "bobcat_charge")
 		if GlobalState["BobcatC4"] == cData.SID then
 			GlobalState["BobcatC4"] = false
 		end

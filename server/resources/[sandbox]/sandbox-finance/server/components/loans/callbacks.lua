@@ -1,13 +1,16 @@
 function GetCharactersLoans(stateId)
     local p = promise.new()
 
-    exports['sandbox-base']:DatabaseGameFind({
-        collection = 'loans',
-        query = {
-            SID = stateId,
-        }
-    }, function(success, results)
-        if success and #results > 0 then
+    exports.oxmysql:execute('SELECT * FROM loans WHERE SID = ?', { stateId }, function(results)
+        if results and #results > 0 then
+            for k, v in ipairs(results) do
+                if v.paymentHistory then
+                    v.paymentHistory = json.decode(v.paymentHistory)
+                end
+                if v.terms then
+                    v.terms = json.decode(v.terms)
+                end
+            end
             p:resolve(results)
         else
             p:resolve({})
