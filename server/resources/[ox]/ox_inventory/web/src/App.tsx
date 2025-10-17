@@ -166,14 +166,20 @@ const App: React.FC = () => {
 
     setImagePath(imagepath);
     dispatch(setupInventory({ leftInventory }));
-  });
 
-  fetchNui('uiLoaded', {});
+    fetchNui('uiLoaded', {}).catch((error) => {
+      console.warn('Failed to call uiLoaded:', error);
+    });
 
-  fetchNui('fetchSlotRestrictions', {}).then((restrictions: any) => {
-    if (restrictions && typeof restrictions === 'object') {
-      setUtilitySlotRestrictions(restrictions);
-    }
+    fetchNui('fetchSlotRestrictions', {})
+      .then((restrictions: any) => {
+        if (restrictions && typeof restrictions === 'object') {
+          setUtilitySlotRestrictions(restrictions);
+        }
+      })
+      .catch((error) => {
+        console.warn('Failed to fetch slot restrictions:', error);
+      });
   });
 
   useNuiEvent('closeInventory', () => {

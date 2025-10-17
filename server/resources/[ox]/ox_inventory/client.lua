@@ -1502,8 +1502,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
         })
     end
 
-    while not client.uiLoaded do Wait(50) end
-
     SendNUIMessage({
         action = 'init',
         data = {
@@ -1518,6 +1516,8 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
             imagepath = client.imagepath
         }
     })
+
+    while not client.uiLoaded do Wait(50) end
 
     PlayerData.loaded = true
 
