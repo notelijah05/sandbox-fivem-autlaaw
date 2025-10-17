@@ -4,6 +4,7 @@ require 'modules.bridge.server'
 require 'modules.crafting.server'
 require 'modules.shops.server'
 require 'modules.pefcl.server'
+require 'modules.slotRestrictions.server'
 
 if GetConvar('inventory:versioncheck', 'true') == 'true' then
     lib.versionCheck('communityox/ox_inventory')
@@ -58,8 +59,8 @@ function server.setPlayerInventory(player, data)
                         description = item.description,
                         metadata = v.metadata,
                         stack = item.stack,
-                        close = item
-                            .close
+                        close = item.close,
+                        rarity = item.rarity
                     }
                 end
             end
@@ -82,6 +83,63 @@ end
 
 exports('setPlayerInventory', server.setPlayerInventory)
 AddEventHandler('ox_inventory:setPlayerInventory', server.setPlayerInventory)
+
+exports('getUtilitySlotItem', function(source, slot)
+    if not source or not slot or slot < 1 or slot > 9 then
+        return nil
+    end
+
+    local inventory = Inventory(source)
+    if not inventory then
+        return nil
+    end
+
+    local item = inventory.items[slot]
+    if item and item.name then
+        return {
+            name = item.name,
+            count = item.count,
+            slot = item.slot,
+            weight = item.weight,
+            metadata = item.metadata,
+            durability = item.durability,
+            rarity = item.rarity or item.metadata?.rarity
+        }
+    end
+
+    return nil
+end)
+
+exports('getAllUtilitySlots', function(source)
+    if not source then
+        return {}
+    end
+
+    local inventory = Inventory(source)
+    if not inventory then
+        return {}
+    end
+
+    local utilitySlots = {}
+    for slot = 1, 9 do
+        local item = inventory.items[slot]
+        if item and item.name then
+            utilitySlots[slot] = {
+                name = item.name,
+                count = item.count,
+                slot = item.slot,
+                weight = item.weight,
+                metadata = item.metadata,
+                durability = item.durability,
+                rarity = item.rarity or item.metadata?.rarity
+            }
+        else
+            utilitySlots[slot] = nil
+        end
+    end
+
+    return utilitySlots
+end)
 
 local registeredDumpsters = {}
 

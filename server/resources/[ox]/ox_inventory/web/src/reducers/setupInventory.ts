@@ -51,6 +51,28 @@ export const setupInventoryReducer: CaseReducer<
       }),
     };
 
+  if (leftInventory) {
+    state.utilityInventory = {
+      ...state.utilityInventory,
+      id: leftInventory.id,
+      type: leftInventory.type,
+      items: Array.from(Array(9), (_, index) => {
+        const item = Object.values(leftInventory.items).find((item) => item?.slot === index + 1) || {
+          slot: index + 1,
+        };
+
+        if (!item.name) return item;
+
+        if (typeof Items[item.name] === 'undefined') {
+          getItemData(item.name);
+        }
+
+        item.durability = itemDurability(item.metadata, curTime);
+        return item;
+      }),
+    };
+  }
+
   state.shiftPressed = false;
   state.isBusy = false;
 };

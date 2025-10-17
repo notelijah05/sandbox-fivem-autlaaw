@@ -8,15 +8,23 @@ import { useExitListener } from '../../hooks/useExitListener';
 import type { Inventory as InventoryProps } from '../../typings';
 import RightInventory from './RightInventory';
 import LeftInventory from './LeftInventory';
+import UtilityInventory from './UtilityInventory';
+import SectionIndicator from './SectionIndicator';
+import CloseButton from './CloseButton';
 import Tooltip from '../utils/Tooltip';
 import { closeTooltip } from '../../store/tooltip';
 import InventoryContext from './InventoryContext';
 import { closeContextMenu } from '../../store/contextMenu';
 import Fade from '../utils/transitions/Fade';
+import { useAppSelector } from '../../store';
+import { selectCurrentView, selectRightInventory } from '../../store/inventory';
+import CraftingInventory from './CraftingInventory';
 
 const Inventory: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = useState(false);
   const dispatch = useAppDispatch();
+  const currentView = useAppSelector(selectCurrentView);
+  const rightInventory = useAppSelector(selectRightInventory);
 
   useNuiEvent<boolean>('setInventoryVisible', setInventoryVisible);
   useNuiEvent<false>('closeInventory', () => {
@@ -44,9 +52,19 @@ const Inventory: React.FC = () => {
     <>
       <Fade in={inventoryVisible}>
         <div className="inventory-wrapper">
+          <CloseButton />
           <LeftInventory />
           <InventoryControl />
-          <RightInventory />
+          {rightInventory.type === 'crafting' && currentView === 'normal' ? (
+            <CraftingInventory />
+          ) : rightInventory.type === 'crafting' && currentView === 'utility' ? (
+            <UtilityInventory />
+          ) : currentView === 'normal' ? (
+            <RightInventory />
+          ) : (
+            <UtilityInventory />
+          )}
+          <SectionIndicator />
           <Tooltip />
           <InventoryContext />
         </div>

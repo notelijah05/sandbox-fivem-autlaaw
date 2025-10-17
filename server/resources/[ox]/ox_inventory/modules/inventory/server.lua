@@ -387,8 +387,19 @@ function Inventory.SetSlot(inv, item, count, metadata, slot)
         TriggerClientEvent('ox_inventory:itemNotify', inv.id, { currentSlot, 'ui_removed', currentSlot.count })
         currentSlot = nil
     else
-        currentSlot = { name = item.name, label = item.label, weight = item.weight, slot = slot, count = newCount, description =
-        item.description, metadata = metadata, stack = item.stack, close = item.close }
+        currentSlot = {
+            name = item.name,
+            label = item.label,
+            weight = item.weight,
+            slot = slot,
+            count = newCount,
+            description =
+                item.description,
+            metadata = metadata,
+            stack = item.stack,
+            close = item.close,
+            rarity = item.rarity
+        }
         local slotWeight = Inventory.SlotWeight(item, currentSlot)
         currentSlot.weight = slotWeight
         newWeight += slotWeight
@@ -503,7 +514,7 @@ local function hasActiveInventory(playerId, owner)
                     playerName = GetPlayerName(activePlayer),
                     fivem = GetPlayerIdentifierByType(activePlayer, 'fivem'),
                     license = GetPlayerIdentifierByType(activePlayer, 'license2') or
-                    GetPlayerIdentifierByType(activePlayer, 'license'),
+                        GetPlayerIdentifierByType(activePlayer, 'license'),
                 }, {
                     indent = true,
                     sort_keys = true
@@ -546,7 +557,7 @@ RegisterCommand('clearActiveIdentifier', function(source, args)
             playerName = GetPlayerName(activePlayer),
             fivem = GetPlayerIdentifierByType(activePlayer, 'fivem'),
             license = GetPlayerIdentifierByType(activePlayer, 'license2') or
-            GetPlayerIdentifierByType(activePlayer, 'license'),
+                GetPlayerIdentifierByType(activePlayer, 'license'),
         }, {
             indent = true,
             sort_keys = true
@@ -800,8 +811,19 @@ local function generateItems(inv, invType, items)
             local metadata, count = Items.Metadata(inv, item, v[3] or {}, v[2])
             local weight = Inventory.SlotWeight(item, { count = count, metadata = metadata })
             totalWeight = totalWeight + weight
-            returnData[i] = { name = item.name, label = item.label, weight = weight, slot = i, count = count, description =
-            item.description, metadata = metadata, stack = item.stack, close = item.close }
+            returnData[i] = {
+                name = item.name,
+                label = item.label,
+                weight = weight,
+                slot = i,
+                count = count,
+                description =
+                    item.description,
+                metadata = metadata,
+                stack = item.stack,
+                close = item.close,
+                rarity = item.rarity
+            }
         end
     end
 
@@ -849,8 +871,19 @@ function Inventory.Load(id, invType, owner)
                 v.metadata = Items.CheckMetadata(v.metadata or {}, item, v.name, ostime)
                 local slotWeight = Inventory.SlotWeight(item, v)
                 weight += slotWeight
-                returnData[v.slot] = { name = item.name, label = item.label, weight = slotWeight, slot = v.slot, count =
-                v.count, description = item.description, metadata = v.metadata, stack = item.stack, close = item.close }
+                returnData[v.slot] = {
+                    name = item.name,
+                    label = item.label,
+                    weight = slotWeight,
+                    slot = v.slot,
+                    count =
+                        v.count,
+                    description = item.description,
+                    metadata = v.metadata,
+                    stack = item.stack,
+                    close = item.close,
+                    rarity = item.rarity
+                }
             end
         end
     end
@@ -1056,12 +1089,12 @@ function Inventory.SetMetadata(inv, slotId, metadata)
         if Utils.IsValidImageUrl(metadata.imageurl) then
             Utils.DiscordEmbed('Valid image URL',
                 ('Updated item "%s" (%s) with valid url in "%s".\n%s\nid: %s\nowner: %s'):format(
-                metadata.label or slot.label, slot.name, inv.label, metadata.imageurl, inv.id, inv.owner,
+                    metadata.label or slot.label, slot.name, inv.label, metadata.imageurl, inv.id, inv.owner,
                     metadata.imageurl), metadata.imageurl, 65280)
         else
             Utils.DiscordEmbed('Invalid image URL',
                 ('Updated item "%s" (%s) with invalid url in "%s".\n%s\nid: %s\nowner: %s'):format(
-                metadata.label or slot.label, slot.name, inv.label, metadata.imageurl, inv.id, inv.owner,
+                    metadata.label or slot.label, slot.name, inv.label, metadata.imageurl, inv.id, inv.owner,
                     metadata.imageurl), metadata.imageurl, 16711680)
             metadata.imageurl = nil
         end
@@ -1156,7 +1189,8 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
         local items = inv.items
         slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
 
-        for i = 1, inv.slots do
+        local startSlot = (inv.type == 'player') and 10 or 1
+        for i = startSlot, inv.slots do
             local slotData = items[i]
 
             if item.stack and slotData ~= nil and slotData.name == item.name and table.matches(slotData.metadata, slotMetadata) then
@@ -1175,6 +1209,31 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
                 slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
             elseif not toSlot and not slotData then
                 toSlot = i
+            end
+        end
+
+        if not toSlot and inv.type == 'player' then
+            for i = 1, 9 do
+                local slotData = items[i]
+
+                if item.stack and slotData ~= nil and slotData.name == item.name and table.matches(slotData.metadata, slotMetadata) then
+                    toSlot = i
+                    break
+                elseif not item.stack and not slotData then
+                    if not toSlot then toSlot = {} end
+
+                    toSlot[#toSlot + 1] = { slot = i, count = slotCount, metadata = slotMetadata }
+
+                    if count == slotCount then
+                        break
+                    end
+
+                    count -= 1
+                    slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {},
+                        count)
+                elseif not toSlot and not slotData then
+                    toSlot = i
+                end
             end
         end
     end
@@ -1763,7 +1822,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
             if toData and toData.metadata.container and fromInventory.type == 'container' then return false end
 
             local container, containerItem = (not sameInventory and playerInventory.containerSlot) and
-            (fromInventory.type == 'container' and fromInventory or toInventory)
+                (fromInventory.type == 'container' and fromInventory or toInventory)
 
             if container then
                 containerItem = playerInventory.items[playerInventory.containerSlot]
@@ -2088,9 +2147,20 @@ function Inventory.Return(source)
             if item then
                 local weight = Inventory.SlotWeight(item, data)
                 totalWeight = totalWeight + weight
-                inventory[data.slot] = { name = data.name, label = item.label, weight = weight, slot = data.slot, count =
-                data.count, description = item.description, metadata = data.metadata, stack = item.stack, close = item
-                .close }
+                inventory[data.slot] = {
+                    name = data.name,
+                    label = item.label,
+                    weight = weight,
+                    slot = data.slot,
+                    count =
+                        data.count,
+                    description = item.description,
+                    metadata = data.metadata,
+                    stack = item.stack,
+                    close = item
+                        .close,
+                    rarity = item.rarity
+                }
             end
         end
     end

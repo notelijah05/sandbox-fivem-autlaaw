@@ -28,9 +28,22 @@ const ItemNotification = React.forwardRef(
   (props: { item: ItemNotificationProps; style?: React.CSSProperties }, ref: React.ForwardedRef<HTMLDivElement>) => {
     const slotItem = props.item.item;
 
+    const getNotificationType = (text: string) => {
+      if (text.toLowerCase().includes('added')) return 'added';
+      if (text.toLowerCase().includes('removed')) return 'removed';
+      return 'neutral';
+    };
+
+    const getRarityClass = () => {
+      const rarity = slotItem.metadata?.rarity || slotItem.rarity || Items[slotItem.name]?.rarity;
+      return rarity ? `rarity-${rarity}` : '';
+    };
+
     return (
       <div
-        className="item-notification-item-box"
+        className={`item-notification-item-box ${getRarityClass()}`}
+        data-notification-type={getNotificationType(props.item.text)}
+        data-durability={slotItem.durability}
         style={{
           backgroundImage: `url(${getItemUrl(slotItem) || 'none'}`,
           ...props.style,
@@ -70,7 +83,26 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
   };
 
   useNuiEvent<[item: SlotWithItem, text: string, count?: number]>('itemNotify', ([item, text, count]) => {
-    add({ item: item, text: count ? `${Locale[text]} ${count}x` : `${Locale[text]}` });
+    // Fallback text for notifications, so they can be tested / used in web dev
+    const fallbackText: { [key: string]: string } = {
+      ui_added: 'Added',
+      ui_removed: 'Removed',
+      ui_equipped: 'Equipped',
+      ui_unequipped: 'Unequipped',
+      ui_holstered: 'Holstered',
+      ui_used: 'Used',
+      ui_broken: 'Broken',
+      added: 'Added',
+      removed: 'Removed',
+      equipped: 'Equipped',
+      unequipped: 'Unequipped',
+      holstered: 'Holstered',
+      used: 'Used',
+      broken: 'Broken',
+    };
+
+    const displayText = Locale[text] || fallbackText[text] || text;
+    add({ item: item, text: count ? `${displayText} ${count}x` : `${displayText}` });
   });
 
   return (

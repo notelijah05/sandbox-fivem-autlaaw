@@ -119,7 +119,7 @@ AddEventHandler("Characters:Client:Updated", function(key)
 	if
 		key == "States"
 		and LocalPlayer.state.phoneOpen
-		and exports.ox_inventory:Search('count', 'phone') == 0
+		and exports.ox_inventory:getUtilitySlotItem(8) == nil or exports.ox_inventory:getUtilitySlotItem(8).durability <= 0
 	then
 		exports['sandbox-phone']:Close(true)
 	end
@@ -233,7 +233,7 @@ function TogglePhone()
 	end
 	if not _openCd then
 		if not exports['sandbox-hud']:IsDisabled() then
-			if not exports['sandbox-jail']:IsJailed() and exports.ox_inventory:Search('count', 'phone') > 0 then
+			if exports.ox_inventory:getUtilitySlotItem(8) ~= nil and exports.ox_inventory:getUtilitySlotItem(8).durability > 0 then
 				exports['sandbox-phone']:Open()
 			else
 				exports["sandbox-hud"]:Notification("error", "You Don't Have a Phone", 2000)

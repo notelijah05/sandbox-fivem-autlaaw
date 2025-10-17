@@ -29,6 +29,14 @@ export const refreshSlotsReducer: CaseReducer<State, PayloadAction<Payload>> = (
 
         data.item.durability = itemDurability(data.item.metadata, curTime);
         targetInventory.items[data.item.slot - 1] = data.item;
+
+        if (targetInventory === state.leftInventory && data.item.slot <= 5) {
+          state.utilityInventory.items[data.item.slot - 1] = data.item;
+        }
+
+        if (targetInventory === state.utilityInventory && data.item.slot <= 5) {
+          state.leftInventory.items[data.item.slot - 1] = data.item;
+        }
       });
 
     // Janky workaround to force a state rerender for crafting inventory to

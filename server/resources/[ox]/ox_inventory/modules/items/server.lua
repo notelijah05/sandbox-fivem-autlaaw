@@ -206,8 +206,8 @@ function Items.Metadata(inv, item, metadata, count)
                 local char = exports['sandbox-characters']:FetchCharacterSource(inv.player.source)
                 if char then
                     metadata.type = inv.player.name
-                    metadata.description = string.format( -- I don't know why this can't be formatted properly, if formatted downwards, it breaks the metadata (There's probably a better way to do this)
-                        "Name: %s %s SID: %s PassportID: %s DOB: %s Gender: %s",
+                    metadata.description = string.format( -- The UI now reads line breaks properly, so this works now
+                        "Name: %s %s\nSID: %s\nPassport ID: %s\nDOB: %s\nGender: %s",
                         char:GetData("First"),
                         char:GetData("Last"),
                         char:GetData("SID"),

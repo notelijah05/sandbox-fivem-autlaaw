@@ -7,6 +7,7 @@ export type Slot = {
     [key: string]: any;
   };
   durability?: number;
+  rarity?: number;
 };
 
 export type SlotWithItem = Slot & {

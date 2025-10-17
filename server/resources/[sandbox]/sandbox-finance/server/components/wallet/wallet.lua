@@ -48,7 +48,7 @@ AddEventHandler("Finance:Server:Startup", function()
 	})
 
 	exports["sandbox-chat"]:RegisterAdminCommand("addcash", function(source, args, rawCommand)
-		exports['ox_inventory']:addCash(source, tonumber(args[1]))
+		exports.ox_inventory:addCash(source, tonumber(args[1]))
 	end, {
 		help = "Give Cash To Yourself",
 		params = {

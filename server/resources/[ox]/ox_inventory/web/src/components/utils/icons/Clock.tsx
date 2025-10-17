@@ -1,4 +1,4 @@
-export const ClockIcon: React.FC = () => {
+export const Clock: React.FC = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -18,4 +18,4 @@ export const ClockIcon: React.FC = () => {
   );
 };
 
-export default ClockIcon;
+export default Clock;

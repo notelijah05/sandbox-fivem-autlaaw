@@ -4,11 +4,14 @@ import { onDrop } from '../../dnd/onDrop';
 import { Items } from '../../store/items';
 import { fetchNui } from '../../utils/fetchNui';
 import { Locale } from '../../store/locale';
-import { isSlotWithItem } from '../../helpers';
+import { isSlotWithItem, findAvailableSlot } from '../../helpers';
 import { setClipboard } from '../../utils/setClipboard';
 import { useAppSelector } from '../../store';
 import React from 'react';
 import { Menu, MenuItem } from '../utils/menu/Menu';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy, faHammer, faHandHolding, faTrash, faHandPointUp } from '@fortawesome/free-solid-svg-icons';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 interface DataProps {
   action: string;
@@ -22,6 +25,7 @@ interface Button {
   label: string;
   index: number;
   group?: string;
+  icon?: IconProp;
 }
 
 interface Group {
@@ -38,6 +42,22 @@ interface GroupedButtons extends Array<Group> {}
 const InventoryContext: React.FC = () => {
   const contextMenu = useAppSelector((state) => state.contextMenu);
   const item = contextMenu.item;
+  const leftInventory = useAppSelector((state) => state.inventory.leftInventory);
+
+  const canDropItem = () => {
+    if (!item || !isSlotWithItem(item)) return false;
+
+    const itemData = Items[item.name];
+    if (!itemData) return false;
+
+    try {
+      const availableSlot = findAvailableSlot(item, itemData, leftInventory.items, 'player');
+      return availableSlot !== undefined;
+    } catch (error) {
+      console.log('Error checking available slots:', error);
+      return false;
+    }
+  };
 
   const handleClick = (data: DataProps) => {
     if (!item) return;
@@ -50,7 +70,9 @@ const InventoryContext: React.FC = () => {
         onGive({ name: item.name, slot: item.slot });
         break;
       case 'drop':
-        isSlotWithItem(item) && onDrop({ item: item, inventory: 'player' });
+        if (isSlotWithItem(item) && canDropItem()) {
+          onDrop({ item: item, inventory: 'player' });
+        }
         break;
       case 'remove':
         fetchNui('removeComponent', { component: data?.component, slot: data?.slot });
@@ -92,16 +114,34 @@ const InventoryContext: React.FC = () => {
   return (
     <>
       <Menu>
-        <MenuItem onClick={() => handleClick({ action: 'use' })} label={Locale.ui_use || 'Use'} />
-        <MenuItem onClick={() => handleClick({ action: 'give' })} label={Locale.ui_give || 'Give'} />
-        <MenuItem onClick={() => handleClick({ action: 'drop' })} label={Locale.ui_drop || 'Drop'} />
+        <MenuItem
+          onClick={() => handleClick({ action: 'use' })}
+          label={Locale.ui_use || 'Use'}
+          icon={<FontAwesomeIcon icon={faHandPointUp} />}
+        />
+        <MenuItem
+          onClick={() => handleClick({ action: 'give' })}
+          label={Locale.ui_give || 'Give'}
+          icon={<FontAwesomeIcon icon={faHandHolding} />}
+        />
+        <MenuItem
+          onClick={() => handleClick({ action: 'drop' })}
+          label={Locale.ui_drop || 'Drop'}
+          icon={<FontAwesomeIcon icon={faTrash} />}
+          disabled={!canDropItem()}
+        />
         {item && item.metadata?.ammo > 0 && (
-          <MenuItem onClick={() => handleClick({ action: 'removeAmmo' })} label={Locale.ui_remove_ammo} />
+          <MenuItem
+            onClick={() => handleClick({ action: 'removeAmmo' })}
+            label={Locale.ui_remove_ammo}
+            icon={<FontAwesomeIcon icon={faTrash} />}
+          />
         )}
         {item && item.metadata?.serial && (
           <MenuItem
             onClick={() => handleClick({ action: 'copy', serial: item.metadata?.serial })}
             label={Locale.ui_copy}
+            icon={<FontAwesomeIcon icon={faCopy} />}
           />
         )}
         {item && item.metadata?.components && item.metadata?.components.length > 0 && (
@@ -112,6 +152,7 @@ const InventoryContext: React.FC = () => {
                   key={index}
                   onClick={() => handleClick({ action: 'remove', component, slot: item.slot })}
                   label={Items[component]?.label || ''}
+                  icon={<FontAwesomeIcon icon={faHammer} />}
                 />
               ))}
           </Menu>
@@ -129,6 +170,7 @@ const InventoryContext: React.FC = () => {
                           key={button.index}
                           onClick={() => handleClick({ action: 'custom', id: button.index })}
                           label={button.label}
+                          icon={<FontAwesomeIcon icon={button.icon as IconProp} />}
                         />
                       ))}
                     </Menu>
@@ -138,6 +180,7 @@ const InventoryContext: React.FC = () => {
                         key={button.index}
                         onClick={() => handleClick({ action: 'custom', id: button.index })}
                         label={button.label}
+                        icon={<FontAwesomeIcon icon={button.icon as IconProp} />}
                       />
                     ))
                   )}

@@ -188,7 +188,7 @@ AddEventHandler("Vehicles:Client:CharacterLogin", function()
 					if IsPedDoingDriveby(playerPed) then
 						if GetFollowPedCamViewMode() <= 2 or GetFollowVehicleCamViewMode() <= 2 then
 							LocalPlayer.state.adjustingCam = true
-							local curWeapon = exports.ox_inventory:WeaponsGetEquippedHash()
+							local curWeapon = exports.ox_inventory:GetEquippedHash()
 							SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true)
 							SetCurrentPedVehicleWeapon(playerPed, `WEAPON_UNARMED`)
 							SetPlayerCanDoDriveBy(PlayerId(), false)

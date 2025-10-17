@@ -11,8 +11,36 @@ import DragPreview from './components/utils/DragPreview';
 import { fetchNui } from './utils/fetchNui';
 import { useDragDropManager } from 'react-dnd';
 import KeyPress from './components/utils/KeyPress';
+import { setUtilitySlotRestrictions } from './utils/utilitySlotValidation';
 
 debugData([
+  // Item notify start //
+  {
+    action: 'itemNotify',
+    data: [{ slot: 1, name: 'water', weight: 3000, count: 5, metadata: {} }, 'ui_added', 5],
+  },
+  {
+    action: 'itemNotify',
+    data: [{ slot: 2, name: 'water', weight: 0, count: 1, metadata: { durability: 75 } }, 'ui_removed', 1],
+  },
+  {
+    action: 'itemNotify',
+    data: [
+      { slot: 3, name: 'weapon_pistol', weight: 1000, count: 1, metadata: { durability: 100 } },
+      'ui_holstered',
+      1,
+    ],
+  },
+  // Item notify end //
+
+  // Toggle hotbar start //
+  {
+    action: 'toggleHotbar',
+    data: {},
+  },
+  // Toggle hotbar end //
+
+  // Setup inventory start //
   {
     action: 'setupInventory',
     data: {
@@ -20,41 +48,77 @@ debugData([
         id: 'test',
         type: 'player',
         slots: 50,
-        label: 'Bob Smith',
+        label: 'AutLaaw Dev',
         weight: 3000,
         maxWeight: 5000,
         items: [
           {
             slot: 1,
-            name: 'iron',
+            name: 'weapon_pistolxm3',
             weight: 3000,
             metadata: {
-              description: `name: Svetozar Miletic  \n Gender: Male`,
-              ammo: 3,
-              mustard: '60%',
-              ketchup: '30%',
-              mayo: '10%',
+              description: `Name: Svetozar Miletic  \n Gender: Male`,
             },
-            count: 5,
+            count: 1,
           },
-          { slot: 2, name: 'powersaw', weight: 0, count: 1, metadata: { durability: 75 } },
-          { slot: 3, name: 'copper', weight: 100, count: 12, metadata: { type: 'Special' } },
+          {
+            slot: 2,
+            name: 'weapon_advancedrifle',
+            weight: 0,
+            count: 1,
+            rarity: 2,
+          },
+          { slot: 3, name: 'Rum', weight: 100, count: 12, rarity: 3, metadata: { type: 'Special' } },
           {
             slot: 4,
             name: 'water',
             weight: 100,
-            count: 1,
-            metadata: { description: 'Generic item description' },
+            count: 5,
+            rarity: 4,
           },
-          { slot: 5, name: 'water', weight: 100, count: 1 },
+          {
+            slot: 5,
+            name: 'lockpick',
+            weight: 100,
+            count: 1,
+            rarity: 5,
+          },
           {
             slot: 6,
+            name: 'military_backpack',
+            weight: 100,
+            count: 1,
+            rarity: 6,
+          },
+          {
+            slot: 7,
+            name: 'Armor',
+            weight: 100,
+            count: 1,
+            rarity: 7,
+          },
+          {
+            slot: 8,
+            name: 'Phone',
+            weight: 100,
+            count: 1,
+            rarity: 7,
+          },
+          {
+            slot: 9,
+            name: 'parachute',
+            weight: 100,
+            count: 1,
+          },
+          {
+            slot: 10,
             name: 'backwoods',
             weight: 100,
             count: 1,
             metadata: {
               label: 'Russian Cream',
               imageurl: 'https://i.imgur.com/2xHhTTz.png',
+              rarity: 6,
             },
           },
         ],
@@ -63,7 +127,7 @@ debugData([
         id: 'shop',
         type: 'crafting',
         slots: 5000,
-        label: 'Bob Smith',
+        label: 'AutLaaw Dev',
         weight: 3000,
         maxWeight: 5000,
         items: [
@@ -73,9 +137,8 @@ debugData([
             weight: 500,
             price: 300,
             ingredients: {
-              iron: 5,
-              copper: 12,
-              powersaw: 0.1,
+              ironbar: 5,
+              recycledgoods: 10,
             },
             metadata: {
               description: 'Simple lockpick that breaks easily and can pick basic door locks',
@@ -85,6 +148,7 @@ debugData([
       },
     },
   },
+  // Setup inventory end //
 ]);
 
 const App: React.FC = () => {
@@ -106,6 +170,12 @@ const App: React.FC = () => {
 
   fetchNui('uiLoaded', {});
 
+  fetchNui('fetchSlotRestrictions', {}).then((restrictions: any) => {
+    if (restrictions && typeof restrictions === 'object') {
+      setUtilitySlotRestrictions(restrictions);
+    }
+  });
+
   useNuiEvent('closeInventory', () => {
     manager.dispatch({ type: 'dnd-core/END_DRAG' });
   });
@@ -119,8 +189,8 @@ const App: React.FC = () => {
   );
 };
 
-addEventListener("dragstart", function(event) {
-  event.preventDefault()
-})
+addEventListener('dragstart', function (event) {
+  event.preventDefault();
+});
 
 export default App;

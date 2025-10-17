@@ -1,59 +1,63 @@
-import { flip, FloatingPortal, offset, shift, useFloating, useTransitionStyles } from '@floating-ui/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '../../store';
 import SlotTooltip from '../inventory/SlotTooltip';
 
 const Tooltip: React.FC = () => {
   const hoverData = useAppSelector((state) => state.tooltip);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const { refs, context, floatingStyles } = useFloating({
-    middleware: [flip(), shift(), offset({ mainAxis: 10, crossAxis: 10 })],
-    open: hoverData.open,
-    placement: 'right-start',
-  });
-
-  const { isMounted, styles } = useTransitionStyles(context, {
-    duration: 200,
-  });
-
-  const handleMouseMove = ({ clientX, clientY }: MouseEvent | React.MouseEvent<unknown, MouseEvent>) => {
-    refs.setPositionReference({
-      getBoundingClientRect() {
-        return {
-          width: 0,
-          height: 0,
-          x: clientX,
-          y: clientY,
-          left: clientX,
-          top: clientY,
-          right: clientX,
-          bottom: clientY,
-        };
-      },
-    });
+  const handleMouseMove = (event: MouseEvent) => {
+    setMousePosition({ x: event.clientX, y: event.clientY });
   };
 
   useEffect(() => {
+    document.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
 
+  if (!hoverData.open || !hoverData.item || !hoverData.inventoryType) {
+    return null;
+  }
+
+  const getTooltipPosition = () => {
+    const offset = 10;
+    const tooltipWidth = 200;
+    const tooltipHeight = 100;
+
+    let x = mousePosition.x + offset;
+    let y = mousePosition.y - offset;
+
+    if (x + tooltipWidth > window.innerWidth) {
+      x = mousePosition.x - tooltipWidth - offset;
+    }
+    if (y + tooltipHeight > window.innerHeight) {
+      y = mousePosition.y - tooltipHeight - offset;
+    }
+    if (y < 0) {
+      y = mousePosition.y + offset;
+    }
+
+    return { x, y };
+  };
+
+  const position = getTooltipPosition();
+
   return (
-    <>
-      {isMounted && hoverData.item && hoverData.inventoryType && (
-        <FloatingPortal>
-          <SlotTooltip
-            ref={refs.setFloating}
-            style={{ ...floatingStyles, ...styles }}
-            item={hoverData.item!}
-            inventoryType={hoverData.inventoryType!}
-          />
-        </FloatingPortal>
-      )}
-    </>
+    <div
+      style={{
+        position: 'fixed',
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        pointerEvents: 'none',
+      }}
+    >
+      <SlotTooltip item={hoverData.item} inventoryType={hoverData.inventoryType} style={{}} />
+    </div>
   );
 };
 

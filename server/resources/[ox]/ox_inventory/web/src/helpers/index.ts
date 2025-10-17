@@ -85,28 +85,56 @@ export const isSlotWithItem = (slot: Slot, strict: boolean = false): slot is Slo
 export const canStack = (sourceSlot: Slot, targetSlot: Slot) =>
   sourceSlot.name === targetSlot.name && isEqual(sourceSlot.metadata, targetSlot.metadata);
 
-export const findAvailableSlot = (item: Slot, data: ItemData, items: Slot[]) => {
-  if (!data.stack) return items.find((target) => target.name === undefined);
+export const findAvailableSlot = (item: Slot, data: ItemData, items: Slot[], inventoryType?: string) => {
+  const isPlayerInventory = inventoryType === 'player';
+  const startSlot = isPlayerInventory ? 9 : 0;
+
+  if (!data.stack) {
+    for (let i = startSlot; i < items.length; i++) {
+      if (items[i]?.name === undefined) {
+        return items[i];
+      }
+    }
+    if (isPlayerInventory) {
+      return items.find((target) => target.name === undefined);
+    }
+    return undefined;
+  }
 
   const stackableSlot = items.find((target) => target.name === item.name && isEqual(target.metadata, item.metadata));
 
-  return stackableSlot || items.find((target) => target.name === undefined);
+  if (stackableSlot) return stackableSlot;
+
+  for (let i = startSlot; i < items.length; i++) {
+    if (items[i]?.name === undefined) {
+      return items[i];
+    }
+  }
+  if (isPlayerInventory) {
+    return items.find((target) => target.name === undefined);
+  }
+  return undefined;
 };
 
 export const getTargetInventory = (
   state: State,
   sourceType: Inventory['type'],
   targetType?: Inventory['type']
-): { sourceInventory: Inventory; targetInventory: Inventory } => ({
-  sourceInventory: sourceType === InventoryType.PLAYER ? state.leftInventory : state.rightInventory,
-  targetInventory: targetType
-    ? targetType === InventoryType.PLAYER
-      ? state.leftInventory
-      : state.rightInventory
-    : sourceType === InventoryType.PLAYER
-    ? state.rightInventory
-    : state.leftInventory,
-});
+): { sourceInventory: Inventory; targetInventory: Inventory } => {
+  const isLeftInventory = sourceType === InventoryType.PLAYER || sourceType === 'utility';
+  const isTargetLeftInventory = targetType === InventoryType.PLAYER || targetType === 'utility';
+
+  return {
+    sourceInventory: isLeftInventory ? state.leftInventory : state.rightInventory,
+    targetInventory: targetType
+      ? isTargetLeftInventory
+        ? state.leftInventory
+        : state.rightInventory
+      : isLeftInventory
+      ? state.rightInventory
+      : state.leftInventory,
+  };
+};
 
 export const itemDurability = (metadata: any, curTime: number) => {
   // sorry dunak

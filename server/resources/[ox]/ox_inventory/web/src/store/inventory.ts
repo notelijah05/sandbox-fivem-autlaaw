@@ -24,10 +24,20 @@ const initialState: State = {
     maxWeight: 0,
     items: [],
   },
+  utilityInventory: {
+    id: '',
+    type: '',
+    slots: 9,
+    maxWeight: 0,
+    items: [],
+  },
+  currentView: 'normal', // 'normal' or 'utility'
   additionalMetadata: new Array(),
   itemAmount: 0,
   shiftPressed: false,
   isBusy: false,
+  leftInventoryCollapsed: false,
+  rightInventoryCollapsed: false,
 };
 
 export const inventorySlice = createSlice({
@@ -62,6 +72,18 @@ export const inventorySlice = createSlice({
 
       container.weight = action.payload;
     },
+    toggleView: (state) => {
+      state.currentView = state.currentView === 'normal' ? 'utility' : 'normal';
+    },
+    setView: (state, action: PayloadAction<'normal' | 'utility'>) => {
+      state.currentView = action.payload;
+    },
+    toggleLeftInventory: (state) => {
+      state.leftInventoryCollapsed = !state.leftInventoryCollapsed;
+    },
+    toggleRightInventory: (state) => {
+      state.rightInventoryCollapsed = !state.rightInventoryCollapsed;
+    },
   },
   extraReducers: (builder) => {
     builder.addMatcher(isPending, (state) => {
@@ -95,10 +117,18 @@ export const {
   stackSlots,
   refreshSlots,
   setContainerWeight,
+  toggleView,
+  setView,
+  toggleLeftInventory,
+  toggleRightInventory,
 } = inventorySlice.actions;
 export const selectLeftInventory = (state: RootState) => state.inventory.leftInventory;
 export const selectRightInventory = (state: RootState) => state.inventory.rightInventory;
+export const selectUtilityInventory = (state: RootState) => state.inventory.utilityInventory;
+export const selectCurrentView = (state: RootState) => state.inventory.currentView;
 export const selectItemAmount = (state: RootState) => state.inventory.itemAmount;
 export const selectIsBusy = (state: RootState) => state.inventory.isBusy;
+export const selectLeftInventoryCollapsed = (state: RootState) => state.inventory.leftInventoryCollapsed;
+export const selectRightInventoryCollapsed = (state: RootState) => state.inventory.rightInventoryCollapsed;
 
 export default inventorySlice.reducer;

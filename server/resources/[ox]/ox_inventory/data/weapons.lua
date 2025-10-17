@@ -25,6 +25,7 @@ return {
             label = 'Advanced Rifle',
             weight = 3100,
             durability = 0.03,
+            rarity = 3,
             ammoname = 'ammo-rifle',
         },
 
@@ -32,6 +33,7 @@ return {
             label = 'AP Pistol',
             weight = 1400,
             durability = 0.1,
+            rarity = 2,
             ammoname = 'ammo-9',
         },
 
@@ -39,6 +41,7 @@ return {
             label = 'Assault Rifle',
             weight = 4500,
             durability = 0.03,
+            rarity = 3,
             ammoname = 'ammo-rifle2',
         },
 
@@ -46,6 +49,7 @@ return {
             label = 'Assault Rifle MK2',
             weight = 2950,
             durability = 0.03,
+            rarity = 3,
             ammoname = 'ammo-rifle2',
         },
 
@@ -53,6 +57,7 @@ return {
             label = 'Assault Shotgun',
             weight = 5200,
             durability = 0.05,
+            rarity = 3,
             ammoname = 'ammo-shotgun'
         },
 
@@ -60,6 +65,7 @@ return {
             label = 'Assault SMG',
             weight = 2900,
             durability = 0.05,
+            rarity = 3,
             ammoname = 'ammo-rifle'
         },
 
@@ -78,6 +84,7 @@ return {
         ['WEAPON_BATTLEAXE'] = {
             label = 'Battle Axe',
             weight = 6500,
+            rarity = 2,
             durability = 0.1,
         },
 
@@ -91,6 +98,7 @@ return {
             label = 'Bullpup Rifle',
             weight = 2900,
             durability = 0.03,
+            rarity = 3,
             ammoname = 'ammo-rifle'
         },
 
@@ -98,6 +106,7 @@ return {
             label = 'Bullpup Rifle MK2',
             weight = 2900,
             durability = 0.03,
+            rarity = 3,
             ammoname = 'ammo-rifle'
         },
 
@@ -105,12 +114,14 @@ return {
             label = 'Bullpup Shotgun',
             weight = 3100,
             durability = 0.2,
+            rarity = 7,
             ammoname = 'ammo-shotgun'
         },
 
         ['WEAPON_BZGAS'] = {
             label = 'BZ Gas',
             weight = 600,
+            rarity = 4,
             throwable = true,
         },
 
@@ -118,6 +129,7 @@ return {
             label = 'Carbine Rifle',
             weight = 3100,
             durability = 0.03,
+            rarity = 3,
             ammoname = 'ammo-rifle'
         },
 
@@ -125,6 +137,7 @@ return {
             label = 'Carbine Rifle MK2',
             weight = 3000,
             durability = 0.03,
+            rarity = 3,
             ammoname = 'ammo-rifle'
         },
 
@@ -146,6 +159,7 @@ return {
             label = 'Combat MG',
             weight = 7500,
             durability = 0.02,
+            rarity = 3,
             ammoname = 'ammo-rifle'
         },
 
@@ -153,6 +167,7 @@ return {
             label = 'Combat MG MK2',
             weight = 8000,
             durability = 0.02,
+            rarity = 3,
             ammoname = 'ammo-rifle2'
         },
 
@@ -160,6 +175,7 @@ return {
             label = 'Combat PDW',
             weight = 2300,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-9'
         },
 
@@ -188,6 +204,7 @@ return {
             label = 'Compact Rifle',
             weight = 3600,
             durability = 0.05,
+            rarity = 3,
             ammoname = 'ammo-rifle2'
         },
 
@@ -200,6 +217,7 @@ return {
         ['WEAPON_DAGGER'] = {
             label = 'Dagger',
             weight = 800,
+            rarity = 2,
             durability = 0.1,
         },
 
@@ -214,6 +232,7 @@ return {
             label = 'Double Action Revolver',
             weight = 940,
             durability = 0.2,
+            rarity = 3,
             ammoname = 'ammo-38'
         },
 
@@ -240,6 +259,7 @@ return {
         ['WEAPON_FLARE'] = {
             label = 'Flare',
             weight = 250,
+            rarity = 3,
             throwable = true,
         },
 
@@ -265,6 +285,7 @@ return {
         ['WEAPON_GRENADE'] = {
             label = 'Grenade',
             weight = 400,
+            rarity = 4,
             throwable = true,
         },
 
@@ -279,6 +300,7 @@ return {
             label = 'Gusenberg',
             weight = 4900,
             durability = 0.04,
+            rarity = 3,
             ammoname = 'ammo-45'
         },
 
@@ -327,6 +349,7 @@ return {
             label = 'Heavy Pistol',
             weight = 1100,
             durability = 0.2,
+            rarity = 2,
             ammoname = 'ammo-45'
         },
 
@@ -334,6 +357,7 @@ return {
             label = 'Heavy Shotgun',
             weight = 3600,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-shotgun'
         },
 
@@ -341,6 +365,7 @@ return {
             label = 'Heavy Sniper',
             weight = 12700,
             durability = 0.5,
+            rarity = 3,
             ammoname = 'ammo-heavysniper'
         },
 
@@ -348,6 +373,7 @@ return {
             label = 'Heavy Sniper MK2',
             weight = 14000,
             durability = 0.5,
+            rarity = 3,
             ammoname = 'ammo-heavysniper'
         },
 
@@ -360,12 +386,14 @@ return {
         ['WEAPON_KNUCKLE'] = {
             label = 'Knuckle Dusters',
             weight = 300,
+            rarity = 2,
             durability = 0.1,
         },
 
         ['WEAPON_MACHETE'] = {
             label = 'Machete',
             weight = 1000,
+            rarity = 2,
             durability = 0.1,
         },
 
@@ -373,6 +401,7 @@ return {
             label = 'Machine Pistol',
             weight = 1400,
             durability = 0.05,
+            rarity = 3,
             ammoname = 'ammo-9'
         },
 
@@ -380,6 +409,7 @@ return {
             label = 'Marksman Pistol',
             weight = 1588,
             durability = 0.5,
+            rarity = 3,
             ammoname = 'ammo-22'
         },
 
@@ -387,6 +417,7 @@ return {
             label = 'Marksman Rifle',
             weight = 7500,
             durability = 0.4,
+            rarity = 3,
             ammoname = 'ammo-sniper'
         },
 
@@ -394,6 +425,7 @@ return {
             label = 'Marksman Rifle MK2',
             weight = 4000,
             durability = 0.4,
+            rarity = 3,
             ammoname = 'ammo-sniper'
         },
 
@@ -401,6 +433,7 @@ return {
             label = 'Machine Gun',
             weight = 9000,
             durability = 0.02,
+            rarity = 3,
             ammoname = 'ammo-rifle2'
         },
 
@@ -415,6 +448,7 @@ return {
             label = 'Micro SMG',
             weight = 3000,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-45'
         },
 
@@ -429,12 +463,14 @@ return {
             label = 'Mini SMG',
             weight = 1270,
             durability = 0.05,
+            rarity = 3,
             ammoname = 'ammo-9'
         },
 
         ['WEAPON_MOLOTOV'] = {
             label = 'Molotov',
             weight = 1800,
+            rarity = 4,
             throwable = true,
         },
 
@@ -442,6 +478,7 @@ return {
             label = 'Musket',
             weight = 4500,
             durability = 0.5,
+            rarity = 3,
             ammoname = 'ammo-musket'
         },
 
@@ -473,6 +510,7 @@ return {
         ['WEAPON_PIPEBOMB'] = {
             label = 'Pipe Bomb',
             weight = 1800,
+            rarity = 4,
             throwable = true,
         },
 
@@ -487,6 +525,7 @@ return {
             label = 'Pistol .50',
             weight = 2000,
             durability = 0.1,
+            rarity = 4,
             ammoname = 'ammo-50'
         },
 
@@ -494,6 +533,7 @@ return {
             label = 'Pistol MK2',
             weight = 1000,
             durability = 0.5,
+            rarity = 3,
             ammoname = 'ammo-9'
         },
 
@@ -512,6 +552,7 @@ return {
         ['WEAPON_PROXMINE'] = {
             label = 'Proximity Mine',
             weight = 2500,
+            rarity = 4,
             throwable = true,
         },
 
@@ -519,6 +560,7 @@ return {
             label = 'Pump Shotgun',
             weight = 3400,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-shotgun'
         },
 
@@ -526,6 +568,7 @@ return {
             label = 'Pump Shotgun MK2',
             weight = 3200,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-shotgun'
         },
 
@@ -560,6 +603,7 @@ return {
             label = 'Revolver',
             weight = 2260,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-44'
         },
 
@@ -567,6 +611,7 @@ return {
             label = 'Revolver MK2',
             weight = 2600,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-44'
         },
 
@@ -588,6 +633,7 @@ return {
             label = 'SMG',
             weight = 3084,
             durability = 0.8,
+            rarity = 3,
             ammoname = 'ammo-9'
         },
 
@@ -595,18 +641,21 @@ return {
             label = 'SMG Mk2',
             weight = 2700,
             durability = 0.05,
+            rarity = 3,
             ammoname = 'ammo-9'
         },
 
         ['WEAPON_FLASHBANG'] = {
             label = 'Flashbang',
             weight = 1800,
+            rarity = 4,
             throwable = true,
         },
 
         ['WEAPON_SMOKEGRENADE'] = {
             label = 'Smoke Grenade',
             weight = 600,
+            rarity = 3,
             throwable = true,
         },
 
@@ -627,6 +676,7 @@ return {
             label = 'SNS Pistol',
             weight = 465,
             durability = 0.1,
+            rarity = 2,
             ammoname = 'ammo-45'
         },
 
@@ -634,6 +684,7 @@ return {
             label = 'SNS Pistol MK2',
             weight = 465,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-45'
         },
 
@@ -641,6 +692,7 @@ return {
             label = 'Special Carbine',
             weight = 3000,
             durability = 0.03,
+            rarity = 3,
             ammoname = 'ammo-rifle'
         },
 
@@ -648,12 +700,14 @@ return {
             label = 'Special Carbine MK2',
             weight = 3370,
             durability = 0.03,
+            rarity = 3,
             ammoname = 'ammo-rifle'
         },
 
         ['WEAPON_STICKYBOMB'] = {
             label = 'Sticky Bomb',
             weight = 1000,
+            rarity = 4,
             throwable = true,
         },
 
@@ -673,6 +727,7 @@ return {
             label = 'Sweeper Shotgun',
             weight = 4400,
             durability = 0.05,
+            rarity = 3,
             ammoname = 'ammo-shotgun'
         },
 
@@ -734,6 +789,7 @@ return {
             label = '(PD) Glock 19',
             weight = 1130,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-9'
         },
 
@@ -741,6 +797,7 @@ return {
             label = '(PD) Five Seven',
             weight = 1130,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-9'
         },
 
@@ -748,6 +805,7 @@ return {
             label = '(PD) FM1 P226',
             weight = 1130,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-9'
         },
 
@@ -755,6 +813,7 @@ return {
             label = '(PD) 2011',
             weight = 1130,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-9'
         },
 
@@ -762,6 +821,7 @@ return {
             label = '(PD) 38 Snubnose',
             weight = 1130,
             durability = 0.1,
+            rarity = 4,
             ammoname = 'ammo-9'
         },
 
@@ -769,6 +829,7 @@ return {
             label = '(PD) 44 Magnum',
             weight = 1130,
             durability = 0.1,
+            rarity = 4,
             ammoname = 'ammo-9'
         },
 
@@ -776,6 +837,7 @@ return {
             label = '(PD) HKUMP',
             weight = 1130,
             durability = 0.1,
+            rarity = 3,
             ammoname = 'ammo-9'
         },
 
@@ -783,6 +845,7 @@ return {
             label = '(PD) Benelli M2',
             weight = 1130,
             durability = 0.1,
+            rarity = 4,
             ammoname = 'ammo-shotgun'
         },
 
@@ -790,6 +853,7 @@ return {
             label = '(PD) Bullpup Shotgun',
             weight = 1130,
             durability = 0.1,
+            rarity = 7,
             ammoname = 'ammo-shotgun'
         },
 

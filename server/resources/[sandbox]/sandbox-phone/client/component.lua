@@ -186,7 +186,7 @@ end)
 
 exports("NotificationAdd", function(title, description, time, duration, app, actions, notifData)
 	if
-		not LocalPlayer.state.loggedIn or exports.ox_inventory:Search('count', 'phone') == 0
+		not LocalPlayer.state.loggedIn or exports.ox_inventory:getUtilitySlotItem(8) == nil or exports.ox_inventory:getUtilitySlotItem(8).durability <= 0
 	then
 		return
 	end

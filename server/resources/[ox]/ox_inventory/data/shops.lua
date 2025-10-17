@@ -2,7 +2,7 @@ return {
     General = {
         name = 'Shop',
         blip = {
-            id = 59, colour = 69, scale = 0.8
+            id = 59, colour = 69, scale = 0.45
         },
         inventory = {
             { name = 'sandwich',       price = 3 },
@@ -48,7 +48,7 @@ return {
     Liquor = {
         name = 'Liquor Store',
         blip = {
-            id = 93, colour = 69, scale = 0.8
+            id = 52, colour = 64, scale = 0.45
         },
         inventory = {
             { name = 'water',  price = 3 },
@@ -75,9 +75,9 @@ return {
     },
 
     YouTool = {
-        name = 'YouTool',
+        name = 'Hardware Store',
         blip = {
-            id = 402, colour = 69, scale = 0.8
+            id = 566, colour = 28, scale = 0.45
         },
         inventory = {
             { name = 'screwdriver',           price = 400 },
@@ -113,7 +113,7 @@ return {
     Ammunation = {
         name = 'Ammunation',
         blip = {
-            id = 110, colour = 69, scale = 0.8
+            id = 110, colour = 6, scale = 0.45
         },
         inventory = {
             { name = 'armor',               price = 750 },
@@ -153,7 +153,7 @@ return {
         groups = shared.police,
         reqDuty = true,
         -- blip = {
-        --     id = 110, colour = 84, scale = 0.8
+        --     id = 110, colour = 84, scale = 0.45
         -- },
         inventory = {
             { name = 'radio',                    price = 0 },
@@ -205,7 +205,7 @@ return {
         workplace = "corrections",
         reqDuty = true,
         -- blip = {
-        --     id = 110, colour = 84, scale = 0.8
+        --     id = 110, colour = 84, scale = 0.45
         -- },
         inventory = {
             { name = 'pdarmor',             price = 0 },
@@ -246,7 +246,7 @@ return {
         groups = { "ems" },
         reqDuty = true,
         -- blip = {
-        --     id = 403, colour = 69, scale = 0.8
+        --     id = 403, colour = 69, scale = 0.45
         -- },
         inventory = {
             { name = 'traumakit',  price = 0 },

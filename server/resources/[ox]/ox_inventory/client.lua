@@ -5,10 +5,63 @@ require 'modules.interface.client'
 
 local Utils = require 'modules.utils.client'
 local Weapon = require 'modules.weapon.client'
+local SlotRestrictions = require 'modules.slotRestrictions.client'
 local currentWeapon
 
 exports('getCurrentWeapon', function()
     return currentWeapon
+end)
+
+exports('getUtilitySlotItem', function(slot)
+    if not slot or slot < 1 or slot > 9 then
+        return nil
+    end
+
+    if not PlayerData or not PlayerData.id or not PlayerData.inventory then
+        return nil
+    end
+
+    local item = PlayerData.inventory[slot]
+
+    if item and item.name then
+        return {
+            name = item.name,
+            count = item.count,
+            slot = item.slot,
+            weight = item.weight,
+            metadata = item.metadata,
+            durability = item.durability,
+            rarity = item.rarity or item.metadata?.rarity
+        }
+    end
+
+    return nil
+end)
+
+exports('getAllUtilitySlots', function()
+    if not PlayerData or not PlayerData.id or not PlayerData.inventory then
+        return {}
+    end
+
+    local utilitySlots = {}
+    for slot = 1, 9 do
+        local item = PlayerData.inventory[slot]
+        if item and item.name then
+            utilitySlots[slot] = {
+                name = item.name,
+                count = item.count,
+                slot = item.slot,
+                weight = item.weight,
+                metadata = item.metadata,
+                durability = item.durability,
+                rarity = item.rarity or item.metadata?.rarity
+            }
+        else
+            utilitySlots[slot] = nil
+        end
+    end
+
+    return utilitySlots
 end)
 
 RegisterNetEvent('ox_inventory:disarm', function(noAnim)
@@ -30,6 +83,42 @@ local invBusy = true
 
 ---@type boolean?
 local invOpen = false
+
+local screenBlurEnabled = GetResourceKvpString('ox_inventory_screenblur') ~= 'false'
+local audioEnabled = GetResourceKvpString('ox_inventory_audio') ~= 'false'
+
+local function updateScreenBlurSetting(enabled)
+    screenBlurEnabled = enabled
+    SetResourceKvp('ox_inventory_screenblur', tostring(enabled))
+end
+
+local function updateAudioSetting(enabled)
+    audioEnabled = enabled
+    SetResourceKvp('ox_inventory_audio', tostring(enabled))
+end
+
+RegisterNUICallback('toggleScreenBlur', function(data, cb)
+    updateScreenBlurSetting(data)
+    cb('ok')
+end)
+
+RegisterNUICallback('getSettings', function(data, cb)
+    cb({
+        screenBlur = screenBlurEnabled,
+        audio = audioEnabled
+    })
+end)
+
+RegisterNUICallback('getPhoneKey', function(data, cb)
+    local phoneKey = exports["sandbox-keybinds"]:GetKey("phone_toggle")
+    cb(phoneKey or "M")
+end)
+
+RegisterNUICallback('toggleAudio', function(data, cb)
+    updateAudioSetting(data)
+    cb('ok')
+end)
+
 local plyState = LocalPlayer.state
 local IsPedCuffed = IsPedCuffed
 local playerPed = cache.ped
@@ -294,7 +383,7 @@ function client.openInventory(inv, data)
     SetNuiFocusKeepInput(true)
     closeTrunk()
 
-    if client.screenblur then Utils.blurIn() end
+    if screenBlurEnabled then Utils.blurIn() end
 
     currentInventory = right or defaultInventory
     left.items = PlayerData.inventory
@@ -352,7 +441,7 @@ RegisterNetEvent('ox_inventory:forceOpenInventory', function(left, right)
     SetNuiFocusKeepInput(true)
     closeTrunk()
 
-    if client.screenblur then Utils.blurIn() end
+    if screenBlurEnabled then Utils.blurIn() end
 
     currentInventory = right or defaultInventory
     currentInventory.ignoreSecurityChecks = true
@@ -448,7 +537,7 @@ end
 ---@param data table
 ---@param cb fun(response: SlotWithItem | false)?
 ---@param noAnim? boolean
-local function useItem(data, cb, noAnim)
+local function useItem(data, cb, noAnim, skipUsedNotification)
     local slotData, result = PlayerData.inventory[data.slot]
 
     if not slotData or not canUseItem(data.ammo and true) then
@@ -484,6 +573,23 @@ local function useItem(data, cb, noAnim)
     if result then
         TriggerEvent('ox_inventory:usedItem', slotData.name, slotData.slot, next(slotData.metadata) and slotData
             .metadata)
+    end
+
+    local shouldSkipUsedNotification = skipUsedNotification or false
+
+    if not shouldSkipUsedNotification and slotData and slotData.name then
+        local itemData = Items[slotData.name]
+        if itemData and itemData.weapon then
+            shouldSkipUsedNotification = true
+        end
+    end
+
+    if not shouldSkipUsedNotification and Utils.HadRemovedNotification(slotData.name) then
+        shouldSkipUsedNotification = true
+    end
+
+    if client.usenotify and not shouldSkipUsedNotification then
+        Utils.ItemNotify({ slotData, 'ui_used' })
     end
 
     Wait(500)
@@ -1680,7 +1786,7 @@ RegisterNetEvent('ox_inventory:viewInventory', function(left, right)
     SetNuiFocusKeepInput(true)
     closeTrunk()
 
-    if client.screenblur then Utils.blurIn() end
+    if screenBlurEnabled then Utils.blurIn() end
 
     currentInventory = right or defaultInventory
     currentInventory.ignoreSecurityChecks = true
@@ -2018,4 +2124,9 @@ lib.callback.register('ox_inventory:getVehicleData', function(netid)
     if entity then
         return GetEntityModel(entity), GetVehicleClass(entity)
     end
+end)
+
+RegisterNUICallback('fetchSlotRestrictions', function(data, cb)
+    local restrictions = SlotRestrictions.fetch()
+    cb(restrictions)
 end)

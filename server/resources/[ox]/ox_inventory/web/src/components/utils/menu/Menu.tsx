@@ -217,7 +217,12 @@ export const MenuComponent = React.forwardRef<HTMLButtonElement, MenuProps & Rea
                     <div
                       ref={refs.setFloating}
                       className="context-menu-list"
-                      style={{ ...floatingStyles, ...styles }}
+                      style={{
+                        ...floatingStyles,
+                        ...styles,
+                        zIndex: 999999,
+                        position: 'fixed',
+                      }}
                       {...getFloatingProps()}
                     >
                       {children}
@@ -236,12 +241,13 @@ export const MenuComponent = React.forwardRef<HTMLButtonElement, MenuProps & Rea
 interface MenuItemProps {
   label: string;
   disabled?: boolean;
+  icon?: React.ReactNode;
 }
 
 export const MenuItem = React.forwardRef<
   HTMLButtonElement,
   MenuItemProps & React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ label, disabled, ...props }, forwardedRef) => {
+>(({ label, disabled, icon, ...props }, forwardedRef) => {
   const menu = useContext(MenuContext);
   const item = useListItem({ label: disabled ? null : label });
   const tree = useFloatingTree();
@@ -267,7 +273,8 @@ export const MenuItem = React.forwardRef<
         },
       })}
     >
-      {label}
+      {icon && <span className="menu-item-icon">{icon}</span>}
+      <span className="menu-item-label">{label}</span>
     </button>
   );
 });

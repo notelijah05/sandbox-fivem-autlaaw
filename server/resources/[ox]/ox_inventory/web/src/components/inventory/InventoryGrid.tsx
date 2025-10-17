@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Inventory } from '../../typings';
-import WeightBar from '../utils/WeightBar';
 import InventorySlot from './InventorySlot';
 import { getTotalWeight } from '../../helpers';
 import { useAppSelector } from '../../store';
@@ -8,7 +7,11 @@ import { useIntersection } from '../../hooks/useIntersection';
 
 const PAGE_SIZE = 30;
 
-const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
+const InventoryGrid: React.FC<{
+  inventory: Inventory;
+  isCollapsed?: boolean;
+  collapseButton?: React.ReactNode;
+}> = ({ inventory, isCollapsed = false, collapseButton }) => {
   const weight = useMemo(
     () => (inventory.maxWeight !== undefined ? Math.floor(getTotalWeight(inventory.items) * 1000) / 1000 : 0),
     [inventory.maxWeight, inventory.items]
@@ -25,19 +28,26 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   }, [entry]);
   return (
     <>
-      <div className="inventory-grid-wrapper" style={{ pointerEvents: isBusy ? 'none' : 'auto' }}>
+      <div
+        className={`inventory-grid-wrapper ${isCollapsed ? 'collapsed' : ''}`}
+        style={{ pointerEvents: isBusy ? 'none' : 'auto' }}
+      >
         <div>
           <div className="inventory-grid-header-wrapper">
-            <p>{inventory.label}</p>
-            {inventory.maxWeight && (
-              <p>
-                {weight / 1000}/{inventory.maxWeight / 1000}kg
-              </p>
-            )}
+            <div className="inventory-header-content">
+              <p>{inventory.label}</p>
+              <div className="inventory-header-right">
+                {inventory.maxWeight && (
+                  <p>
+                    {Math.round((weight / 1000) * 10) / 10}/{Math.round((inventory.maxWeight / 1000) * 10) / 10}kg
+                  </p>
+                )}
+                {collapseButton}
+              </div>
+            </div>
           </div>
-          <WeightBar percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0} />
         </div>
-        <div className="inventory-grid-container" ref={containerRef}>
+        <div className={`inventory-grid-container ${isCollapsed ? 'collapsed' : ''}`} ref={containerRef}>
           <>
             {inventory.items.slice(0, (page + 1) * PAGE_SIZE).map((item, index) => (
               <InventorySlot

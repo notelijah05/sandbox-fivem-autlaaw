@@ -8,6 +8,7 @@ return {
     },
     ["evidence-projectile"] = {
         label = "Bullet Projectile",
+        description = "Can be matched to the weapon it was fired from",
         weight = 250.0,
         degrade = nil,
         client = {},
@@ -15,6 +16,7 @@ return {
     },
     ["evidence-casing"] = {
         label = "Bullet Casing",
+        description = "Identifies the type of ammo used",
         weight = 250.0,
         degrade = nil,
         client = {},
@@ -134,6 +136,7 @@ return {
     },
     ["adv_electronics_kit"] = {
         label = "Hacking Device",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 500.0,
         degrade = 2419200,
         client = {},
@@ -148,6 +151,7 @@ return {
     },
     ["safecrack_kit"] = {
         label = "Safe Cracking Kit",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 500.0,
         degrade = 604800,
         client = {},
@@ -162,6 +166,7 @@ return {
     },
     ["sequencer"] = {
         label = "Yellow Keypad Sequencer",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 1209600,
         client = {},
@@ -169,6 +174,7 @@ return {
     },
     ["green_sequencer"] = {
         label = "Green Keypad Sequencer",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 1209600,
         client = {},
@@ -176,6 +182,7 @@ return {
     },
     ["blue_sequencer"] = {
         label = "Blue Keypad Sequencer",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 1209600,
         client = {},
@@ -183,6 +190,7 @@ return {
     },
     ["red_sequencer"] = {
         label = "Red Keypad Sequencer",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 1209600,
         client = {},
@@ -197,90 +205,115 @@ return {
     },
     ["bobcat_charge"] = {
         label = "Breach Charge",
+        description = "Kinda like thermite, but more ... explosive",
         weight = 3000,
         degrade = 3600,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["green_dongle"] = {
         label = "USB Drive (Green)",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 604800,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["blue_dongle"] = {
         label = "USB Drive (Blue)",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 1814400,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["purple_dongle"] = {
         label = "USB Drive (Purple)",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 604800,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["red_dongle"] = {
         label = "USB Drive (Red)",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 1814400,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["yellow_dongle"] = {
         label = "USB Drive (Yellow)",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 259200,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["green_laptop"] = {
         label = "Laptop (Green)",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 604800,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["blue_laptop"] = {
         label = "Laptop (Blue)",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 604800,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["purple_laptop"] = {
         label = "Laptop (Purple)",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 1209600,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["red_laptop"] = {
         label = "Laptop (Red)",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 604800,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["yellow_laptop"] = {
         label = "Laptop (Yellow)",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 604800,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["paleto_access_codes"] = {
         label = "Access Codes",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 1000,
         degrade = 14400,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["boosting_tracking_disabler"] = {
         label = "Tracker Hacker Device",
+        description = "<i>Marked For Police Seizure</i>",
         weight = 500.0,
         degrade = 2419200,
         client = {},
@@ -316,64 +349,82 @@ return {
     },
     ["sign_dontblock"] = {
         label = "Do Not Block Sign",
+        description = "Where did this come from?",
         weight = 1000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["sign_leftturn"] = {
         label = "Left Turn Sign",
+        description = "Where did this come from?",
         weight = 1000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["sign_nopark"] = {
         label = "No Parking Sign",
+        description = "Where did this come from?",
         weight = 2000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["sign_notresspass"] = {
         label = "No Tresspassing Sign",
+        description = "Where did this come from?",
         weight = 2000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["sign_rightturn"] = {
         label = "Right Turn Sign",
+        description = "Where did this come from?",
         weight = 2000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["sign_stop"] = {
         label = "Stop Sign",
+        description = "Where did this come from?",
         weight = 2000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["sign_uturn"] = {
         label = "U-Turn Sign",
+        description = "Where did this come from?",
         weight = 2000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["sign_walkingman"] = {
         label = "Walking Man Sign",
+        description = "Where did this come from?",
         weight = 2000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["sign_yield"] = {
         label = "Yield Sign",
+        description = "Where did this come from?",
         weight = 2000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -407,6 +458,7 @@ return {
     },
     ["carrot_cake"] = {
         label = "Carrot Cake",
+        description = "A Lovely Comforting Cake",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -414,6 +466,7 @@ return {
     },
     ["smoothie_veg"] = {
         label = "Veg Smoothie",
+        description = "A Bean Machine Exclusive",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -428,6 +481,7 @@ return {
     },
     ["beanmachine"] = {
         label = "The Bean Machine",
+        description = "We take beans and put them in machines",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -512,6 +566,7 @@ return {
     },
     ["mocha_shake"] = {
         label = "Mocha Shake",
+        description = "Go Crazy",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -561,6 +616,7 @@ return {
     },
     ["repairkit"] = {
         label = "Repair Kit",
+        description = "Fixes a vehicles engine so it can be driven again.",
         weight = 250.0,
         degrade = 604800,
         client = {},
@@ -568,13 +624,16 @@ return {
     },
     ["repairkitadv"] = {
         label = "Advanced Repair Kit",
+        description = "Fixes a vehicles engine and tires so it can be driven again.",
         weight = 500.0,
         degrade = 1209600,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["carclean"] = {
         label = "Car Cleaning Kit",
+        description = "Make your car squeaky clean!",
         weight = 1000.0,
         degrade = 1209600,
         client = {},
@@ -582,6 +641,7 @@ return {
     },
     ["carpolish"] = {
         label = "Car Polish",
+        description = "Stop your car getting dirty!",
         weight = 1000.0,
         degrade = 1209600,
         client = {},
@@ -589,13 +649,16 @@ return {
     },
     ["carpolish_high"] = {
         label = "Fantastic Car Wax",
+        description = "Stop your car getting dirty and keep it sqeaky clean!",
         weight = 1000.0,
         degrade = 1209600,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["purgecontroller"] = {
         label = "Purge Controller",
+        description = "Redefine the look of your purges!",
         weight = 3000.0,
         degrade = 2419200,
         client = {},
@@ -603,6 +666,7 @@ return {
     },
     ["camber_controller"] = {
         label = "Camber Controller",
+        description = "Stance it up bruh",
         weight = 3000.0,
         degrade = 2419200,
         client = {},
@@ -610,6 +674,7 @@ return {
     },
     ["repair_part_electronics"] = {
         label = "Vehicle Electronics",
+        description = "Vehicle Electronic Parts",
         weight = 0.0,
         degrade = 7776000,
         client = {},
@@ -617,6 +682,7 @@ return {
     },
     ["repair_part_axle"] = {
         label = "Axle Parts",
+        description = "Vehicle Axle Parts",
         weight = 0.0,
         degrade = 7776000,
         client = {},
@@ -624,6 +690,7 @@ return {
     },
     ["repair_part_rad"] = {
         label = "Radiator",
+        description = "Vehicle Radiator",
         weight = 0.0,
         degrade = 7776000,
         client = {},
@@ -631,6 +698,7 @@ return {
     },
     ["repair_part_transmission"] = {
         label = "Transmission Parts",
+        description = "Vehicle Transmission",
         weight = 0.0,
         degrade = 7776000,
         client = {},
@@ -638,6 +706,7 @@ return {
     },
     ["repair_part_brakes"] = {
         label = "Brakes",
+        description = "Vehicle Brakes",
         weight = 0.0,
         degrade = 7776000,
         client = {},
@@ -645,6 +714,7 @@ return {
     },
     ["repair_part_clutch"] = {
         label = "Clutch",
+        description = "Vehicle Clutch",
         weight = 0.0,
         degrade = 7776000,
         client = {},
@@ -652,6 +722,7 @@ return {
     },
     ["repair_part_injectors"] = {
         label = "Fuel Injectors",
+        description = "Vehicle Fuel Injectors",
         weight = 0.0,
         degrade = 7776000,
         client = {},
@@ -659,169 +730,217 @@ return {
     },
     ["repair_part_rad_hg"] = {
         label = "HG Radiator",
+        description = "(High Grade) Vehicle Radiator",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["repair_part_transmission_hg"] = {
         label = "HG Transmission Parts",
+        description = "(High Grade) Vehicle Transmission Parts",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["repair_part_brakes_hg"] = {
         label = "HG Brakes",
+        description = "(High Grade) Vehicle Brakes",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["repair_part_clutch_hg"] = {
         label = "HG Clutch",
+        description = "(High Grade) Vehicle Clutch",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["repair_part_injectors_hg"] = {
         label = "HG Fuel Injectors",
+        description = "(High Grade) Vehicle Fuel Injectors",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["upgrade_turbo"] = {
         label = "Turbo Upgrade",
+        description = "Upgrade a Vehicles to a Turbo",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_engine1"] = {
         label = "Engine Upgrade (1)",
+        description = "Upgrade a Vehicles Engine to Level 1",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_engine2"] = {
         label = "Engine Upgrade (2)",
+        description = "Upgrade a Vehicles Engine to Level 2",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_engine3"] = {
         label = "Engine Upgrade (3)",
+        description = "Upgrade a Vehicles Engine to Level 3",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_engine4"] = {
         label = "Engine Upgrade (4)",
+        description = "Upgrade a Vehicles Engine to Level 4",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_brakes1"] = {
         label = "Brakes Upgrade (1)",
+        description = "Upgrade a Vehicles Brakes to Level 1",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_brakes2"] = {
         label = "Brakes Upgrade (2)",
+        description = "Upgrade a Vehicles Brakes to Level 2",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_brakes3"] = {
         label = "Brakes Upgrade (3)",
+        description = "Upgrade a Vehicles Brakes to Level 3",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_brakes4"] = {
         label = "Brakes Upgrade (4)",
+        description = "Upgrade a Vehicles Brakes to Level 4",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_transmission1"] = {
         label = "Transmission Upgrade (1)",
+        description = "Upgrade a Vehicles Transmission to Level 1",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_transmission2"] = {
         label = "Transmission Upgrade (2)",
+        description = "Upgrade a Vehicles Transmission to Level 2",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_transmission3"] = {
         label = "Transmission Upgrade (3)",
+        description = "Upgrade a Vehicles Transmission to Level 3",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_transmission4"] = {
         label = "Transmission Upgrade (4)",
+        description = "Upgrade a Vehicles Transmission to Level 4",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_suspension1"] = {
         label = "Suspension Upgrade (1)",
+        description = "Upgrade a Vehicles Suspension to Level 1",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_suspension2"] = {
         label = "Suspension Upgrade (2)",
+        description = "Upgrade a Vehicles Suspension to Level 2",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_suspension3"] = {
         label = "Suspension Upgrade (3)",
+        description = "Upgrade a Vehicles Suspension to Level 3",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["upgrade_suspension4"] = {
         label = "Suspension Upgrade (4)",
+        description = "Upgrade a Vehicles Suspension to Level 4",
         weight = 0.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["harness"] = {
         label = "Vehicle Harness",
+        description = "Stop flying to the moon!",
         weight = 150.0,
         degrade = nil,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["nitrous"] = {
         label = "Nitrous Oxide",
+        description = "Copium",
         weight = 3000.0,
         degrade = nil,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -834,6 +953,7 @@ return {
     },
     ["government_badge"] = {
         label = "Badge",
+        description = "Government Issued Badge",
         weight = 0,
         degrade = nil,
         client = {},
@@ -855,6 +975,7 @@ return {
     },
     ["rental_papers"] = {
         label = "Rental Papers",
+        description = "Documents that prove who rented a vehicle.",
         weight = 1000,
         degrade = 86400,
         client = {},
@@ -862,13 +983,16 @@ return {
     },
     ["radio"] = {
         label = "Encrypted Radio",
+        description = "Encrypted Communication Device for Emergency Services",
         weight = 1000,
         degrade = 5184000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["radio_shitty"] = {
         label = "P6900 Radio",
+        description = "High Frequency Used for Short Range Communication",
         weight = 1000,
         degrade = 1814400,
         client = {},
@@ -876,8 +1000,10 @@ return {
     },
     ["radio_extendo"] = {
         label = "B0085 Radio",
+        description = "Used for Slightly Longer Range Communication",
         weight = 1000,
         degrade = 1814400,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -906,34 +1032,43 @@ return {
     },
     ["megaphone"] = {
         label = "Megaphone",
+        description = "Yell insults at people but from a longer distance",
         weight = 2000,
         degrade = 1209600,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["fakeplates"] = {
         label = "License Plates",
+        description = "A set of license plates from a vehicle",
         weight = 2000,
         degrade = nil,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["personal_plates"] = {
         label = "Personal Plate",
+        description = "Set a personal plate for a vehicle.",
         weight = 500.0,
         degrade = nil,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["personal_plates_donator"] = {
         label = "Personal Plate",
+        description = "Set a personal plate for a vehicle.",
         weight = 500.0,
         degrade = nil,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["fertilizer_nitrogen"] = {
         label = "Fertilizer (Nitrogen)",
+        description = "Nitrogen rich fertilizer improves viability of output when the plant is harvested.",
         weight = 3000,
         degrade = 604800,
         client = {},
@@ -941,6 +1076,7 @@ return {
     },
     ["fertilizer_phosphorus"] = {
         label = "Fertilizer (Phosphorus)",
+        description = "Phosphorus rich fertilizer helps increase plant growth speed.",
         weight = 3000,
         degrade = 604800,
         client = {},
@@ -948,6 +1084,7 @@ return {
     },
     ["fertilizer_potassium"] = {
         label = "Fertilizer (Potassium)",
+        description = "Potassium rich fertilizer helps keep plants hydrated.",
         weight = 3000,
         degrade = 604800,
         client = {},
@@ -990,6 +1127,7 @@ return {
     },
     ["beanbag"] = {
         label = "A Beanbag",
+        description = "So Comfortable",
         weight = 2000.0,
         degrade = nil,
         client = {},
@@ -1027,6 +1165,7 @@ return {
         label = "Heavy Body Armor",
         weight = 8000,
         degrade = 604800,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -1034,6 +1173,7 @@ return {
         label = "PD Body Armor",
         weight = 8000,
         degrade = 604800,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -1041,13 +1181,16 @@ return {
         label = "Bowling Ball",
         weight = 50000.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["petrock"] = {
         label = "Pet Rock",
+        description = "Please take care of me",
         weight = 1000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -1055,6 +1198,7 @@ return {
         label = "Vanity Item",
         weight = 10.0,
         degrade = nil,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -1062,34 +1206,43 @@ return {
         label = "Scrap Box",
         weight = 10000,
         degrade = 604800,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["choplist"] = {
         label = "LSUNDG Shopping List",
+        description = "Personal list just for you, how special",
         weight = 100.0,
         degrade = 1209600,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["lsundg_invite"] = {
         label = "LSUNDG Invitation",
+        description = "Gain access to an exclusive club, wow aren't you special",
         weight = 100.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["chopping_invite"] = {
         label = "Sketchy USB Drive",
+        description = "Probably not the greatest idea to plug this into your phone... unless?",
         weight = 100.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["birthday_cake"] = {
         label = "Birthday Cake",
+        description = "Happy Birthday",
         weight = 2000.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -1097,6 +1250,7 @@ return {
         label = "Scuba Gear",
         weight = 10000,
         degrade = 1209600,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -1132,6 +1286,7 @@ return {
         label = "Diamond VIP",
         weight = 0,
         degrade = 604800,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -1139,6 +1294,7 @@ return {
         label = "Laptop",
         weight = 4000,
         degrade = 2592000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -1146,6 +1302,7 @@ return {
         label = "Handheld Light",
         weight = 2000,
         degrade = 2592000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -1153,6 +1310,7 @@ return {
         label = "Gas Can",
         weight = 1250.0,
         degrade = 432000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -1161,6 +1319,56 @@ return {
         weight = 0,
         degrade = 432000,
         client = {},
+        server = {
+            export = 'sandbox-phone.phone_case'
+        }
+    },
+    ["case_blue"] = {
+        label = "Phone Case: Blue",
+        weight = 0,
+        degrade = 432000,
+        client = {},
+        server = {
+            export = 'sandbox-phone.phone_case'
+        }
+    },
+    ["case_gold"] = {
+        label = "Phone Case: Gold",
+        weight = 0,
+        degrade = 432000,
+        client = {},
+        server = {
+            export = 'sandbox-phone.phone_case'
+        }
+    },
+    ["case_pink"] = {
+        label = "Phone Case: Pink",
+        weight = 0,
+        degrade = 432000,
+        client = {},
+        server = {
+            export = 'sandbox-phone.phone_case'
+        }
+    },
+    ["case_white"] = {
+        label = "Phone Case: White",
+        weight = 0,
+        degrade = 432000,
+        client = {},
+        server = {
+            export = 'sandbox-phone.phone_case'
+        }
+    },
+    ["event_invite"] = {
+        label = "Race Event Invite",
+        weight = 0,
+        degrade = 86400,
+        client = {},
+        server = {}
+    },
+    ["alias_changer"] = {
+        label = "Alias Changer",
+        weight = 0,
         server = {}
     },
     ["case_blue"] = {
@@ -1191,64 +1399,9 @@ return {
         client = {},
         server = {}
     },
-    ["event_invite"] = {
-        label = "Race Event Invite",
-        weight = 0,
-        degrade = 86400,
-        client = {},
-        server = {}
-    },
-    ["alias_changer"] = {
-        label = "Alias Changer",
-        weight = 0,
-        degrade = 86400,
-        client = {},
-        server = {}
-    },
-    ["pd_panic_button"] = {
-        label = "Panic Button",
-        weight = 0,
-        degrade = 604800,
-        client = {},
-        server = {}
-    },
-    ["doc_panic_button"] = {
-        label = "Panic Button",
-        weight = 0,
-        degrade = 604800,
-        client = {},
-        server = {}
-    },
-    ["ems_panic_button"] = {
-        label = "Panic Button",
-        weight = 0,
-        degrade = 604800,
-        client = {},
-        server = {}
-    },
-    ["carvedpumpkin"] = {
-        label = "Jack O' Lantern",
-        weight = 3000,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["taco_bag"] = {
-        label = "Bagged Order",
-        weight = 1000,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["present"] = {
-        label = "Present",
-        weight = 0,
-        degrade = 86400,
-        client = {},
-        server = {}
-    },
     ["present_daily"] = {
         label = "Daily Present",
+        description = "Happy Holidays!",
         weight = 0,
         degrade = 86400,
         client = {},
@@ -1340,6 +1493,7 @@ return {
     },
     ["coffee_holder"] = {
         label = "Drinks Holder",
+        description = "Open Me!",
         weight = 8000,
         degrade = nil,
         client = {},
@@ -1347,6 +1501,7 @@ return {
     },
     ["foodbag"] = {
         label = "Carrier Bag",
+        description = "Open Me!",
         weight = 15000,
         degrade = nil,
         client = {},
@@ -1354,12 +1509,14 @@ return {
     },
     ["bento_box"] = {
         label = "Bento Box",
+        description = "Open Me!",
         weight = 10000,
         degrade = nil,
         client = {},
         server = {}
     },
     ["cardboard_box"] = {
+        description = "Open Me!",
         label = "Box",
         weight = 50000,
         degrade = nil,
@@ -1368,6 +1525,7 @@ return {
     },
     ["paper_bag"] = {
         label = "Bag",
+        description = "Open Me!",
         weight = 10000,
         degrade = nil,
         client = {},
@@ -1375,6 +1533,7 @@ return {
     },
     ["burgershot_bag"] = {
         label = "Burgershot Bag",
+        description = "Open Me!",
         weight = 10000,
         degrade = nil,
         client = {},
@@ -1382,6 +1541,7 @@ return {
     },
     ["card_holder"] = {
         label = "Card Holder",
+        description = "Open Me!",
         weight = 2000,
         degrade = nil,
         client = {},
@@ -1559,6 +1719,7 @@ return {
         label = "Gold Bar",
         weight = 250.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -1566,6 +1727,7 @@ return {
         label = "Silver Bar",
         weight = 250.0,
         degrade = 7776000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -1587,6 +1749,7 @@ return {
         label = "Refined Aluminum",
         weight = 0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -1594,6 +1757,7 @@ return {
         label = "Refined Iron",
         weight = 0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -1601,6 +1765,7 @@ return {
         label = "Refined Copper",
         weight = 0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -1608,6 +1773,7 @@ return {
         label = "Refined Plasic",
         weight = 0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -1615,6 +1781,7 @@ return {
         label = "Refined Glue",
         weight = 0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -1622,6 +1789,7 @@ return {
         label = "Advanced Electronic Parts",
         weight = 0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -1629,27 +1797,34 @@ return {
         label = "Refined Rubber",
         weight = 0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["buttplug_black"] = {
         label = "Butt Plug",
+        description = "Part of the Uranus Butt Plug Corporation.",
         weight = 1000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["buttplug_pink"] = {
         label = "Butt Plug",
+        description = "Part of the Uranus Butt Plug Corporation.",
         weight = 1000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["vibrator_pink"] = {
         label = "Vibrator",
+        description = "If you vibe it, they will cum.",
         weight = 2000,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -1657,6 +1832,7 @@ return {
         label = "Bottle of Wine",
         weight = 500.0,
         degrade = 12960000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -1664,6 +1840,7 @@ return {
         label = "Glass of Wine",
         weight = 100.0,
         degrade = 432000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -1671,6 +1848,7 @@ return {
         label = "Beer",
         weight = 100.0,
         degrade = 432000,
+        rarity = 1,
         client = {},
         server = {}
     },
@@ -1678,6 +1856,7 @@ return {
         label = "Whiskey",
         weight = 300.0,
         degrade = 5184000,
+        rarity = 1,
         client = {},
         server = {}
     },
@@ -1685,6 +1864,7 @@ return {
         label = "Rum",
         weight = 300.0,
         degrade = 5184000,
+        rarity = 1,
         client = {},
         server = {}
     },
@@ -1774,6 +1954,7 @@ return {
     },
     ["pint_mcdougles"] = {
         label = "McDougle's Stout",
+        description = "McDougle's Irish Stout™",
         weight = 100.0,
         degrade = 604800,
         client = {},
@@ -2070,6 +2251,7 @@ return {
         label = "Lockpick",
         weight = 500.0,
         degrade = 1209600,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -2077,11 +2259,13 @@ return {
         label = "Advanced Lockpick",
         weight = 500.0,
         degrade = 2419200,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["lockpick_pd"] = {
         label = "PD Lockpick",
+        description = "Only Usable By Police",
         weight = 500.0,
         degrade = nil,
         client = {},
@@ -2096,15 +2280,19 @@ return {
     },
     ["racing_crappy"] = {
         label = "Homemade Phone Dongle",
+        description = "Its a really shitty dongly boi",
         weight = 1000,
         degrade = 43200,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["racedongle"] = {
         label = "Phone Dongle",
+        description = "Its a dongly boi",
         weight = 2500.0,
         degrade = 1814400,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -2112,6 +2300,7 @@ return {
         label = "VPN",
         weight = 1000,
         degrade = 1814400,
+        rarity = 4,
         stack = false,
         decay = true,
         client = {
@@ -2134,6 +2323,7 @@ return {
         label = "PD Handcuffs",
         weight = 250.0,
         degrade = 604800,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -2155,6 +2345,7 @@ return {
         label = "Spike Strips",
         weight = 12500.0,
         degrade = 604800,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -2162,6 +2353,7 @@ return {
         label = "Binoculars",
         weight = 2500.0,
         degrade = 1814400,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -2169,6 +2361,7 @@ return {
         label = "Camera",
         weight = 2500.0,
         degrade = 1814400,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -2176,6 +2369,7 @@ return {
         label = "GPS Tracker",
         weight = 1000,
         degrade = 1814400,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -2183,6 +2377,7 @@ return {
         label = "GPS Tracker",
         weight = 1000,
         degrade = 1814400,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -2190,6 +2385,7 @@ return {
         label = "GPS Tracker",
         weight = 1000,
         degrade = 1814400,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -2197,6 +2393,7 @@ return {
         label = "Meth Table",
         weight = 500.0,
         degrade = 1209600,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -2204,6 +2401,7 @@ return {
         label = "Parachute",
         weight = 5000,
         degrade = 604800,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -2211,6 +2409,7 @@ return {
         label = "Det. Cord",
         weight = 250.0,
         degrade = 86400,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -2666,6 +2865,7 @@ return {
         label = "Unknown Ore",
         weight = 3000.0,
         degrade = nil,
+        rarity = 5,
         client = {},
         server = {}
     },
@@ -2673,6 +2873,7 @@ return {
         label = "Packaged Parts",
         weight = 4000.0,
         degrade = nil,
+        rarity = 5,
         client = {},
         server = {}
     },
@@ -2680,6 +2881,7 @@ return {
         label = "Hunting Bait",
         weight = 2000.0,
         degrade = nil,
+        rarity = 5,
         client = {},
         server = {}
     },
@@ -2687,6 +2889,7 @@ return {
         label = "Deer Bait",
         weight = 2000.0,
         degrade = nil,
+        rarity = 5,
         client = {},
         server = {}
     },
@@ -2694,6 +2897,7 @@ return {
         label = "Boar Bait",
         weight = 2000.0,
         degrade = nil,
+        rarity = 5,
         client = {},
         server = {}
     },
@@ -2701,6 +2905,7 @@ return {
         label = "Pig Bait",
         weight = 2000.0,
         degrade = nil,
+        rarity = 5,
         client = {},
         server = {}
     },
@@ -2708,6 +2913,7 @@ return {
         label = "Chicken Bait",
         weight = 2000.0,
         degrade = nil,
+        rarity = 5,
         client = {},
         server = {}
     },
@@ -2715,6 +2921,7 @@ return {
         label = "Cow Bait",
         weight = 2000.0,
         degrade = nil,
+        rarity = 5,
         client = {},
         server = {}
     },
@@ -2722,6 +2929,7 @@ return {
         label = "Rabbit Bait",
         weight = 2000.0,
         degrade = nil,
+        rarity = 5,
         client = {},
         server = {}
     },
@@ -2729,11 +2937,13 @@ return {
         label = "Exotic Bait",
         weight = 2000.0,
         degrade = nil,
+        rarity = 5,
         client = {},
         server = {}
     },
     ["jugo"] = {
         label = "Jugo Fruit Punch",
+        description = "Definitely organic.",
         weight = 250.0,
         degrade = 172800,
         client = {},
@@ -2741,6 +2951,7 @@ return {
     },
     ["taco_soda"] = {
         label = "Southside Soda",
+        description = "Yeah, tastes about right.",
         weight = 250.0,
         degrade = 172800,
         client = {},
@@ -2748,6 +2959,7 @@ return {
     },
     ["beef_taco"] = {
         label = "Beef Taco",
+        description = "In case you don't have beef yet.",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -2755,6 +2967,7 @@ return {
     },
     ["tostada"] = {
         label = "Tostada",
+        description = "Deep fried or toasted?",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -2762,6 +2975,7 @@ return {
     },
     ["quesadilla"] = {
         label = "Quesadilla",
+        description = "Basically grilled cheese",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -2769,6 +2983,7 @@ return {
     },
     ["burrito"] = {
         label = "Burrito",
+        description = "Burritoe, get it?",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -2776,6 +2991,7 @@ return {
     },
     ["enchilada"] = {
         label = "Enchilada",
+        description = "Meat birthday cakes.",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -2783,6 +2999,7 @@ return {
     },
     ["carne_asada"] = {
         label = "Carne Asada",
+        description = "Kanye Asada",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -2790,6 +3007,7 @@ return {
     },
     ["torta"] = {
         label = "Torta",
+        description = "Fancy sub",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -2846,20 +3064,25 @@ return {
     },
     ["briefcase_cash"] = {
         label = "Briefcase",
+        description = "Sandbox Lotto Event",
         weight = 1000,
         degrade = 864000,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["valuegoods"] = {
         label = "Valuable Goods",
+        description = "Potentially Stolen",
         weight = 1000,
         degrade = 864000,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["goldcoins"] = {
         label = "Gold Coins",
+        description = "Potentially Stolen",
         weight = 100.0,
         degrade = 864000,
         client = {},
@@ -2867,13 +3090,16 @@ return {
     },
     ["rolex"] = {
         label = "Rolex",
+        description = "Potentially Stolen",
         weight = 750.0,
         degrade = 864000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["ring"] = {
         label = "Ring",
+        description = "Potentially Stolen",
         weight = 1000,
         degrade = 864000,
         client = {},
@@ -2881,6 +3107,7 @@ return {
     },
     ["chain"] = {
         label = "Gold Chain",
+        description = "Potentially Stolen",
         weight = 500.0,
         degrade = 864000,
         client = {},
@@ -2888,6 +3115,7 @@ return {
     },
     ["watch"] = {
         label = "Gold Watch",
+        description = "Potentially Stolen",
         weight = 1000,
         degrade = 864000,
         client = {},
@@ -2895,6 +3123,7 @@ return {
     },
     ["earrings"] = {
         label = "Gold Earrings",
+        description = "Potentially Stolen",
         weight = 800.0,
         degrade = 864000,
         client = {},
@@ -2902,6 +3131,7 @@ return {
     },
     ["tv"] = {
         label = "Television",
+        description = "Potentially Stolen",
         weight = 100000.0,
         degrade = 864000,
         client = {},
@@ -2909,6 +3139,7 @@ return {
     },
     ["big_tv"] = {
         label = "Television",
+        description = "Potentially Stolen",
         weight = 100000.0,
         degrade = 864000,
         client = {},
@@ -2916,6 +3147,7 @@ return {
     },
     ["boombox"] = {
         label = "Boom Box",
+        description = "Potentially Stolen",
         weight = 50000.0,
         degrade = 864000,
         client = {},
@@ -2923,6 +3155,7 @@ return {
     },
     ["microwave"] = {
         label = "Microwave",
+        description = "Potentially Stolen",
         weight = 50000.0,
         degrade = 864000,
         client = {},
@@ -2932,6 +3165,7 @@ return {
         label = "Golf Club Set",
         weight = 100000.0,
         degrade = 864000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -2939,6 +3173,7 @@ return {
         label = "Painting",
         weight = 100000.0,
         degrade = 864000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -2946,6 +3181,7 @@ return {
         label = "PC",
         weight = 80000.0,
         degrade = 864000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -2974,6 +3210,7 @@ return {
         label = "Gold Ore",
         weight = 250.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -2981,6 +3218,7 @@ return {
         label = "Silver Ore",
         weight = 250.0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -2988,6 +3226,7 @@ return {
         label = "Iron Ore",
         weight = 0,
         degrade = 7776000,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -2995,6 +3234,7 @@ return {
         label = "Diamond",
         weight = 500.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -3002,6 +3242,7 @@ return {
         label = "Emerald",
         weight = 500.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -3009,6 +3250,7 @@ return {
         label = "Sapphire",
         weight = 500.0,
         degrade = nil,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -3016,6 +3258,7 @@ return {
         label = "Ruby",
         weight = 500.0,
         degrade = nil,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -3023,6 +3266,7 @@ return {
         label = "Amethyst",
         weight = 500.0,
         degrade = nil,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -3030,6 +3274,7 @@ return {
         label = "Citrine",
         weight = 500.0,
         degrade = nil,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -3091,8 +3336,10 @@ return {
     },
     ["fleeca_card"] = {
         label = "Disposable Access Card",
+        description = "This seems like it may be useful",
         weight = 250.0,
         degrade = 21600,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -3100,6 +3347,7 @@ return {
         label = "Crypto Voucher",
         weight = 250.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -3107,11 +3355,13 @@ return {
         label = "Rep Voucher",
         weight = 250.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["traumakit"] = {
         label = "Trauma Kit",
+        description = "Needed to treat serious trauma in the field",
         weight = 5000,
         degrade = 432000,
         client = {},
@@ -3119,6 +3369,7 @@ return {
     },
     ["medicalkit"] = {
         label = "Medical Kit",
+        description = "Used to treat patients. Only usable by Doctors",
         weight = 3000,
         degrade = nil,
         client = {},
@@ -3128,6 +3379,7 @@ return {
         label = "IFAK",
         weight = 3000,
         degrade = 432000,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -3135,6 +3387,7 @@ return {
         label = "First Aid Kit",
         weight = 5000,
         degrade = 432000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -3189,6 +3442,7 @@ return {
     },
     ["chickenpotpie"] = {
         label = "Chicken Pot Pie",
+        description = "A truly hearty meal",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -3378,6 +3632,7 @@ return {
     },
     ["keg"] = {
         label = "Keg of Irish Stout",
+        description = "McDougle's Irish Stout™",
         weight = 1500.0,
         degrade = nil,
         client = {},
@@ -3506,11 +3761,13 @@ return {
         label = "Car Bomb",
         weight = 5000.0,
         degrade = 1814400,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["fishing_rod"] = {
         label = "Fishing Rod",
+        description = "Catch the Fishies",
         weight = 3500.0,
         degrade = 2592000,
         client = {},
@@ -3518,13 +3775,16 @@ return {
     },
     ["fishing_net"] = {
         label = "Fishing Net",
+        description = "Catch all the Fishies",
         weight = 5000.0,
         degrade = 5184000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["fishing_bait_lugworm"] = {
         label = "Lugworm Bait",
+        description = "Marine Fish Bait",
         weight = 100.0,
         degrade = 5184000,
         client = {},
@@ -3532,6 +3792,7 @@ return {
     },
     ["fishing_bait_worm"] = {
         label = "Worm Bait",
+        description = "Fresh Water Fish Bait",
         weight = 100.0,
         degrade = 5184000,
         client = {},
@@ -3539,50 +3800,64 @@ return {
     },
     ["fishing_rainbowtrout"] = {
         label = "Rainbow Trout",
+        description = "A fish found in fresh water",
         weight = 2000.0,
         degrade = 5184000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["fishing_chub"] = {
         label = "Chub",
+        description = "A fish found in fresh water",
         weight = 1500.0,
         degrade = 5184000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["fishing_grasscarp"] = {
         label = "Grass Carp",
+        description = "A fish found in fresh water",
         weight = 1000.0,
         degrade = 5184000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["fishing_kelp"] = {
         label = "Kelp Fish",
+        description = "A fish found in the ocean",
         weight = 1500.0,
         degrade = 5184000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["fishing_bass"] = {
         label = "Bass Fish",
+        description = "A fish found in the ocean",
         weight = 1500.0,
         degrade = 5184000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["fishing_rockfish"] = {
         label = "Rock Fish",
+        description = "A fish found in the ocean",
         weight = 1000.0,
         degrade = 5184000,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["fishing_lobster"] = {
         label = "Lobster",
+        description = "It's a lobster",
         weight = 750.0,
         degrade = 5184000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -3590,6 +3865,7 @@ return {
         label = "Tuna",
         weight = 2500.0,
         degrade = 5184000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -3597,6 +3873,7 @@ return {
         label = "Bluefin Tuna",
         weight = 3500.0,
         degrade = 5184000,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -3604,6 +3881,7 @@ return {
         label = "A Whale",
         weight = 100000.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -3611,6 +3889,7 @@ return {
         label = "A Dolphin",
         weight = 50000.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -3618,41 +3897,52 @@ return {
         label = "A Shark",
         weight = 75000.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["fishing_boot"] = {
         label = "Soggy Boot",
+        description = "I think someone is missing a boot",
         weight = 5000.0,
         degrade = nil,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["fishing_bike"] = {
         label = "Rusty Bicycle",
+        description = "I don't think this is worth anything",
         weight = 25000.0,
         degrade = nil,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["fishing_chest"] = {
         label = "Old Chest",
+        description = "Maybe There is Treasure!",
         weight = 50000.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["fishing_oil"] = {
         label = "Fish Oil",
+        description = "Eww",
         weight = 250.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["fishing_seaweed"] = {
         label = "Seaweed",
+        description = "A salty snack",
         weight = 10.0,
         degrade = 5184000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -3695,6 +3985,7 @@ return {
         label = "Baggy of Weed",
         weight = 50.0,
         degrade = 1209600,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -3716,6 +4007,7 @@ return {
         label = "Brick of Weed",
         weight = 10000,
         degrade = 3888000,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -3730,6 +4022,7 @@ return {
         label = "Mysterious Box",
         weight = 0,
         degrade = 86400,
+        rarity = 5,
         client = {},
         server = {}
     },
@@ -3772,6 +4065,7 @@ return {
         label = "Adrenaline Syringe",
         weight = 0.0,
         degrade = 604800,
+        rarity = 3,
         client = {},
         server = {}
     },
@@ -3779,6 +4073,7 @@ return {
         label = "Still",
         weight = 2000.0,
         degrade = 1209600,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -3786,6 +4081,7 @@ return {
         label = "Oak Barrel",
         weight = 2000.0,
         degrade = 1209600,
+        rarity = 4,
         client = {},
         server = {}
     },
@@ -3800,6 +4096,7 @@ return {
         label = "Homemade Moonshine",
         weight = 100.0,
         degrade = 864000,
+        rarity = 2,
         client = {},
         server = {}
     },
@@ -3895,6 +4192,7 @@ return {
     },
     ["glass_cock"] = {
         label = "Coke",
+        description = "Glass of Cock",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -3965,6 +4263,7 @@ return {
     },
     ["hotdog"] = {
         label = "Hotdog",
+        description = "A dog but very hot",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -4208,13 +4507,6 @@ return {
         client = {},
         server = {}
     },
-    ["mocha_shake"] = {
-        label = "Mocha Shake",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
     ["sandwich"] = {
         label = "Ham Sandwich",
         weight = 250.0,
@@ -4259,6 +4551,7 @@ return {
     },
     ["sandwich_crisp"] = {
         label = "Crisp Sandwich",
+        description = "Yeah, that's right. Crisps",
         weight = 250.0,
         degrade = 432000,
         client = {},
@@ -4567,6 +4860,7 @@ return {
     },
     ["uwu_prize_box"] = {
         label = "UwU Mystery Box",
+        description = "Collect all the different bears! UwU",
         weight = 0.0,
         degrade = nil,
         client = {},
@@ -4574,6 +4868,7 @@ return {
     },
     ["uwu_prize_b1"] = {
         label = "UwU Bear",
+        description = "UwU Cafe Collectable",
         weight = 0.0,
         degrade = nil,
         client = {},
@@ -4581,6 +4876,7 @@ return {
     },
     ["uwu_prize_b2"] = {
         label = "UwU Rainbow Bear",
+        description = "UwU Cafe Collectable",
         weight = 0.0,
         degrade = nil,
         client = {},
@@ -4588,6 +4884,7 @@ return {
     },
     ["uwu_prize_b3"] = {
         label = "UwU Sun Bear",
+        description = "UwU Cafe Collectable",
         weight = 0.0,
         degrade = nil,
         client = {},
@@ -4595,6 +4892,7 @@ return {
     },
     ["uwu_prize_b4"] = {
         label = "UwU Flower Bear",
+        description = "UwU Cafe Collectable",
         weight = 0.0,
         degrade = nil,
         client = {},
@@ -4602,42 +4900,1011 @@ return {
     },
     ["uwu_prize_b5"] = {
         label = "UwU Tree Bear",
+        description = "UwU Cafe Collectable",
         weight = 0.0,
         degrade = nil,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["uwu_prize_b6"] = {
         label = "UwU Heart Bear",
+        description = "UwU Cafe Collectable",
         weight = 0.0,
         degrade = nil,
+        rarity = 2,
         client = {},
         server = {}
     },
     ["uwu_prize_b7"] = {
         label = "UwU Moon Bear",
+        description = "UwU Cafe Collectable",
         weight = 0.0,
         degrade = nil,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["uwu_prize_b8"] = {
         label = "UwU Rain Bear",
+        description = "UwU Cafe Collectable",
         weight = 0.0,
         degrade = nil,
+        rarity = 3,
         client = {},
         server = {}
     },
     ["uwu_prize_b9"] = {
         label = "UwU Star Bear",
+        description = "UwU Cafe Collectable",
         weight = 0.0,
         degrade = nil,
+        rarity = 4,
         client = {},
         server = {}
     },
     ["uwu_prize_b10"] = {
         label = "UwU Snow Bear",
+        description = "UwU Cafe Collectable",
         weight = 0.0,
+        degrade = nil,
+        rarity = 4,
+        client = {},
+        server = {}
+    },
+    ["backpack"] = {
+        label = "Backpack",
+        description = "A backpack with a capacity of 10 slots.",
+        weight = 2000.0,
+        degrade = nil,
+        rarity = 4,
+        client = {},
+        server = {}
+    },
+    ["large_backpack"] = {
+        label = "Large Backpack",
+        description = "A backpack with a capacity of 20 slots.",
+        weight = 4000.0,
+        degrade = nil,
+        rarity = 4,
+        client = {},
+        server = {}
+    },
+    ["military_backpack"] = {
+        label = "Military Backpack",
+        description = "A backpack with a capacity of 30 slots.",
+        weight = 8000.0,
+        degrade = nil,
+        rarity = 4,
+        container = {
+            side = 'left',
+            slots = 30,
+            maxWeight = 25000,
+            label = 'Military Backpack Storage'
+        },
+        client = {},
+        server = {}
+    },
+    ["carvedpumpkin"] = {
+        label = "Jack O' Lantern",
+        description = "Trick Or Treat Muthafu-",
+        weight = 3000.0,
+        degrade = nil,
+        rarity = 4,
+        client = {},
+        server = {}
+    },
+    ["taco_bag"] = {
+        label = "Bagged Order",
+        description = "Smells just like Southside",
+        weight = 1000.0,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["present"] = {
+        label = "Present",
+        description = "Happy Holidays!",
+        weight = 1000.0,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["simcard"] = {
+        label = "Sim Card",
+        description = "A Sim Card for a phone",
+        weight = 1000.0,
+        degrade = nil,
+        rarity = 2,
+        client = {},
+        server = {}
+    },
+    ["wallet"] = {
+        label = "Wallet",
+        description = "A Wallet for your money",
+        weight = 1000.0,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["mint_mate_chain"] = {
+        label = "Mint Mate Chain",
+        description = "It's Mint Mate",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["mint_mate_chain_2"] = {
+        label = "Mint Mate Chain (Large)",
+        description = "It's Mint Mate ... but large",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["ssb_chain"] = {
+        label = "SSB Chain",
+        description = "SSB Gang Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["gotti_chain"] = {
+        label = "Gotti Family Chain",
+        description = "Gotti Family Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["uwu_chain"] = {
+        label = "UwU Chain",
+        description = "UwU Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["pixels_chain"] = {
+        label = "Business Bureau Chain",
+        description = "Business Bureau Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["frosty_chain"] = {
+        label = "Frosty Chain",
+        description = "Frosty Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["milk_chain"] = {
+        label = "Milk Chain",
+        description = "Milk Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["saint_chain"] = {
+        label = "Saint Chain",
+        description = "Saint Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["bobs_chain"] = {
+        label = "Bob's Balls Chain",
+        description = "Bob's Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["lala_chain"] = {
+        label = "Tequi-La-La Chain",
+        description = "Tequi-La-La Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["rooks_chain"] = {
+        label = "Rooks Chain",
+        description = "Rooks Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["deathrow_chain"] = {
+        label = "Death Row Chain",
+        description = "Death Row Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["ferrari_chain"] = {
+        label = "Ferrari Family Chain",
+        description = "Ferrari Family Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["dynasty_chain"] = {
+        label = "Dynasty Chain",
+        description = "Dynasty Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["oni_chain"] = {
+        label = "Oni Chain",
+        description = "Oni Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["snowboiz_chain"] = {
+        label = "Snow Boiz Chain",
+        description = "Snow Boiz Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["mint_mate_chain_3"] = {
+        label = "Mint Mate Chain (Alternate)",
+        description = "It's Mint Mate",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["boo_chain"] = {
+        label = "BOO Chain",
+        description = "BOO!",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["krazed_chain"] = {
+        label = "Krazed Ridez Chain",
+        description = "Krazed Ridez Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["snow_chain"] = {
+        label = "Snow Chain",
+        description = "Snow Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["rush_chain"] = {
+        label = "Rush Chain",
+        description = "Rush Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["meg_chain"] = {
+        label = "Meg Chain",
+        description = "Meg Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["olivia_chain"] = {
+        label = "Vangelico Chain",
+        description = "Vangelico Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["diamond_chain"] = {
+        label = "Olivia Chain",
+        description = "Olivia Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["britton_chain"] = {
+        label = "Britton Chain",
+        description = "Britton Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["ssf_chain"] = {
+        label = "SSF Chain",
+        description = "SSF Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["bigpoppa_chain"] = {
+        label = "Big Poppa Chain",
+        description = "Big Poppa Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["skull_chain"] = {
+        label = "Thick Skull Chain",
+        description = "Thick Skull Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["pimpdaddy_chain"] = {
+        label = "Pimp Daddy Chain",
+        description = "Pimp Daddy Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["richardson_chain"] = {
+        label = "Richardson Chain",
+        description = "Richardson Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["king_chain"] = {
+        label = "King Crown Chain",
+        description = "King Crown Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["unicorn_chain"] = {
+        label = "Unicorn Chain",
+        description = "Unicorn Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["unity_chain"] = {
+        label = "The Unity Chain",
+        description = "The Unity Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["pizzathis_chain"] = {
+        label = "Pizza This Chain",
+        description = "Pizza This Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["ottos_chain"] = {
+        label = "Otto's Chain",
+        description = "Otto's Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["duck_chain"] = {
+        label = "Duck Chain",
+        description = "Duck Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["dani_chain"] = {
+        label = "Dani Chain",
+        description = "Dani Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["armytags_chain"] = {
+        label = "Army Dog Tag Chain",
+        description = "Army Dog Tag Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["donut_chain"] = {
+        label = "Donut Chain",
+        description = "Donut Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["mustard_chain"] = {
+        label = "Mustard Chain",
+        description = "Mustard Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["pandanoodle_chain"] = {
+        label = "Panda Noodle Chain",
+        description = "Panda Noodle Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["famli_chain"] = {
+        label = "Teal’s Chain",
+        description = "Teal’s Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["pgs_chain"] = {
+        label = "PGS Chain",
+        description = "PGS Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["bdragon_chain"] = {
+        label = "BlackDragon Chain",
+        description = "BlackDragon Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["doublecup_chain"] = {
+        label = "Double Cup Chain",
+        description = "2 is a party!",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["axel_chain"] = {
+        label = "Axel Chain",
+        description = "Axel Chain and jewelry",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["sage_chain"] = {
+        label = "Bear Chain",
+        description = "Bear Chain - Female",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["fredo_chain"] = {
+        label = "Fredo Chain",
+        description = "Fredo Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["hajaar_chain"] = {
+        label = "Hajaar Chain",
+        description = "Hajaar Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["diablos_chain"] = {
+        label = "Diablos Chain",
+        description = "Diablos Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["ninezero_chain"] = {
+        label = "9Zero Chain",
+        description = "9Zero Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["otf_chain"] = {
+        label = "OTF Chain",
+        description = "OTF Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["nolan_chain"] = {
+        label = "Nolan Chain",
+        description = "Nolan Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["olivia2_chain"] = {
+        label = "Olivia Chain",
+        description = "Olivia Chain - female",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["him_chain"] = {
+        label = "I'm Him Chain",
+        description = "I'm HIM Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["nos_chain"] = {
+        label = "NOS Chain",
+        description = "LIGHTNING FAST",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["eb13_chain"] = {
+        label = "EB13 Chain",
+        description = "EB13 Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["tracy_chain"] = {
+        label = "Tracy Chain",
+        description = "WOOP WOOP Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["oggramps_chain"] = {
+        label = "OG Gramps Chain",
+        description = "OG Gramps' Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["cloud9_chain"] = {
+        label = "Cloud9 Chain",
+        description = "Cloud9 Drifting Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["dex_chain"] = {
+        label = "Dex Chain",
+        description = "Dex Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["takia_chain"] = {
+        label = "Takia Chain",
+        description = "Takia Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["queen_chain"] = {
+        label = "Queen Chain",
+        description = "Queen Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["nines_chain"] = {
+        label = "The 9's Chain",
+        description = "9's Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["vell_chain"] = {
+        label = "Vell's Chain",
+        description = "Vell's Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["jrawefg_chain"] = {
+        label = "FG Chain",
+        description = "FG Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["bco_chain"] = {
+        label = "Broward Boy Chain",
+        description = "Broward Boy Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["paletotuner_chain"] = {
+        label = "Paleto Tuner Chain",
+        description = "Paleto Tuner Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["illuminati_chain"] = {
+        label = "Illuminati Chain",
+        description = "Illuminati Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["produce_chain"] = {
+        label = "Produce Crew Chain",
+        description = "Produce Crew Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["bandits_chain"] = {
+        label = "Bandits Chain",
+        description = "Bandits Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["mafia_chain"] = {
+        label = "Escobar Mafia Chain",
+        description = "Escobar Mafia Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["one41_chain"] = {
+        label = "141 Chain",
+        description = "141 Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["streetlegends_chain"] = {
+        label = "Street Legends Chain",
+        description = "Street Legends Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["summer_chain"] = {
+        label = "Summer Chain",
+        description = "Summer Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["esb_chain"] = {
+        label = "ESB Chain",
+        description = "ESB Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["shlevin_chain"] = {
+        label = "Shlevin Chain",
+        description = "Shlevin Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["moneybag_chain"] = {
+        label = "Money Bag Chain",
+        description = "Money Bag Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["bluediamond_chain"] = {
+        label = "Blue Diamond Chain",
+        description = "Blue Diamond Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["wolfring_chain"] = {
+        label = "G.S. Wolf Ring",
+        description = "Wolf Ring",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["smiley_chain"] = {
+        label = "Smiley Chain",
+        description = "Why so serious?",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["him2_chain"] = {
+        label = "I'm Him Chain 2",
+        description = "I'm Him Chain 2",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["sbc_chain"] = {
+        label = "SBC Chain",
+        description = "SBC Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["fafo_chain"] = {
+        label = "FAFO Chain",
+        description = "FAFO Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["weed_chain"] = {
+        label = "Weed Chain",
+        description = "Weed Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["queenies_chain"] = {
+        label = "Queenies Chain",
+        description = "Queenies Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["hbdatsme_chain"] = {
+        label = "HB Chain",
+        description = "HBDATSME yo",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["dagoat_chain"] = {
+        label = "DaGOAT Chain",
+        description = "DaGOAT Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["billyhale_chain"] = {
+        label = "Calilly Chain",
+        description = "Calilly Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["ten13_chain"] = {
+        label = "1013 Chain",
+        description = "1013 Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["deathrow2_chain"] = {
+        label = "Death Row Chain 2",
+        description = "Death Row Chain 2",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["turtles_chain"] = {
+        label = "Ice Ice Turtle Chain",
+        description = "I like turtles",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["mostwanted_chain"] = {
+        label = "Most Wanted Chain",
+        description = "Most Wanted Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["spencer_chain"] = {
+        label = "41 Spencer Chain",
+        description = "41 Spencer Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["santamuerte_chain"] = {
+        label = "Santa Muerte Chain",
+        description = "Santa Muerte Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["egan_chain"] = {
+        label = "Egan Chain",
+        description = "Egan Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ["moneymind_chain"] = {
+        label = "Money on the Mind Chain",
+        description = "Money on the Mind Chain",
+        weight = 0.0,
+        rarity = 4,
         degrade = nil,
         client = {},
         server = {}

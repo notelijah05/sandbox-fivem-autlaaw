@@ -64,7 +64,6 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
         isOver: monitor.isOver(),
       }),
       drop: (source) => {
-        dispatch(closeTooltip());
         switch (source.inventory) {
           case InventoryType.SHOP:
             onBuy(source, { inventory: inventoryType, item: { slot: item.slot } });
@@ -102,7 +101,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
 
   const handleContext = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (inventoryType !== 'player' || !isSlotWithItem(item)) return;
+    if ((inventoryType !== 'player' && inventoryType !== 'utility') || !isSlotWithItem(item)) return;
 
     dispatch(openContextMenu({ item, coords: { x: event.clientX, y: event.clientY } }));
   };
@@ -110,21 +109,36 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     dispatch(closeTooltip());
     if (timerRef.current) clearTimeout(timerRef.current);
-    if (event.ctrlKey && isSlotWithItem(item) && inventoryType !== 'shop' && inventoryType !== 'crafting') {
+    if (event.shiftKey && isSlotWithItem(item) && inventoryType !== 'shop' && inventoryType !== 'crafting') {
       onDrop({ item: item, inventory: inventoryType });
-    } else if (event.altKey && isSlotWithItem(item) && inventoryType === 'player') {
+    } else if (event.altKey && isSlotWithItem(item) && (inventoryType === 'player' || inventoryType === 'utility')) {
+      onUse(item);
+    }
+  };
+
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.button === 1 && isSlotWithItem(item) && (inventoryType === 'player' || inventoryType === 'utility')) {
+      event.preventDefault();
       onUse(item);
     }
   };
 
   const refs = useMergeRefs([connectRef, ref]);
 
+  const getRarityClass = () => {
+    if (!isSlotWithItem(item)) return '';
+    const rarity = item.metadata?.rarity || item.rarity || Items[item.name]?.rarity;
+    return rarity ? `rarity-${rarity}` : '';
+  };
+
   return (
     <div
       ref={refs}
       onContextMenu={handleContext}
       onClick={handleClick}
-      className="inventory-slot"
+      onMouseDown={handleMouseDown}
+      className={`inventory-slot ${getRarityClass()}`}
+      data-durability={isSlotWithItem(item) ? item.durability : undefined}
       style={{
         filter:
           !canPurchaseItem(item, { type: inventoryType, groups: inventoryGroups }) || !canCraftItem(item, inventoryType)
@@ -132,7 +146,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
             : undefined,
         opacity: isDragging ? 0.4 : 1.0,
         backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}`,
-        border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
+        border: isOver ? '2px dashed rgba(255,255,255,0.4)' : '',
       }}
     >
       {isSlotWithItem(item) && (
@@ -141,7 +155,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
           onMouseEnter={() => {
             timerRef.current = window.setTimeout(() => {
               dispatch(openTooltip({ item, inventoryType }));
-            }, 500) as unknown as number;
+            }, 200) as unknown as number;
           }}
           onMouseLeave={() => {
             dispatch(closeTooltip());
@@ -162,7 +176,8 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
                 {item.weight > 0
                   ? item.weight >= 1000
                     ? `${(item.weight / 1000).toLocaleString('en-us', {
-                        minimumFractionDigits: 2,
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2,
                       })}kg `
                     : `${item.weight.toLocaleString('en-us', {
                         minimumFractionDigits: 0,
@@ -173,7 +188,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
             </div>
           </div>
           <div>
-            {inventoryType !== 'shop' && item?.durability !== undefined && (
+            {inventoryType !== 'shop' && item?.durability !== undefined && item.durability > 0 && (
               <WeightBar percent={item.durability} durability />
             )}
             {inventoryType === 'shop' && item?.price !== undefined && (
