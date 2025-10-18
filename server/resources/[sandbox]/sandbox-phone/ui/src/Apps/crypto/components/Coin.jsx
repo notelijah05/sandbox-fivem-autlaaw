@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: '14px 14px 8px 8px',
 		marginBottom: 4,
 		background: `${theme.palette.secondary.dark}d1`,
-		backdropFilter: 'blur(10px)',
+		//backdropFilter: 'blur(10px)',
 		borderRadius: 8,
 	},
 	icon: {

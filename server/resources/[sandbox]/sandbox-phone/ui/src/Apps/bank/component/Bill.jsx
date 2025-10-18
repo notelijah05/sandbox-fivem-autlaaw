@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
 	container: {
 		zIndex: 1,
 		background: `${theme.palette.secondary.dark}d1`,
-		backdropFilter: 'blur(10px)',
+		//backdropFilter: 'blur(10px)',
 		border: `1px solid ${theme.palette.border.divider}`,
 		borderLeft: (app) => `2px solid ${app.color}`,
 		transition: 'border ease-in 0.15s',
@@ -67,10 +67,10 @@ const useStyles = makeStyles((theme) => ({
 		padding: 8,
 		borderTop: `1px solid ${theme.palette.border.divider}`,
 	},
-    timestamp: {
-        fontSize: 12,
-        color: theme.palette.text.alt,
-    }
+	timestamp: {
+		fontSize: 12,
+		color: theme.palette.text.alt,
+	},
 }));
 
 export default ({ bill, onPay, onDecline }) => {

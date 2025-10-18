@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 		paddingTop: 15,
 		borderTop: (app) => `1px solid ${app.color}`,
 		background: `${theme.palette.secondary.dark}d1`,
-		backdropFilter: 'blur(10px)',
+		//backdropFilter: 'blur(10px)',
 	},
 	alert: {
 		backgroundColor: '#8E1467',

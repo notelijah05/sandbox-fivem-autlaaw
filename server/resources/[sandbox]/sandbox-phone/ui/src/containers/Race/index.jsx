@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
 	wrapper: {
 		padding: 10,
 		background: `${theme.palette.secondary.dark}d1`,
-		backdropFilter: 'blur(10px)',
+		//backdropFilter: 'blur(10px)',
 		borderRadius: 4,
 		marginBottom: 10,
 	},

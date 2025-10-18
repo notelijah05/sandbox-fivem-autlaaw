@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 		left: 0,
 		margin: 'auto',
 		background: `${theme.palette.secondary.dark}d1`,
-		backdropFilter: 'blur(10px)',
+		//backdropFilter: 'blur(10px)',
 		padding: 10,
 		zIndex: 10001,
 		borderRadius: 15,

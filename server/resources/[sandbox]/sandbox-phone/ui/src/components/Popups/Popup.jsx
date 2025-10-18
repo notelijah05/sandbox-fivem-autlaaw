@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 	wrapper: {
 		padding: 10,
 		background: `${theme.palette.secondary.dark}d1`,
-		backdropFilter: 'blur(10px)',
+		//backdropFilter: 'blur(10px)',
 		borderRadius: 4,
 		marginBottom: 10,
 	},
@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 		display: 'block',
 		fontSize: 14,
 		color: theme.palette.text.alt,
-		whiteSpace: (hovering) => Boolean(hovering) ? 'wrap' : 'nowrap',
+		whiteSpace: (hovering) => (Boolean(hovering) ? 'wrap' : 'nowrap'),
 		overflow: 'hidden',
 		textOverflow: 'ellipsis',
 	},

@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 	tweet: {
 		borderRadius: 8,
 		background: `${theme.palette.secondary.dark}d1`,
-		backdropFilter: 'blur(10px)',
+		//backdropFilter: 'blur(10px)',
 		marginBottom: 8,
 		border: `1px solid ${theme.palette.border.divider}`,
 	},

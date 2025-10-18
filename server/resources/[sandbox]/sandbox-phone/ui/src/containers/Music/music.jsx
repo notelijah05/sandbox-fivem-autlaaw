@@ -3,12 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-
 const useStyles = makeStyles((theme) => ({
 	wrapper: {
 		padding: 10,
 		background: `${theme.palette.secondary.dark}d1`,
-		backdropFilter: 'blur(10px)',
+		//backdropFilter: 'blur(10px)',
 		borderRadius: 4,
 		marginBottom: 10,
 	},
@@ -55,34 +54,34 @@ const useStyles = makeStyles((theme) => ({
 		whiteSpace: 'nowrap',
 		overflow: 'hidden',
 		textOverflow: 'ellipsis',
-		textAlign: 'right'
+		textAlign: 'right',
 	},
 	eqBars: {
-		transform: "scale(1, -1) translate(0, -24px)"
+		transform: 'scale(1, -1) translate(0, -24px)',
 	},
 	eqBars1: {
-		animationName: "short-eq",
-		animationDuration: "0.5s",
-		animationIterationCount: "infinite",
-		animationDelay: "0s"
+		animationName: 'short-eq',
+		animationDuration: '0.5s',
+		animationIterationCount: 'infinite',
+		animationDelay: '0s',
 	},
 	eqBars2: {
-		animationName: "tall-eq",
-		animationDuration: "0.5s",
-		animationIterationCount: "infinite",
-		animationDelay: "0.17s"
+		animationName: 'tall-eq',
+		animationDuration: '0.5s',
+		animationIterationCount: 'infinite',
+		animationDelay: '0.17s',
 	},
 	eqBars3: {
-		animationName: "short-eq",
-		animationDuration: "0.5s",
-		animationIterationCount: "infinite",
-		animationDelay: "0.34s"
+		animationName: 'short-eq',
+		animationDuration: '0.5s',
+		animationIterationCount: 'infinite',
+		animationDelay: '0.34s',
 	},
 	eqBarWrapper: {
-		textAlign: "right",
-		display: "block",
-		fill: "#fff"
-	}
+		textAlign: 'right',
+		display: 'block',
+		fill: '#fff',
+	},
 }));
 
 Number.prototype.pad = function (size) {
@@ -104,8 +103,7 @@ export default () => {
 	return (
 		<Fragment>
 			<style>
-				{
-					`
+				{`
 					@keyframes short-eq {
 						0% {
 						  height: 8px
@@ -133,21 +131,45 @@ export default () => {
 						  height: 16px
 						}
 					  }
-					`
-				}
+					`}
 			</style>
 			<Grid container className={classes.wrapper}>
 				<Grid item xs={12} className={classes.appInfo}>
 					<Grid container>
 						<Grid item xs={6} style={{ position: 'relative' }}>
-							<span className={classes.appName}>Currently Playing</span>
+							<span className={classes.appName}>
+								Currently Playing
+							</span>
 						</Grid>
 						<Grid item xs={6} style={{ position: 'relative' }}>
 							<span className={classes.eqBarWrapper}>
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-									<rect className={`${classes.eqBars} ${classes.eqBars1}`} x="4" y="4" width="3.7" height="8"/>
-									<rect className={`${classes.eqBars} ${classes.eqBars2}`} x="10.2" y="4" width="3.7" height="16"/>
-									<rect className={`${classes.eqBars} ${classes.eqBars3}`} x="16.3" y="4" width="3.7" height="11"/>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="24"
+									height="24"
+									viewBox="0 0 24 24"
+								>
+									<rect
+										className={`${classes.eqBars} ${classes.eqBars1}`}
+										x="4"
+										y="4"
+										width="3.7"
+										height="8"
+									/>
+									<rect
+										className={`${classes.eqBars} ${classes.eqBars2}`}
+										x="10.2"
+										y="4"
+										width="3.7"
+										height="16"
+									/>
+									<rect
+										className={`${classes.eqBars} ${classes.eqBars3}`}
+										x="16.3"
+										y="4"
+										width="3.7"
+										height="11"
+									/>
 								</svg>
 							</span>
 						</Grid>

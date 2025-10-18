@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: 22,
 		height: 65,
 		background: `${theme.palette.secondary.dark}d1`,
-		backdropFilter: 'blur(10px)',
+		//backdropFilter: 'blur(10px)',
 		border: `1px solid ${theme.palette.border.divider}`,
 		borderLeft: `2px solid ${theme.palette.secondary.light}`,
 		transition: 'border ease-in 0.15s',
@@ -159,7 +159,7 @@ export default (props) => {
 	});
 
 	const apps = useMyApps();
-	const app = apps["bank"];
+	const app = apps['bank'];
 
 	useEffect(() => {
 		setAccTrans(Array());
@@ -184,10 +184,7 @@ export default (props) => {
 			if (res?.data) {
 				setMoreTransactions(res.more);
 
-				setAccTrans([
-					...accTrans,
-					...res.data,
-				]);
+				setAccTrans([...accTrans, ...res.data]);
 			}
 		} catch (err) {
 			console.log(err);
@@ -367,8 +364,8 @@ export default (props) => {
 								<span className="currency">
 									{accountData.Permissions?.BALANCE
 										? accountData.Balance.toLocaleString(
-											'en-US',
-										)
+												'en-US',
+										  )
 										: '???'}
 								</span>
 							</div>
@@ -377,30 +374,35 @@ export default (props) => {
 					{accountData.Permissions?.TRANSACTIONS && (
 						<div className={classes.accountBody}>
 							<div className={classes.transactions}>
-								{Boolean(accTrans) &&
-									accTrans.length > 0 ? (
+								{Boolean(accTrans) && accTrans.length > 0 ? (
 									<Fragment>
 										{accTrans
-											.sort((a, b) => b.Timestamp - a.Timestamp)
+											.sort(
+												(a, b) =>
+													b.Timestamp - a.Timestamp,
+											)
 											.map((transactionLog, k) => {
 												return (
 													<Transaction
 														key={`trans-${k}`}
-														transaction={transactionLog}
+														transaction={
+															transactionLog
+														}
 													/>
 												);
 											})}
-										{(moreTransactions && accTrans.length < 100) && (
-											<Button
-												fullWidth
-												color="success"
-												onClick={() => {
-													getTransactions();
-												}}
-											>
-												Load More
-											</Button>
-										)}
+										{moreTransactions &&
+											accTrans.length < 100 && (
+												<Button
+													fullWidth
+													color="success"
+													onClick={() => {
+														getTransactions();
+													}}
+												>
+													Load More
+												</Button>
+											)}
 									</Fragment>
 								) : (
 									<Fragment>No Transaction History</Fragment>
