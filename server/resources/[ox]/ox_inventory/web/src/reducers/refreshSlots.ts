@@ -28,6 +28,11 @@ export const refreshSlotsReducer: CaseReducer<State, PayloadAction<Payload>> = (
           : state.leftInventory;
 
         data.item.durability = itemDurability(data.item.metadata, curTime);
+
+        while (targetInventory.items.length < data.item.slot) {
+          targetInventory.items.push({ slot: targetInventory.items.length + 1 });
+        }
+
         targetInventory.items[data.item.slot - 1] = data.item;
 
         if (targetInventory === state.leftInventory && data.item.slot <= 5) {

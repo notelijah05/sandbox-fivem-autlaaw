@@ -44,9 +44,13 @@ export const setupInventoryReducer: CaseReducer<
         slots: actualSlots,
         items: Array.from(Array(actualSlots), (_, index) => {
           const slotNumber = index + 1;
-          const item = isShop
-            ? Object.values(leftInventory.items)[index] || { slot: slotNumber }
-            : leftInventory.items[slotNumber] || { slot: slotNumber };
+
+          let item;
+          if (Array.isArray(leftInventory.items)) {
+            item = leftInventory.items.find((item) => item && item.slot === slotNumber) || { slot: slotNumber };
+          } else {
+            item = leftInventory.items[slotNumber] || { slot: slotNumber };
+          }
 
           if (!item.name) return item;
 
@@ -84,18 +88,70 @@ export const setupInventoryReducer: CaseReducer<
       !isNewInventory || (state.rightInventory && state.rightInventory.id === rightInventory.id && hasExistingItems);
 
     if (shouldPreserve) {
+      const cleanedItems = Array.from(Array(actualSlots), (_, index) => {
+        const slotNumber = index + 1;
+
+        let item = state.rightInventory.items.find((item) => item && item.slot === slotNumber);
+
+        if (!item && state.rightInventory.items[index]) {
+          item = state.rightInventory.items[index];
+        }
+
+        if (!item || !item.name || item.name === '') {
+          return { slot: slotNumber };
+        }
+
+        const cleanedItem = {
+          ...item,
+          slot: slotNumber,
+          durability: itemDurability(item.metadata, curTime),
+        };
+
+        if (typeof Items[item.name] === 'undefined') {
+          getItemData(item.name);
+        }
+
+        return cleanedItem;
+      });
+
       state.rightInventory = {
         ...state.rightInventory,
         ...rightInventory,
-        items: state.rightInventory.items,
+        items: cleanedItems,
       };
     } else if (isNewInventory) {
       if (isInventoryTransition) {
         if (rightInventory.type === 'drop' && hasExistingItems) {
+          const cleanedItems = Array.from(Array(actualSlots), (_, index) => {
+            const slotNumber = index + 1;
+
+            let item = state.rightInventory.items.find((item) => item && item.slot === slotNumber);
+
+            if (!item && state.rightInventory.items[index]) {
+              item = state.rightInventory.items[index];
+            }
+
+            if (!item || !item.name || item.name === '') {
+              return { slot: slotNumber };
+            }
+
+            const cleanedItem = {
+              ...item,
+              slot: slotNumber,
+              durability: itemDurability(item.metadata, curTime),
+            };
+
+            if (typeof Items[item.name] === 'undefined') {
+              getItemData(item.name);
+            }
+
+            return cleanedItem;
+          });
+
           state.rightInventory = {
             ...state.rightInventory,
             ...rightInventory,
-            items: state.rightInventory.items,
+            items: cleanedItems,
             slots: actualSlots,
           };
 
@@ -108,9 +164,13 @@ export const setupInventoryReducer: CaseReducer<
         slots: actualSlots,
         items: Array.from(Array(actualSlots), (_, index) => {
           const slotNumber = index + 1;
-          const item = isShop
-            ? Object.values(rightInventory.items)[index] || { slot: slotNumber }
-            : rightInventory.items[slotNumber] || { slot: slotNumber };
+
+          let item;
+          if (Array.isArray(rightInventory.items)) {
+            item = rightInventory.items.find((item) => item && item.slot === slotNumber) || { slot: slotNumber };
+          } else {
+            item = rightInventory.items[slotNumber] || { slot: slotNumber };
+          }
 
           if (!item.name) return item;
 
@@ -123,10 +183,36 @@ export const setupInventoryReducer: CaseReducer<
         }),
       };
     } else {
+      const cleanedItems = Array.from(Array(actualSlots), (_, index) => {
+        const slotNumber = index + 1;
+
+        let item = state.rightInventory.items.find((item) => item && item.slot === slotNumber);
+
+        if (!item && state.rightInventory.items[index]) {
+          item = state.rightInventory.items[index];
+        }
+
+        if (!item || !item.name || item.name === '') {
+          return { slot: slotNumber };
+        }
+
+        const cleanedItem = {
+          ...item,
+          slot: slotNumber,
+          durability: itemDurability(item.metadata, curTime),
+        };
+
+        if (typeof Items[item.name] === 'undefined') {
+          getItemData(item.name);
+        }
+
+        return cleanedItem;
+      });
+
       state.rightInventory = {
         ...state.rightInventory,
         ...rightInventory,
-        items: state.rightInventory.items,
+        items: cleanedItems,
       };
     }
   }
