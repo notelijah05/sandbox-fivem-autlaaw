@@ -4828,13 +4828,6 @@ return {
         client = {},
         server = {}
     },
-    ["green_tea"] = {
-        label = "Green Tea",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
     ["cherry_milkshake"] = {
         label = "Cherry Milkshake",
         weight = 250.0,
@@ -4961,6 +4954,13 @@ return {
         client = {},
         server = {}
     },
+    ['booba_tea'] = {
+        label = "Bobba Tea",
+        weight = 250.0,
+        degrade = 432000,
+        client = {},
+        server = {}
+    },
     ["green_tea"] = {
         label = "Green Tea",
         weight = 250.0,
@@ -4970,6 +4970,13 @@ return {
     },
     ["iced_coffee"] = {
         label = "Iced Coffee",
+        weight = 250.0,
+        degrade = 432000,
+        client = {},
+        server = {}
+    },
+    ['matcha_latte'] = {
+        label = "Matcha Latte",
         weight = 250.0,
         degrade = 432000,
         client = {},
