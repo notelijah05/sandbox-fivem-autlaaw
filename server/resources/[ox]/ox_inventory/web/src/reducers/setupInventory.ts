@@ -13,52 +13,122 @@ export const setupInventoryReducer: CaseReducer<
   const { leftInventory, rightInventory } = action.payload;
   const curTime = Math.floor(Date.now() / 1000);
 
+  if (
+    leftInventory &&
+    rightInventory &&
+    state.leftInventory &&
+    state.rightInventory &&
+    state.leftInventory.id === leftInventory.id &&
+    state.rightInventory.id === rightInventory.id
+  ) {
+    return;
+  }
+
+  if (rightInventory && !leftInventory && state.rightInventory && state.rightInventory.id === rightInventory.id) {
+    return;
+  }
+
+  if (leftInventory && !rightInventory && state.leftInventory && state.leftInventory.id === leftInventory.id) {
+    return;
+  }
+
   if (leftInventory) {
     const isShop = leftInventory.type === 'shop';
     const actualSlots = isShop ? Object.keys(leftInventory.items).length : leftInventory.slots;
 
-    state.leftInventory = {
-      ...leftInventory,
-      slots: actualSlots,
-      items: Array.from(Array(actualSlots), (_, index) => {
-        const item = isShop
-          ? Object.values(leftInventory.items)[index] || { slot: index + 1 }
-          : leftInventory.items[index + 1] || { slot: index + 1 };
+    const isNewInventory = !state.leftInventory || state.leftInventory.id !== leftInventory.id;
 
-        if (!item.name) return item;
+    if (isNewInventory) {
+      state.leftInventory = {
+        ...leftInventory,
+        slots: actualSlots,
+        items: Array.from(Array(actualSlots), (_, index) => {
+          const slotNumber = index + 1;
+          const item = isShop
+            ? Object.values(leftInventory.items)[index] || { slot: slotNumber }
+            : leftInventory.items[slotNumber] || { slot: slotNumber };
 
-        if (typeof Items[item.name] === 'undefined') {
-          getItemData(item.name);
-        }
+          if (!item.name) return item;
 
-        item.durability = itemDurability(item.metadata, curTime);
-        return item;
-      }),
-    };
+          if (typeof Items[item.name] === 'undefined') {
+            getItemData(item.name);
+          }
+
+          item.durability = itemDurability(item.metadata, curTime);
+          return item;
+        }),
+      };
+    } else {
+      state.leftInventory = {
+        ...state.leftInventory,
+        ...leftInventory,
+        items: state.leftInventory.items,
+      };
+    }
   }
 
   if (rightInventory) {
     const isShop = rightInventory.type === 'shop';
     const actualSlots = isShop ? Object.keys(rightInventory.items).length : rightInventory.slots;
 
-    state.rightInventory = {
-      ...rightInventory,
-      slots: actualSlots,
-      items: Array.from(Array(actualSlots), (_, index) => {
-        const item = isShop
-          ? Object.values(rightInventory.items)[index] || { slot: index + 1 }
-          : rightInventory.items[index + 1] || { slot: index + 1 };
+    const isNewInventory = !state.rightInventory || state.rightInventory.id !== rightInventory.id;
 
-        if (!item.name) return item;
+    const hasExistingItems =
+      state.rightInventory &&
+      state.rightInventory.items &&
+      state.rightInventory.items.some((item) => item && item.name);
 
-        if (typeof Items[item.name] === 'undefined') {
-          getItemData(item.name);
+    const isInventoryTransition = state.rightInventory && state.rightInventory.type !== rightInventory.type;
+
+    const shouldPreserve =
+      !isNewInventory || (state.rightInventory && state.rightInventory.id === rightInventory.id && hasExistingItems);
+
+    if (shouldPreserve) {
+      state.rightInventory = {
+        ...state.rightInventory,
+        ...rightInventory,
+        items: state.rightInventory.items,
+      };
+    } else if (isNewInventory) {
+      if (isInventoryTransition) {
+        if (rightInventory.type === 'drop' && hasExistingItems) {
+          state.rightInventory = {
+            ...state.rightInventory,
+            ...rightInventory,
+            items: state.rightInventory.items,
+            slots: actualSlots,
+          };
+
+          return;
         }
+      }
 
-        item.durability = itemDurability(item.metadata, curTime);
-        return item;
-      }),
-    };
+      state.rightInventory = {
+        ...rightInventory,
+        slots: actualSlots,
+        items: Array.from(Array(actualSlots), (_, index) => {
+          const slotNumber = index + 1;
+          const item = isShop
+            ? Object.values(rightInventory.items)[index] || { slot: slotNumber }
+            : rightInventory.items[slotNumber] || { slot: slotNumber };
+
+          if (!item.name) return item;
+
+          if (typeof Items[item.name] === 'undefined') {
+            getItemData(item.name);
+          }
+
+          item.durability = itemDurability(item.metadata, curTime);
+          return item;
+        }),
+      };
+    } else {
+      state.rightInventory = {
+        ...state.rightInventory,
+        ...rightInventory,
+        items: state.rightInventory.items,
+      };
+    }
   }
 
   if (leftInventory) {
@@ -67,9 +137,8 @@ export const setupInventoryReducer: CaseReducer<
       id: leftInventory.id,
       type: leftInventory.type,
       items: Array.from(Array(9), (_, index) => {
-        const item = Object.values(leftInventory.items).find((item) => item?.slot === index + 1) || {
-          slot: index + 1,
-        };
+        const slotNumber = index + 1;
+        const item = leftInventory.items[slotNumber] || { slot: slotNumber };
 
         if (!item.name) return item;
 

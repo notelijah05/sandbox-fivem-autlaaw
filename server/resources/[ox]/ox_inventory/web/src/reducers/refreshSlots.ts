@@ -89,12 +89,5 @@ export const refreshSlotsReducer: CaseReducer<State, PayloadAction<Payload>> = (
     if (!inv) return;
 
     state[inv].slots = slots;
-    inventorySlice.caseReducers.setupInventory(state, {
-      type: 'setupInventory',
-      payload: {
-        leftInventory: inv === 'leftInventory' ? state[inv] : undefined,
-        rightInventory: inv === 'rightInventory' ? state[inv] : undefined,
-      },
-    });
   }
 };
