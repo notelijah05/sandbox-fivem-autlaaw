@@ -1,5 +1,6 @@
 _todaysDayNumber = nil
 _existingTree = nil
+_isChristmasMonth = false
 
 AddEventHandler('onClientResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
@@ -9,6 +10,8 @@ AddEventHandler('onClientResourceStart', function(resource)
 end)
 
 RegisterNetEvent("Xmas:Client:Init", function(dayNumber, tree, hasLooted)
+	_isChristmasMonth = true
+
 	exports.ox_target:addBoxZone({
 		coords = vector3(184.33, -963.19, 30.1),
 		size = vector3(3.0, 5.8, 3.2),

@@ -42,7 +42,7 @@ function SetupTree(treeData, hasLooted)
 end
 
 AddEventHandler("Xmas:Client:RegisterStartups", function()
-	exports['sandbox-hud']:InteractionRegisterMenu("pickup-snowball", "Pickup Snowball", "ball-pile", function(data)
+	exports['sandbox-hud']:InteractionRegisterMenu("pickup-snowball", "Pickup Snowball", "snowflake", function(data)
 		exports['sandbox-hud']:InteractionHide()
 		exports['sandbox-xmas']:SnowballsPickup()
 	end, function()
@@ -75,5 +75,5 @@ exports("SnowballsPickup", function()
 end)
 
 exports("SnowballsCanPickup", function()
-	return CheckZone()
+	return _isChristmasMonth and CheckZone()
 end)

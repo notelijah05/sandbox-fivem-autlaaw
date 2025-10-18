@@ -3,7 +3,7 @@ function RegisterCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
-			exports.ox_inventory:AddItem(sid, "WEAPON_SNOWBALL", 0, { ammo = 1, clip = 0 }, 1)
+			exports.ox_inventory:AddItem(sid, "WEAPON_SNOWBALL", 1, {}, 1)
 		end
 	end)
 
