@@ -472,7 +472,7 @@ Config.VehicleMenu = {
         text = "Toss Garbage",
         event = "Garbage:Client:TossBag",
         model = `trash2`,
-        tempgroups = "Garbage",
+        tempjob = "Garbage",
         data = {},
         minDist = 10.0,
         isEnabled = function(data, entityData)
@@ -895,7 +895,7 @@ Config.VehicleMenu = {
                 and not Entity(entity.entity).state.cornering
                 and not Config.BlacklistedCornering[GetVehicleClass(entity.entity)]
         end,
-        tempgroups = "CornerDealing",
+        tempjob = "CornerDealing",
         text = "Start Corner Dealing",
         event = "CornerDealing:Client:StartCornering",
         data = {},
@@ -906,7 +906,7 @@ Config.VehicleMenu = {
         isEnabled = function(data, entity)
             return LocalPlayer.state.cornering and Entity(entity.entity).state.cornering
         end,
-        tempgroups = "CornerDealing",
+        tempjob = "CornerDealing",
         text = "Stop Corner Dealing",
         event = "CornerDealing:Client:StopCornering",
         data = {},
@@ -974,6 +974,7 @@ for _, menuItem in ipairs(Config.VehicleMenu) do
             reqOffDuty = menuItem.reqOffDuty or false,
             workplace = menuItem.workplace or nil,
             permissionKey = menuItem.permissionKey or nil,
+            tempjob = menuItem.tempjob or nil,
             model = menuItem.model or nil,
             canInteract = canInteractFn,
         })
