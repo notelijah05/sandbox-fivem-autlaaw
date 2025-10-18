@@ -862,7 +862,13 @@ return {
             weight = 1130,
             durability = 0.1,
             ammoname = 'ammo-9'
-        }
+        },
+
+        ['WEAPON_SHOVEL'] = {
+            label = 'Shovel',
+            weight = 2500,
+            durability = 0.1,
+        },
     },
 
     Components = {

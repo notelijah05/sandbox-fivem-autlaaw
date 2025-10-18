@@ -3,10 +3,27 @@
 
 function server.hasGroup(inv, group)
     if type(group) == 'table' then
-        for name, rank in pairs(group) do
-            local groupRank = inv.player.groups[name]
-            if groupRank and groupRank >= (rank or 0) then
-                return name, groupRank
+        local isArray = true
+        for k, v in pairs(group) do
+            if type(k) ~= 'number' then
+                isArray = false
+                break
+            end
+        end
+
+        if isArray then
+            for _, name in ipairs(group) do
+                local groupRank = inv.player.groups[name]
+                if groupRank then
+                    return name, groupRank
+                end
+            end
+        else
+            for name, rank in pairs(group) do
+                local groupRank = inv.player.groups[name]
+                if groupRank and groupRank >= (rank or 0) then
+                    return name, groupRank
+                end
             end
         end
     else

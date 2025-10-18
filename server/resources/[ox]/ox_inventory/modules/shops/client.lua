@@ -2,11 +2,13 @@ if not lib then return end
 
 local shopTypes = {}
 local shops = {}
+local SpawnedPeds = {}
 local createBlip = require 'modules.utils.client'.CreateBlip
 
 for shopType, shopData in pairs(lib.load('data.shops') or {} --[[@as table<string, OxShop>]]) do
     local shop = {
         name = shopData.name,
+        permissionKey = shopData.permissionKey,
         groups = shopData.groups or shopData.jobs,
         blip = shopData.blip,
         label = shopData.label,
@@ -16,6 +18,7 @@ for shopType, shopData in pairs(lib.load('data.shops') or {} --[[@as table<strin
     if shared.target then
         shop.model = shopData.model
         shop.targets = shopData.targets
+        shop.peds = shopData.peds
     else
         shop.locations = shopData.locations
     end
@@ -49,6 +52,7 @@ local function onEnterShop(point)
             {
                 icon = point.icon or 'fas fa-shopping-basket',
                 label = point.label,
+                permissionKey = point.permissionKey,
                 groups = point.groups,
                 onSelect = function()
                     client.openInventory('shop', { id = point.invId, type = point.type })
@@ -78,7 +82,7 @@ end
 local function hasShopAccess(shop)
     local hasGroupAccess = not shop.groups or client.hasGroup(shop.groups)
     local hasWorkplaceAccess = not shop.workplace or client.hasWorkplace(shop.workplace)
-    local hasDutyAccess = not shop.reqDuty or client.isOnDuty()
+    local hasDutyAccess = not shop.reqDuty or client.isOnDuty(shop.groups)
     return hasGroupAccess and hasWorkplaceAccess and hasDutyAccess
 end
 
@@ -87,6 +91,20 @@ local function getShopName(shop, target)
         return target.name
     end
     return nil
+end
+
+local function cleanupPeds()
+    for i = 1, #SpawnedPeds do
+        local ped = SpawnedPeds[i]
+        if DoesEntityExist(ped) then
+            DeletePed(ped)
+        end
+    end
+    SpawnedPeds = {}
+end
+
+local function cleanup()
+    cleanupPeds()
 end
 
 local function wipeShops()
@@ -110,6 +128,7 @@ local function wipeShops()
     end
 
     table.wipe(shops)
+    cleanup()
 end
 
 local function refreshShops()
@@ -120,6 +139,68 @@ local function refreshShops()
     for type, shop in pairs(shopTypes) do
         local blip = shop.blip
         local label = shop.label or locale('open_label', shop.name)
+
+        if shop.peds then
+            for i = 1, #shop.peds do
+                local ped = shop.peds[i]
+                local model = ped.model
+                local coords = ped.coords
+                local heading = ped.heading or 0.0
+                local distance = ped.distance or 2.0
+                local renderDistance = ped.renderDistance or 25.0
+                local label = ped.label or locale('open_label', shop.name)
+                local icon = ped.icon or 'fas fa-shopping-basket'
+                local animation = ped.animation or nil
+
+                local success = lib.requestModel(model)
+                if not success then
+                    warn(('Failed to load ped model "%s" for shop "%s"'):format(model, type))
+                    goto continue_ped
+                end
+
+                local pedEntity = CreatePed(4, model, coords.x, coords.y, coords.z, heading, false, true)
+                SetEntityHeading(pedEntity, heading)
+                FreezeEntityPosition(pedEntity, true)
+                SetEntityInvincible(pedEntity, true)
+                SetBlockingOfNonTemporaryEvents(pedEntity, true)
+                SetEntityLodDist(pedEntity, renderDistance)
+                SetModelAsNoLongerNeeded(model)
+
+                SpawnedPeds[#SpawnedPeds + 1] = pedEntity
+
+                if animation then
+                    if _G.type(animation) == 'string' and animation:match('^WORLD_HUMAN_') then     -- Must use _G.type to get the function because of lua syntax
+                        TaskStartScenarioInPlace(pedEntity, animation, 0, true)
+                    elseif _G.type(animation) == 'table' and animation.dict and animation.name then -- Must use _G.type to get the function because of lua syntax
+                        lib.requestAnimDict(animation.dict)
+                        TaskPlayAnim(pedEntity, animation.dict, animation.name, 8.0, -8.0, -1, animation.flag or 1, 0,
+                            false, false, false)
+                    end
+                end
+
+                if shared.target then
+                    exports.ox_target:addLocalEntity(pedEntity, {
+                        {
+                            label = label,
+                            permissionKey = shop.permissionKey,
+                            canInteract = shop.groups and function()
+                                return client.hasGroup(shop.groups)
+                            end or nil,
+                            onSelect = function()
+                                client.openInventory('shop', { type = type, id = i })
+                            end,
+                            distance = distance,
+                            icon = icon,
+                        }
+                    })
+                end
+
+                if blip then
+                    createBlip(blip, coords)
+                end
+                ::continue_ped::
+            end
+        end
 
         if shared.target then
             if shop.model then
@@ -159,6 +240,7 @@ local function refreshShops()
                             ped = target.ped,
                             scenario = target.scenario,
                             label = locationLabel,
+                            permissionKey = shop.permissionKey,
                             groups = shop.groups,
                             icon = shop.icon or 'fas fa-shopping-basket',
                             iconColor = target.iconColor,
@@ -177,6 +259,7 @@ local function refreshShops()
                                     name = shopid,
                                     icon = shop.icon or 'fas fa-shopping-basket',
                                     label = locationLabel,
+                                    permissionKey = shop.permissionKey,
                                     groups = shop.groups,
                                     onSelect = function()
                                         client.openInventory('shop', { id = i, type = type })
@@ -223,6 +306,12 @@ local function refreshShops()
         ::skipLoop::
     end
 end
+
+AddEventHandler('onResourceStop', function(resourceName)
+    if resourceName == GetCurrentResourceName() then
+        cleanup()
+    end
+end)
 
 return {
     refreshShops = refreshShops,

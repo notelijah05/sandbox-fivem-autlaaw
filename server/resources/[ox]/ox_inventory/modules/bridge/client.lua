@@ -10,10 +10,27 @@ function client.hasGroup(group)
     if not PlayerData.loaded then return end
 
     if type(group) == 'table' then
-        for name, rank in pairs(group) do
-            local groupRank = PlayerData.groups[name]
-            if groupRank and groupRank >= (rank or 0) then
-                return name, groupRank
+        local isArray = true
+        for k, v in pairs(group) do
+            if type(k) ~= 'number' then
+                isArray = false
+                break
+            end
+        end
+
+        if isArray then
+            for _, name in ipairs(group) do
+                local groupRank = PlayerData.groups[name]
+                if groupRank then
+                    return name, groupRank
+                end
+            end
+        else
+            for name, rank in pairs(group) do
+                local groupRank = PlayerData.groups[name]
+                if groupRank and groupRank >= (rank or 0) then
+                    return name, groupRank
+                end
             end
         end
     else
@@ -46,11 +63,23 @@ function client.hasWorkplace(workplace)
     return false
 end
 
-function client.isOnDuty()
+function client.isOnDuty(jobName)
     if not PlayerData.loaded then return false end
 
-    local onDuty = LocalPlayer.state.onDuty
-    return onDuty and onDuty ~= false
+    if jobName then
+        if type(jobName) == 'table' then
+            for _, job in ipairs(jobName) do
+                if exports['sandbox-jobs']:DutyGet(job) ~= false then
+                    return true
+                end
+            end
+            return false
+        else
+            return exports['sandbox-jobs']:DutyGet(jobName) ~= false
+        end
+    else
+        return exports['sandbox-jobs']:DutyGet() ~= false
+    end
 end
 
 local Shops = require 'modules.shops.client'

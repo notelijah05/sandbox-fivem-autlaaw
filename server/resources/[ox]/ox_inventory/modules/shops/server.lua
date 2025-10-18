@@ -43,7 +43,8 @@ local function setupShopItems(id, shopType, shopName, groups)
                 license = slot.license,
                 qualification = slot.qualification,
                 currency = slot.currency,
-                grade = slot.grade
+                grade = slot.grade,
+                job = slot.job
             }
 
             if slot.metadata then
@@ -160,7 +161,7 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
         end
 
         if shop.reqDuty then
-            local onDuty = server.isOnDuty(source)
+            local onDuty = server.isOnDuty(source, shop.groups)
             if not onDuty then return end
         end
 
@@ -168,9 +169,39 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
             return
         end
 
+        local playerJobs = {}
+        local playerInv = Inventory(source)
+        if playerInv and playerInv.player and playerInv.player.groups then
+            for jobName, _ in pairs(playerInv.player.groups) do
+                playerJobs[jobName] = true
+            end
+        end
+
+        local filteredShop = table.clone(shop)
+        local filteredItems = {}
+
+        for i = 1, #shop.items do
+            local item = shop.items[i]
+            if item and (not item.job or playerJobs[item.job]) then
+                filteredItems[#filteredItems + 1] = item
+            end
+        end
+
+        filteredShop.items = filteredItems
+        filteredShop.slots = #filteredItems
+
         ---@diagnostic disable-next-line: assign-type-mismatch
         left:openInventory(left)
         left.currentShop = shop.id
+
+        return {
+                label = left.label,
+                type = left.type,
+                slots = left.slots,
+                weight = left.weight,
+                maxWeight = left.maxWeight
+            },
+            filteredShop
     end
 
     return { label = left.label, type = left.type, slots = left.slots, weight = left.weight, maxWeight = left.maxWeight },
@@ -240,6 +271,19 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
 
             if fromData.qualification and server.hasQualification and not server.hasQualification(source, fromData.qualification) then
                 return false, false, { type = 'error', description = locale('item_unqualified') }
+            end
+
+            if fromData.job then
+                local hasJob = playerInv and playerInv.player and playerInv.player.groups and
+                    playerInv.player.groups[fromData.job]
+                if not hasJob then
+                    return false, false,
+                        {
+                            type = 'error',
+                            description = ('You need to be employed at %s to purchase this item'):format(
+                                fromData.job)
+                        }
+                end
             end
 
             if fromData.grade then

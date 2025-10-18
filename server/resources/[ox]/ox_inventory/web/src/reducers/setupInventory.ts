@@ -13,13 +13,17 @@ export const setupInventoryReducer: CaseReducer<
   const { leftInventory, rightInventory } = action.payload;
   const curTime = Math.floor(Date.now() / 1000);
 
-  if (leftInventory)
+  if (leftInventory) {
+    const isShop = leftInventory.type === 'shop';
+    const actualSlots = isShop ? Object.keys(leftInventory.items).length : leftInventory.slots;
+
     state.leftInventory = {
       ...leftInventory,
-      items: Array.from(Array(leftInventory.slots), (_, index) => {
-        const item = Object.values(leftInventory.items).find((item) => item?.slot === index + 1) || {
-          slot: index + 1,
-        };
+      slots: actualSlots,
+      items: Array.from(Array(actualSlots), (_, index) => {
+        const item = isShop
+          ? Object.values(leftInventory.items)[index] || { slot: index + 1 }
+          : leftInventory.items[index + 1] || { slot: index + 1 };
 
         if (!item.name) return item;
 
@@ -31,14 +35,19 @@ export const setupInventoryReducer: CaseReducer<
         return item;
       }),
     };
+  }
 
-  if (rightInventory)
+  if (rightInventory) {
+    const isShop = rightInventory.type === 'shop';
+    const actualSlots = isShop ? Object.keys(rightInventory.items).length : rightInventory.slots;
+
     state.rightInventory = {
       ...rightInventory,
-      items: Array.from(Array(rightInventory.slots), (_, index) => {
-        const item = Object.values(rightInventory.items).find((item) => item?.slot === index + 1) || {
-          slot: index + 1,
-        };
+      slots: actualSlots,
+      items: Array.from(Array(actualSlots), (_, index) => {
+        const item = isShop
+          ? Object.values(rightInventory.items)[index] || { slot: index + 1 }
+          : rightInventory.items[index + 1] || { slot: index + 1 };
 
         if (!item.name) return item;
 
@@ -50,6 +59,7 @@ export const setupInventoryReducer: CaseReducer<
         return item;
       }),
     };
+  }
 
   if (leftInventory) {
     state.utilityInventory = {

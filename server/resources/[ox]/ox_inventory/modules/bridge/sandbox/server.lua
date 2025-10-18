@@ -376,12 +376,21 @@ function server.hasWorkplace(inv, workplace)
     return false
 end
 
-function server.isOnDuty(source)
-    local player = Player(source)
-    if not player then return false end
-
-    local onDuty = player.state.onDuty
-    return onDuty and onDuty ~= false
+function server.isOnDuty(source, jobName)
+    if jobName then
+        if type(jobName) == 'table' then
+            for _, job in ipairs(jobName) do
+                if exports['sandbox-jobs']:DutyGet(source, job) ~= false then
+                    return true
+                end
+            end
+            return false
+        else
+            return exports['sandbox-jobs']:DutyGet(source, jobName) ~= false
+        end
+    else
+        return exports['sandbox-jobs']:DutyGet(source) ~= false
+    end
 end
 
 function server.hasBalance(source, amt)
