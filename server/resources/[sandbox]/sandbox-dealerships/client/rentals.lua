@@ -5,17 +5,17 @@ function CreateRentalSpots()
                 v.interactionPed.heading,
                 v.interactionPed.range, {
                     {
-                        icon = 'car-side',
+                        icon = 'fa-solid fa-car-side',
                         text = 'Vehicle Rentals',
                         onSelect = function()
-                            TriggerEvent('VehicleRentals:Client:OpenRental', k)
+                            TriggerEvent('VehicleRentals:Client:OpenRental', { rental = k })
                         end,
                     },
                     {
-                        icon = 'car-garage',
+                        icon = 'fa-solid fa-warehouse',
                         text = 'Rental Returns',
                         onSelect = function()
-                            TriggerEvent('VehicleRentals:Client:ReturnRental', k)
+                            TriggerEvent('VehicleRentals:Client:ReturnRental', { rental = k })
                         end,
                     },
                 }, 'car-side', v.interactionPed.scenario)
@@ -111,7 +111,7 @@ AddEventHandler('VehicleRentals:Client:ConfirmRental', function(data)
     end
 end)
 
-AddEventHandler('VehicleRentals:Client:ReturnRental', function(entityData, data)
+AddEventHandler('VehicleRentals:Client:ReturnRental', function(data)
     exports["sandbox-base"]:ServerCallback('Rentals:GetPending', { rental = data.rental }, function(pending)
         if pending then
             local menu = {

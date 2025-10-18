@@ -188,6 +188,8 @@ function CreateDumbAssPed(model, coords, heading, menu, icon, scenario, anim, co
 				onSelect = function()
 					if option.event then
 						TriggerEvent(option.event, (option.data or {}))
+					else
+						option.onSelect()
 					end
 				end,
 				canInteract = option.isEnabled or function()
