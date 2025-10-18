@@ -1467,6 +1467,20 @@ CreateThread(function()
                 end
             end)
         end
+
+        if itemData.drugState then
+            exports.ox_inventory:RegisterUse(name, "DrugStates", function(source, item)
+                local char = exports['sandbox-characters']:FetchCharacterSource(source)
+                if char ~= nil then
+                    local drugStates = char:GetData("DrugStates") or {}
+                    drugStates[itemData.drugState.type] = {
+                        item = name,
+                        expires = os.time() + itemData.drugState.duration,
+                    }
+                    char:SetData("DrugStates", drugStates)
+                end
+            end)
+        end
     end
 end)
 

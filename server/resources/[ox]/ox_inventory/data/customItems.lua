@@ -19,6 +19,9 @@
     client?: table                   -- Client-side properties
     buttons?: table                  -- Custom context menu buttons
     rarity?: number                  -- Item rarity (0-7)
+    drugState?: table                -- Drug state configuration
+        type: string                 -- Drug state type
+        duration: number            -- Duration in seconds
 
     ===========================================
     SERVER DATA PROPERTIES
@@ -4158,6 +4161,10 @@ return {
         label = "Joint",
         weight = 500.0,
         degrade = 1728000,
+        drugState = {
+            type = "weed",
+            duration = (60 * 30),
+        },
         client = {},
         server = {}
     },
@@ -4173,6 +4180,10 @@ return {
         label = "OxyContin",
         weight = 100.0,
         degrade = 1728000,
+        drugState = {
+            type = "oxy",
+            duration = (60 * 60),
+        },
         client = {},
         server = {}
     },
@@ -4209,6 +4220,10 @@ return {
         label = "Cocaine",
         weight = 100.0,
         degrade = 1728000,
+        drugState = {
+            type = "coke",
+            duration = (60 * 60),
+        },
         client = {},
         server = {}
     },
