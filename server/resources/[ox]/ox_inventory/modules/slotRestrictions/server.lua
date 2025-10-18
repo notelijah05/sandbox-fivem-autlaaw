@@ -6,7 +6,7 @@ local function fetchSlotRestrictions()
         [2] = { name = "WEAPON SLOT 2", restrictions = { type = "weapon_prefix", prefix = "WEAPON_", exclude = false } },
         [3] = {
             name = "HOTKEY SLOT 3",
-            exclude_items = { "backpack", "large_backpack", "military_backpack", "armor", "heavyarmor", "phone", "parachute" },
+            exclude_items = { "backpack", "large_backpack", "military_backpack", "armor", "heavyarmor", "pdarmor", "phone", "parachute" },
             restrictions = {
                 type = "weapon_prefix",
                 prefix = "WEAPON_",
@@ -15,7 +15,7 @@ local function fetchSlotRestrictions()
         },
         [4] = {
             name = "HOTKEY SLOT 4",
-            exclude_items = { "backpack", "large_backpack", "military_backpack", "armor", "heavyarmor", "phone", "parachute" },
+            exclude_items = { "backpack", "large_backpack", "military_backpack", "armor", "heavyarmor", "pdarmor", "phone", "parachute" },
             restrictions = {
                 type = "weapon_prefix",
                 prefix = "WEAPON_",
@@ -24,7 +24,7 @@ local function fetchSlotRestrictions()
         },
         [5] = {
             name = "HOTKEY SLOT 5",
-            exclude_items = { "backpack", "large_backpack", "military_backpack", "armor", "heavyarmor", "phone", "parachute" },
+            exclude_items = { "backpack", "large_backpack", "military_backpack", "armor", "heavyarmor", "pdarmor", "phone", "parachute" },
             restrictions = {
                 type = "weapon_prefix",
                 prefix = "WEAPON_",
@@ -32,7 +32,7 @@ local function fetchSlotRestrictions()
             },
         },
         [6] = { name = "BACKPACK", restrictions = { type = "allowed_items", items = { "backpack", "large_backpack", "military_backpack" } } },
-        [7] = { name = "BODY ARMOR", restrictions = { type = "allowed_items", items = { "armor", "heavyarmor" } } },
+        [7] = { name = "BODY ARMOR", restrictions = { type = "allowed_items", items = { "armor", "heavyarmor", "pdarmor" } } },
         [8] = { name = "PHONE", restrictions = { type = "allowed_items", items = { "phone" } } },
         [9] = { name = "PARACHUTE", restrictions = { type = "allowed_items", items = { "parachute" } } }
     }
