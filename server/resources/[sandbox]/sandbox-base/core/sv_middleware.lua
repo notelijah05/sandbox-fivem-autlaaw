@@ -1,7 +1,7 @@
 local _middlewares = {}
 
 local _ignored = {
-    ["screenshot-basic"] = true,
+    ["screencapture"] = true,
 }
 
 AddEventHandler('onResourceStart', function(resource)

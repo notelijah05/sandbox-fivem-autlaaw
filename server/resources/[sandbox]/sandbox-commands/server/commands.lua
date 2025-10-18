@@ -6,6 +6,25 @@ AddEventHandler('onResourceStart', function(resource)
 	end
 end)
 
+RegisterNetEvent("Commands:Server:CaptureScreenshot", function(webhookId, callback)
+	local source = source
+	local webhookUrl = string.format("https://discord.com/api/webhooks/%s", webhookId)
+
+	exports["screencapture"]:remoteUpload(
+		source,
+		webhookUrl,
+		{
+			encoding = "webp",
+			formField = "files[]"
+		},
+		function(data)
+			local image = json.decode(data)
+			callback(json.encode({ url = image.attachments[1].proxy_url }))
+		end,
+		"blob"
+	)
+end)
+
 function RegisterChatCommands()
 	exports["sandbox-chat"]:RegisterCommand("clear", function(source, args, rawCommand)
 		TriggerClientEvent("chat:clearChat", source)

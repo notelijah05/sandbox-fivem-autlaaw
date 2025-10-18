@@ -230,6 +230,6 @@ Config = {
 		["sandbox-police"] = true,
 		["sandbox-phone"] = true,
 		["sandbox-robbery"] = true,
-		["screenshot-basic"] = true,
+		["screencapture"] = true,
 	},
 }

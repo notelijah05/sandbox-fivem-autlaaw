@@ -29,22 +29,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 		end)
 
 		exports["sandbox-base"]:RegisterClientCallback("Selfie:Client:UploadPhoto", function(data, cb)
-			local options = {
-				encoding = "webp",
-				quality = 0.8,
-				headers = {
-					Authorization = string.format("%s", data.token),
-				},
-			}
-			exports["screenshot-basic"]:requestScreenshotUpload(
-				string.format("%s", data.api),
-				"image",
-				options,
-				function(data)
-					local image = json.decode(data)
-					cb(json.encode({ url = image.url }))
-				end
-			)
+			TriggerServerEvent("Animations:Server:UploadSelfie", data, cb)
 		end)
 	end
 end)

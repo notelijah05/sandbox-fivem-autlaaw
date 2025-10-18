@@ -133,6 +133,30 @@ end)
 
 local pendingSend = false
 
+RegisterNetEvent("Animations:Server:UploadSelfie", function(data, callback)
+	local source = source
+	local apiUrl = data.api
+	local token = data.token
+
+	exports["screencapture"]:remoteUpload(
+		source,
+		apiUrl,
+		{
+			encoding = "webp",
+			quality = 0.8,
+			headers = {
+				Authorization = token
+			},
+			formField = "image"
+		},
+		function(response)
+			local image = json.decode(response)
+			callback(json.encode({ url = image.url }))
+		end,
+		"blob"
+	)
+end)
+
 RegisterServerEvent("Selfie:CaptureSelfie", function()
 	local src = source
 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
