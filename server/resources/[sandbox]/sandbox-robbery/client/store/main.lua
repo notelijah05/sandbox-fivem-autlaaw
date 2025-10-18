@@ -95,6 +95,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 					icon = "fa-solid fa-cash-register",
 					label = "Lockpick Register",
 					item = "lockpick",
+					distance = 1.5,
 					onSelect = function()
 						TriggerEvent("Robbery:Client:Store:LockpickRegister", id)
 					end,
