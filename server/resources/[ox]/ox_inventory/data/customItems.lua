@@ -1,3 +1,96 @@
+--[[
+    ITEMS DATABASE -- Item Options Reference
+    You can refer to this: https://coxdocs.dev/ox_inventory/Guides/creatingItems
+    But that won't have all the params that this inventory includes
+
+    ===========================================
+    BASIC PROPERTIES
+    ===========================================
+    label: string                    -- Required: Item display name
+    weight?: number                  -- Weight in grams
+    stack?: boolean                  -- Can stack (default: true)
+    degrade?: number                 -- Degrade time in minutes
+    decay?: boolean                  -- Delete when durability reaches 0
+    close?: boolean                  -- Close inventory on use (default: true)
+    description?: string             -- Tooltip description
+    consume?: number                 -- Amount consumed on use (default: 1)
+    allowArmed?: boolean            -- Allow use while armed (default: false)
+    server?: table                   -- Server-side properties
+    client?: table                   -- Client-side properties
+    buttons?: table                  -- Custom context menu buttons
+    rarity?: number                  -- Item rarity (0-7)
+
+    ===========================================
+    SERVER DATA PROPERTIES
+    ===========================================
+    export?: string                  -- Export function to call
+    event?: string                   -- Event to trigger
+    status?: table                   -- Adjust status values (hunger, thirst, stress, etc.)
+
+    ===========================================
+    CLIENT DATA PROPERTIES
+    ===========================================
+    export?: string                  -- Export function to call
+    event?: string                   -- Event to trigger
+    status?: table                   -- Adjust status values
+    anim?: table                     -- Animation during use
+        dict: string                 -- Animation dictionary
+        clip: string                 -- Animation clip
+    prop?: table                     -- Attached prop during use
+        model: string or hash        -- Prop model
+        pos: table (x, y, z)         -- Position
+        rot: table (x, y, z)        -- Rotation
+        bone?: number                -- Bone to attach to
+        rotOrder?: number            -- Rotation order
+    disable?: table                  -- Actions to disable during use
+        move?: boolean               -- Disable movement
+        car?: boolean                -- Disable car actions
+        combat?: boolean             -- Disable combat
+        mouse?: boolean              -- Disable mouse
+        sprint?: boolean             -- Disable sprint
+    usetime?: number                -- Use time in milliseconds
+    cancel?: boolean                 -- Allow cancel during use
+    add?: function(total: number)    -- Function when receiving item
+    remove?: function(total: number) -- Function when removing item
+
+    ===========================================
+    BUTTONS (CONTEXT MENU)
+    ===========================================
+    label: string                    -- Button text
+    action: function(slot: number)   -- Callback when clicked
+
+    ===========================================
+    CONSUME VALUES
+    ===========================================
+    consume = 1        -- Remove 1 item on use
+    consume = 2        -- Remove 2 items on use
+    consume = 0.2      -- Remove 20% durability on use
+    consume = 0.5      -- Remove 50% durability on use
+
+    ===========================================
+    STATUS EFFECTS
+    ===========================================
+    PLAYER_HUNGER     -- Hunger level
+    PLAYER_THIRST     -- Thirst level
+    PLAYER_STRESS     -- Stress level
+    Player_DRUNK      -- Drunk level
+
+    ===========================================
+    RARITY SYSTEM
+    ===========================================
+
+    rarity can also be passed as item metadata, if you'd like to give a unique item a rarity other than the default
+
+    0 = nothing (common)
+    1 = common
+    2 = uncommon
+    3 = rare
+    4 = epic
+    5 = labor objective
+    6 = legendary
+    7 = exotic
+]]
+
 return {
     ["evidence-paint"] = {
         label = "Paint Fragment",
@@ -987,7 +1080,14 @@ return {
         weight = 1000,
         degrade = 5184000,
         rarity = 2,
-        client = {},
+        client = {
+            add = function(count)
+                HandleItemState('RADIO_ENCRYPTED', count, 'radio')
+            end,
+            remove = function(count)
+                HandleItemState('RADIO_ENCRYPTED', count, 'radio')
+            end
+        },
         server = {}
     },
     ["radio_shitty"] = {
@@ -995,7 +1095,14 @@ return {
         description = "High Frequency Used for Short Range Communication",
         weight = 1000,
         degrade = 1814400,
-        client = {},
+        client = {
+            add = function(count)
+                HandleItemState('RADIO_CIV', count, 'radio_shitty')
+            end,
+            remove = function(count)
+                HandleItemState('RADIO_CIV', count, 'radio_shitty')
+            end
+        },
         server = {}
     },
     ["radio_extendo"] = {
@@ -1004,7 +1111,14 @@ return {
         weight = 1000,
         degrade = 1814400,
         rarity = 2,
-        client = {},
+        client = {
+            add = function(count)
+                HandleItemState('RADIO_EXTENDO', count, 'radio_extendo')
+            end,
+            remove = function(count)
+                HandleItemState('RADIO_EXTENDO', count, 'radio_extendo')
+            end
+        },
         server = {}
     },
     ["phone"] = {
@@ -1020,14 +1134,28 @@ return {
         label = "SB NavMaster",
         weight = 1000,
         degrade = 1814400,
-        client = {},
+        client = {
+            add = function(count)
+                HandleItemState('GPS', count, 'gps')
+            end,
+            remove = function(count)
+                HandleItemState('GPS', count, 'gps')
+            end,
+        },
         server = {}
     },
     ["pd_watch"] = {
         label = "PD Watch",
         weight = 1000,
         degrade = 1814400,
-        client = {},
+        client = {
+            add = function(count)
+                HandleItemState('PD_WATCH', count, 'pd_watch')
+            end,
+            remove = function(count)
+                HandleItemState('PD_WATCH', count, 'pd_watch')
+            end
+        },
         server = {}
     },
     ["megaphone"] = {
@@ -1036,7 +1164,14 @@ return {
         weight = 2000,
         degrade = 1209600,
         rarity = 2,
-        client = {},
+        client = {
+            add = function(count)
+                HandleItemState('MEGAPHONE', count, 'megaphone')
+            end,
+            remove = function(count)
+                HandleItemState('MEGAPHONE', count, 'megaphone')
+            end
+        },
         server = {}
     },
     ["fakeplates"] = {
@@ -1191,7 +1326,14 @@ return {
         weight = 50000.0,
         degrade = nil,
         rarity = 4,
-        client = {},
+        client = {
+            add = function(count)
+                HandleItemState('ANIM_bowling_ball', count, 'bowling_ball')
+            end,
+            remove = function(count)
+                HandleItemState('ANIM_bowling_ball', count, 'bowling_ball')
+            end
+        },
         server = {}
     },
     ["petrock"] = {
@@ -1216,7 +1358,14 @@ return {
         weight = 10000,
         degrade = 604800,
         rarity = 3,
-        client = {},
+        client = {
+            add = function(count)
+                HandleItemState('ANIM_box', count, 'parts_box')
+            end,
+            remove = function(count)
+                HandleItemState('ANIM_box', count, 'parts_box')
+            end,
+        },
         server = {}
     },
     ["choplist"] = {

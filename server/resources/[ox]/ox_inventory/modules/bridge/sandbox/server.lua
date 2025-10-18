@@ -1519,7 +1519,7 @@ RegisterNetEvent('Inventory:handleItemState', function(state, count, item)
     local char = exports['sandbox-characters']:FetchCharacterSource(src)
     local states = char:GetData('States') or {}
     local update = false
-    local hasItem = exports.ox_inventory:GetItem(src, item, nil, true)
+    local hasItem = exports.ox_inventory:GetItemCount(src, item) > 0
 
     if count > 0 and hasItem and not lib.table.contains(states, state) then
         update = true
