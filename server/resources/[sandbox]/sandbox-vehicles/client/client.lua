@@ -68,7 +68,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 						end,
 					},
 					{
-						icon = "person-seat",
+						icon = "chair",
 						label = "Seats",
 						shouldShow = function()
 							if VEHICLE_INSIDE then
@@ -85,7 +85,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 								local actualFuckingSeatNumber = i - 2
 								if GetPedInVehicleSeat(VEHICLE_INSIDE, actualFuckingSeatNumber) == 0 then
 									table.insert(fuckingSeats, {
-										icon = "person-seat",
+										icon = "chair",
 										label = actualFuckingSeatNumber == -1 and "Driver's Seat" or "Seat #" .. i,
 										action = function()
 											TriggerEvent("Vehicles:Client:Actions:SwitchSeat", actualFuckingSeatNumber)
@@ -165,7 +165,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 						end,
 					},
 					{
-						icon = "window-frame",
+						icon = "windows",
 						label = "Windows",
 						shouldShow = function()
 							if VEHICLE_INSIDE then
@@ -178,7 +178,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 						action = function()
 							local fuckingDoors = {}
 							table.insert(fuckingDoors, {
-								icon = "window-frame",
+								icon = "windows",
 								label = "Driver Window",
 								action = function()
 									TriggerEvent("Vehicles:Client:Actions:ToggleWindow", 0)
@@ -186,7 +186,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 							})
 
 							table.insert(fuckingDoors, {
-								icon = "window-frame",
+								icon = "windows",
 								label = "Passenger Window",
 								action = function()
 									TriggerEvent("Vehicles:Client:Actions:ToggleWindow", 1)
@@ -194,7 +194,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 							})
 
 							table.insert(fuckingDoors, {
-								icon = "window-frame",
+								icon = "windows",
 								label = "Close All",
 								action = function()
 									TriggerEvent("Vehicles:Client:Actions:ToggleWindow", "shut")
@@ -202,7 +202,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 							})
 
 							table.insert(fuckingDoors, {
-								icon = "window-frame",
+								icon = "windows",
 								label = "Open All",
 								action = function()
 									TriggerEvent("Vehicles:Client:Actions:ToggleWindow", "open")
@@ -213,7 +213,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 						end,
 					},
 					{
-						icon = "gauge-min",
+						icon = "gauge",
 						label = "Check Mileage",
 						action = function()
 							if VEHICLE_INSIDE then
