@@ -1158,7 +1158,10 @@ return {
         label = "Body Armor",
         weight = 8000,
         degrade = 604800,
-        client = {},
+        client = {
+            anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+            usetime = 3500
+        },
         server = {}
     },
     ["heavyarmor"] = {
@@ -1166,7 +1169,10 @@ return {
         weight = 8000,
         degrade = 604800,
         rarity = 2,
-        client = {},
+        client = {
+            anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+            usetime = 5000
+        },
         server = {}
     },
     ["pdarmor"] = {
@@ -1174,7 +1180,10 @@ return {
         weight = 8000,
         degrade = 604800,
         rarity = 3,
-        client = {},
+        client = {
+            anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
+            usetime = 5000
+        },
         server = {}
     },
     ["bowling_ball"] = {

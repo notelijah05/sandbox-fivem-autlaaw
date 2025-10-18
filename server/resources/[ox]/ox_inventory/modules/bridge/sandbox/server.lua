@@ -971,7 +971,15 @@ exports('RemoveSlot', function(Owner, Name, Count, Slot, invType)
         Owner = char:GetData("Source")
     end
 
-    return exports.ox_inventory:RemoveItem(Owner, Name, Count, nil, Slot)
+    local inv = Inventory(Owner)
+    if not inv then return false end
+
+    -- This needs to be done because when I used 1 item, but had 3 of the same item within the inventory, it removed all 3 of them
+    if inv.items[Slot] and inv.items[Slot].name == Name then
+        return Inventory.RemoveItem(inv, Name, Count, nil, Slot)
+    else
+        return false
+    end
 end)
 
 exports('RemoveList', function(Owner, invType, items)
