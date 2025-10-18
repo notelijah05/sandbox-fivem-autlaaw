@@ -22,6 +22,11 @@
     drugState?: table                -- Drug state configuration
         type: string                 -- Drug state type
         duration: number            -- Duration in seconds
+    energyModifier?: table          -- Energy modifier configuration
+        modifier: string             -- Energy modifier type
+        duration: number             -- Duration in seconds
+        cooldown: number             -- Cooldown in seconds
+        skipScreenEffects: boolean   -- Skip screen effects
 
     ===========================================
     SERVER DATA PROPERTIES
@@ -549,6 +554,12 @@ return {
         label = "Millionare Shortbread",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -565,6 +576,12 @@ return {
         description = "A Bean Machine Exclusive",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.2,
+            duration = 12,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -643,6 +660,12 @@ return {
         label = "Meteorite Ice Cream",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -650,6 +673,12 @@ return {
         label = "Orangotang Ice Cream",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -1733,6 +1762,12 @@ return {
         label = "Tiramisu",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -2405,6 +2440,12 @@ return {
         label = "Stack of Donuts",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.15,
+            duration = 15,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -3591,6 +3632,12 @@ return {
         label = "Explosive Shake",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.15,
+            duration = 15,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -3598,6 +3645,12 @@ return {
         label = "Chocolate Shake",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.15,
+            duration = 15,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -4304,6 +4357,11 @@ return {
         label = "Donut",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 80,
+        },
         client = {},
         server = {}
     },
@@ -4332,6 +4390,11 @@ return {
         label = "Energy Drink",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.15,
+            duration = 12,
+            cooldown = 60,
+        },
         client = {},
         server = {}
     },
@@ -4353,6 +4416,12 @@ return {
         label = "Lemonade",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -4360,6 +4429,12 @@ return {
         label = "Orange Smoothie",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -4368,6 +4443,12 @@ return {
         description = "Glass of Cock",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -4446,6 +4527,12 @@ return {
         label = "Cherry Pop",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 80,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -4467,6 +4554,12 @@ return {
         label = "Creampie",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 80,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -4488,6 +4581,12 @@ return {
         label = "Chocolate Whammy",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 80,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -5028,6 +5127,12 @@ return {
         label = "Frozen Yoghurt",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.1,
+            duration = 18,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },
@@ -5035,6 +5140,12 @@ return {
         label = "Fresh Lemonade",
         weight = 250.0,
         degrade = 432000,
+        energyModifier = {
+            modifier = 1.15,
+            duration = 15,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
         client = {},
         server = {}
     },

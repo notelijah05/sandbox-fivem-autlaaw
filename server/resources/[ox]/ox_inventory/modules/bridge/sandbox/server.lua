@@ -1481,6 +1481,19 @@ CreateThread(function()
                 end
             end)
         end
+
+        if itemData.energyModifier then
+            exports.ox_inventory:RegisterUse(name, "EnergyModifier", function(source, item)
+                TriggerClientEvent(
+                    "Inventory:Client:SpeedyBoi",
+                    source,
+                    itemData.energyModifier.modifier,
+                    itemData.energyModifier.duration * 1000,
+                    itemData.energyModifier.cooldown * 1000,
+                    itemData.energyModifier.skipScreenEffects
+                )
+            end)
+        end
     end
 end)
 
