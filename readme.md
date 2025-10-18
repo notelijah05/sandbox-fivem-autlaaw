@@ -43,7 +43,7 @@ Ensure the following packages are installed:
 
 ---
 
-## Importing Database (MariaDB)
+## Importing Database
 
 1. Open **HeidiSQL**.
 2. Import the `database.sql` file.
@@ -86,3 +86,11 @@ Ensure the following packages are installed:
 
 - **Discord Logging**  
   Logging works only in `production` mode. To enable logs on a development server, set the environment to `prod` in `core.ptr.cfg`.
+
+---
+
+## Support
+
+If you enjoy this project and would like to support its continued development, any contribution is greatly appreciated! Your support helps keep this project alive and allows me to spend more time on it, as I've already invested countless hours into making this the best framework possible.
+
+[![ko-fi](https://img.shields.io/badge/Support%20on%20Ko--fi-ff5e5b?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/autlaaw)
