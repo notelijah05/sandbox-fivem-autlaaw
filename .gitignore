@@ -9,6 +9,7 @@ node_modules
 *.bkp
 .replxx_history
 !server/resources/\[sandbox\]/sandbox-base/node_modules
+!server/resources/\[sandbox\]/sandbox-ws/node_modules
 bun.lock
 
 # linux only
