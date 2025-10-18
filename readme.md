@@ -38,7 +38,6 @@ Ensure the following packages are installed:
 
 5. **Configure Databases**  
    - Update `database.ptr.cfg` with the correct **Heidi/MariaDB** information.
-   - Update `mongodb.ptr.cfg` with the correct **MongoDB** information.
 
 6. **Add CFX Key**  
    Add your `cfx` key to the `sv_licenseKey` field in the configuration. (*A default key will be added soon for MLO support.)
