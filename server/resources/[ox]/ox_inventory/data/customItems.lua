@@ -424,28 +424,36 @@ return {
         label = "Prison Food",
         weight = 1000,
         degrade = 86400,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["prison_drink"] = {
         label = "Prison Drink",
         weight = 500.0,
         degrade = 86400,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 100 } },
+        },
         server = {}
     },
     ["fruitpunchslushie"] = {
         label = "Prison Slushi",
         weight = 500.0,
         degrade = 10800,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 100 } },
+        },
         server = {}
     },
     ["beatdownberryrazz"] = {
         label = "Beatdown BerryRazz",
         weight = 500.0,
         degrade = 10800,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 50 } },
+        },
         server = {}
     },
     ["sign_dontblock"] = {
@@ -560,7 +568,9 @@ return {
             cooldown = 60,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 80 } },
+        },
         server = {}
     },
     ["carrot_cake"] = {
@@ -568,7 +578,9 @@ return {
         description = "A Lovely Comforting Cake",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["smoothie_veg"] = {
@@ -582,14 +594,18 @@ return {
             cooldown = 60,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 10, PLAYER_THIRST = 75 } },
+        },
         server = {}
     },
     ["expresso"] = {
         label = "Espresso",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 50 } },
+        },
         server = {}
     },
     ["beanmachine"] = {
@@ -597,7 +613,15 @@ return {
         description = "We take beans and put them in machines",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        energyModifier = {
+            modifier = 1.2,
+            duration = 12,
+            cooldown = 60,
+            skipScreenEffects = true,
+        },
+        client = {
+            status = { Add = { PLAYER_THIRST = 40 } },
+        },
         server = {}
     },
     ["hornys_cup"] = {
@@ -694,49 +718,63 @@ return {
         description = "Go Crazy",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 10, PLAYER_THIRST = 10 } },
+        },
         server = {}
     },
     ["japanese_pan_noodles"] = {
         label = "Japanese Pan Noodles",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["guksu"] = {
         label = "Guksu",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+        },
         server = {}
     },
     ["pad_thai"] = {
         label = "Pad Thai",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+        },
         server = {}
     },
     ["maki_calirolls"] = {
         label = "San Andreas Maki",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+        },
         server = {}
     },
     ["maki_tuna"] = {
         label = "Tuna Rolls",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+        },
         server = {}
     },
     ["sashimi_mix"] = {
         label = "Sashimi Mix",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+        },
         server = {}
     },
     ["repairkit"] = {
@@ -1433,7 +1471,9 @@ return {
         weight = 2000.0,
         degrade = nil,
         rarity = 4,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["scuba_gear"] = {
@@ -1501,7 +1541,9 @@ return {
         weight = 1250.0,
         degrade = 432000,
         rarity = 2,
-        client = {},
+        client = {
+            status = { Remove = { PLAYER_THIRST = 70 } },
+        },
         server = {}
     },
     ["case_black"] = {
@@ -1657,7 +1699,9 @@ return {
         label = "Chocolate Ice Cream",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["snrbuns_icecreamvanilla"] = {
@@ -1741,21 +1785,27 @@ return {
         label = "Lasagna",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["ravioli"] = {
         label = "Ravioli",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["fettuccini_alfredo"] = {
         label = "Fettuccini Alfredo",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["tiramisu"] = {
@@ -1768,7 +1818,9 @@ return {
             cooldown = 60,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["AMMO_SMG"] = {
@@ -2391,49 +2443,63 @@ return {
         label = "Baguette",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["bavarois"] = {
         label = "Bavarois",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["choux"] = {
         label = "Choux Pastry",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["choclat_eclair"] = {
         label = "Chocolate Eclair",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["charlotte"] = {
         label = "Charlotte",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["croissant"] = {
         label = "Croissant",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["latte"] = {
         label = "Latte",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 25 } },
+        },
         server = {}
     },
     ["donut_stack"] = {
@@ -2446,7 +2512,9 @@ return {
             cooldown = 60,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 80 } },
+        },
         server = {}
     },
     ["lockpick"] = {
@@ -3148,7 +3216,9 @@ return {
         description = "Definitely organic.",
         weight = 250.0,
         degrade = 172800,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 15 }, Remove = { PLAYER_HUNGER = 3 } },
+        },
         server = {}
     },
     ["taco_soda"] = {
@@ -3156,7 +3226,9 @@ return {
         description = "Yeah, tastes about right.",
         weight = 250.0,
         degrade = 172800,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 15 }, Remove = { PLAYER_HUNGER = 3 } },
+        },
         server = {}
     },
     ["beef_taco"] = {
@@ -3164,7 +3236,9 @@ return {
         description = "In case you don't have beef yet.",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15 } },
+        },
         server = {}
     },
     ["tostada"] = {
@@ -3172,7 +3246,9 @@ return {
         description = "Deep fried or toasted?",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15 } },
+        },
         server = {}
     },
     ["quesadilla"] = {
@@ -3180,7 +3256,9 @@ return {
         description = "Basically grilled cheese",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15 } },
+        },
         server = {}
     },
     ["burrito"] = {
@@ -3188,7 +3266,9 @@ return {
         description = "Burritoe, get it?",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15 } },
+        },
         server = {}
     },
     ["enchilada"] = {
@@ -3196,7 +3276,9 @@ return {
         description = "Meat birthday cakes.",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15 } },
+        },
         server = {}
     },
     ["carne_asada"] = {
@@ -3204,7 +3286,9 @@ return {
         description = "Kanye Asada",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15 } },
+        },
         server = {}
     },
     ["torta"] = {
@@ -3212,7 +3296,9 @@ return {
         description = "Fancy sub",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15 } },
+        },
         server = {}
     },
     ["taco_chicken"] = {
@@ -3625,7 +3711,9 @@ return {
         label = "Root Beer Float",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 10, PLAYER_THIRST = 90 }, Remove = { PLAYER_STRESS = 10 } },
+        },
         server = {}
     },
     ["milkshake"] = {
@@ -3638,7 +3726,9 @@ return {
             cooldown = 60,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 20, PLAYER_THIRST = 80 } },
+        },
         server = {}
     },
     ["chocolate_shake"] = {
@@ -3651,7 +3741,9 @@ return {
             cooldown = 60,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 20, PLAYER_THIRST = 80 } },
+        },
         server = {}
     },
     ["chickenpotpie"] = {
@@ -3659,35 +3751,45 @@ return {
         description = "A truly hearty meal",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["chickenfriedsteak"] = {
         label = "Chicken Fried Steak",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["salisbury_steak"] = {
         label = "Salisbury Steak",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["baconeggbiscuit"] = {
         label = "Bacon & Egg Biscuit",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["sloppyjoe"] = {
         label = "Sloppy Joe",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["tomato"] = {
@@ -4218,7 +4320,9 @@ return {
             type = "weed",
             duration = (60 * 30),
         },
-        client = {},
+        client = {
+            status = { Remove = { PLAYER_HUNGER = 5 } },
+        },
         server = {}
     },
     ["weed_brick"] = {
@@ -4237,7 +4341,9 @@ return {
             type = "oxy",
             duration = (60 * 60),
         },
-        client = {},
+        client = {
+            status = { Remove = { PLAYER_THIRST = 3 } },
+        },
         server = {}
     },
     ["contraband"] = {
@@ -4277,7 +4383,9 @@ return {
             type = "coke",
             duration = (60 * 60),
         },
-        client = {},
+        client = {
+            status = { Remove = { PLAYER_THIRST = 5 } },
+        },
         server = {}
     },
     ["coke_brick"] = {
@@ -4326,12 +4434,12 @@ return {
         client = {},
         server = {}
     },
-    ['water'] = { -- This item is just a test, but shows how to properly set status changes
+    ['water'] = {
         label = 'Water',
         weight = 250.0,
         degrade = 432000,
         client = {
-            status = { Add = { PLAYER_THIRST = 20 } }, -- Can pass either Add or Remove
+            status = { Add = { PLAYER_THIRST = 30 } },
             anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
             prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
             usetime = 2500,
@@ -4343,7 +4451,9 @@ return {
         label = "Onion Rings",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 30 } },
+        },
         server = {}
     },
     ["chocolate_bar"] = {
@@ -4369,21 +4479,27 @@ return {
         label = "Blueberry Muffin",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 50 } },
+        },
         server = {}
     },
     ["chocy_muff"] = {
         label = "Chocolate Muffin",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 50 } },
+        },
         server = {}
     },
     ["crisp"] = {
         label = "Crisps",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 20 } },
+        },
         server = {}
     },
     ["energy_pepe"] = {
@@ -4395,21 +4511,27 @@ return {
             duration = 12,
             cooldown = 60,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 15 } },
+        },
         server = {}
     },
     ["coffee"] = {
         label = "Coffee",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 15 } },
+        },
         server = {}
     },
     ["salad"] = {
         label = "Salad",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 50 } },
+        },
         server = {}
     },
     ["lemonade"] = {
@@ -4422,7 +4544,9 @@ return {
             cooldown = 60,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 5, PLAYER_THIRST = 40 } },
+        },
         server = {}
     },
     ["smoothie_orange"] = {
@@ -4435,7 +4559,9 @@ return {
             cooldown = 60,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15, PLAYER_THIRST = 60 } },
+        },
         server = {}
     },
     ["glass_cock"] = {
@@ -4449,70 +4575,90 @@ return {
             cooldown = 60,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 5, PLAYER_THIRST = 60 } },
+        },
         server = {}
     },
     ["soda"] = {
         label = "Soda",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 35 } },
+        },
         server = {}
     },
     ["gingerale"] = {
         label = "Gingerale",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 35 } },
+        },
         server = {}
     },
     ["chips"] = {
         label = "Chips",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 55 } },
+        },
         server = {}
     },
     ["fishandchips"] = {
         label = "Fish and Chips",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 80 } },
+        },
         server = {}
     },
     ["sausageroll"] = {
         label = "Sausage Roll",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 40 } },
+        },
         server = {}
     },
     ["cheeseburger"] = {
         label = "Cheese Burger",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15 }, Remove = { PLAYER_THIRST = 3 } },
+        },
         server = {}
     },
     ["vension_steak"] = {
         label = "Venison Steak",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 50 } },
+        },
         server = {}
     },
     ["fries"] = {
         label = "Fries",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 30 } },
+        },
         server = {}
     },
     ["popcorn"] = {
         label = "Popcorn",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 20 }, Remove = { PLAYER_THIRST = 3 } },
+        },
         server = {}
     },
     ["hotdog"] = {
@@ -4520,7 +4666,9 @@ return {
         description = "A dog but very hot",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 10 }, Remove = { PLAYER_THIRST = 3 } },
+        },
         server = {}
     },
     ["rusty_strawsprinkle"] = {
@@ -4533,21 +4681,27 @@ return {
             cooldown = 80,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 45 } },
+        },
         server = {}
     },
     ["rusty_ring"] = {
         label = "Rusty Ring",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 45 } },
+        },
         server = {}
     },
     ["rusty_lemon"] = {
         label = "Bannana Deep",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 45 }, Remove = { PLAYER_THIRST = 3 } },
+        },
         server = {}
     },
     ["rusty_custard"] = {
@@ -4560,21 +4714,27 @@ return {
             cooldown = 80,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 45 } },
+        },
         server = {}
     },
     ["rusty_cookiecream"] = {
         label = "Manure Mix",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 45 }, Remove = { PLAYER_THIRST = 3 } },
+        },
         server = {}
     },
     ["rusty_chocstuff"] = {
         label = "Brown Mess",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 45 }, Remove = { PLAYER_THIRST = 3 } },
+        },
         server = {}
     },
     ["rusty_chocsprinkle"] = {
@@ -4587,14 +4747,18 @@ return {
             cooldown = 80,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 45 }, Remove = { PLAYER_THIRST = 3 } },
+        },
         server = {}
     },
     ["rusty_blueice"] = {
         label = "Follemos",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 45 } },
+        },
         server = {}
     },
     ["rusty_strawsprinkbox"] = {
@@ -4629,21 +4793,27 @@ return {
         label = "Shmilk",
         weight = 1000.0,
         degrade = 259200,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15, PLAYER_THIRST = 40 } },
+        },
         server = {}
     },
     ["chai_latte"] = {
         label = "Chai Latte",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 15 } },
+        },
         server = {}
     },
     ["tommy_tea"] = {
         label = "Tommy Tea",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 100 } },
+        },
         server = {}
     },
     ["rusty_empty"] = {
@@ -4678,14 +4848,18 @@ return {
         label = "The Bleeder",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 25 } },
+        },
         server = {}
     },
     ["burgershot_drink"] = {
         label = "Burger Shot Cola",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 75 } },
+        },
         server = {}
     },
     ["burgershot_southern_sweet"] = {
@@ -4713,112 +4887,144 @@ return {
         label = "Double Shot",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["prickly_burger"] = {
         label = "The Prickly",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["the_simply_burger"] = {
         label = "Simply Burger",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 80 } },
+        },
         server = {}
     },
     ["tacos"] = {
         label = "Taco",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["burgershot_fries"] = {
         label = "Fries",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 60 } },
+        },
         server = {}
     },
     ["heartstopper"] = {
         label = "Heart Stopper",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["meteorite_icecream"] = {
         label = "Meteorite Ice Cream",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 50, PLAYER_THIRST = 50 } },
+        },
         server = {}
     },
     ["orangotang_icecream"] = {
         label = "Orangotang Ice Cream",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 50, PLAYER_THIRST = 50 } },
+        },
         server = {}
     },
     ["goat_cheese_wrap"] = {
         label = "Goat Cheese Wrap",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["chicken_wrap"] = {
         label = "Chicken Wrap",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["sandwich"] = {
         label = "Ham Sandwich",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15 } },
+        },
         server = {}
     },
     ["sandwich_turkey"] = {
         label = "Turkey Sandwich",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 40 } },
+        },
         server = {}
     },
     ["sandwich_beef"] = {
         label = "Beef Sandwich",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 42 } },
+        },
         server = {}
     },
     ["sandwich_blt"] = {
         label = "BLT Sandwich",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 45 } },
+        },
         server = {}
     },
     ["sandwich_egg"] = {
         label = "Egg Sandwich",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 35 } },
+        },
         server = {}
     },
     ["sandwich_chips"] = {
         label = "Chip Butty",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 40 } },
+        },
         server = {}
     },
     ["sandwich_crisp"] = {
@@ -4826,56 +5032,72 @@ return {
         description = "Yeah, that's right. Crisps",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 30 } },
+        },
         server = {}
     },
     ["pepperoni_pizza"] = {
         label = "Pepperoni Pizza",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["margherita_pizza"] = {
         label = "Margherita Pizza",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 90 } },
+        },
         server = {}
     },
     ["san_manzano_pizza"] = {
         label = "San Manzano Pizza",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["pasta_fresca"] = {
         label = "Pasta Fresca",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 80 } },
+        },
         server = {}
     },
     ["penna_rosa"] = {
         label = "Penne Rosa",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 85 } },
+        },
         server = {}
     },
     ["pesto_cavatappi"] = {
         label = "Pesto Cavatappi",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 75 } },
+        },
         server = {}
     },
     ["spag_bowl"] = {
         label = "Spaghetti Bolognese",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 70 } },
+        },
         server = {}
     },
     ["beef_tartare"] = {
@@ -4945,14 +5167,18 @@ return {
         label = "Chocolate Pancakes",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 10 } },
+        },
         server = {}
     },
     ["apple_crumble"] = {
         label = "Apple Crumble",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100 } },
+        },
         server = {}
     },
     ["ramen"] = {
@@ -5008,14 +5234,45 @@ return {
         label = "Cat Donut",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 40 } },
+        },
         server = {}
     },
     ["cat_cupcake"] = {
         label = "Cat Cupcake",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 40 } },
+        },
+        server = {}
+    },
+    ["homemade_cookie"] = {
+        label = "Homemade Cookie",
+        weight = 250.0,
+        degrade = 432000,
+        client = {
+            status = { Add = { PLAYER_HUNGER = 50 } },
+        },
+        server = {}
+    },
+    ["fruit_explosion"] = {
+        label = "Fruit Explosion",
+        weight = 250.0,
+        degrade = 432000,
+        client = {
+            status = { Add = { PLAYER_HUNGER = 30, PLAYER_THIRST = 100 } },
+        },
+        server = {}
+    },
+    ["booba_tea"] = {
+        label = "Bobba Tea",
+        weight = 250.0,
+        degrade = 432000,
+        client = {
+            status = { Add = { PLAYER_THIRST = 100 } },
+        },
         server = {}
     },
     ["mochi_blue"] = {
@@ -5053,32 +5310,31 @@ return {
         client = {},
         server = {}
     },
-    ['booba_tea'] = {
-        label = "Bobba Tea",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
     ["green_tea"] = {
         label = "Green Tea",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 75 }, Remove = { PLAYER_DRUNK = 10 } },
+        },
         server = {}
     },
     ["iced_coffee"] = {
         label = "Iced Coffee",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 25 } },
+        },
         server = {}
     },
     ['matcha_latte'] = {
         label = "Matcha Latte",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 50 } },
+        },
         server = {}
     },
     ["blueberry_boba"] = {
@@ -5113,14 +5369,18 @@ return {
         label = "Pumpkin Spice Latte",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_THIRST = 25 } },
+        },
         server = {}
     },
     ["cat_tuccino"] = {
         label = "Cat Tuccino",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 15 } },
+        },
         server = {}
     },
     ["frozen_yoghurt"] = {
@@ -5133,7 +5393,9 @@ return {
             cooldown = 60,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+        },
         server = {}
     },
     ["fresh_lemonade"] = {
@@ -5146,7 +5408,9 @@ return {
             cooldown = 60,
             skipScreenEffects = true,
         },
-        client = {},
+        client = {
+            status = { Add = { PLAYER_HUNGER = 5, PLAYER_THIRST = 40 } },
+        },
         server = {}
     },
     ["uwu_prize_box"] = {
