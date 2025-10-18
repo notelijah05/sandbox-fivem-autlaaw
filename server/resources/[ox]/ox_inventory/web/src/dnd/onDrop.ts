@@ -96,7 +96,7 @@ export const onDrop = async (source: DragSource, target?: DropTarget) => {
 
   const count =
     state.shiftPressed && sourceSlot.count > 1 && sourceInventory.type !== 'shop'
-      ? Math.floor(sourceSlot.count / 2)
+      ? sourceSlot.count
       : state.itemAmount === 0 || state.itemAmount > sourceSlot.count
       ? sourceSlot.count
       : state.itemAmount;
