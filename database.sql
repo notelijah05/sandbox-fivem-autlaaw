@@ -392,6 +392,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `Mugshot` varchar(255) DEFAULT NULL,
   `Attorney` tinyint(1) DEFAULT 0,
   `MDTSuspension` tinyint(1) DEFAULT 0,
+  `DrugStates` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `Inventory` longtext DEFAULT NULL,
   PRIMARY KEY (`SID`) USING BTREE,
   CONSTRAINT `Origin` CHECK (json_valid(`Origin`)),
@@ -416,7 +417,8 @@ CREATE TABLE IF NOT EXISTS `characters` (
   CONSTRAINT `JailedData` CHECK (json_valid(`JailedData`)),
   CONSTRAINT `ICU` CHECK (json_valid(`ICU`)),
   CONSTRAINT `Status` CHECK (json_valid(`Status`)),
-  CONSTRAINT `Parole` CHECK (json_valid(`Parole`))
+  CONSTRAINT `Parole` CHECK (json_valid(`Parole`)),
+  CONSTRAINT `DrugStates` CHECK (json_valid(`DrugStates`))
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 DROP TABLE IF EXISTS `character_app_profiles`;

@@ -47,5 +47,6 @@ TablesToDecode = {
 	"PhonePosition",
 	"Callsign",
 	"HUDConfig",
+	"DrugStates",
 	-- Maybe more to be added
 }
