@@ -1523,4 +1523,127 @@ return {
     },
 
     -- Mechanic Crafting Benches End --
+
+    -- Taco Shop Crafting Benches Start --
+
+    { -- Taco Shop Food Prep Table
+        name = 'taco-shop-food',
+        label = 'Taco Farmer Prep Table',
+        items = {
+            {
+                name = 'beef_taco',
+                ingredients = {
+                    taco_cheese = 2,
+                    taco_beef = 2,
+                    taco_tortilla = 4,
+                },
+                duration = 3000,
+                count = 4,
+            },
+            {
+                name = 'tostada',
+                ingredients = {
+                    taco_cheese = 2,
+                    taco_beef = 2,
+                    taco_tortilla = 4,
+                },
+                duration = 3000,
+                count = 4,
+            },
+            {
+                name = 'quesadilla',
+                ingredients = {
+                    taco_cheese = 2,
+                    taco_chicken = 2,
+                    taco_tortilla = 4,
+                },
+                duration = 3000,
+                count = 4,
+            },
+            {
+                name = 'burrito',
+                ingredients = {
+                    taco_cheese = 2,
+                    taco_chicken = 2,
+                    taco_tortilla = 4,
+                },
+                duration = 3000,
+                count = 4,
+            },
+            {
+                name = 'enchilada',
+                ingredients = {
+                    taco_cheese = 2,
+                    taco_beef = 2,
+                    taco_tortilla = 4,
+                },
+                duration = 3000,
+                count = 4,
+            },
+            {
+                name = 'carne_asada',
+                ingredients = {
+                    taco_cheese = 2,
+                    taco_steak = 4,
+                },
+                duration = 3000,
+                count = 4,
+            },
+            {
+                name = 'torta',
+                ingredients = {
+                    taco_cheese = 2,
+                    taco_chicken = 2,
+                    torta_roll = 4,
+                },
+                duration = 3000,
+                count = 4,
+            },
+        },
+        zones = {
+            {
+                label = 'Taco Farmer Prep Table',
+                icon = 'fa-solid fa-utensils',
+                coords = vec3(9.81, -1600.51, 29.38),
+                size = vec3(1.8, 0.8, 4.0),
+                distance = 1.5,
+                rotation = 320.0,
+            },
+        },
+    },
+
+    { -- Taco Shop Drinks Fountain
+        name = 'taco-shop-drinks',
+        label = 'Taco Farmer Fountain Drinks',
+        items = {
+            {
+                name = 'jugo',
+                ingredients = {
+                    taco_plastic_cups = 4,
+                },
+                duration = 2000,
+                count = 4,
+            },
+            {
+                name = 'taco_soda',
+                ingredients = {
+                    taco_plastic_cups = 4,
+                },
+                duration = 2000,
+                count = 4,
+            },
+        },
+        zones = {
+            {
+                label = 'Taco Farmer Fountain Drinks',
+                icon = 'fa-solid fa-glass-water',
+                coords = vec3(7.5, -1606.48, 29.38),
+                size = vec3(0.8, 1.8, 1.4),
+                distance = 1.5,
+                rotation = 320.0,
+            },
+        },
+    },
+
+    -- Taco Shop Crafting Benches End --
 }
