@@ -161,8 +161,11 @@ lib.callback.register('ox_inventory:openShop', function(source, data)
         end
 
         if shop.reqDuty then
-            local onDuty = server.isOnDuty(source, shop.groups)
-            if not onDuty then return end
+            local group = server.hasGroup(left, shop.groups)
+            if group then
+                local onDuty = server.isOnDuty(source, group)
+                if not onDuty then return end
+            end
         end
 
         if type(shop.coords) == 'vector3' and #(GetEntityCoords(GetPlayerPed(source)) - shop.coords) > 10 then

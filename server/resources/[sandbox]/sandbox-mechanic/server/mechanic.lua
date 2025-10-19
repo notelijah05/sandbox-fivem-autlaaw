@@ -5,23 +5,6 @@ AddEventHandler('onResourceStart', function(resource)
 
 		RegisterMechanicItems()
 
-		for k, v in ipairs(_mechanicShopStorageCrafting) do
-			if v.partCrafting then
-				for benchId, bench in ipairs(v.partCrafting) do
-					exports.ox_inventory:CraftingRegisterBench(string.format("mech-%s-%s", v.job, benchId),
-						bench.label, bench.targeting, {
-							x = bench.targeting.poly.coords.x,
-							y = bench.targeting.poly.coords.y,
-							z = bench.targeting.poly.coords.z,
-							h = bench.targeting.poly.options.heading,
-						}, {
-							job = {
-								id = v.job,
-								onDuty = true,
-							},
-						}, bench.recipes, bench.canUseSchematics)
-				end
-			end
-		end
+		-- Mechanic crafting benches are now handled by ox_inventory crafting.lua, No need to register them here anymore
 	end
 end)

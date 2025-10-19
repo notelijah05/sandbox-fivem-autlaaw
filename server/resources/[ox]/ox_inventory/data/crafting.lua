@@ -475,4 +475,1052 @@ return {
     },
 
     -- Weed Packaging End --
+
+    -- Mechanic Crafting Benches Start --
+
+    { -- Redline Mechanic Shop
+        name = 'redline-mechanic-1',
+        label = 'Mechanic Workbench',
+        groups = { 'redline' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(-584.07, -939.57, 23.89),
+                size = vec3(3.8, 1.0, 1.6),
+                distance = 1.5,
+                rotation = 270.0,
+            },
+        },
+    },
+
+    { -- Redline Mechanic Shop 2
+        name = 'redline-mechanic-2',
+        label = 'Mechanic Workbench',
+        groups = { 'redline' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(-589.19, -926.07, 28.14),
+                size = vec3(2.0, 1.0, 1.6),
+                distance = 1.5,
+                rotation = 270.0,
+            },
+        },
+    },
+
+    { -- Tuna Mechanic Shop
+        name = 'tuna-mechanic',
+        label = 'Mechanic Workbench',
+        groups = { 'tuna' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(133.37, -3051.24, 7.04),
+                size = vec3(11.8, 1.8, 2.2),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    { -- Tirenutz Mechanic Shop
+        name = 'tirenutz-mechanic',
+        label = 'Mechanic Workbench',
+        groups = { 'tirenutz' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(-57.5, -1325.07, 29.27),
+                size = vec3(4.2, 1.0, 2.8),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    { -- Hayes Mechanic Shop
+        name = 'hayes-mechanic',
+        label = 'Mechanic Workbench',
+        groups = { 'hayes' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(-1421.67, -456.38, 35.91),
+                size = vec3(3.8, 1.0, 2.4),
+                distance = 1.5,
+                rotation = 302.0,
+            },
+        },
+    },
+
+    { -- Atomic Mechanic Shop
+        name = 'atomic-mechanic',
+        label = 'Mechanic Workbench',
+        groups = { 'atomic' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(476.67, -1876.93, 26.09),
+                size = vec3(4.0, 1.2, 3.0),
+                distance = 1.5,
+                rotation = 25.0,
+            },
+        },
+    },
+
+    { -- Harmony Mechanic Shop
+        name = 'harmony-mechanic',
+        label = 'Mechanic Workbench',
+        groups = { 'harmony' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(1176.15, 2635.21, 37.75),
+                size = vec3(3.8, 1.4, 2.8),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    { -- Auto Exotics Mechanic Shop
+        name = 'autoexotics-mechanic',
+        label = 'Mechanic Workbench',
+        groups = { 'autoexotics' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(558.99, -171.67, 54.51),
+                size = vec3(3.6, 1.2, 2.6),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    { -- Ottos Mechanic Shop
+        name = 'ottos-mechanic',
+        label = 'Mechanic Workbench',
+        groups = { 'ottos' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(950.91, -979.09, 39.5),
+                size = vec3(3.8, 1.2, 2.2),
+                distance = 1.5,
+                rotation = 4.0,
+            },
+        },
+    },
+
+    { -- Bennys Mechanic Shop
+        name = 'bennys-mechanic',
+        label = 'Mechanic Workbench',
+        groups = { 'bennys' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(-205.3346, -1335.6605, 31.300),
+                size = vec3(5.0, 1.0, 3.0),
+                distance = 1.5,
+                rotation = 270.0,
+            },
+        },
+    },
+
+    { -- Paleto Tuners Mechanic Shop
+        name = 'paleto-tuners-mechanic',
+        label = 'Mechanic Workbench',
+        groups = { 'paleto_tuners' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(163.12, 6364.78, 31.27),
+                size = vec3(4.4, 2.0, 2.4),
+                distance = 1.5,
+                rotation = 30.0,
+            },
+        },
+    },
+
+    { -- Dreamworks Mechanic Shop
+        name = 'dreamworks-mechanic',
+        label = 'Mechanic Workbench',
+        groups = { 'dreamworks' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'repair_part_electronics',
+                ingredients = {
+                    electronic_parts = 5,
+                    plastic = 4,
+                    rubber = 1,
+                    copperwire = 8,
+                },
+                duration = 3500,
+                count = 10,
+            },
+            {
+                name = 'repair_part_axle',
+                ingredients = {
+                    ironbar = 4,
+                },
+                duration = 5000,
+                count = 5,
+            },
+            {
+                name = 'repair_part_injectors',
+                ingredients = {
+                    ironbar = 2,
+                    plastic = 2,
+                    copperwire = 4,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 20,
+            },
+            {
+                name = 'repair_part_clutch',
+                ingredients = {
+                    ironbar = 6,
+                    rubber = 1,
+                },
+                duration = 5000,
+                count = 8,
+            },
+            {
+                name = 'repair_part_brakes',
+                ingredients = {
+                    ironbar = 2,
+                    glue = 1,
+                },
+                duration = 4500,
+                count = 5,
+            },
+            {
+                name = 'repair_part_transmission',
+                ingredients = {
+                    ironbar = 3,
+                    electronic_parts = 1,
+                    plastic = 1,
+                },
+                duration = 3500,
+                count = 2,
+            },
+            {
+                name = 'repair_part_rad',
+                ingredients = {
+                    ironbar = 3,
+                    rubber = 1,
+                    glue = 1,
+                },
+                duration = 2000,
+                count = 2,
+            },
+        },
+        zones = {
+            {
+                label = 'Mechanic Workbench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(-726.39, -1505.64, 5.06),
+                size = vec3(5.0, 1.0, 2.6),
+                distance = 1.5,
+                rotation = 293.0,
+            },
+        },
+    },
+
+    -- Mechanic Crafting Benches End --
 }
