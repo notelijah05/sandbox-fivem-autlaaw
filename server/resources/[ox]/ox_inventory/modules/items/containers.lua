@@ -18,13 +18,6 @@ local function arrayToSet(tbl)
     return set
 end
 
--- Register containers from items.lua instead of having to manually set them here
-for itemName, properties in pairs(Items) do
-    if properties.container then
-        setContainerProperties(itemName, properties.container)
-    end
-end
-
 ---Registers items with itemName as containers (i.e. backpacks, wallets).
 ---@param itemName string
 ---@param properties ItemContainerProperties
@@ -60,5 +53,12 @@ local function setContainerProperties(itemName, properties)
 end
 
 exports('setContainerProperties', setContainerProperties)
+
+-- Register containers from items.lua instead of having to manually set them here
+for itemName, properties in pairs(Items) do
+    if properties.container then
+        setContainerProperties(itemName, properties.container)
+    end
+end
 
 return containers

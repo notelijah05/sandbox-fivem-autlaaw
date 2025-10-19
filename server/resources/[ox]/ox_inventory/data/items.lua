@@ -430,7 +430,19 @@ return {
         weight = 1000,
         degrade = 86400,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `prop_sandwich_01`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(-50.0, 16.0, 60.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -439,7 +451,19 @@ return {
         weight = 500.0,
         degrade = 86400,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_THIRST = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_ecola_can`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 130.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -448,7 +472,19 @@ return {
         weight = 500.0,
         degrade = 10800,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_THIRST = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_ecola_can`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 130.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -457,7 +493,19 @@ return {
         weight = 500.0,
         degrade = 10800,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_THIRST = 50 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_ecola_can`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 130.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -574,7 +622,18 @@ return {
             skipScreenEffects = true,
         },
         client = {
+            usetime = 5000,
             status = { Add = { PLAYER_HUNGER = 80 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -584,7 +643,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 10000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_clipboard@male@idle_a', clip = 'idle_c' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -600,7 +670,19 @@ return {
             skipScreenEffects = true,
         },
         client = {
+            usetime = 9000,
             status = { Add = { PLAYER_HUNGER = 10, PLAYER_THIRST = 75 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -609,7 +691,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 7500,
             status = { Add = { PLAYER_THIRST = 50 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+            prop = { model = `bzzz_food_cooffeecup01_a`, pos = vec3(0.14, 0.0, 0.06), rot = vec3(-224.0, -77.0, -132.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -625,7 +719,19 @@ return {
             skipScreenEffects = true,
         },
         client = {
+            usetime = 7500,
             status = { Add = { PLAYER_THIRST = 40 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -724,7 +830,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 7500,
             status = { Add = { PLAYER_HUNGER = 10, PLAYER_THIRST = 10 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -733,7 +851,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -742,7 +871,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -751,7 +891,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -760,7 +911,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -769,7 +931,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -778,7 +951,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -1354,14 +1538,38 @@ return {
         label = "Cigarette",
         weight = 100.0,
         degrade = 864000,
-        client = {},
+        client = {
+            usetime = 8000,
+            cancel = false,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_aa_smoke@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_stat_pack_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = false,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {}
     },
     ["cigarette_pack"] = {
         label = "Pack of Cigarettes",
         weight = 5000.0,
         degrade = 864000,
-        client = {},
+        client = {
+            usetime = 2000,
+            cancel = false,
+            allowArmed = false,
+            disable = {
+                move = false,
+                car = false,
+                combat = false,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {}
     },
     ["armor"] = {
@@ -1369,8 +1577,16 @@ return {
         weight = 8000,
         degrade = 604800,
         client = {
-            anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-            usetime = 3500
+            usetime = 5000,
+            cancel = true,
+            allowArmed = false,
+            disable = {
+                move = false,
+                car = false,
+                combat = false,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -1380,8 +1596,16 @@ return {
         degrade = 604800,
         rarity = 2,
         client = {
-            anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-            usetime = 5000
+            usetime = 10000,
+            cancel = true,
+            allowArmed = false,
+            disable = {
+                move = false,
+                car = false,
+                combat = false,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -1391,8 +1615,16 @@ return {
         degrade = 604800,
         rarity = 3,
         client = {
-            anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-            usetime = 5000
+            usetime = 7500,
+            cancel = true,
+            allowArmed = false,
+            disable = {
+                move = false,
+                car = false,
+                combat = false,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -1547,7 +1779,19 @@ return {
         degrade = 432000,
         rarity = 2,
         client = {
+            usetime = 20000,
             status = { Remove = { PLAYER_THIRST = 70 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_seat_wall_eating@male@both_hands@base', clip = 'base' },
+            prop = { model = `v_ind_cs_jerrycan03`, pos = vec3(0.16, 0.0, 0.03), rot = vec3(-70.0, 14.0, -42.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = true,
+            },
         },
         server = {}
     },
@@ -1555,7 +1799,18 @@ return {
         label = "Phone Case: Black",
         weight = 0,
         degrade = 432000,
-        client = {},
+        client = {
+            usetime = 3000,
+            cancel = true,
+            allowArmed = false,
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {
             export = 'sandbox-phone.phone_case'
         }
@@ -1564,7 +1819,18 @@ return {
         label = "Phone Case: Blue",
         weight = 0,
         degrade = 432000,
-        client = {},
+        client = {
+            usetime = 3000,
+            cancel = true,
+            allowArmed = false,
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {
             export = 'sandbox-phone.phone_case'
         }
@@ -1573,7 +1839,18 @@ return {
         label = "Phone Case: Gold",
         weight = 0,
         degrade = 432000,
-        client = {},
+        client = {
+            usetime = 3000,
+            cancel = true,
+            allowArmed = false,
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {
             export = 'sandbox-phone.phone_case'
         }
@@ -1582,7 +1859,18 @@ return {
         label = "Phone Case: Pink",
         weight = 0,
         degrade = 432000,
-        client = {},
+        client = {
+            usetime = 3000,
+            cancel = true,
+            allowArmed = false,
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {
             export = 'sandbox-phone.phone_case'
         }
@@ -1591,7 +1879,18 @@ return {
         label = "Phone Case: White",
         weight = 0,
         degrade = 432000,
-        client = {},
+        client = {
+            usetime = 3000,
+            cancel = true,
+            allowArmed = false,
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {
             export = 'sandbox-phone.phone_case'
         }
@@ -1826,7 +2125,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -1835,7 +2145,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -1844,7 +2165,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -1859,7 +2191,18 @@ return {
             skipScreenEffects = true,
         },
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -2484,7 +2827,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 18000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -2493,7 +2847,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 18000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -2502,7 +2867,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 18000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -2511,7 +2887,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 18000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -2520,7 +2907,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 18000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -2529,7 +2927,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 18000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -2538,7 +2947,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
-            status = { Add = { PLAYER_THIRST = 25 } },
+            usetime = 18000,
+            status = { Add = { PLAYER_THIRST = 15 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@base', clip = 'base' },
+            prop = { model = `p_amb_brolly_01`, pos = vec3(0.15, 0.005, 0.0), rot = vec3(87.0, -20.0, 180.0), bone = 57005 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -2553,7 +2974,18 @@ return {
             skipScreenEffects = true,
         },
         client = {
+            usetime = 18000,
             status = { Add = { PLAYER_HUNGER = 80 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3257,7 +3689,19 @@ return {
         weight = 250.0,
         degrade = 172800,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_THIRST = 15 }, Remove = { PLAYER_HUNGER = 3 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_ecola_can`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 130.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3267,7 +3711,19 @@ return {
         weight = 250.0,
         degrade = 172800,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_THIRST = 15 }, Remove = { PLAYER_HUNGER = 3 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_ecola_can`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 130.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3277,7 +3733,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 15 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `prop_taco_01`, pos = vec3(0.13, 0.07, 0.02), rot = vec3(160.0, 0.0, -50.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3287,7 +3755,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 15 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `prop_taco_01`, pos = vec3(0.13, 0.07, 0.02), rot = vec3(160.0, 0.0, -50.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3297,7 +3777,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 15 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `prop_taco_01`, pos = vec3(0.13, 0.07, 0.02), rot = vec3(160.0, 0.0, -50.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3307,7 +3799,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 15 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `prop_taco_01`, pos = vec3(0.13, 0.07, 0.02), rot = vec3(160.0, 0.0, -50.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3317,7 +3821,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 15 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `prop_taco_01`, pos = vec3(0.13, 0.07, 0.02), rot = vec3(160.0, 0.0, -50.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3327,7 +3843,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 15 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `prop_taco_01`, pos = vec3(0.13, 0.07, 0.02), rot = vec3(160.0, 0.0, -50.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3337,7 +3865,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 15 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `prop_taco_01`, pos = vec3(0.13, 0.07, 0.02), rot = vec3(160.0, 0.0, -50.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3708,7 +4248,20 @@ return {
         weight = 3000,
         degrade = 432000,
         rarity = 3,
-        client = {},
+        client = {
+            usetime = 15000,
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_clipboard@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_stat_pack_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 60309 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {}
     },
     ["firstaid"] = {
@@ -3716,35 +4269,100 @@ return {
         weight = 5000,
         degrade = 432000,
         rarity = 2,
-        client = {},
+        client = {
+            usetime = 11000,
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_clipboard@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_stat_pack_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 60309 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {}
     },
     ["tourniquet"] = {
         label = "Tourniquet",
         weight = 1000,
         degrade = 604800,
-        client = {},
+        client = {
+            usetime = 5000,
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_clipboard@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_stat_pack_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 60309 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {}
     },
     ["bandage"] = {
         label = "Bandage",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            usetime = 2000,
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_clipboard@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_stat_pack_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 60309 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {}
     },
     ["gauze"] = {
         label = "Gauze",
         weight = 100.0,
         degrade = 432000,
-        client = {},
+        client = {
+            usetime = 2000,
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_clipboard@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_stat_pack_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 60309 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {}
     },
     ["morphine"] = {
         label = "Morphine",
         weight = 1000,
         degrade = 432000,
-        client = {},
+        client = {
+            usetime = 8000,
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_clipboard@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_stat_pack_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 60309 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {}
     },
     ["rootbeerfloat"] = {
@@ -3752,7 +4370,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 10, PLAYER_THIRST = 90 }, Remove = { PLAYER_STRESS = 10 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_plastic_cup_02`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3767,7 +4397,19 @@ return {
             skipScreenEffects = true,
         },
         client = {
+            usetime = 10000,
             status = { Add = { PLAYER_HUNGER = 20, PLAYER_THIRST = 80 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_plastic_cup_02`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3782,7 +4424,19 @@ return {
             skipScreenEffects = true,
         },
         client = {
+            usetime = 10000,
             status = { Add = { PLAYER_HUNGER = 20, PLAYER_THIRST = 80 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_plastic_cup_02`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3792,7 +4446,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3801,7 +4466,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3810,7 +4486,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3819,7 +4506,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -3828,7 +4526,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 100 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4382,7 +5091,18 @@ return {
             duration = (60 * 60),
         },
         client = {
+            usetime = 2800,
+            cancel = false,
+            allowArmed = false,
             status = { Remove = { PLAYER_THIRST = 3 } },
+            anim = { dict = 'mp_suicide', clip = 'pill' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4479,11 +5199,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
-            status = { Add = { PLAYER_THIRST = 30 } },
-            anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
-            prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.03, 0.03, 0.02), rot = vec3(0.0, 0.0, -1.5) },
-            usetime = 2500,
+            usetime = 5000,
             cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_ld_flow_bottle`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4492,7 +5219,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 30 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4500,7 +5238,21 @@ return {
         label = "Chocolate Bar",
         weight = 250.0,
         degrade = 432000,
-        client = {},
+        client = {
+            usetime = 8000,
+            status = { Add = { PLAYER_HUNGER = 30 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `prop_choc_ego`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 60309 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
+        },
         server = {}
     },
     ["donut"] = {
@@ -4520,7 +5272,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 50 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4529,7 +5292,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 50 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4538,7 +5312,17 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 20 } },
+            cancel = true,
+            allowArmed = false,
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4552,7 +5336,19 @@ return {
             cooldown = 60,
         },
         client = {
+            usetime = 6000,
             status = { Add = { PLAYER_THIRST = 15 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@pnq', clip = 'loop' },
+            prop = { model = `prop_choc_ego`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 60309 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4561,7 +5357,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 10000,
             status = { Add = { PLAYER_THIRST = 15 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4570,7 +5378,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 50 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4585,7 +5404,19 @@ return {
             skipScreenEffects = true,
         },
         client = {
+            usetime = 9000,
             status = { Add = { PLAYER_HUNGER = 5, PLAYER_THIRST = 40 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_plastic_cup_02`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4600,7 +5431,19 @@ return {
             skipScreenEffects = true,
         },
         client = {
+            usetime = 9000,
             status = { Add = { PLAYER_HUNGER = 15, PLAYER_THIRST = 60 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_plastic_cup_02`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4616,7 +5459,19 @@ return {
             skipScreenEffects = true,
         },
         client = {
+            usetime = 9000,
             status = { Add = { PLAYER_HUNGER = 5, PLAYER_THIRST = 60 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_plastic_cup_02`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4625,7 +5480,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_THIRST = 35 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_ecola_can`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 130.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4634,7 +5501,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_THIRST = 35 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+            prop = { model = `prop_ecola_can`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 130.0), bone = 28422 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4643,7 +5522,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 12000,
             status = { Add = { PLAYER_THIRST = 55 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4652,7 +5542,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 12000,
             status = { Add = { PLAYER_HUNGER = 80 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4661,7 +5562,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 40 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4670,7 +5582,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 12000,
             status = { Add = { PLAYER_HUNGER = 15 }, Remove = { PLAYER_THIRST = 3 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4679,7 +5602,18 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 15000,
             status = { Add = { PLAYER_HUNGER = 50 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4688,7 +5622,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 10000,
             status = { Add = { PLAYER_HUNGER = 30 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `nels_fries_box_prop`, pos = vec3(0.125, 0.04, 0.025), rot = vec3(0.0, 150.0, 0.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4697,7 +5643,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 12000,
             status = { Add = { PLAYER_HUNGER = 20 }, Remove = { PLAYER_THIRST = 3 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'anim@scripted@island@special_peds@pavel@hs4_pavel_ig5_caviar_p1', clip = 'base_idle' },
+            prop = { model = `xs_prop_trinket_cup_01a`, pos = vec3(0.16, 0.0, 0.03), rot = vec3(-70.0, 14.0, 42.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4707,7 +5665,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 18000,
             status = { Add = { PLAYER_HUNGER = 10 }, Remove = { PLAYER_THIRST = 3 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `prop_cs_hotdog_01`, pos = vec3(-0.03, 0.01, -0.010000), rot = vec3(95.107101, 94.700104, -66.917900), bone = 60309 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4722,7 +5692,19 @@ return {
             skipScreenEffects = true,
         },
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 45 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `map4all_asset_donut02`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(135.0, 16.0, 60.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4731,7 +5713,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 45 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `map4all_asset_donut02`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(135.0, 16.0, 60.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4740,7 +5734,19 @@ return {
         weight = 250.0,
         degrade = 432000,
         client = {
+            usetime = 8000,
             status = { Add = { PLAYER_HUNGER = 45 }, Remove = { PLAYER_THIRST = 3 } },
+            cancel = true,
+            allowArmed = false,
+            anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+            prop = { model = `map4all_asset_donut03`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(135.0, 16.0, 60.0), bone = 18905 },
+            disable = {
+                move = false,
+                car = false,
+                combat = true,
+                mouse = false,
+                sprint = false,
+            },
         },
         server = {}
     },
@@ -4753,1756 +5759,2381 @@ return {
             duration = 18,
             cooldown = 80,
             skipScreenEffects = true,
+            client = {
+                usetime = 8000,
+                status = { Add = { PLAYER_HUNGER = 45 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `map4all_asset_donut08`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(135.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        client = {
-            status = { Add = { PLAYER_HUNGER = 45 } },
+        ["rusty_cookiecream"] = {
+            label = "Manure Mix",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 8000,
+                status = { Add = { PLAYER_HUNGER = 45 }, Remove = { PLAYER_THIRST = 3 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `map4all_asset_donut04`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(135.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["rusty_cookiecream"] = {
-        label = "Manure Mix",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 45 }, Remove = { PLAYER_THIRST = 3 } },
+        ["rusty_chocstuff"] = {
+            label = "Brown Mess",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 8000,
+                status = { Add = { PLAYER_HUNGER = 45 }, Remove = { PLAYER_THIRST = 3 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `map4all_asset_donut07`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(135.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["rusty_chocstuff"] = {
-        label = "Brown Mess",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 45 }, Remove = { PLAYER_THIRST = 3 } },
+        ["rusty_chocsprinkle"] = {
+            label = "Chocolate Whammy",
+            weight = 250.0,
+            degrade = 432000,
+            energyModifier = {
+                modifier = 1.1,
+                duration = 18,
+                cooldown = 80,
+                skipScreenEffects = true,
+            },
+            client = {
+                usetime = 8000,
+                status = { Add = { PLAYER_HUNGER = 45 }, Remove = { PLAYER_THIRST = 3 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `map4all_asset_donut01`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(135.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["rusty_chocsprinkle"] = {
-        label = "Chocolate Whammy",
-        weight = 250.0,
-        degrade = 432000,
-        energyModifier = {
-            modifier = 1.1,
-            duration = 18,
-            cooldown = 80,
-            skipScreenEffects = true,
+        ["rusty_blueice"] = {
+            label = "Follemos",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 8000,
+                status = { Add = { PLAYER_HUNGER = 45 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `map4all_asset_donut05`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(135.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        client = {
-            status = { Add = { PLAYER_HUNGER = 45 }, Remove = { PLAYER_THIRST = 3 } },
+        ["rusty_strawsprinkbox"] = {
+            label = "Box of Swifty Sprinkles",
+            weight = 5000.0,
+            degrade = 864000,
+            client = {
+                usetime = 2000,
+                status = { Add = { PLAYER_HUNGER = 45 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `map4all_asset_donut05`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(135.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["rusty_blueice"] = {
-        label = "Follemos",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 45 } },
+        ["rusty_ringmixbox"] = {
+            label = "Box of Mixed Rings",
+            weight = 5000.0,
+            degrade = 864000,
+            client = {
+                usetime = 2000,
+                cancel = true,
+                allowArmed = false,
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["rusty_strawsprinkbox"] = {
-        label = "Box of Swifty Sprinkles",
-        weight = 5000.0,
-        degrade = 864000,
-        client = {},
-        server = {}
-    },
-    ["rusty_ringmixbox"] = {
-        label = "Box of Mixed Rings",
-        weight = 5000.0,
-        degrade = 864000,
-        client = {},
-        server = {}
-    },
-    ["rusty_ringbox"] = {
-        label = "Box of Rings",
-        weight = 5000.0,
-        degrade = 864000,
-        client = {},
-        server = {}
-    },
-    ["rusty_pd"] = {
-        label = "Rusty's Sword",
-        weight = 5000.0,
-        degrade = 864000,
-        client = {},
-        server = {}
-    },
-    ["shmilk"] = {
-        label = "Shmilk",
-        weight = 1000.0,
-        degrade = 259200,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 15, PLAYER_THIRST = 40 } },
+        ["rusty_ringbox"] = {
+            label = "Box of Rings",
+            weight = 5000.0,
+            degrade = 864000,
+            client = {
+                usetime = 2000,
+                cancel = true,
+                allowArmed = false,
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["chai_latte"] = {
-        label = "Chai Latte",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_THIRST = 15 } },
+        ["rusty_pd"] = {
+            label = "Rusty's Sword",
+            weight = 5000.0,
+            degrade = 864000,
+            client = {
+                usetime = 2000,
+                cancel = true,
+                allowArmed = false,
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["tommy_tea"] = {
-        label = "Tommy Tea",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_THIRST = 100 } },
+        ["shmilk"] = {
+            label = "Shmilk",
+            weight = 1000.0,
+            degrade = 259200,
+            client = {
+                usetime = 7500,
+                status = { Add = { PLAYER_HUNGER = 15, PLAYER_THIRST = 40 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+                prop = { model = `bzzz_machines_milk_box`, pos = vec3(0.12, -0.04, 0.06), rot = vec3(-65.0, 85.0, -20.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["rusty_empty"] = {
-        label = "Empty Donut Box",
-        weight = 0.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["burgershot_cup"] = {
-        label = "BS Cup",
-        weight = 0.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["bun"] = {
-        label = "Hamburger Bun",
-        weight = 100.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["patty"] = {
-        label = "Hamburger Patty",
-        weight = 200.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["burger"] = {
-        label = "The Bleeder",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 25 } },
+        ["chai_latte"] = {
+            label = "Chai Latte",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 7500,
+                status = { Add = { PLAYER_THIRST = 15 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["burgershot_drink"] = {
-        label = "Burger Shot Cola",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_THIRST = 75 } },
+        ["tommy_tea"] = {
+            label = "Tommy Tea",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 7500,
+                status = { Add = { PLAYER_THIRST = 100 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+                prop = { model = `bzzz_food_cooffeecup01_a`, pos = vec3(0.14, 0.0, 0.06), rot = vec3(-224.0, -77.0, -132.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["burgershot_southern_sweet"] = {
-        label = "Burger Shot Southern Sweet",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["burgershot_dr_peppy"] = {
-        label = "Burger Shot Dr. Peppy",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["burgershot_rimjob"] = {
-        label = "Burger Shot Rimjob",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["double_shot_burger"] = {
-        label = "Double Shot",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 100 } },
+        ["rusty_empty"] = {
+            label = "Empty Donut Box",
+            weight = 0.0,
+            degrade = nil,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["prickly_burger"] = {
-        label = "The Prickly",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 100 } },
+        ["burgershot_cup"] = {
+            label = "BS Cup",
+            weight = 0.0,
+            degrade = nil,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["the_simply_burger"] = {
-        label = "Simply Burger",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 80 } },
+        ["bun"] = {
+            label = "Hamburger Bun",
+            weight = 100.0,
+            degrade = nil,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["tacos"] = {
-        label = "Taco",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 100 } },
+        ["patty"] = {
+            label = "Hamburger Patty",
+            weight = 200.0,
+            degrade = nil,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["burgershot_fries"] = {
-        label = "Fries",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 60 } },
+        ["burger"] = {
+            label = "The Bleeder",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 12000,
+                status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 25 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `nels_burger_bleeder_prop`, pos = vec3(0.135, 0.01, 0.0), rot = vec3(-194.0, 0.0, 0.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["heartstopper"] = {
-        label = "Heart Stopper",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 100 } },
+        ["burgershot_drink"] = {
+            label = "Burger Shot Cola",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 12000,
+                status = { Add = { PLAYER_THIRST = 75 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `nels_soda_prop`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 190.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["meteorite_icecream"] = {
-        label = "Meteorite Ice Cream",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 50, PLAYER_THIRST = 50 } },
+        ["burgershot_southern_sweet"] = {
+            label = "Burger Shot Southern Sweet",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["orangotang_icecream"] = {
-        label = "Orangotang Ice Cream",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 50, PLAYER_THIRST = 50 } },
+        ["burgershot_dr_peppy"] = {
+            label = "Burger Shot Dr. Peppy",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["goat_cheese_wrap"] = {
-        label = "Goat Cheese Wrap",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 100 } },
+        ["burgershot_rimjob"] = {
+            label = "Burger Shot Rimjob",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["chicken_wrap"] = {
-        label = "Chicken Wrap",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 100 } },
+        ["double_shot_burger"] = {
+            label = "Double Shot",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 12000,
+                status = { Add = { PLAYER_HUNGER = 100 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `nels_burger_double_shot_prop`, pos = vec3(0.135, 0.01, 0.0), rot = vec3(-194.0, 0.0, 0.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["sandwich"] = {
-        label = "Ham Sandwich",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 15 } },
+        ["prickly_burger"] = {
+            label = "The Prickly",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 12000,
+                status = { Add = { PLAYER_HUNGER = 100 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `nels_burger_prickly_prop`, pos = vec3(0.135, 0.01, 0.0), rot = vec3(-194.0, 0.0, 0.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["sandwich_turkey"] = {
-        label = "Turkey Sandwich",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 40 } },
+        ["the_simply_burger"] = {
+            label = "Simply Burger",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 12000,
+                status = { Add = { PLAYER_HUNGER = 80 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `nels_burger_simply_prop`, pos = vec3(0.135, 0.01, 0.0), rot = vec3(-194.0, 0.0, 0.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["sandwich_beef"] = {
-        label = "Beef Sandwich",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 42 } },
+        ["tacos"] = {
+            label = "Taco",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 12000,
+                status = { Add = { PLAYER_HUNGER = 100 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `nels_tacos_prop`, pos = vec3(0.13, 0.07, 0.02), rot = vec3(160.0, 0.0, -50.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["sandwich_blt"] = {
-        label = "BLT Sandwich",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 45 } },
+        ["burgershot_fries"] = {
+            label = "Fries",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 10000,
+                status = { Add = { PLAYER_HUNGER = 60 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `nels_fries_box_prop`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 150.0, 0.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["sandwich_egg"] = {
-        label = "Egg Sandwich",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 35 } },
+        ["heartstopper"] = {
+            label = "Heart Stopper",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 15000,
+                status = { Add = { PLAYER_HUNGER = 100 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `nels_burger_fabulous_6lb_prop`, pos = vec3(0.135, 0.01, 0.0), rot = vec3(-194.0, 0.0, 0.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["sandwich_chips"] = {
-        label = "Chip Butty",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 40 } },
+        ["meteorite_icecream"] = {
+            label = "Meteorite Ice Cream",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 15000,
+                status = { Add = { PLAYER_HUNGER = 50, PLAYER_THIRST = 50 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `nels_ice_cream_meteorite_prop`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["sandwich_crisp"] = {
-        label = "Crisp Sandwich",
-        description = "Yeah, that's right. Crisps",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 30 } },
+        ["orangotang_icecream"] = {
+            label = "Orangotang Ice Cream",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 15000,
+                status = { Add = { PLAYER_HUNGER = 50, PLAYER_THIRST = 50 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `nels_ice_cream_orang_otan_prop`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["pepperoni_pizza"] = {
-        label = "Pepperoni Pizza",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 100 } },
+        ["goat_cheese_wrap"] = {
+            label = "Goat Cheese Wrap",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 15000,
+                status = { Add = { PLAYER_HUNGER = 50, PLAYER_THIRST = 50 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `nels_goat_wrap_prop`, pos = vec3(0.135, 0.01, 0.0), rot = vec3(0.0, 160.0, 0.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["margherita_pizza"] = {
-        label = "Margherita Pizza",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 90 } },
+        ["chicken_wrap"] = {
+            label = "Chicken Wrap",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 15000,
+                status = { Add = { PLAYER_HUNGER = 100 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `nels_chicken_wrap_prop`, pos = vec3(0.135, 0.01, 0.0), rot = vec3(0.0, 160.0, 0.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["san_manzano_pizza"] = {
-        label = "San Manzano Pizza",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 100 } },
+        ["sandwich"] = {
+            label = "Ham Sandwich",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 11000,
+                status = { Add = { PLAYER_HUNGER = 15 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `mp_player_int_eat_burger`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(-50.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["pasta_fresca"] = {
-        label = "Pasta Fresca",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 80 } },
+        ["sandwich_turkey"] = {
+            label = "Turkey Sandwich",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 11000,
+                status = { Add = { PLAYER_HUNGER = 40 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `mp_player_int_eat_burger`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(-50.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["penna_rosa"] = {
-        label = "Penne Rosa",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 85 } },
+        ["sandwich_beef"] = {
+            label = "Beef Sandwich",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 11000,
+                status = { Add = { PLAYER_HUNGER = 42 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `mp_player_int_eat_burger`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(-50.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["pesto_cavatappi"] = {
-        label = "Pesto Cavatappi",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 75 } },
+        ["sandwich_blt"] = {
+            label = "BLT Sandwich",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 11000,
+                status = { Add = { PLAYER_HUNGER = 45 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `mp_player_int_eat_burger`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(-50.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["spag_bowl"] = {
-        label = "Spaghetti Bolognese",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 70 } },
+        ["sandwich_egg"] = {
+            label = "Egg Sandwich",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 11000,
+                status = { Add = { PLAYER_HUNGER = 35 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `mp_player_int_eat_burger`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(-50.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["beef_tartare"] = {
-        label = "Beef Tartare",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["duck_leg_confit"] = {
-        label = "Duck Leg Confit",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["wagyu_sirloin"] = {
-        label = "Kuroge Wagyu Sirloin",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["lamb_chops"] = {
-        label = "Cognac Dijon Lamb Chops",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["mussels"] = {
-        label = "Mussels a la Bourguignonne",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["tarte_tatin"] = {
-        label = "Tarte Tatin",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["tarte_tatin_chocolate"] = {
-        label = "Tarte au Chocolat",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["cherry_milkshake"] = {
-        label = "Cherry Milkshake",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["noalch_red_wine"] = {
-        label = "Non Alcoholic Red Wine",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["choclate_pancakes"] = {
-        label = "Chocolate Pancakes",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 10 } },
+        ["sandwich_chips"] = {
+            label = "Chip Butty",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 11000,
+                status = { Add = { PLAYER_HUNGER = 45 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `mp_player_int_eat_burger`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(-50.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["apple_crumble"] = {
-        label = "Apple Crumble",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 100 } },
+        ["sandwich_crisp"] = {
+            label = "Crisp Sandwich",
+            description = "Yeah, that's right. Crisps",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 11000,
+                status = { Add = { PLAYER_HUNGER = 30 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                prop = { model = `mp_player_int_eat_burger`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(-50.0, 16.0, 60.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["ramen"] = {
-        label = "Ramen",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["kitty_sliders"] = {
-        label = "Kitty Sliders",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["bento_boxfood"] = {
-        label = "Bento Box",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["kitty_sushi"] = {
-        label = "Kitty Sushi",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["miso_soup"] = {
-        label = "Miso Soup",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["purrrito"] = {
-        label = "Purrrito",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["kitty_pizza"] = {
-        label = "Kitty Pizza",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["cat_donut"] = {
-        label = "Cat Donut",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 40 } },
+        ["pepperoni_pizza"] = {
+            label = "Pepperoni Pizza",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 18000,
+                status = { Add = { PLAYER_HUNGER = 100 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@code_human_wander_eating_donut@male@idle_a', clip = 'idle_a' },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["cat_cupcake"] = {
-        label = "Cat Cupcake",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 40 } },
+        ["margherita_pizza"] = {
+            label = "Margherita Pizza",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 18000,
+                status = { Add = { PLAYER_HUNGER = 90 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@code_human_wander_eating_donut@male@idle_a', clip = 'idle_a' },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["homemade_cookie"] = {
-        label = "Homemade Cookie",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 50 } },
+        ["san_manzano_pizza"] = {
+            label = "San Manzano Pizza",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 18000,
+                status = { Add = { PLAYER_HUNGER = 100 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@code_human_wander_eating_donut@male@idle_a', clip = 'idle_a' },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["fruit_explosion"] = {
-        label = "Fruit Explosion",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 30, PLAYER_THIRST = 100 } },
+        ["pasta_fresca"] = {
+            label = "Pasta Fresca",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 20000,
+                status = { Add = { PLAYER_HUNGER = 80 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["booba_tea"] = {
-        label = "Bobba Tea",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_THIRST = 100 } },
+        ["penna_rosa"] = {
+            label = "Penne Rosa",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 20000,
+                status = { Add = { PLAYER_HUNGER = 85 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["mochi_blue"] = {
-        label = "Blueberry Mochi",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["mochi_green"] = {
-        label = "Matcha Mochi",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["mochi_orange"] = {
-        label = "Mango Mochi",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["mochi_pink"] = {
-        label = "Strawberry Mochi",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["mango_refresher"] = {
-        label = "Mango Refresher",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["green_tea"] = {
-        label = "Green Tea",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 75 }, Remove = { PLAYER_DRUNK = 10 } },
+        ["pesto_cavatappi"] = {
+            label = "Pesto Cavatappi",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 17000,
+                status = { Add = { PLAYER_HUNGER = 75 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ["iced_coffee"] = {
-        label = "Iced Coffee",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 25 } },
+        ["spag_bowl"] = {
+            label = "Spaghetti Bolognese",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 17000,
+                status = { Add = { PLAYER_HUNGER = 70 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
         },
-        server = {}
-    },
-    ['matcha_latte'] = {
-        label = "Matcha Latte",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_THIRST = 50 } },
+        ["beef_tartare"] = {
+            label = "Beef Tartare",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["blueberry_boba"] = {
-        label = "Blueberry Boba",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["matcha_boba"] = {
-        label = "Matcha Boba",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["matcha_boba"] = {
-        label = "Matcha Boba",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["strawberry_boba"] = {
-        label = "Strawberry Boba",
-        weight = 250.0,
-        degrade = 432000,
-        client = {},
-        server = {}
-    },
-    ["pumpkinspiced_latte"] = {
-        label = "Pumpkin Spice Latte",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_THIRST = 25 } },
+        ["duck_leg_confit"] = {
+            label = "Duck Leg Confit",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["cat_tuccino"] = {
-        label = "Cat Tuccino",
-        weight = 250.0,
-        degrade = 432000,
-        client = {
-            status = { Add = { PLAYER_HUNGER = 15 } },
+        ["wagyu_sirloin"] = {
+            label = "Kuroge Wagyu Sirloin",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["frozen_yoghurt"] = {
-        label = "Frozen Yoghurt",
-        weight = 250.0,
-        degrade = 432000,
-        energyModifier = {
-            modifier = 1.1,
-            duration = 18,
-            cooldown = 60,
-            skipScreenEffects = true,
+        ["lamb_chops"] = {
+            label = "Cognac Dijon Lamb Chops",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
         },
-        client = {
-            status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+        ["mussels"] = {
+            label = "Mussels a la Bourguignonne",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["fresh_lemonade"] = {
-        label = "Fresh Lemonade",
-        weight = 250.0,
-        degrade = 432000,
-        energyModifier = {
-            modifier = 1.15,
-            duration = 15,
-            cooldown = 60,
-            skipScreenEffects = true,
+        ["tarte_tatin"] = {
+            label = "Tarte Tatin",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
         },
-        client = {
-            status = { Add = { PLAYER_HUNGER = 5, PLAYER_THIRST = 40 } },
+        ["tarte_tatin_chocolate"] = {
+            label = "Tarte au Chocolat",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
         },
-        server = {}
-    },
-    ["uwu_prize_box"] = {
-        label = "UwU Mystery Box",
-        description = "Collect all the different bears! UwU",
-        weight = 0.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["uwu_prize_b1"] = {
-        label = "UwU Bear",
-        description = "UwU Cafe Collectable",
-        weight = 0.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["uwu_prize_b2"] = {
-        label = "UwU Rainbow Bear",
-        description = "UwU Cafe Collectable",
-        weight = 0.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["uwu_prize_b3"] = {
-        label = "UwU Sun Bear",
-        description = "UwU Cafe Collectable",
-        weight = 0.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["uwu_prize_b4"] = {
-        label = "UwU Flower Bear",
-        description = "UwU Cafe Collectable",
-        weight = 0.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["uwu_prize_b5"] = {
-        label = "UwU Tree Bear",
-        description = "UwU Cafe Collectable",
-        weight = 0.0,
-        degrade = nil,
-        rarity = 2,
-        client = {},
-        server = {}
-    },
-    ["uwu_prize_b6"] = {
-        label = "UwU Heart Bear",
-        description = "UwU Cafe Collectable",
-        weight = 0.0,
-        degrade = nil,
-        rarity = 2,
-        client = {},
-        server = {}
-    },
-    ["uwu_prize_b7"] = {
-        label = "UwU Moon Bear",
-        description = "UwU Cafe Collectable",
-        weight = 0.0,
-        degrade = nil,
-        rarity = 3,
-        client = {},
-        server = {}
-    },
-    ["uwu_prize_b8"] = {
-        label = "UwU Rain Bear",
-        description = "UwU Cafe Collectable",
-        weight = 0.0,
-        degrade = nil,
-        rarity = 3,
-        client = {},
-        server = {}
-    },
-    ["uwu_prize_b9"] = {
-        label = "UwU Star Bear",
-        description = "UwU Cafe Collectable",
-        weight = 0.0,
-        degrade = nil,
-        rarity = 4,
-        client = {},
-        server = {}
-    },
-    ["uwu_prize_b10"] = {
-        label = "UwU Snow Bear",
-        description = "UwU Cafe Collectable",
-        weight = 0.0,
-        degrade = nil,
-        rarity = 4,
-        client = {},
-        server = {}
-    },
-    ["backpack"] = {
-        label = "Backpack",
-        description = "A backpack with a capacity of 10 slots.",
-        weight = 2000.0,
-        degrade = nil,
-        rarity = 4,
-        client = {},
-        server = {}
-    },
-    ["large_backpack"] = {
-        label = "Large Backpack",
-        description = "A backpack with a capacity of 20 slots.",
-        weight = 4000.0,
-        degrade = nil,
-        rarity = 4,
-        client = {},
-        server = {}
-    },
-    ["military_backpack"] = {
-        label = "Military Backpack",
-        description = "A backpack with a capacity of 30 slots.",
-        weight = 8000.0,
-        degrade = nil,
-        rarity = 4,
-        client = {},
-        server = {}
-    },
-    ["carvedpumpkin"] = {
-        label = "Jack O' Lantern",
-        description = "Trick Or Treat Muthafu-",
-        weight = 3000.0,
-        degrade = nil,
-        rarity = 4,
-        client = {},
-        server = {}
-    },
-    ["taco_bag"] = {
-        label = "Bagged Order",
-        description = "Smells just like Southside",
-        weight = 1000.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["present"] = {
-        label = "Present",
-        description = "Happy Holidays!",
-        weight = 1000.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["simcard"] = {
-        label = "Sim Card",
-        description = "A Sim Card for a phone",
-        weight = 1000.0,
-        degrade = nil,
-        rarity = 2,
-        client = {},
-        server = {}
-    },
-    ["wallet"] = {
-        label = "Wallet",
-        description = "A Wallet for your money",
-        weight = 1000.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["mint_mate_chain"] = {
-        label = "Mint Mate Chain",
-        description = "It's Mint Mate",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["mint_mate_chain_2"] = {
-        label = "Mint Mate Chain (Large)",
-        description = "It's Mint Mate ... but large",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["ssb_chain"] = {
-        label = "SSB Chain",
-        description = "SSB Gang Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["gotti_chain"] = {
-        label = "Gotti Family Chain",
-        description = "Gotti Family Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["uwu_chain"] = {
-        label = "UwU Chain",
-        description = "UwU Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["pixels_chain"] = {
-        label = "Business Bureau Chain",
-        description = "Business Bureau Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["frosty_chain"] = {
-        label = "Frosty Chain",
-        description = "Frosty Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["milk_chain"] = {
-        label = "Milk Chain",
-        description = "Milk Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["saint_chain"] = {
-        label = "Saint Chain",
-        description = "Saint Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["bobs_chain"] = {
-        label = "Bob's Balls Chain",
-        description = "Bob's Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["lala_chain"] = {
-        label = "Tequi-La-La Chain",
-        description = "Tequi-La-La Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["rooks_chain"] = {
-        label = "Rooks Chain",
-        description = "Rooks Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["deathrow_chain"] = {
-        label = "Death Row Chain",
-        description = "Death Row Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["ferrari_chain"] = {
-        label = "Ferrari Family Chain",
-        description = "Ferrari Family Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["dynasty_chain"] = {
-        label = "Dynasty Chain",
-        description = "Dynasty Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["oni_chain"] = {
-        label = "Oni Chain",
-        description = "Oni Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["snowboiz_chain"] = {
-        label = "Snow Boiz Chain",
-        description = "Snow Boiz Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["mint_mate_chain_3"] = {
-        label = "Mint Mate Chain (Alternate)",
-        description = "It's Mint Mate",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["boo_chain"] = {
-        label = "BOO Chain",
-        description = "BOO!",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["krazed_chain"] = {
-        label = "Krazed Ridez Chain",
-        description = "Krazed Ridez Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["snow_chain"] = {
-        label = "Snow Chain",
-        description = "Snow Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["rush_chain"] = {
-        label = "Rush Chain",
-        description = "Rush Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["meg_chain"] = {
-        label = "Meg Chain",
-        description = "Meg Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["olivia_chain"] = {
-        label = "Vangelico Chain",
-        description = "Vangelico Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["diamond_chain"] = {
-        label = "Olivia Chain",
-        description = "Olivia Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["britton_chain"] = {
-        label = "Britton Chain",
-        description = "Britton Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["ssf_chain"] = {
-        label = "SSF Chain",
-        description = "SSF Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["bigpoppa_chain"] = {
-        label = "Big Poppa Chain",
-        description = "Big Poppa Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["skull_chain"] = {
-        label = "Thick Skull Chain",
-        description = "Thick Skull Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["pimpdaddy_chain"] = {
-        label = "Pimp Daddy Chain",
-        description = "Pimp Daddy Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["richardson_chain"] = {
-        label = "Richardson Chain",
-        description = "Richardson Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["king_chain"] = {
-        label = "King Crown Chain",
-        description = "King Crown Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["unicorn_chain"] = {
-        label = "Unicorn Chain",
-        description = "Unicorn Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["unity_chain"] = {
-        label = "The Unity Chain",
-        description = "The Unity Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["pizzathis_chain"] = {
-        label = "Pizza This Chain",
-        description = "Pizza This Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["ottos_chain"] = {
-        label = "Otto's Chain",
-        description = "Otto's Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["duck_chain"] = {
-        label = "Duck Chain",
-        description = "Duck Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["dani_chain"] = {
-        label = "Dani Chain",
-        description = "Dani Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["armytags_chain"] = {
-        label = "Army Dog Tag Chain",
-        description = "Army Dog Tag Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["donut_chain"] = {
-        label = "Donut Chain",
-        description = "Donut Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["mustard_chain"] = {
-        label = "Mustard Chain",
-        description = "Mustard Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["pandanoodle_chain"] = {
-        label = "Panda Noodle Chain",
-        description = "Panda Noodle Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["famli_chain"] = {
-        label = "Teal’s Chain",
-        description = "Teal’s Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["pgs_chain"] = {
-        label = "PGS Chain",
-        description = "PGS Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["bdragon_chain"] = {
-        label = "BlackDragon Chain",
-        description = "BlackDragon Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["doublecup_chain"] = {
-        label = "Double Cup Chain",
-        description = "2 is a party!",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["axel_chain"] = {
-        label = "Axel Chain",
-        description = "Axel Chain and jewelry",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["sage_chain"] = {
-        label = "Bear Chain",
-        description = "Bear Chain - Female",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["fredo_chain"] = {
-        label = "Fredo Chain",
-        description = "Fredo Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["hajaar_chain"] = {
-        label = "Hajaar Chain",
-        description = "Hajaar Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["diablos_chain"] = {
-        label = "Diablos Chain",
-        description = "Diablos Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["ninezero_chain"] = {
-        label = "9Zero Chain",
-        description = "9Zero Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["otf_chain"] = {
-        label = "OTF Chain",
-        description = "OTF Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["nolan_chain"] = {
-        label = "Nolan Chain",
-        description = "Nolan Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["olivia2_chain"] = {
-        label = "Olivia Chain",
-        description = "Olivia Chain - female",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["him_chain"] = {
-        label = "I'm Him Chain",
-        description = "I'm HIM Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["nos_chain"] = {
-        label = "NOS Chain",
-        description = "LIGHTNING FAST",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["eb13_chain"] = {
-        label = "EB13 Chain",
-        description = "EB13 Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["tracy_chain"] = {
-        label = "Tracy Chain",
-        description = "WOOP WOOP Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["oggramps_chain"] = {
-        label = "OG Gramps Chain",
-        description = "OG Gramps' Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["cloud9_chain"] = {
-        label = "Cloud9 Chain",
-        description = "Cloud9 Drifting Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["dex_chain"] = {
-        label = "Dex Chain",
-        description = "Dex Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["takia_chain"] = {
-        label = "Takia Chain",
-        description = "Takia Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["queen_chain"] = {
-        label = "Queen Chain",
-        description = "Queen Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["nines_chain"] = {
-        label = "The 9's Chain",
-        description = "9's Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["vell_chain"] = {
-        label = "Vell's Chain",
-        description = "Vell's Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["jrawefg_chain"] = {
-        label = "FG Chain",
-        description = "FG Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["bco_chain"] = {
-        label = "Broward Boy Chain",
-        description = "Broward Boy Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["paletotuner_chain"] = {
-        label = "Paleto Tuner Chain",
-        description = "Paleto Tuner Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["illuminati_chain"] = {
-        label = "Illuminati Chain",
-        description = "Illuminati Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["produce_chain"] = {
-        label = "Produce Crew Chain",
-        description = "Produce Crew Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["bandits_chain"] = {
-        label = "Bandits Chain",
-        description = "Bandits Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["mafia_chain"] = {
-        label = "Escobar Mafia Chain",
-        description = "Escobar Mafia Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["one41_chain"] = {
-        label = "141 Chain",
-        description = "141 Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["streetlegends_chain"] = {
-        label = "Street Legends Chain",
-        description = "Street Legends Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["summer_chain"] = {
-        label = "Summer Chain",
-        description = "Summer Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["esb_chain"] = {
-        label = "ESB Chain",
-        description = "ESB Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["shlevin_chain"] = {
-        label = "Shlevin Chain",
-        description = "Shlevin Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["moneybag_chain"] = {
-        label = "Money Bag Chain",
-        description = "Money Bag Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["bluediamond_chain"] = {
-        label = "Blue Diamond Chain",
-        description = "Blue Diamond Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["wolfring_chain"] = {
-        label = "G.S. Wolf Ring",
-        description = "Wolf Ring",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["smiley_chain"] = {
-        label = "Smiley Chain",
-        description = "Why so serious?",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["him2_chain"] = {
-        label = "I'm Him Chain 2",
-        description = "I'm Him Chain 2",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["sbc_chain"] = {
-        label = "SBC Chain",
-        description = "SBC Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["fafo_chain"] = {
-        label = "FAFO Chain",
-        description = "FAFO Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["weed_chain"] = {
-        label = "Weed Chain",
-        description = "Weed Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["queenies_chain"] = {
-        label = "Queenies Chain",
-        description = "Queenies Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["hbdatsme_chain"] = {
-        label = "HB Chain",
-        description = "HBDATSME yo",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["dagoat_chain"] = {
-        label = "DaGOAT Chain",
-        description = "DaGOAT Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["billyhale_chain"] = {
-        label = "Calilly Chain",
-        description = "Calilly Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["ten13_chain"] = {
-        label = "1013 Chain",
-        description = "1013 Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["deathrow2_chain"] = {
-        label = "Death Row Chain 2",
-        description = "Death Row Chain 2",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["turtles_chain"] = {
-        label = "Ice Ice Turtle Chain",
-        description = "I like turtles",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["mostwanted_chain"] = {
-        label = "Most Wanted Chain",
-        description = "Most Wanted Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["spencer_chain"] = {
-        label = "41 Spencer Chain",
-        description = "41 Spencer Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["santamuerte_chain"] = {
-        label = "Santa Muerte Chain",
-        description = "Santa Muerte Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["egan_chain"] = {
-        label = "Egan Chain",
-        description = "Egan Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ["moneymind_chain"] = {
-        label = "Money on the Mind Chain",
-        description = "Money on the Mind Chain",
-        weight = 0.0,
-        rarity = 4,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
-    ['garbage'] = {
-        label = "Garbage",
-        weight = 1000.0,
-        degrade = nil,
-        client = {},
-        server = {}
-    },
+        ["cherry_milkshake"] = {
+            label = "Cherry Milkshake",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["noalch_red_wine"] = {
+            label = "Non Alcoholic Red Wine",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["choclate_pancakes"] = {
+            label = "Chocolate Pancakes",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 10000,
+                status = { Add = { PLAYER_HUNGER = 10 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["apple_crumble"] = {
+            label = "Apple Crumble",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 10000,
+                status = { Add = { PLAYER_HUNGER = 100 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["ramen"] = {
+            label = "Ramen",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["kitty_sliders"] = {
+            label = "Kitty Sliders",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["bento_boxfood"] = {
+            label = "Bento Box",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["kitty_sushi"] = {
+            label = "Kitty Sushi",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["miso_soup"] = {
+            label = "Miso Soup",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["purrrito"] = {
+            label = "Purrrito",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["kitty_pizza"] = {
+            label = "Kitty Pizza",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["cat_donut"] = {
+            label = "Cat Donut",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 9000,
+                status = { Add = { PLAYER_HUNGER = 40 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                disable = {
+                    prop = { model = `prop_amb_donut`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(-50.0, 16.0, 60.0), bone = 18905 },
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["cat_cupcake"] = {
+            label = "Cat Cupcake",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 9000,
+                status = { Add = { PLAYER_HUNGER = 40 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                disable = {
+                    prop = { model = `prop_amb_donut`, pos = vec3(0.13, 0.05, 0.02), rot = vec3(-50.0, 16.0, 60.0), bone = 18905 },
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["homemade_cookie"] = {
+            label = "Homemade Cookie",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 5000,
+                status = { Add = { PLAYER_HUNGER = 50 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_inteat@burger', clip = 'mp_player_int_eat_burger' },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["fruit_explosion"] = {
+            label = "Fruit Explosion",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 5000,
+                status = { Add = { PLAYER_HUNGER = 30, PLAYER_THIRST = 100 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `prop_plastic_cup_02`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["booba_tea"] = {
+            label = "Bobba Tea",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 7500,
+                status = { Add = { PLAYER_THIRST = 100 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+                prop = { model = `bzzz_food_bubbletea_a`, pos = vec3(0.12, 0.0, 0.05), rot = vec3(-115.0, 296.0, 13.0), bone = 18905 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["mochi_blue"] = {
+            label = "Blueberry Mochi",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["mochi_green"] = {
+            label = "Matcha Mochi",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["mochi_orange"] = {
+            label = "Mango Mochi",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["mochi_pink"] = {
+            label = "Strawberry Mochi",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["mango_refresher"] = {
+            label = "Mango Refresher",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["green_tea"] = {
+            label = "Green Tea",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 7500,
+                status = { Add = { PLAYER_HUNGER = 75 }, Remove = { PLAYER_DRUNK = 10 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["iced_coffee"] = {
+            label = "Iced Coffee",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 7500,
+                status = { Add = { PLAYER_HUNGER = 25 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ['matcha_latte'] = {
+            label = "Matcha Latte",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 7500,
+                status = { Add = { PLAYER_HUNGER = 50 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["blueberry_boba"] = {
+            label = "Blueberry Boba",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["matcha_boba"] = {
+            label = "Matcha Boba",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["matcha_boba"] = {
+            label = "Matcha Boba",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["strawberry_boba"] = {
+            label = "Strawberry Boba",
+            weight = 250.0,
+            degrade = 432000,
+            client = {},
+            server = {}
+        },
+        ["pumpkinspiced_latte"] = {
+            label = "Pumpkin Spice Latte",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 7500,
+                status = { Add = { PLAYER_THIRST = 25 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["cat_tuccino"] = {
+            label = "Cat Tuccino",
+            weight = 250.0,
+            degrade = 432000,
+            client = {
+                usetime = 7500,
+                status = { Add = { PLAYER_HUNGER = 15 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `p_amb_coffeecup_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["frozen_yoghurt"] = {
+            label = "Frozen Yoghurt",
+            weight = 250.0,
+            degrade = 432000,
+            energyModifier = {
+                modifier = 1.1,
+                duration = 18,
+                cooldown = 60,
+                skipScreenEffects = true,
+            },
+            client = {
+                usetime = 9000,
+                status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `prop_plastic_cup_02`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["fresh_lemonade"] = {
+            label = "Fresh Lemonade",
+            weight = 250.0,
+            degrade = 432000,
+            energyModifier = {
+                modifier = 1.15,
+                duration = 15,
+                cooldown = 60,
+                skipScreenEffects = true,
+            },
+            client = {
+                usetime = 9000,
+                status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'amb@world_human_drinking@coffee@male@idle_a', clip = 'idle_c' },
+                prop = { model = `prop_plastic_cup_02`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["uwu_prize_box"] = {
+            label = "UwU Mystery Box",
+            description = "Collect all the different bears! UwU",
+            weight = 0.0,
+            degrade = nil,
+            client = {
+                usetime = 3000,
+                status = { Add = { PLAYER_HUNGER = 100, PLAYER_THIRST = 10 } },
+                cancel = true,
+                allowArmed = false,
+                anim = { dict = 'anim@mp_player_intcelebrationmale@mind_blown', clip = 'mind_blown' },
+                disable = {
+                    move = false,
+                    car = false,
+                    combat = true,
+                    mouse = false,
+                    sprint = false,
+                },
+            },
+            server = {}
+        },
+        ["uwu_prize_b1"] = {
+            label = "UwU Bear",
+            description = "UwU Cafe Collectable",
+            weight = 0.0,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["uwu_prize_b2"] = {
+            label = "UwU Rainbow Bear",
+            description = "UwU Cafe Collectable",
+            weight = 0.0,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["uwu_prize_b3"] = {
+            label = "UwU Sun Bear",
+            description = "UwU Cafe Collectable",
+            weight = 0.0,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["uwu_prize_b4"] = {
+            label = "UwU Flower Bear",
+            description = "UwU Cafe Collectable",
+            weight = 0.0,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["uwu_prize_b5"] = {
+            label = "UwU Tree Bear",
+            description = "UwU Cafe Collectable",
+            weight = 0.0,
+            degrade = nil,
+            rarity = 2,
+            client = {},
+            server = {}
+        },
+        ["uwu_prize_b6"] = {
+            label = "UwU Heart Bear",
+            description = "UwU Cafe Collectable",
+            weight = 0.0,
+            degrade = nil,
+            rarity = 2,
+            client = {},
+            server = {}
+        },
+        ["uwu_prize_b7"] = {
+            label = "UwU Moon Bear",
+            description = "UwU Cafe Collectable",
+            weight = 0.0,
+            degrade = nil,
+            rarity = 3,
+            client = {},
+            server = {}
+        },
+        ["uwu_prize_b8"] = {
+            label = "UwU Rain Bear",
+            description = "UwU Cafe Collectable",
+            weight = 0.0,
+            degrade = nil,
+            rarity = 3,
+            client = {},
+            server = {}
+        },
+        ["uwu_prize_b9"] = {
+            label = "UwU Star Bear",
+            description = "UwU Cafe Collectable",
+            weight = 0.0,
+            degrade = nil,
+            rarity = 4,
+            client = {},
+            server = {}
+        },
+        ["uwu_prize_b10"] = {
+            label = "UwU Snow Bear",
+            description = "UwU Cafe Collectable",
+            weight = 0.0,
+            degrade = nil,
+            rarity = 4,
+            client = {},
+            server = {}
+        },
+        ["backpack"] = {
+            label = "Backpack",
+            description = "A backpack with a capacity of 10 slots.",
+            weight = 2000.0,
+            degrade = nil,
+            rarity = 4,
+            client = {},
+            server = {}
+        },
+        ["large_backpack"] = {
+            label = "Large Backpack",
+            description = "A backpack with a capacity of 20 slots.",
+            weight = 4000.0,
+            degrade = nil,
+            rarity = 4,
+            client = {},
+            server = {}
+        },
+        ["military_backpack"] = {
+            label = "Military Backpack",
+            description = "A backpack with a capacity of 30 slots.",
+            weight = 8000.0,
+            degrade = nil,
+            rarity = 4,
+            container = {
+                side = 'left',
+                slots = 30,
+                maxWeight = 25000,
+                label = 'Military Backpack Storage'
+            },
+            client = {},
+            server = {}
+        },
+        ["carvedpumpkin"] = {
+            label = "Jack O' Lantern",
+            description = "Trick Or Treat Muthafu-",
+            weight = 3000.0,
+            degrade = nil,
+            rarity = 4,
+            client = {},
+            server = {}
+        },
+        ["taco_bag"] = {
+            label = "Bagged Order",
+            description = "Smells just like Southside",
+            weight = 1000.0,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["present"] = {
+            label = "Present",
+            description = "Happy Holidays!",
+            weight = 1000.0,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["simcard"] = {
+            label = "Sim Card",
+            description = "A Sim Card for a phone",
+            weight = 1000.0,
+            degrade = nil,
+            rarity = 2,
+            client = {},
+            server = {}
+        },
+        ["wallet"] = {
+            label = "Wallet",
+            description = "A Wallet for your money",
+            weight = 1000.0,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["mint_mate_chain"] = {
+            label = "Mint Mate Chain",
+            description = "It's Mint Mate",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["mint_mate_chain_2"] = {
+            label = "Mint Mate Chain (Large)",
+            description = "It's Mint Mate ... but large",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["ssb_chain"] = {
+            label = "SSB Chain",
+            description = "SSB Gang Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["gotti_chain"] = {
+            label = "Gotti Family Chain",
+            description = "Gotti Family Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["uwu_chain"] = {
+            label = "UwU Chain",
+            description = "UwU Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["pixels_chain"] = {
+            label = "Business Bureau Chain",
+            description = "Business Bureau Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["frosty_chain"] = {
+            label = "Frosty Chain",
+            description = "Frosty Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["milk_chain"] = {
+            label = "Milk Chain",
+            description = "Milk Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["saint_chain"] = {
+            label = "Saint Chain",
+            description = "Saint Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["bobs_chain"] = {
+            label = "Bob's Balls Chain",
+            description = "Bob's Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["lala_chain"] = {
+            label = "Tequi-La-La Chain",
+            description = "Tequi-La-La Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["rooks_chain"] = {
+            label = "Rooks Chain",
+            description = "Rooks Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["deathrow_chain"] = {
+            label = "Death Row Chain",
+            description = "Death Row Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["ferrari_chain"] = {
+            label = "Ferrari Family Chain",
+            description = "Ferrari Family Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["dynasty_chain"] = {
+            label = "Dynasty Chain",
+            description = "Dynasty Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["oni_chain"] = {
+            label = "Oni Chain",
+            description = "Oni Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["snowboiz_chain"] = {
+            label = "Snow Boiz Chain",
+            description = "Snow Boiz Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["mint_mate_chain_3"] = {
+            label = "Mint Mate Chain (Alternate)",
+            description = "It's Mint Mate",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["boo_chain"] = {
+            label = "BOO Chain",
+            description = "BOO!",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["krazed_chain"] = {
+            label = "Krazed Ridez Chain",
+            description = "Krazed Ridez Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["snow_chain"] = {
+            label = "Snow Chain",
+            description = "Snow Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["rush_chain"] = {
+            label = "Rush Chain",
+            description = "Rush Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["meg_chain"] = {
+            label = "Meg Chain",
+            description = "Meg Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["olivia_chain"] = {
+            label = "Vangelico Chain",
+            description = "Vangelico Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["diamond_chain"] = {
+            label = "Olivia Chain",
+            description = "Olivia Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["britton_chain"] = {
+            label = "Britton Chain",
+            description = "Britton Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["ssf_chain"] = {
+            label = "SSF Chain",
+            description = "SSF Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["bigpoppa_chain"] = {
+            label = "Big Poppa Chain",
+            description = "Big Poppa Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["skull_chain"] = {
+            label = "Thick Skull Chain",
+            description = "Thick Skull Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["pimpdaddy_chain"] = {
+            label = "Pimp Daddy Chain",
+            description = "Pimp Daddy Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["richardson_chain"] = {
+            label = "Richardson Chain",
+            description = "Richardson Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["king_chain"] = {
+            label = "King Crown Chain",
+            description = "King Crown Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["unicorn_chain"] = {
+            label = "Unicorn Chain",
+            description = "Unicorn Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["unity_chain"] = {
+            label = "The Unity Chain",
+            description = "The Unity Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["pizzathis_chain"] = {
+            label = "Pizza This Chain",
+            description = "Pizza This Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["ottos_chain"] = {
+            label = "Otto's Chain",
+            description = "Otto's Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["duck_chain"] = {
+            label = "Duck Chain",
+            description = "Duck Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["dani_chain"] = {
+            label = "Dani Chain",
+            description = "Dani Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["armytags_chain"] = {
+            label = "Army Dog Tag Chain",
+            description = "Army Dog Tag Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["donut_chain"] = {
+            label = "Donut Chain",
+            description = "Donut Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["mustard_chain"] = {
+            label = "Mustard Chain",
+            description = "Mustard Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["pandanoodle_chain"] = {
+            label = "Panda Noodle Chain",
+            description = "Panda Noodle Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["famli_chain"] = {
+            label = "Teal’s Chain",
+            description = "Teal’s Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["pgs_chain"] = {
+            label = "PGS Chain",
+            description = "PGS Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["bdragon_chain"] = {
+            label = "BlackDragon Chain",
+            description = "BlackDragon Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["doublecup_chain"] = {
+            label = "Double Cup Chain",
+            description = "2 is a party!",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["axel_chain"] = {
+            label = "Axel Chain",
+            description = "Axel Chain and jewelry",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["sage_chain"] = {
+            label = "Bear Chain",
+            description = "Bear Chain - Female",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["fredo_chain"] = {
+            label = "Fredo Chain",
+            description = "Fredo Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["hajaar_chain"] = {
+            label = "Hajaar Chain",
+            description = "Hajaar Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["diablos_chain"] = {
+            label = "Diablos Chain",
+            description = "Diablos Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["ninezero_chain"] = {
+            label = "9Zero Chain",
+            description = "9Zero Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["otf_chain"] = {
+            label = "OTF Chain",
+            description = "OTF Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["nolan_chain"] = {
+            label = "Nolan Chain",
+            description = "Nolan Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["olivia2_chain"] = {
+            label = "Olivia Chain",
+            description = "Olivia Chain - female",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["him_chain"] = {
+            label = "I'm Him Chain",
+            description = "I'm HIM Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["nos_chain"] = {
+            label = "NOS Chain",
+            description = "LIGHTNING FAST",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["eb13_chain"] = {
+            label = "EB13 Chain",
+            description = "EB13 Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["tracy_chain"] = {
+            label = "Tracy Chain",
+            description = "WOOP WOOP Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["oggramps_chain"] = {
+            label = "OG Gramps Chain",
+            description = "OG Gramps' Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["cloud9_chain"] = {
+            label = "Cloud9 Chain",
+            description = "Cloud9 Drifting Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["dex_chain"] = {
+            label = "Dex Chain",
+            description = "Dex Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["takia_chain"] = {
+            label = "Takia Chain",
+            description = "Takia Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["queen_chain"] = {
+            label = "Queen Chain",
+            description = "Queen Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["nines_chain"] = {
+            label = "The 9's Chain",
+            description = "9's Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["vell_chain"] = {
+            label = "Vell's Chain",
+            description = "Vell's Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["jrawefg_chain"] = {
+            label = "FG Chain",
+            description = "FG Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["bco_chain"] = {
+            label = "Broward Boy Chain",
+            description = "Broward Boy Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["paletotuner_chain"] = {
+            label = "Paleto Tuner Chain",
+            description = "Paleto Tuner Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["illuminati_chain"] = {
+            label = "Illuminati Chain",
+            description = "Illuminati Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["produce_chain"] = {
+            label = "Produce Crew Chain",
+            description = "Produce Crew Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["bandits_chain"] = {
+            label = "Bandits Chain",
+            description = "Bandits Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["mafia_chain"] = {
+            label = "Escobar Mafia Chain",
+            description = "Escobar Mafia Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["one41_chain"] = {
+            label = "141 Chain",
+            description = "141 Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["streetlegends_chain"] = {
+            label = "Street Legends Chain",
+            description = "Street Legends Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["summer_chain"] = {
+            label = "Summer Chain",
+            description = "Summer Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["esb_chain"] = {
+            label = "ESB Chain",
+            description = "ESB Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["shlevin_chain"] = {
+            label = "Shlevin Chain",
+            description = "Shlevin Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["moneybag_chain"] = {
+            label = "Money Bag Chain",
+            description = "Money Bag Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["bluediamond_chain"] = {
+            label = "Blue Diamond Chain",
+            description = "Blue Diamond Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["wolfring_chain"] = {
+            label = "G.S. Wolf Ring",
+            description = "Wolf Ring",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["smiley_chain"] = {
+            label = "Smiley Chain",
+            description = "Why so serious?",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["him2_chain"] = {
+            label = "I'm Him Chain 2",
+            description = "I'm Him Chain 2",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["sbc_chain"] = {
+            label = "SBC Chain",
+            description = "SBC Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["fafo_chain"] = {
+            label = "FAFO Chain",
+            description = "FAFO Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["weed_chain"] = {
+            label = "Weed Chain",
+            description = "Weed Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["queenies_chain"] = {
+            label = "Queenies Chain",
+            description = "Queenies Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["hbdatsme_chain"] = {
+            label = "HB Chain",
+            description = "HBDATSME yo",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["dagoat_chain"] = {
+            label = "DaGOAT Chain",
+            description = "DaGOAT Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["billyhale_chain"] = {
+            label = "Calilly Chain",
+            description = "Calilly Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["ten13_chain"] = {
+            label = "1013 Chain",
+            description = "1013 Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["deathrow2_chain"] = {
+            label = "Death Row Chain 2",
+            description = "Death Row Chain 2",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["turtles_chain"] = {
+            label = "Ice Ice Turtle Chain",
+            description = "I like turtles",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["mostwanted_chain"] = {
+            label = "Most Wanted Chain",
+            description = "Most Wanted Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["spencer_chain"] = {
+            label = "41 Spencer Chain",
+            description = "41 Spencer Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["santamuerte_chain"] = {
+            label = "Santa Muerte Chain",
+            description = "Santa Muerte Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["egan_chain"] = {
+            label = "Egan Chain",
+            description = "Egan Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+        ["moneymind_chain"] = {
+            label = "Money on the Mind Chain",
+            description = "Money on the Mind Chain",
+            weight = 0.0,
+            rarity = 4,
+            degrade = nil,
+            client = {},
+            server = {}
+        },
+    }
 }
