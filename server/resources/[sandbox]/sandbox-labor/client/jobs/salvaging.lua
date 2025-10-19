@@ -6,31 +6,29 @@ local _inPoly = false
 local _blip = nil
 local _count = 0
 local _nodes = nil
+local _targetingSetup = false
 
 local eventHandlers = {}
 local _models = {
-	-273279397, 322493792, 1120812170, 591265130, -915224107, 10106915, -52638650, -896997473, -1748303324, 1434516869, 1069797899, 591265130, 1898296526, 2090224559, -1366478936, -273279397, 322493792
+	-273279397, 322493792, 1120812170, 591265130, -915224107, 10106915, -52638650, -896997473, -1748303324, 1434516869, 1069797899, 1898296526, 2090224559, -1366478936
 }
 
-function SalvCleanup()
-
-end
-
 function SetupTargetting()
-	for k, v in ipairs(_models) do
-		exports.ox_target:removeModel(v)
-		exports.ox_target:addModel(v, {
-			{
-				icon = "engine",
-				label = "Scrap",
-				event = "Salvaging:Client:ScrapCar",
-				distance = 3.0,
-				canInteract = function(s, s2)
-					return (_working and _inPoly and (_nodes ~= nil and not _nodes[NetworkGetNetworkIdFromEntity(s2.entity)]))
-				end,
-			}
-		})
-	end
+	if _targetingSetup then return end
+
+	exports.ox_target:removeModel(_models)
+	exports.ox_target:addModel(_models, {
+		{
+			icon = "fa-solid fa-screwdriver-wrench",
+			label = "Scrap",
+			event = "Salvaging:Client:ScrapCar",
+			distance = 3.0,
+			canInteract = function(entity)
+				return (_working and _inPoly and (_nodes ~= nil and not _nodes[entity]))
+			end,
+		}
+	})
+	_targetingSetup = true
 end
 
 AddEventHandler("Labor:Client:Setup", function()
@@ -106,25 +104,26 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 		eventHandlers["enter-poly"] = AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 			if id ~= _POLYID or _count >= 15 then return end
 
-			SetupTargetting()
-
-			_inPoly = true
+			if not _inPoly then
+				SetupTargetting()
+				_inPoly = true
+			end
 		end)
 
 		eventHandlers["enter-exit"] = AddEventHandler("Polyzone:Exit", function(id, testedPoint, insideZones, data)
 			if id ~= _POLYID then return end
 			_inPoly = false
-			for k, v in ipairs(_models) do
-				exports.ox_target:removeModel(v)
-			end
+			exports.ox_target:removeModel(_models)
 		end)
 
 		_blip = AddBlipForArea(2385.561, 3057.702, 48.153, 140.0, 80.0)
 		SetBlipColour(_blip, 79)
 
 		if _inPoly or (not _inPoly and exports['sandbox-polyzone']:IsCoordsInZone(GetEntityCoords(LocalPlayer.state.ped, false, _POLYID, true)) and _count < 15) then
-			SetupTargetting()
-			_inPoly = true
+			if not _inPoly then
+				SetupTargetting()
+				_inPoly = true
+			end
 		end
 	end)
 
@@ -135,9 +134,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 				RemoveBlip(_blip)
 			end
 
-			for k, v in ipairs(_models) do
-				exports.ox_target:removeModel(v)
-			end
+			exports.ox_target:removeModel(_models)
 		end)
 
 	eventHandlers["delivery"] = RegisterNetEvent(string.format("Salvaging:Client:%s:StartDelivery", joiner),
@@ -162,15 +159,13 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 				}, 'box-circle-check')
 		end)
 
-	eventHandlers["actions"] = RegisterNetEvent(string.format("Salvaging:Client:%s:Action", joiner), function(netid)
+	eventHandlers["actions"] = RegisterNetEvent(string.format("Salvaging:Client:%s:Action", joiner), function(entity)
 		if _nodes then
-			_nodes[netid] = true
+			_nodes[entity] = true
 		end
 		_count = _count + 1
 		if _count >= 15 then
-			for k, v in ipairs(_models) do
-				exports.ox_target:removeModel(v)
-			end
+			exports.ox_target:removeModel(_models)
 
 			if _blip ~= nil then
 				RemoveBlip(_blip)
@@ -180,7 +175,7 @@ RegisterNetEvent("Salvaging:Client:OnDuty", function(joiner, time)
 	end)
 end)
 
-AddEventHandler("Salvaging:Client:ScrapCar", function(s, s2)
+AddEventHandler("Salvaging:Client:ScrapCar", function(data)
 	exports['sandbox-hud']:Progress({
 		name = 'salvaging_action',
 		duration = (math.random(15) + 25) * 1000,
@@ -200,7 +195,7 @@ AddEventHandler("Salvaging:Client:ScrapCar", function(s, s2)
 		}
 	}, function(cancelled)
 		if not cancelled then
-			exports["sandbox-base"]:ServerCallback('Salvaging:SalvageCar', NetworkGetNetworkIdFromEntity(s.entity))
+			exports["sandbox-base"]:ServerCallback('Salvaging:SalvageCar', data.entity)
 		end
 	end)
 end)
@@ -232,9 +227,7 @@ RegisterNetEvent("Salvaging:Client:OffDuty", function(time)
 		exports["sandbox-blips"]:Remove("SalvDelivery")
 	end
 
-	for k, v in ipairs(_models) do
-		exports.ox_target:removeModel(v)
-	end
+	exports.ox_target:removeModel(_models)
 
 	exports['sandbox-pedinteraction']:Remove("SalvagingDelivery")
 
@@ -242,4 +235,5 @@ RegisterNetEvent("Salvaging:Client:OffDuty", function(time)
 	_joiner = nil
 	_working = false
 	_nodes = nil
+	_targetingSetup = false
 end)
