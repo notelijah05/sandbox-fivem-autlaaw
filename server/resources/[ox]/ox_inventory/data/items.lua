@@ -8149,4 +8149,8 @@ return {
         client = {},
         server = {}
     },
+
+    ['garbage'] = {
+        label = 'Garbage',
+    },
 }
