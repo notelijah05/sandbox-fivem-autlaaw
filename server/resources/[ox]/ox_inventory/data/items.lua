@@ -27,6 +27,11 @@
         duration: number             -- Duration in seconds
         cooldown: number             -- Cooldown in seconds
         skipScreenEffects: boolean   -- Skip screen effects
+    container?: table               -- Container configuration
+        slots: number               -- Number of slots
+        maxWeight: number            -- Maximum weight in grams
+        whitelist?: table<string, true> | string[]          -- A table of item names that are allowed in the container. If not provided, all items are allowed except those blacklisted.
+        blacklist?: table<string, true> | string[]          -- A table of item names that are not allowed in the container. If not provided, no items are blacklisted unless whitelist is provided.
 
     ===========================================
     SERVER DATA PROPERTIES
@@ -1730,6 +1735,11 @@ return {
         description = "Open Me!",
         weight = 8000,
         degrade = nil,
+        container = {
+            slots = 5,
+            maxWeight = 5000,
+            -- Currently, any item can go in this container
+        },
         client = {},
         server = {}
     },
@@ -1738,6 +1748,11 @@ return {
         description = "Open Me!",
         weight = 15000,
         degrade = nil,
+        container = {
+            slots = 5,
+            maxWeight = 5000,
+            -- Currently, any item can go in this container
+        },
         client = {},
         server = {}
     },
@@ -1746,6 +1761,11 @@ return {
         description = "Open Me!",
         weight = 10000,
         degrade = nil,
+        container = {
+            slots = 5,
+            maxWeight = 5000,
+            -- Currently, any item can go in this container
+        },
         client = {},
         server = {}
     },
@@ -1754,6 +1774,11 @@ return {
         label = "Box",
         weight = 50000,
         degrade = nil,
+        container = {
+            slots = 5,
+            maxWeight = 5000,
+            -- Currently, any item can go in this container
+        },
         client = {},
         server = {}
     },
@@ -1762,6 +1787,11 @@ return {
         description = "Open Me!",
         weight = 10000,
         degrade = nil,
+        container = {
+            slots = 5,
+            maxWeight = 5000,
+            -- Currently, any item can go in this container
+        },
         client = {},
         server = {}
     },
@@ -1770,6 +1800,11 @@ return {
         description = "Open Me!",
         weight = 10000,
         degrade = nil,
+        container = {
+            slots = 5,
+            maxWeight = 5000,
+            -- Currently, any item can go in this container
+        },
         client = {},
         server = {}
     },
@@ -1778,6 +1813,11 @@ return {
         description = "Open Me!",
         weight = 2000,
         degrade = nil,
+        container = {
+            slots = 5,
+            maxWeight = 5000,
+            -- Currently, any item can go in this container
+        },
         client = {},
         server = {}
     },
@@ -5531,12 +5571,6 @@ return {
         weight = 8000.0,
         degrade = nil,
         rarity = 4,
-        container = {
-            side = 'left',
-            slots = 30,
-            maxWeight = 25000,
-            label = 'Military Backpack Storage'
-        },
         client = {},
         server = {}
     },
