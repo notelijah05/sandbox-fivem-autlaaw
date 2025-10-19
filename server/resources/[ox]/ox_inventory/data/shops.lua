@@ -688,7 +688,8 @@ return {
         --     id = 403, colour = 69, scale = 0.45
         -- },
         inventory = {
-            -- This didn't have any items defined?
+            { name = 'firstaid', price = 250 },
+            { name = 'bandage',  price = 50 },
         },
         peds = {
             { -- Pharmacist
@@ -701,6 +702,54 @@ return {
                 icon = 'fas fa-pills',
                 animation = 'WORLD_HUMAN_STAND',
             },
+        },
+    },
+
+    HuntingSupplies = {
+        name = 'Hunting Supplies',
+        -- blip = {
+        --     id = 403, colour = 69, scale = 0.45
+        -- },
+        inventory = {
+            { name = 'WEAPON_SNIPERRIFLE2', price = 1000, metadata = { registered = true, serial = 'HUNT' }, license = { 'Hunting', 'Weapons' } },
+            { name = 'ammo-sniper',         price = 25,   license = { 'Hunting', 'Weapons' } },
+            { name = 'WEAPON_KNIFE',        price = 400 },
+            { name = 'hunting_bait',        price = 25 },
+            { name = 'hunting_map_light',   price = 25 },
+            { name = 'hunting_map_dark',    price = 25 },
+            -- { name = 'deer_bait',           price = 100 },
+            -- { name = 'boar_bait',           price = 100 },
+            -- { name = 'pig_bait',            price = 100 },
+            -- { name = 'chicken_bait',        price = 100 },
+            -- { name = 'rabbit_bait',         price = 100 },
+            -- { name = 'exotic_bait',         price = 1000 },
+        },
+    },
+
+    FishingSupplies = {
+        name = 'Fishing Supplies',
+        -- blip = {
+        --     id = 403, colour = 69, scale = 0.45
+        -- },
+        inventory = {
+            { name = 'fishing_rod',          price = 900 },
+            { name = 'fishing_bait_worm',    price = 15 },
+            { name = 'fishing_bait_lugworm', price = 10 },
+            { name = 'WEAPON_KNIFE',         price = 400 },
+        },
+    },
+
+    FishingSuppliesAdvanced = {
+        name = 'Fishing Supplies Advanced',
+        -- blip = {
+        --     id = 403, colour = 69, scale = 0.45
+        -- },
+        inventory = {
+            { name = 'fishing_rod',          price = 900 },
+            { name = 'fishing_net',          price = 3000 },
+            { name = 'fishing_bait_worm',    price = 15 },
+            { name = 'fishing_bait_lugworm', price = 10 },
+            { name = 'WEAPON_KNIFE',         price = 400 },
         },
     },
 

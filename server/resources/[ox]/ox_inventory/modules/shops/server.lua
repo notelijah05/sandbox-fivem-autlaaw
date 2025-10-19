@@ -265,8 +265,24 @@ lib.callback.register('ox_inventory:buyItem', function(source, data)
                 end
             end
 
-            if fromData.license and server.hasLicense and not server.hasLicense(source, fromData.license) then
-                return false, false, { type = 'error', description = locale('item_unlicensed') }
+            if fromData.license and server.hasLicense then
+                local hasRequiredLicense = false
+
+                if type(fromData.license) == 'table' then
+                    hasRequiredLicense = true
+                    for i = 1, #fromData.license do
+                        if not server.hasLicense(source, fromData.license[i]) then
+                            hasRequiredLicense = false
+                            break
+                        end
+                    end
+                else
+                    hasRequiredLicense = server.hasLicense(source, fromData.license)
+                end
+
+                if not hasRequiredLicense then
+                    return false, false, { type = 'error', description = locale('item_unlicensed') }
+                end
             end
 
             if fromData.qualification and server.hasQualification and not server.hasQualification(source, fromData.qualification) then

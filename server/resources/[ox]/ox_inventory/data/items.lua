@@ -106,8 +106,8 @@
 
 return {
     ["money"] = {
-		label = "Money",
-	},
+        label = "Money",
+    },
     ["evidence-paint"] = {
         label = "Paint Fragment",
         weight = 250.0,

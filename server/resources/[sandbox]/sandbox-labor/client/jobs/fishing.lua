@@ -179,8 +179,9 @@ AddEventHandler("Labor:Client:Setup", function()
         {
             icon = "cart-shopping",
             text = "Shop",
-            event = "Fishing:Client:OpenShop",
-            data = "fishing-supplies",
+            onSelect = function()
+                TriggerEvent("Fishing:Client:OpenShop", { type = "FishingSupplies" })
+            end,
             isEnabled = function()
                 return exports['sandbox-characters']:RepGetLevel("Fishing") < 3
             end,
@@ -188,8 +189,9 @@ AddEventHandler("Labor:Client:Setup", function()
         {
             icon = "cart-shopping",
             text = "Advanced Shop",
-            event = "Fishing:Client:OpenShop",
-            data = "fishing-supplies-advanced",
+            onSelect = function()
+                TriggerEvent("Fishing:Client:OpenShop", { type = "FishingSuppliesAdvanced" })
+            end,
             rep = {
                 id = "Fishing",
                 level = 3,
@@ -206,12 +208,10 @@ AddEventHandler("Labor:Client:Setup", function()
             table.insert(shopData, {
                 icon = "sack-dollar",
                 text = string.format("Sell %s ($%s)", fishData.label, fishData.price),
-                event = "Fishing:Client:Sell",
-                data = { fish = v },
-                --rep = { id = "Hunting", level = 0 },
-                isEnabled = function()
-                    return true
+                onSelect = function()
+                    TriggerEvent("Fishing:Client:Sell", v)
                 end,
+                --rep = { id = "Hunting", level = 0 },
             })
         end
     end
@@ -491,12 +491,12 @@ RegisterNetEvent("Fishing:Client:OffDuty", function(time)
     _blip = nil
 end)
 
-AddEventHandler("Fishing:Client:OpenShop", function(hitting, data)
-    exports.ox_inventory:ShopOpen(data)
+AddEventHandler("Fishing:Client:OpenShop", function(data)
+    exports.ox_inventory:openInventory("shop", { data.type })
 end)
 
-AddEventHandler("Fishing:Client:Sell", function(entity, data)
-    exports["sandbox-base"]:ServerCallback("Fishing:Sell", data.fish)
+AddEventHandler("Fishing:Client:Sell", function(data)
+    exports["sandbox-base"]:ServerCallback("Fishing:Sell", data)
 end)
 
 
