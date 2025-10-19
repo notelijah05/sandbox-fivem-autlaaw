@@ -1735,6 +1735,35 @@ local function dropItem(source, playerInventory, fromData, data)
     }
 end
 
+local function matchesExcludingDurability(meta1, meta2)
+    local durability1 = meta1.durability or 0
+    local durability2 = meta2.durability or 0
+    local degrade1 = meta1.degrade or 0
+    local degrade2 = meta2.degrade or 0
+
+    -- Check that durabilities are within 10% of each other
+    local averageDurability = ((degrade1 + degrade2) / 2)
+    local diff = math.abs(durability1 - durability2)
+
+    if diff > averageDurability * 0.1 then
+        return false
+    end
+
+    for k, v in pairs(meta1) do
+        if k ~= "durability" and (not meta2[k] or meta2[k] ~= v) then
+            return false
+        end
+    end
+
+    for k, v in pairs(meta2) do
+        if k ~= "durability" and (not meta1[k] or meta1[k] ~= v) then
+            return false
+        end
+    end
+
+    return true
+end
+
 local activeSlots = {}
 
 ---@param source number
@@ -1839,8 +1868,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
                 count = data.count,
             }
 
-            if toData and ((toData.name ~= fromData.name) or not toData.stack or (not table.matches(toData.metadata, fromData.metadata))) then
-                -- Swap items
+            if toData and ((toData.name ~= fromData.name) or not toData.stack or (not matchesExcludingDurability(toData.metadata, fromData.metadata))) then -- Swap items
                 local toWeight = not sameInventory and (toInventory.weight - toData.weight + fromData.weight) or 0
                 local fromWeight = not sameInventory and (fromInventory.weight + toData.weight - fromData.weight) or 0
                 hookPayload.action = 'swap'
@@ -1893,7 +1921,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
                     toData, fromData = Inventory.SwapSlots(fromInventory, toInventory, data.fromSlot, data.toSlot)
                 end
-            elseif toData and toData.name == fromData.name and table.matches(toData.metadata, fromData.metadata) then
+            elseif toData and toData.name == fromData.name and matchesExcludingDurability(toData.metadata, fromData.metadata) then
                 -- Stack items
                 toData.count += data.count
                 fromData.count -= data.count
