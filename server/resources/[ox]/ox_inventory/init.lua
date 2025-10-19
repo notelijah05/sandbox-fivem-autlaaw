@@ -25,12 +25,12 @@ shared = {
 shared.dropslots = GetConvarInt('inventory:dropslots', shared.playerslots)
 shared.dropweight = GetConvarInt('inventory:dropweight', shared.playerweight)
 
-do
-    if type(shared.police) == 'string' then
-        shared.police = { shared.police }
-    end
-    -- Keep police as an array for duty checks instead of converting to hash table (Sandbox doesn't have permissions defined this way)
-end
+-- do
+--     if type(shared.police) == 'string' then
+--         shared.police = { shared.police }
+--     end
+--     -- Keep police as an array for duty checks instead of converting to hash table (Sandbox doesn't have permissions defined this way)
+-- end
 
 if IsDuplicityVersion() then
     server = {
