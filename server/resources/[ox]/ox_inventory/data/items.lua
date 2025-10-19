@@ -6464,4 +6464,11 @@ return {
         client = {},
         server = {}
     },
+    ['garbage'] = {
+        label = "Garbage",
+        weight = 1000.0,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
 }
