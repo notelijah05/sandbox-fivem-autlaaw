@@ -78,6 +78,7 @@ lib.callback.register('ox_inventory:openCraftingBench', function(source, id, ind
                 if not onDuty then return end
             end
         end
+        if bench.rep and not server.hasRep(source, bench.rep) then return end
         if #(GetEntityCoords(GetPlayerPed(source)) - coords) > 10 then return end
 
         if left.open and left.open ~= source then
@@ -114,6 +115,7 @@ lib.callback.register('ox_inventory:craftItem', function(source, id, index, reci
                 if not onDuty then return end
             end
         end
+        if bench.rep and not server.hasRep(source, bench.rep) then return end
         if #(GetEntityCoords(GetPlayerPed(source)) - coords) > 10 then return end
 
         local recipe = bench.items[recipeId]

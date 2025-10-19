@@ -876,6 +876,12 @@ return {
             durability = 0.2,
             ammoname = 'ammo-sniper'
         },
+
+        ['WEAPON_SHIV'] = {
+            label = 'Shiv',
+            weight = 100,
+            durability = 0.1,
+        },
     },
 
     Components = {
