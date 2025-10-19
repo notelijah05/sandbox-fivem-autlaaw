@@ -5061,6 +5061,7 @@ return {
         label = "Marijuana Bud",
         weight = 100.0,
         degrade = 1209600,
+        stack = 100,
         client = {},
         server = {}
     },

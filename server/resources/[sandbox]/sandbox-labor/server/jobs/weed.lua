@@ -9,44 +9,6 @@ AddEventHandler("Labor:Server:Startup", function()
 		delay = (1000 * 60) * 3,
 	})
 
-	exports.ox_inventory:CraftingRegisterBench("WeedPackaging", "Weed Processing", {
-		actionString = "Packaging",
-		icon = "cannabis",
-		poly = {
-			coords = vector3(1056.47, -2450.58, 23.29),
-			w = 2.8,
-			l = 1.0,
-			options = {
-				name = "WeedPackaging",
-				heading = 0,
-				--debugPoly=true,
-				minZ = 21.89,
-				maxZ = 24.29,
-			},
-		},
-	}, {}, {
-		shared = true,
-	}, {
-		{
-			result = { name = "weed_brick", count = 1 },
-			items = {
-				{ name = "plastic_wrap", count = 2 },
-				{ name = "weed_bud",     count = 200 },
-			},
-			time = 8000,
-			animation = "mechanic",
-		},
-		{
-			result = { name = "weed_baggy", count = 1 },
-			items = {
-				{ name = "baggy",    count = 1 },
-				{ name = "weed_bud", count = 2 },
-			},
-			time = 2000,
-			animation = "mechanic",
-		},
-	})
-
 	exports["sandbox-base"]:RegisterServerCallback("WeedRun:Enable", function(source, data, cb)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local states = char:GetData("States") or {}

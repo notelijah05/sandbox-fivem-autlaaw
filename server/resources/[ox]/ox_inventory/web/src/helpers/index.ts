@@ -62,15 +62,19 @@ export const canCraftItem = (item: Slot, inventoryType: string) => {
       if (globalItem && globalItem.count >= count) return false;
     }
 
-    const hasItem = leftInventory.items.find((playerItem) => {
+    const totalCount = leftInventory.items.reduce((total, playerItem) => {
       if (isSlotWithItem(playerItem) && playerItem.name === item) {
         if (count < 1) {
-          if (playerItem.metadata?.durability >= count * 100) return true;
-
-          return false;
+          const durability = playerItem.metadata?.durability || 0;
+          return durability >= count * 100 ? 1 : 0;
+        } else {
+          return total + (playerItem.count || 0);
         }
       }
-    });
+      return total;
+    }, 0);
+
+    const hasItem = count < 1 ? totalCount > 0 : totalCount >= count;
 
     return !hasItem;
   });

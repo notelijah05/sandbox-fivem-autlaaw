@@ -22,16 +22,23 @@ const CraftingInventory: React.FC = () => {
 
     const ingredientEntries = Object.entries(item.ingredients);
     return ingredientEntries.every(([ingredientName, requiredAmount]) => {
-      const playerItem = leftInventory.items.find((playerItem) => playerItem.name === ingredientName);
+      const totalCount = leftInventory.items.reduce((total, playerItem) => {
+        if (playerItem.name === ingredientName) {
+          return total + (playerItem.count || 0);
+        }
+        return total;
+      }, 0);
+
       const required = requiredAmount as number;
 
       const isPercentage = required < 1 && required > 0;
 
       if (isPercentage) {
+        const playerItem = leftInventory.items.find((playerItem) => playerItem.name === ingredientName);
         const durability = playerItem?.metadata?.durability || 0;
         return durability >= required * 100;
       } else {
-        return playerItem && (playerItem.count || 0) >= required;
+        return totalCount >= required;
       }
     });
   };
@@ -49,8 +56,12 @@ const CraftingInventory: React.FC = () => {
     });
 
     return sortedIngredients.map(([ingredientName, requiredAmount]) => {
-      const playerItem = leftInventory.items.find((playerItem) => playerItem.name === ingredientName);
-      const available = playerItem ? playerItem.count || 0 : 0;
+      const available = leftInventory.items.reduce((total, playerItem) => {
+        if (playerItem.name === ingredientName) {
+          return total + (playerItem.count || 0);
+        }
+        return total;
+      }, 0);
       const required = requiredAmount as number;
 
       const isPercentage = required < 1 && required > 0;
@@ -58,6 +69,7 @@ const CraftingInventory: React.FC = () => {
       let displayRequired, displayAvailable, hasEnough;
 
       if (isPercentage) {
+        const playerItem = leftInventory.items.find((playerItem) => playerItem.name === ingredientName);
         const durability = playerItem?.metadata?.durability || 0;
         const durabilityPercent = Math.round(durability);
         displayRequired = `${(required * 100).toFixed(0)}%`;
