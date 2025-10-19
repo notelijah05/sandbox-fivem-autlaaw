@@ -1646,4 +1646,88 @@ return {
     },
 
     -- Taco Shop Crafting Benches End --
+
+    -- Prison Crafting Benches Start --
+
+    { -- Prison Crafting Low Level
+        name = 'prison-crafting-low',
+        label = 'Prison Crafting',
+        rep = {
+            id = 'PrisonSearch',
+            level = 0,
+        },
+        items = {
+            {
+                name = 'coffee',
+                ingredients = {
+                    coffee_beans = 5,
+                },
+                duration = 5000,
+                count = 3,
+            },
+        },
+        peds = {
+            {
+                label = 'Wanna Talk?',
+                icon = 'fa-solid fa-toolbox',
+                coords = vec4(1625.526, 2578.829, 44.565, 51.167),
+                model = 's_m_y_prisoner_01',
+                animation = 'WORLD_HUMAN_SMOKING',
+            },
+        },
+    },
+
+    { -- Prison Crafting High Level
+        name = 'prison-crafting-high',
+        label = 'Prison Crafting',
+        rep = {
+            id = 'PrisonSearch',
+            level = 3,
+        },
+        items = {
+            {
+                name = 'WEAPON_SHIV',
+                ingredients = {
+                    plastic = 25,
+                    glue = 25,
+                    scrapmetal = 50,
+                },
+                duration = 5000,
+                count = 1,
+            },
+            {
+                name = 'phone',
+                ingredients = {
+                    electronic_parts = 25,
+                    glue = 25,
+                    scrapmetal = 25,
+                    plastic = 25,
+                },
+                duration = 5000,
+                count = 1,
+            },
+            {
+                name = 'radio_shitty',
+                ingredients = {
+                    electronic_parts = 50,
+                    glue = 50,
+                    scrapmetal = 50,
+                    plastic = 50,
+                },
+                duration = 5000,
+                count = 1,
+            },
+        },
+        peds = {
+            {
+                label = 'Lets Chat',
+                icon = 'fa-solid fa-toolbox',
+                coords = vec4(1699.579, 2472.416, 44.565, 87.913),
+                model = 's_m_y_prisoner_01',
+                animation = 'WORLD_HUMAN_SMOKING',
+            },
+        },
+    },
+
+    -- Prison Crafting Benches End --
 }

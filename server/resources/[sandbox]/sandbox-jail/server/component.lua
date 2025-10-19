@@ -10,7 +10,6 @@ AddEventHandler('onResourceStart', function(resource)
 		RegisterMiddleware()
 		RegisterPrisonSearchStartup()
 		RegisterPrisonStashStartup()
-		RegisterPrisonCraftingStartup()
 	end
 end)
 
