@@ -29,14 +29,7 @@ do
     if type(shared.police) == 'string' then
         shared.police = { shared.police }
     end
-
-    local police = table.create(0, shared.police and #shared.police or 0)
-
-    for i = 1, #shared.police do
-        police[shared.police[i]] = 0
-    end
-
-    shared.police = police
+    -- Keep police as an array for duty checks instead of converting to hash table (Sandbox doesn't have permissions defined this way)
 end
 
 if IsDuplicityVersion() then
