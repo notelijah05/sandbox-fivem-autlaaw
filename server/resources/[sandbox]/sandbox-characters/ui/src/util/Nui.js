@@ -1,8 +1,8 @@
 export default {
 	async send(event, data = {}) {
-		/// #if DEBUG
-		return new Promise((resolve) => setTimeout(resolve, 100));
-		/// #endif
+		if (import.meta && import.meta.env && import.meta.env.MODE !== 'production') {
+			return new Promise((resolve) => setTimeout(resolve, 100));
+		}
 
 		/* eslint-disable no-unreachable */
 		return fetch(`https://sandbox-characters/${event}`, {
@@ -14,7 +14,7 @@ export default {
 		});
 		/* eslint-enable no-unreachable  */
 	},
-	emulate(type, data = null) {
+		emulate(type, data = null) {
 		window.dispatchEvent(
 			new MessageEvent('message', {
 				data: {

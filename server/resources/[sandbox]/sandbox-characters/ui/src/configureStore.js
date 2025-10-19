@@ -9,8 +9,8 @@ export default function configureStore(initialState) {
 		applyMiddleware(thunk),
 	);
 
-	if (module.hot) {
-		module.hot.accept('./reducers', () => {
+	if (import.meta && import.meta.hot) {
+		import.meta.hot.accept(['./reducers'], () => {
 			store.replaceReducer(createReducer(store.injectedReducers));
 		});
 	}

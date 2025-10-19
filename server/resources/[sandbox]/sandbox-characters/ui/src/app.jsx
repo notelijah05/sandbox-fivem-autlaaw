@@ -1,8 +1,10 @@
-import '@babel/polyfill';
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
+
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
+import './index.css';
 
 import App from 'containers/App';
 
@@ -14,7 +16,7 @@ const initialState = {};
 const store = configureStore(initialState);
 
 const MOUNT_NODE = document.getElementById('app');
-const root = createRoot(MOUNT_NODE); // createRoot(container!) if you use TypeScript
+const root = createRoot(MOUNT_NODE);
 
 const render = () => {
 	root.render(
@@ -26,9 +28,8 @@ const render = () => {
 	);
 };
 
-if (module.hot) {
-	module.hot.accept(['./containers/App'], () => {
-		ReactDOM.unmountComponentAtNode(MOUNT_NODE);
+if (import.meta && import.meta.hot) {
+	import.meta.hot.accept(['./containers/App'], () => {
 		render();
 	});
 }
