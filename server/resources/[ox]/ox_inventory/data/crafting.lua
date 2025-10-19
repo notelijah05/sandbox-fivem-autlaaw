@@ -436,4 +436,43 @@ return {
     },
 
     -- Schematic Benches End --
+
+    -- Weed Packaging  Start --
+
+    { -- Weed Packaging Bench
+        name = 'weed-packaging',
+        label = 'Weed Processing',
+        items = {
+            {
+                name = 'weed_brick',
+                ingredients = {
+                    plastic_wrap = 2,
+                    weed_bud = 200,
+                },
+                duration = 8000,
+                count = 1,
+            },
+            {
+                name = 'weed_baggy',
+                ingredients = {
+                    baggy = 1,
+                    weed_bud = 2,
+                },
+                duration = 2000,
+                count = 1,
+            },
+        },
+        zones = {
+            {
+                label = 'Open Crafting Bench',
+                icon = 'fa-solid fa-wrench',
+                coords = vec3(1056.47, -2450.58, 29.29),
+                size = vec3(2.8, 1.0, 2.0),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    -- Weed Packaging End --
 }
