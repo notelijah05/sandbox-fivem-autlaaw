@@ -108,27 +108,12 @@ for type, data in pairs(lib.load('data.weapons') or {}) do
     end
 end
 
-local files = {
-    'data.items',
-    'data.customitems',
-    -- 'data.drinks',
-    -- 'data.police',
-}
+for k, v in pairs(lib.load('data.items') or {}) do
+    v.name = k
+    local success, response = pcall(newItem, v)
 
-for _, file in ipairs(files) do
-    local data = lib.load(file)
-    if data then
-        for k, v in pairs(data) do
-            v.name = k
-            local success, response = pcall(newItem, v)
-
-            if not success then
-                warn(('An error occurred while creating item "%s" from %s\n^1SCRIPT ERROR: %s^0'):format(k, file,
-                    response))
-            end
-        end
-    else
-        print(('Failed to load item file: %s'):format(file))
+    if not success then
+        warn(('An error occurred while creating item "%s" callback!\n^1SCRIPT ERROR: %s^0'):format(k, response))
     end
 end
 
