@@ -492,7 +492,7 @@ RegisterNetEvent("Fishing:Client:OffDuty", function(time)
 end)
 
 AddEventHandler("Fishing:Client:OpenShop", function(data)
-    exports.ox_inventory:openInventory("shop", { data.type })
+    exports.ox_inventory:openInventory("shop", { type = data.type })
 end)
 
 AddEventHandler("Fishing:Client:Sell", function(data)
