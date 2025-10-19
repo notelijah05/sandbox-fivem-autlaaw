@@ -7184,28 +7184,43 @@ return {
     },
     ["backpack"] = {
         label = "Backpack",
-        description = "A backpack with a capacity of 10 slots.",
+        description = "A backpack with a capacity of 5 slots.",
         weight = 2000.0,
         degrade = nil,
         rarity = 4,
+        container = {
+            slots = 5,
+            maxWeight = 5000,
+            -- Currently, any item can go in this container
+        },
         client = {},
         server = {}
     },
     ["large_backpack"] = {
         label = "Large Backpack",
-        description = "A backpack with a capacity of 20 slots.",
+        description = "A backpack with a capacity of 10 slots.",
         weight = 4000.0,
         degrade = nil,
         rarity = 4,
+        container = {
+            slots = 10,
+            maxWeight = 10000,
+            -- Currently, any item can go in this container
+        },
         client = {},
         server = {}
     },
     ["military_backpack"] = {
         label = "Military Backpack",
-        description = "A backpack with a capacity of 30 slots.",
+        description = "A backpack with a capacity of 15 slots.",
         weight = 8000.0,
         degrade = nil,
         rarity = 4,
+        container = {
+            slots = 15,
+            maxWeight = 15000,
+            -- Currently, any item can go in this container
+        },
         client = {},
         server = {}
     },
