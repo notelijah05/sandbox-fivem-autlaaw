@@ -869,6 +869,13 @@ return {
             weight = 2500,
             durability = 0.1,
         },
+
+        ['WEAPON_SNIPERRIFLE2'] = {
+            label = 'Hunting Rifle',
+            weight = 5000,
+            durability = 0.2,
+            ammoname = 'ammo-sniper'
+        },
     },
 
     Components = {

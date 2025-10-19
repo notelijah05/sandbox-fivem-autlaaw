@@ -243,69 +243,56 @@ AddEventHandler("Labor:Client:Setup", function()
 	for k, v in ipairs(_sellers) do
 		exports['sandbox-pedinteraction']:Add(string.format("HideSeller%s", k), v.model, v.coords, v.heading, 25.0, {
 			{
-				icon = "cart-shopping",
+				icon = "fa-solid fa-cart-shopping",
 				text = "Buy Stuff",
 				onSelect = function()
 					TriggerEvent("Vendor:Client:GetItems", { id = "HuntingBaits" })
 				end,
-				data = { id = "HuntingBaits" },
 				rep = { id = "Hunting", level = 2 },
 			},
 			{
-				icon = "sack-dollar",
+				icon = "fa-solid fa-sack-dollar",
 				text = "Sell Tier 1 Hides",
 				onSelect = function()
-					TriggerEvent("Hunting:Client:Sell", nil, { tier = 1 })
+					TriggerEvent("Hunting:Client:Sell", { tier = 1 })
 				end,
 				rep = { id = "Hunting", level = 4 },
-				canInteract = function()
-					return true
-				end,
 			},
 			{
-				icon = "sack-dollar",
+				icon = "fa-solid fa-sack-dollar",
 				text = "Sell Tier 2 Hides",
 				onSelect = function()
-					TriggerEvent("Hunting:Client:Sell", nil, { tier = 2 })
+					TriggerEvent("Hunting:Client:Sell", { tier = 2 })
 				end,
 				rep = { id = "Hunting", level = 5 },
-				canInteract = function()
-					return true
-				end,
 			},
 			{
-				icon = "sack-dollar",
+				icon = "fa-solid fa-sack-dollar",
 				text = "Sell Tier 3 Hides",
 				onSelect = function()
-					TriggerEvent("Hunting:Client:Sell", nil, { tier = 3 })
+					TriggerEvent("Hunting:Client:Sell", { tier = 3 })
 				end,
 				rep = { id = "Hunting", level = 6 },
-				canInteract = function()
-					return true
-				end,
 			},
 			{
-				icon = "sack-dollar",
+				icon = "fa-solid fa-sack-dollar",
 				text = "Sell Tier 4 Hides",
 				onSelect = function()
-					TriggerEvent("Hunting:Client:Sell", nil, { tier = 4 })
+					TriggerEvent("Hunting:Client:Sell", { tier = 4 })
 				end,
 				rep = { id = "Hunting", level = 7 },
-				canInteract = function()
-					return true
-				end,
 			},
 		}, "paw", "WORLD_HUMAN_SMOKING")
 	end
 
 	exports['sandbox-pedinteraction']:Add("HuntingJob", `cs_hunter`, _huntingStore, 227.201, 25.0, {
 		{
-			icon = "cart-shopping",
+			icon = "fa-solid fa-cart-shopping",
 			text = "Shop",
 			event = "Hunting:Client:OpenShop",
 		},
 		{
-			icon = "ballot-check",
+			icon = "fa-solid fa-ballot-check",
 			text = "Check In",
 			event = "Hunting:Client:StartJob",
 			tempjob = "Hunting",
@@ -314,7 +301,7 @@ AddEventHandler("Labor:Client:Setup", function()
 			end,
 		},
 		{
-			icon = "ballot-check",
+			icon = "fa-solid fa-ballot-check",
 			text = "Finish Job",
 			event = "Hunting:Client:FinishJob",
 			tempjob = "Hunting",
@@ -409,10 +396,10 @@ RegisterNetEvent("Hunting:Client:OnDuty", function(joiner, time)
 end)
 
 AddEventHandler("Hunting:Client:OpenShop", function()
-	exports.ox_inventory:ShopOpen("hunting-supplies")
+	exports.ox_inventory:openInventory("shop", { type = "HuntingSupplies" })
 end)
 
-AddEventHandler("Hunting:Client:Sell", function(entity, data)
+AddEventHandler("Hunting:Client:Sell", function(data)
 	exports["sandbox-base"]:ServerCallback("Hunting:Sell", data.tier)
 end)
 

@@ -22,7 +22,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 				event = "Government:Client:BuyID",
 			},
 			{
-				icon = "fa-solid fa-file-certificate",
+				icon = "fa-solid fa-id-badge",
 				text = "License Services",
 				event = "Government:Client:BuyLicense",
 			},
