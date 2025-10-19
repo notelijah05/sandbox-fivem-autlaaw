@@ -1,9 +1,6 @@
 table.insert(Config.Restaurants, {
     Name = "Smoke on the Water",
     Job = "weed",
-    -- Benches = {
-
-    -- },
     Pickups = {
         {
             id = "weed-pickup-1",
@@ -16,13 +13,13 @@ table.insert(Config.Restaurants, {
                 minZ = 3.66,
                 maxZ = 5.26
             },
-			data = {
+            data = {
                 business = "weed",
                 inventory = {
                     invType = 25,
                     owner = "weed-pickup-1",
                 },
-			},
+            },
         },
     },
     -- Warmers = {

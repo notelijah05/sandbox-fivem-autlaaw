@@ -4,39 +4,6 @@ _warmers = {}
 function Startup()
 	for k, v in ipairs(Config.Restaurants) do
 		exports['sandbox-base']:LoggerTrace("Restaurant", string.format("Registering Restaurant ^3%s^7", v.Name))
-		if v.Benches then
-			for benchId, bench in pairs(v.Benches) do
-				-- exports['sandbox-base']:LoggerTrace("Restaurant", string.format("Registering Crafting Bench ^2%s^7 For ^3%s^7", bench.label, v.Name))
-				if v?.IgnoreDuty then
-					exports.ox_inventory:CraftingRegisterBench(string.format("%s-%s", k, benchId), bench.label,
-						bench.targeting, {
-							x = bench.targeting.poly.coords.x,
-							y = bench.targeting.poly.coords.y,
-							z = bench.targeting.poly.coords.z,
-							h = bench.targeting.poly.options.heading,
-						}, {
-							job = {
-								id = v.Job,
-								onDuty = false,
-							},
-						}, bench.recipes)
-				else
-					exports.ox_inventory:CraftingRegisterBench(string.format("%s-%s", k, benchId), bench.label,
-						bench.targeting, {
-							x = bench.targeting.poly.coords.x,
-							y = bench.targeting.poly.coords.y,
-							z = bench.targeting.poly.coords.z,
-							h = bench.targeting.poly.options.heading,
-						}, {
-							job = {
-								id = v.Job,
-								onDuty = true,
-							},
-						}, bench.recipes)
-				end
-			end
-		end
-
 		if v.Pickups then
 			for num, pickup in pairs(v.Pickups) do
 				table.insert(_pickups, pickup.id)

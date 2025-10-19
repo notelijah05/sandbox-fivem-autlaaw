@@ -1,73 +1,6 @@
 table.insert(Config.Restaurants, {
     Name = "Bobs Balls",
     Job = "bowling",
-    -- Benches = {
-    -- 	drinks = {
-    -- 		label = "Drinks",
-    -- 		targeting = {
-    -- 			actionString = "Preparing",
-    -- 			icon = "cup-straw-swoosh",
-    -- 			poly = {
-    -- 				coords = vector3(-1199.32, -896.87, 14.0),
-    -- 				w = 5.4,
-    -- 				l = 2.2,
-    -- 				options = {
-    -- 					heading = 33,
-    -- 					--debugPoly = true,
-    -- 					minZ = 11.6,
-    -- 					maxZ = 15.6,
-    -- 				},
-    -- 			},
-    -- 		},
-    -- 		recipes = {
-    -- 			{
-    -- 				result = { name = "burgershot_drink", count = 1 },
-    -- 				items = {
-    -- 					{ name = "burgershot_cup", count = 1 },
-    -- 				},
-    -- 				time = 2000,
-    -- 			},
-    -- 		},
-    -- 	},
-    -- 	food = {
-    -- 		label = "Food",
-    -- 		targeting = {
-    -- 			actionString = "Cooking",
-    -- 			icon = "burger-fries",
-    -- 			poly = {
-    -- 				coords = vector3(-1201.41, -899.46, 14.0),
-    -- 				w = 1.2,
-    -- 				l = 10.35,
-    -- 				options = {
-    -- 					heading = 304,
-    -- 					--debugPoly = true,
-    -- 					minZ = 13.0,
-    -- 					maxZ = 15.6,
-    -- 				},
-    -- 			},
-    -- 		},
-    -- 		recipes = {
-    -- 			{
-    -- 				result = { name = "burger", count = 1 },
-    -- 				items = {
-    -- 					{ name = "bun", count = 1 },
-    -- 					{ name = "patty", count = 1 },
-    -- 					{ name = "lettuce", count = 1 },
-    -- 					{ name = "pickle", count = 1 },
-    -- 					{ name = "tomato", count = 1 },
-    -- 				},
-    -- 				time = 3000,
-    -- 			},
-    -- 			{
-    -- 				result = { name = "burgershot_fries", count = 1 },
-    -- 				items = {
-    -- 					{ name = "potato", count = 1 },
-    -- 				},
-    -- 				time = 3000,
-    -- 			},
-    -- 		},
-    -- 	},
-    -- },
     Pickups = {
         {
             id = "bobs_balls-pickup-1",
@@ -80,13 +13,13 @@ table.insert(Config.Restaurants, {
                 minZ = 26.14,
                 maxZ = 26.94
             },
-			data = {
+            data = {
                 business = "bowling",
                 inventory = {
                     invType = 25,
                     owner = "bobs_balls-pickup-1",
                 },
-			},
+            },
         },
     },
     -- Warmers = {

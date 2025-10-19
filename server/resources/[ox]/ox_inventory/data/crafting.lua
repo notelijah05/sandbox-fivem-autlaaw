@@ -5460,4 +5460,924 @@ return {
     -- },
 
     -- Business Crafting Benches End --
+
+    -- Restaurant Crafting Benches --
+
+    { -- Burger Shot Drinks & Ice Cream
+        name = 'burgershot-drinks',
+        label = 'Drinks & Ice Cream',
+        groups = { 'burgershot' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'burgershot_drink',
+                ingredients = {
+                    burgershot_cup = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'orangotang_icecream',
+                ingredients = {
+                    milk_can = 3,
+                    sugar = 1,
+                    orange = 10,
+                },
+                duration = 2500,
+                count = 10,
+            },
+            {
+                name = 'meteorite_icecream',
+                ingredients = {
+                    milk_can = 3,
+                    sugar = 1,
+                    chocolate_bar = 3,
+                },
+                duration = 2500,
+                count = 10,
+            },
+            {
+                name = 'mocha_shake',
+                ingredients = {
+                    plastic_cup = 1,
+                    milk_can = 3,
+                    chocolate_bar = 1,
+                    coffee_beans = 3,
+                },
+                duration = 2500,
+                count = 5,
+            },
+        },
+        zones = {
+            {
+                label = 'Drinks & Ice Cream',
+                icon = 'fa-solid fa-cup-straw-swoosh',
+                coords = vec3(-1191.52, -897.64, 13.8),
+                size = vec3(2.6, 0.6, 1.2),
+                distance = 1.5,
+                rotation = 35.0,
+            },
+        },
+    },
+
+    { -- Burger Shot Drinks & Ice Cream (Drive Thru)
+        name = 'burgershot-drinks-drivethru',
+        label = 'Drinks & Ice Cream',
+        groups = { 'burgershot' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'burgershot_drink',
+                ingredients = {
+                    burgershot_cup = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'orangotang_icecream',
+                ingredients = {
+                    milk_can = 3,
+                    sugar = 1,
+                    orange = 10,
+                },
+                duration = 2500,
+                count = 10,
+            },
+            {
+                name = 'meteorite_icecream',
+                ingredients = {
+                    milk_can = 3,
+                    sugar = 1,
+                    chocolate_bar = 3,
+                },
+                duration = 2500,
+                count = 10,
+            },
+            {
+                name = 'mocha_shake',
+                ingredients = {
+                    plastic_cup = 1,
+                    milk_can = 3,
+                    chocolate_bar = 1,
+                    coffee_beans = 3,
+                },
+                duration = 2500,
+                count = 5,
+            },
+        },
+        zones = {
+            {
+                label = 'Drinks & Ice Cream',
+                icon = 'fa-solid fa-cup-straw-swoosh',
+                coords = vec3(-1191.12, -905.38, 13.8),
+                size = vec3(1.4, 1.0, 1.2),
+                distance = 1.5,
+                rotation = 305.0,
+            },
+        },
+    },
+
+    { -- Burger Shot Food
+        name = 'burgershot-food',
+        label = 'Food',
+        groups = { 'burgershot' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'patty',
+                ingredients = {
+                    unk_meat = 10,
+                },
+                duration = 2000,
+                count = 5,
+            },
+            {
+                name = 'pickle',
+                ingredients = {
+                    cucumber = 15,
+                },
+                duration = 2000,
+                count = 10,
+            },
+            {
+                name = 'burger',
+                ingredients = {
+                    bun = 4,
+                    patty = 4,
+                    lettuce = 3,
+                    pickle = 6,
+                    tomato = 10,
+                    cheese = 5,
+                },
+                duration = 2000,
+                count = 5,
+            },
+            {
+                name = 'double_shot_burger',
+                ingredients = {
+                    bun = 6,
+                    patty = 6,
+                    lettuce = 6,
+                    pickle = 6,
+                    tomato = 10,
+                    cheese = 5,
+                },
+                duration = 2000,
+                count = 5,
+            },
+            {
+                name = 'tacos',
+                ingredients = {
+                    dough = 1,
+                    lettuce = 2,
+                    tomato = 4,
+                    beef = 2,
+                },
+                duration = 2000,
+                count = 3,
+            },
+            {
+                name = 'heartstopper',
+                ingredients = {
+                    bun = 2,
+                    patty = 3,
+                    lettuce = 2,
+                    pickle = 3,
+                    tomato = 4,
+                    cheese = 5,
+                },
+                duration = 2000,
+                count = 1,
+            },
+            {
+                name = 'the_simply_burger',
+                ingredients = {
+                    bun = 5,
+                    patty = 5,
+                    lettuce = 12,
+                },
+                duration = 2000,
+                count = 5,
+            },
+            {
+                name = 'prickly_burger',
+                ingredients = {
+                    bun = 3,
+                    patty = 3,
+                    lettuce = 9,
+                    chicken = 9,
+                    cheese = 3,
+                },
+                duration = 2000,
+                count = 5,
+            },
+            {
+                name = 'chicken_wrap',
+                ingredients = {
+                    dough = 1,
+                    lettuce = 1,
+                    cucumber = 3,
+                    tomato = 5,
+                    cheese = 1,
+                    chicken = 1,
+                },
+                duration = 2000,
+                count = 3,
+            },
+            {
+                name = 'goat_cheese_wrap',
+                ingredients = {
+                    dough = 1,
+                    lettuce = 1,
+                    cucumber = 2,
+                    tomato = 3,
+                    cheese = 5,
+                },
+                duration = 2000,
+                count = 3,
+            },
+            {
+                name = 'burgershot_fries',
+                ingredients = {
+                    potato = 10,
+                },
+                duration = 2000,
+                count = 5,
+            },
+        },
+        zones = {
+            {
+                label = 'Food',
+                icon = 'fa-solid fa-burger-fries',
+                coords = vec3(-1187.16, -900.2, 13.8),
+                size = vec3(1.8, 3.4, 1.2),
+                distance = 1.5,
+                rotation = 34.0,
+            },
+        },
+    },
+
+    { -- Bean Machine Food
+        name = 'beanmachine-food',
+        label = 'Food',
+        groups = { 'beanmachine' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'carrot_cake',
+                ingredients = {
+                    icing = 1,
+                    sugar = 3,
+                    dough = 1,
+                    milk_can = 1,
+                },
+                duration = 5000,
+                count = 4,
+            },
+            {
+                name = 'blueberry_muffin',
+                ingredients = {
+                    sugar = 3,
+                    dough = 1,
+                    milk_can = 1,
+                },
+                duration = 5000,
+                count = 6,
+            },
+            {
+                name = 'chocy_muff',
+                ingredients = {
+                    sugar = 4,
+                    dough = 1,
+                    milk_can = 1,
+                },
+                duration = 5000,
+                count = 6,
+            },
+            {
+                name = 'million_shrtbread',
+                ingredients = {
+                    sugar = 4,
+                    dough = 1,
+                    milk_can = 1,
+                },
+                duration = 5000,
+                count = 10,
+            },
+        },
+        zones = {
+            {
+                label = 'Food',
+                icon = 'fa-solid fa-sandwich',
+                coords = vec3(121.6, -1038.57, 29.28),
+                size = vec3(1.8, 0.8, 1.2),
+                distance = 1.5,
+                rotation = 340.0,
+            },
+        },
+    },
+
+    { -- Bean Machine Coffee
+        name = 'beanmachine-coffee',
+        label = 'Coffee Machine',
+        groups = { 'beanmachine' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'beanmachine',
+                ingredients = {
+                    plastic_cup = 1,
+                    coffee_beans = 3,
+                    milk_can = 1,
+                },
+                duration = 5000,
+                count = 3,
+            },
+            {
+                name = 'expresso',
+                ingredients = {
+                    coffee_beans = 5,
+                },
+                duration = 5000,
+                count = 3,
+            },
+        },
+        zones = {
+            {
+                label = 'Coffee Machine',
+                icon = 'fa-solid fa-coffee-pot',
+                coords = vec3(124.04, -1039.23, 29.28),
+                size = vec3(6.2, 1.0, 1.2),
+                distance = 1.5,
+                rotation = 340.0,
+            },
+        },
+    },
+
+    { -- Bean Machine Cold Drinks
+        name = 'beanmachine-colddrinks',
+        label = 'Drinks Machine',
+        groups = { 'beanmachine' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'smoothie_orange',
+                ingredients = {
+                    plastic_cup = 1,
+                    orange = 3,
+                    sugar = 1,
+                },
+                duration = 5000,
+                count = 3,
+            },
+            {
+                name = 'smoothie_veg',
+                ingredients = {
+                    plastic_cup = 1,
+                    lettuce = 4,
+                    peas = 10,
+                    cucumber = 4,
+                    sugar = 1,
+                },
+                duration = 5000,
+                count = 3,
+            },
+        },
+        zones = {
+            {
+                label = 'Drinks Machine',
+                icon = 'fa-solid fa-cup-straw-swoosh',
+                coords = vec3(123.46, -1042.84, 29.28),
+                size = vec3(0.8, 1.8, 1.2),
+                distance = 1.5,
+                rotation = 340.0,
+            },
+        },
+    },
+
+    { -- Pizza This Drinks
+        name = 'pizza_this-drinks',
+        label = 'Drinks',
+        groups = { 'pizza_this' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'glass_cock',
+                ingredients = {
+                    plastic_cup = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'lemonade',
+                ingredients = {
+                    plastic_cup = 1,
+                    orange = 3,
+                },
+                duration = 0,
+                count = 1,
+            },
+        },
+        zones = {
+            {
+                label = 'Drinks',
+                icon = 'fa-solid fa-cup-straw-swoosh',
+                coords = vec3(810.74, -764.46, 26.78),
+                size = vec3(1.0, 2.0, 1.2),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    { -- Pizza This Drinks Bar
+        name = 'pizza_this-drinksbar',
+        label = 'Drinks',
+        groups = { 'pizza_this' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'glass_cock',
+                ingredients = {
+                    plastic_cup = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'lemonade',
+                ingredients = {
+                    plastic_cup = 1,
+                    orange = 3,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'vodka_shot',
+                ingredients = {
+                    plastic_cup = 1,
+                    vodka = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'whiskey_glass',
+                ingredients = {
+                    plastic_cup = 1,
+                    whiskey = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+        },
+        zones = {
+            {
+                label = 'Drinks',
+                icon = 'fa-solid fa-cup-straw-swoosh',
+                coords = vec3(814.05, -749.35, 26.78),
+                size = vec3(1.0, 2.2, 1.2),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    { -- Pizza This Pizza Oven
+        name = 'pizza_this-pizza',
+        label = 'Pizza Oven',
+        groups = { 'pizza_this' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'pepperoni_pizza',
+                ingredients = {
+                    dough = 1,
+                    tomato = 5,
+                    unk_meat = 5,
+                    cheese = 1,
+                },
+                duration = 3000,
+                count = 1,
+            },
+            {
+                name = 'margherita_pizza',
+                ingredients = {
+                    dough = 1,
+                    tomato = 5,
+                    cheese = 2,
+                },
+                duration = 3000,
+                count = 1,
+            },
+            {
+                name = 'san_manzano_pizza',
+                ingredients = {
+                    dough = 1,
+                    tomato = 5,
+                    lettuce = 4,
+                    cheese = 2,
+                },
+                duration = 3000,
+                count = 1,
+            },
+        },
+        zones = {
+            {
+                label = 'Pizza Oven',
+                icon = 'fa-solid fa-pizza',
+                coords = vec3(813.97, -752.85, 26.78),
+                size = vec3(2.0, 2.0, 1.2),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    { -- Pizza This Food
+        name = 'pizza_this-food',
+        label = 'Food',
+        groups = { 'pizza_this' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'pasta_fresca',
+                ingredients = {
+                    dough = 2,
+                    tomato = 6,
+                    lettuce = 4,
+                    cheese = 4,
+                },
+                duration = 4000,
+                count = 4,
+            },
+            {
+                name = 'pesto_cavatappi',
+                ingredients = {
+                    dough = 2,
+                    cheese = 4,
+                    milk_can = 1,
+                },
+                duration = 4000,
+                count = 4,
+            },
+            {
+                name = 'spag_bowl',
+                ingredients = {
+                    dough = 1,
+                    cheese = 4,
+                    tomato = 6,
+                    beef = 3,
+                },
+                duration = 4000,
+                count = 4,
+            },
+            {
+                name = 'chips',
+                ingredients = {
+                    potato = 6,
+                },
+                duration = 3000,
+                count = 5,
+            },
+        },
+        zones = {
+            {
+                label = 'Food',
+                icon = 'fa-solid fa-pizza',
+                coords = vec3(808.69, -761.17, 26.78),
+                size = vec3(3.0, 2.2, 1.2),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    { -- Vanilla Unicorn Bar
+        name = 'unicorn-bar',
+        label = 'Bar',
+        groups = { 'unicorn' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'raspberry_mimosa',
+                ingredients = {
+                    plastic_cup = 1,
+                    champagne = 1,
+                    orange = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'pina_colada',
+                ingredients = {
+                    plastic_cup = 1,
+                    rum = 1,
+                    coconut = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'bloody_mary',
+                ingredients = {
+                    plastic_cup = 1,
+                    vodka = 1,
+                    tomato = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'vodka_shot',
+                ingredients = {
+                    plastic_cup = 1,
+                    vodka = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'whiskey_glass',
+                ingredients = {
+                    plastic_cup = 1,
+                    whiskey = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'jaeger_bomb',
+                ingredients = {
+                    plastic_cup = 1,
+                    jaeger = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'beer',
+                ingredients = {
+                    plastic_cup = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'glass_cock',
+                ingredients = {
+                    plastic_cup = 1,
+                },
+                duration = 0,
+                count = 1,
+            },
+            {
+                name = 'lemonade',
+                ingredients = {
+                    plastic_cup = 1,
+                    orange = 3,
+                },
+                duration = 0,
+                count = 1,
+            },
+        },
+        zones = {
+            {
+                label = 'Bar',
+                icon = 'fa-solid fa-martini-glass-citrus',
+                coords = vec3(131.03, -1282.28, 29.27),
+                size = vec3(2.2, 1.2, 1.2),
+                distance = 1.5,
+                rotation = 30.0,
+            },
+        },
+    },
+
+    { -- UwU Cafe Hot Drinks
+        name = 'uwu-drinks',
+        label = 'Hot Drinks',
+        groups = { 'uwu' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'iced_coffee',
+                ingredients = {
+                    plastic_cup = 1,
+                    coffee_beans = 1,
+                    milk_can = 1,
+                },
+                duration = 2000,
+                count = 5,
+            },
+            {
+                name = 'matcha_latte',
+                ingredients = {
+                    plastic_cup = 1,
+                    tea_leaf = 2,
+                    milk_can = 1,
+                },
+                duration = 2000,
+                count = 5,
+            },
+            {
+                name = 'pumpkinspiced_latte',
+                ingredients = {
+                    plastic_cup = 1,
+                    coffee_beans = 1,
+                    milk_can = 1,
+                },
+                duration = 2000,
+                count = 5,
+            },
+            {
+                name = 'cat_tuccino',
+                ingredients = {
+                    plastic_cup = 1,
+                    coffee_beans = 3,
+                    milk_can = 1,
+                },
+                duration = 3000,
+                count = 5,
+            },
+            {
+                name = 'booba_tea',
+                ingredients = {
+                    plastic_cup = 1,
+                    tea_leaf = 2,
+                },
+                duration = 2000,
+                count = 5,
+            },
+            {
+                name = 'green_tea',
+                ingredients = {
+                    plastic_cup = 1,
+                    tea_leaf = 4,
+                },
+                duration = 6000,
+                count = 5,
+            },
+        },
+        zones = {
+            {
+                label = 'Hot Drinks',
+                icon = 'fa-solid fa-mug-hot',
+                coords = vec3(-586.98, -1061.91, 22.34),
+                size = vec3(0.8, 0.8, 1.2),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    { -- UwU Cafe Oven
+        name = 'uwu-oven',
+        label = 'Oven',
+        groups = { 'uwu' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'homemade_cookie',
+                ingredients = {
+                    dough = 1,
+                    sugar = 2,
+                    icing = 1,
+                },
+                duration = 2000,
+                count = 12,
+            },
+            {
+                name = 'choclate_pancakes',
+                ingredients = {
+                    milk_can = 3,
+                    sugar = 3,
+                },
+                duration = 2000,
+                count = 6,
+            },
+            {
+                name = 'apple_crumble',
+                ingredients = {
+                    dough = 3,
+                    sugar = 6,
+                },
+                duration = 2000,
+                count = 3,
+            },
+            {
+                name = 'cat_donut',
+                ingredients = {
+                    dough = 2,
+                    sugar = 2,
+                    icing = 2,
+                },
+                duration = 2000,
+                count = 6,
+            },
+            {
+                name = 'cat_cupcake',
+                ingredients = {
+                    dough = 2,
+                    sugar = 2,
+                    icing = 4,
+                },
+                duration = 2000,
+                count = 6,
+            },
+        },
+        zones = {
+            {
+                label = 'Oven',
+                icon = 'fa-solid fa-cupcake',
+                coords = vec3(-590.9, -1059.56, 22.34),
+                size = vec3(1.6, 1.0, 1.2),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    { -- UwU Cafe Food
+        name = 'uwu-food',
+        label = 'Food',
+        groups = { 'uwu' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'frozen_yoghurt',
+                ingredients = {
+                    plastic_cup = 1,
+                    milk_can = 1,
+                    sugar = 1,
+                },
+                duration = 2000,
+                count = 4,
+            },
+            {
+                name = 'fruit_explosion',
+                ingredients = {
+                    plastic_cup = 1,
+                    milk_can = 1,
+                    sugar = 8,
+                    orange = 10,
+                },
+                duration = 2000,
+                count = 4,
+            },
+            {
+                name = 'fresh_lemonade',
+                ingredients = {
+                    plastic_cup = 5,
+                    orange = 15,
+                },
+                duration = 2000,
+                count = 5,
+            },
+        },
+        zones = {
+            {
+                label = 'Food',
+                icon = 'fa-solid fa-sandwich',
+                coords = vec3(-591.13, -1063.23, 22.36),
+                size = vec3(2.6, 0.8, 1.2),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    { -- UwU Cafe Arts & Crafts
+        name = 'uwu-other',
+        label = 'Arts & Crafts',
+        groups = { 'uwu' },
+        reqDuty = true,
+        items = {
+            {
+                name = 'uwu_prize_box',
+                ingredients = {
+                    plastic = 15,
+                    cloth = 5,
+                },
+                duration = 1000,
+                count = 3,
+            },
+        },
+        zones = {
+            {
+                label = 'Arts & Crafts',
+                icon = 'fa-solid fa-paintbrush-pencil',
+                coords = vec3(-596.06, -1052.47, 22.34),
+                size = vec3(1.0, 2.0, 1.2),
+                distance = 1.5,
+                rotation = 0.0,
+            },
+        },
+    },
+
+    -- Restaurant Crafting Benches End --
 }

@@ -8149,7 +8149,42 @@ return {
         client = {},
         server = {}
     },
-
+    ['rlg_chain'] = {
+        label = "RLG Chain",
+        description = "RLG Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ['lss_chain'] = {
+        label = "LSS Chain",
+        description = "LSS Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ['pepega_chain'] = {
+        label = "Pepega Chain",
+        description = "Pepega Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
+    ['lust_chain'] = {
+        label = "Lust Chain",
+        description = "Lust Chain",
+        weight = 0.0,
+        rarity = 4,
+        degrade = nil,
+        client = {},
+        server = {}
+    },
     ['garbage'] = {
         label = 'Garbage',
     },
