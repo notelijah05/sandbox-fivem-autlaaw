@@ -32,6 +32,9 @@
         maxWeight: number            -- Maximum weight in grams
         whitelist?: table<string, true> | string[]          -- A table of item names that are allowed in the container. If not provided, all items are allowed except those blacklisted.
         blacklist?: table<string, true> | string[]          -- A table of item names that are not allowed in the container. If not provided, no items are blacklisted unless whitelist is provided.
+        items?: table                       -- A table of items to add to the container.
+            name: string                    -- Item name
+            count: number                   -- Item count
 
     ===========================================
     SERVER DATA PROPERTIES
@@ -1539,14 +1542,14 @@ return {
     },
     ["cigarette"] = {
         label = "Cigarette",
-        weight = 100.0,
+        weight = 50.0,
         degrade = 864000,
         client = {
             usetime = 8000,
             cancel = false,
             allowArmed = false,
             anim = { dict = 'amb@world_human_aa_smoke@male@idle_a', clip = 'idle_c' },
-            prop = { model = `prop_stat_pack_01`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
+            prop = { model = `ng_proc_cigarette01a`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0.0, 0.0, 0.0), bone = 28422 },
             disable = {
                 move = false,
                 car = false,
@@ -1559,20 +1562,19 @@ return {
     },
     ["cigarette_pack"] = {
         label = "Pack of Cigarettes",
-        weight = 5000.0,
+        weight = 500.0,
         degrade = 864000,
-        client = {
-            usetime = 2000,
-            cancel = false,
-            allowArmed = false,
-            disable = {
-                move = false,
-                car = false,
-                combat = false,
-                mouse = false,
-                sprint = false,
+        container = {
+            slots = 1,
+            maxWeight = 1000,
+            whitelist = {
+                'cigarette',
             },
+            items = {
+                { name = 'cigarette', count = 20 },
+            }
         },
+        client = {},
         server = {}
     },
     ["armor"] = {

@@ -6,6 +6,7 @@ local containers = {}
 ---@field maxWeight number
 ---@field whitelist? table<string, true> | string[]
 ---@field blacklist? table<string, true> | string[]
+---@field items? table<string, number>
 
 local function arrayToSet(tbl)
     local size = #tbl
@@ -49,6 +50,7 @@ local function setContainerProperties(itemName, properties)
         size = { properties.slots, properties.maxWeight },
         blacklist = blacklist,
         whitelist = whitelist,
+        items = properties.items or nil,
     }
 end
 
