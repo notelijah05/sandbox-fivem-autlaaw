@@ -32,12 +32,17 @@ local function SpawnOres()
 			local o = CreateObject(v.ore.object, v.location.x, v.location.y, v.location.z - 1.4, false, true, false)
 			PlaceObjectOnGroundProperly(o)
 			FreezeEntityPosition(o, true)
-			exports.ox_target:addEntity(o, {
+			Wait(100)
+			exports.ox_target:addLocalEntity(o, {
 				{
 					label = string.format("Mine %s", v.ore.label),
 					icon = "pickaxe",
 					event = string.format("Mining:Client:%s:Action", _joiner),
 					distance = 3.0,
+					data = v,
+					canInteract = function()
+						return _working and _state == 1 and _nodes ~= nil
+					end,
 				},
 			})
 			local b = exports["sandbox-blips"]:Add(string.format("MiningNode-%s", k), "Mining Node", v.location, 594, 0,
@@ -60,7 +65,7 @@ local function DeleteNode(location)
 				vector3(v.data.location.x, v.data.location.y, v.data.location.z)
 				== vector3(location.x, location.y, location.z)
 			then
-				exports.ox_target:removeEntity(v.ent)
+				exports.ox_target:removeLocalEntity(v.ent)
 				DeleteObject(v.ent)
 				exports["sandbox-blips"]:Remove(v.blipId)
 
@@ -84,7 +89,7 @@ local function DespawnOres()
 			local v = _objs[i]
 
 			if v then
-				exports.ox_target:removeEntity(v.ent)
+				exports.ox_target:removeLocalEntity(v.ent)
 				DeleteObject(v.ent)
 				exports["sandbox-blips"]:Remove(v.blipId)
 			end
@@ -199,9 +204,10 @@ RegisterNetEvent("Mining:Client:OnDuty", function(joiner, time)
 		SpawnOres()
 	end)
 
-	eventHandlers["actions"] = RegisterNetEvent(string.format("Mining:Client:%s:Action", joiner), function(ent, data)
+	eventHandlers["actions"] = RegisterNetEvent(string.format("Mining:Client:%s:Action", joiner), function(response)
 		attempt = 0
-		if data.luck <= 10 then
+		local data = response.data
+		if data and data.luck <= 10 then
 			CreateThread(function()
 				local p = promise.new()
 				while attempt < 3 do
@@ -313,7 +319,7 @@ end)
 AddEventHandler("Mining:Client:StartJob", function()
 	exports["sandbox-base"]:ServerCallback("Mining:StartJob", _joiner, function(state)
 		if not state then
-			exports["sandbox-hud"]:NotifError("Unable To Start Job")
+			exports["sandbox-hud"]:Notification("error", "Unable To Start Job")
 		end
 	end)
 end)
