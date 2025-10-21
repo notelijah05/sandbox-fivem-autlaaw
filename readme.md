@@ -1,8 +1,8 @@
 ![Logo](https://i.ibb.co/Tm01NWq/banner.png)
 
-# Sandbox RP
+# Sandbox RP Framework
 
-This is a heavily modified version of the Mythic Framework for Sandbox RP. It uses a custom component-based system, with all UIs built in React. This codebase is released with full permissions from the original Mythic Framework authors, Alzar & Dr. Nick.
+This is a heavily modified version of the Mythic Framework for Sandbox RP. It used to have  a custom component-based system - but now its using a fully custom exports system written from the bottom up with major improvements to make the framework run better, with all UIs built in React. This codebase is released with full permissions from the original Mythic Framework authors, Alzar & Dr. Nick.
 
 ---
 
@@ -39,7 +39,7 @@ Ensure the following packages are installed:
    - Update `database.ptr.cfg` with the correct **Heidi/MariaDB** information.
 
 6. **Add CFX Key**  
-   Add your `cfx` key to the `sv_licenseKey` field in the configuration. (*A default key will be added soon for MLO support.)
+   Add your `cfx` key to the `sv_licenseKey` field in the configuration.
 
 ---
 
