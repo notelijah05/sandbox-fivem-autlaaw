@@ -191,7 +191,7 @@ AddEventHandler("Characters:Client:Updated", function(key)
 					SID = LocalPlayer.state.Character:GetData("SID"),
 					First = LocalPlayer.state.Character:GetData("First"),
 					Last = LocalPlayer.state.Character:GetData("Last"),
-					Cash = LocalPlayer.state.Character:GetData("Cash"),
+					Cash = exports.ox_inventory:GetItemCount('money'),
 				},
 			},
 		})
@@ -208,7 +208,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 				SID = LocalPlayer.state.Character:GetData("SID"),
 				First = LocalPlayer.state.Character:GetData("First"),
 				Last = LocalPlayer.state.Character:GetData("Last"),
-				Cash = LocalPlayer.state.Character:GetData("Cash"),
+				Cash = exports.ox_inventory:GetItemCount('money'),
 			},
 		},
 	})
