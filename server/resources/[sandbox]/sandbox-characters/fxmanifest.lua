@@ -20,4 +20,4 @@ shared_scripts({
 
 ui_page("ui/dist/index.html")
 
-files({ "ui/dist/index.html", 'ui/dist/assets/**' })
+files({ "ui/dist/index.html", "ui/dist/*.png", "ui/dist/*.js" })
