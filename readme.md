@@ -35,8 +35,8 @@ Ensure the following packages are installed:
    - Create a new `artifact` folder in the root directory.
    - Move the downloaded artifact files into the `artifact` folder.
 
-5. **Configure Databases**  
-   - Update `database.ptr.cfg` with the correct **Heidi/MariaDB** information.
+5. **Configure Database**  
+   - Update `database.cfg` with the correct **HeidiSQL** information.
 
 6. **Add CFX Key**  
    Add your `cfx` key to the `sv_licenseKey` field in the configuration.
@@ -63,6 +63,11 @@ Ensure the following packages are installed:
 3. **Enable OneSync**  
    - In **txAdmin**, enable `OneSync` for proper server functionality.
    - Restart the server.
+
+4. **Errors**  
+   - If you encounter any **errors** after completing the setup steps:  
+     1. Restart the server.  
+     2. Verify all configurations and file paths.  
 
 ![txAdmin](https://i.ibb.co/0yfp7Qt/txadmin.jpg)
 
