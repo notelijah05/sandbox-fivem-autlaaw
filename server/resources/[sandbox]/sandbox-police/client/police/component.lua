@@ -308,7 +308,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 					label = "Start Pit Timer (5 Mins)",
 					action = function()
 						exports['sandbox-hud']:InteractionHide()
-						exports["sandbox-hud"]:NotifCustom("5 Minute Pit Timer", 60 * 1000 * 5, 'car-burst', {
+						exports["sandbox-hud"]:Notification("success", "5 Minute Pit Timer", 60 * 1000 * 5, 'car-burst', {
 							alert = {
 								background = "#247BA5B3",
 							},
