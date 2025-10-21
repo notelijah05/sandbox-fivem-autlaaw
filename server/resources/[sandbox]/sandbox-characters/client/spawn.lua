@@ -70,7 +70,7 @@ exports('SpawnInit', function()
 	end
 
 	FadeInWithTimeout(500)
-	Wait(500) -- Why the fuck does NUI just not do this without a wait here???
+	Wait(500) -- Why does NUI just not do this without a wait here???
 	SetNuiFocus(true, true)
 	SendNUIMessage({ type = "APP_SHOW" })
 end)

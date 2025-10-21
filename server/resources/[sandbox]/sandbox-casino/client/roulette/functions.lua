@@ -491,7 +491,7 @@ function RouletteStandUpAnim(chairId)
     TaskPlayAnim(LocalPlayer.state.ped, "anim_casino_b@amb@casino@games@shared@player@", whichAnim, 1.0, 1.0, 2500, 0)
 end
 
-local fuckface = {
+local rewards = {
     [100] = `vw_prop_chip_100dollar_x1`,
     [500] = `vw_prop_chip_500dollar_x1`,
     [1000] = `vw_prop_chip_1kdollar_x1`,
@@ -500,7 +500,7 @@ local fuckface = {
 }
 
 function getRouletteBetObjectType(betAmount)
-    return fuckface[betAmount]
+    return rewards[betAmount]
 end
 
 function DoRouletteBetAnimation()
