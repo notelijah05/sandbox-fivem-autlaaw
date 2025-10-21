@@ -710,12 +710,18 @@ end)
 exports("CreatorEnd", function()
 	exports["sandbox-sync"]:Start()
 	TriggerServerEvent("Ped:LeaveCreator")
-	exports['sandbox-ped']:PlacePedIntoWorld(_data)
+
 	exports['sandbox-ped']:CustomizationHide()
 	LocalPlayer.state.inCreator = false
 	FROZEN = false
-	_data = nil
+	local characterData = LocalPlayer.state.Character:GetData()
+	if characterData then
+		local currentPedData = characterData.Ped
+		characterData.Ped = currentPedData
+		exports['sandbox-ped']:PlacePedIntoWorld(characterData)
+	end
 
+	_data = nil
 	exports["sandbox-base"]:ServerCallback("Apartment:SpawnInside", {})
 end)
 
