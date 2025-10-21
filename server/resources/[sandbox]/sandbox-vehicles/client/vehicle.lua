@@ -202,8 +202,8 @@ exports("SlimJim", function(vehicle)
 				setToFail = true
 			end
 
-			local getFucked = math.random(0, 60)
-			if getFucked <= 20 and getFucked >= 5 then
+			local randomValue = math.random(0, 60)
+			if randomValue <= 20 and randomValue >= 5 then
 				setToFail = true
 			end
 

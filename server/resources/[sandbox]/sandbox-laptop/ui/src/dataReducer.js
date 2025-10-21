@@ -889,7 +889,7 @@ export const initialState = {
 							],
 							team: {
 								id: 2,
-								name: 'Dumbfucks',
+								name: 'sandbox',
 							},
 							payment: {
 								coin: 'PLEB',

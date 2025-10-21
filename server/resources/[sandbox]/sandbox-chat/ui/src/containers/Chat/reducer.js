@@ -7,7 +7,7 @@ export const initialState = {
                       type: 'ooc',
                       message: 'TEST',
                       author: {
-                          First: 'Fucky',
+                          First: 'Lucky',
                           Last: 'Ducky',
                           SID: 1,
                       },
@@ -17,7 +17,7 @@ export const initialState = {
                       type: 'ooc',
                       message: 'TEST',
                       author: {
-                          First: 'Fucky',
+                          First: 'Lucky',
                           Last: 'Ducky',
                           SID: 1,
                       },
@@ -32,7 +32,7 @@ export const initialState = {
                       type: 'ooc',
                       message: 'TEST',
                       author: {
-                          First: 'Fucky',
+                          First: 'Lucky',
                           Last: 'Ducky',
                           SID: 1,
                       },

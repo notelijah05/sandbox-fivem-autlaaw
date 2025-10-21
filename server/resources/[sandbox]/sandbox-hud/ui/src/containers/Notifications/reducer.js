@@ -14,7 +14,7 @@ export const initialState = {
                       style: null,
                   },
                   {
-                      _id: 'fuckme-123',
+                      _id: 'test-123',
                       created: 1629674399000,
                       icon: 'rocket',
                       message: 'This is a test description, neat',
