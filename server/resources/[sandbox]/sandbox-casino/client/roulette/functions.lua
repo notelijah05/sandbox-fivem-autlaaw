@@ -505,7 +505,7 @@ end
 
 function DoRouletteBetAnimation()
     _rouletteForceIdle = false
-    local duration = doStupidFuckingAnimation("anim_casino_b@amb@casino@games@blackjack@player", getAnimNameFromBet(100))
+    local duration = doAnimation("anim_casino_b@amb@casino@games@blackjack@player", getAnimNameFromBet(100))
 
     SetTimeout(duration, function()
         _rouletteForceIdle = true
@@ -514,7 +514,7 @@ end
 
 function DoRouletteLossAnimation()
     _rouletteForceIdle = false
-    local duration = doStupidFuckingAnimation("anim_casino_b@amb@casino@games@shared@player@", "reaction_bad_var_01")
+    local duration = doAnimation("anim_casino_b@amb@casino@games@shared@player@", "reaction_bad_var_01")
     SetTimeout(duration * 0.9, function()
         _rouletteForceIdle = true
     end)
@@ -522,7 +522,7 @@ end
 
 function DoRoulettePushAnimation()
     _rouletteForceIdle = false
-    local duration = doStupidFuckingAnimation("anim_casino_b@amb@casino@games@shared@player@",
+    local duration = doAnimation("anim_casino_b@amb@casino@games@shared@player@",
         "reaction_impartial_var_01")
     SetTimeout(duration * 0.9, function()
         _rouletteForceIdle = true
@@ -531,7 +531,7 @@ end
 
 function DoRouletteWinAnimation()
     _rouletteForceIdle = false
-    local duration = doStupidFuckingAnimation("anim_casino_b@amb@casino@games@shared@player@", "reaction_good_var_01")
+    local duration = doAnimation("anim_casino_b@amb@casino@games@shared@player@", "reaction_good_var_01")
     SetTimeout(duration * 0.9, function()
         _rouletteForceIdle = true
     end)

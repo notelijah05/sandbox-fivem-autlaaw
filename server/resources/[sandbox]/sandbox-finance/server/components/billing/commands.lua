@@ -31,8 +31,8 @@ AddEventHandler('Finance:Server:Startup', function()
 
     exports["sandbox-chat"]:RegisterAdminCommand('testbilling', function(source, args, rawCommand)
         exports['sandbox-hud']:Notification(source, "info", 'Bill Created')
-        exports['sandbox-finance']:BillingCreate(source, 'Some Random Fucking Business', 1500,
-            'This is a shitty description of a test bill.',
+        exports['sandbox-finance']:BillingCreate(source, 'Some Random Business', 1500,
+            'This is a description of a test bill.',
             function(wasPayed)
                 if wasPayed then
                     exports['sandbox-hud']:Notification(src, "success", 'Bill Accepted')

@@ -1,4 +1,4 @@
-_justBoughtFuckingBike = {}
+_justBoughtBike = {}
 
 _bikeStands = {
 	{
@@ -101,7 +101,7 @@ function CreateBikeStandBlips()
 end
 
 AddEventHandler("BikeStands:Client:Open", function(entityData, data)
-	if _justBoughtFuckingBike[data.location] then
+	if _justBoughtBike[data.location] then
 		return exports["sandbox-hud"]:Notification("error", "You Just Bought a Bike off Me! Weirdo!")
 	end
 
@@ -140,7 +140,7 @@ AddEventHandler("BikeStands:Client:Purchase", function(data)
 			spawnHeading = locationData.vehicleSpawn.w,
 		}, function(success)
 			if success then
-				_justBoughtFuckingBike[data.location] = true
+				_justBoughtBike[data.location] = true
 				exports["sandbox-hud"]:Notification("success",
 					string.format("Purchased %s, It Has Been Brought out for You.",
 						bikeData.name))

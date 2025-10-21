@@ -121,12 +121,12 @@ function HasBankAccountPermission(source, accountData, permission, stateId)
 
         for k, v in ipairs(pData) do
             local jp = json.decode(v.jobPermissions or "{}")
-            local fuckingWorkplace = false
+            local workplace = false
             if v.workplace and v.workplace ~= "" and #v.workplace > 0 then
-                fuckingWorkplace = v.workplace
+                workplace = v.workplace
             end
 
-            if exports['sandbox-jobs']:HasJob(source, v.job, fuckingWorkplace, false, false, false, jp[permission]) then
+            if exports['sandbox-jobs']:HasJob(source, v.job, workplace, false, false, false, jp[permission]) then
                 return true
             end
         end

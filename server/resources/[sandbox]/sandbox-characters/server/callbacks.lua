@@ -2,20 +2,20 @@ local Config = require('shared.config')
 _tempLastLocation = {}
 _lastSpawnLocations = {}
 
-_pleaseFuckingWorkSID = {}
-_pleaseFuckingWorkID = {}
+_SID = {}
+_ID = {}
 
-_fuckingBozos = {}
+_afkPlayers = {}
 
 AddEventHandler("Player:Server:Connected", function(source)
-	_fuckingBozos[source] = os.time()
+	_afkPlayers[source] = os.time()
 end)
 
 function RegisterCallbacks()
 	CreateThread(function()
 		while true do
 			if not (GlobalState["DisableAFK"] or false) then
-				for k, v in pairs(_fuckingBozos) do
+				for k, v in pairs(_afkPlayers) do
 					if v < (os.time() - (60 * 10)) then
 						local pState = Player(k).state
 						if not pState.isDev and not pState.isAdmin and not pState.isStaff then
@@ -24,7 +24,7 @@ function RegisterCallbacks()
 						else
 							exports['sandbox-base']:LoggerWarn("Characters",
 								"Staff or Admin Was AFK, Removing From Checks")
-							_fuckingBozos[k] = nil
+							_afkPlayers[k] = nil
 						end
 					elseif v < (os.time() - (60 * 5)) then
 						-- TODO: Implement better alert when at this stage when we have someway to do it
@@ -358,8 +358,8 @@ function RegisterCallbacks()
 		local store = exports['sandbox-base']:CreateStore(source, "Character", cData)
 		ONLINE_CHARACTERS[source] = store
 
-		_pleaseFuckingWorkSID[cData.SID] = source
-		_pleaseFuckingWorkID[cData.ID] = source
+		_SID[cData.SID] = source
+		_ID[cData.ID] = source
 
 		GlobalState[string.format("SID:%s", source)] = cData.SID
 
@@ -369,13 +369,13 @@ function RegisterCallbacks()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Characters:Logout", function(source, data, cb)
-		_fuckingBozos[source] = os.time()
+		_afkPlayers[source] = os.time()
 		local c = exports['sandbox-characters']:FetchCharacterSource(source)
 		if c ~= nil then
 			local cData = c:GetData()
 			if cData.SID and cData.ID then
-				_pleaseFuckingWorkSID[cData.SID] = nil
-				_pleaseFuckingWorkID[cData.ID] = nil
+				_SID[cData.SID] = nil
+				_ID[cData.ID] = nil
 			end
 
 			TriggerEvent("Characters:Server:PlayerLoggedOut", source, cData)
@@ -397,14 +397,14 @@ function RegisterCallbacks()
 end
 
 AddEventHandler("Characters:Server:DropCleanup", function(source, cData)
-	_fuckingBozos[source] = nil
+	_afkPlayers[source] = nil
 	ONLINE_CHARACTERS[source] = nil
 
 	GlobalState[string.format("SID:%s", source)] = nil
 
 	if cData and cData.SID and cData.ID then
-		_pleaseFuckingWorkSID[cData.SID] = nil
-		_pleaseFuckingWorkID[cData.ID] = nil
+		_SID[cData.SID] = nil
+		_ID[cData.ID] = nil
 	end
 end)
 
@@ -436,7 +436,7 @@ end)
 
 function RegisterMiddleware()
 	exports['sandbox-base']:MiddlewareAdd("Characters:Spawning", function(source)
-		_fuckingBozos[source] = nil
+		_afkPlayers[source] = nil
 		TriggerClientEvent("Characters:Client:Spawned", source)
 	end, 100000)
 	exports['sandbox-base']:MiddlewareAdd("Characters:ForceStore", function(source)

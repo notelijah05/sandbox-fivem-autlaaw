@@ -27,14 +27,14 @@ exports('FetchCountCharacters', function()
 end)
 
 exports('FetchByID', function(value)
-	local source = _pleaseFuckingWorkID[value]
+	local source = _ID[value]
 	if source then
 		return ONLINE_CHARACTERS[tonumber(source)]
 	end
 end)
 
 exports('FetchBySID', function(value)
-	local source = _pleaseFuckingWorkSID[value]
+	local source = _SID[value]
 	if source then
 		return ONLINE_CHARACTERS[tonumber(source)]
 	end

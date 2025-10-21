@@ -215,7 +215,7 @@ function RegisterPrisonSearchStartup()
 					_loot = _lootTables.high
 				elseif _PlayerRep >= 7500 then
 					_loot = _lootTables.high
-					-- maybe give a fucking rifle or some shit kekw
+					-- maybe give a rifle or some shit kekw
 				end
 				exports.ox_inventory:LootCustomWeightedSetWithCountAndModifier(_loot, char:GetData("SID"), 1, 1,
 					false)

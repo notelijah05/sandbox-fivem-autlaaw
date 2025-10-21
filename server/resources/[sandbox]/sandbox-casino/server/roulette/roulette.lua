@@ -158,7 +158,7 @@ function CheckRouletteWinners(tableId, bets, winningIndex)
     for k, v in pairs(totalsLost) do
         if v > 0 then
             UpdateCharacterCasinoStats(k, "roulette", false, v)
-            GiveCasinoFuckingMoney(k, "Roulette", v)
+            DepositCasinoProfit(k, "Roulette", v)
         end
     end
 

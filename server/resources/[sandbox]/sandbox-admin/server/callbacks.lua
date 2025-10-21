@@ -1,19 +1,5 @@
 PER_PAGE = 10
 
-local fuckingCharProjection = {
-    SID = 1,
-    First = 1,
-    Last = 1,
-    DOB = 1,
-    BankAccount = 1,
-    Jobs = 1,
-    Cash = 1,
-    LastPlayed = 1,
-    Phone = 1,
-    Deleted = 1,
-    User = 1,
-}
-
 function RegisterCallbacks()
     exports["sandbox-base"]:RegisterServerCallback('Admin:GetPlayerList', function(source, data, cb)
         CreateThread(function()

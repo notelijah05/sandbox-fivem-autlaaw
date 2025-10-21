@@ -220,14 +220,14 @@ function RegisterBankingCallbacks()
 					local jPData = jobBankPerms[account.Account]
 					if jPData then
 						for _, job in ipairs(jPData) do
-							local fuckingWorkplace = false
+							local workplace = false
 							if job.workplace and job.workplace ~= "" and #job.workplace > 0 then
-								fuckingWorkplace = job.workplace
+								workplace = job.workplace
 							end
 							local jobPermissions = exports['sandbox-jobs']:GetPermissionsFromJob(
 								source,
 								job.job,
-								fuckingWorkplace
+								workplace
 							)
 
 							if jobPermissions then

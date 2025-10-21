@@ -454,7 +454,7 @@ function SetupTrackPD(skipBlip)
 	end
 end
 
--- This is a fucking mess that somehow functions? Someone that is sane pls rewrite
+-- This is a mess that somehow functions? Someone that is sane pls rewrite
 function StartRacePD()
 	cCp = 1
 	sCp = -1

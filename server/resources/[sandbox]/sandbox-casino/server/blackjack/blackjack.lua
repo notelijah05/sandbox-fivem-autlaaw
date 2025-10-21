@@ -152,7 +152,7 @@ function StartBlackjackGame(tableId)
                                         v.State = "bust"
 
                                         UpdateCharacterCasinoStats(v.Source, "blackjack", false, v.Bet)
-                                        GiveCasinoFuckingMoney(v.Source, "Blackjack", v.Bet)
+                                        DepositCasinoProfit(v.Source, "Blackjack", v.Bet)
                                     elseif currentHand < 21 then
                                         -- Ask Again
                                         TriggerClientEvent("Casino:Client:BlackjackStandOrHit", -1, tableId, k)
@@ -199,7 +199,7 @@ function StartBlackjackGame(tableId)
 
                                             UpdateCharacterCasinoStats(v.Source, "blackjack", false, v.Bet)
 
-                                            GiveCasinoFuckingMoney(v.Source, "Blackjack", v.Bet)
+                                            DepositCasinoProfit(v.Source, "Blackjack", v.Bet)
                                         end
 
                                         nextCardCount = 0
@@ -316,7 +316,7 @@ function StartBlackjackGame(tableId)
                                     isPush = true
                                 else
                                     UpdateCharacterCasinoStats(v.Source, "blackjack", false, v.Bet)
-                                    GiveCasinoFuckingMoney(v.Source, "Blackjack", v.Bet)
+                                    DepositCasinoProfit(v.Source, "Blackjack", v.Bet)
                                 end
                             end
 

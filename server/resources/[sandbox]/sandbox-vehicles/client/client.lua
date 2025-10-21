@@ -79,24 +79,24 @@ AddEventHandler('onClientResourceStart', function(resource)
 							return false
 						end,
 						action = function()
-							local fuckingSeats = {}
+							local seats = {}
 							local seatAmount = GetVehicleModelNumberOfSeats(GetEntityModel(VEHICLE_INSIDE))
 							for i = 1, seatAmount do
-								local actualFuckingSeatNumber = i - 2
-								if GetPedInVehicleSeat(VEHICLE_INSIDE, actualFuckingSeatNumber) == 0 then
-									table.insert(fuckingSeats, {
+								local actualSeatNumber = i - 2
+								if GetPedInVehicleSeat(VEHICLE_INSIDE, actualSeatNumber) == 0 then
+									table.insert(seats, {
 										icon = "chair",
-										label = actualFuckingSeatNumber == -1 and "Driver's Seat" or "Seat #" .. i,
+										label = actualSeatNumber == -1 and "Driver's Seat" or "Seat #" .. i,
 										action = function()
-											TriggerEvent("Vehicles:Client:Actions:SwitchSeat", actualFuckingSeatNumber)
+											TriggerEvent("Vehicles:Client:Actions:SwitchSeat", actualSeatNumber)
 											exports['sandbox-hud']:InteractionHide()
 										end,
 									})
 								end
 							end
 
-							if #fuckingSeats > 0 then
-								exports['sandbox-hud']:InteractionShowMenu(fuckingSeats)
+							if #seats > 0 then
+								exports['sandbox-hud']:InteractionShowMenu(seats)
 							else
 								exports["sandbox-hud"]:Notification("error", "No Seats Free")
 							end
@@ -114,10 +114,10 @@ AddEventHandler('onClientResourceStart', function(resource)
 							return false
 						end,
 						action = function()
-							local fuckingDoors = {}
+							local doors = {}
 							for doorId, doorName in pairs(vehicleDoorNames) do
 								if GetIsDoorValid(VEHICLE_INSIDE, doorId) then
-									table.insert(fuckingDoors, {
+									table.insert(doors, {
 										icon = "car-side",
 										label = doorName,
 										action = function()
@@ -127,7 +127,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 								end
 							end
 
-							exports['sandbox-hud']:InteractionShowMenu(fuckingDoors)
+							exports['sandbox-hud']:InteractionShowMenu(doors)
 						end,
 					},
 					{
@@ -176,8 +176,8 @@ AddEventHandler('onClientResourceStart', function(resource)
 							return false
 						end,
 						action = function()
-							local fuckingDoors = {}
-							table.insert(fuckingDoors, {
+							local doors = {}
+							table.insert(doors, {
 								icon = "windows",
 								label = "Driver Window",
 								action = function()
@@ -185,7 +185,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 								end,
 							})
 
-							table.insert(fuckingDoors, {
+							table.insert(doors, {
 								icon = "windows",
 								label = "Passenger Window",
 								action = function()
@@ -193,7 +193,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 								end,
 							})
 
-							table.insert(fuckingDoors, {
+							table.insert(doors, {
 								icon = "windows",
 								label = "Close All",
 								action = function()
@@ -201,7 +201,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 								end,
 							})
 
-							table.insert(fuckingDoors, {
+							table.insert(doors, {
 								icon = "windows",
 								label = "Open All",
 								action = function()
@@ -209,7 +209,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 								end,
 							})
 
-							exports['sandbox-hud']:InteractionShowMenu(fuckingDoors)
+							exports['sandbox-hud']:InteractionShowMenu(doors)
 						end,
 					},
 					{

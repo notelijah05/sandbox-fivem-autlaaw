@@ -2,7 +2,7 @@ characterLoaded = false
 _withinShowroom = false
 _withinCatalog = false
 
-_justBoughtFuckingBike = {}
+_justBoughtBike = {}
 
 AddEventHandler('onClientResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
@@ -30,7 +30,7 @@ RegisterNetEvent("Characters:Client:Logout")
 AddEventHandler("Characters:Client:Logout", function()
 	characterLoaded = false
 
-	_justBoughtFuckingBike = {}
+	_justBoughtBike = {}
 end)
 
 function CreatePolyzone(id, zone, data)

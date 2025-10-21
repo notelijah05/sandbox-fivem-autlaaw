@@ -26,7 +26,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 			}, "money-check-dollar")
 
 		exports.ox_target:addBoxZone({
-			id = "paycheck-fuckingcunt",
+			id = "paycheck",
 			coords = vector3(254.53, 216.58, 106.28),
 			size = vector3(0.8, 3.6, 3.0),
 			rotation = 340,
@@ -58,7 +58,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 			}, "money-check-dollar")
 
 		exports.ox_target:addBoxZone({
-			id = "paycheck-fuckingcunt-2",
+			id = "paycheck-2",
 			coords = vector3(16.72, -927.74, 29.9),
 			size = vector3(2.0, 1.0, 1.6),
 			rotation = 15,
@@ -90,7 +90,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 			}, "money-check-dollar")
 
 		exports.ox_target:addBoxZone({
-			id = "paycheck-fuckingcunt-3",
+			id = "paycheck-3",
 			coords = vector3(-109.04, 6471.68, 31.63),
 			size = vector3(1.6, 1.2, 4.0),
 			rotation = 315,

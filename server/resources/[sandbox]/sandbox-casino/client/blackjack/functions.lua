@@ -221,7 +221,7 @@ function getDealerAnimString(tableId)
     return ""
 end
 
-function doStupidFuckingAnimation(dict, anim)
+function doAnimation(dict, anim)
     local duration = GetAnimDuration(dict, anim)
     TaskPlayAnim(LocalPlayer.state.ped, dict, anim, 2.0, 0.0, duration, 48, 0.0, 0, 0, 0)
 
@@ -1492,7 +1492,7 @@ function goToBlackjackSeat(seatId)
     syncedScene = NetworkCreateSynchronisedScene(goToVector.x, goToVector.y, goToVector.z, xRot, yRot, zRot, 2, 1, 0,
         1065353216, 0, 1065353216)
     NetworkAddPedToSynchronisedScene(LocalPlayer.state.ped, syncedScene, "anim_casino_b@amb@casino@games@shared@player@",
-        blackjack_func_213(Local_198f_251), 2.0, -2.0, 13, 16, 2.0, 0)                                                                                                                   -- 8.0, -1.5, 157, 16, 1148846080, 0) ?
+        blackjack_func_213(Local_198f_251), 2.0, -2.0, 13, 16, 2.0, 0) -- 8.0, -1.5, 157, 16, 1148846080, 0) ?
     NetworkStartSynchronisedScene(syncedScene)
     --Local_198.f_255 = NETWORK::NETWORK_CREATE_SYNCHRONISED_SCENE(func_348(Local_198.f_247), func_215(Local_198.f_247), 2, 1, 0, 1065353216, 0, 1065353216)
     --NETWORK::NETWORK_ADD_PED_TO_SYNCHRONISED_SCENE(PLAYER::PLAYER_PED_ID(), Local_198.f_255, "anim_casino_b@amb@casino@games@shared@player@", blackjack_func_213(Local_198f_251), 2f, -2f, 13, 16, 2f, 0)
@@ -1606,7 +1606,7 @@ end
 
 function DoBlackjackDeclineCardAnimation()
     shouldForceIdleCardGames = false
-    local duration = doStupidFuckingAnimation("anim_casino_b@amb@casino@games@blackjack@player", "decline_card_001")
+    local duration = doAnimation("anim_casino_b@amb@casino@games@blackjack@player", "decline_card_001")
     SetTimeout(duration, function()
         shouldForceIdleCardGames = true
     end)
@@ -1614,7 +1614,7 @@ end
 
 function DoBlackjackRequestCardAnimation()
     shouldForceIdleCardGames = false
-    local duration = doStupidFuckingAnimation("anim_casino_b@amb@casino@games@blackjack@player", "request_card")
+    local duration = doAnimation("anim_casino_b@amb@casino@games@blackjack@player", "request_card")
     SetTimeout(duration, function()
         shouldForceIdleCardGames = true
     end)
@@ -1622,7 +1622,7 @@ end
 
 function DoBlackjackPlaceBetAnimation()
     shouldForceIdleCardGames = false
-    local duration = doStupidFuckingAnimation("anim_casino_b@amb@casino@games@blackjack@player", getAnimNameFromBet(100))
+    local duration = doAnimation("anim_casino_b@amb@casino@games@blackjack@player", getAnimNameFromBet(100))
 
     SetTimeout(duration, function()
         shouldForceIdleCardGames = true
@@ -1631,7 +1631,7 @@ end
 
 function DoBlackjackBustAnimation()
     shouldForceIdleCardGames = false
-    local duration = doStupidFuckingAnimation("anim_casino_b@amb@casino@games@shared@player@", "reaction_terrible_var_01")
+    local duration = doAnimation("anim_casino_b@amb@casino@games@shared@player@", "reaction_terrible_var_01")
     SetTimeout(duration, function()
         shouldForceIdleCardGames = true
     end)
@@ -1639,7 +1639,7 @@ end
 
 function DoBlackjackLossAnimation()
     shouldForceIdleCardGames = false
-    local duration = doStupidFuckingAnimation("anim_casino_b@amb@casino@games@shared@player@", "reaction_bad_var_01")
+    local duration = doAnimation("anim_casino_b@amb@casino@games@shared@player@", "reaction_bad_var_01")
     SetTimeout(duration * 0.9, function()
         shouldForceIdleCardGames = true
     end)
@@ -1647,7 +1647,7 @@ end
 
 function DoBlackjackPushAnimation()
     shouldForceIdleCardGames = false
-    local duration = doStupidFuckingAnimation("anim_casino_b@amb@casino@games@shared@player@",
+    local duration = doAnimation("anim_casino_b@amb@casino@games@shared@player@",
         "reaction_impartial_var_01")
     SetTimeout(duration * 0.9, function()
         shouldForceIdleCardGames = true
@@ -1656,7 +1656,7 @@ end
 
 function DoBlackjackWinAnimation()
     shouldForceIdleCardGames = false
-    local duration = doStupidFuckingAnimation("anim_casino_b@amb@casino@games@shared@player@", "reaction_good_var_01")
+    local duration = doAnimation("anim_casino_b@amb@casino@games@shared@player@", "reaction_good_var_01")
     SetTimeout(duration * 0.9, function()
         shouldForceIdleCardGames = true
     end)
@@ -1704,7 +1704,7 @@ function startDealing(tableId, dealerPed, cardData, chairId, cardIndex, gotCurre
             vVar8 = vector3(0.0, 0.0, getTableHeading(blackjack_func_368(chairId)))
             tablePosX, tablePosY, tablePosZ = getTableCoords(blackjack_func_368(chairId))
             cardOffsetX, cardOffsetY, cardOffsetZ = blackjack_func_377(iVar5,
-                getLocalChairIndexFromGlobalChairId(chairId), 0)                                                             --iVar9 is the local seat number 0-3
+                getLocalChairIndexFromGlobalChairId(chairId), 0) --iVar9 is the local seat number 0-3
         else
             vVar8 = vector3(0.0, 0.0, getTableHeading(blackjack_func_368(fakeChairIdForDealerTurn)))
             tablePosX, tablePosY, tablePosZ = getTableCoords(blackjack_func_368(fakeChairIdForDealerTurn))
@@ -1915,7 +1915,7 @@ function startSingleDealerDealing(dealerPed, tableId, card, nextCardCount, gotCu
         PlayAmbientSpeech1(dealerPed, soundCardString, "SPEECH_PARAMS_FORCE_NORMAL_CLEAR", 1)
         vVar8 = vector3(0.0, 0.0, getTableHeading(tableId))
         local tablePosX, tablePosY, tablePosZ = getTableCoords(tableId)
-        local cardQueue = cardPosition                                        -- number of card
+        local cardQueue = cardPosition                                          -- number of card
         local iVar5 = cardQueue
         cardOffsetX, cardOffsetY, cardOffsetZ = blackjack_func_377(iVar5, 4, 1) --iVar9 is seat number 0-3
         local cardPos = GetObjectOffsetFromCoords(tablePosX, tablePosY, tablePosZ, vVar8.z, cardOffsetX, cardOffsetY,
@@ -1967,7 +1967,7 @@ function startSingleDealing(chairId, dealerPed, cardData, nextCardCount, gotCurr
         vVar8 = vector3(0.0, 0.0, getTableHeading(blackjack_func_368(chairId)))
         cardObjectOffsetRotation = vVar8 + func_376(iVar5, iVar9, 0, false)
         SetEntityRotation(nextCardObj, cardObjectOffsetRotation.x, cardObjectOffsetRotation.y, cardObjectOffsetRotation
-        .z, 2, 1)
+            .z, 2, 1)
         Wait(400)
     else
         --print("Failed to deal cards, entity doesn't exist or we don't have control")
@@ -2012,7 +2012,7 @@ function cleanUpChips(chairId, tableId)
             TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer",
                 genderAnimString .. "retrieve_cards_player_0" .. tostring(localChairId), 3.0, 1.0, -1, 2, 0, 0, 0, 0)
             PlayFacialAnim(dealerPed, genderAnimString .. "retrieve_cards_player_0" .. tostring(localChairId) ..
-            "_facial", "anim_casino_b@amb@casino@games@blackjack@dealer")
+                "_facial", "anim_casino_b@amb@casino@games@blackjack@dealer")
         else
             TaskPlayAnim(dealerPed, "anim_casino_b@amb@casino@games@blackjack@dealer",
                 genderAnimString .. "retrieve_own_cards_and_remove", 3.0, 1.0, -1, 2, 0, 0, 0, 0)

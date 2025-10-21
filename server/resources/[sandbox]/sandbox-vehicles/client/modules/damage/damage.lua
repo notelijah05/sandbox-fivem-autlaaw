@@ -126,7 +126,7 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 	AddTaskBeforeVehicleThread("regular_damage", function(veh, class)
 		DAMAGE_VEHICLE = veh
 
-		fuckingExplode = false
+		explode = false
 
 		INSIDE_DAMAGE_MODIFIER = 2.0
 		if _damageMultiplierOverrides[class] then
@@ -181,20 +181,20 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 				end
 
 				local allowExplode = math.random(5, engineRunning and 40 or 60)
-				if fuckingExplode or (allowExplode <= 7) then
-					fuckingExplode = true
+				if explode or (allowExplode <= 7) then
+					explode = true
 					SetDisableVehiclePetrolTankDamage(veh, false)
 					SetDisableVehiclePetrolTankFires(veh, false)
 					SetVehiclePetrolTankHealth(veh, 200.0)
 				else
-					fuckingExplode = false
+					explode = false
 					SetDisableVehiclePetrolTankDamage(veh, true)
 					SetDisableVehiclePetrolTankFires(veh, true)
 					SetVehiclePetrolTankHealth(veh, 4000.0)
 				end
 			else
-				if fuckingExplode then
-					fuckingExplode = false
+				if explode then
+					explode = false
 				end
 
 				if SENT_FUCKED_DAMAGE[veh] then

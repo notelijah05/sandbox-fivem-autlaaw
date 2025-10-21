@@ -24,7 +24,7 @@ function LoadAnim(dict)
 	end
 end
 
-function ShittyDrillAnim()
+function DrillAnim()
 	if
 		DrillingSpeed <= 0
 		and not IsEntityPlayingAnim(LocalPlayer.state.ped, "anim@heists@fleeca_bank@drilling", "drill_straight_idle", 3)
@@ -51,7 +51,7 @@ function ShittyDrillAnim()
 	end
 end
 
-function YouFuckingSuck()
+function HandleDrillingFailure()
 	local waitTime = math.random(5000, 10000)
 	StopAnimTask(LocalPlayer.state.ped, "anim@heists@fleeca_bank@drilling", "drill_straight_start")
 	StopAnimTask(LocalPlayer.state.ped, "anim@heists@fleeca_bank@drilling", "drill_straight_idle")
@@ -73,7 +73,7 @@ function YouFuckingSuck()
 	StopSound(DrillingSounds.FailSound)
 end
 
-function CreateAndAttchProp()
+function CreateAndAttachProp()
 	loadModel(GetHashKey("hei_prop_heist_drill"))
 
 	local myPos = GetEntityCoords(LocalPlayer.state.ped)
@@ -151,7 +151,7 @@ local function DrillingInit()
 	RequestAmbientAudioBank("vault_door")
 	RequestAmbientAudioBank("DLC_HEIST_FLEECA_SOUNDSET")
 
-	CreateAndAttchProp()
+	CreateAndAttachProp()
 
 	exports['sandbox-base']:ScaleformPopFloat(DrillingScaleform, "SET_SPEED", 0.0)
 	exports['sandbox-base']:ScaleformPopFloat(DrillingScaleform, "SET_DRILL_POSITION", 0.0)
@@ -165,7 +165,7 @@ local function DrillingUpdate(callback)
 	FreezeEntityPosition(PlayerPedId(), true)
 	while DrillingActive do
 		exports['sandbox-games']:DrillingDraw()
-		ShittyDrillAnim()
+		DrillAnim()
 		--exports['sandbox-games']:DrillingDisableControls()
 
 		for k, v in pairs(DrillingPins) do
@@ -285,7 +285,7 @@ exports("DrillingHandleControls", function()
 	end
 
 	if DrillingTemp >= 1.0 then
-		YouFuckingSuck()
+		HandleDrillingFailure()
 		DrillingResult = false
 		DrillingActive = false
 	elseif DrillingPos >= 1.0 then

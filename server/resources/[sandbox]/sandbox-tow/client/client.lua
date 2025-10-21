@@ -55,7 +55,7 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 	local truckModel = GetEntityModel(truck)
 	if not _towingAction and _towTrucks[truckModel] and truckState and not truckState.towingVehicle then
 		local targetVehicle = GetVehicleBehindTowTruck(truck, 8.0)
-		local canTow, errorMessage = CanFuckingTowVehicle(truck, targetVehicle)
+		local canTow, errorMessage = CanTowVehicle(truck, targetVehicle)
 		if canTow then
 			exports["sandbox-sounds"]:PlayDistance(5.0, "tow_truck.ogg", 0.2)
 			exports['sandbox-hud']:ProgressWithStartAndTick({
@@ -79,7 +79,7 @@ AddEventHandler("Vehicles:Client:BeginTow", function(entityData)
 			}, function()
 				_towingAction = true
 			end, function()
-				local canTow, errorMessage = CanFuckingTowVehicle(truck, targetVehicle)
+				local canTow, errorMessage = CanTowVehicle(truck, targetVehicle)
 				if not canTow then
 					exports['sandbox-hud']:ProgressCancel()
 					exports["sandbox-hud"]:Notification("error", errorMessage, 5000, "truck-tow")

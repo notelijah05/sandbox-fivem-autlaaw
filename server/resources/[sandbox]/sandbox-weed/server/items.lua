@@ -85,7 +85,7 @@ function RegisterItems()
 				end
 			end)
 		else
-			exports['sandbox-hud']:Notification(source, "error", "You need bud you fucking idiot")
+			exports['sandbox-hud']:Notification(source, "error", "You need bud to do this")
 		end
 	end)
 
@@ -118,7 +118,7 @@ function RegisterItems()
 				end
 			end)
 		else
-			exports['sandbox-hud']:Notification(source, "error", "You need 200 bud you fucking idiot")
+			exports['sandbox-hud']:Notification(source, "error", "You need 200 bud to do this")
 		end
 	end)
 
@@ -136,7 +136,7 @@ function RegisterItems()
 				end
 			end)
 		else
-			exports['sandbox-hud']:Notification(source, "error", "You need 200 bud you fucking idiot")
+			exports['sandbox-hud']:Notification(source, "error", "You need 200 bud to do this")
 		end
 	end)
 end

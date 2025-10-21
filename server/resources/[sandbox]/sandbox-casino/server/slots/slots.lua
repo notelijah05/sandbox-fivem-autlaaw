@@ -100,7 +100,7 @@ AddEventHandler("Casino:Server:Startup", function()
             for k, v in pairs(_slotMachines) do
                 if v and v.Source == source then
                     if exports['sandbox-casino']:ChipsModify(source, -bet) then
-                        GiveCasinoFuckingMoney(source, "Slots", bet)
+                        DepositCasinoProfit(source, "Slots", bet)
                         SendCasinoSpentChipsPhoneNotification(source, bet)
 
                         _slotMachines[k].Spinning = true
