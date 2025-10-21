@@ -14,7 +14,7 @@ Ensure the following packages are installed:
 | ---------------- | ---------------------------------------------------------------------------- |
 | Node.js          | [Download Here](https://nodejs.org/en/download)                              |
 | MariaDB          | [Download Here](https://mariadb.org/download/?t=mariadb&p=mariadb&r=12.0.2) (v12.0.2) |
-| HeidiSQL         | [Download Here](https://www.heidisql.com/download.php) (*can be installed via MariaDB) |
+| HeidiSQL         | [Download Here](https://www.heidisql.com/download.php) (**can be installed via MariaDB**) |
 | Git for Windows  | [Download Here](https://git-scm.com/download/win)                            |
 | Bun              | [Download Here](https://bun.sh)                                              |
 
