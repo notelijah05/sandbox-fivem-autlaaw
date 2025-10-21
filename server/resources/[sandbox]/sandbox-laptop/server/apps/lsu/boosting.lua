@@ -138,7 +138,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                             ['@SID'] = data.SID
                         }, function(affectedRows)
                             if affectedRows > 0 then
-                                local targetChar = Fetch:SID(data.SID)
+                                local targetChar = exports['sandbox-characters']:FetchBySID(data.SID)
                                 if targetChar then
                                     targetChar:SetData("LSUNDGBan", bans)
                                 end
@@ -170,7 +170,7 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                         ['@SID'] = data.SID
                     }, function(affectedRows)
                         if affectedRows > 0 then
-                            local targetChar = Fetch:SID(data.SID)
+                            local targetChar = exports['sandbox-characters']:FetchBySID(data.SID)
                             if targetChar then
                                 targetChar:SetData("LSUNDGBan", nil)
                             end

@@ -45,7 +45,7 @@ function RegisterChatCommands()
 				['@callsign'] = callsign
 			})
 
-			local fetchedChar = Fetch:SID(char.SID)
+			local fetchedChar = exports['sandbox-characters']:FetchBySID(char.SID)
 			if fetchedChar then
 				fetchedChar:SetData("Callsign", false)
 			end
