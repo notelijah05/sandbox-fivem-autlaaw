@@ -1,6 +1,6 @@
 DAMAGE_VEHICLE = false
 
-SENT_FUCKED_DAMAGE = {}
+SENT_DAMAGE = {}
 
 LAST_DAMAGE_ENGINE = 1000.0
 LAST_DAMAGE_BODY = 1000.0
@@ -13,7 +13,7 @@ AddEventHandler("Vehicles:Client:ForceUpdateVehicleDamageState", function(vehicl
 		LAST_DAMAGE_ENGINE = newDamage.Engine
 		LAST_DAMAGE_BODY = newDamage.Body
 
-		SENT_FUCKED_DAMAGE[vehicle] = false
+		SENT_DAMAGE[vehicle] = false
 	end
 end)
 
@@ -175,8 +175,8 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 			end
 
 			if engineHealth <= -100.0 then
-				if INSIDE_HAS_DEGEN and not SENT_FUCKED_DAMAGE[veh] then
-					SENT_FUCKED_DAMAGE[veh] = true
+				if INSIDE_HAS_DEGEN and not SENT_DAMAGE[veh] then
+					SENT_DAMAGE[veh] = true
 					RunVehiclePartsDamage(veh, false, false, true)
 				end
 
@@ -197,8 +197,8 @@ AddEventHandler("Vehicles:Client:StartUp", function()
 					explode = false
 				end
 
-				if SENT_FUCKED_DAMAGE[veh] then
-					SENT_FUCKED_DAMAGE[veh] = false
+				if SENT_DAMAGE[veh] then
+					SENT_DAMAGE[veh] = false
 				end
 			end
 		end
