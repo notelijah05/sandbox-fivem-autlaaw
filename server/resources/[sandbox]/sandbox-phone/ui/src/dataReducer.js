@@ -841,7 +841,7 @@ export const initialState = {
 							id: 2,
 							owner: 2,
 							sharer: 2,
-							sharer_name: 'Fuck You',
+							sharer_name: 'Bless You',
 							time: 1645020394,
 							title: 'Lol 2',
 							content:
@@ -852,7 +852,7 @@ export const initialState = {
 							id: 3,
 							owner: 2,
 							sharer: 2,
-							sharer_name: 'Fuck You',
+							sharer_name: 'Bless You',
 							time: 1645020394,
 							title: 'Lol 2',
 							content:

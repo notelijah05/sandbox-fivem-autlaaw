@@ -25,7 +25,7 @@ function StartCallTimeout()
 	end)
 end
 
-function fucksound()
+function playsound()
 	exports["sandbox-sounds"]:StopDistance(GetPlayerServerId(LocalPlayer.state.PlayerID),
 		_settings.ringtone or "ringtone1.ogg")
 	exports["sandbox-sounds"]:StopOne("ringing.ogg")
@@ -78,7 +78,7 @@ exports("CallReceive", function(id, number, limited)
 end)
 
 exports("CallAccept", function()
-	fucksound()
+	playsound()
 	if LocalPlayer.state.phoneOpen then
 		PhoneTextToCall()
 	end
@@ -87,7 +87,7 @@ end)
 
 exports("CallEnd", function()
 	_calling = false
-	fucksound()
+	playsound()
 	exports["sandbox-base"]:ServerCallback("Phone:Phone:EndCall")
 end)
 
@@ -139,7 +139,7 @@ RegisterNetEvent("Phone:Client:Phone:EndCall", function()
 	SendNUIMessage({ type = "END_CALL" })
 	_call = nil
 
-	fucksound()
+	playsound()
 
 	CreateThread(function()
 		Wait(100)
@@ -165,18 +165,18 @@ RegisterNetEvent("Phone:Client:Phone:AcceptCall", function(number)
 	_calling = false
 	_call.state = 2
 	_call.duration = 0
-	fucksound()
+	playsound()
 	SendNUIMessage({ type = "SET_CALL_ACTIVE" })
 	PhonePlayCall(false)
 end)
 
 AddEventHandler("Phone:Nui:Phone:AcceptCall", function()
-	fucksound()
+	playsound()
 	exports['sandbox-phone']:CallAccept()
 end)
 
 AddEventHandler("Phone:Nui:Phone:EndCall", function()
-	fucksound()
+	playsound()
 	exports['sandbox-phone']:CallEnd()
 end)
 
@@ -186,13 +186,13 @@ end)
 
 RegisterNUICallback("AcceptCall", function(data, cb)
 	cb("OK")
-	fucksound()
+	playsound()
 	exports['sandbox-phone']:CallAccept()
 end)
 
 RegisterNUICallback("EndCall", function(data, cb)
 	cb("OK")
-	fucksound()
+	playsound()
 	exports['sandbox-phone']:CallEnd()
 end)
 

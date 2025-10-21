@@ -210,7 +210,7 @@ RegisterNetEvent("Characters:Client:Logout", function()
 	_loggedIn = false
 
 	CleanupBizPhones()
-	fucksound()
+	playsound()
 end)
 
 function hasValue(tbl, value)
