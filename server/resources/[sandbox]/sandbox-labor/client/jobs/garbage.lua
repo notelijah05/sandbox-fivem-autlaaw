@@ -63,7 +63,7 @@ AddEventHandler("Labor:Client:Setup", function()
 	exports['sandbox-pedinteraction']:Add("GarbageJob", GetHashKey("s_m_y_garbage"), vector3(-348.940, -1570.224, 24.228),
 		340.561, 25.0, {
 			{
-				icon = "trash",
+				icon = "fa-solid fa-trash-can",
 				text = "Start Work",
 				event = "Garbage:Client:StartJob",
 				tempjob = "Garbage",
@@ -72,7 +72,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				end,
 			},
 			{
-				icon = "handshake-angle",
+				icon = "fa-solid fa-truck",
 				text = "Borrow Garbage Truck",
 				event = "Garbage:Client:GarbageSpawn",
 				tempjob = "Garbage",
@@ -81,7 +81,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				end,
 			},
 			{
-				icon = "handshake-angle",
+				icon = "fa-solid fa-truck",
 				text = "Return Garbage Truck",
 				event = "Garbage:Client:GarbageSpawnRemove",
 				tempjob = "Garbage",
@@ -90,7 +90,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				end,
 			},
 			{
-				icon = "handshake-angle",
+				icon = "fa-solid fa-check",
 				text = "Complete Job",
 				event = "Garbage:Client:TurnIn",
 				tempjob = "Garbage",
@@ -140,8 +140,8 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 						if not _entities[entityId] then
 							exports.ox_target:addLocalEntity(obj, {
 								{
-									icon = "trash",
-									label = "Grab Trash",
+									icon = "fa-solid fa-trash-can",
+									label = "Pick Up Trash",
 									event = "Garbage:Client:TrashGrab",
 									distance = 3.0,
 									canInteract = function(entity)
