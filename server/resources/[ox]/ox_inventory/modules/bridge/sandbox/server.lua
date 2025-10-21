@@ -295,8 +295,14 @@ server.syncInventory = function(inv)
 end
 
 RegisterServerEvent('Characters:Server:Spawning', function(newCharacter)
-    local _newCharacter = newCharacter
-    loadPlayerInv(source, _newCharacter)
+    local char = exports['sandbox-characters']:FetchCharacterSource(source)
+    local isNewCharacter = false
+
+    if char then
+        isNewCharacter = char:GetData("New") or false
+    end
+
+    loadPlayerInv(source, isNewCharacter)
 end)
 
 SetTimeout(500, function()
