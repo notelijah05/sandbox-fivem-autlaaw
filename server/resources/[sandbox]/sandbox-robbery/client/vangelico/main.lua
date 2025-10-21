@@ -151,47 +151,47 @@ end)
 
 AddEventHandler("Polyzone:Enter", function(id, point, insideZones, data)
 	if id == "vangelico" then
-		-- exports.ox_target:addModel(GetHashKey("hei_prop_hei_keypad_03"), {
-		-- 	-- {
-		-- 	-- 	icon = "bell-on",
-		-- 	-- 	label = "Disable Alarm",
-		-- 	-- 	event = "Robbery:Client:Vangelico:DisableAlarm",
-		-- 	-- 	groups = { "police" },
-		-- 	-- 	canInteract = function()
-		-- 	-- 		local dist = #(
-		-- 	-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
-		-- 	-- 				- _pdAlarm
-		-- 	-- 			)
-		-- 	-- 		return dist <= 2.0 and GlobalState["Vangelico:Alarm"]
-		-- 	-- 	end,
-		-- 	-- },
-		-- 	-- {
-		-- 	-- 	icon = "terminal",
-		-- 	-- 	label = "Hack Keypad",
-		-- 	-- 	event = "Robbery:Client:Vangelico:HackKeypad",
-		-- 	-- 	item = "sequencer",
-		-- 	-- 	canInteract = function()
-		-- 	-- 		local dist = #(
-		-- 	-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
-		-- 	-- 				- _officeHack
-		-- 	-- 			)
-		-- 	-- 		return dist <= 2.0 and not GlobalState["Vangelico:Lockdown"]
-		-- 	-- 	end,
-		-- 	-- },
-		-- 	-- {
-		-- 	-- 	icon = "address-card",
-		-- 	-- 	label = "Use Keycard",
-		-- 	-- 	event = "Robbery:Client:Vangelico:UseKeycard",
-		-- 	-- 	item = "xg_keycard",
-		-- 	-- 	canInteract = function()
-		-- 	-- 		local dist = #(
-		-- 	-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
-		-- 	-- 				- _officeHack
-		-- 	-- 			)
-		-- 	-- 		return dist <= 2.0 and not GlobalState["Vangelico:Lockdown"]
-		-- 	-- 	end,
-		-- 	-- },
-		-- })
+		exports.ox_target:addModel(GetHashKey("hei_prop_hei_keypad_03"), {
+			-- {
+			-- 	icon = "bell-on",
+			-- 	label = "Disable Alarm",
+			-- 	event = "Robbery:Client:Vangelico:DisableAlarm",
+			-- 	groups = { "police" },
+			-- 	canInteract = function()
+			-- 		local dist = #(
+			-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
+			-- 				- _pdAlarm
+			-- 			)
+			-- 		return dist <= 2.0 and GlobalState["Vangelico:Alarm"]
+			-- 	end,
+			-- },
+			-- {
+			-- 	icon = "terminal",
+			-- 	label = "Hack Keypad",
+			-- 	event = "Robbery:Client:Vangelico:HackKeypad",
+			-- 	item = "sequencer",
+			-- 	canInteract = function()
+			-- 		local dist = #(
+			-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
+			-- 				- _officeHack
+			-- 			)
+			-- 		return dist <= 2.0 and not GlobalState["Vangelico:Lockdown"]
+			-- 	end,
+			-- },
+			-- {
+			-- 	icon = "address-card",
+			-- 	label = "Use Keycard",
+			-- 	event = "Robbery:Client:Vangelico:UseKeycard",
+			-- 	item = "xg_keycard",
+			-- 	canInteract = function()
+			-- 		local dist = #(
+			-- 				vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z)
+			-- 				- _officeHack
+			-- 			)
+			-- 		return dist <= 2.0 and not GlobalState["Vangelico:Lockdown"]
+			-- 	end,
+			-- },
+		})
 	end
 end)
 

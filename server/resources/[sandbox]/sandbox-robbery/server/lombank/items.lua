@@ -40,7 +40,7 @@ function RegisterLBItemUses()
 				local myPos = GetEntityCoords(GetPlayerPed(source))
 
 				for k, v in pairs(lbThermPoints) do
-					if exports['sandbox-doors']:IsLocked(v.door) and #(v.coords - myPos) <= 1.5 then
+					if exports['ox_doorlock']:IsLocked(v.door) and #(v.coords - myPos) <= 1.5 then
 						if AreRequirementsUnlocked(v.requiredDoors) then
 							if not _lbInUse[k] then
 								_lbInUse[k] = source
@@ -99,7 +99,7 @@ function RegisterLBItemUses()
 												GlobalState["AntiShitlord"] = os.time() + (60 * math.random(10, 15))
 											end
 
-											exports['sandbox-doors']:SetLock(v.door, false)
+											exports['ox_doorlock']:SetLock(v.door, false)
 											GlobalState["Fleeca:Disable:lombank_legion"] = true
 											if not _lbAlerted or os.time() > _lbAlerted then
 												exports['sandbox-robbery']:TriggerPDAlert(
@@ -148,7 +148,7 @@ function RegisterLBItemUses()
 					6000
 				)
 			end
-		elseif pState.inLombankPower and not exports['sandbox-doors']:IsLocked("lombank_hidden_entrance") and IsLBPowerDisabled() then
+		elseif pState.inLombankPower and not exports['ox_doorlock']:IsLocked("lombank_hidden_entrance") and IsLBPowerDisabled() then
 			local pos = {
 				coords = vector3(50.79477, -818.1543, 31.59213),
 				heading = 253.851,
@@ -246,7 +246,7 @@ function RegisterLBItemUses()
 									exports["sandbox-sounds"]:PlayLocation(source, pos.coords, 15.0,
 										"power_small_complete_off.ogg", 0.1)
 
-									exports['sandbox-doors']:SetLock("lombank_lasers", false)
+									exports['ox_doorlock']:SetLock("lombank_lasers", false)
 									exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 									GlobalState["Fleeca:Disable:lombank_legion"] = true
 									if not _lbAlerted or os.time() > _lbAlerted then
@@ -419,7 +419,7 @@ function RegisterLBItemUses()
 												v.door
 											)
 										)
-										exports['sandbox-doors']:SetLock(v.door, true)
+										exports['ox_doorlock']:SetLock(v.door, true)
 										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
@@ -450,9 +450,3 @@ function RegisterLBItemUses()
 		end
 	end)
 end
-
-RegisterNetEvent('ox_inventory:ready', function()
-	if GetResourceState(GetCurrentResourceName()) == 'started' then
-		RegisterLBItemUses()
-	end
-end)

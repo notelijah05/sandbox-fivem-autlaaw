@@ -40,7 +40,7 @@ function RegisterMBItemUses()
 				local myPos = GetEntityCoords(GetPlayerPed(source))
 
 				for k, v in pairs(_mbDoors) do
-					if exports['sandbox-doors']:IsLocked(v.door) and #(v.coords - myPos) <= 1.5 then
+					if exports['ox_doorlock']:IsLocked(v.door) and #(v.coords - myPos) <= 1.5 then
 						if AreRequirementsUnlocked(v.requiredDoors) then
 							if not _mbInUse[k] then
 								_mbInUse[k] = source
@@ -100,7 +100,7 @@ function RegisterMBItemUses()
 											end
 
 											_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
-											exports['sandbox-doors']:SetLock(v.door, false)
+											exports['ox_doorlock']:SetLock(v.door, false)
 											if not _mbAlerted or os.time() > _mbAlerted then
 												exports['sandbox-robbery']:TriggerPDAlert(
 													source,
@@ -381,7 +381,7 @@ function RegisterMBItemUses()
 
 										GlobalState["Fleeca:Disable:mazebank_baycity"] = true
 										_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
-										exports['sandbox-doors']:SetLock(v.door, false)
+										exports['ox_doorlock']:SetLock(v.door, false)
 										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 									else
 										exports['sandbox-base']:LoggerInfo(
@@ -396,7 +396,7 @@ function RegisterMBItemUses()
 										)
 
 										_mbGlobalReset = os.time() + MAZEBANK_RESET_TIME
-										exports['sandbox-doors']:SetLock(v.door, true)
+										exports['ox_doorlock']:SetLock(v.door, true)
 										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 
 										local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
@@ -426,9 +426,3 @@ function RegisterMBItemUses()
 		end
 	end)
 end
-
-RegisterNetEvent('ox_inventory:ready', function()
-	if GetResourceState(GetCurrentResourceName()) == 'started' then
-		RegisterMBItemUses()
-	end
-end)

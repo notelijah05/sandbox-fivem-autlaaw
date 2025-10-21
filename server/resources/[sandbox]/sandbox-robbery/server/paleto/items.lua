@@ -117,7 +117,7 @@ function RegisterPBItems()
 													250.0
 												)
 
-												exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", false)
+												exports['ox_doorlock']:SetLock("bank_savings_paleto_gate", false)
 												exports['sandbox-cctv']:StateGroupOffline("paleto")
 											else
 												exports["sandbox-sounds"]:PlayLocation(
@@ -127,7 +127,7 @@ function RegisterPBItems()
 													"power_small_complete_off.ogg",
 													0.1
 												)
-												exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", true)
+												exports['ox_doorlock']:SetLock("bank_savings_paleto_gate", true)
 												exports['sandbox-cctv']:StateGroupOnline("paleto")
 											end
 
@@ -187,7 +187,7 @@ function RegisterPBItems()
 					local myCoords = GetEntityCoords(ped)
 
 					for k, v in ipairs(_pbDoorThermite) do
-						if exports['sandbox-doors']:IsLocked(v.door) then
+						if exports['ox_doorlock']:IsLocked(v.door) then
 							if #(v.coords - myCoords) <= 1.5 then
 								if AreRequirementsUnlocked(v.requiredDoors) then
 									if not _pbInUse[v.door] then
@@ -249,7 +249,7 @@ function RegisterPBItems()
 															(60 * math.random(10, 15))
 													end
 
-													exports['sandbox-doors']:SetLock(v.door, false)
+													exports['ox_doorlock']:SetLock(v.door, false)
 													GlobalState["Fleeca:Disable:savings_paleto"] = true
 													if not _pbAlerted or os.time() > _pbAlerted then
 														exports['sandbox-robbery']:TriggerPDAlert(
@@ -296,7 +296,7 @@ function RegisterPBItems()
 						end
 					end
 
-					if exports['sandbox-doors']:IsLocked("bank_savings_paleto_security") then
+					if exports['ox_doorlock']:IsLocked("bank_savings_paleto_security") then
 						for k, v in ipairs(_pbSecurityPower) do
 							if #(v.coords - myCoords) <= 1.5 then
 								if AreRequirementsUnlocked(v.requiredDoors) then
@@ -374,10 +374,10 @@ function RegisterPBItems()
 													)
 
 													if IsSecurityAccessible() then
-														exports['sandbox-doors']:SetLock("bank_savings_paleto_security",
+														exports['ox_doorlock']:SetLock("bank_savings_paleto_security",
 															false)
 													else
-														exports['sandbox-doors']:SetLock("bank_savings_paleto_security",
+														exports['ox_doorlock']:SetLock("bank_savings_paleto_security",
 															true)
 													end
 
@@ -532,7 +532,7 @@ function RegisterPBItems()
 													v.door
 												)
 											)
-											exports['sandbox-doors']:SetLock(v.door, true)
+											exports['ox_doorlock']:SetLock(v.door, true)
 											exports['sandbox-status']:Add(source, "PLAYER_STRESS", 6)
 
 											local newValue = slot.CreateDate - math.ceil(itemData.durability / 4)
@@ -565,9 +565,3 @@ function RegisterPBItems()
 		end
 	end)
 end
-
-RegisterNetEvent('ox_inventory:ready', function()
-	if GetResourceState(GetCurrentResourceName()) == 'started' then
-		RegisterPBItems()
-	end
-end)

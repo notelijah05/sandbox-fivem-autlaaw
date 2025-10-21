@@ -59,7 +59,7 @@ function DisablePaletoPower(source)
 		}, false, 250.0)
 
 	GlobalState["Fleeca:Disable:savings_paleto"] = true
-	exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", false)
+	exports['ox_doorlock']:SetLock("bank_savings_paleto_gate", false)
 	RestorePowerThread()
 end
 
@@ -83,7 +83,7 @@ function ResetPaleto()
 	end
 
 	for k, v in ipairs(_pbDoorIds) do
-		exports['sandbox-doors']:SetLock(v, true)
+		exports['ox_doorlock']:SetLock(v, true)
 	end
 
 	exports['sandbox-robbery']:StateSet("paleto", {
@@ -99,7 +99,7 @@ function ResetPaleto()
 	})
 	_pbGlobalReset = os.time() + PALETO_RESET_TIME
 
-	exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", true)
+	exports['ox_doorlock']:SetLock("bank_savings_paleto_gate", true)
 	exports['sandbox-cctv']:StateGroupOnline("paleto")
 
 	TriggerClientEvent("Robbery:Client:Paleto:ResetLasers", -1)
@@ -116,7 +116,7 @@ function SecurePaleto()
 	end
 
 	for k, v in ipairs(_pbDoorIds) do
-		exports['sandbox-doors']:SetLock(v, true)
+		exports['ox_doorlock']:SetLock(v, true)
 	end
 
 	exports['sandbox-robbery']:StateSet("paleto", {
@@ -132,7 +132,7 @@ function SecurePaleto()
 	})
 	_pbGlobalReset = os.time() + PALETO_RESET_TIME
 
-	exports['sandbox-doors']:SetLock("bank_savings_paleto_gate", true)
+	exports['ox_doorlock']:SetLock("bank_savings_paleto_gate", true)
 	exports['sandbox-cctv']:StateGroupOnline("paleto")
 
 	TriggerClientEvent("Robbery:Client:Paleto:ResetLasers", -1)

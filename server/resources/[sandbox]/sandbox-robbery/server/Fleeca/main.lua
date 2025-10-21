@@ -64,8 +64,8 @@ function ResetFleeca(fleecaId)
 	end
 
 	TriggerClientEvent("Robbery:Client:Fleeca:CloseVaultDoor", -1, fleecaId)
-	exports['sandbox-doors']:SetLock(string.format("%s_tills", fleecaId), true)
-	exports['sandbox-doors']:SetLock(string.format("%s_gate", fleecaId), true)
+	exports['ox_doorlock']:SetLock(string.format("%s_tills", fleecaId), true)
+	exports['ox_doorlock']:SetLock(string.format("%s_gate", fleecaId), true)
 	_triggered[fleecaId] = false
 end
 
@@ -98,8 +98,8 @@ function StartAutoCDTimer(fleecaId)
 			end
 
 			TriggerClientEvent("Robbery:Client:Fleeca:CloseVaultDoor", -1, fleecaId)
-			exports['sandbox-doors']:SetLock(string.format("%s_tills", fleecaId), true)
-			exports['sandbox-doors']:SetLock(string.format("%s_gate", fleecaId), true)
+			exports['ox_doorlock']:SetLock(string.format("%s_tills", fleecaId), true)
+			exports['ox_doorlock']:SetLock(string.format("%s_gate", fleecaId), true)
 			_triggered[fleecaId] = false
 		end
 	end)
@@ -114,7 +114,6 @@ function GetFleecaIds()
 end
 
 AddEventHandler("Robbery:Server:Setup", function()
-	RegisterItems()
 	local t = {}
 	for k, v in pairs(FLEECA_LOCATIONS) do
 		_inProgress[v.id] = false
@@ -143,7 +142,7 @@ AddEventHandler("Robbery:Server:Setup", function()
 				GlobalState[string.format("Fleeca:%s:Loot:%s", pState.fleeca, data.id)] == nil
 				and (
 					data.index <= 2
-					or not exports['sandbox-doors']:IsLocked(string.format("%s_gate", pState.fleeca))
+					or not exports['ox_doorlock']:IsLocked(string.format("%s_gate", pState.fleeca))
 				)
 			then
 				if GetGameTimer() < SERVER_START_WAIT or (GlobalState["RestartLockdown"] and not _inProgress[pState.fleeca]) then
@@ -325,15 +324,13 @@ AddEventHandler("Robbery:Server:Setup", function()
 					string.format("%s %s (%s) Secured Fleeca %s", char:GetData("First"), char:GetData("Last"),
 						char:GetData("SID"), pState.fleeca))
 				TriggerClientEvent("Robbery:Client:Fleeca:CloseVaultDoor", -1, pState.fleeca)
-				exports['sandbox-doors']:SetLock(string.format("%s_tills", pState.fleeca), true)
-				exports['sandbox-doors']:SetLock(string.format("%s_gate", pState.fleeca), true)
+				exports['ox_doorlock']:SetLock(string.format("%s_tills", pState.fleeca), true)
+				exports['ox_doorlock']:SetLock(string.format("%s_gate", pState.fleeca), true)
 			else
 			end
 		end
 	end)
-end)
 
-function RegisterItems()
 	exports.ox_inventory:RegisterUse("green_laptop", "FleecaRobbery", function(source, slot, itemData)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
@@ -528,7 +525,7 @@ function RegisterItems()
 					if
 						GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)] ~= nil
 						and GlobalState[string.format("Fleeca:%s:VaultDoor", pState.fleeca)].state == 3
-						and exports['sandbox-doors']:IsLocked(string.format("%s_gate", pState.fleeca))
+						and exports['ox_doorlock']:IsLocked(string.format("%s_gate", pState.fleeca))
 					then
 						if _inUse.Vault[pState.fleeca] == nil or not _inUse.GateDoor[pState.fleeca] then
 							exports['sandbox-base']:LoggerInfo("Robbery",
@@ -595,7 +592,7 @@ function RegisterItems()
 											state = 3,
 											expires = _fcGlobalReset[pState.fleeca],
 										}
-										exports['sandbox-doors']:SetLock(string.format("%s_gate", pState.fleeca), false)
+										exports['ox_doorlock']:SetLock(string.format("%s_gate", pState.fleeca), false)
 										exports['sandbox-status']:Add(source, "PLAYER_STRESS", 3)
 										exports['sandbox-hud']:Notification(source, "success",
 											"Doorlock Disengaged", 6000)
@@ -773,10 +770,4 @@ function RegisterItems()
 			exports['sandbox-hud']:Notification(source, "error", "Not Ready Yet", 6000)
 		end
 	end)
-end
-
-RegisterNetEvent('ox_inventory:ready', function()
-	if GetResourceState(GetCurrentResourceName()) == 'started' then
-		RegisterItems()
-	end
 end)

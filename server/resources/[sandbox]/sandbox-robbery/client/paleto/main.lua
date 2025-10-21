@@ -6,7 +6,7 @@ function PaletoNeedsReset()
 	end
 
 	for k, v in ipairs(_pbDoorIds) do
-		if not exports['sandbox-doors']:IsLocked(v) then
+		if not exports['ox_doorlock']:IsLocked(v) then
 			return true
 		end
 	end
@@ -143,7 +143,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 				event = "Robbery:Client:Paleto:Doors",
 				canInteract = function()
 					return IsPaletoExploitInstalled() and
-						not exports['sandbox-doors']:IsLocked("bank_savings_paleto_security")
+						not exports['ox_doorlock']:IsLocked("bank_savings_paleto_security")
 				end,
 			},
 		}
@@ -279,7 +279,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					end,
 					canInteract = function(data)
 						return IsPaletoExploitInstalled()
-							and not exports['sandbox-doors']:IsLocked("bank_savings_paleto_vault")
+							and not exports['ox_doorlock']:IsLocked("bank_savings_paleto_vault")
 							and (
 								not _bankStates.paleto.drillPoints[data.drillId]
 								or GetCloudTimeAsInt() > _bankStates.paleto.drillPoints[data.drillId]
@@ -306,7 +306,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 				item = "paleto_access_codes",
 				canInteract = function()
 					return IsPaletoExploitInstalled()
-						and not exports['sandbox-doors']:IsLocked("bank_savings_paleto_office_3")
+						and not exports['ox_doorlock']:IsLocked("bank_savings_paleto_office_3")
 						and (not _bankStates.paleto.officeSafe or GetCloudTimeAsInt() > _bankStates.paleto.officeSafe)
 				end,
 			},
@@ -331,7 +331,7 @@ AddEventHandler("Robbery:Client:Setup", function()
 					end,
 					canInteract = function(data)
 						return IsPaletoExploitInstalled()
-							and not exports['sandbox-doors']:IsLocked(data.door)
+							and not exports['ox_doorlock']:IsLocked(data.door)
 							and (
 								not _bankStates.paleto.officeSearch[data.searchId]
 								or GetCloudTimeAsInt() > _bankStates.paleto.officeSearch[data.searchId]
@@ -352,7 +352,7 @@ AddEventHandler("Polyzone:Enter", function(id, testedPoint, insideZones, data)
 			exports['sandbox-lasers']:SetActive(string.format("paleto_lasers_%s", k), not powerDisabled)
 			exports['sandbox-lasers']:SetVisible(string.format("paleto_lasers_%s", k), not powerDisabled)
 		end
-	elseif id == "paleto_hack_access" and not exports['sandbox-doors']:IsLocked("bank_savings_paleto_gate") then
+	elseif id == "paleto_hack_access" and not exports['ox_doorlock']:IsLocked("bank_savings_paleto_gate") then
 		LocalPlayer.state:set("inPaletoWSPoint", true, true)
 	elseif data.subStationId ~= nil then
 		LocalPlayer.state:set("inSubStation", data.subStationId, true)
