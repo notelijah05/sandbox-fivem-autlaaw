@@ -127,22 +127,43 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 	eventHandlers["startup"] = RegisterNetEvent(string.format("Garbage:Client:%s:Startup", joiner), function()
 		_working = true
 		_state = 1
-		for k, v in ipairs(trashBins) do
-			exports.ox_target:addModel(v, {
-				{
-					icon = "trash",
-					label = "Grab Trash",
-					event = "Garbage:Client:TrashGrab",
-					distance = 3.0,
-					canInteract = function(entity)
-						return not _entities[ObjToNet(entity)]
-							and LocalPlayer.state.inGarbagbeZone
-							and GarbageObject == nil
-							and _state == 2
-					end,
-				},
-			})
-		end
+		CreateThread(function()
+			while _working do
+				local playerCoords = GetEntityCoords(PlayerPedId())
+				for k, v in ipairs(trashBins) do
+					local obj = GetClosestObjectOfType(playerCoords.x, playerCoords.y, playerCoords.z, 50.0, v, false,
+						false, false)
+					if obj and obj ~= 0 then
+						local entityId = GetEntityModel(obj) ..
+							"_" ..
+							GetEntityCoords(obj).x .. "_" .. GetEntityCoords(obj).y .. "_" .. GetEntityCoords(obj).z
+						if not _entities[entityId] then
+							exports.ox_target:addLocalEntity(obj, {
+								{
+									icon = "trash",
+									label = "Grab Trash",
+									event = "Garbage:Client:TrashGrab",
+									distance = 3.0,
+									canInteract = function(entity)
+										local entityId = GetEntityModel(entity) ..
+											"_" ..
+											GetEntityCoords(entity).x ..
+											"_" .. GetEntityCoords(entity).y .. "_" .. GetEntityCoords(entity).z
+										local isGrabbed = _entities[entityId] == "grabbed"
+										return LocalPlayer.state.inGarbagbeZone
+											and GarbageObject == nil
+											and _state == 2
+											and not isGrabbed
+									end,
+								},
+							})
+							_entities[entityId] = obj
+						end
+					end
+				end
+				Wait(2000)
+			end
+		end)
 
 		CreateThread(function()
 			while _working do
@@ -202,9 +223,14 @@ RegisterNetEvent("Garbage:Client:OnDuty", function(joiner, time)
 			GarbageObject = nil
 		end
 
+		local entityId = GetEntityModel(entity.entity) ..
+			"_" ..
+			GetEntityCoords(entity.entity).x ..
+			"_" .. GetEntityCoords(entity.entity).y .. "_" .. GetEntityCoords(entity.entity).z
 		exports["sandbox-base"]:ServerCallback("Garbage:TrashGrab", ObjToNet(entity.entity), function(s)
 			if s then
 				LocalPlayer.state.carryingGarbabge = true
+				_entities[entityId] = "grabbed"
 			end
 		end)
 	end)
@@ -290,8 +316,10 @@ RegisterNetEvent("Garbage:Client:OffDuty", function(time)
 		RemoveEventHandler(v)
 	end
 
-	for k, v in ipairs(trashBins) do
-		exports.ox_target:removeModel(v)
+	for entityId, entity in pairs(_entities) do
+		if entity and entity ~= 0 and entity ~= "grabbed" then
+			exports.ox_target:removeLocalEntity(entity)
+		end
 	end
 
 	if _blip ~= nil then
