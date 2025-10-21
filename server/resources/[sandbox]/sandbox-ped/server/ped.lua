@@ -369,14 +369,14 @@ AddEventHandler('onResourceStart', function(resource)
 								['@label'] = label
 							}, function(affectedRows)
 								if affectedRows > 0 then
-									Chat.Send.System:Single(source,
+									exports["sandbox-chat"]:SendSystemSingle(source,
 										string.format("Added Whitelisted Ped to State ID %s", sid))
 								else
-									Chat.Send.System:Single(source, "Failed to add Whitelisted Ped")
+									exports["sandbox-chat"]:SendSystemSingle(source, "Failed to add Whitelisted Ped")
 								end
 							end)
 					else
-						Chat.Send.System:Single(source, "Invalid State ID")
+						exports["sandbox-chat"]:SendSystemSingle(source, "Invalid State ID")
 					end
 				end)
 			else

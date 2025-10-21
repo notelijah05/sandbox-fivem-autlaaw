@@ -50,10 +50,10 @@ function RegisterChatCommands()
 				fetchedChar:SetData("Callsign", false)
 			end
 
-			Chat.Send.System:Single(source,
+			exports["sandbox-chat"]:SendSystemSingle(source,
 				string.format("Callsign Reclaimed From %s %s (%s)", char.First, char.Last, char.SID))
 		else
-			Chat.Send.System:Single(source, "Nobody With That Callsign")
+			exports["sandbox-chat"]:SendSystemSingle(source, "Nobody With That Callsign")
 		end
 	end, {
 		help = "Force Reclaim a Callsign",
