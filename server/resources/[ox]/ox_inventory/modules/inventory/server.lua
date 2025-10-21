@@ -1166,6 +1166,36 @@ end
 
 exports('SetMaxWeight', Inventory.SetMaxWeight)
 
+local function matchesExcludingDurability(meta1, meta2)
+    local durability1 = meta1.durability or 0
+    local durability2 = meta2.durability or 0
+    local degrade1 = meta1.degrade or 0
+    local degrade2 = meta2.degrade or 0
+
+    -- Check that durabilities are within 10% of each other
+    local averageDurability = ((degrade1 + degrade2) / 2)
+    local diff = math.abs(durability1 - durability2)
+
+    if diff > averageDurability * 0.1 then
+        return false
+    end
+
+    for k, v in pairs(meta1) do
+        if k ~= "durability" and (not meta2[k] or meta2[k] ~= v) then
+            return false
+        end
+    end
+
+    for k, v in pairs(meta2) do
+        if k ~= "durability" and (not meta1[k] or meta1[k] ~= v) then
+            return false
+        end
+    end
+
+    return true
+end
+
+
 ---@param inv inventory
 ---@param item table | string
 ---@param count number
@@ -1195,7 +1225,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
         local slotData = inv.items[slot]
         slotMetadata, slotCount = Items.Metadata(inv.id, item, metadata and table.clone(metadata) or {}, count)
 
-        if not slotData or (item.stack and slotData.name == item.name and table.matches(slotData.metadata, slotMetadata)) then
+        if not slotData or (item.stack and slotData.name == item.name and matchesExcludingDurability(slotData.metadata, slotMetadata)) then
             toSlot = slot
         end
     end
@@ -1208,7 +1238,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
         for i = startSlot, inv.slots do
             local slotData = items[i]
 
-            if item.stack and slotData ~= nil and slotData.name == item.name and table.matches(slotData.metadata, slotMetadata) then
+            if item.stack and slotData ~= nil and slotData.name == item.name and matchesExcludingDurability(slotData.metadata, slotMetadata) then
                 toSlot = i
                 break
             elseif not item.stack and not slotData then
@@ -1231,7 +1261,7 @@ function Inventory.AddItem(inv, item, count, metadata, slot, cb)
             for i = 1, 9 do
                 local slotData = items[i]
 
-                if item.stack and slotData ~= nil and slotData.name == item.name and table.matches(slotData.metadata, slotMetadata) then
+                if item.stack and slotData ~= nil and slotData.name == item.name and matchesExcludingDurability(slotData.metadata, slotMetadata) then
                     toSlot = i
                     break
                 elseif not item.stack and not slotData then
@@ -1748,35 +1778,6 @@ local function dropItem(source, playerInventory, fromData, data)
             }
         }
     }
-end
-
-local function matchesExcludingDurability(meta1, meta2)
-    local durability1 = meta1.durability or 0
-    local durability2 = meta2.durability or 0
-    local degrade1 = meta1.degrade or 0
-    local degrade2 = meta2.degrade or 0
-
-    -- Check that durabilities are within 10% of each other
-    local averageDurability = ((degrade1 + degrade2) / 2)
-    local diff = math.abs(durability1 - durability2)
-
-    if diff > averageDurability * 0.1 then
-        return false
-    end
-
-    for k, v in pairs(meta1) do
-        if k ~= "durability" and (not meta2[k] or meta2[k] ~= v) then
-            return false
-        end
-    end
-
-    for k, v in pairs(meta2) do
-        if k ~= "durability" and (not meta1[k] or meta1[k] ~= v) then
-            return false
-        end
-    end
-
-    return true
 end
 
 local activeSlots = {}
