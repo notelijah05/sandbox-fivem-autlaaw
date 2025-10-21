@@ -316,6 +316,7 @@ CREATE TABLE IF NOT EXISTS `casino_statistics` (
     `AmountLost` LONGTEXT DEFAULT NULL,
     `TotalAmountWon` DECIMAL(15,2) DEFAULT 0,
     `TotalAmountLost` DECIMAL(15,2) DEFAULT 0,
+    `wheel` LONGTEXT DEFAULT NULL,
     PRIMARY KEY (`SID`),
     CONSTRAINT `slots` CHECK (json_valid(`slots`)),
     CONSTRAINT `poker` CHECK (json_valid(`poker`)),
@@ -394,6 +395,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `MDTSuspension` tinyint(1) DEFAULT 0,
   `DrugStates` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `Inventory` longtext DEFAULT NULL,
+  `CasinoChips` LONGTEXT DEFAULT NULL,
   PRIMARY KEY (`SID`) USING BTREE,
   CONSTRAINT `Origin` CHECK (json_valid(`Origin`)),
   CONSTRAINT `Apps` CHECK (json_valid(`Apps`)),
@@ -418,7 +420,8 @@ CREATE TABLE IF NOT EXISTS `characters` (
   CONSTRAINT `ICU` CHECK (json_valid(`ICU`)),
   CONSTRAINT `Status` CHECK (json_valid(`Status`)),
   CONSTRAINT `Parole` CHECK (json_valid(`Parole`)),
-  CONSTRAINT `DrugStates` CHECK (json_valid(`DrugStates`))
+  CONSTRAINT `DrugStates` CHECK (json_valid(`DrugStates`)),
+  CONSTRAINT `CasinoChips` CHECK (json_valid(`CasinoChips`))
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 DROP TABLE IF EXISTS `character_app_profiles`;

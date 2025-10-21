@@ -29,7 +29,7 @@ AddEventHandler("Billboards:Client:RecieveTVLinkInput", function(values)
     end
 end)
 
-AddEventHandler("Billboards:Client:SetLink", function(e, data)
+AddEventHandler("Billboards:Client:SetLink", function(data)
     local tvLink = GetNewTVLink(data.id)
     exports["sandbox-base"]:ServerCallback("Billboards:UpdateURL", {
         id = data.id,

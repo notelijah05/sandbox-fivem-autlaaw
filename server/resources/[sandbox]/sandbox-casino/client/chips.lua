@@ -105,23 +105,21 @@ AddEventHandler("Casino:Client:ConfirmChipSell", function(data)
     exports["sandbox-base"]:ServerCallback("Casino:SellChips", data.amount)
 end)
 
-_CASINO = _CASINO or {}
-
-_CASINO.Chips = {
-    Get = function(self)
-        local chips = 0
-        if LocalPlayer.state.loggedIn and LocalPlayer.state.Character then
-            if LocalPlayer.state.Character:GetData("CasinoChips") and LocalPlayer.state.Character:GetData("CasinoChips") > 0 then
-                chips = LocalPlayer.state.Character:GetData("CasinoChips")
-            end
+exports("ChipsGet", function()
+    local chips = 0
+    if LocalPlayer.state.loggedIn and LocalPlayer.state.Character then
+        local casinoChips = LocalPlayer.state.Character:GetData("CasinoChips")
+        if casinoChips then
+            chips = tonumber(casinoChips) or 0
         end
-
-        return chips
-    end,
-    Has = function(self, amount)
-        if amount > 0 then
-            return exports['sandbox-casino']:ChipsGet() >= amount
-        end
-        return false
     end
-}
+
+    return chips
+end)
+
+exports("ChipsHas", function(amount)
+    if amount > 0 then
+        return exports['sandbox-casino']:ChipsGet() >= amount
+    end
+    return false
+end)

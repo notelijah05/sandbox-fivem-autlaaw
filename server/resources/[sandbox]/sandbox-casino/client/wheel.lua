@@ -15,7 +15,7 @@ AddEventHandler("Casino:Client:Startup", function()
         maxZ = 73.27,
         options = {
             {
-                icon = "face-tongue-money",
+                icon = "fa-solid fa-money-bill",
                 label = "Spin the Wheel! ($1,500)",
                 event = "Casino:Client:StartSpin",
                 canInteract = function()
@@ -24,16 +24,18 @@ AddEventHandler("Casino:Client:Startup", function()
                 end,
             },
             {
-                icon = "gift-card",
+                icon = "fa-solid fa-gift",
                 label = "VIP Turbo Spin ($7,500)",
-                event = "Casino:Client:StartSpin",
+                onSelect = function()
+                    TriggerEvent("Casino:Client:StartSpin", { turbo = true })
+                end,
                 canInteract = function()
                     return GlobalState["CasinoOpen"] and not GlobalState["Casino:WheelStarted"] and
                         not GlobalState["Casino:WheelSpinning"] and not GlobalState["Casino:WheelLocked"]
                 end,
             },
             {
-                icon = "unlock",
+                icon = "fa-solid fa-unlock",
                 label = "Unlock Wheel",
                 event = "Casino:Client:UnlockWheel",
                 groups = { "casino" },

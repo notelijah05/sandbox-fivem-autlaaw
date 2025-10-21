@@ -48,5 +48,6 @@ TablesToDecode = {
 	"Callsign",
 	"HUDConfig",
 	"DrugStates",
+	"CasinoChips",
 	-- Maybe more to be added
 }

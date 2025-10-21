@@ -1,8 +1,8 @@
 local showroomManagement
 local showroomManagementSub
 
-AddEventHandler('Dealerships:Client:ShowroomManagement', function(hit, data)
-    if data and data.dealerId then
+AddEventHandler('Dealerships:Client:ShowroomManagement', function(data)
+    if data.dealerId then
         OpenShowroomManagement(data.dealerId)
     end
 end)

@@ -160,6 +160,17 @@ _mechanicShops = {
 				maxZ = 10.04,
 			},
 		},
+		dutyPoint = {
+			center = vector3(145.3, -3012.75, 7.0),
+			length = 0.45,
+			width = 0.35,
+			options = {
+				heading = 0,
+				--debugPoly = true,
+				minZ = 6.8,
+				maxZ = 7.2,
+			},
+		},
 	},
 
 	{

@@ -89,37 +89,34 @@ function CreateDealerships()
 					maxZ = v.options.maxZ,
 					options = {
 						{
-							icon = "fa-solid fa-car-garage",
+							icon = "fa-solid fa-warehouse",
 							label = "Edit Showroom",
-							event = "Dealerships:Client:ShowroomManagement",
+							groups = { dealerId },
+							reqDuty = true,
 							onSelect = function()
 								TriggerEvent("Dealerships:Client:ShowroomManagement", { dealerId = dealerId })
 							end,
-							groups = { dealerId },
-							reqDuty = true,
 							canInteract = function()
-								return LocalPlayer.state.Character:HasPermission("dealership_showroom")
+								return exports['sandbox-jobs']:HasPermission("dealership_showroom")
 							end,
 						},
 						{
-							icon = "fa-solid fa-briefcase-clock",
+							icon = "fa-solid fa-clipboard-check",
 							label = "Go On Duty",
-							event = "Dealerships:Client:ToggleDuty",
+							groups = { dealerId },
+							reqOffDuty = true,
 							onSelect = function()
 								TriggerEvent("Dealerships:Client:ToggleDuty", { dealerId = dealerId, state = true })
 							end,
-							groups = { dealerId },
-							reqOffDuty = true,
 						},
 						{
-							icon = "fa-solid fa-briefcase-clock",
+							icon = "fa-solid fa-clipboard",
 							label = "Go Off Duty",
-							event = "Dealerships:Client:ToggleDuty",
+							groups = { dealerId },
+							reqDuty = true,
 							onSelect = function()
 								TriggerEvent("Dealerships:Client:ToggleDuty", { dealerId = dealerId, state = false })
 							end,
-							groups = { dealerId },
-							reqDuty = true,
 						},
 					}
 				})
@@ -178,7 +175,7 @@ AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
 	end
 end)
 
-AddEventHandler("Dealerships:Client:ToggleDuty", function(entityData, data)
+AddEventHandler("Dealerships:Client:ToggleDuty", function(data)
 	if data and data.dealerId then
 		if data.state then
 			exports['sandbox-jobs']:DutyOn(data.dealerId)

@@ -53,23 +53,29 @@ AddEventHandler("Casino:Client:Startup", function()
 			maxZ = v.options.maxZ,
 			options = {
 				{
-					icon = "clipboard-check",
+					icon = "fa-solid fa-clipboard-check",
 					label = "Clock In",
-					event = "Casino:Client:ClockIn",
+					onSelect = function()
+						TriggerEvent("Casino:Client:ClockIn", { job = "casino" })
+					end,
 					groups = { "casino" },
 					reqOffDuty = true,
 				},
 				{
-					icon = "clipboard",
+					icon = "fa-solid fa-clipboard",
 					label = "Clock Out",
-					event = "Casino:Client:ClockOut",
+					onSelect = function()
+						TriggerEvent("Casino:Client:ClockOut", { job = "casino" })
+					end,
 					groups = { "casino" },
 					reqDuty = true,
 				},
 				{
-					icon = "slot-machine",
+					icon = "fa-solid fa-door-closed",
 					label = "Close Casino",
-					event = "Casino:Client:OpenClose",
+					onSelect = function()
+						TriggerEvent("Casino:Client:OpenClose", { state = false })
+					end,
 					groups = { "casino" },
 					reqDuty = true,
 					canInteract = function()
@@ -77,9 +83,11 @@ AddEventHandler("Casino:Client:Startup", function()
 					end,
 				},
 				{
-					icon = "slot-machine",
+					icon = "fa-solid fa-door-open",
 					label = "Open Casino",
-					event = "Casino:Client:OpenClose",
+					onSelect = function()
+						TriggerEvent("Casino:Client:OpenClose", { state = true })
+					end,
 					groups = { "casino" },
 					reqDuty = true,
 					canInteract = function()
@@ -100,6 +108,7 @@ AddEventHandler("Casino:Client:Startup", function()
 		"seal-question",
 		"WORLD_HUMAN_STAND_IMPATIENT"
 	)
+
 	exports['sandbox-pedinteraction']:Add(
 		"CasinoStaff2",
 		`s_m_y_casino_01`,
@@ -159,7 +168,7 @@ AddEventHandler("Casino:Client:Startup", function()
 		vector3(990.372, 31.271, 70.466),
 		56.249,
 		25.0,
-		{},
+		false,
 		"seal-question"
 	)
 
@@ -173,20 +182,20 @@ AddEventHandler("Casino:Client:Startup", function()
 		maxZ = 73.27,
 		options = {
 			{
-				icon = "inbox-out",
+				icon = "fa-solid fa-inbox",
 				label = "Cash Out Chips",
 				event = "Casino:Client:StartChipSell",
 				canInteract = function()
-					return exports['sandbox-casino']:ChipsGet(source) > 0
+					return exports['sandbox-casino']:ChipsGet() > 0
 				end,
 			},
 			{
-				icon = "inbox-in",
+				icon = "fa-solid fa-inbox",
 				label = "Purchase Chips",
 				event = "Casino:Client:StartChipPurchase",
 			},
 			{
-				icon = "gift-card",
+				icon = "fa-solid fa-gift",
 				label = "Purchase VIP Card ($10,000, 1 Week)",
 				event = "Casino:Client:PurchaseVIP",
 			},

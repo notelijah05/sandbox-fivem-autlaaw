@@ -40,7 +40,7 @@ AddEventHandler("Casino:Client:Startup", function()
             maxZ = v.polyzone.options.maxZ,
             options = {
                 {
-                    icon = "cards",
+                    icon = "fa-solid fa-diamond",
                     label = _rouletteTablesConfig[k].isVIP and string.format("Join VIP Game ($%s Max Bet)", maxBet) or
                         string.format("Join Game ($%s Max Bet)", maxBet),
                     onSelect = function()
@@ -51,14 +51,14 @@ AddEventHandler("Casino:Client:Startup", function()
                     end,
                 },
                 {
-                    icon = "cards",
+                    icon = "fa-solid fa-diamond",
                     label = "Game Full",
                     canInteract = function()
                         return not CanJoinRouletteTable(k) and not _rouletteAtTable
                     end,
                 },
                 {
-                    icon = "cards",
+                    icon = "fa-solid fa-diamond",
                     label = "Leave Game",
                     onSelect = function()
                         TriggerEvent("Casino:Client:LeaveRoulette", { table = k })
@@ -169,7 +169,7 @@ function CanJoinRouletteTable(table)
     return false
 end
 
-AddEventHandler("Casino:Client:JoinRoulette", function(_, data)
+AddEventHandler("Casino:Client:JoinRoulette", function(data)
     local chairData = GetClosestRouletteChair(data.table)
 
     if chairData then
@@ -269,7 +269,7 @@ function LeaveRoulette(skipAnim)
     end)
 end
 
-AddEventHandler("Casino:Client:LeaveRoulette", function(_, data)
+AddEventHandler("Casino:Client:LeaveRoulette", function(data)
     if _rouletteAtTable and data?.table == _rouletteAtTable then
         LeaveRoulette(false)
     end

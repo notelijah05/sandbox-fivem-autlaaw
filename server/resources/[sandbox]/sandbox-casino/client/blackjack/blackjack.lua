@@ -29,10 +29,9 @@ AddEventHandler("Casino:Client:Startup", function()
             maxZ = v.polyzone.options.maxZ,
             options = {
                 {
-                    icon = "cards",
+                    icon = "fa-solid fa-heart",
                     label = _blackjackTablesConfig[k].isVIP and string.format("Join VIP Game ($%s Max Bet)", maxBet) or
                         string.format("Join Game ($%s Max Bet)", maxBet),
-                    event = "Casino:Client:JoinBlackjack",
                     onSelect = function()
                         TriggerEvent("Casino:Client:JoinBlackjack", { table = k })
                     end,
@@ -41,16 +40,15 @@ AddEventHandler("Casino:Client:Startup", function()
                     end,
                 },
                 {
-                    icon = "cards",
+                    icon = "fa-solid fa-heart",
                     label = "Game Full",
                     canInteract = function()
                         return not CanJoinBlackjackTable(k) and not _BJsatAtTable
                     end,
                 },
                 {
-                    icon = "cards",
+                    icon = "fa-solid fa-heart",
                     label = "Leave Game",
-                    event = "Casino:Client:LeaveBlackjack",
                     onSelect = function()
                         TriggerEvent("Casino:Client:LeaveBlackjack", { table = k })
                     end,
@@ -60,10 +58,9 @@ AddEventHandler("Casino:Client:Startup", function()
                     end,
                 },
                 {
-                    icon = "play",
+                    icon = "fa-solid fa-play",
                     label = _blackjackTablesConfig[k].isVIP and string.format("Start VIP Game ($%s Max Bet)", maxBet) or
                         string.format("Start Game ($%s Max Bet)", maxBet),
-                    event = "Casino:Client:StartBlackjack",
                     onSelect = function()
                         TriggerEvent("Casino:Client:StartBlackjack", { table = k })
                     end,
@@ -222,7 +219,7 @@ function CanJoinBlackjackTable(table)
     return false
 end
 
-AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
+AddEventHandler("Casino:Client:JoinBlackjack", function(data)
     local tableId = blackjack_func_368(_BJclosestChair)
 
     if tableId == data.table then
@@ -275,7 +272,7 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
     end
 end)
 
-AddEventHandler("Casino:Client:StartBlackjack", function(_, data)
+AddEventHandler("Casino:Client:StartBlackjack", function(data)
     if _BJsatAtTable and data?.table == _BJsatAtTable then
         exports["sandbox-base"]:ServerCallback("Casino:StartBlackjack", {}, function(success)
             if success then
@@ -285,7 +282,7 @@ AddEventHandler("Casino:Client:StartBlackjack", function(_, data)
     end
 end)
 
-AddEventHandler("Casino:Client:LeaveBlackjack", function(_, data)
+AddEventHandler("Casino:Client:LeaveBlackjack", function(data)
     if _BJsatAtTable and data?.table == _BJsatAtTable then
         exports["sandbox-base"]:ServerCallback("Casino:LeaveBlackjack", {}, function(success)
             if success then

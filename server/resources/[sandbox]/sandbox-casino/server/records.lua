@@ -2,6 +2,7 @@ function UpdateCharacterCasinoStats(source, statType, isWin, amount)
     local char = exports['sandbox-characters']:FetchCharacterSource(source)
     if char then
         local p = promise.new()
+        local update = {}
 
         if isWin then
             update["$inc"] = {
@@ -43,7 +44,15 @@ function UpdateCharacterCasinoStats(source, statType, isWin, amount)
                         { json.encode(stats), json.encode(amountWon), json.encode(amountLost), existing.TotalAmountWon,
                             existing.TotalAmountLost, char:GetData("SID") },
                         function(affectedRows)
-                            p:resolve(affectedRows > 0)
+                            local success = false
+                            if affectedRows then
+                                if type(affectedRows) == "table" then
+                                    success = affectedRows.affectedRows and affectedRows.affectedRows > 0
+                                else
+                                    success = affectedRows > 0
+                                end
+                            end
+                            p:resolve(success)
                         end)
                 else
                     local stats = { {
@@ -66,7 +75,15 @@ function UpdateCharacterCasinoStats(source, statType, isWin, amount)
                         { char:GetData("SID"), json.encode(stats), json.encode(amountWon), json.encode(amountLost), isWin and
                         amount or 0, isWin and 0 or amount },
                         function(insertId)
-                            p:resolve(insertId and insertId > 0)
+                            local success = false
+                            if insertId then
+                                if type(insertId) == "table" then
+                                    success = insertId.insertId and insertId.insertId > 0
+                                else
+                                    success = insertId > 0
+                                end
+                            end
+                            p:resolve(success)
                         end)
                 end
             end)
@@ -94,7 +111,15 @@ function SaveCasinoBigWin(source, machine, prize, data)
             'INSERT INTO casino_bigwins (Type, Time, Winner, Prize, MetaData) VALUES (?, ?, ?, ?, ?)',
             { machine, os.time(), winnerJson, prize, metaDataJson },
             function(insertId)
-                p:resolve(insertId and insertId > 0)
+                local success = false
+                if insertId then
+                    if type(insertId) == "table" then
+                        success = insertId.insertId and insertId.insertId > 0
+                    else
+                        success = insertId > 0
+                    end
+                end
+                p:resolve(success)
             end)
 
         local res = Citizen.Await(p)

@@ -5,14 +5,18 @@ function CreateMechanicDutyPoints()
 				{
 					icon = "fa-solid fa-clipboard-check",
 					label = "Go On Duty",
-					event = "Mechanic:Client:OnDuty",
+					onSelect = function()
+						TriggerEvent("Mechanic:Client:OnDuty", v.job)
+					end,
 					groups = { v.job },
 					reqOffDuty = true,
 				},
 				{
 					icon = "fa-solid fa-clipboard",
 					label = "Go Off Duty",
-					event = "Mechanic:Client:OffDuty",
+					onSelect = function()
+						TriggerEvent("Mechanic:Client:OffDuty", v.job)
+					end,
 					groups = { v.job },
 					reqDuty = true,
 				},
@@ -61,7 +65,7 @@ function CreateMechanicDutyPoints()
 	end
 end
 
-AddEventHandler("Mechanic:Client:OnDuty", function(_, job)
+AddEventHandler("Mechanic:Client:OnDuty", function(job)
 	if not _mechanicJobs[job] then
 		return
 	end
@@ -69,7 +73,7 @@ AddEventHandler("Mechanic:Client:OnDuty", function(_, job)
 	exports['sandbox-jobs']:DutyOn(job)
 end)
 
-AddEventHandler("Mechanic:Client:OffDuty", function(_, job)
+AddEventHandler("Mechanic:Client:OffDuty", function(job)
 	if not _mechanicJobs[job] then
 		return
 	end
