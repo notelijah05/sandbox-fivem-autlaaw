@@ -7,12 +7,21 @@ exports("SequenceGet", function(key)
 		_cachedSeq[key].dirty = true
 		return _cachedSeq[key].sequence
 	else
+		local maxValue = 0
+		if key == "Character" then
+			local result = MySQL.scalar.await('SELECT MAX(SID) FROM characters')
+			if result then
+				maxValue = result
+			end
+		end
+
 		_cachedSeq[key] = {
 			id = key,
-			sequence = 1,
+			sequence = maxValue,
 			dirty = true,
 		}
-		return 1
+		_cachedSeq[key].sequence += 1
+		return _cachedSeq[key].sequence
 	end
 end)
 
