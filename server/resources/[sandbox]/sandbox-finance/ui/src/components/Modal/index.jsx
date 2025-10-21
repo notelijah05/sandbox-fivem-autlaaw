@@ -62,6 +62,7 @@ export default ({
 			scroll="paper"
 			open={open && mdtOpen}
 			onClose={onClose}
+			hideBackdrop={true}
 		>
 			{Boolean(onSubmit) ? (
 				<form onSubmit={onSubmit} ref={formRef}>
