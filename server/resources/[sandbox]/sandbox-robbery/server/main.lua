@@ -354,7 +354,7 @@ RegisterNetEvent("Robbery:Server:Idiot", function(id)
 		exports['sandbox-base']:LoggerInfo(
 			"Exploit",
 			string.format(
-				"%s %s (%s) Exploited Into A Kill Zone (%s) That Was Still Active, They're Now Dead As Fuck",
+				"%s %s (%s) Exploited Into A Kill Zone (%s) That Was Still Active, They're Now Dead",
 				char:GetData("First"),
 				char:GetData("Last"),
 				char:GetData("SID"),

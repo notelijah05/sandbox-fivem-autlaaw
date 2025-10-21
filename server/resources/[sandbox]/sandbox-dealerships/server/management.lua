@@ -4,16 +4,16 @@ exports('ManagementLoadData', function()
     local p = promise.new()
     exports.oxmysql:execute('SELECT * FROM dealer_data', {}, function(results)
         if results then
-            local fuckface = {}
+            local cardealers = {}
             for k, v in ipairs(results) do
                 if v.dealership then
-                    fuckface[v.dealership] = v
+                    cardealers[v.dealership] = v
                 end
             end
 
             for k, v in pairs(_dealerships) do
-                if fuckface[k] then
-                    _managementData[k] = fuckface[k]
+                if cardealers[k] then
+                    _managementData[k] = cardealers[k]
                 else
                     _managementData[k] = _defaultDealershipSalesData
                 end

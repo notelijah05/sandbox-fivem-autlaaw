@@ -41,7 +41,7 @@ function RegisterJobChatCommands()
                         'Error Giving Job - Maybe that State ID Doesn\'t Exist')
                 end
             else
-                exports["sandbox-chat"]:SendSystemSingle(source, 'Job Doesn\'t Exist Fuckface')
+                exports["sandbox-chat"]:SendSystemSingle(source, 'Job Doesn\'t Exist')
             end
             return
         else
@@ -91,7 +91,7 @@ function RegisterJobChatCommands()
                     exports["sandbox-chat"]:SendSystemSingle(source, 'Error Setting Job Owner')
                 end
             else
-                exports["sandbox-chat"]:SendSystemSingle(source, 'Job Doesn\'t Exist or Isn\'t a Company You Fuck')
+                exports["sandbox-chat"]:SendSystemSingle(source, 'Job Doesn\'t Exist or Isn\'t a Company')
             end
         else
             exports["sandbox-chat"]:SendSystemSingle(source, 'Invalid Job or State ID')

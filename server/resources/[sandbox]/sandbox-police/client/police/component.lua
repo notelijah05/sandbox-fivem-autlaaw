@@ -381,9 +381,9 @@ AddEventHandler('onClientResourceStart', function(resource)
 			function(data)
 				local bruh = GlobalState["Robbery:InProgress"]
 				for k, v in ipairs(bruh) do
-					local fuck = GlobalState[string.format("Robbery:InProgress:%s", v)]
-					if fuck then
-						local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - vector3(fuck.x, fuck.y, fuck.z))
+					local robberystatus = GlobalState[string.format("Robbery:InProgress:%s", v)]
+					if robberystatus then
+						local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - vector3(loc.x, loc.y, loc.z))
 						if dist <= 3.0 then
 							exports["sandbox-base"]:ServerCallback("Police:Breach", {
 								type = "robbery",
@@ -399,9 +399,9 @@ AddEventHandler('onClientResourceStart', function(resource)
 				if LocalPlayer.state.onDuty and LocalPlayer.state.onDuty == "police" then
 					local bruh = GlobalState["Robbery:InProgress"]
 					for k, v in ipairs(bruh) do
-						local fuck = GlobalState[string.format("Robbery:InProgress:%s", v)]
-						if fuck then
-							local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - vector3(fuck.x, fuck.y, fuck.z))
+						local robberystatus = GlobalState[string.format("Robbery:InProgress:%s", v)]
+						if robberystatus then
+							local dist = #(vector3(LocalPlayer.state.myPos.x, LocalPlayer.state.myPos.y, LocalPlayer.state.myPos.z) - vector3(loc.x, loc.y, loc.z))
 							if dist <= 3.0 then
 								return true
 							end

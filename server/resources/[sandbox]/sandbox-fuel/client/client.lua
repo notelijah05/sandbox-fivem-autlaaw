@@ -365,7 +365,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 				local hasWeapon, weapon = GetCurrentPedWeapon(LocalPlayer.state.ped)
 				local ammoAmount = GetPedAmmoByType(LocalPlayer.state.ped, `AMMO_PETROLCAN`)
 				local fuelAmount = 50 * ammoAmount / 4500
-				local fuck = fuelAmount
+				local currentFuel = fuelAmount
 				local fuelAmountAfterUse = 0
 
 				if not hasWeapon or weapon ~= `WEAPON_PETROLCAN` then
@@ -472,7 +472,7 @@ AddEventHandler("Vehicles:Client:StartJerryFueling", function(entityData)
 					_fueling = false
 					if wasCancelled then
 						fuelAmount = math.ceil(fuelAmount * (secondsElapsed / time))
-						fuelAmountAfterUse = math.floor(fuck - fuelAmount)
+						fuelAmountAfterUse = math.floor(currentFuel - fuelAmount)
 					end
 
 					SetPedAmmoByType(LocalPlayer.state.ped, `AMMO_PETROLCAN`, (fuelAmountAfterUse / 50 * 4500))

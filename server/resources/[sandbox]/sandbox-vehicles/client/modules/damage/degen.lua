@@ -271,12 +271,12 @@ function RunVehiclePartsDamageEffects(veh)
 
                 if wait then
                     exports['sandbox-base']:LoggerTrace('Vehicles', 'Running Damage Effects - Clutch')
-                    local lolGetFucked = true
+                    local isDamaged = true
                     Citizen.SetTimeout(wait, function()
-                        lolGetFucked = false
+                        isDamaged = false
                     end)
                     CreateThread(function()
-                        while lolGetFucked do
+                        while isDamaged do
                             Wait(5)
                             SetVehicleCurrentRpm(veh, 0.2)
                         end

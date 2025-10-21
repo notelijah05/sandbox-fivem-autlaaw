@@ -336,7 +336,7 @@ export default (props) => {
 			) : loanData ? (
 				<div className={classes.accountBody}></div>
 			) : (
-				<p>There was big fuckup oh no.</p>
+				<p>There was big messup oh no.</p>
 			)}
 
 			<Modal

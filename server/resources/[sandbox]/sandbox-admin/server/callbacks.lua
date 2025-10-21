@@ -256,7 +256,7 @@ function RegisterCallbacks()
         if player and data.action and data.targetSource and player.Permissions:IsStaff() then
             local target = exports['sandbox-base']:FetchSource(data.targetSource)
             if target then
-                local canFuckWith = player.Permissions:GetLevel() > target.Permissions:GetLevel()
+                local havePerms = player.Permissions:GetLevel() > target.Permissions:GetLevel()
                 local notMe = player:GetData('Source') ~= target:GetData('Source')
                 local wasSuccessful = false
 
@@ -264,7 +264,7 @@ function RegisterCallbacks()
                 if targetChar then
                     local playerPed = GetPlayerPed(player:GetData('Source'))
                     local targetPed = GetPlayerPed(target:GetData('Source'))
-                    if data.action == 'bring' and canFuckWith and notMe then
+                    if data.action == 'bring' and havePerms and notMe then
                         local playerCoords = GetEntityCoords(playerPed)
                         exports['sandbox-pwnzor']:TempPosIgnore(target:GetData("Source"))
                         SetEntityCoords(targetPed, playerCoords.x, playerCoords.y, playerCoords.z + 1.0)
@@ -301,7 +301,7 @@ function RegisterCallbacks()
                                 message = 'Can\'t Heal Yourself'
                             })
                         end
-                    elseif data.action == 'attach' and (canFuckWith or player.Permissions:GetLevel() == 100) and notMe then
+                    elseif data.action == 'attach' and (havePerms or player.Permissions:GetLevel() == 100) and notMe then
                         TriggerClientEvent('Admin:Client:Attach', source, target:GetData('Source'),
                             GetEntityCoords(targetPed), {
                                 First = targetChar:GetData("First"),
@@ -316,7 +316,7 @@ function RegisterCallbacks()
                         })
 
                         wasSuccessful = true
-                    elseif data.action == 'marker' and (canFuckWith or player.Permissions:GetLevel() == 100) then
+                    elseif data.action == 'marker' and (havePerms or player.Permissions:GetLevel() == 100) then
                         local targetCoords = GetEntityCoords(targetPed)
                         TriggerClientEvent('Admin:Client:Marker', source, targetCoords.x, targetCoords.y)
                     else

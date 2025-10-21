@@ -841,7 +841,7 @@ export const initialState = {
 							id: 2,
 							owner: 2,
 							sharer: 2,
-							sharer_name: 'Fuck You',
+							sharer_name: 'Bless You',
 							time: 1645020394,
 							title: 'Lol 2',
 							content:
@@ -852,14 +852,14 @@ export const initialState = {
 							id: 3,
 							owner: 2,
 							sharer: 2,
-							sharer_name: 'Fuck You',
+							sharer_name: 'Bless You',
 							time: 1645020394,
 							title: 'Lol 2',
 							content:
 								'<p class="ql-align-center"><span class="ql-size-huge">asdasdasdasd</span></p><p><br></p><pre class="ql-syntax" spellcheck="false">asdfsdfsdfsdfsdfsdfs</pre><p><br></p><p><br></p><p>Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. Hello, thjis is a test word sentences yeah bla bla bla. </p>',
 							signature_required: true,
 							signed: 1687814232,
-							signed_name: 'Fuck Me',
+							signed_name: 'Autlaw',
 						},
 					],
 					messages: [
@@ -869,7 +869,7 @@ export const initialState = {
 							method: 1,
 							time: 1583397349801,
 							message:
-								'This is a fucking dumb thing that I really hope may possibly fucking work but I really dont know fucking hell dumb bitchass whore',
+								'This is a dumb thing that I really hope may possibly work but I really dont know',
 							unread: true,
 						},
 						{
@@ -1258,7 +1258,7 @@ export const initialState = {
 							id: 1,
 							sender: 'chop@mechanics.onion',
 							subject: 'Offer Expires Soon',
-							body: 'Why in the absolute fuck do we do this to ourselves?',
+							body: 'Why in the absolute hell do we do this to ourselves?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1268,10 +1268,9 @@ export const initialState = {
 						},
 						{
 							id: 2,
-							sender: 'fuckyou@suckmyass.com',
-							subject:
-								'I Want To Fucking Die I Want To Fucking Die I Want To Fucking Die I Want To Fucking Die I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe Welcome to Sandbox babe Welcome to Sandbox babe Welcome to Sandbox babe Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1280,16 +1279,16 @@ export const initialState = {
 						},
 						{
 							id: 3,
-							sender: 'fuckyou1@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system1@suckmyass.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 						},
 						{
 							id: 4,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1298,9 +1297,9 @@ export const initialState = {
 						},
 						{
 							id: 5,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1309,9 +1308,9 @@ export const initialState = {
 						},
 						{
 							id: 6,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1320,9 +1319,9 @@ export const initialState = {
 						},
 						{
 							id: 7,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1331,9 +1330,9 @@ export const initialState = {
 						},
 						{
 							id: 8,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1342,9 +1341,9 @@ export const initialState = {
 						},
 						{
 							id: 9,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1353,9 +1352,9 @@ export const initialState = {
 						},
 						{
 							id: 10,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1364,9 +1363,9 @@ export const initialState = {
 						},
 						{
 							id: 11,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1375,9 +1374,9 @@ export const initialState = {
 						},
 						{
 							id: 12,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1386,9 +1385,9 @@ export const initialState = {
 						},
 						{
 							id: 13,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1397,9 +1396,9 @@ export const initialState = {
 						},
 						{
 							id: 14,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1408,9 +1407,9 @@ export const initialState = {
 						},
 						{
 							id: 15,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1419,9 +1418,9 @@ export const initialState = {
 						},
 						{
 							id: 16,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1430,9 +1429,9 @@ export const initialState = {
 						},
 						{
 							id: 17,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1441,9 +1440,9 @@ export const initialState = {
 						},
 						{
 							id: 18,
-							sender: 'fuckyou@suckmyass.com',
-							subject: 'I Want To Fucking Die',
-							body: 'Why in the absolute fuck do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
+							sender: 'system@sandbox.com',
+							subject: 'Welcome to Sandbox babe',
+							body: 'Why in the absolute hell do we do this to ourselves? Like all this bullshit to just entertain randoms on the internet?',
 							time: 1687914914,
 							unread: true,
 							flags: {
@@ -1476,7 +1475,7 @@ export const initialState = {
 						},
 						3: {
 							id: 3,
-							author: 'Fuck Me',
+							author: 'Bless Me',
 							number: '555-555-5553',
 							time: 1687914914,
 							price: 400,
@@ -1487,7 +1486,7 @@ export const initialState = {
 						},
 						4: {
 							id: 4,
-							author: 'Fuck Me',
+							author: 'Bless Me',
 							number: '555-555-5553',
 							time: 1687914914,
 							price: 400,

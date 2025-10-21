@@ -9,7 +9,7 @@ local _v = nil
 local _entered = nil
 local _psychoShit = nil
 local _inPoly = false
-local _fuckedOff = false
+local _completed = false
 
 local _queueLoc = nil
 RegisterNetEvent("Labor:Client:GetLocs", function(locs)
@@ -101,8 +101,8 @@ AddEventHandler("Labor:Client:Setup", function()
                     arrived = true
 
                     Wait(25000)
-                    if forceEnd or _psychoShit ~= nil and _psychoShit.veh == VehToNet(vehicle) and not _fuckedOff then
-                        _fuckedOff = true
+                    if forceEnd or _psychoShit ~= nil and _psychoShit.veh == VehToNet(vehicle) and not _completed then
+                        _completed = true
                         TaskVehicleDriveWander(NetToPed(_psychoShit.ped), NetToVeh(_psychoShit.veh), 20.0, 786603)
                         Citizen.SetTimeout(30000, function()
                             exports["sandbox-base"]:ServerCallback("OxyRun:DeleteShit", _psychoShit)
@@ -137,7 +137,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
     _joiner = joiner
     LocalPlayer.state.oxyJoiner = joiner
     _working = true
-    _fuckedOff = false
+    _completed = false
 
     eventHandlers["primary_action"] = AddEventHandler("Keybinds:Client:KeyUp:primary_action", function()
         if _working and _state == 3 and LocalPlayer.state.inOxyPickup and not LocalPlayer.state.doingAction then
@@ -294,7 +294,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
 
     eventHandlers["spawned"] = RegisterNetEvent(string.format("OxyRun:Client:%s:Spawn", joiner), function(data)
         LocalPlayer.state.oxyBuyer = data
-        _fuckedOff = false
+        _completed = false
         _psychoShit = data
     end)
 
@@ -317,7 +317,7 @@ RegisterNetEvent("OxyRun:Client:OnDuty", function(joiner, time)
 
             Wait(8000)
 
-            _fuckedOff = true
+            _completed = true
             TaskVehicleDriveWander(NetToPed(_psychoShit.ped), NetToVeh(_psychoShit.veh), 20.0, 786603)
             local wait = math.random(30, 100) * 1000
             Citizen.SetTimeout(wait, function()
@@ -386,5 +386,5 @@ RegisterNetEvent("OxyRun:Client:OffDuty", function(time)
     _entered = nil
     _psychoShit = nil
     _inPoly = false
-    _fuckedOff = false
+    _completed = false
 end)

@@ -603,7 +603,7 @@ function StartRacePD()
 				SetBlipColour(raceBlips[cCp + 1], 6)
 				SetBlipScale(raceBlips[cCp + 1], 1.15)
 
-				-- Like what the fuck is this code?
+				-- Like what is this code?
 				local ftr = nil
 				if cCp + 1 > #_activeRace.trackData.Checkpoints then
 					ftr = _activeRace.trackData.Checkpoints[1]
@@ -748,16 +748,16 @@ function CreateCheckpointPD()
 	end
 
 	if lcp == nil or dist > 5 then
-		local fuckme = rotateVector(facingVector, 90)
+		local loc = rotateVector(facingVector, 90)
 		local left = enlargeVector(
 			{ x = pX, y = pY, z = pZ },
-			{ x = pX + fuckme.x, y = pY + fuckme.y, z = pZ + fuckme.z },
+			{ x = pX + loc.x, y = pY + loc.y, z = pZ + loc.z },
 			_size / 2
 		)
-		local fuckme2 = rotateVector(facingVector, -90)
+		local loc2 = rotateVector(facingVector, -90)
 		local right = enlargeVector(
 			{ x = pX, y = pY, z = pZ },
-			{ x = pX + fuckme2.x, y = pY + fuckme2.y, z = pZ + fuckme2.z },
+			{ x = pX + loc2.x, y = pY + loc2.y, z = pZ + loc2.z },
 			_size / 2
 		)
 		-- _pendingTrack.Checkpoints[(#_pendingTrack.Checkpoints + 1)] = {
@@ -822,16 +822,16 @@ function DisplayTempCheckpointPD()
 	}
 	local pX, pY, pZ = table.unpack(GetEntityCoords(pPed))
 
-	local fuckme = rotateVector(facingVector, 90)
+	local loc = rotateVector(facingVector, 90)
 	local left = enlargeVector(
 		{ x = pX, y = pY, z = pZ },
-		{ x = pX + fuckme.x, y = pY + fuckme.y, z = pZ + fuckme.z },
+		{ x = pX + loc.x, y = pY + loc.y, z = pZ + loc.z },
 		_size / 2
 	)
-	local fuckme2 = rotateVector(facingVector, -90)
+	local loc2 = rotateVector(facingVector, -90)
 	local right = enlargeVector(
 		{ x = pX, y = pY, z = pZ },
-		{ x = pX + fuckme2.x, y = pY + fuckme2.y, z = pZ + fuckme2.z },
+		{ x = pX + loc2.x, y = pY + loc2.y, z = pZ + loc2.z },
 		_size / 2
 	)
 
