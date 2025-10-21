@@ -69,7 +69,7 @@ export const initialState = {
             : Array(),
     inputs:
         process.env.NODE_ENV != 'production'
-            ? Array('/ooc TEST', '/m0', '/911a "FUCK YOU CUNT LOL"')
+            ? Array('/ooc TEST', '/m0', '/911a')
             : Array(),
 };
 
