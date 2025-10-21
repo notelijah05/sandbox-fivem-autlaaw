@@ -39,6 +39,7 @@ const Inventory: React.FC = () => {
     rightInventory?: InventoryProps;
   }>('setupInventory', (data) => {
     dispatch(setupInventory(data));
+    dispatch(closeTooltip());
     !inventoryVisible && setInventoryVisible(true);
   });
 
