@@ -281,32 +281,46 @@ function CheckPlayerAuth(source, doorPermissionData)
 	end
 	return false
 end
+local webhook = GetConvar("create_newdoorlock_log", "")
 
 RegisterNetEvent("Doors:Server:PrintDoor", function(data)
-	local src = source
-	local player = exports['sandbox-base']:FetchSource(src)
-	if not player.Permissions:IsAdmin() then
-		return
-	end
+    local src = source
+    local player = exports['sandbox-base']:FetchSource(src)
+    if not player.Permissions:IsAdmin() then
+        return
+    end
 
-	file = io.open("created_doors_data.txt", "a")
-	io.output(file)
-	local output = GetDoorOutput(data)
-	io.write(output)
-	io.close(file)
+    local output = GetDoorOutput(data)
+    if webhook ~= nil and webhook ~= "" then
+        PerformHttpRequest(webhook, function(err, text, headers)
+            if err ~= 200 then
+                print("[DOORS] Failed to send webhook (" .. tostring(err) .. ")")
+            end
+        end, "POST", json.encode({
+            username = "Door Creator Logger",
+            embeds = {{
+                title = "New Door Created - here is the data:",
+                description = string.format("```lua\n%s\n```", output),
+                color = 3447003,
+                footer = { text = os.date("%Y-%m-%d %H:%M:%S") }
+            }}
+        }), { ["Content-Type"] = "application/json" })
+    else
+        print("No webhook link configured in your logs.cfg file. Please set/fix the links")
+    end
 end)
 
 function GetDoorOutput(data)
-	local printout = '{\n\tid = "' .. data.name .. '",\n\tmodel = ' .. data.model .. ","
+    local printout = '{\n\tid = "' .. data.name .. '",\n\tmodel = ' .. data.model .. ","
 
-	printout = printout
-		.. "\n\tcoords = vector3("
-		.. tostring(exports['sandbox-base']:UtilsRound(data.coords.x, 2))
-		.. ", "
-		.. tostring(exports['sandbox-base']:UtilsRound(data.coords.y, 2))
-		.. ", "
-		.. tostring(exports['sandbox-base']:UtilsRound(data.coords.z, 2))
-		.. "),"
-	printout = printout .. "\n}\n\n"
-	return printout
+    printout = printout
+        .. "\n\tcoords = vector3("
+        .. tostring(exports['sandbox-base']:UtilsRound(data.coords.x, 2))
+        .. ", "
+        .. tostring(exports['sandbox-base']:UtilsRound(data.coords.y, 2))
+        .. ", "
+        .. tostring(exports['sandbox-base']:UtilsRound(data.coords.z, 2))
+        .. "),"
+    printout = printout .. "\n}\n\n"
+    return printout
 end
