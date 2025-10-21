@@ -1,15 +1,64 @@
-import React from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { makeStyles } from '@mui/styles';
+import { Slide } from '@mui/material';
 
-export default () => {
-  return (
-    <div className="absolute bottom-0 left-0 right-0 m-auto h-10 w-fit pointer-events-none z-10 flex bg-[#0f0f0fcc] border-l-4 border-info">
-      <small className="text-xs block leading-10 px-1.5">HELP</small>
-      <div className="text-white text-[18px] leading-10 shadow-[0_0_5px_#000] pl-[5px] pr-[15px] flex border-l border-[rgba(255,255,255,0.12)]">
-        <span className="text-primary font-bold mr-1">Double Click</span>
-        To Play As Character.
-        <span className="text-primary font-bold mx-1">Right Click</span>
-        To Delete Character
-      </div>
-    </div>
-  );
+const useStyles = makeStyles((theme) => ({
+	container: {
+		position: 'absolute',
+		bottom: 0,
+		left: 0,
+		right: 0,
+		margin: 'auto',
+		height: 40,
+		width: 'fit-content',
+		pointerEvents: 'none',
+		display: 'flex',
+		zIndex: 1,
+		background: `${theme.palette.secondary.dark}80`,
+		borderLeft: `4px solid ${theme.palette.info.main}`,
+		'& small': {
+			fontSize: 12,
+			display: 'block',
+			lineHeight: '40px',
+			padding: '0 5px',
+		},
+	},
+	label: {
+		color: theme.palette.text.main,
+		fontSize: 18,
+		lineHeight: '40px',
+		textShadow: '0 0 5px #000',
+		paddingLeft: 5,
+		paddingRight: 15,
+		flex: 1,
+		borderLeft: `1px solid ${theme.palette.border.divider}`,
+		height: 'fit-content',
+		display: 'flex',
+
+		'& .highlight': {
+			color: theme.palette.primary.main,
+			fontWeight: 'bold',
+			marginRight: 4,
+			'&:not(:first-of-type)': {
+				marginLeft: 2,
+			},
+		},
+	},
+}));
+
+export default ({ message }) => {
+	const classes = useStyles();
+	return (
+		<Slide direction="up" in={true}>
+			<div className={classes.container}>
+				<small>HELP</small>
+				<div className={classes.label}>
+					<span className="highlight">Double Click</span>
+					To Play As Character.
+					<span className="highlight">Right Click</span>
+					To Delete Character
+				</div>
+			</div>
+		</Slide>
+	);
 };
