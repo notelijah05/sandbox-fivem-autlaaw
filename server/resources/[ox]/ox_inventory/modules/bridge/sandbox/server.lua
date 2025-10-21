@@ -743,7 +743,7 @@ exports('GetNumberOfFreeSlots', function(id)
     return inventorySlots - #items
 end)
 
-exports('GetSlot', function(Owner, Slot, Type)
+exports('OldGetSlot', function(Owner, Slot, Type)
     if tonumber(Owner) then -- probably a player?
         local char = exports['sandbox-characters']:FetchBySID(Owner)
         Owner = char:GetData("Source")

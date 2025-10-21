@@ -3,7 +3,7 @@ function RegisterBallisticsCallbacks()
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char and data and data.slotNum and data.serial then
 			-- Files a Gun So Evidence Can Be Found
-			local item = exports.ox_inventory:GetSlot(char:GetData("SID"), data.slotNum, 1)
+			local item = exports.ox_inventory:OldGetSlot(char:GetData("SID"), data.slotNum, 1)
 			if item and item.MetaData and (item.MetaData.ScratchedSerialNumber or item.MetaData.SerialNumber) then
 				local firearmRecord, policeWeapId
 
