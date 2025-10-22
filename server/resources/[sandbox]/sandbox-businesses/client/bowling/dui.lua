@@ -176,7 +176,7 @@ AddEventHandler('Bowling:Client:SetTV', function()
         if success then
             SendBowlingNotification('Updated Link!')
         else
-            exports["sandbox-hud"]:Notification("error", 'Error', 5000, 'bowling-ball-pin')
+            exports["sandbox-hud"]:Notification("error", 'Unable to Update Link', 5000, 'bowling-ball-pin')
         end
     end)
 end)

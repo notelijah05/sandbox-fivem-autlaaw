@@ -360,7 +360,7 @@ function OpenVehicleStorageMenu(storageType, storageId, storedVehicleData, parki
 
     if storageType == 2 then
         for k, v in ipairs(personalVehicles) do
-            if v.Owner and v.Owner.Id == characterId then
+            if v.Owner and tostring(v.Owner.Id) == tostring(characterId) then
                 local description = ''
                 if v.RegisteredPlate then
                     description = 'Plate: ' .. v.RegisteredPlate
@@ -379,7 +379,7 @@ function OpenVehicleStorageMenu(storageType, storageId, storedVehicleData, parki
         end
 
         for k, v in ipairs(personalVehicles) do
-            if v.Owner and v.Owner.Id ~= characterId then
+            if v.Owner and tostring(v.Owner.Id) ~= tostring(characterId) then
                 local description = ''
                 if v.RegisteredPlate then
                     description = 'Plate: ' .. v.RegisteredPlate
@@ -662,7 +662,7 @@ AddEventHandler('Vehicles:Client:Storage:Retrieve', function(data)
             if success then
                 exports["sandbox-hud"]:Notification("info", 'Spawned Vehicle & Received Keys')
             else
-                exports["sandbox-hud"]:Notification("error", 'Error') -- Very descriptive error message
+                exports["sandbox-hud"]:Notification("error", 'Unable to Retrieve Vehicle')
             end
         end)
     end

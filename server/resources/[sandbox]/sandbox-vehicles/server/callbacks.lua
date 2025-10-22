@@ -171,7 +171,7 @@ function RegisterCallbacks()
             if vehicle and vehicle.VIN then
                 local isAuthedForVehicle = false
                 local extraData = {}
-                if vehicle.Owner.Type == 0 and (vehicle.Owner.Id == characterId or data.storageType == 2) then
+                if vehicle.Owner.Type == 0 and (tostring(vehicle.Owner.Id) == tostring(characterId) or data.storageType == 2) then
                     isAuthedForVehicle = true
                 elseif vehicle.Owner.Type == 1 then
                     local onDuty = Player(source).state.onDuty
@@ -198,7 +198,7 @@ function RegisterCallbacks()
                         if success then
                             exports['sandbox-vehicles']:KeysAdd(source, vehicle.VIN)
 
-                            if data.storageType == 2 and vehicle.Owner.Id ~= characterId then
+                            if data.storageType == 2 and tostring(vehicle.Owner.Id) ~= tostring(characterId) then
                                 exports['sandbox-vehicles']:KeysAddBySID(vehicle.Owner.Id, vehicle.VIN)
                             end
                         end
