@@ -18,8 +18,6 @@ alpine/
 imgui.ini
 yarn.lock
 
-polyzone_created_zones.txt
-
 server/created_doors_data.txt
 
 /server/db
